@@ -1,0 +1,7 @@
+{
+  "moderate": true,
+  "package-manager": "auto",
+  "report": true,
+  "advisories": [],
+  "whitelist": []
+}
