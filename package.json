@@ -1,6 +1,7 @@
 {
   "name": "freeipa-ui",
   "version": "0.1.0",
+  "homepage": ".",
   "private": true,
   "dependencies": {
     "@patternfly/react-core": "^4.198.19",
