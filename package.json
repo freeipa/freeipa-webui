@@ -1,61 +1,62 @@
 {
-  "name": "freeipa-ui",
+  "name": "freeipa-webui",
   "version": "0.1.0",
   "homepage": ".",
   "private": true,
+  "author": "",
+  "license": "GPL-3.0-or-later",
   "dependencies": {
+    "@patternfly/patternfly": "^4.202.1",
     "@patternfly/react-core": "^4.198.19",
-    "@testing-library/jest-dom": "^5.16.3",
-    "@testing-library/react": "^12.1.4",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.4.1",
-    "@types/node": "^16.11.26",
-    "@types/react": "^17.0.43",
-    "@types/react-dom": "^17.0.14",
+    "@patternfly/react-table": "^4.93.1",
+    "mini-css-extract-plugin": "^2.6.1",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "5.0.0",
-    "typescript": "^4.6.3",
-    "web-vitals": "^2.1.4"
+    "react-dom": "^17.0.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "build": "webpack build",
+    "start": "webpack serve --mode development",
     "audit-ci": "audit-ci --config audit-ci.json",
     "lint": "eslint --color src/",
     "lint:fix": "eslint --fix src/",
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --write ."
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
   "devDependencies": {
+    "@babel/core": "^7.18.9",
+    "@babel/plugin-transform-typescript": "^7.18.10",
+    "@babel/preset-env": "^7.18.9",
+    "@testing-library/jest-dom": "^5.16.3",
+    "@testing-library/react": "^12.1.5",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.11.45",
+    "@types/react": "^17.0.47",
+    "@types/react-dom": "^17.0.17",
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^5.17.0",
     "@typescript-eslint/parser": "^5.17.0",
     "audit-ci": "^6.1.2",
+    "babel-loader": "^8.2.5",
+    "babel-plugin-module-resolver": "^4.1.0",
+    "css-loader": "^6.7.1",
     "eslint": "^8.12.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",
-    "prettier": "^2.6.1"
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.5.0",
+    "mini-css-extract-plugin": "^2.6.1",
+    "prettier": "^2.6.1",
+    "sass-loader": "^13.0.2",
+    "source-map-loader": "^4.0.0",
+    "ts-loader": "^9.3.1",
+    "tsconfig-paths": "^4.0.0",
+    "tsconfig-paths-webpack-plugin": "^4.0.0",
+    "typescript": "^4.7.4",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.9.3"
   }
 }

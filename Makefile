@@ -1,4 +1,4 @@
-BUILD_DIR := ./build
+BUILD_DIR := ./dist
 INSTALL_DIR := /usr/share/ipa/modern-ui
 
 .PHONY: clean
