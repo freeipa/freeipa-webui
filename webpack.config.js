@@ -18,6 +18,11 @@ module.exports = {
 
   devtool: "source-map",
 
+  watchOptions: {
+    aggregateTimeout: 600,
+    poll: 1000,
+  },
+
   devServer: {
     watchFiles: ["src/**/*"],
     static: {

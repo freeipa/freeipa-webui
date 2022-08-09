@@ -14,7 +14,8 @@
   },
   "scripts": {
     "build": "webpack build --mode production --progress",
-    "start": "webpack serve --mode development",
+    "start": "webpack build --watch --mode development",
+    "serve": "webpack serve --mode development",
     "audit-ci": "audit-ci --config audit-ci.json",
     "lint": "eslint --color src/",
     "lint:fix": "eslint --fix src/",
