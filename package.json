@@ -9,12 +9,11 @@
     "@patternfly/patternfly": "^4.202.1",
     "@patternfly/react-core": "^4.198.19",
     "@patternfly/react-table": "^4.93.1",
-    "mini-css-extract-plugin": "^2.6.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
   "scripts": {
-    "build": "webpack build",
+    "build": "webpack build --mode production --progress",
     "start": "webpack serve --mode development",
     "audit-ci": "audit-ci --config audit-ci.json",
     "lint": "eslint --color src/",

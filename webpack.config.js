@@ -19,7 +19,7 @@ module.exports = {
   devtool: "source-map",
 
   devServer: {
-    watchFiles: ["src/**/*", "public/**/*"],
+    watchFiles: ["src/**/*"],
     static: {
       directory: path.join(__dirname, "dist"),
     },
