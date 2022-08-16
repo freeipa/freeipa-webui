@@ -4,11 +4,19 @@
 Vagrant.configure("2") do |config|
   config.vm.hostname = "server.ipa.demo"
   config.vm.box = "fedora/36-cloud-base"
+
   config.vm.synced_folder ".", "/vagrant", disabled: true
-  config.vm.synced_folder ".", "/usr/src/freeipa-webui", type: "sshfs"
-  config.vm.provider "libvirt" do |v|
+  config.vm.synced_folder ".", "/usr/src/freeipa-webui"
+
+  config.vm.provider "libvirt" do |v,override|
     v.memory = 4096
     v.cpus = 1
+    override.vm.synced_folder ".", "/usr/src/freeipa-webui", type: "sshfs"
+  end
+
+  # Virtualbox is used by the CI
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = 2048
   end
 
   # Install system dependencies
