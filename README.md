@@ -1,3 +1,5 @@
+[![Gating tests](https://github.com/freeipa/freeipa-webui/actions/workflows/gating.yml/badge.svg)](https://github.com/freeipa/freeipa-webui/actions/workflows/gating.yml)
+
 # FreeIPA Web UI
 
 New version of the web application for administration of FreeIPA built using
