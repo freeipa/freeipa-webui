@@ -8,6 +8,9 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/vagrant", disabled: true
   config.vm.synced_folder ".", "/usr/src/freeipa-webui"
 
+  # Needed by Cypress - optional if you edit your /etc/hosts
+  config.vm.network "forwarded_port", guest: 443, host: 443
+
   config.vm.provider "libvirt" do |v,override|
     v.memory = 4096
     v.cpus = 1

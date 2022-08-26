@@ -78,6 +78,19 @@ jobs:
       - name: Run vagrant provision
         run: vagrant provision
 
-      - name: Add hosts to /etc/hosts
-        run: |
-          echo "$(vagrant ssh-config | grep HostName | sed 's/  HostName //') server.ipa.demo"  | sudo tee -a /etc/hosts
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v4
+
+      - name: Upload cypress screenshots
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+
+      - name: Upload cypress videos
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos
