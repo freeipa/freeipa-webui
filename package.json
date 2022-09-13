@@ -10,7 +10,8 @@
     "@patternfly/react-core": "^4.198.19",
     "@patternfly/react-table": "^4.93.1",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^6.3.0"
   },
   "scripts": {
     "build": "webpack build --mode production --progress",
