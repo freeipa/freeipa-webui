@@ -14,6 +14,8 @@ import {
 } from "@patternfly/react-core";
 import React from "react";
 import BarsIcon from "@patternfly/react-icons/dist/esm/icons/bars-icon";
+// Navigation
+import Navigation from "./navigation/Nav";
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
   const headerToolbar = (
@@ -44,7 +46,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
     </Masthead>
   );
 
-  const Sidebar = <PageSidebar nav="Navigation" />;
+  const Sidebar = <PageSidebar nav={<Navigation />} />;
 
   const pageId = "primary-app-container";
 
