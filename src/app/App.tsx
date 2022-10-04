@@ -5,18 +5,52 @@ import "@patternfly/react-core/dist/styles/base.css";
 import { AppLayout } from "./AppLayout";
 // Navigation
 import { AppRoutes } from "./navigation/AppRoutes";
-import { Navigate, Route, Routes } from "react-router-dom";
-// Pages
-import ActiveUsers from "./pages/ActiveUsers/ActiveUsers";
-import ActiveUsersTabs from "./pages/ActiveUsers/ActiveUsersTabs";
-import StageUsers from "./pages/StageUsers/StageUsers";
-import PreservedUsers from "./pages/PreservedUsers/PreservedUsers";
+
+// Context
+export const Context = React.createContext<{
+  groupActive: string;
+  setGroupActive: React.Dispatch<any>;
+  browserTitle: string;
+  setBrowserTitle: React.Dispatch<any>;
+  superGroupActive: string;
+  setSuperGroupActive: React.Dispatch<any>;
+}>({
+  groupActive: "active-users",
+  setGroupActive: () => null,
+  browserTitle: "Active users title",
+  setBrowserTitle: () => null,
+  superGroupActive: "users",
+  setSuperGroupActive: () => null,
+});
 
 const App: React.FunctionComponent = () => {
+  // - Initial active group
+  const [groupActive, setGroupActive] = React.useState("active-users");
+  // - Initial title
+  const [browserTitle, setBrowserTitle] = React.useState("Active users title");
+  // - Initial active super group
+  const [superGroupActive, setSuperGroupActive] = React.useState("users");
+
+  // Update the 'browserTitle' on document.title when this changes
+  React.useEffect(() => {
+    document.title = browserTitle;
+  }, [browserTitle]);
+
   return (
-    <AppLayout>
-      <AppRoutes />
-    </AppLayout>
+    <Context.Provider
+      value={{
+        groupActive,
+        setGroupActive,
+        browserTitle,
+        setBrowserTitle,
+        superGroupActive,
+        setSuperGroupActive,
+      }}
+    >
+      <AppLayout>
+        <AppRoutes />
+      </AppLayout>
+    </Context.Provider>
   );
 };
 
