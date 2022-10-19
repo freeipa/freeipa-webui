@@ -4,7 +4,7 @@ name: Gating tests
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, devel]
 
 jobs:
   audit-and-build:
