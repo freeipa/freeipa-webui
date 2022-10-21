@@ -4,14 +4,14 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import NotFound from "./NotFound";
 
 // PAGE COMPONENTS
-import ActiveUsers from "app/pages/ActiveUsers/ActiveUsers";
-import ActiveUsersTabs from "app/pages/ActiveUsers/ActiveUsersTabs";
-import StageUsers from "app/pages/StageUsers/StageUsers";
-import StageUsersTabs from "app/pages/StageUsers/StageUsersTabs";
-import PreservedUsers from "app/pages/PreservedUsers/PreservedUsers";
-import UserGroups from "app/pages/UserGroups/UserGroups";
-import HostGroups from "app/pages/HostGroups/HostGroups";
-import Netgroups from "app/pages/Netgroups/Netgroups";
+import ActiveUsers from "src/pages/ActiveUsers/ActiveUsers";
+import ActiveUsersTabs from "src/pages/ActiveUsers/ActiveUsersTabs";
+import StageUsers from "src/pages/StageUsers/StageUsers";
+import StageUsersTabs from "src/pages/StageUsers/StageUsersTabs";
+import PreservedUsers from "src/pages/PreservedUsers/PreservedUsers";
+import UserGroups from "src/pages/UserGroups/UserGroups";
+import HostGroups from "src/pages/HostGroups/HostGroups";
+import Netgroups from "src/pages/Netgroups/Netgroups";
 
 // Navigation
 import { URL_PREFIX } from "./NavRoutes";
