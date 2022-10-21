@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 // Navigation (PatternFly)
 import { navigationRoutes } from "./NavRoutes";
 // Context
-import { Context } from "app/App";
+import { Context } from "../App";
 
 // Renders NavItem
 const renderNavItem = (
