@@ -24,7 +24,7 @@ module.exports = {
   },
 
   devServer: {
-    watchFiles: ["src/**/*"],
+    watchFiles: ["src/**/*", "public/**/*"],
     static: {
       directory: path.join(__dirname, "dist"),
     },
@@ -41,7 +41,7 @@ module.exports = {
   plugins: [
     new MiniCssExtractPlugin(),
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, "src", "public", "index.html"),
+      template: path.resolve(__dirname, "public", "index.html"),
     }),
   ],
 
