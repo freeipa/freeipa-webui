@@ -17,7 +17,8 @@
     "strict": true,
     "importHelpers": true,
     "skipLibCheck": true,
-    "noEmit": false
+    "noEmit": false,
+    "resolveJsonModule": true
   },
   "exclude": ["node_modules"]
 }
