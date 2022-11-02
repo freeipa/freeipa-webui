@@ -1,0 +1,233 @@
+[
+  {
+    "userId": "admin",
+    "userLogin": "admin",
+    "firstName": "",
+    "lastName": "Administrator",
+    "status": "Enabled",
+    "uid": "1151000000",
+    "emailAddress": "",
+    "phone": "",
+    "jobTitle": ""
+  },
+  {
+    "userId": "jdoe",
+    "userLogin": "jdoe",
+    "firstName": "John",
+    "lastName": "Doe",
+    "status": "Enabled",
+    "uid": "1151000001",
+    "emailAddress": "jdoe@ipaexample.test",
+    "phone": "",
+    "jobTitle": ""
+  },
+  {
+    "userId": "sother",
+    "userLogin": "sother",
+    "firstName": "Some",
+    "lastName": "Other",
+    "status": "Disabled",
+    "uid": "1151000003",
+    "emailAddress": "sother@ipaexample.test",
+    "phone": "",
+    "jobTitle": ""
+  },
+  {
+    "userId": "sother2",
+    "userLogin": "sother2",
+    "firstName": "Some",
+    "lastName": "Other",
+    "status": "Enabled",
+    "uid": "1151000004",
+    "emailAddress": "sother2@ipaexample.test",
+    "phone": "",
+    "jobTitle": ""
+  },
+  {
+    "userId": "sother3",
+    "userLogin": "sother3",
+    "firstName": "Some",
+    "lastName": "Other",
+    "status": "Enabled",
+    "uid": "1151000005",
+    "emailAddress": "sother3@ipaexample.test",
+    "phone": "",
+    "jobTitle": ""
+  },
+  {
+    "userId": "sother4",
+    "userLogin": "sother4",
+    "firstName": "Some",
+    "lastName": "Other",
+    "status": "Enabled",
+    "uid": "1151000006",
+    "emailAddress": "sother4@ipaexample.test",
+    "phone": "",
+    "jobTitle": ""
+  },
+  {
+    "userId": "sother5",
+    "userLogin": "sother5",
+    "firstName": "Some",
+    "lastName": "Other",
+    "status": "Enabled",
+    "uid": "1151000007",
+    "emailAddress": "sother5@ipaexample.test",
+    "phone": "",
+    "jobTitle": ""
+  },
+  {
+    "userId": "sother6",
+    "userLogin": "sother6",
+    "firstName": "Some",
+    "lastName": "Other",
+    "status": "Enabled",
+    "uid": "1151000008",
+    "emailAddress": "sother6@ipaexample.test",
+    "phone": "",
+    "jobTitle": ""
+  },
+  {
+    "userId": "sother7",
+    "userLogin": "sother7",
+    "firstName": "Some",
+    "lastName": "Other",
+    "status": "Enabled",
+    "uid": "1151000009",
+    "emailAddress": "sother7@ipaexample.test",
+    "phone": "",
+    "jobTitle": ""
+  },
+  {
+    "userId": "sother8",
+    "userLogin": "sother8",
+    "firstName": "Some",
+    "lastName": "Other",
+    "status": "Enabled",
+    "uid": "1151000010",
+    "emailAddress": "sother8@ipaexample.test",
+    "phone": "",
+    "jobTitle": ""
+  },
+  {
+    "userId": "sother9",
+    "userLogin": "sother9",
+    "firstName": "Some",
+    "lastName": "Other",
+    "status": "Enabled",
+    "uid": "1151000011",
+    "emailAddress": "sother9@ipaexample.test",
+    "phone": "",
+    "jobTitle": ""
+  },
+  {
+    "userId": "sother10",
+    "userLogin": "sother10",
+    "firstName": "Some",
+    "lastName": "Other",
+    "status": "Enabled",
+    "uid": "1151000012",
+    "emailAddress": "sother10@ipaexample.test",
+    "phone": "",
+    "jobTitle": ""
+  },
+  {
+    "userId": "sother11",
+    "userLogin": "sother11",
+    "firstName": "Some",
+    "lastName": "Other",
+    "status": "Enabled",
+    "uid": "1151000013",
+    "emailAddress": "sother11@ipaexample.test",
+    "phone": "",
+    "jobTitle": ""
+  },
+  {
+    "userId": "sother12",
+    "userLogin": "sother12",
+    "firstName": "Some",
+    "lastName": "Other",
+    "status": "Enabled",
+    "uid": "1151000014",
+    "emailAddress": "sother12@ipaexample.test",
+    "phone": "",
+    "jobTitle": ""
+  },
+  {
+    "userId": "sother13",
+    "userLogin": "sother13",
+    "firstName": "Some",
+    "lastName": "Other",
+    "status": "Enabled",
+    "uid": "1151000015",
+    "emailAddress": "sother13@ipaexample.test",
+    "phone": "",
+    "jobTitle": ""
+  },
+  {
+    "userId": "sother14",
+    "userLogin": "sother14",
+    "firstName": "Some",
+    "lastName": "Other",
+    "status": "Enabled",
+    "uid": "1151000016",
+    "emailAddress": "sother14@ipaexample.test",
+    "phone": "",
+    "jobTitle": ""
+  },
+  {
+    "userId": "sother15",
+    "userLogin": "sother15",
+    "firstName": "Some",
+    "lastName": "Other",
+    "status": "Disabled",
+    "uid": "1151000017",
+    "emailAddress": "sother15@ipaexample.test",
+    "phone": "",
+    "jobTitle": ""
+  },
+  {
+    "userId": "sother16",
+    "userLogin": "sother16",
+    "firstName": "Some",
+    "lastName": "Other",
+    "status": "Enabled",
+    "uid": "1151000018",
+    "emailAddress": "sother16@ipaexample.test",
+    "phone": "",
+    "jobTitle": ""
+  },
+  {
+    "userId": "sother17",
+    "userLogin": "sother17",
+    "firstName": "Some",
+    "lastName": "Other",
+    "status": "Enabled",
+    "uid": "1151000019",
+    "emailAddress": "sother17@ipaexample.test",
+    "phone": "",
+    "jobTitle": ""
+  },
+  {
+    "userId": "sother18",
+    "userLogin": "sother18",
+    "firstName": "Some",
+    "lastName": "Other",
+    "status": "Enabled",
+    "uid": "1151000020",
+    "emailAddress": "sother18@ipaexample.test",
+    "phone": "",
+    "jobTitle": ""
+  },
+  {
+    "userId": "sother19",
+    "userLogin": "sother19",
+    "firstName": "Some",
+    "lastName": "Other",
+    "status": "Enabled",
+    "uid": "1151000021",
+    "emailAddress": "sother19@ipaexample.test",
+    "phone": "",
+    "jobTitle": ""
+  }
+]
