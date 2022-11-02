@@ -1,0 +1,38 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React from "react";
+// PatternFly
+import { Button } from "@patternfly/react-core";
+
+interface PropsToSecondaryButton {
+  className?: string;
+  isDisabled?: boolean;
+  onClickHandler?: React.MouseEventHandler<HTMLButtonElement> | undefined;
+  children?: React.ReactNode;
+  isActive?: boolean;
+  isBlock?: boolean;
+  isInLine?: boolean;
+  ouijaId?: number | string;
+  ouijaSafe?: boolean;
+  innerRef?: React.Ref<any>;
+}
+
+const SecondaryButton = (props: PropsToSecondaryButton) => {
+  return (
+    <Button
+      className={props.className}
+      variant="secondary"
+      isDisabled={props.isDisabled}
+      isActive={props.isActive}
+      isBlock={props.isBlock}
+      isInline={props.isInLine}
+      ouiaId={props.ouijaId}
+      ouiaSafe={props.ouijaSafe}
+      onClick={props.onClickHandler}
+      innerRef={props.innerRef}
+    >
+      {props.children}
+    </Button>
+  );
+};
+
+export default SecondaryButton;
