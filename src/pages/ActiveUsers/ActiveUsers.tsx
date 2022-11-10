@@ -287,7 +287,11 @@ const ActiveUsers = () => {
   return (
     <Page>
       <PageSection variant={PageSectionVariants.light}>
-        <TitleLayout headingLevel="h1" text="Active users" />
+        <TitleLayout
+          id="active users title"
+          headingLevel="h1"
+          text="Active users"
+        />
       </PageSection>
       <PageSection
         variant={PageSectionVariants.light}
