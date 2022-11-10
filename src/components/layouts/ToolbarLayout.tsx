@@ -39,11 +39,12 @@ interface PropsToToolbar {
   toolbarItems: ToolbarItem[];
   className?: string;
   contentClassName?: string;
+  isSticky?: boolean;
 }
 
 const ToolbarLayout = (props: PropsToToolbar) => {
   return (
-    <Toolbar className={props.className}>
+    <Toolbar className={props.className} isSticky={props.isSticky}>
       <ToolbarContent className={props.contentClassName}>
         {props.toolbarItems.map((elem) => (
           <ToolbarItem

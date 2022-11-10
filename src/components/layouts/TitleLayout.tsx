@@ -4,6 +4,7 @@ import { TextContent, Title } from "@patternfly/react-core";
 
 interface PropsToTitleLayout {
   headingLevel: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+  id: string;
   text: string;
   className?: string;
   ouiaId?: number | string;
@@ -13,9 +14,10 @@ interface PropsToTitleLayout {
 
 const TitleLayout = (props: PropsToTitleLayout) => {
   return (
-    <TextContent>
+    <TextContent key={props.id}>
       <Title
         headingLevel={props.headingLevel}
+        id={props.id}
         className={props.className}
         ouiaId={props.ouiaId}
         ouiaSafe={props.ouiaSafe}
