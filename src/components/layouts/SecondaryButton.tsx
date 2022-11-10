@@ -4,7 +4,8 @@ import React from "react";
 import { Button } from "@patternfly/react-core";
 
 interface PropsToSecondaryButton {
-  className?: string;
+  classname?: string;
+  name?: string;
   isDisabled?: boolean;
   onClickHandler?: React.MouseEventHandler<HTMLButtonElement> | undefined;
   children?: React.ReactNode;
@@ -19,7 +20,8 @@ interface PropsToSecondaryButton {
 const SecondaryButton = (props: PropsToSecondaryButton) => {
   return (
     <Button
-      className={props.className}
+      className={props.classname}
+      name={props.name}
       variant="secondary"
       isDisabled={props.isDisabled}
       isActive={props.isActive}

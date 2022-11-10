@@ -17,6 +17,7 @@ interface PropsToKebab {
   // Toggle
   onKebabToggle?: ((value: boolean, event: any) => void) | undefined;
   idKebab: string;
+  direction?: "up" | "down";
 }
 
 const KebabLayout = (props: PropsToKebab) => {
@@ -28,6 +29,7 @@ const KebabLayout = (props: PropsToKebab) => {
       isOpen={props.isKebabOpen}
       isPlain={props.isPlain}
       dropdownItems={props.dropdownItems}
+      direction={props.direction}
     />
   );
 };
