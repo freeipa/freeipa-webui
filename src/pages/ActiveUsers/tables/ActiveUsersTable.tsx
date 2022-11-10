@@ -21,6 +21,10 @@ import {
 } from "src/store/shared/shared-slice";
 // Utils
 import { checkEqualStatus } from "src/utils/utils";
+// Navigation
+import { URL_PREFIX } from "src/navigation/NavRoutes";
+// React Router DOM
+import { Link } from "react-router-dom";
 
 export interface PropsToTable {
   elementsList: User[];
@@ -317,7 +321,9 @@ const ActiveUsersTable = (props: PropsToTable) => {
         style={setStyleOnStatus(user.status)}
         dataLabel={columnNames.userLogin}
       >
-        {user.userLogin}
+        <Link to={URL_PREFIX + "/active-users/settings"} state={user}>
+          {user.userLogin}
+        </Link>
       </Td>
       <Td
         style={setStyleOnStatus(user.status)}
