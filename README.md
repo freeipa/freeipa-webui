@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2022 Red Hat, Inc.
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 [![Gating tests](https://github.com/freeipa/freeipa-webui/actions/workflows/gating.yml/badge.svg)](https://github.com/freeipa/freeipa-webui/actions/workflows/gating.yml)
 
 # FreeIPA Web UI
