@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2022 Red Hat, Inc.
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 /// <reference types="cypress" />
 // ***********************************************
 // This example commands.ts shows you how to
