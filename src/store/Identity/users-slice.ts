@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2022 Red Hat, Inc.
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "src/store/store";
 import usersJson from "./users.json";

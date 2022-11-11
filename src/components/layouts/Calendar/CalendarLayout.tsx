@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2022 Red Hat, Inc.
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import React from "react";
 // PatternFly
 import { InputGroup, Popover, TextInput } from "@patternfly/react-core";

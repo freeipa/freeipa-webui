@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2022 Red Hat, Inc.
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React from "react";
 // Data type

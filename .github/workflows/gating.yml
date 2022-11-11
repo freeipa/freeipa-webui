@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2022 Red Hat, Inc.
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 ---
 name: Gating tests
 
@@ -7,6 +10,13 @@ on:
     branches: [main, devel]
 
 jobs:
+  reuse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: REUSE Compliance Check
+        uses: fsfe/reuse-action@v1
+
   audit-and-build:
     name: Audit and build
     runs-on: ubuntu-latest

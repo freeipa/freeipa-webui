@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2022 Red Hat, Inc.
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { configureStore } from "@reduxjs/toolkit";
 import usersReducer from "./Identity/users-slice";
 import sharedReducer from "./shared/shared-slice";

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2022 Red Hat, Inc.
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // ***********************************************************
 // This example support/e2e.ts is processed and
 // loaded automatically before your test files.
