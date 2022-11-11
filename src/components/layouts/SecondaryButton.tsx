@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2022 Red Hat, Inc.
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 // PatternFly

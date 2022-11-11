@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2022 Red Hat, Inc.
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { Nav, NavExpandable, NavItem, NavList } from "@patternfly/react-core";
 import React from "react";
 import { NavLink } from "react-router-dom";
