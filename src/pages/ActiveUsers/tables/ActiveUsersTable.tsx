@@ -18,7 +18,7 @@ import {
   setSelectedUserIds,
   setSelectedPerPage,
   setIsDeletion,
-} from "src/store/shared/shared-slice";
+} from "src/store/shared/activeUsersShared-slice";
 // Utils
 import { checkEqualStatus } from "src/utils/utils";
 // Navigation
@@ -42,16 +42,20 @@ const ActiveUsersTable = (props: PropsToTable) => {
 
   // Get shared props
   const isDisableEnableOp = useAppSelector(
-    (state) => state.shared.isDisableEnableOp
+    (state) => state.activeUsersShared.isDisableEnableOp
   );
   const selectedUserIds = useAppSelector(
-    (state) => state.shared.selectedUserIds
+    (state) => state.activeUsersShared.selectedUserIds
   );
   const selectedPerPage = useAppSelector(
-    (state) => state.shared.selectedPerPage
+    (state) => state.activeUsersShared.selectedPerPage
   );
-  const showTableRows = useAppSelector((state) => state.shared.showTableRows);
-  const isDeletion = useAppSelector((state) => state.shared.isDeletion);
+  const showTableRows = useAppSelector(
+    (state) => state.activeUsersShared.showTableRows
+  );
+  const isDeletion = useAppSelector(
+    (state) => state.activeUsersShared.isDeletion
+  );
 
   // Retrieve users data from props
   const activeUsersList = [...props.elementsList];

@@ -13,7 +13,7 @@ import {
   setIsEnableButtonDisabled,
   setIsDisableButtonDisabled,
   setIsDisableEnableOp,
-} from "src/store/shared/shared-slice";
+} from "src/store/shared/activeUsersShared-slice";
 import { changeStatus } from "src/store/Identity/users-slice";
 
 export interface PropsToDisableEnableUsers {
@@ -27,7 +27,9 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
   const dispatch = useAppDispatch();
 
   // Get shared props (Redux)
-  const selectedUsers = useAppSelector((state) => state.shared.selectedUsers);
+  const selectedUsers = useAppSelector(
+    (state) => state.activeUsersShared.selectedUsers
+  );
 
   // List of fields
   const fields = [
