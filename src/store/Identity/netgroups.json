@@ -1,0 +1,14 @@
+[
+  {
+    "name": "netgroup1",
+    "description": "First netgroup"
+  },
+  {
+    "name": "netgroup2",
+    "description": "Second netgroup"
+  },
+  {
+    "name": "netgroup3",
+    "description": "Third netgroup"
+  }
+]
