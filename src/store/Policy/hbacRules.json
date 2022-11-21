@@ -1,0 +1,17 @@
+[
+  {
+    "name": "allow_all",
+    "status": "Enabled",
+    "description": "Allow all users to access any host from any host"
+  },
+  {
+    "name": "allow_systemd-user",
+    "status": "Enabled",
+    "description": "Allow pam_systemd to run user@.service to create a system user session"
+  },
+  {
+    "name": "allow_unicorn-user",
+    "status": "Disabled",
+    "description": "Test to have a disabled rule by default"
+  }
+]

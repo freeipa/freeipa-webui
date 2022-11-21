@@ -1,0 +1,22 @@
+[
+  {
+    "name": "admins",
+    "gid": "613800000",
+    "description": "Account administrators group"
+  },
+  {
+    "name": "editors",
+    "gid": "613800002",
+    "description": "Limited admins who can edit other users"
+  },
+  {
+    "name": "employees",
+    "gid": "613800005",
+    "description": "Test Employees"
+  },
+  {
+    "name": "group123",
+    "gid": "613800008",
+    "description": "The best group ever"
+  }
+]
