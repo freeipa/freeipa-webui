@@ -25,7 +25,7 @@ import {
   setIsDeleteButtonDisabled,
   setIsEnableButtonDisabled,
   setIsDisableButtonDisabled,
-} from "src/store/shared/shared-slice";
+} from "src/store/shared/activeUsersShared-slice";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
@@ -50,13 +50,13 @@ const ActiveUsers = () => {
 
   // Get shared variables (Redux)
   const isDeleteButtonDisabled = useAppSelector(
-    (state) => state.shared.isDeleteButtonDisabled
+    (state) => state.activeUsersShared.isDeleteButtonDisabled
   );
   const isEnableButtonDisabled = useAppSelector(
-    (state) => state.shared.isEnableButtonDisabled
+    (state) => state.activeUsersShared.isEnableButtonDisabled
   );
   const isDisableButtonDisabled = useAppSelector(
-    (state) => state.shared.isDisableButtonDisabled
+    (state) => state.activeUsersShared.isDisableButtonDisabled
   );
 
   // Initialize active users list (Redux)

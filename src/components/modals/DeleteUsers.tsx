@@ -17,7 +17,7 @@ import {
   setIsDeleteButtonDisabled,
   setSelectedUsers,
   setIsDeletion,
-} from "src/store/shared/shared-slice";
+} from "src/store/shared/activeUsersShared-slice";
 import { removeUser } from "src/store/Identity/users-slice";
 
 export interface PropsToDeleteUsers {
@@ -30,7 +30,9 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
   const dispatch = useAppDispatch();
 
   // Get shared props (Redux)
-  const selectedUsers = useAppSelector((state) => state.shared.selectedUsers);
+  const selectedUsers = useAppSelector(
+    (state) => state.activeUsersShared.selectedUsers
+  );
 
   // Radio buttons states
   const [isDeleteChecked, setIsDeleteChecked] = useState(true);
