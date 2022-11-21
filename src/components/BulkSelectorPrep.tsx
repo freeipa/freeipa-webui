@@ -22,7 +22,7 @@ import {
   setIsDisableEnableOp,
   setSelectedUserIds,
   setSelectedPerPage,
-} from "src/store/shared/shared-slice";
+} from "src/store/shared/activeUsersShared-slice";
 // Utils
 import { checkEqualStatus } from "src/utils/utils";
 
@@ -40,9 +40,11 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
   const dispatch = useAppDispatch();
 
   // Retrieve shared variables (Redux)
-  const selectedUsers = useAppSelector((state) => state.shared.selectedUsers);
+  const selectedUsers = useAppSelector(
+    (state) => state.activeUsersShared.selectedUsers
+  );
   const selectedPerPage = useAppSelector(
-    (state) => state.shared.selectedPerPage
+    (state) => state.activeUsersShared.selectedPerPage
   );
 
   // Table functionality (from parent component) to manage the bulk selector functionality

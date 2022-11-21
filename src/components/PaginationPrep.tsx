@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import {
   setSelectedPerPage,
   setShowTableRows,
-} from "src/store/shared/shared-slice";
+} from "src/store/shared/activeUsersShared-slice";
 
 interface PropsToPaginationPrep {
   list: User[]; // TODO: Multi-type
@@ -29,7 +29,9 @@ const PaginationPrep = (props: PropsToPaginationPrep) => {
   const dispatch = useAppDispatch();
 
   // Get shared props
-  const showTableRows = useAppSelector((state) => state.shared.showTableRows);
+  const showTableRows = useAppSelector(
+    (state) => state.activeUsersShared.showTableRows
+  );
 
   // Refresh displayed users every time users list changes (from Redux or somewhere else)
   React.useEffect(() => {
