@@ -19,6 +19,7 @@ import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { User } from "src/utils/datatypes/globalDataTypes";
 // Other
 import UserSettings from "./UserSettings";
+import UserMemberOf from "./UserMemberOf";
 // Layouts
 import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
 
@@ -38,7 +39,7 @@ const ActiveUsersTabs = () => {
   };
 
   // 'pagesVisited' array will contain the visited pages.
-  // Those will be passed to the BreadcrumbLayout component.
+  // - Those will be passed to the BreadcrumbLayout component.
   const pagesVisited = [
     {
       name: "Active users",
@@ -68,9 +69,20 @@ const ActiveUsersTabs = () => {
           isBox
           className="pf-u-ml-lg"
         >
-          <Tab eventKey={0} title={<TabTitleText>Settings</TabTitleText>}>
+          <Tab
+            eventKey={0}
+            name="details"
+            title={<TabTitleText>Settings</TabTitleText>}
+          >
             <PageSection className="pf-u-pb-0"></PageSection>
             <UserSettings user={userData} />
+          </Tab>
+          <Tab
+            eventKey={1}
+            name="memberof-details"
+            title={<TabTitleText>Is a member of</TabTitleText>}
+          >
+            <UserMemberOf user={userData} />
           </Tab>
         </Tabs>
       </PageSection>
