@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core";
 
-interface ToolbarItemSpacer {
+export interface ToolbarItemSpacer {
   default?: "spacerNone" | "spacerSm" | "spacerMd" | "spacerLg";
   md?: "spacerNone" | "spacerSm" | "spacerMd" | "spacerLg";
   lg?: "spacerNone" | "spacerSm" | "spacerMd" | "spacerLg";
@@ -10,7 +10,7 @@ interface ToolbarItemSpacer {
   "2xl"?: "spacerNone" | "spacerSm" | "spacerMd" | "spacerLg";
 }
 
-interface ToolbarItemAlignment {
+export interface ToolbarItemAlignment {
   default?: "alignRight" | "alignLeft";
   md?: "alignRight" | "alignLeft";
   lg?: "alignRight" | "alignLeft";
@@ -20,7 +20,7 @@ interface ToolbarItemAlignment {
 
 export interface ToolbarItem {
   key: number;
-  // element: JSX.Element | undefined;
+  id?: string;
   element?: JSX.Element;
   toolbarItemVariant?:
     | "bulk-select"
