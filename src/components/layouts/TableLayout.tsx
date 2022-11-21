@@ -8,6 +8,7 @@ import React from "react";
 
 export interface PropsToTable {
   ariaLabel: string;
+  name?: string;
   variant: TableVariant | "compact";
   hasBorders: boolean;
   classes?: string;
@@ -21,6 +22,7 @@ const TableLayout = (props: PropsToTable) => {
   return (
     <TableComposable
       aria-label={props.ariaLabel}
+      name={props.name}
       variant={props.variant}
       borders={props.hasBorders}
       className={props.classes}
