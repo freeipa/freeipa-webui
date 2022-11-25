@@ -12,41 +12,40 @@ import {
 import { User } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import BulkSelectorLayout from "src/components/layouts/BulkSelectorLayout";
-// Redux
-import { useAppSelector, useAppDispatch } from "src/store/hooks";
-import {
-  setSelectedUsers,
-  setIsDeleteButtonDisabled,
-  setIsEnableButtonDisabled,
-  setIsDisableButtonDisabled,
-  setIsDisableEnableOp,
-  setSelectedUserIds,
-  setSelectedPerPage,
-} from "src/store/shared/activeUsersShared-slice";
 // Utils
 import { checkEqualStatus } from "src/utils/utils";
+
+interface UsersData {
+  selectedUsers: string[];
+  updateSelectedUsers: (newSelectedUsers: string[]) => void;
+  updateSelectedUserIds: (newSelectedUserIds: string[]) => void;
+  selectedUserNames: string[];
+  changeSelectedUserNames: (selectedUsernames: string[]) => void;
+  selectableUsersTable: User[];
+  isUserSelectable: (user: User) => boolean;
+}
+
+interface ButtonsData {
+  updateIsDeleteButtonDisabled: (value: boolean) => void;
+  updateIsEnableButtonDisabled: (value: boolean) => void;
+  updateIsDisableButtonDisabled: (value: boolean) => void;
+  updateIsDisableEnableOp: (value: boolean) => void;
+}
+
+interface SelectedPerPageData {
+  selectedPerPage: number;
+  updateSelectedPerPage: (selected: number) => void;
+}
 
 interface PropsToBulkSelectorPrep {
   list: User[];
   shownElementsList: User[];
-  changeSelectedUserNames: (selectedUsernames: string[]) => void;
-  selectableUsersTable: User[];
-  selectedUserNames: string[];
-  isUserSelectable: (user: User) => boolean;
+  usersData: UsersData;
+  buttonsData: ButtonsData;
+  selectedPerPageData: SelectedPerPageData;
 }
 
 const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
-
-  // Retrieve shared variables (Redux)
-  const selectedUsers = useAppSelector(
-    (state) => state.activeUsersShared.selectedUsers
-  );
-  const selectedPerPage = useAppSelector(
-    (state) => state.activeUsersShared.selectedPerPage
-  );
-
   // Table functionality (from parent component) to manage the bulk selector functionality
   // - Menu
   const [isOpenMenu, setIsOpenMenu] = useState(false);
@@ -92,16 +91,16 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
 
   // - Selectable checkboxes on table (elements per page)
   const selectableUsersPage = props.shownElementsList.filter(
-    props.isUserSelectable
+    props.usersData.isUserSelectable
   );
 
   // - Methods to manage the Bulk selector options
   // -- Unselect all items on the table
   const unselectAllItems = () => {
-    dispatch(setSelectedUserIds([]));
-    dispatch(setSelectedUsers([]));
-    dispatch(setIsDeleteButtonDisabled(true));
-    props.changeSelectedUserNames([]);
+    props.usersData.updateSelectedUserIds([]);
+    props.usersData.updateSelectedUsers([]);
+    props.buttonsData.updateIsDeleteButtonDisabled(true);
+    props.usersData.changeSelectedUserNames([]);
   };
 
   // - Helper method: Remove duplicates in a list
@@ -114,7 +113,7 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
     isSelecting = true,
     selectableUsersList: User[]
   ) => {
-    props.changeSelectedUserNames(
+    props.usersData.changeSelectedUserNames(
       isSelecting ? selectableUsersList.map((r) => r.userLogin) : []
     );
     // Check if all selected users have the same status
@@ -129,20 +128,20 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
       selectableUsersList.map((user) => {
         userNamesArray.push(user.userId);
       });
-      dispatch(setSelectedUsers(userNamesArray));
+      props.usersData.updateSelectedUsers(userNamesArray);
       // Resetting 'isDisableEnableOp'
-      dispatch(setIsDisableEnableOp(false));
+      props.buttonsData.updateIsDisableEnableOp(false);
       // Enable or disable buttons depending on the status
       if (firstStatus === "Enabled") {
-        dispatch(setIsDisableButtonDisabled(false));
-        dispatch(setIsEnableButtonDisabled(true));
+        props.buttonsData.updateIsDisableButtonDisabled(false);
+        props.buttonsData.updateIsEnableButtonDisabled(true);
       } else if (firstStatus === "Disabled") {
-        dispatch(setIsDisableButtonDisabled(true));
-        dispatch(setIsEnableButtonDisabled(false));
+        props.buttonsData.updateIsDisableButtonDisabled(true);
+        props.buttonsData.updateIsEnableButtonDisabled(false);
       }
     } else {
-      dispatch(setIsDisableButtonDisabled(true));
-      dispatch(setIsEnableButtonDisabled(true));
+      props.buttonsData.updateIsDisableButtonDisabled(true);
+      props.buttonsData.updateIsEnableButtonDisabled(true);
     }
 
     // Enable/disable 'Delete' button
@@ -150,8 +149,10 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
       let usersIdArray: string[] = [];
 
       // if all page selected, the original 'selectedUsers' data is preserved
-      if (selectableUsersList.length < props.selectableUsersTable.length) {
-        selectedUsers.map((user) => {
+      if (
+        selectableUsersList.length < props.usersData.selectableUsersTable.length
+      ) {
+        props.usersData.selectedUsers.map((user) => {
           usersIdArray.push(user);
         });
         selectableUsersList.map((user) => {
@@ -160,23 +161,25 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
       }
       // Correct duplicates (if any)
       usersIdArray = removeDuplicates(usersIdArray);
-      dispatch(setSelectedUsers(usersIdArray));
+      props.usersData.updateSelectedUsers(usersIdArray);
 
       // Update data
-      dispatch(setSelectedUserIds(usersIdArray));
-      dispatch(setSelectedUsers(usersIdArray));
-      props.changeSelectedUserNames(usersIdArray);
+      props.usersData.updateSelectedUserIds(usersIdArray);
+      props.usersData.updateSelectedUsers(usersIdArray);
+      props.usersData.changeSelectedUserNames(usersIdArray);
       // Enable delete button
-      dispatch(setIsDeleteButtonDisabled(false));
+      props.buttonsData.updateIsDeleteButtonDisabled(false);
       // Update the 'selectedPerPage' counter
-      dispatch(setSelectedPerPage(selectableUsersList.length));
+      props.selectedPerPageData.updateSelectedPerPage(
+        selectableUsersList.length
+      );
     } else {
-      dispatch(setSelectedUserIds([]));
-      dispatch(setSelectedUsers([]));
-      props.changeSelectedUserNames([]);
-      dispatch(setIsDeleteButtonDisabled(true));
+      props.usersData.updateSelectedUserIds([]);
+      props.usersData.updateSelectedUsers([]);
+      props.usersData.changeSelectedUserNames([]);
+      props.buttonsData.updateIsDeleteButtonDisabled(true);
       // Restore the 'selectedPerPage' counter
-      dispatch(setSelectedPerPage(0));
+      props.selectedPerPageData.updateSelectedPerPage(0);
     }
   };
 
@@ -185,7 +188,7 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
     isSelecting = true,
     selectableUsersList: User[]
   ) => {
-    props.changeSelectedUserNames(
+    props.usersData.changeSelectedUserNames(
       isSelecting ? selectableUsersList.map((r) => r.userLogin) : []
     );
     // Check if all users have the same status
@@ -200,33 +203,33 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
       selectableUsersList.map((user) => {
         userNamesArray.push(user.userId);
       });
-      dispatch(setSelectedUsers(userNamesArray));
+      props.usersData.updateSelectedUsers(userNamesArray);
       // Resetting 'isDisableEnableOp'
-      dispatch(setIsDisableEnableOp(false));
+      props.buttonsData.updateIsDisableEnableOp(false);
       // Enable or disable buttons depending on the status
       if (firstStatus === "Enabled") {
-        dispatch(setIsDisableButtonDisabled(false));
-        dispatch(setIsEnableButtonDisabled(true));
+        props.buttonsData.updateIsDisableButtonDisabled(false);
+        props.buttonsData.updateIsEnableButtonDisabled(true);
       } else if (firstStatus === "Disabled") {
-        dispatch(setIsDisableButtonDisabled(true));
-        dispatch(setIsEnableButtonDisabled(false));
+        props.buttonsData.updateIsDisableButtonDisabled(true);
+        props.buttonsData.updateIsEnableButtonDisabled(false);
       }
     } else {
-      dispatch(setIsDisableButtonDisabled(true));
-      dispatch(setIsEnableButtonDisabled(true));
+      props.buttonsData.updateIsDisableButtonDisabled(true);
+      props.buttonsData.updateIsEnableButtonDisabled(true);
     }
 
     // Enable/disable 'Delete' button
     if (isSelecting) {
       const usersIdArray: string[] = [];
       selectableUsersList.map((user) => usersIdArray.push(user.userId));
-      dispatch(setSelectedUserIds(usersIdArray));
-      dispatch(setSelectedUsers(usersIdArray));
-      dispatch(setIsDeleteButtonDisabled(false));
+      props.usersData.updateSelectedUserIds(usersIdArray);
+      props.usersData.updateSelectedUsers(usersIdArray);
+      props.buttonsData.updateIsDeleteButtonDisabled(false);
     } else {
-      dispatch(setSelectedUserIds([]));
-      dispatch(setSelectedUsers([]));
-      dispatch(setIsDeleteButtonDisabled(true));
+      props.usersData.updateSelectedUserIds([]);
+      props.usersData.updateSelectedUsers([]);
+      props.buttonsData.updateIsDeleteButtonDisabled(true);
     }
   };
 
@@ -235,9 +238,10 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
   // - Some rows selected: null (-)
   // - None selected: false (empty)
   const areAllUsersSelected: boolean | null =
-    props.selectedUserNames.length === props.selectableUsersTable.length
+    props.usersData.selectedUserNames.length ===
+    props.usersData.selectableUsersTable.length
       ? true
-      : props.selectedUserNames.length > 0
+      : props.usersData.selectedUserNames.length > 0
       ? null
       : false;
 
@@ -257,11 +261,16 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
               isSelecting: boolean | undefined,
               // eslint-disable-next-line @typescript-eslint/no-unused-vars
               event: FormEvent<HTMLInputElement>
-            ) => selectAllUsersTable(isSelecting, props.selectableUsersTable)}
+            ) =>
+              selectAllUsersTable(
+                isSelecting,
+                props.usersData.selectableUsersTable
+              )
+            }
             isChecked={areAllUsersSelected}
           >
-            {selectedUsers.length > 0 && (
-              <p>{selectedUsers.length + " selected"}</p>
+            {props.usersData.selectedUsers.length > 0 && (
+              <p>{props.usersData.selectedUsers.length + " selected"}</p>
             )}
           </MenuToggleCheckbox>,
         ],
@@ -277,7 +286,7 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
   // The 'currectPageAlreadySelected' should be set when elements are selected
   useEffect(() => {
     const found = props.shownElementsList.every(
-      (user) => selectedUsers.indexOf(user.userId) >= 0
+      (user) => props.usersData.selectedUsers.indexOf(user.userId) >= 0
     );
 
     if (found) {
@@ -289,24 +298,27 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
       // If there is no elements selected on the page yet, reset 'selectedPerPage'
       if (
         !props.shownElementsList.some(
-          (user) => selectedUsers.indexOf(user.userId) >= 0
+          (user) => props.usersData.selectedUsers.indexOf(user.userId) >= 0
         )
       ) {
-        dispatch(setSelectedPerPage(0));
+        props.selectedPerPageData.updateSelectedPerPage(0);
       }
     }
-  }, [selectedUsers.length, props.shownElementsList]);
+  }, [props.usersData.selectedUsers.length, props.shownElementsList]);
 
   // Set the messages displayed in the 'Select page' option (bulk selector)
   const getSelectedElements = () => {
-    let msg = "Select page (" + selectedUsers.length + " items)";
+    let msg =
+      "Select page (" + props.usersData.selectedUsers.length + " items)";
     const remainingElements = Math.min(
-      selectedUsers.length + props.shownElementsList.length - selectedPerPage,
+      props.usersData.selectedUsers.length +
+        props.shownElementsList.length -
+        props.selectedPerPageData.selectedPerPage,
       props.list.length
     );
 
     if (
-      props.list.length > selectedUsers.length &&
+      props.list.length > props.usersData.selectedUsers.length &&
       !currentPageAlreadySelected
     ) {
       msg = "Select page (" + remainingElements + " items)";
@@ -335,7 +347,7 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
           <MenuItem
             itemId={2}
             onClick={() =>
-              selectAllUsersTable(true, props.selectableUsersTable)
+              selectAllUsersTable(true, props.usersData.selectableUsersTable)
             }
           >
             Select all ({props.list.length} items)
