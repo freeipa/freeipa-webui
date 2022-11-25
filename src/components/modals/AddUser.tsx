@@ -20,10 +20,11 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import { User } from "src/utils/datatypes/globalDataTypes";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
-import { addUser } from "src/store/Identity/users-slice";
+import { addUser as addActiveUser } from "src/store/Identity/activeUsers-slice";
 
 export interface PropsToAddUser {
   show: boolean;
+  from: "active-users" | "stage-users" | "preserved-users";
   handleModalToggle: () => void;
 }
 
@@ -415,7 +416,9 @@ const AddUser = (props: PropsToAddUser) => {
         phone: "",
         jobTitle: "",
       };
-      dispatch(addUser(newUser));
+      if (props.from === "active-users") {
+        dispatch(addActiveUser(newUser));
+      }
       cleanAndCloseModal();
     }
   };
@@ -463,7 +466,9 @@ const AddUser = (props: PropsToAddUser) => {
         phone: "",
         jobTitle: "",
       };
-      dispatch(addUser(newUser));
+      if (props.from === "active-users") {
+        dispatch(addActiveUser(newUser));
+      }
       // Do not close the modal, but clean fields & reset validations
       cleanAllFields();
       resetValidations();
@@ -501,7 +506,7 @@ const AddUser = (props: PropsToAddUser) => {
       modalPosition="top"
       offPosition="76px"
       title="Add user"
-      formId="active-users-add-user-modal"
+      formId="users-add-user-modal"
       fields={fields}
       show={props.show}
       onClose={cleanAndCloseModal}

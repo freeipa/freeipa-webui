@@ -8,28 +8,27 @@ import {
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Redux
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
-import {
-  setIsEnableButtonDisabled,
-  setIsDisableButtonDisabled,
-  setIsDisableEnableOp,
-} from "src/store/shared/activeUsersShared-slice";
-import { changeStatus } from "src/store/Identity/users-slice";
+import { useAppDispatch } from "src/store/hooks";
+import { changeStatus as changeStatusActiveUser } from "src/store/Identity/activeUsers-slice";
+
+interface ButtonsData {
+  updateIsEnableButtonDisabled: (value: boolean) => void;
+  updateIsDisableButtonDisabled: (value: boolean) => void;
+  updateIsDisableEnableOp: (value: boolean) => void;
+}
 
 export interface PropsToDisableEnableUsers {
   show: boolean;
+  from: "active-users" | "stage-users" | "preserved-users";
   handleModalToggle: () => void;
   optionSelected: string; // 'enable' | 'disable'
+  selectedUsers: string[];
+  buttonsData: ButtonsData;
 }
 
 const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
   // Set dispatch (Redux)
   const dispatch = useAppDispatch();
-
-  // Get shared props (Redux)
-  const selectedUsers = useAppSelector(
-    (state) => state.activeUsersShared.selectedUsers
-  );
 
   // List of fields
   const fields = [
@@ -51,21 +50,23 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
   };
 
   const modifyStatus = (newStatus: string, selectedUsers: string[]) => {
-    dispatch(
-      changeStatus({
-        newStatus,
-        selectedUsers,
-      })
-    );
+    if (props.from === "active-users") {
+      dispatch(
+        changeStatusActiveUser({
+          newStatus,
+          selectedUsers,
+        })
+      );
+    }
     // Update 'isDisbleEnableOp' to notify table that an updating operation is performed
-    dispatch(setIsDisableEnableOp(true));
+    props.buttonsData.updateIsDisableEnableOp(true);
     // Update buttons
     if (props.optionSelected === "enable") {
-      dispatch(setIsEnableButtonDisabled(true));
-      dispatch(setIsDisableButtonDisabled(false));
+      props.buttonsData.updateIsEnableButtonDisabled(true);
+      props.buttonsData.updateIsDisableButtonDisabled(false);
     } else if (props.optionSelected === "disable") {
-      dispatch(setIsEnableButtonDisabled(false));
-      dispatch(setIsDisableButtonDisabled(true));
+      props.buttonsData.updateIsEnableButtonDisabled(false);
+      props.buttonsData.updateIsDisableButtonDisabled(true);
     }
     closeModal();
   };
@@ -75,8 +76,8 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
     <Button
       key="disable-users"
       variant="primary"
-      onClick={() => modifyStatus(props.optionSelected, selectedUsers)}
-      form="active-users-enable-disable-users-modal"
+      onClick={() => modifyStatus(props.optionSelected, props.selectedUsers)}
+      form="users-enable-disable-users-modal"
     >
       Disable
     </Button>,
@@ -91,7 +92,7 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
       modalPosition="top"
       offPosition="76px"
       title="Disable confirmation"
-      formId="active-users-enable-disable-users-modal"
+      formId="users-enable-disable-users-modal"
       fields={fields}
       show={props.show}
       onClose={closeModal}
@@ -104,7 +105,7 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
     <Button
       key="enable-users"
       variant="primary"
-      onClick={() => modifyStatus(props.optionSelected, selectedUsers)}
+      onClick={() => modifyStatus(props.optionSelected, props.selectedUsers)}
       form="active-users-enable-disable-users-modal"
     >
       Enable
@@ -120,7 +121,7 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
       modalPosition="top"
       offPosition="76px"
       title="Enable confirmation"
-      formId="active-users-enable-disable-users-modal"
+      formId="users-enable-disable-users-modal"
       fields={fields}
       show={props.show}
       onClose={closeModal}
