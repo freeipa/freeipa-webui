@@ -20,12 +20,7 @@ import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/o
 import { User } from "src/utils/datatypes/globalDataTypes";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 // Redux
-import { useAppSelector, useAppDispatch } from "src/store/hooks";
-import {
-  setIsDeleteButtonDisabled,
-  setIsEnableButtonDisabled,
-  setIsDisableButtonDisabled,
-} from "src/store/shared/activeUsersShared-slice";
+import { useAppSelector } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
@@ -33,34 +28,82 @@ import KebabLayout from "src/components/layouts/KebabLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 // Tables
-import ActiveUsersTable from "./tables/ActiveUsersTable";
+import UsersTable from "../../components/tables/UsersTable";
 // Components
 import PaginationPrep from "src/components/PaginationPrep";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 // Modals
-import AddUser from "../../components/modals/AddUser";
-import DeleteUsers from "../../components/modals/DeleteUsers";
-import DisableEnableUsers from "../../components/modals/DisableEnableUsers";
+import AddUser from "src/components/modals/AddUser";
+import DeleteUsers from "src/components/modals/DeleteUsers";
+import DisableEnableUsers from "src/components/modals/DisableEnableUsers";
 // Utils
 import { isUserSelectable } from "src/utils/utils";
 
 const ActiveUsers = () => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
-
-  // Get shared variables (Redux)
-  const isDeleteButtonDisabled = useAppSelector(
-    (state) => state.activeUsersShared.isDeleteButtonDisabled
-  );
-  const isEnableButtonDisabled = useAppSelector(
-    (state) => state.activeUsersShared.isEnableButtonDisabled
-  );
-  const isDisableButtonDisabled = useAppSelector(
-    (state) => state.activeUsersShared.isDisableButtonDisabled
-  );
-
   // Initialize active users list (Redux)
-  const activeUsersList = useAppSelector((state) => state.users.usersList);
+  const activeUsersList = useAppSelector(
+    (state) => state.activeUsers.usersList
+  );
+
+  // Selected users state
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+
+  const updateSelectedUsers = (newSelectedUsers: string[]) => {
+    setSelectedUsers(newSelectedUsers);
+  };
+
+  // 'Delete' button state
+  const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
+    useState<boolean>(true);
+
+  const updateIsDeleteButtonDisabled = (value: boolean) => {
+    setIsDeleteButtonDisabled(value);
+  };
+
+  // If some entries have been deleted, restore the selectedUsers list
+  const [isDeletion, setIsDeletion] = useState(false);
+
+  const updateIsDeletion = (value: boolean) => {
+    setIsDeletion(value);
+  };
+
+  // 'Enable' button state
+  const [isEnableButtonDisabled, setIsEnableButtonDisabled] =
+    useState<boolean>(true);
+
+  const updateIsEnableButtonDisabled = (value: boolean) => {
+    setIsEnableButtonDisabled(value);
+  };
+
+  // 'Disable' button state
+  const [isDisableButtonDisabled, setIsDisableButtonDisabled] =
+    useState<boolean>(true);
+
+  const updateIsDisableButtonDisabled = (value: boolean) => {
+    setIsDisableButtonDisabled(value);
+  };
+
+  // If some entries' status has been updated, unselect selected rows
+  const [isDisableEnableOp, setIsDisableEnableOp] = useState(false);
+
+  const updateIsDisableEnableOp = (value: boolean) => {
+    setIsDisableEnableOp(value);
+  };
+
+  // - Selected user ids state
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+
+  const updateSelectedUserIds = (newSelectedUserIds: string[]) => {
+    setSelectedUserIds(newSelectedUserIds);
+  };
+
+  // Elements selected (per page)
+  //  - This will help to calculate the remaining elements on a specific page (bulk selector)
+  const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
+
+  const updateSelectedPerPage = (selected: number) => {
+    setSelectedPerPage(selected);
+  };
 
   // Pagination
   const [page, setPage] = useState<number>(1);
@@ -82,6 +125,13 @@ const ActiveUsers = () => {
 
   const updateShownUsersList = (newShownUsersList: User[]) => {
     setShownUsersList(newShownUsersList);
+  };
+
+  // Show table rows
+  const [showTableRows, setShowTableRows] = useState(false);
+
+  const updateShowTableRows = (value: boolean) => {
+    setShowTableRows(value);
   };
 
   // Dropdown kebab
@@ -129,9 +179,9 @@ const ActiveUsers = () => {
   };
 
   const onEnableDisableHandler = (optionClicked: string) => {
-    dispatch(setIsDeleteButtonDisabled(true)); // prevents 'Delete' button to be enabled
-    dispatch(setIsEnableButtonDisabled(true)); // prevents 'Enable' button to be enabled
-    dispatch(setIsDisableButtonDisabled(true)); // prevents 'Disable' button to be enabled
+    setIsDeleteButtonDisabled(true); // prevents 'Delete' button to be enabled
+    setIsEnableButtonDisabled(true); // prevents 'Enable' button to be enabled
+    setIsDisableButtonDisabled(true); // prevents 'Disable' button to be enabled
     setEnableDisableOptionSelected(optionClicked);
     setShowEnableDisableModal(true);
   };
@@ -164,6 +214,82 @@ const ActiveUsers = () => {
         : otherSelectedUserNames;
     });
 
+  // Data wrappers
+  // - 'PaginationPrep'
+  const paginationData = {
+    page,
+    perPage,
+    updatePage,
+    updatePerPage,
+    showTableRows,
+    updateShowTableRows,
+    updateSelectedPerPage,
+    updateShownUsersList,
+  };
+
+  // - 'BulkSelectorPrep'
+  const usersData = {
+    selectedUsers,
+    updateSelectedUsers,
+    updateSelectedUserIds,
+    selectedUserNames,
+    changeSelectedUserNames,
+    selectableUsersTable,
+    isUserSelectable,
+  };
+
+  const buttonsData = {
+    updateIsDeleteButtonDisabled,
+    updateIsEnableButtonDisabled,
+    updateIsDisableButtonDisabled,
+    updateIsDisableEnableOp,
+  };
+
+  const selectedPerPageData = {
+    selectedPerPage,
+    updateSelectedPerPage,
+  };
+
+  // 'DeleteUsers'
+  const deleteUsersButtonsData = {
+    updateIsDeleteButtonDisabled,
+    updateIsDeletion,
+  };
+
+  const selectedUsersData = {
+    selectedUsers,
+    updateSelectedUsers,
+  };
+
+  // 'DisableEnableUsers'
+  const disableEnableButtonsData = {
+    updateIsEnableButtonDisabled,
+    updateIsDisableButtonDisabled,
+    updateIsDisableEnableOp,
+  };
+
+  // 'UsersTable'
+  const usersTableData = {
+    isUserSelectable,
+    selectedUserNames,
+    changeSelectedUserNames,
+    selectedUserIds,
+    updateSelectedUserIds,
+    selectableUsersTable,
+    setUserSelected,
+    updateSelectedUsers,
+  };
+
+  const usersTableButtonsData = {
+    updateIsDeleteButtonDisabled,
+    updateIsEnableButtonDisabled,
+    updateIsDisableButtonDisabled,
+    isDeletion,
+    updateIsDeletion,
+    isDisableEnableOp,
+    updateIsDisableEnableOp,
+  };
+
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -172,10 +298,9 @@ const ActiveUsers = () => {
         <BulkSelectorPrep
           list={activeUsersList}
           shownElementsList={shownUsersList}
-          selectedUserNames={selectedUserNames}
-          changeSelectedUserNames={changeSelectedUserNames}
-          selectableUsersTable={selectableUsersTable}
-          isUserSelectable={isUserSelectable}
+          usersData={usersData}
+          buttonsData={buttonsData}
+          selectedPerPageData={selectedPerPageData}
         />
       ),
     },
@@ -270,11 +395,7 @@ const ActiveUsers = () => {
       element: (
         <PaginationPrep
           list={activeUsersList}
-          perPage={perPage}
-          page={page}
-          updatePage={updatePage}
-          updatePerPage={updatePerPage}
-          updateShownUsersList={updateShownUsersList}
+          paginationData={paginationData}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -306,40 +427,46 @@ const ActiveUsers = () => {
         <div style={{ height: `calc(100vh - 352.2px)` }}>
           <OuterScrollContainer>
             <InnerScrollContainer>
-              <ActiveUsersTable
+              <UsersTable
                 elementsList={activeUsersList}
                 shownElementsList={shownUsersList}
-                isUserSelectable={isUserSelectable}
-                selectedUserNames={selectedUserNames}
-                changeSelectedUserNames={changeSelectedUserNames}
-                selectableUsers={selectableUsersTable}
-                setUserSelected={setUserSelected}
+                from="active-users"
+                showTableRows={showTableRows}
+                usersData={usersTableData}
+                buttonsData={usersTableButtonsData}
+                paginationData={selectedPerPageData}
               />
             </InnerScrollContainer>
           </OuterScrollContainer>
         </div>
         <PaginationPrep
           list={activeUsersList}
-          page={page}
-          perPage={perPage}
-          updatePage={updatePage}
-          updatePerPage={updatePerPage}
-          updateShownUsersList={updateShownUsersList}
+          paginationData={paginationData}
           variant={PaginationVariant.bottom}
           widgetId="pagination-options-menu-bottom"
           perPageComponent="button"
           className="pf-u-pb-0 pf-u-pr-md"
         />
       </PageSection>
-      <AddUser show={showAddModal} handleModalToggle={onAddModalToggle} />
+      <AddUser
+        show={showAddModal}
+        from="active-users"
+        handleModalToggle={onAddModalToggle}
+      />
       <DeleteUsers
         show={showDeleteModal}
+        from="active-users"
         handleModalToggle={onDeleteModalToggle}
+        selectedUsersData={selectedUsersData}
+        buttonsData={deleteUsersButtonsData}
       />
       <DisableEnableUsers
         show={showEnableDisableModal}
+        from="active-users"
         handleModalToggle={onEnableDisableModalToggle}
         optionSelected={enableDisableOptionSelected}
+        selectedUsers={selectedUsers}
+        buttonsData={disableEnableButtonsData}
       />
     </Page>
   );
