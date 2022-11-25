@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "src/store/store";
-import usersJson from "./users.json";
+// User data (JSON file)
+import activeUsersJson from "./activeUsers.json";
 // Data types
 import { User } from "src/utils/datatypes/globalDataTypes";
 
-interface UsersState {
+interface ActiveUsersState {
   usersList: User[];
 }
 
@@ -13,12 +14,12 @@ interface ChangeStatusData {
   selectedUsers: string[];
 }
 
-const initialState: UsersState = {
-  usersList: usersJson,
+const initialState: ActiveUsersState = {
+  usersList: activeUsersJson,
 };
 
-const usersSlice = createSlice({
-  name: "users",
+const activeUsersSlice = createSlice({
+  name: "activeUsers",
   initialState,
   reducers: {
     addUser: (state, action: PayloadAction<User>) => {
@@ -87,6 +88,7 @@ const usersSlice = createSlice({
   },
 });
 
-export const { addUser, removeUser, changeStatus } = usersSlice.actions;
-export const selectUsers = (state: RootState) => state.users.usersList;
-export default usersSlice.reducer;
+export const { addUser, removeUser, changeStatus } = activeUsersSlice.actions;
+export const selectUsers = (state: RootState) =>
+  state.activeUsers.usersList as User[];
+export default activeUsersSlice.reducer;
