@@ -10,23 +10,30 @@ import { useAppSelector } from "src/store/hooks";
 
 export interface PropsToDeletedUsersTable {
   usersToDelete: string[];
+  from: "active-users" | "stage-users" | "preserved-users";
 }
 
 const DeletedUsersTable = (props: PropsToDeletedUsersTable) => {
-  // Retrieve active users list from Store
-  const activeUsersList = useAppSelector((state) => state.users.usersList);
-  // Make a copy to work with it
+  // Retrieve all users list from Store
+  // - Active users
+  const activeUsersList = useAppSelector(
+    (state) => state.activeUsers.usersList
+  );
   const activeUsersListCopy = [...activeUsersList];
 
   // Given userIds, retrieve full user info to display into table
   const usersToDelete: User[] = [];
-  activeUsersListCopy.map((user) => {
-    props.usersToDelete.map((selected) => {
-      if (user.userId === selected) {
-        usersToDelete.push(user);
-      }
-    });
-  });
+  switch (props.from) {
+    case "active-users":
+      activeUsersListCopy.map((user) => {
+        props.usersToDelete.map((selected) => {
+          if (user.userId === selected) {
+            usersToDelete.push(user);
+          }
+        });
+      });
+      break;
+  }
 
   // Define column names
   const columnNames = {
