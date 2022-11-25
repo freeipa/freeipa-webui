@@ -12,27 +12,30 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
 import DeletedUsersTable from "src/components/tables/DeletedUsersTable";
 // Redux
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
-import {
-  setIsDeleteButtonDisabled,
-  setSelectedUsers,
-  setIsDeletion,
-} from "src/store/shared/activeUsersShared-slice";
-import { removeUser } from "src/store/Identity/users-slice";
+import { useAppDispatch } from "src/store/hooks";
+import { removeUser as removeActiveUser } from "src/store/Identity/activeUsers-slice";
+
+interface ButtonsData {
+  updateIsDeleteButtonDisabled: (value: boolean) => void;
+  updateIsDeletion: (value: boolean) => void;
+}
+
+interface SelectedUsersData {
+  selectedUsers: string[];
+  updateSelectedUsers: (newSelectedUsers: string[]) => void;
+}
 
 export interface PropsToDeleteUsers {
   show: boolean;
+  from: "active-users" | "stage-users" | "preserved-users";
   handleModalToggle: () => void;
+  selectedUsersData: SelectedUsersData;
+  buttonsData: ButtonsData;
 }
 
 const DeleteUsers = (props: PropsToDeleteUsers) => {
   // Set dispatch (Redux)
   const dispatch = useAppDispatch();
-
-  // Get shared props (Redux)
-  const selectedUsers = useAppSelector(
-    (state) => state.activeUsersShared.selectedUsers
-  );
 
   // Radio buttons states
   const [isDeleteChecked, setIsDeleteChecked] = useState(true);
@@ -57,7 +60,12 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
     },
     {
       id: "deleted-users-table",
-      pfComponent: <DeletedUsersTable usersToDelete={selectedUsers} />,
+      pfComponent: (
+        <DeletedUsersTable
+          usersToDelete={props.selectedUsersData.selectedUsers}
+          from={props.from}
+        />
+      ),
     },
     {
       id: "radio-buttons",
@@ -93,12 +101,14 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
 
   // Redux: Delete user
   const deleteUsers = () => {
-    selectedUsers.map((user) => {
-      dispatch(removeUser(user));
+    props.selectedUsersData.selectedUsers.map((user) => {
+      if (props.from === "active-users") {
+        dispatch(removeActiveUser(user));
+      }
     });
-    dispatch(setSelectedUsers([]));
-    dispatch(setIsDeleteButtonDisabled(true));
-    dispatch(setIsDeletion(true));
+    props.selectedUsersData.updateSelectedUsers([]);
+    props.buttonsData.updateIsDeleteButtonDisabled(true);
+    props.buttonsData.updateIsDeletion(true);
     closeModal();
   };
 
