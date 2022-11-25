@@ -1,6 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import usersReducer from "./Identity/users-slice";
-import activeUsersSharedReducer from "./shared/activeUsersShared-slice";
+import activeUsersReducer from "./Identity/activeUsers-slice";
 import netgroupsReducer from "./Identity/netgroups-slice";
 import userGroupsReducer from "./Identity/userGroups-slice";
 import rolesReducer from "./IPA server/roles-slice";
@@ -10,8 +9,7 @@ import activeUsersMemberOfSharedReducer from "./shared/activeUsersMemberOf-slice
 
 const store = configureStore({
   reducer: {
-    users: usersReducer,
-    activeUsersShared: activeUsersSharedReducer,
+    activeUsers: activeUsersReducer,
     netgroups: netgroupsReducer,
     usergroups: userGroupsReducer,
     roles: rolesReducer,
