@@ -3,20 +3,21 @@ import React from "react";
 import { User } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import PaginationLayout from "src/components/layouts/PaginationLayout";
-// Redux
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
-import {
-  setSelectedPerPage,
-  setShowTableRows,
-} from "src/store/shared/activeUsersShared-slice";
 
-interface PropsToPaginationPrep {
-  list: User[]; // TODO: Multi-type
+interface PaginationData {
   page: number;
   perPage: number;
   updatePage: (newPage: number) => void;
   updatePerPage: (newSetPerPage: number) => void;
+  showTableRows: boolean;
+  updateShowTableRows: (value: boolean) => void;
+  updateSelectedPerPage: (selected: number) => void;
   updateShownUsersList: (newShownUsersList: User[]) => void;
+}
+
+interface PropsToPaginationPrep {
+  list: User[]; // TODO: Multi-type
+  paginationData: PaginationData;
   variant?: "top" | "bottom";
   widgetId?: string | undefined;
   perPageComponent?: "div" | "button";
@@ -25,23 +26,18 @@ interface PropsToPaginationPrep {
 }
 
 const PaginationPrep = (props: PropsToPaginationPrep) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
-
-  // Get shared props
-  const showTableRows = useAppSelector(
-    (state) => state.activeUsersShared.showTableRows
-  );
-
   // Refresh displayed users every time users list changes (from Redux or somewhere else)
   React.useEffect(() => {
-    props.updatePage(1);
-    if (showTableRows) dispatch(setShowTableRows(false));
+    props.paginationData.updatePage(1);
+    if (props.paginationData.showTableRows)
+      props.paginationData.updateShowTableRows(false);
     setTimeout(() => {
-      props.updateShownUsersList(props.list.slice(0, props.perPage));
-      dispatch(setShowTableRows(true));
+      props.paginationData.updateShownUsersList(
+        props.list.slice(0, props.paginationData.perPage)
+      );
+      props.paginationData.updateShowTableRows(true);
       // Reset 'selectedPerPage'
-      dispatch(setSelectedPerPage(0));
+      props.paginationData.updateSelectedPerPage(0);
     }, 2000);
   }, [props.list]);
 
@@ -53,13 +49,15 @@ const PaginationPrep = (props: PropsToPaginationPrep) => {
     startIdx: number | undefined,
     endIdx: number | undefined
   ) => {
-    props.updatePage(newPage);
-    dispatch(setShowTableRows(false));
+    props.paginationData.updatePage(newPage);
+    props.paginationData.updateShowTableRows(false);
     setTimeout(() => {
-      props.updateShownUsersList(props.list.slice(startIdx, endIdx));
-      dispatch(setShowTableRows(true));
+      props.paginationData.updateShownUsersList(
+        props.list.slice(startIdx, endIdx)
+      );
+      props.paginationData.updateShowTableRows(true);
       // Reset 'selectedPerPage'
-      dispatch(setSelectedPerPage(0));
+      props.paginationData.updateSelectedPerPage(0);
     }, 2000);
   };
 
@@ -71,22 +69,24 @@ const PaginationPrep = (props: PropsToPaginationPrep) => {
     startIdx: number | undefined,
     endIdx: number | undefined
   ) => {
-    props.updatePerPage(newPerPage);
-    props.updatePage(newPage);
-    dispatch(setShowTableRows(false));
+    props.paginationData.updatePerPage(newPerPage);
+    props.paginationData.updatePage(newPage);
+    props.paginationData.updateShowTableRows(false);
     setTimeout(() => {
-      props.updateShownUsersList(props.list.slice(startIdx, endIdx));
-      dispatch(setShowTableRows(true));
+      props.paginationData.updateShownUsersList(
+        props.list.slice(startIdx, endIdx)
+      );
+      props.paginationData.updateShowTableRows(true);
       // Reset 'selectedPerPage'
-      dispatch(setSelectedPerPage(0));
+      props.paginationData.updateSelectedPerPage(0);
     }, 2000);
   };
 
   return (
     <PaginationLayout
       list={props.list}
-      perPage={props.perPage}
-      page={props.page}
+      perPage={props.paginationData.perPage}
+      page={props.paginationData.page}
       handleSetPerPage={handlePerPageSelect}
       handleSetPage={handleSetPage}
       variant={props.variant}
