@@ -14,13 +14,6 @@ import SearchIcon from "@patternfly/react-icons/dist/esm/icons/search-icon";
 // Layouts
 import TableLayout from "../layouts/TableLayout";
 import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout";
-// Redux
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
-import {
-  setIsDeleteButtonDisabled,
-  setGroupsNamesSelected,
-  setIsDeletion,
-} from "src/store/shared/activeUsersMemberOf-slice";
 
 interface ColumnNames {
   name: string;
@@ -41,22 +34,73 @@ interface MemberOfElement {
   description: string;
 }
 
+interface ButtonData {
+  isDeletion: boolean;
+  updateIsDeletion: (option: boolean) => void;
+  changeIsDeleteButtonDisabled: (updatedDeleteButton: boolean) => void;
+}
+
 export interface PropsToTable {
   group: MemberOfElement[];
-  columnNames: ColumnNames;
+  // columnNames: ColumnNames;
   tableName: string;
   activeTabKey: number;
+  changeSelectedGroups: (groups: string[]) => void;
+  buttonData: ButtonData;
   showTableRows: boolean;
 }
 
 const MemberOfTable = (props: PropsToTable) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
+  // Define column names
+  const userGroupsColumnNames: ColumnNames = {
+    name: "Group name",
+    gid: "GID",
+    description: "Description",
+  };
+  const netgroupsColumnNames: ColumnNames = {
+    name: "Netgroup name",
+    description: "Description",
+  };
+  const rolesColumnNames: ColumnNames = {
+    name: "Role name",
+    description: "Description",
+  };
+  const hbacRulesColumnNames: ColumnNames = {
+    name: "Rule name",
+    status: "Status",
+    description: "Description",
+  };
+  const sudoRulesColumnNames: ColumnNames = {
+    name: "Rule name",
+    status: "Status",
+    description: "Description",
+  };
 
-  // retrieved shared data (Redux)
-  const isDeletion = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.isDeletion
+  // State for column names
+  const [columnNames, setColumnNames] = useState<ColumnNames>(
+    userGroupsColumnNames
   );
+
+  // When moving to another tab, the column names must change
+  useEffect(() => {
+    switch (props.activeTabKey) {
+      case 0:
+        setColumnNames(userGroupsColumnNames);
+        break;
+      case 1:
+        setColumnNames(netgroupsColumnNames);
+        break;
+      case 2:
+        setColumnNames(rolesColumnNames);
+        break;
+      case 3:
+        setColumnNames(hbacRulesColumnNames);
+        break;
+      case 4:
+        setColumnNames(sudoRulesColumnNames);
+        break;
+    }
+  }, [props.activeTabKey]);
 
   // selected user ids state
   const [selectedGroupNameIds, setSelectedGroupNameIds] = useState<string[]>(
@@ -97,11 +141,11 @@ const MemberOfTable = (props: PropsToTable) => {
       const groupsNameArray: string[] = [];
       selectableGroups.map((group) => groupsNameArray.push(group.name));
       setSelectedGroupNameIds(groupsNameArray);
-      dispatch(setGroupsNamesSelected(groupsNameArray));
-      dispatch(setIsDeleteButtonDisabled(false));
+      props.changeSelectedGroups(groupsNameArray);
+      props.buttonData.changeIsDeleteButtonDisabled(false);
     } else {
-      dispatch(setGroupsNamesSelected([]));
-      dispatch(setIsDeleteButtonDisabled(true));
+      props.changeSelectedGroups([]);
+      props.buttonData.changeIsDeleteButtonDisabled(true);
     }
   };
 
@@ -143,32 +187,32 @@ const MemberOfTable = (props: PropsToTable) => {
     if (isSelecting) {
       selectedGroupsArray.push(group.name);
       setSelectedGroupNameIds(selectedGroupsArray);
-      dispatch(setGroupsNamesSelected(selectedGroupsArray));
+      props.changeSelectedGroups(selectedGroupsArray);
     } else {
       selectedGroupsArray = selectedGroupsArray.filter(
         (groupName) => groupName !== group.name
       );
       setSelectedGroupNameIds(selectedGroupsArray);
-      dispatch(setGroupsNamesSelected(selectedGroupsArray));
+      props.changeSelectedGroups(selectedGroupsArray);
     }
   };
 
   // Reset 'updateIsDeletion' when a delete operation has been done
   useEffect(() => {
-    if (isDeletion) {
+    if (props.buttonData.isDeletion) {
       setSelectedGroupNameIds([]);
       setSelectedGroupNames([]);
-      dispatch(setIsDeletion(false));
+      props.buttonData.updateIsDeletion(false);
     }
-  }, [isDeletion]);
+  }, [props.buttonData.isDeletion]);
 
   // Enable 'Delete' button if any group on the table is selected
   useEffect(() => {
     if (selectedGroupNameIds.length > 0) {
-      dispatch(setIsDeleteButtonDisabled(false));
+      props.buttonData.changeIsDeleteButtonDisabled(false);
     }
     if (selectedGroupNameIds.length === 0) {
-      dispatch(setIsDeleteButtonDisabled(true));
+      props.buttonData.changeIsDeleteButtonDisabled(true);
     }
   }, [selectedGroupNameIds]);
 
@@ -227,22 +271,22 @@ const MemberOfTable = (props: PropsToTable) => {
           isSelected: areAllGroupsSelected,
         }}
       />
-      <Th key={props.columnNames.name} modifier="wrap">
-        {props.columnNames.name}
+      <Th key={columnNames.name} modifier="wrap">
+        {columnNames.name}
       </Th>
-      {props.columnNames.gid && (
-        <Th key={props.columnNames.gid} modifier="wrap">
-          {props.columnNames.gid}
+      {columnNames.gid && (
+        <Th key={columnNames.gid} modifier="wrap">
+          {columnNames.gid}
         </Th>
       )}
-      {props.columnNames.status && (
-        <Th key={props.columnNames.status} modifier="wrap">
-          {props.columnNames.status}
+      {columnNames.status && (
+        <Th key={columnNames.status} modifier="wrap">
+          {columnNames.status}
         </Th>
       )}
-      {props.columnNames.description && (
-        <Th key={props.columnNames.description} modifier="wrap">
-          {props.columnNames.description}
+      {columnNames.description && (
+        <Th key={columnNames.description} modifier="wrap">
+          {columnNames.description}
         </Th>
       )}
     </Tr>
