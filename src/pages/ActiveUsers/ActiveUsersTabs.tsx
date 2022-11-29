@@ -18,7 +18,7 @@ import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Data types
 import { User } from "src/utils/datatypes/globalDataTypes";
 // Other
-import UserSettings from "./UserSettings";
+import UserSettings from "../../components/UserSettings";
 import UserMemberOf from "./UserMemberOf";
 // Layouts
 import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
@@ -75,7 +75,7 @@ const ActiveUsersTabs = () => {
             title={<TabTitleText>Settings</TabTitleText>}
           >
             <PageSection className="pf-u-pb-0"></PageSection>
-            <UserSettings user={userData} />
+            <UserSettings user={userData} from="active-users" />
           </Tab>
           <Tab
             eventKey={1}
