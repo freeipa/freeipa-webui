@@ -35,6 +35,7 @@ import UsersAttributesSMB from "src/components/UsersSections/UsersAttributesSMB"
 
 export interface PropsToUserSettings {
   user: User;
+  from: "active-users" | "stage-users" | "preserved-users";
 }
 
 const UserSettings = (props: PropsToUserSettings) => {
