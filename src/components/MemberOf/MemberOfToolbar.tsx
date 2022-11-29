@@ -28,29 +28,16 @@ import {
   HBACRules,
   SudoRules,
 } from "src/utils/datatypes/globalDataTypes";
-// Redux
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
-import {
-  onClickAddHandler,
-  onClickDeleteHandler,
-  setTabName,
-  setPage,
-  setPerPage,
-} from "src/store/shared/activeUsersMemberOf-slice";
 
-export interface PropsToToolbar {
-  pageRepo: UserGroup[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[];
-  shownItems: UserGroup[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[];
-  toolbar: "user groups" | "netgroups" | "roles" | "HBAC rules" | "sudo rules";
-  changeMemberGroupsList: (
-    arg: UserGroup[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[]
-  ) => void;
+interface PageData {
+  page: number;
   changeSetPage: (
     newPage: number,
     perPage: number | undefined,
     startIdx: number | undefined,
     endIdx: number | undefined
   ) => void;
+  perPage: number;
   changePerPageSelect: (
     newPerPage: number,
     newPage: number,
@@ -59,18 +46,32 @@ export interface PropsToToolbar {
   ) => void;
 }
 
-const MemberOfToolbar = (props: PropsToToolbar) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
+interface ButtonData {
+  onClickAddHandler: () => void;
+  onClickDeleteHandler: () => void;
+  isDeleteButtonDisabled: boolean;
+}
 
-  // Retrieve shared data (Redux)
-  const isDeleteButtonDisabled = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.isDeleteButtonDisabled
-  );
-  const page = useAppSelector((state) => state.activeUsersMemberOfShared.page);
-  const perPage = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.perPage
-  );
+interface SettersData {
+  changeMemberGroupsList: (
+    arg: UserGroup[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[]
+  ) => void;
+  changeTabName: (name: string) => void;
+}
+
+export interface PropsToToolbar {
+  pageRepo: UserGroup[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[];
+  shownItems: UserGroup[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[];
+  toolbar: "user groups" | "netgroups" | "roles" | "HBAC rules" | "sudo rules";
+  settersData: SettersData;
+  pageData: PageData;
+  buttonData: ButtonData;
+}
+
+const MemberOfToolbar = (props: PropsToToolbar) => {
+  // -- Pagination
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
 
   // - Page setters
   const onSetPage = (
@@ -80,9 +81,11 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
     startIdx: number | undefined,
     endIdx: number | undefined
   ) => {
-    dispatch(setPage(newPage));
-    props.changeMemberGroupsList(props.pageRepo.slice(startIdx, endIdx));
-    props.changeSetPage(newPage, perPage, startIdx, endIdx);
+    setPage(newPage);
+    props.settersData.changeMemberGroupsList(
+      props.pageRepo.slice(startIdx, endIdx)
+    );
+    props.pageData.changeSetPage(newPage, perPage, startIdx, endIdx);
   };
 
   const onPerPageSelect = (
@@ -92,9 +95,11 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
     startIdx: number | undefined,
     endIdx: number | undefined
   ) => {
-    dispatch(setPerPage(newPerPage));
-    props.changeMemberGroupsList(props.pageRepo.slice(startIdx, endIdx));
-    props.changePerPageSelect(newPerPage, newPage, startIdx, endIdx);
+    setPerPage(newPerPage);
+    props.settersData.changeMemberGroupsList(
+      props.pageRepo.slice(startIdx, endIdx)
+    );
+    props.pageData.changePerPageSelect(newPerPage, newPage, startIdx, endIdx);
   };
 
   // Toggle group
@@ -111,13 +116,13 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
   };
 
   const userGroupsOnClickAddHandler = () => {
-    dispatch(setTabName("User groups"));
-    dispatch(onClickAddHandler());
+    props.settersData.changeTabName("User groups");
+    props.buttonData.onClickAddHandler();
   };
 
   const userGroupsOnDeleteClickHandler = () => {
-    dispatch(setTabName("User groups"));
-    dispatch(onClickDeleteHandler());
+    props.settersData.changeTabName("User groups");
+    props.buttonData.onClickDeleteHandler();
   };
 
   // - Netgroups
@@ -132,13 +137,13 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
   };
 
   const netgroupsOnClickAddHandler = () => {
-    dispatch(setTabName("Netgroups"));
-    dispatch(onClickAddHandler());
+    props.settersData.changeTabName("Netgroups");
+    props.buttonData.onClickAddHandler();
   };
 
   const netgroupsOnDeleteClickHandler = () => {
-    dispatch(setTabName("Netgroups"));
-    dispatch(onClickDeleteHandler());
+    props.settersData.changeTabName("Netgroups");
+    props.buttonData.onClickDeleteHandler();
   };
 
   // - Roles
@@ -153,13 +158,13 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
   };
 
   const rolesOnClickAddHandler = () => {
-    dispatch(setTabName("Roles"));
-    dispatch(onClickAddHandler());
+    props.settersData.changeTabName("Roles");
+    props.buttonData.onClickAddHandler();
   };
 
   const rolesOnDeleteClickHandler = () => {
-    dispatch(setTabName("Roles"));
-    dispatch(onClickDeleteHandler());
+    props.settersData.changeTabName("Roles");
+    props.buttonData.onClickDeleteHandler();
   };
 
   // - HBAC rules
@@ -174,13 +179,13 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
   };
 
   const hbacRulesOnClickAddHandler = () => {
-    dispatch(setTabName("HBAC rules"));
-    dispatch(onClickAddHandler());
+    props.settersData.changeTabName("HBAC rules");
+    props.buttonData.onClickAddHandler();
   };
 
   const hbacRulesOnDeleteClickHandler = () => {
-    dispatch(setTabName("HBAC rules"));
-    dispatch(onClickDeleteHandler());
+    props.settersData.changeTabName("HBAC rules");
+    props.buttonData.onClickDeleteHandler();
   };
 
   // - Sudo rules
@@ -195,13 +200,13 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
   };
 
   const sudoRulesOnClickAddHandler = () => {
-    dispatch(setTabName("Sudo rules"));
-    dispatch(onClickAddHandler());
+    props.settersData.changeTabName("Sudo rules");
+    props.buttonData.onClickAddHandler();
   };
 
   const sudoRulesOnDeleteClickHandler = () => {
-    dispatch(setTabName("Sudo rules"));
-    dispatch(onClickDeleteHandler());
+    props.settersData.changeTabName("Sudo rules");
+    props.buttonData.onClickDeleteHandler();
   };
 
   // 'User groups' toolbar elements data
@@ -213,7 +218,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
     },
     deleteButton: {
       id: "userGroups-button-delete",
-      isDisabledHandler: isDeleteButtonDisabled,
+      isDisabledHandler: props.buttonData.isDeleteButtonDisabled,
       onClickHandler: userGroupsOnDeleteClickHandler,
     },
     addButton: {
@@ -246,7 +251,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
     },
     deleteButton: {
       id: "netgroups-button-delete",
-      isDisabledHandler: isDeleteButtonDisabled,
+      isDisabledHandler: props.buttonData.isDeleteButtonDisabled,
       onClickHandler: netgroupsOnDeleteClickHandler,
     },
     addButton: {
@@ -279,7 +284,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
     },
     deleteButton: {
       id: "roles-button-delete",
-      isDisabledHandler: isDeleteButtonDisabled,
+      isDisabledHandler: props.buttonData.isDeleteButtonDisabled,
       onClickHandler: rolesOnDeleteClickHandler,
     },
     addButton: {
@@ -312,7 +317,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
     },
     deleteButton: {
       id: "hbacRules-button-delete",
-      isDisabledHandler: isDeleteButtonDisabled,
+      isDisabledHandler: props.buttonData.isDeleteButtonDisabled,
       onClickHandler: hbacRulesOnDeleteClickHandler,
     },
     addButton: {
@@ -345,7 +350,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
     },
     deleteButton: {
       id: "sudoRules-button-delete",
-      isDisabledHandler: isDeleteButtonDisabled,
+      isDisabledHandler: props.buttonData.isDeleteButtonDisabled,
       onClickHandler: sudoRulesOnDeleteClickHandler,
     },
     addButton: {

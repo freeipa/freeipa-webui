@@ -10,13 +10,6 @@ import {
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
 import MemberOfDeletedGroupsTable from "src/components/MemberOf/MemberOfDeletedGroupsTable";
-// Redux
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
-import {
-  setIsDeleteButtonDisabled,
-  setIsDeletion,
-  setShowDeleteModal,
-} from "src/store/shared/activeUsersMemberOf-slice";
 
 // Although tabs data types habe been already defined, it is not possible to access to all
 //  its variables. Just the mandatory ones ('name' and 'description') are accessible at this point.
@@ -30,32 +23,31 @@ interface MemberOfElement {
   description: string;
 }
 
-interface PropsToDelete {
+interface ModalData {
+  showModal: boolean;
+  handleModalToggle: () => void;
+}
+
+interface ButtonData {
+  changeIsDeleteButtonDisabled: (updatedDeleteButton: boolean) => void;
+  updateIsDeletion: (option: boolean) => void;
+}
+
+interface TabData {
+  tabName: string;
   activeTabKey: number;
+}
+
+interface PropsToDelete {
+  modalData: ModalData;
+  tabData: TabData;
+  groupNamesToDelete: string[];
   groupRepository: MemberOfElement[];
   updateGroupRepository: (args: MemberOfElement[]) => void;
+  buttonData: ButtonData;
 }
 
 const MemberOfDeleteModal = (props: PropsToDelete) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
-
-  // Retrieve shared data (Redux)
-  const groupsNamesSelected = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.groupsNamesSelected
-  );
-  const tabName = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.tabName
-  );
-  const showDeleteModal = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.showDeleteModal
-  );
-
-  // On modal toggle
-  const onModalDeleteToggle = () => {
-    dispatch(setShowDeleteModal(!showDeleteModal));
-  };
-
   // Given a single group name, obtain full info to be sent and shown on the deletion table
   const getGroupInfoByName = (groupName: string) => {
     const res = props.groupRepository.filter(
@@ -66,7 +58,7 @@ const MemberOfDeleteModal = (props: PropsToDelete) => {
 
   const getListOfGroupsToDelete = () => {
     const groupsToDelete: MemberOfElement[] = [];
-    groupsNamesSelected.map((groupName) =>
+    props.groupNamesToDelete.map((groupName) =>
       groupsToDelete.push(getGroupInfoByName(groupName))
     );
     return groupsToDelete;
@@ -92,7 +84,7 @@ const MemberOfDeleteModal = (props: PropsToDelete) => {
       pfComponent: (
         <MemberOfDeletedGroupsTable
           groupsToDelete={groupsToDelete}
-          tabName={tabName}
+          tabName={props.tabData.tabName}
         />
       ),
     },
@@ -100,14 +92,14 @@ const MemberOfDeleteModal = (props: PropsToDelete) => {
 
   // Close modal
   const closeModal = () => {
-    onModalDeleteToggle();
+    props.modalData.handleModalToggle();
   };
 
   // Delete groups
   const deleteGroups = () => {
     // Define function that will be reused to delete the selected entries
     let generalUpdatedGroupList = props.groupRepository;
-    groupsNamesSelected.map((groupName) => {
+    props.groupNamesToDelete.map((groupName) => {
       const updatedGroupList = generalUpdatedGroupList.filter(
         (grp) => grp.name !== groupName
       );
@@ -117,8 +109,8 @@ const MemberOfDeleteModal = (props: PropsToDelete) => {
       }
     });
     props.updateGroupRepository(generalUpdatedGroupList);
-    dispatch(setIsDeleteButtonDisabled(true));
-    dispatch(setIsDeletion(true));
+    props.buttonData.changeIsDeleteButtonDisabled(true);
+    props.buttonData.updateIsDeletion(true);
     closeModal();
   };
 
@@ -143,10 +135,10 @@ const MemberOfDeleteModal = (props: PropsToDelete) => {
       variantType="medium"
       modalPosition="top"
       offPosition="76px"
-      title={"Remove " + tabName}
+      title={"Remove " + props.tabData.tabName}
       formId="active-users-remove-groups-modal"
       fields={fields}
-      show={showDeleteModal}
+      show={props.modalData.showModal}
       onClose={closeModal}
       actions={modalActionsDelete}
     />
