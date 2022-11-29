@@ -23,17 +23,16 @@ import {
   User,
 } from "src/utils/datatypes/globalDataTypes";
 // Redux
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/store/hooks";
+
+// Repositories
 import {
-  setUserGroupsRepository,
-  setNetgroupsRepository,
-  setRolesRepository,
-  setHbacRulesRepository,
-  setSudoRulesRepository,
-  setPage,
-  setPerPage,
-  setActiveTabKey,
-} from "src/store/shared/activeUsersMemberOf-slice";
+  userGroupsInitialData,
+  netgroupsInitialData,
+  rolesInitialData,
+  hbacRulesInitialData,
+  sudoRulesInitialData,
+} from "src/utils/data/GroupRepositories";
 // Modals
 import MemberOfAddModal from "src/components/MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModal";
@@ -43,9 +42,6 @@ interface PropsToUserMemberOf {
 }
 
 const UserMemberOf = (props: PropsToUserMemberOf) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
-
   // Retrieve each group list from Redux:
   let userGroupsList = useAppSelector(
     (state) => state.usergroups.userGroupList
@@ -54,42 +50,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   let rolesList = useAppSelector((state) => state.roles.roleList);
   let hbacRulesList = useAppSelector((state) => state.hbacrules.hbacRulesList);
   let sudoRulesList = useAppSelector((state) => state.sudorules.sudoRulesList);
-
-  // Retrieve shared props (Redux)
-  const userGroupsRepository = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.userGroupsRepository
-  );
-  const netgroupsRepository = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.netgroupsRepository
-  );
-  const rolesRepository = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.rolesRepository
-  );
-  const hbacRulesRepository = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.hbacRulesRepository
-  );
-  const sudoRulesRepository = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.sudoRulesRepository
-  );
-  const showAddModal = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.showAddModal
-  );
-  const showDeleteModal = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.showDeleteModal
-  );
-  const tabName = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.tabName
-  );
-  const groupsNamesSelected = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.groupsNamesSelected
-  );
-  const page = useAppSelector((state) => state.activeUsersMemberOfShared.page);
-  const perPage = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.perPage
-  );
-  const activeTabKey = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.activeTabKey
-  );
 
   // Alter the available options list to keep the state of the recently added / removed items
   const updateUserGroupsList = (newAvOptionsList: unknown[]) => {
@@ -108,13 +68,17 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     sudoRulesList = newAvOptionsList as SudoRules[];
   };
 
-  // Define column names that will be shown
-  interface ColumnNames {
-    name: string;
-    gid?: string;
-    status?: string;
-    description: string;
-  }
+  // List of default dummy data (for each tab option)
+  const [userGroupsRepository, setUserGroupsRepository] = useState(
+    userGroupsInitialData
+  );
+  const [netgroupsRepository, setNetgroupsRepository] =
+    useState(netgroupsInitialData);
+  const [rolesRepository, setRolesRepository] = useState(rolesInitialData);
+  const [hbacRulesRepository, setHbacRulesRepository] =
+    useState(hbacRulesInitialData);
+  const [sudoRulesRepository, setSudoRulesRepository] =
+    useState(sudoRulesInitialData);
 
   // Filter functions to compare the available data with the data that
   //  the user is already member of. This is done to prevent duplicates
@@ -198,68 +162,72 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   ) => {
     switch (tabName) {
       case "User groups":
-        dispatch(setUserGroupsRepository(groupRepository as UserGroup[]));
+        setUserGroupsRepository(groupRepository as UserGroup[]);
         setShownUserGroupsList(userGroupsRepository.slice(0, perPage));
         setUserGroupsRepoLength(userGroupsRepository.length);
         break;
       case "Netgroups":
-        dispatch(setNetgroupsRepository(groupRepository as Netgroup[]));
+        setNetgroupsRepository(groupRepository as Netgroup[]);
         setShownNetgroupsList(netgroupsRepository.slice(0, perPage));
         setNetgroupsRepoLength(netgroupsRepository.length);
         break;
       case "Roles":
-        dispatch(setRolesRepository(groupRepository as Roles[]));
+        setRolesRepository(groupRepository as Roles[]);
         setShownRolesList(rolesRepository.slice(0, perPage));
         setRolesRepoLength(rolesRepository.length);
         break;
       case "HBAC rules":
-        dispatch(setHbacRulesRepository(groupRepository as HBACRules[]));
+        setHbacRulesRepository(groupRepository as HBACRules[]);
         setShownHBACRulesList(hbacRulesRepository.slice(0, perPage));
         setHbacRulesRepoLength(hbacRulesRepository.length);
         break;
       case "Sudo rules":
-        dispatch(setSudoRulesRepository(groupRepository as SudoRules[]));
+        setSudoRulesRepository(groupRepository as SudoRules[]);
         setShownSudoRulesList(sudoRulesRepository.slice(0, perPage));
         setSudoRulesRepoLength(sudoRulesRepository.length);
         break;
     }
   };
 
-  // Column names for each repository
-  const groupNameColumnNames: ColumnNames = {
-    name: "Group name",
-    gid: "GID",
-    description: "Description",
-  };
-  const netgroupsColumnNames: ColumnNames = {
-    name: "Netgroup name",
-    description: "Description",
-  };
-  const rolesColumnNames: ColumnNames = {
-    name: "Role name",
-    description: "Description",
-  };
-  const hbacRulesColumnNames: ColumnNames = {
-    name: "Rule name",
-    status: "Status",
-    description: "Description",
-  };
-  const sudoRulesColumnNames: ColumnNames = {
-    name: "Rule name",
-    status: "Status",
-    description: "Description",
-  };
-
   // State that determines whether the row tables are displayed nor not
   // - This helps with the reload state
   const [showTableRows, setShowTableRows] = useState(false);
+
+  // -- Name of the groups selected on the table (to remove)
+  const [groupsNamesSelected, setGroupsNamesSelected] = useState<string[]>([]);
+
+  const updateGroupsNamesSelected = (groups: string[]) => {
+    setGroupsNamesSelected(groups);
+  };
+
+  // -- 'Delete' button state
+  const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
+    useState<boolean>(true);
+
+  const updateIsDeleteButtonDisabled = (updatedDeleteButton: boolean) => {
+    setIsDeleteButtonDisabled(updatedDeleteButton);
+  };
+
+  // If some entries have been deleted, restore the 'groupsNamesSelected' list
+  const [isDeletion, setIsDeletion] = useState(false);
+
+  const updateIsDeletion = (option: boolean) => {
+    setIsDeletion(option);
+  };
+
+  // -- Tab
+  const [activeTabKey, setActiveTabKey] = useState(0);
 
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    dispatch(setActiveTabKey(tabIndex as number));
+    setActiveTabKey(tabIndex as number);
   };
+
+  // -- Pagination
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
 
   // Member groups displayed on the first page
   const [shownUserGroupsList, setShownUserGroupsList] = useState(
@@ -309,7 +277,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     startIdx: number | undefined,
     endIdx: number | undefined
   ) => {
-    dispatch(setPage(newPage));
+    setPage(newPage);
     switch (activeTabKey) {
       case 0:
         setShownUserGroupsList(userGroupsRepository.slice(startIdx, endIdx));
@@ -363,7 +331,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     startIdx: number | undefined,
     endIdx: number | undefined
   ) => {
-    dispatch(setPage(newPage));
+    setPage(newPage);
     switch (activeTabKey) {
       case 0:
         setShownUserGroupsList(userGroupsRepository.slice(startIdx, endIdx));
@@ -425,9 +393,35 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     }
   };
 
+  // -- Modal
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const onClickAddHandler = () => {
+    setShowAddModal(true);
+  };
+  const onModalToggle = () => {
+    setShowAddModal(!showAddModal);
+  };
+
+  const onClickDeleteHandler = () => {
+    setShowDeleteModal(true);
+  };
+
+  const onModalDeleteToggle = () => {
+    setShowDeleteModal(!showDeleteModal);
+  };
+
+  // -- Tab name
+  const [tabName, setTabName] = useState("user groups");
+
+  const updateTabName = (name: string) => {
+    setTabName(name);
+  };
+
   // Reloads the table everytime any of the group lists are updated
   useEffect(() => {
-    dispatch(setPage(1));
+    setPage(1);
     if (showTableRows) setShowTableRows(false);
     setTimeout(() => {
       switch (activeTabKey) {
@@ -462,6 +456,60 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     sudoRulesRepository,
   ]);
 
+  // Data wrappers
+  // - MemberOfToolbar
+  const toolbarPageData = {
+    page,
+    changeSetPage,
+    perPage,
+    changePerPageSelect,
+  };
+
+  const toolbarButtonData = {
+    onClickAddHandler,
+    onClickDeleteHandler,
+    isDeleteButtonDisabled,
+  };
+
+  const toolbarSettersData = {
+    changeMemberGroupsList,
+    changeTabName: updateTabName,
+  };
+
+  // - MemberOfTable
+  const tableButtonData = {
+    isDeletion,
+    updateIsDeletion,
+    changeIsDeleteButtonDisabled: updateIsDeleteButtonDisabled,
+  };
+
+  // - MemberOfAddModal
+  const addModalData = {
+    showModal: showAddModal,
+    handleModalToggle: onModalToggle,
+  };
+
+  const tabData = {
+    tabName,
+    userName: props.user.userLogin,
+  };
+
+  // - MemberOfDeleteModal
+  const deleteModalData = {
+    showModal: showDeleteModal,
+    handleModalToggle: onModalDeleteToggle,
+  };
+
+  const deleteButtonData = {
+    changeIsDeleteButtonDisabled: updateIsDeleteButtonDisabled,
+    updateIsDeletion,
+  };
+
+  const deleteTabData = {
+    tabName,
+    activeTabKey,
+  };
+
   // Render 'ActiveUsersIsMemberOf'
   return (
     <Page>
@@ -487,15 +535,16 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               pageRepo={userGroupsRepository}
               shownItems={shownUserGroupsList}
               toolbar="user groups"
-              changeMemberGroupsList={changeMemberGroupsList}
-              changeSetPage={changeSetPage}
-              changePerPageSelect={changePerPageSelect}
+              settersData={toolbarSettersData}
+              pageData={toolbarPageData}
+              buttonData={toolbarButtonData}
             />
             <MemberOfTable
               group={shownUserGroupsList}
-              columnNames={groupNameColumnNames}
               tableName={"User groups"}
               activeTabKey={activeTabKey}
+              changeSelectedGroups={updateGroupsNamesSelected}
+              buttonData={tableButtonData}
               showTableRows={showTableRows}
             />
           </Tab>
@@ -515,15 +564,16 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               pageRepo={netgroupsRepository}
               shownItems={shownNetgroupsList}
               toolbar="netgroups"
-              changeMemberGroupsList={changeMemberGroupsList}
-              changeSetPage={changeSetPage}
-              changePerPageSelect={changePerPageSelect}
+              settersData={toolbarSettersData}
+              pageData={toolbarPageData}
+              buttonData={toolbarButtonData}
             />
             <MemberOfTable
               group={shownNetgroupsList}
-              columnNames={netgroupsColumnNames}
               tableName={"Netgroups"}
               activeTabKey={activeTabKey}
+              changeSelectedGroups={updateGroupsNamesSelected}
+              buttonData={tableButtonData}
               showTableRows={showTableRows}
             />
           </Tab>
@@ -543,15 +593,16 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               pageRepo={rolesRepository}
               shownItems={shownRolesList}
               toolbar="roles"
-              changeMemberGroupsList={changeMemberGroupsList}
-              changeSetPage={changeSetPage}
-              changePerPageSelect={changePerPageSelect}
+              settersData={toolbarSettersData}
+              pageData={toolbarPageData}
+              buttonData={toolbarButtonData}
             />
             <MemberOfTable
               group={shownRolesList}
-              columnNames={rolesColumnNames}
               tableName={"Roles"}
               activeTabKey={activeTabKey}
+              changeSelectedGroups={updateGroupsNamesSelected}
+              buttonData={tableButtonData}
               showTableRows={showTableRows}
             />
           </Tab>
@@ -571,15 +622,16 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               pageRepo={hbacRulesRepository}
               shownItems={shownHBACRulesList}
               toolbar="HBAC rules"
-              changeMemberGroupsList={changeMemberGroupsList}
-              changeSetPage={changeSetPage}
-              changePerPageSelect={changePerPageSelect}
+              settersData={toolbarSettersData}
+              pageData={toolbarPageData}
+              buttonData={toolbarButtonData}
             />
             <MemberOfTable
               group={shownHBACRulesList}
-              columnNames={hbacRulesColumnNames}
               tableName={"HBAC rules"}
               activeTabKey={activeTabKey}
+              changeSelectedGroups={updateGroupsNamesSelected}
+              buttonData={tableButtonData}
               showTableRows={showTableRows}
             />
           </Tab>
@@ -599,15 +651,16 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               pageRepo={sudoRulesRepository}
               shownItems={shownSudoRulesList}
               toolbar="sudo rules"
-              changeMemberGroupsList={changeMemberGroupsList}
-              changeSetPage={changeSetPage}
-              changePerPageSelect={changePerPageSelect}
+              settersData={toolbarSettersData}
+              pageData={toolbarPageData}
+              buttonData={toolbarButtonData}
             />
             <MemberOfTable
               group={shownSudoRulesList}
-              columnNames={sudoRulesColumnNames}
               tableName={"Sudo rules"}
               activeTabKey={activeTabKey}
+              changeSelectedGroups={updateGroupsNamesSelected}
+              buttonData={tableButtonData}
               showTableRows={showTableRows}
             />
           </Tab>
@@ -628,19 +681,22 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
         <>
           {showAddModal && (
             <MemberOfAddModal
-              show={showAddModal}
+              modalData={addModalData}
               availableData={userGroupsFilteredData}
-              userGroupData={userGroupsRepository}
+              groupRepository={userGroupsRepository}
               updateGroupRepository={updateGroupRepository}
               updateAvOptionsList={updateUserGroupsList}
-              userName={props.user.userLogin}
+              tabData={tabData}
             />
           )}
           {showDeleteModal && groupsNamesSelected.length !== 0 && (
             <MemberOfDeleteModal
-              activeTabKey={activeTabKey}
+              modalData={deleteModalData}
+              tabData={deleteTabData}
+              groupNamesToDelete={groupsNamesSelected}
               groupRepository={userGroupsRepository}
               updateGroupRepository={updateGroupRepository}
+              buttonData={deleteButtonData}
             />
           )}
         </>
@@ -649,19 +705,22 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
         <>
           {showAddModal && (
             <MemberOfAddModal
-              show={showAddModal}
+              modalData={addModalData}
               availableData={netgroupsFilteredData}
-              userGroupData={netgroupsRepository}
+              groupRepository={netgroupsRepository}
               updateGroupRepository={updateGroupRepository}
               updateAvOptionsList={updateNetgroupsList}
-              userName={props.user.userLogin}
+              tabData={tabData}
             />
           )}
           {showDeleteModal && groupsNamesSelected.length !== 0 && (
             <MemberOfDeleteModal
-              activeTabKey={activeTabKey}
+              modalData={deleteModalData}
+              tabData={deleteTabData}
+              groupNamesToDelete={groupsNamesSelected}
               groupRepository={netgroupsRepository}
               updateGroupRepository={updateGroupRepository}
+              buttonData={deleteButtonData}
             />
           )}
         </>
@@ -670,19 +729,22 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
         <>
           {showAddModal && (
             <MemberOfAddModal
-              show={showAddModal}
+              modalData={addModalData}
               availableData={rolesFilteredData}
-              userGroupData={rolesRepository}
+              groupRepository={rolesRepository}
               updateGroupRepository={updateGroupRepository}
               updateAvOptionsList={updateRolesList}
-              userName={props.user.userLogin}
+              tabData={tabData}
             />
           )}
           {showDeleteModal && groupsNamesSelected.length !== 0 && (
             <MemberOfDeleteModal
-              activeTabKey={activeTabKey}
+              modalData={deleteModalData}
+              tabData={deleteTabData}
+              groupNamesToDelete={groupsNamesSelected}
               groupRepository={rolesRepository}
               updateGroupRepository={updateGroupRepository}
+              buttonData={deleteButtonData}
             />
           )}
         </>
@@ -691,19 +753,22 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
         <>
           {showAddModal && (
             <MemberOfAddModal
-              show={showAddModal}
+              modalData={addModalData}
               availableData={hbacRulesFilteredData}
-              userGroupData={hbacRulesRepository}
+              groupRepository={hbacRulesRepository}
               updateGroupRepository={updateGroupRepository}
               updateAvOptionsList={updateHbacRulesList}
-              userName={props.user.userLogin}
+              tabData={tabData}
             />
           )}
           {showDeleteModal && groupsNamesSelected.length !== 0 && (
             <MemberOfDeleteModal
-              activeTabKey={activeTabKey}
+              modalData={deleteModalData}
+              tabData={deleteTabData}
+              groupNamesToDelete={groupsNamesSelected}
               groupRepository={hbacRulesRepository}
               updateGroupRepository={updateGroupRepository}
+              buttonData={deleteButtonData}
             />
           )}
         </>
@@ -712,19 +777,22 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
         <>
           {showAddModal && (
             <MemberOfAddModal
-              show={showAddModal}
+              modalData={addModalData}
               availableData={sudoRulesFilteredData}
-              userGroupData={sudoRulesRepository}
+              groupRepository={sudoRulesRepository}
               updateGroupRepository={updateGroupRepository}
               updateAvOptionsList={updateSudoRulesList}
-              userName={props.user.userLogin}
+              tabData={tabData}
             />
           )}
           {showDeleteModal && groupsNamesSelected.length !== 0 && (
             <MemberOfDeleteModal
-              activeTabKey={activeTabKey}
+              modalData={deleteModalData}
+              tabData={deleteTabData}
+              groupNamesToDelete={groupsNamesSelected}
               groupRepository={sudoRulesRepository}
               updateGroupRepository={updateGroupRepository}
+              buttonData={deleteButtonData}
             />
           )}
         </>
