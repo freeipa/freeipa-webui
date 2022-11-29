@@ -11,19 +11,26 @@ import {
   HBACRules,
   SudoRules,
 } from "src/utils/datatypes/globalDataTypes";
-// Redux
-import { useAppSelector, useAppDispatch } from "src/store/hooks";
-import { setShowAddModal } from "src/store/shared/activeUsersMemberOf-slice";
+
+interface ModalData {
+  showModal: boolean;
+  handleModalToggle: () => void;
+}
+
+interface TabData {
+  tabName: string;
+  userName: string;
+}
 
 export interface PropsToAdd {
-  show: boolean;
+  modalData: ModalData;
   availableData: UserGroup[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[];
-  userGroupData: unknown[];
+  groupRepository: unknown[];
   updateGroupRepository: (
     args: UserGroup[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[]
   ) => void;
   updateAvOptionsList: (args: unknown[]) => void;
-  userName: string;
+  tabData: TabData;
 }
 
 // Although tabs data types habe been already defined, it is not possible to access to all
@@ -40,37 +47,6 @@ interface MemberOfElement {
 }
 
 const MemberOfAddModal = (props: PropsToAdd) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
-
-  // Retrieve shared data (Redux)
-  const showAddModal = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.showAddModal
-  );
-  const tabName = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.tabName
-  );
-  const userGroupsRepository = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.userGroupsRepository
-  );
-  const netgroupsRepository = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.netgroupsRepository
-  );
-  const rolesRepository = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.rolesRepository
-  );
-  const hbacRulesRepository = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.hbacRulesRepository
-  );
-  const sudoRulesRepository = useAppSelector(
-    (state) => state.activeUsersMemberOfShared.sudoRulesRepository
-  );
-
-  // Set Modal toggle
-  const onModalToggle = () => {
-    dispatch(setShowAddModal(!showAddModal));
-  };
-
   // Dual list data
   const data = props.availableData.map((d) => d.name);
 
@@ -111,7 +87,7 @@ const MemberOfAddModal = (props: PropsToAdd) => {
   // Clean fields and close modal (To prevent data persistence when reopen modal)
   const cleanAndCloseModal = () => {
     cleanData();
-    onModalToggle();
+    props.modalData.handleModalToggle();
   };
 
   // Buttons are disabled until the user fills the required fields
@@ -131,66 +107,74 @@ const MemberOfAddModal = (props: PropsToAdd) => {
 
   // Add group option
   const onClickAddGroupHandler = () => {
-    // Copy of the repository to add new data
-    let repositoryCopy: unknown[] = [];
-    // Define a general 'groupRepository' variable to assign the
-    //  right repository depending on the 'tabName'.
-    let groupRepository: unknown[] = [];
-    switch (tabName) {
-      case "User groups":
-        groupRepository = [...userGroupsRepository] as UserGroup[];
-        break;
-      case "Netgroups":
-        groupRepository = [...netgroupsRepository] as Netgroup[];
-        break;
-      case "Roles":
-        groupRepository = [...rolesRepository] as Roles[];
-        break;
-      case "HBAC rules":
-        groupRepository = [...hbacRulesRepository] as HBACRules[];
-        break;
-      case "Sudo rules":
-        groupRepository = [...sudoRulesRepository] as SudoRules[];
-        break;
-    }
-    // Add the chosed options to the repository list
     chosenOptions.map((opt) => {
       const optionData: MemberOfElement | undefined = getInfoFromGroupData(opt);
       if (optionData !== undefined) {
-        repositoryCopy =
-          repositoryCopy.length === 0
-            ? [...groupRepository]
-            : [...repositoryCopy];
-        repositoryCopy.push({
-          name: optionData.name !== undefined && optionData.name,
-          description:
-            optionData.description !== undefined && optionData.description,
-          gid: optionData.gid !== undefined && optionData.gid,
-          status: optionData.status !== undefined && optionData.status,
-        });
-        // Send updated data to table (specifying the group data type)
-        switch (tabName) {
-          case "User groups":
-            props.updateGroupRepository(repositoryCopy as UserGroup[]);
-            break;
-          case "Netgroups":
-            props.updateGroupRepository(repositoryCopy as Netgroup[]);
-            break;
-          case "Roles":
-            props.updateGroupRepository(repositoryCopy as Roles[]);
-            break;
-          case "HBAC rules":
-            props.updateGroupRepository(repositoryCopy as HBACRules[]);
-            break;
-          case "Sudo rules":
-            props.updateGroupRepository(repositoryCopy as SudoRules[]);
-            break;
+        // User groups
+        if (props.tabData.tabName === "User groups") {
+          props.groupRepository.push({
+            name: optionData.name !== undefined && optionData.name,
+            description:
+              optionData.description !== undefined && optionData.description,
+            gid: optionData.gid !== undefined && optionData.gid,
+            status: optionData.status !== undefined && optionData.status,
+          } as UserGroup);
+          // Send updated data to table
+          props.updateGroupRepository(props.groupRepository as UserGroup[]);
+        }
+        // Netgroups
+        if (props.tabData.tabName === "Netgroups") {
+          props.groupRepository.push({
+            name: optionData.name !== undefined && optionData.name,
+            description:
+              optionData.description !== undefined && optionData.description,
+            gid: optionData.gid !== undefined && optionData.gid,
+            status: optionData.status !== undefined && optionData.status,
+          } as Netgroup);
+          // Send updated data to table
+          props.updateGroupRepository(props.groupRepository as Netgroup[]);
+        }
+        // Roles
+        if (props.tabData.tabName === "Roles") {
+          props.groupRepository.push({
+            name: optionData.name !== undefined && optionData.name,
+            description:
+              optionData.description !== undefined && optionData.description,
+            gid: optionData.gid !== undefined && optionData.gid,
+            status: optionData.status !== undefined && optionData.status,
+          } as Roles);
+          // Send updated data to table
+          props.updateGroupRepository(props.groupRepository as Roles[]);
+        }
+        // HBAC rules
+        if (props.tabData.tabName === "HBAC rules") {
+          props.groupRepository.push({
+            name: optionData.name !== undefined && optionData.name,
+            description:
+              optionData.description !== undefined && optionData.description,
+            gid: optionData.gid !== undefined && optionData.gid,
+            status: optionData.status !== undefined && optionData.status,
+          } as HBACRules);
+          // Send updated data to table
+          props.updateGroupRepository(props.groupRepository as HBACRules[]);
+        }
+        // Sudo rules
+        if (props.tabData.tabName === "Sudo rules") {
+          props.groupRepository.push({
+            name: optionData.name !== undefined && optionData.name,
+            description:
+              optionData.description !== undefined && optionData.description,
+            gid: optionData.gid !== undefined && optionData.gid,
+            status: optionData.status !== undefined && optionData.status,
+          } as SudoRules);
+          // Send updated data to table
+          props.updateGroupRepository(props.groupRepository as SudoRules[]);
         }
       }
     });
     // Clean chosen options and close modal
     setChosenOptions([]);
-    onModalToggle();
+    props.modalData.handleModalToggle();
   };
 
   // Buttons that will be shown at the end of the form
@@ -215,10 +199,15 @@ const MemberOfAddModal = (props: PropsToAdd) => {
       variantType="medium"
       modalPosition="top"
       offPosition="76px"
-      title={"Add user '" + props.userName + "' into " + tabName}
+      title={
+        "Add user '" +
+        props.tabData.userName +
+        "' into " +
+        props.tabData.tabName
+      }
       formId="is-member-of-add-modal"
       fields={fields}
-      show={props.show}
+      show={props.modalData.showModal}
       onClose={cleanAndCloseModal}
       actions={modalActions}
     />
