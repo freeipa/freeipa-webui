@@ -10,6 +10,7 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { changeStatus as changeStatusActiveUser } from "src/store/Identity/activeUsers-slice";
+import { changeStatus as changeStatusStageUser } from "src/store/Identity/stageUsers-slice";
 
 interface ButtonsData {
   updateIsEnableButtonDisabled: (value: boolean) => void;
@@ -17,12 +18,17 @@ interface ButtonsData {
   updateIsDisableEnableOp: (value: boolean) => void;
 }
 
+interface SelectedUsersData {
+  selectedUsers: string[];
+  updateSelectedUsers: (newSelectedUsers: string[]) => void;
+}
+
 export interface PropsToDisableEnableUsers {
   show: boolean;
   from: "active-users" | "stage-users" | "preserved-users";
   handleModalToggle: () => void;
   optionSelected: string; // 'enable' | 'disable'
-  selectedUsers: string[];
+  selectedUsersData: SelectedUsersData;
   buttonsData: ButtonsData;
 }
 
@@ -57,6 +63,13 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
           selectedUsers,
         })
       );
+    } else if (props.from === "stage-users") {
+      dispatch(
+        changeStatusStageUser({
+          newStatus,
+          selectedUsers,
+        })
+      );
     }
     // Update 'isDisbleEnableOp' to notify table that an updating operation is performed
     props.buttonsData.updateIsDisableEnableOp(true);
@@ -68,6 +81,8 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
       props.buttonsData.updateIsEnableButtonDisabled(false);
       props.buttonsData.updateIsDisableButtonDisabled(true);
     }
+
+    props.selectedUsersData.updateSelectedUsers([]);
     closeModal();
   };
 
@@ -76,7 +91,12 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
     <Button
       key="disable-users"
       variant="primary"
-      onClick={() => modifyStatus(props.optionSelected, props.selectedUsers)}
+      onClick={() =>
+        modifyStatus(
+          props.optionSelected,
+          props.selectedUsersData.selectedUsers
+        )
+      }
       form="users-enable-disable-users-modal"
     >
       Disable
@@ -105,7 +125,12 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
     <Button
       key="enable-users"
       variant="primary"
-      onClick={() => modifyStatus(props.optionSelected, props.selectedUsers)}
+      onClick={() =>
+        modifyStatus(
+          props.optionSelected,
+          props.selectedUsersData.selectedUsers
+        )
+      }
       form="active-users-enable-disable-users-modal"
     >
       Enable
