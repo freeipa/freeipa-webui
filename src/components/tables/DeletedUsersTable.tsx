@@ -21,11 +21,24 @@ const DeletedUsersTable = (props: PropsToDeletedUsersTable) => {
   );
   const activeUsersListCopy = [...activeUsersList];
 
+  // - Stage users
+  const stageUsersList = useAppSelector((state) => state.stageUsers.usersList);
+  const stageUsersListCopy = [...stageUsersList];
+
   // Given userIds, retrieve full user info to display into table
   const usersToDelete: User[] = [];
   switch (props.from) {
     case "active-users":
       activeUsersListCopy.map((user) => {
+        props.usersToDelete.map((selected) => {
+          if (user.userId === selected) {
+            usersToDelete.push(user);
+          }
+        });
+      });
+      break;
+    case "stage-users":
+      stageUsersListCopy.map((user) => {
         props.usersToDelete.map((selected) => {
           if (user.userId === selected) {
             usersToDelete.push(user);

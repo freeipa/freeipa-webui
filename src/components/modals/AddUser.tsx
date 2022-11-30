@@ -21,6 +21,7 @@ import { User } from "src/utils/datatypes/globalDataTypes";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { addUser as addActiveUser } from "src/store/Identity/activeUsers-slice";
+import { addUser as addStageUser } from "src/store/Identity/stageUsers-slice";
 
 export interface PropsToAddUser {
   show: boolean;
@@ -418,6 +419,8 @@ const AddUser = (props: PropsToAddUser) => {
       };
       if (props.from === "active-users") {
         dispatch(addActiveUser(newUser));
+      } else if (props.from === "stage-users") {
+        dispatch(addStageUser(newUser));
       }
       cleanAndCloseModal();
     }
@@ -468,6 +471,8 @@ const AddUser = (props: PropsToAddUser) => {
       };
       if (props.from === "active-users") {
         dispatch(addActiveUser(newUser));
+      } else if (props.from === "stage-users") {
+        dispatch(addStageUser(newUser));
       }
       // Do not close the modal, but clean fields & reset validations
       cleanAllFields();

@@ -14,6 +14,7 @@ import DeletedUsersTable from "src/components/tables/DeletedUsersTable";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { removeUser as removeActiveUser } from "src/store/Identity/activeUsers-slice";
+import { removeUser as removeStageUser } from "src/store/Identity/stageUsers-slice";
 
 interface ButtonsData {
   updateIsDeleteButtonDisabled: (value: boolean) => void;
@@ -104,6 +105,8 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
     props.selectedUsersData.selectedUsers.map((user) => {
       if (props.from === "active-users") {
         dispatch(removeActiveUser(user));
+      } else if (props.from === "stage-users") {
+        dispatch(removeStageUser(user));
       }
     });
     props.selectedUsersData.updateSelectedUsers([]);
