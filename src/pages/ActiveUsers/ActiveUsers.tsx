@@ -465,7 +465,7 @@ const ActiveUsers = () => {
         from="active-users"
         handleModalToggle={onEnableDisableModalToggle}
         optionSelected={enableDisableOptionSelected}
-        selectedUsers={selectedUsers}
+        selectedUsersData={selectedUsersData}
         buttonsData={disableEnableButtonsData}
       />
     </Page>
