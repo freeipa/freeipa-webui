@@ -22,6 +22,7 @@ import { User } from "src/utils/datatypes/globalDataTypes";
 import { useAppDispatch } from "src/store/hooks";
 import { addUser as addActiveUser } from "src/store/Identity/activeUsers-slice";
 import { addUser as addStageUser } from "src/store/Identity/stageUsers-slice";
+import { addUser as addPreservedUser } from "src/store/Identity/preservedUsers-slice";
 
 export interface PropsToAddUser {
   show: boolean;
@@ -421,6 +422,8 @@ const AddUser = (props: PropsToAddUser) => {
         dispatch(addActiveUser(newUser));
       } else if (props.from === "stage-users") {
         dispatch(addStageUser(newUser));
+      } else if (props.from === "preserved-users") {
+        dispatch(addPreservedUser(newUser));
       }
       cleanAndCloseModal();
     }
@@ -473,6 +476,8 @@ const AddUser = (props: PropsToAddUser) => {
         dispatch(addActiveUser(newUser));
       } else if (props.from === "stage-users") {
         dispatch(addStageUser(newUser));
+      } else if (props.from === "preserved-users") {
+        dispatch(addPreservedUser(newUser));
       }
       // Do not close the modal, but clean fields & reset validations
       cleanAllFields();

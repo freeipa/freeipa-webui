@@ -15,6 +15,7 @@ import DeletedUsersTable from "src/components/tables/DeletedUsersTable";
 import { useAppDispatch } from "src/store/hooks";
 import { removeUser as removeActiveUser } from "src/store/Identity/activeUsers-slice";
 import { removeUser as removeStageUser } from "src/store/Identity/stageUsers-slice";
+import { removeUser as removePreservedUser } from "src/store/Identity/preservedUsers-slice";
 
 interface ButtonsData {
   updateIsDeleteButtonDisabled: (value: boolean) => void;
@@ -107,6 +108,8 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
         dispatch(removeActiveUser(user));
       } else if (props.from === "stage-users") {
         dispatch(removeStageUser(user));
+      } else if (props.from === "preserved-users") {
+        dispatch(removePreservedUser(user));
       }
     });
     props.selectedUsersData.updateSelectedUsers([]);
