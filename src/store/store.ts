@@ -6,6 +6,7 @@ import rolesReducer from "./IPA server/roles-slice";
 import hbacRulesReducer from "./Policy/hbacRules-slice";
 import sudoRulesReducer from "./Policy/sudoRules-slice";
 import stageUsersReducer from "./Identity/stageUsers-slice";
+import preservedUsersReducer from "./Identity/preservedUsers-slice";
 
 const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
     hbacrules: hbacRulesReducer,
     sudorules: sudoRulesReducer,
     stageUsers: stageUsersReducer,
+    preservedUsers: preservedUsersReducer,
   },
 });
 
