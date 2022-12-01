@@ -11,6 +11,7 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import { useAppDispatch } from "src/store/hooks";
 import { changeStatus as changeStatusActiveUser } from "src/store/Identity/activeUsers-slice";
 import { changeStatus as changeStatusStageUser } from "src/store/Identity/stageUsers-slice";
+import { changeStatus as changeStatusPreservedUser } from "src/store/Identity/preservedUsers-slice";
 
 interface ButtonsData {
   updateIsEnableButtonDisabled: (value: boolean) => void;
@@ -66,6 +67,13 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
     } else if (props.from === "stage-users") {
       dispatch(
         changeStatusStageUser({
+          newStatus,
+          selectedUsers,
+        })
+      );
+    } else if (props.from === "preserved-users") {
+      dispatch(
+        changeStatusPreservedUser({
           newStatus,
           selectedUsers,
         })
