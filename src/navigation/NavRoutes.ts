@@ -89,6 +89,14 @@ export const navigationRoutes = [
             group: PreservedUsersGroupRef,
             title: "Preserved users title",
             path: `${URL_PREFIX}/preserved-users`,
+            items: [
+              {
+                label: "Preserved users Settings",
+                group: PreservedUsersGroupRef,
+                title: "Preserved users Settings title",
+                path: `${URL_PREFIX}/preserved-users/settings`,
+              },
+            ],
           },
         ],
       },

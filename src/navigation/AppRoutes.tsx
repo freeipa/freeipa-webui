@@ -9,6 +9,7 @@ import ActiveUsersTabs from "src/pages/ActiveUsers/ActiveUsersTabs";
 import StageUsers from "src/pages/StageUsers/StageUsers";
 import StageUsersTabs from "src/pages/StageUsers/StageUsersTabs";
 import PreservedUsers from "src/pages/PreservedUsers/PreservedUsers";
+import PreservedUsersTabs from "src/pages/PreservedUsers/PreservedUsersTabs";
 import UserGroups from "src/pages/UserGroups/UserGroups";
 import HostGroups from "src/pages/HostGroups/HostGroups";
 import Netgroups from "src/pages/Netgroups/Netgroups";
@@ -30,6 +31,7 @@ export const AppRoutes = (): React.ReactElement => (
       </Route>
       <Route path="preserved-users">
         <Route path="" element={<PreservedUsers />} />
+        <Route path="settings" element={<PreservedUsersTabs />} />
       </Route>
       <Route path="hosts">
         <Route path="" />
