@@ -80,6 +80,13 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   const [sudoRulesRepository, setSudoRulesRepository] =
     useState(sudoRulesInitialData);
 
+  // Filter (Input search)
+  const [searchValue, setSearchValue] = React.useState("");
+
+  const updateSearchValue = (value: string) => {
+    setSearchValue(value);
+  };
+
   // Filter functions to compare the available data with the data that
   //  the user is already member of. This is done to prevent duplicates
   //  (e.g: adding the same element twice).
@@ -510,6 +517,13 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     activeTabKey,
   };
 
+  // - 'MemberOfToolbar' > 'SearchInputLayout'
+  // SearchInputLayout
+  const searchValueData = {
+    searchValue,
+    updateSearchValue,
+  };
+
   // Render 'ActiveUsersIsMemberOf'
   return (
     <Page>
@@ -538,6 +552,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               settersData={toolbarSettersData}
               pageData={toolbarPageData}
               buttonData={toolbarButtonData}
+              searchValueData={searchValueData}
             />
             <MemberOfTable
               group={shownUserGroupsList}
@@ -546,6 +561,8 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               changeSelectedGroups={updateGroupsNamesSelected}
               buttonData={tableButtonData}
               showTableRows={showTableRows}
+              searchValue={searchValue}
+              fullGroupList={userGroupsRepository}
             />
           </Tab>
           <Tab
@@ -567,6 +584,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               settersData={toolbarSettersData}
               pageData={toolbarPageData}
               buttonData={toolbarButtonData}
+              searchValueData={searchValueData}
             />
             <MemberOfTable
               group={shownNetgroupsList}
@@ -575,6 +593,8 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               changeSelectedGroups={updateGroupsNamesSelected}
               buttonData={tableButtonData}
               showTableRows={showTableRows}
+              searchValue={searchValue}
+              fullGroupList={netgroupsRepository}
             />
           </Tab>
           <Tab
@@ -596,6 +616,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               settersData={toolbarSettersData}
               pageData={toolbarPageData}
               buttonData={toolbarButtonData}
+              searchValueData={searchValueData}
             />
             <MemberOfTable
               group={shownRolesList}
@@ -604,6 +625,8 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               changeSelectedGroups={updateGroupsNamesSelected}
               buttonData={tableButtonData}
               showTableRows={showTableRows}
+              searchValue={searchValue}
+              fullGroupList={rolesRepository}
             />
           </Tab>
           <Tab
@@ -625,6 +648,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               settersData={toolbarSettersData}
               pageData={toolbarPageData}
               buttonData={toolbarButtonData}
+              searchValueData={searchValueData}
             />
             <MemberOfTable
               group={shownHBACRulesList}
@@ -633,6 +657,8 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               changeSelectedGroups={updateGroupsNamesSelected}
               buttonData={tableButtonData}
               showTableRows={showTableRows}
+              searchValue={searchValue}
+              fullGroupList={hbacRulesRepository}
             />
           </Tab>
           <Tab
@@ -654,6 +680,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               settersData={toolbarSettersData}
               pageData={toolbarPageData}
               buttonData={toolbarButtonData}
+              searchValueData={searchValueData}
             />
             <MemberOfTable
               group={shownSudoRulesList}
@@ -662,6 +689,8 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               changeSelectedGroups={updateGroupsNamesSelected}
               buttonData={tableButtonData}
               showTableRows={showTableRows}
+              searchValue={searchValue}
+              fullGroupList={sudoRulesRepository}
             />
           </Tab>
         </Tabs>
