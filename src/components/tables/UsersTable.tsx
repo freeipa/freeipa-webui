@@ -48,6 +48,7 @@ export interface PropsToTable {
   usersData: UsersData;
   buttonsData: ButtonsData;
   paginationData: PaginationData;
+  searchValue: string;
 }
 
 const UsersTable = (props: PropsToTable) => {
@@ -65,6 +66,30 @@ const UsersTable = (props: PropsToTable) => {
     phone: "Phone",
     jobTitle: "Job title",
   };
+
+  // Filter (SearchInput)
+  // - When a user is search using the Search Input
+  const onFilter = (user: User) => {
+    if (props.searchValue === "") {
+      return true;
+    }
+
+    let input: RegExp;
+    try {
+      input = new RegExp(props.searchValue, "i");
+    } catch (err) {
+      input = new RegExp(
+        props.searchValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+        "i"
+      );
+    }
+    return user.userLogin.search(input) >= 0;
+  };
+
+  const filteredShownUsers =
+    props.searchValue === ""
+      ? shownUsersList
+      : props.elementsList.filter(onFilter);
 
   // Index of the currently sorted column
   // Note: if you intend to make columns reorderable, you may instead want to use a non-numeric key
@@ -213,7 +238,7 @@ const UsersTable = (props: PropsToTable) => {
     }
   }, [props.buttonsData.isDeletion]);
 
-  // // Enable 'Delete' and 'Enable|Disable' option buttons (if any user selected)
+  // Enable 'Delete' and 'Enable|Disable' option buttons (if any user selected)
   useEffect(() => {
     if (props.usersData.selectedUserIds.length > 0) {
       props.buttonsData.updateIsDeleteButtonDisabled(false);
@@ -309,7 +334,7 @@ const UsersTable = (props: PropsToTable) => {
     </Tr>
   );
 
-  const body = shownUsersList.map((user, rowIndex) => (
+  const body = filteredShownUsers.map((user, rowIndex) => (
     <Tr key={user.userLogin} id={user.userLogin}>
       <Td
         dataLabel="checkbox"

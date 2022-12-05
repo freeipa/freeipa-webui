@@ -5,7 +5,6 @@ import {
   Page,
   PageSection,
   PageSectionVariants,
-  SearchInput,
   TextVariants,
   PaginationVariant,
 } from "@patternfly/react-core";
@@ -27,6 +26,7 @@ import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayou
 import KebabLayout from "src/components/layouts/KebabLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
+import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
 import UsersTable from "../../components/tables/UsersTable";
 // Components
@@ -125,6 +125,13 @@ const ActiveUsers = () => {
 
   const updateShownUsersList = (newShownUsersList: User[]) => {
     setShownUsersList(newShownUsersList);
+  };
+
+  // Filter (Input search)
+  const [searchValue, setSearchValue] = React.useState("");
+
+  const updateSearchValue = (value: string) => {
+    setSearchValue(value);
   };
 
   // Show table rows
@@ -290,6 +297,12 @@ const ActiveUsers = () => {
     updateIsDisableEnableOp,
   };
 
+  // SearchInputLayout
+  const searchValueData = {
+    searchValue,
+    updateSearchValue,
+  };
+
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -306,7 +319,14 @@ const ActiveUsers = () => {
     },
     {
       key: 1,
-      element: <SearchInput aria-label="Search user" placeholder="Search" />,
+      element: (
+        <SearchInputLayout
+          name="search"
+          ariaLabel="Search user"
+          placeholder="Search"
+          searchValueData={searchValueData}
+        />
+      ),
       toolbarItemVariant: "search-filter",
       toolbarItemSpacer: { default: "spacerMd" },
     },
@@ -435,6 +455,7 @@ const ActiveUsers = () => {
                 usersData={usersTableData}
                 buttonsData={usersTableButtonsData}
                 paginationData={selectedPerPageData}
+                searchValue={searchValue}
               />
             </InnerScrollContainer>
           </OuterScrollContainer>
