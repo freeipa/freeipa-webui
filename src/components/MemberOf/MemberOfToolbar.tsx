@@ -5,7 +5,6 @@ import {
   Button,
   Form,
   FormGroup,
-  SearchInput,
   ToggleGroupItem,
   Text,
   ToolbarItemVariant,
@@ -28,6 +27,8 @@ import {
   HBACRules,
   SudoRules,
 } from "src/utils/datatypes/globalDataTypes";
+// Layout
+import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 
 interface PageData {
   page: number;
@@ -59,6 +60,11 @@ interface SettersData {
   changeTabName: (name: string) => void;
 }
 
+interface SearchValueData {
+  searchValue: string;
+  updateSearchValue: (value: string) => void;
+}
+
 export interface PropsToToolbar {
   pageRepo: UserGroup[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[];
   shownItems: UserGroup[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[];
@@ -66,6 +72,7 @@ export interface PropsToToolbar {
   settersData: SettersData;
   pageData: PageData;
   buttonData: ButtonData;
+  searchValueData: SearchValueData;
 }
 
 const MemberOfToolbar = (props: PropsToToolbar) => {
@@ -398,10 +405,11 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
       id: toolbarData().searchId,
       key: 0,
       element: (
-        <SearchInput
+        <SearchInputLayout
           name="search"
-          aria-label="Search user"
+          ariaLabel="Search user"
           placeholder="Search"
+          searchValueData={props.searchValueData}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant["search-filter"],

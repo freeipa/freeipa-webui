@@ -42,12 +42,13 @@ interface ButtonData {
 
 export interface PropsToTable {
   group: MemberOfElement[];
-  // columnNames: ColumnNames;
   tableName: string;
   activeTabKey: number;
   changeSelectedGroups: (groups: string[]) => void;
   buttonData: ButtonData;
   showTableRows: boolean;
+  searchValue: string;
+  fullGroupList: MemberOfElement[];
 }
 
 const MemberOfTable = (props: PropsToTable) => {
@@ -80,6 +81,29 @@ const MemberOfTable = (props: PropsToTable) => {
   const [columnNames, setColumnNames] = useState<ColumnNames>(
     userGroupsColumnNames
   );
+
+  // Filter (SearchInput)
+  const onFilter = (group: MemberOfElement) => {
+    if (props.searchValue === "") {
+      return true;
+    }
+
+    let input: RegExp;
+    try {
+      input = new RegExp(props.searchValue, "i");
+    } catch (err) {
+      input = new RegExp(
+        props.searchValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+        "i"
+      );
+    }
+    return group.name.search(input) >= 0;
+  };
+
+  const filteredShownGroups =
+    props.searchValue === ""
+      ? props.group
+      : props.fullGroupList.filter(onFilter);
 
   // When moving to another tab, the column names must change
   useEffect(() => {
@@ -293,7 +317,7 @@ const MemberOfTable = (props: PropsToTable) => {
   );
 
   // Define table body
-  const body = props.group.map((group, rowIndex) => (
+  const body = filteredShownGroups.map((group, rowIndex) => (
     <Tr key={group.name} id={group.name}>
       <Td
         dataLabel="checkbox"
