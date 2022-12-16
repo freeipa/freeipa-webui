@@ -7,6 +7,7 @@ import hbacRulesReducer from "./Policy/hbacRules-slice";
 import sudoRulesReducer from "./Policy/sudoRules-slice";
 import stageUsersReducer from "./Identity/stageUsers-slice";
 import preservedUsersReducer from "./Identity/preservedUsers-slice";
+import hostsReducer from "./Identity/hosts-slice";
 
 const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ const store = configureStore({
     sudorules: sudoRulesReducer,
     stageUsers: stageUsersReducer,
     preservedUsers: preservedUsersReducer,
+    hosts: hostsReducer,
   },
 });
 

@@ -37,3 +37,13 @@ export interface SudoRules {
   status: string;
   description: string;
 }
+
+export interface Host {
+  id: string;
+  hostName: string;
+  dnsZone: string;
+  class: string;
+  ipAddress: string;
+  description: string;
+  enrolled: boolean;
+}
