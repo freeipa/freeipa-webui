@@ -1,0 +1,137 @@
+[
+  {
+    "id": "ipa",
+    "hostName": "ipa.server.ipa.demo",
+    "dnsZone": "server.ipa.demo",
+    "class": "",
+    "ipAddress": "",
+    "description": "This is a base description",
+    "enrolled": true
+  },
+  {
+    "id": "example",
+    "hostName": "example.server.ipa.demo",
+    "dnsZone": "server.ipa.demo",
+    "class": "",
+    "ipAddress": "",
+    "description": "",
+    "enrolled": true
+  },
+  {
+    "id": "example2",
+    "hostName": "example2.server.ipa.demo",
+    "dnsZone": "server.ipa.demo",
+    "class": "",
+    "ipAddress": "",
+    "description": "Description for example2",
+    "enrolled": true
+  },
+  {
+    "id": "example3",
+    "hostName": "example3.server.ipa.demo",
+    "dnsZone": "server.ipa.demo",
+    "class": "",
+    "ipAddress": "",
+    "description": "",
+    "enrolled": false
+  },
+  {
+    "id": "example4",
+    "hostName": "example4.server.ipa.demo",
+    "dnsZone": "server.ipa.demo",
+    "class": "",
+    "ipAddress": "",
+    "description": "",
+    "enrolled": true
+  },
+  {
+    "id": "example5",
+    "hostName": "example5.server.ipa.demo",
+    "dnsZone": "server.ipa.demo",
+    "class": "",
+    "ipAddress": "",
+    "description": "",
+    "enrolled": true
+  },
+  {
+    "id": "example6",
+    "hostName": "example6.server.ipa.demo",
+    "dnsZone": "server.ipa.demo",
+    "class": "",
+    "ipAddress": "",
+    "description": "Description for example6",
+    "enrolled": false
+  },
+  {
+    "id": "example7",
+    "hostName": "example7.server.ipa.demo",
+    "dnsZone": "server.ipa.demo",
+    "class": "",
+    "ipAddress": "",
+    "description": "",
+    "enrolled": true
+  },
+  {
+    "id": "example8",
+    "hostName": "example8.server.ipa.demo",
+    "dnsZone": "server.ipa.demo",
+    "class": "",
+    "ipAddress": "",
+    "description": "",
+    "enrolled": true
+  },
+  {
+    "id": "example9",
+    "hostName": "example9.server.ipa.demo",
+    "dnsZone": "server.ipa.demo",
+    "class": "",
+    "ipAddress": "",
+    "description": "",
+    "enrolled": true
+  },
+  {
+    "id": "example10",
+    "hostName": "example10.server.ipa.demo",
+    "dnsZone": "server.ipa.demo",
+    "class": "",
+    "ipAddress": "",
+    "description": "Description for example10",
+    "enrolled": true
+  },
+  {
+    "id": "example11",
+    "hostName": "example11.server.ipa.demo",
+    "dnsZone": "server.ipa.demo",
+    "class": "",
+    "ipAddress": "",
+    "description": "",
+    "enrolled": true
+  },
+  {
+    "id": "example12",
+    "hostName": "example12.server.ipa.demo",
+    "dnsZone": "server.ipa.demo",
+    "class": "",
+    "ipAddress": "",
+    "description": "",
+    "enrolled": true
+  },
+  {
+    "id": "example13",
+    "hostName": "example13.server.ipa.demo",
+    "dnsZone": "server.ipa.demo",
+    "class": "",
+    "ipAddress": "",
+    "description": "",
+    "enrolled": true
+  },
+  {
+    "id": "example14",
+    "hostName": "example14.server.ipa.demo",
+    "dnsZone": "server.ipa.demo",
+    "class": "",
+    "ipAddress": "",
+    "description": "Description for example14",
+    "enrolled": true
+  }
+]
