@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { FormEvent, useEffect, useRef, useState } from "react";
 // PatternFly
 import {
@@ -49,7 +51,7 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
   // Table functionality (from parent component) to manage the bulk selector functionality
   // - Menu
   const [isOpenMenu, setIsOpenMenu] = useState(false);
-  const toggleRefMenu = useRef<HTMLButtonElement>(null);
+  const toggleRefMenu = useRef<any>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const containerRefMenu = useRef<HTMLDivElement>(null);
 
@@ -150,7 +152,8 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
 
       // if all page selected, the original 'selectedUsers' data is preserved
       if (
-        selectableUsersList.length < props.usersData.selectableUsersTable.length
+        selectableUsersList.length <=
+        props.usersData.selectableUsersTable.length
       ) {
         props.usersData.selectedUsers.map((user) => {
           usersIdArray.push(user);
@@ -329,7 +332,14 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
 
   // Menu options
   const menuToolbar = (
-    <Menu ref={menuRef} style={{ minWidth: "fit-content" }}>
+    <Menu
+      ref={menuRef}
+      style={{ minWidth: "fit-content" }}
+      onSelect={(_ev) => {
+        setIsOpenMenu(!isOpenMenu);
+        toggleRefMenu.current?.querySelector("button").focus();
+      }}
+    >
       <MenuContent>
         <MenuList>
           <MenuItem itemId={0} onClick={unselectAllItems}>
