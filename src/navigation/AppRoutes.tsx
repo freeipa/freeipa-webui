@@ -13,6 +13,7 @@ import PreservedUsersTabs from "src/pages/PreservedUsers/PreservedUsersTabs";
 import UserGroups from "src/pages/UserGroups/UserGroups";
 import HostGroups from "src/pages/HostGroups/HostGroups";
 import Netgroups from "src/pages/Netgroups/Netgroups";
+import Hosts from "src/pages/Hosts/Hosts";
 
 // Navigation
 import { URL_PREFIX } from "./NavRoutes";
@@ -34,7 +35,7 @@ export const AppRoutes = (): React.ReactElement => (
         <Route path="settings" element={<PreservedUsersTabs />} />
       </Route>
       <Route path="hosts">
-        <Route path="" />
+        <Route path="" element={<Hosts />} />
       </Route>
       <Route path="services">
         <Route path="" />
