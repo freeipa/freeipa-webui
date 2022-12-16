@@ -15,6 +15,7 @@ interface PropsToSecondaryButton {
   ouijaId?: number | string;
   ouijaSafe?: boolean;
   innerRef?: React.Ref<any>;
+  form?: string;
 }
 
 const SecondaryButton = (props: PropsToSecondaryButton) => {
@@ -31,6 +32,7 @@ const SecondaryButton = (props: PropsToSecondaryButton) => {
       ouiaSafe={props.ouijaSafe}
       onClick={props.onClickHandler}
       innerRef={props.innerRef}
+      form={props.form}
     >
       {props.children}
     </Button>

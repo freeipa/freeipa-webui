@@ -1,11 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 // PatternFly
 import { Pagination } from "@patternfly/react-core";
-// Data types
-import { User } from "src/utils/datatypes/globalDataTypes";
 
 interface PropsToPaginationLayout {
-  list: User[];
+  list: any[];
   perPage: number;
   page: number;
   variant?: "top" | "bottom";
