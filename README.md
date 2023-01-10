@@ -5,6 +5,18 @@
 New version of the web application for administration of FreeIPA built using
 [React](https://reactjs.org/) and [PatternFly 4](https://www.patternfly.org/v4/).
 
+You can read more about the plans [here](https://github.com/freeipa/freeipa-webui/discussions/34).
+
+## Mock-ups
+
+**Note**: these mockups are for general direction we're taking the Web UI.
+Some finer details and interactions will be worked out as we develop the application.
+
+![Mockup of the Vertical navigation](doc/mockup-navigation.png)
+![Mockup of the Delete dialog](doc/mockup-delete.png)
+![Mockup of how scrolling affects tables](doc/mockup-scrolling.png)
+![Mockup of a user settings pages](doc/mockup-settings.png)
+
 ## Development environment
 
 This project relies on Vagrant to set-up a virtual machine with FreeIPA installed
