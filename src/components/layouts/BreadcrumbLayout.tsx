@@ -8,8 +8,9 @@ export interface PagesVisited {
 }
 
 export interface PropsToBreadcrumb {
-  userId: string;
+  userId: string; // TODO: Replace 'userId' to a more reusable name
   className?: string;
+  preText?: string;
   pagesVisited: PagesVisited[];
 }
 
@@ -21,7 +22,10 @@ const BreadcrumbLayout = (props: PropsToBreadcrumb) => {
           {page.name}
         </BreadcrumbItem>
       ))}
-      <BreadcrumbItem isActive>User login: {props.userId}</BreadcrumbItem>
+      <BreadcrumbItem isActive>
+        {props.preText !== undefined ? props.preText : "User login:"}{" "}
+        {props.userId}
+      </BreadcrumbItem>
     </Breadcrumb>
   );
 };
