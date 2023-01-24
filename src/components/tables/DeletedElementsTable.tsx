@@ -5,8 +5,34 @@ import { Td, Th, Tr } from "@patternfly/react-table";
 // Layout
 import TableLayout from "src/components/layouts/TableLayout";
 
+/*
+ * Goal: Show already selected elements ready to delete in a table.
+ *
+ * Parameters:
+ *  - 'mode':
+ *     · "passing_id": When the passed data are id names. When using this
+ *        mode, there is no need to pass the 'elementsList' (this is meant for
+ *        managing the whole data). Instead, the elements to delete can be passed
+ *        via 'elementsToDelete' variable.
+ *             Eg: ['user123', 'user456', 'user789']: string[]
+ *     · "passing_full_data": When the passed data has more complexity
+ *        than only a few strings. When using this mode, the 'elementsList'
+ *        variable (to pass the full data) must be used.
+ *             Eg: [{ userID: 'user123', first: "John", last: "Snow", ...}, {...}]: User[]
+ *  - 'elementsList':
+ *     · List of full-data elements. This will be compared against the 'elementsToDelete'
+ *       to retrieve the whole element.
+ *  - 'elementsToDelete':
+ *     · List of elements to delete (by ID).
+ *  - 'columnNames':
+ *     · Column names to show in the table.
+ *  - 'elementType':
+ *     · String used to set the 'ariaLabel' and the table ID.
+ */
+
 export interface PropsToDeletedElementsTable {
-  elementsList: any[];
+  mode: "passing_id" | "passing_full_data";
+  elementsList?: any[];
   elementsToDelete: string[];
   columnNames: string[];
   elementType: string;
@@ -16,15 +42,26 @@ const DeletedElementsTable = (props: PropsToDeletedElementsTable) => {
   // TODO: Check the columnNames against the actual variable name
   //   when retrieving data from the RPC server.
 
-  // Given the id, retrieve full element info to display into table
   const elementsToDelete: any = [];
-  props.elementsList.map((element) => {
-    props.elementsToDelete.map((selected) => {
-      if (element.id === selected) {
-        elementsToDelete.push(element);
+  switch (props.mode) {
+    case "passing_full_data":
+      // Given the id, retrieve full element info to display into table
+      // const elementsToDelete: any = [];
+      if (props.elementsList !== undefined) {
+        props.elementsList.map((element) => {
+          props.elementsToDelete.map((selected) => {
+            if (element.id === selected) {
+              elementsToDelete.push(element);
+            }
+          });
+        });
       }
-    });
-  });
+      break;
+    case "passing_id":
+      props.elementsToDelete.map((userName) => {
+        elementsToDelete.push(userName);
+      });
+  }
 
   // Generate the actual column names
   // - Given the 'columnNames' provided via props, infer to get
@@ -51,23 +88,35 @@ const DeletedElementsTable = (props: PropsToDeletedElementsTable) => {
     </Tr>
   );
 
-  const body = elementsToDelete.map((element) => (
-    <Tr key={element.id} id={element.id}>
-      {props.columnNames.map((columnName, idx) => (
-        <Td key={idx} dataLabel={columnName}>
-          {element[columnName]}
-        </Td>
-      ))}
-    </Tr>
-  ));
+  const getBody = () => {
+    if (props.mode === "passing_full_data") {
+      return elementsToDelete.map((element) => (
+        <Tr key={element.id} id={element.id}>
+          {props.columnNames.map((columnName, idx) => (
+            <Td key={idx} dataLabel={columnName}>
+              {element[columnName]}
+            </Td>
+          ))}
+        </Tr>
+      ));
+    } else if (props.mode === "passing_id") {
+      return elementsToDelete.map((element) => (
+        <Tr key={element} id={element}>
+          {element && <Td dataLabel={element}>{element}</Td>}
+        </Tr>
+      ));
+    }
+  };
+
+  const body = getBody();
 
   // Render 'DeletedUsersTable'
   return (
     <TableLayout
-      ariaLabel={"Remove " + props.elementType + " table"}
+      ariaLabel={"Remove " + props.elementType + "s table"}
       variant={"compact"}
       hasBorders={true}
-      tableId={"remove-" + props.elementType + "-table"}
+      tableId={"remove-" + props.elementType + "s-table"}
       isStickyHeader={true}
       tableHeader={header}
       tableBody={body}
