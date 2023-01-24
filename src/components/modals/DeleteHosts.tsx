@@ -60,6 +60,7 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
       id: "deleted-users-table",
       pfComponent: (
         <DeletedElementsTable
+          mode="passing_full_data"
           elementsToDelete={props.selectedHostsData.selectedHosts}
           elementsList={hostsListCopy}
           columnNames={deleteHostsColumnNames}
