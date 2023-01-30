@@ -10,6 +10,7 @@ import {
   Roles,
   HBACRules,
   SudoRules,
+  HostGroup,
 } from "src/utils/datatypes/globalDataTypes";
 
 interface ModalData {
@@ -19,15 +20,27 @@ interface ModalData {
 
 interface TabData {
   tabName: string;
-  userName: string;
+  userName: string; // TODO: Change to a more generalistic name
 }
 
 export interface PropsToAdd {
   modalData: ModalData;
-  availableData: UserGroup[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[];
+  availableData:
+    | UserGroup[]
+    | Netgroup[]
+    | Roles[]
+    | HBACRules[]
+    | SudoRules[]
+    | HostGroup[];
   groupRepository: unknown[];
   updateGroupRepository: (
-    args: UserGroup[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[]
+    args:
+      | UserGroup[]
+      | Netgroup[]
+      | Roles[]
+      | HBACRules[]
+      | SudoRules[]
+      | HostGroup[]
   ) => void;
   updateAvOptionsList: (args: unknown[]) => void;
   tabData: TabData;
@@ -38,8 +51,9 @@ export interface PropsToAdd {
 // To display all the possible data types for all the tabs (and not only the mandatory ones)
 //   an extra interface 'MemberOfElement' will be defined. This will be called when assigning
 //   a new group instead of refering to each type (UserGroup | Netgroup | Roles | HBACRules |
-//   SudoRules).
+//   SudoRules | HostGroup).
 interface MemberOfElement {
+  hostGroup?: string;
   name: string;
   gid?: string;
   status?: string;
@@ -169,6 +183,16 @@ const MemberOfAddModal = (props: PropsToAdd) => {
           } as SudoRules);
           // Send updated data to table
           props.updateGroupRepository(props.groupRepository as SudoRules[]);
+        }
+        // Host groups
+        if (props.tabData.tabName === "Host groups") {
+          props.groupRepository.push({
+            name: optionData.name !== undefined && optionData.name,
+            description:
+              optionData.description !== undefined && optionData.description,
+          } as HostGroup);
+          // Send updated data to table
+          props.updateGroupRepository(props.groupRepository as HostGroup[]);
         }
       }
     });

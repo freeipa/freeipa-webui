@@ -26,6 +26,7 @@ import {
   Roles,
   HBACRules,
   SudoRules,
+  HostGroup,
 } from "src/utils/datatypes/globalDataTypes";
 // Layout
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
@@ -55,7 +56,13 @@ interface ButtonData {
 
 interface SettersData {
   changeMemberGroupsList: (
-    arg: UserGroup[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[]
+    arg:
+      | UserGroup[]
+      | Netgroup[]
+      | Roles[]
+      | HBACRules[]
+      | SudoRules[]
+      | HostGroup[]
   ) => void;
   changeTabName: (name: string) => void;
 }
@@ -66,9 +73,27 @@ interface SearchValueData {
 }
 
 export interface PropsToToolbar {
-  pageRepo: UserGroup[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[];
-  shownItems: UserGroup[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[];
-  toolbar: "user groups" | "netgroups" | "roles" | "HBAC rules" | "sudo rules";
+  pageRepo:
+    | UserGroup[]
+    | Netgroup[]
+    | Roles[]
+    | HBACRules[]
+    | SudoRules[]
+    | HostGroup[];
+  shownItems:
+    | UserGroup[]
+    | Netgroup[]
+    | Roles[]
+    | HBACRules[]
+    | SudoRules[]
+    | HostGroup[];
+  toolbar:
+    | "user groups"
+    | "netgroups"
+    | "roles"
+    | "HBAC rules"
+    | "sudo rules"
+    | "host groups";
   settersData: SettersData;
   pageData: PageData;
   buttonData: ButtonData;
@@ -213,6 +238,28 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
 
   const sudoRulesOnDeleteClickHandler = () => {
     props.settersData.changeTabName("Sudo rules");
+    props.buttonData.onClickDeleteHandler();
+  };
+
+  // - Host groups
+  const [isTGHostGroupsSelected, setIsTGHostGroupsSelected] =
+    useState("direct");
+
+  const TGHostGroupsHandler = (
+    isSelected: boolean,
+    event: React.MouseEvent<any> | React.KeyboardEvent | MouseEvent
+  ) => {
+    const id = event.currentTarget.id;
+    setIsTGHostGroupsSelected(id);
+  };
+
+  const hostGroupsOnClickAddHandler = () => {
+    props.settersData.changeTabName("Host groups");
+    props.buttonData.onClickAddHandler();
+  };
+
+  const hostGroupsOnDeleteClickHandler = () => {
+    props.settersData.changeTabName("Host groups");
     props.buttonData.onClickDeleteHandler();
   };
 
@@ -381,6 +428,39 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
     paginationId: "sudoRules-pagination",
   };
 
+  // 'Host groups' toolbar elements data
+  const hostGroupsToolbarData = {
+    searchId: "hostGroups-search",
+    separator1Id: "hostGroups-separator-1",
+    refreshButton: {
+      id: "hostGroups-button-refresh",
+    },
+    deleteButton: {
+      id: "hostGroups-button-delete",
+      isDisabledHandler: props.buttonData.isDeleteButtonDisabled,
+      onClickHandler: hostGroupsOnDeleteClickHandler,
+    },
+    addButton: {
+      id: "hostGroups-button-add",
+      onClickHandler: hostGroupsOnClickAddHandler,
+    },
+    separator2Id: "hostGroups-separator-2",
+    membership: {
+      formId: "hostGroups-form",
+      toggleGroupId: "hostGroups-toggle-group",
+      isDirectSelected: isTGHostGroupsSelected === "direct",
+      onDirectChange: TGHostGroupsHandler,
+      isIndirectSelected: isTGHostGroupsSelected === "indirect",
+      onIndirectChange: TGHostGroupsHandler,
+    },
+    separator3Id: "hostGroups-separator-3",
+    helpIcon: {
+      id: "hostGroups-help-icon",
+      // href: TDB
+    },
+    paginationId: "hostGroups-pagination",
+  };
+
   // Specify which toolbar to show
   const toolbarData = () => {
     switch (props.toolbar) {
@@ -394,6 +474,8 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
         return hbacRulesToolbarData;
       case "sudo rules":
         return sudoRulesToolbarData;
+      case "host groups":
+        return hostGroupsToolbarData;
     }
   };
 

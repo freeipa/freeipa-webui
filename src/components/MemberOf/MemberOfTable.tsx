@@ -26,7 +26,7 @@ interface ColumnNames {
 //  its variables. Just the mandatory ones ('name' and 'description') are accessible at this point.
 // To display all the possible data types for all the tabs (and not only the mandatory ones)
 //   an extra interface 'MemberOfElement' will be defined. This will be called in the 'PropsToTable'
-//   interface instead of each type (UserGroup | Netgroup | Roles | HBACRules | SudoRules).
+//   interface instead of each type (UserGroup | Netgroup | Roles | HBACRules | SudoRules | HostGroup).
 interface MemberOfElement {
   name: string;
   gid?: string;
@@ -76,6 +76,10 @@ const MemberOfTable = (props: PropsToTable) => {
     status: "Status",
     description: "Description",
   };
+  const hostGroupsColumnNames: ColumnNames = {
+    name: "Host name",
+    description: "Description",
+  };
 
   // State for column names
   const [columnNames, setColumnNames] = useState<ColumnNames>(
@@ -109,7 +113,12 @@ const MemberOfTable = (props: PropsToTable) => {
   useEffect(() => {
     switch (props.activeTabKey) {
       case 0:
-        setColumnNames(userGroupsColumnNames);
+        if (props.tableName === "User groups") {
+          setColumnNames(userGroupsColumnNames);
+        }
+        if (props.tableName === "Host groups") {
+          setColumnNames(hostGroupsColumnNames);
+        }
         break;
       case 1:
         setColumnNames(netgroupsColumnNames);
