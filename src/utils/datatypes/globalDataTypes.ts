@@ -47,3 +47,8 @@ export interface Host {
   description: string;
   enrolled: boolean;
 }
+
+export interface HostGroup {
+  name: string;
+  description: string;
+}
