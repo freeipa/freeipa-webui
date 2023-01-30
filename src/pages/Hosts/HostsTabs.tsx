@@ -14,6 +14,7 @@ import { useLocation } from "react-router-dom";
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Other
 import HostsSettings from "./HostsSettings";
+import HostsMemberOf from "./HostsMemberOf";
 // Layouts
 import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -77,6 +78,14 @@ const HostsTabs = () => {
           >
             <PageSection className="pf-u-pb-0"></PageSection>
             <HostsSettings host={hostData} />
+          </Tab>
+          <Tab
+            eventKey={1}
+            name="details"
+            title={<TabTitleText>Is a member of</TabTitleText>}
+          >
+            <PageSection className="pf-u-pb-0"></PageSection>
+            <HostsMemberOf host={hostData} />
           </Tab>
         </Tabs>
       </PageSection>
