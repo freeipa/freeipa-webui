@@ -1,0 +1,18 @@
+[
+  {
+    "name": "ipaservers",
+    "description": "IPA server hosts"
+  },
+  {
+    "name": "hostgroup1",
+    "description": "Host group 1"
+  },
+  {
+    "name": "hostgroup2",
+    "description": "Host group 2"
+  },
+  {
+    "name": "hostgroup3",
+    "description": "Host group 3"
+  }
+]
