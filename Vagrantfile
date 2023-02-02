@@ -56,6 +56,9 @@ Vagrant.configure("2") do |config|
       AllowOverride None
       Satisfy Any
       Require all granted
+      RewriteEngine On
+      RewriteCond %{REQUEST_FILENAME} !-f
+      RewriteRule ^ index.html [QSA,L]
     </Directory>
     EOF
 
