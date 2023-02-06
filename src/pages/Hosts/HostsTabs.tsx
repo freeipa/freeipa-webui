@@ -15,6 +15,7 @@ import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Other
 import HostsSettings from "./HostsSettings";
 import HostsMemberOf from "./HostsMemberOf";
+import HostsManagedBy from "./HostsManagedBy";
 // Layouts
 import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -86,6 +87,14 @@ const HostsTabs = () => {
           >
             <PageSection className="pf-u-pb-0"></PageSection>
             <HostsMemberOf host={hostData} />
+          </Tab>
+          <Tab
+            eventKey={2}
+            name="details"
+            title={<TabTitleText>Is managed by</TabTitleText>}
+          >
+            <PageSection className="pf-u-pb-0"></PageSection>
+            <HostsManagedBy host={hostData} />
           </Tab>
         </Tabs>
       </PageSection>
