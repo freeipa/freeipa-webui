@@ -148,9 +148,9 @@ const CreateKeytabUsersTable = (props: PropsToTable) => {
         select={{
           onSelect: (_event, isSelecting) => selectAllUsers(isSelecting),
           isSelected: areAllUsersSelected,
+          isDisabled: tableUsersList.length === 0 ? true : false,
         }}
       />
-      {/* <Th width={10}>{usersColumnNames.user}</Th> */}
       <Th width={10}>{usersColumnNamesArray[0]}</Th>
     </Tr>
   );
@@ -168,7 +168,6 @@ const CreateKeytabUsersTable = (props: PropsToTable) => {
           disable: false,
         }}
       />
-      {/* <Td dataLabel={usersColumnNames.user}>{user}</Td> */}
       <Td dataLabel={usersColumnNamesArray[0]}>{user}</Td>
     </Tr>
   ));

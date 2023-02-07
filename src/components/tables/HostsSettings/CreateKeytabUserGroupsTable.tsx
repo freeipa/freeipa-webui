@@ -164,6 +164,7 @@ const CreateKeytabUserGroupsTable = (props: PropsToTable) => {
         select={{
           onSelect: (_event, isSelecting) => selectAllUserGroups(isSelecting),
           isSelected: areAllUserGroupsSelected,
+          isDisabled: tableUserGroupsList.length === 0 ? true : false,
         }}
       />
       <Th width={10}>{userGroupsColumnNamesArray[0]}</Th>

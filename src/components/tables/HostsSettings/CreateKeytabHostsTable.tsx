@@ -148,6 +148,7 @@ const CreateKeytabHostsTable = (props: PropsToTable) => {
         select={{
           onSelect: (_event, isSelecting) => selectAllHosts(isSelecting),
           isSelected: areAllHostsSelected,
+          isDisabled: tableHostsList.length === 0 ? true : false,
         }}
       />
       <Th width={10}>{hostsColumnNamesArray[0]}</Th>
