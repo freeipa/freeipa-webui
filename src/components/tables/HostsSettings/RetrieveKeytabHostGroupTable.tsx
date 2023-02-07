@@ -161,6 +161,7 @@ const RetrieveKeytabHostGroupsTable = (props: PropsToTable) => {
         select={{
           onSelect: (_event, isSelecting) => selectAllHostGroups(isSelecting),
           isSelected: areAllHostGroupsSelected,
+          isDisabled: tableHostGroupsList.length === 0 ? true : false,
         }}
       />
       <Th width={10}>{hostGroupsColumnNamesArray[0]}</Th>
