@@ -148,9 +148,9 @@ const RetrieveKeytabUsersTable = (props: PropsToTable) => {
         select={{
           onSelect: (_event, isSelecting) => selectAllUsers(isSelecting),
           isSelected: areAllUsersSelected,
+          isDisabled: tableUsersList.length === 0 ? true : false,
         }}
       />
-      {/* <Th width={10}>{usersColumnNames.user}</Th> */}
       <Th width={10}>{usersColumnNamesArray[0]}</Th>
     </Tr>
   );
