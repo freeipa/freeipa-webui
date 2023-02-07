@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { FormEvent, SyntheticEvent } from "react";
 // PatternFly
 import { SearchInput } from "@patternfly/react-core";
 
@@ -15,8 +16,15 @@ interface PropsToSearchInput {
 }
 
 const SearchInputLayout = (props: PropsToSearchInput) => {
-  const onSearchChange = (value: string) => {
+  const onSearchChange = (
+    _event: FormEvent<HTMLInputElement>,
+    value: string
+  ) => {
     props.searchValueData.updateSearchValue(value);
+  };
+
+  const onSearchClean = (_event: SyntheticEvent<HTMLButtonElement, Event>) => {
+    props.searchValueData.updateSearchValue("");
   };
 
   return (
@@ -26,7 +34,7 @@ const SearchInputLayout = (props: PropsToSearchInput) => {
       placeholder={props.placeholder}
       value={props.searchValueData.searchValue}
       onChange={onSearchChange}
-      onClear={() => onSearchChange("")}
+      onClear={onSearchClean}
     />
   );
 };
