@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React from "react";
 // Data type
-import { Host, User } from "./datatypes/globalDataTypes";
+import { Host, Service, User } from "./datatypes/globalDataTypes";
 
 /*
  * Functions that can be reusable and called by several components throughout the application.
@@ -20,3 +20,6 @@ export const isUserSelectable = (user: User) => user.userLogin !== "";
 
 // Determine whether a host is selectable or not
 export const isHostSelectable = (host: Host) => host.id != "";
+
+// Determine whether a service is selectable or not
+export const isServiceSelectable = (service: Service) => service.id != "";

@@ -52,3 +52,9 @@ export interface HostGroup {
   name: string;
   description: string;
 }
+
+export interface Service {
+  id: string;
+  serviceType: string;
+  host: string;
+}
