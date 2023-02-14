@@ -9,6 +9,7 @@ import stageUsersReducer from "./Identity/stageUsers-slice";
 import preservedUsersReducer from "./Identity/preservedUsers-slice";
 import hostsReducer from "./Identity/hosts-slice";
 import hostGroupsReducer from "./Identity/hostGroups-slice";
+import servicesReducer from "./Identity/services-slice";
 
 const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ const store = configureStore({
     preservedUsers: preservedUsersReducer,
     hosts: hostsReducer,
     hostGroups: hostGroupsReducer,
+    services: servicesReducer,
   },
 });
 
