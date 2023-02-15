@@ -10,9 +10,11 @@ import preservedUsersReducer from "./Identity/preservedUsers-slice";
 import hostsReducer from "./Identity/hosts-slice";
 import hostGroupsReducer from "./Identity/hostGroups-slice";
 import servicesReducer from "./Identity/services-slice";
+import { api } from "./services/rpc";
 
 const store = configureStore({
   reducer: {
+    api: api.reducer,
     activeUsers: activeUsersReducer,
     netgroups: netgroupsReducer,
     usergroups: userGroupsReducer,

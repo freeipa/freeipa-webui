@@ -19,13 +19,14 @@ import Services from "src/pages/Services/Services";
 
 // Navigation
 import { URL_PREFIX } from "./NavRoutes";
+import APIBrowser from "src/pages/APIBrowser";
 
 // Renders routes (React)
 export const AppRoutes = (): React.ReactElement => (
   <Routes>
     <Route path={URL_PREFIX}>
       <Route path="active-users">
-        <Route path="" element={<ActiveUsers />} />
+        <Route path="" element={<APIBrowser />} />
         <Route path="settings" element={<ActiveUsersTabs />} />
       </Route>
       <Route path="stage-users">
@@ -92,10 +93,11 @@ export const AppRoutes = (): React.ReactElement => (
         <Route path="" />
       </Route>
     </Route>
-    <Route
+    {/* <Route
       path=""
       element={<Navigate to={URL_PREFIX + "/active-users"} replace />}
-    />
+    /> */}
+    <Route path={URL_PREFIX} element={<APIBrowser />} />
     <Route path="*" element={<NotFound />} />
   </Routes>
 );
