@@ -23,7 +23,7 @@ import KebabLayout from "src/components/layouts/KebabLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 // Components
 import BulkSelectorServicesPrep from "src/components/BulkSelectorServicesPrep";
-import PaginationServicesPrep from "src/components/PaginationServicesPrep";
+import PaginationPrep from "src/components/PaginationPrep";
 // Tables
 import ServicesTable from "./ServicesTable";
 // Redux
@@ -326,7 +326,7 @@ const Services = () => {
     {
       key: 9,
       element: (
-        <PaginationServicesPrep
+        <PaginationPrep
           list={servicesList}
           paginationData={paginationData}
           widgetId="pagination-options-menu-top"
@@ -368,7 +368,7 @@ const Services = () => {
             </InnerScrollContainer>
           </OuterScrollContainer>
         </div>
-        <PaginationServicesPrep
+        <PaginationPrep
           list={servicesList}
           paginationData={paginationData}
           variant={PaginationVariant.bottom}

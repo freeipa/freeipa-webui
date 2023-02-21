@@ -30,7 +30,7 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
 import UsersTable from "../../components/tables/UsersTable";
 // Components
-import PaginationUsersPrep from "src/components/PaginationUsersPrep";
+import PaginationPrep from "src/components/PaginationPrep";
 import BulkSelectorUsersPrep from "src/components/BulkSelectorUsersPrep";
 // Modals
 import AddUser from "src/components/modals/AddUser";
@@ -231,7 +231,7 @@ const ActiveUsers = () => {
     showTableRows,
     updateShowTableRows,
     updateSelectedPerPage,
-    updateShownUsersList,
+    updateShownElementsList: updateShownUsersList,
   };
 
   // - 'BulkSelectorUsersPrep'
@@ -413,7 +413,7 @@ const ActiveUsers = () => {
     {
       key: 11,
       element: (
-        <PaginationUsersPrep
+        <PaginationPrep
           list={activeUsersList}
           paginationData={paginationData}
           widgetId="pagination-options-menu-top"
@@ -460,7 +460,7 @@ const ActiveUsers = () => {
             </InnerScrollContainer>
           </OuterScrollContainer>
         </div>
-        <PaginationUsersPrep
+        <PaginationPrep
           list={activeUsersList}
           paginationData={paginationData}
           variant={PaginationVariant.bottom}

@@ -23,7 +23,7 @@ import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayou
 import KebabLayout from "src/components/layouts/KebabLayout";
 // Components
 import BulkSelectorHostsPrep from "src/components/BulkSelectorHostsPrep";
-import PaginationHostsPrep from "src/components/PaginationHostsPrep";
+import PaginationPrep from "src/components/PaginationPrep";
 // Tables
 import HostsTable from "./HostsTable";
 // Modal
@@ -182,7 +182,7 @@ const Hosts = () => {
     showTableRows,
     updateShowTableRows,
     updateSelectedPerPage,
-    updateShownHostsList,
+    updateShownElementsList: updateShownHostsList,
   };
 
   // - 'BulkSelectorPrep'
@@ -324,7 +324,7 @@ const Hosts = () => {
     {
       key: 9,
       element: (
-        <PaginationHostsPrep
+        <PaginationPrep
           list={hostsList}
           paginationData={paginationData}
           widgetId="pagination-options-menu-top"
@@ -365,7 +365,7 @@ const Hosts = () => {
             </InnerScrollContainer>
           </OuterScrollContainer>
         </div>
-        <PaginationHostsPrep
+        <PaginationPrep
           list={hostsList}
           paginationData={paginationData}
           variant={PaginationVariant.bottom}
