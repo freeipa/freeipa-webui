@@ -30,7 +30,7 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
 import UsersTable from "../../components/tables/UsersTable";
 // Components
-import PaginationUsersPrep from "src/components/PaginationUsersPrep";
+import PaginationPrep from "src/components/PaginationPrep";
 import BulkSelectorUsersPrep from "src/components/BulkSelectorUsersPrep";
 // Modals
 import AddUser from "src/components/modals/AddUser";
@@ -231,7 +231,7 @@ const PreservedUsers = () => {
     showTableRows,
     updateShowTableRows,
     updateSelectedPerPage,
-    updateShownUsersList,
+    updateShownElementsList: updateShownUsersList,
   };
 
   // - 'BulkSelectorPrep'
@@ -415,7 +415,7 @@ const PreservedUsers = () => {
     {
       key: 11,
       element: (
-        <PaginationUsersPrep
+        <PaginationPrep
           list={preservedUsersList}
           paginationData={paginationData}
           widgetId="pagination-options-menu-top"
@@ -462,7 +462,7 @@ const PreservedUsers = () => {
             </InnerScrollContainer>
           </OuterScrollContainer>
         </div>
-        <PaginationUsersPrep
+        <PaginationPrep
           list={preservedUsersList}
           paginationData={paginationData}
           variant={PaginationVariant.bottom}

@@ -30,7 +30,7 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
 import UsersTable from "../../components/tables/UsersTable";
 // Components
-import PaginationUsersPrep from "src/components/PaginationUsersPrep";
+import PaginationPrep from "src/components/PaginationPrep";
 import BulkSelectorUsersPrep from "src/components/BulkSelectorUsersPrep";
 // Modals
 import AddUser from "src/components/modals/AddUser";
@@ -229,7 +229,7 @@ const StageUsers = () => {
     showTableRows,
     updateShowTableRows,
     updateSelectedPerPage,
-    updateShownUsersList,
+    updateShownElementsList: updateShownUsersList,
   };
 
   // - 'BulkSelectorPrep'
@@ -244,9 +244,7 @@ const StageUsers = () => {
   };
 
   const buttonsData = {
-    // isDeleteButtonDisabled, //
     updateIsDeleteButtonDisabled,
-    // isEnableButtonDisabled, //
     updateIsEnableButtonDisabled,
     updateIsDisableButtonDisabled,
     updateIsDisableEnableOp,
@@ -413,7 +411,7 @@ const StageUsers = () => {
     {
       key: 11,
       element: (
-        <PaginationUsersPrep
+        <PaginationPrep
           list={stageUsersList}
           paginationData={paginationData}
           widgetId="pagination-options-menu-top"
@@ -460,7 +458,7 @@ const StageUsers = () => {
             </InnerScrollContainer>
           </OuterScrollContainer>
         </div>
-        <PaginationUsersPrep
+        <PaginationPrep
           list={stageUsersList}
           paginationData={paginationData}
           variant={PaginationVariant.bottom}
