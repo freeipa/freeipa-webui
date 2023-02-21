@@ -16,6 +16,7 @@ import Netgroups from "src/pages/Netgroups/Netgroups";
 import Hosts from "src/pages/Hosts/Hosts";
 import HostsTabs from "src/pages/Hosts/HostsTabs";
 import Services from "src/pages/Services/Services";
+import ServicesTabs from "src/pages/Services/ServicesTabs";
 
 // Navigation
 import { URL_PREFIX } from "./NavRoutes";
@@ -42,6 +43,7 @@ export const AppRoutes = (): React.ReactElement => (
       </Route>
       <Route path="services">
         <Route path="" element={<Services />} />
+        <Route path="settings" element={<ServicesTabs />} />
       </Route>
       <Route path="user-groups">
         <Route path="" element={<UserGroups />} />
