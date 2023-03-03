@@ -27,32 +27,32 @@ export const AppRoutes = (): React.ReactElement => (
     <Route path={URL_PREFIX}>
       <Route path="active-users">
         <Route path="" element={<ActiveUsers />} />
-        <Route path="settings" element={<ActiveUsersTabs />} />
+        {/* <Route path="settings" element={<ActiveUsersTabs />} /> */}
       </Route>
       <Route path="stage-users">
-        <Route path="" element={<StageUsers />} />
-        <Route path="settings" element={<StageUsersTabs />} />
+        {/* <Route path="" element={<StageUsers />} />
+        <Route path="settings" element={<StageUsersTabs />} /> */}
       </Route>
       <Route path="preserved-users">
-        <Route path="" element={<PreservedUsers />} />
-        <Route path="settings" element={<PreservedUsersTabs />} />
+        {/* <Route path="" element={<PreservedUsers />} />
+        <Route path="settings" element={<PreservedUsersTabs />} /> */}
       </Route>
       <Route path="hosts">
-        <Route path="" element={<Hosts />} />
-        <Route path="settings" element={<HostsTabs />} />
+        {/* <Route path= "" element={<Hosts />} />
+        <Route path="settings" element={<HostsTabs />} /> */}
       </Route>
       <Route path="services">
-        <Route path="" element={<Services />} />
-        <Route path="settings" element={<ServicesTabs />} />
+        {/* <Route path="" element={<Services />} />
+        <Route path="settings" element={<ServicesTabs />} /> */}
       </Route>
       <Route path="user-groups">
-        <Route path="" element={<UserGroups />} />
+        {/* <Route path="" element={<UserGroups />} /> */}
       </Route>
       <Route path="host-groups">
-        <Route path="" element={<HostGroups />} />
+        {/* <Route path="" element={<HostGroups />} /> */}
       </Route>
       <Route path="netgroups">
-        <Route path="" element={<Netgroups />} />
+        {/* <Route path="" element={<Netgroups />} /> */}
       </Route>
       <Route path="id-views">
         <Route path="" />
