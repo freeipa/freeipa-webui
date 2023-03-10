@@ -10,7 +10,6 @@ interface PaginationData {
   updatePage: (newPage: number) => void;
   updatePerPage: (newSetPerPage: number) => void;
   showTableRows: boolean;
-  updateShowTableRows: (value: boolean) => void;
   updateSelectedPerPage: (selected: number) => void;
   updateShownUsersList: (newShownUsersList: User[]) => void;
 }
@@ -26,21 +25,6 @@ interface PropsToPaginationPrep {
 }
 
 const PaginationPrep = (props: PropsToPaginationPrep) => {
-  // Refresh displayed users every time users list changes (from Redux or somewhere else)
-  React.useEffect(() => {
-    props.paginationData.updatePage(1);
-    if (props.paginationData.showTableRows)
-      props.paginationData.updateShowTableRows(false);
-    setTimeout(() => {
-      props.paginationData.updateShownUsersList(
-        props.list.slice(0, props.paginationData.perPage)
-      );
-      props.paginationData.updateShowTableRows(true);
-      // Reset 'selectedPerPage'
-      props.paginationData.updateSelectedPerPage(0);
-    }, 2000);
-  }, [props.list]);
-
   // Handle content on 'setPage'
   const handleSetPage = (
     _event: React.MouseEvent | React.KeyboardEvent | MouseEvent,
@@ -50,15 +34,16 @@ const PaginationPrep = (props: PropsToPaginationPrep) => {
     endIdx: number | undefined
   ) => {
     props.paginationData.updatePage(newPage);
-    props.paginationData.updateShowTableRows(false);
-    setTimeout(() => {
+    if (props.paginationData.showTableRows) {
+      // Load is finished. Data must show.
       props.paginationData.updateShownUsersList(
         props.list.slice(startIdx, endIdx)
       );
-      props.paginationData.updateShowTableRows(true);
       // Reset 'selectedPerPage'
       props.paginationData.updateSelectedPerPage(0);
-    }, 2000);
+    } else {
+      // Loading. Still no data.
+    }
   };
 
   // Handle content on 'perPageSelect'
@@ -71,15 +56,16 @@ const PaginationPrep = (props: PropsToPaginationPrep) => {
   ) => {
     props.paginationData.updatePerPage(newPerPage);
     props.paginationData.updatePage(newPage);
-    props.paginationData.updateShowTableRows(false);
-    setTimeout(() => {
+    if (props.paginationData.showTableRows) {
+      // Load is finished. Data must show.
       props.paginationData.updateShownUsersList(
         props.list.slice(startIdx, endIdx)
       );
-      props.paginationData.updateShowTableRows(true);
       // Reset 'selectedPerPage'
       props.paginationData.updateSelectedPerPage(0);
-    }, 2000);
+    } else {
+      // Loading. Still no data.
+    }
   };
 
   return (

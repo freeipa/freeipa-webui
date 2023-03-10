@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   DropdownItem,
@@ -19,7 +19,8 @@ import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/o
 import { User } from "src/utils/datatypes/globalDataTypes";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 // Redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppDispatch } from "src/store/hooks";
+import { updateUsersList } from "src/store/Identity/activeUsers-slice";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
@@ -38,12 +39,181 @@ import DeleteUsers from "src/components/modals/DeleteUsers";
 import DisableEnableUsers from "src/components/modals/DisableEnableUsers";
 // Utils
 import { isUserSelectable } from "src/utils/utils";
+// RPC server
+import {
+  // CommandWithMethod,
+  Command,
+  UIDType,
+  useBatchCommandQuery,
+  useSimpleCommandQuery,
+} from "src/store/services/rpc";
+import TextLayout from "src/components/layouts/TextLayout";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { SerializedError } from "@reduxjs/toolkit";
 
 const ActiveUsers = () => {
-  // Initialize active users list (Redux)
-  const activeUsersList = useAppSelector(
-    (state) => state.activeUsers.usersList
+  // Dispatch (Redux)
+  const dispatch = useAppDispatch();
+
+  // Active users list
+  const activeUsersList: User[] = [];
+
+  //------- RETRIEVING INITIAL DATA ---------------
+  // Step 1: Retrieve all uids
+  const payloadDataUids: Command = {
+    method: "user_find",
+    params: [
+      [],
+      {
+        pkey_only: true,
+        sizelimit: 0,
+        version: "2.251",
+      },
+    ],
+  };
+  const { data: userIdsData, error: uidsError } =
+    useSimpleCommandQuery(payloadDataUids);
+
+  const userIds: string[] = [];
+  if (userIdsData !== undefined) {
+    const returnedItems = userIdsData.result.count;
+    for (let i = 0; i < returnedItems; i++) {
+      const userId = userIdsData.result.result[i] as UIDType;
+      const { uid } = userId;
+      userIds.push(uid[0] as string);
+    }
+  }
+
+  // Step 2: Batch operations
+  const payloadDataBatch: Command[] = [];
+  const infoType = { no_members: true };
+  // const infoType = { all: true, rights: true };
+
+  if (userIds.length > 0) {
+    userIds.map((uid) => {
+      const payloadItem = {
+        method: "user_show",
+        params: [[uid], infoType],
+      };
+      payloadDataBatch.push(payloadItem);
+    });
+  }
+
+  let storedData = false;
+
+  const {
+    data: batchResponse,
+    isLoading: isBatchLoading,
+    error: batchError,
+  } = useBatchCommandQuery(payloadDataBatch);
+
+  if (batchResponse !== undefined) {
+    // console.log("--> batchResponse");
+    // console.log(batchResponse);
+    const returnItems = batchResponse.result.count;
+    const usersData = batchResponse.result.results;
+
+    for (let i = 0; i < returnItems; i++) {
+      activeUsersList.push(usersData[i].result);
+    }
+
+    // If user data retrieved, enable flag
+    if (activeUsersList.length > 0) {
+      storedData = true;
+    }
+  }
+
+  // When users' data is fully retrieved, update:
+  //   - Active users slice data (#1)
+  //   - Users' list to show in the table (#2)
+  useEffect(() => {
+    if (storedData) {
+      // #1
+      dispatch(updateUsersList(activeUsersList));
+
+      // #2
+      setShownUsersList(activeUsersList.slice(0, perPage));
+    }
+  }, [storedData]);
+
+  // Handle API calls errors
+  // See: https://redux-toolkit.js.org/rtk-query/usage-with-typescript#type-safe-error-handling
+  // - Errors array
+  const [apiErrorsJsx, setApiErrorsJsx] = useState<JSX.Element[]>([]);
+
+  // - Global error message (JSX wrapper to display the array above)
+  const [errorGlobalMessage, setErrorGlobalMessage] = useState<JSX.Element>(
+    <></>
   );
+
+  // - Helper function to write JSX error messages into 'apiErrorsJsx' array
+  const setApiError = (
+    errorFromApiCall: FetchBaseQueryError | SerializedError | undefined,
+    contextMessage: string,
+    key: string
+  ) => {
+    if (errorFromApiCall !== undefined) {
+      const errorJsx = [...apiErrorsJsx];
+
+      if ("originalStatus" in errorFromApiCall) {
+        // The original status is accessible here (error 401)
+        errorJsx.push(
+          <TextLayout component="p" key={key}>
+            {errorFromApiCall.originalStatus + " " + contextMessage}
+          </TextLayout>
+        );
+      } else if ("status" in errorFromApiCall) {
+        // you can access all properties of `FetchBaseQueryError` here
+        errorJsx.push(
+          <TextLayout component="p" key={key}>
+            {errorFromApiCall.status + " " + contextMessage}
+          </TextLayout>
+        );
+      } else {
+        // you can access all properties of `SerializedError` here
+        errorJsx.push(
+          <div key={key} style={{ alignSelf: "center", marginTop: "16px" }}>
+            <TextLayout component="p">{contextMessage}</TextLayout>
+            <TextLayout component="p">
+              {"ERROR CODE: " + errorFromApiCall.code}
+            </TextLayout>
+            <TextLayout component="p">{errorFromApiCall.message}</TextLayout>
+          </div>
+        );
+      }
+      setApiErrorsJsx(errorJsx);
+    }
+  };
+
+  // - Keep 'errorGlobalMessage' data updated with recent changes (in 'apiErrorsJsx')
+  useEffect(() => {
+    setErrorGlobalMessage(
+      <div style={{ alignSelf: "center", marginTop: "16px" }}>
+        <TextLayout component="h3">An error has occurred</TextLayout>
+        {apiErrorsJsx}
+      </div>
+    );
+  }, [apiErrorsJsx]);
+
+  // - Gracefully handle 'uidsError' messages
+  useEffect(() => {
+    console.log("--> uidsError");
+    console.log(uidsError);
+    setApiError(uidsError, "Error when getting uids", "error-uids");
+  }, [uidsError]);
+
+  // - Gracefully handle 'batchError' messages
+  useEffect(() => {
+    console.log("--> batchError");
+    console.log(batchError);
+    setApiError(
+      batchError,
+      "Error when getting user data",
+      "error-batch-users"
+    );
+  }, [batchError]);
+
+  // ---------------------------
 
   // Selected users state
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
@@ -135,11 +305,14 @@ const ActiveUsers = () => {
   };
 
   // Show table rows
-  const [showTableRows, setShowTableRows] = useState(false);
+  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
 
-  const updateShowTableRows = (value: boolean) => {
-    setShowTableRows(value);
-  };
+  // Show table rows only when data is fully retrieved
+  useEffect(() => {
+    if (showTableRows !== !isBatchLoading) {
+      setShowTableRows(!isBatchLoading);
+    }
+  }, [isBatchLoading]);
 
   // Dropdown kebab
   const [kebabIsOpen, setKebabIsOpen] = useState(false);
@@ -171,9 +344,11 @@ const ActiveUsers = () => {
   const [showEnableDisableModal, setShowEnableDisableModal] = useState(false);
   const [enableDisableOptionSelected, setEnableDisableOptionSelected] =
     useState("");
+
   const onAddClickHandler = () => {
     setShowAddModal(true);
   };
+
   const onAddModalToggle = () => {
     setShowAddModal(!showAddModal);
   };
@@ -181,6 +356,7 @@ const ActiveUsers = () => {
   const onDeleteHandler = () => {
     setShowDeleteModal(true);
   };
+
   const onDeleteModalToggle = () => {
     setShowDeleteModal(!showDeleteModal);
   };
@@ -213,11 +389,9 @@ const ActiveUsers = () => {
   // - Helper method to set the selected users from the table
   const setUserSelected = (user: User, isSelecting = true) =>
     setSelectedUserNames((prevSelected) => {
-      const otherSelectedUserNames = prevSelected.filter(
-        (r) => r !== user.userLogin
-      );
+      const otherSelectedUserNames = prevSelected.filter((r) => r !== user.uid);
       return isSelecting && isUserSelectable(user)
-        ? [...otherSelectedUserNames, user.userLogin]
+        ? [...otherSelectedUserNames, user.uid]
         : otherSelectedUserNames;
     });
 
@@ -229,7 +403,6 @@ const ActiveUsers = () => {
     updatePage,
     updatePerPage,
     showTableRows,
-    updateShowTableRows,
     updateSelectedPerPage,
     updateShownUsersList,
   };
@@ -447,16 +620,20 @@ const ActiveUsers = () => {
         <div style={{ height: `calc(100vh - 352.2px)` }}>
           <OuterScrollContainer>
             <InnerScrollContainer>
-              <UsersTable
-                elementsList={activeUsersList}
-                shownElementsList={shownUsersList}
-                from="active-users"
-                showTableRows={showTableRows}
-                usersData={usersTableData}
-                buttonsData={usersTableButtonsData}
-                paginationData={selectedPerPageData}
-                searchValue={searchValue}
-              />
+              {uidsError !== undefined && uidsError ? (
+                <>{errorGlobalMessage}</>
+              ) : (
+                <UsersTable
+                  elementsList={activeUsersList}
+                  shownElementsList={shownUsersList}
+                  from="active-users"
+                  showTableRows={showTableRows}
+                  usersData={usersTableData}
+                  buttonsData={usersTableButtonsData}
+                  paginationData={selectedPerPageData}
+                  searchValue={searchValue}
+                />
+              )}
             </InnerScrollContainer>
           </OuterScrollContainer>
         </div>
@@ -469,7 +646,8 @@ const ActiveUsers = () => {
           className="pf-u-pb-0 pf-u-pr-md"
         />
       </PageSection>
-      <AddUser
+      {/* TODO: Adapt the action buttons to perform API calls */}
+      {/* <AddUser
         show={showAddModal}
         from="active-users"
         handleModalToggle={onAddModalToggle}
@@ -488,7 +666,7 @@ const ActiveUsers = () => {
         optionSelected={enableDisableOptionSelected}
         selectedUsersData={selectedUsersData}
         buttonsData={disableEnableButtonsData}
-      />
+      /> */}
     </Page>
   );
 };

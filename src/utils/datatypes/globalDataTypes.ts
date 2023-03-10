@@ -1,13 +1,93 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+export interface UserAuthTypes {
+  password: boolean;
+  radius: boolean;
+  otp: boolean;
+  pkinit: boolean;
+  hardened: boolean;
+  idp: boolean;
+}
+
 export interface User {
-  userId: string;
-  userLogin: string;
-  firstName: string;
-  lastName: string;
-  status: string;
+  // identity
+  title: string;
+  givenname: string;
+  sn: string;
+  displayname: string;
+  initials: string;
+  gecos: string;
+  userclass: string;
+  // account
   uid: string;
-  emailAddress: string;
-  phone: string;
-  jobTitle: string;
+  has_password: boolean;
+  krbpasswordexpiration: string;
+  uidnumber: string;
+  gidnumber: string;
+  krbprincipalname: string;
+  krbprincipalexpiration: string;
+  loginshell: string;
+  homedirectory: string;
+  ipasshpubkey: string[]; // multivalue
+  usercertificate: string[]; // multivalue
+  ipacertmapdata: string[]; // multivalue
+  ipauserauthtype: UserAuthTypes;
+  ipatokenradiusconfiglink: string[];
+  ipatokenradiususername: string;
+  ipaidpconfiglink: string[];
+  ipaidpsub: string;
+  // pwpolicy
+  krbmaxpwdlife: string;
+  krbminpwdlife: string;
+  krbpwdhistorylength: string;
+  krbpwdmindiffchars: string;
+  krbpwdminlength: string;
+  krbpwdmaxfailure: string;
+  krbpwdfailurecountinterval: string;
+  krbpwdlockoutduration: string;
+  passwordgracelimit: string;
+  // krbtpolicy
+  krbmaxrenewableage: string;
+  krbmaxticketlife: string;
+  // contact
+  mail: string[]; // multivalue
+  telephonenumber: string[]; // multivalue
+  pager: string[]; // multivalue
+  mobile: string[]; // multivalue
+  facsimiletelephonenumber: string[]; // multivalue
+  // mailing
+  street: string;
+  l: string;
+  st: string;
+  postalcode: string;
+  // employee
+  ou: string;
+  manager: string[]; // multivalue
+  departmentnumber: string[]; // multivalue
+  employeenumber: string;
+  employeetype: string;
+  preferredlanguage: string;
+  // misc
+  carlicense: string[]; // multivalue
+  // smb_attributes
+  ipantlogonscript: string;
+  ipantprofilepath: string;
+  ipanthomedirectory: string;
+  ipanthomedirectorydrive: string;
+  // 'Member of' data
+  memberof_group: string[]; // multivalue
+  // other
+  cn: string;
+  krbcanonicalname: string[];
+  nsaccountlock: boolean; // status (Enable: False | Disabled: True)
+  objectclass: any[];
+  ipauniqueid: string;
+  mepmanagedentry: string;
+  ipantsecurityidentifier: string;
+  attributelevelrights: Record<string, unknown>; // Generic, any type of object
+  has_keytab: boolean;
+  preserved: boolean;
+  dn: string;
 }
 
 export interface UserGroup {

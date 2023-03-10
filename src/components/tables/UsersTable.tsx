@@ -13,6 +13,9 @@ import { checkEqualStatus } from "src/utils/utils";
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 // React Router DOM
 import { Link } from "react-router-dom";
+// Icons
+import { CheckIcon } from "@patternfly/react-icons";
+import { MinusIcon } from "@patternfly/react-icons";
 
 interface UsersData {
   isUserSelectable: (user: User) => boolean;
@@ -57,14 +60,14 @@ const UsersTable = (props: PropsToTable) => {
   const shownUsersList = [...props.shownElementsList];
 
   const columnNames = {
-    userLogin: "User login",
-    firstName: "First name",
-    lastName: "Last name",
-    status: "Status",
-    uid: "UID",
-    emailAddress: "Email address",
-    phone: "Phone",
-    jobTitle: "Job title",
+    uid: "User login",
+    givenname: "First name",
+    sn: "Last name",
+    nsaccountlock: "Status",
+    uidnumber: "UID",
+    mail: "Email address",
+    telephonenumber: "Phone",
+    title: "Job title",
   };
 
   // Filter (SearchInput)
@@ -83,7 +86,7 @@ const UsersTable = (props: PropsToTable) => {
         "i"
       );
     }
-    return user.userLogin.search(input) >= 0;
+    return user.uid.search(input) >= 0;
   };
 
   const filteredShownUsers =
@@ -104,24 +107,48 @@ const UsersTable = (props: PropsToTable) => {
   // Since OnSort specifies sorted columns by index, we need sortable values for our object by column index.
   const getSortableRowValues = (user: User): (string | number)[] => {
     const {
-      userLogin,
-      firstName,
-      lastName,
-      status,
       uid,
-      emailAddress,
-      phone,
-      jobTitle,
+      givenname,
+      sn,
+      nsaccountlock,
+      uidnumber,
+      mail,
+      telephonenumber,
+      title,
     } = user;
+
+    // Process array data
+    let givennameString = "";
+    if (givenname !== undefined) {
+      givennameString = givenname[0];
+    }
+
+    const nsaccountlockString = nsaccountlock.toString();
+
+    let mailString = "";
+    if (mail !== undefined) {
+      mailString = mail.toString();
+    }
+
+    let telephoneNumberString = "";
+    if (telephonenumber !== undefined) {
+      telephoneNumberString = telephonenumber.toString();
+    }
+
+    let titleString = "";
+    if (title !== undefined) {
+      titleString = title[0];
+    }
+
     return [
-      userLogin,
-      firstName,
-      lastName,
-      status,
-      uid,
-      emailAddress,
-      phone,
-      jobTitle,
+      uid[0],
+      givennameString,
+      sn[0],
+      nsaccountlockString,
+      uidnumber[0],
+      mailString,
+      telephoneNumberString,
+      titleString,
     ];
   };
 
@@ -168,7 +195,7 @@ const UsersTable = (props: PropsToTable) => {
   }, [props.buttonsData.isDisableEnableOp]);
 
   const isUserSelected = (user: User) =>
-    props.usersData.selectedUserNames.includes(user.userLogin);
+    props.usersData.selectedUserNames.includes(user.uid);
 
   // To allow shift+click to select/deselect multiple rows
   const [recentSelectedRowIndex, setRecentSelectedRowIndex] = useState<
@@ -205,14 +232,14 @@ const UsersTable = (props: PropsToTable) => {
     // Update userIdsSelected array
     let userIdsSelectedArray = props.usersData.selectedUserNames;
     if (isSelecting) {
-      userIdsSelectedArray.push(user.userId);
+      userIdsSelectedArray.push(user.uid);
       // Increment the elements selected per page (++)
       props.paginationData.updateSelectedPerPage(
         props.paginationData.selectedPerPage + 1
       );
     } else {
       userIdsSelectedArray = userIdsSelectedArray.filter(
-        (userId) => userId !== user.userId
+        (userId) => userId !== user.uid
       );
       // Decrement the elements selected per page (--)
       props.paginationData.updateSelectedPerPage(
@@ -225,7 +252,7 @@ const UsersTable = (props: PropsToTable) => {
 
   // Given userId, returns full User
   const getUserById = (userId: string) => {
-    const res = usersList.filter((user) => user.userId === userId);
+    const res = usersList.filter((user) => user.uid === userId);
     return res[0];
   };
 
@@ -250,14 +277,14 @@ const UsersTable = (props: PropsToTable) => {
       // Check if selected users have the same status
       if (selectedUsers.length > 0) {
         const equalStatus = checkEqualStatus(
-          selectedUsers[0].status,
+          selectedUsers[0].nsaccountlock,
           selectedUsers
         );
         if (equalStatus) {
-          if (selectedUsers[0].status === "Enabled") {
+          if (selectedUsers[0].nsaccountlock) {
             props.buttonsData.updateIsDisableButtonDisabled(false);
             props.buttonsData.updateIsEnableButtonDisabled(true);
-          } else if (selectedUsers[0].status === "Disabled") {
+          } else if (!selectedUsers[0].nsaccountlock) {
             props.buttonsData.updateIsDisableButtonDisabled(true);
             props.buttonsData.updateIsEnableButtonDisabled(false);
           }
@@ -299,8 +326,8 @@ const UsersTable = (props: PropsToTable) => {
   }, []);
 
   // Helper method: Set styles depending on the status
-  const setStyleOnStatus = (status: string) => {
-    return status === "Disabled" ? { color: "grey" } : { color: "black" };
+  const setStyleOnStatus = (status: boolean) => {
+    return status ? { color: "grey" } : { color: "black" };
   };
 
   // Defining table header and body from here to avoid passing specific names to the Table Layout
@@ -308,34 +335,34 @@ const UsersTable = (props: PropsToTable) => {
     <Tr>
       <Th modifier="wrap"></Th>
       <Th modifier="wrap" sort={getSortParams(0)}>
-        {columnNames.userLogin}
-      </Th>
-      <Th modifier="wrap" sort={getSortParams(1)}>
-        {columnNames.firstName}
-      </Th>
-      <Th modifier="wrap" sort={getSortParams(2)}>
-        {columnNames.lastName}
-      </Th>
-      <Th modifier="wrap" sort={getSortParams(3)}>
-        {columnNames.status}
-      </Th>
-      <Th modifier="wrap" sort={getSortParams(4)}>
         {columnNames.uid}
       </Th>
+      <Th modifier="wrap" sort={getSortParams(1)}>
+        {columnNames.givenname}
+      </Th>
+      <Th modifier="wrap" sort={getSortParams(2)}>
+        {columnNames.sn}
+      </Th>
+      <Th modifier="wrap" sort={getSortParams(3)}>
+        {columnNames.nsaccountlock}
+      </Th>
+      <Th modifier="wrap" sort={getSortParams(4)}>
+        {columnNames.uidnumber}
+      </Th>
       <Th modifier="wrap" sort={getSortParams(5)}>
-        {columnNames.emailAddress}
+        {columnNames.mail}
       </Th>
       <Th modifier="wrap" sort={getSortParams(6)}>
-        {columnNames.phone}
+        {columnNames.telephonenumber}
       </Th>
       <Th modifier="wrap" sort={getSortParams(7)}>
-        {columnNames.jobTitle}
+        {columnNames.title}
       </Th>
     </Tr>
   );
 
   const body = filteredShownUsers.map((user, rowIndex) => (
-    <Tr key={user.userLogin} id={user.userLogin}>
+    <Tr key={user.uid} id={user.uid}>
       <Td
         dataLabel="checkbox"
         select={{
@@ -347,45 +374,62 @@ const UsersTable = (props: PropsToTable) => {
         }}
       />
       <Td
-        style={setStyleOnStatus(user.status)}
-        dataLabel={columnNames.userLogin}
+        style={setStyleOnStatus(user.nsaccountlock)}
+        dataLabel={columnNames.uid}
       >
         <Link to={URL_PREFIX + "/" + props.from + "/settings"} state={user}>
-          {user.userLogin}
+          {user.uid}
         </Link>
       </Td>
       <Td
-        style={setStyleOnStatus(user.status)}
-        dataLabel={columnNames.firstName}
+        style={setStyleOnStatus(user.nsaccountlock)}
+        dataLabel={columnNames.givenname}
       >
-        {user.firstName}
+        {user.givenname}
       </Td>
       <Td
-        style={setStyleOnStatus(user.status)}
-        dataLabel={columnNames.lastName}
+        style={setStyleOnStatus(user.nsaccountlock)}
+        dataLabel={columnNames.sn}
       >
-        {user.lastName}
-      </Td>
-      <Td style={setStyleOnStatus(user.status)} dataLabel={columnNames.status}>
-        {user.status}
-      </Td>
-      <Td style={setStyleOnStatus(user.status)} dataLabel={columnNames.uid}>
-        {user.uid}
+        {user.sn}
       </Td>
       <Td
-        style={setStyleOnStatus(user.status)}
-        dataLabel={columnNames.emailAddress}
+        style={setStyleOnStatus(user.nsaccountlock)}
+        dataLabel={columnNames.nsaccountlock}
       >
-        {user.emailAddress}
-      </Td>
-      <Td style={setStyleOnStatus(user.status)} dataLabel={columnNames.phone}>
-        {user.phone}
+        {user.nsaccountlock ? (
+          <>
+            <MinusIcon /> {" Disabled"}
+          </>
+        ) : (
+          <>
+            <CheckIcon /> {" Enabled"}
+          </>
+        )}
       </Td>
       <Td
-        style={setStyleOnStatus(user.status)}
-        dataLabel={columnNames.jobTitle}
+        style={setStyleOnStatus(user.nsaccountlock)}
+        dataLabel={columnNames.uidnumber}
       >
-        {user.jobTitle}
+        {user.uidnumber}
+      </Td>
+      <Td
+        style={setStyleOnStatus(user.nsaccountlock)}
+        dataLabel={columnNames.mail}
+      >
+        {user.mail !== undefined && user.mail.join(", ")}
+      </Td>
+      <Td
+        style={setStyleOnStatus(user.nsaccountlock)}
+        dataLabel={columnNames.telephonenumber}
+      >
+        {user.telephonenumber !== undefined && user.telephonenumber.join(", ")}
+      </Td>
+      <Td
+        style={setStyleOnStatus(user.nsaccountlock)}
+        dataLabel={columnNames.title}
+      >
+        {user.title}
       </Td>
     </Tr>
   ));
