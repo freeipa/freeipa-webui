@@ -14,7 +14,7 @@ import { useLocation } from "react-router-dom";
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Other
 import ServicesSettings from "./ServicesSettings";
-
+import ServicesMemberOf from "./ServicesMemberOf";
 // Layouts
 import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -75,6 +75,14 @@ const ServicesTabs = () => {
           >
             <PageSection className="pf-u-pb-0"></PageSection>
             <ServicesSettings service={serviceData} />
+          </Tab>
+          <Tab
+            eventKey={1}
+            name="details"
+            title={<TabTitleText>Is a member of</TabTitleText>}
+          >
+            <PageSection className="pf-u-pb-0"></PageSection>
+            <ServicesMemberOf service={serviceData} />
           </Tab>
         </Tabs>
       </PageSection>
