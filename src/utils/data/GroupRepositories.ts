@@ -160,3 +160,7 @@ export let hostsHbacRulesInitialData: HBACRules[] = [
 
 // - 'Sudo rules' initial data
 export let hostsSudoRulesInitialData: SudoRules[] = [];
+
+// SERVICES
+// - 'Roles' initial data
+export let servicesRolesInitialData: Roles[] = [];
