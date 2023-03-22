@@ -1,0 +1,20 @@
+#
+# Copyright (C) 2023  FreeIPA Contributors see COPYING for license
+#
+
+wheel
+
+sphinx > 3.0
+
+# convert markdown to rest
+# m2r2 fork is active in development and works with
+# newer sphinx versions
+m2r2
+
+## dependencies
+lxml
+myst_parser
+
+# Sequence diagrams generator
+sphinxcontrib-plantuml
+pillow
