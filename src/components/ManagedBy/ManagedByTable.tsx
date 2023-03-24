@@ -31,7 +31,6 @@ interface ButtonData {
 interface PropsToTable {
   list: Host[];
   tableName: string;
-  updateList: (newList: Host[]) => void;
   showTableRows: boolean;
   updateElementsSelected: (newElementsSelected: string[]) => void;
   buttonData: ButtonData;
