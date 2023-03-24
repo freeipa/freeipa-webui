@@ -15,6 +15,7 @@ import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Other
 import ServicesSettings from "./ServicesSettings";
 import ServicesMemberOf from "./ServicesMemberOf";
+import ServicesManagedBy from "./ServicesManagedBy";
 // Layouts
 import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -83,6 +84,14 @@ const ServicesTabs = () => {
           >
             <PageSection className="pf-u-pb-0"></PageSection>
             <ServicesMemberOf service={serviceData} />
+          </Tab>
+          <Tab
+            eventKey={2}
+            name="details"
+            title={<TabTitleText>Is managed by</TabTitleText>}
+          >
+            <PageSection className="pf-u-pb-0"></PageSection>
+            <ServicesManagedBy service={serviceData} />
           </Tab>
         </Tabs>
       </PageSection>
