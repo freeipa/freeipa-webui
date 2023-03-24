@@ -36,6 +36,7 @@ interface ButtonData {
 export interface PropsToToolbar {
   pageRepo: Host[];
   shownItems: Host[];
+  updateShownElementsList: (newShownElementsList: Host[]) => void;
   pageData: PageData;
   buttonData: ButtonData;
 }
@@ -54,6 +55,7 @@ const ManagedByToolbar = (props: PropsToToolbar) => {
     endIdx: number | undefined
   ) => {
     setPage(newPage);
+    props.updateShownElementsList(props.pageRepo.slice(startIdx, endIdx));
     props.pageData.changeSetPage(newPage, perPage, startIdx, endIdx);
   };
 
@@ -65,6 +67,7 @@ const ManagedByToolbar = (props: PropsToToolbar) => {
     endIdx: number | undefined
   ) => {
     setPerPage(newPerPage);
+    props.updateShownElementsList(props.pageRepo.slice(startIdx, endIdx));
     props.pageData.changePerPageSelect(newPerPage, newPage, startIdx, endIdx);
   };
 

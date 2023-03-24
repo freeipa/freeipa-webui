@@ -30,8 +30,13 @@ const HostsManagedBy = (props: PropsToHostsManagedBy) => {
   // List of currents elements on the list (Dummy data)
   const [hostsList, setHostsList] = useState<Host[]>([props.host]);
 
-  const updateHostsList = (newHostsList: Host[]) => {
+  // Some data is updated when any group list is altered
+  //  - The whole list itself
+  //  - The slice of data to show (considering the pagination)
+  //  - Number of items for a specific list
+  const updateGroupRepository = (newHostsList: Host[]) => {
     setHostsList(newHostsList);
+    setShownHostsList(hostsList.slice(0, perPage));
   };
 
   // Retrieve available hosts data from Redux
@@ -43,7 +48,7 @@ const HostsManagedBy = (props: PropsToHostsManagedBy) => {
   };
 
   // Filter functions to compare the available data with the data that
-  //  the host is already member of. This is done to prevent duplicates
+  //  the host is already managed by. This is done to prevent duplicates
   //  (e.g: adding the same element twice).
   const filterHostsData = () => {
     // Host groups
@@ -54,7 +59,7 @@ const HostsManagedBy = (props: PropsToHostsManagedBy) => {
     });
   };
 
-  // Available data to be added as member of
+  // Available data to be added as managed by
   const hostsFilteredData: Host[] = filterHostsData();
 
   // State that determines whether the row tables are displayed nor not
@@ -91,6 +96,10 @@ const HostsManagedBy = (props: PropsToHostsManagedBy) => {
   const [shownHostsList, setShownHostsList] = useState(
     hostsList.slice(0, perPage)
   );
+
+  const updateShownHostsList = (newShownHostsList: Host[]) => {
+    setShownHostsList(newShownHostsList);
+  };
 
   // Pages setters (to manage pagination as an event)
   const onSetPage = (
@@ -238,13 +247,13 @@ const HostsManagedBy = (props: PropsToHostsManagedBy) => {
             <ManagedByToolbar
               pageRepo={hostsList}
               shownItems={shownHostsList}
+              updateShownElementsList={updateShownHostsList}
               pageData={toolbarPageData}
               buttonData={toolbarButtonData}
             />
             <ManagedByTable
-              list={hostsList}
+              list={shownHostsList}
               tableName="Hosts"
-              updateList={updateHostsList}
               showTableRows={showTableRows}
               updateElementsSelected={updateHostsSelected}
               buttonData={tableButtonData}
@@ -269,7 +278,7 @@ const HostsManagedBy = (props: PropsToHostsManagedBy) => {
             modalData={addModalData}
             availableData={hostsFilteredData}
             groupRepository={hostsList}
-            updateGroupRepository={updateHostsList}
+            updateGroupRepository={updateGroupRepository}
             updateAvOptionsList={updateAvailableHostsList}
             tabData={tabData}
           />
@@ -280,7 +289,7 @@ const HostsManagedBy = (props: PropsToHostsManagedBy) => {
             tabData={deleteTabData}
             groupNamesToDelete={hostsSelected}
             groupRepository={hostsList}
-            updateGroupRepository={updateHostsList}
+            updateGroupRepository={updateGroupRepository}
             buttonData={deleteButtonData}
           />
         )}
