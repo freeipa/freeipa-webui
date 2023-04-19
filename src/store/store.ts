@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
+import globalReducer from "./Global/global-slice";
 import activeUsersReducer from "./Identity/activeUsers-slice";
 import netgroupsReducer from "./Identity/netgroups-slice";
 import userGroupsReducer from "./Identity/userGroups-slice";
@@ -16,6 +17,7 @@ import { api } from "../services/rpc";
 const store = configureStore({
   reducer: {
     api: api.reducer,
+    global: globalReducer,
     activeUsers: activeUsersReducer,
     netgroups: netgroupsReducer,
     usergroups: userGroupsReducer,
