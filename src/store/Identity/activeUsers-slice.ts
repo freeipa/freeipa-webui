@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "src/store/store";
-// User data (JSON file)
-import activeUsersJson from "./activeUsers.json";
 // Data types
 import { User } from "src/utils/datatypes/globalDataTypes";
 
@@ -15,7 +13,7 @@ interface ChangeStatusData {
 }
 
 const initialState: ActiveUsersState = {
-  usersList: activeUsersJson,
+  usersList: [],
 };
 
 const activeUsersSlice = createSlice({
