@@ -13,6 +13,9 @@ import { checkEqualStatus } from "src/utils/utils";
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 // React Router DOM
 import { Link } from "react-router-dom";
+// Icons
+import { CheckIcon } from "@patternfly/react-icons";
+import { MinusIcon } from "@patternfly/react-icons";
 
 interface UsersData {
   isUserSelectable: (user: User) => boolean;
@@ -115,17 +118,37 @@ const UsersTable = (props: PropsToTable) => {
     } = user;
 
     // Process array data
+    let givennameString = "";
+    if (givenname !== undefined) {
+      givennameString = givenname[0];
+    }
+
     const nsaccountlockString = nsaccountlock.toString();
 
+    let mailString = "";
+    if (mail !== undefined) {
+      mailString = mail.toString();
+    }
+
+    let telephoneNumberString = "";
+    if (telephonenumber !== undefined) {
+      telephoneNumberString = telephonenumber.toString();
+    }
+
+    let titleString = "";
+    if (title !== undefined) {
+      titleString = title[0];
+    }
+
     return [
-      uid,
-      givenname,
-      sn,
+      uid[0],
+      givennameString,
+      sn[0],
       nsaccountlockString,
-      uidnumber,
-      mail[0],
-      telephonenumber[0],
-      title,
+      uidnumber[0],
+      mailString,
+      telephoneNumberString,
+      titleString,
     ];
   };
 
@@ -374,7 +397,15 @@ const UsersTable = (props: PropsToTable) => {
         style={setStyleOnStatus(user.nsaccountlock)}
         dataLabel={columnNames.nsaccountlock}
       >
-        {user.nsaccountlock}
+        {user.nsaccountlock ? (
+          <>
+            <MinusIcon /> {" Disabled"}
+          </>
+        ) : (
+          <>
+            <CheckIcon /> {" Enabled"}
+          </>
+        )}
       </Td>
       <Td
         style={setStyleOnStatus(user.nsaccountlock)}
@@ -386,13 +417,13 @@ const UsersTable = (props: PropsToTable) => {
         style={setStyleOnStatus(user.nsaccountlock)}
         dataLabel={columnNames.mail}
       >
-        {user.mail}
+        {user.mail !== undefined && user.mail.join(", ")}
       </Td>
       <Td
         style={setStyleOnStatus(user.nsaccountlock)}
         dataLabel={columnNames.telephonenumber}
       >
-        {user.telephonenumber}
+        {user.telephonenumber !== undefined && user.telephonenumber.join(", ")}
       </Td>
       <Td
         style={setStyleOnStatus(user.nsaccountlock)}
