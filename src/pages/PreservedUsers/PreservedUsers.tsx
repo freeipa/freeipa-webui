@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
 import {
-  DropdownItem,
   Page,
   PageSection,
   PageSectionVariants,
@@ -23,7 +22,6 @@ import { useAppSelector } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import KebabLayout from "src/components/layouts/KebabLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
@@ -33,9 +31,7 @@ import UsersTable from "../../components/tables/UsersTable";
 import PaginationPrep from "src/components/PaginationPrep";
 import BulkSelectorUsersPrep from "src/components/BulkSelectorUsersPrep";
 // Modals
-import AddUser from "src/components/modals/AddUser";
 import DeleteUsers from "src/components/modals/DeleteUsers";
-import DisableEnableUsers from "src/components/modals/DisableEnableUsers";
 // Utils
 import { isUserSelectable } from "src/utils/utils";
 
@@ -65,29 +61,6 @@ const PreservedUsers = () => {
 
   const updateIsDeletion = (value: boolean) => {
     setIsDeletion(value);
-  };
-
-  // 'Enable' button state
-  const [isEnableButtonDisabled, setIsEnableButtonDisabled] =
-    useState<boolean>(true);
-
-  const updateIsEnableButtonDisabled = (value: boolean) => {
-    setIsEnableButtonDisabled(value);
-  };
-
-  // 'Disable' button state
-  const [isDisableButtonDisabled, setIsDisableButtonDisabled] =
-    useState<boolean>(true);
-
-  const updateIsDisableButtonDisabled = (value: boolean) => {
-    setIsDisableButtonDisabled(value);
-  };
-
-  // If some entries' status has been updated, unselect selected rows
-  const [isDisableEnableOp, setIsDisableEnableOp] = useState(false);
-
-  const updateIsDisableEnableOp = (value: boolean) => {
-    setIsDisableEnableOp(value);
   };
 
   // - Selected user ids state
@@ -141,62 +114,14 @@ const PreservedUsers = () => {
     setShowTableRows(value);
   };
 
-  // Dropdown kebab
-  const [kebabIsOpen, setKebabIsOpen] = useState(false);
-
-  const dropdownItems = [
-    <DropdownItem key="action" component="button">
-      Rebuild auto membership
-    </DropdownItem>,
-  ];
-
-  const onKebabToggle = (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    event: any,
-    isOpen: boolean
-  ) => {
-    setKebabIsOpen(isOpen);
-  };
-
-  const onDropdownSelect = (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    event?: React.SyntheticEvent<HTMLDivElement, Event> | undefined
-  ) => {
-    setKebabIsOpen(!kebabIsOpen);
-  };
-
   // Modals functionality
-  const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showEnableDisableModal, setShowEnableDisableModal] = useState(false);
-  const [enableDisableOptionSelected, setEnableDisableOptionSelected] =
-    useState("");
-  const onAddClickHandler = () => {
-    setShowAddModal(true);
-  };
-  const onAddModalToggle = () => {
-    setShowAddModal(!showAddModal);
-  };
 
   const onDeleteHandler = () => {
     setShowDeleteModal(true);
   };
   const onDeleteModalToggle = () => {
     setShowDeleteModal(!showDeleteModal);
-  };
-
-  const onEnableDisableHandler = (optionClicked: string) => {
-    setIsDeleteButtonDisabled(true); // prevents 'Delete' button to be enabled
-    setIsEnableButtonDisabled(true); // prevents 'Enable' button to be enabled
-    setIsDisableButtonDisabled(true); // prevents 'Disable' button to be enabled
-    setEnableDisableOptionSelected(optionClicked);
-    setShowEnableDisableModal(true);
-  };
-
-  const onEnableDisableModalToggle = () => {
-    setIsEnableButtonDisabled(true); // prevents 'Enable' button to be enabled
-    setIsDisableButtonDisabled(true); // prevents 'Disable' button to be enabled
-    setShowEnableDisableModal(!showEnableDisableModal);
   };
 
   // Table-related shared functionality
@@ -246,12 +171,8 @@ const PreservedUsers = () => {
   };
 
   const buttonsData = {
-    // isDeleteButtonDisabled, //
+    isDeleteButtonDisabled,
     updateIsDeleteButtonDisabled,
-    // isEnableButtonDisabled, //
-    updateIsEnableButtonDisabled,
-    updateIsDisableButtonDisabled,
-    updateIsDisableEnableOp,
   };
 
   const selectedPerPageData = {
@@ -270,13 +191,6 @@ const PreservedUsers = () => {
     updateSelectedUsers,
   };
 
-  // 'DisableEnableUsers'
-  const disableEnableButtonsData = {
-    updateIsEnableButtonDisabled,
-    updateIsDisableButtonDisabled,
-    updateIsDisableEnableOp,
-  };
-
   // 'UsersTable'
   const usersTableData = {
     isUserSelectable,
@@ -291,12 +205,8 @@ const PreservedUsers = () => {
 
   const usersTableButtonsData = {
     updateIsDeleteButtonDisabled,
-    updateIsEnableButtonDisabled,
-    updateIsDisableButtonDisabled,
     isDeletion,
     updateIsDeletion,
-    isDisableEnableOp,
-    updateIsDisableEnableOp,
   };
 
   // SearchInputLayout
@@ -353,53 +263,18 @@ const PreservedUsers = () => {
     },
     {
       key: 5,
-      element: (
-        <SecondaryButton onClickHandler={onAddClickHandler}>
-          Add
-        </SecondaryButton>
-      ),
+      element: <SecondaryButton>Restore</SecondaryButton>,
     },
     {
       key: 6,
-      element: (
-        <SecondaryButton
-          isDisabled={isDisableButtonDisabled}
-          onClickHandler={() => onEnableDisableHandler("disable")}
-        >
-          Disable
-        </SecondaryButton>
-      ),
+      element: <SecondaryButton>Stage</SecondaryButton>,
     },
     {
       key: 7,
-      element: (
-        <SecondaryButton
-          isDisabled={isEnableButtonDisabled}
-          onClickHandler={() => onEnableDisableHandler("enable")}
-        >
-          Enable
-        </SecondaryButton>
-      ),
-    },
-    {
-      key: 8,
-      element: (
-        <KebabLayout
-          onDropdownSelect={onDropdownSelect}
-          onKebabToggle={onKebabToggle}
-          idKebab="main-dropdown-kebab"
-          isKebabOpen={kebabIsOpen}
-          isPlain={true}
-          dropdownItems={dropdownItems}
-        />
-      ),
-    },
-    {
-      key: 9,
       toolbarItemVariant: "separator",
     },
     {
-      key: 10,
+      key: 8,
       element: (
         <HelpTextWithIconLayout
           textComponent={TextVariants.p}
@@ -413,7 +288,7 @@ const PreservedUsers = () => {
       ),
     },
     {
-      key: 11,
+      key: 9,
       element: (
         <PaginationPrep
           list={preservedUsersList}
@@ -471,25 +346,12 @@ const PreservedUsers = () => {
           className="pf-u-pb-0 pf-u-pr-md"
         />
       </PageSection>
-      <AddUser
-        show={showAddModal}
-        from="preserved-users"
-        handleModalToggle={onAddModalToggle}
-      />
       <DeleteUsers
         show={showDeleteModal}
         from="preserved-users"
         handleModalToggle={onDeleteModalToggle}
         selectedUsersData={selectedUsersData}
         buttonsData={deleteUsersButtonsData}
-      />
-      <DisableEnableUsers
-        show={showEnableDisableModal}
-        from="preserved-users"
-        handleModalToggle={onEnableDisableModalToggle}
-        optionSelected={enableDisableOptionSelected}
-        selectedUsersData={selectedUsersData}
-        buttonsData={disableEnableButtonsData}
       />
     </Page>
   );
