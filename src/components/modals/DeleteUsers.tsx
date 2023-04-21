@@ -18,7 +18,7 @@ import { removeUser as removeStageUser } from "src/store/Identity/stageUsers-sli
 import { removeUser as removePreservedUser } from "src/store/Identity/preservedUsers-slice";
 
 interface ButtonsData {
-  updateIsDeleteButtonDisabled: (value: boolean) => void;
+  updateIsDeleteButtonDisabled?: (value: boolean) => void;
   updateIsDeletion: (value: boolean) => void;
 }
 
@@ -113,7 +113,12 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
       }
     });
     props.selectedUsersData.updateSelectedUsers([]);
-    props.buttonsData.updateIsDeleteButtonDisabled(true);
+    if (
+      props.from === "active-users" &&
+      props.buttonsData.updateIsDeleteButtonDisabled !== undefined
+    ) {
+      props.buttonsData.updateIsDeleteButtonDisabled(true);
+    }
     props.buttonsData.updateIsDeletion(true);
     closeModal();
   };

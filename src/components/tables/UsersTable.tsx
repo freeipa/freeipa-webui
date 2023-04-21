@@ -27,12 +27,12 @@ interface UsersData {
 
 interface ButtonsData {
   updateIsDeleteButtonDisabled: (value: boolean) => void;
-  updateIsEnableButtonDisabled: (value: boolean) => void;
-  updateIsDisableButtonDisabled: (value: boolean) => void;
+  updateIsEnableButtonDisabled?: (value: boolean) => void;
+  updateIsDisableButtonDisabled?: (value: boolean) => void;
   isDeletion: boolean;
   updateIsDeletion: (value: boolean) => void;
-  isDisableEnableOp: boolean;
-  updateIsDisableEnableOp: (value: boolean) => void;
+  isDisableEnableOp?: boolean;
+  updateIsDisableEnableOp?: (value: boolean) => void;
 }
 
 interface PaginationData {
@@ -200,7 +200,9 @@ const UsersTable = (props: PropsToTable) => {
     setRecentSelectedRowIndex(rowIndex);
 
     // Resetting 'isDisableEnableOp'
-    props.buttonsData.updateIsDisableEnableOp(false);
+    if (props.buttonsData.updateIsDisableEnableOp !== undefined) {
+      props.buttonsData.updateIsDisableEnableOp(false);
+    }
 
     // Update userIdsSelected array
     let userIdsSelectedArray = props.usersData.selectedUserNames;
@@ -219,6 +221,7 @@ const UsersTable = (props: PropsToTable) => {
         props.paginationData.selectedPerPage - 1
       );
     }
+
     props.usersData.updateSelectedUserIds(userIdsSelectedArray);
     props.usersData.updateSelectedUsers(userIdsSelectedArray);
   };
@@ -242,37 +245,49 @@ const UsersTable = (props: PropsToTable) => {
   useEffect(() => {
     if (props.usersData.selectedUserIds.length > 0) {
       props.buttonsData.updateIsDeleteButtonDisabled(false);
+
       const selectedUsers: User[] = props.usersData.selectedUserIds.map(
         (userId) => {
           return getUserById(userId);
         }
       );
+
       // Check if selected users have the same status
-      if (selectedUsers.length > 0) {
-        const equalStatus = checkEqualStatus(
-          selectedUsers[0].status,
-          selectedUsers
-        );
-        if (equalStatus) {
-          if (selectedUsers[0].status === "Enabled") {
-            props.buttonsData.updateIsDisableButtonDisabled(false);
-            props.buttonsData.updateIsEnableButtonDisabled(true);
-          } else if (selectedUsers[0].status === "Disabled") {
+      if (
+        props.buttonsData.updateIsEnableButtonDisabled !== undefined &&
+        props.buttonsData.updateIsDisableButtonDisabled !== undefined
+      ) {
+        if (selectedUsers.length > 0) {
+          const equalStatus = checkEqualStatus(
+            selectedUsers[0].status,
+            selectedUsers
+          );
+          if (equalStatus) {
+            if (selectedUsers[0].status === "Enabled") {
+              props.buttonsData.updateIsDisableButtonDisabled(false);
+              props.buttonsData.updateIsEnableButtonDisabled(true);
+            } else if (selectedUsers[0].status === "Disabled") {
+              props.buttonsData.updateIsDisableButtonDisabled(true);
+              props.buttonsData.updateIsEnableButtonDisabled(false);
+            }
+          } else {
+            // Different status selected -> Disable all buttons
             props.buttonsData.updateIsDisableButtonDisabled(true);
-            props.buttonsData.updateIsEnableButtonDisabled(false);
+            props.buttonsData.updateIsEnableButtonDisabled(true);
           }
-        } else {
-          // Different status selected -> Disable all buttons
-          props.buttonsData.updateIsDisableButtonDisabled(true);
-          props.buttonsData.updateIsEnableButtonDisabled(true);
         }
       }
     }
 
     if (props.usersData.selectedUserIds.length === 0) {
       props.buttonsData.updateIsDeleteButtonDisabled(true);
-      props.buttonsData.updateIsDisableButtonDisabled(true);
-      props.buttonsData.updateIsEnableButtonDisabled(true);
+      if (
+        props.buttonsData.updateIsEnableButtonDisabled !== undefined &&
+        props.buttonsData.updateIsDisableButtonDisabled !== undefined
+      ) {
+        props.buttonsData.updateIsDisableButtonDisabled(true);
+        props.buttonsData.updateIsEnableButtonDisabled(true);
+      }
     }
   }, [props.usersData.selectedUserIds]);
 

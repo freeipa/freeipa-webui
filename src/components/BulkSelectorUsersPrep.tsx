@@ -29,9 +29,9 @@ interface UsersData {
 
 interface ButtonsData {
   updateIsDeleteButtonDisabled: (value: boolean) => void;
-  updateIsEnableButtonDisabled: (value: boolean) => void;
-  updateIsDisableButtonDisabled: (value: boolean) => void;
-  updateIsDisableEnableOp: (value: boolean) => void;
+  updateIsEnableButtonDisabled?: (value: boolean) => void;
+  updateIsDisableButtonDisabled?: (value: boolean) => void;
+  updateIsDisableEnableOp?: (value: boolean) => void;
 }
 
 interface SelectedPerPageData {
@@ -131,19 +131,30 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
         userNamesArray.push(user.userId);
       });
       props.usersData.updateSelectedUsers(userNamesArray);
-      // Resetting 'isDisableEnableOp'
-      props.buttonsData.updateIsDisableEnableOp(false);
-      // Enable or disable buttons depending on the status
-      if (firstStatus === "Enabled") {
-        props.buttonsData.updateIsDisableButtonDisabled(false);
-        props.buttonsData.updateIsEnableButtonDisabled(true);
-      } else if (firstStatus === "Disabled") {
-        props.buttonsData.updateIsDisableButtonDisabled(true);
-        props.buttonsData.updateIsEnableButtonDisabled(false);
+      if (
+        props.buttonsData.updateIsEnableButtonDisabled !== undefined &&
+        props.buttonsData.updateIsDisableButtonDisabled !== undefined &&
+        props.buttonsData.updateIsDisableEnableOp !== undefined
+      ) {
+        // Resetting 'isDisableEnableOp'
+        props.buttonsData.updateIsDisableEnableOp(false);
+        // Enable or disable buttons depending on the status
+        if (firstStatus === "Enabled") {
+          props.buttonsData.updateIsDisableButtonDisabled(false);
+          props.buttonsData.updateIsEnableButtonDisabled(true);
+        } else if (firstStatus === "Disabled") {
+          props.buttonsData.updateIsDisableButtonDisabled(true);
+          props.buttonsData.updateIsEnableButtonDisabled(false);
+        }
       }
     } else {
-      props.buttonsData.updateIsDisableButtonDisabled(true);
-      props.buttonsData.updateIsEnableButtonDisabled(true);
+      if (
+        props.buttonsData.updateIsDisableButtonDisabled !== undefined &&
+        props.buttonsData.updateIsEnableButtonDisabled !== undefined
+      ) {
+        props.buttonsData.updateIsDisableButtonDisabled(true);
+        props.buttonsData.updateIsEnableButtonDisabled(true);
+      }
     }
 
     // Enable/disable 'Delete' button
@@ -207,19 +218,30 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
         userNamesArray.push(user.userId);
       });
       props.usersData.updateSelectedUsers(userNamesArray);
-      // Resetting 'isDisableEnableOp'
-      props.buttonsData.updateIsDisableEnableOp(false);
-      // Enable or disable buttons depending on the status
-      if (firstStatus === "Enabled") {
-        props.buttonsData.updateIsDisableButtonDisabled(false);
-        props.buttonsData.updateIsEnableButtonDisabled(true);
-      } else if (firstStatus === "Disabled") {
-        props.buttonsData.updateIsDisableButtonDisabled(true);
-        props.buttonsData.updateIsEnableButtonDisabled(false);
+      if (
+        props.buttonsData.updateIsDisableEnableOp !== undefined &&
+        props.buttonsData.updateIsDisableButtonDisabled !== undefined &&
+        props.buttonsData.updateIsEnableButtonDisabled !== undefined
+      ) {
+        // Resetting 'isDisableEnableOp'
+        props.buttonsData.updateIsDisableEnableOp(false);
+        // Enable or disable buttons depending on the status
+        if (firstStatus === "Enabled") {
+          props.buttonsData.updateIsDisableButtonDisabled(false);
+          props.buttonsData.updateIsEnableButtonDisabled(true);
+        } else if (firstStatus === "Disabled") {
+          props.buttonsData.updateIsDisableButtonDisabled(true);
+          props.buttonsData.updateIsEnableButtonDisabled(false);
+        }
       }
     } else {
-      props.buttonsData.updateIsDisableButtonDisabled(true);
-      props.buttonsData.updateIsEnableButtonDisabled(true);
+      if (
+        props.buttonsData.updateIsDisableButtonDisabled !== undefined &&
+        props.buttonsData.updateIsEnableButtonDisabled !== undefined
+      ) {
+        props.buttonsData.updateIsDisableButtonDisabled(true);
+        props.buttonsData.updateIsEnableButtonDisabled(true);
+      }
     }
 
     // Enable/disable 'Delete' button
