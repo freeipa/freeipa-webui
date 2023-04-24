@@ -394,37 +394,120 @@ const AddUser = (props: PropsToAddUser) => {
     } else return true;
   };
 
-  const addUserHandler = () => {
+  const addUserData = () => {
+    // If 'userLogin' is empty, generate one based on first and last names
+    // TODO: This might need a better name generator method to manage long names and accents
+    let usLogin = userLoginRef.current.value;
+    if (userLogin.length === 0) {
+      usLogin =
+        firstNameRef.current.value.charAt(0) +
+        lastNameRef.current.value.replace(" ", "");
+      usLogin = usLogin.toLowerCase();
+    }
+
+    const newUser: User = {
+      title: "",
+      givenname: firstNameRef.current.value,
+      sn: lastNameRef.current.value,
+      displayname: firstNameRef.current.value + lastNameRef.current.value,
+      initials:
+        firstNameRef.current.value.charAt(0) +
+        lastNameRef.current.value.charAt(0),
+      gecos: firstNameRef.current.value + lastNameRef.current.value,
+      userclass: "",
+      // account
+      uid: usLogin,
+      has_password: true,
+      krbpasswordexpiration: "",
+      uidnumber: "12345678",
+      gidnumber: "12345678",
+      krbprincipalname: usLogin + "@IPA.DOMAIN",
+      krbprincipalexpiration: "",
+      loginshell: "/bin/sh",
+      homedirectory: "/home/" + usLogin,
+      ipasshpubkey: [""],
+      usercertificate: [""],
+      ipacertmapdata: [""],
+      ipauserauthtype: {
+        password: false,
+        radius: false,
+        otp: false,
+        pkinit: false,
+        hardened: false,
+        idp: false,
+      },
+      ipatokenradiusconfiglink: [""],
+      ipatokenradiususername: "",
+      ipaidpconfiglink: [""],
+      ipaidpsub: "",
+      // pwpolicy
+      krbmaxpwdlife: "90",
+      krbminpwdlife: "1",
+      krbpwdhistorylength: "0",
+      krbpwdmindiffchars: "0",
+      krbpwdminlength: "8",
+      krbpwdmaxfailure: "6",
+      krbpwdfailurecountinterval: "60",
+      krbpwdlockoutduration: "600",
+      passwordgracelimit: "-1",
+      // krbtpolicy
+      krbmaxrenewableage: "604800",
+      krbmaxticketlife: "86400",
+      // contact
+      mail: [usLogin + "@ipa.domain"],
+      telephonenumber: [""],
+      pager: [""],
+      mobile: [""],
+      facsimiletelephonenumber: [""],
+      // mailing
+      street: "",
+      l: "",
+      st: "",
+      postalcode: "",
+      // employee
+      ou: "",
+      manager: [""],
+      departmentnumber: [""],
+      employeenumber: "",
+      employeetype: "",
+      preferredlanguage: "",
+      // misc
+      carlicense: [""],
+      // smb_attributes
+      ipantlogonscript: "",
+      ipantprofilepath: "",
+      ipanthomedirectory: "",
+      ipanthomedirectorydrive: "",
+      // 'Member of' data
+      memberof_group: [""], // E.g: "cn=ipausers,cn=groups,cn=accounts,dc=ipa,dc=domain"
+      // 'Managed by' data
+      mepmanagedentry: [""], // E.g: "cn=username,cn=groups,cn=accounts,dc=ipa,dc=domain"
+      // other
+      cn: firstNameRef.current.value + lastNameRef.current.value,
+      krbcanonicalname: [usLogin + "@ipa.domain"],
+      nsaccountlock: false,
+      objectclass: [],
+      ipauniqueid: "", // E.g: "3c44ec90-b8f5-11ed-9350-52540021e405" Auth. generated?
+      ipantsecurityidentifier: "", // E.g: "S-1-5-21-905075754-1492382060-461393011-1005"
+      attributelevelrights: {},
+      has_keytab: false,
+      preserved: false,
+      dn: "uid=" + usLogin + ",cn=users,cn=accounts,dc=ipa,dc=domain",
+    };
+
+    if (props.from === "active-users") {
+      dispatch(addActiveUser(newUser));
+    } else if (props.from === "stage-users") {
+      dispatch(addStageUser(newUser));
+    } else if (props.from === "preserved-users") {
+      dispatch(addPreservedUser(newUser));
+    }
+  };
+
+  const onAddUser = () => {
     const validation = validateFields();
     if (validation) {
-      // If 'userLogin' is empty, generate one based on first and last names
-      // TODO: This might need a better name generator method to manage long names and accents
-      let usLogin = userLoginRef.current.value;
-      if (userLogin.length === 0) {
-        usLogin =
-          firstNameRef.current.value.charAt(0) +
-          lastNameRef.current.value.replace(" ", "");
-        usLogin = usLogin.toLowerCase();
-      }
-
-      const newUser: User = {
-        userId: usLogin,
-        userLogin: usLogin,
-        firstName: firstNameRef.current.value,
-        lastName: lastNameRef.current.value,
-        status: "Enabled",
-        uid: "12345678",
-        emailAddress: usLogin + "@domain.com",
-        phone: "",
-        jobTitle: "",
-      };
-      if (props.from === "active-users") {
-        dispatch(addActiveUser(newUser));
-      } else if (props.from === "stage-users") {
-        dispatch(addStageUser(newUser));
-      } else if (props.from === "preserved-users") {
-        dispatch(addPreservedUser(newUser));
-      }
+      addUserData();
       cleanAndCloseModal();
     }
   };
@@ -448,37 +531,10 @@ const AddUser = (props: PropsToAddUser) => {
     props.handleModalToggle();
   };
 
-  const addAndAddAnotherHandler = () => {
+  const onAddAndAddAnother = () => {
     const validation = validateFields();
     if (validation) {
-      // If 'userLogin' is empty, generate one based on first and last names
-      // TODO: This might need a better name generator method to manage long names and accents
-      let usLogin = userLoginRef.current.value;
-      if (userLogin.length === 0) {
-        usLogin =
-          firstNameRef.current.value.charAt(0) +
-          lastNameRef.current.value.replace(" ", "");
-        usLogin = usLogin.toLowerCase();
-      }
-
-      const newUser: User = {
-        userId: usLogin,
-        userLogin: usLogin,
-        firstName: firstNameRef.current.value,
-        lastName: lastNameRef.current.value,
-        status: "Enabled",
-        uid: "12345678",
-        emailAddress: usLogin + "@domain.com",
-        phone: "",
-        jobTitle: "",
-      };
-      if (props.from === "active-users") {
-        dispatch(addActiveUser(newUser));
-      } else if (props.from === "stage-users") {
-        dispatch(addStageUser(newUser));
-      } else if (props.from === "preserved-users") {
-        dispatch(addPreservedUser(newUser));
-      }
+      addUserData();
       // Do not close the modal, but clean fields & reset validations
       cleanAllFields();
       resetValidations();
@@ -491,7 +547,7 @@ const AddUser = (props: PropsToAddUser) => {
       key="add-new-user"
       variant="secondary"
       isDisabled={buttonDisabled}
-      onClick={addUserHandler}
+      onClick={onAddUser}
       form="modal-form"
     >
       Add
@@ -500,7 +556,7 @@ const AddUser = (props: PropsToAddUser) => {
       key="add-and-add-another-user"
       variant="secondary"
       isDisabled={buttonDisabled}
-      onClick={addAndAddAnotherHandler}
+      onClick={onAddAndAddAnother}
     >
       Add and add another
     </Button>,
