@@ -116,10 +116,10 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
     selectableUsersList: User[]
   ) => {
     props.usersData.changeSelectedUserNames(
-      isSelecting ? selectableUsersList.map((r) => r.userLogin) : []
+      isSelecting ? selectableUsersList.map((r) => r.uid) : []
     );
     // Check if all selected users have the same status
-    const firstStatus = selectableUsersList[0].status;
+    const firstStatus = selectableUsersList[0].nsaccountlock;
     const areAllStatusEqual = checkEqualStatus(
       firstStatus,
       selectableUsersList
@@ -128,16 +128,18 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
       // Update selected users
       const userNamesArray: string[] = [];
       selectableUsersList.map((user) => {
-        userNamesArray.push(user.userId);
+        userNamesArray.push(user.uid);
       });
       props.usersData.updateSelectedUsers(userNamesArray);
       // Resetting 'isDisableEnableOp'
       props.buttonsData.updateIsDisableEnableOp(false);
       // Enable or disable buttons depending on the status
-      if (firstStatus === "Enabled") {
+      if (!firstStatus) {
+        // Enabled
         props.buttonsData.updateIsDisableButtonDisabled(false);
         props.buttonsData.updateIsEnableButtonDisabled(true);
-      } else if (firstStatus === "Disabled") {
+      } else if (firstStatus) {
+        // Disabled
         props.buttonsData.updateIsDisableButtonDisabled(true);
         props.buttonsData.updateIsEnableButtonDisabled(false);
       }
@@ -159,7 +161,7 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
           usersIdArray.push(user);
         });
         selectableUsersList.map((user) => {
-          usersIdArray.push(user.userId);
+          usersIdArray.push(user.uid);
         });
       }
       // Correct duplicates (if any)
@@ -192,10 +194,10 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
     selectableUsersList: User[]
   ) => {
     props.usersData.changeSelectedUserNames(
-      isSelecting ? selectableUsersList.map((r) => r.userLogin) : []
+      isSelecting ? selectableUsersList.map((r) => r.uid) : []
     );
     // Check if all users have the same status
-    const firstStatus = selectableUsersList[0].status;
+    const firstStatus = selectableUsersList[0].nsaccountlock;
     const areAllStatusEqual = checkEqualStatus(
       firstStatus,
       selectableUsersList
@@ -204,16 +206,18 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
       // Update selected users
       const userNamesArray: string[] = [];
       selectableUsersList.map((user) => {
-        userNamesArray.push(user.userId);
+        userNamesArray.push(user.uid);
       });
       props.usersData.updateSelectedUsers(userNamesArray);
       // Resetting 'isDisableEnableOp'
       props.buttonsData.updateIsDisableEnableOp(false);
       // Enable or disable buttons depending on the status
-      if (firstStatus === "Enabled") {
+      if (!firstStatus) {
+        // Enabled
         props.buttonsData.updateIsDisableButtonDisabled(false);
         props.buttonsData.updateIsEnableButtonDisabled(true);
-      } else if (firstStatus === "Disabled") {
+      } else if (firstStatus) {
+        // Disabled
         props.buttonsData.updateIsDisableButtonDisabled(true);
         props.buttonsData.updateIsEnableButtonDisabled(false);
       }
@@ -225,7 +229,7 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
     // Enable/disable 'Delete' button
     if (isSelecting) {
       const usersIdArray: string[] = [];
-      selectableUsersList.map((user) => usersIdArray.push(user.userId));
+      selectableUsersList.map((user) => usersIdArray.push(user.uid));
       props.usersData.updateSelectedUserIds(usersIdArray);
       props.usersData.updateSelectedUsers(usersIdArray);
       props.buttonsData.updateIsDeleteButtonDisabled(false);
@@ -289,7 +293,7 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
   // The 'currectPageAlreadySelected' should be set when elements are selected
   useEffect(() => {
     const found = props.shownElementsList.every(
-      (user) => props.usersData.selectedUsers.indexOf(user.userId) >= 0
+      (user) => props.usersData.selectedUsers.indexOf(user.uid) >= 0
     );
 
     if (found) {
@@ -301,7 +305,7 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
       // If there is no elements selected on the page yet, reset 'selectedPerPage'
       if (
         !props.shownElementsList.some(
-          (user) => props.usersData.selectedUsers.indexOf(user.userId) >= 0
+          (user) => props.usersData.selectedUsers.indexOf(user.uid) >= 0
         )
       ) {
         props.selectedPerPageData.updateSelectedPerPage(0);
