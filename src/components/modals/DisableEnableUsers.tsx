@@ -28,7 +28,7 @@ export interface PropsToDisableEnableUsers {
   show: boolean;
   from: "active-users" | "stage-users" | "preserved-users";
   handleModalToggle: () => void;
-  optionSelected: string; // 'enable' | 'disable'
+  optionSelected: boolean; // 'enable': false | 'disable': true
   selectedUsersData: SelectedUsersData;
   buttonsData: ButtonsData;
 }
@@ -56,7 +56,7 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
     props.handleModalToggle();
   };
 
-  const modifyStatus = (newStatus: string, selectedUsers: string[]) => {
+  const modifyStatus = (newStatus: boolean, selectedUsers: string[]) => {
     if (props.from === "active-users") {
       dispatch(
         changeStatusActiveUser({
@@ -82,10 +82,12 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
     // Update 'isDisbleEnableOp' to notify table that an updating operation is performed
     props.buttonsData.updateIsDisableEnableOp(true);
     // Update buttons
-    if (props.optionSelected === "enable") {
+    if (!props.optionSelected) {
+      // Enable
       props.buttonsData.updateIsEnableButtonDisabled(true);
       props.buttonsData.updateIsDisableButtonDisabled(false);
-    } else if (props.optionSelected === "disable") {
+    } else if (props.optionSelected) {
+      // Disable
       props.buttonsData.updateIsEnableButtonDisabled(false);
       props.buttonsData.updateIsDisableButtonDisabled(true);
     }
@@ -165,8 +167,8 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
   // Render 'DisableEnableUsers'
   return (
     <>
-      {props.optionSelected === "enable" && modalEnable}
-      {props.optionSelected === "disable" && modalDisable}
+      {!props.optionSelected && modalEnable}
+      {props.optionSelected && modalDisable}
     </>
   );
 };
