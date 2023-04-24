@@ -37,7 +37,7 @@ const DeletedUsersTable = (props: PropsToDeletedUsersTable) => {
     case "active-users":
       activeUsersListCopy.map((user) => {
         props.usersToDelete.map((selected) => {
-          if (user.userId === selected) {
+          if (user.uid === selected) {
             usersToDelete.push(user);
           }
         });
@@ -46,7 +46,7 @@ const DeletedUsersTable = (props: PropsToDeletedUsersTable) => {
     case "stage-users":
       stageUsersListCopy.map((user) => {
         props.usersToDelete.map((selected) => {
-          if (user.userId === selected) {
+          if (user.uid === selected) {
             usersToDelete.push(user);
           }
         });
@@ -55,7 +55,7 @@ const DeletedUsersTable = (props: PropsToDeletedUsersTable) => {
     case "preserved-users":
       preservedUsersListCopy.map((user) => {
         props.usersToDelete.map((selected) => {
-          if (user.userId === selected) {
+          if (user.uid === selected) {
             usersToDelete.push(user);
           }
         });
@@ -84,12 +84,12 @@ const DeletedUsersTable = (props: PropsToDeletedUsersTable) => {
   );
 
   const body = usersToDelete.map((user) => (
-    <Tr key={user.userLogin} id={user.userLogin}>
-      <Td dataLabel={columnNames.userLogin}>{user.userLogin}</Td>
-      <Td dataLabel={columnNames.firstName}>{user.firstName}</Td>
-      <Td dataLabel={columnNames.lastName}>{user.lastName}</Td>
+    <Tr key={user.uid} id={user.uid}>
+      <Td dataLabel={columnNames.userLogin}>{user.uid}</Td>
+      <Td dataLabel={columnNames.firstName}>{user.givenname}</Td>
+      <Td dataLabel={columnNames.lastName}>{user.sn}</Td>
       <Td dataLabel={columnNames.uid}>{user.uid}</Td>
-      <Td dataLabel={columnNames.emailAddress}>{user.emailAddress}</Td>
+      <Td dataLabel={columnNames.emailAddress}>{user.mail}</Td>
     </Tr>
   ));
 
