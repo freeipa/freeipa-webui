@@ -16,10 +16,10 @@ interface PropsToUsersIdentity {
 
 const UsersIdentity = (props: PropsToUsersIdentity) => {
   // TODO: This state variables should update the user data via the IPA API (`user_mod`)
-  const [firstName] = useState(props.user.firstName);
-  const [lastName, setLastName] = useState(props.user.lastName);
+  const [firstName] = useState(props.user.givenname);
+  const [lastName, setLastName] = useState(props.user.sn);
   const [fullName, setFullName] = useState(firstName + " " + lastName);
-  const [jobTitle] = useState(props.user.jobTitle);
+  const [jobTitle] = useState(props.user.title);
   const [gecos, setGecos] = useState(fullName);
   const [classField, setClassField] = useState("");
 
