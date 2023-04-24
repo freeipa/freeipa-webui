@@ -498,7 +498,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
 
   const tabData = {
     tabName,
-    userName: props.user.userLogin,
+    userName: props.user.uid,
   };
 
   // - MemberOfDeleteModal
