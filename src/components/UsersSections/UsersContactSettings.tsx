@@ -44,7 +44,7 @@ interface FaxData {
 const UsersContactSettings = (props: PropsToUsersContactSettings) => {
   // TODO: This state variables should update the user data via the IPA API (`user_mod`)
   const [emailList, setEmailList] = useState<EmailData[]>([
-    { id: 0, email: props.user.emailAddress },
+    { id: 0, email: props.user.mail[0] },
   ]);
   const [telephoneList, setTelephoneList] = useState<TelephoneData[]>([]);
   const [pagerList, setPagerList] = useState<PagerData[]>([]);

@@ -38,15 +38,15 @@ interface ElementData {
 
 const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
   // TODO: This state variables should update the user data via the IPA API (`user_mod`)
-  const [userLogin] = useState(props.user.userLogin);
+  const [userLogin] = useState(props.user.uid);
   const [password] = useState("");
   const [passwordExpiration] = useState("");
-  const [uid, setUid] = useState(props.user.uid);
+  const [uid, setUid] = useState(props.user.uidnumber);
   const [gid, setGid] = useState("");
   const [principalAliasList, setPrincipalAliasList] = useState<ElementData[]>([
     {
       id: 0,
-      element: props.user.userLogin + "@IPAEXAMPLE.TEST",
+      element: props.user.uid + "@IPAEXAMPLE.TEST",
     },
   ]);
   const [homeDirectory, setHomeDirectory] = useState("/home/" + userLogin);
