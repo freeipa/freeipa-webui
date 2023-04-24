@@ -51,12 +51,12 @@ const StageUsersTabs = () => {
       <PageSection variant={PageSectionVariants.light} className="pf-u-pr-0">
         <BreadcrumbLayout
           className="pf-u-mb-md"
-          userId={userData.userId}
+          userId={userData.uid}
           pagesVisited={pagesVisited}
         />
         <TextContent>
           <Title headingLevel="h1">
-            <Text>{userData.userId}</Text>
+            <Text>{userData.uid}</Text>
           </Title>
         </TextContent>
       </PageSection>
