@@ -144,11 +144,9 @@ const StageUsers = () => {
   // - Helper method to set the selected users from the table
   const setUserSelected = (user: User, isSelecting = true) =>
     setSelectedUserNames((prevSelected) => {
-      const otherSelectedUserNames = prevSelected.filter(
-        (r) => r !== user.userLogin
-      );
+      const otherSelectedUserNames = prevSelected.filter((r) => r !== user.uid);
       return isSelecting && isUserSelectable(user)
-        ? [...otherSelectedUserNames, user.userLogin]
+        ? [...otherSelectedUserNames, user.uid]
         : otherSelectedUserNames;
     });
 
