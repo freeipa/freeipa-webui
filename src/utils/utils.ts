@@ -8,15 +8,15 @@ import { Host, Service, User } from "./datatypes/globalDataTypes";
  */
 
 // Helper method: Given an users list and status, check if some entry has different status
-export const checkEqualStatus = (status: string, usersList: User[]) => {
+export const checkEqualStatus = (status: boolean, usersList: User[]) => {
   const usersWithOtherStatus = usersList.filter(
-    (user) => user.status !== status
+    (user) => user.nsaccountlock !== status
   );
   return usersWithOtherStatus.length === 0;
 };
 
 // Determine whether a user is selectable or not
-export const isUserSelectable = (user: User) => user.userLogin !== "";
+export const isUserSelectable = (user: User) => user.uid !== "";
 
 // Determine whether a host is selectable or not
 export const isHostSelectable = (host: Host) => host.id != "";
