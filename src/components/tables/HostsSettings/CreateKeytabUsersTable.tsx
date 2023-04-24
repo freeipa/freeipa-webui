@@ -16,7 +16,7 @@ interface PropsToTable {
 const CreateKeytabUsersTable = (props: PropsToTable) => {
   // Full users list -> Initial data
   const fullUsersList = useAppSelector((state) => state.activeUsers.usersList);
-  const fullUserIdsList = fullUsersList.map((user) => user.userLogin);
+  const fullUserIdsList = fullUsersList.map((user) => user.uid);
 
   // Users list on the table
   const [tableUsersList, setTableUsersList] = useState<string[]>([]);
