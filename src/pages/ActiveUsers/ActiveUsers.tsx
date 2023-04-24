@@ -170,7 +170,7 @@ const ActiveUsers = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEnableDisableModal, setShowEnableDisableModal] = useState(false);
   const [enableDisableOptionSelected, setEnableDisableOptionSelected] =
-    useState("");
+    useState(false);
   const onAddClickHandler = () => {
     setShowAddModal(true);
   };
@@ -185,7 +185,7 @@ const ActiveUsers = () => {
     setShowDeleteModal(!showDeleteModal);
   };
 
-  const onEnableDisableHandler = (optionClicked: string) => {
+  const onEnableDisableHandler = (optionClicked: boolean) => {
     setIsDeleteButtonDisabled(true); // prevents 'Delete' button to be enabled
     setIsEnableButtonDisabled(true); // prevents 'Enable' button to be enabled
     setIsDisableButtonDisabled(true); // prevents 'Disable' button to be enabled
@@ -213,11 +213,9 @@ const ActiveUsers = () => {
   // - Helper method to set the selected users from the table
   const setUserSelected = (user: User, isSelecting = true) =>
     setSelectedUserNames((prevSelected) => {
-      const otherSelectedUserNames = prevSelected.filter(
-        (r) => r !== user.userLogin
-      );
+      const otherSelectedUserNames = prevSelected.filter((r) => r !== user.uid);
       return isSelecting && isUserSelectable(user)
-        ? [...otherSelectedUserNames, user.userLogin]
+        ? [...otherSelectedUserNames, user.uid]
         : otherSelectedUserNames;
     });
 
@@ -362,7 +360,7 @@ const ActiveUsers = () => {
       element: (
         <SecondaryButton
           isDisabled={isDisableButtonDisabled}
-          onClickHandler={() => onEnableDisableHandler("disable")}
+          onClickHandler={() => onEnableDisableHandler(true)}
         >
           Disable
         </SecondaryButton>
@@ -373,7 +371,7 @@ const ActiveUsers = () => {
       element: (
         <SecondaryButton
           isDisabled={isEnableButtonDisabled}
-          onClickHandler={() => onEnableDisableHandler("enable")}
+          onClickHandler={() => onEnableDisableHandler(false)}
         >
           Enable
         </SecondaryButton>
