@@ -150,6 +150,18 @@ const StageUsers = () => {
         : otherSelectedUserNames;
     });
 
+  // Refresh displayed elements every time elements list changes (from Redux or somewhere else)
+  React.useEffect(() => {
+    updatePage(1);
+    if (showTableRows) updateShowTableRows(false);
+    setTimeout(() => {
+      updateShownUsersList(stageUsersList.slice(0, perPage));
+      updateShowTableRows(true);
+      // Reset 'selectedPerPage'
+      updateSelectedPerPage(0);
+    }, 2000);
+  }, [stageUsersList]);
+
   // Data wrappers
   // - 'PaginationPrep'
   const paginationData = {
@@ -158,7 +170,6 @@ const StageUsers = () => {
     updatePage,
     updatePerPage,
     showTableRows,
-    updateShowTableRows,
     updateSelectedPerPage,
     updateShownElementsList: updateShownUsersList,
   };
