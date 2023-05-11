@@ -110,7 +110,10 @@ export const api = createApi({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
       query: (payloadData: Command) => getCommand(payloadData),
     }),
-    simpleMutCommand: build.mutation<BatchRPCResponse, Command>({
+    simpleMutCommand: build.mutation<
+      FindRPCResponse | BatchRPCResponse,
+      Command
+    >({
       query: (payloadData: Command) => getCommand(payloadData),
     }),
     batchCommand: build.query<BatchRPCResponse, Command[] | void>({
