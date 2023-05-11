@@ -16,23 +16,69 @@ import {
 import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
 // Layout
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
+import SecondaryButton from "../layouts/SecondaryButton";
 // Data types
 import { User } from "src/utils/datatypes/globalDataTypes";
 // Redux
-import { useAppDispatch } from "src/store/hooks";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import { addUser as addActiveUser } from "src/store/Identity/activeUsers-slice";
 import { addUser as addStageUser } from "src/store/Identity/stageUsers-slice";
 import { addUser as addPreservedUser } from "src/store/Identity/preservedUsers-slice";
+// RPC
+import {
+  useSimpleMutCommandMutation,
+  Command,
+  FindRPCResponse,
+} from "src/services/rpc";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { SerializedError } from "@reduxjs/toolkit";
+// Modals
+import ErrorModal from "./ErrorModal";
+
+interface GroupId {
+  cn: string;
+  description: string;
+  dn: string;
+  gidnumber: string;
+}
 
 export interface PropsToAddUser {
   show: boolean;
   from: "active-users" | "stage-users" | "preserved-users";
+  //  NOTE: 'setShowTableRows' is handled as { (boolean) => void | undefined } as a temporal solution
+  //    until the C.L. is adapted in 'stage-' and 'preserved users' (otherwise
+  //    the operation will fail for those components)
+  setShowTableRows?: (value: boolean) => void;
+  //  NOTE: This prop is not needed but it is still being used by 'stage-' and 'preserved users'
+  //     and will be removed when the communication layer is implemented in the buttons od those pages.
   handleModalToggle: () => void;
+  //  NOTE: 'onOpenAddModal' is handled as { () => void | undefined } as a temporal solution
+  //    until the C.L. is adapted in 'stage-' and 'preserved users' (otherwise
+  //    the operation will fail for those components)
+  onOpenAddModal?: () => void;
+  //  NOTE: 'onCloseAddModal' is handled as { () => void | undefined } as a temporal solution
+  //    until the C.L. is adapted in 'stage-' and 'preserved users' (otherwise
+  //    the operation will fail for those components)
+  onCloseAddModal?: () => void;
+  //  NOTE: 'onRefresh' is handled as { (User) => void | undefined } as a temporal solution
+  //    until the C.L. is adapted in 'stage-' and 'preserved users' (otherwise
+  //    the operation will fail for those components)
+  onRefresh?: (newUserData: User) => void;
 }
 
 const AddUser = (props: PropsToAddUser) => {
   // Set dispatch (Redux)
   const dispatch = useAppDispatch();
+
+  // Retrieve API version from environment data
+  const apiVersion = useAppSelector(
+    (state) => state.global.environment.api_version
+  ) as string;
+
+  // Define 'executeCommand' to add user data to IPA server
+  const [executeUserAddCommand] = useSimpleMutCommandMutation();
+  // Define handler to execute when getting gids
+  const [retrieveGIDs] = useSimpleMutCommandMutation();
 
   // useStates for TextInputs
   const [userLogin, setUserLogin] = React.useState("");
@@ -209,21 +255,62 @@ const AddUser = (props: PropsToAddUser) => {
     });
   };
 
+  // [API call] Get GIDs
+  const getGIDs = () => {
+    // Prepare the command data
+    const groupParamsData = [
+      [null],
+      {
+        no_members: true,
+        posix: true,
+        version: apiVersion,
+      },
+    ];
+
+    // Define payload data
+    const groupFindPayload: Command = {
+      method: "group_find",
+      params: groupParamsData,
+    };
+
+    // Execute command here
+    retrieveGIDs(groupFindPayload).then((response) => {
+      if ("data" in response) {
+        const data = response.data as FindRPCResponse;
+        const GIDsData = data.result.result;
+        const error = data.error as FetchBaseQueryError | SerializedError;
+
+        if (error !== null) return error;
+
+        setGIDs(GIDsData as unknown as GroupId[]);
+        return GIDsData;
+      }
+    });
+  };
+
   // Select GID
+  const [GIDs, setGIDs] = useState<GroupId[]>([]);
   const [isGidOpen, setIsGidOpen] = useState(false);
-  const [gidSelected, setGidSelected] = useState("");
-  const gidOptions = [
-    { value: "Option 1", disabled: false },
-    { value: "Option 2", disabled: false },
-    { value: "Option 3", disabled: false },
-  ];
+  const [gidSelected, setGidSelected] = useState<string>("");
+  const gidOptions = GIDs.map((gid) => gid.cn);
+
   const gidOnToggle = (isOpen: boolean) => {
     setIsGidOpen(isOpen);
   };
 
+  // Given a gid name, return gid number
+  const getGIDNumberFromName = (gidName: string) => {
+    for (let i = 0; i < GIDs.length; i++) {
+      if (gidName === GIDs[i].cn[0]) {
+        return GIDs[i].gidnumber[0];
+      }
+    }
+  };
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const gidOnSelect = (selection: any) => {
-    setGidSelected(selection.target.textContent);
+    const gidnumber = getGIDNumberFromName(selection.target.textContent);
+    setGidSelected(gidnumber as string);
     setIsGidOpen(false);
   };
 
@@ -248,6 +335,15 @@ const AddUser = (props: PropsToAddUser) => {
       setButtonDisabled(true);
     }
   }, [userLogin, firstName, lastName, newPassword, verifyNewPassword]);
+
+  // If modal is shown, load GID data to show in the selector (only once)
+  useEffect(() => {
+    if (props.show) {
+      if (GIDs.length === 0) {
+        getGIDs();
+      }
+    }
+  }, [props.show]);
 
   // List of fields
   const fields = [
@@ -376,11 +472,7 @@ const AddUser = (props: PropsToAddUser) => {
           aria-labelledby="gid"
         >
           {gidOptions.map((option, index) => (
-            <SelectOption
-              isDisabled={option.disabled}
-              key={index}
-              value={option.value}
-            />
+            <SelectOption key={index} value={option} />
           ))}
         </Select>
       ),
@@ -452,121 +544,99 @@ const AddUser = (props: PropsToAddUser) => {
     } else return true;
   };
 
-  const addUserData = () => {
-    // If 'userLogin' is empty, generate one based on first and last names
-    // TODO: This might need a better name generator method to manage long names and accents
-    let usLogin = userLoginRef.current.value;
-    if (userLogin.length === 0) {
-      usLogin =
-        firstNameRef.current.value.charAt(0) +
-        lastNameRef.current.value.replace(" ", "");
-      usLogin = usLogin.toLowerCase();
-    }
-
-    const newUser: User = {
-      title: "",
-      givenname: firstNameRef.current.value,
-      sn: lastNameRef.current.value,
-      displayname: firstNameRef.current.value + lastNameRef.current.value,
-      initials:
-        firstNameRef.current.value.charAt(0) +
-        lastNameRef.current.value.charAt(0),
-      gecos: firstNameRef.current.value + lastNameRef.current.value,
-      userclass: "",
-      // account
-      uid: usLogin,
-      has_password: true,
-      krbpasswordexpiration: "",
-      uidnumber: "12345678",
-      gidnumber: "12345678",
-      krbprincipalname: usLogin + "@IPA.DOMAIN",
-      krbprincipalexpiration: "",
-      loginshell: "/bin/sh",
-      homedirectory: "/home/" + usLogin,
-      ipasshpubkey: [""],
-      usercertificate: [""],
-      ipacertmapdata: [""],
-      ipauserauthtype: {
-        password: false,
-        radius: false,
-        otp: false,
-        pkinit: false,
-        hardened: false,
-        idp: false,
-      },
-      ipatokenradiusconfiglink: [""],
-      ipatokenradiususername: "",
-      ipaidpconfiglink: [""],
-      ipaidpsub: "",
-      // pwpolicy
-      krbmaxpwdlife: "90",
-      krbminpwdlife: "1",
-      krbpwdhistorylength: "0",
-      krbpwdmindiffchars: "0",
-      krbpwdminlength: "8",
-      krbpwdmaxfailure: "6",
-      krbpwdfailurecountinterval: "60",
-      krbpwdlockoutduration: "600",
-      passwordgracelimit: "-1",
-      // krbtpolicy
-      krbmaxrenewableage: "604800",
-      krbmaxticketlife: "86400",
-      // contact
-      mail: [usLogin + "@ipa.domain"],
-      telephonenumber: [""],
-      pager: [""],
-      mobile: [""],
-      facsimiletelephonenumber: [""],
-      // mailing
-      street: "",
-      l: "",
-      st: "",
-      postalcode: "",
-      // employee
-      ou: "",
-      manager: [""],
-      departmentnumber: [""],
-      employeenumber: "",
-      employeetype: "",
-      preferredlanguage: "",
-      // misc
-      carlicense: [""],
-      // smb_attributes
-      ipantlogonscript: "",
-      ipantprofilepath: "",
-      ipanthomedirectory: "",
-      ipanthomedirectorydrive: "",
-      // 'Member of' data
-      memberof_group: [""], // E.g: "cn=ipausers,cn=groups,cn=accounts,dc=ipa,dc=domain"
-      // 'Managed by' data
-      mepmanagedentry: [""], // E.g: "cn=username,cn=groups,cn=accounts,dc=ipa,dc=domain"
-      // other
-      cn: firstNameRef.current.value + lastNameRef.current.value,
-      krbcanonicalname: [usLogin + "@ipa.domain"],
-      nsaccountlock: false,
-      objectclass: [],
-      ipauniqueid: "", // E.g: "3c44ec90-b8f5-11ed-9350-52540021e405" Auth. generated?
-      ipantsecurityidentifier: "", // E.g: "S-1-5-21-905075754-1492382060-461393011-1005"
-      attributelevelrights: {},
-      has_keytab: false,
-      preserved: false,
-      dn: "uid=" + usLogin + ",cn=users,cn=accounts,dc=ipa,dc=domain",
-    };
-
+  // Add new user data to user Redux slice
+  const newUserToRedux = (userData: User) => {
     if (props.from === "active-users") {
-      dispatch(addActiveUser(newUser));
+      dispatch(addActiveUser(userData));
     } else if (props.from === "stage-users") {
-      dispatch(addStageUser(newUser));
+      dispatch(addStageUser(userData));
     } else if (props.from === "preserved-users") {
-      dispatch(addPreservedUser(newUser));
+      dispatch(addPreservedUser(userData));
     }
   };
 
+  // Define status flags to determine user added successfully or error
+  let isAdditionSuccess = true;
+
+  // Track which button has been clicked ('onAddUser' or 'onAddAndAddAnother')
+  //  to better handle the 'retry' function and its behavior
+  let onAddUserClicked = true;
+
+  // Add user data
+  const addUserData = async () => {
+    // Hide table elements
+    if (props.setShowTableRows !== undefined) {
+      props.setShowTableRows(false);
+    }
+
+    // If 'userLogin' is not provided, use empty array
+    const usLogin = userLogin !== "" ? [userLogin] : [];
+
+    const newUserData = {
+      givenname: firstName,
+      noprivate: isNoPrivateGroupChecked,
+      sn: lastName,
+      userclass: userClass !== "" ? userClass : undefined,
+      gidnumber: gidSelected,
+      userpassword: newPassword,
+      version: apiVersion,
+    };
+
+    // Prepare the command data
+    const newUserCommandData = [usLogin, newUserData];
+
+    // Define payload data
+    const newUserPayload: Command = {
+      method: "user_add",
+      params: newUserCommandData,
+    };
+
+    // Add user via API call
+    await executeUserAddCommand(newUserPayload).then((user) => {
+      if ("data" in user) {
+        const data = user.data as FindRPCResponse;
+        const result = data.result;
+        const error = data.error as FetchBaseQueryError | SerializedError;
+
+        if (result) {
+          const updatedUsersList = result.result as unknown as User;
+          // Dispatch user data to redux
+          newUserToRedux(updatedUsersList);
+          // Set status flag: success
+          isAdditionSuccess = true;
+          // Refresh data
+          if (props.onRefresh !== undefined) {
+            props.onRefresh(updatedUsersList);
+          }
+        } else if (error) {
+          // Set status flag: error
+          isAdditionSuccess = false;
+          // Handle error
+          handleAPIError(error);
+        }
+      }
+      // Show table elements
+      if (props.setShowTableRows !== undefined) {
+        props.setShowTableRows(true);
+      }
+    });
+  };
+
   const onAddUser = () => {
+    onAddUserClicked = true;
     const validation = validateFields();
     if (validation) {
-      addUserData();
-      cleanAndCloseModal();
+      addUserData().then(() => {
+        if (!isAdditionSuccess) {
+          // Close the modal without cleaning fields
+          if (props.onCloseAddModal !== undefined) {
+            props.onCloseAddModal();
+          }
+        } else {
+          // Clean data and close modal
+          cleanAndCloseModal();
+        }
+      });
     }
   };
 
@@ -586,17 +656,83 @@ const AddUser = (props: PropsToAddUser) => {
   const cleanAndCloseModal = () => {
     cleanAllFields();
     resetValidations();
-    props.handleModalToggle();
+    if (props.onCloseAddModal !== undefined) {
+      props.onCloseAddModal();
+    }
   };
 
   const onAddAndAddAnother = () => {
+    onAddUserClicked = false;
     const validation = validateFields();
     if (validation) {
-      addUserData();
-      // Do not close the modal, but clean fields & reset validations
-      cleanAllFields();
-      resetValidations();
+      addUserData().then(() => {
+        if (isAdditionSuccess) {
+          // Do not close the modal, but clean fields & reset validations
+          cleanAllFields();
+          resetValidations();
+        } else {
+          // Close the modal without cleaning fields
+          if (props.onCloseAddModal !== undefined) {
+            props.onCloseAddModal();
+          }
+        }
+      });
     }
+  };
+
+  // Handle API error data
+  const [isModalErrorOpen, setIsModalErrorOpen] = useState(false);
+  const [errorTitle, setErrorTitle] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const closeAndCleanErrorParameters = () => {
+    setIsModalErrorOpen(false);
+    setErrorTitle("");
+    setErrorMessage("");
+  };
+
+  const onCloseErrorModal = () => {
+    closeAndCleanErrorParameters();
+    // Show Add modal
+    if (props.onOpenAddModal !== undefined) {
+      props.onOpenAddModal();
+    }
+  };
+
+  const onRetry = () => {
+    // Keep the add modal closed until the operation is done...
+    if (props.onCloseAddModal !== undefined) {
+      props.onCloseAddModal();
+    }
+
+    // Close the error modal
+    closeAndCleanErrorParameters();
+
+    // Repeats the same previous operation
+    if (onAddUserClicked) {
+      onAddUser();
+    } else {
+      onAddAndAddAnother();
+    }
+  };
+
+  const errorModalActions = [
+    <SecondaryButton key="retry" onClickHandler={onRetry}>
+      Retry
+    </SecondaryButton>,
+    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+      Cancel
+    </Button>,
+  ];
+
+  const handleAPIError = (error: FetchBaseQueryError | SerializedError) => {
+    if ("code" in error) {
+      setErrorTitle("IPA error " + error.code + ": " + error.name);
+      if (error.message !== undefined) {
+        setErrorMessage(error.message);
+      }
+    }
+    setIsModalErrorOpen(true);
   };
 
   // Buttons that will be shown at the end of the form
@@ -625,17 +761,28 @@ const AddUser = (props: PropsToAddUser) => {
 
   // Render 'AddUser'
   return (
-    <ModalWithFormLayout
-      variantType="small"
-      modalPosition="top"
-      offPosition="76px"
-      title="Add user"
-      formId="users-add-user-modal"
-      fields={fields}
-      show={props.show}
-      onClose={cleanAndCloseModal}
-      actions={modalActions}
-    />
+    <>
+      <ModalWithFormLayout
+        variantType="small"
+        modalPosition="top"
+        offPosition="76px"
+        title="Add user"
+        formId="users-add-user-modal"
+        fields={fields}
+        show={props.show}
+        onClose={cleanAndCloseModal}
+        actions={modalActions}
+      />
+      {isModalErrorOpen && (
+        <ErrorModal
+          title={errorTitle}
+          isOpen={isModalErrorOpen}
+          onClose={onCloseErrorModal}
+          actions={errorModalActions}
+          errorMessage={errorMessage}
+        />
+      )}
+    </>
   );
 };
 

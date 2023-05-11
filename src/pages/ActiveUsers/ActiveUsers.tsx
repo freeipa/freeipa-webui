@@ -287,6 +287,10 @@ const ActiveUsers = () => {
     setShowAddModal(true);
   };
 
+  const onCloseAddModal = () => {
+    setShowAddModal(false);
+  };
+
   const onAddModalToggle = () => {
     setShowAddModal(!showAddModal);
   };
@@ -403,9 +407,6 @@ const ActiveUsers = () => {
 
     // 1.- Retrieving user ids
     executeCommand(userFindPayload).then((userFindRes) => {
-      // console.log("--> userFindRes");
-      // console.log(userFindRes);
-
       if ("data" in userFindRes) {
         const data = userFindRes.data as FindRPCResponse;
         const uids = data.result.result;
@@ -745,13 +746,16 @@ const ActiveUsers = () => {
           className="pf-u-pb-0 pf-u-pr-md"
         />
       </PageSection>
-      {/* TODO: Adapt the action buttons to perform API calls */}
-      {/* <AddUser
+      <AddUser
         show={showAddModal}
         from="active-users"
+        setShowTableRows={setShowTableRows}
         handleModalToggle={onAddModalToggle}
+        onOpenAddModal={onAddClickHandler}
+        onCloseAddModal={onCloseAddModal}
+        onRefresh={() => refreshUsersData(activeUsersList)}
       />
-      <DeleteUsers
+      {/* <DeleteUsers
         show={showDeleteModal}
         from="active-users"
         handleModalToggle={onDeleteModalToggle}
