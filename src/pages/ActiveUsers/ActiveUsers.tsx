@@ -7,6 +7,7 @@ import {
   PageSectionVariants,
   TextVariants,
   PaginationVariant,
+  Button,
 } from "@patternfly/react-core";
 // PatternFly table
 import {
@@ -41,10 +42,19 @@ import DisableEnableUsers from "src/components/modals/DisableEnableUsers";
 // Utils
 import { apiErrorToJsXError, isUserSelectable } from "src/utils/utils";
 // RPC client
-import { useGettingUserDataQuery } from "src/services/rpc";
+import {
+  Command,
+  FindRPCResponse,
+  BatchRPCResponse,
+  UIDType,
+  useBatchMutCommandMutation,
+  useGettingUserDataQuery,
+  useSimpleMutCommandMutation,
+} from "src/services/rpc";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
+import ErrorModal from "src/components/modals/ErrorModal";
 
 const ActiveUsers = () => {
   // Dispatch (Redux)
@@ -56,7 +66,13 @@ const ActiveUsers = () => {
   ) as string;
 
   // Active users list
-  const activeUsersList: User[] = [];
+  let activeUsersList: User[] = [];
+
+  // Define 'executeCommand' to execute simple commands (via Mutation)
+  const [executeCommand] = useSimpleMutCommandMutation();
+
+  // Define 'executeBatchCommand' to execute a batch of operations (via Mutation)
+  const [executeBatchCommand] = useBatchMutCommandMutation();
 
   // [API Call] Retrieve partial user info from multiple query
   const {
@@ -317,6 +333,161 @@ const ActiveUsers = () => {
         : otherSelectedUserNames;
     });
 
+  // Updates the 'activeUsersList'
+  const updateActiveUsersList = (newUsersList) => {
+    activeUsersList = [];
+    for (let i = 0; i < newUsersList.length; i++) {
+      if (newUsersList[i].result !== undefined) {
+        const user = newUsersList[i].result as User;
+        activeUsersList.push(user);
+      }
+    }
+    return activeUsersList;
+  };
+
+  // Handle API error data
+  const [isModalErrorOpen, setIsModalErrorOpen] = useState(false);
+  const [errorTitle, setErrorTitle] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const closeAndCleanErrorParameters = () => {
+    setIsModalErrorOpen(false);
+    setErrorTitle("");
+    setErrorMessage("");
+  };
+
+  const onCloseErrorModal = () => {
+    closeAndCleanErrorParameters();
+  };
+
+  const errorModalActions = [
+    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+      Cancel
+    </Button>,
+  ];
+
+  const handleAPIError = (error: FetchBaseQueryError | SerializedError) => {
+    console.log("--> error");
+    console.log(error);
+    if ("error" in error) {
+      setErrorTitle("IPA error");
+      if (error.data !== undefined) {
+        setErrorMessage(error.error);
+      }
+    }
+    setIsModalErrorOpen(true);
+  };
+
+  // Update user data in Redux
+  const updateDataToRedux = (newUsersList: User[]) => {
+    dispatch(updateUsersList(newUsersList));
+  };
+
+  // Refresh data
+  const refreshUsersData = (listToRefresh: User[]) => {
+    // Hide table elements
+    setShowTableRows(false);
+
+    // Getting uids
+    const userFindPayload: Command = {
+      method: "user_find",
+      params: [
+        [],
+        {
+          pkey_only: true,
+          sizelimit: 0,
+          version: apiVersion,
+        },
+      ],
+    };
+
+    // 1.- Retrieving user ids
+    executeCommand(userFindPayload).then((userFindRes) => {
+      // console.log("--> userFindRes");
+      // console.log(userFindRes);
+
+      if ("data" in userFindRes) {
+        const data = userFindRes.data as FindRPCResponse;
+        const uids = data.result.result;
+        const uidsSize = data.result.count;
+        const uidsError = userFindRes.data.error as
+          | FetchBaseQueryError
+          | SerializedError;
+
+        if (uids !== undefined) {
+          // Getting list of users
+          const userIds: string[] = [];
+          const returnedItems = uidsSize;
+          for (let i = 0; i < returnedItems; i++) {
+            const userId = uids[i] as UIDType;
+            const { uid } = userId;
+            userIds.push(uid[0] as string);
+          }
+
+          const payloadUserDataBatch: Command[] = [];
+          const infoType = { no_members: true };
+          if (userIds.length > 0) {
+            userIds.map((uid) => {
+              const payloadItem = {
+                method: "user_show",
+                params: [[uid], infoType],
+              };
+              payloadUserDataBatch.push(payloadItem);
+            });
+          }
+
+          // 2.- Retrieving users list (based on uids)
+          executeBatchCommand(payloadUserDataBatch).then((userListRes) => {
+            if ("data" in userListRes) {
+              const responseData = userListRes.data as BatchRPCResponse;
+              const usersList = responseData.result.results;
+              const usersListSize = responseData.result.count;
+              const usersListError = responseData.error as
+                | FetchBaseQueryError
+                | SerializedError;
+
+              if (usersList !== undefined) {
+                listToRefresh = [];
+                for (let i = 0; i < usersListSize; i++) {
+                  listToRefresh.push(usersList[i]);
+                }
+
+                // Update 'activeUsersList'
+                const newActiveUsersList = updateActiveUsersList(listToRefresh);
+                // Update 'shownUsersList'
+                setShownUsersList(newActiveUsersList.slice(0, perPage));
+
+                // Update changes to Redux
+                updateDataToRedux(newActiveUsersList);
+
+                // If user data retrieved, enable flag
+                if (listToRefresh.length > 0) {
+                  storedData = true;
+                }
+
+                // Show table elements
+                setShowTableRows(true);
+              } else if (usersListError !== undefined) {
+                // TODO: Handle error
+                handleAPIError(usersListError);
+              }
+            }
+          });
+        } else if (uidsError !== undefined) {
+          // TODO: Handle error
+          handleAPIError(uidsError);
+        }
+      } else if ("error" in userFindRes) {
+        const error = {
+          status: "CUSTOM_ERROR",
+          data: "",
+          error: "Unable to retrieve users' data",
+        } as FetchBaseQueryError;
+        handleAPIError(error as FetchBaseQueryError);
+      }
+    });
+  };
+
   // Data wrappers
   // - 'PaginationPrep'
   const paginationData = {
@@ -431,7 +602,13 @@ const ActiveUsers = () => {
     },
     {
       key: 3,
-      element: <SecondaryButton>Refresh</SecondaryButton>,
+      element: (
+        <SecondaryButton
+          onClickHandler={() => refreshUsersData(activeUsersList)}
+        >
+          Refresh
+        </SecondaryButton>
+      ),
     },
     {
       key: 4,
@@ -589,6 +766,15 @@ const ActiveUsers = () => {
         selectedUsersData={selectedUsersData}
         buttonsData={disableEnableButtonsData}
       /> */}
+      {isModalErrorOpen && (
+        <ErrorModal
+          title={errorTitle}
+          isOpen={isModalErrorOpen}
+          onClose={onCloseErrorModal}
+          actions={errorModalActions}
+          errorMessage={errorMessage}
+        />
+      )}
     </Page>
   );
 };
