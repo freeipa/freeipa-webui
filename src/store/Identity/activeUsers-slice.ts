@@ -111,12 +111,12 @@ const activeUsersSlice = createSlice({
     removeUser: (state, action: PayloadAction<string>) => {
       const userId = action.payload;
       const updatedUserList = state.usersList.filter(
-        (user) => user.uid !== userId
+        (user) => user.uid[0] !== userId
       );
+
       // If not empty, replace userList by new array
       if (updatedUserList) {
         state.usersList = updatedUserList;
-        // Update json file
       }
     },
     changeStatus: (state, action: PayloadAction<ChangeStatusData>) => {

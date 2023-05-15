@@ -299,6 +299,14 @@ const ActiveUsers = () => {
     setShowDeleteModal(true);
   };
 
+  const onOpenDeleteModal = () => {
+    setShowDeleteModal(true);
+  };
+
+  const onCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+  };
+
   const onDeleteModalToggle = () => {
     setShowDeleteModal(!showDeleteModal);
   };
@@ -487,6 +495,11 @@ const ActiveUsers = () => {
         handleAPIError(error as FetchBaseQueryError);
       }
     });
+  };
+
+  // Refresh 'Active users' list
+  const refreshActiveUsersList = () => {
+    refreshUsersData(activeUsersList);
   };
 
   // Data wrappers
@@ -755,14 +768,17 @@ const ActiveUsers = () => {
         onCloseAddModal={onCloseAddModal}
         onRefresh={() => refreshUsersData(activeUsersList)}
       />
-      {/* <DeleteUsers
+      <DeleteUsers
         show={showDeleteModal}
         from="active-users"
         handleModalToggle={onDeleteModalToggle}
         selectedUsersData={selectedUsersData}
         buttonsData={deleteUsersButtonsData}
+        onRefresh={refreshActiveUsersList}
+        onCloseDeleteModal={onCloseDeleteModal}
+        onOpenDeleteModal={onOpenDeleteModal}
       />
-      <DisableEnableUsers
+      {/* <DisableEnableUsers
         show={showEnableDisableModal}
         from="active-users"
         handleModalToggle={onEnableDisableModalToggle}
