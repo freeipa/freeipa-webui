@@ -37,7 +37,7 @@ const DeletedUsersTable = (props: PropsToDeletedUsersTable) => {
     case "active-users":
       activeUsersListCopy.map((user) => {
         props.usersToDelete.map((selected) => {
-          if (user.uid === selected) {
+          if (user.uid[0] === selected[0]) {
             usersToDelete.push(user);
           }
         });
@@ -68,7 +68,7 @@ const DeletedUsersTable = (props: PropsToDeletedUsersTable) => {
     userLogin: "User login",
     firstName: "First name",
     lastName: "Last name",
-    uid: "UID",
+    uidnumber: "UID",
     emailAddress: "Email address",
   };
 
@@ -78,7 +78,7 @@ const DeletedUsersTable = (props: PropsToDeletedUsersTable) => {
       <Th>{columnNames.userLogin}</Th>
       <Th modifier="wrap">{columnNames.firstName}</Th>
       <Th modifier="wrap">{columnNames.lastName}</Th>
-      <Th modifier="wrap">{columnNames.uid}</Th>
+      <Th modifier="wrap">{columnNames.uidnumber}</Th>
       <Th modifier="wrap">{columnNames.emailAddress}</Th>
     </Tr>
   );
@@ -88,7 +88,7 @@ const DeletedUsersTable = (props: PropsToDeletedUsersTable) => {
       <Td dataLabel={columnNames.userLogin}>{user.uid}</Td>
       <Td dataLabel={columnNames.firstName}>{user.givenname}</Td>
       <Td dataLabel={columnNames.lastName}>{user.sn}</Td>
-      <Td dataLabel={columnNames.uid}>{user.uid}</Td>
+      <Td dataLabel={columnNames.uidnumber}>{user.uidnumber}</Td>
       <Td dataLabel={columnNames.emailAddress}>{user.mail}</Td>
     </Tr>
   ));
