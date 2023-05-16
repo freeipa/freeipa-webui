@@ -139,3 +139,10 @@ export interface Service {
   serviceType: string;
   host: string;
 }
+
+// Errors
+export interface ErrorData {
+  code: string;
+  name: string;
+  error: string;
+}

@@ -129,7 +129,7 @@ const activeUsersSlice = createSlice({
         for (let j = 0; j < state.usersList.length; j++) {
           if (selectedUsersCount > 0) {
             // Find User by userId
-            if (selectedUsersIds[i] === state.usersList[j].uid) {
+            if (selectedUsersIds[i][0] === state.usersList[j].uid[0]) {
               // Update the status only
               const updatedUser = {
                 // identity
