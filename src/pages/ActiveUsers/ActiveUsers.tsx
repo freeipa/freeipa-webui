@@ -66,7 +66,8 @@ const ActiveUsers = () => {
   ) as string;
 
   // Active users list
-  let activeUsersList: User[] = [];
+  const usersList: User[] = [];
+  const [activeUsersList, setActiveUsersList] = useState<User[]>([]);
 
   // Define 'executeCommand' to execute simple commands (via Mutation)
   const [executeCommand] = useSimpleMutCommandMutation();
@@ -88,25 +89,29 @@ const ActiveUsers = () => {
     const usersData = batchResponse.result.results;
 
     for (let i = 0; i < returnItems; i++) {
-      activeUsersList.push(usersData[i].result);
+      usersList.push(usersData[i].result);
     }
 
     // If user data retrieved, enable flag
-    if (activeUsersList.length > 0) {
+    if (usersList.length > 0) {
       storedData = true;
     }
   }
 
   // When users' data is fully retrieved, update:
-  //   - Active users slice data (#1)
-  //   - Users' list to show in the table (#2)
+  //   - Active users list (#1)
+  //   - Active users slice data (#2)
+  //   - Users' list to show in the table (#3)
   useEffect(() => {
     if (storedData) {
       // #1
-      dispatch(updateUsersList(activeUsersList));
+      setActiveUsersList(usersList);
 
       // #2
-      setShownUsersList(activeUsersList.slice(0, perPage));
+      dispatch(updateUsersList(usersList));
+
+      // #3
+      setShownUsersList(usersList.slice(0, perPage));
     }
   }, [storedData]);
 
@@ -347,14 +352,15 @@ const ActiveUsers = () => {
 
   // Updates the 'activeUsersList'
   const updateActiveUsersList = (newUsersList) => {
-    activeUsersList = [];
+    const usersList: User[] = [];
     for (let i = 0; i < newUsersList.length; i++) {
       if (newUsersList[i].result !== undefined) {
         const user = newUsersList[i].result as User;
-        activeUsersList.push(user);
+        usersList.push(user);
       }
     }
-    return activeUsersList;
+    setActiveUsersList(usersList);
+    return usersList;
   };
 
   // Handle API error data
@@ -379,8 +385,6 @@ const ActiveUsers = () => {
   ];
 
   const handleAPIError = (error: FetchBaseQueryError | SerializedError) => {
-    console.log("--> error");
-    console.log(error);
     if ("error" in error) {
       setErrorTitle("IPA error");
       if (error.data !== undefined) {

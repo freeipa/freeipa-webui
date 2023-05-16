@@ -255,7 +255,7 @@ const UsersTable = (props: PropsToTable) => {
 
   // Given userId, returns full User
   const getUserById = (userId: string) => {
-    const res = usersList.filter((user) => user.uid === userId);
+    const res = usersList.filter((user) => user.uid[0] === userId);
     return res[0];
   };
 
@@ -275,7 +275,7 @@ const UsersTable = (props: PropsToTable) => {
 
       const selectedUsers: User[] = props.usersData.selectedUserIds.map(
         (userId) => {
-          return getUserById(userId);
+          return getUserById(userId[0]);
         }
       );
 
