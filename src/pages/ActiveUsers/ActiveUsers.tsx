@@ -782,14 +782,15 @@ const ActiveUsers = () => {
         onCloseDeleteModal={onCloseDeleteModal}
         onOpenDeleteModal={onOpenDeleteModal}
       />
-      {/* <DisableEnableUsers
+      <DisableEnableUsers
         show={showEnableDisableModal}
         from="active-users"
         handleModalToggle={onEnableDisableModalToggle}
         optionSelected={enableDisableOptionSelected}
         selectedUsersData={selectedUsersData}
         buttonsData={disableEnableButtonsData}
-      /> */}
+        onRefresh={refreshActiveUsersList}
+      />
       {isModalErrorOpen && (
         <ErrorModal
           title={errorTitle}
