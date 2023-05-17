@@ -74,6 +74,11 @@ const AddUser = (props: PropsToAddUser) => {
     message: "",
     pfError: ValidatedOptions.default,
   });
+  const [verifyPasswordValidation, setVerifyPasswordValidation] = useState({
+    isError: false,
+    message: "",
+    pfError: ValidatedOptions.default,
+  });
 
   // TextInput setters
   const userLoginValueHandler = (value: string) => {
@@ -154,6 +159,19 @@ const AddUser = (props: PropsToAddUser) => {
     return false;
   };
 
+  const verifyPasswordValidationHandler = () => {
+    if (newPassword !== verifyNewPassword) {
+      const verifyPassVal = {
+        isError: true,
+        message: "Passwords must match",
+        pfError: ValidatedOptions.error,
+      };
+      setVerifyPasswordValidation(verifyPassVal);
+      return true; // is error
+    }
+    return false;
+  };
+
   // Reset validation methods
   // - User login
   const resetUserLoginError = () => {
@@ -182,6 +200,15 @@ const AddUser = (props: PropsToAddUser) => {
     });
   };
 
+  // Verify password
+  const resetVerifyPassword = () => {
+    setVerifyPasswordValidation({
+      isError: false,
+      message: "",
+      pfError: ValidatedOptions.default,
+    });
+  };
+
   // Select GID
   const [isGidOpen, setIsGidOpen] = useState(false);
   const [gidSelected, setGidSelected] = useState("");
@@ -200,15 +227,27 @@ const AddUser = (props: PropsToAddUser) => {
     setIsGidOpen(false);
   };
 
+  // Checks if the passwords are filled and matches
+  const verifiedPasswords =
+    (newPassword === verifyNewPassword &&
+      newPassword.length > 0 &&
+      verifyNewPassword.length > 0) ||
+    (newPassword.length === 0 && verifyNewPassword.length === 0);
+
   // Buttons are disabled until the user fills the required fields
   const [buttonDisabled, setButtonDisabled] = useState(true);
   useEffect(() => {
-    if (firstName.length > 0 && lastName.length > 0 && validateFields()) {
+    if (
+      firstName.length > 0 &&
+      lastName.length > 0 &&
+      verifiedPasswords &&
+      validateFields()
+    ) {
       setButtonDisabled(false);
     } else {
       setButtonDisabled(true);
     }
-  }, [userLogin, firstName, lastName]);
+  }, [userLogin, firstName, lastName, newPassword, verifyNewPassword]);
 
   // List of fields
   const fields = [
@@ -355,6 +394,8 @@ const AddUser = (props: PropsToAddUser) => {
           id="modal-form-new-password"
           name="modal-form-new-password"
           value={newPassword}
+          onBlur={verifyPasswordValidationHandler}
+          onFocus={resetVerifyPassword}
           onChange={newPasswordValueHandler}
           ref={newPasswordRef}
         />
@@ -364,14 +405,24 @@ const AddUser = (props: PropsToAddUser) => {
       id: "verify-password",
       name: "Verify password",
       pfComponent: (
-        <TextInput
-          type="password"
-          id="modal-form-verify-password"
-          name="modal-form-verify-password"
-          value={verifyNewPassword}
-          onChange={verifyNewPasswordValueHandler}
-          ref={verifyNewPasswordRef}
-        />
+        <>
+          <TextInput
+            type="password"
+            id="modal-form-verify-password"
+            name="modal-form-verify-password"
+            value={verifyNewPassword}
+            onBlur={verifyPasswordValidationHandler}
+            onFocus={resetVerifyPassword}
+            onChange={verifyNewPasswordValueHandler}
+            validated={verifyPasswordValidation.pfError}
+            ref={verifyNewPasswordRef}
+          />
+          <HelperText>
+            <HelperTextItem variant="error">
+              {verifyPasswordValidation.message}
+            </HelperTextItem>
+          </HelperText>
+        </>
       ),
     },
   ];
@@ -381,6 +432,7 @@ const AddUser = (props: PropsToAddUser) => {
     resetUserLoginError();
     resetFirstNameError();
     resetLastNameError();
+    resetVerifyPassword();
   };
 
   // List of field validations
@@ -389,7 +441,13 @@ const AddUser = (props: PropsToAddUser) => {
     const userLoginError = userLoginValidationHandler();
     const firstNameError = firstNameValidationHandler();
     const lastNameError = lastNameValidationHandler();
-    if (userLoginError || firstNameError || lastNameError) {
+    const verifyPasswordError = verifyPasswordValidationHandler();
+    if (
+      userLoginError ||
+      firstNameError ||
+      lastNameError ||
+      verifyPasswordError
+    ) {
       return false;
     } else return true;
   };
