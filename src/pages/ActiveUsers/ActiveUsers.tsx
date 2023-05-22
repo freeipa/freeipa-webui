@@ -30,6 +30,8 @@ import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import TextLayout from "src/components/layouts/TextLayout";
+import AlertGroupLayout from "src/components/layouts/AlertGroupLayout";
+import AlertLayout from "src/components/layouts/AlertLayout";
 // Tables
 import UsersTable from "../../components/tables/UsersTable";
 // Components
@@ -39,6 +41,7 @@ import BulkSelectorUsersPrep from "src/components/BulkSelectorUsersPrep";
 import AddUser from "src/components/modals/AddUser";
 import DeleteUsers from "src/components/modals/DeleteUsers";
 import DisableEnableUsers from "src/components/modals/DisableEnableUsers";
+import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Utils
 import { apiErrorToJsXError, isUserSelectable } from "src/utils/utils";
 // RPC client
@@ -74,6 +77,9 @@ const ActiveUsers = () => {
 
   // Define 'executeBatchCommand' to execute a batch of operations (via Mutation)
   const [executeBatchCommand] = useBatchMutCommandMutation();
+
+  // Alerts to show in the UI
+  const [alerts, setAlerts] = useState<JSX.Element[]>([]);
 
   // [API Call] Retrieve partial user info from multiple query
   const {
@@ -258,20 +264,118 @@ const ActiveUsers = () => {
     }
   }, [isBatchLoading]);
 
+  // Alerts
+  // - Remove alert from the 'alerts' list state
+  const removeAlert = (key: React.Key) => {
+    const updatedList = alerts.filter((alert) => alert.key !== key);
+
+    setAlerts(updatedList);
+  };
+
+  // - Add alert into 'alerts' list state
+  const addAlert = (
+    key: string,
+    title: React.ReactNode,
+    variant?: "default" | "danger" | "warning" | "success" | "info" | undefined
+  ) => {
+    const newAlert = (
+      <AlertLayout
+        key={key}
+        variant={variant}
+        title={title}
+        onCloseHandler={() => removeAlert(key)}
+      />
+    );
+
+    const newAlertList = alerts;
+    newAlertList.push(newAlert);
+    setAlerts(newAlertList);
+  };
+
+  // [API call] 'Rebuild auto membership'
+  const onRebuildAutoMembership = () => {
+    // The operation will be made depending on the selected users
+    const paramArgs =
+      selectedUsers.length === 0
+        ? { type: "group", version: apiVersion }
+        : { users: selectedUsers.map((uid) => uid[0]), version: apiVersion };
+
+    // Prepare API call payload
+    const automemberPayload: Command = {
+      method: "automember_rebuild",
+      params: [[], paramArgs],
+    };
+
+    executeCommand(automemberPayload).then((result) => {
+      if ("data" in result) {
+        const automemberError = result.data.error as
+          | FetchBaseQueryError
+          | SerializedError;
+
+        if (automemberError) {
+          // alert: error
+          addAlert("rebuild-automember-error", automemberError, "danger");
+        } else {
+          // alert: success
+          addAlert(
+            "rebuild-automember-success",
+            "Automember rebuild membership task completed",
+            "success"
+          );
+        }
+        // Hide modal
+        setIsMembershipModalOpen(!isMembershipModalOpen);
+      }
+    });
+  };
+
+  // 'Rebuild auto membership' modal
+  const [isMembershipModalOpen, setIsMembershipModalOpen] = useState(false);
+
+  const membershipModalActions: JSX.Element[] = [
+    <Button
+      key="rebuild-auto-membership"
+      variant="primary"
+      onClick={onRebuildAutoMembership}
+      form="rebuild-auto-membership-modal"
+    >
+      OK
+    </Button>,
+    <Button
+      key="cancel-rebuild-auto-membership"
+      variant="link"
+      onClick={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
+    >
+      Cancel
+    </Button>,
+  ];
+
+  // 'Rebuild auto membership' modal fields: Confirmation question
+  const confirmationQuestion = [
+    {
+      id: "question-text",
+      pfComponent: (
+        <TextLayout component="p">
+          Are you sure you want to rebuild auto membership?
+        </TextLayout>
+      ),
+    },
+  ];
+
   // Dropdown kebab
   const [kebabIsOpen, setKebabIsOpen] = useState(false);
 
   const dropdownItems = [
-    <DropdownItem key="action" component="button">
+    <DropdownItem
+      key="action"
+      component="button"
+      onClick={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
+    >
       Rebuild auto membership
     </DropdownItem>,
   ];
 
-  const onKebabToggle = (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    event: any,
-    isOpen: boolean
-  ) => {
+  const onKebabToggle = (isOpen: boolean) => {
     setKebabIsOpen(isOpen);
   };
 
@@ -716,91 +820,109 @@ const ActiveUsers = () => {
 
   // Render 'Active users'
   return (
-    <Page>
-      <PageSection variant={PageSectionVariants.light}>
-        <TitleLayout
-          id="active users title"
-          headingLevel="h1"
-          text="Active users"
-        />
-      </PageSection>
-      <PageSection
-        variant={PageSectionVariants.light}
-        isFilled={false}
-        className="pf-u-m-lg pf-u-pb-md pf-u-pl-0 pf-u-pr-0"
-      >
-        <ToolbarLayout
-          className="pf-u-pt-0 pf-u-pl-lg pf-u-pr-md"
-          contentClassName="pf-u-p-0"
-          toolbarItems={toolbarItems}
-        />
-        <div style={{ height: `calc(100vh - 352.2px)` }}>
-          <OuterScrollContainer>
-            <InnerScrollContainer>
-              {batchError !== undefined && batchError ? (
-                <>{errorGlobalMessage}</>
-              ) : (
-                <UsersTable
-                  elementsList={activeUsersList}
-                  shownElementsList={shownUsersList}
-                  from="active-users"
-                  showTableRows={showTableRows}
-                  usersData={usersTableData}
-                  buttonsData={usersTableButtonsData}
-                  paginationData={selectedPerPageData}
-                  searchValue={searchValue}
-                />
-              )}
-            </InnerScrollContainer>
-          </OuterScrollContainer>
-        </div>
-        <PaginationPrep
-          list={activeUsersList}
-          paginationData={paginationData}
-          variant={PaginationVariant.bottom}
-          widgetId="pagination-options-menu-bottom"
-          perPageComponent="button"
-          className="pf-u-pb-0 pf-u-pr-md"
-        />
-      </PageSection>
-      <AddUser
-        show={showAddModal}
-        from="active-users"
-        setShowTableRows={setShowTableRows}
-        handleModalToggle={onAddModalToggle}
-        onOpenAddModal={onAddClickHandler}
-        onCloseAddModal={onCloseAddModal}
-        onRefresh={() => refreshUsersData(activeUsersList)}
-      />
-      <DeleteUsers
-        show={showDeleteModal}
-        from="active-users"
-        handleModalToggle={onDeleteModalToggle}
-        selectedUsersData={selectedUsersData}
-        buttonsData={deleteUsersButtonsData}
-        onRefresh={refreshActiveUsersList}
-        onCloseDeleteModal={onCloseDeleteModal}
-        onOpenDeleteModal={onOpenDeleteModal}
-      />
-      <DisableEnableUsers
-        show={showEnableDisableModal}
-        from="active-users"
-        handleModalToggle={onEnableDisableModalToggle}
-        optionSelected={enableDisableOptionSelected}
-        selectedUsersData={selectedUsersData}
-        buttonsData={disableEnableButtonsData}
-        onRefresh={refreshActiveUsersList}
-      />
-      {isModalErrorOpen && (
-        <ErrorModal
-          title={errorTitle}
-          isOpen={isModalErrorOpen}
-          onClose={onCloseErrorModal}
-          actions={errorModalActions}
-          errorMessage={errorMessage}
-        />
+    <>
+      {alerts !== undefined && (
+        <AlertGroupLayout alerts={alerts} setAlerts={setAlerts} />
       )}
-    </Page>
+      <Page>
+        <PageSection variant={PageSectionVariants.light}>
+          <TitleLayout
+            id="active users title"
+            headingLevel="h1"
+            text="Active users"
+          />
+        </PageSection>
+        <PageSection
+          variant={PageSectionVariants.light}
+          isFilled={false}
+          className="pf-u-m-lg pf-u-pb-md pf-u-pl-0 pf-u-pr-0"
+        >
+          <ToolbarLayout
+            className="pf-u-pt-0 pf-u-pl-lg pf-u-pr-md"
+            contentClassName="pf-u-p-0"
+            toolbarItems={toolbarItems}
+          />
+          <div style={{ height: `calc(100vh - 352.2px)` }}>
+            <OuterScrollContainer>
+              <InnerScrollContainer>
+                {batchError !== undefined && batchError ? (
+                  <>{errorGlobalMessage}</>
+                ) : (
+                  <UsersTable
+                    elementsList={activeUsersList}
+                    shownElementsList={shownUsersList}
+                    from="active-users"
+                    showTableRows={showTableRows}
+                    usersData={usersTableData}
+                    buttonsData={usersTableButtonsData}
+                    paginationData={selectedPerPageData}
+                    searchValue={searchValue}
+                  />
+                )}
+              </InnerScrollContainer>
+            </OuterScrollContainer>
+          </div>
+          <PaginationPrep
+            list={activeUsersList}
+            paginationData={paginationData}
+            variant={PaginationVariant.bottom}
+            widgetId="pagination-options-menu-bottom"
+            perPageComponent="button"
+            className="pf-u-pb-0 pf-u-pr-md"
+          />
+        </PageSection>
+        <AddUser
+          show={showAddModal}
+          from="active-users"
+          setShowTableRows={setShowTableRows}
+          handleModalToggle={onAddModalToggle}
+          onOpenAddModal={onAddClickHandler}
+          onCloseAddModal={onCloseAddModal}
+          onRefresh={() => refreshUsersData(activeUsersList)}
+        />
+        <DeleteUsers
+          show={showDeleteModal}
+          from="active-users"
+          handleModalToggle={onDeleteModalToggle}
+          selectedUsersData={selectedUsersData}
+          buttonsData={deleteUsersButtonsData}
+          onRefresh={refreshActiveUsersList}
+          onCloseDeleteModal={onCloseDeleteModal}
+          onOpenDeleteModal={onOpenDeleteModal}
+        />
+        <DisableEnableUsers
+          show={showEnableDisableModal}
+          from="active-users"
+          handleModalToggle={onEnableDisableModalToggle}
+          optionSelected={enableDisableOptionSelected}
+          selectedUsersData={selectedUsersData}
+          buttonsData={disableEnableButtonsData}
+          onRefresh={refreshActiveUsersList}
+        />
+        {isModalErrorOpen && (
+          <ErrorModal
+            title={errorTitle}
+            isOpen={isModalErrorOpen}
+            onClose={onCloseErrorModal}
+            actions={errorModalActions}
+            errorMessage={errorMessage}
+          />
+        )}
+        {isMembershipModalOpen && (
+          <ModalWithFormLayout
+            variantType="medium"
+            modalPosition="top"
+            offPosition="76px"
+            title="Confirmation"
+            formId="rebuild-auto-membership-modal"
+            fields={confirmationQuestion}
+            show={isMembershipModalOpen}
+            onClose={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
+            actions={membershipModalActions}
+          />
+        )}
+      </Page>
+    </>
   );
 };
 
