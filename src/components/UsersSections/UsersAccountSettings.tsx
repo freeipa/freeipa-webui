@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 // PatternFly
 import {
@@ -15,7 +16,7 @@ import {
   Button,
 } from "@patternfly/react-core";
 // Data types
-import { User } from "src/utils/datatypes/globalDataTypes";
+import { IDPServer, User } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import DataTimePickerLayout from "src/components/layouts/Calendar/DataTimePickerLayout";
@@ -52,6 +53,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
   const [homeDirectory, setHomeDirectory] = useState("/home/" + userLogin);
   const [loginShell, setLoginShell] = useState("/bin/sh");
   const [radiusUsername, setRadiusUsername] = useState("");
+  const [idpIdentifier, setIdpIdentifier] = useState("");
 
   // UID
   const uidInputHandler = (value: string) => {
@@ -350,6 +352,11 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
     setRadiusUsername(value);
   };
 
+  // Track changes on External IdP user identifier textbox field
+  const idpIdentifierInputHandler = (value: string) => {
+    setIdpIdentifier(value);
+  };
+
   // Checkboxes
   const [passwordCheckbox] = useState(false);
   const [radiusCheckbox] = useState(false);
@@ -447,6 +454,20 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
   const radiusConfOnSelect = (selection: any) => {
     setRadiusConfSelected(selection.target.textContent);
     setIsRadiusConfOpen(false);
+  };
+
+  // Dropdown 'External IdP configuration'
+  const [isIdpConfOpen, setIsIdpConfOpen] = useState(false);
+  const [idpConfSelected, setIdpConfSelected] = useState("");
+  const [idpConfOptions] = useState<IDPServer[]>([]);
+
+  const idpConfOnToggle = (isOpen: boolean) => {
+    setIsIdpConfOpen(isOpen);
+  };
+
+  const idpConfOnSelect = (selection: any) => {
+    setIdpConfSelected(selection.target.textContent);
+    setIsIdpConfOpen(false);
   };
 
   // Messages for the popover
@@ -734,6 +755,40 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 type="text"
                 onChange={radiusUsernameInputHandler}
                 aria-label="radius proxy username"
+              />
+            </FormGroup>
+            <FormGroup
+              label="External IdP configuration"
+              fieldId="external-idp-configuration"
+            >
+              <Select
+                id="external-idp-configuration"
+                name="ipaidpconfiglink"
+                variant={SelectVariant.single}
+                placeholderText=" "
+                aria-label="Select Input with descriptions"
+                onToggle={idpConfOnToggle}
+                onSelect={idpConfOnSelect}
+                selections={idpConfSelected}
+                isOpen={isIdpConfOpen}
+                aria-labelledby="external-idp-conf"
+              >
+                {idpConfOptions.map((option, index) => (
+                  <SelectOption key={index} value={option.cn} />
+                ))}
+              </Select>
+            </FormGroup>
+            <FormGroup
+              label="External IdP user identifier"
+              fieldId="external-idp-user-identifier"
+            >
+              <TextInput
+                id="external-idp-user-identifier"
+                name="ipaidpsub"
+                value={idpIdentifier}
+                type="text"
+                onChange={idpIdentifierInputHandler}
+                aria-label="idp user identifier"
               />
             </FormGroup>
           </Form>

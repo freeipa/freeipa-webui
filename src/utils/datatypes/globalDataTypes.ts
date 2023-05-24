@@ -146,3 +146,16 @@ export interface ErrorData {
   name: string;
   error: string;
 }
+
+// Identity Provider server
+export interface IDPServer {
+  cn: string;
+  dn: string;
+  ipaidpauthendpoint: string;
+  ipaidpclientid: string[];
+  ipaidpdevauthendpoint: string[];
+  ipaidpscope: string;
+  ipaidpsub: string;
+  ipaidptokenendpoint: string;
+  ipaidpuserinfoendpoint: string[];
+}
