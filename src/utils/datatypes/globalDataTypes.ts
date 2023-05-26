@@ -1,40 +1,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-export interface UserAuthTypes {
-  password: boolean;
-  radius: boolean;
-  otp: boolean;
-  pkinit: boolean;
-  hardened: boolean;
-  idp: boolean;
-}
-
 export interface User {
   // identity
   title: string;
-  givenname: string;
-  sn: string;
+  givenname: string; // required
+  sn: string; // required
   displayname: string;
   initials: string;
   gecos: string;
-  userclass: string;
+  userclass: string[]; // multivalue
   // account
-  uid: string;
+  uid: string; // required
   has_password: boolean;
-  krbpasswordexpiration: string;
+  krbpasswordexpiration: Date | string;
   uidnumber: string;
   gidnumber: string;
-  krbprincipalname: string;
-  krbprincipalexpiration: string;
+  krbprincipalname: string[]; // multivalue
+  krbprincipalexpiration: Date | string;
   loginshell: string;
   homedirectory: string;
   ipasshpubkey: string[]; // multivalue
   usercertificate: string[]; // multivalue
   ipacertmapdata: string[]; // multivalue
-  ipauserauthtype: UserAuthTypes;
-  ipatokenradiusconfiglink: string[];
+  ipauserauthtype: string[]; // multivalue
+  ipatokenradiusconfiglink: string;
   ipatokenradiususername: string;
-  ipaidpconfiglink: string[];
+  ipaidpconfiglink: string;
   ipaidpsub: string;
   // pwpolicy
   krbmaxpwdlife: string;
@@ -62,7 +53,7 @@ export interface User {
   postalcode: string;
   // employee
   ou: string;
-  manager: string[]; // multivalue
+  manager: string;
   departmentnumber: string[]; // multivalue
   employeenumber: string;
   employeetype: string;
@@ -79,7 +70,7 @@ export interface User {
   // 'Managed by' data
   mepmanagedentry: string[];
   // other
-  cn: string;
+  cn: string; // required
   krbcanonicalname: string[];
   nsaccountlock: boolean; // status (Enable: False | Disabled: True)
   objectclass: any[];
@@ -89,6 +80,7 @@ export interface User {
   has_keytab: boolean;
   preserved: boolean;
   dn: string;
+  sshpubkeyfp: string[]; // multivalue
 }
 
 export interface UserGroup {
