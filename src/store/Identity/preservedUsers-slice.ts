@@ -108,6 +108,7 @@ const preservedUsersSlice = createSlice({
         has_keytab: newUser.has_keytab,
         preserved: newUser.preserved,
         dn: newUser.dn,
+        sshpubkeyfp: newUser.sshpubkeyfp,
       });
       // Update json file
     },
@@ -220,6 +221,7 @@ const preservedUsersSlice = createSlice({
                 has_keytab: state.usersList[j].has_keytab,
                 preserved: state.usersList[j].preserved,
                 dn: state.usersList[j].dn,
+                sshpubkeyfp: state.usersList[j].sshpubkeyfp,
               };
               // Replace entry
               state.usersList[j] = updatedUser;
