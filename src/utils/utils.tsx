@@ -70,3 +70,25 @@ export const apiErrorToJsXError = (
 
   return errorJsx;
 };
+
+// Parse string to UTC date format
+// '20230809120244Z' --> 'Sat Aug 09 2023 14:02:44 GMT+0200 (Central European Summer Time)'
+export const parseStringToUTCFormat = (date: string) => {
+  const year = date.substring(0, 4);
+  const month = date.substring(4, 6);
+  const day = date.substring(6, 8);
+  const hour = date.substring(8, 10);
+  const minutes = date.substring(10, 12);
+  const seconds = date.substring(12, 14);
+
+  const dateFormat = new Date(
+    +year,
+    +month - 1, // number between 0 and 11 (January to December).
+    +day,
+    +hour,
+    +minutes,
+    +seconds
+  ); // UTC
+
+  return dateFormat;
+};
