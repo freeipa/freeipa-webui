@@ -363,6 +363,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
   const [tpaCheckbox] = useState(false);
   const [pkinitCheckbox] = useState(false);
   const [hardenedPassCheckbox] = useState(false);
+  const [extIdentityProvCheckbox] = useState(false);
 
   // Date and time picker (Calendar)
   const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
@@ -717,6 +718,15 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 id="hardenedPassCheckbox"
                 name="ipauserauthtype"
                 value="hardened"
+                className="pf-u-mt-xs pf-u-mb-sm"
+              />
+              <Checkbox
+                label="External Identity Provider"
+                isChecked={extIdentityProvCheckbox}
+                aria-label="external identity provider from user authentication types"
+                id="extIdentityProvCheckbox"
+                name="ipauserauthtype"
+                value="idp"
               />
             </FormGroup>
             <FormGroup
