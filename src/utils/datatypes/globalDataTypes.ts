@@ -139,15 +139,23 @@ export interface ErrorData {
   error: string;
 }
 
-// Identity Provider server
-export interface IDPServer {
+// Certificates
+export interface Certificate {
+  certificate: string;
+  issuer: string;
+  ownerUser: string[];
+  serialNumber: number;
+  serialNumberHex: string;
+  sha1Fingerprint: string;
+  sha256Fingerprint: string;
+  subject: string;
+  validNotAfter: string;
+  validNotBefore: string;
+}
+
+// RADIUS server
+export interface RadiusServer {
   cn: string;
   dn: string;
-  ipaidpauthendpoint: string;
-  ipaidpclientid: string[];
-  ipaidpdevauthendpoint: string[];
-  ipaidpscope: string;
-  ipaidpsub: string;
-  ipaidptokenendpoint: string;
-  ipaidpuserinfoendpoint: string[];
+  ipatokenradiusserver: string;
 }

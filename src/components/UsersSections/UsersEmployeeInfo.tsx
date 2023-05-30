@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   SelectOption,
@@ -12,13 +13,15 @@ import {
 } from "@patternfly/react-core";
 // Layouts
 import SecondaryButton from "../layouts/SecondaryButton";
+// Data types
+import { User } from "src/utils/datatypes/globalDataTypes";
 
-interface DepartmentNumberData {
-  id: number | string;
-  departmentNumber: string;
+interface PropsToEmployeeData {
+  uidsData: any;
+  userData: any;
 }
 
-const UsersEmployeeInfo = () => {
+const UsersEmployeeInfo = (props: PropsToEmployeeData) => {
   // TODO: This state variables should update the user data via the IPA API (`user_mod`)
   const [orgUnit, setOrgUnit] = useState("");
   const [employeeNumber, setEmployeeNumber] = useState("");
@@ -38,17 +41,46 @@ const UsersEmployeeInfo = () => {
     setPreferredLanguage(value);
   };
 
+  // Updates data on 'userData' changes
+  useEffect(() => {
+    if (props.userData !== undefined) {
+      const userData = props.userData as User;
+      if (userData.ou !== undefined) {
+        setOrgUnit(userData.ou);
+      }
+      if (userData.employeenumber !== undefined) {
+        setEmployeeNumber(userData.employeenumber);
+      }
+      if (userData.employeetype !== undefined) {
+        setEmployeeType(userData.employeetype);
+      }
+      if (userData.preferredlanguage !== undefined) {
+        setPreferredLanguage(userData.preferredlanguage);
+      }
+      if (userData.departmentnumber !== undefined) {
+        setDepartmentNumberList(userData.departmentnumber);
+      }
+      if (userData.manager !== undefined) {
+        setManagerSelected(userData.manager);
+      }
+    }
+  }, [props.userData]);
+
   // Dropdown 'Manager'
   const [isManagerOpen, setIsManagerOpen] = useState(false);
   const [managerSelected, setManagerSelected] = useState("");
-  const managerOptions = [
-    { value: "Option 1", disabled: false },
-    { value: "Option 2", disabled: false },
-    { value: "Option 3", disabled: false },
-  ];
+  const [managerOptions, setManagerOptions] = useState<string[]>([]);
   const managerOnToggle = (isOpen: boolean) => {
     setIsManagerOpen(isOpen);
   };
+
+  // Updates data on 'uidsData' changes
+  useEffect(() => {
+    if (props.uidsData !== undefined) {
+      const uidsList = props.uidsData.map((uid) => uid.uid[0]);
+      setManagerOptions(uidsList);
+    }
+  }, [props.uidsData]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const managerOnSelect = (selection: any) => {
@@ -57,17 +89,14 @@ const UsersEmployeeInfo = () => {
   };
 
   // Department number
-  const [departmentNumberList, setDepartmentNumberList] = useState<
-    DepartmentNumberData[]
-  >([]);
+  const [departmentNumberList, setDepartmentNumberList] = useState<string[]>(
+    []
+  );
 
   // - 'Add department number' handler
   const onAddDepartmentNumberHandler = () => {
     const departmentNumberListCopy = [...departmentNumberList];
-    departmentNumberListCopy.push({
-      id: Date.now.toString(),
-      departmentNumber: "",
-    });
+    departmentNumberListCopy.push("");
     setDepartmentNumberList(departmentNumberListCopy);
   };
 
@@ -111,19 +140,16 @@ const UsersEmployeeInfo = () => {
               name="manager"
               variant={SelectVariant.single}
               placeholderText=" "
-              aria-label="Select Input with descriptions"
+              aria-label="Select manager"
               onToggle={managerOnToggle}
               onSelect={managerOnSelect}
               selections={managerSelected}
               isOpen={isManagerOpen}
               aria-labelledby="manager"
+              style={{ height: "186px", overflowY: "scroll" }}
             >
               {managerOptions.map((option, index) => (
-                <SelectOption
-                  isDisabled={option.disabled}
-                  key={index}
-                  value={option.value}
-                />
+                <SelectOption key={index} value={option} />
               ))}
             </Select>
           </FormGroup>
@@ -132,16 +158,16 @@ const UsersEmployeeInfo = () => {
               {departmentNumberList.map((departmentNumber, idx) => (
                 <Flex
                   direction={{ default: "row" }}
-                  key={departmentNumber.id + "-" + idx + "-div"}
+                  key={departmentNumber + "-" + idx + "-div"}
                   name="value"
                 >
                   <FlexItem
-                    key={departmentNumber.id + "-textbox"}
+                    key={departmentNumber + "-" + idx + "-textbox"}
                     flex={{ default: "flex_1" }}
                   >
                     <TextInput
-                      id="department-number"
-                      value={departmentNumber.departmentNumber}
+                      id={"department-number" + idx}
+                      value={departmentNumber}
                       type="text"
                       name={"departmentnumber-" + idx}
                       aria-label="department number"
@@ -150,7 +176,9 @@ const UsersEmployeeInfo = () => {
                       }
                     />
                   </FlexItem>
-                  <FlexItem key={departmentNumber.id + "-delete-button"}>
+                  <FlexItem
+                    key={departmentNumber + "-" + idx + "-delete-button"}
+                  >
                     <SecondaryButton
                       name="remove"
                       onClickHandler={() =>

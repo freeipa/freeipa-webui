@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   Flex,
@@ -11,17 +12,37 @@ import {
 import { User } from "src/utils/datatypes/globalDataTypes";
 
 interface PropsToUsersIdentity {
-  user: User;
+  userData: any;
 }
 
 const UsersIdentity = (props: PropsToUsersIdentity) => {
   // TODO: This state variables should update the user data via the IPA API (`user_mod`)
-  const [firstName] = useState(props.user.givenname);
-  const [lastName, setLastName] = useState(props.user.sn);
-  const [fullName, setFullName] = useState(firstName + " " + lastName);
-  const [jobTitle] = useState(props.user.title);
-  const [gecos, setGecos] = useState(fullName);
-  const [classField, setClassField] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [gecos, setGecos] = useState("");
+  const [classField, setClassField] = useState<string[]>([]);
+
+  // Updates data on 'userData' changes
+  useEffect(() => {
+    if (props.userData !== undefined) {
+      const userData = props.userData as User;
+      setFirstName(userData.givenname);
+      setLastName(userData.sn);
+      setFullName(userData.displayname);
+      setJobTitle(userData.title);
+      setGecos(userData.gecos);
+      if (userData.userclass !== undefined) {
+        setClassField(userData.userclass);
+      }
+    }
+  }, [props.userData]);
+
+  // Field input handlers
+  const firstNameInputHandler = (value: string) => {
+    setFirstName(value);
+  };
 
   const lastNameInputHandler = (value: string) => {
     setLastName(value);
@@ -31,12 +52,16 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
     setFullName(value);
   };
 
+  const jobTitleInputHandler = (value: string) => {
+    setJobTitle(value);
+  };
+
   const gecosInputHandler = (value: string) => {
     setGecos(value);
   };
 
   const classFieldInputHandler = (value: string) => {
-    setClassField(value);
+    setClassField([value]);
   };
 
   return (
@@ -49,6 +74,7 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
               name="givenname"
               value={firstName}
               type="text"
+              onChange={firstNameInputHandler}
               aria-label="first name"
               isRequired
             />
@@ -85,6 +111,7 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
               name="title"
               value={jobTitle}
               type="text"
+              onChange={jobTitleInputHandler}
               aria-label="job title"
               isDisabled
             />
@@ -104,7 +131,7 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
             <TextInput
               id="class-field"
               name="userclass"
-              value={classField}
+              value={classField && classField[0]} // TODO: Better represent the classes array
               type="text"
               onChange={classFieldInputHandler}
               aria-label="class field"
