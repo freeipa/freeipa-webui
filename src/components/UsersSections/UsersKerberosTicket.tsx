@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   Flex,
@@ -8,10 +9,22 @@ import {
   TextInput,
 } from "@patternfly/react-core";
 
-const UsersKerberosTicket = () => {
-  // TODO: This state variables should update the user data via the IPA API (`krbtpolicy_mod`)
-  const [maxRenew] = useState("");
-  const [maxLife] = useState("");
+interface PropsToKerberosTicket {
+  krbtpolicyData: any;
+}
+
+const UsersKerberosTicket = (props: PropsToKerberosTicket) => {
+  // TODO: Specify field access (read/write) based on 'attributelevelrights'
+  const [maxRenew, setMaxRenew] = useState("");
+  const [maxLife, setMaxLife] = useState("");
+
+  // Updates data on 'krbtpolicyData' changes
+  useEffect(() => {
+    if (props.krbtpolicyData !== undefined) {
+      setMaxRenew(props.krbtpolicyData.krbmaxrenewableage[0]);
+      setMaxLife(props.krbtpolicyData.krbmaxticketlife[0]);
+    }
+  }, [props.krbtpolicyData]);
 
   return (
     <Flex direction={{ default: "column", md: "row" }}>

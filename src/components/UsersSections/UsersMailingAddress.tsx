@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   Flex,
@@ -7,13 +8,39 @@ import {
   FormGroup,
   TextInput,
 } from "@patternfly/react-core";
+// Data types
+import { User } from "src/utils/datatypes/globalDataTypes";
 
-const UsersMailingAddress = () => {
+interface PropsToMailingAddress {
+  userData: any;
+}
+
+const UsersMailingAddress = (props: PropsToMailingAddress) => {
   // TODO: This state variables should update the user data via the IPA API (`user_mod`)
   const [streetAddress, setStreetAddress] = useState("");
   const [city, setCity] = useState("");
   const [stateProvince, setStateProvince] = useState("");
   const [zip, setZip] = useState("");
+
+  // Updates data on 'userData' changes
+  useEffect(() => {
+    if (props.userData !== undefined) {
+      const userData = props.userData as User;
+
+      if (userData.street !== undefined) {
+        setStreetAddress(userData.street);
+      }
+      if (userData.l !== undefined) {
+        setCity(userData.l);
+      }
+      if (userData.st !== undefined) {
+        setStateProvince(userData.st);
+      }
+      if (userData.postalcode !== undefined) {
+        setZip(userData.postalcode);
+      }
+    }
+  }, [props.userData]);
 
   const onChangeStreetAddressHandler = (value: string) => {
     setStreetAddress(value);

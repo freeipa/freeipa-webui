@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   Flex,
@@ -8,17 +9,36 @@ import {
   TextInput,
 } from "@patternfly/react-core";
 
-const UsersPasswordPolicy = () => {
-  // TODO: This state variables should update the user data via the IPA API (`pwpolicy_mod`)
-  const [maxLifetimeDays] = useState("");
-  const [minLifetimeHours] = useState("");
-  const [historySize] = useState("");
-  const [characterClasses] = useState("");
-  const [minLength] = useState("");
-  const [maxFailures] = useState("");
-  const [futureResetInterval] = useState("");
-  const [lockoutDuration] = useState("");
-  const [graceLoginLimit] = useState("");
+interface PropsToPasswordPolicy {
+  pwpolicyData: any;
+}
+
+const UsersPasswordPolicy = (props: PropsToPasswordPolicy) => {
+  // TODO: Specify field access (read/write) based on 'attributelevelrights'
+  const [maxLifetimeDays, setMaxLifetimeDays] = useState("");
+  const [minLifetimeHours, setMinLifetimeHours] = useState("");
+  const [historySize, setHistorySize] = useState("");
+  const [characterClasses, setCharacterClasses] = useState("");
+  const [minLength, setMinLength] = useState("");
+  const [maxFailures, setMaxFailures] = useState("");
+  const [futureResetInterval, setFutureResetInterval] = useState("");
+  const [lockoutDuration, setLockoutDuration] = useState("");
+  const [graceLoginLimit, setGraceLoginLimit] = useState("");
+
+  // Updates data on 'pwpolicyData' changes
+  useEffect(() => {
+    if (props.pwpolicyData !== undefined) {
+      setMaxLifetimeDays(props.pwpolicyData.krbmaxpwdlife[0]);
+      setMinLifetimeHours(props.pwpolicyData.krbminpwdlife[0]);
+      setHistorySize(props.pwpolicyData.krbpwdhistorylength[0]);
+      setCharacterClasses(props.pwpolicyData.krbpwdmindiffchars[0]);
+      setMinLength(props.pwpolicyData.krbpwdminlength[0]);
+      setMaxFailures(props.pwpolicyData.krbpwdmaxfailure[0]);
+      setFutureResetInterval(props.pwpolicyData.krbpwdfailurecountinterval[0]);
+      setLockoutDuration(props.pwpolicyData.krbpwdlockoutduration[0]);
+      setGraceLoginLimit(props.pwpolicyData.passwordgracelimit[0]);
+    }
+  }, [props.pwpolicyData]);
 
   return (
     <Flex direction={{ default: "column", md: "row" }}>

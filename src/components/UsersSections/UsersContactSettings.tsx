@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   Flex,
@@ -13,49 +14,39 @@ import { User } from "src/utils/datatypes/globalDataTypes";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 
 interface PropsToUsersContactSettings {
-  user: User;
-}
-
-interface EmailData {
-  id: number | string;
-  email: string;
-}
-
-interface TelephoneData {
-  id: number | string;
-  telephone: string;
-}
-
-interface PagerData {
-  id: number | string;
-  pager: string;
-}
-
-interface MobilePhoneData {
-  id: number | string;
-  mobile: string;
-}
-
-interface FaxData {
-  id: number | string;
-  fax: string;
+  userData: any;
 }
 
 const UsersContactSettings = (props: PropsToUsersContactSettings) => {
   // TODO: This state variables should update the user data via the IPA API (`user_mod`)
-  const [emailList, setEmailList] = useState<EmailData[]>([
-    { id: 0, email: props.user.mail[0] },
-  ]);
-  const [telephoneList, setTelephoneList] = useState<TelephoneData[]>([]);
-  const [pagerList, setPagerList] = useState<PagerData[]>([]);
-  const [mobilePhoneList, setMobilePhoneList] = useState<MobilePhoneData[]>([]);
-  const [faxList, setFaxList] = useState<FaxData[]>([]);
+  const [emailList, setEmailList] = useState<string[]>([]);
+  const [telephoneList, setTelephoneList] = useState<string[]>([]);
+  const [pagerList, setPagerList] = useState<string[]>([]);
+  const [mobilePhoneList, setMobilePhoneList] = useState<string[]>([]);
+  const [faxList, setFaxList] = useState<string[]>([]);
+
+  // Updates data on 'userData' changes
+  useEffect(() => {
+    if (props.userData !== undefined) {
+      const userData = props.userData as User;
+
+      if (userData.mail !== undefined) setEmailList(userData.mail);
+      if (userData.telephonenumber !== undefined) {
+        setTelephoneList(userData.telephonenumber);
+      }
+      if (userData.pager !== undefined) setPagerList(userData.pager);
+      if (userData.mobile !== undefined) setMobilePhoneList(userData.mobile);
+      if (userData.facsimiletelephonenumber !== undefined) {
+        setFaxList(userData.facsimiletelephonenumber);
+      }
+    }
+  }, [props.userData]);
 
   // Email
   // - 'Add email field' handler
   const onAddEmailFieldHandler = () => {
     const emailListCopy = [...emailList];
-    emailListCopy.push({ id: Date.now.toString(), email: "" });
+    emailListCopy.push("");
     setEmailList(emailListCopy);
   };
 
@@ -66,7 +57,7 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
     idx: number
   ) => {
     const emailListCopy = [...emailList];
-    emailListCopy[idx]["email"] = (event.target as HTMLInputElement).value;
+    emailListCopy[idx] = (event.target as HTMLInputElement).value;
     setEmailList(emailListCopy);
   };
 
@@ -81,7 +72,7 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
   // - 'Add telephone number' handler
   const onAddTelephoneFieldHandler = () => {
     const telephoneListCopy = [...telephoneList];
-    telephoneListCopy.push({ id: Date.now.toString(), telephone: "" });
+    telephoneListCopy.push("");
     setTelephoneList(telephoneListCopy);
   };
 
@@ -109,7 +100,7 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
   // - 'Add pager number' handler
   const onAddPagerFieldHandler = () => {
     const pagerListCopy = [...pagerList];
-    pagerListCopy.push({ id: Date.now.toString(), pager: "" });
+    pagerListCopy.push("");
     setPagerList(pagerListCopy);
   };
 
@@ -135,7 +126,7 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
   // - 'Add mobile phone' handler
   const onAddMobilePhoneFieldHandler = () => {
     const mobilePhoneListCopy = [...mobilePhoneList];
-    mobilePhoneListCopy.push({ id: Date.now.toString(), mobile: "" });
+    mobilePhoneListCopy.push("");
     setMobilePhoneList(mobilePhoneListCopy);
   };
 
@@ -163,7 +154,7 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
   // - 'Add fax' handler
   const onAddFaxFieldHandler = () => {
     const faxListCopy = [...faxList];
-    faxListCopy.push({ id: Date.now.toString(), fax: "" });
+    faxListCopy.push("");
     setFaxList(faxListCopy);
   };
 
@@ -194,16 +185,16 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
               {emailList.map((userEmail, idx) => (
                 <Flex
                   direction={{ default: "row" }}
-                  key={userEmail.id + "-" + idx + "-div"}
+                  key={"mail-" + idx + "-div"}
                   name="value"
                 >
                   <FlexItem
-                    key={userEmail.id + "-textbox"}
+                    key={"mail-" + idx + "-textbox"}
                     flex={{ default: "flex_1" }}
                   >
                     <TextInput
                       id="user-email"
-                      value={userEmail.email}
+                      value={userEmail}
                       type="email"
                       name={"mail-" + idx}
                       aria-label="user email"
@@ -212,7 +203,7 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
                       }
                     />
                   </FlexItem>
-                  <FlexItem key={userEmail.id + "-delete-button"}>
+                  <FlexItem key={"mail-" + idx + "-delete-button"}>
                     <SecondaryButton
                       name="remove"
                       onClickHandler={() => onRemoveEmailHandler(idx)}
@@ -233,37 +224,38 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
           </FormGroup>
           <FormGroup label="Telephone number" fieldId="telephone-number">
             <Flex direction={{ default: "column" }} name="telephonenumber">
-              {telephoneList.map((userTelephone, idx) => (
-                <Flex
-                  direction={{ default: "row" }}
-                  key={userTelephone.id + "-" + idx + "-div"}
-                  name="value"
-                >
-                  <FlexItem
-                    key={userTelephone.id + "-textbox"}
-                    flex={{ default: "flex_1" }}
+              {telephoneList !== undefined &&
+                telephoneList.map((userTelephone, idx) => (
+                  <Flex
+                    direction={{ default: "row" }}
+                    key={"telephonenumber-" + idx + "-div"}
+                    name="value"
                   >
-                    <TextInput
-                      id="user-telephone"
-                      value={userTelephone.telephone}
-                      type="tel"
-                      name={"telephonenumber-" + idx}
-                      aria-label="user telephone"
-                      onChange={(value, event) =>
-                        onHandleTelephoneChange(value, event, idx)
-                      }
-                    />
-                  </FlexItem>
-                  <FlexItem key={userTelephone.id + "-delete-button"}>
-                    <SecondaryButton
-                      name="remove"
-                      onClickHandler={() => onRemoveTelephoneHandler(idx)}
+                    <FlexItem
+                      key={"telephonenumber-" + idx + "-textbox"}
+                      flex={{ default: "flex_1" }}
                     >
-                      Delete
-                    </SecondaryButton>
-                  </FlexItem>
-                </Flex>
-              ))}
+                      <TextInput
+                        id="user-telephone"
+                        value={userTelephone}
+                        type="tel"
+                        name={"telephonenumber-" + idx}
+                        aria-label="user telephone"
+                        onChange={(value, event) =>
+                          onHandleTelephoneChange(value, event, idx)
+                        }
+                      />
+                    </FlexItem>
+                    <FlexItem key={"telephonenumber-" + idx + "-delete-button"}>
+                      <SecondaryButton
+                        name="remove"
+                        onClickHandler={() => onRemoveTelephoneHandler(idx)}
+                      >
+                        Delete
+                      </SecondaryButton>
+                    </FlexItem>
+                  </Flex>
+                ))}
             </Flex>
             <SecondaryButton
               classname="pf-u-mt-sm"
@@ -275,37 +267,38 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
           </FormGroup>
           <FormGroup label="Pager number" fieldId="pager-number">
             <Flex direction={{ default: "column" }} name="pager">
-              {pagerList.map((userPager, idx) => (
-                <Flex
-                  direction={{ default: "row" }}
-                  key={userPager.id + "-" + idx + "-div"}
-                  name="value"
-                >
-                  <FlexItem
-                    key={userPager.id + "-textbox"}
-                    flex={{ default: "flex_1" }}
+              {pagerList !== undefined &&
+                pagerList.map((userPager, idx) => (
+                  <Flex
+                    direction={{ default: "row" }}
+                    key={"pager-" + idx + "-div"}
+                    name="value"
                   >
-                    <TextInput
-                      id="user-pager"
-                      value={userPager.pager}
-                      type="text"
-                      name={"pager-" + idx}
-                      aria-label="user pager"
-                      onChange={(value, event) =>
-                        onHandlePagerChange(value, event, idx)
-                      }
-                    />
-                  </FlexItem>
-                  <FlexItem key={userPager.id + "-delete-button"}>
-                    <SecondaryButton
-                      name="remove"
-                      onClickHandler={() => onRemovePagerHandler(idx)}
+                    <FlexItem
+                      key={"pager-" + idx + "-textbox"}
+                      flex={{ default: "flex_1" }}
                     >
-                      Delete
-                    </SecondaryButton>
-                  </FlexItem>
-                </Flex>
-              ))}
+                      <TextInput
+                        id="user-pager"
+                        value={userPager}
+                        type="text"
+                        name={"pager-" + idx}
+                        aria-label="user pager"
+                        onChange={(value, event) =>
+                          onHandlePagerChange(value, event, idx)
+                        }
+                      />
+                    </FlexItem>
+                    <FlexItem key={"pager-" + idx + "-delete-button"}>
+                      <SecondaryButton
+                        name="remove"
+                        onClickHandler={() => onRemovePagerHandler(idx)}
+                      >
+                        Delete
+                      </SecondaryButton>
+                    </FlexItem>
+                  </Flex>
+                ))}
             </Flex>
             <SecondaryButton
               classname="pf-u-mt-sm"
@@ -321,37 +314,38 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
         <Form className="pf-u-mb-lg">
           <FormGroup label="Mobile phone number" fieldId="mobile-phone-number">
             <Flex direction={{ default: "column" }} name="mobile">
-              {mobilePhoneList.map((userMobilePhone, idx) => (
-                <Flex
-                  direction={{ default: "row" }}
-                  key={userMobilePhone.id + "-" + idx + "-div"}
-                  name="value"
-                >
-                  <FlexItem
-                    key={userMobilePhone.id + "-textbox"}
-                    flex={{ default: "flex_1" }}
+              {mobilePhoneList !== undefined &&
+                mobilePhoneList.map((userMobilePhone, idx) => (
+                  <Flex
+                    direction={{ default: "row" }}
+                    key={"mobile-" + idx + "-div"}
+                    name="value"
                   >
-                    <TextInput
-                      id="user-mobile-phone"
-                      value={userMobilePhone.mobile}
-                      type="tel"
-                      name={"mobile-" + idx}
-                      aria-label="user mobile phone"
-                      onChange={(value, event) =>
-                        onHandleMobilePhoneChange(value, event, idx)
-                      }
-                    />
-                  </FlexItem>
-                  <FlexItem key={userMobilePhone.id + "-delete-button"}>
-                    <SecondaryButton
-                      name="remove"
-                      onClickHandler={() => onRemoveMobilePhoneHandler(idx)}
+                    <FlexItem
+                      key={"mobile-" + idx + "-textbox"}
+                      flex={{ default: "flex_1" }}
                     >
-                      Delete
-                    </SecondaryButton>
-                  </FlexItem>
-                </Flex>
-              ))}
+                      <TextInput
+                        id="user-mobile-phone"
+                        value={userMobilePhone}
+                        type="tel"
+                        name={"mobile-" + idx}
+                        aria-label="user mobile phone"
+                        onChange={(value, event) =>
+                          onHandleMobilePhoneChange(value, event, idx)
+                        }
+                      />
+                    </FlexItem>
+                    <FlexItem key={"mobile-" + idx + "-delete-button"}>
+                      <SecondaryButton
+                        name="remove"
+                        onClickHandler={() => onRemoveMobilePhoneHandler(idx)}
+                      >
+                        Delete
+                      </SecondaryButton>
+                    </FlexItem>
+                  </Flex>
+                ))}
             </Flex>
             <SecondaryButton
               classname="pf-u-mt-sm"
@@ -366,37 +360,40 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
               direction={{ default: "column" }}
               name="facsimiletelephonenumber"
             >
-              {faxList.map((userFax, idx) => (
-                <Flex
-                  direction={{ default: "row" }}
-                  key={userFax.id + "-" + idx + "-div"}
-                  name="value"
-                >
-                  <FlexItem
-                    key={userFax.id + "-textbox"}
-                    flex={{ default: "flex_1" }}
+              {faxList !== undefined &&
+                faxList.map((userFax, idx) => (
+                  <Flex
+                    direction={{ default: "row" }}
+                    key={"facsimiletelephonenumber-" + idx + "-div"}
+                    name="value"
                   >
-                    <TextInput
-                      id="user-fax"
-                      value={userFax.fax}
-                      type="tel"
-                      name={"mobile-" + idx}
-                      aria-label="user fax"
-                      onChange={(value, event) =>
-                        onHandleFaxChange(value, event, idx)
-                      }
-                    />
-                  </FlexItem>
-                  <FlexItem key={userFax.id + "-delete-button"}>
-                    <SecondaryButton
-                      name="remove"
-                      onClickHandler={() => onRemoveFaxHandler(idx)}
+                    <FlexItem
+                      key={"facsimiletelephonenumber-" + idx + "-textbox"}
+                      flex={{ default: "flex_1" }}
                     >
-                      Delete
-                    </SecondaryButton>
-                  </FlexItem>
-                </Flex>
-              ))}
+                      <TextInput
+                        id="user-fax"
+                        value={userFax}
+                        type="tel"
+                        name={"facsimiletelephonenumber-" + idx}
+                        aria-label="user fax"
+                        onChange={(value, event) =>
+                          onHandleFaxChange(value, event, idx)
+                        }
+                      />
+                    </FlexItem>
+                    <FlexItem
+                      key={"facsimiletelephonenumber-" + idx + "-delete-button"}
+                    >
+                      <SecondaryButton
+                        name="remove"
+                        onClickHandler={() => onRemoveFaxHandler(idx)}
+                      >
+                        Delete
+                      </SecondaryButton>
+                    </FlexItem>
+                  </Flex>
+                ))}
             </Flex>
             <SecondaryButton
               classname="pf-u-mt-sm"
