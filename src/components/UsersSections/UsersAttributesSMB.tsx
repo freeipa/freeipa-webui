@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   SelectVariant,
@@ -12,12 +13,37 @@ import {
 } from "@patternfly/react-core";
 // Layout
 import PopoverWithIconLayout from "../layouts/PopoverWithIconLayout";
+// Data types
+import { User } from "src/utils/datatypes/globalDataTypes";
 
-const UsersAttributesSMB = () => {
+interface PropsToUsersAttributesSMB {
+  userData: any;
+}
+
+const UsersAttributesSMB = (props: PropsToUsersAttributesSMB) => {
   // TODO: This state variables should update the user data via the IPA API
   const [SMBLogonScriptPath, setSMBLogonScriptPath] = useState("");
   const [SMBProfilePath, setSMBProfilePath] = useState("");
   const [SMBHomeDirectory, setSMBHomeDirectory] = useState("");
+
+  // Updates data on 'userData' changes
+  useEffect(() => {
+    if (props.userData !== undefined) {
+      const userData = props.userData as User;
+      if (userData.ipantlogonscript !== undefined) {
+        setSMBLogonScriptPath(userData.ipantlogonscript);
+      }
+      if (userData.ipantprofilepath !== undefined) {
+        setSMBProfilePath(userData.ipantprofilepath);
+      }
+      if (userData.ipanthomedirectory !== undefined) {
+        setSMBHomeDirectory(userData.ipanthomedirectory);
+      }
+      if (userData.ipanthomedirectorydrive !== undefined) {
+        setSMBHomeDirectoryDriveSelected(userData.ipanthomedirectorydrive);
+      }
+    }
+  }, [props.userData]);
 
   const onChangeSMBLogonScriptPath = (value: string) => {
     setSMBLogonScriptPath(value);
@@ -49,32 +75,33 @@ const UsersAttributesSMB = () => {
   const [SMBHomeDirectoryDriveSelected, setSMBHomeDirectoryDriveSelected] =
     useState("");
   const SMBHomeDirectoryDriveOptions = [
-    { value: "A:", disabled: false },
-    { value: "B:", disabled: false },
-    { value: "C:", disabled: false },
-    { value: "D:", disabled: false },
-    { value: "E:", disabled: false },
-    { value: "F:", disabled: false },
-    { value: "G:", disabled: false },
-    { value: "H:", disabled: false },
-    { value: "I:", disabled: false },
-    { value: "J:", disabled: false },
-    { value: "K:", disabled: false },
-    { value: "L:", disabled: false },
-    { value: "M:", disabled: false },
-    { value: "N:", disabled: false },
-    { value: "O:", disabled: false },
-    { value: "P:", disabled: false },
-    { value: "Q:", disabled: false },
-    { value: "R:", disabled: false },
-    { value: "S:", disabled: false },
-    { value: "T:", disabled: false },
-    { value: "U:", disabled: false },
-    { value: "V:", disabled: false },
-    { value: "W:", disabled: false },
-    { value: "X:", disabled: false },
-    { value: "Y:", disabled: false },
-    { value: "Z:", disabled: false },
+    "",
+    "A:",
+    "B:",
+    "C:",
+    "D:",
+    "E:",
+    "F:",
+    "G:",
+    "H:",
+    "I:",
+    "J:",
+    "K:",
+    "L:",
+    "M:",
+    "N:",
+    "O:",
+    "P:",
+    "Q:",
+    "R:",
+    "S:",
+    "T:",
+    "U:",
+    "V:",
+    "W:",
+    "X:",
+    "Y:",
+    "Z:",
   ];
   const SMBHomeDirectoryDriveOnToggle = (isOpen: boolean) => {
     setIsSMBHomeDirectoryDriveOpen(isOpen);
@@ -172,11 +199,7 @@ const UsersAttributesSMB = () => {
               maxHeight="280px"
             >
               {SMBHomeDirectoryDriveOptions.map((option, index) => (
-                <SelectOption
-                  isDisabled={option.disabled}
-                  key={index}
-                  value={option.value}
-                />
+                <SelectOption key={index} value={option} />
               ))}
             </Select>
           </FormGroup>

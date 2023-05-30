@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   Flex,
@@ -16,7 +16,11 @@ import {
   Button,
 } from "@patternfly/react-core";
 // Data types
-import { IDPServer, User } from "src/utils/datatypes/globalDataTypes";
+import {
+  User,
+  Certificate,
+  RadiusServer,
+} from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import DataTimePickerLayout from "src/components/layouts/Calendar/DataTimePickerLayout";
@@ -26,38 +30,121 @@ import PopoverWithIconLayout from "src/components/layouts/PopoverWithIconLayout"
 import ModalWithTextAreaLayout from "src/components/layouts/ModalWithTextAreaLayout";
 // Modals
 import CertificateMappingDataModal from "src/components/modals/CertificateMappingDataModal";
+// Utils
+import { parseStringToUTCFormat } from "src/utils/utils";
 
 interface PropsToUsersAccountSettings {
-  user: User;
-}
-
-// Generic data to pass to the Textbox adder
-interface ElementData {
-  id: string | number;
-  element: string;
+  userData: any;
+  certData: any;
+  radiusProxyData: any;
+  idpData: any;
 }
 
 const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
   // TODO: This state variables should update the user data via the IPA API (`user_mod`)
-  const [userLogin] = useState(props.user.uid);
-  const [password] = useState("");
-  const [passwordExpiration] = useState("");
-  const [uid, setUid] = useState(props.user.uidnumber);
+  const [userLogin, setUserLogin] = useState("");
+  const [password, setPassword] = useState(false);
+  const [passwordExpiration, setPasswordExpiration] = useState("");
+  const [uidNumber, setUidNumber] = useState("");
   const [gid, setGid] = useState("");
-  const [principalAliasList, setPrincipalAliasList] = useState<ElementData[]>([
-    {
-      id: 0,
-      element: props.user.uid + "@IPAEXAMPLE.TEST",
-    },
-  ]);
-  const [homeDirectory, setHomeDirectory] = useState("/home/" + userLogin);
-  const [loginShell, setLoginShell] = useState("/bin/sh");
+  const [principalAliasList, setPrincipalAliasList] = useState<string[]>([]);
+  const [homeDirectory, setHomeDirectory] = useState("");
+  const [loginShell, setLoginShell] = useState("");
   const [radiusUsername, setRadiusUsername] = useState("");
   const [idpIdentifier, setIdpIdentifier] = useState("");
 
-  // UID
-  const uidInputHandler = (value: string) => {
-    setUid(value);
+  // Updates data on 'userData' changes
+  useEffect(() => {
+    if (props.userData !== undefined) {
+      const userData = props.userData as User;
+      setUserLogin(userData.uid);
+      setPassword(userData.has_password);
+      setUidNumber(userData.uidnumber);
+      setGid(userData.gidnumber);
+      setPrincipalAliasList(userData.krbprincipalname);
+      setHomeDirectory(userData.homedirectory);
+      setLoginShell(userData.loginshell);
+
+      if (userData.ipatokenradiusconfiglink !== undefined) {
+        setRadiusConfSelected(userData.ipatokenradiusconfiglink);
+      }
+
+      setRadiusUsername(userData.ipatokenradiususername);
+      if (userData.ipaidpconfiglink !== undefined) {
+        setIdpConfSelected(userData.ipaidpconfiglink);
+      }
+
+      if (userData.krbpasswordexpiration !== undefined) {
+        const psswdExpirationUtcDate = parseStringToUTCFormat(
+          userData.krbpasswordexpiration[0].__datetime__
+        );
+        setPasswordExpiration(psswdExpirationUtcDate.toLocaleString());
+      }
+
+      if (userData.ipauserauthtype !== undefined) {
+        assignUserAuthTypes(userData.ipauserauthtype);
+      }
+
+      // TODO: Parse 'krbprincipalexpiration' into Calendar time picker format
+      // TODO: SSH Public keys ('ipasshpubkey'):
+      //   - Assign data to list, show UI and implement modal functionality
+      // TODO: Certificate mapping data ('ipacertmapdata'):
+      //   - Adapt and assign data to list, show UI and implement modal functionality
+    }
+  }, [props.userData]);
+
+  // Updates data on 'certData' changes
+  useEffect(() => {
+    if (props.certData !== undefined) {
+      setCertificateList(props.certData.result);
+      // TODO: Implement 'Certification' functionality & UI
+    }
+  }, [props.certData]);
+
+  // Updates data field on 'radiusProxyData' changes
+  useEffect(() => {
+    if (props.radiusProxyData !== undefined) {
+      setradiusConfOptions(props.radiusProxyData);
+    }
+  }, [props.radiusProxyData]);
+
+  // Updates data field on 'radiusProxyData' changes
+  useEffect(() => {
+    if (props.idpData !== undefined) {
+      const idpEntries = props.idpData.map((idpEntry) => idpEntry.cn[0]);
+      setIdpConfOptions(idpEntries);
+    }
+  }, [props.idpData]);
+
+  // Assign user authentication types
+  const assignUserAuthTypes = (userAuthTypes) => {
+    userAuthTypes.map((authType) => {
+      switch (authType) {
+        case "password":
+          setPasswordCheckbox(true);
+          break;
+        case "radius":
+          setRadiusCheckbox(true);
+          break;
+        case "otp":
+          setTpaCheckbox(true);
+          break;
+        case "pkinit":
+          setPkinitCheckbox(true);
+          break;
+        case "hardened":
+          setHardenedPassCheckbox(true);
+          break;
+        case "ipd":
+          setExtIdentityProvCheckbox(true);
+          break;
+      }
+    });
+  };
+
+  // UID number
+  const uidNumberInputHandler = (value: string) => {
+    setUidNumber(value);
   };
 
   // GID
@@ -69,10 +156,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
   // - 'Add principal alias' handler
   const onAddPrincipalAliasFieldHandler = () => {
     const principalAliasListCopy = [...principalAliasList];
-    principalAliasListCopy.push({
-      id: Date.now.toString(),
-      element: "",
-    });
+    principalAliasListCopy.push("");
     setPrincipalAliasList(principalAliasListCopy);
   };
 
@@ -215,18 +299,18 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
     setSubjectTemp(value);
   };
 
-  // -- Certificate mapping data: Lists and generated textboxe and textarea
+  // -- Certificate mapping data: Lists and generated textboxes and textarea
   const [certificateMappingDataList, setCertificateMappingDataList] = useState<
-    ElementData[]
+    Certificate[]
   >([]);
-  const [certificateList, setCertificateList] = useState<ElementData[]>([]);
+  const [certificateList, setCertificateList] = useState<Certificate[]>([]);
   // -- Copy of the data to be used as a temporal values. This helps to restore the
   //   original values when the modal is close without saving (instead of showing empty
   //   textboxes/textareas)
   const [certificateMappingDataListTemp, setCertificateMappingDataListTemp] =
-    useState<ElementData[]>([]);
+    useState<Certificate[]>([]);
   const [certificateListTemp, setCertificateListTemp] =
-    useState<ElementData[]>(certificateList);
+    useState<Certificate[]>(certificateList);
   // -- Deep-copy of the data that will be used for a short-term copy on simple operations.
   const certificateMappingDataListCopy = structuredClone(
     certificateMappingDataListTemp
@@ -358,12 +442,12 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
   };
 
   // Checkboxes
-  const [passwordCheckbox] = useState(false);
-  const [radiusCheckbox] = useState(false);
-  const [tpaCheckbox] = useState(false);
-  const [pkinitCheckbox] = useState(false);
-  const [hardenedPassCheckbox] = useState(false);
-  const [extIdentityProvCheckbox] = useState(false);
+  const [passwordCheckbox, setPasswordCheckbox] = useState(false);
+  const [radiusCheckbox, setRadiusCheckbox] = useState(false);
+  const [tpaCheckbox, setTpaCheckbox] = useState(false);
+  const [pkinitCheckbox, setPkinitCheckbox] = useState(false);
+  const [hardenedPassCheckbox, setHardenedPassCheckbox] = useState(false);
+  const [extIdentityProvCheckbox, setExtIdentityProvCheckbox] = useState(false);
 
   // Date and time picker (Calendar)
   const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
@@ -442,11 +526,10 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
   // Dropdown 'Radius proxy configuration'
   const [isRadiusConfOpen, setIsRadiusConfOpen] = useState(false);
   const [radiusConfSelected, setRadiusConfSelected] = useState("");
-  const radiusConfOptions = [
-    { value: "Option 1", disabled: false },
-    { value: "Option 2", disabled: false },
-    { value: "Option 3", disabled: false },
-  ];
+  const [radiusConfOptions, setradiusConfOptions] = useState<RadiusServer[]>(
+    []
+  );
+
   const radiusConfOnToggle = (isOpen: boolean) => {
     setIsRadiusConfOpen(isOpen);
   };
@@ -460,7 +543,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
   // Dropdown 'External IdP configuration'
   const [isIdpConfOpen, setIsIdpConfOpen] = useState(false);
   const [idpConfSelected, setIdpConfSelected] = useState("");
-  const [idpConfOptions] = useState<IDPServer[]>([]);
+  const [idpConfOptions, setIdpConfOptions] = useState<string[]>([]);
 
   const idpConfOnToggle = (isOpen: boolean) => {
     setIsIdpConfOpen(isOpen);
@@ -516,7 +599,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               <TextInput
                 id="password"
                 name="has_password"
-                value={password}
+                value={password ? "" : ""} // TODO: Define how to show a password properly
                 type="password"
                 aria-label="password"
                 isDisabled
@@ -535,14 +618,14 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 isDisabled
               />
             </FormGroup>
-            <FormGroup label="UID" fieldId="uid">
+            <FormGroup label="UID" fieldId="uid-number">
               <TextInput
-                id="uid"
+                id="uid-number"
                 name="uidnumber"
-                value={uid}
+                value={uidNumber}
                 type="text"
-                onChange={uidInputHandler}
-                aria-label="uid"
+                onChange={uidNumberInputHandler}
+                aria-label="uid number"
               />
             </FormGroup>
             <FormGroup label="GID" fieldId="gid">
@@ -560,25 +643,25 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 {principalAliasList.map((principalAlias, idx) => (
                   <Flex
                     direction={{ default: "row" }}
-                    key={principalAlias.id + "-" + idx + "-div"}
+                    key={principalAlias + "-" + idx + "-div"}
                     name="value"
                   >
                     <FlexItem
-                      key={principalAlias.id + "-textbox"}
+                      key={principalAlias + "-textbox"}
                       flex={{ default: "flex_1" }}
                     >
                       <TextInput
-                        id="principal-alias"
-                        value={principalAlias.element}
+                        id={"principal-alias-" + principalAlias + "-" + idx}
+                        value={principalAlias}
                         type="text"
-                        name={"krbprincipalname-" + idx}
+                        name={"krbprincipalname-" + principalAlias + "-" + idx}
                         aria-label="principal alias"
                         onChange={(value, event) =>
                           onHandlePrincipalAliasChange(value, event, idx)
                         }
                       />
                     </FlexItem>
-                    <FlexItem key={principalAlias.id + "-delete-button"}>
+                    <FlexItem key={principalAlias + "-delete-button"}>
                       <SecondaryButton
                         name="remove"
                         onClickHandler={() =>
@@ -746,11 +829,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 aria-labelledby="radius-proxy-conf"
               >
                 {radiusConfOptions.map((option, index) => (
-                  <SelectOption
-                    isDisabled={option.disabled}
-                    key={index}
-                    value={option.value}
-                  />
+                  <SelectOption key={index} value={option.cn} />
                 ))}
               </Select>
             </FormGroup>
@@ -784,7 +863,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 aria-labelledby="external-idp-conf"
               >
                 {idpConfOptions.map((option, index) => (
-                  <SelectOption key={index} value={option.cn} />
+                  <SelectOption key={index} value={option} />
                 ))}
               </Select>
             </FormGroup>

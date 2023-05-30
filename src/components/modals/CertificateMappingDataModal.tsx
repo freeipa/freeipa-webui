@@ -13,12 +13,8 @@ import {
 // Layouts
 import SecondaryButton from "../layouts/SecondaryButton";
 import PopoverWithIconLayout from "../layouts/PopoverWithIconLayout";
-
-// Generic data to pass to the Textbox adder
-interface ElementData {
-  id: string | number;
-  element: string;
-}
+// Data types
+import { Certificate } from "src/utils/datatypes/globalDataTypes";
 
 interface PropsToCertificateMappingData {
   // Modal options
@@ -36,8 +32,8 @@ interface PropsToCertificateMappingData {
   onChangeIssuer: (value: string) => void;
   onChangeSubject: (value: string) => void;
   // Generated texboxes, textareas, and data
-  certificateMappingDataList: ElementData[];
-  certificateList: ElementData[];
+  certificateMappingDataList: Certificate[];
+  certificateList: Certificate[];
   onAddCertificateMappingDataHandler: () => void;
   onHandleCertificateMappingDataChange: (
     value: string,
@@ -98,16 +94,16 @@ const CertificateMappingDataModal = (props: PropsToCertificateMappingData) => {
               {props.certificateMappingDataList.map((certMap, idx) => (
                 <Flex
                   direction={{ default: "row" }}
-                  key={certMap.id + "-" + idx + "-div"}
+                  key={certMap.serialNumber + "-" + idx + "-div"}
                   name="value"
                 >
                   <FlexItem
-                    key={certMap.id + "-textbox"}
+                    key={certMap.serialNumber + "-textbox"}
                     flex={{ default: "flex_1" }}
                   >
                     <TextInput
                       id="cert-map-data"
-                      value={certMap.element}
+                      value={certMap.certificate}
                       type="text"
                       name={"ipacertmapdata-" + idx}
                       aria-label="certificate mapping data textbox"
@@ -120,7 +116,7 @@ const CertificateMappingDataModal = (props: PropsToCertificateMappingData) => {
                       }
                     />
                   </FlexItem>
-                  <FlexItem key={certMap.id + "-delete-button"}>
+                  <FlexItem key={certMap.serialNumber + "-delete-button"}>
                     <SecondaryButton
                       name="remove"
                       onClickHandler={() =>
@@ -155,17 +151,17 @@ const CertificateMappingDataModal = (props: PropsToCertificateMappingData) => {
               {props.certificateList.map((certificate, idx) => (
                 <Flex
                   direction={{ default: "row" }}
-                  key={certificate.id + "-" + idx + "-div"}
+                  key={certificate.serialNumber + "-" + idx + "-div"}
                   alignItems={{ default: "alignItemsFlexEnd" }}
                   name="value"
                 >
                   <FlexItem
-                    key={certificate.id + "-textbox"}
+                    key={certificate.serialNumber + "-textbox"}
                     flex={{ default: "flex_1" }}
                   >
                     <TextArea
                       id="cert-map-data"
-                      value={certificate.element}
+                      value={certificate.certificate}
                       type="text"
                       name={"certificate-" + idx}
                       aria-label="certificate textarea"
@@ -176,7 +172,7 @@ const CertificateMappingDataModal = (props: PropsToCertificateMappingData) => {
                       style={{ height: "135px" }}
                     />
                   </FlexItem>
-                  <FlexItem key={certificate.id + "-delete-button"}>
+                  <FlexItem key={certificate.serialNumber + "-delete-button"}>
                     <SecondaryButton
                       name="remove"
                       onClickHandler={() =>
