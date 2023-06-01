@@ -30,8 +30,6 @@ import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import TextLayout from "src/components/layouts/TextLayout";
-import AlertGroupLayout from "src/components/layouts/AlertGroupLayout";
-import AlertLayout from "src/components/layouts/AlertLayout";
 // Tables
 import UsersTable from "../../components/tables/UsersTable";
 // Components
@@ -42,8 +40,11 @@ import AddUser from "src/components/modals/AddUser";
 import DeleteUsers from "src/components/modals/DeleteUsers";
 import DisableEnableUsers from "src/components/modals/DisableEnableUsers";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
+// Hooks
+import { useAlerts } from "src/hooks/useAlerts";
 // Utils
 import { apiErrorToJsXError, isUserSelectable } from "src/utils/utils";
+
 // RPC client
 import {
   Command,
@@ -79,7 +80,7 @@ const ActiveUsers = () => {
   const [executeBatchCommand] = useBatchMutCommandMutation();
 
   // Alerts to show in the UI
-  const [alerts, setAlerts] = useState<JSX.Element[]>([]);
+  const alerts = useAlerts();
 
   // [API Call] Retrieve partial user info from multiple query
   const {
@@ -264,34 +265,6 @@ const ActiveUsers = () => {
     }
   }, [isBatchLoading]);
 
-  // Alerts
-  // - Remove alert from the 'alerts' list state
-  const removeAlert = (key: React.Key) => {
-    const updatedList = alerts.filter((alert) => alert.key !== key);
-
-    setAlerts(updatedList);
-  };
-
-  // - Add alert into 'alerts' list state
-  const addAlert = (
-    key: string,
-    title: React.ReactNode,
-    variant?: "default" | "danger" | "warning" | "success" | "info" | undefined
-  ) => {
-    const newAlert = (
-      <AlertLayout
-        key={key}
-        variant={variant}
-        title={title}
-        onCloseHandler={() => removeAlert(key)}
-      />
-    );
-
-    const newAlertList = alerts;
-    newAlertList.push(newAlert);
-    setAlerts(newAlertList);
-  };
-
   // [API call] 'Rebuild auto membership'
   const onRebuildAutoMembership = () => {
     // The operation will be made depending on the selected users
@@ -314,10 +287,22 @@ const ActiveUsers = () => {
 
         if (automemberError) {
           // alert: error
-          addAlert("rebuild-automember-error", automemberError, "danger");
+
+          let error: string | undefined = "";
+          if ("error" in automemberError) {
+            error = automemberError.error;
+          } else if ("message" in automemberError) {
+            error = automemberError.message;
+          }
+
+          alerts.addAlert(
+            "rebuild-automember-error",
+            error || "Error when rebuilding membership",
+            "danger"
+          );
         } else {
           // alert: success
-          addAlert(
+          alerts.addAlert(
             "rebuild-automember-success",
             "Automember rebuild membership task completed",
             "success"
@@ -821,9 +806,7 @@ const ActiveUsers = () => {
   // Render 'Active users'
   return (
     <>
-      {alerts !== undefined && (
-        <AlertGroupLayout alerts={alerts} setAlerts={setAlerts} />
-      )}
+      <alerts.ManagedAlerts />
       <Page>
         <PageSection variant={PageSectionVariants.light}>
           <TitleLayout
