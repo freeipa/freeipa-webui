@@ -12,9 +12,12 @@ import {
 import { User } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import SecondaryButton from "src/components/layouts/SecondaryButton";
+// Utils
+import { isFieldWritable } from "src/utils/utils";
 
 interface PropsToUsersContactSettings {
   userData: any;
+  attrLevelRights: any;
 }
 
 const UsersContactSettings = (props: PropsToUsersContactSettings) => {
@@ -201,27 +204,33 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
                       onChange={(value, event) =>
                         onHandleEmailChange(value, event, idx)
                       }
+                      isDisabled={!isFieldWritable(props.attrLevelRights.mail)}
                     />
                   </FlexItem>
-                  <FlexItem key={"mail-" + idx + "-delete-button"}>
-                    <SecondaryButton
-                      name="remove"
-                      onClickHandler={() => onRemoveEmailHandler(idx)}
-                    >
-                      Delete
-                    </SecondaryButton>
-                  </FlexItem>
+                  {isFieldWritable(props.attrLevelRights.mail) && (
+                    <FlexItem key={"mail-" + idx + "-delete-button"}>
+                      <SecondaryButton
+                        name="remove"
+                        onClickHandler={() => onRemoveEmailHandler(idx)}
+                      >
+                        Delete
+                      </SecondaryButton>
+                    </FlexItem>
+                  )}
                 </Flex>
               ))}
             </Flex>
-            <SecondaryButton
-              classname="pf-u-mt-sm"
-              name="add"
-              onClickHandler={onAddEmailFieldHandler}
-            >
-              Add
-            </SecondaryButton>
+            {isFieldWritable(props.attrLevelRights.mail) && (
+              <SecondaryButton
+                classname="pf-u-mt-sm"
+                name="add"
+                onClickHandler={onAddEmailFieldHandler}
+              >
+                Add
+              </SecondaryButton>
+            )}
           </FormGroup>
+
           <FormGroup label="Telephone number" fieldId="telephone-number">
             <Flex direction={{ default: "column" }} name="telephonenumber">
               {telephoneList !== undefined &&
@@ -244,27 +253,39 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
                         onChange={(value, event) =>
                           onHandleTelephoneChange(value, event, idx)
                         }
+                        isDisabled={
+                          !isFieldWritable(
+                            props.attrLevelRights.telephonenumber
+                          )
+                        }
                       />
                     </FlexItem>
-                    <FlexItem key={"telephonenumber-" + idx + "-delete-button"}>
-                      <SecondaryButton
-                        name="remove"
-                        onClickHandler={() => onRemoveTelephoneHandler(idx)}
+                    {isFieldWritable(props.attrLevelRights.telephonenumber) && (
+                      <FlexItem
+                        key={"telephonenumber-" + idx + "-delete-button"}
                       >
-                        Delete
-                      </SecondaryButton>
-                    </FlexItem>
+                        <SecondaryButton
+                          name="remove"
+                          onClickHandler={() => onRemoveTelephoneHandler(idx)}
+                        >
+                          Delete
+                        </SecondaryButton>
+                      </FlexItem>
+                    )}
                   </Flex>
                 ))}
             </Flex>
-            <SecondaryButton
-              classname="pf-u-mt-sm"
-              name="add"
-              onClickHandler={onAddTelephoneFieldHandler}
-            >
-              Add
-            </SecondaryButton>
+            {isFieldWritable(props.attrLevelRights.telephonenumber) && (
+              <SecondaryButton
+                classname="pf-u-mt-sm"
+                name="add"
+                onClickHandler={onAddTelephoneFieldHandler}
+              >
+                Add
+              </SecondaryButton>
+            )}
           </FormGroup>
+
           <FormGroup label="Pager number" fieldId="pager-number">
             <Flex direction={{ default: "column" }} name="pager">
               {pagerList !== undefined &&
@@ -287,26 +308,33 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
                         onChange={(value, event) =>
                           onHandlePagerChange(value, event, idx)
                         }
+                        isDisabled={
+                          !isFieldWritable(props.attrLevelRights.pager)
+                        }
                       />
                     </FlexItem>
-                    <FlexItem key={"pager-" + idx + "-delete-button"}>
-                      <SecondaryButton
-                        name="remove"
-                        onClickHandler={() => onRemovePagerHandler(idx)}
-                      >
-                        Delete
-                      </SecondaryButton>
-                    </FlexItem>
+                    {isFieldWritable(props.attrLevelRights.pager) && (
+                      <FlexItem key={"pager-" + idx + "-delete-button"}>
+                        <SecondaryButton
+                          name="remove"
+                          onClickHandler={() => onRemovePagerHandler(idx)}
+                        >
+                          Delete
+                        </SecondaryButton>
+                      </FlexItem>
+                    )}
                   </Flex>
                 ))}
             </Flex>
-            <SecondaryButton
-              classname="pf-u-mt-sm"
-              name="add"
-              onClickHandler={onAddPagerFieldHandler}
-            >
-              Add
-            </SecondaryButton>
+            {isFieldWritable(props.attrLevelRights.pager) && (
+              <SecondaryButton
+                classname="pf-u-mt-sm"
+                name="add"
+                onClickHandler={onAddPagerFieldHandler}
+              >
+                Add
+              </SecondaryButton>
+            )}
           </FormGroup>
         </Form>
       </FlexItem>
@@ -334,26 +362,33 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
                         onChange={(value, event) =>
                           onHandleMobilePhoneChange(value, event, idx)
                         }
+                        isDisabled={
+                          !isFieldWritable(props.attrLevelRights.mobile)
+                        }
                       />
                     </FlexItem>
-                    <FlexItem key={"mobile-" + idx + "-delete-button"}>
-                      <SecondaryButton
-                        name="remove"
-                        onClickHandler={() => onRemoveMobilePhoneHandler(idx)}
-                      >
-                        Delete
-                      </SecondaryButton>
-                    </FlexItem>
+                    {isFieldWritable(props.attrLevelRights.mobile) && (
+                      <FlexItem key={"mobile-" + idx + "-delete-button"}>
+                        <SecondaryButton
+                          name="remove"
+                          onClickHandler={() => onRemoveMobilePhoneHandler(idx)}
+                        >
+                          Delete
+                        </SecondaryButton>
+                      </FlexItem>
+                    )}
                   </Flex>
                 ))}
             </Flex>
-            <SecondaryButton
-              classname="pf-u-mt-sm"
-              name="add"
-              onClickHandler={onAddMobilePhoneFieldHandler}
-            >
-              Add
-            </SecondaryButton>
+            {isFieldWritable(props.attrLevelRights.mobile) && (
+              <SecondaryButton
+                classname="pf-u-mt-sm"
+                name="add"
+                onClickHandler={onAddMobilePhoneFieldHandler}
+              >
+                Add
+              </SecondaryButton>
+            )}
           </FormGroup>
           <FormGroup label="Fax number" fieldId="fax-number">
             <Flex
@@ -380,28 +415,43 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
                         onChange={(value, event) =>
                           onHandleFaxChange(value, event, idx)
                         }
+                        isDisabled={
+                          !isFieldWritable(
+                            props.attrLevelRights.facsimiletelephonenumber
+                          )
+                        }
                       />
                     </FlexItem>
-                    <FlexItem
-                      key={"facsimiletelephonenumber-" + idx + "-delete-button"}
-                    >
-                      <SecondaryButton
-                        name="remove"
-                        onClickHandler={() => onRemoveFaxHandler(idx)}
+                    {isFieldWritable(
+                      props.attrLevelRights.facsimiletelephonenumber
+                    ) && (
+                      <FlexItem
+                        key={
+                          "facsimiletelephonenumber-" + idx + "-delete-button"
+                        }
                       >
-                        Delete
-                      </SecondaryButton>
-                    </FlexItem>
+                        <SecondaryButton
+                          name="remove"
+                          onClickHandler={() => onRemoveFaxHandler(idx)}
+                        >
+                          Delete
+                        </SecondaryButton>
+                      </FlexItem>
+                    )}
                   </Flex>
                 ))}
             </Flex>
-            <SecondaryButton
-              classname="pf-u-mt-sm"
-              name="add"
-              onClickHandler={onAddFaxFieldHandler}
-            >
-              Add
-            </SecondaryButton>
+            {isFieldWritable(
+              props.attrLevelRights.facsimiletelephonenumber
+            ) && (
+              <SecondaryButton
+                classname="pf-u-mt-sm"
+                name="add"
+                onClickHandler={onAddFaxFieldHandler}
+              >
+                Add
+              </SecondaryButton>
+            )}
           </FormGroup>
         </Form>
       </FlexItem>

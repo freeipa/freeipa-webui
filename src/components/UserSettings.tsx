@@ -347,7 +347,10 @@ const UserSettings = (props: PropsToUserSettings) => {
                   id="contact-settings"
                   text="Contact settings"
                 />
-                <UsersContactSettings userData={userShowData} />
+                <UsersContactSettings
+                  userData={userShowData}
+                  attrLevelRights={attrLevelRights}
+                />
                 <TitleLayout
                   key={5}
                   headingLevel="h2"
