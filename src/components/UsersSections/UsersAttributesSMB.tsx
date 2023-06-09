@@ -15,9 +15,13 @@ import {
 import PopoverWithIconLayout from "../layouts/PopoverWithIconLayout";
 // Data types
 import { User } from "src/utils/datatypes/globalDataTypes";
+// Utils
+import { isFieldReadable, isFieldWritable } from "src/utils/utils";
+import FieldWrapper from "src/utils/FieldWrapper";
 
 interface PropsToUsersAttributesSMB {
   userData: any;
+  attrLevelRights: any;
 }
 
 const UsersAttributesSMB = (props: PropsToUsersAttributesSMB) => {
@@ -119,90 +123,120 @@ const UsersAttributesSMB = (props: PropsToUsersAttributesSMB) => {
     <Flex direction={{ default: "column", md: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-u-mb-lg">
-          <FormGroup
-            label="SMB logon script path"
-            fieldId="smb-logon-script-path"
-            labelIcon={
-              <PopoverWithIconLayout message={SBMLogonScriptPathMessage} />
-            }
+          <FieldWrapper
+            isWritable={isFieldWritable(props.attrLevelRights.ipantlogonscript)}
+            isReadable={isFieldReadable(props.attrLevelRights.ipantlogonscript)}
           >
-            <TextInput
-              id="smb-logon-script-path"
-              name="ipantlogonscript"
-              value={SMBLogonScriptPath}
-              type="text"
-              aria-label="smb logon script path"
-              onChange={onChangeSMBLogonScriptPath}
-            />
-          </FormGroup>
-          <FormGroup
-            label="SMB profile path"
-            fieldId="smb-profile-path"
-            labelIcon={
-              <PopoverWithIconLayout message={SMBProfilePathMessage} />
-            }
+            <FormGroup
+              label="SMB logon script path"
+              fieldId="smb-logon-script-path"
+              labelIcon={
+                <PopoverWithIconLayout message={SBMLogonScriptPathMessage} />
+              }
+            >
+              <TextInput
+                id="smb-logon-script-path"
+                name="ipantlogonscript"
+                value={SMBLogonScriptPath}
+                type="text"
+                aria-label="smb logon script path"
+                onChange={onChangeSMBLogonScriptPath}
+              />
+            </FormGroup>
+          </FieldWrapper>
+
+          <FieldWrapper
+            isWritable={isFieldWritable(props.attrLevelRights.ipantprofilepath)}
+            isReadable={isFieldReadable(props.attrLevelRights.ipantprofilepath)}
           >
-            <TextInput
-              id="smb-profile-path"
-              name="ipantprofilepath"
-              value={SMBProfilePath}
-              type="text"
-              aria-label="smb profile path"
-              onChange={onChangeSMBProfilePath}
-            />
-          </FormGroup>
+            <FormGroup
+              label="SMB profile path"
+              fieldId="smb-profile-path"
+              labelIcon={
+                <PopoverWithIconLayout message={SMBProfilePathMessage} />
+              }
+            >
+              <TextInput
+                id="smb-profile-path"
+                name="ipantprofilepath"
+                value={SMBProfilePath}
+                type="text"
+                aria-label="smb profile path"
+                onChange={onChangeSMBProfilePath}
+              />
+            </FormGroup>
+          </FieldWrapper>
         </Form>
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-u-mb-lg">
-          <FormGroup
-            label="SMB home directory"
-            fieldId="smb-home-directory"
-            labelIcon={
-              <PopoverWithIconLayout
-                message={SMBHomeDirectoryMessage}
-                hasAutoWidth={true}
-              />
-            }
+          <FieldWrapper
+            isWritable={isFieldWritable(
+              props.attrLevelRights.ipanthomedirectory
+            )}
+            isReadable={isFieldReadable(
+              props.attrLevelRights.ipanthomedirectory
+            )}
           >
-            <TextInput
-              id="smb-home-directory"
-              name="ipanthomedirectory"
-              value={SMBHomeDirectory}
-              type="text"
-              aria-label="smb home directory"
-              onChange={onChangeSMBHomeDirectory}
-            />
-          </FormGroup>
-          <FormGroup
-            label="SMB home directory drive"
-            fieldId="smb-home-directory-drive"
-            labelIcon={
-              <PopoverWithIconLayout
-                message={SMBHomeDirectoryDriveMessage}
-                hasAutoWidth={true}
-              />
-            }
-          >
-            <Select
-              id="smb-home-directory-drive"
-              name="ipanthomedirectorydrive"
-              variant={SelectVariant.single}
-              direction={"up"}
-              placeholderText=" "
-              aria-label="Select samba home directory drive"
-              onToggle={SMBHomeDirectoryDriveOnToggle}
-              onSelect={SMBHomeDirectoryDriveOnSelect}
-              selections={SMBHomeDirectoryDriveSelected}
-              isOpen={isSMBHomeDirectoryDriveOpen}
-              aria-labelledby="smb-directory-drive"
-              maxHeight="280px"
+            <FormGroup
+              label="SMB home directory"
+              fieldId="smb-home-directory"
+              labelIcon={
+                <PopoverWithIconLayout
+                  message={SMBHomeDirectoryMessage}
+                  hasAutoWidth={true}
+                />
+              }
             >
-              {SMBHomeDirectoryDriveOptions.map((option, index) => (
-                <SelectOption key={index} value={option} />
-              ))}
-            </Select>
-          </FormGroup>
+              <TextInput
+                id="smb-home-directory"
+                name="ipanthomedirectory"
+                value={SMBHomeDirectory}
+                type="text"
+                aria-label="smb home directory"
+                onChange={onChangeSMBHomeDirectory}
+              />
+            </FormGroup>
+          </FieldWrapper>
+
+          <FieldWrapper
+            isWritable={isFieldWritable(
+              props.attrLevelRights.ipanthomedirectorydrive
+            )}
+            isReadable={isFieldReadable(
+              props.attrLevelRights.ipanthomedirectorydrive
+            )}
+          >
+            <FormGroup
+              label="SMB home directory drive"
+              fieldId="smb-home-directory-drive"
+              labelIcon={
+                <PopoverWithIconLayout
+                  message={SMBHomeDirectoryDriveMessage}
+                  hasAutoWidth={true}
+                />
+              }
+            >
+              <Select
+                id="smb-home-directory-drive"
+                name="ipanthomedirectorydrive"
+                variant={SelectVariant.single}
+                direction={"up"}
+                placeholderText=" "
+                aria-label="Select samba home directory drive"
+                onToggle={SMBHomeDirectoryDriveOnToggle}
+                onSelect={SMBHomeDirectoryDriveOnSelect}
+                selections={SMBHomeDirectoryDriveSelected}
+                isOpen={isSMBHomeDirectoryDriveOpen}
+                aria-labelledby="smb-directory-drive"
+                maxHeight="280px"
+              >
+                {SMBHomeDirectoryDriveOptions.map((option, index) => (
+                  <SelectOption key={index} value={option} />
+                ))}
+              </Select>
+            </FormGroup>
+          </FieldWrapper>
         </Form>
       </FlexItem>
     </Flex>
