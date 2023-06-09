@@ -370,6 +370,7 @@ const UserSettings = (props: PropsToUserSettings) => {
                 <UsersEmployeeInfo
                   uidsData={uidsData}
                   userData={userShowData}
+                  attrLevelRights={attrLevelRights}
                 />
                 <TitleLayout
                   key={7}
