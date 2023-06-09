@@ -31,13 +31,19 @@ import ModalWithTextAreaLayout from "src/components/layouts/ModalWithTextAreaLay
 // Modals
 import CertificateMappingDataModal from "src/components/modals/CertificateMappingDataModal";
 // Utils
-import { parseStringToUTCFormat } from "src/utils/utils";
+import {
+  isFieldWritable,
+  isFieldReadable,
+  parseStringToUTCFormat,
+} from "src/utils/utils";
+import FieldWrapper from "src/utils/FieldWrapper";
 
 interface PropsToUsersAccountSettings {
   userData: any;
   certData: any;
   radiusProxyData: any;
   idpData: any;
+  attrLevelRights: any;
 }
 
 const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
@@ -618,26 +624,39 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 isDisabled
               />
             </FormGroup>
-            <FormGroup label="UID" fieldId="uid-number">
-              <TextInput
-                id="uid-number"
-                name="uidnumber"
-                value={uidNumber}
-                type="text"
-                onChange={uidNumberInputHandler}
-                aria-label="uid number"
-              />
-            </FormGroup>
-            <FormGroup label="GID" fieldId="gid">
-              <TextInput
-                id="gid"
-                name="gidnumber"
-                value={gid}
-                type="text"
-                onChange={gidInputHandler}
-                aria-label="gid"
-              />
-            </FormGroup>
+
+            <FieldWrapper
+              isWritable={isFieldWritable(props.attrLevelRights.uidnumber)}
+              isReadable={isFieldReadable(props.attrLevelRights.uidnumber)}
+            >
+              <FormGroup label="UID" fieldId="uid-number">
+                <TextInput
+                  id="uid-number"
+                  name="uidnumber"
+                  value={uidNumber}
+                  type="text"
+                  onChange={uidNumberInputHandler}
+                  aria-label="uid number"
+                />
+              </FormGroup>
+            </FieldWrapper>
+
+            <FieldWrapper
+              isWritable={isFieldWritable(props.attrLevelRights.gidnumber)}
+              isReadable={isFieldReadable(props.attrLevelRights.gidnumber)}
+            >
+              <FormGroup label="GID" fieldId="gid">
+                <TextInput
+                  id="gid"
+                  name="gidnumber"
+                  value={gid}
+                  type="text"
+                  onChange={gidInputHandler}
+                  aria-label="gid"
+                />
+              </FormGroup>
+            </FieldWrapper>
+
             <FormGroup label="Principal alias" fieldId="principal-alias">
               <Flex direction={{ default: "column" }} name="krbprincipalname">
                 {principalAliasList.map((principalAlias, idx) => (
@@ -659,29 +678,44 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                         onChange={(value, event) =>
                           onHandlePrincipalAliasChange(value, event, idx)
                         }
+                        isDisabled={
+                          !isFieldWritable(
+                            props.attrLevelRights.krbprincipalname
+                          )
+                        }
                       />
                     </FlexItem>
-                    <FlexItem key={principalAlias + "-delete-button"}>
-                      <SecondaryButton
-                        name="remove"
-                        onClickHandler={() =>
-                          onRemovePrincipalAliasHandler(idx)
-                        }
-                      >
-                        Delete
-                      </SecondaryButton>
-                    </FlexItem>
+                    {isFieldWritable(
+                      props.attrLevelRights.krbprincipalname
+                    ) && (
+                      <FlexItem key={principalAlias + "-delete-button"}>
+                        <SecondaryButton
+                          name="remove"
+                          onClickHandler={() =>
+                            onRemovePrincipalAliasHandler(idx)
+                          }
+                        >
+                          Delete
+                        </SecondaryButton>
+                      </FlexItem>
+                    )}
                   </Flex>
                 ))}
               </Flex>
-              <SecondaryButton
-                classname="pf-u-mt-md"
-                name="add"
-                onClickHandler={onAddPrincipalAliasFieldHandler}
-              >
-                Add
-              </SecondaryButton>
+              {isFieldWritable(props.attrLevelRights.krbprincipalname) && (
+                <SecondaryButton
+                  classname="pf-u-mt-md"
+                  name="add"
+                  onClickHandler={onAddPrincipalAliasFieldHandler}
+                  isDisabled={
+                    !isFieldWritable(props.attrLevelRights.krbprincipalname)
+                  }
+                >
+                  Add
+                </SecondaryButton>
+              )}
             </FormGroup>
+
             <FormGroup
               label="Kerberos principal expiration (UTC)"
               fieldId="kerberos-principal-expiration"
@@ -697,45 +731,78 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 textInputId="date-time"
                 textInputAriaLabel="date and time picker"
                 textInputValue={valueDate + " " + valueTime}
+                isDisable={
+                  !isFieldWritable(props.attrLevelRights.krbprincipalexpiration)
+                }
               >
-                {calendarButton}
-                {time}
+                {isFieldWritable(
+                  props.attrLevelRights.krbprincipalexpiration
+                ) ? (
+                  calendarButton
+                ) : (
+                  <></>
+                )}
+                {isFieldWritable(
+                  props.attrLevelRights.krbprincipalexpiration
+                ) ? (
+                  time
+                ) : (
+                  <></>
+                )}
               </CalendarLayout>
             </FormGroup>
-            <FormGroup label="Login shell" fieldId="login-shell">
-              <TextInput
-                id="login-shell"
-                name="loginshell"
-                value={loginShell}
-                type="text"
-                onChange={loginShellInputHandler}
-                aria-label="login shell"
-              />
-            </FormGroup>
+
+            <FieldWrapper
+              isWritable={isFieldWritable(props.attrLevelRights.loginshell)}
+              isReadable={isFieldReadable(props.attrLevelRights.loginshell)}
+            >
+              <FormGroup label="Login shell" fieldId="login-shell">
+                <TextInput
+                  id="login-shell"
+                  name="loginshell"
+                  value={loginShell}
+                  type="text"
+                  onChange={loginShellInputHandler}
+                  aria-label="login shell"
+                />
+              </FormGroup>
+            </FieldWrapper>
           </Form>
         </FlexItem>
         <FlexItem flex={{ default: "flex_1" }}>
           <Form className="pf-u-mb-lg">
-            <FormGroup label="Home directory" fieldId="home-directory">
-              <TextInput
-                id="home-directory"
-                name="homedirectory"
-                value={homeDirectory}
-                type="text"
-                onChange={homeDirectoryInputHandler}
-                aria-label="home directory"
-              />
-            </FormGroup>
+            <FieldWrapper
+              isWritable={isFieldWritable(props.attrLevelRights.homedirectory)}
+              isReadable={isFieldReadable(props.attrLevelRights.homedirectory)}
+            >
+              <FormGroup label="Home directory" fieldId="home-directory">
+                <TextInput
+                  id="home-directory"
+                  name="homedirectory"
+                  value={homeDirectory}
+                  type="text"
+                  onChange={homeDirectoryInputHandler}
+                  aria-label="home directory"
+                />
+              </FormGroup>
+            </FieldWrapper>
+
             <FormGroup label="SSH public keys" fieldId="ssh-public-keys">
-              <SecondaryButton onClickHandler={openSshPublicKeysModal}>
-                Add
-              </SecondaryButton>
+              {isFieldWritable(props.attrLevelRights.ipasshpubkey) && (
+                <SecondaryButton onClickHandler={openSshPublicKeysModal}>
+                  Add
+                </SecondaryButton>
+              )}
             </FormGroup>
+
             <FormGroup label="Certificates" fieldId="certificates">
-              <SecondaryButton onClickHandler={openCertificatesModal}>
-                Add
-              </SecondaryButton>
+              {isFieldWritable(props.attrLevelRights.usercertificate) && (
+                <SecondaryButton onClickHandler={openCertificatesModal}>
+                  Add
+                </SecondaryButton>
+              )}
             </FormGroup>
+
             <FormGroup
               label="Certificate mapping data"
               fieldId="certificate-mapping-data"
@@ -745,144 +812,196 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 />
               }
             >
-              <SecondaryButton
-                onClickHandler={openCertificatesMappingDataModal}
+              {isFieldWritable(props.attrLevelRights.ipacertmapdata) && (
+                <SecondaryButton
+                  onClickHandler={openCertificatesMappingDataModal}
+                >
+                  Add
+                </SecondaryButton>
+              )}
+            </FormGroup>
+
+            <FieldWrapper
+              isWritable={isFieldWritable(
+                props.attrLevelRights.ipauserauthtype,
+                props.attrLevelRights.objectclass,
+                "w_if_no_aci"
+              )}
+              isReadable={isFieldReadable(
+                props.attrLevelRights.ipauserauthtype,
+                "r_if_no_aci"
+              )}
+            >
+              <FormGroup
+                label="User authentication types"
+                fieldId="user-authentication-types"
+                labelIcon={
+                  <PopoverWithIconLayout message={userAuthTypesMessage} />
+                }
               >
-                Add
-              </SecondaryButton>
-            </FormGroup>
-            <FormGroup
-              label="User authentication types"
-              fieldId="user-authentication-types"
-              labelIcon={
-                <PopoverWithIconLayout message={userAuthTypesMessage} />
-              }
+                <Checkbox
+                  label="Password"
+                  isChecked={passwordCheckbox}
+                  aria-label="password from user authentication types"
+                  id="passwordCheckbox"
+                  name="ipauserauthtype"
+                  value="password"
+                  className="pf-u-mt-xs pf-u-mb-sm"
+                />
+                <Checkbox
+                  label="RADIUS"
+                  isChecked={radiusCheckbox}
+                  aria-label="radius from user authentication types"
+                  id="radiusCheckbox"
+                  name="ipauserauthtype"
+                  value="radius"
+                  className="pf-u-mt-xs pf-u-mb-sm"
+                />
+                <Checkbox
+                  label="Two-factor authentication (password + OTP)"
+                  isChecked={tpaCheckbox}
+                  aria-label="two factor authentication from user authentication types"
+                  id="tpaCheckbox"
+                  name="ipauserauthtype"
+                  value="otp"
+                  className="pf-u-mt-xs pf-u-mb-sm"
+                />
+                <Checkbox
+                  label="PKINIT"
+                  isChecked={pkinitCheckbox}
+                  aria-label="pkinit from user authentication types"
+                  id="pkinitCheckbox"
+                  name="ipauserauthtype"
+                  value="pkinit"
+                  className="pf-u-mt-xs pf-u-mb-sm"
+                />
+                <Checkbox
+                  label="Hardened password (by SPAKE or FAST)"
+                  isChecked={hardenedPassCheckbox}
+                  aria-label="hardened password from user authentication types"
+                  id="hardenedPassCheckbox"
+                  name="ipauserauthtype"
+                  value="hardened"
+                  className="pf-u-mt-xs pf-u-mb-sm"
+                />
+                <Checkbox
+                  label="External Identity Provider"
+                  isChecked={extIdentityProvCheckbox}
+                  aria-label="external identity provider from user authentication types"
+                  id="extIdentityProvCheckbox"
+                  name="ipauserauthtype"
+                  value="idp"
+                />
+              </FormGroup>
+            </FieldWrapper>
+
+            <FieldWrapper
+              isWritable={isFieldWritable(
+                props.attrLevelRights.ipatokenradiusconfiglink
+              )}
+              isReadable={isFieldReadable(
+                props.attrLevelRights.ipatokenradiusconfiglink
+              )}
             >
-              <Checkbox
-                label="Password"
-                isChecked={passwordCheckbox}
-                aria-label="password from user authentication types"
-                id="passwordCheckbox"
-                name="ipauserauthtype"
-                value="password"
-                className="pf-u-mt-xs pf-u-mb-sm"
-              />
-              <Checkbox
-                label="RADIUS"
-                isChecked={radiusCheckbox}
-                aria-label="radius from user authentication types"
-                id="radiusCheckbox"
-                name="ipauserauthtype"
-                value="radius"
-                className="pf-u-mt-xs pf-u-mb-sm"
-              />
-              <Checkbox
-                label="Two-factor authentication (password + OTP)"
-                isChecked={tpaCheckbox}
-                aria-label="two factor authentication from user authentication types"
-                id="tpaCheckbox"
-                name="ipauserauthtype"
-                value="otp"
-                className="pf-u-mt-xs pf-u-mb-sm"
-              />
-              <Checkbox
-                label="PKINIT"
-                isChecked={pkinitCheckbox}
-                aria-label="pkinit from user authentication types"
-                id="pkinitCheckbox"
-                name="ipauserauthtype"
-                value="pkinit"
-                className="pf-u-mt-xs pf-u-mb-sm"
-              />
-              <Checkbox
-                label="Hardened password (by SPAKE or FAST)"
-                isChecked={hardenedPassCheckbox}
-                aria-label="hardened password from user authentication types"
-                id="hardenedPassCheckbox"
-                name="ipauserauthtype"
-                value="hardened"
-                className="pf-u-mt-xs pf-u-mb-sm"
-              />
-              <Checkbox
-                label="External Identity Provider"
-                isChecked={extIdentityProvCheckbox}
-                aria-label="external identity provider from user authentication types"
-                id="extIdentityProvCheckbox"
-                name="ipauserauthtype"
-                value="idp"
-              />
-            </FormGroup>
-            <FormGroup
-              label="Radius proxy configuration"
-              fieldId="radius-proxy-configuration"
-            >
-              <Select
-                id="radius-proxy-configuration"
-                name="ipatokenradiusconfiglink"
-                variant={SelectVariant.single}
-                placeholderText=" "
-                aria-label="Select Input with descriptions"
-                onToggle={radiusConfOnToggle}
-                onSelect={radiusConfOnSelect}
-                selections={radiusConfSelected}
-                isOpen={isRadiusConfOpen}
-                aria-labelledby="radius-proxy-conf"
+              <FormGroup
+                label="Radius proxy configuration"
+                fieldId="radius-proxy-configuration"
               >
-                {radiusConfOptions.map((option, index) => (
-                  <SelectOption key={index} value={option.cn} />
-                ))}
-              </Select>
-            </FormGroup>
-            <FormGroup
-              label="Radius proxy username"
-              fieldId="radius-proxy-username"
+                <Select
+                  id="radius-proxy-configuration"
+                  name="ipatokenradiusconfiglink"
+                  variant={SelectVariant.single}
+                  placeholderText=" "
+                  aria-label="Select Input with descriptions"
+                  onToggle={radiusConfOnToggle}
+                  onSelect={radiusConfOnSelect}
+                  selections={radiusConfSelected}
+                  isOpen={isRadiusConfOpen}
+                  aria-labelledby="radius-proxy-conf"
+                >
+                  {radiusConfOptions.map((option, index) => (
+                    <SelectOption key={index} value={option.cn} />
+                  ))}
+                </Select>
+              </FormGroup>
+            </FieldWrapper>
+
+            <FieldWrapper
+              isWritable={isFieldWritable(
+                props.attrLevelRights.ipatokenradiususername
+              )}
+              isReadable={isFieldReadable(
+                props.attrLevelRights.ipatokenradiususername
+              )}
             >
-              <TextInput
-                id="radius-proxy-username"
-                name="ipatokenradiususername"
-                value={radiusUsername}
-                type="text"
-                onChange={radiusUsernameInputHandler}
-                aria-label="radius proxy username"
-              />
-            </FormGroup>
-            <FormGroup
-              label="External IdP configuration"
-              fieldId="external-idp-configuration"
-            >
-              <Select
-                id="external-idp-configuration"
-                name="ipaidpconfiglink"
-                variant={SelectVariant.single}
-                placeholderText=" "
-                aria-label="Select Input with descriptions"
-                onToggle={idpConfOnToggle}
-                onSelect={idpConfOnSelect}
-                selections={idpConfSelected}
-                isOpen={isIdpConfOpen}
-                aria-labelledby="external-idp-conf"
+              <FormGroup
+                label="Radius proxy username"
+                fieldId="radius-proxy-username"
               >
-                {idpConfOptions.map((option, index) => (
-                  <SelectOption key={index} value={option} />
-                ))}
-              </Select>
-            </FormGroup>
-            <FormGroup
-              label="External IdP user identifier"
-              fieldId="external-idp-user-identifier"
+                <TextInput
+                  id="radius-proxy-username"
+                  name="ipatokenradiususername"
+                  value={radiusUsername}
+                  type="text"
+                  onChange={radiusUsernameInputHandler}
+                  aria-label="radius proxy username"
+                />
+              </FormGroup>
+            </FieldWrapper>
+
+            <FieldWrapper
+              isWritable={isFieldWritable(
+                props.attrLevelRights.ipaidpconfiglink
+              )}
+              isReadable={isFieldReadable(
+                props.attrLevelRights.ipaidpconfiglink
+              )}
             >
-              <TextInput
-                id="external-idp-user-identifier"
-                name="ipaidpsub"
-                value={idpIdentifier}
-                type="text"
-                onChange={idpIdentifierInputHandler}
-                aria-label="idp user identifier"
-              />
-            </FormGroup>
+              <FormGroup
+                label="External IdP configuration"
+                fieldId="external-idp-configuration"
+              >
+                <Select
+                  id="external-idp-configuration"
+                  name="ipaidpconfiglink"
+                  variant={SelectVariant.single}
+                  placeholderText=" "
+                  aria-label="Select Input with descriptions"
+                  onToggle={idpConfOnToggle}
+                  onSelect={idpConfOnSelect}
+                  selections={idpConfSelected}
+                  isOpen={isIdpConfOpen}
+                  aria-labelledby="external-idp-conf"
+                >
+                  {idpConfOptions.map((option, index) => (
+                    <SelectOption key={index} value={option} />
+                  ))}
+                </Select>
+              </FormGroup>
+            </FieldWrapper>
+
+            <FieldWrapper
+              isWritable={isFieldWritable(props.attrLevelRights.ipaidpsub)}
+              isReadable={isFieldReadable(props.attrLevelRights.ipaidpsub)}
+            >
+              <FormGroup
+                label="External IdP user identifier"
+                fieldId="external-idp-user-identifier"
+              >
+                <TextInput
+                  id="external-idp-user-identifier"
+                  name="ipaidpsub"
+                  value={idpIdentifier}
+                  type="text"
+                  onChange={idpIdentifierInputHandler}
+                  aria-label="idp user identifier"
+                />
+              </FormGroup>
+            </FieldWrapper>
           </Form>
         </FlexItem>
       </Flex>
+
       <ModalWithTextAreaLayout
         value={textAreaSshPublicKeysValue}
         onChange={onChangeTextAreaSshPublicKeysValue}

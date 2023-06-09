@@ -319,6 +319,7 @@ const UserSettings = (props: PropsToUserSettings) => {
                   certData={certFindData}
                   radiusProxyData={radiusProxyData}
                   idpData={idpData}
+                  attrLevelRights={attrLevelRights}
                 />
                 <TitleLayout
                   key={2}
