@@ -327,7 +327,10 @@ const UserSettings = (props: PropsToUserSettings) => {
                   id="password-policy"
                   text="Password policy"
                 />
-                <UsersPasswordPolicy pwpolicyData={pwpolicyShowData} />
+                <UsersPasswordPolicy
+                  pwpolicyData={pwpolicyShowData}
+                  attrLevelRights={attrLevelRights}
+                />
                 <TitleLayout
                   key={3}
                   headingLevel="h2"
