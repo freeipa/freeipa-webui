@@ -357,7 +357,10 @@ const UserSettings = (props: PropsToUserSettings) => {
                   id="mailing-address"
                   text="Mailing address"
                 />
-                <UsersMailingAddress userData={userShowData} />
+                <UsersMailingAddress
+                  userData={userShowData}
+                  attrLevelRights={attrLevelRights}
+                />
                 <TitleLayout
                   key={6}
                   headingLevel="h2"
