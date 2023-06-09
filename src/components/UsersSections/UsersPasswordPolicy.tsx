@@ -8,9 +8,13 @@ import {
   FormGroup,
   TextInput,
 } from "@patternfly/react-core";
+// Utils
+import { isFieldReadable, isFieldWritable } from "src/utils/utils";
+import FieldWrapper from "src/utils/FieldWrapper";
 
 interface PropsToPasswordPolicy {
   pwpolicyData: any;
+  attrLevelRights: any;
 }
 
 const UsersPasswordPolicy = (props: PropsToPasswordPolicy) => {
@@ -44,109 +48,168 @@ const UsersPasswordPolicy = (props: PropsToPasswordPolicy) => {
     <Flex direction={{ default: "column", md: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-u-mb-lg">
-          <FormGroup label="Max lifetime (days)" fieldId="max-lifetime-days">
-            <TextInput
-              id="max-lifetime-days"
-              name="krbmaxpwdlife"
-              value={maxLifetimeDays}
-              type="text"
-              aria-label="max lifetime in days"
-              isDisabled
-            />
-          </FormGroup>
-          <FormGroup label="Min lifetime (hours)" fieldId="mini-lifetime-hours">
-            <TextInput
-              id="min-lifetime-hours"
-              name="krbminpwdlife"
-              value={minLifetimeHours}
-              type="text"
-              aria-label="min lifetime in hours"
-              isDisabled
-            />
-          </FormGroup>
-          <FormGroup
-            label="History size (number of passwords)"
-            fieldId="history-size"
+          <FieldWrapper
+            isWritable={isFieldWritable(props.attrLevelRights.krbmaxpwdlife)}
+            isReadable={isFieldReadable(props.attrLevelRights.krbmaxpwdlife)}
           >
-            <TextInput
-              id="history-size"
-              name="krbpwdhistorylength"
-              value={historySize}
-              type="text"
-              aria-label="history size"
-              isDisabled
-            />
-          </FormGroup>
-          <FormGroup label="Character classes" fieldId="character-classes">
-            <TextInput
-              id="character-classes"
-              name="krbpwdmindiffchars"
-              value={characterClasses}
-              type="text"
-              aria-label="character classes"
-              isDisabled
-            />
-          </FormGroup>
-          <FormGroup label="Min length" fieldId="min-length">
-            <TextInput
-              id="min-length"
-              name="krbpwdminlength"
-              value={minLength}
-              type="text"
-              aria-label="min length"
-              isDisabled
-            />
-          </FormGroup>
+            <FormGroup label="Max lifetime (days)" fieldId="max-lifetime-days">
+              <TextInput
+                id="max-lifetime-days"
+                name="krbmaxpwdlife"
+                value={maxLifetimeDays}
+                type="text"
+                aria-label="max lifetime in days"
+              />
+            </FormGroup>
+          </FieldWrapper>
+          <FieldWrapper
+            isWritable={isFieldWritable(props.attrLevelRights.krbminpwdlife)}
+            isReadable={isFieldReadable(props.attrLevelRights.krbminpwdlife)}
+          >
+            <FormGroup
+              label="Min lifetime (hours)"
+              fieldId="mini-lifetime-hours"
+            >
+              <TextInput
+                id="min-lifetime-hours"
+                name="krbminpwdlife"
+                value={minLifetimeHours}
+                type="text"
+                aria-label="min lifetime in hours"
+              />
+            </FormGroup>
+          </FieldWrapper>
+          <FieldWrapper
+            isWritable={isFieldWritable(
+              props.attrLevelRights.krbpwdhistorylength
+            )}
+            isReadable={isFieldReadable(
+              props.attrLevelRights.krbpwdhistorylength
+            )}
+          >
+            <FormGroup
+              label="History size (number of passwords)"
+              fieldId="history-size"
+            >
+              <TextInput
+                id="history-size"
+                name="krbpwdhistorylength"
+                value={historySize}
+                type="text"
+                aria-label="history size"
+              />
+            </FormGroup>
+          </FieldWrapper>
+          <FieldWrapper
+            isWritable={isFieldWritable(
+              props.attrLevelRights.krbpwdmindiffchars
+            )}
+            isReadable={isFieldReadable(
+              props.attrLevelRights.krbpwdmindiffchars
+            )}
+          >
+            <FormGroup label="Character classes" fieldId="character-classes">
+              <TextInput
+                id="character-classes"
+                name="krbpwdmindiffchars"
+                value={characterClasses}
+                type="text"
+                aria-label="character classes"
+              />
+            </FormGroup>
+          </FieldWrapper>
+          <FieldWrapper
+            isWritable={isFieldWritable(props.attrLevelRights.krbpwdminlength)}
+            isReadable={isFieldReadable(props.attrLevelRights.krbpwdminlength)}
+          >
+            <FormGroup label="Min length" fieldId="min-length">
+              <TextInput
+                id="min-length"
+                name="krbpwdminlength"
+                value={minLength}
+                type="text"
+                aria-label="min length"
+              />
+            </FormGroup>
+          </FieldWrapper>
         </Form>
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-u-mb-lg">
-          <FormGroup label="Max failures" fieldId="max-failures">
-            <TextInput
-              id="max-failures"
-              name="krbpwdminlength"
-              value={maxFailures}
-              type="text"
-              aria-label="max failures"
-              isDisabled
-            />
-          </FormGroup>
-          <FormGroup
-            label="Future reset interval (seconds)"
-            fieldId="future-reset-interval"
+          <FieldWrapper
+            isWritable={isFieldWritable(props.attrLevelRights.krbpwdmaxfailure)}
+            isReadable={isFieldReadable(props.attrLevelRights.krbpwdmaxfailure)}
           >
-            <TextInput
-              id="future-reset-interval"
-              name="krbpwdfailurecountinterval"
-              value={futureResetInterval}
-              type="text"
-              aria-label="future reset interval in seconds"
-              isDisabled
-            />
-          </FormGroup>
-          <FormGroup
-            label="Lockout duration (seconds)"
-            fieldId="lockout-duration"
+            <FormGroup label="Max failures" fieldId="max-failures">
+              <TextInput
+                id="max-failures"
+                name="krbpwdmaxfailure"
+                value={maxFailures}
+                type="text"
+                aria-label="max failures"
+              />
+            </FormGroup>
+          </FieldWrapper>
+          <FieldWrapper
+            isWritable={isFieldWritable(
+              props.attrLevelRights.krbpwdfailurecountinterval
+            )}
+            isReadable={isFieldReadable(
+              props.attrLevelRights.krbpwdfailurecountinterval
+            )}
           >
-            <TextInput
-              id="lockout-duration"
-              name="krbpwdlockoutduration"
-              value={lockoutDuration}
-              type="text"
-              aria-label="lockout duration in seconds"
-              isDisabled
-            />
-          </FormGroup>
-          <FormGroup label="Grace login limit" fieldId="grace-login-limit">
-            <TextInput
-              id="grace-login-limit"
-              name="passwordgracelimit"
-              value={graceLoginLimit}
-              type="text"
-              aria-label="grace login limit"
-              isDisabled
-            />
-          </FormGroup>
+            <FormGroup
+              label="Future reset interval (seconds)"
+              fieldId="future-reset-interval"
+            >
+              <TextInput
+                id="future-reset-interval"
+                name="krbpwdfailurecountinterval"
+                value={futureResetInterval}
+                type="text"
+                aria-label="future reset interval in seconds"
+              />
+            </FormGroup>
+          </FieldWrapper>
+          <FieldWrapper
+            isWritable={isFieldWritable(
+              props.attrLevelRights.krbpwdlockoutduration
+            )}
+            isReadable={isFieldReadable(
+              props.attrLevelRights.krbpwdlockoutduration
+            )}
+          >
+            <FormGroup
+              label="Lockout duration (seconds)"
+              fieldId="lockout-duration"
+            >
+              <TextInput
+                id="lockout-duration"
+                name="krbpwdlockoutduration"
+                value={lockoutDuration}
+                type="text"
+                aria-label="lockout duration in seconds"
+              />
+            </FormGroup>
+          </FieldWrapper>
+          <FieldWrapper
+            isWritable={isFieldWritable(
+              props.attrLevelRights.passwordgracelimit
+            )}
+            isReadable={isFieldReadable(
+              props.attrLevelRights.passwordgracelimit
+            )}
+          >
+            <FormGroup label="Grace login limit" fieldId="grace-login-limit">
+              <TextInput
+                id="grace-login-limit"
+                name="passwordgracelimit"
+                value={graceLoginLimit}
+                type="text"
+                aria-label="grace login limit"
+              />
+            </FormGroup>
+          </FieldWrapper>
         </Form>
       </FlexItem>
     </Flex>
