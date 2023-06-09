@@ -92,3 +92,42 @@ export const parseStringToUTCFormat = (date: string) => {
 
   return dateFormat;
 };
+
+// Returns a boolean value if file is writable
+// Writable:
+// - attribute level rights for acl param contains 'w'
+// - with 'w_if_no_aci' flag and no attribute level rights and user has rights to modify objectclass
+export const isFieldWritable = (
+  aci: string,
+  objectClass?: string,
+  flag?: string
+) => {
+  if (aci !== undefined) {
+    return aci.includes("w");
+  } else {
+    // Writable if no aci defined, but `objectclass` defined, flag received and it has permissions.
+    if (
+      objectClass !== undefined &&
+      flag === "w_if_no_aci" &&
+      isFieldWritable(objectClass)
+    ) {
+      return true;
+    }
+  }
+
+  // Not writable if aci is not defined in `attributelevelrights` and no flag provided
+  return false;
+};
+
+// Returns a boolean value if file is readable
+export const isFieldReadable = (aci: string, flag?: string) => {
+  if (aci !== undefined) {
+    // Hide if empty aci
+    if (aci === "") return false;
+    return aci.includes("r");
+  }
+  // Readable if flag received
+  if (flag !== undefined && flag === "r_if_no_aci") return true;
+  // Not readable if aci is not defined in `attributelevelrights` and no flag provided
+  return false;
+};
