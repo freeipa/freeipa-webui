@@ -15,10 +15,14 @@ import {
 import SecondaryButton from "../layouts/SecondaryButton";
 // Data types
 import { User } from "src/utils/datatypes/globalDataTypes";
+// Utils
+import { isFieldReadable, isFieldWritable } from "src/utils/utils";
+import FieldWrapper from "src/utils/FieldWrapper";
 
 interface PropsToEmployeeData {
   uidsData: any;
   userData: any;
+  attrLevelRights: any;
 }
 
 const UsersEmployeeInfo = (props: PropsToEmployeeData) => {
@@ -124,35 +128,45 @@ const UsersEmployeeInfo = (props: PropsToEmployeeData) => {
     <Flex direction={{ default: "column", md: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-u-mb-lg">
-          <FormGroup label="Org. unit" fieldId="org-unit">
-            <TextInput
-              id="org-unit"
-              name="ou"
-              value={orgUnit}
-              type="text"
-              aria-label="organization unit"
-              onChange={onChangeOrgUnit}
-            />
-          </FormGroup>
-          <FormGroup label="Manager" fieldId="manager">
-            <Select
-              id="manager"
-              name="manager"
-              variant={SelectVariant.single}
-              placeholderText=" "
-              aria-label="Select manager"
-              onToggle={managerOnToggle}
-              onSelect={managerOnSelect}
-              selections={managerSelected}
-              isOpen={isManagerOpen}
-              aria-labelledby="manager"
-              style={{ height: "186px", overflowY: "scroll" }}
-            >
-              {managerOptions.map((option, index) => (
-                <SelectOption key={index} value={option} />
-              ))}
-            </Select>
-          </FormGroup>
+          <FieldWrapper
+            isWritable={isFieldWritable(props.attrLevelRights.ou)}
+            isReadable={isFieldReadable(props.attrLevelRights.ou)}
+          >
+            <FormGroup label="Org. unit" fieldId="org-unit">
+              <TextInput
+                id="org-unit"
+                name="ou"
+                value={orgUnit}
+                type="text"
+                aria-label="organization unit"
+                onChange={onChangeOrgUnit}
+              />
+            </FormGroup>
+          </FieldWrapper>
+          <FieldWrapper
+            isWritable={isFieldWritable(props.attrLevelRights.manager)}
+            isReadable={isFieldReadable(props.attrLevelRights.manager)}
+          >
+            <FormGroup label="Manager" fieldId="manager">
+              <Select
+                id="manager"
+                name="manager"
+                variant={SelectVariant.single}
+                placeholderText=" "
+                aria-label="Select manager"
+                onToggle={managerOnToggle}
+                onSelect={managerOnSelect}
+                selections={managerSelected}
+                isOpen={isManagerOpen}
+                aria-labelledby="manager"
+                style={{ height: "186px", overflowY: "scroll" }}
+              >
+                {managerOptions.map((option, index) => (
+                  <SelectOption key={index} value={option} />
+                ))}
+              </Select>
+            </FormGroup>
+          </FieldWrapper>
           <FormGroup label="Department number" fieldId="department-number">
             <Flex direction={{ default: "column" }} name="departmentnumber">
               {departmentNumberList.map((departmentNumber, idx) => (
@@ -174,65 +188,93 @@ const UsersEmployeeInfo = (props: PropsToEmployeeData) => {
                       onChange={(value, event) =>
                         onHandleDepartmentNumberChange(value, event, idx)
                       }
+                      isDisabled={
+                        !isFieldWritable(props.attrLevelRights.departmentnumber)
+                      }
                     />
                   </FlexItem>
                   <FlexItem
                     key={departmentNumber + "-" + idx + "-delete-button"}
                   >
-                    <SecondaryButton
-                      name="remove"
-                      onClickHandler={() =>
-                        onRemoveDepartmentNumberHandler(idx)
-                      }
-                    >
-                      Delete
-                    </SecondaryButton>
+                    {isFieldWritable(
+                      props.attrLevelRights.departmentnumber
+                    ) && (
+                      <SecondaryButton
+                        name="remove"
+                        onClickHandler={() =>
+                          onRemoveDepartmentNumberHandler(idx)
+                        }
+                      >
+                        Delete
+                      </SecondaryButton>
+                    )}
                   </FlexItem>
                 </Flex>
               ))}
             </Flex>
-            <SecondaryButton
-              classname="pf-u-mt-sm"
-              name="add"
-              onClickHandler={onAddDepartmentNumberHandler}
-            >
-              Add
-            </SecondaryButton>
+            {isFieldWritable(props.attrLevelRights.departmentnumber) && (
+              <SecondaryButton
+                classname="pf-u-mt-sm"
+                name="add"
+                onClickHandler={onAddDepartmentNumberHandler}
+              >
+                Add
+              </SecondaryButton>
+            )}
           </FormGroup>
         </Form>
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-u-mb-lg">
-          <FormGroup label="Employee number" fieldId="employee-number">
-            <TextInput
-              id="employee-number"
-              name="employeenumber"
-              value={employeeNumber}
-              type="text"
-              aria-label="employee number"
-              onChange={onChangeEmployeeNumber}
-            />
-          </FormGroup>
-          <FormGroup label="Employee type" fieldId="employee-type">
-            <TextInput
-              id="employee-type"
-              name="employeetype"
-              value={employeeType}
-              type="text"
-              aria-label="employee type"
-              onChange={onChangeEmployeeType}
-            />
-          </FormGroup>
-          <FormGroup label="Preferred language" fieldId="preferred-language">
-            <TextInput
-              id="preferred-language"
-              name="preferredlanguage"
-              value={preferredLanguage}
-              type="text"
-              aria-label="preferred language"
-              onChange={onChangePreferredLanguage}
-            />
-          </FormGroup>
+          <FieldWrapper
+            isWritable={isFieldWritable(props.attrLevelRights.employeenumber)}
+            isReadable={isFieldReadable(props.attrLevelRights.employeenumber)}
+          >
+            <FormGroup label="Employee number" fieldId="employee-number">
+              <TextInput
+                id="employee-number"
+                name="employeenumber"
+                value={employeeNumber}
+                type="text"
+                aria-label="employee number"
+                onChange={onChangeEmployeeNumber}
+              />
+            </FormGroup>
+          </FieldWrapper>
+          <FieldWrapper
+            isWritable={isFieldWritable(props.attrLevelRights.employeetype)}
+            isReadable={isFieldReadable(props.attrLevelRights.employeetype)}
+          >
+            <FormGroup label="Employee type" fieldId="employee-type">
+              <TextInput
+                id="employee-type"
+                name="employeetype"
+                value={employeeType}
+                type="text"
+                aria-label="employee type"
+                onChange={onChangeEmployeeType}
+              />
+            </FormGroup>
+          </FieldWrapper>
+          <FieldWrapper
+            isWritable={isFieldWritable(
+              props.attrLevelRights.preferredlanguage
+            )}
+            isReadable={isFieldReadable(
+              props.attrLevelRights.preferredlanguage
+            )}
+          >
+            <FormGroup label="Preferred language" fieldId="preferred-language">
+              <TextInput
+                id="preferred-language"
+                name="preferredlanguage"
+                value={preferredLanguage}
+                type="text"
+                aria-label="preferred language"
+                onChange={onChangePreferredLanguage}
+              />
+            </FormGroup>
+          </FieldWrapper>
         </Form>
       </FlexItem>
     </Flex>
