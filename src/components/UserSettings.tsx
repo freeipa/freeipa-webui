@@ -65,6 +65,10 @@ const UserSettings = (props: PropsToUserSettings) => {
     useState<Record<string, unknown>>();
   const [idpData, setIdpData] = useState<Record<string, unknown>>();
   const [uidsData, setUidsData] = useState<Record<string, unknown>>();
+  // Attribute level rights
+  // - Some fields are hidden for some users and can have different
+  //   read/write permissions.
+  const [attrLevelRights, setAttrLevelRights] = useState<any>("");
 
   // [API call] Get full user information
   const userShowCommand: Command = {
@@ -133,6 +137,9 @@ const UserSettings = (props: PropsToUserSettings) => {
       setPwpolicyShowData(batchResponse.result.results[1].result);
       setKrbtpolicyShowData(batchResponse.result.results[2].result);
       setCertFindData(batchResponse.result.results[3].result);
+      setAttrLevelRights(
+        batchResponse.result.results[0].result.attributelevelrights
+      );
     }
   }, [isBatchLoading]);
 
@@ -297,7 +304,10 @@ const UserSettings = (props: PropsToUserSettings) => {
                   id="identity-settings"
                   text="Identity settings"
                 />
-                <UsersIdentity userData={userShowData} />
+                <UsersIdentity
+                  userData={userShowData}
+                  attrLevelRights={attrLevelRights}
+                />
                 <TitleLayout
                   key={1}
                   headingLevel="h2"
