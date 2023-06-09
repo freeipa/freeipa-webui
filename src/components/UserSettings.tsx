@@ -378,7 +378,10 @@ const UserSettings = (props: PropsToUserSettings) => {
                   id="smb-services"
                   text="User attributes for SMB services"
                 />
-                <UsersAttributesSMB userData={userShowData} />
+                <UsersAttributesSMB
+                  userData={userShowData}
+                  attrLevelRights={attrLevelRights}
+                />
               </Flex>
             </SidebarContent>
           </Sidebar>
