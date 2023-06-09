@@ -27,6 +27,7 @@ interface PropsToCalendar {
   textInputAriaLabel?: string;
   textInputValue: string | number;
   children: JSX.Element[];
+  isDisable?: boolean;
 }
 
 const CalendarLayout = (props: PropsToCalendar) => {
@@ -46,6 +47,7 @@ const CalendarLayout = (props: PropsToCalendar) => {
           name={props.name}
           aria-label={props.textInputAriaLabel}
           value={props.textInputValue}
+          isDisabled={props.isDisable}
         />
         {props.children}
       </InputGroup>
