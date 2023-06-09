@@ -337,7 +337,10 @@ const UserSettings = (props: PropsToUserSettings) => {
                   id="kerberos-ticket"
                   text="Kerberos ticket"
                 />
-                <UsersKerberosTicket krbtpolicyData={krbtpolicyShowData} />
+                <UsersKerberosTicket
+                  krbtpolicyData={krbtpolicyShowData}
+                  attrLevelRights={attrLevelRights}
+                />
                 <TitleLayout
                   key={4}
                   headingLevel="h2"
