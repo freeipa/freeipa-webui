@@ -14,6 +14,7 @@ import {
   SidebarContent,
   DropdownDirection,
   Spinner,
+  Button,
 } from "@patternfly/react-core";
 // Icons
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
@@ -38,10 +39,18 @@ import UsersAttributesSMB from "src/components/UsersSections/UsersAttributesSMB"
 import { useAppSelector } from "src/store/hooks";
 // RPC
 import {
+  BatchRPCResponse,
   Command,
+  FindRPCResponse,
   useBatchCommandQuery,
+  useBatchMutCommandMutation,
   useSimpleCommandQuery,
+  useSimpleMutCommandMutation,
 } from "src/services/rpc";
+// Errors
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { SerializedError } from "@reduxjs/toolkit";
+import ErrorModal from "./modals/ErrorModal";
 
 export interface PropsToUserSettings {
   user: User;
@@ -53,6 +62,15 @@ const UserSettings = (props: PropsToUserSettings) => {
   const apiVersion = useAppSelector(
     (state) => state.global.environment.api_version
   ) as string;
+
+  // Define functions to execute commands (via Mutation)
+  const [retrieveUserData] = useBatchMutCommandMutation();
+  const [retrieveRadiusProxy] = useSimpleMutCommandMutation();
+  const [retrieveIdp] = useSimpleMutCommandMutation();
+  const [retrieveUids] = useSimpleMutCommandMutation();
+
+  // Loading data
+  const [isDataLoading, setIsDataLoading] = useState(true);
 
   // Initialize data
   const [userShowData, setUserShowData] = useState<Record<string, unknown>>();
@@ -164,6 +182,18 @@ const UserSettings = (props: PropsToUserSettings) => {
     }
   }, [isUidsLoading]);
 
+  // Update the data loading flag
+  useEffect(() => {
+    if (
+      !isBatchLoading &&
+      !isRadiusProxyLoading &&
+      !isIdpLoading &&
+      !isUidsLoading
+    ) {
+      setIsDataLoading(false);
+    }
+  }, [isBatchLoading, isRadiusProxyLoading, isIdpLoading, isUidsLoading]);
+
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
 
@@ -204,11 +234,124 @@ const UserSettings = (props: PropsToUserSettings) => {
     />
   );
 
+  // Handle API error data
+  const [isModalErrorOpen, setIsModalErrorOpen] = useState(false);
+  const [errorTitle, setErrorTitle] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const closeAndCleanErrorParameters = () => {
+    setIsModalErrorOpen(false);
+    setErrorTitle("");
+    setErrorMessage("");
+  };
+
+  const onCloseErrorModal = () => {
+    closeAndCleanErrorParameters();
+  };
+
+  const errorModalActions = [
+    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+      Cancel
+    </Button>,
+  ];
+
+  const handleAPIError = (error: FetchBaseQueryError | SerializedError) => {
+    if ("error" in error) {
+      setErrorTitle("IPA error");
+      if (error.data !== undefined) {
+        setErrorMessage(error.error);
+      }
+    }
+    setIsModalErrorOpen(true);
+  };
+
+  // Refresh data
+  const refreshUserData = () => {
+    // Set data loading flag
+    setIsDataLoading(true);
+
+    // Make API calls
+    // - User data & others (batch)
+    retrieveUserData(batchPayload).then((batchResponse) => {
+      if ("data" in batchResponse) {
+        const responseData = batchResponse.data as BatchRPCResponse;
+        const usersList = responseData.result.results;
+        const usersError = responseData.error as
+          | FetchBaseQueryError
+          | SerializedError;
+        if (usersList !== undefined) {
+          setUserShowData(usersList[0].result);
+          setPwpolicyShowData(usersList[1].result);
+          setKrbtpolicyShowData(usersList[2].result);
+          setCertFindData(usersList[3].result);
+          setAttrLevelRights(usersList[0].result.attributelevelrights);
+        } else if (usersError) {
+          handleAPIError(usersError);
+        }
+      }
+      // This batch will finish later than the other calls.
+      //   So remove spinner and show data when finished.
+      setIsDataLoading(false);
+    });
+
+    // - Radius proxy data
+    retrieveRadiusProxy(radiusproxyPayload).then((radiusProxyResponse) => {
+      if ("data" in radiusProxyResponse) {
+        const responseData = radiusProxyResponse.data as FindRPCResponse;
+        const radiusProxyList = responseData.result.result;
+        const radiusProxyError = responseData.error as
+          | FetchBaseQueryError
+          | SerializedError;
+        if (radiusProxyList !== undefined) {
+          setRadiusProxyData(radiusProxyList);
+        } else if (radiusProxyError) {
+          handleAPIError(radiusProxyError);
+        }
+      }
+    });
+
+    // - IDP data
+    retrieveIdp(idpPayload).then((idpResponse) => {
+      if ("data" in idpResponse) {
+        const responseData = idpResponse.data as FindRPCResponse;
+        const idpList = responseData.result.result;
+        const idpError = responseData.error as
+          | FetchBaseQueryError
+          | SerializedError;
+        if (idpList !== undefined) {
+          setIdpData(idpList);
+        } else if (idpError) {
+          handleAPIError(idpError);
+        }
+      }
+    });
+
+    // - UIDs data
+    retrieveUids(userIdsPayload).then((uidsResponse) => {
+      if ("data" in uidsResponse) {
+        const responseData = uidsResponse.data as FindRPCResponse;
+        const uidsList = responseData.result.result;
+        const uidsError = responseData.error as
+          | FetchBaseQueryError
+          | SerializedError;
+        if (uidsList !== undefined) {
+          setUidsData(uidsList);
+        } else if (uidsError) {
+          handleAPIError(uidsError);
+        }
+      }
+    });
+  };
+
   // Toolbar
   const toolbarFields = [
     {
       key: 0,
-      element: <SecondaryButton>Refresh</SecondaryButton>,
+      element: (
+        <SecondaryButton onClickHandler={refreshUserData}>
+          Refresh
+        </SecondaryButton>
+      ),
     },
     {
       key: 1,
@@ -243,10 +386,7 @@ const UserSettings = (props: PropsToUserSettings) => {
         className="pf-u-pr-0 pf-u-ml-lg pf-u-mr-sm"
         style={{ overflowY: "scroll", height: `calc(100vh - 319.2px)` }}
       >
-        {!isBatchLoading &&
-        !isRadiusProxyLoading &&
-        !isIdpLoading &&
-        !isUidsLoading ? (
+        {!isDataLoading ? (
           <Sidebar isPanelRight className="pf-u-mt-lg">
             <SidebarPanel variant="sticky">
               <HelpTextWithIconLayout
@@ -394,6 +534,15 @@ const UserSettings = (props: PropsToUserSettings) => {
         className={"pf-u-p-md pf-u-ml-lg pf-u-mr-lg"}
         toolbarItems={toolbarFields}
       />
+      {isModalErrorOpen && (
+        <ErrorModal
+          title={errorTitle}
+          isOpen={isModalErrorOpen}
+          onClose={onCloseErrorModal}
+          actions={errorModalActions}
+          errorMessage={errorMessage}
+        />
+      )}
     </>
   );
 };
