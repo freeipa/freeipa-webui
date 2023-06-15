@@ -108,6 +108,18 @@ const Services = () => {
     setShowTableRows(value);
   };
 
+  // Refresh displayed elements every time elements list changes (from Redux or somewhere else)
+  React.useEffect(() => {
+    updatePage(1);
+    if (showTableRows) updateShowTableRows(false);
+    setTimeout(() => {
+      updateShownServicesList(servicesList.slice(0, perPage));
+      updateShowTableRows(true);
+      // Reset 'selectedPerPage'
+      updateSelectedPerPage(0);
+    }, 1000);
+  }, [servicesList]);
+
   // Dropdown kebab
   const [kebabIsOpen, setKebabIsOpen] = useState(false);
 
