@@ -94,6 +94,18 @@ const Hosts = () => {
     setShownHostsList(newShownHostsList);
   };
 
+  // Refresh displayed elements every time elements list changes (from Redux or somewhere else)
+  React.useEffect(() => {
+    updatePage(1);
+    if (showTableRows) updateShowTableRows(false);
+    setTimeout(() => {
+      updateShownHostsList(hostsList.slice(0, perPage));
+      updateShowTableRows(true);
+      // Reset 'selectedPerPage'
+      updateSelectedPerPage(0);
+    }, 1000);
+  }, [hostsList]);
+
   // Filter (Input search)
   const [searchValue, setSearchValue] = React.useState("");
 
