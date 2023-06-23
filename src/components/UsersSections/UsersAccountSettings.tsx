@@ -455,6 +455,38 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
   const [hardenedPassCheckbox, setHardenedPassCheckbox] = useState(false);
   const [extIdentityProvCheckbox, setExtIdentityProvCheckbox] = useState(false);
 
+  // Handles changes for the 'User authentication types' checkboxes
+  const checkboxOnChange = (
+    checked: boolean,
+    event: React.FormEvent<HTMLInputElement>
+  ) => {
+    const target = event.currentTarget;
+    const value = target.value;
+
+    switch (value) {
+      case "password":
+        setPasswordCheckbox(checked);
+        break;
+      case "radius":
+        setRadiusCheckbox(checked);
+        break;
+      case "otp":
+        setTpaCheckbox(checked);
+        break;
+      case "pkinit":
+        setPkinitCheckbox(checked);
+        break;
+      case "hardened":
+        setHardenedPassCheckbox(checked);
+        break;
+      case "idp":
+        setExtIdentityProvCheckbox(checked);
+        break;
+      default:
+        console.log(value);
+    }
+  };
+
   // Date and time picker (Calendar)
   const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
   const [isTimeOpen, setIsTimeOpen] = React.useState(false);
@@ -845,6 +877,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                   aria-label="password from user authentication types"
                   id="passwordCheckbox"
                   name="ipauserauthtype"
+                  onChange={checkboxOnChange}
                   value="password"
                   className="pf-u-mt-xs pf-u-mb-sm"
                 />
@@ -854,6 +887,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                   aria-label="radius from user authentication types"
                   id="radiusCheckbox"
                   name="ipauserauthtype"
+                  onChange={checkboxOnChange}
                   value="radius"
                   className="pf-u-mt-xs pf-u-mb-sm"
                 />
@@ -863,6 +897,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                   aria-label="two factor authentication from user authentication types"
                   id="tpaCheckbox"
                   name="ipauserauthtype"
+                  onChange={checkboxOnChange}
                   value="otp"
                   className="pf-u-mt-xs pf-u-mb-sm"
                 />
@@ -872,6 +907,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                   aria-label="pkinit from user authentication types"
                   id="pkinitCheckbox"
                   name="ipauserauthtype"
+                  onChange={checkboxOnChange}
                   value="pkinit"
                   className="pf-u-mt-xs pf-u-mb-sm"
                 />
@@ -881,6 +917,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                   aria-label="hardened password from user authentication types"
                   id="hardenedPassCheckbox"
                   name="ipauserauthtype"
+                  onChange={checkboxOnChange}
                   value="hardened"
                   className="pf-u-mt-xs pf-u-mb-sm"
                 />
@@ -890,6 +927,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                   aria-label="external identity provider from user authentication types"
                   id="extIdentityProvCheckbox"
                   name="ipauserauthtype"
+                  onChange={checkboxOnChange}
                   value="idp"
                 />
               </FormGroup>
