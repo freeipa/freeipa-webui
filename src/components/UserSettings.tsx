@@ -16,7 +16,7 @@ import {
 // Icons
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // Data types
-import { User } from "src/utils/datatypes/globalDataTypes";
+import { Metadata, User } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -35,6 +35,8 @@ import UsersAttributesSMB from "src/components/UsersSections/UsersAttributesSMB"
 
 export interface PropsToUserSettings {
   user: User;
+  onUserChange: (user: User) => void;
+  metadata: Metadata;
   from: "active-users" | "stage-users" | "preserved-users";
 }
 
@@ -166,7 +168,11 @@ const UserSettings = (props: PropsToUserSettings) => {
                 id="identity-settings"
                 text="Identity settings"
               />
-              <UsersIdentity user={props.user} />
+              <UsersIdentity
+                user={props.user}
+                onUserChange={props.onUserChange}
+                metadata={props.metadata}
+              />
               <TitleLayout
                 key={1}
                 headingLevel="h2"

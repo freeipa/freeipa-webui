@@ -22,11 +22,20 @@ import UserSettings from "../../components/UserSettings";
 import UserMemberOf from "./UserMemberOf";
 // Layouts
 import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
+import DataSpinner from "src/components/layouts/DataSpinner";
+// RPC client
+import { useGetObjectMetadataQuery } from "src/services/rpc";
 
 const ActiveUsersTabs = () => {
   // Get location (React Router DOM) and get state data
   const location = useLocation();
   const userData: User = location.state as User;
+
+  const [user, setUser] = useState<User>(userData);
+
+  const metadataQuery = useGetObjectMetadataQuery();
+  const metadata = metadataQuery.data || {};
+  const metadataLoading = metadataQuery.isLoading;
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(0);
@@ -46,6 +55,10 @@ const ActiveUsersTabs = () => {
       url: URL_PREFIX + "/active-users",
     },
   ];
+
+  if (metadataLoading) {
+    return <DataSpinner />;
+  }
 
   return (
     <Page>
@@ -75,7 +88,12 @@ const ActiveUsersTabs = () => {
             title={<TabTitleText>Settings</TabTitleText>}
           >
             <PageSection className="pf-u-pb-0"></PageSection>
-            <UserSettings user={userData} from="active-users" />
+            <UserSettings
+              user={user}
+              metadata={metadata}
+              onUserChange={setUser}
+              from="active-users"
+            />
           </Tab>
           <Tab
             eventKey={1}
