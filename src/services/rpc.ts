@@ -8,6 +8,7 @@ import {
 } from "@reduxjs/toolkit/query/react";
 // Utils
 import { API_VERSION_BACKUP } from "src/utils/utils";
+import { Metadata } from "src/utils/datatypes/globalDataTypes";
 
 export interface UIDType {
   dn: string;
@@ -18,6 +19,14 @@ export interface Query {
   data: FindRPCResponse | BatchRPCResponse | undefined;
   isLoading: boolean;
   error: FetchBaseQueryError | SerializedError | undefined;
+}
+
+export interface ShowRPCResponse {
+  error: string;
+  id: string;
+  principal: string;
+  version: string;
+  result: Record<string, unknown>;
 }
 
 // 'FindRPCResponse' type
@@ -77,6 +86,7 @@ export const getCommand = (commandData: Command) => {
       params: commandData.params,
     },
   };
+  payloadWithParams.body.params[1].version = API_VERSION_BACKUP;
   return payloadWithParams;
 };
 
@@ -105,7 +115,9 @@ export const getBatchCommand = (commandData: Command[], apiVersion: string) => {
 //   (e.g: `batchCommand`), and multiple commands executed sequentially in a single
 //   endpoint (e.g: `gettingUserData`)
 export const api = createApi({
+  reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: "/" }), // TODO: Global settings!
+  tagTypes: ["ObjectMetadata"],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
       query: (payloadData: Command) => getCommand(payloadData),
@@ -188,6 +200,23 @@ export const api = createApi({
             };
       },
     }),
+
+    getObjectMetadata: build.query<Metadata, void>({
+      query: () => {
+        return getCommand({
+          method: "json_metadata",
+          params: [
+            [],
+            {
+              object: "all",
+            },
+          ],
+        });
+      },
+      transformResponse: (response: ShowRPCResponse): Metadata =>
+        response.result,
+      providesTags: ["ObjectMetadata"],
+    }),
   }),
 });
 
@@ -197,4 +226,5 @@ export const {
   useBatchCommandQuery,
   useBatchMutCommandMutation,
   useGettingUserDataQuery,
+  useGetObjectMetadataQuery,
 } = api;

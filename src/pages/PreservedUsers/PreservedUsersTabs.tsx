@@ -21,11 +21,20 @@ import { User } from "src/utils/datatypes/globalDataTypes";
 import UserSettings from "src/components/UserSettings";
 // Layouts
 import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
+import DataSpinner from "src/components/layouts/DataSpinner";
+// RPC client
+import { useGetObjectMetadataQuery } from "src/services/rpc";
 
 const PreservedUsersTabs = () => {
   // Get location (React Router DOM) and get state data
   const location = useLocation();
   const userData: User = location.state as User;
+
+  const [user, setUser] = useState<User>(userData);
+
+  const metadataQuery = useGetObjectMetadataQuery();
+  const metadata = metadataQuery.data || {};
+  const metadataLoading = metadataQuery.isLoading;
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(0);
@@ -45,6 +54,10 @@ const PreservedUsersTabs = () => {
       url: URL_PREFIX + "/preserved-users",
     },
   ];
+
+  if (metadataLoading) {
+    return <DataSpinner />;
+  }
 
   return (
     <Page>
@@ -74,7 +87,12 @@ const PreservedUsersTabs = () => {
             title={<TabTitleText>Settings</TabTitleText>}
           >
             <PageSection className="pf-u-pb-0"></PageSection>
-            <UserSettings user={userData} from="preserved-users" />
+            <UserSettings
+              user={user}
+              metadata={metadata}
+              onUserChange={setUser}
+              from="preserved-users"
+            />
           </Tab>
         </Tabs>
       </PageSection>
