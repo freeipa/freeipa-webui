@@ -3,93 +3,114 @@ import React from "react";
 import { Flex, FlexItem, Form, FormGroup } from "@patternfly/react-core";
 // Data types
 import { Metadata, User } from "src/utils/datatypes/globalDataTypes";
+// Utils
+import { asRecord } from "src/utils/userUtils";
+// Fields
 import IpaTextInput from "../Form/IpaTextInput";
 
 interface PropsToUsersIdentity {
   user: User;
-  onUserChange: (user: User) => void;
+  onUserChange: (element: User) => void;
   metadata: Metadata;
 }
 
-function usersTextInput(
-  property: string,
-  onChange: (user: User) => void,
-  user: User,
-  metadata: Metadata
-) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const ipaObject = user as Record<string, any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function recordOnChange(ipaObject: Record<string, any>) {
-    onChange(ipaObject as User);
-  }
-  return (
+const UsersIdentity = (props: PropsToUsersIdentity) => {
+  // Get 'ipaObject' and 'recordOnChange' to use in 'IpaTextInput'
+  const { ipaObject, recordOnChange } = asRecord(
+    props.user,
+    props.onUserChange
+  );
+
+  const firstNameTextInput = (
     <IpaTextInput
-      name={property}
+      name={"givenname"}
       ipaObject={ipaObject}
       onChange={recordOnChange}
       objectName="user"
-      metadata={metadata}
+      metadata={props.metadata}
     />
   );
-}
 
-const UsersIdentity = (props: PropsToUsersIdentity) => {
+  // - Last name
+  const lastNameTextInput = (
+    <IpaTextInput
+      name={"sn"}
+      ipaObject={ipaObject}
+      onChange={recordOnChange}
+      objectName="user"
+      metadata={props.metadata}
+    />
+  );
+
+  // - Full name
+  const fullNameTextInput = (
+    <IpaTextInput
+      name={"cn"}
+      ipaObject={ipaObject}
+      onChange={recordOnChange}
+      objectName="user"
+      metadata={props.metadata}
+    />
+  );
+
+  // - Job title
+  const jobTitleTextInput = (
+    <IpaTextInput
+      name={"title"}
+      ipaObject={ipaObject}
+      onChange={recordOnChange}
+      objectName="user"
+      metadata={props.metadata}
+    />
+  );
+
+  // - GECOS
+  const gecosTextInput = (
+    <IpaTextInput
+      name={"gecos"}
+      ipaObject={ipaObject}
+      onChange={recordOnChange}
+      objectName="user"
+      metadata={props.metadata}
+    />
+  );
+
+  // - User class
+  const userClassTextInput = (
+    <IpaTextInput
+      name={"userclass"}
+      ipaObject={ipaObject}
+      onChange={recordOnChange}
+      objectName="user"
+      metadata={props.metadata}
+    />
+  );
+
   return (
     <Flex direction={{ default: "column", lg: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-u-mb-lg">
           <FormGroup label="First name" fieldId="first-name" isRequired>
-            {usersTextInput(
-              "givenname",
-              props.onUserChange,
-              props.user,
-              props.metadata
-            )}
+            {firstNameTextInput}
           </FormGroup>
           <FormGroup label="Last name" fieldId="last-name" isRequired>
-            {usersTextInput(
-              "sn",
-              props.onUserChange,
-              props.user,
-              props.metadata
-            )}
+            {lastNameTextInput}
           </FormGroup>
           <FormGroup label="Full name" fieldId="full-name" isRequired>
-            {usersTextInput(
-              "cn",
-              props.onUserChange,
-              props.user,
-              props.metadata
-            )}
+            {fullNameTextInput}
           </FormGroup>
         </Form>
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-u-mb-lg">
           <FormGroup label="Job title" fieldId="job-title">
-            {usersTextInput(
-              "title",
-              props.onUserChange,
-              props.user,
-              props.metadata
-            )}
+            {jobTitleTextInput}
           </FormGroup>
           <FormGroup label="GECOS" fieldId="gecos">
-            {usersTextInput(
-              "gecos",
-              props.onUserChange,
-              props.user,
-              props.metadata
-            )}
+            {gecosTextInput}
           </FormGroup>
           <FormGroup label="Class" fieldId="class-field">
-            {usersTextInput(
-              "userclass",
-              props.onUserChange,
-              props.user,
-              props.metadata
-            )}
+            {userClassTextInput}
           </FormGroup>
         </Form>
       </FlexItem>
