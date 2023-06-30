@@ -10,6 +10,13 @@ import {
 import { API_VERSION_BACKUP } from "src/utils/utils";
 import { Metadata } from "src/utils/datatypes/globalDataTypes";
 
+export type UserFullData = {
+  user?: Record<string, unknown>;
+  pwPolicy?: Record<string, unknown>;
+  krbtPolicy?: Record<string, unknown>;
+  cert?: Record<string, unknown>;
+};
+
 export interface UIDType {
   dn: string;
   uid: string[];
@@ -27,6 +34,19 @@ export interface ShowRPCResponse {
   principal: string;
   version: string;
   result: Record<string, unknown>;
+}
+
+export interface BatchResult {
+  result: Record<string, unknown>;
+  count: number;
+  truncated: boolean;
+  summary: string;
+}
+
+export interface BatchResponse {
+  result: {
+    results: BatchResult[];
+  };
 }
 
 // 'FindRPCResponse' type
@@ -117,7 +137,7 @@ export const getBatchCommand = (commandData: Command[], apiVersion: string) => {
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: "/" }), // TODO: Global settings!
-  tagTypes: ["ObjectMetadata"],
+  tagTypes: ["ObjectMetadata", "FullUserData"],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
       query: (payloadData: Command) => getCommand(payloadData),
@@ -217,6 +237,48 @@ export const api = createApi({
         response.result,
       providesTags: ["ObjectMetadata"],
     }),
+    getUsersFullData: build.query<UserFullData, string>({
+      query: (userId: string, apiVersion?: string) => {
+        const userShowCommand: Command = {
+          method: "user_show",
+          params: [userId, { all: true, rights: true }],
+        };
+
+        const pwpolicyShowCommand: Command = {
+          method: "pwpolicy_show",
+          params: [[], { user: userId[0], all: true, rights: true }],
+        };
+
+        const krbtpolicyShowCommand: Command = {
+          method: "krbtpolicy_show",
+          params: [userId, { all: true, rights: true }],
+        };
+
+        const certFindCommand: Command = {
+          method: "cert_find",
+          params: [[], { user: userId[0], sizelimit: 0, all: true }],
+        };
+
+        const batchPayload: Command[] = [
+          userShowCommand,
+          pwpolicyShowCommand,
+          krbtpolicyShowCommand,
+          certFindCommand,
+        ];
+
+        return getBatchCommand(batchPayload, apiVersion || API_VERSION_BACKUP);
+      },
+      transformResponse: (response: BatchResponse): UserFullData => {
+        const results = response.result.results;
+        return {
+          user: results[0].result,
+          pwPolicy: results[1].result,
+          krbtPolicy: results[2].result,
+          cert: results[3].result,
+        };
+      },
+      providesTags: ["FullUserData"],
+    }),
   }),
 });
 
@@ -227,4 +289,5 @@ export const {
   useBatchMutCommandMutation,
   useGettingUserDataQuery,
   useGetObjectMetadataQuery,
+  useGetUsersFullDataQuery,
 } = api;
