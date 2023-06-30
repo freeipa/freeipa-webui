@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   Flex,
@@ -14,11 +14,6 @@ import SecondaryButton from "src/components/layouts/SecondaryButton";
 
 interface PropsToUsersContactSettings {
   user: User;
-}
-
-interface EmailData {
-  id: number | string;
-  email: string;
 }
 
 interface TelephoneData {
@@ -43,19 +38,23 @@ interface FaxData {
 
 const UsersContactSettings = (props: PropsToUsersContactSettings) => {
   // TODO: This state variables should update the user data via the IPA API (`user_mod`)
-  const [emailList, setEmailList] = useState<EmailData[]>([
-    { id: 0, email: props.user.mail[0] },
-  ]);
+  const [emailList, setEmailList] = useState<string[]>([]);
   const [telephoneList, setTelephoneList] = useState<TelephoneData[]>([]);
   const [pagerList, setPagerList] = useState<PagerData[]>([]);
   const [mobilePhoneList, setMobilePhoneList] = useState<MobilePhoneData[]>([]);
   const [faxList, setFaxList] = useState<FaxData[]>([]);
 
+  useEffect(() => {
+    if (props.user.mail !== undefined) {
+      setEmailList(props.user.mail);
+    }
+  }, [props.user]);
+
   // Email
   // - 'Add email field' handler
   const onAddEmailFieldHandler = () => {
     const emailListCopy = [...emailList];
-    emailListCopy.push({ id: Date.now.toString(), email: "" });
+    emailListCopy.push("");
     setEmailList(emailListCopy);
   };
 
@@ -66,7 +65,7 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
     idx: number
   ) => {
     const emailListCopy = [...emailList];
-    emailListCopy[idx]["email"] = (event.target as HTMLInputElement).value;
+    emailListCopy[idx] = (event.target as HTMLInputElement).value;
     setEmailList(emailListCopy);
   };
 
@@ -194,16 +193,16 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
               {emailList.map((userEmail, idx) => (
                 <Flex
                   direction={{ default: "row" }}
-                  key={userEmail.id + "-" + idx + "-div"}
+                  key={"mail-" + idx + "-div"}
                   name="value"
                 >
                   <FlexItem
-                    key={userEmail.id + "-textbox"}
+                    key={"mail-" + idx + "-textbox"}
                     flex={{ default: "flex_1" }}
                   >
                     <TextInput
                       id="user-email"
-                      value={userEmail.email}
+                      value={userEmail}
                       type="email"
                       name={"mail-" + idx}
                       aria-label="user email"
@@ -212,7 +211,7 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
                       }
                     />
                   </FlexItem>
-                  <FlexItem key={userEmail.id + "-delete-button"}>
+                  <FlexItem key={"mail-" + idx + "-delete-button"}>
                     <SecondaryButton
                       name="remove"
                       onClickHandler={() => onRemoveEmailHandler(idx)}
