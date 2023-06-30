@@ -34,9 +34,17 @@ import UsersEmployeeInfo from "src/components/UsersSections/UsersEmployeeInfo";
 import UsersAttributesSMB from "src/components/UsersSections/UsersAttributesSMB";
 
 export interface PropsToUserSettings {
-  user: User;
+  user: User; // TODO: Replace with `userData` in all subsections
   onUserChange: (user: User) => void;
   metadata: Metadata;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  userData: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  pwPolicyData: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  krbPolicyData: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  certData: any;
   from: "active-users" | "stage-users" | "preserved-users";
 }
 
@@ -169,7 +177,7 @@ const UserSettings = (props: PropsToUserSettings) => {
                 text="Identity settings"
               />
               <UsersIdentity
-                user={props.user}
+                user={props.userData}
                 onUserChange={props.onUserChange}
                 metadata={props.metadata}
               />

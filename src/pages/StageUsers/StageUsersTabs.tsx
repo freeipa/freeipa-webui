@@ -22,8 +22,8 @@ import UserSettings from "src/components/UserSettings";
 // Layouts
 import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
-// RPC client
-import { useGetObjectMetadataQuery } from "src/services/rpc";
+// Hooks
+import useUserSettingsData from "src/hooks/useUserSettingsData";
 
 const StageUsersTabs = () => {
   // Get location (React Router DOM) and get state data
@@ -32,9 +32,8 @@ const StageUsersTabs = () => {
 
   const [user, setUser] = useState<User>(userData);
 
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  // Make API calls needed for user Settings' data
+  const userSettingsData = useUserSettingsData(userData.uid);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(0);
@@ -55,7 +54,7 @@ const StageUsersTabs = () => {
     },
   ];
 
-  if (metadataLoading) {
+  if (userSettingsData.isLoading) {
     return <DataSpinner />;
   }
 
@@ -89,7 +88,11 @@ const StageUsersTabs = () => {
             <PageSection className="pf-u-pb-0"></PageSection>
             <UserSettings
               user={user}
-              metadata={metadata}
+              metadata={userSettingsData.metadata}
+              userData={userSettingsData.userData}
+              pwPolicyData={userSettingsData.pwPolicyData}
+              krbPolicyData={userSettingsData.krbtPolicyData}
+              certData={userSettingsData.certData}
               onUserChange={setUser}
               from="stage-users"
             />
