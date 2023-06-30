@@ -23,8 +23,8 @@ import UserMemberOf from "./UserMemberOf";
 // Layouts
 import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
-// RPC client
-import { useGetObjectMetadataQuery } from "src/services/rpc";
+// Hooks
+import useUserSettingsData from "src/hooks/useUserSettingsData";
 
 const ActiveUsersTabs = () => {
   // Get location (React Router DOM) and get state data
@@ -33,9 +33,9 @@ const ActiveUsersTabs = () => {
 
   const [user, setUser] = useState<User>(userData);
 
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  // Make API calls needed for user Settings' data
+  const { metadata, metadataLoading, batchResponse, isBatchLoading } =
+    useUserSettingsData(userData.uid);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(0);
@@ -56,7 +56,7 @@ const ActiveUsersTabs = () => {
     },
   ];
 
-  if (metadataLoading) {
+  if (metadataLoading || isBatchLoading) {
     return <DataSpinner />;
   }
 
@@ -91,6 +91,10 @@ const ActiveUsersTabs = () => {
             <UserSettings
               user={user}
               metadata={metadata}
+              userData={batchResponse[0].result}
+              pwPolicyData={batchResponse[1].result}
+              krbPolicyData={batchResponse[2].result}
+              certData={batchResponse[3].result}
               onUserChange={setUser}
               from="active-users"
             />

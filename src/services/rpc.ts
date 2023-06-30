@@ -29,6 +29,19 @@ export interface ShowRPCResponse {
   result: Record<string, unknown>;
 }
 
+export interface BatchResult {
+  result: Record<string, unknown>;
+  count: number;
+  truncated: boolean;
+  summary: string;
+}
+
+export interface BatchResponse {
+  result: {
+    results: BatchResult[];
+  };
+}
+
 // 'FindRPCResponse' type
 //   - Has 'result' > 'result' structure
 export interface FindRPCResponse {
@@ -117,7 +130,7 @@ export const getBatchCommand = (commandData: Command[], apiVersion: string) => {
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: "/" }), // TODO: Global settings!
-  tagTypes: ["ObjectMetadata"],
+  tagTypes: ["ObjectMetadata", "FullUserData"],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
       query: (payloadData: Command) => getCommand(payloadData),
@@ -217,6 +230,14 @@ export const api = createApi({
         response.result,
       providesTags: ["ObjectMetadata"],
     }),
+    getUsersFullData: build.query<BatchResult[], Command[]>({
+      query: (payloadData: Command[], apiVersion?: string) => {
+        return getBatchCommand(payloadData, apiVersion || API_VERSION_BACKUP);
+      },
+      transformResponse: (response: BatchResponse): BatchResult[] =>
+        response.result.results,
+      providesTags: ["FullUserData"],
+    }),
   }),
 });
 
@@ -227,4 +248,5 @@ export const {
   useBatchMutCommandMutation,
   useGettingUserDataQuery,
   useGetObjectMetadataQuery,
+  useGetUsersFullDataQuery,
 } = api;
