@@ -30,6 +30,10 @@
     "GHSA-c2qf-rxjj-qqgw|eslint-plugin-react>semver",
     "GHSA-c2qf-rxjj-qqgw|make-dir>semver>",
     "GHSA-c2qf-rxjj-qqgw|find-cache-dir>make-dir>semver>",
-    "GHSA-j8xg-fqg3-53r7|optionator>word-wrap"
+    "GHSA-j8xg-fqg3-53r7|optionator>word-wrap",
+    "GHSA-c2qf-rxjj-qqgw|@babel/core>semver",
+    "GHSA-c2qf-rxjj-qqgw|@babel/helper-compilation-targets>semver",
+    "GHSA-c2qf-rxjj-qqgw|@babel/preset-env>semver",
+    "GHSA-c2qf-rxjj-qqgw|babel-loader>make-dir>semver"
   ]
 }
