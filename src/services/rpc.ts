@@ -8,10 +8,10 @@ import {
 } from "@reduxjs/toolkit/query/react";
 // Utils
 import { API_VERSION_BACKUP } from "src/utils/utils";
-import { Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Metadata, User } from "src/utils/datatypes/globalDataTypes";
 
 export type UserFullData = {
-  user?: Record<string, unknown>;
+  user?: Partial<User>;
   pwPolicy?: Record<string, unknown>;
   krbtPolicy?: Record<string, unknown>;
   cert?: Record<string, unknown>;

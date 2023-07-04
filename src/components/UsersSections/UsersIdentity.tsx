@@ -9,8 +9,8 @@ import { asRecord } from "src/utils/userUtils";
 import IpaTextInput from "../Form/IpaTextInput";
 
 interface PropsToUsersIdentity {
-  user: User;
-  onUserChange: (element: User) => void;
+  user: Partial<User>;
+  onUserChange: (element: Partial<User>) => void;
   metadata: Metadata;
 }
 

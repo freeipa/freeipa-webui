@@ -5,8 +5,8 @@ import { User } from "src/utils/datatypes/globalDataTypes";
 // - TODO: Adapt it to work with many types of data
 export const asRecord = (
   // property: string,
-  element: User,
-  onElementChange: (element: User) => void
+  element: Partial<User>,
+  onElementChange: (element: Partial<User>) => void
   // metadata: Metadata
 ) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
