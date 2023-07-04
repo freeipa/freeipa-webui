@@ -238,6 +238,13 @@ export const api = createApi({
         response.result.results,
       providesTags: ["FullUserData"],
     }),
+    refreshUsers: build.mutation<BatchResult[], Command[]>({
+      query: (payloadData: Command[], apiVersion?: string) => {
+        return getBatchCommand(payloadData, apiVersion || API_VERSION_BACKUP);
+      },
+      transformResponse: (response: BatchResponse): BatchResult[] =>
+        response.result.results,
+    }),
   }),
 });
 
@@ -249,4 +256,5 @@ export const {
   useGettingUserDataQuery,
   useGetObjectMetadataQuery,
   useGetUsersFullDataQuery,
+  useRefreshUsersMutation,
 } = api;

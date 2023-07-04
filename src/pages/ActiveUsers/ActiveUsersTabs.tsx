@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   Title,
@@ -25,6 +25,12 @@ import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
 // Hooks
 import useUserSettingsData from "src/hooks/useUserSettingsData";
+// RPC
+import {
+  BatchResult,
+  Command,
+  useRefreshUsersMutation,
+} from "src/services/rpc";
 
 const ActiveUsersTabs = () => {
   // Get location (React Router DOM) and get state data
@@ -32,10 +38,81 @@ const ActiveUsersTabs = () => {
   const userData: User = location.state as User;
 
   const [user, setUser] = useState<User>(userData);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [pwPolicyData, setPwPolicyData] = useState<any>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [krbPolicyData, setKrbPolicyData] = useState<any>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [certData, setCertData] = useState<any>();
+
+  // Loading data
+  const [isDataLoading, setIsDataLoading] = useState(false);
 
   // Make API calls needed for user Settings' data
   const { metadata, metadataLoading, batchResponse, isBatchLoading } =
     useUserSettingsData(userData.uid);
+
+  // Define function to execute 'useRefreshUsersMutation' hook (via Mutation)
+  const [retrieveUserData] = useRefreshUsersMutation();
+
+  // Update states on receiving 'batchResponse' from 'useUserSettingsData'
+  useEffect(() => {
+    if (Object.keys(batchResponse).length > 0) {
+      setUser(batchResponse[0].result);
+      setPwPolicyData(batchResponse[1].result);
+      setKrbPolicyData(batchResponse[2].result);
+      setCertData(batchResponse[3].result);
+    }
+  }, [batchResponse]);
+
+  // Refresh data
+  const refreshUserData = () => {
+    // Payload
+    const userShowCommand: Command = {
+      method: "user_show",
+      params: [userData.uid, { all: true, rights: true }],
+    };
+    const pwpolicyShowCommand: Command = {
+      method: "pwpolicy_show",
+      params: [[], { user: userData.uid[0], all: true, rights: true }],
+    };
+    const krbtpolicyShowCommand: Command = {
+      method: "krbtpolicy_show",
+      params: [userData.uid, { all: true, rights: true }],
+    };
+    const certFindCommand: Command = {
+      method: "cert_find",
+      params: [[], { user: userData.uid[0], sizelimit: 0, all: true }],
+    };
+    const batchPayload: Command[] = [
+      userShowCommand,
+      pwpolicyShowCommand,
+      krbtpolicyShowCommand,
+      certFindCommand,
+    ];
+    // Set data loading flag
+    setIsDataLoading(true);
+
+    // Make API call
+    retrieveUserData(batchPayload).then((batchResponse) => {
+      if ("data" in batchResponse) {
+        const responseData = batchResponse.data as BatchResult[];
+        if (responseData !== undefined) {
+          const newUserData = responseData[0].result;
+          const newPwPolicyData = responseData[1].result;
+          const newKrbPolicyData = responseData[2].result;
+          const newCertData = responseData[3].result;
+          setUser(newUserData as unknown as User);
+          setPwPolicyData(newPwPolicyData);
+          setKrbPolicyData(newKrbPolicyData);
+          setCertData(newCertData);
+        }
+      }
+      // This batch will finish later than the other calls.
+      //   So remove spinner and show data when finished.
+      setIsDataLoading(false);
+    });
+  };
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(0);
@@ -91,11 +168,13 @@ const ActiveUsersTabs = () => {
             <UserSettings
               user={user}
               metadata={metadata}
-              userData={batchResponse[0].result}
-              pwPolicyData={batchResponse[1].result}
-              krbPolicyData={batchResponse[2].result}
-              certData={batchResponse[3].result}
+              userData={user}
+              pwPolicyData={pwPolicyData}
+              krbPolicyData={krbPolicyData}
+              certData={certData}
               onUserChange={setUser}
+              onRefresh={refreshUserData}
+              isDataLoading={isDataLoading}
               from="active-users"
             />
           </Tab>
