@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // PatternFly
 import {
   Title,
@@ -29,11 +29,10 @@ const PreservedUsersTabs = () => {
   // Get location (React Router DOM) and get state data
   const location = useLocation();
   const userData: User = location.state as User;
+  const uid = userData.uid;
 
-  const [user, setUser] = useState<User>(userData);
-
-  // Make API calls needed for user Settings' data
-  const userSettingsData = useUserSettingsData(userData.uid);
+  // Data loaded from DB
+  const userSettingsData = useUserSettingsData(uid);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(0);
@@ -87,13 +86,12 @@ const PreservedUsersTabs = () => {
           >
             <PageSection className="pf-u-pb-0"></PageSection>
             <UserSettings
-              user={user}
+              user={userSettingsData.user}
               metadata={userSettingsData.metadata}
-              userData={userSettingsData.userData}
               pwPolicyData={userSettingsData.pwPolicyData}
               krbPolicyData={userSettingsData.krbtPolicyData}
               certData={userSettingsData.certData}
-              onUserChange={setUser}
+              onUserChange={userSettingsData.setUser}
               from="preserved-users"
             />
           </Tab>

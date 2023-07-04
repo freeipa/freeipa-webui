@@ -13,7 +13,7 @@ import { User } from "src/utils/datatypes/globalDataTypes";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 
 interface PropsToUsersContactSettings {
-  user: User;
+  user: Partial<User>;
 }
 
 interface TelephoneData {

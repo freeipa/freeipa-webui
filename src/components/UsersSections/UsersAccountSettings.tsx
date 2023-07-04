@@ -28,7 +28,7 @@ import ModalWithTextAreaLayout from "src/components/layouts/ModalWithTextAreaLay
 import CertificateMappingDataModal from "src/components/modals/CertificateMappingDataModal";
 
 interface PropsToUsersAccountSettings {
-  user: User;
+  user: Partial<User>;
 }
 
 // Generic data to pass to the Textbox adder

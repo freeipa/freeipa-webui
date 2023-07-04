@@ -34,17 +34,17 @@ import UsersEmployeeInfo from "src/components/UsersSections/UsersEmployeeInfo";
 import UsersAttributesSMB from "src/components/UsersSections/UsersAttributesSMB";
 
 export interface PropsToUserSettings {
-  user: User; // TODO: Replace with `userData` in all subsections
-  onUserChange: (user: User) => void;
+  user: Partial<User>; // TODO: Replace with `userData` in all subsections
+  onUserChange: (user: Partial<User>) => void;
   metadata: Metadata;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  userData: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   pwPolicyData: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   krbPolicyData: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   certData: any;
+  onRefresh?: () => void;
+  isDataLoading?: boolean;
   from: "active-users" | "stage-users" | "preserved-users";
 }
 
@@ -84,7 +84,11 @@ const UserSettings = (props: PropsToUserSettings) => {
   const toolbarFields = [
     {
       key: 0,
-      element: <SecondaryButton>Refresh</SecondaryButton>,
+      element: (
+        <SecondaryButton onClickHandler={props.onRefresh}>
+          Refresh
+        </SecondaryButton>
+      ),
     },
     {
       key: 1,
@@ -177,7 +181,7 @@ const UserSettings = (props: PropsToUserSettings) => {
                 text="Identity settings"
               />
               <UsersIdentity
-                user={props.userData}
+                user={props.user}
                 onUserChange={props.onUserChange}
                 metadata={props.metadata}
               />
