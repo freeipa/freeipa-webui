@@ -3,22 +3,22 @@ import React from "react";
 import { Flex, FlexItem, Form, FormGroup } from "@patternfly/react-core";
 // Data types
 import { Metadata, User } from "src/utils/datatypes/globalDataTypes";
-// Utils
-import { asRecord } from "src/utils/userUtils";
 // Fields
 import IpaTextInput from "../Form/IpaTextInput";
+import useFieldComparison from "src/hooks/useFieldComparison";
 
 interface PropsToUsersIdentity {
   user: User;
   onUserChange: (element: User) => void;
   metadata: Metadata;
+  setFieldChanged: (value: boolean) => void;
 }
 
 const UsersIdentity = (props: PropsToUsersIdentity) => {
-  // Get 'ipaObject' and 'recordOnChange' to use in 'IpaTextInput'
-  const { ipaObject, recordOnChange } = asRecord(
+  const { ipaObject, recordOnChange } = useFieldComparison(
     props.user,
-    props.onUserChange
+    props.onUserChange,
+    props.setFieldChanged
   );
 
   const firstNameTextInput = (

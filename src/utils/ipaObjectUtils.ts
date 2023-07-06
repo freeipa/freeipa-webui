@@ -144,7 +144,7 @@ export function getParamProperties(
   const value = getValue(parDef.ipaObject, propName);
   const onChange = (value: BasicType) => {
     if (parDef.onChange) {
-      parDef.onChange({ ...parDef.ipaObject, [propName]: value });
+      parDef.onChange({ ...parDef.ipaObject, [propName]: [value] });
     }
   };
   return {

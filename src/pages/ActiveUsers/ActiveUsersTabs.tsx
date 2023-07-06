@@ -62,6 +62,7 @@ const ActiveUsersTabs = () => {
       setPwPolicyData(batchResponse[1].result);
       setKrbPolicyData(batchResponse[2].result);
       setCertData(batchResponse[3].result);
+      // TODO: Add the rest of the API calls
     }
   }, [batchResponse]);
 
@@ -90,6 +91,8 @@ const ActiveUsersTabs = () => {
       krbtpolicyShowCommand,
       certFindCommand,
     ];
+    // TODO: Add the rest of the API calls
+
     // Set data loading flag
     setIsDataLoading(true);
 
@@ -106,12 +109,25 @@ const ActiveUsersTabs = () => {
           setPwPolicyData(newPwPolicyData);
           setKrbPolicyData(newKrbPolicyData);
           setCertData(newCertData);
+          // TODO: Add the rest of the API calls
         }
       }
       // This batch will finish later than the other calls.
       //   So remove spinner and show data when finished.
       setIsDataLoading(false);
     });
+  };
+
+  // Revert button
+  const revertUserData = () => {
+    // Updates fields with the already retrieved data
+    if (Object.keys(batchResponse).length > 0) {
+      setUser(batchResponse[0].result);
+      setPwPolicyData(batchResponse[1].result);
+      setKrbPolicyData(batchResponse[2].result);
+      setCertData(batchResponse[3].result);
+    }
+    // TODO: Set the rest of the values
   };
 
   // Tab
@@ -174,6 +190,7 @@ const ActiveUsersTabs = () => {
               certData={certData}
               onUserChange={setUser}
               onRefresh={refreshUserData}
+              onRevert={revertUserData}
               isDataLoading={isDataLoading}
               from="active-users"
             />

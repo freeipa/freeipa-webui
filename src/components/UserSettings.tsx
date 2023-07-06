@@ -47,11 +47,15 @@ export interface PropsToUserSettings {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   certData: any;
   onRefresh?: () => void;
+  onRevert?: () => void;
   isDataLoading?: boolean;
   from: "active-users" | "stage-users" | "preserved-users";
 }
 
 const UserSettings = (props: PropsToUserSettings) => {
+  // Disable / enable 'Revert' and 'Save' buttons
+  const [fieldsChanged, setFieldChanged] = useState(false);
+
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
 
@@ -95,11 +99,20 @@ const UserSettings = (props: PropsToUserSettings) => {
     },
     {
       key: 1,
-      element: <SecondaryButton isDisabled={true}>Revert</SecondaryButton>,
+      element: (
+        <SecondaryButton
+          isDisabled={!fieldsChanged}
+          onClickHandler={props.onRevert}
+        >
+          Revert
+        </SecondaryButton>
+      ),
     },
     {
       key: 2,
-      element: <SecondaryButton isDisabled={true}>Save</SecondaryButton>,
+      element: (
+        <SecondaryButton isDisabled={!fieldsChanged}>Save</SecondaryButton>
+      ),
     },
     {
       key: 3,
@@ -188,6 +201,7 @@ const UserSettings = (props: PropsToUserSettings) => {
                   user={props.userData}
                   onUserChange={props.onUserChange}
                   metadata={props.metadata}
+                  setFieldChanged={setFieldChanged}
                 />
                 <TitleLayout
                   key={1}
