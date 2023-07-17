@@ -48,6 +48,7 @@ export interface PropsToUserSettings {
   certData: any;
   onRefresh?: () => void;
   onRevert?: () => void;
+  onSave?: () => void;
   isDataLoading?: boolean;
   from: "active-users" | "stage-users" | "preserved-users";
 }
@@ -111,7 +112,12 @@ const UserSettings = (props: PropsToUserSettings) => {
     {
       key: 2,
       element: (
-        <SecondaryButton isDisabled={!fieldsChanged}>Save</SecondaryButton>
+        <SecondaryButton
+          isDisabled={!fieldsChanged}
+          onClickHandler={props.onSave}
+        >
+          Save
+        </SecondaryButton>
       ),
     },
     {

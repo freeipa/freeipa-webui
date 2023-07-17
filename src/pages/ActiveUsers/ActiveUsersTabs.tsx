@@ -29,7 +29,9 @@ import useUserSettingsData from "src/hooks/useUserSettingsData";
 import {
   BatchResult,
   Command,
+  FindRPCResponse,
   useRefreshUsersMutation,
+  useSaveUserDataMutation,
 } from "src/services/rpc";
 
 const ActiveUsersTabs = () => {
@@ -54,6 +56,9 @@ const ActiveUsersTabs = () => {
 
   // Define function to execute 'useRefreshUsersMutation' hook (via Mutation)
   const [retrieveUserData] = useRefreshUsersMutation();
+
+  // Define function to execute 'useSaveUserDataMutation' hook (via mutation)
+  const [saveData] = useSaveUserDataMutation();
 
   // Update states on receiving 'batchResponse' from 'useUserSettingsData'
   useEffect(() => {
@@ -130,6 +135,21 @@ const ActiveUsersTabs = () => {
     // TODO: Set the rest of the values
   };
 
+  // Save button
+  const saveUserData = () => {
+    // Prepare payload
+    // - TODO: Take the new updated data from fields
+    // - TEST
+    const payload = { uid: "alee", params: { title: "Senior", sn: "Lee" } };
+
+    // Make API call
+    saveData(payload).then((response) => {
+      if ("data" in response) {
+        console.log(response.data as FindRPCResponse);
+      }
+    });
+  };
+
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(0);
 
@@ -191,6 +211,7 @@ const ActiveUsersTabs = () => {
               onUserChange={setUser}
               onRefresh={refreshUserData}
               onRevert={revertUserData}
+              onSave={saveUserData}
               isDataLoading={isDataLoading}
               from="active-users"
             />

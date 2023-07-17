@@ -8,7 +8,7 @@ import {
 } from "@reduxjs/toolkit/query/react";
 // Utils
 import { API_VERSION_BACKUP } from "src/utils/utils";
-import { Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Metadata, User } from "src/utils/datatypes/globalDataTypes";
 
 export interface UIDType {
   dn: string;
@@ -119,6 +119,8 @@ export const getBatchCommand = (commandData: Command[], apiVersion: string) => {
   };
   return payloadBatchParams;
 };
+
+type userModData = { uid: string, params: Partial<User> };
 
 // Endpoints that will be called from anywhere in the application.
 // Two types:
@@ -245,6 +247,26 @@ export const api = createApi({
       transformResponse: (response: BatchResponse): BatchResult[] =>
         response.result.results,
     }),
+    saveUserData: build.mutation<FindRPCResponse, userModData>({
+      query: (data) => {
+        const baseParams = {
+          all: true,
+          rights: true,
+          version: API_VERSION_BACKUP,
+        }
+
+        const fullParams = Object.assign(baseParams, data.params)
+
+
+        return getCommand({
+            method: "user_mod",
+            params: [
+              [data.uid],
+              fullParams,
+            ],
+        });
+      },
+    }),
   }),
 });
 
@@ -257,4 +279,5 @@ export const {
   useGetObjectMetadataQuery,
   useGetUsersFullDataQuery,
   useRefreshUsersMutation,
+  useSaveUserDataMutation,
 } = api;
