@@ -63,6 +63,13 @@
     "typescript": "^4.7.4",
     "webpack": "^5.76.2",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.9.3"
+    "webpack-dev-server": "^4.9.3",
+    "@badeball/cypress-cucumber-preprocessor": "^18.0.1",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0"
+  },
+  "cypress-cucumber-preprocessor": {
+    "stepDefinitions": [
+      "tests/features/steps/*.{js,ts}"
+    ]
   }
 }

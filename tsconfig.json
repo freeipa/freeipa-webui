@@ -3,7 +3,7 @@
     "baseUrl": ".",
     "rootDir": ".",
     "outDir": "dist",
-    "target": "es5",
+    "target": "ES2015",
     "lib": ["es6", "dom"],
     "sourceMap": true,
     "jsx": "react",
@@ -18,7 +18,13 @@
     "importHelpers": true,
     "skipLibCheck": true,
     "noEmit": false,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "paths": {
+      "@badeball/cypress-cucumber-preprocessor/*": [
+        "./node_modules/@badeball/cypress-cucumber-preprocessor/dist/subpath-entrypoints/*"
+      ]
+    }
   },
   "exclude": ["node_modules"]
 }

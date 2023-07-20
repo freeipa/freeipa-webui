@@ -57,7 +57,7 @@ jobs:
     runs-on: macos-12
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: actions/download-artifact@v3
         with:
@@ -65,7 +65,7 @@ jobs:
           path: dist
 
       - name: Cache Vagrant boxes
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.vagrant.d/boxes
           key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
@@ -78,8 +78,13 @@ jobs:
       - name: Run vagrant provision
         run: vagrant provision
 
+      - name: Put IPA Server's IP to /etc/hosts
+        run: sudo echo "192.168.56.101 server.ipa.demo" | sudo tee -a /etc/hosts
+
       - name: Run Cypress tests
-        uses: cypress-io/github-action@v4
+        uses: cypress-io/github-action@v5
+        with:
+          browser: firefox
 
       - name: Upload cypress screenshots
         uses: actions/upload-artifact@v2
@@ -89,7 +94,7 @@ jobs:
           path: cypress/screenshots
 
       - name: Upload cypress videos
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: cypress-videos
