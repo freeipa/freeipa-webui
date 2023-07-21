@@ -9,6 +9,7 @@ import {
 // Utils
 import { API_VERSION_BACKUP } from "src/utils/utils";
 import { Metadata, User } from "src/utils/datatypes/globalDataTypes";
+import { apiToUser } from "src/utils/userUtils";
 
 export type UserFullData = {
   user?: Partial<User>;
@@ -271,13 +272,29 @@ export const api = createApi({
       transformResponse: (response: BatchResponse): UserFullData => {
         const results = response.result.results;
         return {
-          user: results[0].result,
+          user: apiToUser(results[0].result),
           pwPolicy: results[1].result,
           krbtPolicy: results[2].result,
           cert: results[3].result,
         };
       },
       providesTags: ["FullUserData"],
+    }),
+    saveUser: build.mutation<FindRPCResponse, Partial<User>>({
+      query: (user) => {
+        const params = {
+          version: API_VERSION_BACKUP,
+          ...user,
+        };
+
+        delete params["uid"];
+
+        return getCommand({
+          method: "user_mod",
+          params: [[user.uid], params],
+        });
+      },
+      invalidatesTags: ["FullUserData"],
     }),
   }),
 });
@@ -290,4 +307,5 @@ export const {
   useGettingUserDataQuery,
   useGetObjectMetadataQuery,
   useGetUsersFullDataQuery,
+  useSaveUserMutation,
 } = api;

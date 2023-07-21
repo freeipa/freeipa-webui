@@ -12,14 +12,16 @@ type UserSettingsData = {
   isLoading: boolean;
   isFetching: boolean;
   modified: boolean;
+  resetValues: () => void;
   metadata: Metadata;
-  originalUser?: Partial<User>;
+  originalUser: Partial<User>;
   user: Partial<User>;
   setUser: (user: Partial<User>) => void;
   pwPolicyData?: Record<string, unknown>;
   krbtPolicyData?: Record<string, unknown>;
   certData?: Record<string, unknown>;
-  refetch?: () => void;
+  refetch: () => void;
+  modifiedValues: () => Partial<User>;
 };
 
 const useUserSettingsData = (userId: string): UserSettingsData => {
@@ -32,6 +34,8 @@ const useUserSettingsData = (userId: string): UserSettingsData => {
   const userFullData = userFullDataQuery.data;
   const isFullDataLoading = userFullDataQuery.isLoading;
 
+  const [modified, setModified] = useState(false);
+
   // Data displayed and modified by the user
   const [user, setUser] = useState<Partial<User>>({});
   useEffect(() => {
@@ -43,6 +47,7 @@ const useUserSettingsData = (userId: string): UserSettingsData => {
   const settingsData = {
     isLoading: metadataLoading || isFullDataLoading,
     isFetching: userFullDataQuery.isFetching,
+    modified,
     metadata,
     user,
     setUser,
@@ -50,11 +55,28 @@ const useUserSettingsData = (userId: string): UserSettingsData => {
   } as UserSettingsData;
 
   if (userFullData) {
-    settingsData.originalUser = userFullData.user;
+    settingsData.originalUser = userFullData.user || {};
     settingsData.pwPolicyData = userFullData.pwPolicy;
     settingsData.krbtPolicyData = userFullData.krbtPolicy;
     settingsData.certData = userFullData.cert;
+  } else {
+    settingsData.originalUser = {};
   }
+
+  const getModifiedValues = (): Partial<User> => {
+    if (!userFullData || !userFullData.user) {
+      return {};
+    }
+
+    const modifiedValues = {};
+    for (const [key, value] of Object.entries(user)) {
+      if (userFullData.user[key] !== value) {
+        modifiedValues[key] = value;
+      }
+    }
+    return modifiedValues;
+  };
+  settingsData.modifiedValues = getModifiedValues;
 
   useEffect(() => {
     if (!userFullData || !userFullData.user) {
@@ -67,8 +89,13 @@ const useUserSettingsData = (userId: string): UserSettingsData => {
         break;
       }
     }
-    settingsData.modified = modified;
+    setModified(modified);
   }, [user, userFullData]);
+
+  const onResetValues = () => {
+    setModified(false);
+  };
+  settingsData.resetValues = onResetValues;
 
   return settingsData;
 };

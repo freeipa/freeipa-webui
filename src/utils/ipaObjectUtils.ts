@@ -166,3 +166,22 @@ export function convertToString(value: BasicType): string {
     return String(value);
   }
 }
+
+export function convertApiObj(
+  apiRecord: Record<string, unknown>,
+  simpleValues: Set<string>,
+  dateValues: Set<string>
+) {
+  const obj = {};
+  for (const [key, value] of Object.entries(apiRecord)) {
+    if (simpleValues.has(key)) {
+      obj[key] = convertToString(value as BasicType);
+    } else if (dateValues.has(key)) {
+      // TODO convert to Datetime object
+      obj[key] = value;
+    } else {
+      obj[key] = value;
+    }
+  }
+  return obj;
+}
