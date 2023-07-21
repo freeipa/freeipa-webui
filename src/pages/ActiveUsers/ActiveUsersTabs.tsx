@@ -87,6 +87,7 @@ const ActiveUsersTabs = () => {
           >
             <PageSection className="pf-u-pb-0"></PageSection>
             <UserSettings
+              originalUser={userSettingsData.originalUser}
               user={userSettingsData.user}
               metadata={userSettingsData.metadata}
               pwPolicyData={userSettingsData.pwPolicyData}
@@ -95,6 +96,9 @@ const ActiveUsersTabs = () => {
               onUserChange={userSettingsData.setUser}
               isDataLoading={userSettingsData.isFetching}
               onRefresh={userSettingsData.refetch}
+              isModified={userSettingsData.modified}
+              onResetValues={userSettingsData.resetValues}
+              modifiedValues={userSettingsData.modifiedValues}
               from="active-users"
             />
           </Tab>

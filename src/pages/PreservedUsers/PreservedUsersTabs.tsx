@@ -86,12 +86,18 @@ const PreservedUsersTabs = () => {
           >
             <PageSection className="pf-u-pb-0"></PageSection>
             <UserSettings
+              originalUser={userSettingsData.originalUser}
               user={userSettingsData.user}
               metadata={userSettingsData.metadata}
               pwPolicyData={userSettingsData.pwPolicyData}
               krbPolicyData={userSettingsData.krbtPolicyData}
               certData={userSettingsData.certData}
               onUserChange={userSettingsData.setUser}
+              isDataLoading={userSettingsData.isFetching}
+              onRefresh={userSettingsData.refetch}
+              isModified={userSettingsData.modified}
+              onResetValues={userSettingsData.resetValues}
+              modifiedValues={userSettingsData.modifiedValues}
               from="preserved-users"
             />
           </Tab>

@@ -32,8 +32,13 @@ import UsersContactSettings from "src/components/UsersSections/UsersContactSetti
 import UsersMailingAddress from "src/components/UsersSections/UsersMailingAddress";
 import UsersEmployeeInfo from "src/components/UsersSections/UsersEmployeeInfo";
 import UsersAttributesSMB from "src/components/UsersSections/UsersAttributesSMB";
+// RPC
+import { useSaveUserMutation } from "src/services/rpc";
+// Hooks
+import useAlerts from "src/hooks/useAlerts";
 
 export interface PropsToUserSettings {
+  originalUser: Partial<User>;
   user: Partial<User>; // TODO: Replace with `userData` in all subsections
   onUserChange: (user: Partial<User>) => void;
   metadata: Metadata;
@@ -43,12 +48,21 @@ export interface PropsToUserSettings {
   krbPolicyData: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   certData: any;
-  onRefresh?: () => void;
+  onRefresh: () => void;
+  isModified: boolean;
   isDataLoading?: boolean;
+  modifiedValues: () => Partial<User>;
+  onResetValues: () => void;
   from: "active-users" | "stage-users" | "preserved-users";
 }
 
 const UserSettings = (props: PropsToUserSettings) => {
+  // Alerts to show in the UI
+  const alerts = useAlerts();
+
+  // RTK hook: save user
+  const [saveUser] = useSaveUserMutation();
+
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
 
@@ -80,6 +94,38 @@ const UserSettings = (props: PropsToUserSettings) => {
     setIsKebabOpen(!isKebabOpen);
   };
 
+  // 'Revert' handler method
+  const onRevert = () => {
+    props.onUserChange(props.originalUser);
+    alerts.addAlert("revert-success", "User data reverted", "success");
+  };
+
+  // 'Save' handler method
+  const onSave = () => {
+    const modifiedValues = props.modifiedValues();
+    // Assign uid
+    modifiedValues.uid = props.user.uid;
+
+    // Make API call
+    saveUser(modifiedValues).then((response) => {
+      if ("data" in response) {
+        if (response.data.result) {
+          // Show toast notification: success
+          alerts.addAlert("save-success", "User modified", "success");
+        } else if (response.data.error) {
+          // Show toast notification: error
+          alerts.addAlert(
+            "save-error",
+            response.data.error || "Error when modifying user",
+            "danger"
+          );
+        }
+        // TODO: Reset values. Disable 'revert' and 'save' buttons
+        props.onResetValues();
+      }
+    });
+  };
+
   // Toolbar
   const toolbarFields = [
     {
@@ -92,11 +138,22 @@ const UserSettings = (props: PropsToUserSettings) => {
     },
     {
       key: 1,
-      element: <SecondaryButton isDisabled={true}>Revert</SecondaryButton>,
+      element: (
+        <SecondaryButton
+          isDisabled={!props.isModified}
+          onClickHandler={onRevert}
+        >
+          Revert
+        </SecondaryButton>
+      ),
     },
     {
       key: 2,
-      element: <SecondaryButton isDisabled={true}>Save</SecondaryButton>,
+      element: (
+        <SecondaryButton isDisabled={!props.isModified} onClickHandler={onSave}>
+          Save
+        </SecondaryButton>
+      ),
     },
     {
       key: 3,
@@ -117,6 +174,7 @@ const UserSettings = (props: PropsToUserSettings) => {
   // 'UserSettings' render
   return (
     <>
+      <alerts.ManagedAlerts />
       <PageSection
         id="settings-page"
         variant={PageSectionVariants.light}
