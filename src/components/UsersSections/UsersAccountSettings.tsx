@@ -16,7 +16,7 @@ import {
   Button,
 } from "@patternfly/react-core";
 // Data types
-import { IDPServer, User } from "src/utils/datatypes/globalDataTypes";
+import { IDPServer, Metadata, User } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import DataTimePickerLayout from "src/components/layouts/Calendar/DataTimePickerLayout";
@@ -26,9 +26,25 @@ import PopoverWithIconLayout from "src/components/layouts/PopoverWithIconLayout"
 import ModalWithTextAreaLayout from "src/components/layouts/ModalWithTextAreaLayout";
 // Modals
 import CertificateMappingDataModal from "src/components/modals/CertificateMappingDataModal";
+import IpaTextInputFromList from "../Form/IpaTextInputFromList";
+import AddTextInputFromListModal from "../modals/AddTextInputFromListModal";
+// Utils
+import { asRecord, isSimpleValue } from "src/utils/userUtils";
+// RTK
+import {
+  ErrorResult,
+  useAddPrincipalAliasMutation,
+  useRemovePrincipalAliasMutation,
+} from "src/services/rpc";
+// Hooks
+import useAlerts from "src/hooks/useAlerts";
+import DeletionConfirmationModal from "../modals/DeletionConfirmationModal";
 
 interface PropsToUsersAccountSettings {
   user: Partial<User>;
+  onUserChange: (element: Partial<User>) => void;
+  metadata: Metadata;
+  onRefresh: () => void;
 }
 
 // Generic data to pass to the Textbox adder
@@ -38,18 +54,154 @@ interface ElementData {
 }
 
 const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
+  // Get 'ipaObject' and 'recordOnChange' to use in 'IpaTextInput'
+  const { ipaObject, recordOnChange } = asRecord(
+    props.user,
+    props.onUserChange
+  );
+
+  // Alerts to show in the UI
+  const alerts = useAlerts();
+
+  // RTK hooks
+  const [addPrincipalAlias] = useAddPrincipalAliasMutation();
+  const [removePrincipalAlias] = useRemovePrincipalAliasMutation();
+
+  // TextInput Modal data
+  const [isTextInputModalOpen, setIsTextInputModalOpen] = useState(false);
+  const [newAliasValue, setNewAliasValue] = React.useState("");
+
+  const onOpenTextInputModal = () => {
+    setIsTextInputModalOpen(true);
+  };
+
+  const onCloseTextInputModal = () => {
+    setIsTextInputModalOpen(false);
+  };
+
+  // Deletion confirmation Modal data
+  const [isDeleteConfModalOpen, setIsDeleteConfModalOpen] =
+    React.useState(false);
+  const [aliasIdxToDelete, setAliasIdxToDelete] = React.useState<number>(999);
+  const [messageDeletionConf, setMessageDeletionConf] = React.useState("");
+
+  const onRemoveAlias = (idx: number) => {
+    // Get the specific index of the element to remove
+    setAliasIdxToDelete(idx);
+    // Set message to show on the deletion confirmation modal
+    const aliasToDelete = ipaObject["krbprincipalname"][idx];
+    setMessageDeletionConf(
+      "Do you want to remove kerberos alias " + aliasToDelete + "?"
+    );
+    // Open deletion confirmation modal
+    onOpenDeletionConfModal();
+  };
+
+  const onOpenDeletionConfModal = () => {
+    setIsDeleteConfModalOpen(true);
+  };
+
+  const onCloseDeletionConfModal = () => {
+    setIsDeleteConfModalOpen(false);
+  };
+
+  const deletionConfModalActions = [
+    <Button
+      key="add-principal-alias"
+      variant="danger"
+      onClick={() => onRemovePrincipalAlias(aliasIdxToDelete)}
+    >
+      Delete
+    </Button>,
+    <Button key="cancel" variant="link" onClick={onCloseDeletionConfModal}>
+      Cancel
+    </Button>,
+  ];
+
+  // Updates 'ipaObject'
+  const updateIpaObject = (newValue: string | string[], paramName: string) => {
+    if (!isSimpleValue(paramName)) {
+      const paramToModify = newValue as string[];
+      recordOnChange({ ...ipaObject, [paramName]: paramToModify });
+    } else {
+      recordOnChange({ ...ipaObject, [paramName]: newValue });
+    }
+  };
+
+  // Add 'principal alias'
+  const onAddPrincipalAlias = () => {
+    const payload = [props.user.uid, [newAliasValue]];
+
+    addPrincipalAlias(payload).then((response) => {
+      if ("data" in response) {
+        if (response.data.result) {
+          // Close modal
+          setIsTextInputModalOpen(false);
+          // Set alert: success
+          alerts.addAlert(
+            "add-alias-success",
+            "Added new aliases to user '" + props.user.uid + "'",
+            "success"
+          );
+        } else if (response.data.error) {
+          // Set alert: error
+          const errorMessage = response.data.error as ErrorResult;
+          alerts.addAlert("add-alias-error", errorMessage.message, "danger");
+        }
+        // Refresh data to show new changes in the UI
+        props.onRefresh();
+      }
+    });
+  };
+
+  // Remove handler
+  const onRemovePrincipalAlias = (idx: number) => {
+    const aliasList = [...ipaObject.krbprincipalname];
+    const elementToRemove = aliasList[idx];
+
+    // Set payload
+    const payload = [ipaObject.uid, [elementToRemove]];
+
+    removePrincipalAlias(payload).then((response) => {
+      if ("data" in response) {
+        if (response.data.result) {
+          // Close modal
+          setIsDeleteConfModalOpen(false);
+          // Show toast notification: success
+          alerts.addAlert(
+            "remove-alias-success",
+            "Removed aliases from user '" + props.user.uid + "'",
+            "success"
+          );
+        } else if (response.data.error) {
+          // Show toast notification: error
+          const errorMessage = response.data.error as ErrorResult;
+          alerts.addAlert("remove-alias-error", errorMessage.message, "danger");
+        }
+        // Refresh data to show new changes in the UI
+        props.onRefresh();
+      }
+    });
+  };
+
+  const textInputModalActions = [
+    <SecondaryButton
+      key="add-principal-alias"
+      onClickHandler={onAddPrincipalAlias}
+    >
+      Add
+    </SecondaryButton>,
+    <Button key="cancel" variant="link" onClick={onCloseTextInputModal}>
+      Cancel
+    </Button>,
+  ];
+
   // TODO: This state variables should update the user data via the IPA API (`user_mod`)
   const [userLogin] = useState(props.user.uid);
   const [password] = useState("");
   const [passwordExpiration] = useState("");
   const [uid, setUid] = useState(props.user.uidnumber);
   const [gid, setGid] = useState("");
-  const [principalAliasList, setPrincipalAliasList] = useState<ElementData[]>([
-    {
-      id: 0,
-      element: props.user.uid + "@IPAEXAMPLE.TEST",
-    },
-  ]);
   const [homeDirectory, setHomeDirectory] = useState("/home/" + userLogin);
   const [loginShell, setLoginShell] = useState("/bin/sh");
   const [radiusUsername, setRadiusUsername] = useState("");
@@ -63,37 +215,6 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
   // GID
   const gidInputHandler = (value: string) => {
     setGid(value);
-  };
-
-  // Principal alias
-  // - 'Add principal alias' handler
-  const onAddPrincipalAliasFieldHandler = () => {
-    const principalAliasListCopy = [...principalAliasList];
-    principalAliasListCopy.push({
-      id: Date.now.toString(),
-      element: "",
-    });
-    setPrincipalAliasList(principalAliasListCopy);
-  };
-
-  // - 'Change principal alias' handler
-  const onHandlePrincipalAliasChange = (
-    value: string,
-    event: React.FormEvent<HTMLInputElement>,
-    idx: number
-  ) => {
-    const principalAliasListCopy = [...principalAliasList];
-    principalAliasListCopy[idx]["element"] = (
-      event.target as HTMLInputElement
-    ).value;
-    setPrincipalAliasList(principalAliasListCopy);
-  };
-
-  // - 'Remove principal alias' handler
-  const onRemovePrincipalAliasHandler = (idx: number) => {
-    const principalAliasListCopy = [...principalAliasList];
-    principalAliasListCopy.splice(idx, 1);
-    setPrincipalAliasList(principalAliasListCopy);
   };
 
   // Home directory
@@ -499,6 +620,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
   // Render 'UsersAccountSettings'
   return (
     <>
+      <alerts.ManagedAlerts />
       <Flex direction={{ default: "column", lg: "row" }}>
         <FlexItem flex={{ default: "flex_1" }}>
           <Form className="pf-u-mb-lg">
@@ -555,49 +677,35 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 aria-label="gid"
               />
             </FormGroup>
-            <FormGroup label="Principal alias" fieldId="principal-alias">
-              <Flex direction={{ default: "column" }} name="krbprincipalname">
-                {principalAliasList.map((principalAlias, idx) => (
-                  <Flex
-                    direction={{ default: "row" }}
-                    key={principalAlias.id + "-" + idx + "-div"}
-                    name="value"
-                  >
-                    <FlexItem
-                      key={principalAlias.id + "-textbox"}
-                      flex={{ default: "flex_1" }}
-                    >
-                      <TextInput
-                        id="principal-alias"
-                        value={principalAlias.element}
-                        type="text"
-                        name={"krbprincipalname-" + idx}
-                        aria-label="principal alias"
-                        onChange={(value, event) =>
-                          onHandlePrincipalAliasChange(value, event, idx)
-                        }
-                      />
-                    </FlexItem>
-                    <FlexItem key={principalAlias.id + "-delete-button"}>
-                      <SecondaryButton
-                        name="remove"
-                        onClickHandler={() =>
-                          onRemovePrincipalAliasHandler(idx)
-                        }
-                      >
-                        Delete
-                      </SecondaryButton>
-                    </FlexItem>
-                  </Flex>
-                ))}
-              </Flex>
-              <SecondaryButton
-                classname="pf-u-mt-md"
-                name="add"
-                onClickHandler={onAddPrincipalAliasFieldHandler}
-              >
-                Add
-              </SecondaryButton>
+            <FormGroup
+              label="Kerberos principal alias"
+              fieldId="kerberos-principal-alias"
+            >
+              <IpaTextInputFromList
+                name="krbprincipalname"
+                elementsList={ipaObject.krbprincipalname}
+                ipaObject={ipaObject}
+                metadata={props.metadata}
+                onOpenModal={onOpenTextInputModal}
+                onRemove={onRemoveAlias}
+              />
+              <AddTextInputFromListModal
+                newValue={newAliasValue}
+                setNewValue={setNewAliasValue}
+                title={"Add kerberos principal alias"}
+                isOpen={isTextInputModalOpen}
+                onClose={onCloseTextInputModal}
+                actions={textInputModalActions}
+                textInputTitle={"New kerberos principal alias"}
+                textInputName="krbprincalname"
+              />
+              <DeletionConfirmationModal
+                title={"Remove kerberos alias"}
+                isOpen={isDeleteConfModalOpen}
+                onClose={onCloseDeletionConfModal}
+                actions={deletionConfModalActions}
+                messageText={messageDeletionConf}
+              />
             </FormGroup>
             <FormGroup
               label="Kerberos principal expiration (UTC)"

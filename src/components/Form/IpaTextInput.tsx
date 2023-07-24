@@ -12,7 +12,6 @@ const IpaTextInput = (props: IPAParamDefinition) => {
 
   return (
     <TextInput
-      id={props.name}
       name={props.name}
       value={convertToString(value)}
       onChange={onChange}

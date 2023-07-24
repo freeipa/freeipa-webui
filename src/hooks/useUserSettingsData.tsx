@@ -12,6 +12,7 @@ type UserSettingsData = {
   isLoading: boolean;
   isFetching: boolean;
   modified: boolean;
+  setModified: (value: boolean) => void;
   resetValues: () => void;
   metadata: Metadata;
   originalUser: Partial<User>;
@@ -48,6 +49,7 @@ const useUserSettingsData = (userId: string): UserSettingsData => {
     isLoading: metadataLoading || isFullDataLoading,
     isFetching: userFullDataQuery.isFetching,
     modified,
+    setModified,
     metadata,
     user,
     setUser,
@@ -84,9 +86,17 @@ const useUserSettingsData = (userId: string): UserSettingsData => {
     }
     let modified = false;
     for (const [key, value] of Object.entries(user)) {
-      if (userFullData.user[key] !== value) {
-        modified = true;
-        break;
+      if (Array.isArray(value)) {
+        // 'JSON.stringify' when comparing arrays (to prevent data type false positives)
+        if (JSON.stringify(userFullData.user[key]) !== JSON.stringify(value)) {
+          modified = true;
+          break;
+        }
+      } else {
+        if (userFullData.user[key] !== value) {
+          modified = true;
+          break;
+        }
       }
     }
     setModified(modified);

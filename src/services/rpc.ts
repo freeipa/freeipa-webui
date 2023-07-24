@@ -50,10 +50,20 @@ export interface BatchResponse {
   };
 }
 
+export interface ErrorResult {
+  code: number;
+  message: string;
+  data: {
+    attr: string;
+    value: string;
+  };
+  name: string;
+}
+
 // 'FindRPCResponse' type
 //   - Has 'result' > 'result' structure
 export interface FindRPCResponse {
-  error: string;
+  error: string | ErrorResult;
   id: string;
   principal: string;
   version: string;
@@ -296,6 +306,26 @@ export const api = createApi({
       },
       invalidatesTags: ["FullUserData"],
     }),
+    removePrincipalAlias: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [payload, { version: API_VERSION_BACKUP }];
+
+        return getCommand({
+          method: "user_remove_principal",
+          params: params,
+        });
+      },
+    }),
+    addPrincipalAlias: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [payload, { version: API_VERSION_BACKUP }];
+
+        return getCommand({
+          method: "user_add_principal",
+          params: params,
+        });
+      },
+    }),
   }),
 });
 
@@ -308,4 +338,6 @@ export const {
   useGetObjectMetadataQuery,
   useGetUsersFullDataQuery,
   useSaveUserMutation,
+  useRemovePrincipalAliasMutation,
+  useAddPrincipalAliasMutation,
 } = api;
