@@ -6,8 +6,8 @@ export type BasicType = string | number | boolean | null | undefined | [];
 export type IPAObject = Record<string, unknown>;
 
 export interface IPAParamDefinition {
-  id?: string; //
-  value?: string; //
+  id?: string;
+  value?: string;
   name: string;
   ipaObject?: Record<string, unknown>;
   onChange?: (ipaObject: IPAObject) => void;
@@ -20,14 +20,12 @@ export interface IPAParamDefinition {
   label?: string;
 }
 
-// TEST
 export interface IPAParamDefinitionWithIndex {
-  id?: string; //
-  value?: string; //
+  id?: string;
+  value?: string;
   name: string;
   ipaObject?: Record<string, unknown>;
-  onChange?: (ipaObject: IPAObject) => void; // , idx: number
-  onChangeWithIndex?: boolean; //
+  onChange?: (ipaObject: IPAObject) => void;
   objectName: string;
   metadata: Metadata;
   propertyName?: string;
@@ -35,6 +33,22 @@ export interface IPAParamDefinitionWithIndex {
   readOnly?: boolean;
   required?: boolean;
   idx: number;
+}
+
+export interface IPAParamDefinitionCheckbox {
+  id?: string;
+  value?: string;
+  name: string;
+  ipaObject?: Record<string, unknown>;
+  onChange?: (ipaObject: IPAObject) => void;
+  objectName: string;
+  metadata: Metadata;
+  propertyName?: string;
+  alwaysWritable?: boolean;
+  readOnly?: boolean;
+  required?: boolean;
+  label?: string; //
+  className?: string; //
 }
 
 export interface ParamProperties {
@@ -46,7 +60,6 @@ export interface ParamProperties {
   paramMetadata: ParamMetadata;
 }
 
-// TEST
 export interface ParamPropertiesWithIndex {
   writable: boolean;
   required: boolean;
@@ -55,6 +68,17 @@ export interface ParamPropertiesWithIndex {
   onChange: (value: BasicType) => void;
   paramMetadata: ParamMetadata;
   idx: number;
+}
+
+export interface ParamPropertiesCheckbox {
+  writable: boolean;
+  required: boolean;
+  readOnly: boolean;
+  value: BasicType;
+  onChange: (value: BasicType) => void;
+  paramMetadata: ParamMetadata;
+  label: string; //
+  className: string; //
 }
 
 function getParamMetadata(
@@ -256,6 +280,83 @@ export function getParamPropertiesWithIndex(
     onChange,
     paramMetadata,
     idx,
+  };
+}
+
+export function getParamPropertiesCheckBox(
+  parDef: IPAParamDefinitionCheckbox
+): ParamPropertiesCheckbox {
+  const propName = parDef.propertyName || parDef.name;
+  const paramMetadata = getParamMetadata(
+    parDef.metadata,
+    parDef.objectName,
+    propName
+  );
+  if (!paramMetadata) {
+    return {
+      writable: false,
+      required: false,
+      readOnly: true,
+      value: "",
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onChange: () => {},
+      paramMetadata: {} as ParamMetadata,
+      label: "",
+      className: "",
+    };
+  }
+  const writable = isWritable(
+    paramMetadata,
+    parDef.ipaObject,
+    parDef.alwaysWritable
+  );
+  const required = isRequired(parDef, paramMetadata, writable);
+  const readOnly = parDef.readOnly === undefined ? !writable : parDef.readOnly;
+
+  // const value = getValue(parDef.ipaObject, propName);
+  const value = parDef.value;
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const onChange = (value: BasicType) => {
+    if (parDef.onChange) {
+      if (!isSimpleValue(propName)) {
+        if (parDef.ipaObject !== undefined) {
+          // Modify array
+          const objToModify = [...(parDef.ipaObject[propName] as string[])];
+          const elementToChange = parDef.value;
+          const elementToChangeStatus = value;
+
+          // Modify object
+          if (elementToChange !== undefined) {
+            if (elementToChangeStatus === true) {
+              objToModify.push(elementToChange);
+            } else {
+              const index = objToModify.indexOf(elementToChange);
+              if (index > -1) {
+                objToModify.splice(index, 1);
+              }
+            }
+          }
+
+          // Apply changes
+          parDef.onChange({ ...parDef.ipaObject, [propName]: objToModify });
+
+          return elementToChangeStatus;
+        }
+      }
+    }
+  };
+  const label = parDef.label !== undefined ? parDef.label : ""; //
+  const className = parDef.className || "";
+  return {
+    writable,
+    required,
+    readOnly,
+    value,
+    onChange,
+    paramMetadata,
+    label,
+    className,
   };
 }
 

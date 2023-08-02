@@ -7,7 +7,6 @@ import {
   Form,
   FormGroup,
   TextInput,
-  Checkbox,
   Select,
   SelectVariant,
   SelectOption,
@@ -39,6 +38,8 @@ import {
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 import DeletionConfirmationModal from "../modals/DeletionConfirmationModal";
+// Form
+import IpaCheckbox from "../Form/IpaCheckbox";
 
 interface PropsToUsersAccountSettings {
   user: Partial<User>;
@@ -478,14 +479,6 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
     setIdpIdentifier(value);
   };
 
-  // Checkboxes
-  const [passwordCheckbox] = useState(false);
-  const [radiusCheckbox] = useState(false);
-  const [tpaCheckbox] = useState(false);
-  const [pkinitCheckbox] = useState(false);
-  const [hardenedPassCheckbox] = useState(false);
-  const [extIdentityProvCheckbox] = useState(false);
-
   // Date and time picker (Calendar)
   const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
   const [isTimeOpen, setIsTimeOpen] = React.useState(false);
@@ -783,58 +776,70 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 <PopoverWithIconLayout message={userAuthTypesMessage} />
               }
             >
-              <Checkbox
+              <IpaCheckbox
+                id="password"
                 label="Password"
-                isChecked={passwordCheckbox}
-                aria-label="password from user authentication types"
-                id="passwordCheckbox"
                 name="ipauserauthtype"
                 value="password"
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
                 className="pf-u-mt-xs pf-u-mb-sm"
               />
-              <Checkbox
+              <IpaCheckbox
+                id="radius"
                 label="RADIUS"
-                isChecked={radiusCheckbox}
-                aria-label="radius from user authentication types"
-                id="radiusCheckbox"
                 name="ipauserauthtype"
                 value="radius"
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
                 className="pf-u-mt-xs pf-u-mb-sm"
               />
-              <Checkbox
+              <IpaCheckbox
+                id="otp"
                 label="Two-factor authentication (password + OTP)"
-                isChecked={tpaCheckbox}
-                aria-label="two factor authentication from user authentication types"
-                id="tpaCheckbox"
                 name="ipauserauthtype"
                 value="otp"
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
                 className="pf-u-mt-xs pf-u-mb-sm"
               />
-              <Checkbox
+              <IpaCheckbox
+                id="pkinit"
                 label="PKINIT"
-                isChecked={pkinitCheckbox}
-                aria-label="pkinit from user authentication types"
-                id="pkinitCheckbox"
                 name="ipauserauthtype"
                 value="pkinit"
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
                 className="pf-u-mt-xs pf-u-mb-sm"
               />
-              <Checkbox
+              <IpaCheckbox
+                id="hardened"
                 label="Hardened password (by SPAKE or FAST)"
-                isChecked={hardenedPassCheckbox}
-                aria-label="hardened password from user authentication types"
-                id="hardenedPassCheckbox"
                 name="ipauserauthtype"
                 value="hardened"
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
                 className="pf-u-mt-xs pf-u-mb-sm"
               />
-              <Checkbox
+              <IpaCheckbox
+                id="idp"
                 label="External Identity Provider"
-                isChecked={extIdentityProvCheckbox}
-                aria-label="external identity provider from user authentication types"
-                id="extIdentityProvCheckbox"
                 name="ipauserauthtype"
                 value="idp"
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
               />
             </FormGroup>
             <FormGroup
