@@ -198,3 +198,9 @@ export interface ParamMetadata {
   sortorder: number;
   type: string;
 }
+
+export interface RadiusServer {
+  ipatokenradiusserver: string;
+  cn: string;
+  dn: string;
+}

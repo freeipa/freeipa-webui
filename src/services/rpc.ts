@@ -8,7 +8,12 @@ import {
 } from "@reduxjs/toolkit/query/react";
 // Utils
 import { API_VERSION_BACKUP } from "src/utils/utils";
-import { Metadata, User } from "src/utils/datatypes/globalDataTypes";
+import {
+  IDPServer,
+  Metadata,
+  RadiusServer,
+  User,
+} from "src/utils/datatypes/globalDataTypes";
 import { apiToUser } from "src/utils/userUtils";
 
 export type UserFullData = {
@@ -148,7 +153,12 @@ export const getBatchCommand = (commandData: Command[], apiVersion: string) => {
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: "/" }), // TODO: Global settings!
-  tagTypes: ["ObjectMetadata", "FullUserData"],
+  tagTypes: [
+    "ObjectMetadata",
+    "FullUserData",
+    "RadiusServerData",
+    "IdpServerData",
+  ],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
       query: (payloadData: Command) => getCommand(payloadData),
@@ -326,6 +336,28 @@ export const api = createApi({
         });
       },
     }),
+    getRadiusProxy: build.query<RadiusServer[], void>({
+      query: () => {
+        return getCommand({
+          method: "radiusproxy_find",
+          params: [[null], { version: API_VERSION_BACKUP }],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): RadiusServer[] =>
+        response.result.result as unknown as RadiusServer[],
+      providesTags: ["RadiusServerData"],
+    }),
+    getIdpServer: build.query<IDPServer[], void>({
+      query: () => {
+        return getCommand({
+          method: "idp_find",
+          params: [[null], { version: API_VERSION_BACKUP }],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): IDPServer[] =>
+        response.result.result as unknown as IDPServer[],
+      providesTags: ["IdpServerData"],
+    }),
   }),
 });
 
@@ -340,4 +372,6 @@ export const {
   useSaveUserMutation,
   useRemovePrincipalAliasMutation,
   useAddPrincipalAliasMutation,
+  useGetRadiusProxyQuery,
+  useGetIdpServerQuery,
 } = api;

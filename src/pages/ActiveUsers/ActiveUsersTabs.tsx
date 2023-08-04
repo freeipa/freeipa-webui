@@ -99,6 +99,8 @@ const ActiveUsersTabs = () => {
               isModified={userSettingsData.modified}
               onResetValues={userSettingsData.resetValues}
               modifiedValues={userSettingsData.modifiedValues}
+              radiusProxyData={userSettingsData.radiusServer}
+              idpData={userSettingsData.idpServer}
               from="active-users"
             />
           </Tab>

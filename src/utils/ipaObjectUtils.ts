@@ -1,5 +1,7 @@
 import { Metadata, ParamMetadata } from "src/utils/datatypes/globalDataTypes";
 import { isSimpleValue } from "./userUtils";
+// PatternFly
+import { SelectOptionObject } from "@patternfly/react-core";
 
 export type BasicType = string | number | boolean | null | undefined | [];
 
@@ -51,6 +53,31 @@ export interface IPAParamDefinitionCheckbox {
   className?: string; //
 }
 
+export interface IPAParamDefinitionSelect {
+  id?: string;
+  value?: string;
+  name: string;
+  ipaObject?: Record<string, unknown>;
+  objectName: string;
+  metadata: Metadata;
+  propertyName?: string;
+  alwaysWritable?: boolean;
+  readOnly?: boolean;
+  required?: boolean;
+  //---
+  variant?: "single" | "checkbox" | "typeahead" | "typeaheadmulti";
+  elementsOptions: string[];
+  onToggle: (isOpen: boolean) => void;
+  onSelect?: (
+    event: React.MouseEvent | React.ChangeEvent,
+    value: string | SelectOptionObject,
+    isPlaceholder?: boolean
+  ) => void;
+  selections?: string | SelectOptionObject | (string | SelectOptionObject)[];
+  isOpen: boolean;
+  ariaLabelledBy?: string;
+}
+
 export interface ParamProperties {
   writable: boolean;
   required: boolean;
@@ -79,6 +106,14 @@ export interface ParamPropertiesCheckbox {
   paramMetadata: ParamMetadata;
   label: string; //
   className: string; //
+}
+
+export interface ParamPropertiesSelect {
+  writable: boolean;
+  required: boolean;
+  readOnly: boolean;
+  value: BasicType;
+  paramMetadata: ParamMetadata;
 }
 
 function getParamMetadata(
@@ -225,7 +260,6 @@ export function getParamProperties(
   };
 }
 
-// TEST
 export function getParamPropertiesWithIndex(
   parDef: IPAParamDefinitionWithIndex
 ): ParamPropertiesWithIndex {
@@ -357,6 +391,43 @@ export function getParamPropertiesCheckBox(
     paramMetadata,
     label,
     className,
+  };
+}
+
+export function getParamPropertiesSelect(
+  parDef: IPAParamDefinitionSelect
+): ParamPropertiesSelect {
+  const propName = parDef.propertyName || parDef.name;
+  const paramMetadata = getParamMetadata(
+    parDef.metadata,
+    parDef.objectName,
+    propName
+  );
+  if (!paramMetadata) {
+    return {
+      writable: false,
+      required: false,
+      readOnly: true,
+      value: "",
+      paramMetadata: {} as ParamMetadata,
+    };
+  }
+  const writable = isWritable(
+    paramMetadata,
+    parDef.ipaObject,
+    parDef.alwaysWritable
+  );
+  const required = isRequired(parDef, paramMetadata, writable);
+  const readOnly = parDef.readOnly === undefined ? !writable : parDef.readOnly;
+  const value = getValue(parDef.ipaObject, propName)?.toString();
+
+  return {
+    writable,
+    required,
+    readOnly,
+    value,
+    // onChange,
+    paramMetadata,
   };
 }
 

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   Flex,
@@ -7,15 +7,17 @@ import {
   Form,
   FormGroup,
   TextInput,
-  Select,
-  SelectVariant,
-  SelectOption,
   DropdownItem,
   CalendarMonth,
   Button,
 } from "@patternfly/react-core";
 // Data types
-import { IDPServer, Metadata, User } from "src/utils/datatypes/globalDataTypes";
+import {
+  IDPServer,
+  Metadata,
+  RadiusServer,
+  User,
+} from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import DataTimePickerLayout from "src/components/layouts/Calendar/DataTimePickerLayout";
@@ -40,12 +42,15 @@ import useAlerts from "src/hooks/useAlerts";
 import DeletionConfirmationModal from "../modals/DeletionConfirmationModal";
 // Form
 import IpaCheckbox from "../Form/IpaCheckbox";
+import IpaSelect from "../Form/IpaSelect";
 
 interface PropsToUsersAccountSettings {
   user: Partial<User>;
   onUserChange: (element: Partial<User>) => void;
   metadata: Metadata;
   onRefresh: () => void;
+  radiusProxyConf: RadiusServer[];
+  idpConf: IDPServer[];
 }
 
 // Generic data to pass to the Textbox adder
@@ -196,6 +201,59 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
       Cancel
     </Button>,
   ];
+
+  // Dropdown 'Radius proxy configuration'
+  const [isRadiusConfOpen, setIsRadiusConfOpen] = useState(false);
+  const [radiusConfSelected, setRadiusConfSelected] = useState(
+    ipaObject.ipatokenradiusconfiglink
+  );
+  const [radiusConfOptions, setRadiusConfOptions] = useState<string[]>([]);
+  const radiusConfOnToggle = (isOpen: boolean) => {
+    setIsRadiusConfOpen(isOpen);
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const radiusConfOnSelect = (selection: any) => {
+    setRadiusConfSelected(selection.target.textContent as string);
+    updateIpaObject(
+      selection.target.textContent as string,
+      "ipatokenradiusconfiglink"
+    );
+    setIsRadiusConfOpen(false);
+  };
+
+  useEffect(() => {
+    const radiusProxyList: string[] = [];
+    props.radiusProxyConf.map((item) => {
+      const itemString = item.cn.toString();
+      radiusProxyList.push(itemString);
+    });
+    setRadiusConfOptions(radiusProxyList);
+  }, [props.radiusProxyConf]);
+
+  // Dropdown 'External IdP configuration'
+  const [isIdpConfOpen, setIsIdpConfOpen] = useState(false);
+  const [idpConfSelected, setIdpConfSelected] = useState("");
+  const [idpConfOptions, setIdpConfOptions] = useState<string[]>([]);
+
+  const idpConfOnToggle = (isOpen: boolean) => {
+    setIsIdpConfOpen(isOpen);
+  };
+
+  const idpConfOnSelect = (selection: any) => {
+    setIdpConfSelected(selection.target.textContent as string);
+    updateIpaObject(selection.target.textContent as string, "ipaidpconfiglink");
+    setIsIdpConfOpen(false);
+  };
+
+  useEffect(() => {
+    const idpList: string[] = [];
+    props.idpConf.map((item) => {
+      const itemString = item.cn.toString();
+      idpList.push(itemString);
+    });
+    setIdpConfOptions(idpList);
+  }, [props.idpConf]);
 
   // TODO: This state variables should update the user data via the IPA API (`user_mod`)
   const [userLogin] = useState(props.user.uid);
@@ -553,38 +611,6 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
     />
   );
 
-  // Dropdown 'Radius proxy configuration'
-  const [isRadiusConfOpen, setIsRadiusConfOpen] = useState(false);
-  const [radiusConfSelected, setRadiusConfSelected] = useState("");
-  const radiusConfOptions = [
-    { value: "Option 1", disabled: false },
-    { value: "Option 2", disabled: false },
-    { value: "Option 3", disabled: false },
-  ];
-  const radiusConfOnToggle = (isOpen: boolean) => {
-    setIsRadiusConfOpen(isOpen);
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const radiusConfOnSelect = (selection: any) => {
-    setRadiusConfSelected(selection.target.textContent);
-    setIsRadiusConfOpen(false);
-  };
-
-  // Dropdown 'External IdP configuration'
-  const [isIdpConfOpen, setIsIdpConfOpen] = useState(false);
-  const [idpConfSelected, setIdpConfSelected] = useState("");
-  const [idpConfOptions] = useState<IDPServer[]>([]);
-
-  const idpConfOnToggle = (isOpen: boolean) => {
-    setIsIdpConfOpen(isOpen);
-  };
-
-  const idpConfOnSelect = (selection: any) => {
-    setIdpConfSelected(selection.target.textContent);
-    setIsIdpConfOpen(false);
-  };
-
   // Messages for the popover
   const certificateMappingDataMessage = () => (
     <div>
@@ -846,26 +872,18 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               label="Radius proxy configuration"
               fieldId="radius-proxy-configuration"
             >
-              <Select
+              <IpaSelect
                 id="radius-proxy-configuration"
                 name="ipatokenradiusconfiglink"
-                variant={SelectVariant.single}
-                placeholderText=" "
-                aria-label="Select Input with descriptions"
                 onToggle={radiusConfOnToggle}
                 onSelect={radiusConfOnSelect}
-                selections={radiusConfSelected}
+                elementsOptions={radiusConfOptions}
                 isOpen={isRadiusConfOpen}
-                aria-labelledby="radius-proxy-conf"
-              >
-                {radiusConfOptions.map((option, index) => (
-                  <SelectOption
-                    isDisabled={option.disabled}
-                    key={index}
-                    value={option.value}
-                  />
-                ))}
-              </Select>
+                ipaObject={ipaObject}
+                objectName="user"
+                metadata={props.metadata}
+                value={radiusConfSelected}
+              />
             </FormGroup>
             <FormGroup
               label="Radius proxy username"
@@ -884,22 +902,18 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               label="External IdP configuration"
               fieldId="external-idp-configuration"
             >
-              <Select
+              <IpaSelect
                 id="external-idp-configuration"
                 name="ipaidpconfiglink"
-                variant={SelectVariant.single}
-                placeholderText=" "
-                aria-label="Select Input with descriptions"
                 onToggle={idpConfOnToggle}
                 onSelect={idpConfOnSelect}
-                selections={idpConfSelected}
+                elementsOptions={idpConfOptions}
                 isOpen={isIdpConfOpen}
-                aria-labelledby="external-idp-conf"
-              >
-                {idpConfOptions.map((option, index) => (
-                  <SelectOption key={index} value={option.cn} />
-                ))}
-              </Select>
+                ipaObject={ipaObject}
+                objectName="user"
+                metadata={props.metadata}
+                value={idpConfSelected}
+              />
             </FormGroup>
             <FormGroup
               label="External IdP user identifier"
