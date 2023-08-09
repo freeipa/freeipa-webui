@@ -6,9 +6,6 @@ import {
   FlexItem,
   Form,
   FormGroup,
-  TextInput,
-  DropdownItem,
-  CalendarMonth,
   Button,
 } from "@patternfly/react-core";
 // Data types
@@ -253,37 +250,6 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
     setIdpConfOptions(idpList);
   }, [props.idpConf]);
 
-  // TODO: This state variables should update the user data via the IPA API (`user_mod`)
-  const [userLogin] = useState(props.user.uid);
-  const [password] = useState("");
-  const [passwordExpiration] = useState("");
-  const [uid, setUid] = useState(props.user.uidnumber);
-  const [gid, setGid] = useState("");
-  const [homeDirectory, setHomeDirectory] = useState("/home/" + userLogin);
-  const [loginShell, setLoginShell] = useState("/bin/sh");
-  const [radiusUsername, setRadiusUsername] = useState("");
-  const [idpIdentifier, setIdpIdentifier] = useState("");
-
-  // UID
-  const uidInputHandler = (value: string) => {
-    setUid(value);
-  };
-
-  // GID
-  const gidInputHandler = (value: string) => {
-    setGid(value);
-  };
-
-  // Home directory
-  const homeDirectoryInputHandler = (value: string) => {
-    setHomeDirectory(value);
-  };
-
-  // Login shell
-  const loginShellInputHandler = (value: string) => {
-    setLoginShell(value);
-  };
-
   // SSH public keys
   // -Text area
   const [textAreaSshPublicKeysValue, setTextAreaSshPublicKeysValue] =
@@ -525,16 +491,6 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
     </Button>,
   ];
 
-  // RADIUS username
-  const radiusUsernameInputHandler = (value: string) => {
-    setRadiusUsername(value);
-  };
-
-  // Track changes on External IdP user identifier textbox field
-  const idpIdentifierInputHandler = (value: string) => {
-    setIdpIdentifier(value);
-  };
-
   // Messages for the popover
   const certificateMappingDataMessage = () => (
     <div>
@@ -568,56 +524,51 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
         <FlexItem flex={{ default: "flex_1" }}>
           <Form className="pf-u-mb-lg">
             <FormGroup label="User login" fieldId="user-login">
-              <TextInput
-                id="user-login"
-                name="uid"
-                value={userLogin}
-                type="text"
-                aria-label="user login"
-                isDisabled
+              <IpaTextInput
+                name={"uid"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
               />
             </FormGroup>
             <FormGroup label="Password" fieldId="password">
-              <TextInput
-                id="password"
-                name="has_password"
-                value={password}
-                type="password"
-                aria-label="password"
-                isDisabled
+              <IpaTextInput
+                name={"has_password"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
               />
             </FormGroup>
             <FormGroup
               label="Password expiration"
               fieldId="password-expiration"
             >
-              <TextInput
-                id="password-expiration"
-                name="krbpasswordexpiration"
-                value={passwordExpiration}
-                type="text"
-                aria-label="password expiration"
-                isDisabled
+              <IpaTextInput
+                name={"krbpasswordexpiration"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
               />
             </FormGroup>
             <FormGroup label="UID" fieldId="uid">
-              <TextInput
-                id="uid"
-                name="uidnumber"
-                value={uid}
-                type="text"
-                onChange={uidInputHandler}
-                aria-label="uid"
+              <IpaTextInput
+                name={"uidnumber"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
               />
             </FormGroup>
             <FormGroup label="GID" fieldId="gid">
-              <TextInput
-                id="gid"
-                name="gidnumber"
-                value={gid}
-                type="text"
-                onChange={gidInputHandler}
-                aria-label="gid"
+              <IpaTextInput
+                name={"gidnumber"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
               />
             </FormGroup>
             <FormGroup
@@ -663,13 +614,12 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               />
             </FormGroup>
             <FormGroup label="Login shell" fieldId="login-shell">
-              <TextInput
-                id="login-shell"
-                name="loginshell"
-                value={loginShell}
-                type="text"
-                onChange={loginShellInputHandler}
-                aria-label="login shell"
+              <IpaTextInput
+                name={"loginshell"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
               />
             </FormGroup>
           </Form>
@@ -677,13 +627,12 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
         <FlexItem flex={{ default: "flex_1" }}>
           <Form className="pf-u-mb-lg">
             <FormGroup label="Home directory" fieldId="home-directory">
-              <TextInput
-                id="home-directory"
-                name="homedirectory"
-                value={homeDirectory}
-                type="text"
-                onChange={homeDirectoryInputHandler}
-                aria-label="home directory"
+              <IpaTextInput
+                name={"homedirectory"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
               />
             </FormGroup>
             <FormGroup label="SSH public keys" fieldId="ssh-public-keys">
@@ -805,13 +754,12 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               label="Radius proxy username"
               fieldId="radius-proxy-username"
             >
-              <TextInput
-                id="radius-proxy-username"
-                name="ipatokenradiususername"
-                value={radiusUsername}
-                type="text"
-                onChange={radiusUsernameInputHandler}
-                aria-label="radius proxy username"
+              <IpaTextInput
+                name={"ipatokenradiususername"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
               />
             </FormGroup>
             <FormGroup
@@ -835,13 +783,12 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               label="External IdP user identifier"
               fieldId="external-idp-user-identifier"
             >
-              <TextInput
-                id="external-idp-user-identifier"
-                name="ipaidpsub"
-                value={idpIdentifier}
-                type="text"
-                onChange={idpIdentifierInputHandler}
-                aria-label="idp user identifier"
+              <IpaTextInput
+                name={"ipaidpsub"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
               />
             </FormGroup>
           </Form>
