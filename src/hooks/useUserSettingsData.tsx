@@ -84,9 +84,17 @@ const useUserSettingsData = (userId: string): UserSettingsData => {
     }
     let modified = false;
     for (const [key, value] of Object.entries(user)) {
-      if (userFullData.user[key] !== value) {
-        modified = true;
-        break;
+      if (Array.isArray(value)) {
+        // Using 'JSON.stringify' when comparing arrays (to prevent data type false positives)
+        if (JSON.stringify(userFullData.user[key]) !== JSON.stringify(value)) {
+          modified = true;
+          break;
+        }
+      } else {
+        if (userFullData.user[key] !== value) {
+          modified = true;
+          break;
+        }
       }
     }
     setModified(modified);
