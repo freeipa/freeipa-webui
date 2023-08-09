@@ -459,3 +459,18 @@ export function convertApiObj(
   }
   return obj;
 }
+
+// Updates 'ipaObject'
+export const updateIpaObject = (
+  ipaObject: Record<string, unknown>,
+  setIpaObject: (ipaObject: Record<string, unknown>) => void,
+  newValue: string | string[],
+  paramName: string
+) => {
+  if (!isSimpleValue(paramName)) {
+    const paramToModify = newValue as string[];
+    setIpaObject({ ...ipaObject, [paramName]: paramToModify });
+  } else {
+    setIpaObject({ ...ipaObject, [paramName]: newValue });
+  }
+};

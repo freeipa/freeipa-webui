@@ -14,6 +14,7 @@ interface PropsToDataTimePicker {
   toggleIndicator?: React.ElementType | null;
   toggleOnToggle?: (value: boolean, event: any) => void;
   toggleStyle?: React.CSSProperties | undefined;
+  // isDisabled: boolean;
 }
 
 const DataTimePickerLayout = (props: PropsToDataTimePicker) => {
@@ -26,6 +27,7 @@ const DataTimePickerLayout = (props: PropsToDataTimePicker) => {
           toggleIndicator={props.toggleIndicator}
           onToggle={props.toggleOnToggle}
           style={props.toggleStyle}
+          // isDisabled={props.isDisabled}
         >
           <OutlinedClockIcon />
         </DropdownToggle>
