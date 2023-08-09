@@ -249,7 +249,12 @@ const UserSettings = (props: PropsToUserSettings) => {
                 id="account-settings"
                 text="Account settings"
               />
-              <UsersAccountSettings user={props.user} />
+              <UsersAccountSettings
+                user={props.user}
+                onUserChange={props.onUserChange}
+                metadata={props.metadata}
+                onRefresh={props.onRefresh}
+              />
               <TitleLayout
                 key={2}
                 headingLevel="h2"

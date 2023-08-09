@@ -16,7 +16,7 @@ import {
   Button,
 } from "@patternfly/react-core";
 // Data types
-import { IDPServer, User } from "src/utils/datatypes/globalDataTypes";
+import { IDPServer, Metadata, User } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import DataTimePickerLayout from "src/components/layouts/Calendar/DataTimePickerLayout";
@@ -26,9 +26,16 @@ import PopoverWithIconLayout from "src/components/layouts/PopoverWithIconLayout"
 import ModalWithTextAreaLayout from "src/components/layouts/ModalWithTextAreaLayout";
 // Modals
 import CertificateMappingDataModal from "src/components/modals/CertificateMappingDataModal";
+// Utils
+import { asRecord } from "src/utils/userUtils";
+// Form
+import IpaTextInput from "src/components/Form/IpaTextInput";
 
 interface PropsToUsersAccountSettings {
   user: Partial<User>;
+  onUserChange: (element: Partial<User>) => void;
+  metadata: Metadata;
+  onRefresh: () => void;
 }
 
 // Generic data to pass to the Textbox adder
@@ -38,32 +45,21 @@ interface ElementData {
 }
 
 const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
-  // TODO: This state variables should update the user data via the IPA API (`user_mod`)
-  const [userLogin] = useState(props.user.uid);
+  // TODO: Handle the `has_password` variable (boolean) by another Ipa component
   const [password] = useState("");
-  const [passwordExpiration] = useState("");
-  const [uid, setUid] = useState(props.user.uidnumber);
-  const [gid, setGid] = useState("");
+
+  // Get 'ipaObject' and 'recordOnChange' to use in 'IpaTextInput'
+  const { ipaObject, recordOnChange } = asRecord(
+    props.user,
+    props.onUserChange
+  );
+
   const [principalAliasList, setPrincipalAliasList] = useState<ElementData[]>([
     {
       id: 0,
       element: props.user.uid + "@IPAEXAMPLE.TEST",
     },
   ]);
-  const [homeDirectory, setHomeDirectory] = useState("/home/" + userLogin);
-  const [loginShell, setLoginShell] = useState("/bin/sh");
-  const [radiusUsername, setRadiusUsername] = useState("");
-  const [idpIdentifier, setIdpIdentifier] = useState("");
-
-  // UID
-  const uidInputHandler = (value: string) => {
-    setUid(value);
-  };
-
-  // GID
-  const gidInputHandler = (value: string) => {
-    setGid(value);
-  };
 
   // Principal alias
   // - 'Add principal alias' handler
@@ -94,16 +90,6 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
     const principalAliasListCopy = [...principalAliasList];
     principalAliasListCopy.splice(idx, 1);
     setPrincipalAliasList(principalAliasListCopy);
-  };
-
-  // Home directory
-  const homeDirectoryInputHandler = (value: string) => {
-    setHomeDirectory(value);
-  };
-
-  // Login shell
-  const loginShellInputHandler = (value: string) => {
-    setLoginShell(value);
   };
 
   // SSH public keys
@@ -347,16 +333,6 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
     </Button>,
   ];
 
-  // RADIUS username
-  const radiusUsernameInputHandler = (value: string) => {
-    setRadiusUsername(value);
-  };
-
-  // Track changes on External IdP user identifier textbox field
-  const idpIdentifierInputHandler = (value: string) => {
-    setIdpIdentifier(value);
-  };
-
   // Checkboxes
   const [passwordCheckbox] = useState(false);
   const [radiusCheckbox] = useState(false);
@@ -503,13 +479,12 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
         <FlexItem flex={{ default: "flex_1" }}>
           <Form className="pf-u-mb-lg">
             <FormGroup label="User login" fieldId="user-login">
-              <TextInput
-                id="user-login"
-                name="uid"
-                value={userLogin}
-                type="text"
-                aria-label="user login"
-                isDisabled
+              <IpaTextInput
+                name={"uid"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
               />
             </FormGroup>
             <FormGroup label="Password" fieldId="password">
@@ -519,40 +494,37 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 value={password}
                 type="password"
                 aria-label="password"
-                isDisabled
+                readOnlyVariant="plain"
               />
             </FormGroup>
             <FormGroup
               label="Password expiration"
               fieldId="password-expiration"
             >
-              <TextInput
-                id="password-expiration"
-                name="krbpasswordexpiration"
-                value={passwordExpiration}
-                type="text"
-                aria-label="password expiration"
-                isDisabled
+              <IpaTextInput
+                name={"krbpasswordexpiration"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
               />
             </FormGroup>
             <FormGroup label="UID" fieldId="uid">
-              <TextInput
-                id="uid"
-                name="uidnumber"
-                value={uid}
-                type="text"
-                onChange={uidInputHandler}
-                aria-label="uid"
+              <IpaTextInput
+                name={"uidnumber"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
               />
             </FormGroup>
             <FormGroup label="GID" fieldId="gid">
-              <TextInput
-                id="gid"
-                name="gidnumber"
-                value={gid}
-                type="text"
-                onChange={gidInputHandler}
-                aria-label="gid"
+              <IpaTextInput
+                name={"gidnumber"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
               />
             </FormGroup>
             <FormGroup label="Principal alias" fieldId="principal-alias">
@@ -620,13 +592,12 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               </CalendarLayout>
             </FormGroup>
             <FormGroup label="Login shell" fieldId="login-shell">
-              <TextInput
-                id="login-shell"
-                name="loginshell"
-                value={loginShell}
-                type="text"
-                onChange={loginShellInputHandler}
-                aria-label="login shell"
+              <IpaTextInput
+                name={"loginshell"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
               />
             </FormGroup>
           </Form>
@@ -634,13 +605,12 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
         <FlexItem flex={{ default: "flex_1" }}>
           <Form className="pf-u-mb-lg">
             <FormGroup label="Home directory" fieldId="home-directory">
-              <TextInput
-                id="home-directory"
-                name="homedirectory"
-                value={homeDirectory}
-                type="text"
-                onChange={homeDirectoryInputHandler}
-                aria-label="home directory"
+              <IpaTextInput
+                name={"homedirectory"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
               />
             </FormGroup>
             <FormGroup label="SSH public keys" fieldId="ssh-public-keys">
@@ -758,13 +728,12 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               label="Radius proxy username"
               fieldId="radius-proxy-username"
             >
-              <TextInput
-                id="radius-proxy-username"
-                name="ipatokenradiususername"
-                value={radiusUsername}
-                type="text"
-                onChange={radiusUsernameInputHandler}
-                aria-label="radius proxy username"
+              <IpaTextInput
+                name={"ipatokenradiususername"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
               />
             </FormGroup>
             <FormGroup
@@ -792,13 +761,12 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               label="External IdP user identifier"
               fieldId="external-idp-user-identifier"
             >
-              <TextInput
-                id="external-idp-user-identifier"
-                name="ipaidpsub"
-                value={idpIdentifier}
-                type="text"
-                onChange={idpIdentifierInputHandler}
-                aria-label="idp user identifier"
+              <IpaTextInput
+                name={"ipaidpsub"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
               />
             </FormGroup>
           </Form>
