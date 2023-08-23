@@ -16,7 +16,12 @@ import {
 // Icons
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // Data types
-import { Metadata, User } from "src/utils/datatypes/globalDataTypes";
+import {
+  Metadata,
+  User,
+  IDPServer,
+  RadiusServer,
+} from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -53,6 +58,8 @@ export interface PropsToUserSettings {
   isDataLoading?: boolean;
   modifiedValues: () => Partial<User>;
   onResetValues: () => void;
+  radiusProxyData?: RadiusServer[];
+  idpData?: IDPServer[];
   from: "active-users" | "stage-users" | "preserved-users";
 }
 
@@ -254,6 +261,8 @@ const UserSettings = (props: PropsToUserSettings) => {
                 onUserChange={props.onUserChange}
                 metadata={props.metadata}
                 onRefresh={props.onRefresh}
+                radiusProxyConf={props.radiusProxyData || []}
+                idpConf={props.idpData || []}
               />
               <TitleLayout
                 key={2}
