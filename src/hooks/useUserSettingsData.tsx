@@ -2,11 +2,18 @@ import { useState, useEffect } from "react";
 
 // RPC
 import {
+  useGetIdpServerQuery,
   useGetObjectMetadataQuery,
+  useGetRadiusProxyQuery,
   useGetUsersFullDataQuery,
 } from "src/services/rpc";
-
-import { Metadata, User } from "src/utils/datatypes/globalDataTypes";
+// Data types
+import {
+  IDPServer,
+  Metadata,
+  RadiusServer,
+  User,
+} from "src/utils/datatypes/globalDataTypes";
 
 type UserSettingsData = {
   isLoading: boolean;
@@ -22,6 +29,8 @@ type UserSettingsData = {
   certData?: Record<string, unknown>;
   refetch: () => void;
   modifiedValues: () => Partial<User>;
+  radiusServers: RadiusServer[];
+  idpServers: IDPServer[];
 };
 
 const useUserSettingsData = (userId: string): UserSettingsData => {
@@ -30,14 +39,26 @@ const useUserSettingsData = (userId: string): UserSettingsData => {
   const metadata = metadataQuery.data || {};
   const metadataLoading = metadataQuery.isLoading;
 
+  // [API call] User
   const userFullDataQuery = useGetUsersFullDataQuery(userId);
   const userFullData = userFullDataQuery.data;
   const isFullDataLoading = userFullDataQuery.isLoading;
+
+  // [API call] RADIUS proxy server
+  const radiusProxyQuery = useGetRadiusProxyQuery();
+  const radiusProxyData = radiusProxyQuery.data;
+  const isRadiusProxyLoading = radiusProxyQuery.isLoading;
+
+  // [API call] IdP server
+  const idpQuery = useGetIdpServerQuery();
+  const idpData = idpQuery.data;
+  const isIdpLoading = idpQuery.isLoading;
 
   const [modified, setModified] = useState(false);
 
   // Data displayed and modified by the user
   const [user, setUser] = useState<Partial<User>>({});
+
   useEffect(() => {
     if (userFullData && !userFullDataQuery.isFetching) {
       setUser({ ...userFullData.user });
@@ -45,12 +66,18 @@ const useUserSettingsData = (userId: string): UserSettingsData => {
   }, [userFullData, userFullDataQuery.isFetching]);
 
   const settingsData = {
-    isLoading: metadataLoading || isFullDataLoading,
+    isLoading:
+      metadataLoading ||
+      isFullDataLoading ||
+      isRadiusProxyLoading ||
+      isIdpLoading,
     isFetching: userFullDataQuery.isFetching,
     modified,
     metadata,
     user,
     setUser,
+    radiusServers: radiusProxyData || [],
+    idpServers: idpData || [],
     refetch: userFullDataQuery.refetch,
   } as UserSettingsData;
 
@@ -78,6 +105,7 @@ const useUserSettingsData = (userId: string): UserSettingsData => {
   };
   settingsData.modifiedValues = getModifiedValues;
 
+  // Detect any change in 'originalUser' and 'user' objects
   useEffect(() => {
     if (!userFullData || !userFullData.user) {
       return;

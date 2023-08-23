@@ -71,3 +71,9 @@ const dateValues = new Set(["krbpasswordexpiration", "krbprincipalexpiration"]);
 export function apiToUser(apiRecord: Record<string, unknown>) {
   return convertApiObj(apiRecord, simpleValues, dateValues) as Partial<User>;
 }
+
+// Determines whether a given property name is a simple value or is it multivalue (Array)
+//  - Returns: boolean
+export const isSimpleValue = (propertyName) => {
+  return simpleValues.has(propertyName);
+};
