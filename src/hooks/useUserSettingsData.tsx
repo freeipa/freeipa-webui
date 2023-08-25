@@ -19,6 +19,7 @@ type UserSettingsData = {
   isLoading: boolean;
   isFetching: boolean;
   modified: boolean;
+  setModified: (value: boolean) => void;
   resetValues: () => void;
   metadata: Metadata;
   originalUser: Partial<User>;
@@ -73,6 +74,7 @@ const useUserSettingsData = (userId: string): UserSettingsData => {
       isIdpLoading,
     isFetching: userFullDataQuery.isFetching,
     modified,
+    setModified,
     metadata,
     user,
     setUser,
