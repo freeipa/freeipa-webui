@@ -147,6 +147,7 @@ export function getParamProperties(
       parDef.onChange({ ...parDef.ipaObject, [propName]: value });
     }
   };
+
   return {
     writable,
     required,
@@ -194,3 +195,13 @@ export const updateIpaObject = (
 ) => {
   setIpaObject({ ...ipaObject, [paramName]: newValue });
 };
+
+export function toArray(value: BasicType): BasicType[] {
+  if (Array.isArray(value)) {
+    return value;
+  } else if (value === null || value === undefined) {
+    return [];
+  } else {
+    return [value];
+  }
+}

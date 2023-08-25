@@ -62,7 +62,19 @@ $ npm install
 To build (and watch the project for changes), run:
 
 ```
-$ npm run watch
+$ npm run start
+```
+
+You can serve the project using the following command:
+
+```
+$ npm run serve
+```
+
+You can also build and serve the project for production using the following command:
+
+```
+$ npm run build
 ```
 
 Now your dev environment is ready, you can do changes and see them at:
