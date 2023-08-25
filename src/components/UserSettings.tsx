@@ -38,7 +38,7 @@ import UsersMailingAddress from "src/components/UsersSections/UsersMailingAddres
 import UsersEmployeeInfo from "src/components/UsersSections/UsersEmployeeInfo";
 import UsersAttributesSMB from "src/components/UsersSections/UsersAttributesSMB";
 // RPC
-import { useSaveUserMutation } from "src/services/rpc";
+import { ErrorResult, useSaveUserMutation } from "src/services/rpc";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 
@@ -121,13 +121,10 @@ const UserSettings = (props: PropsToUserSettings) => {
           alerts.addAlert("save-success", "User modified", "success");
         } else if (response.data.error) {
           // Show toast notification: error
-          alerts.addAlert(
-            "save-error",
-            response.data.error || "Error when modifying user",
-            "danger"
-          );
+          const errorMessage = response.data.error as ErrorResult;
+          alerts.addAlert("save-error", errorMessage.message, "danger");
         }
-        // TODO: Reset values. Disable 'revert' and 'save' buttons
+        // Reset values. Disable 'revert' and 'save' buttons
         props.onResetValues();
       }
     });

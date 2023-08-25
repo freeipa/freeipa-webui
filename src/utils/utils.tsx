@@ -2,7 +2,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React from "react";
 // Data type
-import { Host, Service, User } from "./datatypes/globalDataTypes";
+import { Host, Metadata, Service, User } from "./datatypes/globalDataTypes";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -69,4 +69,18 @@ export const apiErrorToJsXError = (
   }
 
   return errorJsx;
+};
+
+// Get the current realm of the user
+export const getRealmFromKrbPolicy = (metadata: Metadata) => {
+  let realm = "";
+  if (metadata.objects !== undefined) {
+    const krbPolicy = metadata.objects.krbtpolicy.container_dn as string;
+    if (krbPolicy !== undefined) {
+      // Get realm from krbtpolicy
+      //  - Format: "cn=REALM, cn=kerberos"
+      realm = krbPolicy.split(",")[0].split("=")[1];
+    }
+  }
+  return realm;
 };

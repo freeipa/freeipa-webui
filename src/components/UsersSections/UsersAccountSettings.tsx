@@ -33,6 +33,7 @@ import { asRecord } from "src/utils/userUtils";
 import IpaTextInput from "src/components/Form/IpaTextInput";
 import IpaSelect from "../Form/IpaSelect";
 import IpaCheckboxes from "../Form/IpaCheckboxes";
+import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";
 
 interface PropsToUsersAccountSettings {
   user: Partial<User>;
@@ -66,44 +67,6 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
 
   // Dropdown 'External IdP configuration'
   const idpConfOptions = props.idpConf.map((item) => item.cn.toString());
-
-  const [principalAliasList, setPrincipalAliasList] = useState<ElementData[]>([
-    {
-      id: 0,
-      element: props.user.uid + "@IPAEXAMPLE.TEST",
-    },
-  ]);
-
-  // Principal alias
-  // - 'Add principal alias' handler
-  const onAddPrincipalAliasFieldHandler = () => {
-    const principalAliasListCopy = [...principalAliasList];
-    principalAliasListCopy.push({
-      id: Date.now.toString(),
-      element: "",
-    });
-    setPrincipalAliasList(principalAliasListCopy);
-  };
-
-  // - 'Change principal alias' handler
-  const onHandlePrincipalAliasChange = (
-    value: string,
-    event: React.FormEvent<HTMLInputElement>,
-    idx: number
-  ) => {
-    const principalAliasListCopy = [...principalAliasList];
-    principalAliasListCopy[idx]["element"] = (
-      event.target as HTMLInputElement
-    ).value;
-    setPrincipalAliasList(principalAliasListCopy);
-  };
-
-  // - 'Remove principal alias' handler
-  const onRemovePrincipalAliasHandler = (idx: number) => {
-    const principalAliasListCopy = [...principalAliasList];
-    principalAliasListCopy.splice(idx, 1);
-    setPrincipalAliasList(principalAliasListCopy);
-  };
 
   // SSH public keys
   // -Text area
@@ -500,49 +463,15 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 metadata={props.metadata}
               />
             </FormGroup>
-            <FormGroup label="Principal alias" fieldId="principal-alias">
-              <Flex direction={{ default: "column" }} name="krbprincipalname">
-                {principalAliasList.map((principalAlias, idx) => (
-                  <Flex
-                    direction={{ default: "row" }}
-                    key={principalAlias.id + "-" + idx + "-div"}
-                    name="value"
-                  >
-                    <FlexItem
-                      key={principalAlias.id + "-textbox"}
-                      flex={{ default: "flex_1" }}
-                    >
-                      <TextInput
-                        id="principal-alias"
-                        value={principalAlias.element}
-                        type="text"
-                        name={"krbprincipalname-" + idx}
-                        aria-label="principal alias"
-                        onChange={(value, event) =>
-                          onHandlePrincipalAliasChange(value, event, idx)
-                        }
-                      />
-                    </FlexItem>
-                    <FlexItem key={principalAlias.id + "-delete-button"}>
-                      <SecondaryButton
-                        name="remove"
-                        onClickHandler={() =>
-                          onRemovePrincipalAliasHandler(idx)
-                        }
-                      >
-                        Delete
-                      </SecondaryButton>
-                    </FlexItem>
-                  </Flex>
-                ))}
-              </Flex>
-              <SecondaryButton
-                classname="pf-u-mt-md"
-                name="add"
-                onClickHandler={onAddPrincipalAliasFieldHandler}
-              >
-                Add
-              </SecondaryButton>
+            <FormGroup
+              label="Kerberos principal alias"
+              fieldId="kerberos-principal-alias"
+            >
+              <PrincipalAliasMultiTextBox
+                ipaObject={ipaObject}
+                metadata={props.metadata}
+                onRefresh={props.onRefresh}
+              />
             </FormGroup>
             <FormGroup
               label="Kerberos principal expiration (UTC)"
