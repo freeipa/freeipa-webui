@@ -7,8 +7,6 @@ import {
   Form,
   FormGroup,
   TextInput,
-  DropdownItem,
-  CalendarMonth,
   Button,
 } from "@patternfly/react-core";
 // Data types
@@ -20,9 +18,6 @@ import {
 } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import SecondaryButton from "src/components/layouts/SecondaryButton";
-import DataTimePickerLayout from "src/components/layouts/Calendar/DataTimePickerLayout";
-import CalendarButton from "src/components/layouts/Calendar/CalendarButton";
-import CalendarLayout from "src/components/layouts/Calendar/CalendarLayout";
 import PopoverWithIconLayout from "src/components/layouts/PopoverWithIconLayout";
 import ModalWithTextAreaLayout from "src/components/layouts/ModalWithTextAreaLayout";
 // Modals
@@ -34,6 +29,7 @@ import IpaTextInput from "src/components/Form/IpaTextInput";
 import IpaSelect from "../Form/IpaSelect";
 import IpaCheckboxes from "../Form/IpaCheckboxes";
 import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";
+import IpaCalendar from "../Form/IpaCalendar";
 
 interface PropsToUsersAccountSettings {
   user: Partial<User>;
@@ -309,80 +305,6 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
     </Button>,
   ];
 
-  // Date and time picker (Calendar)
-  const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
-  const [isTimeOpen, setIsTimeOpen] = React.useState(false);
-  const [valueDate, setValueDate] = React.useState("YYYY-MM-DD");
-  const [valueTime, setValueTime] = React.useState("HH:MM");
-  const times = Array.from(new Array(10), (_, i) => i + 10);
-  const defaultTime = "0:00";
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dateFormat = (date: any) =>
-    date
-      .toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      })
-      .replace(/\//g, "-");
-
-  const onToggleCalendar = () => {
-    setIsCalendarOpen(!isCalendarOpen);
-    setIsTimeOpen(false);
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-  const onToggleTime = (_ev: any) => {
-    setIsTimeOpen(!isTimeOpen);
-    setIsCalendarOpen(false);
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onSelectCalendar = (newValueDate: any) => {
-    const newValue = dateFormat(newValueDate);
-    setValueDate(newValue);
-    setIsCalendarOpen(!isCalendarOpen);
-    // setting default time when it is not picked
-    if (valueTime === "HH:MM") {
-      setValueTime(defaultTime);
-    }
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onSelectTime = (ev: any) => {
-    setValueTime(ev.target.value);
-    setIsTimeOpen(!isTimeOpen);
-  };
-
-  const timeOptions = times.map((time) => (
-    <DropdownItem key={time} component="button" value={`${time}:00`}>
-      {`${time}:00`}
-    </DropdownItem>
-  ));
-
-  const calendar = (
-    <CalendarMonth date={new Date(valueDate)} onChange={onSelectCalendar} />
-  );
-
-  const time = (
-    <DataTimePickerLayout
-      dropdownOnSelect={onSelectTime}
-      toggleAriaLabel="Toggle the time picker menu"
-      toggleIndicator={null}
-      toggleOnToggle={onToggleTime}
-      toggleStyle={{ padding: "6px 16px" }}
-      dropdownIsOpen={isTimeOpen}
-      dropdownItems={timeOptions}
-    />
-  );
-
-  const calendarButton = (
-    <CalendarButton
-      ariaLabel="Toggle the calendar"
-      onClick={onToggleCalendar}
-    />
-  );
-
   // Messages for the popover
   const certificateMappingDataMessage = () => (
     <div>
@@ -477,21 +399,13 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               label="Kerberos principal expiration (UTC)"
               fieldId="kerberos-principal-expiration"
             >
-              <CalendarLayout
-                name="krbprincipalexpiration"
-                position="bottom"
-                bodyContent={calendar}
-                showClose={false}
-                isVisible={isCalendarOpen}
-                hasNoPadding={true}
-                hasAutoWidth={true}
-                textInputId="date-time"
-                textInputAriaLabel="date and time picker"
-                textInputValue={valueDate + " " + valueTime}
-              >
-                {calendarButton}
-                {time}
-              </CalendarLayout>
+              <IpaCalendar
+                name={"krbprincipalexpiration"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="user"
+                metadata={props.metadata}
+              />
             </FormGroup>
             <FormGroup label="Login shell" fieldId="login-shell">
               <IpaTextInput
