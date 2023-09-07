@@ -19,16 +19,17 @@ import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/o
 import { Service } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import TitleLayout from "src/components/layouts/TitleLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import KebabLayout from "src/components/layouts/KebabLayout";
+import SecondaryButton from "src/components/layouts/SecondaryButton";
+import TitleLayout from "src/components/layouts/TitleLayout";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 // Field sections
-import ServiceSettings from "src/components/ServicesSections/ServiceSettings";
+import AllowedCreateKeytab from "src/components/ServicesSections/AllowedCreateKeytab";
+import AllowedRetrieveKeytab from "src/components/ServicesSections/AllowedRetrieveKeytab";
 import Provisioning from "src/components/ServicesSections/Provisioning";
 import ServiceCertificate from "src/components/ServicesSections/ServiceCertificate";
-import AllowedRetrieveKeytab from "src/components/ServicesSections/AllowedRetrieveKeytab";
-import AllowedCreateKeytab from "src/components/ServicesSections/AllowedCreateKeytab";
+import ServiceSettings from "src/components/ServicesSections/ServiceSettings";
+import { getLabel } from "src/language";
 
 interface PropsToServicesSettings {
   service: Service;
@@ -63,15 +64,21 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
   const toolbarFields = [
     {
       key: 0,
-      element: <SecondaryButton>Refresh</SecondaryButton>,
+      element: <SecondaryButton>{getLabel("Refresh")}</SecondaryButton>,
     },
     {
       key: 1,
-      element: <SecondaryButton isDisabled={true}>Revert</SecondaryButton>,
+      element: (
+        <SecondaryButton isDisabled={true}>
+          {getLabel("Revert")}
+        </SecondaryButton>
+      ),
     },
     {
       key: 2,
-      element: <SecondaryButton isDisabled={true}>Save</SecondaryButton>,
+      element: (
+        <SecondaryButton isDisabled={true}>{getLabel("Save")}</SecondaryButton>
+      ),
     },
     {
       key: 3,
@@ -105,7 +112,7 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
               textClassName="pf-u-mb-md"
               subTextComponent={TextVariants.a}
               subTextIsVisitedLink={true}
-              textContent="Help"
+              textContent={getLabel("Help")}
               icon={
                 <OutlinedQuestionCircleIcon className="pf-u-primary-color-100 pf-u-mr-sm" />
               }
@@ -144,35 +151,35 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
                 key={0}
                 headingLevel="h2"
                 id="service-settings"
-                text="Service settings"
+                text={getLabel("Service settings")}
               />
               <ServiceSettings service={props.service} />
               <TitleLayout
                 key={1}
                 headingLevel="h2"
                 id="provisioning"
-                text="Provisioning"
+                text={getLabel("Provisioning")}
               />
               <Provisioning />
               <TitleLayout
                 key={2}
                 headingLevel="h2"
                 id="service-certificate"
-                text="Service certificate"
+                text={getLabel("Service certificate")}
               />
               <ServiceCertificate />
               <TitleLayout
                 key={3}
                 headingLevel="h2"
                 id="allowed-retrieve-keytab"
-                text="Allowed to retrieve keytab"
+                text={getLabel("Allowed to retrieve keytab")}
               />
               <AllowedRetrieveKeytab service={props.service} />
               <TitleLayout
                 key={4}
                 headingLevel="h2"
                 id="allowed-create-keytab"
-                text="Allowed to create keytab"
+                text={getLabel("Allowed to create keytab")}
               />
               <AllowedCreateKeytab service={props.service} />
             </Flex>

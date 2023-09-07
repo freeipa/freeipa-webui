@@ -4,8 +4,8 @@ import {
   Page,
   PageSection,
   PageSectionVariants,
-  TextVariants,
   PaginationVariant,
+  TextVariants,
 } from "@patternfly/react-core";
 // PatternFly table
 import {
@@ -15,24 +15,25 @@ import {
 // Icons
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // Data types
-import { User } from "src/utils/datatypes/globalDataTypes";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
+import { User } from "src/utils/datatypes/globalDataTypes";
 // Redux
 import { useAppSelector } from "src/store/hooks";
 // Layouts
-import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
-import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
+import SecondaryButton from "src/components/layouts/SecondaryButton";
+import TitleLayout from "src/components/layouts/TitleLayout";
+import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 // Tables
 import UsersTable from "../../components/tables/UsersTable";
 // Components
-import PaginationPrep from "src/components/PaginationPrep";
 import BulkSelectorUsersPrep from "src/components/BulkSelectorUsersPrep";
+import PaginationPrep from "src/components/PaginationPrep";
 // Modals
 import DeleteUsers from "src/components/modals/DeleteUsers";
 // Utils
+import { getLabel } from "src/language";
 import { isUserSelectable } from "src/utils/utils";
 
 const PreservedUsers = () => {
@@ -244,7 +245,7 @@ const PreservedUsers = () => {
         <SearchInputLayout
           name="search"
           ariaLabel="Search user"
-          placeholder="Search"
+          placeholder={getLabel("Search")}
           searchValueData={searchValueData}
         />
       ),
@@ -257,7 +258,7 @@ const PreservedUsers = () => {
     },
     {
       key: 3,
-      element: <SecondaryButton>Refresh</SecondaryButton>,
+      element: <SecondaryButton>{getLabel("Refresh")}</SecondaryButton>,
     },
     {
       key: 4,
@@ -266,17 +267,17 @@ const PreservedUsers = () => {
           isDisabled={isDeleteButtonDisabled}
           onClickHandler={onDeleteHandler}
         >
-          Delete
+          {getLabel("Delete")}
         </SecondaryButton>
       ),
     },
     {
       key: 5,
-      element: <SecondaryButton>Restore</SecondaryButton>,
+      element: <SecondaryButton>{getLabel("Restore")}</SecondaryButton>,
     },
     {
       key: 6,
-      element: <SecondaryButton>Stage</SecondaryButton>,
+      element: <SecondaryButton>{getLabel("Stage")}</SecondaryButton>,
     },
     {
       key: 7,
@@ -289,7 +290,7 @@ const PreservedUsers = () => {
           textComponent={TextVariants.p}
           subTextComponent={TextVariants.a}
           subTextIsVisitedLink={true}
-          textContent="Help"
+          textContent={getLabel("Help")}
           icon={
             <OutlinedQuestionCircleIcon className="pf-u-primary-color-100 pf-u-mr-sm" />
           }
@@ -317,7 +318,7 @@ const PreservedUsers = () => {
         <TitleLayout
           id="preserved users title"
           headingLevel="h1"
-          text="Preserved users"
+          text={getLabel("Preserved users")}
         />
       </PageSection>
       <PageSection

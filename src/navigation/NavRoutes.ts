@@ -1,3 +1,5 @@
+import { getLabel } from "src/language";
+
 // Navigation
 export const URL_PREFIX = "/ipa/modern_ui";
 
@@ -45,25 +47,25 @@ const KerberosTicketPolicyGroupRef = "kerberos-ticket-policy";
 // List of navigation routes (UI)
 export const navigationRoutes = [
   {
-    label: "Identity",
+    label: getLabel("Identity"),
     group: "",
     title: "Identity title",
     path: "",
     items: [
       {
-        label: "Users",
+        label: getLabel("Users"),
         group: usersGroupRef,
         title: "Users title",
         path: "",
         items: [
           {
-            label: "Active users",
+            label: getLabel("Active users"),
             group: ActiveUsersGroupRef,
             title: "Active users title",
             path: `${URL_PREFIX}/active-users`,
             items: [
               {
-                label: "Active users Settings",
+                label: getLabel("Active users Settings"),
                 group: ActiveUsersGroupRef,
                 title: "Active users Settings title",
                 path: `${URL_PREFIX}/active-users/settings`,
@@ -71,13 +73,13 @@ export const navigationRoutes = [
             ],
           },
           {
-            label: "Stage users",
+            label: getLabel("Stage users"),
             group: StageUsersGroupRef,
             title: "Stage users title",
             path: `${URL_PREFIX}/stage-users`,
             items: [
               {
-                label: "Stage users Settings",
+                label: getLabel("Stage users Settings"),
                 group: StageUsersGroupRef,
                 title: "Stage users Settings title",
                 path: `${URL_PREFIX}/stage-users/settings`,
@@ -85,13 +87,13 @@ export const navigationRoutes = [
             ],
           },
           {
-            label: "Preserved users",
+            label: getLabel("Preserved users"),
             group: PreservedUsersGroupRef,
             title: "Preserved users title",
             path: `${URL_PREFIX}/preserved-users`,
             items: [
               {
-                label: "Preserved users Settings",
+                label: getLabel("Preserved users Settings"),
                 group: PreservedUsersGroupRef,
                 title: "Preserved users Settings title",
                 path: `${URL_PREFIX}/preserved-users/settings`,
@@ -101,39 +103,39 @@ export const navigationRoutes = [
         ],
       },
       {
-        label: "Hosts",
+        label: getLabel("Hosts"),
         group: HostsGroupRef,
         title: "Hosts title",
         items: [],
         path: `${URL_PREFIX}/hosts`,
       },
       {
-        label: "Services",
+        label: getLabel("Services"),
         group: ServicesGroupRef,
         title: "Services title",
         items: [],
         path: `${URL_PREFIX}/services`,
       },
       {
-        label: "Groups",
+        label: getLabel("Groups"),
         group: GroupsGroupRef,
         title: "Groups title",
         path: "",
         items: [
           {
-            label: "User groups",
+            label: getLabel("User groups"),
             group: UserGroupsGroupRef,
             title: "User groups title",
             path: `${URL_PREFIX}/user-groups`,
           },
           {
-            label: "Host groups",
+            label: getLabel("Host groups"),
             group: HostGroupsGroupRef,
             title: "Host groups title",
             path: `${URL_PREFIX}/host-groups`,
           },
           {
-            label: "Netgroups",
+            label: getLabel("Net groups"),
             group: NetgroupsGroupRef,
             title: "Netgroups title",
             path: `${URL_PREFIX}/netgroups`,
@@ -141,26 +143,26 @@ export const navigationRoutes = [
         ],
       },
       {
-        label: "ID views",
+        label: getLabel("ID views"),
         group: IdViewsGroupRef,
         title: "ID views title",
         items: [],
         path: `${URL_PREFIX}/id-views`,
       },
       {
-        label: "Automember",
+        label: getLabel("Automember"),
         group: AutomemberGroupRef,
         title: "Automamber title",
         path: "",
         items: [
           {
-            label: "User Group Rules",
+            label: getLabel("User Group Rules"),
             group: UserGroupRulesGroupRef,
             title: "User Group Rules title",
             path: `${URL_PREFIX}/user-group-rules`,
           },
           {
-            label: "Host Group Rules",
+            label: getLabel("Host Group Rules"),
             group: HostGroupRulesGroupRef,
             title: "Host Group Rules title",
             path: `${URL_PREFIX}/host-group-rules`,
@@ -170,37 +172,37 @@ export const navigationRoutes = [
     ],
   },
   {
-    label: "Policy",
+    label: getLabel("Policy"),
     group: "",
     title: "Policy title",
     path: "",
     items: [
       {
-        label: "Host-based access control",
+        label: getLabel("Host-based access control"),
         group: HostBasedAccessControlGroupRef,
         title: "Host-based access control title",
         path: "",
         items: [
           {
-            label: "HBAC rules",
+            label: getLabel("HBAC rules"),
             group: HbacRulesGroupRef,
             title: "HBAC rules title",
             path: `${URL_PREFIX}/hbac-rules`,
           },
           {
-            label: "HBAC services",
+            label: getLabel("HBAC services"),
             group: HbacServicesGroupRef,
             title: "HBAC services title",
             path: `${URL_PREFIX}/hbac-services`,
           },
           {
-            label: "HBAC service groups",
+            label: getLabel("HBAC service groups"),
             group: HbacServiceGroupsGroupRef,
             title: "HBAC service groups title",
             path: `${URL_PREFIX}/hbac-service-groups`,
           },
           {
-            label: "HBAC test",
+            label: getLabel("HBAC test"),
             group: HbacTestGroupRef,
             title: "HBAC test title",
             path: `${URL_PREFIX}/hbac-test`,
@@ -208,25 +210,25 @@ export const navigationRoutes = [
         ],
       },
       {
-        label: "Sudo",
+        label: getLabel("Sudo"),
         group: SudoGroupRef,
         title: "Sudo title",
         path: "",
         items: [
           {
-            label: "Sudo rules",
+            label: getLabel("Sudo rules"),
             group: SudoRulesGroupRef,
             title: "Sudo rules title",
             path: `${URL_PREFIX}/sudo-rules`,
           },
           {
-            label: "Sudo commands",
+            label: getLabel("Sudo commands"),
             group: SudoCommandsGroupRef,
             title: "Sudo commands title",
             path: `${URL_PREFIX}/sudo-commands`,
           },
           {
-            label: "Sudo command groups",
+            label: getLabel("Sudo command groups"),
             group: SudoCommandGroupsGroupRef,
             title: "Sudo command groups title",
             path: `${URL_PREFIX}/sudo-command-groups`,
@@ -234,21 +236,21 @@ export const navigationRoutes = [
         ],
       },
       {
-        label: "SELinux user maps",
+        label: getLabel("SELinux user maps"),
         group: SelinuxUserMapsGroupRef,
         title: "SELinux user maps title",
         path: "",
         items: [],
       },
       {
-        label: "Password policies",
+        label: getLabel("Password policies"),
         group: PasswordPoliciesGroupRef,
         title: "Password policies title",
         path: "",
         items: [],
       },
       {
-        label: "Kerberos ticket policy",
+        label: getLabel("Kerberos ticket policy"),
         group: KerberosTicketPolicyGroupRef,
         title: "Kerberos ticket policy title",
         path: "",

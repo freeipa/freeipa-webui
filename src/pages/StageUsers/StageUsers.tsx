@@ -4,8 +4,8 @@ import {
   Page,
   PageSection,
   PageSectionVariants,
-  TextVariants,
   PaginationVariant,
+  TextVariants,
 } from "@patternfly/react-core";
 // PatternFly table
 import {
@@ -15,30 +15,34 @@ import {
 // Icons
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // Data types
-import { User } from "src/utils/datatypes/globalDataTypes";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
+import { User } from "src/utils/datatypes/globalDataTypes";
 // Redux
 import { useAppSelector } from "src/store/hooks";
 // Layouts
-import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
-import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
+import SecondaryButton from "src/components/layouts/SecondaryButton";
+import TitleLayout from "src/components/layouts/TitleLayout";
+import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 // Tables
 import UsersTable from "../../components/tables/UsersTable";
 // Components
-import PaginationPrep from "src/components/PaginationPrep";
 import BulkSelectorUsersPrep from "src/components/BulkSelectorUsersPrep";
+import PaginationPrep from "src/components/PaginationPrep";
 // Modals
-import DeleteUsers from "src/components/modals/DeleteUsers";
 import AddUser from "src/components/modals/AddUser";
+import DeleteUsers from "src/components/modals/DeleteUsers";
 // Utils
+import { getLabel } from "src/language";
 import { isUserSelectable } from "src/utils/utils";
 
 const StageUsers = () => {
   // Initialize stage users list (Redux)
-  const stageUsersList = useAppSelector((state) => state.stageUsers.usersList);
+  const stageUsersList = useAppSelector((state) => {
+    console.log("state", state);
+    return state.stageUsers.usersList;
+  });
 
   // Selected users state
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
@@ -249,7 +253,7 @@ const StageUsers = () => {
         <SearchInputLayout
           name="search"
           ariaLabel="Search user"
-          placeholder="Search"
+          placeholder={getLabel("Search")}
           searchValueData={searchValueData}
         />
       ),
@@ -262,7 +266,7 @@ const StageUsers = () => {
     },
     {
       key: 3,
-      element: <SecondaryButton>Refresh</SecondaryButton>,
+      element: <SecondaryButton>{getLabel("Refresh")}</SecondaryButton>,
     },
     {
       key: 4,
@@ -271,7 +275,7 @@ const StageUsers = () => {
           isDisabled={isDeleteButtonDisabled}
           onClickHandler={onDeleteHandler}
         >
-          Delete
+          {getLabel("Delete")}
         </SecondaryButton>
       ),
     },
@@ -279,7 +283,7 @@ const StageUsers = () => {
       key: 5,
       element: (
         <SecondaryButton onClickHandler={onAddClickHandler}>
-          Add
+          {getLabel("Add")}
         </SecondaryButton>
       ),
     },
@@ -298,7 +302,7 @@ const StageUsers = () => {
           textComponent={TextVariants.p}
           subTextComponent={TextVariants.a}
           subTextIsVisitedLink={true}
-          textContent="Help"
+          textContent={getLabel("Help")}
           icon={
             <OutlinedQuestionCircleIcon className="pf-u-primary-color-100 pf-u-mr-sm" />
           }
@@ -326,7 +330,7 @@ const StageUsers = () => {
         <TitleLayout
           id="stage users title"
           headingLevel="h1"
-          text="Stage users"
+          text={getLabel("Stage users")}
         />
       </PageSection>
       <PageSection

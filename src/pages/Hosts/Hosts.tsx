@@ -13,14 +13,14 @@ import {
   OuterScrollContainer,
 } from "@patternfly/react-table";
 // Layouts
+import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import KebabLayout from "src/components/layouts/KebabLayout";
+import SearchInputLayout from "src/components/layouts/SearchInputLayout";
+import SecondaryButton from "src/components/layouts/SecondaryButton";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
-import SearchInputLayout from "src/components/layouts/SearchInputLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
-import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import KebabLayout from "src/components/layouts/KebabLayout";
 // Components
 import BulkSelectorHostsPrep from "src/components/BulkSelectorHostsPrep";
 import PaginationPrep from "src/components/PaginationPrep";
@@ -37,6 +37,7 @@ import { Host } from "src/utils/datatypes/globalDataTypes";
 import { isHostSelectable } from "src/utils/utils";
 // Icons
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
+import { getLabel } from "src/language";
 
 const Hosts = () => {
   // Initialize hosts list (Redux)
@@ -125,7 +126,7 @@ const Hosts = () => {
 
   const dropdownItems = [
     <DropdownItem key="rebuild auto membership" component="button">
-      Rebuild auto membership
+      {getLabel("Rebuild auto membership")}
     </DropdownItem>,
   ];
 
@@ -268,7 +269,7 @@ const Hosts = () => {
         <SearchInputLayout
           name="search"
           ariaLabel="Search hosts"
-          placeholder="Search"
+          placeholder={getLabel("Search")}
           searchValueData={searchValueData}
         />
       ),
@@ -281,7 +282,7 @@ const Hosts = () => {
     },
     {
       key: 3,
-      element: <SecondaryButton>Refresh</SecondaryButton>,
+      element: <SecondaryButton>{getLabel("Refresh")}</SecondaryButton>,
     },
     {
       key: 4,
@@ -290,7 +291,7 @@ const Hosts = () => {
           isDisabled={isDeleteButtonDisabled}
           onClickHandler={onDeleteHandler}
         >
-          Delete
+          {getLabel("Delete")}
         </SecondaryButton>
       ),
     },
@@ -298,7 +299,7 @@ const Hosts = () => {
       key: 5,
       element: (
         <SecondaryButton onClickHandler={onAddClickHandler}>
-          Add
+          {getLabel("Add")}
         </SecondaryButton>
       ),
     },
@@ -326,7 +327,7 @@ const Hosts = () => {
           textComponent={TextVariants.p}
           subTextComponent={TextVariants.a}
           subTextIsVisitedLink={true}
-          textContent="Help"
+          textContent={getLabel("Help")}
           icon={
             <OutlinedQuestionCircleIcon className="pf-u-primary-color-100 pf-u-mr-sm" />
           }
@@ -350,7 +351,11 @@ const Hosts = () => {
   return (
     <Page>
       <PageSection variant={PageSectionVariants.light}>
-        <TitleLayout id="Hosts title" headingLevel="h1" text="Hosts" />
+        <TitleLayout
+          id="Hosts title"
+          headingLevel="h1"
+          text={getLabel("Hosts")}
+        />
       </PageSection>
       <PageSection
         variant={PageSectionVariants.light}

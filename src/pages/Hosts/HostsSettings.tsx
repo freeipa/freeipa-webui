@@ -19,16 +19,17 @@ import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/o
 import { Host } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import TitleLayout from "src/components/layouts/TitleLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import KebabLayout from "src/components/layouts/KebabLayout";
+import SecondaryButton from "src/components/layouts/SecondaryButton";
+import TitleLayout from "src/components/layouts/TitleLayout";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 // Field sections
-import HostSettings from "src/components/HostsSections/HostSettings";
+import AllowedCreateKeytab from "src/components/HostsSections/AllowedCreateKeytab";
+import AllowedRetrieveKeytab from "src/components/HostsSections/AllowedRetrieveKeytab";
 import Enrollment from "src/components/HostsSections/Enrollment";
 import HostCertificate from "src/components/HostsSections/HostCertificate";
-import AllowedRetrieveKeytab from "src/components/HostsSections/AllowedRetrieveKeytab";
-import AllowedCreateKeytab from "src/components/HostsSections/AllowedCreateKeytab";
+import HostSettings from "src/components/HostsSections/HostSettings";
+import { getLabel } from "src/language";
 
 interface PropsToHostsSettings {
   host: Host;
@@ -40,13 +41,15 @@ const HostsSettings = (props: PropsToHostsSettings) => {
 
   const dropdownItems = [
     <DropdownItem key="rebuild auto membership">
-      Rebuild auto membership
+      {getLabel("Rebuild auto membership")}
     </DropdownItem>,
-    <DropdownItem key="unprovision">Unprovision</DropdownItem>,
+    <DropdownItem key="unprovision">{getLabel("Unprovision")}</DropdownItem>,
     <DropdownItem key="set-one-time-password">
-      Set one-time password
+      {getLabel("Set one-time password")}
     </DropdownItem>,
-    <DropdownItem key="new certificate">New certificate</DropdownItem>,
+    <DropdownItem key="new certificate">
+      {getLabel("New certificate")}
+    </DropdownItem>,
   ];
 
   const onKebabToggle = (isOpen: boolean) => {
@@ -63,15 +66,21 @@ const HostsSettings = (props: PropsToHostsSettings) => {
   const toolbarFields = [
     {
       key: 0,
-      element: <SecondaryButton>Refresh</SecondaryButton>,
+      element: <SecondaryButton>{getLabel("Refresh")}</SecondaryButton>,
     },
     {
       key: 1,
-      element: <SecondaryButton isDisabled={true}>Revert</SecondaryButton>,
+      element: (
+        <SecondaryButton isDisabled={true}>
+          {getLabel("Revert")}
+        </SecondaryButton>
+      ),
     },
     {
       key: 2,
-      element: <SecondaryButton isDisabled={true}>Save</SecondaryButton>,
+      element: (
+        <SecondaryButton isDisabled={true}>{getLabel("Save")}</SecondaryButton>
+      ),
     },
     {
       key: 3,
@@ -103,7 +112,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
               textClassName="pf-u-mb-md"
               subTextComponent={TextVariants.a}
               subTextIsVisitedLink={true}
-              textContent="Help"
+              textContent={getLabel("Help")}
               icon={
                 <OutlinedQuestionCircleIcon className="pf-u-primary-color-100 pf-u-mr-sm" />
               }
@@ -142,35 +151,35 @@ const HostsSettings = (props: PropsToHostsSettings) => {
                 key={0}
                 headingLevel="h2"
                 id="host-settings"
-                text="Host settings"
+                text={getLabel("Host settings")}
               />
               <HostSettings host={props.host} />
               <TitleLayout
                 key={1}
                 headingLevel="h2"
                 id="enrollment"
-                text="Enrollment"
+                text={getLabel("Enrollment")}
               />
               <Enrollment />
               <TitleLayout
                 key={2}
                 headingLevel="h2"
                 id="host-certificate"
-                text="Host certificate"
+                text={getLabel("Host certificate")}
               />
               <HostCertificate />
               <TitleLayout
                 key={3}
                 headingLevel="h2"
                 id="allow-retrieve-keytab"
-                text="Allow to retrieve keytab"
+                text={getLabel("Allow to retrieve keytab")}
               />
               <AllowedRetrieveKeytab host={props.host} />
               <TitleLayout
                 key={4}
                 headingLevel="h2"
                 id="allow-create-keytab"
-                text="Allow to create keytab"
+                text={getLabel("Allow to create keytab")}
               />
               <AllowedCreateKeytab host={props.host} />
             </Flex>

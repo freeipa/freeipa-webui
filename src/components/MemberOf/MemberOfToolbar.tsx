@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
 import {
-  ToggleGroup,
   Button,
   Form,
   FormGroup,
-  ToggleGroupItem,
+  Pagination,
   Text,
-  ToolbarItemVariant,
   TextContent,
   TextVariants,
-  Pagination,
+  ToggleGroup,
+  ToggleGroupItem,
+  ToolbarItemVariant,
 } from "@patternfly/react-core";
+import React, { useState } from "react";
 // Icons
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // Toolbar layout
@@ -21,15 +21,16 @@ import ToolbarLayout, {
 } from "src/components/layouts/ToolbarLayout";
 // Data types
 import {
-  UserGroup,
+  HBACRules,
+  HostGroup,
   Netgroup,
   Roles,
-  HBACRules,
   SudoRules,
-  HostGroup,
+  UserGroup,
 } from "src/utils/datatypes/globalDataTypes";
 // Layout
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
+import { getLabel } from "src/language";
 
 interface PageData {
   page: number;
@@ -490,7 +491,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
         <SearchInputLayout
           name="search"
           ariaLabel="Search user"
-          placeholder="Search"
+          placeholder={getLabel("Search")}
           searchValueData={props.searchValueData}
         />
       ),
@@ -509,7 +510,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
       key: 2,
       element: (
         <Button variant="secondary" name="refresh">
-          Refresh
+          {getLabel("Refresh")}
         </Button>
       ),
     },
@@ -523,7 +524,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
           isDisabled={toolbarData().deleteButton.isDisabledHandler}
           onClick={toolbarData().deleteButton.onClickHandler}
         >
-          Delete
+          {getLabel("Delete")}
         </Button>
       ),
     },
@@ -536,7 +537,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
           name="add"
           onClick={toolbarData().addButton.onClickHandler}
         >
-          Add
+          {getLabel("Add")}
         </Button>
       ),
     },
@@ -564,14 +565,14 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
       element: (
         <ToggleGroup isCompact aria-label="Toggle group with single selectable">
           <ToggleGroupItem
-            text="Direct"
+            text={getLabel("Direct")}
             name="user-memberof-group-type-radio-direct"
             buttonId="direct"
             isSelected={toolbarData().membership.isDirectSelected}
             onChange={toolbarData().membership.onDirectChange}
           />
           <ToggleGroupItem
-            text="Indirect"
+            text={getLabel("Indirect")}
             name="user-memberof-group-type-radio-indirect"
             buttonId="indirect"
             isSelected={toolbarData().membership.isIndirectSelected}
@@ -593,7 +594,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
           <Text component={TextVariants.p}>
             <OutlinedQuestionCircleIcon className="pf-u-primary-color-100 pf-u-mr-sm" />
             <Text component={TextVariants.a} isVisitedLink>
-              Help
+              {getLabel("Help")}
             </Text>
           </Text>
         </TextContent>

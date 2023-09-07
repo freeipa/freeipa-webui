@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
+  Button,
   DropdownItem,
   Page,
   PageSection,
   PageSectionVariants,
-  TextVariants,
   PaginationVariant,
-  Button,
+  TextVariants,
 } from "@patternfly/react-core";
 // PatternFly table
 import {
@@ -17,29 +17,29 @@ import {
 // Icons
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // Data types
-import { User } from "src/utils/datatypes/globalDataTypes";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
+import { User } from "src/utils/datatypes/globalDataTypes";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import { updateUsersList } from "src/store/Identity/activeUsers-slice";
 // Layouts
-import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import KebabLayout from "src/components/layouts/KebabLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
-import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
+import SecondaryButton from "src/components/layouts/SecondaryButton";
 import TextLayout from "src/components/layouts/TextLayout";
+import TitleLayout from "src/components/layouts/TitleLayout";
+import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 // Tables
 import UsersTable from "../../components/tables/UsersTable";
 // Components
-import PaginationPrep from "src/components/PaginationPrep";
 import BulkSelectorUsersPrep from "src/components/BulkSelectorUsersPrep";
+import PaginationPrep from "src/components/PaginationPrep";
 // Modals
+import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import AddUser from "src/components/modals/AddUser";
 import DeleteUsers from "src/components/modals/DeleteUsers";
 import DisableEnableUsers from "src/components/modals/DisableEnableUsers";
-import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Hooks
 import { useAlerts } from "src/hooks/useAlerts";
 // Utils
@@ -47,18 +47,19 @@ import { apiErrorToJsXError, isUserSelectable } from "src/utils/utils";
 
 // RPC client
 import {
+  BatchRPCResponse,
   Command,
   FindRPCResponse,
-  BatchRPCResponse,
   UIDType,
   useBatchMutCommandMutation,
   useGettingUserDataQuery,
   useSimpleMutCommandMutation,
 } from "src/services/rpc";
 // Errors
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import ErrorModal from "src/components/modals/ErrorModal";
+import { getLabel } from "src/language";
 
 const ActiveUsers = () => {
   // Dispatch (Redux)
@@ -155,7 +156,9 @@ const ActiveUsers = () => {
   useEffect(() => {
     setErrorGlobalMessage(
       <div style={{ alignSelf: "center", marginTop: "16px" }}>
-        <TextLayout component="h3">An error has occurred</TextLayout>
+        <TextLayout component="h3">
+          {getLabel("An error has occurred")}
+        </TextLayout>
         {apiErrorsJsx}
       </div>
     );
@@ -296,15 +299,15 @@ const ActiveUsers = () => {
           }
 
           alerts.addAlert(
-            "rebuild-automember-error",
-            error || "Error when rebuilding membership",
+            getLabel("rebuild-automember-error"),
+            error || getLabel("Error when rebuilding membership"),
             "danger"
           );
         } else {
           // alert: success
           alerts.addAlert(
-            "rebuild-automember-success",
-            "Automember rebuild membership task completed",
+            getLabel("rebuild-automember-success"),
+            getLabel("Automember rebuild membership task completed"),
             "success"
           );
         }
@@ -324,14 +327,14 @@ const ActiveUsers = () => {
       onClick={onRebuildAutoMembership}
       form="rebuild-auto-membership-modal"
     >
-      OK
+      {getLabel("OK")}
     </Button>,
     <Button
       key="cancel-rebuild-auto-membership"
       variant="link"
       onClick={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
     >
-      Cancel
+      {getLabel("Cancel")}
     </Button>,
   ];
 
@@ -341,7 +344,7 @@ const ActiveUsers = () => {
       id: "question-text",
       pfComponent: (
         <TextLayout component="p">
-          Are you sure you want to rebuild auto membership?
+          {getLabel("Are you sure you want to rebuild auto membership?")}
         </TextLayout>
       ),
     },
@@ -356,7 +359,7 @@ const ActiveUsers = () => {
       component="button"
       onClick={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
     >
-      Rebuild auto membership
+      {getLabel("Rebuild auto membership")}
     </DropdownItem>,
   ];
 
@@ -696,7 +699,7 @@ const ActiveUsers = () => {
         <SearchInputLayout
           name="search"
           ariaLabel="Search user"
-          placeholder="Search"
+          placeholder={getLabel("Search")}
           searchValueData={searchValueData}
         />
       ),
@@ -713,7 +716,7 @@ const ActiveUsers = () => {
         <SecondaryButton
           onClickHandler={() => refreshUsersData(activeUsersList)}
         >
-          Refresh
+          {getLabel("Refresh")}
         </SecondaryButton>
       ),
     },
@@ -724,7 +727,7 @@ const ActiveUsers = () => {
           isDisabled={isDeleteButtonDisabled}
           onClickHandler={onDeleteHandler}
         >
-          Delete
+          {getLabel("Delete")}
         </SecondaryButton>
       ),
     },
@@ -732,7 +735,7 @@ const ActiveUsers = () => {
       key: 5,
       element: (
         <SecondaryButton onClickHandler={onAddClickHandler}>
-          Add
+          {getLabel("Add")}
         </SecondaryButton>
       ),
     },
@@ -743,7 +746,7 @@ const ActiveUsers = () => {
           isDisabled={isDisableButtonDisabled}
           onClickHandler={() => onEnableDisableHandler(true)}
         >
-          Disable
+          {getLabel("Disable")}
         </SecondaryButton>
       ),
     },
@@ -754,7 +757,7 @@ const ActiveUsers = () => {
           isDisabled={isEnableButtonDisabled}
           onClickHandler={() => onEnableDisableHandler(false)}
         >
-          Enable
+          {getLabel("Enable")}
         </SecondaryButton>
       ),
     },
@@ -782,7 +785,7 @@ const ActiveUsers = () => {
           textComponent={TextVariants.p}
           subTextComponent={TextVariants.a}
           subTextIsVisitedLink={true}
-          textContent="Help"
+          textContent={getLabel("Help")}
           icon={
             <OutlinedQuestionCircleIcon className="pf-u-primary-color-100 pf-u-mr-sm" />
           }
@@ -812,7 +815,7 @@ const ActiveUsers = () => {
           <TitleLayout
             id="active users title"
             headingLevel="h1"
-            text="Active users"
+            text={getLabel("Active users")}
           />
         </PageSection>
         <PageSection

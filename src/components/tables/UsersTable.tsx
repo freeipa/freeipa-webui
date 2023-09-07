@@ -14,8 +14,8 @@ import { URL_PREFIX } from "src/navigation/NavRoutes";
 // React Router DOM
 import { Link } from "react-router-dom";
 // Icons
-import { CheckIcon } from "@patternfly/react-icons";
-import { MinusIcon } from "@patternfly/react-icons";
+import { CheckIcon, MinusIcon } from "@patternfly/react-icons";
+import { getLabel } from "src/language";
 
 interface UsersData {
   isUserSelectable: (user: User) => boolean;
@@ -352,28 +352,28 @@ const UsersTable = (props: PropsToTable) => {
     <Tr>
       <Th modifier="wrap"></Th>
       <Th modifier="wrap" sort={getSortParams(0)}>
-        {columnNames.uid}
+        {getLabel(columnNames.uid)}
       </Th>
       <Th modifier="wrap" sort={getSortParams(1)}>
-        {columnNames.givenname}
+        {getLabel(columnNames.givenname)}
       </Th>
       <Th modifier="wrap" sort={getSortParams(2)}>
-        {columnNames.sn}
+        {getLabel(columnNames.sn)}
       </Th>
       <Th modifier="wrap" sort={getSortParams(3)}>
-        {columnNames.nsaccountlock}
+        {getLabel(columnNames.nsaccountlock)}
       </Th>
       <Th modifier="wrap" sort={getSortParams(4)}>
-        {columnNames.uidnumber}
+        {getLabel(columnNames.uidnumber)}
       </Th>
       <Th modifier="wrap" sort={getSortParams(5)}>
-        {columnNames.mail}
+        {getLabel(columnNames.mail)}
       </Th>
       <Th modifier="wrap" sort={getSortParams(6)}>
-        {columnNames.telephonenumber}
+        {getLabel(columnNames.telephonenumber)}
       </Th>
       <Th modifier="wrap" sort={getSortParams(7)}>
-        {columnNames.title}
+        {getLabel(columnNames.title)}
       </Th>
     </Tr>
   );
@@ -416,11 +416,13 @@ const UsersTable = (props: PropsToTable) => {
       >
         {user.nsaccountlock ? (
           <>
-            <MinusIcon /> {" Disabled"}
+            <MinusIcon />
+            &nbsp; {getLabel("Disabled")}
           </>
         ) : (
           <>
-            <CheckIcon /> {" Enabled"}
+            <CheckIcon />
+            &nbsp; {getLabel("Enabled")}
           </>
         )}
       </Td>
@@ -455,7 +457,7 @@ const UsersTable = (props: PropsToTable) => {
     <SkeletonOnTableLayout
       rows={4}
       colSpan={9}
-      screenreaderText={"Loading table rows"}
+      screenreaderText={getLabel("Loading table rows")}
     />
   );
 

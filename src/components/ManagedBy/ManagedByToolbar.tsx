@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 // PatternFly
-import { Pagination, ToolbarItemVariant, Text } from "@patternfly/react-core";
+import { Pagination, Text, ToolbarItemVariant } from "@patternfly/react-core";
 // Icons
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // Data types
 import { Host } from "src/utils/datatypes/globalDataTypes";
 // Layouts
-import SecondaryButton from "../layouts/SecondaryButton";
 import TextLayout from "src/components/layouts/TextLayout";
+import { getLabel } from "src/language";
+import SecondaryButton from "../layouts/SecondaryButton";
 import ToolbarLayout, { ToolbarItemAlignment } from "../layouts/ToolbarLayout";
 
 interface PageData {
@@ -97,7 +98,9 @@ const ManagedByToolbar = (props: PropsToToolbar) => {
     {
       id: hostsToolbarData.refreshButton.id,
       key: 0,
-      element: <SecondaryButton name="refresh">Refresh</SecondaryButton>,
+      element: (
+        <SecondaryButton name="refresh">{getLabel("Refresh")}</SecondaryButton>
+      ),
     },
     {
       id: hostsToolbarData.deleteButton.id,
@@ -108,7 +111,7 @@ const ManagedByToolbar = (props: PropsToToolbar) => {
           isDisabled={hostsToolbarData.deleteButton.isDisabledHandler}
           onClickHandler={hostsToolbarData.deleteButton.onClickHandler}
         >
-          Delete
+          {getLabel("Delete")}
         </SecondaryButton>
       ),
     },
@@ -120,7 +123,7 @@ const ManagedByToolbar = (props: PropsToToolbar) => {
           name="add"
           onClickHandler={hostsToolbarData.addButton.onClickHandler}
         >
-          Add
+          {getLabel("Add")}
         </SecondaryButton>
       ),
     },
@@ -136,7 +139,7 @@ const ManagedByToolbar = (props: PropsToToolbar) => {
         <TextLayout component="p">
           <OutlinedQuestionCircleIcon className="pf-u-primary-color-100 pf-u-mr-sm" />
           <Text component="a" isVisitedLink>
-            Help
+            {getLabel("Help")}
           </Text>
         </TextLayout>
       ),

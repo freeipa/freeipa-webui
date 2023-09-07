@@ -6,6 +6,7 @@ import TableLayout from "src/components/layouts/TableLayout";
 // Data types
 import { User } from "src/utils/datatypes/globalDataTypes";
 // Redux
+import { getLabel } from "src/language";
 import { useAppSelector } from "src/store/hooks";
 
 export interface PropsToDeletedUsersTable {
@@ -75,11 +76,11 @@ const DeletedUsersTable = (props: PropsToDeletedUsersTable) => {
   // Define table header and body
   const header = (
     <Tr>
-      <Th>{columnNames.userLogin}</Th>
-      <Th modifier="wrap">{columnNames.firstName}</Th>
-      <Th modifier="wrap">{columnNames.lastName}</Th>
-      <Th modifier="wrap">{columnNames.uidnumber}</Th>
-      <Th modifier="wrap">{columnNames.emailAddress}</Th>
+      <Th>{getLabel(columnNames.userLogin)}</Th>
+      <Th modifier="wrap">{getLabel(columnNames.firstName)}</Th>
+      <Th modifier="wrap">{getLabel(columnNames.lastName)}</Th>
+      <Th modifier="wrap">{getLabel(columnNames.uidnumber)}</Th>
+      <Th modifier="wrap">{getLabel(columnNames.emailAddress)}</Th>
     </Tr>
   );
 

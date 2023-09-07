@@ -1,46 +1,47 @@
 import React, { SyntheticEvent, useState } from "react";
 // PatternFly
 import {
-  PageSection,
-  PageSectionVariants,
+  DropdownDirection,
+  DropdownItem,
+  Flex,
   JumpLinks,
   JumpLinksItem,
-  TextVariants,
-  Flex,
-  DropdownItem,
+  PageSection,
+  PageSectionVariants,
   Sidebar,
-  SidebarPanel,
   SidebarContent,
-  DropdownDirection,
+  SidebarPanel,
+  TextVariants,
 } from "@patternfly/react-core";
 // Icons
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // Data types
 import {
-  Metadata,
-  User,
   IDPServer,
+  Metadata,
   RadiusServer,
+  User,
 } from "src/utils/datatypes/globalDataTypes";
 // Layouts
-import ToolbarLayout from "src/components/layouts/ToolbarLayout";
-import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import KebabLayout from "src/components/layouts/KebabLayout";
+import SecondaryButton from "src/components/layouts/SecondaryButton";
+import TitleLayout from "src/components/layouts/TitleLayout";
+import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 // Field sections
-import UsersIdentity from "src/components/UsersSections/UsersIdentity";
 import UsersAccountSettings from "src/components/UsersSections/UsersAccountSettings";
-import UsersPasswordPolicy from "src/components/UsersSections/UsersPasswordPolicy";
-import UsersKerberosTicket from "src/components/UsersSections/UsersKerberosTicket";
-import UsersContactSettings from "src/components/UsersSections/UsersContactSettings";
-import UsersMailingAddress from "src/components/UsersSections/UsersMailingAddress";
-import UsersEmployeeInfo from "src/components/UsersSections/UsersEmployeeInfo";
 import UsersAttributesSMB from "src/components/UsersSections/UsersAttributesSMB";
+import UsersContactSettings from "src/components/UsersSections/UsersContactSettings";
+import UsersEmployeeInfo from "src/components/UsersSections/UsersEmployeeInfo";
+import UsersIdentity from "src/components/UsersSections/UsersIdentity";
+import UsersKerberosTicket from "src/components/UsersSections/UsersKerberosTicket";
+import UsersMailingAddress from "src/components/UsersSections/UsersMailingAddress";
+import UsersPasswordPolicy from "src/components/UsersSections/UsersPasswordPolicy";
 // RPC
 import { useSaveUserMutation } from "src/services/rpc";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
+import { getLabel } from "src/language";
 
 export interface PropsToUserSettings {
   originalUser: Partial<User>;
@@ -74,20 +75,26 @@ const UserSettings = (props: PropsToUserSettings) => {
   const [isKebabOpen, setIsKebabOpen] = useState(false);
 
   const dropdownItems = [
-    <DropdownItem key="reset password">Reset password</DropdownItem>,
+    <DropdownItem key="reset password">
+      {getLabel("Reset password")}
+    </DropdownItem>,
     <DropdownItem key="enable" isDisabled>
-      Enable
+      {getLabel("Enable")}
     </DropdownItem>,
-    <DropdownItem key="disable">Disable</DropdownItem>,
-    <DropdownItem key="delete">Delete</DropdownItem>,
+    <DropdownItem key="disable">{getLabel("Disable")}</DropdownItem>,
+    <DropdownItem key="delete">{getLabel("Delete")}</DropdownItem>,
     <DropdownItem key="unlock" isDisabled>
-      Unlock
+      {getLabel("Unlock")}
     </DropdownItem>,
-    <DropdownItem key="add otp token">Add OTP token</DropdownItem>,
+    <DropdownItem key="add otp token">
+      {getLabel("Add OTP token")}
+    </DropdownItem>,
     <DropdownItem key="rebuild auto membership">
-      Rebuild auto membership
+      {getLabel("Rebuild auto membership")}
     </DropdownItem>,
-    <DropdownItem key="new certificate">New certificate</DropdownItem>,
+    <DropdownItem key="new certificate">
+      {getLabel("New certificate")}
+    </DropdownItem>,
   ];
 
   const onKebabToggle = (isOpen: boolean) => {
@@ -104,7 +111,11 @@ const UserSettings = (props: PropsToUserSettings) => {
   // 'Revert' handler method
   const onRevert = () => {
     props.onUserChange(props.originalUser);
-    alerts.addAlert("revert-success", "User data reverted", "success");
+    alerts.addAlert(
+      getLabel("revert-success"),
+      getLabel("User data reverted"),
+      "success"
+    );
   };
 
   // 'Save' handler method
@@ -118,12 +129,16 @@ const UserSettings = (props: PropsToUserSettings) => {
       if ("data" in response) {
         if (response.data.result) {
           // Show toast notification: success
-          alerts.addAlert("save-success", "User modified", "success");
+          alerts.addAlert(
+            getLabel("save-success"),
+            getLabel("User modified"),
+            "success"
+          );
         } else if (response.data.error) {
           // Show toast notification: error
           alerts.addAlert(
-            "save-error",
-            response.data.error || "Error when modifying user",
+            getLabel("save-error"),
+            response.data.error || getLabel("Error when modifying user"),
             "danger"
           );
         }
@@ -139,7 +154,7 @@ const UserSettings = (props: PropsToUserSettings) => {
       key: 0,
       element: (
         <SecondaryButton onClickHandler={props.onRefresh}>
-          Refresh
+          {getLabel("Refresh")}
         </SecondaryButton>
       ),
     },
@@ -150,7 +165,7 @@ const UserSettings = (props: PropsToUserSettings) => {
           isDisabled={!props.isModified}
           onClickHandler={onRevert}
         >
-          Revert
+          {getLabel("Revert")}
         </SecondaryButton>
       ),
     },
@@ -158,7 +173,7 @@ const UserSettings = (props: PropsToUserSettings) => {
       key: 2,
       element: (
         <SecondaryButton isDisabled={!props.isModified} onClickHandler={onSave}>
-          Save
+          {getLabel("Save")}
         </SecondaryButton>
       ),
     },
@@ -195,7 +210,7 @@ const UserSettings = (props: PropsToUserSettings) => {
               textClassName="pf-u-mb-md"
               subTextComponent={TextVariants.a}
               subTextIsVisitedLink={true}
-              textContent="Help"
+              textContent={getLabel("Help")}
               icon={
                 <OutlinedQuestionCircleIcon className="pf-u-primary-color-100 pf-u-mr-sm" />
               }
@@ -208,28 +223,28 @@ const UserSettings = (props: PropsToUserSettings) => {
               expandable={{ default: "expandable", md: "nonExpandable" }}
             >
               <JumpLinksItem key={0} href="#identity-settings">
-                Identity settings
+                {getLabel("Identity settings")}
               </JumpLinksItem>
               <JumpLinksItem key={1} href="#account-settings">
-                Account settings
+                {getLabel("Account settings")}
               </JumpLinksItem>
               <JumpLinksItem key={2} href="#password-policy">
-                Password policy
+                {getLabel("Password policy")}
               </JumpLinksItem>
               <JumpLinksItem key={3} href="#kerberos-ticket">
-                Kerberos ticket policy
+                {getLabel("Kerberos ticket policy")}
               </JumpLinksItem>
               <JumpLinksItem key={4} href="#contact-settings">
-                Contact settings
+                {getLabel("Contact settings")}
               </JumpLinksItem>
               <JumpLinksItem key={5} href="#mailing-address">
-                Mailing address
+                {getLabel("Mailing address")}
               </JumpLinksItem>
               <JumpLinksItem key={6} href="#employee-information">
-                Employee information
+                {getLabel("Employee information")}
               </JumpLinksItem>
               <JumpLinksItem key={7} href="#smb-services">
-                User attributes for SMB services
+                {getLabel("User attributes for SMB services")}
               </JumpLinksItem>
             </JumpLinks>
           </SidebarPanel>
@@ -243,7 +258,7 @@ const UserSettings = (props: PropsToUserSettings) => {
                 key={0}
                 headingLevel="h2"
                 id="identity-settings"
-                text="Identity settings"
+                text={getLabel("Identity settings")}
               />
               <UsersIdentity
                 user={props.user}
@@ -254,7 +269,7 @@ const UserSettings = (props: PropsToUserSettings) => {
                 key={1}
                 headingLevel="h2"
                 id="account-settings"
-                text="Account settings"
+                text={getLabel("Account settings")}
               />
               <UsersAccountSettings
                 user={props.user}
@@ -268,42 +283,42 @@ const UserSettings = (props: PropsToUserSettings) => {
                 key={2}
                 headingLevel="h2"
                 id="password-policy"
-                text="Password policy"
+                text={getLabel("Password policy")}
               />
               <UsersPasswordPolicy />
               <TitleLayout
                 key={3}
                 headingLevel="h2"
                 id="kerberos-ticket"
-                text="Kerberos ticket"
+                text={getLabel("Kerberos ticket")}
               />
               <UsersKerberosTicket />
               <TitleLayout
                 key={4}
                 headingLevel="h2"
                 id="contact-settings"
-                text="Contact settings"
+                text={getLabel("Contact settings")}
               />
               <UsersContactSettings user={props.user} />
               <TitleLayout
                 key={5}
                 headingLevel="h2"
                 id="mailing-address"
-                text="Mailing address"
+                text={getLabel("Mailing address")}
               />
               <UsersMailingAddress />
               <TitleLayout
                 key={6}
                 headingLevel="h2"
                 id="employee-information"
-                text="Employee information"
+                text={getLabel("Employee information")}
               />
               <UsersEmployeeInfo />
               <TitleLayout
                 key={7}
                 headingLevel="h2"
                 id="smb-services"
-                text="User attributes for SMB services"
+                text={getLabel("User attributes for SMB services")}
               />
               <UsersAttributesSMB />
             </Flex>

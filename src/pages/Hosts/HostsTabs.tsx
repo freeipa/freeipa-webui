@@ -4,22 +4,23 @@ import {
   Page,
   PageSection,
   PageSectionVariants,
-  Tabs,
   Tab,
   TabTitleText,
+  Tabs,
 } from "@patternfly/react-core";
 // React Router DOM
 import { useLocation } from "react-router-dom";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Other
-import HostsSettings from "./HostsSettings";
-import HostsMemberOf from "./HostsMemberOf";
 import HostsManagedBy from "./HostsManagedBy";
+import HostsMemberOf from "./HostsMemberOf";
+import HostsSettings from "./HostsSettings";
 // Layouts
 import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
 // Data types
+import { getLabel } from "src/language";
 import { Host } from "src/utils/datatypes/globalDataTypes";
 
 const HostsTabs = () => {
@@ -54,7 +55,7 @@ const HostsTabs = () => {
       <PageSection variant={PageSectionVariants.light} className="pf-u-pr-0">
         <BreadcrumbLayout
           className="pf-u-mb-md"
-          preText="Host:"
+          preText={getLabel("Host:")}
           userId={hostData.id}
           pagesVisited={pagesVisited}
         />
@@ -75,7 +76,7 @@ const HostsTabs = () => {
           <Tab
             eventKey={0}
             name="details"
-            title={<TabTitleText>Settings</TabTitleText>}
+            title={<TabTitleText>{getLabel("Settings")}</TabTitleText>}
           >
             <PageSection className="pf-u-pb-0"></PageSection>
             <HostsSettings host={hostData} />
@@ -83,7 +84,7 @@ const HostsTabs = () => {
           <Tab
             eventKey={1}
             name="details"
-            title={<TabTitleText>Is a member of</TabTitleText>}
+            title={<TabTitleText>{getLabel("Is a member of")}</TabTitleText>}
           >
             <PageSection className="pf-u-pb-0"></PageSection>
             <HostsMemberOf host={hostData} />
@@ -91,7 +92,7 @@ const HostsTabs = () => {
           <Tab
             eventKey={2}
             name="details"
-            title={<TabTitleText>Is managed by</TabTitleText>}
+            title={<TabTitleText>{getLabel("Is managed by")}</TabTitleText>}
           >
             <PageSection className="pf-u-pb-0"></PageSection>
             <HostsManagedBy host={hostData} />

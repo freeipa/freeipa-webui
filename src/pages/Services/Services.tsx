@@ -13,14 +13,14 @@ import {
   OuterScrollContainer,
 } from "@patternfly/react-table";
 // Layouts
+import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import KebabLayout from "src/components/layouts/KebabLayout";
+import SearchInputLayout from "src/components/layouts/SearchInputLayout";
+import SecondaryButton from "src/components/layouts/SecondaryButton";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
-import SearchInputLayout from "src/components/layouts/SearchInputLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
-import KebabLayout from "src/components/layouts/KebabLayout";
-import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 // Components
 import BulkSelectorServicesPrep from "src/components/BulkSelectorServicesPrep";
 import PaginationPrep from "src/components/PaginationPrep";
@@ -37,6 +37,7 @@ import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/o
 // Modals
 import AddService from "src/components/modals/AddService";
 import DeleteServices from "src/components/modals/DeleteServices";
+import { getLabel } from "src/language";
 
 const Services = () => {
   // Initialize services list (Redux)
@@ -125,7 +126,7 @@ const Services = () => {
 
   const dropdownItems = [
     <DropdownItem key="rebuild auto membership" component="button">
-      Rebuild auto membership
+      {getLabel("Rebuild auto membership")}
     </DropdownItem>,
   ];
 
@@ -270,7 +271,7 @@ const Services = () => {
         <SearchInputLayout
           name="search"
           ariaLabel="Search services"
-          placeholder="Search"
+          placeholder={getLabel("Search")}
           searchValueData={searchValueData}
         />
       ),
@@ -283,7 +284,7 @@ const Services = () => {
     },
     {
       key: 3,
-      element: <SecondaryButton>Refresh</SecondaryButton>,
+      element: <SecondaryButton>{getLabel("Refresh")}</SecondaryButton>,
     },
     {
       key: 4,
@@ -292,7 +293,7 @@ const Services = () => {
           isDisabled={isDeleteButtonDisabled}
           onClickHandler={onDeleteHandler}
         >
-          Delete
+          {getLabel("Delete")}
         </SecondaryButton>
       ),
     },
@@ -300,7 +301,7 @@ const Services = () => {
       key: 5,
       element: (
         <SecondaryButton onClickHandler={onAddClickHandler}>
-          Add
+          {getLabel("Add")}
         </SecondaryButton>
       ),
     },
@@ -328,7 +329,7 @@ const Services = () => {
           textComponent={TextVariants.p}
           subTextComponent={TextVariants.a}
           subTextIsVisitedLink={true}
-          textContent="Help"
+          textContent={getLabel("Help")}
           icon={
             <OutlinedQuestionCircleIcon className="pf-u-primary-color-100 pf-u-mr-sm" />
           }
@@ -353,7 +354,11 @@ const Services = () => {
   return (
     <Page>
       <PageSection variant={PageSectionVariants.light}>
-        <TitleLayout id="Services title" headingLevel="h1" text="Services" />
+        <TitleLayout
+          id="Services title"
+          headingLevel="h1"
+          text={getLabel("Services")}
+        />
       </PageSection>
       <PageSection
         variant={PageSectionVariants.light}
