@@ -9,22 +9,16 @@ import {
   PageToggleButton,
   SkipToContent,
   Toolbar,
-  ToolbarContent,
-  ToolbarItem,
 } from "@patternfly/react-core";
 import React from "react";
 import BarsIcon from "@patternfly/react-icons/dist/esm/icons/bars-icon";
 // Navigation
 import Navigation from "./navigation/Nav";
+// Images
+import headerLogo from "public/images/header-logo.png";
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
-  const headerToolbar = (
-    <Toolbar id="toolbar">
-      <ToolbarContent>
-        <ToolbarItem>Header Item</ToolbarItem>
-      </ToolbarContent>
-    </Toolbar>
-  );
+  const headerToolbar = <Toolbar id="toolbar" />;
 
   const Header = (
     <Masthead>
@@ -34,12 +28,8 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
         </PageToggleButton>
       </MastheadToggle>
       <MastheadMain>
-        <MastheadBrand
-          href="https://patternfly.org"
-          onClick={() => console.log("clicked logo")}
-          target="_blank"
-        >
-          Logo
+        <MastheadBrand>
+          <img src={headerLogo} alt="FreeIPA Logo" />
         </MastheadBrand>
       </MastheadMain>
       <MastheadContent>{headerToolbar}</MastheadContent>
@@ -71,7 +61,6 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       header={Header}
       sidebar={Sidebar}
       isManagedSidebar={true}
-      //   onPageResize={onPageResize}
       skipToContent={PageSkipToContent}
     >
       {children}
