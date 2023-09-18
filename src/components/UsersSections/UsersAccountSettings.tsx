@@ -359,7 +359,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               label="Password expiration"
               fieldId="password-expiration"
             >
-              <IpaTextInput
+              <IpaCalendar
                 name={"krbpasswordexpiration"}
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
