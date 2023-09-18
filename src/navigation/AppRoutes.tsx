@@ -95,7 +95,7 @@ export const AppRoutes = (): React.ReactElement => (
       </Route>
     </Route>
     <Route
-      path=""
+      path={URL_PREFIX + "/"}
       element={<Navigate to={URL_PREFIX + "/active-users"} replace />}
     />
     <Route path="*" element={<NotFound />} />
