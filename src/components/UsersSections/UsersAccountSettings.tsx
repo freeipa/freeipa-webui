@@ -30,6 +30,7 @@ import IpaSelect from "../Form/IpaSelect";
 import IpaCheckboxes from "../Form/IpaCheckboxes";
 import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";
 import IpaCalendar from "../Form/IpaCalendar";
+import IpaSshPublicKeys from "../Form/IpaSshPublicKeys";
 
 interface PropsToUsersAccountSettings {
   user: Partial<User>;
@@ -63,45 +64,6 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
 
   // Dropdown 'External IdP configuration'
   const idpConfOptions = props.idpConf.map((item) => item.cn.toString());
-
-  // SSH public keys
-  // -Text area
-  const [textAreaSshPublicKeysValue, setTextAreaSshPublicKeysValue] =
-    useState("");
-  const [isTextAreaSshPublicKeysOpen, setIsTextAreaSshPublicKeysOpen] =
-    useState(false);
-
-  const onChangeTextAreaSshPublicKeysValue = (value: string) => {
-    setTextAreaSshPublicKeysValue(value);
-  };
-
-  const onClickSetTextAreaSshPublicKeys = () => {
-    // Store data here
-    // Closes the modal
-    setIsTextAreaSshPublicKeysOpen(false);
-  };
-
-  const onClickCancelTextAreaSshPublicKeys = () => {
-    // Closes the modal
-    setIsTextAreaSshPublicKeysOpen(false);
-  };
-
-  const openSshPublicKeysModal = () => {
-    setIsTextAreaSshPublicKeysOpen(true);
-  };
-
-  const sshPublicKeysOptions = [
-    <SecondaryButton key="set" onClickHandler={onClickSetTextAreaSshPublicKeys}>
-      Set
-    </SecondaryButton>,
-    <Button
-      key="cancel"
-      variant="link"
-      onClick={onClickCancelTextAreaSshPublicKeys}
-    >
-      Cancel
-    </Button>,
-  ];
 
   // Certificates
   // -Text area
@@ -430,9 +392,11 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               />
             </FormGroup>
             <FormGroup label="SSH public keys" fieldId="ssh-public-keys">
-              <SecondaryButton onClickHandler={openSshPublicKeysModal}>
-                Add
-              </SecondaryButton>
+              <IpaSshPublicKeys
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                metadata={props.metadata}
+              />
             </FormGroup>
             <FormGroup label="Certificates" fieldId="certificates">
               <SecondaryButton onClickHandler={openCertificatesModal}>
@@ -551,17 +515,6 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
         </FlexItem>
       </Flex>
       <ModalWithTextAreaLayout
-        value={textAreaSshPublicKeysValue}
-        onChange={onChangeTextAreaSshPublicKeysValue}
-        isOpen={isTextAreaSshPublicKeysOpen}
-        onClose={onClickCancelTextAreaSshPublicKeys}
-        actions={sshPublicKeysOptions}
-        title="Set SSH key"
-        subtitle="SSH public key:"
-        cssName="ipasshpubkey"
-        ariaLabel="new ssh public key modal text area"
-      />
-      <ModalWithTextAreaLayout
         value={textAreaCertificatesValue}
         onChange={onChangeTextAreaCertificatesValue}
         isOpen={isTextAreaCertificatesOpen}
@@ -569,8 +522,12 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
         actions={certificatesOptions}
         title="New certificate"
         subtitle="Certificate in base64 or PEM format:"
-        cssName="usercertificate"
         ariaLabel="new certificate modal text area"
+        cssStyle={{ height: "422px" }}
+        name="usercertificate"
+        objectName="user"
+        ipaObject={ipaObject}
+        metadata={props.metadata}
       />
       <CertificateMappingDataModal
         // Modal options

@@ -1,6 +1,8 @@
 import React from "react";
 // PatternFly
 import { Form, FormGroup, Modal, TextArea } from "@patternfly/react-core";
+// Data types
+import { Metadata } from "src/utils/datatypes/globalDataTypes";
 
 interface PropsToPKModal {
   value: string;
@@ -10,8 +12,13 @@ interface PropsToPKModal {
   actions: JSX.Element[];
   title: string;
   subtitle?: string;
-  cssName: string;
   ariaLabel?: string;
+  resizeOrientation?: "horizontal" | "vertical";
+  cssStyle?: React.CSSProperties;
+  name: string;
+  objectName: string;
+  ipaObject: Record<string, unknown>;
+  metadata: Metadata;
 }
 
 const ModalWithTextAreaLayout = (props: PropsToPKModal) => {
@@ -27,11 +34,11 @@ const ModalWithTextAreaLayout = (props: PropsToPKModal) => {
         <FormGroup label={props.subtitle} type="string" fieldId="selection">
           <TextArea
             value={props.value}
-            name={props.cssName}
+            name={props.name}
             onChange={props.onChange}
             aria-label={props.ariaLabel}
-            resizeOrientation="vertical"
-            style={{ height: "422px" }}
+            resizeOrientation={props.resizeOrientation || "vertical"}
+            style={props.cssStyle}
           />
         </FormGroup>
       </Form>
