@@ -79,14 +79,15 @@ const UsersTable = (props: PropsToTable) => {
 
     let input: RegExp;
     try {
-      input = new RegExp(props.searchValue, "i");
+      // Find matches that begin with the pattern
+      input = new RegExp("^" + props.searchValue, "i");
     } catch (err) {
       input = new RegExp(
         props.searchValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
         "i"
       );
     }
-    return user.uid.search(input) >= 0;
+    return user.uid[0].search(input) >= 0;
   };
 
   const filteredShownUsers =
