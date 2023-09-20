@@ -280,7 +280,7 @@ export const api = createApi({
 
         const certFindCommand: Command = {
           method: "cert_find",
-          params: [[], { user: userId[0], sizelimit: 0, all: true }],
+          params: [[], { user: [userId[0]], sizelimit: 0, all: true }],
         };
 
         const batchPayload: Command[] = [
@@ -361,6 +361,32 @@ export const api = createApi({
         });
       },
     }),
+    addCertificate: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [
+          [payload[0]],
+          { usercertificate: payload[1], version: API_VERSION_BACKUP },
+        ];
+
+        return getCommand({
+          method: "user_add_cert",
+          params: params,
+        });
+      },
+    }),
+    removeCertificate: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [
+          [payload[0]],
+          { usercertificate: payload[1], version: API_VERSION_BACKUP },
+        ];
+
+        return getCommand({
+          method: "user_remove_cert",
+          params: params,
+        });
+      },
+    }),
   }),
 });
 
@@ -377,4 +403,6 @@ export const {
   useGetIdpServerQuery,
   useRemovePrincipalAliasMutation,
   useAddPrincipalAliasMutation,
+  useAddCertificateMutation,
+  useRemoveCertificateMutation,
 } = api;

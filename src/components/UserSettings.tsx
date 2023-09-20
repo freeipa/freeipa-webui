@@ -260,6 +260,7 @@ const UserSettings = (props: PropsToUserSettings) => {
                 onRefresh={props.onRefresh}
                 radiusProxyConf={props.radiusProxyData || []}
                 idpConf={props.idpData || []}
+                certData={props.certData}
               />
               <TitleLayout
                 key={2}

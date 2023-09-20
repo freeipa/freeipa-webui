@@ -12,6 +12,7 @@ interface PropsToPKModal {
   actions: JSX.Element[];
   title: string;
   subtitle?: string;
+  isRequired?: boolean | false;
   ariaLabel?: string;
   resizeOrientation?: "horizontal" | "vertical";
   cssStyle?: React.CSSProperties;
@@ -19,19 +20,25 @@ interface PropsToPKModal {
   objectName: string;
   ipaObject: Record<string, unknown>;
   metadata: Metadata;
+  variant?: "default" | "small" | "medium" | "large";
 }
 
 const ModalWithTextAreaLayout = (props: PropsToPKModal) => {
   return (
     <Modal
-      variant="small"
+      variant={props.variant || "small"}
       title={props.title}
       isOpen={props.isOpen}
       onClose={props.onClose}
       actions={props.actions}
     >
       <Form>
-        <FormGroup label={props.subtitle} type="string" fieldId="selection">
+        <FormGroup
+          label={props.subtitle}
+          type="string"
+          fieldId="selection"
+          isRequired={props.isRequired}
+        >
           <TextArea
             value={props.value}
             name={props.name}
