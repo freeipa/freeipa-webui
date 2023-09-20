@@ -26,7 +26,10 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Modals
 import ErrorModal from "./ErrorModal";
+// Data types
 import { ErrorData } from "src/utils/datatypes/globalDataTypes";
+// Hooks
+import useAlerts from "src/hooks/useAlerts";
 
 interface ButtonsData {
   updateIsDeleteButtonDisabled?: (value: boolean) => void;
@@ -61,6 +64,9 @@ export interface PropsToDeleteUsers {
 const DeleteUsers = (props: PropsToDeleteUsers) => {
   // Set dispatch (Redux)
   const dispatch = useAppDispatch();
+
+  // Alerts
+  const alerts = useAlerts();
 
   // Define 'executeUserDelCommand' to add user data to IPA server
   const [executeUserDelCommand] = useBatchMutCommandMutation();
@@ -244,6 +250,21 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
               props.onRefresh();
             }
 
+            // Show alert: success
+            if (isDeleteChecked) {
+              alerts.addAlert(
+                "remove-users-success",
+                "Users removed",
+                "success"
+              );
+            } else {
+              alerts.addAlert(
+                "preserve-users-success",
+                "Users preserved",
+                "success"
+              );
+            }
+
             closeModal();
           }
         } else if (error) {
@@ -353,6 +374,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
   // Render 'DeleteUsers'
   return (
     <>
+      <alerts.ManagedAlerts />
       {isDeleteChecked ? modalDelete : modalPreserve}
       {isModalErrorOpen && (
         <ErrorModal
