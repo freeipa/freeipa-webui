@@ -34,6 +34,8 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Modals
 import ErrorModal from "./ErrorModal";
+// Hooks
+import useAlerts from "src/hooks/useAlerts";
 
 interface GroupId {
   cn: string;
@@ -69,6 +71,9 @@ export interface PropsToAddUser {
 const AddUser = (props: PropsToAddUser) => {
   // Set dispatch (Redux)
   const dispatch = useAppDispatch();
+
+  // Alerts to show in the UI
+  const alerts = useAlerts();
 
   // Retrieve API version from environment data
   const apiVersion = useAppSelector(
@@ -608,6 +613,9 @@ const AddUser = (props: PropsToAddUser) => {
           if (props.onRefresh !== undefined) {
             props.onRefresh(updatedUsersList);
           }
+
+          // Set alert: success
+          alerts.addAlert("add-user-success", "New user added", "success");
         } else if (error) {
           // Set status flag: error
           isAdditionSuccess = false;
@@ -762,6 +770,7 @@ const AddUser = (props: PropsToAddUser) => {
   // Render 'AddUser'
   return (
     <>
+      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         variantType="small"
         modalPosition="top"

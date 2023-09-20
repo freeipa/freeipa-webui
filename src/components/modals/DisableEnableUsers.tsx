@@ -22,7 +22,10 @@ import {
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
 import ErrorModal from "./ErrorModal";
+// Data types
 import { ErrorData } from "src/utils/datatypes/globalDataTypes";
+// Hooks
+import useAlerts from "src/hooks/useAlerts";
 
 interface ButtonsData {
   updateIsEnableButtonDisabled: (value: boolean) => void;
@@ -51,6 +54,9 @@ export interface PropsToDisableEnableUsers {
 const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
   // Set dispatch (Redux)
   const dispatch = useAppDispatch();
+
+  // Alerts to show in the UI
+  const alerts = useAlerts();
 
   // Define 'executeEnableDisableCommand' to add user data to IPA server
   const [executeEnableDisableCommand] = useBatchMutCommandMutation();
@@ -216,10 +222,22 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
               // Enable
               props.buttonsData.updateIsEnableButtonDisabled(true);
               props.buttonsData.updateIsDisableButtonDisabled(false);
+              // Set alert: success
+              alerts.addAlert(
+                "enable-user-success",
+                "Users enabled",
+                "success"
+              );
             } else if (props.optionSelected) {
               // Disable
               props.buttonsData.updateIsEnableButtonDisabled(false);
               props.buttonsData.updateIsDisableButtonDisabled(true);
+              // Set alert: success
+              alerts.addAlert(
+                "disable-user-success",
+                "Users disabled",
+                "success"
+              );
             }
 
             // Reset selected users
@@ -316,6 +334,7 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
   // Render 'DisableEnableUsers'
   return (
     <>
+      <alerts.ManagedAlerts />
       {!props.optionSelected ? modalEnable : modalDisable}
       {isModalErrorOpen && (
         <ErrorModal
