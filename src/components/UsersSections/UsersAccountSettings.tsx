@@ -19,7 +19,6 @@ import {
 // Layouts
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import PopoverWithIconLayout from "src/components/layouts/PopoverWithIconLayout";
-import ModalWithTextAreaLayout from "src/components/layouts/ModalWithTextAreaLayout";
 // Modals
 import CertificateMappingDataModal from "src/components/modals/CertificateMappingDataModal";
 // Utils
@@ -31,6 +30,7 @@ import IpaCheckboxes from "../Form/IpaCheckboxes";
 import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";
 import IpaCalendar from "../Form/IpaCalendar";
 import IpaSshPublicKeys from "../Form/IpaSshPublicKeys";
+import IpaCertificates from "../Form/IpaCertificates";
 
 interface PropsToUsersAccountSettings {
   user: Partial<User>;
@@ -39,6 +39,7 @@ interface PropsToUsersAccountSettings {
   onRefresh: () => void;
   radiusProxyConf: RadiusServer[];
   idpConf: IDPServer[];
+  certData: Record<string, unknown>;
 }
 
 // Generic data to pass to the Textbox adder
@@ -64,45 +65,6 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
 
   // Dropdown 'External IdP configuration'
   const idpConfOptions = props.idpConf.map((item) => item.cn.toString());
-
-  // Certificates
-  // -Text area
-  const [textAreaCertificatesValue, setTextAreaCertificatesValue] =
-    useState("");
-  const [isTextAreaCertificatesOpen, setIsTextAreaCertificatesOpen] =
-    useState(false);
-
-  const onChangeTextAreaCertificatesValue = (value: string) => {
-    setTextAreaCertificatesValue(value);
-  };
-
-  const onClickAddTextAreaCertificates = () => {
-    // Store data here
-    // Closes the modal
-    setIsTextAreaCertificatesOpen(false);
-  };
-
-  const onClickCancelTextAreaCertificates = () => {
-    // Closes the modal
-    setIsTextAreaCertificatesOpen(false);
-  };
-
-  const openCertificatesModal = () => {
-    setIsTextAreaCertificatesOpen(true);
-  };
-
-  const certificatesOptions = [
-    <SecondaryButton key="add" onClickHandler={onClickAddTextAreaCertificates}>
-      Add
-    </SecondaryButton>,
-    <Button
-      key="cancel"
-      variant="link"
-      onClick={onClickCancelTextAreaCertificates}
-    >
-      Cancel
-    </Button>,
-  ];
 
   // Certificate mapping data
   // - Radio buttons
@@ -399,9 +361,13 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               />
             </FormGroup>
             <FormGroup label="Certificates" fieldId="certificates">
-              <SecondaryButton onClickHandler={openCertificatesModal}>
-                Add
-              </SecondaryButton>
+              <IpaCertificates
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                metadata={props.metadata}
+                certificates={props.certData}
+                onRefresh={props.onRefresh}
+              />
             </FormGroup>
             <FormGroup
               label="Certificate mapping data"
@@ -514,21 +480,6 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
           </Form>
         </FlexItem>
       </Flex>
-      <ModalWithTextAreaLayout
-        value={textAreaCertificatesValue}
-        onChange={onChangeTextAreaCertificatesValue}
-        isOpen={isTextAreaCertificatesOpen}
-        onClose={onClickCancelTextAreaCertificates}
-        actions={certificatesOptions}
-        title="New certificate"
-        subtitle="Certificate in base64 or PEM format:"
-        ariaLabel="new certificate modal text area"
-        cssStyle={{ height: "422px" }}
-        name="usercertificate"
-        objectName="user"
-        ipaObject={ipaObject}
-        metadata={props.metadata}
-      />
       <CertificateMappingDataModal
         // Modal options
         isOpen={isCertificatesMappingDataModalOpen}

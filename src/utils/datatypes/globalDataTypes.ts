@@ -204,3 +204,17 @@ export interface RadiusServer {
   cn: string;
   dn: string;
 }
+
+export interface Certificate {
+  serial_number: string;
+  certificate: string;
+  subject: string;
+  issuer: string;
+  serial_number_hex: string;
+  valid_not_before: string;
+  valid_not_after: string;
+  sha1_fingerprint: string;
+  sha256_fingerprint: string;
+  san_rfc822name: string[];
+  owner_user: string[];
+}
