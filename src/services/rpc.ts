@@ -159,7 +159,13 @@ export const getBatchCommand = (commandData: Command[], apiVersion: string) => {
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: "/" }), // TODO: Global settings!
-  tagTypes: ["ObjectMetadata", "FullUser", "RadiusServer", "IdpServer"],
+  tagTypes: [
+    "ObjectMetadata",
+    "FullUser",
+    "RadiusServer",
+    "IdpServer",
+    "CertificateAuthority",
+  ],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
       query: (payloadData: Command) => getCommand(payloadData),

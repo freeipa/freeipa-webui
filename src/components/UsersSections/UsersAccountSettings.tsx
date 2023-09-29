@@ -15,7 +15,6 @@ import {
   Metadata,
   User,
   RadiusServer,
-  Certificate,
 } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import SecondaryButton from "src/components/layouts/SecondaryButton";

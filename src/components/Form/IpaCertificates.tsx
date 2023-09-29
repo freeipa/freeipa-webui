@@ -14,6 +14,7 @@ import { getParamProperties } from "src/utils/ipaObjectUtils";
 // Modals
 import ModalWithTextAreaLayout from "../layouts/ModalWithTextAreaLayout";
 import DeletionConfirmationModal from "../modals/DeletionConfirmationModal";
+import CertificatesInformationModal from "../modals/CertificatesInformationModal";
 // Components
 import SecondaryButton from "../layouts/SecondaryButton";
 // RTK
@@ -26,6 +27,8 @@ import {
 import ExpandableCardLayout from "../layouts/ExpandableCardLayout";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
+// Utils
+import { parseDn } from "src/utils/utils";
 
 interface PropsToIpaCertificates {
   ipaObject: Record<string, unknown>;
@@ -39,7 +42,7 @@ interface CertificateParam {
   __base64__: string;
 }
 
-interface CertificateData {
+export interface CertificateData {
   certificate: CertificateParam;
   certInfo: Certificate;
 }
@@ -70,34 +73,6 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
     metadata: props.metadata,
     objectName: "user",
   });
-
-  // Get different values from DN
-  const parseDn = (dn: string) => {
-    const result = {} as DN;
-    if (dn === undefined) return result;
-
-    // TODO: Use proper LDAP DN parser
-    const rdns = dn.split(",");
-    for (let i = 0; i < rdns.length; i++) {
-      const rdn = rdns[i];
-      if (!rdn) continue;
-
-      const parts = rdn.split("=");
-      const name = parts[0].toLowerCase();
-      const value = parts[1];
-
-      const old_value = result[name];
-      if (!old_value) {
-        result[name] = value;
-      } else if (typeof old_value == "string") {
-        result[name] = [old_value, value];
-      } else {
-        result[name].push(value);
-      }
-    }
-
-    return result as DN;
-  };
 
   // Get further details of a certificate (via the `cert_find` results)
   const getCertificateInfo = (certificate: CertificateParam) => {
@@ -183,7 +158,11 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
   // Function to get the dropdown items (based on 'idx')
   const getDropdownItems = (idx: number) => {
     return [
-      <DropdownItem key="view" component="button">
+      <DropdownItem
+        key="view"
+        component="button"
+        onClick={() => onViewCertificate(idx)}
+      >
         View
       </DropdownItem>,
       <DropdownItem key="get" component="button">
@@ -352,7 +331,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
   // Delete confirmation modal
   const [isDeleteConfModalOpen, setIsDeleteConfModalOpen] =
     React.useState(false);
-  const [idxToDelete, setIdxToDelete] = React.useState<number>(999); // Asumption: There will never be 999 alias
+  const [idxToDelete, setIdxToDelete] = React.useState<number>(999); // Asumption: There will never be 999 certificates
   const [messageDeletionConf, setMessageDeletionConf] = React.useState("");
 
   const onOpenDeletionConfModal = () => {
@@ -390,10 +369,25 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
     </Button>,
   ];
 
+  // // INFORMATION MODAL
+  const [isInfoModalOpen, setIsInfoModalOpen] = React.useState(false);
+  const [idxSelected, setIdxSelected] = React.useState<number>(0);
+
+  const onCloseInfoModal = () => {
+    setIsInfoModalOpen(false);
+  };
+
+  const onViewCertificate = (idx: number) => {
+    // Track index of the selected certificate
+    setIdxSelected(idx);
+    // show info modal
+    setIsInfoModalOpen(true);
+  };
+
   // Render component
   return (
     <>
-      {certificatesList.length > 0
+      {certificatesList !== undefined && certificatesList.length > 0
         ? certificatesList.map((cert, idx) => {
             return (
               <>
@@ -455,6 +449,15 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         actions={deletionConfModalActions}
         messageText={messageDeletionConf}
       />
+      {certificatesList[idxSelected] !== undefined && (
+        <CertificatesInformationModal
+          isOpen={isInfoModalOpen}
+          onClose={onCloseInfoModal}
+          idxSelected={idxSelected}
+          certificatesList={certificatesList}
+          uid={props.ipaObject.uid as string}
+        />
+      )}
     </>
   );
 };

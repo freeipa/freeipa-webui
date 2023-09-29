@@ -218,3 +218,10 @@ export interface Certificate {
   san_rfc822name: string[];
   owner_user: string[];
 }
+
+export interface DN {
+  c: string;
+  cn: string;
+  o: string;
+  ou?: string;
+}
