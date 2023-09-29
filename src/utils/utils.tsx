@@ -2,7 +2,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React from "react";
 // Data type
-import { Host, Metadata, Service, User } from "./datatypes/globalDataTypes";
+import { DN, Host, Metadata, Service, User } from "./datatypes/globalDataTypes";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -228,4 +228,32 @@ const formatDate = (date, format, local) => {
 
 export const toGeneralizedTime = (date: Date) => {
   return formatDate(date, templates.generalized, false);
+};
+
+// Get different values from DN
+export const parseDn = (dn: string) => {
+  const result = {} as DN;
+  if (dn === undefined) return result;
+
+  // TODO: Use proper LDAP DN parser
+  const rdns = dn.split(",");
+  for (let i = 0; i < rdns.length; i++) {
+    const rdn = rdns[i];
+    if (!rdn) continue;
+
+    const parts = rdn.split("=");
+    const name = parts[0].toLowerCase();
+    const value = parts[1];
+
+    const old_value = result[name];
+    if (!old_value) {
+      result[name] = value;
+    } else if (typeof old_value == "string") {
+      result[name] = [old_value, value];
+    } else {
+      result[name].push(value);
+    }
+  }
+
+  return result as DN;
 };
