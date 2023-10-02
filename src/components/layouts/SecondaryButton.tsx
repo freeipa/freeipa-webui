@@ -16,6 +16,10 @@ interface PropsToSecondaryButton {
   ouijaSafe?: boolean;
   innerRef?: React.Ref<any>;
   form?: string;
+  isLoading?: boolean;
+  spinnerAriaValueText?: string;
+  spinnerAriaLabelledBy?: string;
+  spinnerAriaLabel?: string;
 }
 
 const SecondaryButton = (props: PropsToSecondaryButton) => {
@@ -33,6 +37,10 @@ const SecondaryButton = (props: PropsToSecondaryButton) => {
       onClick={props.onClickHandler}
       innerRef={props.innerRef}
       form={props.form}
+      isLoading={props.isLoading}
+      spinnerAriaValueText={props.spinnerAriaValueText}
+      spinnerAriaLabelledBy={props.spinnerAriaLabelledBy}
+      spinnerAriaLabel={props.spinnerAriaLabel}
     >
       {props.children}
     </Button>

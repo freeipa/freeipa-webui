@@ -488,10 +488,17 @@ const ActiveUsers = () => {
     dispatch(updateUsersList(newUsersList));
   };
 
+  const [refreshing, setRefreshing] = useState(false);
+
   // Refresh data
   const refreshUsersData = (listToRefresh: User[]) => {
-    // Hide table elements
-    setShowTableRows(false);
+    // Hide table and start spinning the refresh button
+    setRefreshing(true);
+
+    // Reset selected users on refresh
+    setSelectedUserNames([]);
+    setSelectedUserIds([]);
+    setSelectedUsers([]);
 
     // Getting uids
     const userFindPayload: Command = {
@@ -566,14 +573,12 @@ const ActiveUsers = () => {
                 if (listToRefresh.length > 0) {
                   storedData = true;
                 }
-
-                // Show table elements
-                setShowTableRows(true);
               } else if (usersListError !== undefined) {
                 // TODO: Handle error
                 handleAPIError(usersListError);
               }
             }
+            setRefreshing(false);
           });
         } else if (uidsError !== undefined) {
           // TODO: Handle error
@@ -712,8 +717,12 @@ const ActiveUsers = () => {
       element: (
         <SecondaryButton
           onClickHandler={() => refreshUsersData(activeUsersList)}
+          isLoading={refreshing}
+          isDisabled={refreshing}
+          spinnerAriaValueText="Refreshing"
+          spinnerAriaLabel="Refresh active users table"
         >
-          Refresh
+          {refreshing ? "Refreshing" : "Refresh"}
         </SecondaryButton>
       ),
     },
@@ -721,7 +730,7 @@ const ActiveUsers = () => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled}
+          isDisabled={isDeleteButtonDisabled || refreshing}
           onClickHandler={onDeleteHandler}
         >
           Delete
@@ -731,7 +740,10 @@ const ActiveUsers = () => {
     {
       key: 5,
       element: (
-        <SecondaryButton onClickHandler={onAddClickHandler}>
+        <SecondaryButton
+          onClickHandler={onAddClickHandler}
+          isDisabled={refreshing}
+        >
           Add
         </SecondaryButton>
       ),
@@ -740,7 +752,7 @@ const ActiveUsers = () => {
       key: 6,
       element: (
         <SecondaryButton
-          isDisabled={isDisableButtonDisabled}
+          isDisabled={isDisableButtonDisabled || refreshing}
           onClickHandler={() => onEnableDisableHandler(true)}
         >
           Disable
@@ -751,7 +763,7 @@ const ActiveUsers = () => {
       key: 7,
       element: (
         <SecondaryButton
-          isDisabled={isEnableButtonDisabled}
+          isDisabled={isEnableButtonDisabled || refreshing}
           onClickHandler={() => onEnableDisableHandler(false)}
         >
           Enable
@@ -767,7 +779,7 @@ const ActiveUsers = () => {
           idKebab="main-dropdown-kebab"
           isKebabOpen={kebabIsOpen}
           isPlain={true}
-          dropdownItems={dropdownItems}
+          dropdownItems={!refreshing ? dropdownItems : []}
         />
       ),
     },
@@ -830,6 +842,8 @@ const ActiveUsers = () => {
               <InnerScrollContainer>
                 {batchError !== undefined && batchError ? (
                   <>{errorGlobalMessage}</>
+                ) : refreshing ? (
+                  ""
                 ) : (
                   <UsersTable
                     elementsList={activeUsersList}
