@@ -21,6 +21,7 @@ interface PropsToPKModal {
   ipaObject: Record<string, unknown>;
   metadata: Metadata;
   variant?: "default" | "small" | "medium" | "large";
+  isTextareaDisabled?: boolean;
 }
 
 const ModalWithTextAreaLayout = (props: PropsToPKModal) => {
@@ -46,6 +47,7 @@ const ModalWithTextAreaLayout = (props: PropsToPKModal) => {
             aria-label={props.ariaLabel}
             resizeOrientation={props.resizeOrientation || "vertical"}
             style={props.cssStyle}
+            isDisabled={props.isTextareaDisabled || false}
           />
         </FormGroup>
       </Form>

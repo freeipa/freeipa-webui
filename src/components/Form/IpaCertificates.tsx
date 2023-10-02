@@ -165,7 +165,11 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
       >
         View
       </DropdownItem>,
-      <DropdownItem key="get" component="button">
+      <DropdownItem
+        key="get"
+        component="button"
+        onClick={() => onGetCertificate(idx)}
+      >
         Get
       </DropdownItem>,
       <DropdownItem key="download" component="button">
@@ -276,6 +280,8 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
   const onOpenModal = () => {
     // Assign value to text area state
     setTextAreaValue("");
+    // Determine wich option to show
+    setTextareaModalOption("add");
     // Open modal
     setIsModalOpen(true);
   };
@@ -384,6 +390,34 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
     setIsInfoModalOpen(true);
   };
 
+  // 'GET' OPTION
+  const [textareaModalOption, setTextareaModalOption] = React.useState<
+    "add" | "get"
+  >("get");
+  const [selectedCertName, setSelectedCertName] = React.useState<string>("");
+
+  const onGetCertificate = (idx: number) => {
+    const certificateIssuer = parseDn(certificatesList[idx].certInfo.issuer).cn;
+    const rfcName = certificatesList[idx].certInfo.san_rfc822name;
+
+    if (rfcName !== undefined) {
+      setSelectedCertName(rfcName[0]);
+    } else {
+      setSelectedCertName(certificateIssuer);
+    }
+
+    // Get certificate in PEM format
+    const cert =
+      "-----BEGIN CERTIFICATE-----\n" +
+      certificatesList[idx].certificate.__base64__ +
+      "\n-----END CERTIFICATE-----";
+    setTextAreaValue(cert);
+    // Set to 'get' option
+    setTextareaModalOption("get");
+    // Show modal
+    setIsModalOpen(true);
+  };
+
   // Render component
   return (
     <>
@@ -419,28 +453,48 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         onChange={onChangeTextAreaValue}
         isOpen={isModalOpen}
         onClose={onClickCancel}
-        actions={[
-          <SecondaryButton
-            key="add-certificate"
-            onClickHandler={onAddCertificate}
-            isDisabled={textAreaValue === ""}
-          >
-            Add
-          </SecondaryButton>,
-          <Button key="cancel" variant="link" onClick={onClickCancel}>
-            Cancel
-          </Button>,
-        ]}
-        title="New certificate"
-        subtitle="Certificate in base64 or PEM format"
+        actions={
+          textareaModalOption === "add"
+            ? [
+                <SecondaryButton
+                  key="add-certificate"
+                  onClickHandler={onAddCertificate}
+                >
+                  Add
+                </SecondaryButton>,
+                <Button key="cancel" variant="link" onClick={onClickCancel}>
+                  Cancel
+                </Button>,
+              ]
+            : [
+                <Button key="close" variant="link" onClick={onClickCancel}>
+                  Close
+                </Button>,
+              ]
+        }
+        title={
+          textareaModalOption === "add"
+            ? "New certificate"
+            : "Certificate for " + selectedCertName
+        }
+        subtitle={
+          textareaModalOption === "add"
+            ? "Certificate in base64 or PEM format"
+            : ""
+        }
         isRequired={true}
-        ariaLabel="new certificate modal text area"
+        ariaLabel={
+          textareaModalOption === "add"
+            ? "new certificate modal text area"
+            : "certificate modal text area"
+        }
         cssStyle={{ height: "422px" }}
         name={"usercertificate"}
         objectName="user"
         ipaObject={props.ipaObject}
         metadata={props.metadata}
         variant="medium"
+        isTextareaDisabled={textareaModalOption === "get"}
       />
       <DeletionConfirmationModal
         title={"Remove certificate"}
