@@ -172,7 +172,11 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
       >
         Get
       </DropdownItem>,
-      <DropdownItem key="download" component="button">
+      <DropdownItem
+        key="download"
+        component="button"
+        onClick={() => onDownloadCertificate(idx)}
+      >
         Download
       </DropdownItem>,
       <DropdownItem key="revoke" component="button" isDisabled>
@@ -416,6 +420,19 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
     setTextareaModalOption("get");
     // Show modal
     setIsModalOpen(true);
+  };
+
+  const onDownloadCertificate = (idx: number) => {
+    const certificate =
+      "-----BEGIN CERTIFICATE-----" +
+      certificatesList[idx].certificate.__base64__ +
+      "\n-----END CERTIFICATE-----";
+    const blob = new Blob([certificate], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.download = "cert.pem";
+    link.href = url;
+    link.click();
   };
 
   // Render component
