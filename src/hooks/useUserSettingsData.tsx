@@ -66,7 +66,7 @@ const useUserSettingsData = (userId: string): UserSettingsData => {
     }
   }, [userFullData, userFullDataQuery.isFetching]);
 
-  const settingsData = {
+  const settings = {
     isLoading:
       metadataLoading ||
       isFullDataLoading ||
@@ -84,12 +84,12 @@ const useUserSettingsData = (userId: string): UserSettingsData => {
   } as UserSettingsData;
 
   if (userFullData) {
-    settingsData.originalUser = userFullData.user || {};
-    settingsData.pwPolicyData = userFullData.pwPolicy;
-    settingsData.krbtPolicyData = userFullData.krbtPolicy;
-    settingsData.certData = userFullData.cert;
+    settings.originalUser = userFullData.user || {};
+    settings.pwPolicyData = userFullData.pwPolicy;
+    settings.krbtPolicyData = userFullData.krbtPolicy;
+    settings.certData = userFullData.cert;
   } else {
-    settingsData.originalUser = {};
+    settings.originalUser = {};
   }
 
   const getModifiedValues = (): Partial<User> => {
@@ -105,7 +105,7 @@ const useUserSettingsData = (userId: string): UserSettingsData => {
     }
     return modifiedValues;
   };
-  settingsData.modifiedValues = getModifiedValues;
+  settings.modifiedValues = getModifiedValues;
 
   // Detect any change in 'originalUser' and 'user' objects
   useEffect(() => {
@@ -133,9 +133,9 @@ const useUserSettingsData = (userId: string): UserSettingsData => {
   const onResetValues = () => {
     setModified(false);
   };
-  settingsData.resetValues = onResetValues;
+  settings.resetValues = onResetValues;
 
-  return settingsData;
+  return settings;
 };
 
 export default useUserSettingsData;
