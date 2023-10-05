@@ -17,6 +17,7 @@ import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
 // Layout
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import SecondaryButton from "../layouts/SecondaryButton";
+import PasswordInput from "../layouts/PasswordInput";
 // Data types
 import { User } from "src/utils/datatypes/globalDataTypes";
 // Redux
@@ -95,6 +96,11 @@ const AddUser = (props: PropsToAddUser) => {
   const [newPassword, setNewPassword] = React.useState("");
   const [verifyNewPassword, setVerifyNewPassword] = React.useState("");
 
+  // Verify the passwords are the same when we update a password value
+  useEffect(() => {
+    verifyPasswordValidationHandler();
+  }, [newPassword, verifyNewPassword]);
+
   // refs
   const userLoginRef =
     React.useRef() as React.MutableRefObject<HTMLInputElement>;
@@ -109,7 +115,7 @@ const AddUser = (props: PropsToAddUser) => {
   const verifyNewPasswordRef =
     React.useRef() as React.MutableRefObject<HTMLInputElement>;
 
-  // Validation fiels
+  // Validation fields
   const [userLoginValidation, setUserLoginValidation] = useState({
     isError: false,
     message: "Only alphanumeric and special characters _-.$",
@@ -220,6 +226,7 @@ const AddUser = (props: PropsToAddUser) => {
       setVerifyPasswordValidation(verifyPassVal);
       return true; // is error
     }
+    resetVerifyPassword();
     return false;
   };
 
@@ -349,6 +356,9 @@ const AddUser = (props: PropsToAddUser) => {
       }
     }
   }, [props.show]);
+
+  const [passwordHidden, setPasswordHidden] = React.useState(true);
+  const [verifyPasswordHidden, setVerifyPasswordHidden] = React.useState(true);
 
   // List of fields
   const fields = [
@@ -486,15 +496,14 @@ const AddUser = (props: PropsToAddUser) => {
       id: "new-password",
       name: "New Password",
       pfComponent: (
-        <TextInput
-          type="password"
+        <PasswordInput
           id="modal-form-new-password"
           name="modal-form-new-password"
           value={newPassword}
-          onBlur={verifyPasswordValidationHandler}
           onFocus={resetVerifyPassword}
           onChange={newPasswordValueHandler}
-          ref={newPasswordRef}
+          onRevealHandler={setPasswordHidden}
+          passwordHidden={passwordHidden}
         />
       ),
     },
@@ -503,16 +512,15 @@ const AddUser = (props: PropsToAddUser) => {
       name: "Verify password",
       pfComponent: (
         <>
-          <TextInput
-            type="password"
+          <PasswordInput
             id="modal-form-verify-password"
             name="modal-form-verify-password"
             value={verifyNewPassword}
-            onBlur={verifyPasswordValidationHandler}
             onFocus={resetVerifyPassword}
             onChange={verifyNewPasswordValueHandler}
+            onRevealHandler={setVerifyPasswordHidden}
+            passwordHidden={verifyPasswordHidden}
             validated={verifyPasswordValidation.pfError}
-            ref={verifyNewPasswordRef}
           />
           <HelperText>
             <HelperTextItem variant="error">
