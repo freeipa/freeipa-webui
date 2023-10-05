@@ -149,16 +149,11 @@ export const getBatchCommand = (commandData: Command[], apiVersion: string) => {
 //   - Mutations: https://redux-toolkit.js.org/rtk-query/usage/mutations
 // Endpoints can perform individual calls (e.g: `simpleCommand`), multiple commands
 //   (e.g: `batchCommand`), and multiple commands executed sequentially in a single
-//   endpoint (e.g: `gettingUserData`)
+//   endpoint (e.g: `gettingUser`)
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: "/" }), // TODO: Global settings!
-  tagTypes: [
-    "ObjectMetadata",
-    "FullUserData",
-    "RadiusServerData",
-    "IdpServerData",
-  ],
+  tagTypes: ["ObjectMetadata", "FullUser", "RadiusServer", "IdpServer"],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
       query: (payloadData: Command) => getCommand(payloadData),
@@ -177,7 +172,7 @@ export const api = createApi({
       query: (payloadData: Command[], apiVersion?: string) =>
         getBatchCommand(payloadData, apiVersion || API_VERSION_BACKUP),
     }),
-    gettingUserData: build.query<BatchRPCResponse, string | void>({
+    gettingUser: build.query<BatchRPCResponse, string | void>({
       async queryFn(apiVersion, _queryApi, _extraOptions, fetchWithBQ) {
         // 1ST CALL - GETTING ALL UIDS
         if (apiVersion === undefined) {
@@ -298,7 +293,7 @@ export const api = createApi({
           cert: results[3].result,
         };
       },
-      providesTags: ["FullUserData"],
+      providesTags: ["FullUser"],
     }),
     saveUser: build.mutation<FindRPCResponse, Partial<User>>({
       query: (user) => {
@@ -314,7 +309,7 @@ export const api = createApi({
           params: [[user.uid], params],
         });
       },
-      invalidatesTags: ["FullUserData"],
+      invalidatesTags: ["FullUser"],
     }),
     getRadiusProxy: build.query<RadiusServer[], void>({
       query: () => {
@@ -325,7 +320,7 @@ export const api = createApi({
       },
       transformResponse: (response: FindRPCResponse): RadiusServer[] =>
         response.result.result as unknown as RadiusServer[],
-      providesTags: ["RadiusServerData"],
+      providesTags: ["RadiusServer"],
     }),
     getIdpServer: build.query<IDPServer[], void>({
       query: () => {
@@ -336,7 +331,7 @@ export const api = createApi({
       },
       transformResponse: (response: FindRPCResponse): IDPServer[] =>
         response.result.result as unknown as IDPServer[],
-      providesTags: ["IdpServerData"],
+      providesTags: ["IdpServer"],
     }),
     removePrincipalAlias: build.mutation<FindRPCResponse, any[]>({
       query: (payload) => {
@@ -366,7 +361,7 @@ export const {
   useSimpleMutCommandMutation,
   useBatchCommandQuery,
   useBatchMutCommandMutation,
-  useGettingUserDataQuery,
+  useGettingUserQuery,
   useGetObjectMetadataQuery,
   useGetUsersFullDataQuery,
   useSaveUserMutation,

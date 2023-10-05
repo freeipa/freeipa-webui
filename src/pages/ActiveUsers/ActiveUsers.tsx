@@ -52,7 +52,7 @@ import {
   BatchRPCResponse,
   UIDType,
   useBatchMutCommandMutation,
-  useGettingUserDataQuery,
+  useGettingUserQuery,
   useSimpleMutCommandMutation,
 } from "src/services/rpc";
 // Errors
@@ -87,7 +87,7 @@ const ActiveUsers = () => {
     data: batchResponse,
     isLoading: isBatchLoading,
     error: batchError,
-  } = useGettingUserDataQuery(apiVersion);
+  } = useGettingUserQuery(apiVersion);
 
   let storedData = false;
 
