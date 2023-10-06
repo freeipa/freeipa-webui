@@ -5,7 +5,8 @@ import {
   useGetIdpServerQuery,
   useGetObjectMetadataQuery,
   useGetRadiusProxyQuery,
-  useGetUsersFullDataQuery,
+  useGetUsersFullQuery,
+  useGetStageUsersFullQuery,
 } from "src/services/rpc";
 // Data types
 import {
@@ -34,14 +35,28 @@ type UserSettingsData = {
   idpServers: IDPServer[];
 };
 
-const useUserSettingsData = (userId: string): UserSettingsData => {
+const useUserSettings = (userId: string): UserSettingsData => {
+  return useSettingsData(userId, "active");
+};
+
+const useStageUserSettings = (userId: string): UserSettingsData => {
+  return useSettingsData(userId, "stage");
+};
+
+const useSettingsData = (
+  userId: string,
+  userType: string
+): UserSettingsData => {
   // [API call] Metadata
   const metadataQuery = useGetObjectMetadataQuery();
   const metadata = metadataQuery.data || {};
   const metadataLoading = metadataQuery.isLoading;
 
   // [API call] User
-  const userFullDataQuery = useGetUsersFullDataQuery(userId);
+  let userFullDataQuery = useGetUsersFullQuery(userId);
+  if (userType === "stage") {
+    userFullDataQuery = useGetStageUsersFullQuery(userId);
+  }
   const userFullData = userFullDataQuery.data;
   const isFullDataLoading = userFullDataQuery.isLoading;
 
@@ -138,4 +153,4 @@ const useUserSettingsData = (userId: string): UserSettingsData => {
   return settings;
 };
 
-export default useUserSettingsData;
+export { useUserSettings, useStageUserSettings };

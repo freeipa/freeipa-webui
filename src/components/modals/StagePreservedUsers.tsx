@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 // PatternFly
 import {
-  TextContent,
-  Text,
-  TextVariants,
-  Radio,
   Button,
+  Text,
+  TextContent,
+  TextVariants,
 } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
@@ -13,8 +12,6 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import UsersDisplayTable from "src/components/tables/UsersDisplayTable";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
-import { removeUser as removeActiveUser } from "src/store/Identity/activeUsers-slice";
-import { removeUser as removeStageUser } from "src/store/Identity/stageUsers-slice";
 import { removeUser as removePreservedUser } from "src/store/Identity/preservedUsers-slice";
 // RPC
 import {
@@ -31,22 +28,15 @@ import { ErrorData } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 
-interface ButtonsData {
-  updateIsDeleteButtonDisabled?: (value: boolean) => void;
-  updateIsDeletion: (value: boolean) => void;
-}
-
 interface SelectedUsersData {
   selectedUsers: string[];
   updateSelectedUsers: (newSelectedUsers: string[]) => void;
 }
 
-export interface PropsToDeleteUsers {
+export interface PropsToPreservedUsers {
   show: boolean;
-  from: "active-users" | "stage-users" | "preserved-users";
   handleModalToggle: () => void;
   selectedUsersData: SelectedUsersData;
-  buttonsData: ButtonsData;
   //  NOTE: 'onRefresh' is handled as { (User) => void | undefined } as a temporal solution
   //    until the C.L. is adapted in 'stage-' and 'preserved users' (otherwise
   //    the operation will fail for those components)
@@ -61,7 +51,7 @@ export interface PropsToDeleteUsers {
   onCloseDeleteModal?: () => void;
 }
 
-const DeleteUsers = (props: PropsToDeleteUsers) => {
+const StagePreservedUsers = (props: PropsToPreservedUsers) => {
   // Set dispatch (Redux)
   const dispatch = useAppDispatch();
 
@@ -69,23 +59,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
   const alerts = useAlerts();
 
   // Define 'executeUserDelCommand' to add user data to IPA server
-  const [executeUserDelCommand] = useBatchMutCommandMutation();
-
-  // Radio buttons states
-  const [isDeleteChecked, setIsDeleteChecked] = useState(true);
-
-  // Only one radio button must be checked
-  const manageRadioButtons = () => {
-    setIsDeleteChecked(!isDeleteChecked);
-  };
-
-  // Generate page name (based on 'from' text)
-  // E.g.: 'active-users' --> 'Active users'
-  const getUserPageName = () => {
-    const capitalizedName =
-      props.from.charAt(0).toUpperCase() + props.from.slice(1);
-    return capitalizedName.replace("-", " ");
-  };
+  const [executeUserStageCommand] = useBatchMutCommandMutation();
 
   // List of fields
   const fields = [
@@ -94,64 +68,25 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
       pfComponent: (
         <TextContent>
           <Text component={TextVariants.p}>
-            Are you sure you want to remove the selected entries from{" "}
-            {getUserPageName()}?
+            Are you sure you want to stage the selected preserved entries?
           </Text>
         </TextContent>
       ),
     },
     {
-      id: "deleted-users-table",
+      id: "stage-users-table",
       pfComponent: (
         <UsersDisplayTable
           usersToDisplay={props.selectedUsersData.selectedUsers}
-          from={props.from}
+          from={"preserved-users"}
         />
-      ),
-    },
-    {
-      id: "radio-buttons",
-      pfComponent: (
-        <>
-          <TextContent>
-            <Text component={TextVariants.p}>Remove mode</Text>
-          </TextContent>
-          <Radio
-            id="radio-delete"
-            label="Delete"
-            name="radio-delete"
-            isChecked={isDeleteChecked}
-            onChange={manageRadioButtons}
-          />
-          <Radio
-            id="radio-preserve"
-            label="Preserve"
-            name="radio-preserve"
-            isChecked={!isDeleteChecked}
-            onChange={manageRadioButtons}
-          />
-        </>
       ),
     },
   ];
 
   // Close modal
   const closeModal = () => {
-    setIsDeleteChecked(true);
     props.handleModalToggle();
-  };
-
-  // Redux: Delete user
-  const deleteUsersFromRedux = () => {
-    props.selectedUsersData.selectedUsers.map((user) => {
-      if (props.from === "active-users") {
-        dispatch(removeActiveUser(user[0]));
-      } else if (props.from === "stage-users") {
-        dispatch(removeStageUser(user[0]));
-      } else if (props.from === "preserved-users") {
-        dispatch(removePreservedUser(user[0]));
-      }
-    });
   };
 
   // Handle API error data
@@ -193,28 +128,21 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
     setIsModalErrorOpen(true);
   };
 
-  // Delete user
-  const deleteUsers = (uidsToDelete: string[]) => {
+  // Stage user
+  const stageUsers = () => {
     // Prepare users params
-    const uidsToDeletePayload: Command[] = [];
-    let deletionParams = {};
-    if (props.from !== "stage-users") {
-      deletionParams = { preserve: !isDeleteChecked };
-    }
-    uidsToDelete.map((uid) => {
-      let method = "user_del";
-      if (props.from === "stage-users") {
-        method = "stageuser_del";
-      }
+    const uidsToStagePayload: Command[] = [];
+
+    props.selectedUsersData.selectedUsers.map((uid) => {
       const payloadItem = {
-        method: method,
-        params: [[uid], deletionParams],
+        method: "user_stage",
+        params: [[uid], {}],
       } as Command;
-      uidsToDeletePayload.push(payloadItem);
+      uidsToStagePayload.push(payloadItem);
     });
 
-    // [API call] Delete elements
-    executeUserDelCommand(uidsToDeletePayload).then((response) => {
+    // [API call] Stage elements
+    executeUserStageCommand(uidsToStagePayload).then((response) => {
       if ("data" in response) {
         const data = response.data as BatchRPCResponse;
         const result = data.result;
@@ -237,19 +165,12 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
             handleAPIError(error);
           } else {
             // Update data from Redux
-            deleteUsersFromRedux();
+            props.selectedUsersData.selectedUsers.map((user) => {
+              dispatch(removePreservedUser(user[0]));
+            });
 
             // Reset selected values
             props.selectedUsersData.updateSelectedUsers([]);
-
-            // Disable 'Delete' button
-            if (
-              props.from === "active-users" &&
-              props.buttonsData.updateIsDeleteButtonDisabled !== undefined
-            ) {
-              props.buttonsData.updateIsDeleteButtonDisabled(true);
-            }
-            props.buttonsData.updateIsDeletion(true);
 
             // Refresh data
             if (props.onRefresh !== undefined) {
@@ -257,19 +178,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
             }
 
             // Show alert: success
-            if (isDeleteChecked) {
-              alerts.addAlert(
-                "remove-users-success",
-                "Users removed",
-                "success"
-              );
-            } else {
-              alerts.addAlert(
-                "preserve-users-success",
-                "Users preserved",
-                "success"
-              );
-            }
+            alerts.addAlert("stage-users-success", "Users staged", "success");
 
             closeModal();
           }
@@ -281,84 +190,40 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
     });
   };
 
-  // Set the Modal and Action buttons for 'Delete' option
-  const modalActionsDelete: JSX.Element[] = [
+  // Set the Modal and Action buttons for 'Stage' option
+  const modalStageActions: JSX.Element[] = [
     <Button
-      key="delete-users"
-      variant="danger"
-      onClick={() => {
-        deleteUsers(props.selectedUsersData.selectedUsers);
-      }}
-      form="active-users-remove-users-modal"
-    >
-      Delete
-    </Button>,
-    <Button key="cancel-new-user" variant="link" onClick={closeModal}>
-      Cancel
-    </Button>,
-  ];
-
-  let title = "Remove Active Users";
-  if (props.from === "stage-users") {
-    title = "Remove Stage Users";
-    // Drop last field (radio buttons with option to perserve)
-    fields.splice(-1);
-  } else if (props.from === "preserved-users") {
-    title = "Remove Preserved Users";
-    // Drop last field (radio buttons with option to perserve)
-    fields.splice(-1);
-  }
-
-  const modalDelete: JSX.Element = (
-    <ModalWithFormLayout
-      variantType="medium"
-      modalPosition="top"
-      offPosition="76px"
-      title={title}
-      formId="active-users-remove-users-modal"
-      fields={fields}
-      show={props.show}
-      onClose={closeModal}
-      actions={modalActionsDelete}
-    />
-  );
-
-  // Set the Modal and Action buttons for 'Preserve' option
-  const modalActionsPreserve: JSX.Element[] = [
-    <Button
-      key="preserve-users"
+      key="stage-users"
       variant="primary"
-      onClick={() => {
-        deleteUsers(props.selectedUsersData.selectedUsers);
-      }}
-      form="active-users-remove-users-modal"
+      onClick={stageUsers}
+      form="stage-users-modal"
     >
-      Preserve
+      Stage
     </Button>,
-    <Button key="cancel-new-user" variant="link" onClick={closeModal}>
+    <Button key="cancel-stage-user" variant="link" onClick={closeModal}>
       Cancel
     </Button>,
   ];
 
-  const modalPreserve: JSX.Element = (
+  const modalStage: JSX.Element = (
     <ModalWithFormLayout
       variantType="medium"
       modalPosition="top"
       offPosition="76px"
-      title={title}
-      formId="active-users-remove-users-modal"
+      title="Stage Preserved User"
+      formId="preserved-users-stage-modal"
       fields={fields}
       show={props.show}
       onClose={closeModal}
-      actions={modalActionsPreserve}
+      actions={modalStageActions}
     />
   );
 
-  // Render 'DeleteUsers'
+  // Render 'StageUsers'
   return (
     <>
       <alerts.ManagedAlerts />
-      {isDeleteChecked ? modalDelete : modalPreserve}
+      {modalStage}
       {isModalErrorOpen && (
         <ErrorModal
           title={errorTitle}
@@ -372,4 +237,4 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
   );
 };
 
-export default DeleteUsers;
+export default StagePreservedUsers;

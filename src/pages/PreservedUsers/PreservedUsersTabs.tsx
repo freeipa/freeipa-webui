@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 // PatternFly
 import {
   Title,
@@ -23,7 +23,7 @@ import UserSettings from "src/components/UserSettings";
 import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
 // Hooks
-import useUserSettingsData from "src/hooks/useUserSettingsData";
+import { useUserSettings } from "src/hooks/useUserSettingsData";
 
 const PreservedUsersTabs = () => {
   // Get location (React Router DOM) and get state data
@@ -32,7 +32,7 @@ const PreservedUsersTabs = () => {
   const uid = userData.uid;
 
   // Data loaded from DB
-  const userSettingsData = useUserSettingsData(uid);
+  const userSettingsData = useUserSettings(uid);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(0);
@@ -98,6 +98,8 @@ const PreservedUsersTabs = () => {
               isModified={userSettingsData.modified}
               onResetValues={userSettingsData.resetValues}
               modifiedValues={userSettingsData.modifiedValues}
+              radiusProxyData={userSettingsData.radiusServers}
+              idpData={userSettingsData.idpServers}
               from="preserved-users"
             />
           </Tab>

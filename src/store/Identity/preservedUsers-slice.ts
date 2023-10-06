@@ -237,7 +237,7 @@ const preservedUsersSlice = createSlice({
   },
 });
 
-export const { addUser, removeUser, changeStatus } =
+export const { updateUsersList, addUser, removeUser, changeStatus } =
   preservedUsersSlice.actions;
 export const selectUsers = (state: RootState) =>
   state.preservedUsers.usersList as User[];

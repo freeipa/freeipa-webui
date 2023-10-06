@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   Page,
@@ -18,7 +18,9 @@ import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/o
 import { User } from "src/utils/datatypes/globalDataTypes";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 // Redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
+// Hooks
+import { updateUsersList } from "src/store/Identity/stageUsers-slice";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
@@ -33,12 +35,119 @@ import BulkSelectorUsersPrep from "src/components/BulkSelectorUsersPrep";
 // Modals
 import DeleteUsers from "src/components/modals/DeleteUsers";
 import AddUser from "src/components/modals/AddUser";
+import ActivateStageUsers from "src/components/modals/ActivateStageUsers";
 // Utils
-import { isUserSelectable } from "src/utils/utils";
+import { API_VERSION_BACKUP, isUserSelectable } from "src/utils/utils";
+// RPC client
+import { useGettingStageUserQuery, UsersPayload } from "src/services/rpc";
+import useApiError from "src/hooks/useApiError";
+import GlobalErrors from "src/components/errors/GlobalErrors";
+import ModalErrors from "src/components/errors/ModalErrors";
 
 const StageUsers = () => {
   // Initialize stage users list (Redux)
-  const stageUsersList = useAppSelector((state) => state.stageUsers.usersList);
+  const dispatch = useAppDispatch();
+
+  // Retrieve API version from environment data
+  const apiVersion = useAppSelector(
+    (state) => state.global.environment.api_version
+  ) as string;
+
+  // Active users list
+  const [stageUsersList, setStageUsersList] = useState<User[]>([]);
+
+  // Handle API calls errors
+  const globalErrors = useApiError([]);
+  const modalErrors = useApiError([]);
+
+  // Main states - what user can define / what we could use in page URL
+  const [searchValue, setSearchValue] = React.useState("");
+  const [page, setPage] = useState<number>(1);
+  const [perPage, setPerPage] = useState<number>(15);
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+
+  // Users displayed on the first page
+  const [shownUsersList, setShownUsersList] = useState<User[]>([]);
+
+  // Derived states - what we get from API
+  const userDataResponse = useGettingStageUserQuery({
+    searchValue,
+    sizeLimit: 0,
+    apiVersion: apiVersion || API_VERSION_BACKUP,
+  } as UsersPayload);
+
+  const {
+    data: batchResponse,
+    isLoading: isBatchLoading,
+    error: batchError,
+  } = userDataResponse;
+
+  // Page indexes
+  const firstUserIdx = (page - 1) * perPage;
+  const lastUserIdx = page * perPage;
+
+  // Handle data when the API call is finished
+  useEffect(() => {
+    if (userDataResponse.isFetching) {
+      setShowTableRows(false);
+      // Reset selected users on refresh
+      setSelectedUserNames([]);
+      setSelectedUserIds([]);
+      setSelectedUsers([]);
+      globalErrors.clear();
+      return;
+    }
+
+    // API response: Success
+    if (
+      userDataResponse.isSuccess &&
+      userDataResponse.data &&
+      batchResponse !== undefined
+    ) {
+      const usersListResult = batchResponse.result.results;
+      const usersListSize = batchResponse.result.count;
+      const usersList: User[] = [];
+
+      for (let i = 0; i < usersListSize; i++) {
+        usersList.push(usersListResult[i].result);
+      }
+
+      // Update 'Active users' slice data
+      dispatch(updateUsersList(usersList));
+      // Update the list of users
+      setStageUsersList(usersList);
+      // Update the shown users list
+      setShownUsersList(usersList.slice(firstUserIdx, lastUserIdx));
+      // Show table elements
+      setShowTableRows(true);
+    }
+
+    // API response: Error
+    if (
+      !userDataResponse.isLoading &&
+      userDataResponse.isError &&
+      userDataResponse.error !== undefined
+    ) {
+      globalErrors.addError(
+        batchError,
+        "Error when loading data",
+        "error-batch-users"
+      );
+    }
+  }, [userDataResponse]);
+
+  // Refresh button handling
+  const refreshUsersData = () => {
+    // Hide table
+    setShowTableRows(false);
+
+    // Reset selected users on refresh
+    setSelectedUserNames([]);
+    setSelectedUserIds([]);
+    setSelectedUsers([]);
+
+    userDataResponse.refetch();
+  };
 
   // Selected users state
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
@@ -62,9 +171,6 @@ const StageUsers = () => {
     setIsDeletion(value);
   };
 
-  // - Selected user ids state
-  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
-
   const updateSelectedUserIds = (newSelectedUserIds: string[]) => {
     setSelectedUserIds(newSelectedUserIds);
   };
@@ -78,56 +184,58 @@ const StageUsers = () => {
   };
 
   // Pagination
-  const [page, setPage] = useState<number>(1);
-
   const updatePage = (newPage: number) => {
     setPage(newPage);
   };
-
-  const [perPage, setPerPage] = useState<number>(15);
 
   const updatePerPage = (newSetPerPage: number) => {
     setPerPage(newSetPerPage);
   };
 
   // Users displayed on the first page
-  const [shownUsersList, setShownUsersList] = useState(
-    stageUsersList.slice(0, perPage)
-  );
-
   const updateShownUsersList = (newShownUsersList: User[]) => {
     setShownUsersList(newShownUsersList);
   };
 
   // Filter (Input search)
-  const [searchValue, setSearchValue] = React.useState("");
-
   const updateSearchValue = (value: string) => {
     setSearchValue(value);
   };
 
   // Show table rows
-  const [showTableRows, setShowTableRows] = useState(false);
+  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
 
-  const updateShowTableRows = (value: boolean) => {
-    setShowTableRows(value);
-  };
+  // Show table rows only when data is fully retrieved
+  useEffect(() => {
+    if (showTableRows !== !isBatchLoading) {
+      setShowTableRows(!isBatchLoading);
+    }
+  }, [isBatchLoading]);
 
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showActivateModal, setShowActivateModal] = useState(false);
   const onAddClickHandler = () => {
     setShowAddModal(true);
+  };
+  const onCloseAddModal = () => {
+    setShowAddModal(false);
   };
   const onAddModalToggle = () => {
     setShowAddModal(!showAddModal);
   };
-
   const onDeleteHandler = () => {
     setShowDeleteModal(true);
   };
   const onDeleteModalToggle = () => {
     setShowDeleteModal(!showDeleteModal);
+  };
+  const onActivateHandler = () => {
+    setShowActivateModal(true);
+  };
+  const onActivateModalToggle = () => {
+    setShowActivateModal(!showActivateModal);
   };
 
   // Table-related shared functionality
@@ -149,18 +257,6 @@ const StageUsers = () => {
         ? [...otherSelectedUserNames, user.uid]
         : otherSelectedUserNames;
     });
-
-  // Refresh displayed elements every time elements list changes (from Redux or somewhere else)
-  React.useEffect(() => {
-    updatePage(1);
-    if (showTableRows) updateShowTableRows(false);
-    setTimeout(() => {
-      updateShownUsersList(stageUsersList.slice(0, perPage));
-      updateShowTableRows(true);
-      // Reset 'selectedPerPage'
-      updateSelectedPerPage(0);
-    }, 2000);
-  }, [stageUsersList]);
 
   // Data wrappers
   // - 'PaginationPrep'
@@ -262,13 +358,20 @@ const StageUsers = () => {
     },
     {
       key: 3,
-      element: <SecondaryButton>Refresh</SecondaryButton>,
+      element: (
+        <SecondaryButton
+          onClickHandler={refreshUsersData}
+          isDisabled={!showTableRows}
+        >
+          Refresh
+        </SecondaryButton>
+      ),
     },
     {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled}
+          isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
         >
           Delete
@@ -278,14 +381,24 @@ const StageUsers = () => {
     {
       key: 5,
       element: (
-        <SecondaryButton onClickHandler={onAddClickHandler}>
+        <SecondaryButton
+          onClickHandler={onAddClickHandler}
+          isDisabled={!showTableRows}
+        >
           Add
         </SecondaryButton>
       ),
     },
     {
       key: 6,
-      element: <SecondaryButton>Activate</SecondaryButton>,
+      element: (
+        <SecondaryButton
+          isDisabled={!showTableRows || selectedUsers.length === 0}
+          onClickHandler={onActivateHandler}
+        >
+          Activate
+        </SecondaryButton>
+      ),
     },
     {
       key: 7,
@@ -326,7 +439,7 @@ const StageUsers = () => {
         <TitleLayout
           id="stage users title"
           headingLevel="h1"
-          text="Stage users"
+          text="Stage Users"
         />
       </PageSection>
       <PageSection
@@ -342,16 +455,20 @@ const StageUsers = () => {
         <div style={{ height: `calc(100vh - 352.2px)` }}>
           <OuterScrollContainer>
             <InnerScrollContainer>
-              <UsersTable
-                elementsList={stageUsersList}
-                shownElementsList={shownUsersList}
-                from="stage-users"
-                showTableRows={showTableRows}
-                usersData={usersTableData}
-                buttonsData={usersTableButtonsData}
-                paginationData={selectedPerPageData}
-                searchValue={searchValue}
-              />
+              {batchError !== undefined && batchError ? (
+                <GlobalErrors errors={globalErrors.getAll()} />
+              ) : (
+                <UsersTable
+                  elementsList={stageUsersList}
+                  shownElementsList={shownUsersList}
+                  from="stage-users"
+                  showTableRows={showTableRows}
+                  usersData={usersTableData}
+                  buttonsData={usersTableButtonsData}
+                  paginationData={selectedPerPageData}
+                  searchValue={searchValue}
+                />
+              )}
             </InnerScrollContainer>
           </OuterScrollContainer>
         </div>
@@ -364,10 +481,15 @@ const StageUsers = () => {
           className="pf-u-pb-0 pf-u-pr-md"
         />
       </PageSection>
+      <ModalErrors errors={modalErrors.getAll()} />
       <AddUser
         show={showAddModal}
         from="stage-users"
+        setShowTableRows={setShowTableRows}
         handleModalToggle={onAddModalToggle}
+        onOpenAddModal={onAddClickHandler}
+        onCloseAddModal={onCloseAddModal}
+        onRefresh={refreshUsersData}
       />
       <DeleteUsers
         show={showDeleteModal}
@@ -375,6 +497,13 @@ const StageUsers = () => {
         handleModalToggle={onDeleteModalToggle}
         selectedUsersData={selectedUsersData}
         buttonsData={deleteUsersButtonsData}
+        onRefresh={refreshUsersData}
+      />
+      <ActivateStageUsers
+        show={showActivateModal}
+        handleModalToggle={onActivateModalToggle}
+        selectedUsersData={selectedUsersData}
+        onRefresh={refreshUsersData}
       />
     </Page>
   );

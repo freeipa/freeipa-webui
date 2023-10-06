@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { RootState } from "src/store/store";
+// import type { RootState } from "src/store/store";
 // User data (JSON file)
 import servicesJson from "./services.json";
 // Data types

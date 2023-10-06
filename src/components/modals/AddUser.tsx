@@ -346,7 +346,14 @@ const AddUser = (props: PropsToAddUser) => {
     } else {
       setButtonDisabled(true);
     }
-  }, [userLogin, firstName, lastName, newPassword, verifyNewPassword]);
+  }, [
+    userLogin,
+    firstName,
+    lastName,
+    newPassword,
+    verifyNewPassword,
+    gidSelected,
+  ]);
 
   // If modal is shown, load GID data to show in the selector (only once)
   useEffect(() => {
@@ -361,6 +368,22 @@ const AddUser = (props: PropsToAddUser) => {
   const [verifyPasswordHidden, setVerifyPasswordHidden] = React.useState(true);
 
   // List of fields
+  let GIDTitle;
+  if (props.from === "stage-users") {
+    // GID is required for stage users, but the Select component doesn't have
+    // a "Required" prop that shows the asterisk "*", so lets add it manually
+    GIDTitle = (
+      <label className="pf-c-form__label" htmlFor="gid">
+        <span className="pf-c-form__label-text">GID</span>
+        <span className="pf-c-form__label-required" aria-hidden="true">
+          {" "}
+          *
+        </span>
+      </label>
+    );
+  } else {
+    GIDTitle = "GID";
+  }
   const fields = [
     {
       id: "user-login",
@@ -473,7 +496,7 @@ const AddUser = (props: PropsToAddUser) => {
     },
     {
       id: "gid-form",
-      name: "GID",
+      name: GIDTitle,
       pfComponent: (
         <Select
           id="gid"
@@ -547,11 +570,16 @@ const AddUser = (props: PropsToAddUser) => {
     const firstNameError = firstNameValidationHandler();
     const lastNameError = lastNameValidationHandler();
     const verifyPasswordError = verifyPasswordValidationHandler();
+    let stageUsersGIDError = false;
+    if (props.from === "stage-users" && gidSelected === "") {
+      stageUsersGIDError = true;
+    }
     if (
       userLoginError ||
       firstNameError ||
       lastNameError ||
-      verifyPasswordError
+      verifyPasswordError ||
+      stageUsersGIDError
     ) {
       return false;
     } else return true;
@@ -587,7 +615,6 @@ const AddUser = (props: PropsToAddUser) => {
 
     const newUserData = {
       givenname: firstName,
-      noprivate: isNoPrivateGroupChecked,
       sn: lastName,
       userclass: userClass !== "" ? userClass : undefined,
       gidnumber: gidSelected,
@@ -595,12 +622,19 @@ const AddUser = (props: PropsToAddUser) => {
       version: apiVersion,
     };
 
+    // Define payload data
+    let method = "user_add";
+    if (props.from === "stage-users") {
+      method = "stageuser_add";
+    } else {
+      // Non-stage users use noprivate
+      newUserData["noprivate"] = isNoPrivateGroupChecked;
+    }
     // Prepare the command data
     const newUserCommandData = [usLogin, newUserData];
 
-    // Define payload data
     const newUserPayload: Command = {
-      method: "user_add",
+      method: method,
       params: newUserCommandData,
     };
 
@@ -783,7 +817,7 @@ const AddUser = (props: PropsToAddUser) => {
         variantType="small"
         modalPosition="top"
         offPosition="76px"
-        title="Add user"
+        title={props.from === "stage-users" ? "Add Stage User" : "Add User"}
         formId="users-add-user-modal"
         fields={fields}
         show={props.show}

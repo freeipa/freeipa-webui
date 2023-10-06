@@ -39,6 +39,7 @@ interface PropsToUsersAccountSettings {
   onRefresh: () => void;
   radiusProxyConf: RadiusServer[];
   idpConf: IDPServer[];
+  from: "active-users" | "stage-users" | "preserved-users";
 }
 
 // Generic data to pass to the Textbox adder
@@ -355,6 +356,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 ipaObject={ipaObject}
                 metadata={props.metadata}
                 onRefresh={props.onRefresh}
+                from={props.from}
               />
             </FormGroup>
             <FormGroup
