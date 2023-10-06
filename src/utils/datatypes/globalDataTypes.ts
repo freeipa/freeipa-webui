@@ -206,6 +206,8 @@ export interface RadiusServer {
 }
 
 export interface Certificate {
+  cacn: string;
+  certificate_chain: string[];
   serial_number: string;
   certificate: string;
   subject: string;
@@ -217,6 +219,9 @@ export interface Certificate {
   sha256_fingerprint: string;
   san_rfc822name: string[];
   owner_user: string[];
+  revocation_reason: number;
+  revoked: boolean;
+  status: string;
 }
 
 export interface DN {
@@ -224,4 +229,14 @@ export interface DN {
   cn: string;
   o: string;
   ou?: string;
+}
+
+export interface CertificateAuthority {
+  cn: string;
+  description: string;
+  dn: string;
+  ipacaid: string;
+  ipacaissuerdn: string;
+  ipacarandomserialnumberversion: string;
+  ipacasubjectdn: string;
 }

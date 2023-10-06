@@ -13,6 +13,7 @@ import {
   User,
   IDPServer,
   RadiusServer,
+  CertificateAuthority,
 } from "src/utils/datatypes/globalDataTypes";
 import { apiToUser } from "src/utils/userUtils";
 
@@ -393,6 +394,34 @@ export const api = createApi({
         });
       },
     }),
+    getCertificateAuthority: build.query<CertificateAuthority[], void>({
+      query: () => {
+        return getCommand({
+          method: "ca_find",
+          params: [[null], { version: API_VERSION_BACKUP }],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): CertificateAuthority[] =>
+        response.result.result as unknown as CertificateAuthority[],
+      providesTags: ["CertificateAuthority"],
+    }),
+    revokeCertificate: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [
+          [payload[0]],
+          {
+            revocation_reason: payload[1],
+            cacn: payload[2],
+            version: API_VERSION_BACKUP,
+          },
+        ];
+
+        return getCommand({
+          method: "cert_revoke",
+          params: params,
+        });
+      },
+    }),
   }),
 });
 
@@ -411,4 +440,6 @@ export const {
   useAddPrincipalAliasMutation,
   useAddCertificateMutation,
   useRemoveCertificateMutation,
+  useGetCertificateAuthorityQuery,
+  useRevokeCertificateMutation,
 } = api;
