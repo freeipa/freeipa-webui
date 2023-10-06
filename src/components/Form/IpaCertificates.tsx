@@ -15,6 +15,7 @@ import { getParamProperties } from "src/utils/ipaObjectUtils";
 import ModalWithTextAreaLayout from "../layouts/ModalWithTextAreaLayout";
 import DeletionConfirmationModal from "../modals/DeletionConfirmationModal";
 import CertificatesInformationModal from "../modals/CertificatesInformationModal";
+import RevokeCertificate from "../modals/RevokeCertificate";
 // Components
 import SecondaryButton from "../layouts/SecondaryButton";
 // RTK
@@ -109,6 +110,11 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
     setCertificatesList(getCertificatesList());
   }, [value]);
 
+  // Update certificates list when 'props.certificates' changes
+  React.useEffect(() => {
+    setCertificatesList(getCertificatesList());
+  }, [props.certificates]);
+
   // States
   const [textAreaValue, setTextAreaValue] = React.useState("");
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -155,6 +161,28 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
     });
   };
 
+  // Checks if the certificate can be revoked
+  // - i.e.: issued by IPA CA + not expired + not revoked
+  const canBeRevoked = (idx: number) => {
+    const cert: CertificateData = certificatesList[idx];
+    if (
+      cert.certInfo.cacn !== undefined &&
+      cert.certInfo.valid_not_after !== undefined
+    ) {
+      // Issued by IPA CA
+      const issuedByIpaCa = cert.certInfo.cacn === "ipa";
+      // Not expired
+      const now = new Date();
+      const expirationDate = new Date(cert.certInfo.valid_not_after);
+      // Not revoked
+      const isCertRevoked =
+        cert.certInfo.revoked !== undefined && cert.certInfo.revoked;
+
+      return issuedByIpaCa && now < expirationDate && !isCertRevoked;
+    }
+    return false;
+  };
+
   // Function to get the dropdown items (based on 'idx')
   const getDropdownItems = (idx: number) => {
     return [
@@ -179,7 +207,12 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
       >
         Download
       </DropdownItem>,
-      <DropdownItem key="revoke" component="button" isDisabled>
+      <DropdownItem
+        key="revoke"
+        component="button"
+        isDisabled={!canBeRevoked(idx)}
+        onClick={() => onRevokeCertificate(idx)}
+      >
         Revoke
       </DropdownItem>,
       <DropdownItem key="remove-hold" component="button" isDisabled>
@@ -209,6 +242,11 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         className="pf-u-font-weight-normal pf-u-font-family-redhatVF-sans-serif"
       >
         {title}
+        {cert.certInfo.revoked ? (
+          <p className="pf-u-color-200">{" (REVOKED)"}</p>
+        ) : (
+          ""
+        )}
       </CardTitle>
     );
   };
@@ -435,6 +473,20 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
     link.click();
   };
 
+  // 'REVOKE' OPTION
+  const [isRevokeModalOpen, setIsRevokeModalOpen] = React.useState(false);
+
+  const onRevokeCertificate = (idx: number) => {
+    // Track index of the selected certificate
+    setIdxSelected(idx);
+    // show revoke modal
+    setIsRevokeModalOpen(true);
+  };
+
+  const onCloseRevokeModal = () => {
+    setIsRevokeModalOpen(false);
+  };
+
   // Render component
   return (
     <>
@@ -521,13 +573,21 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         messageText={messageDeletionConf}
       />
       {certificatesList[idxSelected] !== undefined && (
-        <CertificatesInformationModal
-          isOpen={isInfoModalOpen}
-          onClose={onCloseInfoModal}
-          idxSelected={idxSelected}
-          certificatesList={certificatesList}
-          uid={props.ipaObject.uid as string}
-        />
+        <>
+          <CertificatesInformationModal
+            isOpen={isInfoModalOpen}
+            onClose={onCloseInfoModal}
+            idxSelected={idxSelected}
+            certificatesList={certificatesList}
+            uid={props.ipaObject.uid as string}
+          />
+          <RevokeCertificate
+            certificate={certificatesList[idxSelected]}
+            isOpen={isRevokeModalOpen}
+            onClose={onCloseRevokeModal}
+            onRefresh={props.onRefresh}
+          />
+        </>
       )}
     </>
   );
