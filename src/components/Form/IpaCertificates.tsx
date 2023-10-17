@@ -16,6 +16,7 @@ import ModalWithTextAreaLayout from "../layouts/ModalWithTextAreaLayout";
 import DeletionConfirmationModal from "../modals/DeletionConfirmationModal";
 import CertificatesInformationModal from "../modals/CertificatesInformationModal";
 import RevokeCertificate from "../modals/RevokeCertificate";
+import RemoveHoldCertificate from "../modals/RemoveHoldCertificate";
 // Components
 import SecondaryButton from "../layouts/SecondaryButton";
 // RTK
@@ -46,12 +47,6 @@ interface CertificateParam {
 export interface CertificateData {
   certificate: CertificateParam;
   certInfo: Certificate;
-}
-
-interface DN {
-  c: string;
-  cn: string;
-  o: string;
 }
 
 export interface DictWithName {
@@ -183,6 +178,16 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
     return false;
   };
 
+  // Check if the certificate can be removed from hold
+  // - i.e.: certificate has been revoked with CRL reason #6: 'Certificate hold'
+  const canHoldBeRemoved = (idx: number) => {
+    const cert: CertificateData = certificatesList[idx];
+    if (cert.certInfo.revocation_reason !== undefined) {
+      return cert.certInfo.revocation_reason === 6;
+    }
+    return false;
+  };
+
   // Function to get the dropdown items (based on 'idx')
   const getDropdownItems = (idx: number) => {
     return [
@@ -215,7 +220,12 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
       >
         Revoke
       </DropdownItem>,
-      <DropdownItem key="remove-hold" component="button" isDisabled>
+      <DropdownItem
+        key="remove-hold"
+        component="button"
+        isDisabled={!canHoldBeRemoved(idx)}
+        onClick={() => onRemoveHoldCertificate(idx)}
+      >
         Remove hold
       </DropdownItem>,
       <DropdownSeparator key="separator" />,
@@ -487,6 +497,21 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
     setIsRevokeModalOpen(false);
   };
 
+  // 'REMOVE HOLD' OPTION
+  const [isRemoveHoldModalOpen, setIsRemoveHoldModalOpen] =
+    React.useState(false);
+
+  const onRemoveHoldCertificate = (idx: number) => {
+    // Track index of the selected certificate
+    setIdxSelected(idx);
+    // show revoke modal
+    setIsRemoveHoldModalOpen(true);
+  };
+
+  const onCloseRemoveHoldModal = () => {
+    setIsRemoveHoldModalOpen(false);
+  };
+
   // Render component
   return (
     <>
@@ -585,6 +610,12 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
             certificate={certificatesList[idxSelected]}
             isOpen={isRevokeModalOpen}
             onClose={onCloseRevokeModal}
+            onRefresh={props.onRefresh}
+          />
+          <RemoveHoldCertificate
+            certificate={certificatesList[idxSelected]}
+            isOpen={isRemoveHoldModalOpen}
+            onClose={onCloseRemoveHoldModal}
             onRefresh={props.onRefresh}
           />
         </>

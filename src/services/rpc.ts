@@ -422,6 +422,22 @@ export const api = createApi({
         });
       },
     }),
+    removeHoldCertificate: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [
+          [payload[0]],
+          {
+            cacn: payload[1],
+            version: API_VERSION_BACKUP,
+          },
+        ];
+
+        return getCommand({
+          method: "cert_remove_hold",
+          params: params,
+        });
+      },
+    }),
   }),
 });
 
@@ -442,4 +458,5 @@ export const {
   useRemoveCertificateMutation,
   useGetCertificateAuthorityQuery,
   useRevokeCertificateMutation,
+  useRemoveHoldCertificateMutation,
 } = api;
