@@ -112,6 +112,12 @@ export interface BatchCommand {
   batch: CommandWithSingleParam[];
 }
 
+export interface UsersPayload {
+  searchValue: string;
+  sizeLimit: number;
+  apiVersion: string;
+}
+
 // Body data to perform the calls
 export const getCommand = (commandData: Command) => {
   const payloadWithParams = {
@@ -172,8 +178,10 @@ export const api = createApi({
       query: (payloadData: Command[], apiVersion?: string) =>
         getBatchCommand(payloadData, apiVersion || API_VERSION_BACKUP),
     }),
-    gettingUser: build.query<BatchRPCResponse, string | void>({
-      async queryFn(apiVersion, _queryApi, _extraOptions, fetchWithBQ) {
+    gettingUser: build.query<BatchRPCResponse, UsersPayload>({
+      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
+        const { searchValue, sizeLimit, apiVersion } = payloadData;
+
         // 1ST CALL - GETTING ALL UIDS
         if (apiVersion === undefined) {
           return {
@@ -188,10 +196,10 @@ export const api = createApi({
         const payloadDataUids: Command = {
           method: "user_find",
           params: [
-            [],
+            [searchValue],
             {
               pkey_only: true,
-              sizelimit: 0,
+              sizelimit: sizeLimit,
               version: apiVersion,
             },
           ],
