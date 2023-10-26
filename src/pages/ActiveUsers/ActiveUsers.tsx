@@ -703,7 +703,6 @@ const ActiveUsers = () => {
         <AddUser
           show={showAddModal}
           from="active-users"
-          setShowTableRows={setShowTableRows}
           handleModalToggle={onAddModalToggle}
           onOpenAddModal={onAddClickHandler}
           onCloseAddModal={onCloseAddModal}

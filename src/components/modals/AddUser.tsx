@@ -66,7 +66,7 @@ export interface PropsToAddUser {
   //  NOTE: 'onRefresh' is handled as { (User) => void | undefined } as a temporal solution
   //    until the C.L. is adapted in 'stage-' and 'preserved users' (otherwise
   //    the operation will fail for those components)
-  onRefresh?: (newUserData: User) => void;
+  onRefresh?: () => void;
 }
 
 const AddUser = (props: PropsToAddUser) => {
@@ -577,11 +577,6 @@ const AddUser = (props: PropsToAddUser) => {
 
   // Add user data
   const addUserData = async () => {
-    // Hide table elements
-    if (props.setShowTableRows !== undefined) {
-      props.setShowTableRows(false);
-    }
-
     // If 'userLogin' is not provided, use empty array
     const usLogin = userLogin !== "" ? [userLogin] : [];
 
@@ -619,7 +614,7 @@ const AddUser = (props: PropsToAddUser) => {
           isAdditionSuccess = true;
           // Refresh data
           if (props.onRefresh !== undefined) {
-            props.onRefresh(updatedUsersList);
+            props.onRefresh();
           }
 
           // Set alert: success
@@ -630,10 +625,6 @@ const AddUser = (props: PropsToAddUser) => {
           // Handle error
           handleAPIError(error);
         }
-      }
-      // Show table elements
-      if (props.setShowTableRows !== undefined) {
-        props.setShowTableRows(true);
       }
     });
   };
