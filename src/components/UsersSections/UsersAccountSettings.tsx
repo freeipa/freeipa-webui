@@ -19,8 +19,7 @@ import {
 // Layouts
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import PopoverWithIconLayout from "src/components/layouts/PopoverWithIconLayout";
-// Modals
-import CertificateMappingDataModal from "src/components/modals/CertificateMappingDataModal";
+import ModalWithTextAreaLayout from "src/components/layouts/ModalWithTextAreaLayout";
 // Utils
 import { asRecord } from "src/utils/userUtils";
 // Form
@@ -31,6 +30,7 @@ import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";
 import IpaCalendar from "../Form/IpaCalendar";
 import IpaSshPublicKeys from "../Form/IpaSshPublicKeys";
 import IpaCertificates from "../Form/IpaCertificates";
+import IpaCertificateMappingData from "../Form/IpaCertificateMappingData";
 
 interface PropsToUsersAccountSettings {
   user: Partial<User>;
@@ -41,12 +41,6 @@ interface PropsToUsersAccountSettings {
   idpConf: IDPServer[];
   certData: Record<string, unknown>;
   from: "active-users" | "stage-users" | "preserved-users";
-}
-
-// Generic data to pass to the Textbox adder
-interface ElementData {
-  id: string | number;
-  element: string;
 }
 
 const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
@@ -67,175 +61,41 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
   // Dropdown 'External IdP configuration'
   const idpConfOptions = props.idpConf.map((item) => item.cn.toString());
 
-  // Certificate mapping data
-  // - Radio buttons
-  const [certMappingDataCheck, setCertMappingDataCheck] = useState(true);
-  const [issuerAndSubjectCheck, setIssuerAndSubjectCheck] = useState(false);
+  // Certificates
+  // -Text area
+  const [textAreaCertificatesValue, setTextAreaCertificatesValue] =
+    useState("");
+  const [isTextAreaCertificatesOpen, setIsTextAreaCertificatesOpen] =
+    useState(false);
 
-  const onChangeMappingDataCheck = (value: boolean) => {
-    setCertMappingDataCheck(value);
-    setIssuerAndSubjectCheck(!value);
+  const onChangeTextAreaCertificatesValue = (value: string) => {
+    setTextAreaCertificatesValue(value);
   };
 
-  const onChangeIssuerAndSubjectCheck = (value: boolean) => {
-    setIssuerAndSubjectCheck(value);
-    setCertMappingDataCheck(!value);
+  const onClickAddTextAreaCertificates = () => {
+    // Store data here
+    // Closes the modal
+    setIsTextAreaCertificatesOpen(false);
   };
 
-  // -- Issuer and subject textboxes
-  const [issuer, setIssuer] = useState("");
-  const [subject, setSubject] = useState("");
-  // -- Temporal values for issuer and subject. This helps to restore the original
-  //    values when the modal is close without saving (instead of showing empty
-  //    textboxes/textareas)
-  const [issuerTemp, setIssuerTemp] = useState(issuer);
-  const [subjectTemp, setSubjectTemp] = useState(subject);
-
-  const onChangeIssuer = (value: string) => {
-    setIssuerTemp(value);
-  };
-  const onChangeSubject = (value: string) => {
-    setSubjectTemp(value);
+  const onClickCancelTextAreaCertificates = () => {
+    // Closes the modal
+    setIsTextAreaCertificatesOpen(false);
   };
 
-  // -- Certificate mapping data: Lists and generated textboxe and textarea
-  const [certificateMappingDataList, setCertificateMappingDataList] = useState<
-    ElementData[]
-  >([]);
-  const [certificateList, setCertificateList] = useState<ElementData[]>([]);
-  // -- Copy of the data to be used as a temporal values. This helps to restore the
-  //   original values when the modal is close without saving (instead of showing empty
-  //   textboxes/textareas)
-  const [certificateMappingDataListTemp, setCertificateMappingDataListTemp] =
-    useState<ElementData[]>([]);
-  const [certificateListTemp, setCertificateListTemp] =
-    useState<ElementData[]>(certificateList);
-  // -- Deep-copy of the data that will be used for a short-term copy on simple operations.
-  const certificateMappingDataListCopy = structuredClone(
-    certificateMappingDataListTemp
-  );
-  const certificateListCopy = structuredClone(certificateListTemp);
-
-  // --- 'Add certificate mapping data' handler
-  const onAddCertificateMappingDataHandler = () => {
-    certificateMappingDataListCopy.push({
-      id: Date.now.toString(),
-      element: "",
-    });
-    setCertificateMappingDataListTemp(certificateMappingDataListCopy);
-  };
-
-  // --- 'Change certificate mapping data' handler
-  const onHandleCertificateMappingDataChange = (
-    value: string,
-    event: React.FormEvent<HTMLInputElement>,
-    idx: number
-  ) => {
-    certificateMappingDataListCopy[idx]["element"] = (
-      event.target as HTMLInputElement
-    ).value;
-    setCertificateMappingDataListTemp(certificateMappingDataListCopy);
-  };
-
-  // --- 'Remove certificate mapping data' handler
-  const onRemoveCertificateMappingDataHandler = (idx: number) => {
-    certificateMappingDataListCopy.splice(idx, 1);
-    setCertificateMappingDataListTemp(certificateMappingDataListCopy);
-  };
-
-  // --- 'Add certificate' handler
-  const onAddCertificateHandler = () => {
-    certificateListCopy.push({
-      id: Date.now.toString(),
-      element: "",
-    });
-    setCertificateListTemp(certificateListCopy);
-  };
-
-  // --- 'Change certificate' handler
-  const onHandleCertificateChange = (
-    value: string,
-    event: React.ChangeEvent<HTMLTextAreaElement>,
-    idx: number
-  ) => {
-    certificateListCopy[idx]["element"] = (
-      event.target as HTMLTextAreaElement
-    ).value;
-    setCertificateListTemp(certificateListCopy);
-  };
-
-  // --- 'Remove certificate' handler
-  const onRemoveCertificateHandler = (idx: number) => {
-    certificateListCopy.splice(idx, 1);
-    setCertificateListTemp(certificateListCopy);
-  };
-
-  // - Modal
-  const [
-    isCertificatesMappingDataModalOpen,
-    setIsCertificatesMappingDataModalOpen,
-  ] = useState(false);
-
-  // -- Close modal
-  const onCloseCertificatesMappingData = () => {
-    // Reset values on lists | original -> temp
-    setCertificateMappingDataListTemp(certificateMappingDataList);
-    setCertificateListTemp(certificateList);
-    // Reset values on 'issuer and subject' values | original -> temp
-    setIssuerTemp(issuer);
-    setSubjectTemp(subject);
-    // Close the modal
-    setIsCertificatesMappingDataModalOpen(false);
-  };
-
-  // -- Open modal
-  const openCertificatesMappingDataModal = () => {
-    setIsCertificatesMappingDataModalOpen(true);
-  };
-
-  // -- Add data
-  const onAddCertificateMappingData = () => {
-    // Add temp values into the original lists | temp -> original
-    if (certMappingDataCheck) {
-      setCertificateMappingDataList(certificateMappingDataListTemp);
-      setCertificateList(certificateListTemp);
-    } else {
-      // Reset values | original -> temp
-      setCertificateMappingDataListTemp(certificateMappingDataList);
-      setCertificateListTemp(certificateList);
-    }
-    // Add temp values to the 'issuer and subject' values | temp -> original
-    if (issuerAndSubjectCheck) {
-      setIssuer(issuerTemp);
-      setSubject(subjectTemp);
-    } else {
-      // Reset values | original -> temp
-      setIssuerTemp(issuer);
-      setSubjectTemp(subject);
-    }
-    // Close the modal
-    setIsCertificatesMappingDataModalOpen(false);
-  };
-
-  const certificatesMappingDataActions = [
-    <SecondaryButton key="add" onClickHandler={onAddCertificateMappingData}>
+  const certificatesOptions = [
+    <SecondaryButton key="add" onClickHandler={onClickAddTextAreaCertificates}>
       Add
     </SecondaryButton>,
     <Button
       key="cancel"
       variant="link"
-      onClick={onCloseCertificatesMappingData}
+      onClick={onClickCancelTextAreaCertificates}
     >
       Cancel
     </Button>,
   ];
 
-  // Messages for the popover
-  const certificateMappingDataMessage = () => (
-    <div>
-      <p>Add one or more certificate mappings to the user entry</p>
-    </div>
-  );
   const userAuthTypesMessage = () => (
     <div>
       <p>
@@ -252,6 +112,13 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
         never does. LDAP only recognize the password and two-factor
         authentication options.
       </p>
+    </div>
+  );
+
+  // Messages for the popover
+  const certificateMappingDataMessage = () => (
+    <div>
+      <p>Add one or more certificate mappings to the user entry</p>
     </div>
   );
 
@@ -343,7 +210,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             </FormGroup>
           </Form>
         </FlexItem>
-        <FlexItem flex={{ default: "flex_1" }}>
+        <FlexItem flex={{ default: "flex_1" }} className="pf-u-w-50">
           <Form className="pf-u-mb-lg">
             <FormGroup label="Home directory" fieldId="home-directory">
               <IpaTextInput
@@ -380,12 +247,19 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                   message={certificateMappingDataMessage}
                 />
               }
+              // Keep long words to have the same width as the other elements
+              style={{
+                overflowWrap: "break-word",
+                maxWidth: "100%",
+                wordBreak: "break-all",
+              }}
             >
-              <SecondaryButton
-                onClickHandler={openCertificatesMappingDataModal}
-              >
-                Add
-              </SecondaryButton>
+              <IpaCertificateMappingData
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                metadata={props.metadata}
+                onRefresh={props.onRefresh}
+              />
             </FormGroup>
             <FormGroup
               label="User authentication types"
@@ -483,34 +357,20 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
           </Form>
         </FlexItem>
       </Flex>
-      <CertificateMappingDataModal
-        // Modal options
-        isOpen={isCertificatesMappingDataModalOpen}
-        onClose={onCloseCertificatesMappingData}
-        actions={certificatesMappingDataActions}
-        // First radio option: Certificate mapping data
-        isCertMappingDataChecked={certMappingDataCheck}
-        onChangeCertMappingDataCheck={onChangeMappingDataCheck}
-        // Second radio option: Issuer and subject
-        isIssuerAndSubjectChecked={issuerAndSubjectCheck}
-        onChangeIssuerAndSubjectCheck={onChangeIssuerAndSubjectCheck}
-        issuerValue={issuerTemp}
-        subjectValue={subjectTemp}
-        onChangeIssuer={onChangeIssuer}
-        onChangeSubject={onChangeSubject}
-        // Generated texboxes, textareas, and data
-        certificateMappingDataList={certificateMappingDataListTemp}
-        certificateList={certificateListTemp}
-        onAddCertificateMappingDataHandler={onAddCertificateMappingDataHandler}
-        onHandleCertificateMappingDataChange={
-          onHandleCertificateMappingDataChange
-        }
-        onRemoveCertificateMappingDataHandler={
-          onRemoveCertificateMappingDataHandler
-        }
-        onAddCertificateHandler={onAddCertificateHandler}
-        onHandleCertificateChange={onHandleCertificateChange}
-        onRemoveCertificateHandler={onRemoveCertificateHandler}
+      <ModalWithTextAreaLayout
+        value={textAreaCertificatesValue}
+        onChange={onChangeTextAreaCertificatesValue}
+        isOpen={isTextAreaCertificatesOpen}
+        onClose={onClickCancelTextAreaCertificates}
+        actions={certificatesOptions}
+        title="New certificate"
+        subtitle="Certificate in base64 or PEM format:"
+        ariaLabel="new certificate modal text area"
+        cssStyle={{ height: "422px" }}
+        name="usercertificate"
+        objectName="user"
+        ipaObject={ipaObject}
+        metadata={props.metadata}
       />
     </>
   );
