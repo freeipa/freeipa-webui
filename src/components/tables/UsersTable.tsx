@@ -87,7 +87,17 @@ const UsersTable = (props: PropsToTable) => {
         "i"
       );
     }
-    return user.uid[0].search(input) >= 0;
+
+    for (const attr of Object.keys(columnNames)) {
+      if (
+        attr !== "nsaccountlock" &&
+        user[attr] !== undefined &&
+        user[attr][0].search(input) >= 0
+      ) {
+        return true;
+      }
+    }
+    return false;
   };
 
   const filteredShownUsers =

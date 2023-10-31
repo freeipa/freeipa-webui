@@ -94,7 +94,7 @@ const ActiveUsers = () => {
 
   // Derived states - what we get from API
   const userDataResponse = useGettingUserQuery({
-    searchValue,
+    searchValue: "",
     sizeLimit: 0,
     apiVersion: apiVersion || API_VERSION_BACKUP,
   } as UsersPayload);
