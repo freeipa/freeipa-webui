@@ -438,6 +438,22 @@ export const api = createApi({
         });
       },
     }),
+    addCertMapData: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        return getCommand({
+          method: "user_add_certmapdata",
+          params: payload,
+        });
+      },
+    }),
+    removeCertMapData: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        return getCommand({
+          method: "user_remove_certmapdata",
+          params: payload,
+        });
+      },
+    }),
   }),
 });
 
@@ -459,4 +475,6 @@ export const {
   useGetCertificateAuthorityQuery,
   useRevokeCertificateMutation,
   useRemoveHoldCertificateMutation,
+  useAddCertMapDataMutation,
+  useRemoveCertMapDataMutation,
 } = api;
