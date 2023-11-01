@@ -39,6 +39,7 @@ const TextLayout = (props: PropsToTextLayout) => {
         isVisitedLink={props.isvisitedLink}
         ouiaId={props.ouiaId}
         ouiaSafe={props.ouiaSafe}
+        className={props.className}
       >
         {props.children}
       </Text>

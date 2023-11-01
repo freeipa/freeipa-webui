@@ -40,6 +40,7 @@ interface PropsToUsersAccountSettings {
   radiusProxyConf: RadiusServer[];
   idpConf: IDPServer[];
   certData: Record<string, unknown>;
+  from: "active-users" | "stage-users" | "preserved-users";
 }
 
 // Generic data to pass to the Textbox adder
@@ -358,6 +359,8 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
                 metadata={props.metadata}
+                onRefresh={props.onRefresh}
+                from={props.from}
               />
             </FormGroup>
             <FormGroup label="Certificates" fieldId="certificates">

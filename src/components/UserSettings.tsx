@@ -261,6 +261,7 @@ const UserSettings = (props: PropsToUserSettings) => {
                 radiusProxyConf={props.radiusProxyData || []}
                 idpConf={props.idpData || []}
                 certData={props.certData}
+                from={props.from}
               />
               <TitleLayout
                 key={2}
