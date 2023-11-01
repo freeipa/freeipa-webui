@@ -12,6 +12,7 @@ interface PropsToSecondaryButton {
   isActive?: boolean;
   isBlock?: boolean;
   isInLine?: boolean;
+  isSmall?: boolean;
   ouijaId?: number | string;
   ouijaSafe?: boolean;
   innerRef?: React.Ref<any>;
@@ -32,6 +33,7 @@ const SecondaryButton = (props: PropsToSecondaryButton) => {
       isActive={props.isActive}
       isBlock={props.isBlock}
       isInline={props.isInLine}
+      isSmall={props.isSmall}
       ouiaId={props.ouijaId}
       ouiaSafe={props.ouijaSafe}
       onClick={props.onClickHandler}

@@ -1,6 +1,4 @@
 import React from "react";
-// PatternFly
-import { TextInput } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
 import TextLayout from "../layouts/TextLayout";

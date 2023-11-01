@@ -110,10 +110,6 @@ const AddUser = (props: PropsToAddUser) => {
     React.useRef() as React.MutableRefObject<HTMLInputElement>;
   const userClassRef =
     React.useRef() as React.MutableRefObject<HTMLInputElement>;
-  const newPasswordRef =
-    React.useRef() as React.MutableRefObject<HTMLInputElement>;
-  const verifyNewPasswordRef =
-    React.useRef() as React.MutableRefObject<HTMLInputElement>;
 
   // Validation fields
   const [userLoginValidation, setUserLoginValidation] = useState({
