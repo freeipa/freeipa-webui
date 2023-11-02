@@ -269,7 +269,7 @@ const UserSettings = (props: PropsToUserSettings) => {
                 id="password-policy"
                 text="Password policy"
               />
-              <UsersPasswordPolicy />
+              <UsersPasswordPolicy pwdPolicyData={props.pwPolicyData || []} />
               <TitleLayout
                 key={3}
                 headingLevel="h2"
