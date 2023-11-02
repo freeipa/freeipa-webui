@@ -1,4 +1,8 @@
 import {
+  Avatar,
+  Dropdown,
+  DropdownItem,
+  DropdownToggle,
   Masthead,
   MastheadBrand,
   MastheadContent,
@@ -11,14 +15,66 @@ import {
   Toolbar,
 } from "@patternfly/react-core";
 import React from "react";
+// Icons
 import BarsIcon from "@patternfly/react-icons/dist/esm/icons/bars-icon";
+import UserIcon from "@patternfly/react-icons/dist/esm/icons/user-icon";
+import KeyIcon from "@patternfly/react-icons/dist/esm/icons/key-icon";
+import CogIcon from "@patternfly/react-icons/dist/esm/icons/cog-icon";
+import UnknownIcon from "@patternfly/react-icons/dist/esm/icons/unknown-icon";
+import ShareSquareIcon from "@patternfly/react-icons/dist/esm/icons/share-square-icon";
 // Navigation
 import Navigation from "./navigation/Nav";
 // Images
 import headerLogo from "public/images/header-logo.png";
+import avatarImg from "public/images/avatarImg.svg";
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
   const headerToolbar = <Toolbar id="toolbar" />;
+
+  // Dropdown
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+
+  const onDropdownToggle = (isOpen: boolean) => {
+    setIsDropdownOpen(isOpen);
+  };
+
+  const onDropdownSelect = () => {
+    setIsDropdownOpen(false);
+  };
+
+  const dropdownItems = [
+    <DropdownItem key="profile" component="button">
+      <UserIcon /> Profile
+    </DropdownItem>,
+    <DropdownItem key="change-password" component="button">
+      <KeyIcon /> Change password
+    </DropdownItem>,
+    <DropdownItem key="customization" component="button">
+      <CogIcon /> Customization
+    </DropdownItem>,
+    <DropdownItem key="about" component="button">
+      <UnknownIcon /> About
+    </DropdownItem>,
+    <DropdownItem key="logout" component="button">
+      <ShareSquareIcon /> Log out
+    </DropdownItem>,
+  ];
+
+  // TODO: Show the proper user login
+  const dropdown = (
+    <Dropdown
+      isText
+      isPlain
+      onSelect={onDropdownSelect}
+      toggle={
+        <DropdownToggle id="toggle-plain-text" onToggle={onDropdownToggle}>
+          Administrator
+        </DropdownToggle>
+      }
+      isOpen={isDropdownOpen}
+      dropdownItems={dropdownItems}
+    />
+  );
 
   const Header = (
     <Masthead>
@@ -32,7 +88,13 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
           <img src={headerLogo} alt="FreeIPA Logo" />
         </MastheadBrand>
       </MastheadMain>
-      <MastheadContent>{headerToolbar}</MastheadContent>
+      <MastheadContent>
+        <>
+          {headerToolbar}
+          {dropdown}
+          <Avatar src={avatarImg} alt="avatar" size="md" />
+        </>
+      </MastheadContent>
     </Masthead>
   );
 
