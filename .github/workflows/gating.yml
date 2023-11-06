@@ -85,7 +85,7 @@ jobs:
         run: sudo echo "192.168.56.101 server.ipa.demo" | sudo tee -a /etc/hosts
 
       - name: Run Cypress tests
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           browser: firefox
 
