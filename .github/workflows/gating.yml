@@ -57,7 +57,7 @@ jobs:
   integration-tests:
     name: Integration tests
     needs: audit-and-build
-    runs-on: macos-12
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v3
