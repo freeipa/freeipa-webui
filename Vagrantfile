@@ -10,14 +10,6 @@ Vagrant.configure("2") do |config|
 
   # Needed by Cypress - optional if you edit your /etc/hosts
   config.vm.network "forwarded_port", guest: 443, host: 443
-  config.vm.network "forwarded_port", guest: 80, host: 80
-  if ENV['GITHUB_CI']
-    config.vm.network "private_network",
-              :ip => "192.168.56.10",
-              :virtualbox__dhcp_enabled => false,
-              :virtualbox__network_address => '192.168.56.0/21',
-              :virtualbox__forward_mode => 'route'
-  end
 
   config.vm.provider "libvirt" do |v,override|
     v.memory = 4096
@@ -40,7 +32,7 @@ Vagrant.configure("2") do |config|
 
   # Add eth0 ip address to /etc/hosts
   config.vm.provision "shell",
-    inline: "echo \"$(hostname -I|sed 's/10\.0\.2\.15//') server.ipa.demo\" | tee -a /etc/hosts"
+    inline: "echo \"$(hostname -I) server.ipa.demo\" | tee -a /etc/hosts"
 
   # Install ipa server
   config.vm.provision "shell",
