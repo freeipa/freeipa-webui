@@ -75,6 +75,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-vagrant-
 
+      - name: Cleanup running Vagrant boxes in case they are running
+        run: vagrant destroy --force
+
       - name: Run vagrant up
         run: vagrant up --no-provision
 
@@ -82,12 +85,19 @@ jobs:
         run: vagrant provision
 
       - name: Put IPA Server's IP to /etc/hosts
-        run: sudo echo "192.168.56.101 server.ipa.demo" | sudo tee -a /etc/hosts
+        run: sudo echo "$(vagrant ssh -c "hostname -I") server.ipa.demo" | sudo tee -a /etc/hosts
+
+      - name: Save server's IP address to env
+        run: echo "SERVER_IP=$(vagrant ssh -c "hostname -I")" >> $GITHUB_ENV
+
+      - name: Print exported variable
+        run: echo "$SERVER_IP"
 
       - name: Run Cypress tests
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           browser: firefox
+          env: host="https://${{ env.SERVER_IP  }}"
 
       - name: Upload cypress screenshots
         uses: actions/upload-artifact@v2
