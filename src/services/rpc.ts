@@ -117,6 +117,7 @@ export interface UsersPayload {
   searchValue: string;
   sizeLimit: number;
   apiVersion: string;
+  userType?: string;
 }
 
 // Body data to perform the calls
@@ -187,7 +188,7 @@ export const api = createApi({
     }),
     gettingUser: build.query<BatchRPCResponse, UsersPayload>({
       async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { searchValue, sizeLimit, apiVersion } = payloadData;
+        const { searchValue, sizeLimit, apiVersion, userType } = payloadData;
 
         // 1ST CALL - GETTING ALL UIDS
         if (apiVersion === undefined) {
@@ -199,17 +200,26 @@ export const api = createApi({
             } as FetchBaseQueryError,
           };
         }
+
+        // Prepare search parameters
+        const params = {
+          pkey_only: true,
+          sizelimit: sizeLimit,
+          version: apiVersion,
+        };
+        let method = "user_find";
+        let show_method = "user_show";
+        if (userType === "stage") {
+          method = "stageuser_find";
+          show_method = "stageuser_show";
+        } else if (userType === "preserved") {
+          params["preserved"] = true;
+        }
+
         // Prepare payload
         const payloadDataUids: Command = {
-          method: "user_find",
-          params: [
-            [searchValue],
-            {
-              pkey_only: true,
-              sizelimit: sizeLimit,
-              version: apiVersion,
-            },
-          ],
+          method: method,
+          params: [[searchValue], params],
         };
 
         // Make call using 'fetchWithBQ'
@@ -233,7 +243,7 @@ export const api = createApi({
         // Prepare payload
         const options = { no_members: true };
         const payloadUserDataBatch: Command[] = uids.map((uid) => ({
-          method: "user_show",
+          method: show_method,
           params: [[uid], options],
         }));
 
@@ -268,26 +278,42 @@ export const api = createApi({
         response.result,
       providesTags: ["ObjectMetadata"],
     }),
-    getUsersFullData: build.query<UserFullData, string>({
-      query: (userId: string, apiVersion?: string) => {
+    getGenericUsersFullData: build.query<UserFullData, object>({
+      query: (query_args) => {
+        // Prepare search parameters
+        const user_params = {
+          all: true,
+          rights: true,
+        };
+        let method = "user_show";
+        if (query_args["user_type"] === "stage") {
+          // Preserved users work with user_show, but not stage users
+          method = "stageuser_show";
+        }
         const userShowCommand: Command = {
-          method: "user_show",
-          params: [userId, { all: true, rights: true }],
+          method: method,
+          params: [query_args["userId"], user_params],
         };
 
         const pwpolicyShowCommand: Command = {
           method: "pwpolicy_show",
-          params: [[], { user: userId[0], all: true, rights: true }],
+          params: [
+            [],
+            { user: query_args["userId"][0], all: true, rights: true },
+          ],
         };
 
         const krbtpolicyShowCommand: Command = {
           method: "krbtpolicy_show",
-          params: [userId, { all: true, rights: true }],
+          params: [query_args["userId"], { all: true, rights: true }],
         };
 
         const certFindCommand: Command = {
           method: "cert_find",
-          params: [[], { user: [userId[0]], sizelimit: 0, all: true }],
+          params: [
+            [],
+            { user: query_args["userId"][0], sizelimit: 0, all: true },
+          ],
         };
 
         const batchPayload: Command[] = [
@@ -297,7 +323,10 @@ export const api = createApi({
           certFindCommand,
         ];
 
-        return getBatchCommand(batchPayload, apiVersion || API_VERSION_BACKUP);
+        return getBatchCommand(
+          batchPayload,
+          query_args["version"] || API_VERSION_BACKUP
+        );
       },
       transformResponse: (response: BatchResponse): UserFullData => {
         const results = response.result.results;
@@ -311,16 +340,36 @@ export const api = createApi({
       providesTags: ["FullUser"],
     }),
     saveUser: build.mutation<FindRPCResponse, Partial<User>>({
+      query: (save_args) => {
+        const params = {
+          version: API_VERSION_BACKUP,
+          ...save_args["user"],
+        };
+
+        delete params["uid"];
+
+        let method = "user_mod";
+        if (save_args["user_type"] === "stage") {
+          method = "stageuser_mod";
+        }
+
+        return getCommand({
+          method: method,
+          params: [[params.user.uid], params],
+        });
+      },
+      invalidatesTags: ["FullUser"],
+    }),
+    saveStageUser: build.mutation<FindRPCResponse, Partial<User>>({
       query: (user) => {
         const params = {
           version: API_VERSION_BACKUP,
           ...user,
         };
-
         delete params["uid"];
 
         return getCommand({
-          method: "user_mod",
+          method: "stageuser_mod",
           params: [[user.uid], params],
         });
       },
@@ -377,6 +426,16 @@ export const api = createApi({
 
         return getCommand({
           method: "user_add_cert",
+          params: params,
+        });
+      },
+    }),
+    removeStagePrincipalAlias: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [payload, { version: API_VERSION_BACKUP }];
+
+        return getCommand({
+          method: "stageuser_remove_principal",
           params: params,
         });
       },
@@ -454,8 +513,53 @@ export const api = createApi({
         });
       },
     }),
+    addStagePrincipalAlias: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [payload, { version: API_VERSION_BACKUP }];
+
+        return getCommand({
+          method: "stageuser_add_principal",
+          params: params,
+        });
+      },
+    }),
   }),
 });
+
+// Wrappers for active, preserved, and stage users
+export const useGettingActiveUserQuery = (payloadData) => {
+  payloadData["userType"] = "user";
+  return useGettingUserQuery(payloadData);
+};
+
+export const useGettingStageUserQuery = (payloadData) => {
+  payloadData["userType"] = "stage";
+  return useGettingUserQuery(payloadData);
+};
+
+export const useGettingPreservedUserQuery = (payloadData) => {
+  payloadData["userType"] = "preserved";
+  return useGettingUserQuery(payloadData);
+};
+
+export const useGetUsersFullQuery = (userId: string) => {
+  // Active and preserved users
+  const query_args = {
+    userId: userId,
+    user_type: "active",
+    version: API_VERSION_BACKUP,
+  };
+  return useGetGenericUsersFullDataQuery(query_args);
+};
+
+export const useGetStageUsersFullQuery = (userId: string) => {
+  const query_args = {
+    userId: userId,
+    user_type: "stage",
+    version: API_VERSION_BACKUP,
+  };
+  return useGetGenericUsersFullDataQuery(query_args);
+};
 
 export const {
   useSimpleCommandQuery,
@@ -464,8 +568,9 @@ export const {
   useBatchMutCommandMutation,
   useGettingUserQuery,
   useGetObjectMetadataQuery,
-  useGetUsersFullDataQuery,
+  useGetGenericUsersFullDataQuery,
   useSaveUserMutation,
+  useSaveStageUserMutation,
   useGetRadiusProxyQuery,
   useGetIdpServerQuery,
   useRemovePrincipalAliasMutation,
@@ -477,4 +582,6 @@ export const {
   useRemoveHoldCertificateMutation,
   useAddCertMapDataMutation,
   useRemoveCertMapDataMutation,
+  useRemoveStagePrincipalAliasMutation,
+  useAddStagePrincipalAliasMutation,
 } = api;

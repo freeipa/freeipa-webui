@@ -23,7 +23,7 @@ import UserSettings from "src/components/UserSettings";
 import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
 // Hooks
-import useUserSettingsData from "src/hooks/useUserSettingsData";
+import { useStageUserSettings } from "src/hooks/useUserSettingsData";
 
 const StageUsersTabs = () => {
   // Get location (React Router DOM) and get state data
@@ -32,7 +32,7 @@ const StageUsersTabs = () => {
   const uid = userData.uid;
 
   // Data loaded from DB
-  const userSettingsData = useUserSettingsData(uid);
+  const userSettingsData = useStageUserSettings(uid);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(0);
@@ -98,6 +98,8 @@ const StageUsersTabs = () => {
               isModified={userSettingsData.modified}
               onResetValues={userSettingsData.resetValues}
               modifiedValues={userSettingsData.modifiedValues}
+              radiusProxyData={userSettingsData.radiusServers}
+              idpData={userSettingsData.idpServers}
               from="stage-users"
             />
           </Tab>

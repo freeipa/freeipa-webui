@@ -204,6 +204,9 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
     isSelecting = true,
     selectableUsersList: User[]
   ) => {
+    if (selectableUsersList.length === 0) {
+      return;
+    }
     props.usersData.changeSelectedUserNames(
       isSelecting ? selectableUsersList.map((r) => r.uid) : []
     );

@@ -357,7 +357,7 @@ const AddUser = (props: PropsToAddUser) => {
   const [verifyPasswordHidden, setVerifyPasswordHidden] = React.useState(true);
 
   // List of fields
-  const fields = [
+  let fields = [
     {
       id: "user-login",
       name: "User login",
@@ -452,7 +452,12 @@ const AddUser = (props: PropsToAddUser) => {
           ref={userClassRef}
         />
       ),
-      labelIcon: <HelpIcon className="pf-u-ml-xs" />,
+      labelIcon:
+        props.from !== "stage-users" ? (
+          <HelpIcon className="pf-u-ml-xs" />
+        ) : (
+          <div />
+        ),
     },
     {
       id: "no-private-group",
@@ -528,6 +533,14 @@ const AddUser = (props: PropsToAddUser) => {
     },
   ];
 
+  // For stage users we need to clean up the fields
+  if (props.from === "stage-users") {
+    const new_fields = fields.filter(
+      (el) => el.id !== "no-private-group" && el.id !== "gid-form"
+    );
+    fields = new_fields;
+  }
+
   // Helper method to reset validation values
   const resetValidations = () => {
     resetUserLoginError();
@@ -578,20 +591,27 @@ const AddUser = (props: PropsToAddUser) => {
 
     const newUserData = {
       givenname: firstName,
-      noprivate: isNoPrivateGroupChecked,
       sn: lastName,
       userclass: userClass !== "" ? userClass : undefined,
-      gidnumber: gidSelected,
       userpassword: newPassword,
       version: apiVersion,
     };
 
+    // Define payload data
+    let method = "user_add";
+    if (props.from === "stage-users") {
+      method = "stageuser_add";
+    } else {
+      // Non-stage users use noprivate
+      newUserData["noprivate"] = isNoPrivateGroupChecked;
+      // Add gidNumber for non-stage users
+      newUserData["gidnumber"] = gidSelected;
+    }
     // Prepare the command data
     const newUserCommandData = [usLogin, newUserData];
 
-    // Define payload data
     const newUserPayload: Command = {
-      method: "user_add",
+      method: method,
       params: newUserCommandData,
     };
 
@@ -770,7 +790,7 @@ const AddUser = (props: PropsToAddUser) => {
         variantType="small"
         modalPosition="top"
         offPosition="76px"
-        title="Add user"
+        title={props.from === "stage-users" ? "Add stage user" : "Add user"}
         formId="users-add-user-modal"
         fields={fields}
         show={props.show}
