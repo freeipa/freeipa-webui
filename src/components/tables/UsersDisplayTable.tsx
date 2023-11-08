@@ -8,12 +8,12 @@ import { User } from "src/utils/datatypes/globalDataTypes";
 // Redux
 import { useAppSelector } from "src/store/hooks";
 
-export interface PropsToDeletedUsersTable {
-  usersToDelete: string[];
+export interface PropsToDisplayUsersTable {
+  usersToDisplay: string[];
   from: "active-users" | "stage-users" | "preserved-users";
 }
 
-const DeletedUsersTable = (props: PropsToDeletedUsersTable) => {
+const UsersDisplayTable = (props: PropsToDisplayUsersTable) => {
   // Retrieve all users list from Store
   // - Active users
   const activeUsersList = useAppSelector(
@@ -32,31 +32,31 @@ const DeletedUsersTable = (props: PropsToDeletedUsersTable) => {
   const preservedUsersListCopy = [...preservedUsersList];
 
   // Given userIds, retrieve full user info to display into table
-  const usersToDelete: User[] = [];
+  const usersToDisplay: User[] = [];
   switch (props.from) {
     case "active-users":
       activeUsersListCopy.map((user) => {
-        props.usersToDelete.map((selected) => {
+        props.usersToDisplay.map((selected) => {
           if (user.uid[0] === selected[0]) {
-            usersToDelete.push(user);
+            usersToDisplay.push(user);
           }
         });
       });
       break;
     case "stage-users":
       stageUsersListCopy.map((user) => {
-        props.usersToDelete.map((selected) => {
+        props.usersToDisplay.map((selected) => {
           if (user.uid === selected) {
-            usersToDelete.push(user);
+            usersToDisplay.push(user);
           }
         });
       });
       break;
     case "preserved-users":
       preservedUsersListCopy.map((user) => {
-        props.usersToDelete.map((selected) => {
+        props.usersToDisplay.map((selected) => {
           if (user.uid === selected) {
-            usersToDelete.push(user);
+            usersToDisplay.push(user);
           }
         });
       });
@@ -83,7 +83,7 @@ const DeletedUsersTable = (props: PropsToDeletedUsersTable) => {
     </Tr>
   );
 
-  const body = usersToDelete.map((user) => (
+  const body = usersToDisplay.map((user) => (
     <Tr key={user.uid} id={user.uid}>
       <Td dataLabel={columnNames.userLogin}>{user.uid}</Td>
       <Td dataLabel={columnNames.firstName}>{user.givenname}</Td>
@@ -93,7 +93,7 @@ const DeletedUsersTable = (props: PropsToDeletedUsersTable) => {
     </Tr>
   ));
 
-  // Render 'DeletedUsersTable'
+  // Render 'UsersDisplayTable'
   return (
     <TableLayout
       ariaLabel={"Remove users table"}
@@ -107,4 +107,4 @@ const DeletedUsersTable = (props: PropsToDeletedUsersTable) => {
   );
 };
 
-export default DeletedUsersTable;
+export default UsersDisplayTable;

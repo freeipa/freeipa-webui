@@ -43,6 +43,12 @@ interface PropsToUsersAccountSettings {
   from: "active-users" | "stage-users" | "preserved-users";
 }
 
+// Generic data to pass to the Textbox adder
+interface ElementData {
+  id: string | number;
+  element: string;
+}
+
 const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
   // TODO: Handle the `has_password` variable (boolean) by another Ipa component
   const [password] = useState("");
@@ -185,6 +191,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 ipaObject={ipaObject}
                 metadata={props.metadata}
                 onRefresh={props.onRefresh}
+                from={props.from}
               />
             </FormGroup>
             <FormGroup

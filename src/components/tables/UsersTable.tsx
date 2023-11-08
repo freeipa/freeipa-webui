@@ -371,9 +371,11 @@ const UsersTable = (props: PropsToTable) => {
       <Th modifier="wrap" sort={getSortParams(2)}>
         {columnNames.sn}
       </Th>
-      <Th modifier="wrap" sort={getSortParams(3)}>
-        {columnNames.nsaccountlock}
-      </Th>
+      {props.from !== "stage-users" ? (
+        <Th modifier="wrap" sort={getSortParams(3)}>
+          {columnNames.nsaccountlock}
+        </Th>
+      ) : null}
       <Th modifier="wrap" sort={getSortParams(4)}>
         {columnNames.uidnumber}
       </Th>
@@ -421,20 +423,22 @@ const UsersTable = (props: PropsToTable) => {
       >
         {user.sn}
       </Td>
-      <Td
-        style={setStyleOnStatus(user.nsaccountlock)}
-        dataLabel={columnNames.nsaccountlock}
-      >
-        {user.nsaccountlock ? (
-          <>
-            <MinusIcon /> {" Disabled"}
-          </>
-        ) : (
-          <>
-            <CheckIcon /> {" Enabled"}
-          </>
-        )}
-      </Td>
+      {props.from !== "stage-users" ? (
+        <Td
+          style={setStyleOnStatus(user.nsaccountlock)}
+          dataLabel={columnNames.nsaccountlock}
+        >
+          {user.nsaccountlock ? (
+            <>
+              <MinusIcon /> {" Disabled"}
+            </>
+          ) : (
+            <>
+              <CheckIcon /> {" Enabled"}
+            </>
+          )}
+        </Td>
+      ) : null}
       <Td
         style={setStyleOnStatus(user.nsaccountlock)}
         dataLabel={columnNames.uidnumber}

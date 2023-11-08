@@ -237,7 +237,8 @@ const stageUsersSlice = createSlice({
   },
 });
 
-export const { addUser, removeUser, changeStatus } = stageUsersSlice.actions;
+export const { updateUsersList, addUser, removeUser, changeStatus } =
+  stageUsersSlice.actions;
 export const selectUsers = (state: RootState) =>
   state.stageUsers.usersList as User[];
 export default stageUsersSlice.reducer;

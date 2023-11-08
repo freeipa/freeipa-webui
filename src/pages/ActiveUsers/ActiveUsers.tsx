@@ -48,7 +48,7 @@ import { API_VERSION_BACKUP, isUserSelectable } from "src/utils/utils";
 // RPC client
 import {
   Command,
-  useGettingUserQuery,
+  useGettingActiveUserQuery,
   useSimpleMutCommandMutation,
   UsersPayload,
 } from "src/services/rpc";
@@ -93,7 +93,7 @@ const ActiveUsers = () => {
   const [isDisabledDueError, setIsDisabledDueError] = useState<boolean>(false);
 
   // Derived states - what we get from API
-  const userDataResponse = useGettingUserQuery({
+  const userDataResponse = useGettingActiveUserQuery({
     searchValue: "",
     sizeLimit: 0,
     apiVersion: apiVersion || API_VERSION_BACKUP,
@@ -658,7 +658,7 @@ const ActiveUsers = () => {
           <TitleLayout
             id="active users title"
             headingLevel="h1"
-            text="Active users"
+            text="Active Users"
           />
         </PageSection>
         <PageSection

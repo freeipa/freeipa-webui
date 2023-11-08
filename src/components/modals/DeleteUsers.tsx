@@ -10,7 +10,7 @@ import {
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
-import DeletedUsersTable from "src/components/tables/DeletedUsersTable";
+import UsersDisplayTable from "src/components/tables/UsersDisplayTable";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { removeUser as removeActiveUser } from "src/store/Identity/activeUsers-slice";
@@ -103,8 +103,8 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
     {
       id: "deleted-users-table",
       pfComponent: (
-        <DeletedUsersTable
-          usersToDelete={props.selectedUsersData.selectedUsers}
+        <UsersDisplayTable
+          usersToDisplay={props.selectedUsersData.selectedUsers}
           from={props.from}
         />
       ),
@@ -194,14 +194,20 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
   };
 
   // Delete user
-  const deleteUsersNew = (uidsToDelete: string[]) => {
+  const deleteUsers = (uidsToDelete: string[]) => {
     // Prepare users params
     const uidsToDeletePayload: Command[] = [];
-
-    const deletionParams = { preserve: !isDeleteChecked };
+    let deletionParams = {};
+    if (props.from !== "stage-users") {
+      deletionParams = { preserve: !isDeleteChecked };
+    }
     uidsToDelete.map((uid) => {
+      let method = "user_del";
+      if (props.from === "stage-users") {
+        method = "stageuser_del";
+      }
       const payloadItem = {
-        method: "user_del",
+        method: method,
         params: [[uid], deletionParams],
       } as Command;
       uidsToDeletePayload.push(payloadItem);
@@ -275,38 +281,14 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
     });
   };
 
-  // Delete users (for components not adapted to communication layer)
-  //  NOTE: This function will dissapear when all user types will be adapted to C.L.
-  const deleteUsers = () => {
-    deleteUsersFromRedux();
-
-    props.selectedUsersData.updateSelectedUsers([]);
-    if (
-      props.from === "active-users" &&
-      props.buttonsData.updateIsDeleteButtonDisabled !== undefined
-    ) {
-      props.buttonsData.updateIsDeleteButtonDisabled(true);
-    }
-    props.buttonsData.updateIsDeletion(true);
-    closeModal();
-  };
-
-  // [Temporal solution] Defines which function is used to delete users
-  const setDeleteFunction = () => {
-    if (props.from === "active-users") {
-      return deleteUsersNew(props.selectedUsersData.selectedUsers);
-    } else {
-      // 'stage' and 'preserved users'
-      return deleteUsers();
-    }
-  };
-
   // Set the Modal and Action buttons for 'Delete' option
   const modalActionsDelete: JSX.Element[] = [
     <Button
       key="delete-users"
       variant="danger"
-      onClick={setDeleteFunction}
+      onClick={() => {
+        deleteUsers(props.selectedUsersData.selectedUsers);
+      }}
       form="active-users-remove-users-modal"
     >
       Delete
@@ -316,12 +298,23 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
     </Button>,
   ];
 
+  let title = "Remove Active Users";
+  if (props.from === "stage-users") {
+    title = "Remove Stage Users";
+    // Drop last field (radio buttons with option to perserve)
+    fields.splice(-1);
+  } else if (props.from === "preserved-users") {
+    title = "Remove Preserved Users";
+    // Drop last field (radio buttons with option to perserve)
+    fields.splice(-1);
+  }
+
   const modalDelete: JSX.Element = (
     <ModalWithFormLayout
       variantType="medium"
       modalPosition="top"
       offPosition="76px"
-      title="Remove active users"
+      title={title}
       formId="active-users-remove-users-modal"
       fields={fields}
       show={props.show}
@@ -330,24 +323,14 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
     />
   );
 
-  // Preserve users
-  // TODO: Remove this to adapt the general solution
-  //   to all user pages when the C.L. is fully implemented
-  const setPreserveFunction = () => {
-    if (props.from === "active-users") {
-      return deleteUsersNew(props.selectedUsersData.selectedUsers);
-    } else {
-      // User pages not adapted to communication layer
-      return alert("This functionality will be provided soon!");
-    }
-  };
-
   // Set the Modal and Action buttons for 'Preserve' option
   const modalActionsPreserve: JSX.Element[] = [
     <Button
       key="preserve-users"
       variant="primary"
-      onClick={setPreserveFunction}
+      onClick={() => {
+        deleteUsers(props.selectedUsersData.selectedUsers);
+      }}
       form="active-users-remove-users-modal"
     >
       Preserve
@@ -362,7 +345,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
       variantType="medium"
       modalPosition="top"
       offPosition="76px"
-      title="Remove active users"
+      title={title}
       formId="active-users-remove-users-modal"
       fields={fields}
       show={props.show}

@@ -38,7 +38,11 @@ import UsersMailingAddress from "src/components/UsersSections/UsersMailingAddres
 import UsersEmployeeInfo from "src/components/UsersSections/UsersEmployeeInfo";
 import UsersAttributesSMB from "src/components/UsersSections/UsersAttributesSMB";
 // RPC
-import { ErrorResult, useSaveUserMutation } from "src/services/rpc";
+import {
+  ErrorResult,
+  useSaveUserMutation,
+  useSaveStageUserMutation,
+} from "src/services/rpc";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 
@@ -67,8 +71,11 @@ const UserSettings = (props: PropsToUserSettings) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
-  // RTK hook: save user
-  const [saveUser] = useSaveUserMutation();
+  // RTK hook: save user (acive/preserved and stage)
+  let [saveUser] = useSaveUserMutation();
+  if (props.from === "stage-users") {
+    [saveUser] = useSaveStageUserMutation();
+  }
 
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
