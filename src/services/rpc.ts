@@ -17,19 +17,12 @@ import {
   IDPServer,
   RadiusServer,
   CertificateAuthority,
-  fqdnType,
-  Metadata,
-  servicesType,
-  UIDType,
-  cnType,
-  roleType,
-  sudoCmdType,
-} from "../utils/datatypes/globalDataTypes";
-import { apiToHost } from "../utils/hostUtils";
-import { apiToUser } from "../utils/userUtils";
-import { apiToService } from "../utils/serviceUtils";
-import { apiToPwPolicy } from "../utils/pwPolicyUtils";
-import { apiToKrbPolicy } from "../utils/krbPolicyUtils";
+  PwPolicy,
+  KrbPolicy,
+} from "src/utils/datatypes/globalDataTypes";
+import { apiToUser } from "src/utils/userUtils";
+import { apiToPwPolicy } from "src/utils/pwPolicyUtils";
+import { apiToKrbPolicy } from "src/utils/krbPolicyUtils";
 
 export type UserFullData = {
   user?: Partial<User>;

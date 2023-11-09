@@ -2,6 +2,7 @@
 import { KrbPolicy } from "./datatypes/globalDataTypes";
 // Utils
 import { convertApiObj } from "src/utils/ipaObjectUtils";
+import { parseAPIDatetime } from "./utils";
 
 const simpleValues = new Set([
   "cn",
@@ -22,35 +23,34 @@ export function apiToKrbPolicy(apiRecord: Record<string, unknown>) {
     simpleValues,
     dateValues
   ) as Partial<KrbPolicy>;
-  return partialKrbPolicyToKrbPolicy(converted);
+  return objectToKrbPolicy(converted);
 }
 
-export function partialKrbPolicyToKrbPolicy(
-  partialKrbPolicy: Partial<KrbPolicy>
-) {
-  return {
-    ...createEmptyKrbPolicy(),
-    ...partialKrbPolicy,
+// Convert an partial KrbPolicy object into a full KrbPolicy object
+// (initializing the undefined params with default empty values)
+export const objectToKrbPolicy = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  partialKrbPolicy: any | Partial<KrbPolicy>
+) => {
+  const krbPolicy: KrbPolicy = {
+    attributelevelrights: partialKrbPolicy.attributelevelrights || {},
+    cn: partialKrbPolicy.cn || "",
+    ipacertmapdata: partialKrbPolicy.ipacertmapdata || [],
+    ipantsecurityidentifier: partialKrbPolicy.ipantsecurityidentifier || "",
+    ipasshpubkey: partialKrbPolicy.ipasshpubkey || [],
+    ipauniqueid: partialKrbPolicy.ipauniqueid || "",
+    krbcanonicalname: partialKrbPolicy.krbcanonicalname || "",
+    krbmaxrenewableage: partialKrbPolicy.krbmaxrenewableage || "",
+    krbmaxticketlife: partialKrbPolicy.krbmaxticketlife || "",
+    krbprincipalexpiration: parseAPIDatetime(
+      partialKrbPolicy.krbprincipalexpiration
+    ),
+    krbprincipalname: partialKrbPolicy.krbprincipalname || [],
+    loginshell: partialKrbPolicy.loginshell || "",
+    mail: partialKrbPolicy.mail || [],
+    memberof: partialKrbPolicy.memberof || "",
+    mepmanagedentry: partialKrbPolicy.mepmanagedentry || "",
+    usercertificatebinary: partialKrbPolicy.usercertificatebinary || [],
   };
-}
-
-export function createEmptyKrbPolicy(): KrbPolicy {
-  return {
-    attributelevelrights: {},
-    cn: "",
-    ipacertmapdata: [],
-    ipantsecurityidentifier: "",
-    ipasshpubkey: [],
-    ipauniqueid: "",
-    krbcanonicalname: "",
-    krbmaxrenewableage: "",
-    krbmaxticketlife: "",
-    krbprincipalexpiration: null,
-    krbprincipalname: [],
-    loginshell: "",
-    mail: [],
-    memberof: "",
-    mepmanagedentry: "",
-    usercertificatebinary: [],
-  };
-}
+  return krbPolicy;
+};

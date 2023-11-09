@@ -1,7 +1,8 @@
 // Data types
 import { User } from "src/utils/datatypes/globalDataTypes";
 // Utils
-import { convertApiObj, convertToApiObj } from "src/utils/ipaObjectUtils";
+import { convertApiObj } from "src/utils/ipaObjectUtils";
+import { parseAPIDatetime } from "./utils";
 
 // Parse the 'textInputField' data into expected data type
 // - TODO: Adapt it to work with many types of data
@@ -81,121 +82,159 @@ export function apiToUser(apiRecord: Record<string, unknown>): User {
     simpleValues,
     dateValues
   ) as Partial<User>;
-  return partialUserToUser(converted) as User;
+  return objectToUser(converted) as User;
 }
 
-export function partialUserToUser(partialUser: Partial<User>): User {
-  return {
-    ...createEmptyUser(),
-    ...partialUser,
-  };
-}
+// Determines whether a given property name is a simple value or is it multivalue (Array)
+//  - Returns: boolean
+export const isSimpleValue = (propertyName) => {
+  return simpleValues.has(propertyName);
+};
 
-export function userToApi(user: Partial<User>): Record<string, unknown> {
-  return convertToApiObj(user as Record<string, unknown>, dateValues);
-}
-
-// Get empty User object initialized with default values
-export function createEmptyUser(): User {
+// Covert an partial User object into a full User object
+// (initializing the undefined params with default empty values)
+export const objectToUser = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  partialUser: Record<string, any> | Partial<User>,
+  oldUserObject?: Partial<User> // Optional: To override the current object values
+): User => {
   const user: User = {
     // identity
-    title: "",
-    givenname: "",
-    sn: "",
-    cn: "",
-    displayname: "",
-    initials: "",
-    gecos: "",
-    userclass: [],
+    title: partialUser.title || oldUserObject?.title || "",
+    givenname: partialUser.givenname || oldUserObject?.givenname || "",
+    sn: partialUser.sn || oldUserObject?.sn || "",
+    cn: partialUser.cn || oldUserObject?.cn || "",
+    displayname: partialUser.displayname || oldUserObject?.displayname || "",
+    initials: partialUser.initials || oldUserObject?.initials || "",
+    gecos: partialUser.gecos || oldUserObject?.gecos || "",
+    userclass: partialUser.userclass || oldUserObject?.userclass || [],
     // account
-    uid: "",
-    has_password: false,
-    krbpasswordexpiration: null,
-    uidnumber: "",
-    gidnumber: "",
-    krbprincipalname: [],
-    krbprincipalexpiration: null,
-    loginshell: "",
-    homedirectory: "",
-    ipasshpubkey: [],
-    usercertificate: [],
-    ipacertmapdata: [],
-    ipauserauthtype: [],
-    ipatokenradiusconfiglink: "",
-    ipatokenradiususername: "",
-    ipaidpconfiglink: "",
-    ipaidpsub: "",
+    uid: partialUser.uid || oldUserObject?.uid || "",
+    has_password:
+      partialUser.has_password || oldUserObject?.has_password || false,
+    krbpasswordexpiration: parseAPIDatetime(partialUser.krbpasswordexpiration),
+    uidnumber: partialUser.uidnumber || oldUserObject?.uidnumber || "",
+    gidnumber: partialUser.gidnumber || oldUserObject?.gidnumber || "",
+    krbprincipalname:
+      partialUser.krbprincipalname || oldUserObject?.krbprincipalname || [],
+    krbprincipalexpiration: parseAPIDatetime(
+      partialUser.krbprincipalexpiration
+    ),
+    loginshell: partialUser.loginshell || oldUserObject?.loginshell || "",
+    homedirectory:
+      partialUser.homedirectory || oldUserObject?.homedirectory || "",
+    ipasshpubkey: partialUser.ipasshpubkey || oldUserObject?.ipasshpubkey || [],
+    usercertificate:
+      partialUser.usercertificate || oldUserObject?.usercertificate || [],
+    ipacertmapdata:
+      partialUser.ipacertmapdata || oldUserObject?.ipacertmapdata || [],
+    ipauserauthtype:
+      partialUser.ipauserauthtype || oldUserObject?.ipauserauthtype || [],
+    ipatokenradiusconfiglink:
+      partialUser.ipatokenradiusconfiglink ||
+      oldUserObject?.ipatokenradiusconfiglink ||
+      "",
+    ipatokenradiususername:
+      partialUser.ipatokenradiususername ||
+      oldUserObject?.ipatokenradiususername ||
+      "",
+    ipaidpconfiglink:
+      partialUser.ipaidpconfiglink || oldUserObject?.ipaidpconfiglink || "",
+    ipaidpsub: partialUser.ipaidpsub || oldUserObject?.ipaidpsub || "",
     // pwpolicy
-    krbmaxpwdlife: "",
-    krbminpwdlife: "",
-    krbpwdhistorylength: "",
-    krbpwdmindiffchars: "",
-    krbpwdminlength: "",
-    krbpwdmaxfailure: "",
-    krbpwdfailurecountinterval: "",
-    krbpwdlockoutduration: "",
-    passwordgracelimit: "",
+    krbmaxpwdlife:
+      partialUser.krbmaxpwdlife || oldUserObject?.krbmaxpwdlife || "",
+    krbminpwdlife:
+      partialUser.krbminpwdlife || oldUserObject?.krbminpwdlife || "",
+    krbpwdhistorylength:
+      partialUser.krbpwdhistorylength ||
+      oldUserObject?.krbpwdhistorylength ||
+      "",
+    krbpwdmindiffchars:
+      partialUser.krbpwdmindiffchars || oldUserObject?.krbpwdmindiffchars || "",
+    krbpwdminlength:
+      partialUser.krbpwdminlength || oldUserObject?.krbpwdminlength || "",
+    krbpwdmaxfailure:
+      partialUser.krbpwdmaxfailure || oldUserObject?.krbpwdmaxfailure || "",
+    krbpwdfailurecountinterval:
+      partialUser.krbpwdfailurecountinterval ||
+      oldUserObject?.krbpwdfailurecountinterval ||
+      "",
+    krbpwdlockoutduration:
+      partialUser.krbpwdlockoutduration ||
+      oldUserObject?.krbpwdlockoutduration ||
+      "",
+    passwordgracelimit:
+      partialUser.passwordgracelimit || oldUserObject?.passwordgracelimit || "",
     // krbtpolicy
-    krbmaxrenewableage: "",
-    krbmaxticketlife: "",
+    krbmaxrenewableage:
+      partialUser.krbmaxrenewableage || oldUserObject?.krbmaxrenewableage || "",
+    krbmaxticketlife:
+      partialUser.krbmaxticketlife || oldUserObject?.krbmaxticketlife || "",
     // contact
-    mail: [],
-    telephonenumber: [],
-    pager: [],
-    mobile: [],
-    facsimiletelephonenumber: [],
+    mail: partialUser.mail || oldUserObject?.mail || [],
+    telephonenumber:
+      partialUser.telephonenumber || oldUserObject?.telephonenumber || [],
+    pager: partialUser.pager || oldUserObject?.pager || [],
+    mobile: partialUser.mobile || oldUserObject?.mobile || [],
+    facsimiletelephonenumber:
+      partialUser.facsimiletelephonenumber ||
+      oldUserObject?.facsimiletelephonenumber ||
+      [],
     // mailing
-    street: "",
-    l: "",
-    st: "",
-    postalcode: "",
+    street: partialUser.street || oldUserObject?.street || "",
+    l: partialUser.l || oldUserObject?.l || "",
+    st: partialUser.st || oldUserObject?.st || "",
+    postalcode: partialUser.postalcode || oldUserObject?.postalcode || "",
     // employee
-    ou: "",
-    manager: "",
-    departmentnumber: [],
-    employeenumber: "",
-    employeetype: "",
-    preferredlanguage: "",
+    ou: partialUser.ou || oldUserObject?.ou || "",
+    manager: partialUser.manager || oldUserObject?.manager || "",
+    departmentnumber:
+      partialUser.departmentnumber || oldUserObject?.departmentnumber || [],
+    employeenumber:
+      partialUser.employeenumber || oldUserObject?.employeenumber || "",
+    employeetype: partialUser.employeetype || oldUserObject?.employeetype || "",
+    preferredlanguage:
+      partialUser.preferredlanguage || oldUserObject?.preferredlanguage || "",
     // misc
-    carlicense: [],
+    carlicense: partialUser.carlicense || oldUserObject?.carlicense || [],
     // smb_attributes
-    ipantlogonscript: "",
-    ipantprofilepath: "",
-    ipanthomedirectory: "",
-    ipanthomedirectorydrive: "",
+    ipantlogonscript:
+      partialUser.ipantlogonscript || oldUserObject?.ipantlogonscript || "",
+    ipantprofilepath:
+      partialUser.ipantprofilepath || oldUserObject?.ipantprofilepath || "",
+    ipanthomedirectory:
+      partialUser.ipanthomedirectory || oldUserObject?.ipanthomedirectory || "",
+    ipanthomedirectorydrive:
+      partialUser.ipanthomedirectorydrive ||
+      oldUserObject?.ipanthomedirectorydrive ||
+      "",
     // 'Member of' data
-    memberof_group: [],
-    memberof_netgroup: [],
-    memberof_role: [],
-    memberof_hbacrule: [],
-    memberof_sudorule: [],
-    memberof_subid: [],
-    // Indirect membership
-    memberofindirect_group: [],
-    memberofindirect_netgroup: [],
-    memberofindirect_role: [],
-    memberofindirect_hbacrule: [],
-    memberofindirect_sudorule: [],
-    memberofindirect_subid: [],
+    memberof_group:
+      partialUser.memberof_group || oldUserObject?.memberof_group || [],
     // 'Managed by' data
-    mepmanagedentry: [],
+    mepmanagedentry:
+      partialUser.mepmanagedentry || oldUserObject?.mepmanagedentry || [],
     // other
-    krbcanonicalname: [],
-    nsaccountlock: false,
-    objectclass: [],
-    ipauniqueid: "",
-    ipantsecurityidentifier: "",
-    attributelevelrights: {},
-    has_keytab: false,
-    preserved: false,
-    dn: "",
-    sshpubkeyfp: [],
-    krbextradata: "",
-    krblastadminunlock: null,
-    krblastfailedauth: null,
-    krblastpwdchange: null,
-    krbloginfailedcount: "",
+    krbcanonicalname:
+      partialUser.krbcanonicalname || oldUserObject?.krbcanonicalname || [],
+    nsaccountlock:
+      partialUser.nsaccountlock || oldUserObject?.nsaccountlock || true,
+    objectclass: partialUser.objectclass || oldUserObject?.objectclass || [],
+    ipauniqueid: partialUser.ipauniqueid || oldUserObject?.ipauniqueid || "",
+    ipantsecurityidentifier:
+      partialUser.ipantsecurityidentifier ||
+      oldUserObject?.ipantsecurityidentifier ||
+      "",
+    attributelevelrights:
+      partialUser.attributelevelrights ||
+      oldUserObject?.attributelevelrights ||
+      {},
+    has_keytab: partialUser.has_keytab || oldUserObject?.has_keytab || false,
+    preserved: partialUser.preserved || oldUserObject?.preserved || false,
+    dn: partialUser.dn || oldUserObject?.dn || "",
+    sshpubkeyfp: partialUser.sshpubkeyfp || oldUserObject?.sshpubkeyfp || [],
   };
 
   return user;
-}
+};

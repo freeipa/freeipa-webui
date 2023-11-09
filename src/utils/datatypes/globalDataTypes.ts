@@ -135,7 +135,7 @@ export interface KrbPolicy {
   usercertificatebinary: string[];
 }
 
-export interface UserGroupOld {
+export interface UserGroup {
   name: string;
   gid: string;
   description: string;
