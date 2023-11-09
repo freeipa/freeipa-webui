@@ -21,6 +21,8 @@ import {
   User,
   IDPServer,
   RadiusServer,
+  PwPolicy,
+  KrbPolicy,
 } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
@@ -51,10 +53,8 @@ export interface PropsToUserSettings {
   user: Partial<User>; // TODO: Replace with `userData` in all subsections
   onUserChange: (user: Partial<User>) => void;
   metadata: Metadata;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  pwPolicyData: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  krbPolicyData: any;
+  pwPolicyData: Partial<PwPolicy>;
+  krbPolicyData: Partial<KrbPolicy>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   certData: any;
   onRefresh: () => void;
