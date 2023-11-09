@@ -33,7 +33,9 @@ const store = configureStore({
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(api.middleware),
+    getDefaultMiddleware({
+      serializableCheck: false, // Removes the warning about non-serializable data
+    }).concat(api.middleware),
 });
 
 // optional, but required for refetchOnFocus/refetchOnReconnect behaviors

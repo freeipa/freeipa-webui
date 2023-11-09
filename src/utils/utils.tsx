@@ -227,7 +227,8 @@ const formatDate = (date, format, local) => {
 };
 
 export const toGeneralizedTime = (date: Date) => {
-  return formatDate(date, templates.generalized, false);
+  const generalizedTimeDate = formatDate(date, templates.generalized, false);
+  return generalizedTimeDate;
 };
 
 // Get different values from DN
@@ -256,4 +257,20 @@ export const parseDn = (dn: string) => {
   }
 
   return result as DN;
+};
+
+// Given a (potential) __datetime__ object, parse it into a Date object or null (if empty)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const parseAPIDatetime = (param: any) => {
+  let parsedDate: Date | null = null;
+  if (param !== undefined) {
+    if (param[0].__datetime__ !== undefined) {
+      parsedDate = parseFullDateStringToUTCFormat(
+        param[0].__datetime__
+      ) as Date;
+    } else {
+      parsedDate = parseFullDateStringToUTCFormat(param) as Date;
+    }
+  }
+  return parsedDate;
 };

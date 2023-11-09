@@ -5,7 +5,6 @@ import {
   InputGroup,
   TimePicker,
   isValidDate,
-  yyyyMMddFormat,
 } from "@patternfly/react-core";
 // Utils
 import {
@@ -15,9 +14,8 @@ import {
 import {
   BasicType,
   IPAParamDefinition,
-  getParamMetadata,
-  isRequired,
-  isWritable,
+  ParamProperties,
+  getParamProperties,
   updateIpaObject,
 } from "src/utils/ipaObjectUtils";
 import { ParamMetadata } from "src/utils/datatypes/globalDataTypes";
@@ -40,84 +38,35 @@ export interface ParamPropertiesDateTime {
   paramMetadata: ParamMetadata;
 }
 
-const IpaCalendar = (props: IPAParamDefinition) => {
-  const getValueDateTime = (ipaObject, propName) => {
-    let paramUtcDate: Date | null = null;
+function getParamPropertiesDateTime(
+  parDef: IPAParamDefinition
+): ParamPropertiesDateTime {
+  const paramProms: ParamProperties = getParamProperties(parDef);
 
-    if (ipaObject !== undefined) {
-      const paramValue = ipaObject[propName] as DateParam[];
-
-      if (paramValue) {
-        // Detect if date parameter exists
-        let dateParam = "";
-        // Processing different formats
-        // i.e.: 'paramValue[0].__datetime__' or 'paramValue'
-        if (paramValue[0].__datetime__) {
-          dateParam = paramValue[0].__datetime__ as string;
-        } else {
-          dateParam = paramValue.toString();
-        }
-        // Parse to UTC format
-        paramUtcDate = parseFullDateStringToUTCFormat(dateParam);
-      }
-    }
-    return paramUtcDate;
-  };
-
-  function getParamPropertiesDateTime(
-    parDef: IPAParamDefinition
-  ): ParamPropertiesDateTime {
-    const propName = parDef.propertyName || parDef.name;
-    const paramMetadata = getParamMetadata(
-      parDef.metadata,
-      parDef.objectName,
-      propName
-    );
-    if (!paramMetadata) {
-      return {
-        writable: false,
-        required: false,
-        readOnly: true,
-        value: null,
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        onChange: () => {},
-        paramMetadata: {} as ParamMetadata,
-      };
-    }
-    const writable = isWritable(
-      paramMetadata,
-      parDef.ipaObject,
-      parDef.alwaysWritable
-    );
-    const required = isRequired(parDef, paramMetadata, writable);
-    const readOnly =
-      parDef.readOnly === undefined ? !writable : parDef.readOnly;
-    const value = getValueDateTime(parDef.ipaObject, propName);
-
-    const onChange = (value: BasicType) => {
-      if (parDef.onChange) {
-        parDef.onChange({ ...parDef.ipaObject, [propName]: value });
-      }
-    };
-    return {
-      writable,
-      required,
-      readOnly,
-      value,
-      onChange,
-      paramMetadata,
-    };
+  let valueDate: Date | null;
+  if (paramProms.value instanceof Date) {
+    valueDate = paramProms.value as Date;
+  } else if (typeof paramProms.value === "string") {
+    valueDate = parseFullDateStringToUTCFormat(paramProms.value as string);
+  } else {
+    valueDate = null;
   }
+  return {
+    writable: paramProms.writable,
+    required: paramProms.required,
+    readOnly: paramProms.readOnly,
+    value: valueDate,
+    onChange: paramProms.onChange,
+    paramMetadata: paramProms.paramMetadata,
+  };
+}
 
+function cloneDate(date: Date): Date {
+  return parseFullDateStringToUTCFormat(toGeneralizedTime(date)) as Date;
+}
+
+const IpaCalendar = (props: IPAParamDefinition) => {
   const { readOnly, value } = getParamPropertiesDateTime(props);
-  const [valueDate, setValueDate] = React.useState<Date | null>(value || null);
-
-  // Keep the values updated, thus preventing empty values
-  React.useEffect(() => {
-    if (props.ipaObject !== undefined) {
-      setValueDate(value || null);
-    }
-  }, [props.ipaObject]);
 
   // On change date handler
   const onDateChange = (
@@ -127,23 +76,17 @@ const IpaCalendar = (props: IPAParamDefinition) => {
   ) => {
     if (newFromDate !== undefined) {
       if (
-        valueDate &&
-        isValidDate(valueDate) &&
         isValidDate(newFromDate) &&
         inputDate === yyyyMMddFormat(newFromDate)
       ) {
-        newFromDate.setHours(valueDate.getHours());
-        newFromDate.setMinutes(valueDate.getMinutes());
-      }
-      if (
-        isValidDate(newFromDate) &&
-        inputDate === yyyyMMddFormat(newFromDate)
-      ) {
-        setValueDate(newFromDate);
+        if (value) {
+          newFromDate.setHours(value.getHours());
+          newFromDate.setMinutes(value.getMinutes());
+        }
         // Update 'ipaObject' with the new date
         // - Parse to generalized format (to return to the "user_mod" API call)
         if (props.ipaObject !== undefined && props.onChange !== undefined) {
-          const LDAPDate = toGeneralizedTime(newFromDate);
+          const LDAPDate: string = toGeneralizedTime(newFromDate);
           updateIpaObject(
             props.ipaObject,
             props.onChange,
@@ -157,48 +100,55 @@ const IpaCalendar = (props: IPAParamDefinition) => {
 
   // On change time handler
   const onTimeChange = (_event, time, hour, minute) => {
-    if (valueDate && isValidDate(valueDate)) {
-      const updatedFromDate = valueDate;
-      updatedFromDate.setHours(hour);
-      updatedFromDate.setMinutes(minute);
-
-      setValueDate(updatedFromDate);
-      // Update 'ipaObject' with the new date
-      // - Parse to generalized format (to return to the "user_mod" API call)
-      if (props.ipaObject !== undefined && props.onChange !== undefined) {
-        const LDAPDate = toGeneralizedTime(updatedFromDate);
-        updateIpaObject(props.ipaObject, props.onChange, LDAPDate, props.name);
-      }
-    }
+    // Assume inital data is null
     // If the date is empty, create a new one with the current time
-    if (valueDate === null) {
-      const updatedFromDate = new Date();
-      updatedFromDate.setHours(hour);
-      updatedFromDate.setMinutes(minute);
+    let updatedFromDate: Date = new Date();
+    if (value && isValidDate(value)) {
+      updatedFromDate = cloneDate(value);
+    }
+    updatedFromDate.setHours(hour);
+    updatedFromDate.setMinutes(minute);
 
-      setValueDate(updatedFromDate);
-      // Update 'ipaObject' with the new date
-      // - Parse to generalized format (to return to the "user_mod" API call)
-      if (props.ipaObject !== undefined && props.onChange !== undefined) {
-        const LDAPDate = toGeneralizedTime(updatedFromDate);
-        updateIpaObject(props.ipaObject, props.onChange, LDAPDate, props.name);
-      }
+    // Update 'ipaObject' with the new date
+    // - Parse to generalized format (to return to the "user_mod" API call)
+    if (props.ipaObject !== undefined && props.onChange !== undefined) {
+      const LDAPDate = toGeneralizedTime(updatedFromDate);
+      updateIpaObject(props.ipaObject, props.onChange, LDAPDate, props.name);
     }
   };
 
-  // Parse the current date into 'HH:MM' format
-  const hhMMFormat = (date: Date) => {
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
+  // Parse the current date into 'YYYY-MM-DD' format
+  const yyyyMMddFormat = (date: Date | null | undefined): string => {
+    if (date === undefined || date === null) return "";
 
-    return hours + ":" + minutes;
+    // This convertion is needed to prevent any Date data type issues
+    const dt = new Date(date);
+    const year = dt.getFullYear();
+    const month = dt.getMonth() + 1;
+    const day = dt.getDate().toString().padStart(2, "0");
+
+    const res = year.toString() + "-" + month.toString() + "-" + day;
+    return res;
+  };
+
+  // Parse the current date into 'HH:MM' format
+  const hhMMFormat = (date: Date | null | undefined): string => {
+    if (date === undefined || date === null) return "";
+
+    // This convertion is needed to prevent any Date data type issues
+    const dt = new Date(date);
+    const hours = dt.getHours().toString().padStart(2, "0");
+    const minutes = dt.getMinutes().toString().padStart(2, "0");
+
+    const res = hours + ":" + minutes;
+    return res;
   };
 
   return (
     <InputGroup>
       <DatePicker
         name={"add-date-" + props.name}
-        value={valueDate !== null ? yyyyMMddFormat(valueDate) : ""}
+        value={yyyyMMddFormat(value)}
         onChange={onDateChange}
         aria-label="Kerberos principal expiration date"
         placeholder="YYYY-MM-DD"
@@ -206,7 +156,7 @@ const IpaCalendar = (props: IPAParamDefinition) => {
       />
       <TimePicker
         name={"add-time-" + props.name}
-        time={valueDate !== null ? hhMMFormat(valueDate) : ""}
+        time={hhMMFormat(value)}
         aria-label="Kerberos principal expiration time"
         onChange={onTimeChange}
         placeholder="HH:MM"

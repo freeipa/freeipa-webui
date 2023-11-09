@@ -12,11 +12,11 @@ export interface User {
   // account
   uid: string; // required
   has_password: boolean;
-  krbpasswordexpiration: Date | string;
+  krbpasswordexpiration: Date | string | null; // string | any[]; // TODO; Remove 'string' when 'staged' and 'preserved' are adapted
   uidnumber: string;
   gidnumber: string;
   krbprincipalname: string[]; // multivalue
-  krbprincipalexpiration: Date | string;
+  krbprincipalexpiration: Date | string | null; // TODO; Remove 'string' when 'staged' and 'preserved' are adapted
   loginshell: string;
   homedirectory: string;
   ipasshpubkey: string[]; // multivalue
@@ -81,6 +81,40 @@ export interface User {
   preserved: boolean;
   dn: string;
   sshpubkeyfp: string[]; // multivalue
+}
+
+export interface PwPolicy {
+  attributelevelrights: Record<string, unknown>;
+  name: string;
+  dn: string;
+  krbmaxpwdlife: string;
+  krbminpwdlife: string;
+  krbpwdfailurecountinterval: string;
+  krbpwdhistorylength: string;
+  krbpwdlockoutduration: string;
+  krbpwdmaxfailure: string;
+  krbpwdmindiffchars: string;
+  krbpwdminlength: string;
+  passwordgracelimit: string;
+}
+
+export interface KrbPolicy {
+  attributelevelrights: Record<string, unknown>;
+  cn: string;
+  ipacertmapdata: string[];
+  ipantsecurityidentifier: string;
+  ipasshpubkey: string[];
+  ipauniqueid: string;
+  krbcanonicalname: string;
+  krbmaxrenewableage: string;
+  krbmaxticketlife: string;
+  krbprincipalexpiration: Date | string | null; // TODO: Remove 'string' when 'staged' and 'preserved' are adapted
+  krbprincipalname: string[];
+  loginshell: string;
+  mail: string[];
+  memberof: string;
+  mepmanagedentry: string;
+  usercertificatebinary: string[];
 }
 
 export interface UserGroup {
