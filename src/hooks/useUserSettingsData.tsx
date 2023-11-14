@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 // RPC
 import {
+  useGetActiveUsersQuery,
   useGetIdpServerQuery,
   useGetObjectMetadataQuery,
   useGetRadiusProxyQuery,
@@ -32,6 +33,7 @@ type UserSettingsData = {
   refetch: () => void;
   modifiedValues: () => Partial<User>;
   radiusServers: RadiusServer[];
+  activeUsersList: Partial<User>[];
   idpServers: IDPServer[];
 };
 
@@ -70,6 +72,11 @@ const useSettingsData = (
   const idpData = idpQuery.data;
   const isIdpLoading = idpQuery.isLoading;
 
+  // [API call] Active users (uid list)
+  const activeUsersListQuery = useGetActiveUsersQuery();
+  const activeUsersListData = activeUsersListQuery.data;
+  const isActiveUsersListLoading = activeUsersListQuery.isLoading;
+
   const [modified, setModified] = useState(false);
 
   // Data displayed and modified by the user
@@ -86,7 +93,8 @@ const useSettingsData = (
       metadataLoading ||
       isFullDataLoading ||
       isRadiusProxyLoading ||
-      isIdpLoading,
+      isIdpLoading ||
+      isActiveUsersListLoading,
     isFetching: userFullDataQuery.isFetching,
     modified,
     setModified,
@@ -95,6 +103,7 @@ const useSettingsData = (
     setUser,
     radiusServers: radiusProxyData || [],
     idpServers: idpData || [],
+    activeUsersList: activeUsersListData || [],
     refetch: userFullDataQuery.refetch,
   } as UserSettingsData;
 
