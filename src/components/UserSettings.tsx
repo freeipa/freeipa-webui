@@ -64,6 +64,7 @@ export interface PropsToUserSettings {
   onResetValues: () => void;
   radiusProxyData?: RadiusServer[];
   idpData?: IDPServer[];
+  activeUsersList?: Partial<User>[];
   from: "active-users" | "stage-users" | "preserved-users";
 }
 
@@ -308,7 +309,12 @@ const UserSettings = (props: PropsToUserSettings) => {
                 id="employee-information"
                 text="Employee information"
               />
-              <UsersEmployeeInfo />
+              <UsersEmployeeInfo
+                user={props.user}
+                onUserChange={props.onUserChange}
+                metadata={props.metadata}
+                activeUsersList={props.activeUsersList || []}
+              />
               <TitleLayout
                 key={7}
                 headingLevel="h2"

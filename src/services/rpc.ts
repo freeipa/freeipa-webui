@@ -167,6 +167,7 @@ export const api = createApi({
     "RadiusServer",
     "IdpServer",
     "CertificateAuthority",
+    "ActiveUsers",
   ],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
@@ -523,6 +524,17 @@ export const api = createApi({
         });
       },
     }),
+    getActiveUsers: build.query<User[], void>({
+      query: () => {
+        return getCommand({
+          method: "user_find",
+          params: [[null], { version: API_VERSION_BACKUP }],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): User[] =>
+        response.result.result as unknown as User[],
+      providesTags: ["ActiveUsers"],
+    }),
   }),
 });
 
@@ -584,4 +596,5 @@ export const {
   useRemoveCertMapDataMutation,
   useRemoveStagePrincipalAliasMutation,
   useAddStagePrincipalAliasMutation,
+  useGetActiveUsersQuery,
 } = api;
