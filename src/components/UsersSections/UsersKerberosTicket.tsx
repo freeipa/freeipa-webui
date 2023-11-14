@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 // PatternFly
 import {
   Flex,
@@ -8,11 +8,12 @@ import {
   TextInput,
 } from "@patternfly/react-core";
 
-const UsersKerberosTicket = () => {
-  // TODO: This state variables should update the user data via the IPA API (`krbtpolicy_mod`)
-  const [maxRenew] = useState("");
-  const [maxLife] = useState("");
+interface PropsToKrbTicket {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  krbPolicyData: Record<string, any>;
+}
 
+const UsersKerberosTicket = (props: PropsToKrbTicket) => {
   return (
     <Flex direction={{ default: "column", md: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
@@ -21,10 +22,10 @@ const UsersKerberosTicket = () => {
             <TextInput
               id="max-renew"
               name="krbmaxrenewableage"
-              value={maxRenew}
+              value={props.krbPolicyData.krbmaxrenewableage}
               type="text"
               aria-label="max renew in seconds"
-              isDisabled
+              readOnlyVariant="plain"
             />
           </FormGroup>
         </Form>
@@ -35,10 +36,10 @@ const UsersKerberosTicket = () => {
             <TextInput
               id="max-life"
               name="krbmaxticketlife"
-              value={maxLife}
+              value={props.krbPolicyData.krbmaxticketlife}
               type="text"
               aria-label="max life in seconds"
-              isDisabled
+              readOnlyVariant="plain"
             />
           </FormGroup>
         </Form>
