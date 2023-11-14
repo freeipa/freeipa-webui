@@ -290,7 +290,11 @@ const UserSettings = (props: PropsToUserSettings) => {
                 id="mailing-address"
                 text="Mailing address"
               />
-              <UsersMailingAddress />
+              <UsersMailingAddress
+                user={props.user}
+                onUserChange={props.onUserChange}
+                metadata={props.metadata}
+              />
               <TitleLayout
                 key={6}
                 headingLevel="h2"

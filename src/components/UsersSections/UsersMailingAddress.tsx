@@ -1,58 +1,46 @@
-import React, { useState } from "react";
+import React from "react";
 // PatternFly
-import {
-  Flex,
-  FlexItem,
-  Form,
-  FormGroup,
-  TextInput,
-} from "@patternfly/react-core";
+import { Flex, FlexItem, Form, FormGroup } from "@patternfly/react-core";
+// Data types
+import { Metadata, User } from "src/utils/datatypes/globalDataTypes";
+// Form
+import IpaTextInput from "../Form/IpaTextInput";
+// Utils
+import { asRecord } from "src/utils/userUtils";
 
-const UsersMailingAddress = () => {
-  // TODO: This state variables should update the user data via the IPA API (`user_mod`)
-  const [streetAddress, setStreetAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [stateProvince, setStateProvince] = useState("");
-  const [zip, setZip] = useState("");
+interface PropsToUsersMailingAddress {
+  user: Partial<User>;
+  onUserChange: (user: Partial<User>) => void;
+  metadata: Metadata;
+}
 
-  const onChangeStreetAddressHandler = (value: string) => {
-    setStreetAddress(value);
-  };
-
-  const onChangeCityHandler = (value: string) => {
-    setCity(value);
-  };
-
-  const onChangeStateProvinceHandler = (value: string) => {
-    setStateProvince(value);
-  };
-
-  const onChangeZipHandler = (value: string) => {
-    setZip(value);
-  };
+const UsersMailingAddress = (props: PropsToUsersMailingAddress) => {
+  // Get 'ipaObject' and 'recordOnChange' to use in 'IpaTextInput'
+  const { ipaObject, recordOnChange } = asRecord(
+    props.user,
+    props.onUserChange
+  );
 
   return (
     <Flex direction={{ default: "column", md: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-u-mb-lg">
           <FormGroup label="Street address" fieldId="street-address">
-            <TextInput
-              id="street-address"
-              name="street"
-              value={streetAddress}
-              type="text"
-              aria-label="street address"
-              onChange={onChangeStreetAddressHandler}
+            <IpaTextInput
+              name={"street"}
+              ipaObject={ipaObject}
+              onChange={recordOnChange}
+              objectName="user"
+              metadata={props.metadata}
             />
           </FormGroup>
           <FormGroup label="City" fieldId="city">
-            <TextInput
-              id="city"
-              name="l"
-              value={city}
-              type="text"
-              aria-label="city"
-              onChange={onChangeCityHandler}
+            <IpaTextInput
+              name={"l"}
+              ipaObject={ipaObject}
+              onChange={recordOnChange}
+              objectName="user"
+              metadata={props.metadata}
             />
           </FormGroup>
         </Form>
@@ -60,23 +48,21 @@ const UsersMailingAddress = () => {
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-u-mb-lg">
           <FormGroup label="State/province" fieldId="state-province">
-            <TextInput
-              id="state-province"
-              name="st"
-              value={stateProvince}
-              type="text"
-              aria-label="state province"
-              onChange={onChangeStateProvinceHandler}
+            <IpaTextInput
+              name={"st"}
+              ipaObject={ipaObject}
+              onChange={recordOnChange}
+              objectName="user"
+              metadata={props.metadata}
             />
           </FormGroup>
           <FormGroup label="ZIP" fieldId="zip">
-            <TextInput
-              id="zip"
-              name="postalcode"
-              value={zip}
-              type="text"
-              aria-label="zip"
-              onChange={onChangeZipHandler}
+            <IpaTextInput
+              name={"postalcode"}
+              ipaObject={ipaObject}
+              onChange={recordOnChange}
+              objectName="user"
+              metadata={props.metadata}
             />
           </FormGroup>
         </Form>
