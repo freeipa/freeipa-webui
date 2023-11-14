@@ -308,7 +308,11 @@ const UserSettings = (props: PropsToUserSettings) => {
                 id="smb-services"
                 text="User attributes for SMB services"
               />
-              <UsersAttributesSMB />
+              <UsersAttributesSMB
+                user={props.user}
+                onUserChange={props.onUserChange}
+                metadata={props.metadata}
+              />
             </Flex>
           </SidebarContent>
         </Sidebar>
