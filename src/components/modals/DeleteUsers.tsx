@@ -193,10 +193,15 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
     setIsModalErrorOpen(true);
   };
 
+  const [spinning, setBtnSpinning] = React.useState<boolean>(false);
+
   // Delete user
   const deleteUsers = (uidsToDelete: string[]) => {
     // Prepare users params
     const uidsToDeletePayload: Command[] = [];
+
+    setBtnSpinning(true);
+
     let deletionParams = {};
     if (props.from !== "stage-users") {
       deletionParams = { preserve: !isDeleteChecked };
@@ -278,6 +283,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
           handleAPIError(error);
         }
       }
+      setBtnSpinning(false);
     });
   };
 
@@ -290,8 +296,12 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
         deleteUsers(props.selectedUsersData.selectedUsers);
       }}
       form="active-users-remove-users-modal"
+      spinnerAriaValueText="Deleting"
+      spinnerAriaLabel="Deleting"
+      isLoading={spinning}
+      isDisabled={spinning}
     >
-      Delete
+      {spinning ? "Deleting" : "Delete"}
     </Button>,
     <Button key="cancel-new-user" variant="link" onClick={closeModal}>
       Cancel
@@ -332,8 +342,12 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
         deleteUsers(props.selectedUsersData.selectedUsers);
       }}
       form="active-users-remove-users-modal"
+      spinnerAriaValueText="Preserving"
+      spinnerAriaLabel="Preserving"
+      isLoading={spinning}
+      isDisabled={spinning}
     >
-      Preserve
+      {spinning ? "Preserving" : "Preserve"}
     </Button>,
     <Button key="cancel-new-user" variant="link" onClick={closeModal}>
       Cancel
