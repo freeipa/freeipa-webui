@@ -291,7 +291,11 @@ const UserSettings = (props: PropsToUserSettings) => {
                 id="contact-settings"
                 text="Contact settings"
               />
-              <UsersContactSettings user={props.user} />
+              <UsersContactSettings
+                user={props.user}
+                onUserChange={props.onUserChange}
+                metadata={props.metadata}
+              />
               <TitleLayout
                 key={5}
                 headingLevel="h2"
