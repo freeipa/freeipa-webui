@@ -341,22 +341,17 @@ export const api = createApi({
       providesTags: ["FullUser"],
     }),
     saveUser: build.mutation<FindRPCResponse, Partial<User>>({
-      query: (save_args) => {
+      query: (user) => {
         const params = {
           version: API_VERSION_BACKUP,
-          ...save_args["user"],
+          ...user,
         };
 
         delete params["uid"];
 
-        let method = "user_mod";
-        if (save_args["user_type"] === "stage") {
-          method = "stageuser_mod";
-        }
-
         return getCommand({
-          method: method,
-          params: [[params.user.uid], params],
+          method: "user_mod",
+          params: [[user.uid], params],
         });
       },
       invalidatesTags: ["FullUser"],
