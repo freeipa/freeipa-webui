@@ -48,24 +48,10 @@ interface GroupId {
 export interface PropsToAddUser {
   show: boolean;
   from: "active-users" | "stage-users" | "preserved-users";
-  //  NOTE: 'setShowTableRows' is handled as { (boolean) => void | undefined } as a temporal solution
-  //    until the C.L. is adapted in 'stage-' and 'preserved users' (otherwise
-  //    the operation will fail for those components)
   setShowTableRows?: (value: boolean) => void;
-  //  NOTE: This prop is not needed but it is still being used by 'stage-' and 'preserved users'
-  //     and will be removed when the communication layer is implemented in the buttons od those pages.
   handleModalToggle: () => void;
-  //  NOTE: 'onOpenAddModal' is handled as { () => void | undefined } as a temporal solution
-  //    until the C.L. is adapted in 'stage-' and 'preserved users' (otherwise
-  //    the operation will fail for those components)
   onOpenAddModal?: () => void;
-  //  NOTE: 'onCloseAddModal' is handled as { () => void | undefined } as a temporal solution
-  //    until the C.L. is adapted in 'stage-' and 'preserved users' (otherwise
-  //    the operation will fail for those components)
   onCloseAddModal?: () => void;
-  //  NOTE: 'onRefresh' is handled as { (User) => void | undefined } as a temporal solution
-  //    until the C.L. is adapted in 'stage-' and 'preserved users' (otherwise
-  //    the operation will fail for those components)
   onRefresh?: () => void;
 }
 
@@ -95,6 +81,9 @@ const AddUser = (props: PropsToAddUser) => {
     React.useState<boolean>(false);
   const [newPassword, setNewPassword] = React.useState("");
   const [verifyNewPassword, setVerifyNewPassword] = React.useState("");
+  const [addSpinning, setAddBtnSpinning] = React.useState<boolean>(false);
+  const [addAgainSpinning, setAddAgainBtnSpinning] =
+    React.useState<boolean>(false);
 
   // Verify the passwords are the same when we update a password value
   useEffect(() => {
@@ -588,7 +577,6 @@ const AddUser = (props: PropsToAddUser) => {
   const addUserData = async () => {
     // If 'userLogin' is not provided, use empty array
     const usLogin = userLogin !== "" ? [userLogin] : [];
-
     const newUserData = {
       givenname: firstName,
       sn: lastName,
@@ -642,6 +630,8 @@ const AddUser = (props: PropsToAddUser) => {
           handleAPIError(error);
         }
       }
+      setAddBtnSpinning(false);
+      setAddAgainBtnSpinning(false);
     });
   };
 
@@ -649,6 +639,7 @@ const AddUser = (props: PropsToAddUser) => {
     onAddUserClicked = true;
     const validation = validateFields();
     if (validation) {
+      setAddBtnSpinning(true);
       addUserData().then(() => {
         if (!isAdditionSuccess) {
           // Close the modal without cleaning fields
@@ -688,6 +679,7 @@ const AddUser = (props: PropsToAddUser) => {
     onAddUserClicked = false;
     const validation = validateFields();
     if (validation) {
+      setAddAgainBtnSpinning(true);
       addUserData().then(() => {
         if (isAdditionSuccess) {
           // Do not close the modal, but clean fields & reset validations
@@ -763,19 +755,25 @@ const AddUser = (props: PropsToAddUser) => {
     <Button
       key="add-new-user"
       variant="secondary"
-      isDisabled={buttonDisabled}
+      isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
       onClick={onAddUser}
       form="modal-form"
+      spinnerAriaValueText="Adding"
+      spinnerAriaLabel="Adding"
+      isLoading={addSpinning}
     >
-      Add
+      {addSpinning ? "Adding" : "Add"}
     </Button>,
     <Button
       key="add-and-add-another-user"
       variant="secondary"
-      isDisabled={buttonDisabled}
+      isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
       onClick={onAddAndAddAnother}
+      spinnerAriaValueText="Adding again"
+      spinnerAriaLabel="Adding again"
+      isLoading={addAgainSpinning}
     >
-      Add and add another
+      {addAgainSpinning ? "Adding" : "Add and add another"}
     </Button>,
     <Button key="cancel-new-user" variant="link" onClick={cleanAndCloseModal}>
       Cancel

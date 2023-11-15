@@ -149,6 +149,12 @@ const StageUsers = () => {
     userDataResponse.refetch();
   };
 
+  // Always refetch data when the component is loaded.
+  // This ensures the data is always up-to-date.
+  React.useEffect(() => {
+    userDataResponse.refetch();
+  }, []);
+
   // Selected users state
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
 

@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   Page,
+  PaginationVariant,
   PageSection,
   PageSectionVariants,
   TextVariants,
-  PaginationVariant,
 } from "@patternfly/react-core";
 // PatternFly table
 import {
@@ -18,7 +18,7 @@ import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/o
 import { User } from "src/utils/datatypes/globalDataTypes";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 // Redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
@@ -32,14 +32,127 @@ import PaginationPrep from "src/components/PaginationPrep";
 import BulkSelectorUsersPrep from "src/components/BulkSelectorUsersPrep";
 // Modals
 import DeleteUsers from "src/components/modals/DeleteUsers";
+import StagePreservedUsers from "src/components/modals/StagePreservedUsers";
+import RestorePreservedUsers from "src/components/modals/RestorePreservedUsers";
+// Hooks
+import { updateUsersList } from "src/store/Identity/preservedUsers-slice";
 // Utils
-import { isUserSelectable } from "src/utils/utils";
+import { API_VERSION_BACKUP, isUserSelectable } from "src/utils/utils";
+import { useGettingPreservedUserQuery, UsersPayload } from "src/services/rpc";
+import useApiError from "src/hooks/useApiError";
+import GlobalErrors from "src/components/errors/GlobalErrors";
+import ModalErrors from "src/components/errors/ModalErrors";
 
 const PreservedUsers = () => {
-  // Initialize preserved users list (Redux)
-  const preservedUsersList = useAppSelector(
-    (state) => state.preservedUsers.usersList
-  );
+  // Initialize stage users list (Redux)
+  const dispatch = useAppDispatch();
+
+  // Retrieve API version from environment data
+  const apiVersion = useAppSelector(
+    (state) => state.global.environment.api_version
+  ) as string;
+
+  // Preservered users list
+  const [preservedUsersList, setPreservedUsersList] = useState<User[]>([]);
+
+  // Handle API calls errors
+  const globalErrors = useApiError([]);
+  const modalErrors = useApiError([]);
+
+  // Main states - what user can define / what we could use in page URL
+  const [searchValue, setSearchValue] = React.useState("");
+  const [page, setPage] = useState<number>(1);
+  const [perPage, setPerPage] = useState<number>(15);
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+
+  // Users displayed on the first page
+  const [shownUsersList, setShownUsersList] = useState<User[]>([]);
+
+  // Derived states - what we get from API
+  const userDataResponse = useGettingPreservedUserQuery({
+    searchValue: "",
+    sizeLimit: 0,
+    apiVersion: apiVersion || API_VERSION_BACKUP,
+  } as UsersPayload);
+
+  const {
+    data: batchResponse,
+    isLoading: isBatchLoading,
+    error: batchError,
+  } = userDataResponse;
+
+  // Page indexes
+  const firstUserIdx = (page - 1) * perPage;
+  const lastUserIdx = page * perPage;
+
+  // Handle data when the API call is finished
+  useEffect(() => {
+    if (userDataResponse.isFetching) {
+      setShowTableRows(false);
+      // Reset selected users on refresh
+      setSelectedUserNames([]);
+      setSelectedUserIds([]);
+      setSelectedUsers([]);
+      globalErrors.clear();
+      return;
+    }
+
+    // API response: Success
+    if (
+      userDataResponse.isSuccess &&
+      userDataResponse.data &&
+      batchResponse !== undefined
+    ) {
+      const usersListResult = batchResponse.result.results;
+      const usersListSize = batchResponse.result.count;
+      const usersList: User[] = [];
+
+      for (let i = 0; i < usersListSize; i++) {
+        usersList.push(usersListResult[i].result);
+      }
+
+      // Update 'Active users' slice data
+      dispatch(updateUsersList(usersList));
+      // Update the list of users
+      setPreservedUsersList(usersList);
+      // Update the shown users list
+      setShownUsersList(usersList.slice(firstUserIdx, lastUserIdx));
+      // Show table elements
+      setShowTableRows(true);
+    }
+
+    // API response: Error
+    if (
+      !userDataResponse.isLoading &&
+      userDataResponse.isError &&
+      userDataResponse.error !== undefined
+    ) {
+      globalErrors.addError(
+        batchError,
+        "Error when loading data",
+        "error-batch-users"
+      );
+    }
+  }, [userDataResponse]);
+
+  // Refresh button handling
+  const refreshUsersData = () => {
+    // Hide table
+    setShowTableRows(false);
+
+    // Reset selected users on refresh
+    setSelectedUserNames([]);
+    setSelectedUserIds([]);
+    setSelectedUsers([]);
+
+    userDataResponse.refetch();
+  };
+
+  // Always refetch data when the component is loaded.
+  // This ensures the data is always up-to-date.
+  React.useEffect(() => {
+    userDataResponse.refetch();
+  }, []);
 
   // Selected users state
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
@@ -63,9 +176,6 @@ const PreservedUsers = () => {
     setIsDeletion(value);
   };
 
-  // - Selected user ids state
-  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
-
   const updateSelectedUserIds = (newSelectedUserIds: string[]) => {
     setSelectedUserIds(newSelectedUserIds);
   };
@@ -79,50 +189,33 @@ const PreservedUsers = () => {
   };
 
   // Pagination
-  const [page, setPage] = useState<number>(1);
-
   const updatePage = (newPage: number) => {
     setPage(newPage);
   };
-
-  const [perPage, setPerPage] = useState<number>(15);
 
   const updatePerPage = (newSetPerPage: number) => {
     setPerPage(newSetPerPage);
   };
 
   // Users displayed on the first page
-  const [shownUsersList, setShownUsersList] = useState(
-    preservedUsersList.slice(0, perPage)
-  );
-
   const updateShownUsersList = (newShownUsersList: User[]) => {
     setShownUsersList(newShownUsersList);
   };
 
   // Filter (Input search)
-  const [searchValue, setSearchValue] = React.useState("");
-
   const updateSearchValue = (value: string) => {
     setSearchValue(value);
   };
 
   // Show table rows
-  const [showTableRows, setShowTableRows] = useState(false);
+  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
 
-  const updateShowTableRows = (value: boolean) => {
-    setShowTableRows(value);
-  };
-
-  // Modals functionality
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-  const onDeleteHandler = () => {
-    setShowDeleteModal(true);
-  };
-  const onDeleteModalToggle = () => {
-    setShowDeleteModal(!showDeleteModal);
-  };
+  // Show table rows only when data is fully retrieved
+  useEffect(() => {
+    if (showTableRows !== !isBatchLoading) {
+      setShowTableRows(!isBatchLoading);
+    }
+  }, [isBatchLoading]);
 
   // Table-related shared functionality
   // - Selectable checkboxes on table
@@ -144,17 +237,28 @@ const PreservedUsers = () => {
         : otherSelectedUserNames;
     });
 
-  // Refresh displayed elements every time elements list changes (from Redux or somewhere else)
-  React.useEffect(() => {
-    updatePage(1);
-    if (showTableRows) updateShowTableRows(false);
-    setTimeout(() => {
-      updateShownUsersList(preservedUsersList.slice(0, perPage));
-      updateShowTableRows(true);
-      // Reset 'selectedPerPage'
-      updateSelectedPerPage(0);
-    }, 2000);
-  }, [preservedUsersList]);
+  // Modals functionality
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showRestoreModal, setShowRestoreModal] = useState(false);
+  const [showStageModal, setShowStageModal] = useState(false);
+  const onDeleteHandler = () => {
+    setShowDeleteModal(true);
+  };
+  const onDeleteModalToggle = () => {
+    setShowDeleteModal(!showDeleteModal);
+  };
+  const onRestoreHandler = () => {
+    setShowRestoreModal(true);
+  };
+  const onRestoreModalToggle = () => {
+    setShowRestoreModal(!showRestoreModal);
+  };
+  const onStageHandler = () => {
+    setShowStageModal(true);
+  };
+  const onStageModalToggle = () => {
+    setShowStageModal(!showStageModal);
+  };
 
   // Data wrappers
   // - 'PaginationPrep'
@@ -257,13 +361,20 @@ const PreservedUsers = () => {
     },
     {
       key: 3,
-      element: <SecondaryButton>Refresh</SecondaryButton>,
+      element: (
+        <SecondaryButton
+          onClickHandler={refreshUsersData}
+          isDisabled={!showTableRows}
+        >
+          Refresh
+        </SecondaryButton>
+      ),
     },
     {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled}
+          isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
         >
           Delete
@@ -272,11 +383,25 @@ const PreservedUsers = () => {
     },
     {
       key: 5,
-      element: <SecondaryButton>Restore</SecondaryButton>,
+      element: (
+        <SecondaryButton
+          isDisabled={!showTableRows || selectedUsers.length === 0}
+          onClickHandler={onRestoreHandler}
+        >
+          Restore
+        </SecondaryButton>
+      ),
     },
     {
       key: 6,
-      element: <SecondaryButton>Stage</SecondaryButton>,
+      element: (
+        <SecondaryButton
+          isDisabled={!showTableRows || selectedUsers.length === 0}
+          onClickHandler={onStageHandler}
+        >
+          Stage
+        </SecondaryButton>
+      ),
     },
     {
       key: 7,
@@ -333,16 +458,20 @@ const PreservedUsers = () => {
         <div style={{ height: `calc(100vh - 352.2px)` }}>
           <OuterScrollContainer>
             <InnerScrollContainer>
-              <UsersTable
-                elementsList={preservedUsersList}
-                shownElementsList={shownUsersList}
-                from="preserved-users"
-                showTableRows={showTableRows}
-                usersData={usersTableData}
-                buttonsData={usersTableButtonsData}
-                paginationData={selectedPerPageData}
-                searchValue={searchValue}
-              />
+              {batchError !== undefined && batchError ? (
+                <GlobalErrors errors={globalErrors.getAll()} />
+              ) : (
+                <UsersTable
+                  elementsList={preservedUsersList}
+                  shownElementsList={shownUsersList}
+                  from="preserved-users"
+                  showTableRows={showTableRows}
+                  usersData={usersTableData}
+                  buttonsData={usersTableButtonsData}
+                  paginationData={selectedPerPageData}
+                  searchValue={searchValue}
+                />
+              )}
             </InnerScrollContainer>
           </OuterScrollContainer>
         </div>
@@ -355,12 +484,26 @@ const PreservedUsers = () => {
           className="pf-u-pb-0 pf-u-pr-md"
         />
       </PageSection>
+      <ModalErrors errors={modalErrors.getAll()} />
       <DeleteUsers
         show={showDeleteModal}
         from="preserved-users"
         handleModalToggle={onDeleteModalToggle}
         selectedUsersData={selectedUsersData}
         buttonsData={deleteUsersButtonsData}
+        onRefresh={refreshUsersData}
+      />
+      <RestorePreservedUsers
+        show={showRestoreModal}
+        handleModalToggle={onRestoreModalToggle}
+        selectedUsersData={selectedUsersData}
+        onRefresh={refreshUsersData}
+      />
+      <StagePreservedUsers
+        show={showStageModal}
+        handleModalToggle={onStageModalToggle}
+        selectedUsersData={selectedUsersData}
+        onRefresh={refreshUsersData}
       />
     </Page>
   );
