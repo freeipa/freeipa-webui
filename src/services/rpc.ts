@@ -884,6 +884,22 @@ export const api = createApi({
         });
       },
     }),
+    changePassword: build.mutation<FindRPCResponse, PasswordChangePayload>({
+      query: (payload) => {
+        const params = [
+          [payload.uid],
+          {
+            password: payload.password,
+            version: API_VERSION_BACKUP,
+          },
+        ];
+
+        return getCommand({
+          method: "passwd",
+          params: params,
+        });
+      },
+    }),
   }),
 });
 
@@ -918,4 +934,5 @@ export const {
   useEnableUserMutation,
   useDisableUserMutation,
   useUnlockUserMutation,
+  useChangePasswordMutation,
 } = api;
