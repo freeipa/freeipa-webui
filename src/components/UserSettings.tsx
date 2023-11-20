@@ -45,6 +45,7 @@ import {
 } from "src/services/rpc";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
+import ResetPassword from "./modals/ResetPassword";
 
 export interface PropsToUserSettings {
   originalUser: Partial<User>;
@@ -78,17 +79,32 @@ const UserSettings = (props: PropsToUserSettings) => {
     [saveUser] = useSaveStageUserMutation();
   }
 
+  // 'Reset password' option
+  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] =
+    useState(false);
+
+  const onCloseResetPasswordModal = () => {
+    setIsResetPasswordModalOpen(false);
+  };
+
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
 
   const dropdownItems = [
-    <DropdownItem key="reset password">Reset password</DropdownItem>,
-    <DropdownItem key="enable" isDisabled>
+    <DropdownItem
+      key="reset password"
+      onClick={() => setIsResetPasswordModalOpen(true)}
+    >
+      Reset password
+    </DropdownItem>,
+    <DropdownItem key="enable" isDisabled={!props.user.nsaccountlock}>
       Enable
     </DropdownItem>,
-    <DropdownItem key="disable">Disable</DropdownItem>,
+    <DropdownItem key="disable" isDisabled={props.user.nsaccountlock}>
+      Disable
+    </DropdownItem>,
     <DropdownItem key="delete">Delete</DropdownItem>,
-    <DropdownItem key="unlock" isDisabled>
+    <DropdownItem key="unlock" isDisabled={props.user.nsaccountlock}>
       Unlock
     </DropdownItem>,
     <DropdownItem key="add otp token">Add OTP token</DropdownItem>,
@@ -338,6 +354,11 @@ const UserSettings = (props: PropsToUserSettings) => {
         isSticky={true}
         className={"pf-u-p-md pf-u-ml-lg pf-u-mr-lg"}
         toolbarItems={toolbarFields}
+      />
+      <ResetPassword
+        uid={props.user.uid}
+        isOpen={isResetPasswordModalOpen}
+        onClose={onCloseResetPasswordModal}
       />
     </>
   );

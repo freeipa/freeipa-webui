@@ -530,6 +530,22 @@ export const api = createApi({
         response.result.result as unknown as User[],
       providesTags: ["ActiveUsers"],
     }),
+    changePassword: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [
+          [payload[0]],
+          {
+            password: payload[1],
+            version: API_VERSION_BACKUP,
+          },
+        ];
+
+        return getCommand({
+          method: "passwd",
+          params: params,
+        });
+      },
+    }),
   }),
 });
 
@@ -592,4 +608,5 @@ export const {
   useRemoveStagePrincipalAliasMutation,
   useAddStagePrincipalAliasMutation,
   useGetActiveUsersQuery,
+  useChangePasswordMutation,
 } = api;
