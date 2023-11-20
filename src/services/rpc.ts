@@ -163,6 +163,12 @@ export const getBatchCommand = (commandData: Command[], apiVersion: string) => {
   return payloadBatchParams;
 };
 
+// Payload needed to change password
+export interface PasswordChangePayload {
+  uid: string;
+  password: string;
+}
+
 // Endpoints that will be called from anywhere in the application.
 // Two types:
 //   - Queries: https://redux-toolkit.js.org/rtk-query/usage/queries
@@ -714,6 +720,22 @@ export const api = createApi({
         });
       },
     }),
+    changePassword: build.mutation<FindRPCResponse, PasswordChangePayload>({
+      query: (payload) => {
+        const params = [
+          [payload.uid],
+          {
+            password: payload.password,
+            version: API_VERSION_BACKUP,
+          },
+        ];
+
+        return getCommand({
+          method: "passwd",
+          params: params,
+        });
+      },
+    }),
   }),
 });
 
@@ -782,4 +804,5 @@ export const {
   useEnableUserMutation,
   useDisableUserMutation,
   useUnlockUserMutation,
+  useChangePasswordMutation,
 } = api;

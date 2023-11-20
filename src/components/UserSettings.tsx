@@ -51,6 +51,7 @@ import DisableEnableUsers from "./modals/DisableEnableUsers";
 import DeleteUsers from "./modals/DeleteUsers";
 import RebuildAutoMembership from "./modals/RebuildAutoMembership";
 import UnlockUser from "./modals/UnlockUser";
+import ResetPassword from "./modals/ResetPassword";
 
 export interface PropsToUserSettings {
   originalUser: Partial<User>;
@@ -160,11 +161,20 @@ const UserSettings = (props: PropsToUserSettings) => {
     return isLocked;
   };
 
+  // 'Reset password' option
+  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] =
+    useState(false);
+
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
 
   const activeDropdownItems = [
-    <DropdownItem key="reset password">Reset password</DropdownItem>,
+    <DropdownItem
+      key="reset password"
+      onClick={() => setIsResetPasswordModalOpen(true)}
+    >
+      Reset password
+    </DropdownItem>,
     <DropdownItem
       key="enable"
       isDisabled={!props.user.nsaccountlock}
@@ -487,6 +497,11 @@ const UserSettings = (props: PropsToUserSettings) => {
         onClose={onCloseRebuildAutoMembershipModal}
         entriesToRebuild={userToRebuild}
         entity="users"
+      />
+      <ResetPassword
+        uid={props.user.uid}
+        isOpen={isResetPasswordModalOpen}
+        onClose={() => setIsResetPasswordModalOpen(false)}
       />
     </>
   );
