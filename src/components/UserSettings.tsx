@@ -47,6 +47,8 @@ import {
 } from "src/services/rpc";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
+// Modals
+import DisableEnableUsers from "./modals/DisableEnableUsers";
 
 export interface PropsToUserSettings {
   originalUser: Partial<User>;
@@ -78,15 +80,60 @@ const UserSettings = (props: PropsToUserSettings) => {
     [saveUser] = useSaveStageUserMutation();
   }
 
+  // To handle the logic of the selectedUsersData (from
+  //   the 'Disable / Enable' modal), lets use the 'selectedUsers' state
+  const uidArray: string[] = ([props.user.uid] as string[]) || [];
+  const [selectedUsers, setSelectedUsers] = React.useState<string[]>(uidArray);
+  const [selectedUsersData, setSelectedUsersData] = React.useState({
+    selectedUsers: selectedUsers,
+    updateSelectedUsers: setSelectedUsers,
+  });
+
+  // Data is updated on 'props.user' changes
+  React.useEffect(() => {
+    if (props.user.nsaccountlock !== undefined) {
+      setOptionSelected(!props.user.nsaccountlock);
+    }
+
+    if (props.user.uid !== undefined) {
+      setSelectedUsers([props.user.uid]);
+      setSelectedUsersData({
+        selectedUsers: [props.user.uid],
+        updateSelectedUsers: setSelectedUsers,
+      });
+    }
+  }, [props.user]);
+
+  // 'Enable / disable' option
+  const [isDisableEnableModalOpen, setIsDisableEnableModalOpen] =
+    React.useState(false);
+  const [optionSelected, setOptionSelected] = React.useState<boolean>(
+    !props.user.nsaccountlock || false
+  ); // 'enable': false | 'disable': true
+
+  const onCloseDisableEnableModal = () => {
+    setIsDisableEnableModalOpen(false);
+  };
+
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
 
   const dropdownItems = [
     <DropdownItem key="reset password">Reset password</DropdownItem>,
-    <DropdownItem key="enable" isDisabled>
+    <DropdownItem
+      key="enable"
+      isDisabled={!props.user.nsaccountlock}
+      onClick={() => setIsDisableEnableModalOpen(true)}
+    >
       Enable
     </DropdownItem>,
-    <DropdownItem key="disable">Disable</DropdownItem>,
+    <DropdownItem
+      key="disable"
+      isDisabled={props.user.nsaccountlock}
+      onClick={() => setIsDisableEnableModalOpen(true)}
+    >
+      Disable
+    </DropdownItem>,
     <DropdownItem key="delete">Delete</DropdownItem>,
     <DropdownItem key="unlock" isDisabled>
       Unlock
@@ -338,6 +385,15 @@ const UserSettings = (props: PropsToUserSettings) => {
         isSticky={true}
         className={"pf-u-p-md pf-u-ml-lg pf-u-mr-lg"}
         toolbarItems={toolbarFields}
+      />
+      <DisableEnableUsers
+        show={isDisableEnableModalOpen}
+        from={props.from}
+        handleModalToggle={onCloseDisableEnableModal}
+        optionSelected={optionSelected}
+        selectedUsersData={selectedUsersData}
+        singleUser={true}
+        onRefresh={props.onRefresh}
       />
     </>
   );
