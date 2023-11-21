@@ -45,7 +45,9 @@ import {
 } from "src/services/rpc";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
+// Modals
 import ResetPassword from "./modals/ResetPassword";
+import DisableEnableUsers from "./modals/DisableEnableUsers";
 
 export interface PropsToUserSettings {
   originalUser: Partial<User>;
@@ -87,6 +89,41 @@ const UserSettings = (props: PropsToUserSettings) => {
     setIsResetPasswordModalOpen(false);
   };
 
+  // To handle the logic of the selectedUsersData (from
+  //   the 'Disable / Enable' modal), lets use the 'selectedUsers' state
+  const uidArray: string[] = ([props.user.uid] as string[]) || [];
+  const [selectedUsers, setSelectedUsers] = React.useState<string[]>(uidArray);
+  const [selectedUsersData, setSelectedUsersData] = React.useState({
+    selectedUsers: selectedUsers,
+    updateSelectedUsers: setSelectedUsers,
+  });
+
+  // Data is updated on 'props.user' changes
+  React.useEffect(() => {
+    if (props.user.nsaccountlock !== undefined) {
+      setOptionSelected(!props.user.nsaccountlock);
+    }
+
+    if (props.user.uid !== undefined) {
+      setSelectedUsers([props.user.uid]);
+      setSelectedUsersData({
+        selectedUsers: [props.user.uid],
+        updateSelectedUsers: setSelectedUsers,
+      });
+    }
+  }, [props.user]);
+
+  // 'Enable / disable' option
+  const [isDisableEnableModalOpen, setIsDisableEnableModalOpen] =
+    React.useState(false);
+  const [optionSelected, setOptionSelected] = React.useState<boolean>(
+    !props.user.nsaccountlock || false
+  ); // 'enable': false | 'disable': true
+
+  const onCloseDisableEnableModal = () => {
+    setIsDisableEnableModalOpen(false);
+  };
+
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
 
@@ -97,10 +134,18 @@ const UserSettings = (props: PropsToUserSettings) => {
     >
       Reset password
     </DropdownItem>,
-    <DropdownItem key="enable" isDisabled={!props.user.nsaccountlock}>
+    <DropdownItem
+      key="enable"
+      isDisabled={!props.user.nsaccountlock}
+      onClick={() => setIsDisableEnableModalOpen(true)}
+    >
       Enable
     </DropdownItem>,
-    <DropdownItem key="disable" isDisabled={props.user.nsaccountlock}>
+    <DropdownItem
+      key="disable"
+      isDisabled={props.user.nsaccountlock}
+      onClick={() => setIsDisableEnableModalOpen(true)}
+    >
       Disable
     </DropdownItem>,
     <DropdownItem key="delete">Delete</DropdownItem>,
@@ -359,6 +404,15 @@ const UserSettings = (props: PropsToUserSettings) => {
         uid={props.user.uid}
         isOpen={isResetPasswordModalOpen}
         onClose={onCloseResetPasswordModal}
+      />
+      <DisableEnableUsers
+        show={isDisableEnableModalOpen}
+        from={props.from}
+        handleModalToggle={onCloseDisableEnableModal}
+        optionSelected={optionSelected}
+        selectedUsersData={selectedUsersData}
+        singleUser={true}
+        onRefresh={props.onRefresh}
       />
     </>
   );
