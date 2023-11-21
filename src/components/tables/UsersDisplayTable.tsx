@@ -33,35 +33,45 @@ const UsersDisplayTable = (props: PropsToDisplayUsersTable) => {
 
   // Given userIds, retrieve full user info to display into table
   const usersToDisplay: User[] = [];
-  switch (props.from) {
-    case "active-users":
-      activeUsersListCopy.map((user) => {
-        props.usersToDisplay.map((selected) => {
-          if (user.uid[0] === selected[0]) {
-            usersToDisplay.push(user);
-          }
+  const [usersToDisplayList, setUsersToDisplayList] = React.useState<User[]>(
+    []
+  );
+
+  // Given its `uids`, get full user info to display
+  React.useEffect(() => {
+    switch (props.from) {
+      case "active-users":
+        activeUsersListCopy.map((user) => {
+          props.usersToDisplay.map((selected) => {
+            if (user.uid[0] === selected[0] || user.uid[0] === selected) {
+              usersToDisplay.push(user);
+            }
+          });
         });
-      });
-      break;
-    case "stage-users":
-      stageUsersListCopy.map((user) => {
-        props.usersToDisplay.map((selected) => {
-          if (user.uid === selected) {
-            usersToDisplay.push(user);
-          }
+        setUsersToDisplayList(usersToDisplay);
+        break;
+      case "stage-users":
+        stageUsersListCopy.map((user) => {
+          props.usersToDisplay.map((selected) => {
+            if (user.uid === selected || user.uid[0] === selected) {
+              usersToDisplay.push(user);
+            }
+          });
         });
-      });
-      break;
-    case "preserved-users":
-      preservedUsersListCopy.map((user) => {
-        props.usersToDisplay.map((selected) => {
-          if (user.uid === selected) {
-            usersToDisplay.push(user);
-          }
+        setUsersToDisplayList(usersToDisplay);
+        break;
+      case "preserved-users":
+        preservedUsersListCopy.map((user) => {
+          props.usersToDisplay.map((selected) => {
+            if (user.uid === selected || user.uid[0] === selected) {
+              usersToDisplay.push(user);
+            }
+          });
         });
-      });
-      break;
-  }
+        setUsersToDisplayList(usersToDisplay);
+        break;
+    }
+  }, [props.usersToDisplay]);
 
   // Define column names
   const columnNames = {
@@ -83,7 +93,8 @@ const UsersDisplayTable = (props: PropsToDisplayUsersTable) => {
     </Tr>
   );
 
-  const body = usersToDisplay.map((user) => (
+  // const body = usersToDisplay.map((user) => ( // usersToDisplayList
+  const body = usersToDisplayList.map((user) => (
     <Tr key={user.uid} id={user.uid}>
       <Td dataLabel={columnNames.userLogin}>{user.uid}</Td>
       <Td dataLabel={columnNames.firstName}>{user.givenname}</Td>

@@ -30,6 +30,9 @@ import ErrorModal from "./ErrorModal";
 import { ErrorData } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
+// Routing
+import { useNavigate } from "react-router-dom";
+import { URL_PREFIX } from "src/navigation/NavRoutes";
 
 interface ButtonsData {
   updateIsDeleteButtonDisabled?: (value: boolean) => void;
@@ -46,7 +49,7 @@ export interface PropsToDeleteUsers {
   from: "active-users" | "stage-users" | "preserved-users";
   handleModalToggle: () => void;
   selectedUsersData: SelectedUsersData;
-  buttonsData: ButtonsData;
+  buttonsData?: ButtonsData;
   //  NOTE: 'onRefresh' is handled as { (User) => void | undefined } as a temporal solution
   //    until the C.L. is adapted in 'stage-' and 'preserved users' (otherwise
   //    the operation will fail for those components)
@@ -59,11 +62,17 @@ export interface PropsToDeleteUsers {
   //    until the C.L. is adapted in 'stage-' and 'preserved users' (otherwise
   //    the operation will fail for those components)
   onCloseDeleteModal?: () => void;
+  // The elements to delete come from 'Settings' page.
+  // - In this case, it must redirect to main page after deletion
+  fromSettings?: boolean | false;
 }
 
 const DeleteUsers = (props: PropsToDeleteUsers) => {
   // Set dispatch (Redux)
   const dispatch = useAppDispatch();
+
+  // Redirect
+  const navigate = useNavigate();
 
   // Alerts
   const alerts = useAlerts();
@@ -248,13 +257,15 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
             props.selectedUsersData.updateSelectedUsers([]);
 
             // Disable 'Delete' button
-            if (
-              props.from === "active-users" &&
-              props.buttonsData.updateIsDeleteButtonDisabled !== undefined
-            ) {
-              props.buttonsData.updateIsDeleteButtonDisabled(true);
+            if (props.buttonsData !== undefined) {
+              if (
+                props.from === "active-users" &&
+                props.buttonsData.updateIsDeleteButtonDisabled !== undefined
+              ) {
+                props.buttonsData.updateIsDeleteButtonDisabled(true);
+              }
+              props.buttonsData.updateIsDeletion(true);
             }
-            props.buttonsData.updateIsDeletion(true);
 
             // Refresh data
             if (props.onRefresh !== undefined) {
@@ -275,7 +286,9 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
                 "success"
               );
             }
-
+            // Redirect to main page
+            navigate(URL_PREFIX + "/active-users");
+            // Close modal
             closeModal();
           }
         } else if (error) {
@@ -295,7 +308,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
       onClick={() => {
         deleteUsers(props.selectedUsersData.selectedUsers);
       }}
-      form="active-users-remove-users-modal"
+      form="remove-users-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -325,7 +338,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
       modalPosition="top"
       offPosition="76px"
       title={title}
-      formId="active-users-remove-users-modal"
+      formId="remove-users-modal"
       fields={fields}
       show={props.show}
       onClose={closeModal}
@@ -341,7 +354,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
       onClick={() => {
         deleteUsers(props.selectedUsersData.selectedUsers);
       }}
-      form="active-users-remove-users-modal"
+      form="remove-users-modal"
       spinnerAriaValueText="Preserving"
       spinnerAriaLabel="Preserving"
       isLoading={spinning}
@@ -360,7 +373,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
       modalPosition="top"
       offPosition="76px"
       title={title}
-      formId="active-users-remove-users-modal"
+      formId="remove-users-modal"
       fields={fields}
       show={props.show}
       onClose={closeModal}
