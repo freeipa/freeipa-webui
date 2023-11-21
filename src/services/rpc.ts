@@ -670,6 +670,36 @@ export const api = createApi({
         });
       },
     }),
+    enableUser: build.mutation<FindRPCResponse, string>({
+      query: (uid) => {
+        const params = [
+          [uid],
+          {
+            version: API_VERSION_BACKUP,
+          },
+        ];
+
+        return getCommand({
+          method: "user_enable",
+          params: params,
+        });
+      },
+    }),
+    disableUser: build.mutation<FindRPCResponse, string>({
+      query: (uid) => {
+        const params = [
+          [uid],
+          {
+            version: API_VERSION_BACKUP,
+          },
+        ];
+
+        return getCommand({
+          method: "user_disable",
+          params: params,
+        });
+      },
+    }),
   }),
 });
 
@@ -735,4 +765,6 @@ export const {
   useGettingHostQuery,
   useAutoMemberRebuildHostsMutation,
   useAutoMemberRebuildUsersMutation,
+  useEnableUserMutation,
+  useDisableUserMutation,
 } = api;

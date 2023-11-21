@@ -17,6 +17,9 @@ import {
   Command,
   BatchRPCResponse,
   useBatchMutCommandMutation,
+  useEnableUserMutation,
+  useDisableUserMutation,
+  ErrorResult,
 } from "src/services/rpc";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
@@ -44,11 +47,14 @@ export interface PropsToDisableEnableUsers {
   handleModalToggle: () => void;
   optionSelected: boolean; // 'enable': false | 'disable': true
   selectedUsersData: SelectedUsersData;
-  buttonsData: ButtonsData;
+  buttonsData?: ButtonsData;
   //  NOTE: 'onRefresh' is handled as { (User) => void | undefined } as a temporal solution
   //    until the C.L. is adapted in 'stage-' and 'preserved users' (otherwise
   //    the operation will fail for those components)
   onRefresh?: () => void;
+  // By default, the API call will be a batch operation (multiple users at once)
+  // - If 'singleUser' is set to 'true', the API call will be a single operation
+  singleUser?: boolean | false;
 }
 
 const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
@@ -60,6 +66,9 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
 
   // Define 'executeEnableDisableCommand' to add user data to IPA server
   const [executeEnableDisableCommand] = useBatchMutCommandMutation();
+  // Single user operations
+  const [enableSingleUser] = useEnableUserMutation();
+  const [disableSingleUser] = useDisableUserMutation();
 
   // Define which action (enable | disable) based on 'optionSelected'
   const action = !props.optionSelected ? "enable" : "disable";
@@ -154,18 +163,20 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
     // Update changes to Redux
     dispatchToRedux(newStatus, selectedUsers);
 
-    // Update 'isDisbleEnableOp' to notify table that an updating operation is performed
-    props.buttonsData.updateIsDisableEnableOp(true);
+    if (props.buttonsData !== undefined) {
+      // Update 'isDisbleEnableOp' to notify table that an updating operation is performed
+      props.buttonsData.updateIsDisableEnableOp(true);
 
-    // Update buttons
-    if (!props.optionSelected) {
-      // Enable
-      props.buttonsData.updateIsEnableButtonDisabled(true);
-      props.buttonsData.updateIsDisableButtonDisabled(false);
-    } else if (props.optionSelected) {
-      // Disable
-      props.buttonsData.updateIsEnableButtonDisabled(false);
-      props.buttonsData.updateIsDisableButtonDisabled(true);
+      // Update buttons
+      if (!props.optionSelected) {
+        // Enable
+        props.buttonsData.updateIsEnableButtonDisabled(true);
+        props.buttonsData.updateIsDisableButtonDisabled(false);
+      } else if (props.optionSelected) {
+        // Disable
+        props.buttonsData.updateIsEnableButtonDisabled(false);
+        props.buttonsData.updateIsDisableButtonDisabled(true);
+      }
     }
 
     // Reset selected users
@@ -174,88 +185,139 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
   };
 
   // Modify user status using IPA commands
+  // TODO: Better Adapt this function to several use-cases
   const modifyStatus = (newStatus: boolean, selectedUsers: string[]) => {
     // Prepare users params
     const uidsToChangeStatusPayload: Command[] = [];
     const changeStatusParams = {};
     const option = props.optionSelected ? "user_disable" : "user_enable";
 
-    selectedUsers.map((uid) => {
-      const payloadItem = {
-        method: option,
-        params: [uid, changeStatusParams],
-      } as Command;
+    // Make the API call (depending on 'singleUser' value)
+    if (props.singleUser === undefined || !props.singleUser) {
+      selectedUsers.map((uid) => {
+        const payloadItem = {
+          method: option,
+          params: [uid, changeStatusParams],
+        } as Command;
 
-      uidsToChangeStatusPayload.push(payloadItem);
-    });
+        uidsToChangeStatusPayload.push(payloadItem);
+      });
 
-    executeEnableDisableCommand(uidsToChangeStatusPayload).then((response) => {
-      if ("data" in response) {
-        const data = response.data as BatchRPCResponse;
-        const result = data.result;
-        const error = data.error as FetchBaseQueryError | SerializedError;
+      executeEnableDisableCommand(uidsToChangeStatusPayload).then(
+        (response) => {
+          if ("data" in response) {
+            const data = response.data as BatchRPCResponse;
+            const result = data.result;
+            const error = data.error as FetchBaseQueryError | SerializedError;
 
-        if (result) {
-          if ("error" in result.results[0] && result.results[0].error) {
-            const errorData = {
-              code: result.results[0].error_code,
-              name: result.results[0].error_name,
-              error: result.results[0].error,
-            } as ErrorData;
+            if (result) {
+              if ("error" in result.results[0] && result.results[0].error) {
+                const errorData = {
+                  code: result.results[0].error_code,
+                  name: result.results[0].error_name,
+                  error: result.results[0].error,
+                } as ErrorData;
 
-            const error = {
-              status: "CUSTOM_ERROR",
-              data: errorData,
-            } as FetchBaseQueryError;
+                const error = {
+                  status: "CUSTOM_ERROR",
+                  data: errorData,
+                } as FetchBaseQueryError;
 
-            // Handle error
-            handleAPIError(error);
-          } else {
+                // Handle error
+                handleAPIError(error);
+              } else {
+                // Update changes to Redux
+                dispatchToRedux(newStatus, selectedUsers);
+
+                if (props.buttonsData !== undefined) {
+                  // Update 'isDisbleEnableOp' to notify table that an updating operation is performed
+                  props.buttonsData.updateIsDisableEnableOp(true);
+
+                  // Update buttons
+                  if (!props.optionSelected) {
+                    // Enable
+                    props.buttonsData.updateIsEnableButtonDisabled(true);
+                    props.buttonsData.updateIsDisableButtonDisabled(false);
+                    // Set alert: success
+                    alerts.addAlert(
+                      "enable-user-success",
+                      "Users enabled",
+                      "success"
+                    );
+                  } else if (props.optionSelected) {
+                    // Disable
+                    props.buttonsData.updateIsEnableButtonDisabled(false);
+                    props.buttonsData.updateIsDisableButtonDisabled(true);
+                    // Set alert: success
+                    alerts.addAlert(
+                      "disable-user-success",
+                      "Users disabled",
+                      "success"
+                    );
+                  }
+                }
+
+                // Reset selected users
+                props.selectedUsersData.updateSelectedUsers([]);
+
+                // Refresh data
+                if (props.onRefresh !== undefined) {
+                  props.onRefresh();
+                }
+              }
+            } else if (error) {
+              // Handle error
+              handleAPIError(error);
+            }
+            // Close modal
+            closeModal();
+          }
+        }
+      );
+    } else {
+      // Single user operation
+      let command;
+      if (option === "user_disable") {
+        command = disableSingleUser;
+      } else {
+        command = enableSingleUser;
+      }
+
+      const payload = props.selectedUsersData.selectedUsers[0];
+
+      command(payload).then((response) => {
+        if ("data" in response) {
+          if (response.data.result) {
             // Update changes to Redux
             dispatchToRedux(newStatus, selectedUsers);
-
-            // Update 'isDisbleEnableOp' to notify table that an updating operation is performed
-            props.buttonsData.updateIsDisableEnableOp(true);
-
-            // Update buttons
-            if (!props.optionSelected) {
-              // Enable
-              props.buttonsData.updateIsEnableButtonDisabled(true);
-              props.buttonsData.updateIsDisableButtonDisabled(false);
-              // Set alert: success
-              alerts.addAlert(
-                "enable-user-success",
-                "Users enabled",
-                "success"
-              );
-            } else if (props.optionSelected) {
-              // Disable
-              props.buttonsData.updateIsEnableButtonDisabled(false);
-              props.buttonsData.updateIsDisableButtonDisabled(true);
-              // Set alert: success
-              alerts.addAlert(
-                "disable-user-success",
-                "Users disabled",
-                "success"
-              );
-            }
-
+            // Close modal
+            closeModal();
+            // Set alert: success
+            alerts.addAlert(
+              "enable-user-success",
+              "Enabled user account '" +
+                props.selectedUsersData.selectedUsers[0] +
+                "'",
+              "success"
+            );
             // Reset selected users
             props.selectedUsersData.updateSelectedUsers([]);
-
             // Refresh data
             if (props.onRefresh !== undefined) {
               props.onRefresh();
             }
+          } else if (response.data.error) {
+            // Set alert: error
+            const errorMessage = response.data.error as ErrorResult;
+            alerts.addAlert(
+              "enable-user-error",
+              errorMessage.message,
+              "danger"
+            );
           }
-        } else if (error) {
-          // Handle error
-          handleAPIError(error);
         }
-        // Close modal
-        closeModal();
-      }
-    });
+      });
+    }
   };
 
   // Set the Modal and Action buttons for 'Disable' option
