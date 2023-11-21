@@ -48,6 +48,7 @@ import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Modals
 import DisableEnableUsers from "./modals/DisableEnableUsers";
+import DeleteUsers from "./modals/DeleteUsers";
 
 export interface PropsToUserSettings {
   originalUser: Partial<User>;
@@ -121,10 +122,16 @@ const UserSettings = (props: PropsToUserSettings) => {
     setIsDisableEnableModalOpen(false);
   };
 
+  // 'Delete' modal
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
+  const onCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
 
-  const dropdownItems = [
+  const activeDropdownItems = [
     <DropdownItem key="reset password">Reset password</DropdownItem>,
     <DropdownItem
       key="enable"
@@ -140,7 +147,9 @@ const UserSettings = (props: PropsToUserSettings) => {
     >
       Disable
     </DropdownItem>,
-    <DropdownItem key="delete">Delete</DropdownItem>,
+    <DropdownItem key="delete" onClick={() => setIsDeleteModalOpen(true)}>
+      Delete
+    </DropdownItem>,
     <DropdownItem key="unlock" isDisabled>
       Unlock
     </DropdownItem>,
@@ -172,28 +181,22 @@ const UserSettings = (props: PropsToUserSettings) => {
   ];
 
   const stageDropdownItems = [
-    <DropdownItem key="activate" onClick={() => setIsActivateModalOpen(true)}>
-      Activate
-    </DropdownItem>,
+    <DropdownItem key="activate">Activate</DropdownItem>,
     <DropdownItem key="delete" onClick={() => setIsDeleteModalOpen(true)}>
       Delete
     </DropdownItem>,
   ];
 
   const preservedDropdownItems = [
-    <DropdownItem key="stage" onClick={() => setIsStageModalOpen(true)}>
-      Stage
-    </DropdownItem>,
-    <DropdownItem key="restore" onClick={() => setIsRestoreModalOpen(true)}>
-      Restore
-    </DropdownItem>,
+    <DropdownItem key="stage">Stage</DropdownItem>,
+    <DropdownItem key="restore">Restore</DropdownItem>,
     <DropdownItem key="delete" onClick={() => setIsDeleteModalOpen(true)}>
       Delete
     </DropdownItem>,
   ];
 
-  const onKebabToggle = () => {
-    setIsKebabOpen(!isKebabOpen);
+  const onKebabToggle = (isOpen: boolean) => {
+    setIsKebabOpen(isOpen);
   };
 
   const onKebabSelect = (
@@ -270,6 +273,7 @@ const UserSettings = (props: PropsToUserSettings) => {
           onKebabToggle={onKebabToggle}
           idKebab="toggle-action-buttons"
           isKebabOpen={isKebabOpen}
+          isPlain={true}
           dropdownItems={
             props.from === "active-users"
               ? activeDropdownItems
@@ -429,6 +433,14 @@ const UserSettings = (props: PropsToUserSettings) => {
         optionSelected={optionSelected}
         selectedUsersData={selectedUsersData}
         singleUser={true}
+        onRefresh={props.onRefresh}
+      />
+      <DeleteUsers
+        show={isDeleteModalOpen}
+        from={props.from}
+        handleModalToggle={onCloseDeleteModal}
+        selectedUsersData={selectedUsersData}
+        fromSettings={true}
         onRefresh={props.onRefresh}
       />
     </>
