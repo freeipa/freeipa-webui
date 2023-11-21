@@ -47,20 +47,7 @@ import {
 import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Modals
-import DisableEnableUsers from "src/components/modals/UserModals/DisableEnableUsers";
-import DeleteUsers from "src/components/modals/UserModals/DeleteUsers";
-import RebuildAutoMembership from "src/components/modals/RebuildAutoMembership";
-import UnlockUser from "src/components/modals/UserModals/UnlockUser";
-import ResetPassword from "src/components/modals/UserModals/ResetPassword";
-import IssueNewCertificate from "src/components/modals/CertificateModals/IssueNewCertificate";
-import AddOtpToken from "src/components/modals/UserModals/AddOtpToken";
-import ActivateStageUsers from "src/components/modals/UserModals/ActivateStageUsers";
-import StagePreservedUsers from "src/components/modals/UserModals/StagePreservedUsers";
-import RestorePreservedUsers from "src/components/modals/UserModals/RestorePreservedUsers";
-// Utils
-import { API_VERSION_BACKUP } from "src/utils/utils";
-// Navigate
-import { useNavigate } from "react-router-dom";
+import DisableEnableUsers from "./modals/DisableEnableUsers";
 
 export interface PropsToUserSettings {
   originalUser: Partial<User>;
@@ -134,144 +121,11 @@ const UserSettings = (props: PropsToUserSettings) => {
     setIsDisableEnableModalOpen(false);
   };
 
-  // 'Delete' modal
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
-  const onCloseDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-  };
-
-  // 'Rebuild auto membership' option
-  const [
-    isRebuildAutoMembershipModalOpen,
-    setIsRebuildAutoMembershipModalOpen,
-  ] = useState(false);
-  const onCloseRebuildAutoMembershipModal = () => {
-    setIsRebuildAutoMembershipModalOpen(false);
-  };
-  const userToRebuild = props.user.uid ? [props.user.uid] : [];
-
-  // 'Unlock' option
-  const [isUnlockModalOpen, setIsUnlockModalOpen] = React.useState(false);
-  const onCloseUnlockModal = () => {
-    setIsUnlockModalOpen(false);
-  };
-
-  // Get the status of the 'Unlock' option
-  // - locked: true | unlocked: false
-  const getUnlockStatus = (): boolean => {
-    let isLocked = false;
-    if (
-      props.user.krbloginfailedcount &&
-      props.pwPolicyData.krbpwdmaxfailure !== undefined
-    ) {
-      // In case there is no permission to check password policy we
-      // allow to unlock user even if he has only one failed login.
-      const max_failure = props.pwPolicyData
-        ? props.pwPolicyData.krbpwdmaxfailure[0]
-        : 1;
-
-      if (props.user.krbloginfailedcount[0] >= max_failure) {
-        isLocked = true;
-      }
-    }
-    return isLocked;
-  };
-
-  // 'Reset password' option
-  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] =
-    useState(false);
-
-  // 'New certificate' option
-  const [isNewCertificateModalOpen, setIsNewCertificateModalOpen] =
-    useState(false);
-  const onCloseNewCertificateModal = () => {
-    setIsNewCertificateModalOpen(false);
-  };
-
-  // 'Add OTP token' option
-  const [isAddOtpTokenModalOpen, setIsAddOtpTokenModalOpen] = useState(false);
-  const onCloseAddOtpTokenModal = () => {
-    setIsAddOtpTokenModalOpen(false);
-  };
-
-  // RTK hook: 'Auto assign subordinate IDs'
-  const [generateSubIds] = useGenerateSubIdsMutation();
-
-  // Data is updated on 'props.user' changes
-  React.useEffect(() => {
-    if (
-      props.user.memberof_subid !== undefined &&
-      props.user.memberof_subid.length > 0
-    ) {
-      setIsDisabledAutoAssignSubIds(true);
-    }
-  }, [props.user]);
-
-  // 'Auto assign subordinate IDs' option
-  const [isDisabledAutoAssignSubIds, setIsDisabledAutoAssignSubIds] =
-    useState(false);
-
-  // 'Auto assign subordinate IDs' handler method
-  const onClickAutoAssignSubIds = () => {
-    // Prepare payload (params)
-    const payload = [
-      {
-        ipaowner: props.user.uid,
-        version: API_VERSION_BACKUP,
-      },
-    ];
-
-    // Make API call
-    generateSubIds(payload).then((response) => {
-      if ("data" in response) {
-        if (response.data.result) {
-          // Disable kebab option
-          setIsDisabledAutoAssignSubIds(true);
-          // Refresh page
-          props.onRefresh();
-          // Show toast notification: success
-          alerts.addAlert(
-            "auto-assign-success",
-            response.data.result.summary,
-            "success"
-          );
-        } else if (response.data.error) {
-          // Show toast notification: error
-          const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("auto-assign-error", errorMessage.message, "danger");
-        }
-      }
-    });
-  };
-
-  // Stage users - 'Activate' option
-  const [isActivateModalOpen, setIsActivateModalOpen] = React.useState(false);
-  const onCloseActivateModal = () => {
-    setIsActivateModalOpen(false);
-  };
-
-  // Preserved users - 'Stage' option
-  const [isStageModalOpen, setIsStageModalOpen] = React.useState(false);
-  const onCloseStageModal = () => {
-    setIsStageModalOpen(false);
-  };
-
-  // Preserved users - 'Restore' option
-  const [isRestoreModalOpen, setIsRestoreModalOpen] = React.useState(false);
-  const onCloseRestoreModal = () => {
-    setIsRestoreModalOpen(false);
-  };
-
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
 
-  const activeDropdownItems = [
-    <DropdownItem
-      key="reset password"
-      onClick={() => setIsResetPasswordModalOpen(true)}
-    >
-      Reset password
-    </DropdownItem>,
+  const dropdownItems = [
+    <DropdownItem key="reset password">Reset password</DropdownItem>,
     <DropdownItem
       key="enable"
       isDisabled={!props.user.nsaccountlock}
@@ -286,14 +140,8 @@ const UserSettings = (props: PropsToUserSettings) => {
     >
       Disable
     </DropdownItem>,
-    <DropdownItem key="delete" onClick={() => setIsDeleteModalOpen(true)}>
-      Delete
-    </DropdownItem>,
-    <DropdownItem
-      key="unlock"
-      isDisabled={!getUnlockStatus()}
-      onClick={() => setIsUnlockModalOpen(true)}
-    >
+    <DropdownItem key="delete">Delete</DropdownItem>,
+    <DropdownItem key="unlock" isDisabled>
       Unlock
     </DropdownItem>,
     <DropdownItem
@@ -581,70 +429,9 @@ const UserSettings = (props: PropsToUserSettings) => {
         optionSelected={optionSelected}
         selectedUsersData={selectedUsersData}
         singleUser={true}
-      />
-      <UnlockUser
-        uid={props.user.uid}
-        isOpen={isUnlockModalOpen}
-        onClose={onCloseUnlockModal}
         onRefresh={props.onRefresh}
       />
-      <DeleteUsers
-        show={isDeleteModalOpen}
-        from={props.from}
-        handleModalToggle={onCloseDeleteModal}
-        selectedUsersData={selectedUsersData}
-        fromSettings={true}
-        onRefresh={props.onRefresh}
-      />
-      <RebuildAutoMembership
-        isOpen={isRebuildAutoMembershipModalOpen}
-        onClose={onCloseRebuildAutoMembershipModal}
-        entriesToRebuild={userToRebuild}
-        entity="users"
-      />
-      <ResetPassword
-        uid={props.user.uid}
-        isOpen={isResetPasswordModalOpen}
-        onClose={() => setIsResetPasswordModalOpen(false)}
-        onRefresh={props.onRefresh}
-      />
-      <IssueNewCertificate
-        isOpen={isNewCertificateModalOpen}
-        onClose={onCloseNewCertificateModal}
-        id={props.user.uid}
-        showPrincipalFields={false}
-        onRefresh={props.onRefresh}
-        principal={props.user.uid}
-      />
-      {props.user.uid !== undefined && (
-        <AddOtpToken
-          uid={props.user.uid}
-          isOpen={isAddOtpTokenModalOpen}
-          setIsOpen={setIsAddOtpTokenModalOpen}
-          onClose={onCloseAddOtpTokenModal}
-        />
-      )}
-      <ActivateStageUsers
-        show={isActivateModalOpen}
-        handleModalToggle={onCloseActivateModal}
-        selectedUsers={[props.user] as User[]}
-        onSuccess={() => navigate("stage-users")}
-      />
-      <StagePreservedUsers
-        show={isStageModalOpen}
-        handleModalToggle={onCloseStageModal}
-        selectedUsers={[props.user] as User[]}
-        clearSelectedUsers={clearSelectedUsers}
-        onSuccess={() => navigate("preserved-users")}
-      />
-      <RestorePreservedUsers
-        show={isRestoreModalOpen}
-        handleModalToggle={onCloseRestoreModal}
-        selectedUsers={[props.user] as User[]}
-        clearSelectedUsers={clearSelectedUsers}
-        onSuccess={() => navigate("preserved-users")}
-      />
-    </TabLayout>
+    </>
   );
 };
 
