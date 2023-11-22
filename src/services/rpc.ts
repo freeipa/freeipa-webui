@@ -9,8 +9,11 @@ import {
 // Utils
 import { API_VERSION_BACKUP } from "src/utils/utils";
 import {
+  Host,
   Metadata,
   User,
+  UIDType,
+  fqdnType,
   IDPServer,
   RadiusServer,
   CertificateAuthority,
@@ -23,11 +26,6 @@ export type UserFullData = {
   krbtPolicy?: Record<string, unknown>;
   cert?: Record<string, unknown>;
 };
-
-export interface UIDType {
-  dn: string;
-  uid: string[];
-}
 
 export interface Query {
   data: FindRPCResponse | BatchRPCResponse | undefined;
@@ -120,6 +118,12 @@ export interface UsersPayload {
   userType?: string;
 }
 
+export interface HostsPayload {
+  searchValue: string;
+  sizeLimit: number;
+  apiVersion: string;
+}
+
 // Body data to perform the calls
 export const getCommand = (commandData: Command) => {
   const payloadWithParams = {
@@ -168,6 +172,7 @@ export const api = createApi({
     "IdpServer",
     "CertificateAuthority",
     "ActiveUsers",
+    "Hosts",
   ],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
@@ -262,7 +267,6 @@ export const api = createApi({
             };
       },
     }),
-
     getObjectMetadata: build.query<Metadata, void>({
       query: () => {
         return getCommand({
@@ -530,6 +534,106 @@ export const api = createApi({
         response.result.result as unknown as User[],
       providesTags: ["ActiveUsers"],
     }),
+    // Hosts
+    gettingHost: build.query<BatchRPCResponse, HostsPayload>({
+      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
+        const { searchValue, sizeLimit, apiVersion } = payloadData;
+
+        if (apiVersion === undefined) {
+          return {
+            error: {
+              status: "CUSTOM_ERROR",
+              data: "",
+              error: "API version not available",
+            } as FetchBaseQueryError,
+          };
+        }
+
+        // Prepare search parameters
+        const params = {
+          pkey_only: true,
+          sizelimit: sizeLimit,
+          version: apiVersion,
+        };
+
+        // Prepare payload
+        const payloadDataIds: Command = {
+          method: "host_find",
+          params: [[searchValue], params],
+        };
+
+        // Make call using 'fetchWithBQ'
+        const getGroupIDsResult = await fetchWithBQ(getCommand(payloadDataIds));
+        // Return possible errors
+        if (getGroupIDsResult.error) {
+          return { error: getGroupIDsResult.error as FetchBaseQueryError };
+        }
+        // If no error: cast and assign 'uids'
+        const hostIdResponseData = getGroupIDsResult.data as FindRPCResponse;
+
+        const fqdns: string[] = [];
+        const itemsCount = hostIdResponseData.result.result.length as number;
+        for (let i = 0; i < itemsCount; i++) {
+          const hostId = hostIdResponseData.result.result[i] as fqdnType;
+          const { fqdn } = hostId;
+          fqdns.push(fqdn[0] as string);
+        }
+
+        // 2ND CALL - GET PARTIAL HOSTS INFO
+        // Prepare payload
+        const payloadHostDataBatch: Command[] = fqdns.map((fqdn) => ({
+          method: "host_show",
+          params: [[fqdn], {}],
+        }));
+
+        // Make call using 'fetchWithBQ'
+        const partialHostsInfoResult = await fetchWithBQ(
+          getBatchCommand(payloadHostDataBatch as Command[], apiVersion)
+        );
+
+        // Return results
+        return partialHostsInfoResult.data
+          ? { data: partialHostsInfoResult.data as BatchRPCResponse }
+          : {
+              error:
+                partialHostsInfoResult.error as unknown as FetchBaseQueryError,
+            };
+      },
+    }),
+    // Autommeber Users
+    autoMemberRebuildUsers: build.mutation<FindRPCResponse, any[]>({
+      query: (users) => {
+        const paramArgs =
+          users.length === 0
+            ? { type: "group", version: API_VERSION_BACKUP }
+            : {
+                users: users.map((uid) => uid[0]),
+                version: API_VERSION_BACKUP,
+              };
+
+        return getCommand({
+          method: "automember_rebuild",
+          params: [[], paramArgs],
+        });
+      },
+    }),
+    // Automember Hosts
+    autoMemberRebuildHosts: build.mutation<FindRPCResponse, any[]>({
+      query: (hosts) => {
+        const paramArgs =
+          hosts.length === 0
+            ? { type: "group", version: API_VERSION_BACKUP }
+            : {
+                hosts: hosts.map((fqdn) => fqdn[0]),
+                version: API_VERSION_BACKUP,
+              };
+
+        return getCommand({
+          method: "automember_rebuild",
+          params: [[], paramArgs],
+        });
+      },
+    }),
   }),
 });
 
@@ -592,4 +696,7 @@ export const {
   useRemoveStagePrincipalAliasMutation,
   useAddStagePrincipalAliasMutation,
   useGetActiveUsersQuery,
+  useGettingHostQuery,
+  useAutoMemberRebuildHostsMutation,
+  useAutoMemberRebuildUsersMutation,
 } = api;

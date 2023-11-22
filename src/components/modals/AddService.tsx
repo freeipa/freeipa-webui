@@ -31,7 +31,7 @@ const AddService = (props: PropsToAddService) => {
 
   // Set host names list
   const hostsList = useAppSelector((state) => state.hosts.hostsList);
-  const hostNamesList = hostsList.map((hostName) => hostName.hostName);
+  const hostNamesList = hostsList.map((hostName) => hostName.fqdn);
 
   // 'Service' select
   const [isServiceOpen, setIsServiceOpen] = useState(false);

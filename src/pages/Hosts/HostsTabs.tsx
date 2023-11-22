@@ -55,7 +55,7 @@ const HostsTabs = () => {
         <BreadcrumbLayout
           className="pf-u-mb-md"
           preText="Host:"
-          userId={hostData.id}
+          userId={hostData.fqdn}
           pagesVisited={pagesVisited}
         />
         <TitleLayout

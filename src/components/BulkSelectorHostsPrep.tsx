@@ -108,13 +108,13 @@ const BulkSelectorHostsPrep = (props: PropsToBulkSelectorHostsPrep) => {
     selectableHostsList: Host[]
   ) => {
     props.elementData.changeSelectedHostIds(
-      isSelecting ? selectableHostsList.map((r) => r.id) : []
+      isSelecting ? selectableHostsList.map((r) => r.fqdn) : []
     );
 
     // Update selected elements
     const hostNamesArray: string[] = [];
     selectableHostsList.map((host) => {
-      hostNamesArray.push(host.id);
+      hostNamesArray.push(host.fqdn);
     });
     props.elementData.updateSelectedHosts(hostNamesArray);
 
@@ -131,7 +131,7 @@ const BulkSelectorHostsPrep = (props: PropsToBulkSelectorHostsPrep) => {
           hostsIdArray.push(host);
         });
         selectableHostsList.map((host) => {
-          hostsIdArray.push(host.id);
+          hostsIdArray.push(host.fqdn);
         });
       }
 
@@ -163,20 +163,20 @@ const BulkSelectorHostsPrep = (props: PropsToBulkSelectorHostsPrep) => {
     selectableHostsList: Host[]
   ) => {
     props.elementData.changeSelectedHostIds(
-      isSelecting ? selectableHostsList.map((r) => r.id) : []
+      isSelecting ? selectableHostsList.map((r) => r.fqdn) : []
     );
 
     // Update selected elements
     const hostNamesArray: string[] = [];
     selectableHostsList.map((host) => {
-      hostNamesArray.push(host.id);
+      hostNamesArray.push(host.fqdn);
     });
     props.elementData.updateSelectedHosts(hostNamesArray);
 
     // Enable/disable 'Delete' button
     if (isSelecting) {
       const hostsIdArray: string[] = [];
-      selectableHostsList.map((host) => hostsIdArray.push(host.id));
+      selectableHostsList.map((host) => hostsIdArray.push(host.fqdn));
       props.elementData.changeSelectedHostIds(hostsIdArray);
       props.elementData.updateSelectedHosts(hostsIdArray);
       props.buttonsData.updateIsDeleteButtonDisabled(false);
@@ -240,7 +240,7 @@ const BulkSelectorHostsPrep = (props: PropsToBulkSelectorHostsPrep) => {
   // The 'currentPageAlreadySelected' should be set when elements are selected
   useEffect(() => {
     const found = props.shownElementsList.every(
-      (host) => props.elementData.selectedHosts.indexOf(host.id) >= 0
+      (host) => props.elementData.selectedHosts.indexOf(host.fqdn) >= 0
     );
 
     if (found) {
@@ -252,7 +252,7 @@ const BulkSelectorHostsPrep = (props: PropsToBulkSelectorHostsPrep) => {
       // If there is no elements selected on the page yet, reset 'selectedPerPage'
       if (
         !props.shownElementsList.some(
-          (host) => props.elementData.selectedHosts.indexOf(host.id) >= 0
+          (host) => props.elementData.selectedHosts.indexOf(host.fqdn) >= 0
         )
       ) {
         props.selectedPerPageData.updateSelectedPerPage(0);

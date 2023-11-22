@@ -48,7 +48,7 @@ const HostsTable = (props: PropsToTable) => {
 
   // Column names
   const columnNames = {
-    hostName: "Host name",
+    fqdn: "Host name",
     description: "Description",
     enrolled: "Enrolled",
   };
@@ -69,7 +69,17 @@ const HostsTable = (props: PropsToTable) => {
         "i"
       );
     }
-    return host.hostName.search(input) >= 0;
+
+    for (const attr of Object.keys(columnNames)) {
+      if (
+        host[attr] !== undefined &&
+        host[attr] !== "enrolled" &&
+        host[attr][0].search(input) >= 0
+      ) {
+        return true;
+      }
+    }
+    return false;
   };
 
   const filteredShownHosts =
@@ -89,8 +99,14 @@ const HostsTable = (props: PropsToTable) => {
 
   // Since OnSort specifies sorted columns by index, we need sortable values for our object by column index.
   const getSortableRowValues = (host: Host): (string | number)[] => {
-    const { hostName, description } = host;
-    return [hostName, description];
+    const { fqdn, description } = host;
+
+    let descriptionString = "";
+    if (description !== undefined) {
+      descriptionString = description[0];
+    }
+
+    return [fqdn[0], descriptionString];
   };
 
   let sortedHosts = [...shownHostsList];
@@ -131,7 +147,7 @@ const HostsTable = (props: PropsToTable) => {
   });
 
   const isHostSelected = (host: Host) =>
-    props.hostsData.selectedHostIds.includes(host.id);
+    props.hostsData.selectedHostIds.includes(host.fqdn);
 
   // To allow shift+click to select/deselect multiple rows
   const [recentSelectedRowIndex, setRecentSelectedRowIndex] = useState<
@@ -168,14 +184,14 @@ const HostsTable = (props: PropsToTable) => {
     // Update hostIdsSelected array
     let hostIdsSelectedArray = props.hostsData.selectedHostIds;
     if (isSelecting) {
-      hostIdsSelectedArray.push(host.id);
+      hostIdsSelectedArray.push(host.fqdn);
       // Increment the elements selected per page (++)
       props.paginationData.updateSelectedPerPage(
         props.paginationData.selectedPerPage + 1
       );
     } else {
       hostIdsSelectedArray = hostIdsSelectedArray.filter(
-        (hostId) => hostId !== host.id
+        (hostId) => hostId !== host.fqdn
       );
       // Decrement the elements selected per page (--)
       props.paginationData.updateSelectedPerPage(
@@ -232,7 +248,7 @@ const HostsTable = (props: PropsToTable) => {
     <Tr>
       <Th modifier="wrap"></Th>
       <Th modifier="wrap" sort={getSortParams(0)}>
-        {columnNames.hostName}
+        {columnNames.fqdn}
       </Th>
       <Th modifier="wrap" sort={getSortParams(1)}>
         {columnNames.description}
@@ -244,7 +260,7 @@ const HostsTable = (props: PropsToTable) => {
   );
 
   const body = filteredShownHosts.map((host, rowIndex) => (
-    <Tr key={host.id} id={host.id}>
+    <Tr key={host.fqdn[0]} id={host.fqdn[0]}>
       <Td
         dataLabel="checkbox"
         select={{
@@ -255,14 +271,14 @@ const HostsTable = (props: PropsToTable) => {
           disable: !props.hostsData.isHostSelectable(host),
         }}
       />
-      <Td dataLabel={columnNames.hostName}>
+      <Td dataLabel={columnNames.fqdn}>
         <Link to={URL_PREFIX + "/hosts/settings"} state={host}>
-          {host.hostName}
+          {host.fqdn[0]}
         </Link>
       </Td>
       <Td dataLabel={columnNames.description}>{host.description}</Td>
       <Td dataLabel={columnNames.enrolled}>
-        {host.enrolled === true ? "True" : "False"}
+        {host.enrolledby !== "" ? "True" : "False"}
       </Td>
     </Tr>
   ));

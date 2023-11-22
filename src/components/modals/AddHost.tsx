@@ -23,6 +23,7 @@ import { addHost } from "src/store/Identity/hosts-slice";
 export interface PropsToAddHost {
   show: boolean;
   handleModalToggle: () => void;
+  onRefresh?: () => void;
 }
 
 const AddHost = (props: PropsToAddHost) => {
@@ -304,13 +305,30 @@ const AddHost = (props: PropsToAddHost) => {
     const validation = validateFields();
     if (validation) {
       const newHost: Host = {
-        id: hostName,
-        hostName: hostName + "." + dnsZoneSelected,
+        hostName: hostName,
+        fqdn: hostName + "." + dnsZoneSelected,
         dnsZone: dnsZoneSelected,
-        class: hostClass,
-        ipAddress: hostIpAddress,
+        userclass: hostClass,
+        ip_address: hostIpAddress,
         description: "",
-        enrolled: true, // TODO: Investigate on enrolling hosts to set this value correctly
+        enrolledby: "", // TODO: Investigate on enrolling hosts to see how this value is determined
+        force: false,
+        has_keytab: false,
+        has_password: false,
+        krbcanonicalname: "",
+        krbprincipalname: "",
+        managedby_host: [],
+        memberof_hostgroup: [],
+        sshpubkeyfp: [],
+        nshostlocation: "",
+        l: "",
+        attributelevelrights: [],
+        krbpwdpolicyreference: [],
+        managing_host: [],
+        serverhostname: "",
+        ipakrbrequirespreauth: false,
+        ipakrbokasdelegate: false,
+        ipakrboktoauthasdelegate: false,
       };
       dispatch(addHost(newHost));
       cleanAndCloseModal();
@@ -321,13 +339,30 @@ const AddHost = (props: PropsToAddHost) => {
     const validation = validateFields();
     if (validation) {
       const newHost: Host = {
-        id: hostName,
-        hostName: hostName + "." + dnsZoneSelected,
+        hostName: hostName,
+        fqdn: hostName + "." + dnsZoneSelected,
         dnsZone: dnsZoneSelected,
-        class: hostClass,
-        ipAddress: hostIpAddress,
+        userclass: hostClass,
+        ip_address: hostIpAddress,
         description: "",
-        enrolled: true, // TODO: Investigate on enrolling hosts to set this value correctly
+        enrolledby: "", // TODO: Investigate on enrolling hosts to set this value correctly
+        force: false,
+        has_keytab: false,
+        has_password: false,
+        krbcanonicalname: "",
+        krbprincipalname: "",
+        managedby_host: [],
+        memberof_hostgroup: [],
+        sshpubkeyfp: [],
+        nshostlocation: "",
+        l: "",
+        attributelevelrights: [],
+        krbpwdpolicyreference: [],
+        managing_host: [],
+        serverhostname: "",
+        ipakrbrequirespreauth: false,
+        ipakrbokasdelegate: false,
+        ipakrboktoauthasdelegate: false,
       };
       dispatch(addHost(newHost));
       // Do not close the modal, but clean fields & reset validations
@@ -358,7 +393,7 @@ const AddHost = (props: PropsToAddHost) => {
     </Button>,
   ];
 
-  // Render 'AddUser'
+  // Render 'AddHost'
   return (
     <ModalWithFormLayout
       variantType="small"

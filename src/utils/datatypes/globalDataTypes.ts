@@ -112,13 +112,31 @@ export interface SudoRules {
 }
 
 export interface Host {
-  id: string;
+  attributelevelrights: string[];
+  description: string;
   hostName: string;
   dnsZone: string;
-  class: string;
-  ipAddress: string;
-  description: string;
-  enrolled: boolean;
+  enrolledby: string;
+  fqdn: string;
+  ip_address: string;
+  krbcanonicalname: string;
+  krbprincipalname: string;
+  krbpwdpolicyreference: string[];
+  l: string;
+  managedby_host: string[];
+  memberof_hostgroup: string[];
+  managing_host: string[];
+  nshostlocation: string;
+  userclass: string;
+  serverhostname: string;
+  sshpubkeyfp: string[];
+  // Booleans
+  force: boolean; // force host name even if not in DNS
+  has_keytab: boolean;
+  has_password: boolean;
+  ipakrbrequirespreauth: boolean;
+  ipakrbokasdelegate: boolean;
+  ipakrboktoauthasdelegate: boolean;
 }
 
 export interface HostGroup {
@@ -239,4 +257,19 @@ export interface CertificateAuthority {
   ipacaissuerdn: string;
   ipacarandomserialnumberversion: string;
   ipacasubjectdn: string;
+}
+
+export interface UIDType {
+  dn: string;
+  uid: string[];
+}
+
+export interface cnType {
+  dn: string;
+  cn: string[];
+}
+
+export interface fqdnType {
+  dn: string;
+  fqdn: string[];
 }

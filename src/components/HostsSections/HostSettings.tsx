@@ -40,7 +40,7 @@ interface PropsToHostSettings {
 const HostSettings = (props: PropsToHostSettings) => {
   const REALM = "@SERVER.IPA.DEMO";
   // Host name - textbox (mandatory field)
-  const [hostName] = useState(props.host.hostName);
+  const [hostName] = useState(props.host.fqdn);
 
   // Principal alias - textbox
   const [principalAliasList, setPrincipalAliasList] = useState<
@@ -48,7 +48,7 @@ const HostSettings = (props: PropsToHostSettings) => {
   >([
     {
       id: 0,
-      alias: "host/" + props.host.hostName + REALM, // TODO: The realm (@SERVER.IPA.DEMO) should adapt to context
+      alias: "host/" + props.host.fqdn + REALM, // TODO: The realm (@SERVER.IPA.DEMO) should adapt to context
     },
   ]);
 
@@ -61,7 +61,7 @@ const HostSettings = (props: PropsToHostSettings) => {
   };
 
   // Class - textbox
-  const [hostClass, setHostClass] = useState(props.host.class);
+  const [hostClass, setHostClass] = useState(props.host.userclass);
   const updateHostClass = (newHostClass: string) => {
     setHostClass(newHostClass);
   };
