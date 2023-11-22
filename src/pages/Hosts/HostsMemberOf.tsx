@@ -502,7 +502,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
 
   const tabData = {
     tabName,
-    userName: props.host.id,
+    userName: props.host.fqdn,
   };
 
   // - MemberOfDeleteModal

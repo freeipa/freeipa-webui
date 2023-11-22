@@ -27,12 +27,12 @@ interface PropsToAddModal {
 }
 
 interface ManagedByElement {
-  hostName?: string;
+  fqdn?: string;
 }
 
 const ManagedByAddModal = (props: PropsToAddModal) => {
   // Dual list data
-  const data = props.availableData.map((d) => d.hostName);
+  const data = props.availableData.map((d) => d.fqdn);
 
   // Dual list selector
   const [availableOptions, setAvailableOptions] = useState<ReactNode[]>(data);
@@ -86,7 +86,7 @@ const ManagedByAddModal = (props: PropsToAddModal) => {
 
   // Get all info from a chosen option
   const getInfoFromGroupData = (option: unknown) => {
-    return props.availableData.find((d) => option === d.hostName);
+    return props.availableData.find((d) => option === d.fqdn);
   };
 
   // Add group option
@@ -98,7 +98,7 @@ const ManagedByAddModal = (props: PropsToAddModal) => {
         // Host groups
         if (props.tabData.tabName === "Hosts") {
           props.groupRepository.push({
-            hostName: optionData.hostName !== undefined && optionData.hostName,
+            hostName: optionData.fqdn !== undefined && optionData.fqdn,
           } as Host);
           // Send updated data to table
           props.updateGroupRepository(props.groupRepository as Host[]);

@@ -50,7 +50,7 @@ const ManagedByTable = (props: PropsToTable) => {
   const [selectedElementIds, setSelectedElementIds] = useState<string[]>([]);
 
   // Selectable checkboxes on table
-  const isElementSelectable = (element: Host) => element.hostName !== "";
+  const isElementSelectable = (element: Host) => element.fqdn !== "";
   const selectableElements = props.list.filter(isElementSelectable);
 
   // Selected rows are tracked. Primary key: hostName
@@ -61,10 +61,10 @@ const ManagedByTable = (props: PropsToTable) => {
   const setElementSelected = (element: Host, isSelecting = true) =>
     setSelectedElementNames((prevSelected) => {
       const otherSelectedElementNames = prevSelected.filter(
-        (r) => r !== element.hostName
+        (r) => r !== element.fqdn
       );
       return isSelecting && isElementSelectable(element)
-        ? [...otherSelectedElementNames, element.hostName]
+        ? [...otherSelectedElementNames, element.fqdn]
         : otherSelectedElementNames;
     });
 
@@ -72,20 +72,18 @@ const ManagedByTable = (props: PropsToTable) => {
     selectedElementNames.length === selectableElements.length;
 
   const isElementSelected = (element: Host) =>
-    selectedElementNames.includes(element.hostName);
+    selectedElementNames.includes(element.fqdn);
 
   // Multiple selection
   const selectAllElements = (isSelecting = true) => {
     setSelectedElementNames(
-      isSelecting ? selectableElements.map((g) => g.hostName) : []
+      isSelecting ? selectableElements.map((g) => g.fqdn) : []
     );
 
     // Enable/disable 'Delete' button
     if (isSelecting) {
       const groupsNameArray: string[] = [];
-      selectableElements.map((element) =>
-        groupsNameArray.push(element.hostName)
-      );
+      selectableElements.map((element) => groupsNameArray.push(element.fqdn));
       setSelectedElementIds(groupsNameArray);
       props.updateElementsSelected(groupsNameArray);
       props.buttonData.changeIsDeleteButtonDisabled(false);
@@ -131,12 +129,12 @@ const ManagedByTable = (props: PropsToTable) => {
     // Update selectedElements array
     let selectedElementsArray = selectedElementNames;
     if (isSelecting) {
-      selectedElementsArray.push(element.hostName);
+      selectedElementsArray.push(element.fqdn);
       setSelectedElementIds(selectedElementsArray);
       props.updateElementsSelected(selectedElementsArray);
     } else {
       selectedElementsArray = selectedElementsArray.filter(
-        (elementName) => elementName !== element.hostName
+        (elementName) => elementName !== element.fqdn
       );
       setSelectedElementIds(selectedElementsArray);
       props.updateElementsSelected(selectedElementsArray);
@@ -219,7 +217,7 @@ const ManagedByTable = (props: PropsToTable) => {
 
   // Define table body
   const body = props.list.map((element, rowIndex) => (
-    <Tr key={element.hostName} id={element.hostName}>
+    <Tr key={element.fqdn} id={element.fqdn}>
       <Td
         dataLabel="checkbox"
         select={{
@@ -230,7 +228,7 @@ const ManagedByTable = (props: PropsToTable) => {
           disable: !isElementSelectable(element),
         }}
       />
-      <Td dataLabel={element.hostName}>{element.hostName}</Td>
+      <Td dataLabel={element.fqdn}>{element.fqdn}</Td>
     </Tr>
   ));
 

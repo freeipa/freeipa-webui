@@ -28,7 +28,7 @@ export const checkEqualStatus = (status: boolean, usersList: User[]) => {
 export const isUserSelectable = (user: User) => user.uid !== "";
 
 // Determine whether a host is selectable or not
-export const isHostSelectable = (host: Host) => host.id != "";
+export const isHostSelectable = (host: Host) => host.fqdn != "";
 
 // Determine whether a service is selectable or not
 export const isServiceSelectable = (service: Service) => service.id != "";

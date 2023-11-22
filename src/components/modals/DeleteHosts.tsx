@@ -29,6 +29,7 @@ export interface PropsToDeleteHosts {
   handleModalToggle: () => void;
   selectedHostsData: SelectedHostsData;
   buttonsData: ButtonsData;
+  onRefresh?: () => void;
 }
 
 const DeleteHosts = (props: PropsToDeleteHosts) => {

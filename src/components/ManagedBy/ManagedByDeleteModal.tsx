@@ -74,7 +74,7 @@ const ManagedByDeleteModal = (props: PropsToDeleteModal) => {
     let generalUpdatedGroupList = props.groupRepository;
     props.groupNamesToDelete.map((groupName) => {
       const updatedGroupList = generalUpdatedGroupList.filter(
-        (grp) => grp.hostName !== groupName
+        (grp) => grp.fqdn !== groupName
       );
       // If not empty, replace groupList by new array
       if (updatedGroupList) {
