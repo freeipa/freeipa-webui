@@ -50,6 +50,7 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 import DisableEnableUsers from "./modals/DisableEnableUsers";
 import DeleteUsers from "./modals/DeleteUsers";
 import RebuildAutoMembership from "./modals/RebuildAutoMembership";
+import UnlockUser from "./modals/UnlockUser";
 
 export interface PropsToUserSettings {
   originalUser: Partial<User>;
@@ -139,6 +140,33 @@ const UserSettings = (props: PropsToUserSettings) => {
   };
   const userToRebuild = props.user.uid ? [props.user.uid] : [];
 
+  // 'Unlock' option
+  const [isUnlockModalOpen, setIsUnlockModalOpen] = React.useState(false);
+  const onCloseUnlockModal = () => {
+    setIsUnlockModalOpen(false);
+  };
+
+  // Get the status of the 'Unlock' option
+  // - locked: true | unlocked: false
+  const getUnlockStatus = (): boolean => {
+    let isLocked = false;
+    if (
+      props.user.krbloginfailedcount &&
+      props.pwPolicyData.krbpwdmaxfailure !== undefined
+    ) {
+      // In case there is no permission to check password policy we
+      // allow to unlock user even if he has only one failed login.
+      const max_failure = props.pwPolicyData
+        ? props.pwPolicyData.krbpwdmaxfailure[0]
+        : 1;
+
+      if (props.user.krbloginfailedcount[0] >= max_failure) {
+        isLocked = true;
+      }
+    }
+    return isLocked;
+  };
+
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
 
@@ -161,7 +189,11 @@ const UserSettings = (props: PropsToUserSettings) => {
     <DropdownItem key="delete" onClick={() => setIsDeleteModalOpen(true)}>
       Delete
     </DropdownItem>,
-    <DropdownItem key="unlock" isDisabled>
+    <DropdownItem
+      key="unlock"
+      isDisabled={!getUnlockStatus()}
+      onClick={() => setIsUnlockModalOpen(true)}
+    >
       Unlock
     </DropdownItem>,
     <DropdownItem key="add otp token">Add OTP token</DropdownItem>,
@@ -439,6 +471,11 @@ const UserSettings = (props: PropsToUserSettings) => {
         optionSelected={optionSelected}
         selectedUsersData={selectedUsersData}
         singleUser={true}
+      />
+      <UnlockUser
+        uid={props.user.uid}
+        isOpen={isUnlockModalOpen}
+        onClose={onCloseUnlockModal}
         onRefresh={props.onRefresh}
       />
       <DeleteUsers
