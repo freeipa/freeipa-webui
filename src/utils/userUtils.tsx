@@ -234,6 +234,14 @@ export const objectToUser = (
     preserved: partialUser.preserved || oldUserObject?.preserved || false,
     dn: partialUser.dn || oldUserObject?.dn || "",
     sshpubkeyfp: partialUser.sshpubkeyfp || oldUserObject?.sshpubkeyfp || [],
+    krbextradata: partialUser.krbextradata || oldUserObject?.krbextradata || "",
+    krblastadminunlock: parseAPIDatetime(partialUser.krblastadminunlock),
+    krblastfailedauth: parseAPIDatetime(partialUser.krblastfailedauth),
+    krblastpwdchange: parseAPIDatetime(partialUser.krblastpwdchange),
+    krbloginfailedcount:
+      partialUser.krbloginfailedcount ||
+      oldUserObject?.krbloginfailedcount ||
+      "",
   };
 
   return user;
