@@ -700,6 +700,21 @@ export const api = createApi({
         });
       },
     }),
+    unlockUser: build.mutation<FindRPCResponse, string>({
+      query: (uid) => {
+        const params = [
+          [uid],
+          {
+            version: API_VERSION_BACKUP,
+          },
+        ];
+
+        return getCommand({
+          method: "user_unlock",
+          params: params,
+        });
+      },
+    }),
   }),
 });
 
@@ -767,4 +782,5 @@ export const {
   useAutoMemberRebuildUsersMutation,
   useEnableUserMutation,
   useDisableUserMutation,
+  useUnlockUserMutation,
 } = api;
