@@ -51,7 +51,8 @@ import { GenericPayload, useSearchEntriesMutation } from "src/services/rpc";
 import {
   useGettingActiveUserQuery,
   useAutoMemberRebuildUsersMutation,
-} from "src/services/rpcUsers";
+  UsersPayload,
+} from "src/services/rpc";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -322,18 +323,6 @@ const ActiveUsers = () => {
 
   // [API call] 'Rebuild auto membership'
   const onRebuildAutoMembership = () => {
-    // The operation will be made depending on the selected users
-    const paramArgs =
-      selectedUsers.length === 0
-        ? { type: "group", version: apiVersion }
-        : { users: selectedUsers.map((uid) => uid[0]), version: apiVersion };
-
-    // Prepare API call payload
-    const automemberPayload: Command = {
-      method: "automember_rebuild",
-      params: [[], paramArgs],
-    };
-
     // Task can potentially run for a very long time, give feed back that we
     // at least started the task
     alerts.addAlert(
@@ -342,8 +331,7 @@ const ActiveUsers = () => {
         "time to complete) ...",
       "info"
     );
-
-    executeCommand(automemberPayload).then((result) => {
+    executeAutoMemberRebuild(selectedUsers).then((result) => {
       if ("data" in result) {
         const automemberError = result.data.error as
           | FetchBaseQueryError

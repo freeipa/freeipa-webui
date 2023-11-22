@@ -33,9 +33,6 @@ import { isValidIpAddress } from "src/utils/utils";
 export interface PropsToAddHost {
   show: boolean;
   handleModalToggle: () => void;
-  onOpenAddModal?: () => void;
-  onCloseAddModal?: () => void;
-  dnsZones: string[];
   onRefresh?: () => void;
 }
 
@@ -476,19 +473,37 @@ const AddHost = (props: PropsToAddHost) => {
     } else return true;
   };
 
-  // Define status flags to determine user added successfully or error
-  let isAdditionSuccess = true;
-
-  // Track which button has been clicked ('onAddUser' or 'onAddAndAddAnother')
-  // to better handle the 'retry' function and its behavior
-  let onAddHostClicked = true;
-
-  // Add host data
-  const addHostData = async () => {
-    let dnsZone = dnsZoneSelected;
-    if (dnsZone.endsWith(".")) {
-      // Strip trailing dot
-      dnsZone = dnsZone.slice(0, -1);
+  const addHostHandler = () => {
+    const validation = validateFields();
+    if (validation) {
+      const newHost: Host = {
+        hostName: hostName,
+        fqdn: hostName + "." + dnsZoneSelected,
+        dnsZone: dnsZoneSelected,
+        userclass: hostClass,
+        ip_address: hostIpAddress,
+        description: "",
+        enrolledby: "", // TODO: Investigate on enrolling hosts to see how this value is determined
+        force: false,
+        has_keytab: false,
+        has_password: false,
+        krbcanonicalname: "",
+        krbprincipalname: "",
+        managedby_host: [],
+        memberof_hostgroup: [],
+        sshpubkeyfp: [],
+        nshostlocation: "",
+        l: "",
+        attributelevelrights: [],
+        krbpwdpolicyreference: [],
+        managing_host: [],
+        serverhostname: "",
+        ipakrbrequirespreauth: false,
+        ipakrbokasdelegate: false,
+        ipakrboktoauthasdelegate: false,
+      };
+      dispatch(addHost(newHost));
+      cleanAndCloseModal();
     }
     const newHostPayload = {
       fqdn: hostName + "." + dnsZone,
@@ -535,19 +550,36 @@ const AddHost = (props: PropsToAddHost) => {
     onAddHostClicked = false;
     const validation = validateFields();
     if (validation) {
-      setAddAgainBtnSpinning(true);
-      addHostData().then(() => {
-        if (isAdditionSuccess) {
-          // Do not close the modal, but clean fields & reset validations
-          cleanAllFields();
-          resetValidations();
-        } else {
-          // Close the modal without cleaning fields
-          if (props.onCloseAddModal !== undefined) {
-            props.onCloseAddModal();
-          }
-        }
-      });
+      const newHost: Host = {
+        hostName: hostName,
+        fqdn: hostName + "." + dnsZoneSelected,
+        dnsZone: dnsZoneSelected,
+        userclass: hostClass,
+        ip_address: hostIpAddress,
+        description: "",
+        enrolledby: "", // TODO: Investigate on enrolling hosts to set this value correctly
+        force: false,
+        has_keytab: false,
+        has_password: false,
+        krbcanonicalname: "",
+        krbprincipalname: "",
+        managedby_host: [],
+        memberof_hostgroup: [],
+        sshpubkeyfp: [],
+        nshostlocation: "",
+        l: "",
+        attributelevelrights: [],
+        krbpwdpolicyreference: [],
+        managing_host: [],
+        serverhostname: "",
+        ipakrbrequirespreauth: false,
+        ipakrbokasdelegate: false,
+        ipakrboktoauthasdelegate: false,
+      };
+      dispatch(addHost(newHost));
+      // Do not close the modal, but clean fields & reset validations
+      cleanAllFields();
+      resetValidations();
     }
   };
 

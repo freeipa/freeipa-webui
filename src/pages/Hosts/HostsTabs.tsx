@@ -115,9 +115,11 @@ const HostsTabs = ({ section }) => {
   return (
     <>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
-        <BreadCrumb
-          className="pf-v5-u-mb-md"
-          breadcrumbItems={breadcrumbItems}
+        <BreadcrumbLayout
+          className="pf-u-mb-md"
+          preText="Host:"
+          userId={hostData.fqdn}
+          pagesVisited={pagesVisited}
         />
         <TitleLayout
           id={hostId}

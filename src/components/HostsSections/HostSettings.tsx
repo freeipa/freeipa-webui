@@ -40,22 +40,62 @@ interface PropsToHostSettings {
 
 const HostSettings = (props: PropsToHostSettings) => {
   // Host name - textbox (mandatory field)
-  let fqdn = "";
-  if (props.host.fqdn !== undefined) {
-    fqdn = props.host.fqdn;
-  }
-  const [hostName] = useState(fqdn);
+  const [hostName] = useState(props.host.fqdn);
 
-  // Update current route data to Redux and highlight the current page in the Nav bar
-  useUpdateRoute({ pathname: "hosts" });
+  // Principal alias - textbox
+  const [principalAliasList, setPrincipalAliasList] = useState<
+    PrincipalAlias[]
+  >([
+    {
+      id: 0,
+      alias: "host/" + props.host.fqdn + REALM, // TODO: The realm (@SERVER.IPA.DEMO) should adapt to context
+    },
+  ]);
 
-  // Get krb realms
-  const krbrealms = props.host.krbprincipalname;
-  const aliasList: PrincipalAlias[] = [];
-  for (let i = 0; krbrealms && krbrealms[i]; i++) {
-    aliasList.push({
-      id: i,
-      alias: krbrealms[i],
+  // Description - textbox
+  const [hostDescription, setHostDescription] = useState(
+    props.host.description
+  );
+  const onChangeDescriptionHandler = (newDescription: string) => {
+    setHostDescription(newDescription);
+  };
+
+  // Class - textbox
+  const [hostClass, setHostClass] = useState(props.host.userclass);
+  const updateHostClass = (newHostClass: string) => {
+    setHostClass(newHostClass);
+  };
+
+  // Locality - textbox
+  const [locality, setLocality] = useState("");
+  const updateLocality = (newLocality: string) => {
+    setLocality(newLocality);
+  };
+  const [location, setLocation] = useState("");
+  const updateLocation = (newLocation: string) => {
+    setLocation(newLocation);
+  };
+  const [platform, setPlatform] = useState("");
+  const updatePlatform = (newPlatform: string) => {
+    setPlatform(newPlatform);
+  };
+  const [operatingSystem, setOperatingSystem] = useState("");
+  const updateOperatingSystem = (newOperatingSystem: string) => {
+    setOperatingSystem(newOperatingSystem);
+  };
+
+  // SSH public keys
+  const [sshPublicKeys] = useState<SshPublicKey[]>([]);
+
+  // MAC address
+  const [macAddressList, setMacAddressList] = useState<MacAddress[]>([]);
+
+  // - 'Add MAC address' handler
+  const onAddMacAddressFieldHandler = () => {
+    const macAddressListCopy = [...macAddressList];
+    macAddressListCopy.push({
+      id: Date.now.toString(),
+      address: "",
     });
   }
 

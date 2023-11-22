@@ -52,9 +52,8 @@ const AddService = (props: PropsToAddService) => {
   const [executeServiceAddCommand] = useAddServiceMutation();
 
   // Set host names list
-  const [addSpinning, setAddBtnSpinning] = React.useState<boolean>(false);
-  const [addAgainSpinning, setAddAgainBtnSpinning] =
-    React.useState<boolean>(false);
+  const hostsList = useAppSelector((state) => state.hosts.hostsList);
+  const hostNamesList = hostsList.map((hostName) => hostName.fqdn);
 
   // 'Service' select
   const [isServiceOpen, setIsServiceOpen] = useState(false);

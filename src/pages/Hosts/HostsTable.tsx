@@ -50,16 +50,60 @@ const HostsTable = (props: PropsToTable) => {
     enrolled: "Enrolled",
   };
 
-  const isHostSelected = (host: Host) => {
-    if (
-      props.hostsData.selectedHosts.find(
-        (selectedHost) => selectedHost.fqdn[0] === host.fqdn[0]
-      )
-    ) {
+  // Filter (SearchInput)
+  // - When a host is search using the Search Input
+  const onFilter = (host: Host) => {
+    if (props.searchValue === "") {
       return true;
-    } else {
-      return false;
     }
+
+    let input: RegExp;
+    try {
+      input = new RegExp(props.searchValue, "i");
+    } catch (err) {
+      input = new RegExp(
+        props.searchValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+        "i"
+      );
+    }
+
+    for (const attr of Object.keys(columnNames)) {
+      if (
+        host[attr] !== undefined &&
+        host[attr] !== "enrolled" &&
+        host[attr][0].search(input) >= 0
+      ) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const filteredShownHosts =
+    props.searchValue === ""
+      ? shownHostsList
+      : props.elementsList.filter(onFilter);
+
+  // Index of the currently sorted column
+  // Note: if you intend to make columns reorderable, you may instead want to use a non-numeric key
+  // as the identifier of the sorted column. See the "Compound expandable" example.
+  const [activeSortIndex, setActiveSortIndex] = useState<number | null>(null);
+
+  // Sort direction of the currently sorted column
+  const [activeSortDirection, setActiveSortDirection] = useState<
+    "asc" | "desc" | null
+  >(null);
+
+  // Since OnSort specifies sorted columns by index, we need sortable values for our object by column index.
+  const getSortableRowValues = (host: Host): (string | number)[] => {
+    const { fqdn, description } = host;
+
+    let descriptionString = "";
+    if (description !== undefined) {
+      descriptionString = description[0];
+    }
+
+    return [fqdn[0], descriptionString];
   };
 
   // To allow shift+click to select/deselect multiple rows
@@ -159,8 +203,8 @@ const HostsTable = (props: PropsToTable) => {
     </Tr>
   );
 
-  const body = shownHostsList.map((host, rowIndex) => (
-    <Tr key={host.fqdn} id={host.fqdn}>
+  const body = filteredShownHosts.map((host, rowIndex) => (
+    <Tr key={host.fqdn[0]} id={host.fqdn[0]}>
       <Td
         dataLabel="checkbox"
         select={{
@@ -172,13 +216,13 @@ const HostsTable = (props: PropsToTable) => {
         }}
       />
       <Td dataLabel={columnNames.fqdn}>
-        <Link to={"/hosts/" + host.fqdn} state={host}>
-          {host.fqdn}
+        <Link to={URL_PREFIX + "/hosts/settings"} state={host}>
+          {host.fqdn[0]}
         </Link>
       </Td>
       <Td dataLabel={columnNames.description}>{host.description}</Td>
       <Td dataLabel={columnNames.enrolled}>
-        {host.has_keytab ? "True" : "False"}
+        {host.enrolledby !== "" ? "True" : "False"}
       </Td>
     </Tr>
   ));

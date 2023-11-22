@@ -9,6 +9,14 @@ import {
 // Utils
 import { API_VERSION_BACKUP } from "../utils/utils";
 import {
+  Host,
+  Metadata,
+  User,
+  UIDType,
+  fqdnType,
+  IDPServer,
+  RadiusServer,
+  CertificateAuthority,
   fqdnType,
   Metadata,
   servicesType,
@@ -17,6 +25,18 @@ import {
   roleType,
   sudoCmdType,
 } from "../utils/datatypes/globalDataTypes";
+import { apiToHost } from "../utils/hostUtils";
+import { apiToUser } from "../utils/userUtils";
+import { apiToService } from "../utils/serviceUtils";
+import { apiToPwPolicy } from "../utils/pwPolicyUtils";
+import { apiToKrbPolicy } from "../utils/krbPolicyUtils";
+
+export type UserFullData = {
+  user?: Partial<User>;
+  pwPolicy?: Partial<PwPolicy>;
+  krbtPolicy?: Partial<KrbPolicy>;
+  cert?: Record<string, unknown>;
+};
 
 export interface Query {
   data: FindRPCResponse | BatchRPCResponse | undefined;
@@ -161,6 +181,12 @@ export interface MemberPayload {
   entityType: string;
 }
 
+export interface HostsPayload {
+  searchValue: string;
+  sizeLimit: number;
+  apiVersion: string;
+}
+
 // Body data to perform the calls
 export const getCommand = (commandData: Command) => {
   const payloadWithParams = {
@@ -222,22 +248,6 @@ export const api = createApi({
     "CertificateAuthority",
     "ActiveUsers",
     "Hosts",
-    "CertProfile",
-    "DNSZones",
-    "FullHost",
-    "FullService",
-    "FullUserGroup",
-    "FullHBACRule",
-    "FullHBACService",
-    "FullHBACServiceGrp",
-    "FullHostGroup",
-    "FullNetgroup",
-    "FullIDView",
-    "FullIDViewHosts",
-    "FullIDViewHostgroups",
-    "FullSudoRule",
-    "FullSudoCmdGroup",
-    "FullSudoCmd",
   ],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
@@ -257,6 +267,81 @@ export const api = createApi({
       query: (payloadData: Command[], apiVersion?: string) =>
         getBatchCommand(payloadData, apiVersion || API_VERSION_BACKUP),
     }),
+    gettingUser: build.query<BatchRPCResponse, UsersPayload>({
+      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
+        const { searchValue, sizeLimit, apiVersion, userType } = payloadData;
+
+        // 1ST CALL - GETTING ALL UIDS
+        if (apiVersion === undefined) {
+          return {
+            error: {
+              status: "CUSTOM_ERROR",
+              data: "",
+              error: "API version not available",
+            } as FetchBaseQueryError,
+          };
+        }
+
+        // Prepare search parameters
+        const params = {
+          pkey_only: true,
+          sizelimit: sizeLimit,
+          version: apiVersion,
+        };
+        let method = "user_find";
+        let show_method = "user_show";
+        if (userType === "stage") {
+          method = "stageuser_find";
+          show_method = "stageuser_show";
+        } else if (userType === "preserved") {
+          params["preserved"] = true;
+        }
+
+        // Prepare payload
+        const payloadDataUids: Command = {
+          method: method,
+          params: [[searchValue], params],
+        };
+
+        // Make call using 'fetchWithBQ'
+        const getUidsResult = await fetchWithBQ(getCommand(payloadDataUids));
+        // Return possible errors
+        if (getUidsResult.error) {
+          return { error: getUidsResult.error as FetchBaseQueryError };
+        }
+        // If no error: cast and assign 'uids'
+        const uidResponseData = getUidsResult.data as FindRPCResponse;
+
+        const uids: string[] = [];
+        const itemsCount = uidResponseData.result.result.length as number;
+        for (let i = 0; i < itemsCount; i++) {
+          const userId = uidResponseData.result.result[i] as UIDType;
+          const { uid } = userId;
+          uids.push(uid[0] as string);
+        }
+
+        // 2ND CALL - GET PARTIAL USERS INFO
+        // Prepare payload
+        const options = { no_members: true };
+        const payloadUserDataBatch: Command[] = uids.map((uid) => ({
+          method: show_method,
+          params: [[uid], options],
+        }));
+
+        // Make call using 'fetchWithBQ'
+        const partialUsersInfoResult = await fetchWithBQ(
+          getBatchCommand(payloadUserDataBatch as Command[], apiVersion)
+        );
+
+        // Return results
+        return partialUsersInfoResult.data
+          ? { data: partialUsersInfoResult.data as BatchRPCResponse }
+          : {
+              error:
+                partialUsersInfoResult.error as unknown as FetchBaseQueryError,
+            };
+      },
+    }),
     getObjectMetadata: build.query<Metadata, void>({
       query: () => {
         return getCommand({
@@ -273,34 +358,399 @@ export const api = createApi({
         response.result,
       providesTags: ["ObjectMetadata"],
     }),
-    // Basic find/show query: Hosts, Services, ...
-    gettingGeneric: build.query<BatchRPCResponse, GenericPayload>({
-      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const {
-          searchValue,
-          sizeLimit,
-          apiVersion,
-          user,
-          no_user,
-          startIdx,
-          stopIdx,
-          cn,
-          description,
-          sudocmd,
-          timelimit,
-          objAttr,
-        } = payloadData;
-        let objName = payloadData.objName;
-
-        if (objAttr === undefined || objName === undefined) {
-          return {
-            error: {
-              status: "CUSTOM_ERROR",
-              data: "",
-              error: "Missing required param",
-            } as FetchBaseQueryError,
-          };
+    getGenericUsersFullData: build.query<UserFullData, object>({
+      query: (query_args) => {
+        // Prepare search parameters
+        const user_params = {
+          all: true,
+          rights: true,
+        };
+        let method = "user_show";
+        if (query_args["user_type"] === "stage") {
+          // Preserved users work with user_show, but not stage users
+          method = "stageuser_show";
         }
+        const userShowCommand: Command = {
+          method: method,
+          params: [query_args["userId"], user_params],
+        };
+
+        const pwpolicyShowCommand: Command = {
+          method: "pwpolicy_show",
+          params: [
+            [],
+            { user: query_args["userId"][0], all: true, rights: true },
+          ],
+        };
+
+        const krbtpolicyShowCommand: Command = {
+          method: "krbtpolicy_show",
+          params: [query_args["userId"], { all: true, rights: true }],
+        };
+
+        const certFindCommand: Command = {
+          method: "cert_find",
+          params: [
+            [],
+            { user: query_args["userId"][0], sizelimit: 0, all: true },
+          ],
+        };
+
+        const batchPayload: Command[] = [
+          userShowCommand,
+          pwpolicyShowCommand,
+          krbtpolicyShowCommand,
+          certFindCommand,
+        ];
+
+        return getBatchCommand(
+          batchPayload,
+          query_args["version"] || API_VERSION_BACKUP
+        );
+      },
+      transformResponse: (response: BatchResponse): UserFullData => {
+        const [
+          userResponse,
+          pwPolicyResponse,
+          krbtPolicyResponse,
+          certResponse,
+        ] = response.result.results;
+
+        // Initialize user data (to prevent 'undefined' values)
+        const userData = userResponse.result;
+        const pwPolicyData = pwPolicyResponse.result;
+        const krbtPolicyData = krbtPolicyResponse.result;
+        const certData = certResponse.result;
+
+        let userObject = {};
+        if (!userResponse.error) {
+          userObject = apiToUser(userData);
+        }
+
+        let pwPolicyObject = {};
+        if (!pwPolicyResponse.error) {
+          pwPolicyObject = apiToPwPolicy(pwPolicyData);
+        }
+
+        let krbtPolicyObject = {};
+        if (!krbtPolicyResponse.error) {
+          krbtPolicyObject = apiToKrbPolicy(krbtPolicyData);
+        }
+
+        return {
+          user: userObject,
+          pwPolicy: pwPolicyObject,
+          krbtPolicy: krbtPolicyObject,
+          cert: certData,
+        };
+      },
+      providesTags: ["FullUser"],
+    }),
+    getHostsFullData: build.query<HostFullData, string>({
+      query: (hostId) => {
+        // Prepare search parameters
+        const host_params = {
+          all: true,
+          rights: true,
+        };
+
+        const hostShowCommand: Command = {
+          method: "host_show",
+          params: [[hostId], host_params],
+        };
+
+        const certFindCommand: Command = {
+          method: "cert_find",
+          params: [[], { host: hostId, sizelimit: 0, all: true }],
+        };
+
+        const batchPayload: Command[] = [hostShowCommand, certFindCommand];
+
+        return getBatchCommand(batchPayload, API_VERSION_BACKUP);
+      },
+      transformResponse: (response: BatchResponse): HostFullData => {
+        const [hostResponse, certResponse] = response.result.results;
+
+        // Initialize user data (to prevent 'undefined' values)
+        const hostData = hostResponse.result;
+        const certData = certResponse.result;
+
+        let hostObject = {};
+        if (!hostResponse.error) {
+          hostObject = apiToHost(hostData);
+        }
+
+        return {
+          host: hostObject,
+          cert: certData,
+        };
+      },
+      providesTags: ["FullHost"],
+    }),
+    getServicesFullData: build.query<Service, string>({
+      query: (serviceName: string) => {
+        // Prepare search parameters
+        const params = {
+          all: true,
+          rights: true,
+          version: API_VERSION_BACKUP,
+        };
+        return getCommand({
+          method: "service_show",
+          params: [serviceName, params],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): Service => {
+        return apiToService(response.result.result);
+      },
+      providesTags: ["FullService"],
+    }),
+    saveUser: build.mutation<FindRPCResponse, Partial<User>>({
+      query: (user) => {
+        const params = {
+          version: API_VERSION_BACKUP,
+          ...user,
+        };
+
+        delete params["uid"];
+
+        return getCommand({
+          method: "user_mod",
+          params: [[user.uid], params],
+        });
+      },
+      invalidatesTags: ["FullUser"],
+    }),
+    saveStageUser: build.mutation<FindRPCResponse, Partial<User>>({
+      query: (user) => {
+        const params = {
+          version: API_VERSION_BACKUP,
+          ...user,
+        };
+        delete params["uid"];
+
+        return getCommand({
+          method: "stageuser_mod",
+          params: [[user.uid], params],
+        });
+      },
+      invalidatesTags: ["FullUser"],
+    }),
+    saveHost: build.mutation<FindRPCResponse, Partial<Host>>({
+      query: (host) => {
+        const params = {
+          version: API_VERSION_BACKUP,
+          ...host,
+        };
+        delete params["fqdn"];
+        delete params["krbcanonicalname"];
+        const fqdn = host.fqdn !== undefined ? host.fqdn : "";
+        return getCommand({
+          method: "host_mod",
+          params: [[fqdn], params],
+        });
+      },
+      invalidatesTags: ["FullHost"],
+    }),
+    getRadiusProxy: build.query<RadiusServer[], void>({
+      query: () => {
+        return getCommand({
+          method: "radiusproxy_find",
+          params: [[null], { version: API_VERSION_BACKUP }],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): RadiusServer[] =>
+        response.result.result as unknown as RadiusServer[],
+      providesTags: ["RadiusServer"],
+    }),
+    getIdpServer: build.query<IDPServer[], void>({
+      query: () => {
+        return getCommand({
+          method: "idp_find",
+          params: [[null], { version: API_VERSION_BACKUP }],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): IDPServer[] =>
+        response.result.result as unknown as IDPServer[],
+      providesTags: ["IdpServer"],
+    }),
+    removePrincipalAlias: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [payload, { version: API_VERSION_BACKUP }];
+
+        return getCommand({
+          method: "user_remove_principal",
+          params: params,
+        });
+      },
+    }),
+    addPrincipalAlias: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [payload, { version: API_VERSION_BACKUP }];
+
+        return getCommand({
+          method: "user_add_principal",
+          params: params,
+        });
+      },
+    }),
+    addHostPrincipalAlias: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [payload, { version: API_VERSION_BACKUP }];
+
+        return getCommand({
+          method: "host_add_principal",
+          params: params,
+        });
+      },
+    }),
+    removeHostPrincipalAlias: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [payload, { version: API_VERSION_BACKUP }];
+
+        return getCommand({
+          method: "host_remove_principal",
+          params: params,
+        });
+      },
+    }),
+    addCertificate: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [
+          [payload[0]],
+          { usercertificate: payload[1], version: API_VERSION_BACKUP },
+        ];
+
+        // Determine the method to use via the object type
+        let method = "user_add_cert";
+        if (payload[2] === "host") {
+          method = "host_add_cert";
+        } else if (payload[2] === "service") {
+          method = "service_add_cert";
+        }
+
+        return getCommand({
+          method: method,
+          params: params,
+        });
+      },
+    }),
+    removeStagePrincipalAlias: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [payload, { version: API_VERSION_BACKUP }];
+
+        return getCommand({
+          method: "stageuser_remove_principal",
+          params: params,
+        });
+      },
+    }),
+    removeCertificate: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [
+          [payload[0]],
+          { usercertificate: payload[1], version: API_VERSION_BACKUP },
+        ];
+
+        // Determine the method to use via the object type
+        let method = "user_remove_cert";
+        if (payload[2] === "host") {
+          method = "host_remove_cert";
+        } else if (payload[2] === "service") {
+          method = "service_remove_cert";
+        }
+
+        return getCommand({
+          method: method,
+          params: params,
+        });
+      },
+    }),
+    getCertificateAuthority: build.query<CertificateAuthority[], void>({
+      query: () => {
+        return getCommand({
+          method: "ca_find",
+          params: [[null], { version: API_VERSION_BACKUP }],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): CertificateAuthority[] =>
+        response.result.result as unknown as CertificateAuthority[],
+      providesTags: ["CertificateAuthority"],
+    }),
+    revokeCertificate: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [
+          [payload[0]],
+          {
+            revocation_reason: payload[1],
+            cacn: payload[2],
+            version: API_VERSION_BACKUP,
+          },
+        ];
+
+        return getCommand({
+          method: "cert_revoke",
+          params: params,
+        });
+      },
+    }),
+    removeHoldCertificate: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [
+          [payload[0]],
+          {
+            cacn: payload[1],
+            version: API_VERSION_BACKUP,
+          },
+        ];
+
+        return getCommand({
+          method: "cert_remove_hold",
+          params: params,
+        });
+      },
+    }),
+    addCertMapData: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        return getCommand({
+          method: "user_add_certmapdata",
+          params: payload,
+        });
+      },
+    }),
+    removeCertMapData: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        return getCommand({
+          method: "user_remove_certmapdata",
+          params: payload,
+        });
+      },
+    }),
+    addStagePrincipalAlias: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [payload, { version: API_VERSION_BACKUP }];
+
+        return getCommand({
+          method: "stageuser_add_principal",
+          params: params,
+        });
+      },
+    }),
+    getActiveUsers: build.query<User[], void>({
+      query: () => {
+        return getCommand({
+          method: "user_find",
+          params: [[null], { version: API_VERSION_BACKUP }],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): User[] =>
+        response.result.result as unknown as User[],
+      providesTags: ["ActiveUsers"],
+    }),
+    // Hosts
+    gettingHost: build.query<BatchRPCResponse, HostsPayload>({
+      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
+        const { searchValue, sizeLimit, apiVersion } = payloadData;
 
         if (apiVersion === undefined) {
           return {
@@ -319,72 +769,10 @@ export const api = createApi({
           version: apiVersion,
         };
 
-        if (timelimit) {
-          params["timelimit"] = timelimit;
-        }
-
-        if (
-          objName === "group" ||
-          objName === "netgroup" ||
-          objName === "hostgroup"
-        ) {
-          if (user !== undefined) {
-            params["user"] = user;
-          } else if (no_user !== undefined) {
-            params["no_user"] = no_user;
-          }
-        }
-
-        if (objName === "preserved") {
-          params["preserved"] = true;
-          objName = "user";
-        }
-
-        if (
-          objName === "role" ||
-          objName === "sudorule" ||
-          objName === "sudocmdgroup" ||
-          objName === "idview"
-        ) {
-          if (cn) {
-            params["cn"] = cn;
-          }
-          if (description) {
-            params["description"] = description;
-          }
-        }
-
-        if (objName === "hbacrule" || objName === "hbacsvc") {
-          if (description) {
-            params["description"] = description;
-          }
-        }
-
-        if (objName === "hbacsvcgroup") {
-          if (description) {
-            params["description"] = description;
-          }
-        }
-
-        if (objName === "sudocmd") {
-          if (sudocmd) {
-            params["sudocmd"] = sudocmd;
-          }
-          if (description) {
-            params["description"] = description;
-          }
-        }
-
-        // Prevent searchValue to be null
-        let parsedSearchValue = searchValue;
-        if (searchValue === null || searchValue === undefined) {
-          parsedSearchValue = "";
-        }
-
         // Prepare payload
         const payloadDataIds: Command = {
-          method: objName + "_find",
-          params: [[parsedSearchValue], params],
+          method: "host_find",
+          params: [[searchValue], params],
         };
 
         // Make call using 'fetchWithBQ'
@@ -394,404 +782,68 @@ export const api = createApi({
           return { error: getGroupIDsResult.error as FetchBaseQueryError };
         }
         // If no error: cast and assign 'uids'
-        const idResponseData = getGroupIDsResult.data as FindRPCResponse;
-        const ids: string[] = [];
-        const itemsCount = idResponseData.result.result.length as number;
-        for (let i = startIdx; i < itemsCount && i < stopIdx; i++) {
-          let id;
-          if (objName === "host") {
-            id = idResponseData.result.result[i] as fqdnType;
-          } else if (objName === "service") {
-            id = idResponseData.result.result[i] as servicesType;
-          } else if (objName === "user" || objName === "stageuser") {
-            id = idResponseData.result.result[i] as UIDType;
-          } else if (
-            // CN types
-            objName === "group" ||
-            objName === "netgroup" ||
-            objName === "hostgroup" ||
-            objName === "idview" ||
-            objName === "hbacrule" ||
-            objName === "hbacsvc" ||
-            objName === "hbacsvcgroup" ||
-            objName === "sudorule" ||
-            objName === "sudocmdgroup"
-          ) {
-            id = idResponseData.result.result[i] as cnType;
-          } else if (objName === "role") {
-            id = idResponseData.result.result[i] as roleType;
-          } else if (objName === "sudocmd") {
-            id = idResponseData.result.result[i] as sudoCmdType;
-          } else {
-            // Unknown, should never happen
-            return {
-              error: {
-                status: "CUSTOM_ERROR",
-                data: "",
-                error: "Unknown object name " + objName,
-              } as FetchBaseQueryError,
-            };
-          }
-          ids.push(id[objAttr][0] as string);
+        const hostIdResponseData = getGroupIDsResult.data as FindRPCResponse;
+
+        const fqdns: string[] = [];
+        const itemsCount = hostIdResponseData.result.result.length as number;
+        for (let i = 0; i < itemsCount; i++) {
+          const hostId = hostIdResponseData.result.result[i] as fqdnType;
+          const { fqdn } = hostId;
+          fqdns.push(fqdn[0] as string);
         }
 
-        // 2ND CALL - GET PARTIAL INFO
+        // 2ND CALL - GET PARTIAL HOSTS INFO
         // Prepare payload
-        let payloadDataBatch: Command[] = [];
-        if (objName === "idview") {
-          // There is no "no_members" param
-          payloadDataBatch = ids.map((name) => ({
-            method: objName + "_show",
-            params: [[name], {}],
-          }));
-        } else {
-          payloadDataBatch = ids.map((name) => ({
-            method: objName + "_show",
-            params: [[name], { no_members: true }],
-          }));
-        }
-
-        // Make call using 'fetchWithBQ'
-        const partialInfoResult = await fetchWithBQ(
-          getBatchCommand(payloadDataBatch as Command[], apiVersion)
-        );
-
-        const response = partialInfoResult.data as BatchRPCResponse;
-        if (response) {
-          response.result.totalCount = itemsCount;
-        }
-
-        // Return results
-        return response
-          ? { data: response }
-          : {
-              error: partialInfoResult.error as unknown as FetchBaseQueryError,
-            };
-      },
-    }),
-    // Refresh entries by search value (mutation instead of query)
-    searchEntries: build.mutation<BatchRPCResponse, GenericPayload>({
-      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const {
-          searchValue,
-          sizeLimit,
-          apiVersion,
-          startIdx,
-          stopIdx,
-          entryType,
-        } = payloadData;
-
-        if (apiVersion === undefined) {
-          return {
-            error: {
-              status: "CUSTOM_ERROR",
-              data: "",
-              error: "API version not available",
-            } as FetchBaseQueryError,
-          };
-        }
-
-        // Prepare search parameters
-        const params = {
-          pkey_only: true,
-          sizelimit: sizeLimit,
-          version: apiVersion,
-          all: true,
-        };
-
-        let method = "";
-        let show_method = "";
-        if (entryType === "user") {
-          method = "user_find";
-          show_method = "user_show";
-        } else if (entryType === "stage") {
-          method = "stageuser_find";
-          show_method = "stageuser_show";
-        } else if (entryType === "preserved") {
-          method = "user_find";
-          show_method = "user_show";
-          params["preserved"] = true;
-        } else if (entryType === "host") {
-          method = "host_find";
-          show_method = "host_show";
-        } else if (entryType === "service") {
-          method = "service_find";
-          show_method = "service_show";
-        } else if (entryType === "hostgroup") {
-          method = "hostgroup_find";
-          show_method = "hostgroup_show";
-        } else if (entryType === "usergroup") {
-          method = "group_find";
-          show_method = "group_show";
-        } else if (entryType === "netgroup") {
-          method = "netgroup_find";
-          show_method = "netgroup_show";
-        } else if (entryType === "hbacrule") {
-          method = "hbacrule_find";
-          show_method = "hbacrule_show";
-        } else if (entryType === "hbacsvc") {
-          method = "hbacsvc_find";
-          show_method = "hbacsvc_show";
-        } else if (entryType === "hbacsvcgroup") {
-          method = "hbacsvcgroup_find";
-          show_method = "hbacsvcgroup_show";
-        } else if (entryType === "idview") {
-          method = "idview_find";
-          show_method = "idview_show";
-        } else if (entryType === "sudocmd") {
-          method = "sudocmd_find";
-          show_method = "sudocmd_show";
-        } else if (entryType === "sudocmdgroup") {
-          method = "sudocmdgroup_find";
-          show_method = "sudocmdgroup_show";
-        } else if (entryType === "sudorule") {
-          method = "sudorule_find";
-          show_method = "sudorule_show";
-        }
-
-        // Prepare payload
-        const payloadDataIds: Command = {
-          method: method,
-          params: [[searchValue], params],
-        };
-
-        // Make call using 'fetchWithBQ'
-        const getGroupIDsResult = await fetchWithBQ(getCommand(payloadDataIds));
-        // Return possible errors
-        if (getGroupIDsResult.error) {
-          return { error: getGroupIDsResult.error as FetchBaseQueryError };
-        }
-        // If no error: cast and assign 'ids'
-        const responseData = getGroupIDsResult.data as FindRPCResponse;
-
-        const ids: string[] = [];
-        const itemsCount = responseData.result.result.length as number;
-        for (let i = startIdx; i < itemsCount && i < stopIdx; i++) {
-          if (
-            entryType === "user" ||
-            entryType === "stage" ||
-            entryType === "preserved"
-          ) {
-            const userId = responseData.result.result[i] as UIDType;
-            const { uid } = userId;
-            ids.push(uid[0] as string);
-          } else if (entryType === "host") {
-            const hostId = responseData.result.result[i] as fqdnType;
-            const { fqdn } = hostId;
-            ids.push(fqdn[0] as string);
-          } else if (entryType === "service") {
-            const serviceId = responseData.result.result[i] as servicesType;
-            const { krbprincipalname } = serviceId;
-            ids.push(krbprincipalname[0] as string);
-          } else if (entryType === "sudocmd") {
-            const sudoCmd = responseData.result.result[i] as sudoCmdType;
-            const { sudocmd } = sudoCmd;
-            ids.push(sudocmd[0] as string);
-          } else if (
-            entryType === "usergroup" ||
-            entryType === "hostgroup" ||
-            entryType === "netgroup" ||
-            entryType === "hbacrule" ||
-            entryType === "hbacsvc" ||
-            entryType === "hbacsvcgroup" ||
-            entryType === "sudocmdgroup" ||
-            entryType === "idview" ||
-            entryType === "sudorule"
-          ) {
-            const groupId = responseData.result.result[i] as cnType;
-            const { cn } = groupId;
-            ids.push(cn[0] as string);
-          }
-        }
-
-        // 2ND CALL - GET PARTIAL INFO
-        // Prepare payload
-        let payloadDataBatch: Command[] = [];
-        if (entryType === "idview") {
-          // There is no "no_members" param
-          payloadDataBatch = ids.map((id) => ({
-            method: show_method,
-            params: [[id], {}],
-          }));
-        } else {
-          payloadDataBatch = ids.map((id) => ({
-            method: show_method,
-            params: [[id], { no_members: true }],
-          }));
-        }
-
-        // Make call using 'fetchWithBQ'
-        const partialInfoResult = await fetchWithBQ(
-          getBatchCommand(payloadDataBatch as Command[], apiVersion)
-        );
-
-        const response = partialInfoResult.data as BatchRPCResponse;
-        if (response) {
-          response.result.totalCount = itemsCount;
-        }
-
-        // Return results
-        return response
-          ? { data: response }
-          : {
-              error: partialInfoResult.error as unknown as FetchBaseQueryError,
-            };
-      },
-    }),
-    // Take a list of ID's and get the full entries
-    getEntries: build.mutation<BatchRPCResponse, GetEntriesPayload>({
-      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { idList, apiVersion, entryType } = payloadData;
-
-        if (apiVersion === undefined) {
-          return {
-            error: {
-              status: "CUSTOM_ERROR",
-              data: "",
-              error: "API version not available",
-            } as FetchBaseQueryError,
-          };
-        }
-
-        let show_method = "";
-        if (entryType === "user") {
-          show_method = "user_show";
-        } else if (entryType === "host") {
-          show_method = "host_show";
-        } else if (entryType === "hostgroup") {
-          show_method = "hostgroup_show";
-        } else {
-          // user group
-          show_method = "group_show";
-        }
-
-        const payloadDataBatch: Command[] = idList.map((id) => ({
-          method: show_method,
-          params: [[id], { no_members: true }],
+        const payloadHostDataBatch: Command[] = fqdns.map((fqdn) => ({
+          method: "host_show",
+          params: [[fqdn], {}],
         }));
 
         // Make call using 'fetchWithBQ'
-        const partialInfoResult = await fetchWithBQ(
-          getBatchCommand(payloadDataBatch as Command[], apiVersion)
+        const partialHostsInfoResult = await fetchWithBQ(
+          getBatchCommand(payloadHostDataBatch as Command[], apiVersion)
         );
 
-        const response = partialInfoResult.data as BatchRPCResponse;
-        if (response) {
-          response.result.totalCount = idList.length;
-        }
-
         // Return results
-        return response
-          ? { data: response }
+        return partialHostsInfoResult.data
+          ? { data: partialHostsInfoResult.data as BatchRPCResponse }
           : {
-              error: partialInfoResult.error as unknown as FetchBaseQueryError,
+              error:
+                partialHostsInfoResult.error as unknown as FetchBaseQueryError,
             };
       },
     }),
-    getIDList: build.mutation<ListResponse, GenericPayload>({
-      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { searchValue, sizeLimit, startIdx, stopIdx, entryType } =
-          payloadData;
+    // Autommeber Users
+    autoMemberRebuildUsers: build.mutation<FindRPCResponse, any[]>({
+      query: (users) => {
+        const paramArgs =
+          users.length === 0
+            ? { type: "group", version: API_VERSION_BACKUP }
+            : {
+                users: users.map((uid) => uid[0]),
+                version: API_VERSION_BACKUP,
+              };
 
-        // Prepare search parameters
-        const params = {
-          pkey_only: true,
-          sizelimit: sizeLimit,
-          version: API_VERSION_BACKUP,
-          all: true,
-        };
-
-        let method = "";
-        if (entryType === "user") {
-          method = "user_find";
-        } else if (entryType === "stage") {
-          method = "stageuser_find";
-        } else if (entryType === "preserved") {
-          method = "user_find";
-          params["preserved"] = true;
-        } else if (entryType === "host") {
-          method = "host_find";
-        } else if (entryType === "hostgroup") {
-          method = "hostgroup_find";
-        } else if (entryType === "group") {
-          method = "group_find";
-        } else if (entryType === "netgroup") {
-          method = "netgroup_find";
-        } else if (entryType === "service") {
-          method = "service_find";
-        } else if (entryType === "hbacsvc") {
-          method = "hbacsvc_find";
-        } else if (entryType === "hbacsvcgroup") {
-          method = "hbacsvcgroup_find";
-        } else {
-          return {
-            error: {
-              status: "CUSTOM_ERROR",
-              data: "",
-              error: "Unknown entry type",
-            } as FetchBaseQueryError,
-          };
-        }
-
-        // Prepare payload
-        const payloadDataIds: Command = {
-          method: method,
-          params: [[searchValue], params],
-        };
-
-        // Make call using 'fetchWithBQ'
-        const getGroupIDsResult = await fetchWithBQ(getCommand(payloadDataIds));
-        // Return possible errors
-        if (getGroupIDsResult.error) {
-          return {
-            error: {
-              status: "CUSTOM_ERROR",
-              data: "",
-              error: "Failed to search for entries",
-            } as FetchBaseQueryError,
-          };
-        }
-        // If no error: cast and assign 'ids'
-        const responseData = getGroupIDsResult.data as FindRPCResponse;
-
-        const ids: string[] = [];
-        const itemsCount = responseData.result.result.length as number;
-        for (let i = startIdx; i < itemsCount && i < stopIdx; i++) {
-          if (entryType === "user") {
-            const userId = responseData.result.result[i] as UIDType;
-            const { uid } = userId;
-            ids.push(uid[0] as string);
-          } else if (entryType === "host") {
-            const hostId = responseData.result.result[i] as fqdnType;
-            const { fqdn } = hostId;
-            ids.push(fqdn[0] as string);
-          } else if (entryType === "service") {
-            const serviceId = responseData.result.result[i] as servicesType;
-            const { krbprincipalname } = serviceId;
-            ids.push(krbprincipalname[0] as string);
-          } else if (
-            entryType === "group" ||
-            entryType === "hostgroup" ||
-            entryType === "netgroup" ||
-            entryType === "hbacsvc" ||
-            entryType === "hbacsvcgroup"
-          ) {
-            const groupId = responseData.result.result[i] as cnType;
-            const { cn } = groupId;
-            ids.push(cn[0] as string);
-          }
-        }
-
-        const result = { list: ids, count: itemsCount } as ListResponse;
-
-        return { data: result };
+        return getCommand({
+          method: "automember_rebuild",
+          params: [[], paramArgs],
+        });
       },
     }),
-    getGenericList: build.query<FindRPCResponse, string>({
-      query: (objName) => {
+    // Automember Hosts
+    autoMemberRebuildHosts: build.mutation<FindRPCResponse, any[]>({
+      query: (hosts) => {
+        const paramArgs =
+          hosts.length === 0
+            ? { type: "group", version: API_VERSION_BACKUP }
+            : {
+                hosts: hosts.map((fqdn) => fqdn[0]),
+                version: API_VERSION_BACKUP,
+              };
+
         return getCommand({
-          method: objName + "_find",
-          params: [[], { version: API_VERSION_BACKUP }],
+          method: "automember_rebuild",
+          params: [[], paramArgs],
         });
       },
     }),
@@ -804,9 +856,26 @@ export const {
   useBatchCommandQuery,
   useBatchMutCommandMutation,
   useGetObjectMetadataQuery,
-  useGettingGenericQuery,
-  useGetGenericListQuery,
-  useSearchEntriesMutation,
-  useGetIDListMutation,
-  useGetEntriesMutation,
+  useGetGenericUsersFullDataQuery,
+  useSaveUserMutation,
+  useSaveStageUserMutation,
+  useGetRadiusProxyQuery,
+  useGetIdpServerQuery,
+  useRemovePrincipalAliasMutation,
+  useAddPrincipalAliasMutation,
+  useAddCertificateMutation,
+  useRemoveCertificateMutation,
+  useGetCertificateAuthorityQuery,
+  useRevokeCertificateMutation,
+  useRemoveHoldCertificateMutation,
+  useAddCertMapDataMutation,
+  useRemoveCertMapDataMutation,
+  useRemoveStagePrincipalAliasMutation,
+  useAddStagePrincipalAliasMutation,
+  useRemoveHostPrincipalAliasMutation,
+  useAddHostPrincipalAliasMutation,
+  useGetActiveUsersQuery,
+  useGettingHostQuery,
+  useAutoMemberRebuildHostsMutation,
+  useAutoMemberRebuildUsersMutation,
 } = api;

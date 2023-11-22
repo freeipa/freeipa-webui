@@ -296,17 +296,15 @@ export interface SudoCmdGroup {
 }
 
 export interface Host {
-  dn: string;
-  attributelevelrights: Record<string, unknown>;
+  attributelevelrights: string[];
   description: string;
+  hostName: string;
   dnsZone: string;
   enrolledby: string;
   fqdn: string;
   ip_address: string;
-  nshardwareplatform: string;
-  nsosversion: string;
   krbcanonicalname: string;
-  krbprincipalname: string[];
+  krbprincipalname: string;
   krbpwdpolicyreference: string[];
   l: string;
   managedby_host: string[];
@@ -325,10 +323,6 @@ export interface Host {
   userclass: string;
   serverhostname: string;
   sshpubkeyfp: string[];
-  sshpublickey: string[];
-  macaddress: string[];
-  krbprincipalauthind: string[];
-  usercertificate: string[];
   // Booleans
   force: boolean; // force host name even if not in DNS
   has_keytab: boolean;
@@ -516,56 +510,4 @@ export interface cnType {
 export interface fqdnType {
   dn: string;
   fqdn: string[];
-}
-
-export interface servicesType {
-  dn: string;
-  krbprincipalname: string[];
-}
-
-export interface roleType {
-  dn: string;
-  cn: string[];
-  description: string;
-}
-
-export interface sudoCmdType {
-  dn: string;
-  sudocmd: string;
-  description: string;
-}
-
-export interface CertProfile {
-  cn: string;
-  description: string;
-  ipacertprofilestoreissued: boolean;
-  dn: string;
-}
-
-export interface OTPToken {
-  ipatokenotpalgorithm: string;
-  ipatokenuniqueid: string;
-  ipatokenotpkey: string;
-  ipatokenowner: string;
-  ipatokentotptimestep: string;
-  ipatokentotpclockoffset: string;
-  ipatokenotpdigits: string;
-  uri: string;
-  type: string;
-  dn: string;
-}
-
-export interface SubId {
-  ipauniqueid: string;
-  ipaowner: string;
-  ipasubgidnumber: string;
-  ipasubuidnumber: string;
-  description: string;
-  ipasubuidcount: string;
-  ipasubgidcount: string;
-  dn: string;
-}
-
-export interface DNSZone {
-  idnsname: string;
 }

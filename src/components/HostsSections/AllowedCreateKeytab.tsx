@@ -41,96 +41,16 @@ const AllowedCreateKeytab = (props: PropsToAllowCreateKeytab) => {
     props.host[attr] !== undefined ? props.host[attr].length : 0;
 
   return (
-    <Tabs
-      activeKey={activeTabKey}
-      onSelect={handleTabClick}
-      aria-label="Tabs for types of entries that can create keytabs"
-    >
-      <Tab
-        key={0}
-        eventKey={0}
-        title={
-          <TabTitleText>
-            Users <Label isCompact>{user_count}</Label>
-          </TabTitleText>
-        }
-        aria-label="user groups for create keytabs"
-      >
-        <KeytabTable
-          from="host"
-          id={fqdn}
-          entry={props.host}
-          onRefresh={props.onRefresh}
-          className="pf-v5-u-ml-md pf-v5-u-mt-sm"
-          opType="create"
-          entryAttr="ipaallowedtoperform_write_keys_user"
-          entryType="user"
-        />
-      </Tab>
-      <Tab
-        key={1}
-        eventKey={1}
-        title={
-          <TabTitleText>
-            User Groups <Label isCompact>{group_count}</Label>
-          </TabTitleText>
-        }
-        aria-label="user groups for create keytabs"
-      >
-        <KeytabTable
-          from="host"
-          id={fqdn}
-          entry={props.host}
-          onRefresh={props.onRefresh}
-          className="pf-v5-u-ml-md pf-v5-u-mt-sm"
-          opType="create"
-          entryAttr="ipaallowedtoperform_write_keys_group"
-          entryType="group"
-        />
-      </Tab>
-      <Tab
-        key={2}
-        eventKey={2}
-        title={
-          <TabTitleText>
-            Hosts <Label isCompact>{host_count}</Label>
-          </TabTitleText>
-        }
-        aria-label="hosts for create keytabs"
-      >
-        <KeytabTable
-          from="host"
-          id={fqdn}
-          entry={props.host}
-          onRefresh={props.onRefresh}
-          className="pf-v5-u-ml-md pf-v5-u-mt-sm"
-          opType="create"
-          entryAttr="ipaallowedtoperform_write_keys_host"
-          entryType="host"
-        />
-      </Tab>
-      <Tab
-        key={3}
-        eventKey={3}
-        title={
-          <TabTitleText>
-            Host Groups <Label isCompact>{hostgroup_count}</Label>
-          </TabTitleText>
-        }
-        aria-label="hostser groups for create keytabs"
-      >
-        <KeytabTable
-          from="host"
-          id={fqdn}
-          entry={props.host}
-          onRefresh={props.onRefresh}
-          className="pf-v5-u-ml-md pf-v5-u-mt-sm"
-          opType="create"
-          entryAttr="ipaallowedtoperform_write_keys_hostgroup"
-          entryType="hostgroup"
-        />
-      </Tab>
-    </Tabs>
+    <Flex direction={{ default: "column", lg: "row" }}>
+      <FlexItem flex={{ default: "flex_1" }}>
+        <CreateKeytabUsersTable host={props.host.fqdn} />
+        <CreateKeytabHostsTable host={props.host.fqdn} />
+      </FlexItem>
+      <FlexItem flex={{ default: "flex_1" }}>
+        <CreateKeytabUserGroupsTable host={props.host.fqdn} />
+        <CreateKeytabHostGroupsTable host={props.host.fqdn} />
+      </FlexItem>
+    </Flex>
   );
 };
 

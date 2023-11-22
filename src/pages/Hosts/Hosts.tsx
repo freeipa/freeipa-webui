@@ -54,10 +54,10 @@ import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/o
 // RPC client
 import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
 import {
-  useGetDNSZonesQuery,
   useGettingHostQuery,
   useAutoMemberRebuildHostsMutation,
-} from "../../services/rpcHosts";
+  HostsPayload,
+} from "src/services/rpc";
 
 const Hosts = () => {
   // Dispatch (Redux)
@@ -94,11 +94,11 @@ const Hosts = () => {
   const modalErrors = useApiError([]);
 
   // Table comps
+  const [searchValue, setSearchValue] = React.useState("");
+  const [page, setPage] = useState<number>(1);
+  const [perPage, setPerPage] = useState<number>(15);
+  const [selectedHosts, setSelectedHosts] = useState<string[]>([]);
   const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
-  const [totalCount, setHostsTotalCount] = useState<number>(0);
-  const [dnsZones, setDNSZones] = useState<string[]>([]);
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
-
   const updateSelectedPerPage = (selected: number) => {
     setSelectedPerPage(selected);
   };
@@ -124,6 +124,11 @@ const Hosts = () => {
     setIsDeletion(value);
   };
 
+  // Hosts displayed on the first page
+  const [shownHostsList, setShownHostsList] = useState(
+    hostsList.slice(0, perPage)
+  );
+
   const updateShownHostsList = (newShownHostsList: Host[]) => {
     setHostsList(newShownHostsList);
   };
@@ -131,24 +136,22 @@ const Hosts = () => {
   // Button disabled due to error
   const [isDisabledDueError, setIsDisabledDueError] = useState<boolean>(false);
 
-  // Page indexes
-  const firstHostIdx = (page - 1) * perPage;
-  const lastHostIdx = page * perPage;
-
   // Derived states - what we get from API
   const hostDataResponse = useGettingHostQuery({
     searchValue: searchValue,
     sizeLimit: 0,
     apiVersion: apiVersion || API_VERSION_BACKUP,
-    startIdx: firstHostIdx,
-    stopIdx: lastHostIdx,
-  } as GenericPayload);
+  } as HostsPayload);
 
   const {
     data: batchResponse,
     isLoading: isBatchLoading,
     error: batchError,
   } = hostDataResponse;
+
+  // Page indexes
+  const firstHostIdx = (page - 1) * perPage;
+  const lastHostIdx = page * perPage;
 
   // Handle data when the API call is finished
   useEffect(() => {
@@ -168,7 +171,6 @@ const Hosts = () => {
       batchResponse !== undefined
     ) {
       const hostsListResult = batchResponse.result.results;
-      const totalCount = batchResponse.result.totalCount;
       const hostsListSize = batchResponse.result.count;
       const hostsList: Host[] = [];
 
@@ -179,7 +181,8 @@ const Hosts = () => {
       // Update 'Hosts' slice data
       dispatch(updateHostsList(hostsList));
       setHostsList(hostsList);
-      setHostsTotalCount(totalCount);
+      // Update the shown users list
+      setShownHostsList(hostsList.slice(firstHostIdx, lastHostIdx));
       // Show table elements
       setShowTableRows(true);
     }
@@ -195,46 +198,6 @@ const Hosts = () => {
       window.location.reload();
     }
   }, [hostDataResponse]);
-
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  useEffect(() => {
-    hostDataResponse.refetch();
-  }, []);
-
-  // Get dns zones
-  const dnsZoneDataResponse = useGetDNSZonesQuery();
-
-  // Handle data when the API call is finished
-  useEffect(() => {
-    if (dnsZoneDataResponse.isFetching) {
-      return;
-    }
-    if (dnsZoneDataResponse.isSuccess && dnsZoneDataResponse.data) {
-      const dnsZoneListResult = dnsZoneDataResponse.data.result.result;
-      const dnsZoneListSize = dnsZoneDataResponse.data.result.count;
-      const dnsZones: string[] = [];
-      for (let i = 0; i < dnsZoneListSize; i++) {
-        const dnsZone = dnsZoneListResult[i] as DNSZone;
-        dnsZones.push(dnsZone["idnsname"][0]["__dns_name__"]);
-      }
-      setDNSZones(dnsZones);
-    }
-
-    // API response: Error
-    if (
-      !hostDataResponse.isLoading &&
-      hostDataResponse.isError &&
-      hostDataResponse.error !== undefined
-    ) {
-      setIsDisabledDueError(true);
-      globalErrors.addError(
-        batchError,
-        "Error when loading dns zones",
-        "error-dns-zones"
-      );
-    }
-  }, [dnsZoneDataResponse]);
 
   // Refresh button handling
   const refreshHostsData = () => {
@@ -640,6 +603,7 @@ const Hosts = () => {
           onKebabToggle={onKebabToggle}
           idKebab="main-dropdown-kebab"
           isKebabOpen={kebabIsOpen}
+          isPlain={true}
           dropdownItems={!showTableRows ? [] : dropdownItems}
         />
       ),
@@ -700,7 +664,7 @@ const Hosts = () => {
               ) : (
                 <HostsTable
                   elementsList={hostsList}
-                  shownElementsList={hostsList}
+                  shownElementsList={shownHostsList}
                   showTableRows={showTableRows}
                   hostsData={hostsTableData}
                   buttonsData={hostsTableButtonsData}
@@ -736,9 +700,6 @@ const Hosts = () => {
       <AddHost
         show={showAddModal}
         handleModalToggle={onAddModalToggle}
-        onOpenAddModal={onAddClickHandler}
-        onCloseAddModal={onCloseAddModal}
-        dnsZones={dnsZones}
         onRefresh={refreshHostsData}
       />
       <DeleteHosts
