@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "src/store/store";
-// User data (JSON file)
-import stageUsersJson from "./stageUsers.json";
 // Data types
 import { User } from "src/utils/datatypes/globalDataTypes";
 
@@ -15,7 +13,7 @@ interface ChangeStatusData {
 }
 
 const initialState: StageUsersState = {
-  usersList: stageUsersJson,
+  usersList: [],
 };
 
 const stageUsersSlice = createSlice({
@@ -109,6 +107,11 @@ const stageUsersSlice = createSlice({
         preserved: newUser.preserved,
         dn: newUser.dn,
         sshpubkeyfp: newUser.sshpubkeyfp,
+        krbextradata: newUser.krbextradata,
+        krblastadminunlock: newUser.krblastadminunlock,
+        krblastfailedauth: newUser.krblastfailedauth,
+        krblastpwdchange: newUser.krblastpwdchange,
+        krbloginfailedcount: newUser.krbloginfailedcount,
       });
       // Update json file
     },
@@ -222,6 +225,11 @@ const stageUsersSlice = createSlice({
                 preserved: state.usersList[j].preserved,
                 dn: state.usersList[j].dn,
                 sshpubkeyfp: state.usersList[j].sshpubkeyfp,
+                krbextradata: state.usersList[j].krbextradata,
+                krblastadminunlock: state.usersList[j].krblastadminunlock,
+                krblastfailedauth: state.usersList[j].krblastfailedauth,
+                krblastpwdchange: state.usersList[j].krblastpwdchange,
+                krbloginfailedcount: state.usersList[j].krbloginfailedcount,
               };
               // Replace entry
               state.usersList[j] = updatedUser;
