@@ -67,7 +67,12 @@
     "has_keytab": false,
     "preserved": false,
     "dn": "uid=sother,cn=users,cn=accounts,dc=ipa,dc=domain",
-    "sshpubkeyfp": [""]
+    "sshpubkeyfp": [""],
+    "krbextradata": "",
+    "krblastadminunlock": "",
+    "krblastfailedauth": "",
+    "krblastpwdchange": "",
+    "krbloginfailedcount": ""
   },
   {
     "title": "",
@@ -137,7 +142,12 @@
     "has_keytab": false,
     "preserved": false,
     "dn": "uid=sother2,cn=users,cn=accounts,dc=ipa,dc=domain",
-    "sshpubkeyfp": [""]
+    "sshpubkeyfp": [""],
+    "krbextradata": "",
+    "krblastadminunlock": "",
+    "krblastfailedauth": "",
+    "krblastpwdchange": "",
+    "krbloginfailedcount": ""
   },
   {
     "title": "",
@@ -207,7 +217,12 @@
     "has_keytab": false,
     "preserved": false,
     "dn": "uid=sother3,cn=users,cn=accounts,dc=ipa,dc=domain",
-    "sshpubkeyfp": [""]
+    "sshpubkeyfp": [""],
+    "krbextradata": "",
+    "krblastadminunlock": "",
+    "krblastfailedauth": "",
+    "krblastpwdchange": "",
+    "krbloginfailedcount": ""
   },
   {
     "title": "",
@@ -277,7 +292,12 @@
     "has_keytab": false,
     "preserved": false,
     "dn": "uid=sother4,cn=users,cn=accounts,dc=ipa,dc=domain",
-    "sshpubkeyfp": [""]
+    "sshpubkeyfp": [""],
+    "krbextradata": "",
+    "krblastadminunlock": "",
+    "krblastfailedauth": "",
+    "krblastpwdchange": "",
+    "krbloginfailedcount": ""
   },
   {
     "title": "",
@@ -347,7 +367,12 @@
     "has_keytab": false,
     "preserved": false,
     "dn": "uid=sother5,cn=users,cn=accounts,dc=ipa,dc=domain",
-    "sshpubkeyfp": [""]
+    "sshpubkeyfp": [""],
+    "krbextradata": "",
+    "krblastadminunlock": "",
+    "krblastfailedauth": "",
+    "krblastpwdchange": "",
+    "krbloginfailedcount": ""
   },
   {
     "title": "",
@@ -417,7 +442,12 @@
     "has_keytab": false,
     "preserved": false,
     "dn": "uid=sother6,cn=users,cn=accounts,dc=ipa,dc=domain",
-    "sshpubkeyfp": [""]
+    "sshpubkeyfp": [""],
+    "krbextradata": "",
+    "krblastadminunlock": "",
+    "krblastfailedauth": "",
+    "krblastpwdchange": "",
+    "krbloginfailedcount": ""
   },
   {
     "title": "",
@@ -487,7 +517,12 @@
     "has_keytab": false,
     "preserved": false,
     "dn": "uid=sother7,cn=users,cn=accounts,dc=ipa,dc=domain",
-    "sshpubkeyfp": [""]
+    "sshpubkeyfp": [""],
+    "krbextradata": "",
+    "krblastadminunlock": "",
+    "krblastfailedauth": "",
+    "krblastpwdchange": "",
+    "krbloginfailedcount": ""
   },
   {
     "title": "",
@@ -557,7 +592,12 @@
     "has_keytab": false,
     "preserved": false,
     "dn": "uid=sother8,cn=users,cn=accounts,dc=ipa,dc=domain",
-    "sshpubkeyfp": [""]
+    "sshpubkeyfp": [""],
+    "krbextradata": "",
+    "krblastadminunlock": "",
+    "krblastfailedauth": "",
+    "krblastpwdchange": "",
+    "krbloginfailedcount": ""
   },
   {
     "title": "",
@@ -627,7 +667,12 @@
     "has_keytab": false,
     "preserved": false,
     "dn": "uid=sother9,cn=users,cn=accounts,dc=ipa,dc=domain",
-    "sshpubkeyfp": [""]
+    "sshpubkeyfp": [""],
+    "krbextradata": "",
+    "krblastadminunlock": "",
+    "krblastfailedauth": "",
+    "krblastpwdchange": "",
+    "krbloginfailedcount": ""
   },
   {
     "title": "",
@@ -697,7 +742,12 @@
     "has_keytab": false,
     "preserved": false,
     "dn": "uid=sother10,cn=users,cn=accounts,dc=ipa,dc=domain",
-    "sshpubkeyfp": [""]
+    "sshpubkeyfp": [""],
+    "krbextradata": "",
+    "krblastadminunlock": "",
+    "krblastfailedauth": "",
+    "krblastpwdchange": "",
+    "krbloginfailedcount": ""
   },
   {
     "title": "",
@@ -767,6 +817,11 @@
     "has_keytab": false,
     "preserved": false,
     "dn": "uid=sother11,cn=users,cn=accounts,dc=ipa,dc=domain",
-    "sshpubkeyfp": [""]
+    "sshpubkeyfp": [""],
+    "krbextradata": "",
+    "krblastadminunlock": "",
+    "krblastfailedauth": "",
+    "krblastpwdchange": "",
+    "krbloginfailedcount": ""
   }
 ]

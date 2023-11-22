@@ -109,6 +109,11 @@ const preservedUsersSlice = createSlice({
         preserved: newUser.preserved,
         dn: newUser.dn,
         sshpubkeyfp: newUser.sshpubkeyfp,
+        krbextradata: newUser.krbextradata,
+        krblastadminunlock: newUser.krblastadminunlock,
+        krblastfailedauth: newUser.krblastfailedauth,
+        krblastpwdchange: newUser.krblastpwdchange,
+        krbloginfailedcount: newUser.krbloginfailedcount,
       });
       // Update json file
     },
@@ -222,6 +227,11 @@ const preservedUsersSlice = createSlice({
                 preserved: state.usersList[j].preserved,
                 dn: state.usersList[j].dn,
                 sshpubkeyfp: state.usersList[j].sshpubkeyfp,
+                krbextradata: state.usersList[j].krbextradata,
+                krblastadminunlock: state.usersList[j].krblastadminunlock,
+                krblastfailedauth: state.usersList[j].krblastfailedauth,
+                krblastpwdchange: state.usersList[j].krblastpwdchange,
+                krbloginfailedcount: state.usersList[j].krbloginfailedcount,
               };
               // Replace entry
               state.usersList[j] = updatedUser;

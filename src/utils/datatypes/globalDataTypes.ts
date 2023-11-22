@@ -81,6 +81,11 @@ export interface User {
   preserved: boolean;
   dn: string;
   sshpubkeyfp: string[]; // multivalue
+  krbextradata: string;
+  krblastadminunlock: Date | string;
+  krblastfailedauth: Date | string;
+  krblastpwdchange: Date | string;
+  krbloginfailedcount: string;
 }
 
 export interface UserGroup {
