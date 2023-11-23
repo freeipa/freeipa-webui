@@ -16,5 +16,8 @@
 // Import commands.js using ES2015 syntax:
 import "./commands";
 
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
+before(() => {
+  Cypress.session.clearCurrentSessionData().then();
+  cy.loginAsAnUser(Cypress.env("admin_login"), Cypress.env("admin_password"));
+  cy.userCleanup();
+});

@@ -7,6 +7,7 @@ export default defineConfig({
   e2e: {
     specPattern: "**/*.feature",
     baseUrl: "https://server.ipa.demo/",
+    testIsolation: false,
 
     async setupNodeEvents(
       on: Cypress.PluginEvents,
@@ -21,5 +22,10 @@ export default defineConfig({
       );
       return config;
     },
+  },
+  env: {
+    base_url: "/ipa/modern_ui",
+    admin_login: "admin",
+    admin_password: "Secret123",
   },
 });
