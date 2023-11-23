@@ -17,6 +17,9 @@ Vagrant.configure("2") do |config|
     override.vm.synced_folder ".", "/usr/src/freeipa-webui", type: "sshfs"
   end
 
+  # Enable X-forwarding
+  config.ssh.forward_x11 = true
+
   # Virtualbox is used by the CI
   config.vm.provider "virtualbox" do |vb|
     vb.memory = 2048

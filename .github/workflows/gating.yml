@@ -81,6 +81,9 @@ jobs:
       - name: Run vagrant up
         run: vagrant up --no-provision
 
+      - name: Check vagrant ssh-config
+        run: vagrant ssh-config
+
       - name: Run vagrant provision
         run: vagrant provision
 
@@ -97,7 +100,25 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           browser: firefox
-          env: host="https://${{ env.SERVER_IP  }}"
+          # env: host="https://${{ env.SERVER_IP  }}"
+          config: baseUrl=https://${{ env.SERVER_IP  }}
+
+      # - name: Print exported variable
+      #   jobs:
+      #   cypress-run:
+      #     runs-on: ubuntu-22.04
+      #     steps:
+      #       - name: Checkout
+      #         uses: actions/checkout@v4
+      #       # Install NPM dependencies, cache them correctly
+      #       # and run all Cypress tests
+      #       - name: Cypress run
+      #         uses: cypress-io/github-action@v6
+      #         with:
+      #           browser: firefox
+      #           env: host="https://${{ env.SERVER_IP  }}"
+      #           build: npm run build
+      #           start: npm start
 
       - name: Upload cypress screenshots
         uses: actions/upload-artifact@v2

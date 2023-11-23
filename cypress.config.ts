@@ -12,6 +12,7 @@ export default defineConfig({
       on: Cypress.PluginEvents,
       config: Cypress.PluginConfigOptions
     ): Promise<Cypress.PluginConfigOptions> {
+      config.baseUrl = process.env.SERVER_IP || "http://server.ipa.demo";
       await addCucumberPreprocessorPlugin(on, config);
       on(
         "file:preprocessor",
