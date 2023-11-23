@@ -25,13 +25,64 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 //
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }
+export {}; // needed for modification of global scope to work properly
+
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      createTestUser(username: string): Chainable<void>;
+      loginAsAnUser(username: string, password: string): Chainable<void>;
+      userCleanup(): Chainable<void>;
+    }
+  }
+}
+
+Cypress.Commands.add("loginAsAnUser", (username: string, password: string) => {
+  // temporary solution as the new UI doesn't have login page yet
+  cy.visit("/ipa/ui");
+  cy.get("[id=username1]").type(username);
+  cy.get("[id=password2").type(password);
+  cy.get("button[name=login]").click();
+  cy.wait(1000);
+  cy.visit(Cypress.env("base_url"));
+});
+
+Cypress.Commands.add("userCleanup", () => {
+  cy.get("tr[id=admin]", { timeout: 10000 }).should("be.visible");
+  cy.get('input[aria-label="Select all"]').check();
+  cy.get("tr[id=admin] input[type=checkbox]").uncheck();
+
+  cy.get("button")
+    .contains("Delete")
+    .then(($deleteButton) => {
+      if ($deleteButton.prop("disabled")) return;
+      $deleteButton.trigger("click");
+      cy.get("[role=dialog] button").contains("Delete").trigger("click");
+    });
+});
+
+Cypress.Commands.add("createTestUser", (username: string) => {
+  cy.visit(Cypress.env("base_url") + "/active-users");
+  if (cy.get("tr[id=" + username + "]").should("not.exist")) {
+    cy.get("button").contains("Add").click();
+    cy.get("[role=dialog] label")
+      .contains("User login")
+      .parent()
+      .then(($label) => {
+        cy.get("[name=modal-form-" + $label.attr("for") + "]").type(username);
+      });
+    cy.get("[role=dialog] label")
+      .contains("First name")
+      .parent()
+      .then(($label) => {
+        cy.get("[name=modal-form-" + $label.attr("for") + "]").type("Artic");
+      });
+    cy.get("[role=dialog] label")
+      .contains("Last name")
+      .parent()
+      .then(($label) => {
+        cy.get("[name=modal-form-" + $label.attr("for") + "]").type("Asbestos");
+      });
+    cy.get("[role=dialog] button").contains("Add").click();
+  }
+});
