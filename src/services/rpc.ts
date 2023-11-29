@@ -913,6 +913,16 @@ export const api = createApi({
         response.result.result as unknown as CertProfile[],
       providesTags: ["CertProfile"],
     }),
+    addOtpToken: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [payload[0], payload[1]];
+
+        return getCommand({
+          method: "otptoken_add",
+          params: params,
+        });
+      },
+    }),
   }),
 });
 
@@ -949,4 +959,5 @@ export const {
   useUnlockUserMutation,
   useChangePasswordMutation,
   useGetCertProfileQuery,
+  useAddOtpTokenMutation,
 } = api;
