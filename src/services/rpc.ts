@@ -601,6 +601,16 @@ export const api = createApi({
         });
       },
     }),
+    autoMembershipRebuild: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [[], payload[0]];
+
+        return getCommand({
+          method: "automember_rebuild",
+          params: params,
+        });
+      },
+    }),
   }),
 });
 
@@ -668,4 +678,5 @@ export const {
   useDisableUserMutation,
   useUnlockUserMutation,
   useAddOtpTokenMutation,
+  useAutoMembershipRebuildMutation,
 } = api;
