@@ -643,7 +643,7 @@ export const api = createApi({
           users.length === 0
             ? { type: "group", version: API_VERSION_BACKUP }
             : {
-                users: users.map((uid) => uid[0]),
+                users: users.map((uid) => uid),
                 version: API_VERSION_BACKUP,
               };
 
@@ -660,7 +660,7 @@ export const api = createApi({
           hosts.length === 0
             ? { type: "group", version: API_VERSION_BACKUP }
             : {
-                hosts: hosts.map((fqdn) => fqdn[0]),
+                hosts: hosts.map((fqdn) => fqdn),
                 version: API_VERSION_BACKUP,
               };
 
