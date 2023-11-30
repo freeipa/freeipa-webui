@@ -50,6 +50,7 @@ import useAlerts from "src/hooks/useAlerts";
 // Modals
 import DisableEnableUsers from "./modals/DisableEnableUsers";
 import DeleteUsers from "./modals/DeleteUsers";
+import RebuildAutoMembership from "./modals/RebuildAutoMembership";
 
 export interface PropsToUserSettings {
   originalUser: Partial<User>;
@@ -122,6 +123,16 @@ const UserSettings = (props: PropsToUserSettings) => {
     setIsDeleteModalOpen(false);
   };
 
+  // 'Rebuild auto membership' option
+  const [
+    isRebuildAutoMembershipModalOpen,
+    setIsRebuildAutoMembershipModalOpen,
+  ] = useState(false);
+  const onCloseRebuildAutoMembershipModal = () => {
+    setIsRebuildAutoMembershipModalOpen(false);
+  };
+  const userToRebuild = props.user.uid ? [props.user.uid] : [];
+
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
 
@@ -148,7 +159,10 @@ const UserSettings = (props: PropsToUserSettings) => {
       Unlock
     </DropdownItem>,
     <DropdownItem key="add otp token">Add OTP token</DropdownItem>,
-    <DropdownItem key="rebuild auto membership">
+    <DropdownItem
+      key="rebuild auto membership"
+      onClick={() => setIsRebuildAutoMembershipModalOpen(true)}
+    >
       Rebuild auto membership
     </DropdownItem>,
     <DropdownItem key="new certificate">New certificate</DropdownItem>,
@@ -432,6 +446,12 @@ const UserSettings = (props: PropsToUserSettings) => {
         selectedUsersData={selectedUsersData}
         fromSettings={true}
         onRefresh={props.onRefresh}
+      />
+      <RebuildAutoMembership
+        isOpen={isRebuildAutoMembershipModalOpen}
+        onClose={onCloseRebuildAutoMembershipModal}
+        entriesToRebuild={userToRebuild}
+        entity="users"
       />
     </>
   );
