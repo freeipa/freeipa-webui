@@ -1,0 +1,23 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    // be explicit about types included
+    // to avoid clashing with Jest types
+    "types": ["cypress"],
+    "paths": {
+      "@badeball/cypress-cucumber-preprocessor/*": [
+        "./node_modules/@badeball/cypress-cucumber-preprocessor/dist/subpath-entrypoints/*"
+      ]
+    },
+    "isolatedModules": false
+  },
+  "include": [
+    "../node_modules/cypress",
+    "./**/*.ts",
+    "./cypress.config.ts",
+    "./cypress"
+  ],
+  "exclude": [],
+  "files": ["cypress.config.ts"]
+}

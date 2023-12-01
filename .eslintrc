@@ -10,7 +10,7 @@
     "jsx": true,
     "js": true,
     "useJSXTextNode": true,
-    "project": "./tsconfig.json",
+    "project": ["./tsconfig.json", "./cypress/tsconfig.json"],
     "tsconfigRootDir": "."
   },
   "extends": [
