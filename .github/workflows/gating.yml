@@ -94,6 +94,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           browser: firefox
+          config-file: cypress/cypress.config.ts
 
       - name: Upload cypress screenshots
         uses: actions/upload-artifact@v2
