@@ -258,3 +258,10 @@ export interface OTPToken {
   type: string;
   dn: string;
 }
+
+export interface CertProfile {
+  cn: string;
+  description: string;
+  ipacertprofilestoreissued: boolean;
+  dn: string;
+}

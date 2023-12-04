@@ -14,6 +14,7 @@ import {
   IDPServer,
   RadiusServer,
   CertificateAuthority,
+  CertProfile,
 } from "src/utils/datatypes/globalDataTypes";
 import { apiToUser } from "src/utils/userUtils";
 
@@ -168,6 +169,7 @@ export const api = createApi({
     "IdpServer",
     "CertificateAuthority",
     "ActiveUsers",
+    "CertProfile",
   ],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
@@ -611,6 +613,17 @@ export const api = createApi({
         });
       },
     }),
+    getCertProfile: build.query<CertProfile[], void>({
+      query: () => {
+        return getCommand({
+          method: "certprofile_find",
+          params: [[null], { version: API_VERSION_BACKUP }],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): CertProfile[] =>
+        response.result.result as unknown as CertProfile[],
+      providesTags: ["CertProfile"],
+    }),
   }),
 });
 
@@ -679,4 +692,5 @@ export const {
   useUnlockUserMutation,
   useAddOtpTokenMutation,
   useAutoMembershipRebuildMutation,
+  useGetCertProfileQuery,
 } = api;
