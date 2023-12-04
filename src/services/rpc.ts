@@ -18,6 +18,7 @@ import {
   CertificateAuthority,
   PwPolicy,
   KrbPolicy,
+  CertProfile,
 } from "src/utils/datatypes/globalDataTypes";
 import { apiToUser } from "src/utils/userUtils";
 import { apiToPwPolicy } from "src/utils/pwPolicyUtils";
@@ -187,6 +188,7 @@ export const api = createApi({
     "CertificateAuthority",
     "ActiveUsers",
     "Hosts",
+    "CertProfile",
   ],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
@@ -736,6 +738,17 @@ export const api = createApi({
         });
       },
     }),
+    getCertProfile: build.query<CertProfile[], void>({
+      query: () => {
+        return getCommand({
+          method: "certprofile_find",
+          params: [[null], { version: API_VERSION_BACKUP }],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): CertProfile[] =>
+        response.result.result as unknown as CertProfile[],
+      providesTags: ["CertProfile"],
+    }),
   }),
 });
 
@@ -805,4 +818,5 @@ export const {
   useDisableUserMutation,
   useUnlockUserMutation,
   useChangePasswordMutation,
+  useGetCertProfileQuery,
 } = api;

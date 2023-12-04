@@ -312,3 +312,10 @@ export interface fqdnType {
   dn: string;
   fqdn: string[];
 }
+
+export interface CertProfile {
+  cn: string;
+  description: string;
+  ipacertprofilestoreissued: boolean;
+  dn: string;
+}
