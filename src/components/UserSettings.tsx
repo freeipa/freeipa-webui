@@ -52,6 +52,7 @@ import DeleteUsers from "./modals/DeleteUsers";
 import RebuildAutoMembership from "./modals/RebuildAutoMembership";
 import UnlockUser from "./modals/UnlockUser";
 import ResetPassword from "./modals/ResetPassword";
+import IssueNewCertificate from "./modals/IssueNewCertificate";
 
 export interface PropsToUserSettings {
   originalUser: Partial<User>;
@@ -165,6 +166,13 @@ const UserSettings = (props: PropsToUserSettings) => {
   const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] =
     useState(false);
 
+  // 'New certificate' option
+  const [isNewCertificateModalOpen, setIsNewCertificateModalOpen] =
+    useState(false);
+  const onCloseNewCertificateModal = () => {
+    setIsNewCertificateModalOpen(false);
+  };
+
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
 
@@ -206,7 +214,12 @@ const UserSettings = (props: PropsToUserSettings) => {
     >
       Rebuild auto membership
     </DropdownItem>,
-    <DropdownItem key="new certificate">New certificate</DropdownItem>,
+    <DropdownItem
+      key="new certificate"
+      onClick={() => setIsNewCertificateModalOpen(true)}
+    >
+      New certificate
+    </DropdownItem>,
   ];
 
   const stageDropdownItems = [
@@ -502,6 +515,13 @@ const UserSettings = (props: PropsToUserSettings) => {
         uid={props.user.uid}
         isOpen={isResetPasswordModalOpen}
         onClose={() => setIsResetPasswordModalOpen(false)}
+      />
+      <IssueNewCertificate
+        isOpen={isNewCertificateModalOpen}
+        onClose={onCloseNewCertificateModal}
+        uid={props.user.uid}
+        showPrincipalFields={false}
+        onRefresh={props.onRefresh}
       />
     </>
   );
