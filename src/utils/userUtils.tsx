@@ -212,6 +212,8 @@ export const objectToUser = (
     // 'Member of' data
     memberof_group:
       partialUser.memberof_group || oldUserObject?.memberof_group || [],
+    memberof_subid:
+      partialUser.memberof_subid || oldUserObject?.memberof_subid || [],
     // 'Managed by' data
     mepmanagedentry:
       partialUser.mepmanagedentry || oldUserObject?.mepmanagedentry || [],
