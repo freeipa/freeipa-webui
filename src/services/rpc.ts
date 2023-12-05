@@ -624,6 +624,16 @@ export const api = createApi({
         response.result.result as unknown as CertProfile[],
       providesTags: ["CertProfile"],
     }),
+    generateSubIds: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [[], payload[0]];
+
+        return getCommand({
+          method: "subid_generate",
+          params: params,
+        });
+      },
+    }),
   }),
 });
 
@@ -693,4 +703,5 @@ export const {
   useAddOtpTokenMutation,
   useAutoMembershipRebuildMutation,
   useGetCertProfileQuery,
+  useGenerateSubIdsMutation,
 } = api;
