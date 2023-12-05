@@ -293,6 +293,7 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
                 <FlexItem>
                   <SecondaryButton
                     onClickHandler={() => onDeleteCertMapData(idx)}
+                    name={"remove-certificate-mapping-data-" + idx}
                   >
                     Delete
                   </SecondaryButton>
@@ -302,7 +303,10 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
           })
         : null}
 
-      <SecondaryButton onClickHandler={() => setIsOpen(true)}>
+      <SecondaryButton
+        name={"add-certificate-mapping-data"}
+        onClickHandler={() => setIsOpen(true)}
+      >
         Add
       </SecondaryButton>
       <Modal

@@ -59,7 +59,7 @@ const IpaTextInputFromList = (props: PropsToTextInputFromList) => {
                 order={{ default: "-1" }}
               >
                 <SecondaryButton
-                  name="remove"
+                  name={"remove-principal-alias-" + idx}
                   onClickHandler={() => props.onRemove(idx)}
                   isDisabled={readOnly}
                 >
@@ -71,7 +71,7 @@ const IpaTextInputFromList = (props: PropsToTextInputFromList) => {
       </Flex>
       <SecondaryButton
         classname="pf-u-mt-md"
-        name="add"
+        name="add-principal-alias"
         onClickHandler={props.onOpenModal}
         isDisabled={readOnly}
       >

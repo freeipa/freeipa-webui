@@ -539,7 +539,11 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
             );
           })
         : null}
-      <SecondaryButton onClickHandler={onOpenModal} isDisabled={readOnly}>
+      <SecondaryButton
+        name={"add-certificate"}
+        onClickHandler={onOpenModal}
+        isDisabled={readOnly}
+      >
         Add
       </SecondaryButton>
       <ModalWithTextAreaLayout

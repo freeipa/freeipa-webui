@@ -197,7 +197,7 @@ const IpaCalendar = (props: IPAParamDefinition) => {
   return (
     <InputGroup>
       <DatePicker
-        name={props.name}
+        name={"add-date-" + props.name}
         value={valueDate !== null ? yyyyMMddFormat(valueDate) : ""}
         onChange={onDateChange}
         aria-label="Kerberos principal expiration date"
@@ -205,7 +205,7 @@ const IpaCalendar = (props: IPAParamDefinition) => {
         isDisabled={readOnly}
       />
       <TimePicker
-        name={props.name}
+        name={"add-time-" + props.name}
         time={valueDate !== null ? hhMMFormat(valueDate) : ""}
         aria-label="Kerberos principal expiration time"
         onChange={onTimeChange}
