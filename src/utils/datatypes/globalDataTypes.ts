@@ -67,6 +67,7 @@ export interface User {
   ipanthomedirectorydrive: string;
   // 'Member of' data
   memberof_group: string[]; // multivalue
+  memberof_subid?: string[]; // multivalue
   // 'Managed by' data
   mepmanagedentry: string[];
   // other
@@ -330,5 +331,17 @@ export interface OTPToken {
   ipatokenotpdigits: string;
   uri: string;
   type: string;
+  dn: string;
+}
+
+export interface SubId {
+  ipauniqueid: string;
+  objectclass: string[];
+  ipaowner: string;
+  ipasubgidnumber: string;
+  ipasubuidnumber: string;
+  description: string;
+  ipasubuidcount: string;
+  ipasubgidcount: string;
   dn: string;
 }

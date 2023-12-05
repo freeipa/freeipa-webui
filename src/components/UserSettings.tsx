@@ -43,6 +43,7 @@ import {
   ErrorResult,
   useSaveUserMutation,
   useSaveStageUserMutation,
+  useGenerateSubIdsMutation,
 } from "src/services/rpc";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
@@ -54,6 +55,8 @@ import UnlockUser from "./modals/UnlockUser";
 import ResetPassword from "./modals/ResetPassword";
 import IssueNewCertificate from "./modals/IssueNewCertificate";
 import AddOtpToken from "./modals/AddOtpToken";
+// Utils
+import { API_VERSION_BACKUP } from "src/utils/utils";
 
 export interface PropsToUserSettings {
   originalUser: Partial<User>;
@@ -180,6 +183,56 @@ const UserSettings = (props: PropsToUserSettings) => {
     setIsAddOtpTokenModalOpen(false);
   };
 
+  // RTK hook: 'Auto assign subordinate IDs'
+  const [generateSubIds] = useGenerateSubIdsMutation();
+
+  // Data is updated on 'props.user' changes
+  React.useEffect(() => {
+    if (
+      props.user.memberof_subid !== undefined &&
+      props.user.memberof_subid.length > 0
+    ) {
+      setIsDisabledAutoAssignSubIds(true);
+    }
+  }, [props.user]);
+
+  // 'Auto assign subordinate IDs' option
+  const [isDisabledAutoAssignSubIds, setIsDisabledAutoAssignSubIds] =
+    useState(false);
+
+  // 'Auto assign subordinate IDs' handler method
+  const onClickAutoAssignSubIds = () => {
+    // Prepare payload (params)
+    const payload = [
+      {
+        ipaowner: props.user.uid,
+        version: API_VERSION_BACKUP,
+      },
+    ];
+
+    // Make API call
+    generateSubIds(payload).then((response) => {
+      if ("data" in response) {
+        if (response.data.result) {
+          // Disable kebab option
+          setIsDisabledAutoAssignSubIds(true);
+          // Refresh page
+          props.onRefresh();
+          // Show toast notification: success
+          alerts.addAlert(
+            "auto-assign-success",
+            response.data.result.summary,
+            "success"
+          );
+        } else if (response.data.error) {
+          // Show toast notification: error
+          const errorMessage = response.data.error as ErrorResult;
+          alerts.addAlert("auto-assign-error", errorMessage.message, "danger");
+        }
+      }
+    });
+  };
+
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
 
@@ -231,6 +284,13 @@ const UserSettings = (props: PropsToUserSettings) => {
       onClick={() => setIsNewCertificateModalOpen(true)}
     >
       New certificate
+    </DropdownItem>,
+    <DropdownItem
+      key="auto assign subordinate ids"
+      isDisabled={isDisabledAutoAssignSubIds}
+      onClick={onClickAutoAssignSubIds}
+    >
+      Auto assign subordinate IDs
     </DropdownItem>,
   ];
 
