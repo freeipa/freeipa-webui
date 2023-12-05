@@ -113,6 +113,10 @@ When(
   }
 );
 
+When("I clear the selected field", () => {
+  cy.focused().clear();
+});
+
 // Data tables
 When("I select entry {string} in the data table", (name: string) => {
   cy.get("tr[id=" + name + "] input[type=checkbox]").check();
