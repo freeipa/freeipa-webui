@@ -43,12 +43,6 @@ interface PropsToUsersAccountSettings {
   from: "active-users" | "stage-users" | "preserved-users";
 }
 
-// Generic data to pass to the Textbox adder
-interface ElementData {
-  id: string | number;
-  element: string;
-}
-
 const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
   // TODO: Handle the `has_password` variable (boolean) by another Ipa component
   const [password] = useState("");
@@ -134,7 +128,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
       <Flex direction={{ default: "column", lg: "row" }}>
         <FlexItem flex={{ default: "flex_1" }}>
           <Form className="pf-u-mb-lg">
-            <FormGroup label="User login" fieldId="user-login">
+            <FormGroup label="User login" fieldId="uid">
               <IpaTextInput
                 name={"uid"}
                 ipaObject={ipaObject}
@@ -155,7 +149,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             </FormGroup>
             <FormGroup
               label="Password expiration"
-              fieldId="password-expiration"
+              fieldId="krbpasswordexpiration"
             >
               <IpaCalendar
                 name={"krbpasswordexpiration"}
@@ -165,7 +159,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 metadata={props.metadata}
               />
             </FormGroup>
-            <FormGroup label="UID" fieldId="uid">
+            <FormGroup label="UID" fieldId="uidnumber">
               <IpaTextInput
                 name={"uidnumber"}
                 ipaObject={ipaObject}
@@ -174,7 +168,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 metadata={props.metadata}
               />
             </FormGroup>
-            <FormGroup label="GID" fieldId="gid">
+            <FormGroup label="GID" fieldId="gidnumber">
               <IpaTextInput
                 name={"gidnumber"}
                 ipaObject={ipaObject}
@@ -185,7 +179,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             </FormGroup>
             <FormGroup
               label="Kerberos principal alias"
-              fieldId="kerberos-principal-alias"
+              fieldId="krbprincipalname"
             >
               <PrincipalAliasMultiTextBox
                 ipaObject={ipaObject}
@@ -196,7 +190,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             </FormGroup>
             <FormGroup
               label="Kerberos principal expiration (UTC)"
-              fieldId="kerberos-principal-expiration"
+              fieldId="krbprincipalexpiration"
             >
               <IpaCalendar
                 name={"krbprincipalexpiration"}
@@ -206,7 +200,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 metadata={props.metadata}
               />
             </FormGroup>
-            <FormGroup label="Login shell" fieldId="login-shell">
+            <FormGroup label="Login shell" fieldId="loginshell">
               <IpaTextInput
                 name={"loginshell"}
                 ipaObject={ipaObject}
@@ -219,7 +213,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
         </FlexItem>
         <FlexItem flex={{ default: "flex_1" }} className="pf-u-w-50">
           <Form className="pf-u-mb-lg">
-            <FormGroup label="Home directory" fieldId="home-directory">
+            <FormGroup label="Home directory" fieldId="homedirectory">
               <IpaTextInput
                 name={"homedirectory"}
                 ipaObject={ipaObject}
@@ -228,7 +222,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 metadata={props.metadata}
               />
             </FormGroup>
-            <FormGroup label="SSH public keys" fieldId="ssh-public-keys">
+            <FormGroup label="SSH public keys" fieldId="ipasshpubkey">
               <IpaSshPublicKeys
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
@@ -237,7 +231,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 from={props.from}
               />
             </FormGroup>
-            <FormGroup label="Certificates" fieldId="certificates">
+            <FormGroup label="Certificates" fieldId="usercertificate">
               <IpaCertificates
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
@@ -248,7 +242,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             </FormGroup>
             <FormGroup
               label="Certificate mapping data"
-              fieldId="certificate-mapping-data"
+              fieldId="ipacertmapdata"
               labelIcon={
                 <PopoverWithIconLayout
                   message={certificateMappingDataMessage}
@@ -270,7 +264,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             </FormGroup>
             <FormGroup
               label="User authentication types"
-              fieldId="user-authentication-types"
+              fieldId="ipauserauthtype"
               labelIcon={
                 <PopoverWithIconLayout message={userAuthTypesMessage} />
               }
@@ -311,7 +305,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             </FormGroup>
             <FormGroup
               label="Radius proxy configuration"
-              fieldId="radius-proxy-configuration"
+              fieldId="ipatokenradiusconfiglink"
             >
               <IpaSelect
                 id="radius-proxy-configuration"
@@ -325,7 +319,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             </FormGroup>
             <FormGroup
               label="Radius proxy username"
-              fieldId="radius-proxy-username"
+              fieldId="ipatokenradiususername"
             >
               <IpaTextInput
                 name={"ipatokenradiususername"}
@@ -337,7 +331,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             </FormGroup>
             <FormGroup
               label="External IdP configuration"
-              fieldId="external-idp-configuration"
+              fieldId="ipaidpconfiglink"
             >
               <IpaSelect
                 id="external-idp-configuration"
@@ -349,10 +343,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 metadata={props.metadata}
               />
             </FormGroup>
-            <FormGroup
-              label="External IdP user identifier"
-              fieldId="external-idp-user-identifier"
-            >
+            <FormGroup label="External IdP user identifier" fieldId="ipaidpsub">
               <IpaTextInput
                 name={"ipaidpsub"}
                 ipaObject={ipaObject}

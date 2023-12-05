@@ -25,7 +25,7 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
     <Flex direction={{ default: "column", md: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-u-mb-lg">
-          <FormGroup label="Mail address" fieldId="mail-address">
+          <FormGroup label="Mail address" fieldId="mail">
             <IpaTextboxList
               ipaObject={ipaObject}
               setIpaObject={recordOnChange}
@@ -33,7 +33,7 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
               ariaLabel={"email address list"}
             />
           </FormGroup>
-          <FormGroup label="Telephone number" fieldId="telephone-number">
+          <FormGroup label="Telephone number" fieldId="telephonenumber">
             <IpaTextboxList
               ipaObject={ipaObject}
               setIpaObject={recordOnChange}
@@ -41,7 +41,7 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
               ariaLabel={"telephone number list"}
             />
           </FormGroup>
-          <FormGroup label="Pager number" fieldId="pager-number">
+          <FormGroup label="Pager number" fieldId="pager">
             <IpaTextboxList
               ipaObject={ipaObject}
               setIpaObject={recordOnChange}
@@ -53,7 +53,7 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-u-mb-lg">
-          <FormGroup label="Mobile phone number" fieldId="mobile-phone-number">
+          <FormGroup label="Mobile phone number" fieldId="mobile">
             <IpaTextboxList
               ipaObject={ipaObject}
               setIpaObject={recordOnChange}

@@ -90,26 +90,26 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
     <Flex direction={{ default: "column", lg: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-u-mb-lg">
-          <FormGroup label="First name" fieldId="first-name" isRequired>
+          <FormGroup label="First name" fieldId="givenname" isRequired>
             {firstNameTextInput}
           </FormGroup>
-          <FormGroup label="Last name" fieldId="last-name" isRequired>
+          <FormGroup label="Last name" fieldId="sn" isRequired>
             {lastNameTextInput}
           </FormGroup>
-          <FormGroup label="Full name" fieldId="full-name" isRequired>
+          <FormGroup label="Full name" fieldId="cn" isRequired>
             {fullNameTextInput}
           </FormGroup>
         </Form>
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-u-mb-lg">
-          <FormGroup label="Job title" fieldId="job-title">
+          <FormGroup label="Job title" fieldId="title">
             {jobTitleTextInput}
           </FormGroup>
           <FormGroup label="GECOS" fieldId="gecos">
             {gecosTextInput}
           </FormGroup>
-          <FormGroup label="Class" fieldId="class-field">
+          <FormGroup label="Class" fieldId="userclass">
             {userClassTextInput}
           </FormGroup>
         </Form>

@@ -75,7 +75,7 @@ const UsersAttributesSMB = (props: PropsToSmbServices) => {
         <Form className="pf-u-mb-lg">
           <FormGroup
             label="SMB logon script path"
-            fieldId="smb-logon-script-path"
+            fieldId="ipantlogonscript"
             labelIcon={
               <PopoverWithIconLayout message={SBMLogonScriptPathMessage} />
             }
@@ -90,7 +90,7 @@ const UsersAttributesSMB = (props: PropsToSmbServices) => {
           </FormGroup>
           <FormGroup
             label="SMB profile path"
-            fieldId="smb-profile-path"
+            fieldId="ipantprofilepath"
             labelIcon={
               <PopoverWithIconLayout message={SMBProfilePathMessage} />
             }
@@ -109,7 +109,7 @@ const UsersAttributesSMB = (props: PropsToSmbServices) => {
         <Form className="pf-u-mb-lg">
           <FormGroup
             label="SMB home directory"
-            fieldId="smb-home-directory"
+            fieldId="ipanthomedirectory"
             labelIcon={
               <PopoverWithIconLayout
                 message={SMBHomeDirectoryMessage}
@@ -127,7 +127,7 @@ const UsersAttributesSMB = (props: PropsToSmbServices) => {
           </FormGroup>
           <FormGroup
             label="SMB home directory drive"
-            fieldId="smb-home-directory-drive"
+            fieldId="ipanthomedirectorydrive"
             labelIcon={
               <PopoverWithIconLayout
                 message={SMBHomeDirectoryDriveMessage}

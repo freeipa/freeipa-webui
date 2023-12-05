@@ -25,7 +25,7 @@ const UsersMailingAddress = (props: PropsToUsersMailingAddress) => {
     <Flex direction={{ default: "column", md: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-u-mb-lg">
-          <FormGroup label="Street address" fieldId="street-address">
+          <FormGroup label="Street address" fieldId="street">
             <IpaTextInput
               name={"street"}
               ipaObject={ipaObject}
@@ -34,7 +34,7 @@ const UsersMailingAddress = (props: PropsToUsersMailingAddress) => {
               metadata={props.metadata}
             />
           </FormGroup>
-          <FormGroup label="City" fieldId="city">
+          <FormGroup label="City" fieldId="l">
             <IpaTextInput
               name={"l"}
               ipaObject={ipaObject}
@@ -47,7 +47,7 @@ const UsersMailingAddress = (props: PropsToUsersMailingAddress) => {
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-u-mb-lg">
-          <FormGroup label="State/province" fieldId="state-province">
+          <FormGroup label="State/province" fieldId="st">
             <IpaTextInput
               name={"st"}
               ipaObject={ipaObject}
@@ -56,7 +56,7 @@ const UsersMailingAddress = (props: PropsToUsersMailingAddress) => {
               metadata={props.metadata}
             />
           </FormGroup>
-          <FormGroup label="ZIP" fieldId="zip">
+          <FormGroup label="ZIP" fieldId="postalcode">
             <IpaTextInput
               name={"postalcode"}
               ipaObject={ipaObject}
