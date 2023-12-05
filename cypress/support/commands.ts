@@ -64,26 +64,37 @@ Cypress.Commands.add("userCleanup", () => {
 
 Cypress.Commands.add("createTestUser", (username: string) => {
   cy.visit(Cypress.env("base_url") + "/active-users");
-  if (cy.get("tr[id=" + username + "]").should("not.exist")) {
-    cy.get("button").contains("Add").click();
-    cy.get("[role=dialog] label")
-      .contains("User login")
-      .parent()
-      .then(($label) => {
-        cy.get("[name=modal-form-" + $label.attr("for") + "]").type(username);
-      });
-    cy.get("[role=dialog] label")
-      .contains("First name")
-      .parent()
-      .then(($label) => {
-        cy.get("[name=modal-form-" + $label.attr("for") + "]").type("Artic");
-      });
-    cy.get("[role=dialog] label")
-      .contains("Last name")
-      .parent()
-      .then(($label) => {
-        cy.get("[name=modal-form-" + $label.attr("for") + "]").type("Asbestos");
-      });
-    cy.get("[role=dialog] button").contains("Add").click();
-  }
+  cy.wait(1000);
+  cy.get("tr[id=" + username + "]")
+    .should(() => undefined)
+    .then(($user) => {
+      if ($user.length == 0) {
+        cy.get("button").contains("Add").click();
+        cy.get("[role=dialog] label")
+          .contains("User login")
+          .parent()
+          .then(($label) => {
+            cy.get("[name=modal-form-" + $label.attr("for") + "]").type(
+              username
+            );
+          });
+        cy.get("[role=dialog] label")
+          .contains("First name")
+          .parent()
+          .then(($label) => {
+            cy.get("[name=modal-form-" + $label.attr("for") + "]").type(
+              "Arctic"
+            );
+          });
+        cy.get("[role=dialog] label")
+          .contains("Last name")
+          .parent()
+          .then(($label) => {
+            cy.get("[name=modal-form-" + $label.attr("for") + "]").type(
+              "Asbestos"
+            );
+          });
+        cy.get("[role=dialog] button").contains("Add").click();
+      }
+    });
 });
