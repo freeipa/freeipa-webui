@@ -33,7 +33,7 @@ const UsersEmployeeInfo = (props: PropsToEmployeeInfo) => {
     <Flex direction={{ default: "column", md: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-u-mb-lg">
-          <FormGroup label="Org. unit" fieldId="org-unit">
+          <FormGroup label="Org. unit" fieldId="ou">
             <IpaTextInput
               name={"ou"}
               ipaObject={ipaObject}
@@ -53,7 +53,7 @@ const UsersEmployeeInfo = (props: PropsToEmployeeInfo) => {
               metadata={props.metadata}
             />
           </FormGroup>
-          <FormGroup label="Department number" fieldId="department-number">
+          <FormGroup label="Department number" fieldId="departmentnumber">
             <IpaTextboxList
               ipaObject={ipaObject}
               setIpaObject={recordOnChange}
@@ -65,7 +65,7 @@ const UsersEmployeeInfo = (props: PropsToEmployeeInfo) => {
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-u-mb-lg">
-          <FormGroup label="Employee number" fieldId="employee-number">
+          <FormGroup label="Employee number" fieldId="employeenumber">
             <IpaTextInput
               name={"employeenumber"}
               ipaObject={ipaObject}
@@ -74,7 +74,7 @@ const UsersEmployeeInfo = (props: PropsToEmployeeInfo) => {
               metadata={props.metadata}
             />
           </FormGroup>
-          <FormGroup label="Employee type" fieldId="employee-type">
+          <FormGroup label="Employee type" fieldId="employeetype">
             <IpaTextInput
               name={"employeetype"}
               ipaObject={ipaObject}
@@ -83,7 +83,7 @@ const UsersEmployeeInfo = (props: PropsToEmployeeInfo) => {
               metadata={props.metadata}
             />
           </FormGroup>
-          <FormGroup label="Preferred language" fieldId="preferred-language">
+          <FormGroup label="Preferred language" fieldId="preferredlanguage">
             <IpaTextInput
               name={"preferredlanguage"}
               ipaObject={ipaObject}
