@@ -68,18 +68,7 @@ export interface User {
   ipanthomedirectorydrive: string;
   // 'Member of' data
   memberof_group: string[]; // multivalue
-  memberof_netgroup: string[]; // multivalue
-  memberof_role: string[]; // multivalue
-  memberof_hbacrule: string[]; // multivalue
-  memberof_sudorule: string[]; // multivalue
-  memberof_subid: string[]; // multivalue
-  // Indirect membership
-  memberofindirect_group: string[]; // multivalue
-  memberofindirect_netgroup: string[]; // multivalue
-  memberofindirect_role: string[]; // multivalue
-  memberofindirect_hbacrule: string[]; // multivalue
-  memberofindirect_sudorule: string[]; // multivalue
-  memberofindirect_subid: string[]; // multivalue
+  memberof_subid?: string[]; // multivalue
   // 'Managed by' data
   mepmanagedentry: string[];
   // other
@@ -529,5 +518,17 @@ export interface OTPToken {
   ipatokenotpdigits: string;
   uri: string;
   type: string;
+  dn: string;
+}
+
+export interface SubId {
+  ipauniqueid: string;
+  objectclass: string[];
+  ipaowner: string;
+  ipasubgidnumber: string;
+  ipasubuidnumber: string;
+  description: string;
+  ipasubuidcount: string;
+  ipasubgidcount: string;
   dn: string;
 }

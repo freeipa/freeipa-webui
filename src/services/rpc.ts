@@ -923,6 +923,17 @@ export const api = createApi({
         });
       },
     }),
+    generateSubIds: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [[], payload[0]];
+
+        return getCommand({
+          method: "subid_generate",
+          params: params,
+        });
+      },
+      invalidatesTags: ["FullUser"],
+    }),
   }),
 });
 
@@ -960,4 +971,5 @@ export const {
   useChangePasswordMutation,
   useGetCertProfileQuery,
   useAddOtpTokenMutation,
+  useGenerateSubIdsMutation,
 } = api;
