@@ -274,6 +274,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
                       <FlexItem>
                         <SecondaryButton
                           onClickHandler={() => onShowSetSshKey(idx, publicKey)}
+                          name={"show-ssh-public-key-" + idx}
                           isDisabled={readOnly}
                           isSmall
                         >
@@ -283,6 +284,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
                       <FlexItem className="pf-u-mb-md">
                         <SecondaryButton
                           onClickHandler={() => onDeleteSshKey(idx)}
+                          name={"remove-ssh-public-key-" + idx}
                           isDisabled={readOnly}
                           isSmall
                         >
@@ -319,6 +321,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
       </Modal>
       <SecondaryButton
         onClickHandler={openSshPublicKeysModal}
+        name={"add-ssh-public-key"}
         isDisabled={readOnly}
         isSmall
       >
