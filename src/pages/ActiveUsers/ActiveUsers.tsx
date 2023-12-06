@@ -282,6 +282,15 @@ const ActiveUsers = () => {
       params: [[], paramArgs],
     };
 
+    // Task can potentially run for a very long time, give feed back that we
+    // at least started the task
+    alerts.addAlert(
+      "rebuild-automember-start",
+      "Starting automember rebuild membership task (this may take a long " +
+        "time to complete) ...",
+      "info"
+    );
+
     executeCommand(automemberPayload).then((result) => {
       if ("data" in result) {
         const automemberError = result.data.error as
@@ -344,7 +353,11 @@ const ActiveUsers = () => {
       id: "question-text",
       pfComponent: (
         <TextLayout component="p">
-          Are you sure you want to rebuild auto membership?
+          <b>Warning</b> In case of a high number of users, hosts or groups, the
+          rebuild task may require high CPU usage. This can severely impact
+          server performance. Typically this only needs to be done once after
+          importing raw data into the server. Are you sure you want to rebuild
+          the auto memberships?
         </TextLayout>
       ),
     },
