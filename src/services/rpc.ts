@@ -934,6 +934,22 @@ export const api = createApi({
       },
       invalidatesTags: ["FullUser"],
     }),
+    activateUser: build.mutation<FindRPCResponse, string[]>({
+      query: (query_args) => {
+        const batchPayload: Command[] = [];
+        query_args.map((uid) => {
+          batchPayload.push({
+            method: "stageuser_activate",
+            params: [[uid], {}],
+          });
+        });
+
+        return getBatchCommand(
+          batchPayload,
+          query_args["version"] || API_VERSION_BACKUP
+        );
+      },
+    }),
   }),
 });
 
@@ -972,4 +988,5 @@ export const {
   useGetCertProfileQuery,
   useAddOtpTokenMutation,
   useGenerateSubIdsMutation,
+  useActivateUserMutation,
 } = api;

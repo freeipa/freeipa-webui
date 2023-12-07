@@ -56,8 +56,12 @@ import UnlockUser from "./modals/UnlockUser";
 import ResetPassword from "./modals/ResetPassword";
 import IssueNewCertificate from "./modals/IssueNewCertificate";
 import AddOtpToken from "./modals/AddOtpToken";
+import ActivateStageUsers from "./modals/ActivateStageUsers";
 // Utils
 import { API_VERSION_BACKUP } from "src/utils/utils";
+// Navigate
+import { URL_PREFIX } from "src/navigation/NavRoutes";
+import { useNavigate } from "react-router-dom";
 
 export interface PropsToUserSettings {
   originalUser: Partial<User>;
@@ -241,6 +245,12 @@ const UserSettings = (props: PropsToUserSettings) => {
     });
   };
 
+  // Stage users - 'Activate' option
+  const [isActivateModalOpen, setIsActivateModalOpen] = React.useState(false);
+  const onCloseActivateModal = () => {
+    setIsActivateModalOpen(false);
+  };
+
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
 
@@ -303,7 +313,9 @@ const UserSettings = (props: PropsToUserSettings) => {
   ];
 
   const stageDropdownItems = [
-    <DropdownItem key="activate">Activate</DropdownItem>,
+    <DropdownItem key="activate" onClick={() => setIsActivateModalOpen(true)}>
+      Activate
+    </DropdownItem>,
     <DropdownItem key="delete" onClick={() => setIsDeleteModalOpen(true)}>
       Delete
     </DropdownItem>,
@@ -595,6 +607,12 @@ const UserSettings = (props: PropsToUserSettings) => {
           onClose={onCloseAddOtpTokenModal}
         />
       )}
+      <ActivateStageUsers
+        show={isActivateModalOpen}
+        handleModalToggle={onCloseActivateModal}
+        selectedUids={selectedUsers}
+        onSuccess={() => navigate(URL_PREFIX + "/stage-users")}
+      />
     </>
   );
 };
