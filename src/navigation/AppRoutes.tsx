@@ -1,7 +1,7 @@
 import * as React from "react";
 // React router dom
 import { Navigate, Route, Routes } from "react-router-dom";
-import NotFound from "./NotFound";
+import { NotFound } from "src/components/errors/PageErrors";
 
 // PAGE COMPONENTS
 import ActiveUsers from "src/pages/ActiveUsers/ActiveUsers";
@@ -17,6 +17,19 @@ import Hosts from "src/pages/Hosts/Hosts";
 import HostsTabs from "src/pages/Hosts/HostsTabs";
 import Services from "src/pages/Services/Services";
 import ServicesTabs from "src/pages/Services/ServicesTabs";
+import IDViews from "src/pages/IDViews/IDViews";
+import AutoMemHostRules from "src/pages/AutoMemHostRules/AutoMemHostRules";
+import AutoMemUserRules from "src/pages/AutoMemUserRules/AutoMemUserRules";
+import HBACRules from "src/pages/HBACRules/HBACRules";
+import HBACServices from "src/pages/HBACServices/HBACServices";
+import HBACServiceGroups from "src/pages/HBACServiceGroups/HBACServiceGroups";
+import HBACTest from "src/pages/HBACTest/HBACTest";
+import SudoRules from "src/pages/SudoRules/SudoRules";
+import SudoCmds from "src/pages/SudoCmds/SudoCmds";
+import SudoCmdGroups from "src/pages/SudoCmdGroups/SudoCmdGroups";
+import SELinuxUserMaps from "src/pages/SELinuxUserMaps/SELinuxUserMaps";
+import PasswordPolicies from "src/pages/PasswordPolicies/PasswordPolicies";
+import KrbTicketPolicy from "src/pages/KrbTicketPolicy/KrbTicketPolicy";
 
 // Navigation
 import { URL_PREFIX } from "./NavRoutes";
@@ -55,43 +68,43 @@ export const AppRoutes = (): React.ReactElement => (
         <Route path="" element={<Netgroups />} />
       </Route>
       <Route path="id-views">
-        <Route path="" />
+        <Route path="" element={<IDViews />} />
       </Route>
       <Route path="user-group-rules">
-        <Route path="" />
+        <Route path="" element={<AutoMemUserRules />} />
       </Route>
       <Route path="host-group-rules">
-        <Route path="" />
+        <Route path="" element={<AutoMemHostRules />} />
       </Route>
       <Route path="hbac-rules">
-        <Route path="" />
+        <Route path="" element={<HBACRules />} />
       </Route>
       <Route path="hbac-services">
-        <Route path="" />
+        <Route path="" element={<HBACServices />} />
       </Route>
       <Route path="hbac-service-groups">
-        <Route path="" />
+        <Route path="" element={<HBACServiceGroups />} />
       </Route>
       <Route path="hbac-test">
-        <Route path="" />
+        <Route path="" element={<HBACTest />} />
       </Route>
       <Route path="sudo-rules">
-        <Route path="" />
+        <Route path="" element={<SudoRules />} />
       </Route>
       <Route path="sudo-commands">
-        <Route path="" />
+        <Route path="" element={<SudoCmds />} />
       </Route>
-      <Route path="sudo-command-group">
-        <Route path="" />
+      <Route path="sudo-command-groups">
+        <Route path="" element={<SudoCmdGroups />} />
       </Route>
       <Route path="selinux-user-maps">
-        <Route path="" />
+        <Route path="" element={<SELinuxUserMaps />} />
       </Route>
       <Route path="password-policies">
-        <Route path="" />
+        <Route path="" element={<PasswordPolicies />} />
       </Route>
       <Route path="kerberos-ticket-policy">
-        <Route path="" />
+        <Route path="" element={<KrbTicketPolicy />} />
       </Route>
     </Route>
     <Route

@@ -1,7 +1,8 @@
 import React from "react";
+import { EmptyPage } from "src/components/errors/PageErrors";
 
 const UserGroups = () => {
-  return <p>User groups Page</p>;
+  return EmptyPage();
 };
 
 export default UserGroups;

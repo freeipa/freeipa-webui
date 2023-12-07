@@ -1,8 +1,9 @@
 import React from "react";
 import { EmptyPage } from "src/components/errors/PageErrors";
 
-const HostGroups = () => {
+// Automembership user group rules
+const AutoMemUserRules = () => {
   return EmptyPage();
 };
 
-export default HostGroups;
+export default AutoMemUserRules;
