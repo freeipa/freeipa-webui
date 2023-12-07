@@ -508,8 +508,8 @@ const StageUsers = () => {
       <ActivateStageUsers
         show={showActivateModal}
         handleModalToggle={onActivateModalToggle}
-        selectedUsersData={selectedUsersData}
-        onRefresh={refreshUsersData}
+        selectedUids={selectedUsers.map((uid) => uid[0])}
+        onSuccess={refreshUsersData}
       />
     </Page>
   );
