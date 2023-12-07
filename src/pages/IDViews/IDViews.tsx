@@ -1,8 +1,8 @@
 import React from "react";
 import { EmptyPage } from "src/components/errors/PageErrors";
 
-const HostGroups = () => {
+const IDViews = () => {
   return EmptyPage();
 };
 
-export default HostGroups;
+export default IDViews;
