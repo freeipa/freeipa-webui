@@ -634,6 +634,29 @@ export const api = createApi({
         });
       },
     }),
+    activateUser: build.mutation<FindRPCResponse, any[]>({
+      query: (query_args) => {
+        const batchPayload: Command[] = [];
+        query_args.map((userToActivate) => {
+          let individualUserParams;
+          if (Array.isArray(userToActivate)) {
+            individualUserParams = [userToActivate, {}];
+          } else {
+            individualUserParams = [[userToActivate], {}];
+          }
+
+          batchPayload.push({
+            method: "stageuser_activate",
+            params: individualUserParams,
+          });
+        });
+
+        return getBatchCommand(
+          batchPayload,
+          query_args["version"] || API_VERSION_BACKUP
+        );
+      },
+    }),
   }),
 });
 
@@ -704,4 +727,5 @@ export const {
   useAutoMembershipRebuildMutation,
   useGetCertProfileQuery,
   useGenerateSubIdsMutation,
+  useActivateUserMutation,
 } = api;

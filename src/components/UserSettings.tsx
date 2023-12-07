@@ -54,6 +54,7 @@ import UnlockUser from "./modals/UnlockUser";
 import AddOtpToken from "./modals/AddOtpToken";
 import RebuildAutoMembership from "./modals/RebuildAutoMembership";
 import IssueNewCertificate from "./modals/IssueNewCertificate";
+import ActivateStageUsers from "./modals/ActivateStageUsers";
 // Utils
 import { API_VERSION_BACKUP } from "src/utils/utils";
 
@@ -232,6 +233,12 @@ const UserSettings = (props: PropsToUserSettings) => {
     });
   };
 
+  // Stage users - 'Activate' option
+  const [isActivateModalOpen, setIsActivateModalOpen] = React.useState(false);
+  const onCloseActivateModal = () => {
+    setIsActivateModalOpen(false);
+  };
+
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
 
@@ -294,7 +301,9 @@ const UserSettings = (props: PropsToUserSettings) => {
   ];
 
   const stageDropdownItems = [
-    <DropdownItem key="activate">Activate</DropdownItem>,
+    <DropdownItem key="activate" onClick={() => setIsActivateModalOpen(true)}>
+      Activate
+    </DropdownItem>,
     <DropdownItem key="delete" onClick={() => setIsDeleteModalOpen(true)}>
       Delete
     </DropdownItem>,
@@ -601,6 +610,11 @@ const UserSettings = (props: PropsToUserSettings) => {
         uid={props.user.uid}
         showPrincipalFields={false}
         onRefresh={props.onRefresh}
+      />
+      <ActivateStageUsers
+        show={isActivateModalOpen}
+        handleModalToggle={onCloseActivateModal}
+        selectedUsersData={selectedUsersData}
       />
     </>
   );
