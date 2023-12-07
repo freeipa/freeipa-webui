@@ -53,7 +53,7 @@ const UsersDisplayTable = (props: PropsToDisplayUsersTable) => {
       case "stage-users":
         stageUsersListCopy.map((user) => {
           props.usersToDisplay.map((selected) => {
-            if (user.uid === selected || user.uid[0] === selected) {
+            if (user.uid[0] === selected[0] || user.uid[0] === selected) {
               usersToDisplay.push(user);
             }
           });
@@ -63,7 +63,7 @@ const UsersDisplayTable = (props: PropsToDisplayUsersTable) => {
       case "preserved-users":
         preservedUsersListCopy.map((user) => {
           props.usersToDisplay.map((selected) => {
-            if (user.uid === selected || user.uid[0] === selected) {
+            if (user.uid[0] === selected[0] || user.uid[0] === selected) {
               usersToDisplay.push(user);
             }
           });
