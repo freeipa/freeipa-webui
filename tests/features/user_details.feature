@@ -56,3 +56,57 @@ Feature: User details
     And I should see value "" in the field "Password"
     And I should see value "/home/rbarclay" in the field "Home directory"
 
+  Scenario: Change the account settings - SSH keys addition
+      When I click on Add key in the SSH public keys section
+      Then I see "Set SSH key" modal
+      When I put SSH key named "valid sample 1" into the text area
+      And in the modal dialog I click on "Set" button
+      Then I should see "success" alert with text "Added SSH public key to 'armadillo'"
+      And I should see 1 SSH keys in the SSH public keys section
+      When I click on Show key button for key number 1
+      Then the SSH key should match "valid sample 1"
+      * in the modal dialog I click on "Cancel" button
+      # Duplicate key
+      When I click on Add key in the SSH public keys section
+      Then I see "Set SSH key" modal
+      When I put SSH key named "valid sample 1" into the text area
+      And in the modal dialog I click on "Set" button
+      Then I should see "danger" alert with text "no modifications to be performed"
+      * in the modal dialog I click on "Cancel" button
+      And I should see 1 SSH keys in the SSH public keys section
+      # Invalid key
+      When I click on Add key in the SSH public keys section
+      Then I see "Set SSH key" modal
+      When I put SSH key named "invalid sample" into the text area
+      And in the modal dialog I click on "Set" button
+      Then I should see "danger" alert with text "invalid 'sshpubkey': invalid SSH public key"
+      * in the modal dialog I click on "Cancel" button
+      And I should see 1 SSH keys in the SSH public keys section
+      # Another valid key
+      When I click on Add key in the SSH public keys section
+      Then I see "Set SSH key" modal
+      When I put SSH key named "valid sample 2" into the text area
+      And in the modal dialog I click on "Set" button
+      Then I should see "success" alert with text "Added SSH public key to 'armadillo'"
+      And I should see 2 SSH keys in the SSH public keys section
+      When I click on Show key button for key number 2
+      Then the SSH key should match "valid sample 2"
+      * in the modal dialog I click on "Cancel" button
+
+  Scenario: Change the account settings - SSH keys deletion
+    When I click on Delete button for key number 1
+    Then I see "Remove SSH Public Key" modal
+    When in the modal dialog I click on "Cancel" button
+    Then I should see 2 SSH keys in the SSH public keys section
+
+    When I click on Delete button for key number 1
+    Then I see "Remove SSH Public Key" modal
+    When in the modal dialog I click on "Delete" button
+    Then I should see "success" alert with text "Removed SSH public key from 'armadillo'"
+    And I should see 1 SSH keys in the SSH public keys section
+    # the order has changed, hence key number 1
+    When I click on Delete button for key number 1
+    Then I see "Remove SSH Public Key" modal
+    When in the modal dialog I click on "Delete" button
+    Then I should see "success" alert with text "Removed SSH public key from 'armadillo'"
+    And I should see 0 SSH keys in the SSH public keys section

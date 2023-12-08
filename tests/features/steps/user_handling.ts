@@ -59,3 +59,45 @@ Then("the active field should be read-only", () => {
 Then("the active field should be empty", () => {
   cy.focused().should("have.value", "");
 });
+
+// SSH keys
+When("I click on Add key in the SSH public keys section", () => {
+  cy.get('button[name="add-ssh-public-key"').click();
+});
+
+When("I put SSH key named {string} into the text area", (keyID: string) => {
+  let selectedKey = "";
+  if (keyID == "valid sample 1") {
+    selectedKey = SSH_RSA_valid_1;
+  } else if (keyID == "valid sample 2") {
+    selectedKey = SSH_RSA_valid_2;
+  } else if (keyID == "invalid sample") {
+    selectedKey = "invalid key";
+  }
+  cy.get('textarea[name="ipasshpubkey"').type(selectedKey, { delay: 0 });
+});
+
+Then(
+  "I should see {int} SSH keys in the SSH public keys section",
+  (count: number) => {
+    cy.get('small:contains("Key (ssh-rsa)")').should("have.length", count);
+  }
+);
+
+When("I click on Show key button for key number {int}", (order: number) => {
+  cy.get('button[name="show-ssh-public-key-' + (order - 1) + '"]').click();
+});
+
+When("I click on Delete button for key number {int}", (order: number) => {
+  cy.get('button[name="remove-ssh-public-key-' + (order - 1) + '"]').click();
+});
+
+Then("the SSH key should match {string}", (keyID: string) => {
+  let selectedKey = "";
+  if (keyID == "valid sample 1") {
+    selectedKey = SSH_RSA_valid_1;
+  } else if (keyID == "valid sample 2") {
+    selectedKey = SSH_RSA_valid_2;
+  }
+  cy.get('textarea[name="ipasshpubkey"').should("have.text", selectedKey);
+});
