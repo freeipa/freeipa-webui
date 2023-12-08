@@ -110,3 +110,107 @@ Feature: User details
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed SSH public key from 'armadillo'"
     And I should see 0 SSH keys in the SSH public keys section
+
+  Scenario: Certificates - addition
+    When I click on Add key in the Certificates section
+    And I put Certificate named "valid sample 1" into the text area
+    And in the modal dialog I click on "Add" button
+    Then I should see "success" alert with text "Added certificate to 'armadillo'"
+    And I should see 1 certificates in the Certificates section
+    # empty certificate
+    When I click on Add key in the Certificates section
+    And in the modal dialog I click on "Add" button
+    Then I should see "danger" alert with text "'usercertificate' is required"
+    * in the modal dialog I click on "Cancel" button
+    Then I should see 1 certificates in the Certificates section
+    # certificate too short
+    When I click on Add key in the Certificates section
+    And I put Certificate named "invalid sample - short" into the text area
+    And in the modal dialog I click on "Add" button
+    Then I should see "danger" alert with text "Certificate format error: error parsing asn1 value: ParseError { kind: ShortData }"
+    * in the modal dialog I click on "Cancel" button
+    Then I should see 1 certificates in the Certificates section
+    # certificate length not divisible by 4
+    When I click on Add key in the Certificates section
+    And I put Certificate named "invalid sample - padding" into the text area
+    And in the modal dialog I click on "Add" button
+    Then I should see "danger" alert with text "Base64 decoding failed: Incorrect padding"
+    * in the modal dialog I click on "Cancel" button
+    Then I should see 1 certificates in the Certificates section
+
+    # Another valid certificate
+    When I click on Add key in the Certificates section
+    And I put Certificate named "valid sample 2" into the text area
+    And in the modal dialog I click on "Add" button
+    Then I should see "success" alert with text "Added certificate to 'armadillo'"
+    And I should see 2 certificates in the Certificates section
+
+    # Duplicate certificate
+    When I click on Add key in the Certificates section
+    And I put Certificate named "valid sample 2" into the text area
+    And in the modal dialog I click on "Add" button
+    Then I should see "danger" alert with text "'usercertificate;binary' already contains one or more values"
+    * in the modal dialog I click on "Cancel" button
+    Then I should see 2 certificates in the Certificates section
+
+  Scenario Outline: Certificates - details
+    Given certificate number <number> has name "<name>"
+    When I toggle the details for certificate number <number>
+    Then in the certificate details, I should see value "<serial>" in the field "Serial number"
+    * in the certificate details, I should see value "<issuer>" in the field "Issued by"
+    * in the certificate details, I should see value "<validFrom>" in the field "Valid from"
+    * in the certificate details, I should see value "<validTo>" in the field "Valid to"
+    Then I toggle the details for certificate number <number>
+
+    When I toggle the kebab menu for certificate number <number>
+    And in the opened certificate kebab menu, I click on "View" button
+    Then I see "Certificate for <cn>" modal
+    And I see a modal with text "<serial>"
+    And I see a modal with text "<issuer>"
+    And I see a modal with text "<validFrom>"
+    And I see a modal with text "<validTo>"
+    * in the modal dialog I click on "Close" button
+    * I toggle the kebab menu for certificate number <number>
+ Examples:
+    | number | name                     | serial                                            | issuer        | validFrom                     | validTo                       | cn                |
+    | 1      | krunoslav.hrnjak@hops.hr | 264374074076456325397645183544606453821           | Fina RDC 2015 | Mon Oct 14 12:13:20 2019 UTC  | Thu Oct 14 12:13:20 2021 UTC  | KRUNOSLAV HRNJAK  |
+    | 2      | mshelley                 | 11594046475060613235605226731133545093594498279   | mshelley      | Wed Sep 27 09:17:49 2023 UTC  | Thu Sep 26 09:17:49 2024 UTC  | mshelley          |
+
+  Scenario: Certificates - show raw certificate
+    Given certificate number 1 has name "krunoslav.hrnjak@hops.hr"
+    When I toggle the kebab menu for certificate number 1
+    And in the opened certificate kebab menu, I click on "Get" button
+    Then I should see value of "valid sample 1" in the text area
+    * in the modal dialog I click on "Close" button
+    * I toggle the kebab menu for certificate number 1
+
+    Given certificate number 2 has name "mshelley"
+    When I toggle the kebab menu for certificate number 2
+    And in the opened certificate kebab menu, I click on "Get" button
+    Then I should see value of "valid sample 2" in the text area
+    * in the modal dialog I click on "Close" button
+    * I toggle the kebab menu for certificate number 2
+
+  Scenario Outline: Certificates - download pem file
+    Given certificate number <number> has name "<name>"
+    When I toggle the kebab menu for certificate number <number>
+    And in the opened certificate kebab menu, I click on "Download" button
+    Then file with extension "pem" should be downloaded
+    * I toggle the kebab menu for certificate number <number>
+  Examples:
+    | number  | name                      |
+    | 1       | krunoslav.hrnjak@hops.hr  |
+    | 2       | mshelley                  |
+
+  Scenario Outline: Certificates - deletion
+    Given certificate number 1 has name "<name>"
+    When I toggle the kebab menu for certificate number 1
+    And in the opened certificate kebab menu, I click on "Delete" button
+    Then I see "Remove certificate" modal
+    And I see a modal with text "<serial>"
+    When in the modal dialog I click on "Delete" button
+    Then I should see <remains> certificates in the Certificates section
+  Examples:
+    | remains  | name                       | serial                                          |
+    | 1        | krunoslav.hrnjak@hops.hr   | 264374074076456325397645183544606453821         |
+    | 0        | mshelley                   | 11594046475060613235605226731133545093594498279 |

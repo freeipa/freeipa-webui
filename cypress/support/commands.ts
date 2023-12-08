@@ -28,6 +28,8 @@
 //
 export {}; // needed for modification of global scope to work properly
 
+require("cy-verify-downloads").addCustomCommand();
+
 declare global {
   namespace Cypress {
     interface Chainable {
