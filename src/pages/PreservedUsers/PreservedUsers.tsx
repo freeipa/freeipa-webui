@@ -496,7 +496,8 @@ const PreservedUsers = () => {
       <RestorePreservedUsers
         show={showRestoreModal}
         handleModalToggle={onRestoreModalToggle}
-        selectedUsersData={selectedUsersData}
+        selectedUids={selectedUsers.map((uid) => uid[0])}
+        updateSelectedUids={updateSelectedUsers}
         onSuccess={refreshUsersData}
       />
       <StagePreservedUsers
