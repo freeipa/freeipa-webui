@@ -586,8 +586,7 @@ const PreservedUsers = () => {
       <RestorePreservedUsers
         show={showRestoreModal}
         handleModalToggle={onRestoreModalToggle}
-        selectedUsers={selectedUsers}
-        clearSelectedUsers={clearSelectedUsers}
+        selectedUsersData={selectedUsersData}
         onSuccess={refreshUsersData}
       />
       <StagePreservedUsers
