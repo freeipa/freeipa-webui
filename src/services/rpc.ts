@@ -950,6 +950,22 @@ export const api = createApi({
         );
       },
     }),
+    restoreUser: build.mutation<BatchRPCResponse, string[]>({
+      query: (query_args) => {
+        const batchPayload: Command[] = [];
+        query_args.map((uid) => {
+          batchPayload.push({
+            method: "user_undel",
+            params: [[uid], {}],
+          });
+        });
+
+        return getBatchCommand(
+          batchPayload,
+          query_args["version"] || API_VERSION_BACKUP
+        );
+      },
+    }),
   }),
 });
 
@@ -989,4 +1005,5 @@ export const {
   useAddOtpTokenMutation,
   useGenerateSubIdsMutation,
   useActivateUserMutation,
+  useRestoreUserMutation,
 } = api;

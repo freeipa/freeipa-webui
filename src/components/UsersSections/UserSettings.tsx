@@ -58,6 +58,7 @@ import IssueNewCertificate from "./modals/IssueNewCertificate";
 import AddOtpToken from "./modals/AddOtpToken";
 import ActivateStageUsers from "./modals/ActivateStageUsers";
 import StagePreservedUsers from "./modals/StagePreservedUsers";
+import RestorePreservedUsers from "./modals/RestorePreservedUsers";
 // Utils
 import { API_VERSION_BACKUP } from "src/utils/utils";
 // Navigate
@@ -258,6 +259,12 @@ const UserSettings = (props: PropsToUserSettings) => {
     setIsStageModalOpen(false);
   };
 
+  // Preserved users - 'Restore' option
+  const [isRestoreModalOpen, setIsRestoreModalOpen] = React.useState(false);
+  const onCloseRestoreModal = () => {
+    setIsRestoreModalOpen(false);
+  };
+
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
 
@@ -332,7 +339,9 @@ const UserSettings = (props: PropsToUserSettings) => {
     <DropdownItem key="stage" onClick={() => setIsStageModalOpen(true)}>
       Stage
     </DropdownItem>,
-    <DropdownItem key="restore">Restore</DropdownItem>,
+    <DropdownItem key="restore" onClick={() => setIsRestoreModalOpen(true)}>
+      Restore
+    </DropdownItem>,
     <DropdownItem key="delete" onClick={() => setIsDeleteModalOpen(true)}>
       Delete
     </DropdownItem>,
@@ -627,6 +636,13 @@ const UserSettings = (props: PropsToUserSettings) => {
         handleModalToggle={onCloseStageModal}
         selectedUsers={selectedUsers}
         updateSelectedUsers={setSelectedUsers}
+        onSuccess={() => navigate(URL_PREFIX + "/preserved-users")}
+      />
+      <RestorePreservedUsers
+        show={isRestoreModalOpen}
+        handleModalToggle={onCloseRestoreModal}
+        selectedUids={selectedUsers}
+        updateSelectedUids={setSelectedUsers}
         onSuccess={() => navigate(URL_PREFIX + "/preserved-users")}
       />
     </>

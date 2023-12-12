@@ -24,7 +24,8 @@ import useAlerts from "src/hooks/useAlerts";
 export interface PropsToPreservedUsers {
   show: boolean;
   handleModalToggle: () => void;
-  selectedUsersData: SelectedUsersData;
+  selectedUids: string[];
+  updateSelectedUids: (newSelectedUids: string[]) => void;
   onSuccess: () => void;
 }
 
@@ -89,20 +90,12 @@ const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
           // Reset selected values
           props.clearSelectedUsers();
 
-            // Reset selected values
-            props.selectedUsersData.updateSelectedUsers([]);
-
-            // Refresh data or redirect
-            props.onSuccess();
-
-            // Show alert: success
-            alerts.addAlert(
-              "restore-users-success",
-              "Users restored",
-              "success"
-            );
-
-            closeModal();
+          // Show alert: success
+          let successMessage = "";
+          if (result.count > 1) {
+            successMessage = result.count + " users restored";
+          } else if (result.count === 1) {
+            successMessage = result.results[0].summary;
           }
           alerts.addAlert("restore-users-success", successMessage, "success");
 
