@@ -37,7 +37,7 @@ export interface PropsToPreservedUsers {
   show: boolean;
   handleModalToggle: () => void;
   selectedUsersData: SelectedUsersData;
-  onRefresh?: () => void;
+  onSuccess: () => void;
 }
 
 const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
@@ -165,10 +165,8 @@ const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
             // Reset selected values
             props.selectedUsersData.updateSelectedUsers([]);
 
-            // Refresh data
-            if (props.onRefresh !== undefined) {
-              props.onRefresh();
-            }
+            // Refresh data or redirect
+            props.onSuccess();
 
             // Show alert: success
             alerts.addAlert(

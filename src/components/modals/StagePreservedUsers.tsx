@@ -27,9 +27,16 @@ import ErrorModal from "./ErrorModal";
 import { ErrorData } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
-import { PropsToPreservedUsers } from "./RestorePreservedUsers";
 
-const StagePreservedUsers = (props: PropsToPreservedUsers) => {
+export interface PropsToStagePreservedUsers {
+  show: boolean;
+  handleModalToggle: () => void;
+  selectedUsers: string[];
+  updateSelectedUsers: (newSelectedUsers: string[]) => void;
+  onSuccess: () => void;
+}
+
+const StagePreservedUsers = (props: PropsToStagePreservedUsers) => {
   // Set dispatch (Redux)
   const dispatch = useAppDispatch();
 
@@ -55,7 +62,7 @@ const StagePreservedUsers = (props: PropsToPreservedUsers) => {
       id: "stage-users-table",
       pfComponent: (
         <UsersDisplayTable
-          usersToDisplay={props.selectedUsersData.selectedUsers}
+          usersToDisplay={props.selectedUsers}
           from={"preserved-users"}
         />
       ),
@@ -115,7 +122,7 @@ const StagePreservedUsers = (props: PropsToPreservedUsers) => {
 
     setBtnSpinning(true);
 
-    props.selectedUsersData.selectedUsers.map((uid) => {
+    props.selectedUsers.map((uid) => {
       const payloadItem = {
         method: "user_stage",
         params: [[uid], {}],
@@ -147,22 +154,21 @@ const StagePreservedUsers = (props: PropsToPreservedUsers) => {
             handleAPIError(error);
           } else {
             // Update data from Redux
-            props.selectedUsersData.selectedUsers.map((user) => {
+            props.selectedUsers.map((user) => {
               dispatch(removePreservedUser(user[0]));
             });
 
             // Reset selected values
-            props.selectedUsersData.updateSelectedUsers([]);
-
-            // Refresh data
-            if (props.onRefresh !== undefined) {
-              props.onRefresh();
-            }
+            props.updateSelectedUsers([]);
 
             // Show alert: success
             alerts.addAlert("stage-users-success", "Users staged", "success");
 
+            // Close modal
             closeModal();
+
+            // Navigate to selected page
+            props.onSuccess();
           }
         } else if (error) {
           // Handle error

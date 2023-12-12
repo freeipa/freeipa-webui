@@ -497,13 +497,14 @@ const PreservedUsers = () => {
         show={showRestoreModal}
         handleModalToggle={onRestoreModalToggle}
         selectedUsersData={selectedUsersData}
-        onRefresh={refreshUsersData}
+        onSuccess={refreshUsersData}
       />
       <StagePreservedUsers
         show={showStageModal}
         handleModalToggle={onStageModalToggle}
-        selectedUsersData={selectedUsersData}
-        onRefresh={refreshUsersData}
+        selectedUsers={selectedUsers}
+        updateSelectedUsers={setSelectedUsers}
+        onSuccess={refreshUsersData}
       />
     </Page>
   );
