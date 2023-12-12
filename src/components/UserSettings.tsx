@@ -55,8 +55,12 @@ import AddOtpToken from "./modals/AddOtpToken";
 import RebuildAutoMembership from "./modals/RebuildAutoMembership";
 import IssueNewCertificate from "./modals/IssueNewCertificate";
 import ActivateStageUsers from "./modals/ActivateStageUsers";
+import StagePreservedUsers from "./modals/StagePreservedUsers";
 // Utils
 import { API_VERSION_BACKUP } from "src/utils/utils";
+// Navigation
+import { useNavigate } from "react-router-dom";
+import { URL_PREFIX } from "src/navigation/NavRoutes";
 
 export interface PropsToUserSettings {
   originalUser: Partial<User>;
@@ -83,6 +87,9 @@ export interface PropsToUserSettings {
 const UserSettings = (props: PropsToUserSettings) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
+
+  // Navigate
+  const navigate = useNavigate();
 
   // RTK hook: save user (acive/preserved and stage)
   let [saveUser] = useSaveUserMutation();
@@ -239,6 +246,12 @@ const UserSettings = (props: PropsToUserSettings) => {
     setIsActivateModalOpen(false);
   };
 
+  // Preserved users - 'Stage' option
+  const [isStageModalOpen, setIsStageModalOpen] = React.useState(false);
+  const onCloseStageModal = () => {
+    setIsStageModalOpen(false);
+  };
+
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
 
@@ -310,7 +323,9 @@ const UserSettings = (props: PropsToUserSettings) => {
   ];
 
   const preservedDropdownItems = [
-    <DropdownItem key="stage">Stage</DropdownItem>,
+    <DropdownItem key="stage" onClick={() => setIsStageModalOpen(true)}>
+      Stage
+    </DropdownItem>,
     <DropdownItem key="restore">Restore</DropdownItem>,
     <DropdownItem key="delete" onClick={() => setIsDeleteModalOpen(true)}>
       Delete
@@ -615,6 +630,13 @@ const UserSettings = (props: PropsToUserSettings) => {
         show={isActivateModalOpen}
         handleModalToggle={onCloseActivateModal}
         selectedUsersData={selectedUsersData}
+      />
+      <StagePreservedUsers
+        show={isStageModalOpen}
+        handleModalToggle={onCloseStageModal}
+        selectedUsersData={selectedUsersData}
+        navigateFunc={navigate}
+        navigateTo={URL_PREFIX + "/preserved-users"}
       />
     </>
   );

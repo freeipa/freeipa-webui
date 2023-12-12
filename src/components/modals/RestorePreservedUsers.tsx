@@ -27,6 +27,8 @@ import ErrorModal from "./ErrorModal";
 import { ErrorData } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
+// Navigation
+import { NavigateFunction } from "react-router-dom";
 
 interface SelectedUsersData {
   selectedUsers: string[];
@@ -38,6 +40,8 @@ export interface PropsToPreservedUsers {
   handleModalToggle: () => void;
   selectedUsersData: SelectedUsersData;
   onRefresh?: () => void;
+  navigateFunc?: NavigateFunction;
+  navigateTo?: string;
 }
 
 const RestorePreservedUsers = (props: PropsToPreservedUsers) => {

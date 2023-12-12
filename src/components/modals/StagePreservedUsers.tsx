@@ -162,7 +162,16 @@ const StagePreservedUsers = (props: PropsToPreservedUsers) => {
             // Show alert: success
             alerts.addAlert("stage-users-success", "Users staged", "success");
 
+            // Close modal
             closeModal();
+
+            // Navigate to selected page
+            if (
+              props.navigateFunc !== undefined &&
+              props.navigateTo !== undefined
+            ) {
+              props.navigateFunc(props.navigateTo);
+            }
           }
         } else if (error) {
           // Handle error
