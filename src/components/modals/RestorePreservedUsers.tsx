@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 // PatternFly
 import {
   Button,
@@ -14,17 +14,7 @@ import UsersDisplayTable from "src/components/tables/UsersDisplayTable";
 import { useAppDispatch } from "src/store/hooks";
 import { removeUser as removePreservedUser } from "src/store/Identity/preservedUsers-slice";
 // RPC
-import {
-  Command,
-  BatchRPCResponse,
-  useBatchMutCommandMutation,
-} from "src/services/rpc";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
-import { SerializedError } from "@reduxjs/toolkit";
-// Modals
-import ErrorModal from "./ErrorModal";
-// Data types
-import { ErrorData } from "src/utils/datatypes/globalDataTypes";
+import { BatchRPCResponse, useRestoreUserMutation } from "src/services/rpc";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // Navigation
@@ -52,7 +42,7 @@ const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
   const alerts = useAlerts();
 
   // Define 'executeUserRestoreCommand' to restore a preserved user
-  const [executeUserRestoreCommand] = useBatchMutCommandMutation();
+  const [executeUserRestoreCommand] = useRestoreUserMutation();
 
   // List of fields
   const fields = [
@@ -82,110 +72,58 @@ const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
     props.handleModalToggle();
   };
 
-  // Handle API error data
-  const [isModalErrorOpen, setIsModalErrorOpen] = useState(false);
-  const [errorTitle, setErrorTitle] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const closeAndCleanErrorParameters = () => {
-    setIsModalErrorOpen(false);
-    setErrorTitle("");
-    setErrorMessage("");
-  };
-
-  const onCloseErrorModal = () => {
-    closeAndCleanErrorParameters();
-  };
-
-  const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
-      OK
-    </Button>,
-  ];
-
-  const handleAPIError = (error: FetchBaseQueryError | SerializedError) => {
-    if ("code" in error) {
-      setErrorTitle("IPA error " + error.code + ": " + error.name);
-      if (error.message !== undefined) {
-        setErrorMessage(error.message);
-      }
-    } else if ("data" in error) {
-      const errorData = error.data as ErrorData;
-      const errorCode = errorData.code as string;
-      const errorName = errorData.name as string;
-      const errorMessage = errorData.error as string;
-
-      setErrorTitle("IPA error " + errorCode + ": " + errorName);
-      setErrorMessage(errorMessage);
-    }
-    setIsModalErrorOpen(true);
-  };
-
   const [spinning, setBtnSpinning] = React.useState<boolean>(false);
 
   // Restore preserved user
   const restoreUsers = () => {
-    // Prepare user params
-    const uidsToRestorePayload: Command[] = [];
-
     setBtnSpinning(true);
 
-    props.selectedUsersData.selectedUsers.map((uid) => {
-      const payloadItem = {
-        method: "user_undel",
-        params: [uid, {}],
-      } as Command;
-      uidsToRestorePayload.push(payloadItem);
-    });
+    // Prepare users params
+    const uidsToRestorePayload = props.selectedUsersData.selectedUsers;
 
     // [API call] Restore elements
     executeUserRestoreCommand(uidsToRestorePayload).then((response) => {
       if ("data" in response) {
         const data = response.data as BatchRPCResponse;
         const result = data.result;
-        const error = data.error as FetchBaseQueryError | SerializedError;
+        const error = data.error;
 
         if (result) {
-          if ("error" in result.results[0] && result.results[0].error) {
-            const errorData = {
-              code: result.results[0].error_code,
-              name: result.results[0].error_name,
-              error: result.results[0].error,
-            } as ErrorData;
+          // Close modal
+          closeModal();
 
-            const error = {
-              status: "CUSTOM_ERROR",
-              data: errorData,
-            } as FetchBaseQueryError;
+          // Update data from Redux
+          props.selectedUsersData.selectedUsers.map((user) => {
+            dispatch(removePreservedUser(user[0]));
+          });
 
-            // Handle error
-            handleAPIError(error);
-          } else {
-            // Update data from Redux
-            props.selectedUsersData.selectedUsers.map((user) => {
-              dispatch(removePreservedUser(user[0]));
-            });
+          // Reset selected values
+          props.selectedUsersData.updateSelectedUsers([]);
 
-            // Reset selected values
-            props.selectedUsersData.updateSelectedUsers([]);
+          // Show alert: success
+          let successMessage = "";
+          if (result.count > 1) {
+            successMessage = result.count + " users restored";
+          } else if (result.count === 1) {
+            successMessage = result.results[0].summary;
+          }
+          alerts.addAlert("restore-users-success", successMessage, "success");
 
-            // Refresh data
-            if (props.onRefresh !== undefined) {
-              props.onRefresh();
-            }
+          // Refresh data
+          if (props.onRefresh !== undefined) {
+            props.onRefresh();
+          }
 
-            // Show alert: success
-            alerts.addAlert(
-              "restore-users-success",
-              "Users restored",
-              "success"
-            );
-
-            closeModal();
+          // Navigate to selected page
+          if (
+            props.navigateFunc !== undefined &&
+            props.navigateTo !== undefined
+          ) {
+            props.navigateFunc(props.navigateTo);
           }
         } else if (error) {
           // Handle error
-          handleAPIError(error);
+          alerts.addAlert("restore-users-error", error, "danger");
         }
       }
       setBtnSpinning(false);
@@ -211,33 +149,20 @@ const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
     </Button>,
   ];
 
-  const modalRestore: JSX.Element = (
-    <ModalWithFormLayout
-      variantType="medium"
-      modalPosition="top"
-      offPosition="76px"
-      title="Restore preserved user"
-      formId="restore-users-stage-modal"
-      fields={fields}
-      show={props.show}
-      onClose={closeModal}
-      actions={modalRestoreActions}
-    />
-  );
-
   return (
     <>
       <alerts.ManagedAlerts />
-      {modalRestore}
-      {isModalErrorOpen && (
-        <ErrorModal
-          title={errorTitle}
-          isOpen={isModalErrorOpen}
-          onClose={onCloseErrorModal}
-          actions={errorModalActions}
-          errorMessage={errorMessage}
-        />
-      )}
+      <ModalWithFormLayout
+        variantType="medium"
+        modalPosition="top"
+        offPosition="76px"
+        title="Restore preserved user"
+        formId="restore-users-stage-modal"
+        fields={fields}
+        show={props.show}
+        onClose={closeModal}
+        actions={modalRestoreActions}
+      />
     </>
   );
 };
