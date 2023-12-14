@@ -1,11 +1,11 @@
 import React from "react";
 // PatternFly
 import {
-  Select,
-  SelectOption,
-  SelectOptionObject,
-  SelectVariant,
-} from "@patternfly/react-core";
+	Select,
+	SelectOption,
+	SelectOptionObject,
+	SelectVariant
+} from '@patternfly/react-core/deprecated';
 // Utils
 import {
   IPAParamDefinition,
@@ -63,7 +63,7 @@ const IpaSelect = (props: IPAParamDefinitionSelect) => {
       name={props.name}
       variant={props.variant || SelectVariant.single}
       aria-label={props.name}
-      onToggle={setIsOpen}
+      onToggle={(_event, val) => setIsOpen(val)}
       onSelect={onSelect}
       selections={valueSelected}
       isOpen={isOpen}

@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
-  Button,
-  Checkbox,
-  Flex,
-  HelperText,
-  HelperTextItem,
-  Select,
-  SelectOption,
-  SelectVariant,
-  TextInput,
-  ValidatedOptions,
-} from "@patternfly/react-core";
+	Button,
+	Checkbox,
+	Flex,
+	HelperText,
+	HelperTextItem,
+	TextInput,
+	ValidatedOptions
+} from '@patternfly/react-core';
+import {
+	Select,
+	SelectOption,
+	SelectVariant
+} from '@patternfly/react-core/deprecated';
 // Icons
 import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
 // Layout
@@ -359,7 +361,7 @@ const AddUser = (props: PropsToAddUser) => {
             onFocus={resetUserLoginError}
             onBlur={userLoginValidationHandler}
             value={userLogin}
-            onChange={userLoginValueHandler}
+            onChange={(_event, value: string) => userLoginValueHandler(value)}
             validated={userLoginValidation.pfError}
             ref={userLoginRef}
           />
@@ -389,7 +391,7 @@ const AddUser = (props: PropsToAddUser) => {
             onFocus={resetFirstNameError}
             onBlur={firstNameValidationHandler}
             value={firstName}
-            onChange={firstNameValueHandler}
+            onChange={(_event, value: string) => firstNameValueHandler(value)}
             validated={firstNameValidation.pfError}
             ref={firstNameRef}
           />
@@ -415,7 +417,7 @@ const AddUser = (props: PropsToAddUser) => {
             onFocus={resetLastNameError}
             onBlur={lastNameValidationHandler}
             value={lastName}
-            onChange={lastNameValueHandler}
+            onChange={(_event, value: string) => lastNameValueHandler(value)}
             validated={lastNameValidation.pfError}
             ref={lastNameRef}
           />
@@ -437,7 +439,7 @@ const AddUser = (props: PropsToAddUser) => {
           id="modal-form-user-class"
           name="modal-form-user-class"
           value={userClass}
-          onChange={userClassValueHandler}
+          onChange={(_event, value: string) => userClassValueHandler(value)}
           ref={userClassRef}
         />
       ),
@@ -470,7 +472,7 @@ const AddUser = (props: PropsToAddUser) => {
           variant={SelectVariant.single}
           placeholderText=" "
           aria-label="Select Input"
-          onToggle={gidOnToggle}
+          onToggle={(_event, isOpen: boolean) => gidOnToggle(isOpen)}
           onSelect={gidOnSelect}
           selections={gidSelected}
           isOpen={isGidOpen}

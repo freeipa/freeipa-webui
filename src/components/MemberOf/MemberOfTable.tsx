@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import {
-  Title,
   Bullseye,
   EmptyState,
   EmptyStateIcon,
   EmptyStateVariant,
   EmptyStateBody,
-  Button,
+  Button, EmptyStateHeader, EmptyStateFooter,
 } from "@patternfly/react-core";
 import { Td, Th, Tr } from "@patternfly/react-table";
 // Icons
@@ -282,14 +281,11 @@ const MemberOfTable = (props: PropsToTable) => {
     <Tr>
       <Td colSpan={8}>
         <Bullseye>
-          <EmptyState variant={EmptyStateVariant.small}>
-            <EmptyStateIcon icon={SearchIcon} />
-            <Title headingLevel="h2" size="lg">
-              No results found
-            </Title>
-            <EmptyStateBody>Clear all filters and try again.</EmptyStateBody>
+          <EmptyState variant={EmptyStateVariant.sm}>
+            <EmptyStateHeader titleText="No results found" icon={<EmptyStateIcon icon={SearchIcon} />} headingLevel="h2" />
+            <EmptyStateBody>Clear all filters and try again.</EmptyStateBody><EmptyStateFooter>
             <Button variant="link">Clear all filters</Button>
-          </EmptyState>
+          </EmptyStateFooter></EmptyState>
         </Bullseye>
       </Td>
     </Tr>
@@ -335,7 +331,7 @@ const MemberOfTable = (props: PropsToTable) => {
           onSelect: (_event, isSelecting) =>
             onSelectGroup(group, rowIndex, isSelecting),
           isSelected: isGroupSelected(group),
-          disable: !isGroupSelectable(group),
+          isDisabled: !isGroupSelectable(group),
         }}
       />
       <Td dataLabel={group.name}>{group.name}</Td>

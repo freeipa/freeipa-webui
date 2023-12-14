@@ -51,7 +51,7 @@ const ToolbarLayout = (props: PropsToToolbar) => {
             key={elem.key}
             id={elem.key.toString()}
             variant={elem.toolbarItemVariant}
-            alignment={elem.toolbarItemAlignment}
+            align={elem.toolbarItemAlignment}
             spacer={elem.toolbarItemSpacer}
           >
             {elem.element}

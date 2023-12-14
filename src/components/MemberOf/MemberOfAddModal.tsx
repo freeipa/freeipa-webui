@@ -85,7 +85,7 @@ const MemberOfAddModal = (props: PropsToAdd) => {
           isSearchable
           availableOptions={availableOptions}
           chosenOptions={chosenOptions}
-          onListChange={listChange}
+          onListChange={(_event, newAvailableOptions: ReactNode[], newChosenOptions: ReactNode[]) => listChange(newAvailableOptions, newChosenOptions)}
           id="basicSelectorWithSearch"
         />
       ),

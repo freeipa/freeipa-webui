@@ -165,7 +165,7 @@ const RetrieveKeytabUsersTable = (props: PropsToTable) => {
           onSelect: (_event, isSelecting) =>
             onSelectUser(user, rowIndex, isSelecting),
           isSelected: isUserSelected(user),
-          disable: false,
+          isDisabled: false,
         }}
       />
       {/* <Td dataLabel={usersColumnNames.user}>{user}</Td> */}

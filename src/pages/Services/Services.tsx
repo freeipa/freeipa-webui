@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 // PatternFly
 import {
-  DropdownItem,
-  Page,
-  PageSection,
-  PageSectionVariants,
-  PaginationVariant,
-  TextVariants,
-} from "@patternfly/react-core";
+	Page,
+	PageSection,
+	PageSectionVariants,
+	PaginationVariant,
+	TextVariants
+} from '@patternfly/react-core';
+import {
+	DropdownItem
+} from '@patternfly/react-core/deprecated';
 import {
   InnerScrollContainer,
   OuterScrollContainer,

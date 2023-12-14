@@ -268,7 +268,7 @@ const HostsTable = (props: PropsToTable) => {
           onSelect: (_event, isSelecting) =>
             onSelectHost(host, rowIndex, isSelecting),
           isSelected: isHostSelected(host),
-          disable: !props.hostsData.isHostSelectable(host),
+          isDisabled: !props.hostsData.isHostSelectable(host),
         }}
       />
       <Td dataLabel={columnNames.fqdn}>

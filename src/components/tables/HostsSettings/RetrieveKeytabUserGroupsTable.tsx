@@ -180,7 +180,7 @@ const RetrieveKeytabUserGroupsTable = (props: PropsToTable) => {
           onSelect: (_event, isSelecting) =>
             onSelectUserGroup(userGroup, rowIndex, isSelecting),
           isSelected: isUserGroupSelected(userGroup),
-          disable: false,
+          isDisabled: false,
         }}
       />
       <Td dataLabel={userGroupsColumnNamesArray[0]}>{userGroup}</Td>

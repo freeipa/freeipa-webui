@@ -1,19 +1,21 @@
 import {
-  Avatar,
-  Dropdown,
-  DropdownItem,
-  DropdownToggle,
-  Masthead,
-  MastheadBrand,
-  MastheadContent,
-  MastheadMain,
-  MastheadToggle,
-  Page,
-  PageSidebar,
-  PageToggleButton,
-  SkipToContent,
-  Toolbar,
-} from "@patternfly/react-core";
+	Avatar,
+	Masthead,
+	MastheadBrand,
+	MastheadContent,
+	MastheadMain,
+	MastheadToggle,
+	Page,
+	PageSidebar,
+	PageToggleButton,
+	SkipToContent,
+	Toolbar, PageSidebarBody
+} from '@patternfly/react-core';
+import {
+	Dropdown,
+	DropdownItem,
+	DropdownToggle
+} from '@patternfly/react-core/deprecated';
 import React from "react";
 // Icons
 import BarsIcon from "@patternfly/react-icons/dist/esm/icons/bars-icon";
@@ -67,7 +69,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       isPlain
       onSelect={onDropdownSelect}
       toggle={
-        <DropdownToggle id="toggle-plain-text" onToggle={onDropdownToggle}>
+        <DropdownToggle id="toggle-plain-text" onToggle={(_event, isOpen: boolean) => onDropdownToggle(isOpen)}>
           Administrator
         </DropdownToggle>
       }
@@ -84,7 +86,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
         </PageToggleButton>
       </MastheadToggle>
       <MastheadMain>
-        <MastheadBrand>
+        <MastheadBrand component="a">
           <img src={headerLogo} alt="FreeIPA Logo" />
         </MastheadBrand>
       </MastheadMain>
@@ -98,7 +100,11 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
     </Masthead>
   );
 
-  const Sidebar = <PageSidebar nav={<Navigation />} />;
+  const Sidebar = <PageSidebar  >
+<PageSidebarBody>
+<Navigation />
+</PageSidebarBody>
+</PageSidebar>;
 
   const pageId = "primary-app-container";
 

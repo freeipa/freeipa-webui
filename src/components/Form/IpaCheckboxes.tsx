@@ -50,7 +50,7 @@ const IpaCheckboxes = (props: IPAParamDefinitionCheckboxes) => {
           id={props.name + "-" + option.value} // Mandatory
           name={props.name}
           label={option.text}
-          onChange={(checked) => updateList(checked, option.value)}
+          onChange={(_event, checked) => updateList(checked, option.value)}
           isRequired={required}
           readOnly={readOnly}
           isChecked={

@@ -699,7 +699,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
           </Tab>
         </Tabs>
         <Pagination
-          perPageComponent="button"
+          
           className="pf-u-pb-0 pf-u-pr-md"
           itemCount={numberOfItems()}
           widgetId="pagination-options-menu-bottom"

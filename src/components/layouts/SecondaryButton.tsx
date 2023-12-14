@@ -33,7 +33,7 @@ const SecondaryButton = (props: PropsToSecondaryButton) => {
       isActive={props.isActive}
       isBlock={props.isBlock}
       isInline={props.isInLine}
-      isSmall={props.isSmall}
+      size="sm"
       ouiaId={props.ouijaId}
       ouiaSafe={props.ouijaSafe}
       onClick={props.onClickHandler}
