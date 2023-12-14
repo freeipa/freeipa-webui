@@ -15,7 +15,7 @@ const IpaTextInput = (props: IPAParamDefinition) => {
       id={props.name}
       name={props.name}
       value={convertToString(value)}
-      onChange={onChange}
+      onChange={(_event, value) => onChange(value)}
       type="text"
       aria-label={props.name}
       isRequired={required}

@@ -140,8 +140,9 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
     useState("direct");
 
   const TGUserGroupsHandler = (
-    isSelected: boolean,
-    event: React.MouseEvent<any> | React.KeyboardEvent | MouseEvent
+    event: React.MouseEvent<any> | React.KeyboardEvent | MouseEvent,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    isSelected: boolean
   ) => {
     const id = event.currentTarget.id;
     setIsTGUserGroupsSelected(id);
@@ -161,8 +162,9 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
   const [isTGNetgroupsSelected, setIsTGNetgroupsSelected] = useState("direct");
 
   const TGNetgroupsHandler = (
-    isSelected: boolean,
-    event: React.MouseEvent<any> | React.KeyboardEvent | MouseEvent
+    event: React.MouseEvent<any> | React.KeyboardEvent | MouseEvent,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    isSelected: boolean
   ) => {
     const id = event.currentTarget.id;
     setIsTGNetgroupsSelected(id);
@@ -182,8 +184,9 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
   const [isTGRolesSelected, setIsTGRolesSelected] = useState("direct");
 
   const TGRolesHandler = (
-    isSelected: boolean,
-    event: React.MouseEvent<any> | React.KeyboardEvent | MouseEvent
+    event: React.MouseEvent<any> | React.KeyboardEvent | MouseEvent,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    isSelected: boolean
   ) => {
     const id = event.currentTarget.id;
     setIsTGRolesSelected(id);
@@ -203,8 +206,9 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
   const [isTGHbacRulesSelected, setIsTGHbacRulesSelected] = useState("direct");
 
   const TGHbacRulesHandler = (
-    isSelected: boolean,
-    event: React.MouseEvent<any> | React.KeyboardEvent | MouseEvent
+    event: React.MouseEvent<any> | React.KeyboardEvent | MouseEvent,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    isSelected: boolean
   ) => {
     const id = event.currentTarget.id;
     setIsTGHbacRulesSelected(id);
@@ -224,8 +228,9 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
   const [isTGSudoRulesSelected, setIsTGSudoRulesSelected] = useState("direct");
 
   const TGSudoRulesHandler = (
-    isSelected: boolean,
-    event: React.MouseEvent<any> | React.KeyboardEvent | MouseEvent
+    event: React.MouseEvent<any> | React.KeyboardEvent | MouseEvent,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    isSelected: boolean
   ) => {
     const id = event.currentTarget.id;
     setIsTGSudoRulesSelected(id);
@@ -246,8 +251,9 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
     useState("direct");
 
   const TGHostGroupsHandler = (
-    isSelected: boolean,
-    event: React.MouseEvent<any> | React.KeyboardEvent | MouseEvent
+    event: React.MouseEvent<any> | React.KeyboardEvent | MouseEvent,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    isSelected: boolean
   ) => {
     const id = event.currentTarget.id;
     setIsTGHostGroupsSelected(id);

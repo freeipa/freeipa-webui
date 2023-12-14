@@ -211,7 +211,7 @@ const CertificateMappingDataOption = (
       <Radio
         isChecked={props.isCertMappingDataChecked}
         name="cert-mapping-data-radio"
-        onChange={props.onChangeCertMappingDataCheck}
+        onChange={(_event, value) => props.onChangeCertMappingDataCheck(value)}
         label="Certificate mapping data"
         id="certificate-mapping-data"
         className="pf-v5-u-mb-md"

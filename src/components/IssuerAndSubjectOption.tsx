@@ -53,7 +53,7 @@ const IssuerAndSubjectOption = (props: PropsToIssuerAndSubjectOption) => {
       <Radio
         isChecked={props.isIssuerAndSubjectChecked}
         name="issuer-and-subject-radio"
-        onChange={props.onChangeIssuerAndSubjectCheck}
+        onChange={(_event, value) => props.onChangeIssuerAndSubjectCheck(value)}
         label="Issuer and subject"
         id="issuer-and-subject"
         className="pf-v5-u-mb-md"

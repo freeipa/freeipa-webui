@@ -47,7 +47,7 @@ const AddTextInputFromListModal = (props: PropsToAddModal) => {
           <TextInput
             name={props.textInputName}
             value={props.newValue}
-            onChange={props.setNewValue}
+            onChange={(_event, value) => props.setNewValue(value)}
             type="text"
             aria-label={props.textInputName}
             isRequired={true}

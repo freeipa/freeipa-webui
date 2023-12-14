@@ -7,12 +7,7 @@ import {
   AlertActionCloseButton,
 } from "@patternfly/react-core";
 
-export type AlertVariant =
-  | "default"
-  | "danger"
-  | "warning"
-  | "success"
-  | "info";
+export type AlertVariant = "custom" | "danger" | "warning" | "success" | "info";
 
 export interface AlertInfo {
   name: string;

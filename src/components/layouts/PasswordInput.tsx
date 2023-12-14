@@ -17,7 +17,7 @@ interface PropsToPasswordInput {
   value?: string;
   passwordHidden?: boolean | true;
   onFocus?: React.MouseEventHandler<HTMLButtonElement> | undefined;
-  onChange?: (value: string) => void;
+  onChange: (value: string) => void;
   onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
   onRevealHandler: (value: boolean) => void;
   validated?: "success" | "warning" | "error" | "default";
@@ -35,7 +35,7 @@ const PasswordInput = (props: PropsToPasswordInput) => {
           name={props.name}
           value={props.value}
           onFocus={props.onFocus}
-          onChange={props.onChange}
+          onChange={(_event, value) => props.onChange(value)}
           validated={props.validated}
         />
       </InputGroupItem>

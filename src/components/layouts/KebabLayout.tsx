@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 // PatternFly
-import { Dropdown, KebabToggle } from "@patternfly/react-core/deprecated";
+import { Dropdown } from "@patternfly/react-core/deprecated";
+import { MenuToggle } from "@patternfly/react-core";
+// Icons
+import EllipsisVIcon from "@patternfly/react-icons/dist/esm/icons/ellipsis-v-icon";
 
 interface PropsToKebab {
   // Dropdown
@@ -15,17 +18,30 @@ interface PropsToKebab {
   isPlain?: boolean;
   dropdownItems?: any[] | undefined;
   // Toggle
-  onKebabToggle?: ((value: boolean, event: any) => void) | undefined;
+  onKebabToggle?: () => void;
   idKebab: string;
   direction?: "up" | "down";
 }
 
 const KebabLayout = (props: PropsToKebab) => {
+  // Toggle
+  const KebabToggleWithRef = (
+    <MenuToggle
+      id={props.idKebab}
+      aria-label="kebab dropdown toggle"
+      variant="plain"
+      onClick={props.onKebabToggle}
+      isExpanded={props.isKebabOpen}
+    >
+      <EllipsisVIcon />
+    </MenuToggle>
+  );
+
   return (
     <Dropdown
       onSelect={props.onDropdownSelect}
       className={props.className}
-      toggle={<KebabToggle onToggle={props.onKebabToggle} id={props.idKebab} />}
+      toggle={KebabToggleWithRef}
       isOpen={props.isKebabOpen}
       isPlain={props.isPlain}
       dropdownItems={props.dropdownItems}
