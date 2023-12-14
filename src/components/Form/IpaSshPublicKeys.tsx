@@ -281,7 +281,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
                           Show Key
                         </SecondaryButton>
                       </FlexItem>
-                      <FlexItem className="pf-u-mb-md">
+                      <FlexItem className="pf-v5-u-mb-md">
                         <SecondaryButton
                           onClickHandler={() => onDeleteSshKey(idx)}
                           name={"remove-ssh-public-key-" + idx}
@@ -310,7 +310,9 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
             <TextArea
               value={textAreaSshPublicKeysValue}
               name={"ipasshpubkey"}
-              onChange={(_event, value: string) => onChangeTextAreaSshPublicKeysValue(value)}
+              onChange={(_event, value: string) =>
+                onChangeTextAreaSshPublicKeysValue(value)
+              }
               aria-label="new ssh public key modal text area"
               resizeOrientation="vertical"
               style={{ height: "422px" }}

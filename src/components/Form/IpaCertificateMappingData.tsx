@@ -284,7 +284,7 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
               <Flex
                 key={"flex-" + idx}
                 flex={{ default: "flex_1" }}
-                className="pf-u-mb-sm"
+                className="pf-v5-u-mb-sm"
                 flexWrap={{ default: "nowrap" }}
               >
                 <FlexItem>

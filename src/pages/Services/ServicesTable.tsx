@@ -276,7 +276,7 @@ const ServicesTable = (props: PropsToTable) => {
       ariaLabel={"Services table"}
       variant={"compact"}
       hasBorders={true}
-      classes={"pf-u-mt-md"}
+      classes={"pf-v5-u-mt-md"}
       tableId={"services-table"}
       isStickyHeader={true}
       tableHeader={header}

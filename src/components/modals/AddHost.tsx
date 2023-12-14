@@ -1,18 +1,18 @@
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 // PatternFly
 import {
-	Button,
-	Checkbox,
-	HelperText,
-	HelperTextItem,
-	TextInput,
-	ValidatedOptions
-} from '@patternfly/react-core';
+  Button,
+  Checkbox,
+  HelperText,
+  HelperTextItem,
+  TextInput,
+  ValidatedOptions,
+} from "@patternfly/react-core";
 import {
-	Select,
-	SelectOption,
-	SelectVariant
-} from '@patternfly/react-core/deprecated';
+  Select,
+  SelectOption,
+  SelectVariant,
+} from "@patternfly/react-core/deprecated";
 // Layout
 import SecondaryButton from "../layouts/SecondaryButton";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
@@ -264,7 +264,7 @@ const AddHost = (props: PropsToAddHost) => {
           id="generateOtpCheckbox"
           name="random"
           value="generateotp"
-          className="pf-u-mb-md"
+          className="pf-v5-u-mb-md"
         />
       ),
     },

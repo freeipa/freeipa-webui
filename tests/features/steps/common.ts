@@ -20,7 +20,7 @@ Given("I am logged in as {string}", (username: string) => {
     }
   });
   cy.get(
-    "div.pf-c-masthead__content button span.pf-c-dropdown__toggle-text"
+    "div.pf-v5-c-masthead__content button span.pf-v5-c-dropdown__toggle-text"
   ).then(($ele) => {
     if ($ele.text() != username) {
       cy.loginAsAnUser(
@@ -97,7 +97,7 @@ Then("I see {string} modal", (modalHeading: string) => {
 });
 
 Then("I see a modal with text {string}", (text: string) => {
-  cy.get("[role=dialog] div.pf-c-modal-box__body").contains(text);
+  cy.get("[role=dialog] div.pf-v5-c-modal-box__body").contains(text);
 });
 
 // Fields
@@ -142,12 +142,12 @@ Then(
 Then(
   "I should see {string} alert with text {string}",
   (type: string, content: string) => {
-    cy.get("div.pf-c-alert.pf-m-" + type).contains(content);
+    cy.get("div.pf-v5-c-alert.pf-m-" + type).contains(content);
   }
 );
 
 // Kebab
 When("I click on kebab menu and select {string}", (buttonName: string) => {
   cy.get("#main-dropdown-kebab").click();
-  cy.get("button.pf-c-dropdown__menu-item").contains(buttonName).click();
+  cy.get("button.pf-v5-c-dropdown__menu-item").contains(buttonName).click();
 });

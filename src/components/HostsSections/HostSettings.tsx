@@ -267,7 +267,7 @@ const HostSettings = (props: PropsToHostSettings) => {
     <>
       <Flex direction={{ default: "column", lg: "row" }}>
         <FlexItem flex={{ default: "flex_1" }}>
-          <Form className="pf-u-mb-lg">
+          <Form className="pf-v5-u-mb-lg">
             <FormGroup label="Host name" fieldId="host-name">
               <TextInput
                 id="host-name"
@@ -280,7 +280,7 @@ const HostSettings = (props: PropsToHostSettings) => {
             </FormGroup>
             <FormGroup label="Principal alias" fieldId="principal-alias">
               {principalAliasList.map((alias, idx) => (
-                <Flex key={idx} className={idx !== 0 ? "pf-u-mt-sm" : ""}>
+                <Flex key={idx} className={idx !== 0 ? "pf-v5-u-mt-sm" : ""}>
                   <FlexItem>{alias.alias}</FlexItem>
                   <FlexItem>
                     <SecondaryButton
@@ -301,7 +301,9 @@ const HostSettings = (props: PropsToHostSettings) => {
               <TextArea
                 value={hostDescription}
                 name="description"
-                onChange={(_event, newDescription: string) => onChangeDescriptionHandler(newDescription)}
+                onChange={(_event, newDescription: string) =>
+                  onChangeDescriptionHandler(newDescription)
+                }
                 aria-label="host description"
                 resizeOrientation="vertical"
               />
@@ -310,7 +312,9 @@ const HostSettings = (props: PropsToHostSettings) => {
               <TextInput
                 id="host-class"
                 name="userclass"
-                onChange={(_event, newHostClass: string) => updateHostClass(newHostClass)}
+                onChange={(_event, newHostClass: string) =>
+                  updateHostClass(newHostClass)
+                }
                 value={hostClass}
                 type="text"
                 aria-label="host class"
@@ -320,7 +324,9 @@ const HostSettings = (props: PropsToHostSettings) => {
               <TextInput
                 id="locality"
                 name="l"
-                onChange={(_event, newLocality: string) => updateLocality(newLocality)}
+                onChange={(_event, newLocality: string) =>
+                  updateLocality(newLocality)
+                }
                 value={locality}
                 type="text"
                 aria-label="locality"
@@ -330,7 +336,9 @@ const HostSettings = (props: PropsToHostSettings) => {
               <TextInput
                 id="location"
                 name="nshostlocation"
-                onChange={(_event, newLocation: string) => updateLocation(newLocation)}
+                onChange={(_event, newLocation: string) =>
+                  updateLocation(newLocation)
+                }
                 value={location}
                 type="text"
                 aria-label="location"
@@ -340,7 +348,9 @@ const HostSettings = (props: PropsToHostSettings) => {
               <TextInput
                 id="platform"
                 name="nshardwareplatform"
-                onChange={(_event, newPlatform: string) => updatePlatform(newPlatform)}
+                onChange={(_event, newPlatform: string) =>
+                  updatePlatform(newPlatform)
+                }
                 value={platform}
                 type="text"
                 aria-label="platform"
@@ -350,7 +360,9 @@ const HostSettings = (props: PropsToHostSettings) => {
               <TextInput
                 id="operating-system"
                 name="nsosversion"
-                onChange={(_event, newOperatingSystem: string) => updateOperatingSystem(newOperatingSystem)}
+                onChange={(_event, newOperatingSystem: string) =>
+                  updateOperatingSystem(newOperatingSystem)
+                }
                 value={operatingSystem}
                 type="text"
                 aria-label="operating-system"
@@ -413,7 +425,7 @@ const HostSettings = (props: PropsToHostSettings) => {
                 ))}
               </Flex>
               <SecondaryButton
-                classname={macAddressList.length !== 0 ? "pf-u-mt-md" : ""}
+                classname={macAddressList.length !== 0 ? "pf-v5-u-mt-md" : ""}
                 name="add"
                 onClickHandler={onAddMacAddressFieldHandler}
               >
@@ -434,7 +446,7 @@ const HostSettings = (props: PropsToHostSettings) => {
                 id="tpaCheckbox"
                 name="ipauserauthtype"
                 value="otp"
-                className="pf-u-mt-xs pf-u-mb-sm"
+                className="pf-v5-u-mt-xs pf-v5-u-mb-sm"
               />
               <Checkbox
                 label="RADIUS"
@@ -443,7 +455,7 @@ const HostSettings = (props: PropsToHostSettings) => {
                 id="radiusCheckbox"
                 name="ipauserauthtype"
                 value="radius"
-                className="pf-u-mt-xs pf-u-mb-sm"
+                className="pf-v5-u-mt-xs pf-v5-u-mb-sm"
               />
               <Checkbox
                 label="PKINIT"
@@ -452,7 +464,7 @@ const HostSettings = (props: PropsToHostSettings) => {
                 id="pkinitCheckbox"
                 name="ipauserauthtype"
                 value="pkinit"
-                className="pf-u-mt-xs pf-u-mb-sm"
+                className="pf-v5-u-mt-xs pf-v5-u-mb-sm"
               />
               <Checkbox
                 label="Hardened password (by SPAKE or FAST)"

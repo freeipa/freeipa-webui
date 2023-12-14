@@ -228,11 +228,11 @@ const CreateKeytabUserGroupsTable = (props: PropsToTable) => {
         isStickyHeader={false}
         tableHeader={userGroupsHeader}
         tableBody={userGroupsBody}
-        tableClasses="pf-u-mb-3xl"
-        deleteButtonClasses="pf-u-mr-sm"
+        tableClasses="pf-v5-u-mb-3xl"
+        deleteButtonClasses="pf-v5-u-mr-sm"
         onDeleteModal={onClickDeleteHandler}
         isDeleteDisabled={isDeleteDisabled}
-        addButtonClasses="pf-u-mr-sm"
+        addButtonClasses="pf-v5-u-mr-sm"
         onAddModal={onClickAddHandler}
       />
       {showAddModal && (

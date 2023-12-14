@@ -25,7 +25,7 @@ const PopoverWithIconLayout = (props: PropsToPopover) => {
       withFocusTrap={props.withFocusTrap || false}
       hasAutoWidth={props.hasAutoWidth || false}
     >
-      <OutlinedQuestionCircleIcon className="pf-u-color-200" />
+      <OutlinedQuestionCircleIcon className="pf-v5-u-color-200" />
     </Popover>
   );
 };

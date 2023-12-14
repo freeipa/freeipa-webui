@@ -33,7 +33,7 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
           <TextLayout>{key}:</TextLayout>
         </FlexItem>
         <FlexItem>
-          <TextLayout className="pf-u-ml-md">{value}</TextLayout>
+          <TextLayout className="pf-v5-u-ml-md">{value}</TextLayout>
         </FlexItem>
       </Flex>
     );
@@ -74,7 +74,7 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
         id={"info-modal-issued-by"}
         headingLevel="h2"
         text={"Issued by"}
-        className="pf-u-mt-sm"
+        className="pf-v5-u-mt-sm"
       />
       {parseKeyValue(
         "Common name",
@@ -95,7 +95,7 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
         id={"info-modal-validity"}
         headingLevel="h2"
         text={"Validity"}
-        className="pf-u-mt-sm"
+        className="pf-v5-u-mt-sm"
       />
       {parseKeyValue(
         "Issued on",
@@ -110,7 +110,7 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
         id={"info-modal-fingerprints"}
         headingLevel="h2"
         text={"Fingerprints"}
-        className="pf-u-mt-sm"
+        className="pf-v5-u-mt-sm"
       />
       {parseKeyValue(
         "Expires on",

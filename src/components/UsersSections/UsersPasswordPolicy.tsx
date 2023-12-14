@@ -17,7 +17,7 @@ const UsersPasswordPolicy = (props: PropsToPasswordPolicy) => {
   return (
     <Flex direction={{ default: "column", md: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-u-mb-lg">
+        <Form className="pf-v5-u-mb-lg">
           <FormGroup label="Max lifetime (days)" fieldId="max-lifetime-days">
             <TextInput
               id="max-lifetime-days"
@@ -74,7 +74,7 @@ const UsersPasswordPolicy = (props: PropsToPasswordPolicy) => {
         </Form>
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-u-mb-lg">
+        <Form className="pf-v5-u-mb-lg">
           <FormGroup label="Max failures" fieldId="max-failures">
             <TextInput
               id="max-failures"

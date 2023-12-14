@@ -32,7 +32,7 @@ const UsersEmployeeInfo = (props: PropsToEmployeeInfo) => {
   return (
     <Flex direction={{ default: "column", md: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-u-mb-lg">
+        <Form className="pf-v5-u-mb-lg">
           <FormGroup label="Org. unit" fieldId="ou">
             <IpaTextInput
               name={"ou"}
@@ -64,7 +64,7 @@ const UsersEmployeeInfo = (props: PropsToEmployeeInfo) => {
         </Form>
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-u-mb-lg">
+        <Form className="pf-v5-u-mb-lg">
           <FormGroup label="Employee number" fieldId="employeenumber">
             <IpaTextInput
               name={"employeenumber"}

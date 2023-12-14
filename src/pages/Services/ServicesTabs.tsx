@@ -48,9 +48,9 @@ const ServicesTabs = () => {
 
   return (
     <Page>
-      <PageSection variant={PageSectionVariants.light} className="pf-u-pr-0">
+      <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadcrumbLayout
-          className="pf-u-mb-md"
+          className="pf-v5-u-mb-md"
           preText="Service:"
           userId={serviceData.id}
           pagesVisited={pagesVisited}
@@ -67,14 +67,14 @@ const ServicesTabs = () => {
           onSelect={handleTabClick}
           variant="light300"
           isBox
-          className="pf-u-ml-lg"
+          className="pf-v5-u-ml-lg"
         >
           <Tab
             eventKey={0}
             name="details"
             title={<TabTitleText>Settings</TabTitleText>}
           >
-            <PageSection className="pf-u-pb-0"></PageSection>
+            <PageSection className="pf-v5-u-pb-0"></PageSection>
             <ServicesSettings service={serviceData} />
           </Tab>
           <Tab
@@ -82,7 +82,7 @@ const ServicesTabs = () => {
             name="details"
             title={<TabTitleText>Is a member of</TabTitleText>}
           >
-            <PageSection className="pf-u-pb-0"></PageSection>
+            <PageSection className="pf-v5-u-pb-0"></PageSection>
             <ServicesMemberOf service={serviceData} />
           </Tab>
           <Tab
@@ -90,7 +90,7 @@ const ServicesTabs = () => {
             name="details"
             title={<TabTitleText>Is managed by</TabTitleText>}
           >
-            <PageSection className="pf-u-pb-0"></PageSection>
+            <PageSection className="pf-v5-u-pb-0"></PageSection>
             <ServicesManagedBy service={serviceData} />
           </Tab>
         </Tabs>

@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
-	Button,
-	Checkbox,
-	Flex,
-	HelperText,
-	HelperTextItem,
-	TextInput,
-	ValidatedOptions
-} from '@patternfly/react-core';
+  Button,
+  Checkbox,
+  Flex,
+  HelperText,
+  HelperTextItem,
+  TextInput,
+  ValidatedOptions,
+} from "@patternfly/react-core";
 import {
-	Select,
-	SelectOption,
-	SelectVariant
-} from '@patternfly/react-core/deprecated';
+  Select,
+  SelectOption,
+  SelectVariant,
+} from "@patternfly/react-core/deprecated";
 // Icons
 import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
 // Layout
@@ -445,7 +445,7 @@ const AddUser = (props: PropsToAddUser) => {
       ),
       labelIcon:
         props.from !== "stage-users" ? (
-          <HelpIcon className="pf-u-ml-xs" />
+          <HelpIcon className="pf-v5-u-ml-xs" />
         ) : (
           <div />
         ),

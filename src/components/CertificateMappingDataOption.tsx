@@ -117,7 +117,7 @@ const CertificateMappingDataOption = (
         ))}
       </Flex>
       <SecondaryButton
-        classname="pf-u-mt-sm pf-u-mb-0"
+        classname="pf-v5-u-mt-sm pf-v5-u-mb-0"
         isDisabled={!props.isCertMappingDataChecked}
         onClickHandler={onAddCertificateMappingDataHandler}
       >
@@ -190,7 +190,7 @@ const CertificateMappingDataOption = (
         ))}
       </Flex>
       <SecondaryButton
-        classname="pf-u-mt-sm"
+        classname="pf-v5-u-mt-sm"
         isDisabled={!props.isCertMappingDataChecked}
         onClickHandler={onAddCertificateHandler}
       >
@@ -214,9 +214,9 @@ const CertificateMappingDataOption = (
         onChange={props.onChangeCertMappingDataCheck}
         label="Certificate mapping data"
         id="certificate-mapping-data"
-        className="pf-u-mb-md"
+        className="pf-v5-u-mb-md"
       />
-      <div className="pf-u-ml-lg pf-u-mb-md">
+      <div className="pf-v5-u-ml-lg pf-v5-u-mb-md">
         <Form>
           <FormGroup
             label="Certificate mapping data"

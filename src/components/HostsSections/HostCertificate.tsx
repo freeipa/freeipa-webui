@@ -16,7 +16,7 @@ const HostCertificate = () => {
   return (
     <Flex direction={{ default: "column", lg: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-u-mb-lg">
+        <Form className="pf-v5-u-mb-lg">
           <FormGroup label="Certificates" fieldId="certificates">
             {certificatesList.length > 0 ? (
               certificatesList.map((cert) => {

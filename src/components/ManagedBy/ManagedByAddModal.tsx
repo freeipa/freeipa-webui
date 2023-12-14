@@ -55,7 +55,11 @@ const ManagedByAddModal = (props: PropsToAddModal) => {
           isSearchable
           availableOptions={availableOptions}
           chosenOptions={chosenOptions}
-          onListChange={(_event, newAvailableOptions: ReactNode[], newChosenOptions: ReactNode[]) => listChange(newAvailableOptions, newChosenOptions)}
+          onListChange={(
+            _event,
+            newAvailableOptions: ReactNode[],
+            newChosenOptions: ReactNode[]
+          ) => listChange(newAvailableOptions, newChosenOptions)}
           id="basicSelectorWithSearch"
         />
       ),
