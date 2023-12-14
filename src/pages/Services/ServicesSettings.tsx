@@ -50,8 +50,8 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
     <DropdownItem key="new certificate">New certificate</DropdownItem>,
   ];
 
-  const onKebabToggle = (isOpen: boolean) => {
-    setIsKebabOpen(isOpen);
+  const onKebabToggle = () => {
+    setIsKebabOpen(!isKebabOpen);
   };
 
   const onKebabSelect = (

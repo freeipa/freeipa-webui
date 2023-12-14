@@ -43,7 +43,7 @@ const ModalWithTextAreaLayout = (props: PropsToPKModal) => {
           <TextArea
             value={props.value}
             name={props.name}
-            onChange={props.onChange}
+            onChange={(_event, value) => props.onChange(value)}
             aria-label={props.ariaLabel}
             resizeOrientation={props.resizeOrientation || "vertical"}
             style={props.cssStyle}

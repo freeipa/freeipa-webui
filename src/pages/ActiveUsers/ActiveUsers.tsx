@@ -362,8 +362,8 @@ const ActiveUsers = () => {
     </DropdownItem>,
   ];
 
-  const onKebabToggle = (isOpen: boolean) => {
-    setKebabIsOpen(isOpen);
+  const onKebabToggle = () => {
+    setKebabIsOpen(!kebabIsOpen);
   };
 
   const onDropdownSelect = (
