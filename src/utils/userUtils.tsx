@@ -221,7 +221,7 @@ export const objectToUser = (
     krbcanonicalname:
       partialUser.krbcanonicalname || oldUserObject?.krbcanonicalname || [],
     nsaccountlock:
-      partialUser.nsaccountlock || oldUserObject?.nsaccountlock || true,
+      partialUser.nsaccountlock || oldUserObject?.nsaccountlock || false,
     objectclass: partialUser.objectclass || oldUserObject?.objectclass || [],
     ipauniqueid: partialUser.ipauniqueid || oldUserObject?.ipauniqueid || "",
     ipantsecurityidentifier:
