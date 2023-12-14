@@ -25,15 +25,20 @@ const HostCertificate = (props: PropsToHostSettings) => {
     <Flex direction={{ default: "column", lg: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-v5-u-mb-lg">
-          <FormGroup label="Certificates" fieldId="usercertificate">
-            <IpaCertificates
-              ipaObject={ipaObject}
-              onChange={recordOnChange}
-              metadata={props.metadata}
-              certificates={props.certData}
-              onRefresh={props.onRefresh}
-              objectType="host"
-            />
+          <FormGroup label="Certificates" fieldId="certificates">
+            {certificatesList.length > 0 ? (
+              certificatesList.map((cert) => {
+                return (
+                  <>
+                    {cert.certificate}
+                    <SecondaryButton>Show</SecondaryButton>
+                    <SecondaryButton>Delete</SecondaryButton>
+                  </>
+                );
+              })
+            ) : (
+              <SecondaryButton>Add</SecondaryButton>
+            )}
           </FormGroup>
         </Form>
       </FlexItem>

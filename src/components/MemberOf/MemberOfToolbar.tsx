@@ -70,20 +70,94 @@ const MemberOfToolbar = (props: MemberOfToolbarProps) => {
           variant={ToolbarItemVariant["search-filter"]}
           spacer={{ default: "spacerMd" }}
         >
-          <SearchInputLayout
-            name="search"
-            ariaLabel="Search user"
-            placeholder="Search"
-            searchValueData={{
-              searchValue: props.searchText,
-              updateSearchValue: props.onSearchTextChange,
-              submitSearchValue: props.onSearch,
-            }}
+          Delete
+        </Button>
+      ),
+    },
+    {
+      id: toolbarData().addButton.id,
+      key: 4,
+      element: (
+        <Button
+          variant="secondary"
+          name="add"
+          onClick={toolbarData().addButton.onClickHandler}
+        >
+          Add
+        </Button>
+      ),
+    },
+    {
+      id: toolbarData().separator2Id,
+      key: 5,
+      toolbarItemVariant: ToolbarItemVariant.separator,
+    },
+    {
+      id: "membership-form",
+      key: 6,
+      element: (
+        <Form isHorizontal maxWidth="93px" className="pf-v5-u-pb-xs">
+          <FormGroup
+            fieldId="membership"
+            label="Membership"
+            className="pf-v5-u-pt-0"
+          ></FormGroup>
+        </Form>
+      ),
+    },
+    {
+      id: toolbarData().membership.formId,
+      key: 7,
+      element: (
+        <ToggleGroup isCompact aria-label="Toggle group with single selectable">
+          <ToggleGroupItem
+            text="Direct"
+            name="user-memberof-group-type-radio-direct"
+            buttonId="direct"
+            isSelected={toolbarData().membership.isDirectSelected}
+            onChange={toolbarData().membership.onDirectChange}
           />
-        </ToolbarItem>
-        <ToolbarItem
-          id="separator-refresh"
-          variant={ToolbarItemVariant.separator}
+          <ToggleGroupItem
+            text="Indirect"
+            name="user-memberof-group-type-radio-indirect"
+            buttonId="indirect"
+            isSelected={toolbarData().membership.isIndirectSelected}
+            onChange={toolbarData().membership.onIndirectChange}
+          />
+        </ToggleGroup>
+      ),
+    },
+    {
+      id: toolbarData().separator3Id,
+      key: 8,
+      toolbarItemVariant: ToolbarItemVariant.separator,
+    },
+    {
+      id: toolbarData().helpIcon.id,
+      key: 9,
+      element: (
+        <TextContent>
+          <Text component={TextVariants.p}>
+            <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
+            <Text component={TextVariants.a} isVisitedLink>
+              Help
+            </Text>
+          </Text>
+        </TextContent>
+      ),
+    },
+    {
+      id: toolbarData().paginationId,
+      key: 10,
+      element: (
+        <Pagination
+          itemCount={props.pageRepo.length}
+          perPage={perPage}
+          page={page}
+          onSetPage={onSetPage}
+          widgetId="pagination-options-menu-top"
+          onPerPageSelect={onPerPageSelect}
+          isCompact
         />
         <ToolbarItem id="refresh-button">
           <Button

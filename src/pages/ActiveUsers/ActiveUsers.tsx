@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
-	Page,
-	PageSection,
-	PageSectionVariants,
-	TextVariants,
-	PaginationVariant,
-	Button
-} from '@patternfly/react-core';
-import {
-	DropdownItem
-} from '@patternfly/react-core/deprecated';
+  Page,
+  PageSection,
+  PageSectionVariants,
+  TextVariants,
+  PaginationVariant,
+  Button,
+} from "@patternfly/react-core";
+import { DropdownItem } from "@patternfly/react-core/deprecated";
 // PatternFly table
 import {
   InnerScrollContainer,
@@ -735,11 +733,60 @@ const ActiveUsers = () => {
   return (
     <Page>
       <alerts.ManagedAlerts />
-      <PageSection variant={PageSectionVariants.light}>
-        <TitleLayout
-          id="active users title"
-          headingLevel="h1"
-          text="Active Users"
+      <Page>
+        <PageSection variant={PageSectionVariants.light}>
+          <TitleLayout
+            id="active users title"
+            headingLevel="h1"
+            text="Active Users"
+          />
+        </PageSection>
+        <PageSection
+          variant={PageSectionVariants.light}
+          isFilled={false}
+          className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
+        >
+          <ToolbarLayout
+            className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
+            contentClassName="pf-v5-u-p-0"
+            toolbarItems={toolbarItems}
+          />
+          <div style={{ height: `calc(100vh - 352.2px)` }}>
+            <OuterScrollContainer>
+              <InnerScrollContainer>
+                {batchError !== undefined && batchError ? (
+                  <GlobalErrors errors={globalErrors.getAll()} />
+                ) : (
+                  <UsersTable
+                    elementsList={activeUsersList}
+                    shownElementsList={shownUsersList}
+                    from="active-users"
+                    showTableRows={showTableRows}
+                    usersData={usersTableData}
+                    buttonsData={usersTableButtonsData}
+                    paginationData={selectedPerPageData}
+                    searchValue={searchValue}
+                  />
+                )}
+              </InnerScrollContainer>
+            </OuterScrollContainer>
+          </div>
+          <PaginationPrep
+            list={activeUsersList}
+            paginationData={paginationData}
+            variant={PaginationVariant.bottom}
+            widgetId="pagination-options-menu-bottom"
+            perPageComponent="button"
+            className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+          />
+        </PageSection>
+        <AddUser
+          show={showAddModal}
+          from="active-users"
+          handleModalToggle={onAddModalToggle}
+          onOpenAddModal={onAddClickHandler}
+          onCloseAddModal={onCloseAddModal}
+          onRefresh={refreshUsersData}
         />
       </PageSection>
       <PageSection

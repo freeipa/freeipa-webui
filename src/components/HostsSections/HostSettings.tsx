@@ -143,21 +143,26 @@ const HostSettings = (props: PropsToHostSettings) => {
                 isDisabled
               />
             </FormGroup>
-            <FormGroup
-              label="Kerberos principal alias"
-              fieldId="krbprincipalname"
-            >
-              <PrincipalAliasMultiTextBox
-                ipaObject={ipaObject}
-                metadata={props.metadata}
-                onRefresh={props.onRefresh}
-                from="hosts"
-              />
+            <FormGroup label="Principal alias" fieldId="principal-alias">
+              {principalAliasList.map((alias, idx) => (
+                <Flex key={idx} className={idx !== 0 ? "pf-v5-u-mt-sm" : ""}>
+                  <FlexItem>{alias.alias}</FlexItem>
+                  <FlexItem>
+                    <SecondaryButton
+                      onClickHandler={() => openModalAndSetAlias(alias.alias)}
+                    >
+                      Delete
+                    </SecondaryButton>
+                  </FlexItem>
+                </Flex>
+              ))}
             </FormGroup>
             <FormGroup label="Description" fieldId="description">
               <IpaTextArea
                 name="description"
-                onChange={(_event, newDescription: string) => onChangeDescriptionHandler(newDescription)}
+                onChange={(_event, newDescription: string) =>
+                  onChangeDescriptionHandler(newDescription)
+                }
                 aria-label="host description"
                 resizeOrientation="vertical"
               />
@@ -166,7 +171,9 @@ const HostSettings = (props: PropsToHostSettings) => {
               <TextInput
                 id="host-class"
                 name="userclass"
-                onChange={(_event, newHostClass: string) => updateHostClass(newHostClass)}
+                onChange={(_event, newHostClass: string) =>
+                  updateHostClass(newHostClass)
+                }
                 value={hostClass}
                 type="text"
                 aria-label="host class"
@@ -176,7 +183,9 @@ const HostSettings = (props: PropsToHostSettings) => {
               <TextInput
                 id="locality"
                 name="l"
-                onChange={(_event, newLocality: string) => updateLocality(newLocality)}
+                onChange={(_event, newLocality: string) =>
+                  updateLocality(newLocality)
+                }
                 value={locality}
                 type="text"
                 aria-label="locality"
@@ -186,7 +195,9 @@ const HostSettings = (props: PropsToHostSettings) => {
               <TextInput
                 id="location"
                 name="nshostlocation"
-                onChange={(_event, newLocation: string) => updateLocation(newLocation)}
+                onChange={(_event, newLocation: string) =>
+                  updateLocation(newLocation)
+                }
                 value={location}
                 type="text"
                 aria-label="location"
@@ -196,7 +207,9 @@ const HostSettings = (props: PropsToHostSettings) => {
               <TextInput
                 id="platform"
                 name="nshardwareplatform"
-                onChange={(_event, newPlatform: string) => updatePlatform(newPlatform)}
+                onChange={(_event, newPlatform: string) =>
+                  updatePlatform(newPlatform)
+                }
                 value={platform}
                 type="text"
                 aria-label="platform"
@@ -206,7 +219,9 @@ const HostSettings = (props: PropsToHostSettings) => {
               <TextInput
                 id="operating-system"
                 name="nsosversion"
-                onChange={(_event, newOperatingSystem: string) => updateOperatingSystem(newOperatingSystem)}
+                onChange={(_event, newOperatingSystem: string) =>
+                  updateOperatingSystem(newOperatingSystem)
+                }
                 value={operatingSystem}
                 type="text"
                 aria-label="operating-system"
@@ -260,7 +275,7 @@ const HostSettings = (props: PropsToHostSettings) => {
                 ))}
               </Flex>
               <SecondaryButton
-                classname={macAddressList.length !== 0 ? "pf-u-mt-md" : ""}
+                classname={macAddressList.length !== 0 ? "pf-v5-u-mt-md" : ""}
                 name="add"
                 onClickHandler={onAddMacAddressFieldHandler}
               >
@@ -274,35 +289,40 @@ const HostSettings = (props: PropsToHostSettings) => {
                 <PopoverWithIconLayout message={AuthIndicatorsTypesMessage} />
               }
             >
-              <IpaCheckboxes
-                name="krbprincipalauthind"
-                options={[
-                  {
-                    value: "otp",
-                    text: "Two-factor authentication (password + OTP)",
-                  },
-                  {
-                    value: "radius",
-                    text: "RADIUS",
-                  },
-
-                  {
-                    value: "pkinit",
-                    text: "PKINIT",
-                  },
-                  {
-                    value: "hardened",
-                    text: "Hardened password (by SPAKE or FAST)",
-                  },
-                  {
-                    value: "idp",
-                    text: "External Identity Provider",
-                  },
-                ]}
-                ipaObject={ipaObject}
-                onChange={recordOnChange}
-                objectName="host"
-                metadata={props.metadata}
+              <Checkbox
+                label="Two-factor authentication (password + OTP)"
+                isChecked={tpaCheckbox}
+                aria-label="two factor authentication from authentication indicators checkbox"
+                id="tpaCheckbox"
+                name="ipauserauthtype"
+                value="otp"
+                className="pf-v5-u-mt-xs pf-v5-u-mb-sm"
+              />
+              <Checkbox
+                label="RADIUS"
+                isChecked={radiusCheckbox}
+                aria-label="radius from authentication indicators checkbox"
+                id="radiusCheckbox"
+                name="ipauserauthtype"
+                value="radius"
+                className="pf-v5-u-mt-xs pf-v5-u-mb-sm"
+              />
+              <Checkbox
+                label="PKINIT"
+                isChecked={pkinitCheckbox}
+                aria-label="pkinit from authentication indicators checkbox"
+                id="pkinitCheckbox"
+                name="ipauserauthtype"
+                value="pkinit"
+                className="pf-v5-u-mt-xs pf-v5-u-mb-sm"
+              />
+              <Checkbox
+                label="Hardened password (by SPAKE or FAST)"
+                isChecked={hardenedPassCheckbox}
+                aria-label="hardened password from authentication indicators checkbox"
+                id="hardenedPassCheckbox"
+                name="ipauserauthtype"
+                value="hardened"
               />
             </FormGroup>
             <FormGroup

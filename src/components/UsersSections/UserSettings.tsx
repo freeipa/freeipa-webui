@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 // PatternFly
 import {
-	PageSection,
-	PageSectionVariants,
-	JumpLinks,
-	JumpLinksItem,
-	TextVariants,
-	Flex,
-	Sidebar,
-	SidebarPanel,
-	SidebarContent
-} from '@patternfly/react-core';
+  PageSection,
+  PageSectionVariants,
+  JumpLinks,
+  JumpLinksItem,
+  TextVariants,
+  Flex,
+  Sidebar,
+  SidebarPanel,
+  SidebarContent,
+} from "@patternfly/react-core";
 import {
-	DropdownItem,
-	DropdownDirection
-} from '@patternfly/react-core/deprecated';
+  DropdownItem,
+  DropdownDirection,
+} from "@patternfly/react-core/deprecated";
 // Icons
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // Data types

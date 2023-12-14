@@ -75,7 +75,6 @@ const PaginationLayout = (props: PropsToPaginationPrep) => {
 
   return (
     <Pagination
-      
       className={props.className}
       itemCount={
         props.paginationData.totalCount

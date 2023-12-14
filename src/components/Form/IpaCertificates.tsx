@@ -1,14 +1,10 @@
 import React from "react";
 // PatternFly
+import { Button, CardBody, CardTitle } from "@patternfly/react-core";
 import {
-	Button,
-	CardBody,
-	CardTitle
-} from '@patternfly/react-core';
-import {
-	DropdownItem,
-	DropdownSeparator
-} from '@patternfly/react-core/deprecated';
+  DropdownItem,
+  DropdownSeparator,
+} from "@patternfly/react-core/deprecated";
 // Data types
 import { Certificate, Metadata } from "src/utils/datatypes/globalDataTypes";
 // ipaObject utils
@@ -289,7 +285,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
       <div className="pf-v5-u-display-table">
         {elements.map((element) => {
           return (
-            <div key={"table-body-" + element.key}>
+            <>
               <div className="pf-v5-u-display-table-row">
                 <div className="pf-v5-u-display-table-cell">
                   <p className="pf-v5-u-mb-xs pf-v5-u-mr-xs pf-v5-u-font-weight-bold">

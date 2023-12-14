@@ -135,7 +135,6 @@ const App: React.FunctionComponent = () => {
           <AppRoutes />
         ) : (
           <Spinner
-            
             style={{ alignSelf: "center", marginTop: "15%" }}
             aria-label="Spinner waiting to load page"
           />

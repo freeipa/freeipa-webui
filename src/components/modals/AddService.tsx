@@ -2,17 +2,17 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
-	Button,
-	Checkbox,
-	HelperText,
-	HelperTextItem,
-	ValidatedOptions
-} from '@patternfly/react-core';
+  Button,
+  Checkbox,
+  HelperText,
+  HelperTextItem,
+  ValidatedOptions,
+} from "@patternfly/react-core";
 import {
-	Select,
-	SelectOption,
-	SelectVariant
-} from '@patternfly/react-core/deprecated';
+  Select,
+  SelectOption,
+  SelectVariant,
+} from "@patternfly/react-core/deprecated";
 // Layout
 import SecondaryButton from "../layouts/SecondaryButton";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";

@@ -84,8 +84,7 @@ const HostsManagedBy = (props: PropsToHostsManagedBy) => {
           </Tab>
         </Tabs>
         <Pagination
-          
-          className="pf-u-pb-0 pf-u-pr-md"
+          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
           itemCount={hostsList.length}
           widgetId="pagination-options-menu-bottom"
           perPage={perPage}

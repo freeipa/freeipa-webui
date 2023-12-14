@@ -1,18 +1,18 @@
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 // PatternFly
 import {
-	Button,
-	Checkbox,
-	HelperText,
-	HelperTextItem,
-	TextInput,
-	ValidatedOptions
-} from '@patternfly/react-core';
+  Button,
+  Checkbox,
+  HelperText,
+  HelperTextItem,
+  TextInput,
+  ValidatedOptions,
+} from "@patternfly/react-core";
 import {
-	Select,
-	SelectOption,
-	SelectVariant
-} from '@patternfly/react-core/deprecated';
+  Select,
+  SelectOption,
+  SelectVariant,
+} from "@patternfly/react-core/deprecated";
 // Layout
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
@@ -402,22 +402,6 @@ const AddHost = (props: PropsToAddHost) => {
           id="generateOtpCheckbox"
           name="generateOtpCheckbox"
           value="generateotp"
-          onChange={handleOtpCheckbox}
-        />
-      ),
-    },
-    {
-      id: "no-membership",
-      name: "",
-      pfComponent: (
-        <Checkbox
-          label="Suppress processing of membership attributes"
-          isChecked={noMembershipCheckbox}
-          aria-label="Suppress membership attributes checkbox"
-          id="noMembershipCheckbox"
-          name="noMembershipCheckbox"
-          value="nomembership"
-          onChange={handleNoMembershipCheckbox}
           className="pf-v5-u-mb-md"
         />
       ),
