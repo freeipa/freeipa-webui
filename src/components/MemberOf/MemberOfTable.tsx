@@ -5,7 +5,9 @@ import {
   EmptyStateIcon,
   EmptyStateVariant,
   EmptyStateBody,
-  Button, EmptyStateHeader, EmptyStateFooter,
+  Button,
+  EmptyStateHeader,
+  EmptyStateFooter,
 } from "@patternfly/react-core";
 import { Td, Th, Tr } from "@patternfly/react-table";
 // Icons
@@ -282,10 +284,16 @@ const MemberOfTable = (props: PropsToTable) => {
       <Td colSpan={8}>
         <Bullseye>
           <EmptyState variant={EmptyStateVariant.sm}>
-            <EmptyStateHeader titleText="No results found" icon={<EmptyStateIcon icon={SearchIcon} />} headingLevel="h2" />
-            <EmptyStateBody>Clear all filters and try again.</EmptyStateBody><EmptyStateFooter>
-            <Button variant="link">Clear all filters</Button>
-          </EmptyStateFooter></EmptyState>
+            <EmptyStateHeader
+              titleText="No results found"
+              icon={<EmptyStateIcon icon={SearchIcon} />}
+              headingLevel="h2"
+            />
+            <EmptyStateBody>Clear all filters and try again.</EmptyStateBody>
+            <EmptyStateFooter>
+              <Button variant="link">Clear all filters</Button>
+            </EmptyStateFooter>
+          </EmptyState>
         </Bullseye>
       </Td>
     </Tr>
@@ -359,7 +367,7 @@ const MemberOfTable = (props: PropsToTable) => {
       name="cn"
       variant={"compact"}
       hasBorders={true}
-      classes={"pf-u-mt-md"}
+      classes={"pf-v5-u-mt-md"}
       tableId={props.tableName.replace(" ", "-").toLowerCase() + "-table"}
       isStickyHeader={true}
       tableHeader={props.group.length === 0 ? undefined : header}

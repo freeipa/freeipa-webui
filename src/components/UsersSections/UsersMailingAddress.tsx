@@ -24,7 +24,7 @@ const UsersMailingAddress = (props: PropsToUsersMailingAddress) => {
   return (
     <Flex direction={{ default: "column", md: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-u-mb-lg">
+        <Form className="pf-v5-u-mb-lg">
           <FormGroup label="Street address" fieldId="street">
             <IpaTextInput
               name={"street"}
@@ -46,7 +46,7 @@ const UsersMailingAddress = (props: PropsToUsersMailingAddress) => {
         </Form>
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-u-mb-lg">
+        <Form className="pf-v5-u-mb-lg">
           <FormGroup label="State/province" fieldId="st">
             <IpaTextInput
               name={"st"}

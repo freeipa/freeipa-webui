@@ -127,7 +127,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
     <>
       <Flex direction={{ default: "column", lg: "row" }}>
         <FlexItem flex={{ default: "flex_1" }}>
-          <Form className="pf-u-mb-lg">
+          <Form className="pf-v5-u-mb-lg">
             <FormGroup label="User login" fieldId="uid">
               <IpaTextInput
                 name={"uid"}
@@ -211,8 +211,8 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             </FormGroup>
           </Form>
         </FlexItem>
-        <FlexItem flex={{ default: "flex_1" }} className="pf-u-w-50">
-          <Form className="pf-u-mb-lg">
+        <FlexItem flex={{ default: "flex_1" }} className="pf-v5-u-w-50">
+          <Form className="pf-v5-u-mb-lg">
             <FormGroup label="Home directory" fieldId="homedirectory">
               <IpaTextInput
                 name={"homedirectory"}

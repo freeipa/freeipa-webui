@@ -1,12 +1,7 @@
 import React from "react";
 // PatternFly
-import {
-	Button
-} from '@patternfly/react-core';
-import {
-	Select,
-	SelectOption
-} from '@patternfly/react-core/deprecated';
+import { Button } from "@patternfly/react-core";
+import { Select, SelectOption } from "@patternfly/react-core/deprecated";
 // Modals
 import ModalWithFormLayout, { Field } from "../layouts/ModalWithFormLayout";
 // Data types

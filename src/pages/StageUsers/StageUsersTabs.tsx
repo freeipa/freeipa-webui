@@ -59,9 +59,9 @@ const StageUsersTabs = () => {
 
   return (
     <Page>
-      <PageSection variant={PageSectionVariants.light} className="pf-u-pr-0">
+      <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadcrumbLayout
-          className="pf-u-mb-md"
+          className="pf-v5-u-mb-md"
           userId={userData.uid}
           pagesVisited={pagesVisited}
         />
@@ -77,14 +77,14 @@ const StageUsersTabs = () => {
           onSelect={handleTabClick}
           variant="light300"
           isBox
-          className="pf-u-ml-lg"
+          className="pf-v5-u-ml-lg"
         >
           <Tab
             eventKey={0}
             name="details"
             title={<TabTitleText>Settings</TabTitleText>}
           >
-            <PageSection className="pf-u-pb-0"></PageSection>
+            <PageSection className="pf-v5-u-pb-0"></PageSection>
             <UserSettings
               originalUser={userSettingsData.originalUser}
               user={userSettingsData.user}

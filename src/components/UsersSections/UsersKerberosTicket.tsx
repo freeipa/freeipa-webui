@@ -17,7 +17,7 @@ const UsersKerberosTicket = (props: PropsToKrbTicket) => {
   return (
     <Flex direction={{ default: "column", md: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-u-mb-lg">
+        <Form className="pf-v5-u-mb-lg">
           <FormGroup label="Max renew (seconds)" fieldId="max-renew">
             <TextInput
               id="max-renew"
@@ -31,7 +31,7 @@ const UsersKerberosTicket = (props: PropsToKrbTicket) => {
         </Form>
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-u-mb-lg">
+        <Form className="pf-v5-u-mb-lg">
           <FormGroup label="Max life (seconds)" fieldId="max-life">
             <TextInput
               id="max-life"

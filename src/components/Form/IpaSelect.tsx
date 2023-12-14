@@ -1,11 +1,11 @@
 import React from "react";
 // PatternFly
 import {
-	Select,
-	SelectOption,
-	SelectOptionObject,
-	SelectVariant
-} from '@patternfly/react-core/deprecated';
+  Select,
+  SelectOption,
+  SelectOptionObject,
+  SelectVariant,
+} from "@patternfly/react-core/deprecated";
 // Utils
 import {
   IPAParamDefinition,

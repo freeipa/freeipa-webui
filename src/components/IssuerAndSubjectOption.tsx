@@ -56,9 +56,9 @@ const IssuerAndSubjectOption = (props: PropsToIssuerAndSubjectOption) => {
         onChange={props.onChangeIssuerAndSubjectCheck}
         label="Issuer and subject"
         id="issuer-and-subject"
-        className="pf-u-mb-md"
+        className="pf-v5-u-mb-md"
       />
-      <div className="pf-u-ml-lg pf-u-mb-md">
+      <div className="pf-v5-u-ml-lg pf-v5-u-mb-md">
         <Form>
           <FormGroup
             label="Issuer"

@@ -1,14 +1,10 @@
 import React from "react";
 // PatternFly
+import { Button, CardBody, CardTitle } from "@patternfly/react-core";
 import {
-	Button,
-	CardBody,
-	CardTitle
-} from '@patternfly/react-core';
-import {
-	DropdownItem,
-	DropdownSeparator
-} from '@patternfly/react-core/deprecated';
+  DropdownItem,
+  DropdownSeparator,
+} from "@patternfly/react-core/deprecated";
 // Data types
 import { Certificate, Metadata } from "src/utils/datatypes/globalDataTypes";
 // ipaObject utils
@@ -251,11 +247,11 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
     return (
       <CardTitle
         id={"card-" + parseDn(cert.certInfo.issuer).cn}
-        className="pf-u-font-weight-normal pf-u-font-family-redhatVF-sans-serif"
+        className="pf-v5-u-font-weight-normal pf-v5-u-font-family-redhatVF-sans-serif"
       >
         {title}
         {cert.certInfo.revoked ? (
-          <p className="pf-u-color-200">{" (REVOKED)"}</p>
+          <p className="pf-v5-u-color-200">{" (REVOKED)"}</p>
         ) : (
           ""
         )}
@@ -275,19 +271,19 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
 
   const buildTableBody = (elements: DictWithName[]) => {
     return (
-      <div className="pf-u-display-table">
+      <div className="pf-v5-u-display-table">
         {elements.map((element) => {
           return (
             <>
-              <div className="pf-u-display-table-row">
-                <div className="pf-u-display-table-cell">
-                  <p className="pf-u-mb-xs pf-u-mr-xs pf-u-font-weight-bold">
+              <div className="pf-v5-u-display-table-row">
+                <div className="pf-v5-u-display-table-cell">
+                  <p className="pf-v5-u-mb-xs pf-v5-u-mr-xs pf-v5-u-font-weight-bold">
                     {element.key + ": "}
                   </p>
                 </div>
-                <div className="pf-u-display-table-cell">
+                <div className="pf-v5-u-display-table-cell">
                   <p
-                    className="pf-u-mb-xs"
+                    className="pf-v5-u-mb-xs"
                     id={element.name}
                     data-name={element.name}
                   >

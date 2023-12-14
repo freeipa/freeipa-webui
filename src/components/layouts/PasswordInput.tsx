@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 // PatternFly
-import { Button, InputGroup, TextInput, InputGroupItem } from "@patternfly/react-core";
+import {
+  Button,
+  InputGroup,
+  TextInput,
+  InputGroupItem,
+} from "@patternfly/react-core";
 import EyeSlashIcon from "@patternfly/react-icons/dist/esm/icons/eye-slash-icon";
 import EyeIcon from "@patternfly/react-icons/dist/esm/icons/eye-icon";
 
@@ -23,22 +28,26 @@ interface PropsToPasswordInput {
 const PasswordInput = (props: PropsToPasswordInput) => {
   return (
     <InputGroup>
-      <InputGroupItem isFill ><TextInput
-        type={props.passwordHidden ? "password" : "text"}
-        id={props.id}
-        name={props.name}
-        value={props.value}
-        onFocus={props.onFocus}
-        onChange={props.onChange}
-        validated={props.validated}
-      /></InputGroupItem>
-      <InputGroupItem><Button
-        variant="control"
-        onClick={() => props.onRevealHandler(!props.passwordHidden)}
-        aria-label={props.passwordHidden ? "Show password" : "Hide password"}
-      >
-        {props.passwordHidden ? <EyeIcon /> : <EyeSlashIcon />}
-      </Button></InputGroupItem>
+      <InputGroupItem isFill>
+        <TextInput
+          type={props.passwordHidden ? "password" : "text"}
+          id={props.id}
+          name={props.name}
+          value={props.value}
+          onFocus={props.onFocus}
+          onChange={props.onChange}
+          validated={props.validated}
+        />
+      </InputGroupItem>
+      <InputGroupItem>
+        <Button
+          variant="control"
+          onClick={() => props.onRevealHandler(!props.passwordHidden)}
+          aria-label={props.passwordHidden ? "Show password" : "Hide password"}
+        >
+          {props.passwordHidden ? <EyeIcon /> : <EyeSlashIcon />}
+        </Button>
+      </InputGroupItem>
     </InputGroup>
   );
 };

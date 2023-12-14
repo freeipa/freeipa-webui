@@ -89,7 +89,7 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
         ))}
       </Flex>
       <SecondaryButton
-        classname="pf-u-mt-sm"
+        classname="pf-v5-u-mt-sm"
         name={"add-" + props.name}
         onClickHandler={onAddHandler}
       >

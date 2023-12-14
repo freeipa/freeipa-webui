@@ -296,7 +296,7 @@ const HostsTable = (props: PropsToTable) => {
       ariaLabel={"Hosts table"}
       variant={"compact"}
       hasBorders={true}
-      classes={"pf-u-mt-md"}
+      classes={"pf-v5-u-mt-md"}
       tableId={"hosts-table"}
       isStickyHeader={true}
       tableHeader={header}

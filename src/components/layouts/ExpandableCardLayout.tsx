@@ -1,14 +1,11 @@
 import React from "react";
 // PatternFly
 import {
-	Card,
-	CardHeader,
-	CardExpandableContent
-} from '@patternfly/react-core';
-import {
-	Dropdown,
-	KebabToggle
-} from '@patternfly/react-core/deprecated';
+  Card,
+  CardHeader,
+  CardExpandableContent,
+} from "@patternfly/react-core";
+import { Dropdown, KebabToggle } from "@patternfly/react-core/deprecated";
 
 interface PropsToCardLayout {
   className?: string;
@@ -46,7 +43,7 @@ const ExpandableCardLayout = (props: PropsToCardLayout) => {
           isPlain
           dropdownItems={props.dropdownItems}
           position={"right"}
-          className="pf-u-ml-auto"
+          className="pf-v5-u-ml-auto"
         />
       );
     }
@@ -54,7 +51,7 @@ const ExpandableCardLayout = (props: PropsToCardLayout) => {
 
   return (
     <Card
-      className={"pf-u-mb-sm " + props.className}
+      className={"pf-v5-u-mb-sm " + props.className}
       isCompact={props.isCompact}
       isExpanded={isExpanded}
     >

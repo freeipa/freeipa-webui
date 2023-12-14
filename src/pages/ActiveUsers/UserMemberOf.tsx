@@ -530,7 +530,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
       <PageSection
         variant={PageSectionVariants.light}
         isFilled={false}
-        className="pf-u-m-lg"
+        className="pf-v5-u-m-lg"
       >
         <Tabs activeKey={activeTabKey} onSelect={handleTabClick} isBox={false}>
           <Tab
@@ -695,8 +695,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
           </Tab>
         </Tabs>
         <Pagination
-          
-          className="pf-u-pb-0 pf-u-pr-md"
+          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
           itemCount={numberOfItems()}
           widgetId="pagination-options-menu-bottom"
           perPage={perPage}
