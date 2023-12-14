@@ -189,6 +189,48 @@ const Services = () => {
   // Show table rows
   const [showTableRows, setShowTableRows] = useState(false);
 
+  const updateShowTableRows = (value: boolean) => {
+    setShowTableRows(value);
+  };
+
+  // Refresh displayed elements every time elements list changes (from Redux or somewhere else)
+  React.useEffect(() => {
+    updatePage(1);
+    if (showTableRows) updateShowTableRows(false);
+    setTimeout(() => {
+      updateShownServicesList(servicesList.slice(0, perPage));
+      updateShowTableRows(true);
+      // Reset 'selectedPerPage'
+      updateSelectedPerPage(0);
+    }, 1000);
+  }, [servicesList]);
+
+  // Dropdown kebab
+  const [kebabIsOpen, setKebabIsOpen] = useState(false);
+
+  const dropdownItems = [
+    <DropdownItem key="rebuild auto membership" component="button">
+      Rebuild auto membership
+    </DropdownItem>,
+  ];
+
+  const onKebabToggle = () => {
+    setKebabIsOpen(!kebabIsOpen);
+  };
+
+  const onFocus = () => {
+    const element = document.getElementById("main-dropdown-kebab");
+    element?.focus();
+  };
+
+  const onDropdownSelect = (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _event: React.SyntheticEvent<HTMLDivElement, Event> | undefined
+  ) => {
+    setKebabIsOpen(!kebabIsOpen);
+    onFocus();
+  };
+
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);

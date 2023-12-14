@@ -37,7 +37,7 @@ const PasswordInput = (props: PropsToPasswordInput) => {
           name={props.name}
           value={props.value}
           onFocus={props.onFocus}
-          onChange={props.onChange}
+          onChange={(_event, value) => props.onChange(value)}
           validated={props.validated}
         />
       </InputGroupItem>

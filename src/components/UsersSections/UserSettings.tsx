@@ -238,8 +238,8 @@ const UserSettings = (props: PropsToUserSettings) => {
     </DropdownItem>,
   ];
 
-  const onKebabToggle = (isOpen: boolean) => {
-    setIsKebabOpen(isOpen);
+  const onKebabToggle = () => {
+    setIsKebabOpen(!isKebabOpen);
   };
 
   const onKebabSelect = (
