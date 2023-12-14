@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 // PatternFly
 import {
+  Icon,
   Title,
   Page,
   PageSection,
@@ -25,6 +26,7 @@ import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
 // Hooks
 import { useUserSettings } from "src/hooks/useUserSettingsData";
+import LockIcon from "@patternfly/react-icons/dist/esm/icons/lock-icon";
 
 const ActiveUsersTabs = () => {
   // Get location (React Router DOM) and get state data
@@ -58,6 +60,8 @@ const ActiveUsersTabs = () => {
     return <DataSpinner />;
   }
 
+  const disabled = userSettingsData.user.nsaccountlock;
+
   return (
     <Page>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
@@ -68,7 +72,23 @@ const ActiveUsersTabs = () => {
         />
         <TextContent>
           <Title headingLevel="h1">
-            <Text>{userData.uid}</Text>
+            <Text
+              className="pf-v5-u-display-flex"
+              title={disabled ? "User is disabled" : ""}
+            >
+              {userData.uid}
+              {disabled ? (
+                <Icon
+                  className="pf-v5-u-ml-sm pf-v5-u-mt-sm"
+                  status="info"
+                  size="md"
+                >
+                  <LockIcon />
+                </Icon>
+              ) : (
+                ""
+              )}
+            </Text>
           </Title>
         </TextContent>
       </PageSection>
