@@ -484,7 +484,7 @@ const AddUser = (props: PropsToAddUser) => {
     },
     {
       id: "new-password",
-      name: "New Password",
+      name: "New password",
       pfComponent: (
         <PasswordInput
           id="modal-form-new-password"

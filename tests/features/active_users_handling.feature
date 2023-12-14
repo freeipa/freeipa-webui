@@ -11,7 +11,7 @@ Feature: User manipulation
     * I type in the field "User login" text "<userLogin>"
     * I type in the field "First name" text "<firstName>"
     * I type in the field "Last name" text "<lastName>"
-    * I type in the field "New Password" text "<password>"
+    * I type in the field "New password" text "<password>"
     * I type in the field "Verify password" text "<password>"
     * in the modal dialog I click on "Add" button
     Then I should see "<userLogin>" entry in the data table
@@ -27,14 +27,14 @@ Feature: User manipulation
     * I type in the field "User login" text "chainuser1"
     * I type in the field "First name" text "Chain"
     * I type in the field "Last name" text "User1"
-    * I type in the field "New Password" text "CorrectHorseBatteryStaple"
+    * I type in the field "New password" text "CorrectHorseBatteryStaple"
     * I type in the field "Verify password" text "CorrectHorseBatteryStaple"
     * in the modal dialog I click on "Add and add another" button
 
     When I type in the field "User login" text "chainuser2"
     * I type in the field "First name" text "Chain"
     * I type in the field "Last name" text "User2"
-    * I type in the field "New Password" text "IncorrectHorseBatteryStaple"
+    * I type in the field "New password" text "IncorrectHorseBatteryStaple"
     * I type in the field "Verify password" text "IncorrectHorseBatteryStaple"
     * in the modal dialog I click on "Add" button
     Then I should see "chainuser1" entry in the data table
@@ -175,7 +175,7 @@ Scenario: Re-enable multiple users at once
     * I type in the field "User login" text "cancelleduser"
     * I type in the field "First name" text "Cancelled"
     * I type in the field "Last name" text "User1"
-    * I type in the field "New Password" text "DoesntReallyMatter"
+    * I type in the field "New password" text "DoesntReallyMatter"
     * I type in the field "Verify password" text "DoesntReallyMatter"
     * in the modal dialog I click on "Cancel" button
     Then I should not see "cancelleduser" entry in the data table
