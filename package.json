@@ -6,9 +6,9 @@
   "author": "",
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "@patternfly/patternfly": "^4.202.1",
-    "@patternfly/react-core": "^4.250.1",
-    "@patternfly/react-table": "^4.112.39",
+    "@patternfly/patternfly": "^5.1.0",
+    "@patternfly/react-core": "^5.1.2",
+    "@patternfly/react-table": "^5.1.2",
     "@reduxjs/toolkit": "^1.8.6",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
