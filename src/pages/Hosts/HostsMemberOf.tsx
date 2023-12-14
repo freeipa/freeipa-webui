@@ -216,118 +216,301 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
         mountOnEnter
         unmountOnExit
       >
-        <Tab
-          eventKey={"memberof_hostgroup"}
-          name="memberof_hostgroup"
-          title={
-            <TabTitleText>
-              Host groups{" "}
-              <Badge key={0} isRead>
-                {groupCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfHostGroups
-            entity={host}
-            id={host.fqdn as string}
-            from={"hosts"}
-            isDataLoading={hostQuery.isFetching}
-            onRefreshData={onRefreshHostData}
-            setDirection={updateGroupDirection}
-            direction={groupDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"memberof_role"}
-          name="memberof_role"
-          title={
-            <TabTitleText>
-              Roles{" "}
-              <Badge key={0} isRead>
-                {roleCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfRoles
-            entity={host}
-            id={host.fqdn as string}
-            from={"roles"}
-            isDataLoading={hostQuery.isFetching}
-            onRefreshData={onRefreshHostData}
-            setDirection={updateRoleDirection}
-            direction={groupDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"memberof_netgroup"}
-          name="memberof_netgroup"
-          title={
-            <TabTitleText>
-              Netgroups{" "}
-              <Badge key={1} isRead>
-                {netgroupCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfNetgroups
-            entity={host}
-            id={host.fqdn as string}
-            from={"hosts"}
-            isDataLoading={hostQuery.isFetching}
-            onRefreshData={onRefreshHostData}
-            setDirection={updateNetgroupDirection}
-            direction={netgroupDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"memberof_hbacrule"}
-          name="memberof_hbacrule"
-          title={
-            <TabTitleText>
-              HBAC rules{" "}
-              <Badge key={3} isRead>
-                {hbacCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfHbacRules
-            entity={host}
-            id={host.fqdn as string}
-            from={"hosts"}
-            isDataLoading={hostQuery.isFetching}
-            onRefreshData={onRefreshHostData}
-            setDirection={updateHbacDirection}
-            direction={hbacDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"memberof_sudorule"}
-          name="memberof_sudorule"
-          title={
-            <TabTitleText>
-              Sudo rules{" "}
-              <Badge key={4} isRead>
-                {sudoCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfSudoRules
-            entity={host}
-            id={host.fqdn as string}
-            from={"hosts"}
-            isDataLoading={hostQuery.isFetching}
-            onRefreshData={onRefreshHostData}
-            setDirection={updateSudoDirection}
-            direction={sudoDirection}
-          />
-        </Tab>
-      </Tabs>
-    </TabLayout>
+        <Tabs activeKey={activeTabKey} onSelect={handleTabClick} isBox={false}>
+          <Tab
+            eventKey={0}
+            name="memberof_hostgroup"
+            title={
+              <TabTitleText>
+                Host groups{" "}
+                <Badge key={0} isRead>
+                  {hostGroupsRepoLength}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfToolbar
+              pageRepo={hostGroupsRepository}
+              shownItems={shownHostGroupsList}
+              toolbar="host groups"
+              settersData={toolbarSettersData}
+              pageData={toolbarPageData}
+              buttonData={toolbarButtonData}
+              searchValueData={searchValueData}
+            />
+            <MemberOfTable
+              group={shownHostGroupsList}
+              tableName={"Host groups"}
+              activeTabKey={activeTabKey}
+              changeSelectedGroups={updateGroupsNamesSelected}
+              buttonData={tableButtonData}
+              showTableRows={showTableRows}
+              searchValue={searchValue}
+              fullGroupList={hostGroupsRepository}
+            />
+          </Tab>
+          <Tab
+            eventKey={1}
+            name="memberof_netgroup"
+            title={
+              <TabTitleText>
+                Netgroups{" "}
+                <Badge key={1} isRead>
+                  {netgroupsRepoLength}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfToolbar
+              pageRepo={netgroupsRepository}
+              shownItems={shownNetgroupsList}
+              toolbar="netgroups"
+              settersData={toolbarSettersData}
+              pageData={toolbarPageData}
+              buttonData={toolbarButtonData}
+              searchValueData={searchValueData}
+            />
+            <MemberOfTable
+              group={shownNetgroupsList}
+              tableName={"Netgroups"}
+              activeTabKey={activeTabKey}
+              changeSelectedGroups={updateGroupsNamesSelected}
+              buttonData={tableButtonData}
+              showTableRows={showTableRows}
+              searchValue={searchValue}
+              fullGroupList={netgroupsRepository}
+            />
+          </Tab>
+          <Tab
+            eventKey={2}
+            name="memberof_role"
+            title={
+              <TabTitleText>
+                Roles{" "}
+                <Badge key={2} isRead>
+                  {rolesRepoLength}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfToolbar
+              pageRepo={rolesRepository}
+              shownItems={shownRolesList}
+              toolbar="roles"
+              settersData={toolbarSettersData}
+              pageData={toolbarPageData}
+              buttonData={toolbarButtonData}
+              searchValueData={searchValueData}
+            />
+            <MemberOfTable
+              group={shownRolesList}
+              tableName={"Roles"}
+              activeTabKey={activeTabKey}
+              changeSelectedGroups={updateGroupsNamesSelected}
+              buttonData={tableButtonData}
+              showTableRows={showTableRows}
+              searchValue={searchValue}
+              fullGroupList={rolesRepository}
+            />
+          </Tab>
+          <Tab
+            eventKey={3}
+            name="memberof_hbacrule"
+            title={
+              <TabTitleText>
+                HBAC rules{" "}
+                <Badge key={3} isRead>
+                  {hbacRulesRepoLength}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfToolbar
+              pageRepo={hbacRulesRepository}
+              shownItems={shownHBACRulesList}
+              toolbar="HBAC rules"
+              settersData={toolbarSettersData}
+              pageData={toolbarPageData}
+              buttonData={toolbarButtonData}
+              searchValueData={searchValueData}
+            />
+            <MemberOfTable
+              group={shownHBACRulesList}
+              tableName={"HBAC rules"}
+              activeTabKey={activeTabKey}
+              changeSelectedGroups={updateGroupsNamesSelected}
+              buttonData={tableButtonData}
+              showTableRows={showTableRows}
+              searchValue={searchValue}
+              fullGroupList={hbacRulesRepository}
+            />
+          </Tab>
+          <Tab
+            eventKey={4}
+            name="memberof_sudorule"
+            title={
+              <TabTitleText>
+                Sudo rules{" "}
+                <Badge key={4} isRead>
+                  {sudoRulesRepoLength}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfToolbar
+              pageRepo={sudoRulesRepository}
+              shownItems={shownSudoRulesList}
+              toolbar="sudo rules"
+              settersData={toolbarSettersData}
+              pageData={toolbarPageData}
+              buttonData={toolbarButtonData}
+              searchValueData={searchValueData}
+            />
+            <MemberOfTable
+              group={shownSudoRulesList}
+              tableName={"Sudo rules"}
+              activeTabKey={activeTabKey}
+              changeSelectedGroups={updateGroupsNamesSelected}
+              buttonData={tableButtonData}
+              showTableRows={showTableRows}
+              searchValue={searchValue}
+              fullGroupList={sudoRulesRepository}
+            />
+          </Tab>
+        </Tabs>
+        <Pagination
+          
+          className="pf-u-pb-0 pf-u-pr-md"
+          itemCount={numberOfItems()}
+          widgetId="pagination-options-menu-bottom"
+          perPage={perPage}
+          page={page}
+          variant={PaginationVariant.bottom}
+          onSetPage={onSetPage}
+          onPerPageSelect={onPerPageSelect}
+        />
+      </PageSection>
+      {tabName === "Host groups" && (
+        <>
+          {showAddModal && (
+            <MemberOfAddModal
+              modalData={addModalData}
+              availableData={hostGroupsFilteredData}
+              groupRepository={hostGroupsRepository}
+              updateGroupRepository={updateGroupRepository}
+              updateAvOptionsList={updateHostGroupsList}
+              tabData={tabData}
+            />
+          )}
+          {showDeleteModal && groupsNamesSelected.length !== 0 && (
+            <MemberOfDeleteModal
+              modalData={deleteModalData}
+              tabData={deleteTabData}
+              groupNamesToDelete={groupsNamesSelected}
+              groupRepository={hostGroupsRepository}
+              updateGroupRepository={updateGroupRepository}
+              buttonData={deleteButtonData}
+            />
+          )}
+        </>
+      )}
+      {tabName === "Netgroups" && (
+        <>
+          {showAddModal && (
+            <MemberOfAddModal
+              modalData={addModalData}
+              availableData={netgroupsFilteredData}
+              groupRepository={netgroupsRepository}
+              updateGroupRepository={updateGroupRepository}
+              updateAvOptionsList={updateNetgroupsList}
+              tabData={tabData}
+            />
+          )}
+          {showDeleteModal && groupsNamesSelected.length !== 0 && (
+            <MemberOfDeleteModal
+              modalData={deleteModalData}
+              tabData={deleteTabData}
+              groupNamesToDelete={groupsNamesSelected}
+              groupRepository={netgroupsRepository}
+              updateGroupRepository={updateGroupRepository}
+              buttonData={deleteButtonData}
+            />
+          )}
+        </>
+      )}
+      {tabName === "Roles" && (
+        <>
+          {showAddModal && (
+            <MemberOfAddModal
+              modalData={addModalData}
+              availableData={rolesFilteredData}
+              groupRepository={rolesRepository}
+              updateGroupRepository={updateGroupRepository}
+              updateAvOptionsList={updateRolesList}
+              tabData={tabData}
+            />
+          )}
+          {showDeleteModal && groupsNamesSelected.length !== 0 && (
+            <MemberOfDeleteModal
+              modalData={deleteModalData}
+              tabData={deleteTabData}
+              groupNamesToDelete={groupsNamesSelected}
+              groupRepository={rolesRepository}
+              updateGroupRepository={updateGroupRepository}
+              buttonData={deleteButtonData}
+            />
+          )}
+        </>
+      )}
+      {tabName === "HBAC rules" && (
+        <>
+          {showAddModal && (
+            <MemberOfAddModal
+              modalData={addModalData}
+              availableData={hbacRulesFilteredData}
+              groupRepository={hbacRulesRepository}
+              updateGroupRepository={updateGroupRepository}
+              updateAvOptionsList={updateHbacRulesList}
+              tabData={tabData}
+            />
+          )}
+          {showDeleteModal && groupsNamesSelected.length !== 0 && (
+            <MemberOfDeleteModal
+              modalData={deleteModalData}
+              tabData={deleteTabData}
+              groupNamesToDelete={groupsNamesSelected}
+              groupRepository={hbacRulesRepository}
+              updateGroupRepository={updateGroupRepository}
+              buttonData={deleteButtonData}
+            />
+          )}
+        </>
+      )}
+      {tabName === "Sudo rules" && (
+        <>
+          {showAddModal && (
+            <MemberOfAddModal
+              modalData={addModalData}
+              availableData={sudoRulesFilteredData}
+              groupRepository={sudoRulesRepository}
+              updateGroupRepository={updateGroupRepository}
+              updateAvOptionsList={updateSudoRulesList}
+              tabData={tabData}
+            />
+          )}
+          {showDeleteModal && groupsNamesSelected.length !== 0 && (
+            <MemberOfDeleteModal
+              modalData={deleteModalData}
+              tabData={deleteTabData}
+              groupNamesToDelete={groupsNamesSelected}
+              groupRepository={sudoRulesRepository}
+              updateGroupRepository={updateGroupRepository}
+              buttonData={deleteButtonData}
+            />
+          )}
+        </>
+      )}
+    </Page>
   );
 };
 

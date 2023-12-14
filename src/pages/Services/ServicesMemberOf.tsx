@@ -70,32 +70,67 @@ const ServicesMemberOf = (props: PropsToServicesMemberOf) => {
 
   // Render component
   return (
-    <TabLayout id="memberof">
-      <Tabs activeKey={0} isBox={false} mountOnEnter unmountOnExit>
-        <Tab
-          eventKey={0}
-          name="memberof_role"
-          title={
-            <TabTitleText>
-              Roles{" "}
-              <Badge key={0} isRead>
-                {service && service.memberof_role
-                  ? service.memberof_role.length
-                  : 0}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfRoles
-            entity={service}
-            id={service.krbcanonicalname as string}
-            from={"services"}
-            isDataLoading={serviceQuery.isFetching}
-            onRefreshData={onRefreshServiceData}
-            membershipDisabled={true}
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            setDirection={() => {}}
-            direction={"direct" as MembershipDirection}
+    <Page>
+      <PageSection
+        variant={PageSectionVariants.light}
+        isFilled={false}
+        className="pf-v5-u-m-lg"
+      >
+        <Tabs activeKey={activeTabKey} onSelect={handleTabClick} isBox={false}>
+          <Tab
+            eventKey={2}
+            name="memberof_role"
+            title={
+              <TabTitleText>
+                Roles{" "}
+                <Badge key={2} isRead>
+                  {rolesRepoLength}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfToolbar
+              pageRepo={rolesRepository}
+              shownItems={shownRolesList}
+              toolbar="roles"
+              settersData={toolbarSettersData}
+              pageData={toolbarPageData}
+              buttonData={toolbarButtonData}
+              searchValueData={searchValueData}
+            />
+            <MemberOfTable
+              group={shownRolesList}
+              tableName={"Roles"}
+              activeTabKey={activeTabKey}
+              changeSelectedGroups={updateGroupsNamesSelected}
+              buttonData={tableButtonData}
+              showTableRows={showTableRows}
+              searchValue={searchValue}
+              fullGroupList={rolesRepository}
+            />
+          </Tab>
+        </Tabs>
+        <Pagination
+          
+          className="pf-u-pb-0 pf-u-pr-md"
+          itemCount={rolesRepository.length}
+          widgetId="pagination-options-menu-bottom"
+          perPage={perPage}
+          page={page}
+          variant={PaginationVariant.bottom}
+          onSetPage={onSetPage}
+          onPerPageSelect={onPerPageSelect}
+        />
+      </PageSection>
+      <>
+        {showAddModal && (
+          <MemberOfAddModal
+            modalData={addModalData}
+            availableData={rolesFilteredData}
+            groupRepository={rolesRepository}
+            updateGroupRepository={updateGroupRepository}
+            updateAvOptionsList={updateRolesList}
+            tabData={tabData}
           />
         </Tab>
       </Tabs>

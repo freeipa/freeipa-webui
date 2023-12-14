@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
-  Button,
-  Checkbox,
-  Flex,
-  HelperText,
-  HelperTextItem,
-  SelectOptionProps,
-  TextInput,
-  ValidatedOptions,
-} from "@patternfly/react-core";
+	Button,
+	Checkbox,
+	Flex,
+	HelperText,
+	HelperTextItem,
+	TextInput,
+	ValidatedOptions
+} from '@patternfly/react-core';
+import {
+	Select,
+	SelectOption,
+	SelectVariant
+} from '@patternfly/react-core/deprecated';
 // Icons
 import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
 // Layout
@@ -462,12 +466,21 @@ const AddUser = (props: PropsToAddUser) => {
       id: "gid-form",
       name: "GID",
       pfComponent: (
-        <TypeAheadSelectWithCreate
-          id={"modal-form-gid"}
-          options={gidOptions}
-          selected={gidSelected}
-          onSelectedChange={setGidSelected}
-        />
+        <Select
+          id="gid"
+          variant={SelectVariant.single}
+          placeholderText=" "
+          aria-label="Select Input"
+          onToggle={(_event, isOpen: boolean) => gidOnToggle(isOpen)}
+          onSelect={gidOnSelect}
+          selections={gidSelected}
+          isOpen={isGidOpen}
+          aria-labelledby="gid"
+        >
+          {gidOptions.map((option, index) => (
+            <SelectOption key={index} value={option} />
+          ))}
+        </Select>
       ),
     },
     {

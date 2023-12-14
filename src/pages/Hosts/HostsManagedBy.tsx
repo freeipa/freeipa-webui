@@ -54,24 +54,56 @@ const HostsManagedBy = (props: PropsToHostsManagedBy) => {
           navigate("/hosts/" + props.host.fqdn + "/managedby_host");
         }}
       >
-        <Tab
-          eventKey={"managedby_host"}
-          name="managedby_host"
-          title={
-            <TabTitleText>
-              Hosts{" "}
-              <Badge key={0} isRead>
-                {host && host.managedby_host ? host.managedby_host.length : 0}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <ManagedByHosts
-            entity={host}
-            id={host.fqdn as string}
-            from="host"
-            isDataLoading={hostQuery.isFetching}
-            onRefreshData={onRefreshHostData}
+        <Tabs activeKey={0} isBox={false}>
+          <Tab
+            eventKey={0}
+            name="managedby_host"
+            title={
+              <TabTitleText>
+                Hosts{" "}
+                <Badge key={0} isRead>
+                  {hostsList.length}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <ManagedByToolbar
+              pageRepo={hostsList}
+              shownItems={shownHostsList}
+              updateShownElementsList={updateShownHostsList}
+              pageData={toolbarPageData}
+              buttonData={toolbarButtonData}
+            />
+            <ManagedByTable
+              list={shownHostsList}
+              tableName="Hosts"
+              showTableRows={showTableRows}
+              updateElementsSelected={updateHostsSelected}
+              buttonData={tableButtonData}
+            />
+          </Tab>
+        </Tabs>
+        <Pagination
+          
+          className="pf-u-pb-0 pf-u-pr-md"
+          itemCount={hostsList.length}
+          widgetId="pagination-options-menu-bottom"
+          perPage={perPage}
+          page={page}
+          variant={PaginationVariant.bottom}
+          onSetPage={onSetPage}
+          onPerPageSelect={onPerPageSelect}
+        />
+      </PageSection>
+      <>
+        {showAddModal && (
+          <ManagedByAddModal
+            modalData={addModalData}
+            availableData={hostsFilteredData}
+            groupRepository={hostsList}
+            updateGroupRepository={updateGroupRepository}
+            updateAvOptionsList={updateAvailableHostsList}
+            tabData={tabData}
           />
         </Tab>
       </Tabs>

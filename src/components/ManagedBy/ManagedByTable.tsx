@@ -6,9 +6,7 @@ import {
   EmptyStateIcon,
   EmptyStateVariant,
   EmptyStateBody,
-  Button,
-  EmptyStateHeader,
-  EmptyStateFooter,
+  Button, EmptyStateHeader, EmptyStateFooter,
 } from "@patternfly/react-core";
 import { Td, Th, Tr } from "@patternfly/react-table";
 // Icons
@@ -189,16 +187,10 @@ const ManagedByTable = (props: PropsToTable) => {
       <Td colSpan={8}>
         <Bullseye>
           <EmptyState variant={EmptyStateVariant.sm}>
-            <EmptyStateHeader
-              titleText="No results found"
-              icon={<EmptyStateIcon icon={SearchIcon} />}
-              headingLevel="h2"
-            />
-            <EmptyStateBody>Clear all filters and try again.</EmptyStateBody>
-            <EmptyStateFooter>
-              <Button variant="link">Clear all filters</Button>
-            </EmptyStateFooter>
-          </EmptyState>
+            <EmptyStateHeader titleText="No results found" icon={<EmptyStateIcon icon={SearchIcon} />} headingLevel="h2" />
+            <EmptyStateBody>Clear all filters and try again.</EmptyStateBody><EmptyStateFooter>
+            <Button variant="link">Clear all filters</Button>
+          </EmptyStateFooter></EmptyState>
         </Bullseye>
       </Td>
     </Tr>

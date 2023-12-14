@@ -2,12 +2,9 @@
 import React from "react";
 // PatternFly
 import {
-  Dropdown,
-  MenuToggle,
-  MenuToggleElement,
-} from "@patternfly/react-core";
-// Icons
-import EllipsisVIcon from "@patternfly/react-icons/dist/esm/icons/ellipsis-v-icon";
+	Dropdown,
+	KebabToggle
+} from '@patternfly/react-core/deprecated';
 
 interface PropsToKebab {
   // Dropdown

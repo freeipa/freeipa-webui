@@ -96,12 +96,37 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
               />
             </FormGroup>
             <FormGroup label="PAC type" fieldId="pac-type">
-              <IpaPACType
-                name="ipakrbauthzdata"
-                ipaObject={ipaObject}
-                onChange={recordOnChange}
-                objectName="service"
-                metadata={props.metadata}
+              <Radio
+                isChecked={isInheritedChecked}
+                name="inherited"
+                onChange={(_event, isChecked: boolean) => onChangeInheritedRadio(isChecked)}
+                label="Inherited from server configuration"
+                id="inherited-from-server-conf"
+              />
+              <Radio
+                isChecked={isOverrideChecked}
+                name="override"
+                onChange={(_event, isChecked: boolean) => onChangeOverrideRadio(isChecked)}
+                label="Override inherited settings"
+                id="override-inherited-settings"
+              />
+              <Checkbox
+                label="MS-PAC"
+                isChecked={isMsPacChecked}
+                onChange={(_event, isChecked: boolean) => onChangeMsPac(isChecked)}
+                isDisabled={!isOverrideChecked}
+                id="ms-pac-checkbox"
+                name="ms-pac"
+                className="pf-v5-u-ml-lg"
+              />
+              <Checkbox
+                label="PAD"
+                isChecked={isPadChecked}
+                onChange={(_event, isChecked: boolean) => onChangePad(isChecked)}
+                isDisabled={!isOverrideChecked}
+                id="pad-checkbox"
+                name="pad"
+                className="pf-v5-u-ml-lg"
               />
             </FormGroup>
           </Form>
@@ -178,7 +203,12 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
               label="Requires pre-authentication"
               fieldId="requires-pre-authentication"
             >
-              <IpaCheckbox
+              <Checkbox
+                label="Requires pre-authentication"
+                isChecked={requiresPreAuthCheckbox}
+                onChange={(_event, isChecked: boolean) => onChangeRequiresPreAuth(isChecked)}
+                aria-label="requires pre authentication checkbox"
+                id="requiresPreAuthenticationCheckbox"
                 name="ipakrbrequirespreauth"
                 value="requiresPreAuth"
                 text="Requires pre-authentication"

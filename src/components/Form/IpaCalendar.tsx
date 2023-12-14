@@ -4,7 +4,7 @@ import {
   DatePicker,
   InputGroup,
   TimePicker,
-  isValidDate,
+  isValidDate, InputGroupItem,
 } from "@patternfly/react-core";
 // Utils
 import { parseFullDateStringToUTCFormat } from "src/utils/utils";
@@ -140,15 +140,15 @@ const IpaCalendar = (props: IPAParamDefinition) => {
 
   return (
     <InputGroup>
-      <DatePicker
+      <InputGroupItem><DatePicker
         name={"add-date-" + props.name}
         value={yyyyMMddFormat(value)}
         onChange={onDateChange}
         aria-label="Kerberos principal expiration date"
         placeholder="YYYY-MM-DD"
         isDisabled={readOnly}
-      />
-      <TimePicker
+      /></InputGroupItem>
+      <InputGroupItem><TimePicker
         name={"add-time-" + props.name}
         time={hhMMFormat(value)}
         aria-label="Kerberos principal expiration time"
@@ -156,7 +156,7 @@ const IpaCalendar = (props: IPAParamDefinition) => {
         placeholder="HH:MM"
         is24Hour={true}
         isDisabled={readOnly}
-      />
+      /></InputGroupItem>
     </InputGroup>
   );
 };

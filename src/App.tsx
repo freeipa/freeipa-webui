@@ -120,18 +120,28 @@ const App: React.FunctionComponent = () => {
     return <DataSpinner />;
   }
   return (
-    <>
-      {hasUser && userLoggedIn && (
-        <AppLayout loggedInUser={loggedInUser}>
-          <AppRoutes isInitialDataLoaded={isDataLoaded} />
-        </AppLayout>
-      )}
-      {!hasUser && !userLoggedIn && (
-        <>
-          <AppRoutes isInitialDataLoaded={isDataLoaded} />
-        </>
-      )}
-    </>
+    <Context.Provider
+      value={{
+        groupActive,
+        setGroupActive,
+        browserTitle,
+        setBrowserTitle,
+        superGroupActive,
+        setSuperGroupActive,
+      }}
+    >
+      <AppLayout>
+        {!isInitialBatchLoading ? (
+          <AppRoutes />
+        ) : (
+          <Spinner
+            
+            style={{ alignSelf: "center", marginTop: "15%" }}
+            aria-label="Spinner waiting to load page"
+          />
+        )}
+      </AppLayout>
+    </Context.Provider>
   );
 };
 

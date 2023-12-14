@@ -1,21 +1,21 @@
 import {
-  Avatar,
-  Masthead,
-  MastheadBrand,
-  MastheadContent,
-  MastheadMain,
-  MastheadToggle,
-  Page,
-  PageSidebar,
-  PageToggleButton,
-  SkipToContent,
-  Toolbar,
-  PageSidebarBody,
-  DropdownItem,
-  Dropdown,
-  MenuToggleElement,
-  MenuToggle,
-} from "@patternfly/react-core";
+	Avatar,
+	Masthead,
+	MastheadBrand,
+	MastheadContent,
+	MastheadMain,
+	MastheadToggle,
+	Page,
+	PageSidebar,
+	PageToggleButton,
+	SkipToContent,
+	Toolbar, PageSidebarBody
+} from '@patternfly/react-core';
+import {
+	Dropdown,
+	DropdownItem,
+	DropdownToggle
+} from '@patternfly/react-core/deprecated';
 import React from "react";
 // Icons
 import BarsIcon from "@patternfly/react-icons/dist/esm/icons/bars-icon";
@@ -115,16 +115,9 @@ const AppLayout = (props: PropsToAppLayout) => {
   const dropdown = (
     <Dropdown
       onSelect={onDropdownSelect}
-      toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-        <MenuToggle
-          ref={toggleRef}
-          id="toggle-plain-text"
-          onClick={onDropdownToggle}
-          isExpanded={isDropdownOpen}
-          className="pf-v5-u-mr-md"
-          variant="plainText"
-        >
-          {fullName}
+      toggle={
+        <DropdownToggle id="toggle-plain-text" onToggle={(_event, isOpen: boolean) => onDropdownToggle(isOpen)}>
+          Administrator
         </MenuToggle>
       )}
       isOpen={isDropdownOpen}
@@ -155,13 +148,11 @@ const AppLayout = (props: PropsToAppLayout) => {
     </Masthead>
   );
 
-  const Sidebar = (
-    <PageSidebar>
-      <PageSidebarBody>
-        <Navigation />
-      </PageSidebarBody>
-    </PageSidebar>
-  );
+  const Sidebar = <PageSidebar  >
+<PageSidebarBody>
+<Navigation />
+</PageSidebarBody>
+</PageSidebar>;
 
   const pageId = "primary-app-container";
 

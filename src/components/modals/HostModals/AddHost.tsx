@@ -1,17 +1,18 @@
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 // PatternFly
 import {
-  Button,
-  Checkbox,
-  HelperText,
-  HelperTextItem,
-  MenuToggle,
-  MenuToggleElement,
-  Select,
-  SelectOption,
-  TextInput,
-  ValidatedOptions,
-} from "@patternfly/react-core";
+	Button,
+	Checkbox,
+	HelperText,
+	HelperTextItem,
+	TextInput,
+	ValidatedOptions
+} from '@patternfly/react-core';
+import {
+	Select,
+	SelectOption,
+	SelectVariant
+} from '@patternfly/react-core/deprecated';
 // Layout
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
@@ -295,7 +296,8 @@ const AddHost = (props: PropsToAddHost) => {
           <Select
             id="dnszone"
             aria-label="Select DNS zone selector"
-            toggle={toggle}
+            onToggle={(_event, isOpen: boolean) => dnsZoneOnToggle(isOpen)}
+            onFocus={resetDnsZoneError}
             onSelect={dnsZoneOnSelect}
             selected={dnsZoneSelected}
             isOpen={isDnsZoneOpen}
@@ -356,26 +358,14 @@ const AddHost = (props: PropsToAddHost) => {
       id: "host-ip-address",
       name: "IP address",
       pfComponent: (
-        <>
-          <TextInput
-            type="text"
-            id="modal-form-host-ip-address"
-            name="modal-form-host-ip-address"
-            value={hostIpAddress}
-            onChange={(_event, value: string) => hostIpAddressHandler(value)}
-            ref={hostIpAddressRef}
-          />
-          <HelperText>
-            {!hostIpAddressValidation.isError && (
-              <HelperTextItem>{hostIpAddressValidation.message}</HelperTextItem>
-            )}
-            {hostIpAddressValidation.isError && (
-              <HelperTextItem variant="error">
-                {hostIpAddressValidation.message}
-              </HelperTextItem>
-            )}
-          </HelperText>
-        </>
+        <TextInput
+          type="text"
+          id="modal-form-host-ip-address"
+          name="ip_address"
+          value={hostIpAddress}
+          onChange={(_event, value: string) => hostIpAddressHandler(value)}
+          ref={hostIpAddressRef}
+        />
       ),
     },
     {

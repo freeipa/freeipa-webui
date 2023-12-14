@@ -157,60 +157,59 @@ const HostSettings = (props: PropsToHostSettings) => {
             <FormGroup label="Description" fieldId="description">
               <IpaTextArea
                 name="description"
-                ipaObject={ipaObject}
-                onChange={recordOnChange}
-                objectName="host"
-                metadata={props.metadata}
+                onChange={(_event, newDescription: string) => onChangeDescriptionHandler(newDescription)}
+                aria-label="host description"
+                resizeOrientation="vertical"
               />
             </FormGroup>
-            <FormGroup label="Class" fieldId="userclass">
-              <IpaTextInput
-                name={"userclass"}
-                ariaLabel={"User class"}
-                ipaObject={ipaObject}
-                onChange={recordOnChange}
-                objectName="host"
-                metadata={props.metadata}
+            <FormGroup label="Class" fieldId="host-class">
+              <TextInput
+                id="host-class"
+                name="userclass"
+                onChange={(_event, newHostClass: string) => updateHostClass(newHostClass)}
+                value={hostClass}
+                type="text"
+                aria-label="host class"
               />
             </FormGroup>
-            <FormGroup label="Locality" fieldId="l">
-              <IpaTextInput
-                name={"l"}
-                ariaLabel={"Locality"}
-                ipaObject={ipaObject}
-                onChange={recordOnChange}
-                objectName="host"
-                metadata={props.metadata}
+            <FormGroup label="Locality" fieldId="locality">
+              <TextInput
+                id="locality"
+                name="l"
+                onChange={(_event, newLocality: string) => updateLocality(newLocality)}
+                value={locality}
+                type="text"
+                aria-label="locality"
               />
             </FormGroup>
-            <FormGroup label="Location" fieldId="nshostlocation">
-              <IpaTextInput
-                name={"nshostlocation"}
-                ariaLabel={"Location"}
-                ipaObject={ipaObject}
-                onChange={recordOnChange}
-                objectName="host"
-                metadata={props.metadata}
+            <FormGroup label="Location" fieldId="location">
+              <TextInput
+                id="location"
+                name="nshostlocation"
+                onChange={(_event, newLocation: string) => updateLocation(newLocation)}
+                value={location}
+                type="text"
+                aria-label="location"
               />
             </FormGroup>
-            <FormGroup label="Platform" fieldId="nshardwareplatform">
-              <IpaTextInput
-                name={"nshardwareplatform"}
-                ariaLabel={"Platform"}
-                ipaObject={ipaObject}
-                onChange={recordOnChange}
-                objectName="host"
-                metadata={props.metadata}
+            <FormGroup label="Platform" fieldId="platform">
+              <TextInput
+                id="platform"
+                name="nshardwareplatform"
+                onChange={(_event, newPlatform: string) => updatePlatform(newPlatform)}
+                value={platform}
+                type="text"
+                aria-label="platform"
               />
             </FormGroup>
-            <FormGroup label="Operating system" fieldId="nsosversion">
-              <IpaTextInput
-                name={"nsosversion"}
-                ariaLabel={"Operating system"}
-                ipaObject={ipaObject}
-                onChange={recordOnChange}
-                objectName="host"
-                metadata={props.metadata}
+            <FormGroup label="Operating system" fieldId="operating-system">
+              <TextInput
+                id="operating-system"
+                name="nsosversion"
+                onChange={(_event, newOperatingSystem: string) => updateOperatingSystem(newOperatingSystem)}
+                value={operatingSystem}
+                type="text"
+                aria-label="operating-system"
               />
             </FormGroup>
           </Form>
@@ -226,14 +225,47 @@ const HostSettings = (props: PropsToHostSettings) => {
                 from={"hosts"}
               />
             </FormGroup>
-            <FormGroup label="MAC address" fieldId="macaddress">
-              <IpaTextboxList
-                ipaObject={ipaObject}
-                setIpaObject={recordOnChange}
-                name={"macaddress"}
-                ariaLabel={"MAC address"}
-                validator={validateMAC}
-              />
+            <FormGroup label="MAC address" fieldId="mac-address">
+              <Flex direction={{ default: "column" }} name="macaddress">
+                {macAddressList.map((macAddress, idx) => (
+                  <Flex
+                    direction={{ default: "row" }}
+                    key={macAddress.id + "-" + idx + "-div"}
+                    name={"macaddress-" + idx}
+                  >
+                    <FlexItem
+                      key={macAddress.id + "-textbox"}
+                      flex={{ default: "flex_1" }}
+                    >
+                      <TextInput
+                        id="mac-address-text"
+                        value={macAddress.address}
+                        type="text"
+                        name={"macaddress-" + idx}
+                        aria-label="mac address"
+                        onChange={(event, value) =>
+                          onHandleMacAddressChange(value, event, idx)
+                        }
+                      />
+                    </FlexItem>
+                    <FlexItem key={macAddress.id + "-delete-button"}>
+                      <SecondaryButton
+                        name="remove"
+                        onClickHandler={() => onRemoveMacAddressHandler(idx)}
+                      >
+                        Delete
+                      </SecondaryButton>
+                    </FlexItem>
+                  </Flex>
+                ))}
+              </Flex>
+              <SecondaryButton
+                classname={macAddressList.length !== 0 ? "pf-u-mt-md" : ""}
+                name="add"
+                onClickHandler={onAddMacAddressFieldHandler}
+              >
+                Add
+              </SecondaryButton>
             </FormGroup>
             <FormGroup
               label="Authentication indicators"

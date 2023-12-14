@@ -343,9 +343,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
             <TextArea
               value={textAreaSshPublicKeysValue}
               name={"ipasshpubkey"}
-              onChange={(_event, value: string) =>
-                onChangeTextAreaSshPublicKeysValue(value)
-              }
+              onChange={(_event, value: string) => onChangeTextAreaSshPublicKeysValue(value)}
               aria-label="new ssh public key modal text area"
               resizeOrientation="vertical"
               style={{ height: "422px" }}

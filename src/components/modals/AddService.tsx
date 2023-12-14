@@ -2,16 +2,17 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
-  Button,
-  Checkbox,
-  HelperText,
-  HelperTextItem,
-  MenuToggle,
-  MenuToggleElement,
-  Select,
-  SelectOption,
-  ValidatedOptions,
-} from "@patternfly/react-core";
+	Button,
+	Checkbox,
+	HelperText,
+	HelperTextItem,
+	ValidatedOptions
+} from '@patternfly/react-core';
+import {
+	Select,
+	SelectOption,
+	SelectVariant
+} from '@patternfly/react-core/deprecated';
 // Layout
 import SecondaryButton from "../layouts/SecondaryButton";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
@@ -237,7 +238,7 @@ const AddService = (props: PropsToAddService) => {
           <Select
             id="service"
             aria-label="Select service"
-            toggle={toggleService}
+            onToggle={(_event, isOpen: boolean) => serviceOnToggle(isOpen)}
             onSelect={serviceOnSelect}
             selected={serviceSelected}
             isOpen={isServiceOpen}
@@ -271,7 +272,7 @@ const AddService = (props: PropsToAddService) => {
           <Select
             id="host"
             aria-label="Select host name"
-            toggle={toggleHost}
+            onToggle={(_event, isOpen: boolean) => hostNameOnToggle(isOpen)}
             onSelect={hostNameOnSelect}
             selected={hostNameSelected}
             isOpen={isHostNameOpen}
