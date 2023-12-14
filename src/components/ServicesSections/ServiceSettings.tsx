@@ -271,21 +271,21 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
               <Radio
                 isChecked={isInheritedChecked}
                 name="inherited"
-                onChange={onChangeInheritedRadio}
+                onChange={(_event, isChecked: boolean) => onChangeInheritedRadio(isChecked)}
                 label="Inherited from server configuration"
                 id="inherited-from-server-conf"
               />
               <Radio
                 isChecked={isOverrideChecked}
                 name="override"
-                onChange={onChangeOverrideRadio}
+                onChange={(_event, isChecked: boolean) => onChangeOverrideRadio(isChecked)}
                 label="Override inherited settings"
                 id="override-inherited-settings"
               />
               <Checkbox
                 label="MS-PAC"
                 isChecked={isMsPacChecked}
-                onChange={onChangeMsPac}
+                onChange={(_event, isChecked: boolean) => onChangeMsPac(isChecked)}
                 isDisabled={!isOverrideChecked}
                 id="ms-pac-checkbox"
                 name="ms-pac"
@@ -294,7 +294,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
               <Checkbox
                 label="PAD"
                 isChecked={isPadChecked}
-                onChange={onChangePad}
+                onChange={(_event, isChecked: boolean) => onChangePad(isChecked)}
                 isDisabled={!isOverrideChecked}
                 id="pad-checkbox"
                 name="pad"
@@ -390,7 +390,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
               <Checkbox
                 label="Requires pre-authentication"
                 isChecked={requiresPreAuthCheckbox}
-                onChange={onChangeRequiresPreAuth}
+                onChange={(_event, isChecked: boolean) => onChangeRequiresPreAuth(isChecked)}
                 aria-label="requires pre authentication checkbox"
                 id="requiresPreAuthenticationCheckbox"
                 name="ipakrbrequirespreauth"

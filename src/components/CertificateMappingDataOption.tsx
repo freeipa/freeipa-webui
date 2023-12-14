@@ -98,7 +98,7 @@ const CertificateMappingDataOption = (
                 type="text"
                 name={"ipacertmapdata-" + idx}
                 aria-label="certificate mapping data textbox"
-                onChange={(value, event) =>
+                onChange={(event, value) =>
                   onHandleCertificateMappingDataChange(value, event, idx)
                 }
               />
@@ -172,7 +172,7 @@ const CertificateMappingDataOption = (
                 name={"certificate-" + idx}
                 aria-label="certificate textarea"
                 resizeOrientation="vertical"
-                onChange={(value, event) =>
+                onChange={(event, value) =>
                   onHandleCertificateChange(value, event, idx)
                 }
                 style={{ height: "135px" }}

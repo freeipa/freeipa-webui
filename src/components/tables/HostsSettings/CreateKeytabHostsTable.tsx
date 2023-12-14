@@ -164,7 +164,7 @@ const CreateKeytabHostsTable = (props: PropsToTable) => {
           onSelect: (_event, isSelecting) =>
             onSelectHost(host, rowIndex, isSelecting),
           isSelected: isHostSelected(host),
-          disable: false,
+          isDisabled: false,
         }}
       />
       <Td dataLabel={hostsColumnNamesArray[0]}>{host}</Td>

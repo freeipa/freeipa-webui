@@ -1,16 +1,18 @@
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 // PatternFly
 import {
-  Button,
-  Checkbox,
-  HelperText,
-  HelperTextItem,
-  Select,
-  SelectOption,
-  SelectVariant,
-  TextInput,
-  ValidatedOptions,
-} from "@patternfly/react-core";
+	Button,
+	Checkbox,
+	HelperText,
+	HelperTextItem,
+	TextInput,
+	ValidatedOptions
+} from '@patternfly/react-core';
+import {
+	Select,
+	SelectOption,
+	SelectVariant
+} from '@patternfly/react-core/deprecated';
 // Layout
 import SecondaryButton from "../layouts/SecondaryButton";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
@@ -153,7 +155,7 @@ const AddHost = (props: PropsToAddHost) => {
             onFocus={resetHostNameError}
             onBlur={hostNameValidationHandler}
             value={hostName}
-            onChange={hostNameHandler}
+            onChange={(_event, value: string) => hostNameHandler(value)}
             validated={hostNameValidation.pfError}
             ref={hostNameRef}
           />
@@ -181,7 +183,7 @@ const AddHost = (props: PropsToAddHost) => {
             variant={SelectVariant.single}
             placeholderText=" "
             aria-label="Select DNS zone selector"
-            onToggle={dnsZoneOnToggle}
+            onToggle={(_event, isOpen: boolean) => dnsZoneOnToggle(isOpen)}
             onFocus={resetDnsZoneError}
             onSelect={dnsZoneOnSelect}
             selections={dnsZoneSelected}
@@ -218,7 +220,7 @@ const AddHost = (props: PropsToAddHost) => {
           id="modal-form-host-class"
           name="userclass"
           value={hostClass}
-          onChange={hostClassHandler}
+          onChange={(_event, value: string) => hostClassHandler(value)}
           ref={hostClassRef}
         />
       ),
@@ -232,7 +234,7 @@ const AddHost = (props: PropsToAddHost) => {
           id="modal-form-host-ip-address"
           name="ip_address"
           value={hostIpAddress}
-          onChange={hostIpAddressHandler}
+          onChange={(_event, value: string) => hostIpAddressHandler(value)}
           ref={hostIpAddressRef}
         />
       ),

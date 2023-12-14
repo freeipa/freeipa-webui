@@ -261,7 +261,7 @@ const HostsManagedBy = (props: PropsToHostsManagedBy) => {
           </Tab>
         </Tabs>
         <Pagination
-          perPageComponent="button"
+          
           className="pf-u-pb-0 pf-u-pr-md"
           itemCount={hostsList.length}
           widgetId="pagination-options-menu-bottom"

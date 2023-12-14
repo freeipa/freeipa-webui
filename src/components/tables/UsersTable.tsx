@@ -400,7 +400,7 @@ const UsersTable = (props: PropsToTable) => {
           onSelect: (_event, isSelecting) =>
             onSelectUser(user, rowIndex, isSelecting),
           isSelected: isUserSelected(user),
-          disable: !props.usersData.isUserSelectable(user),
+          isDisabled: !props.usersData.isUserSelectable(user),
         }}
       />
       <Td

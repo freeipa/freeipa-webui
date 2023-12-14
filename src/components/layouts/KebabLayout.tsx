@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 // PatternFly
-import { Dropdown, KebabToggle } from "@patternfly/react-core";
+import {
+	Dropdown,
+	KebabToggle
+} from '@patternfly/react-core/deprecated';
 
 interface PropsToKebab {
   // Dropdown

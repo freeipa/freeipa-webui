@@ -177,7 +177,7 @@ const RetrieveKeytabHostGroupsTable = (props: PropsToTable) => {
           onSelect: (_event, isSelecting) =>
             onSelectHostGroup(hostGroup, rowIndex, isSelecting),
           isSelected: isHostGroupSelected(hostGroup),
-          disable: false,
+          isDisabled: false,
         }}
       />
       <Td dataLabel={hostGroupsColumnNamesArray[0]}>{hostGroup}</Td>

@@ -251,7 +251,7 @@ const ServicesTable = (props: PropsToTable) => {
           onSelect: (_event, isSelecting) =>
             onSelectService(service, rowIndex, isSelecting),
           isSelected: isServiceSelected(service),
-          disable: !props.servicesData.isServiceSelectable(service),
+          isDisabled: !props.servicesData.isServiceSelectable(service),
         }}
       />
       <Td dataLabel={columnNames.principalName}>

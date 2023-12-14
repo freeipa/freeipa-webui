@@ -31,7 +31,7 @@ interface PropsToPaginationLayout {
 const PaginationLayout = (props: PropsToPaginationLayout) => {
   return (
     <Pagination
-      perPageComponent={props.perPageComponent}
+      
       className={props.className}
       itemCount={props.list.length}
       widgetId={props.widgetId}

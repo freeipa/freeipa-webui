@@ -165,7 +165,7 @@ const CreateKeytabUsersTable = (props: PropsToTable) => {
           onSelect: (_event, isSelecting) =>
             onSelectUser(user, rowIndex, isSelecting),
           isSelected: isUserSelected(user),
-          disable: false,
+          isDisabled: false,
         }}
       />
       <Td dataLabel={usersColumnNamesArray[0]}>{user}</Td>

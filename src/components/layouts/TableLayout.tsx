@@ -1,5 +1,5 @@
 import {
-  TableComposable,
+  Table /* data-codemods */,
   TableVariant,
   Tbody,
   Thead,
@@ -20,7 +20,7 @@ export interface PropsToTable {
 
 const TableLayout = (props: PropsToTable) => {
   return (
-    <TableComposable
+    <Table
       aria-label={props.ariaLabel}
       name={props.name}
       variant={props.variant}
@@ -31,7 +31,7 @@ const TableLayout = (props: PropsToTable) => {
     >
       <Thead>{props.tableHeader}</Thead>
       <Tbody>{props.tableBody}</Tbody>
-    </TableComposable>
+    </Table>
   );
 };
 

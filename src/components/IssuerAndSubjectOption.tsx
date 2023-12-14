@@ -77,7 +77,7 @@ const IssuerAndSubjectOption = (props: PropsToIssuerAndSubjectOption) => {
               type="text"
               name="issuer"
               aria-label="issuer textbox"
-              onChange={onChangeIssuer}
+              onChange={(_event, value: string) => onChangeIssuer(value)}
               isDisabled={!props.isIssuerAndSubjectChecked}
               placeholder="O=EXAMPLE.ORG,CN=Issuer Example CA"
             />
@@ -99,7 +99,7 @@ const IssuerAndSubjectOption = (props: PropsToIssuerAndSubjectOption) => {
               type="text"
               name="subject"
               aria-label="subject textbox"
-              onChange={onChangeSubject}
+              onChange={(_event, value: string) => onChangeSubject(value)}
               isDisabled={!props.isIssuerAndSubjectChecked}
               placeholder="CN=Subject example,O=EXAMPLE.ORG"
             />

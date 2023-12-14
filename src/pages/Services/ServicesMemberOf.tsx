@@ -315,7 +315,7 @@ const ServicesMemberOf = (props: PropsToServicesMemberOf) => {
           </Tab>
         </Tabs>
         <Pagination
-          perPageComponent="button"
+          
           className="pf-u-pb-0 pf-u-pr-md"
           itemCount={rolesRepository.length}
           widgetId="pagination-options-menu-bottom"

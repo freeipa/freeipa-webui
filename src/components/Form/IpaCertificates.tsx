@@ -1,12 +1,14 @@
 import React from "react";
 // PatternFly
 import {
-  Button,
-  CardBody,
-  CardTitle,
-  DropdownItem,
-  DropdownSeparator,
-} from "@patternfly/react-core";
+	Button,
+	CardBody,
+	CardTitle
+} from '@patternfly/react-core';
+import {
+	DropdownItem,
+	DropdownSeparator
+} from '@patternfly/react-core/deprecated';
 // Data types
 import { Certificate, Metadata } from "src/utils/datatypes/globalDataTypes";
 // ipaObject utils
