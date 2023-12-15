@@ -108,10 +108,16 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
       key="del-principal-alias"
       variant="danger"
       onClick={() => onRemovePrincipalAlias(aliasIdxToDelete)}
+      isSmall
     >
       Delete
     </Button>,
-    <Button key="cancel" variant="link" onClick={onCloseDeletionConfModal}>
+    <Button
+      key="cancel"
+      variant="link"
+      isSmall
+      onClick={onCloseDeletionConfModal}
+    >
       Cancel
     </Button>,
   ];

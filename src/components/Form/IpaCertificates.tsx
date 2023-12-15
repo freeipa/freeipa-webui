@@ -543,6 +543,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         name={"add-certificate"}
         onClickHandler={onOpenModal}
         isDisabled={readOnly}
+        isSmall
       >
         Add
       </SecondaryButton>

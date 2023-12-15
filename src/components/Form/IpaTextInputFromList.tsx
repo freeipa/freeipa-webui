@@ -62,6 +62,7 @@ const IpaTextInputFromList = (props: PropsToTextInputFromList) => {
                   name={"remove-principal-alias-" + idx}
                   onClickHandler={() => props.onRemove(idx)}
                   isDisabled={readOnly}
+                  isSmall
                 >
                   Delete
                 </SecondaryButton>
@@ -74,6 +75,7 @@ const IpaTextInputFromList = (props: PropsToTextInputFromList) => {
         name="add-principal-alias"
         onClickHandler={props.onOpenModal}
         isDisabled={readOnly}
+        isSmall
       >
         Add
       </SecondaryButton>

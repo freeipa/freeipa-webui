@@ -81,6 +81,7 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
               <SecondaryButton
                 name={"remove-" + props.name + "-" + idx}
                 onClickHandler={() => onRemoveHandler(idx)}
+                isSmall
               >
                 Delete
               </SecondaryButton>
@@ -92,6 +93,7 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
         classname="pf-u-mt-sm"
         name={"add-" + props.name}
         onClickHandler={onAddHandler}
+        isSmall
       >
         Add
       </SecondaryButton>

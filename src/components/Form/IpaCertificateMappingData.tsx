@@ -306,6 +306,7 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
       <SecondaryButton
         name={"add-certificate-mapping-data"}
         onClickHandler={() => setIsOpen(true)}
+        isSmall
       >
         Add
       </SecondaryButton>
