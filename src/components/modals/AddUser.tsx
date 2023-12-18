@@ -6,14 +6,13 @@ import {
   Flex,
   HelperText,
   HelperTextItem,
+  MenuToggle,
+  MenuToggleElement,
+  Select,
+  SelectOption,
   TextInput,
   ValidatedOptions,
 } from "@patternfly/react-core";
-import {
-  Select,
-  SelectOption,
-  SelectVariant,
-} from "@patternfly/react-core/deprecated";
 // Icons
 import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
 // Layout
@@ -293,8 +292,8 @@ const AddUser = (props: PropsToAddUser) => {
   const [gidSelected, setGidSelected] = useState<string>("");
   const gidOptions = GIDs.map((gid) => gid.cn);
 
-  const gidOnToggle = (isOpen: boolean) => {
-    setIsGidOpen(isOpen);
+  const gidOnToggle = () => {
+    setIsGidOpen(!isGidOpen);
   };
 
   // Given a gid name, return gid number
@@ -312,6 +311,13 @@ const AddUser = (props: PropsToAddUser) => {
     setGidSelected(gidnumber as string);
     setIsGidOpen(false);
   };
+
+  // Toggle
+  const toggleGid = (toggleRef: React.Ref<MenuToggleElement>) => (
+    <MenuToggle ref={toggleRef} onClick={gidOnToggle} className="pf-v5-u-w-100">
+      {gidSelected}
+    </MenuToggle>
+  );
 
   // Checks if the passwords are filled and matches
   const verifiedPasswords =
@@ -468,18 +474,18 @@ const AddUser = (props: PropsToAddUser) => {
       name: "GID",
       pfComponent: (
         <Select
-          id="gid"
-          variant={SelectVariant.single}
-          placeholderText=" "
+          id="gidnumber"
           aria-label="Select Input"
-          onToggle={(_event, isOpen: boolean) => gidOnToggle(isOpen)}
+          toggle={toggleGid}
           onSelect={gidOnSelect}
-          selections={gidSelected}
+          selected={gidSelected}
           isOpen={isGidOpen}
           aria-labelledby="gid"
         >
           {gidOptions.map((option, index) => (
-            <SelectOption key={index} value={option} />
+            <SelectOption key={index} value={option}>
+              {option}
+            </SelectOption>
           ))}
         </Select>
       ),

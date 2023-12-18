@@ -6,13 +6,12 @@ import {
   Checkbox,
   HelperText,
   HelperTextItem,
-  ValidatedOptions,
-} from "@patternfly/react-core";
-import {
+  MenuToggle,
+  MenuToggleElement,
   Select,
   SelectOption,
-  SelectVariant,
-} from "@patternfly/react-core/deprecated";
+  ValidatedOptions,
+} from "@patternfly/react-core";
 // Layout
 import SecondaryButton from "../layouts/SecondaryButton";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
@@ -51,9 +50,20 @@ const AddService = (props: PropsToAddService) => {
     "qpidd",
   ];
 
-  const serviceOnToggle = (isOpen: boolean) => {
-    setIsServiceOpen(isOpen);
+  const serviceOnToggle = () => {
+    setIsServiceOpen(!isServiceOpen);
   };
+
+  // Toggle
+  const toggleService = (toggleRef: React.Ref<MenuToggleElement>) => (
+    <MenuToggle
+      ref={toggleRef}
+      onClick={serviceOnToggle}
+      className="pf-v5-u-w-100"
+    >
+      {serviceSelected}
+    </MenuToggle>
+  );
 
   const serviceOnSelect = (selection: any) => {
     setServiceSelected(selection.target.textContent);
@@ -70,8 +80,8 @@ const AddService = (props: PropsToAddService) => {
   const [hostNameSelected, setHostNameSelected] = useState("");
   const hostNameOptions = hostNamesList;
 
-  const hostNameOnToggle = (isOpen: boolean) => {
-    setIsHostNameOpen(isOpen);
+  const hostNameOnToggle = () => {
+    setIsHostNameOpen(!isHostNameOpen);
   };
 
   const hostNameOnSelect = (selection: any) => {
@@ -83,6 +93,17 @@ const AddService = (props: PropsToAddService) => {
     });
     setIsHostNameOpen(false);
   };
+
+  // Toggle
+  const toggleHost = (toggleRef: React.Ref<MenuToggleElement>) => (
+    <MenuToggle
+      ref={toggleRef}
+      onClick={hostNameOnToggle}
+      className="pf-v5-u-w-100"
+    >
+      {hostNameSelected}
+    </MenuToggle>
+  );
 
   // 'Force' checkbox
   const [isForceChecked, setIsForceChecked] = useState(false);
@@ -188,18 +209,17 @@ const AddService = (props: PropsToAddService) => {
         <>
           <Select
             id="service"
-            name="service"
-            variant={SelectVariant.single}
-            placeholderText=" "
             aria-label="Select service"
-            onToggle={(_event, isOpen: boolean) => serviceOnToggle(isOpen)}
+            toggle={toggleService}
             onSelect={serviceOnSelect}
-            selections={serviceSelected}
+            selected={serviceSelected}
             isOpen={isServiceOpen}
             aria-labelledby="service"
           >
             {serviceOptions.map((option, index) => (
-              <SelectOption key={index} value={option} />
+              <SelectOption key={index} value={option}>
+                {option}
+              </SelectOption>
             ))}
           </Select>
           <HelperText>
@@ -222,19 +242,18 @@ const AddService = (props: PropsToAddService) => {
       pfComponent: (
         <>
           <Select
-            id="host-name"
-            name="host"
-            variant={SelectVariant.single}
-            placeholderText=" "
+            id="host"
             aria-label="Select host name"
-            onToggle={(_event, isOpen: boolean) => hostNameOnToggle(isOpen)}
+            toggle={toggleHost}
             onSelect={hostNameOnSelect}
-            selections={hostNameSelected}
+            selected={hostNameSelected}
             isOpen={isHostNameOpen}
             aria-labelledby="host name"
           >
             {hostNameOptions.map((option, index) => (
-              <SelectOption key={index} value={option} />
+              <SelectOption key={index} value={option}>
+                {option}
+              </SelectOption>
             ))}
           </Select>
           <HelperText>

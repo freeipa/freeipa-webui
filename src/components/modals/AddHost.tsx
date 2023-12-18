@@ -5,14 +5,13 @@ import {
   Checkbox,
   HelperText,
   HelperTextItem,
+  MenuToggle,
+  MenuToggleElement,
+  Select,
+  SelectOption,
   TextInput,
   ValidatedOptions,
 } from "@patternfly/react-core";
-import {
-  Select,
-  SelectOption,
-  SelectVariant,
-} from "@patternfly/react-core/deprecated";
 // Layout
 import SecondaryButton from "../layouts/SecondaryButton";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
@@ -54,9 +53,20 @@ const AddHost = (props: PropsToAddHost) => {
   const [dnsZoneSelected, setDnsZoneSelected] = useState(defaultDnsZone);
   const dnsZoneOptions = [{ value: defaultDnsZone, disabled: false }]; // TODO: Adapt to existing DNS options
 
-  const dnsZoneOnToggle = (isOpen: boolean) => {
-    setIsDnsZoneOpen(isOpen);
+  const dnsZoneOnToggle = () => {
+    setIsDnsZoneOpen(!isDnsZoneOpen);
   };
+
+  // Toggle
+  const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
+    <MenuToggle
+      ref={toggleRef}
+      onClick={dnsZoneOnToggle}
+      className="pf-v5-u-w-100"
+    >
+      {dnsZoneSelected}
+    </MenuToggle>
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dnsZoneOnSelect = (selection: any) => {
@@ -178,15 +188,12 @@ const AddHost = (props: PropsToAddHost) => {
       pfComponent: (
         <>
           <Select
-            id="dns-zone-selector"
-            name="dnszone"
-            variant={SelectVariant.single}
-            placeholderText=" "
+            id="dnszone"
             aria-label="Select DNS zone selector"
-            onToggle={(_event, isOpen: boolean) => dnsZoneOnToggle(isOpen)}
+            toggle={toggle}
             onFocus={resetDnsZoneError}
             onSelect={dnsZoneOnSelect}
-            selections={dnsZoneSelected}
+            selected={dnsZoneSelected}
             isOpen={isDnsZoneOpen}
             aria-labelledby="dns zone"
           >
@@ -195,7 +202,9 @@ const AddHost = (props: PropsToAddHost) => {
                 isDisabled={option.disabled}
                 key={index}
                 value={option.value}
-              />
+              >
+                {option.value}
+              </SelectOption>
             ))}
           </Select>
           <HelperText>

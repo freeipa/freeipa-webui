@@ -1,7 +1,12 @@
 import React from "react";
 // PatternFly
-import { Button } from "@patternfly/react-core";
-import { Select, SelectOption } from "@patternfly/react-core/deprecated";
+import {
+  Button,
+  MenuToggle,
+  MenuToggleElement,
+  Select,
+  SelectOption,
+} from "@patternfly/react-core";
 // Modals
 import ModalWithFormLayout, { Field } from "../layouts/ModalWithFormLayout";
 // Data types
@@ -56,8 +61,8 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
   const [revReasonSelected, setRevReasonSelected] =
     React.useState<string>("Unspecified");
 
-  const onToggleRevReason = (isOpen: boolean) => {
-    setIsRevReasonOpen(isOpen);
+  const onToggleRevReason = () => {
+    setIsRevReasonOpen(!isRevReasonOpen);
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -65,6 +70,17 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
     setRevReasonSelected(selection.target.textContent);
     setIsRevReasonOpen(false);
   };
+
+  // Toggle
+  const toggleRevReason = (toggleRef: React.Ref<MenuToggleElement>) => (
+    <MenuToggle
+      ref={toggleRef}
+      onClick={onToggleRevReason}
+      className="pf-v5-u-w-100"
+    >
+      {revReasonSelected}
+    </MenuToggle>
+  );
 
   // SELECT: 'CA'
   const [isCAOpen, setIsCAOpen] = React.useState(false);
@@ -83,15 +99,24 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
     }
   }, [certificateAuthorities]);
 
-  const onCAToggle = (isOpen: boolean) => {
-    setIsCAOpen(isOpen);
+  const onCAToggle = () => {
+    setIsCAOpen(!isCAOpen);
   };
 
-  const onCASelect = (event: React.MouseEvent | React.ChangeEvent) => {
-    const target = event.target as HTMLInputElement;
-    setCASelected(target.value);
+  const onCASelect = (
+    _event: React.MouseEvent<Element, MouseEvent> | undefined,
+    selection: string | number | undefined
+  ) => {
+    setCASelected(selection as string);
     setIsCAOpen(false);
   };
+
+  // Toggle
+  const toggleCASelect = (toggleRef: React.Ref<MenuToggleElement>) => (
+    <MenuToggle ref={toggleRef} onClick={onCAToggle} className="pf-v5-u-w-100">
+      {CASelected}
+    </MenuToggle>
+  );
 
   // MODAL
   const onCancel = () => {
@@ -153,16 +178,17 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
       pfComponent: (
         <Select
           id="revocation-reasons"
-          variant="single"
           aria-label="Select a revocation reason"
           aria-labelledby="revocation-reasons"
-          selections={revReasonSelected}
+          selected={revReasonSelected}
           isOpen={isRevReasonOpen}
-          onToggle={(_event, isOpen: boolean) => onToggleRevReason(isOpen)}
+          toggle={toggleRevReason}
           onSelect={onSelectRevReason}
         >
           {Object.entries(REVOCATION_REASONS).map((value) => (
-            <SelectOption key={value[0]} value={value[1]} />
+            <SelectOption key={value[0]} value={value[1]}>
+              {value[1]}
+            </SelectOption>
           ))}
         </Select>
       ),
@@ -173,17 +199,17 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
       pfComponent: (
         <Select
           id="revocation-certificate-authority"
-          variant="single"
-          placeholderText=" "
           aria-label="Select a certificate authority for the revocation"
           aria-labelledby="revocation certificate authority"
-          selections={CASelected}
+          selected={CASelected}
           isOpen={isCAOpen}
-          onToggle={(_event, isOpen: boolean) => onCAToggle(isOpen)}
+          toggle={toggleCASelect}
           onSelect={onCASelect}
         >
           {CAOptions.map((option, index) => (
-            <SelectOption key={index} value={option} />
+            <SelectOption key={index} value={option}>
+              {option}
+            </SelectOption>
           ))}
         </Select>
       ),

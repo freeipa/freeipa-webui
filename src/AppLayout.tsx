@@ -11,12 +11,11 @@ import {
   SkipToContent,
   Toolbar,
   PageSidebarBody,
-} from "@patternfly/react-core";
-import {
-  Dropdown,
   DropdownItem,
-  DropdownToggle,
-} from "@patternfly/react-core/deprecated";
+  Dropdown,
+  MenuToggleElement,
+  MenuToggle,
+} from "@patternfly/react-core";
 import React from "react";
 // Icons
 import BarsIcon from "@patternfly/react-icons/dist/esm/icons/bars-icon";
@@ -37,8 +36,8 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
   // Dropdown
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
 
-  const onDropdownToggle = (isOpen: boolean) => {
-    setIsDropdownOpen(isOpen);
+  const onDropdownToggle = () => {
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   const onDropdownSelect = () => {
@@ -66,20 +65,23 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
   // TODO: Show the proper user login
   const dropdown = (
     <Dropdown
-      isText
-      isPlain
       onSelect={onDropdownSelect}
-      toggle={
-        <DropdownToggle
+      toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+        <MenuToggle
+          ref={toggleRef}
           id="toggle-plain-text"
-          onToggle={(_event, isOpen: boolean) => onDropdownToggle(isOpen)}
+          onClick={onDropdownToggle}
+          isExpanded={isDropdownOpen}
+          className="pf-v5-u-mr-md"
+          variant="plainText"
         >
           Administrator
-        </DropdownToggle>
-      }
+        </MenuToggle>
+      )}
       isOpen={isDropdownOpen}
-      dropdownItems={dropdownItems}
-    />
+    >
+      {dropdownItems}
+    </Dropdown>
   );
 
   const Header = (

@@ -153,7 +153,6 @@ const CertificateMappingDataOption = (
   const certificateElement = (
     <>
       <Flex direction={{ default: "column" }} name="certificate">
-        {/* {props.certificatesList.map((certificate, idx) => ( */}
         {certificateListCopy.map((certificate, idx) => (
           <Flex
             direction={{ default: "row" }}

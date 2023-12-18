@@ -1,6 +1,7 @@
-import React, { SyntheticEvent, useState } from "react";
+import React, { useState } from "react";
 // PatternFly
 import {
+  DropdownItem,
   Flex,
   JumpLinks,
   JumpLinksItem,
@@ -11,10 +12,6 @@ import {
   SidebarPanel,
   TextVariants,
 } from "@patternfly/react-core";
-import {
-  DropdownDirection,
-  DropdownItem,
-} from "@patternfly/react-core/deprecated";
 // Icons
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // Data types
@@ -57,7 +54,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
 
   const onKebabSelect = (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _event: SyntheticEvent<HTMLDivElement, Event> | undefined
+    _event: React.MouseEvent<Element, MouseEvent> | undefined
   ) => {
     setIsKebabOpen(!isKebabOpen);
   };
@@ -79,12 +76,11 @@ const HostsSettings = (props: PropsToHostsSettings) => {
       key: 3,
       element: (
         <KebabLayout
-          direction={DropdownDirection.up}
+          direction={"up"}
           onDropdownSelect={onKebabSelect}
           onKebabToggle={onKebabToggle}
           idKebab="toggle-action-buttons"
           isKebabOpen={isKebabOpen}
-          isPlain={true}
           dropdownItems={dropdownItems}
         />
       ),

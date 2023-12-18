@@ -9,7 +9,6 @@ import {
 // Utils
 import { API_VERSION_BACKUP } from "src/utils/utils";
 import {
-  Host,
   Metadata,
   User,
   UIDType,

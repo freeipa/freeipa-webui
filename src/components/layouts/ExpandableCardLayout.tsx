@@ -4,8 +4,15 @@ import {
   Card,
   CardHeader,
   CardExpandableContent,
+  Dropdown,
+  DropdownList,
+  MenuToggle,
+  MenuToggleElement,
+  Flex,
+  FlexItem,
 } from "@patternfly/react-core";
-import { Dropdown, KebabToggle } from "@patternfly/react-core/deprecated";
+// Icons
+import EllipsisVIcon from "@patternfly/react-icons/dist/esm/icons/ellipsis-v-icon";
 
 interface PropsToCardLayout {
   className?: string;
@@ -33,18 +40,26 @@ const ExpandableCardLayout = (props: PropsToCardLayout) => {
     setIsOpen(!isOpen);
   };
 
+  // Toggle
+  const KebabToggleWithRef = (toggleRef: React.Ref<MenuToggleElement>) => (
+    <MenuToggle
+      ref={toggleRef}
+      id={props.id}
+      aria-label="kebab dropdown toggle"
+      variant="plain"
+      isExpanded={isOpen}
+      onClick={onSelect}
+    >
+      <EllipsisVIcon />
+    </MenuToggle>
+  );
+
   const getDropdownItems = () => {
     if (props.dropdownItems !== undefined && props.dropdownItems.length > 0) {
       return (
-        <Dropdown
-          onSelect={onSelect}
-          toggle={<KebabToggle onToggle={(_event, val) => setIsOpen(val)} />}
-          isOpen={isOpen}
-          isPlain
-          dropdownItems={props.dropdownItems}
-          position={"right"}
-          className="pf-v5-u-ml-auto"
-        />
+        <Dropdown toggle={KebabToggleWithRef} isOpen={isOpen}>
+          <DropdownList>{props.dropdownItems}</DropdownList>
+        </Dropdown>
       );
     }
   };
@@ -59,9 +74,17 @@ const ExpandableCardLayout = (props: PropsToCardLayout) => {
         onExpand={onExpand}
         toggleButtonProps={props.headerToggleButtonProps}
       >
-        {props.cardActions !== undefined && <>{props.cardActions}</>}
-        {props.cardTitle !== undefined && <>{props.cardTitle}</>}
-        {props.dropdownItems !== undefined && getDropdownItems()}
+        <Flex>
+          <FlexItem>
+            {props.cardActions !== undefined && <>{props.cardActions}</>}
+          </FlexItem>
+          <FlexItem>
+            {props.cardTitle !== undefined && <>{props.cardTitle}</>}
+          </FlexItem>
+          <FlexItem align={{ default: "alignRight" }}>
+            {props.dropdownItems !== undefined && getDropdownItems()}
+          </FlexItem>
+        </Flex>
       </CardHeader>
       <CardExpandableContent>{props.cardBody}</CardExpandableContent>
     </Card>
