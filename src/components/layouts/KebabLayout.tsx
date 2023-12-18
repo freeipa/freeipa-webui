@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 // PatternFly
-import { Dropdown } from "@patternfly/react-core/deprecated";
-import { MenuToggle } from "@patternfly/react-core";
+import {
+  Dropdown,
+  MenuToggle,
+  MenuToggleElement,
+} from "@patternfly/react-core";
 // Icons
 import EllipsisVIcon from "@patternfly/react-icons/dist/esm/icons/ellipsis-v-icon";
 
@@ -23,8 +26,9 @@ interface PropsToKebab {
 
 const KebabLayout = (props: PropsToKebab) => {
   // Toggle
-  const KebabToggleWithRef = (
+  const toggleKebab = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
+      ref={toggleRef}
       id={props.idKebab}
       aria-label="kebab dropdown toggle"
       variant="plain"
@@ -39,7 +43,7 @@ const KebabLayout = (props: PropsToKebab) => {
     <Dropdown
       onSelect={props.onDropdownSelect}
       className={props.className}
-      toggle={KebabToggleWithRef}
+      toggle={toggleKebab}
       isOpen={props.isKebabOpen}
       isPlain={props.isPlain || false}
       popperProps={{ direction: props.direction }}

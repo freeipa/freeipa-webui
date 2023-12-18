@@ -1,11 +1,11 @@
 import React from "react";
 // PatternFly
 import {
+  MenuToggle,
+  MenuToggleElement,
   Select,
   SelectOption,
-  SelectOptionObject,
-  SelectVariant,
-} from "@patternfly/react-core/deprecated";
+} from "@patternfly/react-core";
 // Utils
 import {
   IPAParamDefinition,
@@ -102,7 +102,8 @@ const IpaSelect = (props: IPAParamDefinitionSelect) => {
     <Select
       id={props.id}
       aria-label={props.name}
-      onToggle={(_event, val) => setIsOpen(val)}
+      onOpenChange={(isOpen) => setIsOpen(isOpen)}
+      toggle={toggle}
       onSelect={onSelect}
       selected={valueSelected}
       isOpen={isOpen}

@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   Button,
+  DropdownItem,
   Page,
   PageSection,
   PageSectionVariants,
   PaginationVariant,
   TextVariants,
 } from "@patternfly/react-core";
-import { DropdownItem } from "@patternfly/react-core/deprecated";
 import {
   InnerScrollContainer,
   OuterScrollContainer,
@@ -603,7 +603,6 @@ const Hosts = () => {
           onKebabToggle={onKebabToggle}
           idKebab="main-dropdown-kebab"
           isKebabOpen={kebabIsOpen}
-          isPlain={true}
           dropdownItems={!showTableRows ? [] : dropdownItems}
         />
       ),

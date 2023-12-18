@@ -11,12 +11,11 @@ import {
   SkipToContent,
   Toolbar,
   PageSidebarBody,
-} from "@patternfly/react-core";
-import {
-  Dropdown,
   DropdownItem,
-  DropdownToggle,
-} from "@patternfly/react-core/deprecated";
+  Dropdown,
+  MenuToggleElement,
+  MenuToggle,
+} from "@patternfly/react-core";
 import React from "react";
 // Icons
 import BarsIcon from "@patternfly/react-icons/dist/esm/icons/bars-icon";
@@ -116,10 +115,14 @@ const AppLayout = (props: PropsToAppLayout) => {
   const dropdown = (
     <Dropdown
       onSelect={onDropdownSelect}
-      toggle={
-        <DropdownToggle
+      toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+        <MenuToggle
+          ref={toggleRef}
           id="toggle-plain-text"
-          onToggle={(_event, isOpen: boolean) => onDropdownToggle(isOpen)}
+          onClick={onDropdownToggle}
+          isExpanded={isDropdownOpen}
+          className="pf-v5-u-mr-md"
+          variant="plainText"
         >
           Administrator
         </MenuToggle>

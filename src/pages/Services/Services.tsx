@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
+  DropdownItem,
   Page,
   PageSection,
   PageSectionVariants,
   PaginationVariant,
   TextVariants,
 } from "@patternfly/react-core";
-import { DropdownItem } from "@patternfly/react-core/deprecated";
 import {
   InnerScrollContainer,
   OuterScrollContainer,
@@ -225,7 +225,7 @@ const Services = () => {
 
   const onDropdownSelect = (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _event: React.SyntheticEvent<HTMLDivElement, Event> | undefined
+    _event: React.MouseEvent<Element, MouseEvent> | undefined
   ) => {
     setKebabIsOpen(!kebabIsOpen);
     onFocus();
@@ -551,6 +551,18 @@ const Services = () => {
     },
     {
       key: 6,
+      element: (
+        <KebabLayout
+          onDropdownSelect={onDropdownSelect}
+          onKebabToggle={onKebabToggle}
+          idKebab="main-dropdown-kebab"
+          isKebabOpen={kebabIsOpen}
+          dropdownItems={dropdownItems}
+        />
+      ),
+    },
+    {
+      key: 7,
       toolbarItemVariant: "separator",
     },
     {

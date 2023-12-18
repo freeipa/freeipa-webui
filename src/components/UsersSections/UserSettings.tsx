@@ -10,11 +10,8 @@ import {
   Sidebar,
   SidebarPanel,
   SidebarContent,
-} from "@patternfly/react-core";
-import {
   DropdownItem,
-  DropdownDirection,
-} from "@patternfly/react-core/deprecated";
+} from "@patternfly/react-core";
 // Icons
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // Data types
@@ -316,7 +313,6 @@ const UserSettings = (props: PropsToUserSettings) => {
           onKebabToggle={onKebabToggle}
           idKebab="toggle-action-buttons"
           isKebabOpen={isKebabOpen}
-          isPlain={true}
           dropdownItems={
             props.from === "active-users"
               ? activeDropdownItems

@@ -5,14 +5,13 @@ import {
   Checkbox,
   HelperText,
   HelperTextItem,
+  MenuToggle,
+  MenuToggleElement,
+  Select,
+  SelectOption,
   TextInput,
   ValidatedOptions,
 } from "@patternfly/react-core";
-import {
-  Select,
-  SelectOption,
-  SelectVariant,
-} from "@patternfly/react-core/deprecated";
 // Layout
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
@@ -78,12 +77,6 @@ const AddHost = (props: PropsToAddHost) => {
   const defaultDnsZone = props.dnsZones.length > 0 ? props.dnsZones[0] : "";
   const [isDnsZoneOpen, setIsDnsZoneOpen] = useState(false);
   const [dnsZoneSelected, setDnsZoneSelected] = useState(defaultDnsZone);
-
-  useEffect(() => {
-    if (props.dnsZones.length > 0) {
-      setDnsZoneSelected(props.dnsZones[0]);
-    }
-  }, [props.dnsZones]);
 
   const dnsZoneOnToggle = () => {
     setIsDnsZoneOpen(!isDnsZoneOpen);
@@ -296,7 +289,7 @@ const AddHost = (props: PropsToAddHost) => {
           <Select
             id="dnszone"
             aria-label="Select DNS zone selector"
-            onToggle={(_event, isOpen: boolean) => dnsZoneOnToggle(isOpen)}
+            toggle={toggle}
             onFocus={resetDnsZoneError}
             onSelect={dnsZoneOnSelect}
             selected={dnsZoneSelected}

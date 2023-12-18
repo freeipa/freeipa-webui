@@ -6,13 +6,12 @@ import {
   Checkbox,
   HelperText,
   HelperTextItem,
-  ValidatedOptions,
-} from "@patternfly/react-core";
-import {
+  MenuToggle,
+  MenuToggleElement,
   Select,
   SelectOption,
-  SelectVariant,
-} from "@patternfly/react-core/deprecated";
+  ValidatedOptions,
+} from "@patternfly/react-core";
 // Layout
 import SecondaryButton from "../layouts/SecondaryButton";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
@@ -133,6 +132,12 @@ const AddService = (props: PropsToAddService) => {
     </MenuToggle>
   );
 
+  // 'Force' checkbox
+  const [isForceChecked, setIsForceChecked] = useState(false);
+
+  // 'Skip host check' checkbox
+  const [isSkipHostChecked, setIsSkipHostChecked] = useState(false);
+
   // Validation fields
   const [serviceValidation, setServiceValidation] = useState({
     isError: false,
@@ -238,7 +243,7 @@ const AddService = (props: PropsToAddService) => {
           <Select
             id="service"
             aria-label="Select service"
-            onToggle={(_event, isOpen: boolean) => serviceOnToggle(isOpen)}
+            toggle={toggleService}
             onSelect={serviceOnSelect}
             selected={serviceSelected}
             isOpen={isServiceOpen}
@@ -272,13 +277,13 @@ const AddService = (props: PropsToAddService) => {
           <Select
             id="host"
             aria-label="Select host name"
-            onToggle={(_event, isOpen: boolean) => hostNameOnToggle(isOpen)}
+            toggle={toggleHost}
             onSelect={hostNameOnSelect}
             selected={hostNameSelected}
             isOpen={isHostNameOpen}
             aria-labelledby="host name"
           >
-            {props.hostsList.map((option, index) => (
+            {hostNameOptions.map((option, index) => (
               <SelectOption key={index} value={option}>
                 {option}
               </SelectOption>

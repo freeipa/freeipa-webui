@@ -1,7 +1,12 @@
 import React from "react";
 // PatternFly
-import { Button } from "@patternfly/react-core";
-import { Select, SelectOption } from "@patternfly/react-core/deprecated";
+import {
+  Button,
+  MenuToggle,
+  MenuToggleElement,
+  Select,
+  SelectOption,
+} from "@patternfly/react-core";
 // Modals
 import ModalWithFormLayout, {
   Field,
@@ -187,7 +192,7 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
           aria-labelledby="revocation-reasons"
           selected={revReasonSelected}
           isOpen={isRevReasonOpen}
-          onToggle={(_event, isOpen: boolean) => onToggleRevReason(isOpen)}
+          toggle={toggleRevReason}
           onSelect={onSelectRevReason}
         >
           {Object.entries(REVOCATION_REASONS).map((value) => (
@@ -208,7 +213,7 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
           aria-labelledby="revocation certificate authority"
           selected={CASelected}
           isOpen={isCAOpen}
-          onToggle={(_event, isOpen: boolean) => onCAToggle(isOpen)}
+          toggle={toggleCASelect}
           onSelect={onCASelect}
         >
           {CAOptions.map((option, index) => (

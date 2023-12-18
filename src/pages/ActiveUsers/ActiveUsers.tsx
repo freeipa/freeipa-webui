@@ -7,8 +7,8 @@ import {
   TextVariants,
   PaginationVariant,
   Button,
+  DropdownItem,
 } from "@patternfly/react-core";
-import { DropdownItem } from "@patternfly/react-core/deprecated";
 // PatternFly table
 import {
   InnerScrollContainer,
