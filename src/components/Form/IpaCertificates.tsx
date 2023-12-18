@@ -1,10 +1,12 @@
 import React from "react";
 // PatternFly
-import { Button, CardBody, CardTitle } from "@patternfly/react-core";
 import {
+  Button,
+  CardBody,
+  CardTitle,
+  Divider,
   DropdownItem,
-  DropdownSeparator,
-} from "@patternfly/react-core/deprecated";
+} from "@patternfly/react-core";
 // Data types
 import { Certificate, Metadata } from "src/utils/datatypes/globalDataTypes";
 // ipaObject utils
@@ -226,7 +228,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
       >
         Remove hold
       </DropdownItem>,
-      <DropdownSeparator key="separator" />,
+      <Divider component="li" key="separator" />,
       <DropdownItem
         key="delete"
         component="button"

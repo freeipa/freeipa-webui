@@ -7,8 +7,8 @@ import {
   TextVariants,
   PaginationVariant,
   Button,
+  DropdownItem,
 } from "@patternfly/react-core";
-import { DropdownItem } from "@patternfly/react-core/deprecated";
 // PatternFly table
 import {
   InnerScrollContainer,
@@ -47,7 +47,6 @@ import { API_VERSION_BACKUP, isUserSelectable } from "src/utils/utils";
 
 // RPC client
 import {
-  Command,
   useGettingActiveUserQuery,
   useAutoMemberRebuildUsersMutation,
   UsersPayload,
@@ -368,7 +367,7 @@ const ActiveUsers = () => {
 
   const onDropdownSelect = (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    event?: React.SyntheticEvent<HTMLDivElement, Event> | undefined
+    event?: React.MouseEvent<Element, MouseEvent> | undefined
   ) => {
     setKebabIsOpen(!kebabIsOpen);
   };
@@ -617,7 +616,6 @@ const ActiveUsers = () => {
           onKebabToggle={onKebabToggle}
           idKebab="main-dropdown-kebab"
           isKebabOpen={kebabIsOpen}
-          isPlain={true}
           dropdownItems={showTableRows ? dropdownItems : []}
         />
       ),
