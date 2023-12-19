@@ -20,7 +20,7 @@ Given("I am logged in as {string}", (username: string) => {
     }
   });
   cy.get(
-    "div.pf-v5-c-masthead__content button span.pf-v5-c-dropdown__toggle-text"
+    "div.pf-v5-c-masthead__content button span.pf-v5-c-menu-toggle__text"
   ).then(($ele) => {
     if ($ele.text() != username) {
       cy.loginAsAnUser(
@@ -149,5 +149,5 @@ Then(
 // Kebab
 When("I click on kebab menu and select {string}", (buttonName: string) => {
   cy.get("#main-dropdown-kebab").click();
-  cy.get("button.pf-v5-c-dropdown__menu-item").contains(buttonName).click();
+  cy.get("span.pf-v5-c-menu__item-text").contains(buttonName).click();
 });
