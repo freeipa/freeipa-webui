@@ -19,7 +19,6 @@ import ToolbarLayout, {
 } from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
-import KebabLayout from "src/components/layouts/KebabLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 // Components
 import BulkSelectorServicesPrep from "src/components/BulkSelectorServicesPrep";
@@ -306,22 +305,10 @@ const Services = () => {
     },
     {
       key: 6,
-      element: (
-        <KebabLayout
-          onDropdownSelect={onDropdownSelect}
-          onKebabToggle={onKebabToggle}
-          idKebab="main-dropdown-kebab"
-          isKebabOpen={kebabIsOpen}
-          dropdownItems={dropdownItems}
-        />
-      ),
-    },
-    {
-      key: 7,
       toolbarItemVariant: "separator",
     },
     {
-      key: 8,
+      key: 7,
       element: (
         <HelpTextWithIconLayout
           textComponent={TextVariants.p}
@@ -335,7 +322,7 @@ const Services = () => {
       ),
     },
     {
-      key: 9,
+      key: 8,
       element: (
         <PaginationPrep
           list={servicesList}
