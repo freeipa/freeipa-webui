@@ -287,7 +287,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
       <div className="pf-v5-u-display-table">
         {elements.map((element) => {
           return (
-            <>
+            <div key={"table-body-" + element.key}>
               <div className="pf-v5-u-display-table-row">
                 <div className="pf-v5-u-display-table-cell">
                   <p className="pf-v5-u-mb-xs pf-v5-u-mr-xs pf-v5-u-font-weight-bold">
