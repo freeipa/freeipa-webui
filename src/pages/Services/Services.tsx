@@ -16,10 +16,10 @@ import {
 import TitleLayout from "../../components/layouts/TitleLayout";
 import ToolbarLayout, {
   ToolbarItem,
-} from "../../components/layouts/ToolbarLayout";
-import SearchInputLayout from "../../components/layouts/SearchInputLayout";
-import SecondaryButton from "../../components/layouts/SecondaryButton";
-import HelpTextWithIconLayout from "../../components/layouts/HelpTextWithIconLayout";
+} from "src/components/layouts/ToolbarLayout";
+import SearchInputLayout from "src/components/layouts/SearchInputLayout";
+import SecondaryButton from "src/components/layouts/SecondaryButton";
+import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 // Components
 import BulkSelectorPrep from "../../components/BulkSelectorPrep";
 import PaginationLayout from "../../components/layouts/PaginationLayout";
@@ -551,18 +551,6 @@ const Services = () => {
     },
     {
       key: 6,
-      element: (
-        <KebabLayout
-          onDropdownSelect={onDropdownSelect}
-          onKebabToggle={onKebabToggle}
-          idKebab="main-dropdown-kebab"
-          isKebabOpen={kebabIsOpen}
-          dropdownItems={dropdownItems}
-        />
-      ),
-    },
-    {
-      key: 7,
       toolbarItemVariant: "separator",
     },
     {
