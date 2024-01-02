@@ -261,7 +261,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
       {sshPublicKeysList !== undefined
         ? sshPublicKeysList.map((publicKey, idx) => {
             return (
-              <>
+              <div key={idx}>
                 <Flex direction={{ default: "row" }}>
                   {publicKey !== "" && (
                     <>
@@ -294,7 +294,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
                     </>
                   )}
                 </Flex>
-              </>
+              </div>
             );
           })
         : null}
