@@ -276,7 +276,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
       <div className="pf-v5-u-display-table">
         {elements.map((element) => {
           return (
-            <>
+            <div key={"table-body-" + element.key}>
               <div className="pf-v5-u-display-table-row">
                 <div className="pf-v5-u-display-table-cell">
                   <p className="pf-v5-u-mb-xs pf-v5-u-mr-xs pf-v5-u-font-weight-bold">
@@ -293,7 +293,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
                   </p>
                 </div>
               </div>
-            </>
+            </div>
           );
         })}
       </div>
@@ -518,7 +518,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
       {certificatesList !== undefined && certificatesList.length > 0
         ? certificatesList.map((cert, idx) => {
             return (
-              <>
+              <div key={idx}>
                 {cert.certInfo !== undefined &&
                   Object.keys(cert.certInfo).length !== 0 && (
                     <div key={"certificate-" + idx}>
@@ -535,7 +535,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
                       />
                     </div>
                   )}
-              </>
+              </div>
             );
           })
         : null}
