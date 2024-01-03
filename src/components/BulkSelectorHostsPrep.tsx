@@ -192,8 +192,9 @@ const BulkSelectorHostsPrep = (props: PropsToBulkSelectorHostsPrep) => {
   // - Some rows selected: null (-)
   // - None selected: false (empty)
   const areAllElementsSelected: boolean | null =
+    props.elementData.selectedHosts.length > 0 &&
     props.elementData.selectedHosts.length ===
-    props.elementData.selectableHostsTable.length
+      props.elementData.selectableHostsTable.length
       ? true
       : props.elementData.selectedHosts.length > 0
       ? null

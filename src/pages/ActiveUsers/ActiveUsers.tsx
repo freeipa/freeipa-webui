@@ -267,7 +267,6 @@ const ActiveUsers = () => {
   }, [isBatchLoading]);
 
   // [API call] 'Rebuild auto membership'
-  // TODO: Move this into a separate component
   const onRebuildAutoMembership = () => {
     // Task can potentially run for a very long time, give feed back that we
     // at least started the task

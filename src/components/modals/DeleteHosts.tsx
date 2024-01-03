@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 // PatternFly
 import {
   TextContent,
@@ -13,6 +13,15 @@ import { removeHost } from "src/store/Identity/hosts-slice";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
 // Tables
 import DeletedElementsTable from "src/components/tables/DeletedElementsTable";
+// Hooks
+import useAlerts from "src/hooks/useAlerts";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { SerializedError } from "@reduxjs/toolkit";
+// Data types
+import { ErrorData } from "src/utils/datatypes/globalDataTypes";
+// Modals
+import ErrorModal from "./ErrorModal";
+import { BatchRPCResponse, useRemoveHostsMutation } from "src/services/rpc";
 
 interface ButtonsData {
   updateIsDeleteButtonDisabled: (value: boolean) => void;
@@ -36,6 +45,9 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
   // Set dispatch (Redux)
   const dispatch = useAppDispatch();
 
+  // Alerts
+  const alerts = useAlerts();
+
   // Retrieve all hosts list from Store and make a copy
   const hostsList = useAppSelector((state) => state.hosts.hostsList);
   const hostsListCopy = [...hostsList];
@@ -43,7 +55,11 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
   // Define the column names that will be displayed on the confirmation table.
   // - NOTE: Camel-case should match with the property to show as it is defined in the data.
   //    This variable will be coverted into word.
-  const deleteHostsColumnNames = ["hostName", "description"];
+  const deleteHostsColumnNames = ["fqdn", "description"];
+
+  const [executeHostsDelCommand] = useRemoveHostsMutation();
+
+  const [spinning, setBtnSpinning] = React.useState<boolean>(false);
 
   // List of fields
   const fields = [
@@ -76,15 +92,97 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
     props.handleModalToggle();
   };
 
-  // Redux: Delete hosts
+  // Handle API error data
+  const [isModalErrorOpen, setIsModalErrorOpen] = useState(false);
+  const [errorTitle, setErrorTitle] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const closeAndCleanErrorParameters = () => {
+    setIsModalErrorOpen(false);
+    setErrorTitle("");
+    setErrorMessage("");
+  };
+
+  const onCloseErrorModal = () => {
+    closeAndCleanErrorParameters();
+  };
+
+  const errorModalActions = [
+    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+      OK
+    </Button>,
+  ];
+
+  const handleAPIError = (error: FetchBaseQueryError | SerializedError) => {
+    if ("code" in error) {
+      setErrorTitle("IPA error " + error.code + ": " + error.name);
+      if (error.message !== undefined) {
+        setErrorMessage(error.message);
+      }
+    } else if ("data" in error) {
+      const errorData = error.data as ErrorData;
+      const errorCode = errorData.code as string;
+      const errorName = errorData.name as string;
+      const errorMessage = errorData.error as string;
+
+      setErrorTitle("IPA error " + errorCode + ": " + errorName);
+      setErrorMessage(errorMessage);
+    }
+    setIsModalErrorOpen(true);
+  };
+
   const deleteHosts = () => {
-    props.selectedHostsData.selectedHosts.map((host) => {
-      dispatch(removeHost(host));
-    });
-    props.selectedHostsData.updateSelectedHosts([]);
-    props.buttonsData.updateIsDeleteButtonDisabled(true);
-    props.buttonsData.updateIsDeletion(true);
-    closeModal();
+    setBtnSpinning(true);
+
+    // Delete elements
+    executeHostsDelCommand(props.selectedHostsData.selectedHosts).then(
+      (response) => {
+        if ("data" in response) {
+          const data = response.data as BatchRPCResponse;
+          const result = data.result;
+
+          if (result) {
+            if ("error" in result.results[0] && result.results[0].error) {
+              const errorData = {
+                code: result.results[0].error_code,
+                name: result.results[0].error_name,
+                error: result.results[0].error,
+              } as ErrorData;
+
+              const error = {
+                status: "CUSTOM_ERROR",
+                data: errorData,
+              } as FetchBaseQueryError;
+
+              // Handle error
+              handleAPIError(error);
+            } else {
+              // Update data from Redux
+              props.selectedHostsData.selectedHosts.map((host) => {
+                dispatch(removeHost(host));
+              });
+
+              props.selectedHostsData.updateSelectedHosts([]);
+              props.buttonsData.updateIsDeleteButtonDisabled(true);
+              props.buttonsData.updateIsDeletion(true);
+
+              alerts.addAlert(
+                "remove-hosts-success",
+                "Hosts removed",
+                "success"
+              );
+
+              setBtnSpinning(false);
+              closeModal();
+              // Refresh data
+              if (props.onRefresh !== undefined) {
+                props.onRefresh();
+              }
+            }
+          }
+        }
+      }
+    );
   };
 
   // Set the Modal and Action buttons for 'Delete' option
@@ -94,8 +192,12 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
       variant="danger"
       onClick={deleteHosts}
       form="delete-hosts-modal"
+      spinnerAriaValueText="Deleting"
+      spinnerAriaLabel="Deleting"
+      isLoading={spinning}
+      isDisabled={spinning}
     >
-      Delete
+      {spinning ? "Deleting" : "Delete"}
     </Button>,
     <Button key="cancel-delete-hosts" variant="link" onClick={closeModal}>
       Cancel
@@ -103,17 +205,29 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
   ];
 
   const modalDelete: JSX.Element = (
-    <ModalWithFormLayout
-      variantType="medium"
-      modalPosition="top"
-      offPosition="76px"
-      title="Remove hosts"
-      formId="remove-hosts-modal"
-      fields={fields}
-      show={props.show}
-      onClose={closeModal}
-      actions={modalActionsDelete}
-    />
+    <>
+      <alerts.ManagedAlerts />
+      <ModalWithFormLayout
+        variantType="medium"
+        modalPosition="top"
+        offPosition="76px"
+        title="Remove hosts"
+        formId="remove-hosts-modal"
+        fields={fields}
+        show={props.show}
+        onClose={closeModal}
+        actions={modalActionsDelete}
+      />
+      {isModalErrorOpen && (
+        <ErrorModal
+          title={errorTitle}
+          isOpen={isModalErrorOpen}
+          onClose={onCloseErrorModal}
+          actions={errorModalActions}
+          errorMessage={errorMessage}
+        />
+      )}
+    </>
   );
 
   // Render 'DeleteUsers'

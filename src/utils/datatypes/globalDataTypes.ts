@@ -345,3 +345,7 @@ export interface SubId {
   ipasubgidcount: string;
   dn: string;
 }
+
+export interface DNSZone {
+  idnsname: string;
+}

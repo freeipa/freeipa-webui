@@ -270,8 +270,9 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
   // - Some rows selected: null (-)
   // - None selected: false (empty)
   const areAllUsersSelected: boolean | null =
+    props.usersData.selectedUserNames.length > 0 &&
     props.usersData.selectedUserNames.length ===
-    props.usersData.selectableUsersTable.length
+      props.usersData.selectableUsersTable.length
       ? true
       : props.usersData.selectedUserNames.length > 0
       ? null
