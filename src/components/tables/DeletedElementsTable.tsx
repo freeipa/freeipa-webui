@@ -74,8 +74,17 @@ const DeletedElementsTable = (props: PropsToDeletedElementsTable) => {
   let elementsToDelete: any = [];
   switch (props.mode) {
     case "passing_full_data":
-      // We already have our list of objs to delete
-      elementsToDelete = props.elementsToDelete;
+      // Given the id, retrieve full element info to display into table
+      // const elementsToDelete: any = [];
+      if (props.elementsList !== undefined) {
+        props.elementsList.map((element) => {
+          props.elementsToDelete.map((selected) => {
+            if (element.fqdn[0] === selected[0]) {
+              elementsToDelete.push(element);
+            }
+          });
+        });
+      }
       break;
     case "passing_id":
       props.elementsToDelete.map((userName) => {
@@ -116,7 +125,7 @@ const DeletedElementsTable = (props: PropsToDeletedElementsTable) => {
   const getBody = () => {
     if (props.mode === "passing_full_data") {
       return elementsToDelete.map((element) => (
-        <Tr key={element[props.idAttr]} id={element[props.idAttr]}>
+        <Tr key={element.fqdn[0]} id={element.fqdn[0]}>
           {props.columnNames.map((columnName, idx) => (
             <Td key={idx} dataLabel={columnName}>
               {element[columnName]}

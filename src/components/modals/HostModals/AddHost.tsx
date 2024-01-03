@@ -33,6 +33,9 @@ import { isValidIpAddress } from "src/utils/utils";
 export interface PropsToAddHost {
   show: boolean;
   handleModalToggle: () => void;
+  onOpenAddModal?: () => void;
+  onCloseAddModal?: () => void;
+  dnsZones: string[];
   onRefresh?: () => void;
 }
 
@@ -77,6 +80,12 @@ const AddHost = (props: PropsToAddHost) => {
   const defaultDnsZone = props.dnsZones.length > 0 ? props.dnsZones[0] : "";
   const [isDnsZoneOpen, setIsDnsZoneOpen] = useState(false);
   const [dnsZoneSelected, setDnsZoneSelected] = useState(defaultDnsZone);
+
+  useEffect(() => {
+    if (props.dnsZones.length > 0) {
+      setDnsZoneSelected(props.dnsZones[0]);
+    }
+  }, [props.dnsZones]);
 
   const dnsZoneOnToggle = () => {
     setIsDnsZoneOpen(!isDnsZoneOpen);
@@ -290,7 +299,6 @@ const AddHost = (props: PropsToAddHost) => {
             id="dnszone"
             aria-label="Select DNS zone selector"
             toggle={toggle}
-            onFocus={resetDnsZoneError}
             onSelect={dnsZoneOnSelect}
             selected={dnsZoneSelected}
             isOpen={isDnsZoneOpen}
@@ -351,14 +359,26 @@ const AddHost = (props: PropsToAddHost) => {
       id: "host-ip-address",
       name: "IP address",
       pfComponent: (
-        <TextInput
-          type="text"
-          id="modal-form-host-ip-address"
-          name="ip_address"
-          value={hostIpAddress}
-          onChange={(_event, value: string) => hostIpAddressHandler(value)}
-          ref={hostIpAddressRef}
-        />
+        <>
+          <TextInput
+            type="text"
+            id="modal-form-host-ip-address"
+            name="ip_address"
+            value={hostIpAddress}
+            onChange={(_event, value: string) => hostIpAddressHandler(value)}
+            ref={hostIpAddressRef}
+          />
+          <HelperText>
+            {!hostIpAddressValidation.isError && (
+              <HelperTextItem>{hostIpAddressValidation.message}</HelperTextItem>
+            )}
+            {hostIpAddressValidation.isError && (
+              <HelperTextItem variant="error">
+                {hostIpAddressValidation.message}
+              </HelperTextItem>
+            )}
+          </HelperText>
+        </>
       ),
     },
     {
@@ -395,6 +415,22 @@ const AddHost = (props: PropsToAddHost) => {
           id="generateOtpCheckbox"
           name="generateOtpCheckbox"
           value="generateotp"
+          onChange={handleOtpCheckbox}
+        />
+      ),
+    },
+    {
+      id: "no-membership",
+      name: "",
+      pfComponent: (
+        <Checkbox
+          label="Suppress processing of membership attributes"
+          isChecked={noMembershipCheckbox}
+          aria-label="Suppress membership attributes checkbox"
+          id="noMembershipCheckbox"
+          name="nomembership"
+          value="nomembership"
+          onChange={handleNoMembershipCheckbox}
           className="pf-v5-u-mb-md"
         />
       ),
@@ -440,37 +476,19 @@ const AddHost = (props: PropsToAddHost) => {
     } else return true;
   };
 
-  const addHostHandler = () => {
-    const validation = validateFields();
-    if (validation) {
-      const newHost: Host = {
-        hostName: hostName,
-        fqdn: hostName + "." + dnsZoneSelected,
-        dnsZone: dnsZoneSelected,
-        userclass: hostClass,
-        ip_address: hostIpAddress,
-        description: "",
-        enrolledby: "", // TODO: Investigate on enrolling hosts to see how this value is determined
-        force: false,
-        has_keytab: false,
-        has_password: false,
-        krbcanonicalname: "",
-        krbprincipalname: "",
-        managedby_host: [],
-        memberof_hostgroup: [],
-        sshpubkeyfp: [],
-        nshostlocation: "",
-        l: "",
-        attributelevelrights: [],
-        krbpwdpolicyreference: [],
-        managing_host: [],
-        serverhostname: "",
-        ipakrbrequirespreauth: false,
-        ipakrbokasdelegate: false,
-        ipakrboktoauthasdelegate: false,
-      };
-      dispatch(addHost(newHost));
-      cleanAndCloseModal();
+  // Define status flags to determine user added successfully or error
+  let isAdditionSuccess = true;
+
+  // Track which button has been clicked ('onAddUser' or 'onAddAndAddAnother')
+  // to better handle the 'retry' function and its behavior
+  let onAddHostClicked = true;
+
+  // Add host data
+  const addHostData = async () => {
+    let dnsZone = dnsZoneSelected;
+    if (dnsZone.endsWith(".")) {
+      // Strip trailing dot
+      dnsZone = dnsZone.slice(0, -1);
     }
     const newHostPayload = {
       fqdn: hostName + "." + dnsZone,
@@ -517,36 +535,19 @@ const AddHost = (props: PropsToAddHost) => {
     onAddHostClicked = false;
     const validation = validateFields();
     if (validation) {
-      const newHost: Host = {
-        hostName: hostName,
-        fqdn: hostName + "." + dnsZoneSelected,
-        dnsZone: dnsZoneSelected,
-        userclass: hostClass,
-        ip_address: hostIpAddress,
-        description: "",
-        enrolledby: "", // TODO: Investigate on enrolling hosts to set this value correctly
-        force: false,
-        has_keytab: false,
-        has_password: false,
-        krbcanonicalname: "",
-        krbprincipalname: "",
-        managedby_host: [],
-        memberof_hostgroup: [],
-        sshpubkeyfp: [],
-        nshostlocation: "",
-        l: "",
-        attributelevelrights: [],
-        krbpwdpolicyreference: [],
-        managing_host: [],
-        serverhostname: "",
-        ipakrbrequirespreauth: false,
-        ipakrbokasdelegate: false,
-        ipakrboktoauthasdelegate: false,
-      };
-      dispatch(addHost(newHost));
-      // Do not close the modal, but clean fields & reset validations
-      cleanAllFields();
-      resetValidations();
+      setAddAgainBtnSpinning(true);
+      addHostData().then(() => {
+        if (isAdditionSuccess) {
+          // Do not close the modal, but clean fields & reset validations
+          cleanAllFields();
+          resetValidations();
+        } else {
+          // Close the modal without cleaning fields
+          if (props.onCloseAddModal !== undefined) {
+            props.onCloseAddModal();
+          }
+        }
+      });
     }
   };
 

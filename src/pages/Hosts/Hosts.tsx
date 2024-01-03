@@ -55,6 +55,7 @@ import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/o
 import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
 import {
   useGettingHostQuery,
+  useGetDNSZonesQuery,
   useAutoMemberRebuildHostsMutation,
   HostsPayload,
 } from "src/services/rpc";
@@ -99,6 +100,7 @@ const Hosts = () => {
   const [perPage, setPerPage] = useState<number>(15);
   const [selectedHosts, setSelectedHosts] = useState<string[]>([]);
   const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
+  const [dnsZones, setDNSZones] = useState<string[]>([]);
   const updateSelectedPerPage = (selected: number) => {
     setSelectedPerPage(selected);
   };
@@ -198,6 +200,40 @@ const Hosts = () => {
       window.location.reload();
     }
   }, [hostDataResponse]);
+
+  // Get dns zones
+  const dnsZoneDataResponse = useGetDNSZonesQuery();
+
+  // Handle data when the API call is finished
+  useEffect(() => {
+    if (dnsZoneDataResponse.isFetching) {
+      return;
+    }
+    if (dnsZoneDataResponse.isSuccess && dnsZoneDataResponse.data) {
+      const dnsZoneListResult = dnsZoneDataResponse.data.result.result;
+      const dnsZoneListSize = dnsZoneDataResponse.data.result.count;
+      const dnsZones: string[] = [];
+      for (let i = 0; i < dnsZoneListSize; i++) {
+        const dnsZone = dnsZoneListResult[i] as DNSZone;
+        dnsZones.push(dnsZone["idnsname"][0]["__dns_name__"]);
+      }
+      setDNSZones(dnsZones);
+    }
+
+    // API response: Error
+    if (
+      !hostDataResponse.isLoading &&
+      hostDataResponse.isError &&
+      hostDataResponse.error !== undefined
+    ) {
+      setIsDisabledDueError(true);
+      globalErrors.addError(
+        batchError,
+        "Error when loading dns zones",
+        "error-dns-zones"
+      );
+    }
+  }, [dnsZoneDataResponse]);
 
   // Refresh button handling
   const refreshHostsData = () => {
@@ -699,6 +735,9 @@ const Hosts = () => {
       <AddHost
         show={showAddModal}
         handleModalToggle={onAddModalToggle}
+        onOpenAddModal={onAddClickHandler}
+        onCloseAddModal={onCloseAddModal}
+        dnsZones={dnsZones}
         onRefresh={refreshHostsData}
       />
       <DeleteHosts
