@@ -36,7 +36,7 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import { updateHostsList } from "src/store/Identity/hosts-slice";
 // Data types
-import { Host } from "src/utils/datatypes/globalDataTypes";
+import { Host, DNSZone } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { API_VERSION_BACKUP, isHostSelectable } from "src/utils/utils";
 // Hooks
@@ -52,6 +52,7 @@ import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/o
 // RPC client
 import {
   useGettingHostQuery,
+  useGetDNSZonesQuery,
   useAutoMemberRebuildHostsMutation,
   HostsPayload,
 } from "src/services/rpc";
@@ -84,6 +85,7 @@ const Hosts = () => {
   const [perPage, setPerPage] = useState<number>(15);
   const [selectedHosts, setSelectedHosts] = useState<string[]>([]);
   const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
+  const [dnsZones, setDNSZones] = useState<string[]>([]);
   const updateSelectedPerPage = (selected: number) => {
     setSelectedPerPage(selected);
   };
@@ -191,6 +193,40 @@ const Hosts = () => {
       );
     }
   }, [hostDataResponse]);
+
+  // Get dns zones
+  const dnsZoneDataResponse = useGetDNSZonesQuery();
+
+  // Handle data when the API call is finished
+  useEffect(() => {
+    if (dnsZoneDataResponse.isFetching) {
+      return;
+    }
+    if (dnsZoneDataResponse.isSuccess && dnsZoneDataResponse.data) {
+      const dnsZoneListResult = dnsZoneDataResponse.data.result.result;
+      const dnsZoneListSize = dnsZoneDataResponse.data.result.count;
+      const dnsZones: string[] = [];
+      for (let i = 0; i < dnsZoneListSize; i++) {
+        const dnsZone = dnsZoneListResult[i] as DNSZone;
+        dnsZones.push(dnsZone["idnsname"][0]["__dns_name__"]);
+      }
+      setDNSZones(dnsZones);
+    }
+
+    // API response: Error
+    if (
+      !hostDataResponse.isLoading &&
+      hostDataResponse.isError &&
+      hostDataResponse.error !== undefined
+    ) {
+      setIsDisabledDueError(true);
+      globalErrors.addError(
+        batchError,
+        "Error when loading dns zones",
+        "error-dns-zones"
+      );
+    }
+  }, [dnsZoneDataResponse]);
 
   // Refresh button handling
   const refreshHostsData = () => {
@@ -340,6 +376,9 @@ const Hosts = () => {
 
   const onAddClickHandler = () => {
     setShowAddModal(true);
+  };
+  const onCloseAddModal = () => {
+    setShowAddModal(false);
   };
   const onAddModalToggle = () => {
     setShowAddModal(!showAddModal);
@@ -546,6 +585,7 @@ const Hosts = () => {
 
   return (
     <Page>
+      <alerts.ManagedAlerts />
       <PageSection variant={PageSectionVariants.light}>
         <TitleLayout id="Hosts title" headingLevel="h1" text="Hosts" />
       </PageSection>
@@ -604,6 +644,9 @@ const Hosts = () => {
       <AddHost
         show={showAddModal}
         handleModalToggle={onAddModalToggle}
+        onOpenAddModal={onAddClickHandler}
+        onCloseAddModal={onCloseAddModal}
+        dnsZones={dnsZones}
         onRefresh={refreshHostsData}
       />
       <DeleteHosts

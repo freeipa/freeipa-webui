@@ -133,6 +133,15 @@ export interface HostsPayload {
   apiVersion: string;
 }
 
+export interface HostAddPayload {
+  fqdn: string;
+  userclass?: string;
+  ip_address?: string;
+  force: boolean; // skip DNS check
+  random: boolean; // otp generation
+  description?: string;
+}
+
 // Body data to perform the calls
 export const getCommand = (commandData: Command) => {
   const payloadWithParams = {
@@ -189,6 +198,7 @@ export const api = createApi({
     "ActiveUsers",
     "Hosts",
     "CertProfile",
+    "DNSZones",
   ],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
@@ -738,6 +748,25 @@ export const api = createApi({
         });
       },
     }),
+    addHost: build.mutation<FindRPCResponse, HostAddPayload>({
+      query: (payloadData) => {
+        const params = [
+          [payloadData["fqdn"]],
+          {
+            version: API_VERSION_BACKUP,
+            userclass: payloadData["userclass"],
+            ip_address: payloadData["ip_address"],
+            force: payloadData["force"],
+            description: payloadData["description"],
+            random: payloadData["random"],
+          },
+        ];
+        return getCommand({
+          method: "host_add",
+          params: params,
+        });
+      },
+    }),
     getCertProfile: build.query<CertProfile[], void>({
       query: () => {
         return getCommand({
@@ -800,6 +829,27 @@ export const api = createApi({
           batchPayload,
           query_args["version"] || API_VERSION_BACKUP
         );
+      },
+    }),
+    removeHosts: build.mutation<BatchRPCResponse, string[]>({
+      query: (hostnames) => {
+        const hostsToDeletePayload: Command[] = [];
+        hostnames.map((hostname) => {
+          const payloadItem = {
+            method: "host_del",
+            params: [[hostname], {}],
+          } as Command;
+          hostsToDeletePayload.push(payloadItem);
+        });
+        return getBatchCommand(hostsToDeletePayload, API_VERSION_BACKUP);
+      },
+    }),
+    getDNSZones: build.query<FindRPCResponse, void>({
+      query() {
+        return getCommand({
+          method: "dnszone_find",
+          params: [[], { version: API_VERSION_BACKUP }],
+        });
       },
     }),
   }),
@@ -876,4 +926,7 @@ export const {
   useGenerateSubIdsMutation,
   useActivateUserMutation,
   useRestoreUserMutation,
+  useAddHostMutation,
+  useRemoveHostsMutation,
+  useGetDNSZonesQuery,
 } = api;
