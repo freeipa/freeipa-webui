@@ -12,15 +12,12 @@ import { Host, Metadata } from "../../utils/datatypes/globalDataTypes";
 // Forms
 import IpaTextArea from "../Form/IpaTextArea";
 import IpaTextInput from "../Form/IpaTextInput";
-import IpaCheckbox from "../Form/IpaCheckbox";
 import IpaCheckboxes from "../Form/IpaCheckboxes";
-import IpaSshPublicKeys from "../Form/IpaSshPublicKeys";
-import IpaTextboxList from "../Form/IpaTextboxList";
-
 // Layouts
 import PopoverWithIconLayout from "../layouts/PopoverWithIconLayout";
 // Modals
-import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";
+import PrincipalAliasAddModal from "../modals/PrincipalAliasAddModal";
+import PrincipalAliasDeleteModal from "../modals/PrincipalAliasDeleteModal";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
 // Hooks
@@ -35,54 +32,35 @@ interface PropsToHostSettings {
   host: Partial<Host>;
   metadata: Metadata;
   onHostChange: (host: Partial<Host>) => void;
-  onRefresh: () => void;
 }
 
 const HostSettings = (props: PropsToHostSettings) => {
   // Host name - textbox (mandatory field)
-  const [hostName] = useState(props.host.fqdn);
+  let fqdn = "";
+  if (props.host.fqdn !== undefined) {
+    fqdn = props.host.fqdn;
+  }
+  const [hostName] = useState(fqdn);
+
+  // Get krb realms
+  const krbrealms = props.host.krbprincipalname;
+  const aliasList: PrincipalAlias[] = [];
+  for (let i = 0; krbrealms && krbrealms[i]; i++) {
+    aliasList.push({
+      id: i,
+      alias: krbrealms[i],
+    });
+  }
+
+  // Get 'ipaObject' and 'recordOnChange' to use in 'IpaTextInput'
+  const { ipaObject, recordOnChange } = asRecord(
+    props.host,
+    props.onHostChange
+  );
 
   // Principal alias - textbox
-  const [principalAliasList, setPrincipalAliasList] = useState<
-    PrincipalAlias[]
-  >([
-    {
-      id: 0,
-      alias: "host/" + props.host.fqdn + REALM, // TODO: The realm (@SERVER.IPA.DEMO) should adapt to context
-    },
-  ]);
-
-  // Description - textbox
-  const [hostDescription, setHostDescription] = useState(
-    props.host.description
-  );
-  const onChangeDescriptionHandler = (newDescription: string) => {
-    setHostDescription(newDescription);
-  };
-
-  // Class - textbox
-  const [hostClass, setHostClass] = useState(props.host.userclass);
-  const updateHostClass = (newHostClass: string) => {
-    setHostClass(newHostClass);
-  };
-
-  // Locality - textbox
-  const [locality, setLocality] = useState("");
-  const updateLocality = (newLocality: string) => {
-    setLocality(newLocality);
-  };
-  const [location, setLocation] = useState("");
-  const updateLocation = (newLocation: string) => {
-    setLocation(newLocation);
-  };
-  const [platform, setPlatform] = useState("");
-  const updatePlatform = (newPlatform: string) => {
-    setPlatform(newPlatform);
-  };
-  const [operatingSystem, setOperatingSystem] = useState("");
-  const updateOperatingSystem = (newOperatingSystem: string) => {
-    setOperatingSystem(newOperatingSystem);
-  };
+  const [principalAliasList, setPrincipalAliasList] =
+    useState<PrincipalAlias[]>(aliasList);
 
   // SSH public keys
   const [sshPublicKeys] = useState<SshPublicKey[]>([]);
@@ -128,6 +106,114 @@ const HostSettings = (props: PropsToHostSettings) => {
     return value.match(mac_regex) !== null ? true : false;
   };
 
+  // - Close modal
+  const onClosePrincipalAliasAddModal = () => {
+    // Reset values
+    setNewKrbAlias("");
+    setIsPrincipalAliasAddModalOpen(false);
+  };
+
+  // - Open modal
+  const onOpenPrincipalAliasAddModal = () => {
+    setIsPrincipalAliasAddModalOpen(true);
+  };
+
+  // - Add new kerberos principal alias
+  const addNewKrbPrincipalAlias = (newKrbAlias: string) => {
+    // Process new krb alias
+    // (whether a single name or a complete name with realm is provided,
+    // this needs to be checked)
+    if (aliasList.length > 0) {
+      // TODO this is not correct!, need to look thorguh the entire list,
+      // not just the first item.  Will address in future ticket
+      const REALM = aliasList[0].alias;
+      if (!newKrbAlias.includes(REALM)) {
+        newKrbAlias = newKrbAlias + REALM;
+      }
+    }
+    const principalAliasListCopy = [...principalAliasList];
+    principalAliasListCopy.push({
+      id: Date.now.toString(),
+      alias: newKrbAlias,
+    });
+    setPrincipalAliasList(principalAliasListCopy);
+    // Reset values and close modal
+    onClosePrincipalAliasAddModal();
+  };
+
+  // - Modal actions
+  const principalAliasAddModalActions = [
+    <SecondaryButton
+      key="add"
+      onClickHandler={() => addNewKrbPrincipalAlias(newKrbAlias)}
+    >
+      Add
+    </SecondaryButton>,
+    <Button key="cancel" variant="link" onClick={onClosePrincipalAliasAddModal}>
+      Cancel
+    </Button>,
+  ];
+
+  // - Data to modal
+  const dataToModal = {
+    newKrbAlias,
+    onChangeNewKrbAlias,
+    onClosePrincipalAliasAddModal,
+    onOpenPrincipalAliasAddModal,
+    addNewKrbPrincipalAlias,
+  };
+
+  // Principal alias - Delete Modal
+  const [isPrincipalAliasDeleteModalOpen, setIsPrincipalAliasDeleteModalOpen] =
+    useState(false);
+
+  // - Alias to delete
+  const [aliasToDelete, setAliasToDelete] = useState("");
+
+  // - Close modal
+  const onClosePrincipalAliasDeleteModal = () => {
+    setIsPrincipalAliasDeleteModalOpen(false);
+  };
+
+  // - Open modal
+  const onOpenPrincipalAliasDeleteModal = () => {
+    setIsPrincipalAliasDeleteModalOpen(true);
+  };
+
+  const openModalAndSetAlias = (krbAliasToDelete: string) => {
+    setAliasToDelete(krbAliasToDelete);
+    onOpenPrincipalAliasDeleteModal();
+  };
+
+  // - Delete new kerberos principal alias
+  const deleteNewKrbPrincipalAlias = () => {
+    const principalAliasUpdatedList: PrincipalAlias[] = [];
+    principalAliasList.map((krbAlias) => {
+      if (krbAlias.alias !== aliasToDelete) {
+        principalAliasUpdatedList.push(krbAlias);
+      }
+    });
+    setPrincipalAliasList(principalAliasUpdatedList);
+    // Reset delete variable
+    setAliasToDelete("");
+    // Close modal
+    onClosePrincipalAliasDeleteModal();
+  };
+
+  // - Modal actions
+  const principalAliasDeleteModalActions = [
+    <SecondaryButton key="delete" onClickHandler={deleteNewKrbPrincipalAlias}>
+      Delete
+    </SecondaryButton>,
+    <Button
+      key="cancel"
+      variant="link"
+      onClick={onClosePrincipalAliasDeleteModal}
+    >
+      Cancel
+    </Button>,
+  ];
+
   return (
     <>
       <Flex direction={{ default: "column", lg: "row" }}>
@@ -157,74 +243,63 @@ const HostSettings = (props: PropsToHostSettings) => {
                 </Flex>
               ))}
             </FormGroup>
+            <FormGroup>
+              <SecondaryButton onClickHandler={onOpenPrincipalAliasAddModal}>
+                Add
+              </SecondaryButton>
+            </FormGroup>
             <FormGroup label="Description" fieldId="description">
               <IpaTextArea
                 name="description"
-                onChange={(_event, newDescription: string) =>
-                  onChangeDescriptionHandler(newDescription)
-                }
-                aria-label="host description"
-                resizeOrientation="vertical"
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="host"
+                metadata={props.metadata}
               />
             </FormGroup>
-            <FormGroup label="Class" fieldId="host-class">
-              <TextInput
-                id="host-class"
-                name="userclass"
-                onChange={(_event, newHostClass: string) =>
-                  updateHostClass(newHostClass)
-                }
-                value={hostClass}
-                type="text"
-                aria-label="host class"
+            <FormGroup label="Class" fieldId="userclass">
+              <IpaTextInput
+                name={"userclass"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="host"
+                metadata={props.metadata}
               />
             </FormGroup>
-            <FormGroup label="Locality" fieldId="locality">
-              <TextInput
-                id="locality"
-                name="l"
-                onChange={(_event, newLocality: string) =>
-                  updateLocality(newLocality)
-                }
-                value={locality}
-                type="text"
-                aria-label="locality"
+            <FormGroup label="Locality" fieldId="l">
+              <IpaTextInput
+                name={"l"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="host"
+                metadata={props.metadata}
               />
             </FormGroup>
-            <FormGroup label="Location" fieldId="location">
-              <TextInput
-                id="location"
-                name="nshostlocation"
-                onChange={(_event, newLocation: string) =>
-                  updateLocation(newLocation)
-                }
-                value={location}
-                type="text"
-                aria-label="location"
+            <FormGroup label="Location" fieldId="nshostlocation">
+              <IpaTextInput
+                name={"nshostlocation"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="host"
+                metadata={props.metadata}
               />
             </FormGroup>
-            <FormGroup label="Platform" fieldId="platform">
-              <TextInput
-                id="platform"
-                name="nshardwareplatform"
-                onChange={(_event, newPlatform: string) =>
-                  updatePlatform(newPlatform)
-                }
-                value={platform}
-                type="text"
-                aria-label="platform"
+            <FormGroup label="Platform" fieldId="nshardwareplatform">
+              <IpaTextInput
+                name={"nshardwareplatform"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="host"
+                metadata={props.metadata}
               />
             </FormGroup>
-            <FormGroup label="Operating system" fieldId="operating-system">
-              <TextInput
-                id="operating-system"
-                name="nsosversion"
-                onChange={(_event, newOperatingSystem: string) =>
-                  updateOperatingSystem(newOperatingSystem)
-                }
-                value={operatingSystem}
-                type="text"
-                aria-label="operating-system"
+            <FormGroup label="Operating system" fieldId="nsosversion">
+              <IpaTextInput
+                name={"nsosversion"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="host"
+                metadata={props.metadata}
               />
             </FormGroup>
           </Form>
@@ -258,9 +333,6 @@ const HostSettings = (props: PropsToHostSettings) => {
                         type="text"
                         name={"macaddress-" + idx}
                         aria-label="mac address"
-                        onChange={(event, value) =>
-                          onHandleMacAddressChange(value, event, idx)
-                        }
                       />
                     </FlexItem>
                     <FlexItem key={macAddress.id + "-delete-button"}>
@@ -289,40 +361,35 @@ const HostSettings = (props: PropsToHostSettings) => {
                 <PopoverWithIconLayout message={AuthIndicatorsTypesMessage} />
               }
             >
-              <Checkbox
-                label="Two-factor authentication (password + OTP)"
-                isChecked={tpaCheckbox}
-                aria-label="two factor authentication from authentication indicators checkbox"
-                id="tpaCheckbox"
-                name="ipauserauthtype"
-                value="otp"
-                className="pf-v5-u-mt-xs pf-v5-u-mb-sm"
-              />
-              <Checkbox
-                label="RADIUS"
-                isChecked={radiusCheckbox}
-                aria-label="radius from authentication indicators checkbox"
-                id="radiusCheckbox"
-                name="ipauserauthtype"
-                value="radius"
-                className="pf-v5-u-mt-xs pf-v5-u-mb-sm"
-              />
-              <Checkbox
-                label="PKINIT"
-                isChecked={pkinitCheckbox}
-                aria-label="pkinit from authentication indicators checkbox"
-                id="pkinitCheckbox"
-                name="ipauserauthtype"
-                value="pkinit"
-                className="pf-v5-u-mt-xs pf-v5-u-mb-sm"
-              />
-              <Checkbox
-                label="Hardened password (by SPAKE or FAST)"
-                isChecked={hardenedPassCheckbox}
-                aria-label="hardened password from authentication indicators checkbox"
-                id="hardenedPassCheckbox"
-                name="ipauserauthtype"
-                value="hardened"
+              <IpaCheckboxes
+                name="krbprincipalauthind"
+                options={[
+                  {
+                    value: "otp",
+                    text: "Two-factor authentication (password + OTP)",
+                  },
+                  {
+                    value: "radius",
+                    text: "RADIUS",
+                  },
+
+                  {
+                    value: "pkinit",
+                    text: "PKINIT",
+                  },
+                  {
+                    value: "hardened",
+                    text: "Hardened password (by SPAKE or FAST)",
+                  },
+                  {
+                    value: "idp",
+                    text: "External Identity Provider",
+                  },
+                ]}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="host"
+                metadata={props.metadata}
               />
             </FormGroup>
             <FormGroup

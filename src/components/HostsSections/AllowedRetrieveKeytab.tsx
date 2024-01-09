@@ -42,12 +42,12 @@ const AllowedRetrieveKeytab = (props: PropsToAllowRetrieveKeytab) => {
   return (
     <Flex direction={{ default: "column", lg: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
-        <RetrieveKeytabUsersTable host={props.host.fqdn} />
-        <RetrieveKeytabHostsTable host={props.host.fqdn} />
+        <RetrieveKeytabUsersTable host={fqdn} />
+        <RetrieveKeytabHostsTable host={fqdn} />
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
-        <RetrieveKeytabUserGroupsTable host={props.host.fqdn} />
-        <RetrieveKeytabHostGroupsTable host={props.host.fqdn} />
+        <RetrieveKeytabUserGroupsTable host={fqdn} />
+        <RetrieveKeytabHostGroupsTable host={fqdn} />
       </FlexItem>
     </Flex>
   );

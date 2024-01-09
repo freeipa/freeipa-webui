@@ -117,8 +117,8 @@ const HostsTabs = ({ section }) => {
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadcrumbLayout
           className="pf-v5-u-mb-md"
-          preText="Host:"
           userId={hostData.fqdn}
+          preText=""
           pagesVisited={pagesVisited}
         />
         <TitleLayout
@@ -144,7 +144,18 @@ const HostsTabs = ({ section }) => {
             title={<TabTitleText>Settings</TabTitleText>}
           >
             <PageSection className="pf-v5-u-pb-0"></PageSection>
-            <HostsSettings host={hostData} />
+            <HostsSettings
+              host={hostSettingsData.host}
+              originalHost={hostSettingsData.originalHost}
+              metadata={hostSettingsData.metadata}
+              certData={hostSettingsData.certData}
+              onHostChange={hostSettingsData.setHost}
+              isDataLoading={hostSettingsData.isFetching}
+              onRefresh={hostSettingsData.refetch}
+              isModified={hostSettingsData.modified}
+              onResetValues={hostSettingsData.resetValues}
+              modifiedValues={hostSettingsData.modifiedValues}
+            />
           </Tab>
           <Tab
             eventKey={"memberof"}

@@ -43,12 +43,12 @@ const AllowedCreateKeytab = (props: PropsToAllowCreateKeytab) => {
   return (
     <Flex direction={{ default: "column", lg: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
-        <CreateKeytabUsersTable host={props.host.fqdn} />
-        <CreateKeytabHostsTable host={props.host.fqdn} />
+        <CreateKeytabUsersTable host={fqdn} />
+        <CreateKeytabHostsTable host={fqdn} />
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
-        <CreateKeytabUserGroupsTable host={props.host.fqdn} />
-        <CreateKeytabHostGroupsTable host={props.host.fqdn} />
+        <CreateKeytabUserGroupsTable host={fqdn} />
+        <CreateKeytabHostGroupsTable host={fqdn} />
       </FlexItem>
     </Flex>
   );

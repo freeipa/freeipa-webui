@@ -53,8 +53,7 @@ interface PropsToHostsSettings {
   host: Partial<Host>;
   originalHost: Partial<Host>;
   metadata: Metadata;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  certData: any;
+  certData?: Record<string, unknown>;
   onHostChange: (host: Partial<Host>) => void;
   onRefresh: () => void;
   isModified: boolean;
@@ -408,74 +407,89 @@ const HostsSettings = (props: PropsToHostsSettings) => {
               id="host-settings"
               text="Host settings"
             />
-            <HostSettings
-              host={props.host}
-              metadata={props.metadata}
-              onHostChange={props.onHostChange}
-              onRefresh={props.onRefresh}
-            />
-            <TitleLayout
-              key={1}
-              headingLevel="h2"
-              id="enrollment"
-              text="Enrollment"
-            />
-            <Enrollment host={props.host} />
-            <TitleLayout
-              key={2}
-              headingLevel="h2"
-              id="host-certificate"
-              text="Host certificate"
-            />
-            <HostCertificate
-              host={props.host}
-              metadata={props.metadata}
-              onHostChange={props.onHostChange}
-              onRefresh={props.onRefresh}
-              certData={props.certData}
-            />
-            <TitleLayout
-              key={3}
-              headingLevel="h2"
-              id="allow-retrieve-keytab"
-              text="Allow to retrieve keytab"
-            />
-            <AllowedRetrieveKeytab
-              host={props.host}
-              onRefresh={props.onRefresh}
-            />
-            <TitleLayout
-              key={4}
-              headingLevel="h2"
-              id="allow-create-keytab"
-              text="Allow to create keytab"
-            />
-            <AllowedCreateKeytab
-              host={props.host}
-              onRefresh={props.onRefresh}
-            />
-          </Flex>
-        </SidebarContent>
-      </Sidebar>
-      <ModalErrors errors={modalErrors.getAll()} />
-      {isMembershipModalOpen && (
-        <ModalWithFormLayout
-          variantType="medium"
-          modalPosition="top"
-          offPosition="76px"
-          title="Confirmation"
-          formId="rebuild-auto-membership-modal"
-          fields={confirmationQuestion}
-          show={isMembershipModalOpen}
-          onClose={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
-          actions={membershipModalActions}
-        />
-      )}
-      <HostSetPassword
-        host={props.host.fqdn || ""}
-        isOpen={isPasswordModalOpen}
-        onClose={() => setIsPasswordModalOpen(false)}
-        onRefresh={props.onRefresh}
+            <JumpLinks
+              isVertical
+              label="Jump to section"
+              scrollableSelector="#settings-page"
+              offset={220} // for masthead
+              expandable={{ default: "expandable", md: "nonExpandable" }}
+            >
+              <JumpLinksItem key={0} href="#host-settings">
+                Host settings
+              </JumpLinksItem>
+              <JumpLinksItem key={1} href="#enrollment">
+                Enrollment
+              </JumpLinksItem>
+              <JumpLinksItem key={2} href="#host-certificate">
+                Host certificate
+              </JumpLinksItem>
+              <JumpLinksItem key={3} href="#allow-retrieve-keytab">
+                Allow to retrieve keytab
+              </JumpLinksItem>
+              <JumpLinksItem key={4} href="#allow-create-keytab">
+                Allow to create keytab
+              </JumpLinksItem>
+            </JumpLinks>
+          </SidebarPanel>
+
+          <SidebarContent className="pf-v5-u-mr-xl">
+            <Flex
+              direction={{ default: "column" }}
+              flex={{ default: "flex_1" }}
+            >
+              <TitleLayout
+                key={0}
+                headingLevel="h2"
+                id="host-settings"
+                text="Host settings"
+              />
+              <HostSettings
+                host={props.host}
+                metadata={props.metadata}
+                onHostChange={props.onHostChange}
+              />
+              <TitleLayout
+                key={1}
+                headingLevel="h2"
+                id="enrollment"
+                text="Enrollment"
+              />
+              <Enrollment host={props.host} />
+              <TitleLayout
+                key={2}
+                headingLevel="h2"
+                id="host-certificate"
+                text="Host certificate"
+              />
+              <HostCertificate
+                host={props.host}
+                metadata={props.metadata}
+                onHostChange={props.onHostChange}
+                onRefresh={props.onRefresh}
+                certData={props.certData}
+              />
+              <TitleLayout
+                key={3}
+                headingLevel="h2"
+                id="allow-retrieve-keytab"
+                text="Allow to retrieve keytab"
+              />
+              <AllowedRetrieveKeytab host={props.host} />
+              <TitleLayout
+                key={4}
+                headingLevel="h2"
+                id="allow-create-keytab"
+                text="Allow to create keytab"
+              />
+              <AllowedCreateKeytab host={props.host} />
+            </Flex>
+          </SidebarContent>
+        </Sidebar>
+      </PageSection>
+      <ToolbarLayout
+        isSticky={true}
+        className={"pf-v5-u-p-md pf-v5-u-ml-lg pf-v5-u-mr-lg"}
+        toolbarItems={toolbarFields}
       />
       <IssueNewCertificate
         isOpen={isCertModalOpen}

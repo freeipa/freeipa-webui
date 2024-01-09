@@ -103,7 +103,7 @@ const ManagedByAddModal = (props: PropsToAddModal) => {
         // Host groups
         if (props.tabData.tabName === "Hosts") {
           props.groupRepository.push({
-            hostName: optionData.fqdn !== undefined && optionData.fqdn,
+            fqdn: optionData.fqdn !== undefined && optionData.fqdn,
           } as Host);
           // Send updated data to table
           props.updateGroupRepository(props.groupRepository as Host[]);

@@ -79,7 +79,7 @@ const DeletedElementsTable = (props: PropsToDeletedElementsTable) => {
       if (props.elementsList !== undefined) {
         props.elementsList.map((element) => {
           props.elementsToDelete.map((selected) => {
-            if (element.fqdn[0] === selected[0]) {
+            if (element.fqdn === selected[0]) {
               elementsToDelete.push(element);
             }
           });
@@ -125,7 +125,7 @@ const DeletedElementsTable = (props: PropsToDeletedElementsTable) => {
   const getBody = () => {
     if (props.mode === "passing_full_data") {
       return elementsToDelete.map((element) => (
-        <Tr key={element.fqdn[0]} id={element.fqdn[0]}>
+        <Tr key={element.fqdn} id={element.fqdn}>
           {props.columnNames.map((columnName, idx) => (
             <Td key={idx} dataLabel={columnName}>
               {element[columnName]}

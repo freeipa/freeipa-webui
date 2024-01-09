@@ -9,18 +9,20 @@ import {
 // Utils
 import { API_VERSION_BACKUP } from "../utils/utils";
 import {
-  Metadata,
-  User,
-  UIDType,
-  fqdnType,
-  IDPServer,
-  RadiusServer,
   CertificateAuthority,
-  PwPolicy,
+  fqdnType,
+  Host,
+  IDPServer,
   KrbPolicy,
   CertProfile,
+  Metadata,
+  PwPolicy,
+  RadiusServer,
+  UIDType,
+  User,
 } from "src/utils/datatypes/globalDataTypes";
 import { apiToUser } from "src/utils/userUtils";
+import { apiToHost } from "src/utils/hostUtils";
 import { apiToPwPolicy } from "src/utils/pwPolicyUtils";
 import { apiToKrbPolicy } from "src/utils/krbPolicyUtils";
 
@@ -28,6 +30,11 @@ export type UserFullData = {
   user?: Partial<User>;
   pwPolicy?: Partial<PwPolicy>;
   krbtPolicy?: Partial<KrbPolicy>;
+  cert?: Record<string, unknown>;
+};
+
+export type HostFullData = {
+  host?: Partial<Host>;
   cert?: Record<string, unknown>;
 };
 
@@ -252,6 +259,7 @@ export const api = createApi({
     "Hosts",
     "CertProfile",
     "DNSZones",
+    "FullHost",
   ],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
@@ -465,7 +473,7 @@ export const api = createApi({
 
         const certFindCommand: Command = {
           method: "cert_find",
-          params: [[], { host: hostId, sizelimit: 0, all: true }],
+          params: [[], { user: hostId, sizelimit: 0, all: true }],
         };
 
         const batchPayload: Command[] = [hostShowCommand, certFindCommand];
@@ -490,24 +498,6 @@ export const api = createApi({
         };
       },
       providesTags: ["FullHost"],
-    }),
-    getServicesFullData: build.query<Service, string>({
-      query: (serviceName: string) => {
-        // Prepare search parameters
-        const params = {
-          all: true,
-          rights: true,
-          version: API_VERSION_BACKUP,
-        };
-        return getCommand({
-          method: "service_show",
-          params: [serviceName, params],
-        });
-      },
-      transformResponse: (response: FindRPCResponse): Service => {
-        return apiToService(response.result.result);
-      },
-      providesTags: ["FullService"],
     }),
     saveUser: build.mutation<FindRPCResponse, Partial<User>>({
       query: (user) => {
@@ -771,6 +761,7 @@ export const api = createApi({
           pkey_only: true,
           sizelimit: sizeLimit,
           version: apiVersion,
+          all: true,
         };
 
         // Prepare payload
@@ -800,7 +791,7 @@ export const api = createApi({
         // Prepare payload
         const payloadHostDataBatch: Command[] = fqdns.map((fqdn) => ({
           method: "host_show",
-          params: [[fqdn], {}],
+          params: [[fqdn], { no_members: true }],
         }));
 
         // Make call using 'fetchWithBQ'
@@ -1059,4 +1050,6 @@ export const {
   useAddHostMutation,
   useRemoveHostsMutation,
   useGetDNSZonesQuery,
+  useSaveHostMutation,
+  useGetHostsFullDataQuery,
 } = api;
