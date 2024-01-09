@@ -10,19 +10,23 @@ import RetrieveKeytabHostGroupsTable from "../tables/HostsSettings/RetrieveKeyta
 import { Host } from "src/utils/datatypes/globalDataTypes";
 
 interface PropsToAllowRetrieveKeytab {
-  host: Host;
+  host: Partial<Host>;
 }
 
 const AllowedRetrieveKeytab = (props: PropsToAllowRetrieveKeytab) => {
+  let fqdn = "";
+  if (props.host.fqdn !== undefined) {
+    fqdn = props.host.fqdn;
+  }
   return (
     <Flex direction={{ default: "column", lg: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
-        <RetrieveKeytabUsersTable host={props.host.fqdn} />
-        <RetrieveKeytabHostsTable host={props.host.fqdn} />
+        <RetrieveKeytabUsersTable host={fqdn} />
+        <RetrieveKeytabHostsTable host={fqdn} />
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
-        <RetrieveKeytabUserGroupsTable host={props.host.fqdn} />
-        <RetrieveKeytabHostGroupsTable host={props.host.fqdn} />
+        <RetrieveKeytabUserGroupsTable host={fqdn} />
+        <RetrieveKeytabHostGroupsTable host={fqdn} />
       </FlexItem>
     </Flex>
   );

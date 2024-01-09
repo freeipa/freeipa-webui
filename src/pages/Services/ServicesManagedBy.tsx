@@ -41,7 +41,7 @@ const ServicesManagedBy = (props: PropsToServicesManagedBy) => {
 
     availableHostsData.map((host) => {
       hostNameList.map((hostName) => {
-        if (host.hostName === hostName) {
+        if (host.fqdn === hostName) {
           fullHostList.push(host as Host);
         }
       });
@@ -71,7 +71,7 @@ const ServicesManagedBy = (props: PropsToServicesManagedBy) => {
     // Host groups
     return availableHostsData.filter((item) => {
       return !hostsList.some((itm) => {
-        return item.hostName === itm.hostName;
+        return item.fqdn === itm.fqdn;
       });
     });
   };

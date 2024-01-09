@@ -152,15 +152,17 @@ export interface SudoRules {
 }
 
 export interface Host {
-  attributelevelrights: string[];
+  dn: string;
+  attributelevelrights: Record<string, unknown>;
   description: string;
-  hostName: string;
   dnsZone: string;
   enrolledby: string;
   fqdn: string;
   ip_address: string;
+  nshardwareplatform: string;
+  nsosversion: string;
   krbcanonicalname: string;
-  krbprincipalname: string;
+  krbprincipalname: string[];
   krbpwdpolicyreference: string[];
   l: string;
   managedby_host: string[];
@@ -170,6 +172,10 @@ export interface Host {
   userclass: string;
   serverhostname: string;
   sshpubkeyfp: string[];
+  sshpublickey: string[];
+  macaddress: string[];
+  krbprincipalauthind: string[];
+  usercertificate: string[];
   // Booleans
   force: boolean; // force host name even if not in DNS
   has_keytab: boolean;
