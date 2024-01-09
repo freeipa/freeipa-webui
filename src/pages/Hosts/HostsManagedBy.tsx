@@ -54,7 +54,7 @@ const HostsManagedBy = (props: PropsToHostsManagedBy) => {
     // Host groups
     return availableHostsData.filter((item) => {
       return !hostsList.some((itm) => {
-        return item.hostName === itm.hostName;
+        return item.fqdn === itm.fqdn;
       });
     });
   };
@@ -204,7 +204,7 @@ const HostsManagedBy = (props: PropsToHostsManagedBy) => {
 
   const tabData = {
     tabName: "Hosts",
-    elementName: props.host.hostName,
+    elementName: props.host.fqdn,
   };
 
   // - MemberOfDeleteModal
@@ -220,7 +220,7 @@ const HostsManagedBy = (props: PropsToHostsManagedBy) => {
 
   const deleteTabData = {
     tabName: "Hosts",
-    elementName: props.host.hostName,
+    elementName: props.host.fqdn,
   };
 
   // Render component

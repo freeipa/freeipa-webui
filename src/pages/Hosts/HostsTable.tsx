@@ -106,7 +106,7 @@ const HostsTable = (props: PropsToTable) => {
       descriptionString = description[0];
     }
 
-    return [fqdn[0], descriptionString];
+    return [fqdn, descriptionString];
   };
 
   let sortedHosts = [...shownHostsList];
@@ -260,7 +260,7 @@ const HostsTable = (props: PropsToTable) => {
   );
 
   const body = filteredShownHosts.map((host, rowIndex) => (
-    <Tr key={host.fqdn[0]} id={host.fqdn[0]}>
+    <Tr key={host.fqdn} id={host.fqdn}>
       <Td
         dataLabel="checkbox"
         select={{
@@ -273,7 +273,7 @@ const HostsTable = (props: PropsToTable) => {
       />
       <Td dataLabel={columnNames.fqdn}>
         <Link to={URL_PREFIX + "/hosts/settings"} state={host}>
-          {host.fqdn[0]}
+          {host.fqdn}
         </Link>
       </Td>
       <Td dataLabel={columnNames.description}>{host.description}</Td>

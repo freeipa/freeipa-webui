@@ -16,7 +16,7 @@ interface PropsToTable {
 const RetrieveKeytabHostsTable = (props: PropsToTable) => {
   // Full elements list -> Initial data
   const fullHostsList = useAppSelector((state) => state.hosts.hostsList);
-  const fullHostIdsList = fullHostsList.map((host) => host.hostName);
+  const fullHostIdsList = fullHostsList.map((host) => host.fqdn);
 
   // Elements on the table
   const [tableHostsList, setTableHostsList] = useState<string[]>([]);

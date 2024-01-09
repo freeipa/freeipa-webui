@@ -22,7 +22,7 @@ const hostsSlice = createSlice({
     addHost: (state, action: PayloadAction<Host>) => {
       const newHost = action.payload;
       state.hostsList.push({
-        hostName: newHost.hostName,
+        dn: newHost.dn,
         fqdn: newHost.fqdn,
         dnsZone: newHost.dnsZone,
         userclass: newHost.userclass,
@@ -36,6 +36,8 @@ const hostsSlice = createSlice({
         krbprincipalname: newHost.krbprincipalname,
         managedby_host: newHost.managedby_host,
         memberof_hostgroup: newHost.memberof_hostgroup,
+        sshpublickey: newHost.sshpublickey,
+        macaddress: newHost.macaddress,
         sshpubkeyfp: newHost.sshpubkeyfp,
         nshostlocation: newHost.nshostlocation,
         l: newHost.l,
@@ -46,6 +48,10 @@ const hostsSlice = createSlice({
         ipakrbrequirespreauth: newHost.ipakrbrequirespreauth,
         ipakrbokasdelegate: newHost.ipakrbokasdelegate,
         ipakrboktoauthasdelegate: newHost.ipakrboktoauthasdelegate,
+        nsosversion: newHost.nsosversion,
+        nshardwareplatform: newHost.nshardwareplatform,
+        krbprincipalauthind: newHost.krbprincipalauthind,
+        usercertificate: newHost.usercertificate,
       });
       // Update json file
     },

@@ -15,7 +15,9 @@ import {
 // Icons
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // Data types
-import { Host } from "src/utils/datatypes/globalDataTypes";
+import { Host, Metadata } from "src/utils/datatypes/globalDataTypes";
+// Hooks
+import useAlerts from "src/hooks/useAlerts";
 // Layouts
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -28,14 +30,32 @@ import Enrollment from "src/components/HostsSections/Enrollment";
 import HostCertificate from "src/components/HostsSections/HostCertificate";
 import AllowedRetrieveKeytab from "src/components/HostsSections/AllowedRetrieveKeytab";
 import AllowedCreateKeytab from "src/components/HostsSections/AllowedCreateKeytab";
+// RPC
+import { ErrorResult, useSaveHostMutation } from "src/services/rpc";
 
 interface PropsToHostsSettings {
-  host: Host;
+  host: Partial<Host>;
+  originalHost: Partial<Host>;
+  metadata: Metadata;
+  certData?: Record<string, unknown>;
+  onHostChange: (host: Partial<Host>) => void;
+  onRefresh: () => void;
+  isModified: boolean;
+  isDataLoading?: boolean;
+  modifiedValues: () => Partial<Host>;
+  onResetValues: () => void;
 }
 
 const HostsSettings = (props: PropsToHostsSettings) => {
+  // Alerts to show in the UI
+  const alerts = useAlerts();
+
+  // API save the host
+  const [saveHost] = useSaveHostMutation();
+
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
+  const [isSaving, setSaving] = useState(false);
 
   const dropdownItems = [
     <DropdownItem key="rebuild auto membership">
@@ -58,19 +78,71 @@ const HostsSettings = (props: PropsToHostsSettings) => {
   ) => {
     setIsKebabOpen(!isKebabOpen);
   };
+
+  // 'Save' handler method
+  const onSave = () => {
+    const modifiedValues = props.modifiedValues();
+    modifiedValues.fqdn = props.host.fqdn;
+    setSaving(true);
+
+    saveHost(modifiedValues).then((response) => {
+      if ("data" in response) {
+        if (response.data.result) {
+          // Show toast notification: success
+          alerts.addAlert("save-success", "Host modified", "success");
+        } else if (response.data.error) {
+          // Show toast notification: error
+          const errorMessage = response.data.error as ErrorResult;
+          alerts.addAlert("save-error", errorMessage.message, "danger");
+        }
+        // Reset values. Disable 'revert' and 'save' buttons
+        props.onResetValues();
+        setSaving(false);
+      }
+    });
+  };
+
+  // 'Revert' handler method
+  const onRevert = () => {
+    props.onHostChange(props.originalHost);
+    alerts.addAlert("revert-success", "Host data reverted", "success");
+  };
+
   // Toolbar
   const toolbarFields = [
     {
       key: 0,
-      element: <SecondaryButton>Refresh</SecondaryButton>,
+      element: (
+        <SecondaryButton onClickHandler={props.onRefresh}>
+          Refresh
+        </SecondaryButton>
+      ),
     },
     {
       key: 1,
-      element: <SecondaryButton isDisabled={true}>Revert</SecondaryButton>,
+      element: (
+        <SecondaryButton
+          isDisabled={!props.isModified}
+          onClickHandler={onRevert}
+        >
+          Revert
+        </SecondaryButton>
+      ),
     },
     {
       key: 2,
-      element: <SecondaryButton isDisabled={true}>Save</SecondaryButton>,
+      element: (
+        <SecondaryButton
+          isDisabled={!props.isModified || isSaving}
+          onClickHandler={onSave}
+          isLoading={isSaving}
+          spinnerAriaValueText="Saving"
+          spinnerAriaLabelledBy="Saving"
+          spinnerAriaLabel="Saving"
+        >
+          {isSaving ? "Saving" : "Save"}
+        </SecondaryButton>
+      ),
     },
     {
       key: 3,
@@ -86,8 +158,10 @@ const HostsSettings = (props: PropsToHostsSettings) => {
       ),
     },
   ];
+
   return (
     <>
+      <alerts.ManagedAlerts />
       <PageSection
         id="settings-page"
         variant={PageSectionVariants.light}
@@ -142,7 +216,11 @@ const HostsSettings = (props: PropsToHostsSettings) => {
                 id="host-settings"
                 text="Host settings"
               />
-              <HostSettings host={props.host} />
+              <HostSettings
+                host={props.host}
+                metadata={props.metadata}
+                onHostChange={props.onHostChange}
+              />
               <TitleLayout
                 key={1}
                 headingLevel="h2"

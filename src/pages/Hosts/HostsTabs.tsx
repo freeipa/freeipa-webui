@@ -21,14 +21,15 @@ import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
 // Data types
 import { Host } from "src/utils/datatypes/globalDataTypes";
+// Hooks
+import { useHostSettings } from "src/hooks/useHostSettingsData";
+import DataSpinner from "src/components/layouts/DataSpinner";
 
 const HostsTabs = () => {
-  // TODO: Make the 'Tabs' component data-agnostic and more reusable,
-  //   getting the data via props.
-
   // Get location (React Router DOM) and get state data
   const location = useLocation();
   const hostData: Host = location.state as Host;
+  const hostSettingsData = useHostSettings(hostData.fqdn[0]);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(0);
@@ -49,18 +50,22 @@ const HostsTabs = () => {
     },
   ];
 
+  if (hostSettingsData.isLoading || hostSettingsData.host.fqdn === undefined) {
+    return <DataSpinner />;
+  }
+
   return (
     <Page>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadcrumbLayout
           className="pf-v5-u-mb-md"
-          preText="Host:"
           userId={hostData.fqdn}
+          preText=""
           pagesVisited={pagesVisited}
         />
         <TitleLayout
-          id={hostData.hostName}
-          text={hostData.hostName}
+          id={hostData.fqdn}
+          text={hostData.fqdn}
           headingLevel="h1"
         />
       </PageSection>
@@ -78,7 +83,18 @@ const HostsTabs = () => {
             title={<TabTitleText>Settings</TabTitleText>}
           >
             <PageSection className="pf-v5-u-pb-0"></PageSection>
-            <HostsSettings host={hostData} />
+            <HostsSettings
+              host={hostSettingsData.host}
+              originalHost={hostSettingsData.originalHost}
+              metadata={hostSettingsData.metadata}
+              certData={hostSettingsData.certData}
+              onHostChange={hostSettingsData.setHost}
+              isDataLoading={hostSettingsData.isFetching}
+              onRefresh={hostSettingsData.refetch}
+              isModified={hostSettingsData.modified}
+              onResetValues={hostSettingsData.resetValues}
+              modifiedValues={hostSettingsData.modifiedValues}
+            />
           </Tab>
           <Tab
             eventKey={1}

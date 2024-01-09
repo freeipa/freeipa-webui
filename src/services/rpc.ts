@@ -9,18 +9,20 @@ import {
 // Utils
 import { API_VERSION_BACKUP } from "src/utils/utils";
 import {
-  Metadata,
-  User,
-  UIDType,
-  fqdnType,
-  IDPServer,
-  RadiusServer,
   CertificateAuthority,
-  PwPolicy,
+  fqdnType,
+  Host,
+  IDPServer,
   KrbPolicy,
   CertProfile,
+  Metadata,
+  PwPolicy,
+  RadiusServer,
+  UIDType,
+  User,
 } from "src/utils/datatypes/globalDataTypes";
 import { apiToUser } from "src/utils/userUtils";
+import { apiToHost } from "src/utils/hostUtils";
 import { apiToPwPolicy } from "src/utils/pwPolicyUtils";
 import { apiToKrbPolicy } from "src/utils/krbPolicyUtils";
 
@@ -28,6 +30,11 @@ export type UserFullData = {
   user?: Partial<User>;
   pwPolicy?: Partial<PwPolicy>;
   krbtPolicy?: Partial<KrbPolicy>;
+  cert?: Record<string, unknown>;
+};
+
+export type HostFullData = {
+  host?: Partial<Host>;
   cert?: Record<string, unknown>;
 };
 
@@ -199,6 +206,7 @@ export const api = createApi({
     "Hosts",
     "CertProfile",
     "DNSZones",
+    "FullHost",
   ],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
@@ -397,6 +405,47 @@ export const api = createApi({
       },
       providesTags: ["FullUser"],
     }),
+    getHostsFullData: build.query<HostFullData, string>({
+      query: (hostId) => {
+        // Prepare search parameters
+        const host_params = {
+          all: true,
+          rights: true,
+        };
+
+        const hostShowCommand: Command = {
+          method: "host_show",
+          params: [[hostId], host_params],
+        };
+
+        const certFindCommand: Command = {
+          method: "cert_find",
+          params: [[], { user: hostId, sizelimit: 0, all: true }],
+        };
+
+        const batchPayload: Command[] = [hostShowCommand, certFindCommand];
+
+        return getBatchCommand(batchPayload, API_VERSION_BACKUP);
+      },
+      transformResponse: (response: BatchResponse): HostFullData => {
+        const [hostResponse, certResponse] = response.result.results;
+
+        // Initialize user data (to prevent 'undefined' values)
+        const hostData = hostResponse.result;
+        const certData = certResponse.result;
+
+        let hostObject = {};
+        if (!hostResponse.error) {
+          hostObject = apiToHost(hostData);
+        }
+
+        return {
+          host: hostObject,
+          cert: certData,
+        };
+      },
+      providesTags: ["FullHost"],
+    }),
     saveUser: build.mutation<FindRPCResponse, Partial<User>>({
       query: (user) => {
         const params = {
@@ -427,6 +476,22 @@ export const api = createApi({
         });
       },
       invalidatesTags: ["FullUser"],
+    }),
+    saveHost: build.mutation<FindRPCResponse, Partial<Host>>({
+      query: (host) => {
+        const params = {
+          version: API_VERSION_BACKUP,
+          ...host,
+        };
+        delete params["fqdn"];
+        delete params["krbcanonicalname"];
+        const fqdn = host.fqdn !== undefined ? host.fqdn : "";
+        return getCommand({
+          method: "host_mod",
+          params: [[fqdn], params],
+        });
+      },
+      invalidatesTags: ["FullHost"],
     }),
     getRadiusProxy: build.query<RadiusServer[], void>({
       query: () => {
@@ -607,6 +672,7 @@ export const api = createApi({
           pkey_only: true,
           sizelimit: sizeLimit,
           version: apiVersion,
+          all: true,
         };
 
         // Prepare payload
@@ -636,7 +702,7 @@ export const api = createApi({
         // Prepare payload
         const payloadHostDataBatch: Command[] = fqdns.map((fqdn) => ({
           method: "host_show",
-          params: [[fqdn], {}],
+          params: [[fqdn], { no_members: true }],
         }));
 
         // Make call using 'fetchWithBQ'
@@ -929,4 +995,6 @@ export const {
   useAddHostMutation,
   useRemoveHostsMutation,
   useGetDNSZonesQuery,
+  useSaveHostMutation,
+  useGetHostsFullDataQuery,
 } = api;
