@@ -7,7 +7,7 @@ const ErrorPage = (text: string) => {
     <>
       <div style={{ alignSelf: "center" }}>
         <Icon status="warning" size="xl" className="pf-v5-u-mt-4xl">
-          <ExclamationTriangleIcon sizes="lg" />
+          <ExclamationTriangleIcon />
         </Icon>
       </div>
       <div style={{ alignSelf: "center" }}>
