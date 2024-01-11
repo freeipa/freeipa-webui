@@ -25,6 +25,14 @@ interface PropsToRemoveHoldCertificate {
 }
 
 const RemoveHoldCertificate = (props: PropsToRemoveHoldCertificate) => {
+  const [certName, setCertName] = React.useState<string>("");
+
+  React.useEffect(() => {
+    if (props.certificate.certInfo !== undefined) {
+      setCertName(parseDn(props.certificate.certInfo.issuer).cn);
+    }
+  }, [props.certificate]);
+
   // Alerts to show in the UI
   const alerts = useAlerts();
 
@@ -81,9 +89,7 @@ const RemoveHoldCertificate = (props: PropsToRemoveHoldCertificate) => {
     <>
       <alerts.ManagedAlerts />
       <InformationModalLayout
-        title={
-          "Certificate for " + parseDn(props.certificate.certInfo.issuer).cn
-        }
+        title={"Certificate for " + certName}
         variant="medium"
         actions={infoModalActions}
         isOpen={props.isOpen}
