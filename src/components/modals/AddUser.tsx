@@ -38,6 +38,8 @@ import { SerializedError } from "@reduxjs/toolkit";
 import ErrorModal from "./ErrorModal";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
+// Utils
+import { NO_SELECTION_OPTION } from "src/utils/constUtils";
 
 interface GroupId {
   cn: string;
@@ -287,10 +289,16 @@ const AddUser = (props: PropsToAddUser) => {
   };
 
   // Select GID
+  const assignGidOptions = () => {
+    const newGidOptions = GIDs.map((gid) => gid.cn);
+    newGidOptions.unshift(NO_SELECTION_OPTION);
+    return newGidOptions;
+  };
+
   const [GIDs, setGIDs] = useState<GroupId[]>([]);
   const [isGidOpen, setIsGidOpen] = useState(false);
   const [gidSelected, setGidSelected] = useState<string>("");
-  const gidOptions = GIDs.map((gid) => gid.cn);
+  const gidOptions = assignGidOptions();
 
   const gidOnToggle = () => {
     setIsGidOpen(!isGidOpen);
@@ -298,6 +306,9 @@ const AddUser = (props: PropsToAddUser) => {
 
   // Given a gid name, return gid number
   const getGIDNumberFromName = (gidName: string) => {
+    if (gidName === NO_SELECTION_OPTION) {
+      return "";
+    }
     for (let i = 0; i < GIDs.length; i++) {
       if (gidName === GIDs[i].cn[0]) {
         return GIDs[i].gidnumber[0];
