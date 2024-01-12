@@ -48,14 +48,6 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
-  const [certName, setCertName] = React.useState<string>("");
-
-  React.useEffect(() => {
-    if (props.certificate.certInfo !== undefined) {
-      setCertName(parseDn(props.certificate.certInfo.issuer).cn);
-    }
-  }, [props.certificate]);
-
   // Obtain CAs from the IPA server
   const certificateAuthorityQuery = useGetCertificateAuthorityQuery();
   const certificateAuthorities = certificateAuthorityQuery.data || [];
@@ -230,7 +222,9 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
       <ModalWithFormLayout
         variantType="small"
         modalPosition="top"
-        title={"Certificate for " + certName}
+        title={
+          "Certificate for " + parseDn(props.certificate.certInfo.issuer).cn
+        }
         description={
           "Do you want to revoke this certificate? Select a reason from the pull-down list."
         }
