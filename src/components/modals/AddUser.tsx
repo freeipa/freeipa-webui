@@ -6,10 +6,7 @@ import {
   Flex,
   HelperText,
   HelperTextItem,
-  MenuToggle,
-  MenuToggleElement,
-  Select,
-  SelectOption,
+  SelectOptionProps,
   TextInput,
   ValidatedOptions,
 } from "@patternfly/react-core";
@@ -40,6 +37,8 @@ import ErrorModal from "./ErrorModal";
 import useAlerts from "src/hooks/useAlerts";
 // Utils
 import { NO_SELECTION_OPTION } from "src/utils/constUtils";
+// Components
+import TypeAheadSelectWithCreate from "../TypeAheadSelectWithCreate";
 
 interface GroupId {
   cn: string;
@@ -288,47 +287,26 @@ const AddUser = (props: PropsToAddUser) => {
     });
   };
 
-  // Select GID
-  const assignGidOptions = () => {
-    const newGidOptions = GIDs.map((gid) => gid.cn);
-    newGidOptions.unshift(NO_SELECTION_OPTION);
+  const getGidOptions = (groups: GroupId[]) => {
+    const newGidOptions: SelectOptionProps[] = [];
+    groups.map((gid) => {
+      const item = {
+        value: gid.gidnumber[0],
+        children: gid.cn[0],
+      } as SelectOptionProps;
+      newGidOptions.push(item);
+    });
+
+    newGidOptions.unshift({
+      value: "",
+      children: NO_SELECTION_OPTION,
+    });
     return newGidOptions;
   };
 
   const [GIDs, setGIDs] = useState<GroupId[]>([]);
-  const [isGidOpen, setIsGidOpen] = useState(false);
   const [gidSelected, setGidSelected] = useState<string>("");
-  const gidOptions = assignGidOptions();
-
-  const gidOnToggle = () => {
-    setIsGidOpen(!isGidOpen);
-  };
-
-  // Given a gid name, return gid number
-  const getGIDNumberFromName = (gidName: string) => {
-    if (gidName === NO_SELECTION_OPTION) {
-      return "";
-    }
-    for (let i = 0; i < GIDs.length; i++) {
-      if (gidName === GIDs[i].cn[0]) {
-        return GIDs[i].gidnumber[0];
-      }
-    }
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const gidOnSelect = (selection: any) => {
-    const gidnumber = getGIDNumberFromName(selection.target.textContent);
-    setGidSelected(gidnumber as string);
-    setIsGidOpen(false);
-  };
-
-  // Toggle
-  const toggleGid = (toggleRef: React.Ref<MenuToggleElement>) => (
-    <MenuToggle ref={toggleRef} onClick={gidOnToggle} className="pf-v5-u-w-100">
-      {gidSelected}
-    </MenuToggle>
-  );
+  const gidOptions = getGidOptions(GIDs);
 
   // Checks if the passwords are filled and matches
   const verifiedPasswords =
@@ -484,21 +462,12 @@ const AddUser = (props: PropsToAddUser) => {
       id: "gid-form",
       name: "GID",
       pfComponent: (
-        <Select
-          id="gidnumber"
-          aria-label="Select Input"
-          toggle={toggleGid}
-          onSelect={gidOnSelect}
+        <TypeAheadSelectWithCreate
+          id={"modal-form-gid"}
+          options={gidOptions}
           selected={gidSelected}
-          isOpen={isGidOpen}
-          aria-labelledby="gid"
-        >
-          {gidOptions.map((option, index) => (
-            <SelectOption key={index} value={option}>
-              {option}
-            </SelectOption>
-          ))}
-        </Select>
+          onSelectedChange={setGidSelected}
+        />
       ),
     },
     {
