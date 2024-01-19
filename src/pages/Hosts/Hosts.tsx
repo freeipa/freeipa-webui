@@ -130,7 +130,7 @@ const Hosts = () => {
   // Derived states - what we get from API
   const hostDataResponse = useGettingHostQuery({
     searchValue: "",
-    sizeLimit: 0,
+    sizelimit: 0,
     apiVersion: apiVersion || API_VERSION_BACKUP,
   } as HostsPayload);
 
@@ -162,12 +162,10 @@ const Hosts = () => {
       hostDataResponse.data &&
       batchResponse !== undefined
     ) {
-      const hostsListResult = batchResponse.result.results;
-      const hostsListSize = batchResponse.result.count;
+      const hostsListSize = batchResponse.length;
       const hostsList: Host[] = [];
-
       for (let i = 0; i < hostsListSize; i++) {
-        hostsList.push(hostsListResult[i].result);
+        hostsList.push(batchResponse[i]);
       }
 
       // Update 'Hosts' slice data

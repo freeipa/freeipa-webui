@@ -19,6 +19,7 @@ import {
   PwPolicy,
   KrbPolicy,
   CertProfile,
+  Host,
 } from "src/utils/datatypes/globalDataTypes";
 import { apiToUser } from "src/utils/userUtils";
 import { apiToPwPolicy } from "src/utils/pwPolicyUtils";
@@ -129,7 +130,7 @@ export interface UsersPayload {
 
 export interface HostsPayload {
   searchValue: string;
-  sizeLimit: number;
+  sizelimit: number;
   apiVersion: string;
 }
 
@@ -588,70 +589,21 @@ export const api = createApi({
       providesTags: ["ActiveUsers"],
     }),
     // Hosts
-    gettingHost: build.query<BatchRPCResponse, HostsPayload>({
-      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { searchValue, sizeLimit, apiVersion } = payloadData;
-
-        if (apiVersion === undefined) {
-          return {
-            error: {
-              status: "CUSTOM_ERROR",
-              data: "",
-              error: "API version not available",
-            } as FetchBaseQueryError,
-          };
-        }
-
+    gettingHost: build.query<Host[], HostsPayload>({
+      query: (payload) => {
         // Prepare search parameters
         const params = {
-          pkey_only: true,
-          sizelimit: sizeLimit,
-          version: apiVersion,
+          version: payload.apiVersion,
+          sizelimit: payload.sizelimit,
+          all: true,
         };
-
-        // Prepare payload
-        const payloadDataIds: Command = {
+        return getCommand({
           method: "host_find",
-          params: [[searchValue], params],
-        };
-
-        // Make call using 'fetchWithBQ'
-        const getGroupIDsResult = await fetchWithBQ(getCommand(payloadDataIds));
-        // Return possible errors
-        if (getGroupIDsResult.error) {
-          return { error: getGroupIDsResult.error as FetchBaseQueryError };
-        }
-        // If no error: cast and assign 'uids'
-        const hostIdResponseData = getGroupIDsResult.data as FindRPCResponse;
-
-        const fqdns: string[] = [];
-        const itemsCount = hostIdResponseData.result.result.length as number;
-        for (let i = 0; i < itemsCount; i++) {
-          const hostId = hostIdResponseData.result.result[i] as fqdnType;
-          const { fqdn } = hostId;
-          fqdns.push(fqdn[0] as string);
-        }
-
-        // 2ND CALL - GET PARTIAL HOSTS INFO
-        // Prepare payload
-        const payloadHostDataBatch: Command[] = fqdns.map((fqdn) => ({
-          method: "host_show",
-          params: [[fqdn], {}],
-        }));
-
-        // Make call using 'fetchWithBQ'
-        const partialHostsInfoResult = await fetchWithBQ(
-          getBatchCommand(payloadHostDataBatch as Command[], apiVersion)
-        );
-
-        // Return results
-        return partialHostsInfoResult.data
-          ? { data: partialHostsInfoResult.data as BatchRPCResponse }
-          : {
-              error:
-                partialHostsInfoResult.error as unknown as FetchBaseQueryError,
-            };
+          params: [[payload.searchValue], params],
+        });
       },
+      transformResponse: (response: FindRPCResponse): Host[] =>
+        response.result.result as unknown as Host[],
     }),
     // Autommeber Users
     autoMemberRebuildUsers: build.mutation<FindRPCResponse, any[]>({
