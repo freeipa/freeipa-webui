@@ -191,9 +191,17 @@ export interface HostGroup {
 }
 
 export interface Service {
-  id: string;
   serviceType: string;
-  host: string;
+  krbcanonicalname: string;
+  krbprincipalname: string[];
+  krbprincipalauthind: string[];
+  sshpublickey: string[];
+  usercertificate: string[];
+  ipakrbauthzdata: string[]; // pac_type: MS-PAC, PAD, NONE
+  managedby_host: string[];
+  ipakrbrequirespreauth: boolean;
+  ipakrbokasdelegate: boolean;
+  ipakrboktoauthasdelegate: boolean;
 }
 
 // Errors
@@ -318,6 +326,11 @@ export interface cnType {
 export interface fqdnType {
   dn: string;
   fqdn: string[];
+}
+
+export interface servicesType {
+  dn: string;
+  krbprincipalname: string[];
 }
 
 export interface CertProfile {

@@ -52,7 +52,7 @@ const ServicesManagedBy = (props: PropsToServicesManagedBy) => {
 
   // List is current elements on the list (Dummy data)
   const [hostsList, setHostsList] = useState<Host[]>(
-    getFullHostInformation([props.service.host])
+    getFullHostInformation([props.service.krbcanonicalname])
   );
 
   // Some data is updated when any group list is altered
@@ -221,7 +221,7 @@ const ServicesManagedBy = (props: PropsToServicesManagedBy) => {
 
   const tabData = {
     tabName: "Hosts",
-    elementName: props.service.host,
+    elementName: props.service.krbcanonicalname,
   };
 
   // - MemberOfDeleteModal
@@ -237,7 +237,7 @@ const ServicesManagedBy = (props: PropsToServicesManagedBy) => {
 
   const deleteTabData = {
     tabName: "Hosts",
-    elementName: props.service.host,
+    elementName: props.service.krbcanonicalname,
   };
 
   return (

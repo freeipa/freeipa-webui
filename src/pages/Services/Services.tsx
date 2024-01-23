@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   Page,
@@ -12,37 +12,64 @@ import {
   OuterScrollContainer,
 } from "@patternfly/react-table";
 // Layouts
-import TitleLayout from "src/components/layouts/TitleLayout";
+import TitleLayout from "../../components/layouts/TitleLayout";
 import ToolbarLayout, {
   ToolbarItem,
-} from "src/components/layouts/ToolbarLayout";
-import SearchInputLayout from "src/components/layouts/SearchInputLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
-import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+} from "../../components/layouts/ToolbarLayout";
+import SearchInputLayout from "../../components/layouts/SearchInputLayout";
+import SecondaryButton from "../../components/layouts/SecondaryButton";
+import HelpTextWithIconLayout from "../../components/layouts/HelpTextWithIconLayout";
 // Components
-import BulkSelectorServicesPrep from "src/components/BulkSelectorServicesPrep";
-import PaginationPrep from "src/components/PaginationPrep";
+import BulkSelectorServicesPrep from "../../components/BulkSelectorServicesPrep";
+import PaginationPrep from "../../components/PaginationPrep";
 // Tables
 import ServicesTable from "./ServicesTable";
 // Redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { updateServicesList } from "../../store/Identity/services-slice";
 // Data types
-import { Service } from "src/utils/datatypes/globalDataTypes";
+import { Host, Service } from "../../utils/datatypes/globalDataTypes";
 // Utils
-import { isServiceSelectable } from "src/utils/utils";
+import { API_VERSION_BACKUP, isServiceSelectable } from "../../utils/utils";
 // Icons
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // Modals
-import AddService from "src/components/modals/AddService";
-import DeleteServices from "src/components/modals/DeleteServices";
+import AddService from "../../components/modals/AddService";
+import DeleteServices from "../../components/modals/DeleteServices";
+// Hooks
+import { useAlerts } from "../../hooks/useAlerts";
+// Errors
+import useApiError from "../../hooks/useApiError";
+import GlobalErrors from "../../components/errors/GlobalErrors";
+import ModalErrors from "../../components/errors/ModalErrors";
+// RPC client
+import {
+  useGetHostsListQuery,
+  useGettingServicesQuery,
+  GenericPayload,
+} from "../../services/rpc";
 
 const Services = () => {
   // Initialize services list (Redux)
-  const servicesList = useAppSelector((state) => state.services.servicesList);
+  const [servicesList, setServicesList] = useState<Service[]>([]);
+
+  // Dispatch (Redux)
+  const dispatch = useAppDispatch();
+
+  // Retrieve API version from environment data
+  const apiVersion = useAppSelector(
+    (state) => state.global.environment.api_version
+  ) as string;
+
+  // Alerts to show in the UI
+  const alerts = useAlerts();
+
+  // Handle API calls errors
+  const globalErrors = useApiError([]);
+  const modalErrors = useApiError([]);
 
   // Selected services state
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
-
   const updateSelectedServices = (newSelectedServices: string[]) => {
     setSelectedServices(newSelectedServices);
   };
@@ -50,14 +77,12 @@ const Services = () => {
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
     useState<boolean>(true);
-
   const updateIsDeleteButtonDisabled = (value: boolean) => {
     setIsDeleteButtonDisabled(value);
   };
 
   // If some entries have been deleted, restore the selectedServices list
   const [isDeletion, setIsDeletion] = useState(false);
-
   const updateIsDeletion = (value: boolean) => {
     setIsDeletion(value);
   };
@@ -65,32 +90,22 @@ const Services = () => {
   // Elements selected (per page)
   //  - This will help to calculate the remaining elements on a specific page (bulk selector)
   const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
-
   const updateSelectedPerPage = (selected: number) => {
     setSelectedPerPage(selected);
   };
 
   // Pagination
   const [page, setPage] = useState<number>(1);
-
   const updatePage = (newPage: number) => {
     setPage(newPage);
   };
-
   const [perPage, setPerPage] = useState<number>(15);
-
   const updatePerPage = (newSetPerPage: number) => {
     setPerPage(newSetPerPage);
   };
-
-  // Services displayed on the first page
-  const [shownServicesList, setShownServicesList] = useState(
-    servicesList.slice(0, perPage)
-  );
-
-  const updateShownServicesList = (newShownServicesList: Service[]) => {
-    setShownServicesList(newShownServicesList);
-  };
+  // Page indexes
+  const firstServiceIdx = (page - 1) * perPage;
+  const lastServiceIdx = page * perPage;
 
   // Filter (Input search)
   const [searchValue, setSearchValue] = React.useState("");
@@ -99,24 +114,9 @@ const Services = () => {
     setSearchValue(value);
   };
 
-  // Show table rows
-  const [showTableRows, setShowTableRows] = useState(false);
-
   const updateShowTableRows = (value: boolean) => {
     setShowTableRows(value);
   };
-
-  // Refresh displayed elements every time elements list changes (from Redux or somewhere else)
-  React.useEffect(() => {
-    updatePage(1);
-    if (showTableRows) updateShowTableRows(false);
-    setTimeout(() => {
-      updateShownServicesList(servicesList.slice(0, perPage));
-      updateShowTableRows(true);
-      // Reset 'selectedPerPage'
-      updateSelectedPerPage(0);
-    }, 1000);
-  }, [servicesList]);
 
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
@@ -124,6 +124,9 @@ const Services = () => {
 
   const onAddClickHandler = () => {
     setShowAddModal(true);
+  };
+  const onCloseAddModal = () => {
+    setShowAddModal(false);
   };
   const onAddModalToggle = () => {
     setShowAddModal(!showAddModal);
@@ -136,6 +139,39 @@ const Services = () => {
     setShowDeleteModal(!showDeleteModal);
   };
 
+  // Get a list of the hosts
+  const [hostsList, setHostsList] = useState<string[]>([]);
+  const hostDataResponse = useGetHostsListQuery();
+
+  useEffect(() => {
+    if (hostDataResponse === undefined || hostDataResponse.isFetching) {
+      return;
+    }
+    if (hostDataResponse.isSuccess && hostDataResponse.data) {
+      const hostsListResult = hostDataResponse.data.result.result;
+      const hostCount = hostDataResponse.data.result.count;
+      const hosts: Host[] = [];
+      for (let i = 0; i < hostCount; i++) {
+        const hostObj = hostsListResult[i] as Host;
+        hosts.push(hostObj);
+      }
+      setHostsList(hosts.map((hostName) => hostName.fqdn));
+    }
+
+    // API response: Error
+    if (
+      !hostDataResponse.isLoading &&
+      hostDataResponse.isError &&
+      hostDataResponse.error !== undefined
+    ) {
+      alerts.addAlert(
+        "get-host-list-error",
+        "Failed to get host list",
+        "danger"
+      );
+    }
+  }, [hostDataResponse]);
+
   // Table-related shared functionality
   // - Selectable checkboxes on table
   const selectableServicesTable = servicesList.filter(isServiceSelectable); // elements per Table
@@ -147,16 +183,104 @@ const Services = () => {
     setSelectedServiceIds(selectedServiceIds);
   };
 
+  // Button disabled due to error
+  const [isDisabledDueError, setIsDisabledDueError] = useState<boolean>(false);
+
   // - Helper method to set the selected services from the table
   const setServiceSelected = (service: Service, isSelecting = true) =>
     setSelectedServiceIds((prevSelected) => {
       const otherSelectedServiceIds = prevSelected.filter(
-        (r) => r !== service.id
+        (r) => r !== service.krbcanonicalname
       );
       return isSelecting && isServiceSelectable(service)
-        ? [...otherSelectedServiceIds, service.id]
+        ? [...otherSelectedServiceIds, service.krbcanonicalname]
         : otherSelectedServiceIds;
     });
+
+  // Derived states - what we get from API
+  const servicesDataResponse = useGettingServicesQuery({
+    searchValue: "",
+    sizeLimit: 0,
+    apiVersion: apiVersion || API_VERSION_BACKUP,
+    startIdx: firstServiceIdx,
+    stopIdx: lastServiceIdx,
+  } as GenericPayload);
+
+  const {
+    data: batchResponse,
+    isLoading: isBatchLoading,
+    error: batchError,
+  } = servicesDataResponse;
+
+  // Handle data when the API call is finished
+  useEffect(() => {
+    if (servicesDataResponse.isFetching) {
+      setShowTableRows(false);
+      // Reset selected users on refresh
+      setSelectedServices([]);
+      setSelectedServiceIds([]);
+      globalErrors.clear();
+      setIsDisabledDueError(false);
+      return;
+    }
+
+    // API response: Success
+    if (
+      servicesDataResponse.isSuccess &&
+      servicesDataResponse.data &&
+      batchResponse !== undefined
+    ) {
+      const servicesListResult = batchResponse.result.results;
+      const servicesListSize = batchResponse.result.count;
+      const servicesList: Service[] = [];
+
+      for (let i = 0; i < servicesListSize; i++) {
+        servicesList.push(servicesListResult[i].result);
+      }
+
+      // Update 'Hosts' slice data
+      dispatch(updateServicesList(servicesList));
+      setServicesList(servicesList);
+      // Show table elements
+      setShowTableRows(true);
+    }
+
+    // API response: Error
+    if (
+      !servicesDataResponse.isLoading &&
+      servicesDataResponse.isError &&
+      servicesDataResponse.error !== undefined
+    ) {
+      setIsDisabledDueError(true);
+      globalErrors.addError(
+        batchError,
+        "Error when loading data",
+        "error-batch-hosts"
+      );
+    }
+  }, [servicesDataResponse]);
+
+  // Show table rows
+  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
+
+  // Show table rows only when data is fully retrieved
+  useEffect(() => {
+    if (showTableRows !== !isBatchLoading) {
+      setShowTableRows(!isBatchLoading);
+    }
+  }, [isBatchLoading]);
+
+  // Refresh button handling
+  const refreshServicesData = () => {
+    // Hide table
+    setShowTableRows(false);
+
+    // Reset selected hosts on refresh
+    setSelectedServices([]);
+    setSelectedServiceIds([]);
+
+    servicesDataResponse.refetch();
+  };
 
   // Data wrappers
   // - 'SearchInputLayout'
@@ -192,7 +316,7 @@ const Services = () => {
     showTableRows,
     updateShowTableRows,
     updateSelectedPerPage,
-    updateShownElementsList: updateShownServicesList,
+    updateShownElementsList: setHostsList,
   };
 
   // - 'ServicesTable'
@@ -229,7 +353,7 @@ const Services = () => {
       element: (
         <BulkSelectorServicesPrep
           list={servicesList}
-          shownElementsList={shownServicesList}
+          shownElementsList={servicesList}
           elementData={servicesData}
           buttonsData={buttonsData}
           selectedPerPageData={selectedPerPageData}
@@ -255,7 +379,14 @@ const Services = () => {
     },
     {
       key: 3,
-      element: <SecondaryButton>Refresh</SecondaryButton>,
+      element: (
+        <SecondaryButton
+          onClickHandler={refreshServicesData}
+          isDisabled={!showTableRows}
+        >
+          Refresh
+        </SecondaryButton>
+      ),
     },
     {
       key: 4,
@@ -271,7 +402,10 @@ const Services = () => {
     {
       key: 5,
       element: (
-        <SecondaryButton onClickHandler={onAddClickHandler}>
+        <SecondaryButton
+          isDisabled={!showTableRows || isDisabledDueError}
+          onClickHandler={onAddClickHandler}
+        >
           Add
         </SecondaryButton>
       ),
@@ -311,6 +445,7 @@ const Services = () => {
   // Render component
   return (
     <Page>
+      <alerts.ManagedAlerts />
       <PageSection variant={PageSectionVariants.light}>
         <TitleLayout id="Services title" headingLevel="h1" text="Services" />
       </PageSection>
@@ -327,15 +462,19 @@ const Services = () => {
         <div style={{ height: `calc(100vh - 350px)` }}>
           <OuterScrollContainer>
             <InnerScrollContainer>
-              <ServicesTable
-                elementsList={servicesList}
-                shownElementsList={shownServicesList}
-                showTableRows={showTableRows}
-                servicesData={servicesTableData}
-                buttonsData={servicesTableButtonsData}
-                paginationData={selectedPerPageData}
-                searchValue={searchValue}
-              />
+              {batchError !== undefined && batchError ? (
+                <GlobalErrors errors={globalErrors.getAll()} />
+              ) : (
+                <ServicesTable
+                  elementsList={servicesList}
+                  shownElementsList={servicesList}
+                  showTableRows={showTableRows}
+                  servicesData={servicesTableData}
+                  buttonsData={servicesTableButtonsData}
+                  paginationData={selectedPerPageData}
+                  searchValue={searchValue}
+                />
+              )}
             </InnerScrollContainer>
           </OuterScrollContainer>
         </div>
@@ -348,12 +487,21 @@ const Services = () => {
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
         />
       </PageSection>
-      <AddService show={showAddModal} handleModalToggle={onAddModalToggle} />
+      <ModalErrors errors={modalErrors.getAll()} />
+      <AddService
+        show={showAddModal}
+        handleModalToggle={onAddModalToggle}
+        onOpenAddModal={onAddClickHandler}
+        onCloseAddModal={onCloseAddModal}
+        onRefresh={refreshServicesData}
+        hostsList={hostsList}
+      />
       <DeleteServices
         show={showDeleteModal}
         handleModalToggle={onDeleteModalToggle}
-        selectedElementsData={selectedElementsData}
+        selectedServicesData={selectedElementsData}
         buttonsData={deleteElementsButtonsData}
+        onRefresh={refreshServicesData}
       />
     </Page>
   );

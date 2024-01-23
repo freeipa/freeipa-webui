@@ -16,23 +16,45 @@ import {
 import SecondaryButton from "../layouts/SecondaryButton";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
 // Data types
-import { Service } from "src/utils/datatypes/globalDataTypes";
+import { Service } from "../../utils/datatypes/globalDataTypes";
+// Modals
+import ErrorModal from "./ErrorModal";
 // Redux
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
-import { addService } from "src/store/Identity/services-slice";
+import { useAppDispatch } from "../../store/hooks";
+import { addService } from "../../store/Identity/services-slice";
+// Errors
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { SerializedError } from "@reduxjs/toolkit";
+// Hooks
+import useAlerts from "../../hooks/useAlerts";
+import {
+  FindRPCResponse,
+  ServiceAddPayload,
+  useAddServiceMutation,
+} from "../../services/rpc";
 
 interface PropsToAddService {
   show: boolean;
+  hostsList: string[];
   handleModalToggle: () => void;
+  onOpenAddModal?: () => void;
+  onCloseAddModal?: () => void;
+  onRefresh?: () => void;
 }
 
 const AddService = (props: PropsToAddService) => {
   // Set dispatch (Redux)
   const dispatch = useAppDispatch();
 
+  // Alerts to show in the UI
+  const alerts = useAlerts();
+
+  const [executeServiceAddCommand] = useAddServiceMutation();
+
   // Set host names list
-  const hostsList = useAppSelector((state) => state.hosts.hostsList);
-  const hostNamesList = hostsList.map((hostName) => hostName.fqdn);
+  const [addSpinning, setAddBtnSpinning] = React.useState<boolean>(false);
+  const [addAgainSpinning, setAddAgainBtnSpinning] =
+    React.useState<boolean>(false);
 
   // 'Service' select
   const [isServiceOpen, setIsServiceOpen] = useState(false);
@@ -75,10 +97,16 @@ const AddService = (props: PropsToAddService) => {
     setIsServiceOpen(false);
   };
 
+  // Validation fields
+  const [hostNameValidation, setHostNameValidation] = useState({
+    isError: false,
+    message: "",
+    pfError: ValidatedOptions.default,
+  });
+
   // 'Host name' select
   const [isHostNameOpen, setIsHostNameOpen] = useState(false);
   const [hostNameSelected, setHostNameSelected] = useState("");
-  const hostNameOptions = hostNamesList;
 
   const hostNameOnToggle = () => {
     setIsHostNameOpen(!isHostNameOpen);
@@ -105,20 +133,8 @@ const AddService = (props: PropsToAddService) => {
     </MenuToggle>
   );
 
-  // 'Force' checkbox
-  const [isForceChecked, setIsForceChecked] = useState(false);
-
-  // 'Skip host check' checkbox
-  const [isSkipHostChecked, setIsSkipHostChecked] = useState(false);
-
   // Validation fields
   const [serviceValidation, setServiceValidation] = useState({
-    isError: false,
-    message: "",
-    pfError: ValidatedOptions.default,
-  });
-
-  const [hostNameValidation, setHostNameValidation] = useState({
     isError: false,
     message: "",
     pfError: ValidatedOptions.default,
@@ -189,13 +205,25 @@ const AddService = (props: PropsToAddService) => {
     resetHostNameError();
   };
 
+  // Checklbox handlers
+  const [forceCheckbox, setForceCheckbox] = useState(false);
+  const [skipHostCheckbox, setSkipHostCheckbox] = useState(false);
+  // Force
+  const handleForceCheckbox = () => {
+    setForceCheckbox(!forceCheckbox);
+  };
+  // Skip host check
+  const handleSkipHostCheckCheckbox = () => {
+    setSkipHostCheckbox(!skipHostCheckbox);
+  };
+
   // Add button is disabled until the user fills the required fields
   const [buttonDisabled, setButtonDisabled] = useState(true);
   useEffect(() => {
     if (serviceSelected !== "" && hostNameSelected !== "") {
       setButtonDisabled(false);
     } else {
-      setButtonDisabled(false);
+      setButtonDisabled(true);
     }
   }, [serviceSelected, hostNameSelected]);
 
@@ -250,7 +278,7 @@ const AddService = (props: PropsToAddService) => {
             isOpen={isHostNameOpen}
             aria-labelledby="host name"
           >
-            {hostNameOptions.map((option, index) => (
+            {props.hostsList.map((option, index) => (
               <SelectOption key={index} value={option}>
                 {option}
               </SelectOption>
@@ -275,11 +303,12 @@ const AddService = (props: PropsToAddService) => {
       pfComponent: (
         <Checkbox
           label="Force"
-          isChecked={isForceChecked}
+          isChecked={forceCheckbox}
           aria-label="force service checkbox"
           id="force-checkbox"
           name="force"
           value="force"
+          onChange={handleForceCheckbox}
         />
       ),
     },
@@ -289,11 +318,12 @@ const AddService = (props: PropsToAddService) => {
       pfComponent: (
         <Checkbox
           label="Skip host check"
-          isChecked={isSkipHostChecked}
+          isChecked={skipHostCheckbox}
           aria-label="skip host check checkbox"
           id="skip-host-check-checkbox"
           name="skip_host_check"
           value="skip-host-check"
+          onChange={handleSkipHostCheckCheckbox}
         />
       ),
     },
@@ -303,8 +333,12 @@ const AddService = (props: PropsToAddService) => {
   const cleanAllFields = () => {
     setServiceSelected("");
     setHostNameSelected("");
-    setIsForceChecked(false);
-    setIsSkipHostChecked(false);
+    setForceCheckbox(false);
+    setSkipHostCheckbox(false);
+    setIsHostNameOpen(false);
+    setIsServiceOpen(false);
+    setAddBtnSpinning(false);
+    setAddAgainBtnSpinning(false);
   };
 
   // Clean fields and close modal (To prevent data persistence when reopen modal)
@@ -324,35 +358,149 @@ const AddService = (props: PropsToAddService) => {
     } else return true;
   };
 
-  // Add new 'Service'
-  const addServiceHandler = () => {
+  // Define status flags to determine user added successfully or error
+  let isAdditionSuccess = true;
+
+  // Track which button has been clicked ('onAddUser' or 'onAddAndAddAnother')
+  // to better handle the 'retry' function and its behavior
+  let onAddServiceClicked = true;
+
+  // Add host data
+  const addServiceData = async () => {
+    const newServicePayload = {
+      service: serviceSelected + "/" + hostNameSelected,
+      force: forceCheckbox,
+      skip_host_check: skipHostCheckbox,
+    } as ServiceAddPayload;
+
+    // Add host via API call
+    await executeServiceAddCommand(newServicePayload).then((service) => {
+      if ("data" in service) {
+        const data = service.data as FindRPCResponse;
+        const error = data.error as FetchBaseQueryError | SerializedError;
+        const result = data.result;
+
+        if (error) {
+          // Set status flag: error
+          isAdditionSuccess = false;
+          // Handle error
+          handleAPIError(error);
+        } else {
+          // Set alert: success
+          alerts.addAlert(
+            "add-service-success",
+            "New service added",
+            "success"
+          );
+
+          // Dispatch host data to redux
+          const updatedServiceList = result.result as unknown as Service;
+          dispatch(addService(updatedServiceList));
+          // Set status flag: success
+          isAdditionSuccess = true;
+          // Refresh data
+          if (props.onRefresh !== undefined) {
+            props.onRefresh();
+          }
+        }
+      }
+    });
+  };
+
+  const addAndAddAnotherHandler = () => {
+    onAddServiceClicked = false;
     const validation = validateFields();
     if (validation) {
-      const newService: Service = {
-        id: serviceSelected + "/" + hostNameSelected,
-        serviceType: serviceSelected,
-        host: hostNameSelected,
-      };
-      // TODO: Manage 'Force' and 'Skip host check' behaviors
-      dispatch(addService(newService));
-      cleanAndCloseModal();
+      setAddAgainBtnSpinning(true);
+      addServiceData().then(() => {
+        if (isAdditionSuccess) {
+          // Do not close the modal, but clean fields & reset validations
+          cleanAllFields();
+          resetValidations();
+        } else {
+          // Close the modal without cleaning fields
+          if (props.onCloseAddModal !== undefined) {
+            props.onCloseAddModal();
+          }
+          setAddAgainBtnSpinning(false);
+        }
+      });
     }
   };
 
-  const addAndAddAnotherServiceHandler = () => {
+  const addServiceHandler = () => {
+    onAddServiceClicked = true;
     const validation = validateFields();
     if (validation) {
-      const newService: Service = {
-        id: serviceSelected + "/" + hostNameSelected,
-        serviceType: serviceSelected,
-        host: hostNameSelected,
-      };
-      // TODO: Manage 'Force' and 'Skip host check' behaviors
-      dispatch(addService(newService));
-      // Do not close the modal, but clean fields & reset validations
-      cleanAllFields();
-      resetValidations();
+      setAddBtnSpinning(true);
+      addServiceData().then(() => {
+        if (!isAdditionSuccess) {
+          // Close the modal without cleaning fields
+          if (props.onCloseAddModal !== undefined) {
+            props.onCloseAddModal();
+          }
+          setAddBtnSpinning(false);
+        } else {
+          // Clean data and close modal
+          cleanAndCloseModal();
+        }
+      });
     }
+  };
+
+  // Error handling
+  const [isModalErrorOpen, setIsModalErrorOpen] = useState(false);
+  const [errorTitle, setErrorTitle] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const closeAndCleanErrorParameters = () => {
+    setIsModalErrorOpen(false);
+    setErrorTitle("");
+    setErrorMessage("");
+  };
+
+  const onCloseErrorModal = () => {
+    closeAndCleanErrorParameters();
+    // Show Add modal
+    if (props.onOpenAddModal !== undefined) {
+      props.onOpenAddModal();
+    }
+  };
+
+  const onRetry = () => {
+    // Keep the add modal closed until the operation is done...
+    if (props.onCloseAddModal !== undefined) {
+      props.onCloseAddModal();
+    }
+
+    // Close the error modal
+    closeAndCleanErrorParameters();
+
+    // Repeats the same previous operation
+    if (onAddServiceClicked) {
+      addServiceHandler();
+    } else {
+      addAndAddAnotherHandler();
+    }
+  };
+
+  const errorModalActions = [
+    <SecondaryButton key="retry" onClickHandler={onRetry}>
+      Retry
+    </SecondaryButton>,
+    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+      Cancel
+    </Button>,
+  ];
+
+  const handleAPIError = (error: FetchBaseQueryError | SerializedError) => {
+    if ("code" in error) {
+      setErrorTitle("IPA error " + error.code + ": " + error.name);
+      if (error.message !== undefined) {
+        setErrorMessage(error.message);
+      }
+    }
+    setIsModalErrorOpen(true);
   };
 
   // Buttons that will be shown at the end of the form
@@ -360,20 +508,26 @@ const AddService = (props: PropsToAddService) => {
     <SecondaryButton
       key="add-new-service"
       name="add"
-      isDisabled={buttonDisabled}
+      isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
       onClickHandler={addServiceHandler}
       form="modal-form"
+      spinnerAriaValueText="Adding"
+      spinnerAriaLabel="Adding"
+      isLoading={addSpinning}
     >
-      Add
+      {addSpinning ? "Adding" : "Add"}
     </SecondaryButton>,
     <SecondaryButton
       key="add-and-add-another-new-service"
       name="add_and_add_another"
-      isDisabled={buttonDisabled}
-      onClickHandler={addAndAddAnotherServiceHandler}
+      isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
+      onClickHandler={addAndAddAnotherHandler}
       form="modal-form"
+      spinnerAriaValueText="Adding again"
+      spinnerAriaLabel="Adding again"
+      isLoading={addAgainSpinning}
     >
-      Add and add another
+      {addAgainSpinning ? "Adding" : "Add and add another"}
     </SecondaryButton>,
     <Button
       key="cancel-new-service"
@@ -386,17 +540,29 @@ const AddService = (props: PropsToAddService) => {
 
   // Render component
   return (
-    <ModalWithFormLayout
-      variantType="small"
-      modalPosition="top"
-      offPosition="76px"
-      title="Add service"
-      formId="add-service-modal"
-      fields={fields}
-      show={props.show}
-      onClose={cleanAndCloseModal}
-      actions={modalActions}
-    />
+    <>
+      <alerts.ManagedAlerts />
+      <ModalWithFormLayout
+        variantType="small"
+        modalPosition="top"
+        offPosition="76px"
+        title="Add service"
+        formId="add-service-modal"
+        fields={fields}
+        show={props.show}
+        onClose={cleanAndCloseModal}
+        actions={modalActions}
+      />
+      {isModalErrorOpen && (
+        <ErrorModal
+          title={errorTitle}
+          isOpen={isModalErrorOpen}
+          onClose={onCloseErrorModal}
+          actions={errorModalActions}
+          errorMessage={errorMessage}
+        />
+      )}
+    </>
   );
 };
 

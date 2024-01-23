@@ -50,6 +50,7 @@ const RetrieveKeytabElementsDeleteModal = (props: PropsToDelete) => {
           elementsToDelete={props.elementsToDelete.sort()}
           columnNames={props.columnNames}
           elementType={props.elementType}
+          idAttr="fqdn"
         />
       ),
     },

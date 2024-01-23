@@ -82,6 +82,7 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
           elementsList={hostsListCopy}
           columnNames={deleteHostsColumnNames}
           elementType="hosts"
+          idAttr="fqdn"
         />
       ),
     },

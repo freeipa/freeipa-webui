@@ -110,13 +110,13 @@ const BulkSelectorServicesPrep = (props: PropsToBulkSelectorPrep) => {
     selectableServicesList: Service[]
   ) => {
     props.elementData.changeSelectedServiceIds(
-      isSelecting ? selectableServicesList.map((r) => r.id) : []
+      isSelecting ? selectableServicesList.map((r) => r.krbcanonicalname) : []
     );
 
     // Update selected elements
     const serviceNamesArray: string[] = [];
     selectableServicesList.map((service) => {
-      serviceNamesArray.push(service.id);
+      serviceNamesArray.push(service.krbcanonicalname);
     });
     props.elementData.updateSelectedServices(serviceNamesArray);
 
@@ -133,7 +133,7 @@ const BulkSelectorServicesPrep = (props: PropsToBulkSelectorPrep) => {
           servicesIdArray.push(service);
         });
         selectableServicesList.map((service) => {
-          servicesIdArray.push(service.id);
+          servicesIdArray.push(service.krbcanonicalname);
         });
       }
 
@@ -165,20 +165,22 @@ const BulkSelectorServicesPrep = (props: PropsToBulkSelectorPrep) => {
     selectableServicesList: Service[]
   ) => {
     props.elementData.changeSelectedServiceIds(
-      isSelecting ? selectableServicesList.map((r) => r.id) : []
+      isSelecting ? selectableServicesList.map((r) => r.krbcanonicalname) : []
     );
 
     // Update selected elements
     const serviceNamesArray: string[] = [];
     selectableServicesList.map((service) => {
-      serviceNamesArray.push(service.id);
+      serviceNamesArray.push(service.krbcanonicalname);
     });
     props.elementData.updateSelectedServices(serviceNamesArray);
 
     // Enable/disable 'Delete' button
     if (isSelecting) {
       const servicesIdArray: string[] = [];
-      selectableServicesList.map((service) => servicesIdArray.push(service.id));
+      selectableServicesList.map((service) =>
+        servicesIdArray.push(service.krbcanonicalname)
+      );
       props.elementData.changeSelectedServiceIds(servicesIdArray);
       props.elementData.updateSelectedServices(servicesIdArray);
       props.buttonsData.updateIsDeleteButtonDisabled(false);
@@ -194,8 +196,9 @@ const BulkSelectorServicesPrep = (props: PropsToBulkSelectorPrep) => {
   // - Some rows selected: null (-)
   // - None selected: false (empty)
   const areAllElementsSelected: boolean | null =
+    props.elementData.selectedServices.length > 0 &&
     props.elementData.selectedServices.length ===
-    props.elementData.selectableServicesTable.length
+      props.elementData.selectableServicesTable.length
       ? true
       : props.elementData.selectedServices.length > 0
       ? null
@@ -241,7 +244,9 @@ const BulkSelectorServicesPrep = (props: PropsToBulkSelectorPrep) => {
   // The 'currentPageAlreadySelected' should be set when elements are selected
   useEffect(() => {
     const found = props.shownElementsList.every(
-      (service) => props.elementData.selectedServices.indexOf(service.id) >= 0
+      (service) =>
+        props.elementData.selectedServices.indexOf(service.krbcanonicalname) >=
+        0
     );
 
     if (found) {
@@ -254,7 +259,9 @@ const BulkSelectorServicesPrep = (props: PropsToBulkSelectorPrep) => {
       if (
         !props.shownElementsList.some(
           (service) =>
-            props.elementData.selectedServices.indexOf(service.id) >= 0
+            props.elementData.selectedServices.indexOf(
+              service.krbcanonicalname
+            ) >= 0
         )
       ) {
         props.selectedPerPageData.updateSelectedPerPage(0);

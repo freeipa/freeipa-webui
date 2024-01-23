@@ -51,13 +51,13 @@ const ServicesTabs = () => {
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadcrumbLayout
           className="pf-v5-u-mb-md"
-          preText="Service:"
-          userId={serviceData.id}
+          preText=""
+          userId={serviceData.krbcanonicalname}
           pagesVisited={pagesVisited}
         />
         <TitleLayout
-          id={serviceData.id}
-          text={serviceData.id}
+          id={serviceData.krbcanonicalname}
+          text={serviceData.krbcanonicalname}
           headingLevel="h1"
         />
       </PageSection>

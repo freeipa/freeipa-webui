@@ -1,33 +1,31 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-// User data (JSON file)
-import servicesJson from "./services.json";
 // Data types
-import { Service } from "src/utils/datatypes/globalDataTypes";
+import { Service } from "../../utils/datatypes/globalDataTypes";
 
 interface ServicesState {
   servicesList: Service[];
 }
 
 const initialState: ServicesState = {
-  servicesList: servicesJson,
+  servicesList: [],
 };
 
 const servicesSlice = createSlice({
   name: "services",
   initialState,
   reducers: {
+    updateServicesList: (state, action: PayloadAction<Service[]>) => {
+      const updatedServicesList = action.payload;
+      state.servicesList = updatedServicesList;
+    },
     addService: (state, action: PayloadAction<Service>) => {
       const newService = action.payload;
-      state.servicesList.push({
-        id: newService.id,
-        serviceType: newService.serviceType,
-        host: newService.host,
-      });
+      state.servicesList.push({ ...newService });
     },
     removeService: (state, action: PayloadAction<string>) => {
       const serviceId = action.payload;
       const updatedServiceList = state.servicesList.filter(
-        (service) => service.id !== serviceId
+        (service) => service.krbcanonicalname !== serviceId
       );
       // If not empty, replace list by new array
       if (updatedServiceList) {
@@ -38,4 +36,5 @@ const servicesSlice = createSlice({
 });
 
 export default servicesSlice.reducer;
-export const { addService, removeService } = servicesSlice.actions;
+export const { updateServicesList, addService, removeService } =
+  servicesSlice.actions;

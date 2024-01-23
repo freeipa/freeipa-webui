@@ -67,7 +67,7 @@ const ServicesTable = (props: PropsToTable) => {
         "i"
       );
     }
-    return service.id.search(input) >= 0;
+    return service.krbcanonicalname.search(input) >= 0;
   };
 
   const filteredShownServices =
@@ -87,16 +87,16 @@ const ServicesTable = (props: PropsToTable) => {
 
   // Since OnSort specifies sorted columns by index, we need sortable values for our object by column index.
   const getSortableRowValues = (service: Service): (string | number)[] => {
-    const { id } = service;
-    return [id];
+    const { krbcanonicalname } = service;
+    return [krbcanonicalname];
   };
 
   let sortedServices = [...shownServicesList];
   if (activeSortIndex !== null) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     sortedServices = shownServicesList.sort((a, b) => {
-      const aValue = getSortableRowValues(a)[activeSortIndex];
-      const bValue = getSortableRowValues(b)[activeSortIndex];
+      let aValue = getSortableRowValues(a)[activeSortIndex][0];
+      let bValue = getSortableRowValues(b)[activeSortIndex][0];
       if (typeof aValue === "number") {
         // Numeric sort
         if (activeSortDirection === "asc") {
@@ -105,6 +105,10 @@ const ServicesTable = (props: PropsToTable) => {
         return (bValue as number) - (aValue as number);
       } else {
         // String sort
+        if (aValue.constructor === Array) {
+          aValue = aValue[0];
+          bValue = bValue[0];
+        }
         if (activeSortDirection === "asc") {
           return (aValue as string).localeCompare(bValue as string);
         }
@@ -129,7 +133,7 @@ const ServicesTable = (props: PropsToTable) => {
   });
 
   const isServiceSelected = (service: Service) =>
-    props.servicesData.selectedServiceIds.includes(service.id);
+    props.servicesData.selectedServiceIds.includes(service.krbcanonicalname);
 
   // To allow shift+click to select/deselect multiple rows
   const [recentSelectedRowIndex, setRecentSelectedRowIndex] = useState<
@@ -173,14 +177,14 @@ const ServicesTable = (props: PropsToTable) => {
     // Update serviceIdsSelected array
     let serviceIdsSelectedArray = props.servicesData.selectedServiceIds;
     if (isSelecting) {
-      serviceIdsSelectedArray.push(service.id);
+      serviceIdsSelectedArray.push(service.krbcanonicalname);
       // Increment the elements selected per page (++)
       props.paginationData.updateSelectedPerPage(
         props.paginationData.selectedPerPage + 1
       );
     } else {
       serviceIdsSelectedArray = serviceIdsSelectedArray.filter(
-        (serviceId) => serviceId !== service.id
+        (serviceId) => serviceId !== service.krbcanonicalname
       );
       // Decrement the elements selected per page (--)
       props.paginationData.updateSelectedPerPage(
@@ -243,7 +247,7 @@ const ServicesTable = (props: PropsToTable) => {
   );
 
   const body = filteredShownServices.map((service, rowIndex) => (
-    <Tr key={service.id} id={service.id}>
+    <Tr key={service.krbcanonicalname} id={service.krbcanonicalname}>
       <Td
         dataLabel="checkbox"
         select={{
@@ -256,7 +260,7 @@ const ServicesTable = (props: PropsToTable) => {
       />
       <Td dataLabel={columnNames.principalName}>
         <Link to={URL_PREFIX + "/services/settings"} state={service}>
-          {service.id}
+          {service.krbcanonicalname}
         </Link>
       </Td>
     </Tr>
