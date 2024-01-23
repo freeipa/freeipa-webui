@@ -48,17 +48,44 @@ const ServicesTable = (props: PropsToTable) => {
     principalName: "Principal name",
   };
 
-  const isServiceSelected = (service: Service) => {
-    if (
-      props.servicesData.selectedServices.find(
-        (selectedService) =>
-          selectedService.krbcanonicalname[0] === service.krbcanonicalname[0]
-      )
-    ) {
+  // Filter (SearchInput)
+  // - When a service is search using the Search Input
+  const onFilter = (service: Service) => {
+    if (props.searchValue === "") {
       return true;
-    } else {
-      return false;
     }
+
+    let input: RegExp;
+    try {
+      input = new RegExp(props.searchValue, "i");
+    } catch (err) {
+      input = new RegExp(
+        props.searchValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+        "i"
+      );
+    }
+    return service.krbcanonicalname.search(input) >= 0;
+  };
+
+  const filteredShownServices =
+    props.searchValue === ""
+      ? shownServicesList
+      : props.elementsList.filter(onFilter);
+
+  // Index of the currently sorted column
+  // Note: if you intend to make columns reorderable, you may instead want to use a non-numeric key
+  // as the identifier of the sorted column. See the "Compound expandable" example.
+  const [activeSortIndex, setActiveSortIndex] = useState<number | null>(null);
+
+  // Sort direction of the currently sorted column
+  const [activeSortDirection, setActiveSortDirection] = useState<
+    "asc" | "desc" | null
+  >(null);
+
+  // Since OnSort specifies sorted columns by index, we need sortable values for our object by column index.
+  const getSortableRowValues = (service: Service): (string | number)[] => {
+    const { krbcanonicalname } = service;
+    return [krbcanonicalname];
   };
 
   // To allow shift+click to select/deselect multiple rows
@@ -163,31 +190,25 @@ const ServicesTable = (props: PropsToTable) => {
     </Tr>
   );
 
-  const body = shownServicesList.map((service, rowIndex) => {
-    const encodedServiceId = encodeURIComponent(
-      encodeURIComponent(service.krbcanonicalname[0])
-    );
-
-    return (
-      <Tr key={service.krbcanonicalname[0]} id={service.krbcanonicalname[0]}>
-        <Td
-          dataLabel="checkbox"
-          select={{
-            rowIndex,
-            onSelect: (_event, isSelecting) =>
-              onSelectService(service, rowIndex, isSelecting),
-            isSelected: isServiceSelected(service),
-            isDisabled: !props.servicesData.isServiceSelectable(service),
-          }}
-        />
-        <Td dataLabel={columnNames.principalName}>
-          <Link to={"/services/" + encodedServiceId} state={service}>
-            {service.krbcanonicalname[0]}
-          </Link>
-        </Td>
-      </Tr>
-    );
-  });
+  const body = filteredShownServices.map((service, rowIndex) => (
+    <Tr key={service.krbcanonicalname} id={service.krbcanonicalname}>
+      <Td
+        dataLabel="checkbox"
+        select={{
+          rowIndex,
+          onSelect: (_event, isSelecting) =>
+            onSelectService(service, rowIndex, isSelecting),
+          isSelected: isServiceSelected(service),
+          isDisabled: !props.servicesData.isServiceSelectable(service),
+        }}
+      />
+      <Td dataLabel={columnNames.principalName}>
+        <Link to={URL_PREFIX + "/services/settings"} state={service}>
+          {service.krbcanonicalname}
+        </Link>
+      </Td>
+    </Tr>
+  ));
 
   const skeleton = (
     <SkeletonOnTableLayout

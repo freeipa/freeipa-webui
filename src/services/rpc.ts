@@ -18,11 +18,14 @@ import {
   Metadata,
   PwPolicy,
   RadiusServer,
+  servicesType,
   UIDType,
   User,
+  Service,
 } from "../utils/datatypes/globalDataTypes";
-import { apiToUser } from "../utils/userUtils";
 import { apiToHost } from "../utils/hostUtils";
+import { apiToUser } from "../utils/userUtils";
+import { apiToService } from "../utils/serviceUtils";
 import { apiToPwPolicy } from "../utils/pwPolicyUtils";
 import { apiToKrbPolicy } from "../utils/krbPolicyUtils";
 
@@ -144,12 +147,16 @@ export interface GenericPayload {
   stopIdx: number;
 }
 
-export interface HostsPayload {
+// Convert to BasicPayload (use for Hosts services, etc)
+export interface GenericPayload {
+  method: string;
   searchValue: string;
   sizeLimit: number;
   apiVersion: string;
   startIdx: number;
   stopIdx: number;
+  objName?: string;
+  objAttr?: string;
 }
 
 export interface HostAddPayload {
@@ -159,6 +166,12 @@ export interface HostAddPayload {
   force: boolean; // skip DNS check
   random: boolean; // otp generation
   description?: string;
+}
+
+export interface ServiceAddPayload {
+  service: string;
+  skip_host_check: boolean;
+  force: boolean; // skip DNS check
 }
 
 // Body data to perform the calls
@@ -225,6 +238,7 @@ export const api = createApi({
     "CertProfile",
     "DNSZones",
     "FullHost",
+    "FullService",
   ],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
@@ -243,91 +257,6 @@ export const api = createApi({
     batchMutCommand: build.mutation<BatchRPCResponse, Command[] | void>({
       query: (payloadData: Command[], apiVersion?: string) =>
         getBatchCommand(payloadData, apiVersion || API_VERSION_BACKUP),
-    }),
-    gettingUser: build.query<BatchRPCResponse, UsersPayload>({
-      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const {
-          searchValue,
-          sizeLimit,
-          apiVersion,
-          userType,
-          startIdx,
-          stopIdx,
-        } = payloadData;
-
-        // 1ST CALL - GETTING ALL UIDS
-        if (apiVersion === undefined) {
-          return {
-            error: {
-              status: "CUSTOM_ERROR",
-              data: "",
-              error: "API version not available",
-            } as FetchBaseQueryError,
-          };
-        }
-
-        // Prepare search parameters
-        const params = {
-          pkey_only: true,
-          sizelimit: sizeLimit,
-          version: apiVersion,
-        };
-        let method = "user_find";
-        let show_method = "user_show";
-        if (userType === "stage") {
-          method = "stageuser_find";
-          show_method = "stageuser_show";
-        } else if (userType === "preserved") {
-          params["preserved"] = true;
-        }
-
-        // Prepare payload
-        const payloadDataUids: Command = {
-          method: method,
-          params: [[searchValue], params],
-        };
-
-        // Make call using 'fetchWithBQ'
-        const getUidsResult = await fetchWithBQ(getCommand(payloadDataUids));
-        // Return possible errors
-        if (getUidsResult.error) {
-          return { error: getUidsResult.error as FetchBaseQueryError };
-        }
-        // If no error: cast and assign 'uids'
-        const uidResponseData = getUidsResult.data as FindRPCResponse;
-
-        const uids: string[] = [];
-        const itemsCount = uidResponseData.result.result.length as number;
-        for (let i = startIdx; i < itemsCount && i < stopIdx; i++) {
-          const userId = uidResponseData.result.result[i] as UIDType;
-          const { uid } = userId;
-          uids.push(uid[0] as string);
-        }
-
-        // 2ND CALL - GET PARTIAL USERS INFO
-        // Prepare payload
-        const options = { no_members: true };
-        const payloadUserDataBatch: Command[] = uids.map((uid) => ({
-          method: show_method,
-          params: [[uid], options],
-        }));
-
-        // Make call using 'fetchWithBQ'
-        const partialUsersInfoResult = await fetchWithBQ(
-          getBatchCommand(payloadUserDataBatch as Command[], apiVersion)
-        );
-
-        const response = partialUsersInfoResult.data as BatchRPCResponse;
-        response.result.totalCount = itemsCount;
-
-        // Return results
-        return partialUsersInfoResult.data
-          ? { data: response }
-          : {
-              error:
-                partialUsersInfoResult.error as unknown as FetchBaseQueryError,
-            };
-      },
     }),
     getObjectMetadata: build.query<Metadata, void>({
       query: () => {
@@ -473,6 +402,24 @@ export const api = createApi({
         };
       },
       providesTags: ["FullHost"],
+    }),
+    getServicesFullData: build.query<Service, string>({
+      query: (serviceName: string) => {
+        // Prepare search parameters
+        const params = {
+          all: true,
+          rights: true,
+          version: API_VERSION_BACKUP,
+        };
+        return getCommand({
+          method: "service_show",
+          params: [serviceName, params],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): Service => {
+        return apiToService(response.result.result);
+      },
+      providesTags: ["FullService"],
     }),
     saveUser: build.mutation<FindRPCResponse, Partial<User>>({
       query: (user) => {
@@ -716,11 +663,28 @@ export const api = createApi({
         response.result.result as unknown as User[],
       providesTags: ["ActiveUsers"],
     }),
-    // Hosts
-    gettingHost: build.query<BatchRPCResponse, HostsPayload>({
+    // Basic find/show query: Hosts, Services, ...
+    gettingGeneric: build.query<BatchRPCResponse, GenericPayload>({
       async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { searchValue, sizeLimit, apiVersion, startIdx, stopIdx } =
-          payloadData;
+        const {
+          searchValue,
+          sizeLimit,
+          apiVersion,
+          startIdx,
+          stopIdx,
+          objAttr,
+        } = payloadData;
+        let objName = payloadData.objName;
+
+        if (objAttr === undefined || objName === undefined) {
+          return {
+            error: {
+              status: "CUSTOM_ERROR",
+              data: "",
+              error: "Missing required param",
+            } as FetchBaseQueryError,
+          };
+        }
 
         if (apiVersion === undefined) {
           return {
@@ -737,12 +701,16 @@ export const api = createApi({
           pkey_only: true,
           sizelimit: sizeLimit,
           version: apiVersion,
-          all: true,
         };
+
+        if (objName === "preserved") {
+          params["preserved"] = true;
+          objName = "user";
+        }
 
         // Prepare payload
         const payloadDataIds: Command = {
-          method: "host_find",
+          method: objName + "_find",
           params: [[searchValue], params],
         };
 
@@ -753,36 +721,47 @@ export const api = createApi({
           return { error: getGroupIDsResult.error as FetchBaseQueryError };
         }
         // If no error: cast and assign 'uids'
-        const hostIdResponseData = getGroupIDsResult.data as FindRPCResponse;
-
-        const fqdns: string[] = [];
-        const itemsCount = hostIdResponseData.result.result.length as number;
+        const idResponseData = getGroupIDsResult.data as FindRPCResponse;
+        const ids: string[] = [];
+        const itemsCount = idResponseData.result.result.length as number;
         for (let i = startIdx; i < itemsCount && i < stopIdx; i++) {
-          const hostId = hostIdResponseData.result.result[i] as fqdnType;
-          const { fqdn } = hostId;
-          fqdns.push(fqdn[0] as string);
+          let id;
+          if (objName === "host") {
+            id = idResponseData.result.result[i] as fqdnType;
+          } else if (objName === "service") {
+            id = idResponseData.result.result[i] as servicesType;
+          } else if (objName === "user" || objName === "stage") {
+            id = idResponseData.result.result[i] as UIDType;
+          } else {
+            // Unknown, should never happen
+            return {
+              error: {
+                status: "CUSTOM_ERROR",
+                data: "",
+                error: "Unknown object name " + objName,
+              } as FetchBaseQueryError,
+            };
+          }
+          ids.push(id[objAttr][0] as string);
         }
 
-        // 2ND CALL - GET PARTIAL HOSTS INFO
+        // 2ND CALL - GET PARTIAL INFO
         // Prepare payload
-        const payloadHostDataBatch: Command[] = fqdns.map((fqdn) => ({
-          method: "host_show",
-          params: [[fqdn], { no_members: true }],
+        const payloadDataBatch: Command[] = ids.map((name) => ({
+          method: objName + "_show",
+          params: [[name], {}],
         }));
 
         // Make call using 'fetchWithBQ'
-        const partialHostsInfoResult = await fetchWithBQ(
-          getBatchCommand(payloadHostDataBatch as Command[], apiVersion)
+        const partialInfoResult = await fetchWithBQ(
+          getBatchCommand(payloadDataBatch as Command[], apiVersion)
         );
 
         // Return results
-        const response = partialHostsInfoResult.data as BatchRPCResponse;
-        response.result.totalCount = itemsCount;
-        return partialHostsInfoResult.data
-          ? { data: response }
+        return partialInfoResult.data
+          ? { data: partialInfoResult.data as BatchRPCResponse }
           : {
-              error:
-                partialHostsInfoResult.error as unknown as FetchBaseQueryError,
+              error: partialInfoResult.error as unknown as FetchBaseQueryError,
             };
       },
     }),
@@ -900,6 +879,22 @@ export const api = createApi({
         });
       },
     }),
+    addService: build.mutation<FindRPCResponse, ServiceAddPayload>({
+      query: (payloadData) => {
+        const params = [
+          [payloadData["service"]],
+          {
+            version: API_VERSION_BACKUP,
+            force: payloadData["force"],
+            skip_host_check: payloadData["skip_host_check"],
+          },
+        ];
+        return getCommand({
+          method: "service_add",
+          params: params,
+        });
+      },
+    }),
     getCertProfile: build.query<CertProfile[], void>({
       query: () => {
         return getCommand({
@@ -977,16 +972,88 @@ export const api = createApi({
         return getBatchCommand(hostsToDeletePayload, API_VERSION_BACKUP);
       },
     }),
-    getDNSZones: build.query<FindRPCResponse, void>({
-      query() {
+    removeServices: build.mutation<BatchRPCResponse, string[]>({
+      query: (services) => {
+        const servicesToDeletePayload: Command[] = [];
+        services.map((service) => {
+          const payloadItem = {
+            method: "service_del",
+            params: [[service], {}],
+          } as Command;
+          servicesToDeletePayload.push(payloadItem);
+        });
+        return getBatchCommand(servicesToDeletePayload, API_VERSION_BACKUP);
+      },
+    }),
+    getGenericList: build.query<FindRPCResponse, string>({
+      query(objName) {
         return getCommand({
-          method: "dnszone_find",
+          method: objName + "_find",
           params: [[], { version: API_VERSION_BACKUP }],
         });
       },
     }),
   }),
 });
+
+// Wrappers
+export const useGetDNSZonesQuery = () => {
+  return useGetGenericListQuery("dnszone");
+};
+
+export const useGetHostsListQuery = () => {
+  return useGetGenericListQuery("host");
+};
+
+export const useGettingActiveUserQuery = (payloadData) => {
+  payloadData["objName"] = "user";
+  payloadData["objAttr"] = "uid";
+  return useGettingGenericQuery(payloadData);
+};
+// Stage Users
+export const useGettingStageUserQuery = (payloadData) => {
+  payloadData["objName"] = "stageuser";
+  payloadData["objAttr"] = "uid";
+  return useGettingGenericQuery(payloadData);
+};
+// Preserved users
+export const useGettingPreservedUserQuery = (payloadData) => {
+  payloadData["objName"] = "preserved";
+  payloadData["objAttr"] = "uid";
+  return useGettingGenericQuery(payloadData);
+};
+
+// Full search wrappers
+export const useGetUsersFullQuery = (userId: string) => {
+  // Active and preserved users
+  const query_args = {
+    userId: userId,
+    user_type: "active",
+    version: API_VERSION_BACKUP,
+  };
+  return useGetGenericUsersFullDataQuery(query_args);
+};
+
+export const useGetStageUsersFullQuery = (userId: string) => {
+  const query_args = {
+    userId: userId,
+    user_type: "stage",
+    version: API_VERSION_BACKUP,
+  };
+  return useGetGenericUsersFullDataQuery(query_args);
+};
+
+export const useGettingHostQuery = (payloadData) => {
+  payloadData["objName"] = "host";
+  payloadData["objAttr"] = "fqdn";
+  return useGettingGenericQuery(payloadData);
+};
+
+export const useGettingServicesQuery = (payloadData) => {
+  payloadData["objName"] = "service";
+  payloadData["objAttr"] = "krbprincipalname";
+  return useGettingGenericQuery(payloadData);
+};
 
 export const {
   useSimpleCommandQuery,
@@ -1013,7 +1080,6 @@ export const {
   useRemoveHostPrincipalAliasMutation,
   useAddHostPrincipalAliasMutation,
   useGetActiveUsersQuery,
-  useGettingHostQuery,
   useAutoMemberRebuildHostsMutation,
   useAutoMemberRebuildUsersMutation,
   useEnableUserMutation,
@@ -1026,8 +1092,11 @@ export const {
   useActivateUserMutation,
   useRestoreUserMutation,
   useAddHostMutation,
+  useAddServiceMutation,
   useRemoveHostsMutation,
-  useGetDNSZonesQuery,
   useSaveHostMutation,
   useGetHostsFullDataQuery,
+  useGettingGenericQuery,
+  useGetGenericListQuery,
+  useRemoveServicesMutation,
 } = api;

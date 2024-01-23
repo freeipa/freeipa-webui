@@ -507,6 +507,11 @@ export interface fqdnType {
   fqdn: string[];
 }
 
+export interface servicesType {
+  dn: string;
+  krbprincipalname: string[];
+}
+
 export interface CertProfile {
   cn: string;
   description: string;

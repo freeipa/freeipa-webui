@@ -15,10 +15,10 @@ import {
 import TitleLayout from "../../components/layouts/TitleLayout";
 import ToolbarLayout, {
   ToolbarItem,
-} from "src/components/layouts/ToolbarLayout";
-import SearchInputLayout from "src/components/layouts/SearchInputLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
-import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+} from "../../components/layouts/ToolbarLayout";
+import SearchInputLayout from "../../components/layouts/SearchInputLayout";
+import SecondaryButton from "../../components/layouts/SecondaryButton";
+import HelpTextWithIconLayout from "../../components/layouts/HelpTextWithIconLayout";
 // Components
 import BulkSelectorPrep from "../../components/BulkSelectorPrep";
 import PaginationLayout from "../../components/layouts/PaginationLayout";
@@ -44,12 +44,12 @@ import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "../../hooks/useApiError";
 import GlobalErrors from "../../components/errors/GlobalErrors";
 import ModalErrors from "../../components/errors/ModalErrors";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
-import { SerializedError } from "@reduxjs/toolkit";
 // RPC client
-import { useSearchEntriesMutation, GenericPayload } from "../../services/rpc";
-import { useGetHostsListQuery } from "../../services/rpcHosts";
-import { useGettingServicesQuery } from "../../services/rpcServices";
+import {
+  useGetHostsListQuery,
+  useGettingServicesQuery,
+  GenericPayload,
+} from "../../services/rpc";
 
 const Services = () => {
   // Initialize services list (Redux)
@@ -106,11 +106,10 @@ const Services = () => {
   const updatePage = (newPage: number) => {
     setPage(newPage);
   };
+  const [perPage, setPerPage] = useState<number>(15);
   const updatePerPage = (newSetPerPage: number) => {
     setPerPage(newSetPerPage);
   };
-  const [totalCount, setServicesTotalCount] = useState<number>(0);
-
   // Page indexes
   const firstServiceIdx = (page - 1) * perPage;
   const lastServiceIdx = page * perPage;
@@ -122,87 +121,9 @@ const Services = () => {
     setSearchValue(value);
   };
 
-  const [selectedServices, setSelectedServicesList] = useState<Service[]>([]);
-  const clearSelectedServices = () => {
-    const emptyList: Service[] = [];
-    setSelectedServicesList(emptyList);
-  };
-
-  const [retrieveServices] = useSearchEntriesMutation({});
-
-  // Issue search with filter
-  const submitSearchValue = () => {
-    setShowTableRows(false);
-    setServicesTotalCount(0);
-    setSearchIsDisabled(true);
-    retrieveServices({
-      searchValue: searchValue,
-      sizeLimit: 0,
-      apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: firstServiceIdx,
-      stopIdx: lastServiceIdx,
-      entryType: "service",
-    } as GenericPayload).then((result) => {
-      // Manage new response here
-      if ("data" in result) {
-        const searchError = result.data.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          alerts.addAlert(
-            "submit-search-value-error",
-            error || "Error when searching for services",
-            "danger"
-          );
-        } else {
-          // Success
-          const serviceListResult = result.data.result.results;
-          const serviceListSize = result.data.result.count;
-          const totalCount = result.data.result.totalCount;
-          const serviceList: Service[] = [];
-
-          for (let i = 0; i < serviceListSize; i++) {
-            serviceList.push(serviceListResult[i].result);
-          }
-
-          // Update slice data
-          dispatch(updateServicesList(serviceList));
-          setServicesList(serviceList);
-          setServicesTotalCount(totalCount);
-          // Show table elements
-          setShowTableRows(true);
-        }
-        setSearchIsDisabled(false);
-      }
-    });
-  };
-
-  // Show table rows
-  const [showTableRows, setShowTableRows] = useState(false);
-
   const updateShowTableRows = (value: boolean) => {
     setShowTableRows(value);
   };
-
-  // Refresh displayed elements every time elements list changes (from Redux or somewhere else)
-  React.useEffect(() => {
-    updatePage(1);
-    if (showTableRows) updateShowTableRows(false);
-    setTimeout(() => {
-      updateShownServicesList(servicesList.slice(0, perPage));
-      updateShowTableRows(true);
-      // Reset 'selectedPerPage'
-      updateSelectedPerPage(0);
-    }, 1000);
-  }, [servicesList]);
 
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
@@ -343,17 +264,15 @@ const Services = () => {
     ) {
       const servicesListResult = batchResponse.result.results;
       const servicesListSize = batchResponse.result.count;
-      const totalCount = batchResponse.result.totalCount;
       const servicesList: Service[] = [];
 
       for (let i = 0; i < servicesListSize; i++) {
         servicesList.push(servicesListResult[i].result);
       }
 
-      // Update slice data
+      // Update 'Hosts' slice data
       dispatch(updateServicesList(servicesList));
       setServicesList(servicesList);
-      setServicesTotalCount(totalCount);
       // Show table elements
       setShowTableRows(true);
     }
@@ -370,11 +289,8 @@ const Services = () => {
     }
   }, [servicesDataResponse]);
 
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  useEffect(() => {
-    servicesDataResponse.refetch();
-  }, []);
+  // Show table rows
+  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
 
   // Show table rows only when data is fully retrieved
   useEffect(() => {

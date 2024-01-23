@@ -96,14 +96,14 @@ const HostsTable = (props: PropsToTable) => {
 
   // Since OnSort specifies sorted columns by index, we need sortable values for our object by column index.
   const getSortableRowValues = (host: Host): (string | number)[] => {
-    const { fqdn, description } = host;
+    const { fqdn, description, enrolledby } = host;
 
     let descriptionString = "";
     if (description !== undefined) {
       descriptionString = description[0];
     }
 
-    return [fqdn, descriptionString];
+    return [fqdn, descriptionString, enrolledby ? enrolledby : ""];
   };
 
   // To allow shift+click to select/deselect multiple rows

@@ -52,8 +52,9 @@ const AddService = (props: PropsToAddService) => {
   const [executeServiceAddCommand] = useAddServiceMutation();
 
   // Set host names list
-  const hostsList = useAppSelector((state) => state.hosts.hostsList);
-  const hostNamesList = hostsList.map((hostName) => hostName.fqdn);
+  const [addSpinning, setAddBtnSpinning] = React.useState<boolean>(false);
+  const [addAgainSpinning, setAddAgainBtnSpinning] =
+    React.useState<boolean>(false);
 
   // 'Service' select
   const [isServiceOpen, setIsServiceOpen] = useState(false);
@@ -131,12 +132,6 @@ const AddService = (props: PropsToAddService) => {
       {hostNameSelected}
     </MenuToggle>
   );
-
-  // 'Force' checkbox
-  const [isForceChecked, setIsForceChecked] = useState(false);
-
-  // 'Skip host check' checkbox
-  const [isSkipHostChecked, setIsSkipHostChecked] = useState(false);
 
   // Validation fields
   const [serviceValidation, setServiceValidation] = useState({
@@ -283,7 +278,7 @@ const AddService = (props: PropsToAddService) => {
             isOpen={isHostNameOpen}
             aria-labelledby="host name"
           >
-            {hostNameOptions.map((option, index) => (
+            {props.hostsList.map((option, index) => (
               <SelectOption key={index} value={option}>
                 {option}
               </SelectOption>
