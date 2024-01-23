@@ -39,7 +39,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
   >([
     {
       id: 0,
-      alias: props.service.id,
+      alias: props.service.krbcanonicalname,
     },
   ]);
 
@@ -261,7 +261,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
               <TextInput
                 id="host-name"
                 name="host"
-                value={props.service.host}
+                value={props.service.krbcanonicalname}
                 type="text"
                 aria-label="host name"
                 isDisabled

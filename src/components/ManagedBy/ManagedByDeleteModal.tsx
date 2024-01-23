@@ -58,6 +58,7 @@ const ManagedByDeleteModal = (props: PropsToDeleteModal) => {
           elementsToDelete={props.groupNamesToDelete}
           columnNames={["Host"]}
           elementType={props.tabData.tabName}
+          idAttr="fqdn"
         />
       ),
     },

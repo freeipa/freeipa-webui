@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 // PatternFly
 import { Td, Th, ThProps, Tr } from "@patternfly/react-table";
 // Tables
-import TableLayout from "src/components/layouts/TableLayout";
+import TableLayout from "../../components/layouts/TableLayout";
 // Data types
-import { Host } from "src/utils/datatypes/globalDataTypes";
+import { Host } from "../../utils/datatypes/globalDataTypes";
 // Layouts
-import SkeletonOnTableLayout from "src/components/layouts/Skeleton/SkeletonOnTableLayout";
+import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
 // Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
+import { URL_PREFIX } from "../../navigation/NavRoutes";
 // React Router DOM
 import { Link } from "react-router-dom";
 
@@ -99,22 +99,22 @@ const HostsTable = (props: PropsToTable) => {
 
   // Since OnSort specifies sorted columns by index, we need sortable values for our object by column index.
   const getSortableRowValues = (host: Host): (string | number)[] => {
-    const { fqdn, description } = host;
+    const { fqdn, description, enrolledby } = host;
 
     let descriptionString = "";
     if (description !== undefined) {
       descriptionString = description[0];
     }
 
-    return [fqdn, descriptionString];
+    return [fqdn, descriptionString, enrolledby ? enrolledby : ""];
   };
 
   let sortedHosts = [...shownHostsList];
   if (activeSortIndex !== null) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     sortedHosts = shownHostsList.sort((a, b) => {
-      const aValue = getSortableRowValues(a)[activeSortIndex];
-      const bValue = getSortableRowValues(b)[activeSortIndex];
+      let aValue = getSortableRowValues(a)[activeSortIndex];
+      let bValue = getSortableRowValues(b)[activeSortIndex];
       if (typeof aValue === "number") {
         // Numeric sort
         if (activeSortDirection === "asc") {
@@ -123,6 +123,10 @@ const HostsTable = (props: PropsToTable) => {
         return (bValue as number) - (aValue as number);
       } else {
         // String sort
+        if (aValue.constructor === Array) {
+          aValue = aValue[0];
+          bValue = bValue[0];
+        }
         if (activeSortDirection === "asc") {
           return (aValue as string).localeCompare(bValue as string);
         }

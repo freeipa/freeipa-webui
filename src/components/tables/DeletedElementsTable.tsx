@@ -28,6 +28,8 @@ import TableLayout from "src/components/layouts/TableLayout";
  *     · Column names to show in the table.
  *  - 'elementType':
  *     · String used to set the 'ariaLabel' and the table ID.
+ *  - 'idAttr':
+ *     · The attribute in the entry that is used as its identifier.
  */
 
 export interface PropsToDeletedElementsTable {
@@ -36,6 +38,7 @@ export interface PropsToDeletedElementsTable {
   elementsToDelete: string[];
   columnNames: string[];
   elementType: string;
+  idAttr: string;
 }
 
 const DeletedElementsTable = (props: PropsToDeletedElementsTable) => {
@@ -50,7 +53,7 @@ const DeletedElementsTable = (props: PropsToDeletedElementsTable) => {
       if (props.elementsList !== undefined) {
         props.elementsList.map((element) => {
           props.elementsToDelete.map((selected) => {
-            if (element.fqdn === selected[0]) {
+            if (element[props.idAttr][0] === selected[0]) {
               elementsToDelete.push(element);
             }
           });
@@ -91,7 +94,7 @@ const DeletedElementsTable = (props: PropsToDeletedElementsTable) => {
   const getBody = () => {
     if (props.mode === "passing_full_data") {
       return elementsToDelete.map((element) => (
-        <Tr key={element.fqdn} id={element.fqdn}>
+        <Tr key={element[props.idAttr]} id={element[props.idAttr]}>
           {props.columnNames.map((columnName, idx) => (
             <Td key={idx} dataLabel={columnName}>
               {element[columnName]}

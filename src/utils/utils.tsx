@@ -31,7 +31,8 @@ export const isUserSelectable = (user: User) => user.uid !== "";
 export const isHostSelectable = (host: Host) => host.fqdn != "";
 
 // Determine whether a service is selectable or not
-export const isServiceSelectable = (service: Service) => service.id != "";
+export const isServiceSelectable = (service: Service) =>
+  service.krbcanonicalname != "";
 
 // Write JSX error messages into 'apiErrorsJsx' array
 export const apiErrorToJsXError = (

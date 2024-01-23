@@ -246,7 +246,7 @@ const ServicesMemberOf = (props: PropsToServicesMemberOf) => {
 
   const tabData = {
     tabName,
-    userName: props.service.id,
+    userName: props.service.krbcanonicalname,
   };
 
   // - MemberOfDeleteModal

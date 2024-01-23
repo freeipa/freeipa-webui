@@ -54,7 +54,7 @@ import {
   useGettingHostQuery,
   useGetDNSZonesQuery,
   useAutoMemberRebuildHostsMutation,
-  HostsPayload,
+  GenericPayload,
 } from "../../services/rpc";
 
 const Hosts = () => {
@@ -134,7 +134,7 @@ const Hosts = () => {
     apiVersion: apiVersion || API_VERSION_BACKUP,
     startIdx: firstHostIdx,
     stopIdx: lastHostIdx,
-  } as HostsPayload);
+  } as GenericPayload);
 
   const {
     data: batchResponse,

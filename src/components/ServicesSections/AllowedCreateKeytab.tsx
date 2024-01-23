@@ -7,7 +7,7 @@ import CreateKeytabUserGroupsTable from "../tables/HostsSettings/CreateKeytabUse
 import CreateKeytabHostsTable from "../tables/HostsSettings/CreateKeytabHostsTable";
 import CreateKeytabHostGroupsTable from "../tables/HostsSettings/CreateKeytabHostGroupsTable";
 // Data types
-import { Service } from "src/utils/datatypes/globalDataTypes";
+import { Service } from "../../utils/datatypes/globalDataTypes";
 
 interface PropsToAllowCreateKeytab {
   service: Service;
@@ -17,12 +17,12 @@ const AllowedCreateKeytab = (props: PropsToAllowCreateKeytab) => {
   return (
     <Flex direction={{ default: "column", lg: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
-        <CreateKeytabUsersTable host={props.service.id} />
-        <CreateKeytabHostsTable host={props.service.id} />
+        <CreateKeytabUsersTable host={props.service.krbcanonicalname} />
+        <CreateKeytabHostsTable host={props.service.krbcanonicalname} />
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
-        <CreateKeytabUserGroupsTable host={props.service.id} />
-        <CreateKeytabHostGroupsTable host={props.service.id} />
+        <CreateKeytabUserGroupsTable host={props.service.krbcanonicalname} />
+        <CreateKeytabHostGroupsTable host={props.service.krbcanonicalname} />
       </FlexItem>
     </Flex>
   );
