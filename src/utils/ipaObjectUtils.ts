@@ -181,8 +181,7 @@ export function convertApiObj(
       if (simpleValues.has(key)) {
         obj[key] = convertToString(value as BasicType);
       } else if (dateValues.has(key)) {
-        // TODO convert to Datetime object
-        obj[key] = value;
+        obj[key] = parseAPIDatetime(value);
       } else {
         obj[key] = value;
       }
