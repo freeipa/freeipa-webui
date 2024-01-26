@@ -34,7 +34,7 @@ const simpleValues = new Set([
   "ipakrbokasdelegate",
   "ipakrboktoauthasdelegate",
   "nshostlocation",
-  "userclass", // API says multivalued
+  "userclass",
   "nsosversion",
   "nshardwardplatform",
 ]);
@@ -46,83 +46,49 @@ export function apiToHost(apiRecord: Record<string, unknown>): Host {
     simpleValues,
     dateValues
   ) as Partial<Host>;
-  return objectToHost(converted) as Host;
+  return partialHostToHost(converted) as Host;
 }
 
-// Determines whether a given property name is a simple value or is it multivalue (Array)
-//  - Returns: boolean
-export const isSimpleValue = (propertyName) => {
-  return simpleValues.has(propertyName);
-};
+export function partialHostToHost(partialHost: Partial<Host>) {
+  return {
+    ...createEmptyHost(),
+    ...partialHost,
+  };
+}
 
 // Covert an partial User object into a full User object
-// (initializing the undefined params with default empty values)
-export const objectToHost = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  partialHost: Record<string, any> | Partial<Host>,
-  oldHostObject?: Partial<Host> // Optional: To override the current object values
-): Host => {
-  const host: Host = {
-    dn: partialHost.dn || oldHostObject?.dn || "",
-    attributelevelrights:
-      partialHost.attributelevelrights ||
-      oldHostObject?.attributelevelrights ||
-      {},
-    description: partialHost.description || oldHostObject?.description || "",
-    dnsZone: partialHost.dnsZone || oldHostObject?.dnsZone || "",
-    enrolledby: partialHost.enrolledby || oldHostObject?.enrolledby || "",
-    fqdn: partialHost.fqdn || oldHostObject?.fqdn || "",
-    ip_address: partialHost.ip_address || oldHostObject?.ip_address || "",
-    krbcanonicalname:
-      partialHost.krbcanonicalname || oldHostObject?.krbcanonicalname || "",
-    krbprincipalname:
-      partialHost.krbprincipalname || oldHostObject?.krbprincipalname || [],
-    krbpwdpolicyreference:
-      partialHost.krbpwdpolicyreference ||
-      oldHostObject?.krbpwdpolicyreference ||
-      [],
-    l: partialHost.l || oldHostObject?.l || "",
-    managedby_host:
-      partialHost.managedby_host || oldHostObject?.managedby_host || [],
-    memberof_hostgroup:
-      partialHost.memberof_hostgroup || oldHostObject?.memberof_hostgroup || [],
-    managing_host:
-      partialHost.managing_host || oldHostObject?.managing_host || [],
-    nshostlocation:
-      partialHost.nshostlocation || oldHostObject?.nshostlocation || "",
-    userclass: partialHost.userclass || oldHostObject?.userclass || "",
-    serverhostname:
-      partialHost.serverhostname || oldHostObject?.serverhostname || "",
-    sshpublickey: partialHost.sshpublickey || oldHostObject?.sshpublickey || [],
-    sshpubkeyfp: partialHost.sshpubkeyfp || oldHostObject?.sshpubkeyfp || [],
-    nshardwareplatform:
-      partialHost.nshardwareplatform || oldHostObject?.nshardwareplatform || "",
-    nsosversion: partialHost.nsosversion || oldHostObject?.nsosversion || "",
-    macaddress: partialHost.macaddress || oldHostObject?.macaddress || [],
-    krbprincipalauthind:
-      partialHost.krbprincipalauthind ||
-      oldHostObject?.krbprincipalauthind ||
-      [],
-    usercertificate:
-      partialHost.usercertificate || oldHostObject?.usercertificate || [],
+export function createEmptyHost(): Host {
+  return {
+    dn: "",
+    attributelevelrights: {},
+    description: "",
+    dnsZone: "",
+    enrolledby: "",
+    fqdn: "",
+    ip_address: "",
+    krbcanonicalname: "",
+    krbprincipalname: [],
+    krbpwdpolicyreference: [],
+    l: "",
+    managedby_host: [],
+    memberof_hostgroup: [],
+    managing_host: [],
+    nshostlocation: "",
+    userclass: "",
+    serverhostname: "",
+    sshpublickey: [],
+    sshpubkeyfp: [],
+    nshardwareplatform: "",
+    nsosversion: "",
+    macaddress: [],
+    krbprincipalauthind: [],
+    usercertificate: [],
     // booleans
-    force: partialHost.force || oldHostObject?.force || false,
-    has_keytab: partialHost.has_keytab || oldHostObject?.has_keytab || false,
-    has_password:
-      partialHost.has_password || oldHostObject?.has_password || false,
-    ipakrbrequirespreauth:
-      partialHost.ipakrbrequirespreauth ||
-      oldHostObject?.ipakrbrequirespreauth ||
-      false,
-    ipakrbokasdelegate:
-      partialHost.ipakrbokasdelegate ||
-      oldHostObject?.ipakrbokasdelegate ||
-      false,
-    ipakrboktoauthasdelegate:
-      partialHost.ipakrboktoauthasdelegate ||
-      oldHostObject?.ipakrboktoauthasdelegate ||
-      false,
+    force: false,
+    has_keytab: false,
+    has_password: false,
+    ipakrbrequirespreauth: false,
+    ipakrbokasdelegate: false,
+    ipakrboktoauthasdelegate: false,
   };
-
-  return host;
-};
+}
