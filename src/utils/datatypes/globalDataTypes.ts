@@ -127,6 +127,14 @@ export interface KrbPolicy {
   usercertificatebinary: string[];
 }
 
+export interface UserGroupNew {
+  cn: string;
+  gidnumber: string;
+  description: string;
+  dn: string;
+}
+
+// TODO: Remove this data type (old) when is not needed anymore
 export interface UserGroup {
   name: string;
   gid: string;

@@ -294,3 +294,12 @@ export const isValidIpAddress = (ipAddress: string) => {
     return regexIPv4.test(ipAddress);
   }
 };
+
+// Normalize string LDAP values (string[] --> string)
+export const normalizeString = (entry: string[]) => {
+  let newValue = "";
+  if (entry !== undefined) {
+    newValue = entry[0];
+  }
+  return newValue;
+};
