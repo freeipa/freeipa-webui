@@ -447,6 +447,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
                 host={props.host}
                 metadata={props.metadata}
                 onHostChange={props.onHostChange}
+                onRefresh={props.onRefresh}
               />
               <TitleLayout
                 key={1}
