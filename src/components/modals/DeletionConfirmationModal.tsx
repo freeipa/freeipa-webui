@@ -11,6 +11,7 @@ interface PropsToDeletionConfModal {
   onClose: () => void;
   actions: JSX.Element[];
   messageText: string;
+  messageObj: string;
 }
 
 const DeletionConfirmationModal = (props: PropsToDeletionConfModal) => {
@@ -22,7 +23,10 @@ const DeletionConfirmationModal = (props: PropsToDeletionConfModal) => {
       onClose={props.onClose}
       actions={props.actions}
     >
-      <TextLayout>{props.messageText}</TextLayout>
+      <TextLayout component="p">{props.messageText}</TextLayout>
+      <TextLayout className="pf-v5-u-mt-md">
+        <b>{props.messageObj}</b>
+      </TextLayout>
     </Modal>
   );
 };

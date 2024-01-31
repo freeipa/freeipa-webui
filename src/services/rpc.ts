@@ -550,6 +550,26 @@ export const api = createApi({
         });
       },
     }),
+    addHostPrincipalAlias: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [payload, { version: API_VERSION_BACKUP }];
+
+        return getCommand({
+          method: "host_add_principal",
+          params: params,
+        });
+      },
+    }),
+    removeHostPrincipalAlias: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [payload, { version: API_VERSION_BACKUP }];
+
+        return getCommand({
+          method: "host_remove_principal",
+          params: params,
+        });
+      },
+    }),
     addCertificate: build.mutation<FindRPCResponse, any[]>({
       query: (payload) => {
         const params = [
@@ -997,6 +1017,8 @@ export const {
   useRemoveCertMapDataMutation,
   useRemoveStagePrincipalAliasMutation,
   useAddStagePrincipalAliasMutation,
+  useRemoveHostPrincipalAliasMutation,
+  useAddHostPrincipalAliasMutation,
   useGetActiveUsersQuery,
   useGettingHostQuery,
   useAutoMemberRebuildHostsMutation,

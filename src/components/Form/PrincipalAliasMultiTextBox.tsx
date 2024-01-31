@@ -13,6 +13,8 @@ import {
   useRemovePrincipalAliasMutation,
   useAddStagePrincipalAliasMutation,
   useRemoveStagePrincipalAliasMutation,
+  useAddHostPrincipalAliasMutation,
+  useRemoveHostPrincipalAliasMutation,
 } from "src/services/rpc";
 // Layouts
 import SecondaryButton from "../layouts/SecondaryButton";
@@ -27,7 +29,7 @@ interface PrincipalAliasMultiTextBoxProps {
   ipaObject: Record<string, unknown>;
   metadata: Metadata;
   onRefresh: () => void;
-  from: "active-users" | "stage-users" | "preserved-users";
+  from: "active-users" | "stage-users" | "preserved-users" | "hosts";
 }
 
 const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
@@ -35,14 +37,20 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
   const alerts = useAlerts();
 
   // RTK hooks
+  // User
   let [addPrincipalAlias] = useAddPrincipalAliasMutation();
+  let [removePrincipalAlias] = useRemovePrincipalAliasMutation();
+  let objectID = props.ipaObject.uid;
+  // Stage User
   if (props.from === "stage-users") {
     [addPrincipalAlias] = useAddStagePrincipalAliasMutation();
-  }
-  let [removePrincipalAlias] = useRemovePrincipalAliasMutation();
-  if (props.from === "stage-users") {
     [removePrincipalAlias] = useRemoveStagePrincipalAliasMutation();
+  } else if (props.from === "hosts") {
+    objectID = props.ipaObject.fqdn;
+    [addPrincipalAlias] = useAddHostPrincipalAliasMutation();
+    [removePrincipalAlias] = useRemoveHostPrincipalAliasMutation();
   }
+
   // 'krbprincipalname' value from ipaObject
   const krbprincipalname = props.ipaObject["krbprincipalname"] as string[];
 
@@ -82,15 +90,17 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
     React.useState(false);
   const [aliasIdxToDelete, setAliasIdxToDelete] = React.useState<number>(999); // Asumption: There will never be 999 alias
   const [messageDeletionConf, setMessageDeletionConf] = React.useState("");
+  const [messageDeletionObj, setMessageDeletionObj] = React.useState("");
+  const [modalSpinning, setModalSpinning] = React.useState(false);
 
   const onRemoveAlias = (idx: number) => {
     // Get the specific index of the element to remove
     setAliasIdxToDelete(idx);
     // Set message to show on the deletion confirmation modal
     const aliasToDelete = krbprincipalname[idx];
-    setMessageDeletionConf(
-      "Do you want to remove kerberos alias " + aliasToDelete + "?"
-    );
+    setMessageDeletionConf("Do you want to remove kerberos alias?");
+    setMessageDeletionObj(aliasToDelete);
+
     // Open deletion confirmation modal
     onOpenDeletionConfModal();
   };
@@ -108,8 +118,13 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
       key="del-principal-alias"
       variant="danger"
       onClick={() => onRemovePrincipalAlias(aliasIdxToDelete)}
+      isDisabled={modalSpinning}
+      isLoading={modalSpinning}
+      spinnerAriaValueText="Deleting"
+      spinnerAriaLabelledBy="Deleting"
+      spinnerAriaLabel="Deleting"
     >
-      Delete
+      {modalSpinning ? " Deleting" : "Delete"}
     </Button>,
     <Button key="cancel" variant="link" onClick={onCloseDeletionConfModal}>
       Cancel
@@ -118,17 +133,19 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
 
   // Add 'principal alias'
   const onAddPrincipalAlias = () => {
-    const payload = [props.ipaObject.uid, [newAliasValue]];
+    const payload = [objectID, [newAliasValue]];
+    setModalSpinning(true);
 
     addPrincipalAlias(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
           // Close modal
           setIsTextInputModalOpen(false);
+          setModalSpinning(false);
           // Set alert: success
           alerts.addAlert(
             "add-alias-success",
-            "Added new aliases to user '" + props.ipaObject.uid + "'",
+            "Added new aliases to '" + objectID + "'",
             "success"
           );
         } else if (response.data.error) {
@@ -137,6 +154,7 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
           alerts.addAlert("add-alias-error", errorMessage.message, "danger");
         }
         // Refresh data to show new changes in the UI
+        setModalSpinning(false);
         props.onRefresh();
       }
     });
@@ -148,8 +166,8 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
     const elementToRemove = aliasList[idx];
 
     // Set payload
-    const payload = [props.ipaObject.uid, [elementToRemove]];
-
+    const payload = [objectID, [elementToRemove]];
+    setModalSpinning(true);
     removePrincipalAlias(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
@@ -158,7 +176,7 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
           // Show toast notification: success
           alerts.addAlert(
             "remove-alias-success",
-            "Removed aliases from user '" + props.ipaObject.uid + "'",
+            "Removed aliases from '" + objectID + "'",
             "success"
           );
         } else if (response.data.error) {
@@ -167,6 +185,7 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
           alerts.addAlert("remove-alias-error", errorMessage.message, "danger");
         }
         // Refresh data to show new changes in the UI
+        setModalSpinning(false);
         props.onRefresh();
       }
     });
@@ -179,12 +198,17 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
       // isDisabled={newAliasValue === "" ? true : false}
       isDisabled={
         (newAliasValue !== "" && !newAliasValue.includes("@")) ||
+        modalSpinning ||
         areRealmsMatching
           ? false
           : true
       }
+      isLoading={modalSpinning}
+      spinnerAriaValueText="Adding"
+      spinnerAriaLabelledBy="Adding"
+      spinnerAriaLabel="Adding"
     >
-      Add
+      {modalSpinning ? "Adding" : "Add"}
     </SecondaryButton>,
     <Button key="cancel" variant="link" onClick={onCloseTextInputModal}>
       Cancel
@@ -201,6 +225,8 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
         metadata={props.metadata}
         onOpenModal={onOpenTextInputModal}
         onRemove={onRemoveAlias}
+        from={props.from === "hosts" ? "host" : "user"}
+        isPrincipalAlias
       />
       <AddTextInputFromListModal
         newValue={newAliasValue}
@@ -219,6 +245,7 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
         onClose={onCloseDeletionConfModal}
         actions={deletionConfModalActions}
         messageText={messageDeletionConf}
+        messageObj={messageDeletionObj}
       />
     </>
   );

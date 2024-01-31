@@ -95,6 +95,8 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
   const [isDeletionModalOpen, setIsDeletionModalOpen] = React.useState(false);
   const [idxToDelete, setIdxToDelete] = React.useState<number>(999); // Asumption: There will never be 999 entries
   const [deletionMessage, setDeletionMessage] = React.useState("");
+  const [deletionMessageObj, setDeletionMessageObj] = React.useState("");
+  const [modalSpinning, setModalSpinning] = React.useState(false);
 
   const onCloseDeletionModal = () => {
     setIsDeletionModalOpen(false);
@@ -105,8 +107,13 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
       key="del-certificate-mapping-data"
       variant="danger"
       onClick={() => onRemoveCertificateMappingData(idxToDelete)}
+      isDisabled={modalSpinning}
+      isLoading={modalSpinning}
+      spinnerAriaValueText="Deleting"
+      spinnerAriaLabelledBy="Deleting"
+      spinnerAriaLabel="Deleting"
     >
-      Delete
+      {modalSpinning ? "Deleting" : "Delete"}
     </Button>,
     <Button key="cancel" variant="link" onClick={onCloseDeletionModal}>
       Cancel
@@ -116,11 +123,8 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
   // Operation when deleting an entry
   const onDeleteCertMapData = (idx: number) => {
     setIdxToDelete(idx);
-    setDeletionMessage(
-      "Do you want to remove certificate mapping data '" +
-        certificateMappingDataMainList[idx] +
-        "'?"
-    );
+    setDeletionMessage("Do you want to remove certificate mapping data?");
+    setDeletionMessageObj(certificateMappingDataMainList[idx]);
     setIsDeletionModalOpen(true);
   };
 
@@ -189,6 +193,8 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
       payload = preparePayloadByIssuerAndSubject();
     }
 
+    setModalSpinning(true);
+
     addCertMapData(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
@@ -213,6 +219,7 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
         }
         // Refresh data to show new changes in the UI
         props.onRefresh();
+        setModalSpinning(false);
       }
     });
   };
@@ -266,8 +273,12 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
       key="add"
       onClickHandler={onAddCertificateMappingData}
       isDisabled={isAddButtonDisabled}
+      isLoading={modalSpinning}
+      spinnerAriaValueText="Adding"
+      spinnerAriaLabelledBy="Adding"
+      spinnerAriaLabel="Adding"
     >
-      Add
+      {modalSpinning ? "Adding" : "Add"}
     </SecondaryButton>,
     <Button key="cancel" variant="link" onClick={onClose}>
       Cancel
@@ -343,6 +354,7 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
         onClose={onCloseDeletionModal}
         actions={deletionModalActions}
         messageText={deletionMessage}
+        messageObj={deletionMessageObj}
       />
     </>
   );
