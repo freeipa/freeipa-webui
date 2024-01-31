@@ -67,7 +67,11 @@ export interface User {
   ipanthomedirectorydrive: string;
   // 'Member of' data
   memberof_group: string[]; // multivalue
-  memberof_subid?: string[]; // multivalue
+  memberof_netgroup: string[]; // multivalue
+  memberof_role: string[]; // multivalue
+  memberof_hbacrule: string[]; // multivalue
+  memberof_sudorule: string[]; // multivalue
+  memberof_subid: string[]; // multivalue
   // 'Managed by' data
   mepmanagedentry: string[];
   // other
