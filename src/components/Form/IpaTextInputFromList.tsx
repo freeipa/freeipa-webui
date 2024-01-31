@@ -18,19 +18,33 @@ interface PropsToTextInputFromList {
   metadata: Metadata;
   onOpenModal: () => void;
   onRemove: (idx: number) => void;
+  isPrincipalAlias?: boolean | false;
+  from: "user" | "host";
 }
 
+// This is currently only used for principal aliases
 const IpaTextInputFromList = (props: PropsToTextInputFromList) => {
   // Get 'readOnly' to determine if the field has permissions to be edited
   const { readOnly, required } = getParamProperties({
     name: props.name,
     ipaObject: props.ipaObject,
-    objectName: "user",
+    objectName: props.from,
     metadata: props.metadata,
   });
 
   // Alerts to show in the UI
   const alerts = useAlerts();
+
+  const isDisabled = (idx: number) => {
+    if (props.isPrincipalAlias) {
+      return (
+        props.ipaObject["krbcanonicalname"] ===
+        props.ipaObject["krbprincipalname"][idx]
+      );
+    } else {
+      return false;
+    }
+  };
 
   return (
     <>
@@ -57,11 +71,16 @@ const IpaTextInputFromList = (props: PropsToTextInputFromList) => {
               <FlexItem
                 key={element + "-delete-button"}
                 order={{ default: "-1" }}
+                title={
+                  isDisabled(idx)
+                    ? "Can not delete a principal alias that is the same as the canonical alias"
+                    : ""
+                }
               >
                 <SecondaryButton
                   name={"remove-principal-alias-" + idx}
                   onClickHandler={() => props.onRemove(idx)}
-                  isDisabled={readOnly}
+                  isDisabled={readOnly || isDisabled(idx)}
                 >
                   Delete
                 </SecondaryButton>

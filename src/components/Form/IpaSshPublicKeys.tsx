@@ -61,6 +61,8 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
   const [isDeletionModalOpen, setIsDeletionModalOpen] = React.useState(false);
   const [idxToDelete, setIdxToDelete] = React.useState<number>(999); // Asumption: There will never be 999 entries
   const [deletionMessage, setDeletionMessage] = React.useState("");
+  const [deletionMessageObj, setDeletionMessageObj] = React.useState("");
+  const [modalSpinning, setModalSpinning] = React.useState(false);
 
   // Updates SSH public keys list on every change
   React.useEffect(() => {
@@ -81,8 +83,13 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
       key="del-ssh-key"
       variant="danger"
       onClick={() => onRemoveSSHKey(idxToDelete)}
+      isDisabled={modalSpinning}
+      isLoading={modalSpinning}
+      spinnerAriaValueText="Deleting"
+      spinnerAriaLabelledBy="Deleting"
+      spinnerAriaLabel="Deleting"
     >
-      Delete
+      {modalSpinning ? "Deleting" : "Delete"}
     </Button>,
     <Button key="cancel" variant="link" onClick={onCloseDeletionModal}>
       Cancel
@@ -92,7 +99,8 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
   // Operation when deleting an entry
   const onDeleteSshKey = (idx: number) => {
     setIdxToDelete(idx);
-    setDeletionMessage(sshPublicKeysList[idx]);
+    setDeletionMessage("Are you sure you want to delete SSH Public key?");
+    setDeletionMessageObj(sshPublicKeysList[idx]);
     setIsDeletionModalOpen(true);
   };
 
@@ -112,6 +120,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
         },
       ],
     };
+    setModalSpinning(true);
 
     updateSSHKey(payload).then((response) => {
       if ("data" in response) {
@@ -141,6 +150,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
         }
         // Refresh data to show new changes in the UI
         props.onRefresh();
+        setModalSpinning(false);
       }
     });
   };
@@ -166,6 +176,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
         },
       ],
     };
+    setModalSpinning(true);
 
     updateSSHKey(payload).then((response) => {
       if ("data" in response) {
@@ -193,6 +204,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
         }
         // Refresh data to show new changes in the UI
         props.onRefresh();
+        setModalSpinning(false);
       }
     });
   };
@@ -237,9 +249,13 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
     <SecondaryButton
       key="set"
       onClickHandler={onClickSetTextAreaSshPublicKeys}
-      isDisabled={isSetButtonDisabled}
+      isDisabled={isSetButtonDisabled || modalSpinning}
+      isLoading={modalSpinning}
+      spinnerAriaValueText="Setting"
+      spinnerAriaLabelledBy="Setting"
+      spinnerAriaLabel="Setting"
     >
-      Set
+      {modalSpinning ? "Setting" : "Set"}
     </SecondaryButton>,
     <Button
       key="cancel"
@@ -335,6 +351,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
         onClose={onCloseDeletionModal}
         actions={deletionModalActions}
         messageText={deletionMessage}
+        messageObj={deletionMessageObj}
       />
     </>
   );

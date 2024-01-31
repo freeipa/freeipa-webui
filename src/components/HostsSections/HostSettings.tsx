@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
 import {
-  Button,
   Checkbox,
   Flex,
   FlexItem,
@@ -19,8 +18,7 @@ import IpaCheckboxes from "../Form/IpaCheckboxes";
 import SecondaryButton from "../layouts/SecondaryButton";
 import PopoverWithIconLayout from "../layouts/PopoverWithIconLayout";
 // Modals
-import PrincipalAliasAddModal from "../modals/PrincipalAliasAddModal";
-import PrincipalAliasDeleteModal from "../modals/PrincipalAliasDeleteModal";
+import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
 
@@ -42,6 +40,7 @@ interface PropsToHostSettings {
   host: Partial<Host>;
   metadata: Metadata;
   onHostChange: (host: Partial<Host>) => void;
+  onRefresh: () => void;
 }
 
 const HostSettings = (props: PropsToHostSettings) => {
@@ -67,10 +66,6 @@ const HostSettings = (props: PropsToHostSettings) => {
     props.host,
     props.onHostChange
   );
-
-  // Principal alias - textbox
-  const [principalAliasList, setPrincipalAliasList] =
-    useState<PrincipalAlias[]>(aliasList);
 
   // SSH public keys
   const [sshPublicKeys] = useState<SshPublicKey[]>([]);
@@ -118,126 +113,6 @@ const HostSettings = (props: PropsToHostSettings) => {
   // Assigned ID view - data type unknown, treated as string from now
   const [assignedIDView] = useState("");
 
-  // Principal alias - Add Modal
-  const [isPrincipalAliasAddModalOpen, setIsPrincipalAliasAddModalOpen] =
-    useState(false);
-
-  // - Modal fields data
-  // -- New kerberos principal alias - textbox
-  const [newKrbAlias, setNewKrbAlias] = useState("");
-
-  const onChangeNewKrbAlias = (newAlias: string) => {
-    setNewKrbAlias(newAlias);
-  };
-
-  // - Close modal
-  const onClosePrincipalAliasAddModal = () => {
-    // Reset values
-    setNewKrbAlias("");
-    setIsPrincipalAliasAddModalOpen(false);
-  };
-
-  // - Open modal
-  const onOpenPrincipalAliasAddModal = () => {
-    setIsPrincipalAliasAddModalOpen(true);
-  };
-
-  // - Add new kerberos principal alias
-  const addNewKrbPrincipalAlias = (newKrbAlias: string) => {
-    // Process new krb alias
-    // (whether a single name or a complete name with realm is provided,
-    // this needs to be checked)
-    if (aliasList.length > 0) {
-      // TODO this is not correct!, need to look thorguh the entire list,
-      // not just the first item.  Will address in future ticket
-      const REALM = aliasList[0].alias;
-      if (!newKrbAlias.includes(REALM)) {
-        newKrbAlias = newKrbAlias + REALM;
-      }
-    }
-    const principalAliasListCopy = [...principalAliasList];
-    principalAliasListCopy.push({
-      id: Date.now.toString(),
-      alias: newKrbAlias,
-    });
-    setPrincipalAliasList(principalAliasListCopy);
-    // Reset values and close modal
-    onClosePrincipalAliasAddModal();
-  };
-
-  // - Modal actions
-  const principalAliasAddModalActions = [
-    <SecondaryButton
-      key="add"
-      onClickHandler={() => addNewKrbPrincipalAlias(newKrbAlias)}
-    >
-      Add
-    </SecondaryButton>,
-    <Button key="cancel" variant="link" onClick={onClosePrincipalAliasAddModal}>
-      Cancel
-    </Button>,
-  ];
-
-  // - Data to modal
-  const dataToModal = {
-    newKrbAlias,
-    onChangeNewKrbAlias,
-    onClosePrincipalAliasAddModal,
-    onOpenPrincipalAliasAddModal,
-    addNewKrbPrincipalAlias,
-  };
-
-  // Principal alias - Delete Modal
-  const [isPrincipalAliasDeleteModalOpen, setIsPrincipalAliasDeleteModalOpen] =
-    useState(false);
-
-  // - Alias to delete
-  const [aliasToDelete, setAliasToDelete] = useState("");
-
-  // - Close modal
-  const onClosePrincipalAliasDeleteModal = () => {
-    setIsPrincipalAliasDeleteModalOpen(false);
-  };
-
-  // - Open modal
-  const onOpenPrincipalAliasDeleteModal = () => {
-    setIsPrincipalAliasDeleteModalOpen(true);
-  };
-
-  const openModalAndSetAlias = (krbAliasToDelete: string) => {
-    setAliasToDelete(krbAliasToDelete);
-    onOpenPrincipalAliasDeleteModal();
-  };
-
-  // - Delete new kerberos principal alias
-  const deleteNewKrbPrincipalAlias = () => {
-    const principalAliasUpdatedList: PrincipalAlias[] = [];
-    principalAliasList.map((krbAlias) => {
-      if (krbAlias.alias !== aliasToDelete) {
-        principalAliasUpdatedList.push(krbAlias);
-      }
-    });
-    setPrincipalAliasList(principalAliasUpdatedList);
-    // Reset delete variable
-    setAliasToDelete("");
-    // Close modal
-    onClosePrincipalAliasDeleteModal();
-  };
-
-  // - Modal actions
-  const principalAliasDeleteModalActions = [
-    <SecondaryButton key="delete" onClickHandler={deleteNewKrbPrincipalAlias}>
-      Delete
-    </SecondaryButton>,
-    <Button
-      key="cancel"
-      variant="link"
-      onClick={onClosePrincipalAliasDeleteModal}
-    >
-      Cancel
-    </Button>,
-  ];
-
   return (
     <>
       <Flex direction={{ default: "column", lg: "row" }}>
@@ -253,24 +128,16 @@ const HostSettings = (props: PropsToHostSettings) => {
                 isDisabled
               />
             </FormGroup>
-            <FormGroup label="Principal alias" fieldId="principal-alias">
-              {principalAliasList.map((alias, idx) => (
-                <Flex key={idx} className={idx !== 0 ? "pf-v5-u-mt-sm" : ""}>
-                  <FlexItem>{alias.alias}</FlexItem>
-                  <FlexItem>
-                    <SecondaryButton
-                      onClickHandler={() => openModalAndSetAlias(alias.alias)}
-                    >
-                      Delete
-                    </SecondaryButton>
-                  </FlexItem>
-                </Flex>
-              ))}
-            </FormGroup>
-            <FormGroup>
-              <SecondaryButton onClickHandler={onOpenPrincipalAliasAddModal}>
-                Add
-              </SecondaryButton>
+            <FormGroup
+              label="Kerberos principal alias"
+              fieldId="krbprincipalname"
+            >
+              <PrincipalAliasMultiTextBox
+                ipaObject={ipaObject}
+                metadata={props.metadata}
+                onRefresh={props.onRefresh}
+                from="hosts"
+              />
             </FormGroup>
             <FormGroup label="Description" fieldId="description">
               <IpaTextArea
@@ -464,18 +331,6 @@ const HostSettings = (props: PropsToHostSettings) => {
           </Form>
         </FlexItem>
       </Flex>
-      <PrincipalAliasAddModal
-        isOpen={isPrincipalAliasAddModalOpen}
-        onClose={onClosePrincipalAliasAddModal}
-        actions={principalAliasAddModalActions}
-        data={dataToModal}
-      />
-      <PrincipalAliasDeleteModal
-        isOpen={isPrincipalAliasDeleteModalOpen}
-        onClose={onClosePrincipalAliasDeleteModal}
-        actions={principalAliasDeleteModalActions}
-        hostToRemove={aliasToDelete}
-      />
     </>
   );
 };

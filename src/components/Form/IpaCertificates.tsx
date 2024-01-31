@@ -129,6 +129,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
       props.ipaObject.uid,
       removeCertificateDelimiters(certificateToRemove),
     ];
+    setModalSpinning(true);
 
     removeCertificate(payload).then((response) => {
       if ("data" in response) {
@@ -152,6 +153,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         }
         // Refresh data to show new changes in the UI
         props.onRefresh();
+        setModalSpinning(false);
       }
     });
   };
@@ -359,6 +361,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
       props.ipaObject.uid,
       removeCertificateDelimiters(textAreaValue),
     ];
+    setModalSpinning(true);
 
     addCertificate(payload).then((response) => {
       if ("data" in response) {
@@ -382,6 +385,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         }
         // Refresh data to show new changes in the UI
         props.onRefresh();
+        setModalSpinning(false);
       }
     });
   };
@@ -391,6 +395,8 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
     React.useState(false);
   const [idxToDelete, setIdxToDelete] = React.useState<number>(999); // Asumption: There will never be 999 certificates
   const [messageDeletionConf, setMessageDeletionConf] = React.useState("");
+  const [messageDeletionObj, setMessageDeletionObj] = React.useState("");
+  const [modalSpinning, setModalSpinning] = React.useState(false);
 
   const onOpenDeletionConfModal = () => {
     setIsDeleteConfModalOpen(true);
@@ -406,10 +412,9 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
     // Set message to show on the deletion confirmation modal
     const aliasToDelete = certificatesList[idx].certInfo.serial_number;
     setMessageDeletionConf(
-      "Are you sure you want to delete the certificate with serial number " +
-        aliasToDelete +
-        "?"
+      "Are you sure you want to delete the certificate with the following serial number?"
     );
+    setMessageDeletionObj(aliasToDelete);
     // Open deletion confirmation modal
     onOpenDeletionConfModal();
   };
@@ -419,8 +424,13 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
       key="del-certificate-conf"
       variant="danger"
       onClick={() => onDeleteCertificate(idxToDelete)}
+      isDisabled={modalSpinning}
+      isLoading={modalSpinning}
+      spinnerAriaValueText="Deleting"
+      spinnerAriaLabelledBy="Deleting"
+      spinnerAriaLabel="Deleting"
     >
-      Delete
+      {modalSpinning ? "Deleting" : "Delete"}
     </Button>,
     <Button key="cancel" variant="link" onClick={onCloseDeletionConfModal}>
       Cancel
@@ -557,8 +567,13 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
                 <SecondaryButton
                   key="add-certificate"
                   onClickHandler={onAddCertificate}
+                  isDisabled={modalSpinning}
+                  isLoading={modalSpinning}
+                  spinnerAriaValueText="Adding"
+                  spinnerAriaLabelledBy="Adding"
+                  spinnerAriaLabel="Adding"
                 >
-                  Add
+                  {modalSpinning ? "Adding" : "Add"}
                 </SecondaryButton>,
                 <Button key="cancel" variant="link" onClick={onClickCancel}>
                   Cancel
@@ -600,6 +615,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         onClose={onCloseDeletionConfModal}
         actions={deletionConfModalActions}
         messageText={messageDeletionConf}
+        messageObj={messageDeletionObj}
       />
       {certificatesList[idxSelected] !== undefined && (
         <>
