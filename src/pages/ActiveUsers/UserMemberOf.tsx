@@ -12,22 +12,22 @@ import {
 } from "@patternfly/react-core";
 // Others
 import MemberOfToolbar from "src/components/MemberOf/MemberOfToolbar";
+import MemberOfToolbarNew from "src/components/MemberOf/MemberOfToolbarNew";
 import MemberOfTable from "src/components/MemberOf/MemberOfTable";
+import MemberOfTableNew from "src/components/MemberOf/MemberOfTableNew";
 // Data types
 import {
-  UserGroup,
   Netgroup,
   Roles,
   HBACRules,
   SudoRules,
   User,
+  UserGroupNew,
 } from "src/utils/datatypes/globalDataTypes";
 // Redux
 import { useAppSelector } from "src/store/hooks";
-
 // Repositories
 import {
-  userGroupsInitialData,
   netgroupsInitialData,
   rolesInitialData,
   hbacRulesInitialData,
@@ -36,6 +36,8 @@ import {
 // Modals
 import MemberOfAddModal from "src/components/MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModal";
+import { useGetUserByUidQuery } from "src/services/rpc";
+import { useUserMemberOfData } from "src/hooks/useUserMemberOfData";
 
 interface PropsToUserMemberOf {
   user: User;
@@ -43,18 +45,12 @@ interface PropsToUserMemberOf {
 
 const UserMemberOf = (props: PropsToUserMemberOf) => {
   // Retrieve each group list from Redux:
-  let userGroupsList = useAppSelector(
-    (state) => state.usergroups.userGroupList
-  );
   let netgroupsList = useAppSelector((state) => state.netgroups.netgroupList);
   let rolesList = useAppSelector((state) => state.roles.roleList);
   let hbacRulesList = useAppSelector((state) => state.hbacrules.hbacRulesList);
   let sudoRulesList = useAppSelector((state) => state.sudorules.sudoRulesList);
 
   // Alter the available options list to keep the state of the recently added / removed items
-  const updateUserGroupsList = (newAvOptionsList: unknown[]) => {
-    userGroupsList = newAvOptionsList as UserGroup[];
-  };
   const updateNetgroupsList = (newAvOptionsList: unknown[]) => {
     netgroupsList = newAvOptionsList as Netgroup[];
   };
@@ -68,10 +64,42 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     sudoRulesList = newAvOptionsList as SudoRules[];
   };
 
-  // List of default dummy data (for each tab option)
-  const [userGroupsRepository, setUserGroupsRepository] = useState(
-    userGroupsInitialData
-  );
+  // API call to get user's info
+  const userQuery = useGetUserByUidQuery(props.user.uid[0]);
+
+  const userData = userQuery.data || {};
+
+  const [user, setUser] = React.useState<Partial<User>>({});
+
+  // Member groups associated to user (string[] | UserGroupNew[])
+  const [userGroupsFromUser, setUserGroupsFromUser] = React.useState<
+    UserGroupNew[]
+  >([]);
+
+  React.useEffect(() => {
+    if (!userQuery.isFetching && userData) {
+      setUser({ ...userData });
+    }
+  }, [userData, userQuery.isFetching]);
+
+  // API call to get full lists of Member data
+  const { userGroupsFullList } = useUserMemberOfData();
+
+  // Parse into UserGroupNew[] format by getting the full info from the available data
+  React.useEffect(() => {
+    const userGroupsParsed: UserGroupNew[] = [];
+    user.memberof_group?.map((group) => {
+      userGroupsFullList.map((g) => {
+        if (g.cn === group) {
+          userGroupsParsed.push(g);
+        }
+      });
+    });
+    setUserGroupsFromUser(userGroupsParsed);
+  }, [user, userGroupsFullList]);
+
+  // List of default dummy data (for the still-non-adapted tabs)
+  // TODO: Remove this once all the tabs are adapted with the C.L.
   const [netgroupsRepository, setNetgroupsRepository] =
     useState(netgroupsInitialData);
   const [rolesRepository, setRolesRepository] = useState(rolesInitialData);
@@ -90,14 +118,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   // Filter functions to compare the available data with the data that
   //  the user is already member of. This is done to prevent duplicates
   //  (e.g: adding the same element twice).
-  const filterUserGroupsData = () => {
-    // User groups
-    return userGroupsList.filter((item) => {
-      return !userGroupsRepository.some((itm) => {
-        return item.name === itm.name;
-      });
-    });
-  };
   const filterNetgroupsData = () => {
     // Netgroups
     return netgroupsList.filter((item) => {
@@ -132,7 +152,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   };
 
   // Available data to be added as member of
-  const userGroupsFilteredData: UserGroup[] = filterUserGroupsData();
   const netgroupsFilteredData: Netgroup[] = filterNetgroupsData();
   const rolesFilteredData: Roles[] = filterRolesData();
   const hbacRulesFilteredData: HBACRules[] = filterHbacRulesData();
@@ -140,7 +159,8 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
 
   // Number of items on the list for each repository
   const [userGroupsRepoLength, setUserGroupsRepoLength] = useState(
-    userGroupsRepository.length
+    // userGroupsFullList.length
+    userGroupsFromUser.length
   );
   const [netgroupsRepoLength, setNetgroupsRepoLength] = useState(
     netgroupsRepository.length
@@ -161,7 +181,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   //  - Number of items for a specific list
   const updateGroupRepository = (
     groupRepository:
-      | UserGroup[]
+      | UserGroupNew[]
       | Netgroup[]
       | Roles[]
       | HBACRules[]
@@ -169,9 +189,9 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   ) => {
     switch (tabName) {
       case "User groups":
-        setUserGroupsRepository(groupRepository as UserGroup[]);
-        setShownUserGroupsList(userGroupsRepository.slice(0, perPage));
-        setUserGroupsRepoLength(userGroupsRepository.length);
+        setUserGroupsFromUser(groupRepository as UserGroupNew[]);
+        setShownUserGroupsList(userGroupsFromUser.slice(0, perPage));
+        setUserGroupsRepoLength(userGroupsFromUser.length);
         break;
       case "Netgroups":
         setNetgroupsRepository(groupRepository as Netgroup[]);
@@ -238,7 +258,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
 
   // Member groups displayed on the first page
   const [shownUserGroupsList, setShownUserGroupsList] = useState(
-    userGroupsRepository.slice(0, perPage)
+    userGroupsFromUser.slice(0, perPage)
   );
   const [shownNetgroupsList, setShownNetgroupsList] = useState(
     netgroupsRepository.slice(0, perPage)
@@ -253,13 +273,19 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     sudoRulesRepository.slice(0, perPage)
   );
 
+  // Update shown items based on data updates
+  React.useEffect(() => {
+    setShownUserGroupsList(userGroupsFromUser.slice(0, perPage));
+    // Omitting the rest of the shown lists because they are not adapted yet to the C.L.
+  }, [userGroupsFromUser]);
+
   // Update pagination
   const changeMemberGroupsList = (
-    value: UserGroup[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[]
+    value: UserGroupNew[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[]
   ) => {
     switch (activeTabKey) {
       case 0:
-        setShownUserGroupsList(value as UserGroup[]);
+        setShownUserGroupsList(value as UserGroupNew[]);
         break;
       case 1:
         setShownNetgroupsList(value as Netgroup[]);
@@ -287,7 +313,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     setPage(newPage);
     switch (activeTabKey) {
       case 0:
-        setShownUserGroupsList(userGroupsRepository.slice(startIdx, endIdx));
+        setShownUserGroupsList(userGroupsFromUser.slice(startIdx, endIdx));
         break;
       case 1:
         setShownNetgroupsList(netgroupsRepository.slice(startIdx, endIdx));
@@ -314,7 +340,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     setPerPage(newPerPage);
     switch (activeTabKey) {
       case 0:
-        setShownUserGroupsList(userGroupsRepository.slice(startIdx, endIdx));
+        setShownUserGroupsList(userGroupsFromUser.slice(startIdx, endIdx));
         break;
       case 1:
         setShownNetgroupsList(netgroupsRepository.slice(startIdx, endIdx));
@@ -341,7 +367,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     setPage(newPage);
     switch (activeTabKey) {
       case 0:
-        setShownUserGroupsList(userGroupsRepository.slice(startIdx, endIdx));
+        setShownUserGroupsList(userGroupsFromUser.slice(startIdx, endIdx));
         break;
       case 1:
         setShownNetgroupsList(netgroupsRepository.slice(startIdx, endIdx));
@@ -367,7 +393,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     setPerPage(newPerPage);
     switch (activeTabKey) {
       case 0:
-        setShownUserGroupsList(userGroupsRepository.slice(startIdx, endIdx));
+        setShownUserGroupsList(userGroupsFromUser.slice(startIdx, endIdx));
         break;
       case 1:
         setShownNetgroupsList(netgroupsRepository.slice(startIdx, endIdx));
@@ -388,7 +414,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   const numberOfItems = () => {
     switch (activeTabKey) {
       case 0:
-        return userGroupsRepository.length;
+        return userGroupsFromUser.length;
       case 1:
         return netgroupsRepository.length;
       case 2:
@@ -430,12 +456,16 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   useEffect(() => {
     setPage(1);
     if (showTableRows) setShowTableRows(false);
+    switch (activeTabKey) {
+      case 0:
+        setShownUserGroupsList(userGroupsFromUser.slice(0, perPage));
+        setUserGroupsRepoLength(userGroupsFromUser.length);
+        break;
+    }
+
+    // TODO: Remove the timeout once the remaining elements are adapted into the C.L.
     setTimeout(() => {
       switch (activeTabKey) {
-        case 0:
-          setShownUserGroupsList(userGroupsRepository.slice(0, perPage));
-          setUserGroupsRepoLength(userGroupsRepository.length);
-          break;
         case 1:
           setShownNetgroupsList(netgroupsRepository.slice(0, perPage));
           setNetgroupsRepoLength(netgroupsRepository.length);
@@ -456,7 +486,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
       setShowTableRows(true);
     }, 1000);
   }, [
-    userGroupsRepository,
+    userGroupsFromUser,
     netgroupsRepository,
     rolesRepository,
     hbacRulesRepository,
@@ -526,306 +556,314 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
 
   // Render 'ActiveUsersIsMemberOf'
   return (
-    <Page>
-      <PageSection
-        variant={PageSectionVariants.light}
-        isFilled={false}
-        className="pf-v5-u-m-lg"
-      >
-        <Tabs activeKey={activeTabKey} onSelect={handleTabClick} isBox={false}>
-          <Tab
-            eventKey={0}
-            name="memberof_group"
-            title={
-              <TabTitleText>
-                User groups{" "}
-                <Badge key={0} isRead>
-                  {userGroupsRepoLength}
-                </Badge>
-              </TabTitleText>
-            }
+    <>
+      <Page>
+        <PageSection
+          variant={PageSectionVariants.light}
+          isFilled={false}
+          className="pf-v5-u-m-lg"
+        >
+          <Tabs
+            activeKey={activeTabKey}
+            onSelect={handleTabClick}
+            isBox={false}
           >
-            <MemberOfToolbar
-              pageRepo={userGroupsRepository}
-              shownItems={shownUserGroupsList}
-              toolbar="user groups"
-              settersData={toolbarSettersData}
-              pageData={toolbarPageData}
-              buttonData={toolbarButtonData}
-              searchValueData={searchValueData}
-            />
-            <MemberOfTable
-              group={shownUserGroupsList}
-              tableName={"User groups"}
-              activeTabKey={activeTabKey}
-              changeSelectedGroups={updateGroupsNamesSelected}
-              buttonData={tableButtonData}
-              showTableRows={showTableRows}
-              searchValue={searchValue}
-              fullGroupList={userGroupsRepository}
-            />
-          </Tab>
-          <Tab
-            eventKey={1}
-            name="memberof_netgroup"
-            title={
-              <TabTitleText>
-                Netgroups{" "}
-                <Badge key={1} isRead>
-                  {netgroupsRepoLength}
-                </Badge>
-              </TabTitleText>
-            }
-          >
-            <MemberOfToolbar
-              pageRepo={netgroupsRepository}
-              shownItems={shownNetgroupsList}
-              toolbar="netgroups"
-              settersData={toolbarSettersData}
-              pageData={toolbarPageData}
-              buttonData={toolbarButtonData}
-              searchValueData={searchValueData}
-            />
-            <MemberOfTable
-              group={shownNetgroupsList}
-              tableName={"Netgroups"}
-              activeTabKey={activeTabKey}
-              changeSelectedGroups={updateGroupsNamesSelected}
-              buttonData={tableButtonData}
-              showTableRows={showTableRows}
-              searchValue={searchValue}
-              fullGroupList={netgroupsRepository}
-            />
-          </Tab>
-          <Tab
-            eventKey={2}
-            name="memberof_role"
-            title={
-              <TabTitleText>
-                Roles{" "}
-                <Badge key={2} isRead>
-                  {rolesRepoLength}
-                </Badge>
-              </TabTitleText>
-            }
-          >
-            <MemberOfToolbar
-              pageRepo={rolesRepository}
-              shownItems={shownRolesList}
-              toolbar="roles"
-              settersData={toolbarSettersData}
-              pageData={toolbarPageData}
-              buttonData={toolbarButtonData}
-              searchValueData={searchValueData}
-            />
-            <MemberOfTable
-              group={shownRolesList}
-              tableName={"Roles"}
-              activeTabKey={activeTabKey}
-              changeSelectedGroups={updateGroupsNamesSelected}
-              buttonData={tableButtonData}
-              showTableRows={showTableRows}
-              searchValue={searchValue}
-              fullGroupList={rolesRepository}
-            />
-          </Tab>
-          <Tab
-            eventKey={3}
-            name="memberof_hbacrule"
-            title={
-              <TabTitleText>
-                HBAC rules{" "}
-                <Badge key={3} isRead>
-                  {hbacRulesRepoLength}
-                </Badge>
-              </TabTitleText>
-            }
-          >
-            <MemberOfToolbar
-              pageRepo={hbacRulesRepository}
-              shownItems={shownHBACRulesList}
-              toolbar="HBAC rules"
-              settersData={toolbarSettersData}
-              pageData={toolbarPageData}
-              buttonData={toolbarButtonData}
-              searchValueData={searchValueData}
-            />
-            <MemberOfTable
-              group={shownHBACRulesList}
-              tableName={"HBAC rules"}
-              activeTabKey={activeTabKey}
-              changeSelectedGroups={updateGroupsNamesSelected}
-              buttonData={tableButtonData}
-              showTableRows={showTableRows}
-              searchValue={searchValue}
-              fullGroupList={hbacRulesRepository}
-            />
-          </Tab>
-          <Tab
-            eventKey={4}
-            name="memberof_sudorule"
-            title={
-              <TabTitleText>
-                Sudo rules{" "}
-                <Badge key={4} isRead>
-                  {sudoRulesRepoLength}
-                </Badge>
-              </TabTitleText>
-            }
-          >
-            <MemberOfToolbar
-              pageRepo={sudoRulesRepository}
-              shownItems={shownSudoRulesList}
-              toolbar="sudo rules"
-              settersData={toolbarSettersData}
-              pageData={toolbarPageData}
-              buttonData={toolbarButtonData}
-              searchValueData={searchValueData}
-            />
-            <MemberOfTable
-              group={shownSudoRulesList}
-              tableName={"Sudo rules"}
-              activeTabKey={activeTabKey}
-              changeSelectedGroups={updateGroupsNamesSelected}
-              buttonData={tableButtonData}
-              showTableRows={showTableRows}
-              searchValue={searchValue}
-              fullGroupList={sudoRulesRepository}
-            />
-          </Tab>
-        </Tabs>
-        <Pagination
-          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-          itemCount={numberOfItems()}
-          widgetId="pagination-options-menu-bottom"
-          perPage={perPage}
-          page={page}
-          variant={PaginationVariant.bottom}
-          onSetPage={onSetPage}
-          onPerPageSelect={onPerPageSelect}
-        />
-      </PageSection>
-      {tabName === "User groups" && (
-        <>
-          {showAddModal && (
-            <MemberOfAddModal
-              modalData={addModalData}
-              availableData={userGroupsFilteredData}
-              groupRepository={userGroupsRepository}
-              updateGroupRepository={updateGroupRepository}
-              updateAvOptionsList={updateUserGroupsList}
-              tabData={tabData}
-            />
-          )}
-          {showDeleteModal && groupsNamesSelected.length !== 0 && (
-            <MemberOfDeleteModal
-              modalData={deleteModalData}
-              tabData={deleteTabData}
-              groupNamesToDelete={groupsNamesSelected}
-              groupRepository={userGroupsRepository}
-              updateGroupRepository={updateGroupRepository}
-              buttonData={deleteButtonData}
-            />
-          )}
-        </>
-      )}
-      {tabName === "Netgroups" && (
-        <>
-          {showAddModal && (
-            <MemberOfAddModal
-              modalData={addModalData}
-              availableData={netgroupsFilteredData}
-              groupRepository={netgroupsRepository}
-              updateGroupRepository={updateGroupRepository}
-              updateAvOptionsList={updateNetgroupsList}
-              tabData={tabData}
-            />
-          )}
-          {showDeleteModal && groupsNamesSelected.length !== 0 && (
-            <MemberOfDeleteModal
-              modalData={deleteModalData}
-              tabData={deleteTabData}
-              groupNamesToDelete={groupsNamesSelected}
-              groupRepository={netgroupsRepository}
-              updateGroupRepository={updateGroupRepository}
-              buttonData={deleteButtonData}
-            />
-          )}
-        </>
-      )}
-      {tabName === "Roles" && (
-        <>
-          {showAddModal && (
-            <MemberOfAddModal
-              modalData={addModalData}
-              availableData={rolesFilteredData}
-              groupRepository={rolesRepository}
-              updateGroupRepository={updateGroupRepository}
-              updateAvOptionsList={updateRolesList}
-              tabData={tabData}
-            />
-          )}
-          {showDeleteModal && groupsNamesSelected.length !== 0 && (
-            <MemberOfDeleteModal
-              modalData={deleteModalData}
-              tabData={deleteTabData}
-              groupNamesToDelete={groupsNamesSelected}
-              groupRepository={rolesRepository}
-              updateGroupRepository={updateGroupRepository}
-              buttonData={deleteButtonData}
-            />
-          )}
-        </>
-      )}
-      {tabName === "HBAC rules" && (
-        <>
-          {showAddModal && (
-            <MemberOfAddModal
-              modalData={addModalData}
-              availableData={hbacRulesFilteredData}
-              groupRepository={hbacRulesRepository}
-              updateGroupRepository={updateGroupRepository}
-              updateAvOptionsList={updateHbacRulesList}
-              tabData={tabData}
-            />
-          )}
-          {showDeleteModal && groupsNamesSelected.length !== 0 && (
-            <MemberOfDeleteModal
-              modalData={deleteModalData}
-              tabData={deleteTabData}
-              groupNamesToDelete={groupsNamesSelected}
-              groupRepository={hbacRulesRepository}
-              updateGroupRepository={updateGroupRepository}
-              buttonData={deleteButtonData}
-            />
-          )}
-        </>
-      )}
-      {tabName === "Sudo rules" && (
-        <>
-          {showAddModal && (
-            <MemberOfAddModal
-              modalData={addModalData}
-              availableData={sudoRulesFilteredData}
-              groupRepository={sudoRulesRepository}
-              updateGroupRepository={updateGroupRepository}
-              updateAvOptionsList={updateSudoRulesList}
-              tabData={tabData}
-            />
-          )}
-          {showDeleteModal && groupsNamesSelected.length !== 0 && (
-            <MemberOfDeleteModal
-              modalData={deleteModalData}
-              tabData={deleteTabData}
-              groupNamesToDelete={groupsNamesSelected}
-              groupRepository={sudoRulesRepository}
-              updateGroupRepository={updateGroupRepository}
-              buttonData={deleteButtonData}
-            />
-          )}
-        </>
-      )}
-    </Page>
+            <Tab
+              eventKey={0}
+              name="memberof_group"
+              title={
+                <TabTitleText>
+                  User groups{" "}
+                  <Badge key={0} isRead>
+                    {userGroupsRepoLength}
+                  </Badge>
+                </TabTitleText>
+              }
+            >
+              <MemberOfToolbarNew
+                pageRepo={userGroupsFromUser}
+                shownItems={shownUserGroupsList}
+                toolbar="user groups"
+                settersData={toolbarSettersData}
+                pageData={toolbarPageData}
+                buttonData={toolbarButtonData}
+                searchValueData={searchValueData}
+              />
+              <MemberOfTableNew
+                listOfElements={shownUserGroupsList}
+                tableName={"User groups"}
+                activeTabKey={activeTabKey}
+                changeSelectedGroups={updateGroupsNamesSelected}
+                buttonData={tableButtonData}
+                showTableRows={showTableRows}
+                searchValue={searchValue}
+                fullGroupList={userGroupsFullList}
+              />
+            </Tab>
+            <Tab
+              eventKey={1}
+              name="memberof_netgroup"
+              title={
+                <TabTitleText>
+                  Netgroups{" "}
+                  <Badge key={1} isRead>
+                    {netgroupsRepoLength}
+                  </Badge>
+                </TabTitleText>
+              }
+            >
+              <MemberOfToolbar
+                pageRepo={netgroupsRepository}
+                shownItems={shownNetgroupsList}
+                toolbar="netgroups"
+                settersData={toolbarSettersData}
+                pageData={toolbarPageData}
+                buttonData={toolbarButtonData}
+                searchValueData={searchValueData}
+              />
+              <MemberOfTable
+                group={shownNetgroupsList}
+                tableName={"Netgroups"}
+                activeTabKey={activeTabKey}
+                changeSelectedGroups={updateGroupsNamesSelected}
+                buttonData={tableButtonData}
+                showTableRows={showTableRows}
+                searchValue={searchValue}
+                fullGroupList={netgroupsRepository}
+              />
+            </Tab>
+            <Tab
+              eventKey={2}
+              name="memberof_role"
+              title={
+                <TabTitleText>
+                  Roles{" "}
+                  <Badge key={2} isRead>
+                    {rolesRepoLength}
+                  </Badge>
+                </TabTitleText>
+              }
+            >
+              <MemberOfToolbar
+                pageRepo={rolesRepository}
+                shownItems={shownRolesList}
+                toolbar="roles"
+                settersData={toolbarSettersData}
+                pageData={toolbarPageData}
+                buttonData={toolbarButtonData}
+                searchValueData={searchValueData}
+              />
+              <MemberOfTable
+                group={shownRolesList}
+                tableName={"Roles"}
+                activeTabKey={activeTabKey}
+                changeSelectedGroups={updateGroupsNamesSelected}
+                buttonData={tableButtonData}
+                showTableRows={showTableRows}
+                searchValue={searchValue}
+                fullGroupList={rolesRepository}
+              />
+            </Tab>
+            <Tab
+              eventKey={3}
+              name="memberof_hbacrule"
+              title={
+                <TabTitleText>
+                  HBAC rules{" "}
+                  <Badge key={3} isRead>
+                    {hbacRulesRepoLength}
+                  </Badge>
+                </TabTitleText>
+              }
+            >
+              <MemberOfToolbar
+                pageRepo={hbacRulesRepository}
+                shownItems={shownHBACRulesList}
+                toolbar="HBAC rules"
+                settersData={toolbarSettersData}
+                pageData={toolbarPageData}
+                buttonData={toolbarButtonData}
+                searchValueData={searchValueData}
+              />
+              <MemberOfTable
+                group={shownHBACRulesList}
+                tableName={"HBAC rules"}
+                activeTabKey={activeTabKey}
+                changeSelectedGroups={updateGroupsNamesSelected}
+                buttonData={tableButtonData}
+                showTableRows={showTableRows}
+                searchValue={searchValue}
+                fullGroupList={hbacRulesRepository}
+              />
+            </Tab>
+            <Tab
+              eventKey={4}
+              name="memberof_sudorule"
+              title={
+                <TabTitleText>
+                  Sudo rules{" "}
+                  <Badge key={4} isRead>
+                    {sudoRulesRepoLength}
+                  </Badge>
+                </TabTitleText>
+              }
+            >
+              <MemberOfToolbar
+                pageRepo={sudoRulesRepository}
+                shownItems={shownSudoRulesList}
+                toolbar="sudo rules"
+                settersData={toolbarSettersData}
+                pageData={toolbarPageData}
+                buttonData={toolbarButtonData}
+                searchValueData={searchValueData}
+              />
+              <MemberOfTable
+                group={shownSudoRulesList}
+                tableName={"Sudo rules"}
+                activeTabKey={activeTabKey}
+                changeSelectedGroups={updateGroupsNamesSelected}
+                buttonData={tableButtonData}
+                showTableRows={showTableRows}
+                searchValue={searchValue}
+                fullGroupList={sudoRulesRepository}
+              />
+            </Tab>
+          </Tabs>
+          <Pagination
+            className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+            itemCount={numberOfItems()}
+            widgetId="pagination-options-menu-bottom"
+            perPage={perPage}
+            page={page}
+            variant={PaginationVariant.bottom}
+            onSetPage={onSetPage}
+            onPerPageSelect={onPerPageSelect}
+          />
+        </PageSection>
+        {/* This will remain commented until the 'Add' and 'Delete'
+            functionality is adapted */}
+        {/* {tabName === "User groups" && (
+          <>
+            {showAddModal && (
+              <MemberOfAddModal
+                modalData={addModalData}
+                availableData={userGroupsFilteredData}
+                groupRepository={userGroupsList}
+                updateGroupRepository={updateGroupRepository}
+                updateAvOptionsList={updateUserGroupsList}
+                tabData={tabData}
+              />
+            )}
+            {showDeleteModal && groupsNamesSelected.length !== 0 && (
+              <MemberOfDeleteModal
+                modalData={deleteModalData}
+                tabData={deleteTabData}
+                groupNamesToDelete={groupsNamesSelected}
+                groupRepository={userGroupsList}
+                updateGroupRepository={updateGroupRepository}
+                buttonData={deleteButtonData}
+              />
+            )}
+          </>
+        )} */}
+        {tabName === "Netgroups" && (
+          <>
+            {showAddModal && (
+              <MemberOfAddModal
+                modalData={addModalData}
+                availableData={netgroupsFilteredData}
+                groupRepository={netgroupsRepository}
+                updateGroupRepository={updateGroupRepository}
+                updateAvOptionsList={updateNetgroupsList}
+                tabData={tabData}
+              />
+            )}
+            {showDeleteModal && groupsNamesSelected.length !== 0 && (
+              <MemberOfDeleteModal
+                modalData={deleteModalData}
+                tabData={deleteTabData}
+                groupNamesToDelete={groupsNamesSelected}
+                groupRepository={netgroupsRepository}
+                updateGroupRepository={updateGroupRepository}
+                buttonData={deleteButtonData}
+              />
+            )}
+          </>
+        )}
+        {tabName === "Roles" && (
+          <>
+            {showAddModal && (
+              <MemberOfAddModal
+                modalData={addModalData}
+                availableData={rolesFilteredData}
+                groupRepository={rolesRepository}
+                updateGroupRepository={updateGroupRepository}
+                updateAvOptionsList={updateRolesList}
+                tabData={tabData}
+              />
+            )}
+            {showDeleteModal && groupsNamesSelected.length !== 0 && (
+              <MemberOfDeleteModal
+                modalData={deleteModalData}
+                tabData={deleteTabData}
+                groupNamesToDelete={groupsNamesSelected}
+                groupRepository={rolesRepository}
+                updateGroupRepository={updateGroupRepository}
+                buttonData={deleteButtonData}
+              />
+            )}
+          </>
+        )}
+        {tabName === "HBAC rules" && (
+          <>
+            {showAddModal && (
+              <MemberOfAddModal
+                modalData={addModalData}
+                availableData={hbacRulesFilteredData}
+                groupRepository={hbacRulesRepository}
+                updateGroupRepository={updateGroupRepository}
+                updateAvOptionsList={updateHbacRulesList}
+                tabData={tabData}
+              />
+            )}
+            {showDeleteModal && groupsNamesSelected.length !== 0 && (
+              <MemberOfDeleteModal
+                modalData={deleteModalData}
+                tabData={deleteTabData}
+                groupNamesToDelete={groupsNamesSelected}
+                groupRepository={hbacRulesRepository}
+                updateGroupRepository={updateGroupRepository}
+                buttonData={deleteButtonData}
+              />
+            )}
+          </>
+        )}
+        {tabName === "Sudo rules" && (
+          <>
+            {showAddModal && (
+              <MemberOfAddModal
+                modalData={addModalData}
+                availableData={sudoRulesFilteredData}
+                groupRepository={sudoRulesRepository}
+                updateGroupRepository={updateGroupRepository}
+                updateAvOptionsList={updateSudoRulesList}
+                tabData={tabData}
+              />
+            )}
+            {showDeleteModal && groupsNamesSelected.length !== 0 && (
+              <MemberOfDeleteModal
+                modalData={deleteModalData}
+                tabData={deleteTabData}
+                groupNamesToDelete={groupsNamesSelected}
+                groupRepository={sudoRulesRepository}
+                updateGroupRepository={updateGroupRepository}
+                buttonData={deleteButtonData}
+              />
+            )}
+          </>
+        )}
+      </Page>
+    </>
   );
 };
 

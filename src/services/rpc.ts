@@ -20,6 +20,7 @@ import {
   RadiusServer,
   UIDType,
   User,
+  cnType,
 } from "src/utils/datatypes/globalDataTypes";
 import { apiToUser } from "src/utils/userUtils";
 import { apiToHost } from "src/utils/hostUtils";
@@ -918,6 +919,86 @@ export const api = createApi({
         });
       },
     }),
+    getUserByUid: build.query<User, string>({
+      query: (uid) => {
+        return getCommand({
+          method: "user_show",
+          params: [[uid], { version: API_VERSION_BACKUP }],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): User =>
+        response.result.result as unknown as User,
+    }),
+    getUserGroups: build.query<BatchRPCResponse, HostsPayload>({
+      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
+        const { searchValue, sizeLimit, apiVersion } = payloadData;
+
+        if (apiVersion === undefined) {
+          return {
+            error: {
+              status: "CUSTOM_ERROR",
+              data: "",
+              error: "API version not available",
+            } as FetchBaseQueryError,
+          };
+        }
+
+        // Prepare search parameters
+        const params = {
+          pkey_only: true,
+          sizelimit: sizeLimit,
+          version: apiVersion,
+        };
+
+        // Prepare payload
+        const payloadUserGroups: Command = {
+          method: "group_find",
+          params: [[searchValue], params],
+        };
+
+        // Make call using 'fetchWithBQ'
+        const getUserGroupsIdsResult = await fetchWithBQ(
+          getCommand(payloadUserGroups)
+        );
+        // Return possible errors
+        if (getUserGroupsIdsResult.error) {
+          return { error: getUserGroupsIdsResult.error as FetchBaseQueryError };
+        }
+        // If no error: cast and assign 'uids'
+        const userGroupsIdsResponseData =
+          getUserGroupsIdsResult.data as FindRPCResponse;
+
+        const userGroupsIds: string[] = [];
+        const itemsCount = userGroupsIdsResponseData.result.result
+          .length as number;
+        for (let i = 0; i < itemsCount; i++) {
+          const hostId = userGroupsIdsResponseData.result.result[i] as cnType;
+          const { cn } = hostId;
+          userGroupsIds.push(cn[0] as string);
+        }
+
+        // 2ND CALL - GET USER GROUPS INFO
+        // Prepare payload
+        const payloadUserGroupsBatch: Command[] = userGroupsIds.map(
+          (userGroupId) => ({
+            method: "group_show",
+            params: [[userGroupId], { no_members: true }],
+          })
+        );
+
+        // Make call using 'fetchWithBQ'
+        const userGroupsResult = await fetchWithBQ(
+          getBatchCommand(payloadUserGroupsBatch as Command[], apiVersion)
+        );
+
+        // Return results
+        return userGroupsResult.data
+          ? { data: userGroupsResult.data as BatchRPCResponse }
+          : {
+              error: userGroupsResult.error as unknown as FetchBaseQueryError,
+            };
+      },
+    }),
   }),
 });
 
@@ -997,4 +1078,6 @@ export const {
   useGetDNSZonesQuery,
   useSaveHostMutation,
   useGetHostsFullDataQuery,
+  useGetUserByUidQuery,
+  useGetUserGroupsQuery,
 } = api;
