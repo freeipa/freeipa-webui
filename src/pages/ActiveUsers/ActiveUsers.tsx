@@ -95,7 +95,6 @@ const ActiveUsers = () => {
 
   // Main states - what user can define / what we could use in page URL
   const [totalCount, setUsersTotalCount] = useState<number>(0);
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   // Page indexes
   const firstUserIdx = (page - 1) * perPage;
@@ -108,7 +107,7 @@ const ActiveUsers = () => {
     apiVersion: apiVersion || API_VERSION_BACKUP,
     startIdx: firstUserIdx,
     stopIdx: lastUserIdx,
-  } as GenericPayload);
+  } as UsersPayload);
 
   const {
     data: batchResponse,
@@ -759,7 +758,7 @@ const ActiveUsers = () => {
                 ) : (
                   <UsersTable
                     elementsList={activeUsersList}
-                    shownElementsList={shownUsersList}
+                    shownElementsList={activeUsersList}
                     from="active-users"
                     showTableRows={showTableRows}
                     usersData={usersTableData}
@@ -778,6 +777,7 @@ const ActiveUsers = () => {
             widgetId="pagination-options-menu-bottom"
             perPageComponent="button"
             className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+            totalCount={totalCount}
           />
         </PageSection>
         <AddUser

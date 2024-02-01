@@ -83,7 +83,6 @@ const PreservedUsers = () => {
 
   // Main states - what user can define / what we could use in page URL
   const [totalCount, setUsersTotalCount] = useState<number>(0);
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   // Page indexes
   const firstUserIdx = (page - 1) * perPage;
@@ -96,7 +95,7 @@ const PreservedUsers = () => {
     apiVersion: apiVersion || API_VERSION_BACKUP,
     startIdx: firstUserIdx,
     stopIdx: lastUserIdx,
-  } as GenericPayload);
+  } as UsersPayload);
 
   const {
     data: batchResponse,
@@ -572,6 +571,7 @@ const PreservedUsers = () => {
           variant={PaginationVariant.bottom}
           widgetId="pagination-options-menu-bottom"
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+          totalCount={totalCount}
         />
       </PageSection>
       <ModalErrors errors={modalErrors.getAll()} />
