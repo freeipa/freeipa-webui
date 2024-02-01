@@ -3,7 +3,7 @@ import { EmptyPage } from "src/components/errors/PageErrors";
 
 // Automembership host group rules
 const AutoMemHostRules = () => {
-  return EmptyPage();
+  return <EmptyPage />;
 };
 
 export default AutoMemHostRules;

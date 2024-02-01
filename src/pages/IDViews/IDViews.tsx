@@ -2,7 +2,7 @@ import React from "react";
 import { EmptyPage } from "src/components/errors/PageErrors";
 
 const IDViews = () => {
-  return EmptyPage();
+  return <EmptyPage />;
 };
 
 export default IDViews;

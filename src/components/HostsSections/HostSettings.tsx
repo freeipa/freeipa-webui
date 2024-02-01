@@ -88,31 +88,12 @@ const HostSettings = (props: PropsToHostSettings) => {
     setMacAddressList(macAddressListCopy);
   };
 
-  // - 'Change MAC address' handler
-  const onHandleMacAddressChange = (
-    value: string,
-    event: React.FormEvent<HTMLInputElement>,
-    idx: number
-  ) => {
-    const macAddressListCopy = [...macAddressList];
-    macAddressListCopy[idx]["element"] = (
-      event.target as HTMLInputElement
-    ).value;
-    setMacAddressList(macAddressListCopy);
-  };
-
   // - 'Remove MAC address' handler
   const onRemoveMacAddressHandler = (idx: number) => {
     const macAddressListCopy = [...macAddressList];
     macAddressListCopy.splice(idx, 1);
     setMacAddressList(macAddressListCopy);
   };
-
-  // Authentication indicators - checkboxes
-  const [radiusCheckbox] = useState(false);
-  const [tpaCheckbox] = useState(false);
-  const [pkinitCheckbox] = useState(false);
-  const [hardenedPassCheckbox] = useState(false);
 
   const AuthIndicatorsTypesMessage = () => (
     <div>
