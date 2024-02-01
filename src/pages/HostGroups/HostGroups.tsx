@@ -51,7 +51,7 @@ import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
 import { useGettingHostGroupsQuery } from "../../services/rpcHostGroups";
 
 const HostGroups = () => {
-  return EmptyPage();
+  return <EmptyPage />;
 };
 
 export default HostGroups;

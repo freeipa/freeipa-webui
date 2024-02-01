@@ -49,7 +49,7 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 
 const HBACServices = () => {
-  return EmptyPage();
+  return <EmptyPage />;
 };
 
 export default HBACServices;

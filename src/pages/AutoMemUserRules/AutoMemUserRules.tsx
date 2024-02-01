@@ -3,7 +3,7 @@ import { EmptyPage } from "src/components/errors/PageErrors";
 
 // Automembership user group rules
 const AutoMemUserRules = () => {
-  return EmptyPage();
+  return <EmptyPage />;
 };
 
 export default AutoMemUserRules;

@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 
 // RPC
 import {
-  useGetActiveUsersQuery,
   useGetObjectMetadataQuery,
   useGetHostsFullDataQuery,
 } from "src/services/rpc";

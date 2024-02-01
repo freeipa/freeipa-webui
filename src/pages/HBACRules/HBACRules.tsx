@@ -50,7 +50,7 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 
 const HBACRules = () => {
-  return EmptyPage();
+  return <EmptyPage />;
 };
 
 export default HBACRules;

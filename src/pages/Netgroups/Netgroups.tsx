@@ -51,7 +51,7 @@ import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
 import { useGettingNetgroupsQuery } from "../../services/rpcNetgroups";
 
 const Netgroups = () => {
-  return EmptyPage();
+  return <EmptyPage />;
 };
 
 export default Netgroups;

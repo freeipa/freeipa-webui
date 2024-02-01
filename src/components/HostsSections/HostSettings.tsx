@@ -77,11 +77,12 @@ const HostSettings = (props: PropsToHostSettings) => {
     });
   }
 
-  // Get 'ipaObject' and 'recordOnChange' to use in 'IpaTextInput'
-  const { ipaObject, recordOnChange } = asRecord(
-    props.host,
-    props.onHostChange
-  );
+  // - 'Remove MAC address' handler
+  const onRemoveMacAddressHandler = (idx: number) => {
+    const macAddressListCopy = [...macAddressList];
+    macAddressListCopy.splice(idx, 1);
+    setMacAddressList(macAddressListCopy);
+  };
 
   const AuthIndicatorsTypesMessage = () => (
     <div>

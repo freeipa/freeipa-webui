@@ -51,7 +51,7 @@ import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
 import { useGettingGroupsQuery } from "../../services/rpcUserGroups";
 
 const UserGroups = () => {
-  return EmptyPage();
+  return <EmptyPage />;
 };
 
 export default UserGroups;

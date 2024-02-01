@@ -61,7 +61,7 @@ import {
 } from "../../services/rpcIDViews";
 
 const IDViews = () => {
-  return EmptyPage();
+  return <EmptyPage />;
 };
 
 export default IDViews;

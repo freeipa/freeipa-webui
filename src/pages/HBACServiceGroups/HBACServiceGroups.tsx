@@ -52,7 +52,7 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 
 const HBACServiceGroups = () => {
-  return EmptyPage();
+  return <EmptyPage />;
 };
 
 export default HBACServiceGroups;
