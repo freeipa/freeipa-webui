@@ -23,7 +23,7 @@
     "audit-ci": "audit-ci --config audit-ci.json",
     "cypress": "cypress run --config-file cypress/cypress.config.ts",
     "cypress:open": "cypress open --config-file cypress/cypress.config.ts",
-    "lint": "eslint --color src/",
+    "lint": "eslint --color --max-warnings 0 src/",
     "lint:fix": "eslint --fix src/",
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --write .",
