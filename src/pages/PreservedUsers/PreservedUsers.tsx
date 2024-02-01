@@ -62,17 +62,21 @@ const PreservedUsers = () => {
   // Main states - what user can define / what we could use in page URL
   const [searchValue, setSearchValue] = React.useState("");
   const [page, setPage] = useState<number>(1);
-  const [perPage, setPerPage] = useState<number>(15);
+  const [perPage, setPerPage] = useState<number>(10);
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+  const [totalCount, setUsersTotalCount] = useState<number>(0);
 
-  // Users displayed on the first page
-  const [shownUsersList, setShownUsersList] = useState<User[]>([]);
+  // Page indexes
+  const firstUserIdx = (page - 1) * perPage;
+  const lastUserIdx = page * perPage;
 
   // Derived states - what we get from API
   const userDataResponse = useGettingPreservedUserQuery({
     searchValue: "",
     sizeLimit: 0,
     apiVersion: apiVersion || API_VERSION_BACKUP,
+    startIdx: firstUserIdx,
+    stopIdx: lastUserIdx,
   } as UsersPayload);
 
   const {
@@ -80,10 +84,6 @@ const PreservedUsers = () => {
     isLoading: isBatchLoading,
     error: batchError,
   } = userDataResponse;
-
-  // Page indexes
-  const firstUserIdx = (page - 1) * perPage;
-  const lastUserIdx = page * perPage;
 
   // Handle data when the API call is finished
   useEffect(() => {
@@ -105,18 +105,18 @@ const PreservedUsers = () => {
     ) {
       const usersListResult = batchResponse.result.results;
       const usersListSize = batchResponse.result.count;
+      const totalCount = batchResponse.result.totalCount;
       const usersList: User[] = [];
 
       for (let i = 0; i < usersListSize; i++) {
         usersList.push(usersListResult[i].result);
       }
 
+      setUsersTotalCount(totalCount);
       // Update 'Active users' slice data
       dispatch(updateUsersList(usersList));
       // Update the list of users
       setPreservedUsersList(usersList);
-      // Update the shown users list
-      setShownUsersList(usersList.slice(firstUserIdx, lastUserIdx));
       // Show table elements
       setShowTableRows(true);
     }
@@ -199,7 +199,7 @@ const PreservedUsers = () => {
 
   // Users displayed on the first page
   const updateShownUsersList = (newShownUsersList: User[]) => {
-    setShownUsersList(newShownUsersList);
+    setPreservedUsersList(newShownUsersList);
   };
 
   // Filter (Input search)
@@ -335,7 +335,7 @@ const PreservedUsers = () => {
       element: (
         <BulkSelectorUsersPrep
           list={preservedUsersList}
-          shownElementsList={shownUsersList}
+          shownElementsList={preservedUsersList}
           usersData={usersData}
           buttonsData={buttonsData}
           selectedPerPageData={selectedPerPageData}
@@ -463,7 +463,7 @@ const PreservedUsers = () => {
               ) : (
                 <UsersTable
                   elementsList={preservedUsersList}
-                  shownElementsList={shownUsersList}
+                  shownElementsList={preservedUsersList}
                   from="preserved-users"
                   showTableRows={showTableRows}
                   usersData={usersTableData}
@@ -482,6 +482,7 @@ const PreservedUsers = () => {
           widgetId="pagination-options-menu-bottom"
           perPageComponent="button"
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+          totalCount={totalCount}
         />
       </PageSection>
       <ModalErrors errors={modalErrors.getAll()} />

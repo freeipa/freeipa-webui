@@ -82,20 +82,24 @@ const ActiveUsers = () => {
   // Main states - what user can define / what we could use in page URL
   const [searchValue, setSearchValue] = React.useState("");
   const [page, setPage] = useState<number>(1);
-  const [perPage, setPerPage] = useState<number>(15);
+  const [perPage, setPerPage] = useState<number>(10);
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
-
-  // Users displayed on the first page
-  const [shownUsersList, setShownUsersList] = useState<User[]>([]);
+  const [totalCount, setUsersTotalCount] = useState<number>(0);
 
   // Button disabled due to error
   const [isDisabledDueError, setIsDisabledDueError] = useState<boolean>(false);
+
+  // Page indexes
+  const firstUserIdx = (page - 1) * perPage;
+  const lastUserIdx = page * perPage;
 
   // Derived states - what we get from API
   const userDataResponse = useGettingActiveUserQuery({
     searchValue: "",
     sizeLimit: 0,
     apiVersion: apiVersion || API_VERSION_BACKUP,
+    startIdx: firstUserIdx,
+    stopIdx: lastUserIdx,
   } as UsersPayload);
 
   const {
@@ -103,10 +107,6 @@ const ActiveUsers = () => {
     isLoading: isBatchLoading,
     error: batchError,
   } = userDataResponse;
-
-  // Page indexes
-  const firstUserIdx = (page - 1) * perPage;
-  const lastUserIdx = page * perPage;
 
   // Handle data when the API call is finished
   useEffect(() => {
@@ -128,6 +128,7 @@ const ActiveUsers = () => {
       batchResponse !== undefined
     ) {
       const usersListResult = batchResponse.result.results;
+      const totalCount = batchResponse.result.totalCount;
       const usersListSize = batchResponse.result.count;
       const usersList: User[] = [];
 
@@ -135,12 +136,11 @@ const ActiveUsers = () => {
         usersList.push(usersListResult[i].result);
       }
 
+      setUsersTotalCount(totalCount);
       // Update 'Active users' slice data
       dispatch(updateUsersList(usersList));
       // Update the list of users
       setActiveUsersList(usersList);
-      // Update the shown users list
-      setShownUsersList(usersList.slice(firstUserIdx, lastUserIdx));
       // Show table elements
       setShowTableRows(true);
     }
@@ -248,7 +248,7 @@ const ActiveUsers = () => {
 
   // Users displayed on the first page
   const updateShownUsersList = (newShownUsersList: User[]) => {
-    setShownUsersList(newShownUsersList);
+    setActiveUsersList(newShownUsersList);
   };
 
   // Filter (Input search)
@@ -528,7 +528,7 @@ const ActiveUsers = () => {
       element: (
         <BulkSelectorUsersPrep
           list={activeUsersList}
-          shownElementsList={shownUsersList}
+          shownElementsList={activeUsersList}
           usersData={usersData}
           buttonsData={buttonsData}
           selectedPerPageData={selectedPerPageData}
@@ -681,7 +681,7 @@ const ActiveUsers = () => {
                 ) : (
                   <UsersTable
                     elementsList={activeUsersList}
-                    shownElementsList={shownUsersList}
+                    shownElementsList={activeUsersList}
                     from="active-users"
                     showTableRows={showTableRows}
                     usersData={usersTableData}
@@ -700,6 +700,7 @@ const ActiveUsers = () => {
             widgetId="pagination-options-menu-bottom"
             perPageComponent="button"
             className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+            totalCount={totalCount}
           />
         </PageSection>
         <AddUser

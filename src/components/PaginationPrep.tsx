@@ -15,6 +15,7 @@ interface PaginationData {
 
 interface PropsToPaginationPrep {
   list: any[];
+  totalCount?: number;
   paginationData: PaginationData;
   variant?: "top" | "bottom";
   widgetId?: string | undefined;
@@ -70,6 +71,7 @@ const PaginationPrep = (props: PropsToPaginationPrep) => {
   return (
     <PaginationLayout
       list={props.list}
+      totalCount={props.totalCount}
       perPage={props.paginationData.perPage}
       page={props.paginationData.page}
       handleSetPerPage={handlePerPageSelect}

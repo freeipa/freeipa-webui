@@ -7,7 +7,7 @@ import {
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query/react";
 // Utils
-import { API_VERSION_BACKUP } from "src/utils/utils";
+import { API_VERSION_BACKUP } from "../utils/utils";
 import {
   CertificateAuthority,
   fqdnType,
@@ -20,11 +20,11 @@ import {
   RadiusServer,
   UIDType,
   User,
-} from "src/utils/datatypes/globalDataTypes";
-import { apiToUser } from "src/utils/userUtils";
-import { apiToHost } from "src/utils/hostUtils";
-import { apiToPwPolicy } from "src/utils/pwPolicyUtils";
-import { apiToKrbPolicy } from "src/utils/krbPolicyUtils";
+} from "../utils/datatypes/globalDataTypes";
+import { apiToUser } from "../utils/userUtils";
+import { apiToHost } from "../utils/hostUtils";
+import { apiToPwPolicy } from "../utils/pwPolicyUtils";
+import { apiToKrbPolicy } from "../utils/krbPolicyUtils";
 
 export type UserFullData = {
   user?: Partial<User>;
@@ -105,6 +105,7 @@ export interface BatchRPCResponse {
   version: string;
   result: {
     count: number;
+    totalCount: number;
     results: {
       result: Record<string, unknown>; // General object type
       truncated: boolean;
@@ -132,12 +133,16 @@ export interface UsersPayload {
   sizeLimit: number;
   apiVersion: string;
   userType?: string;
+  startIdx: number;
+  stopIdx: number;
 }
 
 export interface HostsPayload {
   searchValue: string;
   sizeLimit: number;
   apiVersion: string;
+  startIdx: number;
+  stopIdx: number;
 }
 
 export interface HostAddPayload {
@@ -228,7 +233,14 @@ export const api = createApi({
     }),
     gettingUser: build.query<BatchRPCResponse, UsersPayload>({
       async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { searchValue, sizeLimit, apiVersion, userType } = payloadData;
+        const {
+          searchValue,
+          sizeLimit,
+          apiVersion,
+          userType,
+          startIdx,
+          stopIdx,
+        } = payloadData;
 
         // 1ST CALL - GETTING ALL UIDS
         if (apiVersion === undefined) {
@@ -273,7 +285,7 @@ export const api = createApi({
 
         const uids: string[] = [];
         const itemsCount = uidResponseData.result.result.length as number;
-        for (let i = 0; i < itemsCount; i++) {
+        for (let i = startIdx; i < itemsCount && i < stopIdx; i++) {
           const userId = uidResponseData.result.result[i] as UIDType;
           const { uid } = userId;
           uids.push(uid[0] as string);
@@ -292,9 +304,12 @@ export const api = createApi({
           getBatchCommand(payloadUserDataBatch as Command[], apiVersion)
         );
 
+        const response = partialUsersInfoResult.data as BatchRPCResponse;
+        response.result.totalCount = itemsCount;
+
         // Return results
         return partialUsersInfoResult.data
-          ? { data: partialUsersInfoResult.data as BatchRPCResponse }
+          ? { data: response }
           : {
               error:
                 partialUsersInfoResult.error as unknown as FetchBaseQueryError,
@@ -655,7 +670,8 @@ export const api = createApi({
     // Hosts
     gettingHost: build.query<BatchRPCResponse, HostsPayload>({
       async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { searchValue, sizeLimit, apiVersion } = payloadData;
+        const { searchValue, sizeLimit, apiVersion, startIdx, stopIdx } =
+          payloadData;
 
         if (apiVersion === undefined) {
           return {
@@ -692,7 +708,7 @@ export const api = createApi({
 
         const fqdns: string[] = [];
         const itemsCount = hostIdResponseData.result.result.length as number;
-        for (let i = 0; i < itemsCount; i++) {
+        for (let i = startIdx; i < itemsCount && i < stopIdx; i++) {
           const hostId = hostIdResponseData.result.result[i] as fqdnType;
           const { fqdn } = hostId;
           fqdns.push(fqdn[0] as string);
@@ -711,8 +727,10 @@ export const api = createApi({
         );
 
         // Return results
+        const response = partialHostsInfoResult.data as BatchRPCResponse;
+        response.result.totalCount = itemsCount;
         return partialHostsInfoResult.data
-          ? { data: partialHostsInfoResult.data as BatchRPCResponse }
+          ? { data: response }
           : {
               error:
                 partialHostsInfoResult.error as unknown as FetchBaseQueryError,
