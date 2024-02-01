@@ -55,7 +55,7 @@ import {
   useGetDNSZonesQuery,
   useAutoMemberRebuildHostsMutation,
   HostsPayload,
-} from "src/services/rpc";
+} from "../../services/rpc";
 
 const Hosts = () => {
   // Dispatch (Redux)
@@ -82,9 +82,10 @@ const Hosts = () => {
   // Table comps
   const [searchValue, setSearchValue] = React.useState("");
   const [page, setPage] = useState<number>(1);
-  const [perPage, setPerPage] = useState<number>(15);
+  const [perPage, setPerPage] = useState<number>(10);
   const [selectedHosts, setSelectedHosts] = useState<string[]>([]);
   const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
+  const [totalCount, setHostsTotalCount] = useState<number>(0);
   const [dnsZones, setDNSZones] = useState<string[]>([]);
   const updateSelectedPerPage = (selected: number) => {
     setSelectedPerPage(selected);
@@ -115,23 +116,24 @@ const Hosts = () => {
     setIsDeletion(value);
   };
 
-  // Hosts displayed on the first page
-  const [shownHostsList, setShownHostsList] = useState(
-    hostsList.slice(0, perPage)
-  );
-
   const updateShownHostsList = (newShownHostsList: Host[]) => {
-    setShownHostsList(newShownHostsList);
+    setHostsList(newShownHostsList);
   };
 
   // Button disabled due to error
   const [isDisabledDueError, setIsDisabledDueError] = useState<boolean>(false);
+
+  // Page indexes
+  const firstHostIdx = (page - 1) * perPage;
+  const lastHostIdx = page * perPage;
 
   // Derived states - what we get from API
   const hostDataResponse = useGettingHostQuery({
     searchValue: "",
     sizeLimit: 0,
     apiVersion: apiVersion || API_VERSION_BACKUP,
+    startIdx: firstHostIdx,
+    stopIdx: lastHostIdx,
   } as HostsPayload);
 
   const {
@@ -139,10 +141,6 @@ const Hosts = () => {
     isLoading: isBatchLoading,
     error: batchError,
   } = hostDataResponse;
-
-  // Page indexes
-  const firstHostIdx = (page - 1) * perPage;
-  const lastHostIdx = page * perPage;
 
   // Handle data when the API call is finished
   useEffect(() => {
@@ -163,6 +161,7 @@ const Hosts = () => {
       batchResponse !== undefined
     ) {
       const hostsListResult = batchResponse.result.results;
+      const totalCount = batchResponse.result.totalCount;
       const hostsListSize = batchResponse.result.count;
       const hostsList: Host[] = [];
 
@@ -173,8 +172,7 @@ const Hosts = () => {
       // Update 'Hosts' slice data
       dispatch(updateHostsList(hostsList));
       setHostsList(hostsList);
-      // Update the shown users list
-      setShownHostsList(hostsList.slice(firstHostIdx, lastHostIdx));
+      setHostsTotalCount(totalCount);
       // Show table elements
       setShowTableRows(true);
     }
@@ -482,7 +480,7 @@ const Hosts = () => {
       element: (
         <BulkSelectorHostsPrep
           list={hostsList}
-          shownElementsList={shownHostsList}
+          shownElementsList={hostsList}
           elementData={hostsData}
           buttonsData={buttonsData}
           selectedPerPageData={selectedPerPageData}
@@ -607,7 +605,7 @@ const Hosts = () => {
               ) : (
                 <HostsTable
                   elementsList={hostsList}
-                  shownElementsList={shownHostsList}
+                  shownElementsList={hostsList}
                   showTableRows={showTableRows}
                   hostsData={hostsTableData}
                   buttonsData={hostsTableButtonsData}
@@ -620,6 +618,7 @@ const Hosts = () => {
         </div>
         <PaginationPrep
           list={hostsList}
+          totalCount={totalCount}
           paginationData={paginationData}
           variant={PaginationVariant.bottom}
           widgetId="pagination-options-menu-bottom"

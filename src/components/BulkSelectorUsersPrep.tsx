@@ -384,14 +384,6 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
           >
             {getSelectedElements()}
           </MenuItem>
-          <MenuItem
-            itemId={2}
-            onClick={() =>
-              selectAllUsersTable(true, props.usersData.selectableUsersTable)
-            }
-          >
-            Select all ({props.list.length} items)
-          </MenuItem>
         </MenuList>
       </MenuContent>
     </Menu>

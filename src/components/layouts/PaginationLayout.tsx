@@ -5,6 +5,7 @@ import { Pagination } from "@patternfly/react-core";
 
 interface PropsToPaginationLayout {
   list: any[];
+  totalCount?: number;
   perPage: number;
   page: number;
   variant?: "top" | "bottom";
@@ -32,7 +33,7 @@ const PaginationLayout = (props: PropsToPaginationLayout) => {
   return (
     <Pagination
       className={props.className}
-      itemCount={props.list.length}
+      itemCount={props.totalCount ? props.totalCount : props.list.length}
       widgetId={props.widgetId}
       perPage={props.perPage}
       page={props.page}
