@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
 import {
-  DropdownItem,
   Page,
   PageSection,
   PageSectionVariants,
@@ -118,32 +117,6 @@ const Services = () => {
       updateSelectedPerPage(0);
     }, 1000);
   }, [servicesList]);
-
-  // Dropdown kebab
-  const [kebabIsOpen, setKebabIsOpen] = useState(false);
-
-  const dropdownItems = [
-    <DropdownItem key="rebuild auto membership" component="button">
-      Rebuild auto membership
-    </DropdownItem>,
-  ];
-
-  const onKebabToggle = () => {
-    setKebabIsOpen(!kebabIsOpen);
-  };
-
-  const onFocus = () => {
-    const element = document.getElementById("main-dropdown-kebab");
-    element?.focus();
-  };
-
-  const onDropdownSelect = (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _event: React.MouseEvent<Element, MouseEvent> | undefined
-  ) => {
-    setKebabIsOpen(!kebabIsOpen);
-    onFocus();
-  };
 
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
