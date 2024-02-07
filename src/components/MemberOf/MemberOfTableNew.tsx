@@ -28,7 +28,7 @@ interface ColumnNames {
 // To display all the possible data types for all the tabs (and not only the mandatory ones)
 //   an extra interface 'MemberOfElement' will be defined. This will be called in the 'PropsToTable'
 // //   interface instead of each type (UserGroup | Netgroup | Roles | HBACRules | SudoRules | HostGroup).
-interface MemberOfElement {
+export interface MemberOfElement {
   cn?: string;
   name?: string;
   gid?: string;

@@ -999,6 +999,21 @@ export const api = createApi({
             };
       },
     }),
+    groupAddMember: build.mutation<BatchRPCResponse, [string, string[]]>({
+      query: (payload) => {
+        const toUid = payload[0];
+        const listOfMembers = payload[1];
+        const membersToAdd: Command[] = [];
+        listOfMembers.map((member) => {
+          const payloadItem = {
+            method: "group_add_member",
+            params: [[member], { user: toUid }],
+          } as Command;
+          membersToAdd.push(payloadItem);
+        });
+        return getBatchCommand(membersToAdd, API_VERSION_BACKUP);
+      },
+    }),
   }),
 });
 
@@ -1080,4 +1095,5 @@ export const {
   useGetHostsFullDataQuery,
   useGetUserByUidQuery,
   useGetUserGroupsQuery,
+  useGroupAddMemberMutation,
 } = api;

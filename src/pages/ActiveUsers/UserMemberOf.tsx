@@ -36,14 +36,21 @@ import {
 // Modals
 import MemberOfAddModal from "src/components/MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModal";
+import MemberOfAddModalNew from "src/components/MemberOf/MemberOfAddModalNew";
+// RPC
 import { useGetUserByUidQuery } from "src/services/rpc";
+// Hooks
 import { useUserMemberOfData } from "src/hooks/useUserMemberOfData";
+import useAlerts from "src/hooks/useAlerts";
 
 interface PropsToUserMemberOf {
   user: User;
 }
 
 const UserMemberOf = (props: PropsToUserMemberOf) => {
+  // Alerts to show in the UI
+  const alerts = useAlerts();
+
   // Retrieve each group list from Redux:
   let netgroupsList = useAppSelector((state) => state.netgroups.netgroupList);
   let rolesList = useAppSelector((state) => state.roles.roleList);
@@ -51,6 +58,9 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   let sudoRulesList = useAppSelector((state) => state.sudorules.sudoRulesList);
 
   // Alter the available options list to keep the state of the recently added / removed items
+  const updateUserGroupsList = (newAvOptionsList: unknown[]) => {
+    setUserGroupsFromUser(newAvOptionsList as UserGroupNew[]);
+  };
   const updateNetgroupsList = (newAvOptionsList: unknown[]) => {
     netgroupsList = newAvOptionsList as Netgroup[];
   };
@@ -71,7 +81,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
 
   const [user, setUser] = React.useState<Partial<User>>({});
 
-  // Member groups associated to user (string[] | UserGroupNew[])
+  // Member groups associated to user
   const [userGroupsFromUser, setUserGroupsFromUser] = React.useState<
     UserGroupNew[]
   >([]);
@@ -118,6 +128,14 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   // Filter functions to compare the available data with the data that
   //  the user is already member of. This is done to prevent duplicates
   //  (e.g: adding the same element twice).
+  const filterUserGroupsData = () => {
+    // User groups
+    return userGroupsFullList.filter((item) => {
+      return !userGroupsFromUser.some((itm) => {
+        return item.cn === itm.cn;
+      });
+    });
+  };
   const filterNetgroupsData = () => {
     // Netgroups
     return netgroupsList.filter((item) => {
@@ -152,6 +170,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   };
 
   // Available data to be added as member of
+  const userGroupsFilteredData: UserGroupNew[] = filterUserGroupsData();
   const netgroupsFilteredData: Netgroup[] = filterNetgroupsData();
   const rolesFilteredData: Roles[] = filterRolesData();
   const hbacRulesFilteredData: HBACRules[] = filterHbacRulesData();
@@ -557,6 +576,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   // Render 'ActiveUsersIsMemberOf'
   return (
     <>
+      <alerts.ManagedAlerts />
       <Page>
         <PageSection
           variant={PageSectionVariants.light}
@@ -766,6 +786,17 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             )}
           </>
         )} */}
+        {showAddModal && (
+          <MemberOfAddModalNew
+            modalData={addModalData}
+            availableData={userGroupsFilteredData}
+            groupRepository={userGroupsFromUser}
+            updateGroupRepository={updateGroupRepository}
+            updateAvOptionsList={updateUserGroupsList}
+            tabData={tabData}
+            alerts={alerts}
+          />
+        )}
         {tabName === "Netgroups" && (
           <>
             {showAddModal && (

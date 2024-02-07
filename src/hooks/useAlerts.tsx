@@ -15,6 +15,15 @@ export interface AlertInfo {
   variant: AlertVariant;
 }
 
+// In some cases, it is needed to propagate a specific alert to child components.
+// The following object is defined to be refered everytime an Alert is propagated via props.
+export interface AlertObject {
+  addAlert: (name: string, title: string, variant: AlertVariant) => void;
+  removeAlert: (name: string) => void;
+  removeAllAlerts: () => void;
+  ManagedAlerts: () => JSX.Element;
+}
+
 export function useAlerts() {
   const [alerts, setAlerts] = React.useState<AlertInfo[]>([]);
 
