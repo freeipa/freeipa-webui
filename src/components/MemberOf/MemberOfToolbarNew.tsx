@@ -48,6 +48,7 @@ interface PageData {
 }
 
 interface ButtonData {
+  onClickRefreshHandler: () => void;
   onClickAddHandler: () => void;
   onClickDeleteHandler: () => void;
   isDeleteButtonDisabled: boolean;
@@ -97,6 +98,7 @@ export interface PropsToToolbar {
   pageData: PageData;
   buttonData: ButtonData;
   searchValueData: SearchValueData;
+  showTableRows: boolean;
 }
 
 const MemberOfToolbar = (props: PropsToToolbar) => {
@@ -513,7 +515,12 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
       id: toolbarData().refreshButton.id,
       key: 2,
       element: (
-        <Button variant="secondary" name="refresh">
+        <Button
+          variant="secondary"
+          name="refresh"
+          isDisabled={!props.showTableRows}
+          onClick={props.buttonData.onClickRefreshHandler}
+        >
           Refresh
         </Button>
       ),

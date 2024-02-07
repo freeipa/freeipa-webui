@@ -426,6 +426,11 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     }
   };
 
+  // 'Refresh' button functionality
+  const onClickRefreshHandler = () => {
+    userQuery.refetch();
+  };
+
   // -- Modal
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -503,6 +508,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   };
 
   const toolbarButtonData = {
+    onClickRefreshHandler,
     onClickAddHandler,
     onClickDeleteHandler,
     isDeleteButtonDisabled,
@@ -588,6 +594,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
                 pageData={toolbarPageData}
                 buttonData={toolbarButtonData}
                 searchValueData={searchValueData}
+                showTableRows={showTableRows}
               />
               <MemberOfTableNew
                 listOfElements={shownUserGroupsList}
