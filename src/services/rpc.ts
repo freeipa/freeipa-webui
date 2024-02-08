@@ -1014,6 +1014,21 @@ export const api = createApi({
         return getBatchCommand(membersToAdd, API_VERSION_BACKUP);
       },
     }),
+    groupRemoveMember: build.mutation<BatchRPCResponse, [string, string[]]>({
+      query: (payload) => {
+        const toUid = payload[0];
+        const listOfMembers = payload[1];
+        const membersToRemove: Command[] = [];
+        listOfMembers.map((member) => {
+          const payloadItem = {
+            method: "group_remove_member",
+            params: [[member], { user: toUid }],
+          } as Command;
+          membersToRemove.push(payloadItem);
+        });
+        return getBatchCommand(membersToRemove, API_VERSION_BACKUP);
+      },
+    }),
   }),
 });
 
@@ -1096,4 +1111,5 @@ export const {
   useGetUserByUidQuery,
   useGetUserGroupsQuery,
   useGroupAddMemberMutation,
+  useGroupRemoveMemberMutation,
 } = api;

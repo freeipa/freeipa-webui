@@ -37,6 +37,7 @@ import {
 import MemberOfAddModal from "src/components/MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModal";
 import MemberOfAddModalNew from "src/components/MemberOf/MemberOfAddModalNew";
+import MemberOfDeleteModalNew from "src/components/MemberOf/MemberOfDeleteModalNew";
 // RPC
 import { useGetUserByUidQuery } from "src/services/rpc";
 // Hooks
@@ -178,7 +179,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
 
   // Number of items on the list for each repository
   const [userGroupsRepoLength, setUserGroupsRepoLength] = useState(
-    // userGroupsFullList.length
     userGroupsFromUser.length
   );
   const [netgroupsRepoLength, setNetgroupsRepoLength] = useState(
@@ -199,12 +199,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   //  - The slice of data to show (considering the pagination)
   //  - Number of items for a specific list
   const updateGroupRepository = (
-    groupRepository:
-      | UserGroupNew[]
-      | Netgroup[]
-      | Roles[]
-      | HBACRules[]
-      | SudoRules[]
+    groupRepository: (UserGroupNew | Netgroup | Roles | HBACRules | SudoRules)[]
   ) => {
     switch (tabName) {
       case "User groups":
@@ -445,6 +440,11 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     }
   };
 
+  // 'Refresh' button functionality
+  const onClickRefreshHandler = () => {
+    userQuery.refetch();
+  };
+
   // -- Modal
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -559,11 +559,13 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   const deleteButtonData = {
     changeIsDeleteButtonDisabled: updateIsDeleteButtonDisabled,
     updateIsDeletion,
+    onClickRefreshHandler,
   };
 
   const deleteTabData = {
     tabName,
     activeTabKey,
+    userName: props.user.uid,
   };
 
   // - 'MemberOfToolbar' > 'SearchInputLayout'
@@ -760,42 +762,31 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             onPerPageSelect={onPerPageSelect}
           />
         </PageSection>
-        {/* This will remain commented until the 'Add' and 'Delete'
-            functionality is adapted */}
-        {/* {tabName === "User groups" && (
+        {tabName === "User groups" && (
           <>
             {showAddModal && (
-              <MemberOfAddModal
+              <MemberOfAddModalNew
                 modalData={addModalData}
                 availableData={userGroupsFilteredData}
-                groupRepository={userGroupsList}
+                groupRepository={userGroupsFromUser}
                 updateGroupRepository={updateGroupRepository}
                 updateAvOptionsList={updateUserGroupsList}
                 tabData={tabData}
+                alerts={alerts}
               />
             )}
             {showDeleteModal && groupsNamesSelected.length !== 0 && (
-              <MemberOfDeleteModal
+              <MemberOfDeleteModalNew
                 modalData={deleteModalData}
                 tabData={deleteTabData}
                 groupNamesToDelete={groupsNamesSelected}
-                groupRepository={userGroupsList}
+                groupRepository={userGroupsFromUser}
                 updateGroupRepository={updateGroupRepository}
                 buttonData={deleteButtonData}
+                alerts={alerts}
               />
             )}
           </>
-        )} */}
-        {showAddModal && (
-          <MemberOfAddModalNew
-            modalData={addModalData}
-            availableData={userGroupsFilteredData}
-            groupRepository={userGroupsFromUser}
-            updateGroupRepository={updateGroupRepository}
-            updateAvOptionsList={updateUserGroupsList}
-            tabData={tabData}
-            alerts={alerts}
-          />
         )}
         {tabName === "Netgroups" && (
           <>
