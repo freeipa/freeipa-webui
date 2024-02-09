@@ -51,7 +51,8 @@ import { GenericPayload, useSearchEntriesMutation } from "src/services/rpc";
 import {
   useGettingActiveUserQuery,
   useAutoMemberRebuildUsersMutation,
-  UsersPayload,
+  GenericPayload,
+  useSearchEntriesMutation,
 } from "src/services/rpc";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
@@ -95,6 +96,7 @@ const ActiveUsers = () => {
 
   // Main states - what user can define / what we could use in page URL
   const [totalCount, setUsersTotalCount] = useState<number>(0);
+  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   // Page indexes
   const firstUserIdx = (page - 1) * perPage;
@@ -107,7 +109,7 @@ const ActiveUsers = () => {
     apiVersion: apiVersion || API_VERSION_BACKUP,
     startIdx: firstUserIdx,
     stopIdx: lastUserIdx,
-  } as UsersPayload);
+  } as GenericPayload);
 
   const {
     data: batchResponse,
@@ -732,61 +734,11 @@ const ActiveUsers = () => {
   return (
     <Page>
       <alerts.ManagedAlerts />
-      <Page>
-        <PageSection variant={PageSectionVariants.light}>
-          <TitleLayout
-            id="active users title"
-            headingLevel="h1"
-            text="Active Users"
-          />
-        </PageSection>
-        <PageSection
-          variant={PageSectionVariants.light}
-          isFilled={false}
-          className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-        >
-          <ToolbarLayout
-            className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-            contentClassName="pf-v5-u-p-0"
-            toolbarItems={toolbarItems}
-          />
-          <div style={{ height: `calc(100vh - 352.2px)` }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer>
-                {batchError !== undefined && batchError ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <UsersTable
-                    elementsList={activeUsersList}
-                    shownElementsList={activeUsersList}
-                    from="active-users"
-                    showTableRows={showTableRows}
-                    usersData={usersTableData}
-                    buttonsData={usersTableButtonsData}
-                    paginationData={selectedPerPageData}
-                    searchValue={searchValue}
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </div>
-          <PaginationPrep
-            list={activeUsersList}
-            paginationData={paginationData}
-            variant={PaginationVariant.bottom}
-            widgetId="pagination-options-menu-bottom"
-            perPageComponent="button"
-            className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-            totalCount={totalCount}
-          />
-        </PageSection>
-        <AddUser
-          show={showAddModal}
-          from="active-users"
-          handleModalToggle={onAddModalToggle}
-          onOpenAddModal={onAddClickHandler}
-          onCloseAddModal={onCloseAddModal}
-          onRefresh={refreshUsersData}
+      <PageSection variant={PageSectionVariants.light}>
+        <TitleLayout
+          id="active users title"
+          headingLevel="h1"
+          text="Active Users"
         />
       </PageSection>
       <PageSection

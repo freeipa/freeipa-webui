@@ -142,21 +142,11 @@ export interface GenericPayload {
   searchValue: string;
   sizeLimit: number;
   apiVersion: string;
-  userType?: string;
-  startIdx: number;
-  stopIdx: number;
-}
-
-// Convert to BasicPayload (use for Hosts services, etc)
-export interface GenericPayload {
-  method: string;
-  searchValue: string;
-  sizeLimit: number;
-  apiVersion: string;
   startIdx: number;
   stopIdx: number;
   objName?: string;
   objAttr?: string;
+  entryType?: "user" | "stage" | "preserved" | "host" | "service";
 }
 
 export interface HostAddPayload {
@@ -749,7 +739,7 @@ export const api = createApi({
         // Prepare payload
         const payloadDataBatch: Command[] = ids.map((name) => ({
           method: objName + "_show",
-          params: [[name], {}],
+          params: [[name], { no_members: true }],
         }));
 
         // Make call using 'fetchWithBQ'
@@ -758,10 +748,124 @@ export const api = createApi({
         );
 
         const response = partialInfoResult.data as BatchRPCResponse;
-        response.result.totalCount = itemsCount;
+        if (response) {
+          response.result.totalCount = itemsCount;
+        }
 
         // Return results
-        return partialInfoResult.data
+        return response
+          ? { data: response }
+          : {
+              error: partialInfoResult.error as unknown as FetchBaseQueryError,
+            };
+      },
+    }),
+    // Refresh entries by search value (mutation instead of query)
+    searchEntries: build.mutation<BatchRPCResponse, GenericPayload>({
+      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
+        const {
+          searchValue,
+          sizeLimit,
+          apiVersion,
+          startIdx,
+          stopIdx,
+          entryType,
+        } = payloadData;
+
+        if (apiVersion === undefined) {
+          return {
+            error: {
+              status: "CUSTOM_ERROR",
+              data: "",
+              error: "API version not available",
+            } as FetchBaseQueryError,
+          };
+        }
+
+        // Prepare search parameters
+        const params = {
+          pkey_only: true,
+          sizelimit: sizeLimit,
+          version: apiVersion,
+          all: true,
+        };
+
+        let method = "";
+        let show_method = "";
+        if (entryType === "user") {
+          method = "user_find";
+          show_method = "user_show";
+        } else if (entryType === "stage") {
+          method = "stageuser_find";
+          show_method = "stageuser_show";
+        } else if (entryType === "preserved") {
+          method = "user_find";
+          show_method = "user_show";
+          params["preserved"] = true;
+        } else if (entryType === "host") {
+          method = "host_find";
+          show_method = "host_show";
+        } else if (entryType === "service") {
+          method = "service_find";
+          show_method = "service_show";
+        }
+
+        // Prepare payload
+        const payloadDataIds: Command = {
+          method: method,
+          params: [[searchValue], params],
+        };
+
+        // Make call using 'fetchWithBQ'
+        const getGroupIDsResult = await fetchWithBQ(getCommand(payloadDataIds));
+        // Return possible errors
+        if (getGroupIDsResult.error) {
+          return { error: getGroupIDsResult.error as FetchBaseQueryError };
+        }
+        // If no error: cast and assign 'ids'
+        const responseData = getGroupIDsResult.data as FindRPCResponse;
+
+        const ids: string[] = [];
+        const itemsCount = responseData.result.result.length as number;
+        for (let i = startIdx; i < itemsCount && i < stopIdx; i++) {
+          if (
+            entryType === "user" ||
+            entryType === "stage" ||
+            entryType === "preserved"
+          ) {
+            const userId = responseData.result.result[i] as UIDType;
+            const { uid } = userId;
+            ids.push(uid[0] as string);
+          } else if (entryType === "host") {
+            const hostId = responseData.result.result[i] as fqdnType;
+            const { fqdn } = hostId;
+            ids.push(fqdn[0] as string);
+          } else if (entryType === "service") {
+            const serviceId = responseData.result.result[i] as servicesType;
+            const { krbprincipalname } = serviceId;
+            ids.push(krbprincipalname[0] as string);
+          }
+        }
+
+        // 2ND CALL - GET PARTIAL INFO
+        // Prepare payload
+        const payloadDataBatch: Command[] = ids.map((id) => ({
+          method: show_method,
+          params: [[id], { no_members: true }],
+        }));
+
+        // Make call using 'fetchWithBQ'
+        const partialInfoResult = await fetchWithBQ(
+          getBatchCommand(payloadDataBatch as Command[], apiVersion)
+        );
+
+        const response = partialInfoResult.data as BatchRPCResponse;
+        if (response) {
+          response.result.totalCount = itemsCount;
+        }
+
+        // Return results
+        return response
           ? { data: response }
           : {
               error: partialInfoResult.error as unknown as FetchBaseQueryError,
@@ -1008,6 +1112,8 @@ export const useGetHostsListQuery = () => {
   return useGetGenericListQuery("host");
 };
 
+// Wrappers for getting entry lists
+// Active Users
 export const useGettingActiveUserQuery = (payloadData) => {
   payloadData["objName"] = "user";
   payloadData["objAttr"] = "uid";
@@ -1023,6 +1129,18 @@ export const useGettingStageUserQuery = (payloadData) => {
 export const useGettingPreservedUserQuery = (payloadData) => {
   payloadData["objName"] = "preserved";
   payloadData["objAttr"] = "uid";
+  return useGettingGenericQuery(payloadData);
+};
+// Hosts
+export const useGettingHostQuery = (payloadData) => {
+  payloadData["objName"] = "host";
+  payloadData["objAttr"] = "fqdn";
+  return useGettingGenericQuery(payloadData);
+};
+// Services
+export const useGettingServicesQuery = (payloadData) => {
+  payloadData["objName"] = "service";
+  payloadData["objAttr"] = "krbprincipalname";
   return useGettingGenericQuery(payloadData);
 };
 
@@ -1044,18 +1162,6 @@ export const useGetStageUsersFullQuery = (userId: string) => {
     version: API_VERSION_BACKUP,
   };
   return useGetGenericUsersFullDataQuery(query_args);
-};
-
-export const useGettingHostQuery = (payloadData) => {
-  payloadData["objName"] = "host";
-  payloadData["objAttr"] = "fqdn";
-  return useGettingGenericQuery(payloadData);
-};
-
-export const useGettingServicesQuery = (payloadData) => {
-  payloadData["objName"] = "service";
-  payloadData["objAttr"] = "krbprincipalname";
-  return useGettingGenericQuery(payloadData);
 };
 
 export const {
@@ -1102,4 +1208,5 @@ export const {
   useGettingGenericQuery,
   useGetGenericListQuery,
   useRemoveServicesMutation,
+  useSearchEntriesMutation,
 } = api;

@@ -58,6 +58,7 @@ import {
   useGetDNSZonesQuery,
   useAutoMemberRebuildHostsMutation,
   GenericPayload,
+  useSearchEntriesMutation,
 } from "../../services/rpc";
 
 const Hosts = () => {
@@ -102,6 +103,8 @@ const Hosts = () => {
   const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
   const [totalCount, setHostsTotalCount] = useState<number>(0);
   const [dnsZones, setDNSZones] = useState<string[]>([]);
+  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
+
   const updateSelectedPerPage = (selected: number) => {
     setSelectedPerPage(selected);
   };
