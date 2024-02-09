@@ -70,41 +70,6 @@ const UsersTable = (props: PropsToTable) => {
     title: "Job title",
   };
 
-  // Filter (SearchInput)
-  // - When a user is search using the Search Input
-  const onFilter = (user: User) => {
-    if (props.searchValue === "") {
-      return true;
-    }
-
-    let input: RegExp;
-    try {
-      // Find matches that begin with the pattern
-      input = new RegExp("^" + props.searchValue, "i");
-    } catch (err) {
-      input = new RegExp(
-        props.searchValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-        "i"
-      );
-    }
-
-    for (const attr of Object.keys(columnNames)) {
-      if (
-        attr !== "nsaccountlock" &&
-        user[attr] !== undefined &&
-        user[attr][0].search(input) >= 0
-      ) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  const filteredShownUsers =
-    props.searchValue === ""
-      ? shownUsersList
-      : props.elementsList.filter(onFilter);
-
   // Index of the currently sorted column
   // Note: if you intend to make columns reorderable, you may instead want to use a non-numeric key
   // as the identifier of the sorted column. See the "Compound expandable" example.
@@ -391,7 +356,7 @@ const UsersTable = (props: PropsToTable) => {
     </Tr>
   );
 
-  const body = filteredShownUsers.map((user, rowIndex) => (
+  const body = shownUsersList.map((user, rowIndex) => (
     <Tr key={user.uid} id={user.uid}>
       <Td
         dataLabel="checkbox"

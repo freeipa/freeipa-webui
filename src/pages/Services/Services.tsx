@@ -42,10 +42,13 @@ import { useAlerts } from "../../hooks/useAlerts";
 import useApiError from "../../hooks/useApiError";
 import GlobalErrors from "../../components/errors/GlobalErrors";
 import ModalErrors from "../../components/errors/ModalErrors";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { SerializedError } from "@reduxjs/toolkit";
 // RPC client
 import {
   useGetHostsListQuery,
   useGettingServicesQuery,
+  useSearchEntriesMutation,
   GenericPayload,
 } from "../../services/rpc";
 
@@ -111,10 +114,70 @@ const Services = () => {
 
   // Filter (Input search)
   const [searchValue, setSearchValue] = React.useState("");
+  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   const updateSearchValue = (value: string) => {
     setSearchValue(value);
   };
+
+  const [retrieveServices] = useSearchEntriesMutation({});
+
+  // Issue search with filter
+  const submitSearchValue = () => {
+    setShowTableRows(false);
+    setSearchIsDisabled(true);
+    retrieveServices({
+      searchValue: searchValue,
+      sizeLimit: 0,
+      apiVersion: apiVersion || API_VERSION_BACKUP,
+      startIdx: firstServiceIdx,
+      stopIdx: lastServiceIdx,
+      entryType: "service",
+    } as GenericPayload).then((result) => {
+      // Manage new response here
+      if ("data" in result) {
+        const searchError = result.data.error as
+          | FetchBaseQueryError
+          | SerializedError;
+
+        if (searchError) {
+          // Error
+          let error: string | undefined = "";
+          if ("error" in searchError) {
+            error = searchError.error;
+          } else if ("message" in searchError) {
+            error = searchError.message;
+          }
+          alerts.addAlert(
+            "submit-search-value-error",
+            error || "Error when searching for services",
+            "danger"
+          );
+        } else {
+          // Success
+          const serviceListResult = result.data.result.results;
+          const serviceListSize = result.data.result.count;
+          const totalCount = result.data.result.totalCount;
+          const serviceList: Service[] = [];
+
+          for (let i = 0; i < serviceListSize; i++) {
+            serviceList.push(serviceListResult[i].result);
+          }
+
+          // Update slice data
+          dispatch(updateServicesList(serviceList));
+          setServicesList(serviceList);
+          setServicesTotalCount(totalCount);
+          // Show table elements
+          setShowTableRows(true);
+        }
+        setSearchIsDisabled(false);
+      }
+    });
+  };
+
+  // Show table rows
+  const [showTableRows, setShowTableRows] = useState(false);
 
   const updateShowTableRows = (value: boolean) => {
     setShowTableRows(value);
@@ -241,7 +304,7 @@ const Services = () => {
         servicesList.push(servicesListResult[i].result);
       }
 
-      // Update 'Hosts' slice data
+      // Update slice data
       dispatch(updateServicesList(servicesList));
       setServicesList(servicesList);
       setServicesTotalCount(totalCount);
@@ -263,9 +326,6 @@ const Services = () => {
       );
     }
   }, [servicesDataResponse]);
-
-  // Show table rows
-  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
 
   // Show table rows only when data is fully retrieved
   useEffect(() => {
@@ -291,6 +351,7 @@ const Services = () => {
   const searchValueData = {
     searchValue,
     updateSearchValue,
+    submitSearchValue,
   };
 
   // - 'BulkSelectorPrep'
@@ -372,6 +433,7 @@ const Services = () => {
           ariaLabel="Search services"
           placeholder="Search"
           searchValueData={searchValueData}
+          isDisabled={searchDisabled}
         />
       ),
       toolbarItemVariant: "search-filter",
