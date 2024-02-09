@@ -7,8 +7,6 @@ import {
   Tab,
   Tabs,
   Badge,
-  Pagination,
-  PaginationVariant,
 } from "@patternfly/react-core";
 // Others
 import MemberOfToolbar from "src/components/MemberOf/MemberOfToolbarOld";
@@ -36,6 +34,8 @@ import {
 // Modals
 import MemberOfAddModal from "src/components/MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModal";
+// Wrappers
+import MemberOfUserGroups from "src/components/MemberOf/MemberOfUserGroups";
 
 interface PropsToUserMemberOf {
   user: User;
@@ -69,9 +69,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   };
 
   // List of default dummy data (for each tab option)
-  const [userGroupsRepository, setUserGroupsRepository] = useState(
-    userGroupsInitialData
-  );
+  const [userGroupsRepository] = useState(userGroupsInitialData);
   const [netgroupsRepository, setNetgroupsRepository] =
     useState(netgroupsInitialData);
   const [rolesRepository, setRolesRepository] = useState(rolesInitialData);
@@ -139,9 +137,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   const sudoRulesFilteredData: SudoRules[] = filterSudoRulesData();
 
   // Number of items on the list for each repository
-  const [userGroupsRepoLength, setUserGroupsRepoLength] = useState(
-    userGroupsRepository.length
-  );
   const [netgroupsRepoLength, setNetgroupsRepoLength] = useState(
     netgroupsRepository.length
   );
@@ -168,11 +163,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
       | SudoRules[]
   ) => {
     switch (tabName) {
-      case "User groups":
-        setUserGroupsRepository(groupRepository as UserGroup[]);
-        setShownUserGroupsList(userGroupsRepository.slice(0, perPage));
-        setUserGroupsRepoLength(userGroupsRepository.length);
-        break;
       case "Netgroups":
         setNetgroupsRepository(groupRepository as Netgroup[]);
         setShownNetgroupsList(netgroupsRepository.slice(0, perPage));
@@ -208,6 +198,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   };
 
   // -- 'Delete' button state
+  // TODO: Remove this when all tabs are adapted to its own wrapper
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
     useState<boolean>(true);
 
@@ -233,13 +224,11 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   };
 
   // -- Pagination
+  // TODO: Remove this when all tabs are adapted to its own wrapper
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
 
   // Member groups displayed on the first page
-  const [shownUserGroupsList, setShownUserGroupsList] = useState(
-    userGroupsRepository.slice(0, perPage)
-  );
   const [shownNetgroupsList, setShownNetgroupsList] = useState(
     netgroupsRepository.slice(0, perPage)
   );
@@ -258,9 +247,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     value: UserGroup[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[]
   ) => {
     switch (activeTabKey) {
-      case 0:
-        setShownUserGroupsList(value as UserGroup[]);
-        break;
       case 1:
         setShownNetgroupsList(value as Netgroup[]);
         break;
@@ -276,61 +262,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     }
   };
 
-  // Pages setters
-  const onSetPage = (
-    _event: React.MouseEvent | React.KeyboardEvent | MouseEvent,
-    newPage: number,
-    perPage: number | undefined,
-    startIdx: number | undefined,
-    endIdx: number | undefined
-  ) => {
-    setPage(newPage);
-    switch (activeTabKey) {
-      case 0:
-        setShownUserGroupsList(userGroupsRepository.slice(startIdx, endIdx));
-        break;
-      case 1:
-        setShownNetgroupsList(netgroupsRepository.slice(startIdx, endIdx));
-        break;
-      case 2:
-        setShownRolesList(rolesRepository.slice(startIdx, endIdx));
-        break;
-      case 3:
-        setShownHBACRulesList(hbacRulesRepository.slice(startIdx, endIdx));
-        break;
-      case 4:
-        setShownSudoRulesList(sudoRulesRepository.slice(startIdx, endIdx));
-        break;
-    }
-  };
-
-  const onPerPageSelect = (
-    _event: React.MouseEvent | React.KeyboardEvent | MouseEvent,
-    newPerPage: number,
-    newPage: number,
-    startIdx: number | undefined,
-    endIdx: number | undefined
-  ) => {
-    setPerPage(newPerPage);
-    switch (activeTabKey) {
-      case 0:
-        setShownUserGroupsList(userGroupsRepository.slice(startIdx, endIdx));
-        break;
-      case 1:
-        setShownNetgroupsList(netgroupsRepository.slice(startIdx, endIdx));
-        break;
-      case 2:
-        setShownRolesList(rolesRepository.slice(startIdx, endIdx));
-        break;
-      case 3:
-        setShownHBACRulesList(hbacRulesRepository.slice(startIdx, endIdx));
-        break;
-      case 4:
-        setShownSudoRulesList(sudoRulesRepository.slice(startIdx, endIdx));
-        break;
-    }
-  };
-
   // Page setters passed as props
   const changeSetPage = (
     newPage: number,
@@ -340,9 +271,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   ) => {
     setPage(newPage);
     switch (activeTabKey) {
-      case 0:
-        setShownUserGroupsList(userGroupsRepository.slice(startIdx, endIdx));
-        break;
       case 1:
         setShownNetgroupsList(netgroupsRepository.slice(startIdx, endIdx));
         break;
@@ -366,9 +294,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   ) => {
     setPerPage(newPerPage);
     switch (activeTabKey) {
-      case 0:
-        setShownUserGroupsList(userGroupsRepository.slice(startIdx, endIdx));
-        break;
       case 1:
         setShownNetgroupsList(netgroupsRepository.slice(startIdx, endIdx));
         break;
@@ -381,22 +306,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
       case 4:
         setShownSudoRulesList(sudoRulesRepository.slice(startIdx, endIdx));
         break;
-    }
-  };
-
-  // Different number of items will be shown depending on the 'activeTabKey'
-  const numberOfItems = () => {
-    switch (activeTabKey) {
-      case 0:
-        return userGroupsRepository.length;
-      case 1:
-        return netgroupsRepository.length;
-      case 2:
-        return rolesRepository.length;
-      case 3:
-        return hbacRulesRepository.length;
-      case 4:
-        return sudoRulesRepository.length;
     }
   };
 
@@ -432,10 +341,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     if (showTableRows) setShowTableRows(false);
     setTimeout(() => {
       switch (activeTabKey) {
-        case 0:
-          setShownUserGroupsList(userGroupsRepository.slice(0, perPage));
-          setUserGroupsRepoLength(userGroupsRepository.length);
-          break;
         case 1:
           setShownNetgroupsList(netgroupsRepository.slice(0, perPage));
           setNetgroupsRepoLength(netgroupsRepository.length);
@@ -456,7 +361,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
       setShowTableRows(true);
     }, 1000);
   }, [
-    userGroupsRepository,
     netgroupsRepository,
     rolesRepository,
     hbacRulesRepository,
@@ -540,29 +444,14 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               <TabTitleText>
                 User groups{" "}
                 <Badge key={0} isRead>
-                  {userGroupsRepoLength}
+                  {userGroupsRepository.length}
                 </Badge>
               </TabTitleText>
             }
           >
-            <MemberOfToolbar
-              pageRepo={userGroupsRepository}
-              shownItems={shownUserGroupsList}
-              toolbar="user groups"
-              settersData={toolbarSettersData}
-              pageData={toolbarPageData}
-              buttonData={toolbarButtonData}
-              searchValueData={searchValueData}
-            />
-            <MemberOfTable
-              group={shownUserGroupsList}
-              tableName={"User groups"}
-              activeTabKey={activeTabKey}
-              changeSelectedGroups={updateGroupsNamesSelected}
-              buttonData={tableButtonData}
-              showTableRows={showTableRows}
-              searchValue={searchValue}
-              fullGroupList={userGroupsRepository}
+            <MemberOfUserGroups
+              showAddModal={onClickAddHandler}
+              showDeleteModal={onClickDeleteHandler}
             />
           </Tab>
           <Tab
@@ -694,16 +583,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             />
           </Tab>
         </Tabs>
-        <Pagination
-          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-          itemCount={numberOfItems()}
-          widgetId="pagination-options-menu-bottom"
-          perPage={perPage}
-          page={page}
-          variant={PaginationVariant.bottom}
-          onSetPage={onSetPage}
-          onPerPageSelect={onPerPageSelect}
-        />
       </PageSection>
       {tabName === "User groups" && (
         <>
