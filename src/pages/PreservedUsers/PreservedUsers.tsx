@@ -36,9 +36,17 @@ import StagePreservedUsers from "src/components/modals/StagePreservedUsers";
 import RestorePreservedUsers from "src/components/modals/RestorePreservedUsers";
 // Hooks
 import { updateUsersList } from "src/store/Identity/preservedUsers-slice";
+import { useAlerts } from "src/hooks/useAlerts";
+// Errors
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { SerializedError } from "@reduxjs/toolkit";
 // Utils
 import { API_VERSION_BACKUP, isUserSelectable } from "src/utils/utils";
-import { useGettingPreservedUserQuery, UsersPayload } from "src/services/rpc";
+import {
+  useGettingPreservedUserQuery,
+  GenericPayload,
+  useSearchEntriesMutation,
+} from "../../services/rpc";
 import useApiError from "src/hooks/useApiError";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
@@ -46,6 +54,9 @@ import ModalErrors from "src/components/errors/ModalErrors";
 const PreservedUsers = () => {
   // Initialize stage users list (Redux)
   const dispatch = useAppDispatch();
+
+  // Alerts to show in the UI
+  const alerts = useAlerts();
 
   // Retrieve API version from environment data
   const apiVersion = useAppSelector(
@@ -65,6 +76,7 @@ const PreservedUsers = () => {
   const [perPage, setPerPage] = useState<number>(10);
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [totalCount, setUsersTotalCount] = useState<number>(0);
+  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   // Page indexes
   const firstUserIdx = (page - 1) * perPage;
@@ -77,7 +89,7 @@ const PreservedUsers = () => {
     apiVersion: apiVersion || API_VERSION_BACKUP,
     startIdx: firstUserIdx,
     stopIdx: lastUserIdx,
-  } as UsersPayload);
+  } as GenericPayload);
 
   const {
     data: batchResponse,
@@ -207,6 +219,63 @@ const PreservedUsers = () => {
     setSearchValue(value);
   };
 
+  // Issue search with filter
+  const [retrieveUser] = useSearchEntriesMutation({});
+
+  // Issue a search using a specific search value
+  const submitSearchValue = () => {
+    setShowTableRows(false);
+    setSearchIsDisabled(true);
+    retrieveUser({
+      searchValue: searchValue,
+      sizeLimit: 0,
+      apiVersion: apiVersion || API_VERSION_BACKUP,
+      startIdx: firstUserIdx,
+      stopIdx: lastUserIdx,
+      entryType: "preserved",
+    } as GenericPayload).then((result) => {
+      // Manage new response here
+      if ("data" in result) {
+        const searchError = result.data.error as
+          | FetchBaseQueryError
+          | SerializedError;
+
+        if (searchError) {
+          // Error
+          let error: string | undefined = "";
+          if ("error" in searchError) {
+            error = searchError.error;
+          } else if ("message" in searchError) {
+            error = searchError.message;
+          }
+          alerts.addAlert(
+            "submit-search-value-error",
+            error || "Error when searching for preserved users",
+            "danger"
+          );
+        } else {
+          // Success
+          const usersListResult = result.data.result.results;
+          const usersListSize = result.data.result.count;
+          const totalCount = result.data.result.totalCount;
+          const usersList: User[] = [];
+
+          for (let i = 0; i < usersListSize; i++) {
+            usersList.push(usersListResult[i].result);
+          }
+
+          // Update slice data
+          dispatch(updateUsersList(usersList));
+          setPreservedUsersList(usersList);
+          setUsersTotalCount(totalCount);
+          // Show table elements
+          setShowTableRows(true);
+        }
+        setSearchIsDisabled(false);
+      }
+    });
+  };
+
   // Show table rows
   const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
 
@@ -326,6 +395,7 @@ const PreservedUsers = () => {
   const searchValueData = {
     searchValue,
     updateSearchValue,
+    submitSearchValue,
   };
 
   // List of Toolbar items
@@ -350,6 +420,7 @@ const PreservedUsers = () => {
           ariaLabel="Search user"
           placeholder="Search"
           searchValueData={searchValueData}
+          isDisabled={searchDisabled}
         />
       ),
       toolbarItemVariant: "search-filter",
@@ -439,6 +510,7 @@ const PreservedUsers = () => {
   // Render 'Preserved users'
   return (
     <Page>
+      <alerts.ManagedAlerts />
       <PageSection variant={PageSectionVariants.light}>
         <TitleLayout
           id="preserved users title"

@@ -51,30 +51,6 @@ const ServicesTable = (props: PropsToTable) => {
     principalName: "Principal name",
   };
 
-  // Filter (SearchInput)
-  // - When a service is search using the Search Input
-  const onFilter = (service: Service) => {
-    if (props.searchValue === "") {
-      return true;
-    }
-
-    let input: RegExp;
-    try {
-      input = new RegExp(props.searchValue, "i");
-    } catch (err) {
-      input = new RegExp(
-        props.searchValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-        "i"
-      );
-    }
-    return service.krbcanonicalname.search(input) >= 0;
-  };
-
-  const filteredShownServices =
-    props.searchValue === ""
-      ? shownServicesList
-      : props.elementsList.filter(onFilter);
-
   // Index of the currently sorted column
   // Note: if you intend to make columns reorderable, you may instead want to use a non-numeric key
   // as the identifier of the sorted column. See the "Compound expandable" example.
@@ -246,7 +222,7 @@ const ServicesTable = (props: PropsToTable) => {
     </Tr>
   );
 
-  const body = filteredShownServices.map((service, rowIndex) => (
+  const body = shownServicesList.map((service, rowIndex) => (
     <Tr key={service.krbcanonicalname} id={service.krbcanonicalname}>
       <Td
         dataLabel="checkbox"

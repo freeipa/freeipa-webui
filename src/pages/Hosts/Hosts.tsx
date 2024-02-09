@@ -55,6 +55,7 @@ import {
   useGetDNSZonesQuery,
   useAutoMemberRebuildHostsMutation,
   GenericPayload,
+  useSearchEntriesMutation,
 } from "../../services/rpc";
 
 const Hosts = () => {
@@ -87,6 +88,8 @@ const Hosts = () => {
   const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
   const [totalCount, setHostsTotalCount] = useState<number>(0);
   const [dnsZones, setDNSZones] = useState<string[]>([]);
+  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
+
   const updateSelectedPerPage = (selected: number) => {
     setSelectedPerPage(selected);
   };
@@ -240,6 +243,62 @@ const Hosts = () => {
 
   const updateSearchValue = (value: string) => {
     setSearchValue(value);
+  };
+
+  const [retrieveHost] = useSearchEntriesMutation({});
+
+  // Issue a search using a specific search value
+  const submitSearchValue = () => {
+    setShowTableRows(false);
+    setSearchIsDisabled(true);
+    retrieveHost({
+      searchValue: searchValue,
+      sizeLimit: 0,
+      apiVersion: apiVersion || API_VERSION_BACKUP,
+      startIdx: firstHostIdx,
+      stopIdx: lastHostIdx,
+      entryType: "host",
+    } as GenericPayload).then((result) => {
+      // Manage new response here
+      if ("data" in result) {
+        const searchError = result.data.error as
+          | FetchBaseQueryError
+          | SerializedError;
+
+        if (searchError) {
+          // Error
+          let error: string | undefined = "";
+          if ("error" in searchError) {
+            error = searchError.error;
+          } else if ("message" in searchError) {
+            error = searchError.message;
+          }
+          alerts.addAlert(
+            "submit-search-value-error",
+            error || "Error when searching for hosts",
+            "danger"
+          );
+        } else {
+          // Success
+          const hostsListResult = result.data.result.results;
+          const hostsListSize = result.data.result.count;
+          const totalCount = result.data.result.totalCount;
+          const hostsList: Host[] = [];
+
+          for (let i = 0; i < hostsListSize; i++) {
+            hostsList.push(hostsListResult[i].result);
+          }
+
+          // Update 'Hosts' slice data
+          dispatch(updateHostsList(hostsList));
+          setHostsList(hostsList);
+          setHostsTotalCount(totalCount);
+          // Show table elements
+          setShowTableRows(true);
+        }
+        setSearchIsDisabled(false);
+      }
+    });
   };
 
   // Show table rows
@@ -471,6 +530,7 @@ const Hosts = () => {
   const searchValueData = {
     searchValue,
     updateSearchValue,
+    submitSearchValue,
   };
 
   // List of toolbar items
@@ -495,6 +555,7 @@ const Hosts = () => {
           ariaLabel="Search hosts"
           placeholder="Search"
           searchValueData={searchValueData}
+          isDisabled={searchDisabled}
         />
       ),
       toolbarItemVariant: "search-filter",

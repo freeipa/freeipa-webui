@@ -53,40 +53,6 @@ const HostsTable = (props: PropsToTable) => {
     enrolled: "Enrolled",
   };
 
-  // Filter (SearchInput)
-  // - When a host is search using the Search Input
-  const onFilter = (host: Host) => {
-    if (props.searchValue === "") {
-      return true;
-    }
-
-    let input: RegExp;
-    try {
-      input = new RegExp(props.searchValue, "i");
-    } catch (err) {
-      input = new RegExp(
-        props.searchValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
-        "i"
-      );
-    }
-
-    for (const attr of Object.keys(columnNames)) {
-      if (
-        host[attr] !== undefined &&
-        host[attr] !== "enrolled" &&
-        host[attr][0].search(input) >= 0
-      ) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  const filteredShownHosts =
-    props.searchValue === ""
-      ? shownHostsList
-      : props.elementsList.filter(onFilter);
-
   // Index of the currently sorted column
   // Note: if you intend to make columns reorderable, you may instead want to use a non-numeric key
   // as the identifier of the sorted column. See the "Compound expandable" example.
@@ -263,7 +229,7 @@ const HostsTable = (props: PropsToTable) => {
     </Tr>
   );
 
-  const body = filteredShownHosts.map((host, rowIndex) => (
+  const body = shownHostsList.map((host, rowIndex) => (
     <Tr key={host.fqdn} id={host.fqdn}>
       <Td
         dataLabel="checkbox"

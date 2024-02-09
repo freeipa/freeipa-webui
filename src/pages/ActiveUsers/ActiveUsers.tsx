@@ -49,7 +49,8 @@ import { API_VERSION_BACKUP, isUserSelectable } from "src/utils/utils";
 import {
   useGettingActiveUserQuery,
   useAutoMemberRebuildUsersMutation,
-  UsersPayload,
+  GenericPayload,
+  useSearchEntriesMutation,
 } from "src/services/rpc";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
@@ -85,6 +86,7 @@ const ActiveUsers = () => {
   const [perPage, setPerPage] = useState<number>(10);
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [totalCount, setUsersTotalCount] = useState<number>(0);
+  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   // Button disabled due to error
   const [isDisabledDueError, setIsDisabledDueError] = useState<boolean>(false);
@@ -100,7 +102,7 @@ const ActiveUsers = () => {
     apiVersion: apiVersion || API_VERSION_BACKUP,
     startIdx: firstUserIdx,
     stopIdx: lastUserIdx,
-  } as UsersPayload);
+  } as GenericPayload);
 
   const {
     data: batchResponse,
@@ -251,9 +253,65 @@ const ActiveUsers = () => {
     setActiveUsersList(newShownUsersList);
   };
 
-  // Filter (Input search)
+  // Update search input valie
   const updateSearchValue = (value: string) => {
     setSearchValue(value);
+  };
+
+  const [retrieveUser] = useSearchEntriesMutation({});
+
+  // Issue a search using a specific search value
+  const submitSearchValue = () => {
+    setShowTableRows(false);
+    setSearchIsDisabled(true);
+    retrieveUser({
+      searchValue: searchValue,
+      sizeLimit: 0,
+      apiVersion: apiVersion || API_VERSION_BACKUP,
+      startIdx: firstUserIdx,
+      stopIdx: lastUserIdx,
+      entryType: "user",
+    } as GenericPayload).then((result) => {
+      // Manage new response here
+      if ("data" in result) {
+        const searchError = result.data.error as
+          | FetchBaseQueryError
+          | SerializedError;
+
+        if (searchError) {
+          // Error
+          let error: string | undefined = "";
+          if ("error" in searchError) {
+            error = searchError.error;
+          } else if ("message" in searchError) {
+            error = searchError.message;
+          }
+          alerts.addAlert(
+            "submit-search-value-error",
+            error || "Error when searching for users",
+            "danger"
+          );
+        } else {
+          // Success
+          const usersListResult = result.data.result.results;
+          const usersListSize = result.data.result.count;
+          const totalCount = result.data.result.totalCount;
+          const usersList: User[] = [];
+
+          for (let i = 0; i < usersListSize; i++) {
+            usersList.push(usersListResult[i].result);
+          }
+
+          setUsersTotalCount(totalCount);
+          // Update slice data
+          dispatch(updateUsersList(usersList));
+          setActiveUsersList(usersList);
+          // Show table elements
+          setShowTableRows(true);
+        }
+        setSearchIsDisabled(false);
+      }
+    });
   };
 
   // Show table rows
@@ -519,6 +577,7 @@ const ActiveUsers = () => {
   const searchValueData = {
     searchValue,
     updateSearchValue,
+    submitSearchValue,
   };
 
   // List of Toolbar items
@@ -543,6 +602,7 @@ const ActiveUsers = () => {
           ariaLabel="Search user"
           placeholder="Search"
           searchValueData={searchValueData}
+          isDisabled={searchDisabled}
         />
       ),
       toolbarItemVariant: "search-filter",
@@ -654,99 +714,97 @@ const ActiveUsers = () => {
 
   // Render 'Active users'
   return (
-    <>
+    <Page>
       <alerts.ManagedAlerts />
-      <Page>
-        <PageSection variant={PageSectionVariants.light}>
-          <TitleLayout
-            id="active users title"
-            headingLevel="h1"
-            text="Active Users"
-          />
-        </PageSection>
-        <PageSection
-          variant={PageSectionVariants.light}
-          isFilled={false}
-          className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-        >
-          <ToolbarLayout
-            className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-            contentClassName="pf-v5-u-p-0"
-            toolbarItems={toolbarItems}
-          />
-          <div style={{ height: `calc(100vh - 352.2px)` }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer>
-                {batchError !== undefined && batchError ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <UsersTable
-                    elementsList={activeUsersList}
-                    shownElementsList={activeUsersList}
-                    from="active-users"
-                    showTableRows={showTableRows}
-                    usersData={usersTableData}
-                    buttonsData={usersTableButtonsData}
-                    paginationData={selectedPerPageData}
-                    searchValue={searchValue}
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </div>
-          <PaginationPrep
-            list={activeUsersList}
-            paginationData={paginationData}
-            variant={PaginationVariant.bottom}
-            widgetId="pagination-options-menu-bottom"
-            perPageComponent="button"
-            className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-            totalCount={totalCount}
-          />
-        </PageSection>
-        <AddUser
-          show={showAddModal}
-          from="active-users"
-          handleModalToggle={onAddModalToggle}
-          onOpenAddModal={onAddClickHandler}
-          onCloseAddModal={onCloseAddModal}
-          onRefresh={refreshUsersData}
+      <PageSection variant={PageSectionVariants.light}>
+        <TitleLayout
+          id="active users title"
+          headingLevel="h1"
+          text="Active Users"
         />
-        <DeleteUsers
-          show={showDeleteModal}
-          from="active-users"
-          handleModalToggle={onDeleteModalToggle}
-          selectedUsersData={selectedUsersData}
-          buttonsData={deleteUsersButtonsData}
-          onRefresh={refreshUsersData}
-          onCloseDeleteModal={onCloseDeleteModal}
-          onOpenDeleteModal={onOpenDeleteModal}
+      </PageSection>
+      <PageSection
+        variant={PageSectionVariants.light}
+        isFilled={false}
+        className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
+      >
+        <ToolbarLayout
+          className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
+          contentClassName="pf-v5-u-p-0"
+          toolbarItems={toolbarItems}
         />
-        <DisableEnableUsers
-          show={showEnableDisableModal}
-          from="active-users"
-          handleModalToggle={onEnableDisableModalToggle}
-          optionSelected={enableDisableOptionSelected}
-          selectedUsersData={selectedUsersData}
-          buttonsData={disableEnableButtonsData}
-          onRefresh={refreshUsersData}
+        <div style={{ height: `calc(100vh - 352.2px)` }}>
+          <OuterScrollContainer>
+            <InnerScrollContainer>
+              {batchError !== undefined && batchError ? (
+                <GlobalErrors errors={globalErrors.getAll()} />
+              ) : (
+                <UsersTable
+                  elementsList={activeUsersList}
+                  shownElementsList={activeUsersList}
+                  from="active-users"
+                  showTableRows={showTableRows}
+                  usersData={usersTableData}
+                  buttonsData={usersTableButtonsData}
+                  paginationData={selectedPerPageData}
+                  searchValue={searchValue}
+                />
+              )}
+            </InnerScrollContainer>
+          </OuterScrollContainer>
+        </div>
+        <PaginationPrep
+          list={activeUsersList}
+          paginationData={paginationData}
+          variant={PaginationVariant.bottom}
+          widgetId="pagination-options-menu-bottom"
+          perPageComponent="button"
+          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+          totalCount={totalCount}
         />
-        <ModalErrors errors={modalErrors.getAll()} />
-        {isMembershipModalOpen && (
-          <ModalWithFormLayout
-            variantType="medium"
-            modalPosition="top"
-            offPosition="76px"
-            title="Confirmation"
-            formId="rebuild-auto-membership-modal"
-            fields={confirmationQuestion}
-            show={isMembershipModalOpen}
-            onClose={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
-            actions={membershipModalActions}
-          />
-        )}
-      </Page>
-    </>
+      </PageSection>
+      <AddUser
+        show={showAddModal}
+        from="active-users"
+        handleModalToggle={onAddModalToggle}
+        onOpenAddModal={onAddClickHandler}
+        onCloseAddModal={onCloseAddModal}
+        onRefresh={refreshUsersData}
+      />
+      <DeleteUsers
+        show={showDeleteModal}
+        from="active-users"
+        handleModalToggle={onDeleteModalToggle}
+        selectedUsersData={selectedUsersData}
+        buttonsData={deleteUsersButtonsData}
+        onRefresh={refreshUsersData}
+        onCloseDeleteModal={onCloseDeleteModal}
+        onOpenDeleteModal={onOpenDeleteModal}
+      />
+      <DisableEnableUsers
+        show={showEnableDisableModal}
+        from="active-users"
+        handleModalToggle={onEnableDisableModalToggle}
+        optionSelected={enableDisableOptionSelected}
+        selectedUsersData={selectedUsersData}
+        buttonsData={disableEnableButtonsData}
+        onRefresh={refreshUsersData}
+      />
+      <ModalErrors errors={modalErrors.getAll()} />
+      {isMembershipModalOpen && (
+        <ModalWithFormLayout
+          variantType="medium"
+          modalPosition="top"
+          offPosition="76px"
+          title="Confirmation"
+          formId="rebuild-auto-membership-modal"
+          fields={confirmationQuestion}
+          show={isMembershipModalOpen}
+          onClose={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
+          actions={membershipModalActions}
+        />
+      )}
+    </Page>
   );
 };
 
