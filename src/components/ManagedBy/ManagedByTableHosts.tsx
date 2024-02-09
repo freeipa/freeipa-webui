@@ -7,37 +7,35 @@ import { Host } from "src/utils/datatypes/globalDataTypes";
 import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout";
 import EmptyBodyTable from "../tables/EmptyBodyTable";
 
-export interface ManagedByHostsTableProps {
-  hosts: Host[];
-  checkedItems?: string[];
-  onCheckItemsChange?: (checkedItems: string[]) => void;
+export interface MemberOfUserGroupsTableProps {
+  userGroups: UserGroup[];
+  checkedItems: string[];
+  onCheckItemsChange: (checkedItems: string[]) => void;
   showTableRows: boolean;
 }
 
 // Body
-const HostsTableBody = (props: {
-  hosts: Host[];
-  showCheckboxColumn: boolean;
+const UserGroupsTableBody = (props: {
+  userGroups: UserGroup[];
   checkedItems: string[];
   onCheckboxChange: (checked: boolean, groupName: string) => void;
 }) => {
   const { hosts } = props;
   return (
     <>
-      {hosts.map((host, index) => (
-        <Tr key={index} id={host.fqdn}>
-          {props.showCheckboxColumn && (
-            <Td
-              select={{
-                rowIndex: index,
-                onSelect: (_e, isSelected) =>
-                  props.onCheckboxChange(isSelected, host.fqdn),
-                isSelected: props.checkedItems.includes(host.fqdn),
-              }}
-            />
-          )}
-          <Td>{host.fqdn}</Td>
-          <Td>{host.description}</Td>
+      {userGroups.map((userGroup, index) => (
+        <Tr key={index}>
+          <Td
+            select={{
+              rowIndex: index,
+              onSelect: (_e, isSelected) =>
+                props.onCheckboxChange(isSelected, userGroup.name),
+              isSelected: props.checkedItems.includes(userGroup.name),
+            }}
+          />
+          <Td>{userGroup.name}</Td>
+          <Td>{userGroup.gid}</Td>
+          <Td>{userGroup.description}</Td>
         </Tr>
       ))}
     </>
@@ -73,15 +71,12 @@ export default function ManagedByHostsTable(props: ManagedByHostsTableProps) {
     );
   }
 
-  const showCheckboxColumn = props.onCheckItemsChange !== undefined;
-
   const onCheckboxChange = (checked: boolean, groupName: string) => {
-    const originalItems = props.checkedItems || [];
     let newItems: string[] = [];
     if (checked) {
-      newItems = [...originalItems, groupName];
+      newItems = [...props.checkedItems, groupName];
     } else {
-      newItems = originalItems.filter((name) => name !== groupName);
+      newItems = props.checkedItems.filter((name) => name !== groupName);
     }
     if (props.onCheckItemsChange) {
       props.onCheckItemsChange(newItems);
@@ -100,8 +95,9 @@ export default function ManagedByHostsTable(props: ManagedByHostsTableProps) {
     >
       <Thead>
         <Tr>
-          {props.onCheckItemsChange && <Th />}
-          <Th modifier="wrap">Host name</Th>
+          <Th />
+          <Th modifier="wrap">Group name</Th>
+          <Th modifier="wrap">GID</Th>
           <Th modifier="wrap">Description</Th>
         </Tr>
       </Thead>
@@ -111,11 +107,10 @@ export default function ManagedByHostsTable(props: ManagedByHostsTableProps) {
         ) : hosts.length === 0 ? (
           <EmptyBodyTable />
         ) : (
-          <HostsTableBody
-            hosts={hosts}
-            showCheckboxColumn={showCheckboxColumn}
+          <UserGroupsTableBody
+            userGroups={userGroups}
             onCheckboxChange={onCheckboxChange}
-            checkedItems={props.checkedItems || []}
+            checkedItems={props.checkedItems}
           />
         )}
       </Tbody>
