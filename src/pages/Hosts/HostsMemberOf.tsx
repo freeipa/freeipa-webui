@@ -12,7 +12,7 @@ import {
   TabTitleText,
 } from "@patternfly/react-core";
 // Others
-import MemberOfToolbar from "src/components/MemberOf/MemberOfToolbar";
+import MemberOfToolbar from "src/components/MemberOf/MemberOfToolbarOld";
 import MemberOfTable from "src/components/MemberOf/MemberOfTable";
 // Data types
 import {
