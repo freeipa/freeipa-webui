@@ -1,117 +1,60 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import React from "react";
+// PatternFly
 import {
-  ToggleGroup,
   Button,
   Form,
   FormGroup,
-  ToggleGroupItem,
+  Pagination,
   Text,
-  ToolbarItemVariant,
   TextContent,
   TextVariants,
-  Pagination,
+  ToggleGroup,
+  ToggleGroupItem,
+  Toolbar,
+  ToolbarContent,
+  ToolbarItem,
+  ToolbarItemVariant,
 } from "@patternfly/react-core";
 // Icons
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
-// Toolbar layout
-import ToolbarLayout, {
-  ToolbarItemAlignment,
-  ToolbarItemSpacer,
-} from "src/components/layouts/ToolbarLayout";
-// Data types
-import {
-  UserGroupOld,
-  NetgroupOld,
-  RolesOld,
-  HBACRulesOld,
-  SudoRulesOld,
-  HostGroupOld,
-} from "src/utils/datatypes/globalDataTypes";
-// Layout
-import SearchInputLayout from "src/components/layouts/SearchInputLayout";
+// Components
+import SearchInputLayout from "../layouts/SearchInputLayout";
 
-interface PageData {
-  page: number;
-  changeSetPage: (
-    newPage: number,
-    perPage: number | undefined,
-    startIdx: number | undefined,
-    endIdx: number | undefined
-  ) => void;
+export type MembershipDirection = "direct" | "indirect";
+
+interface MemberOfToolbarProps {
+  // search
+  searchText: string;
+  onSearchTextChange: (value: string) => void;
+
+  // buttons
+  refreshButtonEnabled: boolean;
+  onRefreshButtonClick?: () => void;
+  deleteButtonEnabled: boolean;
+  onDeleteButtonClick?: () => void;
+  addButtonEnabled: boolean;
+  onAddButtonClick?: () => void;
+
+  membershipDirectionEnabled?: boolean;
+  membershipDirection?: MembershipDirection;
+  onMembershipDirectionChange: (direction: MembershipDirection) => void;
+
+  // help icon
+  helpIconEnabled?: boolean;
+  onHelpIconClick?: () => void;
+
+  // paging
+  totalItems: number;
   perPage: number;
-  changePerPageSelect: (
-    newPerPage: number,
-    newPage: number,
-    startIdx: number | undefined,
-    endIdx: number | undefined
-  ) => void;
+  page: number;
+  onPageChange?: (page: number) => void;
+  onPerPageChange?: (pageSize: number) => void;
 }
 
-interface ButtonData {
-  onClickAddHandler: () => void;
-  onClickDeleteHandler: () => void;
-  isDeleteButtonDisabled: boolean;
-}
-
-interface SettersData {
-  changeMemberGroupsList: (
-    arg:
-      | UserGroupOld[]
-      | NetgroupOld[]
-      | RolesOld[]
-      | HBACRulesOld[]
-      | SudoRulesOld[]
-      | HostGroupOld[]
-  ) => void;
-  changeTabName: (name: string) => void;
-}
-
-interface SearchValueData {
-  searchValue: string;
-  updateSearchValue: (value: string) => void;
-}
-
-export interface PropsToToolbar {
-  pageRepo:
-    | UserGroupOld[]
-    | NetgroupOld[]
-    | RolesOld[]
-    | HBACRulesOld[]
-    | SudoRulesOld[]
-    | HostGroupOld[];
-  shownItems:
-    | UserGroupOld[]
-    | NetgroupOld[]
-    | RolesOld[]
-    | HBACRulesOld[]
-    | SudoRulesOld[]
-    | HostGroupOld[];
-  toolbar:
-    | "user groups"
-    | "netgroups"
-    | "roles"
-    | "HBAC rules"
-    | "sudo rules"
-    | "host groups";
-  settersData: SettersData;
-  pageData: PageData;
-  buttonData: ButtonData;
-  searchValueData: SearchValueData;
-}
-
-const MemberOfToolbar = (props: PropsToToolbar) => {
-  // -- Pagination
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
-
-  // - Page setters
-  const onSetPage = (
-    _event: React.MouseEvent | React.KeyboardEvent | MouseEvent,
-    newPage: number,
-    perPage: number | undefined,
-    startIdx: number | undefined,
-    endIdx: number | undefined
+const MemberOfToolbar = (props: MemberOfToolbarProps) => {
+  const onMembershipDirectionChange = (
+    selected,
+    direction: MembershipDirection
   ) => {
     setPage(newPage);
     props.settersData.changeMemberGroupsList(
@@ -485,49 +428,13 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
     }
   };
 
-  // Toolbar fields data structure
-  // - Depending on the 'toolbarData' response, a
-  //   specific set of data will be shown.
-  const toolbarFields = [
-    {
-      id: toolbarData().searchId,
-      key: 0,
-      element: (
-        <SearchInputLayout
-          name="search"
-          ariaLabel="Search user"
-          placeholder="Search"
-          searchValueData={props.searchValueData}
-        />
-      ),
-      toolbarItemVariant: ToolbarItemVariant["search-filter"],
-      toolbarItemSpacer: {
-        default: "spacerMd",
-      } as ToolbarItemSpacer,
-    },
-    {
-      id: toolbarData().separator1Id,
-      key: 1,
-      toolbarItemVariant: ToolbarItemVariant.separator,
-    },
-    {
-      id: toolbarData().refreshButton.id,
-      key: 2,
-      element: (
-        <Button variant="secondary" name="refresh">
-          Refresh
-        </Button>
-      ),
-    },
-    {
-      id: toolbarData().deleteButton.id,
-      key: 3,
-      element: (
-        <Button
-          variant="secondary"
-          name="remove"
-          isDisabled={toolbarData().deleteButton.isDisabledHandler}
-          onClick={toolbarData().deleteButton.onClickHandler}
+  return (
+    <Toolbar>
+      <ToolbarContent>
+        <ToolbarItem
+          id="search-input"
+          variant={ToolbarItemVariant["search-filter"]}
+          spacer={{ default: "spacerMd" }}
         >
           Delete
         </Button>
@@ -618,13 +525,110 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
           onPerPageSelect={onPerPageSelect}
           isCompact
         />
-      ),
-      toolbarItemAlignment: { default: "alignRight" } as ToolbarItemAlignment,
-    },
-  ];
-
-  // Render toolbar content
-  return <ToolbarLayout isSticky={false} toolbarItems={toolbarFields} />;
+        <ToolbarItem id="refresh-button">
+          <Button
+            variant="secondary"
+            name="refresh"
+            isDisabled={!props.refreshButtonEnabled}
+            onClick={props.onRefreshButtonClick}
+          >
+            Refresh
+          </Button>
+        </ToolbarItem>
+        <ToolbarItem id="delete-button">
+          <Button
+            variant="secondary"
+            name="remove"
+            isDisabled={!props.deleteButtonEnabled}
+            onClick={props.onDeleteButtonClick}
+          >
+            Delete
+          </Button>
+        </ToolbarItem>
+        <ToolbarItem id="add-button">
+          <Button
+            variant="secondary"
+            name="add"
+            isDisabled={!props.addButtonEnabled}
+            onClick={props.onAddButtonClick}
+          >
+            Add
+          </Button>
+        </ToolbarItem>
+        <ToolbarItem
+          id="separator-membership"
+          variant={ToolbarItemVariant.separator}
+        />
+        <ToolbarItem id="membership-form">
+          <Form isHorizontal maxWidth="93px" className="pf-v5-u-pb-xs">
+            <FormGroup
+              fieldId="membership"
+              label="Membership"
+              className="pf-v5-u-pt-0"
+            ></FormGroup>
+          </Form>
+        </ToolbarItem>
+        <ToolbarItem id="toggle-group">
+          <ToggleGroup
+            isCompact
+            aria-label="Toggle group with single selectable"
+          >
+            <ToggleGroupItem
+              text="Direct"
+              name="user-memberof-group-type-radio-direct"
+              buttonId="direct"
+              isSelected={props.membershipDirection === "direct"}
+              onChange={(_event, selected) =>
+                onMembershipDirectionChange(selected, "direct")
+              }
+            />
+            <ToggleGroupItem
+              text="Indirect"
+              name="user-memberof-group-type-radio-indirect"
+              buttonId="indirect"
+              isSelected={props.membershipDirection === "indirect"}
+              onChange={(_event, selected) =>
+                onMembershipDirectionChange(selected, "indirect")
+              }
+            />
+          </ToggleGroup>
+        </ToolbarItem>
+        <ToolbarItem
+          id="separator-help-icon"
+          variant={ToolbarItemVariant.separator}
+        />
+        <ToolbarItem id="help-icon">
+          <>
+            {props.helpIconEnabled && (
+              <TextContent>
+                <Text component={TextVariants.p}>
+                  <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
+                  <Text component={TextVariants.a} isVisitedLink>
+                    Help
+                  </Text>
+                </Text>
+              </TextContent>
+            )}
+          </>
+        </ToolbarItem>
+        <ToolbarItem id="pagination" align={{ default: "alignRight" }}>
+          <Pagination
+            itemCount={props.totalItems}
+            perPage={props.perPage}
+            page={props.page}
+            onSetPage={(_e, page) =>
+              props.onPageChange ? props.onPageChange(page) : null
+            }
+            widgetId="pagination-options-menu-top"
+            onPerPageSelect={(_e, perPage) =>
+              props.onPerPageChange ? props.onPerPageChange(perPage) : null
+            }
+            isCompact
+          />
+        </ToolbarItem>
+      </ToolbarContent>
+    </Toolbar>
+  );
 };
 
 export default MemberOfToolbar;
