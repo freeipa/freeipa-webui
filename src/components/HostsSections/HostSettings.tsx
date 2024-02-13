@@ -15,8 +15,9 @@ import IpaTextInput from "../Form/IpaTextInput";
 import IpaCheckbox from "../Form/IpaCheckbox";
 import IpaCheckboxes from "../Form/IpaCheckboxes";
 import IpaSshPublicKeys from "../Form/IpaSshPublicKeys";
+import IpaTextboxList from "../Form/IpaTextboxList";
+
 // Layouts
-import SecondaryButton from "../layouts/SecondaryButton";
 import PopoverWithIconLayout from "../layouts/PopoverWithIconLayout";
 // Modals
 import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";
@@ -26,11 +27,6 @@ import { asRecord } from "../../utils/hostUtils";
 interface PrincipalAlias {
   id: number | string;
   alias: string;
-}
-
-interface MacAddress {
-  id: number | string;
-  address: string;
 }
 
 interface PropsToHostSettings {
@@ -64,26 +60,6 @@ const HostSettings = (props: PropsToHostSettings) => {
     props.onHostChange
   );
 
-  // MAC address
-  const [macAddressList, setMacAddressList] = useState<MacAddress[]>([]);
-
-  // - 'Add MAC address' handler
-  const onAddMacAddressFieldHandler = () => {
-    const macAddressListCopy = [...macAddressList];
-    macAddressListCopy.push({
-      id: Date.now.toString(),
-      address: "",
-    });
-    setMacAddressList(macAddressListCopy);
-  };
-
-  // - 'Remove MAC address' handler
-  const onRemoveMacAddressHandler = (idx: number) => {
-    const macAddressListCopy = [...macAddressList];
-    macAddressListCopy.splice(idx, 1);
-    setMacAddressList(macAddressListCopy);
-  };
-
   const AuthIndicatorsTypesMessage = () => (
     <div>
       <p>
@@ -100,6 +76,12 @@ const HostSettings = (props: PropsToHostSettings) => {
 
   // Assigned ID view - data type unknown, treated as string from now
   const [assignedIDView] = useState("");
+
+  // MAC Address validator
+  const validateMAC = (value: string) => {
+    const mac_regex = /^([a-fA-F0-9]{2}[:|\\-]?){5}[a-fA-F0-9]{2}$/;
+    return value.match(mac_regex) !== null ? true : false;
+  };
 
   return (
     <>
@@ -194,44 +176,14 @@ const HostSettings = (props: PropsToHostSettings) => {
                 from={"hosts"}
               />
             </FormGroup>
-            <FormGroup label="MAC address" fieldId="mac-address">
-              <Flex direction={{ default: "column" }} name="macaddress">
-                {macAddressList.map((macAddress, idx) => (
-                  <Flex
-                    direction={{ default: "row" }}
-                    key={macAddress.id + "-" + idx + "-div"}
-                    name={"macaddress-" + idx}
-                  >
-                    <FlexItem
-                      key={macAddress.id + "-textbox"}
-                      flex={{ default: "flex_1" }}
-                    >
-                      <TextInput
-                        id="mac-address-text"
-                        value={macAddress.address}
-                        type="text"
-                        name={"macaddress-" + idx}
-                        aria-label="mac address"
-                      />
-                    </FlexItem>
-                    <FlexItem key={macAddress.id + "-delete-button"}>
-                      <SecondaryButton
-                        name="remove"
-                        onClickHandler={() => onRemoveMacAddressHandler(idx)}
-                      >
-                        Delete
-                      </SecondaryButton>
-                    </FlexItem>
-                  </Flex>
-                ))}
-              </Flex>
-              <SecondaryButton
-                classname={macAddressList.length !== 0 ? "pf-v5-u-mt-md" : ""}
-                name="add"
-                onClickHandler={onAddMacAddressFieldHandler}
-              >
-                Add
-              </SecondaryButton>
+            <FormGroup label="MAC address" fieldId="macaddress">
+              <IpaTextboxList
+                ipaObject={ipaObject}
+                setIpaObject={recordOnChange}
+                name={"macaddress"}
+                ariaLabel={"MAC address"}
+                validator={validateMAC}
+              />
             </FormGroup>
             <FormGroup
               label="Authentication indicators"
