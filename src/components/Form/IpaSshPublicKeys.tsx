@@ -333,7 +333,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
         : null}
       <Modal
         variant="small"
-        title="Set SSH key"
+        title={idxSelected !== null ? "SSH Key" : "Set SSH key"}
         isOpen={isTextAreaSshPublicKeysOpen}
         onClose={onClickCancelTextAreaSshPublicKeys}
         actions={modal_actions}

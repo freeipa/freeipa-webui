@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 // PatternFly
-import { Flex, FlexItem, TextInput } from "@patternfly/react-core";
+import {
+  Flex,
+  FlexItem,
+  TextInput,
+  ValidatedOptions,
+} from "@patternfly/react-core";
 // Components
 import SecondaryButton from "../layouts/SecondaryButton";
 // Utils
@@ -12,12 +17,15 @@ interface PropsToIpaTextboxList {
   setIpaObject: (value: Record<string, unknown>) => void;
   name: string;
   ariaLabel: string;
+  validator?: (value: string) => boolean;
 }
 
 const IpaTextboxList = (props: PropsToIpaTextboxList) => {
   const [list, setList] = React.useState<string[]>(
     props.ipaObject[props.name] || []
   );
+
+  const [invalidList, setInvalidList] = React.useState<number[]>([]);
 
   // Keep the values updated, thus preventing empty values
   React.useEffect(() => {
@@ -39,12 +47,28 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
     event: React.FormEvent<HTMLInputElement>,
     idx: number
   ) => {
+    // Update ipaObject
     const listCopy = [...list];
     listCopy[idx] = value;
     setList(listCopy);
-    // Update the IPA object
     updateIpaObject(props.ipaObject, props.setIpaObject, listCopy, props.name);
   };
+
+  const validateList = () => {
+    if (!props.validator) return;
+
+    const newInvalidList: number[] = [];
+    list.forEach((value, idx) => {
+      if (props.validator !== undefined && !props.validator(value)) {
+        newInvalidList.push(idx);
+      }
+    });
+    setInvalidList(newInvalidList);
+  };
+
+  useEffect(() => {
+    validateList();
+  }, [list]);
 
   // - Remove element on list handler
   const onRemoveHandler = (idx: number) => {
@@ -75,6 +99,11 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
                 name={props.name + "-" + idx}
                 aria-label={props.ariaLabel + " number " + idx}
                 onChange={(event, value) => onChangeHandler(value, event, idx)}
+                validated={
+                  invalidList.includes(idx)
+                    ? ValidatedOptions.error
+                    : ValidatedOptions.default
+                }
               />
             </FlexItem>
             <FlexItem key={props.name + "-" + idx + "-delete-button"}>
