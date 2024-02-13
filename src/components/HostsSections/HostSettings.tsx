@@ -14,6 +14,7 @@ import { Host, Metadata } from "../../utils/datatypes/globalDataTypes";
 import IpaTextArea from "../Form/IpaTextArea";
 import IpaTextInput from "../Form/IpaTextInput";
 import IpaCheckboxes from "../Form/IpaCheckboxes";
+import IpaSshPublicKeys from "../Form/IpaSshPublicKeys";
 // Layouts
 import SecondaryButton from "../layouts/SecondaryButton";
 import PopoverWithIconLayout from "../layouts/PopoverWithIconLayout";
@@ -25,10 +26,6 @@ import { asRecord } from "../../utils/hostUtils";
 interface PrincipalAlias {
   id: number | string;
   alias: string;
-}
-
-interface SshPublicKey {
-  key: string;
 }
 
 interface MacAddress {
@@ -66,9 +63,6 @@ const HostSettings = (props: PropsToHostSettings) => {
     props.host,
     props.onHostChange
   );
-
-  // SSH public keys
-  const [sshPublicKeys] = useState<SshPublicKey[]>([]);
 
   // MAC address
   const [macAddressList, setMacAddressList] = useState<MacAddress[]>([]);
@@ -197,23 +191,14 @@ const HostSettings = (props: PropsToHostSettings) => {
         </FlexItem>
         <FlexItem flex={{ default: "flex_1" }}>
           <Form>
-            <FormGroup label="SSH public keys" fieldId="ssh-public-keys">
-              {sshPublicKeys.length === 0 ? (
-                <SecondaryButton>Add</SecondaryButton>
-              ) : (
-                <>
-                  {sshPublicKeys.map((publicKey) => {
-                    return (
-                      <>
-                        {publicKey.key}
-                        <SecondaryButton>Show/Set key</SecondaryButton>
-                        <SecondaryButton>Delete</SecondaryButton>
-                      </>
-                    );
-                  })}
-                  <SecondaryButton>Add</SecondaryButton>
-                </>
-              )}
+            <FormGroup label="SSH public keys" fieldId="ipasshpubkey">
+              <IpaSshPublicKeys
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                metadata={props.metadata}
+                onRefresh={props.onRefresh}
+                from={"hosts"}
+              />
             </FormGroup>
             <FormGroup label="MAC address" fieldId="mac-address">
               <Flex direction={{ default: "column" }} name="macaddress">
