@@ -99,6 +99,11 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
                 name={props.name + "-" + idx}
                 aria-label={props.ariaLabel + " number " + idx}
                 onChange={(event, value) => onChangeHandler(value, event, idx)}
+                validated={
+                  invalidList.includes(idx)
+                    ? ValidatedOptions.error
+                    : ValidatedOptions.default
+                }
               />
             </FlexItem>
             <FlexItem key={props.name + "-" + idx + "-delete-button"}>
