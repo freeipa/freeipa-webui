@@ -14,6 +14,7 @@ import IpaTextArea from "../Form/IpaTextArea";
 import IpaTextInput from "../Form/IpaTextInput";
 import IpaCheckbox from "../Form/IpaCheckbox";
 import IpaCheckboxes from "../Form/IpaCheckboxes";
+import IpaSshPublicKeys from "../Form/IpaSshPublicKeys";
 // Layouts
 import PopoverWithIconLayout from "../layouts/PopoverWithIconLayout";
 // Modals
@@ -26,6 +27,11 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 interface PrincipalAlias {
   id: number | string;
   alias: string;
+}
+
+interface MacAddress {
+  id: number | string;
+  address: string;
 }
 
 interface PropsToHostSettings {
@@ -58,9 +64,6 @@ const HostSettings = (props: PropsToHostSettings) => {
     props.host,
     props.onHostChange
   );
-
-  // SSH public keys
-  const [sshPublicKeys] = useState<SshPublicKey[]>([]);
 
   // MAC address
   const [macAddressList, setMacAddressList] = useState<MacAddress[]>([]);
