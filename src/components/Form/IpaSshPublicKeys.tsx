@@ -32,7 +32,7 @@ interface PropsToSshPublicKeysModal {
   onChange: (ipaObject: Record<string, unknown>) => void;
   metadata: Metadata;
   onRefresh: () => void;
-  from: "active-users" | "stage-users" | "preserved-users";
+  from: "active-users" | "stage-users" | "preserved-users" | "hosts";
 }
 
 const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
@@ -106,15 +106,23 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
 
   // Remove data (API call)
   const onRemoveSSHKey = (idx: number) => {
-    let method = "user_mod";
-    if (props.from === "stage-users") {
+    let method = "";
+    let id = "";
+    if (props.from === "active-users" || props.from === "preserved-users") {
+      method = "user_mod";
+      id = props.ipaObject.uid as string;
+    } else if (props.from === "stage-users") {
       method = "stageuser_mod";
+      id = props.ipaObject.uid as string;
+    } else if (props.from === "hosts") {
+      method = "host_mod";
+      id = props.ipaObject.fqdn as string;
     }
     // Prepare payload
     const payload: Command = {
       method: method,
       params: [
-        [props.ipaObject.uid],
+        [id],
         {
           delattr: "ipasshpubkey=" + sshPublicKeysList[idx],
         },
@@ -128,7 +136,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
           // Set alert: success
           alerts.addAlert(
             "remove-ssh-public-key-success",
-            "Removed SSH public key from user '" + props.ipaObject.uid + "'",
+            "Removed SSH public key from '" + id + "'",
             "success"
           );
           // Update internal list
@@ -158,11 +166,20 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
   // On click 'Set' button (within modal)
   const onClickSetTextAreaSshPublicKeys = () => {
     // Prepare payload
-    let method = "user_mod";
-    if (props.from === "stage-users") {
+    let method = "";
+    let id = "";
+    if (props.from === "active-users" || props.from === "preserved-users") {
+      method = "user_mod";
+      id = props.ipaObject.uid as string;
+    } else if (props.from === "stage-users") {
       method = "stageuser_mod";
+      id = props.ipaObject.uid as string;
+    } else if (props.from === "hosts") {
+      method = "host_mod";
+      id = props.ipaObject.fqdn as string;
+    } else {
+      return;
     }
-
     // Get all the ssh keys
     const key_list = [...sshPublicKeysList, textAreaSshPublicKeysValue];
 
@@ -170,7 +187,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
     const payload: Command = {
       method: method,
       params: [
-        [props.ipaObject.uid],
+        [id],
         {
           ipasshpubkey: key_list,
         },
@@ -186,7 +203,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
           // Set alert: success
           alerts.addAlert(
             "add-ssh-public-key-success",
-            "Added SSH public key to user '" + props.ipaObject.uid + "'",
+            "Added SSH public key to '" + id + "'",
             "success"
           );
           // Update intenral list
