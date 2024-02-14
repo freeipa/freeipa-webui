@@ -356,7 +356,7 @@ export const api = createApi({
 
         const certFindCommand: Command = {
           method: "cert_find",
-          params: [[], { user: hostId, sizelimit: 0, all: true }],
+          params: [[], { host: hostId, sizelimit: 0, all: true }],
         };
 
         const batchPayload: Command[] = [hostShowCommand, certFindCommand];
@@ -516,8 +516,16 @@ export const api = createApi({
           { usercertificate: payload[1], version: API_VERSION_BACKUP },
         ];
 
+        // Determine the method to use via the object type
+        let method = "user_add_cert";
+        if (payload[2] === "host") {
+          method = "host_add_cert";
+        } else if (payload[2] === "service") {
+          method = "service_add_cert";
+        }
+
         return getCommand({
-          method: "user_add_cert",
+          method: method,
           params: params,
         });
       },
@@ -539,8 +547,16 @@ export const api = createApi({
           { usercertificate: payload[1], version: API_VERSION_BACKUP },
         ];
 
+        // Determine the method to use via the object type
+        let method = "user_remove_cert";
+        if (payload[2] === "host") {
+          method = "host_remove_cert";
+        } else if (payload[2] === "service") {
+          method = "service_remove_cert";
+        }
+
         return getCommand({
-          method: "user_remove_cert",
+          method: method,
           params: params,
         });
       },

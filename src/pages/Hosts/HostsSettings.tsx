@@ -37,7 +37,8 @@ interface PropsToHostsSettings {
   host: Partial<Host>;
   originalHost: Partial<Host>;
   metadata: Metadata;
-  certData?: Record<string, unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  certData: any;
   onHostChange: (host: Partial<Host>) => void;
   onRefresh: () => void;
   isModified: boolean;
@@ -235,7 +236,13 @@ const HostsSettings = (props: PropsToHostsSettings) => {
                 id="host-certificate"
                 text="Host certificate"
               />
-              <HostCertificate />
+              <HostCertificate
+                host={props.host}
+                metadata={props.metadata}
+                onHostChange={props.onHostChange}
+                onRefresh={props.onRefresh}
+                certData={props.certData}
+              />
               <TitleLayout
                 key={3}
                 headingLevel="h2"
