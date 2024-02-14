@@ -1,36 +1,39 @@
-import React, { useState } from "react";
+import React from "react";
 // PatternFly
 import { Flex, FlexItem, Form, FormGroup } from "@patternfly/react-core";
-// Layouts
-import SecondaryButton from "../layouts/SecondaryButton";
+// Forms
+import IpaCertificates from "../Form/IpaCertificates";
+import { asRecord } from "../../utils/hostUtils";
+// Data types
+import { Host, Metadata } from "../../utils/datatypes/globalDataTypes";
 
-interface Certificate {
-  id: string | number;
-  certificate: string;
+interface PropsToHostSettings {
+  host: Partial<Host>;
+  metadata: Metadata;
+  onHostChange: (host: Partial<Host>) => void;
+  onRefresh: () => void;
+  certData: Record<string, unknown>;
 }
 
-const HostCertificate = () => {
-  // Certificates
-  const [certificatesList] = useState<Certificate[]>([]);
+const HostCertificate = (props: PropsToHostSettings) => {
+  const { ipaObject, recordOnChange } = asRecord(
+    props.host,
+    props.onHostChange
+  );
 
   return (
     <Flex direction={{ default: "column", lg: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-v5-u-mb-lg">
-          <FormGroup label="Certificates" fieldId="certificates">
-            {certificatesList.length > 0 ? (
-              certificatesList.map((cert) => {
-                return (
-                  <>
-                    {cert.certificate}
-                    <SecondaryButton>Show</SecondaryButton>
-                    <SecondaryButton>Delete</SecondaryButton>
-                  </>
-                );
-              })
-            ) : (
-              <SecondaryButton>Add</SecondaryButton>
-            )}
+          <FormGroup label="Certificates" fieldId="usercertificate">
+            <IpaCertificates
+              ipaObject={ipaObject}
+              onChange={recordOnChange}
+              metadata={props.metadata}
+              certificates={props.certData}
+              onRefresh={props.onRefresh}
+              objectType="host"
+            />
           </FormGroup>
         </Form>
       </FlexItem>

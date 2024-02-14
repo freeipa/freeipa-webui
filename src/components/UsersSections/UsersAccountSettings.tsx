@@ -234,6 +234,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             <FormGroup label="Certificates" fieldId="usercertificate">
               <IpaCertificates
                 ipaObject={ipaObject}
+                objectType="user"
                 onChange={recordOnChange}
                 metadata={props.metadata}
                 certificates={props.certData}

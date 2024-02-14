@@ -37,6 +37,7 @@ interface PropsToIpaCertificates {
   onChange: (ipaObject: Record<string, unknown>) => void;
   metadata: Metadata;
   certificates: Record<string, unknown>;
+  objectType: string;
   onRefresh: () => void;
 }
 
@@ -67,8 +68,15 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
     name: "usercertificate",
     ipaObject: props.ipaObject,
     metadata: props.metadata,
-    objectName: "user",
+    objectName: props.objectType,
   });
+
+  let idParamName = "uid";
+  if (props.metadata.objects) {
+    const objMetadata = props.metadata.objects[props.objectType];
+    idParamName = objMetadata.primary_key as string;
+  }
+  const idParam = props.ipaObject[idParamName];
 
   // Get further details of a certificate (via the `cert_find` results)
   const getCertificateInfo = (certificate: CertificateParam) => {
@@ -126,8 +134,9 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
     const certificateToRemove = certificatesList[idx].certInfo.certificate;
 
     const payload = [
-      props.ipaObject.uid,
+      idParam,
       removeCertificateDelimiters(certificateToRemove),
+      props.objectType,
     ];
     setModalSpinning(true);
 
@@ -139,7 +148,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
           // Set alert: success
           alerts.addAlert(
             "remove-certificate-success",
-            "Removed certificates from user '" + props.ipaObject.uid + "'",
+            "Removed certificates from user '" + idParam + "'",
             "success"
           );
         } else if (response.data.error) {
@@ -358,8 +367,9 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
   // On adding a certificate
   const onAddCertificate = () => {
     const payload = [
-      props.ipaObject.uid,
+      idParam,
       removeCertificateDelimiters(textAreaValue),
+      props.objectType,
     ];
     setModalSpinning(true);
 
@@ -371,7 +381,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
           // Set alert: success
           alerts.addAlert(
             "add-certificate-success",
-            "Added certificate to user '" + props.ipaObject.uid + "'",
+            "Added certificate to '" + idParam + "'",
             "success"
           );
         } else if (response.data.error) {
@@ -525,6 +535,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
   // Render component
   return (
     <>
+      <alerts.ManagedAlerts />
       {certificatesList !== undefined && certificatesList.length > 0
         ? certificatesList.map((cert, idx) => {
             return (
@@ -603,7 +614,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         }
         cssStyle={{ height: "422px" }}
         name={"usercertificate"}
-        objectName="user"
+        objectName={props.objectType}
         ipaObject={props.ipaObject}
         metadata={props.metadata}
         variant="medium"
@@ -624,7 +635,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
             onClose={onCloseInfoModal}
             idxSelected={idxSelected}
             certificatesList={certificatesList}
-            uid={props.ipaObject.uid as string}
+            uid={idParam as string}
           />
           <RevokeCertificate
             certificate={certificatesList[idxSelected]}
