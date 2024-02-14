@@ -367,7 +367,7 @@ export const api = createApi({
 
         const certFindCommand: Command = {
           method: "cert_find",
-          params: [[], { user: hostId, sizelimit: 0, all: true }],
+          params: [[], { host: hostId, sizelimit: 0, all: true }],
         };
 
         const batchPayload: Command[] = [hostShowCommand, certFindCommand];

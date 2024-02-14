@@ -53,7 +53,8 @@ interface PropsToHostsSettings {
   host: Partial<Host>;
   originalHost: Partial<Host>;
   metadata: Metadata;
-  certData?: Record<string, unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  certData: any;
   onHostChange: (host: Partial<Host>) => void;
   onRefresh: () => void;
   isModified: boolean;
