@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
 import {
-  Checkbox,
   Flex,
   FlexItem,
   Form,
@@ -13,6 +12,7 @@ import { Host, Metadata } from "../../utils/datatypes/globalDataTypes";
 // Forms
 import IpaTextArea from "../Form/IpaTextArea";
 import IpaTextInput from "../Form/IpaTextInput";
+import IpaCheckbox from "../Form/IpaCheckbox";
 import IpaCheckboxes from "../Form/IpaCheckboxes";
 // Layouts
 import PopoverWithIconLayout from "../layouts/PopoverWithIconLayout";
