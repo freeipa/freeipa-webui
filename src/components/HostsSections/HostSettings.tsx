@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
 import {
-  Checkbox,
   Flex,
   FlexItem,
   Form,
@@ -13,6 +12,7 @@ import { Host, Metadata } from "../../utils/datatypes/globalDataTypes";
 // Forms
 import IpaTextArea from "../Form/IpaTextArea";
 import IpaTextInput from "../Form/IpaTextInput";
+import IpaCheckbox from "../Form/IpaCheckbox";
 import IpaCheckboxes from "../Form/IpaCheckboxes";
 // Layouts
 import SecondaryButton from "../layouts/SecondaryButton";
@@ -103,12 +103,6 @@ const HostSettings = (props: PropsToHostSettings) => {
       </p>
     </div>
   );
-
-  // Trusted for delegation - checkbox
-  const [trustedForDelegationCheckbox] = useState(false);
-
-  // Trusted to authenticate as a user - checkbox
-  const [trustedAuthAsUserCheckbox] = useState(false);
 
   // Assigned ID view - data type unknown, treated as string from now
   const [assignedIDView] = useState("");
@@ -296,26 +290,28 @@ const HostSettings = (props: PropsToHostSettings) => {
               label="Trusted for delegation"
               fieldId="trusted-delegation"
             >
-              <Checkbox
-                label="Trusted for delegation"
-                isChecked={trustedForDelegationCheckbox}
-                aria-label="trusted for delegation checkbox"
-                id="trustedForDelegationCheckbox"
+              <IpaCheckbox
                 name="ipakrbokasdelegate"
                 value="trustedForDelegation"
+                text="Trusted for delegation"
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="host"
+                metadata={props.metadata}
               />
             </FormGroup>
             <FormGroup
               label="Trusted to authenticate as a user"
               fieldId="trusted-auth-as-user"
             >
-              <Checkbox
-                label="Trusted to authenticate as a user"
-                isChecked={trustedAuthAsUserCheckbox}
-                aria-label="trusted to authenticate as a user checkbox"
-                id="trustedAuthAsUserCheckbox"
+              <IpaCheckbox
                 name="ipakrboktoauthasdelegate"
                 value="trustedAuthAsUser"
+                text="Trusted to authenticate as a user"
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="host"
+                metadata={props.metadata}
               />
             </FormGroup>
             <FormGroup label="Assigned ID view" fieldId="assigned-id-view">
