@@ -693,7 +693,7 @@ export const api = createApi({
             id = idResponseData.result.result[i] as fqdnType;
           } else if (objName === "service") {
             id = idResponseData.result.result[i] as servicesType;
-          } else if (objName === "user" || objName === "stage") {
+          } else if (objName === "user" || objName === "stageuser") {
             id = idResponseData.result.result[i] as UIDType;
           } else {
             // Unknown, should never happen
