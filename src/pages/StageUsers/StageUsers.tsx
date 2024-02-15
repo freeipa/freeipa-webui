@@ -432,6 +432,7 @@ const StageUsers = () => {
           paginationData={paginationData}
           widgetId="pagination-options-menu-top"
           isCompact={true}
+          totalCount={totalCount}
         />
       ),
       toolbarItemAlignment: { default: "alignRight" },
