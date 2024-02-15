@@ -728,9 +728,12 @@ export const api = createApi({
           getBatchCommand(payloadDataBatch as Command[], apiVersion)
         );
 
+        const response = partialInfoResult.data as BatchRPCResponse;
+        response.result.totalCount = itemsCount;
+
         // Return results
         return partialInfoResult.data
-          ? { data: partialInfoResult.data as BatchRPCResponse }
+          ? { data: response }
           : {
               error: partialInfoResult.error as unknown as FetchBaseQueryError,
             };

@@ -99,10 +99,12 @@ const Services = () => {
   const updatePage = (newPage: number) => {
     setPage(newPage);
   };
-  const [perPage, setPerPage] = useState<number>(15);
+  const [perPage, setPerPage] = useState<number>(10);
   const updatePerPage = (newSetPerPage: number) => {
     setPerPage(newSetPerPage);
   };
+  const [totalCount, setServicesTotalCount] = useState<number>(0);
+
   // Page indexes
   const firstServiceIdx = (page - 1) * perPage;
   const lastServiceIdx = page * perPage;
@@ -232,6 +234,7 @@ const Services = () => {
     ) {
       const servicesListResult = batchResponse.result.results;
       const servicesListSize = batchResponse.result.count;
+      const totalCount = batchResponse.result.totalCount;
       const servicesList: Service[] = [];
 
       for (let i = 0; i < servicesListSize; i++) {
@@ -241,6 +244,7 @@ const Services = () => {
       // Update 'Hosts' slice data
       dispatch(updateServicesList(servicesList));
       setServicesList(servicesList);
+      setServicesTotalCount(totalCount);
       // Show table elements
       setShowTableRows(true);
     }
@@ -436,6 +440,7 @@ const Services = () => {
           paginationData={paginationData}
           widgetId="pagination-options-menu-top"
           isCompact={true}
+          totalCount={totalCount}
         />
       ),
       toolbarItemAlignment: { default: "alignRight" },
@@ -485,6 +490,7 @@ const Services = () => {
           widgetId="pagination-options-menu-bottom"
           perPageComponent="button"
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+          totalCount={totalCount}
         />
       </PageSection>
       <ModalErrors errors={modalErrors.getAll()} />
