@@ -228,7 +228,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
                 id="enrollment"
                 text="Enrollment"
               />
-              <Enrollment />
+              <Enrollment host={props.host} />
               <TitleLayout
                 key={2}
                 headingLevel="h2"
