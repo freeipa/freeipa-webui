@@ -274,7 +274,13 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
               );
             }
             // Redirect to main page
-            navigate(URL_PREFIX + "/active-users");
+            if (props.from === "active-users") {
+              navigate(URL_PREFIX + "/active-users");
+            } else if (props.from === "stage-users") {
+              navigate(URL_PREFIX + "/stage-users");
+            } else if (props.from === "preserved-users") {
+              navigate(URL_PREFIX + "/preserved-users");
+            }
             // Close modal
             closeModal();
           }
