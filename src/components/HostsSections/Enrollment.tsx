@@ -6,17 +6,22 @@ import TextLayout from "../layouts/TextLayout";
 // Icons
 import CheckIcon from "@patternfly/react-icons/dist/esm/icons/check-icon";
 import ExclamationTriangleIcon from "@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon";
+// Data types
+import { Host } from "../../utils/datatypes/globalDataTypes";
 
-const Enrollment = () => {
-  // TODO: This needs to be adapted to real data. The text and icons might change due to that.
+interface PropsToEnrollment {
+  host: Partial<Host>;
+}
+
+const Enrollment = (props: PropsToEnrollment) => {
   // Icons
-  const kerberusKeyIcon = (
+  const presentIcon = (
     <Icon>
       <CheckIcon />
     </Icon>
   );
 
-  const oneTimePwd = (
+  const missingIcon = (
     <Icon>
       <ExclamationTriangleIcon />
     </Icon>
@@ -28,9 +33,15 @@ const Enrollment = () => {
         <Form>
           <FormGroup label="Kerberos key" fieldId="kerberos-key">
             <Flex>
-              <FlexItem>{kerberusKeyIcon}</FlexItem>
               <FlexItem>
-                <TextLayout>Kerberos key present, Host provisioned</TextLayout>
+                {props.host.has_keytab ? presentIcon : missingIcon}
+              </FlexItem>
+              <FlexItem>
+                <TextLayout>
+                  {props.host.has_keytab
+                    ? "Kerberos key present, Host provisioned"
+                    : "Kerberos key not present, Host not provisioned"}
+                </TextLayout>
               </FlexItem>
             </Flex>
           </FormGroup>
@@ -40,9 +51,15 @@ const Enrollment = () => {
         <Form>
           <FormGroup label="One-time password" fieldId="one-time-password">
             <Flex>
-              <FlexItem>{oneTimePwd}</FlexItem>
               <FlexItem>
-                <TextLayout>One-Time Password Not Present</TextLayout>
+                {props.host.has_password ? presentIcon : missingIcon}
+              </FlexItem>
+              <FlexItem>
+                <TextLayout>
+                  {props.host.has_password
+                    ? "One-Time Password Present"
+                    : "One-Time Password Not Present"}
+                </TextLayout>
               </FlexItem>
             </Flex>
           </FormGroup>
