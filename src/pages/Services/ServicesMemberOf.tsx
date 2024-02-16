@@ -21,7 +21,7 @@ import { useAppSelector } from "src/store/hooks";
 // Repositories
 import { servicesRolesInitialData } from "src/utils/data/GroupRepositories";
 // Modals
-import MemberOfAddModal from "src/components/MemberOf/MemberOfAddModal";
+import MemberOfAddModal from "src/components/MemberOf/MemberOfAddModalOld";
 import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModal";
 
 interface PropsToServicesMemberOf {
