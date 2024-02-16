@@ -11,6 +11,7 @@ import MemberOfToolbarUserGroups, {
 } from "./MemberOfToolbar";
 import MemberOfUserGroupsTable from "./MemberOfTableUserGroups";
 import MemberOfAddModal from "./MemberOfAddModalUserGroups";
+import MemberOfDeleteModal from "./MemberOfDeleteModalUserGroups";
 
 function paginate<Type>(array: Type[], page: number, perPage: number): Type[] {
   const startIdx = (page - 1) * perPage;
@@ -118,6 +119,17 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
           updateGroupRepository={(newList: UserGroup[]) =>
             props.updateUsersGroupsFromUser(newList)
           }
+        />
+      )}
+      {showDeleteModal && someItemSelected && (
+        <MemberOfDeleteModal
+          showModal={showDeleteModal}
+          onCloseModal={() => setShowDeleteModal(false)}
+          tabName="User groups"
+          groupNamesToDelete={groupsNamesSelected}
+          updateGroupNamesToDelete={setGroupsNamesSelected}
+          groupRepository={props.usersGroupsFromUser}
+          updateGroupRepository={props.updateUsersGroupsFromUser}
         />
       )}
     </>

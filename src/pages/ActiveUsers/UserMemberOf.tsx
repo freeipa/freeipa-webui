@@ -566,30 +566,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
           </Tab>
         </Tabs>
       </PageSection>
-      {/* {tabName === "User groups" && (
-        <>
-          {showAddModal && (
-            <MemberOfAddModal
-              modalData={addModalData}
-              availableData={userGroupsFilteredData}
-              groupRepository={userGroupsRepository}
-              updateGroupRepository={updateGroupRepository}
-              updateAvOptionsList={updateUserGroupsList}
-              tabData={tabData}
-            />
-          )}
-          {showDeleteModal && groupsNamesSelected.length !== 0 && (
-            <MemberOfDeleteModal
-              modalData={deleteModalData}
-              tabData={deleteTabData}
-              groupNamesToDelete={groupsNamesSelected}
-              groupRepository={userGroupsRepository}
-              updateGroupRepository={updateGroupRepository}
-              buttonData={deleteButtonData}
-            />
-          )}
-        </>
-      )} */}
       {tabName === "Netgroups" && (
         <>
           {showAddModal && (
