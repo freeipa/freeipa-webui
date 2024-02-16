@@ -11,6 +11,7 @@ import MemberOfToolbarUserGroups, {
 } from "./MemberOfToolbar";
 import MemberOfUserGroupsTable from "./MemberOfTableUserGroups";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
+import MemberOfDeleteModal from "./MemberOfDeleteModal";
 
 function paginate<Type>(array: Type[], page: number, perPage: number): Type[] {
   const startIdx = (page - 1) * perPage;
@@ -98,6 +99,14 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
     props.updateUsersGroupsFromUser(updatedGroups);
   };
 
+  // 'Delete' function
+  const onDeleteUserGroup = () => {
+    const updatedGroups = props.usersGroupsFromUser.filter(
+      (group) => !groupsNamesSelected.includes(group.name)
+    );
+    props.updateUsersGroupsFromUser(updatedGroups);
+  };
+
   return (
     <>
       <alerts.ManagedAlerts />
@@ -157,6 +166,23 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
           title={"Add '" + props.uid + "' into User groups"}
           ariaLabel="Add user of  user group modal"
         />
+      )}
+      {showDeleteModal && someItemSelected && (
+        <MemberOfDeleteModal
+          showModal={showDeleteModal}
+          onCloseModal={() => setShowDeleteModal(false)}
+          title="Delete user from user groups"
+          onDelete={onDeleteUserGroup}
+        >
+          <MemberOfUserGroupsTable
+            userGroups={
+              props.usersGroupsFromUser.filter((group) =>
+                groupsNamesSelected.includes(group.name)
+              ) as UserGroup[]
+            }
+            showTableRows
+          />
+        </MemberOfDeleteModal>
       )}
     </>
   );

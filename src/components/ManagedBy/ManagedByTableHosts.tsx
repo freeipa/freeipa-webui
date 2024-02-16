@@ -9,14 +9,15 @@ import EmptyBodyTable from "../tables/EmptyBodyTable";
 
 export interface MemberOfUserGroupsTableProps {
   userGroups: UserGroup[];
-  checkedItems: string[];
-  onCheckItemsChange: (checkedItems: string[]) => void;
+  checkedItems?: string[];
+  onCheckItemsChange?: (checkedItems: string[]) => void;
   showTableRows: boolean;
 }
 
 // Body
 const UserGroupsTableBody = (props: {
   userGroups: UserGroup[];
+  showCheckboxColumn: boolean;
   checkedItems: string[];
   onCheckboxChange: (checked: boolean, groupName: string) => void;
 }) => {
@@ -25,14 +26,16 @@ const UserGroupsTableBody = (props: {
     <>
       {userGroups.map((userGroup, index) => (
         <Tr key={index}>
-          <Td
-            select={{
-              rowIndex: index,
-              onSelect: (_e, isSelected) =>
-                props.onCheckboxChange(isSelected, userGroup.name),
-              isSelected: props.checkedItems.includes(userGroup.name),
-            }}
-          />
+          {props.showCheckboxColumn && (
+            <Td
+              select={{
+                rowIndex: index,
+                onSelect: (_e, isSelected) =>
+                  props.onCheckboxChange(isSelected, userGroup.name),
+                isSelected: props.checkedItems.includes(userGroup.name),
+              }}
+            />
+          )}
           <Td>{userGroup.name}</Td>
           <Td>{userGroup.gid}</Td>
           <Td>{userGroup.description}</Td>
@@ -71,12 +74,15 @@ export default function ManagedByHostsTable(props: ManagedByHostsTableProps) {
     );
   }
 
+  const showCheckboxColumn = props.onCheckItemsChange !== undefined;
+
   const onCheckboxChange = (checked: boolean, groupName: string) => {
+    const originalItems = props.checkedItems || [];
     let newItems: string[] = [];
     if (checked) {
-      newItems = [...props.checkedItems, groupName];
+      newItems = [...originalItems, groupName];
     } else {
-      newItems = props.checkedItems.filter((name) => name !== groupName);
+      newItems = originalItems.filter((name) => name !== groupName);
     }
     if (props.onCheckItemsChange) {
       props.onCheckItemsChange(newItems);
@@ -95,7 +101,7 @@ export default function ManagedByHostsTable(props: ManagedByHostsTableProps) {
     >
       <Thead>
         <Tr>
-          <Th />
+          {props.onCheckItemsChange && <Th />}
           <Th modifier="wrap">Group name</Th>
           <Th modifier="wrap">GID</Th>
           <Th modifier="wrap">Description</Th>
@@ -109,8 +115,9 @@ export default function ManagedByHostsTable(props: ManagedByHostsTableProps) {
         ) : (
           <UserGroupsTableBody
             userGroups={userGroups}
+            showCheckboxColumn={showCheckboxColumn}
             onCheckboxChange={onCheckboxChange}
-            checkedItems={props.checkedItems}
+            checkedItems={props.checkedItems || []}
           />
         )}
       </Tbody>
