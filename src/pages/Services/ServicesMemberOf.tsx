@@ -10,14 +10,12 @@ import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Data types
 import { Service } from "src/utils/datatypes/globalDataTypes";
 // Redux
-import { useAppDispatch } from "src/store/hooks";
-import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
-// React Router DOM
-import { useNavigate } from "react-router-dom";
-// RPC
-import { useGetServiceByIdQuery } from "src/services/rpcServices";
-// Hooks
-import useUpdateRoute from "src/hooks/useUpdateRoute";
+import { useAppSelector } from "src/store/hooks";
+// Repositories
+import { servicesRolesInitialData } from "src/utils/data/GroupRepositories";
+// Modals
+import MemberOfAddModal from "src/components/MemberOf/MemberOfAddModalOld";
+import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModal";
 
 interface PropsToServicesMemberOf {
   service: Service;

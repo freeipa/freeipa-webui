@@ -2,22 +2,28 @@ import React, { useState } from "react";
 // PatternFly
 import { Badge, Tab, Tabs, TabTitleText } from "@patternfly/react-core";
 // Data types
-import { Host } from "src/utils/datatypes/globalDataTypes";
-// Navigation
-import { useNavigate } from "react-router-dom";
-// Layouts
-import TabLayout from "src/components/layouts/TabLayout";
-// Hooks
-import useUpdateRoute from "src/hooks/useUpdateRoute";
-// RPC
-import { useGetHostByIdQuery } from "src/services/rpcHosts";
-// 'Is a member of' sections
-import MemberOfHostGroups from "src/components/MemberOf/MemberOfHostGroups";
-import MemberOfNetgroups from "src/components/MemberOf/MemberOfNetgroups";
-import MemberOfRoles from "src/components/MemberOf/MemberOfRoles";
-import MemberOfHbacRules from "src/components/MemberOf/MemberOfHbacRules";
-import MemberOfSudoRules from "src/components/MemberOf/MemberOfSudoRules";
-import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
+import {
+  HostGroup,
+  Netgroup,
+  Roles,
+  HBACRules,
+  SudoRules,
+  Host,
+} from "src/utils/datatypes/globalDataTypes";
+// Redux
+import { useAppSelector } from "src/store/hooks";
+
+// Repositories
+import {
+  hostsHostGroupsInitialData,
+  hostsNetgroupsInitialData,
+  hostsRolesInitialData,
+  hostsHbacRulesInitialData,
+  hostsSudoRulesInitialData,
+} from "src/utils/data/GroupRepositories";
+// Modals
+import MemberOfAddModal from "src/components/MemberOf/MemberOfAddModalOld";
+import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModal";
 
 interface PropsToHostsMemberOf {
   host: Host;

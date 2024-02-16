@@ -5,12 +5,12 @@ import { Button, DualListSelector } from "@patternfly/react-core";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Data types
 import {
-  UserGroupOld,
-  NetgroupOld,
-  RolesOld,
-  HBACRulesOld,
-  SudoRulesOld,
-  HostGroupOld,
+  UserGroup,
+  Netgroup,
+  Roles,
+  HBACRules,
+  SudoRules,
+  HostGroup,
 } from "src/utils/datatypes/globalDataTypes";
 
 interface ModalData {
@@ -26,21 +26,21 @@ interface TabData {
 export interface PropsToAdd {
   modalData: ModalData;
   availableData:
-    | UserGroupOld[]
-    | NetgroupOld[]
-    | RolesOld[]
-    | HBACRulesOld[]
-    | SudoRulesOld[]
-    | HostGroupOld[];
+    | UserGroup[]
+    | Netgroup[]
+    | Roles[]
+    | HBACRules[]
+    | SudoRules[]
+    | HostGroup[];
   groupRepository: unknown[];
   updateGroupRepository: (
     args:
-      | UserGroupOld[]
-      | NetgroupOld[]
-      | RolesOld[]
-      | HBACRulesOld[]
-      | SudoRulesOld[]
-      | HostGroupOld[]
+      | UserGroup[]
+      | Netgroup[]
+      | Roles[]
+      | HBACRules[]
+      | SudoRules[]
+      | HostGroup[]
   ) => void;
   updateAvOptionsList: (args: unknown[]) => void;
   tabData: TabData;
@@ -50,8 +50,8 @@ export interface PropsToAdd {
 //  its variables. Just the mandatory ones ('name' and 'description') are accessible at this point.
 // To display all the possible data types for all the tabs (and not only the mandatory ones)
 //   an extra interface 'MemberOfElement' will be defined. This will be called when assigning
-//   a new group instead of refering to each type (UserGroupOld | NetgroupOld | Roles | HBACRulesOld |
-//   SudoRulesOld | HostGroupOld).
+//   a new group instead of refering to each type (UserGroup | Netgroup | Roles | HBACRules |
+//   SudoRules | HostGroup).
 interface MemberOfElement {
   hostGroup?: string;
   name: string;
@@ -136,9 +136,9 @@ const MemberOfAddModal = (props: PropsToAdd) => {
               optionData.description !== undefined && optionData.description,
             gid: optionData.gid !== undefined && optionData.gid,
             status: optionData.status !== undefined && optionData.status,
-          } as UserGroupOld);
+          } as UserGroup);
           // Send updated data to table
-          props.updateGroupRepository(props.groupRepository as UserGroupOld[]);
+          props.updateGroupRepository(props.groupRepository as UserGroup[]);
         }
         // Netgroups
         if (props.tabData.tabName === "Netgroups") {
