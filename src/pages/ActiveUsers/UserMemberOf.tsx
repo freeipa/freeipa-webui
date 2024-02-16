@@ -20,7 +20,7 @@ import {
 } from "src/utils/data/GroupRepositories";
 // Modals
 import MemberOfAddModal from "src/components/MemberOf/MemberOfAddModalOld";
-import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModal";
+import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModalOld";
 // Wrappers
 import MemberOfUserGroups from "src/components/MemberOf/MemberOfUserGroups";
 
