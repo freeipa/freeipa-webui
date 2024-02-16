@@ -1,147 +1,70 @@
-import React, { useState } from "react";
+import React from "react";
 // PatternFly
 import {
   TextContent,
   Text,
   TextVariants,
   Button,
+  Modal,
+  Form,
+  FormGroup,
 } from "@patternfly/react-core";
-// Modals
-import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
-// Tables
-import MemberOfDeletedGroupsTable from "src/components/MemberOf/MemberOfDeletedGroupsTable";
-
-// Although tabs data types habe been already defined, it is not possible to access to all
-//  its variables. Just the mandatory ones ('name' and 'description') are accessible at this point.
-// To display all the possible data types for all the tabs (and not only the mandatory ones)
-//   an extra interface 'MemberOfElement' will be defined. This will be called in the 'PropsToTable'
-//   interface instead of each type (UserGroup | Netgroup | Roles | HBACRules | SudoRules).
-interface MemberOfElement {
-  name: string;
-  gid?: string;
-  status?: string;
-  description: string;
-}
-
-interface ModalData {
-  showModal: boolean;
-  handleModalToggle: () => void;
-}
-
-interface ButtonData {
-  changeIsDeleteButtonDisabled: (updatedDeleteButton: boolean) => void;
-  updateIsDeletion: (option: boolean) => void;
-}
-
-interface TabData {
-  tabName: string;
-  activeTabKey: number;
-}
 
 interface PropsToDelete {
-  modalData: ModalData;
-  tabData: TabData;
-  groupNamesToDelete: string[];
-  groupRepository: MemberOfElement[];
-  updateGroupRepository: (args: MemberOfElement[]) => void;
-  buttonData: ButtonData;
+  title: string;
+  showModal: boolean;
+  onCloseModal: () => void;
+  onDelete: () => void;
 }
 
-const MemberOfDeleteModal = (props: PropsToDelete) => {
-  // Given a single group name, obtain full info to be sent and shown on the deletion table
-  const getGroupInfoByName = (groupName: string) => {
-    const res = props.groupRepository.filter(
-      (group) => group.name === groupName
-    );
-    return res[0];
+const MemberOfDeleteModal = (props: React.PropsWithChildren<PropsToDelete>) => {
+  const onDelete = () => {
+    props.onDelete();
+    props.onCloseModal();
   };
 
-  const getListOfGroupsToDelete = () => {
-    const groupsToDelete: MemberOfElement[] = [];
-    props.groupNamesToDelete.map((groupName) =>
-      groupsToDelete.push(getGroupInfoByName(groupName))
-    );
-    return groupsToDelete;
-  };
-
-  // Groups to delete list
-  const [groupsToDelete] = useState<MemberOfElement[]>(getListOfGroupsToDelete);
-
-  // List of fields
-  const fields = [
-    {
-      id: "question-text",
-      pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
-            Are you sure you want to remove the selected entries from the list?
-          </Text>
-        </TextContent>
-      ),
-    },
-    {
-      id: "deleted-users-table",
-      pfComponent: (
-        <MemberOfDeletedGroupsTable
-          groupsToDelete={groupsToDelete}
-          tabName={props.tabData.tabName}
-        />
-      ),
-    },
-  ];
-
-  // Close modal
-  const closeModal = () => {
-    props.modalData.handleModalToggle();
-  };
-
-  // Delete groups
-  const deleteGroups = () => {
-    // Define function that will be reused to delete the selected entries
-    let generalUpdatedGroupList = props.groupRepository;
-    props.groupNamesToDelete.map((groupName) => {
-      const updatedGroupList = generalUpdatedGroupList.filter(
-        (grp) => grp.name !== groupName
-      );
-      // If not empty, replace groupList by new array
-      if (updatedGroupList) {
-        generalUpdatedGroupList = updatedGroupList;
-      }
-    });
-    props.updateGroupRepository(generalUpdatedGroupList);
-    props.buttonData.changeIsDeleteButtonDisabled(true);
-    props.buttonData.updateIsDeletion(true);
-    closeModal();
-  };
-
-  // Set the Modal and Action buttons for 'Delete' option
   const modalActionsDelete: JSX.Element[] = [
     <Button
       key="delete-groups"
       variant="danger"
-      onClick={deleteGroups}
+      onClick={onDelete}
       form="active-users-remove-groups-modal"
     >
       Delete
     </Button>,
-    <Button key="cancel-remove-group" variant="link" onClick={closeModal}>
+    <Button
+      key="cancel-remove-group"
+      variant="link"
+      onClick={props.onCloseModal}
+    >
       Cancel
     </Button>,
   ];
 
-  // Render 'MemberOfDeleteModal'
   return (
-    <ModalWithFormLayout
-      variantType="medium"
-      modalPosition="top"
-      offPosition="76px"
-      title={"Remove " + props.tabData.tabName}
-      formId="active-users-remove-groups-modal"
-      fields={fields}
-      show={props.modalData.showModal}
-      onClose={closeModal}
+    <Modal
+      variant={"medium"}
+      position={"top"}
+      positionOffset={"76px"}
+      title={props.title}
+      isOpen={props.showModal}
+      onClose={props.onCloseModal}
       actions={modalActionsDelete}
-    />
+      aria-label="Delete member modal"
+    >
+      <Form id={"is-member-of-delete-modal"}>
+        <FormGroup key={"question-text"} fieldId={"question-text"}>
+          <TextContent>
+            <Text component={TextVariants.p}>
+              Are you sure you want to remove the following entries?
+            </Text>
+          </TextContent>
+        </FormGroup>
+        <FormGroup key={"deleted-users-table"} fieldId={"deleted-users-table"}>
+          {props.children}
+        </FormGroup>
+      </Form>
+    </Modal>
   );
 };
 
