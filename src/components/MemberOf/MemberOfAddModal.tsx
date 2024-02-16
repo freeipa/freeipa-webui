@@ -1,68 +1,31 @@
 import React, { ReactNode, useEffect, useState } from "react";
 // PatternFly
-import { Button, DualListSelector } from "@patternfly/react-core";
-// Modals
-import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
-// Data types
 import {
-  UserGroup,
-  Netgroup,
-  Roles,
-  HBACRules,
-  SudoRules,
-  HostGroup,
-} from "src/utils/datatypes/globalDataTypes";
+  Button,
+  DualListSelector,
+  Form,
+  FormGroup,
+  Modal,
+} from "@patternfly/react-core";
 
-interface ModalData {
-  showModal: boolean;
-  handleModalToggle: () => void;
-}
-
-interface TabData {
-  tabName: string;
-  userName: string; // TODO: Change to a more generalistic name
+export interface AvailableItems {
+  key: string;
+  title: string;
 }
 
 export interface PropsToAdd {
-  modalData: ModalData;
-  availableData:
-    | UserGroup[]
-    | Netgroup[]
-    | Roles[]
-    | HBACRules[]
-    | SudoRules[]
-    | HostGroup[];
-  groupRepository: unknown[];
-  updateGroupRepository: (
-    args:
-      | UserGroup[]
-      | Netgroup[]
-      | Roles[]
-      | HBACRules[]
-      | SudoRules[]
-      | HostGroup[]
-  ) => void;
-  updateAvOptionsList: (args: unknown[]) => void;
-  tabData: TabData;
-}
-
-// Although tabs data types habe been already defined, it is not possible to access to all
-//  its variables. Just the mandatory ones ('name' and 'description') are accessible at this point.
-// To display all the possible data types for all the tabs (and not only the mandatory ones)
-//   an extra interface 'MemberOfElement' will be defined. This will be called when assigning
-//   a new group instead of refering to each type (UserGroup | Netgroup | Roles | HBACRules |
-//   SudoRules | HostGroup).
-interface MemberOfElement {
-  hostGroup?: string;
-  name: string;
-  gid?: string;
-  status?: string;
-  description: string;
+  showModal: boolean;
+  onCloseModal: () => void;
+  availableItems: AvailableItems[];
+  onAdd: (items: AvailableItems[]) => void;
+  onSearchTextChange: (searchText: string) => void;
+  title: string;
+  ariaLabel: string;
 }
 
 const MemberOfAddModal = (props: PropsToAdd) => {
   // Dual list data
-  const data = props.availableData.map((d) => d.name);
+  const data = props.availableItems.map((d) => d.key);
 
   // Dual list selector
   const [availableOptions, setAvailableOptions] = useState<ReactNode[]>(data);
@@ -74,12 +37,12 @@ const MemberOfAddModal = (props: PropsToAdd) => {
   ) => {
     setAvailableOptions(newAvailableOptions.sort());
     setChosenOptions(newChosenOptions.sort());
-    props.updateAvOptionsList(newAvailableOptions.sort());
   };
 
   const fields = [
     {
       id: "dual-list-selector",
+      name: "Available options",
       pfComponent: (
         <DualListSelector
           isSearchable
@@ -105,7 +68,7 @@ const MemberOfAddModal = (props: PropsToAdd) => {
   // Clean fields and close modal (To prevent data persistence when reopen modal)
   const cleanAndCloseModal = () => {
     cleanData();
-    props.modalData.handleModalToggle();
+    props.onCloseModal();
   };
 
   // Buttons are disabled until the user fills the required fields
@@ -118,91 +81,19 @@ const MemberOfAddModal = (props: PropsToAdd) => {
     }
   }, [chosenOptions]);
 
-  // Get all info from a chosen option
-  const getInfoFromGroupData = (option: unknown) => {
-    return props.availableData.find((d) => option === d.name);
-  };
-
   // Add group option
   const onClickAddGroupHandler = () => {
+    const optionsToAdd: AvailableItems[] = [];
     chosenOptions.map((opt) => {
-      const optionData: MemberOfElement | undefined = getInfoFromGroupData(opt);
-      if (optionData !== undefined) {
-        // User groups
-        if (props.tabData.tabName === "User groups") {
-          props.groupRepository.push({
-            name: optionData.name !== undefined && optionData.name,
-            description:
-              optionData.description !== undefined && optionData.description,
-            gid: optionData.gid !== undefined && optionData.gid,
-            status: optionData.status !== undefined && optionData.status,
-          } as UserGroup);
-          // Send updated data to table
-          props.updateGroupRepository(props.groupRepository as UserGroup[]);
-        }
-        // Netgroups
-        if (props.tabData.tabName === "Netgroups") {
-          props.groupRepository.push({
-            name: optionData.name !== undefined && optionData.name,
-            description:
-              optionData.description !== undefined && optionData.description,
-            gid: optionData.gid !== undefined && optionData.gid,
-            status: optionData.status !== undefined && optionData.status,
-          } as Netgroup);
-          // Send updated data to table
-          props.updateGroupRepository(props.groupRepository as Netgroup[]);
-        }
-        // Roles
-        if (props.tabData.tabName === "Roles") {
-          props.groupRepository.push({
-            name: optionData.name !== undefined && optionData.name,
-            description:
-              optionData.description !== undefined && optionData.description,
-            gid: optionData.gid !== undefined && optionData.gid,
-            status: optionData.status !== undefined && optionData.status,
-          } as Roles);
-          // Send updated data to table
-          props.updateGroupRepository(props.groupRepository as Roles[]);
-        }
-        // HBAC rules
-        if (props.tabData.tabName === "HBAC rules") {
-          props.groupRepository.push({
-            name: optionData.name !== undefined && optionData.name,
-            description:
-              optionData.description !== undefined && optionData.description,
-            gid: optionData.gid !== undefined && optionData.gid,
-            status: optionData.status !== undefined && optionData.status,
-          } as HBACRules);
-          // Send updated data to table
-          props.updateGroupRepository(props.groupRepository as HBACRules[]);
-        }
-        // Sudo rules
-        if (props.tabData.tabName === "Sudo rules") {
-          props.groupRepository.push({
-            name: optionData.name !== undefined && optionData.name,
-            description:
-              optionData.description !== undefined && optionData.description,
-            gid: optionData.gid !== undefined && optionData.gid,
-            status: optionData.status !== undefined && optionData.status,
-          } as SudoRules);
-          // Send updated data to table
-          props.updateGroupRepository(props.groupRepository as SudoRules[]);
-        }
-        // Host groups
-        if (props.tabData.tabName === "Host groups") {
-          props.groupRepository.push({
-            name: optionData.name !== undefined && optionData.name,
-            description:
-              optionData.description !== undefined && optionData.description,
-          } as HostGroup);
-          // Send updated data to table
-          props.updateGroupRepository(props.groupRepository as HostGroup[]);
-        }
-      }
+      optionsToAdd.push({
+        key: opt as string,
+        title: opt as string,
+      });
     });
+    props.onAdd(optionsToAdd);
     // Clean chosen options and close modal
     setChosenOptions([]);
-    props.modalData.handleModalToggle();
+    props.onCloseModal();
   };
 
   // Buttons that will be shown at the end of the form
@@ -221,24 +112,25 @@ const MemberOfAddModal = (props: PropsToAdd) => {
     </Button>,
   ];
 
-  // Render 'MemberOfaddModal'
   return (
-    <ModalWithFormLayout
-      variantType="medium"
-      modalPosition="top"
-      offPosition="76px"
-      title={
-        "Add user '" +
-        props.tabData.userName +
-        "' into " +
-        props.tabData.tabName
-      }
-      formId="is-member-of-add-modal"
-      fields={fields}
-      show={props.modalData.showModal}
-      onClose={cleanAndCloseModal}
+    <Modal
+      variant={"medium"}
+      position={"top"}
+      positionOffset={"76px"}
+      isOpen={props.showModal}
+      onClose={props.onCloseModal}
       actions={modalActions}
-    />
+      title={props.title}
+      aria-label={props.ariaLabel}
+    >
+      <Form id={"is-member-of-add-modal"}>
+        {fields.map((field) => (
+          <FormGroup key={field.id} label={field.name} fieldId={field.id}>
+            {field.pfComponent}
+          </FormGroup>
+        ))}
+      </Form>
+    </Modal>
   );
 };
 
