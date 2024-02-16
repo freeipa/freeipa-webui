@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { Pagination, PaginationVariant } from "@patternfly/react-core";
 // Data types
-import { UserGroup } from "src/utils/datatypes/globalDataTypes";
+import { UserGroupOld } from "src/utils/datatypes/globalDataTypes";
 // Redux
 import { useAppSelector } from "src/store/hooks";
 // Components
@@ -39,8 +39,8 @@ function filterUserGroupsData<Type extends TypeWithName>(
 }
 
 interface MemberOfUserGroupsProps {
-  usersGroupsFromUser: UserGroup[];
-  updateUsersGroupsFromUser: (newList: UserGroup[]) => void;
+  usersGroupsFromUser: UserGroupOld[];
+  updateUsersGroupsFromUser: (newList: UserGroupOld[]) => void;
 }
 
 const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
@@ -69,7 +69,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   const showTableRows = props.usersGroupsFromUser.length > 0;
 
   // Available data to be added as member of
-  const userGroupsFilteredData: UserGroup[] = filterUserGroupsData(
+  const userGroupsFilteredData: UserGroupOld[] = filterUserGroupsData(
     userGroupsFullList,
     props.usersGroupsFromUser
   );
@@ -116,7 +116,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
           onCloseModal={() => setShowAddModal(false)}
           availableData={userGroupsFilteredData}
           groupRepository={props.usersGroupsFromUser}
-          updateGroupRepository={(newList: UserGroup[]) =>
+          updateGroupRepository={(newList: UserGroupOld[]) =>
             props.updateUsersGroupsFromUser(newList)
           }
         />

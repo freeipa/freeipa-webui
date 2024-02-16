@@ -13,7 +13,7 @@ import MemberOfToolbar from "src/components/MemberOf/MemberOfToolbarOld";
 import MemberOfTable from "src/components/MemberOf/MemberOfTable";
 // Data types
 import {
-  UserGroup,
+  UserGroupOld,
   Netgroup,
   Roles,
   HBACRules,
@@ -226,7 +226,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
 
   // Update pagination
   const changeMemberGroupsList = (
-    value: UserGroup[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[]
+    value: UserGroupOld[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[]
   ) => {
     switch (activeTabKey) {
       case 1:

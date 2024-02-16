@@ -8,14 +8,14 @@ import {
   Modal,
 } from "@patternfly/react-core";
 // Data types
-import { UserGroup } from "src/utils/datatypes/globalDataTypes";
+import { UserGroupOld } from "src/utils/datatypes/globalDataTypes";
 
 export interface PropsToAdd {
   showModal: boolean;
   onCloseModal: () => void;
-  availableData: UserGroup[];
+  availableData: UserGroupOld[];
   groupRepository: unknown[];
-  updateGroupRepository: (newList: UserGroup[]) => void;
+  updateGroupRepository: (newList: UserGroupOld[]) => void;
 }
 
 const MemberOfAddModal = (props: PropsToAdd) => {
@@ -84,16 +84,16 @@ const MemberOfAddModal = (props: PropsToAdd) => {
   // Add group option
   const onClickAddGroupHandler = () => {
     chosenOptions.map((opt) => {
-      const optionData: UserGroup | undefined = getInfoFromGroupData(opt);
+      const optionData: UserGroupOld | undefined = getInfoFromGroupData(opt);
       if (optionData !== undefined) {
         props.groupRepository.push({
           name: optionData.name !== undefined && optionData.name,
           description:
             optionData.description !== undefined && optionData.description,
           gid: optionData.gid !== undefined && optionData.gid,
-        } as UserGroup);
+        } as UserGroupOld);
         // Send updated data to table
-        props.updateGroupRepository(props.groupRepository as UserGroup[]);
+        props.updateGroupRepository(props.groupRepository as UserGroupOld[]);
       }
     });
     // Clean chosen options and close modal

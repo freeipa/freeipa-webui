@@ -21,7 +21,7 @@ import ToolbarLayout, {
 } from "src/components/layouts/ToolbarLayout";
 // Data types
 import {
-  UserGroup,
+  UserGroupOld,
   Netgroup,
   Roles,
   HBACRules,
@@ -57,7 +57,7 @@ interface ButtonData {
 interface SettersData {
   changeMemberGroupsList: (
     arg:
-      | UserGroup[]
+      | UserGroupOld[]
       | Netgroup[]
       | Roles[]
       | HBACRules[]
@@ -74,14 +74,14 @@ interface SearchValueData {
 
 export interface PropsToToolbar {
   pageRepo:
-    | UserGroup[]
+    | UserGroupOld[]
     | Netgroup[]
     | Roles[]
     | HBACRules[]
     | SudoRules[]
     | HostGroup[];
   shownItems:
-    | UserGroup[]
+    | UserGroupOld[]
     | Netgroup[]
     | Roles[]
     | HBACRules[]

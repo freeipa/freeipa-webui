@@ -12,15 +12,15 @@ import {
 // Tables
 import MemberOfDeletedGroupsTable from "src/components/MemberOf/MemberOfDeletedGroupsTable";
 // Data types
-import { UserGroup } from "src/utils/datatypes/globalDataTypes";
+import { UserGroupOld } from "src/utils/datatypes/globalDataTypes";
 
 interface PropsToDelete {
   showModal: boolean;
   onCloseModal: () => void;
   tabName: string;
   groupNamesToDelete: string[];
-  groupRepository: UserGroup[];
-  updateGroupRepository: (args: UserGroup[]) => void;
+  groupRepository: UserGroupOld[];
+  updateGroupRepository: (args: UserGroupOld[]) => void;
   updateGroupNamesToDelete: (args: string[]) => void;
 }
 
@@ -35,7 +35,7 @@ const MemberOfDeleteModal = (props: PropsToDelete) => {
 
   // Obtain full info of groups to delete
   const getListOfGroupsToDelete = () => {
-    const groupsToDelete: UserGroup[] = [];
+    const groupsToDelete: UserGroupOld[] = [];
     props.groupNamesToDelete.map((groupName) =>
       groupsToDelete.push(getGroupInfoByName(groupName))
     );
@@ -43,7 +43,7 @@ const MemberOfDeleteModal = (props: PropsToDelete) => {
   };
 
   // Groups to delete list
-  const groupsToDelete: UserGroup[] = getListOfGroupsToDelete();
+  const groupsToDelete: UserGroupOld[] = getListOfGroupsToDelete();
 
   // Delete groups
   const deleteGroups = () => {

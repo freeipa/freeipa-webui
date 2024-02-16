@@ -295,3 +295,22 @@ export const isValidIpAddress = (ipAddress: string) => {
     return regexIPv4.test(ipAddress);
   }
 };
+
+// Normalize string LDAP values (string[] --> string)
+export const normalizeString = (entry: string[] | string) => {
+  let newValue = "";
+  if (entry !== undefined) {
+    newValue = entry[0];
+  }
+  return newValue;
+};
+
+// Some values in a table might not have a specific value defined
+// (i.e. empty string ""). This is not allowed by the table component.
+// Therefore, this function will return "-" instead of "".
+export const parseEmptyString = (str: string) => {
+  if (str === "") {
+    return "-";
+  }
+  return str;
+};
