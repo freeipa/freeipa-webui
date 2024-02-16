@@ -83,7 +83,7 @@ const MemberOfDeleteModal = (props: PropsToDelete) => {
       id: "deleted-users-table",
       pfComponent: (
         <MemberOfDeletedGroupsTable
-          groupsToDelete={groupsToDelete}
+          itemsToDelete={groupsToDelete}
           tabName={props.tabData.tabName}
         />
       ),

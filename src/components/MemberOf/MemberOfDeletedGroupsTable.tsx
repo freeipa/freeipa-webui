@@ -28,7 +28,7 @@ interface ColumnNames {
 }
 
 interface PropsToDeleteOnTable {
-  groupsToDelete: MemberOfElement[];
+  itemsToDelete: MemberOfElement[];
   tabName: string;
 }
 
@@ -84,7 +84,7 @@ const MemberOfDeletedGroupsTable = (props: PropsToDeleteOnTable) => {
     </Tr>
   );
 
-  const body = props.groupsToDelete.map((group) => (
+  const body = props.itemsToDelete.map((group) => (
     <Tr key={group.name} id={group.name}>
       {group.name && <Td dataLabel={group.name}>{group.name}</Td>}
       {group.gid && <Td dataLabel={group.gid}>{group.gid}</Td>}
