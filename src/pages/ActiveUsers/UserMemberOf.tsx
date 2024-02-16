@@ -32,7 +32,7 @@ import {
   sudoRulesInitialData,
 } from "src/utils/data/GroupRepositories";
 // Modals
-import MemberOfAddModal from "src/components/MemberOf/MemberOfAddModal";
+import MemberOfAddModal from "src/components/MemberOf/MemberOfAddModalOld";
 import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModal";
 // Wrappers
 import MemberOfUserGroups from "src/components/MemberOf/MemberOfUserGroups";
