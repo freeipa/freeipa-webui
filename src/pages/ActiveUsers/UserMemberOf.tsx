@@ -31,7 +31,11 @@ interface PropsToUserMemberOf {
 }
 
 const UserMemberOf = (props: PropsToUserMemberOf) => {
-  const navigate = useNavigate();
+  // Retrieve each group list from Redux:
+  let netgroupsList = useAppSelector((state) => state.netgroups.netgroupList);
+  let rolesList = useAppSelector((state) => state.roles.roleList);
+  let hbacRulesList = useAppSelector((state) => state.hbacrules.hbacRulesList);
+  let sudoRulesList = useAppSelector((state) => state.sudorules.sudoRulesList);
 
   // Update breadcrumb route
   React.useEffect(() => {
@@ -215,7 +219,9 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   }, [user]);
 
   // List of default dummy data (for each tab option)
-  const [userGroupsRepository] = useState(userGroupsInitialData);
+  const [userGroupsRepository, setUserGroupsRepository] = useState(
+    userGroupsInitialData
+  );
   const [netgroupsRepository, setNetgroupsRepository] =
     useState(netgroupsInitialData);
   const [rolesRepository, setRolesRepository] = useState(rolesInitialData);
@@ -234,7 +240,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   // Filter functions to compare the available data with the data that
   //  the user is already member of. This is done to prevent duplicates
   //  (e.g: adding the same element twice).
-  // TODO: Remove this when all tab are set into wrappers
   const filterNetgroupsData = () => {
     // Netgroups
     return netgroupsList.filter((item) => {
@@ -590,8 +595,9 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             }
           >
             <MemberOfUserGroups
-              showAddModal={onClickAddHandler}
-              showDeleteModal={onClickDeleteHandler}
+              uid={props.user.uid}
+              usersGroupsFromUser={userGroupsRepository}
+              updateUsersGroupsFromUser={setUserGroupsRepository}
             />
           </Tab>
           <Tab
@@ -724,6 +730,30 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
           </Tab>
         </Tabs>
       </PageSection>
+      {/* {tabName === "User groups" && (
+        <>
+          {showAddModal && (
+            <MemberOfAddModal
+              modalData={addModalData}
+              availableData={userGroupsFilteredData}
+              groupRepository={userGroupsRepository}
+              updateGroupRepository={updateGroupRepository}
+              updateAvOptionsList={updateUserGroupsList}
+              tabData={tabData}
+            />
+          )}
+          {showDeleteModal && groupsNamesSelected.length !== 0 && (
+            <MemberOfDeleteModal
+              modalData={deleteModalData}
+              tabData={deleteTabData}
+              groupNamesToDelete={groupsNamesSelected}
+              groupRepository={userGroupsRepository}
+              updateGroupRepository={updateGroupRepository}
+              buttonData={deleteButtonData}
+            />
+          )}
+        </>
+      )} */}
       {tabName === "Netgroups" && (
         <>
           {showAddModal && (

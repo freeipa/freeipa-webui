@@ -134,7 +134,7 @@ const MemberOfAddModal = (props: PropsToAdd) => {
     >
       <Form id={"is-member-of-add-modal"}>
         {fields.map((field) => (
-          <FormGroup key={field.id} fieldId={field.id}>
+          <FormGroup key={field.id} label={field.name} fieldId={field.id}>
             {field.pfComponent}
           </FormGroup>
         ))}
