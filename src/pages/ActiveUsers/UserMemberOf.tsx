@@ -43,18 +43,12 @@ interface PropsToUserMemberOf {
 
 const UserMemberOf = (props: PropsToUserMemberOf) => {
   // Retrieve each group list from Redux:
-  let userGroupsList = useAppSelector(
-    (state) => state.usergroups.userGroupList
-  );
   let netgroupsList = useAppSelector((state) => state.netgroups.netgroupList);
   let rolesList = useAppSelector((state) => state.roles.roleList);
   let hbacRulesList = useAppSelector((state) => state.hbacrules.hbacRulesList);
   let sudoRulesList = useAppSelector((state) => state.sudorules.sudoRulesList);
 
   // Alter the available options list to keep the state of the recently added / removed items
-  const updateUserGroupsList = (newAvOptionsList: unknown[]) => {
-    userGroupsList = newAvOptionsList as UserGroup[];
-  };
   const updateNetgroupsList = (newAvOptionsList: unknown[]) => {
     netgroupsList = newAvOptionsList as Netgroup[];
   };
@@ -69,7 +63,9 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   };
 
   // List of default dummy data (for each tab option)
-  const [userGroupsRepository] = useState(userGroupsInitialData);
+  const [userGroupsRepository, setUserGroupsRepository] = useState(
+    userGroupsInitialData
+  );
   const [netgroupsRepository, setNetgroupsRepository] =
     useState(netgroupsInitialData);
   const [rolesRepository, setRolesRepository] = useState(rolesInitialData);
@@ -88,14 +84,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   // Filter functions to compare the available data with the data that
   //  the user is already member of. This is done to prevent duplicates
   //  (e.g: adding the same element twice).
-  const filterUserGroupsData = () => {
-    // User groups
-    return userGroupsList.filter((item) => {
-      return !userGroupsRepository.some((itm) => {
-        return item.name === itm.name;
-      });
-    });
-  };
   const filterNetgroupsData = () => {
     // Netgroups
     return netgroupsList.filter((item) => {
@@ -130,7 +118,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   };
 
   // Available data to be added as member of
-  const userGroupsFilteredData: UserGroup[] = filterUserGroupsData();
   const netgroupsFilteredData: Netgroup[] = filterNetgroupsData();
   const rolesFilteredData: Roles[] = filterRolesData();
   const hbacRulesFilteredData: HBACRules[] = filterHbacRulesData();
@@ -155,12 +142,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   //  - The slice of data to show (considering the pagination)
   //  - Number of items for a specific list
   const updateGroupRepository = (
-    groupRepository:
-      | UserGroup[]
-      | Netgroup[]
-      | Roles[]
-      | HBACRules[]
-      | SudoRules[]
+    groupRepository: Netgroup[] | Roles[] | HBACRules[] | SudoRules[]
   ) => {
     switch (tabName) {
       case "Netgroups":
@@ -316,7 +298,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   const onClickAddHandler = () => {
     setShowAddModal(true);
   };
-  const onModalToggle = () => {
+  const onAddModalToggle = () => {
     setShowAddModal(!showAddModal);
   };
 
@@ -397,7 +379,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   // - MemberOfAddModal
   const addModalData = {
     showModal: showAddModal,
-    handleModalToggle: onModalToggle,
+    handleModalToggle: onAddModalToggle,
   };
 
   const tabData = {
@@ -450,8 +432,8 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             }
           >
             <MemberOfUserGroups
-              showAddModal={onClickAddHandler}
-              showDeleteModal={onClickDeleteHandler}
+              usersGroupsFromUser={userGroupsRepository}
+              updateUsersGroupsFromUser={setUserGroupsRepository}
             />
           </Tab>
           <Tab
@@ -584,7 +566,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
           </Tab>
         </Tabs>
       </PageSection>
-      {tabName === "User groups" && (
+      {/* {tabName === "User groups" && (
         <>
           {showAddModal && (
             <MemberOfAddModal
@@ -607,7 +589,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             />
           )}
         </>
-      )}
+      )} */}
       {tabName === "Netgroups" && (
         <>
           {showAddModal && (
