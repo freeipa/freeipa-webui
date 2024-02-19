@@ -3,7 +3,6 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import globalReducer from "./Global/global-slice";
 import activeUsersReducer from "./Identity/activeUsers-slice";
 import netgroupsReducer from "./Identity/netgroups-slice";
-import userGroupsReducer from "./Identity/userGroups-slice";
 import rolesReducer from "./IPA server/roles-slice";
 import hbacRulesReducer from "./Policy/hbacRules-slice";
 import sudoRulesReducer from "./Policy/sudoRules-slice";
@@ -20,7 +19,6 @@ const store = configureStore({
     global: globalReducer,
     activeUsers: activeUsersReducer,
     netgroups: netgroupsReducer,
-    usergroups: userGroupsReducer,
     roles: rolesReducer,
     hbacrules: hbacRulesReducer,
     sudorules: sudoRulesReducer,
