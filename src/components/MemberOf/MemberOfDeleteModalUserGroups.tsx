@@ -12,30 +12,28 @@ import {
 // Tables
 import MemberOfDeletedGroupsTable from "src/components/MemberOf/MemberOfDeletedGroupsTable";
 // Data types
-import { UserGroupOld } from "src/utils/datatypes/globalDataTypes";
+import { UserGroup } from "src/utils/datatypes/globalDataTypes";
 
 interface PropsToDelete {
   showModal: boolean;
   onCloseModal: () => void;
   tabName: string;
   groupNamesToDelete: string[];
-  groupRepository: UserGroupOld[];
-  updateGroupRepository: (args: UserGroupOld[]) => void;
+  groupRepository: UserGroup[];
+  updateGroupRepository: (args: UserGroup[]) => void;
   updateGroupNamesToDelete: (args: string[]) => void;
 }
 
 const MemberOfDeleteModal = (props: PropsToDelete) => {
   // Given a single group name, obtain full info to be sent and shown on the deletion table
   const getGroupInfoByName = (groupName: string) => {
-    const res = props.groupRepository.filter(
-      (group) => group.name === groupName
-    );
+    const res = props.groupRepository.filter((group) => group.cn === groupName);
     return res[0];
   };
 
   // Obtain full info of groups to delete
   const getListOfGroupsToDelete = () => {
-    const groupsToDelete: UserGroupOld[] = [];
+    const groupsToDelete: UserGroup[] = [];
     props.groupNamesToDelete.map((groupName) =>
       groupsToDelete.push(getGroupInfoByName(groupName))
     );
@@ -43,14 +41,14 @@ const MemberOfDeleteModal = (props: PropsToDelete) => {
   };
 
   // Groups to delete list
-  const groupsToDelete: UserGroupOld[] = getListOfGroupsToDelete();
+  const groupsToDelete: UserGroup[] = getListOfGroupsToDelete();
 
   // Delete groups
   const deleteGroups = () => {
     let generalUpdatedGroupList = props.groupRepository;
     props.groupNamesToDelete.map((groupName) => {
       const updatedGroupList = generalUpdatedGroupList.filter(
-        (grp) => grp.name !== groupName
+        (grp) => grp.cn !== groupName
       );
       // If not empty, replace groupList by new array
       if (updatedGroupList) {

@@ -8,19 +8,19 @@ import {
   Modal,
 } from "@patternfly/react-core";
 // Data types
-import { UserGroupOld } from "src/utils/datatypes/globalDataTypes";
+import { UserGroup } from "src/utils/datatypes/globalDataTypes";
 
 export interface PropsToAdd {
   showModal: boolean;
   onCloseModal: () => void;
-  availableData: UserGroupOld[];
+  availableData: UserGroup[];
   groupRepository: unknown[];
-  updateGroupRepository: (newList: UserGroupOld[]) => void;
+  updateGroupRepository: (newList: UserGroup[]) => void;
 }
 
 const MemberOfAddModal = (props: PropsToAdd) => {
   // Dual list data
-  const data = props.availableData.map((d) => d.name);
+  const data = props.availableData.map((d) => d.cn);
 
   // Dual list selector
   const [availableOptions, setAvailableOptions] = useState<ReactNode[]>(data);
@@ -78,22 +78,24 @@ const MemberOfAddModal = (props: PropsToAdd) => {
 
   // Get all info from a chosen option
   const getInfoFromGroupData = (option: unknown) => {
-    return props.availableData.find((d) => option === d.name);
+    return props.availableData.find((d) => option === d.cn);
   };
 
   // Add group option
   const onClickAddGroupHandler = () => {
+    const groupRepository = [...props.groupRepository];
     chosenOptions.map((opt) => {
-      const optionData: UserGroupOld | undefined = getInfoFromGroupData(opt);
+      const optionData: UserGroup | undefined = getInfoFromGroupData(opt);
       if (optionData !== undefined) {
-        props.groupRepository.push({
-          name: optionData.name !== undefined && optionData.name,
+        groupRepository.push({
+          cn: optionData.cn !== undefined && optionData.cn,
           description:
             optionData.description !== undefined && optionData.description,
-          gid: optionData.gid !== undefined && optionData.gid,
-        } as UserGroupOld);
+          gidnumber: optionData.gidnumber !== undefined && optionData.gidnumber,
+          dn: optionData.dn !== undefined && optionData.dn,
+        } as UserGroup);
         // Send updated data to table
-        props.updateGroupRepository(props.groupRepository as UserGroupOld[]);
+        props.updateGroupRepository(groupRepository as UserGroup[]);
       }
     });
     // Clean chosen options and close modal

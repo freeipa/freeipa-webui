@@ -13,7 +13,6 @@ import MemberOfToolbar from "src/components/MemberOf/MemberOfToolbarOld";
 import MemberOfTable from "src/components/MemberOf/MemberOfTable";
 // Data types
 import {
-  UserGroupOld,
   Netgroup,
   Roles,
   HBACRules,
@@ -22,10 +21,8 @@ import {
 } from "src/utils/datatypes/globalDataTypes";
 // Redux
 import { useAppSelector } from "src/store/hooks";
-
 // Repositories
 import {
-  userGroupsInitialData,
   netgroupsInitialData,
   rolesInitialData,
   hbacRulesInitialData,
@@ -36,6 +33,10 @@ import MemberOfAddModal from "src/components/MemberOf/MemberOfAddModalOld";
 import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModalOld";
 // Wrappers
 import MemberOfUserGroups from "src/components/MemberOf/MemberOfUserGroups";
+// RPC
+import { useGetUserByUidQuery } from "src/services/rpc";
+// Utils
+import { normalizeString } from "src/utils/utils";
 
 interface PropsToUserMemberOf {
   user: User;
@@ -43,6 +44,7 @@ interface PropsToUserMemberOf {
 
 const UserMemberOf = (props: PropsToUserMemberOf) => {
   // Retrieve each group list from Redux:
+  // TODO: Remove this when all data is taken from the C.L.
   let netgroupsList = useAppSelector((state) => state.netgroups.netgroupList);
   let rolesList = useAppSelector((state) => state.roles.roleList);
   let hbacRulesList = useAppSelector((state) => state.hbacrules.hbacRulesList);
@@ -62,10 +64,34 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     sudoRulesList = newAvOptionsList as SudoRules[];
   };
 
+  // Page indexes
+  const [page, setPage] = React.useState(1);
+  const [perPage, setPerPage] = React.useState(10);
+
+  // User's full data
+  const userQuery = useGetUserByUidQuery(normalizeString(props.user.uid));
+
+  const userData = userQuery.data || {};
+
+  const [user, setUser] = React.useState<Partial<User>>({});
+
+  React.useEffect(() => {
+    if (!userQuery.isFetching && userData) {
+      setUser({ ...userData });
+    }
+  }, [userData, userQuery.isFetching]);
+
+  // 'User groups' length to show in tab badge
+  const [userGroupsLength, setUserGroupLength] = React.useState(0);
+
+  React.useEffect(() => {
+    if (user && user.memberof_group) {
+      setUserGroupLength(user.memberof_group.length);
+    }
+  }, [user]);
+
   // List of default dummy data (for each tab option)
-  const [userGroupsRepository, setUserGroupsRepository] = useState(
-    userGroupsInitialData
-  );
+  // TODO: Remove when all data is adapted to the C.L.
   const [netgroupsRepository, setNetgroupsRepository] =
     useState(netgroupsInitialData);
   const [rolesRepository, setRolesRepository] = useState(rolesInitialData);
@@ -84,6 +110,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   // Filter functions to compare the available data with the data that
   //  the user is already member of. This is done to prevent duplicates
   //  (e.g: adding the same element twice).
+  // TODO: Remove this when all tab are set into wrappers
   const filterNetgroupsData = () => {
     // Netgroups
     return netgroupsList.filter((item) => {
@@ -205,11 +232,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     setActiveTabKey(tabIndex as number);
   };
 
-  // -- Pagination
-  // TODO: Remove this when all tabs are adapted to its own wrapper
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
-
   // Member groups displayed on the first page
   const [shownNetgroupsList, setShownNetgroupsList] = useState(
     netgroupsRepository.slice(0, perPage)
@@ -226,7 +248,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
 
   // Update pagination
   const changeMemberGroupsList = (
-    value: UserGroupOld[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[]
+    value: Netgroup[] | Roles[] | HBACRules[] | SudoRules[]
   ) => {
     switch (activeTabKey) {
       case 1:
@@ -426,14 +448,17 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               <TabTitleText>
                 User groups{" "}
                 <Badge key={0} isRead>
-                  {userGroupsRepository.length}
+                  {userGroupsLength}
                 </Badge>
               </TabTitleText>
             }
           >
             <MemberOfUserGroups
-              usersGroupsFromUser={userGroupsRepository}
-              updateUsersGroupsFromUser={setUserGroupsRepository}
+              user={user}
+              page={page}
+              setPage={setPage}
+              perPage={perPage}
+              setPerPage={setPerPage}
             />
           </Tab>
           <Tab

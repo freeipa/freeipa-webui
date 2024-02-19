@@ -2,13 +2,15 @@ import React from "react";
 // PatternFly
 import { Table, Tr, Th, Td, Thead, Tbody } from "@patternfly/react-table";
 // Data types
-import { UserGroupOld } from "src/utils/datatypes/globalDataTypes";
+import { UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Components
 import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout";
 import EmptyBodyTable from "../tables/EmptyBodyTable";
+// Utils
+import { parseEmptyString } from "src/utils/utils";
 
 export interface MemberOfUserGroupsTableProps {
-  userGroups: UserGroupOld[];
+  userGroups: UserGroup[];
   checkedItems: string[];
   onCheckItemsChange: (checkedItems: string[]) => void;
   showTableRows: boolean;
@@ -16,7 +18,7 @@ export interface MemberOfUserGroupsTableProps {
 
 // Body
 const UserGroupsTableBody = (props: {
-  userGroups: UserGroupOld[];
+  userGroups: UserGroup[];
   checkedItems: string[];
   onCheckboxChange: (checked: boolean, groupName: string) => void;
 }) => {
@@ -29,12 +31,12 @@ const UserGroupsTableBody = (props: {
             select={{
               rowIndex: index,
               onSelect: (_e, isSelected) =>
-                props.onCheckboxChange(isSelected, userGroup.name),
-              isSelected: props.checkedItems.includes(userGroup.name),
+                props.onCheckboxChange(isSelected, userGroup.cn),
+              isSelected: props.checkedItems.includes(userGroup.cn),
             }}
           />
-          <Td>{userGroup.name}</Td>
-          <Td>{userGroup.gid}</Td>
+          <Td>{userGroup.cn}</Td>
+          <Td>{parseEmptyString(userGroup.gidnumber)}</Td>
           <Td>{userGroup.description}</Td>
         </Tr>
       ))}
