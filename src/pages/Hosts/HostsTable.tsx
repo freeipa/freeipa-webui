@@ -248,7 +248,7 @@ const HostsTable = (props: PropsToTable) => {
       </Td>
       <Td dataLabel={columnNames.description}>{host.description}</Td>
       <Td dataLabel={columnNames.enrolled}>
-        {host.enrolledby !== "" ? "True" : "False"}
+        {host.has_keytab ? "True" : "False"}
       </Td>
     </Tr>
   ));
