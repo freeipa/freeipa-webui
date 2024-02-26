@@ -2,10 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import userGroupsJson from "./userGroups.json";
 // Data type
-import { UserGroup } from "src/utils/datatypes/globalDataTypes";
+import { UserGroupOld } from "src/utils/datatypes/globalDataTypes";
 
 interface UserGroupState {
-  userGroupList: UserGroup[];
+  userGroupList: UserGroupOld[];
 }
 
 const initialState: UserGroupState = {

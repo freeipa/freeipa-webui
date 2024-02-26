@@ -123,10 +123,17 @@ export interface KrbPolicy {
   usercertificatebinary: string[];
 }
 
-export interface UserGroup {
+export interface UserGroupOld {
   name: string;
   gid: string;
   description: string;
+}
+
+export interface UserGroup {
+  cn: string;
+  gidnumber: string;
+  description: string;
+  dn: string;
 }
 
 export interface Netgroup {

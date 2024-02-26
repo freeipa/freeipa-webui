@@ -2,13 +2,13 @@ import React from "react";
 // PatternFly
 import { Table, Tr, Th, Td, Thead, Tbody } from "@patternfly/react-table";
 // Data types
-import { UserGroup } from "src/utils/datatypes/globalDataTypes";
+import { UserGroupOld } from "src/utils/datatypes/globalDataTypes";
 // Components
 import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout";
 import EmptyBodyTable from "../tables/EmptyBodyTable";
 
 export interface MemberOfUserGroupsTableProps {
-  userGroups: UserGroup[];
+  userGroups: UserGroupOld[];
   checkedItems?: string[];
   onCheckItemsChange?: (checkedItems: string[]) => void;
   showTableRows: boolean;
@@ -16,7 +16,7 @@ export interface MemberOfUserGroupsTableProps {
 
 // Body
 const UserGroupsTableBody = (props: {
-  userGroups: UserGroup[];
+  userGroups: UserGroupOld[];
   showCheckboxColumn: boolean;
   checkedItems: string[];
   onCheckboxChange: (checked: boolean, groupName: string) => void;
