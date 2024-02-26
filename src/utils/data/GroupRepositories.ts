@@ -8,7 +8,7 @@
  */
 
 import {
-  UserGroup,
+  UserGroupOld,
   Netgroup,
   Roles,
   HBACRules,
@@ -18,7 +18,7 @@ import {
 
 // USERS
 // 'User groups' initial data
-export let userGroupsInitialData: UserGroup[] = [
+export let userGroupsInitialData: UserGroupOld[] = [
   {
     name: "Initial admins",
     gid: "12345678",

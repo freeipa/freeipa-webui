@@ -5,7 +5,7 @@ import { Button, DualListSelector } from "@patternfly/react-core";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Data types
 import {
-  UserGroup,
+  UserGroupOld,
   Netgroup,
   Roles,
   HBACRules,
@@ -26,7 +26,7 @@ interface TabData {
 export interface PropsToAdd {
   modalData: ModalData;
   availableData:
-    | UserGroup[]
+    | UserGroupOld[]
     | Netgroup[]
     | Roles[]
     | HBACRules[]
@@ -35,7 +35,7 @@ export interface PropsToAdd {
   groupRepository: unknown[];
   updateGroupRepository: (
     args:
-      | UserGroup[]
+      | UserGroupOld[]
       | Netgroup[]
       | Roles[]
       | HBACRules[]
@@ -50,7 +50,7 @@ export interface PropsToAdd {
 //  its variables. Just the mandatory ones ('name' and 'description') are accessible at this point.
 // To display all the possible data types for all the tabs (and not only the mandatory ones)
 //   an extra interface 'MemberOfElement' will be defined. This will be called when assigning
-//   a new group instead of refering to each type (UserGroup | Netgroup | Roles | HBACRules |
+//   a new group instead of refering to each type (UserGroupOld | Netgroup | Roles | HBACRules |
 //   SudoRules | HostGroup).
 interface MemberOfElement {
   hostGroup?: string;
@@ -136,9 +136,9 @@ const MemberOfAddModal = (props: PropsToAdd) => {
               optionData.description !== undefined && optionData.description,
             gid: optionData.gid !== undefined && optionData.gid,
             status: optionData.status !== undefined && optionData.status,
-          } as UserGroup);
+          } as UserGroupOld);
           // Send updated data to table
-          props.updateGroupRepository(props.groupRepository as UserGroup[]);
+          props.updateGroupRepository(props.groupRepository as UserGroupOld[]);
         }
         // Netgroups
         if (props.tabData.tabName === "Netgroups") {
