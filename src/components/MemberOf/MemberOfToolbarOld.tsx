@@ -17,8 +17,22 @@ import {
 } from "@patternfly/react-core";
 // Icons
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
-// Components
-import SearchInputLayout from "../layouts/SearchInputLayout";
+// Toolbar layout
+import ToolbarLayout, {
+  ToolbarItemAlignment,
+  ToolbarItemSpacer,
+} from "src/components/layouts/ToolbarLayout";
+// Data types
+import {
+  UserGroupOld,
+  Netgroup,
+  Roles,
+  HBACRules,
+  SudoRules,
+  HostGroup,
+} from "src/utils/datatypes/globalDataTypes";
+// Layout
+import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 
 export type MembershipDirection = "direct" | "indirect";
 
@@ -51,10 +65,70 @@ interface MemberOfToolbarProps {
   onPerPageChange?: (pageSize: number) => void;
 }
 
-const MemberOfToolbar = (props: MemberOfToolbarProps) => {
-  const onMembershipDirectionChange = (
-    selected,
-    direction: MembershipDirection
+interface ButtonData {
+  onClickAddHandler: () => void;
+  onClickDeleteHandler: () => void;
+  isDeleteButtonDisabled: boolean;
+}
+
+interface SettersData {
+  changeMemberGroupsList: (
+    arg:
+      | UserGroupOld[]
+      | Netgroup[]
+      | Roles[]
+      | HBACRules[]
+      | SudoRules[]
+      | HostGroup[]
+  ) => void;
+  changeTabName: (name: string) => void;
+}
+
+interface SearchValueData {
+  searchValue: string;
+  updateSearchValue: (value: string) => void;
+}
+
+export interface PropsToToolbar {
+  pageRepo:
+    | UserGroupOld[]
+    | Netgroup[]
+    | Roles[]
+    | HBACRules[]
+    | SudoRules[]
+    | HostGroup[];
+  shownItems:
+    | UserGroupOld[]
+    | Netgroup[]
+    | Roles[]
+    | HBACRules[]
+    | SudoRules[]
+    | HostGroup[];
+  toolbar:
+    | "user groups"
+    | "netgroups"
+    | "roles"
+    | "HBAC rules"
+    | "sudo rules"
+    | "host groups";
+  settersData: SettersData;
+  pageData: PageData;
+  buttonData: ButtonData;
+  searchValueData: SearchValueData;
+}
+
+const MemberOfToolbar = (props: PropsToToolbar) => {
+  // -- Pagination
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+
+  // - Page setters
+  const onSetPage = (
+    _event: React.MouseEvent | React.KeyboardEvent | MouseEvent,
+    newPage: number,
+    perPage: number | undefined,
+    startIdx: number | undefined,
+    endIdx: number | undefined
   ) => {
     setPage(newPage);
     props.settersData.changeMemberGroupsList(

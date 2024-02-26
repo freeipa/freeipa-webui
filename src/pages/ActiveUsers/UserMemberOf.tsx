@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { TabTitleText, Tab, Tabs, Badge } from "@patternfly/react-core";
 // Data types
 import {
+  UserGroupOld,
   Netgroup,
   Roles,
   HBACRules,
@@ -382,7 +383,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
 
   // Update pagination
   const changeMemberGroupsList = (
-    value: Netgroup[] | Roles[] | HBACRules[] | SudoRules[]
+    value: UserGroupOld[] | Netgroup[] | Roles[] | HBACRules[] | SudoRules[]
   ) => {
     switch (activeTabKey) {
       case 1:

@@ -15,7 +15,7 @@ import MemberOfDeletedGroupsTable from "src/components/MemberOf/MemberOfDeletedG
 //  its variables. Just the mandatory ones ('name' and 'description') are accessible at this point.
 // To display all the possible data types for all the tabs (and not only the mandatory ones)
 //   an extra interface 'MemberOfElement' will be defined. This will be called in the 'PropsToTable'
-//   interface instead of each type (UserGroup | Netgroup | Roles | HBACRules | SudoRules).
+//   interface instead of each type (UserGroupOld | Netgroup | Roles | HBACRules | SudoRules).
 interface MemberOfElement {
   name: string;
   gid?: string;
