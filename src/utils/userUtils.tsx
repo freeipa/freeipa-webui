@@ -161,6 +161,10 @@ export function createEmptyUser(): User {
     ipanthomedirectorydrive: "",
     // 'Member of' data
     memberof_group: [],
+    memberof_netgroup: [],
+    memberof_role: [],
+    memberof_hbacrule: [],
+    memberof_sudorule: [],
     memberof_subid: [],
     // 'Managed by' data
     mepmanagedentry: [],
