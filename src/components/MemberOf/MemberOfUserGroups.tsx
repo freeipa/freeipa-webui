@@ -2,9 +2,7 @@ import React from "react";
 // PatternFly
 import { Pagination, PaginationVariant } from "@patternfly/react-core";
 // Data types
-import { UserGroupOld } from "src/utils/datatypes/globalDataTypes";
-// Redux
-import { useAppSelector } from "src/store/hooks";
+import { User, UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfToolbarUserGroups, {
   MembershipDirection,
@@ -12,6 +10,8 @@ import MemberOfToolbarUserGroups, {
 import MemberOfUserGroupsTable from "./MemberOfTableUserGroups";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
+// Hooks
+import { useUserMemberOfData } from "src/hooks/useUserMemberOfData";
 
 function paginate<Type>(array: Type[], page: number, perPage: number): Type[] {
   const startIdx = (page - 1) * perPage;
@@ -19,42 +19,75 @@ function paginate<Type>(array: Type[], page: number, perPage: number): Type[] {
   return array.slice(startIdx, endIdx);
 }
 
-interface TypeWithName {
-  name: string;
+interface TypeWithCN {
+  cn: string;
 }
 
 // Filter functions to compare the available data with the data that
 //  the user is already member of. This is done to prevent duplicates
 //  (e.g: adding the same element twice).
-function filterUserGroupsData<Type extends TypeWithName>(
+function filterUserGroupsData<Type extends TypeWithCN>(
   list1: Array<Type>,
   list2: Array<Type>
 ): Type[] {
   // User groups
   return list1.filter((item) => {
     return !list2.some((itm) => {
-      return item.name === itm.name;
+      return item.cn === itm.cn;
     });
   });
 }
 
 interface MemberOfUserGroupsProps {
-  uid: string;
-  usersGroupsFromUser: UserGroupOld[];
-  updateUsersGroupsFromUser: (newList: UserGroupOld[]) => void;
+  user: Partial<User>;
 }
 
 const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
-  const userGroupsFullList = useAppSelector(
-    (state) => state.usergroups.userGroupList
-  );
+  // 'User groups' assigned to  user
+  const [userGroupsFromUser, setUserGroupsFromUser] = React.useState<
+    UserGroup[]
+  >([]);
+
+  // Page indexes
+  const [page, setPage] = React.useState(1);
+  const [perPage, setPerPage] = React.useState(10);
+
+  const firstUserIdx = (page - 1) * perPage;
+  const lastUserIdx = page * perPage;
+
+  const uid = props.user.uid;
+
+  // API call: full list of 'User groups' available
+  const fullUserGroupsQuery = useUserMemberOfData({
+    uid,
+    firstUserIdx,
+    lastUserIdx,
+  });
+
+  const userGroupsFullList = fullUserGroupsQuery.userGroupsFullList;
+
+  // Get full data of the 'User groups' assigned to user
+  React.useEffect(() => {
+    if (!fullUserGroupsQuery.isFetching && userGroupsFullList) {
+      const userGroupsParsed: UserGroup[] = [];
+      props.user.memberof_group?.map((group) => {
+        userGroupsFullList.map((g) => {
+          if (g.cn === group) {
+            userGroupsParsed.push(g);
+          }
+        });
+      });
+      if (
+        JSON.stringify(userGroupsFromUser) !== JSON.stringify(userGroupsParsed)
+      ) {
+        setUserGroupsFromUser(userGroupsParsed);
+      }
+    }
+  }, [fullUserGroupsQuery]);
 
   const [groupsNamesSelected, setGroupsNamesSelected] = React.useState<
     string[]
   >([]);
-
-  const [page, setPage] = React.useState(1);
-  const [perPage, setPerPage] = React.useState(10);
 
   const [searchValue, setSearchValue] = React.useState("");
 
@@ -66,13 +99,13 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
 
   // Computed "states"
   const someItemSelected = groupsNamesSelected.length > 0;
-  const shownUserGroups = paginate(props.usersGroupsFromUser, page, perPage);
-  const showTableRows = props.usersGroupsFromUser.length > 0;
+  const shownUserGroups = paginate(userGroupsFromUser, page, perPage);
+  const showTableRows = userGroupsFromUser.length > 0;
 
   // Available data to be added as member of
-  const userGroupsFilteredData: UserGroupOld[] = filterUserGroupsData(
+  const userGroupsFilteredData: UserGroup[] = filterUserGroupsData(
     userGroupsFullList,
-    props.usersGroupsFromUser
+    userGroupsFromUser
   );
 
   // Parse availableItems to AvailableItems type
@@ -80,8 +113,8 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
     const avItems: AvailableItems[] = [];
     userGroupsFilteredData.map((item) => {
       avItems.push({
-        key: item.name,
-        title: item.name,
+        key: item.cn,
+        title: item.cn,
       });
     });
     return avItems;
@@ -93,18 +126,18 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   const onAddUserGroup = (items: AvailableItems[]) => {
     const newItems = items.map((item) => item.key);
     const newGroups = userGroupsFullList.filter((group) =>
-      newItems.includes(group.name)
+      newItems.includes(group.cn)
     );
-    const updatedGroups = props.usersGroupsFromUser.concat(newGroups);
-    props.updateUsersGroupsFromUser(updatedGroups);
+    const updatedGroups = userGroupsFromUser.concat(newGroups);
+    setUserGroupsFromUser(updatedGroups);
   };
 
   // 'Delete' function
   const onDeleteUserGroup = () => {
-    const updatedGroups = props.usersGroupsFromUser.filter(
-      (group) => !groupsNamesSelected.includes(group.name)
+    const updatedGroups = userGroupsFromUser.filter(
+      (group) => !groupsNamesSelected.includes(group.cn)
     );
-    props.updateUsersGroupsFromUser(updatedGroups);
+    setUserGroupsFromUser(updatedGroups);
   };
 
   return (
@@ -121,7 +154,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
         membershipDirection={membershipDirection}
         onMembershipDirectionChange={setMembershipDirection}
         helpIconEnabled={true}
-        totalItems={props.usersGroupsFromUser.length}
+        totalItems={userGroupsFromUser.length}
         perPage={perPage}
         page={page}
         onPerPageChange={setPerPage}
@@ -135,7 +168,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
       />
       <Pagination
         className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        itemCount={props.usersGroupsFromUser.length}
+        itemCount={userGroupsFromUser.length}
         widgetId="pagination-options-menu-bottom"
         perPage={perPage}
         page={page}
@@ -150,7 +183,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
           availableItems={availableUserGroupsItems}
           onAdd={onAddUserGroup}
           onSearchTextChange={setSearchValue}
-          title={"Add '" + props.uid + "' into User groups"}
+          title={"Add '" + props.user.uid + "' into User groups"}
           ariaLabel="Add user of  user group modal"
         />
       )}
@@ -163,9 +196,9 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
         >
           <MemberOfUserGroupsTable
             userGroups={
-              props.usersGroupsFromUser.filter((group) =>
-                groupsNamesSelected.includes(group.name)
-              ) as UserGroupOld[]
+              userGroupsFromUser.filter((group) =>
+                groupsNamesSelected.includes(group.cn)
+              ) as UserGroup[]
             }
             showTableRows
           />
