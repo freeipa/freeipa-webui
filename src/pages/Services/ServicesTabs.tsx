@@ -21,11 +21,22 @@ import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
 // Data types
 import { Service } from "src/utils/datatypes/globalDataTypes";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { SerializedError } from "@reduxjs/toolkit";
+// Utils
+import { API_VERSION_BACKUP } from "../../utils/utils";
+// Hooks
+import { useAlerts } from "../../hooks/useAlerts";
+// RPC client
+import { useSearchEntriesMutation, GenericPayload } from "../../services/rpc";
 
 const ServicesTabs = () => {
   // Get location (React Router DOM) and get state data
   const location = useLocation();
-  const serviceData: Service = location.state as Service;
+  let serviceData: Service = location.state as Service;
+
+  // Alerts to show in the UI
+  const alerts = useAlerts();
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(0);
@@ -46,8 +57,48 @@ const ServicesTabs = () => {
     },
   ];
 
+  // Handle refresh of a service
+  const [retrieveService] = useSearchEntriesMutation({});
+  const onRefresh = () => {
+    retrieveService({
+      searchValue: serviceData.krbcanonicalname,
+      sizeLimit: 0,
+      apiVersion: API_VERSION_BACKUP,
+      startIdx: 0,
+      stopIdx: 1,
+      entryType: "service",
+    } as GenericPayload).then((result) => {
+      // Manage new response here
+      if ("data" in result) {
+        const searchError = result.data.error as
+          | FetchBaseQueryError
+          | SerializedError;
+
+        if (searchError) {
+          // Error
+          let error: string | undefined = "";
+          if ("error" in searchError) {
+            error = searchError.error;
+          } else if ("message" in searchError) {
+            error = searchError.message;
+          }
+          alerts.addAlert(
+            "refresh service",
+            error || "Error when searching for services",
+            "danger"
+          );
+        } else {
+          // Success
+          const serviceListResult = result.data.result.results;
+          serviceData = serviceListResult[0];
+        }
+      }
+    });
+  };
+
   return (
     <Page>
+      <alerts.ManagedAlerts />
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadcrumbLayout
           className="pf-v5-u-mb-md"
@@ -75,7 +126,7 @@ const ServicesTabs = () => {
             title={<TabTitleText>Settings</TabTitleText>}
           >
             <PageSection className="pf-v5-u-pb-0"></PageSection>
-            <ServicesSettings service={serviceData} />
+            <ServicesSettings service={serviceData} onRefresh={onRefresh} />
           </Tab>
           <Tab
             eventKey={1}

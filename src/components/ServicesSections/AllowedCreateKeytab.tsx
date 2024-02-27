@@ -11,13 +11,19 @@ import { Service } from "../../utils/datatypes/globalDataTypes";
 
 interface PropsToAllowCreateKeytab {
   service: Service;
+  onRefresh: () => void;
 }
 
 const AllowedCreateKeytab = (props: PropsToAllowCreateKeytab) => {
   return (
     <Flex direction={{ default: "column", lg: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
-        <CreateKeytabUsersTable host={props.service.krbcanonicalname} />
+        <CreateKeytabUsersTable
+          from="service"
+          id={props.service.krbcanonicalname}
+          entry={props.service}
+          onRefresh={props.onRefresh}
+        />
         <CreateKeytabHostsTable host={props.service.krbcanonicalname} />
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>

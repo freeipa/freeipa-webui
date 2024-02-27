@@ -256,7 +256,10 @@ const HostsSettings = (props: PropsToHostsSettings) => {
                 id="allow-create-keytab"
                 text="Allow to create keytab"
               />
-              <AllowedCreateKeytab host={props.host} />
+              <AllowedCreateKeytab
+                host={props.host}
+                onRefresh={props.onRefresh}
+              />
             </Flex>
           </SidebarContent>
         </Sidebar>
