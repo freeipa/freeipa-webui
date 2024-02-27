@@ -7,10 +7,11 @@ import CreateKeytabUserGroupsTable from "../tables/HostsSettings/CreateKeytabUse
 import CreateKeytabHostsTable from "../tables/HostsSettings/CreateKeytabHostsTable";
 import CreateKeytabHostGroupsTable from "../tables/HostsSettings/CreateKeytabHostGroupsTable";
 // Data types
-import { Host } from "src/utils/datatypes/globalDataTypes";
+import { Host } from "../../utils/datatypes/globalDataTypes";
 
 interface PropsToAllowCreateKeytab {
   host: Partial<Host>;
+  onRefresh: () => void;
 }
 
 const AllowedCreateKeytab = (props: PropsToAllowCreateKeytab) => {
@@ -18,10 +19,16 @@ const AllowedCreateKeytab = (props: PropsToAllowCreateKeytab) => {
   if (props.host.fqdn !== undefined) {
     fqdn = props.host.fqdn;
   }
+
   return (
     <Flex direction={{ default: "column", lg: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
-        <CreateKeytabUsersTable host={fqdn} />
+        <CreateKeytabUsersTable
+          from="host"
+          id={fqdn}
+          entry={props.host}
+          onRefresh={props.onRefresh}
+        />
         <CreateKeytabHostsTable host={fqdn} />
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>

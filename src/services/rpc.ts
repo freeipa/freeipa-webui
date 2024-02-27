@@ -118,6 +118,11 @@ export interface BatchRPCResponse {
   };
 }
 
+export interface ListResponse {
+  list: string[];
+  count: number;
+}
+
 export interface CommandWithSingleParam {
   command: string;
   param: string;
@@ -160,6 +165,19 @@ export interface ServiceAddPayload {
   service: string;
   skip_host_check: boolean;
   force: boolean; // skip DNS check
+}
+
+export interface KeyTabPayload {
+  id: string;
+  entryType: "user" | "host" | "usergroup" | "hostgroup";
+  entries: string[];
+  method: string;
+}
+
+export interface GetEntriesPayload {
+  idList: string[];
+  apiVersion: string;
+  entryType?: "user" | "group" | "host" | "hostgroup";
 }
 
 // Body data to perform the calls
@@ -876,6 +894,127 @@ export const api = createApi({
             };
       },
     }),
+    // Take a list of ID's and get the full entries
+    getEntries: build.mutation<BatchRPCResponse, GetEntriesPayload>({
+      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
+        const { idList, apiVersion, entryType } = payloadData;
+
+        if (apiVersion === undefined) {
+          return {
+            error: {
+              status: "CUSTOM_ERROR",
+              data: "",
+              error: "API version not available",
+            } as FetchBaseQueryError,
+          };
+        }
+
+        let show_method = "";
+        if (entryType === "user") {
+          show_method = "user_show";
+        } else if (entryType === "host") {
+          show_method = "host_show";
+        } else if (entryType === "hostgroup") {
+          show_method = "hostgroup_show";
+        } else {
+          // user group
+          show_method = "group_show";
+        }
+
+        const payloadDataBatch: Command[] = idList.map((id) => ({
+          method: show_method,
+          params: [[id], { no_members: true }],
+        }));
+
+        // Make call using 'fetchWithBQ'
+        const partialInfoResult = await fetchWithBQ(
+          getBatchCommand(payloadDataBatch as Command[], apiVersion)
+        );
+
+        const response = partialInfoResult.data as BatchRPCResponse;
+        if (response) {
+          response.result.totalCount = idList.length;
+        }
+
+        // Return results
+        return response
+          ? { data: response }
+          : {
+              error: partialInfoResult.error as unknown as FetchBaseQueryError,
+            };
+      },
+    }),
+    getIDList: build.mutation<ListResponse, GenericPayload>({
+      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
+        const { searchValue, sizeLimit, startIdx, stopIdx, entryType } =
+          payloadData;
+
+        // Prepare search parameters
+        const params = {
+          pkey_only: true,
+          sizelimit: sizeLimit,
+          version: API_VERSION_BACKUP,
+          all: true,
+        };
+
+        let method = "";
+        if (entryType === "user") {
+          method = "user_find";
+        } else if (entryType === "stage") {
+          method = "stageuser_find";
+        } else if (entryType === "preserved") {
+          method = "user_find";
+          params["preserved"] = true;
+        } else if (entryType === "host") {
+          method = "host_find";
+        } else if (entryType === "service") {
+          method = "service_find";
+        }
+
+        // Prepare payload
+        const payloadDataIds: Command = {
+          method: method,
+          params: [[searchValue], params],
+        };
+
+        // Make call using 'fetchWithBQ'
+        const getGroupIDsResult = await fetchWithBQ(getCommand(payloadDataIds));
+        // Return possible errors
+        if (getGroupIDsResult.error) {
+          return {
+            error: {
+              status: "CUSTOM_ERROR",
+              data: "",
+              error: "Failed to search for entries",
+            } as FetchBaseQueryError,
+          };
+        }
+        // If no error: cast and assign 'ids'
+        const responseData = getGroupIDsResult.data as FindRPCResponse;
+
+        const ids: string[] = [];
+        const itemsCount = responseData.result.result.length as number;
+        for (let i = startIdx; i < itemsCount && i < stopIdx; i++) {
+          if (entryType === "user") {
+            const userId = responseData.result.result[i] as UIDType;
+            const { uid } = userId;
+            ids.push(uid[0] as string);
+          } else if (entryType === "host") {
+            const hostId = responseData.result.result[i] as fqdnType;
+            const { fqdn } = hostId;
+            ids.push(fqdn[0] as string);
+          } else if (entryType === "service") {
+            const serviceId = responseData.result.result[i] as servicesType;
+            const { krbprincipalname } = serviceId;
+            ids.push(krbprincipalname[0] as string);
+          }
+        }
+
+        const result = { list: ids, count: itemsCount } as ListResponse;
+
+        return { data: result };
+      },
+    }),
     // Autommeber Users
     autoMemberRebuildUsers: build.mutation<FindRPCResponse, any[]>({
       query: (users) => {
@@ -1097,7 +1236,7 @@ export const api = createApi({
       },
     }),
     getGenericList: build.query<FindRPCResponse, string>({
-      query(objName) {
+      query: (objName) => {
         return getCommand({
           method: objName + "_find",
           params: [[], { version: API_VERSION_BACKUP }],
@@ -1114,10 +1253,32 @@ export const api = createApi({
       transformResponse: (response: FindRPCResponse): User =>
         apiToUser(response.result.result),
     }),
+    updateKeyTab: build.mutation<FindRPCResponse, KeyTabPayload>({
+      query: (payload: KeyTabPayload) => {
+        const params = { version: API_VERSION_BACKUP };
+        if (payload.entryType === "user") {
+          params["user"] = payload.entries;
+        } else if (payload.entryType === "host") {
+          params["host"] = payload.entries;
+        } else if (payload.entryType === "usergroup") {
+          params["group"] = payload.entries;
+        } else {
+          // hostgroup
+          params["hostgroup"] = payload.entries;
+        }
+
+        return getCommand({
+          method: payload.method,
+          params: [[payload.id], params],
+        });
+      },
+    }),
   }),
 });
 
+//
 // Wrappers
+//
 export const useGetDNSZonesQuery = () => {
   return useGetGenericListQuery("dnszone");
 };
@@ -1183,6 +1344,9 @@ export const useGetStageUsersFullQuery = (userId: string) => {
   };
   return useGetGenericUsersFullDataQuery(query_args);
 };
+//
+// End of wrappers
+//
 
 export const {
   useSimpleCommandQuery,
@@ -1230,4 +1394,7 @@ export const {
   useRemoveServicesMutation,
   useSearchEntriesMutation,
   useGetUserByUidQuery,
+  useGetIDListMutation,
+  useUpdateKeyTabMutation,
+  useGetEntriesMutation,
 } = api;
