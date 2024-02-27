@@ -31,6 +31,7 @@ import AllowedCreateKeytab from "src/components/ServicesSections/AllowedCreateKe
 
 interface PropsToServicesSettings {
   service: Service;
+  onRefresh: () => void;
 }
 
 const ServicesSettings = (props: PropsToServicesSettings) => {
@@ -172,7 +173,10 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
                 id="allowed-create-keytab"
                 text="Allowed to create keytab"
               />
-              <AllowedCreateKeytab service={props.service} />
+              <AllowedCreateKeytab
+                service={props.service}
+                onRefresh={props.onRefresh}
+              />
             </Flex>
           </SidebarContent>
         </Sidebar>

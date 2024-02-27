@@ -2,43 +2,154 @@ import React, { useEffect, useState } from "react";
 // PatternFly
 import { Td, Th, Tr } from "@patternfly/react-table";
 // Layout
-import TableWithButtonsLayout from "src/components/layouts/TableWithButtonsLayout";
+import TableWithButtonsLayout from "../../../components/layouts/TableWithButtonsLayout";
 // Modals
-import CreateKeytabElementsAddModal from "src/components/modals/HostsSettings/CreateKeytabElementsAddModal";
-import CreateKeytabElementsDeleteModal from "src/components/modals/HostsSettings/CreateKeytabElementsDeleteModal";
-// Redux
-import { useAppSelector } from "src/store/hooks";
+import CreateKeytabElementsAddModal from "../../../components/modals/HostsSettings/CreateKeytabElementsAddModal";
+import CreateKeytabElementsDeleteModal from "../../../components/modals/HostsSettings/CreateKeytabElementsDeleteModal";
+// Hooks
+import { useAlerts } from "../../../hooks/useAlerts";
+// Data types
+import { Host, Service, User } from "../../../utils/datatypes/globalDataTypes";
+// React Router DOM
+import { Link } from "react-router-dom";
+// Utils
+import { API_VERSION_BACKUP } from "../../../utils/utils";
+// Navigation
+import { URL_PREFIX } from "../../../navigation/NavRoutes";
+
+import {
+  ErrorResult,
+  KeyTabPayload,
+  GetEntriesPayload,
+  useUpdateKeyTabMutation,
+  useGetEntriesMutation,
+} from "../../../services/rpc";
 
 interface PropsToTable {
-  host: string;
+  from: "host" | "service";
+  id: string;
+  entry: Partial<Service> | Partial<Host>;
+  onRefresh: () => void;
 }
 
 const CreateKeytabUsersTable = (props: PropsToTable) => {
-  // Full users list -> Initial data
-  const fullUsersList = useAppSelector((state) => state.activeUsers.usersList);
-  const fullUserIdsList = fullUsersList.map((user) => user.uid);
+  const attr = "ipaallowedtoperform_write_keys_user";
+  let users: string[] = [];
+  if (props.entry[attr] !== undefined) {
+    users = props.entry[attr];
+  }
+
+  // Alerts to show in the UI
+  const alerts = useAlerts();
 
   // Users list on the table
-  const [tableUsersList, setTableUsersList] = useState<string[]>([]);
+  const [tableUsersList, setTableUsersList] = useState<string[]>(users);
+  const [fullUser, setFullUsers] = useState<User[]>([]);
 
-  const updateTableUsersList = (newTableUsersList: string[]) => {
-    setTableUsersList(newTableUsersList);
-  };
-
-  // Filter function to compare the available data with the data that
-  //  is in the table already. This is done to prevent duplicates
-  //  (e.g: adding the same element twice).
-  const filterUsersData = () => {
-    return fullUserIdsList.filter((item) => {
-      return !tableUsersList.some((itm) => {
-        return item === itm;
+  // Gather User objects
+  const [getEntries] = useGetEntriesMutation({});
+  useEffect(() => {
+    if (tableUsersList.length > 0) {
+      getEntries({
+        idList: tableUsersList,
+        entryType: "user",
+        apiVersion: API_VERSION_BACKUP,
+      } as GetEntriesPayload).then((result) => {
+        if ("data" in result) {
+          const usersListResult = result.data.result.results;
+          const usersListSize = result.data.result.count;
+          const usersList: User[] = [];
+          for (let i = 0; i < usersListSize; i++) {
+            usersList.push(usersListResult[i].result);
+          }
+          setFullUsers(usersList);
+        }
       });
+    }
+  }, [tableUsersList, users]);
+
+  const [executeUpdate] = useUpdateKeyTabMutation({});
+  let add_method = "";
+  let remove_method = "";
+  if (props.from === "host") {
+    add_method = "host_allow_create_keytab";
+    remove_method = "host_disallow_create_keytab";
+  } else {
+    // Service
+    add_method = "service_allow_create_keytab";
+    remove_method = "service_disallow_create_keytab";
+  }
+
+  const addUserList = (newUsers: string[]) => {
+    executeUpdate({
+      id: props.id,
+      entryType: "user",
+      entries: newUsers,
+      method: add_method,
+    } as KeyTabPayload).then((response) => {
+      if ("data" in response) {
+        if (response.data.result) {
+          alerts.addAlert(
+            "add-users-allow-keytab",
+            "Successfully added users that are allowed to create keytabs",
+            "success"
+          );
+          // Update table
+          const users = [...tableUsersList, ...newUsers].sort();
+          setTableUsersList(users);
+          setShowAddModal(false);
+          props.onRefresh();
+        } else if (response.data.error) {
+          // Set alert: error
+          const errorMessage = response.data.error as ErrorResult;
+          alerts.addAlert(
+            "add-users-allow-keytab",
+            "Failed to add users that are allowed to create keytabs: " +
+              errorMessage.message,
+            "danger"
+          );
+        }
+      }
     });
   };
 
-  // const usersFilteredData = filterUsersData();
-  const [usersFilteredData, setUsersFilteredData] = useState(filterUsersData());
+  const removeUserList = () => {
+    executeUpdate({
+      id: props.id,
+      entryType: "user",
+      entries: selectedUsers,
+      method: remove_method,
+    } as KeyTabPayload).then((response) => {
+      if ("data" in response) {
+        if (response.data.result) {
+          alerts.addAlert(
+            "remove-users-allow-create-keytab",
+            "Removed users that are allowed to create keytabs",
+            "success"
+          );
+          // Filter out removed users
+          const users = tableUsersList.filter(function (user) {
+            return selectedUsers.indexOf(user) < 0;
+          });
+          // Update table
+          setTableUsersList(users);
+          setShowAddModal(false);
+          props.onRefresh();
+        } else if (response.data.error) {
+          // Set alert: error
+          const errorMessage = response.data.error as ErrorResult;
+          alerts.addAlert(
+            "remove-users-allow-create-keytab",
+            "Failed to remove users that are allowed to create keytabs: " +
+              errorMessage.message,
+            "danger"
+          );
+        }
+      }
+    });
+  };
 
+  const [usersFilteredData, setUsersFilteredData] = useState<string[]>([]);
   const updateUsersFilteredData = (newFilteredUsers: unknown[]) => {
     setUsersFilteredData(newFilteredUsers as string[]);
   };
@@ -168,7 +279,14 @@ const CreateKeytabUsersTable = (props: PropsToTable) => {
           isDisabled: false,
         }}
       />
-      <Td dataLabel={usersColumnNamesArray[0]}>{user}</Td>
+      <Td dataLabel={usersColumnNamesArray[0]}>
+        <Link
+          to={URL_PREFIX + "/active-users/settings"}
+          state={fullUser[rowIndex]}
+        >
+          {user}
+        </Link>
+      </Td>
     </Tr>
   ));
 
@@ -204,6 +322,7 @@ const CreateKeytabUsersTable = (props: PropsToTable) => {
 
   return (
     <>
+      <alerts.ManagedAlerts />
       <TableWithButtonsLayout
         ariaLabel="user table in host settings"
         variant="compact"
@@ -222,7 +341,7 @@ const CreateKeytabUsersTable = (props: PropsToTable) => {
       />
       {showAddModal && (
         <CreateKeytabElementsAddModal
-          host={props.host}
+          host={props.id}
           elementType="user"
           operationType="create"
           showModal={showAddModal}
@@ -232,12 +351,12 @@ const CreateKeytabUsersTable = (props: PropsToTable) => {
           updateAvailableData={updateUsersFilteredData}
           updateSelectedElements={updateSelectedUsers}
           tableElementsList={tableUsersList}
-          updateTableElementsList={updateTableUsersList}
+          updateTableElementsList={addUserList}
         />
       )}
       {showDeleteModal && (
         <CreateKeytabElementsDeleteModal
-          host={props.host}
+          host={props.id}
           elementType="user"
           operationType="create"
           columnNames={usersColumnNamesArray}
@@ -247,7 +366,7 @@ const CreateKeytabUsersTable = (props: PropsToTable) => {
           updateIsDeleteButtonDisabled={updateIsDeleteButtonDisabled}
           updateSelectedElements={updateSelectedUsers}
           tableElementsList={tableUsersList}
-          updateTableElementsList={updateTableUsersList}
+          updateTableElementsList={removeUserList}
           availableData={usersFilteredData}
           updateAvailableData={updateUsersFilteredData}
         />
