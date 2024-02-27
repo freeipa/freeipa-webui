@@ -365,3 +365,16 @@ export const isValidIpAddress = (ipAddress: string) => {
     return regexIPv4.test(ipAddress);
   }
 };
+
+/**
+ * Some values in a table might not have a specific value defined
+ *
+ * (i.e. empty string ""). This is not allowed by the table component.
+ * Therefore, this function will return "-" instead of "".
+ */
+export const parseEmptyString = (str: string) => {
+  if (str === "") {
+    return "-";
+  }
+  return str;
+};
