@@ -82,6 +82,10 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     }
   }, [userData, userQuery.isFetching]);
 
+  const onRefreshUserData = () => {
+    userQuery.refetch();
+  };
+
   // 'User groups' length to show in tab badge
   const [userGroupsLength, setUserGroupLength] = React.useState(0);
 
@@ -454,7 +458,11 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               </TabTitleText>
             }
           >
-            <MemberOfUserGroups user={user} />
+            <MemberOfUserGroups
+              user={user}
+              isUserDataLoading={userQuery.isFetching}
+              onRefreshUserData={onRefreshUserData}
+            />
           </Tab>
           <Tab
             eventKey={1}
