@@ -40,6 +40,8 @@ function filterUserGroupsData<Type extends TypeWithCN>(
 
 interface MemberOfUserGroupsProps {
   user: Partial<User>;
+  isUserDataLoading: boolean;
+  onRefreshUserData: () => void;
 }
 
 const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
@@ -85,6 +87,10 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
     }
   }, [fullUserGroupsQuery]);
 
+  React.useEffect(() => {
+    fullUserGroupsQuery.refetch();
+  }, [props.user]);
+
   const [groupsNamesSelected, setGroupsNamesSelected] = React.useState<
     string[]
   >([]);
@@ -121,6 +127,10 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   };
   const availableUserGroupsItems: AvailableItems[] = parseAvailableItems();
 
+  // Buttons functionality
+  // - Refresh
+  const isRefreshButtonEnabled = !props.isUserDataLoading;
+
   // 'Add' function
   // TODO: Adapt to work with real data
   const onAddUserGroup = (items: AvailableItems[]) => {
@@ -145,7 +155,8 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
       <MemberOfToolbarUserGroups
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
-        refreshButtonEnabled={true}
+        refreshButtonEnabled={isRefreshButtonEnabled}
+        onRefreshButtonClick={props.onRefreshUserData}
         deleteButtonEnabled={someItemSelected}
         onDeleteButtonClick={() => setShowDeleteModal(true)}
         addButtonEnabled={true}
