@@ -22,6 +22,7 @@ import {
   UIDType,
   User,
   Service,
+  cnType,
 } from "../utils/datatypes/globalDataTypes";
 import { apiToHost } from "../utils/hostUtils";
 import { apiToUser } from "../utils/userUtils";
@@ -137,11 +138,13 @@ export interface GenericPayload {
   searchValue: string;
   sizeLimit: number;
   apiVersion: string;
+  user?: string;
+  no_user?: string;
   startIdx: number;
   stopIdx: number;
   objName?: string;
   objAttr?: string;
-  entryType?: "user" | "stage" | "preserved" | "host" | "service";
+  entryType?: "user" | "stage" | "preserved" | "host" | "service" | "group";
 }
 
 export interface HostAddPayload {
@@ -649,6 +652,8 @@ export const api = createApi({
           searchValue,
           sizeLimit,
           apiVersion,
+          user,
+          no_user,
           startIdx,
           stopIdx,
           objAttr,
@@ -682,6 +687,14 @@ export const api = createApi({
           version: apiVersion,
         };
 
+        if (objName === "group") {
+          if (user !== undefined) {
+            params["user"] = user;
+          } else if (no_user !== undefined) {
+            params["no_user"] = no_user;
+          }
+        }
+
         if (objName === "preserved") {
           params["preserved"] = true;
           objName = "user";
@@ -711,6 +724,8 @@ export const api = createApi({
             id = idResponseData.result.result[i] as servicesType;
           } else if (objName === "user" || objName === "stageuser") {
             id = idResponseData.result.result[i] as UIDType;
+          } else if (objName === "group") {
+            id = idResponseData.result.result[i] as cnType;
           } else {
             // Unknown, should never happen
             return {
@@ -1089,6 +1104,16 @@ export const api = createApi({
         });
       },
     }),
+    getUserByUid: build.query<User, string>({
+      query: (uid) => {
+        return getCommand({
+          method: "user_show",
+          params: [[uid], { version: API_VERSION_BACKUP }],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): User =>
+        apiToUser(response.result.result),
+    }),
   }),
 });
 
@@ -1130,6 +1155,12 @@ export const useGettingHostQuery = (payloadData) => {
 export const useGettingServicesQuery = (payloadData) => {
   payloadData["objName"] = "service";
   payloadData["objAttr"] = "krbprincipalname";
+  return useGettingGenericQuery(payloadData);
+};
+// Groups
+export const useGettingGroupsQuery = (payloadData) => {
+  payloadData["objName"] = "group";
+  payloadData["objAttr"] = "cn";
   return useGettingGenericQuery(payloadData);
 };
 
@@ -1198,4 +1229,5 @@ export const {
   useGetGenericListQuery,
   useRemoveServicesMutation,
   useSearchEntriesMutation,
+  useGetUserByUidQuery,
 } = api;
