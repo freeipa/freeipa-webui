@@ -1273,6 +1273,29 @@ export const api = createApi({
         });
       },
     }),
+    /**
+     * Add entity to groups
+     * @param {string} toId - ID of the entity to add to groups
+     * @param {string} type - Type of the entity
+     *    Available types: user | host | service
+     * @param {string[]} listOfMembers - List of members to add to the groups
+     */
+    addToGroups: build.mutation<BatchRPCResponse, [string, string, string[]]>({
+      query: (payload) => {
+        const memberId = payload[0];
+        const memberType = payload[1];
+        const groupNames = payload[2];
+        const membersToAdd: Command[] = [];
+        groupNames.map((groupName) => {
+          const payloadItem = {
+            method: "group_add_member",
+            params: [[groupName], { [memberType]: memberId }],
+          } as Command;
+          membersToAdd.push(payloadItem);
+        });
+        return getBatchCommand(membersToAdd, API_VERSION_BACKUP);
+      },
+    }),
   }),
 });
 
@@ -1397,4 +1420,5 @@ export const {
   useGetIDListMutation,
   useUpdateKeyTabMutation,
   useGetEntriesMutation,
+  useAddToGroupsMutation,
 } = api;
