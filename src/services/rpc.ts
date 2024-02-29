@@ -1296,6 +1296,25 @@ export const api = createApi({
         return getBatchCommand(membersToAdd, API_VERSION_BACKUP);
       },
     }),
+    removeFromGroups: build.mutation<
+      BatchRPCResponse,
+      [string, string, string[]]
+    >({
+      query: (payload) => {
+        const memberId = payload[0];
+        const memberType = payload[1];
+        const groupNames = payload[2];
+        const membersToRemove: Command[] = [];
+        groupNames.map((groupName) => {
+          const payloadItem = {
+            method: "group_remove_member",
+            params: [[groupName], { [memberType]: memberId }],
+          } as Command;
+          membersToRemove.push(payloadItem);
+        });
+        return getBatchCommand(membersToRemove, API_VERSION_BACKUP);
+      },
+    }),
   }),
 });
 
@@ -1421,4 +1440,5 @@ export const {
   useUpdateKeyTabMutation,
   useGetEntriesMutation,
   useAddToGroupsMutation,
+  useRemoveFromGroupsMutation,
 } = api;
