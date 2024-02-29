@@ -14,7 +14,11 @@ import MemberOfDeleteModal from "./MemberOfDeleteModal";
 import { useUserMemberOfData } from "src/hooks/useUserMemberOfData";
 import useAlerts from "src/hooks/useAlerts";
 // RPC
-import { ErrorResult, useAddToGroupsMutation } from "src/services/rpc";
+import {
+  ErrorResult,
+  useAddToGroupsMutation,
+  useRemoveFromGroupsMutation,
+} from "src/services/rpc";
 // Utils
 import { paginate } from "src/utils/utils";
 
@@ -30,6 +34,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
 
   // API call
   const [addMemberToUserGroup] = useAddToGroupsMutation();
+  const [removeMembersFromUserGroup] = useRemoveFromGroupsMutation();
 
   // 'User groups' assigned to  user
   const [userGroupsFromUser, setUserGroupsFromUser] = React.useState<
@@ -160,12 +165,44 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
     }
   };
 
-  // 'Delete' function
+  // - 'Delete'
   const onDeleteUserGroup = () => {
     const updatedGroups = userGroupsFromUser.filter(
       (group) => !groupsNamesSelected.includes(group.cn)
     );
-    setUserGroupsFromUser(updatedGroups);
+    if (props.user.uid) {
+      removeMembersFromUserGroup([
+        props.user.uid,
+        "user",
+        groupsNamesSelected,
+      ]).then((response) => {
+        if ("data" in response) {
+          if (response.data.result) {
+            // Set alert: success
+            alerts.addAlert(
+              "remove-user-group-success",
+              "Removed members from user group '" + props.user.uid + "'",
+              "success"
+            );
+            // Update data
+            setUserGroupsFromUser(updatedGroups);
+            setGroupsNamesSelected([]);
+            // Close modal
+            setShowDeleteModal(false);
+            // Refresh
+            props.onRefreshUserData();
+          } else if (response.data.error) {
+            // Set alert: error
+            const errorMessage = response.data.error as unknown as ErrorResult;
+            alerts.addAlert(
+              "remove-user-group-error",
+              errorMessage.message,
+              "danger"
+            );
+          }
+        }
+      });
+    }
   };
 
   return (
