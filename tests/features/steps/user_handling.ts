@@ -95,6 +95,7 @@ const userCert_valid_2: Record<string, string> = {
 };
 // Functions specific to active_users_handling.feature
 Given("sample testing user {string} exists", (username: string) => {
+  // @ts-ignore
   cy.createTestUser(username);
 });
 
