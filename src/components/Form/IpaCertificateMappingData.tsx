@@ -277,10 +277,16 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
       spinnerAriaValueText="Adding"
       spinnerAriaLabelledBy="Adding"
       spinnerAriaLabel="Adding"
+      name={"add-certificate-mapping-data-modal"}
     >
       {modalSpinning ? "Adding" : "Add"}
     </SecondaryButton>,
-    <Button key="cancel" variant="link" onClick={onClose}>
+    <Button
+      key="cancel"
+      variant="link"
+      onClick={onClose}
+      name={"cancel-certificate.mapping-data-modal"}
+    >
       Cancel
     </Button>,
   ];

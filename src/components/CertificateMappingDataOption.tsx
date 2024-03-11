@@ -86,11 +86,12 @@ const CertificateMappingDataOption = (
           <Flex
             direction={{ default: "row" }}
             key={"ipacertmapdata-" + idx + "-div"}
-            name="value"
+            name={"flex-ipacertmapdata-" + idx + "-div"}
           >
             <FlexItem
               key={"ipacertmapdata-" + idx + "-textbox"}
               flex={{ default: "flex_1" }}
+              name={"flexitem-ipacertmapdata-" + idx + "-div"}
             >
               <TextInput
                 id="cert-map-data"
@@ -117,6 +118,7 @@ const CertificateMappingDataOption = (
         ))}
       </Flex>
       <SecondaryButton
+        name={"add-ipacertmapdata"}
         classname="pf-v5-u-mt-sm pf-v5-u-mb-0"
         isDisabled={!props.isCertMappingDataChecked}
         onClickHandler={onAddCertificateMappingDataHandler}
@@ -156,12 +158,12 @@ const CertificateMappingDataOption = (
         {certificateListCopy.map((certificate, idx) => (
           <Flex
             direction={{ default: "row" }}
-            key={"certificate-" + idx + "-div"}
+            key={"flex-certificate-" + idx + "-div"}
             alignItems={{ default: "alignItemsFlexEnd" }}
-            name="value"
+            name={"flex-certificate-" + idx + "-div"}
           >
             <FlexItem
-              key={"certificate-" + idx + "-textbox"}
+              key={"flexitem-certificate-" + idx + "-textbox"}
               flex={{ default: "flex_1" }}
             >
               <TextArea
@@ -177,7 +179,10 @@ const CertificateMappingDataOption = (
                 style={{ height: "135px" }}
               />
             </FlexItem>
-            <FlexItem key={"certificate-" + idx + "-delete-button"}>
+            <FlexItem
+              key={"certificate-" + idx + "-delete-button"}
+              name={"certificate-" + idx + "-delete-button"}
+            >
               <SecondaryButton
                 name="remove"
                 onClickHandler={() => onRemoveCertificateHandler(idx)}
@@ -189,6 +194,7 @@ const CertificateMappingDataOption = (
         ))}
       </Flex>
       <SecondaryButton
+        name={"add-certificate"}
         classname="pf-v5-u-mt-sm"
         isDisabled={!props.isCertMappingDataChecked}
         onClickHandler={onAddCertificateHandler}
@@ -220,6 +226,7 @@ const CertificateMappingDataOption = (
           <FormGroup
             label="Certificate mapping data"
             fieldId="certificate-mapping-data-modal"
+            name={"certificate-mapping-data-section"}
           >
             <>{certificateMappingDataElement}</>
           </FormGroup>
@@ -232,6 +239,7 @@ const CertificateMappingDataOption = (
                 hasAutoWidth={true}
               />
             }
+            name={"certificate-section"}
           >
             <>{certificateElement}</>
           </FormGroup>
