@@ -36,7 +36,7 @@ $ sudo dnf install vagrant vagrant-libvirt vagrant-sshfs
 
 3. Start and provision the guest virtual machine: `vagrant up`
 
-4. Add guest machine's IP address to your `/etc/hosts` pointing to its hostname, e.g:
+4. Add guest machine's IP address to your `/etc/hosts` pointing to its hostname,~~~~ e.g:
 
 ```
 192.168.122.5 server.ipa.demo
@@ -54,32 +54,32 @@ between your host or guest machine.
 
 > If you decide to use your guest machine, just ssh into it, go to the synced folder:
 >
-> ```
+> ```bash
 > $ vagrant ssh
 > $ cd /usr/src/freeipa-webui/
 > ```
 
 Now you can install the project's dependencies:
 
-```
+```bash
 $ npm install
 ```
 
 To build (and watch the project for changes), run:
 
-```
+```bash
 $ npm run start
 ```
 
 You can serve the project using the following command:
 
-```
+```bash
 $ npm run serve
 ```
 
 You can also build and serve the project for production using the following command:
 
-```
+```bash
 $ npm run build
 ```
 
@@ -94,9 +94,29 @@ The default credentials are **admin** and **Secret123**.
 
 ## Testing
 
-TBD
+### Integration tests
 
-- [audit-ci](https://github.com/IBM/audit-ci)
+Integration testing uses Cypress library, which runs Gherkin-defined steps.
+
+#### Launching the existing tests
+
+> [!WARNING]  
+> Never run integration tests on production server. Clean-up step would delete all existing entries, e.g. users.
+
+1. Prepare a vagrant server as in `Development Environment`
+2. if you want to launch all the tests in headless mode, execute
+
+```bash
+$ npm run cypress
+```
+
+if you want to open graphical debugger, execute
+
+```bash
+$ npm run cypress:open
+```
+
+and select desired feature file you want to execute.
 
 ## License
 
