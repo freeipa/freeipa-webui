@@ -311,10 +311,6 @@ const Hosts = () => {
     }
   }, [isBatchLoading]);
 
-  const updateShowTableRows = (value: boolean) => {
-    setShowTableRows(value);
-  };
-
   // Dropdown kebab
   const [kebabIsOpen, setKebabIsOpen] = useState(false);
 
@@ -476,9 +472,9 @@ const Hosts = () => {
     updatePage,
     updatePerPage,
     showTableRows,
-    updateShowTableRows,
     updateSelectedPerPage,
     updateShownElementsList: updateShownHostsList,
+    totalCount,
   };
 
   // - 'BulkSelectorPrep'
@@ -636,7 +632,6 @@ const Hosts = () => {
           paginationData={paginationData}
           widgetId="pagination-options-menu-top"
           isCompact={true}
-          totalCount={totalCount}
         />
       ),
       toolbarItemAlignment: { default: "alignRight" },
@@ -680,7 +675,6 @@ const Hosts = () => {
         </div>
         <PaginationPrep
           list={hostsList}
-          totalCount={totalCount}
           paginationData={paginationData}
           variant={PaginationVariant.bottom}
           widgetId="pagination-options-menu-bottom"

@@ -11,11 +11,11 @@ interface PaginationData {
   showTableRows: boolean;
   updateSelectedPerPage: (selected: number) => void;
   updateShownElementsList: (newShownElementsList: any[]) => void;
+  totalCount: number;
 }
 
 interface PropsToPaginationPrep {
   list: any[];
-  totalCount?: number;
   paginationData: PaginationData;
   variant?: "top" | "bottom";
   widgetId?: string | undefined;
@@ -71,7 +71,7 @@ const PaginationPrep = (props: PropsToPaginationPrep) => {
   return (
     <PaginationLayout
       list={props.list}
-      totalCount={props.totalCount}
+      totalCount={props.paginationData.totalCount}
       perPage={props.paginationData.perPage}
       page={props.paginationData.page}
       handleSetPerPage={handlePerPageSelect}
