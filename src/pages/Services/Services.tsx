@@ -179,10 +179,6 @@ const Services = () => {
   // Show table rows
   const [showTableRows, setShowTableRows] = useState(false);
 
-  const updateShowTableRows = (value: boolean) => {
-    setShowTableRows(value);
-  };
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -379,9 +375,9 @@ const Services = () => {
     updatePage,
     updatePerPage,
     showTableRows,
-    updateShowTableRows,
     updateSelectedPerPage,
     updateShownElementsList: setHostsList,
+    totalCount,
   };
 
   // - 'ServicesTable'
@@ -502,7 +498,6 @@ const Services = () => {
           paginationData={paginationData}
           widgetId="pagination-options-menu-top"
           isCompact={true}
-          totalCount={totalCount}
         />
       ),
       toolbarItemAlignment: { default: "alignRight" },
@@ -552,7 +547,6 @@ const Services = () => {
           widgetId="pagination-options-menu-bottom"
           perPageComponent="button"
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-          totalCount={totalCount}
         />
       </PageSection>
       <ModalErrors errors={modalErrors.getAll()} />
