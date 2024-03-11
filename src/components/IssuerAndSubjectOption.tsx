@@ -58,7 +58,7 @@ const IssuerAndSubjectOption = (props: PropsToIssuerAndSubjectOption) => {
         id="issuer-and-subject"
         className="pf-v5-u-mb-md"
       />
-      <div className="pf-v5-u-ml-lg pf-v5-u-mb-md">
+      <div className="pf-v5-u-ml-lg pf-v5-u-mb-md" id="issuer-and-subject">
         <Form>
           <FormGroup
             label="Issuer"
@@ -70,9 +70,10 @@ const IssuerAndSubjectOption = (props: PropsToIssuerAndSubjectOption) => {
               />
             }
             isRequired={props.isIssuerAndSubjectChecked}
+            name="issuer-formgroup"
           >
             <TextInput
-              id="issuer-textbox"
+              id="issuer"
               value={props.issuerValue}
               type="text"
               name="issuer"
@@ -92,6 +93,7 @@ const IssuerAndSubjectOption = (props: PropsToIssuerAndSubjectOption) => {
               />
             }
             isRequired={props.isIssuerAndSubjectChecked}
+            name="subject-formgroup"
           >
             <TextInput
               id="subject-textbox"
