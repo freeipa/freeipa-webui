@@ -93,7 +93,7 @@ jobs:
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
-          browser: firefox
+          browser: electron
           config-file: cypress/cypress.config.ts
 
       - name: Upload cypress screenshots
