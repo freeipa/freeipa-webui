@@ -214,3 +214,55 @@ Feature: User details
       | remains | name                     | serial                                          |
       | 1       | krunoslav.hrnjak@hops.hr | 264374074076456325397645183544606453821         |
       | 0       | mshelley                 | 11594046475060613235605226731133545093594498279 |
+
+  Scenario: Adding a single Certificate mapping data from the 'Certificate mapping data' radio button
+    When I click on Add key in the Certificate mappings section
+    When in the modal dialog I check "Certificate mapping data" radio selector
+    When in the modal dialog I click on "Add" button under the Certificate mapping data section
+    When I type "Certificate test 123" into the text input in the Certificate mapping data modal
+    When in the modal dialog I click on "Add" button
+    Then I should see certificate mappings with the "Certificate test 123" text in the Certificate mappings section
+    Then I should see "success" alert with text "Added certificate mappings to user 'armadillo'"
+
+  Scenario: Add multiple Certificate mapping data entries from the 'Certificate mapping data' radio button
+    When I click on Add key in the Certificate mappings section
+    When in the modal dialog I check "Certificate mapping data" radio selector
+    When in the modal dialog I click on "Add" button under the Certificate mapping data section
+    When I type "Certificate test 321" into the text input with index 0 in the Certificate mapping data modal
+    When in the modal dialog I click on "Add" button under the Certificate mapping data section
+    When I type "Certificate test 234" into the text input with index 1 in the Certificate mapping data modal
+    When in the modal dialog I click on "Add" button under the Certificate mapping data section
+    When I type "Certificate test 345" into the text input with index 2 in the Certificate mapping data modal
+    When in the modal dialog I click on "Add" button
+    Then I should see certificate mappings with the "Certificate test 321" text in the Certificate mappings section
+    Then I should see certificate mappings with the "Certificate test 234" text in the Certificate mappings section
+    Then I should see certificate mappings with the "Certificate test 345" text in the Certificate mappings section
+    Then I should see "success" alert with text "Added certificate mappings to user 'armadillo'"
+
+  Scenario: Delete certificate mapping data entry
+    When I click on Delete button for certificate mapping data number 1 in the Certificate mappings section
+    Then I see a modal with text "Certificate test 123"
+    When in the modal dialog I click on "Delete" button
+    Then I should see "success" alert with text "Removed certificate mappings from user 'armadillo'"
+
+  Scenario: Add Certificate from the 'Certificate mapping data' radio button
+    When I click on Add key in the Certificate mappings section
+    When in the modal dialog I check "Certificate mapping data" radio selector
+    When in the modal dialog I click on Add button under the Certificate subsection
+    When I put Certificate named "valid sample 1" into the text area with index 1 in the Certificate mapping data modal
+    When in the modal dialog I click on "Add" button
+    Then I should see "success" alert with text "Added certificate mappings to user 'armadillo'"
+
+  Scenario: Add Issuer and object
+    When I click on Add key in the Certificate mappings section
+    When in the modal dialog I check "Issuer and subject" radio selector
+    When I type "O=EXAMPLE.ORG,CN=Issuer 123" into the "Issuer" text input in the Certificate mapping data modal
+    When I type "O=EXAMPLE.ORG,CN=Subject 123" into the "Subject" text input in the Certificate mapping data modal
+    When in the modal dialog I click on "Add" button
+    Then I should see "success" alert with text "Added certificate mappings to user 'armadillo'"
+
+  Scenario: Remove certificate mapping data entry
+    When I click on Delete button for certificate mapping data number 1 in the Certificate mappings section
+    Then I see a modal with text "Certificate test"
+    When in the modal dialog I click on "Delete" button
+    Then I should see "success" alert with text "Removed certificate mappings from user 'armadillo'"

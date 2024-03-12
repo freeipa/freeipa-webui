@@ -268,3 +268,89 @@ Then("file with extension {string} should be downloaded", (ext: string) => {
   // @ts-ignore
   cy.verifyDownload("." + ext, { contains: true });
 });
+
+// Certificate mapping data
+// - Add certificate mapping data
+When("I click on Add key in the Certificate mappings section", () => {
+  cy.get('button[name="add-certificate-mapping-data"]').click();
+});
+
+When(
+  "in the modal dialog I click on {string} button under the Certificate mapping data section",
+  (buttonText: string) => {
+    cy.get("button[name=add-ipacertmapdata]").contains(buttonText).click();
+  }
+);
+
+When(
+  "I type {string} into the text input in the Certificate mapping data modal",
+  (text: string) => {
+    cy.get("div.pf-v5-c-form__group-control input[id=cert-map-data]").type(
+      text
+    );
+  }
+);
+
+Then(
+  "I should see certificate mappings with the {string} text in the Certificate mappings section",
+  (text: string) => {
+    cy.get("div.pf-v5-c-form__group").contains(text);
+  }
+);
+
+// - Add multiple certificate mapping data entries from the certificate mapping data radio button
+When(
+  "I type {string} into the text input with index {int} in the Certificate mapping data modal",
+  (text: string, idx: number) => {
+    cy.get(
+      "div.pf-v5-c-form__group-control input[name=ipacertmapdata-" + idx + "]"
+    ).type(text);
+  }
+);
+
+// - Remove certificate mapping data
+When(
+  "I click on Delete button for certificate mapping data number {int} in the Certificate mappings section",
+  (index: number) => {
+    cy.get(
+      "button[name=remove-certificate-mapping-data-" + (index - 1) + "]"
+    ).click();
+  }
+);
+
+// - Add Certificate from the 'Certificate mapping data' radio button
+When(
+  "in the modal dialog I click on Add button under the Certificate subsection",
+  () => {
+    cy.get("div[name=certificate]").next().click();
+  }
+);
+
+When(
+  "I put Certificate named {string} into the text area with index {int} in the Certificate mapping data modal",
+  (certName: string, index: number) => {
+    let selectedKey = "";
+    if (certName == "valid sample 1") {
+      selectedKey = userCert_valid_1.body;
+    } else if (certName == "valid sample 2") {
+      selectedKey = userCert_valid_2.body;
+    }
+    cy.get(
+      "div.pf-v5-c-form__group-control textarea[name=certificate-" +
+        (index - 1) +
+        "]"
+    ).type(selectedKey, { delay: 0 });
+  }
+);
+
+// - Add Issuer and object
+Then(
+  "I type {string} into the {string} text input in the Certificate mapping data modal",
+  (text: string, textInputName: string) => {
+    cy.get(
+      "div.pf-v5-c-form__group-control input[name=" +
+        textInputName.toLowerCase() +
+        "]"
+    ).type(text);
+  }
+);
