@@ -81,7 +81,7 @@ Then("button {string} should be disabled", function (buttonText: string) {
 When(
   "in the modal dialog I click on {string} button",
   function (buttonText: string) {
-    cy.get("[role=dialog] button").contains(buttonText).click();
+    cy.get("[role=dialog] footer button").contains(buttonText).click();
     cy.wait(1000);
   }
 );
