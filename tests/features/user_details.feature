@@ -37,8 +37,8 @@ Feature: User details
     And I should see value "<firstName> <lastName>" in the field "GECOS"
     And I should see value "<class>" in the field "Class"
     Examples:
-     | firstName | lastName | jobTitle |  class   |
-     | Reginald  | Barclay  | engineer |  ipauser |
+      | firstName | lastName | jobTitle | class   |
+      | Reginald  | Barclay  | engineer | ipauser |
 
   Scenario: Change the account settings - login, password, home
     When I click in the field "User login"
@@ -57,41 +57,41 @@ Feature: User details
     And I should see value "/home/rbarclay" in the field "Home directory"
 
   Scenario: Change the account settings - SSH keys addition
-      When I click on Add key in the SSH public keys section
-      Then I see "Set SSH key" modal
-      When I put SSH key named "valid sample 1" into the text area
-      And in the modal dialog I click on "Set" button
-      Then I should see "success" alert with text "Added SSH public key to 'armadillo'"
-      And I should see 1 SSH keys in the SSH public keys section
-      When I click on Show key button for key number 1
-      Then the SSH key should match "valid sample 1"
-      * in the modal dialog I click on "Cancel" button
-      # Duplicate key
-      When I click on Add key in the SSH public keys section
-      Then I see "Set SSH key" modal
-      When I put SSH key named "valid sample 1" into the text area
-      And in the modal dialog I click on "Set" button
-      Then I should see "danger" alert with text "no modifications to be performed"
-      * in the modal dialog I click on "Cancel" button
-      And I should see 1 SSH keys in the SSH public keys section
-      # Invalid key
-      When I click on Add key in the SSH public keys section
-      Then I see "Set SSH key" modal
-      When I put SSH key named "invalid sample" into the text area
-      And in the modal dialog I click on "Set" button
-      Then I should see "danger" alert with text "invalid 'sshpubkey': invalid SSH public key"
-      * in the modal dialog I click on "Cancel" button
-      And I should see 1 SSH keys in the SSH public keys section
-      # Another valid key
-      When I click on Add key in the SSH public keys section
-      Then I see "Set SSH key" modal
-      When I put SSH key named "valid sample 2" into the text area
-      And in the modal dialog I click on "Set" button
-      Then I should see "success" alert with text "Added SSH public key to 'armadillo'"
-      And I should see 2 SSH keys in the SSH public keys section
-      When I click on Show key button for key number 2
-      Then the SSH key should match "valid sample 2"
-      * in the modal dialog I click on "Cancel" button
+    When I click on Add key in the SSH public keys section
+    Then I see "Set SSH key" modal
+    When I put SSH key named "valid sample 1" into the text area
+    And in the modal dialog I click on "Set" button
+    Then I should see "success" alert with text "Added SSH public key to 'armadillo'"
+    And I should see 1 SSH keys in the SSH public keys section
+    When I click on Show key button for key number 1
+    Then the SSH key should match "valid sample 1"
+    * in the modal dialog I click on "Cancel" button
+    # Duplicate key
+    When I click on Add key in the SSH public keys section
+    Then I see "Set SSH key" modal
+    When I put SSH key named "valid sample 1" into the text area
+    And in the modal dialog I click on "Set" button
+    Then I should see "danger" alert with text "no modifications to be performed"
+    * in the modal dialog I click on "Cancel" button
+    And I should see 1 SSH keys in the SSH public keys section
+    # Invalid key
+    When I click on Add key in the SSH public keys section
+    Then I see "Set SSH key" modal
+    When I put SSH key named "invalid sample" into the text area
+    And in the modal dialog I click on "Set" button
+    Then I should see "danger" alert with text "invalid 'sshpubkey': invalid SSH public key"
+    * in the modal dialog I click on "Cancel" button
+    And I should see 1 SSH keys in the SSH public keys section
+    # Another valid key
+    When I click on Add key in the SSH public keys section
+    Then I see "Set SSH key" modal
+    When I put SSH key named "valid sample 2" into the text area
+    And in the modal dialog I click on "Set" button
+    Then I should see "success" alert with text "Added SSH public key to 'armadillo'"
+    And I should see 2 SSH keys in the SSH public keys section
+    When I click on Show key button for key number 2
+    Then the SSH key should match "valid sample 2"
+    * in the modal dialog I click on "Cancel" button
 
   Scenario: Change the account settings - SSH keys deletion
     When I click on Delete button for key number 1
@@ -171,10 +171,10 @@ Feature: User details
     And I see a modal with text "<validTo>"
     * in the modal dialog I click on "Close" button
     * I toggle the kebab menu for certificate number <number>
- Examples:
-    | number | name                     | serial                                            | issuer        | validFrom                     | validTo                       | cn                |
-    | 1      | krunoslav.hrnjak@hops.hr | 264374074076456325397645183544606453821           | Fina RDC 2015 | Mon Oct 14 12:13:20 2019 UTC  | Thu Oct 14 12:13:20 2021 UTC  | KRUNOSLAV HRNJAK  |
-    | 2      | mshelley                 | 11594046475060613235605226731133545093594498279   | mshelley      | Wed Sep 27 09:17:49 2023 UTC  | Thu Sep 26 09:17:49 2024 UTC  | mshelley          |
+    Examples:
+      | number | name                     | serial                                          | issuer        | validFrom                    | validTo                      | cn               |
+      | 1      | krunoslav.hrnjak@hops.hr | 264374074076456325397645183544606453821         | Fina RDC 2015 | Mon Oct 14 12:13:20 2019 UTC | Thu Oct 14 12:13:20 2021 UTC | KRUNOSLAV HRNJAK |
+      | 2      | mshelley                 | 11594046475060613235605226731133545093594498279 | mshelley      | Wed Sep 27 09:17:49 2023 UTC | Thu Sep 26 09:17:49 2024 UTC | mshelley         |
 
   Scenario: Certificates - show raw certificate
     Given certificate number 1 has name "krunoslav.hrnjak@hops.hr"
@@ -197,10 +197,10 @@ Feature: User details
     And in the opened certificate kebab menu, I click on "Download" button
     Then file with extension "pem" should be downloaded
     * I toggle the kebab menu for certificate number <number>
-  Examples:
-    | number  | name                      |
-    | 1       | krunoslav.hrnjak@hops.hr  |
-    | 2       | mshelley                  |
+    Examples:
+      | number | name                     |
+      | 1      | krunoslav.hrnjak@hops.hr |
+      | 2      | mshelley                 |
 
   Scenario Outline: Certificates - deletion
     Given certificate number 1 has name "<name>"
@@ -210,7 +210,7 @@ Feature: User details
     And I see a modal with text "<serial>"
     When in the modal dialog I click on "Delete" button
     Then I should see <remains> certificates in the Certificates section
-  Examples:
-    | remains  | name                       | serial                                          |
-    | 1        | krunoslav.hrnjak@hops.hr   | 264374074076456325397645183544606453821         |
-    | 0        | mshelley                   | 11594046475060613235605226731133545093594498279 |
+    Examples:
+      | remains | name                     | serial                                          |
+      | 1       | krunoslav.hrnjak@hops.hr | 264374074076456325397645183544606453821         |
+      | 0       | mshelley                 | 11594046475060613235605226731133545093594498279 |
