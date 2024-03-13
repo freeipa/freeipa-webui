@@ -130,7 +130,7 @@ When(
       .contains(fieldName)
       .parent()
       .then(($label) => {
-        cy.get("[name=modal-form-" + $label.attr("for") + "]").type(content);
+        cy.get("#" + $label.attr("for")).type(content);
       });
   }
 );
@@ -221,7 +221,13 @@ Then("I close the alert", () => {
 
 // Kebab
 When("I click on kebab menu and select {string}", (buttonName: string) => {
-  cy.get("#main-dropdown-kebab").click();
+  cy.get("body").then(($body) => {
+    if ($body.find("#main-dropdown-kebab").length) {
+      cy.get("#main-dropdown-kebab").click();
+    } else if ($body.find("#toggle-action-buttons").length) {
+      cy.get("#toggle-action-buttons").click();
+    }
+  });
   cy.get("span.pf-v5-c-menu__item-text").contains(buttonName).click();
 });
 

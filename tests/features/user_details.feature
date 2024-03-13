@@ -376,7 +376,7 @@ Feature: User details
     Then I should see "success" alert with text "User modified"
     And I should see no textboxes under the field "Telephone number"
 
-  # - Pager number
+# - Pager number
   Scenario: Add multiple pager numbers
     When I click on "Add" button in the "Pager number" section
     Then I should see a new empty text input field with ID "pager-0"
@@ -399,7 +399,7 @@ Feature: User details
     And I should see no textboxes under the field "Pager number"
 
   # - Mobile phone number
-  Scenario: Add multiple mobile phone numbers
+Scenario: Add multiple mobile phone numbers
     When I click on "Add" button in the "Mobile phone number" section
     Then I should see a new empty text input field with ID "mobile-0"
     When I click on "Add" button in the "Mobile phone number" section
@@ -420,3 +420,62 @@ Feature: User details
     Then I should see "success" alert with text "User modified"
     And I should see no textboxes under the field "Mobile phone number"
 
+  Scenario: Password - reset - no previous password
+    When I click in the field "Password"
+    Then the active field should be empty
+
+    When I click on kebab menu and select "Reset password"
+    Then I see "Reset password" modal
+    And button "Reset password" should be disabled
+
+    When I type in the field "New Password" text "ToBoldlyGoWhereNoOneHasGoneBefore"
+    And I type in the field "Verify password" text "ToBoldlyGoWhereNoOneHasGoneBefore"
+    Then button "Reset password" should be enabled
+
+    When in the modal dialog I click on "Reset password" button
+    Then I should see "success" alert with text "Changed password for user 'armadillo'"
+    When I click on "Refresh" button
+    Then I should see value "********" in the field "Password"
+
+  Scenario Outline: Password and krb principal expiration - manual input
+    When I click in the date selector field in the "<section>" section
+    # far future - the foundation of the United Federation of Planets
+    And I clear the selected field
+    And I type in the selected field text "2161-03-16"
+
+    When I click in the time selector field in the "<section>" section
+    And I clear the selected field
+    And I type in the selected field text "15:26"
+
+    When I click on "Save" button
+    Then I should see "success" alert with text "User modified"
+    And I should see value "2161-03-16" in the date selector in the "<section>" section
+    And I should see value "15:26" in the time selector in the "<section>" section
+
+    # A day long passed - Apollo 11 landing - before UNIX time
+    When I click in the date selector field in the "<section>" section
+    And I clear the selected field
+    And I type in the selected field text "1969-07-16"
+    And I click on "Save" button
+    Then I should see "success" alert with text "User modified"
+    And I should see value "1969-07-16" in the date selector in the "<section>" section
+    # the time value should remain unchanged
+    And I should see value "15:26" in the time selector in the "<section>" section
+
+    # incorrect date - format mismatch
+    When I click in the date selector field in the "<section>" section
+    And I clear the selected field
+    And I type in the selected field text "1994-13-07"
+    And I blur the selected field
+    Then I should see "Invalid date" message in the "<section>" section
+
+    # incorrect time - format mismatch
+    When I click in the time selector field in the "<section>" section
+    And I clear the selected field
+    And I type in the selected field text "1625"
+    And I blur the selected field
+    Then I should see "Invalid date" message in the "<section>" section
+  Examples:
+    | section                               |
+    | Password expiration                   |
+    | Kerberos principal expiration (UTC)   |

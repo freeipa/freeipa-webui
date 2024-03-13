@@ -118,6 +118,9 @@ When("I type in the selected field text {string}", (inputText: string) => {
   cy.focused().type(inputText);
 });
 
+When("I blur the selected field", () => {
+  cy.focused().blur();
+});
 Then(
   "I should see value {string} in the field {string}",
   (value: string, fieldName: string) => {
@@ -140,6 +143,72 @@ Then("the active field should be empty", () => {
   cy.focused().should("have.value", "");
 });
 
+// specific fields
+When(
+  "I click in the date selector field in the {string} section",
+  (section: string) => {
+    cy.get("label")
+      .contains(section)
+      .parent()
+      .parent()
+      .parent()
+      .find("input[placeholder=YYYY-MM-DD]")
+      .click();
+  }
+);
+
+When(
+  "I click in the time selector field in the {string} section",
+  (section: string) => {
+    cy.get("label")
+      .contains(section)
+      .parent()
+      .parent()
+      .parent()
+      .find("input[placeholder=hh\\:mm]")
+      .click();
+  }
+);
+
+Then(
+  "I should see value {string} in the date selector in the {string} section",
+  (value: string, section: string) => {
+    cy.get("label")
+      .contains(section)
+      .parent()
+      .parent()
+      .parent()
+      .find("input[placeholder=YYYY-MM-DD]")
+      .invoke("val")
+      .should("eq", value);
+  }
+);
+
+Then(
+  "I should see value {string} in the time selector in the {string} section",
+  (value: string, section: string) => {
+    cy.get("label")
+      .contains(section)
+      .parent()
+      .parent()
+      .parent()
+      .find("input[placeholder=hh\\:mm]")
+      .invoke("val")
+      .should("eq", value);
+  }
+);
+
+Then(
+  "I should see {string} message in the {string} section",
+  (msg: string, section: string) => {
+    cy.get("label")
+      .contains(section)
+      .parent()
+      .parent()
+      .get("div.pf-m-error")
+      .contains(msg);
+  }
+);
 // SSH keys
 When("I click on Add key in the SSH public keys section", () => {
   cy.get('button[name="add-ssh-public-key"').click();
