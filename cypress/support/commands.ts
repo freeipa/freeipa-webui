@@ -76,25 +76,19 @@ Cypress.Commands.add("createTestUser", (username: string) => {
           .contains("User login")
           .parent()
           .then(($label) => {
-            cy.get("[name=modal-form-" + $label.attr("for") + "]").type(
-              username
-            );
+            cy.get("#" + $label.attr("for")).type(username);
           });
         cy.get("[role=dialog] label")
           .contains("First name")
           .parent()
           .then(($label) => {
-            cy.get("[name=modal-form-" + $label.attr("for") + "]").type(
-              "Arctic"
-            );
+            cy.get("#" + $label.attr("for")).type("Arctic");
           });
         cy.get("[role=dialog] label")
           .contains("Last name")
           .parent()
           .then(($label) => {
-            cy.get("[name=modal-form-" + $label.attr("for") + "]").type(
-              "Asbestos"
-            );
+            cy.get("#" + $label.attr("for")).type("Asbestos");
           });
         cy.get("[role=dialog] button").contains("Add").click();
       }
