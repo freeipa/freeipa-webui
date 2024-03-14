@@ -21,7 +21,7 @@ import SecondaryButton from "../../components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "../../components/layouts/HelpTextWithIconLayout";
 // Components
 import BulkSelectorServicesPrep from "../../components/BulkSelectorServicesPrep";
-import PaginationPrep from "../../components/PaginationPrep";
+import PaginationLayout from "../../components/layouts/PaginationLayout";
 // Tables
 import ServicesTable from "./ServicesTable";
 // Redux
@@ -125,6 +125,7 @@ const Services = () => {
   // Issue search with filter
   const submitSearchValue = () => {
     setShowTableRows(false);
+    setServicesTotalCount(0);
     setSearchIsDisabled(true);
     retrieveServices({
       searchValue: searchValue,
@@ -278,6 +279,7 @@ const Services = () => {
     if (servicesDataResponse.isFetching) {
       setShowTableRows(false);
       // Reset selected users on refresh
+      setServicesTotalCount(0);
       setSelectedServices([]);
       setSelectedServiceIds([]);
       globalErrors.clear();
@@ -336,6 +338,7 @@ const Services = () => {
     setShowTableRows(false);
 
     // Reset selected hosts on refresh
+    setServicesTotalCount(0);
     setSelectedServices([]);
     setSelectedServiceIds([]);
 
@@ -368,13 +371,12 @@ const Services = () => {
     updateSelectedPerPage,
   };
 
-  // - 'PaginationPrep'
+  // - 'PaginationLayout'
   const paginationData = {
     page,
     perPage,
     updatePage,
     updatePerPage,
-    showTableRows,
     updateSelectedPerPage,
     updateShownElementsList: setHostsList,
     totalCount,
@@ -493,7 +495,7 @@ const Services = () => {
     {
       key: 8,
       element: (
-        <PaginationPrep
+        <PaginationLayout
           list={servicesList}
           paginationData={paginationData}
           widgetId="pagination-options-menu-top"
@@ -540,12 +542,11 @@ const Services = () => {
             </InnerScrollContainer>
           </OuterScrollContainer>
         </div>
-        <PaginationPrep
+        <PaginationLayout
           list={servicesList}
           paginationData={paginationData}
           variant={PaginationVariant.bottom}
           widgetId="pagination-options-menu-bottom"
-          perPageComponent="button"
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
         />
       </PageSection>

@@ -1,45 +1,74 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
-// PatternFly
 import { Pagination } from "@patternfly/react-core";
 
-interface PropsToPaginationLayout {
-  list: any[];
-  totalCount?: number;
-  perPage: number;
+interface PaginationData {
   page: number;
+  perPage: number;
+  updatePage: (newPage: number) => void;
+  updatePerPage: (newSetPerPage: number) => void;
+  updateSelectedPerPage: (selected: number) => void;
+  updateShownElementsList: (newShownElementsList: any[]) => void;
+  totalCount: number;
+}
+
+interface PropsToPaginationPrep {
+  list: any[];
+  paginationData: PaginationData;
   variant?: "top" | "bottom";
-  handleSetPage: (
-    _evt: React.MouseEvent | React.KeyboardEvent | MouseEvent,
-    newPage: number,
-    perPage?: number,
-    startIdx?: number,
-    endIdx?: number
-  ) => void;
-  handleSetPerPage: (
-    _evt: React.MouseEvent | React.KeyboardEvent | MouseEvent,
-    newPerPage: number,
-    newPage: number,
-    startIdx?: number,
-    endIdx?: number
-  ) => void;
-  perPageComponent?: "div" | "button";
-  widgetId: string | undefined;
+  widgetId?: string | undefined;
   className?: string;
   isCompact?: boolean;
 }
 
-const PaginationLayout = (props: PropsToPaginationLayout) => {
+const PaginationLayout = (props: PropsToPaginationPrep) => {
+  // Handle content on 'setPage'
+  const handleSetPage = (
+    _event: React.MouseEvent | React.KeyboardEvent | MouseEvent,
+    newPage: number,
+    perPage: number | undefined,
+    startIdx: number | undefined,
+    endIdx: number | undefined
+  ) => {
+    props.paginationData.updatePage(newPage);
+    props.paginationData.updateShownElementsList(
+      props.list.slice(startIdx, endIdx)
+    );
+    // Reset 'selectedPerPage'
+    props.paginationData.updateSelectedPerPage(0);
+  };
+
+  // Handle content on 'perPageSelect'
+  const handlePerPageSelect = (
+    _event: React.MouseEvent | React.KeyboardEvent | MouseEvent,
+    newPerPage: number,
+    newPage: number,
+    startIdx: number | undefined,
+    endIdx: number | undefined
+  ) => {
+    props.paginationData.updatePerPage(newPerPage);
+    props.paginationData.updatePage(newPage);
+    props.paginationData.updateShownElementsList(
+      props.list.slice(startIdx, endIdx)
+    );
+    // Reset 'selectedPerPage'
+    props.paginationData.updateSelectedPerPage(0);
+  };
+
   return (
     <Pagination
       className={props.className}
-      itemCount={props.totalCount ? props.totalCount : props.list.length}
+      itemCount={
+        props.paginationData.totalCount
+          ? props.paginationData.totalCount
+          : props.list.length
+      }
       widgetId={props.widgetId}
-      perPage={props.perPage}
-      page={props.page}
+      perPage={props.paginationData.perPage}
+      page={props.paginationData.page}
       variant={props.variant}
-      onSetPage={props.handleSetPage}
-      onPerPageSelect={props.handleSetPerPage}
+      onSetPage={handleSetPage}
+      onPerPageSelect={handlePerPageSelect}
       isCompact={props.isCompact}
     />
   );

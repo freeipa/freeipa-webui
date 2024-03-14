@@ -33,7 +33,7 @@ import TextLayout from "src/components/layouts/TextLayout";
 // Tables
 import UsersTable from "../../components/tables/UsersTable";
 // Components
-import PaginationPrep from "src/components/PaginationPrep";
+import PaginationLayout from "../../components/layouts/PaginationLayout";
 import BulkSelectorUsersPrep from "src/components/BulkSelectorUsersPrep";
 // Modals
 import AddUser from "src/components/modals/AddUser";
@@ -115,6 +115,7 @@ const ActiveUsers = () => {
     if (userDataResponse.isFetching) {
       setShowTableRows(false);
       // Reset selected users on refresh
+      setUsersTotalCount(0);
       setSelectedUserNames([]);
       setSelectedUserIds([]);
       setSelectedUsers([]);
@@ -168,9 +169,11 @@ const ActiveUsers = () => {
     setShowTableRows(false);
 
     // Reset selected users on refresh
+    setUsersTotalCount(0);
     setSelectedUserNames([]);
     setSelectedUserIds([]);
     setSelectedUsers([]);
+    setUsersTotalCount(totalCount);
 
     userDataResponse.refetch();
   };
@@ -264,6 +267,7 @@ const ActiveUsers = () => {
   const submitSearchValue = () => {
     setShowTableRows(false);
     setSearchIsDisabled(true);
+    setUsersTotalCount(0);
     retrieveUser({
       searchValue: searchValue,
       sizeLimit: 0,
@@ -499,13 +503,12 @@ const ActiveUsers = () => {
 
   // Data wrappers
   // TODO: Better separation of concerts
-  // - 'PaginationPrep'
+  // - 'PaginationLayout'
   const paginationData = {
     page,
     perPage,
     updatePage,
     updatePerPage,
-    showTableRows,
     updateSelectedPerPage,
     updateShownElementsList: updateShownUsersList,
     totalCount,
@@ -701,7 +704,7 @@ const ActiveUsers = () => {
     {
       key: 11,
       element: (
-        <PaginationPrep
+        <PaginationLayout
           list={activeUsersList}
           paginationData={paginationData}
           widgetId="pagination-options-menu-top"
@@ -753,12 +756,11 @@ const ActiveUsers = () => {
             </InnerScrollContainer>
           </OuterScrollContainer>
         </div>
-        <PaginationPrep
+        <PaginationLayout
           list={activeUsersList}
           paginationData={paginationData}
           variant={PaginationVariant.bottom}
           widgetId="pagination-options-menu-bottom"
-          perPageComponent="button"
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
         />
       </PageSection>
