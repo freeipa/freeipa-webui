@@ -214,3 +214,17 @@ Feature: User details
     | remains  | name                       | serial                                          |
     | 1        | krunoslav.hrnjak@hops.hr   | 264374074076456325397645183544606453821         |
     | 0        | mshelley                   | 11594046475060613235605226731133545093594498279 |
+
+
+  Scenario: Password - reset
+    When I click on kebab menu and select "Reset password"
+    Then I see "Reset password" modal
+    And button "Reset password" should be disabled
+
+    When I type in the field "New Password" text "ToBoldlyGoWhereNoOneHasGoneBefore"
+    And I type in the field "Verify password" text "ToBoldlyGoWhereNoOneHasGoneBefore"
+    Then button "Reset password" should be enabled
+
+    When in the modal dialog I click on "Reset password" button
+    Then I should see "success" alert with text "Changed password for user 'armadillo'"
+

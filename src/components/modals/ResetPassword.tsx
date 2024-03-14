@@ -57,7 +57,7 @@ const ResetPassword = (props: PropsToResetPassword) => {
   // Fields
   const fields = [
     {
-      id: "new-password",
+      id: "reset-password-new-password",
       name: "New Password",
       pfComponent: (
         <PasswordInput
@@ -73,7 +73,7 @@ const ResetPassword = (props: PropsToResetPassword) => {
       ),
     },
     {
-      id: "reset-password",
+      id: "reset-password-verify-password",
       name: "Verify password",
       pfComponent: (
         <>
