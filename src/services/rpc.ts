@@ -23,12 +23,14 @@ import {
   User,
   Service,
   cnType,
+  UserGroup,
 } from "../utils/datatypes/globalDataTypes";
 import { apiToHost } from "../utils/hostUtils";
 import { apiToUser } from "../utils/userUtils";
 import { apiToService } from "../utils/serviceUtils";
 import { apiToPwPolicy } from "../utils/pwPolicyUtils";
 import { apiToKrbPolicy } from "../utils/krbPolicyUtils";
+import { apiToGroup } from "src/utils/groupUtils";
 
 export type UserFullData = {
   user?: Partial<User>;
@@ -150,6 +152,12 @@ export interface GenericPayload {
   objName?: string;
   objAttr?: string;
   entryType?: "user" | "stage" | "preserved" | "host" | "service" | "group";
+}
+
+export interface GroupShowPayload {
+  groupNamesList: string[];
+  no_members?: boolean;
+  version: string;
 }
 
 export interface HostAddPayload {
@@ -1315,6 +1323,34 @@ export const api = createApi({
         return getBatchCommand(membersToRemove, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Given a list of group names, show the full data of those groups
+     * @param {string[]} groupNames - List of group names
+     * @param {boolean} noMembers - Whether to show members or not
+     * @returns {BatchRPCResponse} - Batch response
+     */
+    getGroupInfoByName: build.query<UserGroup[], GroupShowPayload>({
+      query: (payload) => {
+        const groupNames = payload.groupNamesList;
+        const noMembers = payload.no_members || true;
+        const apiVersion = payload.version || API_VERSION_BACKUP;
+        const groupShowCommands: Command[] = groupNames.map((groupName) => ({
+          method: "group_show",
+          params: [[groupName], { no_members: noMembers }],
+        }));
+        return getBatchCommand(groupShowCommands, apiVersion);
+      },
+      transformResponse: (response: BatchRPCResponse): UserGroup[] => {
+        const groupList: UserGroup[] = [];
+        const results = response.result.results;
+        const count = response.result.count;
+        for (let i = 0; i < count; i++) {
+          const groupData = apiToGroup(results[i].result);
+          groupList.push(groupData);
+        }
+        return groupList;
+      },
+    }),
   }),
 });
 
@@ -1441,4 +1477,5 @@ export const {
   useGetEntriesMutation,
   useAddToGroupsMutation,
   useRemoveFromGroupsMutation,
+  useGetGroupInfoByNameQuery,
 } = api;

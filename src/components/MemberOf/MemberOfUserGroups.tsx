@@ -17,10 +17,11 @@ import useAlerts from "src/hooks/useAlerts";
 import {
   ErrorResult,
   useAddToGroupsMutation,
+  useGetGroupInfoByNameQuery,
   useRemoveFromGroupsMutation,
 } from "src/services/rpc";
 // Utils
-import { paginate } from "src/utils/utils";
+import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 
 interface MemberOfUserGroupsProps {
   user: Partial<User>;
@@ -38,6 +39,9 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
 
   // 'User groups' assigned to  user
   const [userGroupsFromUser, setUserGroupsFromUser] = React.useState<
+    UserGroup[]
+  >([]);
+  const [indirectUserGroups, setIndirectUserGroups] = React.useState<
     UserGroup[]
   >([]);
 
@@ -103,8 +107,15 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
 
   // Computed "states"
   const someItemSelected = groupsNamesSelected.length > 0;
-  const shownUserGroups = paginate(userGroupsFromUser, page, perPage);
+  const [shownUserGroups, setShownUserGroups] = React.useState<UserGroup[]>(
+    paginate(userGroupsFromUser, page, perPage)
+  );
   const showTableRows = userGroupsFromUser.length > 0;
+
+  // Update 'shownUserGroups' when 'userGroupsFromUser' changes
+  React.useEffect(() => {
+    setShownUserGroups(paginate(userGroupsFromUser, page, perPage));
+  }, [userGroupsFromUser]);
 
   // Parse availableItems to 'AvailableItems' type
   const parseAvailableItems = (itemsList: UserGroup[]) => {
@@ -121,6 +132,37 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   const availableUserGroupsItems: AvailableItems[] = parseAvailableItems(
     userGroupsNotMemberOfFullList
   );
+
+  // Membership
+  const deleteAndAddButtonsEnabled = membershipDirection !== "indirect";
+
+  const indirectMembersFullDataQuery = useGetGroupInfoByNameQuery({
+    groupNamesList: props.user.memberofindirect_group || [],
+    no_members: true,
+    version: API_VERSION_BACKUP,
+  });
+
+  const indirectMembersData: UserGroup[] =
+    indirectMembersFullDataQuery.data || [];
+
+  // - Update 'Indirect groups' when 'indirectMembersData' changes
+  React.useEffect(() => {
+    if (!indirectMembersFullDataQuery.isFetching && indirectMembersData) {
+      setIndirectUserGroups(indirectMembersData);
+    }
+  }, [indirectMembersFullDataQuery]);
+
+  // - Update shown groups on table when membership direction changes
+  React.useEffect(() => {
+    if (
+      membershipDirection === "indirect" &&
+      props.user.memberofindirect_group
+    ) {
+      setShownUserGroups(paginate(indirectUserGroups, page, perPage));
+    } else {
+      setShownUserGroups(paginate(userGroupsFromUser, page, perPage));
+    }
+  }, [membershipDirection, props.user]);
 
   // Buttons functionality
   // - Refresh
@@ -213,9 +255,9 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
         onSearchTextChange={setSearchValue}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshUserData}
-        deleteButtonEnabled={someItemSelected}
+        deleteButtonEnabled={someItemSelected && deleteAndAddButtonsEnabled}
         onDeleteButtonClick={() => setShowDeleteModal(true)}
-        addButtonEnabled={isAddButtonEnabled}
+        addButtonEnabled={isAddButtonEnabled && deleteAndAddButtonsEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
         membershipDirectionEnabled={true}
         membershipDirection={membershipDirection}
