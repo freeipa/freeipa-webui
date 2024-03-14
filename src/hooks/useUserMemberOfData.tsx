@@ -12,6 +12,10 @@ type MemberOfData = {
   isFetching: boolean;
   refetch: () => void;
   userGroupsFullList: UserGroup[];
+  isLoadingNotMembers: boolean;
+  isFetchingNotMembers: boolean;
+  notMemberOfRefetch: () => void;
+  userGroupsNotMemberOfFullList: UserGroup[];
 };
 
 const useUserMemberOfData = ({
@@ -23,6 +27,13 @@ const useUserMemberOfData = ({
   // TODO: Normalize data to prevent array of arrays
   const userGroupsQuery = useGettingGroupsQuery({
     user: uid,
+    apiVersion: API_VERSION_BACKUP,
+    startIdx: firstUserIdx,
+    stopIdx: lastUserIdx,
+  });
+
+  const userGroupsNotMemberOfQuery = useGettingGroupsQuery({
+    no_user: uid,
     apiVersion: API_VERSION_BACKUP,
     startIdx: firstUserIdx,
     stopIdx: lastUserIdx,
@@ -49,18 +60,50 @@ const useUserMemberOfData = ({
     }
   }, [userGroupsData, userGroupsQuery.isFetching]);
 
+  // Not member of
+  const [userGroupsNotMemberOfFullList, setUserGroupsNotMemberOfFullList] =
+    React.useState<UserGroup[]>([]);
+  const userGroupsNotMemberOfData = userGroupsNotMemberOfQuery.data || {};
+  const isUserGroupsNotMemberOfLoading = userGroupsNotMemberOfQuery.isLoading;
+
+  React.useEffect(() => {
+    if (
+      userGroupsNotMemberOfData !== undefined &&
+      !userGroupsNotMemberOfQuery.isFetching
+    ) {
+      const dataParsed = userGroupsNotMemberOfData as BatchRPCResponse;
+      const count = dataParsed.result.count;
+      const results = dataParsed.result.results;
+
+      const userGroupsNotMemberOfTempList: UserGroup[] = [];
+
+      for (let i = 0; i < count; i++) {
+        userGroupsNotMemberOfTempList.push(apiToGroup(results[i].result));
+      }
+      setUserGroupsNotMemberOfFullList(userGroupsNotMemberOfTempList);
+    }
+  }, [userGroupsNotMemberOfData, userGroupsNotMemberOfQuery.isFetching]);
+
   // [API call] Refresh
   const refetch = () => {
     userGroupsQuery.refetch();
   };
 
+  const notMemberOfRefetch = () => {
+    userGroupsNotMemberOfQuery.refetch();
+  };
+
   // Return data
   return {
-    isFetching: userGroupsQuery.isFetching,
     isLoading: isUserGroupsLoading,
+    isFetching: userGroupsQuery.isFetching,
     refetch,
     userGroupsFullList,
-  } as MemberOfData;
+    isLoadingNotMembers: isUserGroupsNotMemberOfLoading,
+    ifFetchingNotMembers: userGroupsNotMemberOfQuery.isFetching,
+    notMemberOfRefetch,
+    userGroupsNotMemberOfFullList,
+  } as unknown as MemberOfData;
 };
 
 export { useUserMemberOfData };

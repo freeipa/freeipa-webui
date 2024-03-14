@@ -12,31 +12,15 @@ import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 // Hooks
 import { useUserMemberOfData } from "src/hooks/useUserMemberOfData";
-
-function paginate<Type>(array: Type[], page: number, perPage: number): Type[] {
-  const startIdx = (page - 1) * perPage;
-  const endIdx = perPage * page - 1;
-  return array.slice(startIdx, endIdx);
-}
-
-interface TypeWithCN {
-  cn: string;
-}
-
-// Filter functions to compare the available data with the data that
-//  the user is already member of. This is done to prevent duplicates
-//  (e.g: adding the same element twice).
-function filterUserGroupsData<Type extends TypeWithCN>(
-  list1: Array<Type>,
-  list2: Array<Type>
-): Type[] {
-  // User groups
-  return list1.filter((item) => {
-    return !list2.some((itm) => {
-      return item.cn === itm.cn;
-    });
-  });
-}
+import useAlerts from "src/hooks/useAlerts";
+// RPC
+import {
+  ErrorResult,
+  useAddToGroupsMutation,
+  useRemoveFromGroupsMutation,
+} from "src/services/rpc";
+// Utils
+import { paginate } from "src/utils/utils";
 
 interface MemberOfUserGroupsProps {
   user: Partial<User>;
@@ -45,6 +29,13 @@ interface MemberOfUserGroupsProps {
 }
 
 const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
+  // Alerts to show in the UI
+  const alerts = useAlerts();
+
+  // API call
+  const [addMemberToUserGroup] = useAddToGroupsMutation();
+  const [removeMembersFromUserGroup] = useRemoveFromGroupsMutation();
+
   // 'User groups' assigned to  user
   const [userGroupsFromUser, setUserGroupsFromUser] = React.useState<
     UserGroup[]
@@ -66,7 +57,12 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
     lastUserIdx,
   });
 
+  // Member of
   const userGroupsFullList = fullUserGroupsQuery.userGroupsFullList;
+
+  // Not member of
+  const userGroupsNotMemberOfFullList =
+    fullUserGroupsQuery.userGroupsNotMemberOfFullList;
 
   // Get full data of the 'User groups' assigned to user
   React.useEffect(() => {
@@ -87,9 +83,11 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
     }
   }, [fullUserGroupsQuery]);
 
+  // Refetch User groups when user data changes
   React.useEffect(() => {
     fullUserGroupsQuery.refetch();
-  }, [props.user]);
+    fullUserGroupsQuery.notMemberOfRefetch();
+  }, [props.user, userGroupsFromUser]);
 
   const [groupsNamesSelected, setGroupsNamesSelected] = React.useState<
     string[]
@@ -108,16 +106,10 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   const shownUserGroups = paginate(userGroupsFromUser, page, perPage);
   const showTableRows = userGroupsFromUser.length > 0;
 
-  // Available data to be added as member of
-  const userGroupsFilteredData: UserGroup[] = filterUserGroupsData(
-    userGroupsFullList,
-    userGroupsFromUser
-  );
-
-  // Parse availableItems to AvailableItems type
-  const parseAvailableItems = () => {
+  // Parse availableItems to 'AvailableItems' type
+  const parseAvailableItems = (itemsList: UserGroup[]) => {
     const avItems: AvailableItems[] = [];
-    userGroupsFilteredData.map((item) => {
+    itemsList.map((item) => {
       avItems.push({
         key: item.cn,
         title: item.cn,
@@ -125,33 +117,97 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
     });
     return avItems;
   };
-  const availableUserGroupsItems: AvailableItems[] = parseAvailableItems();
+
+  const availableUserGroupsItems: AvailableItems[] = parseAvailableItems(
+    userGroupsNotMemberOfFullList
+  );
 
   // Buttons functionality
   // - Refresh
   const isRefreshButtonEnabled = !props.isUserDataLoading;
 
-  // 'Add' function
-  // TODO: Adapt to work with real data
+  // - 'Add'
+  const isAddButtonEnabled = !props.isUserDataLoading;
+
+  // Add new member to 'User group'
+  const onAddToUserGroup = (toUid: string, type: string, newData: string[]) => {
+    addMemberToUserGroup([toUid, type, newData]).then((response) => {
+      if ("data" in response) {
+        if (response.data.result) {
+          // Set alert: success
+          alerts.addAlert(
+            "add-member-success",
+            "Added new members to user group '" + toUid + "'",
+            "success"
+          );
+          // Refresh data
+          props.onRefreshUserData();
+          // Close modal
+          setShowAddModal(false);
+        } else if (response.data.error) {
+          // Set alert: error
+          const errorMessage = response.data.error as unknown as ErrorResult;
+          alerts.addAlert("add-member-error", errorMessage.message, "danger");
+        }
+      }
+    });
+  };
+
   const onAddUserGroup = (items: AvailableItems[]) => {
     const newItems = items.map((item) => item.key);
     const newGroups = userGroupsFullList.filter((group) =>
       newItems.includes(group.cn)
     );
-    const updatedGroups = userGroupsFromUser.concat(newGroups);
-    setUserGroupsFromUser(updatedGroups);
+    if (props.user.uid !== undefined) {
+      onAddToUserGroup(props.user.uid, "user", newItems);
+      const updatedGroups = userGroupsFromUser.concat(newGroups);
+      setUserGroupsFromUser(updatedGroups);
+    }
   };
 
-  // 'Delete' function
+  // - 'Delete'
   const onDeleteUserGroup = () => {
     const updatedGroups = userGroupsFromUser.filter(
       (group) => !groupsNamesSelected.includes(group.cn)
     );
-    setUserGroupsFromUser(updatedGroups);
+    if (props.user.uid) {
+      removeMembersFromUserGroup([
+        props.user.uid,
+        "user",
+        groupsNamesSelected,
+      ]).then((response) => {
+        if ("data" in response) {
+          if (response.data.result) {
+            // Set alert: success
+            alerts.addAlert(
+              "remove-user-group-success",
+              "Removed members from user group '" + props.user.uid + "'",
+              "success"
+            );
+            // Update data
+            setUserGroupsFromUser(updatedGroups);
+            setGroupsNamesSelected([]);
+            // Close modal
+            setShowDeleteModal(false);
+            // Refresh
+            props.onRefreshUserData();
+          } else if (response.data.error) {
+            // Set alert: error
+            const errorMessage = response.data.error as unknown as ErrorResult;
+            alerts.addAlert(
+              "remove-user-group-error",
+              errorMessage.message,
+              "danger"
+            );
+          }
+        }
+      });
+    }
   };
 
   return (
     <>
+      <alerts.ManagedAlerts />
       <MemberOfToolbarUserGroups
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
@@ -159,7 +215,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
         onRefreshButtonClick={props.onRefreshUserData}
         deleteButtonEnabled={someItemSelected}
         onDeleteButtonClick={() => setShowDeleteModal(true)}
-        addButtonEnabled={true}
+        addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
         membershipDirectionEnabled={true}
         membershipDirection={membershipDirection}

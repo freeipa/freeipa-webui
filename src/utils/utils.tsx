@@ -308,3 +308,20 @@ export const parseEmptyString = (str: string) => {
   }
   return str;
 };
+
+/**
+ * Get a page (slice) from a list of elements
+ * @param array List of elements
+ * @param page Page number
+ * @param perPage Number of elements per page
+ * @returns List of elements for the given page
+ */
+export function paginate<Type>(
+  array: Type[],
+  page: number,
+  perPage: number
+): Type[] {
+  const startIdx = (page - 1) * perPage;
+  const endIdx = perPage * page - 1;
+  return array.slice(startIdx, endIdx);
+}

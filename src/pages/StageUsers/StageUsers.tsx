@@ -343,6 +343,7 @@ const StageUsers = () => {
     showTableRows,
     updateSelectedPerPage,
     updateShownElementsList: updateShownUsersList,
+    totalCount,
   };
 
   // - 'BulkSelectorPrep'
@@ -503,7 +504,6 @@ const StageUsers = () => {
           paginationData={paginationData}
           widgetId="pagination-options-menu-top"
           isCompact={true}
-          totalCount={totalCount}
         />
       ),
       toolbarItemAlignment: { default: "alignRight" },
@@ -558,7 +558,6 @@ const StageUsers = () => {
           widgetId="pagination-options-menu-bottom"
           perPageComponent="button"
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-          totalCount={totalCount}
         />
       </PageSection>
       <ModalErrors errors={modalErrors.getAll()} />

@@ -508,6 +508,7 @@ const ActiveUsers = () => {
     showTableRows,
     updateSelectedPerPage,
     updateShownElementsList: updateShownUsersList,
+    totalCount,
   };
 
   // - 'BulkSelectorUsersPrep'
@@ -705,7 +706,6 @@ const ActiveUsers = () => {
           paginationData={paginationData}
           widgetId="pagination-options-menu-top"
           isCompact={true}
-          totalCount={totalCount}
         />
       ),
       toolbarItemAlignment: { default: "alignRight" },
@@ -760,7 +760,6 @@ const ActiveUsers = () => {
           widgetId="pagination-options-menu-bottom"
           perPageComponent="button"
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-          totalCount={totalCount}
         />
       </PageSection>
       <AddUser
