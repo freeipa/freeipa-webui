@@ -72,6 +72,12 @@ export interface User {
   memberof_hbacrule: string[]; // multivalue
   memberof_sudorule: string[]; // multivalue
   memberof_subid: string[]; // multivalue
+  // Indirect membership
+  memberofindirect_group: string[]; // multivalue
+  memberofindirect_netgroup: string[]; // multivalue
+  memberofindirect_role: string[]; // multivalue
+  memberofindirect_hbacrule: string[]; // multivalue
+  memberofindirect_sudorule: string[]; // multivalue
   // 'Managed by' data
   mepmanagedentry: string[];
   // other
