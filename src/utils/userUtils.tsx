@@ -166,6 +166,12 @@ export function createEmptyUser(): User {
     memberof_hbacrule: [],
     memberof_sudorule: [],
     memberof_subid: [],
+    // Indirect membership
+    memberofindirect_group: [],
+    memberofindirect_netgroup: [],
+    memberofindirect_role: [],
+    memberofindirect_hbacrule: [],
+    memberofindirect_sudorule: [],
     // 'Managed by' data
     mepmanagedentry: [],
     // other
