@@ -31,7 +31,7 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
 import UsersTable from "../../components/tables/UsersTable";
 // Components
-import PaginationPrep from "src/components/PaginationPrep";
+import PaginationLayout from "src/components/layouts/PaginationLayout";
 import BulkSelectorUsersPrep from "src/components/BulkSelectorUsersPrep";
 // Modals
 import DeleteUsers from "src/components/modals/DeleteUsers";
@@ -103,6 +103,7 @@ const StageUsers = () => {
     if (userDataResponse.isFetching) {
       setShowTableRows(false);
       // Reset selected users on refresh
+      setUsersTotalCount(0);
       setSelectedUserNames([]);
       setSelectedUserIds([]);
       setSelectedUsers([]);
@@ -154,6 +155,7 @@ const StageUsers = () => {
     setShowTableRows(false);
 
     // Reset selected users on refresh
+    setUsersTotalCount(0);
     setSelectedUserNames([]);
     setSelectedUserIds([]);
     setSelectedUsers([]);
@@ -226,6 +228,7 @@ const StageUsers = () => {
   // Issue a search using a specific search value
   const submitSearchValue = () => {
     setShowTableRows(false);
+    setUsersTotalCount(0);
     setSearchIsDisabled(true);
     retrieveUser({
       searchValue: searchValue,
@@ -334,13 +337,12 @@ const StageUsers = () => {
     });
 
   // Data wrappers
-  // - 'PaginationPrep'
+  // - 'PaginationLayout'
   const paginationData = {
     page,
     perPage,
     updatePage,
     updatePerPage,
-    showTableRows,
     updateSelectedPerPage,
     updateShownElementsList: updateShownUsersList,
     totalCount,
@@ -499,7 +501,7 @@ const StageUsers = () => {
     {
       key: 9,
       element: (
-        <PaginationPrep
+        <PaginationLayout
           list={stageUsersList}
           paginationData={paginationData}
           widgetId="pagination-options-menu-top"
@@ -551,12 +553,11 @@ const StageUsers = () => {
             </InnerScrollContainer>
           </OuterScrollContainer>
         </div>
-        <PaginationPrep
+        <PaginationLayout
           list={stageUsersList}
           paginationData={paginationData}
           variant={PaginationVariant.bottom}
           widgetId="pagination-options-menu-bottom"
-          perPageComponent="button"
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
         />
       </PageSection>

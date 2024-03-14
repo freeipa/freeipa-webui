@@ -25,7 +25,7 @@ import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayou
 import KebabLayout from "src/components/layouts/KebabLayout";
 // Components
 import BulkSelectorHostsPrep from "src/components/BulkSelectorHostsPrep";
-import PaginationPrep from "src/components/PaginationPrep";
+import PaginationLayout from "src/components/layouts/PaginationLayout";
 // Tables
 import HostsTable from "./HostsTable";
 // Modal
@@ -150,6 +150,7 @@ const Hosts = () => {
     if (hostDataResponse.isFetching) {
       setShowTableRows(false);
       // Reset selected users on refresh
+      setHostsTotalCount(0);
       setSelectedHosts([]);
       setSelectedHostIds([]);
       globalErrors.clear();
@@ -235,6 +236,7 @@ const Hosts = () => {
     setShowTableRows(false);
 
     // Reset selected hosts on refresh
+    setHostsTotalCount(0);
     setSelectedHosts([]);
     setSelectedHostIds([]);
 
@@ -250,6 +252,7 @@ const Hosts = () => {
   // Issue a search using a specific search value
   const submitSearchValue = () => {
     setShowTableRows(false);
+    setHostsTotalCount(0);
     setSearchIsDisabled(true);
     retrieveHost({
       searchValue: searchValue,
@@ -465,13 +468,12 @@ const Hosts = () => {
     });
 
   // Data wrappers
-  // - 'PaginationPrep'
+  // - 'PaginationLayout'
   const paginationData = {
     page,
     perPage,
     updatePage,
     updatePerPage,
-    showTableRows,
     updateSelectedPerPage,
     updateShownElementsList: updateShownHostsList,
     totalCount,
@@ -627,7 +629,7 @@ const Hosts = () => {
     {
       key: 9,
       element: (
-        <PaginationPrep
+        <PaginationLayout
           list={hostsList}
           paginationData={paginationData}
           widgetId="pagination-options-menu-top"
@@ -673,12 +675,11 @@ const Hosts = () => {
             </InnerScrollContainer>
           </OuterScrollContainer>
         </div>
-        <PaginationPrep
+        <PaginationLayout
           list={hostsList}
           paginationData={paginationData}
           variant={PaginationVariant.bottom}
           widgetId="pagination-options-menu-bottom"
-          perPageComponent="button"
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
         />
       </PageSection>
