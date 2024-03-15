@@ -99,6 +99,13 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
 
   const [searchValue, setSearchValue] = React.useState("");
 
+  const onSearch = () => {
+    const searchResult = userGroupsFromUser.filter((group) => {
+      return group.cn.toLowerCase().includes(searchValue.toLowerCase());
+    });
+    setShownUserGroups(paginate(searchResult, page, perPage));
+  };
+
   const [membershipDirection, setMembershipDirection] =
     React.useState<MembershipDirection>("direct");
 
@@ -253,6 +260,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
       <MemberOfToolbarUserGroups
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
+        onSearch={onSearch}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshUserData}
         deleteButtonEnabled={someItemSelected && deleteAndAddButtonsEnabled}
