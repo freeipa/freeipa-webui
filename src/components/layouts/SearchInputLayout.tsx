@@ -25,14 +25,8 @@ const SearchInputLayout = (props: PropsToSearchInput) => {
     props.searchValueData.updateSearchValue(value);
   };
 
-  const onSearchClean = (_event: SyntheticEvent<HTMLButtonElement, Event>) => {
+  const onSearchClear = (_event: SyntheticEvent<HTMLButtonElement, Event>) => {
     props.searchValueData.updateSearchValue("");
-  };
-
-  const onSubmit = () => {
-    if (props.searchValueData.submitSearchValue) {
-      props.searchValueData.submitSearchValue();
-    }
   };
 
   return (
@@ -43,11 +37,11 @@ const SearchInputLayout = (props: PropsToSearchInput) => {
       value={props.searchValueData.searchValue}
       onSearch={
         props.searchValueData.submitSearchValue
-          ? onSubmit
+          ? props.searchValueData.submitSearchValue
           : () => void undefined
       }
       onChange={onSearchChange}
-      onClear={onSearchClean}
+      onClear={onSearchClear}
       isDisabled={props.isDisabled}
     />
   );

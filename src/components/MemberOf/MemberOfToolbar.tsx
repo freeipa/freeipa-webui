@@ -26,6 +26,7 @@ interface MemberOfToolbarProps {
   // search
   searchText: string;
   onSearchTextChange: (value: string) => void;
+  onSearch: () => void;
 
   // buttons
   refreshButtonEnabled: boolean;
@@ -76,6 +77,7 @@ const MemberOfToolbar = (props: MemberOfToolbarProps) => {
             searchValueData={{
               searchValue: props.searchText,
               updateSearchValue: props.onSearchTextChange,
+              submitSearchValue: props.onSearch,
             }}
           />
         </ToolbarItem>
