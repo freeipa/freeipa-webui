@@ -158,3 +158,34 @@ When("I click on kebab menu and select {string}", (buttonName: string) => {
   cy.get("#main-dropdown-kebab").click();
   cy.get("span.pf-v5-c-menu__item-text").contains(buttonName).click();
 });
+
+// Checkboxes
+Then("I should see the {string} checkbox checked", (checkboxName: string) => {
+  cy.get("div.pf-v5-c-check")
+    .find("label")
+    .contains(checkboxName)
+    .prev()
+    .should("be.checked");
+});
+
+Then("I should see the {string} checkbox unchecked", (checkboxName: string) => {
+  cy.get("div.pf-v5-c-check")
+    .find("label")
+    .contains(checkboxName)
+    .prev()
+    .should("not.be.checked");
+});
+
+When(
+  "I click on {string} checkbox in {string} section",
+  (checkboxName: string, section: string) => {
+    cy.get("div.pf-v5-c-form__group-label")
+      .contains(section)
+      .next()
+      .get("div.pf-v5-c-check")
+      .find("label")
+      .contains(checkboxName)
+      .prev()
+      .click();
+  }
+);
