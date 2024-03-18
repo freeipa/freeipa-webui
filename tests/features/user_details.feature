@@ -266,3 +266,45 @@ Feature: User details
     Then I see a modal with text "Certificate test"
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed certificate mappings from user 'armadillo'"
+
+  Scenario: Select single user authentication type
+    When I click on "Password" checkbox in "User authentication types" section
+    Then I should see the "Password" checkbox checked
+    When I click on "Save" button
+    Then I should see "success" alert with text "User modified"
+    And I should see the "Password" checkbox checked
+    And I should see the "Two-factor authentication (password + OTP)" checkbox unchecked
+    And I should see the "RADIUS" checkbox unchecked
+    And I should see the "PKINIT" checkbox unchecked
+    And I should see the "Hardened password (by SPAKE or FAST)" checkbox unchecked
+    And I should see the "External Identity Provider" checkbox unchecked
+
+  Scenario: Select multiple selections of user authentication types
+    When I click on "Two-factor authentication (password + OTP)" checkbox in "User authentication types" section
+    Then I should see the "Two-factor authentication (password + OTP)" checkbox checked
+    When I click on "RADIUS" checkbox in "User authentication types" section
+    Then I should see the "RADIUS" checkbox checked
+    When I click on "PKINIT" checkbox in "User authentication types" section
+    Then I should see the "PKINIT" checkbox checked
+    When I click on "Save" button
+    Then I should see "success" alert with text "User modified"
+    And I should see the "Two-factor authentication (password + OTP)" checkbox checked
+    And I should see the "RADIUS" checkbox checked
+    And I should see the "PKINIT" checkbox checked
+    And I should see the "Hardened password (by SPAKE or FAST)" checkbox unchecked
+    And I should see the "External Identity Provider" checkbox unchecked
+
+  Scenario: Remove multiple selections of user authentication types
+    When I click on "Two-factor authentication (password + OTP)" checkbox in "User authentication types" section
+    Then I should see the "Two-factor authentication (password + OTP)" checkbox unchecked
+    When I click on "RADIUS" checkbox in "User authentication types" section
+    Then I should see the "RADIUS" checkbox unchecked
+    When I click on "PKINIT" checkbox in "User authentication types" section
+    Then I should see the "PKINIT" checkbox unchecked
+    When I click on "Save" button
+    Then I should see "success" alert with text "User modified"
+    And I should see the "Two-factor authentication (password + OTP)" checkbox unchecked
+    And I should see the "RADIUS" checkbox unchecked
+    And I should see the "PKINIT" checkbox unchecked
+    And I should see the "Hardened password (by SPAKE or FAST)" checkbox unchecked
+    And I should see the "External Identity Provider" checkbox unchecked
