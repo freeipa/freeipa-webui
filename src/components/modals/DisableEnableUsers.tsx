@@ -7,6 +7,7 @@ import {
 } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
+import { User } from "src/utils/datatypes/globalDataTypes";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { changeStatus as changeStatusActiveUser } from "src/store/Identity/activeUsers-slice";
@@ -37,8 +38,8 @@ interface ButtonsData {
 }
 
 interface SelectedUsersData {
-  selectedUsers: string[];
-  updateSelectedUsers: (newSelectedUsers: string[]) => void;
+  selectedUsers: User[];
+  clearSelectedUsers: () => void;
 }
 
 export interface PropsToDisableEnableUsers {
@@ -93,7 +94,7 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
   };
 
   // Update changes in Redux
-  const dispatchToRedux = (newStatus: boolean, selectedUsers: string[]) => {
+  const dispatchToRedux = (newStatus: boolean, selectedUsers: User[]) => {
     if (props.from === "active-users") {
       dispatch(
         changeStatusActiveUser({
@@ -159,7 +160,7 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
 
   // Modify user status for those pages not adapted to the C.L.
   // TODO: Remove this function when the C.L. is set in all user pages
-  const oldModifyStatus = (newStatus: boolean, selectedUsers: string[]) => {
+  const oldModifyStatus = (newStatus: boolean, selectedUsers: User[]) => {
     // Update changes to Redux
     dispatchToRedux(newStatus, selectedUsers);
 
@@ -180,13 +181,13 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
     }
 
     // Reset selected users
-    props.selectedUsersData.updateSelectedUsers([]);
+    props.selectedUsersData.clearSelectedUsers();
     closeModal();
   };
 
   // Modify user status using IPA commands
   // TODO: Better Adapt this function to several use-cases
-  const modifyStatus = (newStatus: boolean, selectedUsers: string[]) => {
+  const modifyStatus = (newStatus: boolean, selectedUsers: User[]) => {
     // Prepare users params
     const uidsToChangeStatusPayload: Command[] = [];
     const changeStatusParams = {};
@@ -194,10 +195,10 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
 
     // Make the API call (depending on 'singleUser' value)
     if (props.singleUser === undefined || !props.singleUser) {
-      selectedUsers.map((uid) => {
+      selectedUsers.map((user) => {
         const payloadItem = {
           method: option,
-          params: [uid, changeStatusParams],
+          params: [user.uid, changeStatusParams],
         } as Command;
 
         uidsToChangeStatusPayload.push(payloadItem);
@@ -258,7 +259,7 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
                 }
 
                 // Reset selected users
-                props.selectedUsersData.updateSelectedUsers([]);
+                props.selectedUsersData.clearSelectedUsers();
 
                 // Refresh data
                 if (props.onRefresh !== undefined) {
@@ -296,12 +297,12 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
             alerts.addAlert(
               "enable-user-success",
               "Enabled user account '" +
-                props.selectedUsersData.selectedUsers[0] +
+                props.selectedUsersData.selectedUsers[0].uid +
                 "'",
               "success"
             );
             // Reset selected users
-            props.selectedUsersData.updateSelectedUsers([]);
+            props.selectedUsersData.clearSelectedUsers();
             // Refresh data
             if (props.onRefresh !== undefined) {
               props.onRefresh();

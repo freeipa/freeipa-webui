@@ -14,11 +14,10 @@ import { Link } from "react-router-dom";
 
 interface HostsData {
   isHostSelectable: (host: Host) => boolean;
-  selectedHostIds: string[];
-  changeSelectedHostIds: (newSelectedHostIds: string[]) => void; //
+  selectedHosts: Host[];
   selectableHostsTable: Host[];
   setHostSelected: (host: Host, isSelecting?: boolean) => void;
-  updateSelectedHosts: (newSelectedHosts: string[]) => void;
+  clearSelectedHosts: () => void;
 }
 
 interface ButtonsData {
@@ -116,8 +115,17 @@ const HostsTable = (props: PropsToTable) => {
     columnIndex,
   });
 
-  const isHostSelected = (host: Host) =>
-    props.hostsData.selectedHostIds.includes(host.fqdn);
+  const isHostSelected = (host: Host) => {
+    if (
+      props.hostsData.selectedHosts.find(
+        (selectedHost) => selectedHost.fqdn[0] === host.fqdn[0]
+      )
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   // To allow shift+click to select/deselect multiple rows
   const [recentSelectedRowIndex, setRecentSelectedRowIndex] = useState<
@@ -152,44 +160,37 @@ const HostsTable = (props: PropsToTable) => {
     props.buttonsData.updateIsDeleteButtonDisabled(false);
 
     // Update hostIdsSelected array
-    let hostIdsSelectedArray = props.hostsData.selectedHostIds;
     if (isSelecting) {
-      hostIdsSelectedArray.push(host.fqdn);
       // Increment the elements selected per page (++)
       props.paginationData.updateSelectedPerPage(
         props.paginationData.selectedPerPage + 1
       );
     } else {
-      hostIdsSelectedArray = hostIdsSelectedArray.filter(
-        (hostId) => hostId !== host.fqdn
-      );
       // Decrement the elements selected per page (--)
       props.paginationData.updateSelectedPerPage(
         props.paginationData.selectedPerPage - 1
       );
     }
-    props.hostsData.changeSelectedHostIds(hostIdsSelectedArray);
-    props.hostsData.updateSelectedHosts(hostIdsSelectedArray);
   };
 
   // Reset 'selectedHostIds' array if a delete operation has been done
   useEffect(() => {
     if (props.buttonsData.isDeletion) {
-      props.hostsData.changeSelectedHostIds([]);
+      props.hostsData.clearSelectedHosts();
       props.buttonsData.updateIsDeletion(false);
     }
   }, [props.buttonsData.isDeletion]);
 
   // Enable 'Delete' button (if any host selected)
   useEffect(() => {
-    if (props.hostsData.selectedHostIds.length > 0) {
+    if (props.hostsData.selectedHosts.length > 0) {
       props.buttonsData.updateIsDeleteButtonDisabled(false);
     }
 
-    if (props.hostsData.selectedHostIds.length === 0) {
+    if (props.hostsData.selectedHosts.length === 0) {
       props.buttonsData.updateIsDeleteButtonDisabled(true);
     }
-  }, [props.hostsData.selectedHostIds]);
+  }, [props.hostsData.selectedHosts]);
 
   // Keyboard event
   useEffect(() => {

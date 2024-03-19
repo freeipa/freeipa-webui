@@ -46,7 +46,6 @@ const RetrieveKeytabElementsDeleteModal = (props: PropsToDelete) => {
       pfComponent: (
         <DeletedElementsTable
           mode="passing_id"
-          elementsList={props.elementsToDelete.sort()}
           elementsToDelete={props.elementsToDelete.sort()}
           columnNames={props.columnNames}
           elementType={props.elementType}

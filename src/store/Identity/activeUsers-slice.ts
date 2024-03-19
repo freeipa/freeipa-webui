@@ -9,7 +9,7 @@ interface ActiveUsersState {
 
 interface ChangeStatusData {
   newStatus: boolean;
-  selectedUsers: string[];
+  selectedUsers: User[];
 }
 
 const initialState: ActiveUsersState = {
@@ -41,12 +41,12 @@ const activeUsersSlice = createSlice({
     },
     changeStatus: (state, action: PayloadAction<ChangeStatusData>) => {
       const newStatus = action.payload.newStatus;
-      const selectedUsersIds = action.payload.selectedUsers;
+      const selectedUsers = action.payload.selectedUsers;
 
       // Convert selectedUsersIds to Map for easier search
       const selectedUsersIdMap = new Map<string, boolean>();
-      for (let i = 0; i < selectedUsersIds.length; i++) {
-        selectedUsersIdMap.set(selectedUsersIds[i], true);
+      for (let i = 0; i < selectedUsers.length; i++) {
+        selectedUsersIdMap.set(selectedUsers[i].uid[0], true);
       }
 
       // Update nsaccountlock of selected users

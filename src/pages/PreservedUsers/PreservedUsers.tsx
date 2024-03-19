@@ -74,7 +74,6 @@ const PreservedUsers = () => {
   const [searchValue, setSearchValue] = React.useState("");
   const [page, setPage] = useState<number>(1);
   const [perPage, setPerPage] = useState<number>(10);
-  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [totalCount, setUsersTotalCount] = useState<number>(0);
   const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
@@ -103,9 +102,6 @@ const PreservedUsers = () => {
       setShowTableRows(false);
       // Reset selected users on refresh
       setUsersTotalCount(0);
-      setSelectedUserNames([]);
-      setSelectedUserIds([]);
-      setSelectedUsers([]);
       globalErrors.clear();
       return;
     }
@@ -155,9 +151,7 @@ const PreservedUsers = () => {
 
     // Reset selected users on refresh
     setUsersTotalCount(0);
-    setSelectedUserNames([]);
-    setSelectedUserIds([]);
-    setSelectedUsers([]);
+    clearSelectedUsers();
 
     userDataResponse.refetch();
   };
@@ -167,13 +161,6 @@ const PreservedUsers = () => {
   React.useEffect(() => {
     userDataResponse.refetch();
   }, []);
-
-  // Selected users state
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-
-  const updateSelectedUsers = (newSelectedUsers: string[]) => {
-    setSelectedUsers(newSelectedUsers);
-  };
 
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
@@ -188,10 +175,6 @@ const PreservedUsers = () => {
 
   const updateIsDeletion = (value: boolean) => {
     setIsDeletion(value);
-  };
-
-  const updateSelectedUserIds = (newSelectedUserIds: string[]) => {
-    setSelectedUserIds(newSelectedUserIds);
   };
 
   // Elements selected (per page)
@@ -293,21 +276,54 @@ const PreservedUsers = () => {
   // - Selectable checkboxes on table
   const selectableUsersTable = preservedUsersList.filter(isUserSelectable); // elements per Table
 
-  // - Selected rows are tracked. Primary key: userLogin
-  const [selectedUserNames, setSelectedUserNames] = useState<string[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+  const clearSelectedUsers = () => {
+    const emptyList: User[] = [];
+    setSelectedUsers(emptyList);
+  };
 
-  const changeSelectedUserNames = (selectedUsernames: string[]) => {
-    setSelectedUserNames(selectedUsernames);
+  const updateSelectedUsers = (users: User[], isSelected: boolean) => {
+    let newSelectedUsers: User[] = [];
+    if (isSelected) {
+      newSelectedUsers = JSON.parse(JSON.stringify(selectedUsers));
+      for (let i = 0; i < users.length; i++) {
+        if (
+          selectedUsers.find(
+            (selectedUser) => selectedUser.uid[0] === users[i].uid[0]
+          )
+        ) {
+          // Already in the list
+          continue;
+        }
+        // Add user to list
+        newSelectedUsers.push(users[i]);
+      }
+    } else {
+      // Remove user
+      for (let i = 0; i < selectedUsers.length; i++) {
+        let found = false;
+        for (let ii = 0; ii < users.length; ii++) {
+          if (selectedUsers[i].uid[0] === users[ii].uid[0]) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          // Keep this valid selected entry
+          newSelectedUsers.push(selectedUsers[i]);
+        }
+      }
+    }
+    setSelectedUsers(newSelectedUsers);
+    setIsDeleteButtonDisabled(newSelectedUsers.length === 0);
   };
 
   // - Helper method to set the selected users from the table
-  const setUserSelected = (user: User, isSelecting = true) =>
-    setSelectedUserNames((prevSelected) => {
-      const otherSelectedUserNames = prevSelected.filter((r) => r !== user.uid);
-      return isSelecting && isUserSelectable(user)
-        ? [...otherSelectedUserNames, user.uid]
-        : otherSelectedUserNames;
-    });
+  const setUserSelected = (user: User, isSelecting = true) => {
+    if (isUserSelectable(user)) {
+      updateSelectedUsers([user], isSelecting);
+    }
+  };
 
   // Modals functionality
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -345,12 +361,9 @@ const PreservedUsers = () => {
   };
 
   // - 'BulkSelectorPrep'
-  const usersData = {
+  const usersBulkSelectorData = {
     selectedUsers,
     updateSelectedUsers,
-    updateSelectedUserIds,
-    selectedUserNames,
-    changeSelectedUserNames,
     selectableUsersTable,
     isUserSelectable,
   };
@@ -373,19 +386,16 @@ const PreservedUsers = () => {
 
   const selectedUsersData = {
     selectedUsers,
-    updateSelectedUsers,
+    clearSelectedUsers,
   };
 
   // 'UsersTable'
   const usersTableData = {
     isUserSelectable,
-    selectedUserNames,
-    changeSelectedUserNames,
-    selectedUserIds,
-    updateSelectedUserIds,
+    selectedUsers,
     selectableUsersTable,
     setUserSelected,
-    updateSelectedUsers,
+    clearSelectedUsers,
   };
 
   const usersTableButtonsData = {
@@ -409,7 +419,7 @@ const PreservedUsers = () => {
         <BulkSelectorUsersPrep
           list={preservedUsersList}
           shownElementsList={preservedUsersList}
-          usersData={usersData}
+          usersData={usersBulkSelectorData}
           buttonsData={buttonsData}
           selectedPerPageData={selectedPerPageData}
         />
@@ -537,7 +547,6 @@ const PreservedUsers = () => {
                 <GlobalErrors errors={globalErrors.getAll()} />
               ) : (
                 <UsersTable
-                  elementsList={preservedUsersList}
                   shownElementsList={preservedUsersList}
                   from="preserved-users"
                   showTableRows={showTableRows}
@@ -570,15 +579,15 @@ const PreservedUsers = () => {
       <RestorePreservedUsers
         show={showRestoreModal}
         handleModalToggle={onRestoreModalToggle}
-        selectedUids={selectedUsers.map((uid) => uid[0])}
-        updateSelectedUids={updateSelectedUsers}
+        selectedUsers={selectedUsers}
+        clearSelectedUsers={clearSelectedUsers}
         onSuccess={refreshUsersData}
       />
       <StagePreservedUsers
         show={showStageModal}
         handleModalToggle={onStageModalToggle}
         selectedUsers={selectedUsers}
-        updateSelectedUsers={setSelectedUsers}
+        clearSelectedUsers={clearSelectedUsers}
         onSuccess={refreshUsersData}
       />
     </Page>

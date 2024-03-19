@@ -21,6 +21,8 @@ import {
 } from "src/services/rpc";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
+// Data types
+import { User } from "src/utils/datatypes/globalDataTypes";
 // Modals
 import ErrorModal from "./ErrorModal";
 // Data types
@@ -31,8 +33,8 @@ import useAlerts from "src/hooks/useAlerts";
 export interface PropsToStagePreservedUsers {
   show: boolean;
   handleModalToggle: () => void;
-  selectedUsers: string[];
-  updateSelectedUsers: (newSelectedUsers: string[]) => void;
+  selectedUsers: User[];
+  clearSelectedUsers: () => void;
   onSuccess: () => void;
 }
 
@@ -60,12 +62,7 @@ const StagePreservedUsers = (props: PropsToStagePreservedUsers) => {
     },
     {
       id: "stage-users-table",
-      pfComponent: (
-        <UsersDisplayTable
-          usersToDisplay={props.selectedUsers}
-          from={"preserved-users"}
-        />
-      ),
+      pfComponent: <UsersDisplayTable usersToDisplay={props.selectedUsers} />,
     },
   ];
 
@@ -122,10 +119,10 @@ const StagePreservedUsers = (props: PropsToStagePreservedUsers) => {
 
     setBtnSpinning(true);
 
-    props.selectedUsers.map((uid) => {
+    props.selectedUsers.map((user) => {
       const payloadItem = {
         method: "user_stage",
-        params: [[uid], {}],
+        params: [[user.uid], {}],
       } as Command;
       uidsToStagePayload.push(payloadItem);
     });
@@ -159,7 +156,7 @@ const StagePreservedUsers = (props: PropsToStagePreservedUsers) => {
             });
 
             // Reset selected values
-            props.updateSelectedUsers([]);
+            props.clearSelectedUsers();
 
             // Show alert: success
             alerts.addAlert("stage-users-success", "Users staged", "success");

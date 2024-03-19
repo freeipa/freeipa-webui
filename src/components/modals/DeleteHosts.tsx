@@ -7,7 +7,7 @@ import {
   Button,
 } from "@patternfly/react-core";
 // Redux
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
+import { useAppDispatch } from "src/store/hooks";
 import { removeHost } from "src/store/Identity/hosts-slice";
 // Layouts
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
@@ -18,7 +18,7 @@ import useAlerts from "src/hooks/useAlerts";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Data types
-import { ErrorData } from "src/utils/datatypes/globalDataTypes";
+import { ErrorData, Host } from "src/utils/datatypes/globalDataTypes";
 // Modals
 import ErrorModal from "./ErrorModal";
 import { BatchRPCResponse, useRemoveHostsMutation } from "src/services/rpc";
@@ -29,8 +29,8 @@ interface ButtonsData {
 }
 
 interface SelectedHostsData {
-  selectedHosts: string[];
-  updateSelectedHosts: (newSelectedHosts: string[]) => void;
+  selectedHosts: Host[];
+  clearSelectedHosts: () => void;
 }
 
 export interface PropsToDeleteHosts {
@@ -47,10 +47,6 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
 
   // Alerts
   const alerts = useAlerts();
-
-  // Retrieve all hosts list from Store and make a copy
-  const hostsList = useAppSelector((state) => state.hosts.hostsList);
-  const hostsListCopy = [...hostsList];
 
   // Define the column names that will be displayed on the confirmation table.
   // - NOTE: Camel-case should match with the property to show as it is defined in the data.
@@ -79,7 +75,6 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
         <DeletedElementsTable
           mode="passing_full_data"
           elementsToDelete={props.selectedHostsData.selectedHosts}
-          elementsList={hostsListCopy}
           columnNames={deleteHostsColumnNames}
           elementType="hosts"
           idAttr="fqdn"
@@ -160,10 +155,10 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
             } else {
               // Update data from Redux
               props.selectedHostsData.selectedHosts.map((host) => {
-                dispatch(removeHost(host));
+                dispatch(removeHost(host.fqdn[0]));
               });
 
-              props.selectedHostsData.updateSelectedHosts([]);
+              props.selectedHostsData.clearSelectedHosts();
               props.buttonsData.updateIsDeleteButtonDisabled(true);
               props.buttonsData.updateIsDeletion(true);
 
