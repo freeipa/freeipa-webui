@@ -71,12 +71,6 @@ const Services = () => {
   const globalErrors = useApiError([]);
   const modalErrors = useApiError([]);
 
-  // Selected services state
-  const [selectedServices, setSelectedServices] = useState<string[]>([]);
-  const updateSelectedServices = (newSelectedServices: string[]) => {
-    setSelectedServices(newSelectedServices);
-  };
-
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
     useState<boolean>(true);
@@ -118,6 +112,12 @@ const Services = () => {
 
   const updateSearchValue = (value: string) => {
     setSearchValue(value);
+  };
+
+  const [selectedServices, setSelectedServicesList] = useState<Service[]>([]);
+  const clearSelectedServices = () => {
+    const emptyList: Service[] = [];
+    setSelectedServicesList(emptyList);
   };
 
   const [retrieveServices] = useSearchEntriesMutation({});
@@ -238,26 +238,56 @@ const Services = () => {
   // - Selectable checkboxes on table
   const selectableServicesTable = servicesList.filter(isServiceSelectable); // elements per Table
 
-  // - Selected rows are tracked. Primary key: service Id
-  const [selectedServiceIds, setSelectedServiceIds] = useState<string[]>([]);
-
-  const changeSelectedServiceIds = (selectedServiceIds: string[]) => {
-    setSelectedServiceIds(selectedServiceIds);
-  };
-
   // Button disabled due to error
   const [isDisabledDueError, setIsDisabledDueError] = useState<boolean>(false);
 
-  // - Helper method to set the selected services from the table
-  const setServiceSelected = (service: Service, isSelecting = true) =>
-    setSelectedServiceIds((prevSelected) => {
-      const otherSelectedServiceIds = prevSelected.filter(
-        (r) => r !== service.krbcanonicalname
-      );
-      return isSelecting && isServiceSelectable(service)
-        ? [...otherSelectedServiceIds, service.krbcanonicalname]
-        : otherSelectedServiceIds;
-    });
+  const updateSelectedServices = (services: Service[], isSelected: boolean) => {
+    let newSelectedServices: Service[] = [];
+    if (isSelected) {
+      newSelectedServices = JSON.parse(JSON.stringify(selectedServices));
+      for (let i = 0; i < services.length; i++) {
+        if (
+          selectedServices.find(
+            (selectedService) =>
+              selectedService.krbcanonicalname[0] ===
+              services[i].krbcanonicalname[0]
+          )
+        ) {
+          // Already in the list
+          continue;
+        }
+        // Add user to list
+        newSelectedServices.push(services[i]);
+      }
+    } else {
+      // Remove user
+      for (let i = 0; i < selectedServices.length; i++) {
+        let found = false;
+        for (let ii = 0; ii < services.length; ii++) {
+          if (
+            selectedServices[i].krbcanonicalname[0] ===
+            services[ii].krbcanonicalname[0]
+          ) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          // Keep this valid selected entry
+          newSelectedServices.push(selectedServices[i]);
+        }
+      }
+    }
+    setSelectedServicesList(newSelectedServices);
+    setIsDeleteButtonDisabled(newSelectedServices.length === 0);
+  };
+
+  // - Helper method to set the selected users from the table
+  const setServiceSelected = (service: Service, isSelecting = true) => {
+    if (isServiceSelectable(service)) {
+      updateSelectedServices([service], isSelecting);
+    }
+  };
 
   // Derived states - what we get from API
   const servicesDataResponse = useGettingServicesQuery({
@@ -280,8 +310,6 @@ const Services = () => {
       setShowTableRows(false);
       // Reset selected users on refresh
       setServicesTotalCount(0);
-      setSelectedServices([]);
-      setSelectedServiceIds([]);
       globalErrors.clear();
       setIsDisabledDueError(false);
       return;
@@ -339,8 +367,7 @@ const Services = () => {
 
     // Reset selected hosts on refresh
     setServicesTotalCount(0);
-    setSelectedServices([]);
-    setSelectedServiceIds([]);
+    clearSelectedServices();
 
     servicesDataResponse.refetch();
   };
@@ -354,10 +381,9 @@ const Services = () => {
   };
 
   // - 'BulkSelectorPrep'
-  const servicesData = {
+  const servicesBulkSelectorData = {
     selectedServices,
     updateSelectedServices,
-    changeSelectedServiceIds,
     selectableServicesTable,
     isServiceSelectable,
   };
@@ -385,11 +411,10 @@ const Services = () => {
   // - 'ServicesTable'
   const servicesTableData = {
     isServiceSelectable,
-    selectedServiceIds,
-    changeSelectedServiceIds,
+    selectedServices,
     selectableServicesTable,
     setServiceSelected,
-    updateSelectedServices,
+    clearSelectedServices,
   };
 
   const servicesTableButtonsData = {
@@ -406,7 +431,7 @@ const Services = () => {
 
   const selectedElementsData = {
     selectedElements: selectedServices,
-    updateSelectedElements: updateSelectedServices,
+    clearSelectedServices,
   };
 
   // List of toolbar items
@@ -417,7 +442,7 @@ const Services = () => {
         <BulkSelectorServicesPrep
           list={servicesList}
           shownElementsList={servicesList}
-          elementData={servicesData}
+          elementData={servicesBulkSelectorData}
           buttonsData={buttonsData}
           selectedPerPageData={selectedPerPageData}
         />

@@ -75,7 +75,6 @@ const StageUsers = () => {
   const [searchValue, setSearchValue] = React.useState("");
   const [page, setPage] = useState<number>(1);
   const [perPage, setPerPage] = useState<number>(10);
-  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [totalCount, setUsersTotalCount] = useState<number>(0);
   const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
@@ -104,9 +103,6 @@ const StageUsers = () => {
       setShowTableRows(false);
       // Reset selected users on refresh
       setUsersTotalCount(0);
-      setSelectedUserNames([]);
-      setSelectedUserIds([]);
-      setSelectedUsers([]);
       globalErrors.clear();
       return;
     }
@@ -156,9 +152,7 @@ const StageUsers = () => {
 
     // Reset selected users on refresh
     setUsersTotalCount(0);
-    setSelectedUserNames([]);
-    setSelectedUserIds([]);
-    setSelectedUsers([]);
+    clearSelectedUsers();
 
     userDataResponse.refetch();
   };
@@ -168,13 +162,6 @@ const StageUsers = () => {
   React.useEffect(() => {
     userDataResponse.refetch();
   }, []);
-
-  // Selected users state
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-
-  const updateSelectedUsers = (newSelectedUsers: string[]) => {
-    setSelectedUsers(newSelectedUsers);
-  };
 
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
@@ -189,10 +176,6 @@ const StageUsers = () => {
 
   const updateIsDeletion = (value: boolean) => {
     setIsDeletion(value);
-  };
-
-  const updateSelectedUserIds = (newSelectedUserIds: string[]) => {
-    setSelectedUserIds(newSelectedUserIds);
   };
 
   // Elements selected (per page)
@@ -290,6 +273,56 @@ const StageUsers = () => {
     }
   }, [isBatchLoading]);
 
+  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+
+  const clearSelectedUsers = () => {
+    const emptyList: User[] = [];
+    setSelectedUsers(emptyList);
+  };
+
+  const updateSelectedUsers = (users: User[], isSelected: boolean) => {
+    let newSelectedUsers: User[] = [];
+    if (isSelected) {
+      newSelectedUsers = JSON.parse(JSON.stringify(selectedUsers));
+      for (let i = 0; i < users.length; i++) {
+        if (
+          selectedUsers.find(
+            (selectedUser) => selectedUser.uid[0] === users[i].uid[0]
+          )
+        ) {
+          // Already in the list
+          continue;
+        }
+        // Add user to list
+        newSelectedUsers.push(users[i]);
+      }
+    } else {
+      // Remove user
+      for (let i = 0; i < selectedUsers.length; i++) {
+        let found = false;
+        for (let ii = 0; ii < users.length; ii++) {
+          if (selectedUsers[i].uid[0] === users[ii].uid[0]) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          // Keep this valid selected entry
+          newSelectedUsers.push(selectedUsers[i]);
+        }
+      }
+    }
+    setSelectedUsers(newSelectedUsers);
+    setIsDeleteButtonDisabled(newSelectedUsers.length === 0);
+  };
+
+  // - Helper method to set the selected users from the table
+  const setUserSelected = (user: User, isSelecting = true) => {
+    if (isUserSelectable(user)) {
+      updateSelectedUsers([user], isSelecting);
+    }
+  };
+
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -320,22 +353,6 @@ const StageUsers = () => {
   // - Selectable checkboxes on table
   const selectableUsersTable = stageUsersList.filter(isUserSelectable); // elements per Table
 
-  // - Selected rows are tracked. Primary key: userLogin
-  const [selectedUserNames, setSelectedUserNames] = useState<string[]>([]);
-
-  const changeSelectedUserNames = (selectedUsernames: string[]) => {
-    setSelectedUserNames(selectedUsernames);
-  };
-
-  // - Helper method to set the selected users from the table
-  const setUserSelected = (user: User, isSelecting = true) =>
-    setSelectedUserNames((prevSelected) => {
-      const otherSelectedUserNames = prevSelected.filter((r) => r !== user.uid);
-      return isSelecting && isUserSelectable(user)
-        ? [...otherSelectedUserNames, user.uid]
-        : otherSelectedUserNames;
-    });
-
   // Data wrappers
   // - 'PaginationLayout'
   const paginationData = {
@@ -349,12 +366,9 @@ const StageUsers = () => {
   };
 
   // - 'BulkSelectorPrep'
-  const usersData = {
+  const usersBulkSelectorData = {
     selectedUsers,
     updateSelectedUsers,
-    updateSelectedUserIds,
-    selectedUserNames,
-    changeSelectedUserNames,
     selectableUsersTable,
     isUserSelectable,
   };
@@ -376,19 +390,16 @@ const StageUsers = () => {
 
   const selectedUsersData = {
     selectedUsers,
-    updateSelectedUsers,
+    clearSelectedUsers,
   };
 
   // 'UsersTable'
   const usersTableData = {
     isUserSelectable,
-    selectedUserNames,
-    changeSelectedUserNames,
-    selectedUserIds,
-    updateSelectedUserIds,
+    selectedUsers,
     selectableUsersTable,
     setUserSelected,
-    updateSelectedUsers,
+    clearSelectedUsers,
   };
 
   const usersTableButtonsData = {
@@ -412,7 +423,7 @@ const StageUsers = () => {
         <BulkSelectorUsersPrep
           list={stageUsersList}
           shownElementsList={stageUsersList}
-          usersData={usersData}
+          usersData={usersBulkSelectorData}
           buttonsData={buttonsData}
           selectedPerPageData={selectedPerPageData}
         />
@@ -540,7 +551,6 @@ const StageUsers = () => {
                 <GlobalErrors errors={globalErrors.getAll()} />
               ) : (
                 <UsersTable
-                  elementsList={stageUsersList}
                   shownElementsList={stageUsersList}
                   from="stage-users"
                   showTableRows={showTableRows}
@@ -582,7 +592,7 @@ const StageUsers = () => {
       <ActivateStageUsers
         show={showActivateModal}
         handleModalToggle={onActivateModalToggle}
-        selectedUids={selectedUsers.map((uid) => uid[0])}
+        selectedUsers={selectedUsers}
         onSuccess={refreshUsersData}
       />
     </Page>

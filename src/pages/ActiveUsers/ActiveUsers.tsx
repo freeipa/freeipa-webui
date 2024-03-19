@@ -84,7 +84,6 @@ const ActiveUsers = () => {
   const [searchValue, setSearchValue] = React.useState("");
   const [page, setPage] = useState<number>(1);
   const [perPage, setPerPage] = useState<number>(10);
-  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [totalCount, setUsersTotalCount] = useState<number>(0);
   const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
@@ -116,9 +115,6 @@ const ActiveUsers = () => {
       setShowTableRows(false);
       // Reset selected users on refresh
       setUsersTotalCount(0);
-      setSelectedUserNames([]);
-      setSelectedUserIds([]);
-      setSelectedUsers([]);
       globalErrors.clear();
       setIsDisabledDueError(false);
       return;
@@ -170,10 +166,7 @@ const ActiveUsers = () => {
 
     // Reset selected users on refresh
     setUsersTotalCount(0);
-    setSelectedUserNames([]);
-    setSelectedUserIds([]);
-    setSelectedUsers([]);
-    setUsersTotalCount(totalCount);
+    clearSelectedUsers();
 
     userDataResponse.refetch();
   };
@@ -183,13 +176,6 @@ const ActiveUsers = () => {
   React.useEffect(() => {
     userDataResponse.refetch();
   }, []);
-
-  // Selected users state
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-
-  const updateSelectedUsers = (newSelectedUsers: string[]) => {
-    setSelectedUsers(newSelectedUsers);
-  };
 
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
@@ -229,11 +215,6 @@ const ActiveUsers = () => {
     setIsDisableEnableOp(value);
   };
 
-  // - Selected user ids state
-  const updateSelectedUserIds = (newSelectedUserIds: string[]) => {
-    setSelectedUserIds(newSelectedUserIds);
-  };
-
   // Elements selected (per page)
   //  - This will help to calculate the remaining elements on a specific page (bulk selector)
   const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
@@ -259,6 +240,13 @@ const ActiveUsers = () => {
   // Update search input valie
   const updateSearchValue = (value: string) => {
     setSearchValue(value);
+  };
+
+  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+
+  const clearSelectedUsers = () => {
+    const emptyList: User[] = [];
+    setSelectedUsers(emptyList);
   };
 
   const [retrieveUser] = useSearchEntriesMutation({});
@@ -338,6 +326,7 @@ const ActiveUsers = () => {
         "time to complete) ...",
       "info"
     );
+
     executeAutoMemberRebuild(selectedUsers).then((result) => {
       if ("data" in result) {
         const automemberError = result.data.error as
@@ -485,21 +474,48 @@ const ActiveUsers = () => {
   // - Selectable checkboxes on table
   const selectableUsersTable = activeUsersList.filter(isUserSelectable); // elements per Table
 
-  // - Selected rows are tracked. Primary key: userLogin
-  const [selectedUserNames, setSelectedUserNames] = useState<string[]>([]);
-
-  const changeSelectedUserNames = (selectedUsernames: string[]) => {
-    setSelectedUserNames(selectedUsernames);
+  const updateSelectedUsers = (users: User[], isSelected: boolean) => {
+    let newSelectedUsers: User[] = [];
+    if (isSelected) {
+      newSelectedUsers = JSON.parse(JSON.stringify(selectedUsers));
+      for (let i = 0; i < users.length; i++) {
+        if (
+          selectedUsers.find(
+            (selectedUser) => selectedUser.uid[0] === users[i].uid[0]
+          )
+        ) {
+          // Already in the list
+          continue;
+        }
+        // Add user to list
+        newSelectedUsers.push(users[i]);
+      }
+    } else {
+      // Remove user
+      for (let i = 0; i < selectedUsers.length; i++) {
+        let found = false;
+        for (let ii = 0; ii < users.length; ii++) {
+          if (selectedUsers[i].uid[0] === users[ii].uid[0]) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          // Keep this valid selected entry
+          newSelectedUsers.push(selectedUsers[i]);
+        }
+      }
+    }
+    setSelectedUsers(newSelectedUsers);
+    setIsDeleteButtonDisabled(newSelectedUsers.length === 0);
   };
 
   // - Helper method to set the selected users from the table
-  const setUserSelected = (user: User, isSelecting = true) =>
-    setSelectedUserNames((prevSelected) => {
-      const otherSelectedUserNames = prevSelected.filter((r) => r !== user.uid);
-      return isSelecting && isUserSelectable(user)
-        ? [...otherSelectedUserNames, user.uid]
-        : otherSelectedUserNames;
-    });
+  const setUserSelected = (user: User, isSelecting = true) => {
+    if (isUserSelectable(user)) {
+      updateSelectedUsers([user], isSelecting);
+    }
+  };
 
   // Data wrappers
   // TODO: Better separation of concerts
@@ -515,12 +531,9 @@ const ActiveUsers = () => {
   };
 
   // - 'BulkSelectorUsersPrep'
-  const usersData = {
+  const usersBulkSelectorData = {
     selectedUsers,
     updateSelectedUsers,
-    updateSelectedUserIds,
-    selectedUserNames,
-    changeSelectedUserNames,
     selectableUsersTable,
     isUserSelectable,
   };
@@ -545,7 +558,7 @@ const ActiveUsers = () => {
 
   const selectedUsersData = {
     selectedUsers,
-    updateSelectedUsers,
+    clearSelectedUsers,
   };
 
   // 'DisableEnableUsers'
@@ -558,13 +571,10 @@ const ActiveUsers = () => {
   // 'UsersTable'
   const usersTableData = {
     isUserSelectable,
-    selectedUserNames,
-    changeSelectedUserNames,
-    selectedUserIds,
-    updateSelectedUserIds,
+    selectedUsers,
     selectableUsersTable,
     setUserSelected,
-    updateSelectedUsers,
+    clearSelectedUsers,
   };
 
   const usersTableButtonsData = {
@@ -592,7 +602,7 @@ const ActiveUsers = () => {
         <BulkSelectorUsersPrep
           list={activeUsersList}
           shownElementsList={activeUsersList}
-          usersData={usersData}
+          usersData={usersBulkSelectorData}
           buttonsData={buttonsData}
           selectedPerPageData={selectedPerPageData}
         />
@@ -743,7 +753,6 @@ const ActiveUsers = () => {
                 <GlobalErrors errors={globalErrors.getAll()} />
               ) : (
                 <UsersTable
-                  elementsList={activeUsersList}
                   shownElementsList={activeUsersList}
                   from="active-users"
                   showTableRows={showTableRows}

@@ -1026,11 +1026,17 @@ export const api = createApi({
     // Autommeber Users
     autoMemberRebuildUsers: build.mutation<FindRPCResponse, any[]>({
       query: (users) => {
+        let user_list = users.map((user) => user.uid);
+        // user.uid might be an array
+        if (users.length > 0 && Array.isArray(users[0].uid)) {
+          user_list = users.map((user) => user.uid[0]);
+        }
+
         const paramArgs =
           users.length === 0
             ? { type: "group", version: API_VERSION_BACKUP }
             : {
-                users: users.map((uid) => uid),
+                users: user_list,
                 version: API_VERSION_BACKUP,
               };
 
@@ -1057,10 +1063,10 @@ export const api = createApi({
         });
       },
     }),
-    enableUser: build.mutation<FindRPCResponse, string>({
-      query: (uid) => {
+    enableUser: build.mutation<FindRPCResponse, User>({
+      query: (user) => {
         const params = [
-          [uid],
+          [user.uid],
           {
             version: API_VERSION_BACKUP,
           },
@@ -1072,10 +1078,10 @@ export const api = createApi({
         });
       },
     }),
-    disableUser: build.mutation<FindRPCResponse, string>({
-      query: (uid) => {
+    disableUser: build.mutation<FindRPCResponse, User>({
+      query: (user) => {
         const params = [
-          [uid],
+          [user.uid],
           {
             version: API_VERSION_BACKUP,
           },
@@ -1185,13 +1191,17 @@ export const api = createApi({
       },
       invalidatesTags: ["FullUser"],
     }),
-    activateUser: build.mutation<FindRPCResponse, string[]>({
+    activateUser: build.mutation<FindRPCResponse, User[]>({
       query: (query_args) => {
         const batchPayload: Command[] = [];
-        query_args.map((uid) => {
+        query_args.map((user) => {
+          let id = user.uid;
+          if (Array.isArray(user.uid)) {
+            id = user.uid[0];
+          }
           batchPayload.push({
             method: "stageuser_activate",
-            params: [[uid], {}],
+            params: [[id], {}],
           });
         });
 
@@ -1201,13 +1211,17 @@ export const api = createApi({
         );
       },
     }),
-    restoreUser: build.mutation<BatchRPCResponse, string[]>({
+    restoreUser: build.mutation<BatchRPCResponse, User[]>({
       query: (query_args) => {
         const batchPayload: Command[] = [];
-        query_args.map((uid) => {
+        query_args.map((user) => {
+          let id = user.uid;
+          if (Array.isArray(user.uid)) {
+            id = user.uid[0];
+          }
           batchPayload.push({
             method: "user_undel",
-            params: [[uid], {}],
+            params: [[id], {}],
           });
         });
 
@@ -1217,26 +1231,26 @@ export const api = createApi({
         );
       },
     }),
-    removeHosts: build.mutation<BatchRPCResponse, string[]>({
-      query: (hostnames) => {
+    removeHosts: build.mutation<BatchRPCResponse, Host[]>({
+      query: (hosts) => {
         const hostsToDeletePayload: Command[] = [];
-        hostnames.map((hostname) => {
+        hosts.map((host) => {
           const payloadItem = {
             method: "host_del",
-            params: [[hostname], {}],
+            params: [[host.fqdn[0]], {}],
           } as Command;
           hostsToDeletePayload.push(payloadItem);
         });
         return getBatchCommand(hostsToDeletePayload, API_VERSION_BACKUP);
       },
     }),
-    removeServices: build.mutation<BatchRPCResponse, string[]>({
+    removeServices: build.mutation<BatchRPCResponse, Service[]>({
       query: (services) => {
         const servicesToDeletePayload: Command[] = [];
         services.map((service) => {
           const payloadItem = {
             method: "service_del",
-            params: [[service], {}],
+            params: [[service.krbcanonicalname], {}],
           } as Command;
           servicesToDeletePayload.push(payloadItem);
         });

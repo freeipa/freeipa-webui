@@ -99,11 +99,13 @@ const UserSettings = (props: PropsToUserSettings) => {
 
   // To handle the logic of the selectedUsersData (from
   //   the 'Disable / Enable' modal), lets use the 'selectedUsers' state
-  const uidArray: string[] = ([props.user.uid] as string[]) || [];
-  const [selectedUsers, setSelectedUsers] = React.useState<string[]>(uidArray);
+  const clearSelectedUsers = () => {
+    // Do nothing
+  };
+
   const [selectedUsersData, setSelectedUsersData] = React.useState({
-    selectedUsers: selectedUsers,
-    updateSelectedUsers: setSelectedUsers,
+    selectedUsers: [] as User[],
+    clearSelectedUsers,
   });
 
   // Data is updated on 'props.user' changes
@@ -113,10 +115,9 @@ const UserSettings = (props: PropsToUserSettings) => {
     }
 
     if (props.user.uid !== undefined) {
-      setSelectedUsers([props.user.uid]);
       setSelectedUsersData({
-        selectedUsers: [props.user.uid],
-        updateSelectedUsers: setSelectedUsers,
+        selectedUsers: [props.user] as User[],
+        clearSelectedUsers,
       });
     }
   }, [props.user]);
@@ -639,21 +640,21 @@ const UserSettings = (props: PropsToUserSettings) => {
       <ActivateStageUsers
         show={isActivateModalOpen}
         handleModalToggle={onCloseActivateModal}
-        selectedUids={selectedUsers}
+        selectedUsers={[props.user] as User[]}
         onSuccess={() => navigate(URL_PREFIX + "/stage-users")}
       />
       <StagePreservedUsers
         show={isStageModalOpen}
         handleModalToggle={onCloseStageModal}
-        selectedUsers={selectedUsers}
-        updateSelectedUsers={setSelectedUsers}
+        selectedUsers={[props.user] as User[]}
+        clearSelectedUsers={clearSelectedUsers}
         onSuccess={() => navigate(URL_PREFIX + "/preserved-users")}
       />
       <RestorePreservedUsers
         show={isRestoreModalOpen}
         handleModalToggle={onCloseRestoreModal}
-        selectedUids={selectedUsers}
-        updateSelectedUids={setSelectedUsers}
+        selectedUsers={[props.user] as User[]}
+        clearSelectedUsers={clearSelectedUsers}
         onSuccess={() => navigate(URL_PREFIX + "/preserved-users")}
       />
     </>

@@ -16,11 +16,10 @@ import { Host } from "src/utils/datatypes/globalDataTypes";
 import BulkSelectorLayout from "src/components/layouts/BulkSelectorLayout";
 
 interface HostsData {
-  selectedHosts: string[];
-  updateSelectedHosts: (newSelectedHosts: string[]) => void;
-  changeSelectedHostIds: (newSelectedHostIds: string[]) => void;
+  selectedHosts: Host[];
   selectableHostsTable: Host[];
   isHostSelectable: (host: Host) => boolean;
+  updateSelectedHosts: (host: Host[], isSelected: boolean) => void;
 }
 
 interface ButtonsData {
@@ -91,15 +90,16 @@ const BulkSelectorHostsPrep = (props: PropsToBulkSelectorHostsPrep) => {
 
   // - Methods to manage the Bulk selector options
   // -- Unselect all items on the table
-  const unselectAllItems = () => {
-    props.elementData.changeSelectedHostIds([]);
-    props.elementData.updateSelectedHosts([]);
-    props.buttonsData.updateIsDeleteButtonDisabled(true);
+  const unselectPageItems = () => {
+    props.elementData.updateSelectedHosts(props.shownElementsList, false);
   };
 
-  // - Helper method: Remove duplicates in a list
-  const removeDuplicates = (hostsList: string[]) => {
-    return hostsList.filter((host, index) => hostsList.indexOf(host) === index);
+  const unselectAllItems = () => {
+    props.elementData.updateSelectedHosts(
+      props.elementData.selectedHosts,
+      false
+    );
+    props.buttonsData.updateIsDeleteButtonDisabled(true);
   };
 
   // Select all elements (Page)
@@ -107,41 +107,10 @@ const BulkSelectorHostsPrep = (props: PropsToBulkSelectorHostsPrep) => {
     isSelecting = true,
     selectableHostsList: Host[]
   ) => {
-    props.elementData.changeSelectedHostIds(
-      isSelecting ? selectableHostsList.map((r) => r.fqdn) : []
-    );
-
-    // Update selected elements
-    const hostNamesArray: string[] = [];
-    selectableHostsList.map((host) => {
-      hostNamesArray.push(host.fqdn);
-    });
-    props.elementData.updateSelectedHosts(hostNamesArray);
-
     // Enable/disable 'Delete' button
     if (isSelecting) {
-      let hostsIdArray: string[] = [];
+      props.elementData.updateSelectedHosts(selectableHostsList, true);
 
-      // if all page selected, the original 'selectedHosts' data is preserved
-      if (
-        selectableHostsList.length <=
-        props.elementData.selectableHostsTable.length
-      ) {
-        props.elementData.selectedHosts.map((host) => {
-          hostsIdArray.push(host);
-        });
-        selectableHostsList.map((host) => {
-          hostsIdArray.push(host.fqdn);
-        });
-      }
-
-      // Correct duplicates (if any)
-      hostsIdArray = removeDuplicates(hostsIdArray);
-      props.elementData.updateSelectedHosts(hostsIdArray);
-
-      // Update data
-      props.elementData.changeSelectedHostIds(hostsIdArray);
-      props.elementData.updateSelectedHosts(hostsIdArray);
       // Enable delete button
       props.buttonsData.updateIsDeleteButtonDisabled(false);
       // Update the 'selectedPerPage' counter
@@ -149,41 +118,10 @@ const BulkSelectorHostsPrep = (props: PropsToBulkSelectorHostsPrep) => {
         selectableHostsList.length
       );
     } else {
-      props.elementData.changeSelectedHostIds([]);
-      props.elementData.updateSelectedHosts([]);
+      props.elementData.updateSelectedHosts(props.shownElementsList, false);
       props.buttonsData.updateIsDeleteButtonDisabled(true);
       // Restore the 'selectedPerPage' counter
       props.selectedPerPageData.updateSelectedPerPage(0);
-    }
-  };
-
-  // Select all elements (Table)
-  const selectAllElementsTable = (
-    isSelecting = true,
-    selectableHostsList: Host[]
-  ) => {
-    props.elementData.changeSelectedHostIds(
-      isSelecting ? selectableHostsList.map((r) => r.fqdn) : []
-    );
-
-    // Update selected elements
-    const hostNamesArray: string[] = [];
-    selectableHostsList.map((host) => {
-      hostNamesArray.push(host.fqdn);
-    });
-    props.elementData.updateSelectedHosts(hostNamesArray);
-
-    // Enable/disable 'Delete' button
-    if (isSelecting) {
-      const hostsIdArray: string[] = [];
-      selectableHostsList.map((host) => hostsIdArray.push(host.fqdn));
-      props.elementData.changeSelectedHostIds(hostsIdArray);
-      props.elementData.updateSelectedHosts(hostsIdArray);
-      props.buttonsData.updateIsDeleteButtonDisabled(false);
-    } else {
-      props.elementData.changeSelectedHostIds([]);
-      props.elementData.updateSelectedHosts([]);
-      props.buttonsData.updateIsDeleteButtonDisabled(true);
     }
   };
 
@@ -217,7 +155,7 @@ const BulkSelectorHostsPrep = (props: PropsToBulkSelectorHostsPrep) => {
               // eslint-disable-next-line @typescript-eslint/no-unused-vars
               event: FormEvent<HTMLInputElement>
             ) =>
-              selectAllElementsTable(
+              selectAllElementsPage(
                 isSelecting,
                 props.elementData.selectableHostsTable
               )
@@ -240,8 +178,10 @@ const BulkSelectorHostsPrep = (props: PropsToBulkSelectorHostsPrep) => {
 
   // The 'currentPageAlreadySelected' should be set when elements are selected
   useEffect(() => {
-    const found = props.shownElementsList.every(
-      (host) => props.elementData.selectedHosts.indexOf(host.fqdn) >= 0
+    const found = props.shownElementsList.every((host) =>
+      props.elementData.selectedHosts.find(
+        (selectedHost) => selectedHost.fqdn[0] === host.fqdn[0]
+      )
     );
 
     if (found) {
@@ -252,8 +192,10 @@ const BulkSelectorHostsPrep = (props: PropsToBulkSelectorHostsPrep) => {
       setCurrentPageAlreadySelected(false);
       // If there is no elements selected on the page yet, reset 'selectedPerPage'
       if (
-        !props.shownElementsList.some(
-          (host) => props.elementData.selectedHosts.indexOf(host.fqdn) >= 0
+        !props.shownElementsList.some((host) =>
+          props.elementData.selectedHosts.find(
+            (selectedHost) => selectedHost.fqdn[0] === host.fqdn[0]
+          )
         )
       ) {
         props.selectedPerPageData.updateSelectedPerPage(0);
@@ -282,6 +224,10 @@ const BulkSelectorHostsPrep = (props: PropsToBulkSelectorHostsPrep) => {
     return msg;
   };
 
+  const host_id_list = props.elementData.selectedHosts.map((host) => {
+    return host.fqdn[0];
+  });
+
   // Menu options
   const menuToolbar = (
     <Menu
@@ -294,11 +240,14 @@ const BulkSelectorHostsPrep = (props: PropsToBulkSelectorHostsPrep) => {
     >
       <MenuContent>
         <MenuList>
-          <MenuItem itemId={0} onClick={unselectAllItems}>
-            Select none (0 items)
+          <MenuItem itemId={0} onClick={unselectPageItems}>
+            Unselect page (0 items)
+          </MenuItem>
+          <MenuItem itemId={1} onClick={unselectAllItems}>
+            Unselect all (0 items)
           </MenuItem>
           <MenuItem
-            itemId={1}
+            itemId={2}
             onClick={() => selectAllElementsPage(true, selectableElementsPage)}
             // NOTE: The line below disables this BS option when all the page rows have been selected.
             // This can benefit the user experience as it provides extra context of the already selected elements.
@@ -321,6 +270,7 @@ const BulkSelectorHostsPrep = (props: PropsToBulkSelectorHostsPrep) => {
       appendTo={containerRefMenu.current || undefined}
       isOpenMenu={isOpenMenu}
       ariaLabel="Menu toggle with checkbox split button"
+      title={host_id_list.join(", ")}
     />
   );
 };

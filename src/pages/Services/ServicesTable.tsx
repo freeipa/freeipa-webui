@@ -14,11 +14,10 @@ import { Link } from "react-router-dom";
 
 interface ServicesData {
   isServiceSelectable: (service: Service) => boolean;
-  selectedServiceIds: string[];
-  changeSelectedServiceIds: (newSelectedServiceIds: string[]) => void;
+  selectedServices: Service[];
   selectableServicesTable: Service[];
   setServiceSelected: (service: Service, isSelecting?: boolean) => void;
-  updateSelectedServices: (newSelectedServices: string[]) => void;
+  clearSelectedServices: () => void;
 }
 
 interface ButtonsData {
@@ -108,8 +107,18 @@ const ServicesTable = (props: PropsToTable) => {
     columnIndex,
   });
 
-  const isServiceSelected = (service: Service) =>
-    props.servicesData.selectedServiceIds.includes(service.krbcanonicalname);
+  const isServiceSelected = (service: Service) => {
+    if (
+      props.servicesData.selectedServices.find(
+        (selectedService) =>
+          selectedService.krbcanonicalname[0] === service.krbcanonicalname[0]
+      )
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   // To allow shift+click to select/deselect multiple rows
   const [recentSelectedRowIndex, setRecentSelectedRowIndex] = useState<
@@ -151,44 +160,37 @@ const ServicesTable = (props: PropsToTable) => {
     props.buttonsData.updateIsDeleteButtonDisabled(false);
 
     // Update serviceIdsSelected array
-    let serviceIdsSelectedArray = props.servicesData.selectedServiceIds;
     if (isSelecting) {
-      serviceIdsSelectedArray.push(service.krbcanonicalname);
       // Increment the elements selected per page (++)
       props.paginationData.updateSelectedPerPage(
         props.paginationData.selectedPerPage + 1
       );
     } else {
-      serviceIdsSelectedArray = serviceIdsSelectedArray.filter(
-        (serviceId) => serviceId !== service.krbcanonicalname
-      );
       // Decrement the elements selected per page (--)
       props.paginationData.updateSelectedPerPage(
         props.paginationData.selectedPerPage - 1
       );
     }
-    props.servicesData.changeSelectedServiceIds(serviceIdsSelectedArray);
-    props.servicesData.updateSelectedServices(serviceIdsSelectedArray);
   };
 
   // Reset 'selectedServiceIds' array if a delete operation has been done
   useEffect(() => {
     if (props.buttonsData.isDeletion) {
-      props.servicesData.changeSelectedServiceIds([]);
+      props.servicesData.clearSelectedServices();
       props.buttonsData.updateIsDeletion(false);
     }
   }, [props.buttonsData.isDeletion]);
 
   // Enable 'Delete' button (if any service selected)
   useEffect(() => {
-    if (props.servicesData.selectedServiceIds.length > 0) {
+    if (props.servicesData.selectedServices.length > 0) {
       props.buttonsData.updateIsDeleteButtonDisabled(false);
     }
 
-    if (props.servicesData.selectedServiceIds.length === 0) {
+    if (props.servicesData.selectedServices.length === 0) {
       props.buttonsData.updateIsDeleteButtonDisabled(true);
     }
-  }, [props.servicesData.selectedServiceIds]);
+  }, [props.servicesData.selectedServices]);
 
   // Keyboard event
   useEffect(() => {
@@ -223,7 +225,7 @@ const ServicesTable = (props: PropsToTable) => {
   );
 
   const body = shownServicesList.map((service, rowIndex) => (
-    <Tr key={service.krbcanonicalname} id={service.krbcanonicalname}>
+    <Tr key={service.krbcanonicalname[0]} id={service.krbcanonicalname[0]}>
       <Td
         dataLabel="checkbox"
         select={{
@@ -236,7 +238,7 @@ const ServicesTable = (props: PropsToTable) => {
       />
       <Td dataLabel={columnNames.principalName}>
         <Link to={URL_PREFIX + "/services/settings"} state={service}>
-          {service.krbcanonicalname}
+          {service.krbcanonicalname[0]}
         </Link>
       </Td>
     </Tr>

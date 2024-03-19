@@ -12,6 +12,8 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import UsersDisplayTable from "src/components/tables/UsersDisplayTable";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
+// Data types
+import { User } from "src/utils/datatypes/globalDataTypes";
 import { removeUser as removePreservedUser } from "src/store/Identity/preservedUsers-slice";
 // RPC
 import { BatchRPCResponse, useRestoreUserMutation } from "src/services/rpc";
@@ -21,8 +23,8 @@ import useAlerts from "src/hooks/useAlerts";
 export interface PropsToPreservedUsers {
   show: boolean;
   handleModalToggle: () => void;
-  selectedUids: string[];
-  updateSelectedUids: (newSelectedUids: string[]) => void;
+  selectedUsers: User[];
+  clearSelectedUsers: () => void;
   onSuccess: () => void;
 }
 
@@ -50,12 +52,7 @@ const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
     },
     {
       id: "restore-users-table",
-      pfComponent: (
-        <UsersDisplayTable
-          usersToDisplay={props.selectedUids}
-          from={"preserved-users"}
-        />
-      ),
+      pfComponent: <UsersDisplayTable usersToDisplay={props.selectedUsers} />,
     },
   ];
 
@@ -71,7 +68,7 @@ const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
     setBtnSpinning(true);
 
     // Prepare users params
-    const uidsToRestorePayload = props.selectedUids;
+    const uidsToRestorePayload = props.selectedUsers;
 
     // [API call] Restore elements
     executeUserRestoreCommand(uidsToRestorePayload).then((response) => {
@@ -85,12 +82,12 @@ const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
           closeModal();
 
           // Update data from Redux
-          props.selectedUids.map((user) => {
-            dispatch(removePreservedUser(user[0]));
+          props.selectedUsers.map((user) => {
+            dispatch(removePreservedUser(user.uid[0]));
           });
 
           // Reset selected values
-          props.updateSelectedUids([]);
+          props.clearSelectedUsers();
 
           // Show alert: success
           let successMessage = "";

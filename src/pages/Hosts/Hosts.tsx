@@ -84,7 +84,6 @@ const Hosts = () => {
   const [searchValue, setSearchValue] = React.useState("");
   const [page, setPage] = useState<number>(1);
   const [perPage, setPerPage] = useState<number>(10);
-  const [selectedHosts, setSelectedHosts] = useState<string[]>([]);
   const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
   const [totalCount, setHostsTotalCount] = useState<number>(0);
   const [dnsZones, setDNSZones] = useState<string[]>([]);
@@ -98,10 +97,6 @@ const Hosts = () => {
   };
   const updatePerPage = (newSetPerPage: number) => {
     setPerPage(newSetPerPage);
-  };
-
-  const updateSelectedHosts = (newSelectedHosts: string[]) => {
-    setSelectedHosts(newSelectedHosts);
   };
 
   // 'Delete' button state
@@ -151,8 +146,6 @@ const Hosts = () => {
       setShowTableRows(false);
       // Reset selected users on refresh
       setHostsTotalCount(0);
-      setSelectedHosts([]);
-      setSelectedHostIds([]);
       globalErrors.clear();
       setIsDisabledDueError(false);
       return;
@@ -237,14 +230,19 @@ const Hosts = () => {
 
     // Reset selected hosts on refresh
     setHostsTotalCount(0);
-    setSelectedHosts([]);
-    setSelectedHostIds([]);
+    clearSelectedHosts();
 
     hostDataResponse.refetch();
   };
 
   const updateSearchValue = (value: string) => {
     setSearchValue(value);
+  };
+
+  const [selectedHosts, setSelectedHostsList] = useState<Host[]>([]);
+  const clearSelectedHosts = () => {
+    const emptyList: Host[] = [];
+    setSelectedHostsList(emptyList);
   };
 
   const [retrieveHost] = useSearchEntriesMutation({});
@@ -306,6 +304,49 @@ const Hosts = () => {
 
   // Show table rows
   const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
+
+  const updateSelectedHosts = (hosts: Host[], isSelected: boolean) => {
+    let newSelectedHosts: Host[] = [];
+    if (isSelected) {
+      newSelectedHosts = JSON.parse(JSON.stringify(selectedHosts));
+      for (let i = 0; i < hosts.length; i++) {
+        if (
+          selectedHosts.find(
+            (selectedUser) => selectedUser.fqdn[0] === hosts[i].fqdn[0]
+          )
+        ) {
+          // Already in the list
+          continue;
+        }
+        // Add user to list
+        newSelectedHosts.push(hosts[i]);
+      }
+    } else {
+      // Remove user
+      for (let i = 0; i < selectedHosts.length; i++) {
+        let found = false;
+        for (let ii = 0; ii < hosts.length; ii++) {
+          if (selectedHosts[i].fqdn[0] === hosts[ii].fqdn[0]) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          // Keep this valid selected entry
+          newSelectedHosts.push(selectedHosts[i]);
+        }
+      }
+    }
+    setSelectedHostsList(newSelectedHosts);
+    setIsDeleteButtonDisabled(newSelectedHosts.length === 0);
+  };
+
+  // - Helper method to set the selected users from the table
+  const setHostSelected = (host: Host, isSelecting = true) => {
+    if (isHostSelectable(host)) {
+      updateSelectedHosts([host], isSelecting);
+    }
+  };
 
   // Show table rows only when data is fully retrieved
   useEffect(() => {
@@ -451,22 +492,6 @@ const Hosts = () => {
   // - Selectable checkboxes on table
   const selectableHostsTable = hostsList.filter(isHostSelectable); // elements per Table
 
-  // - Selected rows are tracked. Primary key: host Id
-  const [selectedHostIds, setSelectedHostIds] = useState<string[]>([]);
-
-  const changeSelectedHostIds = (selectedHostIds: string[]) => {
-    setSelectedHostIds(selectedHostIds);
-  };
-
-  // - Helper method to set the selected hosts from the table
-  const setHostSelected = (host: Host, isSelecting = true) =>
-    setSelectedHostIds((prevSelected) => {
-      const otherSelectedHostIds = prevSelected.filter((r) => r !== host.fqdn);
-      return isSelecting && isHostSelectable(host)
-        ? [...otherSelectedHostIds, host.fqdn]
-        : otherSelectedHostIds;
-    });
-
   // Data wrappers
   // - 'PaginationLayout'
   const paginationData = {
@@ -480,10 +505,9 @@ const Hosts = () => {
   };
 
   // - 'BulkSelectorPrep'
-  const hostsData = {
+  const hostsBulkSelectorData = {
     selectedHosts,
     updateSelectedHosts,
-    changeSelectedHostIds,
     selectableHostsTable,
     isHostSelectable,
   };
@@ -505,17 +529,16 @@ const Hosts = () => {
 
   const selectedHostsData = {
     selectedHosts,
-    updateSelectedHosts,
+    clearSelectedHosts,
   };
 
   // - 'HostsTable'
   const hostsTableData = {
     isHostSelectable,
-    selectedHostIds,
-    changeSelectedHostIds,
+    selectedHosts,
     selectableHostsTable,
     setHostSelected,
-    updateSelectedHosts,
+    clearSelectedHosts,
   };
 
   const hostsTableButtonsData = {
@@ -539,7 +562,7 @@ const Hosts = () => {
         <BulkSelectorHostsPrep
           list={hostsList}
           shownElementsList={hostsList}
-          elementData={hostsData}
+          elementData={hostsBulkSelectorData}
           buttonsData={buttonsData}
           selectedPerPageData={selectedPerPageData}
         />

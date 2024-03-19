@@ -4,7 +4,8 @@ import React, { useEffect, useState } from "react";
 import { Td, Th, Tr } from "@patternfly/react-table";
 // Layout
 import TableLayout from "src/components/layouts/TableLayout";
-
+// Data types
+import { Host, Service } from "src/utils/datatypes/globalDataTypes";
 /*
  * Goal: Show already selected elements ready to delete in a table.
  *
@@ -34,8 +35,7 @@ import TableLayout from "src/components/layouts/TableLayout";
 
 export interface PropsToDeletedElementsTable {
   mode: "passing_id" | "passing_full_data";
-  elementsList?: any[];
-  elementsToDelete: string[];
+  elementsToDelete: string[] | Host[] | Service[];
   columnNames: string[];
   elementType: string;
   idAttr: string;
@@ -44,21 +44,11 @@ export interface PropsToDeletedElementsTable {
 const DeletedElementsTable = (props: PropsToDeletedElementsTable) => {
   // TODO: Check the columnNames against the actual variable name
   //   when retrieving data from the RPC server.
-
-  const elementsToDelete: any = [];
+  let elementsToDelete: any = [];
   switch (props.mode) {
     case "passing_full_data":
-      // Given the id, retrieve full element info to display into table
-      // const elementsToDelete: any = [];
-      if (props.elementsList !== undefined) {
-        props.elementsList.map((element) => {
-          props.elementsToDelete.map((selected) => {
-            if (element[props.idAttr][0] === selected[0]) {
-              elementsToDelete.push(element);
-            }
-          });
-        });
-      }
+      // We already have our list of objs to delete
+      elementsToDelete = props.elementsToDelete;
       break;
     case "passing_id":
       props.elementsToDelete.map((userName) => {

@@ -7,6 +7,8 @@ import {
   TextContent,
   TextVariants,
 } from "@patternfly/react-core";
+// Data types
+import { User } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
@@ -22,7 +24,7 @@ import useAlerts from "src/hooks/useAlerts";
 export interface PropsToActivateUsers {
   show: boolean;
   handleModalToggle: () => void;
-  selectedUids: string[];
+  selectedUsers: User[];
   onSuccess: () => void;
 }
 
@@ -52,12 +54,7 @@ const ActivateStageUsers = (props: PropsToActivateUsers) => {
     },
     {
       id: "activate-users-table",
-      pfComponent: (
-        <UsersDisplayTable
-          usersToDisplay={props.selectedUids}
-          from={"stage-users"}
-        />
-      ),
+      pfComponent: <UsersDisplayTable usersToDisplay={props.selectedUsers} />,
     },
     {
       id: "no-members",
@@ -83,17 +80,17 @@ const ActivateStageUsers = (props: PropsToActivateUsers) => {
   // Stage user
   const activateUsers = () => {
     // Prepare users params
-    const uidsToActivatePayload = props.selectedUids;
+    const usersToActivatePayload = props.selectedUsers;
 
     // [API call] activate elements
-    activateUsersCommand(uidsToActivatePayload).then((response) => {
+    activateUsersCommand(usersToActivatePayload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
           // Close modal
           props.handleModalToggle();
           // Update data from Redux
-          props.selectedUids.map((user) => {
-            dispatch(removeStageUser(user[0]));
+          props.selectedUsers.map((user) => {
+            dispatch(removeStageUser(user.uid[0]));
           });
           // Set alert: success
           alerts.addAlert(

@@ -11,6 +11,7 @@ interface PropsToBulkSelector {
   appendTo?: HTMLElement | (() => HTMLElement) | undefined;
   isOpenMenu?: boolean;
   ariaLabel?: string;
+  title?: string;
 }
 
 const BulkSelectorLayout = (props: PropsToBulkSelector) => {
@@ -19,6 +20,7 @@ const BulkSelectorLayout = (props: PropsToBulkSelector) => {
       key={props.menuKey}
       ref={props.containerRefMenu}
       className={props.selectorClassName}
+      title={props.title ? props.title : ""}
     >
       <Popper
         trigger={props.toggle}

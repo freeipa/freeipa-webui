@@ -27,7 +27,7 @@ import { SerializedError } from "@reduxjs/toolkit";
 // Modals
 import ErrorModal from "./ErrorModal";
 // Data types
-import { ErrorData } from "src/utils/datatypes/globalDataTypes";
+import { ErrorData, User } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // Routing
@@ -40,8 +40,8 @@ interface ButtonsData {
 }
 
 interface SelectedUsersData {
-  selectedUsers: string[];
-  updateSelectedUsers: (newSelectedUsers: string[]) => void;
+  selectedUsers: User[];
+  clearSelectedUsers: () => void;
 }
 
 export interface PropsToDeleteUsers {
@@ -103,7 +103,6 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
       pfComponent: (
         <UsersDisplayTable
           usersToDisplay={props.selectedUsersData.selectedUsers}
-          from={props.from}
         />
       ),
     },
@@ -143,11 +142,11 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
   const deleteUsersFromRedux = () => {
     props.selectedUsersData.selectedUsers.map((user) => {
       if (props.from === "active-users") {
-        dispatch(removeActiveUser(user[0]));
+        dispatch(removeActiveUser(user.uid[0]));
       } else if (props.from === "stage-users") {
-        dispatch(removeStageUser(user[0]));
+        dispatch(removeStageUser(user.uid[0]));
       } else if (props.from === "preserved-users") {
-        dispatch(removePreservedUser(user[0]));
+        dispatch(removePreservedUser(user.uid[0]));
       }
     });
   };
@@ -194,9 +193,9 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
   const [spinning, setBtnSpinning] = React.useState<boolean>(false);
 
   // Delete user
-  const deleteUsers = (uidsToDelete: string[]) => {
+  const deleteUsers = (usersToDelete: User[]) => {
     // Prepare users params
-    const uidsToDeletePayload: Command[] = [];
+    const usersToDeletePayload: Command[] = [];
 
     setBtnSpinning(true);
 
@@ -204,20 +203,24 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
     if (props.from !== "stage-users") {
       deletionParams = { preserve: !isDeleteChecked };
     }
-    uidsToDelete.map((uid) => {
+    usersToDelete.map((user) => {
       let method = "user_del";
       if (props.from === "stage-users") {
         method = "stageuser_del";
       }
+      let id = user.uid;
+      if (Array.isArray(user.uid)) {
+        id = user.uid[0];
+      }
       const payloadItem = {
         method: method,
-        params: [[uid], deletionParams],
+        params: [[id], deletionParams],
       } as Command;
-      uidsToDeletePayload.push(payloadItem);
+      usersToDeletePayload.push(payloadItem);
     });
 
     // [API call] Delete elements
-    executeUserDelCommand(uidsToDeletePayload).then((response) => {
+    executeUserDelCommand(usersToDeletePayload).then((response) => {
       if ("data" in response) {
         const data = response.data as BatchRPCResponse;
         const result = data.result;
@@ -243,7 +246,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
             deleteUsersFromRedux();
 
             // Reset selected values
-            props.selectedUsersData.updateSelectedUsers([]);
+            props.selectedUsersData.clearSelectedUsers();
 
             // Disable 'Delete' button
             if (props.buttonsData !== undefined) {

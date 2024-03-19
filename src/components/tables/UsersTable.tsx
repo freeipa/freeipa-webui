@@ -19,13 +19,10 @@ import { MinusIcon } from "@patternfly/react-icons";
 
 interface UsersData {
   isUserSelectable: (user: User) => boolean;
-  selectedUserNames: string[];
-  changeSelectedUserNames: (selectedUsernames: string[]) => void;
-  selectedUserIds: string[];
-  updateSelectedUserIds: (newSelectedUserIds: string[]) => void;
+  selectedUsers: User[];
   selectableUsersTable: User[];
   setUserSelected: (user: User, isSelecting?: boolean) => void;
-  updateSelectedUsers: (newSelectedUsers: string[]) => void;
+  clearSelectedUsers: () => void;
 }
 
 interface ButtonsData {
@@ -44,7 +41,6 @@ interface PaginationData {
 }
 
 export interface PropsToTable {
-  elementsList: User[];
   shownElementsList: User[];
   from: "active-users" | "stage-users" | "preserved-users";
   showTableRows: boolean;
@@ -56,7 +52,6 @@ export interface PropsToTable {
 
 const UsersTable = (props: PropsToTable) => {
   // Retrieve users data from props
-  const usersList = [...props.elementsList];
   const shownUsersList = [...props.shownElementsList];
 
   const columnNames = {
@@ -166,12 +161,21 @@ const UsersTable = (props: PropsToTable) => {
   // When user status is updated, unselect selected rows
   useEffect(() => {
     if (props.buttonsData.isDisableEnableOp) {
-      props.usersData.changeSelectedUserNames([]);
+      props.usersData.clearSelectedUsers();
     }
   }, [props.buttonsData.isDisableEnableOp]);
 
-  const isUserSelected = (user: User) =>
-    props.usersData.selectedUserNames.includes(user.uid);
+  const isUserSelected = (user: User) => {
+    if (
+      props.usersData.selectedUsers.find(
+        (selectedUser) => selectedUser.uid[0] === user.uid[0]
+      )
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   // To allow shift+click to select/deselect multiple rows
   const [recentSelectedRowIndex, setRecentSelectedRowIndex] = useState<
@@ -202,59 +206,32 @@ const UsersTable = (props: PropsToTable) => {
     }
     setRecentSelectedRowIndex(rowIndex);
 
-    // Resetting 'isDisableEnableOp'
-    if (props.buttonsData.updateIsDisableEnableOp !== undefined) {
-      props.buttonsData.updateIsDisableEnableOp(false);
-    }
-
-    // Update userIdsSelected array
-    let userIdsSelectedArray = props.usersData.selectedUserNames;
     if (isSelecting) {
-      userIdsSelectedArray.push(user.uid);
       // Increment the elements selected per page (++)
       props.paginationData.updateSelectedPerPage(
         props.paginationData.selectedPerPage + 1
       );
     } else {
-      userIdsSelectedArray = userIdsSelectedArray.filter(
-        (userId) => userId !== user.uid
-      );
       // Decrement the elements selected per page (--)
       props.paginationData.updateSelectedPerPage(
         props.paginationData.selectedPerPage - 1
       );
     }
-
-    props.usersData.updateSelectedUserIds(userIdsSelectedArray);
-    props.usersData.updateSelectedUsers(userIdsSelectedArray);
   };
 
-  // Given userId, returns full User
-  const getUserById = (userId: string) => {
-    const res = usersList.filter((user) => user.uid[0] === userId);
-    return res[0];
-  };
-
-  // Reset 'selectedUserIds' and 'selectedUserNames' arrays if a delete operation has been done
+  // Reset 'selectedUsers' array if a delete operation has been done
   useEffect(() => {
     if (props.buttonsData.isDeletion) {
-      props.usersData.updateSelectedUserIds([]);
-      props.usersData.changeSelectedUserNames([]);
+      props.usersData.clearSelectedUsers();
       props.buttonsData.updateIsDeletion(false);
     }
   }, [props.buttonsData.isDeletion]);
 
   // Enable 'Delete' and 'Enable|Disable' option buttons (if any user selected)
   useEffect(() => {
-    if (props.usersData.selectedUserIds.length > 0) {
+    if (props.usersData.selectedUsers.length > 0) {
       props.buttonsData.updateIsDeleteButtonDisabled(false);
-
-      const selectedUsers: User[] = props.usersData.selectedUserIds.map(
-        (userId) => {
-          return getUserById(userId[0]);
-        }
-      );
-
+      const selectedUsers: User[] = props.usersData.selectedUsers;
       if (
         props.buttonsData.updateIsDisableButtonDisabled !== undefined &&
         props.buttonsData.updateIsEnableButtonDisabled !== undefined
@@ -284,7 +261,7 @@ const UsersTable = (props: PropsToTable) => {
       }
     }
 
-    if (props.usersData.selectedUserIds.length === 0) {
+    if (props.usersData.selectedUsers.length === 0) {
       props.buttonsData.updateIsDeleteButtonDisabled(true);
       if (
         props.buttonsData.updateIsEnableButtonDisabled !== undefined &&
@@ -294,7 +271,7 @@ const UsersTable = (props: PropsToTable) => {
         props.buttonsData.updateIsEnableButtonDisabled(true);
       }
     }
-  }, [props.usersData.selectedUserIds]);
+  }, [props.usersData.selectedUsers]);
 
   // Keyboard event
   useEffect(() => {
