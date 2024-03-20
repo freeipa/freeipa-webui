@@ -6,7 +6,7 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Data types
 import {
   UserGroupOld,
-  Netgroup,
+  NetgroupOld,
   Roles,
   HBACRules,
   SudoRules,
@@ -27,7 +27,7 @@ export interface PropsToAdd {
   modalData: ModalData;
   availableData:
     | UserGroupOld[]
-    | Netgroup[]
+    | NetgroupOld[]
     | Roles[]
     | HBACRules[]
     | SudoRules[]
@@ -36,7 +36,7 @@ export interface PropsToAdd {
   updateGroupRepository: (
     args:
       | UserGroupOld[]
-      | Netgroup[]
+      | NetgroupOld[]
       | Roles[]
       | HBACRules[]
       | SudoRules[]
@@ -50,7 +50,7 @@ export interface PropsToAdd {
 //  its variables. Just the mandatory ones ('name' and 'description') are accessible at this point.
 // To display all the possible data types for all the tabs (and not only the mandatory ones)
 //   an extra interface 'MemberOfElement' will be defined. This will be called when assigning
-//   a new group instead of refering to each type (UserGroupOld | Netgroup | Roles | HBACRules |
+//   a new group instead of refering to each type (UserGroupOld | NetgroupOld | Roles | HBACRules |
 //   SudoRules | HostGroup).
 interface MemberOfElement {
   hostGroup?: string;
@@ -148,9 +148,9 @@ const MemberOfAddModal = (props: PropsToAdd) => {
               optionData.description !== undefined && optionData.description,
             gid: optionData.gid !== undefined && optionData.gid,
             status: optionData.status !== undefined && optionData.status,
-          } as Netgroup);
+          } as NetgroupOld);
           // Send updated data to table
-          props.updateGroupRepository(props.groupRepository as Netgroup[]);
+          props.updateGroupRepository(props.groupRepository as NetgroupOld[]);
         }
         // Roles
         if (props.tabData.tabName === "Roles") {

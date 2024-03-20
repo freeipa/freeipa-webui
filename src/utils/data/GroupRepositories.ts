@@ -9,7 +9,7 @@
 
 import {
   UserGroupOld,
-  Netgroup,
+  NetgroupOld,
   Roles,
   HBACRules,
   SudoRules,
@@ -92,7 +92,7 @@ export let userGroupsInitialData: UserGroupOld[] = [
 ];
 
 // 'Netgroups' initial data
-export let netgroupsInitialData: Netgroup[] = [
+export let netgroupsInitialData: NetgroupOld[] = [
   {
     name: "netgroup1",
     description: "First netgroup",
@@ -129,7 +129,7 @@ export let sudoRulesInitialData: SudoRules[] = [];
 export let hostsHostGroupsInitialData: HostGroup[] = [];
 
 // - 'Netgroups' initial data
-export let hostsNetgroupsInitialData: Netgroup[] = [
+export let hostsNetgroupsInitialData: NetgroupOld[] = [
   {
     name: "netgroup1",
     description: "First netgroup",

@@ -8,7 +8,7 @@ import TableLayout from "src/components/layouts/TableLayout";
 //  its variables. Just the mandatory ones ('name' and 'description') are accessible at this point.
 // To display all the possible data types for all the tabs (and not only the mandatory ones)
 //   an extra interface 'MemberOfElement' will be defined. This will be assigned in the
-//   'PropsToDeleteOnTable' interface instead of each type (UserGroupOld | Netgroup | Roles
+//   'PropsToDeleteOnTable' interface instead of each type (UserGroupOld | NetgroupOld | Roles
 //   | HBACRules | SudoRules).
 interface MemberOfElement {
   name: string;
@@ -44,7 +44,7 @@ const MemberOfDeletedGroupsTable = (props: PropsToDeleteOnTable) => {
         } as ColumnNames;
       case "Netgroups":
         return {
-          name: "Netgroup name",
+          name: "NetgroupOld name",
           description: "Description",
         } as ColumnNames;
       case "Roles":
