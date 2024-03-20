@@ -146,9 +146,16 @@ export interface UserGroup {
   dn: string;
 }
 
-export interface Netgroup {
+export interface NetgroupOld {
   name: string;
   description: string;
+}
+
+export interface Netgroup {
+  cn: string;
+  nisdomainname: string;
+  description: string;
+  dn: string;
 }
 
 export interface Roles {

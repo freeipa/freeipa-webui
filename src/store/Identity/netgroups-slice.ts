@@ -2,10 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import netgroupsJson from "./netgroups.json";
 // Data type
-import { Netgroup } from "src/utils/datatypes/globalDataTypes";
+import { NetgroupOld } from "src/utils/datatypes/globalDataTypes";
 
 interface NetgroupState {
-  netgroupList: Netgroup[];
+  netgroupList: NetgroupOld[];
 }
 
 const initialState: NetgroupState = {
