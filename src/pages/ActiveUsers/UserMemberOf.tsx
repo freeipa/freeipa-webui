@@ -13,7 +13,6 @@ import MemberOfToolbar from "src/components/MemberOf/MemberOfToolbarOld";
 import MemberOfTable from "src/components/MemberOf/MemberOfTable";
 // Data types
 import {
-  NetgroupOld,
   Roles,
   HBACRules,
   SudoRules,
@@ -21,10 +20,8 @@ import {
 } from "src/utils/datatypes/globalDataTypes";
 // Redux
 import { useAppSelector } from "src/store/hooks";
-
 // Repositories
 import {
-  netgroupsInitialData,
   rolesInitialData,
   hbacRulesInitialData,
   sudoRulesInitialData,
@@ -34,6 +31,7 @@ import MemberOfAddModal from "src/components/MemberOf/MemberOfAddModalOld";
 import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModalOld";
 // Wrappers
 import MemberOfUserGroups from "src/components/MemberOf/MemberOfUserGroups";
+import MemberOfNetgroups from "src/components/MemberOf/MemberOfNetgroups";
 // RPC
 import { useGetUserByUidQuery } from "src/services/rpc";
 // Utils
@@ -46,15 +44,11 @@ interface PropsToUserMemberOf {
 const UserMemberOf = (props: PropsToUserMemberOf) => {
   // Retrieve each group list from Redux:
   // TODO: Remove this when all data is taken from the C.L.
-  let netgroupsList = useAppSelector((state) => state.netgroups.netgroupList);
   let rolesList = useAppSelector((state) => state.roles.roleList);
   let hbacRulesList = useAppSelector((state) => state.hbacrules.hbacRulesList);
   let sudoRulesList = useAppSelector((state) => state.sudorules.sudoRulesList);
 
   // Alter the available options list to keep the state of the recently added / removed items
-  const updateNetgroupsList = (newAvOptionsList: unknown[]) => {
-    netgroupsList = newAvOptionsList as NetgroupOld[];
-  };
   const updateRolesList = (newAvOptionsList: unknown[]) => {
     rolesList = newAvOptionsList as Roles[];
   };
@@ -95,10 +89,17 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     }
   }, [user]);
 
+  // 'Netgroups' length to show in tab badge
+  const [netgroupsLength, setNetgroupsLength] = React.useState(0);
+
+  React.useEffect(() => {
+    if (user && user.memberof_netgroup) {
+      setNetgroupsLength(user.memberof_netgroup.length);
+    }
+  }, [user]);
+
   // List of default dummy data (for each tab option)
   // TODO: Remove when all data is adapted to the C.L.
-  const [netgroupsRepository, setNetgroupsRepository] =
-    useState(netgroupsInitialData);
   const [rolesRepository, setRolesRepository] = useState(rolesInitialData);
   const [hbacRulesRepository, setHbacRulesRepository] =
     useState(hbacRulesInitialData);
@@ -116,14 +117,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   //  the user is already member of. This is done to prevent duplicates
   //  (e.g: adding the same element twice).
   // TODO: Remove this when all tab are set into wrappers
-  const filterNetgroupsData = () => {
-    // Netgroups
-    return netgroupsList.filter((item) => {
-      return !netgroupsRepository.some((itm) => {
-        return item.name === itm.name;
-      });
-    });
-  };
   const filterRolesData = () => {
     // Roles
     return rolesList.filter((item) => {
@@ -150,15 +143,11 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   };
 
   // Available data to be added as member of
-  const netgroupsFilteredData: NetgroupOld[] = filterNetgroupsData();
   const rolesFilteredData: Roles[] = filterRolesData();
   const hbacRulesFilteredData: HBACRules[] = filterHbacRulesData();
   const sudoRulesFilteredData: SudoRules[] = filterSudoRulesData();
 
   // Number of items on the list for each repository
-  const [netgroupsRepoLength, setNetgroupsRepoLength] = useState(
-    netgroupsRepository.length
-  );
   const [rolesRepoLength, setRolesRepoLength] = useState(
     rolesRepository.length
   );
@@ -174,14 +163,9 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   //  - The slice of data to show (considering the pagination)
   //  - Number of items for a specific list
   const updateGroupRepository = (
-    groupRepository: NetgroupOld[] | Roles[] | HBACRules[] | SudoRules[]
+    groupRepository: Roles[] | HBACRules[] | SudoRules[]
   ) => {
     switch (tabName) {
-      case "Netgroups":
-        setNetgroupsRepository(groupRepository as NetgroupOld[]);
-        setShownNetgroupsList(netgroupsRepository.slice(0, perPage));
-        setNetgroupsRepoLength(netgroupsRepository.length);
-        break;
       case "Roles":
         setRolesRepository(groupRepository as Roles[]);
         setShownRolesList(rolesRepository.slice(0, perPage));
@@ -238,9 +222,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   };
 
   // Member groups displayed on the first page
-  const [shownNetgroupsList, setShownNetgroupsList] = useState(
-    netgroupsRepository.slice(0, perPage)
-  );
   const [shownRolesList, setShownRolesList] = useState(
     rolesRepository.slice(0, perPage)
   );
@@ -253,12 +234,9 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
 
   // Update pagination
   const changeMemberGroupsList = (
-    value: NetgroupOld[] | Roles[] | HBACRules[] | SudoRules[]
+    value: Roles[] | HBACRules[] | SudoRules[]
   ) => {
     switch (activeTabKey) {
-      case 1:
-        setShownNetgroupsList(value as NetgroupOld[]);
-        break;
       case 2:
         setShownRolesList(value as Roles[]);
         break;
@@ -280,9 +258,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   ) => {
     setPage(newPage);
     switch (activeTabKey) {
-      case 1:
-        setShownNetgroupsList(netgroupsRepository.slice(startIdx, endIdx));
-        break;
       case 2:
         setShownRolesList(rolesRepository.slice(startIdx, endIdx));
         break;
@@ -303,9 +278,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   ) => {
     setPerPage(newPerPage);
     switch (activeTabKey) {
-      case 1:
-        setShownNetgroupsList(netgroupsRepository.slice(startIdx, endIdx));
-        break;
       case 2:
         setShownRolesList(rolesRepository.slice(startIdx, endIdx));
         break;
@@ -350,10 +322,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     if (showTableRows) setShowTableRows(false);
     setTimeout(() => {
       switch (activeTabKey) {
-        case 1:
-          setShownNetgroupsList(netgroupsRepository.slice(0, perPage));
-          setNetgroupsRepoLength(netgroupsRepository.length);
-          break;
         case 2:
           setShownRolesList(rolesRepository.slice(0, perPage));
           setRolesRepoLength(rolesRepository.length);
@@ -369,12 +337,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
       }
       setShowTableRows(true);
     }, 1000);
-  }, [
-    netgroupsRepository,
-    rolesRepository,
-    hbacRulesRepository,
-    sudoRulesRepository,
-  ]);
+  }, [rolesRepository, hbacRulesRepository, sudoRulesRepository]);
 
   // Data wrappers
   // - MemberOfToolbar
@@ -471,29 +434,15 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               <TabTitleText>
                 Netgroups{" "}
                 <Badge key={1} isRead>
-                  {netgroupsRepoLength}
+                  {netgroupsLength}
                 </Badge>
               </TabTitleText>
             }
           >
-            <MemberOfToolbar
-              pageRepo={netgroupsRepository}
-              shownItems={shownNetgroupsList}
-              toolbar="netgroups"
-              settersData={toolbarSettersData}
-              pageData={toolbarPageData}
-              buttonData={toolbarButtonData}
-              searchValueData={searchValueData}
-            />
-            <MemberOfTable
-              group={shownNetgroupsList}
-              tableName={"Netgroups"}
-              activeTabKey={activeTabKey}
-              changeSelectedGroups={updateGroupsNamesSelected}
-              buttonData={tableButtonData}
-              showTableRows={showTableRows}
-              searchValue={searchValue}
-              fullGroupList={netgroupsRepository}
+            <MemberOfNetgroups
+              user={user}
+              isUserDataLoading={userQuery.isFetching}
+              onRefreshUserData={onRefreshUserData}
             />
           </Tab>
           <Tab
@@ -594,30 +543,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
           </Tab>
         </Tabs>
       </PageSection>
-      {tabName === "Netgroups" && (
-        <>
-          {showAddModal && (
-            <MemberOfAddModal
-              modalData={addModalData}
-              availableData={netgroupsFilteredData}
-              groupRepository={netgroupsRepository}
-              updateGroupRepository={updateGroupRepository}
-              updateAvOptionsList={updateNetgroupsList}
-              tabData={tabData}
-            />
-          )}
-          {showDeleteModal && groupsNamesSelected.length !== 0 && (
-            <MemberOfDeleteModal
-              modalData={deleteModalData}
-              tabData={deleteTabData}
-              groupNamesToDelete={groupsNamesSelected}
-              groupRepository={netgroupsRepository}
-              updateGroupRepository={updateGroupRepository}
-              buttonData={deleteButtonData}
-            />
-          )}
-        </>
-      )}
       {tabName === "Roles" && (
         <>
           {showAddModal && (
