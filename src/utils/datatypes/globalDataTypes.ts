@@ -357,6 +357,11 @@ export interface servicesType {
   krbprincipalname: string[];
 }
 
+export interface NetgroupType {
+  dn: string;
+  cn: string[];
+}
+
 export interface CertProfile {
   cn: string;
   description: string;
