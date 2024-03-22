@@ -84,6 +84,10 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
     }
   }, [netgroupsFullList]);
 
+  React.useEffect(() => {
+    netgroupsQuery.refetch();
+  }, [props.user]);
+
   // Other states
   const [netgroupsSelected, setNetgroupsSelected] = React.useState<string[]>(
     []
@@ -105,6 +109,11 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
     setShownNetgroups(paginate(netgroupsFromUser, page, perPage));
   }, [netgroupsFromUser]);
 
+  // Buttons functionality
+  // - Refresh
+  const isRefreshButtonEnabled =
+    !netgroupsQuery.isFetching && !props.isUserDataLoading;
+
   return (
     <>
       <alerts.ManagedAlerts />
@@ -113,7 +122,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
         onSearchTextChange={setSearchValue}
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         onSearch={() => {}}
-        refreshButtonEnabled={true}
+        refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshUserData}
         deleteButtonEnabled={someItemSelected}
         // eslint-disable-next-line @typescript-eslint/no-empty-function
