@@ -189,3 +189,57 @@ When(
       .click();
   }
 );
+
+// Selectors
+When("I click in the {string} selector field", (selectorName: string) => {
+  cy.get("div.pf-v5-c-form__group-label")
+    .contains(selectorName)
+    .parent()
+    .next()
+    .find("button.pf-v5-c-menu-toggle")
+    .click();
+});
+
+Then(
+  "in the {string} selector I should see the {string} option available to be checked",
+  (selectorName: string, option: string) => {
+    const options = cy
+      .get("div.pf-v5-c-form__group-label")
+      .contains(selectorName)
+      .parent()
+      .next()
+      .find("div.pf-v5-c-menu__content");
+    options.should("contain", option);
+  }
+);
+
+When(
+  "I select {string} option in the {string} selector",
+  (option: string, selectorName: string) => {
+    const selectorNameFound = cy
+      .get("div.pf-v5-c-form__group-label")
+      .contains(selectorName);
+    if (selectorNameFound) {
+      const itemsOptionsList = selectorNameFound
+        .parent()
+        .next()
+        .get("div.pf-v5-c-menu");
+      const itemOptionSelected = itemsOptionsList.contains(option);
+      if (itemOptionSelected) {
+        itemOptionSelected.click({ force: true });
+      }
+    }
+  }
+);
+
+Then(
+  "I should see the option {string} selected in the {string} selector",
+  (option: string, selectorName: string) => {
+    cy.get("div.pf-v5-c-form__group-label")
+      .contains(selectorName)
+      .parent()
+      .next()
+      .find("span.pf-v5-c-menu-toggle__text")
+      .contains(option);
+  }
+);
