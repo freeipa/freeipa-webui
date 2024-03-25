@@ -308,3 +308,25 @@ Feature: User details
     And I should see the "PKINIT" checkbox unchecked
     And I should see the "Hardened password (by SPAKE or FAST)" checkbox unchecked
     And I should see the "External Identity Provider" checkbox unchecked
+
+  # Selector fields
+  # TODO: 'Radius proxy configuration', 'External identity provider'
+  # - 'Manager'
+  Scenario: Set 'Manager' field
+    When I click in the "Manager" selector field
+    Then in the "Manager" selector I should see the "admin" option available to be checked
+    When I select "admin" option in the "Manager" selector
+    Then I should see the option 'admin' selected in the "Manager" selector
+    When I click on "Save" button
+    Then I should see "success" alert with text "User modified"
+    Then I should see the option "admin" selected in the "Manager" selector
+
+  # - 'SMB home directory drive'
+  Scenario: Set 'SMB home directory drive' field
+    When I click in the "SMB home directory drive" selector field
+    Then in the "SMB home directory drive" selector I should see the "H:" option available to be checked
+    When I select "H:" option in the "SMB home directory drive" selector
+    Then I should see the option 'H:' selected in the "SMB home directory drive" selector
+    When I click on "Save" button
+    Then I should see "success" alert with text "User modified"
+    Then I should see the option "H:" selected in the "SMB home directory drive" selector
