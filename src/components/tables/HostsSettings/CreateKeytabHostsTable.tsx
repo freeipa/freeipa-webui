@@ -4,13 +4,14 @@ import { Td, Th, Tr } from "@patternfly/react-table";
 // Layout
 import TableWithButtonsLayout from "src/components/layouts/TableWithButtonsLayout";
 // Modals
-import CreateKeytabElementsAddModal from "src/components/modals/HostsSettings/CreateKeytabElementsAddModal";
-import CreateKeytabElementsDeleteModal from "src/components/modals/HostsSettings/CreateKeytabElementsDeleteModal";
+import KeytabElementsAddModal from "src/components/modals/HostsSettings/KeytabElementsAddModal";
+import KeytabElementsDeleteModal from "src/components/modals/HostsSettings/KeytabElementsDeleteModal";
 // Redux
 import { useAppSelector } from "src/store/hooks";
 
 interface PropsToTable {
   host: string;
+  className?: string | "";
 }
 
 const CreateKeytabHostsTable = (props: PropsToTable) => {
@@ -202,7 +203,7 @@ const CreateKeytabHostsTable = (props: PropsToTable) => {
   };
 
   return (
-    <>
+    <div className={props.className}>
       <TableWithButtonsLayout
         ariaLabel="hosts table in host settings"
         variant="compact"
@@ -220,7 +221,7 @@ const CreateKeytabHostsTable = (props: PropsToTable) => {
         onAddModal={onClickAddHandler}
       />
       {showAddModal && (
-        <CreateKeytabElementsAddModal
+        <KeytabElementsAddModal
           host={props.host}
           elementType="host"
           operationType="create"
@@ -235,7 +236,7 @@ const CreateKeytabHostsTable = (props: PropsToTable) => {
         />
       )}
       {showDeleteModal && (
-        <CreateKeytabElementsDeleteModal
+        <KeytabElementsDeleteModal
           host={props.host}
           elementType="host"
           operationType="create"
@@ -251,7 +252,7 @@ const CreateKeytabHostsTable = (props: PropsToTable) => {
           updateAvailableData={updateHostsFilteredData}
         />
       )}
-    </>
+    </div>
   );
 };
 

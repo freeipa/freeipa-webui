@@ -4,13 +4,14 @@ import { Td, Th, Tr } from "@patternfly/react-table";
 // Layout
 import TableWithButtonsLayout from "src/components/layouts/TableWithButtonsLayout";
 // Modals
-import RetrieveKeytabElementsAddModal from "src/components/modals/HostsSettings/RetrieveKeytabElementsAddModal";
-import RetrieveKeytabElementsDeleteModal from "src/components/modals/HostsSettings/RetrieveKeytabElementsDeleteModal";
+import KeytabElementsAddModal from "src/components/modals/HostsSettings/KeytabElementsAddModal";
+import KeytabElementsDeleteModal from "src/components/modals/HostsSettings/KeytabElementsDeleteModal";
 // Redux
 import { useAppSelector } from "src/store/hooks";
 
 interface PropsToTable {
   host: string;
+  className?: string | "";
 }
 
 const RetrieveKeytabHostsTable = (props: PropsToTable) => {
@@ -220,7 +221,7 @@ const RetrieveKeytabHostsTable = (props: PropsToTable) => {
         onAddModal={onClickAddHandler}
       />
       {showAddModal && (
-        <RetrieveKeytabElementsAddModal
+        <KeytabElementsAddModal
           host={props.host}
           elementType="host"
           operationType="retrieve"
@@ -235,7 +236,7 @@ const RetrieveKeytabHostsTable = (props: PropsToTable) => {
         />
       )}
       {showDeleteModal && (
-        <RetrieveKeytabElementsDeleteModal
+        <KeytabElementsDeleteModal
           host={props.host}
           elementType="host"
           operationType="retrieve"
