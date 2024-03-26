@@ -151,7 +151,14 @@ export interface GenericPayload {
   stopIdx: number;
   objName?: string;
   objAttr?: string;
-  entryType?: "user" | "stage" | "preserved" | "host" | "service" | "group";
+  entryType?:
+    | "user"
+    | "stage"
+    | "preserved"
+    | "host"
+    | "service"
+    | "group"
+    | "netgroups";
 }
 
 export interface GroupShowPayload {
@@ -713,7 +720,7 @@ export const api = createApi({
           version: apiVersion,
         };
 
-        if (objName === "group") {
+        if (objName === "group" || objName === "netgroups") {
           if (user !== undefined) {
             params["user"] = user;
           } else if (no_user !== undefined) {
@@ -750,7 +757,7 @@ export const api = createApi({
             id = idResponseData.result.result[i] as servicesType;
           } else if (objName === "user" || objName === "stageuser") {
             id = idResponseData.result.result[i] as UIDType;
-          } else if (objName === "group") {
+          } else if (objName === "group" || objName === "netgroup") {
             id = idResponseData.result.result[i] as cnType;
           } else {
             // Unknown, should never happen
@@ -1413,6 +1420,12 @@ export const useGettingServicesQuery = (payloadData) => {
 // Groups
 export const useGettingGroupsQuery = (payloadData) => {
   payloadData["objName"] = "group";
+  payloadData["objAttr"] = "cn";
+  return useGettingGenericQuery(payloadData);
+};
+// Netgroups
+export const useGettingNetgroupsQuery = (payloadData) => {
+  payloadData["objName"] = "netgroup";
   payloadData["objAttr"] = "cn";
   return useGettingGenericQuery(payloadData);
 };

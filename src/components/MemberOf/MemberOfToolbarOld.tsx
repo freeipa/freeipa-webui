@@ -22,7 +22,7 @@ import ToolbarLayout, {
 // Data types
 import {
   UserGroupOld,
-  Netgroup,
+  NetgroupOld,
   Roles,
   HBACRules,
   SudoRules,
@@ -58,7 +58,7 @@ interface SettersData {
   changeMemberGroupsList: (
     arg:
       | UserGroupOld[]
-      | Netgroup[]
+      | NetgroupOld[]
       | Roles[]
       | HBACRules[]
       | SudoRules[]
@@ -75,14 +75,14 @@ interface SearchValueData {
 export interface PropsToToolbar {
   pageRepo:
     | UserGroupOld[]
-    | Netgroup[]
+    | NetgroupOld[]
     | Roles[]
     | HBACRules[]
     | SudoRules[]
     | HostGroup[];
   shownItems:
     | UserGroupOld[]
-    | Netgroup[]
+    | NetgroupOld[]
     | Roles[]
     | HBACRules[]
     | SudoRules[]
