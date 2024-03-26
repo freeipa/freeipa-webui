@@ -19,10 +19,19 @@ interface PropsToPaginationPrep {
   widgetId?: string | undefined;
   className?: string;
   isCompact?: boolean;
+  perPageSize?: "sm" | "default";
 }
 
 const PaginationLayout = (props: PropsToPaginationPrep) => {
   // Handle content on 'setPage'
+
+  let perPageOptions = [
+    { title: "10", value: 10 },
+    { title: "20", value: 20 },
+    { title: "50", value: 50 },
+    { title: "100", value: 100 },
+  ];
+
   const handleSetPage = (
     _event: React.MouseEvent | React.KeyboardEvent | MouseEvent,
     newPage: number,
@@ -55,6 +64,15 @@ const PaginationLayout = (props: PropsToPaginationPrep) => {
     props.paginationData.updateSelectedPerPage(0);
   };
 
+  if (props.perPageSize !== undefined && props.perPageSize === "sm") {
+    perPageOptions = [
+      { title: "5", value: 5 },
+      { title: "10", value: 10 },
+      { title: "20", value: 20 },
+      { title: "50", value: 50 },
+    ];
+  }
+
   return (
     <Pagination
       className={props.className}
@@ -70,6 +88,7 @@ const PaginationLayout = (props: PropsToPaginationPrep) => {
       onSetPage={handleSetPage}
       onPerPageSelect={handlePerPageSelect}
       isCompact={props.isCompact}
+      perPageOptions={perPageOptions}
     />
   );
 };
