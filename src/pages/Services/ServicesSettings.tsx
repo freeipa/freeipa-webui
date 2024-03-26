@@ -166,7 +166,10 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
                 id="allowed-retrieve-keytab"
                 text="Allowed to retrieve keytab"
               />
-              <AllowedRetrieveKeytab service={props.service} />
+              <AllowedRetrieveKeytab
+                service={props.service}
+                onRefresh={props.onRefresh}
+              />
               <TitleLayout
                 key={4}
                 headingLevel="h2"
