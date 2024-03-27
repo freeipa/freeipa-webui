@@ -249,7 +249,10 @@ const HostsSettings = (props: PropsToHostsSettings) => {
                 id="allow-retrieve-keytab"
                 text="Allow to retrieve keytab"
               />
-              <AllowedRetrieveKeytab host={props.host} />
+              <AllowedRetrieveKeytab
+                host={props.host}
+                onRefresh={props.onRefresh}
+              />
               <TitleLayout
                 key={4}
                 headingLevel="h2"
