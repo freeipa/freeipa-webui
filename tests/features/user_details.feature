@@ -330,3 +330,93 @@ Feature: User details
     When I click on "Save" button
     Then I should see "success" alert with text "User modified"
     Then I should see the option "H:" selected in the "SMB home directory drive" selector
+
+  # Texbox with 'Add' and 'Delete' buttons
+  # - Mail address
+  Scenario: Add multiple mail addresses
+    When I click on "Add" button in the "Mail address" section
+    Then I should see a new empty text input field with ID "mail-1"
+    When I click on "Add" button in the "Mail address" section
+    Then I should see a new empty text input field with ID "mail-2"
+    When I type in the field with ID "mail-1" the text "testmail1@server.ipa.demo"
+    * I type in the field with ID "mail-2" the text "testmail2"
+    * I click on "Save" button
+    Then I should see "success" alert with text "User modified"
+    And I should see value "testmail1@server.ipa.demo" in any of the textboxes that belong to the field "Mail address"
+    * I should see value "testmail2@server.ipa.demo" in any of the textboxes that belong to the field "Mail address"
+
+  Scenario: Remove multiple mail addresses
+    When in the "Mail address" section I click the "Delete" button of the text input field with text "testmail1@server.ipa.demo"
+    Then I should not see the text input field with text "testmail1@server.ipa.demo" under the field "Mail address"
+    When in the "Mail address" section I click the "Delete" button of the text input field with text "testmail2@server.ipa.demo"
+    Then I should not see the text input field with text "testmail2@server.ipa.demo" under the field "Mail address"
+    When I click on "Save" button
+    Then I should see "success" alert with text "User modified"
+    And I should see value "armadillo@server.ipa.demo" in any of the textboxes that belong to the field "Mail address"
+
+  # - Telephone number
+  Scenario: Add multiple telephone numbers
+    When I click on "Add" button in the "Telephone number" section
+    Then I should see a new empty text input field with ID "telephonenumber-0"
+    When I click on "Add" button in the "Telephone number" section
+    Then I should see a new empty text input field with ID "telephonenumber-1"
+    When I type in the field with ID "telephonenumber-0" the text "123456"
+    * I type in the field with ID "telephonenumber-1" the text "654321"
+    * I click on "Save" button
+    Then I should see "success" alert with text "User modified"
+    And I should see value "123456" in any of the textboxes that belong to the field "Telephone number"
+    * I should see value "654321" in any of the textboxes that belong to the field "Telephone number"
+
+  Scenario: Remove multiple telephone numbers
+    When in the "Telephone number" section I click the "Delete" button of the text input field with text "123456"
+    Then I should not see the text input field with text "123456" under the field "Telephone number"
+    When in the "Telephone number" section I click the "Delete" button of the text input field with text "654321"
+    Then I should not see the text input field with text "654321" under the field "Telephone number"
+    When I click on "Save" button
+    Then I should see "success" alert with text "User modified"
+    And I should see no textboxes under the field "Telephone number"
+
+  # - Pager number
+  Scenario: Add multiple pager numbers
+    When I click on "Add" button in the "Pager number" section
+    Then I should see a new empty text input field with ID "pager-0"
+    When I click on "Add" button in the "Pager number" section
+    Then I should see a new empty text input field with ID "pager-1"
+    When I type in the field with ID "pager-0" the text "123"
+    * I type in the field with ID "pager-1" the text "456"
+    * I click on "Save" button
+    Then I should see "success" alert with text "User modified"
+    And I should see value "123" in any of the textboxes that belong to the field "Pager number"
+    * I should see value "456" in any of the textboxes that belong to the field "Pager number"
+
+  Scenario: Remove multiple pager numbers
+    When in the "Pager number" section I click the "Delete" button of the text input field with text "123"
+    Then I should not see the text input field with text "123" under the field "Pager number"
+    When in the "Pager number" section I click the "Delete" button of the text input field with text "456"
+    Then I should not see the text input field with text "456" under the field "Pager number"
+    When I click on "Save" button
+    Then I should see "success" alert with text "User modified"
+    And I should see no textboxes under the field "Pager number"
+
+  # - Mobile phone number
+  Scenario: Add multiple mobile phone numbers
+    When I click on "Add" button in the "Mobile phone number" section
+    Then I should see a new empty text input field with ID "mobile-0"
+    When I click on "Add" button in the "Mobile phone number" section
+    Then I should see a new empty text input field with ID "mobile-1"
+    When I type in the field with ID "mobile-0" the text "987654"
+    * I type in the field with ID "mobile-1" the text "321098"
+    * I click on "Save" button
+    Then I should see "success" alert with text "User modified"
+    And I should see value "987654" in any of the textboxes that belong to the field "Mobile phone number"
+    And I should see value "321098" in any of the textboxes that belong to the field "Mobile phone number"
+
+  Scenario: Remove multiple phone numbers
+    When in the "Mobile phone number" section I click the "Delete" button of the text input field with text "987654"
+    Then I should not see the text input field with text "987654" under the field "Mobile phone number"
+    When in the "Mobile phone number" section I click the "Delete" button of the text input field with text "321098"
+    Then I should not see the text input field with text "321098" under the field "Mobile phone number"
+    When I click on "Save" button
+    Then I should see "success" alert with text "User modified"
+    And I should see no textboxes under the field "Mobile phone number"
+
