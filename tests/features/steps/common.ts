@@ -243,3 +243,95 @@ Then(
       .contains(option);
   }
 );
+
+// Textboxes with 'Add' and 'Delete' buttons
+Then(
+  "I should see a new empty text input field with ID {string}",
+  (id: string) => {
+    cy.get("input#" + id).should("be.empty");
+  }
+);
+
+When(
+  "I type in the field with ID {string} the text {string}",
+  (id: string, content: string) => {
+    cy.get("input#" + id).type(content);
+  }
+);
+
+When(
+  "I click on {string} button in the {string} section",
+  (buttonName: string, section: string) => {
+    cy.get("div.pf-v5-c-form__group-label")
+      .contains(section)
+      .parent()
+      .next()
+      .find("button")
+      .contains(buttonName)
+      .click();
+  }
+);
+
+When(
+  "in the {string} section I click the {string} button of the text input field with text {string}",
+  (section: string, button: string, text: string) => {
+    cy.get("div.pf-v5-c-form__group-label")
+      .contains(section)
+      .parent()
+      .next()
+      .find("input[value='" + text + "']")
+      .parent()
+      .parent()
+      .next()
+      .find("button")
+      .contains(button)
+      .click();
+  }
+);
+
+Then(
+  "I should not see the text input field with text {string} under the field {string}",
+  (text: string, fieldName: string) => {
+    cy.get("div.pf-v5-c-form__group-label")
+      .contains(fieldName)
+      .parent()
+      .next()
+      .find("input[value='" + text + "']")
+      .should("not.exist");
+  }
+);
+
+Then(
+  "I should see value {string} in any of the textboxes that belong to the field {string}",
+  (value: string, fieldName: string) => {
+    cy.get("div.pf-v5-c-form__group-label")
+      .contains(fieldName)
+      .parent()
+      .next()
+      .find("input[value='" + value + "']");
+  }
+);
+
+Then(
+  "I should not see value {string} in any of the textboxes that belong to the field {string}",
+  (value: string, fieldName: string) => {
+    cy
+      .get("div.pf-v5-c-form__group-label")
+      .contains(fieldName)
+      .parent()
+      .next()
+      .find("input[value='" + value + "']").not;
+  }
+);
+
+Then(
+  "I should see no textboxes under the field {string}",
+  (fieldName: string) => {
+    cy.get("div.pf-v5-c-form__group-label")
+      .contains(fieldName)
+      .parent()
+      .next()
+      .find("input")
+      .should("not.exist");
+  }
+);
