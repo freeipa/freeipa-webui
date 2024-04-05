@@ -720,7 +720,7 @@ export const api = createApi({
           version: apiVersion,
         };
 
-        if (objName === "group" || objName === "netgroups") {
+        if (objName === "group" || objName === "netgroup") {
           if (user !== undefined) {
             params["user"] = user;
           } else if (no_user !== undefined) {
@@ -1372,6 +1372,32 @@ export const api = createApi({
         return groupList;
       },
     }),
+    /**
+     * Add entity to netgroups
+     * @param {string} toId - ID of the entity to add to netgroups
+     * @param {string} type - Type of the entity
+     *    Available types: user | host | service
+     * @param {string[]} listOfMembers - List of members to add to the netgroups
+     */
+    addToNetgroups: build.mutation<
+      BatchRPCResponse,
+      [string, string, string[]]
+    >({
+      query: (payload) => {
+        const memberId = payload[0];
+        const memberType = payload[1];
+        const netgroupNames = payload[2];
+        const membersToAdd: Command[] = [];
+        netgroupNames.map((netgroupName) => {
+          const payloadItem = {
+            method: "netgroup_add_member",
+            params: [[netgroupName], { [memberType]: memberId }],
+          } as Command;
+          membersToAdd.push(payloadItem);
+        });
+        return getBatchCommand(membersToAdd, API_VERSION_BACKUP);
+      },
+    }),
   }),
 });
 
@@ -1505,4 +1531,5 @@ export const {
   useAddToGroupsMutation,
   useRemoveFromGroupsMutation,
   useGetGroupInfoByNameQuery,
+  useAddToNetgroupsMutation,
 } = api;
