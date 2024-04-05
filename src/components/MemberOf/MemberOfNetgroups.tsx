@@ -9,10 +9,16 @@ import MemberOfTableNetgroups from "./MemberOfTableNetgroups";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // RPC
-import { BatchRPCResponse, useGettingNetgroupsQuery } from "src/services/rpc";
+import {
+  BatchRPCResponse,
+  ErrorResult,
+  useAddToNetgroupsMutation,
+  useGettingNetgroupsQuery,
+} from "src/services/rpc";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToNetgroup } from "src/utils/netgroupsUtils";
+import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 
 interface MemberOfNetroupsProps {
   user: Partial<User>;
@@ -23,6 +29,9 @@ interface MemberOfNetroupsProps {
 const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
+
+  // API calls
+  const [addMemberToNetgroup] = useAddToNetgroupsMutation();
 
   // Netgroups from current user
   const [netgroupsFromUser, setNetgroupsFromUser] = React.useState<Netgroup[]>(
@@ -48,11 +57,22 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
     stopIdx: lastUserIdx,
   });
 
+  // - Not member of
+  const netgroupsNotMemberOfQuery = useGettingNetgroupsQuery({
+    no_user: uid,
+    apiVersion: API_VERSION_BACKUP,
+    startIdx: firstUserIdx,
+    stopIdx: lastUserIdx,
+  });
+
   const [netgroupsFullList, setNetgroupsFullList] = React.useState<Netgroup[]>(
     []
   );
+  const [netgroupsNotMemberOfFullList, setNetgroupsNotMemberOfFullList] =
+    React.useState<Netgroup[]>([]);
 
   const netgroupsData = netgroupsQuery.data || {};
+  const netgroupsNotMemberOfData = netgroupsNotMemberOfQuery.data || {};
 
   React.useEffect(() => {
     if (netgroupsData && !netgroupsQuery.isFetching) {
@@ -69,6 +89,24 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
     }
   }, [netgroupsData, netgroupsQuery.isFetching]);
 
+  React.useEffect(() => {
+    if (
+      netgroupsNotMemberOfData !== undefined &&
+      !netgroupsNotMemberOfQuery.isFetching
+    ) {
+      const dataParsed = netgroupsNotMemberOfData as BatchRPCResponse;
+      const count = dataParsed.result.count;
+      const results = dataParsed.result.results;
+
+      const netgroupsNotMemberOfTempList: Netgroup[] = [];
+
+      for (let i = 0; i < count; i++) {
+        netgroupsNotMemberOfTempList.push(apiToNetgroup(results[i].result));
+      }
+      setNetgroupsNotMemberOfFullList(netgroupsNotMemberOfTempList);
+    }
+  }, [netgroupsNotMemberOfData, netgroupsNotMemberOfQuery.isFetching]);
+
   // Get full data of the 'User groups' assigned to user
   React.useEffect(() => {
     const netgroupsParsed: Netgroup[] = [];
@@ -84,9 +122,11 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
     }
   }, [netgroupsFullList]);
 
+  // Refetch User groups when user data changes
   React.useEffect(() => {
     netgroupsQuery.refetch();
-  }, [props.user]);
+    netgroupsNotMemberOfQuery.refetch();
+  }, [props.user, netgroupsFromUser]);
 
   // Other states
   const [netgroupsSelected, setNetgroupsSelected] = React.useState<string[]>(
@@ -96,6 +136,8 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
 
   const [membershipDirection, setMembershipDirection] =
     React.useState<MembershipDirection>("direct");
+
+  const [showAddModal, setShowAddModal] = React.useState(false);
 
   // Computed "states"
   const someItemSelected = netgroupsSelected.length > 0;
@@ -109,10 +151,66 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
     setShownNetgroups(paginate(netgroupsFromUser, page, perPage));
   }, [netgroupsFromUser]);
 
+  // Parse availableItems to 'AvailableItems' type
+  const parseAvailableItems = (itemsList: Netgroup[]) => {
+    const avItems: AvailableItems[] = [];
+    itemsList.map((item) => {
+      avItems.push({
+        key: item.cn,
+        title: item.cn,
+      });
+    });
+    return avItems;
+  };
+
+  const availableNetgroupsItems: AvailableItems[] = parseAvailableItems(
+    netgroupsNotMemberOfFullList
+  );
+
   // Buttons functionality
   // - Refresh
   const isRefreshButtonEnabled =
     !netgroupsQuery.isFetching && !props.isUserDataLoading;
+
+  // - Add
+  const isAddButtonEnabled =
+    !netgroupsQuery.isFetching && !props.isUserDataLoading;
+
+  // Add new member to 'Netgroup'
+  const onAddToNetgroup = (toUid: string, type: string, newData: string[]) => {
+    addMemberToNetgroup([toUid, type, newData]).then((response) => {
+      if ("data" in response) {
+        if (response.data.result) {
+          // Set alert: success
+          alerts.addAlert(
+            "add-member-success",
+            "Added new members to netgroup '" + toUid + "'",
+            "success"
+          );
+          // Refresh data
+          props.onRefreshUserData();
+          // Close modal
+          setShowAddModal(false);
+        } else if (response.data.error) {
+          // Set alert: error
+          const errorMessage = response.data.error as unknown as ErrorResult;
+          alerts.addAlert("add-member-error", errorMessage.message, "danger");
+        }
+      }
+    });
+  };
+
+  const onAddNetgroup = (items: AvailableItems[]) => {
+    const newItems = items.map((item) => item.key);
+    const newNetgroups = netgroupsFullList.filter((group) =>
+      newItems.includes(group.cn)
+    );
+    if (props.user.uid !== undefined) {
+      onAddToNetgroup(props.user.uid, "user", newItems);
+      const updatedNetgroups = netgroupsFromUser.concat(newNetgroups);
+      setNetgroupsFromUser(updatedNetgroups);
+    }
+  };
 
   return (
     <>
@@ -127,9 +225,8 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
         deleteButtonEnabled={someItemSelected}
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         onDeleteButtonClick={() => {}}
-        addButtonEnabled={true}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        onAddButtonClick={() => {}}
+        addButtonEnabled={isAddButtonEnabled}
+        onAddButtonClick={() => setShowAddModal(true)}
         membershipDirectionEnabled={true}
         membershipDirection={membershipDirection}
         onMembershipDirectionChange={setMembershipDirection}
@@ -156,6 +253,17 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
         onSetPage={(_e, page) => setPage(page)}
         onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
       />
+      {showAddModal && (
+        <MemberOfAddModal
+          showModal={showAddModal}
+          onCloseModal={() => setShowAddModal(false)}
+          availableItems={availableNetgroupsItems}
+          onAdd={onAddNetgroup}
+          onSearchTextChange={setSearchValue}
+          title={"Add '" + props.user.uid + "' into Netgroups"}
+          ariaLabel="Add user of netgroup modal"
+        />
+      )}
     </>
   );
 };
