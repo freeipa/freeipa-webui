@@ -14,11 +14,14 @@ import {
   ErrorResult,
   useAddToNetgroupsMutation,
   useGettingNetgroupsQuery,
+  useRemoveFromNetgroupsMutation,
 } from "src/services/rpc";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToNetgroup } from "src/utils/netgroupsUtils";
+// Modals
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
+import MemberOfDeleteModal from "./MemberOfDeleteModal";
 
 interface MemberOfNetroupsProps {
   user: Partial<User>;
@@ -32,6 +35,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
 
   // API calls
   const [addMemberToNetgroup] = useAddToNetgroupsMutation();
+  const [removeMembersFromNetgroup] = useRemoveFromNetgroupsMutation();
 
   // Netgroups from current user
   const [netgroupsFromUser, setNetgroupsFromUser] = React.useState<Netgroup[]>(
@@ -138,6 +142,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
     React.useState<MembershipDirection>("direct");
 
   const [showAddModal, setShowAddModal] = React.useState(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
   // Computed "states"
   const someItemSelected = netgroupsSelected.length > 0;
@@ -168,6 +173,8 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
   );
 
   // Buttons functionality
+  const deleteAndAddButtonsEnabled = membershipDirection !== "indirect";
+
   // - Refresh
   const isRefreshButtonEnabled =
     !netgroupsQuery.isFetching && !props.isUserDataLoading;
@@ -212,6 +219,46 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
     }
   };
 
+  // - Delete
+  const onDeleteNetgroup = () => {
+    const updatedGroups = netgroupsFromUser.filter(
+      (netgroup) => !netgroupsSelected.includes(netgroup.cn)
+    );
+    if (props.user.uid) {
+      removeMembersFromNetgroup([
+        props.user.uid,
+        "user",
+        netgroupsSelected,
+      ]).then((response) => {
+        if ("data" in response) {
+          if (response.data.result) {
+            // Set alert: success
+            alerts.addAlert(
+              "remove-netgroup-success",
+              "Removed members from Netgroup '" + props.user.uid + "'",
+              "success"
+            );
+            // Update data
+            setNetgroupsFromUser(updatedGroups);
+            setNetgroupsSelected([]);
+            // Close modal
+            setShowDeleteModal(false);
+            // Refresh
+            props.onRefreshUserData();
+          } else if (response.data.error) {
+            // Set alert: error
+            const errorMessage = response.data.error as unknown as ErrorResult;
+            alerts.addAlert(
+              "remove-netgroup-error",
+              errorMessage.message,
+              "danger"
+            );
+          }
+        }
+      });
+    }
+  };
+
   return (
     <>
       <alerts.ManagedAlerts />
@@ -222,10 +269,9 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
         onSearch={() => {}}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshUserData}
-        deleteButtonEnabled={someItemSelected}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        onDeleteButtonClick={() => {}}
-        addButtonEnabled={isAddButtonEnabled}
+        deleteButtonEnabled={someItemSelected && deleteAndAddButtonsEnabled}
+        onDeleteButtonClick={() => setShowDeleteModal(true)}
+        addButtonEnabled={isAddButtonEnabled && deleteAndAddButtonsEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
         membershipDirectionEnabled={true}
         membershipDirection={membershipDirection}
@@ -263,6 +309,23 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
           title={"Add '" + props.user.uid + "' into Netgroups"}
           ariaLabel="Add user of netgroup modal"
         />
+      )}
+      {showDeleteModal && someItemSelected && (
+        <MemberOfDeleteModal
+          showModal={showDeleteModal}
+          onCloseModal={() => setShowDeleteModal(false)}
+          title="Delete user from Netgroups"
+          onDelete={onDeleteNetgroup}
+        >
+          <MemberOfTableNetgroups
+            netgroups={
+              netgroupsFromUser.filter((group) =>
+                netgroupsSelected.includes(group.cn)
+              ) as Netgroup[]
+            }
+            showTableRows
+          />
+        </MemberOfDeleteModal>
       )}
     </>
   );
