@@ -1398,6 +1398,32 @@ export const api = createApi({
         return getBatchCommand(membersToAdd, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Delete entity from netgroups
+     * @param {string} memberId - ID of the entity to remove from netgroups
+     * @param {string} memberType - Type of the entity
+     *    Available types: user | host | service
+     * @param {string[]} netgroupNames - List of members to remove from netgroups
+     */
+    removeFromNetgroups: build.mutation<
+      BatchRPCResponse,
+      [string, string, string[]]
+    >({
+      query: (payload) => {
+        const memberId = payload[0];
+        const memberType = payload[1];
+        const netgroupNames = payload[2];
+        const membersToRemove: Command[] = [];
+        netgroupNames.map((netgroupName) => {
+          const payloadItem = {
+            method: "netgroup_remove_member",
+            params: [[netgroupName], { [memberType]: memberId }],
+          } as Command;
+          membersToRemove.push(payloadItem);
+        });
+        return getBatchCommand(membersToRemove, API_VERSION_BACKUP);
+      },
+    }),
   }),
 });
 
@@ -1532,4 +1558,5 @@ export const {
   useRemoveFromGroupsMutation,
   useGetGroupInfoByNameQuery,
   useAddToNetgroupsMutation,
+  useRemoveFromNetgroupsMutation,
 } = api;
