@@ -331,13 +331,13 @@ const AddHost = (props: PropsToAddHost) => {
       ),
     },
     {
-      id: "description",
+      id: "host-desc",
       name: "Description",
       pfComponent: (
         <TextInput
           type="text"
           id="modal-form-host-desc"
-          name="description"
+          name="modal-form-host-desc"
           value={description}
           onChange={(_event, value: string) => hostDescHandler(value)}
           ref={hostDescRef}
@@ -351,7 +351,7 @@ const AddHost = (props: PropsToAddHost) => {
         <TextInput
           type="text"
           id="modal-form-host-class"
-          name="userclass"
+          name="modal-form-host-class"
           value={hostClass}
           onChange={(_event, value: string) => hostClassHandler(value)}
           ref={hostClassRef}
@@ -366,7 +366,7 @@ const AddHost = (props: PropsToAddHost) => {
           <TextInput
             type="text"
             id="modal-form-host-ip-address"
-            name="ip_address"
+            name="modal-form-host-ip-address"
             value={hostIpAddress}
             onChange={(_event, value: string) => hostIpAddressHandler(value)}
             ref={hostIpAddressRef}
@@ -394,7 +394,7 @@ const AddHost = (props: PropsToAddHost) => {
             isChecked={forceCheckbox}
             aria-label="force host name checkbox"
             id="forceCheckbox"
-            name="force"
+            name="forceCheckbox"
             value="force"
             onChange={handleForceCheckbox}
             isDisabled={hostIpAddressValidation.isError || hostIpAddress === ""}
@@ -416,7 +416,7 @@ const AddHost = (props: PropsToAddHost) => {
           isChecked={generateOtpCheckbox}
           aria-label="Generate OTP checkbox"
           id="generateOtpCheckbox"
-          name="random"
+          name="generateOtpCheckbox"
           value="generateotp"
           onChange={handleOtpCheckbox}
         />
@@ -431,7 +431,7 @@ const AddHost = (props: PropsToAddHost) => {
           isChecked={noMembershipCheckbox}
           aria-label="Suppress membership attributes checkbox"
           id="noMembershipCheckbox"
-          name="nomembership"
+          name="noMembershipCheckbox"
           value="nomembership"
           onChange={handleNoMembershipCheckbox}
           className="pf-v5-u-mb-md"

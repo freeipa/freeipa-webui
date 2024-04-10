@@ -138,12 +138,28 @@ Then("I should see {string} entry in the data table", (name: string) => {
 Then("I should not see {string} entry in the data table", (name: string) => {
   cy.get("tr[id=" + name + "]").should("not.exist");
 });
+
 Then(
   "entry {string} should have attribute {string} set to {string}",
   function (name: string, column: string, value: string) {
-    cy.get("tr[id=" + name + "] td[data-label=" + column + "]").contains(value);
+    cy.get("tr[id^=" + name + "] td[data-label=" + column + "]").contains(
+      value
+    );
   }
 );
+
+// Data table - but we only know the starting value of the entry so we
+// use "id^="
+Then(
+  "I should see partial {string} entry in the data table",
+  (name: string) => {
+    cy.get("tr[id^=" + name + "]").should("be.visible");
+  }
+);
+
+When("I select partial entry {string} in the data table", (name: string) => {
+  cy.get("tr[id^=" + name + "] input[type=checkbox]").check();
+});
 
 // Notifications
 Then(
@@ -189,6 +205,14 @@ When(
       .click();
   }
 );
+
+When("I click on {string} checkbox in modal", (checkboxName: string) => {
+  cy.get("div.pf-v5-c-check")
+    .find("label")
+    .contains(checkboxName)
+    .prev()
+    .click();
+});
 
 // Selectors
 When("I click in the {string} selector field", (selectorName: string) => {
