@@ -24,6 +24,7 @@ import {
   Service,
   cnType,
   UserGroup,
+  Netgroup,
 } from "../utils/datatypes/globalDataTypes";
 import { apiToHost } from "../utils/hostUtils";
 import { apiToUser } from "../utils/userUtils";
@@ -31,6 +32,7 @@ import { apiToService } from "../utils/serviceUtils";
 import { apiToPwPolicy } from "../utils/pwPolicyUtils";
 import { apiToKrbPolicy } from "../utils/krbPolicyUtils";
 import { apiToGroup } from "src/utils/groupUtils";
+import { apiToNetgroup } from "src/utils/netgroupsUtils";
 
 export type UserFullData = {
   user?: Partial<User>;
@@ -163,6 +165,12 @@ export interface GenericPayload {
 
 export interface GroupShowPayload {
   groupNamesList: string[];
+  no_members?: boolean;
+  version: string;
+}
+
+export interface NetgroupShowPayload {
+  netgroupNamesList: string[];
   no_members?: boolean;
   version: string;
 }
@@ -1424,6 +1432,35 @@ export const api = createApi({
         return getBatchCommand(membersToRemove, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Given a list of netgroup names, show the full data of those netgroups
+     * @param {NetgroupShowPayload} - Payload with netgroup names and options
+     * @returns {BatchRPCResponse} - Batch response
+     */
+    getNetgroupInfoByName: build.query<Netgroup[], NetgroupShowPayload>({
+      query: (payload) => {
+        const netgroupNames = payload.netgroupNamesList;
+        const noMembers = payload.no_members || true;
+        const apiVersion = payload.version || API_VERSION_BACKUP;
+        const netgroupShowCommands: Command[] = netgroupNames.map(
+          (netgroupName) => ({
+            method: "netgroup_show",
+            params: [[netgroupName], { no_members: noMembers }],
+          })
+        );
+        return getBatchCommand(netgroupShowCommands, apiVersion);
+      },
+      transformResponse: (response: BatchRPCResponse): Netgroup[] => {
+        const netgroupList: Netgroup[] = [];
+        const results = response.result.results;
+        const count = response.result.count;
+        for (let i = 0; i < count; i++) {
+          const netgroupData = apiToNetgroup(results[i].result);
+          netgroupList.push(netgroupData);
+        }
+        return netgroupList;
+      },
+    }),
   }),
 });
 
@@ -1559,4 +1596,5 @@ export const {
   useGetGroupInfoByNameQuery,
   useAddToNetgroupsMutation,
   useRemoveFromNetgroupsMutation,
+  useGetNetgroupInfoByNameQuery,
 } = api;
