@@ -13,6 +13,7 @@ import {
   BatchRPCResponse,
   ErrorResult,
   useAddToNetgroupsMutation,
+  useGetNetgroupInfoByNameQuery,
   useGettingNetgroupsQuery,
   useRemoveFromNetgroupsMutation,
 } from "src/services/rpc";
@@ -39,6 +40,10 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
 
   // Netgroups from current user
   const [netgroupsFromUser, setNetgroupsFromUser] = React.useState<Netgroup[]>(
+    []
+  );
+
+  const [indirectNetgroups, setIndirectNetgroups] = React.useState<Netgroup[]>(
     []
   );
 
@@ -153,7 +158,11 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
 
   // Update 'shownNetgroups' when 'netgroupsFromUser' changes
   React.useEffect(() => {
-    setShownNetgroups(paginate(netgroupsFromUser, page, perPage));
+    if (membershipDirection === "indirect") {
+      setShownNetgroups(indirectNetgroups);
+    } else {
+      setShownNetgroups(paginate(netgroupsFromUser, page, perPage));
+    }
   }, [netgroupsFromUser]);
 
   // Parse availableItems to 'AvailableItems' type
@@ -171,6 +180,41 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
   const availableNetgroupsItems: AvailableItems[] = parseAvailableItems(
     netgroupsNotMemberOfFullList
   );
+
+  // Membership
+  const paginatedIndirectNetgroups = paginate(
+    props.user.memberofindirect_netgroup || [],
+    page,
+    perPage
+  );
+
+  const indirectMembersFullDataQuery = useGetNetgroupInfoByNameQuery({
+    netgroupNamesList: paginatedIndirectNetgroups,
+    no_members: true,
+    version: API_VERSION_BACKUP,
+  });
+
+  const indirectMembersData: Netgroup[] =
+    indirectMembersFullDataQuery.data || [];
+
+  // - Update 'Indirect netgroups' when 'indirectMembersData' changes
+  React.useEffect(() => {
+    if (!indirectMembersFullDataQuery.isFetching && indirectMembersData) {
+      setIndirectNetgroups(indirectMembersData);
+    }
+  }, [indirectMembersFullDataQuery]);
+
+  // - Update shown groups on table when membership direction changes
+  React.useEffect(() => {
+    if (
+      membershipDirection === "indirect" &&
+      props.user.memberofindirect_netgroup
+    ) {
+      setShownNetgroups(indirectNetgroups);
+    } else {
+      setShownNetgroups(paginate(netgroupsFromUser, page, perPage));
+    }
+  }, [membershipDirection, props.user]);
 
   // Buttons functionality
   const deleteAndAddButtonsEnabled = membershipDirection !== "indirect";
