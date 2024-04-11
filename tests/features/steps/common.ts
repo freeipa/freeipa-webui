@@ -214,6 +214,17 @@ When("I click on {string} checkbox in modal", (checkboxName: string) => {
     .click();
 });
 
+When(
+  "I click on {string} checkbox",
+  (checkboxName: string, section: string) => {
+    cy.get("div.pf-v5-c-check")
+      .find("label")
+      .contains(checkboxName)
+      .prev()
+      .click();
+  }
+);
+
 // Selectors
 When("I click in the {string} selector field", (selectorName: string) => {
   cy.get("div.pf-v5-c-form__group-label")
