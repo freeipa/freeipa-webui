@@ -13,7 +13,7 @@ import MemberOfToolbar from "src/components/MemberOf/MemberOfToolbarOld";
 import MemberOfTable from "src/components/MemberOf/MemberOfTable";
 // Data types
 import {
-  Roles,
+  RolesOld,
   HBACRules,
   SudoRules,
   User,
@@ -50,7 +50,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
 
   // Alter the available options list to keep the state of the recently added / removed items
   const updateRolesList = (newAvOptionsList: unknown[]) => {
-    rolesList = newAvOptionsList as Roles[];
+    rolesList = newAvOptionsList as RolesOld[];
   };
   const updateHbacRulesList = (newAvOptionsList: unknown[]) => {
     hbacRulesList = newAvOptionsList as HBACRules[];
@@ -143,7 +143,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   };
 
   // Available data to be added as member of
-  const rolesFilteredData: Roles[] = filterRolesData();
+  const rolesFilteredData: RolesOld[] = filterRolesData();
   const hbacRulesFilteredData: HBACRules[] = filterHbacRulesData();
   const sudoRulesFilteredData: SudoRules[] = filterSudoRulesData();
 
@@ -163,11 +163,11 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   //  - The slice of data to show (considering the pagination)
   //  - Number of items for a specific list
   const updateGroupRepository = (
-    groupRepository: Roles[] | HBACRules[] | SudoRules[]
+    groupRepository: RolesOld[] | HBACRules[] | SudoRules[]
   ) => {
     switch (tabName) {
       case "Roles":
-        setRolesRepository(groupRepository as Roles[]);
+        setRolesRepository(groupRepository as RolesOld[]);
         setShownRolesList(rolesRepository.slice(0, perPage));
         setRolesRepoLength(rolesRepository.length);
         break;
@@ -234,11 +234,11 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
 
   // Update pagination
   const changeMemberGroupsList = (
-    value: Roles[] | HBACRules[] | SudoRules[]
+    value: RolesOld[] | HBACRules[] | SudoRules[]
   ) => {
     switch (activeTabKey) {
       case 2:
-        setShownRolesList(value as Roles[]);
+        setShownRolesList(value as RolesOld[]);
         break;
       case 3:
         setShownHBACRulesList(value as HBACRules[]);

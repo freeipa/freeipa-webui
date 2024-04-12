@@ -10,7 +10,7 @@
 import {
   UserGroupOld,
   NetgroupOld,
-  Roles,
+  RolesOld,
   HBACRules,
   SudoRules,
   HostGroup,
@@ -104,7 +104,7 @@ export let netgroupsInitialData: NetgroupOld[] = [
 ];
 
 // 'Roles' initial data
-export let rolesInitialData: Roles[] = [];
+export let rolesInitialData: RolesOld[] = [];
 
 // 'HBAC rules' initial data
 export let hbacRulesInitialData: HBACRules[] = [
@@ -141,7 +141,7 @@ export let hostsNetgroupsInitialData: NetgroupOld[] = [
 ];
 
 // - 'Roles' initial data
-export let hostsRolesInitialData: Roles[] = [];
+export let hostsRolesInitialData: RolesOld[] = [];
 
 // - 'HBAC rules' initial data
 export let hostsHbacRulesInitialData: HBACRules[] = [
@@ -163,4 +163,4 @@ export let hostsSudoRulesInitialData: SudoRules[] = [];
 
 // SERVICES
 // - 'Roles' initial data
-export let servicesRolesInitialData: Roles[] = [];
+export let servicesRolesInitialData: RolesOld[] = [];

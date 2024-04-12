@@ -2,10 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import rolesJson from "./roles.json";
 // Data type
-import { Roles } from "src/utils/datatypes/globalDataTypes";
+import { RolesOld } from "src/utils/datatypes/globalDataTypes";
 
 interface RoleState {
-  roleList: Roles[];
+  roleList: RolesOld[];
 }
 
 const initialState: RoleState = {
