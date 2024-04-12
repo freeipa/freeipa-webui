@@ -363,6 +363,12 @@ export interface servicesType {
   krbprincipalname: string[];
 }
 
+export interface roleType {
+  dn: string;
+  cn: string[];
+  description: string;
+}
+
 export interface CertProfile {
   cn: string;
   description: string;

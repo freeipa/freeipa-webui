@@ -25,6 +25,7 @@ import {
   cnType,
   UserGroup,
   Netgroup,
+  roleType,
 } from "../utils/datatypes/globalDataTypes";
 import { apiToHost } from "../utils/hostUtils";
 import { apiToUser } from "../utils/userUtils";
@@ -151,6 +152,9 @@ export interface GenericPayload {
   no_user?: string;
   startIdx: number;
   stopIdx: number;
+  cn?: string;
+  description?: string;
+  timelimit?: number;
   objName?: string;
   objAttr?: string;
   entryType?:
@@ -160,7 +164,8 @@ export interface GenericPayload {
     | "host"
     | "service"
     | "group"
-    | "netgroups";
+    | "netgroups"
+    | "role";
 }
 
 export interface GroupShowPayload {
@@ -697,6 +702,9 @@ export const api = createApi({
           no_user,
           startIdx,
           stopIdx,
+          cn,
+          description,
+          timelimit,
           objAttr,
         } = payloadData;
         let objName = payloadData.objName;
@@ -741,6 +749,18 @@ export const api = createApi({
           objName = "user";
         }
 
+        if (objName === "role") {
+          if (cn) {
+            params["cn"] = cn;
+          }
+          if (description) {
+            params["description"] = description;
+          }
+          if (timelimit) {
+            params["timelimit"] = timelimit;
+          }
+        }
+
         // Prepare payload
         const payloadDataIds: Command = {
           method: objName + "_find",
@@ -767,6 +787,8 @@ export const api = createApi({
             id = idResponseData.result.result[i] as UIDType;
           } else if (objName === "group" || objName === "netgroup") {
             id = idResponseData.result.result[i] as cnType;
+          } else if (objName === "role") {
+            id = idResponseData.result.result[i] as roleType;
           } else {
             // Unknown, should never happen
             return {
@@ -1515,6 +1537,12 @@ export const useGettingGroupsQuery = (payloadData) => {
 // Netgroups
 export const useGettingNetgroupsQuery = (payloadData) => {
   payloadData["objName"] = "netgroup";
+  payloadData["objAttr"] = "cn";
+  return useGettingGenericQuery(payloadData);
+};
+// Roles
+export const useGettingRolesQuery = (payloadData) => {
+  payloadData["objName"] = "role";
   payloadData["objAttr"] = "cn";
   return useGettingGenericQuery(payloadData);
 };
