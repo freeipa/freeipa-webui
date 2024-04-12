@@ -23,7 +23,7 @@ import ToolbarLayout, {
 import {
   UserGroupOld,
   NetgroupOld,
-  Roles,
+  RolesOld,
   HBACRules,
   SudoRules,
   HostGroup,
@@ -59,7 +59,7 @@ interface SettersData {
     arg:
       | UserGroupOld[]
       | NetgroupOld[]
-      | Roles[]
+      | RolesOld[]
       | HBACRules[]
       | SudoRules[]
       | HostGroup[]
@@ -76,14 +76,14 @@ export interface PropsToToolbar {
   pageRepo:
     | UserGroupOld[]
     | NetgroupOld[]
-    | Roles[]
+    | RolesOld[]
     | HBACRules[]
     | SudoRules[]
     | HostGroup[];
   shownItems:
     | UserGroupOld[]
     | NetgroupOld[]
-    | Roles[]
+    | RolesOld[]
     | HBACRules[]
     | SudoRules[]
     | HostGroup[];

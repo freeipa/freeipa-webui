@@ -15,7 +15,7 @@ import {
 import MemberOfToolbar from "src/components/MemberOf/MemberOfToolbarOld";
 import MemberOfTable from "src/components/MemberOf/MemberOfTable";
 // Data types
-import { Roles, Service } from "src/utils/datatypes/globalDataTypes";
+import { RolesOld, Service } from "src/utils/datatypes/globalDataTypes";
 // Redux
 import { useAppSelector } from "src/store/hooks";
 // Repositories
@@ -34,7 +34,7 @@ const ServicesMemberOf = (props: PropsToServicesMemberOf) => {
 
   // Alter the available options list to keep the state of the recently added / removed items
   const updateRolesList = (newAvOptionsList: unknown[]) => {
-    rolesList = newAvOptionsList as Roles[];
+    rolesList = newAvOptionsList as RolesOld[];
   };
 
   // List of default dummy data
@@ -62,7 +62,7 @@ const ServicesMemberOf = (props: PropsToServicesMemberOf) => {
   };
 
   // Available data to be added as member of
-  const rolesFilteredData: Roles[] = filterRolesData();
+  const rolesFilteredData: RolesOld[] = filterRolesData();
 
   // Number of items on the list for each repository
   const [rolesRepoLength, setRolesRepoLength] = useState(
@@ -73,8 +73,8 @@ const ServicesMemberOf = (props: PropsToServicesMemberOf) => {
   //  - The whole list itself
   //  - The slice of data to show (considering the pagination)
   //  - Number of items for a specific list
-  const updateGroupRepository = (groupRepository: Roles[]) => {
-    setRolesRepository(groupRepository as Roles[]);
+  const updateGroupRepository = (groupRepository: RolesOld[]) => {
+    setRolesRepository(groupRepository as RolesOld[]);
     setShownRolesList(rolesRepository.slice(0, perPage));
     setRolesRepoLength(rolesRepository.length);
   };
@@ -126,8 +126,8 @@ const ServicesMemberOf = (props: PropsToServicesMemberOf) => {
   );
 
   // Update pagination
-  const changeMemberGroupsList = (value: Roles[]) => {
-    setShownRolesList(value as Roles[]);
+  const changeMemberGroupsList = (value: RolesOld[]) => {
+    setShownRolesList(value as RolesOld[]);
   };
 
   // Pages setters

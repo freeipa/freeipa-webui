@@ -18,7 +18,7 @@ import MemberOfTable from "src/components/MemberOf/MemberOfTable";
 import {
   HostGroup,
   NetgroupOld,
-  Roles,
+  RolesOld,
   HBACRules,
   SudoRules,
   Host,
@@ -60,7 +60,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
     netgroupsList = newAvOptionsList as NetgroupOld[];
   };
   const updateRolesList = (newAvOptionsList: unknown[]) => {
-    rolesList = newAvOptionsList as Roles[];
+    rolesList = newAvOptionsList as RolesOld[];
   };
   const updateHbacRulesList = (newAvOptionsList: unknown[]) => {
     hbacRulesList = newAvOptionsList as HBACRules[];
@@ -138,7 +138,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   // Available data to be added as member of
   const hostGroupsFilteredData: HostGroup[] = filterHostGroupsData();
   const netgroupsFilteredData: NetgroupOld[] = filterNetgroupsData();
-  const rolesFilteredData: Roles[] = filterRolesData();
+  const rolesFilteredData: RolesOld[] = filterRolesData();
   const hbacRulesFilteredData: HBACRules[] = filterHbacRulesData();
   const sudoRulesFilteredData: SudoRules[] = filterSudoRulesData();
 
@@ -167,7 +167,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
     groupRepository:
       | HostGroup[]
       | NetgroupOld[]
-      | Roles[]
+      | RolesOld[]
       | HBACRules[]
       | SudoRules[]
   ) => {
@@ -183,7 +183,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
         setNetgroupsRepoLength(netgroupsRepository.length);
         break;
       case "Roles":
-        setRolesRepository(groupRepository as Roles[]);
+        setRolesRepository(groupRepository as RolesOld[]);
         setShownRolesList(rolesRepository.slice(0, perPage));
         setRolesRepoLength(rolesRepository.length);
         break;
@@ -259,7 +259,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
 
   // Update pagination
   const changeMemberGroupsList = (
-    value: HostGroup[] | NetgroupOld[] | Roles[] | HBACRules[] | SudoRules[]
+    value: HostGroup[] | NetgroupOld[] | RolesOld[] | HBACRules[] | SudoRules[]
   ) => {
     switch (activeTabKey) {
       case 0:
@@ -269,7 +269,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
         setShownNetgroupsList(value as NetgroupOld[]);
         break;
       case 2:
-        setShownRolesList(value as Roles[]);
+        setShownRolesList(value as RolesOld[]);
         break;
       case 3:
         setShownHBACRulesList(value as HBACRules[]);

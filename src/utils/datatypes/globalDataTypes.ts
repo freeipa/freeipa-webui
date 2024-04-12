@@ -158,9 +158,15 @@ export interface Netgroup {
   dn: string;
 }
 
-export interface Roles {
+export interface RolesOld {
   name: string;
   description: string;
+}
+
+export interface Role {
+  cn: string;
+  description: string;
+  dn: string;
 }
 
 export interface HBACRules {

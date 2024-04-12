@@ -7,7 +7,7 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import {
   UserGroupOld,
   NetgroupOld,
-  Roles,
+  RolesOld,
   HBACRules,
   SudoRules,
   HostGroup,
@@ -28,7 +28,7 @@ export interface PropsToAdd {
   availableData:
     | UserGroupOld[]
     | NetgroupOld[]
-    | Roles[]
+    | RolesOld[]
     | HBACRules[]
     | SudoRules[]
     | HostGroup[];
@@ -37,7 +37,7 @@ export interface PropsToAdd {
     args:
       | UserGroupOld[]
       | NetgroupOld[]
-      | Roles[]
+      | RolesOld[]
       | HBACRules[]
       | SudoRules[]
       | HostGroup[]
@@ -160,9 +160,9 @@ const MemberOfAddModal = (props: PropsToAdd) => {
               optionData.description !== undefined && optionData.description,
             gid: optionData.gid !== undefined && optionData.gid,
             status: optionData.status !== undefined && optionData.status,
-          } as Roles);
+          } as RolesOld);
           // Send updated data to table
-          props.updateGroupRepository(props.groupRepository as Roles[]);
+          props.updateGroupRepository(props.groupRepository as RolesOld[]);
         }
         // HBAC rules
         if (props.tabData.tabName === "HBAC rules") {
