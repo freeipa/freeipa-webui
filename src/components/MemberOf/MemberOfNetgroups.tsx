@@ -143,6 +143,20 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
   );
   const [searchValue, setSearchValue] = React.useState("");
 
+  const onSearch = () => {
+    if (membershipDirection === "direct") {
+      const searchResult = netgroupsFromUser.filter((group) => {
+        return group.cn.toLowerCase().includes(searchValue.toLowerCase());
+      });
+      setShownNetgroups(paginate(searchResult, page, perPage));
+    } else {
+      const searchResult = indirectNetgroups.filter((group) => {
+        return group.cn.toLowerCase().includes(searchValue.toLowerCase());
+      });
+      setShownNetgroups(paginate(searchResult, page, perPage));
+    }
+  };
+
   const [membershipDirection, setMembershipDirection] =
     React.useState<MembershipDirection>("direct");
 
@@ -309,8 +323,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        onSearch={() => {}}
+        onSearch={onSearch}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshUserData}
         deleteButtonEnabled={someItemSelected && deleteAndAddButtonsEnabled}
