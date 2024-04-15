@@ -79,6 +79,10 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
     }
   }, [rolesFullList]);
 
+  React.useEffect(() => {
+    rolesQuery.refetch();
+  }, [props.user]);
+
   // Other states
   const [rolesSelected, setRolesSelected] = React.useState<string[]>([]);
   const [searchValue, setSearchValue] = React.useState("");
@@ -98,6 +102,11 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
     setShownRoles(paginate(rolesFromUser, page, perPage));
   }, [rolesFromUser]);
 
+  // Buttons functionality
+  // - Refresh
+  const isRefreshButtonEnabled =
+    !rolesQuery.isFetching && !props.isUserDataLoading;
+
   return (
     <>
       <alerts.ManagedAlerts />
@@ -106,7 +115,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
         onSearchTextChange={setSearchValue}
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         onSearch={() => {}}
-        refreshButtonEnabled={true}
+        refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshUserData}
         deleteButtonEnabled={someItemSelected}
         // eslint-disable-next-line @typescript-eslint/no-empty-function
