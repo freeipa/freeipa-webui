@@ -25,7 +25,7 @@ interface PropsToAddModal {
   updateTableElementsList: (newTableElementsList: string[]) => void;
 }
 
-const CreateKeytabElementsAddModal = (props: PropsToAddModal) => {
+const KeytabElementsAddModal = (props: PropsToAddModal) => {
   // Dual list selector
   const initialList = (
     <div>
@@ -52,19 +52,35 @@ const CreateKeytabElementsAddModal = (props: PropsToAddModal) => {
       setAvailableOptions([emptyList]);
       return;
     }
+
     // Filter out options already in the table
     const filterUsersData = newList.filter((item) => {
+      if (item === props.host) {
+        return false;
+      }
       return !props.tableElementsList.some((itm) => {
         return item === itm;
       });
     });
 
     // Filter out options that have already been chosen
-    const cleanList = filterUsersData.filter((item) => {
+    let cleanList = filterUsersData.filter((item) => {
       return !chosenOptions.some((itm) => {
-        return item === itm;
+        return item === itm || item === props.host;
       });
     });
+
+    let emptyList;
+    if (cleanList.length === 0) {
+      emptyList = (
+        <div id="disabled">
+          <ExclamationTriangleIcon className="pf-v5-u-warning-color-100 pf-v5-u-mr-sm" />{" "}
+          No matching results
+        </div>
+      );
+      cleanList = [emptyList];
+    }
+
     setAvailableOptions(cleanList);
   };
 
@@ -79,8 +95,10 @@ const CreateKeytabElementsAddModal = (props: PropsToAddModal) => {
       stopIdx: 200,
       entryType: props.elementType,
     } as GenericPayload).then((result) => {
-      if ("data" in result) {
+      if (result && "data" in result) {
         updateAvailableOptions(result.data.list);
+      } else {
+        updateAvailableOptions([]);
       }
       setSearchIsDisabled(false);
     });
@@ -242,4 +260,4 @@ const CreateKeytabElementsAddModal = (props: PropsToAddModal) => {
   );
 };
 
-export default CreateKeytabElementsAddModal;
+export default KeytabElementsAddModal;

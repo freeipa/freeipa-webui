@@ -2,10 +2,7 @@ import React from "react";
 // PatternFly
 import { Label, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // Tables
-import KeytabUsersTable from "../tables/HostsSettings/KeytabUsersTable";
-import CreateKeytabUserGroupsTable from "../tables/HostsSettings/CreateKeytabUserGroupsTable";
-import CreateKeytabHostsTable from "../tables/HostsSettings/CreateKeytabHostsTable";
-import CreateKeytabHostGroupsTable from "../tables/HostsSettings/CreateKeytabHostGroupsTable";
+import KeytabTable from "../tables/KeytabTable";
 // Data types
 import { Host } from "../../utils/datatypes/globalDataTypes";
 
@@ -59,7 +56,7 @@ const AllowedCreateKeytab = (props: PropsToAllowCreateKeytab) => {
         }
         aria-label="user groups for create keytabs"
       >
-        <KeytabUsersTable
+        <KeytabTable
           from="host"
           id={fqdn}
           entry={props.host}
@@ -67,6 +64,7 @@ const AllowedCreateKeytab = (props: PropsToAllowCreateKeytab) => {
           className="pf-v5-u-ml-md pf-v5-u-mt-sm"
           opType="create"
           entryAttr="ipaallowedtoperform_write_keys_user"
+          entryType="user"
         />
       </Tab>
       <Tab
@@ -79,9 +77,15 @@ const AllowedCreateKeytab = (props: PropsToAllowCreateKeytab) => {
         }
         aria-label="user groups for create keytabs"
       >
-        <CreateKeytabUserGroupsTable
-          host={fqdn}
+        <KeytabTable
+          from="host"
+          id={fqdn}
+          entry={props.host}
+          onRefresh={props.onRefresh}
           className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+          opType="create"
+          entryAttr="ipaallowedtoperform_write_keys_group"
+          entryType="group"
         />
       </Tab>
       <Tab
@@ -94,9 +98,15 @@ const AllowedCreateKeytab = (props: PropsToAllowCreateKeytab) => {
         }
         aria-label="hosts for create keytabs"
       >
-        <CreateKeytabHostsTable
-          host={fqdn}
+        <KeytabTable
+          from="host"
+          id={fqdn}
+          entry={props.host}
+          onRefresh={props.onRefresh}
           className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+          opType="create"
+          entryAttr="ipaallowedtoperform_write_keys_host"
+          entryType="host"
         />
       </Tab>
       <Tab
@@ -109,9 +119,15 @@ const AllowedCreateKeytab = (props: PropsToAllowCreateKeytab) => {
         }
         aria-label="hostser groups for create keytabs"
       >
-        <CreateKeytabHostGroupsTable
-          host={fqdn}
+        <KeytabTable
+          from="host"
+          id={fqdn}
+          entry={props.host}
+          onRefresh={props.onRefresh}
           className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+          opType="create"
+          entryAttr="ipaallowedtoperform_write_keys_hostgroup"
+          entryType="hostgroup"
         />
       </Tab>
     </Tabs>

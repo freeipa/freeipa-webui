@@ -1014,6 +1014,14 @@ export const api = createApi({
           method = "host_find";
         } else if (entryType === "service") {
           method = "service_find";
+        } else {
+          return {
+            error: {
+              status: "CUSTOM_ERROR",
+              data: "",
+              error: "Unknown entry type",
+            } as FetchBaseQueryError,
+          };
         }
 
         // Prepare payload

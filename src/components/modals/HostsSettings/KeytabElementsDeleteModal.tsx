@@ -28,7 +28,7 @@ interface PropsToDelete {
   updateAvailableData: (newFilteredElements: unknown[]) => void;
 }
 
-const CreateKeytabElementsDeleteModal = (props: PropsToDelete) => {
+const KeytabElementsDeleteModal = (props: PropsToDelete) => {
   // Modal fields
   const fields = [
     {
@@ -125,4 +125,4 @@ const CreateKeytabElementsDeleteModal = (props: PropsToDelete) => {
   );
 };
 
-export default CreateKeytabElementsDeleteModal;
+export default KeytabElementsDeleteModal;

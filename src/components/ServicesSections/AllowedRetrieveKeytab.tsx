@@ -1,11 +1,8 @@
 import React from "react";
 // PatternFly
-import { Flex, FlexItem } from "@patternfly/react-core";
+import { Label, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // Tables
-import KeytabUsersTable from "../tables/HostsSettings/KeytabUsersTable";
-import RetrieveKeytabUserGroupsTable from "../tables/HostsSettings/RetrieveKeytabUserGroupsTable";
-import RetrieveKeytabHostsTable from "../tables/HostsSettings/RetrieveKeytabHostsTable";
-import RetrieveKeytabHostGroupsTable from "../tables/HostsSettings/RetrieveKeytabHostGroupTable";
+import KeytabTable from "../tables/KeytabTable";
 // Data types
 import { Service } from "../../utils/datatypes/globalDataTypes";
 
@@ -15,10 +12,46 @@ interface PropsToAllowCreateKeytab {
 }
 
 const AllowedRetrieveKeytab = (props: PropsToAllowCreateKeytab) => {
+  const [activeTabKey, setActiveTabKey] = React.useState<string | number>(0);
+
+  const handleTabClick = (
+    event: React.MouseEvent | React.KeyboardEvent | MouseEvent,
+    tabIndex: string | number
+  ) => {
+    setActiveTabKey(tabIndex);
+  };
+
+  // Get the item count for the label
+  let attr = "ipaallowedtoperform_read_keys_user";
+  const user_count =
+    props.service[attr] !== undefined ? props.service[attr].length : 0;
+  attr = "ipaallowedtoperform_read_keys_group";
+  const group_count =
+    props.service[attr] !== undefined ? props.service[attr].length : 0;
+  attr = "ipaallowedtoperform_read_keys_host";
+  const host_count =
+    props.service[attr] !== undefined ? props.service[attr].length : 0;
+  attr = "ipaallowedtoperform_read_keys_hostgroup";
+  const hostgroup_count =
+    props.service[attr] !== undefined ? props.service[attr].length : 0;
+
   return (
-    <Flex direction={{ default: "column", lg: "row" }}>
-      <FlexItem flex={{ default: "flex_1" }}>
-        <KeytabUsersTable
+    <Tabs
+      activeKey={activeTabKey}
+      onSelect={handleTabClick}
+      aria-label="Tabs for types of entries that can create keytabs"
+    >
+      <Tab
+        key={0}
+        eventKey={0}
+        title={
+          <TabTitleText>
+            Users <Label isCompact>{user_count}</Label>
+          </TabTitleText>
+        }
+        aria-label="user groups for create keytabs"
+      >
+        <KeytabTable
           from="service"
           id={props.service.krbcanonicalname}
           entry={props.service}
@@ -26,14 +59,73 @@ const AllowedRetrieveKeytab = (props: PropsToAllowCreateKeytab) => {
           className="pf-v5-u-ml-md pf-v5-u-mt-sm"
           opType="retrieve"
           entryAttr="ipaallowedtoperform_read_keys_user"
+          entryType="user"
         />
-        <RetrieveKeytabHostsTable host={props.service.krbcanonicalname} />
-      </FlexItem>
-      <FlexItem flex={{ default: "flex_1" }}>
-        <RetrieveKeytabUserGroupsTable host={props.service.krbcanonicalname} />
-        <RetrieveKeytabHostGroupsTable host={props.service.krbcanonicalname} />
-      </FlexItem>
-    </Flex>
+      </Tab>
+      <Tab
+        key={1}
+        eventKey={1}
+        title={
+          <TabTitleText>
+            User Groups <Label isCompact>{group_count}</Label>
+          </TabTitleText>
+        }
+        aria-label="user groups for create keytabs"
+      >
+        <KeytabTable
+          from="service"
+          id={props.service.krbcanonicalname}
+          entry={props.service}
+          onRefresh={props.onRefresh}
+          className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+          opType="retrieve"
+          entryAttr="ipaallowedtoperform_read_keys_group"
+          entryType="group"
+        />
+      </Tab>
+      <Tab
+        key={2}
+        eventKey={2}
+        title={
+          <TabTitleText>
+            Hosts <Label isCompact>{host_count}</Label>
+          </TabTitleText>
+        }
+        aria-label="hosts for create keytabs"
+      >
+        <KeytabTable
+          from="service"
+          id={props.service.krbcanonicalname}
+          entry={props.service}
+          onRefresh={props.onRefresh}
+          className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+          opType="retrieve"
+          entryAttr="ipaallowedtoperform_read_keys_host"
+          entryType="host"
+        />
+      </Tab>
+      <Tab
+        key={3}
+        eventKey={3}
+        title={
+          <TabTitleText>
+            Host Groups <Label isCompact>{hostgroup_count}</Label>
+          </TabTitleText>
+        }
+        aria-label="hostser groups for create keytabs"
+      >
+        <KeytabTable
+          from="service"
+          id={props.service.krbcanonicalname}
+          entry={props.service}
+          onRefresh={props.onRefresh}
+          className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+          opType="retrieve"
+          entryAttr="ipaallowedtoperform_read_keys_hostgroup"
+          entryType="hostgroup"
+        />
+      </Tab>
+    </Tabs>
   );
 };
 
