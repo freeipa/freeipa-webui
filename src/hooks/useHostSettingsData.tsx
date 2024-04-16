@@ -51,9 +51,13 @@ const useHostSettings = (hostId: string): HostSettingsData => {
     modified,
     setModified,
     metadata,
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    resetValues: () => {},
+    originalHost: host,
     setHost,
     refetch: hostFullDataQuery.refetch,
     host,
+    modifiedValues: () => host,
   } as HostSettingsData;
 
   if (hostFullData) {

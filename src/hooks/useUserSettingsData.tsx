@@ -101,12 +101,18 @@ const useSettingsData = (
     modified,
     setModified,
     metadata,
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    resetValues: () => {},
+    originalUser: user,
     user,
     setUser,
     radiusServers: radiusProxyData || [],
     idpServers: idpData || [],
     activeUsersList: activeUsersListData || [],
     refetch: userFullDataQuery.refetch,
+    modifiedValues: () => user,
+    pwPolicyData: {},
+    krbtPolicyData: {},
   } as UserSettingsData;
 
   if (userFullData) {
