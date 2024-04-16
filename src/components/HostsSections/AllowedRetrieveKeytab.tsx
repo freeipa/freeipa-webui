@@ -2,10 +2,7 @@ import React from "react";
 // PatternFly
 import { Label, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // Tables
-import KeytabUsersTable from "../tables/HostsSettings/KeytabUsersTable";
-import RetrieveKeytabUserGroupsTable from "../tables/HostsSettings/RetrieveKeytabUserGroupsTable";
-import RetrieveKeytabHostsTable from "../tables/HostsSettings/RetrieveKeytabHostsTable";
-import RetrieveKeytabHostGroupsTable from "../tables/HostsSettings/RetrieveKeytabHostGroupTable";
+import KeytabTable from "../tables/KeytabTable";
 // Data types
 import { Host } from "../../utils/datatypes/globalDataTypes";
 
@@ -56,9 +53,9 @@ const AllowedRetrieveKeytab = (props: PropsToAllowRetrieveKeytab) => {
             Users <Label isCompact>{user_count}</Label>
           </TabTitleText>
         }
-        aria-label="user groups for create keytabs"
+        aria-label="user groups for reading keytabs"
       >
-        <KeytabUsersTable
+        <KeytabTable
           from="host"
           id={fqdn}
           entry={props.host}
@@ -66,6 +63,7 @@ const AllowedRetrieveKeytab = (props: PropsToAllowRetrieveKeytab) => {
           className="pf-v5-u-ml-md pf-v5-u-mt-sm"
           opType="retrieve"
           entryAttr="ipaallowedtoperform_read_keys_user"
+          entryType="user"
         />
       </Tab>
       <Tab
@@ -76,11 +74,17 @@ const AllowedRetrieveKeytab = (props: PropsToAllowRetrieveKeytab) => {
             User Groups <Label isCompact>{group_count}</Label>
           </TabTitleText>
         }
-        aria-label="user groups for create keytabs"
+        aria-label="user groups for reading keytabs"
       >
-        <RetrieveKeytabUserGroupsTable
-          host={fqdn}
+        <KeytabTable
+          from="host"
+          id={fqdn}
+          entry={props.host}
+          onRefresh={props.onRefresh}
           className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+          opType="retrieve"
+          entryAttr="ipaallowedtoperform_read_keys_group"
+          entryType="group"
         />
       </Tab>
       <Tab
@@ -91,11 +95,17 @@ const AllowedRetrieveKeytab = (props: PropsToAllowRetrieveKeytab) => {
             Hosts <Label isCompact>{host_count}</Label>
           </TabTitleText>
         }
-        aria-label="hosts for create keytabs"
+        aria-label="hosts for reading keytabs"
       >
-        <RetrieveKeytabHostsTable
-          host={fqdn}
+        <KeytabTable
+          from="host"
+          id={fqdn}
+          entry={props.host}
+          onRefresh={props.onRefresh}
           className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+          opType="retrieve"
+          entryAttr="ipaallowedtoperform_read_keys_host"
+          entryType="host"
         />
       </Tab>
       <Tab
@@ -106,11 +116,17 @@ const AllowedRetrieveKeytab = (props: PropsToAllowRetrieveKeytab) => {
             Host Groups <Label isCompact>{hostgroup_count}</Label>
           </TabTitleText>
         }
-        aria-label="hostser groups for create keytabs"
+        aria-label="hostser groups for reading keytabs"
       >
-        <RetrieveKeytabHostGroupsTable
-          host={fqdn}
+        <KeytabTable
+          from="host"
+          id={fqdn}
+          entry={props.host}
+          onRefresh={props.onRefresh}
           className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+          opType="retrieve"
+          entryAttr="ipaallowedtoperform_read_keys_hostgroup"
+          entryType="hostgroup"
         />
       </Tab>
     </Tabs>

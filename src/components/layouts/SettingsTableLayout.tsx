@@ -32,6 +32,8 @@ export interface PropsToSettingsTableLayout {
   paginationData: PaginationData;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   list: any[];
+  entryCount: number;
+  entryType: string;
 }
 
 interface PaginationData {
@@ -54,12 +56,14 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
     <>
       <Flex>
         <FlexItem>
-          <SearchInput
-            placeholder={"Filter by ..."}
-            value={props.searchValue}
-            onChange={(_event, value: string) => props.onSearchChange(value)}
-            onClear={() => props.onSearchChange("")}
-          />
+          {props.entryCount > 0 && (
+            <SearchInput
+              placeholder={"Filter by ..."}
+              value={props.searchValue}
+              onChange={(_event, value: string) => props.onSearchChange(value)}
+              onClear={() => props.onSearchChange("")}
+            />
+          )}
         </FlexItem>
         <FlexItem>
           <SecondaryButton
@@ -73,7 +77,7 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
             classname="pf-v5-u-mr-sm"
             onClickHandler={props.onAddModal}
           >
-            Add
+            Add {props.entryType}
           </SecondaryButton>
         </FlexItem>
         <FlexItem align={{ default: "alignRight" }}>
