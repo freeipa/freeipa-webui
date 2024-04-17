@@ -45,6 +45,9 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
     UserGroup[]
   >([]);
 
+  const memberof_groups = props.user.memberof_group || [];
+  const memberofindirect_groups = props.user.memberofindirect_group || [];
+
   // Page indexes
   const [page, setPage] = React.useState(1);
   const [perPage, setPerPage] = React.useState(10);
@@ -72,7 +75,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   React.useEffect(() => {
     if (!fullUserGroupsQuery.isFetching && userGroupsFullList) {
       const userGroupsParsed: UserGroup[] = [];
-      props.user.memberof_group?.map((group) => {
+      memberof_groups.map((group) => {
         userGroupsFullList.map((g) => {
           if (g.cn === group) {
             userGroupsParsed.push(g);
@@ -119,9 +122,20 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   );
   const showTableRows = userGroupsFromUser.length > 0;
 
+  // Pagination
+  // - Data would depend on the direction
+  const paginationData =
+    membershipDirection === "direct"
+      ? memberof_groups
+      : memberofindirect_groups;
+
   // Update 'shownUserGroups' when 'userGroupsFromUser' changes
   React.useEffect(() => {
-    setShownUserGroups(paginate(userGroupsFromUser, page, perPage));
+    if (membershipDirection === "indirect") {
+      setShownUserGroups(indirectUserGroups);
+    } else {
+      setShownUserGroups(userGroupsFromUser);
+    }
   }, [userGroupsFromUser]);
 
   // Parse availableItems to 'AvailableItems' type
@@ -143,8 +157,14 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   // Membership
   const deleteAndAddButtonsEnabled = membershipDirection !== "indirect";
 
+  const paginatedIndirectGroups = paginate(
+    memberofindirect_groups,
+    page,
+    perPage
+  );
+
   const indirectMembersFullDataQuery = useGetGroupInfoByNameQuery({
-    groupNamesList: props.user.memberofindirect_group || [],
+    groupNamesList: paginatedIndirectGroups,
     no_members: true,
     version: API_VERSION_BACKUP,
   });
@@ -161,13 +181,10 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
 
   // - Update shown groups on table when membership direction changes
   React.useEffect(() => {
-    if (
-      membershipDirection === "indirect" &&
-      props.user.memberofindirect_group
-    ) {
-      setShownUserGroups(paginate(indirectUserGroups, page, perPage));
+    if (membershipDirection === "indirect") {
+      setShownUserGroups(indirectUserGroups);
     } else {
-      setShownUserGroups(paginate(userGroupsFromUser, page, perPage));
+      setShownUserGroups(userGroupsFromUser);
     }
   }, [membershipDirection, props.user]);
 
@@ -271,7 +288,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
         membershipDirection={membershipDirection}
         onMembershipDirectionChange={setMembershipDirection}
         helpIconEnabled={true}
-        totalItems={userGroupsFromUser.length}
+        totalItems={paginationData.length}
         perPage={perPage}
         page={page}
         onPerPageChange={setPerPage}
@@ -285,7 +302,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
       />
       <Pagination
         className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        itemCount={userGroupsFromUser.length}
+        itemCount={paginationData.length}
         widgetId="pagination-options-menu-bottom"
         perPage={perPage}
         page={page}
