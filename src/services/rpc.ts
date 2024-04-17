@@ -1483,6 +1483,29 @@ export const api = createApi({
         return netgroupList;
       },
     }),
+    /**
+     * Add entity to roles
+     * @param {string} toId - ID of the entity to add to roles
+     * @param {string} type - Type of the entity
+     *    Available types: user | host | service
+     * @param {string[]} listOfMembers - List of members to add to the roles
+     */
+    addToRoles: build.mutation<BatchRPCResponse, [string, string, string[]]>({
+      query: (payload) => {
+        const memberId = payload[0];
+        const memberType = payload[1];
+        const roleNames = payload[2];
+        const membersToAdd: Command[] = [];
+        roleNames.map((roleName) => {
+          const payloadItem = {
+            method: "role_add_member",
+            params: [[roleName], { [memberType]: memberId }],
+          } as Command;
+          membersToAdd.push(payloadItem);
+        });
+        return getBatchCommand(membersToAdd, API_VERSION_BACKUP);
+      },
+    }),
   }),
 });
 
@@ -1625,4 +1648,5 @@ export const {
   useAddToNetgroupsMutation,
   useRemoveFromNetgroupsMutation,
   useGetNetgroupInfoByNameQuery,
+  useAddToRolesMutation,
 } = api;

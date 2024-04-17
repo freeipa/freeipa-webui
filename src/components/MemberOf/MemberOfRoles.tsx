@@ -6,10 +6,16 @@ import { User, Role } from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfToolbar, { MembershipDirection } from "./MemberOfToolbar";
 import MemberOfTableRoles from "./MemberOfTableRoles";
+import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // RPC
-import { BatchRPCResponse, useGettingRolesQuery } from "src/services/rpc";
+import {
+  BatchRPCResponse,
+  ErrorResult,
+  useAddToRolesMutation,
+  useGettingRolesQuery,
+} from "src/services/rpc";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToRole } from "src/utils/rolesUtils";
@@ -23,8 +29,16 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
+  // API calls
+  const [addMemberToRoles] = useAddToRolesMutation();
+
   // Roles from current user
   const [rolesFromUser, setRolesFromUser] = React.useState<Role[]>([]);
+
+  const [rolesNotFromUser, setRolesNotFromUser] = React.useState<Role[]>([]);
+  const [rolesAvailable, setRolesAvailable] = React.useState<AvailableItems[]>(
+    []
+  );
 
   // Page indexes
   const [page, setPage] = React.useState(1);
@@ -33,13 +47,9 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   const firstRoleIdx = (page - 1) * perPage;
   const lastRoleIdx = page * perPage;
 
-  // Current user ID
-  const uid = props.user.uid;
-
   // API call
   // - Full info of available Roles
   const rolesQuery = useGettingRolesQuery({
-    user: uid,
     apiVersion: API_VERSION_BACKUP,
     startIdx: firstRoleIdx,
     stopIdx: lastRoleIdx,
@@ -58,7 +68,8 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
       const rolesTempList: Role[] = [];
 
       for (let i = 0; i < count; i++) {
-        rolesTempList.push(apiToRole(results[i].result));
+        const role = apiToRole(results[i].result);
+        rolesTempList.push(role);
       }
       setRolesFullList(rolesTempList);
     }
@@ -77,11 +88,27 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
     if (JSON.stringify(rolesFromUser) !== JSON.stringify(rolesParsed)) {
       setRolesFromUser(rolesParsed);
     }
+
+    // Roles not from user
+    const rolesNotFromUserParsed: Role[] = rolesFullList.filter(
+      (role) => !props.user.memberof_role?.includes(role.cn)
+    );
+    if (JSON.stringify(rolesFromUser) !== JSON.stringify(rolesParsed)) {
+      setRolesFromUser(rolesParsed);
+    }
+    if (
+      JSON.stringify(rolesNotFromUser) !==
+      JSON.stringify(rolesNotFromUserParsed)
+    ) {
+      setRolesNotFromUser(rolesNotFromUserParsed);
+      setRolesAvailable(parseAvailableItems(rolesNotFromUserParsed));
+    }
   }, [rolesFullList]);
 
+  // Refetch User groups when user data changes
   React.useEffect(() => {
     rolesQuery.refetch();
-  }, [props.user]);
+  }, [props.user, rolesFromUser]);
 
   // Other states
   const [rolesSelected, setRolesSelected] = React.useState<string[]>([]);
@@ -89,6 +116,8 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
 
   const [membershipDirection, setMembershipDirection] =
     React.useState<MembershipDirection>("direct");
+
+  const [showAddModal, setShowAddModal] = React.useState(false);
 
   // Computed "states"
   const someItemSelected = rolesSelected.length > 0;
@@ -102,10 +131,59 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
     setShownRoles(paginate(rolesFromUser, page, perPage));
   }, [rolesFromUser]);
 
+  // Parse availableItems to 'AvailableItems' type
+  const parseAvailableItems = (itemsList: Role[]) => {
+    const avItems: AvailableItems[] = [];
+    itemsList.map((item) => {
+      avItems.push({
+        key: item.cn,
+        title: item.cn,
+      });
+    });
+    return avItems;
+  };
+
   // Buttons functionality
   // - Refresh
   const isRefreshButtonEnabled =
     !rolesQuery.isFetching && !props.isUserDataLoading;
+
+  // - Add
+  const isAddButtonEnabled = !rolesQuery.isFetching && !props.isUserDataLoading;
+
+  // Add new member to 'Role'
+  const onAddToRole = (toUid: string, type: string, newData: string[]) => {
+    addMemberToRoles([toUid, type, newData]).then((response) => {
+      if ("data" in response) {
+        if (response.data.result) {
+          // Set alert: success
+          alerts.addAlert(
+            "add-member-success",
+            "Added new members to Role '" + toUid + "'",
+            "success"
+          );
+          // Refresh data
+          props.onRefreshUserData();
+          // Close modal
+          setShowAddModal(false);
+        } else if (response.data.error) {
+          // Set alert: error
+          const errorMessage = response.data.error as unknown as ErrorResult;
+          alerts.addAlert("add-member-error", errorMessage.message, "danger");
+        }
+      }
+    });
+  };
+
+  const onAddRole = (items: AvailableItems[]) => {
+    const newItems = items.map((item) => item.key);
+    const newRoles = rolesFullList.filter((role) => newItems.includes(role.cn));
+    if (props.user.uid !== undefined) {
+      onAddToRole(props.user.uid, "user", newItems);
+      const updatedRoles = rolesFromUser.concat(newRoles);
+      setRolesFromUser(updatedRoles);
+    }
+  };
 
   return (
     <>
@@ -120,9 +198,8 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
         deleteButtonEnabled={someItemSelected}
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         onDeleteButtonClick={() => {}}
-        addButtonEnabled={true}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        onAddButtonClick={() => {}}
+        addButtonEnabled={isAddButtonEnabled}
+        onAddButtonClick={() => setShowAddModal(true)}
         membershipDirectionEnabled={true}
         membershipDirection={membershipDirection}
         onMembershipDirectionChange={setMembershipDirection}
@@ -149,6 +226,17 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
         onSetPage={(_e, page) => setPage(page)}
         onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
       />
+      {showAddModal && (
+        <MemberOfAddModal
+          showModal={showAddModal}
+          onCloseModal={() => setShowAddModal(false)}
+          availableItems={rolesAvailable}
+          onAdd={onAddRole}
+          onSearchTextChange={setSearchValue}
+          title={"Add '" + props.user.uid + "' into Roles"}
+          ariaLabel="Add user of role modal"
+        />
+      )}
     </>
   );
 };
