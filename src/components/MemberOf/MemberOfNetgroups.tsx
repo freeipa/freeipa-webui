@@ -83,6 +83,9 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
   const netgroupsData = netgroupsQuery.data || {};
   const netgroupsNotMemberOfData = netgroupsNotMemberOfQuery.data || {};
 
+  const memberof_netgroups = props.user.memberof_netgroup || [];
+  const memberofindirect_netgroups = props.user.memberofindirect_netgroup || [];
+
   React.useEffect(() => {
     if (netgroupsData && !netgroupsQuery.isFetching) {
       const dataParsed = netgroupsData as BatchRPCResponse;
@@ -119,7 +122,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
   // Get full data of the 'User groups' assigned to user
   React.useEffect(() => {
     const netgroupsParsed: Netgroup[] = [];
-    props.user.memberof_netgroup?.map((netgroup) => {
+    memberof_netgroups.map((netgroup) => {
       netgroupsFullList.map((ng) => {
         if (ng.cn === netgroup) {
           netgroupsParsed.push(ng);
@@ -170,12 +173,19 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
   );
   const showTableRows = netgroupsFromUser.length > 0;
 
+  // Pagination
+  // - Data would depend on the direction
+  const paginationData =
+    membershipDirection === "direct"
+      ? memberof_netgroups
+      : memberofindirect_netgroups;
+
   // Update 'shownNetgroups' when 'netgroupsFromUser' changes
   React.useEffect(() => {
     if (membershipDirection === "indirect") {
       setShownNetgroups(indirectNetgroups);
     } else {
-      setShownNetgroups(paginate(netgroupsFromUser, page, perPage));
+      setShownNetgroups(netgroupsFromUser);
     }
   }, [netgroupsFromUser]);
 
@@ -197,7 +207,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
 
   // Membership
   const paginatedIndirectNetgroups = paginate(
-    props.user.memberofindirect_netgroup || [],
+    memberofindirect_netgroups,
     page,
     perPage
   );
@@ -220,13 +230,10 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
 
   // - Update shown groups on table when membership direction changes
   React.useEffect(() => {
-    if (
-      membershipDirection === "indirect" &&
-      props.user.memberofindirect_netgroup
-    ) {
+    if (membershipDirection === "indirect") {
       setShownNetgroups(indirectNetgroups);
     } else {
-      setShownNetgroups(paginate(netgroupsFromUser, page, perPage));
+      setShownNetgroups(netgroupsFromUser);
     }
   }, [membershipDirection, props.user]);
 
@@ -334,7 +341,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
         membershipDirection={membershipDirection}
         onMembershipDirectionChange={setMembershipDirection}
         helpIconEnabled={true}
-        totalItems={netgroupsFromUser.length}
+        totalItems={paginationData.length}
         perPage={perPage}
         page={page}
         onPerPageChange={setPerPage}
@@ -348,7 +355,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
       />
       <Pagination
         className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        itemCount={netgroupsFromUser.length}
+        itemCount={paginationData.length}
         widgetId="pagination-options-menu-bottom"
         perPage={perPage}
         page={page}
