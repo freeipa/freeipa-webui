@@ -7,6 +7,7 @@ import { User, Role } from "src/utils/datatypes/globalDataTypes";
 import MemberOfToolbar, { MembershipDirection } from "./MemberOfToolbar";
 import MemberOfTableRoles from "./MemberOfTableRoles";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
+import MemberOfDeleteModal from "./MemberOfDeleteModal";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // RPC
@@ -15,6 +16,7 @@ import {
   ErrorResult,
   useAddToRolesMutation,
   useGettingRolesQuery,
+  useRemoveFromRolesMutation,
 } from "src/services/rpc";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
@@ -31,6 +33,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
 
   // API calls
   const [addMemberToRoles] = useAddToRolesMutation();
+  const [removeMembersFromRoles] = useRemoveFromRolesMutation();
 
   // Roles from current user
   const [rolesFromUser, setRolesFromUser] = React.useState<Role[]>([]);
@@ -118,6 +121,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
     React.useState<MembershipDirection>("direct");
 
   const [showAddModal, setShowAddModal] = React.useState(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
   // Computed "states"
   const someItemSelected = rolesSelected.length > 0;
@@ -144,6 +148,8 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   };
 
   // Buttons functionality
+  const deleteAndAddButtonsEnabled = membershipDirection !== "indirect";
+
   // - Refresh
   const isRefreshButtonEnabled =
     !rolesQuery.isFetching && !props.isUserDataLoading;
@@ -185,6 +191,45 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
     }
   };
 
+  // - Delete
+  const onDeleteRole = () => {
+    const updatedRoles = rolesFromUser.filter(
+      (role) => !rolesSelected.includes(role.cn)
+    );
+    if (props.user.uid) {
+      removeMembersFromRoles([props.user.uid, "user", rolesSelected]).then(
+        (response) => {
+          if ("data" in response) {
+            if (response.data.result) {
+              // Set alert: success
+              alerts.addAlert(
+                "remove-roles-success",
+                "Removed roles from user '" + props.user.uid + "'",
+                "success"
+              );
+              // Update data
+              setRolesFromUser(updatedRoles);
+              setRolesSelected([]);
+              // Close modal
+              setShowDeleteModal(false);
+              // Refresh
+              props.onRefreshUserData();
+            } else if (response.data.error) {
+              // Set alert: error
+              const errorMessage = response.data
+                .error as unknown as ErrorResult;
+              alerts.addAlert(
+                "remove-roles-error",
+                errorMessage.message,
+                "danger"
+              );
+            }
+          }
+        }
+      );
+    }
+  };
+
   return (
     <>
       <alerts.ManagedAlerts />
@@ -195,9 +240,8 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
         onSearch={() => {}}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshUserData}
-        deleteButtonEnabled={someItemSelected}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        onDeleteButtonClick={() => {}}
+        deleteButtonEnabled={someItemSelected && deleteAndAddButtonsEnabled}
+        onDeleteButtonClick={() => setShowDeleteModal(true)}
         addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
         membershipDirectionEnabled={true}
@@ -236,6 +280,21 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           title={"Add '" + props.user.uid + "' into Roles"}
           ariaLabel="Add user of role modal"
         />
+      )}
+      {showDeleteModal && someItemSelected && (
+        <MemberOfDeleteModal
+          showModal={showDeleteModal}
+          onCloseModal={() => setShowDeleteModal(false)}
+          title="Delete user from Roles"
+          onDelete={onDeleteRole}
+        >
+          <MemberOfTableRoles
+            roles={rolesFromUser.filter((group) =>
+              rolesSelected.includes(group.cn)
+            )}
+            showTableRows
+          />
+        </MemberOfDeleteModal>
       )}
     </>
   );
