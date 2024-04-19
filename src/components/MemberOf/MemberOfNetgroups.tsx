@@ -235,6 +235,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
     } else {
       setShownNetgroups(netgroupsFromUser);
     }
+    setPage(1);
   }, [membershipDirection, props.user]);
 
   // Buttons functionality
