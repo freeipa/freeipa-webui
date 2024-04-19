@@ -359,3 +359,22 @@ Then(
       .should("not.exist");
   }
 );
+
+// Search
+When("I type {string} in the search field", (searchText: string) => {
+  cy.get("div.pf-v5-c-toolbar input[name=search]")
+    // cy.get("div.pf-v5-c-text-input-group__text-input")
+    .eq(0)
+    .type(searchText, { force: true });
+});
+
+Then(
+  "I should see the {string} text in the search input field",
+  (searchText: string) => {
+    cy.get("input[name=search]").should("have.value", searchText);
+  }
+);
+
+When("I click on the arrow icon to perform search", () => {
+  cy.get("button[aria-label=Search]").eq(0).click();
+});

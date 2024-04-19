@@ -354,3 +354,141 @@ Then(
     ).type(text);
   }
 );
+
+// 'Is a member of' section
+Given("I click on the Is a member of section", () => {
+  cy.get("button[name=memberof-details]").click();
+});
+
+Then(
+  "I am on {string} user > Is a member of > {string} section",
+  (username: string, sectionName: string) => {
+    cy.url().then(($url) => {
+      if ($url.includes("settings")) {
+        cy.get(".pf-v5-c-breadcrumb__item")
+          .contains(username)
+          .should("be.visible");
+        cy.get("h1>p").contains(username).should("be.visible");
+        cy.get("button[name='memberof-details']")
+          .should("have.attr", "aria-selected", "true")
+          .contains("Is a member of");
+        cy.get("li.pf-v5-c-tabs__item")
+          .children()
+          .get("button[name='memberof_group']")
+          .contains(sectionName);
+        cy.wait(3000);
+      }
+    });
+  }
+);
+
+When(
+  "I click on the {string} tab within Is a member of section",
+  (tabName: string) => {
+    cy.get("button[name=memberof_group]").contains(tabName).click();
+  }
+);
+
+Then("I should see {string} tab is selected", (tabName: string) => {
+  cy.get("button[name=memberof_group]")
+    .should("have.attr", "aria-selected", "true")
+    .contains(tabName);
+});
+
+Then("I should see the table with {string} column", (columnName: string) => {
+  cy.get("th").contains(columnName).should("be.visible");
+});
+
+Then(
+  "I should see the element {string} in the table",
+  (tableElement: string) => {
+    cy.get("table>tbody")
+      .find("td")
+      .contains(tableElement)
+      .should("be.visible");
+  }
+);
+
+Then(
+  "I should not see the element {string} in the table",
+  (tableElement: string) => {
+    cy.get("table>tbody").find("td").contains(tableElement).should("not.exist");
+  }
+);
+
+// - Add
+When(
+  "I click on {string} button located in the toolbar",
+  (buttonName: string) => {
+    cy.get("div.pf-v5-c-toolbar").find("button").contains(buttonName).click();
+  }
+);
+
+Then("I should see the dialog with title {string}", (dialogTitle: string) => {
+  cy.get("div[role='dialog'")
+    .find("h1")
+    .contains(dialogTitle)
+    .should("be.visible");
+});
+
+When(
+  "I move user {string} from the available list and move it to the chosen options",
+  (userName: string) => {
+    // Select and add the 'userName' to the chosen list
+    cy.get("div[role='dialog'")
+      .find("div.pf-v5-c-dual-list-selector__menu")
+      .find("span")
+      .contains(userName)
+      .parent()
+      .parent()
+      .parent()
+      .click();
+    // Add the user to the chosen list
+    cy.get("button[aria-label='Add selected'").click();
+    // Check if 'userName' is in the chosen list
+    cy.get("div.pf-m-chosen")
+      .find("div.pf-v5-c-dual-list-selector__menu")
+      .find("span")
+      .contains(userName);
+  }
+);
+
+Then(
+  "I should not see the element {string} in the add list",
+  (elementName: string) => {
+    // Open 'Add' dialog
+    cy.get("div.pf-v5-c-toolbar").find("button").contains("Add").click();
+    // Check if 'elementName' is in the available list
+    cy.get("div[role='dialog'")
+      .find("div.pf-v5-c-dual-list-selector__menu")
+      .find("span")
+      .contains(elementName)
+      .should("not.exist");
+  }
+);
+
+// - Delete
+Then(
+  "the {string} group name should be in the dialog table",
+  (groupName: string) => {
+    cy.get("div[role='dialog'")
+      .find("table#member-of-table")
+      .find("td.pf-v5-c-table__td")
+      .contains(groupName)
+      .should("be.visible");
+  }
+);
+
+Then(
+  "removed element {string} is back to the add list",
+  (deletedElement: string) => {
+    // Open 'Add' dialog
+    cy.get("div.pf-v5-c-toolbar").find("button").contains("Add").click();
+    // Check if 'deletedElement' is in the available list
+    cy.get("div[role='dialog'")
+      .find("div.pf-v5-c-dual-list-selector__menu")
+      .find("span")
+      .contains(deletedElement)
+      .should("be.visible");
+  }
+);
