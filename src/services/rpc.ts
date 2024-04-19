@@ -1514,6 +1514,32 @@ export const api = createApi({
         return getBatchCommand(membersToAdd, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Delete entity from roles
+     * @param {string} memberId - ID of the entity to remove from roles
+     * @param {string} memberType - Type of the entity
+     *    Available types: user | host | service
+     * @param {string[]} listOfRoles - List of members to remove from roles
+     */
+    removeFromRoles: build.mutation<
+      BatchRPCResponse,
+      [string, string, string[]]
+    >({
+      query: (payload) => {
+        const memberId = payload[0];
+        const memberType = payload[1];
+        const listOfRoles = payload[2];
+        const membersToRemove: Command[] = [];
+        listOfRoles.map((role) => {
+          const payloadItem: Command = {
+            method: "role_remove_member",
+            params: [[role], { [memberType]: memberId }],
+          };
+          membersToRemove.push(payloadItem);
+        });
+        return getBatchCommand(membersToRemove, API_VERSION_BACKUP);
+      },
+    }),
   }),
 });
 
@@ -1657,4 +1683,5 @@ export const {
   useRemoveFromNetgroupsMutation,
   useGetNetgroupInfoByNameQuery,
   useAddToRolesMutation,
+  useRemoveFromRolesMutation,
 } = api;
