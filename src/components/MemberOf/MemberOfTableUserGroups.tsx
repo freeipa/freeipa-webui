@@ -27,7 +27,7 @@ const UserGroupsTableBody = (props: {
   return (
     <>
       {userGroups.map((userGroup, index) => (
-        <Tr key={index}>
+        <Tr key={index} id={userGroup.cn}>
           {props.showCheckboxColumn && (
             <Td
               select={{
