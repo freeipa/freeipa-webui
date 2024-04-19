@@ -186,6 +186,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
     } else {
       setShownUserGroups(userGroupsFromUser);
     }
+    setPage(1);
   }, [membershipDirection, props.user]);
 
   // Buttons functionality
