@@ -36,7 +36,7 @@ const useUserMemberOfData = ({
     no_user: uid,
     apiVersion: API_VERSION_BACKUP,
     startIdx: firstUserIdx,
-    stopIdx: lastUserIdx,
+    stopIdx: 100, // Limited to max. 100 groups to show in the dual selector
   });
 
   const [userGroupsFullList, setUserGroupsFullList] = React.useState<
