@@ -71,7 +71,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
     no_user: uid,
     apiVersion: API_VERSION_BACKUP,
     startIdx: firstUserIdx,
-    stopIdx: lastUserIdx,
+    stopIdx: 100, // Limited to max. 100 netgroups to show in the dual selector
   });
 
   const [netgroupsFullList, setNetgroupsFullList] = React.useState<Netgroup[]>(
