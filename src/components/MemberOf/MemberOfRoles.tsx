@@ -15,6 +15,7 @@ import {
   BatchRPCResponse,
   ErrorResult,
   useAddToRolesMutation,
+  useGetRolesInfoByNameQuery,
   useGettingRolesQuery,
   useRemoveFromRolesMutation,
 } from "src/services/rpc";
@@ -43,24 +44,28 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
     []
   );
 
+  const [indirectRoles, setIndirectRoles] = React.useState<Role[]>([]);
+
   // Page indexes
   const [page, setPage] = React.useState(1);
   const [perPage, setPerPage] = React.useState(10);
 
   const firstRoleIdx = (page - 1) * perPage;
-  const lastRoleIdx = page * perPage;
 
   // API call
   // - Full info of available Roles
   const rolesQuery = useGettingRolesQuery({
     apiVersion: API_VERSION_BACKUP,
     startIdx: firstRoleIdx,
-    stopIdx: lastRoleIdx,
+    stopIdx: 100, // Max number of roles retrieved
   });
 
   const [rolesFullList, setRolesFullList] = React.useState<Role[]>([]);
 
   const rolesData = rolesQuery.data || {};
+
+  const memberof_role = props.user.memberof_role || [];
+  const memberofindirect_role = props.user.memberofindirect_role || [];
 
   React.useEffect(() => {
     if (rolesData && !rolesQuery.isFetching) {
@@ -81,7 +86,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   // Get full data of the 'Roles' assigned to user
   React.useEffect(() => {
     const rolesParsed: Role[] = [];
-    props.user.memberof_role?.map((role) => {
+    memberof_role.map((role) => {
       rolesFullList.map((rl) => {
         if (rl.cn === role) {
           rolesParsed.push(rl);
@@ -94,11 +99,8 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
 
     // Roles not from user
     const rolesNotFromUserParsed: Role[] = rolesFullList.filter(
-      (role) => !props.user.memberof_role?.includes(role.cn)
+      (role) => !memberof_role.includes(role.cn)
     );
-    if (JSON.stringify(rolesFromUser) !== JSON.stringify(rolesParsed)) {
-      setRolesFromUser(rolesParsed);
-    }
     if (
       JSON.stringify(rolesNotFromUser) !==
       JSON.stringify(rolesNotFromUserParsed)
@@ -130,9 +132,18 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   );
   const showTableRows = rolesFromUser.length > 0;
 
+  // Pagination
+  // - Data would depend on the direction
+  const paginationData =
+    membershipDirection === "direct" ? memberof_role : memberofindirect_role;
+
   // Update 'shownRoles' when 'RolesFromUser' changes
   React.useEffect(() => {
-    setShownRoles(paginate(rolesFromUser, page, perPage));
+    if (membershipDirection === "indirect") {
+      setShownRoles(indirectRoles);
+    } else {
+      setShownRoles(paginate(rolesFromUser, page, perPage));
+    }
   }, [rolesFromUser]);
 
   // Parse availableItems to 'AvailableItems' type
@@ -146,6 +157,34 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
     });
     return avItems;
   };
+
+  // Membership
+  const paginatedIndirectRoles = paginate(memberofindirect_role, page, perPage);
+
+  const indirectMembersFullDataQuery = useGetRolesInfoByNameQuery({
+    roleNamesList: paginatedIndirectRoles,
+    no_members: true,
+    version: API_VERSION_BACKUP,
+  });
+
+  const indirectMembersData: Role[] = indirectMembersFullDataQuery.data || [];
+
+  // - Update 'Indirect roles' when 'indirectMembersData' changes
+  React.useEffect(() => {
+    if (!indirectMembersFullDataQuery.isFetching && indirectMembersData) {
+      setIndirectRoles(indirectMembersData);
+    }
+  }, [indirectMembersFullDataQuery]);
+
+  // - Update shown groups on table when membership direction changes
+  React.useEffect(() => {
+    if (membershipDirection === "indirect" && memberofindirect_role) {
+      setShownRoles(indirectRoles);
+    } else {
+      setShownRoles(paginate(rolesFromUser, page, perPage));
+    }
+    setPage(1);
+  }, [membershipDirection, props.user]);
 
   // Buttons functionality
   const deleteAndAddButtonsEnabled = membershipDirection !== "indirect";
@@ -248,7 +287,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
         membershipDirection={membershipDirection}
         onMembershipDirectionChange={setMembershipDirection}
         helpIconEnabled={true}
-        totalItems={rolesFromUser.length}
+        totalItems={paginationData.length}
         perPage={perPage}
         page={page}
         onPerPageChange={setPerPage}
@@ -262,7 +301,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
       />
       <Pagination
         className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        itemCount={rolesFromUser.length}
+        itemCount={paginationData.length}
         widgetId="pagination-options-menu-bottom"
         perPage={perPage}
         page={page}
