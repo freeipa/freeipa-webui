@@ -26,6 +26,7 @@ import {
   UserGroup,
   Netgroup,
   roleType,
+  Role,
 } from "../utils/datatypes/globalDataTypes";
 import { apiToHost } from "../utils/hostUtils";
 import { apiToUser } from "../utils/userUtils";
@@ -34,6 +35,7 @@ import { apiToPwPolicy } from "../utils/pwPolicyUtils";
 import { apiToKrbPolicy } from "../utils/krbPolicyUtils";
 import { apiToGroup } from "src/utils/groupUtils";
 import { apiToNetgroup } from "src/utils/netgroupsUtils";
+import { apiToRole } from "src/utils/rolesUtils";
 
 export type UserFullData = {
   user?: Partial<User>;
@@ -176,6 +178,12 @@ export interface GroupShowPayload {
 
 export interface NetgroupShowPayload {
   netgroupNamesList: string[];
+  no_members?: boolean;
+  version: string;
+}
+
+export interface RoleShowPayload {
+  roleNamesList: string[];
   no_members?: boolean;
   version: string;
 }
@@ -761,10 +769,16 @@ export const api = createApi({
           }
         }
 
+        // Prevent searchValue to be null
+        let parsedSearchValue = searchValue;
+        if (searchValue === null || searchValue === undefined) {
+          parsedSearchValue = "";
+        }
+
         // Prepare payload
         const payloadDataIds: Command = {
           method: objName + "_find",
-          params: [[searchValue], params],
+          params: [[parsedSearchValue], params],
         };
 
         // Make call using 'fetchWithBQ'
@@ -1540,6 +1554,33 @@ export const api = createApi({
         return getBatchCommand(membersToRemove, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Given a list of roles names, show the full data of those roles
+     * @param {RoleShowPayload} - Payload with role names and options
+     * @returns {BatchRPCResponse} - Batch response
+     */
+    getRolesInfoByName: build.query<Role[], RoleShowPayload>({
+      query: (payload) => {
+        const roleNames = payload.roleNamesList;
+        const noMembers = payload.no_members || false;
+        const apiVersion = payload.version || API_VERSION_BACKUP;
+        const roleShowCommands: Command[] = roleNames.map((roleName) => ({
+          method: "role_show",
+          params: [[roleName], { no_members: noMembers }],
+        }));
+        return getBatchCommand(roleShowCommands, apiVersion);
+      },
+      transformResponse: (response: BatchRPCResponse): Role[] => {
+        const roleList: Role[] = [];
+        const results = response.result.results;
+        const count = response.result.count;
+        for (let i = 0; i < count; i++) {
+          const roleData = apiToRole(results[i].result);
+          roleList.push(roleData);
+        }
+        return roleList;
+      },
+    }),
   }),
 });
 
@@ -1684,4 +1725,5 @@ export const {
   useGetNetgroupInfoByNameQuery,
   useAddToRolesMutation,
   useRemoveFromRolesMutation,
+  useGetRolesInfoByNameQuery,
 } = api;
