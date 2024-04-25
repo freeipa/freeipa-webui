@@ -322,6 +322,6 @@ export function paginate<Type>(
   perPage: number
 ): Type[] {
   const startIdx = (page - 1) * perPage;
-  const endIdx = perPage * page - 1;
+  const endIdx = perPage * page;
   return array.slice(startIdx, endIdx);
 }
