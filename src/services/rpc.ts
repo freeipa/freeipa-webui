@@ -1639,10 +1639,10 @@ export const useGettingNetgroupsQuery = (payloadData) => {
   return useGettingGenericQuery(payloadData);
 };
 // Roles
-export const useGettingRolesQuery = (payloadData) => {
+export const useGettingRolesQuery = (payloadData, options) => {
   payloadData["objName"] = "role";
   payloadData["objAttr"] = "cn";
-  return useGettingGenericQuery(payloadData);
+  return useGettingGenericQuery(payloadData, options);
 };
 
 // Full search wrappers

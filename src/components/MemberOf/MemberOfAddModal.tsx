@@ -31,6 +31,19 @@ const MemberOfAddModal = (props: PropsToAdd) => {
   const [availableOptions, setAvailableOptions] = useState<ReactNode[]>(data);
   const [chosenOptions, setChosenOptions] = useState<ReactNode[]>([]);
 
+  // Update available and chosen options when props.availableItems changes
+  useEffect(() => {
+    const newAval = data.filter((d) => !chosenOptions.includes(d));
+    setAvailableOptions(newAval);
+  }, [props.availableItems]);
+
+  // reset dialog on close
+  useEffect(() => {
+    if (!props.showModal) {
+      cleanData();
+    }
+  }, [props.showModal]);
+
   const listChange = (
     newAvailableOptions: ReactNode[],
     newChosenOptions: ReactNode[]
@@ -48,6 +61,9 @@ const MemberOfAddModal = (props: PropsToAdd) => {
           isSearchable
           availableOptions={availableOptions}
           chosenOptions={chosenOptions}
+          onAvailableOptionsSearchInputChanged={(_event, searchText) =>
+            props.onSearchTextChange(searchText)
+          }
           onListChange={(
             _event,
             newAvailableOptions: ReactNode[],
@@ -82,7 +98,7 @@ const MemberOfAddModal = (props: PropsToAdd) => {
   }, [chosenOptions]);
 
   // Add group option
-  const onClickAddGroupHandler = () => {
+  const onClickAddHandler = () => {
     const optionsToAdd: AvailableItems[] = [];
     chosenOptions.map((opt) => {
       optionsToAdd.push({
@@ -103,7 +119,7 @@ const MemberOfAddModal = (props: PropsToAdd) => {
       variant="secondary"
       isDisabled={buttonDisabled}
       form="modal-form"
-      onClick={onClickAddGroupHandler}
+      onClick={onClickAddHandler}
     >
       Add
     </Button>,
