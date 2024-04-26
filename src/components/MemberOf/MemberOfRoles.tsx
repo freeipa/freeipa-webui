@@ -156,8 +156,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
 
   // Pagination
   // - Data would depend on the direction
-  const paginationData =
-    membershipDirection === "direct" ? memberof_role : memberofindirect_role;
+  const [paginationData, setPaginationData] = React.useState<string[]>([]);
 
   // Update 'shownRoles' when 'RolesFromUser' changes
   React.useEffect(() => {
@@ -195,8 +194,10 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   React.useEffect(() => {
     if (membershipDirection === "indirect") {
       setShownRoles(paginate(indirectRoles, page, perPage));
+      setPaginationData(memberofindirect_role);
     } else {
       setShownRoles(paginate(rolesFromUser, page, perPage));
+      setPaginationData(memberof_role);
     }
     setPage(1);
   }, [membershipDirection, props.user]);
@@ -302,14 +303,29 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
     }
   };
 
+  const onSearch = () => {
+    if (membershipDirection === "direct") {
+      const searchResult = rolesFromUser.filter((role) => {
+        return role.cn.toLowerCase().includes(searchValue.toLowerCase());
+      });
+      setShownRoles(paginate(searchResult, page, perPage));
+      setPaginationData(searchResult.map((role) => role.cn));
+    } else {
+      const searchResult = indirectRoles.filter((role) => {
+        return role.cn.toLowerCase().includes(searchValue.toLowerCase());
+      });
+      setShownRoles(paginate(searchResult, page, perPage));
+      setPaginationData(searchResult.map((role) => role.cn));
+    }
+  };
+
   return (
     <>
       <alerts.ManagedAlerts />
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        onSearch={() => {}}
+        onSearch={onSearch}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshUserData}
         deleteButtonEnabled={someItemSelected && deleteAndAddButtonsEnabled}
