@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 // PatternFly
 import { Pagination, PaginationVariant } from "@patternfly/react-core";
 // Data types
@@ -12,7 +12,6 @@ import MemberOfDeleteModal from "./MemberOfDeleteModal";
 import useAlerts from "src/hooks/useAlerts";
 // RPC
 import {
-  BatchRPCResponse,
   ErrorResult,
   useAddToRolesMutation,
   useGetRolesInfoByNameQuery,
@@ -32,202 +31,170 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
-  // API calls
-  const [addMemberToRoles] = useAddToRolesMutation();
-  const [removeMembersFromRoles] = useRemoveFromRolesMutation();
-
-  // Roles from current user
-  const [rolesFromUser, setRolesFromUser] = React.useState<Role[]>([]);
-
-  const [rolesNotFromUser, setRolesNotFromUser] = React.useState<Role[]>([]);
-  const [rolesAvailable, setRolesAvailable] = React.useState<AvailableItems[]>(
-    []
-  );
-
-  const [indirectRoles, setIndirectRoles] = React.useState<Role[]>([]);
-
   // Page indexes
   const [page, setPage] = React.useState(1);
   const [perPage, setPerPage] = React.useState(10);
-
-  // API call
-  // - Full info of available Roles
-  const fullRolesQuery = useGettingRolesQuery({
-    apiVersion: API_VERSION_BACKUP,
-    startIdx: 0,
-    stopIdx: 100, // Max number of roles retrieved
-  });
-
-  const fullRolesData = fullRolesQuery.data || {};
-
-  const [rolesFullList, setRolesFullList] = React.useState<Role[]>([]);
-
-  const memberof_role = props.user.memberof_role || [];
-  const memberofindirect_role = props.user.memberofindirect_role || [];
-
-  const directMembersFullDataQuery = useGetRolesInfoByNameQuery({
-    roleNamesList: memberof_role,
-    no_members: true,
-    version: API_VERSION_BACKUP,
-  });
-
-  const directMembersData = directMembersFullDataQuery.data || [];
-
-  const indirectMembersFullDataQuery = useGetRolesInfoByNameQuery({
-    roleNamesList: memberofindirect_role,
-    no_members: true,
-    version: API_VERSION_BACKUP,
-  });
-
-  const indirectMembersData = indirectMembersFullDataQuery.data || [];
-
-  // Converts API data to Role data
-  React.useEffect(() => {
-    if (fullRolesData && !fullRolesQuery.isFetching) {
-      const dataParsed = fullRolesData as BatchRPCResponse;
-      const count = dataParsed.result.count;
-      const results = dataParsed.result.results;
-
-      const rolesTempList: Role[] = [];
-
-      for (let i = 0; i < count; i++) {
-        const role = apiToRole(results[i].result);
-        rolesTempList.push(role);
-      }
-      setRolesFullList(rolesTempList);
-    }
-  }, [fullRolesData, fullRolesQuery.isFetching]);
-
-  // Assign and sort data when it is fetched
-  React.useEffect(() => {
-    if (directMembersData && !directMembersFullDataQuery.isFetching) {
-      const directMembersDataCopy = [...directMembersData];
-      const sortedDirectMembers = directMembersDataCopy.sort((a, b) =>
-        a.cn.localeCompare(b.cn)
-      );
-      setRolesFromUser(sortedDirectMembers);
-    }
-  }, [directMembersData, directMembersFullDataQuery.isFetching]);
-
-  React.useEffect(() => {
-    if (indirectMembersData && !indirectMembersFullDataQuery.isFetching) {
-      const indirectMembersDataCopy = [...indirectMembersData];
-      const sortedIndirectMembers = indirectMembersDataCopy.sort((a, b) =>
-        a.cn.localeCompare(b.cn)
-      );
-      setIndirectRoles(sortedIndirectMembers);
-    }
-  }, [indirectMembersData, indirectMembersFullDataQuery.isFetching]);
-
-  // Refetch User groups when user data changes
-  React.useEffect(() => {
-    directMembersFullDataQuery.refetch();
-    indirectMembersFullDataQuery.refetch();
-
-    // Roles not from user
-    const rolesNotFromUserParsed: Role[] = rolesFullList.filter(
-      (role) => !memberof_role.includes(role.cn)
-    );
-    if (
-      JSON.stringify(rolesNotFromUser) !==
-      JSON.stringify(rolesNotFromUserParsed)
-    ) {
-      setRolesNotFromUser(rolesNotFromUserParsed);
-      setRolesAvailable(parseAvailableItems(rolesNotFromUserParsed));
-    }
-  }, [rolesFullList]);
 
   // Other states
   const [rolesSelected, setRolesSelected] = React.useState<string[]>([]);
   const [searchValue, setSearchValue] = React.useState("");
 
+  // Loaded roles based on paging and member attributes
+  const [roles, setRoles] = React.useState<Role[]>([]);
+
+  // Membership direction and roles
   const [membershipDirection, setMembershipDirection] =
     React.useState<MembershipDirection>("direct");
 
-  const [showAddModal, setShowAddModal] = React.useState(false);
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  // Choose the correct roles based on the membership direction
+  const memberof_role = props.user.memberof_role || [];
+  const memberofindirect_role = props.user.memberofindirect_role || [];
+  let roleNames =
+    membershipDirection === "direct" ? memberof_role : memberofindirect_role;
+  roleNames = [...roleNames];
+
+  const getRolesNameToLoad = (): string[] => {
+    let toLoad = [...roleNames];
+    toLoad.sort();
+
+    // Filter by search
+    if (searchValue) {
+      toLoad = toLoad.filter((name) =>
+        name.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    }
+
+    // Apply paging
+    toLoad = paginate(toLoad, page, perPage);
+
+    return toLoad;
+  };
+
+  const [roleNamesToLoad, setRoleNamesToLoad] = React.useState<string[]>(
+    getRolesNameToLoad()
+  );
+
+  // Load roles
+  const fullRolesQuery = useGetRolesInfoByNameQuery({
+    roleNamesList: roleNamesToLoad,
+    no_members: true,
+    version: API_VERSION_BACKUP,
+  });
+
+  // Reset page on direction change
+  useEffect(() => {
+    setPage(1);
+  }, [membershipDirection]);
+
+  // Refresh roles
+  useEffect(() => {
+    const rolesNames = getRolesNameToLoad();
+    setRoleNamesToLoad(rolesNames);
+  }, [props.user, membershipDirection, searchValue, page, perPage]);
+
+  React.useEffect(() => {
+    if (roleNamesToLoad.length > 0) {
+      fullRolesQuery.refetch();
+    }
+  }, [roleNamesToLoad]);
+
+  // Update roles
+  React.useEffect(() => {
+    if (fullRolesQuery.data && !fullRolesQuery.isFetching) {
+      setRoles(fullRolesQuery.data);
+    }
+  }, [fullRolesQuery.data, fullRolesQuery.isFetching]);
 
   // Computed "states"
   const someItemSelected = rolesSelected.length > 0;
-  const [shownRoles, setShownRoles] = React.useState<Role[]>(
-    paginate(rolesFromUser, page, perPage)
-  );
-  const showTableRows = rolesFromUser.length > 0;
+  const showTableRows = roles.length > 0;
 
-  // Pagination
-  // - Data would depend on the direction
-  const [paginationData, setPaginationData] = React.useState<string[]>([]);
-
-  // Update 'shownRoles' when 'RolesFromUser' changes
-  React.useEffect(() => {
-    if (membershipDirection === "indirect") {
-      setShownRoles(indirectRoles);
-    } else {
-      setShownRoles(paginate(rolesFromUser, page, perPage));
-    }
-    setPage(1);
-  }, [rolesFromUser]);
-
-  // When change page, update 'shownRoles'
-  React.useEffect(() => {
-    if (membershipDirection === "indirect") {
-      setShownRoles(paginate(indirectRoles, page, perPage));
-    } else {
-      setShownRoles(paginate(rolesFromUser, page, perPage));
-    }
-  }, [page, perPage]);
-
-  // Parse availableItems to 'AvailableItems' type
-  const parseAvailableItems = (itemsList: Role[]) => {
-    const avItems: AvailableItems[] = [];
-    itemsList.map((item) => {
-      avItems.push({
-        key: item.cn,
-        title: item.cn,
-      });
-    });
-    return avItems;
-  };
-
-  // Membership
-  // - Update shown groups on table when membership direction changes
-  React.useEffect(() => {
-    if (membershipDirection === "indirect") {
-      setShownRoles(paginate(indirectRoles, page, perPage));
-      setPaginationData(memberofindirect_role);
-    } else {
-      setShownRoles(paginate(rolesFromUser, page, perPage));
-      setPaginationData(memberof_role);
-    }
-    setPage(1);
-  }, [membershipDirection, props.user]);
+  // Dialogs and actions
+  const [showAddModal, setShowAddModal] = React.useState(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
   // Buttons functionality
-  const deleteAndAddButtonsEnabled = membershipDirection !== "indirect";
-
-  // - Refresh
   const isRefreshButtonEnabled =
-    !directMembersFullDataQuery.isFetching &&
-    !indirectMembersFullDataQuery.isFetching &&
-    !props.isUserDataLoading;
-
-  // - Add
+    !fullRolesQuery.isFetching && !props.isUserDataLoading;
+  const isDeleteEnabled =
+    someItemSelected && membershipDirection !== "indirect";
   const isAddButtonEnabled =
-    !directMembersFullDataQuery.isFetching &&
-    !indirectMembersFullDataQuery.isFetching &&
-    !props.isUserDataLoading;
+    membershipDirection !== "indirect" && isRefreshButtonEnabled;
 
   // Add new member to 'Role'
-  const onAddToRole = (toUid: string, type: string, newData: string[]) => {
-    addMemberToRoles([toUid, type, newData]).then((response) => {
+  // API calls
+  const [addMemberToRoles] = useAddToRolesMutation();
+  const [removeMembersFromRoles] = useRemoveFromRolesMutation();
+  const [adderSearchValue, setAdderSearchValue] = React.useState("");
+  const [availableRoles, setAvailableRoles] = React.useState<Role[]>([]);
+  const [availableItems, setAvailableItems] = React.useState<AvailableItems[]>(
+    []
+  );
+
+  // Load available roles, delay the search for opening the modal
+  const rolesQuery = useGettingRolesQuery(
+    {
+      search: adderSearchValue,
+      apiVersion: API_VERSION_BACKUP,
+      sizelimit: 100,
+      startIdx: 0,
+      stopIdx: 100,
+    },
+    { skip: !showAddModal }
+  );
+
+  // Trigger available roles search
+  React.useEffect(() => {
+    if (showAddModal) {
+      rolesQuery.refetch();
+    }
+  }, [showAddModal, adderSearchValue, props.user]);
+
+  // Update available roles
+  React.useEffect(() => {
+    if (rolesQuery.data && !rolesQuery.isFetching) {
+      // transform data to roles
+      const count = rolesQuery.data.result.count;
+      const results = rolesQuery.data.result.results;
+      let items: AvailableItems[] = [];
+      const avalRoles: Role[] = [];
+      for (let i = 0; i < count; i++) {
+        const role = apiToRole(results[i].result);
+        avalRoles.push(role);
+        items.push({
+          key: role.cn,
+          title: role.cn,
+        });
+      }
+      items = items.filter((item) => !roleNamesToLoad.includes(item.key));
+
+      setAvailableRoles(avalRoles);
+      setAvailableItems(items);
+    }
+  }, [rolesQuery.data, rolesQuery.isFetching]);
+
+  const onAddRole = (items: AvailableItems[]) => {
+    const uid = props.user.uid;
+    const newRoleNames = items.map((item) => item.key);
+    if (uid === undefined || newRoleNames.length == 0) {
+      return;
+    }
+
+    addMemberToRoles([uid, "user", newRoleNames]).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
           // Set alert: success
           alerts.addAlert(
             "add-member-success",
-            "Added new members to Role '" + toUid + "'",
+            `Assigned new roles to user ${uid}`,
             "success"
           );
+          // Update displayed roles before they are updated via refresh
+          const newRoles = roles.concat(
+            availableRoles.filter((role) => newRoleNames.includes(role.cn))
+          );
+          setRoles(newRoles);
+
           // Refresh data
           props.onRefreshUserData();
           // Close modal
@@ -241,26 +208,8 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
     });
   };
 
-  const onAddRole = (items: AvailableItems[]) => {
-    const newItems = items.map((item) => item.key);
-    const newRoles = rolesFullList.filter((role) => newItems.includes(role.cn));
-    if (props.user.uid !== undefined) {
-      onAddToRole(props.user.uid, "user", newItems);
-      const updatedRoles = rolesFromUser.concat(newRoles);
-      setRolesFromUser(updatedRoles);
-      // Remove the just-added items from 'rolesAvailable'
-      const newAvailableItems = rolesAvailable.filter(
-        (item) => !newItems.includes(item.key)
-      );
-      setRolesAvailable(newAvailableItems);
-    }
-  };
-
   // - Delete
   const onDeleteRole = () => {
-    const updatedRoles = rolesFromUser.filter(
-      (role) => !rolesSelected.includes(role.cn)
-    );
     if (props.user.uid) {
       removeMembersFromRoles([props.user.uid, "user", rolesSelected]).then(
         (response) => {
@@ -272,17 +221,13 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
                 "Removed roles from user '" + props.user.uid + "'",
                 "success"
               );
+              // Update displayed roles
+              const newRoles = roles.filter(
+                (role) => !rolesSelected.includes(role.cn)
+              );
+              setRoles(newRoles);
               // Update data
-              setRolesFromUser(updatedRoles);
               setRolesSelected([]);
-              // Add the just-removed items from 'rolesAvailable'
-              const deletedRoles = rolesFullList.filter((role) =>
-                rolesSelected.includes(role.cn)
-              );
-              const newAvailableItems = rolesAvailable.concat(
-                parseAvailableItems(deletedRoles)
-              );
-              setRolesAvailable(newAvailableItems);
               // Close modal
               setShowDeleteModal(false);
               // Refresh
@@ -303,32 +248,17 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
     }
   };
 
-  const onSearch = () => {
-    if (membershipDirection === "direct") {
-      const searchResult = rolesFromUser.filter((role) => {
-        return role.cn.toLowerCase().includes(searchValue.toLowerCase());
-      });
-      setShownRoles(paginate(searchResult, page, perPage));
-      setPaginationData(searchResult.map((role) => role.cn));
-    } else {
-      const searchResult = indirectRoles.filter((role) => {
-        return role.cn.toLowerCase().includes(searchValue.toLowerCase());
-      });
-      setShownRoles(paginate(searchResult, page, perPage));
-      setPaginationData(searchResult.map((role) => role.cn));
-    }
-  };
-
   return (
     <>
       <alerts.ManagedAlerts />
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
-        onSearch={onSearch}
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        onSearch={() => {}}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshUserData}
-        deleteButtonEnabled={someItemSelected && deleteAndAddButtonsEnabled}
+        deleteButtonEnabled={isDeleteEnabled}
         onDeleteButtonClick={() => setShowDeleteModal(true)}
         addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
@@ -336,21 +266,21 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
         membershipDirection={membershipDirection}
         onMembershipDirectionChange={setMembershipDirection}
         helpIconEnabled={true}
-        totalItems={paginationData.length}
+        totalItems={roleNames.length}
         perPage={perPage}
         page={page}
         onPerPageChange={setPerPage}
         onPageChange={setPage}
       />
       <MemberOfTableRoles
-        roles={shownRoles}
+        roles={roles}
         checkedItems={rolesSelected}
         onCheckItemsChange={setRolesSelected}
         showTableRows={showTableRows}
       />
       <Pagination
         className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        itemCount={paginationData.length}
+        itemCount={roleNames.length}
         widgetId="pagination-options-menu-bottom"
         perPage={perPage}
         page={page}
@@ -362,10 +292,10 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
         <MemberOfAddModal
           showModal={showAddModal}
           onCloseModal={() => setShowAddModal(false)}
-          availableItems={rolesAvailable}
+          availableItems={availableItems}
           onAdd={onAddRole}
-          onSearchTextChange={setSearchValue}
-          title={"Add '" + props.user.uid + "' into Roles"}
+          onSearchTextChange={setAdderSearchValue}
+          title={`Assign roles to user ${props.user.uid}`}
           ariaLabel="Add user of role modal"
         />
       )}
@@ -377,9 +307,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           onDelete={onDeleteRole}
         >
           <MemberOfTableRoles
-            roles={rolesFromUser.filter((group) =>
-              rolesSelected.includes(group.cn)
-            )}
+            roles={roles.filter((group) => rolesSelected.includes(group.cn))}
             showTableRows
           />
         </MemberOfDeleteModal>
