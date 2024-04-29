@@ -14,7 +14,7 @@ import MemberOfTable from "src/components/MemberOf/MemberOfTable";
 // Data types
 import {
   RolesOld,
-  HBACRules,
+  HBACRulesOld,
   SudoRules,
   User,
 } from "src/utils/datatypes/globalDataTypes";
@@ -49,7 +49,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
 
   // Alter the available options list to keep the state of the recently added / removed items
   const updateHbacRulesList = (newAvOptionsList: unknown[]) => {
-    hbacRulesList = newAvOptionsList as HBACRules[];
+    hbacRulesList = newAvOptionsList as HBACRulesOld[];
   };
   const updateSudoRulesList = (newAvOptionsList: unknown[]) => {
     sudoRulesList = newAvOptionsList as SudoRules[];
@@ -138,7 +138,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   };
 
   // Available data to be added as member of
-  const hbacRulesFilteredData: HBACRules[] = filterHbacRulesData();
+  const hbacRulesFilteredData: HBACRulesOld[] = filterHbacRulesData();
   const sudoRulesFilteredData: SudoRules[] = filterSudoRulesData();
 
   // Number of items on the list for each repository
@@ -154,11 +154,11 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   //  - The slice of data to show (considering the pagination)
   //  - Number of items for a specific list
   const updateGroupRepository = (
-    groupRepository: RolesOld[] | HBACRules[] | SudoRules[]
+    groupRepository: RolesOld[] | HBACRulesOld[] | SudoRules[]
   ) => {
     switch (tabName) {
       case "HBAC rules":
-        setHbacRulesRepository(groupRepository as HBACRules[]);
+        setHbacRulesRepository(groupRepository as HBACRulesOld[]);
         setShownHBACRulesList(hbacRulesRepository.slice(0, perPage));
         setHbacRulesRepoLength(hbacRulesRepository.length);
         break;
@@ -217,11 +217,11 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
 
   // Update pagination
   const changeMemberGroupsList = (
-    value: RolesOld[] | HBACRules[] | SudoRules[]
+    value: RolesOld[] | HBACRulesOld[] | SudoRules[]
   ) => {
     switch (activeTabKey) {
       case 3:
-        setShownHBACRulesList(value as HBACRules[]);
+        setShownHBACRulesList(value as HBACRulesOld[]);
         break;
       case 4:
         setShownSudoRulesList(value as SudoRules[]);

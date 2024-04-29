@@ -9,7 +9,7 @@ import TableLayout from "src/components/layouts/TableLayout";
 // To display all the possible data types for all the tabs (and not only the mandatory ones)
 //   an extra interface 'MemberOfElement' will be defined. This will be assigned in the
 //   'PropsToDeleteOnTable' interface instead of each type (UserGroupOld | NetgroupOld | Roles
-//   | HBACRules | SudoRules).
+//   | HBACRulesOld | SudoRules).
 interface MemberOfElement {
   name: string;
   gid?: string;

@@ -11,7 +11,7 @@ import {
   UserGroupOld,
   NetgroupOld,
   RolesOld,
-  HBACRules,
+  HBACRulesOld,
   SudoRules,
   HostGroup,
 } from "../datatypes/globalDataTypes";
@@ -107,7 +107,7 @@ export let netgroupsInitialData: NetgroupOld[] = [
 export let rolesInitialData: RolesOld[] = [];
 
 // 'HBAC rules' initial data
-export let hbacRulesInitialData: HBACRules[] = [
+export let hbacRulesInitialData: HBACRulesOld[] = [
   {
     name: "allow_all",
     status: "Enabled",
@@ -144,7 +144,7 @@ export let hostsNetgroupsInitialData: NetgroupOld[] = [
 export let hostsRolesInitialData: RolesOld[] = [];
 
 // - 'HBAC rules' initial data
-export let hostsHbacRulesInitialData: HBACRules[] = [
+export let hostsHbacRulesInitialData: HBACRulesOld[] = [
   {
     name: "allow_all",
     status: "Enabled",

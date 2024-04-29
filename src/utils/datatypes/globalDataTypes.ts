@@ -169,10 +169,20 @@ export interface Role {
   dn: string;
 }
 
-export interface HBACRules {
+export interface HBACRulesOld {
   name: string;
   status: string;
   description: string;
+}
+
+export interface HBACRule {
+  hostcategory: string;
+  servicecategory: string;
+  description: string;
+  usercategory: string;
+  cn: string;
+  ipaenabledflag: boolean;
+  dn: string;
 }
 
 export interface SudoRules {

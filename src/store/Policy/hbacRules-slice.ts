@@ -2,10 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import HBACRulesJson from "./hbacRules.json";
 // Data type
-import { HBACRules } from "src/utils/datatypes/globalDataTypes";
+import { HBACRulesOld } from "src/utils/datatypes/globalDataTypes";
 
 interface HBACRulesState {
-  hbacRulesList: HBACRules[];
+  hbacRulesList: HBACRulesOld[];
 }
 
 const initialState: HBACRulesState = {
