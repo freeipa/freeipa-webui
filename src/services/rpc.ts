@@ -27,6 +27,7 @@ import {
   Netgroup,
   roleType,
   Role,
+  HBACRule,
 } from "../utils/datatypes/globalDataTypes";
 import { apiToHost } from "../utils/hostUtils";
 import { apiToUser } from "../utils/userUtils";
@@ -36,6 +37,7 @@ import { apiToKrbPolicy } from "../utils/krbPolicyUtils";
 import { apiToGroup } from "src/utils/groupUtils";
 import { apiToNetgroup } from "src/utils/netgroupsUtils";
 import { apiToRole } from "src/utils/rolesUtils";
+import { apiToHBACRule } from "src/utils/hbacRulesUtils";
 
 export type UserFullData = {
   user?: Partial<User>;
@@ -167,7 +169,8 @@ export interface GenericPayload {
     | "service"
     | "group"
     | "netgroups"
-    | "role";
+    | "role"
+    | "hbacRule";
 }
 
 export interface GroupShowPayload {
@@ -188,6 +191,12 @@ export interface RoleShowPayload {
   version: string;
 }
 
+export interface HbacRulesShowPayload {
+  hbacRuleNamesList: string[];
+  no_members: boolean | true;
+  version: string;
+}
+
 export interface HostAddPayload {
   fqdn: string;
   userclass?: string;
@@ -195,6 +204,21 @@ export interface HostAddPayload {
   force: boolean; // skip DNS check
   random: boolean; // otp generation
   description?: string;
+}
+
+export interface HBACRulePayload {
+  no_members: boolean | true;
+  cn?: string;
+  accessruletype?: "allow" | "deny";
+  usercategory?: "all";
+  hostcategory?: "all";
+  sourcehostcategory?: "all";
+  servicecategory?: "all";
+  description: string;
+  ipaenabledflag?: boolean;
+  externalhost?: string;
+  timelimit?: number;
+  sizelimit?: number;
 }
 
 export interface ServiceAddPayload {
@@ -769,6 +793,15 @@ export const api = createApi({
           }
         }
 
+        if (objName === "hbacRule") {
+          if (description) {
+            params["description"] = description;
+          }
+          if (timelimit) {
+            params["timelimit"] = timelimit;
+          }
+        }
+
         // Prevent searchValue to be null
         let parsedSearchValue = searchValue;
         if (searchValue === null || searchValue === undefined) {
@@ -803,6 +836,8 @@ export const api = createApi({
             id = idResponseData.result.result[i] as cnType;
           } else if (objName === "role") {
             id = idResponseData.result.result[i] as roleType;
+          } else if (objName === "hbacRule") {
+            id = idResponseData.result.result[i] as cnType;
           } else {
             // Unknown, should never happen
             return {
@@ -1581,6 +1616,35 @@ export const api = createApi({
         return roleList;
       },
     }),
+    /**
+     * Given a list of HBAC rules names, show the full data of those HBAC rules
+     * @param {HbacRulesShowPayload} - Payload with HBAC rule names and options
+     * @returns {BatchRPCResponse} - Batch response
+     */
+    getHbacRulesInfoByName: build.query<HBACRule[], HbacRulesShowPayload>({
+      query: (payload) => {
+        const hbacRuleNames = payload.hbacRuleNamesList;
+        const noMembers = payload.no_members || false;
+        const apiVersion = payload.version || API_VERSION_BACKUP;
+        const hbacRuleNamesShowCommands: Command[] = hbacRuleNames.map(
+          (hbacRuleName) => ({
+            method: "hbacrule_show",
+            params: [[hbacRuleName], { no_members: noMembers }],
+          })
+        );
+        return getBatchCommand(hbacRuleNamesShowCommands, apiVersion);
+      },
+      transformResponse: (response: BatchRPCResponse): HBACRule[] => {
+        const hbacRulesList: HBACRule[] = [];
+        const results = response.result.results;
+        const count = response.result.count;
+        for (let i = 0; i < count; i++) {
+          const hbacRuleData = apiToHBACRule(results[i].result);
+          hbacRulesList.push(hbacRuleData);
+        }
+        return hbacRulesList;
+      },
+    }),
   }),
 });
 
@@ -1641,6 +1705,11 @@ export const useGettingNetgroupsQuery = (payloadData) => {
 // Roles
 export const useGettingRolesQuery = (payloadData) => {
   payloadData["objName"] = "role";
+  payloadData["objAttr"] = "cn";
+  return useGettingGenericQuery(payloadData);
+};
+export const useGettingHbacRulesQuery = (payloadData) => {
+  payloadData["objName"] = "hbacRule";
   payloadData["objAttr"] = "cn";
   return useGettingGenericQuery(payloadData);
 };
@@ -1726,4 +1795,5 @@ export const {
   useAddToRolesMutation,
   useRemoveFromRolesMutation,
   useGetRolesInfoByNameQuery,
+  useGetHbacRulesInfoByNameQuery,
 } = api;
