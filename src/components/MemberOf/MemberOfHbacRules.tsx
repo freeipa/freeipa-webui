@@ -103,6 +103,11 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
   const someItemSelected = hbacRulesSelected.length > 0;
   const showTableRows = hbacRules.length > 0;
 
+  // Buttons functionality
+  // - Refresh
+  const isRefreshButtonEnabled =
+    !fullHbacRulesQuery.isFetching && !props.isUserDataLoading;
+
   return (
     <>
       <alerts.ManagedAlerts />
@@ -111,7 +116,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
         onSearchTextChange={setSearchValue}
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         onSearch={() => {}}
-        refreshButtonEnabled={true}
+        refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshUserData}
         deleteButtonEnabled={someItemSelected}
         // eslint-disable-next-line @typescript-eslint/no-empty-function
