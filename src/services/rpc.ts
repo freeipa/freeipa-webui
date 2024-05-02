@@ -170,7 +170,7 @@ export interface GenericPayload {
     | "group"
     | "netgroups"
     | "role"
-    | "hbacRule";
+    | "hbacrule";
 }
 
 export interface GroupShowPayload {
@@ -793,7 +793,7 @@ export const api = createApi({
           }
         }
 
-        if (objName === "hbacRule") {
+        if (objName === "hbacrule") {
           if (description) {
             params["description"] = description;
           }
@@ -836,7 +836,7 @@ export const api = createApi({
             id = idResponseData.result.result[i] as cnType;
           } else if (objName === "role") {
             id = idResponseData.result.result[i] as roleType;
-          } else if (objName === "hbacRule") {
+          } else if (objName === "hbacrule") {
             id = idResponseData.result.result[i] as cnType;
           } else {
             // Unknown, should never happen
@@ -1645,6 +1645,44 @@ export const api = createApi({
         return hbacRulesList;
       },
     }),
+    /**
+     * Add entity to HBAC rules
+     * @param {string} toId - ID of the entity to add to HBAC rules
+     * @param {string} type - Type of the entity
+     *    Available types: user | host | service | sourcehost
+     * @param {string[]} listOfMembers - List of members to add to the HBAC rules
+     */
+    addToHbacRules: build.mutation<
+      BatchRPCResponse,
+      [string, string, string[]]
+    >({
+      query: (payload) => {
+        const memberId = payload[0];
+        const memberType = payload[1];
+        const roleNames = payload[2];
+
+        let methodType = "";
+        if (memberType === "user") {
+          methodType = "hbacrule_add_user";
+        } else if (memberType === "host") {
+          methodType = "hbacrule_add_host";
+        } else if (memberType === "service") {
+          methodType = "hbacrule_add_service";
+        } else if (memberType === "sourcehost") {
+          methodType = "hbacrule_add_sourcehost";
+        }
+
+        const membersToAdd: Command[] = [];
+        roleNames.map((roleName) => {
+          const payloadItem = {
+            method: methodType,
+            params: [[roleName], { [memberType]: memberId }],
+          } as Command;
+          membersToAdd.push(payloadItem);
+        });
+        return getBatchCommand(membersToAdd, API_VERSION_BACKUP);
+      },
+    }),
   }),
 });
 
@@ -1708,8 +1746,9 @@ export const useGettingRolesQuery = (payloadData, options) => {
   payloadData["objAttr"] = "cn";
   return useGettingGenericQuery(payloadData, options);
 };
+// HBAC rules
 export const useGettingHbacRulesQuery = (payloadData) => {
-  payloadData["objName"] = "hbacRule";
+  payloadData["objName"] = "hbacrule";
   payloadData["objAttr"] = "cn";
   return useGettingGenericQuery(payloadData);
 };
@@ -1796,4 +1835,5 @@ export const {
   useRemoveFromRolesMutation,
   useGetRolesInfoByNameQuery,
   useGetHbacRulesInfoByNameQuery,
+  useAddToHbacRulesMutation,
 } = api;
