@@ -4,24 +4,23 @@ import { Pagination, PaginationVariant } from "@patternfly/react-core";
 // Data types
 import { User, UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Components
-import MemberOfToolbarUserGroups, {
-  MembershipDirection,
-} from "./MemberOfToolbar";
+import MemberOfToolbar, { MembershipDirection } from "./MemberOfToolbar";
 import MemberOfUserGroupsTable from "./MemberOfTableUserGroups";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 // Hooks
-import { useUserMemberOfData } from "src/hooks/useUserMemberOfData";
 import useAlerts from "src/hooks/useAlerts";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import {
   useAddToGroupsMutation,
   useGetGroupInfoByNameQuery,
+  useGettingGroupsQuery,
   useRemoveFromGroupsMutation,
 } from "src/services/rpcUserGroups";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
+import { apiToGroup } from "src/utils/groupUtils";
 
 interface MemberOfUserGroupsProps {
   user: Partial<User>;
@@ -33,180 +32,174 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
-  // API call
-  const [addMemberToUserGroup] = useAddToGroupsMutation();
-  const [removeMembersFromUserGroup] = useRemoveFromGroupsMutation();
-
-  // 'User groups' assigned to  user
-  const [userGroupsFromUser, setUserGroupsFromUser] = React.useState<
-    UserGroup[]
-  >([]);
-  const [indirectUserGroups, setIndirectUserGroups] = React.useState<
-    UserGroup[]
-  >([]);
-
-  const memberof_groups = props.user.memberof_group || [];
-  const memberofindirect_groups = props.user.memberofindirect_group || [];
-
   // Page indexes
   const [page, setPage] = React.useState(1);
   const [perPage, setPerPage] = React.useState(10);
 
-  const firstUserIdx = (page - 1) * perPage;
-  const lastUserIdx = page * perPage;
-
-  const uid = props.user.uid;
-
-  // API call: full list of 'User groups' available
-  const fullUserGroupsQuery = useUserMemberOfData({
-    uid,
-    firstUserIdx,
-    lastUserIdx,
-  });
-
-  // Member of
-  const userGroupsFullList = fullUserGroupsQuery.userGroupsFullList;
-
-  // Not member of
-  const userGroupsNotMemberOfFullList =
-    fullUserGroupsQuery.userGroupsNotMemberOfFullList;
-
-  // Get full data of the 'User groups' assigned to user
-  React.useEffect(() => {
-    if (!fullUserGroupsQuery.isFetching && userGroupsFullList) {
-      const userGroupsParsed: UserGroup[] = [];
-      memberof_groups.map((group) => {
-        userGroupsFullList.map((g) => {
-          if (g.cn === group) {
-            userGroupsParsed.push(g);
-          }
-        });
-      });
-      if (
-        JSON.stringify(userGroupsFromUser) !== JSON.stringify(userGroupsParsed)
-      ) {
-        setUserGroupsFromUser(userGroupsParsed);
-      }
-    }
-  }, [fullUserGroupsQuery]);
-
-  // Refetch User groups when user data changes
-  React.useEffect(() => {
-    fullUserGroupsQuery.refetch();
-    fullUserGroupsQuery.notMemberOfRefetch();
-  }, [props.user, userGroupsFromUser]);
-
-  const [groupsNamesSelected, setGroupsNamesSelected] = React.useState<
-    string[]
-  >([]);
-
+  // Other states
+  const [userGroupsSelected, setUserGroupsSelected] = React.useState<string[]>(
+    []
+  );
   const [searchValue, setSearchValue] = React.useState("");
 
-  const onSearch = () => {
-    const searchResult = userGroupsFromUser.filter((group) => {
-      return group.cn.toLowerCase().includes(searchValue.toLowerCase());
-    });
-    setShownUserGroups(paginate(searchResult, page, perPage));
-  };
+  // Loaded User groups based on paging and member attributes
+  const [userGroups, setUserGroups] = React.useState<UserGroup[]>([]);
 
+  // Membership direction and User groups
   const [membershipDirection, setMembershipDirection] =
     React.useState<MembershipDirection>("direct");
 
-  const [showAddModal, setShowAddModal] = React.useState(false);
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  // Choose the correct User groups based on the membership direction
+  const memberof_group = props.user.memberof_group || [];
+  const memberofindirect_group = props.user.memberofindirect_group || [];
+  let userGroupNames =
+    membershipDirection === "direct" ? memberof_group : memberofindirect_group;
+  userGroupNames = [...userGroupNames];
 
-  // Computed "states"
-  const someItemSelected = groupsNamesSelected.length > 0;
-  const [shownUserGroups, setShownUserGroups] = React.useState<UserGroup[]>(
-    paginate(userGroupsFromUser, page, perPage)
-  );
-  const showTableRows = userGroupsFromUser.length > 0;
+  const getUserGroupsNameToLoad = (): string[] => {
+    let toLoad = [...userGroupNames];
+    toLoad.sort();
 
-  // Pagination
-  // - Data would depend on the direction
-  const paginationData =
-    membershipDirection === "direct"
-      ? memberof_groups
-      : memberofindirect_groups;
-
-  // Update 'shownUserGroups' when 'userGroupsFromUser' changes
-  React.useEffect(() => {
-    if (membershipDirection === "indirect") {
-      setShownUserGroups(indirectUserGroups);
-    } else {
-      setShownUserGroups(userGroupsFromUser);
+    // Filter by search
+    if (searchValue) {
+      toLoad = toLoad.filter((name) =>
+        name.toLowerCase().includes(searchValue.toLowerCase())
+      );
     }
-  }, [userGroupsFromUser]);
 
-  // Parse availableItems to 'AvailableItems' type
-  const parseAvailableItems = (itemsList: UserGroup[]) => {
-    const avItems: AvailableItems[] = [];
-    itemsList.map((item) => {
-      avItems.push({
-        key: item.cn,
-        title: item.cn,
-      });
-    });
-    return avItems;
+    // Apply paging
+    toLoad = paginate(toLoad, page, perPage);
+
+    return toLoad;
   };
 
-  const availableUserGroupsItems: AvailableItems[] = parseAvailableItems(
-    userGroupsNotMemberOfFullList
-  );
+  const [userGroupNamesToLoad, setUserGroupNamesToLoad] = React.useState<
+    string[]
+  >(getUserGroupsNameToLoad());
 
-  // Membership
-  const deleteAndAddButtonsEnabled = membershipDirection !== "indirect";
-
-  const paginatedIndirectGroups = paginate(
-    memberofindirect_groups,
-    page,
-    perPage
-  );
-
-  const indirectMembersFullDataQuery = useGetGroupInfoByNameQuery({
-    groupNamesList: paginatedIndirectGroups,
+  // Load User groups
+  const fullUserGroupsQuery = useGetGroupInfoByNameQuery({
+    groupNamesList: userGroupNamesToLoad,
     no_members: true,
     version: API_VERSION_BACKUP,
   });
 
-  const indirectMembersData: UserGroup[] =
-    indirectMembersFullDataQuery.data || [];
-
-  // - Update 'Indirect groups' when 'indirectMembersData' changes
+  // Reset page on direction change
   React.useEffect(() => {
-    if (!indirectMembersFullDataQuery.isFetching && indirectMembersData) {
-      setIndirectUserGroups(indirectMembersData);
-    }
-  }, [indirectMembersFullDataQuery]);
-
-  // - Update shown groups on table when membership direction changes
-  React.useEffect(() => {
-    if (membershipDirection === "indirect") {
-      setShownUserGroups(indirectUserGroups);
-    } else {
-      setShownUserGroups(userGroupsFromUser);
-    }
     setPage(1);
-  }, [membershipDirection, props.user]);
+  }, [membershipDirection]);
+
+  // Refresh user groups
+  React.useEffect(() => {
+    const userGroupsNames = getUserGroupsNameToLoad();
+    setUserGroupNamesToLoad(userGroupsNames);
+  }, [props.user, membershipDirection, searchValue, page, perPage]);
+
+  React.useEffect(() => {
+    if (userGroupNamesToLoad.length > 0) {
+      fullUserGroupsQuery.refetch();
+    }
+  }, [userGroupNamesToLoad]);
+
+  // Update user groups
+  React.useEffect(() => {
+    if (fullUserGroupsQuery.data && !fullUserGroupsQuery.isFetching) {
+      setUserGroups(fullUserGroupsQuery.data);
+    }
+  }, [fullUserGroupsQuery.data, fullUserGroupsQuery.isFetching]);
+
+  // Computed "states"
+  const someItemSelected = userGroupsSelected.length > 0;
+  const showTableRows = userGroups.length > 0;
+
+  // Dialogs and actions
+  const [showAddModal, setShowAddModal] = React.useState(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
   // Buttons functionality
-  // - Refresh
-  const isRefreshButtonEnabled = !props.isUserDataLoading;
+  const isRefreshButtonEnabled =
+    !fullUserGroupsQuery.isFetching && !props.isUserDataLoading;
+  const isDeleteEnabled =
+    someItemSelected && membershipDirection !== "indirect";
+  const isAddButtonEnabled =
+    membershipDirection !== "indirect" && isRefreshButtonEnabled;
 
-  // - 'Add'
-  const isAddButtonEnabled = !props.isUserDataLoading;
+  // Add new member to 'User groups'
+  // API calls
+  const [addMemberToUserGroups] = useAddToGroupsMutation();
+  const [removeMembersFromUserGroups] = useRemoveFromGroupsMutation();
+  const [adderSearchValue, setAdderSearchValue] = React.useState("");
+  const [availableUserGroups, setAvailableUserGroups] = React.useState<
+    UserGroup[]
+  >([]);
+  const [availableItems, setAvailableItems] = React.useState<AvailableItems[]>(
+    []
+  );
 
-  // Add new member to 'User group'
-  const onAddToUserGroup = (toUid: string, type: string, newData: string[]) => {
-    addMemberToUserGroup([toUid, type, newData]).then((response) => {
+  // Load available User groups
+  const userGroupsQuery = useGettingGroupsQuery({
+    search: adderSearchValue,
+    apiVersion: API_VERSION_BACKUP,
+    sizelimit: 100,
+    startIdx: 0,
+    stopIdx: 100,
+  });
+
+  // Trigger available User groups search
+  React.useEffect(() => {
+    if (showAddModal) {
+      userGroupsQuery.refetch();
+    }
+  }, [showAddModal, adderSearchValue, props.user]);
+
+  // Update available User groups
+  React.useEffect(() => {
+    if (userGroupsQuery.data && !userGroupsQuery.isFetching) {
+      // transform data to User groups
+      const count = userGroupsQuery.data.result.count;
+      const results = userGroupsQuery.data.result.results;
+      let items: AvailableItems[] = [];
+      const avalUserGroups: UserGroup[] = [];
+      for (let i = 0; i < count; i++) {
+        const userGroup = apiToGroup(results[i].result);
+        avalUserGroups.push(userGroup);
+        items.push({
+          key: userGroup.cn,
+          title: userGroup.cn,
+        });
+      }
+      items = items.filter((item) => !userGroupNamesToLoad.includes(item.key));
+
+      setAvailableUserGroups(avalUserGroups);
+      setAvailableItems(items);
+    }
+  }, [userGroupsQuery.data, userGroupsQuery.isFetching]);
+
+  // - Add
+  const onAddUserGroup = (items: AvailableItems[]) => {
+    const uid = props.user.uid;
+    const newUserGroupNames = items.map((item) => item.key);
+    if (uid === undefined || newUserGroupNames.length == 0) {
+      return;
+    }
+
+    addMemberToUserGroups([uid, "user", newUserGroupNames]).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
           // Set alert: success
           alerts.addAlert(
             "add-member-success",
-            "Added new members to user group '" + toUid + "'",
+            `Assigned user ${uid} to user groups`,
             "success"
           );
+          // Update displayed User groups before they are updated via refresh
+          const newUserGroups = userGroups.concat(
+            availableUserGroups.filter((userGroup) =>
+              newUserGroupNames.includes(userGroup.cn)
+            )
+          );
+          setUserGroups(newUserGroups);
+
           // Refresh data
           props.onRefreshUserData();
           // Close modal
@@ -220,40 +213,29 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
     });
   };
 
-  const onAddUserGroup = (items: AvailableItems[]) => {
-    const newItems = items.map((item) => item.key);
-    const newGroups = userGroupsFullList.filter((group) =>
-      newItems.includes(group.cn)
-    );
-    if (props.user.uid !== undefined) {
-      onAddToUserGroup(props.user.uid, "user", newItems);
-      const updatedGroups = userGroupsFromUser.concat(newGroups);
-      setUserGroupsFromUser(updatedGroups);
-    }
-  };
-
-  // - 'Delete'
+  // - Delete
   const onDeleteUserGroup = () => {
-    const updatedGroups = userGroupsFromUser.filter(
-      (group) => !groupsNamesSelected.includes(group.cn)
-    );
     if (props.user.uid) {
-      removeMembersFromUserGroup([
+      removeMembersFromUserGroups([
         props.user.uid,
         "user",
-        groupsNamesSelected,
+        userGroupsSelected,
       ]).then((response) => {
         if ("data" in response) {
           if (response.data.result) {
             // Set alert: success
             alerts.addAlert(
-              "remove-user-group-success",
+              "remove-user-groups-success",
               "Removed members from user group '" + props.user.uid + "'",
               "success"
             );
+            // Update displayed User groups
+            const newUserGroups = userGroups.filter(
+              (userGroup) => !userGroupsSelected.includes(userGroup.cn)
+            );
+            setUserGroups(newUserGroups);
             // Update data
-            setUserGroupsFromUser(updatedGroups);
-            setGroupsNamesSelected([]);
+            setUserGroupsSelected([]);
             // Close modal
             setShowDeleteModal(false);
             // Refresh
@@ -262,7 +244,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
             alerts.addAlert(
-              "remove-user-group-error",
+              "remove-user-groups-error",
               errorMessage.message,
               "danger"
             );
@@ -275,35 +257,36 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   return (
     <>
       <alerts.ManagedAlerts />
-      <MemberOfToolbarUserGroups
+      <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
-        onSearch={onSearch}
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        onSearch={() => {}}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshUserData}
-        deleteButtonEnabled={someItemSelected && deleteAndAddButtonsEnabled}
+        deleteButtonEnabled={isDeleteEnabled}
         onDeleteButtonClick={() => setShowDeleteModal(true)}
-        addButtonEnabled={isAddButtonEnabled && deleteAndAddButtonsEnabled}
+        addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
         membershipDirectionEnabled={true}
         membershipDirection={membershipDirection}
         onMembershipDirectionChange={setMembershipDirection}
         helpIconEnabled={true}
-        totalItems={paginationData.length}
+        totalItems={userGroupNames.length}
         perPage={perPage}
         page={page}
         onPerPageChange={setPerPage}
         onPageChange={setPage}
       />
       <MemberOfUserGroupsTable
-        userGroups={shownUserGroups}
-        checkedItems={groupsNamesSelected}
-        onCheckItemsChange={setGroupsNamesSelected}
+        userGroups={userGroups}
+        checkedItems={userGroupsSelected}
+        onCheckItemsChange={setUserGroupsSelected}
         showTableRows={showTableRows}
       />
       <Pagination
         className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        itemCount={paginationData.length}
+        itemCount={userGroupNames.length}
         widgetId="pagination-options-menu-bottom"
         perPage={perPage}
         page={page}
@@ -315,26 +298,24 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
         <MemberOfAddModal
           showModal={showAddModal}
           onCloseModal={() => setShowAddModal(false)}
-          availableItems={availableUserGroupsItems}
+          availableItems={availableItems}
           onAdd={onAddUserGroup}
-          onSearchTextChange={setSearchValue}
-          title={"Add '" + props.user.uid + "' into User groups"}
-          ariaLabel="Add user of  user group modal"
+          onSearchTextChange={setAdderSearchValue}
+          title={`Assign user groups to user ${props.user.uid}`}
+          ariaLabel="Add user of user group modal"
         />
       )}
       {showDeleteModal && someItemSelected && (
         <MemberOfDeleteModal
           showModal={showDeleteModal}
           onCloseModal={() => setShowDeleteModal(false)}
-          title="Delete user from user groups"
+          title="Delete user from User groups"
           onDelete={onDeleteUserGroup}
         >
           <MemberOfUserGroupsTable
-            userGroups={
-              userGroupsFromUser.filter((group) =>
-                groupsNamesSelected.includes(group.cn)
-              ) as UserGroup[]
-            }
+            userGroups={userGroups.filter((group) =>
+              userGroupsSelected.includes(group.cn)
+            )}
             showTableRows
           />
         </MemberOfDeleteModal>
