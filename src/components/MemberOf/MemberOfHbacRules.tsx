@@ -7,17 +7,17 @@ import { User, HBACRule } from "src/utils/datatypes/globalDataTypes";
 import MemberOfToolbar, { MembershipDirection } from "./MemberOfToolbar";
 import MemberOfHbacRulesTable from "./MemberOfTableHbacRules";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
+import MemberOfDeleteModal from "./MemberOfDeleteModal";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // RPC
 import { ErrorResult } from "src/services/rpc";
-
 import {
   useGetHbacRulesInfoByNameQuery,
   useGettingHbacRulesQuery,
   useAddToHbacRulesMutation,
+  useRemoveFromHbacRulesMutation,
 } from "src/services/rpcHBAC";
-
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToHBACRule } from "src/utils/hbacRulesUtils";
@@ -114,6 +114,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
 
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
   // Buttons functionality
   // - Refresh
@@ -125,6 +126,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
   // Add new member to 'HBAC rules'
   // API calls
   const [addMemberToHbacRules] = useAddToHbacRulesMutation();
+  const [removeMembersFromHbacRules] = useRemoveFromHbacRulesMutation();
   const [adderSearchValue, setAdderSearchValue] = React.useState("");
   const [availableHbacRules, setAvailableHbacRules] = React.useState<
     HBACRule[]
@@ -210,6 +212,47 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
     });
   };
 
+  // - Delete
+  const onDeleteHbacRules = () => {
+    if (props.user.uid) {
+      removeMembersFromHbacRules([
+        props.user.uid,
+        "user",
+        hbacRulesSelected,
+      ]).then((response) => {
+        if ("data" in response) {
+          if (response.data.result) {
+            // Set alert: success
+            alerts.addAlert(
+              "remove-hbac-rules-success",
+              "Removed HBAC rules from user '" + props.user.uid + "'",
+              "success"
+            );
+            // Update displayed HBAC rules
+            const newHbacRules = hbacRules.filter(
+              (hbacRule) => !hbacRulesSelected.includes(hbacRule.cn)
+            );
+            setHbacRules(newHbacRules);
+            // Update data
+            setHbacRulesSelected([]);
+            // Close modal
+            setShowDeleteModal(false);
+            // Refresh
+            props.onRefreshUserData();
+          } else if (response.data.error) {
+            // Set alert: error
+            const errorMessage = response.data.error as unknown as ErrorResult;
+            alerts.addAlert(
+              "remove-hbac-rules-error",
+              errorMessage.message,
+              "danger"
+            );
+          }
+        }
+      });
+    }
+  };
+
   return (
     <>
       <alerts.ManagedAlerts />
@@ -221,8 +264,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshUserData}
         deleteButtonEnabled={someItemSelected}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        onDeleteButtonClick={() => {}}
+        onDeleteButtonClick={() => setShowDeleteModal(true)}
         addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
         membershipDirectionEnabled={true}
@@ -261,6 +303,21 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
           title={`Assign HBAC rule to user ${props.user.uid}`}
           ariaLabel="Add user of HBAC rule modal"
         />
+      )}
+      {showDeleteModal && someItemSelected && (
+        <MemberOfDeleteModal
+          showModal={showDeleteModal}
+          onCloseModal={() => setShowDeleteModal(false)}
+          title="Delete user from HBAC rules"
+          onDelete={onDeleteHbacRules}
+        >
+          <MemberOfHbacRulesTable
+            hbacRules={hbacRules.filter((hbacrule) =>
+              hbacRulesSelected.includes(hbacrule.cn)
+            )}
+            showTableRows
+          />
+        </MemberOfDeleteModal>
       )}
     </>
   );

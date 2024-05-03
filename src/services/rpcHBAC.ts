@@ -107,6 +107,44 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(membersToAdd, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Delete entity from HBAC rules
+     * @param {string} memberId - ID of the entity to remove from HBAC rules
+     * @param {string} memberType - Type of the entity
+     *    Available types: user | host | service
+     * @param {string[]} listOfHbacRules - List of members to remove from HBAC rules
+     */
+    removeFromHbacRules: build.mutation<
+      BatchRPCResponse,
+      [string, string, string[]]
+    >({
+      query: (payload) => {
+        const memberId = payload[0];
+        const memberType = payload[1];
+        const listOfHbacRules = payload[2];
+
+        let methodType = "";
+        if (memberType === "user") {
+          methodType = "hbacrule_remove_user";
+        } else if (memberType === "host") {
+          methodType = "hbacrule_remove_host";
+        } else if (memberType === "service") {
+          methodType = "hbacrule_remove_service";
+        } else if (memberType === "sourcehost") {
+          methodType = "hbacrule_remove_sourcehost";
+        }
+
+        const membersToRemove: Command[] = [];
+        listOfHbacRules.map((hbacrule) => {
+          const payloadItem: Command = {
+            method: methodType,
+            params: [[hbacrule], { [memberType]: memberId }],
+          };
+          membersToRemove.push(payloadItem);
+        });
+        return getBatchCommand(membersToRemove, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -131,5 +169,8 @@ export const useGetDNSZonesQuery = () => {
   return useGetGenericListQuery("dnszone");
 };
 
-export const { useGetHbacRulesInfoByNameQuery, useAddToHbacRulesMutation } =
-  extendedApi;
+export const {
+  useGetHbacRulesInfoByNameQuery,
+  useAddToHbacRulesMutation,
+  useRemoveFromHbacRulesMutation,
+} = extendedApi;
