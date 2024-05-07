@@ -385,18 +385,43 @@ Then(
 When(
   "I click on the {string} tab within Is a member of section",
   (tabName: string) => {
-    cy.get("button[name=memberof_group]").contains(tabName).click();
+    cy.get("button").contains(tabName).click();
   }
 );
 
 Then("I should see {string} tab is selected", (tabName: string) => {
-  cy.get("button[name=memberof_group]")
+  let name = "group";
+  switch (tabName) {
+    case "User groups":
+      name = "group";
+      break;
+    case "Netgroups":
+      name = "netgroup";
+      break;
+    case "Roles":
+      name = "role";
+      break;
+    case "HBAC rules":
+      name = "hbacrule";
+      break;
+    case "Sudo rules":
+      name = "sudorule";
+      break;
+  }
+
+  cy.get("button[name=memberof_" + name + "]")
     .should("have.attr", "aria-selected", "true")
     .contains(tabName);
 });
 
 Then("I should see the table with {string} column", (columnName: string) => {
   cy.get("th").contains(columnName).should("be.visible");
+});
+
+Then("I should see an empty table", () => {
+  cy.get("table#member-of-table")
+    .find("h2.pf-v5-c-empty-state__title-text")
+    .contains("No results found");
 });
 
 Then(
@@ -469,7 +494,7 @@ Then(
 
 // - Delete
 Then(
-  "the {string} group name should be in the dialog table",
+  "the {string} element should be in the dialog table",
   (groupName: string) => {
     cy.get("div[role='dialog'")
       .find("table#member-of-table")
