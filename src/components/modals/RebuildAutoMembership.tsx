@@ -8,11 +8,9 @@ import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
 // Components
 import TextLayout from "../layouts/TextLayout";
 // RPC
-import {
-  ErrorResult,
-  useAutoMemberRebuildHostsMutation,
-  useAutoMemberRebuildUsersMutation,
-} from "src/services/rpc";
+import { ErrorResult } from "src/services/rpc";
+import { useAutoMemberRebuildHostsMutation } from "src/services/rpcHosts";
+import { useAutoMemberRebuildUsersMutation } from "src/services/rpcUsers";
 
 interface PropsToRebuildAutoMembership {
   isOpen: boolean;

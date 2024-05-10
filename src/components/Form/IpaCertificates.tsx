@@ -20,11 +20,11 @@ import RemoveHoldCertificate from "../modals/RemoveHoldCertificate";
 // Components
 import SecondaryButton from "../layouts/SecondaryButton";
 // RTK
+import { ErrorResult } from "src/services/rpc";
 import {
-  ErrorResult,
   useAddCertificateMutation,
   useRemoveCertificateMutation,
-} from "src/services/rpc";
+} from "src/services/rpcCerts";
 // Components
 import ExpandableCardLayout from "../layouts/ExpandableCardLayout";
 // Hooks

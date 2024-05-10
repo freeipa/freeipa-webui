@@ -21,11 +21,11 @@ import DateTimeSelector from "../Form/DateTimeSelector";
 // Utils
 import { NO_SELECTION_OPTION } from "src/utils/constUtils";
 // RTK
+import { ErrorResult } from "src/services/rpc";
 import {
-  ErrorResult,
   useAddOtpTokenMutation,
   useGetActiveUsersQuery,
-} from "src/services/rpc";
+} from "src/services/rpcUsers";
 // Utils
 import { API_VERSION_BACKUP, toGeneralizedTime } from "src/utils/utils";
 

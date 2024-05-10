@@ -44,14 +44,12 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import { useAlerts } from "src/hooks/useAlerts";
 // Utils
 import { API_VERSION_BACKUP, isUserSelectable } from "src/utils/utils";
-
 // RPC client
+import { GenericPayload, useSearchEntriesMutation } from "src/services/rpc";
 import {
   useGettingActiveUserQuery,
   useAutoMemberRebuildUsersMutation,
-  GenericPayload,
-  useSearchEntriesMutation,
-} from "src/services/rpc";
+} from "src/services/rpcUsers";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";

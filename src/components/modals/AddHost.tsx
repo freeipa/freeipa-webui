@@ -26,11 +26,8 @@ import { SerializedError } from "@reduxjs/toolkit";
 import ErrorModal from "./ErrorModal";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
-import {
-  useAddHostMutation,
-  FindRPCResponse,
-  HostAddPayload,
-} from "src/services/rpc";
+import { FindRPCResponse } from "src/services/rpc";
+import { useAddHostMutation, HostAddPayload } from "src/services/rpcHosts";
 import { isValidIpAddress } from "../../utils/utils";
 
 export interface PropsToAddHost {

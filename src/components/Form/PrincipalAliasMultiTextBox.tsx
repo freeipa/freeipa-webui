@@ -7,15 +7,17 @@ import IpaTextInputFromList from "./IpaTextInputFromList";
 import AddTextInputFromListModal from "../modals/AddTextInputFromListModal";
 import DeletionConfirmationModal from "../modals/DeletionConfirmationModal";
 // RTK
+import { ErrorResult } from "src/services/rpc";
 import {
-  ErrorResult,
+  useAddHostPrincipalAliasMutation,
+  useRemoveHostPrincipalAliasMutation,
+} from "src/services/rpcHosts";
+import {
   useAddPrincipalAliasMutation,
   useRemovePrincipalAliasMutation,
   useAddStagePrincipalAliasMutation,
   useRemoveStagePrincipalAliasMutation,
-  useAddHostPrincipalAliasMutation,
-  useRemoveHostPrincipalAliasMutation,
-} from "src/services/rpc";
+} from "src/services/rpcUsers";
 // Layouts
 import SecondaryButton from "../layouts/SecondaryButton";
 // Hooks

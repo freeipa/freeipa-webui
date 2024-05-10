@@ -11,13 +11,13 @@ import MemberOfDeleteModal from "./MemberOfDeleteModal";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // RPC
+import { ErrorResult } from "src/services/rpc";
 import {
-  ErrorResult,
   useAddToRolesMutation,
   useGetRolesInfoByNameQuery,
   useGettingRolesQuery,
   useRemoveFromRolesMutation,
-} from "src/services/rpc";
+} from "src/services/rpcRoles";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToRole } from "src/utils/rolesUtils";

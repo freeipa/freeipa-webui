@@ -9,11 +9,11 @@ import { getParamProperties } from "src/utils/ipaObjectUtils";
 import SecondaryButton from "../layouts/SecondaryButton";
 import CertificateMappingDataOption from "../CertificateMappingDataOption";
 import IssuerAndSubjectOption from "../IssuerAndSubjectOption";
+import { ErrorResult } from "src/services/rpc";
 import {
-  ErrorResult,
   useAddCertMapDataMutation,
   useRemoveCertMapDataMutation,
-} from "src/services/rpc";
+} from "src/services/rpcUsers";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // Modals

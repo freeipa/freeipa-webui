@@ -19,12 +19,12 @@ import useAlerts from "src/hooks/useAlerts";
 // Modals
 import ModalWithFormLayout, { Field } from "../layouts/ModalWithFormLayout";
 // RTK
+import { ErrorResult } from "src/services/rpc";
 import {
-  ErrorResult,
   useAddCertificateMutation,
   useGetCertProfileQuery,
   useGetCertificateAuthorityQuery,
-} from "src/services/rpc";
+} from "src/services/rpcCerts";
 // Data types
 import {
   CertProfile,

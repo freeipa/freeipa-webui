@@ -31,7 +31,8 @@ import HostCertificate from "src/components/HostsSections/HostCertificate";
 import AllowedRetrieveKeytab from "src/components/HostsSections/AllowedRetrieveKeytab";
 import AllowedCreateKeytab from "src/components/HostsSections/AllowedCreateKeytab";
 // RPC
-import { ErrorResult, useSaveHostMutation } from "src/services/rpc";
+import { ErrorResult } from "src/services/rpc";
+import { useSaveHostMutation } from "src/services/rpcHosts";
 
 interface PropsToHostsSettings {
   host: Partial<Host>;

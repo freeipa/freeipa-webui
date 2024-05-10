@@ -17,7 +17,8 @@ import UsersDisplayTable from "src/components/tables/UsersDisplayTable";
 import { useAppDispatch } from "src/store/hooks";
 import { removeUser as removeStageUser } from "src/store/Identity/stageUsers-slice";
 // RPC
-import { useActivateUserMutation, ErrorResult } from "src/services/rpc";
+import { ErrorResult } from "src/services/rpc";
+import { useActivateUserMutation } from "src/services/rpcUsers";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 

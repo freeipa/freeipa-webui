@@ -18,10 +18,12 @@ import {
   Command,
   BatchRPCResponse,
   useBatchMutCommandMutation,
-  useEnableUserMutation,
-  useDisableUserMutation,
   ErrorResult,
 } from "src/services/rpc";
+import {
+  useEnableUserMutation,
+  useDisableUserMutation,
+} from "src/services/rpcUsers";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
