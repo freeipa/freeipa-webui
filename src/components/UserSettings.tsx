@@ -39,12 +39,12 @@ import UsersMailingAddress from "src/components/UsersSections/UsersMailingAddres
 import UsersEmployeeInfo from "src/components/UsersSections/UsersEmployeeInfo";
 import UsersAttributesSMB from "src/components/UsersSections/UsersAttributesSMB";
 // RPC
+import { ErrorResult } from "src/services/rpc";
 import {
-  ErrorResult,
+  useGenerateSubIdsMutation,
   useSaveUserMutation,
   useSaveStageUserMutation,
-  useGenerateSubIdsMutation,
-} from "src/services/rpc";
+} from "src/services/rpcUsers";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // Modals

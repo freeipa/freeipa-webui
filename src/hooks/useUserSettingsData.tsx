@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
 
 // RPC
+import { useGetObjectMetadataQuery } from "src/services/rpc";
 import {
-  useGetActiveUsersQuery,
   useGetIdpServerQuery,
-  useGetObjectMetadataQuery,
   useGetRadiusProxyQuery,
+} from "src/services/rpcUsers";
+import {
   useGetUsersFullQuery,
   useGetStageUsersFullQuery,
-} from "src/services/rpc";
+  useGetActiveUsersQuery,
+} from "src/services/rpcUsers";
 // Data types
 import {
   IDPServer,

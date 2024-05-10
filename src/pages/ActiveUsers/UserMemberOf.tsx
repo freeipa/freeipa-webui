@@ -30,7 +30,7 @@ import MemberOfUserGroups from "src/components/MemberOf/MemberOfUserGroups";
 import MemberOfNetgroups from "src/components/MemberOf/MemberOfNetgroups";
 import MemberOfRoles from "src/components/MemberOf/MemberOfRoles";
 // RPC
-import { useGetUserByUidQuery } from "src/services/rpc";
+import { useGetUserByUidQuery } from "src/services/rpcUsers";
 // Utils
 import { convertToString } from "src/utils/ipaObjectUtils";
 import MemberOfHbacRules from "src/components/MemberOf/MemberOfHbacRules";

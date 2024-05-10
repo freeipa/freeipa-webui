@@ -43,11 +43,8 @@ import { API_VERSION_BACKUP, isUserSelectable } from "src/utils/utils";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // RPC client
-import {
-  useGettingStageUserQuery,
-  GenericPayload,
-  useSearchEntriesMutation,
-} from "../../services/rpc";
+import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
+import { useGettingStageUserQuery } from "../../services/rpcUsers";
 import useApiError from "src/hooks/useApiError";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";

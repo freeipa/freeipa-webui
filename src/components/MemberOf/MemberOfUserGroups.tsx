@@ -14,12 +14,12 @@ import MemberOfDeleteModal from "./MemberOfDeleteModal";
 import { useUserMemberOfData } from "src/hooks/useUserMemberOfData";
 import useAlerts from "src/hooks/useAlerts";
 // RPC
+import { ErrorResult } from "src/services/rpc";
 import {
-  ErrorResult,
   useAddToGroupsMutation,
   useGetGroupInfoByNameQuery,
   useRemoveFromGroupsMutation,
-} from "src/services/rpc";
+} from "src/services/rpcUserGroups";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 

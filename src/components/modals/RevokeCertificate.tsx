@@ -16,11 +16,11 @@ import SecondaryButton from "../layouts/SecondaryButton";
 // Utils
 import { parseDn } from "src/utils/utils";
 // RPC
+import { ErrorResult } from "src/services/rpc";
 import {
-  ErrorResult,
   useGetCertificateAuthorityQuery,
   useRevokeCertificateMutation,
-} from "src/services/rpc";
+} from "src/services/rpcCerts";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 

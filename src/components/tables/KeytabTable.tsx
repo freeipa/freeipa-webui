@@ -22,14 +22,16 @@ import { Link } from "react-router-dom";
 import { API_VERSION_BACKUP } from "../../utils/utils";
 // Navigation
 import { URL_PREFIX } from "../../navigation/NavRoutes";
-
+// RPC
 import {
   ErrorResult,
-  KeyTabPayload,
   GetEntriesPayload,
-  useUpdateKeyTabMutation,
   useGetEntriesMutation,
 } from "../../services/rpc";
+import {
+  KeyTabPayload,
+  useUpdateKeyTabMutation,
+} from "../../services/rpcSettings";
 
 interface PropsToTable {
   from: "host" | "service";

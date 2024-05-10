@@ -12,10 +12,8 @@ import { CertificateData } from "../Form/IpaCertificates";
 // Utils
 import { parseDn } from "src/utils/utils";
 // RPC
-import {
-  ErrorResult,
-  useRemoveHoldCertificateMutation,
-} from "src/services/rpc";
+import { ErrorResult } from "src/services/rpc";
+import { useRemoveHoldCertificateMutation } from "src/services/rpcCerts";
 
 interface PropsToRemoveHoldCertificate {
   certificate: CertificateData;

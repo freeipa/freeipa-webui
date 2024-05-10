@@ -16,7 +16,8 @@ import { useAppDispatch } from "src/store/hooks";
 import { User } from "src/utils/datatypes/globalDataTypes";
 import { removeUser as removePreservedUser } from "src/store/Identity/preservedUsers-slice";
 // RPC
-import { BatchRPCResponse, useRestoreUserMutation } from "src/services/rpc";
+import { BatchRPCResponse } from "src/services/rpc";
+import { useRestoreUserMutation } from "src/services/rpcUsers";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 

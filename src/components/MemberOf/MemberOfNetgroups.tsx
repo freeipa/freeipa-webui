@@ -9,14 +9,13 @@ import MemberOfTableNetgroups from "./MemberOfTableNetgroups";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // RPC
+import { BatchRPCResponse, ErrorResult } from "src/services/rpc";
 import {
-  BatchRPCResponse,
-  ErrorResult,
   useAddToNetgroupsMutation,
   useGetNetgroupInfoByNameQuery,
   useGettingNetgroupsQuery,
   useRemoveFromNetgroupsMutation,
-} from "src/services/rpc";
+} from "src/services/rpcNetgroups";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToNetgroup } from "src/utils/netgroupsUtils";

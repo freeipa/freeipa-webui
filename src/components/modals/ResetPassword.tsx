@@ -11,11 +11,11 @@ import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
 // Components
 import PasswordInput from "../layouts/PasswordInput";
 // RPC
+import { ErrorResult } from "src/services/rpc";
 import {
-  ErrorResult,
   PasswordChangePayload,
   useChangePasswordMutation,
-} from "src/services/rpc";
+} from "src/services/rpcUsers";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 

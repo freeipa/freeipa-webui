@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 
 // RPC
-import {
-  useGetObjectMetadataQuery,
-  useGetHostsFullDataQuery,
-} from "src/services/rpc";
+import { useGetObjectMetadataQuery } from "src/services/rpc";
+import { useGetHostsFullDataQuery } from "src/services/rpcHosts";
 // Data types
 import { Host, Metadata } from "src/utils/datatypes/globalDataTypes";
 

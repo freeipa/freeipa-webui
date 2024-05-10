@@ -50,14 +50,12 @@ import ModalErrors from "src/components/errors/ModalErrors";
 // Icons
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // RPC client
+import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
 import {
-  useGettingHostQuery,
   useGetDNSZonesQuery,
+  useGettingHostQuery,
   useAutoMemberRebuildHostsMutation,
-  GenericPayload,
-  useSearchEntriesMutation,
-} from "../../services/rpc";
-
+} from "../../services/rpcHosts";
 const Hosts = () => {
   // Dispatch (Redux)
   const dispatch = useAppDispatch();

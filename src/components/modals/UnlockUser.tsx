@@ -9,7 +9,8 @@ import {
 // Modals
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
 // RPC
-import { ErrorResult, useUnlockUserMutation } from "src/services/rpc";
+import { ErrorResult } from "src/services/rpc";
+import { useUnlockUserMutation } from "src/services/rpcUsers";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 

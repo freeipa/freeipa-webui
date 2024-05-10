@@ -21,10 +21,8 @@ import { SerializedError } from "@reduxjs/toolkit";
 import { ErrorData, Service } from "../../utils/datatypes/globalDataTypes";
 // Modals
 import ErrorModal from "./ErrorModal";
-import {
-  BatchRPCResponse,
-  useRemoveServicesMutation,
-} from "../../services/rpc";
+import { BatchRPCResponse } from "../../services/rpc";
+import { useRemoveServicesMutation } from "../../services/rpcServices";
 
 interface ButtonsData {
   updateIsDeleteButtonDisabled: (value: boolean) => void;

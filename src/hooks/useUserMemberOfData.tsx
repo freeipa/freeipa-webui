@@ -1,6 +1,7 @@
 // RPC
 import React from "react";
-import { BatchRPCResponse, useGettingGroupsQuery } from "src/services/rpc";
+import { BatchRPCResponse } from "src/services/rpc";
+import { useGettingGroupsQuery } from "src/services/rpcUserGroups";
 // Data types
 import { UserGroup } from "src/utils/datatypes/globalDataTypes";
 import { apiToGroup } from "src/utils/groupUtils";

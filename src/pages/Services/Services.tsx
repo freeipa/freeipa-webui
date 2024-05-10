@@ -45,12 +45,9 @@ import ModalErrors from "../../components/errors/ModalErrors";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // RPC client
-import {
-  useGetHostsListQuery,
-  useGettingServicesQuery,
-  useSearchEntriesMutation,
-  GenericPayload,
-} from "../../services/rpc";
+import { useSearchEntriesMutation, GenericPayload } from "../../services/rpc";
+import { useGetHostsListQuery } from "../../services/rpcHosts";
+import { useGettingServicesQuery } from "../../services/rpcServices";
 
 const Services = () => {
   // Initialize services list (Redux)

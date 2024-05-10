@@ -27,11 +27,11 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Hooks
 import useAlerts from "../../hooks/useAlerts";
+import { FindRPCResponse } from "../../services/rpc";
 import {
-  FindRPCResponse,
   ServiceAddPayload,
   useAddServiceMutation,
-} from "../../services/rpc";
+} from "../../services/rpcServices";
 
 interface PropsToAddService {
   show: boolean;

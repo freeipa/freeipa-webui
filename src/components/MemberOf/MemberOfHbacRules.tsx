@@ -10,12 +10,14 @@ import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // RPC
+import { ErrorResult } from "src/services/rpc";
+
 import {
-  ErrorResult,
-  useAddToHbacRulesMutation,
   useGetHbacRulesInfoByNameQuery,
   useGettingHbacRulesQuery,
-} from "src/services/rpc";
+  useAddToHbacRulesMutation,
+} from "src/services/rpcHBAC";
+
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToHBACRule } from "src/utils/hbacRulesUtils";
