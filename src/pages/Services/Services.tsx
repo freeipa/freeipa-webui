@@ -350,6 +350,12 @@ const Services = () => {
     }
   }, [servicesDataResponse]);
 
+  // Always refetch data when the component is loaded.
+  // This ensures the data is always up-to-date.
+  useEffect(() => {
+    servicesDataResponse.refetch();
+  }, []);
+
   // Show table rows only when data is fully retrieved
   useEffect(() => {
     if (showTableRows !== !isBatchLoading) {

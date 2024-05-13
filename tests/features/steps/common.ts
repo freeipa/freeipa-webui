@@ -235,6 +235,18 @@ When("I click in the {string} selector field", (selectorName: string) => {
     .click();
 });
 
+When(
+  "I select {string} in the {string} form selector field",
+  (selection: string, selectorName: string) => {
+    cy.get("div.pf-v5-c-form__group-label")
+      .contains(selectorName)
+      .parent()
+      .next()
+      .find("select")
+      .select(selection);
+  }
+);
+
 Then(
   "in the {string} selector I should see the {string} option available to be checked",
   (selectorName: string, option: string) => {
@@ -370,6 +382,14 @@ Then(
       .should("not.exist");
   }
 );
+
+Then("TextInput {string} should be enabled", function (id: string) {
+  cy.get("input#" + id).should("be.enabled");
+});
+
+Then("TextInput {string} should be disabled", function (id: string) {
+  cy.get("input#" + id).should("be.disabled");
+});
 
 // Search
 When("I type {string} in the search field", (searchText: string) => {

@@ -187,6 +187,12 @@ const Hosts = () => {
     }
   }, [hostDataResponse]);
 
+  // Always refetch data when the component is loaded.
+  // This ensures the data is always up-to-date.
+  useEffect(() => {
+    hostDataResponse.refetch();
+  }, []);
+
   // Get dns zones
   const dnsZoneDataResponse = useGetDNSZonesQuery();
 

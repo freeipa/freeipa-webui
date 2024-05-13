@@ -1,4 +1,4 @@
-Feature: Host manipulationaddfullhost
+Feature: Host manipulation
   Create, and delete hosts
 
   Background:

@@ -2,7 +2,14 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React from "react";
 // Data type
-import { DN, Host, Metadata, Service, User } from "./datatypes/globalDataTypes";
+import {
+  DN,
+  Host,
+  Metadata,
+  Service,
+  User,
+  UserGroup,
+} from "./datatypes/globalDataTypes";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -33,6 +40,9 @@ export const isHostSelectable = (host: Host) => host.fqdn != "";
 // Determine whether a service is selectable or not
 export const isServiceSelectable = (service: Service) =>
   service.krbcanonicalname != "";
+
+// Determine whether a UserGroup is selectable or not
+export const isUserGroupSelectable = (group: UserGroup) => group.cn != "";
 
 // Write JSX error messages into 'apiErrorsJsx' array
 export const apiErrorToJsXError = (
