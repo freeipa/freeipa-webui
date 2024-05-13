@@ -136,6 +136,7 @@ export interface GenericPayload {
     | "group"
     | "hostgroup"
     | "netgroups"
+    | "usergroup"
     | "role"
     | "hbacrule"
     | "sudorule";
@@ -200,6 +201,7 @@ export const api = createApi({
     "DNSZones",
     "FullHost",
     "FullService",
+    "FullUserGroup",
   ],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
@@ -461,6 +463,9 @@ export const api = createApi({
         } else if (entryType === "hostgroup") {
           method = "hostgroup_find";
           show_method = "hostgroup_show";
+        } else if (entryType === "usergroup") {
+          method = "group_find";
+          show_method = "group_show";
         }
 
         // Prepare payload
@@ -497,6 +502,10 @@ export const api = createApi({
             const serviceId = responseData.result.result[i] as servicesType;
             const { krbprincipalname } = serviceId;
             ids.push(krbprincipalname[0] as string);
+          } else if (entryType === "usergroup") {
+            const groupId = responseData.result.result[i] as cnType;
+            const { cn } = groupId;
+            ids.push(cn[0] as string);
           }
         }
 

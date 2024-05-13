@@ -1,23 +1,41 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { RootState } from "../store";
-import userGroupsJson from "./userGroups.json";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
 // Data type
-import { UserGroupOld } from "src/utils/datatypes/globalDataTypes";
+import { UserGroup } from "src/utils/datatypes/globalDataTypes";
 
 interface UserGroupState {
-  userGroupList: UserGroupOld[];
+  userGroupList: UserGroup[];
 }
 
 const initialState: UserGroupState = {
-  userGroupList: userGroupsJson,
+  userGroupList: [],
 };
 
 const userGroupsSlice = createSlice({
   name: "usergroups",
   initialState,
-  reducers: {},
+  reducers: {
+    updateGroupsList: (state, action: PayloadAction<UserGroup[]>) => {
+      const updatedServicesList = action.payload;
+      state.userGroupList = updatedServicesList;
+    },
+    addGroup: (state, action: PayloadAction<UserGroup>) => {
+      const newService = action.payload;
+      state.userGroupList.push({ ...newService });
+    },
+    removeGroup: (state, action: PayloadAction<string>) => {
+      const groupId = action.payload;
+      const updatedGroupList = state.userGroupList.filter(
+        (group) => group.cn !== groupId
+      );
+      // If not empty, replace list by new array
+      if (updatedGroupList) {
+        state.userGroupList = updatedGroupList;
+      }
+    },
+  },
 });
 
-export const selectUserGroups = (state: RootState) =>
-  state.usergroups.userGroupList;
 export default userGroupsSlice.reducer;
+export const { updateGroupsList, addGroup, removeGroup } =
+  userGroupsSlice.actions;

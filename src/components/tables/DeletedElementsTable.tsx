@@ -5,7 +5,7 @@ import { Td, Th, Tr } from "@patternfly/react-table";
 // Layout
 import TableLayout from "src/components/layouts/TableLayout";
 // Data types
-import { Host, Service } from "src/utils/datatypes/globalDataTypes";
+import { Host, Service, UserGroup } from "src/utils/datatypes/globalDataTypes";
 /*
  * Goal: Show already selected elements ready to delete in a table.
  *
@@ -35,7 +35,7 @@ import { Host, Service } from "src/utils/datatypes/globalDataTypes";
 
 export interface PropsToDeletedElementsTable {
   mode: "passing_id" | "passing_full_data";
-  elementsToDelete: string[] | Host[] | Service[];
+  elementsToDelete: string[] | Host[] | Service[] | UserGroup[];
   columnNames: string[];
   elementType: string;
   idAttr: string;

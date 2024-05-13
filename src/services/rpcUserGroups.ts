@@ -3,13 +3,14 @@ import {
   Command,
   getCommand,
   getBatchCommand,
+  BatchResponse,
   BatchRPCResponse,
   FindRPCResponse,
   useGettingGenericQuery,
 } from "./rpc";
 import { apiToGroup } from "src/utils/groupUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
-import { UserGroup } from "../utils/datatypes/globalDataTypes";
+import { PwPolicy, UserGroup } from "../utils/datatypes/globalDataTypes";
 
 /**
  * User Group-related endpoints: addToGroups, removeFromGroups, getGroupInfoByName, addGroup, removeGroups
@@ -20,6 +21,7 @@ import { UserGroup } from "../utils/datatypes/globalDataTypes";
  * - group_add_member: https://freeipa.readthedocs.io/en/latest/api/group_add_member.html
  * - group_remove_member: https://freeipa.readthedocs.io/en/latest/api/group_remove_member.html
  * - group_show: https://freeipa.readthedocs.io/en/latest/api/group_show.html
+ * - pwpolicy_show: https://freeipa.readthedocs.io/en/latest/api/pwpolicy_show.html
  */
 
 export interface GroupShowPayload {
@@ -36,8 +38,53 @@ export interface GroupAddPayload {
   groupType: "posix" | "non-posix" | "external";
 }
 
+export type GroupFullData = {
+  userGroup?: Partial<UserGroup>;
+  pwPolicy?: Partial<PwPolicy>;
+};
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
+    getUserGroupsFullData: build.query<GroupFullData, string>({
+      query: (groupId) => {
+        // Prepare search parameters
+        const group_params = {
+          all: true,
+          rights: true,
+        };
+
+        const groupShowCommand: Command = {
+          method: "group_show",
+          params: [[groupId], group_params],
+        };
+
+        const pwpolicyShowCommand: Command = {
+          method: "pwpolicy_show",
+          params: [[], { cn: groupId, all: true, rights: true }],
+        };
+        const batchPayload: Command[] = [groupShowCommand, pwpolicyShowCommand];
+
+        return getBatchCommand(batchPayload, API_VERSION_BACKUP);
+      },
+      transformResponse: (response: BatchResponse): GroupFullData => {
+        const [groupResponse, pwpResponse] = response.result.results;
+
+        // Initialize group data (to prevent 'undefined' values)
+        const groupData = groupResponse.result;
+        const pwpData = pwpResponse.result;
+
+        let groupObject = {};
+        if (!groupResponse.error) {
+          groupObject = apiToGroup(groupData);
+        }
+
+        return {
+          userGroup: groupObject,
+          pwPolicy: pwpData,
+        };
+      },
+      providesTags: ["FullUserGroup"],
+    }),
     /**
      * Add a group
      * @param {object} GroupAddPayload - Group payload parameters
@@ -178,4 +225,5 @@ export const {
   useAddToGroupsMutation,
   useRemoveFromGroupsMutation,
   useGetGroupInfoByNameQuery,
+  useGetUserGroupsFullDataQuery,
 } = extendedApi;
