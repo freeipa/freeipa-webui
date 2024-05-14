@@ -9,7 +9,7 @@ import {
   NetgroupOld,
   RolesOld,
   HBACRulesOld,
-  SudoRules,
+  SudoRulesOld,
   HostGroup,
 } from "src/utils/datatypes/globalDataTypes";
 
@@ -30,7 +30,7 @@ export interface PropsToAdd {
     | NetgroupOld[]
     | RolesOld[]
     | HBACRulesOld[]
-    | SudoRules[]
+    | SudoRulesOld[]
     | HostGroup[];
   groupRepository: unknown[];
   updateGroupRepository: (
@@ -39,7 +39,7 @@ export interface PropsToAdd {
       | NetgroupOld[]
       | RolesOld[]
       | HBACRulesOld[]
-      | SudoRules[]
+      | SudoRulesOld[]
       | HostGroup[]
   ) => void;
   updateAvOptionsList: (args: unknown[]) => void;
@@ -51,7 +51,7 @@ export interface PropsToAdd {
 // To display all the possible data types for all the tabs (and not only the mandatory ones)
 //   an extra interface 'MemberOfElement' will be defined. This will be called when assigning
 //   a new group instead of refering to each type (UserGroupOld | NetgroupOld | Roles | HBACRulesOld |
-//   SudoRules | HostGroup).
+//   SudoRulesOld | HostGroup).
 interface MemberOfElement {
   hostGroup?: string;
   name: string;
@@ -184,9 +184,9 @@ const MemberOfAddModal = (props: PropsToAdd) => {
               optionData.description !== undefined && optionData.description,
             gid: optionData.gid !== undefined && optionData.gid,
             status: optionData.status !== undefined && optionData.status,
-          } as SudoRules);
+          } as SudoRulesOld);
           // Send updated data to table
-          props.updateGroupRepository(props.groupRepository as SudoRules[]);
+          props.updateGroupRepository(props.groupRepository as SudoRulesOld[]);
         }
         // Host groups
         if (props.tabData.tabName === "Host groups") {

@@ -15,7 +15,7 @@ import MemberOfTable from "src/components/MemberOf/MemberOfTable";
 import {
   RolesOld,
   HBACRulesOld,
-  SudoRules,
+  SudoRulesOld,
   User,
 } from "src/utils/datatypes/globalDataTypes";
 // Redux
@@ -46,7 +46,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
 
   // Alter the available options list to keep the state of the recently added / removed items
   const updateSudoRulesList = (newAvOptionsList: unknown[]) => {
-    sudoRulesList = newAvOptionsList as SudoRules[];
+    sudoRulesList = newAvOptionsList as SudoRulesOld[];
   };
 
   // Page indexes
@@ -132,7 +132,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   };
 
   // Available data to be added as member of
-  const sudoRulesFilteredData: SudoRules[] = filterSudoRulesData();
+  const sudoRulesFilteredData: SudoRulesOld[] = filterSudoRulesData();
 
   // Number of items on the list for each repository
   const [sudoRulesRepoLength, setSudoRulesRepoLength] = useState(
@@ -144,11 +144,11 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   //  - The slice of data to show (considering the pagination)
   //  - Number of items for a specific list
   const updateGroupRepository = (
-    groupRepository: RolesOld[] | HBACRulesOld[] | SudoRules[]
+    groupRepository: RolesOld[] | HBACRulesOld[] | SudoRulesOld[]
   ) => {
     switch (tabName) {
       case "Sudo rules":
-        setSudoRulesRepository(groupRepository as SudoRules[]);
+        setSudoRulesRepository(groupRepository as SudoRulesOld[]);
         setShownSudoRulesList(sudoRulesRepository.slice(0, perPage));
         setSudoRulesRepoLength(sudoRulesRepository.length);
         break;
@@ -199,11 +199,11 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
 
   // Update pagination
   const changeMemberGroupsList = (
-    value: RolesOld[] | HBACRulesOld[] | SudoRules[]
+    value: RolesOld[] | HBACRulesOld[] | SudoRulesOld[]
   ) => {
     switch (activeTabKey) {
       case 4:
-        setShownSudoRulesList(value as SudoRules[]);
+        setShownSudoRulesList(value as SudoRulesOld[]);
         break;
     }
   };

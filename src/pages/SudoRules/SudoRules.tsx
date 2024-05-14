@@ -1,8 +1,8 @@
 import React from "react";
 import { EmptyPage } from "src/components/errors/PageErrors";
 
-const SudoRules = () => {
+const SudoRulesOld = () => {
   return <EmptyPage />;
 };
 
-export default SudoRules;
+export default SudoRulesOld;

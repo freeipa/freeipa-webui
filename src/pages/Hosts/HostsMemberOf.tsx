@@ -20,7 +20,7 @@ import {
   NetgroupOld,
   RolesOld,
   HBACRulesOld,
-  SudoRules,
+  SudoRulesOld,
   Host,
 } from "src/utils/datatypes/globalDataTypes";
 // Redux
@@ -66,7 +66,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
     hbacRulesList = newAvOptionsList as HBACRulesOld[];
   };
   const updateSudoRulesList = (newAvOptionsList: unknown[]) => {
-    sudoRulesList = newAvOptionsList as SudoRules[];
+    sudoRulesList = newAvOptionsList as SudoRulesOld[];
   };
 
   // List of default dummy data (for each tab option)
@@ -140,7 +140,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   const netgroupsFilteredData: NetgroupOld[] = filterNetgroupsData();
   const rolesFilteredData: RolesOld[] = filterRolesData();
   const hbacRulesFilteredData: HBACRulesOld[] = filterHbacRulesData();
-  const sudoRulesFilteredData: SudoRules[] = filterSudoRulesData();
+  const sudoRulesFilteredData: SudoRulesOld[] = filterSudoRulesData();
 
   // Number of items on the list for each repository
   const [hostGroupsRepoLength, setHostGroupsRepoLength] = useState(
@@ -169,7 +169,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
       | NetgroupOld[]
       | RolesOld[]
       | HBACRulesOld[]
-      | SudoRules[]
+      | SudoRulesOld[]
   ) => {
     switch (tabName) {
       case "Host groups":
@@ -193,7 +193,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
         setHbacRulesRepoLength(hbacRulesRepository.length);
         break;
       case "Sudo rules":
-        setSudoRulesRepository(groupRepository as SudoRules[]);
+        setSudoRulesRepository(groupRepository as SudoRulesOld[]);
         setShownSudoRulesList(sudoRulesRepository.slice(0, perPage));
         setSudoRulesRepoLength(sudoRulesRepository.length);
         break;
@@ -264,7 +264,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
       | NetgroupOld[]
       | RolesOld[]
       | HBACRulesOld[]
-      | SudoRules[]
+      | SudoRulesOld[]
   ) => {
     switch (activeTabKey) {
       case 0:
@@ -280,7 +280,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
         setShownHBACRulesList(value as HBACRulesOld[]);
         break;
       case 4:
-        setShownSudoRulesList(value as SudoRules[]);
+        setShownSudoRulesList(value as SudoRulesOld[]);
         break;
     }
   };
