@@ -136,7 +136,8 @@ export interface GenericPayload {
     | "group"
     | "netgroups"
     | "role"
-    | "hbacrule";
+    | "hbacrule"
+    | "sudorule";
 }
 
 export interface GetEntriesPayload {
@@ -312,6 +313,18 @@ export const api = createApi({
           }
         }
 
+        if (objName === "sudorule") {
+          if (cn) {
+            params["cn"] = cn;
+          }
+          if (description) {
+            params["description"] = description;
+          }
+          if (timelimit) {
+            params["timelimit"] = timelimit;
+          }
+        }
+
         // Prevent searchValue to be null
         let parsedSearchValue = searchValue;
         if (searchValue === null || searchValue === undefined) {
@@ -347,6 +360,8 @@ export const api = createApi({
           } else if (objName === "role") {
             id = idResponseData.result.result[i] as roleType;
           } else if (objName === "hbacrule") {
+            id = idResponseData.result.result[i] as cnType;
+          } else if (objName === "sudorule") {
             id = idResponseData.result.result[i] as cnType;
           } else {
             // Unknown, should never happen
