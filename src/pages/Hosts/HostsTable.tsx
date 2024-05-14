@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
-import { Td, Th, ThProps, Tr } from "@patternfly/react-table";
+import { Td, Th, Tr } from "@patternfly/react-table";
 // Tables
 import TableLayout from "../../components/layouts/TableLayout";
 // Data types
@@ -51,69 +51,6 @@ const HostsTable = (props: PropsToTable) => {
     description: "Description",
     enrolled: "Enrolled",
   };
-
-  // Index of the currently sorted column
-  // Note: if you intend to make columns reorderable, you may instead want to use a non-numeric key
-  // as the identifier of the sorted column. See the "Compound expandable" example.
-  const [activeSortIndex, setActiveSortIndex] = useState<number | null>(null);
-
-  // Sort direction of the currently sorted column
-  const [activeSortDirection, setActiveSortDirection] = useState<
-    "asc" | "desc" | null
-  >(null);
-
-  // Since OnSort specifies sorted columns by index, we need sortable values for our object by column index.
-  const getSortableRowValues = (host: Host): (string | number)[] => {
-    const { fqdn, description, enrolledby } = host;
-
-    let descriptionString = "";
-    if (description !== undefined) {
-      descriptionString = description[0];
-    }
-
-    return [fqdn, descriptionString, enrolledby ? enrolledby : ""];
-  };
-
-  let sortedHosts = [...shownHostsList];
-  if (activeSortIndex !== null) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    sortedHosts = shownHostsList.sort((a, b) => {
-      let aValue = getSortableRowValues(a)[activeSortIndex];
-      let bValue = getSortableRowValues(b)[activeSortIndex];
-      if (typeof aValue === "number") {
-        // Numeric sort
-        if (activeSortDirection === "asc") {
-          return (aValue as number) - (bValue as number);
-        }
-        return (bValue as number) - (aValue as number);
-      } else {
-        // String sort
-        if (aValue.constructor === Array) {
-          aValue = aValue[0];
-          bValue = bValue[0];
-        }
-        if (activeSortDirection === "asc") {
-          return (aValue as string).localeCompare(bValue as string);
-        }
-        return (bValue as string).localeCompare(aValue as string);
-      }
-    });
-  }
-
-  // TODO: Put function in 'utils' file
-  const getSortParams = (columnIndex: number): ThProps["sort"] => ({
-    sortBy: {
-      index: activeSortIndex as number,
-      direction: activeSortDirection as "asc" | "desc",
-      // starting sort direction when first sorting a column. Defaults to 'asc'
-      defaultDirection: "asc",
-    },
-    onSort: (_event, index, direction) => {
-      setActiveSortIndex(index);
-      setActiveSortDirection(direction);
-    },
-    columnIndex,
-  });
 
   const isHostSelected = (host: Host) => {
     if (
@@ -218,15 +155,9 @@ const HostsTable = (props: PropsToTable) => {
   const header = (
     <Tr>
       <Th modifier="wrap"></Th>
-      <Th modifier="wrap" sort={getSortParams(0)}>
-        {columnNames.fqdn}
-      </Th>
-      <Th modifier="wrap" sort={getSortParams(1)}>
-        {columnNames.description}
-      </Th>
-      <Th modifier="wrap" sort={getSortParams(2)}>
-        {columnNames.enrolled}
-      </Th>
+      <Th modifier="wrap">{columnNames.fqdn}</Th>
+      <Th modifier="wrap">{columnNames.description}</Th>
+      <Th modifier="wrap">{columnNames.enrolled}</Th>
     </Tr>
   );
 

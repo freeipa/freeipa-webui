@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
-import { Td, Th, ThProps, Tr } from "@patternfly/react-table";
+import { Td, Th, Tr } from "@patternfly/react-table";
 // Tables
 import TableLayout from "src/components/layouts/TableLayout";
 // Data types
@@ -64,99 +64,6 @@ const UsersTable = (props: PropsToTable) => {
     telephonenumber: "Phone",
     title: "Job title",
   };
-
-  // Index of the currently sorted column
-  // Note: if you intend to make columns reorderable, you may instead want to use a non-numeric key
-  // as the identifier of the sorted column. See the "Compound expandable" example.
-  const [activeSortIndex, setActiveSortIndex] = useState<number | null>(null);
-
-  // Sort direction of the currently sorted column
-  const [activeSortDirection, setActiveSortDirection] = useState<
-    "asc" | "desc" | null
-  >(null);
-
-  // Since OnSort specifies sorted columns by index, we need sortable values for our object by column index.
-  const getSortableRowValues = (user: User): (string | number)[] => {
-    const {
-      uid,
-      givenname,
-      sn,
-      nsaccountlock,
-      uidnumber,
-      mail,
-      telephonenumber,
-      title,
-    } = user;
-
-    // Process array data
-    let givennameString = "";
-    if (givenname !== undefined) {
-      givennameString = givenname[0];
-    }
-
-    const nsaccountlockString = nsaccountlock.toString();
-
-    let mailString = "";
-    if (mail !== undefined) {
-      mailString = mail.toString();
-    }
-
-    let telephoneNumberString = "";
-    if (telephonenumber !== undefined) {
-      telephoneNumberString = telephonenumber.toString();
-    }
-
-    let titleString = "";
-    if (title !== undefined) {
-      titleString = title[0];
-    }
-
-    return [
-      uid[0],
-      givennameString,
-      sn[0],
-      nsaccountlockString,
-      uidnumber[0],
-      mailString,
-      telephoneNumberString,
-      titleString,
-    ];
-  };
-
-  let sortedUsers = [...shownUsersList];
-  if (activeSortIndex !== null) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    sortedUsers = shownUsersList.sort((a, b) => {
-      const aValue = getSortableRowValues(a)[activeSortIndex];
-      const bValue = getSortableRowValues(b)[activeSortIndex];
-      if (typeof aValue === "number") {
-        // Numeric sort
-        if (activeSortDirection === "asc") {
-          return (aValue as number) - (bValue as number);
-        }
-        return (bValue as number) - (aValue as number);
-      } else {
-        // String sort
-        if (activeSortDirection === "asc") {
-          return (aValue as string).localeCompare(bValue as string);
-        }
-        return (bValue as string).localeCompare(aValue as string);
-      }
-    });
-  }
-
-  const getSortParams = (columnIndex: number): ThProps["sort"] => ({
-    sortBy: {
-      index: activeSortIndex as number,
-      direction: activeSortDirection as "asc" | "desc",
-      defaultDirection: "asc", // starting sort direction when first sorting a column. Defaults to 'asc'
-    },
-    onSort: (_event, index, direction) => {
-      setActiveSortIndex(index);
-      setActiveSortDirection(direction);
-    },
-    columnIndex,
-  });
 
   // When user status is updated, unselect selected rows
   useEffect(() => {
@@ -304,32 +211,16 @@ const UsersTable = (props: PropsToTable) => {
   const header = (
     <Tr>
       <Th modifier="wrap"></Th>
-      <Th modifier="wrap" sort={getSortParams(0)}>
-        {columnNames.uid}
-      </Th>
-      <Th modifier="wrap" sort={getSortParams(1)}>
-        {columnNames.givenname}
-      </Th>
-      <Th modifier="wrap" sort={getSortParams(2)}>
-        {columnNames.sn}
-      </Th>
+      <Th modifier="wrap">{columnNames.uid}</Th>
+      <Th modifier="wrap">{columnNames.givenname}</Th>
+      <Th modifier="wrap">{columnNames.sn}</Th>
       {props.from !== "stage-users" ? (
-        <Th modifier="wrap" sort={getSortParams(3)}>
-          {columnNames.nsaccountlock}
-        </Th>
+        <Th modifier="wrap">{columnNames.nsaccountlock}</Th>
       ) : null}
-      <Th modifier="wrap" sort={getSortParams(4)}>
-        {columnNames.uidnumber}
-      </Th>
-      <Th modifier="wrap" sort={getSortParams(5)}>
-        {columnNames.mail}
-      </Th>
-      <Th modifier="wrap" sort={getSortParams(6)}>
-        {columnNames.telephonenumber}
-      </Th>
-      <Th modifier="wrap" sort={getSortParams(7)}>
-        {columnNames.title}
-      </Th>
+      <Th modifier="wrap">{columnNames.uidnumber}</Th>
+      <Th modifier="wrap">{columnNames.mail}</Th>
+      <Th modifier="wrap">{columnNames.telephonenumber}</Th>
+      <Th modifier="wrap">{columnNames.title}</Th>
     </Tr>
   );
 
