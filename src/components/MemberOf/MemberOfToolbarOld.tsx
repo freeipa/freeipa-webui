@@ -25,7 +25,7 @@ import {
   NetgroupOld,
   RolesOld,
   HBACRulesOld,
-  SudoRules,
+  SudoRulesOld,
   HostGroup,
 } from "src/utils/datatypes/globalDataTypes";
 // Layout
@@ -61,7 +61,7 @@ interface SettersData {
       | NetgroupOld[]
       | RolesOld[]
       | HBACRulesOld[]
-      | SudoRules[]
+      | SudoRulesOld[]
       | HostGroup[]
   ) => void;
   changeTabName: (name: string) => void;
@@ -78,14 +78,14 @@ export interface PropsToToolbar {
     | NetgroupOld[]
     | RolesOld[]
     | HBACRulesOld[]
-    | SudoRules[]
+    | SudoRulesOld[]
     | HostGroup[];
   shownItems:
     | UserGroupOld[]
     | NetgroupOld[]
     | RolesOld[]
     | HBACRulesOld[]
-    | SudoRules[]
+    | SudoRulesOld[]
     | HostGroup[];
   toolbar:
     | "user groups"

@@ -185,9 +185,16 @@ export interface HBACRule {
   dn: string;
 }
 
-export interface SudoRules {
+export interface SudoRulesOld {
   name: string;
   status: string;
+  description: string;
+}
+
+export interface SudoRule {
+  cn: string;
+  ipaenabledflag: boolean;
+  dn: string;
   description: string;
 }
 
