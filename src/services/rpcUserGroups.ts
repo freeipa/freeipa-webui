@@ -1,8 +1,10 @@
 import {
   api,
   Command,
+  getCommand,
   getBatchCommand,
   BatchRPCResponse,
+  FindRPCResponse,
   useGettingGenericQuery,
 } from "./rpc";
 import { apiToGroup } from "src/utils/groupUtils";
@@ -10,9 +12,11 @@ import { API_VERSION_BACKUP } from "../utils/utils";
 import { UserGroup } from "../utils/datatypes/globalDataTypes";
 
 /**
- * User Group-related endpoints: addToGroups, removeFromGroups, getGroupInfoByName
+ * User Group-related endpoints: addToGroups, removeFromGroups, getGroupInfoByName, addGroup, removeGroups
  *
  * API commands:
+ * - group_add: https://freeipa.readthedocs.io/en/latest/api/group_add.html
+ * - group_del: https://freeipa.readthedocs.io/en/latest/api/group_del.html
  * - group_add_member: https://freeipa.readthedocs.io/en/latest/api/group_add_member.html
  * - group_remove_member: https://freeipa.readthedocs.io/en/latest/api/group_remove_member.html
  * - group_show: https://freeipa.readthedocs.io/en/latest/api/group_show.html
@@ -24,8 +28,69 @@ export interface GroupShowPayload {
   version: string;
 }
 
+export interface GroupAddPayload {
+  groupName: string;
+  version?: string;
+  gidnumber?: string;
+  description?: string;
+  groupType: "posix" | "non-posix" | "external";
+}
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
+    /**
+     * Add a group
+     * @param {object} GroupAddPayload - Group payload parameters
+     * @param GroupAddPayload.groupName - The name of the group
+     * @param GroupAddPayload.desc - The group description
+     * @param GroupAddPayload.gid - The gidnumber for the group (posix only)
+     * @param GroupAddPayload.groupType - The group type
+     *    Available types: non-posix | posix | external
+     * @param GroupAddPayload.version - The api version
+     */
+    addGroup: build.mutation<FindRPCResponse, GroupAddPayload>({
+      query: (payloadData) => {
+        const params = [
+          [payloadData["groupName"]],
+          {
+            version: payloadData.version || API_VERSION_BACKUP,
+          },
+        ];
+        if ("gidnumber" in payloadData && payloadData["gidnumber"] !== "") {
+          params[1]["gidnumber"] = payloadData["gidnumber"];
+        }
+        if ("description" in payloadData && payloadData["description"] !== "") {
+          params[1]["description"] = payloadData["description"];
+        }
+        if (payloadData["groupType"] === "non-posix") {
+          params[1]["nonposix"] = true;
+        } else if (payloadData["groupType"] === "external") {
+          params[1]["external"] = true;
+        }
+
+        return getCommand({
+          method: "group_add",
+          params: params,
+        });
+      },
+    }),
+    /**
+     * Remove groups
+     * @param {UserGroup[]} listOfGroups - List of groups to remove
+     */
+    removeGroups: build.mutation<BatchRPCResponse, UserGroup[]>({
+      query: (groups) => {
+        const groupsToDeletePayload: Command[] = [];
+        groups.map((group) => {
+          const payloadItem = {
+            method: "group_del",
+            params: [[group.cn], {}],
+          } as Command;
+          groupsToDeletePayload.push(payloadItem);
+        });
+        return getBatchCommand(groupsToDeletePayload, API_VERSION_BACKUP);
+      },
+    }),
     /**
      * Add entity to groups
      * @param {string} toId - ID of the entity to add to groups
@@ -108,6 +173,8 @@ export const useGettingGroupsQuery = (payloadData) => {
 };
 
 export const {
+  useAddGroupMutation,
+  useRemoveGroupsMutation,
   useAddToGroupsMutation,
   useRemoveFromGroupsMutation,
   useGetGroupInfoByNameQuery,
