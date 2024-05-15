@@ -15,6 +15,7 @@ export interface IPAParamDefinition {
   alwaysWritable?: boolean;
   readOnly?: boolean;
   required?: boolean;
+  ariaLabel?: string;
 }
 
 export interface ParamProperties {

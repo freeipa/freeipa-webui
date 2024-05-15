@@ -75,7 +75,7 @@ const IpaCalendar = (props: IPAParamDefinition) => {
       datetime={value}
       onChange={onDateChange}
       name={props.name}
-      ariaLabel="Kerberos principal expiration date"
+      ariaLabel={props.ariaLabel}
       isDisabled={readOnly}
     />
   );
