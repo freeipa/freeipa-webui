@@ -153,6 +153,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             >
               <IpaCalendar
                 name={"krbpasswordexpiration"}
+                ariaLabel={"Kerberos password expiration date"}
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
                 objectName="user"
@@ -194,6 +195,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             >
               <IpaCalendar
                 name={"krbprincipalexpiration"}
+                ariaLabel={"Kerberos principal expiration date"}
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
                 objectName="user"
