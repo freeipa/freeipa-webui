@@ -131,6 +131,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             <FormGroup label="User login" fieldId="uid">
               <IpaTextInput
                 name={"uid"}
+                ariaLabel={"User login"}
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
                 objectName="user"
@@ -163,6 +164,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             <FormGroup label="UID" fieldId="uidnumber">
               <IpaTextInput
                 name={"uidnumber"}
+                ariaLabel={"UID number"}
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
                 objectName="user"
@@ -172,6 +174,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             <FormGroup label="GID" fieldId="gidnumber">
               <IpaTextInput
                 name={"gidnumber"}
+                ariaLabel={"GID number"}
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
                 objectName="user"
@@ -205,6 +208,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             <FormGroup label="Login shell" fieldId="loginshell">
               <IpaTextInput
                 name={"loginshell"}
+                ariaLabel={"Login shell"}
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
                 objectName="user"
@@ -218,6 +222,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             <FormGroup label="Home directory" fieldId="homedirectory">
               <IpaTextInput
                 name={"homedirectory"}
+                ariaLabel={"Home directory"}
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
                 objectName="user"
@@ -326,6 +331,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             >
               <IpaTextInput
                 name={"ipatokenradiususername"}
+                ariaLabel={"Radius proxy username"}
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
                 objectName="user"
@@ -349,6 +355,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             <FormGroup label="External IdP user identifier" fieldId="ipaidpsub">
               <IpaTextInput
                 name={"ipaidpsub"}
+                ariaLabel={"External IdP user identifier"}
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
                 objectName="user"

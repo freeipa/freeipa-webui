@@ -17,7 +17,7 @@ const IpaTextInput = (props: IPAParamDefinition) => {
       value={convertToString(value)}
       onChange={(_event, value) => onChange(value)}
       type="text"
-      aria-label={props.name}
+      aria-label={props.ariaLabel !== undefined ? props.ariaLabel : props.name}
       isRequired={required}
       readOnlyVariant={readOnly ? "plain" : undefined}
     />

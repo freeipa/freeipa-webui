@@ -121,6 +121,7 @@ const HostSettings = (props: PropsToHostSettings) => {
             <FormGroup label="Class" fieldId="userclass">
               <IpaTextInput
                 name={"userclass"}
+                ariaLabel={"User class"}
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
                 objectName="host"
@@ -130,6 +131,7 @@ const HostSettings = (props: PropsToHostSettings) => {
             <FormGroup label="Locality" fieldId="l">
               <IpaTextInput
                 name={"l"}
+                ariaLabel={"Locality"}
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
                 objectName="host"
@@ -139,6 +141,7 @@ const HostSettings = (props: PropsToHostSettings) => {
             <FormGroup label="Location" fieldId="nshostlocation">
               <IpaTextInput
                 name={"nshostlocation"}
+                ariaLabel={"Location"}
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
                 objectName="host"
@@ -148,6 +151,7 @@ const HostSettings = (props: PropsToHostSettings) => {
             <FormGroup label="Platform" fieldId="nshardwareplatform">
               <IpaTextInput
                 name={"nshardwareplatform"}
+                ariaLabel={"Platform"}
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
                 objectName="host"
@@ -157,6 +161,7 @@ const HostSettings = (props: PropsToHostSettings) => {
             <FormGroup label="Operating system" fieldId="nsosversion">
               <IpaTextInput
                 name={"nsosversion"}
+                ariaLabel={"Operating system"}
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
                 objectName="host"
