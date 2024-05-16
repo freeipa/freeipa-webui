@@ -82,6 +82,7 @@ const UsersAttributesSMB = (props: PropsToSmbServices) => {
           >
             <IpaTextInput
               name={"ipantlogonscript"}
+              ariaLabel={"SMB logon script path"}
               ipaObject={ipaObject}
               onChange={recordOnChange}
               objectName="user"
@@ -97,6 +98,7 @@ const UsersAttributesSMB = (props: PropsToSmbServices) => {
           >
             <IpaTextInput
               name={"ipantprofilepath"}
+              ariaLabel={"SMB profile path"}
               ipaObject={ipaObject}
               onChange={recordOnChange}
               objectName="user"
@@ -119,6 +121,7 @@ const UsersAttributesSMB = (props: PropsToSmbServices) => {
           >
             <IpaTextInput
               name={"ipanthomedirectory"}
+              ariaLabel={"SMB home directory"}
               ipaObject={ipaObject}
               onChange={recordOnChange}
               objectName="user"

@@ -24,6 +24,7 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
   const firstNameTextInput = (
     <IpaTextInput
       name={"givenname"}
+      ariaLabel={"Given name"}
       ipaObject={ipaObject}
       onChange={recordOnChange}
       objectName="user"
@@ -35,6 +36,7 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
   const lastNameTextInput = (
     <IpaTextInput
       name={"sn"}
+      ariaLabel={"Last name"}
       ipaObject={ipaObject}
       onChange={recordOnChange}
       objectName="user"
@@ -46,6 +48,7 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
   const fullNameTextInput = (
     <IpaTextInput
       name={"cn"}
+      ariaLabel={"Full name"}
       ipaObject={ipaObject}
       onChange={recordOnChange}
       objectName="user"
@@ -57,6 +60,7 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
   const jobTitleTextInput = (
     <IpaTextInput
       name={"title"}
+      ariaLabel={"Job title"}
       ipaObject={ipaObject}
       onChange={recordOnChange}
       objectName="user"
@@ -68,6 +72,7 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
   const gecosTextInput = (
     <IpaTextInput
       name={"gecos"}
+      ariaLabel={"GECOS"}
       ipaObject={ipaObject}
       onChange={recordOnChange}
       objectName="user"
@@ -79,6 +84,7 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
   const userClassTextInput = (
     <IpaTextInput
       name={"userclass"}
+      ariaLabel={"User Class"}
       ipaObject={ipaObject}
       onChange={recordOnChange}
       objectName="user"

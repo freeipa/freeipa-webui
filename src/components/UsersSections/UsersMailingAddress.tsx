@@ -28,6 +28,7 @@ const UsersMailingAddress = (props: PropsToUsersMailingAddress) => {
           <FormGroup label="Street address" fieldId="street">
             <IpaTextInput
               name={"street"}
+              ariaLabel={"Street address"}
               ipaObject={ipaObject}
               onChange={recordOnChange}
               objectName="user"
@@ -37,6 +38,7 @@ const UsersMailingAddress = (props: PropsToUsersMailingAddress) => {
           <FormGroup label="City" fieldId="l">
             <IpaTextInput
               name={"l"}
+              ariaLabel={"City"}
               ipaObject={ipaObject}
               onChange={recordOnChange}
               objectName="user"
@@ -50,6 +52,7 @@ const UsersMailingAddress = (props: PropsToUsersMailingAddress) => {
           <FormGroup label="State/province" fieldId="st">
             <IpaTextInput
               name={"st"}
+              ariaLabel={"State/province"}
               ipaObject={ipaObject}
               onChange={recordOnChange}
               objectName="user"
@@ -59,6 +62,7 @@ const UsersMailingAddress = (props: PropsToUsersMailingAddress) => {
           <FormGroup label="ZIP" fieldId="postalcode">
             <IpaTextInput
               name={"postalcode"}
+              ariaLabel={"Postal code"}
               ipaObject={ipaObject}
               onChange={recordOnChange}
               objectName="user"

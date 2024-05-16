@@ -36,6 +36,7 @@ const UsersEmployeeInfo = (props: PropsToEmployeeInfo) => {
           <FormGroup label="Org. unit" fieldId="ou">
             <IpaTextInput
               name={"ou"}
+              ariaLabel={"Org. unit"}
               ipaObject={ipaObject}
               onChange={recordOnChange}
               objectName="user"
@@ -68,6 +69,7 @@ const UsersEmployeeInfo = (props: PropsToEmployeeInfo) => {
           <FormGroup label="Employee number" fieldId="employeenumber">
             <IpaTextInput
               name={"employeenumber"}
+              ariaLabel={"Employee number"}
               ipaObject={ipaObject}
               onChange={recordOnChange}
               objectName="user"
@@ -77,6 +79,7 @@ const UsersEmployeeInfo = (props: PropsToEmployeeInfo) => {
           <FormGroup label="Employee type" fieldId="employeetype">
             <IpaTextInput
               name={"employeetype"}
+              ariaLabel={"Employee type"}
               ipaObject={ipaObject}
               onChange={recordOnChange}
               objectName="user"
@@ -86,6 +89,7 @@ const UsersEmployeeInfo = (props: PropsToEmployeeInfo) => {
           <FormGroup label="Preferred language" fieldId="preferredlanguage">
             <IpaTextInput
               name={"preferredlanguage"}
+              ariaLabel={"Preferred language"}
               ipaObject={ipaObject}
               onChange={recordOnChange}
               objectName="user"
