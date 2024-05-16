@@ -6,12 +6,19 @@ import { User, SudoRule } from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfToolbar, { MembershipDirection } from "./MemberOfToolbar";
 import MemberOfTableSudoRules from "./MemberOfTableSudoRules";
+import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // RPC
-import { useGetSudoRulesInfoByNameQuery } from "src/services/rpcSudoRules";
+import {
+  useGetSudoRulesInfoByNameQuery,
+  useAddToSudoRulesMutation,
+  useGettingSudoRulesQuery,
+} from "src/services/rpcSudoRules";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
+import { apiToSudoRule } from "src/utils/sudoRulesUtils";
+import { ErrorResult } from "src/services/rpc";
 
 interface MemberOfSudoRulesProps {
   user: Partial<User>;
@@ -103,10 +110,103 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
   const someItemSelected = sudoRulesSelected.length > 0;
   const showTableRows = sudoRules.length > 0;
 
+  // Dialogs and actions
+  const [showAddModal, setShowAddModal] = React.useState(false);
+
   // Buttons functionality
   // - Refresh
   const isRefreshButtonEnabled =
     !fullSudoRulesQuery.isFetching && !props.isUserDataLoading;
+  const isAddButtonEnabled =
+    membershipDirection !== "indirect" && isRefreshButtonEnabled;
+
+  // Add new member to 'Sudo rules'
+  // API calls
+  const [addMemberToSudoRules] = useAddToSudoRulesMutation();
+  const [adderSearchValue, setAdderSearchValue] = React.useState("");
+  const [availableSudoRules, setAvailableSudoRules] = React.useState<
+    SudoRule[]
+  >([]);
+  const [availableItems, setAvailableItems] = React.useState<AvailableItems[]>(
+    []
+  );
+
+  // Load available Sudo rules, delay the search for opening the modal
+  const sudoRulesQuery = useGettingSudoRulesQuery({
+    search: adderSearchValue,
+    apiVersion: API_VERSION_BACKUP,
+    sizelimit: 100,
+    startIdx: 0,
+    stopIdx: 100,
+  });
+
+  // Trigger available Sudo rules search
+  React.useEffect(() => {
+    if (showAddModal) {
+      sudoRulesQuery.refetch();
+    }
+  }, [showAddModal, adderSearchValue, props.user]);
+
+  // Update available Sudo rules
+  React.useEffect(() => {
+    if (sudoRulesQuery.data && !sudoRulesQuery.isFetching) {
+      // transform data to Sudo rules
+      const count = sudoRulesQuery.data.result.count;
+      const results = sudoRulesQuery.data.result.results;
+      let items: AvailableItems[] = [];
+      const avalSudoRules: SudoRule[] = [];
+      for (let i = 0; i < count; i++) {
+        const sudoRule = apiToSudoRule(results[i].result);
+        avalSudoRules.push(sudoRule);
+        items.push({
+          key: sudoRule.cn,
+          title: sudoRule.cn,
+        });
+      }
+      items = items.filter((item) => !sudoRulesNamesToLoad.includes(item.key));
+
+      setAvailableSudoRules(avalSudoRules);
+      setAvailableItems(items);
+    }
+  }, [sudoRulesQuery.data, sudoRulesQuery.isFetching]);
+
+  // - Add
+  const onAddSudoRule = (items: AvailableItems[]) => {
+    const uid = props.user.uid;
+    const newSudoRuleNames = items.map((item) => item.key);
+    if (uid === undefined || newSudoRuleNames.length == 0) {
+      return;
+    }
+
+    addMemberToSudoRules([uid, "user", newSudoRuleNames]).then((response) => {
+      if ("data" in response) {
+        if (response.data.result) {
+          // Set alert: success
+          alerts.addAlert(
+            "add-member-success",
+            `Assigned new Sudo rule to user ${uid}`,
+            "success"
+          );
+          // Update displayed Sudo Rules before they are updated via refresh
+          const newSudoRules = sudoRules.concat(
+            availableSudoRules.filter((sudoRule) =>
+              newSudoRuleNames.includes(sudoRule.cn)
+            )
+          );
+          setSudoRules(newSudoRules);
+
+          // Refresh data
+          props.onRefreshUserData();
+          // Close modal
+          setShowAddModal(false);
+        } else if (response.data.error) {
+          // Set alert: error
+          const errorMessage = response.data.error as unknown as ErrorResult;
+          alerts.addAlert("add-member-error", errorMessage.message, "danger");
+        }
+      }
+    });
+  };
 
   return (
     <>
@@ -121,9 +221,8 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
         deleteButtonEnabled={someItemSelected}
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         onDeleteButtonClick={() => {}}
-        addButtonEnabled={true}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        onAddButtonClick={() => {}}
+        addButtonEnabled={isAddButtonEnabled}
+        onAddButtonClick={() => setShowAddModal(true)}
         membershipDirectionEnabled={true}
         membershipDirection={membershipDirection}
         onMembershipDirectionChange={setMembershipDirection}
@@ -150,6 +249,17 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
         onSetPage={(_e, page) => setPage(page)}
         onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
       />
+      {showAddModal && (
+        <MemberOfAddModal
+          showModal={showAddModal}
+          onCloseModal={() => setShowAddModal(false)}
+          availableItems={availableItems}
+          onAdd={onAddSudoRule}
+          onSearchTextChange={setAdderSearchValue}
+          title={`Assign Sudo rule to user ${props.user.uid}`}
+          ariaLabel="Add user of Sudo rule modal"
+        />
+      )}
     </>
   );
 };
