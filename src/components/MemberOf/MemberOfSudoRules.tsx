@@ -103,6 +103,11 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
   const someItemSelected = sudoRulesSelected.length > 0;
   const showTableRows = sudoRules.length > 0;
 
+  // Buttons functionality
+  // - Refresh
+  const isRefreshButtonEnabled =
+    !fullSudoRulesQuery.isFetching && !props.isUserDataLoading;
+
   return (
     <>
       <alerts.ManagedAlerts />
@@ -111,7 +116,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
         onSearchTextChange={setSearchValue}
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         onSearch={() => {}}
-        refreshButtonEnabled={true}
+        refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshUserData}
         deleteButtonEnabled={someItemSelected}
         // eslint-disable-next-line @typescript-eslint/no-empty-function
