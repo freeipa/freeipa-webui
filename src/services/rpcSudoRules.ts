@@ -10,10 +10,14 @@ import { API_VERSION_BACKUP } from "../utils/utils";
 import { SudoRule } from "../utils/datatypes/globalDataTypes";
 
 /**
- * Sudo rules-related endpoints: getSudoRulesInfoByName
+ * Sudo rules-related endpoints: getSudoRulesInfoByName, addToSudoRules
  *
  * API commands:
  * - sudorule_show: https://freeipa.readthedocs.io/en/latest/api/hbacrule_show.html
+ * - sudorule_add_user: https://freeipa.readthedocs.io/en/latest/api/hbacrule_add_user.html
+ * - sudorule_add_host: https://freeipa.readthedocs.io/en/latest/api/hbacrule_add_host.html
+ * - sudorule_add_option: https://freeipa.readthedocs.io/en/latest/api/hbacrule_add_option.html
+ *
  */
 
 export interface SudoRulesShowPayload {
@@ -72,6 +76,42 @@ const extendedApi = api.injectEndpoints({
         return sudoRulesList;
       },
     }),
+    /**
+     * Add entity to Sudo rules
+     * @param {string} toId - ID of the entity to add to Sudo rules
+     * @param {string} type - Type of the entity
+     *    Available types: user | host | option
+     * @param {string[]} listOfMembers - List of members to add to the Sudo rules
+     */
+    addToSudoRules: build.mutation<
+      BatchRPCResponse,
+      [string, string, string[]]
+    >({
+      query: (payload) => {
+        const memberId = payload[0];
+        const memberType = payload[1];
+        const sudoRoleNames = payload[2];
+
+        let methodType = "";
+        if (memberType === "user") {
+          methodType = "sudorule_add_user";
+        } else if (memberType === "host") {
+          methodType = "sudorule_add_host";
+        } else if (memberType === "option") {
+          methodType = "sudorule_add_option";
+        }
+
+        const membersToAdd: Command[] = [];
+        sudoRoleNames.map((sudoRoleName) => {
+          const payloadItem = {
+            method: methodType,
+            params: [[sudoRoleName], { [memberType]: memberId }],
+          } as Command;
+          membersToAdd.push(payloadItem);
+        });
+        return getBatchCommand(membersToAdd, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -82,4 +122,5 @@ export const useGettingSudoRulesQuery = (payloadData) => {
   return useGettingGenericQuery(payloadData);
 };
 
-export const { useGetSudoRulesInfoByNameQuery } = extendedApi;
+export const { useGetSudoRulesInfoByNameQuery, useAddToSudoRulesMutation } =
+  extendedApi;
