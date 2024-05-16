@@ -23,6 +23,7 @@ interface PropsToResetPassword {
   uid: string | undefined;
   isOpen: boolean;
   onClose: () => void;
+  onRefresh: () => void;
 }
 
 const ResetPassword = (props: PropsToResetPassword) => {
@@ -150,6 +151,8 @@ const ResetPassword = (props: PropsToResetPassword) => {
           if (response.data.result) {
             // Close modal
             resetFieldsAndCloseModal();
+            // Refresh data
+            props.onRefresh();
             // Set alert: success
             alerts.addAlert(
               "reset-password-success",

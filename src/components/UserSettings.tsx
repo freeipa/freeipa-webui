@@ -621,6 +621,7 @@ const UserSettings = (props: PropsToUserSettings) => {
         uid={props.user.uid}
         isOpen={isResetPasswordModalOpen}
         onClose={() => setIsResetPasswordModalOpen(false)}
+        onRefresh={props.onRefresh}
       />
       <IssueNewCertificate
         isOpen={isNewCertificateModalOpen}

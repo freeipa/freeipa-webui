@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   Flex,
@@ -44,8 +44,13 @@ interface PropsToUsersAccountSettings {
 }
 
 const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
-  // TODO: Handle the `has_password` variable (boolean) by another Ipa component
-  const [password] = useState("");
+  // Use asterisks if a password is set, leave empty otherwise
+  const [password, setPassword] = useState<string>("");
+  useEffect(() => {
+    if (props.user.has_password) {
+      setPassword("********");
+    }
+  }, [props.user]);
 
   // Get 'ipaObject' and 'recordOnChange' to use in 'IpaTextInput'
   const { ipaObject, recordOnChange } = asRecord(
