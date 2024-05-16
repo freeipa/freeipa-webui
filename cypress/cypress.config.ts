@@ -10,7 +10,7 @@ export default defineConfig({
     specPattern: "**/*.feature",
     baseUrl: "https://server.ipa.demo/",
     testIsolation: false,
-
+    experimentalMemoryManagement: true,
     async setupNodeEvents(
       on: Cypress.PluginEvents,
       config: Cypress.PluginConfigOptions
