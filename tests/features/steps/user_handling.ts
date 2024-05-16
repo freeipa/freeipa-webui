@@ -121,8 +121,9 @@ When("I type in the selected field text {string}", (inputText: string) => {
 Then(
   "I should see value {string} in the field {string}",
   (value: string, fieldName: string) => {
+    const regex = new RegExp("^" + fieldName + "$", "i");
     cy.get("#settings-page span")
-      .contains(fieldName)
+      .contains(regex)
       .parent()
       .click()
       .focused()

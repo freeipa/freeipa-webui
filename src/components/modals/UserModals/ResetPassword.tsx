@@ -70,11 +70,11 @@ const ResetPassword = (props: PropsToResetPassword) => {
   // Fields
   const notLoggedInfields = [
     {
-      id: "new-password",
+      id: "reset-password-new-password",
       name: "New Password",
       pfComponent: (
         <PasswordInput
-          id="reset-password-new-password"
+          id="modal-form-reset-password-new-password"
           name="password"
           value={newPassword}
           aria-label="new password text input"
@@ -86,12 +86,12 @@ const ResetPassword = (props: PropsToResetPassword) => {
       ),
     },
     {
-      id: "reset-password",
+      id: "reset-password-verify-password",
       name: "Verify password",
       pfComponent: (
         <>
           <PasswordInput
-            id="reset-password-verify-password"
+            id="modal-form-reset-password-verify-password"
             name="password2"
             value={verifyPassword}
             aria-label="verify password text input"
@@ -113,11 +113,11 @@ const ResetPassword = (props: PropsToResetPassword) => {
 
   const loggedInfields = [
     {
-      id: "current-password",
+      id: "reset-password-current-password",
       name: "Current Password",
       pfComponent: (
         <PasswordInput
-          id="reset-password-current-password"
+          id="modal-form-reset-password-current-password"
           name="current_password"
           value={currentPassword}
           aria-label="current password text input"
@@ -129,11 +129,11 @@ const ResetPassword = (props: PropsToResetPassword) => {
       ),
     },
     {
-      id: "new-password",
+      id: "reset-password-new-password",
       name: "New Password",
       pfComponent: (
         <PasswordInput
-          id="reset-password-new-password"
+          id="modal-form-reset-password-new-password"
           name="password"
           value={newPassword}
           aria-label="new password text input"
@@ -145,12 +145,12 @@ const ResetPassword = (props: PropsToResetPassword) => {
       ),
     },
     {
-      id: "reset-password",
+      id: "reset-password-verify-password",
       name: "Verify password",
       pfComponent: (
         <>
           <PasswordInput
-            id="reset-password-verify-password"
+            id="modal-form-reset-password-verify-password"
             name="password2"
             value={verifyPassword}
             aria-label="verify password text input"
@@ -169,11 +169,11 @@ const ResetPassword = (props: PropsToResetPassword) => {
       ),
     },
     {
-      id: "otp",
+      id: "reset-password-otp",
       name: "OTP",
       pfComponent: (
         <TextInput
-          id="reset-password-otp"
+          id="modal-form-reset-password-otp"
           name="otp"
           value={otp}
           aria-label="otp text input"
