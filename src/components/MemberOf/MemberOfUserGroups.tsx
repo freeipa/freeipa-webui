@@ -21,14 +21,27 @@ import {
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToGroup } from "src/utils/groupUtils";
+// Navigation
+import { useNavigate, useParams } from "react-router-dom";
+import { URL_PREFIX } from "src/navigation/NavRoutes";
 
 interface MemberOfUserGroupsProps {
   user: Partial<User>;
+  from: string;
   isUserDataLoading: boolean;
   onRefreshUserData: () => void;
 }
 
 const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
+  const navigate = useNavigate();
+  const { uid } = useParams();
+
+  React.useEffect(() => {
+    if (props.user && props.user.uid) {
+      navigate(URL_PREFIX + "/" + props.from + "/" + uid + "/memberof_group");
+    }
+  }, [props.user]);
+
   // Alerts to show in the UI
   const alerts = useAlerts();
 

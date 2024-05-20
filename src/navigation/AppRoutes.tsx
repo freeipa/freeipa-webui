@@ -40,7 +40,29 @@ export const AppRoutes = (): React.ReactElement => (
     <Route path={URL_PREFIX}>
       <Route path="active-users">
         <Route path="" element={<ActiveUsers />} />
-        <Route path="settings" element={<ActiveUsersTabs />} />
+        <Route path=":uid">
+          <Route path="" element={<ActiveUsersTabs memberof="" />} />
+          <Route
+            path="memberof_group"
+            element={<ActiveUsersTabs memberof="group" />}
+          />
+          <Route
+            path="memberof_netgroup"
+            element={<ActiveUsersTabs memberof="netgroup" />}
+          />
+          <Route
+            path="memberof_role"
+            element={<ActiveUsersTabs memberof="role" />}
+          />
+          <Route
+            path="memberof_hbacrule"
+            element={<ActiveUsersTabs memberof="hbacrule" />}
+          />
+          <Route
+            path="memberof_rule"
+            element={<ActiveUsersTabs memberof="sudorule" />}
+          />
+        </Route>
       </Route>
       <Route path="stage-users">
         <Route path="" element={<StageUsers />} />

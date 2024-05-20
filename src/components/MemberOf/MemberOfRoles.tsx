@@ -21,13 +21,26 @@ import {
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToRole } from "src/utils/rolesUtils";
+// Navigation
+import { useNavigate, useParams } from "react-router-dom";
+import { URL_PREFIX } from "src/navigation/NavRoutes";
 
 interface MemberOfRolesProps {
   user: Partial<User>;
+  from: string;
   isUserDataLoading: boolean;
   onRefreshUserData: () => void;
 }
 const MemberOfRoles = (props: MemberOfRolesProps) => {
+  const navigate = useNavigate();
+  const { uid } = useParams();
+
+  React.useEffect(() => {
+    if (props.user && props.user.uid) {
+      navigate(URL_PREFIX + "/" + props.from + "/" + uid + "/memberof_role");
+    }
+  }, [props.user]);
+
   // Alerts to show in the UI
   const alerts = useAlerts();
 

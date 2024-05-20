@@ -240,7 +240,7 @@ const UsersTable = (props: PropsToTable) => {
         style={setStyleOnStatus(user.nsaccountlock)}
         dataLabel={columnNames.uid}
       >
-        <Link to={URL_PREFIX + "/" + props.from + "/settings"} state={user}>
+        <Link to={URL_PREFIX + "/" + props.from + "/" + user.uid} state={user}>
           {user.uid}
         </Link>
       </Td>
