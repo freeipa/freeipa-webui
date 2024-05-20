@@ -232,8 +232,14 @@ export interface Host {
   ipakrboktoauthasdelegate: boolean;
 }
 
-export interface HostGroup {
+export interface HostGroupOld {
   name: string;
+  description: string;
+}
+
+export interface HostGroup {
+  dn: string;
+  cn: string;
   description: string;
 }
 

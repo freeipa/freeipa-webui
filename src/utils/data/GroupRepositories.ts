@@ -13,7 +13,7 @@ import {
   RolesOld,
   HBACRulesOld,
   SudoRulesOld,
-  HostGroup,
+  HostGroupOld,
 } from "../datatypes/globalDataTypes";
 
 // USERS
@@ -126,7 +126,7 @@ export let sudoRulesInitialData: SudoRulesOld[] = [];
 
 // HOSTS
 // - 'Host groups' initial data
-export let hostsHostGroupsInitialData: HostGroup[] = [];
+export let hostsHostGroupsInitialData: HostGroupOld[] = [];
 
 // - 'Netgroups' initial data
 export let hostsNetgroupsInitialData: NetgroupOld[] = [

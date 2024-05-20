@@ -26,7 +26,7 @@ import {
   RolesOld,
   HBACRulesOld,
   SudoRulesOld,
-  HostGroup,
+  HostGroupOld,
 } from "src/utils/datatypes/globalDataTypes";
 // Layout
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
@@ -62,7 +62,7 @@ interface SettersData {
       | RolesOld[]
       | HBACRulesOld[]
       | SudoRulesOld[]
-      | HostGroup[]
+      | HostGroupOld[]
   ) => void;
   changeTabName: (name: string) => void;
 }
@@ -79,14 +79,14 @@ export interface PropsToToolbar {
     | RolesOld[]
     | HBACRulesOld[]
     | SudoRulesOld[]
-    | HostGroup[];
+    | HostGroupOld[];
   shownItems:
     | UserGroupOld[]
     | NetgroupOld[]
     | RolesOld[]
     | HBACRulesOld[]
     | SudoRulesOld[]
-    | HostGroup[];
+    | HostGroupOld[];
   toolbar:
     | "user groups"
     | "netgroups"
