@@ -16,7 +16,7 @@ import MemberOfToolbar from "src/components/MemberOf/MemberOfToolbarOld";
 import MemberOfTable from "src/components/MemberOf/MemberOfTable";
 // Data types
 import {
-  HostGroup,
+  HostGroupOld,
   NetgroupOld,
   RolesOld,
   HBACRulesOld,
@@ -54,7 +54,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
 
   // Alter the available options list to keep the state of the recently added / removed items
   const updateHostGroupsList = (newAvOptionsList: unknown[]) => {
-    hostGroupsList = newAvOptionsList as HostGroup[];
+    hostGroupsList = newAvOptionsList as HostGroupOld[];
   };
   const updateNetgroupsList = (newAvOptionsList: unknown[]) => {
     netgroupsList = newAvOptionsList as NetgroupOld[];
@@ -136,7 +136,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   };
 
   // Available data to be added as member of
-  const hostGroupsFilteredData: HostGroup[] = filterHostGroupsData();
+  const hostGroupsFilteredData: HostGroupOld[] = filterHostGroupsData();
   const netgroupsFilteredData: NetgroupOld[] = filterNetgroupsData();
   const rolesFilteredData: RolesOld[] = filterRolesData();
   const hbacRulesFilteredData: HBACRulesOld[] = filterHbacRulesData();
@@ -165,7 +165,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   //  - Number of items for a specific list
   const updateGroupRepository = (
     groupRepository:
-      | HostGroup[]
+      | HostGroupOld[]
       | NetgroupOld[]
       | RolesOld[]
       | HBACRulesOld[]
@@ -173,7 +173,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   ) => {
     switch (tabName) {
       case "Host groups":
-        setHostGroupsRepository(groupRepository as HostGroup[]);
+        setHostGroupsRepository(groupRepository as HostGroupOld[]);
         setShownHostGroupsList(hostGroupsRepository.slice(0, perPage));
         setHostGroupsRepoLength(hostGroupsRepository.length);
         break;
@@ -260,7 +260,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   // Update pagination
   const changeMemberGroupsList = (
     value:
-      | HostGroup[]
+      | HostGroupOld[]
       | NetgroupOld[]
       | RolesOld[]
       | HBACRulesOld[]
@@ -268,7 +268,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   ) => {
     switch (activeTabKey) {
       case 0:
-        setShownHostGroupsList(value as HostGroup[]);
+        setShownHostGroupsList(value as HostGroupOld[]);
         break;
       case 1:
         setShownNetgroupsList(value as NetgroupOld[]);

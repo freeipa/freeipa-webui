@@ -134,6 +134,7 @@ export interface GenericPayload {
     | "host"
     | "service"
     | "group"
+    | "hostgroup"
     | "netgroups"
     | "role"
     | "hbacrule"
@@ -279,7 +280,11 @@ export const api = createApi({
           version: apiVersion,
         };
 
-        if (objName === "group" || objName === "netgroup") {
+        if (
+          objName === "group" ||
+          objName === "netgroup" ||
+          objName === "hostgroup"
+        ) {
           if (user !== undefined) {
             params["user"] = user;
           } else if (no_user !== undefined) {
@@ -355,7 +360,11 @@ export const api = createApi({
             id = idResponseData.result.result[i] as servicesType;
           } else if (objName === "user" || objName === "stageuser") {
             id = idResponseData.result.result[i] as UIDType;
-          } else if (objName === "group" || objName === "netgroup") {
+          } else if (
+            objName === "group" ||
+            objName === "netgroup" ||
+            objName === "hostgroup"
+          ) {
             id = idResponseData.result.result[i] as cnType;
           } else if (objName === "role") {
             id = idResponseData.result.result[i] as roleType;
@@ -449,6 +458,9 @@ export const api = createApi({
         } else if (entryType === "service") {
           method = "service_find";
           show_method = "service_show";
+        } else if (entryType === "hostgroup") {
+          method = "hostgroup_find";
+          show_method = "hostgroup_show";
         }
 
         // Prepare payload

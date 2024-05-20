@@ -2,10 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import hostGroupsJson from "./hostGroups.json";
 // Data type
-import { HostGroup } from "src/utils/datatypes/globalDataTypes";
+import { HostGroupOld } from "src/utils/datatypes/globalDataTypes";
 
 interface HostGroupState {
-  hostGroupsList: HostGroup[];
+  hostGroupsList: HostGroupOld[];
 }
 
 const initialState: HostGroupState = {
