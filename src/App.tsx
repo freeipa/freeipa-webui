@@ -7,6 +7,11 @@ import { Spinner } from "@patternfly/react-core";
 import { AppLayout } from "./AppLayout";
 // Navigation
 import { AppRoutes } from "./navigation/AppRoutes";
+import {
+  getBreadCrumbByPath,
+  getGroupByPath,
+  getTitleByPath,
+} from "./navigation/NavRoutes";
 // RPC client
 import { Command, useBatchCommandQuery } from "./services/rpc";
 // Redux
@@ -21,39 +26,52 @@ import {
   updateCaIsEnabled,
   updateVaultConfiguration,
 } from "src/store/Global/global-slice";
-
-// Context
-export const Context = React.createContext<{
-  groupActive: string;
-  setGroupActive: React.Dispatch<any>;
-  browserTitle: string;
-  setBrowserTitle: React.Dispatch<any>;
-  superGroupActive: string;
-  setSuperGroupActive: React.Dispatch<any>;
-}>({
-  groupActive: "active-users",
-  setGroupActive: () => null,
-  browserTitle: "Active users title",
-  setBrowserTitle: () => null,
-  superGroupActive: "users",
-  setSuperGroupActive: () => null,
-});
+import {
+  updateBreadCrumbPath,
+  updateActivePageName,
+  updateActiveFirstLevel,
+  updateActiveSecondLevel,
+  updateBrowserTitle,
+} from "src/store/Global/routes-slice";
+// Router DOM
+import { useLocation, useNavigate } from "react-router-dom";
 
 const App: React.FunctionComponent = () => {
-  // Dispatch (Redux)
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
-  // - Initial active group
-  const [groupActive, setGroupActive] = React.useState("active-users");
-  // - Initial title
-  const [browserTitle, setBrowserTitle] = React.useState("Active users title");
-  // - Initial active super group
-  const [superGroupActive, setSuperGroupActive] = React.useState("users");
+  // When accessing to a given URL directly from the browser, the routing data is loaded
+  useEffect(() => {
+    // Get group data based on current path
+    const loadedGroup = getGroupByPath(pathname);
+    if (loadedGroup.length > 0) {
+      let currentFirstLevel = loadedGroup[loadedGroup.length - 2];
+      const currentSecondLevel = loadedGroup[loadedGroup.length - 1];
+      // If no second level is present, first and second levels have the same value
+      // This allows the navbar item to be expanded and highlighted
+      // E.g.: ['', 'services']
+      if (currentFirstLevel === "") {
+        currentFirstLevel = currentSecondLevel;
+      }
+      dispatch(updateActiveFirstLevel(currentFirstLevel));
+      dispatch(updateActiveSecondLevel(currentSecondLevel));
+      dispatch(updateActivePageName(currentSecondLevel)); // Corresponds to the page name
+    }
 
-  // Update the 'browserTitle' on document.title when this changes
-  React.useEffect(() => {
-    document.title = browserTitle;
-  }, [browserTitle]);
+    // Get breadcrumb data based on current path
+    const loadedBreadCrumb = getBreadCrumbByPath(pathname);
+    if (loadedBreadCrumb.length > 0) {
+      dispatch(updateBreadCrumbPath(loadedBreadCrumb));
+    }
+
+    // Get browser title based on current path
+    const currentTitle = getTitleByPath(pathname);
+    if (currentTitle) {
+      dispatch(updateBrowserTitle(currentTitle));
+    }
+    navigate(pathname);
+  }, []);
 
   // [API Call] Get initial data
   // TODO: Move this call into a sequential endpoint to execute this
@@ -118,27 +136,16 @@ const App: React.FunctionComponent = () => {
   }, [isInitialBatchLoading]);
 
   return (
-    <Context.Provider
-      value={{
-        groupActive,
-        setGroupActive,
-        browserTitle,
-        setBrowserTitle,
-        superGroupActive,
-        setSuperGroupActive,
-      }}
-    >
-      <AppLayout>
-        {!isInitialBatchLoading ? (
-          <AppRoutes />
-        ) : (
-          <Spinner
-            style={{ alignSelf: "center", marginTop: "15%" }}
-            aria-label="Spinner waiting to load page"
-          />
-        )}
-      </AppLayout>
-    </Context.Provider>
+    <AppLayout>
+      {!isInitialBatchLoading ? (
+        <AppRoutes />
+      ) : (
+        <Spinner
+          style={{ alignSelf: "center", marginTop: "15%" }}
+          aria-label="Spinner waiting to load page"
+        />
+      )}
+    </AppLayout>
   );
 };
 

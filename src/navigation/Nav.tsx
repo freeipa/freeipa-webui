@@ -3,8 +3,15 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 // Navigation (PatternFly)
 import { navigationRoutes } from "./NavRoutes";
-// Context
-import { Context } from "../App";
+// Redux
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
+import {
+  updateBreadCrumbPath,
+  updateActivePageName,
+  updateActiveFirstLevel,
+  updateActiveSecondLevel,
+  updateBrowserTitle,
+} from "src/store/Global/routes-slice";
 
 // Renders NavItem
 const renderNavItem = (
@@ -12,16 +19,18 @@ const renderNavItem = (
   id: number,
   superGroup: string
 ) => {
-  const { groupActive, setGroupActive, setBrowserTitle, setSuperGroupActive } =
-    React.useContext(Context);
+  const dispatch = useAppDispatch();
+  const activePageName = useAppSelector((state) => state.routes.activePageName);
   return (
     <NavItem
       key={id}
-      isActive={groupActive === item.group}
+      isActive={activePageName === item.group}
       onClick={() => {
-        setGroupActive(item.group);
-        setBrowserTitle(item.title);
-        setSuperGroupActive(superGroup);
+        dispatch(updateActiveSecondLevel(item.group));
+        dispatch(updateActivePageName(item.group));
+        dispatch(updateBrowserTitle(item.title));
+        dispatch(updateActiveFirstLevel(superGroup));
+        dispatch(updateBreadCrumbPath([{ name: item.label, url: item.path }]));
       }}
     >
       <NavLink to={item.path}>{item.label}</NavLink>
@@ -31,7 +40,11 @@ const renderNavItem = (
 
 // Renders 'Navigation'
 const Navigation = () => {
-  const { superGroupActive } = React.useContext(Context);
+  // The first level will determine if the section is expanded and highligted
+  const activeFirstLevel = useAppSelector(
+    (state) => state.routes.activeFirstLevel
+  );
+
   return (
     <Nav>
       <NavList>
@@ -41,20 +54,20 @@ const Navigation = () => {
               key={id}
               title={section.label}
               isActive={section.items.some(
-                (route) => route.group === superGroupActive
+                (route) => route.group === activeFirstLevel
               )}
               isExpanded={section.items.some(
-                (route) => route.group === superGroupActive
+                (route) => route.group === activeFirstLevel
               )}
             >
               {section.items.map((subsection, sid) => {
-                if (subsection.items.length > 0) {
+                if (subsection.items && subsection.items.length > 0) {
                   return (
                     <NavExpandable
                       key={sid}
                       title={subsection.label}
-                      isActive={superGroupActive === subsection.group}
-                      isExpanded={superGroupActive === subsection.group}
+                      isActive={activeFirstLevel === subsection.group}
+                      isExpanded={activeFirstLevel === subsection.group}
                     >
                       {subsection.items.map(
                         (linkItem, lid) =>
