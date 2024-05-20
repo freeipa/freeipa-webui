@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 // PatternFly
 import {
   Icon,
@@ -13,70 +13,83 @@ import {
   TabTitleText,
 } from "@patternfly/react-core";
 // React Router DOM
-import { useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
-// Data types
-import { User } from "src/utils/datatypes/globalDataTypes";
-// Other
+// Components
 import UserSettings from "../../components/UserSettings";
 import UserMemberOf from "./UserMemberOf";
+import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 // Layouts
-import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
 // Hooks
 import { useUserSettings } from "src/hooks/useUserSettingsData";
+// Icons
 import LockIcon from "@patternfly/react-icons/dist/esm/icons/lock-icon";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
+import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
+// Utils
+import { partialUserToUser } from "src/utils/userUtils";
 
-const ActiveUsersTabs = () => {
-  // Get location (React Router DOM) and get state data
-  const location = useLocation();
-  const userData: User = location.state as User;
-  const uid = userData.uid;
+// eslint-disable-next-line react/prop-types
+const ActiveUsersTabs = ({ memberof }) => {
+  const { uid } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  React.useEffect(() => {
+    if (!uid) {
+      // Redirect to the active users page
+      navigate(URL_PREFIX + "/active-users");
+    } else {
+      // Update breadcrumb route
+      const currentPath: BreadCrumbItem[] = [
+        {
+          name: "Active users",
+          url: URL_PREFIX + "/active-users",
+        },
+        {
+          name: uid,
+          url: URL_PREFIX + "/active-users/" + uid,
+          isActive: true,
+        },
+      ];
+      dispatch(updateBreadCrumbPath(currentPath));
+    }
+  }, [uid]);
+
+  React.useEffect(() => {
+    if (!memberof) {
+      // Redirect to the user settings page
+      navigate(URL_PREFIX + "/active-users/" + uid);
+    }
+  }, [memberof]);
 
   // Data loaded from DB
-  const userSettingsData = useUserSettings(uid);
+  const userSettingsData = useUserSettings(uid as string);
 
   // Tab
-  const [activeTabKey, setActiveTabKey] = useState(0);
+  const activeTab = memberof ? "memberof" : "settings";
 
-  const handleTabClick = (
-    _event: React.MouseEvent<HTMLElement, MouseEvent>,
-    tabIndex: number | string
-  ) => {
-    setActiveTabKey(tabIndex as number);
-  };
-
-  // 'pagesVisited' array will contain the visited pages.
-  // - Those will be passed to the BreadcrumbLayout component.
-  const pagesVisited = [
-    {
-      name: "Active users",
-      url: URL_PREFIX + "/active-users",
-    },
-  ];
-
-  if (userSettingsData.isLoading) {
+  if (userSettingsData.isLoading || !userSettingsData.user) {
     return <DataSpinner />;
   }
 
   const disabled = userSettingsData.user.nsaccountlock;
+  const user = userSettingsData.user;
 
   return (
     <Page>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
-        <BreadcrumbLayout
-          className="pf-v5-u-mb-md"
-          userId={userData.uid}
-          pagesVisited={pagesVisited}
-        />
+        <BreadCrumb className="pf-v5-u-mb-md" preText="User login:" />
         <TextContent>
           <Title headingLevel="h1">
             <Text
               className="pf-v5-u-display-flex"
               title={disabled ? "User is disabled" : ""}
             >
-              {userData.uid}
+              {uid}
               {disabled ? (
                 <Icon
                   className="pf-v5-u-ml-sm pf-v5-u-mt-sm"
@@ -94,14 +107,22 @@ const ActiveUsersTabs = () => {
       </PageSection>
       <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
         <Tabs
-          activeKey={activeTabKey}
-          onSelect={handleTabClick}
+          activeKey={activeTab}
+          onSelect={(_event, tabIndex) => {
+            if (tabIndex === "settings") {
+              navigate(URL_PREFIX + "/active-users/" + uid);
+            } else if (tabIndex === "memberof") {
+              navigate(URL_PREFIX + "/active-users/" + uid + "/memberof_group");
+            }
+          }}
           variant="light300"
           isBox
           className="pf-v5-u-ml-lg"
+          mountOnEnter
+          unmountOnExit
         >
           <Tab
-            eventKey={0}
+            eventKey={"settings"}
             name="details"
             title={<TabTitleText>Settings</TabTitleText>}
           >
@@ -126,11 +147,16 @@ const ActiveUsersTabs = () => {
             />
           </Tab>
           <Tab
-            eventKey={1}
+            eventKey={"memberof"}
             name="memberof-details"
             title={<TabTitleText>Is a member of</TabTitleText>}
           >
-            <UserMemberOf user={userData} />
+            {/* <UserMemberOf user={userData} from="active-users" /> */}
+            <UserMemberOf
+              user={partialUserToUser(user)}
+              tab={memberof || "group"}
+              from="active-users"
+            />
           </Tab>
         </Tabs>
       </PageSection>

@@ -22,14 +22,29 @@ import { apiToNetgroup } from "src/utils/netgroupsUtils";
 // Modals
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
+// Navigation
+import { useNavigate, useParams } from "react-router-dom";
+import { URL_PREFIX } from "src/navigation/NavRoutes";
 
 interface MemberOfNetroupsProps {
   user: Partial<User>;
+  from: string;
   isUserDataLoading: boolean;
   onRefreshUserData: () => void;
 }
 
 const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
+  const navigate = useNavigate();
+  const { uid } = useParams();
+
+  React.useEffect(() => {
+    if (props.user && props.user.uid) {
+      navigate(
+        URL_PREFIX + "/" + props.from + "/" + uid + "/memberof_netgroup"
+      );
+    }
+  }, [props.user]);
+
   // Alerts to show in the UI
   const alerts = useAlerts();
 

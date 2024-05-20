@@ -459,7 +459,7 @@ export const useGettingPreservedUserQuery = (payloadData) => {
 export const useGetUsersFullQuery = (userId: string) => {
   // Active and preserved users
   const query_args = {
-    userId: userId,
+    userId: [userId],
     user_type: "active",
     version: API_VERSION_BACKUP,
   };

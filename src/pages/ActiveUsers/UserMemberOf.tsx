@@ -23,6 +23,8 @@ import { convertToString } from "src/utils/ipaObjectUtils";
 
 interface PropsToUserMemberOf {
   user: User;
+  tab: string;
+  from: string;
 }
 
 const UserMemberOf = (props: PropsToUserMemberOf) => {
@@ -106,7 +108,13 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
         isFilled={false}
         className="pf-v5-u-m-lg"
       >
-        <Tabs activeKey={activeTabKey} onSelect={handleTabClick} isBox={false}>
+        <Tabs
+          activeKey={activeTabKey}
+          onSelect={handleTabClick}
+          isBox={false}
+          mountOnEnter
+          unmountOnExit
+        >
           <Tab
             eventKey={0}
             name="memberof_group"
@@ -121,6 +129,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
           >
             <MemberOfUserGroups
               user={user}
+              from={props.from}
               isUserDataLoading={userQuery.isFetching}
               onRefreshUserData={onRefreshUserData}
             />
@@ -139,6 +148,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
           >
             <MemberOfNetgroups
               user={user}
+              from={props.from}
               isUserDataLoading={userQuery.isFetching}
               onRefreshUserData={onRefreshUserData}
             />
@@ -157,6 +167,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
           >
             <MemberOfRoles
               user={user}
+              from={props.from}
               isUserDataLoading={userQuery.isFetching}
               onRefreshUserData={onRefreshUserData}
             />
@@ -175,6 +186,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
           >
             <MemberOfHbacRules
               user={user}
+              from={props.from}
               isUserDataLoading={userQuery.isFetching}
               onRefreshUserData={onRefreshUserData}
             />
