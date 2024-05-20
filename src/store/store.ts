@@ -13,6 +13,7 @@ import hostsReducer from "./Identity/hosts-slice";
 import hostGroupsReducer from "./Identity/hostGroups-slice";
 import servicesReducer from "./Identity/services-slice";
 import { api } from "../services/rpc";
+import routesReducer from "./Global/routes-slice";
 
 const store = configureStore({
   reducer: {
@@ -29,6 +30,7 @@ const store = configureStore({
     hosts: hostsReducer,
     hostGroups: hostGroupsReducer,
     services: servicesReducer,
+    routes: routesReducer,
   },
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
