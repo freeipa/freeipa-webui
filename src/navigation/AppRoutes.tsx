@@ -59,7 +59,7 @@ export const AppRoutes = (): React.ReactElement => (
             element={<ActiveUsersTabs memberof="hbacrule" />}
           />
           <Route
-            path="memberof_rule"
+            path="memberof_sudorule"
             element={<ActiveUsersTabs memberof="sudorule" />}
           />
         </Route>
