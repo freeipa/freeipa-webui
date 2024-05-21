@@ -205,6 +205,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
           >
             <MemberOfSudoRules
               user={user}
+              from={props.from}
               isUserDataLoading={userQuery.isFetching}
               onRefreshUserData={onRefreshUserData}
             />
