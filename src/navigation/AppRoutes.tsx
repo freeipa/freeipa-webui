@@ -66,7 +66,9 @@ export const AppRoutes = (): React.ReactElement => (
       </Route>
       <Route path="stage-users">
         <Route path="" element={<StageUsers />} />
-        <Route path="settings" element={<StageUsersTabs />} />
+        <Route path=":uid">
+          <Route path="" element={<StageUsersTabs />} />
+        </Route>
       </Route>
       <Route path="preserved-users">
         <Route path="" element={<PreservedUsers />} />
