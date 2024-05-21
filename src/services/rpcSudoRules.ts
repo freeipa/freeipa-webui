@@ -10,13 +10,16 @@ import { API_VERSION_BACKUP } from "../utils/utils";
 import { SudoRule } from "../utils/datatypes/globalDataTypes";
 
 /**
- * Sudo rules-related endpoints: getSudoRulesInfoByName, addToSudoRules
+ * Sudo rules-related endpoints: getSudoRulesInfoByName, addToSudoRules, removeFromSudoRules
  *
  * API commands:
- * - sudorule_show: https://freeipa.readthedocs.io/en/latest/api/hbacrule_show.html
- * - sudorule_add_user: https://freeipa.readthedocs.io/en/latest/api/hbacrule_add_user.html
- * - sudorule_add_host: https://freeipa.readthedocs.io/en/latest/api/hbacrule_add_host.html
- * - sudorule_add_option: https://freeipa.readthedocs.io/en/latest/api/hbacrule_add_option.html
+ * - sudorule_show: https://freeipa.readthedocs.io/en/latest/api/sudorule_show.html
+ * - sudorule_add_user: https://freeipa.readthedocs.io/en/latest/api/sudorule_add_user.html
+ * - sudorule_add_host: https://freeipa.readthedocs.io/en/latest/api/sudorule_add_host.html
+ * - sudorule_add_option: https://freeipa.readthedocs.io/en/latest/api/sudorule_add_option.html
+ * - sudorule_remove_user: https://freeipa.readthedocs.io/en/latest/api/sudorule_remove_user.html
+ * - sudorule_remove_host: https://freeipa.readthedocs.io/en/latest/api/sudorule_remove_host.html
+ * - sudorule_remove_option: https://freeipa.readthedocs.io/en/latest/api/sudorule_remove_option.html
  *
  */
 
@@ -112,6 +115,42 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(membersToAdd, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Delete entity from Sudo rules
+     * @param {string} memberId - ID of the entity to remove from Sudo rules
+     * @param {string} memberType - Type of the entity
+     *    Available types: user | host | option
+     * @param {string[]} listOfSudoRules - List of members to remove from Sudo rules
+     */
+    removeFromSudoRules: build.mutation<
+      BatchRPCResponse,
+      [string, string, string[]]
+    >({
+      query: (payload) => {
+        const memberId = payload[0];
+        const memberType = payload[1];
+        const listOfSudoRules = payload[2];
+
+        let methodType = "";
+        if (memberType === "user") {
+          methodType = "sudorule_remove_user";
+        } else if (memberType === "host") {
+          methodType = "sudorule_remove_host";
+        } else if (memberType === "option") {
+          methodType = "sudorule_remove_option";
+        }
+
+        const membersToRemove: Command[] = [];
+        listOfSudoRules.map((hbacrule) => {
+          const payloadItem: Command = {
+            method: methodType,
+            params: [[hbacrule], { [memberType]: memberId }],
+          };
+          membersToRemove.push(payloadItem);
+        });
+        return getBatchCommand(membersToRemove, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -122,5 +161,8 @@ export const useGettingSudoRulesQuery = (payloadData) => {
   return useGettingGenericQuery(payloadData);
 };
 
-export const { useGetSudoRulesInfoByNameQuery, useAddToSudoRulesMutation } =
-  extendedApi;
+export const {
+  useGetSudoRulesInfoByNameQuery,
+  useAddToSudoRulesMutation,
+  useRemoveFromSudoRulesMutation,
+} = extendedApi;

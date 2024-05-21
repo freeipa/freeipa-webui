@@ -7,6 +7,7 @@ import { User, SudoRule } from "src/utils/datatypes/globalDataTypes";
 import MemberOfToolbar, { MembershipDirection } from "./MemberOfToolbar";
 import MemberOfTableSudoRules from "./MemberOfTableSudoRules";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
+import MemberOfDeleteModal from "./MemberOfDeleteModal";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // RPC
@@ -14,6 +15,7 @@ import {
   useGetSudoRulesInfoByNameQuery,
   useAddToSudoRulesMutation,
   useGettingSudoRulesQuery,
+  useRemoveFromSudoRulesMutation,
 } from "src/services/rpcSudoRules";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
@@ -112,6 +114,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
 
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
   // Buttons functionality
   // - Refresh
@@ -123,6 +126,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
   // Add new member to 'Sudo rules'
   // API calls
   const [addMemberToSudoRules] = useAddToSudoRulesMutation();
+  const [removeMembersFromSudoRules] = useRemoveFromSudoRulesMutation();
   const [adderSearchValue, setAdderSearchValue] = React.useState("");
   const [availableSudoRules, setAvailableSudoRules] = React.useState<
     SudoRule[]
@@ -208,6 +212,47 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
     });
   };
 
+  // - Delete
+  const onDeleteSudoRules = () => {
+    if (props.user.uid) {
+      removeMembersFromSudoRules([
+        props.user.uid,
+        "user",
+        sudoRulesSelected,
+      ]).then((response) => {
+        if ("data" in response) {
+          if (response.data.result) {
+            // Set alert: success
+            alerts.addAlert(
+              "remove-sudo-rules-success",
+              "Removed Sudo rules from user '" + props.user.uid + "'",
+              "success"
+            );
+            // Update displayed HBAC rules
+            const newSudoRules = sudoRules.filter(
+              (sudoRule) => !sudoRulesSelected.includes(sudoRule.cn)
+            );
+            setSudoRules(newSudoRules);
+            // Update data
+            setSudoRulesSelected([]);
+            // Close modal
+            setShowDeleteModal(false);
+            // Refresh
+            props.onRefreshUserData();
+          } else if (response.data.error) {
+            // Set alert: error
+            const errorMessage = response.data.error as unknown as ErrorResult;
+            alerts.addAlert(
+              "remove-sudo-rules-error",
+              errorMessage.message,
+              "danger"
+            );
+          }
+        }
+      });
+    }
+  };
+
   return (
     <>
       <alerts.ManagedAlerts />
@@ -219,8 +264,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshUserData}
         deleteButtonEnabled={someItemSelected}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        onDeleteButtonClick={() => {}}
+        onDeleteButtonClick={() => setShowDeleteModal(true)}
         addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
         membershipDirectionEnabled={true}
@@ -259,6 +303,21 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
           title={`Assign Sudo rule to user ${props.user.uid}`}
           ariaLabel="Add user of Sudo rule modal"
         />
+      )}
+      {showDeleteModal && someItemSelected && (
+        <MemberOfDeleteModal
+          showModal={showDeleteModal}
+          onCloseModal={() => setShowDeleteModal(false)}
+          title="Delete user from Sudo rules"
+          onDelete={onDeleteSudoRules}
+        >
+          <MemberOfTableSudoRules
+            sudoRules={sudoRules.filter((sudorule) =>
+              sudoRulesSelected.includes(sudorule.cn)
+            )}
+            showTableRows
+          />
+        </MemberOfDeleteModal>
       )}
     </>
   );
