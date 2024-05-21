@@ -468,7 +468,7 @@ export const useGetUsersFullQuery = (userId: string) => {
 
 export const useGetStageUsersFullQuery = (userId: string) => {
   const query_args = {
-    userId: userId,
+    userId: [userId],
     user_type: "stage",
     version: API_VERSION_BACKUP,
   };
