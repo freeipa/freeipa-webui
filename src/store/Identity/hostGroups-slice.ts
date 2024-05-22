@@ -1,23 +1,41 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { RootState } from "../store";
-import hostGroupsJson from "./hostGroups.json";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
 // Data type
-import { HostGroupOld } from "src/utils/datatypes/globalDataTypes";
+import { HostGroup } from "src/utils/datatypes/globalDataTypes";
 
 interface HostGroupState {
-  hostGroupsList: HostGroupOld[];
+  userGroupList: HostGroup[];
 }
 
 const initialState: HostGroupState = {
-  hostGroupsList: hostGroupsJson,
+  userGroupList: [],
 };
 
 const hostGroupsSlice = createSlice({
   name: "hostgroups",
   initialState,
-  reducers: {},
+  reducers: {
+    updateGroupsList: (state, action: PayloadAction<HostGroup[]>) => {
+      const updatedServicesList = action.payload;
+      state.userGroupList = updatedServicesList;
+    },
+    addGroup: (state, action: PayloadAction<HostGroup>) => {
+      const newService = action.payload;
+      state.userGroupList.push({ ...newService });
+    },
+    removeGroup: (state, action: PayloadAction<string>) => {
+      const groupId = action.payload;
+      const updatedGroupList = state.userGroupList.filter(
+        (group) => group.cn !== groupId
+      );
+      // If not empty, replace list by new array
+      if (updatedGroupList) {
+        state.userGroupList = updatedGroupList;
+      }
+    },
+  },
 });
 
-export const selectHostGroups = (state: RootState) =>
-  state.hostGroups.hostGroupsList;
 export default hostGroupsSlice.reducer;
+export const { updateGroupsList, addGroup, removeGroup } =
+  hostGroupsSlice.actions;

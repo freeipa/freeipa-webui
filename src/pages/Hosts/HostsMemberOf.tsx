@@ -44,9 +44,7 @@ interface PropsToHostsMemberOf {
 
 const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   // Retrieve each group list from Redux:
-  let hostGroupsList = useAppSelector(
-    (state) => state.hostGroups.hostGroupsList
-  );
+  let hostGroupsList = [] as HostGroupOld[];
   let netgroupsList = useAppSelector((state) => state.netgroups.netgroupList);
   let rolesList = useAppSelector((state) => state.roles.roleList);
   let hbacRulesList = useAppSelector((state) => state.hbacrules.hbacRulesList);

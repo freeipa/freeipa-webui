@@ -5,6 +5,7 @@ import React from "react";
 import {
   DN,
   Host,
+  HostGroup,
   Metadata,
   Service,
   User,
@@ -43,6 +44,10 @@ export const isServiceSelectable = (service: Service) =>
 
 // Determine whether a UserGroup is selectable or not
 export const isUserGroupSelectable = (group: UserGroup) => group.cn != "";
+
+// Determine whether a hostGroup is selectable or not
+export const isHostGroupSelectable = (hostGroup: HostGroup) =>
+  hostGroup.cn != "";
 
 // Write JSX error messages into 'apiErrorsJsx' array
 export const apiErrorToJsXError = (

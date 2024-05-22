@@ -3,6 +3,7 @@ import {
   Command,
   getCommand,
   getBatchCommand,
+  BatchResponse,
   BatchRPCResponse,
   FindRPCResponse,
   useGettingGenericQuery,
@@ -35,8 +36,46 @@ export interface GroupAddPayload {
   description?: string;
 }
 
+export type GroupFullData = {
+  hostGroup?: Partial<HostGroup>;
+};
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
+    getHostGroupsFullData: build.query<GroupFullData, string>({
+      query: (groupId) => {
+        // Prepare search parameters
+        const group_params = {
+          all: true,
+          rights: true,
+        };
+
+        const groupShowCommand: Command = {
+          method: "hostgroup_show",
+          params: [[groupId], group_params],
+        };
+
+        const batchPayload: Command[] = [groupShowCommand];
+
+        return getBatchCommand(batchPayload, API_VERSION_BACKUP);
+      },
+      transformResponse: (response: BatchResponse): GroupFullData => {
+        const [groupResponse] = response.result.results;
+
+        // Initialize group data (to prevent 'undefined' values)
+        const groupData = groupResponse.result;
+
+        let groupObject = {};
+        if (!groupResponse.error) {
+          groupObject = apiToHostGroup(groupData);
+        }
+
+        return {
+          hostGroup: groupObject,
+        };
+      },
+      providesTags: ["FullHostGroup"],
+    }),
     /**
      * Add a group
      * @param {object} GroupAddPayload - Group payload parameters
@@ -44,7 +83,7 @@ const extendedApi = api.injectEndpoints({
      * @param GroupAddPayload.desc - The group description
      * @param GroupAddPayload.version - The api version
      */
-    addGroup: build.mutation<FindRPCResponse, GroupAddPayload>({
+    addHostGroup: build.mutation<FindRPCResponse, GroupAddPayload>({
       query: (payloadData) => {
         const params = [
           [payloadData["groupName"]],
@@ -67,7 +106,7 @@ const extendedApi = api.injectEndpoints({
      * Remove groups
      * @param {HostGroup[]} listOfGroups - List of groups to remove
      */
-    removeGroups: build.mutation<BatchRPCResponse, HostGroup[]>({
+    removeHostGroups: build.mutation<BatchRPCResponse, HostGroup[]>({
       query: (groups) => {
         const groupsToDeletePayload: Command[] = [];
         groups.map((group) => {
@@ -87,7 +126,10 @@ const extendedApi = api.injectEndpoints({
      *    Available types: user | host | service
      * @param {string[]} listOfMembers - List of members to add to the groups
      */
-    addToGroups: build.mutation<BatchRPCResponse, [string, string, string[]]>({
+    addToHostGroups: build.mutation<
+      BatchRPCResponse,
+      [string, string, string[]]
+    >({
       query: (payload) => {
         const memberId = payload[0];
         const memberType = payload[1];
@@ -103,7 +145,7 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(membersToAdd, API_VERSION_BACKUP);
       },
     }),
-    removeFromGroups: build.mutation<
+    removeFromHostGroups: build.mutation<
       BatchRPCResponse,
       [string, string, string[]]
     >({
@@ -128,7 +170,7 @@ const extendedApi = api.injectEndpoints({
      * @param {boolean} noMembers - Whether to show members or not
      * @returns {BatchRPCResponse} - Batch response
      */
-    getGroupInfoByName: build.query<HostGroup[], GroupShowPayload>({
+    getHostGroupInfoByName: build.query<HostGroup[], GroupShowPayload>({
       query: (payload) => {
         const groupNames = payload.groupNamesList;
         const noMembers = payload.no_members || true;
@@ -155,16 +197,17 @@ const extendedApi = api.injectEndpoints({
 });
 
 // Groups
-export const useGettingGroupsQuery = (payloadData) => {
+export const useGettingHostGroupsQuery = (payloadData) => {
   payloadData["objName"] = "hostgroup";
   payloadData["objAttr"] = "cn";
   return useGettingGenericQuery(payloadData);
 };
 
 export const {
-  useAddGroupMutation,
-  useRemoveGroupsMutation,
-  useAddToGroupsMutation,
-  useRemoveFromGroupsMutation,
-  useGetGroupInfoByNameQuery,
+  useAddHostGroupMutation,
+  useRemoveHostGroupsMutation,
+  useAddToHostGroupsMutation,
+  useRemoveFromHostGroupsMutation,
+  useGetHostGroupInfoByNameQuery,
+  useGetHostGroupsFullDataQuery,
 } = extendedApi;
