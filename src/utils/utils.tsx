@@ -7,6 +7,7 @@ import {
   Host,
   HostGroup,
   Metadata,
+  Netgroup,
   Service,
   User,
   UserGroup,
@@ -37,6 +38,9 @@ export const isUserSelectable = (user: User) => user.uid !== "";
 
 // Determine whether a host is selectable or not
 export const isHostSelectable = (host: Host) => host.fqdn != "";
+
+// Determine whether a host is selectable or not
+export const isNetgroupSelectable = (group: Netgroup) => group.cn != "";
 
 // Determine whether a service is selectable or not
 export const isServiceSelectable = (service: Service) =>

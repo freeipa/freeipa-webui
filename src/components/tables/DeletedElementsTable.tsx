@@ -8,9 +8,11 @@ import TableLayout from "src/components/layouts/TableLayout";
 import {
   Host,
   HostGroup,
+  Netgroup,
   Service,
   UserGroup,
 } from "src/utils/datatypes/globalDataTypes";
+
 /*
  * Goal: Show already selected elements ready to delete in a table.
  *
@@ -40,7 +42,13 @@ import {
 
 export interface PropsToDeletedElementsTable {
   mode: "passing_id" | "passing_full_data";
-  elementsToDelete: string[] | Host[] | HostGroup[] | Service[] | UserGroup[];
+  elementsToDelete:
+    | string[]
+    | Host[]
+    | HostGroup[]
+    | Netgroup[]
+    | Service[]
+    | UserGroup[];
   columnNames: string[];
   elementType: string;
   idAttr: string;

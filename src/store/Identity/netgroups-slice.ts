@@ -1,23 +1,41 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { RootState } from "../store";
-import netgroupsJson from "./netgroups.json";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
 // Data type
-import { NetgroupOld } from "src/utils/datatypes/globalDataTypes";
+import { Netgroup } from "src/utils/datatypes/globalDataTypes";
 
 interface NetgroupState {
-  netgroupList: NetgroupOld[];
+  netgroupList: Netgroup[];
 }
 
 const initialState: NetgroupState = {
-  netgroupList: netgroupsJson,
+  netgroupList: [],
 };
 
 const netgroupsSlice = createSlice({
   name: "netgroups",
   initialState,
-  reducers: {},
+  reducers: {
+    updateNetgroupsList: (state, action: PayloadAction<Netgroup[]>) => {
+      const updatedGroupList = action.payload;
+      state.netgroupList = updatedGroupList;
+    },
+    addNetgroup: (state, action: PayloadAction<Netgroup>) => {
+      const newGroup = action.payload;
+      state.netgroupList.push({ ...newGroup });
+    },
+    removeNetgroup: (state, action: PayloadAction<string>) => {
+      const groupId = action.payload;
+      const updatedGroupList = state.netgroupList.filter(
+        (group) => group.cn !== groupId
+      );
+      // If not empty, replace list by new array
+      if (updatedGroupList) {
+        state.netgroupList = updatedGroupList;
+      }
+    },
+  },
 });
 
-export const selectNetgroups = (state: RootState) =>
-  state.netgroups.netgroupList;
 export default netgroupsSlice.reducer;
+export const { updateNetgroupsList, addNetgroup, removeNetgroup } =
+  netgroupsSlice.actions;
