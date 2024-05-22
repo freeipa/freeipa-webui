@@ -78,6 +78,7 @@ export interface User {
   memberofindirect_role: string[]; // multivalue
   memberofindirect_hbacrule: string[]; // multivalue
   memberofindirect_sudorule: string[]; // multivalue
+  memberofindirect_subid: string[]; // multivalue
   // 'Managed by' data
   mepmanagedentry: string[];
   // other
@@ -414,7 +415,6 @@ export interface OTPToken {
 
 export interface SubId {
   ipauniqueid: string;
-  objectclass: string[];
   ipaowner: string;
   ipasubgidnumber: string;
   ipasubuidnumber: string;

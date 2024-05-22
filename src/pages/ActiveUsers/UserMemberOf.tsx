@@ -16,6 +16,7 @@ import MemberOfNetgroups from "src/components/MemberOf/MemberOfNetgroups";
 import MemberOfRoles from "src/components/MemberOf/MemberOfRoles";
 import MemberOfHbacRules from "src/components/MemberOf/MemberOfHbacRules";
 import MemberOfSudoRules from "src/components/MemberOf/MemberOfSudoRules";
+import MemberOfSubIds from "src/components/MemberOf/MemberOfSubIds";
 // RPC
 import { useGetUserByUidQuery } from "src/services/rpcUsers";
 // Utils
@@ -92,6 +93,15 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   React.useEffect(() => {
     if (user && user.memberof_sudorule) {
       setSudoRulesLength(user.memberof_sudorule.length);
+    }
+  }, [user]);
+
+  // 'Subordinate IDs' length to show in tab badge
+  const [subIdsLength, setSubIdsLength] = React.useState(0);
+
+  React.useEffect(() => {
+    if (user && user.memberof_subid) {
+      setSubIdsLength(user.memberof_subid.length);
     }
   }, [user]);
 
@@ -227,6 +237,24 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             <MemberOfSudoRules
               user={user}
               from={props.from}
+              isUserDataLoading={userQuery.isFetching}
+              onRefreshUserData={onRefreshUserData}
+            />
+          </Tab>
+          <Tab
+            eventKey={5}
+            name="memberof_subid"
+            title={
+              <TabTitleText>
+                Subordinate IDs{" "}
+                <Badge key={5} isRead>
+                  {subIdsLength}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfSubIds
+              user={user}
               isUserDataLoading={userQuery.isFetching}
               onRefreshUserData={onRefreshUserData}
             />
