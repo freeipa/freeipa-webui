@@ -135,7 +135,7 @@ export interface GenericPayload {
     | "service"
     | "group"
     | "hostgroup"
-    | "netgroups"
+    | "netgroup"
     | "usergroup"
     | "role"
     | "hbacrule"
@@ -145,7 +145,7 @@ export interface GenericPayload {
 export interface GetEntriesPayload {
   idList: string[];
   apiVersion: string;
-  entryType?: "user" | "group" | "host" | "hostgroup";
+  entryType?: "user" | "group" | "host" | "hostgroup" | "netgroup";
 }
 
 // Body data to perform the calls
@@ -203,6 +203,7 @@ export const api = createApi({
     "FullService",
     "FullUserGroup",
     "FullHostGroup",
+    "FullNetgroup",
   ],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
@@ -467,6 +468,9 @@ export const api = createApi({
         } else if (entryType === "usergroup") {
           method = "group_find";
           show_method = "group_show";
+        } else if (entryType === "netgroup") {
+          method = "netgroup_find";
+          show_method = "netgroup_show";
         }
 
         // Prepare payload
@@ -503,7 +507,11 @@ export const api = createApi({
             const serviceId = responseData.result.result[i] as servicesType;
             const { krbprincipalname } = serviceId;
             ids.push(krbprincipalname[0] as string);
-          } else if (entryType === "usergroup" || entryType === "hostgroup") {
+          } else if (
+            entryType === "usergroup" ||
+            entryType === "hostgroup" ||
+            entryType === "netgroup"
+          ) {
             const groupId = responseData.result.result[i] as cnType;
             const { cn } = groupId;
             ids.push(cn[0] as string);
@@ -612,7 +620,7 @@ export const api = createApi({
           method = "hostgroup_find";
         } else if (entryType === "group") {
           method = "group_find";
-        } else if (entryType === "netgroups") {
+        } else if (entryType === "netgroup") {
           method = "netgroup_find";
         } else if (entryType === "service") {
           method = "service_find";
@@ -665,7 +673,7 @@ export const api = createApi({
           } else if (
             entryType === "group" ||
             entryType === "hostgroup" ||
-            entryType === "netgroups"
+            entryType === "netgroup"
           ) {
             const groupId = responseData.result.result[i] as cnType;
             const { cn } = groupId;
