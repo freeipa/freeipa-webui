@@ -4,16 +4,19 @@ import {
   getBatchCommand,
   BatchRPCResponse,
   useGettingGenericQuery,
+  FindRPCResponse,
+  getCommand,
 } from "./rpc";
 import { apiToSubId } from "src/utils/subIdsUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
 import { SubId } from "src/utils/datatypes/globalDataTypes";
 
 /**
- * Subordinate IDs-related endpoints:
+ * Subordinate IDs-related endpoints: getSubIdsInfoByName, assignSubIds
  *
  * API commands:
  * - subid_show: https://freeipa.readthedocs.io/en/latest/api/subid_show.html
+ * - subid_generate: https://freeipa.readthedocs.io/en/latest/api/subid_generate.html
  *
  */
 
@@ -61,6 +64,26 @@ const extendedApi = api.injectEndpoints({
         return subIdsList;
       },
     }),
+    /**
+     * Generate and auto-assign subUID and subGID range to user entry
+     * @param {uid} - User entry
+     */
+    assignSubIds: build.mutation<FindRPCResponse, string>({
+      query: (uid) => {
+        const params = [
+          [],
+          {
+            ipaowner: uid,
+            version: API_VERSION_BACKUP,
+          },
+        ];
+
+        return getCommand({
+          method: "subid_generate",
+          params: params,
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -71,4 +94,5 @@ export const useGettingSubIdsQuery = (payloadData) => {
   return useGettingGenericQuery(payloadData);
 };
 
-export const { useGetSubIdsInfoByNameQuery } = extendedApi;
+export const { useGetSubIdsInfoByNameQuery, useAssignSubIdsMutation } =
+  extendedApi;
