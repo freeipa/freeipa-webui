@@ -9,7 +9,10 @@ import MemberOfSubIdToolbar from "./MemberOfSubIdToolbar";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // RPC
-import { useGetSubIdsInfoByNameQuery } from "src/services/rpcSubIds";
+import {
+  useAssignSubIdsMutation,
+  useGetSubIdsInfoByNameQuery,
+} from "src/services/rpcSubIds";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 
@@ -22,6 +25,9 @@ interface MemberOfSubIdsProps {
 const MemberOfSubIds = (props: MemberOfSubIdsProps) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
+
+  // API calls
+  const [assignSubIds] = useAssignSubIdsMutation();
 
   // Page indexes
   const [page, setPage] = React.useState(1);
@@ -77,6 +83,33 @@ const MemberOfSubIds = (props: MemberOfSubIdsProps) => {
   const showTableRows = subIds.length > 0;
   const isEnabledAutoAssign = subIds.length === 0;
 
+  // Assign Subordinate IDs
+  const onAssignSubIds = () => {
+    if (!props.user.uid) {
+      alerts.addAlert(
+        "assign-ids-error-missing-uid",
+        "User ID is missing",
+        "danger"
+      );
+      return;
+    }
+    assignSubIds(props.user.uid).then((response) => {
+      if ("data" in response) {
+        if (response.data.error) {
+          alerts.addAlert(
+            "assign-ids-error",
+            "Error assigning Subordinate IDs",
+            "danger"
+          );
+        } else {
+          const data = response.data.result;
+          alerts.addAlert("assign-ids-success", data.summary, "success");
+          props.onRefreshUserData();
+        }
+      }
+    });
+  };
+
   return (
     <>
       <alerts.ManagedAlerts />
@@ -84,8 +117,7 @@ const MemberOfSubIds = (props: MemberOfSubIdsProps) => {
         refreshButtonEnabled={!props.isUserDataLoading}
         onRefreshButtonClick={props.onRefreshUserData}
         autoAssignButtonEnabled={isEnabledAutoAssign}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        onAutoAssignSubIdsClick={() => {}}
+        onAutoAssignSubIdsClick={onAssignSubIds}
         totalItems={memberof_subid.length}
         perPage={perPage}
         page={page}
