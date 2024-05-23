@@ -607,6 +607,12 @@ export const api = createApi({
           params["preserved"] = true;
         } else if (entryType === "host") {
           method = "host_find";
+        } else if (entryType === "hostgroup") {
+          method = "hostgroup_find";
+        } else if (entryType === "group") {
+          method = "group_find";
+        } else if (entryType === "netgroups") {
+          method = "netgroup_find";
         } else if (entryType === "service") {
           method = "service_find";
         } else {
@@ -655,6 +661,14 @@ export const api = createApi({
             const serviceId = responseData.result.result[i] as servicesType;
             const { krbprincipalname } = serviceId;
             ids.push(krbprincipalname[0] as string);
+          } else if (
+            entryType === "group" ||
+            entryType === "hostgroup" ||
+            entryType === "netgroups"
+          ) {
+            const groupId = responseData.result.result[i] as cnType;
+            const { cn } = groupId;
+            ids.push(cn[0] as string);
           }
         }
 
