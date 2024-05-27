@@ -20,6 +20,9 @@ import MemberOfSudoRules from "src/components/MemberOf/MemberOfSudoRules";
 import { useGetUserByUidQuery } from "src/services/rpcUsers";
 // Utils
 import { convertToString } from "src/utils/ipaObjectUtils";
+// Navigation
+import { URL_PREFIX } from "src/navigation/NavRoutes";
+import { useNavigate } from "react-router-dom";
 
 interface PropsToUserMemberOf {
   user: User;
@@ -28,6 +31,8 @@ interface PropsToUserMemberOf {
 }
 
 const UserMemberOf = (props: PropsToUserMemberOf) => {
+  const navigate = useNavigate();
+
   // User's full data
   const userQuery = useGetUserByUidQuery(convertToString(props.user.uid));
 
@@ -91,16 +96,21 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   }, [user]);
 
   // Tab
-  const [activeTabKey, setActiveTabKey] = useState(0);
+  const [activeTabKey, setActiveTabKey] = useState("group");
 
-  const handleTabClick = (
-    _event: React.MouseEvent<HTMLElement, MouseEvent>,
-    tabIndex: number | string
-  ) => {
-    setActiveTabKey(tabIndex as number);
-  };
+  React.useEffect(() => {
+    setActiveTabKey(props.tab);
+    navigate(
+      URL_PREFIX +
+        "/" +
+        props.from +
+        "/" +
+        props.user.uid +
+        "/memberof_" +
+        props.tab
+    );
+  }, [props.tab]);
 
-  // Render 'ActiveUsersIsMemberOf'
   return (
     <Page>
       <PageSection
@@ -110,13 +120,24 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
       >
         <Tabs
           activeKey={activeTabKey}
-          onSelect={handleTabClick}
+          onSelect={(_event, tabIndex) => {
+            setActiveTabKey(tabIndex as string);
+            navigate(
+              URL_PREFIX +
+                "/" +
+                props.from +
+                "/" +
+                props.user.uid +
+                "/memberof_" +
+                tabIndex
+            );
+          }}
           isBox={false}
           mountOnEnter
           unmountOnExit
         >
           <Tab
-            eventKey={0}
+            eventKey={"group"}
             name="memberof_group"
             title={
               <TabTitleText>
@@ -135,7 +156,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             />
           </Tab>
           <Tab
-            eventKey={1}
+            eventKey={"netgroup"}
             name="memberof_netgroup"
             title={
               <TabTitleText>
@@ -154,7 +175,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             />
           </Tab>
           <Tab
-            eventKey={2}
+            eventKey={"role"}
             name="memberof_role"
             title={
               <TabTitleText>
@@ -173,7 +194,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             />
           </Tab>
           <Tab
-            eventKey={3}
+            eventKey={"hbacrule"}
             name="memberof_hbacrule"
             title={
               <TabTitleText>
@@ -192,7 +213,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             />
           </Tab>
           <Tab
-            eventKey={4}
+            eventKey={"sudorule"}
             name="memberof_sudorule"
             title={
               <TabTitleText>
