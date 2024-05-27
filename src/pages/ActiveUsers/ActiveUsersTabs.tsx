@@ -151,7 +151,6 @@ const ActiveUsersTabs = ({ memberof }) => {
             name="memberof-details"
             title={<TabTitleText>Is a member of</TabTitleText>}
           >
-            {/* <UserMemberOf user={userData} from="active-users" /> */}
             <UserMemberOf
               user={partialUserToUser(user)}
               tab={memberof || "group"}

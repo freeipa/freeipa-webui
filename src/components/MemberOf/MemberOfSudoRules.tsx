@@ -21,9 +21,6 @@ import {
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToSudoRule } from "src/utils/sudoRulesUtils";
 import { ErrorResult } from "src/services/rpc";
-// Navigation
-import { useNavigate, useParams } from "react-router-dom";
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 
 interface MemberOfSudoRulesProps {
   user: Partial<User>;
@@ -33,17 +30,6 @@ interface MemberOfSudoRulesProps {
 }
 
 const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
-  const navigate = useNavigate();
-  const { uid } = useParams();
-
-  React.useEffect(() => {
-    if (props.user && props.user.uid) {
-      navigate(
-        URL_PREFIX + "/" + props.from + "/" + uid + "/memberof_sudorule"
-      );
-    }
-  }, [props.user]);
-
   // Alerts to show in the UI
   const alerts = useAlerts();
 
