@@ -72,7 +72,9 @@ export const AppRoutes = (): React.ReactElement => (
       </Route>
       <Route path="preserved-users">
         <Route path="" element={<PreservedUsers />} />
-        <Route path="settings" element={<PreservedUsersTabs />} />
+        <Route path=":uid">
+          <Route path="" element={<PreservedUsersTabs />} />
+        </Route>
       </Route>
       <Route path="hosts">
         <Route path="" element={<Hosts />} />
