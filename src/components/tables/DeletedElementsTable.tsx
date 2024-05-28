@@ -6,6 +6,7 @@ import { Td, Th, Tr } from "@patternfly/react-table";
 import TableLayout from "src/components/layouts/TableLayout";
 // Data types
 import {
+  HBACRule,
   Host,
   HostGroup,
   Netgroup,
@@ -44,6 +45,7 @@ export interface PropsToDeletedElementsTable {
   mode: "passing_id" | "passing_full_data";
   elementsToDelete:
     | string[]
+    | HBACRule[]
     | Host[]
     | HostGroup[]
     | Netgroup[]

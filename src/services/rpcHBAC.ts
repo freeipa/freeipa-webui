@@ -2,19 +2,34 @@ import {
   api,
   Command,
   getBatchCommand,
+  getCommand,
   BatchRPCResponse,
   useGettingGenericQuery,
-  useGetGenericListQuery,
 } from "./rpc";
 import { apiToHBACRule } from "src/utils/hbacRulesUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
 import { HBACRule } from "../utils/datatypes/globalDataTypes";
 
 /**
- * HBAC-related endpoints: getHbacRulesInfoByName
+ * HBAC-related endpoints:
+ * - getHbacRulesInfoByName
+ * - addHbacRule
+ * - removeHbacRules
+ * - addToHbacRules
+ * - removeFromHbacRules
  *
  * API commands:
  * - hbacrule_show: https://freeipa.readthedocs.io/en/latest/api/hbacrule_show.html
+ * - hbacrule_add: https://freeipa.readthedocs.io/en/latest/api/hbacrule_add.html
+ * - hbacrule_del: https://freeipa.readthedocs.io/en/latest/api/hbacrule_del.html
+ * - hbacrule_add_user: https://freeipa.readthedocs.io/en/latest/api/hbacrule_add_user.html
+ * - hbacrule_add_host: https://freeipa.readthedocs.io/en/latest/api/hbacrule_add_host.html
+ * - hbacrule_add_service: https://freeipa.readthedocs.io/en/latest/api/hbacrule_add_service.html
+ * - hbacrule_add_sourcehost: https://freeipa.readthedocs.io/en/latest/api/hbacrule_add_sourcehost.html
+ * - hbacrule_remove_user: https://freeipa.readthedocs.io/en/latest/api/hbacrule_remove_user.html
+ * - hbacrule_remove_host: https://freeipa.readthedocs.io/en/latest/api/hbacrule_remove_host.html
+ * - hbacrule_remove_service: https://freeipa.readthedocs.io/en/latest/api/hbacrule_remove_service.html
+ * - hbacrule_remove_sourcehost: https://freeipa.readthedocs.io/en/latest/api/hbacrule_remove_sourcehost.html
  */
 
 export interface HbacRulesShowPayload {
@@ -40,6 +55,42 @@ export interface HBACRulePayload {
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
+    /**
+     * Add HBAC rule
+     * @param {string} name - ID of the entity to add to HBAC rules
+     * @param {string} description - description
+     */
+    addHbacRule: build.mutation<BatchRPCResponse, [string, string]>({
+      query: (payload) => {
+        const params = [
+          [payload[0]],
+          {
+            description: payload[1],
+          },
+        ];
+        return getCommand({
+          method: "hbacrule_add",
+          params: params,
+        });
+      },
+    }),
+    /**
+     * Remove HBAC rule
+     * @param {string} name - HBAC Rule name
+     */
+    removeHbacRules: build.mutation<BatchRPCResponse, HBACRule[]>({
+      query: (rules) => {
+        const groupsToDeletePayload: Command[] = [];
+        rules.map((rule) => {
+          const payloadItem = {
+            method: "hbacrule_del",
+            params: [[rule.cn], {}],
+          } as Command;
+          groupsToDeletePayload.push(payloadItem);
+        });
+        return getBatchCommand(groupsToDeletePayload, API_VERSION_BACKUP);
+      },
+    }),
     /**
      * Given a list of HBAC rules names, show the full data of those HBAC rules
      * @param {HbacRulesShowPayload} - Payload with HBAC rule names and options
@@ -155,21 +206,9 @@ export const useGettingHbacRulesQuery = (payloadData) => {
   return useGettingGenericQuery(payloadData);
 };
 
-export const useGettingHostQuery = (payloadData) => {
-  payloadData["objName"] = "host";
-  payloadData["objAttr"] = "fqdn";
-  return useGettingGenericQuery(payloadData);
-};
-
-export const useGetHostsListQuery = () => {
-  return useGetGenericListQuery("host");
-};
-
-export const useGetDNSZonesQuery = () => {
-  return useGetGenericListQuery("dnszone");
-};
-
 export const {
+  useAddHbacRuleMutation,
+  useRemoveHbacRulesMutation,
   useGetHbacRulesInfoByNameQuery,
   useAddToHbacRulesMutation,
   useRemoveFromHbacRulesMutation,
