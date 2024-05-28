@@ -62,6 +62,10 @@ export const AppRoutes = (): React.ReactElement => (
             path="memberof_sudorule"
             element={<ActiveUsersTabs memberof="sudorule" />}
           />
+          <Route
+            path="memberof_subid"
+            element={<ActiveUsersTabs memberof="subid" />}
+          />
         </Route>
       </Route>
       <Route path="stage-users">

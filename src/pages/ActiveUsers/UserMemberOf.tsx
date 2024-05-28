@@ -242,7 +242,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             />
           </Tab>
           <Tab
-            eventKey={5}
+            eventKey={"subid"}
             name="memberof_subid"
             title={
               <TabTitleText>
