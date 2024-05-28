@@ -1,10 +1,4 @@
-import {
-  api,
-  getCommand,
-  FindRPCResponse,
-  useGettingGenericQuery,
-  useGetGenericListQuery,
-} from "./rpc";
+import { api, getCommand, FindRPCResponse } from "./rpc";
 import { API_VERSION_BACKUP } from "../utils/utils";
 
 /**
@@ -61,19 +55,5 @@ const extendedApi = api.injectEndpoints({
   }),
   overrideExisting: false,
 });
-
-export const useGettingHostQuery = (payloadData) => {
-  payloadData["objName"] = "host";
-  payloadData["objAttr"] = "fqdn";
-  return useGettingGenericQuery(payloadData);
-};
-
-export const useGetHostsListQuery = () => {
-  return useGetGenericListQuery("host");
-};
-
-export const useGetDNSZonesQuery = () => {
-  return useGetGenericListQuery("dnszone");
-};
 
 export const { useUpdateKeyTabMutation } = extendedApi;

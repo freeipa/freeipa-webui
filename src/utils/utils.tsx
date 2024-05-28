@@ -4,6 +4,7 @@ import React from "react";
 // Data type
 import {
   DN,
+  HBACRule,
   Host,
   HostGroup,
   Metadata,
@@ -33,14 +34,28 @@ export const checkEqualStatus = (status: boolean, usersList: User[]) => {
   return usersWithOtherStatus.length === 0;
 };
 
+// Helper method: Given a rule list and status, check if some entry has different status
+export const checkEqualStatusHbacRule = (
+  status: boolean,
+  rulesList: HBACRule[]
+) => {
+  const rulesWithOtherStatus = rulesList.filter(
+    (rule) => rule.ipaenabledflag[0] !== status
+  );
+  return rulesWithOtherStatus.length === 0;
+};
+
 // Determine whether a user is selectable or not
 export const isUserSelectable = (user: User) => user.uid !== "";
 
 // Determine whether a host is selectable or not
 export const isHostSelectable = (host: Host) => host.fqdn != "";
 
-// Determine whether a host is selectable or not
+// Determine whether a netgroup is selectable or not
 export const isNetgroupSelectable = (group: Netgroup) => group.cn != "";
+
+// Determine whether a HbacRule is selectable or not
+export const isHbacRuleSelectable = (rule: HBACRule) => rule.cn != "";
 
 // Determine whether a service is selectable or not
 export const isServiceSelectable = (service: Service) =>
