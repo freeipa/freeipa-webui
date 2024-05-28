@@ -12,27 +12,48 @@ import {
   TabTitleText,
 } from "@patternfly/react-core";
 // React Router DOM
-import { useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
-// Data types
-import { User } from "src/utils/datatypes/globalDataTypes";
-// Other
+// Components
 import UserSettings from "src/components/UserSettings";
-// Layouts
-import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
+import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 // Hooks
 import { useUserSettings } from "src/hooks/useUserSettingsData";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
+import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 
 const PreservedUsersTabs = () => {
   // Get location (React Router DOM) and get state data
-  const location = useLocation();
-  const userData: User = location.state as User;
-  const uid = userData.uid;
+  const { uid } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  React.useEffect(() => {
+    if (!uid) {
+      // Redirect to the preserved users page
+      navigate(URL_PREFIX + "/preserved-users");
+    } else {
+      // Update breadcrumb route
+      const currentPath: BreadCrumbItem[] = [
+        {
+          name: "Preserved users",
+          url: URL_PREFIX + "/preserved-users",
+        },
+        {
+          name: uid,
+          url: URL_PREFIX + "/preserved-users/" + uid,
+          isActive: true,
+        },
+      ];
+      dispatch(updateBreadCrumbPath(currentPath));
+    }
+  }, [uid]);
 
   // Data loaded from DB
-  const userSettingsData = useUserSettings(uid);
+  const userSettingsData = useUserSettings(uid as string);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(0);
@@ -44,15 +65,6 @@ const PreservedUsersTabs = () => {
     setActiveTabKey(tabIndex as number);
   };
 
-  // 'pagesVisited' array will contain the visited pages.
-  // - Those will be passed to the BreadcrumbLayout component.
-  const pagesVisited = [
-    {
-      name: "Preserved users",
-      url: URL_PREFIX + "/preserved-users",
-    },
-  ];
-
   if (userSettingsData.isLoading) {
     return <DataSpinner />;
   }
@@ -60,14 +72,10 @@ const PreservedUsersTabs = () => {
   return (
     <Page>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
-        <BreadcrumbLayout
-          className="pf-v5-u-mb-md"
-          userId={userData.uid}
-          pagesVisited={pagesVisited}
-        />
+        <BreadCrumb className="pf-v5-u-mb-md" preText="User login:" />
         <TextContent>
           <Title headingLevel="h1">
-            <Text>{userData.uid}</Text>
+            <Text>{uid}</Text>
           </Title>
         </TextContent>
       </PageSection>
@@ -78,6 +86,8 @@ const PreservedUsersTabs = () => {
           variant="light300"
           isBox
           className="pf-v5-u-ml-lg"
+          mountOnEnter
+          unmountOnExit
         >
           <Tab
             eventKey={0}
