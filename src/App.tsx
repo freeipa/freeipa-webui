@@ -34,11 +34,10 @@ import {
   updateBrowserTitle,
 } from "src/store/Global/routes-slice";
 // Router DOM
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const App: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const { pathname } = useLocation();
 
   // When accessing to a given URL directly from the browser, the routing data is loaded
@@ -70,7 +69,6 @@ const App: React.FunctionComponent = () => {
     if (currentTitle) {
       dispatch(updateBrowserTitle(currentTitle));
     }
-    navigate(pathname);
   }, []);
 
   // [API Call] Get initial data

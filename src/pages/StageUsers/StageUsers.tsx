@@ -48,8 +48,12 @@ import { useGettingStageUserQuery } from "../../services/rpcUsers";
 import useApiError from "src/hooks/useApiError";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
+// Navigation
+import { useSearchParams } from "react-router-dom";
 
 const StageUsers = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   // Initialize stage users list (Redux)
   const dispatch = useAppDispatch();
 
@@ -70,7 +74,9 @@ const StageUsers = () => {
 
   // Main states - what user can define / what we could use in page URL
   const [searchValue, setSearchValue] = React.useState("");
-  const [page, setPage] = useState<number>(1);
+  const [page, setPage] = useState<number>(
+    parseInt(searchParams.get("p") || "1")
+  );
   const [perPage, setPerPage] = useState<number>(10);
   const [totalCount, setUsersTotalCount] = useState<number>(0);
   const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
@@ -141,6 +147,20 @@ const StageUsers = () => {
       );
     }
   }, [userDataResponse]);
+
+  // Handle URLs with pagination
+  React.useEffect(() => {
+    let searchParamsNew = {};
+
+    if (page > 1) {
+      searchParamsNew = {
+        ...searchParamsNew,
+        p: page.toString(),
+      };
+    }
+
+    setSearchParams(searchParamsNew, { replace: true });
+  }, [page]);
 
   // Refresh button handling
   const refreshUsersData = () => {
