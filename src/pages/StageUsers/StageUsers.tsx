@@ -73,7 +73,9 @@ const StageUsers = () => {
   const modalErrors = useApiError([]);
 
   // Main states - what user can define / what we could use in page URL
-  const [searchValue, setSearchValue] = React.useState("");
+  const [searchValue, setSearchValue] = React.useState(
+    searchParams.get("search") || ""
+  );
   const [page, setPage] = useState<number>(
     parseInt(searchParams.get("p") || "1")
   );
@@ -87,7 +89,7 @@ const StageUsers = () => {
 
   // Derived states - what we get from API
   const userDataResponse = useGettingStageUserQuery({
-    searchValue: "",
+    searchValue: searchValue,
     sizeLimit: 0,
     apiVersion: apiVersion || API_VERSION_BACKUP,
     startIdx: firstUserIdx,
@@ -148,7 +150,7 @@ const StageUsers = () => {
     }
   }, [userDataResponse]);
 
-  // Handle URLs with pagination
+  // Handle URLs with pagination and search values
   React.useEffect(() => {
     let searchParamsNew = {};
 
@@ -159,8 +161,15 @@ const StageUsers = () => {
       };
     }
 
+    if (searchValue !== "") {
+      searchParamsNew = {
+        ...searchParamsNew,
+        search: searchValue,
+      };
+    }
+
     setSearchParams(searchParamsNew, { replace: true });
-  }, [page]);
+  }, [page, searchValue]);
 
   // Refresh button handling
   const refreshUsersData = () => {
@@ -230,6 +239,7 @@ const StageUsers = () => {
     setShowTableRows(false);
     setUsersTotalCount(0);
     setSearchIsDisabled(true);
+
     retrieveUser({
       searchValue: searchValue,
       sizeLimit: 0,
