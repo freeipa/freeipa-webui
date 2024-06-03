@@ -20,8 +20,6 @@ import {
 import { Link } from "react-router-dom";
 // Utils
 import { API_VERSION_BACKUP } from "../../utils/utils";
-// Navigation
-import { URL_PREFIX } from "../../navigation/NavRoutes";
 // RPC
 import {
   ErrorResult,
@@ -495,7 +493,7 @@ const KeytabTable = (props: PropsToTable) => {
         }}
       />
       <Td dataLabel={columnNamesArray[0]}>
-        <Link to={URL_PREFIX + entryURL} state={fullEntriesFiltered[rowIndex]}>
+        <Link to={entryURL} state={fullEntriesFiltered[rowIndex]}>
           {entry}
         </Link>
       </Td>

@@ -13,11 +13,13 @@ import "@patternfly/patternfly/utilities/Text/text.css";
 import "@patternfly/patternfly/utilities/Sizing/sizing.css";
 import "@patternfly/patternfly/utilities/Display/display.css";
 import "@patternfly/patternfly/utilities/Accessibility/accessibility.css";
+// Navigation
+import { URL_PREFIX } from "./navigation/NavRoutes";
 
 ReactDOM.render(
   <Provider store={store}>
     <React.StrictMode>
-      <BrowserRouter>
+      <BrowserRouter basename={URL_PREFIX}>
         <App />
       </BrowserRouter>
     </React.StrictMode>

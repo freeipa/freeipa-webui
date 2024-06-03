@@ -7,8 +7,6 @@ import TableLayout from "../../components/layouts/TableLayout";
 import { Host } from "../../utils/datatypes/globalDataTypes";
 // Layouts
 import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
-// Navigation
-import { URL_PREFIX } from "../../navigation/NavRoutes";
 // React Router DOM
 import { Link } from "react-router-dom";
 
@@ -174,7 +172,7 @@ const HostsTable = (props: PropsToTable) => {
         }}
       />
       <Td dataLabel={columnNames.fqdn}>
-        <Link to={URL_PREFIX + "/hosts/settings"} state={host}>
+        <Link to={"/hosts/settings"} state={host}>
           {host.fqdn}
         </Link>
       </Td>

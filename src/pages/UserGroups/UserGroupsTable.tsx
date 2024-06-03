@@ -7,8 +7,6 @@ import TableLayout from "../../components/layouts/TableLayout";
 import { UserGroup } from "../../utils/datatypes/globalDataTypes";
 // Layouts
 import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
-// Navigation
-import { URL_PREFIX } from "../../navigation/NavRoutes";
 // React Router DOM
 import { Link } from "react-router-dom";
 
@@ -178,7 +176,7 @@ const UserGroupsTable = (props: PropsToTable) => {
         }}
       />
       <Td dataLabel={columnNames.cn}>
-        <Link to={URL_PREFIX + "/usergroups/settings"} state={group}>
+        <Link to={"/usergroups/settings"} state={group}>
           {group.cn}
         </Link>
       </Td>

@@ -61,7 +61,6 @@ import RestorePreservedUsers from "./modals/RestorePreservedUsers";
 // Utils
 import { API_VERSION_BACKUP } from "src/utils/utils";
 // Navigate
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { useNavigate } from "react-router-dom";
 
 export interface PropsToUserSettings {
@@ -642,21 +641,21 @@ const UserSettings = (props: PropsToUserSettings) => {
         show={isActivateModalOpen}
         handleModalToggle={onCloseActivateModal}
         selectedUsers={[props.user] as User[]}
-        onSuccess={() => navigate(URL_PREFIX + "/stage-users")}
+        onSuccess={() => navigate("stage-users")}
       />
       <StagePreservedUsers
         show={isStageModalOpen}
         handleModalToggle={onCloseStageModal}
         selectedUsers={[props.user] as User[]}
         clearSelectedUsers={clearSelectedUsers}
-        onSuccess={() => navigate(URL_PREFIX + "/preserved-users")}
+        onSuccess={() => navigate("preserved-users")}
       />
       <RestorePreservedUsers
         show={isRestoreModalOpen}
         handleModalToggle={onCloseRestoreModal}
         selectedUsers={[props.user] as User[]}
         clearSelectedUsers={clearSelectedUsers}
-        onSuccess={() => navigate(URL_PREFIX + "/preserved-users")}
+        onSuccess={() => navigate("preserved-users")}
       />
     </>
   );

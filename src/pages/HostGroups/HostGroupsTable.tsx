@@ -7,10 +7,6 @@ import TableLayout from "../../components/layouts/TableLayout";
 import { HostGroup } from "../../utils/datatypes/globalDataTypes";
 // Layouts
 import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
-// Navigation
-// import { URL_PREFIX } from "../../navigation/NavRoutes";
-// React Router DOM
-// import { Link } from "react-router-dom";
 
 interface GroupsData {
   isHostGroupSelectable: (group: HostGroup) => boolean;

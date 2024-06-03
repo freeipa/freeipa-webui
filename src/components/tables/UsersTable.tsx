@@ -9,8 +9,6 @@ import { User } from "src/utils/datatypes/globalDataTypes";
 import SkeletonOnTableLayout from "src/components/layouts/Skeleton/SkeletonOnTableLayout";
 // Utils
 import { checkEqualStatus } from "src/utils/utils";
-// Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 // React Router DOM
 import { Link } from "react-router-dom";
 // Icons
@@ -240,7 +238,7 @@ const UsersTable = (props: PropsToTable) => {
         style={setStyleOnStatus(user.nsaccountlock)}
         dataLabel={columnNames.uid}
       >
-        <Link to={URL_PREFIX + "/" + props.from + "/" + user.uid} state={user}>
+        <Link to={"/" + props.from + "/" + user.uid} state={user}>
           {user.uid}
         </Link>
       </Td>

@@ -10,8 +10,6 @@ import {
 } from "@patternfly/react-core";
 // React Router DOM
 import { useLocation } from "react-router-dom";
-// Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Other
 import ServicesSettings from "./ServicesSettings";
 import ServicesMemberOf from "./ServicesMemberOf";
@@ -53,7 +51,7 @@ const ServicesTabs = () => {
   const pagesVisited = [
     {
       name: "Services",
-      url: URL_PREFIX + "/services",
+      url: "../services",
     },
   ];
 
