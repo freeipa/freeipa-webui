@@ -7,8 +7,6 @@ import TableLayout from "src/components/layouts/TableLayout";
 import { Service } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import SkeletonOnTableLayout from "src/components/layouts/Skeleton/SkeletonOnTableLayout";
-// Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 // React Router DOM
 import { Link } from "react-router-dom";
 
@@ -178,7 +176,7 @@ const ServicesTable = (props: PropsToTable) => {
         }}
       />
       <Td dataLabel={columnNames.principalName}>
-        <Link to={URL_PREFIX + "/services/settings"} state={service}>
+        <Link to={"/services/settings"} state={service}>
           {service.krbcanonicalname[0]}
         </Link>
       </Td>

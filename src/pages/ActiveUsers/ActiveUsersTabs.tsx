@@ -14,8 +14,6 @@ import {
 } from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate, useParams } from "react-router-dom";
-// Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Components
 import UserSettings from "../../components/UserSettings";
 import UserMemberOf from "./UserMemberOf";
@@ -41,17 +39,17 @@ const ActiveUsersTabs = ({ memberof }) => {
   React.useEffect(() => {
     if (!uid) {
       // Redirect to the active users page
-      navigate(URL_PREFIX + "/active-users");
+      navigate("/active-users");
     } else {
       // Update breadcrumb route
       const currentPath: BreadCrumbItem[] = [
         {
           name: "Active users",
-          url: URL_PREFIX + "/active-users",
+          url: "../active-users",
         },
         {
           name: uid,
-          url: URL_PREFIX + "/active-users/" + uid,
+          url: "../active-users/" + uid,
           isActive: true,
         },
       ];
@@ -61,8 +59,7 @@ const ActiveUsersTabs = ({ memberof }) => {
 
   React.useEffect(() => {
     if (!memberof) {
-      // Redirect to the user settings page
-      navigate(URL_PREFIX + "/active-users/" + uid);
+      navigate("/active-users/" + uid);
     }
   }, [memberof]);
 
@@ -110,9 +107,9 @@ const ActiveUsersTabs = ({ memberof }) => {
           activeKey={activeTab}
           onSelect={(_event, tabIndex) => {
             if (tabIndex === "settings") {
-              navigate(URL_PREFIX + "/active-users/" + uid);
+              navigate("/active-users/" + uid);
             } else if (tabIndex === "memberof") {
-              navigate(URL_PREFIX + "/active-users/" + uid + "/memberof_group");
+              navigate("memberof_group");
             }
           }}
           variant="light300"

@@ -10,8 +10,6 @@ import {
 } from "@patternfly/react-core";
 // React Router DOM
 import { useLocation } from "react-router-dom";
-// Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Layouts
 import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -42,7 +40,7 @@ const HostGroupsTabs = () => {
   const pagesVisited = [
     {
       name: "Host groups",
-      url: URL_PREFIX + "/host-groups",
+      url: "/host-groups",
     },
   ];
 

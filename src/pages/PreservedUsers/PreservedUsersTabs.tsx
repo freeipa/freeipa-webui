@@ -13,9 +13,7 @@ import {
 } from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate, useParams } from "react-router-dom";
-// Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
-// Components
+// Other
 import UserSettings from "src/components/UserSettings";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
@@ -34,17 +32,17 @@ const PreservedUsersTabs = () => {
   React.useEffect(() => {
     if (!uid) {
       // Redirect to the preserved users page
-      navigate(URL_PREFIX + "/preserved-users");
+      navigate("/preserved-users");
     } else {
       // Update breadcrumb route
       const currentPath: BreadCrumbItem[] = [
         {
           name: "Preserved users",
-          url: URL_PREFIX + "/preserved-users",
+          url: "../preserved-users",
         },
         {
           name: uid,
-          url: URL_PREFIX + "/preserved-users/" + uid,
+          url: "../preserved-users/" + uid,
           isActive: true,
         },
       ];

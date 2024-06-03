@@ -13,8 +13,6 @@ import {
 } from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate, useParams } from "react-router-dom";
-// Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Components
 import UserSettings from "src/components/UserSettings";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
@@ -33,17 +31,17 @@ const StageUsersTabs = () => {
   React.useEffect(() => {
     if (!uid) {
       // Redirect to the stage users page
-      navigate(URL_PREFIX + "/stage-users");
+      navigate("stage-users");
     } else {
       // Update breadcrumb route
       const currentPath: BreadCrumbItem[] = [
         {
           name: "Stage users",
-          url: URL_PREFIX + "/stage-users",
+          url: "../stage-users",
         },
         {
           name: uid,
-          url: URL_PREFIX + "/stage-users/" + uid,
+          url: "../stage-users/" + uid,
           isActive: true,
         },
       ];

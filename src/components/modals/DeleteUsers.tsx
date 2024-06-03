@@ -32,7 +32,6 @@ import { ErrorData, User } from "src/utils/datatypes/globalDataTypes";
 import useAlerts from "src/hooks/useAlerts";
 // Routing
 import { useNavigate } from "react-router-dom";
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 
 interface ButtonsData {
   updateIsDeleteButtonDisabled?: (value: boolean) => void;
@@ -278,11 +277,11 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
             }
             // Redirect to main page
             if (props.from === "active-users") {
-              navigate(URL_PREFIX + "/active-users");
+              navigate("/active-users");
             } else if (props.from === "stage-users") {
-              navigate(URL_PREFIX + "/stage-users");
+              navigate("/stage-users");
             } else if (props.from === "preserved-users") {
-              navigate(URL_PREFIX + "/preserved-users");
+              navigate("/preserved-users");
             }
             // Close modal
             closeModal();

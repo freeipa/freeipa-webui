@@ -22,7 +22,6 @@ import { useGetUserByUidQuery } from "src/services/rpcUsers";
 // Utils
 import { convertToString } from "src/utils/ipaObjectUtils";
 // Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { useNavigate } from "react-router-dom";
 
 interface PropsToUserMemberOf {
@@ -110,15 +109,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
 
   React.useEffect(() => {
     setActiveTabKey(props.tab);
-    navigate(
-      URL_PREFIX +
-        "/" +
-        props.from +
-        "/" +
-        props.user.uid +
-        "/memberof_" +
-        props.tab
-    );
   }, [props.tab]);
 
   return (
@@ -133,13 +123,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
           onSelect={(_event, tabIndex) => {
             setActiveTabKey(tabIndex as string);
             navigate(
-              URL_PREFIX +
-                "/" +
-                props.from +
-                "/" +
-                props.user.uid +
-                "/memberof_" +
-                tabIndex
+              "/" + props.from + "/" + props.user.uid + "/memberof_" + tabIndex
             );
           }}
           isBox={false}

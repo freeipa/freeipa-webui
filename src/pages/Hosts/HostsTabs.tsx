@@ -10,8 +10,6 @@ import {
 } from "@patternfly/react-core";
 // React Router DOM
 import { useLocation } from "react-router-dom";
-// Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Other
 import HostsSettings from "./HostsSettings";
 import HostsMemberOf from "./HostsMemberOf";
@@ -46,7 +44,7 @@ const HostsTabs = () => {
   const pagesVisited = [
     {
       name: "Hosts",
-      url: URL_PREFIX + "/hosts",
+      url: "../hosts",
     },
   ];
 
