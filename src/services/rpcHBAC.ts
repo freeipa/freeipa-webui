@@ -4,6 +4,7 @@ import {
   getBatchCommand,
   getCommand,
   BatchRPCResponse,
+  FindRPCResponse,
   useGettingGenericQuery,
 } from "./rpc";
 import { apiToHBACRule } from "src/utils/hbacRulesUtils";
@@ -17,6 +18,8 @@ import { HBACRule } from "../utils/datatypes/globalDataTypes";
  * - removeHbacRules
  * - addToHbacRules
  * - removeFromHbacRules
+ * - disableHbacRule
+ * - enableHbacRule
  *
  * API commands:
  * - hbacrule_show: https://freeipa.readthedocs.io/en/latest/api/hbacrule_show.html
@@ -30,6 +33,8 @@ import { HBACRule } from "../utils/datatypes/globalDataTypes";
  * - hbacrule_remove_host: https://freeipa.readthedocs.io/en/latest/api/hbacrule_remove_host.html
  * - hbacrule_remove_service: https://freeipa.readthedocs.io/en/latest/api/hbacrule_remove_service.html
  * - hbacrule_remove_sourcehost: https://freeipa.readthedocs.io/en/latest/api/hbacrule_remove_sourcehost.html
+ * - hbacrule_disable: https://freeipa.readthedocs.io/en/latest/api/hbacrule_disable.html
+ * - hbacrule_enable: https://freeipa.readthedocs.io/en/latest/api/hbacrule_enable.html
  */
 
 export interface HbacRulesShowPayload {
@@ -196,6 +201,36 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(membersToRemove, API_VERSION_BACKUP);
       },
     }),
+    enableHbacRule: build.mutation<FindRPCResponse, HBACRule>({
+      query: (rule) => {
+        const params = [
+          [rule.cn],
+          {
+            version: API_VERSION_BACKUP,
+          },
+        ];
+
+        return getCommand({
+          method: "hbacrule_enable",
+          params: params,
+        });
+      },
+    }),
+    disableHbacRule: build.mutation<FindRPCResponse, HBACRule>({
+      query: (rule) => {
+        const params = [
+          [rule.cn],
+          {
+            version: API_VERSION_BACKUP,
+          },
+        ];
+
+        return getCommand({
+          method: "hbacrule_disable",
+          params: params,
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -212,4 +247,6 @@ export const {
   useGetHbacRulesInfoByNameQuery,
   useAddToHbacRulesMutation,
   useRemoveFromHbacRulesMutation,
+  useDisableHbacRuleMutation,
+  useEnableHbacRuleMutation,
 } = extendedApi;

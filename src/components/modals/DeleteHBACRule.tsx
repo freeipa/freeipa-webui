@@ -59,14 +59,13 @@ const DeleteHBACRule = (props: PropsToDeleteRules) => {
       pfComponent: (
         <TextContent>
           <Text component={TextVariants.p}>
-            Are you sure you want to remove the selected entries from User
-            groups?
+            Are you sure you want to remove the selected rules?
           </Text>
         </TextContent>
       ),
     },
     {
-      id: "deleted-users-table",
+      id: "deleted-rules-table",
       pfComponent: (
         <DeletedElementsTable
           mode="passing_full_data"

@@ -16,9 +16,9 @@ import {
   ErrorResult,
 } from "src/services/rpc";
 import {
-  useEnableUserMutation,
-  useDisableUserMutation,
-} from "src/services/rpcUsers";
+  useDisableHbacRuleMutation,
+  useEnableHbacRuleMutation,
+} from "src/services/rpcHBAC";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -53,11 +53,11 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
-  // Define 'executeEnableDisableCommand' to add user data to IPA server
+  // Define 'executeEnableDisableCommand' to add rules to IPA server
   const [executeEnableDisableCommand] = useBatchMutCommandMutation();
-  // Single user operations
-  const [enableSingleUser] = useEnableUserMutation();
-  const [disableSingleUser] = useDisableUserMutation();
+  // Single rule operations
+  const [enableSingleRule] = useEnableHbacRuleMutation();
+  const [disableSingleRule] = useDisableHbacRuleMutation();
 
   // Define which action (enable | disable) based on 'optionSelected'
   const action = !props.optionSelected ? "enable" : "disable";
@@ -120,17 +120,16 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
     setIsModalErrorOpen(true);
   };
 
-  // Modify user status using IPA commands
-  // TODO: Better Adapt this function to several use-cases
+  // Modify rule status using IPA commands
   const modifyStatus = (newStatus: boolean, selectedRules: HBACRule[]) => {
-    // Prepare users params
+    // Prepare rule params
     const idsToChangeStatusPayload: Command[] = [];
     const changeStatusParams = {};
     const option = props.optionSelected
       ? "hbacrule_disable"
       : "hbacrule_enable";
 
-    // Make the API call (depending on 'singleUser' value)
+    // Make the API call (depending on 'singleRule' value)
     if (props.singleRule === undefined || !props.singleRule) {
       selectedRules.map((rule) => {
         const payloadItem = {
@@ -211,9 +210,9 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
       // Single rule operation
       let command;
       if (option === "hbacrule_disable") {
-        command = disableSingleUser;
+        command = disableSingleRule;
       } else {
-        command = enableSingleUser;
+        command = enableSingleRule;
       }
 
       const payload = props.selectedRulesData.selectedRules[0];
@@ -231,7 +230,7 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
                 "'",
               "success"
             );
-            // Reset selected users
+            // Reset selected rules
             props.selectedRulesData.clearSelectedRules();
             // Refresh data
             if (props.onRefresh !== undefined) {
@@ -319,7 +318,7 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
     />
   );
 
-  // Render 'DisableEnableUsers'
+  // Render 'DisableEnableHBACRules'
   return (
     <>
       <alerts.ManagedAlerts />
