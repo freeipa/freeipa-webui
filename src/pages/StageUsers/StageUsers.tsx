@@ -22,6 +22,7 @@ import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // Hooks
 import { updateUsersList } from "src/store/Identity/stageUsers-slice";
 import { useAlerts } from "src/hooks/useAlerts";
+import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
@@ -56,6 +57,14 @@ const StageUsers = () => {
 
   // Initialize stage users list (Redux)
   const dispatch = useAppDispatch();
+
+  // Update current route data to Redux and highlight the current page in the Nav bar
+  const { browserTitle } = useUpdateRoute({ pathname: "stage-users" });
+
+  // Set the page title to be shown in the browser tab
+  React.useEffect(() => {
+    document.title = browserTitle;
+  }, [browserTitle]);
 
   // Alerts to show in the UI
   const alerts = useAlerts();

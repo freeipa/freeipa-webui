@@ -7,11 +7,6 @@ import { Spinner } from "@patternfly/react-core";
 import { AppLayout } from "./AppLayout";
 // Navigation
 import { AppRoutes } from "./navigation/AppRoutes";
-import {
-  getBreadCrumbByPath,
-  getGroupByPath,
-  getTitleByPath,
-} from "./navigation/NavRoutes";
 // RPC client
 import { Command, useBatchCommandQuery } from "./services/rpc";
 // Redux
@@ -26,50 +21,9 @@ import {
   updateCaIsEnabled,
   updateVaultConfiguration,
 } from "src/store/Global/global-slice";
-import {
-  updateBreadCrumbPath,
-  updateActivePageName,
-  updateActiveFirstLevel,
-  updateActiveSecondLevel,
-  updateBrowserTitle,
-} from "src/store/Global/routes-slice";
-// Router DOM
-import { useLocation } from "react-router-dom";
 
 const App: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
-  const { pathname } = useLocation();
-
-  // When accessing to a given URL directly from the browser, the routing data is loaded
-  useEffect(() => {
-    // Get group data based on current path
-    const loadedGroup = getGroupByPath(pathname);
-    if (loadedGroup.length > 0) {
-      let currentFirstLevel = loadedGroup[loadedGroup.length - 2];
-      const currentSecondLevel = loadedGroup[loadedGroup.length - 1];
-      // If no second level is present, first and second levels have the same value
-      // This allows the navbar item to be expanded and highlighted
-      // E.g.: ['', 'services']
-      if (currentFirstLevel === "") {
-        currentFirstLevel = currentSecondLevel;
-      }
-      dispatch(updateActiveFirstLevel(currentFirstLevel));
-      dispatch(updateActiveSecondLevel(currentSecondLevel));
-      dispatch(updateActivePageName(currentSecondLevel)); // Corresponds to the page name
-    }
-
-    // Get breadcrumb data based on current path
-    const loadedBreadCrumb = getBreadCrumbByPath(pathname);
-    if (loadedBreadCrumb.length > 0) {
-      dispatch(updateBreadCrumbPath(loadedBreadCrumb));
-    }
-
-    // Get browser title based on current path
-    const currentTitle = getTitleByPath(pathname);
-    if (currentTitle) {
-      dispatch(updateBrowserTitle(currentTitle));
-    }
-  }, []);
 
   // [API Call] Get initial data
   // TODO: Move this call into a sequential endpoint to execute this

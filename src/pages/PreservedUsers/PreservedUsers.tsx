@@ -37,6 +37,7 @@ import RestorePreservedUsers from "src/components/modals/RestorePreservedUsers";
 // Hooks
 import { updateUsersList } from "src/store/Identity/preservedUsers-slice";
 import { useAlerts } from "src/hooks/useAlerts";
+import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -55,6 +56,14 @@ const PreservedUsers = () => {
 
   // Initialize stage users list (Redux)
   const dispatch = useAppDispatch();
+
+  // Update current route data to Redux and highlight the current page in the Nav bar
+  const { browserTitle } = useUpdateRoute({ pathname: "preserved-users" });
+
+  // Set the page title to be shown in the browser tab
+  React.useEffect(() => {
+    document.title = browserTitle;
+  }, [browserTitle]);
 
   // Alerts to show in the UI
   const alerts = useAlerts();
