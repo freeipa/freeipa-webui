@@ -36,6 +36,7 @@ import { Netgroup } from "src/utils/datatypes/globalDataTypes";
 import { API_VERSION_BACKUP, isNetgroupSelectable } from "src/utils/utils";
 // Hooks
 import { useAlerts } from "src/hooks/useAlerts";
+import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -51,6 +52,14 @@ import { useGettingNetgroupsQuery } from "../../services/rpcNetgroups";
 const Netgroups = () => {
   // Dispatch (Redux)
   const dispatch = useAppDispatch();
+
+  // Update current route data to Redux and highlight the current page in the Nav bar
+  const { browserTitle } = useUpdateRoute({ pathname: "netgroups" });
+
+  // Set the page title to be shown in the browser tab
+  React.useEffect(() => {
+    document.title = browserTitle;
+  }, [browserTitle]);
 
   // Retrieve API version from environment data
   const apiVersion = useAppSelector(

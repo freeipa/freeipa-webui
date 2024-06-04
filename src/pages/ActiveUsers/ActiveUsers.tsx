@@ -42,6 +42,7 @@ import DisableEnableUsers from "src/components/modals/DisableEnableUsers";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Hooks
 import { useAlerts } from "src/hooks/useAlerts";
+import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Utils
 import { API_VERSION_BACKUP, isUserSelectable } from "src/utils/utils";
 // RPC client
@@ -64,6 +65,14 @@ const ActiveUsers = () => {
 
   // Dispatch (Redux)
   const dispatch = useAppDispatch();
+
+  // Update current route data to Redux and highlight the current page in the Nav bar
+  const { browserTitle } = useUpdateRoute({ pathname: "active-users" });
+
+  // Set the page title to be shown in the browser tab
+  React.useEffect(() => {
+    document.title = browserTitle;
+  }, [browserTitle]);
 
   // Retrieve API version from environment data
   const apiVersion = useAppSelector(

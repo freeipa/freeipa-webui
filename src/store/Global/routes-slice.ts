@@ -11,10 +11,10 @@ interface RoutesState {
 
 const initialState: RoutesState = {
   breadCrumbPath: null,
-  activePageName: "active-users",
-  activeFirstLevel: "users",
-  activeSecondLevel: "active-users",
-  browserTitle: "Active users",
+  activePageName: "",
+  activeFirstLevel: "",
+  activeSecondLevel: "",
+  browserTitle: "",
 };
 
 const routesSlice = createSlice({

@@ -38,6 +38,7 @@ import AddService from "../../components/modals/AddService";
 import DeleteServices from "../../components/modals/DeleteServices";
 // Hooks
 import { useAlerts } from "../../hooks/useAlerts";
+import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Errors
 import useApiError from "../../hooks/useApiError";
 import GlobalErrors from "../../components/errors/GlobalErrors";
@@ -55,6 +56,14 @@ const Services = () => {
 
   // Dispatch (Redux)
   const dispatch = useAppDispatch();
+
+  // Update current route data to Redux and highlight the current page in the Nav bar
+  const { browserTitle } = useUpdateRoute({ pathname: "services" });
+
+  // Set the page title to be shown in the browser tab
+  React.useEffect(() => {
+    document.title = browserTitle;
+  }, [browserTitle]);
 
   // Retrieve API version from environment data
   const apiVersion = useAppSelector(
