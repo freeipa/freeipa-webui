@@ -172,7 +172,7 @@ const HostsTable = (props: PropsToTable) => {
         }}
       />
       <Td dataLabel={columnNames.fqdn}>
-        <Link to={"/hosts/settings"} state={host}>
+        <Link to={"/hosts/" + host.fqdn} state={host}>
           {host.fqdn}
         </Link>
       </Td>
