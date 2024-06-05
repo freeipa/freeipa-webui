@@ -625,9 +625,10 @@ const UserSettings = (props: PropsToUserSettings) => {
       <IssueNewCertificate
         isOpen={isNewCertificateModalOpen}
         onClose={onCloseNewCertificateModal}
-        uid={props.user.uid}
+        id={props.user.uid}
         showPrincipalFields={false}
         onRefresh={props.onRefresh}
+        principal={props.user.uid}
       />
       {props.user.uid !== undefined && (
         <AddOtpToken

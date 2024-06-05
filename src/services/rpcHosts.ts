@@ -17,6 +17,7 @@ import { Host } from "../utils/datatypes/globalDataTypes";
 /**
  * Hosts-related endpoints: getHostsFullData, addHost, removeHosts, saveHost,
  *   addHostPrincipalAlias, removeHostPrincipalAlias, autoMemberRebuildHosts
+ *   setHostPassword
  *
  * API commands:
  * - host_show: https://freeipa.readthedocs.io/en/latest/api/host_show.html
@@ -24,6 +25,7 @@ import { Host } from "../utils/datatypes/globalDataTypes";
  * - host_add: https://freeipa.readthedocs.io/en/latest/api/host_add.html
  * - host_mod: https://freeipa.readthedocs.io/en/latest/api/host_mod.html
  * - host_del: https://freeipa.readthedocs.io/en/latest/api/host_del.html
+ * - host_disable: https://freeipa.readthedocs.io/en/latest/api/host_disable.html
  * - host_add_principal: https://freeipa.readthedocs.io/en/latest/api/host_add_principal.html
  * - host_remove_principal: https://freeipa.readthedocs.io/en/latest/api/host_remove_principal.html
  * - automember_rebuild: https://freeipa.readthedocs.io/en/latest/api/automember_rebuild.html
@@ -161,17 +163,41 @@ const extendedApi = api.injectEndpoints({
           hosts.length === 0
             ? { type: "group", version: API_VERSION_BACKUP }
             : {
-                hosts: hosts.map((fqdn) => fqdn),
+                hosts: hosts.map((h) => h.fqdn),
                 version: API_VERSION_BACKUP,
               };
-
         return getCommand({
           method: "automember_rebuild",
           params: [[], paramArgs],
         });
       },
     }),
+    // Set one-time password
+    setHostPassword: build.mutation<FindRPCResponse, [string, string]>({
+      query: (payload) => {
+        return getCommand({
+          method: "host_mod",
+          params: [
+            [payload[0]],
+            {
+              userpassword: payload[1],
+              version: API_VERSION_BACKUP,
+            },
+          ],
+        });
+      },
+    }),
+    // Unprovision host
+    unprovisionHost: build.mutation<FindRPCResponse, string>({
+      query: (host) => {
+        return getCommand({
+          method: "host_disable",
+          params: [[host], { version: API_VERSION_BACKUP }],
+        });
+      },
+    }),
   }),
+
   overrideExisting: false,
 });
 
@@ -197,4 +223,6 @@ export const {
   useRemoveHostsMutation,
   useSaveHostMutation,
   useGetHostsFullDataQuery,
+  useSetHostPasswordMutation,
+  useUnprovisionHostMutation,
 } = extendedApi;

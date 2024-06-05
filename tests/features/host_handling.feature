@@ -45,6 +45,20 @@ Feature: Host manipulation
     Then I should see partial "myserver2" entry in the data table
     Then I should see partial "myserver3" entry in the data table
 
+  Scenario: Rebuild auto membership
+    When I click on kebab menu and select "Rebuild auto membership"
+    * I see "Confirmation" modal
+    When in the modal dialog I click on "OK" button
+    * I should see "success" alert with text "Success alert:Automember rebuild membership task completed"
+
+  Scenario: Rebuild specific auto memberships
+    Then I select partial entry "myfirstserver" in the data table
+    Then I select partial entry "addfullhost" in the data table
+    When I click on kebab menu and select "Rebuild auto membership"
+    * I see "Confirmation" modal
+    When in the modal dialog I click on "OK" button
+    * I should see "success" alert with text "Success alert:Automember rebuild membership task completed"
+
   Scenario: Delete a host
     Given I should see partial "myfirstserver" entry in the data table
     Given I should see partial "addfullhost" entry in the data table
@@ -83,8 +97,3 @@ Feature: Host manipulation
     * in the modal dialog I click on "Cancel" button
     Then I should not see "cancelhost" entry in the data table
 
-  Scenario: Rebuild auto membership
-    When I click on kebab menu and select "Rebuild auto membership"
-    * I see "Confirmation" modal
-    When in the modal dialog I click on "OK" button
-    * I should see "success" alert with text "Success alert:Automember rebuild membership task completed"
