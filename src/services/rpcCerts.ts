@@ -9,7 +9,7 @@ import {
 /**
  * Certificate-related endpoints: addCertificate, removeCertificate,
  *   revokeCertificate, getCertificateAuthority, removeHoldCertificate,
- *   getCertProfile
+ *   getCertProfile, addCertRequest
  *
  * API commands:
  * - user_add_cert: https://freeipa.readthedocs.io/en/latest/api/user_show.html
@@ -22,11 +22,19 @@ import {
  * - cert_revoke: https://freeipa.readthedocs.io/en/latest/api/cert_revoke.html
  * - cert_remove_hold: https://freeipa.readthedocs.io/en/latest/api/cert_remove_hold.html
  * - certprofile_find: https://freeipa.readthedocs.io/en/latest/api/certprofile_find.html
+ * - cert_request: https://freeipa.readthedocs.io/en/latest/api/cert_request.html
  */
+
+export interface CertRequestPayload {
+  csr: string;
+  cacn: string;
+  principal: string;
+  profile_id: string;
+}
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
-    addCertificate: build.mutation<FindRPCResponse, any[]>({
+    addCertificate: build.mutation<FindRPCResponse, string[]>({
       query: (payload) => {
         const params = [
           [payload[0]],
@@ -123,6 +131,27 @@ const extendedApi = api.injectEndpoints({
         response.result.result as unknown as CertProfile[],
       providesTags: ["CertProfile"],
     }),
+    addCertRequest: build.mutation<FindRPCResponse, CertRequestPayload>({
+      query: (payload) => {
+        const params = [
+          [payload.csr],
+          {
+            cacn: payload.cacn,
+            principal: payload.principal,
+            profile_id: payload.profile_id,
+            version: API_VERSION_BACKUP,
+          },
+        ];
+        if (params[1]["profile_id"] === "") {
+          delete params[1]["profile_id"];
+        }
+
+        return getCommand({
+          method: "cert_request",
+          params: params,
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -134,4 +163,5 @@ export const {
   useRevokeCertificateMutation,
   useRemoveHoldCertificateMutation,
   useGetCertProfileQuery,
+  useAddCertRequestMutation,
 } = extendedApi;

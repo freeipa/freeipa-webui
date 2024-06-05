@@ -21,7 +21,8 @@ import ModalWithFormLayout, { Field } from "../layouts/ModalWithFormLayout";
 // RTK
 import { ErrorResult } from "src/services/rpc";
 import {
-  useAddCertificateMutation,
+  CertRequestPayload,
+  useAddCertRequestMutation,
   useGetCertProfileQuery,
   useGetCertificateAuthorityQuery,
 } from "src/services/rpcCerts";
@@ -36,9 +37,10 @@ import PopoverWithIconLayout from "../layouts/PopoverWithIconLayout";
 interface PropsToIssueNewCertificate {
   isOpen: boolean;
   onClose: () => void;
-  uid: string | undefined; // TODO: Remove the 'undefined' type when 'User' data is normalized
+  id: string | undefined;
   showPrincipalFields: boolean | false;
   onRefresh: () => void;
+  principal: string | undefined;
 }
 
 const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
@@ -46,7 +48,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
   const alerts = useAlerts();
 
   // RPC hooks
-  const [addCertificate] = useAddCertificateMutation();
+  const [addCertRequest] = useAddCertRequestMutation();
   const certAuthQuery = useGetCertificateAuthorityQuery();
   const certProfileQuery = useGetCertProfileQuery();
 
@@ -179,21 +181,16 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
     }
   }, [props.showPrincipalFields]);
 
-  // Remove certificate delimiters
-  // - This is needed to process the certificate in the API call
-  // TODO: Move this function into the 'utils' file
-  const removeCertificateDelimiters = (certificate: string) => {
-    return certificate
-      .replace(/-----BEGIN CERTIFICATE-----/g, "")
-      .replace(/-----END CERTIFICATE-----/g, "")
-      .replace(/\n/g, "");
-  };
-
   // Add certificate
   const onAddCertificate = () => {
-    const payload = [props.uid, removeCertificateDelimiters(certificate)];
+    const payload = {
+      csr: certificate,
+      cacn: selectedCA,
+      principal: props.principal,
+      profile_id: selectedProfile,
+    } as CertRequestPayload;
 
-    addCertificate(payload).then((response) => {
+    addCertRequest(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
           // Close modal
@@ -201,7 +198,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
           // Set alert: success
           alerts.addAlert(
             "add-certificate-success",
-            "Added certificate to user '" + props.uid + "'",
+            "Added certificate to '" + props.id + "'",
             "success"
           );
         } else if (response.data.error) {
@@ -269,24 +266,36 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
     {
       id: "how-to-issue-certificate",
       pfComponent: (
-        <List component={ListComponent.ol} type={OrderType.number}>
+        <List
+          component={ListComponent.ol}
+          type={OrderType.number}
+          className="pf-v5-u-font-size-md"
+        >
           <ListItem>
             Create a certificate database or use an existing one. To create a
-            new database: <code># certutil -N -d &lt;database path&gt;</code>
+            new database:
+            <br />
+            <code># certutil -N -d &lt;database path&gt;</code>
           </ListItem>
           <ListItem>
             Create a CSR with subject{" "}
-            <i>CN=&lt;common name&gt;,O=&lt;realm&gt;</i>, for example:{" "}
+            <i>CN=&lt;common name&gt;,O=&lt;realm&gt;</i>, for example: <br />
             <code>
               # certutil -R -d &lt;database path&gt; -a -g &lt;key size&gt; -s
               &apos;CN=&lt;common name&gt;,O=IPA.DEMO&apos;
             </code>
           </ListItem>
           <ListItem>
-            Copy and paste the CSR (from{" "}
-            <i>-----BEGIN NEW CERTIFICATE REQUEST-----</i> to{" "}
-            <i>-----END NEW CERTIFICATE REQUEST-----</i>) into the text area
-            below:
+            Copy and paste the CSR (from &quot;
+            <i>
+              <b>-----BEGIN NEW CERTIFICATE REQUEST-----</b>
+            </i>
+            &quot;{" to "}
+            &quot;
+            <i>
+              <b>-----END NEW CERTIFICATE REQUEST-----</b>
+            </i>
+            &quot;) into the text area below:
           </ListItem>
         </List>
       ),
@@ -300,10 +309,12 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
           aria-label="Text area for certificate"
           value={certificate}
           onChange={(_event, value) => setCertificate(value)}
-          style={{ height: "300px" }}
+          style={{ height: "250px" }}
           className="pf-u-mb-lg"
+          autoFocus
         />
       ),
+      fieldRequired: true,
     },
   ];
 
@@ -325,6 +336,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
       key={"issue-new-certificate"}
       variant="primary"
       onClick={onAddCertificate}
+      isDisabled={certificate === ""}
     >
       Issue
     </Button>,
@@ -341,9 +353,9 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
-        variantType="small"
+        variantType="medium"
         modalPosition="top"
-        title={"Issue new certificate for user '" + props.uid + "'"}
+        title={"Issue new certificate for '" + props.id + "'"}
         formId="issue-new-certificate-form"
         fields={fields}
         show={props.isOpen}

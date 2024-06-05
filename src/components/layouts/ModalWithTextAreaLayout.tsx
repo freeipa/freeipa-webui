@@ -48,6 +48,7 @@ const ModalWithTextAreaLayout = (props: PropsToPKModal) => {
             resizeOrientation={props.resizeOrientation || "vertical"}
             style={props.cssStyle}
             isDisabled={props.isTextareaDisabled || false}
+            autoFocus
           />
         </FormGroup>
       </Form>

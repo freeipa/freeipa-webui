@@ -37,7 +37,7 @@ interface PropsToIpaCertificates {
   onChange: (ipaObject: Record<string, unknown>) => void;
   metadata: Metadata;
   certificates: Record<string, unknown>;
-  objectType: string;
+  objectType: "user" | "host" | "service";
   onRefresh: () => void;
 }
 
@@ -76,7 +76,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
     const objMetadata = props.metadata.objects[props.objectType];
     idParamName = objMetadata.primary_key as string;
   }
-  const idParam = props.ipaObject[idParamName];
+  const idParam = props.ipaObject[idParamName] as string;
 
   // Get further details of a certificate (via the `cert_find` results)
   const getCertificateInfo = (certificate: CertificateParam) => {
@@ -366,7 +366,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
 
   // On adding a certificate
   const onAddCertificate = () => {
-    const payload = [
+    const payload: string[] = [
       idParam,
       removeCertificateDelimiters(textAreaValue),
       props.objectType,
