@@ -57,10 +57,14 @@ import {
   useGettingHostQuery,
   useAutoMemberRebuildHostsMutation,
 } from "../../services/rpcHosts";
+// Navigation
+import { useSearchParams } from "react-router-dom";
 
 const Hosts = () => {
   // Dispatch (Redux)
   const dispatch = useAppDispatch();
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "hosts" });
@@ -89,8 +93,12 @@ const Hosts = () => {
   const modalErrors = useApiError([]);
 
   // Table comps
-  const [searchValue, setSearchValue] = React.useState("");
-  const [page, setPage] = useState<number>(1);
+  const [searchValue, setSearchValue] = React.useState(
+    searchParams.get("search") || ""
+  );
+  const [page, setPage] = useState<number>(
+    parseInt(searchParams.get("p") || "1")
+  );
   const [perPage, setPerPage] = useState<number>(10);
   const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
   const [totalCount, setHostsTotalCount] = useState<number>(0);
@@ -135,7 +143,7 @@ const Hosts = () => {
 
   // Derived states - what we get from API
   const hostDataResponse = useGettingHostQuery({
-    searchValue: "",
+    searchValue: searchValue,
     sizeLimit: 0,
     apiVersion: apiVersion || API_VERSION_BACKUP,
     startIdx: firstHostIdx,
@@ -196,6 +204,27 @@ const Hosts = () => {
       );
     }
   }, [hostDataResponse]);
+
+  // Handle URLs with pagination and search values
+  React.useEffect(() => {
+    let searchParamsNew = {};
+
+    if (page > 1) {
+      searchParamsNew = {
+        ...searchParamsNew,
+        p: page.toString(),
+      };
+    }
+
+    if (searchValue !== "") {
+      searchParamsNew = {
+        ...searchParamsNew,
+        search: searchValue,
+      };
+    }
+
+    setSearchParams(searchParamsNew, { replace: true });
+  }, [page, searchValue]);
 
   // Always refetch data when the component is loaded.
   // This ensures the data is always up-to-date.

@@ -78,7 +78,33 @@ export const AppRoutes = (): React.ReactElement => (
     </Route>
     <Route path="hosts">
       <Route path="" element={<Hosts />} />
-      <Route path="settings" element={<HostsTabs />} />
+      <Route path=":fqdn">
+        <Route path="" element={<HostsTabs section="settings" />} />
+        <Route
+          path="memberof_hostgroup"
+          element={<HostsTabs section="memberof_hostgroup" />}
+        />
+        <Route
+          path="memberof_netgroup"
+          element={<HostsTabs section="memberof_netgroup" />}
+        />
+        <Route
+          path="memberof_role"
+          element={<HostsTabs section="memberof_role" />}
+        />
+        <Route
+          path="memberof_hbacrule"
+          element={<HostsTabs section="memberof_hbacrule" />}
+        />
+        <Route
+          path="memberof_sudorule"
+          element={<HostsTabs section="memberof_sudorule" />}
+        />
+        <Route
+          path="managedby_host"
+          element={<HostsTabs section="managedby" />}
+        />
+      </Route>
     </Route>
     <Route path="services">
       <Route path="" element={<Services />} />

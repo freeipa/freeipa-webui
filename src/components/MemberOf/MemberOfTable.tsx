@@ -44,7 +44,7 @@ interface ButtonData {
 export interface PropsToTable {
   group: MemberOfElement[];
   tableName: string;
-  activeTabKey: number;
+  activeTabKey: number | string; // TODO: Change to string
   changeSelectedGroups: (groups: string[]) => void;
   buttonData: ButtonData;
   showTableRows: boolean;
@@ -60,7 +60,7 @@ const MemberOfTable = (props: PropsToTable) => {
     description: "Description",
   };
   const netgroupsColumnNames: ColumnNames = {
-    name: "NetgroupOld name",
+    name: "Netgroup name",
     description: "Description",
   };
   const rolesColumnNames: ColumnNames = {
@@ -113,24 +113,22 @@ const MemberOfTable = (props: PropsToTable) => {
   // When moving to another tab, the column names must change
   useEffect(() => {
     switch (props.activeTabKey) {
-      case 0:
-        if (props.tableName === "User groups") {
-          setColumnNames(userGroupsColumnNames);
-        }
-        if (props.tableName === "Host groups") {
-          setColumnNames(hostGroupsColumnNames);
-        }
+      case "memberof_hostgroup":
+        setColumnNames(hostGroupsColumnNames);
         break;
-      case 1:
+      case "memberof_group":
+        setColumnNames(userGroupsColumnNames);
+        break;
+      case "memberof_netgroup":
         setColumnNames(netgroupsColumnNames);
         break;
-      case 2:
+      case "memberof_role":
         setColumnNames(rolesColumnNames);
         break;
-      case 3:
+      case "memberof_hbacrule":
         setColumnNames(hbacRulesColumnNames);
         break;
-      case 4:
+      case "memberof_sudorule":
         setColumnNames(sudoRulesColumnNames);
         break;
     }

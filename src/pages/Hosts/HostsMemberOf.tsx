@@ -37,12 +37,17 @@ import {
 // Modals
 import MemberOfAddModal from "src/components/MemberOf/MemberOfAddModalOld";
 import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModalOld";
+// Navigation
+import { useNavigate } from "react-router-dom";
 
 interface PropsToHostsMemberOf {
   host: Host;
+  tabSection: string;
 }
 
 const HostsMemberOf = (props: PropsToHostsMemberOf) => {
+  const navigate = useNavigate();
+
   // Retrieve each group list from Redux:
   let hostGroupsList = [] as HostGroupOld[];
   let netgroupsList = [] as NetgroupOld[];
@@ -225,13 +230,35 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   };
 
   // -- Tab
-  const [activeTabKey, setActiveTabKey] = useState(0);
+  const [activeTabKey, setActiveTabKey] = useState("");
+  // This is a temporary solution to keep the active tab number
+  //  as it will be passed to the 'MemberOfDeleteModal' component
+  //  and this is being used by 'Services' component as well
+  const [activeTabNumber, setActiveTabNumber] = useState(0);
 
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as number);
+    switch (tabIndex) {
+      case "memberof_hostgroup":
+        setActiveTabNumber(0);
+        break;
+      case "memberof_netgroup":
+        setActiveTabNumber(1);
+        break;
+      case "memberof_role":
+        setActiveTabNumber(2);
+        break;
+      case "memberof_hbacrule":
+        setActiveTabNumber(3);
+        break;
+      case "memberof_sudorule":
+        setActiveTabNumber(4);
+        break;
+    }
+    setActiveTabKey(tabIndex as string);
+    navigate("/hosts/" + props.host.fqdn + "/" + tabIndex);
   };
 
   // -- Pagination
@@ -265,19 +292,19 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
       | SudoRulesOld[]
   ) => {
     switch (activeTabKey) {
-      case 0:
+      case "memberof_hostgroup":
         setShownHostGroupsList(value as HostGroupOld[]);
         break;
-      case 1:
+      case "memberof_netgroup":
         setShownNetgroupsList(value as NetgroupOld[]);
         break;
-      case 2:
+      case "memberof_role":
         setShownRolesList(value as RolesOld[]);
         break;
-      case 3:
+      case "memberof_hbacrule":
         setShownHBACRulesList(value as HBACRulesOld[]);
         break;
-      case 4:
+      case "memberof_sudorule":
         setShownSudoRulesList(value as SudoRulesOld[]);
         break;
     }
@@ -293,19 +320,19 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   ) => {
     setPage(newPage);
     switch (activeTabKey) {
-      case 0:
+      case "memberof_hostgroup":
         setShownHostGroupsList(hostGroupsRepository.slice(startIdx, endIdx));
         break;
-      case 1:
+      case "memberof_netgroup":
         setShownNetgroupsList(netgroupsRepository.slice(startIdx, endIdx));
         break;
-      case 2:
+      case "memberof_role":
         setShownRolesList(rolesRepository.slice(startIdx, endIdx));
         break;
-      case 3:
+      case "memberof_hbacrule":
         setShownHBACRulesList(hbacRulesRepository.slice(startIdx, endIdx));
         break;
-      case 4:
+      case "memberof_sudorule":
         setShownSudoRulesList(sudoRulesRepository.slice(startIdx, endIdx));
         break;
     }
@@ -320,19 +347,19 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   ) => {
     setPerPage(newPerPage);
     switch (activeTabKey) {
-      case 0:
+      case "memberof_hostgroup":
         setShownHostGroupsList(hostGroupsRepository.slice(startIdx, endIdx));
         break;
-      case 1:
+      case "memberof_netgroup":
         setShownNetgroupsList(netgroupsRepository.slice(startIdx, endIdx));
         break;
-      case 2:
+      case "memberof_role":
         setShownRolesList(rolesRepository.slice(startIdx, endIdx));
         break;
-      case 3:
+      case "memberof_hbacrule":
         setShownHBACRulesList(hbacRulesRepository.slice(startIdx, endIdx));
         break;
-      case 4:
+      case "memberof_sudorule":
         setShownSudoRulesList(sudoRulesRepository.slice(startIdx, endIdx));
         break;
     }
@@ -347,19 +374,19 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   ) => {
     setPage(newPage);
     switch (activeTabKey) {
-      case 0:
+      case "memberof_hostgroup":
         setShownHostGroupsList(hostGroupsRepository.slice(startIdx, endIdx));
         break;
-      case 1:
+      case "memberof_netgroup":
         setShownNetgroupsList(netgroupsRepository.slice(startIdx, endIdx));
         break;
-      case 2:
+      case "memberof_role":
         setShownRolesList(rolesRepository.slice(startIdx, endIdx));
         break;
-      case 3:
+      case "memberof_hbacrule":
         setShownHBACRulesList(hbacRulesRepository.slice(startIdx, endIdx));
         break;
-      case 4:
+      case "memberof_sudorule":
         setShownSudoRulesList(sudoRulesRepository.slice(startIdx, endIdx));
         break;
     }
@@ -373,19 +400,19 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   ) => {
     setPerPage(newPerPage);
     switch (activeTabKey) {
-      case 0:
+      case "memberof_hostgroup":
         setShownHostGroupsList(hostGroupsRepository.slice(startIdx, endIdx));
         break;
-      case 1:
+      case "memberof_netgroup":
         setShownNetgroupsList(netgroupsRepository.slice(startIdx, endIdx));
         break;
-      case 2:
+      case "memberof_role":
         setShownRolesList(rolesRepository.slice(startIdx, endIdx));
         break;
-      case 3:
+      case "memberof_hbacrule":
         setShownHBACRulesList(hbacRulesRepository.slice(startIdx, endIdx));
         break;
-      case 4:
+      case "memberof_sudorule":
         setShownSudoRulesList(sudoRulesRepository.slice(startIdx, endIdx));
         break;
     }
@@ -394,15 +421,15 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   // Different number of items will be shown depending on the 'activeTabKey'
   const numberOfItems = () => {
     switch (activeTabKey) {
-      case 0:
+      case "memberof_hostgroup":
         return hostGroupsRepository.length;
-      case 1:
+      case "memberof_netgroup":
         return netgroupsRepository.length;
-      case 2:
+      case "memberof_role":
         return rolesRepository.length;
-      case 3:
+      case "memberof_hbacrule":
         return hbacRulesRepository.length;
-      case 4:
+      case "memberof_sudorule":
         return sudoRulesRepository.length;
     }
   };
@@ -439,23 +466,23 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
     if (showTableRows) setShowTableRows(false);
     setTimeout(() => {
       switch (activeTabKey) {
-        case 0:
+        case "memberof_hostgroup":
           setShownHostGroupsList(hostGroupsRepository.slice(0, perPage));
           setHostGroupsRepoLength(hostGroupsRepository.length);
           break;
-        case 1:
+        case "memberof_netgroup":
           setShownNetgroupsList(netgroupsRepository.slice(0, perPage));
           setNetgroupsRepoLength(netgroupsRepository.length);
           break;
-        case 2:
+        case "memberof_role":
           setShownRolesList(rolesRepository.slice(0, perPage));
           setRolesRepoLength(rolesRepository.length);
           break;
-        case 3:
+        case "memberof_hbacrule":
           setShownHBACRulesList(hbacRulesRepository.slice(0, perPage));
           setHbacRulesRepoLength(hbacRulesRepository.length);
           break;
-        case 4:
+        case "memberof_sudorule":
           setShownSudoRulesList(sudoRulesRepository.slice(0, perPage));
           setSudoRulesRepoLength(sudoRulesRepository.length);
           break;
@@ -521,7 +548,8 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
 
   const deleteTabData = {
     tabName,
-    activeTabKey,
+    // TODO: Replace it with the 'activeTabKey' state when 'Services' has been adapted
+    activeTabKey: activeTabNumber,
   };
 
   // - 'MemberOfToolbar' > 'SearchInputLayout'
@@ -531,6 +559,11 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
     updateSearchValue,
   };
 
+  React.useEffect(() => {
+    setActiveTabKey(props.tabSection);
+    navigate("/hosts/" + props.host.fqdn + "/" + props.tabSection);
+  }, [props.tabSection]);
+
   // Render component
   return (
     <Page>
@@ -539,9 +572,15 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
         isFilled={false}
         className="pf-v5-u-m-lg"
       >
-        <Tabs activeKey={activeTabKey} onSelect={handleTabClick} isBox={false}>
+        <Tabs
+          activeKey={activeTabKey}
+          onSelect={handleTabClick}
+          isBox={false}
+          mountOnEnter
+          unmountOnExit
+        >
           <Tab
-            eventKey={0}
+            eventKey={"memberof_hostgroup"}
             name="memberof_hostgroup"
             title={
               <TabTitleText>
@@ -573,7 +612,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
             />
           </Tab>
           <Tab
-            eventKey={1}
+            eventKey={"memberof_netgroup"}
             name="memberof_netgroup"
             title={
               <TabTitleText>
@@ -605,7 +644,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
             />
           </Tab>
           <Tab
-            eventKey={2}
+            eventKey={"memberof_role"}
             name="memberof_role"
             title={
               <TabTitleText>
@@ -637,7 +676,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
             />
           </Tab>
           <Tab
-            eventKey={3}
+            eventKey={"memberof_hbacrule"}
             name="memberof_hbacrule"
             title={
               <TabTitleText>
@@ -669,7 +708,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
             />
           </Tab>
           <Tab
-            eventKey={4}
+            eventKey={"memberof_sudorule"}
             name="memberof_sudorule"
             title={
               <TabTitleText>
