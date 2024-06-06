@@ -140,6 +140,7 @@ export interface GenericPayload {
     | "role"
     | "hbacrule"
     | "hbacsvc"
+    | "hbacsvcgroup"
     | "sudorule";
 }
 
@@ -322,6 +323,12 @@ export const api = createApi({
           }
         }
 
+        if (objName === "hbacsvcgroup") {
+          if (description) {
+            params["description"] = description;
+          }
+        }
+
         if (objName === "sudorule") {
           if (cn) {
             params["cn"] = cn;
@@ -369,7 +376,11 @@ export const api = createApi({
             id = idResponseData.result.result[i] as cnType;
           } else if (objName === "role") {
             id = idResponseData.result.result[i] as roleType;
-          } else if (objName === "hbacrule" || objName === "hbacsvc") {
+          } else if (
+            objName === "hbacrule" ||
+            objName === "hbacsvc" ||
+            objName === "hbacsvcgroup"
+          ) {
             id = idResponseData.result.result[i] as cnType;
           } else if (objName === "sudorule") {
             id = idResponseData.result.result[i] as cnType;
@@ -474,6 +485,9 @@ export const api = createApi({
         } else if (entryType === "hbacsvc") {
           method = "hbacsvc_find";
           show_method = "hbacsvc_show";
+        } else if (entryType === "hbacsvcgroup") {
+          method = "hbacsvcgroup_find";
+          show_method = "hbacsvcgroup_show";
         }
 
         // Prepare payload
@@ -515,7 +529,8 @@ export const api = createApi({
             entryType === "hostgroup" ||
             entryType === "netgroup" ||
             entryType === "hbacrule" ||
-            entryType === "hbacsvc"
+            entryType === "hbacsvc" ||
+            entryType === "hbacsvcgroup"
           ) {
             const groupId = responseData.result.result[i] as cnType;
             const { cn } = groupId;
