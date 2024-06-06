@@ -9,7 +9,7 @@ import {
 } from "./rpc";
 import { apiToHBACRule } from "src/utils/hbacRulesUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
-import { HBACRule } from "../utils/datatypes/globalDataTypes";
+import { HBACRule, HBACService } from "../utils/datatypes/globalDataTypes";
 
 /**
  * HBAC-related endpoints:
@@ -20,6 +20,8 @@ import { HBACRule } from "../utils/datatypes/globalDataTypes";
  * - removeFromHbacRules
  * - disableHbacRule
  * - enableHbacRule
+ * - addHbacService
+ * - removeHbacService
  *
  * API commands:
  * - hbacrule_show: https://freeipa.readthedocs.io/en/latest/api/hbacrule_show.html
@@ -35,6 +37,8 @@ import { HBACRule } from "../utils/datatypes/globalDataTypes";
  * - hbacrule_remove_sourcehost: https://freeipa.readthedocs.io/en/latest/api/hbacrule_remove_sourcehost.html
  * - hbacrule_disable: https://freeipa.readthedocs.io/en/latest/api/hbacrule_disable.html
  * - hbacrule_enable: https://freeipa.readthedocs.io/en/latest/api/hbacrule_enable.html
+ * - hbacsvc_add: https://freeipa.readthedocs.io/en/latest/api/hbacsvc_add.html
+ * - hbacsvc_del: https://freeipa.readthedocs.io/en/latest/api/hbacsvc_del.html
  */
 
 export interface HbacRulesShowPayload {
@@ -81,7 +85,7 @@ const extendedApi = api.injectEndpoints({
     }),
     /**
      * Remove HBAC rule
-     * @param {string} name - HBAC Rule name
+     * @param {string[]} names - HBAC Rule name
      */
     removeHbacRules: build.mutation<BatchRPCResponse, HBACRule[]>({
       query: (rules) => {
@@ -231,12 +235,54 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Add HBAC service
+     * @param {string} name - ID of the entity to add to HBAC services
+     * @param {string} description - description
+     */
+    addHbacService: build.mutation<BatchRPCResponse, [string, string]>({
+      query: (payload) => {
+        const params = [
+          [payload[0]],
+          {
+            description: payload[1],
+          },
+        ];
+        return getCommand({
+          method: "hbacsvc_add",
+          params: params,
+        });
+      },
+    }),
+    /**
+     * Remove HBAC services
+     * @param {string[]} services - HBAC service names
+     */
+    removeHbacServices: build.mutation<BatchRPCResponse, HBACService[]>({
+      query: (services) => {
+        const servicesToDeletePayload: Command[] = [];
+        services.map((service) => {
+          const payloadItem = {
+            method: "hbacsvc_del",
+            params: [[service.cn], {}],
+          } as Command;
+          servicesToDeletePayload.push(payloadItem);
+        });
+        return getBatchCommand(servicesToDeletePayload, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
 
 export const useGettingHbacRulesQuery = (payloadData) => {
   payloadData["objName"] = "hbacrule";
+  payloadData["objAttr"] = "cn";
+  return useGettingGenericQuery(payloadData);
+};
+
+export const useGettingHbacServicesQuery = (payloadData) => {
+  payloadData["objName"] = "hbacsvc";
   payloadData["objAttr"] = "cn";
   return useGettingGenericQuery(payloadData);
 };
@@ -249,4 +295,6 @@ export const {
   useRemoveFromHbacRulesMutation,
   useDisableHbacRuleMutation,
   useEnableHbacRuleMutation,
+  useAddHbacServiceMutation,
+  useRemoveHbacServicesMutation,
 } = extendedApi;
