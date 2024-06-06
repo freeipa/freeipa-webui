@@ -4,6 +4,7 @@ import {
   Button,
   HelperText,
   HelperTextItem,
+  TextInput,
   ValidatedOptions,
 } from "@patternfly/react-core";
 // Modals
@@ -18,6 +19,7 @@ import {
 } from "src/services/rpcUsers";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
+import { useAppSelector } from "src/store/hooks";
 
 interface PropsToResetPassword {
   uid: string | undefined;
@@ -30,13 +32,23 @@ const ResetPassword = (props: PropsToResetPassword) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
+  // Get current logged-in user info
+  const loggedInUser = useAppSelector(
+    (state) => state.global.loggedUserInfo.arguments[0]
+  );
+
   // RPC hooks
   const [resetPassword] = useChangePasswordMutation();
 
   // Passwords
+  const [currentPassword, setCurrentPassword] = React.useState("");
   const [newPassword, setNewPassword] = React.useState("");
   const [verifyPassword, setVerifyPassword] = React.useState("");
+  const [otp, setOtp] = React.useState("");
+
   const [passwordHidden, setPasswordHidden] = React.useState(true);
+  const [currentPasswordHidden, setCurrentPasswordHidden] =
+    React.useState(true);
   const [verifyPasswordHidden, setVerifyPasswordHidden] = React.useState(true);
 
   // Verify password
@@ -56,7 +68,7 @@ const ResetPassword = (props: PropsToResetPassword) => {
   };
 
   // Fields
-  const fields = [
+  const notLoggedInfields = [
     {
       id: "new-password",
       name: "New Password",
@@ -95,6 +107,78 @@ const ResetPassword = (props: PropsToResetPassword) => {
             </HelperTextItem>
           </HelperText>
         </>
+      ),
+    },
+  ];
+
+  const loggedInfields = [
+    {
+      id: "current-password",
+      name: "Current Password",
+      pfComponent: (
+        <PasswordInput
+          id="reset-password-current-password"
+          name="current_password"
+          value={currentPassword}
+          aria-label="current password text input"
+          onFocus={resetVerifyPassword}
+          onChange={setCurrentPassword}
+          onRevealHandler={setCurrentPasswordHidden}
+          passwordHidden={currentPasswordHidden}
+        />
+      ),
+    },
+    {
+      id: "new-password",
+      name: "New Password",
+      pfComponent: (
+        <PasswordInput
+          id="reset-password-new-password"
+          name="password"
+          value={newPassword}
+          aria-label="new password text input"
+          onFocus={resetVerifyPassword}
+          onChange={setNewPassword}
+          onRevealHandler={setPasswordHidden}
+          passwordHidden={passwordHidden}
+        />
+      ),
+    },
+    {
+      id: "reset-password",
+      name: "Verify password",
+      pfComponent: (
+        <>
+          <PasswordInput
+            id="reset-password-verify-password"
+            name="password2"
+            value={verifyPassword}
+            aria-label="verify password text input"
+            onFocus={resetVerifyPassword}
+            onChange={setVerifyPassword}
+            onRevealHandler={setVerifyPasswordHidden}
+            passwordHidden={verifyPasswordHidden}
+            validated={passwordValidationResult.pfError}
+          />
+          <HelperText>
+            <HelperTextItem variant="error">
+              {passwordValidationResult.message}
+            </HelperTextItem>
+          </HelperText>
+        </>
+      ),
+    },
+    {
+      id: "otp",
+      name: "OTP",
+      pfComponent: (
+        <TextInput
+          id="reset-password-otp"
+          name="otp"
+          value={otp}
+          aria-label="otp text input"
+          onChange={(_event, newValue) => setOtp(newValue)}
+        />
       ),
     },
   ];
@@ -141,10 +225,23 @@ const ResetPassword = (props: PropsToResetPassword) => {
         "danger"
       );
     } else {
-      const payload = {
+      let payload = {
         uid: props.uid,
         password: newPassword,
       } as PasswordChangePayload;
+
+      if (props.uid === loggedInUser) {
+        payload = {
+          ...payload,
+          currentPassword: currentPassword,
+        };
+        if (otp !== "") {
+          payload = {
+            ...payload,
+            otp: otp,
+          };
+        }
+      }
 
       resetPassword(payload).then((response) => {
         if ("data" in response) {
@@ -203,7 +300,11 @@ const ResetPassword = (props: PropsToResetPassword) => {
         title="Reset password"
         description="Reset the password for the selected user"
         formId="reset-password-form"
-        fields={fields}
+        fields={
+          props.uid && props.uid === loggedInUser
+            ? loggedInfields
+            : notLoggedInfields
+        }
         show={props.isOpen}
         onClose={resetFieldsAndCloseModal}
         actions={actions}

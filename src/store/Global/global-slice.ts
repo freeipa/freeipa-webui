@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface GlobalState {
   // TODO: Specify data types
   ipaServerConfiguration: Record<string, unknown>;
-  loggedUserInfo: Record<string, unknown>;
+  loggedUserInfo: LoggedUserInfo;
   environment: Record<string, unknown>;
   dnsIsEnabled: Record<string, unknown>;
   trustConfiguration: Record<string, unknown>;
@@ -12,9 +12,21 @@ interface GlobalState {
   vaultConfiguration: Record<string, unknown>;
 }
 
+interface LoggedUserInfo {
+  arguments: string;
+  command: string;
+  error: Record<string, unknown>;
+  object: string;
+}
+
 const initialState: GlobalState = {
   ipaServerConfiguration: {},
-  loggedUserInfo: {},
+  loggedUserInfo: {
+    arguments: "",
+    command: "",
+    error: {},
+    object: "",
+  },
   environment: {},
   dnsIsEnabled: {},
   trustConfiguration: {},
@@ -39,7 +51,7 @@ const globalSlice = createSlice({
       action: PayloadAction<Record<string, unknown>>
     ) => {
       const newLoggedUserInfo = action.payload;
-      state.loggedUserInfo = newLoggedUserInfo;
+      state.loggedUserInfo = { ...state.loggedUserInfo, ...newLoggedUserInfo };
     },
     updateEnvironment: (
       state,
