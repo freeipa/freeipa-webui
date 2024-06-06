@@ -66,6 +66,15 @@ export type UserFullData = {
 export interface PasswordChangePayload {
   uid: string;
   password: string;
+  currentPassword?: string;
+  otp?: string;
+}
+
+interface PasswordChangePayloadParams {
+  password: string;
+  current_password?: string;
+  otp?: string;
+  version: string;
 }
 
 const extendedApi = api.injectEndpoints({
@@ -376,13 +385,27 @@ const extendedApi = api.injectEndpoints({
     }),
     changePassword: build.mutation<FindRPCResponse, PasswordChangePayload>({
       query: (payload) => {
-        const params = [
-          [payload.uid],
-          {
-            password: payload.password,
-            version: API_VERSION_BACKUP,
-          },
-        ];
+        let payloadArgs: PasswordChangePayloadParams = {
+          password: payload.password,
+          version: API_VERSION_BACKUP,
+        };
+
+        // Add optional parameters if they exist
+        if (payload.currentPassword !== undefined) {
+          payloadArgs = {
+            ...payloadArgs,
+            current_password: payload.currentPassword,
+          };
+        }
+
+        if (payload.otp !== undefined) {
+          payloadArgs = {
+            ...payloadArgs,
+            otp: payload.otp,
+          };
+        }
+
+        const params = [[payload.uid], payloadArgs];
 
         return getCommand({
           method: "passwd",
