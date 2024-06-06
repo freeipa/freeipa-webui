@@ -61,6 +61,9 @@ const DateTimeSelector = (props: PropsToDateTimeSelector) => {
     if (props.datetime && isValidDate(props.datetime)) {
       updatedFromDate = cloneDate(props.datetime);
     }
+
+    if (!updatedFromDate || isValidDate(updatedFromDate)) return;
+
     updatedFromDate.setHours(hour);
     updatedFromDate.setMinutes(minute);
     if (props.onChange) {
