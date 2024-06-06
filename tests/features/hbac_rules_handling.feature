@@ -30,29 +30,15 @@ Feature: HBAC rules manipulation
     Then I should see "rule3" entry in the data table
     Then I should see "rule4" entry in the data table
 
-  Scenario: Delete a rule
-    Given I should see partial "rule1" entry in the data table
-    When I select entry "rule1" in the data table
-    * I click on "Delete" button
-    When I see "Remove HBAC rule" modal
-    * I should see "rule1" entry in the data table
-    * in the modal dialog I click on "Delete" button
-    * I should see "success" alert with text "HBAC rules removed"
-    Then I should not see "rule1" entry in the data table
-
-  Scenario: Delete many rules
-    Given I should see "rule2" entry in the data table
-    Given I should see "rule3" entry in the data table
-    Then I select partial entry "rule2" in the data table
-    Then I select partial entry "rule3" in the data table
-    When I click on "Delete" button
-    * I see "Remove HBAC rule" modal
-    * I should see partial "rule2" entry in the data table
-    * I should see partial "rule3" entry in the data table
-    * in the modal dialog I click on "Delete" button
-    * I should see "success" alert with text "HBAC rules removed"
-    Then I should not see "rule2" entry in the data table
-    Then I should not see "rule3" entry in the data table
+  Scenario Outline: Search for a rule
+    When I type "rule2" in the search field
+    Then I should see the "rule2" text in the search input field
+    When I click on the arrow icon to perform search
+    Then I should see the element "rule2" in the table
+    And I should not see the element "rule1" in the table
+    Then I click on the X icon to clear the search field
+    When I click on the arrow icon to perform search
+    Then I should see the element "rule1" in the table
 
   Scenario: Disable a rule
     Given I should see "rule4" entry in the data table
@@ -79,6 +65,34 @@ Feature: HBAC rules manipulation
     Then in the modal dialog I click on "Enable" button
     Then I should see "rule4" entry in the data table
     Then entry "rule4" should have attribute "Status" set to "Enabled"
+
+  Scenario: Delete a rule
+    Given I should see partial "rule1" entry in the data table
+    When I select entry "rule1" in the data table
+    * I click on "Delete" button
+    When I see "Remove HBAC rule" modal
+    * I should see "rule1" entry in the data table
+    * in the modal dialog I click on "Delete" button
+    * I should see "success" alert with text "HBAC rules removed"
+    Then I should not see "rule1" entry in the data table
+
+  Scenario: Delete many rules
+    Given I should see "rule2" entry in the data table
+    Given I should see "rule3" entry in the data table
+    Given I should see "rule4" entry in the data table
+    Then I select partial entry "rule2" in the data table
+    Then I select partial entry "rule3" in the data table
+    Then I select partial entry "rule4" in the data table
+    When I click on "Delete" button
+    * I see "Remove HBAC rule" modal
+    * I should see partial "rule2" entry in the data table
+    * I should see partial "rule3" entry in the data table
+    * I should see partial "rule4" entry in the data table
+    * in the modal dialog I click on "Delete" button
+    * I should see "success" alert with text "HBAC rules removed"
+    Then I should not see "rule2" entry in the data table
+    Then I should not see "rule3" entry in the data table
+    Then I should not see "rule4" entry in the data table
 
   Scenario: Cancel creation of a rule
     When I click on "Add" button

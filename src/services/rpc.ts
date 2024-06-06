@@ -139,6 +139,7 @@ export interface GenericPayload {
     | "usergroup"
     | "role"
     | "hbacrule"
+    | "hbacsvc"
     | "sudorule";
 }
 
@@ -202,6 +203,7 @@ export const api = createApi({
     "FullHost",
     "FullService",
     "FullUserGroup",
+    "FullHBACService",
     "FullHostGroup",
     "FullNetgroup",
   ],
@@ -284,6 +286,10 @@ export const api = createApi({
           version: apiVersion,
         };
 
+        if (timelimit) {
+          params["timelimit"] = timelimit;
+        }
+
         if (
           objName === "group" ||
           objName === "netgroup" ||
@@ -308,17 +314,11 @@ export const api = createApi({
           if (description) {
             params["description"] = description;
           }
-          if (timelimit) {
-            params["timelimit"] = timelimit;
-          }
         }
 
-        if (objName === "hbacrule") {
+        if (objName === "hbacrule" || objName === "hbacsvc") {
           if (description) {
             params["description"] = description;
-          }
-          if (timelimit) {
-            params["timelimit"] = timelimit;
           }
         }
 
@@ -328,9 +328,6 @@ export const api = createApi({
           }
           if (description) {
             params["description"] = description;
-          }
-          if (timelimit) {
-            params["timelimit"] = timelimit;
           }
         }
 
@@ -372,7 +369,7 @@ export const api = createApi({
             id = idResponseData.result.result[i] as cnType;
           } else if (objName === "role") {
             id = idResponseData.result.result[i] as roleType;
-          } else if (objName === "hbacrule") {
+          } else if (objName === "hbacrule" || objName === "hbacsvc") {
             id = idResponseData.result.result[i] as cnType;
           } else if (objName === "sudorule") {
             id = idResponseData.result.result[i] as cnType;
@@ -471,6 +468,12 @@ export const api = createApi({
         } else if (entryType === "netgroup") {
           method = "netgroup_find";
           show_method = "netgroup_show";
+        } else if (entryType === "hbacrule") {
+          method = "hbacrule_find";
+          show_method = "hbacrule_show";
+        } else if (entryType === "hbacsvc") {
+          method = "hbacsvc_find";
+          show_method = "hbacsvc_show";
         }
 
         // Prepare payload
@@ -510,7 +513,9 @@ export const api = createApi({
           } else if (
             entryType === "usergroup" ||
             entryType === "hostgroup" ||
-            entryType === "netgroup"
+            entryType === "netgroup" ||
+            entryType === "hbacrule" ||
+            entryType === "hbacsvc"
           ) {
             const groupId = responseData.result.result[i] as cnType;
             const { cn } = groupId;

@@ -5,6 +5,7 @@ import React from "react";
 import {
   DN,
   HBACRule,
+  HBACService,
   Host,
   HostGroup,
   Metadata,
@@ -56,6 +57,9 @@ export const isNetgroupSelectable = (group: Netgroup) => group.cn != "";
 
 // Determine whether a HbacRule is selectable or not
 export const isHbacRuleSelectable = (rule: HBACRule) => rule.cn != "";
+
+// Determine whether a HbacService is selectable or not
+export const isHbacServiceSelectable = (rule: HBACService) => rule.cn != "";
 
 // Determine whether a service is selectable or not
 export const isServiceSelectable = (service: Service) =>

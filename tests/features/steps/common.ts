@@ -409,3 +409,7 @@ Then(
 When("I click on the arrow icon to perform search", () => {
   cy.get("button[aria-label=Search]").eq(0).click();
 });
+
+Then("I click on the X icon to clear the search field", () => {
+  cy.get("button[aria-label=Reset]").eq(0).click();
+});
