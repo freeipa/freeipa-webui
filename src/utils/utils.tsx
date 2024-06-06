@@ -6,6 +6,7 @@ import {
   DN,
   HBACRule,
   HBACService,
+  HBACServiceGroup,
   Host,
   HostGroup,
   Metadata,
@@ -59,7 +60,12 @@ export const isNetgroupSelectable = (group: Netgroup) => group.cn != "";
 export const isHbacRuleSelectable = (rule: HBACRule) => rule.cn != "";
 
 // Determine whether a HbacService is selectable or not
-export const isHbacServiceSelectable = (rule: HBACService) => rule.cn != "";
+export const isHbacServiceSelectable = (service: HBACService) =>
+  service.cn != "";
+
+// Determine whether a HbacServiceGroup is selectable or not
+export const isHbacServiceGroupSelectable = (group: HBACServiceGroup) =>
+  group.cn != "";
 
 // Determine whether a service is selectable or not
 export const isServiceSelectable = (service: Service) =>

@@ -192,6 +192,12 @@ export interface HBACService {
   dn: string;
 }
 
+export interface HBACServiceGroup {
+  description: string;
+  cn: string;
+  dn: string;
+}
+
 export interface SudoRulesOld {
   name: string;
   status: string;
