@@ -343,16 +343,16 @@ Feature: User details
     * I click on "Save" button
     Then I should see "success" alert with text "User modified"
     And I should see value "testmail1@server.ipa.demo" in any of the textboxes that belong to the field "Mail address"
-    * I should see value "testmail2@server.ipa.demo" in any of the textboxes that belong to the field "Mail address"
+    * I should see value "testmail2@dom-server.ipa.demo" in any of the textboxes that belong to the field "Mail address"
 
   Scenario: Remove multiple mail addresses
     When in the "Mail address" section I click the "Delete" button of the text input field with text "testmail1@server.ipa.demo"
     Then I should not see the text input field with text "testmail1@server.ipa.demo" under the field "Mail address"
-    When in the "Mail address" section I click the "Delete" button of the text input field with text "testmail2@server.ipa.demo"
-    Then I should not see the text input field with text "testmail2@server.ipa.demo" under the field "Mail address"
+    When in the "Mail address" section I click the "Delete" button of the text input field with text "testmail2@dom-server.ipa.demo"
+    Then I should not see the text input field with text "testmail2@dom-server.ipa.demo" under the field "Mail address"
     When I click on "Save" button
     Then I should see "success" alert with text "User modified"
-    And I should see value "armadillo@server.ipa.demo" in any of the textboxes that belong to the field "Mail address"
+    And I should see value "armadillo@dom-server.ipa.demo" in any of the textboxes that belong to the field "Mail address"
 
   # - Telephone number
   Scenario: Add multiple telephone numbers
