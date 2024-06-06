@@ -3,7 +3,7 @@
 
 Vagrant.configure("2") do |config|
   config.vm.hostname = "server.ipa.demo"
-  config.vm.box = "fedora/38-cloud-base"
+  config.vm.box = "fedora/39-cloud-base"
 
   config.vm.synced_folder ".", "/vagrant", disabled: true
   config.vm.synced_folder ".", "/usr/src/freeipa-webui"
@@ -44,7 +44,7 @@ Vagrant.configure("2") do |config|
 
   # Install ipa server
   config.vm.provision "shell",
-    inline: "ipa-server-install -U -n server.ipa.demo -r IPA.DEMO -p Secret123 -a Secret123 --forwarder 8.8.8.8 --setup-dns --setup-kra"
+    inline: "ipa-server-install -U -n dom-server.ipa.demo -r DOM-IPA.DEMO -p Secret123 -a Secret123 --forwarder 8.8.8.8 --setup-dns --setup-kra"
 
   # Set SELinux to permissive mode
   config.vm.provision "shell", inline: <<~EOS

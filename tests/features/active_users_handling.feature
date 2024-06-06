@@ -141,7 +141,7 @@ Scenario: Re-enable multiple users at once
 
     When in the modal dialog I check "Delete" radio selector
     And in the modal dialog I click on "Delete" button
-    Then I see a modal with text "admin cannot be deleted"
+    Then I see a modal with text "admin cannot be deleted/modified"
     When in the modal dialog I click on "OK" button
     And in the modal dialog I click on "Cancel" button
     Then I should see "admin" entry in the data table
@@ -154,7 +154,7 @@ Scenario: Re-enable multiple users at once
 
     When in the modal dialog I check "Preserve" radio selector
     And in the modal dialog I click on "Preserve" button
-    Then I see a modal with text "admin cannot be deleted or disabled"
+    Then I see a modal with text "admin cannot be deleted/modified"
     When in the modal dialog I click on "OK" button
     And in the modal dialog I click on "Cancel" button
     Then I should see "admin" entry in the data table
