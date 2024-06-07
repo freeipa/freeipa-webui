@@ -72,6 +72,7 @@ export function createEmptyHost(): Host {
     l: "",
     managedby_host: [],
     memberof_hostgroup: [],
+    memberofindirect_hostgroup: [],
     managing_host: [],
     nshostlocation: "",
     userclass: "",

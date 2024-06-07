@@ -5,8 +5,6 @@ import {
   Page,
   PageSection,
   PageSectionVariants,
-  Pagination,
-  PaginationVariant,
   Tab,
   Tabs,
   TabTitleText,
@@ -17,7 +15,6 @@ import MemberOfTable from "src/components/MemberOf/MemberOfTable";
 import { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 // Data types
 import {
-  HostGroupOld,
   NetgroupOld,
   RolesOld,
   HBACRulesOld,
@@ -29,7 +26,6 @@ import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 // Repositories
 import {
-  hostsHostGroupsInitialData,
   hostsNetgroupsInitialData,
   hostsRolesInitialData,
   hostsHbacRulesInitialData,
@@ -40,6 +36,9 @@ import MemberOfAddModal from "src/components/MemberOf/MemberOfAddModalOld";
 import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModalOld";
 // Navigation
 import { useNavigate } from "react-router-dom";
+// RPC
+import { useGetHostByIdQuery } from "src/services/rpcHosts";
+import MemberOfHostGroups from "src/components/MemberOf/MemberOfHostGroups";
 
 interface PropsToHostsMemberOf {
   host: Host;
@@ -71,17 +70,38 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
     }
   }, [props.host.fqdn]);
 
+  // Host's full data
+  const hostQuery = useGetHostByIdQuery(props.host.fqdn);
+  const hostData = hostQuery.data || {};
+
+  const [host, setHost] = useState<Partial<Host>>({});
+
+  React.useEffect(() => {
+    if (!hostQuery.isFetching && hostData) {
+      setHost({ ...hostData });
+    }
+  }, [hostData, hostQuery.isFetching]);
+
+  const onRefreshHostData = () => {
+    hostQuery.refetch();
+  };
+
+  // 'Host groups' length to show in tab badge
+  const [hostGroupsLength, setHostGroupLength] = React.useState(0);
+
+  React.useEffect(() => {
+    if (host && host.memberof_hostgroup) {
+      setHostGroupLength(host.memberof_hostgroup.length);
+    }
+  }, [host]);
+
   // Retrieve each group list from Redux:
-  let hostGroupsList = [] as HostGroupOld[];
   let netgroupsList = [] as NetgroupOld[];
   let rolesList = useAppSelector((state) => state.roles.roleList);
   let hbacRulesList = useAppSelector((state) => state.hbacrules.hbacRulesList);
   let sudoRulesList = useAppSelector((state) => state.sudorules.sudoRulesList);
 
   // Alter the available options list to keep the state of the recently added / removed items
-  const updateHostGroupsList = (newAvOptionsList: unknown[]) => {
-    hostGroupsList = newAvOptionsList as HostGroupOld[];
-  };
   const updateNetgroupsList = (newAvOptionsList: unknown[]) => {
     netgroupsList = newAvOptionsList as NetgroupOld[];
   };
@@ -96,9 +116,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   };
 
   // List of default dummy data (for each tab option)
-  const [hostGroupsRepository, setHostGroupsRepository] = useState(
-    hostsHostGroupsInitialData
-  );
   const [netgroupsRepository, setNetgroupsRepository] = useState(
     hostsNetgroupsInitialData
   );
@@ -120,14 +137,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   // Filter functions to compare the available data with the data that
   //  the host is already member of. This is done to prevent duplicates
   //  (e.g: adding the same element twice).
-  const filterHostGroupsData = () => {
-    // Host groups
-    return hostGroupsList.filter((item) => {
-      return !hostGroupsRepository.some((itm) => {
-        return item.name === itm.name;
-      });
-    });
-  };
   const filterNetgroupsData = () => {
     // Netgroups
     return netgroupsList.filter((item) => {
@@ -162,16 +171,12 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   };
 
   // Available data to be added as member of
-  const hostGroupsFilteredData: HostGroupOld[] = filterHostGroupsData();
   const netgroupsFilteredData: NetgroupOld[] = filterNetgroupsData();
   const rolesFilteredData: RolesOld[] = filterRolesData();
   const hbacRulesFilteredData: HBACRulesOld[] = filterHbacRulesData();
   const sudoRulesFilteredData: SudoRulesOld[] = filterSudoRulesData();
 
   // Number of items on the list for each repository
-  const [hostGroupsRepoLength, setHostGroupsRepoLength] = useState(
-    hostGroupsRepository.length
-  );
   const [netgroupsRepoLength, setNetgroupsRepoLength] = useState(
     netgroupsRepository.length
   );
@@ -191,18 +196,12 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   //  - Number of items for a specific list
   const updateGroupRepository = (
     groupRepository:
-      | HostGroupOld[]
       | NetgroupOld[]
       | RolesOld[]
       | HBACRulesOld[]
       | SudoRulesOld[]
   ) => {
     switch (tabName) {
-      case "Host groups":
-        setHostGroupsRepository(groupRepository as HostGroupOld[]);
-        setShownHostGroupsList(hostGroupsRepository.slice(0, perPage));
-        setHostGroupsRepoLength(hostGroupsRepository.length);
-        break;
       case "Netgroups":
         setNetgroupsRepository(groupRepository as NetgroupOld[]);
         setShownNetgroupsList(netgroupsRepository.slice(0, perPage));
@@ -264,9 +263,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
     tabIndex: number | string
   ) => {
     switch (tabIndex) {
-      case "memberof_hostgroup":
-        setActiveTabNumber(0);
-        break;
       case "memberof_netgroup":
         setActiveTabNumber(1);
         break;
@@ -289,9 +285,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   const [perPage, setPerPage] = useState(10);
 
   // Member groups displayed on the first page
-  const [shownHostGroupsList, setShownHostGroupsList] = useState(
-    hostGroupsRepository.slice(0, perPage)
-  );
   const [shownNetgroupsList, setShownNetgroupsList] = useState(
     netgroupsRepository.slice(0, perPage)
   );
@@ -307,17 +300,9 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
 
   // Update pagination
   const changeMemberGroupsList = (
-    value:
-      | HostGroupOld[]
-      | NetgroupOld[]
-      | RolesOld[]
-      | HBACRulesOld[]
-      | SudoRulesOld[]
+    value: NetgroupOld[] | RolesOld[] | HBACRulesOld[] | SudoRulesOld[]
   ) => {
     switch (activeTabKey) {
-      case "memberof_hostgroup":
-        setShownHostGroupsList(value as HostGroupOld[]);
-        break;
       case "memberof_netgroup":
         setShownNetgroupsList(value as NetgroupOld[]);
         break;
@@ -333,61 +318,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
     }
   };
 
-  // Pages setters
-  const onSetPage = (
-    _event: React.MouseEvent | React.KeyboardEvent | MouseEvent,
-    newPage: number,
-    perPage: number | undefined,
-    startIdx: number | undefined,
-    endIdx: number | undefined
-  ) => {
-    setPage(newPage);
-    switch (activeTabKey) {
-      case "memberof_hostgroup":
-        setShownHostGroupsList(hostGroupsRepository.slice(startIdx, endIdx));
-        break;
-      case "memberof_netgroup":
-        setShownNetgroupsList(netgroupsRepository.slice(startIdx, endIdx));
-        break;
-      case "memberof_role":
-        setShownRolesList(rolesRepository.slice(startIdx, endIdx));
-        break;
-      case "memberof_hbacrule":
-        setShownHBACRulesList(hbacRulesRepository.slice(startIdx, endIdx));
-        break;
-      case "memberof_sudorule":
-        setShownSudoRulesList(sudoRulesRepository.slice(startIdx, endIdx));
-        break;
-    }
-  };
-
-  const onPerPageSelect = (
-    _event: React.MouseEvent | React.KeyboardEvent | MouseEvent,
-    newPerPage: number,
-    newPage: number,
-    startIdx: number | undefined,
-    endIdx: number | undefined
-  ) => {
-    setPerPage(newPerPage);
-    switch (activeTabKey) {
-      case "memberof_hostgroup":
-        setShownHostGroupsList(hostGroupsRepository.slice(startIdx, endIdx));
-        break;
-      case "memberof_netgroup":
-        setShownNetgroupsList(netgroupsRepository.slice(startIdx, endIdx));
-        break;
-      case "memberof_role":
-        setShownRolesList(rolesRepository.slice(startIdx, endIdx));
-        break;
-      case "memberof_hbacrule":
-        setShownHBACRulesList(hbacRulesRepository.slice(startIdx, endIdx));
-        break;
-      case "memberof_sudorule":
-        setShownSudoRulesList(sudoRulesRepository.slice(startIdx, endIdx));
-        break;
-    }
-  };
-
   // Page setters passed as props
   const changeSetPage = (
     newPage: number,
@@ -397,9 +327,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   ) => {
     setPage(newPage);
     switch (activeTabKey) {
-      case "memberof_hostgroup":
-        setShownHostGroupsList(hostGroupsRepository.slice(startIdx, endIdx));
-        break;
       case "memberof_netgroup":
         setShownNetgroupsList(netgroupsRepository.slice(startIdx, endIdx));
         break;
@@ -423,9 +350,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   ) => {
     setPerPage(newPerPage);
     switch (activeTabKey) {
-      case "memberof_hostgroup":
-        setShownHostGroupsList(hostGroupsRepository.slice(startIdx, endIdx));
-        break;
       case "memberof_netgroup":
         setShownNetgroupsList(netgroupsRepository.slice(startIdx, endIdx));
         break;
@@ -438,22 +362,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
       case "memberof_sudorule":
         setShownSudoRulesList(sudoRulesRepository.slice(startIdx, endIdx));
         break;
-    }
-  };
-
-  // Different number of items will be shown depending on the 'activeTabKey'
-  const numberOfItems = () => {
-    switch (activeTabKey) {
-      case "memberof_hostgroup":
-        return hostGroupsRepository.length;
-      case "memberof_netgroup":
-        return netgroupsRepository.length;
-      case "memberof_role":
-        return rolesRepository.length;
-      case "memberof_hbacrule":
-        return hbacRulesRepository.length;
-      case "memberof_sudorule":
-        return sudoRulesRepository.length;
     }
   };
 
@@ -489,10 +397,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
     if (showTableRows) setShowTableRows(false);
     setTimeout(() => {
       switch (activeTabKey) {
-        case "memberof_hostgroup":
-          setShownHostGroupsList(hostGroupsRepository.slice(0, perPage));
-          setHostGroupsRepoLength(hostGroupsRepository.length);
-          break;
         case "memberof_netgroup":
           setShownNetgroupsList(netgroupsRepository.slice(0, perPage));
           setNetgroupsRepoLength(netgroupsRepository.length);
@@ -513,7 +417,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
       setShowTableRows(true);
     }, 1000);
   }, [
-    hostGroupsRepository,
     netgroupsRepository,
     rolesRepository,
     hbacRulesRepository,
@@ -609,29 +512,15 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
               <TabTitleText>
                 Host groups{" "}
                 <Badge key={0} isRead>
-                  {hostGroupsRepoLength}
+                  {hostGroupsLength}
                 </Badge>
               </TabTitleText>
             }
           >
-            <MemberOfToolbar
-              pageRepo={hostGroupsRepository}
-              shownItems={shownHostGroupsList}
-              toolbar="host groups"
-              settersData={toolbarSettersData}
-              pageData={toolbarPageData}
-              buttonData={toolbarButtonData}
-              searchValueData={searchValueData}
-            />
-            <MemberOfTable
-              group={shownHostGroupsList}
-              tableName={"Host groups"}
-              activeTabKey={activeTabKey}
-              changeSelectedGroups={updateGroupsNamesSelected}
-              buttonData={tableButtonData}
-              showTableRows={showTableRows}
-              searchValue={searchValue}
-              fullGroupList={hostGroupsRepository}
+            <MemberOfHostGroups
+              host={host}
+              isHostDataLoading={hostQuery.isFetching}
+              onRefreshHostData={onRefreshHostData}
             />
           </Tab>
           <Tab
@@ -763,41 +652,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
             />
           </Tab>
         </Tabs>
-        <Pagination
-          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-          itemCount={numberOfItems()}
-          widgetId="pagination-options-menu-bottom"
-          perPage={perPage}
-          page={page}
-          variant={PaginationVariant.bottom}
-          onSetPage={onSetPage}
-          onPerPageSelect={onPerPageSelect}
-        />
       </PageSection>
-      {tabName === "Host groups" && (
-        <>
-          {showAddModal && (
-            <MemberOfAddModal
-              modalData={addModalData}
-              availableData={hostGroupsFilteredData}
-              groupRepository={hostGroupsRepository}
-              updateGroupRepository={updateGroupRepository}
-              updateAvOptionsList={updateHostGroupsList}
-              tabData={tabData}
-            />
-          )}
-          {showDeleteModal && groupsNamesSelected.length !== 0 && (
-            <MemberOfDeleteModal
-              modalData={deleteModalData}
-              tabData={deleteTabData}
-              groupNamesToDelete={groupsNamesSelected}
-              groupRepository={hostGroupsRepository}
-              updateGroupRepository={updateGroupRepository}
-              buttonData={deleteButtonData}
-            />
-          )}
-        </>
-      )}
       {tabName === "Netgroups" && (
         <>
           {showAddModal && (

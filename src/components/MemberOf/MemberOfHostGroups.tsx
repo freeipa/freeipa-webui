@@ -1,0 +1,329 @@
+import React from "react";
+// PatternFly
+import { Pagination, PaginationVariant } from "@patternfly/react-core";
+// Data types
+import { Host, HostGroup } from "src/utils/datatypes/globalDataTypes";
+// Components
+import MemberOfToolbar, { MembershipDirection } from "./MemberOfToolbar";
+import MemberOfHostGroupsTable from "./MemberOfTableHostGroups";
+import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
+import MemberOfDeleteModal from "./MemberOfDeleteModal";
+// Hooks
+import useAlerts from "src/hooks/useAlerts";
+// RPC
+import { ErrorResult } from "src/services/rpc";
+import {
+  useAddToHostGroupsMutation,
+  useGetHostGroupInfoByNameQuery,
+  useGettingHostGroupsQuery,
+  useRemoveFromHostGroupsMutation,
+} from "src/services/rpcHostGroups";
+// Utils
+import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
+import { apiToHostGroup } from "src/utils/hostGroupUtils";
+
+interface MemberOfHostGroupsProps {
+  host: Partial<Host>;
+  isHostDataLoading: boolean;
+  onRefreshHostData: () => void;
+}
+
+const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
+  // Alerts to show in the UI
+  const alerts = useAlerts();
+
+  // Page indexes
+  const [page, setPage] = React.useState(1);
+  const [perPage, setPerPage] = React.useState(10);
+
+  // Other states
+  const [hostGroupsSelected, setHostGroupsSelected] = React.useState<string[]>(
+    []
+  );
+  const [searchValue, setSearchValue] = React.useState("");
+
+  // Loaded Host groups based on paging and member attributes
+  const [hostGroups, setHostGroups] = React.useState<HostGroup[]>([]);
+
+  // Membership direction and Host groups
+  const [membershipDirection, setMembershipDirection] =
+    React.useState<MembershipDirection>("direct");
+
+  // Choose the correct Host groups based on the membership direction
+  const memberof_group = props.host.memberof_hostgroup || [];
+  const memberofindirect_group = props.host.memberofindirect_hostgroup || [];
+  let hostGroupNames =
+    membershipDirection === "direct" ? memberof_group : memberofindirect_group;
+  hostGroupNames = [...hostGroupNames];
+
+  const getHostGroupsNameToLoad = (): string[] => {
+    let toLoad = [...hostGroupNames];
+    toLoad.sort();
+
+    // Filter by search
+    if (searchValue) {
+      toLoad = toLoad.filter((name) =>
+        name.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    }
+
+    // Apply paging
+    toLoad = paginate(toLoad, page, perPage);
+
+    return toLoad;
+  };
+
+  const [hostGroupNamesToLoad, setHostGroupNamesToLoad] = React.useState<
+    string[]
+  >(getHostGroupsNameToLoad());
+
+  // Load Host groups
+  const fullHostGroupsQuery = useGetHostGroupInfoByNameQuery({
+    groupNamesList: hostGroupNamesToLoad,
+    no_members: true,
+    version: API_VERSION_BACKUP,
+  });
+
+  // Reset page on direction change
+  React.useEffect(() => {
+    setPage(1);
+  }, [membershipDirection]);
+
+  // Refresh host groups
+  React.useEffect(() => {
+    const hostGroupsNames = getHostGroupsNameToLoad();
+    setHostGroupNamesToLoad(hostGroupsNames);
+  }, [props.host, membershipDirection, searchValue, page, perPage]);
+
+  React.useEffect(() => {
+    if (hostGroupNamesToLoad.length > 0) {
+      fullHostGroupsQuery.refetch();
+    }
+  }, [hostGroupNamesToLoad]);
+
+  // Update host groups
+  React.useEffect(() => {
+    if (fullHostGroupsQuery.data && !fullHostGroupsQuery.isFetching) {
+      setHostGroups(fullHostGroupsQuery.data);
+    }
+  }, [fullHostGroupsQuery.data, fullHostGroupsQuery.isFetching]);
+
+  // Computed "states"
+  const someItemSelected = hostGroupsSelected.length > 0;
+  const showTableRows = hostGroups.length > 0;
+
+  // Dialogs and actions
+  const [showAddModal, setShowAddModal] = React.useState(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+
+  // Buttons functionality
+  const isRefreshButtonEnabled =
+    !fullHostGroupsQuery.isFetching && !props.isHostDataLoading;
+  const isDeleteEnabled =
+    someItemSelected && membershipDirection !== "indirect";
+  const isAddButtonEnabled =
+    membershipDirection !== "indirect" && isRefreshButtonEnabled;
+
+  // Add new member to 'Host groups'
+  // API calls
+  const [addMemberToHostGroups] = useAddToHostGroupsMutation();
+  const [removeMembersFromHostGroups] = useRemoveFromHostGroupsMutation();
+  const [adderSearchValue, setAdderSearchValue] = React.useState("");
+  const [availableHostGroups, setAvailableHostGroups] = React.useState<
+    HostGroup[]
+  >([]);
+  const [availableItems, setAvailableItems] = React.useState<AvailableItems[]>(
+    []
+  );
+
+  // Load available Host groups
+  const hostGroupsQuery = useGettingHostGroupsQuery({
+    search: adderSearchValue,
+    apiVersion: API_VERSION_BACKUP,
+    sizelimit: 100,
+    startIdx: 0,
+    stopIdx: 100,
+  });
+
+  // Trigger available Host groups search
+  React.useEffect(() => {
+    if (showAddModal) {
+      hostGroupsQuery.refetch();
+    }
+  }, [showAddModal, adderSearchValue, props.host]);
+
+  // Update available Host groups
+  React.useEffect(() => {
+    if (hostGroupsQuery.data && !hostGroupsQuery.isFetching) {
+      // transform data to Host groups
+      const count = hostGroupsQuery.data.result.count;
+      const results = hostGroupsQuery.data.result.results;
+      let items: AvailableItems[] = [];
+      const avalHostGroups: HostGroup[] = [];
+      for (let i = 0; i < count; i++) {
+        const userGroup = apiToHostGroup(results[i].result);
+        avalHostGroups.push(userGroup);
+        items.push({
+          key: userGroup.cn,
+          title: userGroup.cn,
+        });
+      }
+      items = items.filter((item) => !hostGroupNamesToLoad.includes(item.key));
+
+      setAvailableHostGroups(avalHostGroups);
+      setAvailableItems(items);
+    }
+  }, [hostGroupsQuery.data, hostGroupsQuery.isFetching]);
+
+  // - Add
+  const onAddHostGroup = (items: AvailableItems[]) => {
+    const fqdn = props.host.fqdn;
+    const newHostGroupNames = items.map((item) => item.key);
+    if (fqdn === undefined || newHostGroupNames.length == 0) {
+      return;
+    }
+
+    addMemberToHostGroups([fqdn, "host", newHostGroupNames]).then(
+      (response) => {
+        if ("data" in response) {
+          if (response.data.result) {
+            // Set alert: success
+            alerts.addAlert(
+              "add-member-success",
+              `Assigned host ${fqdn} to host groups`,
+              "success"
+            );
+            // Update displayed Host groups before they are updated via refresh
+            const newHostGroups = hostGroups.concat(
+              availableHostGroups.filter((hostGroup) =>
+                newHostGroupNames.includes(hostGroup.cn)
+              )
+            );
+            setHostGroups(newHostGroups);
+
+            // Refresh data
+            props.onRefreshHostData();
+            // Close modal
+            setShowAddModal(false);
+          } else if (response.data.error) {
+            // Set alert: error
+            const errorMessage = response.data.error as unknown as ErrorResult;
+            alerts.addAlert("add-member-error", errorMessage.message, "danger");
+          }
+        }
+      }
+    );
+  };
+
+  // - Delete
+  const onDeleteHostGroup = () => {
+    if (props.host.fqdn) {
+      removeMembersFromHostGroups([
+        props.host.fqdn,
+        "host",
+        hostGroupsSelected,
+      ]).then((response) => {
+        if ("data" in response) {
+          if (response.data.result) {
+            // Set alert: success
+            alerts.addAlert(
+              "remove-host-groups-success",
+              "Removed members from host group '" + props.host.fqdn + "'",
+              "success"
+            );
+            // Update displayed Host groups
+            const newHostGroups = hostGroups.filter(
+              (hostGroup) => !hostGroupsSelected.includes(hostGroup.cn)
+            );
+            setHostGroups(newHostGroups);
+            // Update data
+            setHostGroupsSelected([]);
+            // Close modal
+            setShowDeleteModal(false);
+            // Refresh
+            props.onRefreshHostData();
+          } else if (response.data.error) {
+            // Set alert: error
+            const errorMessage = response.data.error as unknown as ErrorResult;
+            alerts.addAlert(
+              "remove-host-groups-error",
+              errorMessage.message,
+              "danger"
+            );
+          }
+        }
+      });
+    }
+  };
+
+  return (
+    <>
+      <alerts.ManagedAlerts />
+      <MemberOfToolbar
+        searchText={searchValue}
+        onSearchTextChange={setSearchValue}
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        onSearch={() => {}}
+        refreshButtonEnabled={isRefreshButtonEnabled}
+        onRefreshButtonClick={props.onRefreshHostData}
+        deleteButtonEnabled={isDeleteEnabled}
+        onDeleteButtonClick={() => setShowDeleteModal(true)}
+        addButtonEnabled={isAddButtonEnabled}
+        onAddButtonClick={() => setShowAddModal(true)}
+        membershipDirectionEnabled={true}
+        membershipDirection={membershipDirection}
+        onMembershipDirectionChange={setMembershipDirection}
+        helpIconEnabled={true}
+        totalItems={hostGroupNames.length}
+        perPage={perPage}
+        page={page}
+        onPerPageChange={setPerPage}
+        onPageChange={setPage}
+      />
+      <MemberOfHostGroupsTable
+        hostGroups={hostGroups}
+        checkedItems={hostGroupsSelected}
+        onCheckItemsChange={setHostGroupsSelected}
+        showTableRows={showTableRows}
+      />
+      <Pagination
+        className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+        itemCount={hostGroupNames.length}
+        widgetId="pagination-options-menu-bottom"
+        perPage={perPage}
+        page={page}
+        variant={PaginationVariant.bottom}
+        onSetPage={(_e, page) => setPage(page)}
+        onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
+      />
+      {showAddModal && (
+        <MemberOfAddModal
+          showModal={showAddModal}
+          onCloseModal={() => setShowAddModal(false)}
+          availableItems={availableItems}
+          onAdd={onAddHostGroup}
+          onSearchTextChange={setAdderSearchValue}
+          title={`Assign host groups to host ${props.host.fqdn}`}
+          ariaLabel="Add host of host group modal"
+        />
+      )}
+      {showDeleteModal && someItemSelected && (
+        <MemberOfDeleteModal
+          showModal={showDeleteModal}
+          onCloseModal={() => setShowDeleteModal(false)}
+          title="Delete host from Host groups"
+          onDelete={onDeleteHostGroup}
+        >
+          <MemberOfHostGroupsTable
+            hostGroups={hostGroups.filter((hostgroup) =>
+              hostGroupsSelected.includes(hostgroup.cn)
+            )}
+            showTableRows
+          />
+        </MemberOfDeleteModal>
+      )}
+    </>
+  );
+};
+
+export default MemberOfHostGroups;
