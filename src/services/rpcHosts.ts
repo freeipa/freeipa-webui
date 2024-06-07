@@ -17,7 +17,7 @@ import { Host } from "../utils/datatypes/globalDataTypes";
 /**
  * Hosts-related endpoints: getHostsFullData, addHost, removeHosts, saveHost,
  *   addHostPrincipalAlias, removeHostPrincipalAlias, autoMemberRebuildHosts
- *   setHostPassword
+ *   setHostPassword, getHostById
  *
  * API commands:
  * - host_show: https://freeipa.readthedocs.io/en/latest/api/host_show.html
@@ -196,8 +196,17 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    getHostById: build.query<Host, string>({
+      query: (hostId) => {
+        return getCommand({
+          method: "host_show",
+          params: [[hostId], { version: API_VERSION_BACKUP }],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): Host =>
+        apiToHost(response.result.result),
+    }),
   }),
-
   overrideExisting: false,
 });
 
@@ -225,4 +234,5 @@ export const {
   useGetHostsFullDataQuery,
   useSetHostPasswordMutation,
   useUnprovisionHostMutation,
+  useGetHostByIdQuery,
 } = extendedApi;
