@@ -14,6 +14,7 @@ import {
 // Others
 import MemberOfToolbar from "src/components/MemberOf/MemberOfToolbarOld";
 import MemberOfTable from "src/components/MemberOf/MemberOfTable";
+import { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 // Data types
 import {
   HostGroupOld,
@@ -24,8 +25,8 @@ import {
   Host,
 } from "src/utils/datatypes/globalDataTypes";
 // Redux
-import { useAppSelector } from "src/store/hooks";
-
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
+import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 // Repositories
 import {
   hostsHostGroupsInitialData,
@@ -47,6 +48,28 @@ interface PropsToHostsMemberOf {
 
 const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  // Update breadcrumb route
+  React.useEffect(() => {
+    if (!props.host.fqdn) {
+      // Redirect to the main page
+      navigate("/hosts");
+    } else {
+      const currentPath: BreadCrumbItem[] = [
+        {
+          name: "Hosts",
+          url: "../../hosts",
+        },
+        {
+          name: props.host.fqdn,
+          url: "../../hosts/" + props.host.fqdn,
+          isActive: true,
+        },
+      ];
+      dispatch(updateBreadCrumbPath(currentPath));
+    }
+  }, [props.host.fqdn]);
 
   // Retrieve each group list from Redux:
   let hostGroupsList = [] as HostGroupOld[];
