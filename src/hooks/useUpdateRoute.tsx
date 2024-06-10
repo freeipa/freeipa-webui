@@ -67,6 +67,11 @@ export const useUpdateRoute = ({ pathname }) => {
     }
   }, [pathname]);
 
+  // Set the page title to be shown in the browser tab
+  React.useEffect(() => {
+    document.title = browserTitle;
+  }, [browserTitle]);
+
   return {
     loadedGroup,
     breadCrumbPath,

@@ -27,6 +27,8 @@ import { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
+// Hooks
+import useUpdateRoute from "src/hooks/useUpdateRoute";
 
 interface PropsToUserMemberOf {
   user: User;
@@ -59,6 +61,9 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
       dispatch(updateBreadCrumbPath(currentPath));
     }
   }, [props.user.uid]);
+
+  // Update current route data to Redux and highlight the current page in the Nav bar
+  useUpdateRoute({ pathname: props.from });
 
   // User's full data
   const userQuery = useGetUserByUidQuery(convertToString(props.user.uid));

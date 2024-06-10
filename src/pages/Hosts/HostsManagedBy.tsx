@@ -21,6 +21,8 @@ import ManagedByToolbar from "src/components/ManagedBy/ManagedByToolbar";
 // Modals
 import ManagedByAddModal from "src/components/ManagedBy/ManagedByAddModal";
 import ManagedByDeleteModal from "src/components/ManagedBy/ManagedByDeleteModal";
+// Hooks
+import useUpdateRoute from "src/hooks/useUpdateRoute";
 
 interface PropsToHostsManagedBy {
   host: Host;
@@ -29,6 +31,9 @@ interface PropsToHostsManagedBy {
 const HostsManagedBy = (props: PropsToHostsManagedBy) => {
   // List of currents elements on the list (Dummy data)
   const [hostsList, setHostsList] = useState<Host[]>([props.host]);
+
+  // Update current route data to Redux and highlight the current page in the Nav bar
+  useUpdateRoute({ pathname: "hosts" });
 
   // Some data is updated when any group list is altered
   //  - The whole list itself

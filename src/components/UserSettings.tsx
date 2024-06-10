@@ -47,6 +47,7 @@ import {
 } from "src/services/rpcUsers";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
+import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Modals
 import DisableEnableUsers from "./modals/DisableEnableUsers";
 import DeleteUsers from "./modals/DeleteUsers";
@@ -89,6 +90,9 @@ const UserSettings = (props: PropsToUserSettings) => {
 
   // Navigate
   const navigate = useNavigate();
+
+  // Update current route data to Redux and highlight the current page in the Nav bar
+  useUpdateRoute({ pathname: props.from });
 
   // RTK hook: save user (acive/preserved and stage)
   let [saveUser] = useSaveUserMutation();

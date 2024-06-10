@@ -23,6 +23,8 @@ import PopoverWithIconLayout from "../layouts/PopoverWithIconLayout";
 import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
+// Hooks
+import useUpdateRoute from "src/hooks/useUpdateRoute";
 
 interface PrincipalAlias {
   id: number | string;
@@ -43,6 +45,9 @@ const HostSettings = (props: PropsToHostSettings) => {
     fqdn = props.host.fqdn;
   }
   const [hostName] = useState(fqdn);
+
+  // Update current route data to Redux and highlight the current page in the Nav bar
+  useUpdateRoute({ pathname: "hosts" });
 
   // Get krb realms
   const krbrealms = props.host.krbprincipalname;
