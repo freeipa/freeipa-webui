@@ -26,7 +26,6 @@ import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 // Repositories
 import {
-  hostsNetgroupsInitialData,
   hostsRolesInitialData,
   hostsHbacRulesInitialData,
   hostsSudoRulesInitialData,
@@ -40,7 +39,9 @@ import { useNavigate } from "react-router-dom";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // RPC
 import { useGetHostByIdQuery } from "src/services/rpcHosts";
+// 'Is a member of' sections
 import MemberOfHostGroups from "src/components/MemberOf/MemberOfHostGroups";
+import MemberOfNetgroups from "src/components/MemberOf/MemberOfNetgroups";
 
 interface PropsToHostsMemberOf {
   host: Host;
@@ -88,6 +89,9 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
     hostQuery.refetch();
   };
 
+  // Update current route data to Redux and highlight the current page in the Nav bar
+  useUpdateRoute({ pathname: "hosts" });
+
   // 'Host groups' length to show in tab badge
   const [hostGroupsLength, setHostGroupLength] = React.useState(0);
 
@@ -97,19 +101,21 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
     }
   }, [host]);
 
-  // Update current route data to Redux and highlight the current page in the Nav bar
-  useUpdateRoute({ pathname: "hosts" });
+  // 'Netgroups' length to show in tab badge
+  const [netgroupsLength, setNetgroupLength] = React.useState(0);
+
+  React.useEffect(() => {
+    if (host && host.memberof_netgroup) {
+      setNetgroupLength(host.memberof_netgroup.length);
+    }
+  }, [host]);
 
   // Retrieve each group list from Redux:
-  let netgroupsList = [] as NetgroupOld[];
   let rolesList = useAppSelector((state) => state.roles.roleList);
   let hbacRulesList = useAppSelector((state) => state.hbacrules.hbacRulesList);
   let sudoRulesList = useAppSelector((state) => state.sudorules.sudoRulesList);
 
   // Alter the available options list to keep the state of the recently added / removed items
-  const updateNetgroupsList = (newAvOptionsList: unknown[]) => {
-    netgroupsList = newAvOptionsList as NetgroupOld[];
-  };
   const updateRolesList = (newAvOptionsList: unknown[]) => {
     rolesList = newAvOptionsList as RolesOld[];
   };
@@ -121,9 +127,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   };
 
   // List of default dummy data (for each tab option)
-  const [netgroupsRepository, setNetgroupsRepository] = useState(
-    hostsNetgroupsInitialData
-  );
   const [rolesRepository, setRolesRepository] = useState(hostsRolesInitialData);
   const [hbacRulesRepository, setHbacRulesRepository] = useState(
     hostsHbacRulesInitialData
@@ -142,14 +145,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   // Filter functions to compare the available data with the data that
   //  the host is already member of. This is done to prevent duplicates
   //  (e.g: adding the same element twice).
-  const filterNetgroupsData = () => {
-    // Netgroups
-    return netgroupsList.filter((item) => {
-      return !netgroupsRepository.some((itm) => {
-        return item.name === itm.name;
-      });
-    });
-  };
   const filterRolesData = () => {
     // Roles
     return rolesList.filter((item) => {
@@ -176,15 +171,11 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   };
 
   // Available data to be added as member of
-  const netgroupsFilteredData: NetgroupOld[] = filterNetgroupsData();
   const rolesFilteredData: RolesOld[] = filterRolesData();
   const hbacRulesFilteredData: HBACRulesOld[] = filterHbacRulesData();
   const sudoRulesFilteredData: SudoRulesOld[] = filterSudoRulesData();
 
   // Number of items on the list for each repository
-  const [netgroupsRepoLength, setNetgroupsRepoLength] = useState(
-    netgroupsRepository.length
-  );
   const [rolesRepoLength, setRolesRepoLength] = useState(
     rolesRepository.length
   );
@@ -200,18 +191,9 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   //  - The slice of data to show (considering the pagination)
   //  - Number of items for a specific list
   const updateGroupRepository = (
-    groupRepository:
-      | NetgroupOld[]
-      | RolesOld[]
-      | HBACRulesOld[]
-      | SudoRulesOld[]
+    groupRepository: RolesOld[] | HBACRulesOld[] | SudoRulesOld[]
   ) => {
     switch (tabName) {
-      case "Netgroups":
-        setNetgroupsRepository(groupRepository as NetgroupOld[]);
-        setShownNetgroupsList(netgroupsRepository.slice(0, perPage));
-        setNetgroupsRepoLength(netgroupsRepository.length);
-        break;
       case "Roles":
         setRolesRepository(groupRepository as RolesOld[]);
         setShownRolesList(rolesRepository.slice(0, perPage));
@@ -290,9 +272,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   const [perPage, setPerPage] = useState(10);
 
   // Member groups displayed on the first page
-  const [shownNetgroupsList, setShownNetgroupsList] = useState(
-    netgroupsRepository.slice(0, perPage)
-  );
   const [shownRolesList, setShownRolesList] = useState(
     rolesRepository.slice(0, perPage)
   );
@@ -308,9 +287,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
     value: NetgroupOld[] | RolesOld[] | HBACRulesOld[] | SudoRulesOld[]
   ) => {
     switch (activeTabKey) {
-      case "memberof_netgroup":
-        setShownNetgroupsList(value as NetgroupOld[]);
-        break;
       case "memberof_role":
         setShownRolesList(value as RolesOld[]);
         break;
@@ -332,9 +308,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   ) => {
     setPage(newPage);
     switch (activeTabKey) {
-      case "memberof_netgroup":
-        setShownNetgroupsList(netgroupsRepository.slice(startIdx, endIdx));
-        break;
       case "memberof_role":
         setShownRolesList(rolesRepository.slice(startIdx, endIdx));
         break;
@@ -355,9 +328,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   ) => {
     setPerPage(newPerPage);
     switch (activeTabKey) {
-      case "memberof_netgroup":
-        setShownNetgroupsList(netgroupsRepository.slice(startIdx, endIdx));
-        break;
       case "memberof_role":
         setShownRolesList(rolesRepository.slice(startIdx, endIdx));
         break;
@@ -402,10 +372,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
     if (showTableRows) setShowTableRows(false);
     setTimeout(() => {
       switch (activeTabKey) {
-        case "memberof_netgroup":
-          setShownNetgroupsList(netgroupsRepository.slice(0, perPage));
-          setNetgroupsRepoLength(netgroupsRepository.length);
-          break;
         case "memberof_role":
           setShownRolesList(rolesRepository.slice(0, perPage));
           setRolesRepoLength(rolesRepository.length);
@@ -421,12 +387,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
       }
       setShowTableRows(true);
     }, 1000);
-  }, [
-    netgroupsRepository,
-    rolesRepository,
-    hbacRulesRepository,
-    sudoRulesRepository,
-  ]);
+  }, [rolesRepository, hbacRulesRepository, sudoRulesRepository]);
 
   // Data wrappers
   // - MemberOfToolbar
@@ -535,29 +496,17 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
               <TabTitleText>
                 Netgroups{" "}
                 <Badge key={1} isRead>
-                  {netgroupsRepoLength}
+                  {netgroupsLength}
                 </Badge>
               </TabTitleText>
             }
           >
-            <MemberOfToolbar
-              pageRepo={netgroupsRepository}
-              shownItems={shownNetgroupsList}
-              toolbar="netgroups"
-              settersData={toolbarSettersData}
-              pageData={toolbarPageData}
-              buttonData={toolbarButtonData}
-              searchValueData={searchValueData}
-            />
-            <MemberOfTable
-              group={shownNetgroupsList}
-              tableName={"Netgroups"}
-              activeTabKey={activeTabKey}
-              changeSelectedGroups={updateGroupsNamesSelected}
-              buttonData={tableButtonData}
-              showTableRows={showTableRows}
-              searchValue={searchValue}
-              fullGroupList={netgroupsRepository}
+            <MemberOfNetgroups
+              entity={host}
+              id={host.fqdn as string}
+              from={"hosts"}
+              isDataLoading={hostQuery.isFetching}
+              onRefreshData={onRefreshHostData}
             />
           </Tab>
           <Tab
@@ -658,30 +607,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
           </Tab>
         </Tabs>
       </PageSection>
-      {tabName === "Netgroups" && (
-        <>
-          {showAddModal && (
-            <MemberOfAddModal
-              modalData={addModalData}
-              availableData={netgroupsFilteredData}
-              groupRepository={netgroupsRepository}
-              updateGroupRepository={updateGroupRepository}
-              updateAvOptionsList={updateNetgroupsList}
-              tabData={tabData}
-            />
-          )}
-          {showDeleteModal && groupsNamesSelected.length !== 0 && (
-            <MemberOfDeleteModal
-              modalData={deleteModalData}
-              tabData={deleteTabData}
-              groupNamesToDelete={groupsNamesSelected}
-              groupRepository={netgroupsRepository}
-              updateGroupRepository={updateGroupRepository}
-              buttonData={deleteButtonData}
-            />
-          )}
-        </>
-      )}
       {tabName === "Roles" && (
         <>
           {showAddModal && (

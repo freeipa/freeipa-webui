@@ -194,10 +194,11 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             }
           >
             <MemberOfNetgroups
-              user={user}
+              entity={user}
+              id={user.uid as string}
               from={props.from}
-              isUserDataLoading={userQuery.isFetching}
-              onRefreshUserData={onRefreshUserData}
+              isDataLoading={userQuery.isFetching}
+              onRefreshData={onRefreshUserData}
             />
           </Tab>
           <Tab
