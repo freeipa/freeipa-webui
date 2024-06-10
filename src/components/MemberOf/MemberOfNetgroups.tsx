@@ -22,6 +22,8 @@ import { apiToNetgroup } from "src/utils/netgroupsUtils";
 // Modals
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
+// React Router DOM
+import { useSearchParams } from "react-router-dom";
 
 interface MemberOfNetroupsProps {
   user: Partial<User>;
@@ -34,22 +36,30 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   // Page indexes
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = React.useState(
+    parseInt(searchParams.get("p") || "1")
+  );
   const [perPage, setPerPage] = React.useState(10);
 
   // Other states
   const [netgroupsSelected, setNetgroupsSelected] = React.useState<string[]>(
     []
   );
-  const [searchValue, setSearchValue] = React.useState("");
+  const [searchValue, setSearchValue] = React.useState(
+    searchParams.get("search") || ""
+  );
 
   // Loaded netgroups based on paging and member attributes
   const [netgroups, setNetgroups] = React.useState<Netgroup[]>([]);
 
   // Membership direction and netgroups
   const [membershipDirection, setMembershipDirection] =
-    React.useState<MembershipDirection>("direct");
+    React.useState<MembershipDirection>(
+      (searchParams.get("membership") as MembershipDirection) || "direct"
+    );
 
   // Choose the correct netgroups based on the membership direction
   const memberof_netgroup = props.user.memberof_netgroup || [];
@@ -76,6 +86,23 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
 
     return toLoad;
   };
+
+  // Handle URLs with pagination and search values
+  React.useEffect(() => {
+    const searchParamsNew: { [key: string]: string } = {};
+
+    if (page > 1) {
+      searchParamsNew.p = page.toString();
+    }
+    if (searchValue !== "") {
+      searchParamsNew.search = searchValue;
+    }
+    if (membershipDirection !== "direct") {
+      searchParamsNew.membership = membershipDirection;
+    }
+
+    setSearchParams(searchParamsNew, { replace: true });
+  }, [page, searchValue, membershipDirection]);
 
   const [netgroupNamesToLoad, setNetgroupNamesToLoad] = React.useState<
     string[]

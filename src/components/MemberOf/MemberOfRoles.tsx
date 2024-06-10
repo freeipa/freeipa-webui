@@ -21,6 +21,8 @@ import {
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToRole } from "src/utils/rolesUtils";
+// React Router DOM
+import { useSearchParams } from "react-router-dom";
 
 interface MemberOfRolesProps {
   user: Partial<User>;
@@ -32,20 +34,28 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   // Page indexes
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = React.useState(
+    parseInt(searchParams.get("p") || "1")
+  );
   const [perPage, setPerPage] = React.useState(10);
 
   // Other states
   const [rolesSelected, setRolesSelected] = React.useState<string[]>([]);
-  const [searchValue, setSearchValue] = React.useState("");
+  const [searchValue, setSearchValue] = React.useState(
+    searchParams.get("search") || ""
+  );
 
   // Loaded roles based on paging and member attributes
   const [roles, setRoles] = React.useState<Role[]>([]);
 
   // Membership direction and roles
   const [membershipDirection, setMembershipDirection] =
-    React.useState<MembershipDirection>("direct");
+    React.useState<MembershipDirection>(
+      (searchParams.get("membership") as MembershipDirection) || "direct"
+    );
 
   // Choose the correct roles based on the membership direction
   const memberof_role = props.user.memberof_role || [];
@@ -70,6 +80,23 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
 
     return toLoad;
   };
+
+  // Handle URLs with pagination and search values
+  React.useEffect(() => {
+    const searchParamsNew: { [key: string]: string } = {};
+
+    if (page > 1) {
+      searchParamsNew.p = page.toString();
+    }
+    if (searchValue !== "") {
+      searchParamsNew.search = searchValue;
+    }
+    if (membershipDirection !== "direct") {
+      searchParamsNew.membership = membershipDirection;
+    }
+
+    setSearchParams(searchParamsNew, { replace: true });
+  }, [page, searchValue, membershipDirection]);
 
   const [roleNamesToLoad, setRoleNamesToLoad] = React.useState<string[]>(
     getRolesNameToLoad()
