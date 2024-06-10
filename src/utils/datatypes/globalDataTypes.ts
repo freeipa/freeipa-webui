@@ -227,7 +227,9 @@ export interface Host {
   l: string;
   managedby_host: string[];
   memberof_hostgroup: string[];
+  memberof_netgroup: string[];
   memberofindirect_hostgroup: string[];
+  memberofindirect_netgroup: string[];
   managing_host: string[];
   nshostlocation: string;
   userclass: string;
