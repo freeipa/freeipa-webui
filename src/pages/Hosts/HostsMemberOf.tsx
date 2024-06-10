@@ -36,6 +36,8 @@ import MemberOfAddModal from "src/components/MemberOf/MemberOfAddModalOld";
 import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModalOld";
 // Navigation
 import { useNavigate } from "react-router-dom";
+// Hooks
+import useUpdateRoute from "src/hooks/useUpdateRoute";
 // RPC
 import { useGetHostByIdQuery } from "src/services/rpcHosts";
 import MemberOfHostGroups from "src/components/MemberOf/MemberOfHostGroups";
@@ -94,6 +96,9 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
       setHostGroupLength(host.memberof_hostgroup.length);
     }
   }, [host]);
+
+  // Update current route data to Redux and highlight the current page in the Nav bar
+  useUpdateRoute({ pathname: "hosts" });
 
   // Retrieve each group list from Redux:
   let netgroupsList = [] as NetgroupOld[];
