@@ -15,6 +15,8 @@ import {
 } from "src/services/rpcSubIds";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
+// React Router DOM
+import { useSearchParams } from "react-router-dom";
 
 interface MemberOfSubIdsProps {
   user: Partial<User>;
@@ -26,11 +28,15 @@ const MemberOfSubIds = (props: MemberOfSubIdsProps) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   // API calls
   const [assignSubIds] = useAssignSubIdsMutation();
 
   // Page indexes
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = React.useState(
+    parseInt(searchParams.get("p") || "1")
+  );
   const [perPage, setPerPage] = React.useState(10);
 
   // Other states
@@ -59,6 +65,20 @@ const MemberOfSubIds = (props: MemberOfSubIdsProps) => {
     subIdsList: subIdsNamesToLoad,
     version: API_VERSION_BACKUP,
   });
+
+  // Handle URLs with pagination and search values
+  React.useEffect(() => {
+    let searchParamsNew = {};
+
+    if (page > 1) {
+      searchParamsNew = {
+        ...searchParamsNew,
+        p: page.toString(),
+      };
+    }
+
+    setSearchParams(searchParamsNew, { replace: true });
+  }, [page]);
 
   // Refresh Subordinate IDs
   React.useEffect(() => {

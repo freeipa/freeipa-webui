@@ -21,6 +21,8 @@ import {
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToGroup } from "src/utils/groupUtils";
+// React Router DOM
+import { useSearchParams } from "react-router-dom";
 
 interface MemberOfUserGroupsProps {
   user: Partial<User>;
@@ -33,22 +35,30 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   // Page indexes
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = React.useState(
+    parseInt(searchParams.get("p") || "1")
+  );
   const [perPage, setPerPage] = React.useState(10);
 
   // Other states
   const [userGroupsSelected, setUserGroupsSelected] = React.useState<string[]>(
     []
   );
-  const [searchValue, setSearchValue] = React.useState("");
+  const [searchValue, setSearchValue] = React.useState(
+    searchParams.get("search") || ""
+  );
 
   // Loaded User groups based on paging and member attributes
   const [userGroups, setUserGroups] = React.useState<UserGroup[]>([]);
 
   // Membership direction and User groups
   const [membershipDirection, setMembershipDirection] =
-    React.useState<MembershipDirection>("direct");
+    React.useState<MembershipDirection>(
+      (searchParams.get("membership") as MembershipDirection) || "direct"
+    );
 
   // Choose the correct User groups based on the membership direction
   const memberof_group = props.user.memberof_group || [];
@@ -73,6 +83,23 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
 
     return toLoad;
   };
+
+  // Handle URLs with pagination and search values
+  React.useEffect(() => {
+    const searchParamsNew: { [key: string]: string } = {};
+
+    if (page > 1) {
+      searchParamsNew.p = page.toString();
+    }
+    if (searchValue !== "") {
+      searchParamsNew.search = searchValue;
+    }
+    if (membershipDirection !== "direct") {
+      searchParamsNew.membership = membershipDirection;
+    }
+
+    setSearchParams(searchParamsNew, { replace: true });
+  }, [page, searchValue, membershipDirection]);
 
   const [userGroupNamesToLoad, setUserGroupNamesToLoad] = React.useState<
     string[]
