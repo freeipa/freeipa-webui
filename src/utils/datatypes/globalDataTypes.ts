@@ -230,10 +230,12 @@ export interface Host {
   memberof_netgroup: string[];
   memberof_role: string[];
   memberof_hbacrule: string[];
+  memberof_sudorule: string[];
   memberofindirect_hostgroup: string[];
   memberofindirect_netgroup: string[];
   memberofindirect_role: string[];
   memberofindirect_hbacrule: string[];
+  memberofindirect_sudorule: string[];
   managing_host: string[];
   nshostlocation: string;
   userclass: string;
