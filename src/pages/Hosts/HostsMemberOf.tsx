@@ -25,10 +25,7 @@ import {
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 // Repositories
-import {
-  hostsHbacRulesInitialData,
-  hostsSudoRulesInitialData,
-} from "src/utils/data/GroupRepositories";
+import { hostsSudoRulesInitialData } from "src/utils/data/GroupRepositories";
 // Modals
 import MemberOfAddModal from "src/components/MemberOf/MemberOfAddModalOld";
 import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModalOld";
@@ -42,6 +39,7 @@ import { useGetHostByIdQuery } from "src/services/rpcHosts";
 import MemberOfHostGroups from "src/components/MemberOf/MemberOfHostGroups";
 import MemberOfNetgroups from "src/components/MemberOf/MemberOfNetgroups";
 import MemberOfRoles from "src/components/MemberOf/MemberOfRoles";
+import MemberOfHbacRules from "src/components/MemberOf/MemberOfHbacRules";
 
 interface PropsToHostsMemberOf {
   host: Host;
@@ -119,22 +117,24 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
     }
   }, [host]);
 
+  // 'HBAC rules' length to show in tab badge
+  const [hbacRulesLength, setHbacRulesLength] = React.useState(0);
+
+  React.useEffect(() => {
+    if (host && host.memberof_hbacrule) {
+      setHbacRulesLength(host.memberof_hbacrule.length);
+    }
+  }, [host]);
+
   // Retrieve each group list from Redux:
-  let hbacRulesList = useAppSelector((state) => state.hbacrules.hbacRulesList);
   let sudoRulesList = useAppSelector((state) => state.sudorules.sudoRulesList);
 
   // Alter the available options list to keep the state of the recently added / removed items
-  const updateHbacRulesList = (newAvOptionsList: unknown[]) => {
-    hbacRulesList = newAvOptionsList as HBACRulesOld[];
-  };
   const updateSudoRulesList = (newAvOptionsList: unknown[]) => {
     sudoRulesList = newAvOptionsList as SudoRulesOld[];
   };
 
   // List of default dummy data (for each tab option)
-  const [hbacRulesRepository, setHbacRulesRepository] = useState(
-    hostsHbacRulesInitialData
-  );
   const [sudoRulesRepository, setSudoRulesRepository] = useState(
     hostsSudoRulesInitialData
   );
@@ -149,14 +149,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   // Filter functions to compare the available data with the data that
   //  the host is already member of. This is done to prevent duplicates
   //  (e.g: adding the same element twice).
-  const filterHbacRulesData = () => {
-    // HBAC rules
-    return hbacRulesList.filter((item) => {
-      return !hbacRulesRepository.some((itm) => {
-        return item.name === itm.name;
-      });
-    });
-  };
   const filterSudoRulesData = () => {
     // Sudo rules
     return sudoRulesList.filter((item) => {
@@ -167,13 +159,9 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   };
 
   // Available data to be added as member of
-  const hbacRulesFilteredData: HBACRulesOld[] = filterHbacRulesData();
   const sudoRulesFilteredData: SudoRulesOld[] = filterSudoRulesData();
 
   // Number of items on the list for each repository
-  const [hbacRulesRepoLength, setHbacRulesRepoLength] = useState(
-    hbacRulesRepository.length
-  );
   const [sudoRulesRepoLength, setSudoRulesRepoLength] = useState(
     sudoRulesRepository.length
   );
@@ -186,11 +174,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
     groupRepository: RolesOld[] | HBACRulesOld[] | SudoRulesOld[]
   ) => {
     switch (tabName) {
-      case "HBAC rules":
-        setHbacRulesRepository(groupRepository as HBACRulesOld[]);
-        setShownHBACRulesList(hbacRulesRepository.slice(0, perPage));
-        setHbacRulesRepoLength(hbacRulesRepository.length);
-        break;
       case "Sudo rules":
         setSudoRulesRepository(groupRepository as SudoRulesOld[]);
         setShownSudoRulesList(sudoRulesRepository.slice(0, perPage));
@@ -259,9 +242,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   const [perPage, setPerPage] = useState(10);
 
   // Member groups displayed on the first page
-  const [shownHBACRulesList, setShownHBACRulesList] = useState(
-    hbacRulesRepository.slice(0, perPage)
-  );
   const [shownSudoRulesList, setShownSudoRulesList] = useState(
     sudoRulesRepository.slice(0, perPage)
   );
@@ -271,9 +251,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
     value: NetgroupOld[] | RolesOld[] | HBACRulesOld[] | SudoRulesOld[]
   ) => {
     switch (activeTabKey) {
-      case "memberof_hbacrule":
-        setShownHBACRulesList(value as HBACRulesOld[]);
-        break;
       case "memberof_sudorule":
         setShownSudoRulesList(value as SudoRulesOld[]);
         break;
@@ -289,9 +266,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   ) => {
     setPage(newPage);
     switch (activeTabKey) {
-      case "memberof_hbacrule":
-        setShownHBACRulesList(hbacRulesRepository.slice(startIdx, endIdx));
-        break;
       case "memberof_sudorule":
         setShownSudoRulesList(sudoRulesRepository.slice(startIdx, endIdx));
         break;
@@ -306,9 +280,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   ) => {
     setPerPage(newPerPage);
     switch (activeTabKey) {
-      case "memberof_hbacrule":
-        setShownHBACRulesList(hbacRulesRepository.slice(startIdx, endIdx));
-        break;
       case "memberof_sudorule":
         setShownSudoRulesList(sudoRulesRepository.slice(startIdx, endIdx));
         break;
@@ -347,10 +318,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
     if (showTableRows) setShowTableRows(false);
     setTimeout(() => {
       switch (activeTabKey) {
-        case "memberof_hbacrule":
-          setShownHBACRulesList(hbacRulesRepository.slice(0, perPage));
-          setHbacRulesRepoLength(hbacRulesRepository.length);
-          break;
         case "memberof_sudorule":
           setShownSudoRulesList(sudoRulesRepository.slice(0, perPage));
           setSudoRulesRepoLength(sudoRulesRepository.length);
@@ -358,7 +325,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
       }
       setShowTableRows(true);
     }, 1000);
-  }, [hbacRulesRepository, sudoRulesRepository]);
+  }, [sudoRulesRepository]);
 
   // Data wrappers
   // - MemberOfToolbar
@@ -507,29 +474,17 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
               <TabTitleText>
                 HBAC rules{" "}
                 <Badge key={3} isRead>
-                  {hbacRulesRepoLength}
+                  {hbacRulesLength}
                 </Badge>
               </TabTitleText>
             }
           >
-            <MemberOfToolbar
-              pageRepo={hbacRulesRepository}
-              shownItems={shownHBACRulesList}
-              toolbar="HBAC rules"
-              settersData={toolbarSettersData}
-              pageData={toolbarPageData}
-              buttonData={toolbarButtonData}
-              searchValueData={searchValueData}
-            />
-            <MemberOfTable
-              group={shownHBACRulesList}
-              tableName={"HBAC rules"}
-              activeTabKey={activeTabKey}
-              changeSelectedGroups={updateGroupsNamesSelected}
-              buttonData={tableButtonData}
-              showTableRows={showTableRows}
-              searchValue={searchValue}
-              fullGroupList={hbacRulesRepository}
+            <MemberOfHbacRules
+              entity={host}
+              id={host.fqdn as string}
+              from={"hosts"}
+              isDataLoading={hostQuery.isFetching}
+              onRefreshData={onRefreshHostData}
             />
           </Tab>
           <Tab
@@ -566,30 +521,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
           </Tab>
         </Tabs>
       </PageSection>
-      {tabName === "HBAC rules" && (
-        <>
-          {showAddModal && (
-            <MemberOfAddModal
-              modalData={addModalData}
-              availableData={hbacRulesFilteredData}
-              groupRepository={hbacRulesRepository}
-              updateGroupRepository={updateGroupRepository}
-              updateAvOptionsList={updateHbacRulesList}
-              tabData={tabData}
-            />
-          )}
-          {showDeleteModal && groupsNamesSelected.length !== 0 && (
-            <MemberOfDeleteModal
-              modalData={deleteModalData}
-              tabData={deleteTabData}
-              groupNamesToDelete={groupsNamesSelected}
-              groupRepository={hbacRulesRepository}
-              updateGroupRepository={updateGroupRepository}
-              buttonData={deleteButtonData}
-            />
-          )}
-        </>
-      )}
       {tabName === "Sudo rules" && (
         <>
           {showAddModal && (
