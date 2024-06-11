@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 // PatternFly
 import { Pagination, PaginationVariant } from "@patternfly/react-core";
 // Data types
-import { User, Role } from "src/utils/datatypes/globalDataTypes";
+import { User, Role, Host } from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfToolbar, { MembershipDirection } from "./MemberOfToolbar";
 import MemberOfTableRoles from "./MemberOfTableRoles";
@@ -25,10 +25,11 @@ import { apiToRole } from "src/utils/rolesUtils";
 import { useSearchParams } from "react-router-dom";
 
 interface MemberOfRolesProps {
-  user: Partial<User>;
+  entity: Partial<User> | Partial<Host>;
+  id: string;
   from: string;
-  isUserDataLoading: boolean;
-  onRefreshUserData: () => void;
+  isDataLoading: boolean;
+  onRefreshData: () => void;
 }
 const MemberOfRoles = (props: MemberOfRolesProps) => {
   // Alerts to show in the UI
@@ -58,8 +59,8 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
     );
 
   // Choose the correct roles based on the membership direction
-  const memberof_role = props.user.memberof_role || [];
-  const memberofindirect_role = props.user.memberofindirect_role || [];
+  const memberof_role = props.entity.memberof_role || [];
+  const memberofindirect_role = props.entity.memberofindirect_role || [];
   let roleNames =
     membershipDirection === "direct" ? memberof_role : memberofindirect_role;
   roleNames = [...roleNames];
@@ -118,7 +119,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   useEffect(() => {
     const rolesNames = getRolesNameToLoad();
     setRoleNamesToLoad(rolesNames);
-  }, [props.user, membershipDirection, searchValue, page, perPage]);
+  }, [props.entity, membershipDirection, searchValue, page, perPage]);
 
   React.useEffect(() => {
     if (roleNamesToLoad.length > 0) {
@@ -133,9 +134,22 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
     }
   }, [fullRolesQuery.data, fullRolesQuery.isFetching]);
 
+  // Get type of the entity to show as text
+  const getEntityType = () => {
+    if (props.from === "active-users") {
+      return "user";
+    } else if (props.from === "hosts") {
+      return "host";
+    } else {
+      // Return 'user' as default
+      return "user";
+    }
+  };
+
   // Computed "states"
   const someItemSelected = rolesSelected.length > 0;
   const showTableRows = roles.length > 0;
+  const entityType = getEntityType();
 
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
@@ -143,7 +157,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
 
   // Buttons functionality
   const isRefreshButtonEnabled =
-    !fullRolesQuery.isFetching && !props.isUserDataLoading;
+    !fullRolesQuery.isFetching && !props.isDataLoading;
   const isDeleteEnabled =
     someItemSelected && membershipDirection !== "indirect";
   const isAddButtonEnabled =
@@ -176,7 +190,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
     if (showAddModal) {
       rolesQuery.refetch();
     }
-  }, [showAddModal, adderSearchValue, props.user]);
+  }, [showAddModal, adderSearchValue, props.entity]);
 
   // Update available roles
   React.useEffect(() => {
@@ -194,7 +208,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           title: role.cn,
         });
       }
-      items = items.filter((item) => !roleNamesToLoad.includes(item.key));
+      items = items.filter((item) => !memberof_role.includes(item.key));
 
       setAvailableRoles(avalRoles);
       setAvailableItems(items);
@@ -202,19 +216,18 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   }, [rolesQuery.data, rolesQuery.isFetching]);
 
   const onAddRole = (items: AvailableItems[]) => {
-    const uid = props.user.uid;
     const newRoleNames = items.map((item) => item.key);
-    if (uid === undefined || newRoleNames.length == 0) {
+    if (props.id === undefined || newRoleNames.length == 0) {
       return;
     }
 
-    addMemberToRoles([uid, "user", newRoleNames]).then((response) => {
+    addMemberToRoles([props.id, entityType, newRoleNames]).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
           // Set alert: success
           alerts.addAlert(
             "add-member-success",
-            `Assigned new roles to user ${uid}`,
+            "Assigned new roles to " + entityType + " " + props.id,
             "success"
           );
           // Update displayed roles before they are updated via refresh
@@ -224,7 +237,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           setRoles(newRoles);
 
           // Refresh data
-          props.onRefreshUserData();
+          props.onRefreshData();
           // Close modal
           setShowAddModal(false);
         } else if (response.data.error) {
@@ -238,42 +251,41 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
 
   // - Delete
   const onDeleteRole = () => {
-    if (props.user.uid) {
-      removeMembersFromRoles([props.user.uid, "user", rolesSelected]).then(
-        (response) => {
-          if ("data" in response) {
-            if (response.data.result) {
-              // Set alert: success
-              alerts.addAlert(
-                "remove-roles-success",
-                "Removed roles from user '" + props.user.uid + "'",
-                "success"
-              );
-              // Update displayed roles
-              const newRoles = roles.filter(
-                (role) => !rolesSelected.includes(role.cn)
-              );
-              setRoles(newRoles);
-              // Update data
-              setRolesSelected([]);
-              // Close modal
-              setShowDeleteModal(false);
-              // Refresh
-              props.onRefreshUserData();
-            } else if (response.data.error) {
-              // Set alert: error
-              const errorMessage = response.data
-                .error as unknown as ErrorResult;
-              alerts.addAlert(
-                "remove-roles-error",
-                errorMessage.message,
-                "danger"
-              );
-            }
+    removeMembersFromRoles([props.id, entityType, rolesSelected]).then(
+      (response) => {
+        if ("data" in response) {
+          if (response.data.result) {
+            // Set alert: success
+            alerts.addAlert(
+              "remove-roles-success",
+              "Removed roles from " + entityType + " '" + props.id + "'",
+              "success"
+            );
+            // Update displayed roles
+            const newRoles = roles.filter(
+              (role) => !rolesSelected.includes(role.cn)
+            );
+            setRoles(newRoles);
+            // Update data
+            setRolesSelected([]);
+            // Close modal
+            setShowDeleteModal(false);
+            // Refresh
+            props.onRefreshData();
+            // Back to page 1
+            setPage(1);
+          } else if (response.data.error) {
+            // Set alert: error
+            const errorMessage = response.data.error as unknown as ErrorResult;
+            alerts.addAlert(
+              "remove-roles-error",
+              errorMessage.message,
+              "danger"
+            );
           }
         }
-      );
-    }
+      }
+    );
   };
 
   return (
@@ -285,7 +297,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         onSearch={() => {}}
         refreshButtonEnabled={isRefreshButtonEnabled}
-        onRefreshButtonClick={props.onRefreshUserData}
+        onRefreshButtonClick={props.onRefreshData}
         deleteButtonEnabled={isDeleteEnabled}
         onDeleteButtonClick={() => setShowDeleteModal(true)}
         addButtonEnabled={isAddButtonEnabled}
@@ -323,19 +335,21 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           availableItems={availableItems}
           onAdd={onAddRole}
           onSearchTextChange={setAdderSearchValue}
-          title={`Assign roles to user ${props.user.uid}`}
-          ariaLabel="Add user of role modal"
+          title={"Assign roles to " + entityType + " " + props.id}
+          ariaLabel={"Add " + entityType + " of role modal"}
         />
       )}
       {showDeleteModal && someItemSelected && (
         <MemberOfDeleteModal
           showModal={showDeleteModal}
           onCloseModal={() => setShowDeleteModal(false)}
-          title="Delete user from Roles"
+          title={"Delete " + entityType + " from Roles"}
           onDelete={onDeleteRole}
         >
           <MemberOfTableRoles
-            roles={roles.filter((group) => rolesSelected.includes(group.cn))}
+            roles={availableRoles.filter((group) =>
+              rolesSelected.includes(group.cn)
+            )}
             showTableRows
           />
         </MemberOfDeleteModal>
