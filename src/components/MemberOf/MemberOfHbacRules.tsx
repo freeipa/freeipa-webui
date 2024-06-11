@@ -226,7 +226,6 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
 
     addMemberToHbacRules([props.id, entityType, newHbacRuleNames]).then(
       (response) => {
-        console.log("response: ", response);
         if ("data" in response) {
           if (response.data.result) {
             if (response.data.result.results[0].error) {
