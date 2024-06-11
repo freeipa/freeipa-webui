@@ -61,7 +61,22 @@ export default function MemberOfSudoRulesTable(
 ) {
   const { sudoRules } = props;
   if (!sudoRules || sudoRules.length <= 0) {
-    return null; // return empty placeholder
+    // return empty placeholder
+    return (
+      <Table
+        aria-label="member of table"
+        name="cn"
+        variant="compact"
+        borders
+        className={"pf-v5-u-mt-md"}
+        id="member-of-table"
+        isStickyHeader
+      >
+        <Tbody>
+          <EmptyBodyTable />
+        </Tbody>
+      </Table>
+    );
   }
 
   const showCheckboxColumn = props.onCheckItemsChange !== undefined;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 // PatternFly
 import {
   Badge,
@@ -9,26 +9,13 @@ import {
   Tabs,
   TabTitleText,
 } from "@patternfly/react-core";
-// Others
-import MemberOfToolbar from "src/components/MemberOf/MemberOfToolbarOld";
-import MemberOfTable from "src/components/MemberOf/MemberOfTable";
+// Components
 import { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 // Data types
-import {
-  NetgroupOld,
-  RolesOld,
-  HBACRulesOld,
-  SudoRulesOld,
-  Host,
-} from "src/utils/datatypes/globalDataTypes";
+import { Host } from "src/utils/datatypes/globalDataTypes";
 // Redux
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
+import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
-// Repositories
-import { hostsSudoRulesInitialData } from "src/utils/data/GroupRepositories";
-// Modals
-import MemberOfAddModal from "src/components/MemberOf/MemberOfAddModalOld";
-import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModalOld";
 // Navigation
 import { useNavigate } from "react-router-dom";
 // Hooks
@@ -40,6 +27,7 @@ import MemberOfHostGroups from "src/components/MemberOf/MemberOfHostGroups";
 import MemberOfNetgroups from "src/components/MemberOf/MemberOfNetgroups";
 import MemberOfRoles from "src/components/MemberOf/MemberOfRoles";
 import MemberOfHbacRules from "src/components/MemberOf/MemberOfHbacRules";
+import MemberOfSudoRules from "src/components/MemberOf/MemberOfSudoRules";
 
 interface PropsToHostsMemberOf {
   host: Host;
@@ -126,267 +114,24 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
     }
   }, [host]);
 
-  // Retrieve each group list from Redux:
-  let sudoRulesList = useAppSelector((state) => state.sudorules.sudoRulesList);
+  // 'Sudo rules' length to show in tab badge
+  const [sudoRulesLength, setSudoRulesLength] = React.useState(0);
 
-  // Alter the available options list to keep the state of the recently added / removed items
-  const updateSudoRulesList = (newAvOptionsList: unknown[]) => {
-    sudoRulesList = newAvOptionsList as SudoRulesOld[];
-  };
-
-  // List of default dummy data (for each tab option)
-  const [sudoRulesRepository, setSudoRulesRepository] = useState(
-    hostsSudoRulesInitialData
-  );
-
-  // Filter (Input search)
-  const [searchValue, setSearchValue] = React.useState("");
-
-  const updateSearchValue = (value: string) => {
-    setSearchValue(value);
-  };
-
-  // Filter functions to compare the available data with the data that
-  //  the host is already member of. This is done to prevent duplicates
-  //  (e.g: adding the same element twice).
-  const filterSudoRulesData = () => {
-    // Sudo rules
-    return sudoRulesList.filter((item) => {
-      return !sudoRulesRepository.some((itm) => {
-        return item.name === itm.name;
-      });
-    });
-  };
-
-  // Available data to be added as member of
-  const sudoRulesFilteredData: SudoRulesOld[] = filterSudoRulesData();
-
-  // Number of items on the list for each repository
-  const [sudoRulesRepoLength, setSudoRulesRepoLength] = useState(
-    sudoRulesRepository.length
-  );
-
-  // Some data is updated when any group list is altered
-  //  - The whole list itself
-  //  - The slice of data to show (considering the pagination)
-  //  - Number of items for a specific list
-  const updateGroupRepository = (
-    groupRepository: RolesOld[] | HBACRulesOld[] | SudoRulesOld[]
-  ) => {
-    switch (tabName) {
-      case "Sudo rules":
-        setSudoRulesRepository(groupRepository as SudoRulesOld[]);
-        setShownSudoRulesList(sudoRulesRepository.slice(0, perPage));
-        setSudoRulesRepoLength(sudoRulesRepository.length);
-        break;
+  React.useEffect(() => {
+    if (host && host.memberof_sudorule) {
+      setSudoRulesLength(host.memberof_sudorule.length);
     }
-  };
+  }, [host]);
 
-  // State that determines whether the row tables are displayed nor not
-  // - This helps with the reload state
-  const [showTableRows, setShowTableRows] = useState(false);
-
-  // -- Name of the groups selected on the table (to remove)
-  const [groupsNamesSelected, setGroupsNamesSelected] = useState<string[]>([]);
-
-  const updateGroupsNamesSelected = (groups: string[]) => {
-    setGroupsNamesSelected(groups);
-  };
-
-  // -- 'Delete' button state
-  const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
-    useState<boolean>(true);
-
-  const updateIsDeleteButtonDisabled = (updatedDeleteButton: boolean) => {
-    setIsDeleteButtonDisabled(updatedDeleteButton);
-  };
-
-  // If some entries have been deleted, restore the 'groupsNamesSelected' list
-  const [isDeletion, setIsDeletion] = useState(false);
-
-  const updateIsDeletion = (option: boolean) => {
-    setIsDeletion(option);
-  };
-
-  // -- Tab
+  // Tab
   const [activeTabKey, setActiveTabKey] = useState("");
-  // This is a temporary solution to keep the active tab number
-  //  as it will be passed to the 'MemberOfDeleteModal' component
-  //  and this is being used by 'Services' component as well
-  const [activeTabNumber, setActiveTabNumber] = useState(0);
 
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    switch (tabIndex) {
-      case "memberof_netgroup":
-        setActiveTabNumber(1);
-        break;
-      case "memberof_role":
-        setActiveTabNumber(2);
-        break;
-      case "memberof_hbacrule":
-        setActiveTabNumber(3);
-        break;
-      case "memberof_sudorule":
-        setActiveTabNumber(4);
-        break;
-    }
     setActiveTabKey(tabIndex as string);
     navigate("/hosts/" + props.host.fqdn + "/" + tabIndex);
-  };
-
-  // -- Pagination
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
-
-  // Member groups displayed on the first page
-  const [shownSudoRulesList, setShownSudoRulesList] = useState(
-    sudoRulesRepository.slice(0, perPage)
-  );
-
-  // Update pagination
-  const changeMemberGroupsList = (
-    value: NetgroupOld[] | RolesOld[] | HBACRulesOld[] | SudoRulesOld[]
-  ) => {
-    switch (activeTabKey) {
-      case "memberof_sudorule":
-        setShownSudoRulesList(value as SudoRulesOld[]);
-        break;
-    }
-  };
-
-  // Page setters passed as props
-  const changeSetPage = (
-    newPage: number,
-    perPage: number | undefined,
-    startIdx: number | undefined,
-    endIdx: number | undefined
-  ) => {
-    setPage(newPage);
-    switch (activeTabKey) {
-      case "memberof_sudorule":
-        setShownSudoRulesList(sudoRulesRepository.slice(startIdx, endIdx));
-        break;
-    }
-  };
-
-  const changePerPageSelect = (
-    newPerPage: number,
-    newPage: number,
-    startIdx: number | undefined,
-    endIdx: number | undefined
-  ) => {
-    setPerPage(newPerPage);
-    switch (activeTabKey) {
-      case "memberof_sudorule":
-        setShownSudoRulesList(sudoRulesRepository.slice(startIdx, endIdx));
-        break;
-    }
-  };
-
-  // -- Modal
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-  const onClickAddHandler = () => {
-    setShowAddModal(true);
-  };
-  const onModalToggle = () => {
-    setShowAddModal(!showAddModal);
-  };
-
-  const onClickDeleteHandler = () => {
-    setShowDeleteModal(true);
-  };
-
-  const onModalDeleteToggle = () => {
-    setShowDeleteModal(!showDeleteModal);
-  };
-
-  // -- Tab name
-  const [tabName, setTabName] = useState("host groups");
-
-  const updateTabName = (name: string) => {
-    setTabName(name);
-  };
-
-  // Reloads the table everytime any of the group lists are updated
-  useEffect(() => {
-    setPage(1);
-    if (showTableRows) setShowTableRows(false);
-    setTimeout(() => {
-      switch (activeTabKey) {
-        case "memberof_sudorule":
-          setShownSudoRulesList(sudoRulesRepository.slice(0, perPage));
-          setSudoRulesRepoLength(sudoRulesRepository.length);
-          break;
-      }
-      setShowTableRows(true);
-    }, 1000);
-  }, [sudoRulesRepository]);
-
-  // Data wrappers
-  // - MemberOfToolbar
-  const toolbarPageData = {
-    page,
-    changeSetPage,
-    perPage,
-    changePerPageSelect,
-  };
-
-  const toolbarButtonData = {
-    onClickAddHandler,
-    onClickDeleteHandler,
-    isDeleteButtonDisabled,
-  };
-
-  const toolbarSettersData = {
-    changeMemberGroupsList,
-    changeTabName: updateTabName,
-  };
-
-  // - MemberOfTable
-  const tableButtonData = {
-    isDeletion,
-    updateIsDeletion,
-    changeIsDeleteButtonDisabled: updateIsDeleteButtonDisabled,
-  };
-
-  // - MemberOfAddModal
-  const addModalData = {
-    showModal: showAddModal,
-    handleModalToggle: onModalToggle,
-  };
-
-  const tabData = {
-    tabName,
-    userName: props.host.fqdn,
-  };
-
-  // - MemberOfDeleteModal
-  const deleteModalData = {
-    showModal: showDeleteModal,
-    handleModalToggle: onModalDeleteToggle,
-  };
-
-  const deleteButtonData = {
-    changeIsDeleteButtonDisabled: updateIsDeleteButtonDisabled,
-    updateIsDeletion,
-  };
-
-  const deleteTabData = {
-    tabName,
-    // TODO: Replace it with the 'activeTabKey' state when 'Services' has been adapted
-    activeTabKey: activeTabNumber,
-  };
-
-  // - 'MemberOfToolbar' > 'SearchInputLayout'
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
   };
 
   React.useEffect(() => {
@@ -494,57 +239,21 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
               <TabTitleText>
                 Sudo rules{" "}
                 <Badge key={4} isRead>
-                  {sudoRulesRepoLength}
+                  {sudoRulesLength}
                 </Badge>
               </TabTitleText>
             }
           >
-            <MemberOfToolbar
-              pageRepo={sudoRulesRepository}
-              shownItems={shownSudoRulesList}
-              toolbar="sudo rules"
-              settersData={toolbarSettersData}
-              pageData={toolbarPageData}
-              buttonData={toolbarButtonData}
-              searchValueData={searchValueData}
-            />
-            <MemberOfTable
-              group={shownSudoRulesList}
-              tableName={"Sudo rules"}
-              activeTabKey={activeTabKey}
-              changeSelectedGroups={updateGroupsNamesSelected}
-              buttonData={tableButtonData}
-              showTableRows={showTableRows}
-              searchValue={searchValue}
-              fullGroupList={sudoRulesRepository}
+            <MemberOfSudoRules
+              entity={host}
+              id={host.fqdn as string}
+              from={"hosts"}
+              isDataLoading={hostQuery.isFetching}
+              onRefreshData={onRefreshHostData}
             />
           </Tab>
         </Tabs>
       </PageSection>
-      {tabName === "Sudo rules" && (
-        <>
-          {showAddModal && (
-            <MemberOfAddModal
-              modalData={addModalData}
-              availableData={sudoRulesFilteredData}
-              groupRepository={sudoRulesRepository}
-              updateGroupRepository={updateGroupRepository}
-              updateAvOptionsList={updateSudoRulesList}
-              tabData={tabData}
-            />
-          )}
-          {showDeleteModal && groupsNamesSelected.length !== 0 && (
-            <MemberOfDeleteModal
-              modalData={deleteModalData}
-              tabData={deleteTabData}
-              groupNamesToDelete={groupsNamesSelected}
-              groupRepository={sudoRulesRepository}
-              updateGroupRepository={updateGroupRepository}
-              buttonData={deleteButtonData}
-            />
-          )}
-        </>
-      )}
     </Page>
   );
 };

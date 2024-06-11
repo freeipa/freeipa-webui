@@ -254,10 +254,11 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             }
           >
             <MemberOfSudoRules
-              user={user}
+              entity={user}
+              id={user.uid as string}
               from={props.from}
-              isUserDataLoading={userQuery.isFetching}
-              onRefreshUserData={onRefreshUserData}
+              isDataLoading={userQuery.isFetching}
+              onRefreshData={onRefreshUserData}
             />
           </Tab>
           <Tab
