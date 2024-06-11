@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { Pagination, PaginationVariant } from "@patternfly/react-core";
 // Data types
-import { User, HBACRule } from "src/utils/datatypes/globalDataTypes";
+import { User, HBACRule, Host } from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfToolbar, { MembershipDirection } from "./MemberOfToolbar";
 import MemberOfHbacRulesTable from "./MemberOfTableHbacRules";
@@ -25,10 +25,11 @@ import { apiToHBACRule } from "src/utils/hbacRulesUtils";
 import { useSearchParams } from "react-router-dom";
 
 interface MemberOfHbacRulesProps {
-  user: Partial<User>;
+  entity: Partial<User> | Partial<Host>;
+  id: string;
   from: string;
-  isUserDataLoading: boolean;
-  onRefreshUserData: () => void;
+  isDataLoading: boolean;
+  onRefreshData: () => void;
 }
 
 const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
@@ -60,8 +61,9 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
       (searchParams.get("membership") as MembershipDirection) || "direct"
     );
 
-  const memberof_hbacrule = props.user.memberof_hbacrule || [];
-  const memberofindirect_hbacrule = props.user.memberofindirect_hbacrule || [];
+  const memberof_hbacrule = props.entity.memberof_hbacrule || [];
+  const memberofindirect_hbacrule =
+    props.entity.memberofindirect_hbacrule || [];
   let hbacRuleNames =
     membershipDirection === "direct"
       ? memberof_hbacrule
@@ -121,7 +123,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
   React.useEffect(() => {
     const hbacRulesNames = getHbacRulesNameToLoad();
     setHbacRulesNamesToLoad(hbacRulesNames);
-  }, [props.user, membershipDirection, searchValue, page, perPage]);
+  }, [props.entity, membershipDirection, searchValue, page, perPage]);
 
   React.useEffect(() => {
     if (hbacRulesNamesToLoad.length > 0) {
@@ -136,9 +138,22 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
     }
   }, [fullHbacRulesQuery.data, fullHbacRulesQuery.isFetching]);
 
+  // Get type of the entity to show as text
+  const getEntityType = () => {
+    if (props.from === "active-users") {
+      return "user";
+    } else if (props.from === "hosts") {
+      return "host";
+    } else {
+      // Return 'user' as default
+      return "user";
+    }
+  };
+
   // Computed "states"
   const someItemSelected = hbacRulesSelected.length > 0;
   const showTableRows = hbacRules.length > 0;
+  const entityType = getEntityType();
 
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
@@ -147,7 +162,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
   // Buttons functionality
   // - Refresh
   const isRefreshButtonEnabled =
-    !fullHbacRulesQuery.isFetching && !props.isUserDataLoading;
+    !fullHbacRulesQuery.isFetching && !props.isDataLoading;
   const isAddButtonEnabled =
     membershipDirection !== "indirect" && isRefreshButtonEnabled;
 
@@ -177,7 +192,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
     if (showAddModal) {
       hbacRulesQuery.refetch();
     }
-  }, [showAddModal, adderSearchValue, props.user]);
+  }, [showAddModal, adderSearchValue, props.entity]);
 
   // Update available HBAC rules
   React.useEffect(() => {
@@ -195,7 +210,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
           title: hbacRule.cn,
         });
       }
-      items = items.filter((item) => !hbacRulesNamesToLoad.includes(item.key));
+      items = items.filter((item) => !memberof_hbacrule.includes(item.key));
 
       setAvailableHbacRules(avalHbacRules);
       setAvailableItems(items);
@@ -204,56 +219,60 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
 
   // - Add
   const onAddHbacRule = (items: AvailableItems[]) => {
-    const uid = props.user.uid;
     const newHbacRuleNames = items.map((item) => item.key);
-    if (uid === undefined || newHbacRuleNames.length == 0) {
+    if (props.id === undefined || newHbacRuleNames.length == 0) {
       return;
     }
 
-    addMemberToHbacRules([uid, "user", newHbacRuleNames]).then((response) => {
-      if ("data" in response) {
-        if (response.data.result) {
-          // Set alert: success
-          alerts.addAlert(
-            "add-member-success",
-            `Assigned new HBAC rule to user ${uid}`,
-            "success"
-          );
-          // Update displayed HBAC Rules before they are updated via refresh
-          const newHbacRules = hbacRules.concat(
-            availableHbacRules.filter((hbacRule) =>
-              newHbacRuleNames.includes(hbacRule.cn)
-            )
-          );
-          setHbacRules(newHbacRules);
+    addMemberToHbacRules([props.id, entityType, newHbacRuleNames]).then(
+      (response) => {
+        console.log("response: ", response);
+        if ("data" in response) {
+          if (response.data.result) {
+            if (response.data.result.results[0].error) {
+              const errorMessage = response.data.result.results[0]
+                .error as string;
+              alerts.addAlert("add-member-error", errorMessage, "danger");
+            } else {
+              // Set alert: success
+              alerts.addAlert(
+                "add-member-success",
+                "Assigned new HBAC rules to " + entityType + " " + props.id,
+                "success"
+              );
+              // Update displayed HBAC Rules before they are updated via refresh
+              const newHbacRules = hbacRules.concat(
+                availableHbacRules.filter((hbacRule) =>
+                  newHbacRuleNames.includes(hbacRule.cn)
+                )
+              );
+              setHbacRules(newHbacRules);
+            }
 
-          // Refresh data
-          props.onRefreshUserData();
-          // Close modal
-          setShowAddModal(false);
-        } else if (response.data.error) {
-          // Set alert: error
-          const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert("add-member-error", errorMessage.message, "danger");
+            // Refresh data
+            props.onRefreshData();
+            // Close modal
+            setShowAddModal(false);
+          } else if (response.data.error) {
+            // Set alert: error
+            const errorMessage = response.data.error as unknown as ErrorResult;
+            alerts.addAlert("add-member-error", errorMessage.message, "danger");
+          }
         }
       }
-    });
+    );
   };
 
   // - Delete
   const onDeleteHbacRules = () => {
-    if (props.user.uid) {
-      removeMembersFromHbacRules([
-        props.user.uid,
-        "user",
-        hbacRulesSelected,
-      ]).then((response) => {
+    removeMembersFromHbacRules([props.id, entityType, hbacRulesSelected]).then(
+      (response) => {
         if ("data" in response) {
           if (response.data.result) {
             // Set alert: success
             alerts.addAlert(
               "remove-hbac-rules-success",
-              "Removed HBAC rules from user '" + props.user.uid + "'",
+              "Removed HBAC rules from " + entityType + " '" + props.id + "'",
               "success"
             );
             // Update displayed HBAC rules
@@ -266,7 +285,9 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
             // Close modal
             setShowDeleteModal(false);
             // Refresh
-            props.onRefreshUserData();
+            props.onRefreshData();
+            // Back to page 1
+            setPage(1);
           } else if (response.data.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
@@ -277,8 +298,8 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
             );
           }
         }
-      });
-    }
+      }
+    );
   };
 
   return (
@@ -290,7 +311,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         onSearch={() => {}}
         refreshButtonEnabled={isRefreshButtonEnabled}
-        onRefreshButtonClick={props.onRefreshUserData}
+        onRefreshButtonClick={props.onRefreshData}
         deleteButtonEnabled={someItemSelected}
         onDeleteButtonClick={() => setShowDeleteModal(true)}
         addButtonEnabled={isAddButtonEnabled}
@@ -328,19 +349,19 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
           availableItems={availableItems}
           onAdd={onAddHbacRule}
           onSearchTextChange={setAdderSearchValue}
-          title={`Assign HBAC rule to user ${props.user.uid}`}
-          ariaLabel="Add user of HBAC rule modal"
+          title={"Assign HBAC rule to " + entityType + " " + props.id}
+          ariaLabel={"Add " + entityType + " of HBAC rule modal"}
         />
       )}
       {showDeleteModal && someItemSelected && (
         <MemberOfDeleteModal
           showModal={showDeleteModal}
           onCloseModal={() => setShowDeleteModal(false)}
-          title="Delete user from HBAC rules"
+          title={"Delete " + entityType + " from HBAC rules"}
           onDelete={onDeleteHbacRules}
         >
           <MemberOfHbacRulesTable
-            hbacRules={hbacRules.filter((hbacrule) =>
+            hbacRules={availableHbacRules.filter((hbacrule) =>
               hbacRulesSelected.includes(hbacrule.cn)
             )}
             showTableRows

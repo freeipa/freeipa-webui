@@ -229,9 +229,11 @@ export interface Host {
   memberof_hostgroup: string[];
   memberof_netgroup: string[];
   memberof_role: string[];
+  memberof_hbacrule: string[];
   memberofindirect_hostgroup: string[];
   memberofindirect_netgroup: string[];
   memberofindirect_role: string[];
+  memberofindirect_hbacrule: string[];
   managing_host: string[];
   nshostlocation: string;
   userclass: string;
