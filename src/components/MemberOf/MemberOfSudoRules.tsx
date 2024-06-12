@@ -4,12 +4,13 @@ import { Pagination, PaginationVariant } from "@patternfly/react-core";
 // Data types
 import { User, SudoRule, Host } from "src/utils/datatypes/globalDataTypes";
 // Components
-import MemberOfToolbar, { MembershipDirection } from "./MemberOfToolbar";
+import MemberOfToolbar from "./MemberOfToolbar";
 import MemberOfTableSudoRules from "./MemberOfTableSudoRules";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
+import useRoutingParams from "src/hooks/useRoutingParams";
 // RPC
 import {
   useGetSudoRulesInfoByNameQuery,
@@ -21,8 +22,6 @@ import {
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToSudoRule } from "src/utils/sudoRulesUtils";
 import { ErrorResult } from "src/services/rpc";
-// React Router DOM
-import { useSearchParams } from "react-router-dom";
 
 interface MemberOfSudoRulesProps {
   entity: Partial<User> | Partial<Host>;
@@ -36,34 +35,29 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  // Page indexes
-  const [page, setPage] = React.useState(
-    parseInt(searchParams.get("p") || "1")
-  );
-  const [perPage, setPerPage] = React.useState(10);
+  const {
+    page,
+    setPage,
+    perPage,
+    setPerPage,
+    searchValue,
+    setSearchValue,
+    membershipDirection,
+    setMembershipDirection,
+  } = useRoutingParams();
 
   // Other states
   const [sudoRulesSelected, setSudoRulesSelected] = React.useState<string[]>(
     []
   );
-  const [searchValue, setSearchValue] = React.useState(
-    searchParams.get("search") || ""
-  );
 
   // Loaded Sudo rules based on paging and member attributes
   const [sudoRules, setSudoRules] = React.useState<SudoRule[]>([]);
 
-  // Membership direction and Sudo rules
-  const [membershipDirection, setMembershipDirection] =
-    React.useState<MembershipDirection>(
-      (searchParams.get("membership") as MembershipDirection) || "direct"
-    );
-
   const memberof_sudorule = props.entity.memberof_sudorule || [];
   const memberofindirect_sudorule =
     props.entity.memberofindirect_sudorule || [];
+
   let sudoRuleNames =
     membershipDirection === "direct"
       ? memberof_sudorule
@@ -85,23 +79,6 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
     toLoad = paginate(toLoad, page, perPage);
     return toLoad;
   };
-
-  // Handle URLs with pagination and search values
-  React.useEffect(() => {
-    const searchParamsNew: { [key: string]: string } = {};
-
-    if (page > 1) {
-      searchParamsNew.p = page.toString();
-    }
-    if (searchValue !== "") {
-      searchParamsNew.search = searchValue;
-    }
-    if (membershipDirection !== "direct") {
-      searchParamsNew.membership = membershipDirection;
-    }
-
-    setSearchParams(searchParamsNew, { replace: true });
-  }, [page, searchValue, membershipDirection]);
 
   const [sudoRulesNamesToLoad, setSudoRulesNamesToLoad] = React.useState<
     string[]

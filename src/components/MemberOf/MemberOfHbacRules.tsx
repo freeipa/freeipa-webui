@@ -4,12 +4,13 @@ import { Pagination, PaginationVariant } from "@patternfly/react-core";
 // Data types
 import { User, HBACRule, Host } from "src/utils/datatypes/globalDataTypes";
 // Components
-import MemberOfToolbar, { MembershipDirection } from "./MemberOfToolbar";
+import MemberOfToolbar from "./MemberOfToolbar";
 import MemberOfHbacRulesTable from "./MemberOfTableHbacRules";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
+import useRoutingParams from "src/hooks/useRoutingParams";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import {
@@ -21,8 +22,6 @@ import {
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToHBACRule } from "src/utils/hbacRulesUtils";
-// React Router DOM
-import { useSearchParams } from "react-router-dom";
 
 interface MemberOfHbacRulesProps {
   entity: Partial<User> | Partial<Host>;
@@ -36,34 +35,29 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  // Page indexes
-  const [page, setPage] = React.useState(
-    parseInt(searchParams.get("p") || "1")
-  );
-  const [perPage, setPerPage] = React.useState(10);
+  const {
+    page,
+    setPage,
+    perPage,
+    setPerPage,
+    searchValue,
+    setSearchValue,
+    membershipDirection,
+    setMembershipDirection,
+  } = useRoutingParams();
 
   // Other states
   const [hbacRulesSelected, setHbacRulesSelected] = React.useState<string[]>(
     []
   );
-  const [searchValue, setSearchValue] = React.useState(
-    searchParams.get("search") || ""
-  );
 
   // Loaded HBAC rules based on paging and member attributes
   const [hbacRules, setHbacRules] = React.useState<HBACRule[]>([]);
 
-  // Membership direction and HBAC rules
-  const [membershipDirection, setMembershipDirection] =
-    React.useState<MembershipDirection>(
-      (searchParams.get("membership") as MembershipDirection) || "direct"
-    );
-
   const memberof_hbacrule = props.entity.memberof_hbacrule || [];
   const memberofindirect_hbacrule =
     props.entity.memberofindirect_hbacrule || [];
+
   let hbacRuleNames =
     membershipDirection === "direct"
       ? memberof_hbacrule
@@ -85,23 +79,6 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
     toLoad = paginate(toLoad, page, perPage);
     return toLoad;
   };
-
-  // Handle URLs with pagination and search values
-  React.useEffect(() => {
-    const searchParamsNew: { [key: string]: string } = {};
-
-    if (page > 1) {
-      searchParamsNew.p = page.toString();
-    }
-    if (searchValue !== "") {
-      searchParamsNew.search = searchValue;
-    }
-    if (membershipDirection !== "direct") {
-      searchParamsNew.membership = membershipDirection;
-    }
-
-    setSearchParams(searchParamsNew, { replace: true });
-  }, [page, searchValue, membershipDirection]);
 
   const [hbacRulesNamesToLoad, setHbacRulesNamesToLoad] = React.useState<
     string[]
