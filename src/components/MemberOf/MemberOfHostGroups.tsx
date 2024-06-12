@@ -4,12 +4,13 @@ import { Pagination, PaginationVariant } from "@patternfly/react-core";
 // Data types
 import { Host, HostGroup } from "src/utils/datatypes/globalDataTypes";
 // Components
-import MemberOfToolbar, { MembershipDirection } from "./MemberOfToolbar";
+import MemberOfToolbar from "./MemberOfToolbar";
 import MemberOfHostGroupsTable from "./MemberOfTableHostGroups";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
+import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import {
@@ -32,22 +33,24 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
-  // Page indexes
-  const [page, setPage] = React.useState(1);
-  const [perPage, setPerPage] = React.useState(10);
+  const {
+    page,
+    setPage,
+    perPage,
+    setPerPage,
+    searchValue,
+    setSearchValue,
+    membershipDirection,
+    setMembershipDirection,
+  } = useListPageSearchParams();
 
   // Other states
   const [hostGroupsSelected, setHostGroupsSelected] = React.useState<string[]>(
     []
   );
-  const [searchValue, setSearchValue] = React.useState("");
 
   // Loaded Host groups based on paging and member attributes
   const [hostGroups, setHostGroups] = React.useState<HostGroup[]>([]);
-
-  // Membership direction and Host groups
-  const [membershipDirection, setMembershipDirection] =
-    React.useState<MembershipDirection>("direct");
 
   // Choose the correct Host groups based on the membership direction
   const memberof_hostgroup = props.host.memberof_hostgroup || [];
