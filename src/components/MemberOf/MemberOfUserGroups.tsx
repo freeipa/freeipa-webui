@@ -172,7 +172,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
           title: userGroup.cn,
         });
       }
-      items = items.filter((item) => !userGroupNamesToLoad.includes(item.key));
+      items = items.filter((item) => !memberof_group.includes(item.key));
 
       setAvailableUserGroups(avalUserGroups);
       setAvailableItems(items);
