@@ -17,7 +17,7 @@ import { Host } from "../utils/datatypes/globalDataTypes";
 /**
  * Hosts-related endpoints: getHostsFullData, addHost, removeHosts, saveHost,
  *   addHostPrincipalAlias, removeHostPrincipalAlias, autoMemberRebuildHosts
- *   setHostPassword, getHostById
+ *   setHostPassword, getHostById, addToHostsManagedBy, removeFromHostsManagedBy,
  *
  * API commands:
  * - host_show: https://freeipa.readthedocs.io/en/latest/api/host_show.html
@@ -29,6 +29,9 @@ import { Host } from "../utils/datatypes/globalDataTypes";
  * - host_add_principal: https://freeipa.readthedocs.io/en/latest/api/host_add_principal.html
  * - host_remove_principal: https://freeipa.readthedocs.io/en/latest/api/host_remove_principal.html
  * - automember_rebuild: https://freeipa.readthedocs.io/en/latest/api/automember_rebuild.html
+ * - host_add_managedby: https://freeipa.readthedocs.io/en/latest/api/host_add_managedby.html
+ * - host_remove_managedby: https://freeipa.readthedocs.io/en/latest/api/host_remove_managedby.html
+ *
  */
 
 export interface HostAddPayload {
@@ -44,6 +47,12 @@ export type HostFullData = {
   host?: Partial<Host>;
   cert?: Record<string, unknown>;
 };
+
+export interface HostShowPayload {
+  hostNamesList: string[];
+  no_members?: boolean;
+  version: string;
+}
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -206,6 +215,83 @@ const extendedApi = api.injectEndpoints({
       transformResponse: (response: FindRPCResponse): Host =>
         apiToHost(response.result.result),
     }),
+    /**
+     * Add entity to hosts
+     * @param {string} toId - ID of the entity to add to hosts
+     * @param {string} type - Type of the entity
+     *    Available types: user | host | service
+     * @param {string[]} listOfMembers - List of members to add to the hosts
+     */
+    addToHostsManagedBy: build.mutation<
+      FindRPCResponse,
+      [string, string, string[]]
+    >({
+      query: (payload) => {
+        const memberId = payload[0];
+        const memberType = payload[1];
+        const hostNames = payload[2];
+
+        return getCommand({
+          method: "host_add_managedby",
+          params: [
+            [memberId],
+            { all: true, [memberType]: hostNames, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+    }),
+    /**
+     * Remove entity from hosts
+     * @param {string} toId - ID of the entity to add to hosts
+     * @param {string} type - Type of the entity
+     *    Available types: user | host | service
+     * @param {string[]} listOfMembers - List of members to add to the hosts
+     */
+    removeFromHostsManagedBy: build.mutation<
+      FindRPCResponse,
+      [string, string, string[]]
+    >({
+      query: (payload) => {
+        const memberId = payload[0];
+        const memberType = payload[1];
+        const hostNames = payload[2];
+
+        return getCommand({
+          method: "host_remove_managedby",
+          params: [
+            [memberId],
+            { all: true, [memberType]: hostNames, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+    }),
+    /**
+     * Given a list of netgroup names, show the full data of those netgroups
+     * @param {HostShowPayload} - Payload with netgroup names and options
+     * @returns {BatchRPCResponse} - Batch response
+     */
+    getHostInfoByName: build.query<Host[], HostShowPayload>({
+      query: (payload) => {
+        const hostNames = payload.hostNamesList;
+        const noMembers = payload.no_members || true;
+        const apiVersion = payload.version || API_VERSION_BACKUP;
+        const hostShowCommands: Command[] = hostNames.map((hostName) => ({
+          method: "host_show",
+          params: [[hostName], { no_members: noMembers }],
+        }));
+        return getBatchCommand(hostShowCommands, apiVersion);
+      },
+      transformResponse: (response: BatchRPCResponse): Host[] => {
+        const hostList: Host[] = [];
+        const results = response.result.results;
+        const count = response.result.count;
+        for (let i = 0; i < count; i++) {
+          const hostData = apiToHost(results[i].result);
+          hostList.push(hostData);
+        }
+        return hostList;
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -235,4 +321,7 @@ export const {
   useSetHostPasswordMutation,
   useUnprovisionHostMutation,
   useGetHostByIdQuery,
+  useAddToHostsManagedByMutation,
+  useRemoveFromHostsManagedByMutation,
+  useGetHostInfoByNameQuery,
 } = extendedApi;

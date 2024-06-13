@@ -38,7 +38,7 @@ interface MemberOfToolbarProps {
 
   membershipDirectionEnabled?: boolean;
   membershipDirection?: MembershipDirection;
-  onMembershipDirectionChange: (direction: MembershipDirection) => void;
+  onMembershipDirectionChange?: (direction: MembershipDirection) => void;
 
   // help icon
   helpIconEnabled?: boolean;
@@ -115,44 +115,49 @@ const MemberOfToolbar = (props: MemberOfToolbarProps) => {
             Add
           </Button>
         </ToolbarItem>
-        <ToolbarItem
-          id="separator-membership"
-          variant={ToolbarItemVariant.separator}
-        />
-        <ToolbarItem id="membership-form">
-          <Form isHorizontal maxWidth="93px" className="pf-v5-u-pb-xs">
-            <FormGroup
-              fieldId="membership"
-              label="Membership"
-              className="pf-v5-u-pt-0"
-            ></FormGroup>
-          </Form>
-        </ToolbarItem>
-        <ToolbarItem id="toggle-group">
-          <ToggleGroup
-            isCompact
-            aria-label="Toggle group with single selectable"
-          >
-            <ToggleGroupItem
-              text="Direct"
-              name="user-memberof-group-type-radio-direct"
-              buttonId="direct"
-              isSelected={props.membershipDirection === "direct"}
-              onChange={(_event, selected) =>
-                onMembershipDirectionChange(selected, "direct")
-              }
+        {/* Membership will show only if `membershipDirectionEnabled` is defined */}
+        {props.membershipDirectionEnabled !== undefined && (
+          <>
+            <ToolbarItem
+              id="separator-membership"
+              variant={ToolbarItemVariant.separator}
             />
-            <ToggleGroupItem
-              text="Indirect"
-              name="user-memberof-group-type-radio-indirect"
-              buttonId="indirect"
-              isSelected={props.membershipDirection === "indirect"}
-              onChange={(_event, selected) =>
-                onMembershipDirectionChange(selected, "indirect")
-              }
-            />
-          </ToggleGroup>
-        </ToolbarItem>
+            <ToolbarItem id="membership-form">
+              <Form isHorizontal maxWidth="93px" className="pf-v5-u-pb-xs">
+                <FormGroup
+                  fieldId="membership"
+                  label="Membership"
+                  className="pf-v5-u-pt-0"
+                ></FormGroup>
+              </Form>
+            </ToolbarItem>
+            <ToolbarItem id="toggle-group">
+              <ToggleGroup
+                isCompact
+                aria-label="Toggle group with single selectable"
+              >
+                <ToggleGroupItem
+                  text="Direct"
+                  name="user-memberof-group-type-radio-direct"
+                  buttonId="direct"
+                  isSelected={props.membershipDirection === "direct"}
+                  onChange={(_event, selected) =>
+                    onMembershipDirectionChange(selected, "direct")
+                  }
+                />
+                <ToggleGroupItem
+                  text="Indirect"
+                  name="user-memberof-group-type-radio-indirect"
+                  buttonId="indirect"
+                  isSelected={props.membershipDirection === "indirect"}
+                  onChange={(_event, selected) =>
+                    onMembershipDirectionChange(selected, "indirect")
+                  }
+                />
+              </ToggleGroup>
+            </ToolbarItem>
+          </>
+        )}
         <ToolbarItem
           id="separator-help-icon"
           variant={ToolbarItemVariant.separator}
