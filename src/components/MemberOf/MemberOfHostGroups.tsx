@@ -50,10 +50,13 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
     React.useState<MembershipDirection>("direct");
 
   // Choose the correct Host groups based on the membership direction
-  const memberof_group = props.host.memberof_hostgroup || [];
-  const memberofindirect_group = props.host.memberofindirect_hostgroup || [];
+  const memberof_hostgroup = props.host.memberof_hostgroup || [];
+  const memberofindirect_hostgroup =
+    props.host.memberofindirect_hostgroup || [];
   let hostGroupNames =
-    membershipDirection === "direct" ? memberof_group : memberofindirect_group;
+    membershipDirection === "direct"
+      ? memberof_hostgroup
+      : memberofindirect_hostgroup;
   hostGroupNames = [...hostGroupNames];
 
   const getHostGroupsNameToLoad = (): string[] => {
@@ -168,7 +171,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
           title: userGroup.cn,
         });
       }
-      items = items.filter((item) => !hostGroupNamesToLoad.includes(item.key));
+      items = items.filter((item) => !memberof_hostgroup.includes(item.key));
 
       setAvailableHostGroups(avalHostGroups);
       setAvailableItems(items);
@@ -242,6 +245,8 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
             setShowDeleteModal(false);
             // Refresh
             props.onRefreshHostData();
+            // Return to first page
+            setPage(1);
           } else if (response.data.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
@@ -315,7 +320,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
           onDelete={onDeleteHostGroup}
         >
           <MemberOfHostGroupsTable
-            hostGroups={hostGroups.filter((hostgroup) =>
+            hostGroups={availableHostGroups.filter((hostgroup) =>
               hostGroupsSelected.includes(hostgroup.cn)
             )}
             showTableRows
