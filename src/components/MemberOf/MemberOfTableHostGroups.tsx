@@ -60,7 +60,22 @@ export default function MemberOfHostGroupsTable(
 ) {
   const { hostGroups } = props;
   if (!hostGroups || hostGroups.length <= 0) {
-    return null; // return empty placeholder
+    // return empty placeholder
+    return (
+      <Table
+        aria-label="member of table"
+        name="cn"
+        variant="compact"
+        borders
+        className={"pf-v5-u-mt-md"}
+        id="member-of-table"
+        isStickyHeader
+      >
+        <Tbody>
+          <EmptyBodyTable />
+        </Tbody>
+      </Table>
+    );
   }
 
   const showCheckboxColumn = props.onCheckItemsChange !== undefined;
