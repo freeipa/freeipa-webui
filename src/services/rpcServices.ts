@@ -38,7 +38,7 @@ const extendedApi = api.injectEndpoints({
         };
         return getCommand({
           method: "service_show",
-          params: [serviceName, params],
+          params: [[serviceName], params],
         });
       },
       transformResponse: (response: FindRPCResponse): Service => {
@@ -84,4 +84,8 @@ export const useGettingServicesQuery = (payloadData) => {
   payloadData["objAttr"] = "krbprincipalname";
   return useGettingGenericQuery(payloadData);
 };
-export const { useAddServiceMutation, useRemoveServicesMutation } = extendedApi;
+export const {
+  useGetServicesFullDataQuery,
+  useAddServiceMutation,
+  useRemoveServicesMutation,
+} = extendedApi;

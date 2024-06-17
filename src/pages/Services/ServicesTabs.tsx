@@ -9,104 +9,99 @@ import {
   TabTitleText,
 } from "@patternfly/react-core";
 // React Router DOM
-import { useLocation } from "react-router-dom";
-// Other
+import { useNavigate, useParams } from "react-router-dom";
+// Components
 import ServicesSettings from "./ServicesSettings";
 import ServicesMemberOf from "./ServicesMemberOf";
 import ServicesManagedBy from "./ServicesManagedBy";
-// Layouts
-import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
+import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
-// Data types
-import { Service } from "src/utils/datatypes/globalDataTypes";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
-import { SerializedError } from "@reduxjs/toolkit";
-// Utils
-import { API_VERSION_BACKUP } from "../../utils/utils";
+import { partialServiceToService } from "src/utils/serviceUtils";
 // Hooks
 import { useAlerts } from "../../hooks/useAlerts";
-// RPC client
-import { useSearchEntriesMutation, GenericPayload } from "../../services/rpc";
+// Hooks
+import { useServiceSettings } from "src/hooks/useServiceSettingsData";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
+import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
+import DataSpinner from "src/components/layouts/DataSpinner";
 
-const ServicesTabs = () => {
-  // Get location (React Router DOM) and get state data
-  const location = useLocation();
-  let serviceData: Service = location.state as Service;
+// eslint-disable-next-line react/prop-types
+const ServicesTabs = ({ section }) => {
+  const { id } = useParams();
+  const encodedId = encodeURIComponent(id as string);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const [serviceId, setServiceId] = useState("");
+
+  // Data loaded from DB
+  const serviceSettingsData = useServiceSettings(id as string);
 
   // Alerts to show in the UI
   const alerts = useAlerts();
 
   // Tab
-  const [activeTabKey, setActiveTabKey] = useState(0);
+  const [activeTabKey, setActiveTabKey] = useState("settings");
 
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as number);
+    setActiveTabKey(tabIndex as string);
+    id;
+    if (tabIndex === "settings") {
+      navigate("/services/" + encodedId);
+    } else if (tabIndex === "memberof") {
+      navigate("/services/" + encodedId + "/memberof_role");
+    } else if (tabIndex === "managedby") {
+      navigate("/services/" + encodedId + "/managedby_host");
+    }
   };
 
-  // 'pagesVisited' array will contain the visited pages.
-  // - Those will be passed to the 'BreadcrumbLayout' component.
-  const pagesVisited = [
-    {
-      name: "Services",
-      url: "../services",
-    },
-  ];
+  React.useEffect(() => {
+    if (!id) {
+      // Redirect to the main page
+      navigate("/services");
+    } else {
+      setServiceId(id);
+      // Update breadcrumb route
+      const currentPath: BreadCrumbItem[] = [
+        {
+          name: "Services",
+          url: "../services",
+        },
+        {
+          name: id,
+          url: "../services/" + encodeURIComponent(id as string),
+          isActive: true,
+        },
+      ];
+      dispatch(updateBreadCrumbPath(currentPath));
+    }
+  }, [id]);
 
-  // Handle refresh of a service
-  const [retrieveService] = useSearchEntriesMutation({});
-  const onRefresh = () => {
-    retrieveService({
-      searchValue: serviceData.krbcanonicalname,
-      sizeLimit: 0,
-      apiVersion: API_VERSION_BACKUP,
-      startIdx: 0,
-      stopIdx: 1,
-      entryType: "service",
-    } as GenericPayload).then((result) => {
-      // Manage new response here
-      if ("data" in result) {
-        const searchError = result.data.error as
-          | FetchBaseQueryError
-          | SerializedError;
+  // Redirect to the settings page if the section is not defined
+  React.useEffect(() => {
+    if (!section) {
+      navigate("/services/" + serviceId);
+    }
+  }, [section]);
 
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          alerts.addAlert(
-            "refresh service",
-            error || "Error when searching for services",
-            "danger"
-          );
-        } else {
-          // Success
-          const serviceListResult = result.data.result.results;
-          serviceData = serviceListResult[0];
-        }
-      }
-    });
-  };
+  if (serviceSettingsData.isLoading || !serviceSettingsData.service) {
+    return <DataSpinner />;
+  }
+
+  const service = partialServiceToService(serviceSettingsData.service);
 
   return (
     <Page>
       <alerts.ManagedAlerts />
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
-        <BreadcrumbLayout
-          className="pf-v5-u-mb-md"
-          preText=""
-          userId={serviceData.krbcanonicalname}
-          pagesVisited={pagesVisited}
-        />
+        <BreadCrumb className="pf-v5-u-mb-md" />
         <TitleLayout
-          id={serviceData.krbcanonicalname}
-          text={serviceData.krbcanonicalname}
+          id={service.krbcanonicalname}
+          text={service.krbcanonicalname}
           headingLevel="h1"
         />
       </PageSection>
@@ -117,30 +112,35 @@ const ServicesTabs = () => {
           variant="light300"
           isBox
           className="pf-v5-u-ml-lg"
+          mountOnEnter
+          unmountOnExit
         >
           <Tab
-            eventKey={0}
+            eventKey={"settings"}
             name="details"
             title={<TabTitleText>Settings</TabTitleText>}
           >
             <PageSection className="pf-v5-u-pb-0"></PageSection>
-            <ServicesSettings service={serviceData} onRefresh={onRefresh} />
+            <ServicesSettings
+              service={service}
+              onRefresh={serviceSettingsData.refetch}
+            />
           </Tab>
           <Tab
-            eventKey={1}
+            eventKey={"memberof"}
             name="details"
             title={<TabTitleText>Is a member of</TabTitleText>}
           >
             <PageSection className="pf-v5-u-pb-0"></PageSection>
-            <ServicesMemberOf service={serviceData} />
+            <ServicesMemberOf service={service} />
           </Tab>
           <Tab
-            eventKey={2}
+            eventKey={"managedby"}
             name="details"
             title={<TabTitleText>Is managed by</TabTitleText>}
           >
             <PageSection className="pf-v5-u-pb-0"></PageSection>
-            <ServicesManagedBy service={serviceData} />
+            <ServicesManagedBy service={service} />
           </Tab>
         </Tabs>
       </PageSection>

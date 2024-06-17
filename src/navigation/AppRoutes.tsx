@@ -108,7 +108,17 @@ export const AppRoutes = (): React.ReactElement => (
     </Route>
     <Route path="services">
       <Route path="" element={<Services />} />
-      <Route path="settings" element={<ServicesTabs />} />
+      <Route path=":id">
+        <Route path="" element={<ServicesTabs section="settings" />} />
+        <Route
+          path="memberof_role"
+          element={<ServicesTabs section="memberof" />}
+        />
+        <Route
+          path="managedby_host"
+          element={<ServicesTabs section="managedby" />}
+        />
+      </Route>
     </Route>
     <Route path="user-groups">
       <Route path="" element={<UserGroups />} />
