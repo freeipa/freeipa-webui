@@ -176,7 +176,10 @@ const ServicesTable = (props: PropsToTable) => {
         }}
       />
       <Td dataLabel={columnNames.principalName}>
-        <Link to={"/services/settings"} state={service}>
+        <Link
+          to={"/services/" + encodeURIComponent(service.krbcanonicalname[0])}
+          state={service}
+        >
           {service.krbcanonicalname[0]}
         </Link>
       </Td>

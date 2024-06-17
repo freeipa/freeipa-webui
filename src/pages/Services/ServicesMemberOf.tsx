@@ -14,21 +14,49 @@ import {
 // Others
 import MemberOfToolbar from "src/components/MemberOf/MemberOfToolbarOld";
 import MemberOfTable from "src/components/MemberOf/MemberOfTable";
+import { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 // Data types
 import { RolesOld, Service } from "src/utils/datatypes/globalDataTypes";
 // Redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
+import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 // Repositories
 import { servicesRolesInitialData } from "src/utils/data/GroupRepositories";
 // Modals
 import MemberOfAddModal from "src/components/MemberOf/MemberOfAddModalOld";
 import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModalOld";
+// React Router DOM
+import { useNavigate } from "react-router-dom";
 
 interface PropsToServicesMemberOf {
   service: Service;
 }
 
 const ServicesMemberOf = (props: PropsToServicesMemberOf) => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  // Update breadcrumb route
+  React.useEffect(() => {
+    if (!props.service.krbcanonicalname) {
+      // Redirect to the main page
+      navigate("/services");
+    } else {
+      const currentPath: BreadCrumbItem[] = [
+        {
+          name: "Services",
+          url: "../../services",
+        },
+        {
+          name: props.service.krbcanonicalname,
+          url: "../../services/" + props.service.krbcanonicalname,
+          isActive: true,
+        },
+      ];
+      dispatch(updateBreadCrumbPath(currentPath));
+    }
+  }, [props.service.krbcanonicalname]);
+
   // Retrieve Roles' list (Redux)
   let rolesList = useAppSelector((state) => state.roles.roleList);
 
