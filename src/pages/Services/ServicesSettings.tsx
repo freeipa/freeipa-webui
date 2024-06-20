@@ -228,7 +228,7 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
                 id="provisioning"
                 text="Provisioning"
               />
-              <Provisioning />
+              <Provisioning service={props.service} metadata={props.metadata} />
               <TitleLayout
                 key={2}
                 headingLevel="h2"

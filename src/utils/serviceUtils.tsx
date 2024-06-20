@@ -21,8 +21,15 @@ export const asRecord = (
   return { ipaObject, recordOnChange };
 };
 
-const simpleValues = new Set(["dn", "krbcanonicalname"]);
-const dateValues = new Set([]);
+const simpleValues = new Set([
+  "dn",
+  "krbcanonicalname",
+  "serviceType",
+  "ipauniqueid",
+  "krbloginfailedcount",
+  "krbpwdpolicyreference",
+]);
+const dateValues = new Set(["krblastpwdchange"]);
 
 export function apiToService(apiRecord: Record<string, unknown>): Service {
   const converted = convertApiObj(
@@ -53,6 +60,14 @@ export function partialServiceToService(
 export function createEmptyService(): Service {
   const service: Service = {
     serviceType: "",
+    dn: "",
+    has_keytab: false,
+    ipauniqueid: "",
+    krbextradata: [],
+    krblastpwdchange: null,
+    krbloginfailedcount: "",
+    krbpwdpolicyreference: "",
+    krbticketflags: [],
     krbcanonicalname: "",
     krbprincipalname: [],
     krbprincipalauthind: [],
