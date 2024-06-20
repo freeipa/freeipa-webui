@@ -267,6 +267,14 @@ export interface HostGroup {
 
 export interface Service {
   serviceType: string;
+  dn: string;
+  has_keytab: boolean;
+  ipauniqueid: string;
+  krbextradata: string[];
+  krblastpwdchange: Date | string | null;
+  krbloginfailedcount: string;
+  krbpwdpolicyreference: string;
+  krbticketflags: string[];
   krbcanonicalname: string;
   krbprincipalname: string[];
   krbprincipalauthind: string[];
