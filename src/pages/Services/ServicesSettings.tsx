@@ -15,35 +15,54 @@ import {
 // Icons
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // Data types
-import { Service } from "src/utils/datatypes/globalDataTypes";
+import { Metadata, Service } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import KebabLayout from "src/components/layouts/KebabLayout";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
+import ModalErrors from "src/components/errors/ModalErrors";
 // Field sections
 import ServiceSettings from "src/components/ServicesSections/ServiceSettings";
 import Provisioning from "src/components/ServicesSections/Provisioning";
 import ServiceCertificate from "src/components/ServicesSections/ServiceCertificate";
 import AllowedRetrieveKeytab from "src/components/ServicesSections/AllowedRetrieveKeytab";
 import AllowedCreateKeytab from "src/components/ServicesSections/AllowedCreateKeytab";
+// Hooks
+import useAlerts from "src/hooks/useAlerts";
+import useApiError from "src/hooks/useApiError";
+// RPC
+import { useSaveServiceMutation } from "src/services/rpcServices";
+import { ErrorResult } from "src/services/rpc";
+import { partialServiceToService } from "src/utils/serviceUtils";
 
 interface PropsToServicesSettings {
-  service: Service;
+  service: Partial<Service>;
+  originalService: Partial<Service>;
+  metadata: Metadata;
+  onServiceChange: (service: Partial<Service>) => void;
   onRefresh: () => void;
+  isModified: boolean;
+  isDataLoading?: boolean;
+  modifiedValues: () => Partial<Service>;
+  onResetValues: () => void;
 }
 
 const ServicesSettings = (props: PropsToServicesSettings) => {
+  const alerts = useAlerts();
+  const modalErrors = useApiError([]);
+
+  // API call: Save the Service
+  const [saveService] = useSaveServiceMutation();
+
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
+  const [isSaving, setSaving] = useState(false);
 
   const dropdownItems = [
     <DropdownItem key="delete-key-unprovision">
       Delete key, Unprovision
-    </DropdownItem>,
-    <DropdownItem key="set-one-time-password">
-      Set one-time password
     </DropdownItem>,
     <DropdownItem key="new certificate">New certificate</DropdownItem>,
   ];
@@ -59,19 +78,70 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
     setIsKebabOpen(!isKebabOpen);
   };
 
+  // 'Save' handler method
+  const onSave = () => {
+    const modifiedValues = props.modifiedValues();
+    modifiedValues.krbcanonicalname = props.service.krbcanonicalname as string;
+    setSaving(true);
+
+    saveService(modifiedValues).then((response) => {
+      if ("data" in response) {
+        if (response.data.result) {
+          // Show toast notification: success
+          alerts.addAlert("save-success", "Service modified", "success");
+        } else if (response.data.error) {
+          // Show toast notification: error
+          const errorMessage = response.data.error as ErrorResult;
+          alerts.addAlert("save-error", errorMessage.message, "danger");
+        }
+        // Reset values. Disable 'revert' and 'save' buttons
+        props.onResetValues();
+        setSaving(false);
+      }
+    });
+  };
+
+  // 'Revert' handler method
+  const onRevert = () => {
+    props.onServiceChange(props.originalService);
+    alerts.addAlert("revert-success", "Service data reverted", "success");
+  };
+
   // Toolbar
   const toolbarFields = [
     {
       key: 0,
-      element: <SecondaryButton>Refresh</SecondaryButton>,
+      element: (
+        <SecondaryButton onClickHandler={props.onRefresh}>
+          Refresh
+        </SecondaryButton>
+      ),
     },
     {
       key: 1,
-      element: <SecondaryButton isDisabled={true}>Revert</SecondaryButton>,
+      element: (
+        <SecondaryButton
+          isDisabled={!props.isModified}
+          onClickHandler={onRevert}
+        >
+          Revert
+        </SecondaryButton>
+      ),
     },
     {
       key: 2,
-      element: <SecondaryButton isDisabled={true}>Save</SecondaryButton>,
+      element: (
+        <SecondaryButton
+          isDisabled={!props.isModified || isSaving}
+          onClickHandler={onSave}
+          isLoading={isSaving}
+          spinnerAriaValueText="Saving"
+          spinnerAriaLabelledBy="Saving"
+          spinnerAriaLabel="Saving"
+        >
+          {isSaving ? "Saving" : "Save"}
+        </SecondaryButton>
+      ),
     },
     {
       key: 3,
@@ -91,6 +161,7 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
   // Render component
   return (
     <>
+      <alerts.ManagedAlerts />
       <PageSection
         id="settings-page"
         variant={PageSectionVariants.light}
@@ -145,7 +216,12 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
                 id="service-settings"
                 text="Service settings"
               />
-              <ServiceSettings service={props.service} />
+              <ServiceSettings
+                service={props.service}
+                metadata={props.metadata}
+                onServiceChange={props.onServiceChange}
+                onRefresh={props.onRefresh}
+              />
               <TitleLayout
                 key={1}
                 headingLevel="h2"
@@ -167,7 +243,7 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
                 text="Allowed to retrieve keytab"
               />
               <AllowedRetrieveKeytab
-                service={props.service}
+                service={partialServiceToService(props.service)}
                 onRefresh={props.onRefresh}
               />
               <TitleLayout
@@ -177,12 +253,13 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
                 text="Allowed to create keytab"
               />
               <AllowedCreateKeytab
-                service={props.service}
+                service={partialServiceToService(props.service)}
                 onRefresh={props.onRefresh}
               />
             </Flex>
           </SidebarContent>
         </Sidebar>
+        <ModalErrors errors={modalErrors.getAll()} />
       </PageSection>
       <ToolbarLayout
         isSticky={true}
