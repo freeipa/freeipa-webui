@@ -134,7 +134,14 @@ const ServicesTabs = ({ section }) => {
             <PageSection className="pf-v5-u-pb-0"></PageSection>
             <ServicesSettings
               service={service}
+              originalService={serviceSettingsData.originalService}
+              metadata={serviceSettingsData.metadata}
+              onServiceChange={serviceSettingsData.setService}
+              isDataLoading={serviceSettingsData.isLoading}
               onRefresh={serviceSettingsData.refetch}
+              isModified={serviceSettingsData.modified}
+              onResetValues={serviceSettingsData.resetValues}
+              modifiedValues={serviceSettingsData.modifiedValues}
             />
           </Tab>
           <Tab

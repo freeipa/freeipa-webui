@@ -18,6 +18,10 @@ import {
   useAddStagePrincipalAliasMutation,
   useRemoveStagePrincipalAliasMutation,
 } from "src/services/rpcUsers";
+import {
+  useAddServicePrincipalAliasMutation,
+  useRemoveServicePrincipalAliasMutation,
+} from "src/services/rpcServices";
 // Layouts
 import SecondaryButton from "../layouts/SecondaryButton";
 // Hooks
@@ -31,7 +35,12 @@ interface PrincipalAliasMultiTextBoxProps {
   ipaObject: Record<string, unknown>;
   metadata: Metadata;
   onRefresh: () => void;
-  from: "active-users" | "stage-users" | "preserved-users" | "hosts";
+  from:
+    | "active-users"
+    | "stage-users"
+    | "preserved-users"
+    | "hosts"
+    | "services";
 }
 
 const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
@@ -43,7 +52,7 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
   let [addPrincipalAlias] = useAddPrincipalAliasMutation();
   let [removePrincipalAlias] = useRemovePrincipalAliasMutation();
   let objectID = props.ipaObject.uid;
-  // Stage User
+  // Stage User and others
   if (props.from === "stage-users") {
     [addPrincipalAlias] = useAddStagePrincipalAliasMutation();
     [removePrincipalAlias] = useRemoveStagePrincipalAliasMutation();
@@ -51,6 +60,10 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
     objectID = props.ipaObject.fqdn;
     [addPrincipalAlias] = useAddHostPrincipalAliasMutation();
     [removePrincipalAlias] = useRemoveHostPrincipalAliasMutation();
+  } else if (props.from === "services") {
+    objectID = props.ipaObject.krbcanonicalname;
+    [addPrincipalAlias] = useAddServicePrincipalAliasMutation();
+    [removePrincipalAlias] = useRemoveServicePrincipalAliasMutation();
   }
 
   // 'krbprincipalname' value from ipaObject

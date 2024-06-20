@@ -39,7 +39,7 @@ const useServiceSettings = (serviceId: string): ServiceSettingsData => {
 
   useEffect(() => {
     if (serviceFullData && !serviceFullDataQuery.isFetching) {
-      setService({ ...serviceFullData });
+      setService({ ...serviceFullData.service });
     }
   }, [serviceFullData, serviceFullDataQuery.isFetching]);
 
@@ -59,13 +59,14 @@ const useServiceSettings = (serviceId: string): ServiceSettingsData => {
   } as ServiceSettingsData;
 
   if (serviceFullData) {
-    settings.originalService = serviceFullData || {};
+    settings.originalService = serviceFullData.service || {};
+    settings.certData = serviceFullData.cert || {};
   } else {
     settings.originalService = {};
   }
 
   const getModifiedValues = (): Partial<Service> => {
-    if (!serviceFullData || !serviceFullData) {
+    if (!serviceFullData || !serviceFullData.service) {
       return {};
     }
 
@@ -73,10 +74,12 @@ const useServiceSettings = (serviceId: string): ServiceSettingsData => {
     for (const [key, value] of Object.entries(service)) {
       if (Array.isArray(value)) {
         // Using 'JSON.stringify' when comparing arrays (to prevent data type false positives)
-        if (JSON.stringify(serviceFullData[key]) !== JSON.stringify(value)) {
+        if (
+          JSON.stringify(serviceFullData.service[key]) !== JSON.stringify(value)
+        ) {
           modifiedValues[key] = value;
         }
-      } else if (serviceFullData[key] !== value) {
+      } else if (serviceFullData.service[key] !== value) {
         modifiedValues[key] = value;
       }
     }
@@ -86,19 +89,21 @@ const useServiceSettings = (serviceId: string): ServiceSettingsData => {
 
   // Detect any change in 'originalService' and 'service' objects
   useEffect(() => {
-    if (!serviceFullData) {
+    if (!serviceFullData || !serviceFullData.service) {
       return;
     }
     let modified = false;
     for (const [key, value] of Object.entries(service)) {
       if (Array.isArray(value)) {
         // Using 'JSON.stringify' when comparing arrays (to prevent data type false positives)
-        if (JSON.stringify(serviceFullData[key]) !== JSON.stringify(value)) {
+        if (
+          JSON.stringify(serviceFullData.service[key]) !== JSON.stringify(value)
+        ) {
           modified = true;
           break;
         }
       } else {
-        if (serviceFullData[key] !== value) {
+        if (serviceFullData.service[key] !== value) {
           modified = true;
           break;
         }

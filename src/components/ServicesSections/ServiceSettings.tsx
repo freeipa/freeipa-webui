@@ -1,197 +1,49 @@
-import React, { useState } from "react";
+import React from "react";
 // PatternFly
 import {
-  Button,
-  Checkbox,
   Flex,
   FlexItem,
   Form,
   FormGroup,
-  Radio,
   TextInput,
 } from "@patternfly/react-core";
 // Data types
-import { Service } from "src/utils/datatypes/globalDataTypes";
-// Layouts
-import SecondaryButton from "../layouts/SecondaryButton";
+import { Metadata, Service } from "src/utils/datatypes/globalDataTypes";
+// Components
 import PopoverWithIconLayout from "../layouts/PopoverWithIconLayout";
-// Modals
-import PrincipalAliasAddModal from "../modals/PrincipalAliasAddModal";
-import PrincipalAliasDeleteModal from "../modals/PrincipalAliasDeleteModal";
-
-interface PrincipalAlias {
-  id: number | string;
-  alias: string;
-}
+// Utils
+import { asRecord } from "src/utils/serviceUtils";
+// IPA components
+import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";
+import IpaCheckboxes from "../Form/IpaCheckboxes";
+import IpaCheckbox from "../Form/IpaCheckbox";
+import IpaPACType from "../Form/IpaPACType";
 
 interface PropsToServiceSettings {
-  service: Service;
+  service: Partial<Service>;
+  metadata: Metadata;
+  onServiceChange: (service: Partial<Service>) => void;
+  onRefresh: () => void;
 }
 
 const ServiceSettings = (props: PropsToServiceSettings) => {
-  // Get realm
-  // TODO: Adapt to context
-  const REALM = "@SERVER.IPA.DEMO";
+  const serviceName = props.service.krbcanonicalname || "";
 
-  // Principal alias - textbox
-  const [principalAliasList, setPrincipalAliasList] = useState<
-    PrincipalAlias[]
-  >([
-    {
-      id: 0,
-      alias: props.service.krbcanonicalname,
-    },
-  ]);
+  // Extract 'service' and 'host' from 'krbcanonicalname' parameter
+  const serviceHost = serviceName.split("/");
+  const service = serviceHost[0];
+  const hostRealm = serviceHost[1];
+  let host = "";
 
-  // Principal alias - Add Modal
-  const [isPrincipalAliasAddModalOpen, setIsPrincipalAliasAddModalOpen] =
-    useState(false);
+  if (hostRealm) {
+    host = hostRealm.split("@")[0];
+  }
 
-  // - Modal fields data
-  // -- New kerberos principal alias - textbox
-  const [newKrbAlias, setNewKrbAlias] = useState("");
-
-  const onChangeNewKrbAlias = (newAlias: string) => {
-    setNewKrbAlias(newAlias);
-  };
-
-  // - Close modal
-  const onClosePrincipalAliasAddModal = () => {
-    // Reset values
-    setNewKrbAlias("");
-    setIsPrincipalAliasAddModalOpen(false);
-  };
-
-  // - Open modal
-  const onOpenPrincipalAliasAddModal = () => {
-    setIsPrincipalAliasAddModalOpen(true);
-  };
-
-  // - Add new kerberos principal alias
-  const addNewKrbPrincipalAlias = (newKrbAlias: string) => {
-    // Process new krb alias
-    // (whether a single name or a complete name with realm is provided, this needs to be checked)
-    if (!newKrbAlias.includes(REALM)) {
-      newKrbAlias = newKrbAlias + REALM;
-    }
-    const principalAliasListCopy = [...principalAliasList];
-    principalAliasListCopy.push({
-      id: Date.now.toString(),
-      alias: newKrbAlias,
-    });
-    setPrincipalAliasList(principalAliasListCopy);
-    // Reset values and close modal
-    onClosePrincipalAliasAddModal();
-  };
-
-  // - Modal actions
-  const principalAliasAddModalActions = [
-    <SecondaryButton
-      key="add"
-      onClickHandler={() => addNewKrbPrincipalAlias(newKrbAlias)}
-    >
-      Add
-    </SecondaryButton>,
-    <Button key="cancel" variant="link" onClick={onClosePrincipalAliasAddModal}>
-      Cancel
-    </Button>,
-  ];
-
-  // - Data to modal
-  const dataToModal = {
-    newKrbAlias,
-    onChangeNewKrbAlias,
-    onClosePrincipalAliasAddModal,
-    onOpenPrincipalAliasAddModal,
-    addNewKrbPrincipalAlias,
-  };
-
-  // Principal alias - Delete Modal
-  const [isPrincipalAliasDeleteModalOpen, setIsPrincipalAliasDeleteModalOpen] =
-    useState(false);
-
-  // - Alias to delete
-  const [aliasToDelete, setAliasToDelete] = useState("");
-
-  // - Close modal
-  const onClosePrincipalAliasDeleteModal = () => {
-    setIsPrincipalAliasDeleteModalOpen(false);
-  };
-
-  // - Open modal
-  const onOpenPrincipalAliasDeleteModal = () => {
-    setIsPrincipalAliasDeleteModalOpen(true);
-  };
-
-  const openModalAndSetAlias = (krbAliasToDelete: string) => {
-    setAliasToDelete(krbAliasToDelete);
-    onOpenPrincipalAliasDeleteModal();
-  };
-
-  // - Delete new kerberos principal alias
-  const deleteNewKrbPrincipalAlias = () => {
-    const principalAliasUpdatedList: PrincipalAlias[] = [];
-    principalAliasList.map((krbAlias) => {
-      if (krbAlias.alias !== aliasToDelete) {
-        principalAliasUpdatedList.push(krbAlias);
-      }
-    });
-    setPrincipalAliasList(principalAliasUpdatedList);
-    // Reset delete variable
-    setAliasToDelete("");
-    // Close modal
-    onClosePrincipalAliasDeleteModal();
-  };
-
-  // - Modal actions
-  const principalAliasDeleteModalActions = [
-    <SecondaryButton key="delete" onClickHandler={deleteNewKrbPrincipalAlias}>
-      Delete
-    </SecondaryButton>,
-    <Button
-      key="cancel"
-      variant="link"
-      onClick={onClosePrincipalAliasDeleteModal}
-    >
-      Cancel
-    </Button>,
-  ];
-
-  // PAC type - radio button & checkboxes
-  // - Radio buttons
-  const [isInheritedChecked, setIsInheritedChecked] = useState(true);
-  const [isOverrideChecked, setIsOverrideChecked] = useState(false);
-
-  const onChangeInheritedRadio = (isChecked: boolean) => {
-    setIsInheritedChecked(isChecked);
-    setIsOverrideChecked(!isChecked);
-    setIsMsPacChecked(false);
-    setIsPadChecked(false);
-  };
-
-  const onChangeOverrideRadio = (isChecked: boolean) => {
-    setIsOverrideChecked(isChecked);
-    setIsInheritedChecked(!isChecked);
-  };
-
-  // - Checkboxes
-  const [isMsPacChecked, setIsMsPacChecked] = useState(false);
-  const [isPadChecked, setIsPadChecked] = useState(false);
-
-  const onChangeMsPac = (isChecked: boolean) => {
-    setIsMsPacChecked(isChecked);
-  };
-
-  const onChangePad = (isChecked: boolean) => {
-    setIsPadChecked(isChecked);
-  };
-
-  // Authentication indicators - checkboxes
-  const [radiusCheckbox] = useState(false);
-  const [tpaCheckbox] = useState(false);
-  const [pkinitCheckbox] = useState(false);
-  const [hardenedPassCheckbox] = useState(false);
-  const [idpCheckbox] = useState(false);
+  // Get 'ipaObject' and 'recordOnChange' to use in 'IpaTextInput'
+  const { ipaObject, recordOnChange } = asRecord(
+    props.service,
+    props.onServiceChange
+  );
 
   const AuthIndicatorsTypesMessage = () => (
     <div>
@@ -209,19 +61,6 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
     </div>
   );
 
-  // Trusted for delegation - checkbox
-  const [trustedForDelegationCheckbox] = useState(false);
-
-  // Trusted to authenticate as a user - checkbox
-  const [trustedAuthAsUserCheckbox] = useState(false);
-
-  // Required pre-authentication
-  const [requiresPreAuthCheckbox, setRequiresPreAuthCheckbox] = useState(true);
-
-  const onChangeRequiresPreAuth = (isChecked: boolean) => {
-    setRequiresPreAuthCheckbox(isChecked);
-  };
-
   // Render component
   return (
     <>
@@ -229,29 +68,18 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
         <FlexItem flex={{ default: "flex_1" }}>
           <Form className="pf-v5-u-mb-lg">
             <FormGroup label="Principal alias" fieldId="principal-alias">
-              {principalAliasList.map((alias, idx) => (
-                <Flex key={idx} className={idx !== 0 ? "pf-v5-u-mt-sm" : ""}>
-                  <FlexItem>{alias.alias}</FlexItem>
-                  <FlexItem>
-                    <SecondaryButton
-                      onClickHandler={() => openModalAndSetAlias(alias.alias)}
-                    >
-                      Delete
-                    </SecondaryButton>
-                  </FlexItem>
-                </Flex>
-              ))}
-            </FormGroup>
-            <FormGroup>
-              <SecondaryButton onClickHandler={onOpenPrincipalAliasAddModal}>
-                Add
-              </SecondaryButton>
+              <PrincipalAliasMultiTextBox
+                ipaObject={ipaObject}
+                metadata={props.metadata}
+                onRefresh={props.onRefresh}
+                from="services"
+              />
             </FormGroup>
             <FormGroup label="Service" fieldId="service">
               <TextInput
                 id="service"
                 name="service"
-                value={props.service.serviceType}
+                value={service}
                 type="text"
                 aria-label="service"
                 isDisabled
@@ -261,52 +89,19 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
               <TextInput
                 id="host-name"
                 name="host"
-                value={props.service.krbcanonicalname}
+                value={host}
                 type="text"
                 aria-label="host name"
                 isDisabled
               />
             </FormGroup>
             <FormGroup label="PAC type" fieldId="pac-type">
-              <Radio
-                isChecked={isInheritedChecked}
-                name="inherited"
-                onChange={(_event, isChecked: boolean) =>
-                  onChangeInheritedRadio(isChecked)
-                }
-                label="Inherited from server configuration"
-                id="inherited-from-server-conf"
-              />
-              <Radio
-                isChecked={isOverrideChecked}
-                name="override"
-                onChange={(_event, isChecked: boolean) =>
-                  onChangeOverrideRadio(isChecked)
-                }
-                label="Override inherited settings"
-                id="override-inherited-settings"
-              />
-              <Checkbox
-                label="MS-PAC"
-                isChecked={isMsPacChecked}
-                onChange={(_event, isChecked: boolean) =>
-                  onChangeMsPac(isChecked)
-                }
-                isDisabled={!isOverrideChecked}
-                id="ms-pac-checkbox"
-                name="ms-pac"
-                className="pf-v5-u-ml-lg"
-              />
-              <Checkbox
-                label="PAD"
-                isChecked={isPadChecked}
-                onChange={(_event, isChecked: boolean) =>
-                  onChangePad(isChecked)
-                }
-                isDisabled={!isOverrideChecked}
-                id="pad-checkbox"
-                name="pad"
-                className="pf-v5-u-ml-lg"
+              <IpaPACType
+                name="ipakrbauthzdata"
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="service"
+                metadata={props.metadata}
               />
             </FormGroup>
           </Form>
@@ -320,108 +115,82 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
                 <PopoverWithIconLayout message={AuthIndicatorsTypesMessage} />
               }
             >
-              <Checkbox
-                label="Two-factor authentication (password + OTP)"
-                isChecked={tpaCheckbox}
-                aria-label="two factor authentication from authentication indicators checkbox"
-                id="tpaCheckbox"
+              <IpaCheckboxes
                 name="krbprincipalauthind"
-                value="otp"
-                className="pf-v5-u-mt-xs pf-v5-u-mb-sm"
-              />
-              <Checkbox
-                label="RADIUS"
-                isChecked={radiusCheckbox}
-                aria-label="radius from authentication indicators checkbox"
-                id="radiusCheckbox"
-                name="krbprincipalauthind"
-                value="radius"
-                className="pf-v5-u-mt-xs pf-v5-u-mb-sm"
-              />
-              <Checkbox
-                label="PKINIT"
-                isChecked={pkinitCheckbox}
-                aria-label="pkinit from authentication indicators checkbox"
-                id="pkinitCheckbox"
-                name="krbprincipalauthind"
-                value="pkinit"
-                className="pf-v5-u-mt-xs pf-v5-u-mb-sm"
-              />
-              <Checkbox
-                label="Hardened password (by SPAKE or FAST)"
-                isChecked={hardenedPassCheckbox}
-                aria-label="hardened password from authentication indicators checkbox"
-                id="hardenedPassCheckbox"
-                name="krbprincipalauthind"
-                value="hardened"
-                className="pf-v5-u-mt-xs pf-v5-u-mb-sm"
-              />
-              <Checkbox
-                label="External Identity Provider"
-                isChecked={idpCheckbox}
-                aria-label="external identity provider from authentication indicators checkbox"
-                id="idpCheckbox"
-                name="krbprincipalauthind"
-                value="ipd"
+                options={[
+                  {
+                    value: "otp",
+                    text: "Two-factor authentication (password + OTP)",
+                  },
+                  {
+                    value: "radius",
+                    text: "RADIUS",
+                  },
+
+                  {
+                    value: "pkinit",
+                    text: "PKINIT",
+                  },
+                  {
+                    value: "hardened",
+                    text: "Hardened password (by SPAKE or FAST)",
+                  },
+                  {
+                    value: "idp",
+                    text: "External Identity Provider",
+                  },
+                ]}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="service"
+                metadata={props.metadata}
               />
             </FormGroup>
             <FormGroup
               label="Trusted for delegation"
               fieldId="trusted-delegation"
             >
-              <Checkbox
-                label="Trusted for delegation"
-                isChecked={trustedForDelegationCheckbox}
-                aria-label="trusted for delegation checkbox"
-                id="trustedForDelegationCheckbox"
+              <IpaCheckbox
                 name="ipakrbokasdelegate"
                 value="trustedForDelegation"
+                text="Trusted for delegation"
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="service"
+                metadata={props.metadata}
               />
             </FormGroup>
             <FormGroup
               label="Trusted to authenticate as a user"
               fieldId="trusted-auth-as-user"
             >
-              <Checkbox
-                label="Trusted to authenticate as a user"
-                isChecked={trustedAuthAsUserCheckbox}
-                aria-label="trusted to authenticate as a user checkbox"
-                id="trustedAuthAsUserCheckbox"
+              <IpaCheckbox
                 name="ipakrboktoauthasdelegate"
                 value="trustedAuthAsUser"
+                text="Trusted to authenticate as a user"
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="service"
+                metadata={props.metadata}
               />
             </FormGroup>
             <FormGroup
               label="Requires pre-authentication"
               fieldId="requires-pre-authentication"
             >
-              <Checkbox
-                label="Requires pre-authentication"
-                isChecked={requiresPreAuthCheckbox}
-                onChange={(_event, isChecked: boolean) =>
-                  onChangeRequiresPreAuth(isChecked)
-                }
-                aria-label="requires pre authentication checkbox"
-                id="requiresPreAuthenticationCheckbox"
+              <IpaCheckbox
                 name="ipakrbrequirespreauth"
                 value="requiresPreAuth"
+                text="Requires pre-authentication"
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="service"
+                metadata={props.metadata}
               />
             </FormGroup>
           </Form>
         </FlexItem>
       </Flex>
-      <PrincipalAliasAddModal
-        isOpen={isPrincipalAliasAddModalOpen}
-        onClose={onClosePrincipalAliasAddModal}
-        actions={principalAliasAddModalActions}
-        data={dataToModal}
-      />
-      <PrincipalAliasDeleteModal
-        isOpen={isPrincipalAliasDeleteModalOpen}
-        onClose={onClosePrincipalAliasDeleteModal}
-        actions={principalAliasDeleteModalActions}
-        hostToRemove={aliasToDelete}
-      />
     </>
   );
 };

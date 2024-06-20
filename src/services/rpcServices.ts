@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   api,
   Command,
@@ -6,18 +7,22 @@ import {
   BatchRPCResponse,
   FindRPCResponse,
   useGettingGenericQuery,
+  BatchResponse,
 } from "./rpc";
 import { apiToService } from "../utils/serviceUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
 import { Service } from "../utils/datatypes/globalDataTypes";
 
 /**
- * Services-related endpoints: getServicesFullData, addService, removeServices
+ * Services-related endpoints: getServicesFullData, addService, removeServices, saveService, addServicePrincipalAlias, removeServicePrincipalAlias
  *
  * API commands:
  * - service_show: https://freeipa.readthedocs.io/en/latest/api/service_show.html
  * - service_add: https://freeipa.readthedocs.io/en/latest/api/service_add.html
  * - service_del: https://freeipa.readthedocs.io/en/latest/api/service_del.html
+ * - service_mod: https://freeipa.readthedocs.io/en/latest/api/service_mod.html
+ * - service_add_principal: https://freeipa.readthedocs.io/en/latest/api/service_add_principal.html
+ * - service_remove_principal: https://freeipa.readthedocs.io/en/latest/api/service_remove_principal.html
  */
 
 export interface ServiceAddPayload {
@@ -26,23 +31,51 @@ export interface ServiceAddPayload {
   force: boolean; // skip DNS check
 }
 
+export type ServiceFullData = {
+  service?: Partial<Service>;
+  cert?: Record<string, unknown>;
+};
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getServicesFullData: build.query<Service, string>({
-      query: (serviceName: string) => {
+    getServicesFullData: build.query<ServiceFullData, string>({
+      query: (serviceId) => {
         // Prepare search parameters
-        const params = {
+        const service_params = {
           all: true,
           rights: true,
-          version: API_VERSION_BACKUP,
         };
-        return getCommand({
+
+        const serviceShowCommand: Command = {
           method: "service_show",
-          params: [[serviceName], params],
-        });
+          params: [[serviceId], service_params],
+        };
+
+        const certFindCommand: Command = {
+          method: "cert_find",
+          params: [[], { service: serviceId, sizelimit: 0, all: true }],
+        };
+
+        const batchPayload: Command[] = [serviceShowCommand, certFindCommand];
+
+        return getBatchCommand(batchPayload, API_VERSION_BACKUP);
       },
-      transformResponse: (response: FindRPCResponse): Service => {
-        return apiToService(response.result.result);
+      transformResponse: (response: BatchResponse): ServiceFullData => {
+        const [serviceResponse, certResponse] = response.result.results;
+
+        // Initialize service data (to prevent 'undefined' values)
+        const serviceData = serviceResponse.result;
+        const certData = certResponse.result;
+
+        let serviceObject = {};
+        if (!serviceResponse.error) {
+          serviceObject = apiToService(serviceData);
+        }
+
+        return {
+          service: serviceObject,
+          cert: certData,
+        };
       },
       providesTags: ["FullService"],
     }),
@@ -75,6 +108,46 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(servicesToDeletePayload, API_VERSION_BACKUP);
       },
     }),
+    saveService: build.mutation<FindRPCResponse, Partial<Service>>({
+      query: (service) => {
+        const params = {
+          all: true,
+          rights: true,
+          version: API_VERSION_BACKUP,
+          ...service,
+        };
+        delete params["krbcanonicalname"];
+        const id =
+          service.krbcanonicalname !== undefined
+            ? service.krbcanonicalname
+            : "";
+        return getCommand({
+          method: "service_mod",
+          params: [[id], params],
+        });
+      },
+      invalidatesTags: ["FullService"],
+    }),
+    addServicePrincipalAlias: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [payload, { version: API_VERSION_BACKUP }];
+
+        return getCommand({
+          method: "service_add_principal",
+          params: params,
+        });
+      },
+    }),
+    removeServicePrincipalAlias: build.mutation<FindRPCResponse, any[]>({
+      query: (payload) => {
+        const params = [payload, { version: API_VERSION_BACKUP }];
+
+        return getCommand({
+          method: "service_remove_principal",
+          params: params,
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -88,4 +161,7 @@ export const {
   useGetServicesFullDataQuery,
   useAddServiceMutation,
   useRemoveServicesMutation,
+  useSaveServiceMutation,
+  useAddServicePrincipalAliasMutation,
+  useRemoveServicePrincipalAliasMutation,
 } = extendedApi;

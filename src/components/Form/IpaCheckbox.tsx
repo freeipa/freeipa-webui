@@ -28,7 +28,9 @@ const IpaCheckbox = (props: CheckboxOption) => {
   };
 
   const checked =
-    value && typeof value === "string" && value.toLowerCase() === "true"
+    value &&
+    ((typeof value === "string" && value.toLowerCase() === "true") ||
+      value === true)
       ? true
       : false;
 
