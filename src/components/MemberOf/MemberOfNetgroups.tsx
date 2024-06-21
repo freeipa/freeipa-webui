@@ -8,7 +8,7 @@ import MemberOfToolbar from "./MemberOfToolbar";
 import MemberOfTableNetgroups from "./MemberOfTableNetgroups";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
-import useRoutingParams from "src/hooks/useRoutingParams";
+import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import {
@@ -45,7 +45,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
     setSearchValue,
     membershipDirection,
     setMembershipDirection,
-  } = useRoutingParams();
+  } = useListPageSearchParams();
 
   // Other states
   const [netgroupsSelected, setNetgroupsSelected] = React.useState<string[]>(

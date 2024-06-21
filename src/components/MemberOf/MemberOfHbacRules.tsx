@@ -10,7 +10,7 @@ import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
-import useRoutingParams from "src/hooks/useRoutingParams";
+import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import {
@@ -44,7 +44,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
     setSearchValue,
     membershipDirection,
     setMembershipDirection,
-  } = useRoutingParams();
+  } = useListPageSearchParams();
 
   // Other states
   const [hbacRulesSelected, setHbacRulesSelected] = React.useState<string[]>(
