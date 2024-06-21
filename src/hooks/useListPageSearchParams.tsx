@@ -2,7 +2,7 @@ import React from "react";
 import { useSearchParams } from "react-router-dom";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 
-const useRoutingParams = () => {
+const useListPageSearchParams = () => {
   const [params, setParams] = useSearchParams();
 
   // States
@@ -92,4 +92,4 @@ const useRoutingParams = () => {
   };
 };
 
-export default useRoutingParams;
+export default useListPageSearchParams;
