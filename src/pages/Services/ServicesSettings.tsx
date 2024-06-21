@@ -47,6 +47,7 @@ interface PropsToServicesSettings {
   isDataLoading?: boolean;
   modifiedValues: () => Partial<Service>;
   onResetValues: () => void;
+  certData: Record<string, unknown>;
 }
 
 const ServicesSettings = (props: PropsToServicesSettings) => {
@@ -235,7 +236,13 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
                 id="service-certificate"
                 text="Service certificate"
               />
-              <ServiceCertificate />
+              <ServiceCertificate
+                service={props.service}
+                metadata={props.metadata}
+                onServiceChange={props.onServiceChange}
+                onRefresh={props.onRefresh}
+                certData={props.certData}
+              />
               <TitleLayout
                 key={3}
                 headingLevel="h2"

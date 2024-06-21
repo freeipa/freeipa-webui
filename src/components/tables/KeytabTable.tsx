@@ -252,7 +252,7 @@ const KeytabTable = (props: PropsToTable) => {
     let id = props.id;
     if (props.from === "service") {
       // Need to strip off domain for services
-      id = props.id[0].split("@")[0];
+      id = props.id.split("@")[0];
     }
     executeUpdate({
       id: id,
