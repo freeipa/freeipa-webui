@@ -100,6 +100,7 @@ const ServicesTabs = ({ section }) => {
   }
 
   const service = partialServiceToService(serviceSettingsData.service);
+  const certificates = serviceSettingsData.certData || {};
 
   return (
     <Page>
@@ -142,6 +143,7 @@ const ServicesTabs = ({ section }) => {
               isModified={serviceSettingsData.modified}
               onResetValues={serviceSettingsData.resetValues}
               modifiedValues={serviceSettingsData.modifiedValues}
+              certData={certificates}
             />
           </Tab>
           <Tab

@@ -1,36 +1,40 @@
-import React, { useState } from "react";
+import React from "react";
 // PatternFly
 import { Flex, FlexItem, Form, FormGroup } from "@patternfly/react-core";
-// Layouts
-import SecondaryButton from "../layouts/SecondaryButton";
+// Forms
+import IpaCertificates from "../Form/IpaCertificates";
+// Utils
+import { asRecord } from "src/utils/serviceUtils";
+// Data types
+import { Metadata, Service } from "src/utils/datatypes/globalDataTypes";
 
-interface Certificate {
-  id: string | number;
-  certificate: string;
+interface PropsToServiceSettings {
+  service: Partial<Service>;
+  metadata: Metadata;
+  onServiceChange: (service: Partial<Service>) => void;
+  onRefresh: () => void;
+  certData: Record<string, unknown>;
 }
 
-const ServiceCertificate = () => {
-  // Certificates
-  const [certificatesList] = useState<Certificate[]>([]);
+const ServiceCertificate = (props: PropsToServiceSettings) => {
+  const { ipaObject, recordOnChange } = asRecord(
+    props.service,
+    props.onServiceChange
+  );
 
   return (
     <Flex direction={{ default: "column", lg: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-v5-u-mb-lg">
           <FormGroup label="Certificates" fieldId="certificates">
-            {certificatesList.length > 0 ? (
-              certificatesList.map((cert) => {
-                return (
-                  <>
-                    {cert.certificate}
-                    <SecondaryButton>Show</SecondaryButton>
-                    <SecondaryButton>Delete</SecondaryButton>
-                  </>
-                );
-              })
-            ) : (
-              <SecondaryButton>Add</SecondaryButton>
-            )}
+            <IpaCertificates
+              ipaObject={ipaObject}
+              onChange={recordOnChange}
+              metadata={props.metadata}
+              certificates={props.certData}
+              onRefresh={props.onRefresh}
+              objectType="service"
+            />
           </FormGroup>
         </Form>
       </FlexItem>
