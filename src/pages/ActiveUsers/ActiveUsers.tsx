@@ -43,6 +43,7 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Hooks
 import { useAlerts } from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils
 import { API_VERSION_BACKUP, isUserSelectable } from "src/utils/utils";
 // RPC client
@@ -57,12 +58,8 @@ import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
-// Navigation
-import { useSearchParams } from "react-router-dom";
 
 const ActiveUsers = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-
   // Dispatch (Redux)
   const dispatch = useAppDispatch();
 
@@ -87,18 +84,15 @@ const ActiveUsers = () => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
+  // URL parameters: page number, page size, search value
+  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+    useListPageSearchParams();
+
   // Handle API calls errors
   const globalErrors = useApiError([]);
   const modalErrors = useApiError([]);
 
   // Main states - what user can define / what we could use in page URL
-  const [searchValue, setSearchValue] = React.useState(
-    searchParams.get("search") || ""
-  );
-  const [page, setPage] = useState<number>(
-    parseInt(searchParams.get("p") || "1")
-  );
-  const [perPage, setPerPage] = useState<number>(10);
   const [totalCount, setUsersTotalCount] = useState<number>(0);
   const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
@@ -173,26 +167,6 @@ const ActiveUsers = () => {
       );
     }
   }, [userDataResponse]);
-
-  // Handle URLs with pagination and search values
-  React.useEffect(() => {
-    let searchParamsNew = {};
-
-    if (page > 1) {
-      searchParamsNew = {
-        ...searchParamsNew,
-        p: page.toString(),
-      };
-    }
-    if (searchValue !== "") {
-      searchParamsNew = {
-        ...searchParamsNew,
-        search: searchValue,
-      };
-    }
-
-    setSearchParams(searchParamsNew, { replace: true });
-  }, [page, searchValue]);
 
   // Refresh button handling
   const refreshUsersData = () => {
