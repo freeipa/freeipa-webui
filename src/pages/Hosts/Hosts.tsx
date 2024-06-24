@@ -42,6 +42,7 @@ import { API_VERSION_BACKUP, isHostSelectable } from "src/utils/utils";
 // Hooks
 import { useAlerts } from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -57,14 +58,14 @@ import {
   useGettingHostQuery,
   useAutoMemberRebuildHostsMutation,
 } from "../../services/rpcHosts";
-// Navigation
-import { useSearchParams } from "react-router-dom";
 
 const Hosts = () => {
   // Dispatch (Redux)
   const dispatch = useAppDispatch();
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  // URL parameters: page number, page size, search value
+  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+    useListPageSearchParams();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "hosts" });
@@ -93,13 +94,6 @@ const Hosts = () => {
   const modalErrors = useApiError([]);
 
   // Table comps
-  const [searchValue, setSearchValue] = React.useState(
-    searchParams.get("search") || ""
-  );
-  const [page, setPage] = useState<number>(
-    parseInt(searchParams.get("p") || "1")
-  );
-  const [perPage, setPerPage] = useState<number>(10);
   const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
   const [totalCount, setHostsTotalCount] = useState<number>(0);
   const [dnsZones, setDNSZones] = useState<string[]>([]);
@@ -204,27 +198,6 @@ const Hosts = () => {
       );
     }
   }, [hostDataResponse]);
-
-  // Handle URLs with pagination and search values
-  React.useEffect(() => {
-    let searchParamsNew = {};
-
-    if (page > 1) {
-      searchParamsNew = {
-        ...searchParamsNew,
-        p: page.toString(),
-      };
-    }
-
-    if (searchValue !== "") {
-      searchParamsNew = {
-        ...searchParamsNew,
-        search: searchValue,
-      };
-    }
-
-    setSearchParams(searchParamsNew, { replace: true });
-  }, [page, searchValue]);
 
   // Always refetch data when the component is loaded.
   // This ensures the data is always up-to-date.
