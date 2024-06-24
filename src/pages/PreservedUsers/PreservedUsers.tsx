@@ -38,6 +38,7 @@ import RestorePreservedUsers from "src/components/modals/RestorePreservedUsers";
 import { updateUsersList } from "src/store/Identity/preservedUsers-slice";
 import { useAlerts } from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -48,14 +49,14 @@ import { useGettingPreservedUserQuery } from "../../services/rpcUsers";
 import useApiError from "src/hooks/useApiError";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
-// Navigation
-import { useSearchParams } from "react-router-dom";
 
 const PreservedUsers = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-
   // Initialize stage users list (Redux)
   const dispatch = useAppDispatch();
+
+  // URL parameters: page number, page size, search value
+  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+    useListPageSearchParams();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "preserved-users" });
@@ -81,13 +82,6 @@ const PreservedUsers = () => {
   const modalErrors = useApiError([]);
 
   // Main states - what user can define / what we could use in page URL
-  const [searchValue, setSearchValue] = React.useState(
-    searchParams.get("search") || ""
-  );
-  const [page, setPage] = useState<number>(
-    parseInt(searchParams.get("p") || "1")
-  );
-  const [perPage, setPerPage] = useState<number>(10);
   const [totalCount, setUsersTotalCount] = useState<number>(0);
   const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
@@ -157,27 +151,6 @@ const PreservedUsers = () => {
       );
     }
   }, [userDataResponse]);
-
-  // Handle URLs with pagination and search values
-  React.useEffect(() => {
-    let searchParamsNew = {};
-
-    if (page > 1) {
-      searchParamsNew = {
-        ...searchParamsNew,
-        p: page.toString(),
-      };
-    }
-
-    if (searchValue !== "") {
-      searchParamsNew = {
-        ...searchParamsNew,
-        search: searchValue,
-      };
-    }
-
-    setSearchParams(searchParamsNew, { replace: true });
-  }, [page, searchValue]);
 
   // Refresh button handling
   const refreshUsersData = () => {
