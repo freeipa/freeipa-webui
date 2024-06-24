@@ -60,9 +60,14 @@ const HostsManagedBy = (props: PropsToHostsManagedBy) => {
         isFilled={false}
         className="pf-v5-u-m-lg"
       >
-        <Tabs activeKey={0} isBox={false}>
+        <Tabs
+          activeKey={"managedby_host"}
+          isBox={false}
+          mountOnEnter
+          unmountOnExit
+        >
           <Tab
-            eventKey={0}
+            eventKey={"managedby_host"}
             name="managedby_host"
             title={
               <TabTitleText>

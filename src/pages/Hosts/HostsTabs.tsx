@@ -39,7 +39,7 @@ const HostsTabs = ({ section }) => {
   const hostSettingsData = useHostSettings(fqdn as string);
 
   // Tab
-  const [activeTabKey, setActiveTabKey] = useState("settings");
+  const [activeTabKey, setActiveTabKey] = useState(section);
 
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
@@ -82,6 +82,11 @@ const HostsTabs = ({ section }) => {
   React.useEffect(() => {
     if (!section) {
       navigate("/hosts/" + hostId);
+    }
+
+    // Case: any of the 'member of' sections is clicked
+    if (section !== "settings" && section !== "managedby") {
+      setActiveTabKey("memberof");
     }
   }, [section]);
 
