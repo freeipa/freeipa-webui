@@ -10,6 +10,7 @@ import MemberOfAddModal, { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
+import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import {
@@ -34,13 +35,12 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
-  // Page indexes
-  const [page, setPage] = React.useState(1);
-  const [perPage, setPerPage] = React.useState(10);
+  // Get parameters from URL
+  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+    useListPageSearchParams();
 
   // Other states
   const [hostsSelected, setHostsSelected] = React.useState<string[]>([]);
-  const [searchValue, setSearchValue] = React.useState("");
 
   // Loaded nhost based on paging and member attributes
   const [hosts, setHosts] = React.useState<Host[]>([]);

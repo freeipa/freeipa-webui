@@ -17,18 +17,28 @@ import ManagedByHosts from "src/components/ManagedBy/ManagedByHosts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // RPC
 import { useGetHostByIdQuery } from "src/services/rpcHosts";
+// Navigation
+import { useNavigate } from "react-router-dom";
 
 interface PropsToHostsManagedBy {
   host: Host;
 }
 
 const HostsManagedBy = (props: PropsToHostsManagedBy) => {
+  const navigate = useNavigate();
+
   // Host's full data
   const hostQuery = useGetHostByIdQuery(props.host.fqdn);
   const hostData = hostQuery.data || {};
 
   // Current Host's full data
   const [host, setHost] = useState<Partial<Host>>({});
+
+  React.useEffect(() => {
+    if (host && host.managedby_host) {
+      setHostGroupsLength(host.managedby_host.length);
+    }
+  }, [host]);
 
   React.useEffect(() => {
     if (!hostQuery.isFetching && hostData) {
@@ -46,12 +56,6 @@ const HostsManagedBy = (props: PropsToHostsManagedBy) => {
   // 'Host groups' length to show in tab badge
   const [hostGroupsLength, setHostGroupsLength] = React.useState(0);
 
-  React.useEffect(() => {
-    if (host && host.managedby_host) {
-      setHostGroupsLength(host.managedby_host.length);
-    }
-  }, [host]);
-
   // Render component
   return (
     <Page>
@@ -65,6 +69,10 @@ const HostsManagedBy = (props: PropsToHostsManagedBy) => {
           isBox={false}
           mountOnEnter
           unmountOnExit
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          onSelect={(_event) => {
+            navigate("/hosts/" + props.host.fqdn + "/managedby_host");
+          }}
         >
           <Tab
             eventKey={"managedby_host"}
