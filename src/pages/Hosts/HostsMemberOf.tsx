@@ -124,7 +124,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   }, [host]);
 
   // Tab
-  const [activeTabKey, setActiveTabKey] = useState("");
+  const [activeTabKey, setActiveTabKey] = useState("memberof_hostgroup");
 
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
