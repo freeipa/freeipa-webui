@@ -148,6 +148,16 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    getServiceById: build.query<Service, string>({
+      query: (serviceId) => {
+        return getCommand({
+          method: "service_show",
+          params: [[serviceId], { version: API_VERSION_BACKUP }],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): Service =>
+        apiToService(response.result.result),
+    }),
   }),
   overrideExisting: false,
 });
@@ -164,4 +174,5 @@ export const {
   useSaveServiceMutation,
   useAddServicePrincipalAliasMutation,
   useRemoveServicePrincipalAliasMutation,
+  useGetServiceByIdQuery,
 } = extendedApi;

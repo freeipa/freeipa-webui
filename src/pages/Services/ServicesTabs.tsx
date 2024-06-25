@@ -152,7 +152,7 @@ const ServicesTabs = ({ section }) => {
             title={<TabTitleText>Is a member of</TabTitleText>}
           >
             <PageSection className="pf-v5-u-pb-0"></PageSection>
-            <ServicesMemberOf service={service} />
+            <ServicesMemberOf service={service} tabSection={section} />
           </Tab>
           <Tab
             eventKey={"managedby"}
