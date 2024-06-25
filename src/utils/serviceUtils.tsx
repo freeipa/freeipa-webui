@@ -74,6 +74,7 @@ export function createEmptyService(): Service {
     sshpublickey: [],
     usercertificate: [],
     ipakrbauthzdata: [],
+    memberof_role: [],
     managedby_host: [],
     ipakrbrequirespreauth: false,
     ipakrbokasdelegate: false,
