@@ -281,6 +281,7 @@ export interface Service {
   sshpublickey: string[];
   usercertificate: string[];
   ipakrbauthzdata: string[]; // pac_type: MS-PAC, PAD, NONE
+  memberof_role: string[];
   managedby_host: string[];
   ipakrbrequirespreauth: boolean;
   ipakrbokasdelegate: boolean;

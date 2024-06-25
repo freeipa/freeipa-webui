@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 // PatternFly
 import { Pagination, PaginationVariant } from "@patternfly/react-core";
 // Data types
-import { User, Role, Host } from "src/utils/datatypes/globalDataTypes";
+import { User, Role, Host, Service } from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfToolbar from "./MemberOfToolbar";
 import MemberOfTableRoles from "./MemberOfTableRoles";
@@ -24,11 +24,13 @@ import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToRole } from "src/utils/rolesUtils";
 
 interface MemberOfRolesProps {
-  entity: Partial<User> | Partial<Host>;
+  entity: Partial<User> | Partial<Host> | Partial<Service>;
   id: string;
   from: string;
   isDataLoading: boolean;
   onRefreshData: () => void;
+  memberof_role: string[];
+  memberofindirect_role?: string[];
 }
 const MemberOfRoles = (props: MemberOfRolesProps) => {
   // Alerts to show in the UI
@@ -52,8 +54,8 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   const [roles, setRoles] = React.useState<Role[]>([]);
 
   // Choose the correct roles based on the membership direction
-  const memberof_role = props.entity.memberof_role || [];
-  const memberofindirect_role = props.entity.memberofindirect_role || [];
+  const memberof_role = props.memberof_role || [];
+  const memberofindirect_role = props.memberofindirect_role || [];
   let roleNames =
     membershipDirection === "direct" ? memberof_role : memberofindirect_role;
   roleNames = [...roleNames];
@@ -116,6 +118,8 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
       return "user";
     } else if (props.from === "hosts") {
       return "host";
+    } else if (props.from === "services") {
+      return "service";
     } else {
       // Return 'user' as default
       return "user";

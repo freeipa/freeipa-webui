@@ -183,6 +183,8 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
               from={"hosts"}
               isDataLoading={hostQuery.isFetching}
               onRefreshData={onRefreshHostData}
+              memberof_role={host.memberof_role as string[]}
+              memberofindirect_role={host.memberofindirect_role as string[]}
             />
           </Tab>
           <Tab
