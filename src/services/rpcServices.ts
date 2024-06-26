@@ -14,7 +14,8 @@ import { API_VERSION_BACKUP } from "../utils/utils";
 import { Service } from "../utils/datatypes/globalDataTypes";
 
 /**
- * Services-related endpoints: getServicesFullData, addService, removeServices, saveService, addServicePrincipalAlias, removeServicePrincipalAlias
+ * Services-related endpoints: getServicesFullData, addService, removeServices, saveService,
+ * addServicePrincipalAlias, removeServicePrincipalAlias, addServiceHost, removeServiceHost
  *
  * API commands:
  * - service_show: https://freeipa.readthedocs.io/en/latest/api/service_show.html
@@ -23,6 +24,8 @@ import { Service } from "../utils/datatypes/globalDataTypes";
  * - service_mod: https://freeipa.readthedocs.io/en/latest/api/service_mod.html
  * - service_add_principal: https://freeipa.readthedocs.io/en/latest/api/service_add_principal.html
  * - service_remove_principal: https://freeipa.readthedocs.io/en/latest/api/service_remove_principal.html
+ * - service_add_host: https://freeipa.readthedocs.io/en/latest/api/service_add_host.html
+ * - service_remove_host: https://freeipa.readthedocs.io/en/latest/api/service_remove_host.html
  */
 
 export interface ServiceAddPayload {
@@ -35,6 +38,11 @@ export type ServiceFullData = {
   service?: Partial<Service>;
   cert?: Record<string, unknown>;
 };
+
+export interface ServiceAddRemoveHostPayload {
+  serviceId: string;
+  hostsList: string[];
+}
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -158,6 +166,40 @@ const extendedApi = api.injectEndpoints({
       transformResponse: (response: FindRPCResponse): Service =>
         apiToService(response.result.result),
     }),
+    addServiceHost: build.mutation<
+      FindRPCResponse,
+      ServiceAddRemoveHostPayload
+    >({
+      query: (payload) => {
+        const serviceId = payload.serviceId;
+        const hostsList = payload.hostsList;
+
+        return getCommand({
+          method: "service_add_host",
+          params: [
+            [serviceId],
+            { all: true, host: hostsList, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+    }),
+    removeServiceHost: build.mutation<
+      FindRPCResponse,
+      ServiceAddRemoveHostPayload
+    >({
+      query: (payload) => {
+        const serviceId = payload.serviceId;
+        const hostsList = payload.hostsList;
+
+        return getCommand({
+          method: "service_remove_host",
+          params: [
+            [serviceId],
+            { all: true, host: hostsList, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -175,4 +217,6 @@ export const {
   useAddServicePrincipalAliasMutation,
   useRemoveServicePrincipalAliasMutation,
   useGetServiceByIdQuery,
+  useAddServiceHostMutation,
+  useRemoveServiceHostMutation,
 } = extendedApi;

@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { Pagination, PaginationVariant } from "@patternfly/react-core";
 // Data types
-import { Host } from "src/utils/datatypes/globalDataTypes";
+import { Host, Service } from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfToolbar from "../MemberOf/MemberOfToolbar";
 import MemberOfHostsTable from "./ManagedByTableHosts";
@@ -12,19 +12,26 @@ import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 import useAlerts from "src/hooks/useAlerts";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // RPC
-import { ErrorResult } from "src/services/rpc";
+import { ErrorResult, FindRPCResponse } from "src/services/rpc";
 import {
   useAddToHostsManagedByMutation,
   useGetHostInfoByNameQuery,
   useGettingHostQuery,
   useRemoveFromHostsManagedByMutation,
 } from "src/services/rpcHosts";
+import {
+  ServiceAddRemoveHostPayload,
+  useAddServiceHostMutation,
+  useRemoveServiceHostMutation,
+} from "src/services/rpcServices";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToHost } from "src/utils/hostUtils";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { SerializedError } from "@reduxjs/toolkit";
 
 interface ManagedByHostsProps {
-  entity: Partial<Host>;
+  entity: Partial<Host> | Partial<Service>;
   id: string;
   from: string;
   isDataLoading: boolean;
@@ -120,10 +127,14 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
   const isDeleteEnabled = someItemSelected;
   const isAddButtonEnabled = isRefreshButtonEnabled;
 
-  // Add new managed by 'Hosts'
-  // API calls
-  const [addManagedByHosts] = useAddToHostsManagedByMutation();
-  const [removeManagedByHosts] = useRemoveFromHostsManagedByMutation();
+  // API calls - From Hosts
+  const [addHostsFromHosts] = useAddToHostsManagedByMutation();
+  const [removeHostsFromHosts] = useRemoveFromHostsManagedByMutation();
+
+  // API calls - From Services
+  const [addHostsFromServices] = useAddServiceHostMutation();
+  const [removeHostsFromServices] = useRemoveServiceHostMutation();
+
   const [adderSearchValue, setAdderSearchValue] = React.useState("");
   const [availableHosts, setAvailableHosts] = React.useState<Host[]>([]);
   const [availableItems, setAvailableItems] = React.useState<AvailableItems[]>(
@@ -169,6 +180,42 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
     }
   }, [hostsQuery.data, hostsQuery.isFetching]);
 
+  // Handle add response
+  const handleAddResponse = (
+    response:
+      | {
+          data: FindRPCResponse;
+        }
+      | {
+          error: FetchBaseQueryError | SerializedError;
+        }
+  ) => {
+    if ("data" in response) {
+      if (response.data.result) {
+        // Set alert: success
+        alerts.addAlert(
+          "add-member-success",
+          "Assigned " + props.from + " '" + props.id + "' to hosts",
+          "success"
+        );
+        // Update displayed Hosts before they are updated via refresh
+        const newHosts = hosts.concat(
+          availableHosts.filter((host) => hostsSelected.includes(host.fqdn))
+        );
+        setHosts(newHosts);
+
+        // Refresh data
+        props.onRefreshData();
+        // Close modal
+        setShowAddModal(false);
+      } else if (response.data.error) {
+        // Set alert: error
+        const errorMessage = response.data.error as unknown as ErrorResult;
+        alerts.addAlert("add-member-error", errorMessage.message, "danger");
+      }
+    }
+  };
+
   // - Add
   const onAddHost = (items: AvailableItems[]) => {
     const newHostNames = items.map((item) => item.key);
@@ -176,71 +223,78 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
       return;
     }
 
-    addManagedByHosts([props.id, entityType, newHostNames]).then((response) => {
-      if ("data" in response) {
-        if (response.data.result) {
-          // Set alert: success
-          alerts.addAlert(
-            "add-member-success",
-            "Assigned " + entityType + " '" + props.id + "' to hosts",
-            "success"
-          );
-          // Update displayed Hosts before they are updated via refresh
-          const newHosts = hosts.concat(
-            availableHosts.filter((host) => newHostNames.includes(host.fqdn))
-          );
-          setHosts(newHosts);
-
-          // Refresh data
-          props.onRefreshData();
-          // Close modal
-          setShowAddModal(false);
-        } else if (response.data.error) {
-          // Set alert: error
-          const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert("add-member-error", errorMessage.message, "danger");
+    if (props.from === "host") {
+      addHostsFromHosts([props.id, entityType, newHostNames]).then(
+        (response) => {
+          handleAddResponse(response);
         }
+      );
+    } else if (props.from === "service") {
+      const payload: ServiceAddRemoveHostPayload = {
+        serviceId: props.id,
+        hostsList: newHostNames,
+      };
+      addHostsFromServices(payload).then((response) => {
+        handleAddResponse(response);
+      });
+    }
+  };
+
+  // Handle delete response
+  const handleDeleteResponse = (
+    response:
+      | {
+          data: FindRPCResponse;
+        }
+      | {
+          error: FetchBaseQueryError | SerializedError;
+        }
+  ) => {
+    if ("data" in response) {
+      if (response.data.result) {
+        // Set alert: success
+        alerts.addAlert(
+          "remove-hosts-success",
+          "Removed members from " + props.from + " '" + props.id + "'",
+          "success"
+        );
+        // Update displayed Hosts
+        const newHosts = hosts.filter(
+          (host) => !hostsSelected.includes(host.fqdn)
+        );
+        setHosts(newHosts);
+        // Update data
+        setHostsSelected([]);
+        // Close modal
+        setShowDeleteModal(false);
+        // Refresh
+        props.onRefreshData();
+      } else if (response.data.error) {
+        // Set alert: error
+        const errorMessage = response.data.error as unknown as ErrorResult;
+        alerts.addAlert("remove-hosts-error", errorMessage.message, "danger");
       }
-    });
+    }
   };
 
   // - Delete
   const onDeleteHost = () => {
-    if (props.id) {
-      removeManagedByHosts([props.id, entityType, hostsSelected]).then(
+    if (props.id === undefined) return;
+
+    if (props.from === "host") {
+      removeHostsFromHosts([props.id, entityType, hostsSelected]).then(
         (response) => {
-          if ("data" in response) {
-            if (response.data.result) {
-              // Set alert: success
-              alerts.addAlert(
-                "remove-hosts-success",
-                "Removed members from hosts '" + props.id + "'",
-                "success"
-              );
-              // Update displayed Hosts
-              const newHosts = hosts.filter(
-                (host) => !hostsSelected.includes(host.fqdn)
-              );
-              setHosts(newHosts);
-              // Update data
-              setHostsSelected([]);
-              // Close modal
-              setShowDeleteModal(false);
-              // Refresh
-              props.onRefreshData();
-            } else if (response.data.error) {
-              // Set alert: error
-              const errorMessage = response.data
-                .error as unknown as ErrorResult;
-              alerts.addAlert(
-                "remove-hosts-error",
-                errorMessage.message,
-                "danger"
-              );
-            }
-          }
+          handleDeleteResponse(response);
         }
       );
+    } else if (props.from === "service") {
+      const payload: ServiceAddRemoveHostPayload = {
+        serviceId: props.id,
+        hostsList: hostsSelected,
+      };
+      removeHostsFromServices(payload).then((response) => {
+        handleDeleteResponse(response);
+      });
     }
   };
 
