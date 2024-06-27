@@ -25,6 +25,8 @@ import { useServiceSettings } from "src/hooks/useServiceSettingsData";
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import DataSpinner from "src/components/layouts/DataSpinner";
+// Navigation
+import { URL_PREFIX } from "src/navigation/NavRoutes";
 
 // eslint-disable-next-line react/prop-types
 const ServicesTabs = ({ section }) => {
@@ -32,6 +34,10 @@ const ServicesTabs = ({ section }) => {
   const encodedId = encodeURIComponent(id as string);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  const [breadcrumbItems, setBreadcrumbItems] = React.useState<
+    BreadCrumbItem[]
+  >([]);
 
   const [serviceId, setServiceId] = useState("");
 
@@ -69,14 +75,15 @@ const ServicesTabs = ({ section }) => {
       const currentPath: BreadCrumbItem[] = [
         {
           name: "Services",
-          url: "../services",
+          url: URL_PREFIX + "/services",
         },
         {
           name: id,
-          url: "../services/" + encodeURIComponent(id as string),
+          url: URL_PREFIX + "/services/" + encodeURIComponent(id as string),
           isActive: true,
         },
       ];
+      setBreadcrumbItems(currentPath);
       dispatch(updateBreadCrumbPath(currentPath));
     }
   }, [id]);
@@ -98,7 +105,11 @@ const ServicesTabs = ({ section }) => {
     <Page>
       <alerts.ManagedAlerts />
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
-        <BreadCrumb className="pf-v5-u-mb-md" />
+        <BreadCrumb
+          className="pf-v5-u-mb-md"
+          preText="Service:"
+          breadcrumbItems={breadcrumbItems}
+        />
         <TitleLayout
           id={service.krbcanonicalname}
           text={service.krbcanonicalname}

@@ -22,7 +22,15 @@ import { useAppDispatch } from "src/store/hooks";
  * @returns {loadedGroup, breadCrumbPath, browserTitle}
  */
 
-export const useUpdateRoute = ({ pathname }) => {
+interface UpdateRouteProps {
+  pathname: string;
+  noBreadcrumb?: boolean;
+}
+
+export const useUpdateRoute = ({
+  pathname,
+  noBreadcrumb,
+}: UpdateRouteProps) => {
   const dispatch = useAppDispatch();
 
   const [loadedGroup, setLoadedGroup] = React.useState<string[]>([]);
@@ -53,10 +61,12 @@ export const useUpdateRoute = ({ pathname }) => {
     }
 
     // Get breadcrumb data based on current path
-    const loadedBreadCrumb = getBreadCrumbByPath(pathname);
-    if (loadedBreadCrumb.length > 0) {
-      setBreadCrumbPath(loadedBreadCrumb);
-      dispatch(updateBreadCrumbPath(loadedBreadCrumb));
+    if (noBreadcrumb === undefined || !noBreadcrumb) {
+      const loadedBreadCrumb = getBreadCrumbByPath(pathname);
+      if (loadedBreadCrumb.length > 0) {
+        setBreadCrumbPath(loadedBreadCrumb);
+        dispatch(updateBreadCrumbPath(loadedBreadCrumb));
+      }
     }
 
     // Get browser title based on current path

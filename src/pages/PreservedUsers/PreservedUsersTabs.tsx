@@ -22,6 +22,8 @@ import { useUserSettings } from "src/hooks/useUserSettingsData";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
+// Navigation
+import { URL_PREFIX } from "src/navigation/NavRoutes";
 
 const PreservedUsersTabs = () => {
   // Get location (React Router DOM) and get state data
@@ -29,23 +31,28 @@ const PreservedUsersTabs = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  const [breadcrumbItems, setBreadcrumbItems] = React.useState<
+    BreadCrumbItem[]
+  >([]);
+
   React.useEffect(() => {
     if (!uid) {
       // Redirect to the preserved users page
-      navigate("/preserved-users");
+      navigate(URL_PREFIX + "/preserved-users");
     } else {
       // Update breadcrumb route
       const currentPath: BreadCrumbItem[] = [
         {
           name: "Preserved users",
-          url: "../preserved-users",
+          url: URL_PREFIX + "/preserved-users",
         },
         {
           name: uid,
-          url: "../preserved-users/" + uid,
+          url: URL_PREFIX + "/preserved-users/" + uid,
           isActive: true,
         },
       ];
+      setBreadcrumbItems(currentPath);
       dispatch(updateBreadCrumbPath(currentPath));
     }
   }, [uid]);
@@ -70,7 +77,11 @@ const PreservedUsersTabs = () => {
   return (
     <Page>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
-        <BreadCrumb className="pf-v5-u-mb-md" preText="User login:" />
+        <BreadCrumb
+          className="pf-v5-u-mb-md"
+          preText="User login:"
+          breadcrumbItems={breadcrumbItems}
+        />
         <TextContent>
           <Title headingLevel="h1">
             <Text>{uid}</Text>

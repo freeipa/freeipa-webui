@@ -92,7 +92,7 @@ const UserSettings = (props: PropsToUserSettings) => {
   const navigate = useNavigate();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
-  useUpdateRoute({ pathname: props.from });
+  useUpdateRoute({ pathname: props.from, noBreadcrumb: true });
 
   // RTK hook: save user (acive/preserved and stage)
   let [saveUser] = useSaveUserMutation();
