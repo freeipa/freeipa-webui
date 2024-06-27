@@ -9,13 +9,8 @@ import {
   Tabs,
   TabTitleText,
 } from "@patternfly/react-core";
-// Components
-import { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 // Data types
 import { Host } from "src/utils/datatypes/globalDataTypes";
-// Redux
-import { useAppDispatch } from "src/store/hooks";
-import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 // Navigation
 import { useNavigate } from "react-router-dom";
 // Hooks
@@ -36,28 +31,6 @@ interface PropsToHostsMemberOf {
 
 const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-
-  // Update breadcrumb route
-  React.useEffect(() => {
-    if (!props.host.fqdn) {
-      // Redirect to the main page
-      navigate("/hosts");
-    } else {
-      const currentPath: BreadCrumbItem[] = [
-        {
-          name: "Hosts",
-          url: "../../hosts",
-        },
-        {
-          name: props.host.fqdn,
-          url: "../../hosts/" + props.host.fqdn,
-          isActive: true,
-        },
-      ];
-      dispatch(updateBreadCrumbPath(currentPath));
-    }
-  }, [props.host.fqdn]);
 
   // Host's full data
   const hostQuery = useGetHostByIdQuery(props.host.fqdn);
@@ -76,7 +49,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   };
 
   // Update current route data to Redux and highlight the current page in the Nav bar
-  useUpdateRoute({ pathname: "hosts" });
+  useUpdateRoute({ pathname: "hosts", noBreadcrumb: true });
 
   // 'Host groups' length to show in tab badge
   const [hostGroupsLength, setHostGroupLength] = React.useState(0);

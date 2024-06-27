@@ -29,12 +29,18 @@ import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 // Utils
 import { partialUserToUser } from "src/utils/userUtils";
+// Navigation
+import { URL_PREFIX } from "src/navigation/NavRoutes";
 
 // eslint-disable-next-line react/prop-types
 const ActiveUsersTabs = ({ memberof }) => {
   const { uid } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  const [breadcrumbItems, setBreadcrumbItems] = React.useState<
+    BreadCrumbItem[]
+  >([]);
 
   React.useEffect(() => {
     if (!uid) {
@@ -45,14 +51,15 @@ const ActiveUsersTabs = ({ memberof }) => {
       const currentPath: BreadCrumbItem[] = [
         {
           name: "Active users",
-          url: "../active-users",
+          url: URL_PREFIX + "/active-users",
         },
         {
           name: uid,
-          url: "../active-users/" + uid,
+          url: URL_PREFIX + "/active-users/" + uid,
           isActive: true,
         },
       ];
+      setBreadcrumbItems(currentPath);
       dispatch(updateBreadCrumbPath(currentPath));
     }
   }, [uid]);
@@ -79,7 +86,11 @@ const ActiveUsersTabs = ({ memberof }) => {
   return (
     <Page>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
-        <BreadCrumb className="pf-v5-u-mb-md" preText="User login:" />
+        <BreadCrumb
+          className="pf-v5-u-mb-md"
+          preText="User login:"
+          breadcrumbItems={breadcrumbItems}
+        />
         <TextContent>
           <Title headingLevel="h1">
             <Text

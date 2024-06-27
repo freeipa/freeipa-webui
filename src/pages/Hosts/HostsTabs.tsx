@@ -26,12 +26,18 @@ import { useHostSettings } from "src/hooks/useHostSettingsData";
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { partialHostToHost } from "src/utils/hostUtils";
+// Navigation
+import { URL_PREFIX } from "src/navigation/NavRoutes";
 
 // eslint-disable-next-line react/prop-types
 const HostsTabs = ({ section }) => {
   const { fqdn } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  const [breadcrumbItems, setBreadcrumbItems] = React.useState<
+    BreadCrumbItem[]
+  >([]);
 
   const [hostId, setHostId] = useState("");
 
@@ -59,21 +65,22 @@ const HostsTabs = ({ section }) => {
   React.useEffect(() => {
     if (!fqdn) {
       // Redirect to the main page
-      navigate("/hosts");
+      navigate(URL_PREFIX + "/hosts");
     } else {
       setHostId(fqdn);
       // Update breadcrumb route
       const currentPath: BreadCrumbItem[] = [
         {
           name: "Hosts",
-          url: "../hosts",
+          url: URL_PREFIX + "/hosts",
         },
         {
           name: fqdn,
-          url: "../hosts/" + fqdn,
+          url: URL_PREFIX + "/hosts/" + fqdn,
           isActive: true,
         },
       ];
+      setBreadcrumbItems(currentPath);
       dispatch(updateBreadCrumbPath(currentPath));
     }
   }, [fqdn]);
@@ -81,7 +88,7 @@ const HostsTabs = ({ section }) => {
   // Redirect to the settings page if the section is not defined
   React.useEffect(() => {
     if (!section) {
-      navigate("/hosts/" + hostId);
+      navigate(URL_PREFIX + "/hosts/" + hostId);
     }
 
     // Case: any of the 'member of' sections is clicked
@@ -99,7 +106,11 @@ const HostsTabs = ({ section }) => {
   return (
     <Page>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
-        <BreadCrumb className="pf-v5-u-mb-md" preText="Host:" />
+        <BreadCrumb
+          className="pf-v5-u-mb-md"
+          preText="Host:"
+          breadcrumbItems={breadcrumbItems}
+        />
         <TitleLayout id={hostId} text={hostId} headingLevel="h1" />
       </PageSection>
       <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>

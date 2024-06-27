@@ -13,13 +13,18 @@ export interface BreadCrumbItem {
 export interface PropsToBreadcrumb {
   className?: string;
   preText?: string;
+  breadcrumbItems?: BreadCrumbItem[];
 }
 
 const BreadCrumb = (props: PropsToBreadcrumb) => {
   const [breadcrumbItems, setBreadcrumbItems] = React.useState<
     BreadCrumbItem[]
   >([]);
-  const pagesVisited = useAppSelector((state) => state.routes.breadCrumbPath);
+
+  // Posibility of retrieving the 'breadcrumbItems' from the props or via Redux
+  const pagesVisited = !props.breadcrumbItems
+    ? useAppSelector((state) => state.routes.breadCrumbPath)
+    : props.breadcrumbItems;
 
   React.useEffect(() => {
     if (pagesVisited) {
@@ -31,17 +36,17 @@ const BreadCrumb = (props: PropsToBreadcrumb) => {
   return (
     <Breadcrumb className={props.className}>
       {breadcrumbItems.map((page, idx) =>
-        idx === breadcrumbItems.length - 1 ? (
-          <BreadcrumbItem key={idx} isActive={page.isActive || false}>
-            {props.preText && props.preText + " "}
-            {page.name}
-          </BreadcrumbItem>
-        ) : (
+        idx === 0 ? (
           <BreadcrumbItem
             key={idx}
             to={page.url}
             isActive={page.isActive || false}
           >
+            {page.name}
+          </BreadcrumbItem>
+        ) : (
+          <BreadcrumbItem key={idx} isActive={page.isActive || false}>
+            {props.preText && props.preText + " "}
             {page.name}
           </BreadcrumbItem>
         )

@@ -23,10 +23,6 @@ import { useGetUserByUidQuery } from "src/services/rpcUsers";
 import { convertToString } from "src/utils/ipaObjectUtils";
 // Navigation
 import { useNavigate } from "react-router-dom";
-import { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
-// Redux
-import { useAppDispatch } from "src/store/hooks";
-import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 
@@ -38,32 +34,17 @@ interface PropsToUserMemberOf {
 
 const UserMemberOf = (props: PropsToUserMemberOf) => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
   // Update breadcrumb route
   React.useEffect(() => {
     if (!props.user.uid) {
       // Redirect to the main page
       navigate("/" + props.from);
-    } else {
-      const currentPath: BreadCrumbItem[] = [
-        {
-          name:
-            props.from[0].toUpperCase() + props.from.slice(1).replace("-", " "),
-          url: "../../" + props.from,
-        },
-        {
-          name: props.user.uid,
-          url: "../../" + props.from + "/" + props.user.uid,
-          isActive: true,
-        },
-      ];
-      dispatch(updateBreadCrumbPath(currentPath));
     }
   }, [props.user.uid]);
 
   // Update current route data to Redux and highlight the current page in the Nav bar
-  useUpdateRoute({ pathname: props.from });
+  useUpdateRoute({ pathname: props.from, noBreadcrumb: true });
 
   // User's full data
   const userQuery = useGetUserByUidQuery(convertToString(props.user.uid));
