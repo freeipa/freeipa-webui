@@ -1,6 +1,11 @@
 import React from "react";
 // PatternFly
 import {
+  EmptyState,
+  EmptyStateActions,
+  EmptyStateBody,
+  EmptyStateHeader,
+  EmptyStateVariant,
   Flex,
   FlexItem,
   PaginationVariant,
@@ -65,32 +70,34 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
             />
           )}
         </FlexItem>
-        <FlexItem>
-          <SecondaryButton
-            classname="pf-v5-u-mr-sm"
-            isDisabled={props.isDeleteDisabled}
-            onClickHandler={props.onDeleteModal}
-          >
-            Delete
-          </SecondaryButton>
-          <SecondaryButton
-            classname="pf-v5-u-mr-sm"
-            onClickHandler={props.onAddModal}
-          >
-            Add {props.entryType}
-          </SecondaryButton>
-        </FlexItem>
-        <FlexItem align={{ default: "alignRight" }}>
-          {props.paginationData.totalCount > 0 && (
-            <PaginationLayout
-              list={props.list}
-              paginationData={props.paginationData}
-              widgetId="pagination-options-menu-bottom"
-              className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-              perPageSize="sm"
-            />
-          )}
-        </FlexItem>
+        {props.paginationData.totalCount > 0 && (
+          <>
+            <FlexItem>
+              <SecondaryButton
+                classname="pf-v5-u-mr-sm"
+                isDisabled={props.isDeleteDisabled}
+                onClickHandler={props.onDeleteModal}
+              >
+                Delete
+              </SecondaryButton>
+              <SecondaryButton
+                classname="pf-v5-u-mr-sm"
+                onClickHandler={props.onAddModal}
+              >
+                Add {props.entryType}
+              </SecondaryButton>
+            </FlexItem>
+            <FlexItem align={{ default: "alignRight" }}>
+              <PaginationLayout
+                list={props.list}
+                paginationData={props.paginationData}
+                widgetId="pagination-options-menu-bottom"
+                className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+                perPageSize="sm"
+              />
+            </FlexItem>
+          </>
+        )}
       </Flex>
       {props.paginationData.totalCount > 0 ? (
         <>
@@ -115,7 +122,24 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
           />
         </>
       ) : (
-        <div className="pf-v5-u-mb-lg" />
+        <EmptyState variant={EmptyStateVariant.xs}>
+          <EmptyStateHeader
+            titleText={
+              "No " +
+              props.entryType +
+              "s" +
+              (props.entryCount > 0 ? " found" : "")
+            }
+            headingLevel="h6"
+          />
+          <EmptyStateBody>
+            <EmptyStateActions>
+              <SecondaryButton onClickHandler={props.onAddModal}>
+                Add {props.entryType}
+              </SecondaryButton>
+            </EmptyStateActions>
+          </EmptyStateBody>
+        </EmptyState>
       )}
     </>
   );
