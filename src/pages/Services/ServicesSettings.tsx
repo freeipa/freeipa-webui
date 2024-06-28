@@ -36,6 +36,8 @@ import useApiError from "src/hooks/useApiError";
 import { useSaveServiceMutation } from "src/services/rpcServices";
 import { ErrorResult } from "src/services/rpc";
 import { partialServiceToService } from "src/utils/serviceUtils";
+// Hooks
+import useUpdateRoute from "src/hooks/useUpdateRoute";
 
 interface PropsToServicesSettings {
   service: Partial<Service>;
@@ -78,6 +80,9 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
   ) => {
     setIsKebabOpen(!isKebabOpen);
   };
+
+  // Update current route data to Redux and highlight the current page in the Nav bar
+  useUpdateRoute({ pathname: "services", noBreadcrumb: true });
 
   // 'Save' handler method
   const onSave = () => {

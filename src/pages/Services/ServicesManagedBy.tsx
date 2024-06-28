@@ -44,7 +44,7 @@ const ServicesManagedBy = (props: PropsToServicesManagedBy) => {
   };
 
   // Update current route data to Redux and highlight the current page in the Nav bar
-  useUpdateRoute({ pathname: "services" });
+  useUpdateRoute({ pathname: "services", noBreadcrumb: true });
 
   // Encoded data to pass to the URL
   const encodedServiceId = encodeURIComponent(props.service.krbcanonicalname);
