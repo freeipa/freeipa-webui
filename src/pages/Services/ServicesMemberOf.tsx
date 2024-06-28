@@ -21,6 +21,8 @@ import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { useNavigate } from "react-router-dom";
 // RPC
 import { useGetServiceByIdQuery } from "src/services/rpcServices";
+// Hooks
+import useUpdateRoute from "src/hooks/useUpdateRoute";
 
 interface PropsToServicesMemberOf {
   service: Service;
@@ -67,6 +69,9 @@ const ServicesMemberOf = (props: PropsToServicesMemberOf) => {
   const onRefreshServiceData = () => {
     serviceQuery.refetch();
   };
+
+  // Update current route data to Redux and highlight the current page in the Nav bar
+  useUpdateRoute({ pathname: "services", noBreadcrumb: true });
 
   // 'Roles' length to show in tab badge
   const [rolesLength, setRolesLength] = React.useState(0);

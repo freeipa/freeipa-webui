@@ -163,28 +163,31 @@ const ServicesTable = (props: PropsToTable) => {
     </Tr>
   );
 
-  const body = shownServicesList.map((service, rowIndex) => (
-    <Tr key={service.krbcanonicalname[0]} id={service.krbcanonicalname[0]}>
-      <Td
-        dataLabel="checkbox"
-        select={{
-          rowIndex,
-          onSelect: (_event, isSelecting) =>
-            onSelectService(service, rowIndex, isSelecting),
-          isSelected: isServiceSelected(service),
-          isDisabled: !props.servicesData.isServiceSelectable(service),
-        }}
-      />
-      <Td dataLabel={columnNames.principalName}>
-        <Link
-          to={"/services/" + encodeURIComponent(service.krbcanonicalname[0])}
-          state={service}
-        >
-          {service.krbcanonicalname[0]}
-        </Link>
-      </Td>
-    </Tr>
-  ));
+  const body = shownServicesList.map((service, rowIndex) => {
+    const encodedServiceId = encodeURIComponent(
+      encodeURIComponent(service.krbcanonicalname[0])
+    );
+
+    return (
+      <Tr key={service.krbcanonicalname[0]} id={service.krbcanonicalname[0]}>
+        <Td
+          dataLabel="checkbox"
+          select={{
+            rowIndex,
+            onSelect: (_event, isSelecting) =>
+              onSelectService(service, rowIndex, isSelecting),
+            isSelected: isServiceSelected(service),
+            isDisabled: !props.servicesData.isServiceSelectable(service),
+          }}
+        />
+        <Td dataLabel={columnNames.principalName}>
+          <Link to={"/services/" + encodedServiceId} state={service}>
+            {service.krbcanonicalname[0]}
+          </Link>
+        </Td>
+      </Tr>
+    );
+  });
 
   const skeleton = (
     <SkeletonOnTableLayout
