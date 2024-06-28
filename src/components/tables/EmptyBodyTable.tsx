@@ -31,11 +31,13 @@ const EmptyBodyTable = (props: EmptyBodyTableProps) => {
               headingLevel="h2"
             />
             <EmptyStateBody>Clear all filters and try again.</EmptyStateBody>
-            <EmptyStateFooter>
-              <Button variant="link" onClick={props.onClickFilter}>
-                Clear all filters
-              </Button>
-            </EmptyStateFooter>
+            {props.onClickFilter && (
+              <EmptyStateFooter>
+                <Button variant="link" onClick={props.onClickFilter}>
+                  Clear all filters
+                </Button>
+              </EmptyStateFooter>
+            )}
           </EmptyState>
         </Bullseye>
       </Td>

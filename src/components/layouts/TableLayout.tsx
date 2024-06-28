@@ -5,6 +5,7 @@ import {
   Thead,
 } from "@patternfly/react-table";
 import React from "react";
+import EmptyBodyTable from "../tables/EmptyBodyTable";
 
 export interface PropsToTable {
   ariaLabel: string;
@@ -19,6 +20,11 @@ export interface PropsToTable {
 }
 
 const TableLayout = (props: PropsToTable) => {
+  let body = props.tableBody;
+  if (Array.isArray(props.tableBody) && props.tableBody.length === 0) {
+    body = <EmptyBodyTable />;
+  }
+
   return (
     <Table
       aria-label={props.ariaLabel}
@@ -30,7 +36,7 @@ const TableLayout = (props: PropsToTable) => {
       isStickyHeader={props.isStickyHeader}
     >
       <Thead>{props.tableHeader}</Thead>
-      <Tbody>{props.tableBody}</Tbody>
+      <Tbody>{body}</Tbody>
     </Table>
   );
 };
