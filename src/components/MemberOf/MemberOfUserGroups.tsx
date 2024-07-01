@@ -88,11 +88,6 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
     version: API_VERSION_BACKUP,
   });
 
-  // Reset page on direction change
-  React.useEffect(() => {
-    setPage(1);
-  }, [membershipDirection]);
-
   // Refresh user groups
   React.useEffect(() => {
     const userGroupsNames = getUserGroupsNameToLoad();

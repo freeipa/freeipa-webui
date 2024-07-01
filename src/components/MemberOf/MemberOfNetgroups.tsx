@@ -93,11 +93,6 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
     version: API_VERSION_BACKUP,
   });
 
-  // Reset page on direction change
-  React.useEffect(() => {
-    setPage(1);
-  }, [membershipDirection]);
-
   // Refresh netgroups
   React.useEffect(() => {
     const netgroupsNames = getNetgroupsNameToLoad();
