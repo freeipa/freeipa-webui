@@ -109,7 +109,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
 
   React.useEffect(() => {
     setActiveTabKey(props.tabSection);
-    navigate("/hosts/" + props.host.fqdn + "/" + props.tabSection);
   }, [props.tabSection]);
 
   // Render component

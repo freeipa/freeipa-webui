@@ -93,11 +93,6 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
     version: API_VERSION_BACKUP,
   });
 
-  // Reset page on direction change
-  useEffect(() => {
-    setPage(1);
-  }, [membershipDirection]);
-
   // Refresh roles
   useEffect(() => {
     const rolesNames = getRolesNameToLoad();

@@ -90,11 +90,6 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
     version: API_VERSION_BACKUP,
   });
 
-  // Reset page on direction change
-  React.useEffect(() => {
-    setPage(1);
-  }, [membershipDirection]);
-
   // Refresh host groups
   React.useEffect(() => {
     const hostGroupsNames = getHostGroupsNameToLoad();
