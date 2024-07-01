@@ -31,11 +31,16 @@ interface MemberOfRolesProps {
   onRefreshData: () => void;
   memberof_role: string[];
   memberofindirect_role?: string[];
+  membershipDisabled?: boolean;
 }
 const MemberOfRoles = (props: MemberOfRolesProps) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
+  const membershipDisabled =
+    props.membershipDisabled === undefined ? false : props.membershipDisabled;
+
+  // Get parameters from URL
   const {
     page,
     setPage,
@@ -271,27 +276,48 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   return (
     <>
       <alerts.ManagedAlerts />
-      <MemberOfToolbar
-        searchText={searchValue}
-        onSearchTextChange={setSearchValue}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        onSearch={() => {}}
-        refreshButtonEnabled={isRefreshButtonEnabled}
-        onRefreshButtonClick={props.onRefreshData}
-        deleteButtonEnabled={isDeleteEnabled}
-        onDeleteButtonClick={() => setShowDeleteModal(true)}
-        addButtonEnabled={isAddButtonEnabled}
-        onAddButtonClick={() => setShowAddModal(true)}
-        membershipDirectionEnabled={true}
-        membershipDirection={membershipDirection}
-        onMembershipDirectionChange={setMembershipDirection}
-        helpIconEnabled={true}
-        totalItems={roleNames.length}
-        perPage={perPage}
-        page={page}
-        onPerPageChange={setPerPage}
-        onPageChange={setPage}
-      />
+      {membershipDisabled ? (
+        <MemberOfToolbar
+          searchText={searchValue}
+          onSearchTextChange={setSearchValue}
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          onSearch={() => {}}
+          refreshButtonEnabled={isRefreshButtonEnabled}
+          onRefreshButtonClick={props.onRefreshData}
+          deleteButtonEnabled={isDeleteEnabled}
+          onDeleteButtonClick={() => setShowDeleteModal(true)}
+          addButtonEnabled={isAddButtonEnabled}
+          onAddButtonClick={() => setShowAddModal(true)}
+          helpIconEnabled={true}
+          totalItems={roleNames.length}
+          perPage={perPage}
+          page={page}
+          onPerPageChange={setPerPage}
+          onPageChange={setPage}
+        />
+      ) : (
+        <MemberOfToolbar
+          searchText={searchValue}
+          onSearchTextChange={setSearchValue}
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          onSearch={() => {}}
+          refreshButtonEnabled={isRefreshButtonEnabled}
+          onRefreshButtonClick={props.onRefreshData}
+          deleteButtonEnabled={isDeleteEnabled}
+          onDeleteButtonClick={() => setShowDeleteModal(true)}
+          addButtonEnabled={isAddButtonEnabled}
+          onAddButtonClick={() => setShowAddModal(true)}
+          membershipDirectionEnabled={true}
+          membershipDirection={membershipDirection}
+          onMembershipDirectionChange={setMembershipDirection}
+          helpIconEnabled={true}
+          totalItems={roleNames.length}
+          perPage={perPage}
+          page={page}
+          onPerPageChange={setPerPage}
+          onPageChange={setPage}
+        />
+      )}
       <MemberOfTableRoles
         roles={roles}
         checkedItems={rolesSelected}
