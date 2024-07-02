@@ -3,7 +3,15 @@ import { UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { convertApiObj } from "./ipaObjectUtils";
 
-const simpleValues = new Set(["cn", "gidnumber", "description", "dn"]);
+const simpleValues = new Set([
+  "cn",
+  "gidnumber",
+  "description",
+  "dn",
+  "objectclass",
+  "member",
+]);
+
 const dateValues = new Set([]);
 
 export function apiToGroup(apiRecord: Record<string, unknown>): UserGroup {
@@ -31,6 +39,8 @@ export function createEmptyGroup(): UserGroup {
     gidnumber: "",
     description: "",
     dn: "",
+    objectclass: [],
+    member: [],
   };
 
   return group;

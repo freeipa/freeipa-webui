@@ -176,7 +176,7 @@ const UserGroupsTable = (props: PropsToTable) => {
         }}
       />
       <Td dataLabel={columnNames.cn}>
-        <Link to={"/usergroups/settings"} state={group}>
+        <Link to={"/user-groups/" + group.cn} state={group}>
           {group.cn}
         </Link>
       </Td>

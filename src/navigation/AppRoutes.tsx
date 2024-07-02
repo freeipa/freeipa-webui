@@ -30,6 +30,7 @@ import SudoCmdGroups from "src/pages/SudoCmdGroups/SudoCmdGroups";
 import SELinuxUserMaps from "src/pages/SELinuxUserMaps/SELinuxUserMaps";
 import PasswordPolicies from "src/pages/PasswordPolicies/PasswordPolicies";
 import KrbTicketPolicy from "src/pages/KrbTicketPolicy/KrbTicketPolicy";
+import UserGroupsTabs from "src/pages/UserGroups/UserGroupsTabs";
 
 // Renders routes (React)
 export const AppRoutes = (): React.ReactElement => (
@@ -122,6 +123,9 @@ export const AppRoutes = (): React.ReactElement => (
     </Route>
     <Route path="user-groups">
       <Route path="" element={<UserGroups />} />
+      <Route path=":cn">
+        <Route path="" element={<UserGroupsTabs section="settings" />} />
+      </Route>
     </Route>
     <Route path="host-groups">
       <Route path="" element={<HostGroups />} />

@@ -36,7 +36,7 @@ export function partialPwPolicyToPwPolicy(partialPwPolicy: Partial<PwPolicy>) {
 export function createEmptyPwPolicy(): PwPolicy {
   return {
     attributelevelrights: {},
-    name: "",
+    cn: "",
     dn: "",
     krbmaxpwdlife: "",
     krbminpwdlife: "",
