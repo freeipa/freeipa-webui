@@ -62,25 +62,30 @@ When("I close the side menu", () => {
 
 // Buttons and tabs
 When("I click on {string} tab", (tabText: string) => {
-  cy.get("nav a").contains(tabText).click();
+  const regex = new RegExp("^" + tabText + "$", "i");
+  cy.get("nav a").contains(regex).click();
 });
 
 When("I click on {string} button", function (buttonText: string) {
-  cy.get("button").contains(buttonText).click();
+  const regex = new RegExp("^" + buttonText + "$", "i");
+  cy.get("button").contains(regex).click();
 });
 
 Then("button {string} should be enabled", function (buttonText: string) {
-  cy.get("button").contains(buttonText).should("be.enabled");
+  const regex = new RegExp("^" + buttonText + "$", "i");
+  cy.get("button").contains(regex).should("be.enabled");
 });
 
 Then("button {string} should be disabled", function (buttonText: string) {
-  cy.get("button").contains(buttonText).should("be.disabled");
+  const regex = new RegExp("^" + buttonText + "$", "i");
+  cy.get("button").contains(regex).should("be.disabled");
 });
 
 // Modals
 When(
   "in the modal dialog I click on {string} button",
   function (buttonText: string) {
+    const regex = new RegExp("^" + buttonText + "$", "i");
     cy.get("[role=dialog] footer button").contains(buttonText).click();
     cy.wait(1000);
   }
@@ -89,6 +94,7 @@ When(
 When(
   "in the modal dialog I check {string} radio selector",
   (selectorText: string) => {
+    const regex = new RegExp("^" + selectorText + "$", "i");
     cy.get("[role=dialog] input[type=radio]+label")
       .contains(selectorText)
       .click();
@@ -107,11 +113,12 @@ Then("I see a modal with text {string}", (text: string) => {
 When(
   "I type in the field {string} text {string}",
   (fieldName: string, content: string) => {
+    const regex = new RegExp("^" + fieldName + "$", "i");
     cy.get("[role=dialog] label")
-      .contains(fieldName)
+      .contains(regex)
       .parent()
       .then(($label) => {
-        cy.get("[name=modal-form-" + $label.attr("for") + "]").type(content);
+        cy.get("#modal-form-" + $label.attr("for")).type(content);
       });
   }
 );
@@ -171,12 +178,20 @@ Then(
 
 // Kebab
 When("I click on kebab menu and select {string}", (buttonName: string) => {
-  cy.get("#main-dropdown-kebab").click();
-  cy.get("span.pf-v5-c-menu__item-text").contains(buttonName).click();
+  cy.get("body").then(($body) => {
+    if ($body.find("#main-dropdown-kebab").length) {
+      cy.get("#main-dropdown-kebab").click();
+    } else if ($body.find("#toggle-action-buttons").length) {
+      cy.get("#toggle-action-buttons").click();
+    }
+  });
+  const regex = new RegExp("^" + buttonName + "$", "i");
+  cy.get("button.pf-v5-c-menu__item").contains(regex).click();
 });
 
 // Checkboxes
 Then("I should see the {string} checkbox checked", (checkboxName: string) => {
+  // Intentionally not using regex matching as these elements often contain parentheses
   cy.get("div.pf-v5-c-check")
     .find("label")
     .contains(checkboxName)
@@ -185,6 +200,7 @@ Then("I should see the {string} checkbox checked", (checkboxName: string) => {
 });
 
 Then("I should see the {string} checkbox unchecked", (checkboxName: string) => {
+  // Intentionally not using regex matching as these elements often contain parentheses
   cy.get("div.pf-v5-c-check")
     .find("label")
     .contains(checkboxName)
@@ -195,8 +211,10 @@ Then("I should see the {string} checkbox unchecked", (checkboxName: string) => {
 When(
   "I click on {string} checkbox in {string} section",
   (checkboxName: string, section: string) => {
+    const sectionRegex = new RegExp("^" + section + "$", "i");
+    // Intentionally not using regex matching for the checkbox name as these elements often contain parentheses
     cy.get("div.pf-v5-c-form__group-label")
-      .contains(section)
+      .contains(sectionRegex)
       .next()
       .get("div.pf-v5-c-check")
       .find("label")
@@ -207,6 +225,7 @@ When(
 );
 
 When("I click on {string} checkbox in modal", (checkboxName: string) => {
+  // Intentionally not using regex matching as these elements often contain parentheses
   cy.get("div.pf-v5-c-check")
     .find("label")
     .contains(checkboxName)
@@ -217,11 +236,8 @@ When("I click on {string} checkbox in modal", (checkboxName: string) => {
 When(
   "I click on {string} checkbox",
   (checkboxName: string, section: string) => {
-    cy.get("div.pf-v5-c-check")
-      .find("label")
-      .contains(checkboxName)
-      .prev()
-      .click();
+    const regex = new RegExp("^" + checkboxName + "$", "i");
+    cy.get("div.pf-v5-c-check").find("label").contains(regex).prev().click();
   }
 );
 
@@ -282,12 +298,14 @@ When(
 Then(
   "I should see the option {string} selected in the {string} selector",
   (option: string, selectorName: string) => {
+    const optionRegex = new RegExp("^" + option + "$", "i");
+    const selectorRegex = new RegExp("^" + selectorName + "$", "i");
     cy.get("div.pf-v5-c-form__group-label")
-      .contains(selectorName)
+      .contains(selectorRegex)
       .parent()
       .next()
       .find("span.pf-v5-c-menu-toggle__text")
-      .contains(option);
+      .contains(optionRegex);
   }
 );
 
@@ -309,12 +327,14 @@ When(
 When(
   "I click on {string} button in the {string} section",
   (buttonName: string, section: string) => {
+    const sectionRegex = new RegExp("^" + section + "$", "i");
+    const buttonRegex = new RegExp("^" + buttonName + "$", "i");
     cy.get("div.pf-v5-c-form__group-label")
-      .contains(section)
+      .contains(sectionRegex)
       .parent()
       .next()
       .find("button")
-      .contains(buttonName)
+      .contains(buttonRegex)
       .click();
   }
 );
@@ -322,8 +342,10 @@ When(
 When(
   "in the {string} section I click the {string} button of the text input field with text {string}",
   (section: string, button: string, text: string) => {
+    const sectionRegex = new RegExp("^" + section + "$", "i");
+    const buttonRegex = new RegExp("^" + button + "$", "i");
     cy.get("div.pf-v5-c-form__group-label")
-      .contains(section)
+      .contains(sectionRegex)
       .parent()
       .next()
       .find("input[value='" + text + "']")
@@ -331,7 +353,7 @@ When(
       .parent()
       .next()
       .find("button")
-      .contains(button)
+      .contains(buttonRegex)
       .click();
   }
 );
@@ -339,8 +361,9 @@ When(
 Then(
   "I should not see the text input field with text {string} under the field {string}",
   (text: string, fieldName: string) => {
+    const regex = new RegExp("^" + fieldName + "$", "i");
     cy.get("div.pf-v5-c-form__group-label")
-      .contains(fieldName)
+      .contains(regex)
       .parent()
       .next()
       .find("input[value='" + text + "']")
@@ -351,8 +374,9 @@ Then(
 Then(
   "I should see value {string} in any of the textboxes that belong to the field {string}",
   (value: string, fieldName: string) => {
+    const regex = new RegExp("^" + fieldName + "$", "i");
     cy.get("div.pf-v5-c-form__group-label")
-      .contains(fieldName)
+      .contains(regex)
       .parent()
       .next()
       .find("input[value='" + value + "']");
@@ -360,22 +384,11 @@ Then(
 );
 
 Then(
-  "I should not see value {string} in any of the textboxes that belong to the field {string}",
-  (value: string, fieldName: string) => {
-    cy
-      .get("div.pf-v5-c-form__group-label")
-      .contains(fieldName)
-      .parent()
-      .next()
-      .find("input[value='" + value + "']").not;
-  }
-);
-
-Then(
   "I should see no textboxes under the field {string}",
   (fieldName: string) => {
+    const regex = new RegExp("^" + fieldName + "$", "i");
     cy.get("div.pf-v5-c-form__group-label")
-      .contains(fieldName)
+      .contains(regex)
       .parent()
       .next()
       .find("input")
