@@ -37,6 +37,7 @@ import { API_VERSION_BACKUP, isHostGroupSelectable } from "src/utils/utils";
 // Hooks
 import { useAlerts } from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -72,14 +73,15 @@ const HostGroups = () => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
+  // URL parameters: page number, page size, search value
+  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+    useListPageSearchParams();
+
   // Handle API calls errors
   const globalErrors = useApiError([]);
   const modalErrors = useApiError([]);
 
   // Table comps
-  const [searchValue, setSearchValue] = React.useState("");
-  const [page, setPage] = useState<number>(1);
-  const [perPage, setPerPage] = useState<number>(10);
   const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
   const [totalCount, setGroupsTotalCount] = useState<number>(0);
   const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
@@ -122,7 +124,7 @@ const HostGroups = () => {
 
   // Derived states - what we get from API
   const groupDataResponse = useGettingHostGroupsQuery({
-    searchValue: "",
+    searchValue: searchValue,
     sizeLimit: 0,
     apiVersion: apiVersion || API_VERSION_BACKUP,
     startIdx: firstIdx,
