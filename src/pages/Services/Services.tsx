@@ -39,6 +39,7 @@ import DeleteServices from "../../components/modals/DeleteServices";
 // Hooks
 import { useAlerts } from "../../hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors
 import useApiError from "../../hooks/useApiError";
 import GlobalErrors from "../../components/errors/GlobalErrors";
@@ -73,6 +74,10 @@ const Services = () => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
+  // URL parameters: page number, page size, search value
+  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+    useListPageSearchParams();
+
   // Handle API calls errors
   const globalErrors = useApiError([]);
   const modalErrors = useApiError([]);
@@ -98,11 +103,9 @@ const Services = () => {
   };
 
   // Pagination
-  const [page, setPage] = useState<number>(1);
   const updatePage = (newPage: number) => {
     setPage(newPage);
   };
-  const [perPage, setPerPage] = useState<number>(10);
   const updatePerPage = (newSetPerPage: number) => {
     setPerPage(newSetPerPage);
   };
@@ -113,7 +116,6 @@ const Services = () => {
   const lastServiceIdx = page * perPage;
 
   // Filter (Input search)
-  const [searchValue, setSearchValue] = React.useState("");
   const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   const updateSearchValue = (value: string) => {
