@@ -56,7 +56,6 @@ const ServicesTabs = ({ section }) => {
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    console.log("tabIndex", tabIndex);
     setActiveTabKey(tabIndex as string);
     if (tabIndex === "settings") {
       navigate("/services/" + doubleEncodedId);
