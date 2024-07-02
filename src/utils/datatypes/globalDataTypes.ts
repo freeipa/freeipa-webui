@@ -102,7 +102,7 @@ export interface User {
 
 export interface PwPolicy {
   attributelevelrights: Record<string, unknown>;
-  name: string;
+  cn: string;
   dn: string;
   krbmaxpwdlife: string;
   krbminpwdlife: string;
@@ -145,6 +145,8 @@ export interface UserGroup {
   gidnumber: string;
   description: string;
   dn: string;
+  member: string[];
+  objectclass: string[];
 }
 
 export interface NetgroupOld {

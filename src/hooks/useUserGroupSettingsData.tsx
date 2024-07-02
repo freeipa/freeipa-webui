@@ -19,7 +19,7 @@ type UserGroupSettingsData = {
   metadata: Metadata;
   originalGroup: Partial<UserGroup>;
   userGroup: Partial<UserGroup>;
-  setUserGroup: (cn: Partial<UserGroup>) => void;
+  setUserGroup: (usergroup: Partial<UserGroup>) => void;
   refetch: () => void;
   modifiedValues: () => Partial<UserGroup>;
   pwPolicyData: Partial<PwPolicy>;

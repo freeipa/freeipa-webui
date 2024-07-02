@@ -9,13 +9,24 @@ import {
   useGettingGenericQuery,
 } from "./rpc";
 import { apiToGroup } from "src/utils/groupUtils";
+import { apiToPwPolicy } from "src/utils/pwPolicyUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
 import { PwPolicy, UserGroup } from "../utils/datatypes/globalDataTypes";
 
 /**
- * User Group-related endpoints: addToGroups, removeFromGroups, getGroupInfoByName, addGroup, removeGroups
+ * User Group-related endpoints:
+ *  - addToGroups
+ *  - removeFromGroups
+ *  - getGroupInfoByName
+ *  - addGroup
+ *  - removeGroup
+ *  - removeGroups
+ *  - saveGroup
+ *  - convertGroupExternal
+ *  - convertGroupPOSIX
  *
  * API commands:
+ * - group_mod: https://freeipa.readthedocs.io/en/latest/api/group_mod.html
  * - group_add: https://freeipa.readthedocs.io/en/latest/api/group_add.html
  * - group_del: https://freeipa.readthedocs.io/en/latest/api/group_del.html
  * - group_add_member: https://freeipa.readthedocs.io/en/latest/api/group_add_member.html
@@ -36,6 +47,12 @@ export interface GroupAddPayload {
   gidnumber?: string;
   description?: string;
   groupType: "posix" | "non-posix" | "external";
+}
+
+export interface GroupModPayload {
+  groupName: string;
+  version?: string;
+  groupType: "posix" | "external";
 }
 
 export type GroupFullData = {
@@ -78,9 +95,14 @@ const extendedApi = api.injectEndpoints({
           groupObject = apiToGroup(groupData);
         }
 
+        let pwdPolicyObj = {};
+        if (!groupResponse.error) {
+          pwdPolicyObj = apiToPwPolicy(pwpData);
+        }
+
         return {
           userGroup: groupObject,
-          pwPolicy: pwpData,
+          pwPolicy: pwdPolicyObj,
         };
       },
       providesTags: ["FullUserGroup"],
@@ -136,6 +158,57 @@ const extendedApi = api.injectEndpoints({
           groupsToDeletePayload.push(payloadItem);
         });
         return getBatchCommand(groupsToDeletePayload, API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Remove group
+     * @param {string} group name - group to remove
+     */
+    removeGroup: build.mutation<BatchRPCResponse, string>({
+      query: (group) => {
+        return getCommand({
+          method: "group_del",
+          params: [[group], {}],
+        });
+      },
+    }),
+    /**
+     * Convert to POSIX group
+     * @param {string} group - Group name
+     */
+    convertGroupPOSIX: build.mutation<FindRPCResponse, string>({
+      query: (group) => {
+        const params = [
+          [group],
+          {
+            version: API_VERSION_BACKUP,
+            posix: true,
+          },
+        ];
+
+        return getCommand({
+          method: "group_mod",
+          params: params,
+        });
+      },
+    }),
+    /**
+     * Convert to external group
+     * @param {string} group - Group name
+     */
+    convertGroupExternal: build.mutation<FindRPCResponse, string>({
+      query: (group) => {
+        const params = [
+          [group],
+          {
+            external: true,
+          },
+        ];
+
+        return getCommand({
+          method: "group_mod",
+          params: params,
+        });
       },
     }),
     /**
@@ -208,6 +281,28 @@ const extendedApi = api.injectEndpoints({
         return groupList;
       },
     }),
+    /**
+     * Add entity to groups
+     * @param {string} name - name of user group
+     * @param {string} type - Type of the entity
+     *    Available types: user | host | service
+     * @param {string[]} listOfMembers - List of members to add to the groups
+     */
+    saveGroup: build.mutation<FindRPCResponse, Partial<UserGroup>>({
+      query: (group) => {
+        const params = {
+          version: API_VERSION_BACKUP,
+          ...group,
+        };
+        delete params["cn"];
+        const cn = group.cn !== undefined ? group.cn : "";
+        return getCommand({
+          method: "group_mod",
+          params: [[cn], params],
+        });
+      },
+      invalidatesTags: ["FullUserGroup"],
+    }),
   }),
   overrideExisting: false,
 });
@@ -222,8 +317,12 @@ export const useGettingGroupsQuery = (payloadData) => {
 export const {
   useAddGroupMutation,
   useRemoveGroupsMutation,
+  useRemoveGroupMutation,
   useAddToGroupsMutation,
   useRemoveFromGroupsMutation,
   useGetGroupInfoByNameQuery,
   useGetUserGroupsFullDataQuery,
+  useSaveGroupMutation,
+  useConvertGroupExternalMutation,
+  useConvertGroupPOSIXMutation,
 } = extendedApi;

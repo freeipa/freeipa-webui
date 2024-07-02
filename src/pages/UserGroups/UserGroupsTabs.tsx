@@ -9,40 +9,78 @@ import {
   TabTitleText,
 } from "@patternfly/react-core";
 // React Router DOM
-import { useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Layouts
-import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
-// Data types
-import { UserGroup } from "src/utils/datatypes/globalDataTypes";
+import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
+// Components
+import UserGroupsSettings from "./UserGroupsSettings";
+import { partialGroupToGroup } from "src/utils/groupUtils";
 // Hooks
 import { useUserGroupSettings } from "src/hooks/useUserGroupSettingsData";
 import DataSpinner from "src/components/layouts/DataSpinner";
+import { useAlerts } from "../../hooks/useAlerts";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
+import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 
-const UserGroupsTabs = () => {
+// eslint-disable-next-line react/prop-types
+const UserGroupsTabs = ({ section }) => {
+  // Alerts to show in the UI
+  const alerts = useAlerts();
+
   // Get location (React Router DOM) and get state data
-  const location = useLocation();
-  const userGroupsData: UserGroup = location.state as UserGroup;
-  const userGroupSettingsData = useUserGroupSettings(userGroupsData.cn[0]);
+  const { cn } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const userGroupSettingsData = useUserGroupSettings(cn as string);
 
   // Tab
-  const [activeTabKey, setActiveTabKey] = useState(0);
+  const [activeTabKey, setActiveTabKey] = useState(section);
 
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as number);
+    setActiveTabKey(tabIndex as string);
+    if (tabIndex === "settings") {
+      navigate("/user-groups/" + cn);
+    } else if (tabIndex === "memberof") {
+      navigate("/user-groups/" + cn + "/memberof_usergroup");
+    } else if (tabIndex === "managedby") {
+      navigate("/user-groups/" + cn + "/managedby_usergroup");
+    }
   };
 
-  // 'pagesVisited' array will contain the visited pages.
-  // - Those will be passed to the 'BreadcrumbLayout' component.
-  const pagesVisited = [
-    {
-      name: "User groups",
-      url: "/user-groups",
-    },
-  ];
+  React.useEffect(() => {
+    if (!cn) {
+      // Redirect to the main page
+      navigate("/user-groups");
+    } else {
+      // Update breadcrumb route
+      const currentPath: BreadCrumbItem[] = [
+        {
+          name: "User groups",
+          url: URL_PREFIX + "/user-groups",
+        },
+        {
+          name: cn,
+          url: URL_PREFIX + "/user-groups/" + cn,
+          isActive: true,
+        },
+      ];
+      dispatch(updateBreadCrumbPath(currentPath));
+    }
+  }, [cn]);
+
+  // Redirect to the settings page if the section is not defined
+  React.useEffect(() => {
+    if (!section) {
+      navigate(URL_PREFIX + "/user-groups/" + cn);
+    }
+    setActiveTabKey(section);
+  }, [section]);
 
   if (
     userGroupSettingsData.isLoading ||
@@ -51,20 +89,14 @@ const UserGroupsTabs = () => {
     return <DataSpinner />;
   }
 
+  const usergroup = partialGroupToGroup(userGroupSettingsData.userGroup);
+
   return (
     <Page>
+      <alerts.ManagedAlerts />
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
-        <BreadcrumbLayout
-          className="pf-v5-u-mb-md"
-          userId={userGroupsData.cn}
-          preText=""
-          pagesVisited={pagesVisited}
-        />
-        <TitleLayout
-          id={userGroupsData.cn}
-          text={userGroupsData.cn}
-          headingLevel="h1"
-        />
+        <BreadCrumb className="pf-v5-u-mb-md" />
+        <TitleLayout id={usergroup.cn} text={usergroup.cn} headingLevel="h1" />
       </PageSection>
       <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
         <Tabs
@@ -73,24 +105,38 @@ const UserGroupsTabs = () => {
           variant="light300"
           isBox
           className="pf-v5-u-ml-lg"
+          mountOnEnter
+          unmountOnExit
         >
           <Tab
-            eventKey={0}
-            name="details"
+            eventKey={"settings"}
+            name="settings-details"
             title={<TabTitleText>Settings</TabTitleText>}
           >
             <PageSection className="pf-v5-u-pb-0"></PageSection>
+            <UserGroupsSettings
+              userGroup={userGroupSettingsData.userGroup}
+              originalGroup={userGroupSettingsData.originalGroup}
+              metadata={userGroupSettingsData.metadata}
+              onGroupChange={userGroupSettingsData.setUserGroup}
+              isDataLoading={userGroupSettingsData.isFetching}
+              onRefresh={userGroupSettingsData.refetch}
+              isModified={userGroupSettingsData.modified}
+              onResetValues={userGroupSettingsData.resetValues}
+              modifiedValues={userGroupSettingsData.modifiedValues}
+              pwPolicyData={userGroupSettingsData.pwPolicyData}
+            />
           </Tab>
           <Tab
-            eventKey={1}
-            name="details"
+            eventKey={"memberof"}
+            name="memberof-details"
             title={<TabTitleText>Is a member of</TabTitleText>}
           >
             <PageSection className="pf-v5-u-pb-0"></PageSection>
           </Tab>
           <Tab
-            eventKey={2}
-            name="details"
+            eventKey={"managedby"}
+            name="managedby-details"
             title={<TabTitleText>Is managed by</TabTitleText>}
           >
             <PageSection className="pf-v5-u-pb-0"></PageSection>
