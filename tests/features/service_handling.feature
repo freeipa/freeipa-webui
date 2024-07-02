@@ -5,7 +5,7 @@ Feature: Service manipulation
     Given I am logged in as "Administrator"
     Given I am on "services" page
 
-  Scenario Outline: Add a new host to test services
+  Scenario: Add a new host to test services
     Given I am on "hosts" page
     When I click on "Add" button
     * I type in the field "Host name" text "service1"
@@ -13,7 +13,7 @@ Feature: Service manipulation
     * I should see "success" alert with text "New host added"
     Then I should see partial "service1" entry in the data table
 
-  Scenario Outline: Add a service
+  Scenario: Add a service
     When I click on "Add" button
     * I click in the "Service" selector field
     * I select "HTTP" option in the "Service" selector
@@ -24,7 +24,7 @@ Feature: Service manipulation
     * I should see "success" alert with text "New service added"
     Then I should see partial "HTTP\/service1" entry in the data table
 
-  Scenario Outline: Add several services
+  Scenario: Add several services
     When I click on "Add" button
     * I click in the "Service" selector field
     * I select "DNS" option in the "Service" selector
