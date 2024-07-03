@@ -17,7 +17,7 @@ import {
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // Modals
-import DeletionConfirmationModal from "../modals/DeletionConfirmationModal";
+import ConfirmationModal from "../modals/ConfirmationModal";
 // Icons
 import MapIcon from "@patternfly/react-icons/dist/esm/icons/map-icon";
 
@@ -355,7 +355,7 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
           />
         </>
       </Modal>
-      <DeletionConfirmationModal
+      <ConfirmationModal
         title={"Remove certificate mapping data"}
         isOpen={isDeletionModalOpen}
         onClose={onCloseDeletionModal}

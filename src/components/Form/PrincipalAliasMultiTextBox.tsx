@@ -5,7 +5,7 @@ import { Button } from "@patternfly/react-core";
 import IpaTextInputFromList from "./IpaTextInputFromList";
 // Modals
 import AddTextInputFromListModal from "../modals/AddTextInputFromListModal";
-import DeletionConfirmationModal from "../modals/DeletionConfirmationModal";
+import ConfirmationModal from "../modals/ConfirmationModal";
 // RTK
 import { ErrorResult } from "src/services/rpc";
 import {
@@ -254,7 +254,7 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
         textInputName="krbprincalname"
         textInputValidator={areRealmsMatching}
       />
-      <DeletionConfirmationModal
+      <ConfirmationModal
         title={"Remove kerberos alias"}
         isOpen={isDeleteConfModalOpen}
         onClose={onCloseDeletionConfModal}

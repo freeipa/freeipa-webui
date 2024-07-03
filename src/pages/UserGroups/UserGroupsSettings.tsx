@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 // PatternFly
 import {
+  Button,
+  Divider,
   DropdownItem,
   Flex,
   Form,
@@ -11,7 +13,7 @@ import {
   TextInput,
 } from "@patternfly/react-core";
 // Modals
-import ConfirmModal from "../../components/modals/ConfirmModal";
+import ConfirmationModal from "../../components/modals/ConfirmationModal";
 // Forms
 import IpaTextArea from "../../components/Form/IpaTextArea";
 import { useNavigate } from "react-router-dom";
@@ -94,10 +96,11 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
 
   const dropdownItems = [
     <DropdownItem key="delete-user-group" onClick={() => onOpenDeleteModal()}>
-      Delete
+      Delete group
     </DropdownItem>,
   ];
   if (groupType === "") {
+    dropdownItems.push(<Divider key="separator" />);
     dropdownItems.push(
       <DropdownItem key="change-to-posix" onClick={() => onOpenPOSIXModal()}>
         Change to POSIX group
@@ -223,6 +226,60 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
       setModalSpinning(false);
     });
   };
+
+  const deleteModalActions = [
+    <Button
+      key="delete-host"
+      variant="danger"
+      onClick={doDelete}
+      isDisabled={modalSpinning}
+      isLoading={modalSpinning}
+      spinnerAriaValueText="Deleting"
+      spinnerAriaLabelledBy="Deleting"
+      spinnerAriaLabel="Deleting"
+    >
+      {modalSpinning ? "Deleting" : "Delete"}
+    </Button>,
+    <Button key="cancel" variant="link" onClick={onCloseDeleteModal}>
+      Cancel
+    </Button>,
+  ];
+
+  const posixModalActions = [
+    <Button
+      key="change-posix"
+      variant="primary"
+      onClick={doChangeToPosix}
+      isDisabled={modalSpinning}
+      isLoading={modalSpinning}
+      spinnerAriaValueText="Changing"
+      spinnerAriaLabelledBy="Changing"
+      spinnerAriaLabel="Changing"
+    >
+      {modalSpinning ? "Changing" : "Change Group"}
+    </Button>,
+    <Button key="cancel" variant="link" onClick={onClosePOSIXModal}>
+      Cancel
+    </Button>,
+  ];
+
+  const externalModalActions = [
+    <Button
+      key="change-external"
+      variant="primary"
+      onClick={doChangeToExternal}
+      isDisabled={modalSpinning}
+      isLoading={modalSpinning}
+      spinnerAriaValueText="Changing"
+      spinnerAriaLabelledBy="Changing"
+      spinnerAriaLabel="Changing"
+    >
+      {modalSpinning ? "Changing" : "Change Group"}
+    </Button>,
+    <Button key="cancel" variant="link" onClick={onCloseExternalModal}>
+      Cancel
+    </Button>,
+  ];
 
   // 'Save' handler method
   const onSave = () => {
@@ -367,34 +424,33 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
         className={"pf-v5-u-p-md pf-v5-u-ml-lg pf-v5-u-mr-lg"}
         toolbarItems={toolbarFields}
       />
-      <ConfirmModal
-        show={isDeleteModalOpen}
-        handleModalToggle={onCloseDeleteModal}
-        msg={'Are you sure you want to delete group "' + cn + '" ?'}
-        action={doDelete}
-        spinning={modalSpinning}
+      <ConfirmationModal
+        title={"Delete user group"}
+        isOpen={isDeleteModalOpen}
+        onClose={onCloseDeleteModal}
+        actions={deleteModalActions}
+        messageText={"Are you sure you want to delete this user group?"}
+        messageObj={cn}
       />
-      <ConfirmModal
-        show={isExternalModalOpen}
-        handleModalToggle={onCloseExternalModal}
-        msg={
-          'Are you sure you want to convert group "' +
-          cn +
-          '" to an external group?'
+      <ConfirmationModal
+        title={"Change group type"}
+        isOpen={isPOSIXModalOpen}
+        onClose={onClosePOSIXModal}
+        actions={posixModalActions}
+        messageText={
+          "Are you sure you want to change this group to a POSIX group?"
         }
-        action={doChangeToExternal}
-        spinning={modalSpinning}
+        messageObj={cn}
       />
-      <ConfirmModal
-        show={isPOSIXModalOpen}
-        handleModalToggle={onClosePOSIXModal}
-        msg={
-          'Are you sure you want to convert group "' +
-          cn +
-          '" to a POSIX group?'
+      <ConfirmationModal
+        title={"Change group type"}
+        isOpen={isExternalModalOpen}
+        onClose={onCloseExternalModal}
+        actions={externalModalActions}
+        messageText={
+          "Are you sure you want to change this group to an external group?"
         }
-        action={doChangeToPosix}
-        spinning={modalSpinning}
+        messageObj={cn}
       />
     </>
   );

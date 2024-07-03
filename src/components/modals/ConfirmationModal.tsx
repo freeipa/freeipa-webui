@@ -1,10 +1,10 @@
 import React from "react";
 // PatternFly
-import { Modal } from "@patternfly/react-core";
+import { Card, CardTitle, Modal } from "@patternfly/react-core";
 // Components
 import TextLayout from "../layouts/TextLayout";
 
-interface PropsToDeletionConfModal {
+interface PropsToConfModal {
   variant?: "default" | "small" | "medium" | "large";
   title: string;
   isOpen?: boolean;
@@ -14,7 +14,7 @@ interface PropsToDeletionConfModal {
   messageObj: string;
 }
 
-const DeletionConfirmationModal = (props: PropsToDeletionConfModal) => {
+const ConfirmationModal = (props: PropsToConfModal) => {
   return (
     <Modal
       variant={props.variant || "small"}
@@ -24,11 +24,11 @@ const DeletionConfirmationModal = (props: PropsToDeletionConfModal) => {
       actions={props.actions}
     >
       <TextLayout component="p">{props.messageText}</TextLayout>
-      <TextLayout className="pf-v5-u-mt-md">
-        <b>{props.messageObj}</b>
-      </TextLayout>
+      <Card className="pf-v5-u-mt-md" isFlat isCompact>
+        <CardTitle>{props.messageObj}</CardTitle>
+      </Card>
     </Modal>
   );
 };
 
-export default DeletionConfirmationModal;
+export default ConfirmationModal;
