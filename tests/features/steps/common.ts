@@ -116,6 +116,20 @@ When(
   }
 );
 
+When(
+  "I type in the textarea {string} text {string}",
+  (name: string, value: string) => {
+    cy.get('textarea[name="' + name + '"').type(value, { delay: 0 });
+  }
+);
+
+When(
+  "Then I should see {string} in the textarea {string}",
+  (value: string, name: string) => {
+    cy.get('textarea[name="' + name + '"').contains(value);
+  }
+);
+
 When("I clear the selected field", () => {
   cy.focused().clear();
 });
@@ -174,6 +188,14 @@ When("I click on kebab menu and select {string}", (buttonName: string) => {
   cy.get("#main-dropdown-kebab").click();
   cy.get("span.pf-v5-c-menu__item-text").contains(buttonName).click();
 });
+
+When(
+  "I click on the settings kebab menu and select {string}",
+  (buttonName: string) => {
+    cy.get("button[id=toggle-action-buttons]").click();
+    cy.get("span.pf-v5-c-menu__item-text").contains(buttonName).click();
+  }
+);
 
 // Checkboxes
 Then("I should see the {string} checkbox checked", (checkboxName: string) => {
@@ -291,11 +313,42 @@ Then(
   }
 );
 
-// Textboxes with 'Add' and 'Delete' buttons
 Then(
   "I should see a new empty text input field with ID {string}",
   (id: string) => {
     cy.get("input#" + id).should("be.empty");
+  }
+);
+
+Then(
+  "I should see {string} in text input field with ID {string}",
+  (value: string, id: string) => {
+    cy.get("input[id=" + id + "]").contains(value);
+  }
+);
+
+Then(
+  "I should see {string} in readonly text input field with ID {string}",
+  (value: string, id: string) => {
+    cy.get("input[id=" + id + "]")
+      .invoke("prop", "value")
+      .should("equal", value);
+  }
+);
+
+Then(
+  "I should see a non-empty text input field with ID {string}",
+  (id: string) => {
+    cy.get("input#" + id).should("not.be.empty");
+  }
+);
+
+Then(
+  "I should see a non-empty readonly text input field with ID {string}",
+  (id: string) => {
+    cy.get("input[id=" + id + "]")
+      .invoke("prop", "value")
+      .should("not.be.empty");
   }
 );
 
@@ -412,4 +465,9 @@ When("I click on the arrow icon to perform search", () => {
 
 Then("I click on the X icon to clear the search field", () => {
   cy.get("button[aria-label=Reset]").eq(0).click();
+});
+
+// Breadcrumb
+Then("I click on the breadcrump link {string}", (value: string) => {
+  cy.get(".pf-v5-c-breadcrumb__link").eq(0).contains(value).click();
 });
