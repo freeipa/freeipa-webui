@@ -21,6 +21,7 @@ import { partialGroupToGroup } from "src/utils/groupUtils";
 import { useUserGroupSettings } from "src/hooks/useUserGroupSettingsData";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import { useAlerts } from "../../hooks/useAlerts";
+import { NotFound } from "src/components/errors/PageErrors";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
@@ -90,6 +91,14 @@ const UserGroupsTabs = ({ section }) => {
   }
 
   const usergroup = partialGroupToGroup(userGroupSettingsData.userGroup);
+
+  // Show the 'NotFound' page if the userGroup is not found
+  if (
+    !userGroupSettingsData.isLoading &&
+    Object.keys(userGroupSettingsData.userGroup).length === 0
+  ) {
+    return <NotFound />;
+  }
 
   return (
     <Page>

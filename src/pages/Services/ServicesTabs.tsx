@@ -27,6 +27,7 @@ import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import DataSpinner from "src/components/layouts/DataSpinner";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
+import { NotFound } from "src/components/errors/PageErrors";
 
 // eslint-disable-next-line react/prop-types
 const ServicesTabs = ({ section }) => {
@@ -98,6 +99,14 @@ const ServicesTabs = ({ section }) => {
 
   if (serviceSettingsData.isLoading || !serviceSettingsData.service) {
     return <DataSpinner />;
+  }
+
+  // Show the 'NotFound' page if the service is not found
+  if (
+    !serviceSettingsData.isLoading &&
+    Object.keys(serviceSettingsData.service).length === 0
+  ) {
+    return <NotFound />;
   }
 
   const service = partialServiceToService(serviceSettingsData.service);

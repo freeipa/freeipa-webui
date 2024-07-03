@@ -31,6 +31,7 @@ import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { partialUserToUser } from "src/utils/userUtils";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
+import { NotFound } from "src/components/errors/PageErrors";
 
 // eslint-disable-next-line react/prop-types
 const ActiveUsersTabs = ({ memberof }) => {
@@ -78,6 +79,14 @@ const ActiveUsersTabs = ({ memberof }) => {
 
   if (userSettingsData.isLoading || !userSettingsData.user) {
     return <DataSpinner />;
+  }
+
+  // Show the 'NotFound' page if the user is not found
+  if (
+    !userSettingsData.isLoading &&
+    Object.keys(userSettingsData.user).length === 0
+  ) {
+    return <NotFound />;
   }
 
   const disabled = userSettingsData.user.nsaccountlock;
