@@ -18,6 +18,7 @@ import { Netgroup } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import { useNetgroupSettings } from "src/hooks/useNetgroupSettingsData";
 import DataSpinner from "src/components/layouts/DataSpinner";
+import { NotFound } from "src/components/errors/PageErrors";
 
 const NetgroupsTabs = () => {
   // Get location (React Router DOM) and get state data
@@ -49,6 +50,14 @@ const NetgroupsTabs = () => {
     netgroupSettingsData.netgroup.cn === undefined
   ) {
     return <DataSpinner />;
+  }
+
+  // Show the 'NotFound' page if the netgroup is not found
+  if (
+    !netgroupSettingsData.isLoading &&
+    Object.keys(netgroupSettingsData.netgroup).length === 0
+  ) {
+    return <NotFound />;
   }
 
   return (

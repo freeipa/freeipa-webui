@@ -28,6 +28,7 @@ import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { partialHostToHost } from "src/utils/hostUtils";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
+import { NotFound } from "src/components/errors/PageErrors";
 
 // eslint-disable-next-line react/prop-types
 const HostsTabs = ({ section }) => {
@@ -99,6 +100,14 @@ const HostsTabs = ({ section }) => {
 
   if (hostSettingsData.isLoading || !hostSettingsData.host) {
     return <DataSpinner />;
+  }
+
+  // Show the 'NotFound' page if the host is not found
+  if (
+    !hostSettingsData.isLoading &&
+    Object.keys(hostSettingsData.host).length === 0
+  ) {
+    return <NotFound />;
   }
 
   const host = hostSettingsData.host;

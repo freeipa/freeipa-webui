@@ -24,6 +24,7 @@ import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
+import { NotFound } from "src/components/errors/PageErrors";
 
 const PreservedUsersTabs = () => {
   // Get location (React Router DOM) and get state data
@@ -72,6 +73,14 @@ const PreservedUsersTabs = () => {
 
   if (userSettingsData.isLoading) {
     return <DataSpinner />;
+  }
+
+  // Show the 'NotFound' page if the user is not found
+  if (
+    !userSettingsData.isLoading &&
+    Object.keys(userSettingsData.user).length === 0
+  ) {
+    return <NotFound />;
   }
 
   return (

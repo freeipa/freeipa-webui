@@ -18,6 +18,7 @@ import { HostGroup } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import { useHostGroupSettings } from "src/hooks/useHostGroupSettingsData";
 import DataSpinner from "src/components/layouts/DataSpinner";
+import { NotFound } from "src/components/errors/PageErrors";
 
 const HostGroupsTabs = () => {
   // Get location (React Router DOM) and get state data
@@ -49,6 +50,14 @@ const HostGroupsTabs = () => {
     hostGroupSettingsData.hostGroup.cn === undefined
   ) {
     return <DataSpinner />;
+  }
+
+  // Show the 'NotFound' page if the hostGroup is not found
+  if (
+    !hostGroupSettingsData.isLoading &&
+    Object.keys(hostGroupSettingsData.hostGroup).length === 0
+  ) {
+    return <NotFound />;
   }
 
   return (
