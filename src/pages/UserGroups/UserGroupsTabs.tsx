@@ -20,7 +20,6 @@ import { partialGroupToGroup } from "src/utils/groupUtils";
 // Hooks
 import { useUserGroupSettings } from "src/hooks/useUserGroupSettingsData";
 import DataSpinner from "src/components/layouts/DataSpinner";
-import { useAlerts } from "../../hooks/useAlerts";
 import { NotFound } from "src/components/errors/PageErrors";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
@@ -28,9 +27,6 @@ import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 
 // eslint-disable-next-line react/prop-types
 const UserGroupsTabs = ({ section }) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // Get location (React Router DOM) and get state data
   const { cn } = useParams();
   const navigate = useNavigate();
@@ -102,7 +98,6 @@ const UserGroupsTabs = ({ section }) => {
 
   return (
     <Page>
-      <alerts.ManagedAlerts />
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadCrumb className="pf-v5-u-mb-md" />
         <TitleLayout id={usergroup.cn} text={usergroup.cn} headingLevel="h1" />

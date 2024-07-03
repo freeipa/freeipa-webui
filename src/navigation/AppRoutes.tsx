@@ -31,6 +31,7 @@ import SELinuxUserMaps from "src/pages/SELinuxUserMaps/SELinuxUserMaps";
 import PasswordPolicies from "src/pages/PasswordPolicies/PasswordPolicies";
 import KrbTicketPolicy from "src/pages/KrbTicketPolicy/KrbTicketPolicy";
 import UserGroupsTabs from "src/pages/UserGroups/UserGroupsTabs";
+import HostGroupsTabs from "src/pages/HostGroups/HostGroupsTabs";
 
 // Renders routes (React)
 export const AppRoutes = (): React.ReactElement => (
@@ -129,6 +130,9 @@ export const AppRoutes = (): React.ReactElement => (
     </Route>
     <Route path="host-groups">
       <Route path="" element={<HostGroups />} />
+      <Route path=":cn">
+        <Route path="" element={<HostGroupsTabs section="settings" />} />
+      </Route>
     </Route>
     <Route path="netgroups">
       <Route path="" element={<Netgroups />} />

@@ -7,6 +7,8 @@ import TableLayout from "../../components/layouts/TableLayout";
 import { HostGroup } from "../../utils/datatypes/globalDataTypes";
 // Layouts
 import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
+// React Router DOM
+import { Link } from "react-router-dom";
 
 interface GroupsData {
   isHostGroupSelectable: (group: HostGroup) => boolean;
@@ -171,7 +173,11 @@ const HostGroupsTable = (props: PropsToTable) => {
           isDisabled: !props.groupsData.isHostGroupSelectable(group),
         }}
       />
-      <Td dataLabel={columnNames.cn}>{group.cn}</Td>
+      <Td dataLabel={columnNames.cn}>
+        <Link to={"/host-groups/" + group.cn} state={group}>
+          {group.cn}
+        </Link>
+      </Td>
       <Td dataLabel={columnNames.description}>{group.description}</Td>
     </Tr>
   ));

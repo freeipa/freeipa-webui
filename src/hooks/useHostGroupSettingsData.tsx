@@ -15,7 +15,7 @@ type HostGroupSettingsData = {
   metadata: Metadata;
   originalGroup: Partial<HostGroup>;
   hostGroup: Partial<HostGroup>;
-  setHostGroup: (cn: Partial<HostGroup>) => void;
+  setHostGroup: (hostGroup: Partial<HostGroup>) => void;
   refetch: () => void;
   modifiedValues: () => Partial<HostGroup>;
 };

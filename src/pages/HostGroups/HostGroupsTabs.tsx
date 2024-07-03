@@ -9,41 +9,75 @@ import {
   TabTitleText,
 } from "@patternfly/react-core";
 // React Router DOM
-import { useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Layouts
-import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
+import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
-// Data types
-import { HostGroup } from "src/utils/datatypes/globalDataTypes";
+import DataSpinner from "src/components/layouts/DataSpinner";
 // Hooks
 import { useHostGroupSettings } from "src/hooks/useHostGroupSettingsData";
-import DataSpinner from "src/components/layouts/DataSpinner";
+// Utils
+import { partialGroupToGroup } from "src/utils/hostGroupUtils";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
+import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { NotFound } from "src/components/errors/PageErrors";
+import HostGroupsSettings from "./HostGroupsSettings";
 
-const HostGroupsTabs = () => {
+// eslint-disable-next-line react/prop-types
+const HostGroupsTabs = ({ section }) => {
   // Get location (React Router DOM) and get state data
-  const location = useLocation();
-  const hostGroupsData: HostGroup = location.state as HostGroup;
-  const hostGroupSettingsData = useHostGroupSettings(hostGroupsData.cn[0]);
+  const { cn } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const hostGroupSettingsData = useHostGroupSettings(cn as string);
 
   // Tab
-  const [activeTabKey, setActiveTabKey] = useState(0);
+  const [activeTabKey, setActiveTabKey] = useState(section);
 
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as number);
+    setActiveTabKey(tabIndex as string);
+    if (tabIndex === "settings") {
+      navigate("/host-groups/" + cn);
+    } else if (tabIndex === "memberof") {
+      navigate("/host-groups/" + cn + "/memberof_hostgroup");
+    } else if (tabIndex === "managedby") {
+      navigate("/host-groups/" + cn + "/managedby_hostgroup");
+    }
   };
 
-  // 'pagesVisited' array will contain the visited pages.
-  // - Those will be passed to the 'BreadcrumbLayout' component.
-  const pagesVisited = [
-    {
-      name: "Host groups",
-      url: "/host-groups",
-    },
-  ];
+  React.useEffect(() => {
+    if (!cn) {
+      // Redirect to the main page
+      navigate("/host-groups");
+    } else {
+      // Update breadcrumb route
+      const currentPath: BreadCrumbItem[] = [
+        {
+          name: "Host groups",
+          url: URL_PREFIX + "/host-groups",
+        },
+        {
+          name: cn,
+          url: URL_PREFIX + "/host-groups/" + cn,
+          isActive: true,
+        },
+      ];
+      dispatch(updateBreadCrumbPath(currentPath));
+    }
+  }, [cn]);
+
+  // Redirect to the settings page if the section is not defined
+  React.useEffect(() => {
+    if (!section) {
+      navigate(URL_PREFIX + "/host-groups/" + cn);
+    }
+    setActiveTabKey(section);
+  }, [section]);
 
   if (
     hostGroupSettingsData.isLoading ||
@@ -60,20 +94,13 @@ const HostGroupsTabs = () => {
     return <NotFound />;
   }
 
+  const hostgroup = partialGroupToGroup(hostGroupSettingsData.hostGroup);
+
   return (
     <Page>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
-        <BreadcrumbLayout
-          className="pf-v5-u-mb-md"
-          userId={hostGroupsData.cn}
-          preText=""
-          pagesVisited={pagesVisited}
-        />
-        <TitleLayout
-          id={hostGroupsData.cn}
-          text={hostGroupsData.cn}
-          headingLevel="h1"
-        />
+        <BreadCrumb className="pf-v5-u-mb-md" />
+        <TitleLayout id={hostgroup.cn} text={hostgroup.cn} headingLevel="h1" />
       </PageSection>
       <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
         <Tabs
@@ -82,24 +109,37 @@ const HostGroupsTabs = () => {
           variant="light300"
           isBox
           className="pf-v5-u-ml-lg"
+          mountOnEnter
+          unmountOnExit
         >
           <Tab
-            eventKey={0}
-            name="details"
+            eventKey={"settings"}
+            name="settings-details"
             title={<TabTitleText>Settings</TabTitleText>}
           >
             <PageSection className="pf-v5-u-pb-0"></PageSection>
+            <HostGroupsSettings
+              hostGroup={hostGroupSettingsData.hostGroup}
+              originalGroup={hostGroupSettingsData.originalGroup}
+              metadata={hostGroupSettingsData.metadata}
+              onGroupChange={hostGroupSettingsData.setHostGroup}
+              isDataLoading={hostGroupSettingsData.isFetching}
+              onRefresh={hostGroupSettingsData.refetch}
+              isModified={hostGroupSettingsData.modified}
+              onResetValues={hostGroupSettingsData.resetValues}
+              modifiedValues={hostGroupSettingsData.modifiedValues}
+            />
           </Tab>
           <Tab
-            eventKey={1}
-            name="details"
+            eventKey={"memberof"}
+            name="memberof-details"
             title={<TabTitleText>Is a member of</TabTitleText>}
           >
             <PageSection className="pf-v5-u-pb-0"></PageSection>
           </Tab>
           <Tab
-            eventKey={2}
-            name="details"
+            eventKey={"managedby"}
+            name="managedby-details"
             title={<TabTitleText>Is managed by</TabTitleText>}
           >
             <PageSection className="pf-v5-u-pb-0"></PageSection>
