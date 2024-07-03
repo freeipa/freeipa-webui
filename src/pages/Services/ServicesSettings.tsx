@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 // PatternFly
 import {
+  Button,
   DropdownItem,
   Flex,
   JumpLinks,
@@ -16,6 +17,9 @@ import {
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // Data types
 import { Metadata, Service } from "src/utils/datatypes/globalDataTypes";
+// Modals
+import DeletionConfirmationModal from "src/components/modals/DeletionConfirmationModal";
+import IssueNewCertificate from "src/components/modals/IssueNewCertificate";
 // Layouts
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -32,8 +36,14 @@ import AllowedCreateKeytab from "src/components/ServicesSections/AllowedCreateKe
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 import useApiError from "src/hooks/useApiError";
+// Errors
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { SerializedError } from "@reduxjs/toolkit";
 // RPC
-import { useSaveServiceMutation } from "src/services/rpcServices";
+import {
+  useSaveServiceMutation,
+  useUnprovisionServiceMutation,
+} from "src/services/rpcServices";
 import { ErrorResult } from "src/services/rpc";
 import { partialServiceToService } from "src/utils/serviceUtils";
 // Hooks
@@ -58,17 +68,105 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
 
   // API call: Save the Service
   const [saveService] = useSaveServiceMutation();
+  const [executeUnprovision] = useUnprovisionServiceMutation();
 
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
   const [isSaving, setSaving] = useState(false);
 
-  const dropdownItems = [
-    <DropdownItem key="delete-key-unprovision">
-      Delete key, Unprovision
-    </DropdownItem>,
-    <DropdownItem key="new certificate">New certificate</DropdownItem>,
+  // 'Add certificate' modal
+  const [isCertModalOpen, setIsCertModalOpen] = useState(false);
+  const onCloseCertModal = () => {
+    setIsCertModalOpen(false);
+  };
+
+  // Unprovision host modal
+  const [modalSpinning, setModalSpinning] = React.useState(false);
+  const [isUnprovisionModalOpen, setIsUnprovisionModalOpen] =
+    React.useState(false);
+
+  const onCloseUnprovisionModal = () => {
+    setIsUnprovisionModalOpen(false);
+  };
+
+  const unprovisionModalActions = [
+    <Button
+      key="unprov-host"
+      variant="danger"
+      onClick={() => onUnprovision()}
+      isDisabled={modalSpinning}
+      isLoading={modalSpinning}
+      spinnerAriaValueText="Unprovisioning"
+      spinnerAriaLabelledBy="Unprovisioning"
+      spinnerAriaLabel="Unprovisioning"
+    >
+      {modalSpinning ? "Unprovisioning" : "Unprovision"}
+    </Button>,
+    <Button key="cancel" variant="link" onClick={onCloseUnprovisionModal}>
+      Cancel
+    </Button>,
   ];
+
+  const onUnprovision = () => {
+    const service = props.service.krbcanonicalname || "";
+    if (service === "") {
+      return;
+    }
+    setModalSpinning(true);
+
+    executeUnprovision(service).then((result) => {
+      if ("data" in result) {
+        const disableError = result.data.error as
+          | FetchBaseQueryError
+          | SerializedError;
+
+        if (disableError) {
+          // alert: error
+          let error: string | undefined = "";
+          if ("error" in disableError) {
+            error = disableError.error;
+          } else if ("message" in disableError) {
+            error = disableError.message;
+          }
+
+          alerts.addAlert(
+            "unprovision-error",
+            error || "Error when unprovisioning service",
+            "danger"
+          );
+        } else {
+          // alert: success
+          alerts.addAlert(
+            "unprovision-success",
+            "Service successfully unprovisioned",
+            "success"
+          );
+        }
+        setModalSpinning(false);
+        setIsUnprovisionModalOpen(false);
+      }
+    });
+  };
+
+  const dropdownItems = [
+    <DropdownItem
+      key="new certificate"
+      onClick={() => setIsCertModalOpen(true)}
+    >
+      New certificate
+    </DropdownItem>,
+  ];
+
+  if (props.service.has_keytab) {
+    dropdownItems.unshift(
+      <DropdownItem
+        key="delete-key-unprovision"
+        onClick={() => setIsUnprovisionModalOpen(true)}
+      >
+        Delete key, Unprovision
+      </DropdownItem>
+    );
+  }
 
   const onKebabToggle = () => {
     setIsKebabOpen(!isKebabOpen);
@@ -277,6 +375,28 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
         isSticky={true}
         className={"pf-v5-u-p-md pf-v5-u-ml-lg pf-v5-u-mr-lg"}
         toolbarItems={toolbarFields}
+      />
+      <DeletionConfirmationModal
+        title={"Unprovision service"}
+        isOpen={isUnprovisionModalOpen}
+        onClose={onCloseUnprovisionModal}
+        actions={unprovisionModalActions}
+        messageText={"Unprovision/disable this service?"}
+        messageObj={
+          props.service.krbcanonicalname ? props.service.krbcanonicalname : ""
+        }
+      />
+      <IssueNewCertificate
+        isOpen={isCertModalOpen}
+        onClose={onCloseCertModal}
+        id={props.service.krbcanonicalname}
+        showPrincipalFields={false}
+        onRefresh={props.onRefresh}
+        principal={
+          props.service.krbprincipalname
+            ? props.service.krbprincipalname[0]
+            : ""
+        }
       />
     </>
   );
