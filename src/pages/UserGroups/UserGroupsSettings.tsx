@@ -378,7 +378,10 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
             id="group-settings"
             text="User group settings"
           />
-          <Form className="pf-v5-u-mb-lg pf-v5-u-mr-md" isHorizontal>
+          <Form
+            className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md"
+            isHorizontal
+          >
             <FormGroup label="Description" fieldId="description">
               <IpaTextArea
                 name="description"

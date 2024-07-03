@@ -14,7 +14,8 @@ import { API_VERSION_BACKUP } from "../utils/utils";
 import { HostGroup } from "src/utils/datatypes/globalDataTypes";
 
 /**
- * User Group-related endpoints: addToGroups, removeFromGroups, getGroupInfoByName, addGroup, removeGroups
+ * User Group-related endpoints: addToGroups, removeFromGroups,
+ * getGroupInfoByName, addGroup, removeGroups, saveHostGroup
  *
  * API commands:
  * - hostgroup_add: https://freeipa.readthedocs.io/en/latest/api/hostgroup_add.html
@@ -22,6 +23,7 @@ import { HostGroup } from "src/utils/datatypes/globalDataTypes";
  * - hostgroup_add_member: https://freeipa.readthedocs.io/en/latest/api/hostgroup_add_member.html
  * - hostgroup_remove_member: https://freeipa.readthedocs.io/en/latest/api/hostgroup_remove_member.html
  * - hostgroup_show: https://freeipa.readthedocs.io/en/latest/api/hostgroup_show.html
+ * - hostgroup_mod: https://freeipa.readthedocs.io/en/latest/api/hostgroup_mod.html
  */
 
 export interface GroupShowPayload {
@@ -192,6 +194,21 @@ const extendedApi = api.injectEndpoints({
         return groupList;
       },
     }),
+    saveHostGroup: build.mutation<FindRPCResponse, Partial<HostGroup>>({
+      query: (group) => {
+        const params = {
+          version: API_VERSION_BACKUP,
+          ...group,
+        };
+        delete params["cn"];
+        const cn = group.cn !== undefined ? group.cn : "";
+        return getCommand({
+          method: "hostgroup_mod",
+          params: [[cn], params],
+        });
+      },
+      invalidatesTags: ["FullHostGroup"],
+    }),
   }),
   overrideExisting: false,
 });
@@ -210,4 +227,5 @@ export const {
   useRemoveFromHostGroupsMutation,
   useGetHostGroupInfoByNameQuery,
   useGetHostGroupsFullDataQuery,
+  useSaveHostGroupMutation,
 } = extendedApi;
