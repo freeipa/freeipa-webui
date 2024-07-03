@@ -13,7 +13,7 @@ import {
 import SecondaryButton from "../layouts/SecondaryButton";
 import TextLayout from "../layouts/TextLayout";
 // Modals
-import DeletionConfirmationModal from "../modals/DeletionConfirmationModal";
+import ConfirmationModal from "../modals/ConfirmationModal";
 // Data types
 import { Metadata } from "src/utils/datatypes/globalDataTypes";
 // ipaObject utils
@@ -362,7 +362,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
       >
         Add Key
       </SecondaryButton>
-      <DeletionConfirmationModal
+      <ConfirmationModal
         title={"Remove SSH Public Key"}
         isOpen={isDeletionModalOpen}
         onClose={onCloseDeletionModal}

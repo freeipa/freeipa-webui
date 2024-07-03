@@ -27,7 +27,7 @@ import ModalErrors from "src/components/errors/ModalErrors";
 // Modals
 import HostSetPassword from "src/components/modals/HostSetPassword";
 import IssueNewCertificate from "src/components/modals/IssueNewCertificate";
-import DeletionConfirmationModal from "src/components/modals/DeletionConfirmationModal";
+import ConfirmationModal from "src/components/modals/ConfirmationModal";
 // Layouts
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -504,7 +504,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
           props.host.krbprincipalname ? props.host.krbprincipalname[0] : ""
         }
       />
-      <DeletionConfirmationModal
+      <ConfirmationModal
         title={"Unprovision host"}
         isOpen={isUnprovisionHostModalOpen}
         onClose={onCloseUnprovisionHostModal}

@@ -13,7 +13,7 @@ import { Certificate, Metadata } from "src/utils/datatypes/globalDataTypes";
 import { getParamProperties } from "src/utils/ipaObjectUtils";
 // Modals
 import ModalWithTextAreaLayout from "../layouts/ModalWithTextAreaLayout";
-import DeletionConfirmationModal from "../modals/DeletionConfirmationModal";
+import ConfirmationModal from "../modals/ConfirmationModal";
 import CertificatesInformationModal from "../modals/CertificatesInformationModal";
 import RevokeCertificate from "../modals/RevokeCertificate";
 import RemoveHoldCertificate from "../modals/RemoveHoldCertificate";
@@ -620,7 +620,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         variant="medium"
         isTextareaDisabled={textareaModalOption === "get"}
       />
-      <DeletionConfirmationModal
+      <ConfirmationModal
         title={"Remove certificate"}
         isOpen={isDeleteConfModalOpen}
         onClose={onCloseDeletionConfModal}
