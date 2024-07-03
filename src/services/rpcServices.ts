@@ -15,7 +15,8 @@ import { Service } from "../utils/datatypes/globalDataTypes";
 
 /**
  * Services-related endpoints: getServicesFullData, addService, removeServices, saveService,
- * addServicePrincipalAlias, removeServicePrincipalAlias, addServiceHost, removeServiceHost
+ * addServicePrincipalAlias, removeServicePrincipalAlias, addServiceHost, removeServiceHost,
+ * unprovisionService
  *
  * API commands:
  * - service_show: https://freeipa.readthedocs.io/en/latest/api/service_show.html
@@ -26,6 +27,7 @@ import { Service } from "../utils/datatypes/globalDataTypes";
  * - service_remove_principal: https://freeipa.readthedocs.io/en/latest/api/service_remove_principal.html
  * - service_add_host: https://freeipa.readthedocs.io/en/latest/api/service_add_host.html
  * - service_remove_host: https://freeipa.readthedocs.io/en/latest/api/service_remove_host.html
+ * - service_disable: https://freeipa.readthedocs.io/en/latest/api/service_disable.html
  */
 
 export interface ServiceAddPayload {
@@ -200,6 +202,21 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    unprovisionService: build.mutation<FindRPCResponse, string>({
+      query: (service) => {
+        const params = [
+          [service],
+          {
+            version: API_VERSION_BACKUP,
+          },
+        ];
+
+        return getCommand({
+          method: "service_disable",
+          params: params,
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -219,4 +236,5 @@ export const {
   useGetServiceByIdQuery,
   useAddServiceHostMutation,
   useRemoveServiceHostMutation,
+  useUnprovisionServiceMutation,
 } = extendedApi;

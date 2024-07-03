@@ -311,6 +311,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
           onChange={(_event, value) => setCertificate(value)}
           style={{ height: "250px" }}
           className="pf-u-mb-lg"
+          placeholder="Paste certificate text here"
           autoFocus
         />
       ),
