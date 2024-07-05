@@ -7,6 +7,8 @@ import TableLayout from "../../components/layouts/TableLayout";
 import { Netgroup } from "../../utils/datatypes/globalDataTypes";
 // Layouts
 import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
+// React Router DOM
+import { Link } from "react-router-dom";
 
 interface GroupsData {
   isNetgroupSelectable: (group: Netgroup) => boolean;
@@ -171,7 +173,11 @@ const NetgroupsTable = (props: PropsToTable) => {
           isDisabled: !props.groupsData.isNetgroupSelectable(group),
         }}
       />
-      <Td dataLabel={columnNames.cn}>{group.cn}</Td>
+      <Td dataLabel={columnNames.cn}>
+        <Link to={"/netgroups/" + group.cn} state={group}>
+          {group.cn}
+        </Link>
+      </Td>
       <Td dataLabel={columnNames.description}>{group.description}</Td>
     </Tr>
   ));

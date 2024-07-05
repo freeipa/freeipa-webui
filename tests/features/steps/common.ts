@@ -65,6 +65,10 @@ When("I click on {string} tab", (tabText: string) => {
   cy.get("nav a").contains(tabText).click();
 });
 
+When("I click on {string} page tab", (tabText: string) => {
+  cy.get(".pf-v5-c-tabs__link").contains(tabText).click();
+});
+
 When("I click on {string} button", function (buttonText: string) {
   cy.get("button").contains(buttonText).click();
 });
@@ -134,23 +138,29 @@ When("I clear the selected field", () => {
   cy.focused().clear();
 });
 
+When("I clear the field {string}", (id) => {
+  cy.get("input[id='" + id + "']")
+    .focus()
+    .clear();
+});
+
 // Data tables
 When("I select entry {string} in the data table", (name: string) => {
-  cy.get("tr[id=" + name + "] input[type=checkbox]").check();
+  cy.get("tr[id='" + name + "'] input[type=checkbox]").check();
 });
 
 When("I click on {string} entry in the data table", (name: string) => {
-  cy.get("tr[id=" + name + "] a")
+  cy.get("tr[id='" + name + "'] a")
     .contains(name)
     .click();
 });
 
 Then("I should see {string} entry in the data table", (name: string) => {
-  cy.get("tr[id=" + name + "]").should("be.visible");
+  cy.get("tr[id='" + name + "']").should("be.visible");
 });
 
 Then("I should not see {string} entry in the data table", (name: string) => {
-  cy.get("tr[id=" + name + "]").should("not.exist");
+  cy.get("tr[id='" + name + "']").should("not.exist");
 });
 
 Then(
@@ -167,12 +177,12 @@ Then(
 Then(
   "I should see partial {string} entry in the data table",
   (name: string) => {
-    cy.get("tr[id^=" + name + "]").should("be.visible");
+    cy.get("tr[id^='" + name + "']").should("be.visible");
   }
 );
 
 When("I select partial entry {string} in the data table", (name: string) => {
-  cy.get("tr[id^=" + name + "] input[type=checkbox]").check();
+  cy.get("tr[id^='" + name + "'] input[type=checkbox]").check();
 });
 
 // Notifications
@@ -182,6 +192,10 @@ Then(
     cy.get("div.pf-v5-c-alert.pf-m-" + type).contains(content);
   }
 );
+
+Then("I close the alert", () => {
+  cy.get(".pf-v5-c-alert button").click();
+});
 
 // Kebab
 When("I click on kebab menu and select {string}", (buttonName: string) => {
@@ -323,14 +337,14 @@ Then(
 Then(
   "I should see {string} in text input field with ID {string}",
   (value: string, id: string) => {
-    cy.get("input[id=" + id + "]").contains(value);
+    cy.get("input[id='" + id + "']").contains(value);
   }
 );
 
 Then(
   "I should see {string} in readonly text input field with ID {string}",
   (value: string, id: string) => {
-    cy.get("input[id=" + id + "]")
+    cy.get("input[id='" + id + "']")
       .invoke("prop", "value")
       .should("equal", value);
   }
@@ -447,7 +461,6 @@ Then("TextInput {string} should be disabled", function (id: string) {
 // Search
 When("I type {string} in the search field", (searchText: string) => {
   cy.get("div.pf-v5-c-toolbar input[name=search]")
-    // cy.get("div.pf-v5-c-text-input-group__text-input")
     .eq(0)
     .type(searchText, { force: true });
 });
@@ -461,6 +474,7 @@ Then(
 
 When("I click on the arrow icon to perform search", () => {
   cy.get("button[aria-label=Search]").eq(0).click();
+  cy.wait(500);
 });
 
 Then("I click on the X icon to clear the search field", () => {
@@ -470,4 +484,34 @@ Then("I click on the X icon to clear the search field", () => {
 // Breadcrumb
 Then("I click on the breadcrump link {string}", (value: string) => {
   cy.get(".pf-v5-c-breadcrumb__link").eq(0).contains(value).click();
+});
+
+// Dual list
+Then("I click on the dual list item {string}", (value: string) => {
+  cy.get(".pf-v5-c-dual-list-selector__item-text").contains(value).click();
+});
+
+Then("I click on the dual list add selected button", () => {
+  cy.get('button[aria-label="Add selected"]').click();
+});
+
+Then("I click on the first dual list item", () => {
+  cy.get("li[id=basicSelectorWithSearch-available-pane-list-option-0]")
+    .eq(0)
+    .click();
+});
+
+// Misc
+When("I scroll up", () => {
+  cy.get("#settings-page").scrollTo("top", {
+    ensureScrollable: false,
+    duration: 500,
+  });
+});
+
+When("I scroll down", () => {
+  cy.get("#settings-page").scrollTo("bottom", {
+    ensureScrollable: false,
+    duration: 500,
+  });
 });

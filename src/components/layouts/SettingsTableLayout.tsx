@@ -8,7 +8,6 @@ import {
   EmptyStateVariant,
   Flex,
   FlexItem,
-  PaginationVariant,
   SearchInput,
 } from "@patternfly/react-core";
 import { TableVariant } from "@patternfly/react-table";
@@ -84,7 +83,7 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
                 classname="pf-v5-u-mr-sm"
                 onClickHandler={props.onAddModal}
               >
-                Add {props.entryType}
+                Add {props.entryType.toLowerCase()}s
               </SecondaryButton>
             </FlexItem>
             <FlexItem align={{ default: "alignRight" }}>
@@ -112,22 +111,14 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
             tableHeader={props.tableHeader}
             tableBody={props.tableBody}
           />
-          <PaginationLayout
-            list={props.list}
-            paginationData={props.paginationData}
-            variant={PaginationVariant.bottom}
-            widgetId="pagination-options-menu-bottom"
-            className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-            perPageSize="sm"
-          />
         </>
       ) : (
         <EmptyState variant={EmptyStateVariant.xs}>
           <EmptyStateHeader
             titleText={
               "No " +
-              props.entryType +
-              "s" +
+              props.entryType.toLowerCase() +
+              "s " +
               (props.entryCount > 0 ? " found" : "")
             }
             headingLevel="h6"
@@ -135,7 +126,7 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
           <EmptyStateBody>
             <EmptyStateActions>
               <SecondaryButton onClickHandler={props.onAddModal}>
-                Add {props.entryType}
+                Add {props.entryType.toLowerCase()}s
               </SecondaryButton>
             </EmptyStateActions>
           </EmptyStateBody>

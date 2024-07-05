@@ -169,6 +169,14 @@ export interface Netgroup {
   nisdomainname: string;
   description: string;
   dn: string;
+  memberof_netgroup: string[];
+  memberhost_host: string[];
+  memberhost_hostgroup: string[];
+  memberuser_user: string[];
+  memberuser_group: string[];
+  externalhost: string[];
+  usercategory: string;
+  hostcategory: string;
 }
 
 export interface RolesOld {

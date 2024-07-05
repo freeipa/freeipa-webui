@@ -15,7 +15,7 @@ type NetgroupSettingsData = {
   metadata: Metadata;
   originalGroup: Partial<Netgroup>;
   netgroup: Partial<Netgroup>;
-  setNetgroup: (cn: Partial<Netgroup>) => void;
+  setNetgroup: (netgroup: Partial<Netgroup>) => void;
   refetch: () => void;
   modifiedValues: () => Partial<Netgroup>;
 };
