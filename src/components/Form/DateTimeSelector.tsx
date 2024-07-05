@@ -44,15 +44,23 @@ const DateTimeSelector = (props: PropsToDateTimeSelector) => {
       updatedFromDate = cloneDate(props.datetime);
     }
 
-    if (!newFromDate || !isValidDate(newFromDate)) return;
+    if (!props.onChange) return;
+
+    if (!newFromDate) {
+      props.onChange(new Date(NaN));
+      return;
+    }
+
+    if (newFromDate && !isValidDate(newFromDate)) {
+      props.onChange(newFromDate);
+      return;
+    }
 
     updatedFromDate.setFullYear(newFromDate.getFullYear());
     updatedFromDate.setMonth(newFromDate.getMonth());
     updatedFromDate.setDate(newFromDate.getDate());
 
-    if (props.onChange) {
-      props.onChange(updatedFromDate);
-    }
+    props.onChange(updatedFromDate);
   };
 
   // On change time handler
@@ -62,10 +70,23 @@ const DateTimeSelector = (props: PropsToDateTimeSelector) => {
       updatedFromDate = cloneDate(props.datetime);
     }
 
-    if (!updatedFromDate || isValidDate(updatedFromDate)) return;
+    if (!props.onChange) return;
+
+    // If no valid time is provided, then set hour and minutes to default values : 00:00
+    // - This is needed to activate the buttons and not losing the date data
+    if (!hour || !minute) {
+      updatedFromDate.setFullYear(updatedFromDate.getFullYear());
+      updatedFromDate.setMonth(updatedFromDate.getMonth());
+      updatedFromDate.setDate(updatedFromDate.getDate());
+      updatedFromDate.setHours(0);
+      updatedFromDate.setMinutes(0);
+      props.onChange(updatedFromDate);
+      return;
+    }
 
     updatedFromDate.setHours(hour);
     updatedFromDate.setMinutes(minute);
+
     if (props.onChange) {
       props.onChange(updatedFromDate);
     }
