@@ -21,6 +21,7 @@ import { Netgroup } from "../utils/datatypes/globalDataTypes";
  * - netgroup_add_member: https://freeipa.readthedocs.io/en/latest/api/netgroup_add_member.html
  * - netgroup_remove_member: https://freeipa.readthedocs.io/en/latest/api/netgroup_remove_member.html
  * - netgroup_show: https://freeipa.readthedocs.io/en/latest/api/netgroup_show.html
+ * - netgroup_mod: https://freeipa.readthedocs.io/en/latest/api/netgroup_mod.html
  */
 
 export interface NetgroupShowPayload {
@@ -122,7 +123,7 @@ const extendedApi = api.injectEndpoints({
      * Add entity to netgroups
      * @param {string} toId - ID of the entity to add to netgroups
      * @param {string} type - Type of the entity
-     *    Available types: user | host | service
+     *    Available types:  user | group | host | hostgroup | netgroup
      * @param {string[]} listOfMembers - List of members to add to the netgroups
      */
     addToNetgroups: build.mutation<
@@ -145,10 +146,62 @@ const extendedApi = api.injectEndpoints({
       },
     }),
     /**
+     * Add members to a netgroup
+     * @param {string} groupId - ID of the netgroup
+     * @param {string} memberType - Type of the member
+     *    Available types:  user | group | host | hostgroup | netgroup
+     * @param {string[]} listOfMembers - List of members to add to the netgroup
+     */
+    addMemberToNetgroups: build.mutation<
+      BatchRPCResponse,
+      [string, string, string[]]
+    >({
+      query: (payload) => {
+        const groupId = payload[0];
+        const memberType = payload[1];
+        const members = payload[2];
+        const membersToAdd: Command[] = [];
+        members.map((member) => {
+          const payloadItem = {
+            method: "netgroup_add_member",
+            params: [[groupId], { [memberType]: member }],
+          } as Command;
+          membersToAdd.push(payloadItem);
+        });
+        return getBatchCommand(membersToAdd, API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Remove members to a netgroup
+     * @param {string} groupId - ID of the netgroup
+     * @param {string} memberType - Type of the member
+     *    Available types:  user | group | host | hostgroup | netgroup
+     * @param {string[]} listOfMembers - List of members to remove from the netgroup
+     */
+    removeMemberFromNetgroups: build.mutation<
+      BatchRPCResponse,
+      [string, string, string[]]
+    >({
+      query: (payload) => {
+        const groupId = payload[0];
+        const memberType = payload[1];
+        const members = payload[2];
+        const membersToRemove: Command[] = [];
+        members.map((member) => {
+          const payloadItem = {
+            method: "netgroup_remove_member",
+            params: [[groupId], { [memberType]: member }],
+          } as Command;
+          membersToRemove.push(payloadItem);
+        });
+        return getBatchCommand(membersToRemove, API_VERSION_BACKUP);
+      },
+    }),
+    /**
      * Delete entity from netgroups
      * @param {string} memberId - ID of the entity to remove from netgroups
      * @param {string} memberType - Type of the entity
-     *    Available types: user | host | service
+     *    Available types: user | group | host | hostgroup | netgroup
      * @param {string[]} netgroupNames - List of members to remove from netgroups
      */
     removeFromNetgroups: build.mutation<
@@ -199,6 +252,21 @@ const extendedApi = api.injectEndpoints({
         return netgroupList;
       },
     }),
+    saveNetgroup: build.mutation<FindRPCResponse, Partial<Netgroup>>({
+      query: (group) => {
+        const params = {
+          version: API_VERSION_BACKUP,
+          ...group,
+        };
+        delete params["cn"];
+        const cn = group.cn !== undefined ? group.cn : "";
+        return getCommand({
+          method: "netgroup_mod",
+          params: [[cn], params],
+        });
+      },
+      invalidatesTags: ["FullNetgroup"],
+    }),
   }),
   overrideExisting: false,
 });
@@ -216,4 +284,7 @@ export const {
   useRemoveFromNetgroupsMutation,
   useGetNetgroupInfoByNameQuery,
   useGetNetgroupFullDataQuery,
+  useAddMemberToNetgroupsMutation,
+  useSaveNetgroupMutation,
+  useRemoveMemberFromNetgroupsMutation,
 } = extendedApi;

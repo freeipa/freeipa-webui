@@ -9,41 +9,73 @@ import {
   TabTitleText,
 } from "@patternfly/react-core";
 // React Router DOM
-import { useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Layouts
-import BreadcrumbLayout from "src/components/layouts/BreadcrumbLayout";
+import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
-// Data types
-import { Netgroup } from "src/utils/datatypes/globalDataTypes";
+import DataSpinner from "src/components/layouts/DataSpinner";
 // Hooks
 import { useNetgroupSettings } from "src/hooks/useNetgroupSettingsData";
-import DataSpinner from "src/components/layouts/DataSpinner";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
+import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { NotFound } from "src/components/errors/PageErrors";
+import NetgroupsSettings from "./NetgroupsSettings";
 
-const NetgroupsTabs = () => {
+// eslint-disable-next-line react/prop-types
+const NetgroupsTabs = ({ section }) => {
   // Get location (React Router DOM) and get state data
-  const location = useLocation();
-  const netgroupsData: Netgroup = location.state as Netgroup;
-  const netgroupSettingsData = useNetgroupSettings(netgroupsData.cn[0]);
+  const { cn } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const netgroupSettingsData = useNetgroupSettings(cn as string);
 
   // Tab
-  const [activeTabKey, setActiveTabKey] = useState(0);
+  const [activeTabKey, setActiveTabKey] = useState(section);
 
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as number);
+    setActiveTabKey(tabIndex as string);
+    if (tabIndex === "settings") {
+      navigate("/netgroups/" + cn);
+    } else if (tabIndex === "memberof") {
+      navigate("/netgroups/" + cn + "/memberof_netgroup");
+    } else if (tabIndex === "managedby") {
+      navigate("/netgroups/" + cn + "/managedby_netgroup");
+    }
   };
 
-  // 'pagesVisited' array will contain the visited pages.
-  // - Those will be passed to the 'BreadcrumbLayout' component.
-  const pagesVisited = [
-    {
-      name: "Netgroups",
-      url: "/netgroups",
-    },
-  ];
+  React.useEffect(() => {
+    if (!cn) {
+      // Redirect to the main page
+      navigate("/netgroups");
+    } else {
+      // Update breadcrumb route
+      const currentPath: BreadCrumbItem[] = [
+        {
+          name: "Netgroups",
+          url: URL_PREFIX + "/netgroups",
+        },
+        {
+          name: cn,
+          url: URL_PREFIX + "/netgroups/" + cn,
+          isActive: true,
+        },
+      ];
+      dispatch(updateBreadCrumbPath(currentPath));
+    }
+  }, [cn]);
+
+  // Redirect to the settings page if the section is not defined
+  React.useEffect(() => {
+    if (!section) {
+      navigate(URL_PREFIX + "/netgroups/" + cn);
+    }
+    setActiveTabKey(section);
+  }, [section]);
 
   if (
     netgroupSettingsData.isLoading ||
@@ -63,12 +95,7 @@ const NetgroupsTabs = () => {
   return (
     <Page>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
-        <BreadcrumbLayout
-          className="pf-v5-u-mb-md"
-          userId={netgroupSettingsData.netgroup.cn}
-          preText=""
-          pagesVisited={pagesVisited}
-        />
+        <BreadCrumb className="pf-v5-u-mb-md" />
         <TitleLayout
           id={netgroupSettingsData.netgroup.cn}
           text={netgroupSettingsData.netgroup.cn}
@@ -82,17 +109,37 @@ const NetgroupsTabs = () => {
           variant="light300"
           isBox
           className="pf-v5-u-ml-lg"
+          mountOnEnter
+          unmountOnExit
         >
           <Tab
-            eventKey={0}
-            name="details"
+            eventKey={"settings"}
+            name="settings-details"
             title={<TabTitleText>Settings</TabTitleText>}
+          >
+            <PageSection className="pf-v5-u-pb-0"></PageSection>
+            <NetgroupsSettings
+              netgroup={netgroupSettingsData.netgroup}
+              originalGroup={netgroupSettingsData.originalGroup}
+              metadata={netgroupSettingsData.metadata}
+              onGroupChange={netgroupSettingsData.setNetgroup}
+              isDataLoading={netgroupSettingsData.isFetching}
+              onRefresh={netgroupSettingsData.refetch}
+              isModified={netgroupSettingsData.modified}
+              onResetValues={netgroupSettingsData.resetValues}
+              modifiedValues={netgroupSettingsData.modifiedValues}
+            />
+          </Tab>
+          <Tab
+            eventKey={"members"}
+            name="member-details"
+            title={<TabTitleText>Members</TabTitleText>}
           >
             <PageSection className="pf-v5-u-pb-0"></PageSection>
           </Tab>
           <Tab
-            eventKey={1}
-            name="details"
+            eventKey={"memberof"}
+            name="menerof-details"
             title={<TabTitleText>Is a member of</TabTitleText>}
           >
             <PageSection className="pf-v5-u-pb-0"></PageSection>

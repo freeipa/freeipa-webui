@@ -3,7 +3,14 @@ import { Netgroup } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { convertApiObj } from "./ipaObjectUtils";
 
-const simpleValues = new Set(["cn", "nisdomainname", "description", "dn"]);
+const simpleValues = new Set([
+  "cn",
+  "nisdomainname",
+  "description",
+  "dn",
+  "usercategory",
+  "hostcategory",
+]);
 const dateValues = new Set([]);
 
 export function apiToNetgroup(apiRecord: Record<string, unknown>): Netgroup {
@@ -31,6 +38,14 @@ export function createEmptyNetgroup(): Netgroup {
     nisdomainname: "",
     description: "",
     dn: "",
+    usercategory: "",
+    hostcategory: "",
+    memberof_netgroup: [],
+    memberhost_host: [],
+    memberhost_hostgroup: [],
+    memberuser_user: [],
+    memberuser_group: [],
+    externalhost: [],
   };
 
   return group;

@@ -36,6 +36,7 @@ import KrbTicketPolicy from "src/pages/KrbTicketPolicy/KrbTicketPolicy";
 import UserGroupsTabs from "src/pages/UserGroups/UserGroupsTabs";
 import HostGroupsTabs from "src/pages/HostGroups/HostGroupsTabs";
 import LoginMainPage from "src/login/LoginMainPage";
+import NetgroupsTabs from "src/pages/Netgroups/NetgroupsTabs";
 
 // Renders routes (React)
 export const AppRoutes = ({
@@ -167,6 +168,9 @@ export const AppRoutes = ({
             </Route>
             <Route path="netgroups">
               <Route path="" element={<Netgroups />} />
+              <Route path=":cn">
+                <Route path="" element={<NetgroupsTabs section="settings" />} />
+              </Route>
             </Route>
             <Route path="id-views">
               <Route path="" element={<IDViews />} />

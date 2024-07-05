@@ -13,7 +13,7 @@ import { useGetIDListMutation, GenericPayload } from "src/services/rpc";
 
 interface PropsToAddModal {
   entry: string;
-  target: "user" | "group" | "host" | "hostgroup";
+  target: "user" | "group" | "host" | "hostgroup" | "netgroup";
   showModal: boolean;
   onCloseModal: () => void;
   onOpenModal: () => void;
