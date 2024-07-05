@@ -42,6 +42,12 @@ $ sudo dnf install vagrant vagrant-libvirt vagrant-sshfs
 192.168.122.5 server.ipa.demo
 ```
 
+You can get the VM ip for the running VM by:
+
+```bash
+vagrant ssh-config | grep HostName | awk '{print $2}'
+```
+
 At this point you can access your live instance at `https://server.ipa.demo/ipa/ui/`.
 However, you still need to configure your front-end environment, it's up to you to choose
 between your host or guest machine.
