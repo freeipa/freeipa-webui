@@ -67,14 +67,14 @@ const KeytabTable = (props: PropsToTable) => {
   // URL handling
   let entryURL = "";
   if (props.entryType === "user") {
-    entryURL = "/active-users/settings";
+    entryURL = "/active-users/";
   } else if (props.entryType === "group") {
-    entryURL = "/user-groups/settings";
+    entryURL = "/user-groups/";
   } else if (props.entryType === "host") {
-    entryURL = "/hosts/settings";
+    entryURL = "/hosts/";
   } else {
     // Host group
-    entryURL = "/host-groups/settings";
+    entryURL = "/host-groups/";
   }
 
   // PaginationPrep
@@ -493,7 +493,7 @@ const KeytabTable = (props: PropsToTable) => {
         }}
       />
       <Td dataLabel={columnNamesArray[0]}>
-        <Link to={entryURL} state={fullEntriesFiltered[rowIndex]}>
+        <Link to={entryURL + entry} state={fullEntriesFiltered[rowIndex]}>
           {entry}
         </Link>
       </Td>
