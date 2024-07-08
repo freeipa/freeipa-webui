@@ -18,7 +18,7 @@ import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/o
 // Data types
 import { Metadata, Service } from "src/utils/datatypes/globalDataTypes";
 // Modals
-import DeletionConfirmationModal from "src/components/modals/DeletionConfirmationModal";
+import ConfirmationModal from "src/components/modals/ConfirmationModal";
 import IssueNewCertificate from "src/components/modals/IssueNewCertificate";
 // Layouts
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
@@ -376,7 +376,7 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
         className={"pf-v5-u-p-md pf-v5-u-ml-lg pf-v5-u-mr-lg"}
         toolbarItems={toolbarFields}
       />
-      <DeletionConfirmationModal
+      <ConfirmationModal
         title={"Unprovision service"}
         isOpen={isUnprovisionModalOpen}
         onClose={onCloseUnprovisionModal}
