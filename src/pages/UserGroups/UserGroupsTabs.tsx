@@ -17,6 +17,7 @@ import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 // Components
 import UserGroupsSettings from "./UserGroupsSettings";
 import { partialGroupToGroup } from "src/utils/groupUtils";
+import UserGroupsMembers from "./UserGroupsMembers";
 // Hooks
 import { useUserGroupSettings } from "src/hooks/useUserGroupSettingsData";
 import DataSpinner from "src/components/layouts/DataSpinner";
@@ -43,6 +44,8 @@ const UserGroupsTabs = ({ section }) => {
     setActiveTabKey(tabIndex as string);
     if (tabIndex === "settings") {
       navigate("/user-groups/" + cn);
+    } else if (tabIndex === "member_user") {
+      navigate("/user-groups/" + cn + "/member_user");
     } else if (tabIndex === "memberof") {
       navigate("/user-groups/" + cn + "/memberof_usergroup");
     } else if (tabIndex === "managedby") {
@@ -130,6 +133,14 @@ const UserGroupsTabs = ({ section }) => {
               modifiedValues={userGroupSettingsData.modifiedValues}
               pwPolicyData={userGroupSettingsData.pwPolicyData}
             />
+          </Tab>
+          <Tab
+            eventKey={"member_user"}
+            name={"members-details"}
+            title={<TabTitleText>Members</TabTitleText>}
+          >
+            <PageSection className="pf-v5-u-pb-0"></PageSection>
+            <UserGroupsMembers userGroup={usergroup} tabSection={section} />
           </Tab>
           <Tab
             eventKey={"memberof"}

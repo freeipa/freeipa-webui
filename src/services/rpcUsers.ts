@@ -70,6 +70,11 @@ export interface PasswordChangePayload {
   otp?: string;
 }
 
+export interface UserGetInfoPayload {
+  uidsList: string[];
+  noMembers?: boolean;
+}
+
 interface PasswordChangePayloadParams {
   password: string;
   current_password?: string;
@@ -456,6 +461,33 @@ const extendedApi = api.injectEndpoints({
         response.result.result as unknown as IDPServer[],
       providesTags: ["IdpServer"],
     }),
+    /**
+     * Given a list of user IDs, show the full data of those users
+     * @param {UserGetInfoPayload} - Payload with user IDs and options
+     * @returns {BatchRPCResponse} - Batch response
+     */
+    getUsersInfoByUid: build.query<User[], UserGetInfoPayload>({
+      query: (payload) => {
+        const uidsList = payload.uidsList;
+        const noMembers = payload.noMembers;
+
+        const userShowCommands: Command[] = uidsList.map((uid) => ({
+          method: "user_show",
+          params: [[uid], { no_members: noMembers }],
+        }));
+        return getBatchCommand(userShowCommands, API_VERSION_BACKUP);
+      },
+      transformResponse: (response: BatchRPCResponse): User[] => {
+        const userList: User[] = [];
+        const results = response.result.results;
+        const count = response.result.count;
+        for (let i = 0; i < count; i++) {
+          const userData = apiToUser(results[i].result);
+          userList.push(userData);
+        }
+        return userList;
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -521,4 +553,5 @@ export const {
   useAddOtpTokenMutation,
   useGetRadiusProxyQuery,
   useGetIdpServerQuery,
+  useGetUsersInfoByUidQuery,
 } = extendedApi;

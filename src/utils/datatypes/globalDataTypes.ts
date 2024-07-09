@@ -147,6 +147,16 @@ export interface UserGroup {
   dn: string;
   member: string[];
   objectclass: string[];
+  // Member
+  member_user: string[];
+  memberindirect_user: string[];
+  member_group: string[];
+  memberindirect_group: string[];
+  member_service: string[];
+  memberindirect_service: string[];
+  member_external: string[];
+  member_idoverrideuser: string[];
+  memberindirect_idoverrideuser: string[];
 }
 
 export interface NetgroupOld {

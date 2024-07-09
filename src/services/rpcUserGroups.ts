@@ -60,6 +60,12 @@ export type GroupFullData = {
   pwPolicy?: Partial<PwPolicy>;
 };
 
+export interface MemberPayload {
+  userGroup: string;
+  userIds: string[];
+  entityType: string;
+}
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     getUserGroupsFullData: build.query<GroupFullData, string>({
@@ -303,6 +309,58 @@ const extendedApi = api.injectEndpoints({
       },
       invalidatesTags: ["FullUserGroup"],
     }),
+    /**
+     * Get user group info by name
+     *
+     */
+    getGroupById: build.query<UserGroup, string>({
+      query: (groupId) => {
+        return getCommand({
+          method: "group_show",
+          params: [[groupId], { version: API_VERSION_BACKUP }],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): UserGroup =>
+        apiToGroup(response.result.result),
+    }),
+    /**
+     * Given a list of user IDs, add them as members to a group
+     * @param {MemberPayload} - Payload with user IDs and options
+     */
+    addToUsersAsMember: build.mutation<FindRPCResponse, MemberPayload>({
+      query: (payload) => {
+        const userGroup = payload.userGroup;
+        const userIds = payload.userIds;
+        const memberType = payload.entityType;
+
+        return getCommand({
+          method: "group_add_member",
+          params: [
+            [userGroup],
+            { all: true, [memberType]: userIds, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+    }),
+    /**
+     * Remove a user group from some user members
+     * @param {MemberPayload} - Payload with user IDs and options
+     */
+    removeFromUsersAsMember: build.mutation<FindRPCResponse, MemberPayload>({
+      query: (payload) => {
+        const userGroup = payload.userGroup;
+        const userIds = payload.userIds;
+        const memberType = payload.entityType;
+
+        return getCommand({
+          method: "group_remove_member",
+          params: [
+            [userGroup],
+            { all: true, [memberType]: userIds, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -325,4 +383,7 @@ export const {
   useSaveGroupMutation,
   useConvertGroupExternalMutation,
   useConvertGroupPOSIXMutation,
+  useGetGroupByIdQuery,
+  useAddToUsersAsMemberMutation,
+  useRemoveFromUsersAsMemberMutation,
 } = extendedApi;
