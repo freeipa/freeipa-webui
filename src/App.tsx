@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect } from "react";
+import React from "react";
 // PatternFly
 import "@patternfly/react-core/dist/styles/base.css";
-import { Spinner } from "@patternfly/react-core";
 // Layouts
 import { AppLayout } from "./AppLayout";
+import DataSpinner from "./components/layouts/DataSpinner";
 // Navigation
 import { AppRoutes } from "./navigation/AppRoutes";
 // RPC client
@@ -21,16 +21,16 @@ import {
   updateCaIsEnabled,
   updateVaultConfiguration,
 } from "src/store/Global/global-slice";
+import { setIsLogin, setIsLogout } from "./store/Global/auth-slice";
 
 const App: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
 
+  const [loggedInUser, setLoggedInUser] = React.useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
+  const [isDataLoaded, setIsDataLoaded] = React.useState<boolean>(false);
+
   // [API Call] Get initial data
-  // TODO: Move this call into a sequential endpoint to execute this
-  //  alongside with the "user_show/1" call (needed to get the logged in
-  //  user information), as the entered username is needed to perform this call.
-  //  This could be done as soon as the login screen is implemented in the
-  //  new WebUI.
   const payloadDataBatch: Command[] = [];
   const methods = [
     "config_show",
@@ -58,14 +58,24 @@ const App: React.FunctionComponent = () => {
   } = useBatchCommandQuery(payloadDataBatch);
 
   // Store data in global slice (Redux)
-  useEffect(() => {
+  React.useEffect(() => {
+    if (!isInitialBatchLoading && initialBatchResponse === undefined) {
+      // Assume that the user is not loaded
+      setLoggedInUser(null);
+      setIsDataLoaded(true);
+      setIsLoggedIn(false);
+      dispatch(setIsLogout());
+    }
+
     if (!isInitialBatchLoading && initialBatchResponse !== undefined) {
+      setIsDataLoaded(true);
       // 0: IPA server configuration ("config_show")
       const configShowResponse = initialBatchResponse.result.results[0].result;
       dispatch(updateIpaServerConfiguration(configShowResponse));
       // 1: Logged user information ("whoami")
       const whoamiResponse = initialBatchResponse.result.results[1];
-      dispatch(updateLoggedUserInfo(whoamiResponse));
+      const user = whoamiResponse.arguments.toString();
+      dispatch(updateLoggedUserInfo(user));
       // 2: Environment ("env")
       const envResponse = initialBatchResponse.result.results[2].result;
       dispatch(updateEnvironment(envResponse));
@@ -84,20 +94,47 @@ const App: React.FunctionComponent = () => {
       // 7: Vault configuration ("vaultconfig_show")
       const vaultConfig = initialBatchResponse.result.results[7].result;
       dispatch(updateVaultConfiguration(vaultConfig));
+
+      // Set the login status if user found in the whoami response
+      if (user) {
+        setLoggedInUser(user);
+        setIsLoggedIn(true);
+        // [Redux] Update the login status
+        const loginPayload = {
+          loggedInUser: loggedInUser as string,
+          error: null,
+        };
+        dispatch(setIsLogin(loginPayload));
+      } else {
+        setLoggedInUser(null);
+        setIsLoggedIn(false);
+        dispatch(setIsLogout());
+      }
     }
   }, [isInitialBatchLoading]);
 
+  if (isInitialBatchLoading && !initialBatchResponse) {
+    return <DataSpinner />;
+  }
   return (
-    <AppLayout>
-      {!isInitialBatchLoading ? (
-        <AppRoutes />
-      ) : (
-        <Spinner
-          style={{ alignSelf: "center", marginTop: "15%" }}
-          aria-label="Spinner waiting to load page"
-        />
+    <>
+      {isLoggedIn && (
+        <AppLayout>
+          <AppRoutes
+            isUserLoggedIn={isLoggedIn}
+            isInitialDataLoaded={isDataLoaded}
+          />
+        </AppLayout>
       )}
-    </AppLayout>
+      {!isLoggedIn && (
+        <>
+          <AppRoutes
+            isUserLoggedIn={isLoggedIn}
+            isInitialDataLoaded={isDataLoaded}
+          />
+        </>
+      )}
+    </>
   );
 };
 
