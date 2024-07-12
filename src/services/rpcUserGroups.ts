@@ -62,7 +62,7 @@ export type GroupFullData = {
 
 export interface MemberPayload {
   userGroup: string;
-  userIds: string[];
+  idsToAdd: string[];
   entityType: string;
 }
 
@@ -327,17 +327,17 @@ const extendedApi = api.injectEndpoints({
      * Given a list of user IDs, add them as members to a group
      * @param {MemberPayload} - Payload with user IDs and options
      */
-    addToUsersAsMember: build.mutation<FindRPCResponse, MemberPayload>({
+    addAsMember: build.mutation<FindRPCResponse, MemberPayload>({
       query: (payload) => {
         const userGroup = payload.userGroup;
-        const userIds = payload.userIds;
+        const idsToAdd = payload.idsToAdd;
         const memberType = payload.entityType;
 
         return getCommand({
           method: "group_add_member",
           params: [
             [userGroup],
-            { all: true, [memberType]: userIds, version: API_VERSION_BACKUP },
+            { all: true, [memberType]: idsToAdd, version: API_VERSION_BACKUP },
           ],
         });
       },
@@ -346,17 +346,17 @@ const extendedApi = api.injectEndpoints({
      * Remove a user group from some user members
      * @param {MemberPayload} - Payload with user IDs and options
      */
-    removeFromUsersAsMember: build.mutation<FindRPCResponse, MemberPayload>({
+    removeAsMember: build.mutation<FindRPCResponse, MemberPayload>({
       query: (payload) => {
         const userGroup = payload.userGroup;
-        const userIds = payload.userIds;
+        const idsToAdd = payload.idsToAdd;
         const memberType = payload.entityType;
 
         return getCommand({
           method: "group_remove_member",
           params: [
             [userGroup],
-            { all: true, [memberType]: userIds, version: API_VERSION_BACKUP },
+            { all: true, [memberType]: idsToAdd, version: API_VERSION_BACKUP },
           ],
         });
       },
@@ -384,6 +384,6 @@ export const {
   useConvertGroupExternalMutation,
   useConvertGroupPOSIXMutation,
   useGetGroupByIdQuery,
-  useAddToUsersAsMemberMutation,
-  useRemoveFromUsersAsMemberMutation,
+  useAddAsMemberMutation,
+  useRemoveAsMemberMutation,
 } = extendedApi;
