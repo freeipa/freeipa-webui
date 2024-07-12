@@ -22,8 +22,8 @@ import {
 } from "src/services/rpcUsers";
 import {
   MemberPayload,
-  useAddToUsersAsMemberMutation,
-  useRemoveFromUsersAsMemberMutation,
+  useAddAsMemberMutation,
+  useRemoveAsMemberMutation,
 } from "src/services/rpcUserGroups";
 
 interface PropsToMembersUsers {
@@ -164,8 +164,8 @@ const MembersUsers = (props: PropsToMembersUsers) => {
 
   // Add new member to 'User'
   // API calls
-  const [addMemberToUser] = useAddToUsersAsMemberMutation();
-  const [removeMembersFromUsers] = useRemoveFromUsersAsMemberMutation();
+  const [addMemberToUser] = useAddAsMemberMutation();
+  const [removeMembersFromUsers] = useRemoveAsMemberMutation();
   const [adderSearchValue, setAdderSearchValue] = React.useState("");
   const [availableUsers, setAvailableUsers] = React.useState<User[]>([]);
   const [availableItems, setAvailableItems] = React.useState<AvailableItems[]>(
@@ -221,7 +221,7 @@ const MembersUsers = (props: PropsToMembersUsers) => {
     const payload = {
       userGroup: props.id,
       entityType: "user",
-      userIds: newUserNames,
+      idsToAdd: newUserNames,
     } as MemberPayload;
 
     addMemberToUser(payload).then((response) => {
@@ -257,7 +257,7 @@ const MembersUsers = (props: PropsToMembersUsers) => {
     const payload = {
       userGroup: props.id,
       entityType: "user",
-      userIds: usersSelected,
+      idsToAdd: usersSelected,
     } as MemberPayload;
 
     removeMembersFromUsers(payload).then((response) => {
