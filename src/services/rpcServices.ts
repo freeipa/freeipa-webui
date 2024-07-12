@@ -217,6 +217,30 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Given a list of service IDs, show the full data of those services
+     * @param {string[]} - Payload with service IDs and options
+     * @returns {BatchRPCResponse} - Batch response
+     */
+    getServicesInfoByUid: build.query<Service[], string[]>({
+      query: (serviceIds) => {
+        const serviceShowCommands: Command[] = serviceIds.map((serviceId) => ({
+          method: "service_show",
+          params: [[serviceId], { no_members: true }],
+        }));
+        return getBatchCommand(serviceShowCommands, API_VERSION_BACKUP);
+      },
+      transformResponse: (response: BatchRPCResponse): Service[] => {
+        const serviceList: Service[] = [];
+        const results = response.result.results;
+        const count = response.result.count;
+        for (let i = 0; i < count; i++) {
+          const serviceData = apiToService(results[i].result);
+          serviceList.push(serviceData);
+        }
+        return serviceList;
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -237,4 +261,5 @@ export const {
   useAddServiceHostMutation,
   useRemoveServiceHostMutation,
   useUnprovisionServiceMutation,
+  useGetServicesInfoByUidQuery,
 } = extendedApi;
