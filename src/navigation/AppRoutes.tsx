@@ -134,6 +134,10 @@ export const AppRoutes = (): React.ReactElement => (
           path="member_group"
           element={<UserGroupsTabs section="member_group" />}
         />
+        <Route
+          path="member_service"
+          element={<UserGroupsTabs section="member_service" />}
+        />
       </Route>
     </Route>
     <Route path="host-groups">
