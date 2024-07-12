@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { Table, Tr, Th, Td, Thead, Tbody } from "@patternfly/react-table";
 // Data types
-import { User } from "src/utils/datatypes/globalDataTypes";
+import { User, UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Components
 import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout";
 import EmptyBodyTable from "../tables/EmptyBodyTable";
@@ -13,7 +13,7 @@ import { CheckIcon } from "@patternfly/react-icons";
 import { MinusIcon } from "@patternfly/react-icons";
 
 export interface MemberOfTableProps {
-  entityList: User[]; // More types can be added here
+  entityList: User[] | UserGroup[]; // More types can be added here
   idKey: string; // Users: uid, Groups: cn, etc.
   columnNamesToShow: string[];
   propertiesToShow: string[]; // Users: uid, givenname, sn, description, etc.
@@ -24,7 +24,7 @@ export interface MemberOfTableProps {
 
 // Body
 const TableBody = (props: {
-  list: User[]; // More types can be added here
+  list: User[] | UserGroup[]; // More types can be added here
   idKey: string; // Users: uid, Groups: cn, etc.
   columnNamesToShow: string[];
   propertiesToShow: string[]; // Users: uid, first, last, description, etc.

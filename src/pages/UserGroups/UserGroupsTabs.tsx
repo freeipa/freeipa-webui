@@ -28,7 +28,6 @@ import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 
 // eslint-disable-next-line react/prop-types
 const UserGroupsTabs = ({ section }) => {
-  // Get location (React Router DOM) and get state data
   const { cn } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -42,9 +41,10 @@ const UserGroupsTabs = ({ section }) => {
     tabIndex: number | string
   ) => {
     setActiveTabKey(tabIndex as string);
+
     if (tabIndex === "settings") {
       navigate("/user-groups/" + cn);
-    } else if (tabIndex === "member_user") {
+    } else if (tabIndex === "member") {
       navigate("/user-groups/" + cn + "/member_user");
     } else if (tabIndex === "memberof") {
       navigate("/user-groups/" + cn + "/memberof_usergroup");
@@ -79,7 +79,14 @@ const UserGroupsTabs = ({ section }) => {
     if (!section) {
       navigate(URL_PREFIX + "/user-groups/" + cn);
     }
-    setActiveTabKey(section);
+    // Infer the general tab key from the section name
+    const sect = section as string;
+    if (sect.startsWith("member_")) {
+      setActiveTabKey("member");
+    } else {
+      setActiveTabKey(section);
+    }
+    // TODO: Check more routes here
   }, [section]);
 
   if (
@@ -135,7 +142,7 @@ const UserGroupsTabs = ({ section }) => {
             />
           </Tab>
           <Tab
-            eventKey={"member_user"}
+            eventKey={"member"}
             name={"members-details"}
             title={<TabTitleText>Members</TabTitleText>}
           >

@@ -18,6 +18,7 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 // RPC
 import { useGetGroupByIdQuery } from "src/services/rpcUserGroups";
 import MembersUsers from "src/components/Members/MembersUsers";
+import MembersUserGroups from "src/components/Members/MembersUserGroups";
 // 'Is a member of' sections
 
 interface PropsToUserGroupsMembers {
@@ -56,10 +57,19 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
     }
   }, [userGroup]);
 
+  // 'User Groups' length to show in tab badge
+  const [userGroupsLength, setUserGroupsLength] = React.useState(0);
+
+  React.useEffect(() => {
+    if (userGroup && userGroup.member_group) {
+      setUserGroupsLength(userGroup.member_group.length);
+    }
+  }, [userGroup]);
+
   // TODO: Add the rest of the tab lengths here
 
   // Tab
-  const [activeTabKey, setActiveTabKey] = useState("member_user");
+  const [activeTabKey, setActiveTabKey] = useState(props.tabSection);
 
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
@@ -106,6 +116,27 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
               isDataLoading={userGroupQuery.isFetching}
               onRefreshData={onRefreshUserGroupData}
               member_user={userGroup.member_user || []}
+            />
+          </Tab>
+          <Tab
+            eventKey={"member_group"}
+            name="member_group"
+            title={
+              <TabTitleText>
+                User Groups{" "}
+                <Badge key={1} isRead>
+                  {userGroupsLength}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MembersUserGroups
+              entity={userGroup}
+              id={userGroup.cn as string}
+              from="user-groups"
+              isDataLoading={userGroupQuery.isFetching}
+              onRefreshData={onRefreshUserGroupData}
+              member_group={userGroup.member_group || []}
             />
           </Tab>
         </Tabs>
