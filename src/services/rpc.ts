@@ -141,7 +141,8 @@ export interface GenericPayload {
     | "hbacrule"
     | "hbacsvc"
     | "hbacsvcgroup"
-    | "sudorule";
+    | "sudorule"
+    | "idview";
 }
 
 export interface GetEntriesPayload {
@@ -207,6 +208,9 @@ export const api = createApi({
     "FullHBACService",
     "FullHostGroup",
     "FullNetgroup",
+    "FullIDView",
+    "FullIDViewHosts",
+    "FullIDViewHostgroups",
   ],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
@@ -308,7 +312,11 @@ export const api = createApi({
           objName = "user";
         }
 
-        if (objName === "role") {
+        if (
+          objName === "role" ||
+          objName === "sudorule" ||
+          objName === "idview"
+        ) {
           if (cn) {
             params["cn"] = cn;
           }
@@ -324,15 +332,6 @@ export const api = createApi({
         }
 
         if (objName === "hbacsvcgroup") {
-          if (description) {
-            params["description"] = description;
-          }
-        }
-
-        if (objName === "sudorule") {
-          if (cn) {
-            params["cn"] = cn;
-          }
           if (description) {
             params["description"] = description;
           }
@@ -371,7 +370,8 @@ export const api = createApi({
           } else if (
             objName === "group" ||
             objName === "netgroup" ||
-            objName === "hostgroup"
+            objName === "hostgroup" ||
+            objName === "idview"
           ) {
             id = idResponseData.result.result[i] as cnType;
           } else if (objName === "role") {
@@ -399,10 +399,19 @@ export const api = createApi({
 
         // 2ND CALL - GET PARTIAL INFO
         // Prepare payload
-        const payloadDataBatch: Command[] = ids.map((name) => ({
-          method: objName + "_show",
-          params: [[name], { no_members: true }],
-        }));
+        let payloadDataBatch: Command[] = [];
+        if (objName === "idview") {
+          // There is no "no_members" param
+          payloadDataBatch = ids.map((name) => ({
+            method: objName + "_show",
+            params: [[name], {}],
+          }));
+        } else {
+          payloadDataBatch = ids.map((name) => ({
+            method: objName + "_show",
+            params: [[name], { no_members: true }],
+          }));
+        }
 
         // Make call using 'fetchWithBQ'
         const partialInfoResult = await fetchWithBQ(

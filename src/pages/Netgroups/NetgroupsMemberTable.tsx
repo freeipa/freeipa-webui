@@ -430,6 +430,7 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
           onCloseModal={onCloseAddHandler}
           onOpenModal={onClickAddHandler}
           action={addMembers}
+          tableElementsList={props.members}
           spinning={addSpinning}
           addBtnName="Add"
           addSpinningBtnName="Adding"

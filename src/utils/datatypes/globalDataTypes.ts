@@ -308,6 +308,13 @@ export interface Service {
   ipakrboktoauthasdelegate: boolean;
 }
 
+export interface IDView {
+  dn: string;
+  cn: string;
+  description: string;
+  ipadomainresolutionorder: string[];
+}
+
 // Errors
 export interface ErrorData {
   code: string;

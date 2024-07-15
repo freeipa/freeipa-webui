@@ -9,6 +9,7 @@ import {
   HBACRule,
   Host,
   HostGroup,
+  IDView,
   Netgroup,
   Service,
   UserGroup,
@@ -50,7 +51,8 @@ export interface PropsToDeletedElementsTable {
     | HostGroup[]
     | Netgroup[]
     | Service[]
-    | UserGroup[];
+    | UserGroup[]
+    | IDView[];
   columnNames: string[];
   elementType: string;
   idAttr: string;
@@ -77,12 +79,17 @@ const DeletedElementsTable = (props: PropsToDeletedElementsTable) => {
   const [columnNames, setColumnNames] = useState<string[]>([]);
   useEffect(() => {
     const colNamesArray: string[] = [];
-    props.columnNames.map((column) => {
-      const result = column.replace(/([A-Z])/g, " $1");
-      const simplifiedName = result.charAt(0).toUpperCase() + result.slice(1);
-      colNamesArray.push(simplifiedName);
-    });
-    setColumnNames(colNamesArray);
+    if (props.mode === "passing_full_data") {
+      props.columnNames.map((column) => {
+        const result = column.replace(/([A-Z])/g, " $1");
+        const simplifiedName = result.charAt(0).toUpperCase() + result.slice(1);
+        colNamesArray.push(simplifiedName);
+      });
+      setColumnNames(colNamesArray);
+    } else {
+      // In passing_id mode the comlumn names do not require adjusting
+      setColumnNames(props.columnNames);
+    }
   }, []);
 
   // Define table header and body
