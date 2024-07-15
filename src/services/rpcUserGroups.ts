@@ -317,7 +317,10 @@ const extendedApi = api.injectEndpoints({
       query: (groupId) => {
         return getCommand({
           method: "group_show",
-          params: [[groupId], { version: API_VERSION_BACKUP }],
+          params: [
+            [groupId],
+            { all: true, rights: true, version: API_VERSION_BACKUP },
+          ],
         });
       },
       transformResponse: (response: FindRPCResponse): UserGroup =>

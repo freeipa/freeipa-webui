@@ -8,7 +8,6 @@ const simpleValues = new Set([
   "gidnumber",
   "description",
   "dn",
-  "objectclass",
   "member",
 ]);
 

@@ -21,6 +21,7 @@ import { useGetGroupByIdQuery } from "src/services/rpcUserGroups";
 import MembersUsers from "src/components/Members/MembersUsers";
 import MembersUserGroups from "src/components/Members/MembersUserGroups";
 import MembersServices from "src/components/Members/MembersServices";
+import MembersExternal from "src/components/Members/MembersExternal";
 
 interface PropsToUserGroupsMembers {
   userGroup: UserGroup;
@@ -73,6 +74,15 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
   React.useEffect(() => {
     if (userGroup && userGroup.member_service) {
       setServicesLength(userGroup.member_service.length);
+    }
+  }, [userGroup]);
+
+  // 'Externals' length to show in tab badge
+  const [externalsLength, setExternalsLength] = React.useState(0);
+
+  React.useEffect(() => {
+    if (userGroup && userGroup.member_external) {
+      setExternalsLength(userGroup.member_external.length);
     }
   }, [userGroup]);
 
@@ -168,6 +178,27 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
               isDataLoading={userGroupQuery.isFetching}
               onRefreshData={onRefreshUserGroupData}
               member_service={userGroup.member_service || []}
+            />
+          </Tab>
+          <Tab
+            eventKey={"member_external"}
+            name="member_external"
+            title={
+              <TabTitleText>
+                External{" "}
+                <Badge key={3} isRead>
+                  {externalsLength}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MembersExternal
+              entity={userGroup}
+              id={userGroup.cn as string}
+              from="user-groups"
+              isDataLoading={userGroupQuery.isFetching}
+              onRefreshData={onRefreshUserGroupData}
+              member_external={userGroup.member_external || []}
             />
           </Tab>
         </Tabs>

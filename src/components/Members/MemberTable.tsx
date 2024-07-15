@@ -13,8 +13,8 @@ import { CheckIcon } from "@patternfly/react-icons";
 import { MinusIcon } from "@patternfly/react-icons";
 
 export interface MemberOfTableProps {
-  entityList: User[] | UserGroup[] | Service[]; // More types can be added here
-  idKey: string; // Users: uid, Groups: cn, etc.
+  entityList: User[] | UserGroup[] | Service[] | string[]; // More types can be added here
+  idKey?: string; // Users: uid, Groups: cn, etc. If not provided, the entity itself (a single string) will be used
   columnNamesToShow: string[];
   propertiesToShow: string[]; // Users: uid, givenname, sn, description, etc.
   checkedItems?: string[];
@@ -24,8 +24,8 @@ export interface MemberOfTableProps {
 
 // Body
 const TableBody = (props: {
-  list: User[] | UserGroup[] | Service[]; // More types can be added here
-  idKey: string; // Users: uid, Groups: cn, etc.
+  list: User[] | UserGroup[] | Service[] | string[]; // More types can be added here
+  idKey?: string; // Users: uid, Groups: cn, etc.
   columnNamesToShow: string[];
   propertiesToShow: string[]; // Users: uid, first, last, description, etc.
   showCheckboxColumn: boolean;
@@ -38,14 +38,27 @@ const TableBody = (props: {
       {list.map((item, index) => (
         <Tr key={index}>
           {props.showCheckboxColumn && (
-            <Td
-              select={{
-                rowIndex: index,
-                onSelect: (_e, isSelected) =>
-                  props.onCheckboxChange(isSelected, item[idKey]),
-                isSelected: props.checkedItems.includes(item[idKey]),
-              }}
-            />
+            <>
+              {idKey ? (
+                <Td
+                  select={{
+                    rowIndex: index,
+                    onSelect: (_e, isSelected) =>
+                      props.onCheckboxChange(isSelected, item[idKey]),
+                    isSelected: props.checkedItems.includes(item[idKey]),
+                  }}
+                />
+              ) : (
+                <Td
+                  select={{
+                    rowIndex: index,
+                    onSelect: (_e, isSelected) =>
+                      props.onCheckboxChange(isSelected, item),
+                    isSelected: props.checkedItems.includes(item),
+                  }}
+                />
+              )}
+            </>
           )}
           {propertiesToShow.map((propertyName, index) => {
             // Handle special cases: 'nsaccountlock' is a boolean
