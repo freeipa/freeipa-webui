@@ -559,46 +559,41 @@ const KeytabTable = (props: PropsToTable) => {
         entryCount={tableEntryList.length}
         entryType={props.entryType}
       />
-      {showAddModal && (
-        <DualListLayout
-          entry={props.id}
-          target={props.entryType}
-          showModal={showAddModal}
-          onCloseModal={onCloseAddHandler}
-          onOpenModal={onClickAddHandler}
-          clearSelectedEntries={() => setSelectedEntries([])}
-          tableElementsList={tableEntryList}
-          updateTableElementsList={addEntry}
-          title={
-            "Allow " +
-            props.entryType +
-            "s to " +
-            props.opType +
-            " keytab for " +
-            props.id
-          }
-          spinning={modalSpinning}
-          addBtnName="Add"
-          addSpinningBtnName="Adding"
-        />
-      )}
-      {showDeleteModal && (
-        <KeytabElementsDeleteModal
-          host={props.id}
-          elementType={props.entryType}
-          operationType={props.opType}
-          columnNames={columnNamesArray}
-          showModal={showDeleteModal}
-          closeModal={onCloseDeleteHandler}
-          elementsToDelete={selectedEntries}
-          updateIsDeleteButtonDisabled={updateIsDeleteButtonDisabled}
-          updateSelectedElements={updateSelectedEntries}
-          tableElementsList={tableEntryList}
-          updateTableElementsList={removeEntry}
-          availableData={entryFilteredData}
-          updateAvailableData={updateEntryFilteredData}
-        />
-      )}
+      <DualListLayout
+        entry={props.id}
+        target={props.entryType}
+        showModal={showAddModal}
+        onCloseModal={onCloseAddHandler}
+        onOpenModal={onClickAddHandler}
+        tableElementsList={tableEntryList}
+        action={addEntry}
+        title={
+          "Allow " +
+          props.entryType +
+          "s to " +
+          props.opType +
+          " keytab for " +
+          props.id
+        }
+        spinning={modalSpinning}
+        addBtnName="Add"
+        addSpinningBtnName="Adding"
+      />
+      <KeytabElementsDeleteModal
+        host={props.id}
+        elementType={props.entryType}
+        operationType={props.opType}
+        columnNames={columnNamesArray}
+        showModal={showDeleteModal}
+        closeModal={onCloseDeleteHandler}
+        elementsToDelete={selectedEntries}
+        updateIsDeleteButtonDisabled={updateIsDeleteButtonDisabled}
+        updateSelectedElements={updateSelectedEntries}
+        tableElementsList={tableEntryList}
+        updateTableElementsList={removeEntry}
+        availableData={entryFilteredData}
+        updateAvailableData={updateEntryFilteredData}
+      />
     </div>
   );
 };

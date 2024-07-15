@@ -9,6 +9,7 @@ import {
   HBACServiceGroup,
   Host,
   HostGroup,
+  IDView,
   Metadata,
   Netgroup,
   Service,
@@ -77,6 +78,9 @@ export const isUserGroupSelectable = (group: UserGroup) => group.cn != "";
 // Determine whether a hostGroup is selectable or not
 export const isHostGroupSelectable = (hostGroup: HostGroup) =>
   hostGroup.cn != "";
+
+// Determine whether a ID view is selectable or not
+export const isViewSelectable = (view: IDView) => view.cn != "";
 
 // Write JSX error messages into 'apiErrorsJsx' array
 export const apiErrorToJsXError = (

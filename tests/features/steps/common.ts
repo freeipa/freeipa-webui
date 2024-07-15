@@ -194,7 +194,7 @@ Then(
 );
 
 Then("I close the alert", () => {
-  cy.get(".pf-v5-c-alert button").click();
+  cy.get(".pf-v5-c-alert button").click().wait(200);
 });
 
 // Kebab
@@ -473,12 +473,33 @@ Then(
 );
 
 When("I click on the arrow icon to perform search", () => {
-  cy.get("button[aria-label=Search]").eq(0).click();
-  cy.wait(500);
+  cy.get("button[aria-label=Search]").eq(0).click().wait(1000);
 });
 
 Then("I click on the X icon to clear the search field", () => {
   cy.get("button[aria-label=Reset]").eq(0).click();
+});
+
+// Search Modal/Dual List
+When("I type {string} in the modal search field", (searchText: string) => {
+  cy.get("[role=dialog] input[name=search]")
+    .eq(0)
+    .type(searchText, { force: true });
+});
+
+Then(
+  "I should see the {string} text in the modal search input field",
+  (searchText: string) => {
+    cy.get("[role=dialog] input[name=search]").should("have.value", searchText);
+  }
+);
+
+When("I click on the arrow icon to perform search in modal", () => {
+  cy.get("[role=dialog] button[aria-label=Search]").eq(0).click().wait(1000);
+});
+
+Then("I click on the X icon to clear the modal search field", () => {
+  cy.get("[role=dialog] button[aria-label=Reset]").eq(0).click();
 });
 
 // Breadcrumb

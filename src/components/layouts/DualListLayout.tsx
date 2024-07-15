@@ -21,12 +21,8 @@ interface PropsToAddModal {
   title: string;
   addBtnName: string;
   addSpinningBtnName: string;
-  // Action (non-table update)
-  action?: (items: string[]) => void;
-  // Table updates
-  tableElementsList?: string[];
-  clearSelectedEntries?: () => void;
-  updateTableElementsList?: (newTableElementsList: string[]) => void;
+  action: (items: string[]) => void;
+  tableElementsList: string[];
 }
 
 // Dual list layout for updating an existing table, or for performing actions
@@ -35,8 +31,8 @@ const DualListTableLayout = (props: PropsToAddModal) => {
   // Dual list selector
   const initialList = (
     <div>
-      <InfoCircleIcon className="pf-v5-u-info-color-100 pf-v5-u-mr-sm" /> Enter
-      a value in the search field
+      <InfoCircleIcon className="pf-v5-u-info-color-100 pf-v5-u-mr-sm" /> Find
+      entries using the search field
     </div>
   );
 
@@ -60,18 +56,14 @@ const DualListTableLayout = (props: PropsToAddModal) => {
     }
 
     // Filter out options already in the table
-    let filterData: string[] = newList;
-    if (props.tableElementsList !== undefined) {
-      const list = props.tableElementsList;
-      filterData = newList.filter((item) => {
-        if (item === props.entry) {
-          return false;
-        }
-        return !list.some((itm) => {
-          return item === itm;
-        });
+    const filterData = newList.filter((item) => {
+      if (item === props.entry) {
+        return false;
+      }
+      return !props.tableElementsList.some((itm) => {
+        return item === itm;
       });
-    }
+    });
 
     // Filter out options that have already been chosen
     let cleanList = filterData.filter((item) => {
@@ -90,7 +82,6 @@ const DualListTableLayout = (props: PropsToAddModal) => {
       );
       cleanList = [emptyList];
     }
-
     setAvailableOptions(cleanList);
   };
 
@@ -199,6 +190,14 @@ const DualListTableLayout = (props: PropsToAddModal) => {
     }
   }, [chosenOptions]);
 
+  // Close modal and reset lists
+  const closeModal = () => {
+    props.onCloseModal();
+    setSearchValue("");
+    setAvailableOptions([]);
+    setChosenOptions([]);
+  };
+
   // Add element to the list
   const doAction = () => {
     const itemsToAdd: string[] = [];
@@ -208,16 +207,8 @@ const DualListTableLayout = (props: PropsToAddModal) => {
       }
     });
     // Action update
-    if (props.action) {
-      props.action(itemsToAdd);
-    }
-    // Table updates
-    if (props.updateTableElementsList) {
-      props.updateTableElementsList(itemsToAdd);
-    }
-    if (props.clearSelectedEntries) {
-      props.clearSelectedEntries();
-    }
+    props.action(itemsToAdd);
+    closeModal();
   };
 
   // Buttons that will be shown at the end of the form
@@ -236,7 +227,7 @@ const DualListTableLayout = (props: PropsToAddModal) => {
     <Button
       key={"cancel-new-" + props.target}
       variant="link"
-      onClick={props.onCloseModal}
+      onClick={closeModal}
     >
       Cancel
     </Button>,
@@ -251,7 +242,7 @@ const DualListTableLayout = (props: PropsToAddModal) => {
       formId={"dual-list-" + props.target + "-modal"}
       fields={fields}
       show={props.showModal}
-      onClose={props.onCloseModal}
+      onClose={closeModal}
       actions={modalActions}
     />
   );

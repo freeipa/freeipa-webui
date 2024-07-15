@@ -35,6 +35,7 @@ import PasswordPolicies from "src/pages/PasswordPolicies/PasswordPolicies";
 import KrbTicketPolicy from "src/pages/KrbTicketPolicy/KrbTicketPolicy";
 import UserGroupsTabs from "src/pages/UserGroups/UserGroupsTabs";
 import HostGroupsTabs from "src/pages/HostGroups/HostGroupsTabs";
+import IDViewsTabs from "src/pages/IDViews/IDViewsTabs";
 import LoginMainPage from "src/login/LoginMainPage";
 import NetgroupsTabs from "src/pages/Netgroups/NetgroupsTabs";
 
@@ -178,6 +179,9 @@ export const AppRoutes = ({
             </Route>
             <Route path="id-views">
               <Route path="" element={<IDViews />} />
+              <Route path=":view">
+                <Route path="" element={<IDViewsTabs section="settings" />} />
+              </Route>
             </Route>
             <Route path="user-group-rules">
               <Route path="" element={<AutoMemUserRules />} />
