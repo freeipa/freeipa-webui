@@ -17,7 +17,7 @@ import { API_VERSION_BACKUP } from "../utils/utils";
 
 export interface KeyTabPayload {
   id: string;
-  entryType: "user" | "host" | "usergroup" | "hostgroup";
+  entryType: "user" | "host" | "group" | "hostgroup";
   entries: string[];
   method:
     | "host_allow_create_keytab"
@@ -39,7 +39,7 @@ const extendedApi = api.injectEndpoints({
           params["user"] = payload.entries;
         } else if (payload.entryType === "host") {
           params["host"] = payload.entries;
-        } else if (payload.entryType === "usergroup") {
+        } else if (payload.entryType === "group") {
           params["group"] = payload.entries;
         } else {
           // hostgroup
