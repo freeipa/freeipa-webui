@@ -4,28 +4,34 @@ import { Button, DualListSelector } from "@patternfly/react-core";
 // Layout
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
-import SearchInputLayout from "../../layouts/SearchInputLayout";
+import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 //Icons
 import InfoCircleIcon from "@patternfly/react-icons/dist/esm/icons/info-circle-icon";
 import ExclamationTriangleIcon from "@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon";
 // RPC client
-import { useGetIDListMutation, GenericPayload } from "../../../services/rpc";
+import { useGetIDListMutation, GenericPayload } from "src/services/rpc";
 
 interface PropsToAddModal {
-  host: string;
-  elementType: string;
-  operationType: string;
+  entry: string;
+  target: "user" | "group" | "host" | "hostgroup";
   showModal: boolean;
   onCloseModal: () => void;
   onOpenModal: () => void;
-  availableData: string[];
-  updateAvailableData: (newAvailableData: unknown[]) => void;
-  updateSelectedElements: (newSelectedElements: string[]) => void;
-  tableElementsList: string[];
-  updateTableElementsList: (newTableElementsList: string[]) => void;
+  spinning: boolean;
+  title: string;
+  addBtnName: string;
+  addSpinningBtnName: string;
+  // Action (non-table update)
+  action?: (items: string[]) => void;
+  // Table updates
+  tableElementsList?: string[];
+  clearSelectedEntries?: () => void;
+  updateTableElementsList?: (newTableElementsList: string[]) => void;
 }
 
-const KeytabElementsAddModal = (props: PropsToAddModal) => {
+// Dual list layout for updating an existing table, or for performing actions
+// against entries
+const DualListTableLayout = (props: PropsToAddModal) => {
   // Dual list selector
   const initialList = (
     <div>
@@ -54,19 +60,23 @@ const KeytabElementsAddModal = (props: PropsToAddModal) => {
     }
 
     // Filter out options already in the table
-    const filterUsersData = newList.filter((item) => {
-      if (item === props.host) {
-        return false;
-      }
-      return !props.tableElementsList.some((itm) => {
-        return item === itm;
+    let filterData: string[] = newList;
+    if (props.tableElementsList !== undefined) {
+      const list = props.tableElementsList;
+      filterData = newList.filter((item) => {
+        if (item === props.entry) {
+          return false;
+        }
+        return !list.some((itm) => {
+          return item === itm;
+        });
       });
-    });
+    }
 
     // Filter out options that have already been chosen
-    let cleanList = filterUsersData.filter((item) => {
+    let cleanList = filterData.filter((item) => {
       return !chosenOptions.some((itm) => {
-        return item === itm || item === props.host;
+        return item === itm || item === props.entry;
       });
     });
 
@@ -93,7 +103,7 @@ const KeytabElementsAddModal = (props: PropsToAddModal) => {
       sizeLimit: 200,
       startIdx: 0,
       stopIdx: 200,
-      entryType: props.elementType,
+      entryType: props.target,
     } as GenericPayload).then((result) => {
       if (result && "data" in result) {
         updateAvailableOptions(result.data.list);
@@ -128,7 +138,7 @@ const KeytabElementsAddModal = (props: PropsToAddModal) => {
     }
     const newAvailOptions: string[] = [];
     for (let idx = 0; idx < newAvailableOptions.length; idx++) {
-      // Revise avail list to only includue valid string options
+      // Revise avail list to only include valid string options
       if (typeof newAvailableOptions[idx] === "string") {
         const option = newAvailableOptions[idx] as string;
         newAvailOptions.push(option);
@@ -137,8 +147,6 @@ const KeytabElementsAddModal = (props: PropsToAddModal) => {
 
     setAvailableOptions(newAvailOptions.sort() as string[]);
     setChosenOptions(newChosenOptions.sort() as string[]);
-    // The recently added entries are removed from the available data options
-    props.updateAvailableData(newAvailOptions.sort());
   };
 
   let availOptions;
@@ -181,19 +189,6 @@ const KeytabElementsAddModal = (props: PropsToAddModal) => {
     },
   ];
 
-  // When clean data, set to original values
-  const cleanData = () => {
-    setAvailableOptions([]);
-    setChosenOptions([]);
-    props.updateSelectedElements([]);
-  };
-
-  // Clean fields and close modal (To prevent data persistence when reopen modal)
-  const cleanAndCloseModal = () => {
-    cleanData();
-    props.onCloseModal();
-  };
-
   // Buttons are disabled until all the required fields are filled
   const [buttonDisabled, setButtonDisabled] = useState(true);
   useEffect(() => {
@@ -205,32 +200,43 @@ const KeytabElementsAddModal = (props: PropsToAddModal) => {
   }, [chosenOptions]);
 
   // Add element to the list
-  const addElementToList = () => {
+  const doAction = () => {
     const itemsToAdd: string[] = [];
     chosenOptions.map((opt) => {
       if (opt !== undefined && opt !== null) {
         itemsToAdd.push(opt.toString());
       }
     });
-    props.updateTableElementsList(itemsToAdd);
-    props.updateSelectedElements([]);
-    cleanAndCloseModal();
+    // Action update
+    if (props.action) {
+      props.action(itemsToAdd);
+    }
+    // Table updates
+    if (props.updateTableElementsList) {
+      props.updateTableElementsList(itemsToAdd);
+    }
+    if (props.clearSelectedEntries) {
+      props.clearSelectedEntries();
+    }
   };
 
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <SecondaryButton
-      key={"add-new-" + props.elementType}
-      isDisabled={buttonDisabled}
+      key={"dual-list-" + props.target}
+      isDisabled={buttonDisabled || props.spinning}
       form="modal-form"
-      onClickHandler={addElementToList}
+      onClickHandler={doAction}
+      spinnerAriaValueText={props.addSpinningBtnName}
+      spinnerAriaLabel={props.addSpinningBtnName}
+      isLoading={props.spinning}
     >
-      Add
+      {props.spinning ? props.addSpinningBtnName : props.addBtnName}
     </SecondaryButton>,
     <Button
-      key={"cancel-new-" + props.elementType}
+      key={"cancel-new-" + props.target}
       variant="link"
-      onClick={cleanAndCloseModal}
+      onClick={props.onCloseModal}
     >
       Cancel
     </Button>,
@@ -241,23 +247,14 @@ const KeytabElementsAddModal = (props: PropsToAddModal) => {
     <ModalWithFormLayout
       variantType="medium"
       modalPosition="top"
-      title={
-        "Allow " +
-        props.elementType +
-        "s to " +
-        props.operationType +
-        " keytab for " +
-        props.host
-      }
-      formId={
-        props.operationType + "-keytab-" + props.elementType + "s-add-modal"
-      }
+      title={props.title}
+      formId={"dual-list-" + props.target + "-modal"}
       fields={fields}
       show={props.showModal}
-      onClose={cleanAndCloseModal}
+      onClose={props.onCloseModal}
       actions={modalActions}
     />
   );
 };
 
-export default KeytabElementsAddModal;
+export default DualListTableLayout;

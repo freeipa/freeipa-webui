@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Td, Th, Tr } from "@patternfly/react-table";
 // Layout
 import SettingsTableLayout from "../layouts/SettingsTableLayout";
+import DualListLayout from "../layouts/DualListLayout";
 // Modals
-import KeytabElementsAddModal from "../modals/HostsSettings/KeytabElementsAddModal";
 import KeytabElementsDeleteModal from "../modals/HostsSettings/KeytabElementsDeleteModal";
 // Hooks
 import { useAlerts } from "../../hooks/useAlerts";
@@ -248,12 +248,16 @@ const KeytabTable = (props: PropsToTable) => {
     }
   }
 
+  const [modalSpinning, setModalSpinning] = useState(false);
+
   const addEntry = (newEntries: string[]) => {
     let id = props.id;
     if (props.from === "service") {
       // Need to strip off domain for services
       id = props.id.split("@")[0];
     }
+    setModalSpinning(true);
+
     executeUpdate({
       id: id,
       entryType: props.entryType,
@@ -294,6 +298,8 @@ const KeytabTable = (props: PropsToTable) => {
           );
         }
       }
+      onCloseAddHandler();
+      setModalSpinning(false);
     });
   };
 
@@ -301,8 +307,9 @@ const KeytabTable = (props: PropsToTable) => {
     let id = props.id;
     if (props.from === "service") {
       // Need to strip off domain for services
-      id = props.id[0].split("@")[0];
+      id = props.id.split("@")[0];
     }
+
     executeUpdate({
       id: id,
       entryType: props.entryType,
@@ -553,18 +560,26 @@ const KeytabTable = (props: PropsToTable) => {
         entryType={props.entryType}
       />
       {showAddModal && (
-        <KeytabElementsAddModal
-          host={props.id}
-          elementType={props.entryType}
-          operationType={props.opType}
+        <DualListLayout
+          entry={props.id}
+          target={props.entryType}
           showModal={showAddModal}
           onCloseModal={onCloseAddHandler}
           onOpenModal={onClickAddHandler}
-          availableData={entryFilteredData}
-          updateAvailableData={updateEntryFilteredData}
-          updateSelectedElements={updateSelectedEntries}
+          clearSelectedEntries={() => setSelectedEntries([])}
           tableElementsList={tableEntryList}
           updateTableElementsList={addEntry}
+          title={
+            "Allow " +
+            props.entryType +
+            "s to " +
+            props.opType +
+            " keytab for " +
+            props.id
+          }
+          spinning={modalSpinning}
+          addBtnName="Add"
+          addSpinningBtnName="Adding"
         />
       )}
       {showDeleteModal && (
