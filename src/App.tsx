@@ -10,7 +10,7 @@ import { AppRoutes } from "./navigation/AppRoutes";
 // RPC client
 import { Command, useBatchCommandQuery } from "./services/rpc";
 // Redux
-import { useAppDispatch } from "src/store/hooks";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import {
   updateIpaServerConfiguration,
   updateLoggedUserInfo,
@@ -26,9 +26,12 @@ import { setIsLogin, setIsLogout } from "./store/Global/auth-slice";
 const App: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
 
+  // Default: no user logged in & no loaded information about it
   const [loggedInUser, setLoggedInUser] = React.useState<string | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
+  const [hasUser, setHasUser] = React.useState<boolean>(false);
   const [isDataLoaded, setIsDataLoaded] = React.useState<boolean>(false);
+
+  const userLoggedIn = useAppSelector((state) => state.auth.isUserLoggedIn);
 
   // [API Call] Get initial data
   const payloadDataBatch: Command[] = [];
@@ -63,7 +66,7 @@ const App: React.FunctionComponent = () => {
       // Assume that the user is not loaded
       setLoggedInUser(null);
       setIsDataLoaded(true);
-      setIsLoggedIn(false);
+      setHasUser(false);
       dispatch(setIsLogout());
     }
 
@@ -98,7 +101,7 @@ const App: React.FunctionComponent = () => {
       // Set the login status if user found in the whoami response
       if (user) {
         setLoggedInUser(user);
-        setIsLoggedIn(true);
+        setHasUser(true);
         // [Redux] Update the login status
         const loginPayload = {
           loggedInUser: loggedInUser as string,
@@ -107,7 +110,7 @@ const App: React.FunctionComponent = () => {
         dispatch(setIsLogin(loginPayload));
       } else {
         setLoggedInUser(null);
-        setIsLoggedIn(false);
+        setHasUser(false);
         dispatch(setIsLogout());
       }
     }
@@ -118,20 +121,14 @@ const App: React.FunctionComponent = () => {
   }
   return (
     <>
-      {isLoggedIn && (
+      {hasUser && userLoggedIn && (
         <AppLayout>
-          <AppRoutes
-            isUserLoggedIn={isLoggedIn}
-            isInitialDataLoaded={isDataLoaded}
-          />
+          <AppRoutes isInitialDataLoaded={isDataLoaded} />
         </AppLayout>
       )}
-      {!isLoggedIn && (
+      {!hasUser && !userLoggedIn && (
         <>
-          <AppRoutes
-            isUserLoggedIn={isLoggedIn}
-            isInitialDataLoaded={isDataLoaded}
-          />
+          <AppRoutes isInitialDataLoaded={isDataLoaded} />
         </>
       )}
     </>
