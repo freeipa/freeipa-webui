@@ -29,9 +29,30 @@ import Navigation from "./navigation/Nav";
 // Images
 import headerLogo from "public/images/header-logo.png";
 import avatarImg from "public/images/avatarImg.svg";
+// Redux
+import { useAppDispatch } from "./store/hooks";
+import { setIsLogout } from "./store/Global/auth-slice";
+import { useLogoutMutation } from "./services/rpcAuth";
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
+  const dispatch = useAppDispatch();
+
+  // RPC
+  const [logout] = useLogoutMutation();
+
+  // Toolbar
   const headerToolbar = <Toolbar id="toolbar" />;
+
+  // On logout handler
+  const onLogout = () => {
+    logout().then((response) => {
+      if ("data" in response && !response.data.error) {
+        dispatch(setIsLogout());
+        // Forcing full page to reload and redirect to login page
+        window.location.reload();
+      }
+    });
+  };
 
   // Dropdown
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
@@ -57,7 +78,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
     <DropdownItem key="about" component="button">
       <UnknownIcon /> About
     </DropdownItem>,
-    <DropdownItem key="logout" component="button">
+    <DropdownItem key="logout" component="button" onClick={onLogout}>
       <ShareSquareIcon /> Log out
     </DropdownItem>,
   ];
