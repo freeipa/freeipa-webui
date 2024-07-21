@@ -22,7 +22,7 @@ interface PropsToDelete {
   label?: string;
 }
 
-const RemoveNetgroupMembersModal = (props: PropsToDelete) => {
+const RemoveHBACRuleMembersModal = (props: PropsToDelete) => {
   const label = props.label ? props.label : props.elementType;
 
   // Modal fields
@@ -78,7 +78,7 @@ const RemoveNetgroupMembersModal = (props: PropsToDelete) => {
     <ModalWithFormLayout
       variantType="medium"
       modalPosition="top"
-      title={"Remove " + label.toLowerCase() + "s from Netgroup"}
+      title={"Remove " + label.toLowerCase() + "s from HBAC rule"}
       formId={props.elementType + "-delete-modal"}
       fields={fields}
       show={props.showModal}
@@ -88,4 +88,4 @@ const RemoveNetgroupMembersModal = (props: PropsToDelete) => {
   );
 };
 
-export default RemoveNetgroupMembersModal;
+export default RemoveHBACRuleMembersModal;

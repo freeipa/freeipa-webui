@@ -28,8 +28,11 @@ import {
  * - enableHbacRule
  * - addHbacService
  * - removeHbacService
+ * - getHbacRuleFullData
+ * -
  *
  * API commands:
+ * - hbacrule_mod: https://freeipa.readthedocs.io/en/latest/api/hbacrule_mod.html
  * - hbacrule_show: https://freeipa.readthedocs.io/en/latest/api/hbacrule_show.html
  * - hbacrule_add: https://freeipa.readthedocs.io/en/latest/api/hbacrule_add.html
  * - hbacrule_del: https://freeipa.readthedocs.io/en/latest/api/hbacrule_del.html
@@ -48,6 +51,10 @@ import {
  * - hbacsvcgroup_add: https://freeipa.readthedocs.io/en/latest/api/hbacsvcgroup_add.html
  * - hbacsvcgroup_del: https://freeipa.readthedocs.io/en/latest/api/hbacsvcgroup_del.html
  */
+
+export type RuleFullData = {
+  rule?: Partial<HBACRule>;
+};
 
 export interface HbacRulesShowPayload {
   hbacRuleNamesList: string[];
@@ -73,6 +80,23 @@ export interface HBACRulePayload {
 export type ServiceFullData = {
   service?: Partial<HBACService>;
 };
+
+// Selecting allow any/all requires removing old members first
+export interface AllowAllPayload {
+  groupName: string;
+  version?: string;
+  // User category
+  users: string[];
+  groups: string[];
+  // Host category
+  hosts: string[];
+  hostgroups: string[];
+  // Service category
+  services: string[];
+  servicegroups: string[];
+  external: string[];
+  modifiedValues: Partial<HBACRule>;
+}
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -112,6 +136,39 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(groupsToDeletePayload, API_VERSION_BACKUP);
       },
     }),
+    getHbacRuleFullData: build.query<RuleFullData, string>({
+      query: (ruleId) => {
+        // Prepare search parameters
+        const rule_params = {
+          all: true,
+          rights: true,
+        };
+
+        const ruleShowCommand: Command = {
+          method: "hbacrule_show",
+          params: [[ruleId], rule_params],
+        };
+
+        const batchPayload: Command[] = [ruleShowCommand];
+
+        return getBatchCommand(batchPayload, API_VERSION_BACKUP);
+      },
+      transformResponse: (response: BatchResponse): RuleFullData => {
+        const [rulesResponse] = response.result.results;
+
+        // Initialize group data (to prevent 'undefined' values)
+        const groupData = rulesResponse.result;
+        let groupObject = {};
+        if (!rulesResponse.error) {
+          groupObject = apiToHBACRule(groupData);
+        }
+
+        return {
+          rule: groupObject,
+        };
+      },
+      providesTags: ["FullHBACRule"],
+    }),
     /**
      * Given a list of HBAC rules names, show the full data of those HBAC rules
      * @param {HbacRulesShowPayload} - Payload with HBAC rule names and options
@@ -145,7 +202,11 @@ const extendedApi = api.injectEndpoints({
      * Add entity to HBAC rules
      * @param {string} toId - ID of the entity to add to HBAC rules
      * @param {string} type - Type of the entity
-     *    Available types: user | host | service | sourcehost
+     *    Available types:
+     *        user | group |
+     *        host | hostgroup |
+     *        hbacsrc | hbacsvcgroup |
+     *        sourcehost
      * @param {string[]} listOfMembers - List of members to add to the HBAC rules
      */
     addToHbacRules: build.mutation<
@@ -158,11 +219,11 @@ const extendedApi = api.injectEndpoints({
         const roleNames = payload[2];
 
         let methodType = "";
-        if (memberType === "user") {
+        if (memberType === "user" || memberType === "group") {
           methodType = "hbacrule_add_user";
-        } else if (memberType === "host") {
+        } else if (memberType === "host" || memberType === "hostgroup") {
           methodType = "hbacrule_add_host";
-        } else if (memberType === "service") {
+        } else if (memberType === "hbacsvc" || memberType === "hbacsvcgroup") {
           methodType = "hbacrule_add_service";
         } else if (memberType === "sourcehost") {
           methodType = "hbacrule_add_sourcehost";
@@ -180,10 +241,104 @@ const extendedApi = api.injectEndpoints({
       },
     }),
     /**
+     * Add entity to HBAC rule
+     * @param {string} toId - ID of the HBAC rule
+     * @param {string} type - Type of the entity
+     *    Available types:
+     *        user | group |
+     *        host | hostgroup |
+     *        hbacsrc | hbacsvcgroup |
+     *        sourcehost
+     * @param {string[]} listOfMembers - List of members to add to the HBAC rule
+     * @param {boolean} unsetCategory - set the category from "all" to ""
+     */
+    addMembersToHbacRule: build.mutation<
+      BatchRPCResponse,
+      [string, string, string[], boolean]
+    >({
+      query: (payload) => {
+        const actions: Command[] = [];
+        const id = payload[0];
+        const memberType = payload[1];
+        const members = payload[2];
+        const unsetCategory = payload[3];
+        let methodType = "";
+        let catAttr = "";
+
+        if (memberType === "user" || memberType === "group") {
+          methodType = "hbacrule_add_user";
+          catAttr = "usercategory";
+        } else if (memberType === "host" || memberType === "hostgroup") {
+          methodType = "hbacrule_add_host";
+          catAttr = "hostcategory";
+        } else if (memberType === "hbacsvc" || memberType === "hbacsvcgroup") {
+          methodType = "hbacrule_add_service";
+          catAttr = "servicecategory";
+        } else if (memberType === "sourcehost") {
+          methodType = "hbacrule_add_sourcehost";
+          catAttr = "sourcehostcategory";
+        }
+
+        if (unsetCategory) {
+          actions.push({
+            method: "hbacrule_mod",
+            params: [[id], { [catAttr]: "" }],
+          } as Command);
+        }
+        actions.push({
+          method: methodType,
+          params: [[id], { [memberType]: members }],
+        } as Command);
+
+        return getBatchCommand(actions, API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Remove entity from HBAC rule
+     * @param {string} toId - ID of the HBAC rule
+     * @param {string} type - Type of the entity
+     *    Available types:
+     *        user | group |
+     *        host | hostgroup |
+     *        hbacsrc | hbacsvcgroup |
+     *        sourcehost
+     * @param {string[]} listOfMembers - List of members to remove
+     */
+    removeMembersFromHbacRule: build.mutation<
+      FindRPCResponse,
+      [string, string, string[]]
+    >({
+      query: (payload) => {
+        const id = payload[0];
+        const memberType = payload[1];
+        const members = payload[2];
+
+        let methodType = "";
+        if (memberType === "user" || memberType === "group") {
+          methodType = "hbacrule_remove_user";
+        } else if (memberType === "host" || memberType === "hostgroup") {
+          methodType = "hbacrule_remove_host";
+        } else if (memberType === "hbacsvc" || memberType === "hbacsvcgroup") {
+          methodType = "hbacrule_remove_service";
+        } else if (memberType === "sourcehost") {
+          methodType = "hbacrule_remove_sourcehost";
+        }
+
+        return getCommand({
+          method: methodType,
+          params: [[id], { [memberType]: members }],
+        });
+      },
+    }),
+    /**
      * Delete entity from HBAC rules
      * @param {string} memberId - ID of the entity to remove from HBAC rules
      * @param {string} memberType - Type of the entity
-     *    Available types: user | host | service
+     *    Available types:
+     *        user | group |
+     *        host | hostgroup |
+     *        hbacsvc | hbacsvcgroup |
+     *        sourcehost
      * @param {string[]} listOfHbacRules - List of members to remove from HBAC rules
      */
     removeFromHbacRules: build.mutation<
@@ -196,14 +351,14 @@ const extendedApi = api.injectEndpoints({
         const listOfHbacRules = payload[2];
 
         let methodType = "";
-        if (memberType === "user") {
-          methodType = "hbacrule_remove_user";
-        } else if (memberType === "host") {
-          methodType = "hbacrule_remove_host";
-        } else if (memberType === "service") {
-          methodType = "hbacrule_remove_service";
+        if (memberType === "user" || memberType === "group") {
+          methodType = "hbacrule_add_user";
+        } else if (memberType === "host" || memberType === "hostgroup") {
+          methodType = "hbacrule_add_host";
+        } else if (memberType === "hbacsvc" || memberType === "hbacsvcgroup") {
+          methodType = "hbacrule_add_service";
         } else if (memberType === "sourcehost") {
-          methodType = "hbacrule_remove_sourcehost";
+          methodType = "hbacrule_add_sourcehost";
         }
 
         const membersToRemove: Command[] = [];
@@ -371,6 +526,100 @@ const extendedApi = api.injectEndpoints({
       },
       providesTags: ["FullHBACService"],
     }),
+    saveHbacRule: build.mutation<FindRPCResponse, Partial<HBACRule>>({
+      query: (rule) => {
+        const params = {
+          version: API_VERSION_BACKUP,
+          ...rule,
+        };
+        delete params["cn"];
+        const cn = rule.cn !== undefined ? rule.cn : "";
+        return getCommand({
+          method: "hbacrule_mod",
+          params: [[cn], params],
+        });
+      },
+      invalidatesTags: ["FullHBACRule"],
+    }),
+    /*
+     * In order to set the user/host/service category to "all" all the previous
+     * members must be removed first before setting the attribute
+     */
+    saveAndCleanHbacRule: build.mutation<FindRPCResponse, AllowAllPayload>({
+      query: (payload) => {
+        const actions: Command[] = [];
+
+        // User category
+        if (
+          payload.modifiedValues.usercategory &&
+          payload.modifiedValues.usercategory === "all"
+        ) {
+          const params = {
+            version: payload.version || API_VERSION_BACKUP,
+          };
+          if (payload.users.length > 0) {
+            params["user"] = payload.users;
+          }
+          if (payload.groups.length > 0) {
+            params["group"] = payload.groups;
+          }
+          actions.push({
+            method: "hbacrule_remove_user",
+            params: [[payload.groupName], params],
+          } as Command);
+        }
+        // Host category
+        if (
+          payload.modifiedValues.hostcategory &&
+          payload.modifiedValues.hostcategory === "all"
+        ) {
+          const params = {
+            version: payload.version || API_VERSION_BACKUP,
+          };
+          if (payload.hosts.length > 0) {
+            params["host"] = payload.hosts;
+          }
+          if (payload.hostgroups.length > 0) {
+            params["hostgroup"] = payload.hostgroups;
+          }
+          actions.push({
+            method: "hbacrule_remove_host",
+            params: [[payload.groupName], params],
+          } as Command);
+        }
+        // Service category
+        if (
+          payload.modifiedValues.servicecategory &&
+          payload.modifiedValues.servicecategory === "all"
+        ) {
+          const params = {
+            version: payload.version || API_VERSION_BACKUP,
+          };
+          if (payload.services.length > 0) {
+            params["hbacsvc"] = payload.services;
+          }
+          if (payload.servicegroups.length > 0) {
+            params["hbacsvcgroup"] = payload.servicegroups;
+          }
+          actions.push({
+            method: "hbacrule_remove_service",
+            params: [[payload.groupName], params],
+          } as Command);
+        }
+
+        // Do the remaining mods
+        const mod_params = {
+          version: API_VERSION_BACKUP,
+          ...payload.modifiedValues,
+        };
+        actions.push({
+          method: "hbacrule_mod",
+          params: [[payload.groupName], mod_params],
+        } as Command);
+
+        return getBatchCommand(actions, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -407,4 +656,9 @@ export const {
   useRemoveHbacServiceGroupsMutation,
   useSaveHbacServiceMutation,
   useGetHbacServiceFullDataQuery,
+  useGetHbacRuleFullDataQuery,
+  useSaveHbacRuleMutation,
+  useSaveAndCleanHbacRuleMutation,
+  useRemoveMembersFromHbacRuleMutation,
+  useAddMembersToHbacRuleMutation,
 } = extendedApi;

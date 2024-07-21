@@ -11,6 +11,7 @@ import {
 interface CheckboxOption extends IPAParamDefinition {
   value: string;
   text: string;
+  textNode?: React.ReactNode;
   className?: string;
   altTrue?: string; // Alternate True value
   altFalse?: string; // Alternate False value
@@ -47,7 +48,7 @@ const IpaCheckbox = (props: CheckboxOption) => {
       id={props.name + "-" + props.value}
       className={props.className}
       name={props.name}
-      label={props.text}
+      label={props.textNode ? props.textNode : props.text}
       aria-label={props.name}
       isRequired={required}
       readOnly={readOnly}

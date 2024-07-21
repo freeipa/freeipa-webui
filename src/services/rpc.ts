@@ -205,6 +205,7 @@ export const api = createApi({
     "FullHost",
     "FullService",
     "FullUserGroup",
+    "FullHBACRule",
     "FullHBACService",
     "FullHostGroup",
     "FullNetgroup",
@@ -653,6 +654,10 @@ export const api = createApi({
           method = "netgroup_find";
         } else if (entryType === "service") {
           method = "service_find";
+        } else if (entryType === "hbacsvc") {
+          method = "hbacsvc_find";
+        } else if (entryType === "hbacsvcgroup") {
+          method = "hbacsvcgroup_find";
         } else {
           return {
             error: {
@@ -702,7 +707,9 @@ export const api = createApi({
           } else if (
             entryType === "group" ||
             entryType === "hostgroup" ||
-            entryType === "netgroup"
+            entryType === "netgroup" ||
+            entryType === "hbacsvc" ||
+            entryType === "hbacsvcgroup"
           ) {
             const groupId = responseData.result.result[i] as cnType;
             const { cn } = groupId;
