@@ -204,6 +204,12 @@ export interface HBACRule {
   cn: string;
   ipaenabledflag: boolean;
   dn: string;
+  memberhost_host: string[];
+  memberhost_hostgroup: string[];
+  memberuser_user: string[];
+  memberuser_group: string[];
+  memberservice_hbacsvc: string[];
+  memberservice_hbacsvcgroup: string[];
 }
 
 export interface HBACService {

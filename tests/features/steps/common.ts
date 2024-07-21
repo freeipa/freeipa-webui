@@ -250,16 +250,17 @@ When("I click on {string} checkbox in modal", (checkboxName: string) => {
     .click();
 });
 
-When(
-  "I click on {string} checkbox",
-  (checkboxName: string, section: string) => {
-    cy.get("div.pf-v5-c-check")
-      .find("label")
-      .contains(checkboxName)
-      .prev()
-      .click();
-  }
-);
+When("I click on {string} checkbox", (checkboxName: string) => {
+  cy.get("div.pf-v5-c-check")
+    .find("label")
+    .contains(checkboxName)
+    .prev()
+    .click();
+});
+
+When("I click on {string} inline checkbox", (checkboxName: string) => {
+  cy.get("div.pf-v5-c-check").find("label").contains(checkboxName).click();
+});
 
 // Selectors
 When("I click in the {string} selector field", (selectorName: string) => {
@@ -519,7 +520,8 @@ Then("I click on the dual list add selected button", () => {
 Then("I click on the first dual list item", () => {
   cy.get("li[id=basicSelectorWithSearch-available-pane-list-option-0]")
     .eq(0)
-    .click();
+    .click()
+    .wait(1000);
 });
 
 // Misc

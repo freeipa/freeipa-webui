@@ -9,10 +9,8 @@ import { HBACRule } from "../../utils/datatypes/globalDataTypes";
 import { checkEqualStatusHbacRule } from "src/utils/utils";
 // Layouts
 import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
-// Navigation
-// import { URL_PREFIX } from "../../navigation/NavRoutes";
 // React Router DOM
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 interface RulesData {
   isHbacRuleSelectable: (rule: HBACRule) => boolean;
@@ -235,7 +233,11 @@ const HBACRulesTable = (props: PropsToTable) => {
           isDisabled: !props.rulesData.isHbacRuleSelectable(rule),
         }}
       />
-      <Td dataLabel={columnNames.cn}>{rule.cn}</Td>
+      <Td dataLabel={columnNames.cn}>
+        <Link to={"/hbac-rules/" + rule.cn} state={rule}>
+          {rule.cn}
+        </Link>
+      </Td>
       <Td dataLabel={columnNames.ipaenabledflag}>
         {rule.ipaenabledflag[0] ? "Enabled" : "Disabled"}
       </Td>

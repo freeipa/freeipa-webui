@@ -42,6 +42,12 @@ export function createEmptyHBACRule(): HBACRule {
     cn: "",
     ipaenabledflag: true,
     dn: "",
+    memberhost_host: [],
+    memberhost_hostgroup: [],
+    memberuser_user: [],
+    memberuser_group: [],
+    memberservice_hbacsvc: [],
+    memberservice_hbacsvcgroup: [],
   };
 
   return hbacRule;

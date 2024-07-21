@@ -294,10 +294,8 @@ const extendedApi = api.injectEndpoints({
         };
 
         if (
-          (payload.modifiedValues.usercategory &&
-            payload.modifiedValues.usercategory === "all") ||
-          (payload.modifiedValues.hostcategory &&
-            payload.modifiedValues.hostcategory === "all")
+          payload.modifiedValues.usercategory &&
+          payload.modifiedValues.usercategory === "all"
         ) {
           // User category
           if (payload.users.length > 0) {
@@ -306,6 +304,11 @@ const extendedApi = api.injectEndpoints({
           if (payload.groups.length > 0) {
             params["group"] = payload.groups;
           }
+        }
+        if (
+          payload.modifiedValues.hostcategory &&
+          payload.modifiedValues.hostcategory === "all"
+        ) {
           // Host category
           if (payload.hosts.length > 0) {
             params["host"] = payload.hosts;
@@ -317,13 +320,13 @@ const extendedApi = api.injectEndpoints({
             // External hosts and updated via 'host'
             params["host"] = params["host"].concat(payload.external);
           }
-
-          // Cleanup group before setting the "all" category
-          actions.push({
-            method: "netgroup_remove_member",
-            params: [[payload.groupName], params],
-          } as Command);
         }
+
+        // Cleanup group before setting the "all" category
+        actions.push({
+          method: "netgroup_remove_member",
+          params: [[payload.groupName], params],
+        } as Command);
 
         // Do the remaining mods
         const mod_params = {
