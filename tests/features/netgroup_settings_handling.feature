@@ -94,6 +94,37 @@ Feature: Netgroup settings manipulation
     When I scroll down
     Then I should see "test.test.test" entry in the data table
 
+  Scenario: Set User category to allow all users
+    # When enabling "Allow anyone" all members need to be removed otherwise
+    # the update fails
+    When I scroll up
+    * I click on "Allow anyone" checkbox
+    Then I click on "Save" button
+    * I should see "success" alert with text "Netgroup modified"
+    * I close the alert
+    # Members should be removed
+    Then I click on "Allow anyone" checkbox
+    When I click on "Users" page tab
+    Then I should not see "admin" entry in the data table
+    When I click on "Groups" page tab
+    Then I should not see "admins" entry in the data table
+
+  Scenario: Set Host category to allow all hosts
+    # This is the same test as above but for the host category
+    When I scroll down
+    * I click on "Allow any host" checkbox
+    Then I click on "Save" button
+    * I should see "success" alert with text "Netgroup modified"
+    * I close the alert
+    When I scroll down
+    Then I click on "Allow any host" checkbox
+    When I click on "Hosts" page tab
+    Then I should not see "server.ipa.demo" entry in the data table
+    When I click on "Host groups" page tab
+    Then I should not see "ipaservers" entry in the data table
+    When I click on "External hosts" page tab
+    Then I should not see "test.test.test" entry in the data table
+
   Scenario: Delete the groups for cleanup
     When I click on the breadcrump link "Netgroups"
     Then I should see "netgroup1" entry in the data table
