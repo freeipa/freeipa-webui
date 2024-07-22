@@ -13,7 +13,8 @@ import { apiToNetgroup } from "src/utils/netgroupsUtils";
 import { Netgroup } from "../utils/datatypes/globalDataTypes";
 
 /**
- * Netgroup-related endpoints: addToNetgroups, removeFromNetgroups, getNetgroupInfoByName
+ * Netgroup-related endpoints: addToNetgroups, removeFromNetgroups, getNetgroupInfoByName,
+ *   saveNetgroup, saveAndCleanNetgroup
  *
  * API commands:
  * - netgroup_add: https://freeipa.readthedocs.io/en/latest/api/netgroup_add.html
@@ -39,6 +40,20 @@ export interface GroupAddPayload {
 export type GroupFullData = {
   netgroup?: Partial<Netgroup>;
 };
+
+// Selecting allow any/all requires removing old members first
+export interface AllowAllPayload {
+  groupName: string;
+  version?: string;
+  // User category
+  users: string[];
+  groups: string[];
+  // Host category
+  hosts: string[];
+  hostgroups: string[];
+  external: string[];
+  modifiedValues: Partial<Netgroup>;
+}
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -267,6 +282,62 @@ const extendedApi = api.injectEndpoints({
       },
       invalidatesTags: ["FullNetgroup"],
     }),
+    /*
+     * In order to the user/host category to "all" all the previous members
+     * must be removed first before setting the attribute
+     */
+    saveAndCleanNetgroup: build.mutation<FindRPCResponse, AllowAllPayload>({
+      query: (payload) => {
+        const actions: Command[] = [];
+        const params = {
+          version: payload.version || API_VERSION_BACKUP,
+        };
+
+        if (
+          (payload.modifiedValues.usercategory &&
+            payload.modifiedValues.usercategory === "all") ||
+          (payload.modifiedValues.hostcategory &&
+            payload.modifiedValues.hostcategory === "all")
+        ) {
+          // User category
+          if (payload.users.length > 0) {
+            params["user"] = payload.users;
+          }
+          if (payload.groups.length > 0) {
+            params["group"] = payload.groups;
+          }
+          // Host category
+          if (payload.hosts.length > 0) {
+            params["host"] = payload.hosts;
+          }
+          if (payload.hostgroups.length > 0) {
+            params["hostgroup"] = payload.hostgroups;
+          }
+          if (payload.external.length > 0) {
+            // External hosts and updated via 'host'
+            params["host"] = params["host"].concat(payload.external);
+          }
+
+          // Cleanup group before setting the "all" category
+          actions.push({
+            method: "netgroup_remove_member",
+            params: [[payload.groupName], params],
+          } as Command);
+        }
+
+        // Do the remaining mods
+        const mod_params = {
+          version: API_VERSION_BACKUP,
+          ...payload.modifiedValues,
+        };
+        actions.push({
+          method: "netgroup_mod",
+          params: [[payload.groupName], mod_params],
+        } as Command);
+
+        return getBatchCommand(actions, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -287,4 +358,5 @@ export const {
   useAddMemberToNetgroupsMutation,
   useSaveNetgroupMutation,
   useRemoveMemberFromNetgroupsMutation,
+  useSaveAndCleanNetgroupMutation,
 } = extendedApi;

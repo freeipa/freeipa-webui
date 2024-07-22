@@ -18,9 +18,11 @@ import RemoveNetgroupMembersModal from "src/components/modals/RemoveNetgroupMemb
 import { useAlerts } from "../../hooks/useAlerts";
 // React Router DOM
 import { Link } from "react-router-dom";
+import { Netgroup } from "../../utils/datatypes/globalDataTypes";
 // RPC
 import { ErrorResult } from "../../services/rpc";
 import {
+  useSaveNetgroupMutation,
   useAddMemberToNetgroupsMutation,
   useRemoveMemberFromNetgroupsMutation,
 } from "../../services/rpcNetgroups";
@@ -32,12 +34,14 @@ interface PropsToTable {
   members: string[];
   fromLabel?: string;
   onRefresh: () => void;
+  unsetCategory: boolean;
 }
 
 const NetgroupsMemberTable = (props: PropsToTable) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
+  const [saveNetgroup] = useSaveNetgroupMutation();
   const [addMemberToNetgroups] = useAddMemberToNetgroupsMutation();
   const [removeMembersFromNetgroups] = useRemoveMemberFromNetgroupsMutation();
 
@@ -144,30 +148,67 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
     addMemberToNetgroups([props.id, type, newMembers]).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
-          // Set alert: success
-          alerts.addAlert(
-            "add-member-success",
-            "Added " + props.from + " to netgroup",
-            "success"
-          );
           // Update displayed netgroups before they are updated via refresh
           const newNetgroups = members.concat(newMembers);
           setMembers(newNetgroups);
           setSearchValue("");
-          // Refresh data
-          props.onRefresh();
-          // Close modal
-          setShowAddModal(false);
-          closeExternalModal();
-          // Go back to page 1
-          setPage(1);
+
+          if (props.unsetCategory) {
+            // Ok need to unset the category attribute via a nested update
+            const group: Partial<Netgroup> = {};
+            group.cn = props.id;
+            if (props.from === "user" || props.from === "group") {
+              group.usercategory = "";
+            } else {
+              group.hostcategory = "";
+            }
+            saveNetgroup(group).then((modResponse) => {
+              if ("data" in modResponse) {
+                if (modResponse.data.error) {
+                  const errorMessage = modResponse.data
+                    .error as unknown as ErrorResult;
+                  alerts.addAlert(
+                    "update-netgroup-error",
+                    errorMessage.message,
+                    "danger"
+                  );
+                  setAddSpinning(false);
+                  return;
+                } else {
+                  // Set alert: success
+                  alerts.addAlert(
+                    "update-success",
+                    "Added " + props.from + " to netgroup",
+                    "success"
+                  );
+                  props.onRefresh();
+                  setAddSpinning(false);
+                  setShowAddModal(false);
+                  closeExternalModal();
+                  setPage(1);
+                }
+              }
+            });
+          } else {
+            // Set alert: success
+            alerts.addAlert(
+              "add-member-success",
+              "Added " + props.from + " to netgroup",
+              "success"
+            );
+            props.onRefresh();
+            setAddSpinning(false);
+            setShowAddModal(false);
+            closeExternalModal();
+            setPage(1);
+          }
         } else if (response.data.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
           alerts.addAlert("add-member-error", errorMessage.message, "danger");
+          setAddSpinning(false);
         }
       }
-      setAddSpinning(false);
     });
   };
 

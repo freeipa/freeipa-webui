@@ -30,14 +30,16 @@ import { Netgroup, Metadata } from "../../utils/datatypes/globalDataTypes";
 import NetgroupsMemberTable from "./NetgroupsMemberTable";
 // RPC
 import { ErrorResult } from "src/services/rpc";
-import { useSaveNetgroupMutation } from "src/services/rpcNetgroups";
+import {
+  useSaveAndCleanNetgroupMutation,
+  AllowAllPayload,
+} from "src/services/rpcNetgroups";
 
 interface PropsToGroupsSettings {
   netgroup: Partial<Netgroup>;
   originalGroup: Partial<Netgroup>;
   metadata: Metadata;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onGroupChange: (hostGroup: Partial<Netgroup>) => void;
+  onGroupChange: (netgroup: Partial<Netgroup>) => void;
   onRefresh: () => void;
   isModified: boolean;
   isDataLoading?: boolean;
@@ -49,7 +51,7 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
   const alerts = useAlerts();
 
   // API
-  const [saveGroup] = useSaveNetgroupMutation();
+  const [saveGroup] = useSaveAndCleanNetgroupMutation();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "netgroups", noBreadcrumb: true });
@@ -111,23 +113,33 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
   // 'Save' handler method
   const onSave = () => {
     const modifiedValues = props.modifiedValues();
-    modifiedValues.cn = props.netgroup.cn;
-    setSaving(true);
+    const payload = {
+      groupName: cn,
+      users: memberUsers,
+      groups: memberGroups,
+      hosts: memberHosts,
+      hostgroups: memberHostGroups,
+      external: memberExternalHosts,
+      modifiedValues,
+    } as AllowAllPayload;
 
-    saveGroup(modifiedValues).then((response) => {
+    setSaving(true);
+    saveGroup(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
           // Show toast notification: success
           alerts.addAlert("save-success", "Netgroup modified", "success");
+          props.onRefresh();
+          setHostTabKey(0);
+          setUserTabKey(0);
         } else if (response.data.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert("save-error", errorMessage.message, "danger");
+          props.onResetValues();
         }
-        // Reset values. Disable 'revert' and 'save' buttons
-        props.onResetValues();
-        setSaving(false);
       }
+      setSaving(false);
     });
   };
 
@@ -255,6 +267,9 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
                   id={cn}
                   members={memberUsers}
                   onRefresh={props.onRefresh}
+                  unsetCategory={
+                    ipaObject.usercategory !== props.originalGroup.usercategory
+                  }
                 />
               </Tab>
               <Tab
@@ -271,6 +286,9 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
                   id={cn}
                   members={memberGroups}
                   onRefresh={props.onRefresh}
+                  unsetCategory={
+                    ipaObject.usercategory !== props.originalGroup.usercategory
+                  }
                 />
               </Tab>
             </Tabs>
@@ -314,6 +332,9 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
                   id={cn}
                   members={memberHosts}
                   onRefresh={props.onRefresh}
+                  unsetCategory={
+                    ipaObject.hostcategory !== props.originalGroup.hostcategory
+                  }
                 />
               </Tab>
               <Tab
@@ -332,6 +353,9 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
                   members={memberHostGroups}
                   onRefresh={props.onRefresh}
                   fromLabel={"Host group"}
+                  unsetCategory={
+                    ipaObject.hostcategory !== props.originalGroup.hostcategory
+                  }
                 />
               </Tab>
               <Tab
@@ -350,6 +374,9 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
                   members={memberExternalHosts}
                   onRefresh={props.onRefresh}
                   fromLabel={"External host"}
+                  unsetCategory={
+                    ipaObject.hostcategory !== props.originalGroup.hostcategory
+                  }
                 />
               </Tab>
             </Tabs>
