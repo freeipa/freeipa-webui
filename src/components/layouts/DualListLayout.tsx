@@ -30,9 +30,9 @@ interface PropsToAddModal {
 const DualListTableLayout = (props: PropsToAddModal) => {
   // Dual list selector
   const initialList = (
-    <div>
-      <InfoCircleIcon className="pf-v5-u-info-color-100 pf-v5-u-mr-sm" /> Find
-      entries using the search field
+    <div onClick={doSearch}>
+      <InfoCircleIcon className="pf-v5-u-info-color-100 pf-v5-u-mr-sm" />{" "}
+      <a>Click here, or use the search field to find entries</a>
     </div>
   );
 
@@ -112,8 +112,19 @@ const DualListTableLayout = (props: PropsToAddModal) => {
   const searchValueData = {
     searchValue: searchValue,
     updateSearchValue: updateSearchValue,
-    submitSearchValue: submitSearchValue,
+    submitSearchValue: doSearch,
   };
+
+  function doSearch() {
+    const newPlaceholder = (
+      <div>
+        <InfoCircleIcon className="pf-v5-u-info-color-100 pf-v5-u-mr-sm" />{" "}
+        Searching ...
+      </div>
+    );
+    setAvailableOptions([newPlaceholder]);
+    submitSearchValue();
+  }
 
   const listChange = (
     newAvailableOptions: ReactNode[],
