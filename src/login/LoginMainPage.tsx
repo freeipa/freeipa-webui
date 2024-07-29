@@ -23,6 +23,7 @@ import BackgroundImg from "src/assets/images/login-screen-background.jpg";
 // RPC
 import {
   MetaResponse,
+  useKrbLoginMutation,
   useUserPasswordLoginMutation,
 } from "src/services/rpcAuth";
 // Redux
@@ -42,6 +43,10 @@ const LoginMainPage = () => {
   const [password, setPassword] = React.useState("");
   const [isValidPassword, setIsValidPassword] = React.useState(true);
 
+  // Authentication method (assumes user + password by default)
+  // - This will help to get the user credentials if the user is logged in via Kerberos
+  let isUserPwdAuthentication = true;
+
   const handleUsernameChange = (
     _event: React.FormEvent<HTMLInputElement>,
     value: string
@@ -56,11 +61,48 @@ const LoginMainPage = () => {
     setPassword(value);
   };
 
+  /**
+   * If no username is provided and krb enabled, try to login using Kerberos.
+   * 1.- Check if Kerberos is enabled
+   * 2.- Based on the result, authenticate using one method (Kerberos) or the other (via user + password)
+   */
+  const isKerberosEnabled = true;
+
   // API call
   const [onUserPwdLogin] = useUserPasswordLoginMutation();
+  const [onKrbLogin] = useKrbLoginMutation();
+
+  // Kerberos login when loading the component
+  React.useEffect(() => {
+    if (!username && isKerberosEnabled) {
+      onKrbLogin().then((response) => {
+        if ("error" in response) {
+          const receivedError = response.error as MetaResponse;
+          const status = receivedError.response?.status;
+          const wwwAuthenticateHeader =
+            receivedError.response?.headers.get("www-authenticate");
+
+          if (
+            status === 200 &&
+            wwwAuthenticateHeader?.startsWith("Negotiate")
+          ) {
+            // Success on Kerberos login
+            isUserPwdAuthentication = false;
+            onSuccessLogin();
+          } else {
+            // Set error without showing the modal
+            setErrorMessage("Authentication with Kerberos failed");
+          }
+        } else {
+          isUserPwdAuthentication = false;
+          onSuccessLogin();
+        }
+      });
+    }
+  }, []);
 
   // Handling API errors
-  const [isError, setIsError] = React.useState(false);
+  const [showErrorModal, setShowErrorModal] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string>("");
 
   const getErrorMessageByType = (error: string) => {
@@ -82,13 +124,13 @@ const LoginMainPage = () => {
         <Modal
           variant={ModalVariant.small}
           title="Invalid authentication"
-          isOpen={isError}
-          onClose={() => setIsError(false)}
+          isOpen={showErrorModal}
+          onClose={() => setShowErrorModal(false)}
           actions={[
             <Button
               key="confirm"
               variant="primary"
-              onClick={() => setIsError(false)}
+              onClick={() => setShowErrorModal(false)}
             >
               OK
             </Button>,
@@ -103,7 +145,12 @@ const LoginMainPage = () => {
   // Action on login success
   const onSuccessLogin = () => {
     // Sore data on Redux
-    dispatch(setIsLogin({ loggedInUser: username, error: null }));
+    if (isUserPwdAuthentication) {
+      dispatch(setIsLogin({ loggedInUser: username, error: null }));
+    } else {
+      // TODO: Extract the username from the Kerberos ticket and store in Redux
+    }
+
     // Forcing full page to reload and access the protected pages (Default: active users)
     window.location.reload();
     // TODO: Improve this mechanism and redirect to the last page visited
@@ -118,23 +165,50 @@ const LoginMainPage = () => {
     setIsValidPassword(!!password);
     setShowHelperText(!username || !password);
 
-    onUserPwdLogin({ username, password }).then((response) => {
-      if ("error" in response) {
-        const receivedError = response.error as MetaResponse;
-        const status = receivedError.response?.status;
-        const statusText = receivedError.response?.statusText;
+    if (!username && isKerberosEnabled) {
+      onKrbLogin().then((response) => {
+        if ("error" in response) {
+          const receivedError = response.error as MetaResponse;
 
-        if (status === 200) {
-          onSuccessLogin();
+          const status = receivedError.response?.status;
+          const wwwAuthenticateHeader =
+            receivedError.response?.headers.get("www-authenticate");
+          if (
+            status === 200 &&
+            wwwAuthenticateHeader?.startsWith("Negotiate")
+          ) {
+            // Success on Kerberos login
+            isUserPwdAuthentication = false;
+            onSuccessLogin();
+          } else {
+            // Set error without showing the modal
+            setErrorMessage("Authentication with Kerberos failed");
+          }
         } else {
-          // Handle other errors
-          setIsError(true);
-          setErrorMessage(statusText);
+          // Success on Kerberos login
+          isUserPwdAuthentication = false;
+          onSuccessLogin();
         }
-      } else {
-        onSuccessLogin();
-      }
-    });
+      });
+    } else {
+      onUserPwdLogin({ username, password }).then((response) => {
+        if ("error" in response) {
+          const receivedError = response.error as MetaResponse;
+          const status = receivedError.response?.status;
+          const statusText = receivedError.response?.statusText;
+
+          if (status === 200) {
+            onSuccessLogin();
+          } else {
+            // Handle other errors
+            setShowErrorModal(true);
+            setErrorMessage(statusText);
+          }
+        } else {
+          onSuccessLogin();
+        }
+      });
+    }
   };
 
   const socialMediaLoginContent = (
@@ -178,7 +252,7 @@ const LoginMainPage = () => {
   const loginForm = (
     <LoginForm
       showHelperText={showHelperText}
-      helperText="Invalid login credentials."
+      helperText={errorMessage}
       helperTextIcon={<ExclamationCircleIcon />}
       usernameLabel="Username"
       usernameValue={username}
@@ -216,7 +290,7 @@ const LoginMainPage = () => {
         socialMediaLoginAriaLabel="Other options to log in"
       >
         {loginForm}
-        {isError && errorModal(errorMessage)}
+        {showErrorModal && errorModal(errorMessage)}
       </LoginPage>
     </>
   );
