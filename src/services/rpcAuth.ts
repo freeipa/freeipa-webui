@@ -62,6 +62,7 @@ export interface MetaResponse {
 
 // List of URLs
 export const LOGIN_URL = "/ipa/session/login_password";
+export const KERBEROS_URL = "/ipa/session/login_kerberos";
 
 // Utils
 export const encodeURIObject = (obj: Record<string, string>) => {
@@ -112,7 +113,32 @@ const extendedApi = api.injectEndpoints({
           params: [[], { version: API_VERSION_BACKUP }],
         }),
     }),
+    krbLogin: build.mutation<FindRPCResponse | MetaResponse, void>({
+      query: () => {
+        const loginRequest = {
+          url: KERBEROS_URL,
+          method: "GET",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "Data-Type": "html",
+            Referer: URL_PREFIX + "/login",
+          },
+          responseHandler: (response) => response.json(),
+        };
+        return loginRequest;
+      },
+      transformErrorResponse: (
+        response: FetchBaseQueryError,
+        meta: FetchBaseQueryMeta
+      ) => {
+        return meta as unknown as MetaResponse;
+      },
+    }),
   }),
 });
 
-export const { useUserPasswordLoginMutation, useLogoutMutation } = extendedApi;
+export const {
+  useUserPasswordLoginMutation,
+  useLogoutMutation,
+  useKrbLoginMutation,
+} = extendedApi;
