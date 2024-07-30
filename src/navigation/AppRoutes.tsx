@@ -40,6 +40,7 @@ import HostGroupsTabs from "src/pages/HostGroups/HostGroupsTabs";
 import IDViewsTabs from "src/pages/IDViews/IDViewsTabs";
 import LoginMainPage from "src/login/LoginMainPage";
 import NetgroupsTabs from "src/pages/Netgroups/NetgroupsTabs";
+import HBACServicesTabs from "src/pages/HBACServices/HBACServicesTabs";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -203,6 +204,12 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="hbac-services">
                 <Route path="" element={<HBACServices />} />
+                <Route path=":cn">
+                  <Route
+                    path=""
+                    element={<HBACServicesTabs section="settings" />}
+                  />
+                </Route>
               </Route>
               <Route path="hbac-service-groups">
                 <Route path="" element={<HBACServiceGroups />} />

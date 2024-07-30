@@ -3,11 +3,13 @@ import {
   Command,
   getBatchCommand,
   getCommand,
+  BatchResponse,
   BatchRPCResponse,
   FindRPCResponse,
   useGettingGenericQuery,
 } from "./rpc";
 import { apiToHBACRule } from "src/utils/hbacRulesUtils";
+import { apiToHBACService } from "src/utils/hbacServicesUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
 import {
   HBACRule,
@@ -67,6 +69,10 @@ export interface HBACRulePayload {
   timelimit?: number;
   sizelimit?: number;
 }
+
+export type ServiceFullData = {
+  service?: Partial<HBACService>;
+};
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -317,6 +323,54 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(servicesToDeletePayload, API_VERSION_BACKUP);
       },
     }),
+    saveHbacService: build.mutation<FindRPCResponse, Partial<HBACService>>({
+      query: (service) => {
+        const params = {
+          version: API_VERSION_BACKUP,
+          ...service,
+        };
+        delete params["cn"];
+        const cn = service.cn !== undefined ? service.cn : "";
+        return getCommand({
+          method: "hbacsvc_mod",
+          params: [[cn], params],
+        });
+      },
+      invalidatesTags: ["FullHBACService"],
+    }),
+    getHbacServiceFullData: build.query<ServiceFullData, string>({
+      query: (srvId) => {
+        // Prepare search parameters
+        const rule_params = {
+          all: true,
+          rights: true,
+        };
+
+        const srvShowCommand: Command = {
+          method: "hbacsvc_show",
+          params: [[srvId], rule_params],
+        };
+
+        const batchPayload: Command[] = [srvShowCommand];
+
+        return getBatchCommand(batchPayload, API_VERSION_BACKUP);
+      },
+      transformResponse: (response: BatchResponse): ServiceFullData => {
+        const [srvResponse] = response.result.results;
+
+        // Initialize service data (to prevent 'undefined' values)
+        const serviceData = srvResponse.result;
+        let serviceObject = {};
+        if (!srvResponse.error) {
+          serviceObject = apiToHBACService(serviceData);
+        }
+
+        return {
+          service: serviceObject,
+        };
+      },
+      providesTags: ["FullHBACService"],
+    }),
   }),
   overrideExisting: false,
 });
@@ -351,4 +405,6 @@ export const {
   useRemoveHbacServicesMutation,
   useAddHbacServiceGroupMutation,
   useRemoveHbacServiceGroupsMutation,
+  useSaveHbacServiceMutation,
+  useGetHbacServiceFullDataQuery,
 } = extendedApi;

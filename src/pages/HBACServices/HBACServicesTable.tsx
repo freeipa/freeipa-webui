@@ -7,6 +7,7 @@ import TableLayout from "../../components/layouts/TableLayout";
 import { HBACService } from "../../utils/datatypes/globalDataTypes";
 // Layouts
 import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
+import { Link } from "react-router-dom";
 
 interface ServicesData {
   isHbacServiceSelectable: (service: HBACService) => boolean;
@@ -173,7 +174,11 @@ const HBACServicesTable = (props: PropsToTable) => {
           isDisabled: !props.servicesData.isHbacServiceSelectable(service),
         }}
       />
-      <Td dataLabel={columnNames.cn}>{service.cn}</Td>
+      <Td dataLabel={columnNames.cn}>
+        <Link to={"/hbac-services/" + service.cn} state={service}>
+          {service.cn}
+        </Link>
+      </Td>
       <Td dataLabel={columnNames.description}>{service.description}</Td>
     </Tr>
   ));
