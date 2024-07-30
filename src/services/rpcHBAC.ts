@@ -359,13 +359,13 @@ const extendedApi = api.injectEndpoints({
 
         let methodType = "";
         if (memberType === "user" || memberType === "group") {
-          methodType = "hbacrule_add_user";
+          methodType = "hbacrule_remove_user";
         } else if (memberType === "host" || memberType === "hostgroup") {
-          methodType = "hbacrule_add_host";
+          methodType = "hbacrule_remove_host";
         } else if (memberType === "hbacsvc" || memberType === "hbacsvcgroup") {
-          methodType = "hbacrule_add_service";
+          methodType = "hbacrule_remove_service";
         } else if (memberType === "sourcehost") {
-          methodType = "hbacrule_add_sourcehost";
+          methodType = "hbacrule_remove_sourcehost";
         }
 
         const membersToRemove: Command[] = [];

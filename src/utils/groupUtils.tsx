@@ -49,8 +49,20 @@ export function createEmptyGroup(): UserGroup {
     member_external: [],
     member_idoverrideuser: [],
     memberindirect_idoverrideuser: [],
+    // 'Member of' data
     memberof_group: [],
+    memberof_netgroup: [],
+    memberof_role: [],
+    memberof_hbacrule: [],
+    memberof_sudorule: [],
+    memberof_subid: [],
+    // Indirect membership
     memberofindirect_group: [],
+    memberofindirect_netgroup: [],
+    memberofindirect_role: [],
+    memberofindirect_hbacrule: [],
+    memberofindirect_sudorule: [],
+    memberofindirect_subid: [],
   };
 
   return group;
