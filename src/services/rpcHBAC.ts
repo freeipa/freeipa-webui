@@ -10,6 +10,7 @@ import {
 } from "./rpc";
 import { apiToHBACRule } from "src/utils/hbacRulesUtils";
 import { apiToHBACService } from "src/utils/hbacServicesUtils";
+import { apiToHBACServiceGroup } from "src/utils/hbacServiceGrpUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
 import {
   HBACRule,
@@ -50,6 +51,8 @@ import {
  * - hbacsvc_del: https://freeipa.readthedocs.io/en/latest/api/hbacsvc_del.html
  * - hbacsvcgroup_add: https://freeipa.readthedocs.io/en/latest/api/hbacsvcgroup_add.html
  * - hbacsvcgroup_del: https://freeipa.readthedocs.io/en/latest/api/hbacsvcgroup_del.html
+ * - hbacsvcgroup_mod: https://freeipa.readthedocs.io/en/latest/api/hbacsvcgroup_mod.html
+ * - hbacsvcgroup_show: https://freeipa.readthedocs.io/en/latest/api/hbacsvcgroup_show.html
  */
 
 export type RuleFullData = {
@@ -97,6 +100,10 @@ export interface AllowAllPayload {
   external: string[];
   modifiedValues: Partial<HBACRule>;
 }
+
+export type SvcGroupFullData = {
+  svcGrp?: Partial<HBACServiceGroup>;
+};
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -500,7 +507,6 @@ const extendedApi = api.injectEndpoints({
           all: true,
           rights: true,
         };
-
         const srvShowCommand: Command = {
           method: "hbacsvc_show",
           params: [[srvId], rule_params],
@@ -620,6 +626,53 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(actions, API_VERSION_BACKUP);
       },
     }),
+    getHbacSvcGrpFullData: build.query<SvcGroupFullData, string>({
+      query: (svcGrpId) => {
+        // Prepare search parameters
+        const rule_params = {
+          all: true,
+          rights: true,
+        };
+        const ruleShowCommand: Command = {
+          method: "hbacsvcgroup_show",
+          params: [[svcGrpId], rule_params],
+        };
+
+        const batchPayload: Command[] = [ruleShowCommand];
+
+        return getBatchCommand(batchPayload, API_VERSION_BACKUP);
+      },
+      transformResponse: (response: BatchResponse): SvcGroupFullData => {
+        const [rulesResponse] = response.result.results;
+
+        // Initialize group data (to prevent 'undefined' values)
+        const groupData = rulesResponse.result;
+        let groupObject = {};
+        if (!rulesResponse.error) {
+          groupObject = apiToHBACServiceGroup(groupData);
+        }
+
+        return {
+          svcGrp: groupObject,
+        };
+      },
+      providesTags: ["FullHBACServiceGrp"],
+    }),
+    saveHbacServiceGroup: build.mutation<FindRPCResponse, Partial<HBACRule>>({
+      query: (svcGrp) => {
+        const params = {
+          version: API_VERSION_BACKUP,
+          ...svcGrp,
+        };
+        delete params["cn"];
+        const cn = svcGrp.cn !== undefined ? svcGrp.cn : "";
+        return getCommand({
+          method: "hbacsvcgroup_mod",
+          params: [[cn], params],
+        });
+      },
+      invalidatesTags: ["FullHBACServiceGrp"],
+    }),
   }),
   overrideExisting: false,
 });
@@ -661,4 +714,6 @@ export const {
   useSaveAndCleanHbacRuleMutation,
   useRemoveMembersFromHbacRuleMutation,
   useAddMembersToHbacRuleMutation,
+  useGetHbacSvcGrpFullDataQuery,
+  useSaveHbacServiceGroupMutation,
 } = extendedApi;

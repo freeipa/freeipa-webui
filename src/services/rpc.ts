@@ -207,6 +207,7 @@ export const api = createApi({
     "FullUserGroup",
     "FullHBACRule",
     "FullHBACService",
+    "FullHBACServiceGrp",
     "FullHostGroup",
     "FullNetgroup",
     "FullIDView",
