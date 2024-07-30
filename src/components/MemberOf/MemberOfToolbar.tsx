@@ -176,21 +176,23 @@ const MemberOfToolbar = (props: MemberOfToolbarProps) => {
             )}
           </>
         </ToolbarItem>
-        <ToolbarItem id="pagination" align={{ default: "alignRight" }}>
-          <Pagination
-            itemCount={props.totalItems}
-            perPage={props.perPage}
-            page={props.page}
-            onSetPage={(_e, page) =>
-              props.onPageChange ? props.onPageChange(page) : null
-            }
-            widgetId="pagination-options-menu-top"
-            onPerPageSelect={(_e, perPage) =>
-              props.onPerPageChange ? props.onPerPageChange(perPage) : null
-            }
-            isCompact
-          />
-        </ToolbarItem>
+        {props.totalItems > 0 && (
+          <ToolbarItem id="pagination" align={{ default: "alignRight" }}>
+            <Pagination
+              itemCount={props.totalItems}
+              perPage={props.perPage}
+              page={props.page}
+              onSetPage={(_e, page) =>
+                props.onPageChange ? props.onPageChange(page) : null
+              }
+              widgetId="pagination-options-menu-top"
+              onPerPageSelect={(_e, perPage) =>
+                props.onPerPageChange ? props.onPerPageChange(perPage) : null
+              }
+              isCompact
+            />
+          </ToolbarItem>
+        )}
       </ToolbarContent>
     </Toolbar>
   );

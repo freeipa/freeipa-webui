@@ -169,6 +169,26 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                     path="member_external"
                     element={<UserGroupsTabs section="member_external" />}
                   />
+                  <Route
+                    path="memberof_usergroup"
+                    element={<UserGroupsTabs section="memberof_usergroup" />}
+                  />
+                  <Route
+                    path="memberof_netgroup"
+                    element={<UserGroupsTabs section="memberof_netgroup" />}
+                  />
+                  <Route
+                    path="memberof_role"
+                    element={<UserGroupsTabs section="memberof_role" />}
+                  />
+                  <Route
+                    path="memberof_hbacrule"
+                    element={<UserGroupsTabs section="memberof_hbacrule" />}
+                  />
+                  <Route
+                    path="memberof_sudorule"
+                    element={<UserGroupsTabs section="memberof_sudorule" />}
+                  />
                 </Route>
               </Route>
               <Route path="host-groups">

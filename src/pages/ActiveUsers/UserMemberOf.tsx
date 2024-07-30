@@ -156,7 +156,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             }
           >
             <MemberOfUserGroups
-              user={user}
+              entry={user}
               from={props.from}
               isUserDataLoading={userQuery.isFetching}
               onRefreshUserData={onRefreshUserData}
