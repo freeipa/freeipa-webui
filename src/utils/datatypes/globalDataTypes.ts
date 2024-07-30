@@ -157,10 +157,20 @@ export interface UserGroup {
   member_external: string[];
   member_idoverrideuser: string[];
   memberindirect_idoverrideuser: string[];
-  // MemberOf
-  memberof_group: string[];
+  // 'Member of' data
+  memberof_group: string[]; // multivalue
+  memberof_netgroup: string[]; // multivalue
+  memberof_role: string[]; // multivalue
+  memberof_hbacrule: string[]; // multivalue
+  memberof_sudorule: string[]; // multivalue
+  memberof_subid: string[]; // multivalue
   // Indirect membership
-  memberofindirect_group: string[];
+  memberofindirect_group: string[]; // multivalue
+  memberofindirect_netgroup: string[]; // multivalue
+  memberofindirect_role: string[]; // multivalue
+  memberofindirect_hbacrule: string[]; // multivalue
+  memberofindirect_sudorule: string[]; // multivalue
+  memberofindirect_subid: string[]; // multivalue
 }
 
 export interface NetgroupOld {

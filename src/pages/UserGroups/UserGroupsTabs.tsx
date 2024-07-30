@@ -18,6 +18,7 @@ import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import UserGroupsSettings from "./UserGroupsSettings";
 import { partialGroupToGroup } from "src/utils/groupUtils";
 import UserGroupsMembers from "./UserGroupsMembers";
+import UserGroupsMemberOf from "./UserGroupsMemberOf";
 // Hooks
 import { useUserGroupSettings } from "src/hooks/useUserGroupSettingsData";
 import DataSpinner from "src/components/layouts/DataSpinner";
@@ -31,6 +32,12 @@ const UserGroupsTabs = ({ section }) => {
   const { cn } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [breadcrumbItems, setBreadcrumbItems] = React.useState<
+    BreadCrumbItem[]
+  >([]);
+
+  const [groupId, setGroupId] = useState("");
+
   const userGroupSettingsData = useUserGroupSettings(cn as string);
 
   // Tab
@@ -41,10 +48,9 @@ const UserGroupsTabs = ({ section }) => {
     tabIndex: number | string
   ) => {
     setActiveTabKey(tabIndex as string);
-
     if (tabIndex === "settings") {
       navigate("/user-groups/" + cn);
-    } else if (tabIndex === "member") {
+    } else if (tabIndex === "member_user") {
       navigate("/user-groups/" + cn + "/member_user");
     } else if (tabIndex === "memberof") {
       navigate("/user-groups/" + cn + "/memberof_usergroup");
@@ -58,6 +64,7 @@ const UserGroupsTabs = ({ section }) => {
       // Redirect to the main page
       navigate("/user-groups");
     } else {
+      setGroupId(cn);
       // Update breadcrumb route
       const currentPath: BreadCrumbItem[] = [
         {
@@ -70,6 +77,8 @@ const UserGroupsTabs = ({ section }) => {
           isActive: true,
         },
       ];
+      setBreadcrumbItems(currentPath);
+      setActiveTabKey("settings");
       dispatch(updateBreadCrumbPath(currentPath));
     }
   }, [cn]);
@@ -77,16 +86,14 @@ const UserGroupsTabs = ({ section }) => {
   // Redirect to the settings page if the section is not defined
   React.useEffect(() => {
     if (!section) {
-      navigate(URL_PREFIX + "/user-groups/" + cn);
+      navigate(URL_PREFIX + "/user-groups/" + groupId);
     }
-    // Infer the general tab key from the section name
-    const sect = section as string;
-    if (sect.startsWith("member_")) {
-      setActiveTabKey("member");
-    } else {
-      setActiveTabKey(section);
+    const section_string = section as string;
+    if (section_string.startsWith("memberof_")) {
+      setActiveTabKey("memberof_usergroup");
+    } else if (section_string.startsWith("member_")) {
+      setActiveTabKey("member_user");
     }
-    // TODO: Check more routes here
   }, [section]);
 
   if (
@@ -94,6 +101,14 @@ const UserGroupsTabs = ({ section }) => {
     userGroupSettingsData.userGroup.cn === undefined
   ) {
     return <DataSpinner />;
+  }
+
+  // Show the 'NotFound' page if the host is not found
+  if (
+    !userGroupSettingsData.isLoading &&
+    Object.keys(userGroupSettingsData.userGroup).length === 0
+  ) {
+    return <NotFound />;
   }
 
   const usergroup = partialGroupToGroup(userGroupSettingsData.userGroup);
@@ -109,7 +124,10 @@ const UserGroupsTabs = ({ section }) => {
   return (
     <Page>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
-        <BreadCrumb className="pf-v5-u-mb-md" />
+        <BreadCrumb
+          className="pf-v5-u-mb-md"
+          breadcrumbItems={breadcrumbItems}
+        />
         <TitleLayout
           id={usergroup.cn}
           preText="User group:"
@@ -147,22 +165,29 @@ const UserGroupsTabs = ({ section }) => {
             />
           </Tab>
           <Tab
-            eventKey={"member"}
+            eventKey={"member_user"}
             name={"members-details"}
             title={<TabTitleText>Members</TabTitleText>}
           >
             <PageSection className="pf-v5-u-pb-0"></PageSection>
-            <UserGroupsMembers userGroup={usergroup} tabSection={section} />
+            <UserGroupsMembers
+              userGroup={usergroup}
+              tabSection={activeTabKey}
+            />
           </Tab>
           <Tab
-            eventKey={"memberof"}
+            eventKey={"memberof_usergroup"}
             name="memberof-details"
             title={<TabTitleText>Is a member of</TabTitleText>}
           >
             <PageSection className="pf-v5-u-pb-0"></PageSection>
+            <UserGroupsMemberOf
+              userGroup={usergroup}
+              tabSection={activeTabKey}
+            />
           </Tab>
           <Tab
-            eventKey={"managedby"}
+            eventKey={"managedby_usergroup"}
             name="managedby-details"
             title={<TabTitleText>Is managed by</TabTitleText>}
           >
