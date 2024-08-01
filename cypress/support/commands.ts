@@ -66,7 +66,7 @@ Cypress.Commands.add("userCleanup", () => {
 
 Cypress.Commands.add("createTestUser", (username: string) => {
   cy.visit(Cypress.env("base_url") + "/active-users");
-  cy.wait(1000);
+  cy.wait(4000);
   cy.get("tr[id=" + username + "]")
     .should(() => undefined)
     .then(($user) => {
