@@ -165,6 +165,18 @@ export const getCommand = (commandData: Command) => {
   return payloadWithParams;
 };
 
+export const getCommandNoVersion = (commandData: Command) => {
+  const payloadWithParams = {
+    url: "ipa/session/json",
+    method: "POST",
+    body: {
+      method: commandData.method,
+      params: commandData.params,
+    },
+  };
+  return payloadWithParams;
+};
+
 export const getBatchCommand = (commandData: Command[], apiVersion: string) => {
   const payloadBatchParams = {
     url: "ipa/session/json",
