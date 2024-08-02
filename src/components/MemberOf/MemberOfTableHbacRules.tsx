@@ -8,6 +8,8 @@ import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout";
 import EmptyBodyTable from "../tables/EmptyBodyTable";
 // Utils
 import { parseEmptyString } from "src/utils/utils";
+// React Router DOM
+import { Link } from "react-router-dom";
 
 export interface MemberOfHbacRulesTableProps {
   hbacRules: HBACRule[];
@@ -27,7 +29,7 @@ const HbacRulesTableBody = (props: {
   return (
     <>
       {hbacRules.map((hbacRule, index) => (
-        <Tr key={index}>
+        <Tr key={index} id={hbacRule.cn}>
           {props.showCheckboxColumn && (
             <Td
               select={{
@@ -38,7 +40,11 @@ const HbacRulesTableBody = (props: {
               }}
             />
           )}
-          <Td>{hbacRule.cn}</Td>
+          <Td>
+            <Link to={"/hbac-rules/" + hbacRule.cn} state={hbacRule}>
+              {hbacRule.cn}
+            </Link>
+          </Td>
           <Td>{hbacRule.ipaenabledflag ? "Enabled" : "Disabled"}</Td>
           <Td>{parseEmptyString(hbacRule.description)}</Td>
         </Tr>

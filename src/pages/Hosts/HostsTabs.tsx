@@ -82,6 +82,7 @@ const HostsTabs = ({ section }) => {
         },
       ];
       setBreadcrumbItems(currentPath);
+      setActiveTabKey("settings");
       dispatch(updateBreadCrumbPath(currentPath));
     }
   }, [fqdn]);

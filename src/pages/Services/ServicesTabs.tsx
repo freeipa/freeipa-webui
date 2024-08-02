@@ -85,6 +85,7 @@ const ServicesTabs = ({ section }) => {
         },
       ];
       setBreadcrumbItems(currentPath);
+      setActiveTabKey("settings");
       dispatch(updateBreadCrumbPath(currentPath));
     }
   }, [id]);

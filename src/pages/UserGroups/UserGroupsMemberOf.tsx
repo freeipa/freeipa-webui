@@ -1,0 +1,230 @@
+import React, { useState } from "react";
+// PatternFly
+import {
+  Badge,
+  Page,
+  PageSection,
+  PageSectionVariants,
+  Tab,
+  Tabs,
+  TabTitleText,
+} from "@patternfly/react-core";
+// Data types
+import { UserGroup } from "src/utils/datatypes/globalDataTypes";
+// Navigation
+import { useNavigate } from "react-router-dom";
+// Hooks
+import useUpdateRoute from "src/hooks/useUpdateRoute";
+// RPC
+import { useGetGroupByIdQuery } from "src/services/rpcUserGroups";
+// 'Is a member of' sections
+import MemberOfUserGroups from "src/components/MemberOf/MemberOfUserGroups";
+import MemberOfNetgroups from "src/components/MemberOf/MemberOfNetgroups";
+import MemberOfRoles from "src/components/MemberOf/MemberOfRoles";
+import MemberOfHbacRules from "src/components/MemberOf/MemberOfHbacRules";
+import MemberOfSudoRules from "src/components/MemberOf/MemberOfSudoRules";
+
+interface PropsToMemberOf {
+  userGroup: UserGroup;
+  tabSection: string;
+}
+
+const UserGroupsMemberOf = (props: PropsToMemberOf) => {
+  const navigate = useNavigate();
+
+  // User group's full data
+  const groupQuery = useGetGroupByIdQuery(props.userGroup.cn);
+  const groupData = groupQuery.data || {};
+
+  const [group, setGroup] = useState<Partial<UserGroup>>({});
+
+  React.useEffect(() => {
+    if (!groupQuery.isFetching && groupData) {
+      setGroup({ ...groupData });
+    }
+  }, [groupData, groupQuery.isFetching]);
+
+  const onRefreshData = () => {
+    groupQuery.refetch();
+  };
+
+  // Update current route data to Redux and highlight the current page in the Nav bar
+  useUpdateRoute({ pathname: "user-groups", noBreadcrumb: true });
+
+  // 'User groups' length to show in tab badge
+  const [userGroupsLength, setUserGroupLength] = React.useState(0);
+  React.useEffect(() => {
+    if (group && group.memberof_group) {
+      setUserGroupLength(group.memberof_group.length);
+    }
+  }, [group]);
+
+  // 'Netgroups' length to show in tab badge
+  const [netgroupsLength, setNetgroupLength] = React.useState(0);
+  React.useEffect(() => {
+    if (group && group.memberof_netgroup) {
+      setNetgroupLength(group.memberof_netgroup.length);
+    }
+  }, [group]);
+
+  // 'Roles' length to show in tab badge
+  const [rolesLength, setRolesLength] = React.useState(0);
+  React.useEffect(() => {
+    if (group && group.memberof_role) {
+      setRolesLength(group.memberof_role.length);
+    }
+  }, [group]);
+
+  // 'HBAC rules' length to show in tab badge
+  const [hbacRulesLength, setHbacRulesLength] = React.useState(0);
+  React.useEffect(() => {
+    if (group && group.memberof_hbacrule) {
+      setHbacRulesLength(group.memberof_hbacrule.length);
+    }
+  }, [group]);
+
+  // 'Sudo rules' length to show in tab badge
+  const [sudoRulesLength, setSudoRulesLength] = React.useState(0);
+  React.useEffect(() => {
+    if (group && group.memberof_sudorule) {
+      setSudoRulesLength(group.memberof_sudorule.length);
+    }
+  }, [group]);
+
+  // Tab
+  const [activeTabKey, setActiveTabKey] = useState("memberof_usergroup");
+  const handleTabClick = (
+    _event: React.MouseEvent<HTMLElement, MouseEvent>,
+    tabIndex: number | string
+  ) => {
+    setActiveTabKey(tabIndex as string);
+    navigate("/user-groups/" + props.userGroup.cn + "/" + tabIndex);
+  };
+
+  React.useEffect(() => {
+    setActiveTabKey(props.tabSection);
+  }, [props.tabSection]);
+
+  // Render component
+  return (
+    <Page>
+      <PageSection
+        variant={PageSectionVariants.light}
+        isFilled={false}
+        className="pf-v5-u-m-lg"
+      >
+        <Tabs
+          activeKey={activeTabKey}
+          onSelect={handleTabClick}
+          isBox={false}
+          mountOnEnter
+          unmountOnExit
+        >
+          <Tab
+            eventKey={"memberof_usergroup"}
+            name="memberof_usergroup"
+            title={
+              <TabTitleText>
+                User groups{" "}
+                <Badge key={0} isRead>
+                  {userGroupsLength}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfUserGroups
+              entry={group}
+              from="User groups"
+              isUserDataLoading={groupQuery.isFetching}
+              onRefreshUserData={onRefreshData}
+            />
+          </Tab>
+          <Tab
+            eventKey={"memberof_netgroup"}
+            name="memberof_netgroup"
+            title={
+              <TabTitleText>
+                Netgroups{" "}
+                <Badge key={1} isRead>
+                  {netgroupsLength}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfNetgroups
+              entity={group}
+              id={group.cn as string}
+              from={"user-groups"}
+              isDataLoading={groupQuery.isFetching}
+              onRefreshData={onRefreshData}
+            />
+          </Tab>
+          <Tab
+            eventKey={"memberof_role"}
+            name="memberof_role"
+            title={
+              <TabTitleText>
+                Roles{" "}
+                <Badge key={2} isRead>
+                  {rolesLength}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfRoles
+              entity={group}
+              id={group.cn as string}
+              from={"user-groups"}
+              isDataLoading={groupQuery.isFetching}
+              onRefreshData={onRefreshData}
+              memberof_role={group.memberof_role as string[]}
+              memberofindirect_role={group.memberofindirect_role as string[]}
+            />
+          </Tab>
+          <Tab
+            eventKey={"memberof_hbacrule"}
+            name="memberof_hbacrule"
+            title={
+              <TabTitleText>
+                HBAC rules{" "}
+                <Badge key={3} isRead>
+                  {hbacRulesLength}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfHbacRules
+              entity={group}
+              id={group.cn as string}
+              from={"user-groups"}
+              isDataLoading={groupQuery.isFetching}
+              onRefreshData={onRefreshData}
+            />
+          </Tab>
+          <Tab
+            eventKey={"memberof_sudorule"}
+            name="memberof_sudorule"
+            title={
+              <TabTitleText>
+                Sudo rules{" "}
+                <Badge key={4} isRead>
+                  {sudoRulesLength}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfSudoRules
+              entity={group}
+              id={group.cn as string}
+              from={"user-groups"}
+              isDataLoading={groupQuery.isFetching}
+              onRefreshData={onRefreshData}
+            />
+          </Tab>
+        </Tabs>
+      </PageSection>
+    </Page>
+  );
+};
+
+export default UserGroupsMemberOf;

@@ -31,6 +31,9 @@ const IDViewsTabs = ({ section }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const idViewSettingsData = useIDViewSettings(cn as string);
+  const [breadcrumbItems, setBreadcrumbItems] = React.useState<
+    BreadCrumbItem[]
+  >([]);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(section);
@@ -66,6 +69,8 @@ const IDViewsTabs = ({ section }) => {
           isActive: true,
         },
       ];
+      setBreadcrumbItems(currentPath);
+      setActiveTabKey("settings");
       dispatch(updateBreadCrumbPath(currentPath));
     }
   }, [cn]);
@@ -98,7 +103,10 @@ const IDViewsTabs = ({ section }) => {
   return (
     <Page>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
-        <BreadCrumb className="pf-v5-u-mb-md" />
+        <BreadCrumb
+          className="pf-v5-u-mb-md"
+          breadcrumbItems={breadcrumbItems}
+        />
         <TitleLayout id={view.cn} text={view.cn} headingLevel="h1" />
       </PageSection>
       <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>

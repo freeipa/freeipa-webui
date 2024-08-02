@@ -30,6 +30,9 @@ const HBACServiceGroupsTabs = ({ section }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const settingsData = useHBACServiceGroupSettings(cn as string);
+  const [breadcrumbItems, setBreadcrumbItems] = React.useState<
+    BreadCrumbItem[]
+  >([]);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(section);
@@ -59,6 +62,8 @@ const HBACServiceGroupsTabs = ({ section }) => {
           isActive: true,
         },
       ];
+      setBreadcrumbItems(currentPath);
+      setActiveTabKey("settings");
       dispatch(updateBreadCrumbPath(currentPath));
     }
   }, [cn]);
@@ -86,7 +91,10 @@ const HBACServiceGroupsTabs = ({ section }) => {
   return (
     <Page>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
-        <BreadCrumb className="pf-v5-u-mb-md" />
+        <BreadCrumb
+          className="pf-v5-u-mb-md"
+          breadcrumbItems={breadcrumbItems}
+        />
         <TitleLayout
           id={settingsData.svcGroup.cn}
           text={settingsData.svcGroup.cn}

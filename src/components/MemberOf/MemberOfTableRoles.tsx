@@ -27,7 +27,7 @@ const RolesTableBody = (props: {
   return (
     <>
       {roles.map((role, index) => (
-        <Tr key={index}>
+        <Tr key={index} id={role.cn}>
           {props.showCheckboxColumn && (
             <Td
               select={{

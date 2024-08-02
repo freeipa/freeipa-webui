@@ -30,6 +30,9 @@ const NetgroupsTabs = ({ section }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const netgroupSettingsData = useNetgroupSettings(cn as string);
+  const [breadcrumbItems, setBreadcrumbItems] = React.useState<
+    BreadCrumbItem[]
+  >([]);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(section);
@@ -65,6 +68,8 @@ const NetgroupsTabs = ({ section }) => {
           isActive: true,
         },
       ];
+      setBreadcrumbItems(currentPath);
+      setActiveTabKey("settings");
       dispatch(updateBreadCrumbPath(currentPath));
     }
   }, [cn]);
@@ -95,7 +100,10 @@ const NetgroupsTabs = ({ section }) => {
   return (
     <Page>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
-        <BreadCrumb className="pf-v5-u-mb-md" />
+        <BreadCrumb
+          className="pf-v5-u-mb-md"
+          breadcrumbItems={breadcrumbItems}
+        />
         <TitleLayout
           id={netgroupSettingsData.netgroup.cn}
           text={netgroupSettingsData.netgroup.cn}

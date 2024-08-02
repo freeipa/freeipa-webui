@@ -8,6 +8,8 @@ import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout";
 import EmptyBodyTable from "../tables/EmptyBodyTable";
 // Utils
 import { parseEmptyString } from "src/utils/utils";
+// React Router DOM
+import { Link } from "react-router-dom";
 
 export interface MemberOfUserGroupsTableProps {
   userGroups: UserGroup[];
@@ -38,7 +40,11 @@ const UserGroupsTableBody = (props: {
               }}
             />
           )}
-          <Td>{userGroup.cn}</Td>
+          <Td>
+            <Link to={"/user-groups/" + userGroup.cn} state={userGroup}>
+              {userGroup.cn}
+            </Link>
+          </Td>
           <Td>{parseEmptyString(userGroup.gidnumber)}</Td>
           <Td>{userGroup.description}</Td>
         </Tr>
@@ -60,8 +66,24 @@ export default function MemberOfUserGroupsTable(
   props: MemberOfUserGroupsTableProps
 ) {
   const { userGroups } = props;
+
   if (!userGroups || userGroups.length <= 0) {
-    return null; // return empty placeholder
+    // Return empty placeholder
+    return (
+      <Table
+        aria-label="member of table"
+        name="cn"
+        variant="compact"
+        borders
+        className={"pf-v5-u-mt-md"}
+        id="member-of-table"
+        isStickyHeader
+      >
+        <Tbody>
+          <EmptyBodyTable />
+        </Tbody>
+      </Table>
+    );
   }
 
   const showCheckboxColumn = props.onCheckItemsChange !== undefined;

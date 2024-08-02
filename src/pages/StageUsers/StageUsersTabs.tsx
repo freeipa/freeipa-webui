@@ -53,6 +53,7 @@ const StageUsersTabs = () => {
         },
       ];
       setBreadcrumbItems(currentPath);
+      setActiveTabKey(0);
       dispatch(updateBreadCrumbPath(currentPath));
     }
   }, [uid]);
