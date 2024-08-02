@@ -62,6 +62,7 @@ export interface MetaResponse {
 // List of URLs
 export const LOGIN_URL = "/ipa/session/login_password";
 export const KERBEROS_URL = "/ipa/session/login_kerberos";
+export const X509_URL = "/ipa/session/login_x509";
 
 // Utils
 export const encodeURIObject = (obj: Record<string, string>) => {
@@ -133,6 +134,30 @@ const extendedApi = api.injectEndpoints({
         return meta as unknown as MetaResponse;
       },
     }),
+    x509Login: build.mutation<FindRPCResponse | MetaResponse, string>({
+      query: (username) => {
+        const encodedCredentials = encodeURIObject({
+          username: username,
+        });
+        const loginRequest = {
+          url: X509_URL + "?" + encodedCredentials,
+          method: "GET",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "Data-Type": "html",
+            Referer: URL_PREFIX + "/login",
+          },
+          responseHandler: (response) => response.json(),
+        };
+        return loginRequest;
+      },
+      transformErrorResponse: (
+        response: FetchBaseQueryError,
+        meta: FetchBaseQueryMeta
+      ) => {
+        return meta as unknown as MetaResponse;
+      },
+    }),
   }),
 });
 
@@ -140,4 +165,5 @@ export const {
   useUserPasswordLoginMutation,
   useLogoutMutation,
   useKrbLoginMutation,
+  useX509LoginMutation,
 } = extendedApi;
