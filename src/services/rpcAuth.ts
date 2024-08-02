@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { api, getCommand, FindRPCResponse } from "./rpc";
-import { API_VERSION_BACKUP } from "../utils/utils";
+import { api, FindRPCResponse, getCommandNoVersion } from "./rpc";
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 import {
   FetchBaseQueryError,
@@ -63,6 +62,7 @@ export interface MetaResponse {
 // List of URLs
 export const LOGIN_URL = "/ipa/session/login_password";
 export const KERBEROS_URL = "/ipa/session/login_kerberos";
+export const X509_URL = "/ipa/session/login_x509";
 
 // Utils
 export const encodeURIObject = (obj: Record<string, string>) => {
@@ -108,15 +108,39 @@ const extendedApi = api.injectEndpoints({
     }),
     logout: build.mutation<FindRPCResponse, void>({
       query: () =>
-        getCommand({
+        getCommandNoVersion({
           method: "session_logout",
-          params: [[], { version: API_VERSION_BACKUP }],
+          params: [[], {}],
         }),
     }),
     krbLogin: build.mutation<FindRPCResponse | MetaResponse, void>({
       query: () => {
         const loginRequest = {
           url: KERBEROS_URL,
+          method: "GET",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "Data-Type": "html",
+            Referer: URL_PREFIX + "/login",
+          },
+          responseHandler: (response) => response.json(),
+        };
+        return loginRequest;
+      },
+      transformErrorResponse: (
+        response: FetchBaseQueryError,
+        meta: FetchBaseQueryMeta
+      ) => {
+        return meta as unknown as MetaResponse;
+      },
+    }),
+    x509Login: build.mutation<FindRPCResponse | MetaResponse, string>({
+      query: (username) => {
+        const encodedCredentials = encodeURIObject({
+          username: username,
+        });
+        const loginRequest = {
+          url: X509_URL + "?" + encodedCredentials,
           method: "GET",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -141,4 +165,5 @@ export const {
   useUserPasswordLoginMutation,
   useLogoutMutation,
   useKrbLoginMutation,
+  useX509LoginMutation,
 } = extendedApi;

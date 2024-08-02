@@ -25,6 +25,7 @@ import {
   MetaResponse,
   useKrbLoginMutation,
   useUserPasswordLoginMutation,
+  useX509LoginMutation,
 } from "src/services/rpcAuth";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
@@ -68,9 +69,10 @@ const LoginMainPage = () => {
    */
   const isKerberosEnabled = true;
 
-  // API call
+  // API calls
   const [onUserPwdLogin] = useUserPasswordLoginMutation();
   const [onKrbLogin] = useKrbLoginMutation();
+  const [onCertLogin] = useX509LoginMutation();
 
   // Kerberos login when loading the component
   React.useEffect(() => {
@@ -211,15 +213,37 @@ const LoginMainPage = () => {
     }
   };
 
+  // Login using certificate
+  const onLoginWithCertClick = (_event) => {
+    _event.preventDefault();
+    onCertLogin(username).then((response) => {
+      if ("error" in response) {
+        const receivedError = response.error as MetaResponse;
+        const status = receivedError.response?.status;
+        const statusText = "Authentication with personal certificate failed";
+
+        if (status === 200) {
+          onSuccessLogin();
+        } else {
+          // Set error without showing the modal
+          setErrorMessage(statusText);
+          setShowHelperText(true);
+        }
+      } else {
+        onSuccessLogin();
+      }
+    });
+  };
+
   const socialMediaLoginContent = (
     <React.Fragment>
       <LoginMainFooterLinksItem
-        href="#"
+        href=""
         linkComponentProps={{
           "aria-label": "Login using personal Certificate",
         }}
       >
-        <TextContent name="cert_auth">
+        <TextContent onClick={onLoginWithCertClick} name="cert_auth">
           <Text>Login using Certificate</Text>
         </TextContent>
       </LoginMainFooterLinksItem>
