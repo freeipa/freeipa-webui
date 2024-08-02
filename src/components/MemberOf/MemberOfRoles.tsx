@@ -120,6 +120,8 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
       return "host";
     } else if (props.from === "services") {
       return "service";
+    } else if (props.from === "user-groups") {
+      return "group";
     } else {
       // Return 'user' as default
       return "user";
@@ -207,7 +209,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           // Set alert: success
           alerts.addAlert(
             "add-member-success",
-            "Assigned new roles to " + entityType + " " + props.id,
+            `Assigned role members to '${props.id}'`,
             "success"
           );
           // Update displayed roles before they are updated via refresh
@@ -238,7 +240,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
             // Set alert: success
             alerts.addAlert(
               "remove-roles-success",
-              "Removed roles from " + entityType + " '" + props.id + "'",
+              `Removed role members from '${props.id}'`,
               "success"
             );
             // Update displayed roles
@@ -319,16 +321,18 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
         onCheckItemsChange={setRolesSelected}
         showTableRows={showTableRows}
       />
-      <Pagination
-        className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        itemCount={roleNames.length}
-        widgetId="pagination-options-menu-bottom"
-        perPage={perPage}
-        page={page}
-        variant={PaginationVariant.bottom}
-        onSetPage={(_e, page) => setPage(page)}
-        onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
-      />
+      {roleNames.length > 0 && (
+        <Pagination
+          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+          itemCount={roleNames.length}
+          widgetId="pagination-options-menu-bottom"
+          perPage={perPage}
+          page={page}
+          variant={PaginationVariant.bottom}
+          onSetPage={(_e, page) => setPage(page)}
+          onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
+        />
+      )}
       {showAddModal && (
         <MemberOfAddModal
           showModal={showAddModal}
@@ -336,7 +340,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           availableItems={availableItems}
           onAdd={onAddRole}
           onSearchTextChange={setAdderSearchValue}
-          title={"Assign roles to " + entityType + " " + props.id}
+          title={"Assign role members to " + props.id}
           ariaLabel={"Add " + entityType + " of role modal"}
         />
       )}
@@ -344,7 +348,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
         <MemberOfDeleteModal
           showModal={showDeleteModal}
           onCloseModal={() => setShowDeleteModal(false)}
-          title={"Delete " + entityType + " from Roles"}
+          title={"Delete role members from " + props.id}
           onDelete={onDeleteRole}
         >
           <MemberOfTableRoles

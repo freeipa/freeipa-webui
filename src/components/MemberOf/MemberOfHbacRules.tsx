@@ -116,6 +116,8 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
       return "user";
     } else if (props.from === "hosts") {
       return "host";
+    } else if (props.from === "user-groups") {
+      return "group";
     } else {
       // Return 'user' as default
       return "user";
@@ -208,7 +210,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
               // Set alert: success
               alerts.addAlert(
                 "add-member-success",
-                "Assigned new HBAC rules to " + entityType + " " + props.id,
+                `Assigned HBAC rule members to '${props.id}'`,
                 "success"
               );
               // Update displayed HBAC Rules before they are updated via refresh
@@ -243,7 +245,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
             // Set alert: success
             alerts.addAlert(
               "remove-hbac-rules-success",
-              "Removed HBAC rules from " + entityType + " '" + props.id + "'",
+              `Removed HBAC rule members from '${props.id}'`,
               "success"
             );
             // Update displayed HBAC rules
@@ -303,16 +305,18 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
         onCheckItemsChange={setHbacRulesSelected}
         showTableRows={showTableRows}
       />
-      <Pagination
-        className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        itemCount={hbacRuleNames.length}
-        widgetId="pagination-options-menu-bottom"
-        perPage={perPage}
-        page={page}
-        variant={PaginationVariant.bottom}
-        onSetPage={(_e, page) => setPage(page)}
-        onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
-      />
+      {hbacRuleNames.length > 0 && (
+        <Pagination
+          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+          itemCount={hbacRuleNames.length}
+          widgetId="pagination-options-menu-bottom"
+          perPage={perPage}
+          page={page}
+          variant={PaginationVariant.bottom}
+          onSetPage={(_e, page) => setPage(page)}
+          onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
+        />
+      )}
       {showAddModal && (
         <MemberOfAddModal
           showModal={showAddModal}
@@ -320,15 +324,15 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
           availableItems={availableItems}
           onAdd={onAddHbacRule}
           onSearchTextChange={setAdderSearchValue}
-          title={"Assign HBAC rule to " + entityType + " " + props.id}
-          ariaLabel={"Add " + entityType + " of HBAC rule modal"}
+          title={"Assign HBAC rule members to " + props.id}
+          ariaLabel={"Add HBAC rule modal"}
         />
       )}
       {showDeleteModal && someItemSelected && (
         <MemberOfDeleteModal
           showModal={showDeleteModal}
           onCloseModal={() => setShowDeleteModal(false)}
-          title={"Delete " + entityType + " from HBAC rules"}
+          title={"Delete HBAC rule members from " + props.id}
           onDelete={onDeleteHbacRules}
         >
           <MemberOfHbacRulesTable

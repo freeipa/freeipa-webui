@@ -32,6 +32,9 @@ const HostGroupsTabs = ({ section }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const hostGroupSettingsData = useHostGroupSettings(cn as string);
+  const [breadcrumbItems, setBreadcrumbItems] = React.useState<
+    BreadCrumbItem[]
+  >([]);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(section);
@@ -67,6 +70,8 @@ const HostGroupsTabs = ({ section }) => {
           isActive: true,
         },
       ];
+      setBreadcrumbItems(currentPath);
+      setActiveTabKey("settings");
       dispatch(updateBreadCrumbPath(currentPath));
     }
   }, [cn]);
@@ -99,7 +104,10 @@ const HostGroupsTabs = ({ section }) => {
   return (
     <Page>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
-        <BreadCrumb className="pf-v5-u-mb-md" />
+        <BreadCrumb
+          className="pf-v5-u-mb-md"
+          breadcrumbItems={breadcrumbItems}
+        />
         <TitleLayout id={hostgroup.cn} text={hostgroup.cn} headingLevel="h1" />
       </PageSection>
       <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>

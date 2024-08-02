@@ -118,6 +118,8 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
       return "user";
     } else if (props.from === "hosts") {
       return "host";
+    } else if (props.from === "user-groups") {
+      return "group";
     } else {
       // Return 'user' as default
       return "user";
@@ -206,7 +208,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
             // Set alert: success
             alerts.addAlert(
               "add-member-success",
-              "Assigned " + entityType + " " + props.id + " to netgroups",
+              `Assigned netgroup members to '${props.id}'`,
               "success"
             );
             // Update displayed netgroups before they are updated via refresh
@@ -240,7 +242,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
             // Set alert: success
             alerts.addAlert(
               "remove-netgroups-success",
-              "Removed netgroups from " + entityType + " '" + props.id + "'",
+              `Removed netgroup members from '${props.id}'`,
               "success"
             );
             // Update displayed netgroups
@@ -300,16 +302,18 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
         onCheckItemsChange={setNetgroupsSelected}
         showTableRows={showTableRows}
       />
-      <Pagination
-        className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        itemCount={netgroupNames.length}
-        widgetId="pagination-options-menu-bottom"
-        perPage={perPage}
-        page={page}
-        variant={PaginationVariant.bottom}
-        onSetPage={(_e, page) => setPage(page)}
-        onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
-      />
+      {netgroupNames.length > 0 && (
+        <Pagination
+          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+          itemCount={netgroupNames.length}
+          widgetId="pagination-options-menu-bottom"
+          perPage={perPage}
+          page={page}
+          variant={PaginationVariant.bottom}
+          onSetPage={(_e, page) => setPage(page)}
+          onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
+        />
+      )}
       {showAddModal && (
         <MemberOfAddModal
           showModal={showAddModal}
@@ -317,7 +321,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
           availableItems={availableItems}
           onAdd={onAddNetgroup}
           onSearchTextChange={setAdderSearchValue}
-          title={"Assign netgroups to " + entityType + " " + props.id}
+          title={"Assign netgroup members to " + props.id}
           ariaLabel={"Add " + entityType + " of netgroup modal"}
         />
       )}
@@ -325,7 +329,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
         <MemberOfDeleteModal
           showModal={showDeleteModal}
           onCloseModal={() => setShowDeleteModal(false)}
-          title={"Delete " + entityType + " from Netgroups"}
+          title={"Delete netgroup members" + props.id}
           onDelete={onDeleteNetgroup}
         >
           <MemberOfTableNetgroups
