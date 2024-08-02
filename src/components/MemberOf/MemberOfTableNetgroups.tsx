@@ -8,6 +8,8 @@ import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout";
 import EmptyBodyTable from "../tables/EmptyBodyTable";
 // Utils
 import { parseEmptyString } from "src/utils/utils";
+// React Router DOM
+import { Link } from "react-router-dom";
 
 export interface MemberOfNetgroupsTableProps {
   netgroups: Netgroup[];
@@ -27,7 +29,7 @@ const NetgroupsTableBody = (props: {
   return (
     <>
       {netgroups.map((netgroup, index) => (
-        <Tr key={index}>
+        <Tr key={index} id={netgroup.cn}>
           {props.showCheckboxColumn && (
             <Td
               select={{
@@ -38,7 +40,11 @@ const NetgroupsTableBody = (props: {
               }}
             />
           )}
-          <Td>{netgroup.cn}</Td>
+          <Td>
+            <Link to={"/netgroups/" + netgroup.cn} state={netgroup}>
+              {netgroup.cn}
+            </Link>
+          </Td>
           <Td>{parseEmptyString(netgroup.description)}</Td>
         </Tr>
       ))}

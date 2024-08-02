@@ -157,6 +157,10 @@ export interface UserGroup {
   member_external: string[];
   member_idoverrideuser: string[];
   memberindirect_idoverrideuser: string[];
+  // MemberOf
+  memberof_group: string[];
+  // Indirect membership
+  memberofindirect_group: string[];
 }
 
 export interface NetgroupOld {

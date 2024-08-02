@@ -191,7 +191,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
             // Set alert: success
             alerts.addAlert(
               "add-member-success",
-              `Assigned host ${fqdn} to host groups`,
+              `Assigned members to '${fqdn}'`,
               "success"
             );
             // Update displayed Host groups before they are updated via refresh
@@ -289,16 +289,18 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
         onCheckItemsChange={setHostGroupsSelected}
         showTableRows={showTableRows}
       />
-      <Pagination
-        className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        itemCount={hostGroupNames.length}
-        widgetId="pagination-options-menu-bottom"
-        perPage={perPage}
-        page={page}
-        variant={PaginationVariant.bottom}
-        onSetPage={(_e, page) => setPage(page)}
-        onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
-      />
+      {hostGroupNames.length > 0 && (
+        <Pagination
+          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+          itemCount={hostGroupNames.length}
+          widgetId="pagination-options-menu-bottom"
+          perPage={perPage}
+          page={page}
+          variant={PaginationVariant.bottom}
+          onSetPage={(_e, page) => setPage(page)}
+          onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
+        />
+      )}
       {showAddModal && (
         <MemberOfAddModal
           showModal={showAddModal}
@@ -306,7 +308,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
           availableItems={availableItems}
           onAdd={onAddHostGroup}
           onSearchTextChange={setAdderSearchValue}
-          title={`Assign host groups to host ${props.host.fqdn}`}
+          title={`Assign host members groups to ${props.host.fqdn}`}
           ariaLabel="Add host of host group modal"
         />
       )}
@@ -314,7 +316,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
         <MemberOfDeleteModal
           showModal={showDeleteModal}
           onCloseModal={() => setShowDeleteModal(false)}
-          title="Delete host from Host groups"
+          title={`Delete host group members from ${props.host.fqdn}`}
           onDelete={onDeleteHostGroup}
         >
           <MemberOfHostGroupsTable

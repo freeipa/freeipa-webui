@@ -116,6 +116,8 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
       return "user";
     } else if (props.from === "hosts") {
       return "host";
+    } else if (props.from === "user-groups") {
+      return "group";
     } else {
       // Return 'user' as default
       return "user";
@@ -203,7 +205,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
             // Set alert: success
             alerts.addAlert(
               "add-member-success",
-              "Assigned new Sudo rule to " + entityType + " " + props.id,
+              `Assigned sudo rule members to '${props.id}'`,
               "success"
             );
             // Update displayed Sudo Rules before they are updated via refresh
@@ -237,7 +239,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
             // Set alert: success
             alerts.addAlert(
               "remove-sudo-rules-success",
-              "Removed Sudo rules from " + entityType + " '" + props.id + "'",
+              `Removed ${entityType} members from '${props.id}'`,
               "success"
             );
             // Update displayed HBAC rules
@@ -297,16 +299,18 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
         onCheckItemsChange={setSudoRulesSelected}
         showTableRows={showTableRows}
       />
-      <Pagination
-        className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        itemCount={sudoRuleNames.length}
-        widgetId="pagination-options-menu-bottom"
-        perPage={perPage}
-        page={page}
-        variant={PaginationVariant.bottom}
-        onSetPage={(_e, page) => setPage(page)}
-        onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
-      />
+      {sudoRuleNames.length > 0 && (
+        <Pagination
+          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+          itemCount={sudoRuleNames.length}
+          widgetId="pagination-options-menu-bottom"
+          perPage={perPage}
+          page={page}
+          variant={PaginationVariant.bottom}
+          onSetPage={(_e, page) => setPage(page)}
+          onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
+        />
+      )}
       {showAddModal && (
         <MemberOfAddModal
           showModal={showAddModal}
@@ -314,7 +318,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
           availableItems={availableItems}
           onAdd={onAddSudoRule}
           onSearchTextChange={setAdderSearchValue}
-          title={"Assign Sudo rule to " + entityType + " " + props.id}
+          title={"Assign sudo rule members to " + props.id}
           ariaLabel={"Add " + entityType + " of Sudo rule modal"}
         />
       )}
@@ -322,7 +326,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
         <MemberOfDeleteModal
           showModal={showDeleteModal}
           onCloseModal={() => setShowDeleteModal(false)}
-          title={"Delete " + entityType + " from Sudo rules"}
+          title={"Delete sudo rule members from " + props.id}
           onDelete={onDeleteSudoRules}
         >
           <MemberOfTableSudoRules

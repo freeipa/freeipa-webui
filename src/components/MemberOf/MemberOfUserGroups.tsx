@@ -24,7 +24,7 @@ import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToGroup } from "src/utils/groupUtils";
 
 interface MemberOfUserGroupsProps {
-  user: Partial<User>;
+  entry: Partial<User> | Partial<UserGroup>;
   from: string;
   isUserDataLoading: boolean;
   onRefreshUserData: () => void;
@@ -54,8 +54,15 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   const [userGroups, setUserGroups] = React.useState<UserGroup[]>([]);
 
   // Choose the correct User groups based on the membership direction
-  const memberof_group = props.user.memberof_group || [];
-  const memberofindirect_group = props.user.memberofindirect_group || [];
+  const memberof_group = props.entry.memberof_group || [];
+  const memberofindirect_group = props.entry.memberofindirect_group || [];
+  const id =
+    props.from === "active-users"
+      ? "uid" in props.entry
+        ? (props.entry.uid as string)
+        : (props.entry.cn as string)
+      : (props.entry.cn as string);
+  const entryType = props.from === "active-users" ? "user" : "group";
   let userGroupNames =
     membershipDirection === "direct" ? memberof_group : memberofindirect_group;
   userGroupNames = [...userGroupNames];
@@ -92,7 +99,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   React.useEffect(() => {
     const userGroupsNames = getUserGroupsNameToLoad();
     setUserGroupNamesToLoad(userGroupsNames);
-  }, [props.user, membershipDirection, searchValue, page, perPage]);
+  }, [props.entry, membershipDirection, searchValue, page, perPage]);
 
   React.useEffect(() => {
     if (userGroupNamesToLoad.length > 0) {
@@ -149,7 +156,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
     if (showAddModal) {
       userGroupsQuery.refetch();
     }
-  }, [showAddModal, adderSearchValue, props.user]);
+  }, [showAddModal, adderSearchValue, props.entry]);
 
   // Update available User groups
   React.useEffect(() => {
@@ -176,80 +183,80 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
 
   // - Add
   const onAddUserGroup = (items: AvailableItems[]) => {
-    const uid = props.user.uid;
     const newUserGroupNames = items.map((item) => item.key);
-    if (uid === undefined || newUserGroupNames.length == 0) {
+    if (id === undefined || newUserGroupNames.length == 0) {
       return;
     }
 
-    addMemberToUserGroups([uid, "user", newUserGroupNames]).then((response) => {
-      if ("data" in response) {
-        if (response.data.result) {
-          // Set alert: success
-          alerts.addAlert(
-            "add-member-success",
-            `Assigned user ${uid} to user groups`,
-            "success"
-          );
-          // Update displayed User groups before they are updated via refresh
-          const newUserGroups = userGroups.concat(
-            availableUserGroups.filter((userGroup) =>
-              newUserGroupNames.includes(userGroup.cn)
-            )
-          );
-          setUserGroups(newUserGroups);
-
-          // Refresh data
-          props.onRefreshUserData();
-          // Close modal
-          setShowAddModal(false);
-        } else if (response.data.error) {
-          // Set alert: error
-          const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert("add-member-error", errorMessage.message, "danger");
-        }
-      }
-    });
-  };
-
-  // - Delete
-  const onDeleteUserGroup = () => {
-    if (props.user.uid) {
-      removeMembersFromUserGroups([
-        props.user.uid,
-        "user",
-        userGroupsSelected,
-      ]).then((response) => {
+    addMemberToUserGroups([id, entryType, newUserGroupNames]).then(
+      (response) => {
         if ("data" in response) {
           if (response.data.result) {
             // Set alert: success
             alerts.addAlert(
-              "remove-user-groups-success",
-              "Removed members from user group '" + props.user.uid + "'",
+              "add-member-success",
+              `Assigned group members to '${id}'`,
               "success"
             );
-            // Update displayed User groups
-            const newUserGroups = userGroups.filter(
-              (userGroup) => !userGroupsSelected.includes(userGroup.cn)
+            // Update displayed User groups before they are updated via refresh
+            const newUserGroups = userGroups.concat(
+              availableUserGroups.filter((userGroup) =>
+                newUserGroupNames.includes(userGroup.cn)
+              )
             );
             setUserGroups(newUserGroups);
-            // Update data
-            setUserGroupsSelected([]);
-            // Close modal
-            setShowDeleteModal(false);
-            // Refresh
+
+            // Refresh data
             props.onRefreshUserData();
+            // Close modal
+            setShowAddModal(false);
           } else if (response.data.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert(
-              "remove-user-groups-error",
-              errorMessage.message,
-              "danger"
-            );
+            alerts.addAlert("add-member-error", errorMessage.message, "danger");
           }
         }
-      });
+      }
+    );
+  };
+
+  // - Delete
+  const onDeleteUserGroup = () => {
+    if (id) {
+      removeMembersFromUserGroups([id, entryType, userGroupsSelected]).then(
+        (response) => {
+          if ("data" in response) {
+            if (response.data.result) {
+              // Set alert: success
+              alerts.addAlert(
+                "remove-user-groups-success",
+                `Removed group members from '${id}'`,
+                "success"
+              );
+              // Update displayed User groups
+              const newUserGroups = userGroups.filter(
+                (userGroup) => !userGroupsSelected.includes(userGroup.cn)
+              );
+              setUserGroups(newUserGroups);
+              // Update data
+              setUserGroupsSelected([]);
+              // Close modal
+              setShowDeleteModal(false);
+              // Refresh
+              props.onRefreshUserData();
+            } else if (response.data.error) {
+              // Set alert: error
+              const errorMessage = response.data
+                .error as unknown as ErrorResult;
+              alerts.addAlert(
+                "remove-entry-groups-error",
+                errorMessage.message,
+                "danger"
+              );
+            }
+          }
+        }
+      );
     }
   };
 
@@ -283,16 +290,18 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
         onCheckItemsChange={setUserGroupsSelected}
         showTableRows={showTableRows}
       />
-      <Pagination
-        className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        itemCount={userGroupNames.length}
-        widgetId="pagination-options-menu-bottom"
-        perPage={perPage}
-        page={page}
-        variant={PaginationVariant.bottom}
-        onSetPage={(_e, page) => setPage(page)}
-        onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
-      />
+      {userGroupNames.length > 0 && (
+        <Pagination
+          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+          itemCount={userGroupNames.length}
+          widgetId="pagination-options-menu-bottom"
+          perPage={perPage}
+          page={page}
+          variant={PaginationVariant.bottom}
+          onSetPage={(_e, page) => setPage(page)}
+          onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
+        />
+      )}
       {showAddModal && (
         <MemberOfAddModal
           showModal={showAddModal}
@@ -300,15 +309,15 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
           availableItems={availableItems}
           onAdd={onAddUserGroup}
           onSearchTextChange={setAdderSearchValue}
-          title={`Assign user groups to user ${props.user.uid}`}
-          ariaLabel="Add user of user group modal"
+          title={`Assign user group members to ${id}`}
+          ariaLabel="Add entry of user group modal"
         />
       )}
       {showDeleteModal && someItemSelected && (
         <MemberOfDeleteModal
           showModal={showDeleteModal}
           onCloseModal={() => setShowDeleteModal(false)}
-          title="Delete user from User groups"
+          title={`Delete group members from ${id}`}
           onDelete={onDeleteUserGroup}
         >
           <MemberOfUserGroupsTable
