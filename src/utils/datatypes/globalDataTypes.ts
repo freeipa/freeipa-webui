@@ -322,7 +322,7 @@ export interface IDView {
   dn: string;
   cn: string;
   description: string;
-  ipadomainresolutionorder: string[];
+  ipadomainresolutionorder: string;
 }
 
 // Errors

@@ -94,6 +94,7 @@ const NetgroupsTabs = ({ section }) => {
         />
         <TitleLayout
           id={settingsData.rule.cn}
+          preText="HBAC rule:"
           text={settingsData.rule.cn}
           headingLevel="h1"
         />

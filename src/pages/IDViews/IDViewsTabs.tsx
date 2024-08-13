@@ -23,6 +23,7 @@ import { partialViewToView } from "src/utils/idViewUtils";
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { NotFound } from "src/components/errors/PageErrors";
+import IDViewsSettings from "./IDViewsSettings";
 
 // eslint-disable-next-line react/prop-types
 const IDViewsTabs = ({ section }) => {
@@ -78,7 +79,7 @@ const IDViewsTabs = ({ section }) => {
   // Redirect to the settings page if the section is not defined
   React.useEffect(() => {
     if (!section) {
-      navigate(URL_PREFIX + "/idview/" + cn);
+      navigate(URL_PREFIX + "/id-views/" + cn);
     }
     setActiveTabKey(section);
   }, [section]);
@@ -107,7 +108,12 @@ const IDViewsTabs = ({ section }) => {
           className="pf-v5-u-mb-md"
           breadcrumbItems={breadcrumbItems}
         />
-        <TitleLayout id={view.cn} text={view.cn} headingLevel="h1" />
+        <TitleLayout
+          id={view.cn}
+          preText="ID view:"
+          text={view.cn}
+          headingLevel="h1"
+        />
       </PageSection>
       <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
         <Tabs
@@ -125,6 +131,17 @@ const IDViewsTabs = ({ section }) => {
             title={<TabTitleText>Settings</TabTitleText>}
           >
             <PageSection className="pf-v5-u-pb-0"></PageSection>
+            <IDViewsSettings
+              idView={idViewSettingsData.idView}
+              originalIDView={idViewSettingsData.originalView}
+              metadata={idViewSettingsData.metadata}
+              onIDViewChange={idViewSettingsData.setIDView}
+              isDataLoading={idViewSettingsData.isFetching}
+              onRefresh={idViewSettingsData.refetch}
+              isModified={idViewSettingsData.modified}
+              onResetValues={idViewSettingsData.resetValues}
+              modifiedValues={idViewSettingsData.modifiedValues}
+            />
           </Tab>
           <Tab
             eventKey={"overrides"}

@@ -4,11 +4,14 @@ import {
   Flex,
   Form,
   FormGroup,
+  Icon,
   PageSection,
   PageSectionVariants,
+  Tooltip,
 } from "@patternfly/react-core";
 // Forms
 import IpaTextArea from "../../components/Form/IpaTextArea";
+import IpaTextInput from "src/components/Form/IpaTextInput";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
@@ -18,6 +21,8 @@ import { asRecord } from "../../utils/hostUtils";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+// Icons
+import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
 // Data types
 import { IDView, Metadata } from "../../utils/datatypes/globalDataTypes";
 // RPC
@@ -144,6 +149,33 @@ const IDViewSettings = (props: PropsToIDViewSettings) => {
             className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md"
             isHorizontal
           >
+            <FormGroup
+              label="Domain resolution order"
+              fieldId="ipadomainresolutionorder"
+              labelIcon={
+                <Tooltip
+                  content={
+                    <div>
+                      Colon-separated list of domains used for short name
+                      qualification
+                    </div>
+                  }
+                >
+                  <Icon iconSize="sm">
+                    <HelpIcon />
+                  </Icon>
+                </Tooltip>
+              }
+            >
+              <IpaTextInput
+                name="ipadomainresolutionorder"
+                ariaLabel={"Domain resolution order"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="idview"
+                metadata={props.metadata}
+              />
+            </FormGroup>
             <FormGroup label="Description" fieldId="description">
               <IpaTextArea
                 name="description"

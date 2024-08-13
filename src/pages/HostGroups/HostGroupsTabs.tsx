@@ -108,7 +108,12 @@ const HostGroupsTabs = ({ section }) => {
           className="pf-v5-u-mb-md"
           breadcrumbItems={breadcrumbItems}
         />
-        <TitleLayout id={hostgroup.cn} text={hostgroup.cn} headingLevel="h1" />
+        <TitleLayout
+          id={hostgroup.cn}
+          preText="Host group:"
+          text={hostgroup.cn}
+          headingLevel="h1"
+        />
       </PageSection>
       <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
         <Tabs

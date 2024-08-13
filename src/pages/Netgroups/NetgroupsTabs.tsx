@@ -106,6 +106,7 @@ const NetgroupsTabs = ({ section }) => {
         />
         <TitleLayout
           id={netgroupSettingsData.netgroup.cn}
+          preText="Netgroup:"
           text={netgroupSettingsData.netgroup.cn}
           headingLevel="h1"
         />

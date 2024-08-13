@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 // PatternFly
 import {
-  Title,
   Page,
   PageSection,
   PageSectionVariants,
-  TextContent,
-  Text,
   Tabs,
   Tab,
   TabTitleText,
@@ -17,6 +14,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import UserSettings from "src/components/UserSettings";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import DataSpinner from "src/components/layouts/DataSpinner";
+import TitleLayout from "src/components/layouts/TitleLayout";
 // Hooks
 import { useStageUserSettings } from "src/hooks/useUserSettingsData";
 // Redux
@@ -88,14 +86,14 @@ const StageUsersTabs = () => {
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadCrumb
           className="pf-v5-u-mb-md"
-          preText="User login:"
           breadcrumbItems={breadcrumbItems}
         />
-        <TextContent>
-          <Title headingLevel="h1">
-            <Text>{uid}</Text>
-          </Title>
-        </TextContent>
+        <TitleLayout
+          id={uid ? uid : ""}
+          preText="Staged user:"
+          text={uid ? uid : ""}
+          headingLevel="h1"
+        />
       </PageSection>
       <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
         <Tabs

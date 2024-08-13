@@ -7,6 +7,8 @@ import TableLayout from "../../components/layouts/TableLayout";
 import { IDView } from "../../utils/datatypes/globalDataTypes";
 // Layouts
 import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
+// React Router DOM
+import { Link } from "react-router-dom";
 
 interface IDViewsData {
   isViewSelectable: (view: IDView) => boolean;
@@ -171,7 +173,11 @@ const IDViewsTable = (props: PropsToTable) => {
           isDisabled: !props.idViewsData.isViewSelectable(view),
         }}
       />
-      <Td dataLabel={columnNames.cn}>{view.cn}</Td>
+      <Td dataLabel={columnNames.cn}>
+        <Link to={"/id-views/" + view.cn} state={view}>
+          {view.cn}
+        </Link>
+      </Td>
       <Td dataLabel={columnNames.description}>{view.description}</Td>
     </Tr>
   ));

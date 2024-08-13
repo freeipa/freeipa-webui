@@ -3,7 +3,12 @@ import { IDView } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { convertApiObj } from "./ipaObjectUtils";
 
-const simpleValues = new Set(["cn", "description", "dn"]);
+const simpleValues = new Set([
+  "cn",
+  "description",
+  "dn",
+  "ipadomainresolutionorder",
+]);
 const dateValues = new Set([]);
 
 export function apiToIDView(apiRecord: Record<string, unknown>): IDView {
@@ -28,7 +33,7 @@ export function createEmptyView(): IDView {
     dn: "",
     cn: "",
     description: "",
-    ipadomainresolutionorder: [],
+    ipadomainresolutionorder: "",
   };
 
   return view;
