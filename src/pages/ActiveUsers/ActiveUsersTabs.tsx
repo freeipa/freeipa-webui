@@ -91,13 +91,18 @@ const ActiveUsersTabs = ({ memberof }) => {
 
   const disabled = userSettingsData.user.nsaccountlock;
   const user = userSettingsData.user;
+  const titleText = (
+    <div className="pf-v5-u-display-flex">
+      <div className="pf-v5-u-color-400">User:</div>
+      <div className="pf-v5-u-ml-sm">{uid}</div>
+    </div>
+  );
 
   return (
     <Page>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadCrumb
           className="pf-v5-u-mb-md"
-          preText="User login:"
           breadcrumbItems={breadcrumbItems}
         />
         <TextContent>
@@ -106,7 +111,7 @@ const ActiveUsersTabs = ({ memberof }) => {
               className="pf-v5-u-display-flex"
               title={disabled ? "User is disabled" : ""}
             >
-              {uid}
+              {titleText}
               {disabled ? (
                 <Icon
                   className="pf-v5-u-ml-sm pf-v5-u-mt-sm"

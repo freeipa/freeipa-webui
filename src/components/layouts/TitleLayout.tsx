@@ -10,9 +10,18 @@ interface PropsToTitleLayout {
   ouiaId?: number | string;
   ouiaSafe?: boolean;
   size?: "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
+  preText?: string;
 }
 
 const TitleLayout = (props: PropsToTitleLayout) => {
+  const titleText = props.preText ? (
+    <div className="pf-v5-u-display-flex">
+      <div className="pf-v5-u-color-400">{props.preText}</div>
+      <div className="pf-v5-u-ml-sm">{props.text}</div>
+    </div>
+  ) : (
+    <>{props.text}</>
+  );
   return (
     <TextContent key={props.id}>
       <Title
@@ -23,7 +32,7 @@ const TitleLayout = (props: PropsToTitleLayout) => {
         ouiaSafe={props.ouiaSafe}
         size={props.size}
       >
-        {props.text}
+        {titleText}
       </Title>
     </TextContent>
   );

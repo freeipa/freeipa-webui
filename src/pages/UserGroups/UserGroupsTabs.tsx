@@ -110,7 +110,12 @@ const UserGroupsTabs = ({ section }) => {
     <Page>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadCrumb className="pf-v5-u-mb-md" />
-        <TitleLayout id={usergroup.cn} text={usergroup.cn} headingLevel="h1" />
+        <TitleLayout
+          id={usergroup.cn}
+          preText="User group:"
+          text={usergroup.cn}
+          headingLevel="h1"
+        />
       </PageSection>
       <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
         <Tabs

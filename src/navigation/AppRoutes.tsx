@@ -191,7 +191,7 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="id-views">
                 <Route path="" element={<IDViews />} />
-                <Route path=":view">
+                <Route path=":cn">
                   <Route path="" element={<IDViewsTabs section="settings" />} />
                 </Route>
               </Route>

@@ -97,6 +97,7 @@ const HBACServiceGroupsTabs = ({ section }) => {
         />
         <TitleLayout
           id={settingsData.svcGroup.cn}
+          preText="HBAC service group:"
           text={settingsData.svcGroup.cn}
           headingLevel="h1"
         />

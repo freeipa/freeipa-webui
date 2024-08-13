@@ -118,10 +118,14 @@ const HostsTabs = ({ section }) => {
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadCrumb
           className="pf-v5-u-mb-md"
-          preText="Host:"
           breadcrumbItems={breadcrumbItems}
         />
-        <TitleLayout id={hostId} text={hostId} headingLevel="h1" />
+        <TitleLayout
+          id={hostId}
+          preText="Host:"
+          text={hostId}
+          headingLevel="h1"
+        />
       </PageSection>
       <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
         <Tabs

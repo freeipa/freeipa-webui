@@ -97,6 +97,7 @@ const HBACServicesTabs = ({ section }) => {
         />
         <TitleLayout
           id={settingsData.service.cn}
+          preText="HBAC service:"
           text={settingsData.service.cn}
           headingLevel="h1"
         />

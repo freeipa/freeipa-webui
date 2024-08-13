@@ -119,11 +119,11 @@ const ServicesTabs = ({ section }) => {
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadCrumb
           className="pf-v5-u-mb-md"
-          preText="Service:"
           breadcrumbItems={breadcrumbItems}
         />
         <TitleLayout
           id={service.krbcanonicalname}
+          preText="Service:"
           text={service.krbcanonicalname}
           headingLevel="h1"
         />

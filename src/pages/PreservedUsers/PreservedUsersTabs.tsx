@@ -1,22 +1,20 @@
 import React, { useState } from "react";
 // PatternFly
 import {
-  Title,
   Page,
   PageSection,
   PageSectionVariants,
-  TextContent,
-  Text,
   Tabs,
   Tab,
   TabTitleText,
 } from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate, useParams } from "react-router-dom";
-// Other
+// Components
 import UserSettings from "src/components/UserSettings";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
+import TitleLayout from "src/components/layouts/TitleLayout";
 // Hooks
 import { useUserSettings } from "src/hooks/useUserSettingsData";
 // Redux
@@ -89,14 +87,14 @@ const PreservedUsersTabs = () => {
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadCrumb
           className="pf-v5-u-mb-md"
-          preText="User login:"
           breadcrumbItems={breadcrumbItems}
         />
-        <TextContent>
-          <Title headingLevel="h1">
-            <Text>{uid}</Text>
-          </Title>
-        </TextContent>
+        <TitleLayout
+          id={uid ? uid : ""}
+          preText="Preserved user:"
+          text={uid ? uid : ""}
+          headingLevel="h1"
+        />
       </PageSection>
       <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
         <Tabs
