@@ -3,7 +3,13 @@ import { SudoRule } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { convertApiObj } from "./ipaObjectUtils";
 
-const simpleValues = new Set(["cn", "ipaenabledflag", "dn", "description"]);
+const simpleValues = new Set([
+  "cn",
+  "ipaenabledflag",
+  "dn",
+  "description",
+  "sudoorder",
+]);
 const dateValues = new Set([]);
 
 export function apiToSudoRule(apiRecord: Record<string, unknown>): SudoRule {
@@ -31,6 +37,7 @@ export function createEmptySudoRule(): SudoRule {
     ipaenabledflag: true,
     dn: "",
     description: "",
+    sudoorder: "",
   };
 
   return sudoRule;

@@ -16,20 +16,20 @@ import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
 // Hooks
-import { useHBACRuleSettings } from "src/hooks/useHBACRuleSettingsData";
+import { useSudoRuleSettings } from "src/hooks/useSudoRuleSettingsData";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { NotFound } from "src/components/errors/PageErrors";
-import HBACRulesSettings from "./HBACRulesSettings";
 
 // eslint-disable-next-line react/prop-types
-const HBACRulesTabs = ({ section }) => {
+const SudoRulesTabs = ({ section }) => {
   // Get location (React Router DOM) and get state data
   const { cn } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const settingsData = useHBACRuleSettings(cn as string);
+  const settingsData = useSudoRuleSettings(cn as string);
+
   const [breadcrumbItems, setBreadcrumbItems] = React.useState<
     BreadCrumbItem[]
   >([]);
@@ -42,23 +42,23 @@ const HBACRulesTabs = ({ section }) => {
     tabIndex: number | string
   ) => {
     setActiveTabKey(tabIndex as string);
-    navigate("/hbac-rules/" + cn);
+    navigate("/sudo-rules/" + cn);
   };
 
   React.useEffect(() => {
     if (!cn) {
       // Redirect to the main page
-      navigate("/hbac-rules");
+      navigate("/sudo-rules");
     } else {
       // Update breadcrumb route
       const currentPath: BreadCrumbItem[] = [
         {
-          name: "HBAC rules",
-          url: URL_PREFIX + "/hbac-rules",
+          name: "Sudo rules",
+          url: URL_PREFIX + "/sudo-rules",
         },
         {
           name: cn,
-          url: URL_PREFIX + "/hbac-rules/" + cn,
+          url: URL_PREFIX + "/sudo-rules/" + cn,
           isActive: true,
         },
       ];
@@ -71,7 +71,7 @@ const HBACRulesTabs = ({ section }) => {
   // Redirect to the settings page if the section is not defined
   React.useEffect(() => {
     if (!section) {
-      navigate(URL_PREFIX + "/hbac-rules/" + cn);
+      navigate(URL_PREFIX + "/sudo-rules/" + cn);
     }
     setActiveTabKey(section);
   }, [section]);
@@ -80,7 +80,7 @@ const HBACRulesTabs = ({ section }) => {
     return <DataSpinner />;
   }
 
-  // Show the 'NotFound' page if the netgroup is not found
+  // Show the 'NotFound' page if the data is not found
   if (!settingsData.isLoading && Object.keys(settingsData.rule).length === 0) {
     return <NotFound />;
   }
@@ -94,9 +94,9 @@ const HBACRulesTabs = ({ section }) => {
         />
         <TitleLayout
           id={settingsData.rule.cn}
-          preText="HBAC rule:"
           text={settingsData.rule.cn}
           headingLevel="h1"
+          preText="Sudo rule:"
         />
       </PageSection>
       <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
@@ -115,17 +115,6 @@ const HBACRulesTabs = ({ section }) => {
             title={<TabTitleText>Settings</TabTitleText>}
           >
             <PageSection className="pf-v5-u-pb-0"></PageSection>
-            <HBACRulesSettings
-              rule={settingsData.rule}
-              originalRule={settingsData.originalRule}
-              metadata={settingsData.metadata}
-              onRuleChange={settingsData.setRule}
-              isDataLoading={settingsData.isFetching}
-              onRefresh={settingsData.refetch}
-              isModified={settingsData.modified}
-              onResetValues={settingsData.resetValues}
-              modifiedValues={settingsData.modifiedValues}
-            />
           </Tab>
         </Tabs>
       </PageSection>
@@ -133,4 +122,4 @@ const HBACRulesTabs = ({ section }) => {
   );
 };
 
-export default HBACRulesTabs;
+export default SudoRulesTabs;

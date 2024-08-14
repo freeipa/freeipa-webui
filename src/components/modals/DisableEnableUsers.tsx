@@ -76,6 +76,8 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
   // Define which action (enable | disable) based on 'optionSelected'
   const action = !props.optionSelected ? "enable" : "disable";
 
+  const users = props.selectedUsersData.selectedUsers.map((user) => user.uid);
+
   // List of fields
   const fields = [
     {
@@ -84,6 +86,9 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
         <TextContent>
           <Text component={TextVariants.p}>
             Are you sure you want to {action} selected entries?
+          </Text>
+          <Text component={TextVariants.p}>
+            <i>{users.join(", ")}</i>
           </Text>
         </TextContent>
       ),
