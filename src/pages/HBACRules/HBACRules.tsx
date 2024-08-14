@@ -36,6 +36,7 @@ import DeleteHBACRule from "src/components/modals/DeleteHBACRule";
 import DisableEnableHBACRules from "src/components/modals/DisableEnableHBACRules";
 // Hooks
 import { useAlerts } from "src/hooks/useAlerts";
+import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Utils
 import { API_VERSION_BACKUP, isHbacRuleSelectable } from "src/utils/utils";
 // RPC client
@@ -49,6 +50,14 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 
 const HBACRules = () => {
+  // Update current route data to Redux and highlight the current page in the Nav bar
+  const { browserTitle } = useUpdateRoute({ pathname: "hbac-rules" });
+
+  // Set the page title to be shown in the browser tab
+  React.useEffect(() => {
+    document.title = browserTitle;
+  }, [browserTitle]);
+
   // Retrieve API version from environment data
   const apiVersion = useAppSelector(
     (state) => state.global.environment.api_version

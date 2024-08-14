@@ -7,7 +7,7 @@ import {
 } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
-import { HBACRule } from "src/utils/datatypes/globalDataTypes";
+import { SudoRule } from "src/utils/datatypes/globalDataTypes";
 // RPC
 import {
   Command,
@@ -16,9 +16,9 @@ import {
   ErrorResult,
 } from "src/services/rpc";
 import {
-  useDisableHbacRuleMutation,
-  useEnableHbacRuleMutation,
-} from "src/services/rpcHBAC";
+  useDisableSudoRuleMutation,
+  useEnableSudoRuleMutation,
+} from "src/services/rpcSudoRules";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -35,11 +35,11 @@ interface ButtonsData {
 }
 
 interface SelectedRulesData {
-  selectedRules: HBACRule[];
+  selectedRules: SudoRule[];
   clearSelectedRules: () => void;
 }
 
-export interface PropsToDisableEnableHBACRules {
+export interface PropsToDisableEnableRules {
   show: boolean;
   handleModalToggle: () => void;
   optionSelected: boolean; // 'enable': false | 'disable': true
@@ -49,15 +49,15 @@ export interface PropsToDisableEnableHBACRules {
   singleRule?: boolean | false;
 }
 
-const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
+const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
   // Define 'executeEnableDisableCommand' to add rules to IPA server
   const [executeEnableDisableCommand] = useBatchMutCommandMutation();
   // Single rule operations
-  const [enableSingleRule] = useEnableHbacRuleMutation();
-  const [disableSingleRule] = useDisableHbacRuleMutation();
+  const [enableSingleRule] = useEnableSudoRuleMutation();
+  const [disableSingleRule] = useDisableSudoRuleMutation();
 
   // Define which action (enable | disable) based on 'optionSelected'
   const action = !props.optionSelected ? "enable" : "disable";
@@ -126,13 +126,13 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
   };
 
   // Modify rule status using IPA commands
-  const modifyStatus = (newStatus: boolean, selectedRules: HBACRule[]) => {
+  const modifyStatus = (newStatus: boolean, selectedRules: SudoRule[]) => {
     // Prepare rule params
     const idsToChangeStatusPayload: Command[] = [];
     const changeStatusParams = {};
     const option = props.optionSelected
-      ? "hbacrule_disable"
-      : "hbacrule_enable";
+      ? "sudorule_disable"
+      : "sudorule_enable";
 
     // Make the API call (depending on 'singleRule' value)
     if (props.singleRule === undefined || !props.singleRule) {
@@ -178,8 +178,8 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
                   props.buttonsData.updateIsDisableButtonDisabled(false);
                   // Set alert: success
                   alerts.addAlert(
-                    "enable-hbacrule-success",
-                    "HBAC rule enabled",
+                    "enable-sudorule-success",
+                    "Sudo rule enabled",
                     "success"
                   );
                 } else if (props.optionSelected) {
@@ -188,14 +188,14 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
                   props.buttonsData.updateIsDisableButtonDisabled(true);
                   // Set alert: success
                   alerts.addAlert(
-                    "disable-hbacrule-success",
-                    "HBAC rule disabled",
+                    "disable-sudorule-success",
+                    "Sudo rule disabled",
                     "success"
                   );
                 }
               }
 
-              // Reset selected users
+              // Reset selected rules
               props.selectedRulesData.clearSelectedRules();
 
               // Refresh data
@@ -214,7 +214,7 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
     } else {
       // Single rule operation
       let command;
-      if (option === "hbacrule_disable") {
+      if (option === "sudorule_disable") {
         command = disableSingleRule;
       } else {
         command = enableSingleRule;
@@ -229,8 +229,8 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
             closeModal();
             // Set alert: success
             alerts.addAlert(
-              "enable-hbacrule-success",
-              "Enabled HBAC rule '" +
+              "enable-sudorule-success",
+              "Enabled Sudo rule '" +
                 props.selectedRulesData.selectedRules[0].cn +
                 "'",
               "success"
@@ -245,7 +245,7 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
             // Set alert: error
             const errorMessage = response.data.error as ErrorResult;
             alerts.addAlert(
-              "enable-hbacrule-error",
+              "enable-sudorule-error",
               errorMessage.message,
               "danger"
             );
@@ -258,7 +258,7 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
   // Set the Modal and Action buttons for 'Disable' option
   const modalActionsDisable: JSX.Element[] = [
     <Button
-      key="disable-hbacrules"
+      key="disable-sudorules"
       variant="primary"
       onClick={() =>
         modifyStatus(
@@ -266,11 +266,11 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
           props.selectedRulesData.selectedRules
         )
       }
-      form="hbacrules-enable-disable-hbacrules-modal"
+      form="sudorules-enable-disable-modal"
     >
       Disable
     </Button>,
-    <Button key="cancel-disable-hacbrule" variant="link" onClick={closeModal}>
+    <Button key="cancel-disable-sudorule" variant="link" onClick={closeModal}>
       Cancel
     </Button>,
   ];
@@ -281,7 +281,7 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
       modalPosition="top"
       offPosition="76px"
       title="Disable confirmation"
-      formId="hbacrules-enable-disable-hbacrules-modal"
+      formId="sudorules-enable-disable-modal"
       fields={fields}
       show={props.show}
       onClose={closeModal}
@@ -292,7 +292,7 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
   // Set the Modal and Action buttons for 'Enable' option
   const modalActionsEnable: JSX.Element[] = [
     <Button
-      key="enable-hbacrules"
+      key="enable-sudorules"
       variant="primary"
       onClick={() =>
         modifyStatus(
@@ -300,11 +300,11 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
           props.selectedRulesData.selectedRules
         )
       }
-      form="hbacrules-enable-disable-hbacrules-modal"
+      form="sudorules-enable-disable-modal"
     >
       Enable
     </Button>,
-    <Button key="cancel-enable-hbacrule" variant="link" onClick={closeModal}>
+    <Button key="cancel-enable-sudorule" variant="link" onClick={closeModal}>
       Cancel
     </Button>,
   ];
@@ -315,7 +315,7 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
       modalPosition="top"
       offPosition="76px"
       title="Enable confirmation"
-      formId="hbacrules-enable-disable-hbacrules-modal"
+      formId="sudorules-enable-disable-modal"
       fields={fields}
       show={props.show}
       onClose={closeModal}
@@ -323,7 +323,6 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
     />
   );
 
-  // Render 'DisableEnableHBACRules'
   return (
     <>
       <alerts.ManagedAlerts />
@@ -341,4 +340,4 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
   );
 };
 
-export default DisableEnableHBACRules;
+export default DisableEnableSudoRules;

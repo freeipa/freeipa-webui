@@ -229,6 +229,7 @@ export const api = createApi({
     "FullIDView",
     "FullIDViewHosts",
     "FullIDViewHostgroups",
+    "FullSudoRule",
   ],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
@@ -526,12 +527,18 @@ export const api = createApi({
         } else if (entryType === "hbacsvcgroup") {
           method = "hbacsvcgroup_find";
           show_method = "hbacsvcgroup_show";
+        } else if (entryType === "idview") {
+          method = "idview_find";
+          show_method = "idview_show";
         } else if (entryType === "sudocmd") {
           method = "sudocmd_find";
           show_method = "sudocmd_show";
         } else if (entryType === "sudocmdgroup") {
           method = "sudocmdgroup_find";
           show_method = "sudocmdgroup_show";
+        } else if (entryType === "sudorule") {
+          method = "sudorule_find";
+          show_method = "sudorule_show";
         }
 
         // Prepare payload
@@ -579,7 +586,9 @@ export const api = createApi({
             entryType === "hbacrule" ||
             entryType === "hbacsvc" ||
             entryType === "hbacsvcgroup" ||
-            entryType === "sudocmdgroup"
+            entryType === "sudocmdgroup" ||
+            entryType === "idview" ||
+            entryType === "sudorule"
           ) {
             const groupId = responseData.result.result[i] as cnType;
             const { cn } = groupId;
@@ -589,10 +598,19 @@ export const api = createApi({
 
         // 2ND CALL - GET PARTIAL INFO
         // Prepare payload
-        const payloadDataBatch: Command[] = ids.map((id) => ({
-          method: show_method,
-          params: [[id], { no_members: true }],
-        }));
+        let payloadDataBatch: Command[] = [];
+        if (entryType === "idview") {
+          // There is no "no_members" param
+          payloadDataBatch = ids.map((id) => ({
+            method: show_method,
+            params: [[id], {}],
+          }));
+        } else {
+          payloadDataBatch = ids.map((id) => ({
+            method: show_method,
+            params: [[id], { no_members: true }],
+          }));
+        }
 
         // Make call using 'fetchWithBQ'
         const partialInfoResult = await fetchWithBQ(

@@ -135,7 +135,7 @@ const IDViews = () => {
 
   // Derived states - what we get from API
   const viewsDataResponse = useGettingIDViewsQuery({
-    searchValue: searchValue,
+    searchValue: "",
     sizeLimit: 0,
     apiVersion: apiVersion || API_VERSION_BACKUP,
     startIdx: firstIdx,

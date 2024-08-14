@@ -1,8 +1,11 @@
 import {
   api,
   Command,
+  getCommand,
   getBatchCommand,
+  BatchResponse,
   BatchRPCResponse,
+  FindRPCResponse,
   useGettingGenericQuery,
 } from "./rpc";
 import { apiToSudoRule } from "src/utils/sudoRulesUtils";
@@ -10,7 +13,8 @@ import { API_VERSION_BACKUP } from "../utils/utils";
 import { SudoRule } from "../utils/datatypes/globalDataTypes";
 
 /**
- * Sudo rules-related endpoints: getSudoRulesInfoByName, addToSudoRules, removeFromSudoRules
+ * Sudo rules-related endpoints: getSudoRulesInfoByName, addToSudoRules, removeFromSudoRules,
+ *   disableSudoRule, enableSudoRule
  *
  * API commands:
  * - sudorule_show: https://freeipa.readthedocs.io/en/latest/api/sudorule_show.html
@@ -20,8 +24,13 @@ import { SudoRule } from "../utils/datatypes/globalDataTypes";
  * - sudorule_remove_user: https://freeipa.readthedocs.io/en/latest/api/sudorule_remove_user.html
  * - sudorule_remove_host: https://freeipa.readthedocs.io/en/latest/api/sudorule_remove_host.html
  * - sudorule_remove_option: https://freeipa.readthedocs.io/en/latest/api/sudorule_remove_option.html
- *
+ * - sudorule_disable: https://freeipa.readthedocs.io/en/latest/api/sudorule_disable.html
+ * - sudorule_enable: https://freeipa.readthedocs.io/en/latest/api/sudorule_enable.html
  */
+
+export type RuleFullData = {
+  rule?: Partial<SudoRule>;
+};
 
 export interface SudoRulesShowPayload {
   sudoRuleNamesList: string[];
@@ -50,6 +59,42 @@ export interface SudoRulePayload {
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
+    /**
+     * Add Sudo rule
+     * @param {string} name - ID of the entity to add to sudo rules
+     * @param {string} description - description
+     */
+    addSudoRule: build.mutation<BatchRPCResponse, [string, string]>({
+      query: (payload) => {
+        const params = [
+          [payload[0]],
+          {
+            description: payload[1],
+          },
+        ];
+        return getCommand({
+          method: "sudorule_add",
+          params: params,
+        });
+      },
+    }),
+    /**
+     * Remove Sudo rules
+     * @param {string[]} names - Sudo rule names
+     */
+    removeSudoRules: build.mutation<BatchRPCResponse, SudoRule[]>({
+      query: (rules) => {
+        const groupsToDeletePayload: Command[] = [];
+        rules.map((rule) => {
+          const payloadItem = {
+            method: "sudorule_del",
+            params: [[rule.cn], {}],
+          } as Command;
+          groupsToDeletePayload.push(payloadItem);
+        });
+        return getBatchCommand(groupsToDeletePayload, API_VERSION_BACKUP);
+      },
+    }),
     /**
      * Given a list of Sudo rules names, show the full data of those Sudo rules
      * @param {sudoRulesShowPayload} - Payload with Sudo rule names and options
@@ -151,6 +196,69 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(membersToRemove, API_VERSION_BACKUP);
       },
     }),
+    enableSudoRule: build.mutation<FindRPCResponse, SudoRule>({
+      query: (rule) => {
+        const params = [
+          [rule.cn],
+          {
+            version: API_VERSION_BACKUP,
+          },
+        ];
+
+        return getCommand({
+          method: "sudorule_enable",
+          params: params,
+        });
+      },
+    }),
+    disableSudoRule: build.mutation<FindRPCResponse, SudoRule>({
+      query: (rule) => {
+        const params = [
+          [rule.cn],
+          {
+            version: API_VERSION_BACKUP,
+          },
+        ];
+
+        return getCommand({
+          method: "sudorule_disable",
+          params: params,
+        });
+      },
+    }),
+    getSudoRuleFullData: build.query<RuleFullData, string>({
+      query: (ruleId) => {
+        // Prepare search parameters
+        const rule_params = {
+          all: true,
+          rights: true,
+        };
+
+        const ruleShowCommand: Command = {
+          method: "hbacrule_show",
+          params: [[ruleId], rule_params],
+        };
+
+        const batchPayload: Command[] = [ruleShowCommand];
+
+        return getBatchCommand(batchPayload, API_VERSION_BACKUP);
+      },
+      transformResponse: (response: BatchResponse): RuleFullData => {
+        const [rulesResponse] = response.result.results;
+
+        // Initialize group data (to prevent 'undefined' values)
+        const groupData = rulesResponse.result;
+        let groupObject = {};
+        if (!rulesResponse.error) {
+          groupObject = apiToSudoRule(groupData);
+        }
+
+        return {
+          rule: groupObject,
+        };
+      },
+      providesTags: ["FullSudoRule"],
+    }),
   }),
   overrideExisting: false,
 });
@@ -165,4 +273,9 @@ export const {
   useGetSudoRulesInfoByNameQuery,
   useAddToSudoRulesMutation,
   useRemoveFromSudoRulesMutation,
+  useDisableSudoRuleMutation,
+  useEnableSudoRuleMutation,
+  useAddSudoRuleMutation,
+  useRemoveSudoRulesMutation,
+  useGetSudoRuleFullDataQuery,
 } = extendedApi;

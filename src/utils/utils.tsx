@@ -15,6 +15,7 @@ import {
   Service,
   SudoCmd,
   SudoCmdGroup,
+  SudoRule,
   User,
   UserGroup,
 } from "./datatypes/globalDataTypes";
@@ -43,6 +44,15 @@ export const checkEqualStatus = (status: boolean, usersList: User[]) => {
 export const checkEqualStatusHbacRule = (
   status: boolean,
   rulesList: HBACRule[]
+) => {
+  const rulesWithOtherStatus = rulesList.filter(
+    (rule) => rule.ipaenabledflag[0] !== status
+  );
+  return rulesWithOtherStatus.length === 0;
+};
+export const checkEqualStatusSudoRule = (
+  status: boolean,
+  rulesList: SudoRule[]
 ) => {
   const rulesWithOtherStatus = rulesList.filter(
     (rule) => rule.ipaenabledflag[0] !== status
@@ -89,6 +99,9 @@ export const isHostGroupSelectable = (hostGroup: HostGroup) =>
 
 // Determine whether a ID view is selectable or not
 export const isViewSelectable = (view: IDView) => view.cn != "";
+
+// Determine whether a HbacServiceGroup is selectable or not
+export const isSudoRuleSelectable = (rule: SudoRule) => rule.cn != "";
 
 // Write JSX error messages into 'apiErrorsJsx' array
 export const apiErrorToJsXError = (

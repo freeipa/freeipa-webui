@@ -249,6 +249,7 @@ export interface SudoRule {
   ipaenabledflag: boolean;
   dn: string;
   description: string;
+  sudoorder: string;
 }
 
 export interface SudoCmd {
