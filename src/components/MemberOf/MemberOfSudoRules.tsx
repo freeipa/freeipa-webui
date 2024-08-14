@@ -318,7 +318,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
           availableItems={availableItems}
           onAdd={onAddSudoRule}
           onSearchTextChange={setAdderSearchValue}
-          title={"Assign sudo rule members to " + props.id}
+          title={`Add '${props.id}' into sudo rules`}
           ariaLabel={"Add " + entityType + " of Sudo rule modal"}
         />
       )}
@@ -326,7 +326,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
         <MemberOfDeleteModal
           showModal={showDeleteModal}
           onCloseModal={() => setShowDeleteModal(false)}
-          title={"Delete sudo rule members from " + props.id}
+          title={`Remove '${props.id}' from sudo rules`}
           onDelete={onDeleteSudoRules}
         >
           <MemberOfTableSudoRules

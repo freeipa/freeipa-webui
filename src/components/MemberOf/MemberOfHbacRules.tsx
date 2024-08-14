@@ -324,7 +324,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
           availableItems={availableItems}
           onAdd={onAddHbacRule}
           onSearchTextChange={setAdderSearchValue}
-          title={"Assign HBAC rule members to " + props.id}
+          title={`Add '${props.id}' into HBAC rules`}
           ariaLabel={"Add HBAC rule modal"}
         />
       )}
@@ -332,7 +332,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
         <MemberOfDeleteModal
           showModal={showDeleteModal}
           onCloseModal={() => setShowDeleteModal(false)}
-          title={"Delete HBAC rule members from " + props.id}
+          title={`Remove '${props.id}' from HBAC rules`}
           onDelete={onDeleteHbacRules}
         >
           <MemberOfHbacRulesTable
