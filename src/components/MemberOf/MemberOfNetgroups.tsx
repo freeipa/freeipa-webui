@@ -321,7 +321,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
           availableItems={availableItems}
           onAdd={onAddNetgroup}
           onSearchTextChange={setAdderSearchValue}
-          title={"Assign netgroup members to " + props.id}
+          title={`Add '${props.id}' into netgroups`}
           ariaLabel={"Add " + entityType + " of netgroup modal"}
         />
       )}
@@ -329,7 +329,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
         <MemberOfDeleteModal
           showModal={showDeleteModal}
           onCloseModal={() => setShowDeleteModal(false)}
-          title={"Delete netgroup members" + props.id}
+          title={`Remove '${props.id}' from netgroups`}
           onDelete={onDeleteNetgroup}
         >
           <MemberOfTableNetgroups

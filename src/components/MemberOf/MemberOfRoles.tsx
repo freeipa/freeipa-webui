@@ -340,7 +340,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           availableItems={availableItems}
           onAdd={onAddRole}
           onSearchTextChange={setAdderSearchValue}
-          title={"Assign role members to " + props.id}
+          title={`Add '${props.id}' into roles`}
           ariaLabel={"Add " + entityType + " of role modal"}
         />
       )}
@@ -348,7 +348,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
         <MemberOfDeleteModal
           showModal={showDeleteModal}
           onCloseModal={() => setShowDeleteModal(false)}
-          title={"Delete role members from " + props.id}
+          title={`Remove '${props.id}' from roles`}
           onDelete={onDeleteRole}
         >
           <MemberOfTableRoles

@@ -308,7 +308,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
           availableItems={availableItems}
           onAdd={onAddHostGroup}
           onSearchTextChange={setAdderSearchValue}
-          title={`Assign host members groups to ${props.host.fqdn}`}
+          title={`Add '${props.host.fqdn}' into host groups`}
           ariaLabel="Add host of host group modal"
         />
       )}
@@ -316,7 +316,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
         <MemberOfDeleteModal
           showModal={showDeleteModal}
           onCloseModal={() => setShowDeleteModal(false)}
-          title={`Delete host group members from ${props.host.fqdn}`}
+          title={`Remove '${props.host.fqdn}' from host groups`}
           onDelete={onDeleteHostGroup}
         >
           <MemberOfHostGroupsTable
