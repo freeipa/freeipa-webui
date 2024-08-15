@@ -12,6 +12,7 @@ import {
   IDView,
   Netgroup,
   Service,
+  SudoCmd,
   UserGroup,
 } from "src/utils/datatypes/globalDataTypes";
 
@@ -52,7 +53,8 @@ export interface PropsToDeletedElementsTable {
     | Netgroup[]
     | Service[]
     | UserGroup[]
-    | IDView[];
+    | IDView[]
+    | SudoCmd[];
   columnNames: string[];
   elementType: string;
   idAttr: string;

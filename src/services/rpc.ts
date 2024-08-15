@@ -15,6 +15,7 @@ import {
   UIDType,
   cnType,
   roleType,
+  sudoCmdType,
 } from "../utils/datatypes/globalDataTypes";
 
 export interface Query {
@@ -127,6 +128,7 @@ export interface GenericPayload {
   timelimit?: number;
   objName?: string;
   objAttr?: string;
+  sudocmd?: string;
   entryType?:
     | "user"
     | "stage"
@@ -142,6 +144,7 @@ export interface GenericPayload {
     | "hbacsvc"
     | "hbacsvcgroup"
     | "sudorule"
+    | "sudocmd"
     | "idview";
 }
 
@@ -273,6 +276,7 @@ export const api = createApi({
           stopIdx,
           cn,
           description,
+          sudocmd,
           timelimit,
           objAttr,
         } = payloadData;
@@ -351,6 +355,15 @@ export const api = createApi({
           }
         }
 
+        if (objName === "sudocmd") {
+          if (sudocmd) {
+            params["sudocmd"] = sudocmd;
+          }
+          if (description) {
+            params["description"] = description;
+          }
+        }
+
         // Prevent searchValue to be null
         let parsedSearchValue = searchValue;
         if (searchValue === null || searchValue === undefined) {
@@ -398,6 +411,8 @@ export const api = createApi({
             id = idResponseData.result.result[i] as cnType;
           } else if (objName === "sudorule") {
             id = idResponseData.result.result[i] as cnType;
+          } else if (objName === "sudocmd") {
+            id = idResponseData.result.result[i] as sudoCmdType;
           } else {
             // Unknown, should never happen
             return {
@@ -511,6 +526,9 @@ export const api = createApi({
         } else if (entryType === "hbacsvcgroup") {
           method = "hbacsvcgroup_find";
           show_method = "hbacsvcgroup_show";
+        } else if (entryType === "sudocmd") {
+          method = "sudocmd_find";
+          show_method = "sudocmd_show";
         }
 
         // Prepare payload
@@ -547,6 +565,10 @@ export const api = createApi({
             const serviceId = responseData.result.result[i] as servicesType;
             const { krbprincipalname } = serviceId;
             ids.push(krbprincipalname[0] as string);
+          } else if (entryType === "sudocmd") {
+            const sudoCmd = responseData.result.result[i] as sudoCmdType;
+            const { sudocmd } = sudoCmd;
+            ids.push(sudocmd[0] as string);
           } else if (
             entryType === "usergroup" ||
             entryType === "hostgroup" ||

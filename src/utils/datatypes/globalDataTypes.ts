@@ -251,6 +251,12 @@ export interface SudoRule {
   description: string;
 }
 
+export interface SudoCmd {
+  dn: string;
+  sudocmd: string;
+  description: string;
+}
+
 export interface Host {
   dn: string;
   attributelevelrights: Record<string, unknown>;
@@ -467,6 +473,12 @@ export interface servicesType {
 export interface roleType {
   dn: string;
   cn: string[];
+  description: string;
+}
+
+export interface sudoCmdType {
+  dn: string;
+  sudocmd: string;
   description: string;
 }
 

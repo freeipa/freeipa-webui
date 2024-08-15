@@ -13,6 +13,7 @@ import {
   Metadata,
   Netgroup,
   Service,
+  SudoCmd,
   User,
   UserGroup,
 } from "./datatypes/globalDataTypes";
@@ -71,6 +72,9 @@ export const isHbacServiceGroupSelectable = (group: HBACServiceGroup) =>
 // Determine whether a service is selectable or not
 export const isServiceSelectable = (service: Service) =>
   service.krbcanonicalname != "";
+
+// Determine whether a sudo command is selectable or not
+export const isSudoCmdSelectable = (cmd: SudoCmd) => cmd.sudocmd != "";
 
 // Determine whether a UserGroup is selectable or not
 export const isUserGroupSelectable = (group: UserGroup) => group.cn != "";

@@ -31,6 +31,7 @@ import HBACServiceGroups from "src/pages/HBACServiceGroups/HBACServiceGroups";
 import HBACTest from "src/pages/HBACTest/HBACTest";
 import SudoRules from "src/pages/SudoRules/SudoRules";
 import SudoCmds from "src/pages/SudoCmds/SudoCmds";
+import SudoCmdsTabs from "src/pages/SudoCmds/SudoCmdsTabs";
 import SudoCmdGroups from "src/pages/SudoCmdGroups/SudoCmdGroups";
 import SELinuxUserMaps from "src/pages/SELinuxUserMaps/SELinuxUserMaps";
 import PasswordPolicies from "src/pages/PasswordPolicies/PasswordPolicies";
@@ -256,6 +257,12 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="sudo-commands">
                 <Route path="" element={<SudoCmds />} />
+                <Route path=":sudocmd">
+                  <Route
+                    path=""
+                    element={<SudoCmdsTabs section="settings" />}
+                  />
+                </Route>
               </Route>
               <Route path="sudo-command-groups">
                 <Route path="" element={<SudoCmdGroups />} />
