@@ -145,6 +145,7 @@ export interface GenericPayload {
     | "hbacsvcgroup"
     | "sudorule"
     | "sudocmd"
+    | "sudocmdgroup"
     | "idview";
 }
 
@@ -333,6 +334,7 @@ export const api = createApi({
         if (
           objName === "role" ||
           objName === "sudorule" ||
+          objName === "sudocmdgroup" ||
           objName === "idview"
         ) {
           if (cn) {
@@ -395,22 +397,20 @@ export const api = createApi({
           } else if (objName === "user" || objName === "stageuser") {
             id = idResponseData.result.result[i] as UIDType;
           } else if (
+            // CN types
             objName === "group" ||
             objName === "netgroup" ||
             objName === "hostgroup" ||
-            objName === "idview"
+            objName === "idview" ||
+            objName === "hbacrule" ||
+            objName === "hbacsvc" ||
+            objName === "hbacsvcgroup" ||
+            objName === "sudorule" ||
+            objName === "sudocmdgroup"
           ) {
             id = idResponseData.result.result[i] as cnType;
           } else if (objName === "role") {
             id = idResponseData.result.result[i] as roleType;
-          } else if (
-            objName === "hbacrule" ||
-            objName === "hbacsvc" ||
-            objName === "hbacsvcgroup"
-          ) {
-            id = idResponseData.result.result[i] as cnType;
-          } else if (objName === "sudorule") {
-            id = idResponseData.result.result[i] as cnType;
           } else if (objName === "sudocmd") {
             id = idResponseData.result.result[i] as sudoCmdType;
           } else {
@@ -529,6 +529,9 @@ export const api = createApi({
         } else if (entryType === "sudocmd") {
           method = "sudocmd_find";
           show_method = "sudocmd_show";
+        } else if (entryType === "sudocmdgroup") {
+          method = "sudocmdgroup_find";
+          show_method = "sudocmdgroup_show";
         }
 
         // Prepare payload
@@ -575,7 +578,8 @@ export const api = createApi({
             entryType === "netgroup" ||
             entryType === "hbacrule" ||
             entryType === "hbacsvc" ||
-            entryType === "hbacsvcgroup"
+            entryType === "hbacsvcgroup" ||
+            entryType === "sudocmdgroup"
           ) {
             const groupId = responseData.result.result[i] as cnType;
             const { cn } = groupId;
