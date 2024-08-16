@@ -256,6 +256,11 @@ export interface SudoCmd {
   sudocmd: string;
   description: string;
 }
+export interface SudoCmdGroup {
+  cn: string;
+  dn: string;
+  description: string;
+}
 
 export interface Host {
   dn: string;

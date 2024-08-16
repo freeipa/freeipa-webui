@@ -14,6 +14,7 @@ import {
   Netgroup,
   Service,
   SudoCmd,
+  SudoCmdGroup,
   User,
   UserGroup,
 } from "./datatypes/globalDataTypes";
@@ -75,6 +76,9 @@ export const isServiceSelectable = (service: Service) =>
 
 // Determine whether a sudo command is selectable or not
 export const isSudoCmdSelectable = (cmd: SudoCmd) => cmd.sudocmd != "";
+
+// Determine whether a sudo command group is selectable or not
+export const isSudoCmdGroupSelectable = (group: SudoCmdGroup) => group.cn != "";
 
 // Determine whether a UserGroup is selectable or not
 export const isUserGroupSelectable = (group: UserGroup) => group.cn != "";

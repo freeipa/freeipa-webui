@@ -13,6 +13,7 @@ import {
   Netgroup,
   Service,
   SudoCmd,
+  SudoCmdGroup,
   UserGroup,
 } from "src/utils/datatypes/globalDataTypes";
 
@@ -52,6 +53,7 @@ export interface PropsToDeletedElementsTable {
     | HostGroup[]
     | Netgroup[]
     | Service[]
+    | SudoCmdGroup[]
     | UserGroup[]
     | IDView[]
     | SudoCmd[];
