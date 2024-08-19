@@ -195,7 +195,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
             // Set alert: success
             alerts.addAlert(
               "add-member-success",
-              `Assigned group members to '${id}'`,
+              `Assigned '${id}' to user groups`,
               "success"
             );
             // Update displayed User groups before they are updated via refresh
@@ -230,7 +230,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
               // Set alert: success
               alerts.addAlert(
                 "remove-user-groups-success",
-                `Removed group members from '${id}'`,
+                `Removed '${id}' from user groups`,
                 "success"
               );
               // Update displayed User groups
@@ -309,7 +309,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
           availableItems={availableItems}
           onAdd={onAddUserGroup}
           onSearchTextChange={setAdderSearchValue}
-          title={`Assign user group members to ${id}`}
+          title={`Assign '${id}' to user groups`}
           ariaLabel="Add entry of user group modal"
         />
       )}
@@ -317,7 +317,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
         <MemberOfDeleteModal
           showModal={showDeleteModal}
           onCloseModal={() => setShowDeleteModal(false)}
-          title={`Delete group members from ${id}`}
+          title={`Remove '${id}' from user groups`}
           onDelete={onDeleteUserGroup}
         >
           <MemberOfUserGroupsTable

@@ -209,7 +209,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           // Set alert: success
           alerts.addAlert(
             "add-member-success",
-            `Assigned role members to '${props.id}'`,
+            `Assigned '${props.id}' to roles`,
             "success"
           );
           // Update displayed roles before they are updated via refresh
@@ -240,7 +240,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
             // Set alert: success
             alerts.addAlert(
               "remove-roles-success",
-              `Removed role members from '${props.id}'`,
+              `Removed '${props.id}' from roles`,
               "success"
             );
             // Update displayed roles

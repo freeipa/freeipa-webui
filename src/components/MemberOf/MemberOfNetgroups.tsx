@@ -208,7 +208,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
             // Set alert: success
             alerts.addAlert(
               "add-member-success",
-              `Assigned netgroup members to '${props.id}'`,
+              `Assigned '${props.id}' to netgroups`,
               "success"
             );
             // Update displayed netgroups before they are updated via refresh
@@ -242,7 +242,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
             // Set alert: success
             alerts.addAlert(
               "remove-netgroups-success",
-              `Removed netgroup members from '${props.id}'`,
+              `Removed '${props.id}' from netgroups`,
               "success"
             );
             // Update displayed netgroups
