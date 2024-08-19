@@ -210,7 +210,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
               // Set alert: success
               alerts.addAlert(
                 "add-member-success",
-                `Assigned HBAC rule members to '${props.id}'`,
+                `Assigned '${props.id}' to HBAC rules`,
                 "success"
               );
               // Update displayed HBAC Rules before they are updated via refresh
@@ -245,7 +245,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
             // Set alert: success
             alerts.addAlert(
               "remove-hbac-rules-success",
-              `Removed HBAC rule members from '${props.id}'`,
+              `Removed '${props.id}' from HBAC rules`,
               "success"
             );
             // Update displayed HBAC rules

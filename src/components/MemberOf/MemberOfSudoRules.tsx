@@ -205,7 +205,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
             // Set alert: success
             alerts.addAlert(
               "add-member-success",
-              `Assigned sudo rule members to '${props.id}'`,
+              `Assigned '${props.id}' to sudo rules`,
               "success"
             );
             // Update displayed Sudo Rules before they are updated via refresh
@@ -239,7 +239,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
             // Set alert: success
             alerts.addAlert(
               "remove-sudo-rules-success",
-              `Removed ${entityType} members from '${props.id}'`,
+              `Removed '${props.id}' from sudo rules'`,
               "success"
             );
             // Update displayed HBAC rules

@@ -191,7 +191,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
             // Set alert: success
             alerts.addAlert(
               "add-member-success",
-              `Assigned members to '${fqdn}'`,
+              `Assigned '${fqdn}' to host groups`,
               "success"
             );
             // Update displayed Host groups before they are updated via refresh
@@ -229,7 +229,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
             // Set alert: success
             alerts.addAlert(
               "remove-host-groups-success",
-              "Removed members from host group '" + props.host.fqdn + "'",
+              `Removed '${props.host.fqdn}' from host groups`,
               "success"
             );
             // Update displayed Host groups

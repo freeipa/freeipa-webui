@@ -28,10 +28,10 @@ Feature: Usergroup is a member of
     Given I click on the Is a member of section
     Given I am on "a_group" user > Is a member of > "User groups" section
     When I click on "Add" button located in the toolbar
-    Then I should see the dialog with title "Assign user group members"
+    Then I should see the dialog with title "Assign 'a_group' to user groups"
     When I move user "editors" from the available list and move it to the chosen options
     And in the modal dialog I click on "Add" button
-    * I should see "success" alert with text "Assigned group members to 'a_group'"
+    * I should see "success" alert with text "Assigned 'a_group' to user groups"
     * I close the alert
     Then I should see the element "editors" in the table
 
@@ -45,10 +45,10 @@ Feature: Usergroup is a member of
   Scenario: Delete a usergroup member from the user group
     When I select entry "editors" in the data table
     And I click on "Delete" button located in the toolbar
-    Then I should see the dialog with title "Delete group members"
+    Then I should see the dialog with title "Remove 'a_group' from user groups"
     And the "editors" element should be in the dialog table
     When in the modal dialog I click on "Delete" button
-    Then I should see "success" alert with text "Removed group members from 'a_group'"
+    Then I should see "success" alert with text "Removed 'a_group' from user groups"
     * I close the alert
     And I should not see the element "editors" in the table
 
@@ -71,7 +71,7 @@ Feature: Usergroup is a member of
     Then I should see the dialog with title "Add 'a_group' into netgroups"
     When I move user "a_netgroup" from the available list and move it to the chosen options
     And in the modal dialog I click on "Add" button
-    * I should see "success" alert with text "Assigned netgroup members to 'a_group'"
+    * I should see "success" alert with text "Assigned 'a_group' to netgroups"
     * I close the alert
     Then I should see the element "a_netgroup" in the table
 
@@ -81,7 +81,7 @@ Feature: Usergroup is a member of
     Then I should see the dialog with title "Remove 'a_group' from netgroups"
     And the "a_netgroup" element should be in the dialog table
     When in the modal dialog I click on "Delete" button
-    Then I should see "success" alert with text "Removed netgroup members from 'a_group'"
+    Then I should see "success" alert with text "Removed 'a_group' from netgroups"
     * I close the alert
     And I should not see the element "a_netgroup" in the table
 
@@ -92,7 +92,7 @@ Feature: Usergroup is a member of
     Then I should see the dialog with title "Add 'a_group' into roles"
     When I move user "helpdesk" from the available list and move it to the chosen options
     And in the modal dialog I click on "Add" button
-    * I should see "success" alert with text "Assigned role members to 'a_group'"
+    * I should see "success" alert with text "Assigned 'a_group' to roles"
     * I close the alert
     Then I should see the element "helpdesk" in the table
 
@@ -102,7 +102,7 @@ Feature: Usergroup is a member of
     Then I should see the dialog with title "Remove 'a_group' from roles"
     And the "helpdesk" element should be in the dialog table
     When in the modal dialog I click on "Delete" button
-    Then I should see "success" alert with text "Removed role members from 'a_group'"
+    Then I should see "success" alert with text "Removed 'a_group' from roles"
     * I close the alert
     And I should not see the element "helpdesk" in the table
 
@@ -126,7 +126,7 @@ Feature: Usergroup is a member of
     Then I should see the dialog with title "Add 'a_group' into HBAC rules"
     When I move user "rule1" from the available list and move it to the chosen options
     And in the modal dialog I click on "Add" button
-    * I should see "success" alert with text "Assigned HBAC rule members to 'a_group'"
+    * I should see "success" alert with text "Assigned 'a_group' to HBAC rules"
     * I close the alert
     Then I should see the element "rule1" in the table
 
@@ -136,7 +136,7 @@ Feature: Usergroup is a member of
     Then I should see the dialog with title "Remove 'a_group' from HBAC rules"
     And the "rule1" element should be in the dialog table
     When in the modal dialog I click on "Delete" button
-    Then I should see "success" alert with text "Removed HBAC rule members from 'a_group'"
+    Then I should see "success" alert with text "Removed 'a_group' from HBAC rules"
     * I close the alert
     And I should not see the element "rule1" in the table
 

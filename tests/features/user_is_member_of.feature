@@ -26,7 +26,7 @@ Feature: User is a member of
 
   Scenario: Add a set of users into the user groups
     When I click on "Add" button located in the toolbar
-    Then I should see the dialog with title "Assign user group members to armadillo"
+    Then I should see the dialog with title "Assign 'armadillo' to user groups"
     When I move user "editors" from the available list and move it to the chosen options
     # TODO: Aditionally, add more users to the chosen options
     And in the modal dialog I click on "Add" button
@@ -45,10 +45,10 @@ Feature: User is a member of
     When I select entry "editors" in the data table
     # TODO: Additionally, select more users to remove
     And I click on "Delete" button located in the toolbar
-    Then I should see the dialog with title "Delete group members from armadillo"
+    Then I should see the dialog with title "Remove 'armadillo' from user groups"
     And the "editors" element should be in the dialog table
     When in the modal dialog I click on "Delete" button
-    Then I should see "success" alert with text "Removed group members from 'armadillo'"
+    Then I should see "success" alert with text "Removed 'armadillo' from user groups"
     And I should not see the element "editors" in the table
     * I should see the element "ipausers" in the table
     * removed element "editors" is back to the add list
