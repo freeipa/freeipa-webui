@@ -63,60 +63,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     userQuery.refetch();
   };
 
-  // 'User groups' length to show in tab badge
-  const [userGroupsLength, setUserGroupLength] = React.useState(0);
-
-  React.useEffect(() => {
-    if (user && user.memberof_group) {
-      setUserGroupLength(user.memberof_group.length);
-    }
-  }, [user]);
-
-  // 'Netgroups' length to show in tab badge
-  const [netgroupsLength, setNetgroupsLength] = React.useState(0);
-
-  React.useEffect(() => {
-    if (user && user.memberof_netgroup) {
-      setNetgroupsLength(user.memberof_netgroup.length);
-    }
-  }, [user]);
-
-  // 'Roles' length to show in tab badge
-  const [rolesLength, setRolesLength] = React.useState(0);
-
-  React.useEffect(() => {
-    if (user && user.memberof_role) {
-      setRolesLength(user.memberof_role.length);
-    }
-  }, [user]);
-
-  // 'HBACRules' length to show in tab badge
-  const [hbacRulesLength, setHbacRulesLength] = React.useState(0);
-
-  React.useEffect(() => {
-    if (user && user.memberof_hbacrule) {
-      setHbacRulesLength(user.memberof_hbacrule.length);
-    }
-  }, [user]);
-
-  // 'Sudo rules' length to show in tab badge
-  const [sudoRulesLength, setSudoRulesLength] = React.useState(0);
-
-  React.useEffect(() => {
-    if (user && user.memberof_sudorule) {
-      setSudoRulesLength(user.memberof_sudorule.length);
-    }
-  }, [user]);
-
-  // 'Subordinate IDs' length to show in tab badge
-  const [subIdsLength, setSubIdsLength] = React.useState(0);
-
-  React.useEffect(() => {
-    if (user && user.memberof_subid) {
-      setSubIdsLength(user.memberof_subid.length);
-    }
-  }, [user]);
-
   // Tab
   const [activeTabKey, setActiveTabKey] = useState("group");
 
@@ -150,7 +96,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               <TabTitleText>
                 User groups{" "}
                 <Badge key={0} isRead>
-                  {userGroupsLength}
+                  {user && user.memberof_group ? user.memberof_group.length : 0}
                 </Badge>
               </TabTitleText>
             }
@@ -169,7 +115,9 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               <TabTitleText>
                 Netgroups{" "}
                 <Badge key={1} isRead>
-                  {netgroupsLength}
+                  {user && user.memberof_netgroup
+                    ? user.memberof_netgroup.length
+                    : 0}
                 </Badge>
               </TabTitleText>
             }
@@ -189,7 +137,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               <TabTitleText>
                 Roles{" "}
                 <Badge key={2} isRead>
-                  {rolesLength}
+                  {user && user.memberof_role ? user.memberof_role.length : 0}
                 </Badge>
               </TabTitleText>
             }
@@ -211,7 +159,9 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               <TabTitleText>
                 HBAC rules{" "}
                 <Badge key={3} isRead>
-                  {hbacRulesLength}
+                  {user && user.memberof_hbacrule
+                    ? user.memberof_hbacrule.length
+                    : 0}
                 </Badge>
               </TabTitleText>
             }
@@ -231,7 +181,9 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               <TabTitleText>
                 Sudo rules{" "}
                 <Badge key={4} isRead>
-                  {sudoRulesLength}
+                  {user && user.memberof_sudorule
+                    ? user.memberof_sudorule.length
+                    : 0}
                 </Badge>
               </TabTitleText>
             }
@@ -251,7 +203,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
               <TabTitleText>
                 Subordinate IDs{" "}
                 <Badge key={5} isRead>
-                  {subIdsLength}
+                  {user && user.memberof_subid ? user.memberof_subid.length : 0}
                 </Badge>
               </TabTitleText>
             }

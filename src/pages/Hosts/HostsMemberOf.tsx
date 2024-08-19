@@ -51,51 +51,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "hosts", noBreadcrumb: true });
 
-  // 'Host groups' length to show in tab badge
-  const [hostGroupsLength, setHostGroupLength] = React.useState(0);
-
-  React.useEffect(() => {
-    if (host && host.memberof_hostgroup) {
-      setHostGroupLength(host.memberof_hostgroup.length);
-    }
-  }, [host]);
-
-  // 'Netgroups' length to show in tab badge
-  const [netgroupsLength, setNetgroupLength] = React.useState(0);
-
-  React.useEffect(() => {
-    if (host && host.memberof_netgroup) {
-      setNetgroupLength(host.memberof_netgroup.length);
-    }
-  }, [host]);
-
-  // 'Roles' length to show in tab badge
-  const [rolesLength, setRolesLength] = React.useState(0);
-
-  React.useEffect(() => {
-    if (host && host.memberof_role) {
-      setRolesLength(host.memberof_role.length);
-    }
-  }, [host]);
-
-  // 'HBAC rules' length to show in tab badge
-  const [hbacRulesLength, setHbacRulesLength] = React.useState(0);
-
-  React.useEffect(() => {
-    if (host && host.memberof_hbacrule) {
-      setHbacRulesLength(host.memberof_hbacrule.length);
-    }
-  }, [host]);
-
-  // 'Sudo rules' length to show in tab badge
-  const [sudoRulesLength, setSudoRulesLength] = React.useState(0);
-
-  React.useEffect(() => {
-    if (host && host.memberof_sudorule) {
-      setSudoRulesLength(host.memberof_sudorule.length);
-    }
-  }, [host]);
-
   // Tab
   const [activeTabKey, setActiveTabKey] = useState("memberof_hostgroup");
 
@@ -133,7 +88,9 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
               <TabTitleText>
                 Host groups{" "}
                 <Badge key={0} isRead>
-                  {hostGroupsLength}
+                  {host && host.memberof_hostgroup
+                    ? host.memberof_hostgroup.length
+                    : 0}
                 </Badge>
               </TabTitleText>
             }
@@ -151,7 +108,9 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
               <TabTitleText>
                 Netgroups{" "}
                 <Badge key={1} isRead>
-                  {netgroupsLength}
+                  {host && host.memberof_netgroup
+                    ? host.memberof_netgroup.length
+                    : 0}
                 </Badge>
               </TabTitleText>
             }
@@ -171,7 +130,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
               <TabTitleText>
                 Roles{" "}
                 <Badge key={2} isRead>
-                  {rolesLength}
+                  {host && host.memberof_role ? host.memberof_role.length : 0}
                 </Badge>
               </TabTitleText>
             }
@@ -193,7 +152,9 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
               <TabTitleText>
                 HBAC rules{" "}
                 <Badge key={3} isRead>
-                  {hbacRulesLength}
+                  {host && host.memberof_hbacrule
+                    ? host.memberof_hbacrule.length
+                    : 0}
                 </Badge>
               </TabTitleText>
             }
@@ -213,7 +174,9 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
               <TabTitleText>
                 Sudo rules{" "}
                 <Badge key={4} isRead>
-                  {sudoRulesLength}
+                  {host && host.memberof_sudorule
+                    ? host.memberof_sudorule.length
+                    : 0}
                 </Badge>
               </TabTitleText>
             }
