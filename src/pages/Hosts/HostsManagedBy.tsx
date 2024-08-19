@@ -35,12 +35,6 @@ const HostsManagedBy = (props: PropsToHostsManagedBy) => {
   const [host, setHost] = useState<Partial<Host>>({});
 
   React.useEffect(() => {
-    if (host && host.managedby_host) {
-      setHostGroupsLength(host.managedby_host.length);
-    }
-  }, [host]);
-
-  React.useEffect(() => {
     if (!hostQuery.isFetching && hostData) {
       setHost({ ...hostData });
     }
@@ -52,9 +46,6 @@ const HostsManagedBy = (props: PropsToHostsManagedBy) => {
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "hosts" });
-
-  // 'Host groups' length to show in tab badge
-  const [hostGroupsLength, setHostGroupsLength] = React.useState(0);
 
   // Render component
   return (
@@ -81,7 +72,7 @@ const HostsManagedBy = (props: PropsToHostsManagedBy) => {
               <TabTitleText>
                 Hosts{" "}
                 <Badge key={0} isRead>
-                  {hostGroupsLength}
+                  {host && host.managedby_host ? host.managedby_host.length : 0}
                 </Badge>
               </TabTitleText>
             }

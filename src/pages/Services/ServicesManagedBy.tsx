@@ -49,15 +49,6 @@ const ServicesManagedBy = (props: PropsToServicesManagedBy) => {
   // Encoded data to pass to the URL
   const encodedServiceId = encodeURIComponent(props.service.krbcanonicalname);
 
-  // 'Hosts' length to show in tab badge
-  const [hostsLength, setHostsLength] = React.useState(0);
-
-  React.useEffect(() => {
-    if (service && service.managedby_host) {
-      setHostsLength(service.managedby_host.length);
-    }
-  }, [service]);
-
   return (
     <Page>
       <PageSection
@@ -82,7 +73,9 @@ const ServicesManagedBy = (props: PropsToServicesManagedBy) => {
               <TabTitleText>
                 Hosts{" "}
                 <Badge key={0} isRead>
-                  {hostsLength}
+                  {service && service.managedby_host
+                    ? service.managedby_host.length
+                    : 0}
                 </Badge>
               </TabTitleText>
             }

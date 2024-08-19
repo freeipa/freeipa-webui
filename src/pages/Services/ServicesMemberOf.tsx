@@ -73,15 +73,6 @@ const ServicesMemberOf = (props: PropsToServicesMemberOf) => {
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "services", noBreadcrumb: true });
 
-  // 'Roles' length to show in tab badge
-  const [rolesLength, setRolesLength] = React.useState(0);
-
-  React.useEffect(() => {
-    if (service && service.memberof_role) {
-      setRolesLength(service.memberof_role.length);
-    }
-  }, [service]);
-
   // Render component
   return (
     <Page>
@@ -98,7 +89,9 @@ const ServicesMemberOf = (props: PropsToServicesMemberOf) => {
               <TabTitleText>
                 Roles{" "}
                 <Badge key={0} isRead>
-                  {rolesLength}
+                  {service && service.memberof_role
+                    ? service.memberof_role.length
+                    : 0}
                 </Badge>
               </TabTitleText>
             }

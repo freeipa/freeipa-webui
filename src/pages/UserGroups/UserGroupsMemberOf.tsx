@@ -51,46 +51,6 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "user-groups", noBreadcrumb: true });
 
-  // 'User groups' length to show in tab badge
-  const [userGroupsLength, setUserGroupLength] = React.useState(0);
-  React.useEffect(() => {
-    if (group && group.memberof_group) {
-      setUserGroupLength(group.memberof_group.length);
-    }
-  }, [group]);
-
-  // 'Netgroups' length to show in tab badge
-  const [netgroupsLength, setNetgroupLength] = React.useState(0);
-  React.useEffect(() => {
-    if (group && group.memberof_netgroup) {
-      setNetgroupLength(group.memberof_netgroup.length);
-    }
-  }, [group]);
-
-  // 'Roles' length to show in tab badge
-  const [rolesLength, setRolesLength] = React.useState(0);
-  React.useEffect(() => {
-    if (group && group.memberof_role) {
-      setRolesLength(group.memberof_role.length);
-    }
-  }, [group]);
-
-  // 'HBAC rules' length to show in tab badge
-  const [hbacRulesLength, setHbacRulesLength] = React.useState(0);
-  React.useEffect(() => {
-    if (group && group.memberof_hbacrule) {
-      setHbacRulesLength(group.memberof_hbacrule.length);
-    }
-  }, [group]);
-
-  // 'Sudo rules' length to show in tab badge
-  const [sudoRulesLength, setSudoRulesLength] = React.useState(0);
-  React.useEffect(() => {
-    if (group && group.memberof_sudorule) {
-      setSudoRulesLength(group.memberof_sudorule.length);
-    }
-  }, [group]);
-
   // Tab
   const [activeTabKey, setActiveTabKey] = useState("memberof_usergroup");
   const handleTabClick = (
@@ -127,7 +87,9 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
               <TabTitleText>
                 User groups{" "}
                 <Badge key={0} isRead>
-                  {userGroupsLength}
+                  {group && group.memberof_group
+                    ? group.memberof_group.length
+                    : 0}
                 </Badge>
               </TabTitleText>
             }
@@ -146,7 +108,9 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
               <TabTitleText>
                 Netgroups{" "}
                 <Badge key={1} isRead>
-                  {netgroupsLength}
+                  {group && group.memberof_netgroup
+                    ? group.memberof_netgroup.length
+                    : 0}
                 </Badge>
               </TabTitleText>
             }
@@ -166,7 +130,9 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
               <TabTitleText>
                 Roles{" "}
                 <Badge key={2} isRead>
-                  {rolesLength}
+                  {group && group.memberof_role
+                    ? group.memberof_role.length
+                    : 0}
                 </Badge>
               </TabTitleText>
             }
@@ -188,7 +154,9 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
               <TabTitleText>
                 HBAC rules{" "}
                 <Badge key={3} isRead>
-                  {hbacRulesLength}
+                  {group && group.memberof_hbacrule
+                    ? group.memberof_hbacrule.length
+                    : 0}
                 </Badge>
               </TabTitleText>
             }
@@ -208,7 +176,9 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
               <TabTitleText>
                 Sudo rules{" "}
                 <Badge key={4} isRead>
-                  {sudoRulesLength}
+                  {group && group.memberof_sudorule
+                    ? group.memberof_sudorule.length
+                    : 0}
                 </Badge>
               </TabTitleText>
             }
