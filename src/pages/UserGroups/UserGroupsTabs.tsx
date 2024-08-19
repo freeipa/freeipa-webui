@@ -90,9 +90,9 @@ const UserGroupsTabs = ({ section }) => {
     }
     const section_string = section as string;
     if (section_string.startsWith("memberof_")) {
-      setActiveTabKey("memberof_usergroup");
+      setActiveTabKey("memberof");
     } else if (section_string.startsWith("member_")) {
-      setActiveTabKey("member_user");
+      setActiveTabKey("member");
     }
   }, [section]);
 
@@ -165,7 +165,7 @@ const UserGroupsTabs = ({ section }) => {
             />
           </Tab>
           <Tab
-            eventKey={"member_user"}
+            eventKey={"member"}
             name={"members-details"}
             title={<TabTitleText>Members</TabTitleText>}
           >
@@ -176,18 +176,15 @@ const UserGroupsTabs = ({ section }) => {
             />
           </Tab>
           <Tab
-            eventKey={"memberof_usergroup"}
+            eventKey={"memberof"}
             name="memberof-details"
             title={<TabTitleText>Is a member of</TabTitleText>}
           >
             <PageSection className="pf-v5-u-pb-0"></PageSection>
-            <UserGroupsMemberOf
-              userGroup={usergroup}
-              tabSection={activeTabKey}
-            />
+            <UserGroupsMemberOf userGroup={usergroup} tabSection={section} />
           </Tab>
           <Tab
-            eventKey={"managedby_usergroup"}
+            eventKey={"managedby"}
             name="managedby-details"
             title={<TabTitleText>Is managed by</TabTitleText>}
           >
