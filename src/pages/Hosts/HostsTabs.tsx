@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PageSectionVariants,
   Tabs,
@@ -114,7 +113,7 @@ const HostsTabs = ({ section }) => {
   const host = hostSettingsData.host;
 
   return (
-    <Page>
+    <>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadCrumb
           className="pf-v5-u-mb-md"
@@ -142,7 +141,6 @@ const HostsTabs = ({ section }) => {
             name="settings-details"
             title={<TabTitleText>Settings</TabTitleText>}
           >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
             <HostsSettings
               host={host}
               originalHost={hostSettingsData.originalHost}
@@ -161,7 +159,6 @@ const HostsTabs = ({ section }) => {
             name="memberof-details"
             title={<TabTitleText>Is a member of</TabTitleText>}
           >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
             <HostsMemberOf
               host={partialHostToHost(host)}
               tabSection={section}
@@ -172,12 +169,11 @@ const HostsTabs = ({ section }) => {
             name="managedby-details"
             title={<TabTitleText>Is managed by</TabTitleText>}
           >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
             <HostsManagedBy host={host as Host} />
           </Tab>
         </Tabs>
       </PageSection>
-    </Page>
+    </>
   );
 };
 

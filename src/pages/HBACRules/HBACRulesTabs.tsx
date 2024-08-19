@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PageSectionVariants,
   Tabs,
@@ -86,7 +85,7 @@ const HBACRulesTabs = ({ section }) => {
   }
 
   return (
-    <Page>
+    <>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadCrumb
           className="pf-v5-u-mb-md"
@@ -114,7 +113,6 @@ const HBACRulesTabs = ({ section }) => {
             name="settings-details"
             title={<TabTitleText>Settings</TabTitleText>}
           >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
             <HBACRulesSettings
               rule={settingsData.rule}
               originalRule={settingsData.originalRule}
@@ -129,7 +127,7 @@ const HBACRulesTabs = ({ section }) => {
           </Tab>
         </Tabs>
       </PageSection>
-    </Page>
+    </>
   );
 };
 

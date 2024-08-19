@@ -1,18 +1,12 @@
 import React, { useState } from "react";
 // PatternFly
-import {
-  Flex,
-  Form,
-  FormGroup,
-  PageSection,
-  PageSectionVariants,
-} from "@patternfly/react-core";
+import { Flex, Form, FormGroup } from "@patternfly/react-core";
 // Forms
 import IpaTextArea from "src/components/Form/IpaTextArea";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
-import ToolbarLayout from "src/components/layouts/ToolbarLayout";
+import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
 // Hooks
@@ -135,40 +129,28 @@ const HBACServiceGroupsSettings = (props: PropsToSettings) => {
 
   // Render component
   return (
-    <>
+    <TabLayout id="settings-page" toolbarItems={toolbarFields}>
       <alerts.ManagedAlerts />
-      <PageSection
-        id="settings-page"
-        variant={PageSectionVariants.light}
-        className="pf-v5-u-pr-0 pf-v5-u-ml-lg pf-v5-u-mr-sm"
-        style={{ overflowY: "scroll", height: `calc(100vh - 319px)` }}
-      >
-        <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
-          <TitleLayout
-            key={0}
-            headingLevel="h1"
-            id="hbacservice-group-settings"
-            text="HBAC service group settings"
-          />
-          <Form className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md">
-            <FormGroup label="Description" fieldId="description">
-              <IpaTextArea
-                name="description"
-                ipaObject={ipaObject}
-                onChange={recordOnChange}
-                objectName="hbacsvc"
-                metadata={props.metadata}
-              />
-            </FormGroup>
-          </Form>
-        </Flex>
-      </PageSection>
-      <ToolbarLayout
-        isSticky={true}
-        className={"pf-v5-u-p-md pf-v5-u-ml-lg pf-v5-u-mr-lg"}
-        toolbarItems={toolbarFields}
-      />
-    </>
+      <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
+        <TitleLayout
+          key={0}
+          headingLevel="h1"
+          id="hbacservice-group-settings"
+          text="HBAC service group settings"
+        />
+        <Form className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md">
+          <FormGroup label="Description" fieldId="description">
+            <IpaTextArea
+              name="description"
+              ipaObject={ipaObject}
+              onChange={recordOnChange}
+              objectName="hbacsvc"
+              metadata={props.metadata}
+            />
+          </FormGroup>
+        </Form>
+      </Flex>
+    </TabLayout>
   );
 };
 

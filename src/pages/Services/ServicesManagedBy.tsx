@@ -1,18 +1,12 @@
 import React from "react";
 // PatternFly
-import {
-  Badge,
-  Page,
-  PageSection,
-  PageSectionVariants,
-  Tab,
-  Tabs,
-  TabTitleText,
-} from "@patternfly/react-core";
+import { Badge, Tab, Tabs, TabTitleText } from "@patternfly/react-core";
 // Data type
 import { Service } from "src/utils/datatypes/globalDataTypes";
 // Components
 import ManagedByHosts from "src/components/ManagedBy/ManagedByHosts";
+// Layouts
+import TabLayout from "src/components/layouts/TabLayout";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // RPC
@@ -50,47 +44,41 @@ const ServicesManagedBy = (props: PropsToServicesManagedBy) => {
   const encodedServiceId = encodeURIComponent(props.service.krbcanonicalname);
 
   return (
-    <Page>
-      <PageSection
-        variant={PageSectionVariants.light}
-        isFilled={false}
-        className="pf-v5-u-m-lg"
+    <TabLayout id="managedby">
+      <Tabs
+        activeKey={0}
+        isBox={false}
+        mountOnEnter
+        unmountOnExit
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        onSelect={(_event) => {
+          navigate("/services/" + encodedServiceId + "/managedby_host");
+        }}
       >
-        <Tabs
-          activeKey={0}
-          isBox={false}
-          mountOnEnter
-          unmountOnExit
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          onSelect={(_event) => {
-            navigate("/services/" + encodedServiceId + "/managedby_host");
-          }}
+        <Tab
+          eventKey={0}
+          name="managedby_host"
+          title={
+            <TabTitleText>
+              Hosts{" "}
+              <Badge key={0} isRead>
+                {service && service.managedby_host
+                  ? service.managedby_host.length
+                  : 0}
+              </Badge>
+            </TabTitleText>
+          }
         >
-          <Tab
-            eventKey={0}
-            name="managedby_host"
-            title={
-              <TabTitleText>
-                Hosts{" "}
-                <Badge key={0} isRead>
-                  {service && service.managedby_host
-                    ? service.managedby_host.length
-                    : 0}
-                </Badge>
-              </TabTitleText>
-            }
-          >
-            <ManagedByHosts
-              entity={service}
-              id={service.krbcanonicalname as string}
-              from="service"
-              isDataLoading={serviceQuery.isFetching}
-              onRefreshData={onRefreshServiceData}
-            />
-          </Tab>
-        </Tabs>
-      </PageSection>
-    </Page>
+          <ManagedByHosts
+            entity={service}
+            id={service.krbcanonicalname as string}
+            from="service"
+            isDataLoading={serviceQuery.isFetching}
+            onRefreshData={onRefreshServiceData}
+          />
+        </Tab>
+      </Tabs>
+    </TabLayout>
   );
 };
 

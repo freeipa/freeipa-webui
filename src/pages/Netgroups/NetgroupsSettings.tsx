@@ -5,8 +5,6 @@ import {
   Form,
   FormGroup,
   Label,
-  PageSection,
-  PageSectionVariants,
   Tab,
   Tabs,
   TabTitleText,
@@ -15,11 +13,10 @@ import {
 import IpaTextArea from "src/components/Form/IpaTextArea";
 import IpaTextInput from "src/components/Form/IpaTextInput";
 import IpaCheckbox from "src/components/Form/IpaCheckbox";
-
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
-import ToolbarLayout from "src/components/layouts/ToolbarLayout";
+import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
 // Hooks
@@ -189,206 +186,193 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
 
   // Render component
   return (
-    <>
+    <TabLayout id="settings-page" toolbarItems={toolbarFields}>
       <alerts.ManagedAlerts />
-      <PageSection
-        id="settings-page"
-        variant={PageSectionVariants.light}
-        className="pf-v5-u-pr-0 pf-v5-u-ml-lg pf-v5-u-mr-sm"
-        style={{ overflowY: "scroll", height: `calc(100vh - 319px)` }}
-      >
-        <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
-          <TitleLayout
-            key={0}
-            headingLevel="h1"
-            id="group-settings"
-            text="Netgroup settings"
-          />
-          <Form
-            className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md"
-            isHorizontal
+      <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
+        <TitleLayout
+          key={0}
+          headingLevel="h1"
+          id="group-settings"
+          text="Netgroup settings"
+        />
+        <Form
+          className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md"
+          isHorizontal
+        >
+          <FormGroup label="Description" fieldId="description">
+            <IpaTextArea
+              name="description"
+              ipaObject={ipaObject}
+              onChange={recordOnChange}
+              objectName="netgroup"
+              metadata={props.metadata}
+            />
+          </FormGroup>
+          <FormGroup label="NIS domain name" fieldId="nisdomainname">
+            <IpaTextInput
+              name="nisdomainname"
+              ariaLabel={"NIS domain name"}
+              ipaObject={ipaObject}
+              onChange={recordOnChange}
+              objectName="netgroup"
+              metadata={props.metadata}
+            />
+          </FormGroup>
+        </Form>
+        <TitleLayout
+          key={1}
+          headingLevel="h2"
+          id="user-category-tabs"
+          text="User category"
+          className="pf-v5-u-mt-lg"
+        />
+        <IpaCheckbox
+          name="usercategory"
+          value="usercategory"
+          text="Allow anyone"
+          className="pf-v5-u-ml-lg"
+          ipaObject={ipaObject}
+          onChange={recordOnChange}
+          objectName="netgroup"
+          metadata={props.metadata}
+          altTrue="all"
+          altFalse={""}
+        />
+        {ipaObject.usercategory === "" && (
+          <Tabs
+            activeKey={userTabKey}
+            onSelect={handleUserTabClick}
+            className="pf-v5-u-ml-md pf-v5-u-mr-md"
           >
-            <FormGroup label="Description" fieldId="description">
-              <IpaTextArea
-                name="description"
-                ipaObject={ipaObject}
-                onChange={recordOnChange}
-                objectName="netgroup"
-                metadata={props.metadata}
-              />
-            </FormGroup>
-            <FormGroup label="NIS domain name" fieldId="nisdomainname">
-              <IpaTextInput
-                name="nisdomainname"
-                ariaLabel={"NIS domain name"}
-                ipaObject={ipaObject}
-                onChange={recordOnChange}
-                objectName="netgroup"
-                metadata={props.metadata}
-              />
-            </FormGroup>
-          </Form>
-          <TitleLayout
-            key={1}
-            headingLevel="h2"
-            id="user-category-tabs"
-            text="User category"
-            className="pf-v5-u-mt-lg"
-          />
-          <IpaCheckbox
-            name="usercategory"
-            value="usercategory"
-            text="Allow anyone"
-            className="pf-v5-u-ml-lg"
-            ipaObject={ipaObject}
-            onChange={recordOnChange}
-            objectName="netgroup"
-            metadata={props.metadata}
-            altTrue="all"
-            altFalse={""}
-          />
-          {ipaObject.usercategory === "" && (
-            <Tabs
-              activeKey={userTabKey}
-              onSelect={handleUserTabClick}
-              className="pf-v5-u-ml-md pf-v5-u-mr-md"
+            <Tab
+              eventKey={0}
+              name="users"
+              title={
+                <TabTitleText>
+                  Users <Label isCompact>{memberUsers.length}</Label>
+                </TabTitleText>
+              }
             >
-              <Tab
-                eventKey={0}
-                name="users"
-                title={
-                  <TabTitleText>
-                    Users <Label isCompact>{memberUsers.length}</Label>
-                  </TabTitleText>
+              <NetgroupsMemberTable
+                from="user"
+                id={cn}
+                members={memberUsers}
+                onRefresh={props.onRefresh}
+                unsetCategory={
+                  ipaObject.usercategory !== props.originalGroup.usercategory
                 }
-              >
-                <NetgroupsMemberTable
-                  from="user"
-                  id={cn}
-                  members={memberUsers}
-                  onRefresh={props.onRefresh}
-                  unsetCategory={
-                    ipaObject.usercategory !== props.originalGroup.usercategory
-                  }
-                />
-              </Tab>
-              <Tab
-                eventKey={1}
-                name="groups"
-                title={
-                  <TabTitleText>
-                    Groups <Label isCompact>{memberGroups.length}</Label>
-                  </TabTitleText>
-                }
-              >
-                <NetgroupsMemberTable
-                  from="group"
-                  id={cn}
-                  members={memberGroups}
-                  onRefresh={props.onRefresh}
-                  unsetCategory={
-                    ipaObject.usercategory !== props.originalGroup.usercategory
-                  }
-                />
-              </Tab>
-            </Tabs>
-          )}
-          <TitleLayout
-            key={2}
-            headingLevel="h2"
-            id="host-category-tabs"
-            text="Host category"
-            className="pf-v5-u-mt-xl"
-          />
-          <IpaCheckbox
-            name="hostcategory"
-            value="hostcategory"
-            text="Allow any host"
-            className="pf-v5-u-ml-lg"
-            ipaObject={ipaObject}
-            onChange={recordOnChange}
-            objectName="netgroup"
-            metadata={props.metadata}
-            altTrue="all"
-            altFalse={""}
-          />
-          {ipaObject.hostcategory === "" && (
-            <Tabs
-              activeKey={hostTabKey}
-              onSelect={handleHostTabClick}
-              className="pf-v5-u-ml-md pf-v5-u-mr-md"
+              />
+            </Tab>
+            <Tab
+              eventKey={1}
+              name="groups"
+              title={
+                <TabTitleText>
+                  Groups <Label isCompact>{memberGroups.length}</Label>
+                </TabTitleText>
+              }
             >
-              <Tab
-                eventKey={0}
-                name="memberHosts"
-                title={
-                  <TabTitleText>
-                    Hosts <Label isCompact>{memberHosts.length}</Label>
-                  </TabTitleText>
+              <NetgroupsMemberTable
+                from="group"
+                id={cn}
+                members={memberGroups}
+                onRefresh={props.onRefresh}
+                unsetCategory={
+                  ipaObject.usercategory !== props.originalGroup.usercategory
                 }
-              >
-                <NetgroupsMemberTable
-                  from="host"
-                  id={cn}
-                  members={memberHosts}
-                  onRefresh={props.onRefresh}
-                  unsetCategory={
-                    ipaObject.hostcategory !== props.originalGroup.hostcategory
-                  }
-                />
-              </Tab>
-              <Tab
-                eventKey={1}
-                name="memberHostGroups"
-                title={
-                  <TabTitleText>
-                    Host groups{" "}
-                    <Label isCompact>{memberHostGroups.length}</Label>
-                  </TabTitleText>
+              />
+            </Tab>
+          </Tabs>
+        )}
+        <TitleLayout
+          key={2}
+          headingLevel="h2"
+          id="host-category-tabs"
+          text="Host category"
+          className="pf-v5-u-mt-xl"
+        />
+        <IpaCheckbox
+          name="hostcategory"
+          value="hostcategory"
+          text="Allow any host"
+          className="pf-v5-u-ml-lg"
+          ipaObject={ipaObject}
+          onChange={recordOnChange}
+          objectName="netgroup"
+          metadata={props.metadata}
+          altTrue="all"
+          altFalse={""}
+        />
+        {ipaObject.hostcategory === "" && (
+          <Tabs
+            activeKey={hostTabKey}
+            onSelect={handleHostTabClick}
+            className="pf-v5-u-ml-md pf-v5-u-mr-md"
+          >
+            <Tab
+              eventKey={0}
+              name="memberHosts"
+              title={
+                <TabTitleText>
+                  Hosts <Label isCompact>{memberHosts.length}</Label>
+                </TabTitleText>
+              }
+            >
+              <NetgroupsMemberTable
+                from="host"
+                id={cn}
+                members={memberHosts}
+                onRefresh={props.onRefresh}
+                unsetCategory={
+                  ipaObject.hostcategory !== props.originalGroup.hostcategory
                 }
-              >
-                <NetgroupsMemberTable
-                  from="hostgroup"
-                  id={cn}
-                  members={memberHostGroups}
-                  onRefresh={props.onRefresh}
-                  fromLabel={"Host group"}
-                  unsetCategory={
-                    ipaObject.hostcategory !== props.originalGroup.hostcategory
-                  }
-                />
-              </Tab>
-              <Tab
-                eventKey={2}
-                name="memberExternalHosts"
-                title={
-                  <TabTitleText>
-                    External hosts{" "}
-                    <Label isCompact>{memberExternalHosts.length}</Label>
-                  </TabTitleText>
+              />
+            </Tab>
+            <Tab
+              eventKey={1}
+              name="memberHostGroups"
+              title={
+                <TabTitleText>
+                  Host groups <Label isCompact>{memberHostGroups.length}</Label>
+                </TabTitleText>
+              }
+            >
+              <NetgroupsMemberTable
+                from="hostgroup"
+                id={cn}
+                members={memberHostGroups}
+                onRefresh={props.onRefresh}
+                fromLabel={"Host group"}
+                unsetCategory={
+                  ipaObject.hostcategory !== props.originalGroup.hostcategory
                 }
-              >
-                <NetgroupsMemberTable
-                  from="externalHost"
-                  id={cn}
-                  members={memberExternalHosts}
-                  onRefresh={props.onRefresh}
-                  fromLabel={"External host"}
-                  unsetCategory={
-                    ipaObject.hostcategory !== props.originalGroup.hostcategory
-                  }
-                />
-              </Tab>
-            </Tabs>
-          )}
-        </Flex>
-      </PageSection>
-      <ToolbarLayout
-        isSticky={true}
-        className={"pf-v5-u-p-md pf-v5-u-ml-lg pf-v5-u-mr-lg"}
-        toolbarItems={toolbarFields}
-      />
-    </>
+              />
+            </Tab>
+            <Tab
+              eventKey={2}
+              name="memberExternalHosts"
+              title={
+                <TabTitleText>
+                  External hosts{" "}
+                  <Label isCompact>{memberExternalHosts.length}</Label>
+                </TabTitleText>
+              }
+            >
+              <NetgroupsMemberTable
+                from="externalHost"
+                id={cn}
+                members={memberExternalHosts}
+                onRefresh={props.onRefresh}
+                fromLabel={"External host"}
+                unsetCategory={
+                  ipaObject.hostcategory !== props.originalGroup.hostcategory
+                }
+              />
+            </Tab>
+          </Tabs>
+        )}
+      </Flex>
+    </TabLayout>
   );
 };
 

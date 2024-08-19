@@ -3,7 +3,6 @@ import React from "react";
 import {
   Icon,
   Title,
-  Page,
   PageSection,
   PageSectionVariants,
   TextContent,
@@ -99,7 +98,7 @@ const ActiveUsersTabs = ({ memberof }) => {
   );
 
   return (
-    <Page>
+    <>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadCrumb
           className="pf-v5-u-mb-md"
@@ -148,7 +147,6 @@ const ActiveUsersTabs = ({ memberof }) => {
             name="details"
             title={<TabTitleText>Settings</TabTitleText>}
           >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
             <UserSettings
               originalUser={userSettingsData.originalUser}
               user={userSettingsData.user}
@@ -181,7 +179,7 @@ const ActiveUsersTabs = ({ memberof }) => {
           </Tab>
         </Tabs>
       </PageSection>
-    </Page>
+    </>
   );
 };
 

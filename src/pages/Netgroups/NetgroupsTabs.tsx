@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PageSectionVariants,
   Tabs,
@@ -98,7 +97,7 @@ const NetgroupsTabs = ({ section }) => {
   }
 
   return (
-    <Page>
+    <>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadCrumb
           className="pf-v5-u-mb-md"
@@ -126,7 +125,6 @@ const NetgroupsTabs = ({ section }) => {
             name="settings-details"
             title={<TabTitleText>Settings</TabTitleText>}
           >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
             <NetgroupsSettings
               netgroup={netgroupSettingsData.netgroup}
               originalGroup={netgroupSettingsData.originalGroup}
@@ -143,19 +141,15 @@ const NetgroupsTabs = ({ section }) => {
             eventKey={"members"}
             name="member-details"
             title={<TabTitleText>Members</TabTitleText>}
-          >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
-          </Tab>
+          ></Tab>
           <Tab
             eventKey={"memberof"}
             name="menerof-details"
             title={<TabTitleText>Is a member of</TabTitleText>}
-          >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
-          </Tab>
+          ></Tab>
         </Tabs>
       </PageSection>
-    </Page>
+    </>
   );
 };
 

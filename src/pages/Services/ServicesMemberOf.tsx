@@ -1,17 +1,11 @@
 import React from "react";
 // PatternFly
-import {
-  Badge,
-  Page,
-  PageSection,
-  PageSectionVariants,
-  Tab,
-  Tabs,
-  TabTitleText,
-} from "@patternfly/react-core";
+import { Badge, Tab, Tabs, TabTitleText } from "@patternfly/react-core";
 // Components
 import { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import MemberOfRoles from "src/components/MemberOf/MemberOfRoles";
+// LAyouts
+import TabLayout from "src/components/layouts/TabLayout";
 // Data types
 import { Service } from "src/utils/datatypes/globalDataTypes";
 // Redux
@@ -75,40 +69,34 @@ const ServicesMemberOf = (props: PropsToServicesMemberOf) => {
 
   // Render component
   return (
-    <Page>
-      <PageSection
-        variant={PageSectionVariants.light}
-        isFilled={false}
-        className="pf-v5-u-m-lg"
-      >
-        <Tabs activeKey={0} isBox={false} mountOnEnter unmountOnExit>
-          <Tab
-            eventKey={0}
-            name="memberof_role"
-            title={
-              <TabTitleText>
-                Roles{" "}
-                <Badge key={0} isRead>
-                  {service && service.memberof_role
-                    ? service.memberof_role.length
-                    : 0}
-                </Badge>
-              </TabTitleText>
-            }
-          >
-            <MemberOfRoles
-              entity={service}
-              id={service.krbcanonicalname as string}
-              from={"services"}
-              isDataLoading={serviceQuery.isFetching}
-              onRefreshData={onRefreshServiceData}
-              memberof_role={service.memberof_role as string[]}
-              membershipDisabled={true}
-            />
-          </Tab>
-        </Tabs>
-      </PageSection>
-    </Page>
+    <TabLayout id="memberof">
+      <Tabs activeKey={0} isBox={false} mountOnEnter unmountOnExit>
+        <Tab
+          eventKey={0}
+          name="memberof_role"
+          title={
+            <TabTitleText>
+              Roles{" "}
+              <Badge key={0} isRead>
+                {service && service.memberof_role
+                  ? service.memberof_role.length
+                  : 0}
+              </Badge>
+            </TabTitleText>
+          }
+        >
+          <MemberOfRoles
+            entity={service}
+            id={service.krbcanonicalname as string}
+            from={"services"}
+            isDataLoading={serviceQuery.isFetching}
+            onRefreshData={onRefreshServiceData}
+            memberof_role={service.memberof_role as string[]}
+            membershipDisabled={true}
+          />
+        </Tab>
+      </Tabs>
+    </TabLayout>
   );
 };
 

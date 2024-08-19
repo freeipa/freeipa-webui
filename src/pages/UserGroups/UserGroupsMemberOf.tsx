@@ -1,18 +1,12 @@
 import React, { useState } from "react";
 // PatternFly
-import {
-  Badge,
-  Page,
-  PageSection,
-  PageSectionVariants,
-  Tab,
-  Tabs,
-  TabTitleText,
-} from "@patternfly/react-core";
+import { Badge, Tab, Tabs, TabTitleText } from "@patternfly/react-core";
 // Data types
 import { UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Navigation
 import { useNavigate } from "react-router-dom";
+// Layout
+import TabLayout from "src/components/layouts/TabLayout";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // RPC
@@ -67,133 +61,125 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
 
   // Render component
   return (
-    <Page>
-      <PageSection
-        variant={PageSectionVariants.light}
-        isFilled={false}
-        className="pf-v5-u-m-lg"
+    <TabLayout id="memberof">
+      <Tabs
+        activeKey={activeTabKey}
+        onSelect={handleTabClick}
+        isBox={false}
+        mountOnEnter
+        unmountOnExit
       >
-        <Tabs
-          activeKey={activeTabKey}
-          onSelect={handleTabClick}
-          isBox={false}
-          mountOnEnter
-          unmountOnExit
+        <Tab
+          eventKey={"memberof_usergroup"}
+          name="memberof_usergroup"
+          title={
+            <TabTitleText>
+              User groups{" "}
+              <Badge key={0} isRead>
+                {group && group.memberof_group
+                  ? group.memberof_group.length
+                  : 0}
+              </Badge>
+            </TabTitleText>
+          }
         >
-          <Tab
-            eventKey={"memberof_usergroup"}
-            name="memberof_usergroup"
-            title={
-              <TabTitleText>
-                User groups{" "}
-                <Badge key={0} isRead>
-                  {group && group.memberof_group
-                    ? group.memberof_group.length
-                    : 0}
-                </Badge>
-              </TabTitleText>
-            }
-          >
-            <MemberOfUserGroups
-              entry={group}
-              from="User groups"
-              isUserDataLoading={groupQuery.isFetching}
-              onRefreshUserData={onRefreshData}
-            />
-          </Tab>
-          <Tab
-            eventKey={"memberof_netgroup"}
-            name="memberof_netgroup"
-            title={
-              <TabTitleText>
-                Netgroups{" "}
-                <Badge key={1} isRead>
-                  {group && group.memberof_netgroup
-                    ? group.memberof_netgroup.length
-                    : 0}
-                </Badge>
-              </TabTitleText>
-            }
-          >
-            <MemberOfNetgroups
-              entity={group}
-              id={group.cn as string}
-              from={"user-groups"}
-              isDataLoading={groupQuery.isFetching}
-              onRefreshData={onRefreshData}
-            />
-          </Tab>
-          <Tab
-            eventKey={"memberof_role"}
-            name="memberof_role"
-            title={
-              <TabTitleText>
-                Roles{" "}
-                <Badge key={2} isRead>
-                  {group && group.memberof_role
-                    ? group.memberof_role.length
-                    : 0}
-                </Badge>
-              </TabTitleText>
-            }
-          >
-            <MemberOfRoles
-              entity={group}
-              id={group.cn as string}
-              from={"user-groups"}
-              isDataLoading={groupQuery.isFetching}
-              onRefreshData={onRefreshData}
-              memberof_role={group.memberof_role as string[]}
-              memberofindirect_role={group.memberofindirect_role as string[]}
-            />
-          </Tab>
-          <Tab
-            eventKey={"memberof_hbacrule"}
-            name="memberof_hbacrule"
-            title={
-              <TabTitleText>
-                HBAC rules{" "}
-                <Badge key={3} isRead>
-                  {group && group.memberof_hbacrule
-                    ? group.memberof_hbacrule.length
-                    : 0}
-                </Badge>
-              </TabTitleText>
-            }
-          >
-            <MemberOfHbacRules
-              entity={group}
-              id={group.cn as string}
-              from={"user-groups"}
-              isDataLoading={groupQuery.isFetching}
-              onRefreshData={onRefreshData}
-            />
-          </Tab>
-          <Tab
-            eventKey={"memberof_sudorule"}
-            name="memberof_sudorule"
-            title={
-              <TabTitleText>
-                Sudo rules{" "}
-                <Badge key={4} isRead>
-                  {group && group.memberof_sudorule
-                    ? group.memberof_sudorule.length
-                    : 0}
-                </Badge>
-              </TabTitleText>
-            }
-          >
-            <MemberOfSudoRules
-              entity={group}
-              id={group.cn as string}
-              from={"user-groups"}
-              isDataLoading={groupQuery.isFetching}
-              onRefreshData={onRefreshData}
-            />
-          </Tab>
-        </Tabs>
-      </PageSection>
-    </Page>
+          <MemberOfUserGroups
+            entry={group}
+            from="User groups"
+            isUserDataLoading={groupQuery.isFetching}
+            onRefreshUserData={onRefreshData}
+          />
+        </Tab>
+        <Tab
+          eventKey={"memberof_netgroup"}
+          name="memberof_netgroup"
+          title={
+            <TabTitleText>
+              Netgroups{" "}
+              <Badge key={1} isRead>
+                {group && group.memberof_netgroup
+                  ? group.memberof_netgroup.length
+                  : 0}
+              </Badge>
+            </TabTitleText>
+          }
+        >
+          <MemberOfNetgroups
+            entity={group}
+            id={group.cn as string}
+            from={"user-groups"}
+            isDataLoading={groupQuery.isFetching}
+            onRefreshData={onRefreshData}
+          />
+        </Tab>
+        <Tab
+          eventKey={"memberof_role"}
+          name="memberof_role"
+          title={
+            <TabTitleText>
+              Roles{" "}
+              <Badge key={2} isRead>
+                {group && group.memberof_role ? group.memberof_role.length : 0}
+              </Badge>
+            </TabTitleText>
+          }
+        >
+          <MemberOfRoles
+            entity={group}
+            id={group.cn as string}
+            from={"user-groups"}
+            isDataLoading={groupQuery.isFetching}
+            onRefreshData={onRefreshData}
+            memberof_role={group.memberof_role as string[]}
+            memberofindirect_role={group.memberofindirect_role as string[]}
+          />
+        </Tab>
+        <Tab
+          eventKey={"memberof_hbacrule"}
+          name="memberof_hbacrule"
+          title={
+            <TabTitleText>
+              HBAC rules{" "}
+              <Badge key={3} isRead>
+                {group && group.memberof_hbacrule
+                  ? group.memberof_hbacrule.length
+                  : 0}
+              </Badge>
+            </TabTitleText>
+          }
+        >
+          <MemberOfHbacRules
+            entity={group}
+            id={group.cn as string}
+            from={"user-groups"}
+            isDataLoading={groupQuery.isFetching}
+            onRefreshData={onRefreshData}
+          />
+        </Tab>
+        <Tab
+          eventKey={"memberof_sudorule"}
+          name="memberof_sudorule"
+          title={
+            <TabTitleText>
+              Sudo rules{" "}
+              <Badge key={4} isRead>
+                {group && group.memberof_sudorule
+                  ? group.memberof_sudorule.length
+                  : 0}
+              </Badge>
+            </TabTitleText>
+          }
+        >
+          <MemberOfSudoRules
+            entity={group}
+            id={group.cn as string}
+            from={"user-groups"}
+            isDataLoading={groupQuery.isFetching}
+            onRefreshData={onRefreshData}
+          />
+        </Tab>
+      </Tabs>
+    </TabLayout>
   );
 };
 
