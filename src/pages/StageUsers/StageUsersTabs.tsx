@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PageSectionVariants,
   Tabs,
@@ -82,7 +81,7 @@ const StageUsersTabs = () => {
   }
 
   return (
-    <Page>
+    <>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadCrumb
           className="pf-v5-u-mb-md"
@@ -110,7 +109,6 @@ const StageUsersTabs = () => {
             name="details"
             title={<TabTitleText>Settings</TabTitleText>}
           >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
             <UserSettings
               originalUser={userSettingsData.originalUser}
               user={userSettingsData.user}
@@ -131,7 +129,7 @@ const StageUsersTabs = () => {
           </Tab>
         </Tabs>
       </PageSection>
-    </Page>
+    </>
   );
 };
 

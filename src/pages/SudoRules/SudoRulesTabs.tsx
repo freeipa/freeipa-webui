@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PageSectionVariants,
   Tabs,
@@ -86,7 +85,7 @@ const SudoRulesTabs = ({ section }) => {
   }
 
   return (
-    <Page>
+    <>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadCrumb
           className="pf-v5-u-mb-md"
@@ -113,12 +112,10 @@ const SudoRulesTabs = ({ section }) => {
             eventKey={"settings"}
             name="settings-details"
             title={<TabTitleText>Settings</TabTitleText>}
-          >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
-          </Tab>
+          ></Tab>
         </Tabs>
       </PageSection>
-    </Page>
+    </>
   );
 };
 

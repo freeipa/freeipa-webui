@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PageSectionVariants,
   Tabs,
@@ -114,7 +113,7 @@ const ServicesTabs = ({ section }) => {
   const certificates = serviceSettingsData.certData || {};
 
   return (
-    <Page>
+    <>
       <alerts.ManagedAlerts />
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadCrumb
@@ -143,7 +142,6 @@ const ServicesTabs = ({ section }) => {
             name="details"
             title={<TabTitleText>Settings</TabTitleText>}
           >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
             <ServicesSettings
               service={service}
               originalService={serviceSettingsData.originalService}
@@ -162,7 +160,6 @@ const ServicesTabs = ({ section }) => {
             name="details"
             title={<TabTitleText>Is a member of</TabTitleText>}
           >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
             <ServicesMemberOf service={service} tabSection={section} />
           </Tab>
           <Tab
@@ -170,12 +167,11 @@ const ServicesTabs = ({ section }) => {
             name="details"
             title={<TabTitleText>Is managed by</TabTitleText>}
           >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
             <ServicesManagedBy service={service} />
           </Tab>
         </Tabs>
       </PageSection>
-    </Page>
+    </>
   );
 };
 

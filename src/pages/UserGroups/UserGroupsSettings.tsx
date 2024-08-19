@@ -7,8 +7,6 @@ import {
   Flex,
   Form,
   FormGroup,
-  PageSection,
-  PageSectionVariants,
   Label,
   TextInput,
 } from "@patternfly/react-core";
@@ -21,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import KebabLayout from "src/components/layouts/KebabLayout";
-import ToolbarLayout from "src/components/layouts/ToolbarLayout";
+import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
 // Hooks
@@ -363,70 +361,58 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
 
   // Render component
   return (
-    <>
+    <TabLayout id="settings-page" toolbarItems={toolbarFields}>
       <alerts.ManagedAlerts />
-      <PageSection
-        id="settings-page"
-        variant={PageSectionVariants.light}
-        className="pf-v5-u-pr-0 pf-v5-u-ml-lg pf-v5-u-mr-sm"
-        style={{ overflowY: "scroll", height: `calc(100vh - 319px)` }}
-      >
-        <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
-          <TitleLayout
-            key={0}
-            headingLevel="h2"
-            id="group-settings"
-            text="User group settings"
-          />
-          <Form
-            className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md"
-            isHorizontal
-          >
-            <FormGroup label="Description" fieldId="description">
-              <IpaTextArea
-                name="description"
-                ipaObject={ipaObject}
-                onChange={recordOnChange}
-                objectName="group"
-                metadata={props.metadata}
-              />
-            </FormGroup>
-            <FormGroup label="Group type" fieldId="group-type">
-              <TextInput
-                id="group-type"
-                name="grouptype"
-                value={groupType}
-                type="text"
-                aria-label="group type"
-                readOnlyVariant="plain"
-              />
-            </FormGroup>
-            <FormGroup label="GID" fieldId="gid">
-              <TextInput
-                id="gid"
-                name="gid"
-                value={props.userGroup.gidnumber}
-                type="text"
-                aria-label="GID"
-                readOnlyVariant="plain"
-              />
-            </FormGroup>
-            <FormGroup label="Password policy" fieldId="pwdpolicy">
-              <Label
-                label="Temporary until pwdPolicy page is finished"
-                color={props.pwPolicyData.cn ? "blue" : "grey"}
-              >
-                {props.pwPolicyData.cn || "None"}
-              </Label>
-            </FormGroup>
-          </Form>
-        </Flex>
-      </PageSection>
-      <ToolbarLayout
-        isSticky={true}
-        className={"pf-v5-u-p-md pf-v5-u-ml-lg pf-v5-u-mr-lg"}
-        toolbarItems={toolbarFields}
-      />
+      <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
+        <TitleLayout
+          key={0}
+          headingLevel="h2"
+          id="group-settings"
+          text="User group settings"
+        />
+        <Form
+          className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md"
+          isHorizontal
+        >
+          <FormGroup label="Description" fieldId="description">
+            <IpaTextArea
+              name="description"
+              ipaObject={ipaObject}
+              onChange={recordOnChange}
+              objectName="group"
+              metadata={props.metadata}
+            />
+          </FormGroup>
+          <FormGroup label="Group type" fieldId="group-type">
+            <TextInput
+              id="group-type"
+              name="grouptype"
+              value={groupType}
+              type="text"
+              aria-label="group type"
+              readOnlyVariant="plain"
+            />
+          </FormGroup>
+          <FormGroup label="GID" fieldId="gid">
+            <TextInput
+              id="gid"
+              name="gid"
+              value={props.userGroup.gidnumber}
+              type="text"
+              aria-label="GID"
+              readOnlyVariant="plain"
+            />
+          </FormGroup>
+          <FormGroup label="Password policy" fieldId="pwdpolicy">
+            <Label
+              label="Temporary until pwdPolicy page is finished"
+              color={props.pwPolicyData.cn ? "blue" : "grey"}
+            >
+              {props.pwPolicyData.cn || "None"}
+            </Label>
+          </FormGroup>
+        </Form>
+      </Flex>
       <ConfirmationModal
         title={"Delete user group"}
         isOpen={isDeleteModalOpen}
@@ -455,7 +441,7 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
         }
         messageObj={cn}
       />
-    </>
+    </TabLayout>
   );
 };
 

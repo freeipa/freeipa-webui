@@ -6,8 +6,6 @@ import {
   Flex,
   JumpLinks,
   JumpLinksItem,
-  PageSection,
-  PageSectionVariants,
   Sidebar,
   SidebarContent,
   SidebarPanel,
@@ -25,8 +23,8 @@ import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayou
 import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import KebabLayout from "src/components/layouts/KebabLayout";
-import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import ModalErrors from "src/components/errors/ModalErrors";
+import TabLayout from "src/components/layouts/TabLayout";
 // Field sections
 import ServiceSettings from "src/components/ServicesSections/ServiceSettings";
 import Provisioning from "src/components/ServicesSections/Provisioning";
@@ -264,118 +262,102 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
 
   // Render component
   return (
-    <>
+    <TabLayout id="settings-page" toolbarItems={toolbarFields}>
       <alerts.ManagedAlerts />
-      <PageSection
-        id="settings-page"
-        variant={PageSectionVariants.light}
-        className="pf-v5-u-pr-0 pf-v5-u-ml-lg pf-v5-u-mr-sm"
-        style={{ overflowY: "scroll", height: `calc(100vh - 319px)` }}
-      >
-        <Sidebar isPanelRight className="pf-v5-u-mt-lg">
-          <SidebarPanel variant="sticky">
-            <HelpTextWithIconLayout
-              textComponent={TextVariants.p}
-              textClassName="pf-v5-u-mb-md"
-              subTextComponent={TextVariants.a}
-              subTextIsVisitedLink={true}
-              textContent="Help"
-              icon={
-                <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
-              }
+      <Sidebar isPanelRight className="pf-v5-u-mt-lg">
+        <SidebarPanel variant="sticky">
+          <HelpTextWithIconLayout
+            textComponent={TextVariants.p}
+            textClassName="pf-v5-u-mb-md"
+            subTextComponent={TextVariants.a}
+            subTextIsVisitedLink={true}
+            textContent="Help"
+            icon={
+              <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
+            }
+          />
+          <JumpLinks
+            isVertical
+            label="Jump to section"
+            scrollableSelector="#settings-page"
+            offset={220} // for masthead
+            expandable={{ default: "expandable", md: "nonExpandable" }}
+          >
+            <JumpLinksItem key={0} href="#service-settings">
+              Service settings
+            </JumpLinksItem>
+            <JumpLinksItem key={1} href="#provisioning">
+              Provisioning
+            </JumpLinksItem>
+            <JumpLinksItem key={2} href="#service-certificate">
+              Service certificate
+            </JumpLinksItem>
+            <JumpLinksItem key={3} href="#allowed-retrieve-keytab">
+              Allow to retrieve keytab
+            </JumpLinksItem>
+            <JumpLinksItem key={4} href="#allowed-create-keytab">
+              Allow to create keytab
+            </JumpLinksItem>
+          </JumpLinks>
+        </SidebarPanel>
+        <SidebarContent className="pf-v5-u-mr-xl">
+          <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
+            <TitleLayout
+              key={0}
+              headingLevel="h2"
+              id="service-settings"
+              text="Service settings"
             />
-            <JumpLinks
-              isVertical
-              label="Jump to section"
-              scrollableSelector="#settings-page"
-              offset={220} // for masthead
-              expandable={{ default: "expandable", md: "nonExpandable" }}
-            >
-              <JumpLinksItem key={0} href="#service-settings">
-                Service settings
-              </JumpLinksItem>
-              <JumpLinksItem key={1} href="#provisioning">
-                Provisioning
-              </JumpLinksItem>
-              <JumpLinksItem key={2} href="#service-certificate">
-                Service certificate
-              </JumpLinksItem>
-              <JumpLinksItem key={3} href="#allowed-retrieve-keytab">
-                Allow to retrieve keytab
-              </JumpLinksItem>
-              <JumpLinksItem key={4} href="#allowed-create-keytab">
-                Allow to create keytab
-              </JumpLinksItem>
-            </JumpLinks>
-          </SidebarPanel>
-
-          <SidebarContent className="pf-v5-u-mr-xl">
-            <Flex
-              direction={{ default: "column" }}
-              flex={{ default: "flex_1" }}
-            >
-              <TitleLayout
-                key={0}
-                headingLevel="h2"
-                id="service-settings"
-                text="Service settings"
-              />
-              <ServiceSettings
-                service={props.service}
-                metadata={props.metadata}
-                onServiceChange={props.onServiceChange}
-                onRefresh={props.onRefresh}
-              />
-              <TitleLayout
-                key={1}
-                headingLevel="h2"
-                id="provisioning"
-                text="Provisioning"
-              />
-              <Provisioning service={props.service} metadata={props.metadata} />
-              <TitleLayout
-                key={2}
-                headingLevel="h2"
-                id="service-certificate"
-                text="Service certificate"
-              />
-              <ServiceCertificate
-                service={props.service}
-                metadata={props.metadata}
-                onServiceChange={props.onServiceChange}
-                onRefresh={props.onRefresh}
-                certData={props.certData}
-              />
-              <TitleLayout
-                key={3}
-                headingLevel="h2"
-                id="allowed-retrieve-keytab"
-                text="Allowed to retrieve keytab"
-              />
-              <AllowedRetrieveKeytab
-                service={partialServiceToService(props.service)}
-                onRefresh={props.onRefresh}
-              />
-              <TitleLayout
-                key={4}
-                headingLevel="h2"
-                id="allowed-create-keytab"
-                text="Allowed to create keytab"
-              />
-              <AllowedCreateKeytab
-                service={partialServiceToService(props.service)}
-                onRefresh={props.onRefresh}
-              />
-            </Flex>
-          </SidebarContent>
-        </Sidebar>
-        <ModalErrors errors={modalErrors.getAll()} />
-      </PageSection>
-      <ToolbarLayout
-        isSticky={true}
-        className={"pf-v5-u-p-md pf-v5-u-ml-lg pf-v5-u-mr-lg"}
-        toolbarItems={toolbarFields}
-      />
+            <ServiceSettings
+              service={props.service}
+              metadata={props.metadata}
+              onServiceChange={props.onServiceChange}
+              onRefresh={props.onRefresh}
+            />
+            <TitleLayout
+              key={1}
+              headingLevel="h2"
+              id="provisioning"
+              text="Provisioning"
+            />
+            <Provisioning service={props.service} metadata={props.metadata} />
+            <TitleLayout
+              key={2}
+              headingLevel="h2"
+              id="service-certificate"
+              text="Service certificate"
+            />
+            <ServiceCertificate
+              service={props.service}
+              metadata={props.metadata}
+              onServiceChange={props.onServiceChange}
+              onRefresh={props.onRefresh}
+              certData={props.certData}
+            />
+            <TitleLayout
+              key={3}
+              headingLevel="h2"
+              id="allowed-retrieve-keytab"
+              text="Allowed to retrieve keytab"
+            />
+            <AllowedRetrieveKeytab
+              service={partialServiceToService(props.service)}
+              onRefresh={props.onRefresh}
+            />
+            <TitleLayout
+              key={4}
+              headingLevel="h2"
+              id="allowed-create-keytab"
+              text="Allowed to create keytab"
+            />
+            <AllowedCreateKeytab
+              service={partialServiceToService(props.service)}
+              onRefresh={props.onRefresh}
+            />
+          </Flex>
+        </SidebarContent>
+      </Sidebar>
+      <ModalErrors errors={modalErrors.getAll()} />
       <ConfirmationModal
         title={"Unprovision service"}
         isOpen={isUnprovisionModalOpen}
@@ -398,7 +380,7 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
             : ""
         }
       />
-    </>
+    </TabLayout>
   );
 };
 

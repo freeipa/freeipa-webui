@@ -1,16 +1,10 @@
 import React, { useState } from "react";
 // PatternFly
-import {
-  Badge,
-  Page,
-  PageSection,
-  PageSectionVariants,
-  Tab,
-  Tabs,
-  TabTitleText,
-} from "@patternfly/react-core";
+import { Badge, Tab, Tabs, TabTitleText } from "@patternfly/react-core";
 // Data types
 import { UserGroup } from "src/utils/datatypes/globalDataTypes";
+// Layouts
+import TabLayout from "src/components/layouts/TabLayout";
 // Navigation
 import { useNavigate } from "react-router-dom";
 // Hooks
@@ -104,106 +98,100 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
   }, [props.tabSection]);
 
   return (
-    <Page>
-      <PageSection
-        variant={PageSectionVariants.light}
-        isFilled={false}
-        className="pf-v5-u-m-lg"
+    <TabLayout id="members">
+      <Tabs
+        activeKey={activeTabKey}
+        onSelect={handleTabClick}
+        isBox={false}
+        mountOnEnter
+        unmountOnExit
       >
-        <Tabs
-          activeKey={activeTabKey}
-          onSelect={handleTabClick}
-          isBox={false}
-          mountOnEnter
-          unmountOnExit
+        <Tab
+          eventKey={"member_user"}
+          name="member_user"
+          title={
+            <TabTitleText>
+              Users{" "}
+              <Badge key={0} isRead>
+                {usersLength}
+              </Badge>
+            </TabTitleText>
+          }
         >
-          <Tab
-            eventKey={"member_user"}
-            name="member_user"
-            title={
-              <TabTitleText>
-                Users{" "}
-                <Badge key={0} isRead>
-                  {usersLength}
-                </Badge>
-              </TabTitleText>
-            }
-          >
-            <MembersUsers
-              entity={userGroup}
-              id={userGroup.cn as string}
-              from="user-groups"
-              isDataLoading={userGroupQuery.isFetching}
-              onRefreshData={onRefreshUserGroupData}
-              member_user={userGroup.member_user || []}
-            />
-          </Tab>
-          <Tab
-            eventKey={"member_group"}
-            name="member_group"
-            title={
-              <TabTitleText>
-                User Groups{" "}
-                <Badge key={1} isRead>
-                  {userGroupsLength}
-                </Badge>
-              </TabTitleText>
-            }
-          >
-            <MembersUserGroups
-              entity={userGroup}
-              id={userGroup.cn as string}
-              from="user-groups"
-              isDataLoading={userGroupQuery.isFetching}
-              onRefreshData={onRefreshUserGroupData}
-              member_group={userGroup.member_group || []}
-            />
-          </Tab>
-          <Tab
-            eventKey={"member_service"}
-            name="member_service"
-            title={
-              <TabTitleText>
-                Services{" "}
-                <Badge key={2} isRead>
-                  {servicesLength}
-                </Badge>
-              </TabTitleText>
-            }
-          >
-            <MembersServices
-              entity={userGroup}
-              id={userGroup.cn as string}
-              from="user-groups"
-              isDataLoading={userGroupQuery.isFetching}
-              onRefreshData={onRefreshUserGroupData}
-              member_service={userGroup.member_service || []}
-            />
-          </Tab>
-          <Tab
-            eventKey={"member_external"}
-            name="member_external"
-            title={
-              <TabTitleText>
-                External{" "}
-                <Badge key={3} isRead>
-                  {externalsLength}
-                </Badge>
-              </TabTitleText>
-            }
-          >
-            <MembersExternal
-              entity={userGroup}
-              id={userGroup.cn as string}
-              from="user-groups"
-              isDataLoading={userGroupQuery.isFetching}
-              onRefreshData={onRefreshUserGroupData}
-              member_external={userGroup.member_external || []}
-            />
-          </Tab>
-        </Tabs>
-      </PageSection>
-    </Page>
+          <MembersUsers
+            entity={userGroup}
+            id={userGroup.cn as string}
+            from="user-groups"
+            isDataLoading={userGroupQuery.isFetching}
+            onRefreshData={onRefreshUserGroupData}
+            member_user={userGroup.member_user || []}
+          />
+        </Tab>
+        <Tab
+          eventKey={"member_group"}
+          name="member_group"
+          title={
+            <TabTitleText>
+              User Groups{" "}
+              <Badge key={1} isRead>
+                {userGroupsLength}
+              </Badge>
+            </TabTitleText>
+          }
+        >
+          <MembersUserGroups
+            entity={userGroup}
+            id={userGroup.cn as string}
+            from="user-groups"
+            isDataLoading={userGroupQuery.isFetching}
+            onRefreshData={onRefreshUserGroupData}
+            member_group={userGroup.member_group || []}
+          />
+        </Tab>
+        <Tab
+          eventKey={"member_service"}
+          name="member_service"
+          title={
+            <TabTitleText>
+              Services{" "}
+              <Badge key={2} isRead>
+                {servicesLength}
+              </Badge>
+            </TabTitleText>
+          }
+        >
+          <MembersServices
+            entity={userGroup}
+            id={userGroup.cn as string}
+            from="user-groups"
+            isDataLoading={userGroupQuery.isFetching}
+            onRefreshData={onRefreshUserGroupData}
+            member_service={userGroup.member_service || []}
+          />
+        </Tab>
+        <Tab
+          eventKey={"member_external"}
+          name="member_external"
+          title={
+            <TabTitleText>
+              External{" "}
+              <Badge key={3} isRead>
+                {externalsLength}
+              </Badge>
+            </TabTitleText>
+          }
+        >
+          <MembersExternal
+            entity={userGroup}
+            id={userGroup.cn as string}
+            from="user-groups"
+            isDataLoading={userGroupQuery.isFetching}
+            onRefreshData={onRefreshUserGroupData}
+            member_external={userGroup.member_external || []}
+          />
+        </Tab>
+      </Tabs>
+    </TabLayout>
   );
 };
 

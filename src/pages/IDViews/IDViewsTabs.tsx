@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PageSectionVariants,
   Tabs,
@@ -102,7 +101,7 @@ const IDViewsTabs = ({ section }) => {
   const view = partialViewToView(idViewSettingsData.idView);
 
   return (
-    <Page>
+    <>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadCrumb
           className="pf-v5-u-mb-md"
@@ -130,7 +129,6 @@ const IDViewsTabs = ({ section }) => {
             name="settings-details"
             title={<TabTitleText>Settings</TabTitleText>}
           >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
             <IDViewsSettings
               idView={idViewSettingsData.idView}
               originalIDView={idViewSettingsData.originalView}
@@ -147,19 +145,15 @@ const IDViewsTabs = ({ section }) => {
             eventKey={"overrides"}
             name="overrides-details"
             title={<TabTitleText>Overrides</TabTitleText>}
-          >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
-          </Tab>
+          ></Tab>
           <Tab
             eventKey={"appliesTo"}
             name="appliesTo-details"
             title={<TabTitleText>Applies to</TabTitleText>}
-          >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
-          </Tab>
+          ></Tab>
         </Tabs>
       </PageSection>
-    </Page>
+    </>
   );
 };
 

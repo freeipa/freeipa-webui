@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PageSectionVariants,
   Tabs,
@@ -122,7 +121,7 @@ const UserGroupsTabs = ({ section }) => {
   }
 
   return (
-    <Page>
+    <>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadCrumb
           className="pf-v5-u-mb-md"
@@ -150,7 +149,6 @@ const UserGroupsTabs = ({ section }) => {
             name="settings-details"
             title={<TabTitleText>Settings</TabTitleText>}
           >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
             <UserGroupsSettings
               userGroup={userGroupSettingsData.userGroup}
               originalGroup={userGroupSettingsData.originalGroup}
@@ -169,7 +167,6 @@ const UserGroupsTabs = ({ section }) => {
             name={"members-details"}
             title={<TabTitleText>Members</TabTitleText>}
           >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
             <UserGroupsMembers
               userGroup={usergroup}
               tabSection={activeTabKey}
@@ -180,19 +177,16 @@ const UserGroupsTabs = ({ section }) => {
             name="memberof-details"
             title={<TabTitleText>Is a member of</TabTitleText>}
           >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
             <UserGroupsMemberOf userGroup={usergroup} tabSection={section} />
           </Tab>
           <Tab
             eventKey={"managedby"}
             name="managedby-details"
             title={<TabTitleText>Is managed by</TabTitleText>}
-          >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
-          </Tab>
+          ></Tab>
         </Tabs>
       </PageSection>
-    </Page>
+    </>
   );
 };
 

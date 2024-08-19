@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PageSectionVariants,
   Tabs,
@@ -102,7 +101,7 @@ const HostGroupsTabs = ({ section }) => {
   const hostgroup = partialGroupToGroup(hostGroupSettingsData.hostGroup);
 
   return (
-    <Page>
+    <>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
         <BreadCrumb
           className="pf-v5-u-mb-md"
@@ -130,7 +129,6 @@ const HostGroupsTabs = ({ section }) => {
             name="settings-details"
             title={<TabTitleText>Settings</TabTitleText>}
           >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
             <HostGroupsSettings
               hostGroup={hostGroupSettingsData.hostGroup}
               originalGroup={hostGroupSettingsData.originalGroup}
@@ -147,19 +145,15 @@ const HostGroupsTabs = ({ section }) => {
             eventKey={"memberof"}
             name="memberof-details"
             title={<TabTitleText>Is a member of</TabTitleText>}
-          >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
-          </Tab>
+          ></Tab>
           <Tab
             eventKey={"managedby"}
             name="managedby-details"
             title={<TabTitleText>Is managed by</TabTitleText>}
-          >
-            <PageSection className="pf-v5-u-pb-0"></PageSection>
-          </Tab>
+          ></Tab>
         </Tabs>
       </PageSection>
-    </Page>
+    </>
   );
 };
 

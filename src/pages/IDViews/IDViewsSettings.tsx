@@ -1,21 +1,13 @@
 import React, { useState } from "react";
 // PatternFly
-import {
-  Flex,
-  Form,
-  FormGroup,
-  Icon,
-  PageSection,
-  PageSectionVariants,
-  Tooltip,
-} from "@patternfly/react-core";
+import { Flex, Form, FormGroup, Icon, Tooltip } from "@patternfly/react-core";
 // Forms
 import IpaTextArea from "../../components/Form/IpaTextArea";
 import IpaTextInput from "src/components/Form/IpaTextInput";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
-import ToolbarLayout from "src/components/layouts/ToolbarLayout";
+import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
 // Hooks
@@ -130,70 +122,58 @@ const IDViewSettings = (props: PropsToIDViewSettings) => {
 
   // Render component
   return (
-    <>
+    <TabLayout id="settings-page" toolbarItems={toolbarFields}>
       <alerts.ManagedAlerts />
-      <PageSection
-        id="settings-page"
-        variant={PageSectionVariants.light}
-        className="pf-v5-u-pr-0 pf-v5-u-ml-lg pf-v5-u-mr-sm"
-        style={{ overflowY: "scroll", height: `calc(100vh - 319px)` }}
-      >
-        <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
-          <TitleLayout
-            key={0}
-            headingLevel="h2"
-            id="id-view-settings"
-            text="ID view settings"
-          />
-          <Form
-            className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md"
-            isHorizontal
+      <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
+        <TitleLayout
+          key={0}
+          headingLevel="h2"
+          id="id-view-settings"
+          text="ID view settings"
+        />
+        <Form
+          className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md"
+          isHorizontal
+        >
+          <FormGroup
+            label="Domain resolution order"
+            fieldId="ipadomainresolutionorder"
+            labelIcon={
+              <Tooltip
+                content={
+                  <div>
+                    Colon-separated list of domains used for short name
+                    qualification
+                  </div>
+                }
+              >
+                <Icon iconSize="sm">
+                  <HelpIcon />
+                </Icon>
+              </Tooltip>
+            }
           >
-            <FormGroup
-              label="Domain resolution order"
-              fieldId="ipadomainresolutionorder"
-              labelIcon={
-                <Tooltip
-                  content={
-                    <div>
-                      Colon-separated list of domains used for short name
-                      qualification
-                    </div>
-                  }
-                >
-                  <Icon iconSize="sm">
-                    <HelpIcon />
-                  </Icon>
-                </Tooltip>
-              }
-            >
-              <IpaTextInput
-                name="ipadomainresolutionorder"
-                ariaLabel={"Domain resolution order"}
-                ipaObject={ipaObject}
-                onChange={recordOnChange}
-                objectName="idview"
-                metadata={props.metadata}
-              />
-            </FormGroup>
-            <FormGroup label="Description" fieldId="description">
-              <IpaTextArea
-                name="description"
-                ipaObject={ipaObject}
-                onChange={recordOnChange}
-                objectName="idview"
-                metadata={props.metadata}
-              />
-            </FormGroup>
-          </Form>
-        </Flex>
-      </PageSection>
-      <ToolbarLayout
-        isSticky={true}
-        className={"pf-v5-u-p-md pf-v5-u-ml-lg pf-v5-u-mr-lg"}
-        toolbarItems={toolbarFields}
-      />
-    </>
+            <IpaTextInput
+              name="ipadomainresolutionorder"
+              ariaLabel={"Domain resolution order"}
+              ipaObject={ipaObject}
+              onChange={recordOnChange}
+              objectName="idview"
+              metadata={props.metadata}
+            />
+          </FormGroup>
+          <FormGroup label="Description" fieldId="description">
+            <IpaTextArea
+              name="description"
+              ipaObject={ipaObject}
+              onChange={recordOnChange}
+              objectName="idview"
+              metadata={props.metadata}
+            />
+          </FormGroup>
+        </Form>
+      </Flex>
+    </TabLayout>
   );
 };
 
