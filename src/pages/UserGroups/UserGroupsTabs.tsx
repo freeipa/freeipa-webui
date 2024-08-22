@@ -92,6 +92,8 @@ const UserGroupsTabs = ({ section }) => {
       setActiveTabKey("memberof");
     } else if (section_string.startsWith("member_")) {
       setActiveTabKey("member");
+    } else if (section_string.startsWith("managedby")) {
+      // setActiveTabKey("managedby");
     }
   }, [section]);
 

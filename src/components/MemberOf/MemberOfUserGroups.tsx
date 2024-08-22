@@ -11,6 +11,7 @@ import MemberOfDeleteModal from "./MemberOfDeleteModal";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import {
@@ -28,6 +29,8 @@ interface MemberOfUserGroupsProps {
   from: string;
   isUserDataLoading: boolean;
   onRefreshUserData: () => void;
+  setDirection: (direction: MembershipDirection) => void;
+  direction: MembershipDirection;
 }
 
 const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
@@ -99,7 +102,12 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   React.useEffect(() => {
     const userGroupsNames = getUserGroupsNameToLoad();
     setUserGroupNamesToLoad(userGroupsNames);
+    props.setDirection(membershipDirection);
   }, [props.entry, membershipDirection, searchValue, page, perPage]);
+
+  React.useEffect(() => {
+    setMembershipDirection(props.direction);
+  }, [props.entry]);
 
   React.useEffect(() => {
     if (userGroupNamesToLoad.length > 0) {

@@ -6,6 +6,7 @@ import { User, Netgroup, Host } from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfToolbar from "./MemberOfToolbar";
 import MemberOfTableNetgroups from "./MemberOfTableNetgroups";
+import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
@@ -30,6 +31,8 @@ interface MemberOfNetroupsProps {
   from: string;
   isDataLoading: boolean;
   onRefreshData: () => void;
+  setDirection: (direction: MembershipDirection) => void;
+  direction: MembershipDirection;
 }
 
 const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
@@ -97,6 +100,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
   React.useEffect(() => {
     const netgroupsNames = getNetgroupsNameToLoad();
     setNetgroupNamesToLoad(netgroupsNames);
+    props.setDirection(membershipDirection);
   }, [props.entity, membershipDirection, searchValue, page, perPage]);
 
   React.useEffect(() => {
@@ -104,6 +108,10 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
       fullNetgroupsQuery.refetch();
     }
   }, [netgroupNamesToLoad]);
+
+  React.useEffect(() => {
+    setMembershipDirection(props.direction);
+  }, [props.entity]);
 
   // Update netgroups
   React.useEffect(() => {

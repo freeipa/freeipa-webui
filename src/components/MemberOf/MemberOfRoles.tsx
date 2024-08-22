@@ -8,6 +8,7 @@ import MemberOfToolbar from "./MemberOfToolbar";
 import MemberOfTableRoles from "./MemberOfTableRoles";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
+import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
@@ -32,6 +33,8 @@ interface MemberOfRolesProps {
   memberof_role: string[];
   memberofindirect_role?: string[];
   membershipDisabled?: boolean;
+  setDirection: (direction: MembershipDirection) => void;
+  direction: MembershipDirection;
 }
 const MemberOfRoles = (props: MemberOfRolesProps) => {
   // Alerts to show in the UI
@@ -97,7 +100,12 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   useEffect(() => {
     const rolesNames = getRolesNameToLoad();
     setRoleNamesToLoad(rolesNames);
+    props.setDirection(membershipDirection);
   }, [props.entity, membershipDirection, searchValue, page, perPage]);
+
+  React.useEffect(() => {
+    setMembershipDirection(props.direction);
+  }, [props.entity]);
 
   React.useEffect(() => {
     if (roleNamesToLoad.length > 0) {

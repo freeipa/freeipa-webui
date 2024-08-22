@@ -46,9 +46,9 @@ const IDViewsTabs = ({ section }) => {
     if (tabIndex === "settings") {
       navigate("/id-views/" + cn);
     } else if (tabIndex === "overrides") {
-      navigate("/id-views/" + cn + "/overrides_idview");
-    } else if (tabIndex === "appliedto") {
-      navigate("/id-views/" + cn + "/appliedto_idview");
+      // navigate("/id-views/" + cn + "/overrides_idview");
+    } else if (tabIndex === "appliesto") {
+      // navigate("/id-views/" + cn + "/appliesto_idview");
     }
   };
 
@@ -147,8 +147,8 @@ const IDViewsTabs = ({ section }) => {
             title={<TabTitleText>Overrides</TabTitleText>}
           ></Tab>
           <Tab
-            eventKey={"appliesTo"}
-            name="appliesTo-details"
+            eventKey={"appliesto"}
+            name="appliesto-details"
             title={<TabTitleText>Applies to</TabTitleText>}
           ></Tab>
         </Tabs>
