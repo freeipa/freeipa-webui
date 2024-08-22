@@ -44,9 +44,9 @@ const NetgroupsTabs = ({ section }) => {
     if (tabIndex === "settings") {
       navigate("/netgroups/" + cn);
     } else if (tabIndex === "memberof") {
-      navigate("/netgroups/" + cn + "/memberof_netgroup");
-    } else if (tabIndex === "managedby") {
-      navigate("/netgroups/" + cn + "/managedby_netgroup");
+      // navigate("/netgroups/" + cn + "/memberof_netgroup");
+    } else if (tabIndex === "members") {
+      // navigate("/netgroups/" + cn + "/members_netgroup");
     }
   };
 

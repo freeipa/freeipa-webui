@@ -8,6 +8,7 @@ import MemberOfToolbar from "./MemberOfToolbar";
 import MemberOfTableSudoRules from "./MemberOfTableSudoRules";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
+import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
@@ -29,6 +30,8 @@ interface MemberOfSudoRulesProps {
   from: string;
   isDataLoading: boolean;
   onRefreshData: () => void;
+  setDirection: (direction: MembershipDirection) => void;
+  direction: MembershipDirection;
 }
 
 const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
@@ -95,6 +98,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
   React.useEffect(() => {
     const sudoRulesNames = getSudoRulesNameToLoad();
     setSudoRulesNamesToLoad(sudoRulesNames);
+    props.setDirection(membershipDirection);
   }, [props.entity, membershipDirection, searchValue, page, perPage]);
 
   React.useEffect(() => {
@@ -102,6 +106,10 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
       fullSudoRulesQuery.refetch();
     }
   }, [sudoRulesNamesToLoad]);
+
+  React.useEffect(() => {
+    setMembershipDirection(props.direction);
+  }, [props.entity]);
 
   // Update Sudo rules
   React.useEffect(() => {

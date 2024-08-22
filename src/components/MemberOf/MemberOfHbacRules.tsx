@@ -8,6 +8,7 @@ import MemberOfToolbar from "./MemberOfToolbar";
 import MemberOfHbacRulesTable from "./MemberOfTableHbacRules";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
+import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
@@ -29,6 +30,8 @@ interface MemberOfHbacRulesProps {
   from: string;
   isDataLoading: boolean;
   onRefreshData: () => void;
+  setDirection: (direction: MembershipDirection) => void;
+  direction: MembershipDirection;
 }
 
 const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
@@ -95,6 +98,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
   React.useEffect(() => {
     const hbacRulesNames = getHbacRulesNameToLoad();
     setHbacRulesNamesToLoad(hbacRulesNames);
+    props.setDirection(membershipDirection);
   }, [props.entity, membershipDirection, searchValue, page, perPage]);
 
   React.useEffect(() => {
@@ -102,6 +106,10 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
       fullHbacRulesQuery.refetch();
     }
   }, [hbacRulesNamesToLoad]);
+
+  React.useEffect(() => {
+    setMembershipDirection(props.direction);
+  }, [props.entity]);
 
   // Update HBAC rules
   React.useEffect(() => {

@@ -4,8 +4,9 @@ import { Badge, Tab, Tabs, TabTitleText } from "@patternfly/react-core";
 // Components
 import { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import MemberOfRoles from "src/components/MemberOf/MemberOfRoles";
-// LAyouts
+// Layouts
 import TabLayout from "src/components/layouts/TabLayout";
+import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Data types
 import { Service } from "src/utils/datatypes/globalDataTypes";
 // Redux
@@ -93,6 +94,9 @@ const ServicesMemberOf = (props: PropsToServicesMemberOf) => {
             onRefreshData={onRefreshServiceData}
             memberof_role={service.memberof_role as string[]}
             membershipDisabled={true}
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            setDirection={() => {}}
+            direction={"direct" as MembershipDirection}
           />
         </Tab>
       </Tabs>

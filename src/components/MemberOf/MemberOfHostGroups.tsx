@@ -8,6 +8,7 @@ import MemberOfToolbar from "./MemberOfToolbar";
 import MemberOfHostGroupsTable from "./MemberOfTableHostGroups";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
+import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
@@ -27,6 +28,8 @@ interface MemberOfHostGroupsProps {
   host: Partial<Host>;
   isHostDataLoading: boolean;
   onRefreshHostData: () => void;
+  setDirection: (direction: MembershipDirection) => void;
+  direction: MembershipDirection;
 }
 
 const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
@@ -94,6 +97,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
   React.useEffect(() => {
     const hostGroupsNames = getHostGroupsNameToLoad();
     setHostGroupNamesToLoad(hostGroupsNames);
+    props.setDirection(membershipDirection);
   }, [props.host, membershipDirection, searchValue, page, perPage]);
 
   React.useEffect(() => {
@@ -101,6 +105,10 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
       fullHostGroupsQuery.refetch();
     }
   }, [hostGroupNamesToLoad]);
+
+  React.useEffect(() => {
+    setMembershipDirection(props.direction);
+  }, [props.host]);
 
   // Update host groups
   React.useEffect(() => {

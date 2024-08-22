@@ -11,6 +11,7 @@ import MemberOfSudoRules from "src/components/MemberOf/MemberOfSudoRules";
 import MemberOfSubIds from "src/components/MemberOf/MemberOfSubIds";
 // Layouts
 import TabLayout from "src/components/layouts/TabLayout";
+import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // RPC
 import { useGetUserByUidQuery } from "src/services/rpcUsers";
 // Utils
@@ -64,6 +65,110 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
     setActiveTabKey(props.tab);
   }, [props.tab]);
 
+  const [groupCount, setGroupCount] = React.useState(0);
+  const [netgroupCount, setNetgroupCount] = React.useState(0);
+  const [roleCount, setRoleCount] = React.useState(0);
+  const [hbacCount, setHbacCount] = React.useState(0);
+  const [sudoCount, setSudoCount] = React.useState(0);
+  const [groupDirection, setGroupDirection] = React.useState(
+    "direct" as MembershipDirection
+  );
+  const [netgroupDirection, setNetgroupDirection] = React.useState(
+    "direct" as MembershipDirection
+  );
+  const [roleDirection, setRoleDirection] = React.useState(
+    "direct" as MembershipDirection
+  );
+  const [hbacDirection, setHbacDirection] = React.useState(
+    "direct" as MembershipDirection
+  );
+  const [sudoDirection, setSudoDirection] = React.useState(
+    "direct" as MembershipDirection
+  );
+
+  const updateGroupDirection = (direction: MembershipDirection) => {
+    if (direction === "direct") {
+      setGroupCount(
+        user && user.memberof_group ? user.memberof_group.length : 0
+      );
+    } else {
+      setGroupCount(
+        user && user.memberofindirect_group
+          ? user.memberofindirect_group.length
+          : 0
+      );
+    }
+    setGroupDirection(direction);
+  };
+  const updateNetgroupDirection = (direction: MembershipDirection) => {
+    if (direction === "direct") {
+      setNetgroupCount(
+        user && user.memberof_netgroup ? user.memberof_netgroup.length : 0
+      );
+    } else {
+      setNetgroupCount(
+        user && user.memberofindirect_netgroup
+          ? user.memberofindirect_netgroup.length
+          : 0
+      );
+    }
+    setNetgroupDirection(direction);
+  };
+  const updateRoleDirection = (direction: MembershipDirection) => {
+    if (direction === "direct") {
+      setRoleCount(user && user.memberof_role ? user.memberof_role.length : 0);
+    } else {
+      setRoleCount(
+        user && user.memberofindirect_role
+          ? user.memberofindirect_role.length
+          : 0
+      );
+    }
+    setRoleDirection(direction);
+  };
+  const updateHbacDirection = (direction: MembershipDirection) => {
+    if (direction === "direct") {
+      setHbacCount(
+        user && user.memberof_hbacrule ? user.memberof_hbacrule.length : 0
+      );
+    } else {
+      setHbacCount(
+        user && user.memberofindirect_hbacrule
+          ? user.memberofindirect_hbacrule.length
+          : 0
+      );
+    }
+    setHbacDirection(direction);
+  };
+  const updateSudoDirection = (direction: MembershipDirection) => {
+    if (direction === "direct") {
+      setSudoCount(
+        user && user.memberof_sudorule ? user.memberof_sudorule.length : 0
+      );
+    } else {
+      setSudoCount(
+        user && user.memberofindirect_sudorule
+          ? user.memberofindirect_sudorule.length
+          : 0
+      );
+    }
+    setSudoDirection(direction);
+  };
+
+  React.useEffect(() => {
+    setGroupCount(user && user.memberof_group ? user.memberof_group.length : 0);
+    setNetgroupCount(
+      user && user.memberof_netgroup ? user.memberof_netgroup.length : 0
+    );
+    setRoleCount(user && user.memberof_role ? user.memberof_role.length : 0);
+    setHbacCount(
+      user && user.memberof_hbacrule ? user.memberof_hbacrule.length : 0
+    );
+    setSudoCount(
+      user && user.memberof_sudorule ? user.memberof_sudorule.length : 0
+    );
+  }, [user]);
+
   return (
     <TabLayout id="memberOf">
       <Tabs
@@ -85,7 +190,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             <TabTitleText>
               User groups{" "}
               <Badge key={0} isRead>
-                {user && user.memberof_group ? user.memberof_group.length : 0}
+                {groupCount}
               </Badge>
             </TabTitleText>
           }
@@ -95,6 +200,8 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             from={props.from}
             isUserDataLoading={userQuery.isFetching}
             onRefreshUserData={onRefreshUserData}
+            setDirection={updateGroupDirection}
+            direction={groupDirection}
           />
         </Tab>
         <Tab
@@ -104,9 +211,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             <TabTitleText>
               Netgroups{" "}
               <Badge key={1} isRead>
-                {user && user.memberof_netgroup
-                  ? user.memberof_netgroup.length
-                  : 0}
+                {netgroupCount}
               </Badge>
             </TabTitleText>
           }
@@ -117,6 +222,8 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             from={props.from}
             isDataLoading={userQuery.isFetching}
             onRefreshData={onRefreshUserData}
+            setDirection={updateNetgroupDirection}
+            direction={netgroupDirection}
           />
         </Tab>
         <Tab
@@ -126,7 +233,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             <TabTitleText>
               Roles{" "}
               <Badge key={2} isRead>
-                {user && user.memberof_role ? user.memberof_role.length : 0}
+                {roleCount}
               </Badge>
             </TabTitleText>
           }
@@ -139,6 +246,8 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             onRefreshData={onRefreshUserData}
             memberof_role={user.memberof_role as string[]}
             memberofindirect_role={user.memberofindirect_role as string[]}
+            setDirection={updateRoleDirection}
+            direction={roleDirection}
           />
         </Tab>
         <Tab
@@ -148,9 +257,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             <TabTitleText>
               HBAC rules{" "}
               <Badge key={3} isRead>
-                {user && user.memberof_hbacrule
-                  ? user.memberof_hbacrule.length
-                  : 0}
+                {hbacCount}
               </Badge>
             </TabTitleText>
           }
@@ -161,6 +268,8 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             from={props.from}
             isDataLoading={userQuery.isFetching}
             onRefreshData={onRefreshUserData}
+            setDirection={updateHbacDirection}
+            direction={hbacDirection}
           />
         </Tab>
         <Tab
@@ -170,9 +279,7 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             <TabTitleText>
               Sudo rules{" "}
               <Badge key={4} isRead>
-                {user && user.memberof_sudorule
-                  ? user.memberof_sudorule.length
-                  : 0}
+                {sudoCount}
               </Badge>
             </TabTitleText>
           }
@@ -183,6 +290,8 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             from={props.from}
             isDataLoading={userQuery.isFetching}
             onRefreshData={onRefreshUserData}
+            setDirection={updateSudoDirection}
+            direction={sudoDirection}
           />
         </Tab>
         <Tab

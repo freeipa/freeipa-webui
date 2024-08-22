@@ -46,9 +46,9 @@ const HostGroupsTabs = ({ section }) => {
     if (tabIndex === "settings") {
       navigate("/host-groups/" + cn);
     } else if (tabIndex === "memberof") {
-      navigate("/host-groups/" + cn + "/memberof_hostgroup");
+      // navigate("/host-groups/" + cn + "/memberof_hostgroup");
     } else if (tabIndex === "managedby") {
-      navigate("/host-groups/" + cn + "/managedby_hostgroup");
+      // navigate("/host-groups/" + cn + "/managedby_hostgroup");
     }
   };
 
