@@ -15,12 +15,12 @@ interface PropsToDelete {
   showModal: boolean;
   onCloseModal: () => void;
   onDelete: () => void;
+  spinning: boolean;
 }
 
 const MemberOfDeleteModal = (props: React.PropsWithChildren<PropsToDelete>) => {
   const onDelete = () => {
     props.onDelete();
-    props.onCloseModal();
   };
 
   const modalActionsDelete: JSX.Element[] = [
@@ -29,8 +29,12 @@ const MemberOfDeleteModal = (props: React.PropsWithChildren<PropsToDelete>) => {
       variant="danger"
       onClick={onDelete}
       form="active-users-remove-groups-modal"
+      spinnerAriaValueText="Deleting"
+      spinnerAriaLabel="Deleting"
+      isLoading={props.spinning}
+      isDisabled={props.spinning}
     >
-      Delete
+      {props.spinning ? "Deleting" : "Delete"}
     </Button>,
     <Button
       key="cancel-remove-group"

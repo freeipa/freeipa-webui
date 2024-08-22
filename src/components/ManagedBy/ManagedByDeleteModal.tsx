@@ -35,6 +35,7 @@ interface PropsToDeleteModal {
   groupRepository: Host[];
   updateGroupRepository: (args: Host[]) => void;
   buttonData: ButtonData;
+  spinning: boolean;
 }
 
 const ManagedByDeleteModal = (props: PropsToDeleteModal) => {
@@ -95,8 +96,12 @@ const ManagedByDeleteModal = (props: PropsToDeleteModal) => {
       variant="danger"
       onClick={deleteGroups}
       form={props.tabData.tabName.toLowerCase() + "-remove-groups-modal"}
+      spinnerAriaValueText="Deleting"
+      spinnerAriaLabel="Deleting"
+      isLoading={props.spinning}
+      isDisabled={props.spinning}
     >
-      Delete
+      {props.spinning ? "Deleting" : "Delete"}
     </Button>,
     <Button key="cancel-remove-group" variant="link" onClick={closeModal}>
       Cancel

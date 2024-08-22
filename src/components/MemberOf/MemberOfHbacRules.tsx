@@ -132,6 +132,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [spinning, setSpinning] = React.useState(false);
 
   // Buttons functionality
   // - Refresh
@@ -197,7 +198,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
     if (props.id === undefined || newHbacRuleNames.length == 0) {
       return;
     }
-
+    setSpinning(true);
     addMemberToHbacRules([props.id, entityType, newHbacRuleNames]).then(
       (response) => {
         if ("data" in response) {
@@ -213,15 +214,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
                 `Assigned '${props.id}' to HBAC rules`,
                 "success"
               );
-              // Update displayed HBAC Rules before they are updated via refresh
-              const newHbacRules = hbacRules.concat(
-                availableHbacRules.filter((hbacRule) =>
-                  newHbacRuleNames.includes(hbacRule.cn)
-                )
-              );
-              setHbacRules(newHbacRules);
             }
-
             // Refresh data
             props.onRefreshData();
             // Close modal
@@ -232,12 +225,14 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
             alerts.addAlert("add-member-error", errorMessage.message, "danger");
           }
         }
+        setSpinning(false);
       }
     );
   };
 
   // - Delete
   const onDeleteHbacRules = () => {
+    setSpinning(true);
     removeMembersFromHbacRules([props.id, entityType, hbacRulesSelected]).then(
       (response) => {
         if ("data" in response) {
@@ -248,17 +243,12 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
               `Removed '${props.id}' from HBAC rules`,
               "success"
             );
-            // Update displayed HBAC rules
-            const newHbacRules = hbacRules.filter(
-              (hbacRule) => !hbacRulesSelected.includes(hbacRule.cn)
-            );
-            setHbacRules(newHbacRules);
-            // Update data
+            // Refresh
+            props.onRefreshData();
+            // Reset delete button
             setHbacRulesSelected([]);
             // Close modal
             setShowDeleteModal(false);
-            // Refresh
-            props.onRefreshData();
             // Back to page 1
             setPage(1);
           } else if (response.data.error) {
@@ -270,6 +260,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
               "danger"
             );
           }
+          setSpinning(false);
         }
       }
     );
@@ -326,6 +317,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
           onSearchTextChange={setAdderSearchValue}
           title={`Add '${props.id}' into HBAC rules`}
           ariaLabel={"Add HBAC rule modal"}
+          spinning={spinning}
         />
       )}
       {showDeleteModal && someItemSelected && (
@@ -334,6 +326,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
           onCloseModal={() => setShowDeleteModal(false)}
           title={`Remove '${props.id}' from HBAC rules`}
           onDelete={onDeleteHbacRules}
+          spinning={spinning}
         >
           <MemberOfHbacRulesTable
             hbacRules={availableHbacRules.filter((hbacrule) =>

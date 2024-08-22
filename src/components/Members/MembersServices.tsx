@@ -132,6 +132,7 @@ const MembersServices = (props: PropsToMembersServices) => {
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [spinning, setSpinning] = React.useState(false);
 
   // Buttons functionality
   const isRefreshButtonEnabled =
@@ -205,6 +206,7 @@ const MembersServices = (props: PropsToMembersServices) => {
       idsToAdd: newServiceNames,
     } as MemberPayload;
 
+    setSpinning(true);
     addMemberToService(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
@@ -214,14 +216,6 @@ const MembersServices = (props: PropsToMembersServices) => {
             "Assigned new services to " + entityType + " " + props.id,
             "success"
           );
-          // Update displayed services before they are updated via refresh
-          const newServices = services.concat(
-            availableServices.filter((service) =>
-              newServiceNames.includes(service.krbcanonicalname)
-            )
-          );
-          setServices(newServices);
-
           // Refresh data
           props.onRefreshData();
           // Close modal
@@ -232,6 +226,7 @@ const MembersServices = (props: PropsToMembersServices) => {
           alerts.addAlert("add-member-error", errorMessage.message, "danger");
         }
       }
+      setSpinning(false);
     });
   };
 
@@ -243,6 +238,7 @@ const MembersServices = (props: PropsToMembersServices) => {
       idsToAdd: servicesSelected,
     } as MemberPayload;
 
+    setSpinning(true);
     removeMembersFromServices(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
@@ -252,17 +248,10 @@ const MembersServices = (props: PropsToMembersServices) => {
             "Removed services from " + entityType + " '" + props.id + "'",
             "success"
           );
-          // Update displayed services
-          const newServices = services.filter(
-            (service) => !servicesSelected.includes(service.krbcanonicalname)
-          );
-          setServices(newServices);
-          // Update data
-          setServicesSelected([]);
-          // Close modal
-          setShowDeleteModal(false);
           // Refresh
           props.onRefreshData();
+          // Close modal
+          setShowDeleteModal(false);
           // Back to page 1
           setPage(1);
         } else if (response.data.error) {
@@ -275,6 +264,7 @@ const MembersServices = (props: PropsToMembersServices) => {
           );
         }
       }
+      setSpinning(false);
     });
   };
 
@@ -351,6 +341,7 @@ const MembersServices = (props: PropsToMembersServices) => {
           onSearchTextChange={setAdderSearchValue}
           title={"Assign services to " + entityType + " " + props.id}
           ariaLabel={"Add " + entityType + " of service modal"}
+          spinning={spinning}
         />
       )}
       {showDeleteModal && someItemSelected && (
@@ -359,6 +350,7 @@ const MembersServices = (props: PropsToMembersServices) => {
           onCloseModal={() => setShowDeleteModal(false)}
           title={"Delete " + entityType + " from Services"}
           onDelete={onDeleteService}
+          spinning={spinning}
         >
           <MemberTable
             entityList={availableServices.filter((service) =>

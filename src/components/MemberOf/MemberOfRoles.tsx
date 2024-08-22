@@ -136,6 +136,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [spinning, setSpinning] = React.useState(false);
 
   // Buttons functionality
   const isRefreshButtonEnabled =
@@ -203,6 +204,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
       return;
     }
 
+    setSpinning(true);
     addMemberToRoles([props.id, entityType, newRoleNames]).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
@@ -212,12 +214,6 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
             `Assigned '${props.id}' to roles`,
             "success"
           );
-          // Update displayed roles before they are updated via refresh
-          const newRoles = roles.concat(
-            availableRoles.filter((role) => newRoleNames.includes(role.cn))
-          );
-          setRoles(newRoles);
-
           // Refresh data
           props.onRefreshData();
           // Close modal
@@ -228,11 +224,13 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           alerts.addAlert("add-member-error", errorMessage.message, "danger");
         }
       }
+      setSpinning(false);
     });
   };
 
   // - Delete
   const onDeleteRole = () => {
+    setSpinning(true);
     removeMembersFromRoles([props.id, entityType, rolesSelected]).then(
       (response) => {
         if ("data" in response) {
@@ -243,17 +241,12 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
               `Removed '${props.id}' from roles`,
               "success"
             );
-            // Update displayed roles
-            const newRoles = roles.filter(
-              (role) => !rolesSelected.includes(role.cn)
-            );
-            setRoles(newRoles);
-            // Update data
+            // Refresh
+            props.onRefreshData();
+            // Reset delete button
             setRolesSelected([]);
             // Close modal
             setShowDeleteModal(false);
-            // Refresh
-            props.onRefreshData();
             // Back to page 1
             setPage(1);
           } else if (response.data.error) {
@@ -266,6 +259,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
             );
           }
         }
+        setSpinning(false);
       }
     );
   };
@@ -342,6 +336,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           onSearchTextChange={setAdderSearchValue}
           title={`Add '${props.id}' into roles`}
           ariaLabel={"Add " + entityType + " of role modal"}
+          spinning={spinning}
         />
       )}
       {showDeleteModal && someItemSelected && (
@@ -350,6 +345,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           onCloseModal={() => setShowDeleteModal(false)}
           title={`Remove '${props.id}' from roles`}
           onDelete={onDeleteRole}
+          spinning={spinning}
         >
           <MemberOfTableRoles
             roles={availableRoles.filter((group) =>

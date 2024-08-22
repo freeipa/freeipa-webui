@@ -50,7 +50,6 @@ const MembersExternal = (props: PropsToMembersExternal) => {
   );
 
   // Choose the correct externals based on the membership direction
-  const [externals, setExternals] = React.useState(props.member_external || []);
   const isExternal =
     props.entity.objectclass?.includes("ipaexternalgroup") || false;
 
@@ -66,14 +65,15 @@ const MembersExternal = (props: PropsToMembersExternal) => {
 
   // Computed "states"
   const someItemSelected = externalsSelected.length > 0;
-  const showTableRows = externals.length > 0;
+  const showTableRows = props.member_external.length > 0;
   const entityType = getEntityType();
   const externalColumnNames = ["External member"];
-  const externalProperties = externals;
+  const externalProperties = props.member_external;
 
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [spinning, setSpinning] = React.useState(false);
 
   // Buttons functionality
   const isRefreshButtonEnabled = !props.isDataLoading;
@@ -144,6 +144,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
       idsToAdd: newExternalNames,
     } as MemberPayload;
 
+    setSpinning(true);
     addExternalMember(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
@@ -153,9 +154,6 @@ const MembersExternal = (props: PropsToMembersExternal) => {
             "Assigned new externals to " + entityType + " " + props.id,
             "success"
           );
-          // Update displayed externals before they are updated via refresh
-          setExternals(newExternalNames);
-
           // Refresh data
           props.onRefreshData();
           // Close modal
@@ -166,6 +164,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
           alerts.addAlert("add-member-error", errorMessage.message, "danger");
         }
       }
+      setSpinning(false);
     });
   };
 
@@ -177,6 +176,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
       idsToAdd: externalsSelected,
     } as MemberPayload;
 
+    setSpinning(true);
     removeExternalMembers(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
@@ -186,17 +186,10 @@ const MembersExternal = (props: PropsToMembersExternal) => {
             "Removed members from " + entityType + " '" + props.id + "'",
             "success"
           );
-          // Update displayed externals
-          const newExternals = externals.filter(
-            (external) => !externalsSelected.includes(external)
-          );
-          setExternals(newExternals);
-          // Update data
-          setExternalsSelected([]);
-          // Close modal
-          setShowDeleteModal(false);
           // Refresh
           props.onRefreshData();
+          // Close modal
+          setShowDeleteModal(false);
           // Back to page 1
           setPage(1);
         } else if (response.data.error) {
@@ -209,6 +202,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
           );
         }
       }
+      setSpinning(false);
     });
   };
 
@@ -227,14 +221,14 @@ const MembersExternal = (props: PropsToMembersExternal) => {
         addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
         helpIconEnabled={true}
-        totalItems={externals.length}
+        totalItems={props.member_external.length}
         perPage={perPage}
         page={page}
         onPerPageChange={setPerPage}
         onPageChange={setPage}
       />
       <MemberTable
-        entityList={externals}
+        entityList={props.member_external}
         idKey="krbcanonicalname"
         columnNamesToShow={externalColumnNames}
         propertiesToShow={externalProperties}
@@ -244,7 +238,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
       />
       <Pagination
         className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        itemCount={externals.length}
+        itemCount={props.member_external.length}
         widgetId="pagination-options-menu-bottom"
         perPage={perPage}
         page={page}
@@ -270,9 +264,10 @@ const MembersExternal = (props: PropsToMembersExternal) => {
           onCloseModal={() => setShowDeleteModal(false)}
           title={"Delete " + entityType + " from External"}
           onDelete={onDeleteExternal}
+          spinning={spinning}
         >
           <MemberTable
-            entityList={externals.filter((external) =>
+            entityList={props.member_external.filter((external) =>
               externalsSelected.includes(external)
             )}
             columnNamesToShow={externalColumnNames}

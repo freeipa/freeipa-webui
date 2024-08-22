@@ -120,6 +120,7 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [spinning, setSpinning] = React.useState(false);
 
   // Buttons functionality
   const isRefreshButtonEnabled =
@@ -198,12 +199,6 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
           "Assigned " + props.from + " '" + props.id + "' to hosts",
           "success"
         );
-        // Update displayed Hosts before they are updated via refresh
-        const newHosts = hosts.concat(
-          availableHosts.filter((host) => hostsSelected.includes(host.fqdn))
-        );
-        setHosts(newHosts);
-
         // Refresh data
         props.onRefreshData();
         // Close modal
@@ -214,6 +209,7 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
         alerts.addAlert("add-member-error", errorMessage.message, "danger");
       }
     }
+    setSpinning(false);
   };
 
   // - Add
@@ -234,6 +230,7 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
         serviceId: props.id,
         hostsList: newHostNames,
       };
+      setSpinning(true);
       addHostsFromServices(payload).then((response) => {
         handleAddResponse(response);
       });
@@ -258,23 +255,19 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
           "Removed members from " + props.from + " '" + props.id + "'",
           "success"
         );
-        // Update displayed Hosts
-        const newHosts = hosts.filter(
-          (host) => !hostsSelected.includes(host.fqdn)
-        );
-        setHosts(newHosts);
-        // Update data
+        // Refresh
+        props.onRefreshData();
+        // Reset delete button
         setHostsSelected([]);
         // Close modal
         setShowDeleteModal(false);
-        // Refresh
-        props.onRefreshData();
       } else if (response.data.error) {
         // Set alert: error
         const errorMessage = response.data.error as unknown as ErrorResult;
         alerts.addAlert("remove-hosts-error", errorMessage.message, "danger");
       }
     }
+    setSpinning(false);
   };
 
   // - Delete
@@ -282,6 +275,7 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
     if (props.id === undefined) return;
 
     if (props.from === "host") {
+      setSpinning(true);
       removeHostsFromHosts([props.id, entityType, hostsSelected]).then(
         (response) => {
           handleDeleteResponse(response);
@@ -292,6 +286,7 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
         serviceId: props.id,
         hostsList: hostsSelected,
       };
+      setSpinning(true);
       removeHostsFromServices(payload).then((response) => {
         handleDeleteResponse(response);
       });
@@ -344,6 +339,7 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
           onSearchTextChange={setAdderSearchValue}
           title={`Assign hosts to user ${props.id}`}
           ariaLabel="Add user of host modal"
+          spinning={spinning}
         />
       )}
       {showDeleteModal && someItemSelected && (
@@ -352,6 +348,7 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
           onCloseModal={() => setShowDeleteModal(false)}
           title="Delete user from Hosts"
           onDelete={onDeleteHost}
+          spinning={spinning}
         >
           <MemberOfHostsTable
             hosts={availableHosts.filter((host) =>

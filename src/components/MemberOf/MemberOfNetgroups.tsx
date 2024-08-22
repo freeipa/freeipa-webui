@@ -134,6 +134,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [spinning, setSpinning] = React.useState(false);
 
   // Buttons functionality
   const isRefreshButtonEnabled =
@@ -201,6 +202,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
       return;
     }
 
+    setSpinning(true);
     addMemberToNetgroups([props.id, entityType, newNetgroupNames]).then(
       (response) => {
         if ("data" in response) {
@@ -211,14 +213,6 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
               `Assigned '${props.id}' to netgroups`,
               "success"
             );
-            // Update displayed netgroups before they are updated via refresh
-            const newNetgroups = netgroups.concat(
-              availableNetgroups.filter((netgroup) =>
-                newNetgroupNames.includes(netgroup.cn)
-              )
-            );
-            setNetgroups(newNetgroups);
-
             // Refresh data
             props.onRefreshData();
             // Close modal
@@ -229,12 +223,14 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
             alerts.addAlert("add-member-error", errorMessage.message, "danger");
           }
         }
+        setSpinning(false);
       }
     );
   };
 
   // - Delete
   const onDeleteNetgroup = () => {
+    setSpinning(true);
     removeMembersFromNetgroups([props.id, entityType, netgroupsSelected]).then(
       (response) => {
         if ("data" in response) {
@@ -245,17 +241,12 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
               `Removed '${props.id}' from netgroups`,
               "success"
             );
-            // Update displayed netgroups
-            const newNetgroups = netgroups.filter(
-              (netgroup) => !netgroupsSelected.includes(netgroup.cn)
-            );
-            setNetgroups(newNetgroups);
-            // Update data
+            // Refresh
+            props.onRefreshData();
+            // Reset delete button
             setNetgroupsSelected([]);
             // Close modal
             setShowDeleteModal(false);
-            // Refresh
-            props.onRefreshData();
             // Go back to page 1
             setPage(1);
           } else if (response.data.error) {
@@ -268,6 +259,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
             );
           }
         }
+        setSpinning(false);
       }
     );
   };
@@ -323,6 +315,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
           onSearchTextChange={setAdderSearchValue}
           title={`Add '${props.id}' into netgroups`}
           ariaLabel={"Add " + entityType + " of netgroup modal"}
+          spinning={spinning}
         />
       )}
       {showDeleteModal && someItemSelected && (
@@ -331,6 +324,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
           onCloseModal={() => setShowDeleteModal(false)}
           title={`Remove '${props.id}' from netgroups`}
           onDelete={onDeleteNetgroup}
+          spinning={spinning}
         >
           <MemberOfTableNetgroups
             netgroups={availableNetgroups.filter((netgroup) =>

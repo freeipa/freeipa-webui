@@ -24,6 +24,7 @@ interface PropsToAddModal {
   updateGroupRepository: (args: Host[]) => void;
   updateAvOptionsList: (args: unknown[]) => void;
   tabData: TabData;
+  spinning: boolean;
 }
 
 interface ManagedByElement {
@@ -109,9 +110,6 @@ const ManagedByAddModal = (props: PropsToAddModal) => {
         }
       }
     });
-    // Clean chosen options and close modal
-    setChosenOptions([]);
-    props.modalData.handleModalToggle();
   };
 
   // Utility: Convert the tab name by removing the last character and transforming into lower case
@@ -122,11 +120,14 @@ const ManagedByAddModal = (props: PropsToAddModal) => {
   const modalActions = [
     <SecondaryButton
       key={"add-new-" + convertedTabName}
-      isDisabled={buttonDisabled}
+      isDisabled={buttonDisabled || props.spinning}
       form="modal-form"
       onClickHandler={onClickAddGroupHandler}
+      spinnerAriaValueText="Adding"
+      spinnerAriaLabel="Adding"
+      isLoading={props.spinning}
     >
-      Add
+      {props.spinning ? "Adding" : "Add"}
     </SecondaryButton>,
     <Button
       key={"cancel-add-new-" + convertedTabName}
