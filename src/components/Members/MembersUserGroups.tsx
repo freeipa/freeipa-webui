@@ -136,6 +136,7 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [spinning, setSpinning] = React.useState(false);
 
   // Buttons functionality
   const isRefreshButtonEnabled =
@@ -209,6 +210,7 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
       idsToAdd: newUserGroupNames,
     } as MemberPayload;
 
+    setSpinning(true);
     addMemberToUserGroups(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
@@ -218,14 +220,6 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
             "Assigned new user groups to " + entityType + " " + props.id,
             "success"
           );
-          // Update displayed users before they are updated via refresh
-          const newUserGroups = userGroups.concat(
-            availableUserGroups.filter((userGroup) =>
-              newUserGroupNames.includes(userGroup.cn)
-            )
-          );
-          setUserGroups(newUserGroups);
-
           // Refresh data
           props.onRefreshData();
           // Close modal
@@ -236,6 +230,7 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
           alerts.addAlert("add-member-error", errorMessage.message, "danger");
         }
       }
+      setSpinning(false);
     });
   };
 
@@ -247,6 +242,7 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
       idsToAdd: userGroupsSelected,
     } as MemberPayload;
 
+    setSpinning(true);
     removeMembersFromUserGroups(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
@@ -256,17 +252,10 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
             "Removed user groups from " + entityType + " '" + props.id + "'",
             "success"
           );
-          // Update displayed user groups
-          const newUserGroups = userGroups.filter(
-            (userGroup) => !userGroupsSelected.includes(userGroup.cn)
-          );
-          setUserGroups(newUserGroups);
-          // Update data
-          setUserGroupsSelected([]);
-          // Close modal
-          setShowDeleteModal(false);
           // Refresh
           props.onRefreshData();
+          // Close modal
+          setShowDeleteModal(false);
           // Back to page 1
           setPage(1);
         } else if (response.data.error) {
@@ -279,6 +268,7 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
           );
         }
       }
+      setSpinning(false);
     });
   };
 
@@ -355,6 +345,7 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
           onSearchTextChange={setAdderSearchValue}
           title={"Assign User groups to " + entityType + " " + props.id}
           ariaLabel={"Add " + entityType + " of user groups modal"}
+          spinning={spinning}
         />
       )}
       {showDeleteModal && someItemSelected && (
@@ -363,6 +354,7 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
           onCloseModal={() => setShowDeleteModal(false)}
           title={"Delete " + entityType + " from User groups"}
           onDelete={onDeleteUserGroups}
+          spinning={spinning}
         >
           <MemberTable
             entityList={availableUserGroups.filter((userGroup) =>

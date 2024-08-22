@@ -21,6 +21,7 @@ export interface PropsToAdd {
   onSearchTextChange: (searchText: string) => void;
   title: string;
   ariaLabel: string;
+  spinning: boolean;
 }
 
 const MemberOfAddModal = (props: PropsToAdd) => {
@@ -81,12 +82,6 @@ const MemberOfAddModal = (props: PropsToAdd) => {
     setChosenOptions([]);
   };
 
-  // Clean fields and close modal (To prevent data persistence when reopen modal)
-  const cleanAndCloseModal = () => {
-    cleanData();
-    props.onCloseModal();
-  };
-
   // Buttons are disabled until the user fills the required fields
   const [buttonDisabled, setButtonDisabled] = useState(true);
   useEffect(() => {
@@ -107,9 +102,7 @@ const MemberOfAddModal = (props: PropsToAdd) => {
       });
     });
     props.onAdd(optionsToAdd);
-    // Clean chosen options and close modal
     setChosenOptions([]);
-    props.onCloseModal();
   };
 
   // Buttons that will be shown at the end of the form
@@ -117,13 +110,16 @@ const MemberOfAddModal = (props: PropsToAdd) => {
     <Button
       key="add-new-user"
       variant="secondary"
-      isDisabled={buttonDisabled}
+      isDisabled={buttonDisabled || props.spinning}
       form="modal-form"
       onClick={onClickAddHandler}
+      spinnerAriaValueText="Adding"
+      spinnerAriaLabel="Adding"
+      isLoading={props.spinning}
     >
-      Add
+      {props.spinning ? "Adding" : "Add"}
     </Button>,
-    <Button key="cancel-new-user" variant="link" onClick={cleanAndCloseModal}>
+    <Button key="cancel-new-user" variant="link" onClick={props.onCloseModal}>
       Cancel
     </Button>,
   ];

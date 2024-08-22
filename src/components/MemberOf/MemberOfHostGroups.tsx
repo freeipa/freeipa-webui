@@ -116,6 +116,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [spinning, setSpinning] = React.useState(false);
 
   // Buttons functionality
   const isRefreshButtonEnabled =
@@ -184,6 +185,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
       return;
     }
 
+    setSpinning(true);
     addMemberToHostGroups([fqdn, "host", newHostGroupNames]).then(
       (response) => {
         if ("data" in response) {
@@ -194,14 +196,6 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
               `Assigned '${fqdn}' to host groups`,
               "success"
             );
-            // Update displayed Host groups before they are updated via refresh
-            const newHostGroups = hostGroups.concat(
-              availableHostGroups.filter((hostGroup) =>
-                newHostGroupNames.includes(hostGroup.cn)
-              )
-            );
-            setHostGroups(newHostGroups);
-
             // Refresh data
             props.onRefreshHostData();
             // Close modal
@@ -212,6 +206,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
             alerts.addAlert("add-member-error", errorMessage.message, "danger");
           }
         }
+        setSpinning(false);
       }
     );
   };
@@ -219,6 +214,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
   // - Delete
   const onDeleteHostGroup = () => {
     if (props.host.fqdn) {
+      setSpinning(true);
       removeMembersFromHostGroups([
         props.host.fqdn,
         "host",
@@ -232,17 +228,12 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
               `Removed '${props.host.fqdn}' from host groups`,
               "success"
             );
-            // Update displayed Host groups
-            const newHostGroups = hostGroups.filter(
-              (hostGroup) => !hostGroupsSelected.includes(hostGroup.cn)
-            );
-            setHostGroups(newHostGroups);
-            // Update data
+            // Refresh
+            props.onRefreshHostData();
+            // Reset delete button
             setHostGroupsSelected([]);
             // Close modal
             setShowDeleteModal(false);
-            // Refresh
-            props.onRefreshHostData();
             // Return to first page
             setPage(1);
           } else if (response.data.error) {
@@ -255,6 +246,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
             );
           }
         }
+        setSpinning(false);
       });
     }
   };
@@ -310,6 +302,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
           onSearchTextChange={setAdderSearchValue}
           title={`Add '${props.host.fqdn}' into host groups`}
           ariaLabel="Add host of host group modal"
+          spinning={spinning}
         />
       )}
       {showDeleteModal && someItemSelected && (
@@ -318,6 +311,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
           onCloseModal={() => setShowDeleteModal(false)}
           title={`Remove '${props.host.fqdn}' from host groups`}
           onDelete={onDeleteHostGroup}
+          spinning={spinning}
         >
           <MemberOfHostGroupsTable
             hostGroups={availableHostGroups.filter((hostgroup) =>

@@ -121,6 +121,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [spinning, setSpinning] = React.useState(false);
 
   // Buttons functionality
   const isRefreshButtonEnabled =
@@ -135,9 +136,6 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   const [addMemberToUserGroups] = useAddToGroupsMutation();
   const [removeMembersFromUserGroups] = useRemoveFromGroupsMutation();
   const [adderSearchValue, setAdderSearchValue] = React.useState("");
-  const [availableUserGroups, setAvailableUserGroups] = React.useState<
-    UserGroup[]
-  >([]);
   const [availableItems, setAvailableItems] = React.useState<AvailableItems[]>(
     []
   );
@@ -175,8 +173,6 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
         });
       }
       items = items.filter((item) => !memberof_group.includes(item.key));
-
-      setAvailableUserGroups(avalUserGroups);
       setAvailableItems(items);
     }
   }, [userGroupsQuery.data, userGroupsQuery.isFetching]);
@@ -188,6 +184,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
       return;
     }
 
+    setSpinning(true);
     addMemberToUserGroups([id, entryType, newUserGroupNames]).then(
       (response) => {
         if ("data" in response) {
@@ -198,14 +195,6 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
               `Assigned '${id}' to user groups`,
               "success"
             );
-            // Update displayed User groups before they are updated via refresh
-            const newUserGroups = userGroups.concat(
-              availableUserGroups.filter((userGroup) =>
-                newUserGroupNames.includes(userGroup.cn)
-              )
-            );
-            setUserGroups(newUserGroups);
-
             // Refresh data
             props.onRefreshUserData();
             // Close modal
@@ -216,6 +205,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
             alerts.addAlert("add-member-error", errorMessage.message, "danger");
           }
         }
+        setSpinning(false);
       }
     );
   };
@@ -223,6 +213,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   // - Delete
   const onDeleteUserGroup = () => {
     if (id) {
+      setSpinning(true);
       removeMembersFromUserGroups([id, entryType, userGroupsSelected]).then(
         (response) => {
           if ("data" in response) {
@@ -233,17 +224,14 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
                 `Removed '${id}' from user groups`,
                 "success"
               );
-              // Update displayed User groups
-              const newUserGroups = userGroups.filter(
-                (userGroup) => !userGroupsSelected.includes(userGroup.cn)
-              );
-              setUserGroups(newUserGroups);
-              // Update data
+              // Refresh
+              props.onRefreshUserData();
+              // Reset delete button
               setUserGroupsSelected([]);
               // Close modal
               setShowDeleteModal(false);
-              // Refresh
-              props.onRefreshUserData();
+              // Return to first page
+              setPage(1);
             } else if (response.data.error) {
               // Set alert: error
               const errorMessage = response.data
@@ -255,6 +243,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
               );
             }
           }
+          setSpinning(false);
         }
       );
     }
@@ -311,6 +300,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
           onSearchTextChange={setAdderSearchValue}
           title={`Assign '${id}' to user groups`}
           ariaLabel="Add entry of user group modal"
+          spinning={spinning}
         />
       )}
       {showDeleteModal && someItemSelected && (
@@ -319,6 +309,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
           onCloseModal={() => setShowDeleteModal(false)}
           title={`Remove '${id}' from user groups`}
           onDelete={onDeleteUserGroup}
+          spinning={spinning}
         >
           <MemberOfUserGroupsTable
             userGroups={userGroups.filter((group) =>

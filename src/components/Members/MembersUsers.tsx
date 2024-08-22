@@ -153,6 +153,7 @@ const MembersUsers = (props: PropsToMembersUsers) => {
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [spinning, setSpinning] = React.useState(false);
 
   // Buttons functionality
   const isRefreshButtonEnabled =
@@ -224,6 +225,7 @@ const MembersUsers = (props: PropsToMembersUsers) => {
       idsToAdd: newUserNames,
     } as MemberPayload;
 
+    setSpinning(true);
     addMemberToUser(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
@@ -233,12 +235,6 @@ const MembersUsers = (props: PropsToMembersUsers) => {
             "Assigned new users to " + entityType + " " + props.id,
             "success"
           );
-          // Update displayed users before they are updated via refresh
-          const newUsers = users.concat(
-            availableUsers.filter((user) => newUserNames.includes(user.uid))
-          );
-          setUsers(newUsers);
-
           // Refresh data
           props.onRefreshData();
           // Close modal
@@ -249,6 +245,7 @@ const MembersUsers = (props: PropsToMembersUsers) => {
           alerts.addAlert("add-member-error", errorMessage.message, "danger");
         }
       }
+      setSpinning(false);
     });
   };
 
@@ -260,6 +257,7 @@ const MembersUsers = (props: PropsToMembersUsers) => {
       idsToAdd: usersSelected,
     } as MemberPayload;
 
+    setSpinning(true);
     removeMembersFromUsers(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
@@ -269,17 +267,10 @@ const MembersUsers = (props: PropsToMembersUsers) => {
             "Removed users from " + entityType + " '" + props.id + "'",
             "success"
           );
-          // Update displayed users
-          const newUsers = users.filter(
-            (user) => !usersSelected.includes(user.uid)
-          );
-          setUsers(newUsers);
-          // Update data
-          setUsersSelected([]);
-          // Close modal
-          setShowDeleteModal(false);
           // Refresh
           props.onRefreshData();
+          // Close modal
+          setShowDeleteModal(false);
           // Back to page 1
           setPage(1);
         } else if (response.data.error) {
@@ -288,6 +279,7 @@ const MembersUsers = (props: PropsToMembersUsers) => {
           alerts.addAlert("remove-users-error", errorMessage.message, "danger");
         }
       }
+      setSpinning(false);
     });
   };
 
@@ -364,6 +356,7 @@ const MembersUsers = (props: PropsToMembersUsers) => {
           onSearchTextChange={setAdderSearchValue}
           title={"Assign users to " + entityType + " " + props.id}
           ariaLabel={"Add " + entityType + " of user modal"}
+          spinning={spinning}
         />
       )}
       {showDeleteModal && someItemSelected && (
@@ -372,6 +365,7 @@ const MembersUsers = (props: PropsToMembersUsers) => {
           onCloseModal={() => setShowDeleteModal(false)}
           title={"Delete " + entityType + " from Users"}
           onDelete={onDeleteUser}
+          spinning={spinning}
         >
           <MemberTable
             entityList={availableUsers.filter((user) =>

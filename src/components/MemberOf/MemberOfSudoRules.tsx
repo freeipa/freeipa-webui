@@ -132,6 +132,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [spinning, setSpinning] = React.useState(false);
 
   // Buttons functionality
   // - Refresh
@@ -198,6 +199,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
       return;
     }
 
+    setSpinning(true);
     addMemberToSudoRules([props.id, entityType, newSudoRuleNames]).then(
       (response) => {
         if ("data" in response) {
@@ -226,12 +228,14 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
             alerts.addAlert("add-member-error", errorMessage.message, "danger");
           }
         }
+        setSpinning(false);
       }
     );
   };
 
   // - Delete
   const onDeleteSudoRules = () => {
+    setSpinning(true);
     removeMembersFromSudoRules([props.id, entityType, sudoRulesSelected]).then(
       (response) => {
         if ("data" in response) {
@@ -242,17 +246,12 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
               `Removed '${props.id}' from sudo rules'`,
               "success"
             );
-            // Update displayed HBAC rules
-            const newSudoRules = sudoRules.filter(
-              (sudoRule) => !sudoRulesSelected.includes(sudoRule.cn)
-            );
-            setSudoRules(newSudoRules);
-            // Update data
+            // Refresh
+            props.onRefreshData();
+            // Reset delete button
             setSudoRulesSelected([]);
             // Close modal
             setShowDeleteModal(false);
-            // Refresh
-            props.onRefreshData();
             // Back to page 1
             setPage(1);
           } else if (response.data.error) {
@@ -265,6 +264,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
             );
           }
         }
+        setSpinning(false);
       }
     );
   };
@@ -320,6 +320,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
           onSearchTextChange={setAdderSearchValue}
           title={`Add '${props.id}' into sudo rules`}
           ariaLabel={"Add " + entityType + " of Sudo rule modal"}
+          spinning={spinning}
         />
       )}
       {showDeleteModal && someItemSelected && (
@@ -328,6 +329,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
           onCloseModal={() => setShowDeleteModal(false)}
           title={`Remove '${props.id}' from sudo rules`}
           onDelete={onDeleteSudoRules}
+          spinning={spinning}
         >
           <MemberOfTableSudoRules
             sudoRules={availableSudoRules.filter((sudorule) =>
