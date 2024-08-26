@@ -7,6 +7,8 @@ import TableLayout from "../../components/layouts/TableLayout";
 import { SudoCmdGroup } from "../../utils/datatypes/globalDataTypes";
 // Layouts
 import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
+// React Router DOM
+import { Link } from "react-router-dom";
 
 interface CmdGroupsData {
   isSudoCmdGroupSelectable: (group: SudoCmdGroup) => boolean;
@@ -173,7 +175,11 @@ const SudoCmdGroupsTable = (props: PropsToTable) => {
           isDisabled: !props.cmdGroupsData.isSudoCmdGroupSelectable(cmdgroup),
         }}
       />
-      <Td dataLabel={columnNames.cn}>{cmdgroup.cn}</Td>
+      <Td dataLabel={columnNames.cn}>
+        <Link to={"/sudo-command-groups/" + cmdgroup.cn} state={cmdgroup}>
+          {cmdgroup.cn}
+        </Link>
+      </Td>
       <Td dataLabel={columnNames.description}>{cmdgroup.description}</Td>
     </Tr>
   ));

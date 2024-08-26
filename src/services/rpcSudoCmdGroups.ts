@@ -1,6 +1,8 @@
 import {
   api,
+  BatchResponse,
   Command,
+  FindRPCResponse,
   getCommand,
   getBatchCommand,
   BatchRPCResponse,
@@ -20,6 +22,10 @@ import { SudoCmdGroup } from "../utils/datatypes/globalDataTypes";
  * - sudocmdgroup_del: https://freeipa.readthedocs.io/en/latest/api/sudocmdgroup_del.html
  *
  */
+
+interface CmdFullData {
+  group?: Partial<SudoCmdGroup>;
+}
 
 export interface SudoCmdsShowPayload {
   sudoCmdNamesList: string[];
@@ -105,6 +111,54 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(cmdsToDeletePayload, API_VERSION_BACKUP);
       },
     }),
+    getSudoCmdGroupsFullData: build.query<CmdFullData, string>({
+      query: (group) => {
+        // Prepare search parameters
+        const params = {
+          all: true,
+          rights: true,
+        };
+
+        const showCommand: Command = {
+          method: "sudocmdgroup_show",
+          params: [[group], params],
+        };
+
+        const batchPayload: Command[] = [showCommand];
+
+        return getBatchCommand(batchPayload, API_VERSION_BACKUP);
+      },
+      transformResponse: (response: BatchResponse): CmdFullData => {
+        const [groupResponse] = response.result.results;
+
+        // Initialize group data (to prevent 'undefined' values)
+        const groupData = groupResponse.result;
+        let groupObject = {};
+        if (!groupResponse.error) {
+          groupObject = apiToSudoCmdGroup(groupData);
+        }
+
+        return {
+          group: groupObject,
+        };
+      },
+      providesTags: ["FullSudoCmdGroup"],
+    }),
+    saveSudoCmdGroup: build.mutation<FindRPCResponse, Partial<SudoCmdGroup>>({
+      query: (cmd) => {
+        const params = {
+          version: API_VERSION_BACKUP,
+          ...cmd,
+        };
+        delete params["cn"];
+        const id = cmd.cn !== undefined ? cmd.cn : "";
+        return getCommand({
+          method: "sudocmdgroup_mod",
+          params: [[id], params],
+        });
+      },
+      invalidatesTags: ["FullSudoCmdGroup"],
+    }),
   }),
   overrideExisting: false,
 });
@@ -119,4 +173,6 @@ export const {
   useGetSudoCmdGroupsInfoByNameQuery,
   useAddSudoCmdGroupsMutation,
   useRemoveSudoCmdGroupsMutation,
+  useSaveSudoCmdGroupMutation,
+  useGetSudoCmdGroupsFullDataQuery,
 } = extendedApi;
