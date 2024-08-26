@@ -15,19 +15,20 @@ import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
 // Hooks
-import { useHBACServiceSettings } from "src/hooks/useHBACServiceSettingsData";
+import { useSudoCmdsSettings } from "src/hooks/useSudoCmdsSettingsData";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { NotFound } from "src/components/errors/PageErrors";
+import SudoCmdsSettings from "./SudoCmdsSettings";
 
 // eslint-disable-next-line react/prop-types
 const SudoCmdsTabs = ({ section }) => {
   // Get location (React Router DOM) and get state data
-  const { cn } = useParams();
+  const { sudocmd } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const settingsData = useHBACServiceSettings(cn as string);
+  const settingsData = useSudoCmdsSettings(sudocmd as string);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(section);
@@ -40,11 +41,11 @@ const SudoCmdsTabs = ({ section }) => {
     tabIndex: number | string
   ) => {
     setActiveTabKey(tabIndex as string);
-    navigate("/sudo-commands/" + cn);
+    navigate("/sudo-commands/" + sudocmd);
   };
 
   React.useEffect(() => {
-    if (!cn) {
+    if (!sudocmd) {
       // Redirect to the main page
       navigate("/sudo-commands");
     } else {
@@ -55,8 +56,8 @@ const SudoCmdsTabs = ({ section }) => {
           url: URL_PREFIX + "/sudo-commands",
         },
         {
-          name: cn,
-          url: URL_PREFIX + "/sudo-commands/" + cn,
+          name: sudocmd,
+          url: URL_PREFIX + "/sudo-commands/" + sudocmd,
           isActive: true,
         },
       ];
@@ -64,25 +65,22 @@ const SudoCmdsTabs = ({ section }) => {
       setActiveTabKey("settings");
       dispatch(updateBreadCrumbPath(currentPath));
     }
-  }, [cn]);
+  }, [sudocmd]);
 
   // Redirect to the settings page if the section is not defined
   React.useEffect(() => {
     if (!section) {
-      navigate(URL_PREFIX + "/sudo-commands/" + cn);
+      navigate(URL_PREFIX + "/sudo-commands/" + sudocmd);
     }
     setActiveTabKey(section);
   }, [section]);
 
-  if (settingsData.isLoading || settingsData.service.cn === undefined) {
+  if (settingsData.isLoading || settingsData.cmd.sudocmd === undefined) {
     return <DataSpinner />;
   }
 
   // Show the 'NotFound' page if the data is not found
-  if (
-    !settingsData.isLoading &&
-    Object.keys(settingsData.service).length === 0
-  ) {
+  if (!settingsData.isLoading && Object.keys(settingsData.cmd).length === 0) {
     return <NotFound />;
   }
 
@@ -94,8 +92,8 @@ const SudoCmdsTabs = ({ section }) => {
           breadcrumbItems={breadcrumbItems}
         />
         <TitleLayout
-          id={settingsData.service.cn}
-          text={settingsData.service.cn}
+          id={settingsData.cmd.sudocmd}
+          text={settingsData.cmd.sudocmd}
           headingLevel="h1"
           preText="Sudo command"
         />
@@ -114,7 +112,19 @@ const SudoCmdsTabs = ({ section }) => {
             eventKey={"settings"}
             name="settings-details"
             title={<TabTitleText>Settings</TabTitleText>}
-          ></Tab>
+          >
+            <SudoCmdsSettings
+              cmd={settingsData.cmd}
+              originalCmd={settingsData.originalCmd}
+              metadata={settingsData.metadata}
+              onChange={settingsData.setCmd}
+              isDataLoading={settingsData.isFetching}
+              onRefresh={settingsData.refetch}
+              isModified={settingsData.modified}
+              onResetValues={settingsData.resetValues}
+              modifiedValues={settingsData.modifiedValues}
+            />
+          </Tab>
         </Tabs>
       </PageSection>
     </>

@@ -1,6 +1,8 @@
 import {
   api,
+  BatchResponse,
   Command,
+  FindRPCResponse,
   getCommand,
   getBatchCommand,
   BatchRPCResponse,
@@ -18,8 +20,12 @@ import { SudoCmd } from "../utils/datatypes/globalDataTypes";
  * - sudocmd_show: https://freeipa.readthedocs.io/en/latest/api/sudocmd_show.html
  * - sudocmd_add: https://freeipa.readthedocs.io/en/latest/api/sudocmd_add_.html
  * - sudocmd_del: https://freeipa.readthedocs.io/en/latest/api/sudocmd_del.html
- *
+ * - sudocmd_mod: https://freeipa.readthedocs.io/en/latest/api/sudocmd_mod.html
  */
+
+export type CmdFullData = {
+  cmd?: Partial<SudoCmd>;
+};
 
 export interface SudoCmdsShowPayload {
   sudoCmdNamesList: string[];
@@ -102,6 +108,54 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(cmdsToDeletePayload, API_VERSION_BACKUP);
       },
     }),
+    getSudoCmdFullData: build.query<CmdFullData, string>({
+      query: (cmd) => {
+        // Prepare search parameters
+        const params = {
+          all: true,
+          rights: true,
+        };
+
+        const showCommand: Command = {
+          method: "sudocmd_show",
+          params: [[cmd], params],
+        };
+
+        const batchPayload: Command[] = [showCommand];
+
+        return getBatchCommand(batchPayload, API_VERSION_BACKUP);
+      },
+      transformResponse: (response: BatchResponse): CmdFullData => {
+        const [cmdResponse] = response.result.results;
+
+        // Initialize data (to prevent 'undefined' values)
+        const cmdData = cmdResponse.result;
+        let cmdObject = {};
+        if (!cmdResponse.error) {
+          cmdObject = apiToSudoCmd(cmdData);
+        }
+
+        return {
+          cmd: cmdObject,
+        };
+      },
+      providesTags: ["FullSudoCmd"],
+    }),
+    saveSudoCmd: build.mutation<FindRPCResponse, Partial<SudoCmd>>({
+      query: (cmd) => {
+        const params = {
+          version: API_VERSION_BACKUP,
+          ...cmd,
+        };
+        delete params["sudocmd"];
+        const id = cmd.sudocmd !== undefined ? cmd.sudocmd : "";
+        return getCommand({
+          method: "sudocmd_mod",
+          params: [[id], params],
+        });
+      },
+      invalidatesTags: ["FullSudoCmd"],
+    }),
   }),
   overrideExisting: false,
 });
@@ -116,4 +170,6 @@ export const {
   useGetSudoCmdsInfoByNameQuery,
   useAddSudoCmdMutation,
   useRemoveSudoCmdsMutation,
+  useGetSudoCmdFullDataQuery,
+  useSaveSudoCmdMutation,
 } = extendedApi;

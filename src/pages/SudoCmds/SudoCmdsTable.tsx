@@ -7,6 +7,8 @@ import TableLayout from "../../components/layouts/TableLayout";
 import { SudoCmd } from "../../utils/datatypes/globalDataTypes";
 // Layouts
 import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
+// React Router DOM
+import { Link } from "react-router-dom";
 
 interface CmdsData {
   isSudoCmdSelectable: (cmd: SudoCmd) => boolean;
@@ -170,7 +172,11 @@ const SudoCmdsTable = (props: PropsToTable) => {
           isDisabled: !props.cmdsData.isSudoCmdSelectable(cmd),
         }}
       />
-      <Td dataLabel={columnNames.sudocmd}>{cmd.sudocmd}</Td>
+      <Td dataLabel={columnNames.sudocmd}>
+        <Link to={"/sudo-commands/" + cmd.sudocmd} state={cmd}>
+          {cmd.sudocmd}
+        </Link>
+      </Td>
       <Td dataLabel={columnNames.description}>{cmd.description}</Td>
     </Tr>
   ));

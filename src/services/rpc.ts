@@ -231,6 +231,7 @@ export const api = createApi({
     "FullIDViewHostgroups",
     "FullSudoRule",
     "FullSudoCmdGroup",
+    "FullSudoCmd",
   ],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
