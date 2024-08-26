@@ -33,6 +33,7 @@ import SudoRules from "src/pages/SudoRules/SudoRules";
 import SudoCmds from "src/pages/SudoCmds/SudoCmds";
 import SudoCmdsTabs from "src/pages/SudoCmds/SudoCmdsTabs";
 import SudoCmdGroups from "src/pages/SudoCmdGroups/SudoCmdGroups";
+import SudoCmdGroupsTabs from "src/pages/SudoCmdGroups/SudoCmdGroupsTabs";
 import SELinuxUserMaps from "src/pages/SELinuxUserMaps/SELinuxUserMaps";
 import PasswordPolicies from "src/pages/PasswordPolicies/PasswordPolicies";
 import KrbTicketPolicy from "src/pages/KrbTicketPolicy/KrbTicketPolicy";
@@ -266,6 +267,12 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="sudo-command-groups">
                 <Route path="" element={<SudoCmdGroups />} />
+                <Route path=":cn">
+                  <Route
+                    path=""
+                    element={<SudoCmdGroupsTabs section="settings" />}
+                  />
+                </Route>
               </Route>
               <Route path="selinux-user-maps">
                 <Route path="" element={<SELinuxUserMaps />} />

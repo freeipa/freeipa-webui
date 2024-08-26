@@ -15,19 +15,20 @@ import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
 // Hooks
-import { useHBACServiceSettings } from "src/hooks/useHBACServiceSettingsData";
+import { useSudoCmdGroupsSettings } from "src/hooks/useSudoCmdGroupsSettingsData";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { NotFound } from "src/components/errors/PageErrors";
+import SudoCmdGroupsSettings from "./SudoCmdGroupsSettings";
 
 // eslint-disable-next-line react/prop-types
-const SudoCmdsTabs = ({ section }) => {
+const SudoCmdGroupsTabs = ({ section }) => {
   // Get location (React Router DOM) and get state data
   const { cn } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const settingsData = useHBACServiceSettings(cn as string);
+  const settingsData = useSudoCmdGroupsSettings(cn as string);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(section);
@@ -51,7 +52,7 @@ const SudoCmdsTabs = ({ section }) => {
       // Update breadcrumb route
       const currentPath: BreadCrumbItem[] = [
         {
-          name: "Sudo commands",
+          name: "Sudo command groups",
           url: URL_PREFIX + "/sudo-command-groups",
         },
         {
@@ -74,15 +75,12 @@ const SudoCmdsTabs = ({ section }) => {
     setActiveTabKey(section);
   }, [section]);
 
-  if (settingsData.isLoading || settingsData.service.cn === undefined) {
+  if (settingsData.isLoading || settingsData.group.cn === undefined) {
     return <DataSpinner />;
   }
 
   // Show the 'NotFound' page if the data is not found
-  if (
-    !settingsData.isLoading &&
-    Object.keys(settingsData.service).length === 0
-  ) {
+  if (!settingsData.isLoading && Object.keys(settingsData.group).length === 0) {
     return <NotFound />;
   }
 
@@ -94,8 +92,8 @@ const SudoCmdsTabs = ({ section }) => {
           breadcrumbItems={breadcrumbItems}
         />
         <TitleLayout
-          id={settingsData.service.cn}
-          text={settingsData.service.cn}
+          id={settingsData.group.cn}
+          text={settingsData.group.cn}
           headingLevel="h1"
           preText="Sudo command group"
         />
@@ -114,11 +112,23 @@ const SudoCmdsTabs = ({ section }) => {
             eventKey={"settings"}
             name="settings-details"
             title={<TabTitleText>Settings</TabTitleText>}
-          ></Tab>
+          >
+            <SudoCmdGroupsSettings
+              group={settingsData.group}
+              originalGroup={settingsData.originalGroup}
+              metadata={settingsData.metadata}
+              onChange={settingsData.setGroup}
+              isDataLoading={settingsData.isFetching}
+              onRefresh={settingsData.refetch}
+              isModified={settingsData.modified}
+              onResetValues={settingsData.resetValues}
+              modifiedValues={settingsData.modifiedValues}
+            />
+          </Tab>
         </Tabs>
       </PageSection>
     </>
   );
 };
 
-export default SudoCmdsTabs;
+export default SudoCmdGroupsTabs;
