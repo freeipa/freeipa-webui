@@ -30,10 +30,15 @@ import {
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { setIsLogin } from "src/store/Global/auth-slice";
+// Navigation
+import { useNavigate } from "react-router-dom";
 
 const LoginMainPage = () => {
   // Redux
   const dispatch = useAppDispatch();
+
+  // Navigate
+  const navigate = useNavigate();
 
   // Alerts to show in the UI
   const alerts = useAlerts();
@@ -107,25 +112,13 @@ const LoginMainPage = () => {
   const [showErrorModal, setShowErrorModal] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string>("");
 
-  const getErrorMessageByType = (error: string) => {
-    switch (error) {
-      case "Unauthorized":
-        return "Invalid username or password.";
-      // TODO: Add more error messages here
-      default:
-        return "An error occurred. Please try again.";
-    }
-  };
-
   // Modal to show any received error
-  const errorModal = (errorType: string) => {
-    if (errorType !== "") {
-      const errorMessage = getErrorMessageByType(errorType);
-
+  const errorModal = (errorMessage: string) => {
+    if (errorMessage !== "") {
       return (
         <Modal
           variant={ModalVariant.small}
-          title="Invalid authentication"
+          title="Authentication error"
           isOpen={showErrorModal}
           onClose={() => setShowErrorModal(false)}
           actions={[
@@ -156,6 +149,44 @@ const LoginMainPage = () => {
     // Forcing full page to reload and access the protected pages (Default: active users)
     window.location.reload();
     // TODO: Improve this mechanism and redirect to the last page visited
+  };
+
+  // Analyze the error reason
+  const analyzeErrorReason = (reason: string | null) => {
+    let returnMessage = "";
+    switch (reason) {
+      case "password-expired":
+        returnMessage =
+          "Your password has expired. Please enter a new password.";
+        break;
+      case "denied":
+        // TODO: Specify what to do in this case
+        break;
+      case "krbprincipal-expired":
+        // Show modal with the error
+        setShowErrorModal(true);
+        setErrorMessage("Kerberos Principal you entered is expired");
+        break;
+      case "invalid-password":
+        // Show modal with the error
+        setShowErrorModal(true);
+        setErrorMessage("The password or username you entered is incorrect");
+        break;
+      case "user-locked":
+        // Show modal with the error
+        setShowErrorModal(true);
+        setErrorMessage("The user account you entered is locked");
+        break;
+      case null:
+        // Assume sucessful login
+        onSuccessLogin();
+        break;
+      default:
+        // Unknown error. This should not happen
+        console.error("Unknown error reason: ", reason);
+        break;
+    }
+    return returnMessage;
   };
 
   // On login handler
@@ -196,15 +227,18 @@ const LoginMainPage = () => {
       onUserPwdLogin({ username, password }).then((response) => {
         if ("error" in response) {
           const receivedError = response.error as MetaResponse;
-          const status = receivedError.response?.status;
-          const statusText = receivedError.response?.statusText;
 
-          if (status === 200) {
-            onSuccessLogin();
-          } else {
-            // Handle other errors
-            setShowErrorModal(true);
-            setErrorMessage(statusText);
+          // Get the reason of the error
+          const reason = receivedError.response?.headers.get(
+            "x-ipa-rejection-reason"
+          );
+
+          const msg = analyzeErrorReason(reason);
+
+          if (msg) {
+            navigate("/reset-password/" + username, {
+              state: username,
+            });
           }
         } else {
           onSuccessLogin();

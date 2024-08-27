@@ -142,8 +142,6 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       onClick={(event) => {
         event.preventDefault();
         const primaryContentContainer = document.getElementById(pageId);
-        console.log("primaryContentContainer");
-        console.log(primaryContentContainer);
         primaryContentContainer && primaryContentContainer.focus();
       }}
       href={`#${pageId}`}
