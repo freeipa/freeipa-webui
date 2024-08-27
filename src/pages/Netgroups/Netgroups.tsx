@@ -20,7 +20,7 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 // Components
-import BulkSelectorNetgroupsPrep from "src/components/BulkSelectorNetgroupsPrep";
+import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 // Tables
 import NetgroupsTable from "src/pages/Netgroups/NetgroupsTable";
@@ -364,10 +364,10 @@ const Netgroups = () => {
 
   // - 'BulkSelectorPrep'
   const groupsBulkSelectorData = {
-    selectedGroups,
-    updateSelectedGroups,
-    selectableGroupsTable,
-    isNetgroupSelectable,
+    selected: selectedGroups,
+    updateSelected: updateSelectedGroups,
+    selectableTable: selectableGroupsTable,
+    nameAttr: "cn",
   };
 
   const buttonsData = {
@@ -417,7 +417,7 @@ const Netgroups = () => {
     {
       key: 0,
       element: (
-        <BulkSelectorNetgroupsPrep
+        <BulkSelectorPrep
           list={groupsList}
           shownElementsList={groupsList}
           elementData={groupsBulkSelectorData}

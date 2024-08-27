@@ -24,7 +24,7 @@ import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import KebabLayout from "src/components/layouts/KebabLayout";
 // Components
-import BulkSelectorHostsPrep from "src/components/BulkSelectorHostsPrep";
+import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 // Tables
 import HostsTable from "./HostsTable";
@@ -338,7 +338,7 @@ const Hosts = () => {
         newSelectedHosts.push(hosts[i]);
       }
     } else {
-      // Remove user
+      // Remove host
       for (let i = 0; i < selectedHosts.length; i++) {
         let found = false;
         for (let ii = 0; ii < hosts.length; ii++) {
@@ -522,10 +522,10 @@ const Hosts = () => {
 
   // - 'BulkSelectorPrep'
   const hostsBulkSelectorData = {
-    selectedHosts,
-    updateSelectedHosts,
-    selectableHostsTable,
-    isHostSelectable,
+    selected: selectedHosts,
+    updateSelected: updateSelectedHosts,
+    selectableTable: selectableHostsTable,
+    nameAttr: "fqdn",
   };
 
   const buttonsData = {
@@ -575,7 +575,7 @@ const Hosts = () => {
     {
       key: 0,
       element: (
-        <BulkSelectorHostsPrep
+        <BulkSelectorPrep
           list={hostsList}
           shownElementsList={hostsList}
           elementData={hostsBulkSelectorData}

@@ -20,7 +20,7 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 // Components
-import BulkSelectorUserGroupsPrep from "src/components/BulkSelectorUserGroupsPrep";
+import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 // Tables
 import UserGroupsTable from "./UserGroupsTable";
@@ -363,10 +363,10 @@ const UserGroups = () => {
 
   // - 'BulkSelectorPrep'
   const groupsBulkSelectorData = {
-    selectedGroups,
-    updateSelectedGroups,
-    selectableGroupsTable,
-    isUserGroupSelectable,
+    selected: selectedGroups,
+    updateSelected: updateSelectedGroups,
+    selectableTable: selectableGroupsTable,
+    nameAttr: "cn",
   };
 
   const buttonsData = {
@@ -416,7 +416,7 @@ const UserGroups = () => {
     {
       key: 0,
       element: (
-        <BulkSelectorUserGroupsPrep
+        <BulkSelectorPrep
           list={groupsList}
           shownElementsList={groupsList}
           elementData={groupsBulkSelectorData}

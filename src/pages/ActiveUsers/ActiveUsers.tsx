@@ -34,7 +34,7 @@ import TextLayout from "src/components/layouts/TextLayout";
 import UsersTable from "../../components/tables/UsersTable";
 // Components
 import PaginationLayout from "../../components/layouts/PaginationLayout";
-import BulkSelectorUsersPrep from "src/components/BulkSelectorUsersPrep";
+import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 // Modals
 import AddUser from "src/components/modals/AddUser";
 import DeleteUsers from "src/components/modals/DeleteUsers";
@@ -543,10 +543,10 @@ const ActiveUsers = () => {
 
   // - 'BulkSelectorUsersPrep'
   const usersBulkSelectorData = {
-    selectedUsers,
-    updateSelectedUsers,
-    selectableUsersTable,
-    isUserSelectable,
+    selected: selectedUsers,
+    updateSelected: updateSelectedUsers,
+    selectableTable: selectableUsersTable,
+    nameAttr: "uid",
   };
 
   const buttonsData = {
@@ -610,10 +610,10 @@ const ActiveUsers = () => {
     {
       key: 0,
       element: (
-        <BulkSelectorUsersPrep
+        <BulkSelectorPrep
           list={activeUsersList}
           shownElementsList={activeUsersList}
-          usersData={usersBulkSelectorData}
+          elementData={usersBulkSelectorData}
           buttonsData={buttonsData}
           selectedPerPageData={selectedPerPageData}
         />

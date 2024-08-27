@@ -29,7 +29,7 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import HBACServiceGroupsTable from "./HBACServiceGroupsTable";
 // Components
 import PaginationLayout from "../../components/layouts/PaginationLayout";
-import BulkSelectorHBACServiceGroupsPrep from "src/components/BulkSelectorHBACSvcGroupPrep";
+import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 // Modals
 import AddHBACServiceGroup from "src/components/modals/AddHBACServiceGroup";
 import DeleteHBACServiceGroup from "src/components/modals/DeleteHBACServiceGroup";
@@ -371,12 +371,12 @@ const HBACServiceGroups = () => {
     totalCount,
   };
 
-  // - 'BulkSelectorHBACServiceGroupsPrep'
+  // - 'BulkSelectorPrep'
   const svcGroupBulkSelectorData = {
-    selectedServices,
-    updateSelectedServices,
-    selectableServicesTable,
-    isHbacServiceSelectable: isHbacServiceGroupSelectable,
+    selected: selectedServices,
+    updateSelected: updateSelectedServices,
+    selectableTable: selectableServicesTable,
+    nameAttr: "cn",
   };
 
   const buttonsData = {
@@ -426,7 +426,7 @@ const HBACServiceGroups = () => {
     {
       key: 0,
       element: (
-        <BulkSelectorHBACServiceGroupsPrep
+        <BulkSelectorPrep
           list={servicesList}
           shownElementsList={servicesList}
           elementData={svcGroupBulkSelectorData}

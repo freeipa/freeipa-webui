@@ -23,7 +23,7 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 // Components
-import BulkSelectorIDViewsPrep from "src/components/BulkSelectorIDViewsPrep";
+import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 // Tables
 import IDViewsTable from "src/pages/IDViews/IDViewsTable";
@@ -453,10 +453,10 @@ const IDViews = () => {
 
   // - 'BulkSelectorIDViewPrep'
   const viewsBulkSelectorData = {
-    selectedViews,
-    updateSelectedViews,
-    selectableViewsTable,
-    isViewSelectable,
+    selected: selectedViews,
+    updateSelected: updateSelectedViews,
+    selectableTable: selectableViewsTable,
+    nameAttr: "cn",
   };
 
   const buttonsData = {
@@ -534,7 +534,7 @@ const IDViews = () => {
     {
       key: 0,
       element: (
-        <BulkSelectorIDViewsPrep
+        <BulkSelectorPrep
           list={viewsList}
           shownElementsList={viewsList}
           elementData={viewsBulkSelectorData}

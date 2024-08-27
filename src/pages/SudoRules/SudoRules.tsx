@@ -29,7 +29,7 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SudoRulesTable from "./SudoRulesTable";
 // Components
 import PaginationLayout from "../../components/layouts/PaginationLayout";
-import BulkSelectorSudoRulesPrep from "src/components/BulkSelectorSudoRulesPrep";
+import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 // Modals
 import AddSudoRule from "src/components/modals/AddSudoRule";
 import DeleteSudoRule from "src/components/modals/DeleteSudoRule";
@@ -406,10 +406,10 @@ const SudoRules = () => {
 
   // - 'BulkSelectorSudoRulesPrep'
   const rulesBulkSelectorData = {
-    selectedRules,
-    updateSelectedRules,
-    selectableRulesTable,
-    isSudoRuleSelectable,
+    selected: selectedRules,
+    updateSelected: updateSelectedRules,
+    selectableTable: selectableRulesTable,
+    nameAttr: "cn",
   };
 
   const buttonsData = {
@@ -473,7 +473,7 @@ const SudoRules = () => {
     {
       key: 0,
       element: (
-        <BulkSelectorSudoRulesPrep
+        <BulkSelectorPrep
           list={rulesList}
           shownElementsList={rulesList}
           elementData={rulesBulkSelectorData}
