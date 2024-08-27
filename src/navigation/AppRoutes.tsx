@@ -45,6 +45,7 @@ import NetgroupsTabs from "src/pages/Netgroups/NetgroupsTabs";
 import HBACServicesTabs from "src/pages/HBACServices/HBACServicesTabs";
 import HBACRulesTabs from "src/pages/HBACRules/HBACRulesTabs";
 import HBACServiceGroupsTabs from "src/pages/HBACServiceGroups/HBACServiceGroupsTabs";
+import ResetPasswordPage from "src/login/ResetPasswordPage";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -292,6 +293,9 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
           ) : (
             <>
               <Route path="login" element={<LoginMainPage />} />
+              <Route path="reset-password">
+                <Route path=":uid" element={<ResetPasswordPage />} />
+              </Route>
               <Route path="*" element={<Navigate to={"login"} replace />} />
             </>
           )}

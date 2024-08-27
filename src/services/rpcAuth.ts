@@ -18,6 +18,13 @@ export interface UserPasswordPayload {
   password: string;
 }
 
+export interface ResetPasswordPayload {
+  username: string;
+  oldPassword: string;
+  newPassword: string;
+  otp?: string;
+}
+
 export interface ResponseOnLogin {
   error: {
     data: string;
@@ -63,6 +70,7 @@ export interface MetaResponse {
 export const LOGIN_URL = "/ipa/session/login_password";
 export const KERBEROS_URL = "/ipa/session/login_kerberos";
 export const X509_URL = "/ipa/session/login_x509";
+export const RESET_PASSWORD_URL = "/ipa/session/change_password";
 
 // Utils
 export const encodeURIObject = (obj: Record<string, string>) => {
@@ -158,6 +166,40 @@ const extendedApi = api.injectEndpoints({
         return meta as unknown as MetaResponse;
       },
     }),
+    resetPassword: build.mutation<
+      FindRPCResponse | MetaResponse,
+      ResetPasswordPayload
+    >({
+      query: (payload) => {
+        const encodedCredentials = encodeURIObject({
+          user: payload.username,
+          old_password: payload.oldPassword,
+          new_password: payload.newPassword,
+        });
+
+        if (payload.otp) {
+          encodedCredentials.concat("&otp=" + payload.otp);
+        }
+
+        const resetPasswordRequest = {
+          url: RESET_PASSWORD_URL,
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "Data-Type": "html",
+          },
+          body: encodedCredentials,
+        };
+
+        return resetPasswordRequest;
+      },
+      transformErrorResponse: (
+        response: FetchBaseQueryError,
+        meta: FetchBaseQueryMeta
+      ) => {
+        return meta as unknown as MetaResponse;
+      },
+    }),
   }),
 });
 
@@ -166,4 +208,5 @@ export const {
   useLogoutMutation,
   useKrbLoginMutation,
   useX509LoginMutation,
+  useResetPasswordMutation,
 } = extendedApi;

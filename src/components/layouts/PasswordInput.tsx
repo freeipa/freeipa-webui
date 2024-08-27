@@ -21,6 +21,8 @@ interface PropsToPasswordInput {
   onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
   onRevealHandler: (value: boolean) => void;
   validated?: "success" | "warning" | "error" | "default";
+  isRequired?: boolean;
+  isDisabled?: boolean;
 }
 
 // Note - onChange function should trigger validation check (validated prop)
@@ -37,6 +39,8 @@ const PasswordInput = (props: PropsToPasswordInput) => {
           onFocus={props.onFocus}
           onChange={(_event, value) => props.onChange(value)}
           validated={props.validated}
+          required={props.isRequired || false}
+          isDisabled={props.isDisabled || false}
         />
       </InputGroupItem>
       <InputGroupItem>
