@@ -29,7 +29,7 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import HBACServicesTable from "./HBACServicesTable";
 // Components
 import PaginationLayout from "../../components/layouts/PaginationLayout";
-import BulkSelectorHBACServicesPrep from "src/components/BulkSelectorHBACServicesPrep";
+import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 // Modals
 import AddHBACService from "src/components/modals/AddHBACService";
 import DeleteHBACService from "src/components/modals/DeleteHBACService";
@@ -369,10 +369,10 @@ const HBACServices = () => {
 
   // - 'BulkSelectorHBACServicesPrep'
   const rulesBulkSelectorData = {
-    selectedServices,
-    updateSelectedServices,
-    selectableServicesTable,
-    isHbacServiceSelectable,
+    selected: selectedServices,
+    updateSelected: updateSelectedServices,
+    selectableTable: selectableServicesTable,
+    nameAttr: "cn",
   };
 
   const buttonsData = {
@@ -422,7 +422,7 @@ const HBACServices = () => {
     {
       key: 0,
       element: (
-        <BulkSelectorHBACServicesPrep
+        <BulkSelectorPrep
           list={servicesList}
           shownElementsList={servicesList}
           elementData={rulesBulkSelectorData}

@@ -20,7 +20,7 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 // Components
-import BulkSelectorHostGroupsPrep from "src/components/BulkSelectorHostGroupsPrep";
+import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 // Tables
 import HostGroupsTable from "src/pages/HostGroups/HostGroupsTable";
@@ -364,10 +364,10 @@ const HostGroups = () => {
 
   // - 'BulkSelectorPrep'
   const groupsBulkSelectorData = {
-    selectedGroups,
-    updateSelectedGroups,
-    selectableGroupsTable,
-    isHostGroupSelectable,
+    selected: selectedGroups,
+    updateSelected: updateSelectedGroups,
+    selectableTable: selectableGroupsTable,
+    nameAttr: "cn",
   };
 
   const buttonsData = {
@@ -417,7 +417,7 @@ const HostGroups = () => {
     {
       key: 0,
       element: (
-        <BulkSelectorHostGroupsPrep
+        <BulkSelectorPrep
           list={groupsList}
           shownElementsList={groupsList}
           elementData={groupsBulkSelectorData}

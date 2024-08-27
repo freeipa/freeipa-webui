@@ -20,7 +20,7 @@ import SearchInputLayout from "../../components/layouts/SearchInputLayout";
 import SecondaryButton from "../../components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "../../components/layouts/HelpTextWithIconLayout";
 // Components
-import BulkSelectorServicesPrep from "../../components/BulkSelectorServicesPrep";
+import BulkSelectorPrep from "../../components/BulkSelectorPrep";
 import PaginationLayout from "../../components/layouts/PaginationLayout";
 // Tables
 import ServicesTable from "./ServicesTable";
@@ -396,10 +396,10 @@ const Services = () => {
 
   // - 'BulkSelectorPrep'
   const servicesBulkSelectorData = {
-    selectedServices,
-    updateSelectedServices,
-    selectableServicesTable,
-    isServiceSelectable,
+    selected: selectedServices,
+    updateSelected: updateSelectedServices,
+    selectableTable: selectableServicesTable,
+    nameAttr: "krbcanonicalname",
   };
 
   const buttonsData = {
@@ -453,7 +453,7 @@ const Services = () => {
     {
       key: 0,
       element: (
-        <BulkSelectorServicesPrep
+        <BulkSelectorPrep
           list={servicesList}
           shownElementsList={servicesList}
           elementData={servicesBulkSelectorData}

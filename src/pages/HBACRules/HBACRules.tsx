@@ -29,7 +29,7 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import HBACRulesTable from "./HBACRulesTable";
 // Components
 import PaginationLayout from "../../components/layouts/PaginationLayout";
-import BulkSelectorHBACRulesPrep from "src/components/BulkSelectorHBACRulesPrep";
+import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 // Modals
 import AddHBACRule from "src/components/modals/AddHBACRule";
 import DeleteHBACRule from "src/components/modals/DeleteHBACRule";
@@ -406,10 +406,10 @@ const HBACRules = () => {
 
   // - 'BulkSelectorHBACRulesPrep'
   const rulesBulkSelectorData = {
-    selectedRules,
-    updateSelectedRules,
-    selectableRulesTable,
-    isHbacRuleSelectable,
+    selected: selectedRules,
+    updateSelected: updateSelectedRules,
+    selectableTable: selectableRulesTable,
+    nameAttr: "cn",
   };
 
   const buttonsData = {
@@ -473,7 +473,7 @@ const HBACRules = () => {
     {
       key: 0,
       element: (
-        <BulkSelectorHBACRulesPrep
+        <BulkSelectorPrep
           list={rulesList}
           shownElementsList={rulesList}
           elementData={rulesBulkSelectorData}

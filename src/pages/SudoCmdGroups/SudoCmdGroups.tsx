@@ -29,7 +29,7 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SudoCmdGroupsTable from "./SudoCmdGroupsTable";
 // Components
 import PaginationLayout from "../../components/layouts/PaginationLayout";
-import BulkSelectorSudoCmdGroupsPrep from "src/components/BulkSelectorSudoCmdGroupsPrep";
+import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 // Modals
 import AddSudoCmdGroup from "src/components/modals/AddSudoCmdGroup";
 import DeleteSudoCmdGroups from "src/components/modals/DeleteSudoCmdGroups";
@@ -364,10 +364,10 @@ const SudoCmds = () => {
 
   // - 'BulkSelector'
   const cmdsBulkSelectorData = {
-    selectedCmdGroups,
-    updateSelectedCmdGroups,
-    selectableCmdGroupsTable,
-    isSudoCmdGroupSelectable,
+    selected: selectedCmdGroups,
+    updateSelected: updateSelectedCmdGroups,
+    selectableTable: selectableCmdGroupsTable,
+    nameAttr: "cn",
   };
 
   const buttonsData = {
@@ -415,7 +415,7 @@ const SudoCmds = () => {
     {
       key: 0,
       element: (
-        <BulkSelectorSudoCmdGroupsPrep
+        <BulkSelectorPrep
           list={cmdList}
           shownElementsList={cmdList}
           elementData={cmdsBulkSelectorData}
