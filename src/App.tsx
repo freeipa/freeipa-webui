@@ -122,7 +122,7 @@ const App: React.FunctionComponent = () => {
   return (
     <>
       {hasUser && userLoggedIn && (
-        <AppLayout>
+        <AppLayout loggedInUser={loggedInUser}>
           <AppRoutes isInitialDataLoaded={isDataLoaded} />
         </AppLayout>
       )}

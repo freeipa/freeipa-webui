@@ -488,6 +488,14 @@ const extendedApi = api.injectEndpoints({
         return userList;
       },
     }),
+    getUserDetailsByUid: build.mutation<FindRPCResponse, string>({
+      query: (uid) => {
+        return getCommand({
+          method: "user_show",
+          params: [[uid], { version: API_VERSION_BACKUP }],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -554,4 +562,5 @@ export const {
   useGetRadiusProxyQuery,
   useGetIdpServerQuery,
   useGetUsersInfoByUidQuery,
+  useGetUserDetailsByUidMutation,
 } = extendedApi;
