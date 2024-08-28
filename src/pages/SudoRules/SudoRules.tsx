@@ -31,9 +31,9 @@ import SudoRulesTable from "./SudoRulesTable";
 import PaginationLayout from "../../components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 // Modals
-import AddSudoRule from "src/components/modals/AddSudoRule";
-import DeleteSudoRule from "src/components/modals/DeleteSudoRule";
-import DisableEnableSudoRules from "src/components/modals/DisableEnableSudoRules";
+import AddSudoRule from "src/components/modals/SudoModals/AddSudoRule";
+import DeleteSudoRule from "src/components/modals/SudoModals/DeleteSudoRule";
+import DisableEnableSudoRules from "src/components/modals/SudoModals/DisableEnableSudoRules";
 // Hooks
 import { useAlerts } from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";

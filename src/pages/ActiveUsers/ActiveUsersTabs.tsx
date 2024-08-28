@@ -14,7 +14,7 @@ import {
 // React Router DOM
 import { useNavigate, useParams } from "react-router-dom";
 // Components
-import UserSettings from "../../components/UserSettings";
+import UserSettings from "src/components/UsersSections/UserSettings";
 import UserMemberOf from "./UserMemberOf";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 // Layouts

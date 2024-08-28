@@ -31,8 +31,8 @@ import HBACServicesTable from "./HBACServicesTable";
 import PaginationLayout from "../../components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 // Modals
-import AddHBACService from "src/components/modals/AddHBACService";
-import DeleteHBACService from "src/components/modals/DeleteHBACService";
+import AddHBACService from "src/components/modals/HbacModals/AddHBACService";
+import DeleteHBACService from "src/components/modals/HbacModals/DeleteHBACService";
 // Hooks
 import { useAlerts } from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";

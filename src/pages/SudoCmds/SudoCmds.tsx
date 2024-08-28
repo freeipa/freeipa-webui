@@ -31,8 +31,8 @@ import SudoCmdsTable from "./SudoCmdsTable";
 import PaginationLayout from "../../components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 // Modals
-import AddSudoCmd from "src/components/modals/AddSudoCmd";
-import DeleteSudoCmd from "src/components/modals/DeleteSudoCmd";
+import AddSudoCmd from "src/components/modals/SudoModals/AddSudoCmd";
+import DeleteSudoCmd from "src/components/modals/SudoModals/DeleteSudoCmd";
 // Hooks
 import { useAlerts } from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";

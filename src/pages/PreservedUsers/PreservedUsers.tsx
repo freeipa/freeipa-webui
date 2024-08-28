@@ -31,9 +31,9 @@ import UsersTable from "../../components/tables/UsersTable";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 // Modals
-import DeleteUsers from "src/components/modals/DeleteUsers";
-import StagePreservedUsers from "src/components/modals/StagePreservedUsers";
-import RestorePreservedUsers from "src/components/modals/RestorePreservedUsers";
+import DeleteUsers from "src/components/modals/UserModals/DeleteUsers";
+import StagePreservedUsers from "src/components/modals/UserModals/StagePreservedUsers";
+import RestorePreservedUsers from "src/components/modals/UserModals/RestorePreservedUsers";
 // Hooks
 import { updateUsersList } from "src/store/Identity/preservedUsers-slice";
 import { useAlerts } from "src/hooks/useAlerts";

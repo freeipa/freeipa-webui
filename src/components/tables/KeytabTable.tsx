@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 // PatternFly
 import { Td, Th, Tr } from "@patternfly/react-table";
 // Layout
-import SettingsTableLayout from "../layouts/SettingsTableLayout";
-import DualListLayout from "../layouts/DualListLayout";
+import SettingsTableLayout from "src/components/layouts/SettingsTableLayout";
+import DualListLayout from "src/components/layouts/DualListLayout";
 // Modals
-import KeytabElementsDeleteModal from "../modals/HostsSettings/KeytabElementsDeleteModal";
+import KeytabElementsDeleteModal from "src/components/modals/KeytabElementsDeleteModal";
 // Hooks
-import { useAlerts } from "../../hooks/useAlerts";
+import { useAlerts } from "src/hooks/useAlerts";
 // Data types
 import {
   Host,
@@ -15,21 +15,21 @@ import {
   Service,
   User,
   UserGroup,
-} from "../../utils/datatypes/globalDataTypes";
+} from "src/utils/datatypes/globalDataTypes";
 // React Router DOM
 import { Link } from "react-router-dom";
 // Utils
-import { API_VERSION_BACKUP } from "../../utils/utils";
+import { API_VERSION_BACKUP } from "src/utils/utils";
 // RPC
 import {
   ErrorResult,
   GetEntriesPayload,
   useGetEntriesMutation,
-} from "../../services/rpc";
+} from "src/services/rpc";
 import {
   KeyTabPayload,
   useUpdateKeyTabMutation,
-} from "../../services/rpcSettings";
+} from "src/services/rpcSettings";
 
 interface PropsToTable {
   from: "host" | "service";

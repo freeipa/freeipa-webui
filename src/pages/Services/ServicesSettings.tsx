@@ -17,7 +17,7 @@ import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/o
 import { Metadata, Service } from "src/utils/datatypes/globalDataTypes";
 // Modals
 import ConfirmationModal from "src/components/modals/ConfirmationModal";
-import IssueNewCertificate from "src/components/modals/IssueNewCertificate";
+import IssueNewCertificate from "src/components/modals/CertificateModals/IssueNewCertificate";
 // Layouts
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";

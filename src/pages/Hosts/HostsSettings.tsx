@@ -23,8 +23,8 @@ import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
 import ModalErrors from "src/components/errors/ModalErrors";
 // Modals
-import HostSetPassword from "src/components/modals/HostSetPassword";
-import IssueNewCertificate from "src/components/modals/IssueNewCertificate";
+import HostSetPassword from "src/components/modals/HostModals/HostSetPassword";
+import IssueNewCertificate from "src/components/modals/CertificateModals/IssueNewCertificate";
 import ConfirmationModal from "src/components/modals/ConfirmationModal";
 // Layouts
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
