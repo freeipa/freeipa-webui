@@ -12,7 +12,7 @@ Given("I am on {string} page", (handle: string) => {
 // login
 Given("I am logged in as {string}", (username: string) => {
   cy.url().then(($url) => {
-    if (!$url.includes("modern_ui")) {
+    if ($url.includes("modern_ui/login")) {
       // @ts-ignore
       cy.loginAsAnUser(
         Cypress.env("admin_login"),
@@ -23,7 +23,7 @@ Given("I am logged in as {string}", (username: string) => {
   cy.get(
     "div.pf-v5-c-masthead__content button span.pf-v5-c-menu-toggle__text"
   ).then(($ele) => {
-    if ($ele.text() != username) {
+    if ($ele.text() !== username) {
       // @ts-ignore
       cy.loginAsAnUser(
         Cypress.env("admin_login"),

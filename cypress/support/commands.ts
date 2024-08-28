@@ -42,10 +42,10 @@ declare global {
 
 Cypress.Commands.add("loginAsAnUser", (username: string, password: string) => {
   // temporary solution as the new UI doesn't have login page yet
-  cy.visit("/ipa/ui");
-  cy.get("[id=username1]").type(username);
-  cy.get("[id=password2").type(password);
-  cy.get("button[name=login]").click();
+  cy.visit(Cypress.env("login_url"));
+  cy.get("[id=pf-login-username-id]").type(username);
+  cy.get("[id=pf-login-password-id").type(password);
+  cy.get("button").contains("Log in").click();
   cy.wait(1000);
   cy.visit(Cypress.env("base_url"));
 });

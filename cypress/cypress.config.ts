@@ -32,6 +32,7 @@ export default defineConfig({
   },
   env: {
     base_url: "/ipa/modern_ui",
+    login_url: "/ipa/modern_ui/login",
     admin_login: "admin",
     admin_password: "Secret123",
     TAGS: "not @ignore",
