@@ -11,6 +11,7 @@ Given("I am on {string} page", (handle: string) => {
 
 // login
 Given("I am logged in as {string}", (username: string) => {
+  cy.wait(1000);
   cy.url().then(($url) => {
     if ($url.includes("modern_ui/login")) {
       // @ts-ignore

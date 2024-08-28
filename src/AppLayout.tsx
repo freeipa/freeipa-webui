@@ -32,13 +32,41 @@ import avatarImg from "public/images/avatarImg.svg";
 // Redux
 import { useAppDispatch } from "./store/hooks";
 import { setIsLogout } from "./store/Global/auth-slice";
+// RPC
 import { useLogoutMutation } from "./services/rpcAuth";
+import { useGetUserDetailsByUidMutation } from "./services/rpcUsers";
 
-const AppLayout = ({ children }: { children: React.ReactNode }) => {
+interface PropsToAppLayout {
+  loggedInUser: string | null;
+  children: React.ReactNode;
+}
+
+const AppLayout = (props: PropsToAppLayout) => {
   const dispatch = useAppDispatch();
 
   // RPC
   const [logout] = useLogoutMutation();
+  const [getUserDetails] = useGetUserDetailsByUidMutation();
+
+  // Retrieve and assign user full name
+  const [fullName, setFullName] = React.useState<string>("");
+
+  React.useEffect(() => {
+    if (props.loggedInUser) {
+      getUserDetails(props.loggedInUser).then((response) => {
+        if ("data" in response) {
+          const first = response.data.result.result.givenname;
+          const last = response.data.result.result.sn;
+          // Some users (e.g., admin) don't have first name
+          if (!first) {
+            setFullName(last as string);
+          } else {
+            setFullName(first + " " + last);
+          }
+        }
+      });
+    }
+  }, [props.loggedInUser]);
 
   // Toolbar
   const headerToolbar = <Toolbar id="toolbar" />;
@@ -96,7 +124,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
           className="pf-v5-u-mr-md"
           variant="plainText"
         >
-          Administrator
+          {fullName}
         </MenuToggle>
       )}
       isOpen={isDropdownOpen}
@@ -158,7 +186,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       isManagedSidebar={true}
       skipToContent={PageSkipToContent}
     >
-      {children}
+      {props.children}
     </Page>
   );
 };
