@@ -30,16 +30,16 @@ import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import TextLayout from "src/components/layouts/TextLayout";
+import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
 import UsersTable from "../../components/tables/UsersTable";
 // Components
 import PaginationLayout from "../../components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 // Modals
-import AddUser from "src/components/modals/AddUser";
-import DeleteUsers from "src/components/modals/DeleteUsers";
-import DisableEnableUsers from "src/components/modals/DisableEnableUsers";
-import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
+import AddUser from "src/components/modals/UserModals/AddUser";
+import DeleteUsers from "src/components/modals/UserModals/DeleteUsers";
+import DisableEnableUsers from "src/components/modals/UserModals/DisableEnableUsers";
 // Hooks
 import { useAlerts } from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";

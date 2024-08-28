@@ -23,15 +23,15 @@ import TextLayout from "src/components/layouts/TextLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import KebabLayout from "src/components/layouts/KebabLayout";
+import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Components
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 // Tables
 import HostsTable from "./HostsTable";
 // Modal
-import AddHost from "src/components/modals/AddHost";
-import DeleteHosts from "src/components/modals/DeleteHosts";
-import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
+import AddHost from "src/components/modals/HostModals/AddHost";
+import DeleteHosts from "src/components/modals/HostModals/DeleteHosts";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import { updateHostsList } from "src/store/Identity/hosts-slice";

@@ -36,9 +36,9 @@ import UsersTable from "../../components/tables/UsersTable";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 // Modals
-import DeleteUsers from "src/components/modals/DeleteUsers";
-import AddUser from "src/components/modals/AddUser";
-import ActivateStageUsers from "src/components/modals/ActivateStageUsers";
+import DeleteUsers from "src/components/modals/UserModals/DeleteUsers";
+import AddUser from "src/components/modals/UserModals/AddUser";
+import ActivateStageUsers from "src/components/modals/UserModals/ActivateStageUsers";
 // Utils
 import { API_VERSION_BACKUP, isUserSelectable } from "src/utils/utils";
 // Errors

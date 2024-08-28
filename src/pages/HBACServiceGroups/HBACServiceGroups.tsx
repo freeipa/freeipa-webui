@@ -31,8 +31,8 @@ import HBACServiceGroupsTable from "./HBACServiceGroupsTable";
 import PaginationLayout from "../../components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 // Modals
-import AddHBACServiceGroup from "src/components/modals/AddHBACServiceGroup";
-import DeleteHBACServiceGroup from "src/components/modals/DeleteHBACServiceGroup";
+import AddHBACServiceGroup from "src/components/modals/HbacModals/AddHBACServiceGroup";
+import DeleteHBACServiceGroup from "src/components/modals/HbacModals/DeleteHBACServiceGroup";
 // Hooks
 import { useAlerts } from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";

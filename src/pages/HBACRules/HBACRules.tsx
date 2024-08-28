@@ -31,9 +31,9 @@ import HBACRulesTable from "./HBACRulesTable";
 import PaginationLayout from "../../components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 // Modals
-import AddHBACRule from "src/components/modals/AddHBACRule";
-import DeleteHBACRule from "src/components/modals/DeleteHBACRule";
-import DisableEnableHBACRules from "src/components/modals/DisableEnableHBACRules";
+import AddHBACRule from "src/components/modals/HbacModals/AddHBACRule";
+import DeleteHBACRule from "src/components/modals/HbacModals/DeleteHBACRule";
+import DisableEnableHBACRules from "src/components/modals/HbacModals/DisableEnableHBACRules";
 // Hooks
 import { useAlerts } from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";

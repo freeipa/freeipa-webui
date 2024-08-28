@@ -14,9 +14,9 @@ import { getParamProperties } from "src/utils/ipaObjectUtils";
 // Modals
 import ModalWithTextAreaLayout from "../layouts/ModalWithTextAreaLayout";
 import ConfirmationModal from "../modals/ConfirmationModal";
-import CertificatesInformationModal from "../modals/CertificatesInformationModal";
-import RevokeCertificate from "../modals/RevokeCertificate";
-import RemoveHoldCertificate from "../modals/RemoveHoldCertificate";
+import CertificatesInformationModal from "../modals/CertificateModals/CertificatesInformationModal";
+import RevokeCertificate from "../modals/CertificateModals/RevokeCertificate";
+import RemoveHoldCertificate from "../modals/CertificateModals/RemoveHoldCertificate";
 // Components
 import SecondaryButton from "../layouts/SecondaryButton";
 // RTK

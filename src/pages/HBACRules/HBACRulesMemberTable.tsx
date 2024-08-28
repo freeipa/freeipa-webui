@@ -4,7 +4,7 @@ import { Td, Th, Tr } from "@patternfly/react-table";
 import SettingsTableLayout from "src/components/layouts/SettingsTableLayout";
 // Modals
 import DualListLayout from "src/components/layouts/DualListLayout";
-import RemoveHBACRuleMembersModal from "src/components/modals/RemoveHBACRuleMembers";
+import RemoveHBACRuleMembersModal from "src/components/modals/HbacModals/RemoveHBACRuleMembers";
 // Hooks
 import { useAlerts } from "../../hooks/useAlerts";
 // React Router DOM
