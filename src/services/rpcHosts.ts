@@ -54,6 +54,12 @@ export interface HostShowPayload {
   version: string;
 }
 
+export interface MemberPayload {
+  host: string;
+  idsToAdd: string[];
+  entityType: string;
+}
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     getHostsFullData: build.query<HostFullData, string>({

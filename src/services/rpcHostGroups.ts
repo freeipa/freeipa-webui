@@ -42,6 +42,12 @@ export type GroupFullData = {
   hostGroup?: Partial<HostGroup>;
 };
 
+export interface MemberPayload {
+  hostGroup: string;
+  idsToAdd: string[];
+  entityType: string;
+}
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     getHostGroupsFullData: build.query<GroupFullData, string>({
@@ -194,6 +200,22 @@ const extendedApi = api.injectEndpoints({
         return groupList;
       },
     }),
+    /**
+     * Get host group info by name
+     */
+    getHostGroupById: build.query<HostGroup, string>({
+      query: (groupId) => {
+        return getCommand({
+          method: "hostgroup_show",
+          params: [
+            [groupId],
+            { all: true, rights: true, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): HostGroup =>
+        apiToHostGroup(response.result.result),
+    }),
     saveHostGroup: build.mutation<FindRPCResponse, Partial<HostGroup>>({
       query: (group) => {
         const params = {
@@ -208,6 +230,44 @@ const extendedApi = api.injectEndpoints({
         });
       },
       invalidatesTags: ["FullHostGroup"],
+    }),
+    /**
+     * Given a list of user IDs, add them as members to a group
+     * @param {MemberPayload} - Payload with user IDs and options
+     */
+    addAsMemberHG: build.mutation<FindRPCResponse, MemberPayload>({
+      query: (payload) => {
+        const hostGroup = payload.hostGroup;
+        const idsToAdd = payload.idsToAdd;
+        const memberType = payload.entityType;
+
+        return getCommand({
+          method: "hostgroup_add_member",
+          params: [
+            [hostGroup],
+            { all: true, [memberType]: idsToAdd, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+    }),
+    /**
+     * Remove a user group from some user members
+     * @param {MemberPayload} - Payload with user IDs and options
+     */
+    removeAsMemberHG: build.mutation<FindRPCResponse, MemberPayload>({
+      query: (payload) => {
+        const hostGroup = payload.hostGroup;
+        const idsToAdd = payload.idsToAdd;
+        const memberType = payload.entityType;
+
+        return getCommand({
+          method: "hostgroup_remove_member",
+          params: [
+            [hostGroup],
+            { all: true, [memberType]: idsToAdd, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
     }),
   }),
   overrideExisting: false,
@@ -228,4 +288,7 @@ export const {
   useGetHostGroupInfoByNameQuery,
   useGetHostGroupsFullDataQuery,
   useSaveHostGroupMutation,
+  useGetHostGroupByIdQuery,
+  useAddAsMemberHGMutation,
+  useRemoveAsMemberHGMutation,
 } = extendedApi;

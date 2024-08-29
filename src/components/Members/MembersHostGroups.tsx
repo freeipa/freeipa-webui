@@ -8,7 +8,7 @@ import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 import MemberTable from "src/components/tables/MembershipTable";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Data types
-import { UserGroup } from "src/utils/datatypes/globalDataTypes";
+import { HostGroup } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
@@ -18,27 +18,27 @@ import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { ErrorResult } from "src/services/rpc";
 import {
   MemberPayload,
-  useAddAsMemberMutation,
-  useGetGroupInfoByNameQuery,
-  useGettingGroupsQuery,
-  useRemoveAsMemberMutation,
-} from "src/services/rpcUserGroups";
-import { apiToGroup } from "src/utils/groupUtils";
+  useAddAsMemberHGMutation,
+  useGetHostGroupInfoByNameQuery,
+  useGettingHostGroupsQuery,
+  useRemoveAsMemberHGMutation,
+} from "src/services/rpcHostGroups";
+import { apiToHostGroup } from "src/utils/hostGroupUtils";
 
-interface PropsToMembersUsergroups {
-  entity: Partial<UserGroup>;
+interface PropsToMembersHostGroups {
+  entity: Partial<HostGroup>;
   id: string;
   from: string;
   isDataLoading: boolean;
   onRefreshData: () => void;
-  member_group: string[];
-  memberindirect_group?: string[];
+  member_hostgroup: string[];
+  memberindirect_hostgroup?: string[];
   membershipDisabled?: boolean;
   setDirection: (direction: MembershipDirection) => void;
   direction: MembershipDirection;
 }
 
-const MembersUserGroups = (props: PropsToMembersUsergroups) => {
+const MembersHostGroups = (props: PropsToMembersHostGroups) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
@@ -58,24 +58,26 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
   } = useListPageSearchParams();
 
   // Other states
-  const [userGroupsSelected, setUserGroupsSelected] = React.useState<string[]>(
+  const [hostGroupsSelected, setHostGroupsSelected] = React.useState<string[]>(
     []
   );
-  const [indirectUserGroupsSelected, setIndirectUserGroupsSelected] =
+  const [indirectHostGroupsSelected, setIndirectHostGroupsSelected] =
     React.useState<string[]>([]);
 
-  // Loaded userGroups based on paging and member attributes
-  const [userGroups, setUserGroups] = React.useState<UserGroup[]>([]);
+  // Loaded hostGroups based on paging and member attributes
+  const [hostGroups, setHostGroups] = React.useState<HostGroup[]>([]);
 
-  // Choose the correct users based on the membership direction
-  const member_group = props.member_group || [];
-  const memberindirect_group = props.memberindirect_group || [];
-  let userGroupNames =
-    membershipDirection === "direct" ? member_group : memberindirect_group;
-  userGroupNames = [...userGroupNames];
+  // Choose the correct hostgroups based on the membership direction
+  const member_hostgroup = props.member_hostgroup || [];
+  const memberindirect_hostgroup = props.memberindirect_hostgroup || [];
+  let hostGroupNames =
+    membershipDirection === "direct"
+      ? member_hostgroup
+      : memberindirect_hostgroup;
+  hostGroupNames = [...hostGroupNames];
 
-  const getUserGroupsNameToLoad = (): string[] => {
-    let toLoad = [...userGroupNames];
+  const getHostGroupsNameToLoad = (): string[] => {
+    let toLoad = [...hostGroupNames];
     toLoad.sort();
 
     // Filter by search
@@ -91,21 +93,21 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
     return toLoad;
   };
 
-  const [userGroupNamesToLoad, setUserGroupNamesToLoad] = React.useState<
+  const [hostGroupNamesToLoad, setHostGroupNamesToLoad] = React.useState<
     string[]
-  >(getUserGroupsNameToLoad());
+  >(getHostGroupsNameToLoad());
 
-  // Load user groups
-  const fullUserGroupsQuery = useGetGroupInfoByNameQuery({
-    groupNamesList: userGroupNamesToLoad,
+  // Load host groups
+  const fullHostGroupsQuery = useGetHostGroupInfoByNameQuery({
+    groupNamesList: hostGroupNamesToLoad,
     no_members: true,
     version: API_VERSION_BACKUP,
   });
 
-  // Refresh user groups
+  // Refresh host groups
   React.useEffect(() => {
-    const userGroupsNames = getUserGroupsNameToLoad();
-    setUserGroupNamesToLoad(userGroupsNames);
+    const hostGroupsNames = getHostGroupsNameToLoad();
+    setHostGroupNamesToLoad(hostGroupsNames);
     props.setDirection(membershipDirection);
   }, [props.entity, membershipDirection, searchValue, page, perPage]);
 
@@ -114,34 +116,23 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
   }, [props.entity]);
 
   React.useEffect(() => {
-    if (userGroupNamesToLoad.length > 0) {
-      fullUserGroupsQuery.refetch();
+    if (hostGroupNamesToLoad.length > 0) {
+      fullHostGroupsQuery.refetch();
     }
-  }, [userGroupNamesToLoad]);
+  }, [hostGroupNamesToLoad]);
 
-  // Update user groups
+  // Update host groups
   React.useEffect(() => {
-    if (fullUserGroupsQuery.data && !fullUserGroupsQuery.isFetching) {
-      setUserGroups(fullUserGroupsQuery.data);
+    if (fullHostGroupsQuery.data && !fullHostGroupsQuery.isFetching) {
+      setHostGroups(fullHostGroupsQuery.data);
     }
-  }, [fullUserGroupsQuery.data, fullUserGroupsQuery.isFetching]);
-
-  // Get type of the entity to show as text
-  const getEntityType = () => {
-    if (props.from === "user-groups") {
-      return "user group";
-    } else {
-      // Return 'group' as default
-      return "group";
-    }
-  };
+  }, [fullHostGroupsQuery.data, fullHostGroupsQuery.isFetching]);
 
   // Computed "states"
-  const someItemSelected = userGroupsSelected.length > 0;
-  const showTableRows = userGroups.length > 0;
-  const entityType = getEntityType();
-  const userGroupColumnNames = ["Group name", "GID", "Description"];
-  const userGroupProperties = ["cn", "gidnumber", "description"];
+  const someItemSelected = hostGroupsSelected.length > 0;
+  const showTableRows = hostGroups.length > 0;
+  const hostGroupColumnNames = ["Host group name", "Description"];
+  const hostGroupProperties = ["cn", "description"];
 
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
@@ -150,24 +141,24 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
 
   // Buttons functionality
   const isRefreshButtonEnabled =
-    !fullUserGroupsQuery.isFetching && !props.isDataLoading;
+    !fullHostGroupsQuery.isFetching && !props.isDataLoading;
   const isAddButtonEnabled =
     membershipDirection !== "indirect" && isRefreshButtonEnabled;
 
-  // Add new member to 'UserGroup'
+  // Add new member to 'HostGroup'
   // API calls
-  const [addMemberToUserGroups] = useAddAsMemberMutation();
-  const [removeMembersFromUserGroups] = useRemoveAsMemberMutation();
+  const [addMemberToHostGroups] = useAddAsMemberHGMutation();
+  const [removeMembersFromHostGroups] = useRemoveAsMemberHGMutation();
   const [adderSearchValue, setAdderSearchValue] = React.useState("");
-  const [availableUserGroups, setAvailableUserGroups] = React.useState<
-    UserGroup[]
+  const [availableHostGroups, setAvailableHostGroups] = React.useState<
+    HostGroup[]
   >([]);
   const [availableItems, setAvailableItems] = React.useState<AvailableItems[]>(
     []
   );
 
-  // Load available user groups, delay the search for opening the modal
-  const userGroupsQuery = useGettingGroupsQuery({
+  // Load available host groups, delay the search for opening the modal
+  const hostGroupsQuery = useGettingHostGroupsQuery({
     search: adderSearchValue,
     apiVersion: API_VERSION_BACKUP,
     sizelimit: 100,
@@ -175,62 +166,62 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
     stopIdx: 100,
   });
 
-  // Trigger available user groups search
+  // Trigger available host groups search
   React.useEffect(() => {
     if (showAddModal) {
-      userGroupsQuery.refetch();
+      hostGroupsQuery.refetch();
     }
   }, [showAddModal, adderSearchValue, props.entity]);
 
-  // Update available user groups
+  // Update available host groups
   React.useEffect(() => {
-    if (userGroupsQuery.data && !userGroupsQuery.isFetching) {
-      // transform data to user groups
-      const count = userGroupsQuery.data.result.count;
-      const results = userGroupsQuery.data.result.results;
+    if (hostGroupsQuery.data && !hostGroupsQuery.isFetching) {
+      // transform data to host groups
+      const count = hostGroupsQuery.data.result.count;
+      const results = hostGroupsQuery.data.result.results;
       let items: AvailableItems[] = [];
-      const avalUserGroups: UserGroup[] = [];
+      const avalHostGroups: HostGroup[] = [];
       for (let i = 0; i < count; i++) {
-        const userGroup = apiToGroup(results[i].result);
-        avalUserGroups.push(userGroup);
+        const hostGroup = apiToHostGroup(results[i].result);
+        avalHostGroups.push(hostGroup);
         items.push({
-          key: userGroup.cn,
-          title: userGroup.cn,
+          key: hostGroup.cn,
+          title: hostGroup.cn,
         });
       }
       items = items.filter(
         (item) =>
-          !member_group.includes(item.key) &&
-          !memberindirect_group.includes(item.key) &&
+          !member_hostgroup.includes(item.key) &&
+          !memberindirect_hostgroup.includes(item.key) &&
           item.key !== props.id
       );
 
-      setAvailableUserGroups(avalUserGroups);
+      setAvailableHostGroups(avalHostGroups);
       setAvailableItems(items);
     }
-  }, [userGroupsQuery.data, userGroupsQuery.isFetching]);
+  }, [hostGroupsQuery.data, hostGroupsQuery.isFetching]);
 
   // Add
-  const onAddUserGroup = (items: AvailableItems[]) => {
-    const newUserGroupNames = items.map((item) => item.key);
-    if (props.id === undefined || newUserGroupNames.length == 0) {
+  const onAddHostGroup = (items: AvailableItems[]) => {
+    const newHostGroupNames = items.map((item) => item.key);
+    if (props.id === undefined || newHostGroupNames.length == 0) {
       return;
     }
 
     const payload = {
-      userGroup: props.id,
-      entityType: "group",
-      idsToAdd: newUserGroupNames,
+      hostGroup: props.id,
+      entityType: "hostgroup",
+      idsToAdd: newHostGroupNames,
     } as MemberPayload;
 
     setSpinning(true);
-    addMemberToUserGroups(payload).then((response) => {
+    addMemberToHostGroups(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
           // Set alert: success
           alerts.addAlert(
             "add-member-success",
-            "Assigned new user groups to " + entityType + " '" + props.id + "'",
+            "Assigned new host groups to host group '" + props.id + "'",
             "success"
           );
           // Refresh data
@@ -248,30 +239,30 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
   };
 
   // Delete
-  const onDeleteUserGroups = () => {
+  const onDeleteHostGroups = () => {
     const payload = {
-      userGroup: props.id,
-      entityType: "group",
-      idsToAdd: userGroupsSelected,
+      hostGroup: props.id,
+      entityType: "hostgroup",
+      idsToAdd: hostGroupsSelected,
     } as MemberPayload;
 
     setSpinning(true);
-    removeMembersFromUserGroups(payload).then((response) => {
+    removeMembersFromHostGroups(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
           // Set alert: success
           alerts.addAlert(
-            "remove-usersgroups-success",
-            "Removed user groups from " + entityType + " '" + props.id + "'",
+            "remove-hostgroups-success",
+            "Removed host groups from host group '" + props.id + "'",
             "success"
           );
           // Refresh
           props.onRefreshData();
           // Disable 'remove' button
           if (membershipDirection === "direct") {
-            setUserGroupsSelected([]);
+            setHostGroupsSelected([]);
           } else {
-            setIndirectUserGroupsSelected([]);
+            setIndirectHostGroupsSelected([]);
           }
           // Close modal
           setShowDeleteModal(false);
@@ -281,7 +272,7 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
           alerts.addAlert(
-            "remove-usergroups-error",
+            "remove-hostgroups-error",
             errorMessage.message,
             "danger"
           );
@@ -304,14 +295,14 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
           onRefreshButtonClick={props.onRefreshData}
           deleteButtonEnabled={
             membershipDirection === "direct"
-              ? userGroupsSelected.length > 0
-              : indirectUserGroupsSelected.length > 0
+              ? hostGroupsSelected.length > 0
+              : indirectHostGroupsSelected.length > 0
           }
           onDeleteButtonClick={() => setShowDeleteModal(true)}
           addButtonEnabled={isAddButtonEnabled}
           onAddButtonClick={() => setShowAddModal(true)}
           helpIconEnabled={true}
-          totalItems={userGroupNames.length}
+          totalItems={hostGroupNames.length}
           perPage={perPage}
           page={page}
           onPerPageChange={setPerPage}
@@ -327,8 +318,8 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
           onRefreshButtonClick={props.onRefreshData}
           deleteButtonEnabled={
             membershipDirection === "direct"
-              ? userGroupsSelected.length > 0
-              : indirectUserGroupsSelected.length > 0
+              ? hostGroupsSelected.length > 0
+              : indirectHostGroupsSelected.length > 0
           }
           onDeleteButtonClick={() => setShowDeleteModal(true)}
           addButtonEnabled={isAddButtonEnabled}
@@ -337,7 +328,7 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
           membershipDirection={membershipDirection}
           onMembershipDirectionChange={setMembershipDirection}
           helpIconEnabled={true}
-          totalItems={userGroupNames.length}
+          totalItems={hostGroupNames.length}
           perPage={perPage}
           page={page}
           onPerPageChange={setPerPage}
@@ -345,26 +336,26 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
         />
       )}
       <MemberTable
-        entityList={userGroups}
+        entityList={hostGroups}
         idKey="cn"
-        from="user-groups"
-        columnNamesToShow={userGroupColumnNames}
-        propertiesToShow={userGroupProperties}
+        from="host-groups"
+        columnNamesToShow={hostGroupColumnNames}
+        propertiesToShow={hostGroupProperties}
         checkedItems={
           membershipDirection === "direct"
-            ? userGroupsSelected
-            : indirectUserGroupsSelected
+            ? hostGroupsSelected
+            : indirectHostGroupsSelected
         }
         onCheckItemsChange={
           membershipDirection === "direct"
-            ? setUserGroupsSelected
-            : setIndirectUserGroupsSelected
+            ? setHostGroupsSelected
+            : setIndirectHostGroupsSelected
         }
         showTableRows={showTableRows}
       />
       <Pagination
         className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        itemCount={userGroupNames.length}
+        itemCount={hostGroupNames.length}
         widgetId="pagination-options-menu-bottom"
         perPage={perPage}
         page={page}
@@ -377,10 +368,10 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
           showModal={showAddModal}
           onCloseModal={() => setShowAddModal(false)}
           availableItems={availableItems}
-          onAdd={onAddUserGroup}
+          onAdd={onAddHostGroup}
           onSearchTextChange={setAdderSearchValue}
-          title={"Assign user groups to " + entityType + ": " + props.id}
-          ariaLabel={"Add " + entityType + " to user groups modal"}
+          title={"Assign host groups to host group: " + props.id}
+          ariaLabel={"Add host groups modal"}
           spinning={spinning}
         />
       )}
@@ -388,20 +379,20 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
         <MemberOfDeleteModal
           showModal={showDeleteModal}
           onCloseModal={() => setShowDeleteModal(false)}
-          title={"Delete " + entityType + "s from user group: " + props.id}
-          onDelete={onDeleteUserGroups}
+          title={"Delete host groups from host group: " + props.id}
+          onDelete={onDeleteHostGroups}
           spinning={spinning}
         >
           <MemberTable
-            entityList={availableUserGroups.filter((userGroup) =>
+            entityList={availableHostGroups.filter((hostGroup) =>
               membershipDirection === "direct"
-                ? userGroupsSelected.includes(userGroup.cn)
-                : indirectUserGroupsSelected.includes(userGroup.cn)
+                ? hostGroupsSelected.includes(hostGroup.cn)
+                : indirectHostGroupsSelected.includes(hostGroup.cn)
             )}
-            from="user-groups"
+            from="host-groups"
             idKey="cn"
-            columnNamesToShow={userGroupColumnNames}
-            propertiesToShow={userGroupProperties}
+            columnNamesToShow={hostGroupColumnNames}
+            propertiesToShow={hostGroupProperties}
             showTableRows
           />
         </MemberOfDeleteModal>
@@ -410,4 +401,4 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
   );
 };
 
-export default MembersUserGroups;
+export default MembersHostGroups;

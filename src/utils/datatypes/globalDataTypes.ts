@@ -315,6 +315,12 @@ export interface HostGroup {
   dn: string;
   cn: string;
   description: string;
+  membermanager_user: string[];
+  membermanager_group: string[];
+  member_host: string[];
+  member_hostgroup: string[];
+  memberindirect_host: string[];
+  memberindirect_hostgroup: string[];
 }
 
 export interface Service {

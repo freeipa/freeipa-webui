@@ -12,13 +12,8 @@ import {
 // Layouts
 import SecondaryButton from "../layouts/SecondaryButton";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
-// Data types
-import { IDView } from "../../utils/datatypes/globalDataTypes";
 // Modals
 import ErrorModal from "./ErrorModal";
-// Redux
-import { useAppDispatch } from "../../store/hooks";
-import { addGroup } from "../../store/Identity/hostGroups-slice";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -38,9 +33,6 @@ interface PropsToAddIDView {
 }
 
 const AddIDViewModal = (props: PropsToAddIDView) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
-
   // Alerts to show in the UI
   const alerts = useAlerts();
 
@@ -138,7 +130,6 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
       if ("data" in view) {
         const data = view.data as FindRPCResponse;
         const error = data.error as FetchBaseQueryError | SerializedError;
-        const result = data.result;
 
         if (error) {
           // Set status flag: error
@@ -153,9 +144,6 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
             "success"
           );
 
-          // Dispatch host data to redux
-          const newView = result.result as unknown as IDView;
-          dispatch(addGroup(newView));
           // Set status flag: success
           isAdditionSuccess = true;
           // Refresh data

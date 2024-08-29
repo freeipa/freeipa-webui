@@ -95,7 +95,7 @@ const SudoCmdGroupsTabs = ({ section }) => {
           id={settingsData.group.cn}
           text={settingsData.group.cn}
           headingLevel="h1"
-          preText="Sudo command group"
+          preText="Sudo command group:"
         />
       </PageSection>
       <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
