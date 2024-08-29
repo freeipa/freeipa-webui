@@ -3,6 +3,7 @@ import React from "react";
 import { Table, Tr, Th, Td, Thead, Tbody } from "@patternfly/react-table";
 // Data types
 import {
+  Host,
   Service,
   User,
   UserGroup,
@@ -26,6 +27,7 @@ import { Link } from "react-router-dom";
 
 type EntryDataTypes =
   | HBACRule
+  | Host
   | HostGroup
   | Netgroup
   | Role
@@ -39,6 +41,7 @@ type EntryDataTypes =
 type FromTypes =
   | "active-users"
   | "hbac-rules"
+  | "hosts"
   | "host-groups"
   | "netgroups"
   | "roles" // Not in AppRoutes yet (no Link)
@@ -155,12 +158,12 @@ export default function MemberTable(props: MemberTableProps) {
     // Return empty placeholder
     return (
       <Table
-        aria-label="member of table"
+        aria-label="membership table"
         name="cn"
         variant="compact"
         borders
         className={"pf-v5-u-mt-md"}
-        id="member-of-table"
+        id="membership-table"
         isStickyHeader
       >
         <Tbody>
@@ -187,12 +190,12 @@ export default function MemberTable(props: MemberTableProps) {
 
   return (
     <Table
-      aria-label="member of table"
+      aria-label="membership table"
       name="cn"
       variant="compact"
       borders
       className={"pf-v5-u-mt-md"}
-      id="member-of-table"
+      id="membership-table"
       isStickyHeader
     >
       <Thead>

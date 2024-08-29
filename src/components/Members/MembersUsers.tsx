@@ -202,7 +202,12 @@ const MembersUsers = (props: PropsToMembersUsers) => {
           title: user.uid,
         });
       }
-      items = items.filter((item) => !member_user.includes(item.key));
+      items = items.filter(
+        (item) =>
+          !member_user.includes(item.key) &&
+          !memberindirect_user.includes(item.key) &&
+          item.key !== props.id
+      );
 
       setAvailableUsers(avalUsers);
       setAvailableItems(items);
@@ -229,7 +234,7 @@ const MembersUsers = (props: PropsToMembersUsers) => {
           // Set alert: success
           alerts.addAlert(
             "add-member-success",
-            "Assigned new users to " + entityType + " " + props.id,
+            "Assigned new users to " + entityType + " '" + props.id + "'",
             "success"
           );
           // Refresh data
@@ -266,6 +271,12 @@ const MembersUsers = (props: PropsToMembersUsers) => {
           );
           // Refresh
           props.onRefreshData();
+          // Disable 'remove' button
+          if (membershipDirection === "direct") {
+            setUsersSelected([]);
+          } else {
+            setIndirectUsersSelected([]);
+          }
           // Close modal
           setShowDeleteModal(false);
           // Back to page 1
@@ -368,7 +379,7 @@ const MembersUsers = (props: PropsToMembersUsers) => {
           availableItems={availableItems}
           onAdd={onAddUser}
           onSearchTextChange={setAdderSearchValue}
-          title={"Assign users to " + entityType + " " + props.id}
+          title={"Assign users to " + entityType + ": " + props.id}
           ariaLabel={"Add " + entityType + " of user modal"}
           spinning={spinning}
         />
@@ -377,7 +388,7 @@ const MembersUsers = (props: PropsToMembersUsers) => {
         <MemberOfDeleteModal
           showModal={showDeleteModal}
           onCloseModal={() => setShowDeleteModal(false)}
-          title={"Delete " + entityType + " from Users"}
+          title={"Delete users from " + entityType + ": " + props.id}
           onDelete={onDeleteUser}
           spinning={spinning}
         >

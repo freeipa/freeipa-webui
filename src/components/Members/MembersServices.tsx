@@ -122,20 +122,9 @@ const MembersServices = (props: PropsToMembersServices) => {
     }
   }, [fullServicesQuery.data, fullServicesQuery.isFetching]);
 
-  // Get type of the entity to show as text
-  const getEntityType = () => {
-    if (props.from === "user-groups") {
-      return "user group";
-    } else {
-      // Return 'group' as default
-      return "group";
-    }
-  };
-
   // Computed "states"
   const someItemSelected = servicesSelected.length > 0;
   const showTableRows = services.length > 0;
-  const entityType = getEntityType();
   const serviceColumnNames = ["Principal name"];
   const serviceProperties = ["krbcanonicalname"];
 
@@ -196,7 +185,12 @@ const MembersServices = (props: PropsToMembersServices) => {
           title: service.krbcanonicalname,
         });
       }
-      items = items.filter((item) => !member_service.includes(item.key));
+      items = items.filter(
+        (item) =>
+          !member_service.includes(item.key) &&
+          !memberindirect_service.includes(item.key) &&
+          item.key !== props.id
+      );
 
       setAvailableServices(avalServices);
       setAvailableItems(items);
@@ -223,7 +217,7 @@ const MembersServices = (props: PropsToMembersServices) => {
           // Set alert: success
           alerts.addAlert(
             "add-member-success",
-            "Assigned new services to " + entityType + " " + props.id,
+            "Assigned new services to user group '" + props.id + "'",
             "success"
           );
           // Refresh data
@@ -255,11 +249,17 @@ const MembersServices = (props: PropsToMembersServices) => {
           // Set alert: success
           alerts.addAlert(
             "remove-services-success",
-            "Removed services from " + entityType + " '" + props.id + "'",
+            "Removed services from user group '" + props.id + "'",
             "success"
           );
           // Refresh
           props.onRefreshData();
+          // Disable 'remove' button
+          if (membershipDirection === "direct") {
+            setServicesSelected([]);
+          } else {
+            setIndirectServicesSelected([]);
+          }
           // Close modal
           setShowDeleteModal(false);
           // Back to page 1
@@ -362,8 +362,8 @@ const MembersServices = (props: PropsToMembersServices) => {
           availableItems={availableItems}
           onAdd={onAddService}
           onSearchTextChange={setAdderSearchValue}
-          title={"Assign services to " + entityType + " " + props.id}
-          ariaLabel={"Add " + entityType + " of service modal"}
+          title={"Assign services to user group: " + props.id}
+          ariaLabel={"Add services to user group"}
           spinning={spinning}
         />
       )}
@@ -371,7 +371,7 @@ const MembersServices = (props: PropsToMembersServices) => {
         <MemberOfDeleteModal
           showModal={showDeleteModal}
           onCloseModal={() => setShowDeleteModal(false)}
-          title={"Delete " + entityType + " from Services"}
+          title={"Delete services from user group: " + props.id}
           onDelete={onDeleteService}
           spinning={spinning}
         >

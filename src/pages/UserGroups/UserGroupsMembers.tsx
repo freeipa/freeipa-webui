@@ -181,7 +181,7 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
           title={
             <TabTitleText>
               Users{" "}
-              <Badge key={0} isRead>
+              <Badge key={0} id="user_count" isRead>
                 {userCount}
               </Badge>
             </TabTitleText>
@@ -204,8 +204,8 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
           name="member_group"
           title={
             <TabTitleText>
-              User Groups{" "}
-              <Badge key={1} isRead>
+              User groups{" "}
+              <Badge key={1} id="usergroup_count" isRead>
                 {groupCount}
               </Badge>
             </TabTitleText>
@@ -229,7 +229,7 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
           title={
             <TabTitleText>
               Services{" "}
-              <Badge key={2} isRead>
+              <Badge key={2} id="service_count" isRead>
                 {serviceCount}
               </Badge>
             </TabTitleText>
@@ -253,7 +253,7 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
           title={
             <TabTitleText>
               External{" "}
-              <Badge key={3} isRead>
+              <Badge key={3} id="external_count" isRead>
                 {userGroup.member_external
                   ? userGroup.member_external.length
                   : 0}
@@ -276,7 +276,7 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
           title={
             <TabTitleText>
               User ID overrides{" "}
-              <Badge key={4} isRead>
+              <Badge key={4} id="override_count" isRead>
                 {overrideCount}
               </Badge>
             </TabTitleText>

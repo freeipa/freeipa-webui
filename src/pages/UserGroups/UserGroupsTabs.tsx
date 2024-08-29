@@ -166,7 +166,7 @@ const UserGroupsTabs = ({ section }) => {
           </Tab>
           <Tab
             eventKey={"member"}
-            name={"members-details"}
+            name={"member-details"}
             title={<TabTitleText>Members</TabTitleText>}
           >
             <UserGroupsMembers userGroup={usergroup} tabSection={section} />

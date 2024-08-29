@@ -355,92 +355,6 @@ Then(
   }
 );
 
-// 'Is a member of' section
-Given("I click on the Is a member of section", () => {
-  cy.get("button[name=memberof-details]").click();
-});
-
-Then(
-  "I am on {string} user > Is a member of > {string} section",
-  (username: string, sectionName: string) => {
-    cy.url().then(($url) => {
-      if ($url.includes("settings")) {
-        cy.get(".pf-v5-c-breadcrumb__item")
-          .contains(username)
-          .should("be.visible");
-        cy.get("h1>p").contains(username).should("be.visible");
-        cy.get("button[name='memberof-details']")
-          .should("have.attr", "aria-selected", "true")
-          .contains("Is a member of");
-        cy.get("li.pf-v5-c-tabs__item")
-          .children()
-          .get("button[name='memberof_group']")
-          .contains(sectionName);
-        cy.wait(3000);
-      }
-    });
-  }
-);
-
-When(
-  "I click on the {string} tab within Is a member of section",
-  (tabName: string) => {
-    cy.get("button").contains(tabName).click();
-  }
-);
-
-Then("I should see {string} tab is selected", (tabName: string) => {
-  let name = "group";
-  switch (tabName) {
-    case "User groups":
-      name = "group";
-      break;
-    case "Netgroups":
-      name = "netgroup";
-      break;
-    case "Roles":
-      name = "role";
-      break;
-    case "HBAC rules":
-      name = "hbacrule";
-      break;
-    case "Sudo rules":
-      name = "sudorule";
-      break;
-  }
-
-  cy.get("button[name=memberof_" + name + "]")
-    .should("have.attr", "aria-selected", "true")
-    .contains(tabName);
-});
-
-Then("I should see the table with {string} column", (columnName: string) => {
-  cy.get("th").contains(columnName).should("be.visible");
-});
-
-Then("I should see an empty table", () => {
-  cy.get("table#member-of-table")
-    .find("h2.pf-v5-c-empty-state__title-text")
-    .contains("No results found");
-});
-
-Then(
-  "I should see the element {string} in the table",
-  (tableElement: string) => {
-    cy.get("table>tbody")
-      .find("td")
-      .contains(tableElement)
-      .should("be.visible");
-  }
-);
-
-Then(
-  "I should not see the element {string} in the table",
-  (tableElement: string) => {
-    cy.get("table>tbody").find("td").contains(tableElement).should("not.exist");
-  }
-);
-
 // - Add
 When(
   "I click on {string} button located in the toolbar",
@@ -497,7 +411,7 @@ Then(
   "the {string} element should be in the dialog table",
   (groupName: string) => {
     cy.get("div[role='dialog'")
-      .find("table#member-of-table")
+      .find("table#membership-table")
       .find("td.pf-v5-c-table__td")
       .contains(groupName)
       .should("be.visible");

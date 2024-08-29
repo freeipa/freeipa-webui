@@ -188,6 +188,8 @@ const MembersExternal = (props: PropsToMembersExternal) => {
           );
           // Refresh
           props.onRefreshData();
+          // Disable 'remove' button
+          setExternalsSelected([]);
           // Close modal
           setShowDeleteModal(false);
           // Back to page 1

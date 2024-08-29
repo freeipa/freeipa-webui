@@ -23,6 +23,7 @@ import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { NotFound } from "src/components/errors/PageErrors";
 import HostGroupsSettings from "./HostGroupsSettings";
+import HostGroupsMembers from "./HostGroupsMembers";
 
 // eslint-disable-next-line react/prop-types
 const HostGroupsTabs = ({ section }) => {
@@ -34,6 +35,7 @@ const HostGroupsTabs = ({ section }) => {
   const [breadcrumbItems, setBreadcrumbItems] = React.useState<
     BreadCrumbItem[]
   >([]);
+  const [groupId, setGroupId] = useState("");
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(section);
@@ -45,6 +47,8 @@ const HostGroupsTabs = ({ section }) => {
     setActiveTabKey(tabIndex as string);
     if (tabIndex === "settings") {
       navigate("/host-groups/" + cn);
+    } else if (tabIndex === "member") {
+      navigate("/host-groups/" + cn + "/member_host");
     } else if (tabIndex === "memberof") {
       // navigate("/host-groups/" + cn + "/memberof_hostgroup");
     } else if (tabIndex === "managedby") {
@@ -57,6 +61,7 @@ const HostGroupsTabs = ({ section }) => {
       // Redirect to the main page
       navigate("/host-groups");
     } else {
+      setGroupId(cn);
       // Update breadcrumb route
       const currentPath: BreadCrumbItem[] = [
         {
@@ -78,9 +83,16 @@ const HostGroupsTabs = ({ section }) => {
   // Redirect to the settings page if the section is not defined
   React.useEffect(() => {
     if (!section) {
-      navigate(URL_PREFIX + "/host-groups/" + cn);
+      navigate(URL_PREFIX + "/host-groups/" + groupId);
     }
-    setActiveTabKey(section);
+    const section_string = section as string;
+    if (section_string.startsWith("memberof_")) {
+      setActiveTabKey("memberof");
+    } else if (section_string.startsWith("member_")) {
+      setActiveTabKey("member");
+    } else if (section_string.startsWith("managedby")) {
+      // setActiveTabKey("managedby");
+    }
   }, [section]);
 
   if (
@@ -140,6 +152,13 @@ const HostGroupsTabs = ({ section }) => {
               onResetValues={hostGroupSettingsData.resetValues}
               modifiedValues={hostGroupSettingsData.modifiedValues}
             />
+          </Tab>
+          <Tab
+            eventKey={"member"}
+            name="member-details"
+            title={<TabTitleText>Members</TabTitleText>}
+          >
+            <HostGroupsMembers hostGroup={hostgroup} tabSection={section} />
           </Tab>
           <Tab
             eventKey={"memberof"}

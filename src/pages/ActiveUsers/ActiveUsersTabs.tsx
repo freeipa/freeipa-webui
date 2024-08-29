@@ -6,7 +6,6 @@ import {
   PageSection,
   PageSectionVariants,
   TextContent,
-  Text,
   Tabs,
   Tab,
   TabTitleText,
@@ -106,7 +105,7 @@ const ActiveUsersTabs = ({ memberof }) => {
         />
         <TextContent>
           <Title headingLevel="h1">
-            <Text
+            <div
               className="pf-v5-u-display-flex"
               title={disabled ? "User is disabled" : ""}
             >
@@ -122,7 +121,7 @@ const ActiveUsersTabs = ({ memberof }) => {
               ) : (
                 ""
               )}
-            </Text>
+            </div>
           </Title>
         </TextContent>
       </PageSection>

@@ -18,7 +18,7 @@ Feature: User is a member of
   # 'User groups' tab
   Scenario: Default user groups are displayed in the table
     When I click on the "User groups" tab within Is a member of section
-    Then I should see "User groups" tab is selected
+    Then I should see memberof "User groups" tab is selected
     And I should see the table with "Group name" column
     And I should see the table with "GID" column
     And I should see the table with "Description" column
@@ -56,5 +56,5 @@ Feature: User is a member of
   # 'Netgroups' tab
   Scenario: Default netgroups are displayed in the table
     When I click on the "Netgroups" tab within Is a member of section
-    Then I should see "Netgroups" tab is selected
+    Then I should see memberof "Netgroups" tab is selected
     And I should see an empty table

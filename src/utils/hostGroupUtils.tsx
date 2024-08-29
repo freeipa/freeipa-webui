@@ -30,6 +30,12 @@ export function createEmptyGroup(): HostGroup {
     dn: "",
     cn: "",
     description: "",
+    membermanager_user: [],
+    membermanager_group: [],
+    member_host: [],
+    member_hostgroup: [],
+    memberindirect_host: [],
+    memberindirect_hostgroup: [],
   };
 
   return group;

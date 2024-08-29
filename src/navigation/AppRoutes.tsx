@@ -202,6 +202,18 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                     path=""
                     element={<HostGroupsTabs section="settings" />}
                   />
+                  <Route
+                    path="member_host"
+                    element={<HostGroupsTabs section="member_host" />}
+                  />
+                  <Route
+                    path="member_hostgroup"
+                    element={<HostGroupsTabs section="member_hostgroup" />}
+                  />
+                  <Route
+                    path="memberof_hostgroup"
+                    element={<HostGroupsTabs section="memberof_hostgroup" />}
+                  />
                 </Route>
               </Route>
               <Route path="netgroups">

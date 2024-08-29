@@ -95,7 +95,7 @@ const SudoCmdsTabs = ({ section }) => {
           id={settingsData.cmd.sudocmd}
           text={settingsData.cmd.sudocmd}
           headingLevel="h1"
-          preText="Sudo command"
+          preText="Sudo command:"
         />
       </PageSection>
       <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>

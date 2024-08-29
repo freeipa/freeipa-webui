@@ -182,6 +182,13 @@ Then(
   }
 );
 
+Then(
+  "I should not see partial {string} entry in the data table",
+  (name: string) => {
+    cy.get("tr[id^='" + name + "']").should("not.exist");
+  }
+);
+
 When("I select partial entry {string} in the data table", (name: string) => {
   cy.get("tr[id^='" + name + "'] input[type=checkbox]").check();
 });
@@ -539,3 +546,11 @@ When("I scroll down", () => {
     duration: 500,
   });
 });
+
+// Get tab badge count
+Then(
+  "I should see the {string} tab count is {string}",
+  (count_id: string, value: string) => {
+    cy.get("span.pf-v5-c-badge[id=" + count_id + "_count]").contains(value);
+  }
+);
