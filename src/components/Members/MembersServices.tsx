@@ -6,6 +6,7 @@ import MemberOfToolbar from "../MemberOf/MemberOfToolbar";
 import MemberOfAddModal, { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 import MemberTable from "src/components/tables/MembershipTable";
+import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Data types
 import { Service, UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Hooks
@@ -35,6 +36,8 @@ interface PropsToMembersServices {
   member_service: string[];
   memberindirect_service?: string[];
   membershipDisabled?: boolean;
+  setDirection: (direction: MembershipDirection) => void;
+  direction: MembershipDirection;
 }
 
 const MembersServices = (props: PropsToMembersServices) => {
@@ -97,7 +100,12 @@ const MembersServices = (props: PropsToMembersServices) => {
   React.useEffect(() => {
     const servicesNames = getServicesNameToLoad();
     setServiceNamesToLoad(servicesNames);
+    props.setDirection(membershipDirection);
   }, [props.entity, membershipDirection, searchValue, page, perPage]);
+
+  React.useEffect(() => {
+    setMembershipDirection(props.direction);
+  }, [props.entity]);
 
   React.useEffect(() => {
     if (serviceNamesToLoad.length > 0) {
@@ -315,8 +323,8 @@ const MembersServices = (props: PropsToMembersServices) => {
       )}
       <MemberTable
         entityList={services}
-        idKey="krbcanonicalname"
         from="services"
+        idKey="krbcanonicalname"
         columnNamesToShow={serviceColumnNames}
         propertiesToShow={serviceProperties}
         checkedItems={servicesSelected}

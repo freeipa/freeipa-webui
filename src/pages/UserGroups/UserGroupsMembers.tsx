@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Badge, Tab, Tabs, TabTitleText } from "@patternfly/react-core";
 // Data types
 import { UserGroup } from "src/utils/datatypes/globalDataTypes";
+import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Layouts
 import TabLayout from "src/components/layouts/TabLayout";
 // Navigation
@@ -25,10 +26,8 @@ interface PropsToUserGroupsMembers {
 const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
   const navigate = useNavigate();
 
-  // User groups' full data
   const userGroupQuery = useGetGroupByIdQuery(props.userGroup.cn);
   const userGroupData = userGroupQuery.data || {};
-
   const [userGroup, setUserGroup] = useState<Partial<UserGroup>>({});
 
   React.useEffect(() => {
@@ -44,53 +43,123 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "user-groups", noBreadcrumb: true });
 
-  // 'Users' length to show in tab badge
-  const [usersLength, setUsersLength] = React.useState(0);
+  // Tab counters
+  const [userCount, setUserCount] = React.useState(0);
+  const [groupCount, setGroupCount] = React.useState(0);
+  const [serviceCount, setServiceCount] = React.useState(0);
+  const [overrideCount, setOverrideCount] = React.useState(0);
+  // group Directions
+  const [userDirection, setUserDirection] = React.useState(
+    "direct" as MembershipDirection
+  );
+  const [groupDirection, setGroupDirection] = React.useState(
+    "direct" as MembershipDirection
+  );
+  const [serviceDirection, setServiceDirection] = React.useState(
+    "direct" as MembershipDirection
+  );
+
+  const updateUserDirection = (direction: MembershipDirection) => {
+    if (direction === "direct") {
+      setUserCount(
+        userGroup && userGroup.member_user ? userGroup.member_user.length : 0
+      );
+    } else {
+      setUserCount(
+        userGroup && userGroup.memberindirect_user
+          ? userGroup.memberindirect_user.length
+          : 0
+      );
+    }
+    setUserDirection(direction);
+  };
+  const updateGroupDirection = (direction: MembershipDirection) => {
+    if (direction === "direct") {
+      setGroupCount(
+        userGroup && userGroup.member_group ? userGroup.member_group.length : 0
+      );
+    } else {
+      setGroupCount(
+        userGroup && userGroup.memberindirect_group
+          ? userGroup.memberindirect_group.length
+          : 0
+      );
+    }
+    setGroupDirection(direction);
+  };
+  const updateServiceDirection = (direction: MembershipDirection) => {
+    if (direction === "direct") {
+      setServiceCount(
+        userGroup && userGroup.member_service
+          ? userGroup.member_service.length
+          : 0
+      );
+    } else {
+      setServiceCount(
+        userGroup && userGroup.memberindirect_service
+          ? userGroup.memberindirect_service.length
+          : 0
+      );
+    }
+    setServiceDirection(direction);
+  };
 
   React.useEffect(() => {
-    if (userGroup && userGroup.member_user) {
-      setUsersLength(userGroup.member_user.length);
+    if (userDirection === "direct") {
+      setUserCount(
+        userGroup && userGroup.member_user ? userGroup.member_user.length : 0
+      );
+    } else {
+      setUserCount(
+        userGroup && userGroup.memberindirect_user
+          ? userGroup.memberindirect_user.length
+          : 0
+      );
     }
-  }, [userGroup]);
-
-  // 'User Groups' length to show in tab badge
-  const [userGroupsLength, setUserGroupsLength] = React.useState(0);
-
-  React.useEffect(() => {
-    if (userGroup && userGroup.member_group) {
-      setUserGroupsLength(userGroup.member_group.length);
+    if (groupDirection === "direct") {
+      setGroupCount(
+        userGroup && userGroup.member_group ? userGroup.member_group.length : 0
+      );
+    } else {
+      setGroupCount(
+        userGroup && userGroup.memberindirect_group
+          ? userGroup.memberindirect_group.length
+          : 0
+      );
     }
-  }, [userGroup]);
-
-  // 'Services' length to show in tab badge
-  const [servicesLength, setServicesLength] = React.useState(0);
-
-  React.useEffect(() => {
-    if (userGroup && userGroup.member_service) {
-      setServicesLength(userGroup.member_service.length);
+    if (serviceDirection === "direct") {
+      setServiceCount(
+        userGroup && userGroup.member_service
+          ? userGroup.member_service.length
+          : 0
+      );
+    } else {
+      setServiceCount(
+        userGroup && userGroup.memberindirect_service
+          ? userGroup.memberindirect_service.length
+          : 0
+      );
     }
+
+    setOverrideCount(
+      userGroup && userGroup.member_idoverrideuser
+        ? userGroup.member_idoverrideuser.length
+        : 0
+    );
   }, [userGroup]);
-
-  // 'Externals' length to show in tab badge
-  const [externalsLength, setExternalsLength] = React.useState(0);
-
-  React.useEffect(() => {
-    if (userGroup && userGroup.member_external) {
-      setExternalsLength(userGroup.member_external.length);
-    }
-  }, [userGroup]);
-
-  // TODO: Add the rest of the tab lengths here
 
   // Tab
-  const [activeTabKey, setActiveTabKey] = useState(props.tabSection);
+  const [activeTabKey, setActiveTabKey] = useState("member_user");
 
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
     setActiveTabKey(tabIndex as string);
-    navigate("/user-groups/" + props.userGroup.cn + "/" + tabIndex);
+    // id override not implemented yet
+    if (tabIndex !== "member_iduseroverride") {
+      navigate("/user-groups/" + props.userGroup.cn + "/" + tabIndex);
+    }
   };
 
   React.useEffect(() => {
@@ -113,7 +182,7 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
             <TabTitleText>
               Users{" "}
               <Badge key={0} isRead>
-                {usersLength}
+                {userCount}
               </Badge>
             </TabTitleText>
           }
@@ -125,6 +194,9 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
             isDataLoading={userGroupQuery.isFetching}
             onRefreshData={onRefreshUserGroupData}
             member_user={userGroup.member_user || []}
+            memberindirect_user={userGroup.memberindirect_user || []}
+            setDirection={updateUserDirection}
+            direction={userDirection}
           />
         </Tab>
         <Tab
@@ -134,7 +206,7 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
             <TabTitleText>
               User Groups{" "}
               <Badge key={1} isRead>
-                {userGroupsLength}
+                {groupCount}
               </Badge>
             </TabTitleText>
           }
@@ -146,6 +218,9 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
             isDataLoading={userGroupQuery.isFetching}
             onRefreshData={onRefreshUserGroupData}
             member_group={userGroup.member_group || []}
+            memberindirect_group={userGroup.memberindirect_group || []}
+            setDirection={updateGroupDirection}
+            direction={groupDirection}
           />
         </Tab>
         <Tab
@@ -155,7 +230,7 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
             <TabTitleText>
               Services{" "}
               <Badge key={2} isRead>
-                {servicesLength}
+                {serviceCount}
               </Badge>
             </TabTitleText>
           }
@@ -167,6 +242,9 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
             isDataLoading={userGroupQuery.isFetching}
             onRefreshData={onRefreshUserGroupData}
             member_service={userGroup.member_service || []}
+            memberindirect_service={userGroup.memberindirect_service || []}
+            setDirection={updateServiceDirection}
+            direction={serviceDirection}
           />
         </Tab>
         <Tab
@@ -176,7 +254,9 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
             <TabTitleText>
               External{" "}
               <Badge key={3} isRead>
-                {externalsLength}
+                {userGroup.member_external
+                  ? userGroup.member_external.length
+                  : 0}
               </Badge>
             </TabTitleText>
           }
@@ -190,6 +270,18 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
             member_external={userGroup.member_external || []}
           />
         </Tab>
+        <Tab
+          eventKey={"member_iduseroverride"}
+          name="idoverrideuser"
+          title={
+            <TabTitleText>
+              User ID overrides{" "}
+              <Badge key={4} isRead>
+                {overrideCount}
+              </Badge>
+            </TabTitleText>
+          }
+        ></Tab>
       </Tabs>
     </TabLayout>
   );

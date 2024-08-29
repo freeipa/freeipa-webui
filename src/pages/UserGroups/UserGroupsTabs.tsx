@@ -49,7 +49,7 @@ const UserGroupsTabs = ({ section }) => {
     setActiveTabKey(tabIndex as string);
     if (tabIndex === "settings") {
       navigate("/user-groups/" + cn);
-    } else if (tabIndex === "member_user") {
+    } else if (tabIndex === "member") {
       navigate("/user-groups/" + cn + "/member_user");
     } else if (tabIndex === "memberof") {
       navigate("/user-groups/" + cn + "/memberof_usergroup");
@@ -169,10 +169,7 @@ const UserGroupsTabs = ({ section }) => {
             name={"members-details"}
             title={<TabTitleText>Members</TabTitleText>}
           >
-            <UserGroupsMembers
-              userGroup={usergroup}
-              tabSection={activeTabKey}
-            />
+            <UserGroupsMembers userGroup={usergroup} tabSection={section} />
           </Tab>
           <Tab
             eventKey={"memberof"}

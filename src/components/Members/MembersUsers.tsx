@@ -6,6 +6,7 @@ import MemberOfToolbar from "../MemberOf/MemberOfToolbar";
 import MemberOfAddModal, { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 import MemberTable from "src/components/tables/MembershipTable";
+import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Data types
 import { User, UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Hooks
@@ -35,6 +36,8 @@ interface PropsToMembersUsers {
   member_user: string[];
   memberindirect_user?: string[];
   membershipDisabled?: boolean;
+  setDirection: (direction: MembershipDirection) => void;
+  direction: MembershipDirection;
 }
 
 const MembersUsers = (props: PropsToMembersUsers) => {
@@ -58,6 +61,9 @@ const MembersUsers = (props: PropsToMembersUsers) => {
 
   // Other states
   const [usersSelected, setUsersSelected] = React.useState<string[]>([]);
+  const [indirectUsersSelected, setIndirectUsersSelected] = React.useState<
+    string[]
+  >([]);
 
   // Loaded users based on paging and member attributes
   const [users, setUsers] = React.useState<User[]>([]);
@@ -100,7 +106,12 @@ const MembersUsers = (props: PropsToMembersUsers) => {
   React.useEffect(() => {
     const usersNames = getUsersNameToLoad();
     setUserNamesToLoad(usersNames);
+    props.setDirection(membershipDirection);
   }, [props.entity, membershipDirection, searchValue, page, perPage]);
+
+  React.useEffect(() => {
+    setMembershipDirection(props.direction);
+  }, [props.entity]);
 
   React.useEffect(() => {
     if (userNamesToLoad.length > 0) {
@@ -134,21 +145,9 @@ const MembersUsers = (props: PropsToMembersUsers) => {
     "First name",
     "Last name",
     "Status",
-    "UID",
     "Email address",
-    "Telephone number",
-    "Job title",
   ];
-  const userProperties = [
-    "uid",
-    "givenname",
-    "sn",
-    "nsaccountlock",
-    "uidnumber",
-    "mail",
-    "telephonenumber",
-    "title",
-  ];
+  const userProperties = ["uid", "givenname", "sn", "nsaccountlock", "mail"];
 
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
@@ -158,8 +157,6 @@ const MembersUsers = (props: PropsToMembersUsers) => {
   // Buttons functionality
   const isRefreshButtonEnabled =
     !fullUsersQuery.isFetching && !props.isDataLoading;
-  const isDeleteEnabled =
-    someItemSelected && membershipDirection !== "indirect";
   const isAddButtonEnabled =
     membershipDirection !== "indirect" && isRefreshButtonEnabled;
 
@@ -294,7 +291,11 @@ const MembersUsers = (props: PropsToMembersUsers) => {
           onSearch={() => {}}
           refreshButtonEnabled={isRefreshButtonEnabled}
           onRefreshButtonClick={props.onRefreshData}
-          deleteButtonEnabled={isDeleteEnabled}
+          deleteButtonEnabled={
+            membershipDirection === "direct"
+              ? usersSelected.length > 0
+              : indirectUsersSelected.length > 0
+          }
           onDeleteButtonClick={() => setShowDeleteModal(true)}
           addButtonEnabled={isAddButtonEnabled}
           onAddButtonClick={() => setShowAddModal(true)}
@@ -313,7 +314,11 @@ const MembersUsers = (props: PropsToMembersUsers) => {
           onSearch={() => {}}
           refreshButtonEnabled={isRefreshButtonEnabled}
           onRefreshButtonClick={props.onRefreshData}
-          deleteButtonEnabled={isDeleteEnabled}
+          deleteButtonEnabled={
+            membershipDirection === "direct"
+              ? usersSelected.length > 0
+              : indirectUsersSelected.length > 0
+          }
           onDeleteButtonClick={() => setShowDeleteModal(true)}
           addButtonEnabled={isAddButtonEnabled}
           onAddButtonClick={() => setShowAddModal(true)}
@@ -334,8 +339,16 @@ const MembersUsers = (props: PropsToMembersUsers) => {
         from="active-users"
         columnNamesToShow={userColumnNames}
         propertiesToShow={userProperties}
-        checkedItems={usersSelected}
-        onCheckItemsChange={setUsersSelected}
+        checkedItems={
+          membershipDirection === "direct"
+            ? usersSelected
+            : indirectUsersSelected
+        }
+        onCheckItemsChange={
+          membershipDirection === "direct"
+            ? setUsersSelected
+            : setIndirectUsersSelected
+        }
         showTableRows={showTableRows}
       />
       <Pagination
@@ -370,7 +383,9 @@ const MembersUsers = (props: PropsToMembersUsers) => {
         >
           <MemberTable
             entityList={availableUsers.filter((user) =>
-              usersSelected.includes(user.uid)
+              membershipDirection === "direct"
+                ? usersSelected.includes(user.uid)
+                : indirectUsersSelected.includes(user.uid)
             )}
             from="active-users"
             idKey="uid"
