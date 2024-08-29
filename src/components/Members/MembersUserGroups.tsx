@@ -6,6 +6,7 @@ import MemberOfToolbar from "../MemberOf/MemberOfToolbar";
 import MemberOfAddModal, { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 import MemberTable from "src/components/tables/MembershipTable";
+import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Data types
 import { UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Hooks
@@ -33,6 +34,8 @@ interface PropsToMembersUsergroups {
   member_group: string[];
   memberindirect_group?: string[];
   membershipDisabled?: boolean;
+  setDirection: (direction: MembershipDirection) => void;
+  direction: MembershipDirection;
 }
 
 const MembersUserGroups = (props: PropsToMembersUsergroups) => {
@@ -58,6 +61,8 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
   const [userGroupsSelected, setUserGroupsSelected] = React.useState<string[]>(
     []
   );
+  const [indirectUserGroupsSelected, setIndirectUserGroupsSelected] =
+    React.useState<string[]>([]);
 
   // Loaded userGroups based on paging and member attributes
   const [userGroups, setUserGroups] = React.useState<UserGroup[]>([]);
@@ -101,7 +106,12 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
   React.useEffect(() => {
     const userGroupsNames = getUserGroupsNameToLoad();
     setUserGroupNamesToLoad(userGroupsNames);
+    props.setDirection(membershipDirection);
   }, [props.entity, membershipDirection, searchValue, page, perPage]);
+
+  React.useEffect(() => {
+    setMembershipDirection(props.direction);
+  }, [props.entity]);
 
   React.useEffect(() => {
     if (userGroupNamesToLoad.length > 0) {
@@ -141,8 +151,6 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
   // Buttons functionality
   const isRefreshButtonEnabled =
     !fullUserGroupsQuery.isFetching && !props.isDataLoading;
-  const isDeleteEnabled =
-    someItemSelected && membershipDirection !== "indirect";
   const isAddButtonEnabled =
     membershipDirection !== "indirect" && isRefreshButtonEnabled;
 
@@ -283,7 +291,11 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
           onSearch={() => {}}
           refreshButtonEnabled={isRefreshButtonEnabled}
           onRefreshButtonClick={props.onRefreshData}
-          deleteButtonEnabled={isDeleteEnabled}
+          deleteButtonEnabled={
+            membershipDirection === "direct"
+              ? userGroupsSelected.length > 0
+              : indirectUserGroupsSelected.length > 0
+          }
           onDeleteButtonClick={() => setShowDeleteModal(true)}
           addButtonEnabled={isAddButtonEnabled}
           onAddButtonClick={() => setShowAddModal(true)}
@@ -302,7 +314,11 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
           onSearch={() => {}}
           refreshButtonEnabled={isRefreshButtonEnabled}
           onRefreshButtonClick={props.onRefreshData}
-          deleteButtonEnabled={isDeleteEnabled}
+          deleteButtonEnabled={
+            membershipDirection === "direct"
+              ? userGroupsSelected.length > 0
+              : indirectUserGroupsSelected.length > 0
+          }
           onDeleteButtonClick={() => setShowDeleteModal(true)}
           addButtonEnabled={isAddButtonEnabled}
           onAddButtonClick={() => setShowAddModal(true)}
@@ -323,8 +339,16 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
         from="user-groups"
         columnNamesToShow={userGroupColumnNames}
         propertiesToShow={userGroupProperties}
-        checkedItems={userGroupsSelected}
-        onCheckItemsChange={setUserGroupsSelected}
+        checkedItems={
+          membershipDirection === "direct"
+            ? userGroupsSelected
+            : indirectUserGroupsSelected
+        }
+        onCheckItemsChange={
+          membershipDirection === "direct"
+            ? setUserGroupsSelected
+            : setIndirectUserGroupsSelected
+        }
         showTableRows={showTableRows}
       />
       <Pagination
@@ -359,10 +383,12 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
         >
           <MemberTable
             entityList={availableUserGroups.filter((userGroup) =>
-              userGroupsSelected.includes(userGroup.cn)
+              membershipDirection === "direct"
+                ? userGroupsSelected.includes(userGroup.cn)
+                : indirectUserGroupsSelected.includes(userGroup.cn)
             )}
-            idKey="cn"
             from="user-groups"
+            idKey="cn"
             columnNamesToShow={userGroupColumnNames}
             propertiesToShow={userGroupProperties}
             showTableRows
