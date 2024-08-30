@@ -5,7 +5,7 @@ import { Pagination, PaginationVariant } from "@patternfly/react-core";
 import { User, UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfToolbar from "./MemberOfToolbar";
-import MemberOfUserGroupsTable from "./MemberOfTableUserGroups";
+import MemberTable from "src/components/tables/MembershipTable";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 // Hooks
@@ -69,6 +69,9 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   let userGroupNames =
     membershipDirection === "direct" ? memberof_group : memberofindirect_group;
   userGroupNames = [...userGroupNames];
+
+  const columnNames = ["Group name", "GID", "Description"];
+  const properties = ["cn", "gidnumber", "description"];
 
   const getUserGroupsNameToLoad = (): string[] => {
     let toLoad = [...userGroupNames];
@@ -144,6 +147,9 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   const [addMemberToUserGroups] = useAddToGroupsMutation();
   const [removeMembersFromUserGroups] = useRemoveFromGroupsMutation();
   const [adderSearchValue, setAdderSearchValue] = React.useState("");
+  const [availableUserGroups, setAvailableUserGroups] = React.useState<
+    UserGroup[]
+  >([]);
   const [availableItems, setAvailableItems] = React.useState<AvailableItems[]>(
     []
   );
@@ -181,6 +187,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
         });
       }
       items = items.filter((item) => !memberof_group.includes(item.key));
+      setAvailableUserGroups(avalUserGroups);
       setAvailableItems(items);
     }
   }, [userGroupsQuery.data, userGroupsQuery.isFetching]);
@@ -281,8 +288,12 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
         onPerPageChange={setPerPage}
         onPageChange={setPage}
       />
-      <MemberOfUserGroupsTable
-        userGroups={userGroups}
+      <MemberTable
+        entityList={userGroups}
+        idKey="cn"
+        from="user-groups"
+        columnNamesToShow={columnNames}
+        propertiesToShow={properties}
         checkedItems={userGroupsSelected}
         onCheckItemsChange={setUserGroupsSelected}
         showTableRows={showTableRows}
@@ -319,10 +330,14 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
           onDelete={onDeleteUserGroup}
           spinning={spinning}
         >
-          <MemberOfUserGroupsTable
-            userGroups={userGroups.filter((group) =>
-              userGroupsSelected.includes(group.cn)
+          <MemberTable
+            entityList={availableUserGroups.filter((userGroup) =>
+              userGroupsSelected.includes(userGroup.cn)
             )}
+            from="user-groups"
+            idKey="cn"
+            columnNamesToShow={columnNames}
+            propertiesToShow={properties}
             showTableRows
           />
         </MemberOfDeleteModal>

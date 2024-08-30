@@ -5,7 +5,7 @@ import { Pagination, PaginationVariant } from "@patternfly/react-core";
 import MemberOfToolbar from "../MemberOf/MemberOfToolbar";
 import MemberOfAddModal, { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
-import MemberTable from "./MemberTable";
+import MemberTable from "src/components/tables/MembershipTable";
 // Data types
 import { Service, UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Hooks
@@ -316,6 +316,7 @@ const MembersServices = (props: PropsToMembersServices) => {
       <MemberTable
         entityList={services}
         idKey="krbcanonicalname"
+        from="services"
         columnNamesToShow={serviceColumnNames}
         propertiesToShow={serviceProperties}
         checkedItems={servicesSelected}
@@ -357,6 +358,7 @@ const MembersServices = (props: PropsToMembersServices) => {
               servicesSelected.includes(service.krbcanonicalname)
             )}
             idKey="krbcanonicalname"
+            from="services"
             columnNamesToShow={serviceColumnNames}
             propertiesToShow={serviceProperties}
             showTableRows

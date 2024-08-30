@@ -5,7 +5,7 @@ import { Pagination, PaginationVariant } from "@patternfly/react-core";
 import { User, SudoRule, Host } from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfToolbar from "./MemberOfToolbar";
-import MemberOfTableSudoRules from "./MemberOfTableSudoRules";
+import MemberTable from "src/components/tables/MembershipTable";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
@@ -66,6 +66,9 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
       ? memberof_sudorule
       : memberofindirect_sudorule;
   sudoRuleNames = [...sudoRuleNames];
+
+  const columnNames = ["Sudo rule", "Status", "Description"];
+  const properties = ["cn", "ipaenabledflag", "description"];
 
   const getSudoRulesNameToLoad = (): string[] => {
     let toLoad = [...sudoRuleNames];
@@ -301,8 +304,12 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
         onPerPageChange={setPerPage}
         onPageChange={setPage}
       />
-      <MemberOfTableSudoRules
-        sudoRules={sudoRules}
+      <MemberTable
+        entityList={sudoRules}
+        idKey="cn"
+        from="sudo-rules"
+        columnNamesToShow={columnNames}
+        propertiesToShow={properties}
         checkedItems={sudoRulesSelected}
         onCheckItemsChange={setSudoRulesSelected}
         showTableRows={showTableRows}
@@ -339,10 +346,14 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
           onDelete={onDeleteSudoRules}
           spinning={spinning}
         >
-          <MemberOfTableSudoRules
-            sudoRules={availableSudoRules.filter((sudorule) =>
-              sudoRulesSelected.includes(sudorule.cn)
+          <MemberTable
+            entityList={availableSudoRules.filter((userGroup) =>
+              sudoRulesSelected.includes(userGroup.cn)
             )}
+            from="sudo-rules"
+            idKey="cn"
+            columnNamesToShow={columnNames}
+            propertiesToShow={properties}
             showTableRows
           />
         </MemberOfDeleteModal>

@@ -2,19 +2,55 @@ import React from "react";
 // PatternFly
 import { Table, Tr, Th, Td, Thead, Tbody } from "@patternfly/react-table";
 // Data types
-import { Service, User, UserGroup } from "src/utils/datatypes/globalDataTypes";
+import {
+  Service,
+  User,
+  UserGroup,
+  HostGroup,
+  HBACRule,
+  Netgroup,
+  Role,
+  SudoRule,
+  SubId,
+} from "src/utils/datatypes/globalDataTypes";
 // Components
 import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout";
-import EmptyBodyTable from "../tables/EmptyBodyTable";
+import EmptyBodyTable from "./EmptyBodyTable";
 // Utils
 import { parseEmptyString } from "src/utils/utils";
 // Icons
 import { CheckIcon } from "@patternfly/react-icons";
 import { MinusIcon } from "@patternfly/react-icons";
+// React Router DOM
+import { Link } from "react-router-dom";
 
-export interface MemberOfTableProps {
-  entityList: User[] | UserGroup[] | Service[] | string[]; // More types can be added here
-  idKey?: string; // Users: uid, Groups: cn, etc. If not provided, the entity itself (a single string) will be used
+type EntryDataTypes =
+  | HBACRule
+  | HostGroup
+  | Netgroup
+  | Role
+  | Service
+  | SubId
+  | SudoRule
+  | User
+  | UserGroup
+  | string; // external
+
+type FromTypes =
+  | "active-users"
+  | "hbac-rules"
+  | "host-groups"
+  | "netgroups"
+  | "roles" // Not in AppRoutes yet (no Link)
+  | "services"
+  | "sudo-rules"
+  | "user-groups"
+  | "external";
+
+export interface MemberTableProps {
+  entityList: EntryDataTypes[]; // More types can be added here
+  from: FromTypes;
+  idKey: string; // Users: uid, Groups: cn, etc.
   columnNamesToShow: string[];
   propertiesToShow: string[]; // Users: uid, givenname, sn, description, etc.
   checkedItems?: string[];
@@ -24,8 +60,9 @@ export interface MemberOfTableProps {
 
 // Body
 const TableBody = (props: {
-  list: User[] | UserGroup[] | Service[] | string[]; // More types can be added here
-  idKey?: string; // Users: uid, Groups: cn, etc.
+  list: EntryDataTypes[]; // More types can be added here
+  from: string;
+  idKey: string; // Users: uid, Groups: cn, etc.
   columnNamesToShow: string[];
   propertiesToShow: string[]; // Users: uid, first, last, description, etc.
   showCheckboxColumn: boolean;
@@ -36,34 +73,47 @@ const TableBody = (props: {
   return (
     <>
       {list.map((item, index) => (
-        <Tr key={index}>
+        <Tr key={index} id={item[idKey]}>
           {props.showCheckboxColumn && (
-            <>
-              {idKey ? (
-                <Td
-                  select={{
-                    rowIndex: index,
-                    onSelect: (_e, isSelected) =>
-                      props.onCheckboxChange(isSelected, item[idKey]),
-                    isSelected: props.checkedItems.includes(item[idKey]),
-                  }}
-                />
-              ) : (
-                <Td
-                  select={{
-                    rowIndex: index,
-                    onSelect: (_e, isSelected) =>
-                      props.onCheckboxChange(isSelected, item),
-                    isSelected: props.checkedItems.includes(item),
-                  }}
-                />
-              )}
-            </>
+            <Td
+              select={{
+                rowIndex: index,
+                onSelect: (_e, isSelected) =>
+                  props.onCheckboxChange(isSelected, item[idKey]),
+                isSelected: props.checkedItems.includes(item[idKey]),
+              }}
+            />
           )}
+          <Td>
+            {props.from === "roles" ? (
+              // Temporary until Roles are implemented
+              item[idKey]
+            ) : (
+              <Link
+                to={
+                  "/" +
+                  props.from +
+                  "/" +
+                  (props.from === "services"
+                    ? encodeURIComponent(item[idKey])
+                    : item[idKey])
+                }
+                state={item}
+              >
+                {item[idKey]}
+              </Link>
+            )}
+          </Td>
           {propertiesToShow.map((propertyName, index) => {
             // Handle special cases: 'nsaccountlock' is a boolean
-            if (propertyName === "nsaccountlock") {
-              if (item[propertyName]) {
+            if (
+              propertyName === "nsaccountlock" ||
+              propertyName === "ipaenabledflag"
+            ) {
+              if (
+                (propertyName === "nsaccountlock" && item[propertyName]) ||
+                (propertyName === "ipaenabledflag" && !item[propertyName])
+              ) {
                 return (
                   <Td key={index}>
                     <MinusIcon /> {" Disabled"}
@@ -76,7 +126,7 @@ const TableBody = (props: {
                   </Td>
                 );
               }
-            } else {
+            } else if (propertyName !== idKey) {
               // Rest of the cases
               return (
                 <Td key={index}>{parseEmptyString(item[propertyName])}</Td>
@@ -98,7 +148,7 @@ const skeleton = (
   />
 );
 
-export default function MemberOfTable(props: MemberOfTableProps) {
+export default function MemberTable(props: MemberTableProps) {
   const { entityList } = props;
 
   if (!entityList || entityList.length <= 0) {
@@ -163,6 +213,7 @@ export default function MemberOfTable(props: MemberOfTableProps) {
         ) : (
           <TableBody
             list={entityList}
+            from={props.from}
             idKey={props.idKey}
             columnNamesToShow={props.columnNamesToShow}
             propertiesToShow={props.propertiesToShow}
