@@ -34,7 +34,7 @@ const ResetPassword = (props: PropsToResetPassword) => {
 
   // Get current logged-in user info
   const loggedInUser = useAppSelector(
-    (state) => state.global.loggedUserInfo.arguments[0]
+    (state) => state.global.loggedUserInfo.arguments
   );
 
   // RPC hooks

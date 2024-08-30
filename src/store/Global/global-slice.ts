@@ -13,7 +13,7 @@ interface GlobalState {
 }
 
 interface LoggedUserInfo {
-  arguments: string;
+  arguments: string | Record<string, unknown>;
   command: string;
   error: Record<string, unknown>;
   object: string;
@@ -51,7 +51,10 @@ const globalSlice = createSlice({
       action: PayloadAction<Record<string, unknown>>
     ) => {
       const newLoggedUserInfo = action.payload;
-      state.loggedUserInfo = { ...state.loggedUserInfo, ...newLoggedUserInfo };
+      state.loggedUserInfo = {
+        ...state.loggedUserInfo,
+        arguments: newLoggedUserInfo,
+      };
     },
     updateEnvironment: (
       state,
