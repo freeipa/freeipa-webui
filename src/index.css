@@ -15,3 +15,8 @@ code {
 #root {
   height: 100%;
 }
+
+.pf-v5-c-background-image {
+  --pf-v5-c-background-image--BackgroundSize: cover;
+  --pf-v5-c-background-image--BackgroundPosition: center;
+}
