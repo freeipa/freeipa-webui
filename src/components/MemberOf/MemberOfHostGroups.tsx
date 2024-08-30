@@ -5,7 +5,7 @@ import { Pagination, PaginationVariant } from "@patternfly/react-core";
 import { Host, HostGroup } from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfToolbar from "./MemberOfToolbar";
-import MemberOfHostGroupsTable from "./MemberOfTableHostGroups";
+import MemberTable from "src/components/tables/MembershipTable";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
@@ -64,6 +64,9 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
       ? memberof_hostgroup
       : memberofindirect_hostgroup;
   hostGroupNames = [...hostGroupNames];
+
+  const columnNames = ["Host group name", "Description"];
+  const properties = ["cn", "description"];
 
   const getHostGroupsNameToLoad = (): string[] => {
     let toLoad = [...hostGroupNames];
@@ -283,8 +286,12 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
         onPerPageChange={setPerPage}
         onPageChange={setPage}
       />
-      <MemberOfHostGroupsTable
-        hostGroups={hostGroups}
+      <MemberTable
+        entityList={hostGroups}
+        idKey="cn"
+        from="host-groups"
+        columnNamesToShow={columnNames}
+        propertiesToShow={properties}
         checkedItems={hostGroupsSelected}
         onCheckItemsChange={setHostGroupsSelected}
         showTableRows={showTableRows}
@@ -321,10 +328,14 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
           onDelete={onDeleteHostGroup}
           spinning={spinning}
         >
-          <MemberOfHostGroupsTable
-            hostGroups={availableHostGroups.filter((hostgroup) =>
-              hostGroupsSelected.includes(hostgroup.cn)
+          <MemberTable
+            entityList={availableHostGroups.filter((userGroup) =>
+              hostGroupsSelected.includes(userGroup.cn)
             )}
+            from="host-groups"
+            idKey="cn"
+            columnNamesToShow={columnNames}
+            propertiesToShow={properties}
             showTableRows
           />
         </MemberOfDeleteModal>

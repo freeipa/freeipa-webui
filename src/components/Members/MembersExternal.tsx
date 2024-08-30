@@ -10,7 +10,7 @@ import {
 import MemberOfToolbar from "../MemberOf/MemberOfToolbar";
 import { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
-import MemberTable from "./MemberTable";
+import MemberTable from "src/components/tables/MembershipTable";
 // Data types
 import { UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Hooks
@@ -230,6 +230,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
       <MemberTable
         entityList={props.member_external}
         idKey="krbcanonicalname"
+        from="external"
         columnNamesToShow={externalColumnNames}
         propertiesToShow={externalProperties}
         checkedItems={externalsSelected}
@@ -270,6 +271,8 @@ const MembersExternal = (props: PropsToMembersExternal) => {
             entityList={props.member_external.filter((external) =>
               externalsSelected.includes(external)
             )}
+            idKey="krbcanonicalname"
+            from="external"
             columnNamesToShow={externalColumnNames}
             propertiesToShow={externalProperties}
             showTableRows

@@ -5,7 +5,7 @@ import { Pagination, PaginationVariant } from "@patternfly/react-core";
 import MemberOfToolbar from "../MemberOf/MemberOfToolbar";
 import MemberOfAddModal, { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
-import MemberTable from "./MemberTable";
+import MemberTable from "src/components/tables/MembershipTable";
 // Data types
 import { UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Hooks
@@ -320,6 +320,7 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
       <MemberTable
         entityList={userGroups}
         idKey="cn"
+        from="user-groups"
         columnNamesToShow={userGroupColumnNames}
         propertiesToShow={userGroupProperties}
         checkedItems={userGroupsSelected}
@@ -361,6 +362,7 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
               userGroupsSelected.includes(userGroup.cn)
             )}
             idKey="cn"
+            from="user-groups"
             columnNamesToShow={userGroupColumnNames}
             propertiesToShow={userGroupProperties}
             showTableRows

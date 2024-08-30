@@ -5,7 +5,7 @@ import { Pagination, PaginationVariant } from "@patternfly/react-core";
 import { User, Netgroup, Host } from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfToolbar from "./MemberOfToolbar";
-import MemberOfTableNetgroups from "./MemberOfTableNetgroups";
+import MemberTable from "src/components/tables/MembershipTable";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
@@ -67,6 +67,9 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
       ? memberof_netgroup
       : memberofindirect_netgroup;
   netgroupNames = [...netgroupNames];
+
+  const columnNames = ["Netgroup name", "Description"];
+  const properties = ["cn", "description"];
 
   const getNetgroupsNameToLoad = (): string[] => {
     let toLoad = [...netgroupNames];
@@ -296,8 +299,12 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
         onPerPageChange={setPerPage}
         onPageChange={setPage}
       />
-      <MemberOfTableNetgroups
-        netgroups={netgroups}
+      <MemberTable
+        entityList={netgroups}
+        idKey="cn"
+        from="netgroups"
+        columnNamesToShow={columnNames}
+        propertiesToShow={properties}
         checkedItems={netgroupsSelected}
         onCheckItemsChange={setNetgroupsSelected}
         showTableRows={showTableRows}
@@ -334,10 +341,14 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
           onDelete={onDeleteNetgroup}
           spinning={spinning}
         >
-          <MemberOfTableNetgroups
-            netgroups={availableNetgroups.filter((netgroup) =>
-              netgroupsSelected.includes(netgroup.cn)
+          <MemberTable
+            entityList={availableNetgroups.filter((userGroup) =>
+              netgroupsSelected.includes(userGroup.cn)
             )}
+            from="netgroups"
+            idKey="cn"
+            columnNamesToShow={columnNames}
+            propertiesToShow={properties}
             showTableRows
           />
         </MemberOfDeleteModal>

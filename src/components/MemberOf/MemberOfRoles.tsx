@@ -5,7 +5,7 @@ import { Pagination, PaginationVariant } from "@patternfly/react-core";
 import { User, Role, Host, Service } from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfToolbar from "./MemberOfToolbar";
-import MemberOfTableRoles from "./MemberOfTableRoles";
+import MemberTable from "src/components/tables/MembershipTable";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
@@ -67,6 +67,9 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   let roleNames =
     membershipDirection === "direct" ? memberof_role : memberofindirect_role;
   roleNames = [...roleNames];
+
+  const columnNames = ["Role name", "Description"];
+  const properties = ["cn", "description"];
 
   const getRolesNameToLoad = (): string[] => {
     let toLoad = [...roleNames];
@@ -317,8 +320,12 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           onPageChange={setPage}
         />
       )}
-      <MemberOfTableRoles
-        roles={roles}
+      <MemberTable
+        entityList={roles}
+        idKey="cn"
+        from="roles"
+        columnNamesToShow={columnNames}
+        propertiesToShow={properties}
         checkedItems={rolesSelected}
         onCheckItemsChange={setRolesSelected}
         showTableRows={showTableRows}
@@ -355,10 +362,14 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           onDelete={onDeleteRole}
           spinning={spinning}
         >
-          <MemberOfTableRoles
-            roles={availableRoles.filter((group) =>
-              rolesSelected.includes(group.cn)
+          <MemberTable
+            entityList={availableRoles.filter((userGroup) =>
+              rolesSelected.includes(userGroup.cn)
             )}
+            from="roles"
+            idKey="cn"
+            columnNamesToShow={columnNames}
+            propertiesToShow={properties}
             showTableRows
           />
         </MemberOfDeleteModal>

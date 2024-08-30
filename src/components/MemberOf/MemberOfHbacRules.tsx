@@ -5,7 +5,7 @@ import { Pagination, PaginationVariant } from "@patternfly/react-core";
 import { User, HBACRule, Host } from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfToolbar from "./MemberOfToolbar";
-import MemberOfHbacRulesTable from "./MemberOfTableHbacRules";
+import MemberTable from "src/components/tables/MembershipTable";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
@@ -66,6 +66,9 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
       ? memberof_hbacrule
       : memberofindirect_hbacrule;
   hbacRuleNames = [...hbacRuleNames];
+
+  const columnNames = ["HBAC rule", "Status", "Description"];
+  const properties = ["cn", "ipaenabledflag", "description"];
 
   const getHbacRulesNameToLoad = (): string[] => {
     let toLoad = [...hbacRuleNames];
@@ -298,8 +301,12 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
         onPerPageChange={setPerPage}
         onPageChange={setPage}
       />
-      <MemberOfHbacRulesTable
-        hbacRules={hbacRules}
+      <MemberTable
+        entityList={hbacRules}
+        idKey="cn"
+        from="hbac-rules"
+        columnNamesToShow={columnNames}
+        propertiesToShow={properties}
         checkedItems={hbacRulesSelected}
         onCheckItemsChange={setHbacRulesSelected}
         showTableRows={showTableRows}
@@ -336,10 +343,14 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
           onDelete={onDeleteHbacRules}
           spinning={spinning}
         >
-          <MemberOfHbacRulesTable
-            hbacRules={availableHbacRules.filter((hbacrule) =>
-              hbacRulesSelected.includes(hbacrule.cn)
+          <MemberTable
+            entityList={availableHbacRules.filter((userGroup) =>
+              hbacRulesSelected.includes(userGroup.cn)
             )}
+            from="hbac-rules"
+            idKey="cn"
+            columnNamesToShow={columnNames}
+            propertiesToShow={properties}
             showTableRows
           />
         </MemberOfDeleteModal>
