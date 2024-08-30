@@ -13,7 +13,7 @@ import {
   ValidatedOptions,
 } from "@patternfly/react-core";
 // Images
-import BrandImg from "src/assets/images/login-screen-logo.png";
+import BrandImg from "src/assets/images/product-name.png";
 import BackgroundImg from "src/assets/images/login-screen-background.jpg";
 // RPC
 import {
