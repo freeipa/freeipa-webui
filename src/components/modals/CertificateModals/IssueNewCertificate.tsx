@@ -16,6 +16,7 @@ import {
 } from "@patternfly/react-core";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
+import { useAppSelector } from "src/store/hooks";
 // Modals
 import ModalWithFormLayout, {
   Field,
@@ -53,6 +54,13 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
   const [addCertRequest] = useAddCertRequestMutation();
   const certAuthQuery = useGetCertificateAuthorityQuery();
   const certProfileQuery = useGetCertProfileQuery();
+
+  const ipaServerConfiguration = useAppSelector(
+    (state) => state.global.ipaServerConfiguration
+  );
+  const ipaMasterServer = ipaServerConfiguration.ipa_master_server;
+  const ipaCertificateSubjectBase =
+    ipaServerConfiguration.ipacertificatesubjectbase;
 
   // Certificate Authority
   const [certAuthList, setCertAuthList] = React.useState<
@@ -277,26 +285,27 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
             Create a certificate database or use an existing one. To create a
             new database:
             <br />
-            <code># certutil -N -d &lt;database path&gt;</code>
+            <code># certutil -N -d ~/certdb/</code>
           </ListItem>
           <ListItem>
             Create a CSR with subject{" "}
             <i>CN=&lt;common name&gt;,O=&lt;realm&gt;</i>, for example: <br />
             <code>
-              # certutil -R -d &lt;database path&gt; -a -g &lt;key size&gt; -s
-              &apos;CN=&lt;common name&gt;,O=IPA.DEMO&apos;
+              # certutil -R -d ~/certdb/ -a -g 4096 -s &apos;CN=
+              {ipaMasterServer},{ipaCertificateSubjectBase}
+              &apos;
             </code>
           </ListItem>
           <ListItem>
             Copy and paste the CSR (from &quot;
-            <i>
+            <code>
               <b>-----BEGIN NEW CERTIFICATE REQUEST-----</b>
-            </i>
+            </code>
             &quot;{" to "}
             &quot;
-            <i>
+            <code>
               <b>-----END NEW CERTIFICATE REQUEST-----</b>
-            </i>
+            </code>
             &quot;) into the text area below:
           </ListItem>
         </List>
