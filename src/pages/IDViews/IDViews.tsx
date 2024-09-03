@@ -126,9 +126,6 @@ const IDViews = () => {
     setViewsList(newShownViewsList);
   };
 
-  // Button disabled due to error
-  const [isDisabledDueError, setIsDisabledDueError] = useState<boolean>(false);
-
   // Page indexes
   const firstIdx = (page - 1) * perPage;
   const lastIdx = page * perPage;
@@ -155,7 +152,6 @@ const IDViews = () => {
       // Reset selected ID views on refresh
       setViewsTotalCount(0);
       globalErrors.clear();
-      setIsDisabledDueError(false);
       return;
     }
 
@@ -186,12 +182,9 @@ const IDViews = () => {
       viewsDataResponse.isError &&
       viewsDataResponse.error !== undefined
     ) {
-      setIsDisabledDueError(true);
-      globalErrors.addError(
-        batchError,
-        "Error when loading data",
-        "error-batch-views"
-      );
+      // This normally happens when the user is not authorized to view the data
+      // So instead of adding an error, refresh page
+      window.location.reload();
     }
   }, [viewsDataResponse]);
 
@@ -588,7 +581,7 @@ const IDViews = () => {
       element: (
         <SecondaryButton
           onClickHandler={onAddClickHandler}
-          isDisabled={!showTableRows || isDisabledDueError}
+          isDisabled={!showTableRows}
         >
           Add
         </SecondaryButton>

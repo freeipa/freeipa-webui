@@ -246,9 +246,6 @@ const Services = () => {
   // - Selectable checkboxes on table
   const selectableServicesTable = servicesList.filter(isServiceSelectable); // elements per Table
 
-  // Button disabled due to error
-  const [isDisabledDueError, setIsDisabledDueError] = useState<boolean>(false);
-
   const updateSelectedServices = (services: Service[], isSelected: boolean) => {
     let newSelectedServices: Service[] = [];
     if (isSelected) {
@@ -319,7 +316,6 @@ const Services = () => {
       // Reset selected users on refresh
       setServicesTotalCount(0);
       globalErrors.clear();
-      setIsDisabledDueError(false);
       return;
     }
 
@@ -352,12 +348,9 @@ const Services = () => {
       servicesDataResponse.isError &&
       servicesDataResponse.error !== undefined
     ) {
-      setIsDisabledDueError(true);
-      globalErrors.addError(
-        batchError,
-        "Error when loading data",
-        "error-batch-hosts"
-      );
+      // This normally happens when the user is not authorized to view the data
+      // So instead of adding an error, refresh page
+      window.location.reload();
     }
   }, [servicesDataResponse]);
 
@@ -506,7 +499,7 @@ const Services = () => {
       key: 5,
       element: (
         <SecondaryButton
-          isDisabled={!showTableRows || isDisabledDueError}
+          isDisabled={!showTableRows}
           onClickHandler={onAddClickHandler}
         >
           Add

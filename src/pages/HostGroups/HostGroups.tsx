@@ -177,12 +177,15 @@ const HostGroups = () => {
       groupDataResponse.isError &&
       groupDataResponse.error !== undefined
     ) {
-      setIsDisabledDueError(true);
-      globalErrors.addError(
-        batchError,
-        "Error when loading data",
-        "error-batch-groups"
-      );
+      // This normally happens when the user is not authorized to view the data
+      // So instead of adding an error, refresh page
+      window.location.reload();
+      // setIsDisabledDueError(true);
+      // globalErrors.addError(
+      //   batchError,
+      //   "Error when loading data. Please refresh page",
+      //   "error-batch-groups"
+      // );
     }
   }, [groupDataResponse]);
 

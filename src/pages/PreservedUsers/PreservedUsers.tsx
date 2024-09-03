@@ -144,11 +144,9 @@ const PreservedUsers = () => {
       userDataResponse.isError &&
       userDataResponse.error !== undefined
     ) {
-      globalErrors.addError(
-        batchError,
-        "Error when loading data",
-        "error-batch-users"
-      );
+      // This normally happens when the user is not authorized to view the data
+      // So instead of adding an error, refresh page
+      window.location.reload();
     }
   }, [userDataResponse]);
 
