@@ -190,12 +190,9 @@ const Hosts = () => {
       hostDataResponse.isError &&
       hostDataResponse.error !== undefined
     ) {
-      setIsDisabledDueError(true);
-      globalErrors.addError(
-        batchError,
-        "Error when loading data",
-        "error-batch-hosts"
-      );
+      // This normally happens when the user is not authorized to view the data
+      // So instead of adding an error, refresh page
+      window.location.reload();
     }
   }, [hostDataResponse]);
 

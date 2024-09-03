@@ -34,7 +34,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 const ResetPasswordPage = () => {
   // Get user Id
   const location = useLocation();
-  const uid = location.state as string;
+  const uid = location.state.username as string;
+  const msg = location.state.msg as string;
+
+  // Show error message from login page when the page is loaded the first time
+  React.useEffect(() => {
+    if (msg) {
+      alerts.addAlert("reset-password-error", msg, "danger");
+    }
+  }, []);
 
   // Redux
   const dispatch = useAppDispatch();

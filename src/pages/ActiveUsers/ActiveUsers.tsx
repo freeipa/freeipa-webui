@@ -96,9 +96,6 @@ const ActiveUsers = () => {
   const [totalCount, setUsersTotalCount] = useState<number>(0);
   const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
-  // Button disabled due to error
-  const [isDisabledDueError, setIsDisabledDueError] = useState<boolean>(false);
-
   // Page indexes
   const firstUserIdx = (page - 1) * perPage;
   const lastUserIdx = page * perPage;
@@ -125,7 +122,6 @@ const ActiveUsers = () => {
       // Reset selected users on refresh
       setUsersTotalCount(0);
       globalErrors.clear();
-      setIsDisabledDueError(false);
       return;
     }
 
@@ -159,12 +155,9 @@ const ActiveUsers = () => {
       userDataResponse.isError &&
       userDataResponse.error !== undefined
     ) {
-      setIsDisabledDueError(true);
-      globalErrors.addError(
-        batchError,
-        "Error when loading data",
-        "error-batch-users"
-      );
+      // This normally happens when the user is not authorized to view the data
+      // So instead of adding an error, refresh page
+      window.location.reload();
     }
   }, [userDataResponse]);
 
@@ -664,7 +657,7 @@ const ActiveUsers = () => {
       element: (
         <SecondaryButton
           onClickHandler={onAddClickHandler}
-          isDisabled={!showTableRows || isDisabledDueError}
+          isDisabled={!showTableRows}
         >
           Add
         </SecondaryButton>

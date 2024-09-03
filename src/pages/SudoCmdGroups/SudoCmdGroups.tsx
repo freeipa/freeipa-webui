@@ -78,9 +78,6 @@ const SudoCmds = () => {
   const [totalCount, setCmdGroupsTotalCount] = useState<number>(0);
   const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
-  // Button disabled due to error
-  const [isDisabledDueError, setIsDisabledDueError] = useState<boolean>(false);
-
   // Page indexes
   const firstIdx = (page - 1) * perPage;
   const lastIdx = page * perPage;
@@ -107,7 +104,6 @@ const SudoCmds = () => {
       // Reset selected entries on refresh
       setCmdGroupsTotalCount(0);
       globalErrors.clear();
-      setIsDisabledDueError(false);
       return;
     }
 
@@ -139,12 +135,9 @@ const SudoCmds = () => {
       cmdGroupsDataResponse.isError &&
       cmdGroupsDataResponse.error !== undefined
     ) {
-      setIsDisabledDueError(true);
-      globalErrors.addError(
-        batchError,
-        "Error when loading data",
-        "error-batch-sudo-cmd-groups"
-      );
+      // This normally happens when the user is not authorized to view the data
+      // So instead of adding an error, refresh page
+      window.location.reload();
     }
   }, [cmdGroupsDataResponse]);
 
@@ -469,7 +462,7 @@ const SudoCmds = () => {
       element: (
         <SecondaryButton
           onClickHandler={onAddClickHandler}
-          isDisabled={!showTableRows || isDisabledDueError}
+          isDisabled={!showTableRows}
         >
           Add
         </SecondaryButton>

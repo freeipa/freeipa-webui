@@ -152,6 +152,8 @@ const LoginMainPage = () => {
   };
 
   // Analyze the error reason
+  // - A modal will be shown if the error should be shown in the same page
+  // - Otherwise, the error will be sent to the redirected page (e.g., reset password)
   const analyzeErrorReason = (reason: string | null) => {
     let returnMessage = "";
     switch (reason) {
@@ -237,7 +239,7 @@ const LoginMainPage = () => {
 
           if (msg) {
             navigate("/reset-password/" + username, {
-              state: username,
+              state: { username, msg },
             });
           }
         } else {

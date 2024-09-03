@@ -81,9 +81,6 @@ const HBACServiceGroups = () => {
   const [totalCount, setServicesTotalCount] = useState<number>(0);
   const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
-  // Button disabled due to error
-  const [isDisabledDueError, setIsDisabledDueError] = useState<boolean>(false);
-
   // Page indexes
   const firstIdx = (page - 1) * perPage;
   const lastIdx = page * perPage;
@@ -109,7 +106,6 @@ const HBACServiceGroups = () => {
       setShowTableRows(false);
       setServicesTotalCount(0);
       globalErrors.clear();
-      setIsDisabledDueError(false);
       return;
     }
 
@@ -141,12 +137,9 @@ const HBACServiceGroups = () => {
       servicesDataResponse.isError &&
       servicesDataResponse.error !== undefined
     ) {
-      setIsDisabledDueError(true);
-      globalErrors.addError(
-        batchError,
-        "Error when loading data",
-        "error-batch-hbacservicegroup"
-      );
+      // This normally happens when the user is not authorized to view the data
+      // So instead of adding an error, refresh page
+      window.location.reload();
     }
   }, [servicesDataResponse]);
 
@@ -480,7 +473,7 @@ const HBACServiceGroups = () => {
       element: (
         <SecondaryButton
           onClickHandler={onAddClickHandler}
-          isDisabled={!showTableRows || isDisabledDueError}
+          isDisabled={!showTableRows}
         >
           Add
         </SecondaryButton>
