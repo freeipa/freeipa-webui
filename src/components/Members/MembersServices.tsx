@@ -61,6 +61,8 @@ const MembersServices = (props: PropsToMembersServices) => {
 
   // Other states
   const [servicesSelected, setServicesSelected] = React.useState<string[]>([]);
+  const [indirectServicesSelected, setIndirectServicesSelected] =
+    React.useState<string[]>([]);
 
   // Loaded services based on paging and member attributes
   const [services, setServices] = React.useState<Service[]>([]);
@@ -306,7 +308,11 @@ const MembersServices = (props: PropsToMembersServices) => {
           onSearch={() => {}}
           refreshButtonEnabled={isRefreshButtonEnabled}
           onRefreshButtonClick={props.onRefreshData}
-          deleteButtonEnabled={isDeleteEnabled}
+          deleteButtonEnabled={
+            membershipDirection === "direct"
+              ? servicesSelected.length > 0
+              : indirectServicesSelected.length > 0
+          }
           onDeleteButtonClick={() => setShowDeleteModal(true)}
           addButtonEnabled={isAddButtonEnabled}
           onAddButtonClick={() => setShowAddModal(true)}
@@ -327,8 +333,16 @@ const MembersServices = (props: PropsToMembersServices) => {
         idKey="krbcanonicalname"
         columnNamesToShow={serviceColumnNames}
         propertiesToShow={serviceProperties}
-        checkedItems={servicesSelected}
-        onCheckItemsChange={setServicesSelected}
+        checkedItems={
+          membershipDirection === "direct"
+            ? servicesSelected
+            : indirectServicesSelected
+        }
+        onCheckItemsChange={
+          membershipDirection === "direct"
+            ? setServicesSelected
+            : setIndirectServicesSelected
+        }
         showTableRows={showTableRows}
       />
       <Pagination
@@ -363,7 +377,9 @@ const MembersServices = (props: PropsToMembersServices) => {
         >
           <MemberTable
             entityList={availableServices.filter((service) =>
-              servicesSelected.includes(service.krbcanonicalname)
+              membershipDirection === "direct"
+                ? servicesSelected.includes(service.krbcanonicalname)
+                : indirectServicesSelected.includes(service.krbcanonicalname)
             )}
             idKey="krbcanonicalname"
             from="services"

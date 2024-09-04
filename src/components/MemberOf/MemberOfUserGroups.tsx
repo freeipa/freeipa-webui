@@ -52,6 +52,8 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   const [userGroupsSelected, setUserGroupsSelected] = React.useState<string[]>(
     []
   );
+  const [indirectUserGroupsSelected, setIndirectUserGroupsSelected] =
+    React.useState<string[]>([]);
 
   // Loaded User groups based on paging and member attributes
   const [userGroups, setUserGroups] = React.useState<UserGroup[]>([]);
@@ -126,7 +128,6 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   }, [fullUserGroupsQuery.data, fullUserGroupsQuery.isFetching]);
 
   // Computed "states"
-  const someItemSelected = userGroupsSelected.length > 0;
   const showTableRows = userGroups.length > 0;
 
   // Dialogs and actions
@@ -137,8 +138,6 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   // Buttons functionality
   const isRefreshButtonEnabled =
     !fullUserGroupsQuery.isFetching && !props.isUserDataLoading;
-  const isDeleteEnabled =
-    someItemSelected && membershipDirection !== "indirect";
   const isAddButtonEnabled =
     membershipDirection !== "indirect" && isRefreshButtonEnabled;
 
@@ -274,7 +273,11 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
         onSearch={() => {}}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshUserData}
-        deleteButtonEnabled={isDeleteEnabled}
+        deleteButtonEnabled={
+          membershipDirection === "direct"
+            ? userGroupsSelected.length > 0
+            : indirectUserGroupsSelected.length > 0
+        }
         onDeleteButtonClick={() => setShowDeleteModal(true)}
         addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
@@ -294,8 +297,16 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
         from="user-groups"
         columnNamesToShow={columnNames}
         propertiesToShow={properties}
-        checkedItems={userGroupsSelected}
-        onCheckItemsChange={setUserGroupsSelected}
+        checkedItems={
+          membershipDirection === "direct"
+            ? userGroupsSelected
+            : indirectUserGroupsSelected
+        }
+        onCheckItemsChange={
+          membershipDirection === "direct"
+            ? setUserGroupsSelected
+            : setIndirectUserGroupsSelected
+        }
         showTableRows={showTableRows}
       />
       {userGroupNames.length > 0 && (
@@ -310,38 +321,36 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
           onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
         />
       )}
-      {showAddModal && (
-        <MemberOfAddModal
-          showModal={showAddModal}
-          onCloseModal={() => setShowAddModal(false)}
-          availableItems={availableItems}
-          onAdd={onAddUserGroup}
-          onSearchTextChange={setAdderSearchValue}
-          title={`Assign '${id}' to user groups`}
-          ariaLabel="Add entry of user group modal"
-          spinning={spinning}
+      <MemberOfAddModal
+        showModal={showAddModal}
+        onCloseModal={() => setShowAddModal(false)}
+        availableItems={availableItems}
+        onAdd={onAddUserGroup}
+        onSearchTextChange={setAdderSearchValue}
+        title={`Assign '${id}' to user groups`}
+        ariaLabel="Add entry of user group modal"
+        spinning={spinning}
+      />
+      <MemberOfDeleteModal
+        showModal={showDeleteModal}
+        onCloseModal={() => setShowDeleteModal(false)}
+        title={`Remove '${id}' from user groups`}
+        onDelete={onDeleteUserGroup}
+        spinning={spinning}
+      >
+        <MemberTable
+          entityList={availableUserGroups.filter((userGroup) =>
+            membershipDirection === "direct"
+              ? userGroupsSelected.includes(userGroup.cn)
+              : indirectUserGroupsSelected.includes(userGroup.cn)
+          )}
+          from="user-groups"
+          idKey="cn"
+          columnNamesToShow={columnNames}
+          propertiesToShow={properties}
+          showTableRows
         />
-      )}
-      {showDeleteModal && someItemSelected && (
-        <MemberOfDeleteModal
-          showModal={showDeleteModal}
-          onCloseModal={() => setShowDeleteModal(false)}
-          title={`Remove '${id}' from user groups`}
-          onDelete={onDeleteUserGroup}
-          spinning={spinning}
-        >
-          <MemberTable
-            entityList={availableUserGroups.filter((userGroup) =>
-              userGroupsSelected.includes(userGroup.cn)
-            )}
-            from="user-groups"
-            idKey="cn"
-            columnNamesToShow={columnNames}
-            propertiesToShow={properties}
-            showTableRows
-          />
-        </MemberOfDeleteModal>
-      )}
+      </MemberOfDeleteModal>
     </>
   );
 };

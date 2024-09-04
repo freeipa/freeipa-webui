@@ -53,6 +53,8 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
   const [hbacRulesSelected, setHbacRulesSelected] = React.useState<string[]>(
     []
   );
+  const [indirectHbacRulesSelected, setIndirectHbacRulesSelected] =
+    React.useState<string[]>([]);
 
   // Loaded HBAC rules based on paging and member attributes
   const [hbacRules, setHbacRules] = React.useState<HBACRule[]>([]);
@@ -136,7 +138,6 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
   };
 
   // Computed "states"
-  const someItemSelected = hbacRulesSelected.length > 0;
   const showTableRows = hbacRules.length > 0;
   const entityType = getEntityType();
 
@@ -287,7 +288,11 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
         onSearch={() => {}}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshData}
-        deleteButtonEnabled={someItemSelected}
+        deleteButtonEnabled={
+          membershipDirection === "direct"
+            ? hbacRulesSelected.length > 0
+            : indirectHbacRulesSelected.length > 0
+        }
         onDeleteButtonClick={() => setShowDeleteModal(true)}
         addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
@@ -307,8 +312,16 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
         from="hbac-rules"
         columnNamesToShow={columnNames}
         propertiesToShow={properties}
-        checkedItems={hbacRulesSelected}
-        onCheckItemsChange={setHbacRulesSelected}
+        checkedItems={
+          membershipDirection === "direct"
+            ? hbacRulesSelected
+            : indirectHbacRulesSelected
+        }
+        onCheckItemsChange={
+          membershipDirection === "direct"
+            ? setHbacRulesSelected
+            : setIndirectHbacRulesSelected
+        }
         showTableRows={showTableRows}
       />
       {hbacRuleNames.length > 0 && (
@@ -323,38 +336,36 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
           onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
         />
       )}
-      {showAddModal && (
-        <MemberOfAddModal
-          showModal={showAddModal}
-          onCloseModal={() => setShowAddModal(false)}
-          availableItems={availableItems}
-          onAdd={onAddHbacRule}
-          onSearchTextChange={setAdderSearchValue}
-          title={`Add '${props.id}' into HBAC rules`}
-          ariaLabel={"Add HBAC rule modal"}
-          spinning={spinning}
+      <MemberOfAddModal
+        showModal={showAddModal}
+        onCloseModal={() => setShowAddModal(false)}
+        availableItems={availableItems}
+        onAdd={onAddHbacRule}
+        onSearchTextChange={setAdderSearchValue}
+        title={`Add '${props.id}' into HBAC rules`}
+        ariaLabel={"Add HBAC rule modal"}
+        spinning={spinning}
+      />
+      <MemberOfDeleteModal
+        showModal={showDeleteModal}
+        onCloseModal={() => setShowDeleteModal(false)}
+        title={`Remove '${props.id}' from HBAC rules`}
+        onDelete={onDeleteHbacRules}
+        spinning={spinning}
+      >
+        <MemberTable
+          entityList={availableHbacRules.filter((rule) =>
+            membershipDirection === "direct"
+              ? hbacRulesSelected.includes(rule.cn)
+              : indirectHbacRulesSelected.includes(rule.cn)
+          )}
+          from="hbac-rules"
+          idKey="cn"
+          columnNamesToShow={columnNames}
+          propertiesToShow={properties}
+          showTableRows
         />
-      )}
-      {showDeleteModal && someItemSelected && (
-        <MemberOfDeleteModal
-          showModal={showDeleteModal}
-          onCloseModal={() => setShowDeleteModal(false)}
-          title={`Remove '${props.id}' from HBAC rules`}
-          onDelete={onDeleteHbacRules}
-          spinning={spinning}
-        >
-          <MemberTable
-            entityList={availableHbacRules.filter((userGroup) =>
-              hbacRulesSelected.includes(userGroup.cn)
-            )}
-            from="hbac-rules"
-            idKey="cn"
-            columnNamesToShow={columnNames}
-            propertiesToShow={properties}
-            showTableRows
-          />
-        </MemberOfDeleteModal>
-      )}
+      </MemberOfDeleteModal>
     </>
   );
 };

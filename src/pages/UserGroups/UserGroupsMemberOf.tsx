@@ -153,19 +153,61 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
   };
 
   React.useEffect(() => {
-    setGroupCount(
-      group && group.memberof_group ? group.memberof_group.length : 0
-    );
-    setRoleCount(group && group.memberof_role ? group.memberof_role.length : 0);
-    setHbacCount(
-      group && group.memberof_hbacrule ? group.memberof_hbacrule.length : 0
-    );
-    setSudoCount(
-      group && group.memberof_sudorule ? group.memberof_sudorule.length : 0
-    );
-    setNetgroupCount(
-      group && group.memberof_netgroup ? group.memberof_netgroup.length : 0
-    );
+    if (groupDirection === "direct") {
+      setGroupCount(
+        group && group.memberof_group ? group.memberof_group.length : 0
+      );
+    } else {
+      setGroupCount(
+        group && group.memberofindirect_group
+          ? group.memberofindirect_group.length
+          : 0
+      );
+    }
+    if (roleDirection === "direct") {
+      setRoleCount(
+        group && group.memberof_role ? group.memberof_role.length : 0
+      );
+    } else {
+      setRoleCount(
+        group && group.memberofindirect_role
+          ? group.memberofindirect_role.length
+          : 0
+      );
+    }
+    if (hbacDirection === "direct") {
+      setHbacCount(
+        group && group.memberof_hbacrule ? group.memberof_hbacrule.length : 0
+      );
+    } else {
+      setHbacCount(
+        group && group.memberofindirect_hbacrule
+          ? group.memberofindirect_hbacrule.length
+          : 0
+      );
+    }
+    if (sudoDirection === "direct") {
+      setSudoCount(
+        group && group.memberof_sudorule ? group.memberof_sudorule.length : 0
+      );
+    } else {
+      setSudoCount(
+        group && group.memberofindirect_sudorule
+          ? group.memberofindirect_sudorule.length
+          : 0
+      );
+    }
+    if (netgroupDirection === "direct") {
+      setNetgroupCount(
+        group && group.memberof_netgroup ? group.memberof_netgroup.length : 0
+      );
+    } else {
+      setNetgroupCount(
+        group && group.memberofindirect_netgroup
+          ? group.memberofindirect_netgroup.length
+          : 0
+      );
+    }
   }, [group]);
 
   // Render component

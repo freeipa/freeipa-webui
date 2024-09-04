@@ -156,17 +156,59 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   };
 
   React.useEffect(() => {
-    setGroupCount(user && user.memberof_group ? user.memberof_group.length : 0);
-    setNetgroupCount(
-      user && user.memberof_netgroup ? user.memberof_netgroup.length : 0
-    );
-    setRoleCount(user && user.memberof_role ? user.memberof_role.length : 0);
-    setHbacCount(
-      user && user.memberof_hbacrule ? user.memberof_hbacrule.length : 0
-    );
-    setSudoCount(
-      user && user.memberof_sudorule ? user.memberof_sudorule.length : 0
-    );
+    if (groupDirection === "direct") {
+      setGroupCount(
+        user && user.memberof_group ? user.memberof_group.length : 0
+      );
+    } else {
+      setGroupCount(
+        user && user.memberofindirect_group
+          ? user.memberofindirect_group.length
+          : 0
+      );
+    }
+    if (netgroupDirection === "direct") {
+      setNetgroupCount(
+        user && user.memberof_netgroup ? user.memberof_netgroup.length : 0
+      );
+    } else {
+      setNetgroupCount(
+        user && user.memberofindirect_netgroup
+          ? user.memberofindirect_netgroup.length
+          : 0
+      );
+    }
+    if (roleDirection === "direct") {
+      setRoleCount(user && user.memberof_role ? user.memberof_role.length : 0);
+    } else {
+      setRoleCount(
+        user && user.memberofindirect_role
+          ? user.memberofindirect_role.length
+          : 0
+      );
+    }
+    if (hbacDirection === "direct") {
+      setHbacCount(
+        user && user.memberof_hbacrule ? user.memberof_hbacrule.length : 0
+      );
+    } else {
+      setHbacCount(
+        user && user.memberofindirect_hbacrule
+          ? user.memberofindirect_hbacrule.length
+          : 0
+      );
+    }
+    if (sudoDirection === "direct") {
+      setSudoCount(
+        user && user.memberof_sudorule ? user.memberof_sudorule.length : 0
+      );
+    } else {
+      setSudoCount(
+        user && user.memberofindirect_sudorule
+          ? user.memberofindirect_sudorule.length
+          : 0
+      );
+    }
   }, [user]);
 
   return (

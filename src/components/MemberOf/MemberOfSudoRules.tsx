@@ -53,6 +53,8 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
   const [sudoRulesSelected, setSudoRulesSelected] = React.useState<string[]>(
     []
   );
+  const [indirectSudoRulesSelected, setIndirectSudoRulesSelected] =
+    React.useState<string[]>([]);
 
   // Loaded Sudo rules based on paging and member attributes
   const [sudoRules, setSudoRules] = React.useState<SudoRule[]>([]);
@@ -136,7 +138,6 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
   };
 
   // Computed "states"
-  const someItemSelected = sudoRulesSelected.length > 0;
   const showTableRows = sudoRules.length > 0;
   const entityType = getEntityType();
 
@@ -290,7 +291,11 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
         onSearch={() => {}}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshData}
-        deleteButtonEnabled={someItemSelected}
+        deleteButtonEnabled={
+          membershipDirection === "direct"
+            ? sudoRulesSelected.length > 0
+            : indirectSudoRulesSelected.length > 0
+        }
         onDeleteButtonClick={() => setShowDeleteModal(true)}
         addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
@@ -310,8 +315,16 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
         from="sudo-rules"
         columnNamesToShow={columnNames}
         propertiesToShow={properties}
-        checkedItems={sudoRulesSelected}
-        onCheckItemsChange={setSudoRulesSelected}
+        checkedItems={
+          membershipDirection === "direct"
+            ? sudoRulesSelected
+            : indirectSudoRulesSelected
+        }
+        onCheckItemsChange={
+          membershipDirection === "direct"
+            ? setSudoRulesSelected
+            : setIndirectSudoRulesSelected
+        }
         showTableRows={showTableRows}
       />
       {sudoRuleNames.length > 0 && (
@@ -326,38 +339,36 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
           onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
         />
       )}
-      {showAddModal && (
-        <MemberOfAddModal
-          showModal={showAddModal}
-          onCloseModal={() => setShowAddModal(false)}
-          availableItems={availableItems}
-          onAdd={onAddSudoRule}
-          onSearchTextChange={setAdderSearchValue}
-          title={`Add '${props.id}' into sudo rules`}
-          ariaLabel={"Add " + entityType + " of Sudo rule modal"}
-          spinning={spinning}
+      <MemberOfAddModal
+        showModal={showAddModal}
+        onCloseModal={() => setShowAddModal(false)}
+        availableItems={availableItems}
+        onAdd={onAddSudoRule}
+        onSearchTextChange={setAdderSearchValue}
+        title={`Add '${props.id}' into sudo rules`}
+        ariaLabel={"Add " + entityType + " of Sudo rule modal"}
+        spinning={spinning}
+      />
+      <MemberOfDeleteModal
+        showModal={showDeleteModal}
+        onCloseModal={() => setShowDeleteModal(false)}
+        title={`Remove '${props.id}' from sudo rules`}
+        onDelete={onDeleteSudoRules}
+        spinning={spinning}
+      >
+        <MemberTable
+          entityList={availableSudoRules.filter((rule) =>
+            membershipDirection === "direct"
+              ? sudoRulesSelected.includes(rule.cn)
+              : indirectSudoRulesSelected.includes(rule.cn)
+          )}
+          from="sudo-rules"
+          idKey="cn"
+          columnNamesToShow={columnNames}
+          propertiesToShow={properties}
+          showTableRows
         />
-      )}
-      {showDeleteModal && someItemSelected && (
-        <MemberOfDeleteModal
-          showModal={showDeleteModal}
-          onCloseModal={() => setShowDeleteModal(false)}
-          title={`Remove '${props.id}' from sudo rules`}
-          onDelete={onDeleteSudoRules}
-          spinning={spinning}
-        >
-          <MemberTable
-            entityList={availableSudoRules.filter((userGroup) =>
-              sudoRulesSelected.includes(userGroup.cn)
-            )}
-            from="sudo-rules"
-            idKey="cn"
-            columnNamesToShow={columnNames}
-            propertiesToShow={properties}
-            showTableRows
-          />
-        </MemberOfDeleteModal>
-      )}
+      </MemberOfDeleteModal>
     </>
   );
 };

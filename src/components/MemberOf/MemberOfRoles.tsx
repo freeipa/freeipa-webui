@@ -57,6 +57,9 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
 
   // Other states
   const [rolesSelected, setRolesSelected] = React.useState<string[]>([]);
+  const [indirectRolesSelected, setIndirectRolesSelected] = React.useState<
+    string[]
+  >([]);
 
   // Loaded roles based on paging and member attributes
   const [roles, setRoles] = React.useState<Role[]>([]);
@@ -140,7 +143,6 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   };
 
   // Computed "states"
-  const someItemSelected = rolesSelected.length > 0;
   const showTableRows = roles.length > 0;
   const entityType = getEntityType();
 
@@ -152,8 +154,6 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   // Buttons functionality
   const isRefreshButtonEnabled =
     !fullRolesQuery.isFetching && !props.isDataLoading;
-  const isDeleteEnabled =
-    someItemSelected && membershipDirection !== "indirect";
   const isAddButtonEnabled =
     membershipDirection !== "indirect" && isRefreshButtonEnabled;
 
@@ -286,7 +286,11 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           onSearch={() => {}}
           refreshButtonEnabled={isRefreshButtonEnabled}
           onRefreshButtonClick={props.onRefreshData}
-          deleteButtonEnabled={isDeleteEnabled}
+          deleteButtonEnabled={
+            membershipDirection === "direct"
+              ? rolesSelected.length > 0
+              : indirectRolesSelected.length > 0
+          }
           onDeleteButtonClick={() => setShowDeleteModal(true)}
           addButtonEnabled={isAddButtonEnabled}
           onAddButtonClick={() => setShowAddModal(true)}
@@ -305,7 +309,11 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           onSearch={() => {}}
           refreshButtonEnabled={isRefreshButtonEnabled}
           onRefreshButtonClick={props.onRefreshData}
-          deleteButtonEnabled={isDeleteEnabled}
+          deleteButtonEnabled={
+            membershipDirection === "direct"
+              ? rolesSelected.length > 0
+              : indirectRolesSelected.length > 0
+          }
           onDeleteButtonClick={() => setShowDeleteModal(true)}
           addButtonEnabled={isAddButtonEnabled}
           onAddButtonClick={() => setShowAddModal(true)}
@@ -326,8 +334,16 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
         from="roles"
         columnNamesToShow={columnNames}
         propertiesToShow={properties}
-        checkedItems={rolesSelected}
-        onCheckItemsChange={setRolesSelected}
+        checkedItems={
+          membershipDirection === "direct"
+            ? rolesSelected
+            : indirectRolesSelected
+        }
+        onCheckItemsChange={
+          membershipDirection === "direct"
+            ? setRolesSelected
+            : setIndirectRolesSelected
+        }
         showTableRows={showTableRows}
       />
       {roleNames.length > 0 && (
@@ -342,38 +358,36 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
         />
       )}
-      {showAddModal && (
-        <MemberOfAddModal
-          showModal={showAddModal}
-          onCloseModal={() => setShowAddModal(false)}
-          availableItems={availableItems}
-          onAdd={onAddRole}
-          onSearchTextChange={setAdderSearchValue}
-          title={`Add '${props.id}' into roles`}
-          ariaLabel={"Add " + entityType + " of role modal"}
-          spinning={spinning}
+      <MemberOfAddModal
+        showModal={showAddModal}
+        onCloseModal={() => setShowAddModal(false)}
+        availableItems={availableItems}
+        onAdd={onAddRole}
+        onSearchTextChange={setAdderSearchValue}
+        title={`Add '${props.id}' into roles`}
+        ariaLabel={"Add " + entityType + " of role modal"}
+        spinning={spinning}
+      />
+      <MemberOfDeleteModal
+        showModal={showDeleteModal}
+        onCloseModal={() => setShowDeleteModal(false)}
+        title={`Remove '${props.id}' from roles`}
+        onDelete={onDeleteRole}
+        spinning={spinning}
+      >
+        <MemberTable
+          entityList={availableRoles.filter((role) =>
+            membershipDirection === "direct"
+              ? rolesSelected.includes(role.cn)
+              : indirectRolesSelected.includes(role.cn)
+          )}
+          from="roles"
+          idKey="cn"
+          columnNamesToShow={columnNames}
+          propertiesToShow={properties}
+          showTableRows
         />
-      )}
-      {showDeleteModal && someItemSelected && (
-        <MemberOfDeleteModal
-          showModal={showDeleteModal}
-          onCloseModal={() => setShowDeleteModal(false)}
-          title={`Remove '${props.id}' from roles`}
-          onDelete={onDeleteRole}
-          spinning={spinning}
-        >
-          <MemberTable
-            entityList={availableRoles.filter((userGroup) =>
-              rolesSelected.includes(userGroup.cn)
-            )}
-            from="roles"
-            idKey="cn"
-            columnNamesToShow={columnNames}
-            propertiesToShow={properties}
-            showTableRows
-          />
-        </MemberOfDeleteModal>
-      )}
+      </MemberOfDeleteModal>
     </>
   );
 };

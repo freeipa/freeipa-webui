@@ -51,6 +51,8 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
   const [hostGroupsSelected, setHostGroupsSelected] = React.useState<string[]>(
     []
   );
+  const [indirectHostGroupsSelected, setIndirectHostGroupsSelected] =
+    React.useState<string[]>([]);
 
   // Loaded Host groups based on paging and member attributes
   const [hostGroups, setHostGroups] = React.useState<HostGroup[]>([]);
@@ -121,7 +123,6 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
   }, [fullHostGroupsQuery.data, fullHostGroupsQuery.isFetching]);
 
   // Computed "states"
-  const someItemSelected = hostGroupsSelected.length > 0;
   const showTableRows = hostGroups.length > 0;
 
   // Dialogs and actions
@@ -132,8 +133,6 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
   // Buttons functionality
   const isRefreshButtonEnabled =
     !fullHostGroupsQuery.isFetching && !props.isHostDataLoading;
-  const isDeleteEnabled =
-    someItemSelected && membershipDirection !== "indirect";
   const isAddButtonEnabled =
     membershipDirection !== "indirect" && isRefreshButtonEnabled;
 
@@ -272,7 +271,11 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
         onSearch={() => {}}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshHostData}
-        deleteButtonEnabled={isDeleteEnabled}
+        deleteButtonEnabled={
+          membershipDirection === "direct"
+            ? hostGroupsSelected.length > 0
+            : indirectHostGroupsSelected.length > 0
+        }
         onDeleteButtonClick={() => setShowDeleteModal(true)}
         addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
@@ -292,8 +295,16 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
         from="host-groups"
         columnNamesToShow={columnNames}
         propertiesToShow={properties}
-        checkedItems={hostGroupsSelected}
-        onCheckItemsChange={setHostGroupsSelected}
+        checkedItems={
+          membershipDirection === "direct"
+            ? hostGroupsSelected
+            : indirectHostGroupsSelected
+        }
+        onCheckItemsChange={
+          membershipDirection === "direct"
+            ? setHostGroupsSelected
+            : setIndirectHostGroupsSelected
+        }
         showTableRows={showTableRows}
       />
       {hostGroupNames.length > 0 && (
@@ -308,38 +319,36 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
           onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
         />
       )}
-      {showAddModal && (
-        <MemberOfAddModal
-          showModal={showAddModal}
-          onCloseModal={() => setShowAddModal(false)}
-          availableItems={availableItems}
-          onAdd={onAddHostGroup}
-          onSearchTextChange={setAdderSearchValue}
-          title={`Add '${props.host.fqdn}' into host groups`}
-          ariaLabel="Add host of host group modal"
-          spinning={spinning}
+      <MemberOfAddModal
+        showModal={showAddModal}
+        onCloseModal={() => setShowAddModal(false)}
+        availableItems={availableItems}
+        onAdd={onAddHostGroup}
+        onSearchTextChange={setAdderSearchValue}
+        title={`Add '${props.host.fqdn}' into host groups`}
+        ariaLabel="Add host of host group modal"
+        spinning={spinning}
+      />
+      <MemberOfDeleteModal
+        showModal={showDeleteModal}
+        onCloseModal={() => setShowDeleteModal(false)}
+        title={`Remove '${props.host.fqdn}' from host groups`}
+        onDelete={onDeleteHostGroup}
+        spinning={spinning}
+      >
+        <MemberTable
+          entityList={availableHostGroups.filter((hostGroup) =>
+            membershipDirection === "direct"
+              ? hostGroupsSelected.includes(hostGroup.cn)
+              : indirectHostGroupsSelected.includes(hostGroup.cn)
+          )}
+          from="host-groups"
+          idKey="cn"
+          columnNamesToShow={columnNames}
+          propertiesToShow={properties}
+          showTableRows
         />
-      )}
-      {showDeleteModal && someItemSelected && (
-        <MemberOfDeleteModal
-          showModal={showDeleteModal}
-          onCloseModal={() => setShowDeleteModal(false)}
-          title={`Remove '${props.host.fqdn}' from host groups`}
-          onDelete={onDeleteHostGroup}
-          spinning={spinning}
-        >
-          <MemberTable
-            entityList={availableHostGroups.filter((userGroup) =>
-              hostGroupsSelected.includes(userGroup.cn)
-            )}
-            from="host-groups"
-            idKey="cn"
-            columnNamesToShow={columnNames}
-            propertiesToShow={properties}
-            showTableRows
-          />
-        </MemberOfDeleteModal>
-      )}
+      </MemberOfDeleteModal>
     </>
   );
 };
