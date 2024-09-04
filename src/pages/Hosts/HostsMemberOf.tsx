@@ -151,19 +151,59 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
     setSudoDirection(direction);
   };
   React.useEffect(() => {
-    setGroupCount(
-      host && host.memberof_hostgroup ? host.memberof_hostgroup.length : 0
-    );
-    setRoleCount(host && host.memberof_role ? host.memberof_role.length : 0);
-    setHbacCount(
-      host && host.memberof_hbacrule ? host.memberof_hbacrule.length : 0
-    );
-    setSudoCount(
-      host && host.memberof_sudorule ? host.memberof_sudorule.length : 0
-    );
-    setNetgroupCount(
-      host && host.memberof_netgroup ? host.memberof_netgroup.length : 0
-    );
+    if (groupDirection === "direct") {
+      setGroupCount(
+        host && host.memberof_hostgroup ? host.memberof_hostgroup.length : 0
+      );
+    } else {
+      setGroupCount(
+        host && host.memberofindirect_hostgroup
+          ? host.memberofindirect_hostgroup.length
+          : 0
+      );
+    }
+    if (roleDirection === "direct") {
+      setRoleCount(host && host.memberof_role ? host.memberof_role.length : 0);
+    } else {
+      setRoleCount(
+        host && host.memberofindirect_role
+          ? host.memberofindirect_role.length
+          : 0
+      );
+    }
+    if (hbacDirection === "direct") {
+      setHbacCount(
+        host && host.memberof_hbacrule ? host.memberof_hbacrule.length : 0
+      );
+    } else {
+      setHbacCount(
+        host && host.memberofindirect_hbacrule
+          ? host.memberofindirect_hbacrule.length
+          : 0
+      );
+    }
+    if (sudoDirection === "direct") {
+      setSudoCount(
+        host && host.memberof_sudorule ? host.memberof_sudorule.length : 0
+      );
+    } else {
+      setSudoCount(
+        host && host.memberofindirect_sudorule
+          ? host.memberofindirect_sudorule.length
+          : 0
+      );
+    }
+    if (netgroupDirection === "direct") {
+      setNetgroupCount(
+        host && host.memberof_netgroup ? host.memberof_netgroup.length : 0
+      );
+    } else {
+      setNetgroupCount(
+        host && host.memberofindirect_netgroup
+          ? host.memberofindirect_netgroup.length
+          : 0
+      );
+    }
   }, [host]);
 
   // Render component

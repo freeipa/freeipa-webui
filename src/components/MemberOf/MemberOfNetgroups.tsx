@@ -54,6 +54,8 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
   const [netgroupsSelected, setNetgroupsSelected] = React.useState<string[]>(
     []
   );
+  const [indirectNetgroupsSelected, setIndirectNetgroupsSelected] =
+    React.useState<string[]>([]);
 
   // Loaded netgroups based on paging and member attributes
   const [netgroups, setNetgroups] = React.useState<Netgroup[]>([]);
@@ -138,7 +140,6 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
   };
 
   // Computed "states"
-  const someItemSelected = netgroupsSelected.length > 0;
   const showTableRows = netgroups.length > 0;
   const entityType = getEntityType();
 
@@ -150,8 +151,6 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
   // Buttons functionality
   const isRefreshButtonEnabled =
     !fullNetgroupsQuery.isFetching && !props.isDataLoading;
-  const isDeleteEnabled =
-    someItemSelected && membershipDirection !== "indirect";
   const isAddButtonEnabled =
     membershipDirection !== "indirect" && isRefreshButtonEnabled;
 
@@ -285,7 +284,11 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
         onSearch={() => {}}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshData}
-        deleteButtonEnabled={isDeleteEnabled}
+        deleteButtonEnabled={
+          membershipDirection === "direct"
+            ? netgroupsSelected.length > 0
+            : indirectNetgroupsSelected.length > 0
+        }
         onDeleteButtonClick={() => setShowDeleteModal(true)}
         addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
@@ -305,8 +308,16 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
         from="netgroups"
         columnNamesToShow={columnNames}
         propertiesToShow={properties}
-        checkedItems={netgroupsSelected}
-        onCheckItemsChange={setNetgroupsSelected}
+        checkedItems={
+          membershipDirection === "direct"
+            ? netgroupsSelected
+            : indirectNetgroupsSelected
+        }
+        onCheckItemsChange={
+          membershipDirection === "direct"
+            ? setNetgroupsSelected
+            : setIndirectNetgroupsSelected
+        }
         showTableRows={showTableRows}
       />
       {netgroupNames.length > 0 && (
@@ -321,38 +332,36 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
           onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
         />
       )}
-      {showAddModal && (
-        <MemberOfAddModal
-          showModal={showAddModal}
-          onCloseModal={() => setShowAddModal(false)}
-          availableItems={availableItems}
-          onAdd={onAddNetgroup}
-          onSearchTextChange={setAdderSearchValue}
-          title={`Add '${props.id}' into netgroups`}
-          ariaLabel={"Add " + entityType + " of netgroup modal"}
-          spinning={spinning}
+      <MemberOfAddModal
+        showModal={showAddModal}
+        onCloseModal={() => setShowAddModal(false)}
+        availableItems={availableItems}
+        onAdd={onAddNetgroup}
+        onSearchTextChange={setAdderSearchValue}
+        title={`Add '${props.id}' into netgroups`}
+        ariaLabel={"Add " + entityType + " of netgroup modal"}
+        spinning={spinning}
+      />
+      <MemberOfDeleteModal
+        showModal={showDeleteModal}
+        onCloseModal={() => setShowDeleteModal(false)}
+        title={`Remove '${props.id}' from netgroups`}
+        onDelete={onDeleteNetgroup}
+        spinning={spinning}
+      >
+        <MemberTable
+          entityList={availableNetgroups.filter((netgroup) =>
+            membershipDirection === "direct"
+              ? netgroupsSelected.includes(netgroup.cn)
+              : indirectNetgroupsSelected.includes(netgroup.cn)
+          )}
+          from="netgroups"
+          idKey="cn"
+          columnNamesToShow={columnNames}
+          propertiesToShow={properties}
+          showTableRows
         />
-      )}
-      {showDeleteModal && someItemSelected && (
-        <MemberOfDeleteModal
-          showModal={showDeleteModal}
-          onCloseModal={() => setShowDeleteModal(false)}
-          title={`Remove '${props.id}' from netgroups`}
-          onDelete={onDeleteNetgroup}
-          spinning={spinning}
-        >
-          <MemberTable
-            entityList={availableNetgroups.filter((userGroup) =>
-              netgroupsSelected.includes(userGroup.cn)
-            )}
-            from="netgroups"
-            idKey="cn"
-            columnNamesToShow={columnNames}
-            propertiesToShow={properties}
-            showTableRows
-          />
-        </MemberOfDeleteModal>
-      )}
+      </MemberOfDeleteModal>
     </>
   );
 };
