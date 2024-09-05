@@ -547,7 +547,7 @@ When("I scroll down", () => {
   });
 });
 
-// Get tab badge count
+// Get tab badge count. This expects the tab has an id that ends with "_count"
 Then(
   "I should see the {string} tab count is {string}",
   (count_id: string, value: string) => {

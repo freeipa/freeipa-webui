@@ -17,10 +17,9 @@ import { UserGroup } from "src/utils/datatypes/globalDataTypes";
 import useAlerts from "src/hooks/useAlerts";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // RPC
-import { ErrorResult } from "src/services/rpc";
+import { ErrorResult, MemberPayload } from "src/services/rpc";
 
 import {
-  MemberPayload,
   useAddAsMemberMutation,
   useRemoveAsMemberMutation,
 } from "src/services/rpcUserGroups";
@@ -139,7 +138,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
     }
 
     const payload = {
-      userGroup: props.id,
+      entryName: props.id,
       entityType: "ipaexternalmember",
       idsToAdd: newExternalNames,
     } as MemberPayload;
@@ -171,7 +170,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
   // Delete
   const onDeleteExternal = () => {
     const payload = {
-      userGroup: props.id,
+      entryName: props.id,
       entityType: "ipaexternalmember",
       idsToAdd: externalsSelected,
     } as MemberPayload;

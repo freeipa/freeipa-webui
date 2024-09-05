@@ -115,8 +115,8 @@ const MemberOfToolbar = (props: MemberOfToolbarProps) => {
             Add
           </Button>
         </ToolbarItem>
-        {/* Membership will show only if `membershipDirectionEnabled` is defined */}
-        {props.membershipDirectionEnabled !== undefined && (
+        {/* Membership direction will show only if `membershipDirectionEnabled` is true */}
+        {props.membershipDirectionEnabled && (
           <>
             <ToolbarItem
               id="separator-membership"

@@ -184,10 +184,12 @@ export interface Netgroup {
   description: string;
   dn: string;
   memberof_netgroup: string[];
+  member_netgroup: string[];
   memberhost_host: string[];
   memberhost_hostgroup: string[];
   memberuser_user: string[];
   memberuser_group: string[];
+  memberindirect_netgroup: string[];
   externalhost: string[];
   usercategory: string;
   hostcategory: string;

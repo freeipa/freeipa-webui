@@ -15,14 +15,17 @@ import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 // RPC
-import { ErrorResult } from "src/services/rpc";
+import { ErrorResult, MemberPayload } from "src/services/rpc";
 import {
-  MemberPayload,
   useAddAsMemberHGMutation,
   useGetHostGroupInfoByNameQuery,
   useGettingHostGroupsQuery,
   useRemoveAsMemberHGMutation,
 } from "src/services/rpcHostGroups";
+import {
+  useAddAsMemberNGMutation,
+  useRemoveAsMemberNGMutation,
+} from "src/services/rpcNetgroups";
 import { apiToHostGroup } from "src/utils/hostGroupUtils";
 
 interface PropsToMembersHostGroups {
@@ -128,11 +131,25 @@ const MembersHostGroups = (props: PropsToMembersHostGroups) => {
     }
   }, [fullHostGroupsQuery.data, fullHostGroupsQuery.isFetching]);
 
+  // Get type of the entity to show as text
+  const getEntityType = () => {
+    if (props.from === "host-groups") {
+      return "host group";
+    } else if (props.from === "netgroup") {
+      return "netgroup";
+    } else {
+      // Return 'group' as default
+      return "host group";
+    }
+  };
+
   // Computed "states"
   const someItemSelected = hostGroupsSelected.length > 0;
   const showTableRows = hostGroups.length > 0;
+  const entityType = getEntityType();
   const hostGroupColumnNames = ["Host group name", "Description"];
   const hostGroupProperties = ["cn", "description"];
+  const directionEnabled = props.from !== "netgroup" ? true : false;
 
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
@@ -147,8 +164,14 @@ const MembersHostGroups = (props: PropsToMembersHostGroups) => {
 
   // Add new member to 'HostGroup'
   // API calls
-  const [addMemberToHostGroups] = useAddAsMemberHGMutation();
-  const [removeMembersFromHostGroups] = useRemoveAsMemberHGMutation();
+  let [addMembers] = useAddAsMemberHGMutation();
+  if (props.from === "netgroup") {
+    [addMembers] = useAddAsMemberNGMutation();
+  }
+  let [removeMembers] = useRemoveAsMemberHGMutation();
+  if (props.from === "netgroup") {
+    [removeMembers] = useRemoveAsMemberNGMutation();
+  }
   const [adderSearchValue, setAdderSearchValue] = React.useState("");
   const [availableHostGroups, setAvailableHostGroups] = React.useState<
     HostGroup[]
@@ -209,19 +232,19 @@ const MembersHostGroups = (props: PropsToMembersHostGroups) => {
     }
 
     const payload = {
-      hostGroup: props.id,
+      entryName: props.id,
       entityType: "hostgroup",
       idsToAdd: newHostGroupNames,
     } as MemberPayload;
 
     setSpinning(true);
-    addMemberToHostGroups(payload).then((response) => {
+    addMembers(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
           // Set alert: success
           alerts.addAlert(
             "add-member-success",
-            "Assigned new host groups to host group '" + props.id + "'",
+            "Assigned new host groups to " + entityType + " '" + props.id + "'",
             "success"
           );
           // Refresh data
@@ -241,19 +264,19 @@ const MembersHostGroups = (props: PropsToMembersHostGroups) => {
   // Delete
   const onDeleteHostGroups = () => {
     const payload = {
-      hostGroup: props.id,
+      entryName: props.id,
       entityType: "hostgroup",
       idsToAdd: hostGroupsSelected,
     } as MemberPayload;
 
     setSpinning(true);
-    removeMembersFromHostGroups(payload).then((response) => {
+    removeMembers(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
           // Set alert: success
           alerts.addAlert(
             "remove-hostgroups-success",
-            "Removed host groups from host group '" + props.id + "'",
+            "Removed host groups from " + entityType + " '" + props.id + "'",
             "success"
           );
           // Refresh
@@ -324,7 +347,7 @@ const MembersHostGroups = (props: PropsToMembersHostGroups) => {
           onDeleteButtonClick={() => setShowDeleteModal(true)}
           addButtonEnabled={isAddButtonEnabled}
           onAddButtonClick={() => setShowAddModal(true)}
-          membershipDirectionEnabled={true}
+          membershipDirectionEnabled={directionEnabled}
           membershipDirection={membershipDirection}
           onMembershipDirectionChange={setMembershipDirection}
           helpIconEnabled={true}
@@ -370,7 +393,7 @@ const MembersHostGroups = (props: PropsToMembersHostGroups) => {
           availableItems={availableItems}
           onAdd={onAddHostGroup}
           onSearchTextChange={setAdderSearchValue}
-          title={"Assign host groups to host group: " + props.id}
+          title={"Assign host groups to " + entityType + ": " + props.id}
           ariaLabel={"Add host groups modal"}
           spinning={spinning}
         />
@@ -379,7 +402,7 @@ const MembersHostGroups = (props: PropsToMembersHostGroups) => {
         <MemberOfDeleteModal
           showModal={showDeleteModal}
           onCloseModal={() => setShowDeleteModal(false)}
-          title={"Delete host groups from host group: " + props.id}
+          title={"Delete host groups from " + entityType + ": " + props.id}
           onDelete={onDeleteHostGroups}
           spinning={spinning}
         >

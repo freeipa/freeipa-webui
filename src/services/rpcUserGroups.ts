@@ -7,6 +7,7 @@ import {
   BatchRPCResponse,
   FindRPCResponse,
   useGettingGenericQuery,
+  MemberPayload,
 } from "./rpc";
 import { apiToGroup } from "src/utils/groupUtils";
 import { apiToPwPolicy } from "src/utils/pwPolicyUtils";
@@ -59,12 +60,6 @@ export type GroupFullData = {
   userGroup?: Partial<UserGroup>;
   pwPolicy?: Partial<PwPolicy>;
 };
-
-export interface MemberPayload {
-  userGroup: string;
-  idsToAdd: string[];
-  entityType: string;
-}
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -327,12 +322,12 @@ const extendedApi = api.injectEndpoints({
         apiToGroup(response.result.result),
     }),
     /**
-     * Given a list of user IDs, add them as members to a group
-     * @param {MemberPayload} - Payload with user IDs and options
+     * Given a list of IDs, add them as members
+     * @param {MemberPayload} - Payload with IDs and options
      */
     addAsMember: build.mutation<FindRPCResponse, MemberPayload>({
       query: (payload) => {
-        const userGroup = payload.userGroup;
+        const userGroup = payload.entryName;
         const idsToAdd = payload.idsToAdd;
         const memberType = payload.entityType;
 
@@ -346,12 +341,12 @@ const extendedApi = api.injectEndpoints({
       },
     }),
     /**
-     * Remove a user group from some user members
-     * @param {MemberPayload} - Payload with user IDs and options
+     * Remove members
+     * @param {MemberPayload} - Payload with IDs and options
      */
     removeAsMember: build.mutation<FindRPCResponse, MemberPayload>({
       query: (payload) => {
-        const userGroup = payload.userGroup;
+        const userGroup = payload.entryName;
         const idsToAdd = payload.idsToAdd;
         const memberType = payload.entityType;
 
