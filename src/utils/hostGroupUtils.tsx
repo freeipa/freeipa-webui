@@ -36,6 +36,13 @@ export function createEmptyGroup(): HostGroup {
     member_hostgroup: [],
     memberindirect_host: [],
     memberindirect_hostgroup: [],
+    memberof_hostgroup: [],
+    memberof_netgroup: [],
+    memberof_hbacrule: [],
+    memberof_sudorule: [],
+    memberofindirect_hostgroup: [],
+    memberofindirect_hbacrule: [],
+    memberofindirect_sudorule: [],
   };
 
   return group;

@@ -265,7 +265,7 @@ const AddHostGroup = (props: PropsToAddGroup) => {
       name="add"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
       onClickHandler={addGroupHandler}
-      form="modal-form"
+      form="modal-form-add-hostgroup"
       spinnerAriaValueText="Adding"
       spinnerAriaLabel="Adding"
       isLoading={addSpinning}
@@ -277,7 +277,7 @@ const AddHostGroup = (props: PropsToAddGroup) => {
       name="add_and_add_another"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
       onClickHandler={addAndAddAnotherHandler}
-      form="modal-form"
+      form="modal-form-add-another-hostgroup"
       spinnerAriaValueText="Adding again"
       spinnerAriaLabel="Adding again"
       isLoading={addAgainSpinning}
@@ -298,7 +298,7 @@ const AddHostGroup = (props: PropsToAddGroup) => {
         modalPosition="top"
         offPosition="76px"
         title="Add host group"
-        formId="add-host-group-modal"
+        formId="modal-form-add-hostgroup"
         fields={fields}
         show={props.show}
         onClose={cleanAndCloseModal}

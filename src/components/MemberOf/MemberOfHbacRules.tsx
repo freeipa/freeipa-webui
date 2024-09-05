@@ -2,7 +2,12 @@ import React from "react";
 // PatternFly
 import { Pagination, PaginationVariant } from "@patternfly/react-core";
 // Data types
-import { User, HBACRule, Host } from "src/utils/datatypes/globalDataTypes";
+import {
+  User,
+  HBACRule,
+  Host,
+  HostGroup,
+} from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfToolbar from "./MemberOfToolbar";
 import MemberTable from "src/components/tables/MembershipTable";
@@ -25,7 +30,7 @@ import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToHBACRule } from "src/utils/hbacRulesUtils";
 
 interface MemberOfHbacRulesProps {
-  entity: Partial<User> | Partial<Host>;
+  entity: Partial<User> | Partial<Host> | Partial<HostGroup>;
   id: string;
   from: string;
   isDataLoading: boolean;
@@ -129,6 +134,8 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
       return "user";
     } else if (props.from === "hosts") {
       return "host";
+    } else if (props.from === "host-groups") {
+      return "hostgroup";
     } else if (props.from === "user-groups") {
       return "group";
     } else {

@@ -229,10 +229,34 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
           }
         >
           <MemberOfHostGroups
-            host={host}
-            isHostDataLoading={hostQuery.isFetching}
-            onRefreshHostData={onRefreshHostData}
+            entity={host}
+            id={host.fqdn as string}
+            from={"hosts"}
+            isDataLoading={hostQuery.isFetching}
+            onRefreshData={onRefreshHostData}
             setDirection={updateGroupDirection}
+            direction={groupDirection}
+          />
+        </Tab>
+        <Tab
+          eventKey={"memberof_role"}
+          name="memberof_role"
+          title={
+            <TabTitleText>
+              Roles{" "}
+              <Badge key={0} isRead>
+                {roleCount}
+              </Badge>
+            </TabTitleText>
+          }
+        >
+          <MemberOfRoles
+            entity={host}
+            id={host.fqdn as string}
+            from={"roles"}
+            isDataLoading={hostQuery.isFetching}
+            onRefreshData={onRefreshHostData}
+            setDirection={updateRoleDirection}
             direction={groupDirection}
           />
         </Tab>
@@ -256,30 +280,6 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
             onRefreshData={onRefreshHostData}
             setDirection={updateNetgroupDirection}
             direction={netgroupDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"memberof_role"}
-          name="memberof_role"
-          title={
-            <TabTitleText>
-              Roles{" "}
-              <Badge key={2} isRead>
-                {roleCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfRoles
-            entity={host}
-            id={host.fqdn as string}
-            from={"hosts"}
-            isDataLoading={hostQuery.isFetching}
-            onRefreshData={onRefreshHostData}
-            memberof_role={host.memberof_role as string[]}
-            memberofindirect_role={host.memberofindirect_role as string[]}
-            setDirection={updateRoleDirection}
-            direction={roleDirection}
           />
         </Tab>
         <Tab

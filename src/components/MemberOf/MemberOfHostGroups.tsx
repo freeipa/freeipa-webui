@@ -25,9 +25,11 @@ import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToHostGroup } from "src/utils/hostGroupUtils";
 
 interface MemberOfHostGroupsProps {
-  host: Partial<Host>;
-  isHostDataLoading: boolean;
-  onRefreshHostData: () => void;
+  entity: Partial<Host> | Partial<HostGroup>;
+  id: string;
+  from: string;
+  isDataLoading: boolean;
+  onRefreshData: () => void;
   setDirection: (direction: MembershipDirection) => void;
   direction: MembershipDirection;
 }
@@ -58,9 +60,9 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
   const [hostGroups, setHostGroups] = React.useState<HostGroup[]>([]);
 
   // Choose the correct Host groups based on the membership direction
-  const memberof_hostgroup = props.host.memberof_hostgroup || [];
+  const memberof_hostgroup = props.entity.memberof_hostgroup || [];
   const memberofindirect_hostgroup =
-    props.host.memberofindirect_hostgroup || [];
+    props.entity.memberofindirect_hostgroup || [];
   let hostGroupNames =
     membershipDirection === "direct"
       ? memberof_hostgroup
@@ -103,7 +105,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
     const hostGroupsNames = getHostGroupsNameToLoad();
     setHostGroupNamesToLoad(hostGroupsNames);
     props.setDirection(membershipDirection);
-  }, [props.host, membershipDirection, searchValue, page, perPage]);
+  }, [props.entity, membershipDirection, searchValue, page, perPage]);
 
   React.useEffect(() => {
     if (hostGroupNamesToLoad.length > 0) {
@@ -113,7 +115,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
 
   React.useEffect(() => {
     setMembershipDirection(props.direction);
-  }, [props.host]);
+  }, [props.entity]);
 
   // Update host groups
   React.useEffect(() => {
@@ -122,8 +124,21 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
     }
   }, [fullHostGroupsQuery.data, fullHostGroupsQuery.isFetching]);
 
+  // Get type of the entity to show as text
+  const getEntityType = () => {
+    if (props.from === "hosts") {
+      return "host";
+    } else if (props.from === "host-groups") {
+      return "hostgroup";
+    } else {
+      // Return 'user' as default
+      return "host";
+    }
+  };
+
   // Computed "states"
   const showTableRows = hostGroups.length > 0;
+  const entityType = getEntityType();
 
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
@@ -132,7 +147,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
 
   // Buttons functionality
   const isRefreshButtonEnabled =
-    !fullHostGroupsQuery.isFetching && !props.isHostDataLoading;
+    !fullHostGroupsQuery.isFetching && !props.isDataLoading;
   const isAddButtonEnabled =
     membershipDirection !== "indirect" && isRefreshButtonEnabled;
 
@@ -162,7 +177,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
     if (showAddModal) {
       hostGroupsQuery.refetch();
     }
-  }, [showAddModal, adderSearchValue, props.host]);
+  }, [showAddModal, adderSearchValue, props.entity]);
 
   // Update available Host groups
   React.useEffect(() => {
@@ -180,7 +195,10 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
           title: userGroup.cn,
         });
       }
-      items = items.filter((item) => !memberof_hostgroup.includes(item.key));
+      items = items.filter(
+        (item) =>
+          !memberof_hostgroup.includes(item.key) && item.key !== props.id
+      );
 
       setAvailableHostGroups(avalHostGroups);
       setAvailableItems(items);
@@ -189,25 +207,24 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
 
   // - Add
   const onAddHostGroup = (items: AvailableItems[]) => {
-    const fqdn = props.host.fqdn;
     const newHostGroupNames = items.map((item) => item.key);
-    if (fqdn === undefined || newHostGroupNames.length == 0) {
+    if (props.id === undefined || newHostGroupNames.length == 0) {
       return;
     }
 
     setSpinning(true);
-    addMemberToHostGroups([fqdn, "host", newHostGroupNames]).then(
+    addMemberToHostGroups([props.id, entityType, newHostGroupNames]).then(
       (response) => {
         if ("data" in response) {
           if (response.data.result) {
             // Set alert: success
             alerts.addAlert(
               "add-member-success",
-              `Assigned '${fqdn}' to host groups`,
+              `Assigned '${props.id}' to host groups`,
               "success"
             );
             // Refresh data
-            props.onRefreshHostData();
+            props.onRefreshData();
             // Close modal
             setShowAddModal(false);
           } else if (response.data.error) {
@@ -223,42 +240,40 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
 
   // - Delete
   const onDeleteHostGroup = () => {
-    if (props.host.fqdn) {
-      setSpinning(true);
-      removeMembersFromHostGroups([
-        props.host.fqdn,
-        "host",
-        hostGroupsSelected,
-      ]).then((response) => {
-        if ("data" in response) {
-          if (response.data.result) {
-            // Set alert: success
-            alerts.addAlert(
-              "remove-host-groups-success",
-              `Removed '${props.host.fqdn}' from host groups`,
-              "success"
-            );
-            // Refresh
-            props.onRefreshHostData();
-            // Reset delete button
-            setHostGroupsSelected([]);
-            // Close modal
-            setShowDeleteModal(false);
-            // Return to first page
-            setPage(1);
-          } else if (response.data.error) {
-            // Set alert: error
-            const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert(
-              "remove-host-groups-error",
-              errorMessage.message,
-              "danger"
-            );
-          }
+    setSpinning(true);
+    removeMembersFromHostGroups([
+      props.id,
+      entityType,
+      hostGroupsSelected,
+    ]).then((response) => {
+      if ("data" in response) {
+        if (response.data.result) {
+          // Set alert: success
+          alerts.addAlert(
+            "remove-host-groups-success",
+            `Removed '${props.id}' from host groups`,
+            "success"
+          );
+          // Refresh
+          props.onRefreshData();
+          // Reset delete button
+          setHostGroupsSelected([]);
+          // Close modal
+          setShowDeleteModal(false);
+          // Back to page 1
+          setPage(1);
+        } else if (response.data.error) {
+          // Set alert: error
+          const errorMessage = response.data.error as unknown as ErrorResult;
+          alerts.addAlert(
+            "remove-host-groups-error",
+            errorMessage.message,
+            "danger"
+          );
         }
-        setSpinning(false);
-      });
-    }
+      }
+      setSpinning(false);
+    });
   };
 
   return (
@@ -270,7 +285,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         onSearch={() => {}}
         refreshButtonEnabled={isRefreshButtonEnabled}
-        onRefreshButtonClick={props.onRefreshHostData}
+        onRefreshButtonClick={props.onRefreshData}
         deleteButtonEnabled={
           membershipDirection === "direct"
             ? hostGroupsSelected.length > 0
@@ -325,14 +340,14 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
         availableItems={availableItems}
         onAdd={onAddHostGroup}
         onSearchTextChange={setAdderSearchValue}
-        title={`Add '${props.host.fqdn}' into host groups`}
+        title={`Add '${props.id}' into host groups`}
         ariaLabel="Add host of host group modal"
         spinning={spinning}
       />
       <MemberOfDeleteModal
         showModal={showDeleteModal}
         onCloseModal={() => setShowDeleteModal(false)}
-        title={`Remove '${props.host.fqdn}' from host groups`}
+        title={`Remove '${props.id}' from host groups`}
         onDelete={onDeleteHostGroup}
         spinning={spinning}
       >

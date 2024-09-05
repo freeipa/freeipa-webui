@@ -129,6 +129,8 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
       return "user";
     } else if (props.from === "hosts") {
       return "host";
+    } else if (props.from === "host-groups") {
+      return "hostgroup";
     } else if (props.from === "user-groups") {
       return "group";
     } else {

@@ -143,7 +143,7 @@ const extendedApi = api.injectEndpoints({
         let methodType = "";
         if (memberType === "user") {
           methodType = "sudorule_add_user";
-        } else if (memberType === "host") {
+        } else if (memberType === "host" || memberType === "hostgroup") {
           methodType = "sudorule_add_host";
         } else if (memberType === "option") {
           methodType = "sudorule_add_option";
@@ -179,7 +179,7 @@ const extendedApi = api.injectEndpoints({
         let methodType = "";
         if (memberType === "user") {
           methodType = "sudorule_remove_user";
-        } else if (memberType === "host") {
+        } else if (memberType === "host" || memberType === "hostgroup") {
           methodType = "sudorule_remove_host";
         } else if (memberType === "option") {
           methodType = "sudorule_remove_option";

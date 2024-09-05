@@ -286,8 +286,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
             from={props.from}
             isDataLoading={userQuery.isFetching}
             onRefreshData={onRefreshUserData}
-            memberof_role={user.memberof_role as string[]}
-            memberofindirect_role={user.memberofindirect_role as string[]}
             setDirection={updateRoleDirection}
             direction={roleDirection}
           />

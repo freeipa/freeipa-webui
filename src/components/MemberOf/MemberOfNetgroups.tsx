@@ -2,7 +2,12 @@ import React from "react";
 // PatternFly
 import { Pagination, PaginationVariant } from "@patternfly/react-core";
 // Data types
-import { User, Netgroup, Host } from "src/utils/datatypes/globalDataTypes";
+import {
+  User,
+  Netgroup,
+  Host,
+  HostGroup,
+} from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfToolbar from "./MemberOfToolbar";
 import MemberTable from "src/components/tables/MembershipTable";
@@ -25,17 +30,18 @@ import { apiToNetgroup } from "src/utils/netgroupsUtils";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 
-interface MemberOfNetroupsProps {
-  entity: Partial<User> | Partial<Host>;
+interface MemberOfNetgroupsProps {
+  entity: Partial<User> | Partial<Host> | Partial<HostGroup>;
   id: string;
   from: string;
   isDataLoading: boolean;
   onRefreshData: () => void;
+  noIndirect?: boolean | false;
   setDirection: (direction: MembershipDirection) => void;
   direction: MembershipDirection;
 }
 
-const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
+const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
@@ -63,7 +69,9 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
   // Choose the correct netgroups based on the membership direction
   const memberof_netgroup = props.entity.memberof_netgroup || [];
   const memberofindirect_netgroup =
-    props.entity.memberofindirect_netgroup || [];
+    "memberofindirect_netgroup" in props.entity
+      ? (props.entity.memberofindirect_netgroup as string[])
+      : [];
   let netgroupNames =
     membershipDirection === "direct"
       ? memberof_netgroup
@@ -133,6 +141,8 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
       return "host";
     } else if (props.from === "user-groups") {
       return "group";
+    } else if (props.from === "host-groups") {
+      return "hostgroup";
     } else {
       // Return 'user' as default
       return "user";
@@ -292,7 +302,7 @@ const memberOfNetgroups = (props: MemberOfNetroupsProps) => {
         onDeleteButtonClick={() => setShowDeleteModal(true)}
         addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
-        membershipDirectionEnabled={true}
+        membershipDirectionEnabled={!props.noIndirect}
         membershipDirection={membershipDirection}
         onMembershipDirectionChange={setMembershipDirection}
         helpIconEnabled={true}

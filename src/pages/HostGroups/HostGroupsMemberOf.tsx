@@ -2,7 +2,7 @@ import React, { useState } from "react";
 // PatternFly
 import { Badge, Tab, Tabs, TabTitleText } from "@patternfly/react-core";
 // Data types
-import { UserGroup } from "src/utils/datatypes/globalDataTypes";
+import { HostGroup } from "src/utils/datatypes/globalDataTypes";
 // Navigation
 import { useNavigate } from "react-router-dom";
 // Layout
@@ -10,28 +10,26 @@ import TabLayout from "src/components/layouts/TabLayout";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // RPC
-import { useGetGroupByIdQuery } from "src/services/rpcUserGroups";
+import { useGetHostGroupByIdQuery } from "src/services/rpcHostGroups";
 // 'Is a member of' sections
-import MemberOfUserGroups from "src/components/MemberOf/MemberOfUserGroups";
+import MemberOfHostGroups from "src/components/MemberOf/MemberOfHostGroups";
 import MemberOfNetgroups from "src/components/MemberOf/MemberOfNetgroups";
-import MemberOfRoles from "src/components/MemberOf/MemberOfRoles";
 import MemberOfHbacRules from "src/components/MemberOf/MemberOfHbacRules";
 import MemberOfSudoRules from "src/components/MemberOf/MemberOfSudoRules";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 
 interface PropsToMemberOf {
-  userGroup: UserGroup;
+  hostGroup: HostGroup;
   tabSection: string;
 }
 
-const UserGroupsMemberOf = (props: PropsToMemberOf) => {
+const HostGroupsMemberOf = (props: PropsToMemberOf) => {
   const navigate = useNavigate();
 
   // User group's full data
-  const groupQuery = useGetGroupByIdQuery(props.userGroup.cn);
+  const groupQuery = useGetHostGroupByIdQuery(props.hostGroup.cn);
   const groupData = groupQuery.data || {};
-
-  const [group, setGroup] = useState<Partial<UserGroup>>({});
+  const [group, setGroup] = useState<Partial<HostGroup>>({});
 
   React.useEffect(() => {
     if (!groupQuery.isFetching && groupData) {
@@ -44,16 +42,16 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
   };
 
   // Update current route data to Redux and highlight the current page in the Nav bar
-  useUpdateRoute({ pathname: "user-groups", noBreadcrumb: true });
+  useUpdateRoute({ pathname: "host-groups", noBreadcrumb: true });
 
   // Tab
-  const [activeTabKey, setActiveTabKey] = useState("memberof_usergroup");
+  const [activeTabKey, setActiveTabKey] = useState("memberof_hostgroup");
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
     setActiveTabKey(tabIndex as string);
-    navigate("/user-groups/" + props.userGroup.cn + "/" + tabIndex);
+    navigate("/host-groups/" + props.hostGroup.cn + "/" + tabIndex);
   };
 
   React.useEffect(() => {
@@ -61,17 +59,9 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
   }, [props.tabSection]);
 
   const [groupCount, setGroupCount] = React.useState(0);
-  const [netgroupCount, setNetgroupCount] = React.useState(0);
-  const [roleCount, setRoleCount] = React.useState(0);
   const [hbacCount, setHbacCount] = React.useState(0);
   const [sudoCount, setSudoCount] = React.useState(0);
   const [groupDirection, setGroupDirection] = React.useState(
-    "direct" as MembershipDirection
-  );
-  const [netgroupDirection, setNetgroupDirection] = React.useState(
-    "direct" as MembershipDirection
-  );
-  const [roleDirection, setRoleDirection] = React.useState(
     "direct" as MembershipDirection
   );
   const [hbacDirection, setHbacDirection] = React.useState(
@@ -84,44 +74,16 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
   const updateGroupDirection = (direction: MembershipDirection) => {
     if (direction === "direct") {
       setGroupCount(
-        group && group.memberof_group ? group.memberof_group.length : 0
+        group && group.memberof_hostgroup ? group.memberof_hostgroup.length : 0
       );
     } else {
       setGroupCount(
-        group && group.memberofindirect_group
-          ? group.memberofindirect_group.length
+        group && group.memberofindirect_hostgroup
+          ? group.memberofindirect_hostgroup.length
           : 0
       );
     }
     setGroupDirection(direction);
-  };
-  const updateNetgroupDirection = (direction: MembershipDirection) => {
-    if (direction === "direct") {
-      setNetgroupCount(
-        group && group.memberof_netgroup ? group.memberof_netgroup.length : 0
-      );
-    } else {
-      setNetgroupCount(
-        group && group.memberofindirect_netgroup
-          ? group.memberofindirect_netgroup.length
-          : 0
-      );
-    }
-    setNetgroupDirection(direction);
-  };
-  const updateRoleDirection = (direction: MembershipDirection) => {
-    if (direction === "direct") {
-      setRoleCount(
-        group && group.memberof_role ? group.memberof_role.length : 0
-      );
-    } else {
-      setRoleCount(
-        group && group.memberofindirect_role
-          ? group.memberofindirect_role.length
-          : 0
-      );
-    }
-    setRoleDirection(direction);
   };
   const updateHbacDirection = (direction: MembershipDirection) => {
     if (direction === "direct") {
@@ -155,23 +117,12 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
   React.useEffect(() => {
     if (groupDirection === "direct") {
       setGroupCount(
-        group && group.memberof_group ? group.memberof_group.length : 0
+        group && group.memberof_hostgroup ? group.memberof_hostgroup.length : 0
       );
     } else {
       setGroupCount(
-        group && group.memberofindirect_group
-          ? group.memberofindirect_group.length
-          : 0
-      );
-    }
-    if (roleDirection === "direct") {
-      setRoleCount(
-        group && group.memberof_role ? group.memberof_role.length : 0
-      );
-    } else {
-      setRoleCount(
-        group && group.memberofindirect_role
-          ? group.memberofindirect_role.length
+        group && group.memberofindirect_hostgroup
+          ? group.memberofindirect_hostgroup.length
           : 0
       );
     }
@@ -197,17 +148,6 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
           : 0
       );
     }
-    if (netgroupDirection === "direct") {
-      setNetgroupCount(
-        group && group.memberof_netgroup ? group.memberof_netgroup.length : 0
-      );
-    } else {
-      setNetgroupCount(
-        group && group.memberofindirect_netgroup
-          ? group.memberofindirect_netgroup.length
-          : 0
-      );
-    }
   }, [group]);
 
   // Render component
@@ -221,22 +161,23 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
         unmountOnExit
       >
         <Tab
-          eventKey={"memberof_usergroup"}
-          name="memberof_usergroup"
+          eventKey={"memberof_hostgroup"}
+          name="memberof_hostgroup"
           title={
             <TabTitleText>
-              User groups{" "}
-              <Badge key={0} isRead>
+              Host groups{" "}
+              <Badge key={0} id="group_count" isRead>
                 {groupCount}
               </Badge>
             </TabTitleText>
           }
         >
-          <MemberOfUserGroups
-            entry={group}
-            from="User groups"
-            isUserDataLoading={groupQuery.isFetching}
-            onRefreshUserData={onRefreshData}
+          <MemberOfHostGroups
+            entity={group}
+            from="host-groups"
+            id={group.cn as string}
+            isDataLoading={groupQuery.isFetching}
+            onRefreshData={onRefreshData}
             setDirection={updateGroupDirection}
             direction={groupDirection}
           />
@@ -247,8 +188,10 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
           title={
             <TabTitleText>
               Netgroups{" "}
-              <Badge key={1} isRead>
-                {netgroupCount}
+              <Badge key={1} id="netgroup_count" isRead>
+                {group && group.memberof_netgroup
+                  ? group.memberof_netgroup.length
+                  : 0}
               </Badge>
             </TabTitleText>
           }
@@ -256,33 +199,12 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
           <MemberOfNetgroups
             entity={group}
             id={group.cn as string}
-            from={"user-groups"}
+            from={"host-groups"}
             isDataLoading={groupQuery.isFetching}
             onRefreshData={onRefreshData}
-            setDirection={updateNetgroupDirection}
-            direction={netgroupDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"memberof_role"}
-          name="memberof_role"
-          title={
-            <TabTitleText>
-              Roles{" "}
-              <Badge key={2} isRead>
-                {roleCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfRoles
-            entity={group}
-            id={group.cn as string}
-            from={"user-groups"}
-            isDataLoading={groupQuery.isFetching}
-            onRefreshData={onRefreshData}
-            setDirection={updateRoleDirection}
-            direction={roleDirection}
+            noIndirect
+            setDirection={() => []}
+            direction={"direct"}
           />
         </Tab>
         <Tab
@@ -291,7 +213,7 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
           title={
             <TabTitleText>
               HBAC rules{" "}
-              <Badge key={3} isRead>
+              <Badge key={3} id="hbacrule_count" isRead>
                 {hbacCount}
               </Badge>
             </TabTitleText>
@@ -300,7 +222,7 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
           <MemberOfHbacRules
             entity={group}
             id={group.cn as string}
-            from={"user-groups"}
+            from={"host-groups"}
             isDataLoading={groupQuery.isFetching}
             onRefreshData={onRefreshData}
             setDirection={updateHbacDirection}
@@ -313,7 +235,7 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
           title={
             <TabTitleText>
               Sudo rules{" "}
-              <Badge key={4} isRead>
+              <Badge key={4} id="sudorule_count" isRead>
                 {sudoCount}
               </Badge>
             </TabTitleText>
@@ -322,7 +244,7 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
           <MemberOfSudoRules
             entity={group}
             id={group.cn as string}
-            from={"user-groups"}
+            from={"host-groups"}
             isDataLoading={groupQuery.isFetching}
             onRefreshData={onRefreshData}
             setDirection={updateSudoDirection}
@@ -334,4 +256,4 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
   );
 };
 
-export default UserGroupsMemberOf;
+export default HostGroupsMemberOf;
