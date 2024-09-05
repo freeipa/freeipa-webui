@@ -296,7 +296,8 @@ const formatDate = (date, format, local) => {
   return str;
 };
 
-export const toGeneralizedTime = (date: Date) => {
+export const toGeneralizedTime = (date: Date | null) => {
+  if (!date) return "";
   const generalizedTimeDate = formatDate(date, templates.generalized, false);
   return generalizedTimeDate;
 };
