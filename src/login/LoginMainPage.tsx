@@ -32,6 +32,7 @@ import { useAppDispatch } from "src/store/hooks";
 import { setIsLogin } from "src/store/Global/auth-slice";
 // Navigation
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const LoginMainPage = () => {
   // Redux
@@ -295,9 +296,7 @@ const LoginMainPage = () => {
   const listItem = (
     <React.Fragment>
       <ListItem>
-        <LoginFooterItem href="https://server.ipa.demo/ipa/config/ssbrowser.html">
-          Browser Kerberos setup{" "}
-        </LoginFooterItem>
+        <Link to="/browser-config">Browser Kerberos setup</Link>
       </ListItem>
       <ListItem>
         <LoginFooterItem href="https://www.freeipa.org/">

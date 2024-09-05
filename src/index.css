@@ -20,3 +20,9 @@ code {
   --pf-v5-c-background-image--BackgroundSize: cover;
   --pf-v5-c-background-image--BackgroundPosition: center;
 }
+
+code {
+  font-size: 0.8em;
+  background-color: rgb(222, 243, 255);
+  padding: 0.2em;
+}
