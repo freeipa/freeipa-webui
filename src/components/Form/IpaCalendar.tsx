@@ -59,7 +59,7 @@ function getParamPropertiesDateTime(
 const IpaCalendar = (props: IPAParamDefinition) => {
   const { readOnly, value } = getParamPropertiesDateTime(props);
 
-  const onDateChange = (date: Date) => {
+  const onDateChange = (date: Date | null) => {
     if (props.ipaObject !== undefined && props.onChange !== undefined) {
       updateIpaObject(
         props.ipaObject,
