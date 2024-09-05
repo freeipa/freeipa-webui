@@ -24,6 +24,7 @@ import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { NotFound } from "src/components/errors/PageErrors";
 import HostGroupsSettings from "./HostGroupsSettings";
 import HostGroupsMembers from "./HostGroupsMembers";
+import HostGroupsMemberOf from "./HostGroupsMemberOf";
 
 // eslint-disable-next-line react/prop-types
 const HostGroupsTabs = ({ section }) => {
@@ -50,7 +51,7 @@ const HostGroupsTabs = ({ section }) => {
     } else if (tabIndex === "member") {
       navigate("/host-groups/" + cn + "/member_host");
     } else if (tabIndex === "memberof") {
-      // navigate("/host-groups/" + cn + "/memberof_hostgroup");
+      navigate("/host-groups/" + cn + "/memberof_hostgroup");
     } else if (tabIndex === "managedby") {
       // navigate("/host-groups/" + cn + "/managedby_hostgroup");
     }
@@ -164,7 +165,9 @@ const HostGroupsTabs = ({ section }) => {
             eventKey={"memberof"}
             name="memberof-details"
             title={<TabTitleText>Is a member of</TabTitleText>}
-          ></Tab>
+          >
+            <HostGroupsMemberOf hostGroup={hostgroup} tabSection={section} />
+          </Tab>
           <Tab
             eventKey={"managedby"}
             name="managedby-details"

@@ -36,7 +36,7 @@ interface MemberOfToolbarProps {
   addButtonEnabled: boolean;
   onAddButtonClick?: () => void;
 
-  membershipDirectionEnabled?: boolean;
+  membershipDirectionEnabled?: boolean | false;
   membershipDirection?: MembershipDirection;
   onMembershipDirectionChange?: (direction: MembershipDirection) => void;
 

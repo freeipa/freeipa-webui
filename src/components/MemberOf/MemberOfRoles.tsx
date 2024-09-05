@@ -30,8 +30,6 @@ interface MemberOfRolesProps {
   from: string;
   isDataLoading: boolean;
   onRefreshData: () => void;
-  memberof_role: string[];
-  memberofindirect_role?: string[];
   membershipDisabled?: boolean;
   setDirection: (direction: MembershipDirection) => void;
   direction: MembershipDirection;
@@ -65,8 +63,11 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   const [roles, setRoles] = React.useState<Role[]>([]);
 
   // Choose the correct roles based on the membership direction
-  const memberof_role = props.memberof_role || [];
-  const memberofindirect_role = props.memberofindirect_role || [];
+  const memberof_role = props.entity.memberof_role || [];
+  const memberofindirect_role =
+    ("memberofindirect_role" in props.entity &&
+      props.entity.memberofindirect_role) ||
+    [];
   let roleNames =
     membershipDirection === "direct" ? memberof_role : memberofindirect_role;
   roleNames = [...roleNames];

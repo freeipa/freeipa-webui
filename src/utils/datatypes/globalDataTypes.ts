@@ -319,10 +319,19 @@ export interface HostGroup {
   description: string;
   membermanager_user: string[];
   membermanager_group: string[];
+  // Member
   member_host: string[];
   member_hostgroup: string[];
   memberindirect_host: string[];
   memberindirect_hostgroup: string[];
+  // MemberOf
+  memberof_hostgroup: string[];
+  memberof_netgroup: string[];
+  memberof_hbacrule: string[];
+  memberof_sudorule: string[];
+  memberofindirect_hostgroup: string[];
+  memberofindirect_hbacrule: string[];
+  memberofindirect_sudorule: string[];
 }
 
 export interface Service {

@@ -92,7 +92,6 @@ const ServicesMemberOf = (props: PropsToServicesMemberOf) => {
             from={"services"}
             isDataLoading={serviceQuery.isFetching}
             onRefreshData={onRefreshServiceData}
-            memberof_role={service.memberof_role as string[]}
             membershipDisabled={true}
             // eslint-disable-next-line @typescript-eslint/no-empty-function
             setDirection={() => {}}
