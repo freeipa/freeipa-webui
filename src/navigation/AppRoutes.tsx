@@ -46,6 +46,7 @@ import HBACServicesTabs from "src/pages/HBACServices/HBACServicesTabs";
 import HBACRulesTabs from "src/pages/HBACRules/HBACRulesTabs";
 import HBACServiceGroupsTabs from "src/pages/HBACServiceGroups/HBACServiceGroupsTabs";
 import ResetPasswordPage from "src/login/ResetPasswordPage";
+import SetupBrowserConfig from "src/pages/SetupBrowserConfig";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -299,6 +300,8 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               <Route path="*" element={<Navigate to={"login"} replace />} />
             </>
           )}
+          {/* Browser configuration page */}
+          <Route path="browser-config" element={<SetupBrowserConfig />} />
           {/* 404 page */}
           <Route path="*" element={<NotFound />} />
         </Routes>
