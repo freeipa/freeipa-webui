@@ -16,16 +16,19 @@ import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToUser } from "src/utils/userUtils";
 // RPC
-import { ErrorResult } from "src/services/rpc";
+import { ErrorResult, MemberPayload } from "src/services/rpc";
 import {
   useGetUsersInfoByUidQuery,
   useGettingActiveUserQuery,
 } from "src/services/rpcUsers";
 import {
-  MemberPayload,
   useAddAsMemberMutation,
   useRemoveAsMemberMutation,
 } from "src/services/rpcUserGroups";
+import {
+  useAddAsMemberNGMutation,
+  useRemoveAsMemberNGMutation,
+} from "src/services/rpcNetgroups";
 
 interface PropsToMembersUsers {
   entity: Partial<UserGroup>;
@@ -74,6 +77,15 @@ const MembersUsers = (props: PropsToMembersUsers) => {
   let userNames =
     membershipDirection === "direct" ? member_user : memberindirect_user;
   userNames = [...userNames];
+
+  let [addMembers] = useAddAsMemberMutation();
+  if (props.from === "netgroup") {
+    [addMembers] = useAddAsMemberNGMutation();
+  }
+  let [removeMembers] = useRemoveAsMemberMutation();
+  if (props.from === "netgroup") {
+    [removeMembers] = useRemoveAsMemberNGMutation();
+  }
 
   const getUsersNameToLoad = (): string[] => {
     let toLoad = [...userNames];
@@ -130,9 +142,11 @@ const MembersUsers = (props: PropsToMembersUsers) => {
   const getEntityType = () => {
     if (props.from === "user-groups") {
       return "user group";
+    } else if (props.from === "netgroup") {
+      return "netgroup";
     } else {
       // Return 'group' as default
-      return "group";
+      return "user group";
     }
   };
 
@@ -148,6 +162,7 @@ const MembersUsers = (props: PropsToMembersUsers) => {
     "Email address",
   ];
   const userProperties = ["uid", "givenname", "sn", "nsaccountlock", "mail"];
+  const directionEnabled = props.from !== "netgroup" ? true : false;
 
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
@@ -160,10 +175,6 @@ const MembersUsers = (props: PropsToMembersUsers) => {
   const isAddButtonEnabled =
     membershipDirection !== "indirect" && isRefreshButtonEnabled;
 
-  // Add new member to 'User'
-  // API calls
-  const [addMemberToUser] = useAddAsMemberMutation();
-  const [removeMembersFromUsers] = useRemoveAsMemberMutation();
   const [adderSearchValue, setAdderSearchValue] = React.useState("");
   const [availableUsers, setAvailableUsers] = React.useState<User[]>([]);
   const [availableItems, setAvailableItems] = React.useState<AvailableItems[]>(
@@ -222,13 +233,13 @@ const MembersUsers = (props: PropsToMembersUsers) => {
     }
 
     const payload = {
-      userGroup: props.id,
+      entryName: props.id,
       entityType: "user",
       idsToAdd: newUserNames,
     } as MemberPayload;
 
     setSpinning(true);
-    addMemberToUser(payload).then((response) => {
+    addMembers(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
           // Set alert: success
@@ -254,13 +265,13 @@ const MembersUsers = (props: PropsToMembersUsers) => {
   // Delete
   const onDeleteUser = () => {
     const payload = {
-      userGroup: props.id,
+      entryName: props.id,
       entityType: "user",
       idsToAdd: usersSelected,
     } as MemberPayload;
 
     setSpinning(true);
-    removeMembersFromUsers(payload).then((response) => {
+    removeMembers(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
           // Set alert: success
@@ -333,7 +344,7 @@ const MembersUsers = (props: PropsToMembersUsers) => {
           onDeleteButtonClick={() => setShowDeleteModal(true)}
           addButtonEnabled={isAddButtonEnabled}
           onAddButtonClick={() => setShowAddModal(true)}
-          membershipDirectionEnabled={true}
+          membershipDirectionEnabled={directionEnabled}
           membershipDirection={membershipDirection}
           onMembershipDirectionChange={setMembershipDirection}
           helpIconEnabled={true}

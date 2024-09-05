@@ -155,6 +155,12 @@ export interface GetEntriesPayload {
   entryType?: "user" | "group" | "host" | "hostgroup" | "netgroup";
 }
 
+export interface MemberPayload {
+  entryName: string;
+  idsToAdd: string[];
+  entityType: string;
+}
+
 // Body data to perform the calls
 export const getCommand = (commandData: Command) => {
   const payloadWithParams = {

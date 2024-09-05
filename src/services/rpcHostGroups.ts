@@ -12,6 +12,7 @@ import { apiToHostGroup } from "src/utils/hostGroupUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
 // Data types
 import { HostGroup } from "src/utils/datatypes/globalDataTypes";
+import { MemberPayload } from "./rpc";
 
 /**
  * User Group-related endpoints: addToGroups, removeFromGroups,
@@ -41,12 +42,6 @@ export interface GroupAddPayload {
 export type GroupFullData = {
   hostGroup?: Partial<HostGroup>;
 };
-
-export interface MemberPayload {
-  hostGroup: string;
-  idsToAdd: string[];
-  entityType: string;
-}
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -237,7 +232,7 @@ const extendedApi = api.injectEndpoints({
      */
     addAsMemberHG: build.mutation<FindRPCResponse, MemberPayload>({
       query: (payload) => {
-        const hostGroup = payload.hostGroup;
+        const hostGroup = payload.entryName;
         const idsToAdd = payload.idsToAdd;
         const memberType = payload.entityType;
 
@@ -256,7 +251,7 @@ const extendedApi = api.injectEndpoints({
      */
     removeAsMemberHG: build.mutation<FindRPCResponse, MemberPayload>({
       query: (payload) => {
-        const hostGroup = payload.hostGroup;
+        const hostGroup = payload.entryName;
         const idsToAdd = payload.idsToAdd;
         const memberType = payload.entityType;
 

@@ -41,10 +41,12 @@ export function createEmptyNetgroup(): Netgroup {
     usercategory: "",
     hostcategory: "",
     memberof_netgroup: [],
+    member_netgroup: [],
     memberhost_host: [],
     memberhost_hostgroup: [],
     memberuser_user: [],
     memberuser_group: [],
+    memberindirect_netgroup: [],
     externalhost: [],
   };
 

@@ -16,13 +16,12 @@ import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToService } from "src/utils/serviceUtils";
 // RPC
-import { ErrorResult } from "src/services/rpc";
+import { ErrorResult, MemberPayload } from "src/services/rpc";
 import {
   useGetServicesInfoByUidQuery,
   useGettingServicesQuery,
 } from "src/services/rpcServices";
 import {
-  MemberPayload,
   useAddAsMemberMutation,
   useRemoveAsMemberMutation,
 } from "src/services/rpcUserGroups";
@@ -205,7 +204,7 @@ const MembersServices = (props: PropsToMembersServices) => {
     }
 
     const payload = {
-      userGroup: props.id,
+      entryName: props.id,
       entityType: "service",
       idsToAdd: newServiceNames,
     } as MemberPayload;
@@ -237,7 +236,7 @@ const MembersServices = (props: PropsToMembersServices) => {
   // Delete
   const onDeleteService = () => {
     const payload = {
-      userGroup: props.id,
+      entryName: props.id,
       entityType: "service",
       idsToAdd: servicesSelected,
     } as MemberPayload;

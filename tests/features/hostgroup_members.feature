@@ -117,3 +117,25 @@ Feature: Hostgroup members
     And I should not see "testgroup" entry in the data table
     Then I should see the "hostgroup" tab count is "0"
 
+  #
+  # Cleanup
+  #
+  Scenario: Cleanup - remove the test host
+    Given I am on "hosts" page
+    Then I select partial entry "myhost.dom-server.ipa.demo" in the data table
+    When I click on "Delete" button
+    * I see "Remove hosts" modal
+    * I should see partial "myhost.dom-server.ipa.demo" entry in the data table
+    When in the modal dialog I click on "Delete" button
+    * I should see "success" alert with text "Hosts removed"
+    Then I should not see "myhost.dom-server.ipa.demo" entry in the data table
+
+  Scenario: Cleanup - delete the test host group
+    Given I should see "testgroup" entry in the data table
+    Then I select entry "testgroup" in the data table
+    When I click on "Delete" button
+    * I see "Remove host groups" modal
+    * I should see "testgroup" entry in the data table
+    When in the modal dialog I click on "Delete" button
+    * I should see "success" alert with text "Host groups removed"
+    Then I should not see "testgroup" entry in the data table

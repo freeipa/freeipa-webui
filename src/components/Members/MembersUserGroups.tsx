@@ -15,14 +15,17 @@ import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 // RPC
-import { ErrorResult } from "src/services/rpc";
+import { ErrorResult, MemberPayload } from "src/services/rpc";
 import {
-  MemberPayload,
   useAddAsMemberMutation,
   useGetGroupInfoByNameQuery,
   useGettingGroupsQuery,
   useRemoveAsMemberMutation,
 } from "src/services/rpcUserGroups";
+import {
+  useAddAsMemberNGMutation,
+  useRemoveAsMemberNGMutation,
+} from "src/services/rpcNetgroups";
 import { apiToGroup } from "src/utils/groupUtils";
 
 interface PropsToMembersUsergroups {
@@ -130,9 +133,11 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
   const getEntityType = () => {
     if (props.from === "user-groups") {
       return "user group";
+    } else if (props.from === "netgroup") {
+      return "netgroup";
     } else {
       // Return 'group' as default
-      return "group";
+      return "user group";
     }
   };
 
@@ -142,6 +147,7 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
   const entityType = getEntityType();
   const userGroupColumnNames = ["Group name", "GID", "Description"];
   const userGroupProperties = ["cn", "gidnumber", "description"];
+  const directionEnabled = props.from !== "netgroup" ? true : false;
 
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
@@ -156,8 +162,14 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
 
   // Add new member to 'UserGroup'
   // API calls
-  const [addMemberToUserGroups] = useAddAsMemberMutation();
-  const [removeMembersFromUserGroups] = useRemoveAsMemberMutation();
+  let [addMembers] = useAddAsMemberMutation();
+  if (props.from === "netgroup") {
+    [addMembers] = useAddAsMemberNGMutation();
+  }
+  let [removeMembers] = useRemoveAsMemberMutation();
+  if (props.from === "netgroup") {
+    [removeMembers] = useRemoveAsMemberNGMutation();
+  }
   const [adderSearchValue, setAdderSearchValue] = React.useState("");
   const [availableUserGroups, setAvailableUserGroups] = React.useState<
     UserGroup[]
@@ -218,13 +230,13 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
     }
 
     const payload = {
-      userGroup: props.id,
+      entryName: props.id,
       entityType: "group",
       idsToAdd: newUserGroupNames,
     } as MemberPayload;
 
     setSpinning(true);
-    addMemberToUserGroups(payload).then((response) => {
+    addMembers(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
           // Set alert: success
@@ -250,13 +262,13 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
   // Delete
   const onDeleteUserGroups = () => {
     const payload = {
-      userGroup: props.id,
+      entryName: props.id,
       entityType: "group",
       idsToAdd: userGroupsSelected,
     } as MemberPayload;
 
     setSpinning(true);
-    removeMembersFromUserGroups(payload).then((response) => {
+    removeMembers(payload).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
           // Set alert: success
@@ -333,7 +345,7 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
           onDeleteButtonClick={() => setShowDeleteModal(true)}
           addButtonEnabled={isAddButtonEnabled}
           onAddButtonClick={() => setShowAddModal(true)}
-          membershipDirectionEnabled={true}
+          membershipDirectionEnabled={directionEnabled}
           membershipDirection={membershipDirection}
           onMembershipDirectionChange={setMembershipDirection}
           helpIconEnabled={true}
@@ -388,7 +400,7 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
         <MemberOfDeleteModal
           showModal={showDeleteModal}
           onCloseModal={() => setShowDeleteModal(false)}
-          title={"Delete " + entityType + "s from user group: " + props.id}
+          title={"Delete user groups from " + entityType + ": " + props.id}
           onDelete={onDeleteUserGroups}
           spinning={spinning}
         >

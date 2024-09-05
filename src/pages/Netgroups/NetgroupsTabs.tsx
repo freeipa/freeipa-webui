@@ -14,12 +14,14 @@ import { URL_PREFIX } from "src/navigation/NavRoutes";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
+import { partialNetgroupToNetgroup } from "src/utils/netgroupsUtils";
 // Hooks
 import { useNetgroupSettings } from "src/hooks/useNetgroupSettingsData";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { NotFound } from "src/components/errors/PageErrors";
+import NetgroupsMembers from "./NetgroupsMembers";
 import NetgroupsSettings from "./NetgroupsSettings";
 
 // eslint-disable-next-line react/prop-types
@@ -43,10 +45,10 @@ const NetgroupsTabs = ({ section }) => {
     setActiveTabKey(tabIndex as string);
     if (tabIndex === "settings") {
       navigate("/netgroups/" + cn);
+    } else if (tabIndex === "member") {
+      navigate("/netgroups/" + cn + "/member_user");
     } else if (tabIndex === "memberof") {
       // navigate("/netgroups/" + cn + "/memberof_netgroup");
-    } else if (tabIndex === "members") {
-      // navigate("/netgroups/" + cn + "/members_netgroup");
     }
   };
 
@@ -78,7 +80,12 @@ const NetgroupsTabs = ({ section }) => {
     if (!section) {
       navigate(URL_PREFIX + "/netgroups/" + cn);
     }
-    setActiveTabKey(section);
+    const section_string = section as string;
+    if (section_string.startsWith("memberof_")) {
+      setActiveTabKey("memberof");
+    } else if (section_string.startsWith("member_")) {
+      setActiveTabKey("member");
+    }
   }, [section]);
 
   if (
@@ -95,6 +102,8 @@ const NetgroupsTabs = ({ section }) => {
   ) {
     return <NotFound />;
   }
+
+  const netgroup = partialNetgroupToNetgroup(netgroupSettingsData.netgroup);
 
   return (
     <>
@@ -138,13 +147,15 @@ const NetgroupsTabs = ({ section }) => {
             />
           </Tab>
           <Tab
-            eventKey={"members"}
-            name="member-details"
+            eventKey={"member"}
+            name={"members-details"}
             title={<TabTitleText>Members</TabTitleText>}
-          ></Tab>
+          >
+            <NetgroupsMembers netgroup={netgroup} tabSection={section} />
+          </Tab>
           <Tab
             eventKey={"memberof"}
-            name="menerof-details"
+            name="memberof-details"
             title={<TabTitleText>Is a member of</TabTitleText>}
           ></Tab>
         </Tabs>

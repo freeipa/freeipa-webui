@@ -7,6 +7,7 @@ import {
   BatchResponse,
   FindRPCResponse,
   useGettingGenericQuery,
+  MemberPayload,
 } from "./rpc";
 import { API_VERSION_BACKUP } from "../utils/utils";
 import { apiToNetgroup } from "src/utils/netgroupsUtils";
@@ -14,7 +15,7 @@ import { Netgroup } from "../utils/datatypes/globalDataTypes";
 
 /**
  * Netgroup-related endpoints: addToNetgroups, removeFromNetgroups, getNetgroupInfoByName,
- *   saveNetgroup, saveAndCleanNetgroup
+ *   saveNetgroup, saveAndCleanNetgroup, getNetgroupByID
  *
  * API commands:
  * - netgroup_add: https://freeipa.readthedocs.io/en/latest/api/netgroup_add.html
@@ -341,6 +342,61 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(actions, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Get user group info by name
+     *
+     */
+    getNetgroupById: build.query<Netgroup, string>({
+      query: (groupId) => {
+        return getCommand({
+          method: "netgroup_show",
+          params: [
+            [groupId],
+            { all: true, rights: true, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): Netgroup =>
+        apiToNetgroup(response.result.result),
+    }),
+    /**
+     * Given a list of IDs, add them as members
+     * @param {MemberPayload} - Payload with IDs and options
+     */
+    addAsMemberNG: build.mutation<FindRPCResponse, MemberPayload>({
+      query: (payload) => {
+        const netgroup = payload.entryName;
+        const idsToAdd = payload.idsToAdd;
+        const memberType = payload.entityType;
+
+        return getCommand({
+          method: "netgroup_add_member",
+          params: [
+            [netgroup],
+            { all: true, [memberType]: idsToAdd, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+    }),
+    /**
+     * Remove members
+     * @param {MemberPayload} - Payload with IDs and options
+     */
+    removeAsMemberNG: build.mutation<FindRPCResponse, MemberPayload>({
+      query: (payload) => {
+        const netgroup = payload.entryName;
+        const idsToAdd = payload.idsToAdd;
+        const memberType = payload.entityType;
+
+        return getCommand({
+          method: "netgroup_remove_member",
+          params: [
+            [netgroup],
+            { all: true, [memberType]: idsToAdd, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -362,4 +418,7 @@ export const {
   useSaveNetgroupMutation,
   useRemoveMemberFromNetgroupsMutation,
   useSaveAndCleanNetgroupMutation,
+  useGetNetgroupByIdQuery,
+  useAddAsMemberNGMutation,
+  useRemoveAsMemberNGMutation,
 } = extendedApi;
