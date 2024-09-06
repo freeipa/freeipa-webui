@@ -43,17 +43,21 @@ const DateTimeSelector = (props: PropsToDateTimeSelector) => {
       const newTimeText = hhMMFormat(props.datetime);
       if (newTimeText !== timeText) {
         setTimeText(newTimeText);
+        setTimeValid(true);
       }
 
       const newDateText = yyyyMMddFormat(props.datetime);
       if (newDateText !== dateText) {
         setDateText(newDateText);
+        setDateValid(true);
       }
     } else if (props.datetime === null) {
       setDateText("");
+      setDateValid(true);
       // the TimePicker component will unfornately reset the time to current
       // time if the time is set to an empty string
-      setTimeText("");
+      setTimeText("00:00");
+      setTimeValid(true);
     }
   }, [props.datetime]);
 
@@ -76,6 +80,7 @@ const DateTimeSelector = (props: PropsToDateTimeSelector) => {
     // The limitation is that revert might not reset the value as the source
     // might still have the original value.
     if (!dateValid || !timeValid) {
+      props.onChange(new Date(NaN));
       return;
     }
 

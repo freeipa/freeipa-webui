@@ -1,9 +1,6 @@
 import React from "react";
 // Utils
-import {
-  parseFullDateStringToUTCFormat,
-  toGeneralizedTime,
-} from "src/utils/utils";
+import { parseFullDateStringToUTCFormat } from "src/utils/utils";
 import {
   BasicType,
   IPAParamDefinition,
@@ -17,11 +14,6 @@ import DateTimeSelector from "./DateTimeSelector";
 
 export interface DateParam {
   __datetime__: string;
-}
-
-export interface ValueDateTime {
-  valueDate: string;
-  valueTime: string;
 }
 
 export interface ParamPropertiesDateTime {
@@ -61,12 +53,7 @@ const IpaCalendar = (props: IPAParamDefinition) => {
 
   const onDateChange = (date: Date | null) => {
     if (props.ipaObject !== undefined && props.onChange !== undefined) {
-      updateIpaObject(
-        props.ipaObject,
-        props.onChange,
-        toGeneralizedTime(date),
-        props.name
-      );
+      updateIpaObject(props.ipaObject, props.onChange, date, props.name);
     }
   };
 
