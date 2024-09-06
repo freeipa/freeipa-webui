@@ -20,6 +20,8 @@ import {
   RadiusServer,
   User,
 } from "src/utils/datatypes/globalDataTypes";
+// Utils
+import { getModifiedValues, isObjectModified } from "src/utils/ipaObjectUtils";
 
 type UserSettingsData = {
   isLoading: boolean;
@@ -127,42 +129,16 @@ const useSettingsData = (
     settings.originalUser = {};
   }
 
-  const getModifiedValues = (): Partial<User> => {
-    if (!userFullData || !userFullData.user) {
-      return {};
-    }
-
-    const modifiedValues = {};
-    for (const [key, value] of Object.entries(user)) {
-      if (userFullData.user[key] !== value) {
-        modifiedValues[key] = value;
-      }
-    }
-    return modifiedValues;
+  settings.modifiedValues = (): Partial<User> => {
+    return getModifiedValues(user, userFullData?.user || null);
   };
-  settings.modifiedValues = getModifiedValues;
 
   // Detect any change in 'originalUser' and 'user' objects
   useEffect(() => {
-    if (!userFullData || !userFullData.user) {
-      return;
+    const newModified = isObjectModified(user, userFullData?.user || null);
+    if (newModified !== modified) {
+      setModified(newModified);
     }
-    let modified = false;
-    for (const [key, value] of Object.entries(user)) {
-      if (Array.isArray(value)) {
-        // Using 'JSON.stringify' when comparing arrays (to prevent data type false positives)
-        if (JSON.stringify(userFullData.user[key]) !== JSON.stringify(value)) {
-          modified = true;
-          break;
-        }
-      } else {
-        if (userFullData.user[key] !== value) {
-          modified = true;
-          break;
-        }
-      }
-    }
-    setModified(modified);
   }, [user, userFullData]);
 
   const onResetValues = () => {

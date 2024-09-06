@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export interface User {
+  [key: string]: unknown; // to fulfill Record<string, unknown> type
   // identity
   title: string;
   givenname: string; // required

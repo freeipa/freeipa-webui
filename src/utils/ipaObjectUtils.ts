@@ -1,5 +1,5 @@
 import { Metadata, ParamMetadata } from "src/utils/datatypes/globalDataTypes";
-import { parseAPIDatetime } from "./utils";
+import { parseAPIDatetime, toGeneralizedTime } from "./utils";
 
 export type BasicType = string | number | boolean | null | undefined | [];
 
@@ -188,6 +188,71 @@ export function convertApiObj(
     }
   }
   return obj;
+}
+
+export function convertToApiObj(
+  obj: Record<string, unknown>,
+  dateValues: Set<string>
+): Record<string, unknown> {
+  const apiObj = {};
+
+  for (const [key, value] of Object.entries(obj)) {
+    if (dateValues.has(key) && value instanceof Date) {
+      apiObj[key] = toGeneralizedTime(value);
+    } else {
+      apiObj[key] = value;
+    }
+  }
+
+  return apiObj;
+}
+
+export function isValueModified(
+  value: unknown,
+  originalValue: unknown
+): boolean {
+  let modified = false;
+  // For DateTime
+  if (value instanceof Date && originalValue instanceof Date) {
+    modified = value.getTime() !== originalValue.getTime();
+  } else if (Array.isArray(value)) {
+    // Using 'JSON.stringify' when comparing arrays (to prevent data type false positives)
+    modified = JSON.stringify(originalValue) !== JSON.stringify(value);
+  } else {
+    modified = originalValue !== value;
+  }
+  return modified;
+}
+
+export function getModifiedValues(
+  current: Record<string, unknown>,
+  original: Record<string, unknown> | null
+): Record<string, unknown> {
+  if (current === original) return {};
+  if (original === null) return { ...current };
+
+  const modifiedValues: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(current)) {
+    if (isValueModified(value, original[key])) {
+      modifiedValues[key] = value;
+    }
+  }
+  return modifiedValues;
+}
+
+export function isObjectModified(
+  current: Record<string, unknown> | null,
+  original: Record<string, unknown> | null
+): boolean {
+  if (current === original) return false;
+  if (current === null || original === null) return true;
+
+  for (const [key, value] of Object.entries(current)) {
+    if (isValueModified(value, original[key])) {
+      return true;
+    }
+  }
+  return false;
 }
 
 export const updateIpaObject = (
