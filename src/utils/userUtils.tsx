@@ -1,7 +1,7 @@
 // Data types
 import { User } from "src/utils/datatypes/globalDataTypes";
 // Utils
-import { convertApiObj } from "src/utils/ipaObjectUtils";
+import { convertApiObj, convertToApiObj } from "src/utils/ipaObjectUtils";
 
 // Parse the 'textInputField' data into expected data type
 // - TODO: Adapt it to work with many types of data
@@ -89,6 +89,10 @@ export function partialUserToUser(partialUser: Partial<User>): User {
     ...createEmptyUser(),
     ...partialUser,
   };
+}
+
+export function userToApi(user: Partial<User>): Record<string, unknown> {
+  return convertToApiObj(user as Record<string, unknown>, dateValues);
 }
 
 // Get empty User object initialized with default values

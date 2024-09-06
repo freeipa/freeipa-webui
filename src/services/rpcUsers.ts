@@ -9,7 +9,7 @@ import {
   FindRPCResponse,
   useGettingGenericQuery,
 } from "./rpc";
-import { apiToUser } from "../utils/userUtils";
+import { apiToUser, userToApi } from "../utils/userUtils";
 import { apiToPwPolicy } from "../utils/pwPolicyUtils";
 import { apiToKrbPolicy } from "../utils/krbPolicyUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
@@ -186,7 +186,7 @@ const extendedApi = api.injectEndpoints({
       query: (user) => {
         const params = {
           version: API_VERSION_BACKUP,
-          ...user,
+          ...userToApi(user),
         };
 
         delete params["uid"];
@@ -202,7 +202,7 @@ const extendedApi = api.injectEndpoints({
       query: (user) => {
         const params = {
           version: API_VERSION_BACKUP,
-          ...user,
+          ...userToApi(user),
         };
         delete params["uid"];
 
