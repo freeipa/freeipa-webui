@@ -152,7 +152,7 @@ const StagePreservedUsers = (props: PropsToStagePreservedUsers) => {
           } else {
             // Update data from Redux
             props.selectedUsers.map((user) => {
-              dispatch(removePreservedUser(user[0]));
+              dispatch(removePreservedUser(user.uid));
             });
 
             // Reset selected values
