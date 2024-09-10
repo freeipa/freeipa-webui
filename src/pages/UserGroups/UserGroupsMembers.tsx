@@ -17,6 +17,7 @@ import MembersUsers from "src/components/Members/MembersUsers";
 import MembersUserGroups from "src/components/Members/MembersUserGroups";
 import MembersServices from "src/components/Members/MembersServices";
 import MembersExternal from "src/components/Members/MembersExternal";
+import MembersUserIDOverrides from "src/components/Members/MembersUserIDOverrides";
 
 interface PropsToUserGroupsMembers {
   userGroup: UserGroup;
@@ -56,6 +57,9 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
     "direct" as MembershipDirection
   );
   const [serviceDirection, setServiceDirection] = React.useState(
+    "direct" as MembershipDirection
+  );
+  const [overrideDirection, setOverrideDirection] = React.useState(
     "direct" as MembershipDirection
   );
 
@@ -102,6 +106,22 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
       );
     }
     setServiceDirection(direction);
+  };
+  const updateUserIdOverrideDirection = (direction: MembershipDirection) => {
+    if (direction === "direct") {
+      setOverrideCount(
+        userGroup && userGroup.member_idoverrideuser
+          ? userGroup.member_idoverrideuser.length
+          : 0
+      );
+    } else {
+      setOverrideCount(
+        userGroup && userGroup.memberindirect_idoverrideuser
+          ? userGroup.memberindirect_idoverrideuser.length
+          : 0
+      );
+    }
+    setOverrideDirection(direction);
   };
 
   React.useEffect(() => {
@@ -271,7 +291,7 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
           />
         </Tab>
         <Tab
-          eventKey={"member_iduseroverride"}
+          eventKey={"member_idoverrideuser"}
           name="idoverrideuser"
           title={
             <TabTitleText>
@@ -281,7 +301,21 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
               </Badge>
             </TabTitleText>
           }
-        ></Tab>
+        >
+          <MembersUserIDOverrides
+            entity={userGroup}
+            id={userGroup.cn as string}
+            from="user-groups"
+            isDataLoading={userGroupQuery.isFetching}
+            onRefreshData={onRefreshUserGroupData}
+            member_idoverrideuser={userGroup.member_idoverrideuser || []}
+            memberindirect_idoverrideuser={
+              userGroup.memberindirect_idoverrideuser || []
+            }
+            setDirection={updateUserIdOverrideDirection}
+            direction={overrideDirection}
+          />
+        </Tab>
       </Tabs>
     </TabLayout>
   );

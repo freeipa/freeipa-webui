@@ -346,15 +346,19 @@ const extendedApi = api.injectEndpoints({
      */
     removeAsMember: build.mutation<FindRPCResponse, MemberPayload>({
       query: (payload) => {
-        const userGroup = payload.entryName;
-        const idsToAdd = payload.idsToAdd;
+        const userGroup = payload.entityType;
+        const idsToRemove = payload.idsToAdd;
         const memberType = payload.entityType;
 
         return getCommand({
           method: "group_remove_member",
           params: [
             [userGroup],
-            { all: true, [memberType]: idsToAdd, version: API_VERSION_BACKUP },
+            {
+              all: true,
+              [memberType]: idsToRemove,
+              version: API_VERSION_BACKUP,
+            },
           ],
         });
       },

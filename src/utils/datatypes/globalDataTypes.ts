@@ -540,3 +540,22 @@ export interface SubId {
 export interface DNSZone {
   idnsname: string;
 }
+
+export interface UserIDOverride {
+  description: string;
+  gecos: string;
+  gidnumber: string;
+  homedirectory: string;
+  ipaanchoruuid: string;
+  ipaoriginaluid: string;
+  ipasshpubkey: string[];
+  loginshell: string;
+  memberof_group: string[];
+  memberofindirect_group: string[];
+  memberof_role: string[];
+  memberofindirect_role: string[];
+  objectclass: string[];
+  uid: string;
+  uidnumber: string;
+  usercertificate: string[];
+}

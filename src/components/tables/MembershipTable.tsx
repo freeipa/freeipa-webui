@@ -13,6 +13,7 @@ import {
   Role,
   SudoRule,
   SubId,
+  UserIDOverride,
 } from "src/utils/datatypes/globalDataTypes";
 // Components
 import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout";
@@ -36,7 +37,8 @@ type EntryDataTypes =
   | SudoRule
   | User
   | UserGroup
-  | string; // external
+  | string // external
+  | UserIDOverride; // idoverrideuser
 
 type FromTypes =
   | "active-users"
@@ -48,7 +50,8 @@ type FromTypes =
   | "services"
   | "sudo-rules"
   | "user-groups"
-  | "external";
+  | "external"
+  | "idoverrideuser";
 
 export interface MemberTableProps {
   entityList: EntryDataTypes[]; // More types can be added here

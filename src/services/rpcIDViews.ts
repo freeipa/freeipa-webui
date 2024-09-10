@@ -41,8 +41,25 @@ export type ViewFullData = {
   idView?: Partial<IDView>;
 };
 
+export interface FindIdViewResult {
+  cn: string;
+  dn: string;
+}
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
+    getIDViews: build.query<string[], void>({
+      query: () => {
+        return getCommand({
+          method: "idview_find",
+          params: [[], { version: API_VERSION_BACKUP }],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): string[] => {
+        const views = response.result.result as unknown as FindIdViewResult[];
+        return views.map((view) => view.cn[0]);
+      },
+    }),
     getIDViewsFullData: build.query<ViewFullData, string>({
       query: (viewId) => {
         // Prepare search parameters
@@ -200,6 +217,7 @@ export const useGettingIDViewsQuery = (payloadData) => {
 };
 
 export const {
+  useGetIDViewsQuery,
   useAddIDViewMutation,
   useRemoveIDViewsMutation,
   useGetIDViewInfoByNameQuery,

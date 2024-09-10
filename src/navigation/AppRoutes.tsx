@@ -174,6 +174,10 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                     element={<UserGroupsTabs section="member_external" />}
                   />
                   <Route
+                    path="member_idoverrideuser"
+                    element={<UserGroupsTabs section="member_idoverrideuser" />}
+                  />
+                  <Route
                     path="memberof_usergroup"
                     element={<UserGroupsTabs section="memberof_usergroup" />}
                   />
