@@ -229,9 +229,11 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
           }
         >
           <MemberOfHostGroups
-            host={host}
-            isHostDataLoading={hostQuery.isFetching}
-            onRefreshHostData={onRefreshHostData}
+            entity={host}
+            id={host.fqdn as string}
+            from="hosts"
+            isDataLoading={hostQuery.isFetching}
+            onRefreshData={onRefreshHostData}
             setDirection={updateGroupDirection}
             direction={groupDirection}
           />

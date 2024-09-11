@@ -321,6 +321,14 @@ export interface HostGroup {
   member_hostgroup: string[];
   memberindirect_host: string[];
   memberindirect_hostgroup: string[];
+  memberof_hostgroup: string[];
+  memberof_netgroup: string[];
+  memberof_hbacrule: string[];
+  memberof_sudorule: string[];
+  memberofindirect_hostgroup: string[];
+  memberofindirect_netgroup: string[];
+  memberofindirect_hbacrule: string[];
+  memberofindirect_sudorule: string[];
 }
 
 export interface Service {
