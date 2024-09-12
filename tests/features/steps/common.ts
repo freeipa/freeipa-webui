@@ -9,6 +9,20 @@ Given("I am on {string} page", (handle: string) => {
   });
 });
 
+Given(
+  "I navigate to {string} page using the breadcrumb link",
+  (to_page: string) => {
+    // I click on the breadcrump link {string}
+    cy.get(".pf-v5-c-breadcrumb__item a").contains(to_page).click();
+    // Check if the page is loaded
+    cy.url().then(($url) => {
+      if (!$url.includes(to_page)) {
+        cy.visit(Cypress.env("base_url") + "/" + to_page);
+      }
+    });
+  }
+);
+
 // login
 Given("I am logged in as {string}", (username: string) => {
   cy.wait(1000);

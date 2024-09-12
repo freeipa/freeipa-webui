@@ -202,9 +202,6 @@ const HostGroupsMemberOf = (props: PropsToMemberOf) => {
             from={"host-groups"}
             isDataLoading={groupQuery.isFetching}
             onRefreshData={onRefreshData}
-            noIndirect
-            setDirection={() => []}
-            direction={"direct"}
           />
         </Tab>
         <Tab

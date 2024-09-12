@@ -23,6 +23,7 @@ import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { NotFound } from "src/components/errors/PageErrors";
 import NetgroupsMembers from "./NetgroupsMembers";
 import NetgroupsSettings from "./NetgroupsSettings";
+import NetgroupsMemberOf from "./NetgroupsMemberOf";
 
 // eslint-disable-next-line react/prop-types
 const NetgroupsTabs = ({ section }) => {
@@ -48,7 +49,7 @@ const NetgroupsTabs = ({ section }) => {
     } else if (tabIndex === "member") {
       navigate("/netgroups/" + cn + "/member_user");
     } else if (tabIndex === "memberof") {
-      // navigate("/netgroups/" + cn + "/memberof_netgroup");
+      navigate("/netgroups/" + cn + "/memberof_netgroup");
     }
   };
 
@@ -157,7 +158,12 @@ const NetgroupsTabs = ({ section }) => {
             eventKey={"memberof"}
             name="memberof-details"
             title={<TabTitleText>Is a member of</TabTitleText>}
-          ></Tab>
+          >
+            <NetgroupsMemberOf
+              netgroup={netgroup}
+              tabSection={section as string}
+            />
+          </Tab>
         </Tabs>
       </PageSection>
     </>

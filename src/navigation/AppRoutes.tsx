@@ -255,6 +255,10 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                     path="member_netgroup"
                     element={<NetgroupsTabs section="member_netgroup" />}
                   />
+                  <Route
+                    path="memberof_netgroup"
+                    element={<NetgroupsTabs section="memberof_netgroup" />}
+                  />
                 </Route>
               </Route>
               <Route path="id-views">
