@@ -18,6 +18,7 @@ import UserGroupsSettings from "./UserGroupsSettings";
 import { partialGroupToGroup } from "src/utils/groupUtils";
 import UserGroupsMembers from "./UserGroupsMembers";
 import UserGroupsMemberOf from "./UserGroupsMemberOf";
+import UserGroupsMemberManagers from "./UserGroupsMemberManagers";
 // Hooks
 import { useUserGroupSettings } from "src/hooks/useUserGroupSettingsData";
 import DataSpinner from "src/components/layouts/DataSpinner";
@@ -53,8 +54,8 @@ const UserGroupsTabs = ({ section }) => {
       navigate("/user-groups/" + cn + "/member_user");
     } else if (tabIndex === "memberof") {
       navigate("/user-groups/" + cn + "/memberof_usergroup");
-    } else if (tabIndex === "managedby") {
-      navigate("/user-groups/" + cn + "/managedby_usergroup");
+    } else if (tabIndex === "manager") {
+      navigate("/user-groups/" + cn + "/manager_user");
     }
   };
 
@@ -92,8 +93,8 @@ const UserGroupsTabs = ({ section }) => {
       setActiveTabKey("memberof");
     } else if (section_string.startsWith("member_")) {
       setActiveTabKey("member");
-    } else if (section_string.startsWith("managedby")) {
-      // setActiveTabKey("managedby");
+    } else if (section_string.startsWith("manager_")) {
+      setActiveTabKey("manager");
     }
   }, [section]);
 
@@ -179,10 +180,15 @@ const UserGroupsTabs = ({ section }) => {
             <UserGroupsMemberOf userGroup={usergroup} tabSection={section} />
           </Tab>
           <Tab
-            eventKey={"managedby"}
-            name="managedby-details"
-            title={<TabTitleText>Is managed by</TabTitleText>}
-          ></Tab>
+            eventKey={"manager"}
+            name="manager-details"
+            title={<TabTitleText>Member managers</TabTitleText>}
+          >
+            <UserGroupsMemberManagers
+              userGroup={usergroup}
+              tabSection={section}
+            />
+          </Tab>
         </Tabs>
       </PageSection>
     </>

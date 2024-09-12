@@ -191,3 +191,26 @@ Then(
     cy.get("table>tbody").find("td").contains(tableElement).should("not.exist");
   }
 );
+
+// Member managers, and managed by
+Then(
+  "I am on {string} group > Member managers > {string} section",
+  (groupname: string, sectionName: string) => {
+    cy.url().then(($url) => {
+      if ($url.includes("settings")) {
+        cy.get(".pf-v5-c-breadcrumb__item")
+          .contains(groupname)
+          .should("be.visible");
+        cy.get("h1>p").contains(groupname).should("be.visible");
+        cy.get("button[name='manager-details']")
+          .should("have.attr", "aria-selected", "true")
+          .contains("Member managers");
+        cy.get("li.pf-v5-c-tabs__item")
+          .children()
+          .get("button[name='manager_user']")
+          .contains(sectionName);
+        cy.wait(2000);
+      }
+    });
+  }
+);

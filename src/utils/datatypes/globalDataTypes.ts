@@ -172,6 +172,9 @@ export interface UserGroup {
   memberofindirect_hbacrule: string[]; // multivalue
   memberofindirect_sudorule: string[]; // multivalue
   memberofindirect_subid: string[]; // multivalue
+  // Member managers
+  membermanager_group: string[];
+  membermanager_user: string[];
 }
 
 export interface NetgroupOld {
