@@ -25,6 +25,7 @@ import { NotFound } from "src/components/errors/PageErrors";
 import HostGroupsSettings from "./HostGroupsSettings";
 import HostGroupsMembers from "./HostGroupsMembers";
 import HostGroupsMemberOf from "./HostGroupsMemberOf";
+import HostGroupsMemberManagers from "./HostGroupsMemberManagers";
 
 // eslint-disable-next-line react/prop-types
 const HostGroupsTabs = ({ section }) => {
@@ -52,8 +53,8 @@ const HostGroupsTabs = ({ section }) => {
       navigate("/host-groups/" + cn + "/member_host");
     } else if (tabIndex === "memberof") {
       navigate("/host-groups/" + cn + "/memberof_hostgroup");
-    } else if (tabIndex === "managedby") {
-      // navigate("/host-groups/" + cn + "/managedby_hostgroup");
+    } else if (tabIndex === "manager") {
+      navigate("/host-groups/" + cn + "/manager_user");
     }
   };
 
@@ -91,8 +92,8 @@ const HostGroupsTabs = ({ section }) => {
       setActiveTabKey("memberof");
     } else if (section_string.startsWith("member_")) {
       setActiveTabKey("member");
-    } else if (section_string.startsWith("managedby")) {
-      // setActiveTabKey("managedby");
+    } else if (section_string.startsWith("manager_")) {
+      setActiveTabKey("manager");
     }
   }, [section]);
 
@@ -169,10 +170,15 @@ const HostGroupsTabs = ({ section }) => {
             <HostGroupsMemberOf hostGroup={hostgroup} tabSection={section} />
           </Tab>
           <Tab
-            eventKey={"managedby"}
-            name="managedby-details"
-            title={<TabTitleText>Is managed by</TabTitleText>}
-          ></Tab>
+            eventKey={"manager"}
+            name="manager-details"
+            title={<TabTitleText>Member managers</TabTitleText>}
+          >
+            <HostGroupsMemberManagers
+              hostGroup={hostgroup}
+              tabSection={section}
+            />
+          </Tab>
         </Tabs>
       </PageSection>
     </>

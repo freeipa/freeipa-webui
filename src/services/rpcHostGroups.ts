@@ -264,6 +264,44 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Add member managers (user & host groups)
+     * @param {MemberPayload} - Payload with IDs and options
+     */
+    addHGMemberManagers: build.mutation<FindRPCResponse, MemberPayload>({
+      query: (payload) => {
+        const id = payload.entryName;
+        const idsToAdd = payload.idsToAdd;
+        const memberType = payload.entityType;
+
+        return getCommand({
+          method: "hostgroup_add_member_manager",
+          params: [
+            [id],
+            { all: true, [memberType]: idsToAdd, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+    }),
+    /**
+     * Remove member managers (user & host groups)
+     * @param {MemberPayload} - Payload with IDs and options
+     */
+    removeHGMemberManagers: build.mutation<FindRPCResponse, MemberPayload>({
+      query: (payload) => {
+        const id = payload.entryName;
+        const idsToAdd = payload.idsToAdd;
+        const memberType = payload.entityType;
+
+        return getCommand({
+          method: "hostgroup_remove_member_manager",
+          params: [
+            [id],
+            { all: true, [memberType]: idsToAdd, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -286,4 +324,6 @@ export const {
   useGetHostGroupByIdQuery,
   useAddAsMemberHGMutation,
   useRemoveAsMemberHGMutation,
+  useAddHGMemberManagersMutation,
+  useRemoveHGMemberManagersMutation,
 } = extendedApi;

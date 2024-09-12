@@ -34,6 +34,8 @@ import { PwPolicy, UserGroup } from "../utils/datatypes/globalDataTypes";
  * - group_remove_member: https://freeipa.readthedocs.io/en/latest/api/group_remove_member.html
  * - group_show: https://freeipa.readthedocs.io/en/latest/api/group_show.html
  * - pwpolicy_show: https://freeipa.readthedocs.io/en/latest/api/pwpolicy_show.html
+ * - group_add_member_manager: https://freeipa.readthedocs.io/en/latest/api/group_add_member_manager.html
+ * - group_remove_member_manager: https://freeipa.readthedocs.io/en/latest/api/group_remove_member_manager.html
  */
 
 export interface GroupShowPayload {
@@ -359,6 +361,44 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Add member managers (user & host groups)
+     * @param {MemberPayload} - Payload with IDs and options
+     */
+    addMemberManagers: build.mutation<FindRPCResponse, MemberPayload>({
+      query: (payload) => {
+        const id = payload.entryName;
+        const idsToAdd = payload.idsToAdd;
+        const memberType = payload.entityType;
+
+        return getCommand({
+          method: "group_add_member_manager",
+          params: [
+            [id],
+            { all: true, [memberType]: idsToAdd, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+    }),
+    /**
+     * Remove member managers (user & host groups)
+     * @param {MemberPayload} - Payload with IDs and options
+     */
+    removeMemberManagers: build.mutation<FindRPCResponse, MemberPayload>({
+      query: (payload) => {
+        const id = payload.entryName;
+        const idsToAdd = payload.idsToAdd;
+        const memberType = payload.entityType;
+
+        return getCommand({
+          method: "group_remove_member_manager",
+          params: [
+            [id],
+            { all: true, [memberType]: idsToAdd, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -384,4 +424,6 @@ export const {
   useGetGroupByIdQuery,
   useAddAsMemberMutation,
   useRemoveAsMemberMutation,
+  useAddMemberManagersMutation,
+  useRemoveMemberManagersMutation,
 } = extendedApi;

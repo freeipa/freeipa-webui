@@ -193,6 +193,14 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                     path="memberof_sudorule"
                     element={<UserGroupsTabs section="memberof_sudorule" />}
                   />
+                  <Route
+                    path="manager_user"
+                    element={<UserGroupsTabs section="manager_user" />}
+                  />
+                  <Route
+                    path="manager_usergroup"
+                    element={<UserGroupsTabs section="manager_usergroup" />}
+                  />
                 </Route>
               </Route>
               <Route path="host-groups">
@@ -225,6 +233,14 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                   <Route
                     path="memberof_sudorule"
                     element={<HostGroupsTabs section="memberof_sudorule" />}
+                  />
+                  <Route
+                    path="manager_user"
+                    element={<HostGroupsTabs section="manager_user" />}
+                  />
+                  <Route
+                    path="manager_usergroup"
+                    element={<HostGroupsTabs section="manager_usergroup" />}
                   />
                 </Route>
               </Route>

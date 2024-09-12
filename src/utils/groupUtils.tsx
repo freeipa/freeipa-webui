@@ -63,6 +63,9 @@ export function createEmptyGroup(): UserGroup {
     memberofindirect_hbacrule: [],
     memberofindirect_sudorule: [],
     memberofindirect_subid: [],
+    // Member managers
+    membermanager_group: [],
+    membermanager_user: [],
   };
 
   return group;
