@@ -36,14 +36,17 @@ interface MemberOfNetgroupsProps {
   from: string;
   isDataLoading: boolean;
   onRefreshData: () => void;
-  noIndirect?: boolean | false;
-  setDirection: (direction: MembershipDirection) => void;
-  direction: MembershipDirection;
+  membershipDisabled?: boolean;
+  setDirection?: (direction: MembershipDirection) => void;
+  direction?: MembershipDirection;
 }
 
 const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
+
+  const membershipDisabled =
+    props.membershipDisabled === undefined ? false : props.membershipDisabled;
 
   const {
     page,
@@ -113,7 +116,9 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
   React.useEffect(() => {
     const netgroupsNames = getNetgroupsNameToLoad();
     setNetgroupNamesToLoad(netgroupsNames);
-    props.setDirection(membershipDirection);
+    if (props.setDirection) {
+      props.setDirection(membershipDirection);
+    }
   }, [props.entity, membershipDirection, searchValue, page, perPage]);
 
   React.useEffect(() => {
@@ -123,7 +128,9 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
   }, [netgroupNamesToLoad]);
 
   React.useEffect(() => {
-    setMembershipDirection(props.direction);
+    if (props.direction) {
+      setMembershipDirection(props.direction);
+    }
   }, [props.entity]);
 
   // Update netgroups
@@ -143,6 +150,8 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
       return "group";
     } else if (props.from === "host-groups") {
       return "hostgroup";
+    } else if (props.from === "netgroups") {
+      return "netgroup";
     } else {
       // Return 'user' as default
       return "user";
@@ -208,7 +217,9 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
           title: netgroup.cn,
         });
       }
-      items = items.filter((item) => !memberof_netgroup.includes(item.key));
+      items = items.filter(
+        (item) => !memberof_netgroup.includes(item.key) && item.key !== props.id
+      );
 
       setAvailableNetgroups(avalNetgroups);
       setAvailableItems(items);
@@ -287,31 +298,56 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
   return (
     <>
       <alerts.ManagedAlerts />
-      <MemberOfToolbar
-        searchText={searchValue}
-        onSearchTextChange={setSearchValue}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        onSearch={() => {}}
-        refreshButtonEnabled={isRefreshButtonEnabled}
-        onRefreshButtonClick={props.onRefreshData}
-        deleteButtonEnabled={
-          membershipDirection === "direct"
-            ? netgroupsSelected.length > 0
-            : indirectNetgroupsSelected.length > 0
-        }
-        onDeleteButtonClick={() => setShowDeleteModal(true)}
-        addButtonEnabled={isAddButtonEnabled}
-        onAddButtonClick={() => setShowAddModal(true)}
-        membershipDirectionEnabled={!props.noIndirect}
-        membershipDirection={membershipDirection}
-        onMembershipDirectionChange={setMembershipDirection}
-        helpIconEnabled={true}
-        totalItems={netgroupNames.length}
-        perPage={perPage}
-        page={page}
-        onPerPageChange={setPerPage}
-        onPageChange={setPage}
-      />
+      {membershipDisabled ? (
+        <MemberOfToolbar
+          searchText={searchValue}
+          onSearchTextChange={setSearchValue}
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          onSearch={() => {}}
+          refreshButtonEnabled={isRefreshButtonEnabled}
+          onRefreshButtonClick={props.onRefreshData}
+          deleteButtonEnabled={
+            membershipDirection === "direct"
+              ? netgroupsSelected.length > 0
+              : indirectNetgroupsSelected.length > 0
+          }
+          onDeleteButtonClick={() => setShowDeleteModal(true)}
+          addButtonEnabled={isAddButtonEnabled}
+          onAddButtonClick={() => setShowAddModal(true)}
+          membershipDirectionEnabled={true}
+          membershipDirection={membershipDirection}
+          onMembershipDirectionChange={setMembershipDirection}
+          helpIconEnabled={true}
+          totalItems={netgroupNames.length}
+          perPage={perPage}
+          page={page}
+          onPerPageChange={setPerPage}
+          onPageChange={setPage}
+        />
+      ) : (
+        <MemberOfToolbar
+          searchText={searchValue}
+          onSearchTextChange={setSearchValue}
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          onSearch={() => {}}
+          refreshButtonEnabled={isRefreshButtonEnabled}
+          onRefreshButtonClick={props.onRefreshData}
+          deleteButtonEnabled={
+            membershipDirection === "direct"
+              ? netgroupsSelected.length > 0
+              : indirectNetgroupsSelected.length > 0
+          }
+          onDeleteButtonClick={() => setShowDeleteModal(true)}
+          addButtonEnabled={isAddButtonEnabled}
+          onAddButtonClick={() => setShowAddModal(true)}
+          helpIconEnabled={true}
+          totalItems={netgroupNames.length}
+          perPage={perPage}
+          page={page}
+          onPerPageChange={setPerPage}
+          onPageChange={setPage}
+        />
+      )}
       <MemberTable
         entityList={netgroups}
         idKey="cn"
