@@ -9,6 +9,7 @@ import {
   UserGroup,
   HostGroup,
   HBACRule,
+  HBACService,
   Netgroup,
   Role,
   SudoRule,
@@ -27,6 +28,7 @@ import { Link } from "react-router-dom";
 
 type EntryDataTypes =
   | HBACRule
+  | HBACService
   | Host
   | HostGroup
   | Netgroup
@@ -41,6 +43,7 @@ type EntryDataTypes =
 type FromTypes =
   | "active-users"
   | "hbac-rules"
+  | "hbac-services"
   | "hosts"
   | "host-groups"
   | "netgroups"

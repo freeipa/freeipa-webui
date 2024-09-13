@@ -19,7 +19,7 @@ import {
 } from "../../utils/datatypes/globalDataTypes";
 // RPC
 import { ErrorResult } from "src/services/rpc";
-import { useSaveHbacServiceGroupMutation } from "src/services/rpcHBAC";
+import { useSaveHbacServiceGroupMutation } from "src/services/rpcHBACSvcGroups";
 
 interface PropsToSettings {
   svcGroup: Partial<HBACServiceGroup>;

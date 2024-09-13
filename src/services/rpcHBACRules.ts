@@ -9,14 +9,8 @@ import {
   useGettingGenericQuery,
 } from "./rpc";
 import { apiToHBACRule } from "src/utils/hbacRulesUtils";
-import { apiToHBACService } from "src/utils/hbacServicesUtils";
-import { apiToHBACServiceGroup } from "src/utils/hbacServiceGrpUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
-import {
-  HBACRule,
-  HBACService,
-  HBACServiceGroup,
-} from "../utils/datatypes/globalDataTypes";
+import { HBACRule } from "../utils/datatypes/globalDataTypes";
 
 /**
  * HBAC-related endpoints:
@@ -27,8 +21,6 @@ import {
  * - removeFromHbacRules
  * - disableHbacRule
  * - enableHbacRule
- * - addHbacService
- * - removeHbacService
  * - getHbacRuleFullData
  * -
  *
@@ -47,12 +39,6 @@ import {
  * - hbacrule_remove_sourcehost: https://freeipa.readthedocs.io/en/latest/api/hbacrule_remove_sourcehost.html
  * - hbacrule_disable: https://freeipa.readthedocs.io/en/latest/api/hbacrule_disable.html
  * - hbacrule_enable: https://freeipa.readthedocs.io/en/latest/api/hbacrule_enable.html
- * - hbacsvc_add: https://freeipa.readthedocs.io/en/latest/api/hbacsvc_add.html
- * - hbacsvc_del: https://freeipa.readthedocs.io/en/latest/api/hbacsvc_del.html
- * - hbacsvcgroup_add: https://freeipa.readthedocs.io/en/latest/api/hbacsvcgroup_add.html
- * - hbacsvcgroup_del: https://freeipa.readthedocs.io/en/latest/api/hbacsvcgroup_del.html
- * - hbacsvcgroup_mod: https://freeipa.readthedocs.io/en/latest/api/hbacsvcgroup_mod.html
- * - hbacsvcgroup_show: https://freeipa.readthedocs.io/en/latest/api/hbacsvcgroup_show.html
  */
 
 export type RuleFullData = {
@@ -80,10 +66,6 @@ export interface HBACRulePayload {
   sizelimit?: number;
 }
 
-export type ServiceFullData = {
-  service?: Partial<HBACService>;
-};
-
 // Selecting allow any/all requires removing old members first
 export interface AllowAllPayload {
   groupName: string;
@@ -100,10 +82,6 @@ export interface AllowAllPayload {
   external: string[];
   modifiedValues: Partial<HBACRule>;
 }
-
-export type SvcGroupFullData = {
-  svcGrp?: Partial<HBACServiceGroup>;
-};
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -212,7 +190,7 @@ const extendedApi = api.injectEndpoints({
      *    Available types:
      *        user | group |
      *        host | hostgroup |
-     *        hbacsrc | hbacsvcgroup |
+     *        hbacsvc | hbacsvcgroup |
      *        sourcehost
      * @param {string[]} listOfMembers - List of members to add to the HBAC rules
      */
@@ -409,129 +387,6 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
-    /**
-     * Add HBAC service
-     * @param {string} name - ID of the entity to add to HBAC services
-     * @param {string} description - description
-     */
-    addHbacService: build.mutation<BatchRPCResponse, [string, string]>({
-      query: (payload) => {
-        const params = [
-          [payload[0]],
-          {
-            description: payload[1],
-          },
-        ];
-        return getCommand({
-          method: "hbacsvc_add",
-          params: params,
-        });
-      },
-    }),
-    /*
-     * Add HBAC service group
-     * @param {string} name - ID of the entity to add to HBAC service groups
-     * @param {string} description - description
-     */
-    addHbacServiceGroup: build.mutation<BatchRPCResponse, [string, string]>({
-      query: (payload) => {
-        const params = [
-          [payload[0]],
-          {
-            description: payload[1],
-          },
-        ];
-        return getCommand({
-          method: "hbacsvcgroup_add",
-          params: params,
-        });
-      },
-    }),
-    /**
-     * Remove HBAC services
-     * @param {string[]} services - HBAC service names
-     */
-    removeHbacServices: build.mutation<BatchRPCResponse, HBACService[]>({
-      query: (services) => {
-        const servicesToDeletePayload: Command[] = [];
-        services.map((service) => {
-          const payloadItem = {
-            method: "hbacsvc_del",
-
-            params: [[service.cn], {}],
-          } as Command;
-          servicesToDeletePayload.push(payloadItem);
-        });
-        return getBatchCommand(servicesToDeletePayload, API_VERSION_BACKUP);
-      },
-    }),
-    /*
-     * Remove HBAC service groups
-     * @param {string[]} services - HBAC service group names
-     */
-    removeHbacServiceGroups: build.mutation<
-      BatchRPCResponse,
-      HBACServiceGroup[]
-    >({
-      query: (services) => {
-        const servicesToDeletePayload: Command[] = [];
-        services.map((service) => {
-          const payloadItem = {
-            method: "hbacsvcgroup_del",
-            params: [[service.cn], {}],
-          } as Command;
-          servicesToDeletePayload.push(payloadItem);
-        });
-        return getBatchCommand(servicesToDeletePayload, API_VERSION_BACKUP);
-      },
-    }),
-    saveHbacService: build.mutation<FindRPCResponse, Partial<HBACService>>({
-      query: (service) => {
-        const params = {
-          version: API_VERSION_BACKUP,
-          ...service,
-        };
-        delete params["cn"];
-        const cn = service.cn !== undefined ? service.cn : "";
-        return getCommand({
-          method: "hbacsvc_mod",
-          params: [[cn], params],
-        });
-      },
-      invalidatesTags: ["FullHBACService"],
-    }),
-    getHbacServiceFullData: build.query<ServiceFullData, string>({
-      query: (srvId) => {
-        // Prepare search parameters
-        const rule_params = {
-          all: true,
-          rights: true,
-        };
-        const srvShowCommand: Command = {
-          method: "hbacsvc_show",
-          params: [[srvId], rule_params],
-        };
-
-        const batchPayload: Command[] = [srvShowCommand];
-
-        return getBatchCommand(batchPayload, API_VERSION_BACKUP);
-      },
-      transformResponse: (response: BatchResponse): ServiceFullData => {
-        const [srvResponse] = response.result.results;
-
-        // Initialize service data (to prevent 'undefined' values)
-        const serviceData = srvResponse.result;
-        let serviceObject = {};
-        if (!srvResponse.error) {
-          serviceObject = apiToHBACService(serviceData);
-        }
-
-        return {
-          service: serviceObject,
-        };
-      },
-      providesTags: ["FullHBACService"],
-    }),
     saveHbacRule: build.mutation<FindRPCResponse, Partial<HBACRule>>({
       query: (rule) => {
         const params = {
@@ -626,71 +481,12 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(actions, API_VERSION_BACKUP);
       },
     }),
-    getHbacSvcGrpFullData: build.query<SvcGroupFullData, string>({
-      query: (svcGrpId) => {
-        // Prepare search parameters
-        const rule_params = {
-          all: true,
-          rights: true,
-        };
-        const ruleShowCommand: Command = {
-          method: "hbacsvcgroup_show",
-          params: [[svcGrpId], rule_params],
-        };
-
-        const batchPayload: Command[] = [ruleShowCommand];
-
-        return getBatchCommand(batchPayload, API_VERSION_BACKUP);
-      },
-      transformResponse: (response: BatchResponse): SvcGroupFullData => {
-        const [rulesResponse] = response.result.results;
-
-        // Initialize group data (to prevent 'undefined' values)
-        const groupData = rulesResponse.result;
-        let groupObject = {};
-        if (!rulesResponse.error) {
-          groupObject = apiToHBACServiceGroup(groupData);
-        }
-
-        return {
-          svcGrp: groupObject,
-        };
-      },
-      providesTags: ["FullHBACServiceGrp"],
-    }),
-    saveHbacServiceGroup: build.mutation<FindRPCResponse, Partial<HBACRule>>({
-      query: (svcGrp) => {
-        const params = {
-          version: API_VERSION_BACKUP,
-          ...svcGrp,
-        };
-        delete params["cn"];
-        const cn = svcGrp.cn !== undefined ? svcGrp.cn : "";
-        return getCommand({
-          method: "hbacsvcgroup_mod",
-          params: [[cn], params],
-        });
-      },
-      invalidatesTags: ["FullHBACServiceGrp"],
-    }),
   }),
   overrideExisting: false,
 });
 
 export const useGettingHbacRulesQuery = (payloadData) => {
   payloadData["objName"] = "hbacrule";
-  payloadData["objAttr"] = "cn";
-  return useGettingGenericQuery(payloadData);
-};
-
-export const useGettingHbacServicesQuery = (payloadData) => {
-  payloadData["objName"] = "hbacsvc";
-  payloadData["objAttr"] = "cn";
-  return useGettingGenericQuery(payloadData);
-};
-
-export const useGettingHbacServiceGroupQuery = (payloadData) => {
-  payloadData["objName"] = "hbacsvcgroup";
   payloadData["objAttr"] = "cn";
   return useGettingGenericQuery(payloadData);
 };
@@ -703,17 +499,9 @@ export const {
   useRemoveFromHbacRulesMutation,
   useDisableHbacRuleMutation,
   useEnableHbacRuleMutation,
-  useAddHbacServiceMutation,
-  useRemoveHbacServicesMutation,
-  useAddHbacServiceGroupMutation,
-  useRemoveHbacServiceGroupsMutation,
-  useSaveHbacServiceMutation,
-  useGetHbacServiceFullDataQuery,
   useGetHbacRuleFullDataQuery,
   useSaveHbacRuleMutation,
   useSaveAndCleanHbacRuleMutation,
   useRemoveMembersFromHbacRuleMutation,
   useAddMembersToHbacRuleMutation,
-  useGetHbacSvcGrpFullDataQuery,
-  useSaveHbacServiceGroupMutation,
 } = extendedApi;

@@ -20,7 +20,7 @@ import { SerializedError } from "@reduxjs/toolkit";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 import { BatchRPCResponse } from "src/services/rpc";
-import { useAddHbacServiceGroupMutation } from "src/services/rpcHBAC";
+import { useAddHbacServiceGroupMutation } from "src/services/rpcHBACSvcGroups";
 interface PropsToAddGroup {
   show: boolean;
   handleModalToggle: () => void;

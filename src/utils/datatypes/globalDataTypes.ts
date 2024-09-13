@@ -233,6 +233,7 @@ export interface HBACService {
   description: string;
   cn: string;
   dn: string;
+  memberof_hbacsvcgroup: string[];
 }
 
 export interface HBACServiceGroup {

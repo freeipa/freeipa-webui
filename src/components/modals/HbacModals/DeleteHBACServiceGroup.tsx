@@ -22,7 +22,7 @@ import {
 // Modals
 import ErrorModal from "src/components/modals/ErrorModal";
 import { BatchRPCResponse } from "src/services/rpc";
-import { useRemoveHbacServiceGroupsMutation } from "src/services/rpcHBAC";
+import { useRemoveHbacServiceGroupsMutation } from "src/services/rpcHBACSvcGroups";
 
 interface ButtonsData {
   updateIsDeleteButtonDisabled: (value: boolean) => void;

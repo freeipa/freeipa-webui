@@ -41,7 +41,7 @@ import { ErrorResult } from "src/services/rpc";
 import {
   useSaveAndCleanHbacRuleMutation,
   AllowAllPayload,
-} from "src/services/rpcHBAC";
+} from "src/services/rpcHBACRules";
 
 interface PropsToSettings {
   rule: Partial<HBACRule>;

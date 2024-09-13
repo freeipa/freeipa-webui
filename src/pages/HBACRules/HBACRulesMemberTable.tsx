@@ -14,7 +14,7 @@ import { ErrorResult } from "../../services/rpc";
 import {
   useRemoveMembersFromHbacRuleMutation,
   useAddMembersToHbacRuleMutation,
-} from "../../services/rpcHBAC";
+} from "../../services/rpcHBACRules";
 
 // These name spaces can be reused as the params to RPC (do not change them)
 interface PropsToTable {

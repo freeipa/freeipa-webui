@@ -18,7 +18,7 @@ import {
 import {
   useDisableHbacRuleMutation,
   useEnableHbacRuleMutation,
-} from "src/services/rpcHBAC";
+} from "src/services/rpcHBACRules";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";

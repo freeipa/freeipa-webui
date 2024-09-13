@@ -40,7 +40,7 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 import { API_VERSION_BACKUP, isHbacServiceSelectable } from "src/utils/utils";
 // RPC client
 import { GenericPayload, useSearchEntriesMutation } from "src/services/rpc";
-import { useGettingHbacServicesQuery } from "src/services/rpcHBAC";
+import { useGettingHbacServicesQuery } from "src/services/rpcHBACServices";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";

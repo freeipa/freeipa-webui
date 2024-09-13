@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 // RPC
 import { useGetObjectMetadataQuery } from "src/services/rpc";
-import { useGetHbacSvcGrpFullDataQuery } from "src/services/rpcHBAC";
+import { useGetHbacSvcGrpFullDataQuery } from "src/services/rpcHBACSvcGroups";
 // Data types
 import {
   HBACServiceGroup,

@@ -19,7 +19,7 @@ import { ErrorData, HBACService } from "src/utils/datatypes/globalDataTypes";
 // Modals
 import ErrorModal from "src/components/modals/ErrorModal";
 import { BatchRPCResponse } from "src/services/rpc";
-import { useRemoveHbacServicesMutation } from "src/services/rpcHBAC";
+import { useRemoveHbacServicesMutation } from "src/services/rpcHBACServices";
 
 interface ButtonsData {
   updateIsDeleteButtonDisabled: (value: boolean) => void;

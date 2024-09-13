@@ -43,7 +43,7 @@ import {
 } from "src/utils/utils";
 // RPC client
 import { GenericPayload, useSearchEntriesMutation } from "src/services/rpc";
-import { useGettingHbacServiceGroupQuery } from "src/services/rpcHBAC";
+import { useGettingHbacServiceGroupQuery } from "src/services/rpcHBACSvcGroups";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
