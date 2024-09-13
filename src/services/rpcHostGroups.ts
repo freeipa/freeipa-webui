@@ -7,12 +7,12 @@ import {
   BatchRPCResponse,
   FindRPCResponse,
   useGettingGenericQuery,
+  MemberPayload,
 } from "./rpc";
 import { apiToHostGroup } from "src/utils/hostGroupUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
 // Data types
 import { HostGroup } from "src/utils/datatypes/globalDataTypes";
-import { MemberPayload } from "./rpc";
 
 /**
  * User Group-related endpoints: addToGroups, removeFromGroups,

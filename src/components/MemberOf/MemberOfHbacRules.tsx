@@ -24,7 +24,7 @@ import {
   useGettingHbacRulesQuery,
   useAddToHbacRulesMutation,
   useRemoveFromHbacRulesMutation,
-} from "src/services/rpcHBAC";
+} from "src/services/rpcHBACRules";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToHBACRule } from "src/utils/hbacRulesUtils";

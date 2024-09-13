@@ -16,7 +16,7 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 import { HBACService, Metadata } from "../../utils/datatypes/globalDataTypes";
 // RPC
 import { ErrorResult } from "src/services/rpc";
-import { useSaveHbacServiceMutation } from "src/services/rpcHBAC";
+import { useSaveHbacServiceMutation } from "src/services/rpcHBACServices";
 
 interface PropsToSettings {
   service: Partial<HBACService>;
