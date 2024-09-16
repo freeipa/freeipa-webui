@@ -13,6 +13,8 @@ import {
   Netgroup,
   Role,
   SudoRule,
+  SudoCmd,
+  SudoCmdGroup,
   SubId,
 } from "src/utils/datatypes/globalDataTypes";
 // Components
@@ -36,6 +38,8 @@ type EntryDataTypes =
   | Service
   | SubId
   | SudoRule
+  | SudoCmd
+  | SudoCmdGroup
   | User
   | UserGroup
   | string; // external
@@ -50,6 +54,7 @@ type FromTypes =
   | "roles" // Not in AppRoutes yet (no Link)
   | "services"
   | "sudo-rules"
+  | "sudo-commands"
   | "user-groups"
   | "external";
 

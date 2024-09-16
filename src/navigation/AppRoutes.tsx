@@ -335,6 +335,10 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                     path=""
                     element={<SudoCmdsTabs section="settings" />}
                   />
+                  <Route
+                    path="memberof_sudocmdgroup"
+                    element={<SudoCmdsTabs section="memberof_sudocmdgroup" />}
+                  />
                 </Route>
               </Route>
               <Route path="sudo-command-groups">

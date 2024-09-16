@@ -16,11 +16,13 @@ import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
 // Hooks
 import { useSudoCmdsSettings } from "src/hooks/useSudoCmdsSettingsData";
+import { partialSudoCmdToSudoCmd } from "src/utils/sudoCmdsUtils";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { NotFound } from "src/components/errors/PageErrors";
 import SudoCmdsSettings from "./SudoCmdsSettings";
+import SudoCmdsMemberOf from "./SudoCmdsMemberOf";
 
 // eslint-disable-next-line react/prop-types
 const SudoCmdsTabs = ({ section }) => {
@@ -41,7 +43,11 @@ const SudoCmdsTabs = ({ section }) => {
     tabIndex: number | string
   ) => {
     setActiveTabKey(tabIndex as string);
-    navigate("/sudo-commands/" + sudocmd);
+    if (tabIndex === "settings") {
+      navigate("/sudo-commands/" + sudocmd);
+    } else if (tabIndex === "memberof") {
+      navigate("/sudo-commands/" + sudocmd + "/memberof_sudocmdgroup");
+    }
   };
 
   React.useEffect(() => {
@@ -73,6 +79,10 @@ const SudoCmdsTabs = ({ section }) => {
       navigate(URL_PREFIX + "/sudo-commands/" + sudocmd);
     }
     setActiveTabKey(section);
+    const section_string = section as string;
+    if (section_string.startsWith("memberof")) {
+      setActiveTabKey("memberof");
+    }
   }, [section]);
 
   if (settingsData.isLoading || settingsData.cmd.sudocmd === undefined) {
@@ -84,6 +94,8 @@ const SudoCmdsTabs = ({ section }) => {
     return <NotFound />;
   }
 
+  const sudoCmd = partialSudoCmdToSudoCmd(settingsData.cmd);
+
   return (
     <>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
@@ -92,8 +104,8 @@ const SudoCmdsTabs = ({ section }) => {
           breadcrumbItems={breadcrumbItems}
         />
         <TitleLayout
-          id={settingsData.cmd.sudocmd}
-          text={settingsData.cmd.sudocmd}
+          id={sudoCmd.sudocmd}
+          text={sudoCmd.sudocmd}
           headingLevel="h1"
           preText="Sudo command:"
         />
@@ -124,6 +136,13 @@ const SudoCmdsTabs = ({ section }) => {
               onResetValues={settingsData.resetValues}
               modifiedValues={settingsData.modifiedValues}
             />
+          </Tab>
+          <Tab
+            eventKey={"memberof"}
+            name="memberof-details"
+            title={<TabTitleText>Is member of</TabTitleText>}
+          >
+            <SudoCmdsMemberOf sudoCmd={sudoCmd} tabSection={section} />
           </Tab>
         </Tabs>
       </PageSection>

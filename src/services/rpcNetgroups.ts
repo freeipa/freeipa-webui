@@ -343,8 +343,7 @@ const extendedApi = api.injectEndpoints({
       },
     }),
     /**
-     * Get user group info by name
-     *
+     * Get group info by name
      */
     getNetgroupById: build.query<Netgroup, string>({
       query: (groupId) => {

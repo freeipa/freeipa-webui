@@ -263,6 +263,7 @@ export interface SudoCmd {
   dn: string;
   sudocmd: string;
   description: string;
+  memberof_sudocmdgroup: string[];
 }
 export interface SudoCmdGroup {
   cn: string;
