@@ -243,6 +243,7 @@ export interface HBACServiceGroup {
   description: string;
   cn: string;
   dn: string;
+  member_hbacsvc: string[];
 }
 
 export interface SudoRulesOld {

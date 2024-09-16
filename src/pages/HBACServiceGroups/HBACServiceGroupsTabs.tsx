@@ -21,6 +21,9 @@ import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { NotFound } from "src/components/errors/PageErrors";
 import HBACServiceGroupsSettings from "./HBACServiceGroupsSettings";
+import HBACSvcGroupMembers from "./HBACServiceGroupsMembers";
+// Utils
+import { partialHBACSvcGrpToHBACSvcGrp } from "src/utils/hbacServiceGrpUtils";
 
 // eslint-disable-next-line react/prop-types
 const HBACServiceGroupsTabs = ({ section }) => {
@@ -41,7 +44,11 @@ const HBACServiceGroupsTabs = ({ section }) => {
     tabIndex: number | string
   ) => {
     setActiveTabKey(tabIndex as string);
-    navigate("/hbac-service-groups/" + cn);
+    if (tabIndex === "settings") {
+      navigate("/hbac-service-groups/" + cn);
+    } else if (tabIndex === "members") {
+      navigate("/hbac-service-groups/" + cn + "/member_hbacsvc");
+    }
   };
 
   React.useEffect(() => {
@@ -72,7 +79,10 @@ const HBACServiceGroupsTabs = ({ section }) => {
     if (!section) {
       navigate(URL_PREFIX + "/hbac-service-groups/" + cn);
     }
-    setActiveTabKey(section);
+    const section_string = section as string;
+    if (section_string.startsWith("member_")) {
+      setActiveTabKey("members");
+    }
   }, [section]);
 
   if (settingsData.isLoading || settingsData.svcGroup.cn === undefined) {
@@ -86,6 +96,8 @@ const HBACServiceGroupsTabs = ({ section }) => {
   ) {
     return <NotFound />;
   }
+
+  const hbacSrvGroup = partialHBACSvcGrpToHBACSvcGrp(settingsData.svcGroup);
 
   return (
     <>
@@ -126,6 +138,16 @@ const HBACServiceGroupsTabs = ({ section }) => {
               isModified={settingsData.modified}
               onResetValues={settingsData.resetValues}
               modifiedValues={settingsData.modifiedValues}
+            />
+          </Tab>
+          <Tab
+            eventKey={"members"}
+            name="members-details"
+            title={<TabTitleText>Members</TabTitleText>}
+          >
+            <HBACSvcGroupMembers
+              hbacsvcgroup={hbacSrvGroup}
+              tabSection={section}
             />
           </Tab>
         </Tabs>
