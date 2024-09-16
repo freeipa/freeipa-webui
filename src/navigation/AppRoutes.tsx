@@ -305,6 +305,12 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                     path=""
                     element={<HBACServicesTabs section="settings" />}
                   />
+                  <Route
+                    path="memberof_hbacsvcgroup"
+                    element={
+                      <HBACServicesTabs section="memberof_hbacsvcgroup" />
+                    }
+                  />
                 </Route>
               </Route>
               <Route path="hbac-service-groups">

@@ -20,7 +20,9 @@ import { useHBACServiceSettings } from "src/hooks/useHBACServiceSettingsData";
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { NotFound } from "src/components/errors/PageErrors";
+import { partialHBACServiceToHBACService } from "src/utils/hbacServicesUtils";
 import HBACServicesSettings from "./HBACServicesSettings";
+import HBACServicesMemberOf from "./HBACServicesMemberOf";
 
 // eslint-disable-next-line react/prop-types
 const HBACServicesTabs = ({ section }) => {
@@ -41,7 +43,11 @@ const HBACServicesTabs = ({ section }) => {
     tabIndex: number | string
   ) => {
     setActiveTabKey(tabIndex as string);
-    navigate("/hbac-services/" + cn);
+    if (tabIndex === "settings") {
+      navigate("/hbac-services/" + cn);
+    } else if (tabIndex === "memberof") {
+      navigate("/hbac-services/" + cn + "/memberof_hbacsvcgroup");
+    }
   };
 
   React.useEffect(() => {
@@ -72,7 +78,10 @@ const HBACServicesTabs = ({ section }) => {
     if (!section) {
       navigate(URL_PREFIX + "/hbac-services/" + cn);
     }
-    setActiveTabKey(section);
+    const section_string = section as string;
+    if (section_string.startsWith("memberof")) {
+      setActiveTabKey("memberof");
+    }
   }, [section]);
 
   if (settingsData.isLoading || settingsData.service.cn === undefined) {
@@ -86,6 +95,8 @@ const HBACServicesTabs = ({ section }) => {
   ) {
     return <NotFound />;
   }
+
+  const hbacSrv = partialHBACServiceToHBACService(settingsData.service);
 
   return (
     <>
@@ -127,6 +138,13 @@ const HBACServicesTabs = ({ section }) => {
               onResetValues={settingsData.resetValues}
               modifiedValues={settingsData.modifiedValues}
             />
+          </Tab>
+          <Tab
+            eventKey={"memberof"}
+            name="memberof-details"
+            title={<TabTitleText>Is member of</TabTitleText>}
+          >
+            <HBACServicesMemberOf hbacService={hbacSrv} tabSection={section} />
           </Tab>
         </Tabs>
       </PageSection>
