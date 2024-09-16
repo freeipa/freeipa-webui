@@ -155,7 +155,7 @@ const extendedApi = api.injectEndpoints({
         const noMembers = payload.no_members || true;
         const apiVersion = payload.version || API_VERSION_BACKUP;
         const groupShowCommands: Command[] = groupNames.map((groupName) => ({
-          method: "hostgroup_show",
+          method: "hbacsvcgroup_show",
           params: [[groupName], { no_members: noMembers }],
         }));
         return getBatchCommand(groupShowCommands, apiVersion);
