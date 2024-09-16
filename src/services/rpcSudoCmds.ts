@@ -156,6 +156,22 @@ const extendedApi = api.injectEndpoints({
       },
       invalidatesTags: ["FullSudoCmd"],
     }),
+    /**
+     * Get command info by name
+     */
+    getSudoCmdById: build.query<SudoCmd, string>({
+      query: (groupId) => {
+        return getCommand({
+          method: "sudocmd_show",
+          params: [
+            [groupId],
+            { all: true, rights: true, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): SudoCmd =>
+        apiToSudoCmd(response.result.result),
+    }),
   }),
   overrideExisting: false,
 });
@@ -172,4 +188,5 @@ export const {
   useRemoveSudoCmdsMutation,
   useGetSudoCmdFullDataQuery,
   useSaveSudoCmdMutation,
+  useGetSudoCmdByIdQuery,
 } = extendedApi;

@@ -159,6 +159,44 @@ const extendedApi = api.injectEndpoints({
       },
       invalidatesTags: ["FullSudoCmdGroup"],
     }),
+    addToSudoCmdGroups: build.mutation<
+      BatchRPCResponse,
+      [string, string, string[]]
+    >({
+      query: (payload) => {
+        const memberId = payload[0];
+        const memberType = payload[1];
+        const groupNames = payload[2];
+        const membersToAdd: Command[] = [];
+        groupNames.map((groupName) => {
+          const payloadItem = {
+            method: "sudocmdgroup_add_member",
+            params: [[groupName], { [memberType]: memberId }],
+          } as Command;
+          membersToAdd.push(payloadItem);
+        });
+        return getBatchCommand(membersToAdd, API_VERSION_BACKUP);
+      },
+    }),
+    removeFromSudoCmdGroups: build.mutation<
+      BatchRPCResponse,
+      [string, string, string[]]
+    >({
+      query: (payload) => {
+        const memberId = payload[0];
+        const memberType = payload[1];
+        const groupNames = payload[2];
+        const membersToRemove: Command[] = [];
+        groupNames.map((groupName) => {
+          const payloadItem = {
+            method: "sudocmdgroup_remove_member",
+            params: [[groupName], { [memberType]: memberId }],
+          } as Command;
+          membersToRemove.push(payloadItem);
+        });
+        return getBatchCommand(membersToRemove, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -175,4 +213,6 @@ export const {
   useRemoveSudoCmdGroupsMutation,
   useSaveSudoCmdGroupMutation,
   useGetSudoCmdGroupsFullDataQuery,
+  useAddToSudoCmdGroupsMutation,
+  useRemoveFromSudoCmdGroupsMutation,
 } = extendedApi;

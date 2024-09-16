@@ -30,6 +30,7 @@ export function createEmptySudoCmd(): SudoCmd {
     sudocmd: "",
     dn: "",
     description: "",
+    memberof_sudocmdgroup: [],
   };
 
   return sudoCmd;
