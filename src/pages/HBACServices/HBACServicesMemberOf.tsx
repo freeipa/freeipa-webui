@@ -69,7 +69,7 @@ const HBACServicesMemberOf = (props: PropsToMemberOf) => {
           name="memberof_hbacsvcgroup"
           title={
             <TabTitleText>
-              Host groups{" "}
+              Host service groups{" "}
               <Badge key={0} id="svcgroup_count" isRead>
                 {service && service.memberof_hbacsvcgroup
                   ? service.memberof_hbacsvcgroup.length

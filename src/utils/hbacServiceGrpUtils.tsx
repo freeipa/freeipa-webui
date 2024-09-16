@@ -32,6 +32,7 @@ export function createEmptyHBACGroupService(): HBACServiceGroup {
     description: "",
     cn: "",
     dn: "",
+    member_hbacsvc: [],
   };
 
   return hbacService;

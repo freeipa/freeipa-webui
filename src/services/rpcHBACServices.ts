@@ -27,6 +27,12 @@ export type ServiceFullData = {
   service?: Partial<HBACService>;
 };
 
+export interface ShowPayload {
+  serviceNamesList: string[];
+  no_members?: boolean;
+  version: string;
+}
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     /**
@@ -131,7 +137,7 @@ const extendedApi = api.injectEndpoints({
      *    Available types:
      *        user | group |
      *        host | hostgroup |
-     *        hbacsrc | hbacsvcgroup |
+     *        hbacsrv | hbacsvcgroup |
      *        sourcehost
      * @param {string[]} listOfMembers - List of members to add to the HBAC rule
      * @param {boolean} unsetCategory - set the category from "all" to ""
@@ -214,6 +220,34 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Given a list of group names, show the full data of those groups
+     * @param {string[]} groupNames - List of group names
+     * @param {boolean} noMembers - Whether to show members or not
+     * @returns {BatchRPCResponse} - Batch response
+     */
+    getHBACServicesInfoByName: build.query<HBACService[], ShowPayload>({
+      query: (payload) => {
+        const names = payload.serviceNamesList;
+        const noMembers = payload.no_members || true;
+        const apiVersion = payload.version || API_VERSION_BACKUP;
+        const showCommands: Command[] = names.map((name) => ({
+          method: "hbacsvc_show",
+          params: [[name], { no_members: noMembers }],
+        }));
+        return getBatchCommand(showCommands, apiVersion);
+      },
+      transformResponse: (response: BatchRPCResponse): HBACService[] => {
+        const svcList: HBACService[] = [];
+        const results = response.result.results;
+        const count = response.result.count;
+        for (let i = 0; i < count; i++) {
+          const groupData = apiToHBACService(results[i].result);
+          svcList.push(groupData);
+        }
+        return svcList;
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -232,4 +266,5 @@ export const {
   useRemoveMembersFromHbacServiceMutation,
   useAddMembersToHbacServiceMutation,
   useGetHbacServiceByIdQuery,
+  useGetHBACServicesInfoByNameQuery,
 } = extendedApi;
