@@ -255,9 +255,31 @@ export interface SudoRulesOld {
 export interface SudoRule {
   cn: string;
   ipaenabledflag: boolean;
+  externaluser: string;
   dn: string;
   description: string;
   sudoorder: string;
+  usercategory: string;
+  hostcategory: string;
+  cmdcategory: string;
+  memberuser_user: string[];
+  memberhost_host: string[];
+  memberhost_hostgroup: string[];
+  memberallowcmd_sudocmd: string[];
+  memberallowcmd_sudocmdgroup: string[];
+  memberdenycmd_sudocmd: string[];
+  memberdenycmd_sudocmdgroup: string[];
+  ipasudoopt: string[];
+  ipasudorunas_user: string[];
+  ipasudorunas_group: string[];
+  ipasudorunasgroup_group: string[];
+  ipasudorunasusercategory: string;
+  ipasudorunasgroupcategory: string;
+  hostmask: string;
+  externalhost: string;
+  ipasudorunasextusergroup: string;
+  ipasudorunasextgroup: string;
+  ipasudorunasextuser: string;
 }
 
 export interface SudoCmd {
