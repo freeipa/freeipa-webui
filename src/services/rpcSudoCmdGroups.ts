@@ -7,6 +7,7 @@ import {
   getBatchCommand,
   BatchRPCResponse,
   useGettingGenericQuery,
+  MemberPayload,
 } from "./rpc";
 import { apiToSudoCmdGroup } from "src/utils/sudoCmdGroupsUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
@@ -197,6 +198,62 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(membersToRemove, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Get host group info by name
+     */
+    getSudoCmdGroupById: build.query<SudoCmdGroup, string>({
+      query: (groupId) => {
+        return getCommand({
+          method: "sudocmdgroup_show",
+          params: [
+            [groupId],
+            { all: true, rights: true, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): SudoCmdGroup =>
+        apiToSudoCmdGroup(response.result.result),
+    }),
+    /**
+     * Add sudo command members to group
+     * @param {MemberPayload} - Payload with IDs and options
+     */
+    addMembersToSudoCmdGroup: build.mutation<FindRPCResponse, MemberPayload>({
+      query: (payload) => {
+        const group = payload.entryName;
+        const idsToAdd = payload.idsToAdd;
+        const memberType = payload.entityType;
+        return getCommand({
+          method: "sudocmdgroup_add_member",
+          params: [
+            [group],
+            { all: true, [memberType]: idsToAdd, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+    }),
+    /**
+     * Remove sudo command members from group
+     * @param {MemberPayload} - Payload with IDs and options
+     */
+    removeMembersFromSudoCmdGroup: build.mutation<
+      FindRPCResponse,
+      MemberPayload
+    >({
+      query: (payload) => {
+        const group = payload.entryName;
+        const idsToAdd = payload.idsToAdd;
+        const memberType = payload.entityType;
+
+        return getCommand({
+          method: "sudocmdgroup_remove_member",
+          params: [
+            [group],
+            { all: true, [memberType]: idsToAdd, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -215,4 +272,7 @@ export const {
   useGetSudoCmdGroupsFullDataQuery,
   useAddToSudoCmdGroupsMutation,
   useRemoveFromSudoCmdGroupsMutation,
+  useGetSudoCmdGroupByIdQuery,
+  useAddMembersToSudoCmdGroupMutation,
+  useRemoveMembersFromSudoCmdGroupMutation,
 } = extendedApi;

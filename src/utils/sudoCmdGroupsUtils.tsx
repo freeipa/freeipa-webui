@@ -14,10 +14,10 @@ export function apiToSudoCmdGroup(
     simpleValues,
     dateValues
   ) as Partial<SudoCmdGroup>;
-  return partialSudoCmdToSudoCmdGroup(converted) as SudoCmdGroup;
+  return partialSudoCmdGroupToSudoCmdGroup(converted) as SudoCmdGroup;
 }
 
-export function partialSudoCmdToSudoCmdGroup(
+export function partialSudoCmdGroupToSudoCmdGroup(
   partialSudoCmd: Partial<SudoCmdGroup>
 ): SudoCmdGroup {
   return {
@@ -32,6 +32,7 @@ export function createEmptySudoCmdGroup(): SudoCmdGroup {
     cn: "",
     dn: "",
     description: "",
+    member_sudocmd: [],
   };
 
   return sudoCmdGroup;

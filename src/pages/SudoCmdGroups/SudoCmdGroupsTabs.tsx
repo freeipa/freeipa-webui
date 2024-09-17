@@ -21,6 +21,8 @@ import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { NotFound } from "src/components/errors/PageErrors";
 import SudoCmdGroupsSettings from "./SudoCmdGroupsSettings";
+import { partialSudoCmdGroupToSudoCmdGroup } from "src/utils/sudoCmdGroupsUtils";
+import SudoCmdGroupMembers from "./SudoCmdGroupsMembers";
 
 // eslint-disable-next-line react/prop-types
 const SudoCmdGroupsTabs = ({ section }) => {
@@ -41,7 +43,11 @@ const SudoCmdGroupsTabs = ({ section }) => {
     tabIndex: number | string
   ) => {
     setActiveTabKey(tabIndex as string);
-    navigate("/sudo-command-groups/" + cn);
+    if (tabIndex === "settings") {
+      navigate("/sudo-command-groups/" + cn);
+    } else if (tabIndex === "member") {
+      navigate("/sudo-command-groups/" + cn + "/member_sudocmd");
+    }
   };
 
   React.useEffect(() => {
@@ -72,7 +78,10 @@ const SudoCmdGroupsTabs = ({ section }) => {
     if (!section) {
       navigate(URL_PREFIX + "/sudo-command-groups/" + cn);
     }
-    setActiveTabKey(section);
+    const section_string = section as string;
+    if (section_string.startsWith("member_")) {
+      setActiveTabKey("member");
+    }
   }, [section]);
 
   if (settingsData.isLoading || settingsData.group.cn === undefined) {
@@ -83,6 +92,8 @@ const SudoCmdGroupsTabs = ({ section }) => {
   if (!settingsData.isLoading && Object.keys(settingsData.group).length === 0) {
     return <NotFound />;
   }
+
+  const cmdGroup = partialSudoCmdGroupToSudoCmdGroup(settingsData.group);
 
   return (
     <>
@@ -124,6 +135,13 @@ const SudoCmdGroupsTabs = ({ section }) => {
               onResetValues={settingsData.resetValues}
               modifiedValues={settingsData.modifiedValues}
             />
+          </Tab>
+          <Tab
+            eventKey={"member"}
+            name={"member-details"}
+            title={<TabTitleText>Members</TabTitleText>}
+          >
+            <SudoCmdGroupMembers sudocmdgroup={cmdGroup} tabSection={section} />
           </Tab>
         </Tabs>
       </PageSection>
