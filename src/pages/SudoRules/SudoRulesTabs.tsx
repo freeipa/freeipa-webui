@@ -20,6 +20,8 @@ import { useSudoRuleSettings } from "src/hooks/useSudoRuleSettingsData";
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { NotFound } from "src/components/errors/PageErrors";
+import SudoRulesSettings from "./SudoRulesSettings";
+import { partialSudoRuleToSudoRule } from "src/utils/sudoRulesUtils";
 
 // eslint-disable-next-line react/prop-types
 const SudoRulesTabs = ({ section }) => {
@@ -41,6 +43,7 @@ const SudoRulesTabs = ({ section }) => {
     tabIndex: number | string
   ) => {
     setActiveTabKey(tabIndex as string);
+    // Just one section: 'Settings'
     navigate("/sudo-rules/" + cn);
   };
 
@@ -84,6 +87,8 @@ const SudoRulesTabs = ({ section }) => {
     return <NotFound />;
   }
 
+  const rule = partialSudoRuleToSudoRule(settingsData.rule);
+
   return (
     <>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
@@ -92,8 +97,8 @@ const SudoRulesTabs = ({ section }) => {
           breadcrumbItems={breadcrumbItems}
         />
         <TitleLayout
-          id={settingsData.rule.cn}
-          text={settingsData.rule.cn}
+          id={rule.cn}
+          text={rule.cn}
           headingLevel="h1"
           preText="Sudo rule:"
         />
@@ -112,7 +117,19 @@ const SudoRulesTabs = ({ section }) => {
             eventKey={"settings"}
             name="settings-details"
             title={<TabTitleText>Settings</TabTitleText>}
-          ></Tab>
+          >
+            <SudoRulesSettings
+              rule={settingsData.rule}
+              originalRule={settingsData.originalRule}
+              metadata={settingsData.metadata}
+              onRuleChange={settingsData.setRule}
+              onRefresh={settingsData.refetch}
+              isModified={settingsData.modified}
+              isDataLoading={settingsData.isFetching}
+              modifiedValues={settingsData.modifiedValues}
+              onResetValues={settingsData.resetValues}
+            />
+          </Tab>
         </Tabs>
       </PageSection>
     </>
