@@ -57,6 +57,16 @@ export interface SudoRulePayload {
   sizelimit?: number;
 }
 
+export interface AddOptionPayload {
+  option: string;
+  toSudoRule: string;
+}
+
+export interface RemoveOptionsPayload {
+  options: string[];
+  fromSudoRule: string;
+}
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     /**
@@ -196,6 +206,10 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(membersToRemove, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Enable entity from Sudo rules
+     * @param {SudoRule} Rule to enable from Sudo rules
+     */
     enableSudoRule: build.mutation<FindRPCResponse, SudoRule>({
       query: (rule) => {
         const params = [
@@ -211,6 +225,10 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Disable entity from Sudo rules
+     * @param {SudoRule} Rule to disable from Sudo rules
+     */
     disableSudoRule: build.mutation<FindRPCResponse, SudoRule>({
       query: (rule) => {
         const params = [
@@ -226,6 +244,10 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Given a Sudo rule name, show the full data of that Sudo rule
+     * @param {string} Sudo rule name/id/cn
+     */
     getSudoRuleFullData: build.query<RuleFullData, string>({
       query: (ruleId) => {
         // Prepare search parameters
@@ -235,7 +257,7 @@ const extendedApi = api.injectEndpoints({
         };
 
         const ruleShowCommand: Command = {
-          method: "hbacrule_show",
+          method: "sudorule_show",
           params: [[ruleId], rule_params],
         };
 
@@ -259,6 +281,25 @@ const extendedApi = api.injectEndpoints({
       },
       providesTags: ["FullSudoRule"],
     }),
+    /**
+     * Save Sudo rule
+     * @param {Partial<SudoRule>} - Sudo rule data
+     */
+    saveSudoRule: build.mutation<FindRPCResponse, Partial<SudoRule>>({
+      query: (rule) => {
+        const params = {
+          version: API_VERSION_BACKUP,
+          ...rule,
+        };
+        delete params["cn"];
+        const cn = rule.cn !== undefined ? rule.cn : "";
+        return getCommand({
+          method: "sudorule_mod",
+          params: [[cn], params],
+        });
+      },
+      invalidatesTags: ["FullSudoRule"],
+    }),
   }),
   overrideExisting: false,
 });
@@ -278,4 +319,5 @@ export const {
   useAddSudoRuleMutation,
   useRemoveSudoRulesMutation,
   useGetSudoRuleFullDataQuery,
+  useSaveSudoRuleMutation,
 } = extendedApi;

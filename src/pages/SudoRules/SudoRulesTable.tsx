@@ -9,6 +9,8 @@ import { SudoRule } from "../../utils/datatypes/globalDataTypes";
 import { checkEqualStatusSudoRule } from "src/utils/utils";
 // Layouts
 import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
+// React Router DOM
+import { Link } from "react-router-dom";
 
 interface RulesData {
   isSudoRuleSelectable: (rule: SudoRule) => boolean;
@@ -233,7 +235,11 @@ const SudoRulesTable = (props: PropsToTable) => {
           isDisabled: !props.rulesData.isSudoRuleSelectable(rule),
         }}
       />
-      <Td dataLabel={columnNames.cn}>{rule.cn}</Td>
+      <Td dataLabel={columnNames.cn}>
+        <Link to={"/sudo-rules/" + rule.cn} state={rule}>
+          {rule.cn}
+        </Link>
+      </Td>
       <Td dataLabel={columnNames.sudoorder}>{rule.sudoorder}</Td>
       <Td dataLabel={columnNames.ipaenabledflag}>
         {rule.ipaenabledflag[0] ? "Enabled" : "Disabled"}
