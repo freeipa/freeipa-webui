@@ -23,6 +23,8 @@ export interface PropsToModal {
   onClose: () => void;
   // Action buttons
   actions: JSX.Element[];
+  // is horizontal
+  isHorizontal?: boolean;
 }
 
 export interface Field {
@@ -73,7 +75,7 @@ const ModalWithFormLayout = (props: PropsToModal) => {
       onClose={props.onClose}
       actions={props.actions}
     >
-      <Form id={props.formId}>
+      <Form id={props.formId} isHorizontal={props.isHorizontal || false}>
         {props.fields.map((field) => (
           <FormGroup
             key={field.id}

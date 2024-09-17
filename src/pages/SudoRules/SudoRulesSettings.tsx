@@ -11,12 +11,14 @@ import { useSaveSudoRuleMutation } from "src/services/rpcSudoRules";
 // Utils
 import { asRecord } from "src/utils/sudoRulesUtils";
 // Components
+// import ConfirmationModal from "src/components/modals/ConfirmationModal";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import KebabLayout from "src/components/layouts/KebabLayout";
 import TabLayout from "src/components/layouts/TabLayout";
 import SudoRuleGeneral from "src/components/SudoRuleSections/SudoRuleGeneral";
 import SidebarLayout from "src/components/layouts/SidebarLayout";
+import SudoRuleOptions from "src/components/SudoRuleSections/SudoRuleOptions";
 import { ErrorResult } from "src/services/rpc";
 
 interface PropsToSudoRulesSettings {
@@ -173,7 +175,10 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
   ];
 
   // Sidebar items
-  const itemNames = ["General"];
+  const itemNames = ["General", "Options"];
+
+  // Options
+  const sudoOptions = props.rule.ipasudoopt || [];
 
   // Render component
   return (
@@ -187,6 +192,14 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             ipaObject={ipaObject}
             recordOnChange={recordOnChange}
             metadata={props.metadata}
+          />
+        </Flex>
+        {/* Options */}
+        <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
+          <TitleLayout headingLevel="h2" id="options" text="Options" />
+          <SudoRuleOptions
+            sudoRuleId={props.rule.cn as string}
+            options={sudoOptions}
           />
         </Flex>
       </SidebarLayout>

@@ -300,6 +300,54 @@ const extendedApi = api.injectEndpoints({
       },
       invalidatesTags: ["FullSudoRule"],
     }),
+    /**
+     * Add a new Option to a Sudo rule
+     * @param {AddOptionPayload} Option to add to Sudo rule and Sudo rule name
+     */
+    addOptionToSudoRule: build.mutation<FindRPCResponse, AddOptionPayload>({
+      query: (payload) => {
+        const option = payload.option;
+        const toSudoRule = payload.toSudoRule;
+
+        const params = [
+          [toSudoRule],
+          {
+            ipasudoopt: option,
+            version: API_VERSION_BACKUP,
+          },
+        ];
+
+        return getCommand({
+          method: "sudorule_add_option",
+          params: params,
+        });
+      },
+    }),
+    /**
+     * Remove Options from a given Sudo rule
+     * @param {AddOptionPayload} Option to add to Sudo rule and Sudo rule name
+     */
+    removeOptionsFromSudoRule: build.mutation<
+      BatchResponse,
+      RemoveOptionsPayload
+    >({
+      query: (payload) => {
+        const options = payload.options;
+        const fromSudoRule = payload.fromSudoRule;
+
+        const batchParams: Command[] = [];
+
+        options.map((option) => {
+          const chunk = {
+            method: "sudorule_remove_option",
+            params: [[fromSudoRule], { ipasudoopt: option }],
+          };
+          batchParams.push(chunk);
+        });
+
+        return getBatchCommand(batchParams, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -320,4 +368,6 @@ export const {
   useRemoveSudoRulesMutation,
   useGetSudoRuleFullDataQuery,
   useSaveSudoRuleMutation,
+  useAddOptionToSudoRuleMutation,
+  useRemoveOptionsFromSudoRuleMutation,
 } = extendedApi;
