@@ -7,6 +7,8 @@ import TableLayout from "src/components/layouts/TableLayout";
 // Data types
 import {
   HBACRule,
+  HBACService,
+  HBACServiceGroup,
   Host,
   HostGroup,
   IDView,
@@ -14,6 +16,7 @@ import {
   Service,
   SudoCmd,
   SudoCmdGroup,
+  SudoRule,
   UserGroup,
 } from "src/utils/datatypes/globalDataTypes";
 
@@ -49,11 +52,14 @@ export interface PropsToDeletedElementsTable {
   elementsToDelete:
     | string[]
     | HBACRule[]
+    | HBACService[]
+    | HBACServiceGroup[]
     | Host[]
     | HostGroup[]
     | Netgroup[]
     | Service[]
     | SudoCmdGroup[]
+    | SudoRule[]
     | UserGroup[]
     | IDView[]
     | SudoCmd[];

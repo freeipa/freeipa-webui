@@ -270,6 +270,7 @@ export interface SudoCmdGroup {
   cn: string;
   dn: string;
   description: string;
+  member_sudocmd: string[];
 }
 
 export interface Host {

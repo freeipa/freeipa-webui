@@ -352,6 +352,10 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                     path=""
                     element={<SudoCmdGroupsTabs section="settings" />}
                   />
+                  <Route
+                    path="member_sudocmd"
+                    element={<SudoCmdGroupsTabs section="member_sudocmd" />}
+                  />
                 </Route>
               </Route>
               <Route path="selinux-user-maps">
