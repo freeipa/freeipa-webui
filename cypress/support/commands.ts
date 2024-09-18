@@ -66,7 +66,7 @@ Cypress.Commands.add("userCleanup", () => {
 
 Cypress.Commands.add("createTestUser", (username: string) => {
   cy.visit(Cypress.env("base_url") + "/active-users");
-  cy.wait(1000);
+  cy.get("tr[id=admin]", { timeout: 6000 }); // wait up to 6 seconds for the user table to visible
   cy.get("tr[id=" + username + "]")
     .should(() => undefined)
     .then(($user) => {
