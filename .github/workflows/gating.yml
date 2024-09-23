@@ -12,7 +12,7 @@ env:
 jobs:
   audit-and-build:
     name: Audit and build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     container:
       image: fedora:latest
 
