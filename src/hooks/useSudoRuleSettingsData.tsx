@@ -94,7 +94,7 @@ const useSudoRuleSettings = (ruleId: string): SettingsData => {
           break;
         }
       } else {
-        if (ruleFullData.rule[key] !== value) {
+        if (ruleFullData.rule[key].toString() !== value.toString()) {
           modified = true;
           break;
         }

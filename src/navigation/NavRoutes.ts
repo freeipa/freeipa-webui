@@ -44,6 +44,9 @@ const SelinuxUserMapsGroupRef = "selinux-user-maps";
 const PasswordPoliciesGroupRef = "password-policies";
 // - Kerberos ticket policy
 const KerberosTicketPolicyGroupRef = "kerberos-ticket-policy";
+// IPA SERVER
+// - Configuration
+const ConfigRef = "configuration";
 
 // List of navigation routes (UI)
 export const navigationRoutes = [
@@ -255,6 +258,21 @@ export const navigationRoutes = [
         group: KerberosTicketPolicyGroupRef,
         title: `${BASE_TITLE} - Kerberos ticket policy`,
         path: "kerberos-ticket-policy",
+        items: [],
+      },
+    ],
+  },
+  {
+    label: "IPA Server",
+    group: "",
+    title: `${BASE_TITLE} - IPA Server`,
+    path: "",
+    items: [
+      {
+        label: "Configuration",
+        group: ConfigRef,
+        title: `${BASE_TITLE} - Configuration`,
+        path: "configuration",
         items: [],
       },
     ],

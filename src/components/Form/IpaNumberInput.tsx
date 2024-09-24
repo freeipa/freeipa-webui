@@ -23,6 +23,7 @@ import {
  */
 
 interface IPAParamDefinitionNumberInput extends IPAParamDefinition {
+  id?: string;
   className?: string;
   numCharsShown?: number;
   minValue?: number;
@@ -49,11 +50,8 @@ const IpaNumberInput = (props: IPAParamDefinitionNumberInput) => {
   };
 
   const onMinus = () => {
-    const newValue = normalizeBetween(
-      (value as number) - 1,
-      props.minValue,
-      props.maxValue
-    );
+    const num = value ? parseInt(value as string, 10) : 0;
+    const newValue = normalizeBetween(num - 1, props.minValue, props.maxValue);
     onChange(newValue);
   };
 
@@ -88,17 +86,15 @@ const IpaNumberInput = (props: IPAParamDefinitionNumberInput) => {
   };
 
   const onPlus = () => {
-    const newValue = normalizeBetween(
-      (value as number) + 1,
-      props.minValue,
-      props.maxValue
-    );
+    const num = value ? parseInt(value as string, 10) : 0;
+    const newValue = normalizeBetween(num + 1, props.minValue, props.maxValue);
     onChange(newValue);
   };
 
   return (
     <>
       <NumberInput
+        id={props.id}
         value={numberValue}
         onMinus={onMinus}
         onChange={onChangeHandler}
