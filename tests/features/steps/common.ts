@@ -90,6 +90,10 @@ When("I click on {string} button", function (buttonText: string) {
   cy.get("button").contains(regex).click();
 });
 
+When("I click on ID {string} button", function (id: string) {
+  cy.get('button[id="' + id + '"').click();
+});
+
 Then("button {string} should be enabled", function (buttonText: string) {
   const regex = new RegExp("^" + buttonText + "$", "i");
   cy.get("button").contains(regex).should("be.enabled");
@@ -162,6 +166,12 @@ When("I clear the selected field", () => {
 
 When("I clear the field {string}", (id) => {
   cy.get("input[id='" + id + "']")
+    .focus()
+    .clear();
+});
+
+When("I clear the textarea {string}", (id) => {
+  cy.get("textarea[id='" + id + "']")
     .focus()
     .clear();
 });
@@ -303,7 +313,14 @@ When("I click on {string} inline checkbox", (checkboxName: string) => {
   cy.get("div.pf-v5-c-check").find("label").contains(checkboxName).click();
 });
 
+When("I click on ID {string} checkbox", (checkboxName: string) => {
+  cy.get("div.pf-v5-c-check")
+    .find('input[id="' + checkboxName + '"]')
+    .click();
+});
+
 // Selectors
+// This function below works with dropdown menus
 When("I click in the {string} selector field", (selectorName: string) => {
   cy.get("div.pf-v5-c-form__group-label")
     .contains(selectorName)
@@ -338,6 +355,7 @@ Then(
   }
 );
 
+// Also works for dropdown menus
 When(
   "I select {string} option in the {string} selector",
   (option: string, selectorName: string) => {
@@ -596,3 +614,16 @@ Then(
     cy.get("span.pf-v5-c-badge[id=" + count_id + "_count]").contains(value);
   }
 );
+
+// NumberInput
+When("I click on the {string} number plus button", (id: string) => {
+  cy.get("div[id=" + id + "]")
+    .find('button[aria-label="plus"]')
+    .click();
+});
+
+When("I click on the {string} number minus button", (id: string) => {
+  cy.get("div[id=" + id + "]")
+    .find('button[aria-label="minus"]')
+    .click();
+});

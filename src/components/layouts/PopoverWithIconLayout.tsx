@@ -11,6 +11,7 @@ interface PropsToPopover {
   hasNoPadding?: boolean;
   withFocusTrap?: boolean;
   hasAutoWidth?: boolean;
+  triggerHover?: boolean;
 }
 
 const PopoverWithIconLayout = (props: PropsToPopover) => {
@@ -19,6 +20,7 @@ const PopoverWithIconLayout = (props: PropsToPopover) => {
       aria-label={
         props.ariaLabel || "Popover with no header, footer, and close button"
       }
+      triggerAction={props.triggerHover ? "hover" : "click"}
       hasNoPadding={props.hasNoPadding || false}
       showClose={props.showClose || false}
       bodyContent={props.message}

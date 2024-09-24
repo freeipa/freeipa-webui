@@ -394,6 +394,39 @@ export interface IDView {
   ipadomainresolutionorder: string;
 }
 
+export interface Config {
+  dn: string;
+  cn: string;
+  ipamaxusernamelength: string;
+  ipahomesrootdir: string;
+  ipadefaultloginshell: string;
+  ipadefaultprimarygroup: string;
+  ipadefaultemaildomain: string;
+  ipasearchtimelimit: string;
+  ipasearchrecordslimit: string;
+  ipausersearchfields: string;
+  ipagroupsearchfields: string;
+  ipacertificatesubjectbase: string;
+  ipapwdexpadvnotify: string;
+  ipaselinuxusermapdefault: string;
+  ipadomainresolutionorder: string;
+  ipamaxhostnamelength: string;
+  ipaselinuxusermaporder: string;
+  ca_renewal_master_server: string;
+  ipaconfigstring: string[];
+  ipakrbauthzdata: string[];
+  ipauserauthtype: string[];
+  ipagroupobjectclasses: string[];
+  ipauserobjectclasses: string[];
+  ca_server_server: string[];
+  kra_server_server: string[];
+  ipa_master_server: string[];
+  pkinit_server_server: string[];
+  dns_server_server: string[];
+  ipamigrationenabled: boolean;
+  ipauserdefaultsubordinateid: boolean;
+}
+
 // Errors
 export interface ErrorData {
   code: string;

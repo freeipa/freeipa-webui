@@ -48,6 +48,7 @@ import HBACRulesTabs from "src/pages/HBACRules/HBACRulesTabs";
 import HBACServiceGroupsTabs from "src/pages/HBACServiceGroups/HBACServiceGroupsTabs";
 import ResetPasswordPage from "src/login/ResetPasswordPage";
 import SetupBrowserConfig from "src/pages/SetupBrowserConfig";
+import Configuration from "src/pages/Configuration/Configuration";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -372,6 +373,7 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               <Route path="kerberos-ticket-policy">
                 <Route path="" element={<KrbTicketPolicy />} />
               </Route>
+              <Route path="configuration" element={<Configuration />} />
               {/* Redirect to Active users page if user is logged in and navigates to the root page */}
               <Route
                 path="*"
