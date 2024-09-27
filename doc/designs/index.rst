@@ -5,3 +5,4 @@ FreeIPA WebUI documentation
    :maxdepth: 1
 
    webui-communication-layer.md
+   login-via-certificates.md
