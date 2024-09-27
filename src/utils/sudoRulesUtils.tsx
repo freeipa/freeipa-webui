@@ -9,6 +9,16 @@ const simpleValues = new Set([
   "dn",
   "description",
   "sudoorder",
+  "usercategory",
+  "hostcategory",
+  "cmdcategory",
+  "ipasudorunasusercategory",
+  "ipasudorunasgroupcategory",
+  "hostmask",
+  "externalhost",
+  "ipasudorunasextusergroup",
+  "ipasudorunasextgroup",
+  "ipasudorunasextuser",
 ]);
 const dateValues = new Set([]);
 
@@ -38,7 +48,7 @@ export function createEmptySudoRule(): SudoRule {
     dn: "",
     description: "",
     sudoorder: "",
-    externaluser: "",
+    externaluser: [],
     usercategory: "",
     hostcategory: "",
     cmdcategory: "",
@@ -60,6 +70,7 @@ export function createEmptySudoRule(): SudoRule {
     ipasudorunasextusergroup: "",
     ipasudorunasextgroup: "",
     ipasudorunasextuser: "",
+    memberuser_group: [],
   };
 
   return sudoRule;

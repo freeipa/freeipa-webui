@@ -395,3 +395,13 @@ export function paginate<Type>(
   const endIdx = perPage * page;
   return array.slice(startIdx, endIdx);
 }
+
+/**
+ * Check if an array contains any element of another array
+ * @param {unknown[]} array1 List of elements to be checked
+ * @param {unknown[]} array2 List of elements to be checked against
+ * @returns {boolean} True if there is any element in array1 that is also in array2
+ */
+export function containsAny(array1: unknown[], array2: unknown[]): boolean {
+  return array1.some((item) => array2.includes(item));
+}
