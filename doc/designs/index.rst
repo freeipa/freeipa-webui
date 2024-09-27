@@ -6,3 +6,4 @@ FreeIPA WebUI documentation
 
    webui-communication-layer.md
    login-via-certificates.md
+   login-via-kerberos.md
