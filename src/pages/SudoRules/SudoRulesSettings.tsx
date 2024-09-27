@@ -8,10 +8,10 @@ import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // RPC
 import { useSaveSudoRuleMutation } from "src/services/rpcSudoRules";
+import { ErrorResult } from "src/services/rpc";
 // Utils
 import { asRecord } from "src/utils/sudoRulesUtils";
 // Components
-// import ConfirmationModal from "src/components/modals/ConfirmationModal";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import KebabLayout from "src/components/layouts/KebabLayout";
@@ -19,7 +19,8 @@ import TabLayout from "src/components/layouts/TabLayout";
 import SudoRuleGeneral from "src/components/SudoRuleSections/SudoRuleGeneral";
 import SidebarLayout from "src/components/layouts/SidebarLayout";
 import SudoRuleOptions from "src/components/SudoRuleSections/SudoRuleOptions";
-import { ErrorResult } from "src/services/rpc";
+import SudoRulesWho from "src/components/SudoRuleSections/SudoRulesWho";
+import { TableEntry } from "src/components/tables/KeytabTableWithFilter";
 
 interface PropsToSudoRulesSettings {
   rule: Partial<SudoRule>;
@@ -175,10 +176,38 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
   ];
 
   // Sidebar items
-  const itemNames = ["General", "Options"];
+  const itemNames = ["General", "Options", "Who"];
 
   // Options
   const sudoOptions = props.rule.ipasudoopt || [];
+
+  // Who section - Users should also contain external users
+  const [usersAndExternalsList, setUsersAndExternalsList] = React.useState<
+    TableEntry[]
+  >([]);
+  const [usergroupsList, setUsergroupsList] = React.useState<TableEntry[]>([]);
+
+  React.useEffect(() => {
+    // - Users list
+    const usersAndExternalsListTemp: TableEntry[] =
+      props.rule.memberuser_user?.map((entry) => {
+        return { entry: entry, showLink: true };
+      }) || [];
+    // Add externals into 'usersList' without showing link
+    usersAndExternalsListTemp.push(
+      ...((props.rule.externaluser || []).map((entry) => {
+        return { entry: entry, showLink: false };
+      }) || [])
+    );
+    setUsersAndExternalsList(usersAndExternalsListTemp);
+
+    // - User groups list
+    const usergroupsListTemp: TableEntry[] =
+      props.rule.memberuser_group?.map((entry) => {
+        return { entry: entry, showLink: true };
+      }) || [];
+    setUsergroupsList(usergroupsListTemp);
+  }, [props.rule]);
 
   // Render component
   return (
@@ -200,6 +229,20 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
           <SudoRuleOptions
             sudoRuleId={props.rule.cn as string}
             options={sudoOptions}
+          />
+        </Flex>
+        {/* Who */}
+        <Flex
+          direction={{ default: "column" }}
+          flex={{ default: "flex_1" }}
+          className="pf-v5-u-mt-lg"
+        >
+          <TitleLayout headingLevel="h2" id="who" text="Who" />
+          <SudoRulesWho
+            rule={props.rule}
+            onRefresh={props.onRefresh}
+            usersList={usersAndExternalsList}
+            userGroupsList={usergroupsList}
           />
         </Flex>
       </SidebarLayout>

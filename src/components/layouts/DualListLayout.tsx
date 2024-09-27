@@ -1,6 +1,13 @@
 import React, { ReactNode, useEffect, useState } from "react";
 // PatternFly
-import { Button, DualListSelector } from "@patternfly/react-core";
+import {
+  Flex,
+  FlexItem,
+  Button,
+  DualListSelector,
+  FormGroup,
+  TextInput,
+} from "@patternfly/react-core";
 // Layout
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
@@ -8,19 +15,23 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 //Icons
 import InfoCircleIcon from "@patternfly/react-icons/dist/esm/icons/info-circle-icon";
 import ExclamationTriangleIcon from "@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon";
+import ArrowRightIcon from "@patternfly/react-icons/dist/esm/icons/arrow-right-icon";
 // RPC client
 import { useGetIDListMutation, GenericPayload } from "src/services/rpc";
 
+export type DualListTarget =
+  | "user"
+  | "group"
+  | "host"
+  | "hostgroup"
+  | "netgroup"
+  | "hbacsvc"
+  | "hbacsvcgroup"
+  | "sudorule";
+
 interface PropsToAddModal {
   entry: string;
-  target:
-    | "user"
-    | "group"
-    | "host"
-    | "hostgroup"
-    | "netgroup"
-    | "hbacsvc"
-    | "hbacsvcgroup";
+  target: DualListTarget;
   showModal: boolean;
   onCloseModal: () => void;
   onOpenModal: () => void;
@@ -30,6 +41,7 @@ interface PropsToAddModal {
   addSpinningBtnName: string;
   action: (items: string[]) => void;
   tableElementsList: string[];
+  addExternalsOption?: boolean;
 }
 
 // Dual list layout for updating an existing table, or for performing actions
@@ -198,6 +210,58 @@ const DualListTableLayout = (props: PropsToAddModal) => {
     },
   ];
 
+  // Show the possibility of adding externals if this is defined
+  const [externalValue, setExternalValue] = React.useState("");
+
+  // Change the external value string and show it in the list to enable the "addition" arrow button
+  const onAddExternalValue = () => {
+    const newChosenOptions = [...chosenOptions];
+    newChosenOptions.push(externalValue);
+    listChange(availableOptions, newChosenOptions);
+    setExternalValue("");
+  };
+
+  if (props.addExternalsOption) {
+    fields.push({
+      id: "form-externals",
+      pfComponent: (
+        <>
+          <FormGroup
+            label="External"
+            fieldId="dual-list-external"
+            style={{ width: "45%" }}
+          >
+            <Flex>
+              <FlexItem>
+                <TextInput
+                  type="text"
+                  id="dual-list-external"
+                  name="dual-list-external"
+                  aria-label="dual list external"
+                  value={externalValue}
+                  onChange={(_event, value) => setExternalValue(value)}
+                />
+              </FlexItem>
+              <FlexItem>
+                <Button
+                  title="Add external item to the chosen list"
+                  size="sm"
+                  variant="secondary"
+                  icon={<ArrowRightIcon />}
+                  iconPosition="right"
+                  onClick={onAddExternalValue}
+                  isDisabled={externalValue === ""}
+                >
+                  Add
+                </Button>
+              </FlexItem>
+            </Flex>
+          </FormGroup>
+        </>
+      ),
+    });
+  }
+
   // Buttons are disabled until all the required fields are filled
   const [buttonDisabled, setButtonDisabled] = useState(true);
   useEffect(() => {
@@ -224,6 +288,10 @@ const DualListTableLayout = (props: PropsToAddModal) => {
         itemsToAdd.push(opt.toString());
       }
     });
+    // External value (if any)
+    if (props.addExternalsOption && externalValue !== "") {
+      availOptions.push(externalValue);
+    }
     // Action update
     props.action(itemsToAdd);
     closeModal();
