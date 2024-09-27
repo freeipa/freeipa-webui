@@ -724,6 +724,8 @@ export const api = createApi({
           method = "hbacsvc_find";
         } else if (entryType === "hbacsvcgroup") {
           method = "hbacsvcgroup_find";
+        } else if (entryType === "sudorule") {
+          method = "sudorule_find";
         } else {
           return {
             error: {

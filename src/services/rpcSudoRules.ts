@@ -67,6 +67,32 @@ export interface RemoveOptionsPayload {
   fromSudoRule: string;
 }
 
+export interface AddRemoveToSudoRulesPayload {
+  toId: string;
+  type: string;
+  listOfMembers: string[];
+}
+
+export interface AddRemoveToSudoRulesResult {
+  completed: number;
+  error: Record<string, unknown> | null;
+  failed: {
+    memberuser: {
+      group: string[];
+      user: string[];
+    };
+  };
+  result: {
+    cn: string;
+    dn: string;
+    externaluser: string[];
+    ipaenabledflag: boolean;
+    memberuser_user: string[];
+    memberuser_group: string[];
+    sudoorder: number;
+  };
+}
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     /**
@@ -348,6 +374,53 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(batchParams, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Add user from sudo rule
+     * @param {AddToSudoRulesPayload} Parameters to add to Sudo rule
+     */
+    addToSudoRule: build.mutation<BatchResponse, AddRemoveToSudoRulesPayload>({
+      query: (payload) => {
+        const toId = payload.toId;
+        const type = payload.type; // Shoud be 'user'
+        const listOfMembers = payload.listOfMembers;
+
+        const batchParams: Command[] = [];
+
+        listOfMembers.map((option) => {
+          const chunk = {
+            method: "sudorule_add_user",
+            params: [[toId], { [type]: option }],
+          };
+          batchParams.push(chunk);
+        });
+
+        return getBatchCommand(batchParams, API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Remove user from sudo rule
+     * @param {RemoveFromSudoRulesPayload} Parameters to remove from Sudo rule
+     */
+    removeFromSudoRule: build.mutation<
+      FindRPCResponse,
+      AddRemoveToSudoRulesPayload
+    >({
+      query: (payload) => {
+        const toId = payload.toId;
+        const type = payload.type; // Should be 'user'
+        const listOfMembers = payload.listOfMembers;
+
+        const params = [
+          [toId],
+          { [type]: listOfMembers, version: API_VERSION_BACKUP },
+        ];
+
+        return getCommand({
+          method: "sudorule_remove_user",
+          params: params,
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -370,4 +443,6 @@ export const {
   useSaveSudoRuleMutation,
   useAddOptionToSudoRuleMutation,
   useRemoveOptionsFromSudoRuleMutation,
+  useAddToSudoRuleMutation,
+  useRemoveFromSudoRuleMutation,
 } = extendedApi;
