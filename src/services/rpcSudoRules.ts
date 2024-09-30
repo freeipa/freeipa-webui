@@ -151,7 +151,7 @@ const extendedApi = api.injectEndpoints({
         const sudoRoleNames = payload[2];
 
         let methodType = "";
-        if (memberType === "user") {
+        if (memberType === "user" || memberType === "group") {
           methodType = "sudorule_add_user";
         } else if (memberType === "host" || memberType === "hostgroup") {
           methodType = "sudorule_add_host";
