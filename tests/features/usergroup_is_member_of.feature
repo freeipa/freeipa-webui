@@ -11,6 +11,14 @@ Feature: Usergroup is a member of
     Given I am logged in as "Administrator"
     Given I am on "user-groups" page
 
+  Scenario Outline: Add a new rule
+    Given I am on "sudo-rules" page
+    When I click on "Add" button
+    * I type in the field "Rule name" text "rule1"
+    * in the modal dialog I click on "Add" button
+    * I should see "success" alert with text "New sudo rule added"
+    Then I should see "rule1" entry in the data table
+
   Scenario: Add a new usergroup
     When I click on "Add" button
     * I type in the field "Group name" text "a_group"
@@ -140,6 +148,19 @@ Feature: Usergroup is a member of
     * I close the alert
     And I should not see the element "rule1" in the table
 
+  # Test Sudo rules
+  Scenario: Add a Sudo rule member to the user group
+    Given I am on "user-groups" page
+    Given I click on the Is a member of section
+    Then I click on "Sudo rules" page tab
+    When I click on "Add" button located in the toolbar
+    Then I should see the dialog with title "Add 'a_group' into sudo rules"
+    When I move user "rule1" from the available list and move it to the chosen options
+    And in the modal dialog I click on "Add" button
+    * I should see "success" alert with text "Assigned 'a_group' to sudo rules"
+    * I close the alert
+    Then I should see the element "rule1" in the table
+
   # Cleanup
   Scenario: Delete the groups and rules (clean up)
     When I click on the breadcrump link "User groups"
@@ -172,4 +193,14 @@ Feature: Usergroup is a member of
     * I should see "rule1" entry in the data table
     * in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "HBAC rules removed"
+    Then I should not see "rule1" entry in the data table
+
+    Given I am on "sudo-rules" page
+    Given I should see partial "rule1" entry in the data table
+    When I select entry "rule1" in the data table
+    * I click on "Delete" button
+    When I see "Remove sudo rule" modal
+    * I should see "rule1" entry in the data table
+    * in the modal dialog I click on "Delete" button
+    * I should see "success" alert with text "Sudo rules removed"
     Then I should not see "rule1" entry in the data table
