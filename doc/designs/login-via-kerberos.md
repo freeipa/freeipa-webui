@@ -1,6 +1,10 @@
+# Authentication via Kerberos
+
+## Introduction
+
 The Kerberos authentication should be performed by taking the already-configured kerberos credentials (via `kinit`) and authenticate through the `/ipa/session/login_kerberos` endpoint.
 
-### How to reproduce
+## How to reproduce
 
 It is assumed that no ticket is created, no browser has been opened yet, and there is a vagrant machine up and running containing the modern WebUI (see `README` file instructions).
 
@@ -43,11 +47,11 @@ These steps should be enough to test the authentication via Kerberos:
 
 If this doesn't work, try the steps described in 'Plan B'.
 
-### Plan B
+## Plan B
 
 This approach assumes that we want to configure the Kerberos authentication in a server with a different name (e.g., `<my-webui-local-instance>.ipa.demo`). This can be configured via the WebUI or CLI commands
 
-#### Option 1: WebUI
+### Option 1: WebUI
 
 Create the zone for `dom-ipa.demo`
 
@@ -63,7 +67,7 @@ Create the zone for `dom-ipa.demo`
   ![image](https://github.com/user-attachments/assets/10c04be4-04a3-44a6-9b61-1da0884790fd)
   **Disclaimer:** The image show more values defined, but there might be not necessary in this case
 
-#### Option 2: CLI
+### Option 2: CLI
 
 Execute the following commands to generate the zone:
 
@@ -115,7 +119,3 @@ Open a Google chrome window while adding the `ipa.demo` server to the whitelist
 ```
 
 If there is a kerberos ticket, this should automatically log in to the WebUI
-
-### NOTE
-
-This solution is not able to log out from the WebUi as long as there is a Kerberos ticket. The same thing happens to the current WebUI when the page is refreshed from the `/login` page. Not sure if this is an expected behavior.
