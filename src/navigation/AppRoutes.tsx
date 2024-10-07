@@ -283,6 +283,14 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                 <Route path="" element={<IDViews />} />
                 <Route path=":cn">
                   <Route path="" element={<IDViewsTabs section="settings" />} />
+                  <Route
+                    path="override-users"
+                    element={<IDViewsTabs section="override-users" />}
+                  />
+                  <Route
+                    path="override-groups"
+                    element={<IDViewsTabs section="override-groups" />}
+                  />
                 </Route>
               </Route>
               <Route path="user-group-rules">
