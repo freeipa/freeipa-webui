@@ -11,51 +11,66 @@ import {
   DropdownList,
   SearchInput,
 } from "@patternfly/react-core";
-// Utils
-import {
-  IPAParamDefinition,
-  getParamProperties,
-} from "src/utils/ipaObjectUtils";
-import { updateIpaObject } from "src/utils/ipaObjectUtils";
+import { useGetIDListMutation, GenericPayload } from "src/services/rpc";
 
-interface IPAParamDefinitionDropdown extends IPAParamDefinition {
+interface DropdownProps {
   id?: string;
-  setIpaObject?: (ipaObject: Record<string, unknown>) => void;
-  onSelect?: (username: string) => void; // For non-ipaObjects
+  onSelect: (value: string) => void;
   options: string[];
   ariaLabelledBy?: string;
-  onSearch: (value: string) => void;
-  ipaObject?: Record<string, unknown>;
+  searchType: string;
+  value: string;
 }
 
-const IpaDropdownSearch = (props: IPAParamDefinitionDropdown) => {
+const DropdownSearch = (props: DropdownProps) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [searchValue, setSearchValue] = React.useState("");
+  const [options, setOptions] = React.useState(props.options);
 
-  const { value } = getParamProperties(props);
-  const ipaObject = props.ipaObject || {};
+  const [retrieveUsers] = useGetIDListMutation({});
 
   const onSelect = (
     _event: React.MouseEvent<Element, MouseEvent> | undefined,
     selection: string | number | undefined
   ) => {
-    if (ipaObject && props.setIpaObject !== undefined) {
-      updateIpaObject(ipaObject, props.setIpaObject, selection, props.name);
-    }
-    if (props.onSelect !== undefined) {
-      props.onSelect(selection as string);
-    }
-    props.onSearch("");
+    props.onSelect(selection as string);
     setSearchValue("");
     setIsOpen(false);
+    setOptions(props.options);
   };
 
   const onToggleClick = () => {
     setIsOpen(!isOpen);
   };
 
+  // Search for specifc users
+  const submitSearchValue = (value: string) => {
+    if (value === "") {
+      // Reset options
+      setOptions(props.options);
+      return;
+    } else {
+      // Searching
+      setOptions(["Searching ..."]);
+    }
+    retrieveUsers({
+      searchValue: value,
+      sizeLimit: 200,
+      startIdx: 0,
+      stopIdx: 199,
+      entryType: props.searchType,
+    } as GenericPayload).then((result) => {
+      if (result && "data" in result) {
+        setOptions(result.data.list);
+      } else {
+        setOptions([]);
+      }
+      setIsOpen(true);
+    });
+  };
+
   // Removed selected value from options
-  const options = props.options.filter((item) => item !== value);
+  const filteredOptions = options.filter((item) => item !== props.value);
 
   return (
     <Dropdown
@@ -70,7 +85,7 @@ const IpaDropdownSearch = (props: IPAParamDefinitionDropdown) => {
           onClick={onToggleClick}
           isExpanded={isOpen}
         >
-          {value}
+          {props.value}
         </MenuToggle>
       )}
       ouiaId="BasicDropdown"
@@ -83,18 +98,16 @@ const IpaDropdownSearch = (props: IPAParamDefinitionDropdown) => {
             value={searchValue}
             placeholder="Search"
             onChange={(_event, value) => setSearchValue(value)}
-            onSearch={() => props.onSearch(searchValue)}
+            onSearch={() => submitSearchValue(searchValue)}
             onClear={() => {
               setSearchValue("");
-              props.onSearch("");
             }}
-            aria-labelledby="pf-v5-context-selector-search-button-id-1"
           />
         </MenuSearchInput>
       </MenuSearch>
       <Divider />
       <DropdownList>
-        {options.map((option, index) => (
+        {filteredOptions.map((option, index) => (
           <DropdownItem value={option} key={index}>
             {option}
           </DropdownItem>
@@ -104,4 +117,4 @@ const IpaDropdownSearch = (props: IPAParamDefinitionDropdown) => {
   );
 };
 
-export default IpaDropdownSearch;
+export default DropdownSearch;

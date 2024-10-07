@@ -19,10 +19,10 @@ import { IDView } from "src/utils/datatypes/globalDataTypes";
  * unapplyHosts, unapplyHostgroups
  *
  * API commands:
- * - idview_add: https://freeipa.readthedocs.io/en/latest/api/hostgroup_add.html
- * - idview_del: https://freeipa.readthedocs.io/en/latest/api/hostgroup_del.html
- * - idview_show: https://freeipa.readthedocs.io/en/latest/api/hostgroup_show.html
- * - idview_mod: https://freeipa.readthedocs.io/en/latest/api/hostgroup_mod.html
+ * - idview_add: https://freeipa.readthedocs.io/en/latest/api/idview_add.html
+ * - idview_del: https://freeipa.readthedocs.io/en/latest/api/idview_del.html
+ * - idview_show: https://freeipa.readthedocs.io/en/latest/api/idview_show.html
+ * - idview_mod: https://freeipa.readthedocs.io/en/latest/api/idview_mod.html
  * - idview_unapply: https://freeipa.readthedocs.io/en/latest/api/idview_unapply.html
  */
 

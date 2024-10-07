@@ -23,6 +23,7 @@ import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { NotFound } from "src/components/errors/PageErrors";
 import IDViewsSettings from "./IDViewsSettings";
+import IDViewsOverrides from "./IDViewsOverrides";
 
 // eslint-disable-next-line react/prop-types
 const IDViewsTabs = ({ section }) => {
@@ -42,12 +43,13 @@ const IDViewsTabs = ({ section }) => {
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as string);
-    if (tabIndex === "settings") {
+    const tabName = tabIndex as string;
+    setActiveTabKey(tabName);
+    if (tabName === "settings") {
       navigate("/id-views/" + cn);
-    } else if (tabIndex === "overrides") {
-      // navigate("/id-views/" + cn + "/overrides_idview");
-    } else if (tabIndex === "appliesto") {
+    } else if (tabName.startsWith("override")) {
+      navigate("/id-views/" + cn + "/override-users");
+    } else if (tabName === "appliesto") {
       // navigate("/id-views/" + cn + "/appliesto_idview");
     }
   };
@@ -80,7 +82,12 @@ const IDViewsTabs = ({ section }) => {
     if (!section) {
       navigate(URL_PREFIX + "/id-views/" + cn);
     }
-    setActiveTabKey(section);
+    const section_str = section as string;
+    if (section_str.startsWith("override")) {
+      setActiveTabKey("overrides");
+    } else {
+      setActiveTabKey(section);
+    }
   }, [section]);
 
   if (
@@ -145,7 +152,13 @@ const IDViewsTabs = ({ section }) => {
             eventKey={"overrides"}
             name="overrides-details"
             title={<TabTitleText>Overrides</TabTitleText>}
-          ></Tab>
+          >
+            <IDViewsOverrides
+              idView={view}
+              onRefresh={idViewSettingsData.refetch}
+              tabSection={section}
+            />
+          </Tab>
           <Tab
             eventKey={"appliesto"}
             name="appliesto-details"

@@ -393,6 +393,37 @@ export interface IDView {
   cn: string;
   description: string;
   ipadomainresolutionorder: string;
+  useroverrides: string[];
+  groupoverrides: string[];
+}
+
+export interface IDViewOverrideUser {
+  dn: string;
+  cn: string;
+  description: string;
+  homedirectory: string;
+  gecos: string;
+  gidnumber: string;
+  ipaanchoruuid: string;
+  ipaoriginaluid: string;
+  ipasshpubkey: string[];
+  loginshell: string;
+  uid: string;
+  uidnumber: string;
+  usercertificate: string[];
+  // Membership
+  memberof_group: string[];
+  memberof_role: string[];
+  memberofindirect_group: string[];
+  memberofindirect_role: string[];
+}
+
+export interface IDViewOverrideGroup {
+  dn: string;
+  cn: string;
+  description: string;
+  gidnumber: string;
+  ipaanchoruuid: string;
 }
 
 export interface Config {

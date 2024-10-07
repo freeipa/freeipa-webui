@@ -10,6 +10,8 @@ import {
   Host,
   HostGroup,
   IDView,
+  IDViewOverrideUser,
+  IDViewOverrideGroup,
   Metadata,
   Netgroup,
   Service,
@@ -102,6 +104,14 @@ export const isViewSelectable = (view: IDView) => view.cn != "";
 
 // Determine whether a HbacServiceGroup is selectable or not
 export const isSudoRuleSelectable = (rule: SudoRule) => rule.cn != "";
+
+// Determine whether a IDViewOverrideUser is selectable or not
+export const isUserOverrideSelectable = (user: IDViewOverrideUser) =>
+  user.ipaanchoruuid != "";
+
+// Determine whether a IDViewOverrideGroup is selectable or not
+export const isGroupOverrideSelectable = (user: IDViewOverrideGroup) =>
+  user.ipaanchoruuid != "";
 
 // Write JSX error messages into 'apiErrorsJsx' array
 export const apiErrorToJsXError = (

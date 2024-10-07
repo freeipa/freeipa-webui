@@ -146,7 +146,9 @@ export interface GenericPayload {
     | "sudorule"
     | "sudocmd"
     | "sudocmdgroup"
-    | "idview";
+    | "idview"
+    | "idoverrideuser"
+    | "idoverridegroup";
 }
 
 export interface GetEntriesPayload {
@@ -239,6 +241,8 @@ export const api = createApi({
     "FullSudoCmdGroup",
     "FullSudoCmd",
     "FullConfig",
+    "FullOverrideUser",
+    "FullOverrideGroup",
   ],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
