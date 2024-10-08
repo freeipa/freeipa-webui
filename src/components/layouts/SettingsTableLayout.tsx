@@ -30,6 +30,7 @@ export interface PropsToSettingsTableLayout {
   onDeleteModal: () => void;
   isDeleteDisabled?: boolean;
   onAddModal: () => void;
+  isAddDisabled?: boolean;
   onSearchChange: (value: string) => void;
   searchValue: string;
   // pagination
@@ -74,13 +75,14 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
             <FlexItem>
               <SecondaryButton
                 classname="pf-v5-u-mr-sm"
-                isDisabled={props.isDeleteDisabled}
+                isDisabled={props.isDeleteDisabled || false}
                 onClickHandler={props.onDeleteModal}
               >
                 Delete
               </SecondaryButton>
               <SecondaryButton
                 classname="pf-v5-u-mr-sm"
+                isDisabled={props.isAddDisabled || false}
                 onClickHandler={props.onAddModal}
               >
                 Add {props.entryType.toLowerCase()}s
@@ -125,7 +127,10 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
           />
           <EmptyStateBody>
             <EmptyStateActions>
-              <SecondaryButton onClickHandler={props.onAddModal}>
+              <SecondaryButton
+                onClickHandler={props.onAddModal}
+                isDisabled={props.isAddDisabled || false}
+              >
                 Add {props.entryType.toLowerCase()}s
               </SecondaryButton>
             </EmptyStateActions>

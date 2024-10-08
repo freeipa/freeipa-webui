@@ -7,7 +7,12 @@ import { Metadata, SudoRule } from "src/utils/datatypes/globalDataTypes";
 import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // RPC
-import { useSaveSudoRuleMutation } from "src/services/rpcSudoRules";
+import {
+  AddRemoveToSudoRulesPayload,
+  AddRemoveToSudoRulesResult,
+  useRemoveFromSudoRuleMutation,
+  useSaveSudoRuleMutation,
+} from "src/services/rpcSudoRules";
 import { ErrorResult } from "src/services/rpc";
 // Utils
 import { asRecord } from "src/utils/sudoRulesUtils";
@@ -21,6 +26,7 @@ import SidebarLayout from "src/components/layouts/SidebarLayout";
 import SudoRuleOptions from "src/components/SudoRuleSections/SudoRuleOptions";
 import SudoRulesWho from "src/components/SudoRuleSections/SudoRulesWho";
 import { TableEntry } from "src/components/tables/KeytabTableWithFilter";
+import { containsAny } from "src/utils/utils";
 
 interface PropsToSudoRulesSettings {
   rule: Partial<SudoRule>;
@@ -39,6 +45,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
 
   // API calls
   const [saveService] = useSaveSudoRuleMutation();
+  const [onRemove] = useRemoveFromSudoRuleMutation();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "sudo-rules" });
@@ -94,12 +101,18 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
     setIsEnableModalOpen(!isEnableModalOpen);
   };
 
-  // 'Save' handle method
-  const onSave = () => {
+  // When the 'Anyone' option in the 'Who' category is selected, the API calls when saving should be different.
+  // It should:
+  // - Remove all users + groups from the 'Who' category
+  // - Save the sudo rule
+  // Thus, a flag is needed to determine if the 'Anyone' option is selected
+  const [isWhoAnyoneSelected, setIsWhoAnyoneSelected] = React.useState(false);
+
+  const onSaveRule = () => {
+    // Save the rule
     const modifiedValues = props.modifiedValues();
     modifiedValues.cn = props.rule.cn;
     setSaving(true);
-
     saveService(modifiedValues).then((response) => {
       if ("data" in response) {
         if (response.data.result) {
@@ -116,6 +129,127 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
         setSaving(false);
       }
     });
+  };
+
+  const onRemoveUserGroups = (userGroupsToDelete: string[]) => {
+    const payload: AddRemoveToSudoRulesPayload = {
+      toId: props.rule.cn as string,
+      type: "group",
+      listOfMembers: userGroupsToDelete,
+    };
+
+    onRemove(payload).then((response) => {
+      if ("data" in response) {
+        const data = response.data;
+        const results = data.result as unknown as AddRemoveToSudoRulesResult;
+        if (results) {
+          // Some values can be undefined after deletion
+          const usersFromResponse = results.result.memberuser_group || [];
+          if (!containsAny(usersFromResponse, userGroupsToDelete)) {
+            // Set alert: success
+            alerts.addAlert(
+              "remove-who-group-success",
+              "Removed item(s) from " + props.rule.cn,
+              "success"
+            );
+            // Refresh page
+            props.onRefresh();
+            // SAVE RULE
+            onSaveRule();
+          }
+          // Check if any errors
+          else if (
+            results.error ||
+            results.failed.memberuser.group.length > 0
+          ) {
+            alerts.addAlert(
+              "remove-who-group-error",
+              "Error: " + results.error,
+              "danger"
+            );
+          }
+        }
+      }
+    });
+  };
+
+  const onDeleteAllAndSave = (
+    usersToDelete: string[],
+    groupsToDelete: string[]
+  ) => {
+    const payload: AddRemoveToSudoRulesPayload = {
+      toId: props.rule.cn as string,
+      type: "user",
+      listOfMembers: usersToDelete,
+    };
+
+    onRemove(payload).then((response) => {
+      if ("data" in response) {
+        const data = response.data;
+        const results = data.result as unknown as AddRemoveToSudoRulesResult;
+        if (results) {
+          // Some values can be undefined after deletion
+          const usersFromResponse = results.result.memberuser_user || [];
+          const externalsFromResponse = results.result.externaluser || [];
+          if (
+            !containsAny(usersFromResponse, usersToDelete) ||
+            !containsAny(externalsFromResponse, usersToDelete)
+          ) {
+            // Set alert: success
+            alerts.addAlert(
+              "remove-who-user-external-success",
+              "Removed item(s) from " + props.rule.cn,
+              "success"
+            );
+            // Refresh page
+            props.onRefresh();
+            // Remove user groups
+            onRemoveUserGroups(groupsToDelete);
+          }
+          // Check if any errors
+          else if (results.error || results.failed.memberuser.user.length > 0) {
+            alerts.addAlert(
+              "remove-who-user-external-error",
+              "Error: " + results.error,
+              "danger"
+            );
+          }
+        }
+      }
+    });
+  };
+
+  // 'Save' handle method
+  const onSave = () => {
+    const modifiedValues = props.modifiedValues();
+    modifiedValues.cn = props.rule.cn;
+    setSaving(true);
+
+    // If 'Anyone' is selected, remove all users and groups
+    if (isWhoAnyoneSelected) {
+      const usersToRemove = (props.rule.memberuser_user || []).concat(
+        props.rule.externaluser || []
+      );
+      const groupsToRemove = props.rule.memberuser_group || [];
+      onDeleteAllAndSave(usersToRemove, groupsToRemove);
+    } else {
+      saveService(modifiedValues).then((response) => {
+        if ("data" in response) {
+          if (response.data.result) {
+            // Show toast notification: success
+            alerts.addAlert("save-success", "Sudo rule modified", "success");
+            props.onRefresh();
+          } else if (response.data.error) {
+            // Show toast notification: error
+            const errorMessage = response.data.error as ErrorResult;
+            alerts.addAlert("save-error", errorMessage.message, "danger");
+            // Reset values. Disable 'revert' and 'save' buttons
+            props.onResetValues();
+          }
+          setSaving(false);
+        }
+      });
+    }
   };
 
   // 'Revert' handler method
@@ -240,9 +374,15 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
           <TitleLayout headingLevel="h2" id="who" text="Who" />
           <SudoRulesWho
             rule={props.rule}
+            ipaObject={ipaObject}
             onRefresh={props.onRefresh}
             usersList={usersAndExternalsList}
             userGroupsList={usergroupsList}
+            recordOnChange={recordOnChange}
+            metadata={props.metadata}
+            setIsAnyoneSelected={setIsWhoAnyoneSelected}
+            onSave={onSave}
+            modifiedValues={props.modifiedValues}
           />
         </Flex>
       </SidebarLayout>
