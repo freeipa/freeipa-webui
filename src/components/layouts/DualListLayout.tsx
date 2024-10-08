@@ -221,7 +221,7 @@ const DualListTableLayout = (props: PropsToAddModal) => {
     setExternalValue("");
   };
 
-  if (props.addExternalsOption) {
+  if (props.addExternalsOption === true) {
     fields.push({
       id: "form-externals",
       pfComponent: (
