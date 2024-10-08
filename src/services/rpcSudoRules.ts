@@ -314,6 +314,8 @@ const extendedApi = api.injectEndpoints({
     saveSudoRule: build.mutation<FindRPCResponse, Partial<SudoRule>>({
       query: (rule) => {
         const params = {
+          all: true,
+          rights: true,
           version: API_VERSION_BACKUP,
           ...rule,
         };
@@ -381,7 +383,7 @@ const extendedApi = api.injectEndpoints({
     addToSudoRule: build.mutation<BatchResponse, AddRemoveToSudoRulesPayload>({
       query: (payload) => {
         const toId = payload.toId;
-        const type = payload.type; // Shoud be 'user'
+        const type = payload.type; // Shoud be 'user' or 'group'
         const listOfMembers = payload.listOfMembers;
 
         const batchParams: Command[] = [];
