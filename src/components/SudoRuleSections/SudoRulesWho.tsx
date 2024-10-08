@@ -4,32 +4,44 @@ import {
   Flex,
   FlexItem,
   Label,
-  Radio,
   Tab,
   Tabs,
   TabTitleText,
 } from "@patternfly/react-core";
 // Data types
-import { SudoRule } from "src/utils/datatypes/globalDataTypes";
+import { Metadata, SudoRule } from "src/utils/datatypes/globalDataTypes";
 // Components
 import KeytabTableWithFilter, {
   TableEntry,
-} from "../tables/KeytabTableWithFilter";
+} from "src/components/tables/KeytabTableWithFilter";
+import IpaToggleGroup from "src/components/Form/IpaToggleGroup";
 // RPC
 import {
   AddRemoveToSudoRulesResult,
   AddRemoveToSudoRulesPayload,
   useAddToSudoRuleMutation,
   useRemoveFromSudoRuleMutation,
+  useSaveSudoRuleMutation,
 } from "src/services/rpcSudoRules";
+// Utils
 import { containsAny } from "src/utils/utils";
+// Hooks
 import useAlerts from "src/hooks/useAlerts";
+import { ErrorResult } from "src/services/rpc";
 
 interface PropsToSudoRulesWho {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ipaObject: Record<string, any>;
   rule: Partial<SudoRule>;
   usersList: TableEntry[]; // memberuser_user + externaluser
   userGroupsList: TableEntry[]; // memberuser_group
   onRefresh: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  recordOnChange: (ipaObject: Record<string, any>) => void;
+  metadata: Metadata;
+  setIsAnyoneSelected: (value: boolean) => void;
+  onSave: () => void;
+  modifiedValues: () => Partial<SudoRule>;
 }
 
 const SudoRulesWho = (props: PropsToSudoRulesWho) => {
@@ -48,6 +60,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
   // API calls
   const [onAdd] = useAddToSudoRuleMutation();
   const [onRemove] = useRemoveFromSudoRuleMutation();
+  const [onSave] = useSaveSudoRuleMutation();
 
   // States
   const [modalSpinning, setModalSpinning] = React.useState(false);
@@ -81,22 +94,6 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
         const results = data.result
           .results as unknown as AddRemoveToSudoRulesResult[];
         results.forEach((result) => {
-          // Some values can be undefined after addition
-          const usersFromResponse = result.result.memberuser_user || [];
-          const externalsFromResponse = result.result.externaluser || [];
-          if (
-            containsAny(usersFromResponse, newUsers) ||
-            containsAny(externalsFromResponse, newUsers)
-          ) {
-            // Set alert: success
-            alerts.addAlert(
-              "add-who-user-external-success",
-              "Added new item(s)' to" + props.rule.cn + "'",
-              "success"
-            );
-            // Refresh page
-            props.onRefresh();
-          }
           // Check if any errors
           if (result.error !== null) {
             alerts.addAlert(
@@ -104,11 +101,63 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
               "Error: " + result.error,
               "danger"
             );
+          } else {
+            // Some values can be undefined after addition
+            const usersFromResponse = result.result.memberuser_user || [];
+            const externalsFromResponse = result.result.externaluser || [];
+            if (
+              containsAny(usersFromResponse, newUsers) ||
+              containsAny(externalsFromResponse, newUsers)
+            ) {
+              // Set alert: success
+              alerts.addAlert(
+                "add-who-user-external-success",
+                "Added new item(s)' to" + props.rule.cn + "'",
+                "success"
+              );
+              // Refresh page
+              props.onRefresh();
+            }
           }
         });
+      } else {
+        // Assume error
+        alerts.addAlert(
+          "add-who-user-external-error",
+          "Error: " + (response.error ? response.error : "Unknown error"),
+          "danger"
+        );
       }
       setModalSpinning(false);
     });
+  };
+
+  // On save and add users
+  //  - If 'specify' option is selected (just modified) and new users should be added:
+  //    save the rule first and then add the users
+  const onSaveAndAddUsers = (usersToAdd: string[]) => {
+    const modifiedValues = props.modifiedValues();
+    if (modifiedValues.usercategory === "") {
+      modifiedValues.cn = props.rule.cn;
+
+      onSave(modifiedValues).then((response) => {
+        if ("data" in response) {
+          if (response.data.result) {
+            // Show toast notification: success
+            alerts.addAlert("save-success", "Sudo rule modified", "success");
+            props.onRefresh();
+            // Add new users
+            onAddNewUser(usersToAdd);
+          } else if (response.data.error) {
+            // Show toast notification: error
+            const errorMessage = response.data.error as ErrorResult;
+            alerts.addAlert("save-error", errorMessage.message, "danger");
+          }
+        }
+      });
+    } else {
+      onAddNewUser(usersToAdd);
+    }
   };
 
   // on Delete user(s)
@@ -195,6 +244,34 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
     });
   };
 
+  // On save and add groups
+  //  - If 'specify' option is selected (just modified) and new users should be added:
+  //    save the rule first and then add the users
+  const onSaveAndAddGroups = (groupsoAdd: string[]) => {
+    const modifiedValues = props.modifiedValues();
+    if (modifiedValues.usercategory === "") {
+      modifiedValues.cn = props.rule.cn;
+
+      onSave(modifiedValues).then((response) => {
+        if ("data" in response) {
+          if (response.data.result) {
+            // Show toast notification: success
+            alerts.addAlert("save-success", "Sudo rule modified", "success");
+            props.onRefresh();
+            // Add new users
+            onAddNewGroup(groupsoAdd);
+          } else if (response.data.error) {
+            // Show toast notification: error
+            const errorMessage = response.data.error as ErrorResult;
+            alerts.addAlert("save-error", errorMessage.message, "danger");
+          }
+        }
+      });
+    } else {
+      onAddNewGroup(groupsoAdd);
+    }
+  };
+
   // on Delete group(s)
   const onDeleteGroups = (groupsToDelete: string[]) => {
     setModalSpinning(true);
@@ -237,41 +314,44 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
     });
   };
 
-  // Filter
-  const [anyoneRadio, setAnyoneRadio] = React.useState(false);
-  const [specifiedRadio, setSpecifiedRadio] = React.useState(true);
+  // Filter: option options
+  // - Default value: "first" (the first element)
+  // - Instead of using the name of the buttons, it will be referred
+  //   as "first" as per the 'IpaToggleGroup' component
+  // const [optionChecked, setOptionChecked] = React.useState("first");
+  const [optionSelected, setOptionSelected] = React.useState<string>(
+    props.rule.usercategory && props.rule.usercategory === "all"
+      ? "Anyone"
+      : "Specified Users and Groups"
+  );
 
-  React.useEffect(() => {
-    if (anyoneRadio === true) {
-      setSpecifiedRadio(false);
-    }
-  }, [anyoneRadio]);
+  // - When 'usercategory' is "all", disable checkboxes
+  const anyoneOptionSelected = optionSelected === "Anyone";
 
+  // - Modify the 'setIsAnyoneSelected' function to set the value of 'optionSelected'
   React.useEffect(() => {
-    if (specifiedRadio === true) {
-      setAnyoneRadio(false);
-    }
-  }, [specifiedRadio]);
+    props.setIsAnyoneSelected(anyoneOptionSelected);
+  }, [anyoneOptionSelected]);
+
+  const options = [
+    { label: "Anyone", value: "all" },
+    { label: "Specified Users and Groups", value: "" },
+  ];
 
   const filter = (
     <Flex>
       <FlexItem>User category the rule applies to: </FlexItem>
       <FlexItem>
-        <Radio
-          isChecked={anyoneRadio}
-          name="anyone-radio"
-          onChange={(_event, value) => setAnyoneRadio(value)}
-          label="Anyone"
-          id="anyone-radio"
-        />
-      </FlexItem>
-      <FlexItem>
-        <Radio
-          isChecked={specifiedRadio}
-          name="specified-radio"
-          onChange={(_event, value) => setSpecifiedRadio(value)}
-          label="Specified Users and Groups"
-          id="specified-radio"
+        <IpaToggleGroup
+          ipaObject={props.ipaObject}
+          name="usercategory"
+          options={options}
+          optionSelected={optionSelected}
+          setOptionSelected={setOptionSelected}
+          onChange={props.recordOnChange}
+          objectName="sudorule"
+          metadata={props.metadata}
+          isCompact
         />
       </FlexItem>
     </Flex>
@@ -281,7 +361,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
   return (
     <>
       <alerts.ManagedAlerts />
-      {/* Filter: radio options */}
+      {/* Filter: toggle group */}
       {filter}
       {/* Tabs */}
       <Tabs
@@ -311,9 +391,11 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
             tableEntryList={usersList}
             columnNames={["User"]}
             onRefresh={props.onRefresh}
-            onAdd={onAddNewUser}
+            onAdd={onSaveAndAddUsers}
             onDelete={onDeleteUsers}
-            checkboxesDisabled={anyoneRadio}
+            checkboxesDisabled={anyoneOptionSelected}
+            // Add external option on Add modal
+            externalOption={true}
           />
         </Tab>
         <Tab
@@ -338,9 +420,9 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
             tableEntryList={userGroupsList}
             columnNames={["Group"]}
             onRefresh={props.onRefresh}
-            onAdd={onAddNewGroup}
+            onAdd={onSaveAndAddGroups}
             onDelete={onDeleteGroups}
-            checkboxesDisabled={anyoneRadio}
+            checkboxesDisabled={anyoneOptionSelected}
           />
         </Tab>
       </Tabs>

@@ -37,6 +37,8 @@ interface PropsToKeytabTable {
   onAdd: (newEntries: string[]) => void;
   onDelete: (entriesToDelete: string[]) => void;
   checkboxesDisabled?: boolean;
+  // Add external option
+  externalOption?: boolean;
 }
 
 const KeytabTableWithFilter = (props: PropsToKeytabTable) => {
@@ -132,6 +134,7 @@ const KeytabTableWithFilter = (props: PropsToKeytabTable) => {
 
   // Computed states
   const isDeleteDisabled = selectedEntries.length === 0;
+  const isAddDisabled = props.checkboxesDisabled;
 
   // Entries displayed on the first page
   const updateShownEntriesList = (newShownEntriesList: TableEntry[]) => {
@@ -267,6 +270,7 @@ const KeytabTableWithFilter = (props: PropsToKeytabTable) => {
         onDeleteModal={onChangeDeleteModal}
         isDeleteDisabled={isDeleteDisabled}
         onAddModal={onChangeAddModal}
+        isAddDisabled={isAddDisabled}
         onSearchChange={onSearchChange}
         searchValue={searchValue}
         paginationData={paginationData}
@@ -287,7 +291,7 @@ const KeytabTableWithFilter = (props: PropsToKeytabTable) => {
         spinning={props.isSpinning}
         addBtnName="Add"
         addSpinningBtnName="Adding"
-        addExternalsOption={true}
+        addExternalsOption={props.externalOption || false}
       />
       {/* Delete modal */}
       <MemberOfDeleteModal
