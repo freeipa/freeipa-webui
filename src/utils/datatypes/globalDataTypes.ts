@@ -277,7 +277,7 @@ export interface SudoRule {
   ipasudorunasusercategory: string;
   ipasudorunasgroupcategory: string;
   hostmask: string;
-  externalhost: string;
+  externalhost: string[];
   ipasudorunasextusergroup: string;
   ipasudorunasextgroup: string;
   ipasudorunasextuser: string;
