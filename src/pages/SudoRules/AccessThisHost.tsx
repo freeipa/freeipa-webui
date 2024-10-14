@@ -16,25 +16,26 @@ import KeytabTableWithFilter, {
 } from "src/components/tables/KeytabTableWithFilter";
 import IpaToggleGroup from "src/components/Form/IpaToggleGroup";
 // RPC
+import { ErrorResult } from "src/services/rpc";
 import {
-  AddRemoveToSudoRulesResult,
+  AddRemoveHostToSudoRulesResult,
   AddRemoveToSudoRulesPayload,
-  useAddToSudoRuleMutation,
-  useRemoveFromSudoRuleMutation,
+  useAddHostToSudoRuleMutation,
+  useRemoveHostFromSudoRuleMutation,
   useSaveSudoRuleMutation,
 } from "src/services/rpcSudoRules";
+
 // Utils
 import { containsAny } from "src/utils/utils";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
-import { ErrorResult } from "src/services/rpc";
 
-interface PropsToSudoRulesWho {
+interface PropsToAccessThisHost {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ipaObject: Record<string, any>;
   rule: Partial<SudoRule>;
-  usersList: TableEntry[]; // memberuser_user + externaluser
-  userGroupsList: TableEntry[]; // memberuser_group
+  hostsList: TableEntry[]; // memberhost_host + externalhost
+  hostGroupsList: TableEntry[]; // memberhost_hostgroup
   onRefresh: () => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   recordOnChange: (ipaObject: Record<string, any>) => void;
@@ -44,7 +45,7 @@ interface PropsToSudoRulesWho {
   modifiedValues: () => Partial<SudoRule>;
 }
 
-const SudoRulesWho = (props: PropsToSudoRulesWho) => {
+const AccessThisHost = (props: PropsToAccessThisHost) => {
   const [activeTabKey, setActiveTabKey] = React.useState<string | number>(0);
 
   const handleTabClick = (
@@ -58,61 +59,61 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
   const alerts = useAlerts();
 
   // API calls
-  const [onAdd] = useAddToSudoRuleMutation();
-  const [onRemove] = useRemoveFromSudoRuleMutation();
+  const [onAdd] = useAddHostToSudoRuleMutation();
+  const [onDelete] = useRemoveHostFromSudoRuleMutation();
   const [onSave] = useSaveSudoRuleMutation();
 
   // States
   const [modalSpinning, setModalSpinning] = React.useState(false);
-  const [usersList, setUsersList] = React.useState<TableEntry[]>(
-    props.usersList
+  const [hostsList, setHostsList] = React.useState<TableEntry[]>(
+    props.hostsList
   );
-  const [userGroupsList, setUserGroupsList] = React.useState<TableEntry[]>(
-    props.userGroupsList
+  const [hostGroupsList, setHostGroupsList] = React.useState<TableEntry[]>(
+    props.hostGroupsList
   );
 
   React.useEffect(() => {
-    setUsersList(props.usersList);
-  }, [props.usersList]);
+    setHostsList(props.hostsList);
+  }, [props.hostsList]);
 
   React.useEffect(() => {
-    setUserGroupsList(props.userGroupsList);
-  }, [props.userGroupsList]);
+    setHostGroupsList(props.hostGroupsList);
+  }, [props.hostGroupsList]);
 
-  // on Add new user
-  const onAddNewUser = (newUsers: string[]) => {
+  // on Add new host
+  const onAddNewHost = (newHosts: string[]) => {
     setModalSpinning(true);
     const payload: AddRemoveToSudoRulesPayload = {
       toId: props.rule.cn as string,
-      type: "user",
-      listOfMembers: newUsers,
+      type: "host",
+      listOfMembers: newHosts,
     };
 
     onAdd(payload).then((response) => {
       if ("data" in response) {
         const data = response.data;
         const results = data.result
-          .results as unknown as AddRemoveToSudoRulesResult[];
+          .results as unknown as AddRemoveHostToSudoRulesResult[];
         results.forEach((result) => {
           // Check if any errors
           if (result.error !== null) {
             alerts.addAlert(
-              "add-who-user-external-error",
+              "access-this-host-add-host-external-error",
               "Error: " + result.error,
               "danger"
             );
           } else {
             // Some values can be undefined after addition
-            const usersFromResponse = result.result.memberuser_user || [];
-            const externalsFromResponse = result.result.externaluser || [];
+            const hostsFromResponse = result.result.memberhost_host || [];
+            const externalsFromResponse = result.result.externalhost || [];
             if (
-              containsAny(usersFromResponse, newUsers) ||
-              containsAny(externalsFromResponse, newUsers)
+              containsAny(hostsFromResponse, newHosts) ||
+              containsAny(externalsFromResponse, newHosts)
             ) {
               // Set alert: success
               alerts.addAlert(
-                "add-who-user-external-success",
-                "Added new item(s)' to" + props.rule.cn + "'",
+                "access-this-host-add-host-external-success",
+                "Added new item(s) to '" + props.rule.cn + "'",
                 "success"
               );
               // Refresh page
@@ -132,12 +133,12 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
     });
   };
 
-  // On save and add users
-  //  - If 'specify' option is selected (just modified) and new users should be added:
-  //    save the rule first and then add the users
-  const onSaveAndAddUsers = (usersToAdd: string[]) => {
+  // on save and add hosts
+  //  - If 'specify' option is selected (just modified) and new hosts should be added:
+  //    save the rule first and then add the hosts
+  const onSaveAndAddHosts = (hostsToAdd: string[]) => {
     const modifiedValues = props.modifiedValues();
-    if (modifiedValues.usercategory === "") {
+    if (modifiedValues.hostcategory === "") {
       modifiedValues.cn = props.rule.cn;
 
       onSave(modifiedValues).then((response) => {
@@ -146,8 +147,8 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
             // Show toast notification: success
             alerts.addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
-            // Add new users
-            onAddNewUser(usersToAdd);
+            // Add new hosts
+            onAddNewHost(hostsToAdd);
           } else if (response.data.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
@@ -156,34 +157,35 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
         }
       });
     } else {
-      onAddNewUser(usersToAdd);
+      onAddNewHost(hostsToAdd);
     }
   };
 
-  // on Delete user(s)
-  const onDeleteUsers = (usersToDelete: string[]) => {
+  // on Delete host(s)
+  const onDeleteHosts = (hostsToDelete: string[]) => {
     setModalSpinning(true);
     const payload: AddRemoveToSudoRulesPayload = {
       toId: props.rule.cn as string,
-      type: "user",
-      listOfMembers: usersToDelete,
+      type: "host",
+      listOfMembers: hostsToDelete,
     };
 
-    onRemove(payload).then((response) => {
+    onDelete(payload).then((response) => {
       if ("data" in response) {
         const data = response.data;
-        const results = data.result as unknown as AddRemoveToSudoRulesResult;
+        const results =
+          data.result as unknown as AddRemoveHostToSudoRulesResult;
         if (results) {
           // Some values can be undefined after deletion
-          const usersFromResponse = results.result.memberuser_user || [];
-          const externalsFromResponse = results.result.externaluser || [];
+          const hostsFromResponse = results.result.memberhost_host || [];
+          const externalsFromResponse = results.result.externalhost || [];
           if (
-            !containsAny(usersFromResponse, usersToDelete) ||
-            !containsAny(externalsFromResponse, usersToDelete)
+            !containsAny(hostsFromResponse, hostsToDelete) ||
+            !containsAny(externalsFromResponse, hostsToDelete)
           ) {
             // Set alert: success
             alerts.addAlert(
-              "remove-who-user-external-success",
+              "access-this-host-remove-host-external-success",
               "Removed item(s) from " + props.rule.cn,
               "success"
             );
@@ -191,9 +193,9 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
             props.onRefresh();
           }
           // Check if any errors
-          else if (results.error || results.failed.memberuser.user.length > 0) {
+          else if (results.error || results.failed.memberhost.host.length > 0) {
             alerts.addAlert(
-              "remove-who-user-external-error",
+              "access-this-host-remove-host-external-error",
               "Error: " + results.error,
               "danger"
             );
@@ -204,27 +206,28 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
     });
   };
 
-  // on Add new group
-  const onAddNewGroup = (newGroups: string[]) => {
+  // on Add new host group
+  const onAddNewHostGroup = (newHostGroups: string[]) => {
     setModalSpinning(true);
     const payload: AddRemoveToSudoRulesPayload = {
       toId: props.rule.cn as string,
-      type: "group",
-      listOfMembers: newGroups,
+      type: "hostgroup",
+      listOfMembers: newHostGroups,
     };
 
     onAdd(payload).then((response) => {
       if ("data" in response) {
         const data = response.data;
         const results = data.result
-          .results as unknown as AddRemoveToSudoRulesResult[];
+          .results as unknown as AddRemoveHostToSudoRulesResult[];
         results.forEach((result) => {
-          const groupsFromResponse = result.result.memberuser_group;
-          if (containsAny(groupsFromResponse, newGroups)) {
+          const hostGroupsFromResponse =
+            result.result.memberhost_hostgroup || [];
+          if (containsAny(hostGroupsFromResponse, newHostGroups)) {
             // Set alert: success
             alerts.addAlert(
-              "add-who-group-external-success",
-              "Added new item(s)' to" + props.rule.cn + "'",
+              "access-this-host-add-hostgroup-external-success",
+              "Added new item(s) to '" + props.rule.cn + "'",
               "success"
             );
             // Refresh page
@@ -233,7 +236,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
           // Check if any errors
           if (result.error !== null) {
             alerts.addAlert(
-              "add-who-group-external-error",
+              "access-this-host-add-hostgroup-external-error",
               "Error: " + result.error,
               "danger"
             );
@@ -244,10 +247,10 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
     });
   };
 
-  // On save and add groups
-  //  - If 'specify' option is selected (just modified) and new users should be added:
-  //    save the rule first and then add the users
-  const onSaveAndAddGroups = (groupsoAdd: string[]) => {
+  // On save and add host groups
+  //  - If 'specify' option is selected (just modified) and new host groups should be added:
+  //    save the rule first and then add the host groups
+  const onSaveAndAddGroups = (hostGroupsToAdd: string[]) => {
     const modifiedValues = props.modifiedValues();
     if (modifiedValues.usercategory === "") {
       modifiedValues.cn = props.rule.cn;
@@ -259,7 +262,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
             alerts.addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new users
-            onAddNewGroup(groupsoAdd);
+            onAddNewHostGroup(hostGroupsToAdd);
           } else if (response.data.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
@@ -268,29 +271,30 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
         }
       });
     } else {
-      onAddNewGroup(groupsoAdd);
+      onAddNewHostGroup(hostGroupsToAdd);
     }
   };
 
-  // on Delete group(s)
-  const onDeleteGroups = (groupsToDelete: string[]) => {
+  // on Delete host group(s)
+  const onDeleteHostGroups = (hostGroupsToDelete: string[]) => {
     setModalSpinning(true);
     const payload: AddRemoveToSudoRulesPayload = {
       toId: props.rule.cn as string,
-      type: "group",
-      listOfMembers: groupsToDelete,
+      type: "hostgroup",
+      listOfMembers: hostGroupsToDelete,
     };
 
-    onRemove(payload).then((response) => {
+    onDelete(payload).then((response) => {
       if ("data" in response) {
         const data = response.data;
-        const results = data.result as unknown as AddRemoveToSudoRulesResult;
+        const results =
+          data.result as unknown as AddRemoveHostToSudoRulesResult;
         if (results) {
-          const groupsFromResponse = results.result.memberuser_group;
-          if (!containsAny(groupsFromResponse, groupsToDelete)) {
+          const groupsFromResponse = results.result.memberhost_hostgroup || [];
+          if (!containsAny(groupsFromResponse, hostGroupsToDelete)) {
             // Set alert: success
             alerts.addAlert(
-              "remove-who-group-external-success",
+              "access-this-host-remove-hostgroup-external-success",
               "Removed item(s) from " + props.rule.cn,
               "success"
             );
@@ -300,10 +304,10 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
           // Check if any errors
           else if (
             results.error ||
-            results.failed.memberuser.group.length > 0
+            results.failed.memberhost.hostgroup.length > 0
           ) {
             alerts.addAlert(
-              "remove-who-group-external-error",
+              "access-this-host-remove-hostgroup-external-error",
               "Error: " + results.error,
               "danger"
             );
@@ -314,7 +318,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
     });
   };
 
-  // Filter: option options
+  // Filter: toggle options
   // - Default value: "first" (the first element)
   // - Instead of using the name of the buttons, it will be referred
   //   as "first" as per the 'IpaToggleGroup' component
@@ -324,7 +328,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
       : "Specified Users and Groups"
   );
 
-  // - When 'usercategory' is "all", disable checkboxes
+  // - When 'hostcategory' is "all", disable checkboxes
   const anyoneOptionSelected = optionSelected === "Anyone";
 
   // - Modify the 'setIsAnyoneSelected' function to set the value of 'optionSelected'
@@ -339,11 +343,11 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
 
   const filter = (
     <Flex>
-      <FlexItem>User category the rule applies to: </FlexItem>
+      <FlexItem>Host category the rule applies to: </FlexItem>
       <FlexItem>
         <IpaToggleGroup
           ipaObject={props.ipaObject}
-          name="usercategory"
+          name="hostcategory"
           options={options}
           optionSelected={optionSelected}
           setOptionSelected={setOptionSelected}
@@ -373,25 +377,25 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
           eventKey={0}
           title={
             <TabTitleText>
-              Users <Label isCompact>{usersList.length}</Label>
+              Hosts <Label isCompact>{hostsList.length}</Label>
             </TabTitleText>
           }
-          aria-label="users in the who section of the sudo rule"
+          aria-label="hosts in the who section of the sudo rule"
         >
           <KeytabTableWithFilter
             className="pf-v5-u-ml-md pf-v5-u-mt-sm"
             id={props.rule.cn as string}
             from="sudo rule"
-            name="memberuser_user"
+            name="memberhost_host"
             isSpinning={modalSpinning}
-            entityType="user"
+            entityType="host"
             // Table data
-            operationTitle={"Add user into sudo rule " + props.rule.cn}
-            tableEntryList={usersList}
-            columnNames={["User"]}
+            operationTitle={"Add host into sudo rule " + props.rule.cn}
+            tableEntryList={hostsList}
+            columnNames={["Host"]}
             onRefresh={props.onRefresh}
-            onAdd={onSaveAndAddUsers}
-            onDelete={onDeleteUsers}
+            onAdd={onSaveAndAddHosts}
+            onDelete={onDeleteHosts}
             checkboxesDisabled={anyoneOptionSelected}
             // Add external option on Add modal
             externalOption={true}
@@ -402,7 +406,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
           eventKey={1}
           title={
             <TabTitleText>
-              User groups <Label isCompact>{userGroupsList.length}</Label>
+              Host groups <Label isCompact>{hostGroupsList.length}</Label>
             </TabTitleText>
           }
           aria-label="user groups in the who section of the sudo rule"
@@ -413,14 +417,14 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
             from="sudo rule"
             name="memberuser_group"
             isSpinning={modalSpinning}
-            entityType="group"
+            entityType="hostgroup"
             // Table data
-            operationTitle={"Add group into sudo rule " + props.rule.cn}
-            tableEntryList={userGroupsList}
-            columnNames={["Group"]}
+            operationTitle={"Add host group into sudo rule " + props.rule.cn}
+            tableEntryList={hostGroupsList}
+            columnNames={["Host group"]}
             onRefresh={props.onRefresh}
             onAdd={onSaveAndAddGroups}
-            onDelete={onDeleteGroups}
+            onDelete={onDeleteHostGroups}
             checkboxesDisabled={anyoneOptionSelected}
           />
         </Tab>
@@ -429,4 +433,4 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
   );
 };
 
-export default SudoRulesWho;
+export default AccessThisHost;

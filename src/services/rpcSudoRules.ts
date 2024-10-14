@@ -93,6 +93,26 @@ export interface AddRemoveToSudoRulesResult {
   };
 }
 
+export interface AddRemoveHostToSudoRulesResult {
+  completed: number;
+  error: Record<string, unknown> | null;
+  failed: {
+    memberhost: {
+      host: string[];
+      hostgroup: string[];
+    };
+  };
+  result: {
+    cn: string;
+    dn: string;
+    externalhost: string[];
+    ipaenabledflag: boolean;
+    memberhost_host: string[];
+    memberhost_hostgroup: string[];
+    sudoorder: number;
+  };
+}
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     /**
@@ -423,6 +443,56 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Add host from sudo rule
+     * @param {AddToSudoRulesPayload} Parameters to add to Sudo rule
+     */
+    addHostToSudoRule: build.mutation<
+      BatchResponse,
+      AddRemoveToSudoRulesPayload
+    >({
+      query: (payload) => {
+        const toId = payload.toId;
+        const type = payload.type; // Should be 'host' or 'hostgroup
+        const listOfMembers = payload.listOfMembers;
+
+        const batchParams: Command[] = [];
+
+        listOfMembers.map((option) => {
+          const chunk = {
+            method: "sudorule_add_host",
+            params: [[toId], { [type]: option }],
+          };
+          batchParams.push(chunk);
+        });
+
+        return getBatchCommand(batchParams, API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Remove host from sudo rule
+     * @param {RemoveFromSudoRulesPayload} Parameters to remove from Sudo rule
+     */
+    removeHostFromSudoRule: build.mutation<
+      FindRPCResponse,
+      AddRemoveToSudoRulesPayload
+    >({
+      query: (payload) => {
+        const toId = payload.toId;
+        const type = payload.type; // Should be 'host' or 'hostgroup
+        const listOfMembers = payload.listOfMembers;
+
+        const params = [
+          [toId],
+          { [type]: listOfMembers, version: API_VERSION_BACKUP },
+        ];
+
+        return getCommand({
+          method: "sudorule_remove_host",
+          params: params,
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -447,4 +517,6 @@ export const {
   useRemoveOptionsFromSudoRuleMutation,
   useAddToSudoRuleMutation,
   useRemoveFromSudoRuleMutation,
+  useAddHostToSudoRuleMutation,
+  useRemoveHostFromSudoRuleMutation,
 } = extendedApi;

@@ -8,14 +8,17 @@ import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // RPC
 import {
+  AddRemoveHostToSudoRulesResult,
   AddRemoveToSudoRulesPayload,
   AddRemoveToSudoRulesResult,
   useRemoveFromSudoRuleMutation,
+  useRemoveHostFromSudoRuleMutation,
   useSaveSudoRuleMutation,
 } from "src/services/rpcSudoRules";
 import { ErrorResult } from "src/services/rpc";
 // Utils
 import { asRecord } from "src/utils/sudoRulesUtils";
+import { containsAny } from "src/utils/utils";
 // Components
 import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
@@ -26,7 +29,7 @@ import SidebarLayout from "src/components/layouts/SidebarLayout";
 import SudoRuleOptions from "src/components/SudoRuleSections/SudoRuleOptions";
 import SudoRulesWho from "src/components/SudoRuleSections/SudoRulesWho";
 import { TableEntry } from "src/components/tables/KeytabTableWithFilter";
-import { containsAny } from "src/utils/utils";
+import AccessThisHost from "./AccessThisHost";
 
 interface PropsToSudoRulesSettings {
   rule: Partial<SudoRule>;
@@ -45,7 +48,8 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
 
   // API calls
   const [saveService] = useSaveSudoRuleMutation();
-  const [onRemove] = useRemoveFromSudoRuleMutation();
+  const [onRemoveFromUsers] = useRemoveFromSudoRuleMutation();
+  const [onRemoveFromHosts] = useRemoveHostFromSudoRuleMutation();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "sudo-rules" });
@@ -107,6 +111,8 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
   // - Save the sudo rule
   // Thus, a flag is needed to determine if the 'Anyone' option is selected
   const [isWhoAnyoneSelected, setIsWhoAnyoneSelected] = React.useState(false);
+  const [isAccessThisHostAnyoneSelected, setIsAccessThisHostAnyoneSelected] =
+    React.useState(false);
 
   const onSaveRule = () => {
     // Save the rule
@@ -138,7 +144,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
       listOfMembers: userGroupsToDelete,
     };
 
-    onRemove(payload).then((response) => {
+    onRemoveFromUsers(payload).then((response) => {
       if ("data" in response) {
         const data = response.data;
         const results = data.result as unknown as AddRemoveToSudoRulesResult;
@@ -173,7 +179,51 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
     });
   };
 
-  const onDeleteAllAndSave = (
+  const onRemoveHostGroups = (hostGroupsToDelete: string[]) => {
+    const payload: AddRemoveToSudoRulesPayload = {
+      toId: props.rule.cn as string,
+      type: "hostgroup",
+      listOfMembers: hostGroupsToDelete,
+    };
+
+    onRemoveFromHosts(payload).then((response) => {
+      if ("data" in response) {
+        const data = response.data;
+        const results =
+          data.result as unknown as AddRemoveHostToSudoRulesResult;
+        if (results) {
+          // Some values can be undefined after deletion
+          const hostGroupsFromResponse =
+            results.result.memberhost_hostgroup || [];
+          if (!containsAny(hostGroupsFromResponse, hostGroupsToDelete)) {
+            // Set alert: success
+            alerts.addAlert(
+              "remove-acces-host-hostgroup-success",
+              "Removed item(s) from " + props.rule.cn,
+              "success"
+            );
+            // Refresh page
+            props.onRefresh();
+            // SAVE RULE
+            onSaveRule();
+          }
+          // Check if any errors
+          else if (
+            results.error ||
+            results.failed.memberhost.hostgroup.length > 0
+          ) {
+            alerts.addAlert(
+              "remove-acces-host-hostgroup-error",
+              "Error: " + results.error,
+              "danger"
+            );
+          }
+        }
+      }
+    });
+  };
+
+  const onDeleteAllUsersAndSave = (
     usersToDelete: string[],
     groupsToDelete: string[]
   ) => {
@@ -183,7 +233,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
       listOfMembers: usersToDelete,
     };
 
-    onRemove(payload).then((response) => {
+    onRemoveFromUsers(payload).then((response) => {
       if ("data" in response) {
         const data = response.data;
         const results = data.result as unknown as AddRemoveToSudoRulesResult;
@@ -219,6 +269,53 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
     });
   };
 
+  const onDeleteAllHostsAndSave = (
+    hostsToDelete: string[],
+    hostGroupsToDelete: string[]
+  ) => {
+    const payload: AddRemoveToSudoRulesPayload = {
+      toId: props.rule.cn as string,
+      type: "host",
+      listOfMembers: hostsToDelete,
+    };
+
+    onRemoveFromHosts(payload).then((response) => {
+      if ("data" in response) {
+        const data = response.data;
+        const results =
+          data.result as unknown as AddRemoveHostToSudoRulesResult;
+        if (results) {
+          // Some values can be undefined after deletion
+          const hostsFromResponse = results.result.memberhost_host || [];
+          const externalsFromResponse = results.result.externalhost || [];
+          if (
+            !containsAny(hostsFromResponse, hostsToDelete) ||
+            !containsAny(externalsFromResponse, hostsToDelete)
+          ) {
+            // Set alert: success
+            alerts.addAlert(
+              "remove-who-user-external-success",
+              "Removed item(s) from " + props.rule.cn,
+              "success"
+            );
+            // Refresh page
+            props.onRefresh();
+            // Remove user groups
+            onRemoveHostGroups(hostGroupsToDelete);
+          }
+          // Check if any errors
+          else if (results.error || results.failed.memberhost.host.length > 0) {
+            alerts.addAlert(
+              "remove-who-host-external-error",
+              "Error: " + results.error,
+              "danger"
+            );
+          }
+        }
+      }
+    });
+  };
+
   // 'Save' handle method
   const onSave = () => {
     const modifiedValues = props.modifiedValues();
@@ -231,7 +328,13 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
         props.rule.externaluser || []
       );
       const groupsToRemove = props.rule.memberuser_group || [];
-      onDeleteAllAndSave(usersToRemove, groupsToRemove);
+      onDeleteAllUsersAndSave(usersToRemove, groupsToRemove);
+    } else if (isAccessThisHostAnyoneSelected) {
+      const hostsToRemove = (props.rule.memberhost_host || []).concat(
+        props.rule.externalhost || []
+      );
+      const hostGroupsToRemove = props.rule.memberhost_hostgroup || [];
+      onDeleteAllHostsAndSave(hostsToRemove, hostGroupsToRemove);
     } else {
       saveService(modifiedValues).then((response) => {
         if ("data" in response) {
@@ -310,7 +413,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
   ];
 
   // Sidebar items
-  const itemNames = ["General", "Options", "Who"];
+  const itemNames = ["General", "Options", "Who", "Access this host"];
 
   // Options
   const sudoOptions = props.rule.ipasudoopt || [];
@@ -341,6 +444,34 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
         return { entry: entry, showLink: true };
       }) || [];
     setUsergroupsList(usergroupsListTemp);
+  }, [props.rule]);
+
+  // Access this host section - Users should also contain external users
+  const [hostsAndExternalsList, setHostsAndExternalsList] = React.useState<
+    TableEntry[]
+  >([]);
+  const [hostgroupsList, setHostgroupsList] = React.useState<TableEntry[]>([]);
+
+  React.useEffect(() => {
+    // - Users list
+    const hostsAndExternalsListTemp: TableEntry[] =
+      props.rule.memberhost_host?.map((entry) => {
+        return { entry: entry, showLink: true };
+      }) || [];
+    // Add externals into 'usersList' without showing link
+    hostsAndExternalsListTemp.push(
+      ...((props.rule.externalhost || []).map((entry) => {
+        return { entry: entry, showLink: false };
+      }) || [])
+    );
+    setHostsAndExternalsList(hostsAndExternalsListTemp);
+
+    // - User groups list
+    const hostgroupsListTemp: TableEntry[] =
+      props.rule.memberhost_hostgroup?.map((entry) => {
+        return { entry: entry, showLink: true };
+      }) || [];
+    setHostgroupsList(hostgroupsListTemp);
   }, [props.rule]);
 
   // Render component
@@ -381,6 +512,26 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             recordOnChange={recordOnChange}
             metadata={props.metadata}
             setIsAnyoneSelected={setIsWhoAnyoneSelected}
+            onSave={onSave}
+            modifiedValues={props.modifiedValues}
+          />
+        </Flex>
+        {/* Access this host */}
+        <Flex
+          direction={{ default: "column" }}
+          flex={{ default: "flex_1" }}
+          className="pf-v5-u-mt-lg"
+        >
+          <TitleLayout headingLevel="h2" id="who" text="Access this host" />
+          <AccessThisHost
+            rule={props.rule}
+            ipaObject={ipaObject}
+            onRefresh={props.onRefresh}
+            hostsList={hostsAndExternalsList}
+            hostGroupsList={hostgroupsList}
+            recordOnChange={recordOnChange}
+            metadata={props.metadata}
+            setIsAnyoneSelected={setIsAccessThisHostAnyoneSelected}
             onSave={onSave}
             modifiedValues={props.modifiedValues}
           />
