@@ -49,6 +49,7 @@ const LoginMainPage = () => {
   const [isValidUsername, setIsValidUsername] = React.useState(true);
   const [password, setPassword] = React.useState("");
   const [isValidPassword, setIsValidPassword] = React.useState(true);
+  const [authenticating, setAuthenticating] = React.useState(false);
 
   // Authentication method (assumes user + password by default)
   // - This will help to get the user credentials if the user is logged in via Kerberos
@@ -201,6 +202,7 @@ const LoginMainPage = () => {
     setIsValidPassword(!!password);
     setShowHelperText(!username || !password);
 
+    setAuthenticating(true);
     if (!username && isKerberosEnabled) {
       onKrbLogin().then((response) => {
         if ("error" in response) {
@@ -246,6 +248,7 @@ const LoginMainPage = () => {
         } else {
           onSuccessLogin();
         }
+        setAuthenticating(false);
       });
     }
   };
@@ -253,6 +256,7 @@ const LoginMainPage = () => {
   // Login using certificate
   const onLoginWithCertClick = (_event) => {
     _event.preventDefault();
+    setAuthenticating(true);
     onCertLogin(username).then((response) => {
       if ("error" in response) {
         const receivedError = response.error as MetaResponse;
@@ -269,6 +273,7 @@ const LoginMainPage = () => {
       } else {
         onSuccessLogin();
       }
+      setAuthenticating(false);
     });
   };
 
@@ -324,6 +329,7 @@ const LoginMainPage = () => {
       isValidPassword={isValidPassword}
       onLoginButtonClick={onLoginButtonClick}
       loginButtonLabel="Log in"
+      isLoginButtonDisabled={authenticating}
     />
   );
 
