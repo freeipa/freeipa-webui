@@ -14,7 +14,6 @@ interface IDViewsOverrideData {
   isSelectable: (view: IDViewOverrideGroup) => boolean;
   selected: string[];
   selectableTable: IDViewOverrideGroup[];
-  setSelected: (group: IDViewOverrideGroup, isSelecting?: boolean) => void;
   setSelectedGroups: (group: string[]) => void;
   clearSelected: () => void;
 }

@@ -97,16 +97,11 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
   };
 
   const selectableTable = usersList.filter(isUserOverrideSelectable);
-  const setUserSelected = (user: IDViewOverrideUser, isSelecting = true) => {
-    if (isUserOverrideSelectable(user)) {
-      updateSelectedUsers([user], isSelecting);
-    }
-  };
+
   const usersTableData = {
     isSelectable: isUserOverrideSelectable,
     selected: selectedUsers,
     selectableTable,
-    setSelected: setUserSelected,
     setSelectedUsers: setSelectedUsersList,
     clearSelected: clearSelectedUsers,
   };
@@ -245,45 +240,6 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
   // Show table rows
   const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
 
-  const updateSelectedUsers = (
-    users: IDViewOverrideUser[],
-    isSelected: boolean
-  ) => {
-    let newSelected: string[] = [];
-    if (isSelected) {
-      newSelected = JSON.parse(JSON.stringify(selectedUsers));
-      for (let i = 0; i < users.length; i++) {
-        if (
-          selectedUsers.find(
-            (selectedUser) => selectedUser === users[i].ipaanchoruuid[0]
-          )
-        ) {
-          // Already in the list
-          continue;
-        }
-        // user view to list
-        newSelected.push(users[i].ipaanchoruuid[0]);
-      }
-    } else {
-      // Remove view
-      for (let i = 0; i < selectedUsers.length; i++) {
-        let found = false;
-        for (let ii = 0; ii < users.length; ii++) {
-          if (selectedUsers[i] === users[ii].ipaanchoruuid[0]) {
-            found = true;
-            break;
-          }
-        }
-        if (!found) {
-          // Keep this valid selected entry
-          newSelected.push(selectedUsers[i]);
-        }
-      }
-    }
-    setSelectedUsersList(newSelected);
-    setIsDeleteButtonDisabled(newSelected.length === 0);
-  };
-
   // Always refetch data when the component is loaded.
   // This ensures the data is always up-to-date.
   useEffect(() => {
@@ -405,7 +361,7 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
         contentClassName="pf-v5-u-p-0"
         toolbarItems={toolbarItems}
       />
-      <div style={{ height: `calc(100vh - 352.2px)` }}>
+      <div className="pf-v5-u-ml-md pf-v5-u-mr-md">
         <OuterScrollContainer>
           <InnerScrollContainer>
             {batchError !== undefined && batchError ? (

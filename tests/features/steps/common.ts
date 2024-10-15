@@ -375,6 +375,20 @@ When(
   }
 );
 
+When("I click toolbar dropdown {string}", (name: string) => {
+  cy.get("div.pf-v5-c-toolbar__item")
+    .find("button.pf-v5-c-menu-toggle")
+    .contains(name)
+    .click();
+});
+
+When("I click toolbar dropdown item {string}", (name: string) => {
+  cy.get("li.pf-v5-c-menu__list-item")
+    .find("button.pf-v5-c-menu__item")
+    .contains(name)
+    .click();
+});
+
 Then(
   "I should see the option {string} selected in the {string} selector",
   (option: string, selectorName: string) => {

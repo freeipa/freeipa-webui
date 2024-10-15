@@ -24,6 +24,7 @@ import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { NotFound } from "src/components/errors/PageErrors";
 import IDViewsSettings from "./IDViewsSettings";
 import IDViewsOverrides from "./IDViewsOverrides";
+import IDViewsAppliedTo from "./IDViewsAppliedTo";
 
 // eslint-disable-next-line react/prop-types
 const IDViewsTabs = ({ section }) => {
@@ -49,8 +50,8 @@ const IDViewsTabs = ({ section }) => {
       navigate("/id-views/" + cn);
     } else if (tabName.startsWith("override")) {
       navigate("/id-views/" + cn + "/override-users");
-    } else if (tabName === "appliesto") {
-      // navigate("/id-views/" + cn + "/appliesto_idview");
+    } else if (tabIndex === "appliedto") {
+      navigate("/id-views/" + cn + "/appliedto");
     }
   };
 
@@ -160,10 +161,15 @@ const IDViewsTabs = ({ section }) => {
             />
           </Tab>
           <Tab
-            eventKey={"appliesto"}
-            name="appliesto-details"
-            title={<TabTitleText>Applies to</TabTitleText>}
-          ></Tab>
+            eventKey={"appliedto"}
+            name="appliedto-details"
+            title={<TabTitleText>Applied to</TabTitleText>}
+          >
+            <IDViewsAppliedTo
+              idView={view}
+              onRefresh={idViewSettingsData.refetch}
+            />
+          </Tab>
         </Tabs>
       </PageSection>
     </>

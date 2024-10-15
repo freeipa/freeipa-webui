@@ -292,6 +292,10 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                     path="override-groups"
                     element={<IDViewsTabs section="override-groups" />}
                   />
+                  <Route
+                    path="appliedto"
+                    element={<IDViewsTabs section="appliedto" />}
+                  />
                 </Route>
               </Route>
               <Route path="user-group-rules">

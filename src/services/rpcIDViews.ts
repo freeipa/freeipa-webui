@@ -41,6 +41,11 @@ export type ViewFullData = {
   idView?: Partial<IDView>;
 };
 
+export interface ViewApplyPayload {
+  viewName: string;
+  items: string[];
+}
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     getIDViewsFullData: build.query<ViewFullData, string>({
@@ -121,7 +126,7 @@ const extendedApi = api.injectEndpoints({
       },
     }),
     /**
-     * Given a list of view names, show the full data of those grouviewsps
+     * Given a list of view names, show the full data of those views
      * @param {string[]} groupNames - List of group names
      * @param {boolean} noMembers - Whether to show members or not
      * @returns {BatchRPCResponse} - Batch response
@@ -180,13 +185,31 @@ const extendedApi = api.injectEndpoints({
      * @param {string[]} hostgroupNames - List of hostgroup names
      */
     unapplyHostgroups: build.mutation<FindRPCResponse, string[]>({
-      query: (hostgroups) => {
+      query: (hostGroups) => {
         return getCommand({
           method: "idview_unapply",
-          params: [[], { hostgroup: hostgroups }],
+          params: [[], { hostgroup: hostGroups }],
         });
       },
       invalidatesTags: ["FullIDViewHostgroups"],
+    }),
+    applyHosts: build.mutation<FindRPCResponse, ViewApplyPayload>({
+      query: (payload) => {
+        return getCommand({
+          method: "idview_apply",
+          params: [[payload.viewName], { host: payload.items }],
+        });
+      },
+      invalidatesTags: ["FullIDViewHosts"],
+    }),
+    applyHostGroups: build.mutation<FindRPCResponse, ViewApplyPayload>({
+      query: (payload) => {
+        return getCommand({
+          method: "idview_apply",
+          params: [[payload.viewName], { hostgroup: payload.items }],
+        });
+      },
+      invalidatesTags: ["FullIDViewHosts"],
     }),
   }),
   overrideExisting: false,
@@ -207,4 +230,6 @@ export const {
   useSaveIDViewMutation,
   useUnapplyHostsMutation,
   useUnapplyHostgroupsMutation,
+  useApplyHostsMutation,
+  useApplyHostGroupsMutation,
 } = extendedApi;
