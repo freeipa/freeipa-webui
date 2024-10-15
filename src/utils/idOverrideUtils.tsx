@@ -108,6 +108,7 @@ export function createEmptyOverrideGroup(): IDViewOverrideGroup {
     description: "",
     gidnumber: "",
     ipaanchoruuid: "",
+    appliedtohosts: [],
   };
 
   return override;

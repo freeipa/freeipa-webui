@@ -376,7 +376,9 @@ const IDViews = () => {
         if (response.data.result) {
           alerts.addAlert(
             "unapply-id-views-hosts-success",
-            "ID views unapplied from hosts",
+            "ID views unapplied from " +
+              response.data.result["completed"] +
+              " hosts",
             "success"
           );
           // Refresh data
@@ -406,7 +408,9 @@ const IDViews = () => {
         if (response.data.result) {
           alerts.addAlert(
             "unapply-id-views-hosts-success",
-            "ID views unapplied from host groups",
+            "ID views unapplied from " +
+              response.data.result["completed"] +
+              " hosts",
             "success"
           );
           // Refresh data

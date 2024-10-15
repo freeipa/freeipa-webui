@@ -93,7 +93,7 @@ Feature: ID Override user manipulation
   Scenario: Delete users
     Given I am on "active-users" page
     Given I should see "overrideuser1" entry in the data table
-    Given I should see "overrideuser1" entry in the data table
+    Given I should see "overrideuser2" entry in the data table
     When I select entry "overrideuser1" in the data table
     And I select entry "overrideuser2" in the data table
     And I click on "Delete" button

@@ -395,6 +395,7 @@ export interface IDView {
   ipadomainresolutionorder: string;
   useroverrides: string[];
   groupoverrides: string[];
+  appliedtohosts: string[];
 }
 
 export interface IDViewOverrideUser {
@@ -424,6 +425,7 @@ export interface IDViewOverrideGroup {
   description: string;
   gidnumber: string;
   ipaanchoruuid: string;
+  appliedtohosts: string[];
 }
 
 export interface Config {

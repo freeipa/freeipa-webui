@@ -40,7 +40,7 @@ Feature: ID View manipulation
     * I click on the first dual list item
     * I click on the dual list add selected button
     When in the modal dialog I click on "Unapply" button
-    Then I should see "success" alert with text "ID views unapplied from hosts"
+    Then I should see "success" alert with text "ID views unapplied from 0 hosts"
     * I close the alert
 
   Scenario: Unapply views from host groups
@@ -49,7 +49,7 @@ Feature: ID View manipulation
     * I click on the first dual list item
     * I click on the dual list add selected button
     When in the modal dialog I click on "Unapply" button
-    Then I should see "success" alert with text "ID views unapplied from host groups"
+    Then I should see "success" alert with text "ID views unapplied from 0 hosts"
     * I close the alert
 
   Scenario: Delete a view

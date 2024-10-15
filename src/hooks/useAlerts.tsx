@@ -11,7 +11,7 @@ export type AlertVariant = "custom" | "danger" | "warning" | "success" | "info";
 
 export interface AlertInfo {
   name: string;
-  title: string;
+  title: string | React.ReactNode;
   variant: AlertVariant;
 }
 
@@ -22,7 +22,11 @@ export function useAlerts() {
     return alerts.filter((alert) => alert.name !== name);
   };
 
-  const addAlert = (name: string, title: string, variant: AlertVariant) => {
+  const addAlert = (
+    name: string,
+    title: string | React.ReactNode,
+    variant: AlertVariant
+  ) => {
     const alert: AlertInfo = {
       name: name,
       title: title,

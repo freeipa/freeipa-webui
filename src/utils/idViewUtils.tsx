@@ -36,6 +36,7 @@ export function createEmptyView(): IDView {
     ipadomainresolutionorder: "",
     useroverrides: [],
     groupoverrides: [],
+    appliedtohosts: [],
   };
 
   return view;

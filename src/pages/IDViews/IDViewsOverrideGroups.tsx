@@ -101,16 +101,11 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
   };
 
   const selectableTable = groupsList.filter(isGroupOverrideSelectable);
-  const setGroupSelected = (group: IDViewOverrideGroup, isSelecting = true) => {
-    if (isGroupOverrideSelectable(group)) {
-      updateSelectedGroups([group], isSelecting);
-    }
-  };
+
   const groupsTableData = {
     isSelectable: isGroupOverrideSelectable,
     selected: selectedGroups,
     selectableTable,
-    setSelected: setGroupSelected,
     setSelectedGroups: setSelectedGroupsList,
     clearSelected: clearSelectedGroups,
   };
@@ -248,44 +243,6 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
 
   // Show table rows
   const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
-
-  const updateSelectedGroups = (
-    groups: IDViewOverrideGroup[],
-    isSelected: boolean
-  ) => {
-    let newSelected: string[] = [];
-    if (isSelected) {
-      newSelected = JSON.parse(JSON.stringify(selectedGroups));
-      for (let i = 0; i < groups.length; i++) {
-        if (
-          selectedGroups.find(
-            (selectedGroup) => selectedGroup === groups[i].ipaanchoruuid[0]
-          )
-        ) {
-          // Already in the list
-          continue;
-        }
-        newSelected.push(groups[i].ipaanchoruuid[0]);
-      }
-    } else {
-      // Remove view
-      for (let i = 0; i < selectedGroups.length; i++) {
-        let found = false;
-        for (let ii = 0; ii < groups.length; ii++) {
-          if (selectedGroups[i] === groups[ii].ipaanchoruuid[0]) {
-            found = true;
-            break;
-          }
-        }
-        if (!found) {
-          // Keep this valid selected entry
-          newSelected.push(selectedGroups[i]);
-        }
-      }
-    }
-    setSelectedGroupsList(newSelected);
-    setIsDeleteButtonDisabled(newSelected.length === 0);
-  };
 
   // Always refetch data when the component is loaded.
   // This ensures the data is always up-to-date.
@@ -427,7 +384,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
         contentClassName="pf-v5-u-p-0"
         toolbarItems={toolbarItems}
       />
-      <div style={{ height: `calc(100vh - 352.2px)` }}>
+      <div className="pf-v5-u-ml-md pf-v5-u-mr-md">
         <OuterScrollContainer>
           <InnerScrollContainer>
             {batchError !== undefined && batchError ? (
