@@ -112,7 +112,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
               // Set alert: success
               alerts.addAlert(
                 "add-who-user-external-success",
-                "Added new item(s)' to" + props.rule.cn + "'",
+                "Added new item(s) to '" + props.rule.cn + "'",
                 "success"
               );
               // Refresh page
@@ -224,7 +224,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
             // Set alert: success
             alerts.addAlert(
               "add-who-group-external-success",
-              "Added new item(s)' to" + props.rule.cn + "'",
+              "Added new item(s) to '" + props.rule.cn + "'",
               "success"
             );
             // Refresh page
