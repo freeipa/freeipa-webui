@@ -31,8 +31,12 @@ import {
 import { useAppDispatch } from "src/store/hooks";
 import { setIsLogin } from "src/store/Global/auth-slice";
 // Navigation
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+
+interface StateFromSyncOtpPage {
+  alertMessage: string;
+}
 
 const LoginMainPage = () => {
   // Redux
@@ -40,9 +44,20 @@ const LoginMainPage = () => {
 
   // Navigate
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Alerts to show in the UI
   const alerts = useAlerts();
+
+  // There are some cases (e.g., sync OTP token) that the
+  //   login page can receive a given state from navigate.
+  //   This message must be shown as an alert.
+  React.useEffect(() => {
+    if (location.state) {
+      const { alertMessage } = location.state as StateFromSyncOtpPage;
+      alerts.addAlert("sync-otp-message", alertMessage, "success");
+    }
+  }, [location.state]);
 
   const [showHelperText, setShowHelperText] = React.useState(false);
   const [username, setUsername] = React.useState("");
@@ -284,14 +299,9 @@ const LoginMainPage = () => {
           <Text>Login using Certificate</Text>
         </TextContent>
       </LoginMainFooterLinksItem>
-      <LoginMainFooterLinksItem
-        href="#"
-        linkComponentProps={{ "aria-label": "Syncronize OTP Token" }}
-      >
-        <TextContent name="sync">
-          <Text>Sync OTP Token</Text>
-        </TextContent>
-      </LoginMainFooterLinksItem>
+      <Link aria-label="Synchronize otp token" to="/sync-otp">
+        Sync OTP Token
+      </Link>
     </React.Fragment>
   );
 

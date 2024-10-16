@@ -66,11 +66,20 @@ export interface MetaResponse {
   };
 }
 
+export interface SyncOtpPayload {
+  user: string;
+  password: string;
+  first_code: string;
+  second_code: string;
+  token?: string;
+}
+
 // List of URLs
 export const LOGIN_URL = "/ipa/session/login_password";
 export const KERBEROS_URL = "/ipa/session/login_kerberos";
 export const X509_URL = "/ipa/session/login_x509";
 export const RESET_PASSWORD_URL = "/ipa/session/change_password";
+export const SYNC_OTP_URL = "/ipa/session/sync_token";
 
 // Utils
 export const encodeURIObject = (obj: Record<string, string>) => {
@@ -200,6 +209,38 @@ const extendedApi = api.injectEndpoints({
         return meta as unknown as MetaResponse;
       },
     }),
+    syncOtp: build.mutation<FindRPCResponse | MetaResponse, SyncOtpPayload>({
+      query: (payload) => {
+        const encodedCredentials = encodeURIObject({
+          user: payload.user,
+          password: payload.password,
+          first_code: payload.first_code,
+          second_code: payload.second_code,
+        });
+
+        if (payload.token) {
+          encodedCredentials.concat("&token=" + payload.token);
+        }
+
+        const syncOtpRequest = {
+          url: SYNC_OTP_URL,
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "Data-Type": "html",
+          },
+          body: encodedCredentials,
+        };
+
+        return syncOtpRequest;
+      },
+      transformErrorResponse: (
+        response: FetchBaseQueryError,
+        meta: FetchBaseQueryMeta
+      ) => {
+        return meta as unknown as MetaResponse;
+      },
+    }),
   }),
 });
 
@@ -209,4 +250,5 @@ export const {
   useKrbLoginMutation,
   useX509LoginMutation,
   useResetPasswordMutation,
+  useSyncOtpMutation,
 } = extendedApi;
