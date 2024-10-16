@@ -49,6 +49,7 @@ import HBACServiceGroupsTabs from "src/pages/HBACServiceGroups/HBACServiceGroups
 import ResetPasswordPage from "src/login/ResetPasswordPage";
 import SetupBrowserConfig from "src/pages/SetupBrowserConfig";
 import Configuration from "src/pages/Configuration/Configuration";
+import SyncOtpPage from "src/login/SyncOtpPage";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -391,6 +392,8 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
           )}
           {/* Browser configuration page */}
           <Route path="browser-config" element={<SetupBrowserConfig />} />
+          {/* Sync OTP token page */}
+          <Route path="sync-otp" element={<SyncOtpPage />} />
           {/* 404 page */}
           <Route path="*" element={<NotFound />} />
         </Routes>
