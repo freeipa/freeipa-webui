@@ -59,7 +59,7 @@ export interface AddUserPayload {
 
 export interface AddGroupPayload {
   idview: string;
-  name: string;
+  group: string;
   groupName?: string;
   gidnumber?: string;
   description?: string;
@@ -228,12 +228,12 @@ const extendedApi = api.injectEndpoints({
      * @param {object} AddGroupPayload - ID override payload parameters
      * @param AddUserPayload.idview - The name of the ID view
      * @param AddUserPayload.group - The name of the group to override
-     * @param AddUserPayload.cn - The name of this override group
+     * @param AddUserPayload.groupName - The name of this override group
      * @param AddUserPayload.gidnumber
      * @param AddUserPayload.description
      * @param AddUserPayload.version - The api version
      */
-    addIDOverrideGroup: build.mutation<FindRPCResponse, AddUserPayload>({
+    addIDOverrideGroup: build.mutation<FindRPCResponse, AddGroupPayload>({
       query: (payloadData) => {
         const params = [
           [payloadData["idview"], payloadData["group"]],
@@ -241,8 +241,8 @@ const extendedApi = api.injectEndpoints({
             version: payloadData.version || API_VERSION_BACKUP,
           },
         ];
-        if ("cn" in payloadData && payloadData["cn"] !== "") {
-          params[1]["cn"] = payloadData["cn"];
+        if ("groupName" in payloadData && payloadData["groupName"] !== "") {
+          params[1]["cn"] = payloadData["groupName"];
         }
         if ("description" in payloadData && payloadData["description"] !== "") {
           params[1]["description"] = payloadData["description"];
@@ -284,7 +284,7 @@ const extendedApi = api.injectEndpoints({
         payload.groups.map((group) => {
           const payloadItem = {
             method: "idoverridegroup_del",
-            params: [[group], {}],
+            params: [[payload.idview, group], {}],
           } as Command;
           groupsToDeletePayload.push(payloadItem);
         });
@@ -414,7 +414,6 @@ const extendedApi = api.injectEndpoints({
 
         // Prepare search parameters
         const params = {
-          no_members: true,
           sizelimit: sizeLimit,
           version: API_VERSION_BACKUP,
           all: true,

@@ -24,23 +24,23 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Utils
-import { isUserOverrideSelectable } from "src/utils/utils";
-import IDViewsOverrideUsersTable from "src/pages/IDViews/IDViewsOverrideUsersTable";
+import { isGroupOverrideSelectable } from "src/utils/utils";
+import IDViewsOverrideGroupsTable from "src/pages/IDViews/IDViewsOverrideGroupsTable";
 // Modals
-import AddIdOverrideUserModal from "src/components/modals/IdOverrideModals/AddIdOverrideUser";
-import DeleteIdOverrideUsersModal from "src/components/modals/IdOverrideModals/DeleteIdOverrideUsers";
+import AddIdOverrideGroupModal from "src/components/modals/IdOverrideModals/AddIdOverrideGroup";
+import DeleteIdOverrideGroupsModal from "src/components/modals/IdOverrideModals/DeleteIdOverrideGroups";
 // Data types
-import { IDViewOverrideUser } from "src/utils/datatypes/globalDataTypes";
+import { IDViewOverrideGroup } from "src/utils/datatypes/globalDataTypes";
 // RPC
 import {
   IDOverridePayload,
-  useGettingIDOverrideUsersQuery,
+  useGettingIDOverrideGroupsQuery,
   useSearchOverrideEntriesMutation,
 } from "src/services/rpcIdOverrides";
 
 interface PropsToOverrides {
   idview: string;
-  users: string[];
+  groups: string[];
   onRefresh: () => void;
 }
 
@@ -51,18 +51,18 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
     useListPageSearchParams();
   const [totalCount, setTotalCount] = useState<number>(0);
-  const [usersList, setUsersList] = useState<IDViewOverrideUser[]>([]);
-  const [selectedUsers, setSelectedUsersList] = useState<string[]>([]);
+  const [groupsList, setGroupsList] = useState<IDViewOverrideGroup[]>([]);
+  const [selectedGroups, setSelectedGroupsList] = useState<string[]>([]);
   const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
-  const clearSelectedUsers = () => {
+  const clearSelectedGroups = () => {
     const emptyList: string[] = [];
-    setSelectedUsersList(emptyList);
+    setSelectedGroupsList(emptyList);
   };
 
   const selectedData = {
-    selectedUsers,
-    clearSelectedUsers,
+    selectedGroups,
+    clearSelectedGroups,
   };
 
   // Page indexes
@@ -96,19 +96,19 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
     updateSelectedPerPage,
   };
 
-  const selectableTable = usersList.filter(isUserOverrideSelectable);
-  const setUserSelected = (user: IDViewOverrideUser, isSelecting = true) => {
-    if (isUserOverrideSelectable(user)) {
-      updateSelectedUsers([user], isSelecting);
+  const selectableTable = groupsList.filter(isGroupOverrideSelectable);
+  const setUserSelected = (group: IDViewOverrideGroup, isSelecting = true) => {
+    if (isGroupOverrideSelectable(group)) {
+      updateSelectedGroups([group], isSelecting);
     }
   };
-  const usersTableData = {
-    isSelectable: isUserOverrideSelectable,
-    selected: selectedUsers,
+  const groupsTableData = {
+    isSelectable: isGroupOverrideSelectable,
+    selected: selectedGroups,
     selectableTable,
     setSelected: setUserSelected,
-    setSelectedUsers: setSelectedUsersList,
-    clearSelected: clearSelectedUsers,
+    setSelectedGroups: setSelectedGroupsList,
+    clearSelected: clearSelectedGroups,
   };
 
   const viewsTableButtonsData = {
@@ -126,8 +126,8 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
     setPerPage(newSetPerPage);
   };
 
-  const updateShownUsersList = (newShownUsersList: IDViewOverrideUser[]) => {
-    setUsersList(newShownUsersList);
+  const updateShownUsersList = (newShownUsersList: IDViewOverrideGroup[]) => {
+    setGroupsList(newShownUsersList);
   };
 
   // Update search input valie
@@ -147,7 +147,7 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
       sizeLimit: 0,
       startIdx: firstIdx,
       stopIdx: lastIdx,
-      entryType: "idoverrideuser",
+      entryType: "idoverridegroup",
     } as IDOverridePayload).then((result) => {
       // Manage new response here
       if ("data" in result) {
@@ -165,20 +165,20 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
           }
           alerts.addAlert(
             "submit-search-value-error",
-            error || "Error when searching for override users",
+            error || "Error when searching for override groups",
             "danger"
           );
         } else {
           // Success
-          const usersListResult = result.data.result.results;
-          const usersListSize = result.data.result.count;
+          const groupsListResult = result.data.result.results;
+          const groupsListSize = result.data.result.count;
           const totalCount = result.data.result.totalCount;
-          const userList: IDViewOverrideUser[] = [];
+          const groupList: IDViewOverrideGroup[] = [];
 
-          for (let i = 0; i < usersListSize; i++) {
-            userList.push(usersListResult[i].result);
+          for (let i = 0; i < groupsListSize; i++) {
+            groupList.push(groupsListResult[i].result);
           }
-          setUsersList(userList);
+          setGroupsList(groupList);
           setTotalCount(totalCount);
           // Show table elements
           setShowTableRows(true);
@@ -195,7 +195,7 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
     submitSearchValue,
   };
 
-  const dataResponse = useGettingIDOverrideUsersQuery(props.idview);
+  const dataResponse = useGettingIDOverrideGroupsQuery(props.idview);
 
   const {
     data: batchResponse,
@@ -219,7 +219,7 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
       dataResponse.data &&
       batchResponse !== undefined
     ) {
-      setUsersList(batchResponse);
+      setGroupsList(batchResponse);
       setTotalCount(batchResponse.length);
       setShowTableRows(true);
     }
@@ -230,8 +230,8 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
       dataResponse.error !== undefined
     ) {
       alerts.addAlert(
-        "add-user-error",
-        "Failed to query override users: " + dataResponse.error,
+        "add-group-error",
+        "Failed to query override groups: " + dataResponse.error,
         "danger"
       );
     }
@@ -245,42 +245,41 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
   // Show table rows
   const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
 
-  const updateSelectedUsers = (
-    users: IDViewOverrideUser[],
+  const updateSelectedGroups = (
+    groups: IDViewOverrideGroup[],
     isSelected: boolean
   ) => {
     let newSelected: string[] = [];
     if (isSelected) {
-      newSelected = JSON.parse(JSON.stringify(selectedUsers));
-      for (let i = 0; i < users.length; i++) {
+      newSelected = JSON.parse(JSON.stringify(selectedGroups));
+      for (let i = 0; i < groups.length; i++) {
         if (
-          selectedUsers.find(
-            (selectedUser) => selectedUser === users[i].ipaanchoruuid[0]
+          selectedGroups.find(
+            (selectedGroup) => selectedGroup === groups[i].ipaanchoruuid[0]
           )
         ) {
           // Already in the list
           continue;
         }
-        // user view to list
-        newSelected.push(users[i].ipaanchoruuid[0]);
+        newSelected.push(groups[i].ipaanchoruuid[0]);
       }
     } else {
       // Remove view
-      for (let i = 0; i < selectedUsers.length; i++) {
+      for (let i = 0; i < selectedGroups.length; i++) {
         let found = false;
-        for (let ii = 0; ii < users.length; ii++) {
-          if (selectedUsers[i] === users[ii].ipaanchoruuid[0]) {
+        for (let ii = 0; ii < groups.length; ii++) {
+          if (selectedGroups[i] === groups[ii].ipaanchoruuid[0]) {
             found = true;
             break;
           }
         }
         if (!found) {
           // Keep this valid selected entry
-          newSelected.push(selectedUsers[i]);
+          newSelected.push(selectedGroups[i]);
         }
       }
     }
-    setSelectedUsersList(newSelected);
+    setSelectedGroupsList(newSelected);
     setIsDeleteButtonDisabled(newSelected.length === 0);
   };
 
@@ -340,7 +339,7 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
       element: (
         <SearchInputLayout
           name="search"
-          ariaLabel="Search users"
+          ariaLabel="Search groups"
           placeholder="Search"
           searchValueData={searchValueData}
           isDisabled={searchDisabled}
@@ -387,7 +386,7 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
       key: 8,
       element: (
         <PaginationLayout
-          list={props.users}
+          list={props.groups}
           paginationData={paginationData}
           widgetId="pagination-options-menu-top"
           isCompact={true}
@@ -411,11 +410,11 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
             {batchError !== undefined && batchError ? (
               <GlobalErrors errors={globalErrors.getAll()} />
             ) : (
-              <IDViewsOverrideUsersTable
-                elementsList={usersList}
-                shownElementsList={usersList}
+              <IDViewsOverrideGroupsTable
+                elementsList={groupsList}
+                shownElementsList={groupsList}
                 showTableRows={showTableRows}
-                overrideEntryData={usersTableData}
+                overrideEntryData={groupsTableData}
                 buttonsData={viewsTableButtonsData}
                 paginationData={selectedPerPageData}
               />
@@ -424,22 +423,22 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
         </OuterScrollContainer>
       </div>
       <PaginationLayout
-        list={usersList}
+        list={groupsList}
         paginationData={paginationData}
         variant={PaginationVariant.bottom}
         widgetId="pagination-options-menu-bottom"
         className="pf-v5-u-pb-0 pf-v5-u-pr-md"
       />
-      <AddIdOverrideUserModal
+      <AddIdOverrideGroupModal
         show={showAddModal}
         idview={props.idview}
-        users={usersList}
+        groups={groupsList}
         handleModalToggle={onAddModalToggle}
         onOpenAddModal={onAddClickHandler}
         onCloseAddModal={onCloseAddModal}
         onRefresh={onRefresh}
       />
-      <DeleteIdOverrideUsersModal
+      <DeleteIdOverrideGroupsModal
         show={showDeleteModal}
         idview={props.idview}
         handleModalToggle={onDeleteModalToggle}
