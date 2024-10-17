@@ -10,7 +10,7 @@ import TabLayout from "src/components/layouts/TabLayout";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import IDViewsOverrideUsers from "./IDViewsOverrideUsers";
-// import IDViewsOverrideGroups from "./IDViewsOverrideGroups";
+import IDViewsOverrideGroups from "./IDViewsOverrideGroups";
 
 interface PropsToOverrides {
   idView: IDView;
@@ -78,7 +78,13 @@ const IDViewsOverrides = (props: PropsToOverrides) => {
               </Badge>
             </TabTitleText>
           }
-        ></Tab>
+        >
+          <IDViewsOverrideGroups
+            idview={props.idView.cn}
+            groups={props.idView.groupoverrides}
+            onRefresh={props.onRefresh}
+          />
+        </Tab>
       </Tabs>
     </TabLayout>
   );
