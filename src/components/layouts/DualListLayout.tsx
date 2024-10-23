@@ -27,7 +27,9 @@ export type DualListTarget =
   | "netgroup"
   | "hbacsvc"
   | "hbacsvcgroup"
-  | "sudorule";
+  | "sudorule"
+  | "sudocmd"
+  | "sudocmdgroup";
 
 interface PropsToAddModal {
   entry: string;

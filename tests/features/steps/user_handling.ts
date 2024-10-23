@@ -429,6 +429,7 @@ Then(
 When(
   "I click on {string} button located in the toolbar",
   (buttonName: string) => {
+    cy.wait(1000);
     cy.get("div.pf-v5-c-toolbar").find("button").contains(buttonName).click();
   }
 );
