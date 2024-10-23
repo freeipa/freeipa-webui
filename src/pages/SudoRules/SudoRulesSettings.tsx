@@ -11,6 +11,9 @@ import {
   AddRemoveHostToSudoRulesResult,
   AddRemoveToSudoRulesPayload,
   AddRemoveToSudoRulesResult,
+  BatchDeleteAllCommandsResult,
+  RemoveAllCommandsFromSudoRulesPayload,
+  useRemoveAllCommandsAndSaveFromSudoRuleMutation,
   useRemoveFromSudoRuleMutation,
   useRemoveHostFromSudoRuleMutation,
   useSaveSudoRuleMutation,
@@ -30,6 +33,7 @@ import SudoRuleOptions from "src/components/SudoRuleSections/SudoRuleOptions";
 import SudoRulesWho from "src/components/SudoRuleSections/SudoRulesWho";
 import { TableEntry } from "src/components/tables/KeytabTableWithFilter";
 import AccessThisHost from "./AccessThisHost";
+import RunCommands from "src/components/SudoRuleSections/RunCommands";
 
 interface PropsToSudoRulesSettings {
   rule: Partial<SudoRule>;
@@ -50,6 +54,8 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
   const [saveService] = useSaveSudoRuleMutation();
   const [onRemoveFromUsers] = useRemoveFromSudoRuleMutation();
   const [onRemoveFromHosts] = useRemoveHostFromSudoRuleMutation();
+  const [onRemoveAllCommands] =
+    useRemoveAllCommandsAndSaveFromSudoRuleMutation();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "sudo-rules" });
@@ -104,15 +110,6 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
   const onChangeEnableModal = () => {
     setIsEnableModalOpen(!isEnableModalOpen);
   };
-
-  // When the 'Anyone' option in the 'Who' category is selected, the API calls when saving should be different.
-  // It should:
-  // - Remove all users + groups from the 'Who' category
-  // - Save the sudo rule
-  // Thus, a flag is needed to determine if the 'Anyone' option is selected
-  const [isWhoAnyoneSelected, setIsWhoAnyoneSelected] = React.useState(false);
-  const [isAccessThisHostAnyoneSelected, setIsAccessThisHostAnyoneSelected] =
-    React.useState(false);
 
   const onSaveRule = () => {
     // Save the rule
@@ -316,26 +313,118 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
     });
   };
 
+  const onDeleteAllCommandsAndSave = (
+    allowCommandsToDelete: string[],
+    allowCommandGroupsToDelete: string[],
+    denyCommandsToDelete: string[],
+    denyCommandGroupsToDelete: string[]
+  ) => {
+    const payload: RemoveAllCommandsFromSudoRulesPayload = {
+      sudoRuleId: props.rule.cn as string,
+      allowCommands: allowCommandsToDelete,
+      denyCommands: allowCommandGroupsToDelete,
+      allowCommandGroups: denyCommandsToDelete,
+      denyCommandGroups: denyCommandGroupsToDelete,
+    };
+
+    onRemoveAllCommands(payload).then((response) => {
+      if ("data" in response) {
+        const data = response.data;
+        const results = data.result
+          .results as unknown as BatchDeleteAllCommandsResult[];
+        if (results) {
+          results.map((result) => {
+            // Look for individual errors
+            if (
+              result.error ||
+              (result.failed &&
+                (("memberallowcmd" in result.failed &&
+                  result.failed.memberallowcmd.sudocmd.length > 0) ||
+                  ("memberallowcmd" in result.failed &&
+                    result.failed.memberallowcmd.sudocmdgroup.length > 0) ||
+                  ("memberdenycmd" in result.failed &&
+                    result.failed.memberdenycmd.sudocmd.length > 0) ||
+                  ("memberdenycmd" in result.failed &&
+                    result.failed.memberdenycmd.sudocmdgroup.length > 0)))
+            ) {
+              alerts.addAlert(
+                "remove-run-commands-error",
+                "Error: " + result.error,
+                "danger"
+              );
+            }
+          });
+          // Set alert: success
+          if (!data.error) {
+            props.onRefresh();
+            alerts.addAlert(
+              "remove-run-commands-success",
+              "Removed item(s) from '" + props.rule.cn + "' and saved",
+              "success"
+            );
+          }
+          setSaving(false);
+        }
+      }
+    });
+  };
+
   // 'Save' handle method
   const onSave = () => {
-    const modifiedValues = props.modifiedValues();
-    modifiedValues.cn = props.rule.cn;
     setSaving(true);
 
-    // If 'Anyone' is selected, remove all users and groups
-    if (isWhoAnyoneSelected) {
+    // Check which keys from object have been modified
+    const modifiedValues = props.modifiedValues();
+    const keysInObject = Object.keys(modifiedValues);
+
+    if (
+      (keysInObject.includes("usercategory") &&
+        modifiedValues.usercategory === "all") ||
+      (keysInObject.includes("hostcategory") &&
+        modifiedValues.hostcategory === "all") ||
+      (keysInObject.includes("cmdcategory") &&
+        modifiedValues.cmdcategory === "all")
+    ) {
+      // If 'Anyone' is selected, remove all users and groups
       const usersToRemove = (props.rule.memberuser_user || []).concat(
         props.rule.externaluser || []
       );
       const groupsToRemove = props.rule.memberuser_group || [];
-      onDeleteAllUsersAndSave(usersToRemove, groupsToRemove);
-    } else if (isAccessThisHostAnyoneSelected) {
+      if (keysInObject.includes("usercategory")) {
+        onDeleteAllUsersAndSave(usersToRemove, groupsToRemove);
+      }
+
+      // If 'Anyone' is selected, remove all hosts and host groups
       const hostsToRemove = (props.rule.memberhost_host || []).concat(
         props.rule.externalhost || []
       );
       const hostGroupsToRemove = props.rule.memberhost_hostgroup || [];
-      onDeleteAllHostsAndSave(hostsToRemove, hostGroupsToRemove);
+      if (keysInObject.includes("hostcategory")) {
+        onDeleteAllHostsAndSave(hostsToRemove, hostGroupsToRemove);
+      }
+      keysInObject.includes("usercategory") ||
+        keysInObject.includes("hostcategory") ||
+        keysInObject.includes("cmdcategory");
+
+      // If 'Any command' is selected, remove all commands and command groups
+      const allowCommandsToRemove = props.rule.memberallowcmd_sudocmd || [];
+      const denyCommandsToRemove = props.rule.memberdenycmd_sudocmd || [];
+      const allowCommandGroupsToRemove =
+        props.rule.memberallowcmd_sudocmdgroup || [];
+      const denyCommandGroupsToRemove =
+        props.rule.memberdenycmd_sudocmdgroup || [];
+
+      if (keysInObject.includes("cmdcategory")) {
+        onDeleteAllCommandsAndSave(
+          allowCommandsToRemove,
+          denyCommandsToRemove,
+          allowCommandGroupsToRemove,
+          denyCommandGroupsToRemove
+        );
+      }
     } else {
+      // Regular save
+      modifiedValues.cn = props.rule.cn;
       saveService(modifiedValues).then((response) => {
         if ("data" in response) {
           if (response.data.result) {
@@ -413,7 +502,13 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
   ];
 
   // Sidebar items
-  const itemNames = ["General", "Options", "Who", "Access this host"];
+  const itemNames = [
+    "General",
+    "Options",
+    "Who",
+    "Access this host",
+    "Run commands",
+  ];
 
   // Options
   const sudoOptions = props.rule.ipasudoopt || [];
@@ -453,12 +548,12 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
   const [hostgroupsList, setHostgroupsList] = React.useState<TableEntry[]>([]);
 
   React.useEffect(() => {
-    // - Users list
+    // - Hosts list
     const hostsAndExternalsListTemp: TableEntry[] =
       props.rule.memberhost_host?.map((entry) => {
         return { entry: entry, showLink: true };
       }) || [];
-    // Add externals into 'usersList' without showing link
+    // Add externals into 'hostsList' without showing link
     hostsAndExternalsListTemp.push(
       ...((props.rule.externalhost || []).map((entry) => {
         return { entry: entry, showLink: false };
@@ -472,6 +567,50 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
         return { entry: entry, showLink: true };
       }) || [];
     setHostgroupsList(hostgroupsListTemp);
+  }, [props.rule]);
+
+  // 'Run commands' section
+  const [allowCommandsList, setAllowCommandsList] = React.useState<
+    TableEntry[]
+  >([]);
+  const [allowCommandGroupsList, setAllowCommandGroupsList] = React.useState<
+    TableEntry[]
+  >([]);
+  const [denyCommandsList, setDenyCommandsList] = React.useState<TableEntry[]>(
+    []
+  );
+  const [denyCommandGroupsList, setDenyCommandGroupsList] = React.useState<
+    TableEntry[]
+  >([]);
+
+  React.useEffect(() => {
+    // - Allow commands list
+    const allowCommandsListTemp: TableEntry[] =
+      props.rule.memberallowcmd_sudocmd?.map((entry) => {
+        return { entry: entry, showLink: true };
+      }) || [];
+    setAllowCommandsList(allowCommandsListTemp);
+
+    // - Allow command groups list
+    const allowCommandGroupsListTemp: TableEntry[] =
+      props.rule.memberallowcmd_sudocmdgroup?.map((entry) => {
+        return { entry: entry, showLink: true };
+      }) || [];
+    setAllowCommandGroupsList(allowCommandGroupsListTemp);
+
+    // - Deny commands list
+    const denyCommandsListTemp: TableEntry[] =
+      props.rule.memberdenycmd_sudocmd?.map((entry) => {
+        return { entry: entry, showLink: true };
+      }) || [];
+    setDenyCommandsList(denyCommandsListTemp);
+
+    // - Deny command groups list
+    const denyCommandGroupsListTemp: TableEntry[] =
+      props.rule.memberdenycmd_sudocmdgroup?.map((entry) => {
+        return { entry: entry, showLink: true };
+      }) || [];
+    setDenyCommandGroupsList(denyCommandGroupsListTemp);
   }, [props.rule]);
 
   // Render component
@@ -511,7 +650,6 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             userGroupsList={usergroupsList}
             recordOnChange={recordOnChange}
             metadata={props.metadata}
-            setIsAnyoneSelected={setIsWhoAnyoneSelected}
             onSave={onSave}
             modifiedValues={props.modifiedValues}
           />
@@ -531,7 +669,31 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             hostGroupsList={hostgroupsList}
             recordOnChange={recordOnChange}
             metadata={props.metadata}
-            setIsAnyoneSelected={setIsAccessThisHostAnyoneSelected}
+            onSave={onSave}
+            modifiedValues={props.modifiedValues}
+          />
+        </Flex>
+        {/* Run commands */}
+        <Flex
+          direction={{ default: "column" }}
+          flex={{ default: "flex_1" }}
+          className="pf-v5-u-mt-lg"
+        >
+          <TitleLayout
+            headingLevel="h2"
+            id="run-commands"
+            text="Run commands"
+          />
+          <RunCommands
+            rule={props.rule}
+            ipaObject={ipaObject}
+            onRefresh={props.onRefresh}
+            allowCommandsList={allowCommandsList}
+            allowCommandGroupsList={allowCommandGroupsList}
+            denyCommandsList={denyCommandsList}
+            denyCommandGroupsList={denyCommandGroupsList}
+            recordOnChange={recordOnChange}
+            metadata={props.metadata}
             onSave={onSave}
             modifiedValues={props.modifiedValues}
           />
