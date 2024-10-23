@@ -730,6 +730,10 @@ export const api = createApi({
           method = "hbacsvcgroup_find";
         } else if (entryType === "sudorule") {
           method = "sudorule_find";
+        } else if (entryType === "sudocmd") {
+          method = "sudocmd_find";
+        } else if (entryType === "sudocmdgroup") {
+          method = "sudocmdgroup_find";
         } else {
           return {
             error: {
@@ -781,11 +785,16 @@ export const api = createApi({
             entryType === "hostgroup" ||
             entryType === "netgroup" ||
             entryType === "hbacsvc" ||
-            entryType === "hbacsvcgroup"
+            entryType === "hbacsvcgroup" ||
+            entryType === "sudocmdgroup"
           ) {
             const groupId = responseData.result.result[i] as cnType;
             const { cn } = groupId;
             ids.push(cn[0] as string);
+          } else if (entryType === "sudocmd") {
+            const sudoCmd = responseData.result.result[i] as sudoCmdType;
+            const { sudocmd } = sudoCmd;
+            ids.push(sudocmd[0] as string);
           }
         }
 

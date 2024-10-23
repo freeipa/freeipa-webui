@@ -11,6 +11,7 @@ import {
 import { apiToSudoRule } from "src/utils/sudoRulesUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
 import { SudoRule } from "../utils/datatypes/globalDataTypes";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 /**
  * Sudo rules-related endpoints: getSudoRulesInfoByName, addToSudoRules, removeFromSudoRules,
@@ -111,6 +112,74 @@ export interface AddRemoveHostToSudoRulesResult {
     memberhost_hostgroup: string[];
     sudoorder: number;
   };
+}
+
+export interface AddRemoveCommandToSudoRulesResult {
+  completed: number;
+  error: Record<string, unknown> | null;
+  failed: {
+    memberallowcmd: {
+      sudocmd: string[];
+      sudocmdgroup: string[];
+    };
+    memberdenycmd: {
+      sudocmd: string[];
+      sudocmdgroup: string[];
+    };
+  };
+  result: {
+    cn: string;
+    dn: string;
+    ipaenabledflag: boolean;
+    memberallowcmd_sudocmd: string[];
+    memberallowcmd_sudocmdgroup: string[];
+    memberdenycmd_sudocmd: string[];
+    memberdenycmd_sudocmdgroup: string[];
+    sudoorder: number;
+  };
+}
+
+export interface BatchDeleteAllCommandsResult {
+  completed: number;
+  error: Record<string, unknown> | null;
+  failed: {
+    memberallowcmd: {
+      sudocmd: string[];
+      sudocmdgroup: string[];
+    };
+    memberdenycmd: {
+      sudocmd: string[];
+      sudocmdgroup: string[];
+    };
+  };
+  result: {
+    cn: string;
+    dn: string;
+    ipaenabledflag: boolean;
+    cmdcategory: string;
+    memberallowcmd_sudocmd: string[];
+    memberallowcmd_sudocmdgroup: string[];
+    memberdenycmd_sudocmd: string[];
+    memberdenycmd_sudocmdgroup: string[];
+  };
+}
+
+export interface BatchDeleteAllCommandsResponse {
+  error: Record<string, unknown> | null;
+  id: string | null;
+  principal: string;
+  result: {
+    count: number;
+    results: BatchDeleteAllCommandsResult[];
+  };
+}
+
+export interface RemoveAllCommandsFromSudoRulesPayload {
+  sudoRuleId: string;
+  allowCommands: string[];
+  denyCommands: string[];
+  allowCommandGroups: string[];
+  denyCommandGroups: string[];
 }
 
 const extendedApi = api.injectEndpoints({
@@ -493,6 +562,212 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Add allow command from sudo rule
+     * @param {AddToSudoRulesPayload} Parameters to add to Sudo rule
+     */
+    addAllowCommandToSudoRule: build.mutation<
+      BatchResponse,
+      AddRemoveToSudoRulesPayload
+    >({
+      query: (payload) => {
+        const toId = payload.toId;
+        const type = payload.type; // Should be 'sudocmd' or 'sudocmdgroup'
+        const listOfMembers = payload.listOfMembers;
+
+        const batchParams: Command[] = [];
+
+        listOfMembers.map((option) => {
+          const chunk = {
+            method: "sudorule_add_allow_command",
+            params: [[toId], { [type]: option }],
+          };
+          batchParams.push(chunk);
+        });
+
+        return getBatchCommand(batchParams, API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Remove allow command from sudo rule
+     * @param {RemoveFromSudoRulesPayload} Parameters to remove from Sudo rule
+     */
+    removeAllowCommandFromSudoRule: build.mutation<
+      FindRPCResponse,
+      AddRemoveToSudoRulesPayload
+    >({
+      query: (payload) => {
+        const toId = payload.toId;
+        const type = payload.type; // Should be 'sudocmd' or 'sudocmdgroup'
+        const listOfMembers = payload.listOfMembers;
+
+        let methodType = "";
+        if (type === "sudocmd") {
+          methodType = "sudorule_remove_allow_command";
+        } else if (type === "sudocmdgroup") {
+          methodType = "sudorule_remove_allow_command";
+        }
+
+        const params = [
+          [toId],
+          { [type]: listOfMembers, version: API_VERSION_BACKUP },
+        ];
+
+        return getCommand({
+          method: methodType,
+          params: params,
+        });
+      },
+    }),
+    /**
+     * Add deny command from sudo rule
+     * @param {AddToSudoRulesPayload} Parameters to add to Sudo rule
+     */
+    addDenyCommandToSudoRule: build.mutation<
+      BatchResponse,
+      AddRemoveToSudoRulesPayload
+    >({
+      query: (payload) => {
+        const toId = payload.toId;
+        const type = payload.type; // Should be 'sudocmd' or 'sudocmdgroup'
+        const listOfMembers = payload.listOfMembers;
+
+        let methodType = "";
+        if (type === "sudocmd") {
+          methodType = "sudorule_add_deny_command";
+        } else if (type === "sudocmdgroup") {
+          methodType = "sudorule_add_deny_command";
+        }
+
+        const batchParams: Command[] = [];
+
+        listOfMembers.map((option) => {
+          const chunk = {
+            method: methodType,
+            params: [[toId], { [type]: option }],
+          };
+          batchParams.push(chunk);
+        });
+
+        return getBatchCommand(batchParams, API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Remove deny command from sudo rule
+     * @param {RemoveFromSudoRulesPayload} Parameters to remove from Sudo rule
+     */
+    removeDenyCommandFromSudoRule: build.mutation<
+      FindRPCResponse,
+      AddRemoveToSudoRulesPayload
+    >({
+      query: (payload) => {
+        const toId = payload.toId;
+        const type = payload.type; // Should be 'sudocmd' or 'sudocmdgroup'
+        const listOfMembers = payload.listOfMembers;
+
+        let methodType = "";
+        if (type === "sudocmd") {
+          methodType = "sudorule_remove_deny_command";
+        } else if (type === "sudocmdgroup") {
+          methodType = "sudorule_remove_deny_command";
+        }
+
+        const params = [
+          [toId],
+          { [type]: listOfMembers, version: API_VERSION_BACKUP },
+        ];
+
+        return getCommand({
+          method: methodType,
+          params: params,
+        });
+      },
+    }),
+    /**
+     * Remove all commands from sudo rule (allow, deny, commands, and command groups)
+     * @param {RemoveFromSudoRulesPayload} Parameters to remove from Sudo rule
+     */
+    removeAllCommandsAndSaveFromSudoRule: build.mutation<
+      BatchRPCResponse,
+      RemoveAllCommandsFromSudoRulesPayload
+    >({
+      async queryFn(
+        payloadData: RemoveAllCommandsFromSudoRulesPayload,
+        _queryApi,
+        _extraOptions,
+        fetchWithBQ
+      ) {
+        const {
+          sudoRuleId,
+          allowCommands,
+          denyCommands,
+          allowCommandGroups,
+          denyCommandGroups,
+        } = payloadData;
+
+        // Commands
+        const allowCommandsParams = [[sudoRuleId], { sudocmd: allowCommands }];
+
+        const denyCommandsParams = [[sudoRuleId], { sudocmd: denyCommands }];
+
+        // Command groups
+        const allowCommandGroupsParams = [
+          [sudoRuleId],
+          { sudocmdgroup: allowCommandGroups },
+        ];
+
+        const denyCommandGroupsParams = [
+          [sudoRuleId],
+          { sudocmdgroup: denyCommandGroups },
+        ];
+
+        // Batch commands
+        const batchPayload: Command[] = [
+          {
+            method: "sudorule_remove_allow_command",
+            params: allowCommandsParams,
+          },
+          {
+            method: "sudorule_remove_allow_command",
+            params: allowCommandGroupsParams,
+          },
+          {
+            method: "sudorule_remove_deny_command",
+            params: denyCommandsParams,
+          },
+          {
+            method: "sudorule_remove_deny_command",
+            params: denyCommandGroupsParams,
+          },
+          {
+            method: "sudorule_mod",
+            params: [
+              [sudoRuleId],
+              { all: true, rights: true, cmdcategory: "all" },
+            ],
+          },
+        ];
+
+        // Execute batch commands
+        const response = await fetchWithBQ(
+          getBatchCommand(batchPayload, API_VERSION_BACKUP)
+        );
+        // Return possible errors
+        if (response.error) {
+          return {
+            error: {
+              status: "CUSTOM_ERROR",
+              data: "",
+              error: "Failed to search for entries",
+            } as FetchBaseQueryError,
+          };
+        }
+
+        return {
+          data: response.data as BatchRPCResponse,
+        };
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -519,4 +794,9 @@ export const {
   useRemoveFromSudoRuleMutation,
   useAddHostToSudoRuleMutation,
   useRemoveHostFromSudoRuleMutation,
+  useAddAllowCommandToSudoRuleMutation,
+  useRemoveAllowCommandFromSudoRuleMutation,
+  useAddDenyCommandToSudoRuleMutation,
+  useRemoveDenyCommandFromSudoRuleMutation,
+  useRemoveAllCommandsAndSaveFromSudoRuleMutation,
 } = extendedApi;

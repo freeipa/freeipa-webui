@@ -39,7 +39,6 @@ interface PropsToSudoRulesWho {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   recordOnChange: (ipaObject: Record<string, any>) => void;
   metadata: Metadata;
-  setIsAnyoneSelected: (value: boolean) => void;
   onSave: () => void;
   modifiedValues: () => Partial<SudoRule>;
 }
@@ -326,11 +325,6 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
 
   // - When 'usercategory' is "all", disable checkboxes
   const anyoneOptionSelected = optionSelected === "Anyone";
-
-  // - Modify the 'setIsAnyoneSelected' function to set the value of 'optionSelected'
-  React.useEffect(() => {
-    props.setIsAnyoneSelected(anyoneOptionSelected);
-  }, [anyoneOptionSelected]);
 
   const options = [
     { label: "Anyone", value: "all" },
