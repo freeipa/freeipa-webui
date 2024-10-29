@@ -43,6 +43,7 @@ interface PropsToAddModal {
   addSpinningBtnName: string;
   action: (items: string[]) => void;
   tableElementsList: string[];
+  availableOptions?: string[];
   addExternalsOption?: boolean;
 }
 
@@ -59,10 +60,19 @@ const DualListTableLayout = (props: PropsToAddModal) => {
 
   const [availableOptions, setAvailableOptions] = useState<
     string[] | ReactNode[]
-  >([initialList]);
+  >([]);
   const [chosenOptions, setChosenOptions] = useState<string[]>([]);
   const [searchValue, setSearchValue] = React.useState("");
   const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
+
+  // Show available options if they are defined. Otherwise, show the initial list
+  React.useEffect(() => {
+    if (availableOptions === undefined) {
+      setAvailableOptions([initialList]);
+    } else {
+      setAvailableOptions(availableOptions);
+    }
+  }, []);
 
   const updateAvailableOptions = (newList: string[]) => {
     if (newList.length === 0) {
@@ -110,20 +120,25 @@ const DualListTableLayout = (props: PropsToAddModal) => {
   const [retrieveIDs] = useGetIDListMutation({});
   const submitSearchValue = () => {
     setSearchIsDisabled(true);
-    retrieveIDs({
-      searchValue: searchValue,
-      sizeLimit: 200,
-      startIdx: 0,
-      stopIdx: 200,
-      entryType: props.target,
-    } as GenericPayload).then((result) => {
-      if (result && "data" in result) {
-        updateAvailableOptions(result.data.list);
-      } else {
-        updateAvailableOptions([]);
-      }
+    if (props.availableOptions === undefined) {
+      retrieveIDs({
+        searchValue: props.availableOptions || searchValue,
+        sizeLimit: 200,
+        startIdx: 0,
+        stopIdx: 200,
+        entryType: props.target,
+      } as GenericPayload).then((result) => {
+        if (result && "data" in result) {
+          updateAvailableOptions(result.data.list);
+        } else {
+          updateAvailableOptions([]);
+        }
+        setSearchIsDisabled(false);
+      });
+    } else {
+      updateAvailableOptions(props.availableOptions);
       setSearchIsDisabled(false);
-    });
+    }
   };
 
   const updateSearchValue = (value: string) => {
