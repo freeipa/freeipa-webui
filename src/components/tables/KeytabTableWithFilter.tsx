@@ -11,6 +11,8 @@ import DualListLayout, {
 import { useAlerts } from "src/hooks/useAlerts";
 import { usePagination } from "src/hooks/usePagination";
 import useShifting from "src/hooks/useShifting";
+// RPC
+import { GenericPayload, useGetIDListMutation } from "src/services/rpc";
 // Components
 import { paginate } from "src/utils/utils";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
@@ -250,8 +252,36 @@ const KeytabTableWithFilter = (props: PropsToKeytabTable) => {
     onChangeDeleteModal();
   };
 
+  // Issue a search using a specific search value
+  const [fullListElements, setFullListElements] = React.useState<string[]>([]);
+  const [retrieveIDs] = useGetIDListMutation({});
+
+  React.useEffect(() => {
+    retrieveIDs({
+      searchValue: "",
+      sizeLimit: 200,
+      startIdx: 0,
+      stopIdx: 200,
+      entryType: props.entityType,
+    } as GenericPayload).then((result) => {
+      if (result && "data" in result) {
+        setFullListElements(result.data.list);
+      } else {
+        setFullListElements([]);
+      }
+    });
+  }, [props.entityType]);
+
   // Entry count
   const entryCount = tableEntryList.map((entry) => entry.entry).length;
+
+  // Entry elements
+  const entryElements = tableEntryList.map((element) => element.entry);
+
+  // Filter which elements are not in the table
+  const filteredEntryElementsList = fullListElements.filter(
+    (element) => !entryElements.includes(element)
+  );
 
   // Render component
   return (
@@ -285,7 +315,8 @@ const KeytabTableWithFilter = (props: PropsToKeytabTable) => {
         showModal={showAddModal}
         onCloseModal={onChangeAddModal}
         onOpenModal={onChangeAddModal}
-        tableElementsList={tableEntryList.map((element) => element.entry)}
+        tableElementsList={entryElements}
+        availableOptions={filteredEntryElementsList}
         action={onAddNewItems}
         title={props.operationTitle}
         spinning={props.isSpinning}
