@@ -15,9 +15,6 @@ const simpleValues = new Set([
   "ipasudorunasusercategory",
   "ipasudorunasgroupcategory",
   "hostmask",
-  "ipasudorunasextusergroup",
-  "ipasudorunasextgroup",
-  "ipasudorunasextuser",
 ]);
 const dateValues = new Set([]);
 
@@ -66,9 +63,9 @@ export function createEmptySudoRule(): SudoRule {
     ipasudorunasgroupcategory: "",
     hostmask: "",
     externalhost: [],
-    ipasudorunasextusergroup: "",
-    ipasudorunasextgroup: "",
-    ipasudorunasextuser: "",
+    ipasudorunasextusergroup: [],
+    ipasudorunasextgroup: [],
+    ipasudorunasextuser: [],
     memberuser_group: [],
   };
 

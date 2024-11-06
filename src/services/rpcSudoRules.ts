@@ -74,6 +74,13 @@ export interface AddRemoveToSudoRulesPayload {
   listOfMembers: string[];
 }
 
+export interface AddRemoveAsRunToSudoRulesPayload {
+  toId: string;
+  runAsType: "user" | "group";
+  type: string;
+  listOfMembers: string[];
+}
+
 export interface AddRemoveToSudoRulesResult {
   completed: number;
   error: Record<string, unknown> | null;
@@ -136,6 +143,34 @@ export interface AddRemoveCommandToSudoRulesResult {
     memberdenycmd_sudocmd: string[];
     memberdenycmd_sudocmdgroup: string[];
     sudoorder: number;
+  };
+}
+
+export interface AddRemoveRunAsToSudoRulesResult {
+  completed: number;
+  error: Record<string, unknown> | null;
+  failed: {
+    ipasudorunas: {
+      group: string[];
+      user: string[];
+    };
+    ipasudorunasgroup: {
+      group: string[];
+    };
+  };
+  result: {
+    cn: string;
+    dn: string;
+    externaluser: string[];
+    ipaenabledflag: boolean;
+    ipasudorunas_group: string[];
+    ipasudorunasextusergroup: string[];
+    ipasudorunas_user: string[];
+    ipasudorunasextuser: string[];
+    ipasudorunasgroup_group: string[];
+    ipasudorunasextgroup: string[];
+    memberhost_hostgroup: string[];
+    memberuser_user: string[];
   };
 }
 
@@ -768,6 +803,57 @@ const extendedApi = api.injectEndpoints({
         };
       },
     }),
+    /**
+     * Add RunAs users or groups to sudo rule
+     * @param {AddRemoveAsRunToSudoRulesPayload} Parameters to add to Sudo rule
+     */
+    addRunAs: build.mutation<BatchResponse, AddRemoveAsRunToSudoRulesPayload>({
+      query: (payload) => {
+        const toId = payload.toId;
+        const runAsType = payload.runAsType; // Should be 'user' or 'group'
+        const type = payload.type; // Should be 'user' or 'group'
+        const listOfMembers = payload.listOfMembers;
+
+        const batchParams: Command[] = [];
+
+        const methodType = "sudorule_add_runas" + runAsType;
+
+        const chunk = {
+          method: methodType,
+          params: [[toId], { [type]: listOfMembers }],
+        };
+        batchParams.push(chunk);
+
+        return getBatchCommand(batchParams, API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Remove RunAs user from sudo rule
+     * @param {AddRemoveAsRunToSudoRulesPayload} Parameters to remove from Sudo rule
+     */
+    removeRunAs: build.mutation<
+      FindRPCResponse,
+      AddRemoveAsRunToSudoRulesPayload
+    >({
+      query: (payload) => {
+        const toId = payload.toId;
+        const runAsType = payload.runAsType; // Should be 'user' or 'group'
+        const type = payload.type; // Should be 'user' or 'group'
+        const listOfMembers = payload.listOfMembers;
+
+        const methodType = "sudorule_remove_runas" + runAsType;
+
+        const params = [
+          [toId],
+          { [type]: listOfMembers, version: API_VERSION_BACKUP },
+        ];
+
+        return getCommand({
+          method: methodType,
+          params: params,
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -799,4 +885,6 @@ export const {
   useAddDenyCommandToSudoRuleMutation,
   useRemoveDenyCommandFromSudoRuleMutation,
   useRemoveAllCommandsAndSaveFromSudoRuleMutation,
+  useAddRunAsMutation,
+  useRemoveRunAsMutation,
 } = extendedApi;
