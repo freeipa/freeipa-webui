@@ -8,7 +8,9 @@ import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // RPC
 import {
+  AddRemoveAsRunToSudoRulesPayload,
   AddRemoveHostToSudoRulesResult,
+  AddRemoveRunAsToSudoRulesResult,
   AddRemoveToSudoRulesPayload,
   AddRemoveToSudoRulesResult,
   BatchDeleteAllCommandsResult,
@@ -16,6 +18,7 @@ import {
   useRemoveAllCommandsAndSaveFromSudoRuleMutation,
   useRemoveFromSudoRuleMutation,
   useRemoveHostFromSudoRuleMutation,
+  useRemoveRunAsMutation,
   useSaveSudoRuleMutation,
 } from "src/services/rpcSudoRules";
 import { ErrorResult } from "src/services/rpc";
@@ -34,6 +37,7 @@ import SudoRulesWho from "src/components/SudoRuleSections/SudoRulesWho";
 import { TableEntry } from "src/components/tables/KeytabTableWithFilter";
 import AccessThisHost from "./AccessThisHost";
 import RunCommands from "src/components/SudoRuleSections/RunCommands";
+import SudoRuleAsWhom from "src/components/SudoRuleSections/SudoRuleAsWhom";
 
 interface PropsToSudoRulesSettings {
   rule: Partial<SudoRule>;
@@ -56,6 +60,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
   const [onRemoveFromHosts] = useRemoveHostFromSudoRuleMutation();
   const [onRemoveAllCommands] =
     useRemoveAllCommandsAndSaveFromSudoRuleMutation();
+  const [onRemoveRunAs] = useRemoveRunAsMutation();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "sudo-rules" });
@@ -369,6 +374,142 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
     });
   };
 
+  // 'As whom' section - Run as users
+  const onDeleteGroupUsers = (groupUsersToDelete: string[]) => {
+    const payloadGroupUsers: AddRemoveAsRunToSudoRulesPayload = {
+      toId: props.rule.cn as string,
+      runAsType: "user",
+      type: "group",
+      listOfMembers: groupUsersToDelete,
+    };
+
+    onRemoveRunAs(payloadGroupUsers).then((response) => {
+      if ("data" in response) {
+        const data = response.data;
+        const results =
+          data.result as unknown as AddRemoveRunAsToSudoRulesResult;
+        if (results) {
+          // Some values can be undefined after deletion
+          const groupsFromResponse = results.result.ipasudorunas_group || [];
+          const externalsFromResponse =
+            results.result.ipasudorunasextusergroup || [];
+          if (
+            !containsAny(groupsFromResponse, groupUsersToDelete) ||
+            !containsAny(externalsFromResponse, groupUsersToDelete)
+          ) {
+            // Refresh page
+            props.onRefresh();
+            // SAVE RULE
+            onSaveRule();
+          }
+          // Check if any errors
+          else if (
+            results.error ||
+            results.failed.ipasudorunas.group.length > 0
+          ) {
+            alerts.addAlert(
+              "as-whom-remove-user-group-external-error",
+              "Error: " + results.error,
+              "danger"
+            );
+          }
+        }
+      }
+      setSaving(false);
+    });
+  };
+
+  const onDeleteAllRunAsUsersAndSave = (
+    usersToDelete: string[],
+    groupUsersToDelete: string[]
+  ) => {
+    const payloadUsers: AddRemoveAsRunToSudoRulesPayload = {
+      toId: props.rule.cn as string,
+      runAsType: "user",
+      type: "user",
+      listOfMembers: usersToDelete,
+    };
+
+    onRemoveRunAs(payloadUsers).then((response) => {
+      if ("data" in response) {
+        const data = response.data;
+        const results =
+          data.result as unknown as AddRemoveRunAsToSudoRulesResult;
+        if (results) {
+          // Some values can be undefined after deletion
+          const userFromResponse = results.result.ipasudorunas_user || [];
+          const externalsFromResponse =
+            results.result.ipasudorunasextuser || [];
+          if (
+            !containsAny(userFromResponse, usersToDelete) ||
+            !containsAny(externalsFromResponse, usersToDelete)
+          ) {
+            // Refresh page
+            props.onRefresh();
+            // Remove group users
+            onDeleteGroupUsers(groupUsersToDelete);
+          }
+          // Check if any errors
+          else if (
+            results.error ||
+            results.failed.ipasudorunas.user.length > 0
+          ) {
+            alerts.addAlert(
+              "as-whom-remove-user-external-error",
+              "Error: " + results.error,
+              "danger"
+            );
+          }
+        }
+      }
+    });
+  };
+
+  // 'As whom' section - Run as groups
+  const onDeleteAllRunAsGroupsAndSave = (groupsToDelete: string[]) => {
+    const payload: AddRemoveAsRunToSudoRulesPayload = {
+      toId: props.rule.cn as string,
+      runAsType: "group",
+      type: "group",
+      listOfMembers: groupsToDelete,
+    };
+
+    onRemoveRunAs(payload).then((response) => {
+      if ("data" in response) {
+        const data = response.data;
+        const results =
+          data.result as unknown as AddRemoveRunAsToSudoRulesResult;
+        if (results) {
+          // Some values can be undefined after deletion
+          const groupsFromResponse =
+            results.result.ipasudorunasgroup_group || [];
+          const externalsFromResponse =
+            results.result.ipasudorunasextgroup || [];
+          if (
+            !containsAny(groupsFromResponse, groupsToDelete) ||
+            !containsAny(externalsFromResponse, groupsToDelete)
+          ) {
+            // Refresh page
+            props.onRefresh();
+            // SAVE RULE
+            onSaveRule();
+          }
+          // Check if any errors
+          else if (
+            results.error ||
+            results.failed.ipasudorunas.group.length > 0
+          ) {
+            alerts.addAlert(
+              "as-whom-remove-group-external-error",
+              "Error: " + results.error,
+              "danger"
+            );
+          }
+        }
+      }
+    });
+  };
+
   // 'Save' handle method
   const onSave = () => {
     setSaving(true);
@@ -383,7 +524,11 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
       (keysInObject.includes("hostcategory") &&
         modifiedValues.hostcategory === "all") ||
       (keysInObject.includes("cmdcategory") &&
-        modifiedValues.cmdcategory === "all")
+        modifiedValues.cmdcategory === "all") ||
+      (keysInObject.includes("ipasudorunasusercategory") &&
+        modifiedValues.ipasudorunasusercategory === "all") ||
+      (keysInObject.includes("ipasudorunasgroupcategory") &&
+        modifiedValues.ipasudorunasgroupcategory === "all")
     ) {
       // If 'Anyone' is selected, remove all users and groups
       const usersToRemove = (props.rule.memberuser_user || []).concat(
@@ -421,6 +566,36 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
           allowCommandGroupsToRemove,
           denyCommandGroupsToRemove
         );
+      }
+
+      // 'As whom' - If 'Anyone' is selected, remove all run as users
+      const runAsUsersToRemove = (props.rule.ipasudorunas_user || []).concat(
+        props.rule.ipasudorunasextuser || []
+      );
+      const runAsUserGroupsToRemove = (
+        props.rule.ipasudorunas_group || []
+      ).concat(props.rule.ipasudorunasextusergroup || []);
+
+      if (
+        keysInObject.includes("ipasudorunasusercategory") &&
+        modifiedValues.ipasudorunasusercategory === "all"
+      ) {
+        onDeleteAllRunAsUsersAndSave(
+          runAsUsersToRemove,
+          runAsUserGroupsToRemove
+        );
+      }
+
+      // 'As whom' - If 'Any group' is selected, remove all run as groups
+      const runAsGroupsToRemove = (
+        props.rule.ipasudorunasgroup_group || []
+      ).concat(props.rule.ipasudorunasextgroup || []);
+
+      if (
+        keysInObject.includes("ipasudorunasgroupcategory") &&
+        modifiedValues.ipasudorunasgroupcategory === "all"
+      ) {
+        onDeleteAllRunAsGroupsAndSave(runAsGroupsToRemove);
       }
     } else {
       // Regular save
@@ -508,6 +683,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
     "Who",
     "Access this host",
     "Run commands",
+    "As whom",
   ];
 
   // Options
@@ -613,6 +789,57 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
     setDenyCommandGroupsList(denyCommandGroupsListTemp);
   }, [props.rule]);
 
+  // As whom section
+  const [runAsUsersAndExternalsList, setRunAsUsersAndExternalsList] =
+    React.useState<TableEntry[]>([]);
+  const [
+    runAsUsersGroupsAndExternalsList,
+    setRunAsUsersGroupsAndExternalsList,
+  ] = React.useState<TableEntry[]>([]);
+  const [runAsGroupsAndExternalsList, setRunAsGroupsAndExternalsList] =
+    React.useState<TableEntry[]>([]);
+
+  React.useEffect(() => {
+    // RunAs users list
+    const runAsUsersAndExternalsListTemp: TableEntry[] =
+      props.rule.ipasudorunas_user?.map((entry) => {
+        return { entry: entry, showLink: true };
+      }) || [];
+    // - Add externals into 'runAsUsersList' without showing link
+    runAsUsersAndExternalsListTemp.push(
+      ...((props.rule.ipasudorunasextuser || []).map((entry) => {
+        return { entry: entry, showLink: false };
+      }) || [])
+    );
+    setRunAsUsersAndExternalsList(runAsUsersAndExternalsListTemp);
+
+    // Groups of RunAs Users list
+    const runAsUsersGroupsAndExternalsListTemp: TableEntry[] =
+      props.rule.ipasudorunas_group?.map((entry) => {
+        return { entry: entry, showLink: true };
+      }) || [];
+    // - Add externals into 'runAsUsersGroupsList' without showing link
+    runAsUsersGroupsAndExternalsListTemp.push(
+      ...((props.rule.ipasudorunasextusergroup || []).map((entry) => {
+        return { entry: entry, showLink: false };
+      }) || [])
+    );
+    setRunAsUsersGroupsAndExternalsList(runAsUsersGroupsAndExternalsListTemp);
+
+    // RunAs groups list
+    const runAsGroupsAndExternalsListTemp: TableEntry[] =
+      props.rule.ipasudorunasgroup_group?.map((entry) => {
+        return { entry: entry, showLink: true };
+      }) || [];
+    // - Add externals into 'runAsUsersGroupsList' without showing link
+    runAsGroupsAndExternalsListTemp.push(
+      ...((props.rule.ipasudorunasextgroup || []).map((entry) => {
+        return { entry: entry, showLink: false };
+      }) || [])
+    );
+    setRunAsGroupsAndExternalsList(runAsGroupsAndExternalsListTemp);
+  }, [props.rule]);
+
   // Render component
   return (
     <TabLayout id="settings-page" toolbarItems={toolbarFields}>
@@ -639,7 +866,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
         <Flex
           direction={{ default: "column" }}
           flex={{ default: "flex_1" }}
-          className="pf-v5-u-mt-lg"
+          className="pf-v5-u-mt-xl"
         >
           <TitleLayout headingLevel="h2" id="who" text="Who" />
           <SudoRulesWho
@@ -658,7 +885,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
         <Flex
           direction={{ default: "column" }}
           flex={{ default: "flex_1" }}
-          className="pf-v5-u-mt-lg"
+          className="pf-v5-u-mt-xl"
         >
           <TitleLayout headingLevel="h2" id="who" text="Access this host" />
           <AccessThisHost
@@ -677,7 +904,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
         <Flex
           direction={{ default: "column" }}
           flex={{ default: "flex_1" }}
-          className="pf-v5-u-mt-lg"
+          className="pf-v5-u-mt-xl"
         >
           <TitleLayout
             headingLevel="h2"
@@ -692,6 +919,26 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             allowCommandGroupsList={allowCommandGroupsList}
             denyCommandsList={denyCommandsList}
             denyCommandGroupsList={denyCommandGroupsList}
+            recordOnChange={recordOnChange}
+            metadata={props.metadata}
+            onSave={onSave}
+            modifiedValues={props.modifiedValues}
+          />
+        </Flex>
+        {/* As whom */}
+        <Flex
+          direction={{ default: "column" }}
+          flex={{ default: "flex_1" }}
+          className="pf-v5-u-mt-xl"
+        >
+          <TitleLayout headingLevel="h2" id="as-whom" text="As whom" />
+          <SudoRuleAsWhom
+            rule={props.rule}
+            ipaObject={ipaObject}
+            runasuser_users={runAsUsersAndExternalsList}
+            runasuser_groups={runAsUsersGroupsAndExternalsList}
+            runasgroup_group={runAsGroupsAndExternalsList}
+            onRefresh={props.onRefresh}
             recordOnChange={recordOnChange}
             metadata={props.metadata}
             onSave={onSave}
