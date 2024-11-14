@@ -286,7 +286,10 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
         const results = data.result as unknown as AddRemoveToSudoRulesResult;
         if (results) {
           const groupsFromResponse = results.result.memberuser_group;
-          if (!containsAny(groupsFromResponse, groupsToDelete)) {
+          if (
+            groupsFromResponse === undefined ||
+            !containsAny(groupsFromResponse, groupsToDelete)
+          ) {
             // Set alert: success
             alerts.addAlert(
               "remove-who-group-external-success",
@@ -332,7 +335,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
   ];
 
   const filter = (
-    <Flex>
+    <Flex name="usercategory">
       <FlexItem>User category the rule applies to: </FlexItem>
       <FlexItem>
         <IpaToggleGroup
