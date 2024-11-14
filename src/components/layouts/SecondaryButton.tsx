@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "@patternfly/react-core";
 
 interface PropsToSecondaryButton {
+  id?: string;
   classname?: string;
   name?: string;
   isDisabled?: boolean;
@@ -26,6 +27,7 @@ interface PropsToSecondaryButton {
 const SecondaryButton = (props: PropsToSecondaryButton) => {
   return (
     <Button
+      id={props.id}
       className={props.classname}
       name={props.name}
       variant="secondary"

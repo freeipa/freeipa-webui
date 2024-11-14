@@ -95,6 +95,7 @@ const IpaNumberInput = (props: IPAParamDefinitionNumberInput) => {
     <>
       <NumberInput
         id={props.id}
+        name={props.name}
         value={numberValue}
         onMinus={onMinus}
         onChange={onChangeHandler}
