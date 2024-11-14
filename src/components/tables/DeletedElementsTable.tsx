@@ -135,13 +135,18 @@ const DeletedElementsTable = (props: PropsToDeletedElementsTable) => {
 
   const body = getBody();
 
+  // Parse 'elementType' to not have spaces and have lowercase
+  const elementTypeNoSpaces = props.elementType
+    .replace(/\s/g, "-")
+    .toLowerCase();
+
   // Render 'DeletedElementsTable'
   return (
     <TableLayout
       ariaLabel={"Remove " + props.elementType + "s table"}
       variant={"compact"}
       hasBorders={true}
-      tableId={"remove-" + props.elementType + "s-table"}
+      tableId={"remove-" + elementTypeNoSpaces + "s-table"}
       isStickyHeader={true}
       tableHeader={header}
       tableBody={body}
