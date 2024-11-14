@@ -39,6 +39,7 @@ export interface PropsToSettingsTableLayout {
   list: any[];
   entryCount: number;
   entryType: string;
+  extraID?: string;
 }
 
 interface PaginationData {
@@ -57,6 +58,13 @@ interface PaginationData {
 // are ideal in a crowded page where space is limited
 
 const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
+  const extraId = props.extraID ? props.extraID : "";
+  // Prepare ID for the Add buttons
+  // - Should contain the entry type in lowercase and spaces replaced by dashes
+  const addButtonId = extraId
+    ? "add-" + extraId + "-" + props.entryType.toLowerCase().replace(" ", "-")
+    : "add-" + props.entryType.toLowerCase().replace(" ", "-");
+
   return (
     <>
       <Flex>
@@ -84,6 +92,7 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
                 classname="pf-v5-u-mr-sm"
                 isDisabled={props.isAddDisabled || false}
                 onClickHandler={props.onAddModal}
+                id={addButtonId}
               >
                 Add {props.entryType.toLowerCase()}s
               </SecondaryButton>
@@ -130,6 +139,7 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
               <SecondaryButton
                 onClickHandler={props.onAddModal}
                 isDisabled={props.isAddDisabled || false}
+                id={addButtonId}
               >
                 Add {props.entryType.toLowerCase()}s
               </SecondaryButton>

@@ -27,6 +27,7 @@ export interface TableEntry {
 interface PropsToKeytabTable {
   className: string;
   id: string;
+  extraId?: string; // In some cases (e.g. buttons with the same name) it is necessary to add an extra ID
   from: string;
   name: string; // Name used in IPA
   isSpinning: boolean;
@@ -307,6 +308,7 @@ const KeytabTableWithFilter = (props: PropsToKeytabTable) => {
         list={tableEntriesFilteredList}
         entryCount={entryCount}
         entryType={props.entityType}
+        extraID={props.extraId}
       />
       {/* Add modal */}
       <DualListLayout
