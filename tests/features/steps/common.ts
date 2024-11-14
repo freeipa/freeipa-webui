@@ -23,6 +23,15 @@ Given(
   }
 );
 
+// - E.g. "I am on the 'sudo-rules' > 'sudorule-1' Settings page"
+Given(
+  "I am on the {string} > {string} Settings page",
+  (toPage: string, entityName: string) => {
+    cy.visit(Cypress.env("base_url") + "/" + toPage + "/" + entityName);
+    cy.wait(1000);
+  }
+);
+
 // login
 Given("I am logged in as {string}", (username: string) => {
   cy.wait(1000);
@@ -114,6 +123,14 @@ When(
   }
 );
 
+// This takes only the buttons found in the footer of the modal (e.g. "Cancel", "Save", "Add")
+Then(
+  "I click on the {string} button located in the footer modal dialog",
+  (buttonName: string) => {
+    cy.get("[role=dialog] footer").find("button").contains(buttonName).click();
+  }
+);
+
 When(
   "in the modal dialog I check {string} radio selector",
   (selectorText: string) => {
@@ -132,6 +149,33 @@ Then("I see a modal with text {string}", (text: string) => {
   cy.get("[role=dialog] div.pf-v5-c-modal-box__body").contains(text);
 });
 
+Then("I see a modal with title text {string}", (titleText: string) => {
+  cy.get("[role=dialog] h1.pf-v5-c-modal-box__title")
+    .find("span")
+    .contains(titleText);
+});
+
+// - Delete
+// -- Elements to delete on tables
+Then(
+  "the {string} element should be in the dialog table with id {string}",
+  (groupName: string, tableId: string) => {
+    cy.get("div[role='dialog'")
+      .find("table#" + tableId)
+      .find("td.pf-v5-c-table__td")
+      .contains(groupName)
+      .should("be.visible");
+  }
+);
+
+// -- Element to delete on cards
+Then(
+  "the {string} element should be in the dialog card with id {string}",
+  (groupName: string, tableId: string) => {
+    cy.get("div[role='dialog'");
+  }
+);
+
 // Fields
 When(
   "I type in the field {string} text {string}",
@@ -143,6 +187,20 @@ When(
       .then(($label) => {
         cy.get("#modal-form-" + $label.attr("for")).type(content);
       });
+  }
+);
+
+When(
+  "I type in the flex field {string} text {string}",
+  (fieldName: string, content: string) => {
+    const regex = new RegExp("^" + fieldName + "$", "i");
+    cy.get("[role=dialog] label")
+      .contains(regex)
+      .parent()
+      .parent()
+      .parent()
+      .find("input")
+      .type(content);
   }
 );
 
@@ -187,13 +245,46 @@ When("I click on {string} entry in the data table", (name: string) => {
     .click();
 });
 
+When(
+  "I select {string} entry with no link in the data table",
+  (name: string) => {
+    cy.get("tr[id^='" + name + "'] label input").click();
+  }
+);
+
+When(
+  "I click on {string} entry in the data table with name id {string}",
+  (entry: string, name: string) => {
+    cy.find("table[name=" + name + "]")
+      .get("tr[id='" + entry + "'] a")
+      .contains(entry)
+      .click();
+  }
+);
+
 Then("I should see {string} entry in the data table", (name: string) => {
   cy.get("tr[id='" + name + "']").should("be.visible");
 });
 
+Then(
+  "I should see {string} entry in the data table with ID {string}",
+  (name: string, tableId: string) => {
+    cy.get("table#" + tableId + " tbody td a").contains(name);
+  }
+);
+
 Then("I should not see {string} entry in the data table", (name: string) => {
   cy.get("tr[id='" + name + "']").should("not.exist");
 });
+
+Then(
+  "I should not see {string} entry in the data table with ID {string}",
+  (name: string, tableId: string) => {
+    cy.get("table#" + tableId + "tbody tr[id='" + name + "']").should(
+      "not.exist"
+    );
+  }
+);
 
 Then(
   "entry {string} should have attribute {string} set to {string}",
@@ -617,13 +708,41 @@ Then(
 
 // NumberInput
 When("I click on the {string} number plus button", (id: string) => {
-  cy.get("div[id=" + id + "]")
+  cy.get("div[name=" + id + "]")
     .find('button[aria-label="plus"]')
     .click();
 });
 
 When("I click on the {string} number minus button", (id: string) => {
-  cy.get("div[id=" + id + "]")
+  cy.get("div[name=" + id + "]")
     .find('button[aria-label="minus"]')
     .click();
 });
+
+Then(
+  "I should see the {string} number input value is {string}",
+  (id: string, value: string) => {
+    cy.get("div[name=" + id + "]").find("input[value='" + value + "']");
+  }
+);
+
+// Toggle group
+When(
+  "I click on the {string} option under ID {string} toggle group",
+  (option: string, toggleId: string) => {
+    cy.get("div[name=" + toggleId)
+      .find("button")
+      .contains(option)
+      .click();
+  }
+);
+
+Then(
+  "I should see {string} selected in the ID {string} toggle group",
+  (optionSelected: string, toggleId: string) => {
+    cy.get("div[name=" + toggleId)
+      .find("button")
+      .contains(optionSelected)
+      .get("button[aria-pressed=true]");
+  }
+);
