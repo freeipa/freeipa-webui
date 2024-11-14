@@ -337,7 +337,7 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
   ];
 
   const filter = (
-    <Flex>
+    <Flex name="hostcategory">
       <FlexItem>Host category the rule applies to: </FlexItem>
       <FlexItem>
         <IpaToggleGroup
