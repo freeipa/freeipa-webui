@@ -492,12 +492,12 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
   // Filter: toggle options
   const userOptions = [
     { label: "Anyone", value: "all" },
-    { label: "Specified Groups", value: "" },
+    { label: "Specified Users and Groups", value: "" },
   ];
 
   const groupOptions = [
     { label: "Any Group", value: "all" },
-    { label: "Specified Users and Groups", value: "" },
+    { label: "Specified Groups", value: "" },
   ];
 
   // - RunAs Users
@@ -513,7 +513,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
   const runAsUserAnyoneOptionSelected = runAsUserOptionSelected === "Anyone";
 
   const filterRunAsUser = (
-    <Flex>
+    <Flex name="ipasudorunasusercategory">
       <FlexItem>RunAs User category the rule applies to: </FlexItem>
       <FlexItem>
         <IpaToggleGroup
@@ -545,7 +545,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
     runAsGroupOptionSelected === "Any Group";
 
   const filterRunAsGroup = (
-    <Flex className="pf-v5-u-mt-lg">
+    <Flex className="pf-v5-u-mt-lg" name="ipasudorunasgroupcategory">
       <FlexItem>RunAs Group category the rule applies to: </FlexItem>
       <FlexItem>
         <IpaToggleGroup
@@ -590,6 +590,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
           <KeytabTableWithFilter
             className="pf-v5-u-ml-md pf-v5-u-mt-sm"
             id={props.rule.cn as string}
+            extraId="runas"
             from="sudo rule"
             name="ipasudorunas_user"
             isSpinning={modalSpinning}
@@ -621,6 +622,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
           <KeytabTableWithFilter
             className="pf-v5-u-ml-md pf-v5-u-mt-sm"
             id={props.rule.cn as string}
+            extraId="runas"
             from="sudo rule"
             name="ipasudorunas_group"
             isSpinning={modalSpinning}
@@ -661,6 +663,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
           <KeytabTableWithFilter
             className="pf-v5-u-ml-md pf-v5-u-mt-sm"
             id={props.rule.cn as string}
+            extraId="runas-group"
             from="sudo rule"
             name="ipasudorunasgroup_group"
             isSpinning={modalSpinning}

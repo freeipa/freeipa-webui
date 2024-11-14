@@ -502,8 +502,8 @@ const RunCommands = (props: PropsToRunCommands) => {
   ];
 
   const filter = (
-    <Flex>
-      <FlexItem>Host category the rule applies to: </FlexItem>
+    <Flex name="cmdcategory">
+      <FlexItem>Command category the rule applies to: </FlexItem>
       <FlexItem>
         <IpaToggleGroup
           ipaObject={props.ipaObject}
@@ -552,6 +552,7 @@ const RunCommands = (props: PropsToRunCommands) => {
           <KeytabTableWithFilter
             className="pf-v5-u-ml-md pf-v5-u-mt-sm"
             id={props.rule.cn as string}
+            extraId="allow"
             from="sudo rule"
             name="memberallowcmd_sudocmd"
             isSpinning={modalSpinning}
@@ -582,6 +583,7 @@ const RunCommands = (props: PropsToRunCommands) => {
           <KeytabTableWithFilter
             className="pf-v5-u-ml-md pf-v5-u-mt-sm"
             id={props.rule.cn as string}
+            extraId="allow"
             from="sudo rule"
             name="memberallowcmd_sudocmdgroup"
             isSpinning={modalSpinning}
@@ -627,6 +629,7 @@ const RunCommands = (props: PropsToRunCommands) => {
           <KeytabTableWithFilter
             className="pf-v5-u-ml-md pf-v5-u-mt-sm"
             id={props.rule.cn as string}
+            extraId="deny"
             from="sudo rule"
             name="memberdenycmd_sudocmd"
             isSpinning={modalSpinning}
@@ -657,6 +660,7 @@ const RunCommands = (props: PropsToRunCommands) => {
           <KeytabTableWithFilter
             className="pf-v5-u-ml-md pf-v5-u-mt-sm"
             id={props.rule.cn as string}
+            extraId="deny"
             from="sudo rule"
             name="memberdenycmd_sudocmdgroup"
             isSpinning={modalSpinning}
