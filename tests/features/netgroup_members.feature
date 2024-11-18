@@ -115,42 +115,52 @@ Feature: Netgroup members
   #
   # Test "Host" members
   #
+  #Prep: Add a new host
+  Scenario: Prep: Add a host
+    Given I am on "hosts" page
+    When I click on "Add" button
+    * I type in the field "Host name" text "my-new-server"
+    * in the modal dialog I click on "Add" button
+    * I should see "success" alert with text "New host added"
+    Then I should see partial "my-new-server" entry in the data table
   Scenario: Add a Host member into the netgroup
+    Given I am on "netgroups" page
+    Given I click on "mynetgroup" entry in the data table
+    Given I click on "Members" page tab
     Given I click on "Hosts" page tab
-    Given I am on "mynetgroup" group > Members > "Hosts" section
     Then I should see the "host" tab count is "0"
     When I click on "Add" button located in the toolbar
     Then I should see the dialog with title "Assign hosts to netgroup: mynetgroup"
-    When I move user "server.ipa.demo" from the available list and move it to the chosen options
+    When I move user "my-new-server" from the available list and move it to the chosen options
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned new hosts to netgroup 'mynetgroup'"
     * I close the alert
-    Then I should see "server.ipa.demo" entry in the data table
+    Then I should see "my-new-server.dom-server.ipa.demo" entry in the data table
     Then I should see the "host" tab count is "1"
 
   Scenario: Search for a host
-    When I type "server.ipa.demo" in the search field
-    Then I should see the "server.ipa.demo" text in the search input field
+    When I type "my-new-server" in the search field
+    Then I should see the "my-new-server" text in the search input field
     When I click on the arrow icon to perform search
-    Then I should see "server.ipa.demo" entry in the data table
+    Then I should see "my-new-server.dom-server.ipa.demo" entry in the data table
     * I click on the X icon to clear the search field
     When I type "notthere" in the search field
     Then I should see the "notthere" text in the search input field
     When I click on the arrow icon to perform search
-    Then I should not see "server.ipa.demo" entry in the data table
+    Then I should not see "my-new-server" entry in the data table
     Then I click on the X icon to clear the search field
     Then I click on the arrow icon to perform search
-    Then I should see "server.ipa.demo" entry in the data table
+    Then I should see "my-new-server.dom-server.ipa.demo" entry in the data table
 
   Scenario: Remove host member
-    When I select partial entry "server.ipa.demo" in the data table
+    When I select partial entry "my-new-server" in the data table
     And I click on "Delete" button located in the toolbar
     Then I should see the dialog with title "Delete hosts from netgroup: mynetgroup"
-    And the "server.ipa.demo" element should be in the dialog table
+    And the "my-new-server" element should be in the dialog table
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed hosts from netgroup 'mynetgroup'"
     * I close the alert
-    And I should not see the element "server.ipa.demo" in the table
+    And I should not see the element "my-new-server" in the table
     Then I should see the "host" tab count is "0"
 
   #
@@ -263,4 +273,14 @@ Feature: Netgroup members
     * I should see "mynetgroup2" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Netgroups removed"
+
+  Scenario: Cleanup - remove the test host
+    Given I am on "hosts" page
+    Then I select partial entry "my-new-server" in the data table
+    When I click on "Delete" button
+    * I see "Remove hosts" modal
+    * I should see partial "my-new-server" entry in the data table
+    When in the modal dialog I click on "Delete" button
+    * I should see "success" alert with text "Hosts removed"
+    Then I should not see "my-new-server" entry in the data table
 
