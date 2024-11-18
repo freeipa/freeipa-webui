@@ -38,6 +38,18 @@ Feature: User group settings manipulation
     * I should see a non-empty readonly text input field with ID "gid"
     * I click on the breadcrump link "User groups"
 
+  Scenario: Convert group to external group
+    Given I am on "user-groups" page
+    When I click on "group2" entry in the data table
+    Given I should see a new empty text input field with ID "gid"
+    When I click on the settings kebab menu and select "Change to external group"
+    * I see "Change group type" modal
+    * I click on "Change Group" button
+    Then I should see "success" alert with text "User group changed to external group"
+    Then I should see "External" in readonly text input field with ID "group-type"
+    * I should see an empty readonly text input field with ID "gid"
+    * I click on the breadcrump link "User groups"
+
   Scenario: Delete the groups for cleanup
     Given I am on "user-groups" page
     Then I should see "group1" entry in the data table

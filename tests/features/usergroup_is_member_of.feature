@@ -2,9 +2,6 @@ Feature: Usergroup is a member of
   Work with usergroup Is a member of section and its operations in all the available tabs
 
   # TODO: Add pending tests for:
-  #          - 'Sudo rules'
-  #          - Elements to add match with the ones available (in other pages)
-  #          - Membership
   #          - Pagination functionality (with more elements in the table)
 
   Background:

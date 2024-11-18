@@ -428,6 +428,15 @@ Then(
   }
 );
 
+Then(
+  "I should see an empty readonly text input field with ID {string}",
+  (id: string) => {
+    cy.get("input[id=" + id + "]")
+      .invoke("prop", "value")
+      .should("be.empty");
+  }
+);
+
 When(
   "I type in the field with ID {string} the text {string}",
   (id: string, content: string) => {
