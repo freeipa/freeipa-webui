@@ -149,14 +149,16 @@ When(
 When(
   "I type in the textarea {string} text {string}",
   (name: string, value: string) => {
-    cy.get('textarea[name="' + name + '"').type(value, { delay: 0 });
+    cy.get('textarea[name="' + name.toLowerCase() + '"').type(value, {
+      delay: 0,
+    });
   }
 );
 
 When(
   "Then I should see {string} in the textarea {string}",
   (value: string, name: string) => {
-    cy.get('textarea[name="' + name + '"').contains(value);
+    cy.get('textarea[name="' + name.toLowerCase() + '"').contains(value);
   }
 );
 
