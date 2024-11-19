@@ -109,6 +109,9 @@ Feature: ID View applied to manipulation
     Given I select partial entry "idviewhost2" in the data table
     When I click toolbar dropdown "Unapply"
     Then I click toolbar dropdown item "Unapply hosts"
+    Then I should see partial "idviewhost1" entry in the data table
+    Then I should see partial "idviewhost2" entry in the data table
+    When in the modal dialog I click on "Delete" button
     And I should see "success" alert with text "ID view unapplied from 2 hosts"
     * I close the alert
 
