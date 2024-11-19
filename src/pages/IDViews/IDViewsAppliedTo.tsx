@@ -26,8 +26,10 @@ import ToolbarLayout, {
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 // Components
 import PaginationLayout from "src/components/layouts/PaginationLayout";
+import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModal";
 // Tables
 import IDViewsAppliedToTable from "src/pages/IDViews/IDViewsAppliedToTable";
+import DeletedElementsTable from "src/components/tables/DeletedElementsTable";
 // Utils
 import { partialViewToView } from "src/utils/idViewUtils";
 // Data types
@@ -179,16 +181,10 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
   };
 
   // Unapply functions
+  const [showUnapplyHostsModal, setShowUnapplyHostsModal] = useState(false);
   const [showUnapplyHostGroupModal, setShowUnapplyHostGroupModal] =
     useState(false);
   const [applySpinning, setApplySpinning] = useState(false);
-
-  const openUnapplyHostgroupModal = () => {
-    setShowUnapplyHostGroupModal(true);
-  };
-  const closeUnapplyHostgroupModal = () => {
-    setShowUnapplyHostGroupModal(false);
-  };
 
   const onUnapplyHosts = () => {
     setApplySpinning(true);
@@ -245,6 +241,8 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
         }
       }
       setApplySpinning(false);
+      // Close Unapply modal
+      setShowUnapplyHostsModal(false);
     });
   };
 
@@ -308,25 +306,14 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
         }
       }
       setApplySpinning(false);
-      closeUnapplyHostgroupModal();
+      // Close Unapply modal
+      setShowUnapplyHostGroupModal(false);
     });
   };
 
   // Apply functions
   const [showApplyHostModal, setShowApplyHostModal] = useState(false);
   const [showApplyHostGroupModal, setShowApplyHostGroupModal] = useState(false);
-  const openApplyHostModal = () => {
-    setShowApplyHostModal(true);
-  };
-  const closeApplyHostModal = () => {
-    setShowApplyHostModal(false);
-  };
-  const openApplyHostGroupModal = () => {
-    setShowApplyHostGroupModal(true);
-  };
-  const closeApplyHostGroupModal = () => {
-    setShowApplyHostGroupModal(false);
-  };
 
   const onApplyHosts = (hosts: string[]) => {
     setApplySpinning(true);
@@ -388,7 +375,8 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
         }
       }
       setApplySpinning(false);
-      closeApplyHostModal();
+      // Close Apply modal
+      setShowApplyHostModal(false);
     });
   };
 
@@ -452,7 +440,8 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
         }
       }
       setApplySpinning(false);
-      closeApplyHostModal();
+      // Close Apply modal
+      setShowApplyHostGroupModal(false);
     });
   };
 
@@ -598,14 +587,14 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
             <DropdownItem
               value={1}
               key="unapply-hosts"
-              onClick={onUnapplyHosts}
+              onClick={() => setShowUnapplyHostsModal(true)}
               isDisabled={isDeleteButtonDisabled}
             >
               Unapply hosts
             </DropdownItem>
             <DropdownItem
               value={2}
-              key=""
+              key="unapply-host-groups"
               onClick={() => setShowUnapplyHostGroupModal(true)}
             >
               Unapply host groups
@@ -685,8 +674,8 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
         entry={""}
         target={"hostgroup"}
         showModal={showUnapplyHostGroupModal}
-        onCloseModal={closeUnapplyHostgroupModal}
-        onOpenModal={openUnapplyHostgroupModal}
+        onCloseModal={() => setShowUnapplyHostGroupModal(false)}
+        onOpenModal={() => setShowUnapplyHostGroupModal(true)}
         tableElementsList={[]}
         action={onUnapplyHostgroups}
         title={"Un-apply ID Views from hosts of hostgroups"}
@@ -698,8 +687,8 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
         entry={""}
         target={"host"}
         showModal={showApplyHostModal}
-        onCloseModal={closeApplyHostModal}
-        onOpenModal={openApplyHostModal}
+        onCloseModal={() => setShowApplyHostModal(false)}
+        onOpenModal={() => setShowApplyHostModal(true)}
         tableElementsList={hostsList}
         action={onApplyHosts}
         title={"Apply ID view '" + props.idView.cn + "' on hosts"}
@@ -711,8 +700,8 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
         entry={""}
         target={"hostgroup"}
         showModal={showApplyHostGroupModal}
-        onCloseModal={closeApplyHostGroupModal}
-        onOpenModal={openApplyHostGroupModal}
+        onCloseModal={() => setShowApplyHostGroupModal(false)}
+        onOpenModal={() => setShowApplyHostGroupModal(true)}
         tableElementsList={[]}
         action={onApplyHostGroups}
         title={
@@ -722,6 +711,22 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
         addBtnName="Apply"
         addSpinningBtnName="Applying"
       />
+      {/* Delete confirmation modal - Unapply Hosts*/}
+      <MemberOfDeleteModal
+        showModal={showUnapplyHostsModal}
+        onCloseModal={() => setShowUnapplyHostsModal(false)}
+        title={"Un-apply ID view '" + props.idView.cn + "' from hosts"}
+        onDelete={onUnapplyHosts}
+        spinning={applySpinning}
+      >
+        <DeletedElementsTable
+          mode="passing_id"
+          elementsToDelete={selectedHosts}
+          columnNames={["Hosts"]}
+          elementType="Host"
+          idAttr="fqdn"
+        />
+      </MemberOfDeleteModal>
     </Page>
   );
 };
