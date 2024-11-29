@@ -10,7 +10,7 @@ import {
 } from "src/utils/ipaObjectUtils";
 import { ParamMetadata } from "src/utils/datatypes/globalDataTypes";
 // Components
-import DateTimeSelector from "./DateTimeSelector";
+import DateTimeSelector from "./DateTimeSelector/DateTimeSelector";
 
 export interface DateParam {
   __datetime__: string;
