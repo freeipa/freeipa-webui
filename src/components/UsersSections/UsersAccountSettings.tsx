@@ -27,7 +27,7 @@ import IpaTextInput from "src/components/Form/IpaTextInput";
 import IpaSelect from "../Form/IpaSelect";
 import IpaCheckboxes from "../Form/IpaCheckboxes";
 import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";
-import IpaCalendar from "../Form/IpaCalendar";
+import IpaCalendar from "../Form/IpaCalendar/IpaCalendar";
 import IpaSshPublicKeys from "../Form/IpaSshPublicKeys";
 import IpaCertificates from "../Form/IpaCertificates";
 import IpaCertificateMappingData from "../Form/IpaCertificateMappingData";
