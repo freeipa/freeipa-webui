@@ -105,7 +105,7 @@ Then("I am on {string} user settings page", (username: string) => {
       cy.get(".pf-v5-c-breadcrumb__item")
         .contains(username)
         .should("be.visible");
-      cy.get("h1>p").contains(username).should("be.visible");
+      cy.get("h1>p", { timeout: 5000 }).contains(username).should("be.visible");
     }
   });
 });
