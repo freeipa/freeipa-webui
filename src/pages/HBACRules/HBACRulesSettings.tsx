@@ -20,7 +20,7 @@ import {
 } from "@patternfly/react-core";
 // Forms
 import IpaTextArea from "src/components/Form/IpaTextArea";
-import IpaCheckbox from "src/components/Form/IpaCheckbox";
+import IpaCheckbox from "src/components/Form/IpaCheckbox/IpaCheckbox";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
