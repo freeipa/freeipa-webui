@@ -6,7 +6,6 @@ import {
   PageSection,
   PageSectionVariants,
   PaginationVariant,
-  TextVariants,
 } from "@patternfly/react-core";
 import {
   InnerScrollContainer,
@@ -46,8 +45,6 @@ import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
-// Icons
-import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // RPC client
 import {
   ErrorResult,
@@ -609,17 +606,7 @@ const IDViews = () => {
     },
     {
       key: 8,
-      element: (
-        <HelpTextWithIconLayout
-          textComponent={TextVariants.p}
-          subTextComponent={TextVariants.a}
-          subTextIsVisitedLink={true}
-          textContent="Help"
-          icon={
-            <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
-          }
-        />
-      ),
+      element: <HelpTextWithIconLayout textContent="Help" />,
     },
     {
       key: 9,
