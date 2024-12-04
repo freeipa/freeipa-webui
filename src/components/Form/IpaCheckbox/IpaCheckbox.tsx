@@ -6,9 +6,9 @@ import {
   IPAParamDefinition,
   getParamProperties,
   updateIpaObject,
-} from "../../utils/ipaObjectUtils";
+} from "../../../utils/ipaObjectUtils";
 
-interface CheckboxOption extends IPAParamDefinition {
+export interface CheckboxOption extends IPAParamDefinition {
   value: string;
   text: string;
   textNode?: React.ReactNode;
