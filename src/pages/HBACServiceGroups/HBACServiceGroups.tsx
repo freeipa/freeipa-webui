@@ -4,7 +4,6 @@ import {
   Page,
   PageSection,
   PageSectionVariants,
-  TextVariants,
   PaginationVariant,
 } from "@patternfly/react-core";
 // PatternFly table
@@ -12,8 +11,6 @@ import {
   InnerScrollContainer,
   OuterScrollContainer,
 } from "@patternfly/react-table";
-// Icons
-import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // Data types
 import { HBACServiceGroup } from "src/utils/datatypes/globalDataTypes";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
@@ -485,17 +482,7 @@ const HBACServiceGroups = () => {
     },
     {
       key: 7,
-      element: (
-        <HelpTextWithIconLayout
-          textComponent={TextVariants.p}
-          subTextComponent={TextVariants.a}
-          subTextIsVisitedLink={true}
-          textContent="Help"
-          icon={
-            <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
-          }
-        />
-      ),
+      element: <HelpTextWithIconLayout textContent="Help" />,
     },
     {
       key: 8,
