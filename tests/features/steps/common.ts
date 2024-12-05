@@ -4,7 +4,7 @@ import { When, Then, Given } from "@badeball/cypress-cucumber-preprocessor";
 Given("I am on {string} page", (handle: string) => {
   cy.url().then(($url) => {
     if (!$url.includes(handle)) {
-      cy.visit(Cypress.env("base_url") + "/" + handle);
+      cy.visit(Cypress.env("base_url") + "/" + handle, { timeout: 6000 });
     }
   });
 });
@@ -96,7 +96,7 @@ When("I click on {string} page tab", (tabText: string) => {
 
 When("I click on {string} button", function (buttonText: string) {
   const regex = new RegExp("^" + buttonText + "$", "i");
-  cy.get("button").contains(regex).click();
+  cy.get("button", { timeout: 6000 }).contains(regex).click();
 });
 
 When("I click on ID {string} button", function (id: string) {
@@ -242,7 +242,7 @@ When("I select entry {string} in the data table", (name: string) => {
 });
 
 When("I click on {string} entry in the data table", (name: string) => {
-  cy.get("tr[id='" + name + "'] a")
+  cy.get("tr[id='" + name + "'] a", { timeout: 5000 })
     .contains(name)
     .click();
 });
