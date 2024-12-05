@@ -9,10 +9,7 @@ import {
   Sidebar,
   SidebarContent,
   SidebarPanel,
-  TextVariants,
 } from "@patternfly/react-core";
-// Icons
-import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // Data types
 import { Metadata, Service } from "src/utils/datatypes/globalDataTypes";
 // Modals
@@ -266,16 +263,7 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
       <alerts.ManagedAlerts />
       <Sidebar isPanelRight className="pf-v5-u-mt-lg">
         <SidebarPanel variant="sticky">
-          <HelpTextWithIconLayout
-            textComponent={TextVariants.p}
-            textClassName="pf-v5-u-mb-md"
-            subTextComponent={TextVariants.a}
-            subTextIsVisitedLink={true}
-            textContent="Help"
-            icon={
-              <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
-            }
-          />
+          <HelpTextWithIconLayout textContent="Help" />
           <JumpLinks
             isVertical
             label="Jump to section"

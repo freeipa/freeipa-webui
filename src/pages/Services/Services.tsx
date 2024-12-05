@@ -5,7 +5,6 @@ import {
   PageSection,
   PageSectionVariants,
   PaginationVariant,
-  TextVariants,
 } from "@patternfly/react-core";
 import {
   InnerScrollContainer,
@@ -31,8 +30,6 @@ import { updateServicesList } from "../../store/Identity/services-slice";
 import { Host, Service } from "../../utils/datatypes/globalDataTypes";
 // Utils
 import { API_VERSION_BACKUP, isServiceSelectable } from "../../utils/utils";
-// Icons
-import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // Modals
 import AddService from "../../components/modals/AddService";
 import DeleteServices from "../../components/modals/DeleteServices";
@@ -512,17 +509,7 @@ const Services = () => {
     },
     {
       key: 7,
-      element: (
-        <HelpTextWithIconLayout
-          textComponent={TextVariants.p}
-          subTextComponent={TextVariants.a}
-          subTextIsVisitedLink={true}
-          textContent="Help"
-          icon={
-            <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
-          }
-        />
-      ),
+      element: <HelpTextWithIconLayout textContent="Help" />,
     },
     {
       key: 8,

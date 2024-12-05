@@ -219,10 +219,6 @@ const HBACRulesSettings = (props: PropsToSettings) => {
       <Sidebar isPanelRight>
         <SidebarPanel variant="sticky">
           <HelpTextWithIconLayout
-            textComponent={TextVariants.p}
-            textClassName="pf-v5-u-mb-md"
-            subTextComponent={TextVariants.a}
-            subTextIsVisitedLink={true}
             textContent="Help"
             icon={
               <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />

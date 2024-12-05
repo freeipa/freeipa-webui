@@ -12,7 +12,6 @@ import {
   PageSectionVariants,
   PaginationVariant,
   SearchInput,
-  TextVariants,
 } from "@patternfly/react-core";
 import {
   InnerScrollContainer,
@@ -41,8 +40,6 @@ import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors
 import useApiError from "src/hooks/useApiError";
 import ModalErrors from "src/components/errors/ModalErrors";
-// Icons
-import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // RPC client
 import { ErrorResult } from "../../services/rpc";
 import {
@@ -609,17 +606,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
     },
     {
       key: 7,
-      element: (
-        <HelpTextWithIconLayout
-          textComponent={TextVariants.p}
-          subTextComponent={TextVariants.a}
-          subTextIsVisitedLink={true}
-          textContent="Help"
-          icon={
-            <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
-          }
-        />
-      ),
+      element: <HelpTextWithIconLayout textContent="Help" />,
     },
     {
       key: 8,

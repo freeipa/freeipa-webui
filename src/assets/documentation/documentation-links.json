@@ -1,0 +1,28 @@
+{
+  "active-users": [
+    {
+      "name": "User life cycle",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/managing-user-accounts-using-the-idm-web-ui_managing-users-groups-hosts#user-life-cycle_managing-user-accounts-using-the-idm-web-ui"
+    },
+    {
+      "name": "Adding users in the Web UI",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/managing-user-accounts-using-the-idm-web-ui_managing-users-groups-hosts#adding-users-in-the-web-ui_managing-user-accounts-using-the-idm-web-ui"
+    },
+    {
+      "name": "Disabling user accounts in the Web UI",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/managing-user-accounts-using-the-idm-web-ui_managing-users-groups-hosts#disabling-user-accounts-in-the-web-ui_managing-user-accounts-using-the-idm-web-ui"
+    },
+    {
+      "name": "Enabling user accounts in the Web UI",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/managing-user-accounts-using-the-idm-web-ui_managing-users-groups-hosts#enabling-user-accounts-in-the-web-ui_managing-user-accounts-using-the-idm-web-ui"
+    },
+    {
+      "name": "Deleting users in the IdM Web UI",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/managing-user-accounts-using-the-idm-web-ui_managing-users-groups-hosts#deleting-users-in-the-idm-web-ui_managing-user-accounts-using-the-idm-web-ui"
+    },
+    {
+      "name": "Rebuilding automatic membership",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html-single/managing_idm_users_groups_hosts_and_access_control_rules/index#applying-automember-rules-to-existing-entries-using-idm-web-ui_automating-group-membership-using-idm-web-ui"
+    }
+  ]
+}
