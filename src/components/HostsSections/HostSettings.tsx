@@ -13,7 +13,7 @@ import { Host, Metadata } from "../../utils/datatypes/globalDataTypes";
 import IpaTextArea from "../Form/IpaTextArea";
 import IpaTextInput from "../Form/IpaTextInput";
 import IpaCheckbox from "../Form/IpaCheckbox/IpaCheckbox";
-import IpaCheckboxes from "../Form/IpaCheckboxes";
+import IpaCheckboxes from "../Form/IpaCheckboxes/IpaCheckboxes";
 import IpaSshPublicKeys from "../Form/IpaSshPublicKeys";
 import IpaTextboxList from "../Form/IpaTextboxList";
 
