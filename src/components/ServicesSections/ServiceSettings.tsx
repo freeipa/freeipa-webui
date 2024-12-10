@@ -15,7 +15,7 @@ import PopoverWithIconLayout from "../layouts/PopoverWithIconLayout";
 import { asRecord } from "src/utils/serviceUtils";
 // IPA components
 import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";
-import IpaCheckboxes from "../Form/IpaCheckboxes";
+import IpaCheckboxes from "../Form/IpaCheckboxes/IpaCheckboxes";
 import IpaCheckbox from "../Form/IpaCheckbox/IpaCheckbox";
 import IpaPACType from "../Form/IpaPACType";
 
