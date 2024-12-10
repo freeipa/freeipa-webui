@@ -6,8 +6,8 @@ import {
   IPAParamDefinition,
   getParamProperties,
   toArray,
-  updateIpaObject,
 } from "src/utils/ipaObjectUtils";
+import { updateCheckboxList as updateListUtil } from "src/utils/ipaObjectUtils";
 
 interface CheckboxOption {
   value: string;
@@ -21,24 +21,23 @@ export interface IPAParamDefinitionCheckboxes extends IPAParamDefinition {
 const IpaCheckboxes = (props: IPAParamDefinitionCheckboxes) => {
   const { required, readOnly, value } = getParamProperties(props);
 
-  const valueAsArray = toArray(value);
+  const valueAsArray = toArray(value).filter(
+    (val): val is string => val !== undefined
+  );
 
   // Updates the list of checked values when a specific checkbox is clicked
   //  - This is implemented here because we need to know which specific
   //     value (option.value) to add/remove from the list
   const updateList = (checked: boolean, elementToChange: string) => {
     if (props.ipaObject !== undefined && props.onChange !== undefined) {
-      const updatedList = [...valueAsArray];
-      if (checked) {
-        updatedList.push(elementToChange);
-      } else {
-        const index = updatedList.indexOf(elementToChange);
-        if (index > -1) {
-          updatedList.splice(index, 1);
-        }
-      }
-      // Update the IPA object
-      updateIpaObject(props.ipaObject, props.onChange, updatedList, props.name);
+      updateListUtil(
+        checked,
+        elementToChange,
+        valueAsArray,
+        props.ipaObject,
+        props.onChange,
+        props.name
+      );
     }
   };
 

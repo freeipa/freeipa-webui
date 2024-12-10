@@ -273,3 +273,32 @@ export function toArray(value: BasicType): BasicType[] {
     return [value];
   }
 }
+
+/**
+ * Updates the list of checked values when a specific checkbox is clicked
+ * @param checked
+ * @param elementToChange
+ * @param valueAsArray
+ * @param ipaObject
+ * @param onChange
+ * @param name
+ */
+export const updateCheckboxList = (
+  checked: boolean,
+  elementToChange: string,
+  valueAsArray: string[],
+  ipaObject: Record<string, unknown>,
+  onChange: (ipaObject: Record<string, unknown>) => void,
+  name: string
+) => {
+  const updatedList = [...valueAsArray];
+  if (checked) {
+    updatedList.push(elementToChange);
+  } else {
+    const index = updatedList.indexOf(elementToChange);
+    if (index > -1) {
+      updatedList.splice(index, 1);
+    }
+  }
+  updateIpaObject(ipaObject, onChange, updatedList, name);
+};
