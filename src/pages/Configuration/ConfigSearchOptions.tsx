@@ -4,7 +4,7 @@ import { Form, FormGroup } from "@patternfly/react-core";
 // Data types
 import { Metadata } from "src/utils/datatypes/globalDataTypes";
 // Form
-import IpaNumberInput from "src/components/Form/IpaNumberInput";
+import IpaNumberInput from "src/components/Form/IpaNumberInput/IpaNumberInput";
 
 interface PropsToSearchOPtions {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
