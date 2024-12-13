@@ -22,7 +22,7 @@ import {
  *
  */
 
-interface IPAParamDefinitionNumberInput extends IPAParamDefinition {
+export interface IPAParamDefinitionNumberInput extends IPAParamDefinition {
   id?: string;
   className?: string;
   numCharsShown?: number;
@@ -103,6 +103,7 @@ const IpaNumberInput = (props: IPAParamDefinitionNumberInput) => {
         max={props.maxValue}
         onBlur={onBlur}
         onPlus={onPlus}
+        aria-label={props.name}
         inputName="input"
         inputAriaLabel="number input"
         minusBtnAriaLabel="minus"
