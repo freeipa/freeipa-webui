@@ -4,7 +4,7 @@ import { When, Then, Given } from "@badeball/cypress-cucumber-preprocessor";
 Given("I am on {string} page", (handle: string) => {
   cy.url().then(($url) => {
     if (!$url.includes(handle)) {
-      cy.visit(Cypress.env("base_url") + "/" + handle);
+      cy.visit(Cypress.env("base_url") + "/" + handle, { timeout: 6000 });
     }
   });
 });
@@ -45,7 +45,8 @@ Given("I am logged in as {string}", (username: string) => {
     }
   });
   cy.get(
-    "div.pf-v5-c-masthead__content button span.pf-v5-c-menu-toggle__text"
+    "div.pf-v5-c-masthead__content button span.pf-v5-c-menu-toggle__text",
+    { timeout: 6000 }
   ).then(($ele) => {
     if ($ele.text() !== username) {
       // @ts-ignore
@@ -314,7 +315,9 @@ Then(
 );
 
 When("I select partial entry {string} in the data table", (name: string) => {
-  cy.get("tr[id^='" + name + "'] input[type=checkbox]").check();
+  cy.get("tr[id^='" + name + "'] input[type=checkbox]", {
+    timeout: 6000,
+  }).check();
 });
 
 // Notifications
