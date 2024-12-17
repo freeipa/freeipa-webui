@@ -24,7 +24,7 @@ import ModalWithTextAreaLayout from "src/components/layouts/ModalWithTextAreaLay
 import { asRecord } from "src/utils/userUtils";
 // Form
 import IpaTextInput from "src/components/Form/IpaTextInput";
-import IpaSelect from "../Form/IpaSelect";
+import IpaSelect from "../Form/IpaSelect/IpaSelect";
 import IpaCheckboxes from "../Form/IpaCheckboxes/IpaCheckboxes";
 import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";
 import IpaCalendar from "../Form/IpaCalendar/IpaCalendar";

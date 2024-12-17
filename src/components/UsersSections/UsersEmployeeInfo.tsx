@@ -5,7 +5,7 @@ import { Flex, FlexItem, Form, FormGroup } from "@patternfly/react-core";
 import { Metadata, User } from "src/utils/datatypes/globalDataTypes";
 // Form
 import IpaTextInput from "../Form/IpaTextInput";
-import IpaSelect from "../Form/IpaSelect";
+import IpaSelect from "../Form/IpaSelect/IpaSelect";
 import IpaTextboxList from "../Form/IpaTextboxList";
 // Utils
 import { asRecord } from "src/utils/userUtils";
