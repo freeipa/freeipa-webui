@@ -14,7 +14,7 @@ import {
 import { updateIpaObject } from "src/utils/ipaObjectUtils";
 import { NO_SELECTION_OPTION } from "src/utils/constUtils";
 
-interface IPAParamDefinitionSelect extends IPAParamDefinition {
+export interface IPAParamDefinitionSelect extends IPAParamDefinition {
   id?: string;
   setIpaObject?: (ipaObject: Record<string, unknown>) => void;
   variant?:
@@ -33,10 +33,19 @@ const IpaSelect = (props: IPAParamDefinitionSelect) => {
   const { readOnly, value } = getParamProperties(props);
 
   // Handle selected value
-  let valueSelected = NO_SELECTION_OPTION;
-  if (value !== undefined && value && value !== "") {
-    valueSelected = value.toString();
-  }
+  const [valueSelected, setValueSelected] = React.useState(
+    value !== undefined && value && value !== ""
+      ? value.toString()
+      : NO_SELECTION_OPTION
+  );
+
+  React.useEffect(() => {
+    setValueSelected(
+      value !== undefined && value && value !== ""
+        ? value.toString()
+        : NO_SELECTION_OPTION
+    );
+  }, [value]);
 
   const ipaObject = props.ipaObject || {};
 
@@ -55,6 +64,8 @@ const IpaSelect = (props: IPAParamDefinitionSelect) => {
     if (selection !== NO_SELECTION_OPTION) {
       valueToUpdate = selection as string;
     }
+
+    setValueSelected(valueToUpdate || NO_SELECTION_OPTION);
 
     if (ipaObject && props.setIpaObject !== undefined) {
       updateIpaObject(ipaObject, props.setIpaObject, valueToUpdate, props.name);
