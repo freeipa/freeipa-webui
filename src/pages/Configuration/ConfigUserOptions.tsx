@@ -7,7 +7,7 @@ import { Metadata } from "src/utils/datatypes/globalDataTypes";
 import PopoverWithIconLayout from "src/components/layouts/PopoverWithIconLayout";
 // Form
 import IpaTextInput from "src/components/Form/IpaTextInput";
-import IpaTextArea from "src/components/Form/IpaTextArea";
+import IpaTextArea from "src/components/Form/IpaTextArea/IpaTextArea";
 import IpaNumberInput from "src/components/Form/IpaNumberInput/IpaNumberInput";
 import IpaCheckboxes from "src/components/Form/IpaCheckboxes/IpaCheckboxes";
 import IpaCheckbox from "src/components/Form/IpaCheckbox/IpaCheckbox";
