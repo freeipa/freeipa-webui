@@ -3,7 +3,7 @@ import React from "react";
 import { Form, FormGroup } from "@patternfly/react-core";
 // Ipa Components
 import IpaTextInput from "../Form/IpaTextInput";
-import IpaTextArea from "../Form/IpaTextArea";
+import IpaTextArea from "../Form/IpaTextArea/IpaTextArea";
 import IpaNumberInput from "../Form/IpaNumberInput/IpaNumberInput";
 // Data types
 import { Metadata } from "src/utils/datatypes/globalDataTypes";

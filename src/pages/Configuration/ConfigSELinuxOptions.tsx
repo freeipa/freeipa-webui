@@ -4,7 +4,7 @@ import { Form, FormGroup } from "@patternfly/react-core";
 // Data types
 import { Metadata } from "src/utils/datatypes/globalDataTypes";
 // Form
-import IpaTextArea from "src/components/Form/IpaTextArea";
+import IpaTextArea from "src/components/Form/IpaTextArea/IpaTextArea";
 import IpaTextInput from "src/components/Form/IpaTextInput";
 
 interface PropsToSELinuxOptions {

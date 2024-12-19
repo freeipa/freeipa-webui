@@ -19,7 +19,7 @@ import {
   Title,
 } from "@patternfly/react-core";
 // Forms
-import IpaTextArea from "src/components/Form/IpaTextArea";
+import IpaTextArea from "src/components/Form/IpaTextArea/IpaTextArea";
 import IpaCheckbox from "src/components/Form/IpaCheckbox/IpaCheckbox";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
