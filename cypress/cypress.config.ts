@@ -4,6 +4,7 @@ import { addCucumberPreprocessorPlugin } from "@badeball/cypress-cucumber-prepro
 import createEsbuildPlugin from "@badeball/cypress-cucumber-preprocessor/esbuild";
 import { verifyDownloadTasks } from "cy-verify-downloads";
 import { polyfillNode } from "esbuild-plugin-polyfill-node";
+import { generateOTP } from "./support/otp";
 
 export default defineConfig({
   video: true,
@@ -17,6 +18,7 @@ export default defineConfig({
       config: Cypress.PluginConfigOptions
     ): Promise<Cypress.PluginConfigOptions> {
       await addCucumberPreprocessorPlugin(on, config);
+
       on(
         "file:preprocessor",
         createBundler({
@@ -28,6 +30,9 @@ export default defineConfig({
         })
       );
       on("task", verifyDownloadTasks);
+      on("task", {
+        generateOTP,
+      });
       return config;
     },
   },
