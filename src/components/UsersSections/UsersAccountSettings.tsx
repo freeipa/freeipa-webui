@@ -23,7 +23,7 @@ import ModalWithTextAreaLayout from "src/components/layouts/ModalWithTextAreaLay
 // Utils
 import { asRecord } from "src/utils/userUtils";
 // Form
-import IpaTextInput from "src/components/Form/IpaTextInput";
+import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
 import IpaSelect from "../Form/IpaSelect/IpaSelect";
 import IpaCheckboxes from "../Form/IpaCheckboxes/IpaCheckboxes";
 import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";

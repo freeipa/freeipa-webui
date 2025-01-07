@@ -6,7 +6,7 @@ import { Metadata, User } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { asRecord } from "src/utils/userUtils";
 // Fields
-import IpaTextInput from "../Form/IpaTextInput";
+import IpaTextInput from "../Form/IpaTextInput/IpaTextInput";
 
 interface PropsToUsersIdentity {
   user: Partial<User>;

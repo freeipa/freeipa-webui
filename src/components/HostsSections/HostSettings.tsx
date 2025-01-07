@@ -11,7 +11,7 @@ import {
 import { Host, Metadata } from "../../utils/datatypes/globalDataTypes";
 // Forms
 import IpaTextArea from "../Form/IpaTextArea/IpaTextArea";
-import IpaTextInput from "../Form/IpaTextInput";
+import IpaTextInput from "../Form/IpaTextInput/IpaTextInput";
 import IpaCheckbox from "../Form/IpaCheckbox/IpaCheckbox";
 import IpaCheckboxes from "../Form/IpaCheckboxes/IpaCheckboxes";
 import IpaSshPublicKeys from "../Form/IpaSshPublicKeys";
