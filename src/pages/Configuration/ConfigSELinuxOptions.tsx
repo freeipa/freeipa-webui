@@ -5,7 +5,7 @@ import { Form, FormGroup } from "@patternfly/react-core";
 import { Metadata } from "src/utils/datatypes/globalDataTypes";
 // Form
 import IpaTextArea from "src/components/Form/IpaTextArea/IpaTextArea";
-import IpaTextInput from "src/components/Form/IpaTextInput";
+import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
 
 interface PropsToSELinuxOptions {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

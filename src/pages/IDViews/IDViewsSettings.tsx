@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Flex, Form, FormGroup, Icon, Tooltip } from "@patternfly/react-core";
 // Forms
 import IpaTextArea from "../../components/Form/IpaTextArea/IpaTextArea";
-import IpaTextInput from "src/components/Form/IpaTextInput";
+import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";

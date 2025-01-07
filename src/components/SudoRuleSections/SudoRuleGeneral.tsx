@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { Form, FormGroup } from "@patternfly/react-core";
 // Ipa Components
-import IpaTextInput from "../Form/IpaTextInput";
+import IpaTextInput from "../Form/IpaTextInput/IpaTextInput";
 import IpaTextArea from "../Form/IpaTextArea/IpaTextArea";
 import IpaNumberInput from "../Form/IpaNumberInput/IpaNumberInput";
 // Data types
