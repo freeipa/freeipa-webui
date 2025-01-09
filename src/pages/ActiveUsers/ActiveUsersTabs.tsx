@@ -16,6 +16,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import UserSettings from "src/components/UsersSections/UserSettings";
 import UserMemberOf from "./UserMemberOf";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Layouts
 import DataSpinner from "src/components/layouts/DataSpinner";
 // Hooks
@@ -69,6 +70,25 @@ const ActiveUsersTabs = ({ memberof }) => {
     }
   }, [memberof]);
 
+  // Contextual links panel
+  const [fromPageSelected, setFromPageSelected] = React.useState(
+    "active-users-settings"
+  );
+  const [isContextualPanelExpanded, setIsContextualPanelExpanded] =
+    React.useState(false);
+
+  const changeFromPage = (fromPage: string) => {
+    setFromPageSelected(fromPage);
+  };
+
+  const onOpenContextualPanel = () => {
+    setIsContextualPanelExpanded(!isContextualPanelExpanded);
+  };
+
+  const onCloseContextualPanel = () => {
+    setIsContextualPanelExpanded(false);
+  };
+
   // Data loaded from DB
   const userSettingsData = useUserSettings(uid as string);
 
@@ -98,86 +118,97 @@ const ActiveUsersTabs = ({ memberof }) => {
 
   return (
     <>
-      <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
-        <BreadCrumb
-          className="pf-v5-u-mb-md"
-          breadcrumbItems={breadcrumbItems}
-        />
-        <TextContent>
-          <Title headingLevel="h1">
-            <div
-              className="pf-v5-u-display-flex"
-              title={disabled ? "User is disabled" : ""}
-            >
-              {titleText}
-              {disabled ? (
-                <Icon
-                  className="pf-v5-u-ml-sm pf-v5-u-mt-sm"
-                  status="info"
-                  size="md"
-                >
-                  <LockIcon />
-                </Icon>
-              ) : (
-                ""
-              )}
-            </div>
-          </Title>
-        </TextContent>
-      </PageSection>
-      <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
-        <Tabs
-          activeKey={activeTab}
-          onSelect={(_event, tabIndex) => {
-            if (tabIndex === "settings") {
-              navigate("/active-users/" + uid);
-            } else if (tabIndex === "memberof") {
-              navigate("memberof_group");
-            }
-          }}
-          variant="light300"
-          isBox
-          className="pf-v5-u-ml-lg"
-          mountOnEnter
-          unmountOnExit
+      <ContextualHelpPanel
+        fromPage={fromPageSelected}
+        isExpanded={isContextualPanelExpanded}
+        onClose={onCloseContextualPanel}
+      >
+        <PageSection
+          variant={PageSectionVariants.light}
+          className="pf-v5-u-pr-0"
         >
-          <Tab
-            eventKey={"settings"}
-            name="details"
-            title={<TabTitleText>Settings</TabTitleText>}
+          <BreadCrumb
+            className="pf-v5-u-mb-md"
+            breadcrumbItems={breadcrumbItems}
+          />
+          <TextContent>
+            <Title headingLevel="h1">
+              <div
+                className="pf-v5-u-display-flex"
+                title={disabled ? "User is disabled" : ""}
+              >
+                {titleText}
+                {disabled ? (
+                  <Icon
+                    className="pf-v5-u-ml-sm pf-v5-u-mt-sm"
+                    status="info"
+                    size="md"
+                  >
+                    <LockIcon />
+                  </Icon>
+                ) : (
+                  ""
+                )}
+              </div>
+            </Title>
+          </TextContent>
+        </PageSection>
+        <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
+          <Tabs
+            activeKey={activeTab}
+            onSelect={(_event, tabIndex) => {
+              if (tabIndex === "settings") {
+                navigate("/active-users/" + uid);
+              } else if (tabIndex === "memberof") {
+                navigate("memberof_group");
+              }
+            }}
+            variant="light300"
+            isBox
+            className="pf-v5-u-ml-lg"
+            mountOnEnter
+            unmountOnExit
           >
-            <UserSettings
-              originalUser={userSettingsData.originalUser}
-              user={userSettingsData.user}
-              metadata={userSettingsData.metadata}
-              pwPolicyData={userSettingsData.pwPolicyData}
-              krbPolicyData={userSettingsData.krbtPolicyData}
-              certData={userSettingsData.certData}
-              onUserChange={userSettingsData.setUser}
-              isDataLoading={userSettingsData.isFetching}
-              onRefresh={userSettingsData.refetch}
-              isModified={userSettingsData.modified}
-              onResetValues={userSettingsData.resetValues}
-              modifiedValues={userSettingsData.modifiedValues}
-              radiusProxyData={userSettingsData.radiusServers}
-              idpData={userSettingsData.idpServers}
-              activeUsersList={userSettingsData.activeUsersList}
-              from="active-users"
-            />
-          </Tab>
-          <Tab
-            eventKey={"memberof"}
-            name="memberof-details"
-            title={<TabTitleText>Is a member of</TabTitleText>}
-          >
-            <UserMemberOf
-              user={partialUserToUser(user)}
-              tab={memberof || "group"}
-              from="active-users"
-            />
-          </Tab>
-        </Tabs>
-      </PageSection>
+            <Tab
+              eventKey={"settings"}
+              name="details"
+              title={<TabTitleText>Settings</TabTitleText>}
+            >
+              <UserSettings
+                originalUser={userSettingsData.originalUser}
+                user={userSettingsData.user}
+                metadata={userSettingsData.metadata}
+                pwPolicyData={userSettingsData.pwPolicyData}
+                krbPolicyData={userSettingsData.krbtPolicyData}
+                certData={userSettingsData.certData}
+                onUserChange={userSettingsData.setUser}
+                isDataLoading={userSettingsData.isFetching}
+                onRefresh={userSettingsData.refetch}
+                isModified={userSettingsData.modified}
+                onResetValues={userSettingsData.resetValues}
+                modifiedValues={userSettingsData.modifiedValues}
+                radiusProxyData={userSettingsData.radiusServers}
+                idpData={userSettingsData.idpServers}
+                activeUsersList={userSettingsData.activeUsersList}
+                from="active-users"
+                changeFromPage={changeFromPage}
+                onOpenContextualPanel={onOpenContextualPanel}
+              />
+            </Tab>
+            <Tab
+              eventKey={"memberof"}
+              name="memberof-details"
+              title={<TabTitleText>Is a member of</TabTitleText>}
+            >
+              <UserMemberOf
+                user={partialUserToUser(user)}
+                tab={memberof || "group"}
+                from="active-users"
+              />
+            </Tab>
+          </Tabs>
+        </PageSection>
+      </ContextualHelpPanel>
     </>
   );
 };

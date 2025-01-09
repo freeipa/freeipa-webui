@@ -77,6 +77,8 @@ export interface PropsToUserSettings {
   idpData?: IDPServer[];
   activeUsersList?: Partial<User>[];
   from: "active-users" | "stage-users" | "preserved-users";
+  changeFromPage?: (from: string) => void;
+  onOpenContextualPanel?: () => void;
 }
 
 const UserSettings = (props: PropsToUserSettings) => {
@@ -94,6 +96,13 @@ const UserSettings = (props: PropsToUserSettings) => {
   if (props.from === "stage-users") {
     [saveUser] = useSaveStageUserMutation();
   }
+
+  // Update page to show correct links info in Contextual panel
+  React.useEffect(() => {
+    if (props.changeFromPage !== undefined) {
+      props.changeFromPage("active-users-settings");
+    }
+  }, [props.changeFromPage]);
 
   // To handle the logic of the selectedUsersData (from
   //   the 'Disable / Enable' modal), lets use the 'selectedUsers' state
@@ -437,7 +446,10 @@ const UserSettings = (props: PropsToUserSettings) => {
       <alerts.ManagedAlerts />
       <Sidebar isPanelRight>
         <SidebarPanel variant="sticky">
-          <HelpTextWithIconLayout textContent="Help" />
+          <HelpTextWithIconLayout
+            textContent="Help"
+            onClick={props.onOpenContextualPanel}
+          />
           <JumpLinks
             isVertical
             label="Jump to section"

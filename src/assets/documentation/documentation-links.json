@@ -24,5 +24,51 @@
       "name": "Rebuilding automatic membership",
       "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html-single/managing_idm_users_groups_hosts_and_access_control_rules/index#applying-automember-rules-to-existing-entries-using-idm-web-ui_automating-group-membership-using-idm-web-ui"
     }
+  ],
+  "active-users-settings": [
+    {
+      "name": "Resetting another user’s password",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/managing-user-passwords-in-idm_managing-users-groups-hosts#resetting-another-users-password-in-the-idm-web-ui_managing-user-passwords-in-idm"
+    },
+    {
+      "name": "Requesting new certificates for a user, host, or service",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_certificates_in_idm/managing-certificates-for-users-hosts-and-services-using-the-integrated-idm-ca_managing-certificates-in-idm#requesting-new-certificates-for-a-user-host-or-service-using-idm-web-ui_managing-certificates-for-users-hosts-and-services-using-the-integrated-idm-ca"
+    },
+    {
+      "name": "Adding a certificate issued by an external CA to an IdM user, host, or service",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_certificates_in_idm/managing-externally-signed-certificates-for-idm-users-hosts-and-services_managing-certificates-in-idm#adding-a-certificate-issued-by-an-external-ca-to-an-idm-user-host-or-service-by-using-the-idm-web-ui_managing-externally-signed-certificates-for-idm-users-hosts-and-services"
+    },
+    {
+      "name": "Removing a certificate issued by an external CA from an IdM user, host, or service account",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_certificates_in_idm/managing-externally-signed-certificates-for-idm-users-hosts-and-services_managing-certificates-in-idm#removing-a-certificate-issued-by-an-external-ca-from-an-idm-user-host-or-service-account-by-using-the-idm-web-ui_managing-externally-signed-certificates-for-idm-users-hosts-and-services"
+    },
+    {
+      "name": "Converting an external certificate for loading into an IdM user account",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_certificates_in_idm/convert-cert-formats-idm_managing-certificates-in-idm#proc_converting-an-external-certificate-in-the-idm-web-ui-for-loading-into-an-idm-user-account_assembly_converting-an-external-certificate-to-load-into-an-idm-user-account"
+    },
+    {
+      "name": "Viewing the expiry date of a certificate",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_certificates_in_idm/managing-the-validity-of-certificates-in-idm_managing-certificates-in-idm#viewing-the-expiry-date-of-a-certificate-in-IdM-WebUI_managing-the-validity-of-certificates-in-idm"
+    },
+    {
+      "name": "Adding a certificate mapping rule",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_certificates_in_idm/conf-certmap-idm_managing-certificates-in-idm#proc-add-maprule-webui_conf-certmap-for-users-in-idm"
+    },
+    {
+      "name": "Adding certificate mapping data to a user entry",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_certificates_in_idm/conf-certmap-idm_managing-certificates-in-idm#proc-add-maprule-webui_conf-certmap-for-users-in-idm"
+    },
+    {
+      "name": "Adding a certificate to an AD user’s ID override",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_certificates_in_idm/conf-certmap-idm_managing-certificates-in-idm#proc-add-certmapdata-to-user-webui_conf-certmap-for-users-in-idm"
+    },
+    {
+      "name": "Logging in to the Identity Management Web UI using one time passwords",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/accessing_identity_management_services/logging-in-to-the-ipa-web-ui-using-one-time-passwords_accessing-idm-services"
+    },
+    {
+      "name": "Managing user accounts",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/managing-user-accounts-using-the-idm-web-ui_managing-users-groups-hosts"
+    }
   ]
 }
