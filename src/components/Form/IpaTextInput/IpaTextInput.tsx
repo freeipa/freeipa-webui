@@ -10,12 +10,23 @@ import {
 const IpaTextInput = (props: IPAParamDefinition) => {
   const { required, readOnly, value, onChange } = getParamProperties(props);
 
+  const [textInputValue, setTextInputValue] = React.useState<string>(
+    convertToString(value)
+  );
+
+  React.useEffect(() => {
+    setTextInputValue(convertToString(value));
+  }, [value]);
+
   return (
     <TextInput
       id={props.name}
       name={props.name}
-      value={convertToString(value)}
-      onChange={(_event, value) => onChange(value)}
+      value={textInputValue}
+      onChange={(_event, value) => {
+        setTextInputValue(value);
+        onChange(value);
+      }}
       type="text"
       aria-label={props.ariaLabel !== undefined ? props.ariaLabel : props.name}
       isRequired={required}
