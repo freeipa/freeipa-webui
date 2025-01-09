@@ -37,20 +37,17 @@ const ContextualHelpPanel = (props: ContextualHelpPanelProps) => {
 
   React.useEffect(() => {
     const urlList: DocLink[] = [];
-    switch (props.fromPage) {
-      case "active-users":
-        DocumentationLinks["active-users"].map((entry) => {
-          urlList.push({
-            name: entry.name,
-            url: entry.url,
-          });
+
+    if (DocumentationLinks[props.fromPage].length === 0) {
+      setUrlList([]);
+    } else {
+      DocumentationLinks[props.fromPage].map((entry) => {
+        urlList.push({
+          name: entry.name,
+          url: entry.url,
         });
-        setUrlList(urlList);
-        break;
-      // TODO: Add rest of the cases for the links data (based on key)
-      default:
-        setUrlList([]);
-        break;
+      });
+      setUrlList(urlList);
     }
   }, []);
 
