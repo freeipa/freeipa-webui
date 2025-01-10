@@ -12,7 +12,7 @@ env:
 jobs:
   audit-and-build:
     name: Audit and build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     container:
       image: fedora:latest
 
@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "21" # Before: "20"
 
       - name: Audit dependencies
         run: npx audit-ci --config audit-ci.json --skip-dev
@@ -57,14 +57,14 @@ jobs:
   unit-tests:
     name: Unit tests
     needs: audit-and-build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "21" # Before: "20"
 
       - name: Install project
         run: npm install
@@ -75,7 +75,7 @@ jobs:
   integration-tests:
     name: Integration tests
     needs: audit-and-build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v4
@@ -83,10 +83,12 @@ jobs:
       - name: Install vagrant
         run: |
           sudo apt -y install apt-transport-https ca-certificates curl software-properties-common
-          wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+          wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+          wget -O- https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo gpg --dearmor --yes --output /usr/share/keyrings/oracle-virtualbox-2016.gpg
+          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/oracle-virtualbox-2016.gpg] http://download.virtualbox.org/virtualbox/debian $(. /etc/os-release && echo "$VERSION_CODENAME") contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
           sudo apt update
-          sudo apt install vagrant vagrant-sshfs virtualbox
+          sudo apt install vagrant virtualbox-7.1
 
       - uses: actions/download-artifact@v4
         with:
@@ -94,7 +96,7 @@ jobs:
           path: dist
 
       - name: Run vagrant up
-        run: vagrant up --no-provision --provider=virtualbox
+        run: vagrant up --debug --no-provision --provider=virtualbox
 
       - name: Run vagrant provision
         run: vagrant provision

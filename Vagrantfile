@@ -3,12 +3,13 @@
 
 Vagrant.configure("2") do |config|
   config.vm.hostname = "server.ipa.demo"
-  config.vm.box = "fedora/39-cloud-base"
+  config.vm.box = "fedora/40-cloud-base"
 
   config.vm.synced_folder ".", "/vagrant", disabled: true
   config.vm.synced_folder ".", "/usr/src/freeipa-webui"
 
   # Needed by Cypress - optional if you edit your /etc/hosts
+  config.vm.network "forwarded_port", guest: 22, host: 2222, id: "ssh" ##
   config.vm.network "forwarded_port", guest: 443, host: 443
   config.vm.network "forwarded_port", guest: 80, host: 80
   if ENV['GITHUB_CI']
@@ -27,7 +28,8 @@ Vagrant.configure("2") do |config|
 
   # Virtualbox is used by the CI
   config.vm.provider "virtualbox" do |vb|
-    vb.memory = 2048
+    vb.gui = false # Headless mode (no GUI)
+    vb.memory = 4096 # Before: 2048
   end
 
   # Install system dependencies
