@@ -32,6 +32,7 @@ import UsersTable from "../../components/tables/UsersTable";
 // Components
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Modals
 import DeleteUsers from "src/components/modals/UserModals/DeleteUsers";
 import AddUser from "src/components/modals/UserModals/AddUser";
@@ -419,6 +420,18 @@ const StageUsers = () => {
     submitSearchValue,
   };
 
+  // Contextual links panel
+  const [isContextualPanelExpanded, setIsContextualPanelExpanded] =
+    React.useState(false);
+
+  const onOpenContextualPanel = () => {
+    setIsContextualPanelExpanded(!isContextualPanelExpanded);
+  };
+
+  const onCloseContextualPanel = () => {
+    setIsContextualPanelExpanded(false);
+  };
+
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -501,7 +514,12 @@ const StageUsers = () => {
     },
     {
       key: 8,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={onOpenContextualPanel}
+        />
+      ),
     },
     {
       key: 9,
@@ -519,77 +537,83 @@ const StageUsers = () => {
 
   // Render 'Stage users'
   return (
-    <Page>
-      <alerts.ManagedAlerts />
-      <PageSection variant={PageSectionVariants.light}>
-        <TitleLayout
-          id="stage users title"
-          headingLevel="h1"
-          text="Stage users"
+    <ContextualHelpPanel
+      fromPage="stage-users"
+      isExpanded={isContextualPanelExpanded}
+      onClose={onCloseContextualPanel}
+    >
+      <Page>
+        <alerts.ManagedAlerts />
+        <PageSection variant={PageSectionVariants.light}>
+          <TitleLayout
+            id="stage users title"
+            headingLevel="h1"
+            text="Stage users"
+          />
+        </PageSection>
+        <PageSection
+          variant={PageSectionVariants.light}
+          isFilled={false}
+          className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
+        >
+          <ToolbarLayout
+            className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
+            contentClassName="pf-v5-u-p-0"
+            toolbarItems={toolbarItems}
+          />
+          <div style={{ height: `calc(100vh - 352.2px)` }}>
+            <OuterScrollContainer>
+              <InnerScrollContainer>
+                {batchError !== undefined && batchError ? (
+                  <GlobalErrors errors={globalErrors.getAll()} />
+                ) : (
+                  <UsersTable
+                    shownElementsList={stageUsersList}
+                    from="stage-users"
+                    showTableRows={showTableRows}
+                    usersData={usersTableData}
+                    buttonsData={usersTableButtonsData}
+                    paginationData={selectedPerPageData}
+                    searchValue={searchValue}
+                  />
+                )}
+              </InnerScrollContainer>
+            </OuterScrollContainer>
+          </div>
+          <PaginationLayout
+            list={stageUsersList}
+            paginationData={paginationData}
+            variant={PaginationVariant.bottom}
+            widgetId="pagination-options-menu-bottom"
+            className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+          />
+        </PageSection>
+        <ModalErrors errors={modalErrors.getAll()} />
+        <AddUser
+          show={showAddModal}
+          from="stage-users"
+          setShowTableRows={setShowTableRows}
+          handleModalToggle={onAddModalToggle}
+          onOpenAddModal={onAddClickHandler}
+          onCloseAddModal={onCloseAddModal}
+          onRefresh={refreshUsersData}
         />
-      </PageSection>
-      <PageSection
-        variant={PageSectionVariants.light}
-        isFilled={false}
-        className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-      >
-        <ToolbarLayout
-          className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-          contentClassName="pf-v5-u-p-0"
-          toolbarItems={toolbarItems}
+        <DeleteUsers
+          show={showDeleteModal}
+          from="stage-users"
+          handleModalToggle={onDeleteModalToggle}
+          selectedUsersData={selectedUsersData}
+          buttonsData={deleteUsersButtonsData}
+          onRefresh={refreshUsersData}
         />
-        <div style={{ height: `calc(100vh - 352.2px)` }}>
-          <OuterScrollContainer>
-            <InnerScrollContainer>
-              {batchError !== undefined && batchError ? (
-                <GlobalErrors errors={globalErrors.getAll()} />
-              ) : (
-                <UsersTable
-                  shownElementsList={stageUsersList}
-                  from="stage-users"
-                  showTableRows={showTableRows}
-                  usersData={usersTableData}
-                  buttonsData={usersTableButtonsData}
-                  paginationData={selectedPerPageData}
-                  searchValue={searchValue}
-                />
-              )}
-            </InnerScrollContainer>
-          </OuterScrollContainer>
-        </div>
-        <PaginationLayout
-          list={stageUsersList}
-          paginationData={paginationData}
-          variant={PaginationVariant.bottom}
-          widgetId="pagination-options-menu-bottom"
-          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+        <ActivateStageUsers
+          show={showActivateModal}
+          handleModalToggle={onActivateModalToggle}
+          selectedUsers={selectedUsers}
+          onSuccess={refreshUsersData}
         />
-      </PageSection>
-      <ModalErrors errors={modalErrors.getAll()} />
-      <AddUser
-        show={showAddModal}
-        from="stage-users"
-        setShowTableRows={setShowTableRows}
-        handleModalToggle={onAddModalToggle}
-        onOpenAddModal={onAddClickHandler}
-        onCloseAddModal={onCloseAddModal}
-        onRefresh={refreshUsersData}
-      />
-      <DeleteUsers
-        show={showDeleteModal}
-        from="stage-users"
-        handleModalToggle={onDeleteModalToggle}
-        selectedUsersData={selectedUsersData}
-        buttonsData={deleteUsersButtonsData}
-        onRefresh={refreshUsersData}
-      />
-      <ActivateStageUsers
-        show={showActivateModal}
-        handleModalToggle={onActivateModalToggle}
-        selectedUsers={selectedUsers}
-        onSuccess={refreshUsersData}
-      />
-    </Page>
+      </Page>
+    </ContextualHelpPanel>
   );
 };
 
