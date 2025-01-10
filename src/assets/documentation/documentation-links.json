@@ -70,5 +70,19 @@
       "name": "Managing user accounts",
       "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/managing-user-accounts-using-the-idm-web-ui_managing-users-groups-hosts"
     }
+  ],
+  "stage-users": [
+    {
+      "name": "Adding new users",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/managing-user-accounts-using-the-idm-web-ui_managing-users-groups-hosts#adding-users-in-the-web-ui_managing-user-accounts-using-the-idm-web-ui"
+    },
+    {
+      "name": "Activating stage users",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/managing-user-accounts-using-the-idm-web-ui_managing-users-groups-hosts#activating-stage-users-in-the-idm-web-ui_managing-user-accounts-using-the-idm-web-ui"
+    },
+    {
+      "name": "Deleting users",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/managing-user-accounts-using-the-idm-web-ui_managing-users-groups-hosts#deleting-users-in-the-idm-web-ui_managing-user-accounts-using-the-idm-web-ui"
+    }
   ]
 }
