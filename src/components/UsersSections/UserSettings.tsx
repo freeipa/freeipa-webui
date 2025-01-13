@@ -104,6 +104,8 @@ const UserSettings = (props: PropsToUserSettings) => {
         props.changeFromPage("active-users-settings");
       } else if (props.from === "stage-users") {
         props.changeFromPage("stage-users-settings");
+      } else if (props.from === "preserved-users") {
+        props.changeFromPage("preserved-users-settings");
       }
     }
   }, [props.changeFromPage]);
