@@ -14,6 +14,7 @@ import UserSettings from "src/components/UsersSections/UserSettings";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import TitleLayout from "src/components/layouts/TitleLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Hooks
 import { useStageUserSettings } from "src/hooks/useUserSettingsData";
 // Redux
@@ -55,6 +56,25 @@ const StageUsersTabs = () => {
     }
   }, [uid]);
 
+  // Contextual links panel
+  const [fromPageSelected, setFromPageSelected] = React.useState(
+    "stage-users-settings"
+  );
+  const [isContextualPanelExpanded, setIsContextualPanelExpanded] =
+    React.useState(false);
+
+  const changeFromPage = (fromPage: string) => {
+    setFromPageSelected(fromPage);
+  };
+
+  const onOpenContextualPanel = () => {
+    setIsContextualPanelExpanded(!isContextualPanelExpanded);
+  };
+
+  const onCloseContextualPanel = () => {
+    setIsContextualPanelExpanded(false);
+  };
+
   // Data loaded from DB
   const userSettingsData = useStageUserSettings(uid as string);
 
@@ -82,53 +102,64 @@ const StageUsersTabs = () => {
 
   return (
     <>
-      <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
-        <BreadCrumb
-          className="pf-v5-u-mb-md"
-          breadcrumbItems={breadcrumbItems}
-        />
-        <TitleLayout
-          id={uid ? uid : ""}
-          preText="Staged user:"
-          text={uid ? uid : ""}
-          headingLevel="h1"
-        />
-      </PageSection>
-      <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
-        <Tabs
-          activeKey={activeTabKey}
-          onSelect={handleTabClick}
-          variant="light300"
-          isBox
-          className="pf-v5-u-ml-lg"
-          mountOnEnter
-          unmountOnExit
+      <ContextualHelpPanel
+        fromPage={fromPageSelected}
+        isExpanded={isContextualPanelExpanded}
+        onClose={onCloseContextualPanel}
+      >
+        <PageSection
+          variant={PageSectionVariants.light}
+          className="pf-v5-u-pr-0"
         >
-          <Tab
-            eventKey={0}
-            name="details"
-            title={<TabTitleText>Settings</TabTitleText>}
+          <BreadCrumb
+            className="pf-v5-u-mb-md"
+            breadcrumbItems={breadcrumbItems}
+          />
+          <TitleLayout
+            id={uid ? uid : ""}
+            preText="Staged user:"
+            text={uid ? uid : ""}
+            headingLevel="h1"
+          />
+        </PageSection>
+        <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
+          <Tabs
+            activeKey={activeTabKey}
+            onSelect={handleTabClick}
+            variant="light300"
+            isBox
+            className="pf-v5-u-ml-lg"
+            mountOnEnter
+            unmountOnExit
           >
-            <UserSettings
-              originalUser={userSettingsData.originalUser}
-              user={userSettingsData.user}
-              metadata={userSettingsData.metadata}
-              pwPolicyData={userSettingsData.pwPolicyData}
-              krbPolicyData={userSettingsData.krbtPolicyData}
-              certData={userSettingsData.certData}
-              onUserChange={userSettingsData.setUser}
-              isDataLoading={userSettingsData.isFetching}
-              onRefresh={userSettingsData.refetch}
-              isModified={userSettingsData.modified}
-              onResetValues={userSettingsData.resetValues}
-              modifiedValues={userSettingsData.modifiedValues}
-              radiusProxyData={userSettingsData.radiusServers}
-              idpData={userSettingsData.idpServers}
-              from="stage-users"
-            />
-          </Tab>
-        </Tabs>
-      </PageSection>
+            <Tab
+              eventKey={0}
+              name="details"
+              title={<TabTitleText>Settings</TabTitleText>}
+            >
+              <UserSettings
+                originalUser={userSettingsData.originalUser}
+                user={userSettingsData.user}
+                metadata={userSettingsData.metadata}
+                pwPolicyData={userSettingsData.pwPolicyData}
+                krbPolicyData={userSettingsData.krbtPolicyData}
+                certData={userSettingsData.certData}
+                onUserChange={userSettingsData.setUser}
+                isDataLoading={userSettingsData.isFetching}
+                onRefresh={userSettingsData.refetch}
+                isModified={userSettingsData.modified}
+                onResetValues={userSettingsData.resetValues}
+                modifiedValues={userSettingsData.modifiedValues}
+                radiusProxyData={userSettingsData.radiusServers}
+                idpData={userSettingsData.idpServers}
+                from="stage-users"
+                changeFromPage={changeFromPage}
+                onOpenContextualPanel={onOpenContextualPanel}
+              />
+            </Tab>
+          </Tabs>
+        </PageSection>
+      </ContextualHelpPanel>
     </>
   );
 };

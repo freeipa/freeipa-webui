@@ -85,6 +85,20 @@
       "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/managing-user-accounts-using-the-idm-web-ui_managing-users-groups-hosts#deleting-users-in-the-idm-web-ui_managing-user-accounts-using-the-idm-web-ui"
     }
   ],
+  "stage-users-settings": [
+    {
+      "name": "Managing user accounts",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/managing-user-accounts-using-the-idm-web-ui_managing-users-groups-hosts"
+    },
+    {
+      "name": "Adding a certificate mapping rule",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_certificates_in_idm/conf-certmap-idm_managing-certificates-in-idm#proc-add-maprule-webui_conf-certmap-for-users-in-idm"
+    },
+    {
+      "name": "Adding certificate mapping data to a user entry",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_certificates_in_idm/conf-certmap-idm_managing-certificates-in-idm#proc-add-certmapdata-to-user-webui_conf-certmap-for-users-in-idm"
+    }
+  ],
   "preserved-users": [
     {
       "name": "Deleting users",
