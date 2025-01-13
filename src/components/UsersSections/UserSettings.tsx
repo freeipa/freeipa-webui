@@ -100,7 +100,11 @@ const UserSettings = (props: PropsToUserSettings) => {
   // Update page to show correct links info in Contextual panel
   React.useEffect(() => {
     if (props.changeFromPage !== undefined) {
-      props.changeFromPage("active-users-settings");
+      if (props.from === "active-users") {
+        props.changeFromPage("active-users-settings");
+      } else if (props.from === "stage-users") {
+        props.changeFromPage("stage-users-settings");
+      }
     }
   }, [props.changeFromPage]);
 
