@@ -108,5 +108,19 @@
       "name": "Restoring users",
       "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/managing-user-accounts-using-the-idm-web-ui_managing-users-groups-hosts#restoring-users-in-the-idm-web-ui_managing-user-accounts-using-the-idm-web-ui"
     }
+  ],
+  "hosts": [
+    {
+      "name": "Adding host entries from IdM Web UI",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/adding-hosts-ui_managing-users-groups-hosts#doc-wrapper"
+    },
+    {
+      "name": "Rebuilding automatic membership for all users or hosts",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html-single/managing_idm_users_groups_hosts_and_access_control_rules/index#rebuilding-automatic-membership-for-all-users-or-hosts_applying-automember-rules-to-existing-entries-using-idm-web-ui"
+    },
+    {
+      "name": "Rebuilding automatic membership for a single user or host only",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html-single/managing_idm_users_groups_hosts_and_access_control_rules/index#rebuilding-automatic-membership-for-a-single-user-or-host-only_applying-automember-rules-to-existing-entries-using-idm-web-ui"
+    }
   ]
 }

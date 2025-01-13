@@ -26,6 +26,7 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Components
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Tables
 import HostsTable from "./HostsTable";
 // Modal
@@ -564,6 +565,18 @@ const Hosts = () => {
     submitSearchValue,
   };
 
+  // Contextual links panel
+  const [isContextualPanelExpanded, setIsContextualPanelExpanded] =
+    React.useState(false);
+
+  const onOpenContextualPanel = () => {
+    setIsContextualPanelExpanded(!isContextualPanelExpanded);
+  };
+
+  const onCloseContextualPanel = () => {
+    setIsContextualPanelExpanded(false);
+  };
+
   // List of toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -647,7 +660,12 @@ const Hosts = () => {
     },
     {
       key: 8,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={onOpenContextualPanel}
+        />
+      ),
     },
     {
       key: 9,
@@ -664,78 +682,84 @@ const Hosts = () => {
   ];
 
   return (
-    <Page>
-      <alerts.ManagedAlerts />
-      <PageSection variant={PageSectionVariants.light}>
-        <TitleLayout id="Hosts title" headingLevel="h1" text="Hosts" />
-      </PageSection>
-      <PageSection
-        variant={PageSectionVariants.light}
-        isFilled={false}
-        className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-      >
-        <ToolbarLayout
-          className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-          contentClassName="pf-v5-u-p-0"
-          toolbarItems={toolbarItems}
+    <ContextualHelpPanel
+      fromPage="hosts"
+      isExpanded={isContextualPanelExpanded}
+      onClose={onCloseContextualPanel}
+    >
+      <Page>
+        <alerts.ManagedAlerts />
+        <PageSection variant={PageSectionVariants.light}>
+          <TitleLayout id="Hosts title" headingLevel="h1" text="Hosts" />
+        </PageSection>
+        <PageSection
+          variant={PageSectionVariants.light}
+          isFilled={false}
+          className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
+        >
+          <ToolbarLayout
+            className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
+            contentClassName="pf-v5-u-p-0"
+            toolbarItems={toolbarItems}
+          />
+          <div style={{ height: `calc(100vh - 350px)` }}>
+            <OuterScrollContainer>
+              <InnerScrollContainer>
+                {batchError !== undefined && batchError ? (
+                  <GlobalErrors errors={globalErrors.getAll()} />
+                ) : (
+                  <HostsTable
+                    elementsList={hostsList}
+                    shownElementsList={hostsList}
+                    showTableRows={showTableRows}
+                    hostsData={hostsTableData}
+                    buttonsData={hostsTableButtonsData}
+                    paginationData={selectedPerPageData}
+                    searchValue={searchValue}
+                  />
+                )}
+              </InnerScrollContainer>
+            </OuterScrollContainer>
+          </div>
+          <PaginationLayout
+            list={hostsList}
+            paginationData={paginationData}
+            variant={PaginationVariant.bottom}
+            widgetId="pagination-options-menu-bottom"
+            className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+          />
+        </PageSection>
+        <ModalErrors errors={modalErrors.getAll()} />
+        {isMembershipModalOpen && (
+          <ModalWithFormLayout
+            variantType="medium"
+            modalPosition="top"
+            offPosition="76px"
+            title="Confirmation"
+            formId="rebuild-auto-membership-modal"
+            fields={confirmationQuestion}
+            show={isMembershipModalOpen}
+            onClose={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
+            actions={membershipModalActions}
+          />
+        )}
+        <AddHost
+          show={showAddModal}
+          handleModalToggle={onAddModalToggle}
+          onOpenAddModal={onAddClickHandler}
+          onCloseAddModal={onCloseAddModal}
+          dnsZones={dnsZones}
+          onRefresh={refreshHostsData}
         />
-        <div style={{ height: `calc(100vh - 350px)` }}>
-          <OuterScrollContainer>
-            <InnerScrollContainer>
-              {batchError !== undefined && batchError ? (
-                <GlobalErrors errors={globalErrors.getAll()} />
-              ) : (
-                <HostsTable
-                  elementsList={hostsList}
-                  shownElementsList={hostsList}
-                  showTableRows={showTableRows}
-                  hostsData={hostsTableData}
-                  buttonsData={hostsTableButtonsData}
-                  paginationData={selectedPerPageData}
-                  searchValue={searchValue}
-                />
-              )}
-            </InnerScrollContainer>
-          </OuterScrollContainer>
-        </div>
-        <PaginationLayout
-          list={hostsList}
-          paginationData={paginationData}
-          variant={PaginationVariant.bottom}
-          widgetId="pagination-options-menu-bottom"
-          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+        <DeleteHosts
+          show={showDeleteModal}
+          handleModalToggle={onDeleteModalToggle}
+          selectedHostsData={selectedHostsData}
+          buttonsData={deleteHostsButtonsData}
+          onRefresh={refreshHostsData}
         />
-      </PageSection>
-      <ModalErrors errors={modalErrors.getAll()} />
-      {isMembershipModalOpen && (
-        <ModalWithFormLayout
-          variantType="medium"
-          modalPosition="top"
-          offPosition="76px"
-          title="Confirmation"
-          formId="rebuild-auto-membership-modal"
-          fields={confirmationQuestion}
-          show={isMembershipModalOpen}
-          onClose={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
-          actions={membershipModalActions}
-        />
-      )}
-      <AddHost
-        show={showAddModal}
-        handleModalToggle={onAddModalToggle}
-        onOpenAddModal={onAddClickHandler}
-        onCloseAddModal={onCloseAddModal}
-        dnsZones={dnsZones}
-        onRefresh={refreshHostsData}
-      />
-      <DeleteHosts
-        show={showDeleteModal}
-        handleModalToggle={onDeleteModalToggle}
-        selectedHostsData={selectedHostsData}
-        buttonsData={deleteHostsButtonsData}
-        onRefresh={refreshHostsData}
-      />
-    </Page>
+      </Page>
+    </ContextualHelpPanel>
   );
 };
 
