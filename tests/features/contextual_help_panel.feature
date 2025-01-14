@@ -69,3 +69,17 @@ Feature: Contextual help links panel
     Given I should see contextual help panel
     When I click on close button in the panel
     Then I should not see contextual help panel
+
+  # Services
+  Scenario: Open the contextual help links panel on 'services' main page
+    Given I am on "services" page
+    When I click on "Help" button
+    Then I should see contextual help panel
+    And I should see a title "Links" in the panel
+    * I should see a list of links
+
+  Scenario: Close the contextual help links panel on 'Services' main page
+    Given I am on "services" page
+    Given I should see contextual help panel
+    When I click on close button in the panel
+    Then I should not see contextual help panel
