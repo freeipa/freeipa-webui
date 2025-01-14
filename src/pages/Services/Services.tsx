@@ -21,6 +21,7 @@ import HelpTextWithIconLayout from "../../components/layouts/HelpTextWithIconLay
 // Components
 import BulkSelectorPrep from "../../components/BulkSelectorPrep";
 import PaginationLayout from "../../components/layouts/PaginationLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Tables
 import ServicesTable from "./ServicesTable";
 // Redux
@@ -438,6 +439,18 @@ const Services = () => {
     clearSelectedServices,
   };
 
+  // Contextual links panel
+  const [isContextualPanelExpanded, setIsContextualPanelExpanded] =
+    React.useState(false);
+
+  const onOpenContextualPanel = () => {
+    setIsContextualPanelExpanded(!isContextualPanelExpanded);
+  };
+
+  const onCloseContextualPanel = () => {
+    setIsContextualPanelExpanded(false);
+  };
+
   // List of toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -509,7 +522,12 @@ const Services = () => {
     },
     {
       key: 7,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={onOpenContextualPanel}
+        />
+      ),
     },
     {
       key: 8,
@@ -527,65 +545,71 @@ const Services = () => {
 
   // Render component
   return (
-    <Page>
-      <alerts.ManagedAlerts />
-      <PageSection variant={PageSectionVariants.light}>
-        <TitleLayout id="Services title" headingLevel="h1" text="Services" />
-      </PageSection>
-      <PageSection
-        variant={PageSectionVariants.light}
-        isFilled={false}
-        className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-      >
-        <ToolbarLayout
-          className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-          contentClassName="pf-v5-u-p-0"
-          toolbarItems={toolbarItems}
+    <ContextualHelpPanel
+      fromPage="services"
+      isExpanded={isContextualPanelExpanded}
+      onClose={onCloseContextualPanel}
+    >
+      <Page>
+        <alerts.ManagedAlerts />
+        <PageSection variant={PageSectionVariants.light}>
+          <TitleLayout id="Services title" headingLevel="h1" text="Services" />
+        </PageSection>
+        <PageSection
+          variant={PageSectionVariants.light}
+          isFilled={false}
+          className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
+        >
+          <ToolbarLayout
+            className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
+            contentClassName="pf-v5-u-p-0"
+            toolbarItems={toolbarItems}
+          />
+          <div style={{ height: `calc(100vh - 350px)` }}>
+            <OuterScrollContainer>
+              <InnerScrollContainer>
+                {batchError !== undefined && batchError ? (
+                  <GlobalErrors errors={globalErrors.getAll()} />
+                ) : (
+                  <ServicesTable
+                    elementsList={servicesList}
+                    shownElementsList={servicesList}
+                    showTableRows={showTableRows}
+                    servicesData={servicesTableData}
+                    buttonsData={servicesTableButtonsData}
+                    paginationData={selectedPerPageData}
+                    searchValue={searchValue}
+                  />
+                )}
+              </InnerScrollContainer>
+            </OuterScrollContainer>
+          </div>
+          <PaginationLayout
+            list={servicesList}
+            paginationData={paginationData}
+            variant={PaginationVariant.bottom}
+            widgetId="pagination-options-menu-bottom"
+            className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+          />
+        </PageSection>
+        <ModalErrors errors={modalErrors.getAll()} />
+        <AddService
+          show={showAddModal}
+          handleModalToggle={onAddModalToggle}
+          onOpenAddModal={onAddClickHandler}
+          onCloseAddModal={onCloseAddModal}
+          onRefresh={refreshServicesData}
+          hostsList={hostsList}
         />
-        <div style={{ height: `calc(100vh - 350px)` }}>
-          <OuterScrollContainer>
-            <InnerScrollContainer>
-              {batchError !== undefined && batchError ? (
-                <GlobalErrors errors={globalErrors.getAll()} />
-              ) : (
-                <ServicesTable
-                  elementsList={servicesList}
-                  shownElementsList={servicesList}
-                  showTableRows={showTableRows}
-                  servicesData={servicesTableData}
-                  buttonsData={servicesTableButtonsData}
-                  paginationData={selectedPerPageData}
-                  searchValue={searchValue}
-                />
-              )}
-            </InnerScrollContainer>
-          </OuterScrollContainer>
-        </div>
-        <PaginationLayout
-          list={servicesList}
-          paginationData={paginationData}
-          variant={PaginationVariant.bottom}
-          widgetId="pagination-options-menu-bottom"
-          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+        <DeleteServices
+          show={showDeleteModal}
+          handleModalToggle={onDeleteModalToggle}
+          selectedServicesData={selectedElementsData}
+          buttonsData={deleteElementsButtonsData}
+          onRefresh={refreshServicesData}
         />
-      </PageSection>
-      <ModalErrors errors={modalErrors.getAll()} />
-      <AddService
-        show={showAddModal}
-        handleModalToggle={onAddModalToggle}
-        onOpenAddModal={onAddClickHandler}
-        onCloseAddModal={onCloseAddModal}
-        onRefresh={refreshServicesData}
-        hostsList={hostsList}
-      />
-      <DeleteServices
-        show={showDeleteModal}
-        handleModalToggle={onDeleteModalToggle}
-        selectedServicesData={selectedElementsData}
-        buttonsData={deleteElementsButtonsData}
-        onRefresh={refreshServicesData}
-      />
-    </Page>
+      </Page>
+    </ContextualHelpPanel>
   );
 };
 
