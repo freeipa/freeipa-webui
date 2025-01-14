@@ -1,0 +1,35 @@
+---
+lab_name: webui
+container_fqdn: true
+nolog: true
+containerfiles:
+  - containerfile-fedora
+external_data:
+  - playbooks
+subnet: "192.168.59.0/24"
+ipa_deployments:
+  - name: i1
+    domain: dom-server.ipa.demo
+    realm: DOM-IPA.DEMO
+    admin_password: Secret123
+    dm_password: Secret123
+    distro: freeipa-webui-tests
+    cluster:
+      servers:
+        - name: server.ipa.demo
+          nolog: true
+          capabilities:
+            - DNS
+          vars:
+            ipaserver_netbios_name: DOM-SERVER
+            ipaserver_idstart: 61000
+            ipaserver_idmax: 62000
+            ipaserver_rid_base: 63000
+            ipaserver_secondary_rid_base: 70000
+          volumes:
+            - CONF_DIR:/usr/src/freeipa-webui:Z
+      clients:
+        - name: client.ipa.demo
+          nolog: true
+          volumes:
+            - CONF_DIR:/freeipa-webui:Z

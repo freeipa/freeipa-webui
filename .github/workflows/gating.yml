@@ -12,7 +12,7 @@ env:
 jobs:
   audit-and-build:
     name: Audit and build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     container:
       image: fedora:latest
 
@@ -57,7 +57,7 @@ jobs:
   unit-tests:
     name: Unit tests
     needs: audit-and-build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -75,44 +75,64 @@ jobs:
   integration-tests:
     name: Integration tests
     needs: audit-and-build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install vagrant
-        run: |
-          sudo apt -y install apt-transport-https ca-certificates curl software-properties-common
-          wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-          sudo apt update
-          sudo apt install vagrant vagrant-sshfs virtualbox
 
       - uses: actions/download-artifact@v4
         with:
           name: freeipa-webui-build
           path: dist
 
-      - name: Run vagrant up
-        run: vagrant up --no-provision --provider=virtualbox
+      - name: Build test image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: freeipa-webui-tests
+          tags: latest
+          containerfiles: tests/ipalab/containerfile-fedora
 
-      - name: Run vagrant provision
-        run: vagrant provision
+      - name: Install dependencies
+        shell: bash
+        run: |
+          sudo apt update -y
+          sudo apt install libkrb5-dev libvirt-dev
+          sudo apt install software-properties-common
+          sudo apt install ansible-core podman
+
+      - name: Generate ipalab configuration
+        shell: bash
+        run: |
+          sed -e "s@CONF_DIR@$(pwd)@g" tests/ipalab/ipa.yaml.in > tests/ipalab/ipa.yaml
+
+      - name: Configure FreeIPA environment and set up Modern UI for it
+        uses: rjeffman/FreeIPA-Cluster-Test@v1.5.0
+        with:
+          cluster_configuration: tests/ipalab/ipa.yaml
+          test_playbooks: tests/ipalab/playbooks/webui.yaml
 
       - name: Put IPA Server's IP to /etc/hosts
-        run: sudo echo "$(vagrant ssh -c "hostname -I|sed 's/10\.0\.2\.15//'") server.ipa.demo" | sudo tee -a /etc/hosts
-
-      - name: Save server's IP address to env
-        run: echo "SERVER_IP=$(vagrant ssh -c "hostname -I|sed 's/10\.0\.2\.15//'")" >> $GITHUB_ENV
-
-      - name: Print exported variable
-        run: echo "$SERVER_IP"
+        run: sudo echo "$(podman exec -ti server.ipa.demo hostname -I) server.ipa.demo" | sudo tee -a /etc/hosts
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
           browser: electron
           config-file: cypress/cypress.config.ts
+          command: |
+            podman unshare --rootless-netns \
+                   npx cypress run --config-file cypress/cypress.config.ts --browser electron ||:
+
+      - name: Shutdown the test machines and a network
+        uses: rjeffman/FreeIPA-Cluster-Test@v1.5.0
+        with:
+          cluster_configuration: tests/ipalab/ipa.yaml
+          shutdown: true
+
+      - name: Remove ipalab configuration
+        shell: bash
+        run: rm -f tests/ipalab/ipa.yaml
 
       - name: Upload cypress screenshots
         uses: actions/upload-artifact@v4
