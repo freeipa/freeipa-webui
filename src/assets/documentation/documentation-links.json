@@ -122,5 +122,31 @@
       "name": "Rebuilding automatic membership for a single user or host only",
       "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html-single/managing_idm_users_groups_hosts_and_access_control_rules/index#rebuilding-automatic-membership-for-a-single-user-or-host-only_applying-automember-rules-to-existing-entries-using-idm-web-ui"
     }
+  ],
+  "hosts-settings": [
+    {
+      "name": "Hosts in IdM",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/adding-hosts-ui_managing-users-groups-hosts#hosts_managing-hosts-ui"
+    },
+    {
+      "name": "Host enrollment",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/adding-hosts-ui_managing-users-groups-hosts#assembly_host-enrollment_managing-hosts-ui"
+    },
+    {
+      "name": "User privileges required for host enrollment",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/adding-hosts-ui_managing-users-groups-hosts#host-enrollment-privileges_managing-hosts-ui"
+    },
+    {
+      "name": "Enrollment and authentication of IdM hosts and users: comparison",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/adding-hosts-ui_managing-users-groups-hosts#comparing-hosts-and-users_managing-hosts-ui"
+    },
+    {
+      "name": "Host entry in IdM LDAP",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/adding-hosts-ui_managing-users-groups-hosts#con_host-entry-LDAP_managing-hosts-ui"
+    },
+    {
+      "name": "Adding Host Entries from the Web UI",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/adding-hosts-ui_managing-users-groups-hosts#adding-host-entry-ui_managing-hosts-ui"
+    }
   ]
 }
