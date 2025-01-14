@@ -188,5 +188,19 @@
       "name": "The IdM services",
       "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/accessing_identity_management_services/viewing-starting-and-stopping-the-ipa-server_accessing-idm-services#the-idm-services_start-stop-ipa"
     }
+  ],
+  "services-settings": [
+    {
+      "name": "Kerberos authentication indicators",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/managing-kerberos-ticket-policies_managing-users-groups-hosts#kerberos-authentication-indicators_managing-kerberos-ticket-policies"
+    },
+    {
+      "name": "Enforcing authentication indicators for an IdM service",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/managing-kerberos-ticket-policies_managing-users-groups-hosts#enforcing-authentication-indicators-for-an-idm-service_managing-kerberos-ticket-policies"
+    },
+    {
+      "name": "Associating authentication indicators with an IdM service using IdM Web UI",
+      "url": "https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_idm_users_groups_hosts_and_access_control_rules/managing-kerberos-ticket-policies_managing-users-groups-hosts#associating-authentication-indicators-with-an-idm-service-using-idm-web-ui_enforcing-authentication-indicators-for-an-idm-service"
+    }
   ]
 }

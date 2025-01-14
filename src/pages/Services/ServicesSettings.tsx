@@ -55,6 +55,8 @@ interface PropsToServicesSettings {
   modifiedValues: () => Partial<Service>;
   onResetValues: () => void;
   certData: Record<string, unknown>;
+  changeFromPage: (from: string) => void;
+  onOpenContextualPanel: () => void;
 }
 
 const ServicesSettings = (props: PropsToServicesSettings) => {
@@ -64,6 +66,11 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
   // API call: Save the Service
   const [saveService] = useSaveServiceMutation();
   const [executeUnprovision] = useUnprovisionServiceMutation();
+
+  // Update page to show correct links info in Contextual panel
+  React.useEffect(() => {
+    props.changeFromPage("service-settings");
+  }, [props.changeFromPage]);
 
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
@@ -263,7 +270,10 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
       <alerts.ManagedAlerts />
       <Sidebar isPanelRight className="pf-v5-u-mt-lg">
         <SidebarPanel variant="sticky">
-          <HelpTextWithIconLayout textContent="Help" />
+          <HelpTextWithIconLayout
+            textContent="Help"
+            onClick={props.onOpenContextualPanel}
+          />
           <JumpLinks
             isVertical
             label="Jump to section"
