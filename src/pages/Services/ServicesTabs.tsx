@@ -16,6 +16,7 @@ import ServicesManagedBy from "./ServicesManagedBy";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import { partialServiceToService } from "src/utils/serviceUtils";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Hooks
 import { useAlerts } from "../../hooks/useAlerts";
 // Hooks
@@ -42,6 +43,29 @@ const ServicesTabs = ({ section }) => {
   const [breadcrumbItems, setBreadcrumbItems] = React.useState<
     BreadCrumbItem[]
   >([]);
+
+  // Contextual links panel
+  const [fromPageSelected, setFromPageSelected] =
+    React.useState("services-settings");
+  const [isContextualPanelExpanded, setIsContextualPanelExpanded] =
+    React.useState(false);
+
+  const changeFromPage = (fromPage: string) => {
+    setFromPageSelected(fromPage);
+  };
+
+  const onOpenContextualPanel = () => {
+    setIsContextualPanelExpanded(!isContextualPanelExpanded);
+  };
+
+  const onCloseContextualPanel = () => {
+    setIsContextualPanelExpanded(false);
+  };
+
+  // - Close links panel when tab section is changed
+  React.useEffect(() => {
+    setIsContextualPanelExpanded(false);
+  }, [section]);
 
   // Data loaded from DB
   const serviceSettingsData = useServiceSettings(decodedId as string);
@@ -114,63 +138,74 @@ const ServicesTabs = ({ section }) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
-      <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
-        <BreadCrumb
-          className="pf-v5-u-mb-md"
-          breadcrumbItems={breadcrumbItems}
-        />
-        <TitleLayout
-          id={service.krbcanonicalname}
-          preText="Service:"
-          text={service.krbcanonicalname}
-          headingLevel="h1"
-        />
-      </PageSection>
-      <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
-        <Tabs
-          activeKey={activeTabKey}
-          onSelect={handleTabClick}
-          variant="light300"
-          isBox
-          className="pf-v5-u-ml-lg"
-          mountOnEnter
-          unmountOnExit
+      <ContextualHelpPanel
+        fromPage={fromPageSelected}
+        isExpanded={isContextualPanelExpanded}
+        onClose={onCloseContextualPanel}
+      >
+        <alerts.ManagedAlerts />
+        <PageSection
+          variant={PageSectionVariants.light}
+          className="pf-v5-u-pr-0"
         >
-          <Tab
-            eventKey={"settings"}
-            name="details"
-            title={<TabTitleText>Settings</TabTitleText>}
+          <BreadCrumb
+            className="pf-v5-u-mb-md"
+            breadcrumbItems={breadcrumbItems}
+          />
+          <TitleLayout
+            id={service.krbcanonicalname}
+            preText="Service:"
+            text={service.krbcanonicalname}
+            headingLevel="h1"
+          />
+        </PageSection>
+        <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
+          <Tabs
+            activeKey={activeTabKey}
+            onSelect={handleTabClick}
+            variant="light300"
+            isBox
+            className="pf-v5-u-ml-lg"
+            mountOnEnter
+            unmountOnExit
           >
-            <ServicesSettings
-              service={service}
-              originalService={serviceSettingsData.originalService}
-              metadata={serviceSettingsData.metadata}
-              onServiceChange={serviceSettingsData.setService}
-              isDataLoading={serviceSettingsData.isLoading}
-              onRefresh={serviceSettingsData.refetch}
-              isModified={serviceSettingsData.modified}
-              onResetValues={serviceSettingsData.resetValues}
-              modifiedValues={serviceSettingsData.modifiedValues}
-              certData={certificates}
-            />
-          </Tab>
-          <Tab
-            eventKey={"memberof"}
-            name="details"
-            title={<TabTitleText>Is a member of</TabTitleText>}
-          >
-            <ServicesMemberOf service={service} tabSection={section} />
-          </Tab>
-          <Tab
-            eventKey={"managedby"}
-            name="details"
-            title={<TabTitleText>Is managed by</TabTitleText>}
-          >
-            <ServicesManagedBy service={service} />
-          </Tab>
-        </Tabs>
-      </PageSection>
+            <Tab
+              eventKey={"settings"}
+              name="details"
+              title={<TabTitleText>Settings</TabTitleText>}
+            >
+              <ServicesSettings
+                service={service}
+                originalService={serviceSettingsData.originalService}
+                metadata={serviceSettingsData.metadata}
+                onServiceChange={serviceSettingsData.setService}
+                isDataLoading={serviceSettingsData.isLoading}
+                onRefresh={serviceSettingsData.refetch}
+                isModified={serviceSettingsData.modified}
+                onResetValues={serviceSettingsData.resetValues}
+                modifiedValues={serviceSettingsData.modifiedValues}
+                certData={certificates}
+                changeFromPage={changeFromPage}
+                onOpenContextualPanel={onOpenContextualPanel}
+              />
+            </Tab>
+            <Tab
+              eventKey={"memberof"}
+              name="details"
+              title={<TabTitleText>Is a member of</TabTitleText>}
+            >
+              <ServicesMemberOf service={service} tabSection={section} />
+            </Tab>
+            <Tab
+              eventKey={"managedby"}
+              name="details"
+              title={<TabTitleText>Is managed by</TabTitleText>}
+            >
+              <ServicesManagedBy service={service} />
+            </Tab>
+          </Tabs>
+        </PageSection>
+      </ContextualHelpPanel>
     </>
   );
 };
