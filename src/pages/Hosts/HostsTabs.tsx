@@ -13,6 +13,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import HostsSettings from "./HostsSettings";
 import HostsMemberOf from "./HostsMemberOf";
 import HostsManagedBy from "./HostsManagedBy";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
@@ -40,6 +41,29 @@ const HostsTabs = ({ section }) => {
   >([]);
 
   const [hostId, setHostId] = useState("");
+
+  // Contextual links panel
+  const [fromPageSelected, setFromPageSelected] =
+    React.useState("hosts-settings");
+  const [isContextualPanelExpanded, setIsContextualPanelExpanded] =
+    React.useState(false);
+
+  const changeFromPage = (fromPage: string) => {
+    setFromPageSelected(fromPage);
+  };
+
+  const onOpenContextualPanel = () => {
+    setIsContextualPanelExpanded(!isContextualPanelExpanded);
+  };
+
+  const onCloseContextualPanel = () => {
+    setIsContextualPanelExpanded(false);
+  };
+
+  // - Close links panel when tab section is changed
+  React.useEffect(() => {
+    setIsContextualPanelExpanded(false);
+  }, [section]);
 
   // Data loaded from DB
   const hostSettingsData = useHostSettings(fqdn as string);
@@ -114,65 +138,76 @@ const HostsTabs = ({ section }) => {
 
   return (
     <>
-      <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
-        <BreadCrumb
-          className="pf-v5-u-mb-md"
-          breadcrumbItems={breadcrumbItems}
-        />
-        <TitleLayout
-          id={hostId}
-          preText="Host:"
-          text={hostId}
-          headingLevel="h1"
-        />
-      </PageSection>
-      <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
-        <Tabs
-          activeKey={activeTabKey}
-          onSelect={handleTabClick}
-          variant="light300"
-          isBox
-          className="pf-v5-u-ml-lg"
-          mountOnEnter
-          unmountOnExit
+      <ContextualHelpPanel
+        fromPage={fromPageSelected}
+        isExpanded={isContextualPanelExpanded}
+        onClose={onCloseContextualPanel}
+      >
+        <PageSection
+          variant={PageSectionVariants.light}
+          className="pf-v5-u-pr-0"
         >
-          <Tab
-            eventKey={"settings"}
-            name="settings-details"
-            title={<TabTitleText>Settings</TabTitleText>}
+          <BreadCrumb
+            className="pf-v5-u-mb-md"
+            breadcrumbItems={breadcrumbItems}
+          />
+          <TitleLayout
+            id={hostId}
+            preText="Host:"
+            text={hostId}
+            headingLevel="h1"
+          />
+        </PageSection>
+        <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
+          <Tabs
+            activeKey={activeTabKey}
+            onSelect={handleTabClick}
+            variant="light300"
+            isBox
+            className="pf-v5-u-ml-lg"
+            mountOnEnter
+            unmountOnExit
           >
-            <HostsSettings
-              host={host}
-              originalHost={hostSettingsData.originalHost}
-              metadata={hostSettingsData.metadata}
-              certData={hostSettingsData.certData}
-              onHostChange={hostSettingsData.setHost}
-              isDataLoading={hostSettingsData.isFetching}
-              onRefresh={hostSettingsData.refetch}
-              isModified={hostSettingsData.modified}
-              onResetValues={hostSettingsData.resetValues}
-              modifiedValues={hostSettingsData.modifiedValues}
-            />
-          </Tab>
-          <Tab
-            eventKey={"memberof"}
-            name="memberof-details"
-            title={<TabTitleText>Is a member of</TabTitleText>}
-          >
-            <HostsMemberOf
-              host={partialHostToHost(host)}
-              tabSection={section}
-            />
-          </Tab>
-          <Tab
-            eventKey={"managedby"}
-            name="managedby-details"
-            title={<TabTitleText>Is managed by</TabTitleText>}
-          >
-            <HostsManagedBy host={host as Host} />
-          </Tab>
-        </Tabs>
-      </PageSection>
+            <Tab
+              eventKey={"settings"}
+              name="settings-details"
+              title={<TabTitleText>Settings</TabTitleText>}
+            >
+              <HostsSettings
+                host={host}
+                originalHost={hostSettingsData.originalHost}
+                metadata={hostSettingsData.metadata}
+                certData={hostSettingsData.certData}
+                onHostChange={hostSettingsData.setHost}
+                isDataLoading={hostSettingsData.isFetching}
+                onRefresh={hostSettingsData.refetch}
+                isModified={hostSettingsData.modified}
+                onResetValues={hostSettingsData.resetValues}
+                modifiedValues={hostSettingsData.modifiedValues}
+                changeFromPage={changeFromPage}
+                onOpenContextualPanel={onOpenContextualPanel}
+              />
+            </Tab>
+            <Tab
+              eventKey={"memberof"}
+              name="memberof-details"
+              title={<TabTitleText>Is a member of</TabTitleText>}
+            >
+              <HostsMemberOf
+                host={partialHostToHost(host)}
+                tabSection={section}
+              />
+            </Tab>
+            <Tab
+              eventKey={"managedby"}
+              name="managedby-details"
+              title={<TabTitleText>Is managed by</TabTitleText>}
+            >
+              <HostsManagedBy host={host as Host} />
+            </Tab>
+          </Tabs>
+        </PageSection>
+      </ContextualHelpPanel>
     </>
   );
 };

@@ -57,6 +57,8 @@ interface PropsToHostsSettings {
   isDataLoading?: boolean;
   modifiedValues: () => Partial<Host>;
   onResetValues: () => void;
+  changeFromPage: (from: string) => void;
+  onOpenContextualPanel: () => void;
 }
 
 const HostsSettings = (props: PropsToHostsSettings) => {
@@ -71,6 +73,11 @@ const HostsSettings = (props: PropsToHostsSettings) => {
   const [executeAutoMemberRebuild] = useAutoMemberRebuildHostsMutation();
 
   const [executeUnprovisionHost] = useUnprovisionHostMutation();
+
+  // Update page to show correct links info in Contextual panel
+  React.useEffect(() => {
+    props.changeFromPage("active-users-settings");
+  }, [props.changeFromPage]);
 
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = useState(false);
@@ -362,7 +369,10 @@ const HostsSettings = (props: PropsToHostsSettings) => {
       <alerts.ManagedAlerts />
       <Sidebar isPanelRight>
         <SidebarPanel variant="sticky">
-          <HelpTextWithIconLayout textContent="Help" />
+          <HelpTextWithIconLayout
+            textContent="Help"
+            onClick={props.onOpenContextualPanel}
+          />
           <JumpLinks
             isVertical
             label="Jump to section"
