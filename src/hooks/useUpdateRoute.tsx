@@ -1,5 +1,5 @@
 import React from "react";
-import { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
+import { BreadCrumbItem } from "src/components/layouts/BreadCrumb/BreadCrumb";
 import {
   getBreadCrumbByPath,
   getGroupByPath,
