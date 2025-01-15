@@ -11,7 +11,9 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 // Components
 import UserSettings from "src/components/UsersSections/UserSettings";
-import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
+import BreadCrumb, {
+  BreadCrumbItem,
+} from "src/components/layouts/BreadCrumb/BreadCrumb";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";

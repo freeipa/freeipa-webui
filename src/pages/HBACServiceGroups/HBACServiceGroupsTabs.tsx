@@ -11,7 +11,9 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Layouts
-import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
+import BreadCrumb, {
+  BreadCrumbItem,
+} from "src/components/layouts/BreadCrumb/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
 // Hooks
