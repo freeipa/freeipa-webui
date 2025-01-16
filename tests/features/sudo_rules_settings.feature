@@ -117,6 +117,7 @@ Feature: Sudo rules - Settings page
     * I type in the field "Host name" text "my-temp-server"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host added"
+    Then I close the alert
     Then I should see partial "my-temp-server" entry in the data table
 
   Scenario: Add a new host from the 'Sudo rules' page
@@ -150,6 +151,7 @@ Feature: Sudo rules - Settings page
     * I type in the field "Group name" text "a_host_group"
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host group added"
+    Then I close the alert
     Then I should see "a_host_group" entry in the data table
 
   Scenario: Add a new host group
@@ -320,7 +322,8 @@ Feature: Sudo rules - Settings page
     And I should see "admin" entry in the data table
 
   Scenario: Remove runAs user from table
-    Given I should see "admin" entry in the data table
+    Given I am on the "sudo-rules" > "sudoRule1" Settings page
+    Given I should see "admin" entry in the data table with ID "keytab-user-table"
     When I select "admin" entry with no link in the data table
     And I click on "Delete" button
     And the "admin" element should be in the dialog table with id "remove-users-table"
@@ -343,7 +346,7 @@ Feature: Sudo rules - Settings page
     And I should see "admins" entry in the data table
 
   Scenario: Remove group of runAs users from table
-    Given I should see "admins" entry in the data table
+    Given I should see "admins" entry in the data table with ID "keytab-group-table"
     When I select "admins" entry with no link in the data table
     And I click on "Delete" button
     And the "admins" element should be in the dialog table with id "remove-groups-table"
@@ -354,6 +357,7 @@ Feature: Sudo rules - Settings page
 
   # - RunAs Groups
   Scenario: Add a new runAs group
+    Given I am on the "sudo-rules" > "sudoRule1" Settings page
     When I click on ID "add-runas-group-group" button
     Then I see a modal with title text "Add RunAs groups into sudo rule sudoRule1"
     And I click on the arrow icon to perform search
@@ -365,6 +369,7 @@ Feature: Sudo rules - Settings page
     And I should see "admins" entry in the data table with ID "keytab-group-table"
 
   Scenario: Remove runAs group from table
+    Given I am on the "sudo-rules" > "sudoRule1" Settings page
     Given I should see "admins" entry in the data table with ID "keytab-group-table"
     When I select "admins" entry with no link in the data table
     And I click on "Delete" button
@@ -375,6 +380,7 @@ Feature: Sudo rules - Settings page
     And I should not see "admins" entry in the data table with ID "keytab-group-table"
 
   Scenario: Change runAs user and group categories
+    Given I am on the "sudo-rules" > "sudoRule1" Settings page
     When I click on the "Anyone" option under ID "ipasudorunasusercategory" toggle group
     When I click on the "Any Group" option under ID "ipasudorunasgroupcategory" toggle group
     And I click on "Save" button
@@ -394,6 +400,7 @@ Feature: Sudo rules - Settings page
     * I should see partial "my-temp-server" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Hosts removed"
+    Then I close the alert
     Then I should not see "my-temp-server" entry in the data table
 
   # - Host group
@@ -406,6 +413,7 @@ Feature: Sudo rules - Settings page
     * I should see "a_host_group" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Host groups removed"
+    Then I close the alert
     Then I should not see "a_host_group" entry in the data table
 
   # - Sudo command
@@ -444,6 +452,7 @@ Feature: Sudo rules - Settings page
     * I should see "sudoRule1" entry in the data table
     * in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Sudo rules removed"
+    Then I close the alert
     Then I should not see "sudoRule1" entry in the data table
 
 
