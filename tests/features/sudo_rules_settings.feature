@@ -17,7 +17,7 @@ Feature: Sudo rules - Settings page
   # 'General' subsection
   # - Sudo order
   Scenario: Add sudo order
-    Given I am on the "sudo-rules" > "sudoRule1" Settings page
+    Given I am on the "sudo-rules" choose "sudoRule1" Settings page
     When I click on the "sudoorder" number plus button
     And I click on "Save" button
     And I should see the "sudoorder" number input value is "1"
@@ -120,7 +120,7 @@ Feature: Sudo rules - Settings page
     Then I should see partial "my-temp-server" entry in the data table
 
   Scenario: Add a new host from the 'Sudo rules' page
-    Given I am on the "sudo-rules" > "sudoRule1" Settings page
+    Given I am on the "sudo-rules" choose "sudoRule1" Settings page
     When I click on "Add hosts" button
     Then I see a modal with title text "Add host into sudo rule sudoRule1"
     And I click on the arrow icon to perform search
@@ -153,7 +153,7 @@ Feature: Sudo rules - Settings page
     Then I should see "a_host_group" entry in the data table
 
   Scenario: Add a new host group
-    Given I am on the "sudo-rules" > "sudoRule1" Settings page
+    Given I am on the "sudo-rules" choose "sudoRule1" Settings page
     When I click on "Host groups" page tab
     And I click on "Add hostgroups" button
     Then I see a modal with title text "Add host group into sudo rule sudoRule1"
@@ -197,7 +197,7 @@ Feature: Sudo rules - Settings page
     * entry "command1" should have attribute "Description" set to "my description"
 
   Scenario: Add a new sudo allow command
-    Given I am on the "sudo-rules" > "sudoRule1" Settings page
+    Given I am on the "sudo-rules" choose "sudoRule1" Settings page
     When I click on "Add sudocmds" button
     Then I see a modal with title text "Add allow sudo commands into sudo rule 'sudoRule1'"
     And I click on the arrow icon to perform search
@@ -231,7 +231,7 @@ Feature: Sudo rules - Settings page
     * entry "cmdgroup1" should have attribute "Description" set to "my description"
 
   Scenario: Add a new sudo allow command group
-    Given I am on the "sudo-rules" > "sudoRule1" Settings page
+    Given I am on the "sudo-rules" choose "sudoRule1" Settings page
     When I click on "Sudo Allow Command Groups" page tab
     And I click on "Add sudocmdgroups" button
     Then I see a modal with title text "Add allow sudo command groups into sudo rule 'sudoRule1'"
@@ -255,7 +255,7 @@ Feature: Sudo rules - Settings page
 
   # - Deny
   Scenario: Add a new sudo deny command
-    Given I am on the "sudo-rules" > "sudoRule1" Settings page
+    Given I am on the "sudo-rules" choose "sudoRule1" Settings page
     When I click on ID "add-deny-sudocmd" button
     Then I see a modal with title text "Add deny sudo commands into sudo rule 'sudoRule1'"
     And I click on the arrow icon to perform search
@@ -308,7 +308,7 @@ Feature: Sudo rules - Settings page
   # 'As whom' subsection
   # - RunAs User
   Scenario: Add a new runAs user
-    Given I am on the "sudo-rules" > "sudoRule1" Settings page
+    Given I am on the "sudo-rules" choose "sudoRule1" Settings page
     When I click on ID "add-runas-user" button
     Then I see a modal with title text "Add RunAs user into sudo rule sudoRule1"
     And I click on the arrow icon to perform search

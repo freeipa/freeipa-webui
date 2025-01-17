@@ -23,9 +23,9 @@ Given(
   }
 );
 
-// - E.g. "I am on the 'sudo-rules' > 'sudorule-1' Settings page"
+// - E.g. "I am on the 'sudo-rules' choose 'sudorule-1' Settings page"
 Given(
-  "I am on the {string} > {string} Settings page",
+  "I am on the {string} choose {string} Settings page",
   (toPage: string, entityName: string) => {
     cy.visit(Cypress.env("base_url") + "/" + toPage + "/" + entityName);
     cy.wait(1000);

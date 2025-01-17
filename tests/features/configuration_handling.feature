@@ -128,12 +128,12 @@ Feature: Configuration settings manipulation
     Then I close the alert
 
   Scenario: User options - default user authentication types
-    When I click on "Password" checkbox in "Default user authentication types" section
+    When I click on "Passkey" checkbox in "Default user authentication types" section
     And I click on "Save" button
     And I should see "success" alert with text "Configuration updated"
     Then I close the alert
     # Reset to original value
-    When I click on "Password" checkbox in "Default user authentication types" section
+    When I click on "Passkey" checkbox in "Default user authentication types" section
     And I click on "Save" button
     And I should see "success" alert with text "Configuration updated"
     Then I close the alert
