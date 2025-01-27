@@ -580,6 +580,13 @@ export interface cnType {
   cn: string[];
 }
 
+export interface groupType {
+  dn: string;
+  cn: string[];
+  description: string;
+  gidnumber: string;
+}
+
 export interface fqdnType {
   dn: string;
   fqdn: string[];
@@ -600,6 +607,13 @@ export interface sudoCmdType {
   dn: string;
   sudocmd: string;
   description: string;
+}
+
+export interface automemberType {
+  cn: string;
+  automembertargetgroup: string;
+  dn: string;
+  description?: string;
 }
 
 export interface CertProfile {
@@ -636,3 +650,23 @@ export interface SubId {
 export interface DNSZone {
   idnsname: string;
 }
+
+export interface Automember {
+  cn: string;
+  description: string;
+  automemberdefaultgroup: string;
+  automemberinclusiveregex: string[];
+  automemberexclusiveregex: string[];
+  member: string[];
+  no_member: string[];
+  in_memberof: string[];
+  not_in_memberof: string[];
+  memberindirect: string[];
+  memberofindirect: string[];
+  membermanager: string[];
+}
+
+export type AutomemberEntry = {
+  automemberRule: string;
+  description: string;
+};
