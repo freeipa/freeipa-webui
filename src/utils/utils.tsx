@@ -20,6 +20,7 @@ import {
   SudoRule,
   User,
   UserGroup,
+  AutomemberEntry,
 } from "./datatypes/globalDataTypes";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
@@ -112,6 +113,10 @@ export const isUserOverrideSelectable = (user: IDViewOverrideUser) =>
 // Determine whether a IDViewOverrideGroup is selectable or not
 export const isGroupOverrideSelectable = (user: IDViewOverrideGroup) =>
   user.ipaanchoruuid != "";
+
+// Determine whether a Automember User group is selectable or not
+export const isAutomemberUserGroupSelectable = (automember: AutomemberEntry) =>
+  automember.automemberRule != "";
 
 // Write JSX error messages into 'apiErrorsJsx' array
 export const apiErrorToJsXError = (
