@@ -24,6 +24,7 @@ import {
  * API commands:
  * - automember_default_group_show: https://freeipa.readthedocs.io/en/latest/api/automember_default_group_show.html
  * - automember_find: https://freeipa.readthedocs.io/en/latest/api/automember_find.html
+ * - automember_add: https://freeipa.readthedocs.io/en/latest/api/automember_add.html
  */
 
 export type AutomemberFullData = {
@@ -35,6 +36,12 @@ export interface AutomemberShowPayload {
   no_members: boolean | true;
   version: string;
 }
+
+export interface AddPayload {
+  group: string;
+  type: string;
+}
+
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -219,6 +226,23 @@ const extendedApi = api.injectEndpoints({
         return { data: fullAutomemberIdsList };
       },
     }),
+    /**
+     * Adds group to automember
+     * @param AddPayload
+     * @returns FindRPCResponse
+     */
+    addToAutomember: build.mutation<
+      FindRPCResponse,
+      AddPayload
+    >({
+      query: (payload) => {
+        const params = [[payload.group], { type: payload.type }];
+        return getCommand({
+          method: "automember_add",
+          params: params,
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -234,4 +258,5 @@ export const {
   useDefaultGroupShowQuery,
   useSearchUserGroupRulesEntriesMutation,
   useAutomemberFindBasicInfoQuery,
+  useAddToAutomemberMutation,
 } = extendedApi;

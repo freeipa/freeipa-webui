@@ -48,6 +48,8 @@ import {
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
+// Modals
+import AddRule from "src/components/modals/Automember/AddRule";
 
 // Automembership user group rules
 const AutoMemUserRules = () => {
@@ -79,6 +81,10 @@ const AutoMemUserRules = () => {
   // Options for the default user group selector
   const [userGroupsOptions, setUserGroupsOptions] = React.useState<
     SelectOptionProps[]
+  >([]);
+  // Available elements ready to add
+  const [groupsAvailableToAdd, setGroupsAvailableToAdd] = React.useState<
+    string[]
   >([]);
 
   // Alerts to show in the UI
@@ -139,6 +145,15 @@ const AutoMemUserRules = () => {
         } else {
           setDefaultGroup(userGroupRulesData.defaultGroup);
         }
+
+        // Set available user groups to add (userGroupRulesData.userGroups and fullAutomemberIds)
+        const allAutomemberIds = fullAutomemberIds.map(
+          (item) => item.automemberRule
+        );
+        const availableItems = userGroupRulesData.userGroups.filter(
+          (item) => !allAutomemberIds.includes(item)
+        );
+        setGroupsAvailableToAdd(availableItems);
 
         // Set table count
         setTotalCount(totalAutomembersCount);
@@ -384,6 +399,21 @@ const AutoMemUserRules = () => {
     updateIsDisableEnableOp,
   };
 
+  // Modals functionality
+  const [showAddModal, setShowAddModal] = React.useState(false);
+
+  const onOpenAddModal = () => {
+    setShowAddModal(true);
+  };
+
+  const onCloseAddModal = () => {
+    setShowAddModal(false);
+  };
+
+  const onAddModalToggle = () => {
+    setShowAddModal(!showAddModal);
+  };
+
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -450,7 +480,12 @@ const AutoMemUserRules = () => {
     {
       key: 6,
       element: (
-        <SecondaryButton isDisabled={!showTableRows}>Add</SecondaryButton>
+        <SecondaryButton
+          isDisabled={!showTableRows}
+          onClickHandler={onOpenAddModal}
+        >
+          Add
+        </SecondaryButton>
       ),
     },
     {
@@ -521,6 +556,15 @@ const AutoMemUserRules = () => {
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
         />
       </PageSection>
+      <AddRule
+        show={showAddModal}
+        handleModalToggle={onAddModalToggle}
+        onOpenAddModal={onOpenAddModal}
+        onCloseAddModal={onCloseAddModal}
+        onRefresh={refreshData}
+        groupsAvailableToAdd={groupsAvailableToAdd}
+        ruleType="group"
+      />
     </Page>
   );
 };
