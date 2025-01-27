@@ -242,7 +242,10 @@ const extendedApi = api.injectEndpoints({
      * @param AddPayload
      * @returns FindRPCResponse
      */
-    addToAutomember: build.mutation<FindRPCResponse, AddPayload>({
+    addToAutomember: build.mutation<
+      FindRPCResponse,
+      AddPayload
+    >({
       query: (payload) => {
         const params = [[payload.group], { type: payload.type }];
         return getCommand({
