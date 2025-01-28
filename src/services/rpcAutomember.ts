@@ -242,10 +242,7 @@ const extendedApi = api.injectEndpoints({
      * @param AddPayload
      * @returns FindRPCResponse
      */
-    addToAutomember: build.mutation<
-      FindRPCResponse,
-      AddPayload
-    >({
+    addToAutomember: build.mutation<FindRPCResponse, AddPayload>({
       query: (payload) => {
         const params = [[payload.group], { type: payload.type }];
         return getCommand({
@@ -259,10 +256,7 @@ const extendedApi = api.injectEndpoints({
      * @param RemovePayload
      * @returns BatchRPCResponse
      */
-    deleteFromAutomember: build.mutation<
-      BatchRPCResponse,
-      RemovePayload
-    >({
+    deleteFromAutomember: build.mutation<BatchRPCResponse, RemovePayload>({
       query: (payload) => {
         const rulesToDelete = payload.groups;
         const params = [rulesToDelete, { type: payload.type }];
