@@ -256,7 +256,10 @@ const extendedApi = api.injectEndpoints({
      * @param RemovePayload
      * @returns BatchRPCResponse
      */
-    deleteFromAutomember: build.mutation<BatchRPCResponse, RemovePayload>({
+    deleteFromAutomember: build.mutation<
+      BatchRPCResponse,
+      RemovePayload
+    >({
       query: (payload) => {
         const rulesToDelete = payload.groups;
         const params = [rulesToDelete, { type: payload.type }];

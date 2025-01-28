@@ -675,6 +675,14 @@ const AutoMemUserRules = () => {
         messageText="Are you sure you want to change default group?"
         messageObj={defaultGroup}
       />
+      <DeleteRule
+        show={showDeleteModal}
+        handleModalToggle={onToggleDeleteModal}
+        onRefresh={refreshData}
+        buttonsData={deleteButtonsData}
+        selectedData={selectedData}
+        ruleType="group"
+      />
     </Page>
   );
 };
