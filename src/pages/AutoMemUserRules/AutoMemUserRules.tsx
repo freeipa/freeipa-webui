@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Page,
   PageSection,
   PageSectionVariants,
@@ -34,7 +35,11 @@ import useApiError from "src/hooks/useApiError";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 // RPC
 import { GenericPayload } from "src/services/rpc";
-import { useSearchAutomemberTypeEntriesMutation } from "src/services/rpcAutomember";
+import {
+  ChangeDefaultPayload,
+  useChangeDefaultGroupMutation,
+  useSearchAutomemberTypeEntriesMutation,
+} from "src/services/rpcAutomember";
 // Hooks
 import { useAlerts } from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
@@ -51,6 +56,7 @@ import { SerializedError } from "@reduxjs/toolkit";
 // Modals
 import AddRule from "src/components/modals/Automember/AddRule";
 import DeleteRule from "src/components/modals/Automember/DeleteRule";
+import ConfirmationModal from "src/components/modals/ConfirmationModal";
 
 // Automembership user group rules
 const AutoMemUserRules = () => {
@@ -76,6 +82,8 @@ const AutoMemUserRules = () => {
     AutomemberEntry[]
   >([]);
   const [defaultGroup, setDefaultGroup] = React.useState<string>(NO_SELECTION);
+  const [previousDefaultGroup, setPreviousDefaultGroup] =
+    React.useState<string>(NO_SELECTION);
   const [errors, setErrors] = React.useState<
     Array<FetchBaseQueryError | SerializedError>
   >([]);
@@ -103,6 +111,7 @@ const AutoMemUserRules = () => {
 
   // API calls via custom hook
   const userGroupRulesData = useUserGroupsRulesData();
+  const [changeDefaultGroup] = useChangeDefaultGroupMutation();
 
   // Show table rows
   const [showTableRows, setShowTableRows] = React.useState(
@@ -137,10 +146,12 @@ const AutoMemUserRules = () => {
         setUserGroups(userGroupRulesData.userGroups);
         setAutomemberRules(shownPaginatedRulesList);
         // If no default group is set, set it as 'No selection'
-        if (defaultGroup === "") {
+        if (userGroupRulesData.defaultGroup === "") {
           setDefaultGroup(NO_SELECTION);
+          setPreviousDefaultGroup(NO_SELECTION);
         } else {
           setDefaultGroup(userGroupRulesData.defaultGroup);
+          setPreviousDefaultGroup(userGroupRulesData.defaultGroup);
         }
 
         // Set table count
@@ -175,6 +186,32 @@ const AutoMemUserRules = () => {
       setUserGroupsOptions(groupsToSelector);
     }
   }, [userGroups]);
+
+  // On select default group
+  const onSelectDefaultGroup = (group: string) => {
+    const payload: ChangeDefaultPayload = {
+      defaultGroup: group,
+      type: "group",
+    };
+    changeDefaultGroup(payload).then((result) => {
+      if ("data" in result) {
+        setDefaultGroup(group);
+        setPreviousDefaultGroup(group);
+        alerts.addAlert(
+          "default-group-success",
+          "Default group updated",
+          "success"
+        );
+        onCloseConfirmationModal();
+      } else {
+        alerts.addAlert(
+          "default-group-failure",
+          "Default group not updated",
+          "danger"
+        );
+      }
+    });
+  };
 
   // If some entries' status has been updated, unselect selected rows
   const [isDisableEnableOp, setIsDisableEnableOp] = React.useState(false);
@@ -390,6 +427,8 @@ const AutoMemUserRules = () => {
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [showChangeConfirmationModal, setShowChangeConfirmationModal] =
+    React.useState(false);
 
   const onOpenAddModal = () => {
     setShowAddModal(true);
@@ -409,6 +448,24 @@ const AutoMemUserRules = () => {
 
   const onToggleDeleteModal = () => {
     setShowDeleteModal(!showDeleteModal);
+  };
+
+  const onCloseConfirmationModal = () => {
+    setShowChangeConfirmationModal(false);
+  };
+
+  const onOpenConfirmationModal = () => {
+    setShowChangeConfirmationModal(true);
+  };
+
+  const onShowDefaultGroupOnModal = (group: string) => {
+    setDefaultGroup(group);
+    onOpenConfirmationModal();
+  };
+
+  const onCancelDefaultGroup = () => {
+    setDefaultGroup(previousDefaultGroup);
+    onCloseConfirmationModal();
   };
 
   // 'Delete automember rules data
@@ -458,7 +515,7 @@ const AutoMemUserRules = () => {
           options={userGroupsOptions}
           selected={defaultGroup}
           placeholder="Default user group"
-          onSelectedChange={setDefaultGroup}
+          onSelectedChange={onShowDefaultGroupOnModal}
         />
       ),
     },
@@ -583,6 +640,27 @@ const AutoMemUserRules = () => {
         onRefresh={refreshData}
         buttonsData={deleteButtonsData}
         selectedData={selectedData}
+      />
+      <ConfirmationModal
+        title="Default user group"
+        isOpen={showChangeConfirmationModal}
+        onClose={onCloseConfirmationModal}
+        actions={[
+          <Button
+            variant="primary"
+            key="change-default"
+            onClick={() => {
+              onSelectDefaultGroup(defaultGroup);
+            }}
+          >
+            OK
+          </Button>,
+          <SecondaryButton key="cancel" onClickHandler={onCancelDefaultGroup}>
+            Cancel
+          </SecondaryButton>,
+        ]}
+        messageText="Are you sure you want to change default group?"
+        messageObj={defaultGroup}
       />
     </Page>
   );

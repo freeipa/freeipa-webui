@@ -99,14 +99,17 @@ const useUserGroupsRulesData = (): UserGroupsRulesData => {
   // API call: Get default group for automember
   const defaultGroupQuery = useDefaultGroupShowQuery();
   const defaultGroupError = defaultGroupQuery.error;
-  const defaultGroup = defaultGroupQuery.data || "";
+  const defaultGroupData = defaultGroupQuery.data || "";
   const defaultGroupLoading = defaultGroupQuery.isLoading;
 
   React.useEffect(() => {
-    if (defaultGroup && !defaultGroupQuery.isFetching) {
+    if (defaultGroupData && !defaultGroupQuery.isFetching) {
+      // Get from LDAP syntax. E.g: 'cn=groupname,ou=groups,dc=example,dc=com'
+      const defaultSplitByComma = defaultGroupData[0].split(",")[0];
+      const defaultGroup = defaultSplitByComma.replace("cn=", "");
       setDefaultUserGroup(defaultGroup);
     }
-  }, [defaultGroup, defaultGroupQuery.isFetching]);
+  }, [defaultGroupData, defaultGroupQuery.isFetching]);
 
   React.useEffect(() => {
     if (defaultGroupError) {
