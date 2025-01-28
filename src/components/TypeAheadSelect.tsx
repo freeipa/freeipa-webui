@@ -40,6 +40,11 @@ const TypeAheadSelect = (props: PropsToTypeAheadSelect) => {
     setSelectOptions(props.options);
   }, [props.options]);
 
+  // Keep the selected value updated
+  React.useEffect(() => {
+    setInputValue(props.selected);
+  }, [props.selected]);
+
   React.useEffect(() => {
     let newSelectOptions: SelectOptionProps[] = props.options;
 
