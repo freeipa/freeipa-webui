@@ -683,6 +683,27 @@ const AutoMemUserRules = () => {
         selectedData={selectedData}
         ruleType="group"
       />
+      <ConfirmationModal
+        title="Default user group"
+        isOpen={showChangeConfirmationModal}
+        onClose={onCloseConfirmationModal}
+        actions={[
+          <Button
+            variant="primary"
+            key="change-default"
+            onClick={() => {
+              onSelectDefaultGroup(defaultGroup);
+            }}
+          >
+            OK
+          </Button>,
+          <SecondaryButton key="cancel" onClickHandler={onCancelDefaultGroup}>
+            Cancel
+          </SecondaryButton>,
+        ]}
+        messageText="Are you sure you want to change default group?"
+        messageObj={defaultGroup}
+      />
     </Page>
   );
 };
