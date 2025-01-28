@@ -49,6 +49,10 @@ export interface RemovePayload {
   type: string;
 }
 
+export interface ChangeDefaultPayload {
+  defaultGroup: string;
+  type: string;
+}
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -238,10 +242,7 @@ const extendedApi = api.injectEndpoints({
      * @param AddPayload
      * @returns FindRPCResponse
      */
-    addToAutomember: build.mutation<
-      FindRPCResponse,
-      AddPayload
-    >({
+    addToAutomember: build.mutation<FindRPCResponse, AddPayload>({
       query: (payload) => {
         const params = [[payload.group], { type: payload.type }];
         return getCommand({
@@ -255,10 +256,7 @@ const extendedApi = api.injectEndpoints({
      * @param RemovePayload
      * @returns BatchRPCResponse
      */
-    deleteFromAutomember: build.mutation<
-      BatchRPCResponse,
-      RemovePayload
-    >({
+    deleteFromAutomember: build.mutation<BatchRPCResponse, RemovePayload>({
       query: (payload) => {
         const rulesToDelete = payload.groups;
         const params = [rulesToDelete, { type: payload.type }];
@@ -269,6 +267,27 @@ const extendedApi = api.injectEndpoints({
         };
 
         return getBatchCommand([batchParams], API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Changes default group for automember
+     * @param ChangeDefaultPayload
+     * @returns FindRPCResponse
+     */
+    changeDefaultGroup: build.mutation<FindRPCResponse, ChangeDefaultPayload>({
+      query: (payload) => {
+        const params = [
+          [],
+          {
+            type: payload.type,
+            automemberdefaultgroup: payload.defaultGroup,
+            version: API_VERSION_BACKUP,
+          },
+        ];
+        return getCommand({
+          method: "automember_default_group_set",
+          params: params,
+        });
       },
     }),
   }),
@@ -288,4 +307,5 @@ export const {
   useAutomemberFindBasicInfoQuery,
   useAddToAutomemberMutation,
   useDeleteFromAutomemberMutation,
+  useChangeDefaultGroupMutation,
 } = extendedApi;
