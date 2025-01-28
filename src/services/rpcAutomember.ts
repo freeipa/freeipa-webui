@@ -6,6 +6,8 @@ import {
   FindRPCResponse,
   useGettingGenericQuery,
   GenericPayload,
+  BatchRPCResponse,
+  getBatchCommand,
 } from "./rpc";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 // Utils
@@ -39,6 +41,11 @@ export interface AutomemberShowPayload {
 
 export interface AddPayload {
   group: string;
+  type: string;
+}
+
+export interface RemovePayload {
+  groups: string[];
   type: string;
 }
 
@@ -243,6 +250,27 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Removes groups from automember
+     * @param RemovePayload
+     * @returns BatchRPCResponse
+     */
+    deleteFromAutomember: build.mutation<
+      BatchRPCResponse,
+      RemovePayload
+    >({
+      query: (payload) => {
+        const rulesToDelete = payload.groups;
+        const params = [rulesToDelete, { type: payload.type }];
+
+        const batchParams = {
+          method: "automember_del",
+          params: params,
+        };
+
+        return getBatchCommand([batchParams], API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -259,4 +287,5 @@ export const {
   useSearchUserGroupRulesEntriesMutation,
   useAutomemberFindBasicInfoQuery,
   useAddToAutomemberMutation,
+  useDeleteFromAutomemberMutation,
 } = extendedApi;

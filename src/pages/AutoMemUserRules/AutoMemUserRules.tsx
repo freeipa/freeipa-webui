@@ -50,6 +50,7 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Modals
 import AddRule from "src/components/modals/Automember/AddRule";
+import DeleteRule from "src/components/modals/Automember/DeleteRule";
 
 // Automembership user group rules
 const AutoMemUserRules = () => {
@@ -401,6 +402,7 @@ const AutoMemUserRules = () => {
 
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
   const onOpenAddModal = () => {
     setShowAddModal(true);
@@ -412,6 +414,25 @@ const AutoMemUserRules = () => {
 
   const onAddModalToggle = () => {
     setShowAddModal(!showAddModal);
+  };
+
+  const onOpenDeleteModal = () => {
+    setShowDeleteModal(true);
+  };
+
+  const onToggleDeleteModal = () => {
+    setShowDeleteModal(!showDeleteModal);
+  };
+
+  // 'Delete automember rules data
+  const deleteButtonsData = {
+    updateIsDeleteButtonDisabled,
+    updateIsDeletion,
+  };
+
+  const selectedData = {
+    selectedItems: selectedAutomembers,
+    clearSelected: clearSelectedRules,
   };
 
   // List of Toolbar items
@@ -472,7 +493,10 @@ const AutoMemUserRules = () => {
     {
       key: 5,
       element: (
-        <SecondaryButton isDisabled={isDeleteButtonDisabled || !showTableRows}>
+        <SecondaryButton
+          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          onClickHandler={onOpenDeleteModal}
+        >
           Delete
         </SecondaryButton>
       ),
@@ -563,6 +587,14 @@ const AutoMemUserRules = () => {
         onCloseAddModal={onCloseAddModal}
         onRefresh={refreshData}
         groupsAvailableToAdd={groupsAvailableToAdd}
+        ruleType="group"
+      />
+      <DeleteRule
+        show={showDeleteModal}
+        handleModalToggle={onToggleDeleteModal}
+        onRefresh={refreshData}
+        buttonsData={deleteButtonsData}
+        selectedData={selectedData}
         ruleType="group"
       />
     </Page>

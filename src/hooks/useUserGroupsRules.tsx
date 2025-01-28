@@ -71,7 +71,7 @@ const useUserGroupsRulesData = (): UserGroupsRulesData => {
   const automembersLoading = automembersQuery.isLoading;
 
   React.useEffect(() => {
-    if (automembersList.length > 0 && !automembersQuery.isFetching) {
+    if (automembersList && !automembersQuery.isFetching) {
       setAutomemberIdsList(automembersList);
     }
   }, [automembersList, automembersQuery.isFetching, userGroupsGeneralData]);
