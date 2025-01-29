@@ -137,12 +137,6 @@ const AddHost = (props: PropsToAddHost) => {
     pfError: ValidatedOptions.default,
   });
 
-  useEffect(() => {
-    if (hostIpAddress === "") {
-      setForceCheckbox(false);
-    }
-  }, [hostIpAddress]);
-
   const hostNameValidationHandler = (hostname: string) => {
     if (hostname === "") {
       const hostNameVal = {
@@ -218,8 +212,6 @@ const AddHost = (props: PropsToAddHost) => {
         pfError: ValidatedOptions.error,
       };
       setHostIpAddressValidation(ipVal);
-      // Can not force DNS bypass without a valid IP address
-      setForceCheckbox(false);
     }
   }, [hostName, dnsZoneSelected, hostIpAddress]);
 
@@ -394,11 +386,12 @@ const AddHost = (props: PropsToAddHost) => {
             name="forceCheckbox"
             value="force"
             onChange={handleForceCheckbox}
-            isDisabled={hostIpAddressValidation.isError || hostIpAddress === ""}
+            isDisabled={hostIpAddressValidation.isError}
           />
           <HelperText>
             <HelperTextItem variant="indeterminate">
-              Requires valid IP address
+              Allow adding host objects that does not have DNS entries
+              associated with them
             </HelperTextItem>
           </HelperText>
         </div>
@@ -492,12 +485,24 @@ const AddHost = (props: PropsToAddHost) => {
     }
     const newHostPayload = {
       fqdn: hostName + "." + dnsZone,
-      userclass: hostClass,
-      ip_address: hostIpAddress,
-      force: forceCheckbox,
-      description: description,
-      random: generateOtpCheckbox,
     } as HostAddPayload;
+
+    // Add the rest of parameters if they are not empty
+    if (hostClass !== "") {
+      newHostPayload.userclass = hostClass;
+    }
+    if (hostIpAddress !== "") {
+      newHostPayload.ip_address = hostIpAddress;
+    }
+    if (forceCheckbox) {
+      newHostPayload.force = forceCheckbox;
+    }
+    if (description !== "") {
+      newHostPayload.description = description;
+    }
+    if (generateOtpCheckbox) {
+      newHostPayload.random = generateOtpCheckbox;
+    }
 
     // Add host via API call
     await executeHostAddCommand(newHostPayload).then((host) => {
