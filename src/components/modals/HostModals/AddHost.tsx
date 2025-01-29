@@ -137,12 +137,6 @@ const AddHost = (props: PropsToAddHost) => {
     pfError: ValidatedOptions.default,
   });
 
-  useEffect(() => {
-    if (hostIpAddress === "") {
-      setForceCheckbox(false);
-    }
-  }, [hostIpAddress]);
-
   const hostNameValidationHandler = (hostname: string) => {
     if (hostname === "") {
       const hostNameVal = {
@@ -200,7 +194,7 @@ const AddHost = (props: PropsToAddHost) => {
       !hostNameValidationHandler(hostName) &&
       hostName.length > 0 &&
       dnsZoneSelected.length > 0 &&
-      isValidIpAddress(hostIpAddress)
+      (isValidIpAddress(hostIpAddress) || forceCheckbox)
     ) {
       setButtonDisabled(false);
     } else {
@@ -385,7 +379,7 @@ const AddHost = (props: PropsToAddHost) => {
       id: "host-force",
       name: "",
       pfComponent: (
-        <div title="Skip the DNS check, but requires a valid IP address">
+        <div title="Skip the DNS and IP address checks">
           <Checkbox
             label="Force"
             isChecked={forceCheckbox}
@@ -394,11 +388,11 @@ const AddHost = (props: PropsToAddHost) => {
             name="forceCheckbox"
             value="force"
             onChange={handleForceCheckbox}
-            isDisabled={hostIpAddressValidation.isError || hostIpAddress === ""}
+            isDisabled={hostIpAddressValidation.isError}
           />
           <HelperText>
             <HelperTextItem variant="indeterminate">
-              Requires valid IP address
+              Requires valid IP address or can be skipped
             </HelperTextItem>
           </HelperText>
         </div>
