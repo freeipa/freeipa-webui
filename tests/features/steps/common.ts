@@ -426,6 +426,12 @@ When("I click in the {string} selector field", (selectorName: string) => {
     .click();
 });
 
+When("I click in the selector field with ID {string}", (id: string) => {
+  cy.get("div.pf-v5-c-menu-toggle")
+    .find("div[id=" + id + "]")
+    .click();
+});
+
 When(
   "I select {string} in the {string} form selector field",
   (selection: string, selectorName: string) => {
@@ -448,6 +454,15 @@ Then(
       .next()
       .find("div.pf-v5-c-menu__content");
     options.should("contain", option);
+  }
+);
+
+Then(
+  "in the selector with ID {string} I should see option {string} selected",
+  (id: string, option: string) => {
+    cy.get("div.pf-v5-c-menu-toggle")
+      .find("div[id=" + id + "]")
+      .find("input[value='" + option + "']");
   }
 );
 
