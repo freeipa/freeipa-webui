@@ -115,6 +115,7 @@ Feature: Sudo rules - Settings page
     Given I am on "hosts" page
     When I click on "Add" button
     * I type in the field "Host name" text "my-temp-server"
+    * I click on "Force" checkbox in modal
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host added"
     Then I should see partial "my-temp-server" entry in the data table

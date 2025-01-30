@@ -12,11 +12,13 @@ Feature: ID View applied to manipulation
     Given I am on "hosts" page
     When I click on "Add" button
     Then I type in the field "Host name" text "idviewhost1"
+    * I click on "Force" checkbox in modal
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host added"
     Then I should see partial "idviewhost1" entry in the data table
     When I click on "Add" button
     Then I type in the field "Host name" text "idviewhost2"
+    * I click on "Force" checkbox in modal
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host added"
     Then I should see partial "idviewhost2" entry in the data table
