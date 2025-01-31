@@ -105,6 +105,7 @@ Feature: Hbac rule settings manipulation
     When I click on "Add" button
     * I see "Add host" modal
     * I type in the field "Host name" text "my-new-host"
+    * I click on "Force" checkbox in modal
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host added"
     * I close the alert

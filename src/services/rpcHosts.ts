@@ -38,8 +38,8 @@ export interface HostAddPayload {
   fqdn: string;
   userclass?: string;
   ip_address?: string;
-  force: boolean; // skip DNS check
-  random: boolean; // otp generation
+  force?: boolean; // skip DNS check
+  random?: boolean; // otp generation
   description?: string;
 }
 
@@ -109,13 +109,16 @@ const extendedApi = api.injectEndpoints({
           [payloadData["fqdn"]],
           {
             version: API_VERSION_BACKUP,
-            userclass: payloadData["userclass"],
-            ip_address: payloadData["ip_address"],
-            force: payloadData["force"],
-            description: payloadData["description"],
-            random: payloadData["random"],
           },
         ];
+        // Add the rest of parameters if they are not undefined
+        Object.keys(payloadData).forEach((key) => {
+          if (payloadData[key] !== undefined && key !== "fqdn") {
+            params[1][key] = payloadData[key];
+          }
+        });
+        console.log("params", params);
+
         return getCommand({
           method: "host_add",
           params: params,
