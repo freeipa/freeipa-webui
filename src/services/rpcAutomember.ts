@@ -290,6 +290,109 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Find automembers and groups.
+     * Combines the data to build the 'AutomemberEntry' data type
+     * @param GenericPayload
+     * @returns List of automember entries with 'automemberRule' and 'description'
+     *
+     */
+    searchHostGroupRulesEntries: build.mutation<
+      AutomemberEntry[],
+      GenericPayload
+    >({
+      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
+        const { searchValue, apiVersion, startIdx, stopIdx } = payloadData;
+
+        if (apiVersion === undefined) {
+          return {
+            error: {
+              status: "CUSTOM_ERROR",
+              data: "",
+              error: "API version not available",
+            } as FetchBaseQueryError,
+          };
+        }
+
+        // FETCH AUTOMEMBER IDS DATA
+        // Prepare search parameters
+        const automembersParams = {
+          type: "hostgroup",
+          version: apiVersion,
+        };
+
+        // Prepare payload
+        const payloadDataAutomembers: Command = {
+          method: "automember_find",
+          params: [[searchValue], automembersParams],
+        };
+
+        // Make call using 'fetchWithBQ'
+        const getResultAutomember = await fetchWithBQ(
+          getCommand(payloadDataAutomembers)
+        );
+        // Return possible errors
+        if (getResultAutomember.error) {
+          return { error: getResultAutomember.error as FetchBaseQueryError };
+        }
+        // If no error: cast and assign 'ids'
+        const responseDataAutomember =
+          getResultAutomember.data as FindRPCResponse;
+
+        const automemberIds: string[] = [];
+        const automembersItemsCount = responseDataAutomember.result.result
+          .length as number;
+
+        for (let i = startIdx; i < automembersItemsCount && i < stopIdx; i++) {
+          const automemberId = responseDataAutomember.result.result[
+            i
+          ] as automemberType;
+          const { cn } = automemberId;
+          automemberIds.push(cn[0] as string);
+        }
+
+        // FETCH USER GROUPS DATA
+        // Prepare search parameters
+        const groupParams = {
+          version: apiVersion,
+        };
+
+        const payloadDataGroups: Command = {
+          method: "hostgroup_find",
+          params: [[searchValue], groupParams],
+        };
+
+        // Make call using 'fetchWithBQ'
+        const getResultGroup = await fetchWithBQ(getCommand(payloadDataGroups));
+        // Return possible errors
+        if (getResultGroup.error) {
+          return { error: getResultGroup.error as FetchBaseQueryError };
+        }
+        // If no error: cast and assign 'ids'
+        const responseDataGroup = getResultGroup.data as FindRPCResponse;
+        const groupsItemsCount = responseDataGroup.result.result
+          .length as number;
+
+        // COMBINE RESULTS AND RETURN
+        const fullAutomemberIdsList: AutomemberEntry[] = [];
+        for (let i = 0; i < groupsItemsCount && i < stopIdx; i++) {
+          for (let j = 0; j < automemberIds.length; j++) {
+            const groupId = responseDataGroup.result.result[i] as groupType;
+            if (groupId.cn[0] === automemberIds[j]) {
+              fullAutomemberIdsList.push({
+                automemberRule: groupId.cn[0] as string,
+                description: groupId.description
+                  ? (groupId.description[0] as string)
+                  : "",
+              });
+            }
+          }
+        }
+
+        // Return results
+        return { data: fullAutomemberIdsList };
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -308,4 +411,5 @@ export const {
   useAddToAutomemberMutation,
   useDeleteFromAutomemberMutation,
   useChangeDefaultGroupMutation,
+  useSearchHostGroupRulesEntriesMutation,
 } = extendedApi;
