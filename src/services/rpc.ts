@@ -16,6 +16,7 @@ import {
   cnType,
   roleType,
   sudoCmdType,
+  automemberType,
 } from "../utils/datatypes/globalDataTypes";
 
 export interface Query {
@@ -148,7 +149,8 @@ export interface GenericPayload {
     | "sudocmdgroup"
     | "idview"
     | "idoverrideuser"
-    | "idoverridegroup";
+    | "idoverridegroup"
+    | "automember";
 }
 
 export interface GetEntriesPayload {
@@ -243,6 +245,7 @@ export const api = createApi({
     "FullConfig",
     "FullOverrideUser",
     "FullOverrideGroup",
+    "FullAutomember",
   ],
   endpoints: (build) => ({
     simpleCommand: build.query<FindRPCResponse, Command | void>({
@@ -552,6 +555,9 @@ export const api = createApi({
         } else if (entryType === "sudorule") {
           method = "sudorule_find";
           show_method = "sudorule_show";
+        } else if (entryType === "automember") {
+          method = "automember_find";
+          show_method = "automember_show";
         }
 
         // Prepare payload
@@ -605,6 +611,12 @@ export const api = createApi({
           ) {
             const groupId = responseData.result.result[i] as cnType;
             const { cn } = groupId;
+            ids.push(cn[0] as string);
+          } else if (entryType === "automember") {
+            const automemberId = responseData.result.result[
+              i
+            ] as automemberType;
+            const { cn } = automemberId;
             ids.push(cn[0] as string);
           }
         }
@@ -734,6 +746,8 @@ export const api = createApi({
           method = "sudocmd_find";
         } else if (entryType === "sudocmdgroup") {
           method = "sudocmdgroup_find";
+        } else if (entryType === "automember") {
+          method = "automember_find";
         } else {
           return {
             error: {
@@ -795,6 +809,12 @@ export const api = createApi({
             const sudoCmd = responseData.result.result[i] as sudoCmdType;
             const { sudocmd } = sudoCmd;
             ids.push(sudocmd[0] as string);
+          } else if (entryType === "automember") {
+            const automemberId = responseData.result.result[
+              i
+            ] as automemberType;
+            const { cn } = automemberId;
+            ids.push(cn[0] as string);
           }
         }
 
