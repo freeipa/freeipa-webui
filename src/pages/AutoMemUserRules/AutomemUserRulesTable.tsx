@@ -5,8 +5,6 @@ import { Td, Th, Tr } from "@patternfly/react-table";
 import TableLayout from "../../components/layouts/TableLayout";
 // Layouts
 import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
-// React Router DOM
-import { Link } from "react-router-dom";
 // Data types
 import { AutomemberEntry } from "src/utils/datatypes/globalDataTypes";
 
@@ -205,11 +203,7 @@ const MainTable = (props: PropsToTable) => {
           isDisabled: !props.elementsData.isElementSelectable(element),
         }}
       />
-      <Td dataLabel={columnNames.automemberRule}>
-        <Link to={"/user-groups/" + element.automemberRule} state={element}>
-          {element.automemberRule}
-        </Link>
-      </Td>
+      <Td dataLabel={columnNames.automemberRule}>{element.automemberRule}</Td>
       <Td dataLabel={columnNames.description}>{element.description}</Td>
     </Tr>
   ));

@@ -584,7 +584,7 @@ export interface groupType {
   dn: string;
   cn: string[];
   description: string;
-  gidnumber: string;
+  gidnumber?: string;
 }
 
 export interface fqdnType {
@@ -613,6 +613,7 @@ export interface automemberType {
   cn: string;
   automembertargetgroup: string;
   dn: string;
+  description?: string;
 }
 
 export interface CertProfile {

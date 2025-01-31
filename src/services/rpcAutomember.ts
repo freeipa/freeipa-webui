@@ -58,12 +58,15 @@ const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     /**
      * Find automembers
-     * @param void
+     * @param string Type of automember to retrieve ("group" or "hostgroup")
      * @returns List of automember IDs
      */
-    automemberFind: build.query<string[], void>({
-      query: () => {
-        const params = [[], { type: "group", version: API_VERSION_BACKUP }];
+    automemberFind: build.query<string[], string>({
+      query: (automemberType) => {
+        const params = [
+          [],
+          { type: automemberType, version: API_VERSION_BACKUP },
+        ];
         return getCommand({
           method: "automember_find",
           params: params,
@@ -80,13 +83,48 @@ const extendedApi = api.injectEndpoints({
       },
     }),
     /**
+     * Find automembers basic information (cn and description) and returns it as 'AutomemberEntry' data type
+     * @param string Type of automember to retrieve ("group" or "hostgroup")
+     * @returns List of automembers ('AutomemberEntry')
+     */
+    automemberFindBasicInfo: build.query<AutomemberEntry[], string>({
+      query: (automemberType) => {
+        const params = [
+          [],
+          { type: automemberType, version: API_VERSION_BACKUP },
+        ];
+        return getCommand({
+          method: "automember_find",
+          params: params,
+        });
+      },
+      transformResponse: (response: FindRPCResponse): AutomemberEntry[] => {
+        const automembersResult = response.result
+          .result as unknown as automemberType[];
+        const automembersList: AutomemberEntry[] = [];
+        automembersResult.map((automember) => {
+          const entryInfo: AutomemberEntry = {
+            automemberRule: automember.cn.toString(),
+            description: automember.description
+              ? automember.description[0]
+              : "",
+          };
+          automembersList.push(entryInfo);
+        });
+        return automembersList;
+      },
+    }),
+    /**
      * Get default group for automember
-     * @param void
+     * @param string Type of automember to retrieve ("group" or "hostgroup")
      * @returns List of default groups
      */
-    defaultGroupShow: build.query<string, void>({
-      query: () => {
-        const params = [[], { type: "group", version: API_VERSION_BACKUP }];
+    defaultGroupShow: build.query<string, string>({
+      query: (automemberType) => {
+        const params = [
+          [],
+          { type: automemberType, version: API_VERSION_BACKUP },
+        ];
         return getCommand({
           method: "automember_default_group_show",
           params: params,
@@ -103,7 +141,7 @@ const extendedApi = api.injectEndpoints({
      * @returns List of automember entries with 'automemberRule' and 'description'
      *
      */
-    searchAutomemberTypeEntries: build.mutation<
+    searchUserGroupRulesEntries: build.mutation<
       AutomemberEntry[],
       GenericPayload
     >({
@@ -265,8 +303,9 @@ export const useGettingAutomembersQuery = (payloadData) => {
 export const {
   useAutomemberFindQuery,
   useDefaultGroupShowQuery,
-  useSearchAutomemberTypeEntriesMutation,
+  useSearchUserGroupRulesEntriesMutation,
   useAddToAutomemberMutation,
   useDeleteFromAutomemberMutation,
   useChangeDefaultGroupMutation,
+  useAutomemberFindBasicInfoQuery,
 } = extendedApi;

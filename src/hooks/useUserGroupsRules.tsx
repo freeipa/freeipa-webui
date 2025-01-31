@@ -65,7 +65,7 @@ const useUserGroupsRulesData = (): UserGroupsRulesData => {
   }, [userGroupsError]);
 
   // API call: Get all automembers
-  const automembersQuery = useAutomemberFindQuery();
+  const automembersQuery = useAutomemberFindQuery("group");
   const automembersError = automembersQuery.error;
   const automembersList = automembersQuery.data || [];
   const automembersLoading = automembersQuery.isLoading;
@@ -97,7 +97,7 @@ const useUserGroupsRulesData = (): UserGroupsRulesData => {
   }, [automembersError]);
 
   // API call: Get default group for automember
-  const defaultGroupQuery = useDefaultGroupShowQuery();
+  const defaultGroupQuery = useDefaultGroupShowQuery("group");
   const defaultGroupError = defaultGroupQuery.error;
   const defaultGroupData = defaultGroupQuery.data || "";
   const defaultGroupLoading = defaultGroupQuery.isLoading;

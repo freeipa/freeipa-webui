@@ -115,6 +115,7 @@ export const isGroupOverrideSelectable = (user: IDViewOverrideGroup) =>
   user.ipaanchoruuid != "";
 
 // Determine whether a Automember User group is selectable or not
+// - Also works for Automember Host group rules
 export const isAutomemberUserGroupSelectable = (automember: AutomemberEntry) =>
   automember.automemberRule != "";
 

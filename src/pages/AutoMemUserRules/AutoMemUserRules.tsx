@@ -38,7 +38,7 @@ import { GenericPayload } from "src/services/rpc";
 import {
   ChangeDefaultPayload,
   useChangeDefaultGroupMutation,
-  useSearchAutomemberTypeEntriesMutation,
+  useSearchUserGroupRulesEntriesMutation,
 } from "src/services/rpcAutomember";
 // Hooks
 import { useAlerts } from "src/hooks/useAlerts";
@@ -266,7 +266,7 @@ const AutoMemUserRules = () => {
     userGroupRulesData.refetch();
   };
 
-  const [retrieveAutomembers] = useSearchAutomemberTypeEntriesMutation({});
+  const [retrieveAutomembers] = useSearchUserGroupRulesEntriesMutation({});
 
   // Issue a search using a specific search value
   const submitSearchValue = () => {
