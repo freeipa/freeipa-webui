@@ -6,6 +6,8 @@ import {
   FindRPCResponse,
   useGettingGenericQuery,
   GenericPayload,
+  BatchRPCResponse,
+  getBatchCommand,
 } from "./rpc";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 // Utils
@@ -24,6 +26,7 @@ import {
  * API commands:
  * - automember_default_group_show: https://freeipa.readthedocs.io/en/latest/api/automember_default_group_show.html
  * - automember_find: https://freeipa.readthedocs.io/en/latest/api/automember_find.html
+ * - automember_add: https://freeipa.readthedocs.io/en/latest/api/automember_add.html
  */
 
 export type AutomemberFullData = {
@@ -34,6 +37,21 @@ export interface AutomemberShowPayload {
   automemberNamesList: string[];
   no_members: boolean | true;
   version: string;
+}
+
+export interface AddPayload {
+  group: string;
+  type: string;
+}
+
+export interface RemovePayload {
+  groups: string[];
+  type: string;
+}
+
+export interface ChangeDefaultPayload {
+  defaultGroup: string;
+  type: string;
 }
 
 const extendedApi = api.injectEndpoints({
@@ -219,6 +237,59 @@ const extendedApi = api.injectEndpoints({
         return { data: fullAutomemberIdsList };
       },
     }),
+    /**
+     * Adds group to automember
+     * @param AddPayload
+     * @returns FindRPCResponse
+     */
+    addToAutomember: build.mutation<FindRPCResponse, AddPayload>({
+      query: (payload) => {
+        const params = [[payload.group], { type: payload.type }];
+        return getCommand({
+          method: "automember_add",
+          params: params,
+        });
+      },
+    }),
+    /**
+     * Removes groups from automember
+     * @param RemovePayload
+     * @returns BatchRPCResponse
+     */
+    deleteFromAutomember: build.mutation<BatchRPCResponse, RemovePayload>({
+      query: (payload) => {
+        const rulesToDelete = payload.groups;
+        const params = [rulesToDelete, { type: payload.type }];
+
+        const batchParams = {
+          method: "automember_del",
+          params: params,
+        };
+
+        return getBatchCommand([batchParams], API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Changes default group for automember
+     * @param ChangeDefaultPayload
+     * @returns FindRPCResponse
+     */
+    changeDefaultGroup: build.mutation<FindRPCResponse, ChangeDefaultPayload>({
+      query: (payload) => {
+        const params = [
+          [],
+          {
+            type: payload.type,
+            automemberdefaultgroup: payload.defaultGroup,
+            version: API_VERSION_BACKUP,
+          },
+        ];
+        return getCommand({
+          method: "automember_default_group_set",
+          params: params,
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -234,4 +305,7 @@ export const {
   useDefaultGroupShowQuery,
   useSearchUserGroupRulesEntriesMutation,
   useAutomemberFindBasicInfoQuery,
+  useAddToAutomemberMutation,
+  useDeleteFromAutomemberMutation,
+  useChangeDefaultGroupMutation,
 } = extendedApi;
