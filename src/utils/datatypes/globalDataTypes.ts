@@ -584,7 +584,7 @@ export interface groupType {
   dn: string;
   cn: string[];
   description: string;
-  gidnumber: string;
+  gidnumber?: string;
 }
 
 export interface fqdnType {
