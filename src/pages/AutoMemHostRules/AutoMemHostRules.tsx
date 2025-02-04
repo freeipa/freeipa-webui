@@ -48,6 +48,7 @@ import {
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
+import AddRule from "src/components/modals/Automember/AddRule";
 
 // Automembership host group rules
 const AutoMemHostRules = () => {
@@ -79,6 +80,10 @@ const AutoMemHostRules = () => {
   // Options for the default host group selector
   const [hostGroupsOptions, setHostGroupsOptions] = React.useState<
     SelectOptionProps[]
+  >([]);
+  // Available elements ready to add
+  const [groupsAvailableToAdd, setGroupsAvailableToAdd] = React.useState<
+    string[]
   >([]);
 
   // Alerts to show in the UI
@@ -139,6 +144,15 @@ const AutoMemHostRules = () => {
         } else {
           setDefaultGroup(hostGroupRulesData.defaultGroup);
         }
+
+        // Set available host groups to add
+        const allAutomemberIds = fullAutomemberIds.map(
+          (item) => item.automemberRule
+        );
+        const availableItems = hostGroupRulesData.hostGroups.filter(
+          (item) => !allAutomemberIds.includes(item)
+        );
+        setGroupsAvailableToAdd(availableItems);
 
         // Set table count
         setTotalCount(totalAutomembersCount);
@@ -384,6 +398,21 @@ const AutoMemHostRules = () => {
     updateIsDisableEnableOp,
   };
 
+  // Modals functionality
+  const [showAddModal, setShowAddModal] = React.useState(false);
+
+  const onOpenAddModal = () => {
+    setShowAddModal(true);
+  };
+
+  const onCloseAddModal = () => {
+    setShowAddModal(false);
+  };
+
+  const onAddModalToggle = () => {
+    setShowAddModal(!showAddModal);
+  };
+
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -450,7 +479,12 @@ const AutoMemHostRules = () => {
     {
       key: 6,
       element: (
-        <SecondaryButton isDisabled={!showTableRows}>Add</SecondaryButton>
+        <SecondaryButton
+          isDisabled={!showTableRows}
+          onClickHandler={onOpenAddModal}
+        >
+          Add
+        </SecondaryButton>
       ),
     },
     {
@@ -521,6 +555,15 @@ const AutoMemHostRules = () => {
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
         />
       </PageSection>
+      <AddRule
+        show={showAddModal}
+        handleModalToggle={onAddModalToggle}
+        onOpenAddModal={onOpenAddModal}
+        onCloseAddModal={onCloseAddModal}
+        onRefresh={refreshData}
+        groupsAvailableToAdd={groupsAvailableToAdd}
+        ruleType="hostgroup"
+      />
     </Page>
   );
 };
