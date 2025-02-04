@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Page,
   PageSection,
   PageSectionVariants,
@@ -34,7 +35,11 @@ import useApiError from "src/hooks/useApiError";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 // RPC
 import { GenericPayload } from "src/services/rpc";
-import { useSearchHostGroupRulesEntriesMutation } from "src/services/rpcAutomember";
+import {
+  useSearchHostGroupRulesEntriesMutation,
+  ChangeDefaultPayload,
+  useChangeDefaultGroupMutation,
+} from "src/services/rpcAutomember";
 // Hooks
 import { useAlerts } from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
@@ -48,8 +53,10 @@ import {
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
+// Modals
 import AddRule from "src/components/modals/Automember/AddRule";
 import DeleteRule from "src/components/modals/Automember/DeleteRule";
+import ConfirmationModal from "src/components/modals/ConfirmationModal";
 
 // Automembership host group rules
 const AutoMemHostRules = () => {
@@ -86,6 +93,8 @@ const AutoMemHostRules = () => {
   const [groupsAvailableToAdd, setGroupsAvailableToAdd] = React.useState<
     string[]
   >([]);
+  const [previousDefaultGroup, setPreviousDefaultGroup] =
+    React.useState<string>(NO_SELECTION);
 
   // Alerts to show in the UI
   const alerts = useAlerts();
@@ -106,6 +115,7 @@ const AutoMemHostRules = () => {
 
   // API calls via custom hook
   const hostGroupRulesData = useHostGroupsRulesData();
+  const [changeDefaultGroup] = useChangeDefaultGroupMutation();
 
   // Show table rows
   const [showTableRows, setShowTableRows] = React.useState(
@@ -140,10 +150,12 @@ const AutoMemHostRules = () => {
         setHostGroups(hostGroupRulesData.hostGroups);
         setAutomemberRules(shownPaginatedRulesList);
         // If no default group is set, set it as 'No selection'
-        if (defaultGroup === "" || hostGroupRulesData.defaultGroup === "") {
+        if (hostGroupRulesData.defaultGroup === "") {
           setDefaultGroup(NO_SELECTION);
+          setPreviousDefaultGroup(NO_SELECTION);
         } else {
           setDefaultGroup(hostGroupRulesData.defaultGroup);
+          setPreviousDefaultGroup(hostGroupRulesData.defaultGroup);
         }
 
         // Set available host groups to add
@@ -187,6 +199,32 @@ const AutoMemHostRules = () => {
       setHostGroupsOptions(groupsToSelector);
     }
   }, [hostGroups]);
+
+  // On select default group
+  const onSelectDefaultGroup = (group: string) => {
+    const payload: ChangeDefaultPayload = {
+      defaultGroup: group,
+      type: "hostgroup",
+    };
+    changeDefaultGroup(payload).then((result) => {
+      if ("data" in result) {
+        setDefaultGroup(group);
+        setPreviousDefaultGroup(group);
+        alerts.addAlert(
+          "default-group-success",
+          "Default group updated",
+          "success"
+        );
+        onCloseConfirmationModal();
+      } else {
+        alerts.addAlert(
+          "default-group-failure",
+          "Default group not updated",
+          "danger"
+        );
+      }
+    });
+  };
 
   // If some entries' status has been updated, unselect selected rows
   const [isDisableEnableOp, setIsDisableEnableOp] = React.useState(false);
@@ -402,6 +440,8 @@ const AutoMemHostRules = () => {
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [showChangeConfirmationModal, setShowChangeConfirmationModal] =
+    React.useState(false);
 
   const onOpenAddModal = () => {
     setShowAddModal(true);
@@ -421,6 +461,24 @@ const AutoMemHostRules = () => {
 
   const onToggleDeleteModal = () => {
     setShowDeleteModal(!showDeleteModal);
+  };
+
+  const onCloseConfirmationModal = () => {
+    setShowChangeConfirmationModal(false);
+  };
+
+  const onOpenConfirmationModal = () => {
+    setShowChangeConfirmationModal(true);
+  };
+
+  const onShowDefaultGroupOnModal = (group: string) => {
+    setDefaultGroup(group);
+    onOpenConfirmationModal();
+  };
+
+  const onCancelDefaultGroup = () => {
+    setDefaultGroup(previousDefaultGroup);
+    onCloseConfirmationModal();
   };
 
   // 'Delete automember rules data
@@ -470,7 +528,7 @@ const AutoMemHostRules = () => {
           options={hostGroupsOptions}
           selected={defaultGroup}
           placeholder="Default host group"
-          onSelectedChange={setDefaultGroup}
+          onSelectedChange={onShowDefaultGroupOnModal}
         />
       ),
     },
@@ -595,6 +653,27 @@ const AutoMemHostRules = () => {
         buttonsData={deleteButtonsData}
         selectedData={selectedData}
         ruleType="hostgroup"
+      />
+      <ConfirmationModal
+        title="Default hostgroup"
+        isOpen={showChangeConfirmationModal}
+        onClose={onCloseConfirmationModal}
+        actions={[
+          <Button
+            variant="primary"
+            key="change-default"
+            onClick={() => {
+              onSelectDefaultGroup(defaultGroup);
+            }}
+          >
+            OK
+          </Button>,
+          <SecondaryButton key="cancel" onClickHandler={onCancelDefaultGroup}>
+            Cancel
+          </SecondaryButton>,
+        ]}
+        messageText="Are you sure you want to change default group?"
+        messageObj={defaultGroup}
       />
     </Page>
   );
