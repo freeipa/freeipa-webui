@@ -49,6 +49,7 @@ import {
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
 import AddRule from "src/components/modals/Automember/AddRule";
+import DeleteRule from "src/components/modals/Automember/DeleteRule";
 
 // Automembership host group rules
 const AutoMemHostRules = () => {
@@ -400,6 +401,7 @@ const AutoMemHostRules = () => {
 
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
   const onOpenAddModal = () => {
     setShowAddModal(true);
@@ -411,6 +413,25 @@ const AutoMemHostRules = () => {
 
   const onAddModalToggle = () => {
     setShowAddModal(!showAddModal);
+  };
+
+  const onOpenDeleteModal = () => {
+    setShowDeleteModal(true);
+  };
+
+  const onToggleDeleteModal = () => {
+    setShowDeleteModal(!showDeleteModal);
+  };
+
+  // 'Delete automember rules data
+  const deleteButtonsData = {
+    updateIsDeleteButtonDisabled,
+    updateIsDeletion,
+  };
+
+  const selectedData = {
+    selectedItems: selectedAutomembers,
+    clearSelected: clearSelectedRules,
   };
 
   // List of Toolbar items
@@ -471,7 +492,10 @@ const AutoMemHostRules = () => {
     {
       key: 5,
       element: (
-        <SecondaryButton isDisabled={isDeleteButtonDisabled || !showTableRows}>
+        <SecondaryButton
+          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          onClickHandler={onOpenDeleteModal}
+        >
           Delete
         </SecondaryButton>
       ),
@@ -562,6 +586,14 @@ const AutoMemHostRules = () => {
         onCloseAddModal={onCloseAddModal}
         onRefresh={refreshData}
         groupsAvailableToAdd={groupsAvailableToAdd}
+        ruleType="hostgroup"
+      />
+      <DeleteRule
+        show={showDeleteModal}
+        handleModalToggle={onToggleDeleteModal}
+        onRefresh={refreshData}
+        buttonsData={deleteButtonsData}
+        selectedData={selectedData}
         ruleType="hostgroup"
       />
     </Page>
