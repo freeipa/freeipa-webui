@@ -188,20 +188,27 @@ Feature: Sudo rules - Settings page
   # 'Run command' subsection
   # - Allow
   # -- Prep a new command to add from the 'Sudo commands' page
-  Scenario: Add a new sudo command
+  Scenario: Add a new sudo commands
     Given I am on "sudo-commands" page
     When I click on "Add" button
     * I type in the field "Command name" text "command1"
     * I type in the field "Description" text "my description"
+    * in the modal dialog I click on "Add and add another" button
+    * I should see "success" alert with text "New sudo command added"
+    * I close the alert
+    * I type in the field "Command name" text "command2"
+    * I type in the field "Description" text "my description 2"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New sudo command added"
     * I close the alert
     Then I should see "command1" entry in the data table
     * entry "command1" should have attribute "Description" set to "my description"
+    Then I should see "command2" entry in the data table
+    * entry "command2" should have attribute "Description" set to "my description 2"
 
   Scenario: Add a new sudo allow command
     Given I am on the "sudo-rules" > "sudoRule1" Settings page
-    When I click on "Add sudocmds" button
+    When I click on ID "add-allow-sudocmd" button
     Then I see a modal with title text "Add allow sudo commands into sudo rule 'sudoRule1'"
     And I click on the arrow icon to perform search in modal
     And I click on the dual list item "command1"
@@ -225,36 +232,43 @@ Feature: Sudo rules - Settings page
   Scenario: Add a new sudo command group
     Given I am on "sudo-command-groups" page
     When I click on "Add" button
-    * I type in the field "Command group name" text "cmdgroup1"
-    * I type in the field "Description" text "my description"
+    * I type in the field "Command group name" text "my-cmd-group"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New sudo command group added"
     * I close the alert
-    Then I should see "cmdgroup1" entry in the data table
-    * entry "cmdgroup1" should have attribute "Description" set to "my description"
+    Then I should see "my-cmd-group" entry in the data table
+
+  Scenario: Add another sudo command group
+    Given I am on "sudo-command-groups" page
+    When I click on "Add" button
+    * I type in the field "Command group name" text "my-cmd-group-2"
+    * in the modal dialog I click on "Add" button
+    * I should see "success" alert with text "New sudo command group added"
+    * I close the alert
+    Then I should see "my-cmd-group-2" entry in the data table
 
   Scenario: Add a new sudo allow command group
     Given I am on the "sudo-rules" > "sudoRule1" Settings page
     When I click on "Sudo Allow Command Groups" page tab
-    And I click on "Add sudocmdgroups" button
+    And I click on ID "add-allow-sudocmdgroup" button
     Then I see a modal with title text "Add allow sudo command groups into sudo rule 'sudoRule1'"
     And I click on the arrow icon to perform search in modal
-    And I click on the dual list item "cmdgroup1"
+    And I click on the dual list item "my-cmd-group"
     And I click on the dual list add selected button
     And I click on the "Add" button located in the footer modal dialog
     And I should see "success" alert with text "Added new item(s) to 'sudoRule1'"
     Then I close the alert
-    And I should see "cmdgroup1" entry in the data table
+    And I should see "my-cmd-group" entry in the data table
 
   Scenario: Remove sudo allow command group from table
-    Given I should see "cmdgroup1" entry in the data table
-    When I select "cmdgroup1" entry with no link in the data table
+    Given I should see "my-cmd-group" entry in the data table
+    When I select "my-cmd-group" entry with no link in the data table
     And I click on "Delete" button
-    And the "cmdgroup1" element should be in the dialog table with id "remove-sudocmdgroups-table"
+    And the "my-cmd-group" element should be in the dialog table with id "remove-sudocmdgroups-table"
     When in the modal dialog I click on "Delete" button
     And I should see "success" alert with text "Removed item(s) from"
     Then I close the alert
-    And I should not see "cmdgroup1" entry in the data table
+    And I should not see "my-cmd-group" entry in the data table
 
   # - Deny
   Scenario: Add a new sudo deny command
@@ -262,44 +276,44 @@ Feature: Sudo rules - Settings page
     When I click on ID "add-deny-sudocmd" button
     Then I see a modal with title text "Add deny sudo commands into sudo rule 'sudoRule1'"
     And I click on the arrow icon to perform search in modal
-    And I click on the dual list item "command1"
+    And I click on the dual list item "command2"
     And I click on the dual list add selected button
     And I click on the "Add" button located in the footer modal dialog
     And I should see "success" alert with text "Added new item(s) to 'sudoRule1'"
     Then I close the alert
-    And I should see "command1" entry in the data table
+    And I should see "command2" entry in the data table
 
   Scenario: Remove sudo deny command from table
-    Given I should see "command1" entry in the data table
-    When I select "command1" entry with no link in the data table
+    Given I should see "command2" entry in the data table
+    When I select "command2" entry with no link in the data table
     And I click on "Delete" button
-    And the "command1" element should be in the dialog table with id "remove-sudocmds-table"
+    And the "command2" element should be in the dialog table with id "remove-sudocmds-table"
     When in the modal dialog I click on "Delete" button
     And I should see "success" alert with text "Removed item(s) from"
     Then I close the alert
-    And I should not see "command1" entry in the data table
+    And I should not see "command2" entry in the data table
 
   Scenario: Add a new sudo deny command group
     When I click on "Sudo Deny Command Groups" page tab
     And I click on ID "add-deny-sudocmdgroup" button
     Then I see a modal with title text "Add deny sudo command groups into sudo rule 'sudoRule1'"
     And I click on the arrow icon to perform search in modal
-    And I click on the dual list item "cmdgroup1"
+    And I click on the dual list item "my-cmd-group-2"
     And I click on the dual list add selected button
     And I click on the "Add" button located in the footer modal dialog
     And I should see "success" alert with text "Added new item(s) to 'sudoRule1'"
     Then I close the alert
-    And I should see "cmdgroup1" entry in the data table
+    And I should see "my-cmd-group-2" entry in the data table
 
   Scenario: Remove sudo deny command group from table
-    Given I should see "cmdgroup1" entry in the data table
-    When I select "cmdgroup1" entry with no link in the data table
+    Given I should see "my-cmd-group-2" entry in the data table
+    When I select "my-cmd-group-2" entry with no link in the data table
     And I click on "Delete" button
-    And the "cmdgroup1" element should be in the dialog table with id "remove-sudocmdgroups-table"
+    And the "my-cmd-group-2" element should be in the dialog table with id "remove-sudocmdgroups-table"
     When in the modal dialog I click on "Delete" button
     And I should see "success" alert with text "Removed item(s) from"
     Then I close the alert
-    And I should not see "cmdgroup1" entry in the data table
+    And I should not see "my-cmd-group-2" entry in the data table
 
   Scenario: Change command category - 'Specified Commands and Groups' to 'Any command'
     When I click on the "Any command" option under ID "cmdcategory" toggle group
@@ -309,32 +323,57 @@ Feature: Sudo rules - Settings page
     And I should see "Any command" selected in the ID "cmdcategory" toggle group
 
   # 'As whom' subsection
+  # - Prep: Create a new user to work with
+  Scenario: Add a new user
+    Given I am on "active-users" page
+    When I click on "Add" button
+    * I type in the field "First name" text "Han"
+    * I type in the field "Last name" text "Solo"
+    * in the modal dialog I click on "Add" button
+    * I should see "success" alert with text "New user added"
+    Then I close the alert
+    Then I should see "hsolo" entry in the data table
   # - RunAs User
   Scenario: Add a new runAs user
     Given I am on the "sudo-rules" > "sudoRule1" Settings page
     When I click on ID "add-runas-user" button
     Then I see a modal with title text "Add RunAs user into sudo rule sudoRule1"
     And I click on the arrow icon to perform search in modal
-    And I click on the dual list item "admin"
+    And I click on the dual list item "hsolo"
     And I click on the dual list add selected button
     And I click on the "Add" button located in the footer modal dialog
     And I should see "success" alert with text "Added new item(s) to 'sudoRule1'"
     Then I close the alert
-    And I should see "admin" entry in the data table
+    And I should see "hsolo" entry in the data table
 
   Scenario: Remove runAs user from table
     Given I am on the "sudo-rules" > "sudoRule1" Settings page
-    Given I should see "admin" entry in the data table with ID "keytab-user-table"
-    When I select "admin" entry with no link in the data table
+    Given I should see "hsolo" entry in the data table with ID "keytab-user-table"
+    When I select "hsolo" entry with no link in the data table
     And I click on "Delete" button
-    And the "admin" element should be in the dialog table with id "remove-users-table"
+    And the "hsolo" element should be in the dialog table with id "remove-users-table"
     When in the modal dialog I click on "Delete" button
     And I should see "success" alert with text "Removed item(s) from"
     Then I close the alert
-    And I should not see "admin" entry in the data table
+    And I should not see "hsolo" entry in the data table
+
+  # -- Remove hsolo user
+  Scenario: Cleanup: Delete 'hsolo' user
+    Given I am on "active-users" page
+    Given I should see partial "hsolo" entry in the data table
+    Then I select partial entry "hsolo" in the data table
+    When I click on "Delete" button
+    * I see "Remove Active Users" modal
+    * I should see partial "hsolo" entry in the data table
+    When in the modal dialog I check "Delete" radio selector
+    When in the modal dialog I click on "Delete" button
+    * I should see "success" alert with text "Users removed"
+    Then I close the alert
+    Then I should not see "hsolo" entry in the data table
 
   # - Group of runAs users
   Scenario: Add a new group of runAs users
+    Given I am on the "sudo-rules" > "sudoRule1" Settings page
     When I click on "Groups of RunAs Users" page tab
     And I click on ID "add-runas-group" button
     Then I see a modal with title text "Add host group into sudo rule sudoRule1"
@@ -357,28 +396,38 @@ Feature: Sudo rules - Settings page
     And I should not see "admins" entry in the data table
 
   # - RunAs Groups
+  # -- Prep: Create a new group to work with
+  Scenario: Add a new group
+    Given I am on "user-groups" page
+    When I click on "Add" button
+    * I type in the field "Group name" text "super_group"
+    * in the modal dialog I click on "Add" button
+    * I should see "success" alert with text "New user group added"
+    * I close the alert
+    Then I should see "super_group" entry in the data table
+
   Scenario: Add a new runAs group
     Given I am on the "sudo-rules" > "sudoRule1" Settings page
     When I click on ID "add-runas-group-group" button
     Then I see a modal with title text "Add RunAs groups into sudo rule sudoRule1"
     And I click on the arrow icon to perform search in modal
-    And I click on the dual list item "admins"
+    And I click on the dual list item "super_group"
     And I click on the dual list add selected button
     And I click on the "Add" button located in the footer modal dialog
     And I should see "success" alert with text "Added new item(s) to 'sudoRule1'"
     Then I close the alert
-    And I should see "admins" entry in the data table with ID "keytab-group-table"
+    And I should see "super_group" entry in the data table with ID "keytab-group-table"
 
   Scenario: Remove runAs group from table
     Given I am on the "sudo-rules" > "sudoRule1" Settings page
-    Given I should see "admins" entry in the data table with ID "keytab-group-table"
-    When I select "admins" entry with no link in the data table
+    Given I should see "super_group" entry in the data table with ID "keytab-group-table"
+    When I select "super_group" entry with no link in the data table
     And I click on "Delete" button
-    And the "admins" element should be in the dialog table with id "remove-groups-table"
+    And the "super_group" element should be in the dialog table with id "remove-groups-table"
     When in the modal dialog I click on "Delete" button
     And I should see "success" alert with text "Removed item(s) from"
     Then I close the alert
-    And I should not see "admins" entry in the data table with ID "keytab-group-table"
+    And I should not see "super_group" entry in the data table with ID "keytab-group-table"
 
   Scenario: Change runAs user and group categories
     Given I am on the "sudo-rules" > "sudoRule1" Settings page
@@ -389,6 +438,19 @@ Feature: Sudo rules - Settings page
     Then I close the alert
     And I should see "Anyone" selected in the ID "ipasudorunasusercategory" toggle group
     And I should see "Any Group" selected in the ID "ipasudorunasgroupcategory" toggle group
+
+  # -- Cleanup: Delete 'super_group' group
+  Scenario: Cleanup: Delete 'super_group' group
+    Given I am on "user-groups" page
+    Given I should see "super_group" entry in the data table
+    Then I select entry "super_group" in the data table
+    When I click on "Delete" button
+    * I see "Remove user groups" modal
+    * I should see "super_group" entry in the data table
+    When in the modal dialog I click on "Delete" button
+    * I should see "success" alert with text "User groups removed"
+    When I close the alert
+    Then I should not see "super_group" entry in the data table
 
   # Cleanup of created entities
   # - Host
@@ -430,18 +492,33 @@ Feature: Sudo rules - Settings page
     * I close the alert
     Then I should not see "command1" entry in the data table
 
+  Scenario: Delete another command
+    Given I am on "sudo-commands" page
+    Given I should see "command2" entry in the data table
+    When I select entry "command2" in the data table
+    * I click on "Delete" button
+    When I see "Remove sudo commands" modal
+    * I should see "command2" entry in the data table
+    * in the modal dialog I click on "Delete" button
+    * I should see "success" alert with text "Sudo commands removed"
+    * I close the alert
+    Then I should not see "command2" entry in the data table
+
   # - Command group
-  Scenario: Delete a command group
+  Scenario: Delete command groups
     Given I am on "sudo-command-groups" page
-    Given I should see "cmdgroup1" entry in the data table
-    When I select entry "cmdgroup1" in the data table
+    Given I should see "my-cmd-group" entry in the data table
+    When I select entry "my-cmd-group" in the data table
+    When I select entry "my-cmd-group-2" in the data table
     * I click on "Delete" button
     When I see "Remove sudo command groups" modal
-    * I should see "cmdgroup1" entry in the data table
+    * I should see "my-cmd-group" entry in the data table
+    * I should see "my-cmd-group-2" entry in the data table
     * in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Sudo command groups removed"
     * I close the alert
-    Then I should not see "cmdgroup1" entry in the data table
+    Then I should not see "my-cmd-group" entry in the data table
+    Then I should not see "my-cmd-group-2" entry in the data table
 
   # - Sudo rule
   Scenario: Delete the rule

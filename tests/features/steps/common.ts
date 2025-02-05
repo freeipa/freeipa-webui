@@ -714,7 +714,9 @@ Then("I click on the breadcrump link {string}", (value: string) => {
 
 // Dual list
 Then("I click on the dual list item {string}", (value: string) => {
-  cy.get(".pf-v5-c-dual-list-selector__item-text").contains(value).click();
+  cy.get(".pf-v5-c-dual-list-selector__item-text", { timeout: 2000 })
+    .contains(value)
+    .click();
 });
 
 Then("I click on the dual list add selected button", () => {
