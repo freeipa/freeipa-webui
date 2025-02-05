@@ -683,7 +683,9 @@ Then(
 );
 
 When("I click on the arrow icon to perform search in modal", () => {
-  cy.get("[role=dialog] button[aria-label=Search]").eq(0).click().wait(1000);
+  cy.get("[role=dialog] button[aria-label=Search]", { timeout: 1000 })
+    .eq(0)
+    .click();
 });
 
 Then("I click on the X icon to clear the modal search field", () => {

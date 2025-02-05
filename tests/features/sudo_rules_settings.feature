@@ -61,7 +61,7 @@ Feature: Sudo rules - Settings page
   Scenario: Add a new user
     When I click on "Add users" button
     Then I see a modal with title text "Add user into sudo rule sudoRule1"
-    And I click on the arrow icon to perform search
+    And I click on the arrow icon to perform search in modal
     And I click on the dual list item "admin"
     And I click on the dual list add selected button
     And I click on the "Add" button located in the footer modal dialog
@@ -84,7 +84,7 @@ Feature: Sudo rules - Settings page
     When I click on "User groups" page tab
     And I click on "Add groups" button
     Then I see a modal with title text "Add group into sudo rule sudoRule1"
-    And I click on the arrow icon to perform search
+    And I click on the arrow icon to perform search in modal
     And I click on the dual list item "admins"
     And I click on the dual list add selected button
     And I click on the "Add" button located in the footer modal dialog
@@ -125,7 +125,7 @@ Feature: Sudo rules - Settings page
     Given I am on the "sudo-rules" > "sudoRule1" Settings page
     When I click on "Add hosts" button
     Then I see a modal with title text "Add host into sudo rule sudoRule1"
-    And I click on the arrow icon to perform search
+    And I click on the arrow icon to perform search in modal
     And I click on the dual list item "my-temp-server"
     And I click on the dual list add selected button
     And I click on the "Add" button located in the footer modal dialog
@@ -160,7 +160,7 @@ Feature: Sudo rules - Settings page
     When I click on "Host groups" page tab
     And I click on "Add hostgroups" button
     Then I see a modal with title text "Add host group into sudo rule sudoRule1"
-    And I click on the arrow icon to perform search
+    And I click on the arrow icon to perform search in modal
     And I click on the dual list item "a_host_group"
     And I click on the dual list add selected button
     And I click on the "Add" button located in the footer modal dialog
@@ -203,7 +203,7 @@ Feature: Sudo rules - Settings page
     Given I am on the "sudo-rules" > "sudoRule1" Settings page
     When I click on "Add sudocmds" button
     Then I see a modal with title text "Add allow sudo commands into sudo rule 'sudoRule1'"
-    And I click on the arrow icon to perform search
+    And I click on the arrow icon to perform search in modal
     And I click on the dual list item "command1"
     And I click on the dual list add selected button
     And I click on the "Add" button located in the footer modal dialog
@@ -238,7 +238,7 @@ Feature: Sudo rules - Settings page
     When I click on "Sudo Allow Command Groups" page tab
     And I click on "Add sudocmdgroups" button
     Then I see a modal with title text "Add allow sudo command groups into sudo rule 'sudoRule1'"
-    And I click on the arrow icon to perform search
+    And I click on the arrow icon to perform search in modal
     And I click on the dual list item "cmdgroup1"
     And I click on the dual list add selected button
     And I click on the "Add" button located in the footer modal dialog
@@ -261,7 +261,7 @@ Feature: Sudo rules - Settings page
     Given I am on the "sudo-rules" > "sudoRule1" Settings page
     When I click on ID "add-deny-sudocmd" button
     Then I see a modal with title text "Add deny sudo commands into sudo rule 'sudoRule1'"
-    And I click on the arrow icon to perform search
+    And I click on the arrow icon to perform search in modal
     And I click on the dual list item "command1"
     And I click on the dual list add selected button
     And I click on the "Add" button located in the footer modal dialog
@@ -283,7 +283,7 @@ Feature: Sudo rules - Settings page
     When I click on "Sudo Deny Command Groups" page tab
     And I click on ID "add-deny-sudocmdgroup" button
     Then I see a modal with title text "Add deny sudo command groups into sudo rule 'sudoRule1'"
-    And I click on the arrow icon to perform search
+    And I click on the arrow icon to perform search in modal
     And I click on the dual list item "cmdgroup1"
     And I click on the dual list add selected button
     And I click on the "Add" button located in the footer modal dialog
@@ -314,7 +314,7 @@ Feature: Sudo rules - Settings page
     Given I am on the "sudo-rules" > "sudoRule1" Settings page
     When I click on ID "add-runas-user" button
     Then I see a modal with title text "Add RunAs user into sudo rule sudoRule1"
-    And I click on the arrow icon to perform search
+    And I click on the arrow icon to perform search in modal
     And I click on the dual list item "admin"
     And I click on the dual list add selected button
     And I click on the "Add" button located in the footer modal dialog
@@ -338,7 +338,7 @@ Feature: Sudo rules - Settings page
     When I click on "Groups of RunAs Users" page tab
     And I click on ID "add-runas-group" button
     Then I see a modal with title text "Add host group into sudo rule sudoRule1"
-    And I click on the arrow icon to perform search
+    And I click on the arrow icon to perform search in modal
     And I click on the dual list item "admins"
     And I click on the dual list add selected button
     And I click on the "Add" button located in the footer modal dialog
@@ -361,7 +361,7 @@ Feature: Sudo rules - Settings page
     Given I am on the "sudo-rules" > "sudoRule1" Settings page
     When I click on ID "add-runas-group-group" button
     Then I see a modal with title text "Add RunAs groups into sudo rule sudoRule1"
-    And I click on the arrow icon to perform search
+    And I click on the arrow icon to perform search in modal
     And I click on the dual list item "admins"
     And I click on the dual list add selected button
     And I click on the "Add" button located in the footer modal dialog
