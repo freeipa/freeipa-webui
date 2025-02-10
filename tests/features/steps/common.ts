@@ -266,7 +266,7 @@ When(
 );
 
 Then("I should see {string} entry in the data table", (name: string) => {
-  cy.get("tr[id='" + name + "']").should("be.visible");
+  cy.get("tr[id='" + name + "']", { timeout: 3000 }).should("be.visible");
 });
 
 Then(
@@ -431,6 +431,15 @@ When("I click in the selector field with ID {string}", (id: string) => {
     .find("div[id=" + id + "]")
     .click();
 });
+
+When(
+  "I click in the typeahead selector field with ID {string}",
+  (id: string) => {
+    cy.get("div.pf-m-typeahead")
+      .find("div[id=" + id + "]")
+      .click();
+  }
+);
 
 When(
   "I select {string} in the {string} form selector field",
