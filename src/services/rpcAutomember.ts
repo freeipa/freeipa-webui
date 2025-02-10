@@ -54,6 +54,17 @@ export interface ChangeDefaultPayload {
   type: string;
 }
 
+export interface AutomemberShowPayload {
+  automemberId: string;
+  type: string;
+}
+
+export interface AutomemberModPayload {
+  automemberId: string;
+  type: string;
+  description?: string;
+}
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     /**
@@ -393,6 +404,43 @@ const extendedApi = api.injectEndpoints({
         return { data: fullAutomemberIdsList };
       },
     }),
+    /**
+     * Given an automember ID, retrieves the full automember data
+     * @param AutomemberShowPayload
+     * @returns FindRPCResponse
+     */
+    automemberShow: build.query<Automember, AutomemberShowPayload>({
+      query: (payload) => {
+        const params = [[payload.automemberId], { all: true, type: payload.type }];
+        return getCommand({
+          method: "automember_show",
+          params: params,
+        });
+      },
+      transformResponse: (response: FindRPCResponse): Automember => {
+        const automemberData = response.result.result as unknown as Automember;
+        return automemberData;
+      }
+    }),
+    /**
+     * Save automember data
+     * @param AutomemberModPayload
+     * @returns FindRPCResponse
+     */
+    saveAutomember: build.mutation<FindRPCResponse, AutomemberModPayload>({
+      query: (payload) => {
+        const paramProps = { all: true, type: payload.type };
+        if (payload.description !== undefined) {
+          paramProps["description"] = payload.description;
+        }
+
+        const params = [[payload.automemberId], paramProps];
+        return getCommand({
+          method: "automember_add",
+          params: params,
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -412,4 +460,6 @@ export const {
   useDeleteFromAutomemberMutation,
   useChangeDefaultGroupMutation,
   useSearchHostGroupRulesEntriesMutation,
+  useAutomemberShowQuery,
+  useSaveAutomemberMutation
 } = extendedApi;

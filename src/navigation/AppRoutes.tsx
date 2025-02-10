@@ -25,6 +25,7 @@ import ServicesTabs from "src/pages/Services/ServicesTabs";
 import IDViews from "src/pages/IDViews/IDViews";
 import AutoMemHostRules from "src/pages/AutoMemHostRules/AutoMemHostRules";
 import AutoMemUserRules from "src/pages/AutoMemUserRules/AutoMemUserRules";
+import AutoMemUserRulesTabs from "src/pages/AutoMemUserRules/AutoMemUserRulesTabs";
 import HBACRules from "src/pages/HBACRules/HBACRules";
 import HBACServices from "src/pages/HBACServices/HBACServices";
 import HBACServiceGroups from "src/pages/HBACServiceGroups/HBACServiceGroups";
@@ -300,6 +301,17 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="user-group-rules">
                 <Route path="" element={<AutoMemUserRules />} />
+                <Route path=":cn">
+                  <Route
+                    path=""
+                    element={
+                      <AutoMemUserRulesTabs
+                        section="settings"
+                        automemberType="group"
+                      />
+                    }
+                  />
+                </Route>
               </Route>
               <Route path="host-group-rules">
                 <Route path="" element={<AutoMemHostRules />} />
