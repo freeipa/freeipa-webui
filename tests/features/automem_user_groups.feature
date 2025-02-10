@@ -40,10 +40,10 @@ Feature: Automember > User group rules
 
   Scenario: Set default user group rule
     Given I am on "user-group-rules" page
-    When I click in the selector field with ID "typeahead-select-input"
+    When I click in the typeahead selector field with ID "typeahead-select-input"
     * I click toolbar dropdown item "admins"
     Then I see "Default user group" modal
-    When in the modal dialog I click on "OK" button
+    When I click on the "OK" button located in the footer modal dialog
     Then I should see "success" alert with text "Default group updated"
     When I close the alert
     * in the selector with ID "typeahead-select-input" I should see option "admins" selected
