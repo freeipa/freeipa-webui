@@ -131,6 +131,26 @@ jobs:
             podman unshare --rootless-netns \
                    npx cypress run --config-file cypress/cypress.config.ts --browser electron ||:
 
+      - name: Collect server logs in case of a test failure
+        shell: bash
+        if: failure()
+        run: |
+          podman exec -ti server.ipa.demo dnf -y install sos
+          podman exec -ti server.ipa.demo sos report \
+                          --profile={identity,webserver,security,system,network} \
+                          -a --all-logs --batch
+          podman exec server.ipa.demo sh -c 'ls /var/tmp/sosreport*' | while read f ; do
+              podman cp server.ipa.demo:$f tests/ipalab/
+          done
+
+      - name: Upload server logs
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: webui-server-logs
+          path: tests/ipalab/sosreport*
+          if-no-files-found: ignore
+
       - name: Shutdown the test machines and a network
         uses: rjeffman/FreeIPA-Cluster-Test@v1.3.0
         with:
