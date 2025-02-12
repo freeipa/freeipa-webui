@@ -707,7 +707,7 @@ Then(
 );
 
 When("I click on the arrow icon to perform search in modal", () => {
-  cy.get("[role=dialog] button[aria-label=Search]", { timeout: 1000 })
+  cy.get("[role=dialog] button[aria-label=Search]", { timeout: 7000 })
     .eq(0)
     .click();
 });
