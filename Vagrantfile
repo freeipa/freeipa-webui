@@ -44,7 +44,7 @@ Vagrant.configure("2") do |config|
 
   # Install ipa server
   config.vm.provision "shell",
-    inline: "ipa-server-install -U -n dom-server.ipa.demo -r DOM-IPA.DEMO -p Secret123 -a Secret123 --forwarder 8.8.8.8 --setup-dns --setup-kra"
+    inline: "ipa-server-install -U -n dom-server.ipa.demo -r DOM-IPA.DEMO -p Secret123 -a Secret123 --auto-forwarders --setup-dns --setup-kra"
 
   # Set SELinux to permissive mode
   config.vm.provision "shell", inline: <<~EOS
