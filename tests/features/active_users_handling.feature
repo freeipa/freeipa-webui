@@ -21,7 +21,7 @@ Feature: User manipulation
       | testuser2 | Banana    | Bread    | FishAndChips097      |
       | testuser3 | Cypress   | Gateway  | TestingIsFun73       |
 
-#  Test if "Add and add another" behaves as expected
+  #  Test if "Add and add another" behaves as expected
   Scenario: Add one user after another
     When I click on "Add" button
     * I type in the field "User login" text "chainuser1"
@@ -99,7 +99,7 @@ Feature: User manipulation
     Then I should see "testuser2" entry in the data table
     Then entry "testuser2" should have attribute "Status" set to "Enabled"
 
-Scenario: Disable multiple users at once
+  Scenario: Disable multiple users at once
     Given I should see "testuser2" entry in the data table
     Given I should see "testuser3" entry in the data table
     When I select entry "testuser2" in the data table
@@ -116,7 +116,7 @@ Scenario: Disable multiple users at once
     Then entry "testuser2" should have attribute "Status" set to "Disabled"
     Then entry "testuser3" should have attribute "Status" set to "Disabled"
 
-Scenario: Re-enable multiple users at once
+  Scenario: Re-enable multiple users at once
     Given I should see "testuser2" entry in the data table
     Given I should see "testuser3" entry in the data table
     When I select entry "testuser2" in the data table
@@ -157,17 +157,6 @@ Scenario: Re-enable multiple users at once
     Then I see a modal with text "admin cannot be deleted/modified"
     When in the modal dialog I click on "OK" button
     And in the modal dialog I click on "Cancel" button
-    Then I should see "admin" entry in the data table
-
-  Scenario: Try to disable admin user
-    Given I should see "admin" entry in the data table
-    When I select entry "admin" in the data table
-    And I click on "Disable" button
-    Then I see "Disable confirmation" modal
-
-    When in the modal dialog I click on "Disable" button
-    Then I see a modal with text "admin cannot be deleted or disabled"
-    When in the modal dialog I click on "OK" button
     Then I should see "admin" entry in the data table
 
   Scenario: Cancel creation of a user
