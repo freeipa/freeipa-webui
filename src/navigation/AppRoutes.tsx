@@ -315,6 +315,17 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="host-group-rules">
                 <Route path="" element={<AutoMemHostRules />} />
+                <Route path=":cn">
+                  <Route
+                    path=""
+                    element={
+                      <AutoMemUserRulesTabs
+                        section="settings"
+                        automemberType="hostgroup"
+                      />
+                    }
+                  />
+                </Route>
               </Route>
               <Route path="hbac-rules">
                 <Route path="" element={<HBACRules />} />
