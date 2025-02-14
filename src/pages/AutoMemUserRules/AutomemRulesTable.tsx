@@ -7,6 +7,7 @@ import TableLayout from "../../components/layouts/TableLayout";
 import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
 // Data types
 import { AutomemberEntry } from "src/utils/datatypes/globalDataTypes";
+import { Link } from "react-router-dom";
 
 interface ElementData {
   isElementSelectable: (element: AutomemberEntry) => boolean;
@@ -38,6 +39,7 @@ export interface PropsToTable {
   buttonsData: ButtonsData;
   paginationData: PaginationData;
   searchValue: string;
+  automemberType: "user-group" | "host-group";
 }
 
 const MainTable = (props: PropsToTable) => {
@@ -203,7 +205,15 @@ const MainTable = (props: PropsToTable) => {
           isDisabled: !props.elementsData.isElementSelectable(element),
         }}
       />
-      <Td dataLabel={columnNames.automemberRule}>{element.automemberRule}</Td>
+
+      <Td dataLabel={columnNames.automemberRule}>
+        <Link
+          to={"/" + props.automemberType + "-rules/" + element.automemberRule}
+          state={element}
+        >
+          {element.automemberRule}
+        </Link>
+      </Td>
       <Td dataLabel={columnNames.description}>{element.description}</Td>
     </Tr>
   ));
