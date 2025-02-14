@@ -31,8 +31,8 @@ export interface PropsToSettingsTableLayout {
   isDeleteDisabled?: boolean;
   onAddModal: () => void;
   isAddDisabled?: boolean;
-  onSearchChange: (value: string) => void;
-  searchValue: string;
+  onSearchChange?: (value: string) => void;
+  searchValue?: string;
   // pagination
   paginationData: PaginationData;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,12 +69,14 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
     <>
       <Flex>
         <FlexItem>
-          {props.entryCount > 0 && (
+          {props.entryCount > 0 && props.onSearchChange !== undefined && (
             <SearchInput
               placeholder={"Filter by ..."}
               value={props.searchValue}
-              onChange={(_event, value: string) => props.onSearchChange(value)}
-              onClear={() => props.onSearchChange("")}
+              onChange={(_event, value: string) =>
+                props.onSearchChange && props.onSearchChange(value)
+              }
+              onClear={() => props.onSearchChange && props.onSearchChange("")}
             />
           )}
         </FlexItem>
