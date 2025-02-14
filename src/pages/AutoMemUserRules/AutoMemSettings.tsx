@@ -23,30 +23,29 @@ import { asRecord } from "../../utils/hostUtils";
 import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Data types
-import {
-  automemberType,
-  Metadata,
-} from "../../utils/datatypes/globalDataTypes";
+import { Automember, Metadata } from "../../utils/datatypes/globalDataTypes";
 // Icons
 import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import {
   AutomemberModPayload,
+  Condition,
   useSaveAutomemberMutation,
 } from "src/services/rpcAutomember";
+import InclusiveExclusiveSection from "src/components/AutomemberSections/InclusiveExclusiveSection";
 
 interface PropsToSettings {
-  automemberRule: Partial<automemberType>;
-  originalAutomemberRule: Partial<automemberType>;
+  automemberRule: Partial<Automember>;
+  originalAutomemberRule: Partial<Automember>;
   automemberType: string;
   metadata: Metadata;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onAutomemberChange: (automember: Partial<automemberType>) => void;
+  onAutomemberChange: (automember: Partial<Automember>) => void;
   onRefresh: () => void;
   isModified: boolean;
   isDataLoading?: boolean;
-  modifiedValues: () => Partial<automemberType>;
+  modifiedValues: () => Partial<Automember>;
   onResetValues: () => void;
 }
 
@@ -65,14 +64,55 @@ const AutoMemSettings = (props: PropsToSettings) => {
     props.onAutomemberChange
   );
 
+  // States
+  const [inclusiveRules, setInclusiveRules] = React.useState<Condition[]>([]);
+  const [exclusiveRules, setExclusiveRules] = React.useState<Condition[]>([]);
   const [isSaving, setSaving] = React.useState(false);
+
+  // Keep the 'rule' state updated
+  React.useEffect(() => {
+    // Convert the automember inclusive/exclusive rules ('employeetype=SE') to Condition[] format
+    if (props.automemberRule.automemberinclusiveregex !== undefined) {
+      const inclusive = props.automemberRule.automemberinclusiveregex.map(
+        (rule) => {
+          const splittedRule = rule.split("=");
+          const key = splittedRule[0];
+          const value = splittedRule[1];
+
+          return {
+            key: key,
+            automemberregex: value,
+          } as Condition;
+        }
+      );
+
+      setInclusiveRules(inclusive);
+    }
+
+    if (props.automemberRule.automemberexclusiveregex !== undefined) {
+      const exclusive = props.automemberRule.automemberexclusiveregex.map(
+        (rule) => {
+          const splittedRule = rule.split("=");
+          const key = splittedRule[0];
+          const value = splittedRule[1];
+
+          return {
+            key: key,
+            automemberregex: value,
+          } as Condition;
+        }
+      );
+      setExclusiveRules(exclusive);
+    }
+  }, [props.automemberRule]);
 
   // 'Save' handler method
   const onSave = () => {
     const modifiedValues = props.modifiedValues();
     const payload = {
+      automemberId: props.automemberRule.cn?.toString(),
       description: modifiedValues.description,
-      ...modifiedValues,
+      type: props.automemberType,
     } as AutomemberModPayload;
 
     setSaving(true);
@@ -99,6 +139,7 @@ const AutoMemSettings = (props: PropsToSettings) => {
   // 'Revert' handler method
   const onRevert = () => {
     props.onAutomemberChange(props.originalAutomemberRule);
+    props.onRefresh();
     alerts.addAlert(
       "revert-success",
       "Automember rule data reverted",
@@ -180,18 +221,52 @@ const AutoMemSettings = (props: PropsToSettings) => {
               key={0}
               headingLevel="h1"
               id="rule-general"
-              text="HBAC rule settings"
+              text="General"
             />
             <Form className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md">
-              <FormGroup label="Description" fieldId="description">
+              <FormGroup label="General" fieldId="general">
                 <IpaTextArea
                   name="description"
                   ipaObject={ipaObject}
                   onChange={recordOnChange}
-                  objectName="hbacrule"
+                  objectName="automember"
                   metadata={props.metadata}
                 />
               </FormGroup>
+            </Form>
+            <Form className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md">
+              <TitleLayout
+                key={1}
+                headingLevel="h1"
+                id="rule-inclusive"
+                text="Inclusive"
+              />
+              <InclusiveExclusiveSection
+                entityId={props.automemberRule.cn?.toString() as string}
+                automemberType={props.automemberType}
+                conditionType={"inclusive"}
+                tableElements={inclusiveRules}
+                metadata={props.metadata}
+                columnNames={["Attribute", "Expression"]}
+                onRefresh={props.onRefresh}
+              />
+            </Form>
+            <Form className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md">
+              <TitleLayout
+                key={1}
+                headingLevel="h1"
+                id="rule-exclusive"
+                text="Exclusive"
+              />
+              <InclusiveExclusiveSection
+                entityId={props.automemberRule.cn?.toString() as string}
+                automemberType={props.automemberType}
+                conditionType={"exclusive"}
+                tableElements={exclusiveRules}
+                metadata={props.metadata}
+                columnNames={["Attribute", "Expression"]}
+                onRefresh={props.onRefresh}
+              />
             </Form>
           </Flex>
         </SidebarContent>

@@ -19,14 +19,25 @@ import {
   groupType,
   AutomemberEntry,
 } from "src/utils/datatypes/globalDataTypes";
+import { apiToAutomember } from "src/utils/automemberUtils";
 
 /**
- * Automember-related endpoints: defaultGroupShow
+ * Automember-related endpoints: automemberFind, automemberFindBasicInfo, defaultGroupShow,
+ *      searchUserGroupRulesEntries, addToAutomember, deleteFromAutomember, changeDefaultGroup,
+ *      searchHostGroupRulesEntries, automemberShow, saveAutomember, automemberAddCondition,
+ *      automemberRemoveCondition
  *
  * API commands:
  * - automember_default_group_show: https://freeipa.readthedocs.io/en/latest/api/automember_default_group_show.html
  * - automember_find: https://freeipa.readthedocs.io/en/latest/api/automember_find.html
- * - automember_add: https://freeipa.readthedocs.io/en/latest/api/automember_add.html
+ * - automember_add: https://freeipa.readthedocs.io/en/latest/api/automember_add.htmls
+ * - automember_del: https://freeipa.readthedocs.io/en/latest/api/automember_del.html
+ * - automember_default_group_set: https://freeipa.readthedocs.io/en/latest/api/automember_default_group_set.html
+ * - automember_show: https://freeipa.readthedocs.io/en/latest/api/automember_show.html
+ * - automember_add_condition: https://freeipa.readthedocs.io/en/latest/api/automember_add_condition.html
+ * - automember_remove_condition: https://freeipa.readthedocs.io/en/latest/api/automember_remove_condition.html
+ * - automember_mod: https://freeipa.readthedocs.io/en/latest/api/automember_mod.html
+ *
  */
 
 export type AutomemberFullData = {
@@ -63,6 +74,25 @@ export interface AutomemberModPayload {
   automemberId: string;
   type: string;
   description?: string;
+}
+
+export interface AddConditionPayload {
+  automemberId: string;
+  automemberType: string;
+  conditionType: "inclusive" | "exclusive";
+  key: string;
+  automemberregex: string;
+}
+
+export interface Condition {
+  key: string;
+  automemberregex: string;
+}
+export interface RemoveConditionPayload {
+  automemberId: string;
+  automemberType: string;
+  conditionType: "inclusive" | "exclusive";
+  conditions: Condition[];
 }
 
 const extendedApi = api.injectEndpoints({
@@ -411,16 +441,24 @@ const extendedApi = api.injectEndpoints({
      */
     automemberShow: build.query<Automember, AutomemberShowPayload>({
       query: (payload) => {
-        const params = [[payload.automemberId], { all: true, type: payload.type }];
+        const params = [
+          [payload.automemberId],
+          { all: true, type: payload.type },
+        ];
         return getCommand({
           method: "automember_show",
           params: params,
         });
       },
       transformResponse: (response: FindRPCResponse): Automember => {
-        const automemberData = response.result.result as unknown as Automember;
-        return automemberData;
-      }
+        // Initialize automember data (to prevent 'undefined' values)
+        const automemberData = response.result.result;
+        let automemberObject = {};
+        if (!response.error) {
+          automemberObject = apiToAutomember(automemberData);
+        }
+        return automemberObject as Automember;
+      },
     }),
     /**
      * Save automember data
@@ -436,9 +474,69 @@ const extendedApi = api.injectEndpoints({
 
         const params = [[payload.automemberId], paramProps];
         return getCommand({
-          method: "automember_add",
+          method: "automember_mod",
           params: params,
         });
+      },
+    }),
+    /**
+     * Add automember attribute to rule (e.g. employeeType=staff)
+     * @param AddConditionPayload
+     * @returns FindRPCResponse
+     */
+    automemberAddCondition: build.mutation<
+      FindRPCResponse,
+      AddConditionPayload
+    >({
+      query: (payload) => {
+        const paramProps = {
+          key: payload.key,
+          type: payload.automemberType,
+        };
+
+        if (payload.conditionType === "exclusive") {
+          paramProps["automemberexclusiveregex"] = payload.automemberregex;
+        } else {
+          paramProps["automemberinclusiveregex"] = payload.automemberregex;
+        }
+
+        const params = [[payload.automemberId], paramProps];
+        return getCommand({
+          method: "automember_add_condition",
+          params: params,
+        });
+      },
+    }),
+    /**
+     * Remove automember attribute from rule (e.g. employeeType=staff)
+     * @param AddConditionPayload
+     * @returns BatchRPCResponse
+     */
+    automemberRemoveCondition: build.mutation<
+      BatchRPCResponse,
+      RemoveConditionPayload
+    >({
+      query: (payload) => {
+        const batch = payload.conditions.map((item) => {
+          const subparams = {
+            key: item.key,
+            type: payload.automemberType,
+          };
+
+          if (payload.conditionType === "exclusive") {
+            subparams["automemberexclusiveregex"] = item.automemberregex;
+          } else {
+            subparams["automemberinclusiveregex"] = item.automemberregex;
+          }
+
+          const batchParams = {
+            method: "automember_remove_condition",
+            params: [[payload.automemberId], subparams],
+          };
+          return batchParams;
+        });
+
+        return getBatchCommand(batch, API_VERSION_BACKUP);
       },
     }),
   }),
@@ -461,5 +559,7 @@ export const {
   useChangeDefaultGroupMutation,
   useSearchHostGroupRulesEntriesMutation,
   useAutomemberShowQuery,
-  useSaveAutomemberMutation
+  useSaveAutomemberMutation,
+  useAutomemberAddConditionMutation,
+  useAutomemberRemoveConditionMutation,
 } = extendedApi;

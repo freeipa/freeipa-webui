@@ -16,8 +16,6 @@ import BreadCrumb, {
 import TitleLayout from "src/components/layouts/TitleLayout";
 // Layouts
 import DataSpinner from "src/components/layouts/DataSpinner";
-// Icons
-import LockIcon from "@patternfly/react-icons/dist/esm/icons/lock-icon";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
@@ -70,12 +68,12 @@ const AutoMemUserRulesTabs = (props: AutoMemUserRulesTabsProps) => {
       // Update breadcrumb route
       const currentPath: BreadCrumbItem[] = [
         {
-          name: "User group rule",
-          url: URL_PREFIX + "/user-group-rules",
+          name: sectionName,
+          url: URL_PREFIX + "/" + pathname,
         },
         {
           name: cn,
-          url: URL_PREFIX + "/user-group-rules/" + cn,
+          url: URL_PREFIX + "/" + pathname + "/" + cn,
           isActive: true,
         },
       ];
@@ -87,7 +85,7 @@ const AutoMemUserRulesTabs = (props: AutoMemUserRulesTabsProps) => {
   // If the section is not defined, redirect to the User group rule page
   React.useEffect(() => {
     if (!section) {
-      navigate("/user-group-rules/" + cn);
+      navigate("/" + pathname + "/" + cn);
     }
   }, [section]);
 
@@ -112,7 +110,7 @@ const AutoMemUserRulesTabs = (props: AutoMemUserRulesTabsProps) => {
         />
         <TitleLayout
           id={cn as string}
-          preText="User group rule:"
+          preText={sectionName}
           text={cn as string}
           headingLevel="h1"
         />

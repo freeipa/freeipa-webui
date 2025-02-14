@@ -6,11 +6,7 @@ import {
   useAutomemberShowQuery,
 } from "src/services/rpcAutomember";
 // Data types
-import {
-  Automember,
-  automemberType,
-  Metadata,
-} from "src/utils/datatypes/globalDataTypes";
+import { Automember, Metadata } from "src/utils/datatypes/globalDataTypes";
 
 type SettingsData = {
   isLoading: boolean;
@@ -23,7 +19,7 @@ type SettingsData = {
   automember: Partial<Automember>;
   setAutomember: (automember: Partial<Automember>) => void;
   refetch: () => void;
-  modifiedValues: () => Partial<automemberType>;
+  modifiedValues: () => Partial<Automember>;
 };
 
 const useAutomemberSettingsData = (
@@ -76,7 +72,7 @@ const useAutomemberSettingsData = (
   }
 
   const getModifiedValues = (): Partial<Automember> => {
-    if (!automemberFullData || !automemberFullData.cn) {
+    if (!automemberFullData) {
       return {};
     }
 
@@ -84,13 +80,10 @@ const useAutomemberSettingsData = (
     for (const [key, value] of Object.entries(automember)) {
       if (Array.isArray(value)) {
         // Using 'JSON.stringify' when comparing arrays (to prevent data type false positives)
-        if (
-          JSON.stringify(automemberFullData.cn.toString()) !==
-          JSON.stringify(value)
-        ) {
+        if (JSON.stringify(automemberFullData[key]) !== JSON.stringify(value)) {
           modifiedValues[key] = value;
         }
-      } else if (automemberFullData.cn.toString() !== value) {
+      } else if (automemberFullData[key] !== value) {
         modifiedValues[key] = value;
       }
     }
@@ -100,22 +93,19 @@ const useAutomemberSettingsData = (
 
   // Detect any change between 'originalAutomember' and 'automember' objects
   React.useEffect(() => {
-    if (!automemberFullData || !automemberFullData.cn) {
+    if (!automemberFullData) {
       return;
     }
     let modified = false;
-    for (const [value] of Object.entries(automember)) {
+    for (const [key, value] of Object.entries(automember)) {
       if (Array.isArray(value)) {
         // Using 'JSON.stringify' when comparing arrays (to prevent data type false positives)
-        if (
-          JSON.stringify(automemberFullData.cn.toString()) !==
-          JSON.stringify(value)
-        ) {
+        if (JSON.stringify(automemberFullData[key]) !== JSON.stringify(value)) {
           modified = true;
           break;
         }
       } else {
-        if (automemberFullData.cn.toString() !== value) {
+        if (automemberFullData[key] !== value) {
           modified = true;
           break;
         }
