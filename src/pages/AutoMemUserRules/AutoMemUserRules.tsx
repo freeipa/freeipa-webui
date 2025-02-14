@@ -624,6 +624,7 @@ const AutoMemUserRules = () => {
                   buttonsData={automembersTableButtonsData}
                   paginationData={selectedPerPageData}
                   searchValue={searchValue}
+                  automemberType="user-group"
                 />
               )}
             </InnerScrollContainer>
