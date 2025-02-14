@@ -624,6 +624,7 @@ const AutoMemHostRules = () => {
                   buttonsData={automembersTableButtonsData}
                   paginationData={selectedPerPageData}
                   searchValue={searchValue}
+                  automemberType="host-group"
                 />
               )}
             </InnerScrollContainer>
