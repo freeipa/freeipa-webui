@@ -55,8 +55,12 @@ const AutoMemSettings = (props: PropsToSettings) => {
   // RPC calls
   const [saveAutomember] = useSaveAutomemberMutation();
 
+  // Infer pathname from automemberType
+  const pathname =
+    props.automemberType === "group" ? "user-group-rules" : "host-group-rules";
+
   // Update current route data to Redux and highlight the current page in the Nav bar
-  useUpdateRoute({ pathname: "user-group-rules", noBreadcrumb: true });
+  useUpdateRoute({ pathname: pathname, noBreadcrumb: true });
 
   // Get 'ipaObject' and 'recordOnChange' to use in 'IpaTextInput'
   const { ipaObject, recordOnChange } = asRecord(
