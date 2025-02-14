@@ -39,6 +39,7 @@ export interface PropsToTable {
   buttonsData: ButtonsData;
   paginationData: PaginationData;
   searchValue: string;
+  automemberType: "user-group" | "host-group";
 }
 
 const MainTable = (props: PropsToTable) => {
@@ -207,7 +208,7 @@ const MainTable = (props: PropsToTable) => {
 
       <Td dataLabel={columnNames.automemberRule}>
         <Link
-          to={"/user-group-rules/" + element.automemberRule}
+          to={"/" + props.automemberType + "-rules/" + element.automemberRule}
           state={element}
         >
           {element.automemberRule}
