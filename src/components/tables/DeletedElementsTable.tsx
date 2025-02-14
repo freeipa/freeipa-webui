@@ -19,6 +19,7 @@ import {
   SudoRule,
   UserGroup,
 } from "src/utils/datatypes/globalDataTypes";
+import { Condition } from "src/services/rpcAutomember";
 
 /*
  * Goal: Show already selected elements ready to delete in a table.
@@ -62,8 +63,10 @@ export interface PropsToDeletedElementsTable {
     | SudoRule[]
     | UserGroup[]
     | IDView[]
-    | SudoCmd[];
+    | SudoCmd[]
+    | Condition[];
   columnNames: string[];
+  columnIds?: string[];
   elementType: string;
   idAttr: string;
 }
@@ -115,15 +118,31 @@ const DeletedElementsTable = (props: PropsToDeletedElementsTable) => {
 
   const getBody = () => {
     if (props.mode === "passing_full_data") {
-      return elementsToDelete.map((element) => (
-        <Tr key={element[props.idAttr]} id={element[props.idAttr]}>
-          {props.columnNames.map((columnName, idx) => (
-            <Td key={idx} dataLabel={columnName}>
-              {element[columnName]}
-            </Td>
-          ))}
-        </Tr>
-      ));
+      return elementsToDelete.map((element) => {
+        return (
+          <Tr key={element[props.idAttr]} id={element[props.idAttr]}>
+            {props.columnIds === undefined
+              ? props.columnNames.map((columnName, idx) => {
+                  // Tr elements will be based on columnNames (that should match with the object keys)
+                  return (
+                    <Td key={idx} dataLabel={columnName}>
+                      {element[columnName]}
+                    </Td>
+                  );
+                })
+              : props.columnIds.map((columnId, idx) => {
+                  // Tr elements will be based on columnId.
+                  // This is useful when don't want to show the column names
+                  //   with a customized name (and not based on its ID)
+                  return (
+                    <Td key={idx} dataLabel={columnId}>
+                      {element[columnId]}
+                    </Td>
+                  );
+                })}
+          </Tr>
+        );
+      });
     } else if (props.mode === "passing_id") {
       return elementsToDelete.map((element) => (
         <Tr key={element} id={element}>
