@@ -10,7 +10,7 @@ import useAlerts from "src/hooks/useAlerts";
 // ipaObject utils
 import { getParamProperties } from "src/utils/ipaObjectUtils";
 
-interface PropsToTextInputFromList {
+export interface PropsToTextInputFromList {
   name: string;
   elementsList: string[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
