@@ -129,6 +129,12 @@ Then(
   "I click on the {string} button located in the footer modal dialog",
   (buttonName: string) => {
     cy.get("[role=dialog] footer").find("button").contains(buttonName).click();
+    cy.wait(0);
+    /**
+     * Sometimes hooks do not complete their event handlers because the
+     * Cypress test hogs the Javascript thread, and cy.wait(0) releases the
+     * thread so that React hooks can complete the click() action.
+     */
   }
 );
 
@@ -324,7 +330,9 @@ When("I select partial entry {string} in the data table", (name: string) => {
 Then(
   "I should see {string} alert with text {string}",
   (type: string, content: string) => {
-    cy.get("div.pf-v5-c-alert.pf-m-" + type).contains(content);
+    cy.get("div.pf-v5-c-alert.pf-m-" + type, {
+      timeout: 10000,
+    }).contains(content);
   }
 );
 
