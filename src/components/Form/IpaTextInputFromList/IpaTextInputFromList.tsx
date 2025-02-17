@@ -2,7 +2,7 @@ import React from "react";
 // Patternfly
 import { Flex, FlexItem, TextInput } from "@patternfly/react-core";
 // Layouts
-import SecondaryButton from "../layouts/SecondaryButton";
+import SecondaryButton from "../../layouts/SecondaryButton";
 // Data types
 import { Metadata } from "src/utils/datatypes/globalDataTypes";
 // Hooks
