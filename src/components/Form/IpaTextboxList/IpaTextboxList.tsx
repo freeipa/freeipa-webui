@@ -11,7 +11,7 @@ import SecondaryButton from "../../layouts/SecondaryButton";
 // Utils
 import { updateIpaObject } from "src/utils/ipaObjectUtils";
 
-interface PropsToIpaTextboxList {
+export interface PropsToIpaTextboxList {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ipaObject: Record<string, any>;
   setIpaObject: (value: Record<string, unknown>) => void;
