@@ -6,7 +6,7 @@ import { Metadata, User } from "src/utils/datatypes/globalDataTypes";
 // Form
 import IpaTextInput from "../Form/IpaTextInput/IpaTextInput";
 import IpaSelect from "../Form/IpaSelect/IpaSelect";
-import IpaTextboxList from "../Form/IpaTextboxList";
+import IpaTextboxList from "../Form/IpaTextboxList/IpaTextboxList";
 // Utils
 import { asRecord } from "src/utils/userUtils";
 

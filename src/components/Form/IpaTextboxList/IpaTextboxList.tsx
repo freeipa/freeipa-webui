@@ -7,7 +7,7 @@ import {
   ValidatedOptions,
 } from "@patternfly/react-core";
 // Components
-import SecondaryButton from "../layouts/SecondaryButton";
+import SecondaryButton from "../../layouts/SecondaryButton";
 // Utils
 import { updateIpaObject } from "src/utils/ipaObjectUtils";
 
