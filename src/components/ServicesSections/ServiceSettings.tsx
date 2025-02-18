@@ -17,7 +17,7 @@ import { asRecord } from "src/utils/serviceUtils";
 import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";
 import IpaCheckboxes from "../Form/IpaCheckboxes/IpaCheckboxes";
 import IpaCheckbox from "../Form/IpaCheckbox/IpaCheckbox";
-import IpaPACType from "../Form/IpaPACType";
+import IpaPACType from "../Form/IpaPACType/IpaPACType";
 
 interface PropsToServiceSettings {
   service: Partial<Service>;
