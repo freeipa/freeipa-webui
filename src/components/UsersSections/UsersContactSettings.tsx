@@ -6,7 +6,7 @@ import { Metadata, User } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { asRecord } from "src/utils/userUtils";
 // Form
-import IpaTextboxList from "../Form/IpaTextboxList";
+import IpaTextboxList from "../Form/IpaTextboxList/IpaTextboxList";
 
 interface PropsToUsersContactSettings {
   user: Partial<User>;
