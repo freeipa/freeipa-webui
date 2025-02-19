@@ -18,7 +18,7 @@ import {
 } from "src/utils/ipaObjectUtils";
 import { updateIpaObject } from "src/utils/ipaObjectUtils";
 
-interface IPAParamDefinitionDropdown extends IPAParamDefinition {
+export interface IPAParamDefinitionDropdown extends IPAParamDefinition {
   id?: string;
   setIpaObject?: (ipaObject: Record<string, unknown>) => void;
   onSelect?: (username: string) => void; // For non-ipaObjects
