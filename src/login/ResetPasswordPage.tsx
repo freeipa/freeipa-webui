@@ -172,7 +172,7 @@ const ResetPasswordPage = () => {
       </FormGroup>
       <FormGroup label="Current password" fieldId="currentPassword">
         <PasswordInput
-          id="form-current-password"
+          id="currentPassword"
           name="current_password"
           value={currentPassword}
           onChange={setCurrentPassword}
@@ -183,7 +183,7 @@ const ResetPasswordPage = () => {
       </FormGroup>
       <FormGroup label="New password" fieldId="newPassword">
         <PasswordInput
-          id="form-new-password"
+          id="newPassword"
           name="new_password"
           value={newPassword}
           onChange={setNewPassword}
@@ -195,7 +195,7 @@ const ResetPasswordPage = () => {
       </FormGroup>
       <FormGroup label="Verify password" fieldId="verifyPassword">
         <PasswordInput
-          id="form-verify-password"
+          id="verifyPassword"
           name="verify_password"
           value={verifyPassword}
           onChange={setVerifyPassword}
@@ -213,7 +213,7 @@ const ResetPasswordPage = () => {
       </FormGroup>
       <FormGroup label="OTP" fieldId="otp">
         <PasswordInput
-          id="form-otp"
+          id="otp"
           name="otp"
           value={otp}
           onChange={setOtp}
