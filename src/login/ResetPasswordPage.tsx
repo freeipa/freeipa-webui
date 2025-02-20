@@ -20,11 +20,7 @@ import {
   MetaResponse,
   ResetPasswordPayload,
   useResetPasswordMutation,
-  useUserPasswordLoginMutation,
 } from "src/services/rpcAuth";
-// Redux
-import { useAppDispatch } from "src/store/hooks";
-import { setIsLogin } from "src/store/Global/auth-slice";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // Components
@@ -44,9 +40,6 @@ const ResetPasswordPage = () => {
     }
   }, []);
 
-  // Redux
-  const dispatch = useAppDispatch();
-
   // Navigate
   const navigate = useNavigate();
 
@@ -55,7 +48,6 @@ const ResetPasswordPage = () => {
 
   // API calls
   const [resetPassword] = useResetPasswordMutation();
-  const [onUserPwdLogin] = useUserPasswordLoginMutation();
 
   // Main states
   const [currentPassword, setCurrentPassword] = React.useState<string>("");
@@ -122,16 +114,6 @@ const ResetPasswordPage = () => {
 
   const isResetButtonDisabled = evaluateResetButtonDisabled();
 
-  // Login function
-  const onLogin = () => {
-    onUserPwdLogin({ username: uid, password: newPassword }).then(() => {
-      dispatch(setIsLogin({ loggedInUser: uid, error: null }));
-      setBtnSpinning(false);
-      // Assuming sucessful login. Refresh page
-      window.location.reload();
-    });
-  };
-
   // Clear fields when the reset password operation failed
   const clearFields = () => {
     setCurrentPassword("");
@@ -169,8 +151,8 @@ const ResetPasswordPage = () => {
           clearFields();
           setBtnSpinning(false);
         } else {
-          // Login with the new credentials
-          onLogin();
+          // Redirect to login page to allow the user to login with new credentials
+          navigate("/login");
         }
       }
     });
@@ -250,7 +232,7 @@ const ResetPasswordPage = () => {
           onClick={onResetPwd}
           isLoading={spinning}
         >
-          {spinning ? "Resetting and login" : "Reset password and Log in"}
+          {spinning ? "Resetting" : "Reset password"}
         </Button>
       </ActionGroup>
     </Form>
