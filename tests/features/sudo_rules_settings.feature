@@ -149,34 +149,34 @@ Feature: Sudo rules - Settings page
   Scenario: Add a new host group from the 'Host groups' page
     Given I am on "host-groups" page
     When I click on "Add" button
-    * I type in the field "Group name" text "a_host_group"
+    * I type in the field "Group name" text "a_host_group2"
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host group added"
     Then I close the alert
-    Then I should see "a_host_group" entry in the data table
+    Then I should see "a_host_group2" entry in the data table
 
-  Scenario: Add a new host group
+  Scenario: Add a new host group from the 'Sudo rules' page
     Given I am on the "sudo-rules" > "sudoRule1" Settings page
     When I click on "Host groups" page tab
     And I click on "Add hostgroups" button
     Then I see a modal with title text "Add host group into sudo rule sudoRule1"
     And I click on the arrow icon to perform search in modal
-    And I click on the dual list item "a_host_group"
+    And I click on the dual list item "a_host_group2"
     And I click on the dual list add selected button
     And I click on the "Add" button located in the footer modal dialog
     And I should see "success" alert with text "Added new item(s) to 'sudoRule1'"
     Then I close the alert
-    And I should see "a_host_group" entry in the data table
+    And I should see "a_host_group2" entry in the data table
 
   Scenario: Remove host group from table
-    Given I should see "a_host_group" entry in the data table
-    When I select "a_host_group" entry with no link in the data table
+    Given I should see "a_host_group2" entry in the data table
+    When I select "a_host_group2" entry with no link in the data table
     And I click on "Delete" button
-    And the "a_host_group" element should be in the dialog table with id "remove-hostgroups-table"
+    And the "a_host_group2" element should be in the dialog table with id "remove-hostgroups-table"
     When in the modal dialog I click on "Delete" button
     And I should see "success" alert with text "Removed item(s) from"
     Then I close the alert
-    And I should not see "a_host_group" entry in the data table
+    And I should not see "a_host_group2" entry in the data table
 
   Scenario: Change host category - 'Specified Hosts and Groups' to 'Any host'
     When I click on the "Anyone" option under ID "hostcategory" toggle group
@@ -469,15 +469,15 @@ Feature: Sudo rules - Settings page
   # - Host group
   Scenario: Delete a host group
     Given I am on "host-groups" page
-    Given I should see "a_host_group" entry in the data table
-    Then I select entry "a_host_group" in the data table
+    Given I should see "a_host_group2" entry in the data table
+    Then I select entry "a_host_group2" in the data table
     When I click on "Delete" button
     * I see "Remove host groups" modal
-    * I should see "a_host_group" entry in the data table
+    * I should see "a_host_group2" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Host groups removed"
     Then I close the alert
-    Then I should not see "a_host_group" entry in the data table
+    Then I should not see "a_host_group2" entry in the data table
 
   # - Sudo command
   Scenario: Delete a command

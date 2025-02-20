@@ -715,9 +715,15 @@ Then(
 );
 
 When("I click on the arrow icon to perform search in modal", () => {
-  cy.get("[role=dialog] button[aria-label=Search]", { timeout: 7000 })
+  cy.get("[role=dialog] button[aria-label=Search]", { timeout: 10000 })
     .eq(0)
     .click();
+  /**
+   * Sometimes hooks do not complete their event handlers because the
+   * Cypress test hogs the Javascript thread, and cy.wait(0) releases the
+   * thread so that React hooks can complete the click() action.
+   */
+  cy.wait(0);
 });
 
 Then("I click on the X icon to clear the modal search field", () => {
