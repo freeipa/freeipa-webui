@@ -36,7 +36,7 @@ $ sudo dnf install vagrant vagrant-libvirt vagrant-sshfs
 
 3. Start and provision the guest virtual machine: `vagrant up`
 
-4. Add guest machine's IP address to your `/etc/hosts` pointing to its hostname,~~~~ e.g:
+4. Add guest machine's IP address to your `/etc/hosts` pointing to its hostname, e.g:
 
 ```
 192.168.122.5 server.ipa.demo
