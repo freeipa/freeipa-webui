@@ -96,7 +96,7 @@ The default credentials are **admin** and **Secret123**.
 
 ### Integration tests
 
-Integration testing uses Cypress library, which runs Gherkin-defined steps.
+Integration testing uses [Cypress](https://www.cypress.io) library, which runs [Gherkin-defined](https://cucumber.io/docs/gherkin) steps.
 
 #### Launching the existing tests
 
@@ -117,6 +117,28 @@ $ npm run cypress:open
 ```
 
 and select desired feature file you want to execute.
+
+#### Adding new tests
+
+The integration tests use the **.feature** suffix and can be found in the *tests* subfolder, together with the steps describing each feature.
+
+### Unit tests
+
+Unit tests use [jest](https://jestjs.io).
+
+#### Launching the existing tests
+
+The existing tests can be launched by executing
+
+```bash
+$ npm run test
+```
+
+#### Adding new tests
+
+The unit tests live, where the component that is being tested lives, the name should be the same, only with the **.test.tsx** suffix instead.
+
+If you require FreeIPA to be running, please use integration tests instead.
 
 ## License
 
