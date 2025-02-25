@@ -51,6 +51,7 @@ import ResetPasswordPage from "src/login/ResetPasswordPage";
 import SetupBrowserConfig from "src/pages/SetupBrowserConfig";
 import Configuration from "src/pages/Configuration/Configuration";
 import SyncOtpPage from "src/login/SyncOtpPage";
+import SubordinateIDs from "src/pages/SubordinateIDs/SubordinateIDs";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -335,6 +336,9 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                     element={<HBACRulesTabs section="settings" />}
                   />
                 </Route>
+              </Route>
+              <Route path="subordinate-ids">
+                <Route path="" element={<SubordinateIDs />} />
               </Route>
               <Route path="hbac-services">
                 <Route path="" element={<HBACServices />} />

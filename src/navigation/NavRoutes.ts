@@ -26,6 +26,8 @@ const IdViewsGroupRef = "id-views";
 const AutomemberGroupRef = "automember";
 const UserGroupRulesGroupRef = "user-group-rules";
 const HostGroupRulesGroupRef = "host-group-rules";
+// - Subordinate IDs
+const SubordinateIDsGroupRef = "subordinate-ids";
 // POLICY
 // - Host-based access control
 const HostBasedAccessControlGroupRef = "host-based-access-control";
@@ -170,6 +172,20 @@ export const navigationRoutes = [
             group: HostGroupRulesGroupRef,
             title: `${BASE_TITLE} - Host group rules`,
             path: "host-group-rules",
+          },
+        ],
+      },
+      {
+        label: "Subordinate IDs",
+        group: SubordinateIDsGroupRef,
+        title: `${BASE_TITLE} - Subordinate IDs`,
+        path: "",
+        items: [
+          {
+            label: "Subordinate IDs",
+            group: SubordinateIDsGroupRef,
+            title: `${BASE_TITLE} - Subordinate IDs`,
+            path: "subordinate-ids",
           },
         ],
       },

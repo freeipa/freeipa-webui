@@ -639,11 +639,11 @@ export interface OTPToken {
 export interface SubId {
   ipauniqueid: string;
   ipaowner: string;
-  ipasubgidnumber: string;
-  ipasubuidnumber: string;
-  description: string;
-  ipasubuidcount: string;
-  ipasubgidcount: string;
+  ipasubgidnumber?: string;
+  ipasubuidnumber?: string;
+  description?: string;
+  ipasubuidcount?: string;
+  ipasubgidcount?: string;
   dn: string;
 }
 
