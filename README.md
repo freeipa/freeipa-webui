@@ -120,7 +120,7 @@ and select desired feature file you want to execute.
 
 #### Adding new tests
 
-The integration tests use the **.feature** suffix and can be found in the *tests* subfolder, together with the steps describing each feature.
+The integration tests use the **.feature** suffix and can be found in the _tests_ subfolder, together with the steps describing each feature.
 
 ### Unit tests
 
