@@ -19,7 +19,7 @@ interface ToggleOptions {
   value: string;
 }
 
-interface ToggleOptionProps extends IPAParamDefinition {
+export interface ToggleOptionProps extends IPAParamDefinition {
   options: ToggleOptions[];
   optionSelected: string;
   setOptionSelected: (value: string) => void;
