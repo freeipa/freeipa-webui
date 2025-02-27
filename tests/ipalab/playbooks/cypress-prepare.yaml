@@ -1,0 +1,28 @@
+---
+- name: Setup Cypress test environment
+  hosts: client.ipa.demo
+  become: false
+  gather_facts: false
+
+  tasks:
+    - name: Install packages for NodeJS and Cypress
+      ansible.builtin.dnf5:
+        name:
+          - Xvfb
+          - gtk3
+          - at-spi2-atk
+          - nss-tools
+          - cups
+          - nodejs
+          - nodejs-npm
+        state: latest
+
+    - name: Add Cypress
+      ansible.builtin.shell: |
+        rm -rf cypress-test
+        mkdir -p cypress-test
+        cp /freeipa-webui/package.json cypress-test/
+        cd cypress-test
+        npm install
+      args:
+        chdir: /root
