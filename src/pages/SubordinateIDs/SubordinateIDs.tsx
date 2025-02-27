@@ -39,6 +39,8 @@ import {
   useGetSubIdEntriesQuery,
   useSearchSubIdEntriesMutation,
 } from "src/services/rpcSubordinateIDs";
+// Modals
+import AddModal from "src/components/modals/SubIdsModals/AddModal";
 
 const SubordinateIDs = () => {
   // Update current route data to Redux and highlight the current page in the Nav bar
@@ -188,8 +190,8 @@ const SubordinateIDs = () => {
       searchValue: searchValue,
       apiVersion,
       sizelimit: 100,
-      startIdx: firstUserIdx,
-      stopIdx: lastUserIdx,
+      startIdx: 0,
+      stopIdx: 200, // Search will consider a max. of elements
     }).then((result) => {
       if ("data" in result) {
         const searchError = result.data.error as
@@ -251,6 +253,17 @@ const SubordinateIDs = () => {
     submitSearchValue,
   };
 
+  // Modals functionality
+  const [showAddModal, setShowAddModal] = React.useState(false);
+
+  const onOpenAddModal = () => {
+    setShowAddModal(true);
+  };
+
+  const onCloseAddModal = () => {
+    setShowAddModal(false);
+  };
+
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -285,7 +298,12 @@ const SubordinateIDs = () => {
     {
       key: 3,
       element: (
-        <SecondaryButton isDisabled={!showTableRows}>Add</SecondaryButton>
+        <SecondaryButton
+          isDisabled={!showTableRows}
+          onClickHandler={onOpenAddModal}
+        >
+          Add
+        </SecondaryButton>
       ),
     },
     {
@@ -370,6 +388,12 @@ const SubordinateIDs = () => {
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
         />
       </PageSection>
+      <AddModal
+        isOpen={showAddModal}
+        onCloseModal={onCloseAddModal}
+        onRefresh={refreshData}
+        title="Add Subordinate ID"
+      />
     </Page>
   );
 };
