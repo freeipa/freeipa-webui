@@ -23,8 +23,8 @@ describe("IpaToggleGroup Component", () => {
 
   const mockMetadata = {
     objects: {
-      user: {
-        name: "user",
+      sudorule: {
+        name: "sudorule",
         takes_params: [
           {
             alwaysask: false,
@@ -68,7 +68,7 @@ describe("IpaToggleGroup Component", () => {
     required: true,
     readOnly: false,
     metadata: mockMetadata,
-    objectName: "user",
+    objectName: "sudorule",
     options: [
       { value: "all", label: "Anyone" },
       {
