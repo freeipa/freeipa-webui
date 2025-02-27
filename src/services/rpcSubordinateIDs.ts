@@ -9,6 +9,8 @@ import {
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 // Data types
 import { SubId } from "src/utils/datatypes/globalDataTypes";
+// Utils
+import { API_VERSION_BACKUP } from "src/utils/utils";
 
 /**
  * Endpoints: useGetSubIdEntriesQuery, useSearchSubIdEntriesMutation
@@ -24,6 +26,13 @@ export interface SubIdDataPayload {
   sizelimit: number;
   startIdx: number;
   stopIdx: number;
+}
+
+export interface SubidFindPayload {
+  searchValue: string;
+  pkeyOnly: boolean;
+  sizeLimit: number;
+  version?: string;
 }
 
 // API
@@ -180,8 +189,45 @@ const extendedApi = api.injectEndpoints({
         return { data: response };
       },
     }),
+    /**
+     * Retrieves all subordinate IDs (unique IDs).
+     * @param SubidFindPayload
+     * @returns FindRPCResponse
+     */
+    subidFind: build.query<FindRPCResponse, SubidFindPayload>({
+      query: (payload) => {
+        return getCommand({
+          method: "subid_find",
+          params: [
+            [payload.searchValue],
+            {
+              pkey_only: payload.pkeyOnly,
+              sizelimit: payload.sizeLimit,
+              version: payload.version || API_VERSION_BACKUP,
+            },
+          ],
+        });
+      },
+    }),
+    /**
+     * Generate a subordinate ID for a given user
+     * @param string
+     * @returns FindRPCResponse
+     */
+    subidGenerate: build.mutation<FindRPCResponse, string>({
+      query: (uid) => {
+        return getCommand({
+          method: "subid_generate",
+          params: [[], { ipaowner: uid, version: API_VERSION_BACKUP }],
+        });
+      },
+    }),
   }),
 });
 
-export const { useGetSubIdEntriesQuery, useSearchSubIdEntriesMutation } =
-  extendedApi;
+export const {
+  useGetSubIdEntriesQuery,
+  useSearchSubIdEntriesMutation,
+  useSubidGenerateMutation,
+  useSubidFindQuery,
+} = extendedApi;

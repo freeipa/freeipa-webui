@@ -82,6 +82,11 @@ interface PasswordChangePayloadParams {
   version: string;
 }
 
+interface UserFindPayload {
+  uid: string | null;
+  noMembers?: boolean;
+}
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     getGenericUsersFullData: build.query<UserFullData, object>({
@@ -496,6 +501,41 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    userFind: build.query<User[], UserFindPayload>({
+      query: (payload) => {
+        // Add noMembers option if it exists
+        let params = {};
+        if (payload.noMembers) {
+          params = {
+            no_members: payload.noMembers,
+            version: API_VERSION_BACKUP,
+          };
+        } else {
+          params = {
+            version: API_VERSION_BACKUP,
+          };
+        }
+
+        const command = {
+          method: "user_find",
+          params: [[payload.uid], params],
+        };
+
+        return getCommand(command);
+      },
+      transformResponse: (response: FindRPCResponse): User[] => {
+        if (
+          response.result.result.length === 0 ||
+          response.result.result === undefined
+        ) {
+          return [] as User[];
+        } else {
+          const result = response.result.result as unknown as User[];
+          const usersList = result.map((user) => apiToUser(user));
+          return usersList;
+        }
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -563,4 +603,5 @@ export const {
   useGetIdpServerQuery,
   useGetUsersInfoByUidQuery,
   useGetUserDetailsByUidMutation,
+  useUserFindQuery,
 } = extendedApi;
