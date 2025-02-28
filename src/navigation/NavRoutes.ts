@@ -28,6 +28,7 @@ const UserGroupRulesGroupRef = "user-group-rules";
 const HostGroupRulesGroupRef = "host-group-rules";
 // - Subordinate IDs
 const SubordinateIDsGroupRef = "subordinate-ids";
+const SubordinateIDsStatsGroupRef = "subordinate-id-statistics";
 // POLICY
 // - Host-based access control
 const HostBasedAccessControlGroupRef = "host-based-access-control";
@@ -186,6 +187,12 @@ export const navigationRoutes = [
             group: SubordinateIDsGroupRef,
             title: `${BASE_TITLE} - Subordinate IDs`,
             path: "subordinate-ids",
+          },
+          {
+            label: "Subordinate ID Statistics",
+            group: SubordinateIDsStatsGroupRef,
+            title: `${BASE_TITLE} - Subordinate ID Statistics`,
+            path: "subordinate-id-statistics",
           },
         ],
       },
