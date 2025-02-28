@@ -27,8 +27,8 @@ import { ShareSquareIcon } from "@patternfly/react-icons";
 // Navigation
 import Navigation from "./navigation/Nav";
 // Images
-import headerLogo from "public/images/header-logo.png";
-import avatarImg from "public/images/avatarImg.svg";
+import headerLogo from "src/assets/images/header-logo.png";
+import avatarImg from "src/assets/images/avatarImg.svg";
 // Redux
 import { useAppDispatch } from "./store/hooks";
 import { setIsLogout } from "./store/Global/auth-slice";

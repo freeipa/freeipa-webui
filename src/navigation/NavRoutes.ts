@@ -1,7 +1,7 @@
 import { BreadCrumbItem } from "src/components/layouts/BreadCrumb/BreadCrumb";
 
 // Navigation
-export const URL_PREFIX = "/ipa/modern_ui";
+export const URL_PREFIX = import.meta.env.BASE_URL;
 const BASE_TITLE = "Identity Management";
 
 // Group reference variables (group names)

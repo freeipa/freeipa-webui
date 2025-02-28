@@ -65,9 +65,7 @@ Vagrant.configure("2") do |config|
       Satisfy Any
       Require all granted
       RewriteEngine On
-      RewriteRule ^(.*)/js/(.*)\\\\.(js|map)$ js/\\$2.\\$3 [L]
-      RewriteRule ^(.*)/public/images/(.*)$ public/images/\\$2 [L]
-      RewriteRule ^(.*)/(.*)\\\\.(css|ico|woff2)$ \\$2.\\$3 [L]
+      RewriteRule ^(.*)/assets/(.*)$ assets/\\$2 [L]
       RewriteCond %{REQUEST_FILENAME} !-f
       RewriteRule ^ index.html [QSA,L]
     </Directory>
