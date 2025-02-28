@@ -52,6 +52,7 @@ import SetupBrowserConfig from "src/pages/SetupBrowserConfig";
 import Configuration from "src/pages/Configuration/Configuration";
 import SyncOtpPage from "src/login/SyncOtpPage";
 import SubordinateIDs from "src/pages/SubordinateIDs/SubordinateIDs";
+import SubIdsStatistics from "src/pages/SubordinateIDs/SubIdsStatistics";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -339,6 +340,9 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="subordinate-ids">
                 <Route path="" element={<SubordinateIDs />} />
+              </Route>
+              <Route path="subordinate-id-statistics">
+                <Route path="" element={<SubIdsStatistics />} />
               </Route>
               <Route path="hbac-services">
                 <Route path="" element={<HBACServices />} />
