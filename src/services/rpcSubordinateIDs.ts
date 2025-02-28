@@ -13,11 +13,13 @@ import { SubId } from "src/utils/datatypes/globalDataTypes";
 import { API_VERSION_BACKUP } from "src/utils/utils";
 
 /**
- * Endpoints: useGetSubIdEntriesQuery, useSearchSubIdEntriesMutation
+ * Endpoints: useGetSubIdEntriesQuery, useSearchSubIdEntriesMutation, useSubidGenerateMutation, useSubidFindQuery, useSubidStatsQuery
  *
  * API commands:
  * - subid_find: https://freeipa.readthedocs.io/en/latest/api/subid_find.html
  * - subid_show: https://freeipa.readthedocs.io/en/latest/api/subid_show.html
+ * - subid_generate: https://freeipa.readthedocs.io/en/latest/api/subid_generate.html
+ * - subid_stats: https://freeipa.readthedocs.io/en/latest/api/subid_stats.html
  */
 
 export interface SubIdDataPayload {
@@ -222,6 +224,18 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Get subordinate ID statistics
+     *
+     */
+    subidStats: build.query<FindRPCResponse, void>({
+      query: () => {
+        return getCommand({
+          method: "subid_stats",
+          params: [[], { all: true, version: API_VERSION_BACKUP }],
+        });
+      },
+    }),
   }),
 });
 
@@ -230,4 +244,5 @@ export const {
   useSearchSubIdEntriesMutation,
   useSubidGenerateMutation,
   useSubidFindQuery,
+  useSubidStatsQuery,
 } = extendedApi;
