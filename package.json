@@ -34,9 +34,6 @@
     "cache:clean": "npm cache clean --force"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.5",
-    "@babel/plugin-transform-typescript": "^7.18.10",
-    "@babel/preset-env": "^7.23.5",
     "@badeball/cypress-cucumber-preprocessor": "^19.2.0",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
     "@testing-library/jest-dom": "^6.1.5",
@@ -50,9 +47,6 @@
     "@typescript-eslint/eslint-plugin": "^5.17.0",
     "@typescript-eslint/parser": "^5.17.0",
     "audit-ci": "^6.1.2",
-    "babel-jest": "^29.7.0",
-    "babel-loader": "^8.2.5",
-    "babel-plugin-module-resolver": "^5.0.0",
     "css-loader": "^6.7.1",
     "cy-verify-downloads": "^0.2.3",
     "cypress": "^13.6.0",
