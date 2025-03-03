@@ -10,15 +10,15 @@ import {
   TextArea,
 } from "@patternfly/react-core";
 // Components
-import SecondaryButton from "../layouts/SecondaryButton";
-import TextLayout from "../layouts/TextLayout";
+import SecondaryButton from "../../layouts/SecondaryButton";
+import TextLayout from "../../layouts/TextLayout";
 // Modals
-import ConfirmationModal from "../modals/ConfirmationModal";
+import ConfirmationModal from "../../modals/ConfirmationModal";
 // Data types
 import { Metadata } from "src/utils/datatypes/globalDataTypes";
 // ipaObject utils
 import { getParamProperties } from "src/utils/ipaObjectUtils";
-import KeyIcon from "@patternfly/react-icons/dist/esm/icons/key-icon";
+import { KeyIcon } from "@patternfly/react-icons";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 import {
@@ -27,7 +27,7 @@ import {
   useSimpleMutCommandMutation,
 } from "src/services/rpc";
 
-interface PropsToSshPublicKeysModal {
+export interface PropsToSshPublicKeysModal {
   ipaObject: Record<string, unknown>;
   onChange: (ipaObject: Record<string, unknown>) => void;
   metadata: Metadata;
@@ -143,6 +143,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
           const newSshPublicKeysList = [...sshPublicKeysList];
           newSshPublicKeysList.splice(idx, 1);
           setSshPublicKeysList(newSshPublicKeysList);
+          console.log(newSshPublicKeysList);
           // Close things up and refresh
           setIsDeletionModalOpen(false);
         } else if (response.data.error) {
@@ -206,7 +207,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
             "Added SSH public key to '" + id + "'",
             "success"
           );
-          // Update intenral list
+          // Update internal list
           const newSshPublicKeysList = [...sshPublicKeysList];
           newSshPublicKeysList.push(textAreaSshPublicKeysValue);
           setSshPublicKeysList(newSshPublicKeysList);

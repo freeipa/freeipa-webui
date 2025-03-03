@@ -14,7 +14,7 @@ import IpaTextArea from "../Form/IpaTextArea/IpaTextArea";
 import IpaTextInput from "../Form/IpaTextInput/IpaTextInput";
 import IpaCheckbox from "../Form/IpaCheckbox/IpaCheckbox";
 import IpaCheckboxes from "../Form/IpaCheckboxes/IpaCheckboxes";
-import IpaSshPublicKeys from "../Form/IpaSshPublicKeys";
+import IpaSshPublicKeys from "../Form/IpaSshPublicKeys/IpaSshPublicKeys";
 import IpaTextboxList from "../Form/IpaTextboxList/IpaTextboxList";
 
 // Layouts
