@@ -7,8 +7,8 @@ import {
   TextInput,
   InputGroupItem,
 } from "@patternfly/react-core";
-import EyeSlashIcon from "@patternfly/react-icons/dist/esm/icons/eye-slash-icon";
-import EyeIcon from "@patternfly/react-icons/dist/esm/icons/eye-icon";
+import { EyeSlashIcon } from "@patternfly/react-icons";
+import { EyeIcon } from "@patternfly/react-icons";
 
 interface PropsToPasswordInput {
   classname?: string;

@@ -19,7 +19,7 @@ import useAlerts from "src/hooks/useAlerts";
 // Modals
 import ConfirmationModal from "../modals/ConfirmationModal";
 // Icons
-import MapIcon from "@patternfly/react-icons/dist/esm/icons/map-icon";
+import { MapIcon } from "@patternfly/react-icons";
 
 interface PropsToIpaCertificateMappingData {
   ipaObject: Record<string, unknown>;

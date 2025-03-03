@@ -11,7 +11,7 @@ import {
   ValidatedOptions,
 } from "@patternfly/react-core";
 // Icons
-import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
+import { HelpIcon } from "@patternfly/react-icons";
 // Layout
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";

@@ -13,9 +13,9 @@ import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 //Icons
-import InfoCircleIcon from "@patternfly/react-icons/dist/esm/icons/info-circle-icon";
-import ExclamationTriangleIcon from "@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon";
-import ArrowRightIcon from "@patternfly/react-icons/dist/esm/icons/arrow-right-icon";
+import { InfoCircleIcon } from "@patternfly/react-icons";
+import { ExclamationTriangleIcon } from "@patternfly/react-icons";
+import { ArrowRightIcon } from "@patternfly/react-icons";
 // RPC client
 import { useGetIDListMutation, GenericPayload } from "src/services/rpc";
 

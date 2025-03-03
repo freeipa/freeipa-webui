@@ -4,8 +4,8 @@ import { Flex, FlexItem, Form, FormGroup, Icon } from "@patternfly/react-core";
 // Layouts
 import TextLayout from "../layouts/TextLayout";
 // Icons
-import CheckIcon from "@patternfly/react-icons/dist/esm/icons/check-icon";
-import ExclamationTriangleIcon from "@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon";
+import { CheckIcon } from "@patternfly/react-icons";
+import { ExclamationTriangleIcon } from "@patternfly/react-icons";
 // Data types
 import { Metadata, Service } from "src/utils/datatypes/globalDataTypes";
 

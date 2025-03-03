@@ -35,7 +35,7 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 import { HBACRule, Metadata } from "../../utils/datatypes/globalDataTypes";
 import HBACRulesMemberTable from "./HBACRulesMemberTable";
 // Icons
-import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
+import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import {

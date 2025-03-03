@@ -1,6 +1,6 @@
 import React from "react";
 import { Icon, Title } from "@patternfly/react-core";
-import ExclamationTriangleIcon from "@patternfly/react-icons/dist/esm/icons/exclamation-triangle-icon";
+import { ExclamationTriangleIcon } from "@patternfly/react-icons";
 
 const ErrorPage = (text: string) => {
   return (

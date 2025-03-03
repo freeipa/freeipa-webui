@@ -12,7 +12,7 @@ import {
 } from "@patternfly/react-core";
 import { Td, Th, Tr } from "@patternfly/react-table";
 // Icons
-import SearchIcon from "@patternfly/react-icons/dist/esm/icons/search-icon";
+import { SearchIcon } from "@patternfly/react-icons";
 // Layouts
 import TableLayout from "../layouts/TableLayout";
 import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout";

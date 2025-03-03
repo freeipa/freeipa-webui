@@ -16,7 +16,7 @@ import {
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // Icons
-import ExclamationCircleIcon from "@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon";
+import { ExclamationCircleIcon } from "@patternfly/react-icons";
 // Images
 import BrandImg from "src/assets/images/product-name.png";
 import BackgroundImg from "src/assets/images/login-screen-background.jpg";

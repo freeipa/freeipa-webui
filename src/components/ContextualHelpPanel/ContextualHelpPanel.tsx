@@ -15,7 +15,7 @@ import {
 // JSON
 import DocumentationLinks from "src/assets/documentation/documentation-links.json";
 // Icons
-import ExternalLinkAltIcon from "@patternfly/react-icons/dist/esm/icons/external-link-alt-icon";
+import { ExternalLinkAltIcon } from "@patternfly/react-icons";
 // Components
 import TextLayout from "../layouts/TextLayout";
 

@@ -34,7 +34,7 @@ import DeleteIdOverrideGroupsModal from "src/components/modals/IdOverrideModals/
 // Data types
 import { IDViewOverrideGroup } from "src/utils/datatypes/globalDataTypes";
 // Icons
-import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
+import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 // RPC
 import {
   IDOverridePayload,
