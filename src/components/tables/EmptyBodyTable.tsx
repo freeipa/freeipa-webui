@@ -12,7 +12,7 @@ import {
   EmptyStateVariant,
 } from "@patternfly/react-core";
 // Icons
-import SearchIcon from "@patternfly/react-icons/dist/esm/icons/search-icon";
+import { SearchIcon } from "@patternfly/react-icons";
 
 interface EmptyBodyTableProps {
   colSpan?: number;

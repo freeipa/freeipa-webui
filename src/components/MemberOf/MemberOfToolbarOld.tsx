@@ -13,7 +13,7 @@ import {
   Pagination,
 } from "@patternfly/react-core";
 // Icons
-import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
+import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 // Toolbar layout
 import ToolbarLayout, {
   ToolbarItemAlignment,

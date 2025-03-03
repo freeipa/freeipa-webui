@@ -14,7 +14,7 @@ import { asRecord } from "../../utils/hostUtils";
 import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Icons
-import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
+import { HelpIcon } from "@patternfly/react-icons";
 // Data types
 import { IDView, Metadata } from "../../utils/datatypes/globalDataTypes";
 // RPC

@@ -25,7 +25,7 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Data types
 import { Automember, Metadata } from "../../utils/datatypes/globalDataTypes";
 // Icons
-import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
+import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import {

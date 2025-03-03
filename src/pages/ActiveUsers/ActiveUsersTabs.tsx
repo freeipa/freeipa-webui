@@ -24,7 +24,7 @@ import DataSpinner from "src/components/layouts/DataSpinner";
 // Hooks
 import { useUserSettings } from "src/hooks/useUserSettingsData";
 // Icons
-import LockIcon from "@patternfly/react-icons/dist/esm/icons/lock-icon";
+import { LockIcon } from "@patternfly/react-icons";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";

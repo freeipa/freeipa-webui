@@ -18,12 +18,12 @@ import {
 } from "@patternfly/react-core";
 import React from "react";
 // Icons
-import BarsIcon from "@patternfly/react-icons/dist/esm/icons/bars-icon";
-import UserIcon from "@patternfly/react-icons/dist/esm/icons/user-icon";
-import KeyIcon from "@patternfly/react-icons/dist/esm/icons/key-icon";
-import CogIcon from "@patternfly/react-icons/dist/esm/icons/cog-icon";
-import UnknownIcon from "@patternfly/react-icons/dist/esm/icons/unknown-icon";
-import ShareSquareIcon from "@patternfly/react-icons/dist/esm/icons/share-square-icon";
+import { BarsIcon } from "@patternfly/react-icons";
+import { UserIcon } from "@patternfly/react-icons";
+import { KeyIcon } from "@patternfly/react-icons";
+import { CogIcon } from "@patternfly/react-icons";
+import { UnknownIcon } from "@patternfly/react-icons";
+import { ShareSquareIcon } from "@patternfly/react-icons";
 // Navigation
 import Navigation from "./navigation/Nav";
 // Images

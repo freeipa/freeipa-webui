@@ -12,7 +12,7 @@ import {
   FlexItem,
 } from "@patternfly/react-core";
 // Icons
-import EllipsisVIcon from "@patternfly/react-icons/dist/esm/icons/ellipsis-v-icon";
+import { EllipsisVIcon } from "@patternfly/react-icons";
 
 interface PropsToCardLayout {
   className?: string;

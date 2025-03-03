@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { Popover } from "@patternfly/react-core";
 // Icons
-import OutlinedQuestionCircleIcon from "@patternfly/react-icons/dist/esm/icons/outlined-question-circle-icon";
+import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 
 interface PropsToPopover {
   message: React.ReactNode | ((hide: () => void) => React.ReactNode);
