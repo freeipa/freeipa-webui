@@ -13,8 +13,8 @@ import { useUserFindQuery } from "src/services/rpcUsers";
 import {
   SubidFindPayload,
   useSubidFindQuery,
-  useSubidGenerateMutation,
-} from "src/services/rpcSubordinateIDs";
+  useAssignSubIdsMutation,
+} from "src/services/rpcSubIds";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // Errors
@@ -34,7 +34,7 @@ const AddModal = (props: PropsToAddModal) => {
   const alerts = useAlerts();
 
   // API call
-  const [generateSubid] = useSubidGenerateMutation();
+  const [generateSubid] = useAssignSubIdsMutation();
 
   // States
   const [selectedItem, setSelectedItem] = React.useState<string>("");
