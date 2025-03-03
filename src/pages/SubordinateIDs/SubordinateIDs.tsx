@@ -38,7 +38,7 @@ import {
   SubIdDataPayload,
   useGetSubIdEntriesQuery,
   useSearchSubIdEntriesMutation,
-} from "src/services/rpcSubordinateIDs";
+} from "src/services/rpcSubIds";
 // Modals
 import AddModal from "src/components/modals/SubIdsModals/AddModal";
 

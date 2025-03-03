@@ -17,7 +17,7 @@ import SkeletonOnTableLayout from "src/components/layouts/Skeleton/SkeletonOnTab
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // RPC
-import { useSubidStatsQuery } from "src/services/rpcSubordinateIDs";
+import { useSubidStatsQuery } from "src/services/rpcSubIds";
 
 interface SubidStats {
   assigned_subids: number;
