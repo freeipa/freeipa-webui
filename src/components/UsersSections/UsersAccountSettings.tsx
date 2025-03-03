@@ -28,7 +28,7 @@ import IpaSelect from "../Form/IpaSelect/IpaSelect";
 import IpaCheckboxes from "../Form/IpaCheckboxes/IpaCheckboxes";
 import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";
 import IpaCalendar from "../Form/IpaCalendar/IpaCalendar";
-import IpaSshPublicKeys from "../Form/IpaSshPublicKeys";
+import IpaSshPublicKeys from "../Form/IpaSshPublicKeys/IpaSshPublicKeys";
 import IpaCertificates from "../Form/IpaCertificates";
 import IpaCertificateMappingData from "../Form/IpaCertificateMappingData";
 
