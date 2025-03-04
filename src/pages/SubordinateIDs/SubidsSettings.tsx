@@ -25,6 +25,7 @@ import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
 import TabLayout from "src/components/layouts/TabLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import IpaTextContent from "src/components/Form/IpaTextContent";
 
 interface PropsToSubidSettings {
   subId: Partial<SubId>;
@@ -172,13 +173,16 @@ const SubidSettings = (props: PropsToSubidSettings) => {
                     />
                   </FormGroup>
                   <FormGroup label="Owner" fieldId="ipaowner">
-                    <IpaTextInput
+                    <IpaTextContent
                       name={"ipaowner"}
                       ariaLabel={"Owner"}
                       ipaObject={ipaObject}
                       onChange={recordOnChange}
                       objectName="subid"
                       metadata={props.metadata}
+                      linkTo={
+                        "/active-users/" + props.subId.ipaowner?.toString()
+                      }
                     />
                   </FormGroup>
                   <FormGroup
