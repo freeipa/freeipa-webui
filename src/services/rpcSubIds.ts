@@ -13,13 +13,14 @@ import { SubId } from "src/utils/datatypes/globalDataTypes";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 /**
- * Subordinate IDs-related endpoints: getSubIdsInfoByName, assignSubIds, getSubIdEntries, searchSubIdEntries, subidStats
+ * Subordinate IDs-related endpoints: getSubIdsInfoByName, assignSubIds, getSubIdEntries, searchSubIdEntries, subidStats, subidMod
  *
  * API commands:
  * - subid_show: https://freeipa.readthedocs.io/en/latest/api/subid_show.html
  * - subid_generate: https://freeipa.readthedocs.io/en/latest/api/subid_generate.html
  * - subid_find: https://freeipa.readthedocs.io/en/latest/api/subid_find.html
  * - subid_stats: https://freeipa.readthedocs.io/en/latest/api/subid_stats.html
+ * - subid_mod: https://freeipa.readthedocs.io/en/latest/api/subid_mod.html
  */
 
 export interface SubIdsShowPayload {
@@ -51,6 +52,11 @@ export interface SubidFindPayload {
   pkeyOnly: boolean;
   sizeLimit: number;
   version?: string;
+}
+
+export interface SubidModPayload {
+  ipauniqueid: string;
+  description: string;
 }
 
 const extendedApi = api.injectEndpoints({
@@ -284,6 +290,46 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Show a specific subordinate ID (with all its details).
+     * @param string
+     * @returns SubId
+     */
+    subidShow: build.query<SubId, string>({
+      query: (subid) => {
+        return getCommand({
+          method: "subid_show",
+          params: [
+            [subid],
+            { all: true, rights: true, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+      transformResponse: (response: FindRPCResponse) => {
+        return response.result.result as unknown as SubId;
+      },
+    }),
+    /**
+     * Update a specific subordinate ID.
+     * @param SubidModPayload
+     * @returns FindRPCResponse
+     */
+    subidMod: build.mutation<FindRPCResponse, SubidModPayload>({
+      query: (payload) => {
+        return getCommand({
+          method: "subid_mod",
+          params: [
+            [payload.ipauniqueid],
+            {
+              all: true,
+              rights: true,
+              description: payload.description,
+              version: API_VERSION_BACKUP,
+            },
+          ],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -301,4 +347,6 @@ export const {
   useSearchSubIdEntriesMutation,
   useSubidFindQuery,
   useSubidStatsQuery,
+  useSubidShowQuery,
+  useSubidModMutation,
 } = extendedApi;
