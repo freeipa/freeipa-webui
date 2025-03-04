@@ -179,6 +179,9 @@ const SubidSettings = (props: PropsToSubidSettings) => {
                       onChange={recordOnChange}
                       objectName="subid"
                       metadata={props.metadata}
+                      linkTo={
+                        "/active-users/" + props.subId.ipaowner?.toString()
+                      }
                     />
                   </FormGroup>
                   <FormGroup

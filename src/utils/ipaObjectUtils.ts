@@ -16,6 +16,7 @@ export interface IPAParamDefinition {
   readOnly?: boolean;
   required?: boolean;
   ariaLabel?: string;
+  linkTo?: string;
 }
 
 export interface ParamProperties {
