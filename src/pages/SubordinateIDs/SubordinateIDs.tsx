@@ -374,7 +374,7 @@ const SubordinateIDs = () => {
                   hasCheckboxes={false}
                   pathname="subordinate-ids"
                   showTableRows={showTableRows}
-                  showLink={false}
+                  showLink={true}
                 />
               )}
             </InnerScrollContainer>

@@ -208,7 +208,7 @@ const MainTable = (props: PropsToTable) => {
             <Td dataLabel={columnNames[keyName]} key={idx} id={idx.toString()}>
               {idx === 0 && !!props.showLink ? (
                 <Link
-                  to={"/" + props.pathname + "/" + element[keyName]}
+                  to={"/" + props.pathname + "/" + element[keyName].toString()}
                   state={element}
                 >
                   {element[keyName]}
