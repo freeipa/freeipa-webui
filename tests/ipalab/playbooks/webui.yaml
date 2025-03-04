@@ -1,0 +1,37 @@
+---
+- name: Setup Modern UI
+  hosts: ipaserver
+  become: false
+  gather_facts: false
+
+  tasks:
+    - name: Change Apache configuration
+      shell: |
+        cat >> /etc/httpd/conf.d/zz-webui-ipa.conf <<EOF
+
+        Alias /ipa/modern_ui "/usr/src/freeipa-webui/dist"
+        <Directory "/usr/src/freeipa-webui/dist">
+          SetHandler None
+          AllowOverride None
+          Satisfy Any
+          Require all granted
+          RewriteEngine On
+          RewriteRule ^(.*)/js/(.*)\\\\.(js|map)$ js/\\$2.\\$3 [L]
+          RewriteRule ^(.*)/public/images/(.*)$ public/images/\\$2 [L]
+          RewriteRule ^(.*)/(.*)\\\\.(css|ico|woff2)$ \\$2.\\$3 [L]
+          RewriteCond %{REQUEST_FILENAME} !-f
+          RewriteRule ^ index.html [QSA,L]
+        </Directory>
+        EOF
+
+    - name: Restart Apache
+      ansible.builtin.systemd_service:
+        state: restarted
+        daemon_reload: true
+        name: httpd
+
+    - name: Basic IPA test
+      shell: |
+        kinit -k
+        ipa env
+        kdestroy -A
