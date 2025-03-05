@@ -53,6 +53,7 @@ import Configuration from "src/pages/Configuration/Configuration";
 import SyncOtpPage from "src/login/SyncOtpPage";
 import SubordinateIDs from "src/pages/SubordinateIDs/SubordinateIDs";
 import SubIdsStatistics from "src/pages/SubordinateIDs/SubIdsStatistics";
+import SubIdsTabs from "src/pages/SubordinateIDs/SubIdsTabs";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -340,6 +341,9 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="subordinate-ids">
                 <Route path="" element={<SubordinateIDs />} />
+                <Route path=":ipauniqueid">
+                  <Route path="" element={<SubIdsTabs section="settings" />} />
+                </Route>
               </Route>
               <Route path="subordinate-id-statistics">
                 <Route path="" element={<SubIdsStatistics />} />
