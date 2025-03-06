@@ -103,6 +103,7 @@ export interface User {
 
 export interface PwPolicy {
   attributelevelrights: Record<string, unknown>;
+  cospriority: string;
   cn: string;
   dn: string;
   krbmaxpwdlife: string;
@@ -114,6 +115,10 @@ export interface PwPolicy {
   krbpwdmindiffchars: string;
   krbpwdminlength: string;
   passwordgracelimit: string;
+  ipapwdmaxrepeat: string;
+  ipapwdmaxsequence: string;
+  ipapwddictcheck: string;
+  ipapwdusercheck: string;
 }
 
 export interface KrbPolicy {
