@@ -6,9 +6,9 @@ import { Metadata } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { getParamProperties } from "src/utils/ipaObjectUtils";
 // Components
-import SecondaryButton from "../layouts/SecondaryButton";
-import CertificateMappingDataOption from "../CertificateMappingDataOption";
-import IssuerAndSubjectOption from "../IssuerAndSubjectOption";
+import SecondaryButton from "../../layouts/SecondaryButton";
+import CertificateMappingDataOption from "../../CertificateMappingDataOption";
+import IssuerAndSubjectOption from "../../IssuerAndSubjectOption";
 import { ErrorResult } from "src/services/rpc";
 import {
   useAddCertMapDataMutation,
@@ -17,11 +17,11 @@ import {
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // Modals
-import ConfirmationModal from "../modals/ConfirmationModal";
+import ConfirmationModal from "../../modals/ConfirmationModal";
 // Icons
 import { MapIcon } from "@patternfly/react-icons";
 
-interface PropsToIpaCertificateMappingData {
+export interface PropsToIpaCertificateMappingData {
   ipaObject: Record<string, unknown>;
   onChange: (ipaObject: Record<string, unknown>) => void;
   metadata: Metadata;
