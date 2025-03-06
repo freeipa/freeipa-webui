@@ -3,7 +3,8 @@ import { PwPolicy } from "./datatypes/globalDataTypes";
 import { convertApiObj } from "src/utils/ipaObjectUtils";
 
 const simpleValues = new Set([
-  "name",
+  "cospriority",
+  "cn",
   "dn",
   "krbmaxpwdlife",
   "krbminpwdlife",
@@ -14,6 +15,10 @@ const simpleValues = new Set([
   "krbpwdmindiffchars",
   "krbpwdminlength",
   "passwordgracelimit",
+  "ipapwdmaxrepeat",
+  "ipapwdmaxsequence",
+  "ipapwddictcheck",
+  "ipapwdusercheck",
 ]);
 const dateValues = new Set([]);
 
@@ -36,6 +41,7 @@ export function partialPwPolicyToPwPolicy(partialPwPolicy: Partial<PwPolicy>) {
 export function createEmptyPwPolicy(): PwPolicy {
   return {
     attributelevelrights: {},
+    cospriority: "",
     cn: "",
     dn: "",
     krbmaxpwdlife: "",
@@ -47,5 +53,9 @@ export function createEmptyPwPolicy(): PwPolicy {
     krbpwdmindiffchars: "",
     krbpwdminlength: "",
     passwordgracelimit: "",
+    ipapwdmaxrepeat: "",
+    ipapwdmaxsequence: "",
+    ipapwddictcheck: "",
+    ipapwdusercheck: "",
   };
 }

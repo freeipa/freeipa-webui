@@ -5,8 +5,6 @@ import { Td, Th, Tr } from "@patternfly/react-table";
 import TableLayout from "../layouts/TableLayout";
 // Layouts
 import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout";
-// Data types
-import { SubId } from "src/utils/datatypes/globalDataTypes";
 // React router DOM
 import { Link } from "react-router-dom";
 import EmptyBodyTable from "./EmptyBodyTable";
@@ -17,13 +15,11 @@ import EmptyBodyTable from "./EmptyBodyTable";
  *
  */
 
-type DataType = SubId; // TODO: add more data types separated by an 'or' operator ('|')
-
-interface SelectedElementsData {
-  isElementSelectable: (element: DataType) => boolean;
-  selectedElements: DataType[];
-  selectableElementsTable: DataType[];
-  setElementsSelected: (rule: DataType, isSelecting?: boolean) => void;
+interface SelectedElementsData<T> {
+  isElementSelectable: (element: T) => boolean;
+  selectedElements: T[];
+  selectableElementsTable: T[];
+  setElementsSelected: (rule: T, isSelecting?: boolean) => void;
   clearSelectedElements: () => void;
 }
 
@@ -42,9 +38,9 @@ interface PaginationData {
   updateSelectedPerPage: (selected: number) => void;
 }
 
-export interface PropsToTable {
+export interface PropsToTable<T> {
   tableTitle: string;
-  shownElementsList: DataType[];
+  shownElementsList: T[];
   pk: string; // E.g. Primary key for users --> "uid"
   keyNames: string[]; // E.g. for user.uid, user.description --> ["uid", "description"]
   columnNames: string[]; // E.g. ["User ID", "Description"]
@@ -52,12 +48,12 @@ export interface PropsToTable {
   pathname: string; // E.g. "active-users" (without the leading '/')
   showTableRows: boolean;
   showLink: boolean;
-  elementsData?: SelectedElementsData;
+  elementsData?: SelectedElementsData<T>;
   buttonsData?: ButtonsData;
   paginationData?: PaginationData;
 }
 
-const MainTable = (props: PropsToTable) => {
+const MainTable = <T,>(props: PropsToTable<T>) => {
   // Retrieve elements data from props
   const shownElementsList = [...props.shownElementsList];
   const columnNames = [...props.columnNames];
@@ -69,10 +65,11 @@ const MainTable = (props: PropsToTable) => {
     }
   }, [props.buttonsData?.isDisableEnableOp]);
 
-  const isElementSelected = (element: DataType) => {
+  const isElementSelected = (element: T) => {
     if (
       props.elementsData?.selectedElements.find(
-        (selectedElement) => selectedElement[props.pk] === element[props.pk]
+        (selectedElement) =>
+          selectedElement[props.pk].toString() === element[props.pk].toString()
       )
     ) {
       return true;
@@ -89,7 +86,7 @@ const MainTable = (props: PropsToTable) => {
 
   // On selecting one single row
   const onSelectElement = (
-    element: DataType,
+    element: T,
     rowIndex: number,
     isSelecting: boolean
   ) => {
@@ -185,7 +182,7 @@ const MainTable = (props: PropsToTable) => {
   );
 
   const body = shownElementsList.map((element, rowIndex) => {
-    if (element !== undefined) {
+    if (element !== undefined && element !== null) {
       return (
         <Tr key={"row-" + rowIndex} id={"row-" + rowIndex}>
           {/* Checkboxes (if specified) */}
@@ -208,7 +205,7 @@ const MainTable = (props: PropsToTable) => {
             <Td dataLabel={columnNames[keyName]} key={idx} id={idx.toString()}>
               {idx === 0 && !!props.showLink ? (
                 <Link
-                  to={"/" + props.pathname + "/" + element[keyName].toString()}
+                  to={"/" + props.pathname + "/" + element[keyName]}
                   state={element}
                 >
                   {element[keyName]}
