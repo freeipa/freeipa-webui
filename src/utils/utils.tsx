@@ -21,6 +21,7 @@ import {
   User,
   UserGroup,
   AutomemberEntry,
+  PwPolicy,
 } from "./datatypes/globalDataTypes";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
@@ -118,6 +119,8 @@ export const isGroupOverrideSelectable = (user: IDViewOverrideGroup) =>
 // - Also works for Automember Host group rules
 export const isAutomemberUserGroupSelectable = (automember: AutomemberEntry) =>
   automember.automemberRule != "";
+
+export const isPwPolicySelectable = (pwPolicy: PwPolicy) => pwPolicy.cn !== "";
 
 // Write JSX error messages into 'apiErrorsJsx' array
 export const apiErrorToJsXError = (
