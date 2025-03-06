@@ -10,47 +10,12 @@ import {
   MenuToggle,
   MenuToggleCheckbox,
 } from "@patternfly/react-core";
-// Data types
-import {
-  HBACRule,
-  HBACService,
-  HBACServiceGroup,
-  HostGroup,
-  Host,
-  IDView,
-  Netgroup,
-  Service,
-  SudoCmd,
-  SudoCmdGroup,
-  SudoRule,
-  User,
-  UserGroup,
-  AutomemberEntry,
-  PwPolicy,
-} from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import BulkSelectorLayout from "src/components/layouts/BulkSelectorLayout";
 
-type EntryDataTypes =
-  | Host
-  | HostGroup
-  | HBACRule
-  | HBACService
-  | HBACServiceGroup
-  | IDView
-  | Netgroup
-  | Service
-  | SudoCmd
-  | SudoCmdGroup
-  | SudoRule
-  | User
-  | UserGroup
-  | AutomemberEntry
-  | PwPolicy;
-
-interface EntryData {
-  selected: EntryDataTypes[];
-  selectableTable: EntryDataTypes[];
+interface EntryData<Type> {
+  selected: Type[];
+  selectableTable: Type[];
   updateSelected: (entry: any[], isSelected: boolean) => void;
   nameAttr: string;
 }
@@ -64,15 +29,15 @@ interface SelectedPerPageData {
   updateSelectedPerPage: (selected: number) => void;
 }
 
-interface PropsToBulkSelectorPrep {
-  list: EntryDataTypes[];
-  shownElementsList: EntryDataTypes[];
-  elementData: EntryData;
+interface PropsToBulkSelectorPrep<Type> {
+  list: Type[];
+  shownElementsList: Type[];
+  elementData: EntryData<Type>;
   buttonsData: ButtonsData;
   selectedPerPageData: SelectedPerPageData;
 }
 
-const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
+const BulkSelectorPrep = <Type,>(props: PropsToBulkSelectorPrep<Type>) => {
   // Table functionality (from parent component) to manage the bulk selector functionality
   // - Menu
   const [isOpenMenu, setIsOpenMenu] = useState(false);
@@ -117,7 +82,7 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
   };
 
   const getSelectableElements = () => {
-    const selectableElements = [] as EntryDataTypes[];
+    const selectableElements = [] as Type[];
     const key = props.elementData.nameAttr;
     props.shownElementsList.forEach(function (obj) {
       if (obj[key] !== "") {
@@ -144,7 +109,7 @@ const BulkSelectorPrep = (props: PropsToBulkSelectorPrep) => {
   // Select all elements (Page)
   const selectAllElementsPage = (
     isSelecting = true,
-    selectableList: EntryDataTypes[]
+    selectableList: Type[]
   ) => {
     // Enable/disable 'Delete' button
     if (isSelecting) {
