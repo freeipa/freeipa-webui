@@ -26,6 +26,7 @@ import {
   User,
   UserGroup,
   AutomemberEntry,
+  PwPolicy,
 } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import BulkSelectorLayout from "src/components/layouts/BulkSelectorLayout";
@@ -44,7 +45,8 @@ type EntryDataTypes =
   | SudoRule
   | User
   | UserGroup
-  | AutomemberEntry;
+  | AutomemberEntry
+  | PwPolicy;
 
 interface EntryData {
   selected: EntryDataTypes[];
