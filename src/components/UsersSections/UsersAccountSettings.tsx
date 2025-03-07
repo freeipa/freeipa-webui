@@ -30,7 +30,7 @@ import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";
 import IpaCalendar from "../Form/IpaCalendar/IpaCalendar";
 import IpaSshPublicKeys from "../Form/IpaSshPublicKeys/IpaSshPublicKeys";
 import IpaCertificates from "../Form/IpaCertificates";
-import IpaCertificateMappingData from "../Form/IpaCertificateMappingData";
+import IpaCertificateMappingData from "../Form/IpaCertificateMappingData/IpaCertificateMappingData";
 
 interface PropsToUsersAccountSettings {
   user: Partial<User>;
