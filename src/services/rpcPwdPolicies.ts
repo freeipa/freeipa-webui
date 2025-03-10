@@ -16,12 +16,13 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 /**
  * Password policies-related endpoints:
  *     usePwPolicyFindQuery, useGetPwPoliciesEntriesQuery, useSearchPwdPolicyEntriesMutation,
- *     usePwPolicyAddMutation
+ *     usePwPolicyAddMutation, usePwPolicyDeleteMutation
  *
  * API commands:
  * - pwpolicy_find: https://freeipa.readthedocs.io/en/ipa-4-11/api/pwpolicy_find.html
  * - pwpolicy_show: https://freeipa.readthedocs.io/en/ipa-4-11/api/pwpolicy_show.html
  * - pwpolicy_add: https://freeipa.readthedocs.io/en/ipa-4-11/api/pwpolicy_add.html
+ * - pwpolicy_del: https://freeipa.readthedocs.io/en/ipa-4-11/api/pwpolicy_del.html
  */
 
 export interface PwPolicyFindPayload {
@@ -247,6 +248,24 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Delete password policies
+     * @param {PwPolicyDeletePayload} - Payload with the password policy IDs
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    pwPolicyDelete: build.mutation<BatchRPCResponse, string[]>({
+      query: (payload) => {
+        const commands: Command[] = [];
+        payload.forEach((pwPolicyId) => {
+          commands.push({
+            method: "pwpolicy_del",
+            params: [[pwPolicyId], {}],
+          });
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -256,4 +275,5 @@ export const {
   useGetPwPoliciesEntriesQuery,
   useSearchPwdPolicyEntriesMutation,
   usePwPolicyAddMutation,
+  usePwPolicyDeleteMutation,
 } = extendedApi;

@@ -4,22 +4,6 @@ import React, { useEffect, useState } from "react";
 import { Td, Th, Tr } from "@patternfly/react-table";
 // Layout
 import TableLayout from "src/components/layouts/TableLayout";
-// Data types
-import {
-  HBACRule,
-  HBACService,
-  HBACServiceGroup,
-  Host,
-  HostGroup,
-  IDView,
-  Netgroup,
-  Service,
-  SudoCmd,
-  SudoCmdGroup,
-  SudoRule,
-  UserGroup,
-} from "src/utils/datatypes/globalDataTypes";
-import { Condition } from "src/services/rpcAutomember";
 
 /*
  * Goal: Show already selected elements ready to delete in a table.
@@ -42,39 +26,29 @@ import { Condition } from "src/services/rpcAutomember";
  *     · List of elements to delete (by ID).
  *  - 'columnNames':
  *     · Column names to show in the table.
+ *  - 'columnIds' (Optional):
+ *     · Column IDs to show in the table. This is useful when we want to show
+ *       the column names with a customized name (and not based on its ID).
+ *       If this is not provided, the column names will be used as the ID.
  *  - 'elementType':
  *     · String used to set the 'ariaLabel' and the table ID.
  *  - 'idAttr':
  *     · The attribute in the entry that is used as its identifier.
  */
 
-export interface PropsToDeletedElementsTable {
+export interface PropsToDeletedElementsTable<T> {
   mode: "passing_id" | "passing_full_data";
-  elementsToDelete:
-    | string[]
-    | HBACRule[]
-    | HBACService[]
-    | HBACServiceGroup[]
-    | Host[]
-    | HostGroup[]
-    | Netgroup[]
-    | Service[]
-    | SudoCmdGroup[]
-    | SudoRule[]
-    | UserGroup[]
-    | IDView[]
-    | SudoCmd[]
-    | Condition[];
+  elementsToDelete: T[];
   columnNames: string[];
   columnIds?: string[];
   elementType: string;
   idAttr: string;
 }
 
-const DeletedElementsTable = (props: PropsToDeletedElementsTable) => {
+const DeletedElementsTable = <T,>(props: PropsToDeletedElementsTable<T>) => {
   // TODO: Check the columnNames against the actual variable name
   //   when retrieving data from the RPC server.
-  let elementsToDelete: any = [];
+  let elementsToDelete: T[] = [];
   switch (props.mode) {
     case "passing_full_data":
       // We already have our list of objs to delete
@@ -145,14 +119,16 @@ const DeletedElementsTable = (props: PropsToDeletedElementsTable) => {
       });
     } else if (props.mode === "passing_id") {
       return elementsToDelete.map((element) => (
-        <Tr key={element} id={element}>
-          {element && <Td dataLabel={element}>{element}</Td>}
+        <Tr key={element as string} id={element as string}>
+          {element && (
+            <Td dataLabel={element as string}>{element as string}</Td>
+          )}
         </Tr>
       ));
     }
   };
 
-  const body = getBody();
+  const body = getBody() || [];
 
   // Parse 'elementType' to not have spaces and have lowercase
   const elementTypeNoSpaces = props.elementType
