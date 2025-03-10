@@ -65,19 +65,13 @@ Now you can install the project's dependencies:
 $ npm install
 ```
 
-To build (and watch the project for changes), run:
+To start a development server (and watch the project for changes), run:
 
 ```bash
-$ npm run start
+$ npm run dev
 ```
 
-You can serve the project using the following command:
-
-```bash
-$ npm run serve
-```
-
-You can also build and serve the project for production using the following command:
+You can also build the project for production using the following command:
 
 ```bash
 $ npm run build
@@ -87,10 +81,6 @@ Now your dev environment is ready, you can do changes and see them at:
 `https://server.ipa.demo/ipa/modern_ui/`
 
 The default credentials are **admin** and **Secret123**.
-
-### Considerations
-
-- Live reload is currently not available.
 
 ## Testing
 
