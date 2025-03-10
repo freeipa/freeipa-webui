@@ -487,7 +487,7 @@ const PasswordPolicies = () => {
                   hasCheckboxes={true}
                   pathname="password-policies"
                   showTableRows={showTableRows}
-                  showLink={false}
+                  showLink={true}
                   elementsData={{
                     isElementSelectable: isPwPolicySelectable,
                     selectedElements,
