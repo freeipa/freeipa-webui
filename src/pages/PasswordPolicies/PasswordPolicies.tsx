@@ -40,6 +40,7 @@ import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import { isPwPolicySelectable } from "src/utils/utils";
 // Modals
 import AddModal from "src/components/modals/PwPoliciesModals/AddModal";
+import DeleteModal from "src/components/modals/PwPoliciesModals/DeleteModal";
 
 const PasswordPolicies = () => {
   // Update current route data to Redux and highlight the current page in the Nav bar
@@ -345,6 +346,7 @@ const PasswordPolicies = () => {
 
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
   const onOpenAddModal = () => {
     setShowAddModal(true);
@@ -352,6 +354,14 @@ const PasswordPolicies = () => {
 
   const onCloseAddModal = () => {
     setShowAddModal(false);
+  };
+
+  const onOpenDeleteModal = () => {
+    setShowDeleteModal(true);
+  };
+
+  const onCloseDeleteModal = () => {
+    setShowDeleteModal(false);
   };
 
   // List of Toolbar items
@@ -400,7 +410,10 @@ const PasswordPolicies = () => {
     {
       key: 4,
       element: (
-        <SecondaryButton isDisabled={isDeleteButtonDisabled || !showTableRows}>
+        <SecondaryButton
+          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          onClickHandler={onOpenDeleteModal}
+        >
           Delete
         </SecondaryButton>
       ),
@@ -509,6 +522,21 @@ const PasswordPolicies = () => {
         onCloseModal={onCloseAddModal}
         onRefresh={refreshData}
         title="Add password policy"
+      />
+      <DeleteModal
+        show={showDeleteModal}
+        onClose={onCloseDeleteModal}
+        selectedData={{
+          selectedElements,
+          clearSelectedElements,
+        }}
+        buttonsData={{
+          updateIsDeleteButtonDisabled,
+          updateIsDeletion,
+        }}
+        columnNames={["Group", "Priority"]}
+        keyNames={["cn", "cospriority"]}
+        onRefresh={refreshData}
       />
     </Page>
   );
