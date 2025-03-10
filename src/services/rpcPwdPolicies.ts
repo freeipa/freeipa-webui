@@ -9,20 +9,21 @@ import {
 // utils
 import { API_VERSION_BACKUP } from "../utils/utils";
 // Data types
-import { cnType } from "src/utils/datatypes/globalDataTypes";
+import { cnType, PwPolicy } from "src/utils/datatypes/globalDataTypes";
 // Redux
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 /**
  * Password policies-related endpoints:
  *     usePwPolicyFindQuery, useGetPwPoliciesEntriesQuery, useSearchPwdPolicyEntriesMutation,
- *     usePwPolicyAddMutation, usePwPolicyDeleteMutation
+ *     usePwPolicyAddMutation, usePwPolicyDeleteMutation, usePwPolicyShowQuery, usePwPolicyModMutation
  *
  * API commands:
  * - pwpolicy_find: https://freeipa.readthedocs.io/en/ipa-4-11/api/pwpolicy_find.html
  * - pwpolicy_show: https://freeipa.readthedocs.io/en/ipa-4-11/api/pwpolicy_show.html
  * - pwpolicy_add: https://freeipa.readthedocs.io/en/ipa-4-11/api/pwpolicy_add.html
  * - pwpolicy_del: https://freeipa.readthedocs.io/en/ipa-4-11/api/pwpolicy_del.html
+ * - pwpolicy_mod: https://freeipa.readthedocs.io/en/ipa-4-11/api/pwpolicy_mod.html
  */
 
 export interface PwPolicyFindPayload {
@@ -44,6 +45,20 @@ export interface PwPolicyAddPayload {
   groupId: string;
   priority: string;
   version?: string;
+}
+
+export interface PwPolicyModPayload {
+  pwPolicyId: string;
+  krbmaxpwdlife?: string;
+  krbminpwdlife?: string;
+  krbpwdhistorylength?: string;
+  krbpwdmindiffchars?: string;
+  krbpwdminlength?: string;
+  krbpwdmaxfailure?: string;
+  krbpwdfailurecountinterval?: string;
+  krbpwdlockoutduration?: string;
+  cospriority?: string;
+  passwordgracelimit?: string;
 }
 
 const extendedApi = api.injectEndpoints({
@@ -266,6 +281,77 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(commands, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Show a specific Password policy (with all its details).
+     * @param string
+     * @returns SubId
+     */
+    pwPolicyShow: build.query<PwPolicy, string>({
+      query: (pwPolicyId) => {
+        return getCommand({
+          method: "pwpolicy_show",
+          params: [
+            [pwPolicyId],
+            { all: true, rights: true, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+      transformResponse: (response: FindRPCResponse) => {
+        return response.result.result as unknown as PwPolicy;
+      },
+    }),
+    /**
+     * Update a specific Password policy.
+     * @param PwPolicyModPayload
+     * @returns FindRPCResponse
+     */
+    pwPolicyMod: build.mutation<FindRPCResponse, PwPolicyModPayload>({
+      query: (payload) => {
+        const params = {
+          all: true,
+          rights: true,
+          version: API_VERSION_BACKUP,
+        };
+
+        // Add the parameters that are not undefined
+        if (payload.krbmaxpwdlife) {
+          params["krbmaxpwdlife"] = payload.krbmaxpwdlife;
+        }
+        if (payload.krbminpwdlife) {
+          params["krbminpwdlife"] = payload.krbminpwdlife;
+        }
+        if (payload.krbpwdhistorylength) {
+          params["krbpwdhistorylength"] = payload.krbpwdhistorylength;
+        }
+        if (payload.krbpwdmindiffchars) {
+          params["krbpwdmindiffchars"] = payload.krbpwdmindiffchars;
+        }
+        if (payload.krbpwdminlength) {
+          params["krbpwdminlength"] = payload.krbpwdminlength;
+        }
+        if (payload.krbpwdmaxfailure) {
+          params["krbpwdmaxfailure"] = payload.krbpwdmaxfailure;
+        }
+        if (payload.krbpwdfailurecountinterval) {
+          params["krbpwdfailurecountinterval"] =
+            payload.krbpwdfailurecountinterval;
+        }
+        if (payload.krbpwdlockoutduration) {
+          params["krbpwdlockoutduration"] = payload.krbpwdlockoutduration;
+        }
+        if (payload.cospriority) {
+          params["cospriority"] = payload.cospriority;
+        }
+        if (payload.passwordgracelimit) {
+          params["passwordgracelimit"] = payload.passwordgracelimit;
+        }
+
+        return getCommand({
+          method: "pwpolicy_mod",
+          params: [[payload.pwPolicyId], params],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -276,4 +362,6 @@ export const {
   useSearchPwdPolicyEntriesMutation,
   usePwPolicyAddMutation,
   usePwPolicyDeleteMutation,
+  usePwPolicyShowQuery,
+  usePwPolicyModMutation,
 } = extendedApi;

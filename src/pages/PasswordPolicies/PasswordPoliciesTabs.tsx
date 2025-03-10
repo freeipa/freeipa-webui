@@ -1,0 +1,140 @@
+import React from "react";
+// PatternFly
+import {
+  PageSection,
+  PageSectionVariants,
+  Tabs,
+  Tab,
+  TabTitleText,
+} from "@patternfly/react-core";
+// React Router DOM
+import { useNavigate, useParams } from "react-router-dom";
+// Navigation
+import { URL_PREFIX } from "src/navigation/NavRoutes";
+import { NotFound } from "src/components/errors/PageErrors";
+// Hooks
+import { usePasswordPolicySettings } from "src/hooks/usePwPolicySettingsData";
+// Components
+import TitleLayout from "src/components/layouts/TitleLayout";
+import DataSpinner from "src/components/layouts/DataSpinner";
+import BreadCrumb, {
+  BreadCrumbItem,
+} from "src/components/layouts/BreadCrumb/BreadCrumb";
+import PasswordPoliciesSettings from "./PasswordPoliciesSettings";
+
+// eslint-disable-next-line react/prop-types
+const PasswordPoliciesTabs = ({ section }) => {
+  const { cn } = useParams();
+  const navigate = useNavigate();
+  const pathname = "password-policies";
+
+  const [breadcrumbItems, setBreadcrumbItems] = React.useState<
+    BreadCrumbItem[]
+  >([]);
+
+  // States - Identifier of the entity (Password policy -> cn)
+  const [id, setId] = React.useState("");
+
+  // Data loaded from the API
+  const pwPolicySettingsData = usePasswordPolicySettings(cn as string);
+
+  // Tab
+  const [activeTabKey, setActiveTabKey] = React.useState(section);
+
+  const handleTabClick = (
+    _event: React.MouseEvent<HTMLElement, MouseEvent>,
+    tabIndex: number | string
+  ) => {
+    setActiveTabKey(tabIndex as string);
+
+    if (tabIndex === "settings") {
+      navigate("/" + pathname + "/" + id);
+    }
+  };
+
+  React.useEffect(() => {
+    if (!cn) {
+      // Redirect to the main page
+      navigate(URL_PREFIX + "/" + pathname);
+    } else {
+      setId(cn);
+      // Update breadcrumb route
+      const currentPath: BreadCrumbItem[] = [
+        {
+          name: "Password policies",
+          url: URL_PREFIX + "/" + pathname,
+        },
+        {
+          name: cn,
+          url: URL_PREFIX + "/" + pathname + "/" + cn,
+          isActive: true,
+        },
+      ];
+      setBreadcrumbItems(currentPath);
+      setActiveTabKey("settings");
+    }
+  }, [cn]);
+
+  // Handling of the API data
+  if (pwPolicySettingsData.isLoading || !pwPolicySettingsData.pwPolicy) {
+    return <DataSpinner />;
+  }
+
+  // Show the 'NotFound' page if the host is not found
+  if (
+    !pwPolicySettingsData.isLoading &&
+    Object.keys(pwPolicySettingsData.pwPolicy).length === 0
+  ) {
+    return <NotFound />;
+  }
+
+  // Return component
+  return (
+    <>
+      <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
+        <BreadCrumb
+          className="pf-v5-u-mb-md"
+          breadcrumbItems={breadcrumbItems}
+        />
+        <TitleLayout
+          id={id}
+          preText="Password policies:"
+          text={id}
+          headingLevel="h1"
+        />
+      </PageSection>
+      <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
+        <Tabs
+          activeKey={activeTabKey}
+          onSelect={handleTabClick}
+          variant="light300"
+          isBox
+          className="pf-v5-u-ml-lg"
+          mountOnEnter
+          unmountOnExit
+        >
+          <Tab
+            eventKey={"settings"}
+            name="settings-details"
+            title={<TabTitleText>Settings</TabTitleText>}
+          >
+            <PasswordPoliciesSettings
+              pwPolicy={pwPolicySettingsData.pwPolicy}
+              originalPwPolicy={pwPolicySettingsData.originalPwPolicy}
+              metadata={pwPolicySettingsData.metadata}
+              onPwPolicyChange={pwPolicySettingsData.setPwPolicy}
+              onRefresh={pwPolicySettingsData.refetch}
+              isModified={pwPolicySettingsData.modified}
+              isDataLoading={pwPolicySettingsData.isLoading}
+              modifiedValues={pwPolicySettingsData.modifiedValues}
+              onResetValues={pwPolicySettingsData.resetValues}
+              pathname={pathname}
+            />
+          </Tab>
+        </Tabs>
+      </PageSection>
+    </>
+  );
+};
+
+export default PasswordPoliciesTabs;
