@@ -247,6 +247,24 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Delete password policies
+     * @param {PwPolicyDeletePayload} - Payload with the password policy IDs
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    pwPolicyDelete: build.mutation<BatchRPCResponse, string[]>({
+      query: (payload) => {
+        const commands: Command[] = [];
+        payload.forEach((pwPolicyId) => {
+          commands.push({
+            method: "pwpolicy_del",
+            params: [[pwPolicyId], {}],
+          });
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -256,4 +274,5 @@ export const {
   useGetPwPoliciesEntriesQuery,
   useSearchPwdPolicyEntriesMutation,
   usePwPolicyAddMutation,
+  usePwPolicyDeleteMutation,
 } = extendedApi;
