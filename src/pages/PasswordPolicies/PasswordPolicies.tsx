@@ -38,6 +38,9 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import MainTable from "src/components/tables/MainTable";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import { isPwPolicySelectable } from "src/utils/utils";
+// Modals
+import AddModal from "src/components/modals/PwPoliciesModals/AddModal";
+import DeleteModal from "src/components/modals/PwPoliciesModals/DeleteModal";
 
 const PasswordPolicies = () => {
   // Update current route data to Redux and highlight the current page in the Nav bar
@@ -341,6 +344,26 @@ const PasswordPolicies = () => {
     updateSelectedPerPage,
   };
 
+  // Modals functionality
+  const [showAddModal, setShowAddModal] = React.useState(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+
+  const onOpenAddModal = () => {
+    setShowAddModal(true);
+  };
+
+  const onCloseAddModal = () => {
+    setShowAddModal(false);
+  };
+
+  const onOpenDeleteModal = () => {
+    setShowDeleteModal(true);
+  };
+
+  const onCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+  };
+
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -387,7 +410,10 @@ const PasswordPolicies = () => {
     {
       key: 4,
       element: (
-        <SecondaryButton isDisabled={isDeleteButtonDisabled || !showTableRows}>
+        <SecondaryButton
+          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          onClickHandler={onOpenDeleteModal}
+        >
           Delete
         </SecondaryButton>
       ),
@@ -395,7 +421,12 @@ const PasswordPolicies = () => {
     {
       key: 5,
       element: (
-        <SecondaryButton isDisabled={!showTableRows}>Add</SecondaryButton>
+        <SecondaryButton
+          isDisabled={!showTableRows}
+          onClickHandler={onOpenAddModal}
+        >
+          Add
+        </SecondaryButton>
       ),
     },
     {
@@ -486,6 +517,27 @@ const PasswordPolicies = () => {
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
         />
       </PageSection>
+      <AddModal
+        isOpen={showAddModal}
+        onCloseModal={onCloseAddModal}
+        onRefresh={refreshData}
+        title="Add password policy"
+      />
+      <DeleteModal
+        show={showDeleteModal}
+        onClose={onCloseDeleteModal}
+        selectedData={{
+          selectedElements,
+          clearSelectedElements,
+        }}
+        buttonsData={{
+          updateIsDeleteButtonDisabled,
+          updateIsDeletion,
+        }}
+        columnNames={["Group", "Priority"]}
+        keyNames={["cn", "cospriority"]}
+        onRefresh={refreshData}
+      />
     </Page>
   );
 };

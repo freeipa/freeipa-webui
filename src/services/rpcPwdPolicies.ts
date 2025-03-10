@@ -14,11 +14,15 @@ import { cnType } from "src/utils/datatypes/globalDataTypes";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 /**
- * Password policies-related endpoints: usePwPolicyFindQuery, useGetPwPoliciesEntriesQuery, useSearchPwdPolicyEntriesMutation,
+ * Password policies-related endpoints:
+ *     usePwPolicyFindQuery, useGetPwPoliciesEntriesQuery, useSearchPwdPolicyEntriesMutation,
+ *     usePwPolicyAddMutation, usePwPolicyDeleteMutation
  *
  * API commands:
  * - pwpolicy_find: https://freeipa.readthedocs.io/en/ipa-4-11/api/pwpolicy_find.html
  * - pwpolicy_show: https://freeipa.readthedocs.io/en/ipa-4-11/api/pwpolicy_show.html
+ * - pwpolicy_add: https://freeipa.readthedocs.io/en/ipa-4-11/api/pwpolicy_add.html
+ * - pwpolicy_del: https://freeipa.readthedocs.io/en/ipa-4-11/api/pwpolicy_del.html
  */
 
 export interface PwPolicyFindPayload {
@@ -34,6 +38,12 @@ export interface PwPolicyFullDataPayload {
   sizelimit: number;
   startIdx: number;
   stopIdx: number;
+}
+
+export interface PwPolicyAddPayload {
+  groupId: string;
+  priority: string;
+  version?: string;
 }
 
 const extendedApi = api.injectEndpoints({
@@ -219,6 +229,43 @@ const extendedApi = api.injectEndpoints({
         return { data: response };
       },
     }),
+    /**
+     * Add a new password policy
+     * @param {PwPolicyAddPayload} - Payload with the new password policy data
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    pwPolicyAdd: build.mutation<FindRPCResponse, PwPolicyAddPayload>({
+      query: (payload) => {
+        return getCommand({
+          method: "pwpolicy_add",
+          params: [
+            [payload.groupId],
+            {
+              cospriority: payload.priority,
+              version: payload.version || API_VERSION_BACKUP,
+            },
+          ],
+        });
+      },
+    }),
+    /**
+     * Delete password policies
+     * @param {PwPolicyDeletePayload} - Payload with the password policy IDs
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    pwPolicyDelete: build.mutation<BatchRPCResponse, string[]>({
+      query: (payload) => {
+        const commands: Command[] = [];
+        payload.forEach((pwPolicyId) => {
+          commands.push({
+            method: "pwpolicy_del",
+            params: [[pwPolicyId], {}],
+          });
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -227,4 +274,6 @@ export const {
   usePwPolicyFindQuery,
   useGetPwPoliciesEntriesQuery,
   useSearchPwdPolicyEntriesMutation,
+  usePwPolicyAddMutation,
+  usePwPolicyDeleteMutation,
 } = extendedApi;
