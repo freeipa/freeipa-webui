@@ -54,6 +54,7 @@ import SyncOtpPage from "src/login/SyncOtpPage";
 import SubordinateIDs from "src/pages/SubordinateIDs/SubordinateIDs";
 import SubIdsStatistics from "src/pages/SubordinateIDs/SubIdsStatistics";
 import SubIdsTabs from "src/pages/SubordinateIDs/SubIdsTabs";
+import PasswordPoliciesTabs from "src/pages/PasswordPolicies/PasswordPoliciesTabs";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -417,6 +418,12 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="password-policies">
                 <Route path="" element={<PasswordPolicies />} />
+                <Route path=":cn">
+                  <Route
+                    path=""
+                    element={<PasswordPoliciesTabs section="settings" />}
+                  />
+                </Route>
               </Route>
               <Route path="kerberos-ticket-policy">
                 <Route path="" element={<KrbTicketPolicy />} />
