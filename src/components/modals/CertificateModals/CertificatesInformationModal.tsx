@@ -38,12 +38,16 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
 
   const parseKeyValue = (key: string, value: string) => {
     return (
-      <Flex>
-        <FlexItem>
+      <Flex
+        direction={{ default: "column", md: "row" }}
+        justifyContent={{ default: "justifyContentFlexStart" }}
+        className="pf-v5-u-mt-sm"
+      >
+        <FlexItem className="pf-v5-u-mb-0" style={{ width: "200px" }}>
           <TextLayout>{key}:</TextLayout>
         </FlexItem>
-        <FlexItem>
-          <TextLayout className="pf-v5-u-ml-md">{value}</TextLayout>
+        <FlexItem flex={{ default: "flex_1" }}>
+          <TextLayout>{value}</TextLayout>
         </FlexItem>
       </Flex>
     );
@@ -74,7 +78,7 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
             id={"info-modal-issued-by"}
             headingLevel="h2"
             text={"Issued by"}
-            className="pf-v5-u-mt-sm"
+            className="pf-v5-u-mt-md"
           />
           {parseKeyValue("Common name", parseDn(certInfo.issuer).cn || "")}
           {parseKeyValue("Organization", parseDn(certInfo.issuer).o || "")}
@@ -86,7 +90,7 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
             id={"info-modal-validity"}
             headingLevel="h2"
             text={"Validity"}
-            className="pf-v5-u-mt-sm"
+            className="pf-v5-u-mt-md"
           />
           {parseKeyValue("Issued on", certInfo.valid_not_before || "")}
           {parseKeyValue("Expires on", certInfo.valid_not_after || "")}
@@ -94,10 +98,13 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
             id={"info-modal-fingerprints"}
             headingLevel="h2"
             text={"Fingerprints"}
-            className="pf-v5-u-mt-sm"
+            className="pf-v5-u-mt-md"
           />
-          {parseKeyValue("Expires on", certInfo.sha1_fingerprint || "")}
-          {parseKeyValue("Expires on", certInfo.sha256_fingerprint || "")}
+          {parseKeyValue("SHA1 Fingerprint", certInfo.sha1_fingerprint || "")}
+          {parseKeyValue(
+            "SHA256 Fingerprint",
+            certInfo.sha256_fingerprint || ""
+          )}
         </>
       )}
     </>
