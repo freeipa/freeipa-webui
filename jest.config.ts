@@ -157,6 +157,7 @@ const config: Config = {
 
   // The test environment that will be used for testing
   // testEnvironment: "jest-environment-node",
+  // We need to fix jsdom to provide structuredClone, this is not required once we move away from Jest.
   testEnvironment: "./fixJSDOMEnvironment.ts",
 
   // Options that will be passed to the testEnvironment
