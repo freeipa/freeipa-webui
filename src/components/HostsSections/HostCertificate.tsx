@@ -5,14 +5,18 @@ import { Flex, FlexItem, Form, FormGroup } from "@patternfly/react-core";
 import IpaCertificates from "../Form/IpaCertificates";
 import { asRecord } from "../../utils/hostUtils";
 // Data types
-import { Host, Metadata } from "../../utils/datatypes/globalDataTypes";
+import {
+  Certificate,
+  Host,
+  Metadata,
+} from "../../utils/datatypes/globalDataTypes";
 
 interface PropsToHostSettings {
   host: Partial<Host>;
   metadata: Metadata;
   onHostChange: (host: Partial<Host>) => void;
   onRefresh: () => void;
-  certData: Record<string, unknown>;
+  certData?: Certificate[];
 }
 
 const HostCertificate = (props: PropsToHostSettings) => {

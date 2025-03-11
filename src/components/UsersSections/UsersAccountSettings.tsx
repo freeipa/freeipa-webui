@@ -15,6 +15,7 @@ import {
   Metadata,
   User,
   RadiusServer,
+  Certificate,
 } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import SecondaryButton from "src/components/layouts/SecondaryButton";
@@ -39,7 +40,7 @@ interface PropsToUsersAccountSettings {
   onRefresh: () => void;
   radiusProxyConf: RadiusServer[];
   idpConf: IDPServer[];
-  certData: Record<string, unknown>;
+  certData?: Certificate[];
   from: "active-users" | "stage-users" | "preserved-users";
 }
 

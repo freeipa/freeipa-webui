@@ -139,6 +139,7 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
 
   const onRevokeCert = () => {
     // Prepare payload
+    if (props.certificate.certInfo === undefined) return;
     const serialNumber = props.certificate.certInfo.serial_number;
     const reasonKey = Object.keys(REVOCATION_REASONS).find(
       (key) => REVOCATION_REASONS[key] === revReasonSelected

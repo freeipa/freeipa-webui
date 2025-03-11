@@ -136,7 +136,7 @@ const ServicesTabs = ({ section }) => {
   }
 
   const service = partialServiceToService(serviceSettingsData.service);
-  const certificates = serviceSettingsData.certData || {};
+  const certificates = serviceSettingsData.certData;
 
   return (
     <>

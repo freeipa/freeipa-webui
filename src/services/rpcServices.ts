@@ -11,7 +11,7 @@ import {
 } from "./rpc";
 import { apiToService } from "../utils/serviceUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
-import { Service } from "../utils/datatypes/globalDataTypes";
+import { Certificate, Service } from "../utils/datatypes/globalDataTypes";
 
 /**
  * Services-related endpoints: getServicesFullData, addService, removeServices, saveService,
@@ -38,7 +38,7 @@ export interface ServiceAddPayload {
 
 export type ServiceFullData = {
   service?: Partial<Service>;
-  cert?: Record<string, unknown>;
+  cert?: Certificate[];
 };
 
 export interface ServiceAddRemoveHostPayload {
@@ -75,7 +75,7 @@ const extendedApi = api.injectEndpoints({
 
         // Initialize service data (to prevent 'undefined' values)
         const serviceData = serviceResponse.result;
-        const certData = certResponse.result;
+        const certData = certResponse.result as unknown as Certificate[];
 
         let serviceObject = {};
         if (!serviceResponse.error) {

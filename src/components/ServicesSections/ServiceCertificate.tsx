@@ -6,14 +6,18 @@ import IpaCertificates from "../Form/IpaCertificates";
 // Utils
 import { asRecord } from "src/utils/serviceUtils";
 // Data types
-import { Metadata, Service } from "src/utils/datatypes/globalDataTypes";
+import {
+  Certificate,
+  Metadata,
+  Service,
+} from "src/utils/datatypes/globalDataTypes";
 
 interface PropsToServiceSettings {
   service: Partial<Service>;
   metadata: Metadata;
   onServiceChange: (service: Partial<Service>) => void;
   onRefresh: () => void;
-  certData: Record<string, unknown>;
+  certData?: Certificate[];
 }
 
 const ServiceCertificate = (props: PropsToServiceSettings) => {
