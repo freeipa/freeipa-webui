@@ -11,7 +11,11 @@ import {
   SidebarPanel,
 } from "@patternfly/react-core";
 // Data types
-import { Metadata, Service } from "src/utils/datatypes/globalDataTypes";
+import {
+  Certificate,
+  Metadata,
+  Service,
+} from "src/utils/datatypes/globalDataTypes";
 // Modals
 import ConfirmationModal from "src/components/modals/ConfirmationModal";
 import IssueNewCertificate from "src/components/modals/CertificateModals/IssueNewCertificate";
@@ -54,7 +58,7 @@ interface PropsToServicesSettings {
   isDataLoading?: boolean;
   modifiedValues: () => Partial<Service>;
   onResetValues: () => void;
-  certData: Record<string, unknown>;
+  certData?: Certificate[];
   changeFromPage: (from: string) => void;
   onOpenContextualPanel: () => void;
 }

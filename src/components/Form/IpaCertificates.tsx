@@ -36,7 +36,7 @@ interface PropsToIpaCertificates {
   ipaObject: Record<string, unknown>;
   onChange: (ipaObject: Record<string, unknown>) => void;
   metadata: Metadata;
-  certificates: Record<string, unknown>;
+  certificates?: Certificate[];
   objectType: "user" | "host" | "service";
   onRefresh: () => void;
 }
@@ -47,7 +47,7 @@ interface CertificateParam {
 
 export interface CertificateData {
   certificate: CertificateParam;
-  certInfo: Certificate;
+  certInfo?: Certificate;
 }
 
 export interface DictWithName {
@@ -80,13 +80,12 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
 
   // Get further details of a certificate (via the `cert_find` results)
   const getCertificateInfo = (certificate: CertificateParam) => {
-    const certificatesInfoList = props.certificates as unknown as Certificate[];
+    const certificatesInfoList = props.certificates;
     if (certificatesInfoList !== undefined) {
       return certificatesInfoList.find(
         (cert) => cert.certificate === certificate.__base64__
-      ) as Certificate;
+      );
     }
-    return {} as Certificate;
   };
 
   // Get data from 'value'
@@ -96,10 +95,9 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
 
     if (valueAsArray !== undefined) {
       valueAsArray.map((cert) => {
-        const certsInfo: Certificate | undefined = getCertificateInfo(cert);
         const certEntry = {
           certificate: cert,
-          certInfo: certsInfo,
+          certInfo: getCertificateInfo(cert),
         };
         certsList.push(certEntry);
       });
@@ -131,7 +129,10 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
 
   // On delete certificate
   const onDeleteCertificate = (idx: number) => {
-    const certificateToRemove = certificatesList[idx].certInfo.certificate;
+    const certInfo = certificatesList[idx].certInfo;
+    if (certInfo === undefined) return;
+
+    const certificateToRemove = certInfo.certificate;
 
     const payload = [
       idParam,
@@ -170,19 +171,17 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
   // Checks if the certificate can be revoked
   // - i.e.: issued by IPA CA + not expired + not revoked
   const canBeRevoked = (idx: number) => {
-    const cert: CertificateData = certificatesList[idx];
-    if (
-      cert.certInfo.cacn !== undefined &&
-      cert.certInfo.valid_not_after !== undefined
-    ) {
+    const certInfo = certificatesList[idx].certInfo;
+    if (certInfo === undefined) return false;
+
+    if (certInfo.cacn !== undefined && certInfo.valid_not_after !== undefined) {
       // Issued by IPA CA
-      const issuedByIpaCa = cert.certInfo.cacn === "ipa";
+      const issuedByIpaCa = certInfo.cacn === "ipa";
       // Not expired
       const now = new Date();
-      const expirationDate = new Date(cert.certInfo.valid_not_after);
+      const expirationDate = new Date(certInfo.valid_not_after);
       // Not revoked
-      const isCertRevoked =
-        cert.certInfo.revoked !== undefined && cert.certInfo.revoked;
+      const isCertRevoked = certInfo.revoked !== undefined && certInfo.revoked;
 
       return issuedByIpaCa && now < expirationDate && !isCertRevoked;
     }
@@ -192,9 +191,11 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
   // Check if the certificate can be removed from hold
   // - i.e.: certificate has been revoked with CRL reason #6: 'Certificate hold'
   const canHoldBeRemoved = (idx: number) => {
-    const cert: CertificateData = certificatesList[idx];
-    if (cert.certInfo.revocation_reason !== undefined) {
-      return cert.certInfo.revocation_reason === 6;
+    const certInfo = certificatesList[idx].certInfo;
+    if (certInfo === undefined) return false;
+
+    if (certInfo.revocation_reason !== undefined) {
+      return certInfo.revocation_reason === 6;
     }
     return false;
   };
@@ -251,7 +252,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
   };
 
   // Get card title
-  const getCardTitle = (cert: CertificateData) => {
+  const getCardTitle = (cert: Required<CertificateData>) => {
     let title = parseDn(cert.certInfo.issuer).cn;
     if (cert.certInfo.san_rfc822name !== undefined) {
       title = cert.certInfo.san_rfc822name[0];
@@ -273,7 +274,10 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
   };
 
   // Get header toggle button props
-  const getHeaderToggleButtonProps = (cert: CertificateData, idx: number) => {
+  const getHeaderToggleButtonProps = (
+    cert: Required<CertificateData>,
+    idx: number
+  ) => {
     return {
       id: "toggle-button-" + idx,
       "aria-label": "Details",
@@ -312,7 +316,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
   };
 
   // Get card body
-  const getCardBody = (cert: CertificateData) => {
+  const getCardBody = (cert: Required<CertificateData>) => {
     const tableElements: DictWithName[] = [
       {
         key: "Serial number",
@@ -420,7 +424,9 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
     // Get the specific index of the element to remove
     setIdxToDelete(idx);
     // Set message to show on the deletion confirmation modal
-    const aliasToDelete = certificatesList[idx].certInfo.serial_number;
+    const certInfo = certificatesList[idx].certInfo;
+    if (certInfo === undefined) return;
+    const aliasToDelete = certInfo.serial_number;
     setMessageDeletionConf(
       "Are you sure you want to delete the certificate with the following serial number?"
     );
@@ -469,13 +475,16 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
   const [selectedCertName, setSelectedCertName] = React.useState<string>("");
 
   const onGetCertificate = (idx: number) => {
-    const certificateIssuer = parseDn(certificatesList[idx].certInfo.issuer).cn;
-    const rfcName = certificatesList[idx].certInfo.san_rfc822name;
+    const certInfo = certificatesList[idx].certInfo;
+    if (certInfo !== undefined) {
+      const certificateIssuer = parseDn(certInfo.issuer).cn;
+      const rfcName = certInfo.san_rfc822name;
 
-    if (rfcName !== undefined) {
-      setSelectedCertName(rfcName[0]);
-    } else {
-      setSelectedCertName(certificateIssuer);
+      if (rfcName !== undefined) {
+        setSelectedCertName(rfcName[0]);
+      } else {
+        setSelectedCertName(certificateIssuer);
+      }
     }
 
     // Get certificate in PEM format
@@ -538,26 +547,35 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
       <alerts.ManagedAlerts />
       {certificatesList !== undefined && certificatesList.length > 0
         ? certificatesList.map((cert, idx) => {
-            return (
-              <div key={idx}>
-                {cert.certInfo !== undefined &&
-                  Object.keys(cert.certInfo).length !== 0 && (
-                    <div key={"certificate-" + idx}>
-                      <ExpandableCardLayout
-                        id={"card-" + idx}
-                        isCompact={true}
-                        headerToggleButtonProps={getHeaderToggleButtonProps(
-                          cert,
-                          idx
-                        )}
-                        dropdownItems={getDropdownItems(idx)}
-                        cardTitle={getCardTitle(cert)}
-                        cardBody={getCardBody(cert)}
-                      />
-                    </div>
-                  )}
-              </div>
-            );
+            const innerCertificate = () => {
+              const isFullCertificate = (
+                cert: CertificateData
+              ): cert is Required<CertificateData> =>
+                typeof cert.certInfo !== "undefined";
+              if (
+                !isFullCertificate(cert) ||
+                Object.keys(cert.certInfo).length === 0
+              )
+                return null;
+
+              return (
+                <div key={"certificate-" + idx}>
+                  <ExpandableCardLayout
+                    id={"card-" + idx}
+                    isCompact={true}
+                    headerToggleButtonProps={getHeaderToggleButtonProps(
+                      cert,
+                      idx
+                    )}
+                    dropdownItems={getDropdownItems(idx)}
+                    cardTitle={getCardTitle(cert)}
+                    cardBody={getCardBody(cert)}
+                  />
+                </div>
+              );
+            };
+
+            return <div key={idx}>{innerCertificate()}</div>;
           })
         : null}
       <SecondaryButton

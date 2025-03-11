@@ -4,7 +4,11 @@ import { useState, useEffect } from "react";
 import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useGetServicesFullDataQuery } from "src/services/rpcServices";
 // Data types
-import { Service, Metadata } from "src/utils/datatypes/globalDataTypes";
+import {
+  Service,
+  Metadata,
+  Certificate,
+} from "src/utils/datatypes/globalDataTypes";
 
 type ServiceSettingsData = {
   isLoading: boolean;
@@ -18,7 +22,7 @@ type ServiceSettingsData = {
   setService: (fqdn: Partial<Service>) => void;
   refetch: () => void;
   modifiedValues: () => Partial<Service>;
-  certData?: Record<string, unknown>;
+  certData?: Certificate[];
 };
 
 const useServiceSettings = (serviceId: string): ServiceSettingsData => {
@@ -60,7 +64,7 @@ const useServiceSettings = (serviceId: string): ServiceSettingsData => {
 
   if (serviceFullData) {
     settings.originalService = serviceFullData.service || {};
-    settings.certData = serviceFullData.cert || {};
+    settings.certData = serviceFullData.cert;
   } else {
     settings.originalService = {};
   }

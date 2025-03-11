@@ -39,6 +39,7 @@ const RemoveHoldCertificate = (props: PropsToRemoveHoldCertificate) => {
 
   const onRemoveHold = () => {
     // Prepare payload
+    if (props.certificate.certInfo === undefined) return;
     const serialNumber = props.certificate.certInfo.serial_number;
     const cacn = props.certificate.certInfo.cacn;
     const payload = [serialNumber, cacn];
