@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/// <reference types="cypress" />
 import { When, Then, Given } from "@badeball/cypress-cucumber-preprocessor";
 
 // navigation
@@ -66,6 +68,7 @@ When(
   }
 );
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 When("I logout", () => {});
 
 // Side menu
@@ -118,7 +121,6 @@ Then("button {string} should be disabled", function (buttonText: string) {
 When(
   "in the modal dialog I click on {string} button",
   function (buttonText: string) {
-    const regex = new RegExp("^" + buttonText + "$", "i");
     cy.get("[role=dialog] footer button").contains(buttonText).click();
     cy.wait(1000);
   }
@@ -141,7 +143,6 @@ Then(
 When(
   "in the modal dialog I check {string} radio selector",
   (selectorText: string) => {
-    const regex = new RegExp("^" + selectorText + "$", "i");
     cy.get("[role=dialog] input[type=radio]+label")
       .contains(selectorText)
       .click();
@@ -178,7 +179,7 @@ Then(
 // -- Element to delete on cards
 Then(
   "the {string} element should be in the dialog card with id {string}",
-  (groupName: string, tableId: string) => {
+  () => {
     cy.get("div[role='dialog'");
   }
 );
