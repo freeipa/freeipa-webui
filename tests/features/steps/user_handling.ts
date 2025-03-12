@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { When, Then, Given } from "@badeball/cypress-cucumber-preprocessor";
 
 const SSH_RSA_valid_1: string =
