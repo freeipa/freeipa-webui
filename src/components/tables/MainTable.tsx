@@ -182,15 +182,18 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
   );
 
   const body = shownElementsList.map((element, rowIndex) => {
+    const elementName = element[props.pk].toString();
+
     if (element !== undefined && element !== null) {
       return (
-        <Tr key={"row-" + rowIndex} id={"row-" + rowIndex}>
+        <Tr key={"row-" + rowIndex} id={elementName} aria-label={elementName}>
           {/* Checkboxes (if specified) */}
           {props.hasCheckboxes && (
             <Td
               key={rowIndex}
               id={rowIndex.toString()}
               dataLabel="checkbox"
+              aria-label="Select row"
               select={{
                 rowIndex,
                 onSelect: (_event, isSelecting) =>
@@ -218,7 +221,12 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
         </Tr>
       );
     } else {
-      return <EmptyBodyTable key={"empty-row-" + rowIndex} />;
+      return (
+        <EmptyBodyTable
+          key={"empty-row-" + rowIndex}
+          aria-label="Empty body table"
+        />
+      );
     }
   });
 
