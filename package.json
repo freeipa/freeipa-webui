@@ -34,7 +34,7 @@
     "cache:clean": "npm cache clean --force"
   },
   "devDependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "^19.2.0",
+    "@badeball/cypress-cucumber-preprocessor": "^22.0.0",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.0",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^12.1.5",
@@ -49,7 +49,7 @@
     "audit-ci": "^6.1.2",
     "css-loader": "^6.7.1",
     "cy-verify-downloads": "^0.2.3",
-    "cypress": "^13.6.0",
+    "cypress": "^14.1.0",
     "esbuild-plugin-polyfill-node": "^0.3.0",
     "eslint": "^8.12.0",
     "eslint-config-prettier": "^8.5.0",
