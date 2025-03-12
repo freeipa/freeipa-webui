@@ -127,7 +127,7 @@ Feature: User details
     When I click on Add key in the Certificates section
     And I put Certificate named "invalid sample - short" into the text area
     And in the modal dialog I click on "Add" button
-    Then I should see "danger" alert with text "Certificate format error: error parsing asn1 value: ParseError { kind: ShortData }"
+    Then I should see "danger" alert with text "Certificate format error: error parsing asn1 value: ParseError { kind: ShortData {needed: 109}}"
     * in the modal dialog I click on "Cancel" button
     Then I should see 1 certificates in the Certificates section
     # certificate length not divisible by 4

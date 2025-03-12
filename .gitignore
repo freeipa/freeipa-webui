@@ -30,3 +30,7 @@ yarn-error.log*
 /doc/_build
 /doc/.venv
 !/doc/Makefile
+
+# tests/ipalab
+/tests/ipalab/_venv
+cypress.log

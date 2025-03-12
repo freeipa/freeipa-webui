@@ -1,0 +1,12 @@
+---
+- name: Run Cypress tests
+  hosts: client.ipa.demo
+  become: false
+  gather_facts: false
+
+  tasks:
+    - name: Run tests
+      ansible.builtin.shell: |
+        npx cypress run --config-file /freeipa-webui/cypress/cypress.config.ts --project /freeipa-webui --browser electron | tee /freeipa-webui/cypress.log
+      args:
+        chdir: /root/cypress-test
