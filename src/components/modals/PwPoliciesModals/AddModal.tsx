@@ -177,7 +177,8 @@ const AddModal = (props: PropsToAddModal) => {
       name: "Priority",
       pfComponent: (
         <TextInput
-          id="priority"
+          id="modal-form-priority"
+          name="cospriority"
           type="number"
           value={priority}
           onChange={(event) => setPriority(event.currentTarget.value)}
