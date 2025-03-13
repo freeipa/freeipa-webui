@@ -47,18 +47,19 @@ export interface PwPolicyAddPayload {
   version?: string;
 }
 
+// Modified values are either the value (in string) or an array ([]) when set to empty string
 export interface PwPolicyModPayload {
   pwPolicyId: string;
-  krbmaxpwdlife?: string;
-  krbminpwdlife?: string;
-  krbpwdhistorylength?: string;
-  krbpwdmindiffchars?: string;
-  krbpwdminlength?: string;
-  krbpwdmaxfailure?: string;
-  krbpwdfailurecountinterval?: string;
-  krbpwdlockoutduration?: string;
+  krbmaxpwdlife?: string | [];
+  krbminpwdlife?: string | [];
+  krbpwdhistorylength?: string | [];
+  krbpwdmindiffchars?: string | [];
+  krbpwdminlength?: string | [];
+  krbpwdmaxfailure?: string | [];
+  krbpwdfailurecountinterval?: string | [];
+  krbpwdlockoutduration?: string | [];
   cospriority?: string;
-  passwordgracelimit?: string;
+  passwordgracelimit?: string | [];
 }
 
 const extendedApi = api.injectEndpoints({
@@ -348,7 +349,7 @@ const extendedApi = api.injectEndpoints({
 
         return getCommand({
           method: "pwpolicy_mod",
-          params: [[payload.pwPolicyId], params],
+          params: [payload.pwPolicyId, params],
         });
       },
     }),

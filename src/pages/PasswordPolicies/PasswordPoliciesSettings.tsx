@@ -73,45 +73,46 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
     );
   };
 
-  // on Save handler method
-  const onSave = () => {
-    setIsDataLoading(true);
-    const modifiedValues = props.modifiedValues();
+  // Helper method to build the payload based on values
+  const buildPayload = (
+    modifiedValues: Partial<PwPolicy>,
+    keyArray: string[]
+  ): PwPolicyModPayload => {
     const payload: PwPolicyModPayload = {
       pwPolicyId: props.pwPolicy.cn as string,
     };
 
-    if (modifiedValues.krbmaxpwdlife) {
-      payload.krbmaxpwdlife = modifiedValues.krbmaxpwdlife;
-    }
-    if (modifiedValues.krbminpwdlife) {
-      payload.krbminpwdlife = modifiedValues.krbminpwdlife;
-    }
-    if (modifiedValues.krbpwdhistorylength) {
-      payload.krbpwdhistorylength = modifiedValues.krbpwdhistorylength;
-    }
-    if (modifiedValues.krbpwdmindiffchars) {
-      payload.krbpwdmindiffchars = modifiedValues.krbpwdmindiffchars;
-    }
-    if (modifiedValues.krbpwdminlength) {
-      payload.krbpwdminlength = modifiedValues.krbpwdminlength;
-    }
-    if (modifiedValues.krbpwdmaxfailure) {
-      payload.krbpwdmaxfailure = modifiedValues.krbpwdmaxfailure;
-    }
-    if (modifiedValues.krbpwdfailurecountinterval) {
-      payload.krbpwdfailurecountinterval =
-        modifiedValues.krbpwdfailurecountinterval;
-    }
-    if (modifiedValues.krbpwdlockoutduration) {
-      payload.krbpwdlockoutduration = modifiedValues.krbpwdlockoutduration;
-    }
-    if (modifiedValues.cospriority) {
-      payload.cospriority = modifiedValues.cospriority;
-    }
-    if (modifiedValues.passwordgracelimit) {
-      payload.passwordgracelimit = modifiedValues.passwordgracelimit;
-    }
+    keyArray.forEach((key) => {
+      // Modified values are either the value (in string) or an array ([]) when set to empty string
+      if (modifiedValues[key] !== undefined) {
+        if (modifiedValues[key] === "") {
+          payload[key] = [];
+        } else {
+          payload[key] = modifiedValues[key];
+        }
+      }
+    });
+    return payload;
+  };
+
+  // on Save handler method
+  const onSave = () => {
+    setIsDataLoading(true);
+    const modifiedValues = props.modifiedValues();
+
+    // Generate payload
+    const payload = buildPayload(modifiedValues, [
+      "krbmaxpwdlife",
+      "krbminpwdlife",
+      "krbpwdhistorylength",
+      "krbpwdmindiffchars",
+      "krbpwdminlength",
+      "krbpwdmaxfailure",
+      "krbpwdfailurecountinterval",
+      "krbpwdlockoutduration",
+      "cospriority",
+      "passwordgracelimit",
+    ]);
 
     savePwPolicy(payload).then((response) => {
       if ("data" in response) {
@@ -123,7 +124,7 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
           props.onPwPolicyChange(data.result.result);
           alerts.addAlert(
             "success",
-            "Subordinate ID " + props.pwPolicy.cn + " updated",
+            "Password policy '" + props.pwPolicy.cn + "' updated",
             "success"
           );
           // Reset values. Disable 'revert' and 'save' buttons
@@ -193,7 +194,9 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
                       ipaObject={ipaObject}
                       objectName="pwpolicy"
                       metadata={props.metadata}
-                      linkTo={"/user-groups/" + props.pwPolicy.cn?.toString()}
+                      linkTo={
+                        "/password-policies/" + props.pwPolicy.cn?.toString()
+                      }
                     />
                   </FormGroup>
                   <FormGroup
