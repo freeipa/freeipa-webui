@@ -8,7 +8,7 @@ import TextLayout from "src/components/layouts/TextLayout";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // Data types
-import { CertificateData } from "src/components/Form/IpaCertificates";
+import { CertificateData } from "src/components/Form/IpaCertificates/IpaCertificates";
 // Utils
 import { parseDn } from "src/utils/utils";
 // RPC

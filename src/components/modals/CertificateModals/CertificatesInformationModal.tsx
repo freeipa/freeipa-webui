@@ -7,7 +7,7 @@ import TextLayout from "src/components/layouts/TextLayout";
 // Modals
 import InformationModalLayout from "src/components/layouts/InformationModalLayout";
 // Data types
-import { CertificateData } from "src/components/Form/IpaCertificates";
+import { CertificateData } from "src/components/Form/IpaCertificates/IpaCertificates";
 // Utils
 import { parseDn } from "src/utils/utils";
 
@@ -67,7 +67,7 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
           {parseKeyValue("Organization", parseDn(certInfo.subject).o || "")}
           {parseKeyValue(
             "Organization unit",
-            parseDn(certInfo.issuer).ou || ""
+            parseDn(certInfo.subject).ou || ""
           )}
           {parseKeyValue("Serial number", certInfo.serial_number || "")}
           {parseKeyValue(

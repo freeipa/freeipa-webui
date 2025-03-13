@@ -12,13 +12,13 @@ import { Certificate, Metadata } from "src/utils/datatypes/globalDataTypes";
 // ipaObject utils
 import { getParamProperties } from "src/utils/ipaObjectUtils";
 // Modals
-import ModalWithTextAreaLayout from "../layouts/ModalWithTextAreaLayout";
-import ConfirmationModal from "../modals/ConfirmationModal";
-import CertificatesInformationModal from "../modals/CertificateModals/CertificatesInformationModal";
-import RevokeCertificate from "../modals/CertificateModals/RevokeCertificate";
-import RemoveHoldCertificate from "../modals/CertificateModals/RemoveHoldCertificate";
+import ModalWithTextAreaLayout from "../../layouts/ModalWithTextAreaLayout";
+import ConfirmationModal from "../../modals/ConfirmationModal";
+import CertificatesInformationModal from "../../modals/CertificateModals/CertificatesInformationModal";
+import RevokeCertificate from "../../modals/CertificateModals/RevokeCertificate";
+import RemoveHoldCertificate from "../../modals/CertificateModals/RemoveHoldCertificate";
 // Components
-import SecondaryButton from "../layouts/SecondaryButton";
+import SecondaryButton from "../../layouts/SecondaryButton";
 // RTK
 import { ErrorResult } from "src/services/rpc";
 import {
@@ -26,13 +26,13 @@ import {
   useRemoveCertificateMutation,
 } from "src/services/rpcCerts";
 // Components
-import ExpandableCardLayout from "../layouts/ExpandableCardLayout";
+import ExpandableCardLayout from "../../layouts/ExpandableCardLayout";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // Utils
 import { parseDn } from "src/utils/utils";
 
-interface PropsToIpaCertificates {
+export interface PropsToIpaCertificates {
   ipaObject: Record<string, unknown>;
   onChange: (ipaObject: Record<string, unknown>) => void;
   metadata: Metadata;
@@ -253,14 +253,14 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
 
   // Get card title
   const getCardTitle = (cert: Required<CertificateData>) => {
-    let title = parseDn(cert.certInfo.issuer).cn;
+    let title = parseDn(cert.certInfo.subject).cn;
     if (cert.certInfo.san_rfc822name !== undefined) {
       title = cert.certInfo.san_rfc822name[0];
     }
 
     return (
       <CardTitle
-        id={"card-" + parseDn(cert.certInfo.issuer).cn}
+        id={"card-" + parseDn(cert.certInfo.subject).cn}
         className="pf-v5-u-font-weight-normal pf-v5-u-font-family-redhatVF-sans-serif"
       >
         {title}
@@ -282,7 +282,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
       id: "toggle-button-" + idx,
       "aria-label": "Details",
       "aria-labelledby":
-        "toggle-button card-" + parseDn(cert.certInfo.issuer).cn,
+        "toggle-button card-" + parseDn(cert.certInfo.subject).cn,
     };
   };
 

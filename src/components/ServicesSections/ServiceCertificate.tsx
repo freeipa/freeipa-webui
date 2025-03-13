@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { Flex, FlexItem, Form, FormGroup } from "@patternfly/react-core";
 // Forms
-import IpaCertificates from "../Form/IpaCertificates";
+import IpaCertificates from "../Form/IpaCertificates/IpaCertificates";
 // Utils
 import { asRecord } from "src/utils/serviceUtils";
 // Data types
