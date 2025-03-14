@@ -675,3 +675,30 @@ export type AutomemberEntry = {
   automemberRule: string;
   description: string;
 };
+
+export interface KrbTicket {
+  uid: string;
+  cn: string;
+  krbauthindmaxticketlife_otp: string;
+  krbauthindmaxrenewableage_otp: string;
+  krbauthindmaxticketlife_radius: string;
+  krbauthindmaxrenewableage_radius: string;
+  krbauthindmaxticketlife_pkinit: string;
+  krbauthindmaxrenewableage_pkinit: string;
+  krbauthindmaxticketlife_hardened: string;
+  krbauthindmaxrenewableage_hardened: string;
+  krbauthindmaxticketlife_idp: string;
+  krbauthindmaxrenewableage_idp: string;
+  krbauthindmaxticketlife_passkey: string;
+  krbauthindmaxrenewableage_passkey: string;
+  objectclass: string[];
+  krbsubtrees: string;
+  krbsearchscope: string;
+  krbsupportedencsalttypes: string[];
+  krbdefaultencsalttypes: string[];
+  krbpwdpolicyreference: string;
+  krbmaxticketlife: string;
+  krbmaxrenewableage: string;
+  aci: string[];
+  dn: string;
+}
