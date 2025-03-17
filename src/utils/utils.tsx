@@ -22,6 +22,7 @@ import {
   UserGroup,
   AutomemberEntry,
   PwPolicy,
+  IDPServer,
 } from "./datatypes/globalDataTypes";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
@@ -121,6 +122,9 @@ export const isAutomemberUserGroupSelectable = (automember: AutomemberEntry) =>
   automember.automemberRule != "";
 
 export const isPwPolicySelectable = (pwPolicy: PwPolicy) => pwPolicy.cn !== "";
+
+export const isIdpServerSelectable = (idpServer: IDPServer) =>
+  idpServer.cn !== "";
 
 // Write JSX error messages into 'apiErrorsJsx' array
 export const apiErrorToJsXError = (

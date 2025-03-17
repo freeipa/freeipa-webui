@@ -55,6 +55,7 @@ import SubordinateIDs from "src/pages/SubordinateIDs/SubordinateIDs";
 import SubIdsStatistics from "src/pages/SubordinateIDs/SubIdsStatistics";
 import SubIdsTabs from "src/pages/SubordinateIDs/SubIdsTabs";
 import PasswordPoliciesTabs from "src/pages/PasswordPolicies/PasswordPoliciesTabs";
+import IdpReferences from "src/pages/IdPReferences/IdpReferences";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -428,7 +429,9 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               <Route path="kerberos-ticket-policy">
                 <Route path="" element={<KrbTicketPolicy />} />
               </Route>
-              <Route path="identity-provider-references"></Route>
+              <Route path="identity-provider-references">
+                <Route path="" element={<IdpReferences />} />
+              </Route>
               <Route path="configuration" element={<Configuration />} />
               {/* Redirect to Active users page if user is logged in and navigates to the root page */}
               <Route
