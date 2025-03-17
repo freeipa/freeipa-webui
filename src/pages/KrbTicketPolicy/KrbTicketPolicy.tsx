@@ -112,6 +112,7 @@ const KrbTicketPolicy = () => {
       "krbauthindmaxticketlife_idp",
       "krbauthindmaxticketlife_passkey",
       "krbauthindmaxrenewableage_passkey",
+      "krbauthindmaxrenewableage_idp",
     ]);
 
     saveKrbTicketPolicy(payload).then((response) => {

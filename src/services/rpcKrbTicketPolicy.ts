@@ -28,6 +28,7 @@ export interface KrbTicketModPayload {
   krbpwdpolicyreference?: string;
   krbmaxticketlife?: string;
   krbmaxrenewableage?: string;
+  krbauthindmaxrenewableage_idp?: string;
 }
 
 const assignParameters = (
@@ -91,6 +92,7 @@ const extendedApi = api.injectEndpoints({
             "krbauthindmaxticketlife_idp",
             "krbauthindmaxticketlife_passkey",
             "krbauthindmaxrenewableage_passkey",
+            "krbauthindmaxrenewableage_idp",
           ],
           payload
         );
