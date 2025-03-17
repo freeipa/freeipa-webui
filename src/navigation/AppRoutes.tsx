@@ -428,6 +428,7 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               <Route path="kerberos-ticket-policy">
                 <Route path="" element={<KrbTicketPolicy />} />
               </Route>
+              <Route path="identity-provider-references"></Route>
               <Route path="configuration" element={<Configuration />} />
               {/* Redirect to Active users page if user is logged in and navigates to the root page */}
               <Route

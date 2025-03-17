@@ -1,3 +1,4 @@
+import path from "path";
 import { BreadCrumbItem } from "src/components/layouts/BreadCrumb/BreadCrumb";
 
 // Navigation
@@ -47,6 +48,8 @@ const SelinuxUserMapsGroupRef = "selinux-user-maps";
 const PasswordPoliciesGroupRef = "password-policies";
 // - Kerberos ticket policy
 const KerberosTicketPolicyGroupRef = "kerberos-ticket-policy";
+// AUTHENTICATION
+const IdentityProviderReferencesGroupRef = "identity-provider-references";
 // IPA SERVER
 // - Configuration
 const ConfigRef = "configuration";
@@ -281,6 +284,21 @@ export const navigationRoutes = [
         group: KerberosTicketPolicyGroupRef,
         title: `${BASE_TITLE} - Kerberos ticket policy`,
         path: "kerberos-ticket-policy",
+        items: [],
+      },
+    ],
+  },
+  {
+    label: "Authentication",
+    group: "",
+    title: `${BASE_TITLE} - Authentication`,
+    path: "",
+    items: [
+      {
+        label: "Identity Provider references",
+        group: IdentityProviderReferencesGroupRef,
+        title: `${BASE_TITLE} - Identity Provider references`,
+        path: "identity-provider-references",
         items: [],
       },
     ],
