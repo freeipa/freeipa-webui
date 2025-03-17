@@ -10,7 +10,7 @@ import {
 // React Router DOM
 import { Link } from "react-router-dom";
 
-interface IpaTextContentProps extends IPAParamDefinition {
+export interface IpaTextContentProps extends IPAParamDefinition {
   linkTo?: string;
 }
 
@@ -28,16 +28,14 @@ const IpaTextContent = (props: IpaTextContentProps) => {
   return (
     <>
       {props.linkTo ? (
-        <Link to={props.linkTo}>
-          <TextContent
-            readOnly={readOnly}
-            required={required}
-            aria-label={props.ariaLabel}
-            name={props.name}
-          >
-            <Text component={TextVariants.a}>{textValue}</Text>
-          </TextContent>
-        </Link>
+        <TextContent
+          readOnly={readOnly}
+          required={required}
+          aria-label={props.ariaLabel}
+          name={props.name}
+        >
+          <Link to={props.linkTo}>{textValue}</Link>
+        </TextContent>
       ) : (
         <TextContent
           readOnly={readOnly}
