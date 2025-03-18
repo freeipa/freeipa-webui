@@ -432,7 +432,7 @@ describe("IpaCertificates Component", () => {
     // There should be two Add buttons
     const addButtons = screen.getAllByRole("button", { name: /Add/i });
 
-    // Click correcg Add button
+    // Click correct Add button
     await act(async () => {
       fireEvent.click(addButtons[1]);
     });
