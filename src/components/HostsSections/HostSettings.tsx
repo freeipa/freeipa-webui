@@ -20,7 +20,7 @@ import IpaTextboxList from "../Form/IpaTextboxList/IpaTextboxList";
 // Layouts
 import PopoverWithIconLayout from "../layouts/PopoverWithIconLayout";
 // Modals
-import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";
+import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox/PrincipalAliasMultiTextBox";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
 // Hooks

@@ -27,7 +27,7 @@ import { asRecord } from "src/utils/userUtils";
 import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
 import IpaSelect from "../Form/IpaSelect/IpaSelect";
 import IpaCheckboxes from "../Form/IpaCheckboxes/IpaCheckboxes";
-import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";
+import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox/PrincipalAliasMultiTextBox";
 import IpaCalendar from "../Form/IpaCalendar/IpaCalendar";
 import IpaSshPublicKeys from "../Form/IpaSshPublicKeys/IpaSshPublicKeys";
 import IpaCertificates from "../Form/IpaCertificates/IpaCertificates";

@@ -2,10 +2,10 @@ import React from "react";
 // PatternFly
 import { Button } from "@patternfly/react-core";
 // Form
-import IpaTextInputFromList from "./IpaTextInputFromList/IpaTextInputFromList";
+import IpaTextInputFromList from "../IpaTextInputFromList/IpaTextInputFromList";
 // Modals
-import AddTextInputFromListModal from "../modals/AddTextInputFromListModal";
-import ConfirmationModal from "../modals/ConfirmationModal";
+import AddTextInputFromListModal from "../../modals/AddTextInputFromListModal";
+import ConfirmationModal from "../../modals/ConfirmationModal";
 // RTK
 import { ErrorResult } from "src/services/rpc";
 import {
@@ -23,15 +23,16 @@ import {
   useRemoveServicePrincipalAliasMutation,
 } from "src/services/rpcServices";
 // Layouts
-import SecondaryButton from "../layouts/SecondaryButton";
+import SecondaryButton from "../../layouts/SecondaryButton";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // Data types
 import { Metadata } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { getRealmFromKrbPolicy } from "src/utils/utils";
+import { IPAObject } from "src/utils/ipaObjectUtils";
 
-interface PrincipalAliasMultiTextBoxProps {
+export interface PrincipalAliasMultiTextBoxProps {
   ipaObject: Record<string, unknown>;
   metadata: Metadata;
   onRefresh: () => void;
@@ -43,28 +44,42 @@ interface PrincipalAliasMultiTextBoxProps {
     | "services";
 }
 
+const getPrincipalAliasMutations = (from: string) => {
+  if (from === "stage-users") {
+    const [addPrincipalAlias] = useAddStagePrincipalAliasMutation();
+    const [removePrincipalAlias] = useRemoveStagePrincipalAliasMutation();
+    return [addPrincipalAlias, removePrincipalAlias];
+  } else if (from === "hosts") {
+    const [addPrincipalAlias] = useAddHostPrincipalAliasMutation();
+    const [removePrincipalAlias] = useRemoveHostPrincipalAliasMutation();
+    return [addPrincipalAlias, removePrincipalAlias];
+  } else if (from === "services") {
+    const [addPrincipalAlias] = useAddServicePrincipalAliasMutation();
+    const [removePrincipalAlias] = useRemoveServicePrincipalAliasMutation();
+    return [addPrincipalAlias, removePrincipalAlias];
+  }
+
+  // active-users, preserved-users
+  const [addPrincipalAlias] = useAddPrincipalAliasMutation();
+  const [removePrincipalAlias] = useRemovePrincipalAliasMutation();
+  return [addPrincipalAlias, removePrincipalAlias];
+};
+
+const getObjectID = (from: string, ipaObject: IPAObject) => {
+  if (from === "hosts") return ipaObject.fqdn;
+  if (from === "services") return ipaObject.krbcanonicalname;
+  return ipaObject.uid;
+};
+
 const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
 
   // RTK hooks
-  // User
-  let [addPrincipalAlias] = useAddPrincipalAliasMutation();
-  let [removePrincipalAlias] = useRemovePrincipalAliasMutation();
-  let objectID = props.ipaObject.uid;
-  // Stage User and others
-  if (props.from === "stage-users") {
-    [addPrincipalAlias] = useAddStagePrincipalAliasMutation();
-    [removePrincipalAlias] = useRemoveStagePrincipalAliasMutation();
-  } else if (props.from === "hosts") {
-    objectID = props.ipaObject.fqdn;
-    [addPrincipalAlias] = useAddHostPrincipalAliasMutation();
-    [removePrincipalAlias] = useRemoveHostPrincipalAliasMutation();
-  } else if (props.from === "services") {
-    objectID = props.ipaObject.krbcanonicalname;
-    [addPrincipalAlias] = useAddServicePrincipalAliasMutation();
-    [removePrincipalAlias] = useRemoveServicePrincipalAliasMutation();
-  }
+  const [addPrincipalAlias, removePrincipalAlias] = getPrincipalAliasMutations(
+    props.from
+  );
+  const objectID = getObjectID(props.from, props.ipaObject);
 
   // 'krbprincipalname' value from ipaObject
   const krbprincipalname = props.ipaObject["krbprincipalname"] as string[];
@@ -103,7 +118,7 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
   // Deletion confirmation Modal data
   const [isDeleteConfModalOpen, setIsDeleteConfModalOpen] =
     React.useState(false);
-  const [aliasIdxToDelete, setAliasIdxToDelete] = React.useState<number>(999); // Asumption: There will never be 999 alias
+  const [aliasIdxToDelete, setAliasIdxToDelete] = React.useState<number>(999); // Assumption: There will never be 999 alias
   const [messageDeletionConf, setMessageDeletionConf] = React.useState("");
   const [messageDeletionObj, setMessageDeletionObj] = React.useState("");
   const [modalSpinning, setModalSpinning] = React.useState(false);
@@ -251,7 +266,7 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
         onClose={onCloseTextInputModal}
         actions={textInputModalActions}
         textInputTitle={"New kerberos principal alias"}
-        textInputName="krbprincalname"
+        textInputName="krbprincipalname"
         textInputValidator={areRealmsMatching}
       />
       <ConfirmationModal
