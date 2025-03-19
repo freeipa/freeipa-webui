@@ -48,6 +48,7 @@ export function useAlerts() {
         key={alert.name}
         variant={alert.variant}
         title={alert.title}
+        role="alert"
         timeout
         isLiveRegion
         onTimeout={() => removeAlert(alert.name)}
