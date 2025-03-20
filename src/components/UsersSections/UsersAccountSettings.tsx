@@ -24,14 +24,14 @@ import ModalWithTextAreaLayout from "src/components/layouts/ModalWithTextAreaLay
 // Utils
 import { asRecord } from "src/utils/userUtils";
 // Form
-import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
-import IpaSelect from "../Form/IpaSelect/IpaSelect";
-import IpaCheckboxes from "../Form/IpaCheckboxes/IpaCheckboxes";
-import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox/PrincipalAliasMultiTextBox";
-import IpaCalendar from "../Form/IpaCalendar/IpaCalendar";
-import IpaSshPublicKeys from "../Form/IpaSshPublicKeys/IpaSshPublicKeys";
-import IpaCertificates from "../Form/IpaCertificates/IpaCertificates";
-import IpaCertificateMappingData from "../Form/IpaCertificateMappingData/IpaCertificateMappingData";
+import IpaTextInput from "src/components/Form/IpaTextInput";
+import IpaSelect from "../Form/IpaSelect";
+import IpaCheckboxes from "../Form/IpaCheckboxes";
+import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";
+import IpaCalendar from "../Form/IpaCalendar";
+import IpaSshPublicKeys from "../Form/IpaSshPublicKeys";
+import IpaCertificates from "../Form/IpaCertificates";
+import IpaCertificateMappingData from "../Form/IpaCertificateMappingData";
 
 interface PropsToUsersAccountSettings {
   user: Partial<User>;

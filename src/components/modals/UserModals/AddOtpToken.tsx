@@ -19,7 +19,7 @@ import ModalWithFormLayout, {
 } from "src/components/layouts/ModalWithFormLayout";
 import QrCodeModal from "./QrCodeModal";
 // Components
-import DateTimeSelector from "src/components/Form/DateTimeSelector/DateTimeSelector";
+import DateTimeSelector from "src/components/Form/DateTimeSelector";
 // Utils
 import { NO_SELECTION_OPTION } from "src/utils/constUtils";
 // RTK

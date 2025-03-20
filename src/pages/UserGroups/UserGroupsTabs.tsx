@@ -12,9 +12,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
-import BreadCrumb, {
-  BreadCrumbItem,
-} from "src/components/layouts/BreadCrumb/BreadCrumb";
+import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 // Components
 import UserGroupsSettings from "./UserGroupsSettings";
 import { partialGroupToGroup } from "src/utils/groupUtils";

@@ -17,9 +17,7 @@ import { usePasswordPolicySettings } from "src/hooks/usePwPolicySettingsData";
 // Components
 import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
-import BreadCrumb, {
-  BreadCrumbItem,
-} from "src/components/layouts/BreadCrumb/BreadCrumb";
+import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import PasswordPoliciesSettings from "./PasswordPoliciesSettings";
 
 // eslint-disable-next-line react/prop-types

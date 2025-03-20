@@ -62,7 +62,7 @@ describe("IpaCalendar Component", () => {
     metadata: mockMetadata,
   };
 
-  it("renders the DateTimeSelector with correct props", () => {
+  it("renders the IpaCalendar with correct props", () => {
     render(<IpaCalendar {...defaultProps} />);
 
     // Verify the DateTimeSelector exist
@@ -83,7 +83,7 @@ describe("IpaCalendar Component", () => {
     }
   });
 
-  it("disables the DateTimeSelector if readOnly is true", () => {
+  it("disables the IpaCalendar if readOnly is true", () => {
     render(<IpaCalendar {...defaultProps} readOnly={true} />);
 
     const dateInput = screen.getByPlaceholderText("YYYY-MM-DD");

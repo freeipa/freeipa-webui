@@ -7,7 +7,7 @@ import TextLayout from "src/components/layouts/TextLayout";
 // Modals
 import InformationModalLayout from "src/components/layouts/InformationModalLayout";
 // Data types
-import { CertificateData } from "src/components/Form/IpaCertificates/IpaCertificates";
+import { CertificateData } from "src/components/Form/IpaCertificates";
 // Utils
 import { parseDn } from "src/utils/utils";
 

@@ -6,12 +6,12 @@ import { Metadata } from "src/utils/datatypes/globalDataTypes";
 // Components
 import PopoverWithIconLayout from "src/components/layouts/PopoverWithIconLayout";
 // Form
-import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
-import IpaTextArea from "src/components/Form/IpaTextArea/IpaTextArea";
-import IpaNumberInput from "src/components/Form/IpaNumberInput/IpaNumberInput";
-import IpaCheckboxes from "src/components/Form/IpaCheckboxes/IpaCheckboxes";
-import IpaCheckbox from "src/components/Form/IpaCheckbox/IpaCheckbox";
-import IpaDropdownSearch from "src/components/Form/IpaDropdownSearch/IpaDropdownSearch";
+import IpaTextInput from "src/components/Form/IpaTextInput";
+import IpaTextArea from "src/components/Form/IpaTextArea";
+import IpaNumberInput from "src/components/Form/IpaNumberInput";
+import IpaCheckboxes from "src/components/Form/IpaCheckboxes";
+import IpaCheckbox from "src/components/Form/IpaCheckbox";
+import IpaDropdownSearch from "src/components/Form/IpaDropdownSearch";
 import ConfigObjectclassTable from "./ConfigObjectclassTable";
 
 interface PropsToSearchOptions {

@@ -31,7 +31,7 @@ import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import { asRecord } from "src/utils/krbTicketUtils";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
-import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
+import IpaTextInput from "src/components/Form/IpaTextInput";
 import PageWithGrayBorderLayout from "src/components/layouts/PageWithGrayBorderLayout";
 
 const KrbTicketPolicy = () => {

@@ -14,7 +14,7 @@ import { Metadata, SudoRule } from "src/utils/datatypes/globalDataTypes";
 import KeytabTableWithFilter, {
   TableEntry,
 } from "src/components/tables/KeytabTableWithFilter";
-import IpaToggleGroup from "src/components/Form/IpaToggleGroup/IpaToggleGroup";
+import IpaToggleGroup from "src/components/Form/IpaToggleGroup";
 // RPC
 import { BatchResponse, ErrorResult, FindRPCResponse } from "src/services/rpc";
 import {

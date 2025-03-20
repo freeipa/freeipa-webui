@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { Button } from "@patternfly/react-core";
 // Form
-import IpaTextInputFromList from "../IpaTextInputFromList/IpaTextInputFromList";
+import IpaTextInputFromList from "./../IpaTextInputFromList";
 // Modals
 import AddTextInputFromListModal from "../../modals/AddTextInputFromListModal";
 import ConfirmationModal from "../../modals/ConfirmationModal";

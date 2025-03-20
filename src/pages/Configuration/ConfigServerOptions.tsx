@@ -4,7 +4,7 @@ import { Form, FormGroup, TextArea } from "@patternfly/react-core";
 // Data types
 import { Config, Metadata } from "src/utils/datatypes/globalDataTypes";
 // Form
-import IpaDropdownSearch from "src/components/Form/IpaDropdownSearch/IpaDropdownSearch";
+import IpaDropdownSearch from "src/components/Form/IpaDropdownSearch";
 
 interface PropsToServerOptions {
   config: Partial<Config>;

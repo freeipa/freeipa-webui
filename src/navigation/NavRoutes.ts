@@ -1,4 +1,4 @@
-import { BreadCrumbItem } from "src/components/layouts/BreadCrumb/BreadCrumb";
+import { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 
 // Navigation
 export const URL_PREFIX = "/ipa/modern_ui";

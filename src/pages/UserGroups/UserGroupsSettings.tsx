@@ -13,7 +13,7 @@ import {
 // Modals
 import ConfirmationModal from "../../components/modals/ConfirmationModal";
 // Forms
-import IpaTextArea from "../../components/Form/IpaTextArea/IpaTextArea";
+import IpaTextArea from "../../components/Form/IpaTextArea";
 import { useNavigate } from "react-router-dom";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";

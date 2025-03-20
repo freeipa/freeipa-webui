@@ -10,9 +10,9 @@ import {
   TabTitleText,
 } from "@patternfly/react-core";
 // Forms
-import IpaTextArea from "src/components/Form/IpaTextArea/IpaTextArea";
-import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
-import IpaCheckbox from "src/components/Form/IpaCheckbox/IpaCheckbox";
+import IpaTextArea from "src/components/Form/IpaTextArea";
+import IpaTextInput from "src/components/Form/IpaTextInput";
+import IpaCheckbox from "src/components/Form/IpaCheckbox";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";

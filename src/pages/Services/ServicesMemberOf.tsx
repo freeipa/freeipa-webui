@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { Badge, Tab, Tabs, TabTitleText } from "@patternfly/react-core";
 // Components
-import { BreadCrumbItem } from "src/components/layouts/BreadCrumb/BreadCrumb";
+import { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import MemberOfRoles from "src/components/MemberOf/MemberOfRoles";
 // Layouts
 import TabLayout from "src/components/layouts/TabLayout";

@@ -6,8 +6,8 @@ import PopoverWithIconLayout from "../layouts/PopoverWithIconLayout";
 // Data types
 import { Metadata, User } from "src/utils/datatypes/globalDataTypes";
 // Form
-import IpaTextInput from "../Form/IpaTextInput/IpaTextInput";
-import IpaSelect from "../Form/IpaSelect/IpaSelect";
+import IpaTextInput from "../Form/IpaTextInput";
+import IpaSelect from "../Form/IpaSelect";
 // Utils
 import { asRecord } from "src/utils/userUtils";
 
