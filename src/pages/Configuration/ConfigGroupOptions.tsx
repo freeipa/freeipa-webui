@@ -4,7 +4,7 @@ import { Flex, FlexItem, Form, FormGroup } from "@patternfly/react-core";
 // Data types
 import { Metadata } from "src/utils/datatypes/globalDataTypes";
 // Form
-import IpaTextArea from "src/components/Form/IpaTextArea/IpaTextArea";
+import IpaTextArea from "src/components/Form/IpaTextArea";
 import ConfigObjectclassTable from "./ConfigObjectclassTable";
 
 interface PropsToGroupOptions {

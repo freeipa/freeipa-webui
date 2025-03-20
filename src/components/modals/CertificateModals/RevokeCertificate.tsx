@@ -12,7 +12,7 @@ import ModalWithFormLayout, {
   Field,
 } from "src/components/layouts/ModalWithFormLayout";
 // Data types
-import { CertificateData } from "src/components/Form/IpaCertificates/IpaCertificates";
+import { CertificateData } from "src/components/Form/IpaCertificates";
 // Components
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 // Utils

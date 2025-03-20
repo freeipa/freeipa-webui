@@ -2,7 +2,7 @@ import React, { useState } from "react";
 // PatternFly
 import { Flex, Form, FormGroup } from "@patternfly/react-core";
 // Forms
-import IpaTextArea from "src/components/Form/IpaTextArea/IpaTextArea";
+import IpaTextArea from "src/components/Form/IpaTextArea";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";

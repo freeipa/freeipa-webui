@@ -17,9 +17,7 @@ import { useSubidSettings } from "src/hooks/useSubidSettingsData";
 // Components
 import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
-import BreadCrumb, {
-  BreadCrumbItem,
-} from "src/components/layouts/BreadCrumb/BreadCrumb";
+import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import SubidSettings from "./SubidsSettings";
 
 // eslint-disable-next-line react/prop-types

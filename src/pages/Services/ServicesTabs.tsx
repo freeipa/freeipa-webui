@@ -13,9 +13,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import ServicesSettings from "./ServicesSettings";
 import ServicesMemberOf from "./ServicesMemberOf";
 import ServicesManagedBy from "./ServicesManagedBy";
-import BreadCrumb, {
-  BreadCrumbItem,
-} from "src/components/layouts/BreadCrumb/BreadCrumb";
+import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import { partialServiceToService } from "src/utils/serviceUtils";
 import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";

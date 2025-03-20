@@ -10,9 +10,7 @@ import {
 // React Router DOM
 import { useNavigate, useParams } from "react-router-dom";
 // Components
-import BreadCrumb, {
-  BreadCrumbItem,
-} from "src/components/layouts/BreadCrumb/BreadCrumb";
+import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
 // Layouts
 import DataSpinner from "src/components/layouts/DataSpinner";

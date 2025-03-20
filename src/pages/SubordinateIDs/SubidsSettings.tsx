@@ -21,11 +21,11 @@ import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 // RPC
 import { SubidModPayload, useSubidModMutation } from "src/services/rpcSubIds";
 // Components
-import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
+import IpaTextInput from "src/components/Form/IpaTextInput";
 import TabLayout from "src/components/layouts/TabLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import IpaTextContent from "src/components/Form/IpaTextContent/IpaTextContent";
+import IpaTextContent from "src/components/Form/IpaTextContent";
 
 interface PropsToSubidSettings {
   subId: Partial<SubId>;
