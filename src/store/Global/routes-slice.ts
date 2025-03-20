@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { BreadCrumbItem } from "src/components/layouts/BreadCrumb/BreadCrumb";
+import { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 
 interface RoutesState {
   breadCrumbPath: BreadCrumbItem[] | null;

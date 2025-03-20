@@ -14,10 +14,10 @@ import PopoverWithIconLayout from "../layouts/PopoverWithIconLayout";
 // Utils
 import { asRecord } from "src/utils/serviceUtils";
 // IPA components
-import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox/PrincipalAliasMultiTextBox";
-import IpaCheckboxes from "../Form/IpaCheckboxes/IpaCheckboxes";
-import IpaCheckbox from "../Form/IpaCheckbox/IpaCheckbox";
-import IpaPACType from "../Form/IpaPACType/IpaPACType";
+import PrincipalAliasMultiTextBox from "../Form/PrincipalAliasMultiTextBox";
+import IpaCheckboxes from "../Form/IpaCheckboxes";
+import IpaCheckbox from "../Form/IpaCheckbox";
+import IpaPACType from "../Form/IpaPACType";
 
 interface PropsToServiceSettings {
   service: Partial<Service>;

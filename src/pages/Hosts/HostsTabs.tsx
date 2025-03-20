@@ -17,9 +17,7 @@ import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHe
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
-import BreadCrumb, {
-  BreadCrumbItem,
-} from "src/components/layouts/BreadCrumb/BreadCrumb";
+import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 // Data types
 import { Host } from "src/utils/datatypes/globalDataTypes";
 // Hooks

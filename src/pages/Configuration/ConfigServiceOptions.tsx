@@ -4,7 +4,7 @@ import { Form, FormGroup } from "@patternfly/react-core";
 // Data types
 import { Metadata } from "src/utils/datatypes/globalDataTypes";
 // Form
-import IpaCheckboxes from "src/components/Form/IpaCheckboxes/IpaCheckboxes";
+import IpaCheckboxes from "src/components/Form/IpaCheckboxes";
 
 interface PropsToServiceOptions {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
