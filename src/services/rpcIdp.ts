@@ -10,13 +10,16 @@ import {
 import { cnType } from "src/utils/datatypes/globalDataTypes";
 // Redux
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { API_VERSION_BACKUP } from "src/utils/utils";
 
 /**
- * Password policies-related endpoints: useGetIdpEntriesQuery, useSearchIdpEntriesMutation
+ * IdP-related endpoints: useGetIdpEntriesQuery, useSearchIdpEntriesMutation
+ *                        useIdpAddMutation
  *
  * API commands:
  * - idp_find: https://freeipa.readthedocs.io/en/latest/api/idp_find.html
  * - idp_show: https://freeipa.readthedocs.io/en/latest/api/idp_show.html
+ * - idp_add: https://freeipa.readthedocs.io/en/latest/api/idp_add.html
  */
 
 export interface IdpFindPayload {
@@ -32,6 +35,52 @@ export interface IdpFullDataPayload {
   sizelimit: number;
   startIdx: number;
   stopIdx: number;
+}
+
+// Add payloads
+export interface KeycloakOrRedHatSSOAddPayload extends AddParams {
+  ipaidporg: string;
+  ipaidpbaseurl: string;
+}
+
+export interface MicrosoftOrAzureAddPayload extends AddParams {
+  ipaidporg: string;
+}
+
+export interface CustomIdpAddPayload extends AddParams {
+  ipaidpauthendpoint: string;
+  ipaidpdevauthendpoint: string;
+  ipaidptokenendpoint: string;
+  ipaidpuserinfoendpoint: string;
+  ipaidpkeysendpoint: string;
+}
+
+export interface AddParams {
+  ipaidpclientid: string;
+  // Selector option
+  ipaidpprovider?: string;
+  // Other optional fields
+  ipaidpscope?: string;
+  ipaidpsub?: string;
+  version?: string;
+}
+
+export interface IdpAddPayload {
+  cn: string;
+  ipaidpclientid: string;
+  // Selector option
+  ipaidpprovider?: "keycloak" | "microsoft" | "okta" | "google" | "github";
+  // Pre-defined template fields
+  // - Keycloak or Red Hat SSO
+  keycloakRedHatData?: KeycloakOrRedHatSSOAddPayload;
+  // - Microsoft or Azure
+  microsoftAzureData?: MicrosoftOrAzureAddPayload;
+  // Custom definition fields
+  customFields?: CustomIdpAddPayload;
+  // Other optional fields
+  ipaidpscope?: string;
+  ipaidpsub?: string;
+  version?: string;
 }
 
 const extendedApi = api.injectEndpoints({
@@ -191,9 +240,84 @@ const extendedApi = api.injectEndpoints({
         return { data: response };
       },
     }),
+    /**
+     * Add a new IdP reference
+     * @param {IdpAddPayload} - Payload with the new IdP data
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    idpAdd: build.mutation<FindRPCResponse, IdpAddPayload>({
+      query: (payload) => {
+        const payloadReceived: AddParams = {
+          // cn: payload.cn,
+          ipaidpclientid: payload.ipaidpclientid,
+          // ipaidpprovider: payload.ipaidpprovider,
+          version: payload.version || API_VERSION_BACKUP,
+        };
+
+        // Add optional fields if not undefined
+        if (payload.ipaidpscope) {
+          payloadReceived.ipaidpscope = payload.ipaidpscope;
+        }
+        if (payload.ipaidpsub) {
+          payloadReceived.ipaidpsub = payload.ipaidpsub;
+        }
+
+        let params:
+          | KeycloakOrRedHatSSOAddPayload
+          | MicrosoftOrAzureAddPayload
+          | CustomIdpAddPayload
+          | AddParams = { ...payloadReceived };
+
+        // The type of the payload will be determined by the 'ipaidpprovider' field
+        if (payload.ipaidpprovider !== undefined) {
+          if (
+            payload.ipaidpprovider === "keycloak" ||
+            payload.ipaidpprovider === "okta"
+          ) {
+            params = {
+              ...payloadReceived,
+              ipaidpprovider: payload.ipaidpprovider,
+              ipaidporg: payload.keycloakRedHatData?.ipaidporg,
+              ipaidpbaseurl: payload.keycloakRedHatData?.ipaidpbaseurl,
+            } as KeycloakOrRedHatSSOAddPayload;
+          } else if (payload.ipaidpprovider === "microsoft") {
+            params = {
+              ...payloadReceived,
+              ipaidpprovider: payload.ipaidpprovider,
+              ipaidporg: payload.microsoftAzureData?.ipaidporg,
+            } as MicrosoftOrAzureAddPayload;
+          } else if (
+            payload.ipaidpprovider === "google" ||
+            payload.ipaidpprovider === "github"
+          ) {
+            params = payloadReceived as AddParams;
+            params.ipaidpprovider = payload.ipaidpprovider;
+          }
+        } else {
+          // Custom IdP
+          params = {
+            ...payloadReceived,
+            ipaidpauthendpoint: payload.customFields?.ipaidpauthendpoint,
+            ipaidpdevauthendpoint: payload.customFields?.ipaidpdevauthendpoint,
+            ipaidptokenendpoint: payload.customFields?.ipaidptokenendpoint,
+            ipaidpuserinfoendpoint:
+              payload.customFields?.ipaidpuserinfoendpoint,
+            ipaidpkeysendpoint: payload.customFields?.ipaidpkeysendpoint,
+          } as CustomIdpAddPayload;
+        }
+
+        return getCommand({
+          method: "idp_add",
+          params: [[payload.cn], params],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetIdpEntriesQuery, useSearchIdpEntriesMutation } =
-  extendedApi;
+export const {
+  useGetIdpEntriesQuery,
+  useSearchIdpEntriesMutation,
+  useIdpAddMutation,
+} = extendedApi;

@@ -40,6 +40,8 @@ import TitleLayout from "src/components/layouts/TitleLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import MainTable from "src/components/tables/MainTable";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
+// Modals
+import AddModal from "src/components/modals/IdpReferences/AddModal";
 
 const IdpReferences = () => {
   // Update current route data to Redux and highlight the current page in the Nav bar
@@ -304,6 +306,17 @@ const IdpReferences = () => {
     updateSelectedPerPage: setSelectedPerPage,
   };
 
+  // Modals functionality
+  const [showAddModal, setShowAddModal] = React.useState(false);
+
+  const onOpenAddModal = () => {
+    setShowAddModal(true);
+  };
+
+  const onCloseAddModal = () => {
+    setShowAddModal(false);
+  };
+
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -360,7 +373,12 @@ const IdpReferences = () => {
     {
       key: 5,
       element: (
-        <SecondaryButton isDisabled={!showTableRows}>Add</SecondaryButton>
+        <SecondaryButton
+          isDisabled={!showTableRows}
+          onClickHandler={onOpenAddModal}
+        >
+          Add
+        </SecondaryButton>
       ),
     },
     {
@@ -456,6 +474,12 @@ const IdpReferences = () => {
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
         />
       </PageSection>
+      <AddModal
+        isOpen={showAddModal}
+        onCloseModal={onCloseAddModal}
+        onRefresh={refreshData}
+        title="Add Identity Provider reference"
+      />
     </Page>
   );
 };
