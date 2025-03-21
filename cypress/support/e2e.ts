@@ -20,6 +20,14 @@ require("cy-verify-downloads").addCustomCommand();
 
 before(() => {
   Cypress.session.clearCurrentSessionData().then();
-  cy.loginAsAnUser(Cypress.env("admin_login"), Cypress.env("admin_password"));
-  cy.userCleanup();
+  switch (Cypress.spec.name) {
+    // case "loginpage.feature":
+    //   break;
+    default:
+      cy.loginAsAnUser(
+        Cypress.env("admin_login"),
+        Cypress.env("admin_password")
+      );
+      cy.userCleanup();
+  }
 });
