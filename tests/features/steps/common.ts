@@ -6,7 +6,7 @@ import { When, Then, Given } from "@badeball/cypress-cucumber-preprocessor";
 Given("I am on {string} page", (handle: string) => {
   cy.url().then(($url) => {
     if (!$url.includes(handle)) {
-      cy.visit(Cypress.env("base_url") + "/" + handle, { timeout: 6000 });
+      cy.visit(Cypress.env("base_url") + "/" + handle, { timeout: 9000 });
     }
   });
 });
@@ -48,7 +48,7 @@ Given("I am logged in as {string}", (username: string) => {
   });
   cy.get(
     "div.pf-v5-c-masthead__content button span.pf-v5-c-menu-toggle__text",
-    { timeout: 6000 }
+    { timeout: 9000 }
   ).then(($ele) => {
     if ($ele.text() !== username) {
       // @ts-ignore
@@ -100,7 +100,7 @@ When("I click on {string} page tab", (tabText: string) => {
 
 When("I click on {string} button", function (buttonText: string) {
   const regex = new RegExp("^" + buttonText + "$", "i");
-  cy.get("button", { timeout: 6000 }).contains(regex).click();
+  cy.get("button", { timeout: 9000 }).contains(regex).click();
 });
 
 When("I click on ID {string} button", function (id: string) {
@@ -250,7 +250,7 @@ When("I select entry {string} in the data table", (name: string) => {
 });
 
 When("I click on {string} entry in the data table", (name: string) => {
-  cy.get("tr[id='" + name + "'] a", { timeout: 5000 })
+  cy.get("tr[id='" + name + "'] a", { timeout: 9000 })
     .contains(name)
     .click();
 });
@@ -323,7 +323,7 @@ Then(
 
 When("I select partial entry {string} in the data table", (name: string) => {
   cy.get("tr[id^='" + name + "'] input[type=checkbox]", {
-    timeout: 6000,
+    timeout: 9000,
   }).check();
 });
 

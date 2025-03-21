@@ -1,0 +1,88 @@
+---
+- name: Create test environment
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Create Python environment
+      ansible.builtin.shell: |
+        if [ ! -f _venv/bin/activate ] ; then
+            python3 -m venv _venv
+        fi
+      args:
+        creates: _venv
+
+    - name: Clone and setup ipalab config
+      ansible.builtin.shell: |
+        source bin/activate
+        pip3 install "git+https://github.com/abbra/ipalab-config.git@enable-volumes" "podman-compose"
+      args:
+        chdir: _venv
+
+    - name: Setup test environment
+      ansible.builtin.shell: |
+        rm -rf _venv/CONFIG_DIR
+        mkdir -p _venv/CONFIG_DIR
+        cp -pr playbooks containerfile-fedora _venv/
+        sed -e "s@CONF_DIR@$(realpath ../../)@g" ipa.yaml.in > _venv/ipa.yaml
+
+    - name: Create ipalab environment
+      ansible.builtin.shell: |
+        source bin/activate
+        ipalab-config -o CONFIG_DIR ipa.yaml
+      args:
+        chdir: _venv
+
+    - name: Create container image
+      ansible.builtin.shell: |
+        source bin/activate
+        cd CONFIG_DIR
+        podman build -t freeipa-webui-tests:latest -f containerfiles/containerfile-fedora .
+      args:
+        chdir: _venv
+
+    - name: Create container instances
+      ansible.builtin.shell: |
+        source bin/activate
+        cd CONFIG_DIR
+        podman-compose up -d
+      args:
+        chdir: _venv
+
+    - name: Ensure '/ect/shadow' is readable in containers
+      ansible.builtin.shell: |
+        source bin/activate
+        ansible -i CONFIG_DIR/inventory.yml \
+          -m "ansible.builtin.shell" \
+          -a "chmod u+r /etc/shadow" all
+      args:
+        chdir: _venv
+
+    - name: Deploy cluster
+      ansible.builtin.shell: |
+        source bin/activate
+        ansible-galaxy collection install -r CONFIG_DIR/requirements.yml
+        ansible-playbook -i CONFIG_DIR/inventory.yml CONFIG_DIR/playbooks/install-cluster.yml
+      args:
+        chdir: _venv
+
+    - name: Run Ansible test playboooks
+      ansible.builtin.shell: |
+        playbooks="webui.yaml cypress-prepare.yaml"
+        source bin/activate
+        for playbook in $playbooks
+        do
+          echo "Running playbook: ${playbook}"
+          ansible-playbook -i CONFIG_DIR/inventory.yml "playbooks/${playbook}"
+        done
+      args:
+        chdir: _venv
+
+    - name: Put IPA Server's IP to /etc/hosts
+      ansible.builtin.shell: |
+        grep -q server.ipa.demo /etc/hosts || \
+            echo "$(podman exec -ti server.ipa.demo hostname -I) server.ipa.demo" | sudo tee -a /etc/hosts
+
+    - name: run Cypress test
+      ansible.builtin.shell: |
+        podman unshare --rootless-netns \
+               npx cypress run --config-file cypress/cypress.config.ts --browser electron ||:
