@@ -14,12 +14,13 @@ import { API_VERSION_BACKUP } from "src/utils/utils";
 
 /**
  * IdP-related endpoints: useGetIdpEntriesQuery, useSearchIdpEntriesMutation
- *                        useIdpAddMutation
+ *                        useIdpAddMutation, useIdpDeleteMutation
  *
  * API commands:
  * - idp_find: https://freeipa.readthedocs.io/en/latest/api/idp_find.html
  * - idp_show: https://freeipa.readthedocs.io/en/latest/api/idp_show.html
  * - idp_add: https://freeipa.readthedocs.io/en/latest/api/idp_add.html
+ * - idp_del: https://freeipa.readthedocs.io/en/latest/api/idp_del.html
  */
 
 export interface IdpFindPayload {
@@ -312,6 +313,24 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Delete identity provider references
+     * @param {string[]} - Payload with the identity provider references IDs to delete
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    idpDelete: build.mutation<BatchRPCResponse, string[]>({
+      query: (payload) => {
+        const commands: Command[] = [];
+        payload.forEach((idp) => {
+          commands.push({
+            method: "idp_del",
+            params: [[idp], {}],
+          });
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -320,4 +339,5 @@ export const {
   useGetIdpEntriesQuery,
   useSearchIdpEntriesMutation,
   useIdpAddMutation,
+  useIdpDeleteMutation,
 } = extendedApi;

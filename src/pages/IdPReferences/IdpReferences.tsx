@@ -42,6 +42,7 @@ import MainTable from "src/components/tables/MainTable";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 // Modals
 import AddModal from "src/components/modals/IdpReferences/AddModal";
+import DeleteModal from "src/components/modals/IdpReferences/DeleteModal";
 
 const IdpReferences = () => {
   // Update current route data to Redux and highlight the current page in the Nav bar
@@ -308,6 +309,7 @@ const IdpReferences = () => {
 
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
   const onOpenAddModal = () => {
     setShowAddModal(true);
@@ -315,6 +317,14 @@ const IdpReferences = () => {
 
   const onCloseAddModal = () => {
     setShowAddModal(false);
+  };
+
+  const onOpenDeleteModal = () => {
+    setShowDeleteModal(true);
+  };
+
+  const onCloseDeleteModal = () => {
+    setShowDeleteModal(false);
   };
 
   // List of Toolbar items
@@ -365,7 +375,10 @@ const IdpReferences = () => {
     {
       key: 4,
       element: (
-        <SecondaryButton isDisabled={isDeleteButtonDisabled || !showTableRows}>
+        <SecondaryButton
+          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          onClickHandler={onOpenDeleteModal}
+        >
           Delete
         </SecondaryButton>
       ),
@@ -479,6 +492,25 @@ const IdpReferences = () => {
         onCloseModal={onCloseAddModal}
         onRefresh={refreshData}
         title="Add Identity Provider reference"
+      />
+      <DeleteModal
+        show={showDeleteModal}
+        onClose={onCloseDeleteModal}
+        selectedData={{
+          selectedElements,
+          clearSelectedElements,
+        }}
+        buttonsData={{
+          updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
+          updateIsDeletion: setIsDeletion,
+        }}
+        columnNames={[
+          "Identity Provider reference name",
+          "Client identifier",
+          "Scope",
+        ]}
+        keyNames={["cn", "ipaidpclientid", "ipaidpscope"]}
+        onRefresh={refreshData}
       />
     </Page>
   );
