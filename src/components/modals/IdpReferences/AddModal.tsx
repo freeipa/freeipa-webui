@@ -129,9 +129,6 @@ const AddModal = (props: PropsToAddModal) => {
     setExtIdpUidAttr("");
     // Selector
     setSelectedProvider("Keycloak or Red Hat SSO");
-    // Radio buttons
-    setIsPreDefinedChecked(true);
-    setIsCustomChecked(false);
   };
 
   // on change radio functions
