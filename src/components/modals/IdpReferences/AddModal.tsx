@@ -127,8 +127,6 @@ const AddModal = (props: PropsToAddModal) => {
     setJwksUri("");
     setScope("");
     setExtIdpUidAttr("");
-    // Selector
-    setSelectedProvider("Keycloak or Red Hat SSO");
   };
 
   // on change radio functions
@@ -153,6 +151,11 @@ const AddModal = (props: PropsToAddModal) => {
       cn: idpRefName,
       ipaidpclientid: clientId,
     };
+
+    // Check if secret is defined
+    if (secret !== "" && verifySecret !== "" && secret === verifySecret) {
+      payload.ipaidpclientsecret = secret;
+    }
 
     // Define payload based on the radio buttons and selected provider
     if (isPreDefinedChecked) {
@@ -186,7 +189,6 @@ const AddModal = (props: PropsToAddModal) => {
       }
     } else if (isCustomChecked) {
       const customData: CustomIdpAddPayload = {
-        // cn: idpRefName,
         ipaidpclientid: clientId,
         ipaidpauthendpoint: authUri,
         ipaidpdevauthendpoint: devAuthUri,
@@ -624,7 +626,11 @@ const AddModal = (props: PropsToAddModal) => {
     <Button
       key="add-new"
       variant="secondary"
-      isDisabled={isAddButtonSpinning || areMandatoryFieldsEmpty}
+      isDisabled={
+        isAddButtonSpinning ||
+        areMandatoryFieldsEmpty ||
+        secret !== verifySecret
+      }
       form="add-modal-form"
       onClick={() => {
         onAdd(false);
@@ -635,7 +641,11 @@ const AddModal = (props: PropsToAddModal) => {
     <Button
       key="add-new-again"
       variant="secondary"
-      isDisabled={isAddAnotherButtonSpinning || areMandatoryFieldsEmpty}
+      isDisabled={
+        isAddAnotherButtonSpinning ||
+        areMandatoryFieldsEmpty ||
+        secret !== verifySecret
+      }
       form="add-again-modal-form"
       onClick={() => {
         onAdd(true);
