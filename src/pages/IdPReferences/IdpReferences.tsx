@@ -456,7 +456,7 @@ const IdpReferences = () => {
                   hasCheckboxes={true}
                   pathname="identity-provider-references"
                   showTableRows={showTableRows}
-                  showLink={false}
+                  showLink={true}
                   elementsData={{
                     isElementSelectable: isIdpServerSelectable,
                     selectedElements,
