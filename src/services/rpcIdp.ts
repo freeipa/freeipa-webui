@@ -7,20 +7,23 @@ import {
   getCommand,
 } from "./rpc";
 // Data types
-import { cnType } from "src/utils/datatypes/globalDataTypes";
+import { cnType, IDPServer } from "src/utils/datatypes/globalDataTypes";
 // Redux
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { API_VERSION_BACKUP } from "src/utils/utils";
+import { apiToIdpServer } from "src/utils/ipdServerUtils";
 
 /**
  * IdP-related endpoints: useGetIdpEntriesQuery, useSearchIdpEntriesMutation
- *                        useIdpAddMutation, useIdpDeleteMutation
+ *                        useIdpAddMutation, useIdpDeleteMutation, useIdpShowQuery,
+ *                        useIdpModMutation
  *
  * API commands:
  * - idp_find: https://freeipa.readthedocs.io/en/latest/api/idp_find.html
  * - idp_show: https://freeipa.readthedocs.io/en/latest/api/idp_show.html
  * - idp_add: https://freeipa.readthedocs.io/en/latest/api/idp_add.html
  * - idp_del: https://freeipa.readthedocs.io/en/latest/api/idp_del.html
+ * - idp_mod: https://freeipa.readthedocs.io/en/latest/api/idp_mod.html
  */
 
 export interface IdpFindPayload {
@@ -61,6 +64,7 @@ export interface AddParams {
   // Selector option
   ipaidpprovider?: string;
   // Other optional fields
+  ipaidpclientsecret?: string;
   ipaidpscope?: string;
   ipaidpsub?: string;
   version?: string;
@@ -79,9 +83,24 @@ export interface IdpAddPayload {
   // Custom definition fields
   customFields?: CustomIdpAddPayload;
   // Other optional fields
+  ipaidpclientsecret?: string;
   ipaidpscope?: string;
   ipaidpsub?: string;
   version?: string;
+}
+
+export interface IdpModPayload {
+  idpId: string;
+  ipaidpclientid?: string;
+  ipaidpclientsecret?: string;
+  ipaidpscope?: string;
+  ipaidpsub?: string;
+  ipaidpauthendpoint?: string;
+  ipaidpdevauthendpoint?: string;
+  ipaidptokenendpoint?: string;
+  ipaidpuserinfoendpoint?: string;
+  ipaidpkeysendpoint?: string;
+  ipaidpissuerurl?: string;
 }
 
 const extendedApi = api.injectEndpoints({
@@ -249,13 +268,14 @@ const extendedApi = api.injectEndpoints({
     idpAdd: build.mutation<FindRPCResponse, IdpAddPayload>({
       query: (payload) => {
         const payloadReceived: AddParams = {
-          // cn: payload.cn,
           ipaidpclientid: payload.ipaidpclientid,
-          // ipaidpprovider: payload.ipaidpprovider,
           version: payload.version || API_VERSION_BACKUP,
         };
 
         // Add optional fields if not undefined
+        if (payload.ipaidpclientsecret) {
+          payloadReceived.ipaidpclientsecret = payload.ipaidpclientsecret;
+        }
         if (payload.ipaidpscope) {
           payloadReceived.ipaidpscope = payload.ipaidpscope;
         }
@@ -331,6 +351,66 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(commands, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Show a specific Identity Provider (with all its details).
+     * @param string
+     * @returns IDPServer
+     */
+    idpShow: build.query<IDPServer, string>({
+      query: (idpId) => {
+        return getCommand({
+          method: "idp_show",
+          params: [
+            [idpId],
+            { all: true, rights: true, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+      transformResponse: (response: FindRPCResponse) => {
+        const idpServer = apiToIdpServer(response.result.result);
+        // return response.result.result as unknown as IDPServer;
+        return idpServer;
+      },
+    }),
+    /**
+     * Update a specific IdP data.
+     * @param IdpModPayload
+     * @returns FindRPCResponse
+     */
+    idpMod: build.mutation<FindRPCResponse, IdpModPayload>({
+      query: (payload) => {
+        const params: Record<string, unknown> = {
+          all: true,
+          rights: true,
+          version: API_VERSION_BACKUP,
+        };
+
+        const optionalKeys: Array<keyof Omit<IdpModPayload, "idpId">> = [
+          "ipaidpclientid",
+          "ipaidpclientsecret",
+          "ipaidpscope",
+          "ipaidpsub",
+          "ipaidpauthendpoint",
+          "ipaidpdevauthendpoint",
+          "ipaidptokenendpoint",
+          "ipaidpuserinfoendpoint",
+          "ipaidpkeysendpoint",
+          "ipaidpissuerurl",
+        ];
+
+        optionalKeys.forEach((key) => {
+          const value = payload[key];
+          if (value !== undefined) {
+            params[key] = value.toString();
+          }
+        });
+
+        return getCommand({
+          method: "idp_mod",
+          params: [[payload.idpId], params],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -340,4 +420,6 @@ export const {
   useSearchIdpEntriesMutation,
   useIdpAddMutation,
   useIdpDeleteMutation,
+  useIdpShowQuery,
+  useIdpModMutation,
 } = extendedApi;
