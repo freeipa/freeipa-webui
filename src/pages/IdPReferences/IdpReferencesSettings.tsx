@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  DropdownItem,
   Flex,
   FlexItem,
   Form,
@@ -30,6 +31,8 @@ import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayou
 import IpaTextContent from "src/components/Form/IpaTextContent/IpaTextContent";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import IpaPasswordInput from "src/components/Form/IpaPasswordInput";
+import KebabLayout from "src/components/layouts/KebabLayout";
+import ResetIdpPassword from "src/components/ResetIdpPassword";
 
 interface PropsToIdpRefSettings {
   idpRef: Partial<IDPServer>;
@@ -136,6 +139,22 @@ const IdpRefSettings = (props: PropsToIdpRefSettings) => {
     });
   };
 
+  // 'Reset password' option
+  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] =
+    React.useState(false);
+
+  // Kebab
+  const [isKebabOpen, setIsKebabOpen] = React.useState(false);
+
+  const kebabItems = [
+    <DropdownItem
+      key="reset password"
+      onClick={() => setIsResetPasswordModalOpen(true)}
+    >
+      Reset password
+    </DropdownItem>,
+  ];
+
   // Toolbar
   const toolbarFields = [
     {
@@ -166,6 +185,19 @@ const IdpRefSettings = (props: PropsToIdpRefSettings) => {
         >
           Save
         </SecondaryButton>
+      ),
+    },
+    {
+      key: 3,
+      element: (
+        <KebabLayout
+          direction={"up"}
+          onDropdownSelect={() => setIsKebabOpen(!isKebabOpen)}
+          onKebabToggle={() => setIsKebabOpen(!isKebabOpen)}
+          idKebab="toggle-action-buttons"
+          isKebabOpen={isKebabOpen}
+          dropdownItems={kebabItems}
+        />
       ),
     },
   ];
@@ -356,6 +388,13 @@ const IdpRefSettings = (props: PropsToIdpRefSettings) => {
             </Flex>
           </SidebarContent>
         </Sidebar>
+        <ResetIdpPassword
+          idpId={props.idpRef.cn as string}
+          isOpen={isResetPasswordModalOpen}
+          onClose={() => setIsResetPasswordModalOpen(false)}
+          onIdpRefChange={props.onIdpRefChange}
+          onRefresh={props.onRefresh}
+        />
       </TabLayout>
     </>
   );
