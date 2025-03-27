@@ -199,6 +199,15 @@ When(
 );
 
 When(
+  "In the modal, I type into the field with ID {string} text {string}",
+  (id: string, text: string) => {
+    cy.get("[role=dialog] div.pf-v5-c-modal-box__body")
+      .find("input[id=" + id + "]")
+      .type(text);
+  }
+);
+
+When(
   "I type in the flex field {string} text {string}",
   (fieldName: string, content: string) => {
     const regex = new RegExp("^" + fieldName + "$", "i");

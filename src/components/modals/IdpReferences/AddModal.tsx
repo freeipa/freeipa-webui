@@ -338,7 +338,7 @@ const AddModal = (props: PropsToAddModal) => {
     },
     {
       id: "provider-type-radios",
-      name: "Provider type",
+      name: "",
       pfComponent: (
         <>
           <Radio
