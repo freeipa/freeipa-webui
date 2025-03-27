@@ -12,7 +12,7 @@
     "noImplicitReturns": false,
     "noImplicitThis": true,
     "noImplicitAny": false,
-    "allowJs": true,
+    "allowJs": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
@@ -30,5 +30,5 @@
     "cypress",
     "node_modules"
   ],
-  "types": ["jest", "@testing-library/jest-dom", "@testing-library/react"]
+  "types": ["@testing-library/react"]
 }

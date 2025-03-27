@@ -1,14 +1,20 @@
 import React from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import {
+  render,
+  screen,
+  fireEvent,
+  act,
+  cleanup,
+} from "@testing-library/react";
+import { describe, vi, it, expect, afterEach } from "vitest";
 // Component
 import IpaDropdownSearch, {
   IPAParamDefinitionDropdown,
 } from "./IpaDropdownSearch";
 
 describe("IpaDropdownSearch Component", () => {
-  const mockOnchange = jest.fn();
-  const mockOnSearch = jest.fn();
+  const mockOnchange = vi.fn();
+  const mockOnSearch = vi.fn();
 
   const mockMetadata = {
     objects: {
@@ -90,6 +96,8 @@ describe("IpaDropdownSearch Component", () => {
     options: ["server.ipa.demo", "server2.ipa.demo"],
     onSearch: mockOnSearch,
   };
+
+  afterEach(cleanup);
 
   it("should render the component", () => {
     render(<IpaDropdownSearch {...defaultProps} />);

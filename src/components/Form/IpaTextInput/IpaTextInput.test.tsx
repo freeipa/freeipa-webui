@@ -1,13 +1,19 @@
 import React from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import {
+  render,
+  screen,
+  fireEvent,
+  act,
+  cleanup,
+} from "@testing-library/react";
+import { describe, vi, afterEach, it, expect } from "vitest";
 // Component
 import IpaTextInput from "./IpaTextInput";
 // Utils
 import { IPAParamDefinition } from "src/utils/ipaObjectUtils";
 
 describe("IpaTextInput Component", () => {
-  const mockOnChange = jest.fn();
+  const mockOnChange = vi.fn();
 
   const mockMetadata = {
     objects: {
@@ -93,7 +99,8 @@ describe("IpaTextInput Component", () => {
   };
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
+    cleanup();
   });
 
   it("renders IpaTextInput with default props", () => {

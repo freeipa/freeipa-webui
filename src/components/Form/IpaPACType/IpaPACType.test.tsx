@@ -1,19 +1,19 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import { render, screen, fireEvent, cleanup } from "@testing-library/react";
+import { vi, describe, it, expect, afterEach } from "vitest";
 // Component
 import IpaPACType from "./IpaPACType";
 import { IPAParamDefinition } from "src/utils/ipaObjectUtils";
 import { updateIpaObject } from "src/utils/ipaObjectUtils";
 
 // Mock of util function: updateIpaObject
-jest.mock("src/utils/ipaObjectUtils", () => ({
-  ...jest.requireActual("src/utils/ipaObjectUtils.ts"),
-  updateIpaObject: jest.fn(),
+vi.mock("src/utils/ipaObjectUtils", async () => ({
+  ...(await vi.importActual("src/utils/ipaObjectUtils.ts")),
+  updateIpaObject: vi.fn(),
 }));
 
 describe("IpaPACType Component", () => {
-  const mockOnChange = jest.fn((ipaObject) => {
+  const mockOnChange = vi.fn((ipaObject) => {
     console.log("mockOnChange called with:", ipaObject);
   });
 
@@ -91,6 +91,8 @@ describe("IpaPACType Component", () => {
     ipaObject: mockIpaObject,
     metadata: mockMetadata,
   };
+
+  afterEach(cleanup);
 
   it("should render the component", () => {
     render(<IpaPACType {...defaultProps} />);

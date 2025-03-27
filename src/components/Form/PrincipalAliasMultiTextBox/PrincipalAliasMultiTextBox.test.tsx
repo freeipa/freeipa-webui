@@ -1,6 +1,12 @@
 import React from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import {
+  render,
+  screen,
+  fireEvent,
+  act,
+  cleanup,
+} from "@testing-library/react";
+import { Mock, vi, describe, afterEach, it, expect } from "vitest";
 // Component
 import PrincipalAliasMultiTextBox, {
   PrincipalAliasMultiTextBoxProps,
@@ -13,27 +19,27 @@ interface MockReturn {
 /**
  * PrincipalAliasMultiTextBox.tsx
  */
-const addPrincipalAlias: jest.Mock<Promise<MockReturn>> = jest.fn(async () => {
+const addPrincipalAlias: Mock<() => Promise<MockReturn>> = vi.fn(async () => {
   return { data: { result: true } };
 });
 
 /**
  * PrincipalAliasMultiTextBox.tsx
  */
-const removePrincipalAlias: jest.Mock<Promise<MockReturn>> = jest.fn(
+const removePrincipalAlias: Mock<() => Promise<MockReturn>> = vi.fn(
   async () => {
     return { data: { result: true } };
   }
 );
 
 // Mock of rpc functions
-jest.mock("src/services/rpcHosts", () => ({
+vi.mock("src/services/rpcHosts", () => ({
   useAddHostPrincipalAliasMutation: () => [addPrincipalAlias],
   useRemoveHostPrincipalAliasMutation: () => [removePrincipalAlias],
 }));
 
 describe("PrincipalAliasMultiTextBox Component", () => {
-  const mockOnRefresh = jest.fn();
+  const mockOnRefresh = vi.fn();
 
   const mockMetadata = {
     objects: {
@@ -89,7 +95,8 @@ describe("PrincipalAliasMultiTextBox Component", () => {
   };
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
+    cleanup();
   });
 
   it("renders empty PrincipalAliasMultiTextBox", async () => {

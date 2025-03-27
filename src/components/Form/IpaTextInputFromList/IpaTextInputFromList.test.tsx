@@ -1,14 +1,14 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import { render, screen, fireEvent, cleanup } from "@testing-library/react";
+import { describe, vi, it, expect, afterEach } from "vitest";
 // Component
 import IpaTextInputFromList, {
   PropsToTextInputFromList,
 } from "./IpaTextInputFromList";
 
 describe("IpaTextInputFromList Component", () => {
-  const mockOnOpenModal = jest.fn();
-  const mockOnRemove = jest.fn();
+  const mockOnOpenModal = vi.fn();
+  const mockOnRemove = vi.fn();
 
   const mockMetadata = {
     objects: {
@@ -46,6 +46,8 @@ describe("IpaTextInputFromList Component", () => {
       },
     },
   };
+
+  afterEach(cleanup);
 
   const defaultProps: PropsToTextInputFromList = {
     name: "krbprincipalname",

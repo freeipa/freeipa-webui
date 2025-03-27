@@ -1,20 +1,20 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import { render, screen, fireEvent, cleanup } from "@testing-library/react";
+import { vi, describe, afterEach, it, expect } from "vitest";
 // Component
 import IpaCheckboxes, { IPAParamDefinitionCheckboxes } from "./IpaCheckboxes";
 // Utils
 import { updateCheckboxList } from "src/utils/ipaObjectUtils";
 
 // Mock of util function: updateIpaObject
-jest.mock("src/utils/ipaObjectUtils", () => ({
-  ...jest.requireActual("src/utils/ipaObjectUtils.ts"),
-  updateIpaObject: jest.fn(),
-  updateCheckboxList: jest.fn(),
+vi.mock("src/utils/ipaObjectUtils", async () => ({
+  ...(await vi.importActual("src/utils/ipaObjectUtils.ts")),
+  updateIpaObject: vi.fn(),
+  updateCheckboxList: vi.fn(),
 }));
 
 describe("IpaCheckboxes Component", () => {
-  const mockOnChange = jest.fn((ipaObject) => {
+  const mockOnChange = vi.fn((ipaObject) => {
     console.log("mockOnChange called with:", ipaObject);
   });
 
@@ -85,7 +85,8 @@ describe("IpaCheckboxes Component", () => {
   };
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
+    cleanup();
   });
 
   it("renders the IpaCheckboxes component with correct props", () => {

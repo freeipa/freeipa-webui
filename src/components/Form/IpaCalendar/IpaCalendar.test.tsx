@@ -1,19 +1,19 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import { render, screen, fireEvent, cleanup } from "@testing-library/react";
+import { vi, describe, it, expect, afterEach } from "vitest";
 // Component
 import IpaCalendar from "./IpaCalendar";
 // Utils
 import { IPAParamDefinition, updateIpaObject } from "src/utils/ipaObjectUtils";
 
 // Mock of util function: updateIpaObject
-jest.mock("src/utils/ipaObjectUtils", () => ({
-  ...jest.requireActual("src/utils/ipaObjectUtils.ts"),
-  updateIpaObject: jest.fn(),
+vi.mock("src/utils/ipaObjectUtils", async () => ({
+  ...(await vi.importActual("src/utils/ipaObjectUtils.ts")),
+  updateIpaObject: vi.fn(),
 }));
 
 describe("IpaCalendar Component", () => {
-  const mockOnchange = jest.fn();
+  const mockOnchange = vi.fn();
 
   const mockMetadata = {
     objects: {
@@ -61,6 +61,8 @@ describe("IpaCalendar Component", () => {
     readOnly: true,
     metadata: mockMetadata,
   };
+
+  afterEach(cleanup);
 
   it("renders the IpaCalendar with correct props", () => {
     render(<IpaCalendar {...defaultProps} />);
