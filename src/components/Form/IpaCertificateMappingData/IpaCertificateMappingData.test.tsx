@@ -1,6 +1,12 @@
 import React from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import {
+  render,
+  screen,
+  fireEvent,
+  act,
+  cleanup,
+} from "@testing-library/react";
+import { Mock, vi, describe, afterEach, it, expect } from "vitest";
 // Component
 import IpaCertificateMappingData, {
   PropsToIpaCertificateMappingData,
@@ -16,25 +22,25 @@ interface MockReturn {
       };
 }
 
-const addCertMapData: jest.Mock<Promise<MockReturn>> = jest.fn(async () => {
+const addCertMapData: Mock<() => Promise<MockReturn>> = vi.fn(async () => {
   return { data: { result: true } };
 });
 
-const removeCertMapData: jest.Mock<Promise<MockReturn>> = jest.fn(async () => {
+const removeCertMapData: Mock<() => Promise<MockReturn>> = vi.fn(async () => {
   return { data: { result: true } };
 });
 
-jest.mock("src/services/rpcUsers", () => ({
+vi.mock("src/services/rpcUsers", () => ({
   useAddCertMapDataMutation: () => [addCertMapData],
   useRemoveCertMapDataMutation: () => [removeCertMapData],
 }));
 
 describe("IpaCertificateMappingData", () => {
-  const mockOnChange = jest.fn((ipaObject) => {
+  const mockOnChange = vi.fn((ipaObject) => {
     console.log("mockOnChange called with:", ipaObject);
   });
 
-  const mockOnRefresh = jest.fn(() => {
+  const mockOnRefresh = vi.fn(() => {
     console.log("mockOnRefresh called");
   });
 
@@ -82,7 +88,8 @@ describe("IpaCertificateMappingData", () => {
   };
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
+    cleanup();
   });
 
   it("should render the component", async () => {

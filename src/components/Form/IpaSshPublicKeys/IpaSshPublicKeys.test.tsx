@@ -1,6 +1,12 @@
 import React from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import {
+  render,
+  screen,
+  fireEvent,
+  act,
+  cleanup,
+} from "@testing-library/react";
+import { vi, describe, expect, it, afterEach } from "vitest";
 // Component
 import IpaSshPublicKeys, {
   PropsToSshPublicKeysModal,
@@ -29,8 +35,8 @@ const shouldFail = (payload) => {
 };
 
 // Mock of rpc: useSimpleMutCommandMutation
-jest.mock("src/services/rpc", () => ({
-  useSimpleMutCommandMutation: jest.fn(() => [
+vi.mock("src/services/rpc", () => ({
+  useSimpleMutCommandMutation: vi.fn(() => [
     // updateSSHKey
     async (payload) => {
       console.log("updateSSHKey called with:", payload);
@@ -55,10 +61,10 @@ jest.mock("src/services/rpc", () => ({
 }));
 
 describe("IpaSshPublicKeys Component", () => {
-  const mockOnChange = jest.fn((ipaObject) => {
+  const mockOnChange = vi.fn((ipaObject) => {
     console.log("mockOnChange called with:", ipaObject);
   });
-  const mockOnRefresh = jest.fn();
+  const mockOnRefresh = vi.fn();
 
   const mockMetadata = {
     objects: {
@@ -137,6 +143,8 @@ describe("IpaSshPublicKeys Component", () => {
       fireEvent.click(setButton);
     });
   };
+
+  afterEach(cleanup);
 
   it("renders empty keys correctly", () => {
     render(<IpaSshPublicKeys {...defaultProps} />);
