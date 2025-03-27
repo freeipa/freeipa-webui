@@ -1,6 +1,12 @@
 import React from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import {
+  render,
+  screen,
+  fireEvent,
+  act,
+  cleanup,
+} from "@testing-library/react";
+import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 // Component
 import IpaCertificates, { PropsToIpaCertificates } from "./IpaCertificates";
 // Utils
@@ -22,41 +28,42 @@ interface CertificateAuthorityQuery {
 /**
  * IpaCertificates.tsx
  */
-const addCertificate: jest.Mock<Promise<MockReturn>> = jest.fn(async () => {
+const addCertificate: Mock<() => Promise<MockReturn>> = vi.fn(async () => {
   return { data: { result: true } };
 });
 
 /**
  * IpaCertificates.tsx
  */
-const removeCertificate: jest.Mock<Promise<MockReturn>> = jest.fn(async () => {
+const removeCertificate: Mock<() => Promise<MockReturn>> = vi.fn(async () => {
   return { data: { result: true } };
 });
 
 /**
  * RevokeCertificate.tsx
  */
-const mockUseGetCertificateAuthorityQuery: jest.Mock<CertificateAuthorityQuery> =
-  jest.fn(() => {
-    return { isLoading: false };
-  });
+const mockUseGetCertificateAuthorityQuery: Mock<
+  () => CertificateAuthorityQuery
+> = vi.fn(() => {
+  return { isLoading: false };
+});
 
 /**
  * RevokeCertificate.tsx
  */
-const certRevoke: jest.Mock<Promise<MockReturn>> = jest.fn(async () => {
+const certRevoke: Mock<() => Promise<MockReturn>> = vi.fn(async () => {
   return { data: { result: true } };
 });
 
 /**
  * RemoveHoldCertificate.tsx
  */
-const certRemoveHold: jest.Mock<Promise<MockReturn>> = jest.fn(async () => {
+const certRemoveHold: Mock<() => Promise<MockReturn>> = vi.fn(async () => {
   return { data: { result: true } };
 });
 
 // Mock of rpc functions
-jest.mock("src/services/rpcCerts", () => ({
+vi.mock("src/services/rpcCerts", () => ({
   useAddCertificateMutation: () => [addCertificate],
   useRemoveCertificateMutation: () => [removeCertificate],
   // Should be mocked per test
@@ -66,8 +73,8 @@ jest.mock("src/services/rpcCerts", () => ({
 }));
 
 describe("IpaCertificates Component", () => {
-  const mockOnChange = jest.fn();
-  const mockOnRefresh = jest.fn();
+  const mockOnChange = vi.fn();
+  const mockOnRefresh = vi.fn();
 
   const mockMetadata = {
     objects: {
@@ -153,7 +160,8 @@ describe("IpaCertificates Component", () => {
   };
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
+    cleanup();
   });
 
   it("renders the IpaCertificates with correct props", async () => {
@@ -234,7 +242,7 @@ describe("IpaCertificates Component", () => {
     });
 
     // Certificate should be valid
-    jest.useFakeTimers().setSystemTime(new Date("2030-02-02"));
+    vi.useFakeTimers().setSystemTime(new Date("2030-02-02"));
 
     await act(async () => {
       render(<IpaCertificates {...props} />);
@@ -521,7 +529,7 @@ describe("IpaCertificates Component", () => {
     });
 
     // Certificate should be valid
-    jest.useFakeTimers().setSystemTime(new Date("2030-02-02"));
+    vi.useFakeTimers().setSystemTime(new Date("2030-02-02"));
 
     await act(async () => {
       render(<IpaCertificates {...props} />);
@@ -606,7 +614,7 @@ describe("IpaCertificates Component", () => {
     });
 
     // Certificate should be valid
-    jest.useFakeTimers().setSystemTime(new Date("2030-02-02"));
+    vi.useFakeTimers().setSystemTime(new Date("2030-02-02"));
 
     await act(async () => {
       render(<IpaCertificates {...props} />);
@@ -682,7 +690,7 @@ describe("IpaCertificates Component", () => {
     });
 
     // Certificate should be valid
-    jest.useFakeTimers().setSystemTime(new Date("2030-02-02"));
+    vi.useFakeTimers().setSystemTime(new Date("2030-02-02"));
 
     await act(async () => {
       render(<IpaCertificates {...props} />);
@@ -774,7 +782,7 @@ describe("IpaCertificates Component", () => {
     });
 
     // Certificate should be valid
-    jest.useFakeTimers().setSystemTime(new Date("2030-02-02"));
+    vi.useFakeTimers().setSystemTime(new Date("2030-02-02"));
 
     await act(async () => {
       render(<IpaCertificates {...props} />);
@@ -850,7 +858,7 @@ describe("IpaCertificates Component", () => {
     });
 
     // Certificate should be valid
-    jest.useFakeTimers().setSystemTime(new Date("2030-02-02"));
+    vi.useFakeTimers().setSystemTime(new Date("2030-02-02"));
 
     await act(async () => {
       render(<IpaCertificates {...props} />);
@@ -921,7 +929,7 @@ describe("IpaCertificates Component", () => {
     });
 
     // Certificate should be valid
-    jest.useFakeTimers().setSystemTime(new Date("2030-02-02"));
+    vi.useFakeTimers().setSystemTime(new Date("2030-02-02"));
 
     await act(async () => {
       render(<IpaCertificates {...props} />);

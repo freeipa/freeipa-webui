@@ -3,7 +3,7 @@
 # FreeIPA Web UI
 
 New version of the web application for administration of FreeIPA built using
-[React](https://reactjs.org/) and [PatternFly 4](https://www.patternfly.org/v4/).
+[React](https://reactjs.org/) and [PatternFly 5](https://v5-archive.patternfly.org/).
 
 You can read more about the plans [here](https://github.com/freeipa/freeipa-webui/discussions/34).
 
@@ -114,14 +114,14 @@ The integration tests use the **.feature** suffix and can be found in the _tests
 
 ### Unit tests
 
-Unit tests use [jest](https://jestjs.io).
+Unit tests use [vitest](https://vitest.dev).
 
 #### Launching the existing tests
 
 The existing tests can be launched by executing
 
 ```bash
-$ npm run test
+$ npm test
 ```
 
 #### Adding new tests

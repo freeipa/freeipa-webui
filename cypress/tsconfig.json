@@ -3,7 +3,6 @@
   "compilerOptions": {
     "noEmit": true,
     // be explicit about types included
-    // to avoid clashing with Jest types
     "types": ["cypress", "cy-verify-downloads"],
     "paths": {
       "@badeball/cypress-cucumber-preprocessor/*": [

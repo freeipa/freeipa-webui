@@ -1,11 +1,11 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import { render, screen, fireEvent, cleanup } from "@testing-library/react";
+import { describe, it, expect, vi, afterEach } from "vitest";
 // Component
 import IpaTextboxList, { PropsToIpaTextboxList } from "./IpaTextboxList";
 
 describe("IpaTextboxList Component", () => {
-  const mockSetIpaObject = jest.fn();
+  const mockSetIpaObject = vi.fn();
 
   const defaultProps: PropsToIpaTextboxList = {
     ipaObject: {},
@@ -13,6 +13,11 @@ describe("IpaTextboxList Component", () => {
     name: "customipatextboxlist",
     ariaLabel: "customipatextboxlist",
   };
+
+  afterEach(() => {
+    vi.clearAllMocks();
+    cleanup();
+  });
 
   it("should render the component", () => {
     // Initially, the component contains just an 'Add' button
@@ -45,7 +50,7 @@ describe("IpaTextboxList Component", () => {
 
   it("should validate there are no duplicated elements", () => {
     // Mock validatior function should check if entries contain a MAC address
-    const mockValidator = jest.fn((value: string) => {
+    const mockValidator = vi.fn((value: string) => {
       const mac_regex = /^([a-fA-F0-9]{2}[:|\\-]?){5}[a-fA-F0-9]{2}$/;
       return value.match(mac_regex) !== null ? true : false;
     });

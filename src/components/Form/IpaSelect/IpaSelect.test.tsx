@@ -1,20 +1,26 @@
 import React from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import {
+  render,
+  screen,
+  fireEvent,
+  act,
+  cleanup,
+} from "@testing-library/react";
+import { vi, describe, it, expect, afterEach } from "vitest";
 // Component
 import IpaSelect, { IPAParamDefinitionSelect } from "./IpaSelect";
 
 // Mock of util function: updateIpaObject
-jest.mock("src/utils/ipaObjectUtils", () => ({
-  ...jest.requireActual("src/utils/ipaObjectUtils.ts"),
-  updateIpaObject: jest.fn((ipaObject, setIpaObject, valueToUpdate, name) => {
+vi.mock("src/utils/ipaObjectUtils", async () => ({
+  ...(await vi.importActual("src/utils/ipaObjectUtils.ts")),
+  updateIpaObject: vi.fn((ipaObject, setIpaObject, valueToUpdate, name) => {
     console.log("Mock updateIpaObject called");
     console.log({ ipaObject, setIpaObject, valueToUpdate, name });
   }),
 }));
 
 describe("IpaSelect Component", () => {
-  const mockOnChange = jest.fn();
+  const mockOnChange = vi.fn();
 
   const mockMetadata = {
     objects: {
@@ -63,6 +69,8 @@ describe("IpaSelect Component", () => {
     options: ["customOption1", "customOption2"],
     metadata: mockMetadata,
   };
+
+  afterEach(cleanup);
 
   it("renders the select input correctly", async () => {
     render(<IpaSelect {...defaultProps} />);

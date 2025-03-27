@@ -1,15 +1,16 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 // Component
 import BreadCrumb, { BreadCrumbItem } from "./BreadCrumb";
 
 describe("BreadCrumb Component", () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
+    cleanup();
   });
 
-  it("renders the BreadCrumb component with items", () => {
+  it("renders the BreadCrumb component with items", async () => {
     const breadCrumbItems: BreadCrumbItem[] = [
       {
         name: "Active users",
@@ -27,7 +28,7 @@ describe("BreadCrumb Component", () => {
     expect(screen.getByText("user1")).toBeInTheDocument();
   });
 
-  it("renders the BreadCrumb component with preText", () => {
+  it("renders the BreadCrumb component with preText", async () => {
     const breadCrumbItems: BreadCrumbItem[] = [
       {
         name: "Active users",
@@ -61,11 +62,10 @@ describe("BreadCrumb Component", () => {
     render(<BreadCrumb breadcrumbItems={breadCrumbItems} />);
 
     /**
-     * Jest uses jsdom to run its test. jsdom is simulating a
-     * browser, but it has some limitations. One of these
-     * limitations is the fact that you can't change the location
-     * while executing a test. So in this case, the test will
-     * check if the link has the correct href attribute.
+     * Vitest is simulating a browser, but it has some limitations.
+     * One of these limitations is the fact that you can't change
+     * the location while executing a test. So in this case, the
+     * test will check if the link has the correct href attribute.
      */
     const link = screen.getByText("Active users");
     expect(link).toHaveAttribute("href", "/active-users");

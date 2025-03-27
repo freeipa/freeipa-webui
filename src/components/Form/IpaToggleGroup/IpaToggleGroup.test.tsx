@@ -1,23 +1,23 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import { render, screen, fireEvent, cleanup } from "@testing-library/react";
+import { describe, afterEach, it, expect, vi } from "vitest";
 // Component
 import IpaToggleGroup, { ToggleOptionProps } from "./IpaToggleGroup";
 // Utils
 import { updateIpaObject } from "src/utils/ipaObjectUtils";
 
 // Mock of util function: updateIpaObject
-jest.mock("src/utils/ipaObjectUtils", () => ({
-  ...jest.requireActual("src/utils/ipaObjectUtils.ts"),
-  updateIpaObject: jest.fn(),
+vi.mock("src/utils/ipaObjectUtils", async () => ({
+  ...(await vi.importActual("src/utils/ipaObjectUtils.ts")),
+  updateIpaObject: vi.fn(),
 }));
 
 describe("IpaToggleGroup Component", () => {
-  const mockOnChange = jest.fn((ipaObject) => {
+  const mockOnChange = vi.fn((ipaObject) => {
     console.log("mockOnChange called with:", ipaObject);
   });
 
-  const mockSetOptionSelected = jest.fn((option: string) => {
+  const mockSetOptionSelected = vi.fn((option: string) => {
     console.log("mockSetOptionSelected called with:", option);
   });
 
@@ -81,7 +81,8 @@ describe("IpaToggleGroup Component", () => {
   };
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
+    cleanup();
   });
 
   it("should render the component", () => {

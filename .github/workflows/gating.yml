@@ -69,8 +69,8 @@ jobs:
       - name: Install project
         run: npm install
 
-      - name: Run jest
-        run: npm run test
+      - name: Run vitest
+        run: npm test
 
   integration-tests:
     name: Integration tests

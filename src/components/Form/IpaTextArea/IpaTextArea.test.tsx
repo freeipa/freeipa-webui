@@ -1,13 +1,19 @@
 import React from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import {
+  render,
+  screen,
+  fireEvent,
+  act,
+  cleanup,
+} from "@testing-library/react";
+import { describe, afterEach, it, expect, vi } from "vitest";
 // Component
 import IpaTextArea from "./IpaTextArea";
 // Utils
 import { IPAParamDefinition } from "src/utils/ipaObjectUtils";
 
 describe("IpaTextArea Component", () => {
-  const mockOnChange = jest.fn();
+  const mockOnChange = vi.fn();
 
   const mockIpaObject = {
     attributelevelrights: {},
@@ -92,7 +98,8 @@ describe("IpaTextArea Component", () => {
   };
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
+    cleanup();
   });
 
   it("renders the TextArea component", () => {

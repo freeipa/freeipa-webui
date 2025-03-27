@@ -1,19 +1,19 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import { render, screen, fireEvent, cleanup } from "@testing-library/react";
+import { vi, describe, afterEach, it, expect } from "vitest";
 // Component
 import IpaNumberInput, {
   IPAParamDefinitionNumberInput,
 } from "./IpaNumberInput";
 
 // Mock of util function: updateIpaObject
-jest.mock("src/utils/ipaObjectUtils", () => ({
-  ...jest.requireActual("src/utils/ipaObjectUtils.ts"),
-  updateIpaObject: jest.fn(),
+vi.mock("src/utils/ipaObjectUtils", async () => ({
+  ...(await vi.importActual("src/utils/ipaObjectUtils.ts")),
+  updateIpaObject: vi.fn(),
 }));
 
 describe("IpaNumberInput Component", () => {
-  const mockOnChange = jest.fn();
+  const mockOnChange = vi.fn();
 
   const mockMetadata = {
     objects: {
@@ -66,7 +66,8 @@ describe("IpaNumberInput Component", () => {
   };
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
+    cleanup();
   });
 
   it("renders the NumberInput component with correct props", () => {
@@ -93,7 +94,7 @@ describe("IpaNumberInput Component", () => {
 
   it("increment number when clicking plus button", () => {
     let value = ""; // Empty by default
-    const mockOnChange = jest.fn((newValue) => {
+    const mockOnChange = vi.fn((newValue) => {
       value = newValue.sudoorder2;
     });
 
