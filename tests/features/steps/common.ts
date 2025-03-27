@@ -198,6 +198,12 @@ When(
   }
 );
 
+When("In the modal, I type field with ID {string} text {string}", (id: string, text: string) => {
+  cy.get("[role=dialog] div.pf-v5-c-modal-box__body")
+    .find("input[id=" + id + "]")
+    .type(text);
+});
+
 When(
   "I type in the flex field {string} text {string}",
   (fieldName: string, content: string) => {
