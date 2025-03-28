@@ -69,7 +69,7 @@ jobs:
       - name: Install project
         run: npm install
 
-      - name: Run jest
+      - name: Run vitest
         run: npm run test
 
   integration-tests:

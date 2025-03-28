@@ -1,6 +1,6 @@
 import React from "react";
-import { render, screen, act } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import { render, screen, act, cleanup } from "@testing-library/react";
+import { describe, it, expect, afterEach } from "vitest";
 // Component
 import IpaTextContent, { IpaTextContentProps } from "./IpaTextContent";
 import { BrowserRouter } from "react-router-dom";
@@ -50,6 +50,8 @@ describe("IpaTextContent Component", () => {
     metadata: mockMetadata,
     ipaObject: { cn: [mockCn] },
   };
+
+  afterEach(cleanup);
 
   it("should render the component", async () => {
     await act(async () => {

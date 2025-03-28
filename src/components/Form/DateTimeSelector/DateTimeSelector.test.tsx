@@ -1,11 +1,17 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  cleanup,
+} from "@testing-library/react";
+import { describe, vi, it, expect, afterEach } from "vitest";
 // Component
 import DateTimeSelector from "./DateTimeSelector";
 
 describe("DateTimeSelector Component", () => {
-  const mockOnChange = jest.fn();
+  const mockOnChange = vi.fn();
 
   const defaultProps = {
     datetime: null,
@@ -14,6 +20,8 @@ describe("DateTimeSelector Component", () => {
     ariaLabel: "Kerberos password expiration date",
     isDisabled: false,
   };
+
+  afterEach(cleanup);
 
   it("renders the date and time inputs correctly", () => {
     render(<DateTimeSelector {...defaultProps} />);
