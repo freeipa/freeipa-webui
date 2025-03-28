@@ -272,6 +272,10 @@ When(
   }
 );
 
+When("I click on the first entry in the data table", () => {
+  cy.get("table tbody tr td a").eq(0).click();
+});
+
 Then("I should see {string} entry in the data table", (name: string) => {
   cy.get("tr[id='" + name + "']", { timeout: 3000 }).should("be.visible");
 });
@@ -336,6 +340,14 @@ Then(
     }).contains(content);
   }
 );
+
+// Some alerts might have a message whose text is not available in the test
+// - e.g. 'Subordinate ID <very-long-unknown-id> updated'
+Then("I should see {string} alert", (type: string) => {
+  cy.get("div.pf-v5-c-alert.pf-m-" + type, {
+    timeout: 10000,
+  }).should("be.visible");
+});
 
 Then("I close the alert", () => {
   cy.get(".pf-v5-c-alert button").click().wait(200);
