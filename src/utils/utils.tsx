@@ -428,3 +428,8 @@ export function paginate<Type>(
 export function containsAny(array1: unknown[], array2: unknown[]): boolean {
   return array1.some((item) => array2.includes(item));
 }
+
+/**
+ * Returns hidden password string
+ */
+export const HIDDEN_PASSWORD = "********";

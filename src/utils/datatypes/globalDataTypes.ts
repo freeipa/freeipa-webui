@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { ValidatedOptions } from "@patternfly/react-core";
+
 export interface User {
   [key: string]: unknown; // to fulfill Record<string, unknown> type
   // identity
@@ -701,4 +703,10 @@ export interface KrbTicket {
   krbmaxrenewableage: string;
   aci: string[];
   dn: string;
+}
+
+export interface PasswordValidationType {
+  isError: boolean;
+  message: string;
+  pfError: ValidatedOptions;
 }
