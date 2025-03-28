@@ -18,8 +18,11 @@ import useAlerts from "src/hooks/useAlerts";
 // Icons
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 // Images
-import BrandImg from "src/assets/images/product-name.png";
+import FreeIPABrandImg from "src/assets/images/product-name.png";
 import BackgroundImg from "src/assets/images/login-screen-background.jpg";
+// Plugin system
+import { ExtensionSlot } from "src/core/plugins/ExtensionSlot";
+import { loginCustomization } from "src/core/plugins/extensionPoints";
 // RPC
 import {
   MetaResponse,
@@ -45,6 +48,14 @@ const LoginMainPage = () => {
   // Navigate
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [logo, setLogo] = React.useState(FreeIPABrandImg);
+  const [logoAlt, setLogoAlt] = React.useState("FreeIPA logo");
+  const [loginPageText, setloginPageText] = React.useState(
+    "FreeIPA provides centralized authentication, authorization and account " +
+      "information by storing data about user, groups, hosts and other objects " +
+      "necessary to manage the security aspects of a network of computers."
+  );
 
   // Alerts to show in the UI
   const alerts = useAlerts();
@@ -343,22 +354,27 @@ const LoginMainPage = () => {
     />
   );
 
-  const placeHolderText =
-    "· To log in with username and password, enter them in the corresponding fields, then click 'Log in'. \n\n" +
-    "· To log in with Kerberos, please make sure you have valid tickets (obtainable via kinit) and configured the browser correctly, then click 'Log in'. \n\n" +
-    "· To log in with certificate, please make sure you have valid personal certificate.";
-
   return (
     <>
+      {/* Extension slot for login customization */}
+      <ExtensionSlot
+        extensionPointId={loginCustomization}
+        context={{
+          setLogo,
+          setLogoAlt,
+          setloginPageText,
+        }}
+      />
+
       <alerts.ManagedAlerts />
       <LoginPage
         style={{ whiteSpace: "pre-line" }}
         footerListVariants={ListVariant.inline}
-        brandImgSrc={BrandImg}
-        brandImgAlt="FreeIPA logo"
+        brandImgSrc={logo}
+        brandImgAlt={logoAlt}
         backgroundImgSrc={BackgroundImg}
         footerListItems={listItem}
-        textContent={placeHolderText}
+        textContent={loginPageText}
         loginTitle="Log in to your account"
         loginSubtitle="Enter your credentials."
         socialMediaLoginContent={socialMediaLoginContent}

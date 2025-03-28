@@ -9,6 +9,7 @@ import DataSpinner from "src/components/layouts/DataSpinner";
 import { useAppSelector } from "src/store/hooks";
 
 // PAGE COMPONENTS
+import Dashboard from "src/pages/Dashboard/Dashboard";
 import ActiveUsers from "src/pages/ActiveUsers/ActiveUsers";
 import ActiveUsersTabs from "src/pages/ActiveUsers/ActiveUsersTabs";
 import StageUsers from "src/pages/StageUsers/StageUsers";
@@ -75,6 +76,8 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
         <Routes>
           {userLoggedIn ? (
             <>
+              {/* Dashboard Route */}
+              <Route path="" element={<Dashboard />} />
               <Route path="active-users">
                 <Route path="" element={<ActiveUsers />} />
                 <Route path=":uid">
