@@ -56,6 +56,7 @@ import SubIdsStatistics from "src/pages/SubordinateIDs/SubIdsStatistics";
 import SubIdsTabs from "src/pages/SubordinateIDs/SubIdsTabs";
 import PasswordPoliciesTabs from "src/pages/PasswordPolicies/PasswordPoliciesTabs";
 import IdpReferences from "src/pages/IdPReferences/IdpReferences";
+import IdpReferencesTabs from "src/pages/IdPReferences/IdpReferencesTabs";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -431,6 +432,12 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="identity-provider-references">
                 <Route path="" element={<IdpReferences />} />
+                <Route path=":cn">
+                  <Route
+                    path=""
+                    element={<IdpReferencesTabs section="settings" />}
+                  />
+                </Route>
               </Route>
               <Route path="configuration" element={<Configuration />} />
               {/* Redirect to Active users page if user is logged in and navigates to the root page */}

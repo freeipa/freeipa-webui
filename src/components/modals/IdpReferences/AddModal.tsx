@@ -127,8 +127,6 @@ const AddModal = (props: PropsToAddModal) => {
     setJwksUri("");
     setScope("");
     setExtIdpUidAttr("");
-    // Selector
-    setSelectedProvider("Keycloak or Red Hat SSO");
   };
 
   // on change radio functions
@@ -336,7 +334,7 @@ const AddModal = (props: PropsToAddModal) => {
     },
     {
       id: "provider-type-radios",
-      name: "Provider type",
+      name: "",
       pfComponent: (
         <>
           <Radio

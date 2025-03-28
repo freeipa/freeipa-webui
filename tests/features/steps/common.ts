@@ -199,6 +199,15 @@ When(
 );
 
 When(
+  "In the modal, I type field with ID {string} text {string}",
+  (id: string, text: string) => {
+    cy.get("[role=dialog] div.pf-v5-c-modal-box__body")
+      .find("input[id=" + id + "]")
+      .type(text);
+  }
+);
+
+When(
   "I type in the flex field {string} text {string}",
   (fieldName: string, content: string) => {
     const regex = new RegExp("^" + fieldName + "$", "i");
@@ -280,6 +289,13 @@ Then(
   "I should see {string} entry in the data table with ID {string}",
   (name: string, tableId: string) => {
     cy.get("table#" + tableId + " tbody td a").contains(name);
+  }
+);
+
+Then(
+  "I should see input field with ID {string} and value {string}",
+  (id: string, value: string) => {
+    cy.get("input#" + id + " [value='" + value + "']").should("be.visible");
   }
 );
 
