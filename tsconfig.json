@@ -23,12 +23,10 @@
     "moduleResolution": "node",
     "isolatedModules": true
   },
-  "include": ["src", "cypress"],
   "exclude": [
-    "./cypress/cypress.config.ts",
-    "./cypress/**/*",
-    "cypress",
-    "node_modules"
+    "node_modules/*",
+    "dist/*",
+    "coverage/*"
   ],
   "types": ["@testing-library/react"]
 }
