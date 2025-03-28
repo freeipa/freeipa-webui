@@ -289,6 +289,10 @@ Then(
   }
 );
 
+Then("I should see input field with ID {string} and value {string}", (id: string, value: string) => {
+  cy.get("input#" + id +" [value='" + value + "']").should("be.visible");
+});
+
 Then("I should not see {string} entry in the data table", (name: string) => {
   cy.get("tr[id='" + name + "']").should("not.exist");
 });
