@@ -15,6 +15,11 @@ import "@patternfly/patternfly/utilities/Display/display.css";
 import "@patternfly/patternfly/utilities/Accessibility/accessibility.css";
 // Navigation
 import { URL_PREFIX } from "./navigation/NavRoutes";
+// Plugins
+import { registerAllPlugins } from "./plugins";
+
+// Register all plugins
+registerAllPlugins();
 
 ReactDOM.render(
   <Provider store={store}>
