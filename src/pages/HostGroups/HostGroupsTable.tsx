@@ -9,6 +9,9 @@ import { HostGroup } from "../../utils/datatypes/globalDataTypes";
 import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
 // React Router DOM
 import { Link } from "react-router-dom";
+// Plugin support
+import { ExtensionSlot } from "../../core/plugins/ExtensionSlot";
+import { hostGroupsTableColumns } from "../../core/plugins/extensionPoints";
 
 interface GroupsData {
   isHostGroupSelectable: (group: HostGroup) => boolean;
@@ -158,6 +161,11 @@ const HostGroupsTable = (props: PropsToTable) => {
       <Th modifier="wrap"></Th>
       <Th modifier="wrap">{columnNames.cn}</Th>
       <Th modifier="wrap">{columnNames.description}</Th>
+      {/* Extension point for additional columns */}
+      <ExtensionSlot
+        extensionPointId={hostGroupsTableColumns}
+        context={{ isHeader: true }}
+      />
     </Tr>
   );
 
@@ -179,6 +187,11 @@ const HostGroupsTable = (props: PropsToTable) => {
         </Link>
       </Td>
       <Td dataLabel={columnNames.description}>{group.description}</Td>
+      {/* Extension point for additional columns */}
+      <ExtensionSlot
+        extensionPointId={hostGroupsTableColumns}
+        context={{ hostGroup: group, rowIndex }}
+      />
     </Tr>
   ));
 
