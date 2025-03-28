@@ -296,6 +296,15 @@ Then(
   }
 );
 
+Then(
+  "I should see input field with ID {string} and value {string}",
+  (id: string, value: string) => {
+    cy.get("input#" + id)
+      .should("exist")
+      .and("have.value", value);
+  }
+);
+
 Then("I should not see {string} entry in the data table", (name: string) => {
   cy.get("tr[id='" + name + "']").should("not.exist");
 });
