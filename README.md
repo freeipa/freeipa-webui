@@ -49,15 +49,15 @@ vagrant ssh-config | grep HostName | awk '{print $2}'
 ```
 
 At this point you can access your live instance at `https://server.ipa.demo/ipa/ui/`.
-However, you still need to configure your front-end environment, it's up to you to choose
-between your host or guest machine.
+However, you still need to configure your front-end environment.
 
-> If you decide to use your guest machine, just ssh into it, go to the synced folder:
->
-> ```bash
-> $ vagrant ssh
-> $ cd /usr/src/freeipa-webui/
-> ```
+We strongly recommend using [nvm](https://github.com/nvm-sh/nvm) to ensure you are
+using the correct `node` version.
+
+```bash
+$ nvm install
+$ nvm use
+```
 
 Now you can install the project's dependencies:
 
