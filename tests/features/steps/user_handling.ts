@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { When, Then, Given } from "@badeball/cypress-cucumber-preprocessor";
+import { handleRegExp } from "./common";
 
 const SSH_RSA_valid_1: string =
   "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDBVmLXpTDhrYkABOPlADFk" +
@@ -94,6 +95,7 @@ const userCert_valid_2: Record<string, string> = {
   validFrom: "Wed Sep 27 09:17:49 2023 UTC",
   validTo: "Thu Sep 26 09:17:49 2024 UTC",
 };
+
 // Functions specific to active_users_handling.feature
 Given("sample testing user {string} exists", (username: string) => {
   // @ts-ignore
@@ -445,11 +447,12 @@ Then("I should see the dialog with title {string}", (dialogTitle: string) => {
 When(
   "I move user {string} from the available list and move it to the chosen options",
   (userName: string) => {
+    let testName = handleRegExp(userName);
     // Select and add the 'userName' to the chosen list
     cy.get("div[role='dialog'")
       .find("div.pf-v5-c-dual-list-selector__menu")
       .find("span")
-      .contains(userName)
+      .contains(testName)
       .parent()
       .parent()
       .parent()
@@ -460,20 +463,21 @@ When(
     cy.get("div.pf-m-chosen")
       .find("div.pf-v5-c-dual-list-selector__menu")
       .find("span")
-      .contains(userName);
+      .contains(testName);
   }
 );
 
 Then(
   "I should not see the element {string} in the add list",
   (elementName: string) => {
+    let testName = handleRegExp(elementName);
     // Open 'Add' dialog
     cy.get("div.pf-v5-c-toolbar").find("button").contains("Add").click();
     // Check if 'elementName' is in the available list
     cy.get("div[role='dialog'")
       .find("div.pf-v5-c-dual-list-selector__menu")
       .find("span")
-      .contains(elementName)
+      .contains(testName)
       .should("not.exist");
   }
 );
@@ -482,10 +486,11 @@ Then(
 Then(
   "the {string} element should be in the dialog table",
   (groupName: string) => {
+    let testName = handleRegExp(groupName);
     cy.get("div[role='dialog'")
       .find("table#membership-table")
       .find("td.pf-v5-c-table__td")
-      .contains(groupName)
+      .contains(testName)
       .should("be.visible");
   }
 );

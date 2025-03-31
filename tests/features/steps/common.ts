@@ -2,6 +2,14 @@
 /// <reference types="cypress" />
 import { When, Then, Given } from "@badeball/cypress-cucumber-preprocessor";
 
+export function handleRegExp(elementName: string) {
+  if (elementName.startsWith("/", 0)) {
+    return new RegExp(`$(elementName)`, "i");
+  } else {
+    return elementName;
+  }
+}
+
 // navigation
 Given("I am on {string} page", (handle: string) => {
   cy.url().then(($url) => {
@@ -257,6 +265,13 @@ When("I clear the textarea {string}", (id) => {
 When("I select entry {string} in the data table", (name: string) => {
   cy.get("tr[id='" + name + "'] input[type=checkbox]").check();
 });
+
+When(
+  "I select entry that starts with {string} in the data table",
+  (name: string) => {
+    cy.get("tr[id^='" + name + "'] input[type=checkbox]").check();
+  }
+);
 
 When("I click on {string} entry in the data table", (name: string) => {
   cy.get("tr[id='" + name + "'] a", { timeout: 9000 })
