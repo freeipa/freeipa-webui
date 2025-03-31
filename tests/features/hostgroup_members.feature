@@ -39,24 +39,24 @@ Feature: Hostgroup members
     Then I should see the "host" tab count is "0"
     When I click on "Add" button located in the toolbar
     Then I should see the dialog with title "Assign hosts to host group: main-host-group"
-    When I move user "myhost.dom-server.ipa.demo" from the available list and move it to the chosen options
+    When I move user "/^myhost\./" from the available list and move it to the chosen options
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned new hosts to host group 'main-host-group'"
     * I close the alert
-    Then I should see the element "myhost.dom-server.ipa.demo" in the table
+    Then I should see the element "/^myhost\./" in the table
     Then I should see the "host" tab count is "1"
 
   Scenario: Search for a host
     When I type "myhost" in the search field
     Then I should see the "myhost" text in the search input field
     When I click on the arrow icon to perform search
-    Then I should see the element "myhost.dom-server.ipa.demo" in the table
+    Then I should see the element "/^myhost\./" in the table
     * I should not see "server.ipa.demo" entry in the data table
     * I click on the X icon to clear the search field
     When I type "notthere" in the search field
     Then I should see the "notthere" text in the search input field
     When I click on the arrow icon to perform search
-    Then I should not see "myhost.dom-server.ipa.demo" entry in the data table
+    Then I should not see "/^myhost\./" entry in the data table
     * I should not see "server.ipa.demo" entry in the data table
     * I click on the X icon to clear the search field
     Then I click on the arrow icon to perform search
@@ -68,14 +68,14 @@ Feature: Hostgroup members
     Then I should see the "host" tab count is "1"
 
   Scenario: Remove Host from the host group
-    When I select entry "myhost.dom-server.ipa.demo" in the data table
+    When I select entry that starts with "myhost." in the data table
     And I click on "Delete" button located in the toolbar
     Then I should see the dialog with title "Delete hosts from host group: main-host-group"
-    And the "myhost.dom-server.ipa.demo" element should be in the dialog table
+    And the "/^myhost\./" element should be in the dialog table
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed hosts from host group 'main-host-group'"
     * I close the alert
-    And I should not see "myhost.dom-server.ipa.demo" entry in the data table
+    And I should not see "/^myhost\./" entry in the data table
     Then I should see the "host" tab count is "0"
 
   #
@@ -130,14 +130,14 @@ Feature: Hostgroup members
   #
   Scenario: Cleanup - remove the test host
     Given I am on "hosts" page
-    Then I select partial entry "myhost.dom-server.ipa.demo" in the data table
+    Then I select partial entry "/^myhost\./" in the data table
     When I click on "Delete" button
     * I see "Remove hosts" modal
-    * I should see partial "myhost.dom-server.ipa.demo" entry in the data table
+    * I should see partial "/^myhost\./" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Hosts removed"
     * I close the alert
-    Then I should not see "myhost.dom-server.ipa.demo" entry in the data table
+    Then I should not see "/^myhost\./" entry in the data table
 
   Scenario: Cleanup - delete the test host group
     Given I should see "testgroup" entry in the data table
