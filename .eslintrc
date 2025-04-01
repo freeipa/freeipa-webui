@@ -10,7 +10,7 @@
     "jsx": true,
     "js": true,
     "useJSXTextNode": true,
-    "project": ["./tsconfig.json", "./cypress/tsconfig.json"],
+    "project": ["./tsconfig.json"],
     "tsconfigRootDir": "."
   },
   "extends": [
@@ -19,7 +19,12 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended"
   ],
-  "plugins": ["@typescript-eslint", "react-hooks", "eslint-plugin-react-hooks", "prettier"],
+  "plugins": [
+    "@typescript-eslint",
+    "react-hooks",
+    "eslint-plugin-react-hooks",
+    "prettier"
+  ],
   "env": {
     "browser": true,
     "node": true

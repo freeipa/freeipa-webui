@@ -21,12 +21,13 @@
     "noEmit": false,
     "resolveJsonModule": true,
     "moduleResolution": "node",
-    "isolatedModules": true
+    "isolatedModules": true,
+    "paths": {
+      "@badeball/cypress-cucumber-preprocessor/*": [
+        "./node_modules/@badeball/cypress-cucumber-preprocessor/dist/subpath-entrypoints/*"
+      ]
+    }
   },
-  "exclude": [
-    "node_modules/*",
-    "dist/*",
-    "coverage/*"
-  ],
+  "exclude": ["node_modules/*", "dist/*", "coverage/*"],
   "types": ["@testing-library/react"]
 }
