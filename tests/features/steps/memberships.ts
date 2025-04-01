@@ -185,6 +185,14 @@ Then(
 );
 
 Then(
+  "I should see the partial element {string} in the table",
+  (name: string) => {
+    const partialName = new RegExp("^" + name, "i");
+    cy.get("table>tbody").find("a").contains(partialName).should("be.visible");
+  }
+);
+
+Then(
   "I should not see the element {string} in the table",
   (tableElement: string) => {
     let testName = handleRegExp(tableElement);

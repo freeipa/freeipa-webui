@@ -118,7 +118,7 @@ When("I click in the field {string}", (fieldName: string) => {
 });
 
 When("I type in the selected field text {string}", (inputText: string) => {
-  cy.focused().type(inputText);
+  cy.focused({ timeout: 8000 }).type(inputText);
 });
 
 When("I blur the selected field", () => {

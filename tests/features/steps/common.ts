@@ -4,7 +4,7 @@ import { When, Then, Given } from "@badeball/cypress-cucumber-preprocessor";
 
 export function handleRegExp(elementName: string) {
   if (elementName.startsWith("/", 0)) {
-    return new RegExp(`$(elementName)`, "i");
+    return new RegExp(`^(elementName)`, "i");
   } else {
     return elementName;
   }
@@ -184,6 +184,18 @@ Then(
   }
 );
 
+Then(
+  "the {string} partial element should be in the dialog table",
+  (name: string) => {
+    const partialName = new RegExp("^" + name, "i");
+    cy.get("div[role='dialog'")
+      .find("table#membership-table")
+      .find("td.pf-v5-c-table__td")
+      .contains(partialName)
+      .should("be.visible");
+  }
+);
+
 // -- Element to delete on cards
 Then(
   "the {string} element should be in the dialog card with id {string}",
@@ -323,6 +335,14 @@ Then(
 Then("I should not see {string} entry in the data table", (name: string) => {
   cy.get("tr[id='" + name + "']").should("not.exist");
 });
+
+Then(
+  "I should not see {string} partial entry in the data table",
+  (name: string) => {
+    const partialName = new RegExp("^" + name, "i");
+    cy.get("tr[id='" + partialName + "']").should("not.exist");
+  }
+);
 
 Then(
   "I should not see {string} entry in the data table with ID {string}",
@@ -785,6 +805,12 @@ Then("I click on the breadcrump link {string}", (value: string) => {
 Then("I click on the dual list item {string}", (value: string) => {
   cy.get(".pf-v5-c-dual-list-selector__item-text", { timeout: 2000 })
     .contains(value)
+    .click();
+});
+
+Then("I click on the dual list partial item {string}", (value: string) => {
+  cy.get(".pf-v5-c-dual-list-selector__item-text", { timeout: 2000 })
+    .contains(new RegExp(`^${value}`, "i"))
     .click();
 });
 

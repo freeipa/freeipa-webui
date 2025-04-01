@@ -32,7 +32,7 @@ Feature: Configuration settings manipulation
   # User options
   #
   Scenario: User options - search fields
-    When I type in the textarea "ipausersearchfields" text ",cn"
+    When I type in the textarea "ipausersearchfields" text ",cn,uidnumber"
     And I click on "Save" button
     And I should see "success" alert with text "Configuration updated"
     Then I close the alert
@@ -177,7 +177,8 @@ Feature: Configuration settings manipulation
   # Group options
   #
   Scenario: Group options - search fields
-    When I type in the textarea "ipagroupsearchfields" text ",cn"
+    When I clear the textarea "ipagroupsearchfields"
+    When I type in the textarea "ipagroupsearchfields" text "cn"
     And I click on "Save" button
     And I should see "success" alert with text "Configuration updated"
     Then I close the alert

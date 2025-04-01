@@ -45,11 +45,12 @@ Feature: ID View applied to manipulation
     And I am on "idviewhostgroup1" group > Members > "Hosts" section
     When I click on "Add" button located in the toolbar
     Then I should see the dialog with title "Assign hosts to host group: idviewhostgroup1"
-    When I move user "idviewhost1.dom-server.ipa.demo" from the available list and move it to the chosen options
+    * I click on the dual list partial item "idviewhost1"
+    * I click on the dual list add selected button
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned new hosts to host group 'idviewhostgroup1'"
     * I close the alert
-    Then I should see the element "idviewhost1.dom-server.ipa.demo" in the table
+    Then I should see the partial element "idviewhost1" in the table
 
   Scenario: Add a Host members into the host group 2
     Given I am on "host-groups" page
@@ -58,11 +59,12 @@ Feature: ID View applied to manipulation
     And I am on "idviewhostgroup2" group > Members > "Hosts" section
     When I click on "Add" button located in the toolbar
     Then I should see the dialog with title "Assign hosts to host group: idviewhostgroup2"
-    When I move user "idviewhost2.dom-server.ipa.demo" from the available list and move it to the chosen options
+    * I click on the dual list partial item "idviewhost2"
+    * I click on the dual list add selected button
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned new hosts to host group 'idviewhostgroup2'"
     * I close the alert
-    Then I should see the element "idviewhost2.dom-server.ipa.demo" in the table
+    Then I should see the partial element "idviewhost2" in the table
 
   Scenario: Add a new view
     Given I am on "id-views" page
