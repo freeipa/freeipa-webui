@@ -15,8 +15,9 @@
 
 // Import commands.js using ES2015 syntax:
 import "./commands";
+import { addCustomCommand } from "cy-verify-downloads";
 
-require("cy-verify-downloads").addCustomCommand();
+addCustomCommand();
 
 before(() => {
   Cypress.session.clearCurrentSessionData().then();

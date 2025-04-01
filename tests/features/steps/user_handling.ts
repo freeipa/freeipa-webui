@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { When, Then, Given } from "@badeball/cypress-cucumber-preprocessor";
 
 const SSH_RSA_valid_1: string =
@@ -96,7 +95,6 @@ const userCert_valid_2: Record<string, string> = {
 };
 // Functions specific to active_users_handling.feature
 Given("sample testing user {string} exists", (username: string) => {
-  // @ts-ignore
   cy.createTestUser(username);
 });
 
@@ -336,7 +334,6 @@ Then("I should see value of {string} in the text area", (keyID: string) => {
 });
 
 Then("file with extension {string} should be downloaded", (ext: string) => {
-  // @ts-ignore
   cy.verifyDownload("." + ext, { contains: true });
 });
 

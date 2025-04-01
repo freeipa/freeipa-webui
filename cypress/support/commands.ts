@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-namespace */
-/// <reference types="cypress" />
 // ***********************************************
 // This example commands.ts shows you how to
 // create various custom commands and overwrite
@@ -26,19 +24,10 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 //
-export {}; // needed for modification of global scope to work properly
 
-require("cy-verify-downloads").addCustomCommand();
+import { addCustomCommand } from "cy-verify-downloads";
 
-declare global {
-  namespace Cypress {
-    interface Chainable {
-      createTestUser(username: string): Chainable<void>;
-      loginAsAnUser(username: string, password: string): Chainable<void>;
-      userCleanup(): Chainable<void>;
-    }
-  }
-}
+addCustomCommand();
 
 Cypress.Commands.add("loginAsAnUser", (username: string, password: string) => {
   // temporary solution as the new UI doesn't have login page yet

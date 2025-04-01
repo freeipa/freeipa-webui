@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/// <reference types="cypress" />
 import { When, Then, Given } from "@badeball/cypress-cucumber-preprocessor";
 
 // navigation
@@ -39,7 +37,6 @@ Given("I am logged in as {string}", (username: string) => {
   cy.wait(1000);
   cy.url().then(($url) => {
     if ($url.includes("modern_ui/login")) {
-      // @ts-ignore
       cy.loginAsAnUser(
         Cypress.env("admin_login"),
         Cypress.env("admin_password")
@@ -51,7 +48,6 @@ Given("I am logged in as {string}", (username: string) => {
     { timeout: 6000 }
   ).then(($ele) => {
     if ($ele.text() !== username) {
-      // @ts-ignore
       cy.loginAsAnUser(
         Cypress.env("admin_login"),
         Cypress.env("admin_password")
@@ -63,7 +59,6 @@ Given("I am logged in as {string}", (username: string) => {
 When(
   "I log in as {string} with password {string}",
   (username: string, password: string) => {
-    // @ts-ignore
     cy.loginAsAnUser(username, password);
   }
 );
