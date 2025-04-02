@@ -104,9 +104,8 @@ const MembersUsers = (props: PropsToMembersUsers) => {
     return toLoad;
   };
 
-  const [userNamesToLoad, setUserNamesToLoad] = React.useState<string[]>(
-    getUsersNameToLoad()
-  );
+  const [userNamesToLoad, setUserNamesToLoad] =
+    React.useState<string[]>(getUsersNameToLoad());
 
   // Load users
   const fullUsersQuery = useGetUsersInfoByUidQuery({

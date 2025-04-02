@@ -95,9 +95,8 @@ const MembersHosts = (props: PropsToMembersHosts) => {
     return toLoad;
   };
 
-  const [hostNamesToLoad, setHostNamesToLoad] = React.useState<string[]>(
-    getHostsNameToLoad()
-  );
+  const [hostNamesToLoad, setHostNamesToLoad] =
+    React.useState<string[]>(getHostsNameToLoad());
 
   // Load hosts
   const fullHostsQuery = useGetHostInfoByNameQuery({
