@@ -438,8 +438,8 @@ const UserSettings = (props: PropsToUserSettings) => {
             props.from === "active-users"
               ? activeDropdownItems
               : props.from === "stage-users"
-              ? stageDropdownItems
-              : preservedDropdownItems
+                ? stageDropdownItems
+                : preservedDropdownItems
           }
         />
       ),

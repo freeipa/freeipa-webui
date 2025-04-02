@@ -260,8 +260,8 @@ const ManagedByTable = (props: PropsToTable) => {
         !props.showTableRows
           ? skeleton
           : props.list.length === 0
-          ? emptyBody
-          : body
+            ? emptyBody
+            : body
       }
     />
   );

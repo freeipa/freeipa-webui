@@ -28,6 +28,12 @@
       ]
     }
   },
-  "exclude": ["node_modules/*", "dist/*", "coverage/*"],
+  "include": ["src", "cypress", "cypress/plugins/index.js"],
+  "exclude": [
+    "./cypress/cypress.config.ts",
+    "./cypress/**/*",
+    "cypress",
+    "node_modules"
+  ],
   "types": ["@testing-library/react"]
 }

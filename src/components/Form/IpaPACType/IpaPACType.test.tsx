@@ -105,7 +105,9 @@ describe("IpaPACType Component", () => {
     expect(screen.getByText("PAD")).toBeInTheDocument();
     // Is not disabled
     expect(
-      screen.getByRole("radio", { name: "Inherited from server configuration" })
+      screen.getByRole("radio", {
+        name: "Inherited from server configuration",
+      })
     ).toHaveAttribute("aria-invalid", "false");
   });
 
