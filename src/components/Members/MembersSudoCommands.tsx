@@ -65,9 +65,8 @@ const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
     return toLoad;
   };
 
-  const [memberNamesToLoad, setMemberNamesToLoad] = React.useState<string[]>(
-    getCmdNamesToLoad()
-  );
+  const [memberNamesToLoad, setMemberNamesToLoad] =
+    React.useState<string[]>(getCmdNamesToLoad());
 
   // Load services
   const fullServicesQuery = useGetSudoCmdsInfoByNameQuery({

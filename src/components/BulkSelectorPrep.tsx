@@ -137,8 +137,8 @@ const BulkSelectorPrep = <Type,>(props: PropsToBulkSelectorPrep<Type>) => {
       props.elementData.selectableTable.length
       ? true
       : props.elementData.selected.length > 0
-      ? null
-      : false;
+        ? null
+        : false;
 
   // Menu toggle element with checkbox
   const toggle = (

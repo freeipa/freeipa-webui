@@ -92,9 +92,8 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
     return toLoad;
   };
 
-  const [roleNamesToLoad, setRoleNamesToLoad] = React.useState<string[]>(
-    getRolesNameToLoad()
-  );
+  const [roleNamesToLoad, setRoleNamesToLoad] =
+    React.useState<string[]>(getRolesNameToLoad());
 
   // Load roles
   const fullRolesQuery = useGetRolesInfoByNameQuery({

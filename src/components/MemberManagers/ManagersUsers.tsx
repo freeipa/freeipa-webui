@@ -70,9 +70,8 @@ const ManagersUsers = (props: PropsToManagersUsers) => {
     return toLoad;
   };
 
-  const [userNamesToLoad, setUserNamesToLoad] = React.useState<string[]>(
-    getUserNamesToLoad()
-  );
+  const [userNamesToLoad, setUserNamesToLoad] =
+    React.useState<string[]>(getUserNamesToLoad());
 
   // Load user
   const fullUsersQuery = useGetUsersInfoByUidQuery({
