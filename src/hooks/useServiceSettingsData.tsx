@@ -53,7 +53,6 @@ const useServiceSettings = (serviceId: string): ServiceSettingsData => {
     modified,
     setModified,
     metadata,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     resetValues: () => {},
     originalService: service,
     setService,

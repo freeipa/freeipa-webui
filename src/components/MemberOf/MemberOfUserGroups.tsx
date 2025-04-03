@@ -202,7 +202,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
     addMemberToUserGroups([id, entryType, newUserGroupNames]).then(
       (response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Set alert: success
             alerts.addAlert(
               "add-member-success",
@@ -213,7 +213,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
             props.onRefreshUserData();
             // Close modal
             setShowAddModal(false);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
             alerts.addAlert("add-member-error", errorMessage.message, "danger");
@@ -231,7 +231,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
       removeMembersFromUserGroups([id, entryType, userGroupsSelected]).then(
         (response) => {
           if ("data" in response) {
-            if (response.data.result) {
+            if (response.data?.result) {
               // Set alert: success
               alerts.addAlert(
                 "remove-user-groups-success",
@@ -246,7 +246,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
               setShowDeleteModal(false);
               // Return to first page
               setPage(1);
-            } else if (response.data.error) {
+            } else if (response.data?.error) {
               // Set alert: error
               const errorMessage = response.data
                 .error as unknown as ErrorResult;
@@ -269,7 +269,6 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
         onSearch={() => {}}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshUserData}

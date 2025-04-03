@@ -202,7 +202,7 @@ const ManagersUsers = (props: PropsToManagersUsers) => {
     setSpinning(true);
     addManagers(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Set alert: success
           alerts.addAlert(
             "add-member-managers-success",
@@ -213,7 +213,7 @@ const ManagersUsers = (props: PropsToManagersUsers) => {
           props.onRefreshData();
           // Close modal
           setShowAddModal(false);
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
           alerts.addAlert(
@@ -238,7 +238,7 @@ const ManagersUsers = (props: PropsToManagersUsers) => {
     setSpinning(true);
     removeManagers(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Set alert: success
           alerts.addAlert(
             "remove-member-managers-success",
@@ -253,7 +253,7 @@ const ManagersUsers = (props: PropsToManagersUsers) => {
           setShowDeleteModal(false);
           // Back to page 1
           setPage(1);
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
           alerts.addAlert(
@@ -273,7 +273,6 @@ const ManagersUsers = (props: PropsToManagersUsers) => {
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
         onSearch={() => {}}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshData}

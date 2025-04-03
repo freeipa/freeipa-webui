@@ -121,10 +121,10 @@ const IdpRefSettings = (props: PropsToIdpRefSettings) => {
     saveIdpRef(payload).then((response) => {
       if ("data" in response) {
         const data = response.data;
-        if (data.error) {
+        if (data?.error) {
           alerts.addAlert("error", (data.error as Error).message, "danger");
         }
-        if (data.result) {
+        if (data?.result) {
           props.onIdpRefChange(data.result.result);
           alerts.addAlert(
             "success",

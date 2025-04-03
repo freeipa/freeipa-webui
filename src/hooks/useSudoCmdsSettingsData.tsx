@@ -45,7 +45,6 @@ const useSudoCmdsSettings = (command: string): SettingsData => {
     modified,
     setModified,
     metadata,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     resetValues: () => {},
     originalCmd: cmd,
     cmd,

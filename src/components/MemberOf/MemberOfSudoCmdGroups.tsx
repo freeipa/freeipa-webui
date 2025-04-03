@@ -166,7 +166,7 @@ const MemberOfSudoCmdGroups = (props: MemberOfSudoCmdGroupsProps) => {
     addMemberToSudoGroups([props.id, "sudocmd", newSudoCommandNames]).then(
       (response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             if (response.data.result.results[0].error) {
               const errorMessage = response.data.result.results[0]
                 .error as string;
@@ -183,7 +183,7 @@ const MemberOfSudoCmdGroups = (props: MemberOfSudoCmdGroupsProps) => {
             props.onRefreshData();
             // Close modal
             setShowAddModal(false);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
             alerts.addAlert("add-member-error", errorMessage.message, "danger");
@@ -200,7 +200,7 @@ const MemberOfSudoCmdGroups = (props: MemberOfSudoCmdGroupsProps) => {
     removeMembersFromSudoGroup([props.id, "sudocmd", sudoGroupsSelected]).then(
       (response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Set alert: success
             alerts.addAlert(
               "remove-sudo-cmds-success",
@@ -215,7 +215,7 @@ const MemberOfSudoCmdGroups = (props: MemberOfSudoCmdGroupsProps) => {
             setShowDeleteModal(false);
             // Back to page 1
             setPage(1);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
             alerts.addAlert(
@@ -236,7 +236,6 @@ const MemberOfSudoCmdGroups = (props: MemberOfSudoCmdGroupsProps) => {
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
         onSearch={() => {}}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshData}

@@ -45,7 +45,6 @@ const useIDViewSettings = (viewId: string): IDViewSettingsData => {
     modified,
     setModified,
     metadata,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     resetValues: () => {},
     originalView: idView,
     idView,

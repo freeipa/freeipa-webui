@@ -210,7 +210,7 @@ const MembersNetgroups = (props: PropsToMembersNetgroups) => {
     setSpinning(true);
     addMemberToNetgroups(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Set alert: success
           alerts.addAlert(
             "add-member-success",
@@ -221,7 +221,7 @@ const MembersNetgroups = (props: PropsToMembersNetgroups) => {
           props.onRefreshData();
           // Close modal
           setShowAddModal(false);
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
           alerts.addAlert("add-member-error", errorMessage.message, "danger");
@@ -242,7 +242,7 @@ const MembersNetgroups = (props: PropsToMembersNetgroups) => {
     setSpinning(true);
     removeMembersFromNetgroups(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Set alert: success
           alerts.addAlert(
             "remove-hnetgroups-success",
@@ -261,7 +261,7 @@ const MembersNetgroups = (props: PropsToMembersNetgroups) => {
           setShowDeleteModal(false);
           // Back to page 1
           setPage(1);
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
           alerts.addAlert(
@@ -281,7 +281,6 @@ const MembersNetgroups = (props: PropsToMembersNetgroups) => {
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
         onSearch={() => {}}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshData}

@@ -25,7 +25,6 @@ interface PropsToSettings {
   svcGroup: Partial<HBACServiceGroup>;
   originalSvcGrp: Partial<HBACServiceGroup>;
   metadata: Metadata;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSvcGrpChange: (service: Partial<HBACServiceGroup>) => void;
   onRefresh: () => void;
   isModified: boolean;
@@ -59,7 +58,7 @@ const HBACServiceGroupsSettings = (props: PropsToSettings) => {
 
     saveService(modifiedValues).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Show toast notification: success
           alerts.addAlert(
             "save-success",
@@ -67,7 +66,7 @@ const HBACServiceGroupsSettings = (props: PropsToSettings) => {
             "success"
           );
           props.onRefresh();
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert("save-error", errorMessage.message, "danger");
