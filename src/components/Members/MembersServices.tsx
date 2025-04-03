@@ -212,7 +212,7 @@ const MembersServices = (props: PropsToMembersServices) => {
     setSpinning(true);
     addMemberToService(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Set alert: success
           alerts.addAlert(
             "add-member-success",
@@ -223,7 +223,7 @@ const MembersServices = (props: PropsToMembersServices) => {
           props.onRefreshData();
           // Close modal
           setShowAddModal(false);
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
           alerts.addAlert("add-member-error", errorMessage.message, "danger");
@@ -244,7 +244,7 @@ const MembersServices = (props: PropsToMembersServices) => {
     setSpinning(true);
     removeMembersFromServices(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Set alert: success
           alerts.addAlert(
             "remove-services-success",
@@ -263,7 +263,7 @@ const MembersServices = (props: PropsToMembersServices) => {
           setShowDeleteModal(false);
           // Back to page 1
           setPage(1);
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
           alerts.addAlert(
@@ -284,7 +284,6 @@ const MembersServices = (props: PropsToMembersServices) => {
         <MemberOfToolbar
           searchText={searchValue}
           onSearchTextChange={setSearchValue}
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
           onSearch={() => {}}
           refreshButtonEnabled={isRefreshButtonEnabled}
           onRefreshButtonClick={props.onRefreshData}
@@ -303,7 +302,6 @@ const MembersServices = (props: PropsToMembersServices) => {
         <MemberOfToolbar
           searchText={searchValue}
           onSearchTextChange={setSearchValue}
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
           onSearch={() => {}}
           refreshButtonEnabled={isRefreshButtonEnabled}
           onRefreshButtonClick={props.onRefreshData}

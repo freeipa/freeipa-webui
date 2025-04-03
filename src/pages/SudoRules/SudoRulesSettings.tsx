@@ -123,11 +123,11 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
     setSaving(true);
     saveService(modifiedValues).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Show toast notification: success
           alerts.addAlert("save-success", "Sudo rule modified", "success");
           props.onRefresh();
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert("save-error", errorMessage.message, "danger");
@@ -149,7 +149,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
     onRemoveFromUsers(payload).then((response) => {
       if ("data" in response) {
         const data = response.data;
-        const results = data.result as unknown as AddRemoveToSudoRulesResult;
+        const results = data?.result as unknown as AddRemoveToSudoRulesResult;
         if (results) {
           // Some values can be undefined after deletion
           const usersFromResponse = results.result.memberuser_group || [];
@@ -192,7 +192,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
       if ("data" in response) {
         const data = response.data;
         const results =
-          data.result as unknown as AddRemoveHostToSudoRulesResult;
+          data?.result as unknown as AddRemoveHostToSudoRulesResult;
         if (results) {
           // Some values can be undefined after deletion
           const hostGroupsFromResponse =
@@ -238,7 +238,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
     onRemoveFromUsers(payload).then((response) => {
       if ("data" in response) {
         const data = response.data;
-        const results = data.result as unknown as AddRemoveToSudoRulesResult;
+        const results = data?.result as unknown as AddRemoveToSudoRulesResult;
         if (results) {
           // Some values can be undefined after deletion
           const usersFromResponse = results.result.memberuser_user || [];
@@ -285,7 +285,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
       if ("data" in response) {
         const data = response.data;
         const results =
-          data.result as unknown as AddRemoveHostToSudoRulesResult;
+          data?.result as unknown as AddRemoveHostToSudoRulesResult;
         if (results) {
           // Some values can be undefined after deletion
           const hostsFromResponse = results.result.memberhost_host || [];
@@ -335,7 +335,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
     onRemoveAllCommands(payload).then((response) => {
       if ("data" in response) {
         const data = response.data;
-        const results = data.result
+        const results = data?.result
           .results as unknown as BatchDeleteAllCommandsResult[];
         if (results) {
           results.map((result) => {
@@ -360,7 +360,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             }
           });
           // Set alert: success
-          if (!data.error) {
+          if (!data?.error) {
             props.onRefresh();
             alerts.addAlert(
               "remove-run-commands-success",
@@ -387,7 +387,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
       if ("data" in response) {
         const data = response.data;
         const results =
-          data.result as unknown as AddRemoveRunAsToSudoRulesResult;
+          data?.result as unknown as AddRemoveRunAsToSudoRulesResult;
         if (results) {
           // Some values can be undefined after deletion
           const groupsFromResponse = results.result.ipasudorunas_group || [];
@@ -434,7 +434,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
       if ("data" in response) {
         const data = response.data;
         const results =
-          data.result as unknown as AddRemoveRunAsToSudoRulesResult;
+          data?.result as unknown as AddRemoveRunAsToSudoRulesResult;
         if (results) {
           // Some values can be undefined after deletion
           const userFromResponse = results.result.ipasudorunas_user || [];
@@ -478,7 +478,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
       if ("data" in response) {
         const data = response.data;
         const results =
-          data.result as unknown as AddRemoveRunAsToSudoRulesResult;
+          data?.result as unknown as AddRemoveRunAsToSudoRulesResult;
         if (results) {
           // Some values can be undefined after deletion
           const groupsFromResponse =
@@ -547,9 +547,6 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
       if (keysInObject.includes("hostcategory")) {
         onDeleteAllHostsAndSave(hostsToRemove, hostGroupsToRemove);
       }
-      keysInObject.includes("usercategory") ||
-        keysInObject.includes("hostcategory") ||
-        keysInObject.includes("cmdcategory");
 
       // If 'Any command' is selected, remove all commands and command groups
       const allowCommandsToRemove = props.rule.memberallowcmd_sudocmd || [];
@@ -602,11 +599,11 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
       modifiedValues.cn = props.rule.cn;
       saveService(modifiedValues).then((response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Show toast notification: success
             alerts.addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
             alerts.addAlert("save-error", errorMessage.message, "danger");

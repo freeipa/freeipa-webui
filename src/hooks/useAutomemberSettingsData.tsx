@@ -56,7 +56,6 @@ const useAutomemberSettingsData = (
     modified,
     setModified,
     metadata,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     resetValues: () => {},
     originalAutomember: automember,
     automember,

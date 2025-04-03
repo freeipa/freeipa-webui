@@ -45,7 +45,6 @@ const useConfigSettings = (): ConfigSettingsData => {
     modified,
     setModified,
     metadata,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     resetValues: () => {},
     originalConfig: config,
     config,

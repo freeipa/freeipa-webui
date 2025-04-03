@@ -125,7 +125,6 @@ const PasswordPolicies = () => {
       pwPoliciesResponse.isError &&
       pwPoliciesResponse.error !== undefined
     ) {
-      pwPoliciesResponse;
       // This normally happens when the user is not authorized to view the data
       // So instead of adding an error, refresh page
       window.location.reload();
@@ -270,7 +269,7 @@ const PasswordPolicies = () => {
       stopIdx: 200, // Search will consider a max. of elements
     }).then((result) => {
       if ("data" in result) {
-        const searchError = result.data.error as
+        const searchError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
@@ -289,9 +288,9 @@ const PasswordPolicies = () => {
           );
         } else {
           // Success
-          const listResult = result.data.result.results;
-          const listSize = result.data.result.count;
-          const totalCount = result.data.result.totalCount;
+          const listResult = result.data?.result.results || [];
+          const listSize = result.data?.result.count || 0;
+          const totalCount = result.data?.result.totalCount || 0;
           const elementsList: PwPolicy[] = [];
 
           for (let i = 0; i < listSize; i++) {

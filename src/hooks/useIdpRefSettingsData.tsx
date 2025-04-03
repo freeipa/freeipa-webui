@@ -47,7 +47,6 @@ const useIdpRefSettingsData = (idpRefId: string): IdpRefSettingsData => {
     modified,
     setModified,
     metadata,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     resetValues: () => {},
     originalIdpRef: idpRef,
     setIdpRef,

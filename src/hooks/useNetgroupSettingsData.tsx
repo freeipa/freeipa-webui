@@ -45,7 +45,6 @@ const useNetgroupSettings = (groupId: string): NetgroupSettingsData => {
     modified,
     setModified,
     metadata,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     resetValues: () => {},
     originalGroup: netgroup,
     netgroup,

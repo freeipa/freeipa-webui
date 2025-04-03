@@ -24,7 +24,7 @@ const IpaPasswordInput = (props: IPAParamDefinition) => {
     console.log("typeof value", typeof value);
     if (typeof value === "object") {
       setTextInputValue(HIDDEN_PASSWORD);
-    } else if (typeof value === undefined) {
+    } else if (typeof value === "undefined") {
       setTextInputValue("");
     } else {
       setTextInputValue(convertToString(value));

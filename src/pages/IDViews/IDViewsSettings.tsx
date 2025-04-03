@@ -25,7 +25,6 @@ interface PropsToIDViewSettings {
   idView: Partial<IDView>;
   originalIDView: Partial<IDView>;
   metadata: Metadata;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onIDViewChange: (hostGroup: Partial<IDView>) => void;
   onRefresh: () => void;
   isModified: boolean;
@@ -61,10 +60,10 @@ const IDViewSettings = (props: PropsToIDViewSettings) => {
 
     saveView(modifiedValues).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Show toast notification: success
           alerts.addAlert("save-success", "ID view modified", "success");
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert("save-error", errorMessage.message, "danger");

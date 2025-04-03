@@ -217,7 +217,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
     addMemberToSudoRules([props.id, entityType, newSudoRuleNames]).then(
       (response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Set alert: success
             alerts.addAlert(
               "add-member-success",
@@ -236,7 +236,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
             props.onRefreshData();
             // Close modal
             setShowAddModal(false);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
             alerts.addAlert("add-member-error", errorMessage.message, "danger");
@@ -253,7 +253,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
     removeMembersFromSudoRules([props.id, entityType, sudoRulesSelected]).then(
       (response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Set alert: success
             alerts.addAlert(
               "remove-sudo-rules-success",
@@ -268,7 +268,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
             setShowDeleteModal(false);
             // Back to page 1
             setPage(1);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
             alerts.addAlert(
@@ -289,7 +289,6 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
         onSearch={() => {}}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshData}
