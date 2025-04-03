@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { Td, Th, Tr } from "@patternfly/react-table";
 // React Router DOM
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 // Layout
 import DualListLayout, {
   DualListTarget,

@@ -41,8 +41,12 @@ import {
 } from "src/services/rpcSubIds";
 // Modals
 import AddModal from "src/components/modals/SubIdsModals/AddModal";
+// React router
+import { useNavigate } from "react-router";
 
 const SubordinateIDs = () => {
+  const navigate = useNavigate();
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "subordinate-ids" });
 
@@ -129,7 +133,8 @@ const SubordinateIDs = () => {
       subIdsDataResponse.error !== undefined
     ) {
       // This normally happens when the user is not authorized to view the data
-      // So instead of adding an error, refresh page
+      // So instead of adding an error, redirect to login page
+      navigate("/login");
       window.location.reload();
     }
   }, [batchResponse]);

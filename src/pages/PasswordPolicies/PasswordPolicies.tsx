@@ -41,8 +41,12 @@ import { isPwPolicySelectable } from "src/utils/utils";
 // Modals
 import AddModal from "src/components/modals/PwPoliciesModals/AddModal";
 import DeleteModal from "src/components/modals/PwPoliciesModals/DeleteModal";
+// React router
+import { useNavigate } from "react-router";
 
 const PasswordPolicies = () => {
+  const navigate = useNavigate();
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "password-policies" });
 
@@ -126,7 +130,8 @@ const PasswordPolicies = () => {
       pwPoliciesResponse.error !== undefined
     ) {
       // This normally happens when the user is not authorized to view the data
-      // So instead of adding an error, refresh page
+      // So instead of adding an error, redirect to login page
+      navigate("/login");
       window.location.reload();
     }
   }, [pwPoliciesResponse]);

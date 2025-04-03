@@ -31,8 +31,8 @@ import {
 import { useAppDispatch } from "src/store/hooks";
 import { setIsLogin } from "src/store/Global/auth-slice";
 // Navigation
-import { useLocation, useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
+import { Link } from "react-router";
 
 interface StateFromSyncOtpPage {
   alertMessage: string;
@@ -164,6 +164,7 @@ const LoginMainPage = () => {
     }
 
     // Forcing full page to reload and access the protected pages (Default: active users)
+    navigate("/active-users");
     window.location.reload();
     // TODO: Improve this mechanism and redirect to the last page visited
   };

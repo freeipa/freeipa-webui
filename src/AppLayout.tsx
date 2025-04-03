@@ -35,6 +35,8 @@ import { setIsLogout } from "./store/Global/auth-slice";
 // RPC
 import { useLogoutMutation } from "./services/rpcAuth";
 import { useGetUserDetailsByUidMutation } from "./services/rpcUsers";
+// React router
+import { useNavigate } from "react-router";
 
 interface PropsToAppLayout {
   loggedInUser: string | null;
@@ -43,6 +45,7 @@ interface PropsToAppLayout {
 
 const AppLayout = (props: PropsToAppLayout) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   // RPC
   const [logout] = useLogoutMutation();
@@ -77,6 +80,7 @@ const AppLayout = (props: PropsToAppLayout) => {
       if ("data" in response && !response.data?.error) {
         dispatch(setIsLogout());
         // Forcing full page to reload and redirect to login page
+        navigate("/login");
         window.location.reload();
       }
     });

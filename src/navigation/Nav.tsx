@@ -1,6 +1,6 @@
 import { Nav, NavExpandable, NavItem, NavList } from "@patternfly/react-core";
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 // Navigation (PatternFly)
 import { navigationRoutes } from "./NavRoutes";
 // Redux

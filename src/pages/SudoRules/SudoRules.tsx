@@ -46,8 +46,12 @@ import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
+// React router
+import { useNavigate } from "react-router";
 
 const SudoRules = () => {
+  const navigate = useNavigate();
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "sudo-rules" });
 
@@ -140,7 +144,8 @@ const SudoRules = () => {
       rulesDataResponse.error !== undefined
     ) {
       // This normally happens when the user is not authorized to view the data
-      // So instead of adding an error, refresh page
+      // So instead of adding an error, redirect to login page
+      navigate("/login");
       window.location.reload();
     }
   }, [rulesDataResponse]);

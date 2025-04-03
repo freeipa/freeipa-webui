@@ -8,7 +8,7 @@ import {
   TabTitleText,
 } from "@patternfly/react-core";
 // React Router DOM
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
