@@ -201,8 +201,8 @@ const AddModal = (props: PropsToAddModal) => {
 
     addIdp(payload).then((result) => {
       if ("data" in result) {
-        const data = result.data.result;
-        const error = result.data.error as SerializedError;
+        const data = result.data?.result;
+        const error = result.data?.error as SerializedError;
 
         if (error) {
           alerts.addAlert("add-idp-error", error.message, "danger");

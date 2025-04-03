@@ -169,7 +169,7 @@ const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
     addMemberToHbacGroups([props.id, "hbacsvc", newHbacServiceNames]).then(
       (response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             if (response.data.result.results[0].error) {
               const errorMessage = response.data.result.results[0]
                 .error as string;
@@ -186,7 +186,7 @@ const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
             props.onRefreshData();
             // Close modal
             setShowAddModal(false);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
             alerts.addAlert("add-member-error", errorMessage.message, "danger");
@@ -203,7 +203,7 @@ const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
     removeMembersFromHbacGroup([props.id, "hbacsvc", hbacGroupsSelected]).then(
       (response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Set alert: success
             alerts.addAlert(
               "remove-hbac-services-success",
@@ -218,7 +218,7 @@ const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
             setShowDeleteModal(false);
             // Back to page 1
             setPage(1);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
             alerts.addAlert(
@@ -239,7 +239,6 @@ const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
         onSearch={() => {}}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshData}

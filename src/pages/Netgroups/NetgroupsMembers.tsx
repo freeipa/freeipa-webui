@@ -149,7 +149,6 @@ const NetgroupsMembers = (props: PropsToNetgroupsMembers) => {
             isDataLoading={netgroupQuery.isFetching}
             onRefreshData={onRefreshNetgroupData}
             member_user={netgroup.memberuser_user || []}
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
             setDirection={() => {}}
             direction={"direct"}
           />
@@ -173,7 +172,6 @@ const NetgroupsMembers = (props: PropsToNetgroupsMembers) => {
             isDataLoading={netgroupQuery.isFetching}
             onRefreshData={onRefreshNetgroupData}
             member_group={netgroup.memberuser_group || []}
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
             setDirection={() => {}}
             direction={"direct"}
           />
@@ -197,7 +195,6 @@ const NetgroupsMembers = (props: PropsToNetgroupsMembers) => {
             isDataLoading={netgroupQuery.isFetching}
             onRefreshData={onRefreshNetgroupData}
             member_host={netgroup.memberhost_host || []}
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
             setDirection={() => {}}
             direction={"direct"}
           />
@@ -221,7 +218,6 @@ const NetgroupsMembers = (props: PropsToNetgroupsMembers) => {
             isDataLoading={netgroupQuery.isFetching}
             onRefreshData={onRefreshNetgroupData}
             member_hostgroup={netgroup.memberhost_hostgroup || []}
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
             setDirection={() => {}}
             direction={"direct"}
           />

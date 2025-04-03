@@ -194,7 +194,7 @@ const SubordinateIDs = () => {
       stopIdx: 200, // Search will consider a max. of elements
     }).then((result) => {
       if ("data" in result) {
-        const searchError = result.data.error as
+        const searchError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
@@ -213,9 +213,9 @@ const SubordinateIDs = () => {
           );
         } else {
           // Success
-          const listResult = result.data.result.results;
-          const listSize = result.data.result.count;
-          const totalCount = result.data.result.totalCount;
+          const listResult = result.data?.result.results || [];
+          const listSize = result.data?.result.count || 0;
+          const totalCount = result.data?.result.totalCount || 0;
           const elementsList: SubId[] = [];
 
           for (let i = 0; i < listSize; i++) {
@@ -239,8 +239,6 @@ const SubordinateIDs = () => {
     perPage,
     updatePage,
     updatePerPage,
-    // As of now, this function is not used
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     updateSelectedPerPage: () => {},
     updateShownElementsList: updateShownElementsList,
     totalCount,

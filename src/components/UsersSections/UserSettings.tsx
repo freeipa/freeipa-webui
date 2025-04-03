@@ -236,7 +236,7 @@ const UserSettings = (props: PropsToUserSettings) => {
     // Make API call
     generateSubIds(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Disable kebab option
           setIsDisabledAutoAssignSubIds(true);
           // Refresh page
@@ -247,7 +247,7 @@ const UserSettings = (props: PropsToUserSettings) => {
             response.data.result.summary,
             "success"
           );
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert("auto-assign-error", errorMessage.message, "danger");
@@ -382,10 +382,10 @@ const UserSettings = (props: PropsToUserSettings) => {
     // Make API call
     saveUser(modifiedValues).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Show toast notification: success
           alerts.addAlert("save-success", "User modified", "success");
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert("save-error", errorMessage.message, "danger");

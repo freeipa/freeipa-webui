@@ -47,7 +47,6 @@ const useKrbTicketPolicyData = (): KrbTicketSettingsData => {
     modified,
     setModified,
     metadata,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     resetValues: () => {},
     originalPwPolicy: krbTicket,
     setKrbTicket,

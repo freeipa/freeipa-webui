@@ -125,7 +125,6 @@ const IdpReferences = () => {
       idpsResponse.isError &&
       idpsResponse.error !== undefined
     ) {
-      idpsResponse;
       // This normally happens when the user is not authorized to view the data
       // So instead of adding an error, refresh page
       window.location.reload();
@@ -237,7 +236,7 @@ const IdpReferences = () => {
       stopIdx: 200, // Search will consider a max. of elements
     }).then((result) => {
       if ("data" in result) {
-        const searchError = result.data.error as
+        const searchError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
@@ -256,9 +255,9 @@ const IdpReferences = () => {
           );
         } else {
           // Success
-          const listResult = result.data.result.results;
-          const listSize = result.data.result.count;
-          const totalCount = result.data.result.totalCount;
+          const listResult = result.data?.result.results || [];
+          const listSize = result.data?.result.count || 0;
+          const totalCount = result.data?.result.totalCount || 0;
           const elementsList: IDPServer[] = [];
 
           for (let i = 0; i < listSize; i++) {
