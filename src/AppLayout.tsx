@@ -55,8 +55,8 @@ const AppLayout = (props: PropsToAppLayout) => {
     if (props.loggedInUser) {
       getUserDetails(props.loggedInUser).then((response) => {
         if ("data" in response) {
-          const first = response.data.result.result.givenname;
-          const last = response.data.result.result.sn;
+          const first = response.data?.result.result.givenname;
+          const last = response.data?.result.result.sn;
           // Some users (e.g., admin) don't have first name
           if (!first) {
             setFullName(last as string);
@@ -74,7 +74,7 @@ const AppLayout = (props: PropsToAppLayout) => {
   // On logout handler
   const onLogout = () => {
     logout().then((response) => {
-      if ("data" in response && !response.data.error) {
+      if ("data" in response && !response.data?.error) {
         dispatch(setIsLogout());
         // Forcing full page to reload and redirect to login page
         window.location.reload();
@@ -165,15 +165,17 @@ const AppLayout = (props: PropsToAppLayout) => {
 
   const pageId = "primary-app-container";
 
+  const skipToContent = (event) => {
+    event.preventDefault();
+    const primaryContentContainer = document.getElementById(pageId);
+    console.log("primaryContentContainer", primaryContentContainer);
+    if (primaryContentContainer) {
+      return primaryContentContainer.focus();
+    }
+  };
+
   const PageSkipToContent = (
-    <SkipToContent
-      onClick={(event) => {
-        event.preventDefault();
-        const primaryContentContainer = document.getElementById(pageId);
-        primaryContentContainer && primaryContentContainer.focus();
-      }}
-      href={`#${pageId}`}
-    >
+    <SkipToContent onClick={skipToContent} href={`#${pageId}`}>
       Skip to Content
     </SkipToContent>
   );

@@ -45,7 +45,6 @@ const useSudoCmdGroupsSettings = (command: string): SettingsData => {
     modified,
     setModified,
     metadata,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     resetValues: () => {},
     originalGroup: group,
     group,

@@ -118,10 +118,10 @@ const KrbTicketPolicy = () => {
     saveKrbTicketPolicy(payload).then((response) => {
       if ("data" in response) {
         const data = response.data;
-        if (data.error) {
+        if (data?.error) {
           alerts.addAlert("error", (data.error as Error).message, "danger");
         }
-        if (data.result) {
+        if (data?.result) {
           krbTicketPolicyData.setKrbTicket(data.result.result);
           alerts.addAlert(
             "success",

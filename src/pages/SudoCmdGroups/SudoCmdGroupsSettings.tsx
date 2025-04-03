@@ -22,7 +22,6 @@ interface PropsToSettings {
   group: Partial<SudoCmdGroup>;
   originalGroup: Partial<SudoCmdGroup>;
   metadata: Metadata;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onChange: (service: Partial<SudoCmdGroup>) => void;
   onRefresh: () => void;
   isModified: boolean;
@@ -53,7 +52,7 @@ const SudoCmdGroupsSettings = (props: PropsToSettings) => {
 
     saveService(modifiedValues).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Show toast notification: success
           alerts.addAlert(
             "save-success",
@@ -61,7 +60,7 @@ const SudoCmdGroupsSettings = (props: PropsToSettings) => {
             "success"
           );
           props.onRefresh();
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert("save-error", errorMessage.message, "danger");

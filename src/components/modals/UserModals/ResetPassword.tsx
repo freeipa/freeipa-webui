@@ -245,7 +245,7 @@ const ResetPassword = (props: PropsToResetPassword) => {
 
       resetPassword(payload).then((response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Close modal
             resetFieldsAndCloseModal();
             // Refresh data
@@ -256,7 +256,7 @@ const ResetPassword = (props: PropsToResetPassword) => {
               "Changed password for user '" + props.uid + "'",
               "success"
             );
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as ErrorResult;
             alerts.addAlert(

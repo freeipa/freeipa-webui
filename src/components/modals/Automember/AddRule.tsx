@@ -150,10 +150,14 @@ const AddRule = (props: PropsToAddRule) => {
     addRuleCommand(addPayload).then((response) => {
       if ("data" in response) {
         const data = response.data;
-        const error = data.error as FetchBaseQueryError | SerializedError;
+        const error = data?.error as FetchBaseQueryError | SerializedError;
 
         if (error) {
-          alerts.addAlert("add-rule-error", error, "danger");
+          alerts.addAlert(
+            "add-rule-error",
+            JSON.stringify(error, null, 2),
+            "danger"
+          );
         } else {
           // Set alert: success
           alerts.addAlert(
@@ -183,10 +187,14 @@ const AddRule = (props: PropsToAddRule) => {
     addRuleCommand(addPayload).then((response) => {
       if ("data" in response) {
         const data = response.data;
-        const error = data.error as FetchBaseQueryError | SerializedError;
+        const error = data?.error as FetchBaseQueryError | SerializedError;
 
         if (error) {
-          alerts.addAlert("add-rule-error", error, "danger");
+          alerts.addAlert(
+            "add-rule-error",
+            JSON.stringify(error, null, 2),
+            "danger"
+          );
         } else {
           // Set alert: success
           alerts.addAlert(
@@ -198,7 +206,7 @@ const AddRule = (props: PropsToAddRule) => {
 
           // Clean fields and refresh table
           cleanFields();
-          props.onRefresh && props.onRefresh();
+          if (props.onRefresh) props.onRefresh();
         }
       }
     });

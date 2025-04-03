@@ -308,7 +308,6 @@ describe("IpaCertificates Component", () => {
     // Validate View modal
     screen.getByText(ISSUER_DN.cn);
     screen.getByText(ISSUER_DN.o);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     screen.getByText(ISSUER_DN.ou!);
     screen.getByText(mockCertificate.serial_number);
     screen.getByText(mockCertificate.serial_number_hex);
@@ -316,7 +315,6 @@ describe("IpaCertificates Component", () => {
     const subjects = screen.getAllByText(SUBJECT_DN.cn);
     expect(subjects).toHaveLength(2);
     screen.getByText(SUBJECT_DN.o);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     screen.getByText(SUBJECT_DN.ou!);
 
     screen.getByText(mockCertificate.valid_not_before);

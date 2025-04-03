@@ -44,7 +44,6 @@ interface PropsToGroupsSettings {
   userGroup: Partial<UserGroup>;
   originalGroup: Partial<UserGroup>;
   metadata: Metadata;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onGroupChange: (userGroup: Partial<UserGroup>) => void;
   onRefresh: () => void;
   isModified: boolean;
@@ -154,13 +153,13 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
     setModalSpinning(true);
     convertGroupPOSIX(cn).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           alerts.addAlert(
             "posix-usergroup-success",
             "User group changed to POSIX group",
             "success"
           );
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           alerts.addAlert(
             "posix-error",
             "Failed to convert group: " + response.data.error,
@@ -179,13 +178,13 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
     setModalSpinning(true);
     convertGroupExternal(cn).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           alerts.addAlert(
             "external-usergroup-success",
             "User group changed to external group",
             "success"
           );
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           alerts.addAlert(
             "external-error",
             "Failed to convert group: " + response.data.error,
@@ -204,7 +203,7 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
     setModalSpinning(true);
     deleteGroup(cn).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           alerts.addAlert(
             "remove-usergroup-success",
             "User group removed",
@@ -212,7 +211,7 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
           );
           // Redirect to the main page
           navigate("/user-groups");
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           alerts.addAlert(
             "delete-error",
             "Failed to delete group: " + response.data.error,
@@ -287,10 +286,10 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
 
     saveGroup(modifiedValues).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Show toast notification: success
           alerts.addAlert("save-success", "User group modified", "success");
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert("save-error", errorMessage.message, "danger");

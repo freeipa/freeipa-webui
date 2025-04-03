@@ -93,7 +93,6 @@ const ServicesMemberOf = (props: PropsToServicesMemberOf) => {
             isDataLoading={serviceQuery.isFetching}
             onRefreshData={onRefreshServiceData}
             membershipDisabled={true}
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
             setDirection={() => {}}
             direction={"direct" as MembershipDirection}
           />

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { api, FindRPCResponse, getCommandNoVersion } from "./rpc";
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 import {

@@ -221,6 +221,10 @@ const TypeAheadSelect = (props: PropsToTypeAheadSelect) => {
     textInputRef?.current?.focus();
   };
 
+  const onOpenChange = (isOpen) => {
+    if (!isOpen) closeMenu();
+  };
+
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
       ref={toggleRef}
@@ -259,9 +263,7 @@ const TypeAheadSelect = (props: PropsToTypeAheadSelect) => {
       isOpen={isOpen}
       selected={props.selected}
       onSelect={onSelect}
-      onOpenChange={(isOpen) => {
-        !isOpen && closeMenu();
-      }}
+      onOpenChange={onOpenChange}
       toggle={toggle}
     >
       <SelectList id={props.id + "select-typeahead-listbox"}>

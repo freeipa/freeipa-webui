@@ -53,7 +53,6 @@ const useUserGroupSettings = (groupId: string): UserGroupSettingsData => {
     modified,
     setModified,
     metadata,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     resetValues: () => {},
     originalGroup: userGroup,
     setUserGroup,
