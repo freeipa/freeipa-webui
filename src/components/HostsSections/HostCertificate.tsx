@@ -29,7 +29,7 @@ const HostCertificate = (props: PropsToHostSettings) => {
     <Flex direction={{ default: "column", lg: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-v5-u-mb-lg">
-          <FormGroup label="Certificates" fieldId="usercertificate">
+          <FormGroup label="Certificates" role="group">
             <IpaCertificates
               ipaObject={ipaObject}
               onChange={recordOnChange}

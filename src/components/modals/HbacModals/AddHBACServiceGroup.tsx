@@ -56,7 +56,7 @@ const AddHBACServiceGroup = (props: PropsToAddGroup) => {
   // List of fields
   const fields = [
     {
-      id: "service-group-name",
+      id: "modal-form-service-group-name",
       name: "Service group name",
       pfComponent: (
         <>
@@ -81,7 +81,7 @@ const AddHBACServiceGroup = (props: PropsToAddGroup) => {
       ),
     },
     {
-      id: "service-group-desc",
+      id: "modal-form-service-group-desc",
       name: "Description",
       pfComponent: (
         <TextArea

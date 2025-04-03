@@ -148,7 +148,7 @@ Then("the active field should be empty", () => {
 When(
   "I click in the date selector field in the {string} section",
   (section: string) => {
-    cy.get("label")
+    cy.get("span[class='pf-v5-c-form__label-text']")
       .contains(section)
       .parent()
       .parent()
@@ -161,7 +161,7 @@ When(
 When(
   "I click in the time selector field in the {string} section",
   (section: string) => {
-    cy.get("label")
+    cy.get("span[class='pf-v5-c-form__label-text']")
       .contains(section)
       .parent()
       .parent()
@@ -174,7 +174,7 @@ When(
 Then(
   "I should see value {string} in the date selector in the {string} section",
   (value: string, section: string) => {
-    cy.get("label")
+    cy.get("span[class='pf-v5-c-form__label-text']")
       .contains(section)
       .parent()
       .parent()
@@ -188,7 +188,7 @@ Then(
 Then(
   "I should see value {string} in the time selector in the {string} section",
   (value: string, section: string) => {
-    cy.get("label")
+    cy.get("span[class='pf-v5-c-form__label-text']")
       .contains(section)
       .parent()
       .parent()
@@ -202,8 +202,9 @@ Then(
 Then(
   "I should see {string} message in the {string} section",
   (msg: string, section: string) => {
-    cy.get("label")
+    cy.get("span[class='pf-v5-c-form__label-text']")
       .contains(section)
+      .parent()
       .parent()
       .parent()
       .get("div.pf-m-error")
@@ -274,7 +275,9 @@ When("I put Certificate named {string} into the text area", (keyID: string) => {
 Then(
   "I should see {int} certificates in the Certificates section",
   (count: number) => {
-    cy.get("label[for='usercertificate']")
+    cy.get("span[class='pf-v5-c-form__label-text']")
+      .contains("Certificates")
+      .parent()
       .parent()
       .next()
       .get(".pf-v5-c-card__header")

@@ -109,7 +109,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
   // List of fields
   const fields = [
     {
-      id: "override-user",
+      id: "modal-form-override-user",
       name: "User to override",
       pfComponent: (
         <DropdownSearch
@@ -122,7 +122,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       ),
     },
     {
-      id: "user-login",
+      id: "modal-form-user-login",
       name: "User login",
       pfComponent: (
         <TextInput
@@ -136,7 +136,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       ),
     },
     {
-      id: "user-gecos",
+      id: "modal-form-user-gecos",
       name: "GECOS",
       pfComponent: (
         <TextInput
@@ -150,7 +150,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       ),
     },
     {
-      id: "user-uidnumber",
+      id: "modal-form-user-uidnumber",
       name: "UID",
       pfComponent: (
         <TextInput
@@ -169,7 +169,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       ),
     },
     {
-      id: "user-gidnumber",
+      id: "modal-form-user-gidnumber",
       name: "GID",
       pfComponent: (
         <TextInput
@@ -188,7 +188,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       ),
     },
     {
-      id: "user-shell",
+      id: "modal-form-user-shell",
       name: "Login shell",
       pfComponent: (
         <TextInput
@@ -202,7 +202,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       ),
     },
     {
-      id: "user-homedir",
+      id: "modal-form-user-homedir",
       name: "Home directory",
       pfComponent: (
         <TextInput
@@ -216,7 +216,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       ),
     },
     {
-      id: "user-cert",
+      id: "modal-form-user-cert",
       name: "Certificate",
       pfComponent: (
         <TextArea
@@ -228,7 +228,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       ),
     },
     {
-      id: "user-ssh",
+      id: "modal-form-user-ssh",
       name: "SSH public key",
       pfComponent: (
         <TextArea
@@ -240,7 +240,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       ),
     },
     {
-      id: "user-desc",
+      id: "modal-form-user-desc",
       name: "Description",
       pfComponent: (
         <TextArea

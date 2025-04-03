@@ -28,7 +28,7 @@ const UsersPasswordPolicy = (props: PropsToPasswordPolicy) => {
               readOnlyVariant="plain"
             />
           </FormGroup>
-          <FormGroup label="Min lifetime (hours)" fieldId="mini-lifetime-hours">
+          <FormGroup label="Min lifetime (hours)" fieldId="min-lifetime-hours">
             <TextInput
               id="min-lifetime-hours"
               name="krbminpwdlife"

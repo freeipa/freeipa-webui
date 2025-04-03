@@ -345,7 +345,7 @@ const AddUser = (props: PropsToAddUser) => {
   // List of fields
   let fields = [
     {
-      id: "user-login",
+      id: "modal-form-user-login",
       name: "User login",
       pfComponent: (
         <>
@@ -374,7 +374,7 @@ const AddUser = (props: PropsToAddUser) => {
       ),
     },
     {
-      id: "first-name",
+      id: "modal-form-first-name",
       name: "First name",
       pfComponent: (
         <>
@@ -400,7 +400,7 @@ const AddUser = (props: PropsToAddUser) => {
       fieldRequired: true,
     },
     {
-      id: "last-name",
+      id: "modal-form-last-name",
       name: "Last name",
       pfComponent: (
         <>
@@ -426,7 +426,7 @@ const AddUser = (props: PropsToAddUser) => {
       fieldRequired: true,
     },
     {
-      id: "modal-class",
+      id: "modal-form-user-class",
       name: "Class",
       pfComponent: (
         <TextInput
@@ -471,7 +471,7 @@ const AddUser = (props: PropsToAddUser) => {
       ),
     },
     {
-      id: "new-password",
+      id: "modal-form-new-password",
       name: "New password",
       pfComponent: (
         <PasswordInput
@@ -486,7 +486,7 @@ const AddUser = (props: PropsToAddUser) => {
       ),
     },
     {
-      id: "verify-password",
+      id: "modal-form-verify-password",
       name: "Verify password",
       pfComponent: (
         <>

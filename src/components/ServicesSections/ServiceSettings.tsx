@@ -67,7 +67,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
       <Flex direction={{ default: "column", lg: "row" }}>
         <FlexItem flex={{ default: "flex_1" }}>
           <Form className="pf-v5-u-mb-lg">
-            <FormGroup label="Principal alias" fieldId="principal-alias">
+            <FormGroup label="Principal alias" role="group">
               <PrincipalAliasMultiTextBox
                 ipaObject={ipaObject}
                 metadata={props.metadata}
@@ -95,7 +95,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
                 isDisabled
               />
             </FormGroup>
-            <FormGroup label="PAC type" fieldId="pac-type">
+            <FormGroup label="PAC type" role="group">
               <IpaPACType
                 name="ipakrbauthzdata"
                 ipaObject={ipaObject}
@@ -110,7 +110,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
           <Form className="pf-v5-u-mb-lg">
             <FormGroup
               label="Authentication indicators"
-              fieldId="authentication-indicators"
+              role="group"
               labelIcon={
                 <PopoverWithIconLayout message={AuthIndicatorsTypesMessage} />
               }
@@ -146,10 +146,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
                 metadata={props.metadata}
               />
             </FormGroup>
-            <FormGroup
-              label="Trusted for delegation"
-              fieldId="trusted-delegation"
-            >
+            <FormGroup label="Trusted for delegation" role="group">
               <IpaCheckbox
                 name="ipakrbokasdelegate"
                 value="trustedForDelegation"
@@ -160,10 +157,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
                 metadata={props.metadata}
               />
             </FormGroup>
-            <FormGroup
-              label="Trusted to authenticate as a user"
-              fieldId="trusted-auth-as-user"
-            >
+            <FormGroup label="Trusted to authenticate as a user" role="group">
               <IpaCheckbox
                 name="ipakrboktoauthasdelegate"
                 value="trustedAuthAsUser"
@@ -174,10 +168,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
                 metadata={props.metadata}
               />
             </FormGroup>
-            <FormGroup
-              label="Requires pre-authentication"
-              fieldId="requires-pre-authentication"
-            >
+            <FormGroup label="Requires pre-authentication" role="group">
               <IpaCheckbox
                 name="ipakrbrequirespreauth"
                 value="requiresPreAuth"

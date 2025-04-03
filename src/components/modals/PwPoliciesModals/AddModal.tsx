@@ -173,7 +173,7 @@ const AddModal = (props: PropsToAddModal) => {
       fieldRequired: true,
     },
     {
-      id: "priority",
+      id: "modal-form-priority",
       name: "Priority",
       pfComponent: (
         <TextInput

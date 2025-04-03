@@ -403,7 +403,7 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
               readOnlyVariant="plain"
             />
           </FormGroup>
-          <FormGroup label="Password policy" fieldId="pwdpolicy">
+          <FormGroup label="Password policy" role="group">
             <Label
               label="Temporary until pwdPolicy page is finished"
               color={props.pwPolicyData.cn ? "blue" : "grey"}

@@ -586,6 +586,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         Add
       </SecondaryButton>
       <ModalWithTextAreaLayout
+        id="certificate-textarea"
         value={textAreaValue}
         onChange={onChangeTextAreaValue}
         isOpen={isModalOpen}

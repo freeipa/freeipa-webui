@@ -557,7 +557,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
       element: (
         <Form isHorizontal maxWidth="93px" className="pf-v5-u-pb-xs">
           <FormGroup
-            fieldId="membership"
+            role="group"
             label="Membership"
             className="pf-v5-u-pt-0"
           ></FormGroup>

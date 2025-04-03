@@ -340,10 +340,15 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
         actions={modal_actions}
       >
         <Form>
-          <FormGroup label="SSH public key:" type="string" fieldId="selection">
+          <FormGroup
+            label="SSH public key:"
+            type="string"
+            fieldId="ipasshpubkey"
+          >
             <TextArea
+              id="ipasshpubkey"
               value={textAreaSshPublicKeysValue}
-              name={"ipasshpubkey"}
+              name="ipasshpubkey"
               onChange={(_event, value: string) =>
                 onChangeTextAreaSshPublicKeysValue(value)
               }

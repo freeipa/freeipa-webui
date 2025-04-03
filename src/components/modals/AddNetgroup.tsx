@@ -67,7 +67,7 @@ const AddNetgroup = (props: PropsToAddGroup) => {
   // List of fields
   const fields = [
     {
-      id: "netgroup-name",
+      id: "modal-form-netgroup-name",
       name: "Netgroup name",
       pfComponent: (
         <>
@@ -92,7 +92,7 @@ const AddNetgroup = (props: PropsToAddGroup) => {
       ),
     },
     {
-      id: "netgroup-desc",
+      id: "modal-form-netgroup-desc",
       name: "Description",
       pfComponent: (
         <TextArea

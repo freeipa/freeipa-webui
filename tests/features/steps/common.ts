@@ -193,7 +193,7 @@ When(
       .contains(regex)
       .parent()
       .then(($label) => {
-        cy.get("#modal-form-" + $label.attr("for")).type(content);
+        cy.get("#" + $label.attr("for")).type(content);
       });
   }
 );
@@ -416,13 +416,14 @@ When(
   (checkboxName: string, section: string) => {
     const sectionRegex = new RegExp("^" + section + "$", "i");
     // Intentionally not using regex matching for the checkbox name as these elements often contain parentheses
-    cy.get("div.pf-v5-c-form__group-label")
-      .contains(sectionRegex)
+    cy.get("span[class='pf-v5-c-form__label-text']")
+      .contains(section)
+      .parent()
+      .parent()
       .next()
       .get("div.pf-v5-c-check")
       .find("label")
       .contains(checkboxName)
-      .prev()
       .click();
   }
 );
@@ -622,8 +623,9 @@ When(
   (buttonName: string, section: string) => {
     const sectionRegex = new RegExp("^" + section + "$", "i");
     const buttonRegex = new RegExp("^" + buttonName + "$", "i");
-    cy.get("div.pf-v5-c-form__group-label")
+    cy.get("span[class='pf-v5-c-form__label-text']")
       .contains(sectionRegex)
+      .parent()
       .parent()
       .next()
       .find("button")
@@ -640,6 +642,7 @@ When(
     cy.get("div.pf-v5-c-form__group-label")
       .contains(sectionRegex)
       .parent()
+      .parent()
       .next()
       .find("input[value='" + text + "']")
       .parent()
@@ -655,8 +658,9 @@ Then(
   "I should not see value {string} in any of the textboxes that belong to the field {string}",
   (value: string, fieldName: string) => {
     cy
-      .get("div.pf-v5-c-form__group-label")
+      .get("span[class='pf-v5-c-form__label-text'")
       .contains(fieldName)
+      .parent()
       .parent()
       .next()
       .find("input[value='" + value + "']").not;
@@ -669,6 +673,7 @@ Then(
     const regex = new RegExp("^" + fieldName + "$", "i");
     cy.get("div.pf-v5-c-form__group-label")
       .contains(regex)
+      .parent()
       .parent()
       .next()
       .find("input[value='" + text + "']")
@@ -683,6 +688,7 @@ Then(
     cy.get("div.pf-v5-c-form__group-label")
       .contains(regex)
       .parent()
+      .parent()
       .next()
       .find("input[value='" + value + "']");
   }
@@ -694,6 +700,7 @@ Then(
     const regex = new RegExp("^" + fieldName + "$", "i");
     cy.get("div.pf-v5-c-form__group-label")
       .contains(regex)
+      .parent()
       .parent()
       .next()
       .find("input")

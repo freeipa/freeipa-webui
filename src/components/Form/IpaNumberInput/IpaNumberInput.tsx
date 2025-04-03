@@ -94,7 +94,6 @@ const IpaNumberInput = (props: IPAParamDefinitionNumberInput) => {
   return (
     <>
       <NumberInput
-        id={props.id}
         name={props.name}
         value={numberValue}
         onMinus={onMinus}
@@ -111,6 +110,7 @@ const IpaNumberInput = (props: IPAParamDefinitionNumberInput) => {
         isDisabled={readOnly}
         widthChars={props.numCharsShown || 1}
         className={props.className || ""}
+        inputProps={{ id: props.id }}
       />
       {isError && (
         <HelperText>

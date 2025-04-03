@@ -51,7 +51,7 @@ const ConfigObjectclassTable = (props: PropsToTable) => {
             const removeButton = (
               <TableText>
                 <Button
-                  id={item}
+                  id={props.name + "-" + item}
                   onClick={() => removeOC(item)}
                   variant="secondary"
                   size="sm"
@@ -72,7 +72,7 @@ const ConfigObjectclassTable = (props: PropsToTable) => {
         </Tbody>
       </Table>
       <Button
-        id="addoc"
+        id={props.name + "-" + "addoc"}
         onClick={() => {
           setNewOC("");
           setIsOpen(true);

@@ -103,10 +103,7 @@ const HostSettings = (props: PropsToHostSettings) => {
                 isDisabled
               />
             </FormGroup>
-            <FormGroup
-              label="Kerberos principal alias"
-              fieldId="krbprincipalname"
-            >
+            <FormGroup label="Kerberos principal alias" role="group">
               <PrincipalAliasMultiTextBox
                 ipaObject={ipaObject}
                 metadata={props.metadata}
@@ -177,7 +174,7 @@ const HostSettings = (props: PropsToHostSettings) => {
         </FlexItem>
         <FlexItem flex={{ default: "flex_1" }}>
           <Form>
-            <FormGroup label="SSH public keys" fieldId="ipasshpubkey">
+            <FormGroup label="SSH public keys" role="group">
               <IpaSshPublicKeys
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
@@ -186,7 +183,7 @@ const HostSettings = (props: PropsToHostSettings) => {
                 from={"hosts"}
               />
             </FormGroup>
-            <FormGroup label="MAC address" fieldId="macaddress">
+            <FormGroup label="MAC address" role="group">
               <IpaTextboxList
                 ipaObject={ipaObject}
                 setIpaObject={recordOnChange}
@@ -197,7 +194,7 @@ const HostSettings = (props: PropsToHostSettings) => {
             </FormGroup>
             <FormGroup
               label="Authentication indicators"
-              fieldId="krbprincipalauthind"
+              role="group"
               labelIcon={
                 <PopoverWithIconLayout message={AuthIndicatorsTypesMessage} />
               }
@@ -233,10 +230,7 @@ const HostSettings = (props: PropsToHostSettings) => {
                 metadata={props.metadata}
               />
             </FormGroup>
-            <FormGroup
-              label="Trusted for delegation"
-              fieldId="trusted-delegation"
-            >
+            <FormGroup label="Trusted for delegation" role="group">
               <IpaCheckbox
                 name="ipakrbokasdelegate"
                 value="trustedForDelegation"
@@ -247,10 +241,7 @@ const HostSettings = (props: PropsToHostSettings) => {
                 metadata={props.metadata}
               />
             </FormGroup>
-            <FormGroup
-              label="Trusted to authenticate as a user"
-              fieldId="trusted-auth-as-user"
-            >
+            <FormGroup label="Trusted to authenticate as a user" role="group">
               <IpaCheckbox
                 name="ipakrboktoauthasdelegate"
                 value="trustedAuthAsUser"

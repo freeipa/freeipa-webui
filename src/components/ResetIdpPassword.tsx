@@ -75,7 +75,7 @@ const ResetIdpPassword = (props: PropsToResetIdpPassword) => {
   // Fields
   const fields = [
     {
-      id: "reset-password-new-password",
+      id: "modal-form-reset-password-new-password",
       name: "New Password",
       pfComponent: (
         <PasswordInput
@@ -91,7 +91,7 @@ const ResetIdpPassword = (props: PropsToResetIdpPassword) => {
       ),
     },
     {
-      id: "reset-password-verify-password",
+      id: "modal-form-reset-password-verify-password",
       name: "Verify password",
       pfComponent: (
         <>
