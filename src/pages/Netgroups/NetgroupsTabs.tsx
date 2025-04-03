@@ -8,7 +8,7 @@ import {
   TabTitleText,
 } from "@patternfly/react-core";
 // React Router DOM
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Layouts
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";

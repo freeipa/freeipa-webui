@@ -57,7 +57,7 @@ import RestorePreservedUsers from "src/components/modals/UserModals/RestorePrese
 // Utils
 import { API_VERSION_BACKUP } from "src/utils/utils";
 // Navigate
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 export interface PropsToUserSettings {
   originalUser: Partial<User>;

@@ -8,7 +8,7 @@ import { Host } from "../../utils/datatypes/globalDataTypes";
 // Layouts
 import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
 // React Router DOM
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 interface HostsData {
   isHostSelectable: (host: Host) => boolean;
