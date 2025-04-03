@@ -11,6 +11,10 @@ Given("I am on {string} page", (handle: string) => {
   });
 });
 
+Then("I should be on {string} page", (handle: string) => {
+  cy.url().should("contain", handle);
+});
+
 Given(
   "I navigate to {string} page using the breadcrumb link",
   (to_page: string) => {
@@ -35,29 +39,58 @@ Given(
 );
 
 // login
-Given("I am logged in as {string}", (username: string) => {
-  cy.wait(1000);
-  cy.url().then(($url) => {
-    if ($url.includes("modern_ui/login")) {
-      // @ts-ignore
-      cy.loginAsAnUser(
-        Cypress.env("admin_login"),
-        Cypress.env("admin_password")
-      );
-    }
-  });
-  cy.get(
-    "div.pf-v5-c-masthead__content button span.pf-v5-c-menu-toggle__text",
-    { timeout: 6000 }
-  ).then(($ele) => {
-    if ($ele.text() !== username) {
-      // @ts-ignore
-      cy.loginAsAnUser(
-        Cypress.env("admin_login"),
-        Cypress.env("admin_password")
-      );
-    }
-  });
+Given(
+  "I am logged in as {string}",
+  (username: string, password: string = "") => {
+    cy.visit(Cypress.env("base_url") + "/" + "login");
+    cy.wait(1000);
+    cy.url().then(($url) => {
+      cy.log($url);
+      if ($url.includes("active-users")) {
+        cy.get("span.pf-v5-c-menu-toggle__text")
+          .contains(username)
+          .should("be.visible");
+        return;
+      }
+      if ($url.includes(Cypress.env("base_url") + "/" + "login")) {
+        if (username == "Administrator") {
+          // @ts-ignore
+          cy.loginAsAnUser(
+            Cypress.env("admin_login"),
+            Cypress.env("admin_password")
+          );
+        } else {
+          // @ts-ignore
+          cy.loginAsAnUser(username, password);
+        }
+      } else {
+        cy.visit(Cypress.env("base_url"));
+      }
+    });
+
+    // Wait until the header contains username (Administrator in case of admin)
+    cy.get(
+      "div.pf-v5-c-masthead__content button span.pf-v5-c-menu-toggle__text",
+      { timeout: 10000 }
+    ).should("contain", username);
+
+    // Then ensure the correct username is displayed
+    cy.get(
+      "div.pf-v5-c-masthead__content button span.pf-v5-c-menu-toggle__text",
+      { timeout: 10000 }
+    ).contains(username);
+  }
+);
+
+Then("I should be logged in as {string}", (username: string) => {
+  cy.get(".pf-v5-c-masthead__content span.pf-v5-c-menu-toggle__text").should(
+    "contain",
+    username
+  );
+});
+
+When("I click on the logged-in user menu", () => {
+  cy.get("#toggle-plain-text").click();
 });
 
 When(
@@ -68,8 +101,13 @@ When(
   }
 );
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-When("I logout", () => {});
+When(
+  "in the logged-in user menu I click on the {string} button",
+  (button: string) => {
+    cy.get("#toggle-plain-text").click();
+    cy.get("button.pf-v5-c-menu__item").contains(button).click();
+  }
+);
 
 // Side menu
 When("I open the side menu", () => {
@@ -163,12 +201,16 @@ Then("I see a modal with title text {string}", (titleText: string) => {
     .contains(titleText);
 });
 
+Then("I close the modal dialog", () => {
+  cy.get("div.pf-v5-c-modal-box__close button[aria-label=Close]").click();
+});
+
 // - Delete
 // -- Elements to delete on tables
 Then(
   "the {string} element should be in the dialog table with id {string}",
   (groupName: string, tableId: string) => {
-    cy.get("div[role='dialog'")
+    cy.get("div[role='dialog']")
       .find("table#" + tableId)
       .find("td.pf-v5-c-table__td")
       .contains(groupName)
@@ -180,7 +222,7 @@ Then(
 Then(
   "the {string} element should be in the dialog card with id {string}",
   () => {
-    cy.get("div[role='dialog'");
+    cy.get("div[role='dialog']");
   }
 );
 
@@ -373,13 +415,12 @@ Then("I close the alert", () => {
 
 // Kebab
 When("I click on kebab menu and select {string}", (buttonName: string) => {
-  cy.get("body").then(($body) => {
-    if ($body.find("#main-dropdown-kebab").length) {
-      cy.get("#main-dropdown-kebab").click();
-    } else if ($body.find("#toggle-action-buttons").length) {
-      cy.get("#toggle-action-buttons").click();
-    }
-  });
+  // Wait for either #main-dropdown-kebab or #toggle-action-buttons to be visible
+  cy.get("#main-dropdown-kebab, #toggle-action-buttons", { timeout: 10000 })
+    .first()
+    .click();
+
+  // Click the button inside the menu
   const regex = new RegExp("^" + buttonName + "$", "i");
   cy.get("button.pf-v5-c-menu__item").contains(regex).click();
 });
@@ -847,3 +888,22 @@ Then(
       .get("button[aria-pressed=true]");
   }
 );
+
+// OTP secret from the QR code - publish as otp_secret within the scope
+Given("I acquire OTP secret from the displayed QR code", () => {
+  cy.get("#qrCode")
+    .parent()
+    .invoke("attr", "href")
+    .then(($otp_url: string | undefined) => {
+      if ($otp_url) {
+        const otpSecret = $otp_url.split("secret=")[1]?.split("&")[0];
+        if (otpSecret) {
+          cy.task("generateOTP", otpSecret);
+        } else {
+          throw new Error("OTP secret not found in the URL.");
+        }
+      } else {
+        throw new Error("QR code URL is undefined.");
+      }
+    });
+});
