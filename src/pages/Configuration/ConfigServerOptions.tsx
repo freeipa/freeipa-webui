@@ -50,6 +50,7 @@ const ConfigServerOptions = (props: PropsToServerOptions) => {
         fieldId="pkinit_server_server"
       >
         <TextArea
+          id="pkinit_server_server"
           name="pkinit_server_server"
           aria-label="master capable of PKINIT"
           value={

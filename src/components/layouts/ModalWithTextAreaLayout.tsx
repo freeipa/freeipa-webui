@@ -5,6 +5,7 @@ import { Form, FormGroup, Modal, TextArea } from "@patternfly/react-core";
 import { Metadata } from "src/utils/datatypes/globalDataTypes";
 
 interface PropsToPKModal {
+  id: string;
   value: string;
   onChange: (value: string) => void;
   isOpen: boolean;
@@ -37,10 +38,11 @@ const ModalWithTextAreaLayout = (props: PropsToPKModal) => {
         <FormGroup
           label={props.subtitle}
           type="string"
-          fieldId="selection"
+          fieldId={props.id}
           isRequired={props.isRequired}
         >
           <TextArea
+            id={props.id}
             value={props.value}
             name={props.name}
             onChange={(_event, value) => props.onChange(value)}

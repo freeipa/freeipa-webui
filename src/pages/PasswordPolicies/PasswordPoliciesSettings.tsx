@@ -187,7 +187,7 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
             <Flex direction={{ default: "column", lg: "row" }}>
               <FlexItem flex={{ default: "flex_1" }}>
                 <Form className="pf-v5-u-mb-lg">
-                  <FormGroup label="Group" fieldId="group">
+                  <FormGroup label="Group" fieldId="group" role="group">
                     <IpaTextContent
                       name={"cn"}
                       ariaLabel={"Group"}

@@ -99,7 +99,7 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
   // List of fields
   const fields = [
     {
-      id: "override-group",
+      id: "modal-form-override-group",
       name: "Group to override",
       pfComponent: (
         <DropdownSearch
@@ -112,7 +112,7 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
       ),
     },
     {
-      id: "group-name",
+      id: "modal-form-group-name",
       name: "Group name",
       pfComponent: (
         <TextInput
@@ -126,7 +126,7 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
       ),
     },
     {
-      id: "gidnumber",
+      id: "modal-form-gidnumber",
       name: "GID",
       pfComponent: (
         <TextInput
@@ -145,7 +145,7 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
       ),
     },
     {
-      id: "group-desc",
+      id: "modal-form-group-desc",
       name: "Description",
       pfComponent: (
         <TextArea

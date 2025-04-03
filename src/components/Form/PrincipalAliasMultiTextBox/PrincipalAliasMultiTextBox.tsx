@@ -259,6 +259,7 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
         isPrincipalAlias
       />
       <AddTextInputFromListModal
+        id="kerberos-principal-textinput"
         newValue={newAliasValue}
         setNewValue={setNewAliasValue}
         title={"Add kerberos principal alias"}

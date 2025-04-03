@@ -85,7 +85,7 @@ const IssuerAndSubjectOption = (props: PropsToIssuerAndSubjectOption) => {
           </FormGroup>
           <FormGroup
             label="Subject"
-            fieldId="subject"
+            fieldId="subject-textbox"
             labelIcon={
               <PopoverWithIconLayout
                 message={subjectMessage}

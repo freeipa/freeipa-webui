@@ -9,6 +9,7 @@ import {
 } from "@patternfly/react-core";
 
 interface PropsToAddModal {
+  id: string;
   newValue: string;
   setNewValue: (newValue: string) => void;
   variant?: "small" | "medium" | "large" | "default";
@@ -42,9 +43,10 @@ const AddTextInputFromListModal = (props: PropsToAddModal) => {
         <FormGroup
           label={props.textInputTitle}
           type="string"
-          fieldId="selection"
+          fieldId={props.id}
         >
           <TextInput
+            id={props.id}
             name={props.textInputName}
             value={props.newValue}
             onChange={(_event, value) => props.setNewValue(value)}

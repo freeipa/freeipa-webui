@@ -256,7 +256,7 @@ const AddHost = (props: PropsToAddHost) => {
   // List of fields
   const fields = [
     {
-      id: "host-name",
+      id: "modal-form-host-name",
       name: "Host name",
       pfComponent: (
         <>
@@ -320,7 +320,7 @@ const AddHost = (props: PropsToAddHost) => {
       ),
     },
     {
-      id: "host-desc",
+      id: "modal-form-host-desc",
       name: "Description",
       pfComponent: (
         <TextInput
@@ -334,7 +334,7 @@ const AddHost = (props: PropsToAddHost) => {
       ),
     },
     {
-      id: "host-class",
+      id: "modal-form-host-class",
       name: "Class",
       pfComponent: (
         <TextInput
@@ -348,7 +348,7 @@ const AddHost = (props: PropsToAddHost) => {
       ),
     },
     {
-      id: "host-ip-address",
+      id: "modal-form-host-ip-address",
       name: "IP address",
       pfComponent: (
         <>

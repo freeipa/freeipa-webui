@@ -30,7 +30,7 @@ const ServiceCertificate = (props: PropsToServiceSettings) => {
     <Flex direction={{ default: "column", lg: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-v5-u-mb-lg">
-          <FormGroup label="Certificates" fieldId="certificates">
+          <FormGroup label="Certificates" fieldId="certificates" role="group">
             <IpaCertificates
               ipaObject={ipaObject}
               onChange={recordOnChange}

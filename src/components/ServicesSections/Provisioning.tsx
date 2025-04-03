@@ -34,7 +34,7 @@ const Provisioning = (props: PropsToServiceProvisioning) => {
     <Flex direction={{ default: "column", lg: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form>
-          <FormGroup label="Kerberos key" fieldId="kerberos-key">
+          <FormGroup label="Kerberos key" fieldId="kerberos-key" role="group">
             <Flex>
               {hasKeytab ? (
                 <>
