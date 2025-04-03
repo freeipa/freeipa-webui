@@ -67,7 +67,7 @@ const AddHostGroup = (props: PropsToAddGroup) => {
   // List of fields
   const fields = [
     {
-      id: "hostgroup-name",
+      id: "modal-form-hostgroup-name",
       name: "Group name",
       pfComponent: (
         <>
@@ -92,7 +92,7 @@ const AddHostGroup = (props: PropsToAddGroup) => {
       ),
     },
     {
-      id: "hostgroup-desc",
+      id: "modal-form-hostgroup-desc",
       name: "Description",
       pfComponent: (
         <TextArea

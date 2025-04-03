@@ -59,7 +59,7 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
   // List of fields
   const fields = [
     {
-      id: "id-view-name",
+      id: "modal-form-id-view-name",
       name: "ID view name",
       pfComponent: (
         <>
@@ -82,7 +82,7 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
       ),
     },
     {
-      id: "id-view-desc",
+      id: "modal-form-id-view-desc",
       name: "Description",
       pfComponent: (
         <TextArea

@@ -31,7 +31,7 @@ const Enrollment = (props: PropsToEnrollment) => {
     <Flex direction={{ default: "column", lg: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form>
-          <FormGroup label="Kerberos key" fieldId="kerberos-key">
+          <FormGroup label="Kerberos key" fieldId="kerberos-key" role="group">
             <Flex>
               <FlexItem>
                 {props.host.has_keytab ? presentIcon : missingIcon}
@@ -49,7 +49,11 @@ const Enrollment = (props: PropsToEnrollment) => {
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form>
-          <FormGroup label="One-time password" fieldId="one-time-password">
+          <FormGroup
+            label="One-time password"
+            fieldId="one-time-password"
+            role="group"
+          >
             <Flex>
               <FlexItem>
                 {props.host.has_password ? presentIcon : missingIcon}

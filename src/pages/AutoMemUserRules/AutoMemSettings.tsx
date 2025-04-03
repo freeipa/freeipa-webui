@@ -228,7 +228,7 @@ const AutoMemSettings = (props: PropsToSettings) => {
               text="General"
             />
             <Form className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md">
-              <FormGroup label="General" fieldId="general">
+              <FormGroup label="General" fieldId="general" role="group">
                 <IpaTextArea
                   name="description"
                   ipaObject={ipaObject}

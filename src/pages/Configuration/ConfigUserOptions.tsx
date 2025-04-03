@@ -175,7 +175,11 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
               maxValue={2147483647}
             />
           </FormGroup>
-          <FormGroup label="Password plugin features" fieldId="ipaconfigstring">
+          <FormGroup
+            label="Password plugin features"
+            fieldId="ipaconfigstring"
+            role="group"
+          >
             <IpaCheckboxes
               name="ipaconfigstring"
               options={[
@@ -201,7 +205,8 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
           </FormGroup>
           <FormGroup
             label="Default user authentication types"
-            fieldId="ipauserauthtyp"
+            fieldId="ipauserauthtype"
+            role="group"
             labelIcon={
               <PopoverWithIconLayout message={AuthTypesMessage} triggerHover />
             }
@@ -250,7 +255,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
           </FormGroup>
           <FormGroup
             label="Enable migration mode"
-            fieldId="ipamigrationenabled"
+            fieldId="ipamigrationenabled-ipamigrationenabled"
           >
             <IpaCheckbox
               name="ipamigrationenabled"
@@ -265,7 +270,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
           </FormGroup>
           <FormGroup
             label="Enable adding subids to new users"
-            fieldId="ipauserdefaultsubordinateid"
+            fieldId="ipauserdefaultsubordinateid-ipauserdefaultsubordinateid"
           >
             <IpaCheckbox
               name="ipauserdefaultsubordinateid"
@@ -285,6 +290,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
           <FormGroup
             label="Default user objectclasses"
             fieldId="ipauserobjectclasses"
+            role="group"
           >
             <ConfigObjectclassTable
               title="Default user objectclasses"

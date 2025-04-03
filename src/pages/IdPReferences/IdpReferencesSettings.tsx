@@ -244,7 +244,7 @@ const IdpRefSettings = (props: PropsToIdpRefSettings) => {
                 <Form className="pf-v5-u-mb-lg">
                   <FormGroup
                     label="Identity Provider reference name"
-                    fieldId="cn"
+                    role="group"
                   >
                     <IpaTextContent
                       name={"cn"}

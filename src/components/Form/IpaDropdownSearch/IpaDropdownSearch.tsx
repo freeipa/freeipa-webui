@@ -59,12 +59,12 @@ const IpaDropdownSearch = (props: IPAParamDefinitionDropdown) => {
 
   return (
     <Dropdown
-      id={props.id || "dropdown-search"}
       isOpen={isOpen}
       onSelect={onSelect}
       onOpenChange={(isOpen: boolean) => setIsOpen(isOpen)}
       toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
         <MenuToggle
+          id={props.id || "dropdown-search"}
           ref={toggleRef}
           isFullWidth
           onClick={onToggleClick}
@@ -80,6 +80,7 @@ const IpaDropdownSearch = (props: IPAParamDefinitionDropdown) => {
       <MenuSearch>
         <MenuSearchInput>
           <SearchInput
+            id={"search-" + props.id || "dropdown-search"}
             value={searchValue}
             placeholder="Search"
             onChange={(_event, value) => setSearchValue(value)}

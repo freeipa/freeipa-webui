@@ -67,7 +67,11 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
       <Flex direction={{ default: "column", lg: "row" }}>
         <FlexItem flex={{ default: "flex_1" }}>
           <Form className="pf-v5-u-mb-lg">
-            <FormGroup label="Principal alias" fieldId="principal-alias">
+            <FormGroup
+              label="Principal alias"
+              fieldId="principal-alias"
+              role="group"
+            >
               <PrincipalAliasMultiTextBox
                 ipaObject={ipaObject}
                 metadata={props.metadata}
@@ -95,7 +99,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
                 isDisabled
               />
             </FormGroup>
-            <FormGroup label="PAC type" fieldId="pac-type">
+            <FormGroup label="PAC type" fieldId="pac-type" role="group">
               <IpaPACType
                 name="ipakrbauthzdata"
                 ipaObject={ipaObject}
@@ -111,6 +115,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
             <FormGroup
               label="Authentication indicators"
               fieldId="authentication-indicators"
+              role="group"
               labelIcon={
                 <PopoverWithIconLayout message={AuthIndicatorsTypesMessage} />
               }
@@ -149,6 +154,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
             <FormGroup
               label="Trusted for delegation"
               fieldId="trusted-delegation"
+              role="group"
             >
               <IpaCheckbox
                 name="ipakrbokasdelegate"
@@ -163,6 +169,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
             <FormGroup
               label="Trusted to authenticate as a user"
               fieldId="trusted-auth-as-user"
+              role="group"
             >
               <IpaCheckbox
                 name="ipakrboktoauthasdelegate"
@@ -177,6 +184,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
             <FormGroup
               label="Requires pre-authentication"
               fieldId="requires-pre-authentication"
+              role="group"
             >
               <IpaCheckbox
                 name="ipakrbrequirespreauth"

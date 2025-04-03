@@ -38,6 +38,7 @@ const ConfigGroupOptions = (props: PropsToGroupOptions) => {
           <FormGroup
             label="Default group objectclasses"
             fieldId="ipagroupobjectclasses"
+            role="group"
           >
             <ConfigObjectclassTable
               title="Default group objectclasses"

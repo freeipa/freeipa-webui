@@ -77,6 +77,7 @@ const IpaSelect = (props: IPAParamDefinitionSelect) => {
   // Toggle
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
+      id={props.id}
       ref={toggleRef}
       onClick={onToggle}
       isDisabled={readOnly}
@@ -111,7 +112,6 @@ const IpaSelect = (props: IPAParamDefinitionSelect) => {
 
   return (
     <Select
-      id={props.id}
       aria-label={props.name}
       onOpenChange={(isOpen) => setIsOpen(isOpen)}
       toggle={toggle}

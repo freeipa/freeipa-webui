@@ -106,6 +106,7 @@ const HostSettings = (props: PropsToHostSettings) => {
             <FormGroup
               label="Kerberos principal alias"
               fieldId="krbprincipalname"
+              role="group"
             >
               <PrincipalAliasMultiTextBox
                 ipaObject={ipaObject}
@@ -177,7 +178,11 @@ const HostSettings = (props: PropsToHostSettings) => {
         </FlexItem>
         <FlexItem flex={{ default: "flex_1" }}>
           <Form>
-            <FormGroup label="SSH public keys" fieldId="ipasshpubkey">
+            <FormGroup
+              label="SSH public keys"
+              fieldId="ipasshpubkey"
+              role="group"
+            >
               <IpaSshPublicKeys
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
@@ -186,7 +191,7 @@ const HostSettings = (props: PropsToHostSettings) => {
                 from={"hosts"}
               />
             </FormGroup>
-            <FormGroup label="MAC address" fieldId="macaddress">
+            <FormGroup label="MAC address" fieldId="macaddress" role="group">
               <IpaTextboxList
                 ipaObject={ipaObject}
                 setIpaObject={recordOnChange}
@@ -198,6 +203,7 @@ const HostSettings = (props: PropsToHostSettings) => {
             <FormGroup
               label="Authentication indicators"
               fieldId="krbprincipalauthind"
+              role="group"
               labelIcon={
                 <PopoverWithIconLayout message={AuthIndicatorsTypesMessage} />
               }
@@ -236,6 +242,7 @@ const HostSettings = (props: PropsToHostSettings) => {
             <FormGroup
               label="Trusted for delegation"
               fieldId="trusted-delegation"
+              role="group"
             >
               <IpaCheckbox
                 name="ipakrbokasdelegate"
@@ -250,6 +257,7 @@ const HostSettings = (props: PropsToHostSettings) => {
             <FormGroup
               label="Trusted to authenticate as a user"
               fieldId="trusted-auth-as-user"
+              role="group"
             >
               <IpaCheckbox
                 name="ipakrboktoauthasdelegate"
