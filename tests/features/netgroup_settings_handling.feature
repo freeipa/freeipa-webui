@@ -98,24 +98,23 @@ Feature: Netgroup settings manipulation
     Then I click on "Add hosts" button
     * I see "Add hosts to netgroup" modal
     * I click on the arrow icon to perform search
-    Then I click on the dual list item "my-server.dom-server.ipa.demo"
+    Then I click on the dual list partial item "my-server"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added host to netgroup"
     * I close the alert
-    # When I scroll up
-    Then I should see "my-server.dom-server.ipa.demo" entry in the data table
+    Then I should see partial "my-server" entry in the data table
 
   Scenario: Remove host from Host category
     When I click on "Hosts" page tab
-    Then I should see "my-server.dom-server.ipa.demo" entry in the data table
-    * I select entry "my-server.dom-server.ipa.demo" in the data table
+    Then I should see partial "my-server" entry in the data table
+    * I select entry that starts with "my-server" in the data table
     * I click on "Delete" button
-    * I should see "my-server.dom-server.ipa.demo" entry in the data table
+    * I should see partial "my-server" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Removed host from netgroup"
     * I close the alert
-    Then I should not see "my-server.dom-server.ipa.demo" entry in the data table
+    Then I should not see "my-server" partial entry in the data table
 
   Scenario: Add hostgroup to Host category
     When I click on "Host groups" page tab
@@ -207,13 +206,12 @@ Feature: Netgroup settings manipulation
     Then I click on "Add hosts" button
     * I see "Add hosts to netgroup" modal
     * I click on the arrow icon to perform search
-    Then I click on the dual list item "my-server.dom-server.ipa.demo"
+    Then I click on the dual list partial item "my-server"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added host to netgroup"
     * I close the alert
-    # When I scroll up
-    Then I should see "my-server.dom-server.ipa.demo" entry in the data table
+    Then I should see the partial element "my-server" in the table
     # Add hostgroup to Host category (again)
     When I click on "Host groups" page tab
     Then I click on "Add host groups" button
@@ -234,7 +232,7 @@ Feature: Netgroup settings manipulation
     When I scroll down
     Then I click on "Allow any host" checkbox
     When I click on "Hosts" page tab
-    Then I should not see "my-server.dom-server.ipa.demo" entry in the data table
+    Then I should not see "my-server" partial entry in the data table
     When I click on "Host groups" page tab
     Then I should not see "ipaservers" entry in the data table
     When I click on "External hosts" page tab

@@ -124,6 +124,7 @@ Feature: Netgroup members
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host added"
     Then I should see partial "my-new-server" entry in the data table
+
   Scenario: Add a Host member into the netgroup
     Given I am on "netgroups" page
     Given I click on "mynetgroup" entry in the data table
@@ -132,26 +133,27 @@ Feature: Netgroup members
     Then I should see the "host" tab count is "0"
     When I click on "Add" button located in the toolbar
     Then I should see the dialog with title "Assign hosts to netgroup: mynetgroup"
-    When I move user "my-new-server" from the available list and move it to the chosen options
+    * I click on the dual list partial item "my-new-server"
+    * I click on the dual list add selected button
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned new hosts to netgroup 'mynetgroup'"
     * I close the alert
-    Then I should see "my-new-server.dom-server.ipa.demo" entry in the data table
+    * I should see the partial element "my-new-server" in the table
     Then I should see the "host" tab count is "1"
 
   Scenario: Search for a host
     When I type "my-new-server" in the search field
     Then I should see the "my-new-server" text in the search input field
     When I click on the arrow icon to perform search
-    Then I should see "my-new-server.dom-server.ipa.demo" entry in the data table
+    Then I should see partial "my-new-server" entry in the data table
     * I click on the X icon to clear the search field
     When I type "notthere" in the search field
     Then I should see the "notthere" text in the search input field
     When I click on the arrow icon to perform search
-    Then I should not see "my-new-server" entry in the data table
+    Then I should not see "my-new-server" partial entry in the data table
     Then I click on the X icon to clear the search field
     Then I click on the arrow icon to perform search
-    Then I should see "my-new-server.dom-server.ipa.demo" entry in the data table
+    Then I should see partial "my-new-server" entry in the data table
 
   Scenario: Remove host member
     When I select partial entry "my-new-server" in the data table
