@@ -71,9 +71,8 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
     return toLoad;
   };
 
-  const [hostNamesToLoad, setHostNamesToLoad] = React.useState<string[]>(
-    getHostsNameToLoad()
-  );
+  const [hostNamesToLoad, setHostNamesToLoad] =
+    React.useState<string[]>(getHostsNameToLoad());
 
   // Load hosts
   const fullHostsQuery = useGetHostInfoByNameQuery({
@@ -299,7 +298,6 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
         onSearch={() => {}}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshData}

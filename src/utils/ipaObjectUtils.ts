@@ -131,7 +131,6 @@ export function getParamProperties(
       required: false,
       readOnly: true,
       value: "",
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       onChange: () => {},
       paramMetadata: {} as ParamMetadata,
     };

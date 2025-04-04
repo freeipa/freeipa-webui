@@ -13,7 +13,7 @@ import { Service } from "src/utils/datatypes/globalDataTypes";
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 // React Router DOM
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 // RPC
 import { useGetServiceByIdQuery } from "src/services/rpcServices";
 // Hooks
@@ -93,7 +93,6 @@ const ServicesMemberOf = (props: PropsToServicesMemberOf) => {
             isDataLoading={serviceQuery.isFetching}
             onRefreshData={onRefreshServiceData}
             membershipDisabled={true}
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
             setDirection={() => {}}
             direction={"direct" as MembershipDirection}
           />

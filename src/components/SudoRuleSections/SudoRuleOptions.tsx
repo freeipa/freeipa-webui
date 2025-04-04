@@ -237,7 +237,7 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
     addOption(payload).then((response) => {
       if ("data" in response) {
         const responseData = response.data;
-        if (responseData.result) {
+        if (responseData?.result) {
           alerts.addAlert(
             "add-sudo-option-success",
             "Sudo option added",
@@ -247,7 +247,7 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
           fullEntryList = [...fullEntryList, newOption];
           setNewOption("");
           onChangeAddModalVisibility();
-        } else if (responseData.error) {
+        } else if (responseData?.error) {
           alerts.addAlert(
             "add-sudo-option-error",
             "Failed to add sudo option: " + responseData.error,
@@ -315,7 +315,7 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
     removeOption(payload).then((response) => {
       if ("data" in response) {
         const responseData = response.data;
-        if (responseData.result) {
+        if (responseData?.result) {
           alerts.addAlert(
             "remove-sudo-option-success",
             "Sudo option(s) removed",
@@ -329,7 +329,7 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
           );
           setSelectedEntries([]);
           onChangeDeleteModalVisibility();
-        } else if (responseData.error) {
+        } else if (responseData?.error) {
           alerts.addAlert(
             "remove-sudo-option-error",
             "Failed to remove sudo option: " + responseData.error,
@@ -353,12 +353,9 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
         isStickyHeader={false}
         tableHeader={generateHeader()}
         tableBody={generateBody()}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
         onDeleteModal={onChangeDeleteModalVisibility}
         isDeleteDisabled={isDeleteDisabled}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
         onAddModal={onChangeAddModalVisibility}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
         onSearchChange={onSearchChange}
         searchValue={searchValue}
         paginationData={paginationData}

@@ -46,10 +46,13 @@ import ModalErrors from "src/components/errors/ModalErrors";
 // RPC client
 import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
 import { useGettingGroupsQuery } from "../../services/rpcUserGroups";
+// React router
+import { useNavigate } from "react-router";
 
 const UserGroups = () => {
   // Dispatch (Redux)
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "user-groups" });
@@ -171,7 +174,8 @@ const UserGroups = () => {
       groupDataResponse.error !== undefined
     ) {
       // This normally happens when the user is not authorized to view the data
-      // So instead of adding an error, refresh page
+      // So instead of adding an error, redirect to login page
+      navigate("/login");
       window.location.reload();
     }
   }, [groupDataResponse]);
@@ -220,7 +224,7 @@ const UserGroups = () => {
     } as GenericPayload).then((result) => {
       // Manage new response here
       if ("data" in result) {
-        const searchError = result.data.error as
+        const searchError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
@@ -239,9 +243,9 @@ const UserGroups = () => {
           );
         } else {
           // Success
-          const groupsListResult = result.data.result.results;
-          const groupsListSize = result.data.result.count;
-          const totalCount = result.data.result.totalCount;
+          const groupsListResult = result.data?.result.results || [];
+          const groupsListSize = result.data?.result.count || 0;
+          const totalCount = result.data?.result.totalCount || 0;
           const groupsList: UserGroup[] = [];
 
           for (let i = 0; i < groupsListSize; i++) {

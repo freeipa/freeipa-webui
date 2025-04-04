@@ -7,7 +7,7 @@ import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Layouts
 import TabLayout from "src/components/layouts/TabLayout";
 // Navigation
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // RPC
@@ -149,7 +149,6 @@ const NetgroupsMembers = (props: PropsToNetgroupsMembers) => {
             isDataLoading={netgroupQuery.isFetching}
             onRefreshData={onRefreshNetgroupData}
             member_user={netgroup.memberuser_user || []}
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
             setDirection={() => {}}
             direction={"direct"}
           />
@@ -173,7 +172,6 @@ const NetgroupsMembers = (props: PropsToNetgroupsMembers) => {
             isDataLoading={netgroupQuery.isFetching}
             onRefreshData={onRefreshNetgroupData}
             member_group={netgroup.memberuser_group || []}
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
             setDirection={() => {}}
             direction={"direct"}
           />
@@ -197,7 +195,6 @@ const NetgroupsMembers = (props: PropsToNetgroupsMembers) => {
             isDataLoading={netgroupQuery.isFetching}
             onRefreshData={onRefreshNetgroupData}
             member_host={netgroup.memberhost_host || []}
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
             setDirection={() => {}}
             direction={"direct"}
           />
@@ -221,7 +218,6 @@ const NetgroupsMembers = (props: PropsToNetgroupsMembers) => {
             isDataLoading={netgroupQuery.isFetching}
             onRefreshData={onRefreshNetgroupData}
             member_hostgroup={netgroup.memberhost_hostgroup || []}
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
             setDirection={() => {}}
             direction={"direct"}
           />

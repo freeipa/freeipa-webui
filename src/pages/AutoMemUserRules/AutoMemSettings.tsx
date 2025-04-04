@@ -40,7 +40,6 @@ interface PropsToSettings {
   originalAutomemberRule: Partial<Automember>;
   automemberType: string;
   metadata: Metadata;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onAutomemberChange: (automember: Partial<Automember>) => void;
   onRefresh: () => void;
   isModified: boolean;
@@ -123,12 +122,12 @@ const AutoMemSettings = (props: PropsToSettings) => {
 
     saveAutomember(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Show toast notification: success
           alerts.addAlert("save-success", "Entry updated", "success");
           // Refresh the page
           props.onRefresh();
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert("save-error", errorMessage.message, "danger");

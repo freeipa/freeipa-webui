@@ -47,7 +47,6 @@ interface PropsToSettings {
   rule: Partial<HBACRule>;
   originalRule: Partial<HBACRule>;
   metadata: Metadata;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onRuleChange: (rule: Partial<HBACRule>) => void;
   onRefresh: () => void;
   isModified: boolean;
@@ -145,14 +144,14 @@ const HBACRulesSettings = (props: PropsToSettings) => {
 
     saveRule(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Show toast notification: success
           alerts.addAlert("save-success", "HBAC rule modified", "success");
           setHostTabKey(0);
           setUserTabKey(0);
           setSrvTabKey(0);
           props.onRefresh();
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert("save-error", errorMessage.message, "danger");
