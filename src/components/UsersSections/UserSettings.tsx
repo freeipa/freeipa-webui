@@ -8,6 +8,8 @@ import {
   SidebarPanel,
   SidebarContent,
   DropdownItem,
+  Card,
+  CardBody,
 } from "@patternfly/react-core";
 // Data types
 import {
@@ -58,6 +60,8 @@ import RestorePreservedUsers from "src/components/modals/UserModals/RestorePrese
 import { API_VERSION_BACKUP } from "src/utils/utils";
 // Navigate
 import { useNavigate } from "react-router-dom";
+// Plugin system
+import { ExtensionSlot } from "src/core/plugins";
 
 export interface PropsToUserSettings {
   originalUser: Partial<User>;
@@ -487,6 +491,9 @@ const UserSettings = (props: PropsToUserSettings) => {
             <JumpLinksItem key={7} href="#smb-services">
               User attributes for SMB services
             </JumpLinksItem>
+            <JumpLinksItem key={8} href="#misc">
+              Miscellaneous
+            </JumpLinksItem>
           </JumpLinks>
         </SidebarPanel>
         <SidebarContent className="pf-v5-u-mr-xl">
@@ -577,6 +584,25 @@ const UserSettings = (props: PropsToUserSettings) => {
               onUserChange={props.onUserChange}
               metadata={props.metadata}
             />
+            {/* Plugin extension point for user details content */}
+            <TitleLayout
+              key={8}
+              headingLevel="h2"
+              id="misc"
+              text="Miscellaneous"
+            />
+            <Card>
+              <CardBody>
+                {/* Extension point for user details content from plugins */}
+                <ExtensionSlot
+                  extensionPointId="userDetailsContent"
+                  context={{
+                    userId: props.user.uid?.[0] as string,
+                    user: props.user,
+                  }}
+                />
+              </CardBody>
+            </Card>
           </Flex>
         </SidebarContent>
       </Sidebar>

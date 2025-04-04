@@ -4,7 +4,7 @@ import React from "react";
 /**
  * Represents an extension point in the application where plugins can inject content
  */
-export interface ExtensionPoint<T = any> {
+export interface ExtensionPoint {
   id: string;
   displayName: string;
   description: string;

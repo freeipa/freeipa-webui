@@ -32,6 +32,7 @@ import IpaCalendar from "../Form/IpaCalendar";
 import IpaSshPublicKeys from "../Form/IpaSshPublicKeys";
 import IpaCertificates from "../Form/IpaCertificates";
 import IpaCertificateMappingData from "../Form/IpaCertificateMappingData";
+import { ExtensionSlot } from "src/core/plugins/ExtensionSlot";
 
 interface PropsToUsersAccountSettings {
   user: Partial<User>;
@@ -216,6 +217,17 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 metadata={props.metadata}
               />
             </FormGroup>
+
+            {/* Extension point for user edit form from plugins */}
+            <ExtensionSlot
+              extensionPointId="userEditForm"
+              context={{
+                userId: props.user.uid?.[0] as string,
+                user: props.user,
+                onChange: recordOnChange,
+                isReadOnly: false,
+              }}
+            />
           </Form>
         </FlexItem>
         <FlexItem flex={{ default: "flex_1" }} className="pf-v5-u-w-50">
