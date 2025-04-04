@@ -1,3 +1,5 @@
 node_modules/*
 dist/*
 coverage/*
+vite.config.ts
+tests/ipalab/_venv
