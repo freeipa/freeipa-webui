@@ -36,6 +36,7 @@ const SimpleSelector = (props: PropsToSimpleSelector) => {
 
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
+      id={props.id}
       ref={toggleRef}
       aria-label={
         props.ariaLabel ? props.ariaLabel : "Basic selector menu toggle"

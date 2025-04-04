@@ -175,7 +175,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
               maxValue={2147483647}
             />
           </FormGroup>
-          <FormGroup label="Password plugin features" fieldId="ipaconfigstring">
+          <FormGroup label="Password plugin features" role="group">
             <IpaCheckboxes
               name="ipaconfigstring"
               options={[
@@ -201,7 +201,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
           </FormGroup>
           <FormGroup
             label="Default user authentication types"
-            fieldId="ipauserauthtyp"
+            role="group"
             labelIcon={
               <PopoverWithIconLayout message={AuthTypesMessage} triggerHover />
             }
@@ -250,7 +250,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
           </FormGroup>
           <FormGroup
             label="Enable migration mode"
-            fieldId="ipamigrationenabled"
+            fieldId="ipamigrationenabled-ipamigrationenabled"
           >
             <IpaCheckbox
               name="ipamigrationenabled"
@@ -265,7 +265,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
           </FormGroup>
           <FormGroup
             label="Enable adding subids to new users"
-            fieldId="ipauserdefaultsubordinateid"
+            fieldId="ipauserdefaultsubordinateid-ipauserdefaultsubordinateid"
           >
             <IpaCheckbox
               name="ipauserdefaultsubordinateid"
@@ -282,10 +282,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-v5-u-mb-lg pf-v5-u-mt-lg">
-          <FormGroup
-            label="Default user objectclasses"
-            fieldId="ipauserobjectclasses"
-          >
+          <FormGroup label="Default user objectclasses" role="group">
             <ConfigObjectclassTable
               title="Default user objectclasses"
               name="ipauserobjectclasses"

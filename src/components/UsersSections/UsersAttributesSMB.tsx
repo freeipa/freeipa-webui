@@ -139,7 +139,7 @@ const UsersAttributesSMB = (props: PropsToSmbServices) => {
             }
           >
             <IpaSelect
-              id="smb-home-directory-drive"
+              id="ipanthomedirectorydrive"
               name="ipanthomedirectorydrive"
               options={SMBHomeDirectoryDriveOptions}
               ipaObject={ipaObject}

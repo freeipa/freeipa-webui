@@ -149,10 +149,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 readOnlyVariant="plain"
               />
             </FormGroup>
-            <FormGroup
-              label="Password expiration"
-              fieldId="krbpasswordexpiration"
-            >
+            <FormGroup label="Password expiration" role="group">
               <IpaCalendar
                 name={"krbpasswordexpiration"}
                 ariaLabel={"Kerberos password expiration date"}
@@ -182,10 +179,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 metadata={props.metadata}
               />
             </FormGroup>
-            <FormGroup
-              label="Kerberos principal alias"
-              fieldId="krbprincipalname"
-            >
+            <FormGroup label="Kerberos principal alias" role="group">
               <PrincipalAliasMultiTextBox
                 ipaObject={ipaObject}
                 metadata={props.metadata}
@@ -193,10 +187,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 from={props.from}
               />
             </FormGroup>
-            <FormGroup
-              label="Kerberos principal expiration (UTC)"
-              fieldId="krbprincipalexpiration"
-            >
+            <FormGroup label="Kerberos principal expiration (UTC)" role="group">
               <IpaCalendar
                 name={"krbprincipalexpiration"}
                 ariaLabel={"Kerberos principal expiration date"}
@@ -230,7 +221,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 metadata={props.metadata}
               />
             </FormGroup>
-            <FormGroup label="SSH public keys" fieldId="ipasshpubkey">
+            <FormGroup label="SSH public keys" role="group">
               <IpaSshPublicKeys
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
@@ -239,7 +230,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 from={props.from}
               />
             </FormGroup>
-            <FormGroup label="Certificates" fieldId="usercertificate">
+            <FormGroup label="Certificates" role="group">
               <IpaCertificates
                 ipaObject={ipaObject}
                 objectType="user"
@@ -251,7 +242,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             </FormGroup>
             <FormGroup
               label="Certificate mapping data"
-              fieldId="ipacertmapdata"
+              role="group"
               labelIcon={
                 <PopoverWithIconLayout
                   message={certificateMappingDataMessage}
@@ -273,7 +264,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             </FormGroup>
             <FormGroup
               label="User authentication types"
-              fieldId="ipauserauthtype"
+              role="group"
               labelIcon={
                 <PopoverWithIconLayout message={userAuthTypesMessage} />
               }
@@ -317,7 +308,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               fieldId="ipatokenradiusconfiglink"
             >
               <IpaSelect
-                id="radius-proxy-configuration"
+                id="ipatokenradiusconfiglink"
                 name="ipatokenradiusconfiglink"
                 options={radiusProxyList}
                 ipaObject={ipaObject}
@@ -344,7 +335,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               fieldId="ipaidpconfiglink"
             >
               <IpaSelect
-                id="external-idp-configuration"
+                id="ipaidpconfiglink"
                 name="ipaidpconfiglink"
                 options={idpConfOptions}
                 ipaObject={ipaObject}
@@ -367,6 +358,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
         </FlexItem>
       </Flex>
       <ModalWithTextAreaLayout
+        id="certificate-textarea"
         value={textAreaCertificatesValue}
         onChange={onChangeTextAreaCertificatesValue}
         isOpen={isTextAreaCertificatesOpen}

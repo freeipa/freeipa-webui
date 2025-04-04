@@ -168,7 +168,7 @@ Feature: Configuration settings manipulation
     And I should see "success" alert with text "Configuration updated"
     Then I close the alert
     # Remove the new objectclass
-    When I click on ID "extensibleobject" button
+    When I click on ID "ipauserobjectclasses-extensibleobject" button
     And I click on "Save" button
     And I should see "success" alert with text "Configuration updated"
     Then I close the alert
@@ -196,7 +196,7 @@ Feature: Configuration settings manipulation
     And I should see "success" alert with text "Configuration updated"
     Then I close the alert
     # Remove the new objectclass
-    When I click on ID "extensibleobject" button
+    When I click on ID "ipagroupobjectclasses-extensibleobject" button
     And I click on "Save" button
     And I should see "success" alert with text "Configuration updated"
     Then I close the alert

@@ -56,7 +56,7 @@ const AddSudoCmdGroup = (props: PropsToAddGroup) => {
   // List of fields
   const fields = [
     {
-      id: "cmd-grp-name",
+      id: "modal-form-cmd-grp-name",
       name: "Command group name",
       pfComponent: (
         <>
@@ -81,7 +81,7 @@ const AddSudoCmdGroup = (props: PropsToAddGroup) => {
       ),
     },
     {
-      id: "cmd-grp-desc",
+      id: "modal-form-cmd-grp-desc",
       name: "Description",
       pfComponent: (
         <TextArea

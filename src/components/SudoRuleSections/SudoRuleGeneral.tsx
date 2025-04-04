@@ -19,7 +19,7 @@ interface PropsToSudoRuleGeneral {
 const SudoRuleGeneral = (props: PropsToSudoRuleGeneral) => {
   return (
     <Form className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md" isHorizontal>
-      <FormGroup label="Rule name" fieldId="rule-name">
+      <FormGroup label="Rule name" fieldId="cn">
         <IpaTextInput
           name="cn"
           aria-label="rule name"
@@ -31,6 +31,7 @@ const SudoRuleGeneral = (props: PropsToSudoRuleGeneral) => {
       </FormGroup>
       <FormGroup label="Sudo order" fieldId="sudo-order">
         <IpaNumberInput
+          id="sudo-order"
           name="sudoorder"
           aria-label="sudo order"
           ipaObject={props.ipaObject}

@@ -54,7 +54,7 @@ const UsersEmployeeInfo = (props: PropsToEmployeeInfo) => {
               metadata={props.metadata}
             />
           </FormGroup>
-          <FormGroup label="Department number" fieldId="departmentnumber">
+          <FormGroup label="Department number" role="group">
             <IpaTextboxList
               ipaObject={ipaObject}
               setIpaObject={recordOnChange}

@@ -225,14 +225,14 @@ const CertificateMappingDataOption = (
         <Form>
           <FormGroup
             label="Certificate mapping data"
-            fieldId="certificate-mapping-data-modal"
+            role="group"
             name={"certificate-mapping-data-section"}
           >
             <>{certificateMappingDataElement}</>
           </FormGroup>
           <FormGroup
             label="Certificate"
-            fieldId="certificate"
+            role="group"
             labelIcon={
               <PopoverWithIconLayout
                 message={certificateMessage}
