@@ -256,7 +256,7 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
     addCondition(payload).then((response) => {
       if ("data" in response) {
         const responseData = response.data;
-        if (responseData.result) {
+        if (responseData?.result) {
           alerts.addAlert(
             "add-automember-condition-success",
             "Automember condition added",
@@ -265,7 +265,7 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
           props.onRefresh();
           resetValues();
           onChangeAddModalVisibility();
-        } else if (responseData.error) {
+        } else if (responseData?.error) {
           alerts.addAlert(
             "add-automember-condition-error",
             "Failed to add Automember condition: " + responseData.error,
@@ -291,7 +291,7 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
     addCondition(payload).then((response) => {
       if ("data" in response) {
         const responseData = response.data;
-        if (responseData.result) {
+        if (responseData?.result) {
           alerts.addAlert(
             "add-automember-condition-success",
             "Automember condition added",
@@ -299,7 +299,7 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
           );
           props.onRefresh();
           resetValues();
-        } else if (responseData.error) {
+        } else if (responseData?.error) {
           alerts.addAlert(
             "add-automember-condition-error",
             "Failed to add Automember condition: " + responseData.error,
@@ -393,7 +393,7 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
     removeCondition(payload).then((response) => {
       if ("data" in response) {
         const responseData = response.data;
-        if (responseData.result) {
+        if (responseData?.result) {
           alerts.addAlert(
             "remove-condition-success",
             "Item(s) removed",
@@ -402,7 +402,7 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
           props.onRefresh();
           setSelectedEntries([]);
           onChangeDeleteModalVisibility();
-        } else if (responseData.error) {
+        } else if (responseData?.error) {
           alerts.addAlert(
             "remove-condition-error",
             "Failed to remove item(s): " + responseData.error,

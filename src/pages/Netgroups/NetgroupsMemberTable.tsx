@@ -147,7 +147,7 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
     setAddSpinning(true);
     addMemberToNetgroups([props.id, type, newMembers]).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Update displayed netgroups before they are updated via refresh
           const newNetgroups = members.concat(newMembers);
           setMembers(newNetgroups);
@@ -164,7 +164,7 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
             }
             saveNetgroup(group).then((modResponse) => {
               if ("data" in modResponse) {
-                if (modResponse.data.error) {
+                if (modResponse.data?.error) {
                   const errorMessage = modResponse.data
                     .error as unknown as ErrorResult;
                   alerts.addAlert(
@@ -202,7 +202,7 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
             closeExternalModal();
             setPage(1);
           }
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
           alerts.addAlert("add-member-error", errorMessage.message, "danger");
@@ -221,7 +221,7 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
     removeMembersFromNetgroups([props.id, type, selectedMembers]).then(
       (response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Set alert: success
             alerts.addAlert(
               "remove-netgroups-success",
@@ -240,7 +240,7 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
             props.onRefresh();
             // Go back to page 1
             setPage(1);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
             alerts.addAlert(

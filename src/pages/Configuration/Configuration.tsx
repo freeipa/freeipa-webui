@@ -115,7 +115,7 @@ const Configuration = () => {
       entryType: "usergroup",
     } as GenericPayload).then((result) => {
       if ("data" in result) {
-        const searchError = result.data.error as
+        const searchError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
@@ -134,8 +134,8 @@ const Configuration = () => {
           );
         } else {
           // Success
-          const groupsListResult = result.data.result.results;
-          const groupsListSize = result.data.result.count;
+          const groupsListResult = result.data?.result.results || [];
+          const groupsListSize = result.data?.result.count || 0;
           const groupsList: string[] = [];
           for (let i = 0; i < groupsListSize; i++) {
             groupsList.push(groupsListResult[i].result.cn[0]);
@@ -155,10 +155,10 @@ const Configuration = () => {
     setSaving(true);
     saveConfig(modifiedValues).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Show toast notification: success
           alerts.addAlert("save-success", "Configuration updated", "success");
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert("save-error", errorMessage.message, "danger");

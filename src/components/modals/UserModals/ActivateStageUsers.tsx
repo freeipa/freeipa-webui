@@ -86,7 +86,7 @@ const ActivateStageUsers = (props: PropsToActivateUsers) => {
     // [API call] activate elements
     activateUsersCommand(usersToActivatePayload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Close modal
           props.handleModalToggle();
           // Update data from Redux
@@ -101,7 +101,7 @@ const ActivateStageUsers = (props: PropsToActivateUsers) => {
           );
           // Refresh data ('Stage users' main page) or redirect ('Settings' page)
           props.onSuccess();
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert(

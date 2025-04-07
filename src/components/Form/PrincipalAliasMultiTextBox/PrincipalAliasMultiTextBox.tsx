@@ -168,7 +168,7 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
 
     addPrincipalAlias(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Close modal
           setIsTextInputModalOpen(false);
           setModalSpinning(false);
@@ -178,7 +178,7 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
             "Added new aliases to '" + objectID + "'",
             "success"
           );
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert("add-alias-error", errorMessage.message, "danger");
@@ -200,7 +200,7 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
     setModalSpinning(true);
     removePrincipalAlias(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Close modal
           setIsDeleteConfModalOpen(false);
           // Show toast notification: success
@@ -209,7 +209,7 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
             "Removed aliases from '" + objectID + "'",
             "success"
           );
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert("remove-alias-error", errorMessage.message, "danger");
