@@ -128,7 +128,7 @@ const HBACRulesMemberTable = (props: PropsToTable) => {
       props.unsetCategory,
     ]).then((response) => {
       if ("data" in response) {
-        const results = response.data.result.results;
+        const results = response.data?.result.results;
         for (const result in results) {
           if (results[result].error) {
             alerts.addAlert(
@@ -166,7 +166,7 @@ const HBACRulesMemberTable = (props: PropsToTable) => {
     removeMembersFromHbacRule([props.id, props.from, selectedMembers]).then(
       (response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Set alert: success
             alerts.addAlert(
               "remove-member-success",
@@ -188,7 +188,7 @@ const HBACRulesMemberTable = (props: PropsToTable) => {
             props.onRefresh();
             // Go back to page 1
             setPage(1);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
             alerts.addAlert(

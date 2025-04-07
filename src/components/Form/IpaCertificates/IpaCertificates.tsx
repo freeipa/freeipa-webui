@@ -143,7 +143,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
 
     removeCertificate(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Close modal
           setIsDeleteConfModalOpen(false);
           // Set alert: success
@@ -152,7 +152,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
             "Removed certificates from user '" + idParam + "'",
             "success"
           );
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert(
@@ -379,7 +379,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
 
     addCertificate(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Close modal
           setIsModalOpen(false);
           // Set alert: success
@@ -388,7 +388,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
             "Added certificate to '" + idParam + "'",
             "success"
           );
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert(

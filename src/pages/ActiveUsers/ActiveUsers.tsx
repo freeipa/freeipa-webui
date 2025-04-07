@@ -268,7 +268,7 @@ const ActiveUsers = () => {
     } as GenericPayload).then((result) => {
       // Manage new response here
       if ("data" in result) {
-        const searchError = result.data.error as
+        const searchError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
@@ -287,9 +287,9 @@ const ActiveUsers = () => {
           );
         } else {
           // Success
-          const usersListResult = result.data.result.results;
-          const usersListSize = result.data.result.count;
-          const totalCount = result.data.result.totalCount;
+          const usersListResult = result.data?.result.results || [];
+          const usersListSize = result.data?.result.count || 0;
+          const totalCount = result.data?.result.totalCount || 0;
           const usersList: User[] = [];
 
           for (let i = 0; i < usersListSize; i++) {
@@ -331,7 +331,7 @@ const ActiveUsers = () => {
 
     executeAutoMemberRebuild(selectedUsers).then((result) => {
       if ("data" in result) {
-        const automemberError = result.data.error as
+        const automemberError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 

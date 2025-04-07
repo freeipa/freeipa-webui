@@ -102,10 +102,14 @@ const DeleteRule = (props: PropsToDeleteRule) => {
     deleteRuleCommand(deletePayload).then((response) => {
       if ("data" in response) {
         const data = response.data;
-        const error = data.error as FetchBaseQueryError | SerializedError;
+        const error = data?.error as FetchBaseQueryError | SerializedError;
 
         if (error) {
-          alerts.addAlert("delete-rule-error", error, "danger");
+          alerts.addAlert(
+            "delete-rule-error",
+            JSON.stringify(error, null, 2),
+            "danger"
+          );
         } else {
           // Set alert: success
           alerts.addAlert(

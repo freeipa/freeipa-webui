@@ -44,7 +44,7 @@ const RebuildAutoMembership = (props: PropsToRebuildAutoMembership) => {
 
     rebuildAutoMembership(props.entriesToRebuild).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Close modal
           props.onClose();
           // Set alert: success
@@ -53,7 +53,7 @@ const RebuildAutoMembership = (props: PropsToRebuildAutoMembership) => {
             "Automember rebuild membership task completed",
             "success"
           );
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert(

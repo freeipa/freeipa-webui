@@ -110,7 +110,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
     addRunAs(payload).then((response) => {
       if ("data" in response) {
         const data = response.data;
-        const results = data.result
+        const results = data?.result
           .results as unknown as AddRemoveRunAsToSudoRulesResult[];
         results.forEach((result) => {
           // Check if any errors
@@ -160,13 +160,13 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
 
       onSave(modifiedValues).then((response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Show toast notification: success
             alerts.addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new runAs users
             onAddRunAsUser(newUsersToAdd);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
             alerts.addAlert("save-error", errorMessage.message, "danger");
@@ -191,7 +191,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
       if ("data" in response) {
         const data = response.data;
         const results =
-          data.result as unknown as AddRemoveRunAsToSudoRulesResult;
+          data?.result as unknown as AddRemoveRunAsToSudoRulesResult;
         if (results) {
           // Some values can be undefined after deletion
           const userFromResponse = results.result.ipasudorunas_user || [];
@@ -240,7 +240,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
     addRunAs(payload).then((response) => {
       if ("data" in response) {
         const data = response.data;
-        const results = data.result
+        const results = data?.result
           .results as unknown as AddRemoveRunAsToSudoRulesResult[];
         results.forEach((result) => {
           // Check if any errors
@@ -290,13 +290,13 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
 
       onSave(modifiedValues).then((response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Show toast notification: success
             alerts.addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new runAs users
             onAddRunAsUsersGroups(newGroupsToAdd);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
             alerts.addAlert("save-error", errorMessage.message, "danger");
@@ -321,7 +321,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
       if ("data" in response) {
         const data = response.data;
         const results =
-          data.result as unknown as AddRemoveRunAsToSudoRulesResult;
+          data?.result as unknown as AddRemoveRunAsToSudoRulesResult;
         if (results) {
           // Some values can be undefined after deletion
           const groupsFromResponse = results.result.ipasudorunas_group || [];
@@ -370,7 +370,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
     addRunAs(payload).then((response) => {
       if ("data" in response) {
         const data = response.data;
-        const results = data.result
+        const results = data?.result
           .results as unknown as AddRemoveRunAsToSudoRulesResult[];
         results.forEach((result) => {
           // Check if any errors
@@ -421,13 +421,13 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
 
       onSave(modifiedValues).then((response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Show toast notification: success
             alerts.addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new runAs users
             onAddRunAsGroups(newGroupsToAdd);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
             alerts.addAlert("save-error", errorMessage.message, "danger");
@@ -452,7 +452,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
       if ("data" in response) {
         const data = response.data;
         const results =
-          data.result as unknown as AddRemoveRunAsToSudoRulesResult;
+          data?.result as unknown as AddRemoveRunAsToSudoRulesResult;
         if (results) {
           // Some values can be undefined after deletion
           const groupsFromResponse =

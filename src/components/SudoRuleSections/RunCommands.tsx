@@ -281,13 +281,13 @@ const RunCommands = (props: PropsToRunCommands) => {
 
       onSave(modifiedValues).then((response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Show toast notification: success
             alerts.addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new users
             onAddNewAllowCommand(commandsToAdd);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
             alerts.addAlert("save-error", errorMessage.message, "danger");
@@ -343,13 +343,13 @@ const RunCommands = (props: PropsToRunCommands) => {
 
       onSave(modifiedValues).then((response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Show toast notification: success
             alerts.addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new users
             onAddNewAllowCommandGroup(cmdGroupsToAdd);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
             alerts.addAlert("save-error", errorMessage.message, "danger");
@@ -405,13 +405,13 @@ const RunCommands = (props: PropsToRunCommands) => {
 
       onSave(modifiedValues).then((response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Show toast notification: success
             alerts.addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new users
             onAddNewDenyCommand(commandsToAdd);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
             alerts.addAlert("save-error", errorMessage.message, "danger");
@@ -467,13 +467,13 @@ const RunCommands = (props: PropsToRunCommands) => {
 
       onSave(modifiedValues).then((response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Show toast notification: success
             alerts.addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new users
             onAddNewDenyCommandGroup(cmdGroupsToAdd);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
             alerts.addAlert("save-error", errorMessage.message, "danger");
