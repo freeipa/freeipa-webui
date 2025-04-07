@@ -273,7 +273,7 @@ const Hosts = () => {
     } as GenericPayload).then((result) => {
       // Manage new response here
       if ("data" in result) {
-        const searchError = result.data.error as
+        const searchError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
@@ -292,9 +292,9 @@ const Hosts = () => {
           );
         } else {
           // Success
-          const hostsListResult = result.data.result.results;
-          const hostsListSize = result.data.result.count;
-          const totalCount = result.data.result.totalCount;
+          const hostsListResult = result.data?.result.results || [];
+          const hostsListSize = result.data?.result.count || 0;
+          const totalCount = result.data?.result.totalCount || 0;
           const hostsList: Host[] = [];
 
           for (let i = 0; i < hostsListSize; i++) {
@@ -382,7 +382,7 @@ const Hosts = () => {
     );
     executeAutoMemberRebuild(selectedHosts).then((result) => {
       if ("data" in result) {
-        const automemberError = result.data.error as
+        const automemberError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 

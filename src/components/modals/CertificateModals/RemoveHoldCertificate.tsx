@@ -47,7 +47,7 @@ const RemoveHoldCertificate = (props: PropsToRemoveHoldCertificate) => {
     // Perform the API call
     certRemoveHold(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Close modal
           props.onClose();
           // Set alert: success
@@ -56,7 +56,7 @@ const RemoveHoldCertificate = (props: PropsToRemoveHoldCertificate) => {
             "Certificate hold removed",
             "success"
           );
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert(

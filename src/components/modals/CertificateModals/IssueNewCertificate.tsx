@@ -58,9 +58,9 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
   const ipaServerConfiguration = useAppSelector(
     (state) => state.global.ipaServerConfiguration
   );
-  const ipaMasterServer = ipaServerConfiguration.ipa_master_server;
+  const ipaMasterServer = ipaServerConfiguration.ipa_master_server as string;
   const ipaCertificateSubjectBase =
-    ipaServerConfiguration.ipacertificatesubjectbase;
+    ipaServerConfiguration.ipacertificatesubjectbase as string;
 
   // Certificate Authority
   const [certAuthList, setCertAuthList] = React.useState<
@@ -202,7 +202,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
 
     addCertRequest(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Close modal
           resetFieldsAndClose();
           // Set alert: success
@@ -211,7 +211,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
             "Added certificate to '" + props.id + "'",
             "success"
           );
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert(

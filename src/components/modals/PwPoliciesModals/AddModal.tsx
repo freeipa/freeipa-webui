@@ -52,7 +52,11 @@ const AddModal = (props: PropsToAddModal) => {
   React.useEffect(() => {
     // On error
     if (!isLoading && error) {
-      alerts.addAlert("group-find-error", error, "danger");
+      alerts.addAlert(
+        "group-find-error",
+        JSON.stringify(error, null, 2),
+        "danger"
+      );
     }
 
     // On success
@@ -116,8 +120,8 @@ const AddModal = (props: PropsToAddModal) => {
 
     addPwPolicy(payload).then((result) => {
       if ("data" in result) {
-        const data = result.data.result;
-        const error = result.data.error as SerializedError;
+        const data = result.data?.result;
+        const error = result.data?.error as SerializedError;
 
         if (error) {
           alerts.addAlert("add-pwpolicy-error", error.message, "danger");

@@ -115,15 +115,15 @@ const MemberOfSubIds = (props: MemberOfSubIdsProps) => {
     }
     assignSubIds(props.user.uid).then((response) => {
       if ("data" in response) {
-        if (response.data.error) {
+        if (response.data?.error) {
           alerts.addAlert(
             "assign-ids-error",
             "Error assigning Subordinate IDs",
             "danger"
           );
         } else {
-          const data = response.data.result;
-          alerts.addAlert("assign-ids-success", data.summary, "success");
+          const data = response.data?.result;
+          alerts.addAlert("assign-ids-success", data?.summary, "success");
           props.onRefreshUserData();
         }
       }

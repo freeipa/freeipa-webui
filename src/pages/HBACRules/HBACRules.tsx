@@ -246,7 +246,7 @@ const HBACRules = () => {
     } as GenericPayload).then((result) => {
       // Manage new response here
       if ("data" in result) {
-        const searchError = result.data.error as
+        const searchError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
@@ -265,9 +265,9 @@ const HBACRules = () => {
           );
         } else {
           // Success
-          const rulesListResult = result.data.result.results;
-          const rulesListSize = result.data.result.count;
-          const totalCount = result.data.result.totalCount;
+          const rulesListResult = result.data?.result.results || [];
+          const rulesListSize = result.data?.result.count || 0;
+          const totalCount = result.data?.result.totalCount || 0;
           const rulesList: HBACRule[] = [];
 
           for (let i = 0; i < rulesListSize; i++) {

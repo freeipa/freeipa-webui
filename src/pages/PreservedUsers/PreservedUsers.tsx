@@ -227,7 +227,7 @@ const PreservedUsers = () => {
     } as GenericPayload).then((result) => {
       // Manage new response here
       if ("data" in result) {
-        const searchError = result.data.error as
+        const searchError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
@@ -246,9 +246,9 @@ const PreservedUsers = () => {
           );
         } else {
           // Success
-          const usersListResult = result.data.result.results;
-          const usersListSize = result.data.result.count;
-          const totalCount = result.data.result.totalCount;
+          const usersListResult = result.data?.result.results || [];
+          const usersListSize = result.data?.result.count || 0;
+          const totalCount = result.data?.result.totalCount || 0;
           const usersList: User[] = [];
 
           for (let i = 0; i < usersListSize; i++) {

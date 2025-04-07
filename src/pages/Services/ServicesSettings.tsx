@@ -122,7 +122,7 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
 
     executeUnprovision(service).then((result) => {
       if ("data" in result) {
-        const disableError = result.data.error as
+        const disableError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
@@ -196,10 +196,10 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
 
     saveService(modifiedValues).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Show toast notification: success
           alerts.addAlert("save-success", "Service modified", "success");
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert("save-error", errorMessage.message, "danger");

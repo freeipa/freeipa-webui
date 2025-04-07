@@ -92,7 +92,7 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
     onAdd(payload).then((response) => {
       if ("data" in response) {
         const data = response.data;
-        const results = data.result
+        const results = data?.result
           .results as unknown as AddRemoveHostToSudoRulesResult[];
         results.forEach((result) => {
           // Check if any errors
@@ -143,13 +143,13 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
 
       onSave(modifiedValues).then((response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Show toast notification: success
             alerts.addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new hosts
             onAddNewHost(hostsToAdd);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
             alerts.addAlert("save-error", errorMessage.message, "danger");
@@ -174,7 +174,7 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
       if ("data" in response) {
         const data = response.data;
         const results =
-          data.result as unknown as AddRemoveHostToSudoRulesResult;
+          data?.result as unknown as AddRemoveHostToSudoRulesResult;
         if (results) {
           // Some values can be undefined after deletion
           const hostsFromResponse = results.result.memberhost_host || [];
@@ -218,7 +218,7 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
     onAdd(payload).then((response) => {
       if ("data" in response) {
         const data = response.data;
-        const results = data.result
+        const results = data?.result
           .results as unknown as AddRemoveHostToSudoRulesResult[];
         results.forEach((result) => {
           const hostGroupsFromResponse =
@@ -257,13 +257,13 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
 
       onSave(modifiedValues).then((response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Show toast notification: success
             alerts.addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new users
             onAddNewHostGroup(hostGroupsToAdd);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
             alerts.addAlert("save-error", errorMessage.message, "danger");
@@ -288,7 +288,7 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
       if ("data" in response) {
         const data = response.data;
         const results =
-          data.result as unknown as AddRemoveHostToSudoRulesResult;
+          data?.result as unknown as AddRemoveHostToSudoRulesResult;
         if (results) {
           const groupsFromResponse = results.result.memberhost_hostgroup || [];
           if (!containsAny(groupsFromResponse, hostGroupsToDelete)) {

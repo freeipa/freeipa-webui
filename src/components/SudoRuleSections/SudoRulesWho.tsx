@@ -90,7 +90,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
     onAdd(payload).then((response) => {
       if ("data" in response) {
         const data = response.data;
-        const results = data.result
+        const results = data?.result
           .results as unknown as AddRemoveToSudoRulesResult[];
         results.forEach((result) => {
           // Check if any errors
@@ -141,13 +141,13 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
 
       onSave(modifiedValues).then((response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Show toast notification: success
             alerts.addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new users
             onAddNewUser(usersToAdd);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
             alerts.addAlert("save-error", errorMessage.message, "danger");
@@ -171,7 +171,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
     onRemove(payload).then((response) => {
       if ("data" in response) {
         const data = response.data;
-        const results = data.result as unknown as AddRemoveToSudoRulesResult;
+        const results = data?.result as unknown as AddRemoveToSudoRulesResult;
         if (results) {
           // Some values can be undefined after deletion
           const usersFromResponse = results.result.memberuser_user || [];
@@ -215,7 +215,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
     onAdd(payload).then((response) => {
       if ("data" in response) {
         const data = response.data;
-        const results = data.result
+        const results = data?.result
           .results as unknown as AddRemoveToSudoRulesResult[];
         results.forEach((result) => {
           const groupsFromResponse = result.result.memberuser_group;
@@ -253,13 +253,13 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
 
       onSave(modifiedValues).then((response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Show toast notification: success
             alerts.addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new users
             onAddNewGroup(groupsoAdd);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
             alerts.addAlert("save-error", errorMessage.message, "danger");
@@ -283,7 +283,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
     onRemove(payload).then((response) => {
       if ("data" in response) {
         const data = response.data;
-        const results = data.result as unknown as AddRemoveToSudoRulesResult;
+        const results = data?.result as unknown as AddRemoveToSudoRulesResult;
         if (results) {
           const groupsFromResponse = results.result.memberuser_group;
           if (

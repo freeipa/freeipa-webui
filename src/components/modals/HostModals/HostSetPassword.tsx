@@ -131,7 +131,7 @@ const HostSetPassword = (props: PropsToResetPassword) => {
   const onSetPassword = () => {
     setPassword([props.host, newPassword]).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Close modal
           resetFieldsAndCloseModal();
           // Refresh data
@@ -142,7 +142,7 @@ const HostSetPassword = (props: PropsToResetPassword) => {
             "Set one-time password for host '" + props.host + "'",
             "success"
           );
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert("set-password-error", errorMessage.message, "danger");

@@ -266,7 +266,7 @@ const KeytabTableWithFilter = (props: PropsToKeytabTable) => {
       entryType: props.entityType,
     } as GenericPayload).then((result) => {
       if (result && "data" in result) {
-        setFullListElements(result.data.list);
+        setFullListElements(result.data?.list ?? []);
       } else {
         setFullListElements([]);
       }

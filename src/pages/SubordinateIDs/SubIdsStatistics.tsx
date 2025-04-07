@@ -49,7 +49,11 @@ const SubIdsStatistics = () => {
     setShowTableRows(!isLoading);
 
     if (!isLoading && error) {
-      alerts.addAlert("Error fetching data", error, "danger");
+      alerts.addAlert(
+        "Error fetching data",
+        JSON.stringify(error, null, 2),
+        "danger"
+      );
     }
 
     if (!isLoading && data) {
