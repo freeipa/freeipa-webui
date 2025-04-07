@@ -122,18 +122,18 @@ describe("IpaCertificateMappingData", () => {
       name: /Add/i,
     });
 
-    // There is 4 of them (Component, Certificate mapping data, Certificate, Modal)
+    // There is 3 of them (Certificate mapping data, Certificate, Modal)
     expect(Array.isArray(addButtonElems)).toBe(true);
-    expect(addButtonElems.length).toBe(4);
+    expect(addButtonElems.length).toBe(3);
 
     // Certificate mapping data Add is enabled
-    expect(addButtonElems[1]).toBeEnabled();
+    expect(addButtonElems[0]).toBeEnabled();
 
     // Certificate Add is enabled
-    expect(addButtonElems[2]).toBeEnabled();
+    expect(addButtonElems[1]).toBeEnabled();
 
     // Modal Add is disabled (inputs are empty)
-    expect(addButtonElems[3]).toBeDisabled();
+    expect(addButtonElems[2]).toBeDisabled();
 
     // Switch radio button to Issuer and subject
     await act(async () => {
@@ -157,10 +157,10 @@ describe("IpaCertificateMappingData", () => {
     expect(subjectInputBox).toBeEnabled();
 
     // Certificate mapping data Add is disabled
-    expect(addButtonElems[1]).toBeDisabled();
+    expect(addButtonElems[0]).toBeDisabled();
 
     // Certificate Add is disabled
-    expect(addButtonElems[2]).toBeDisabled();
+    expect(addButtonElems[1]).toBeDisabled();
 
     // Switch back, validate Issuer and Subject are disabled
     await act(async () => {
@@ -203,10 +203,10 @@ describe("IpaCertificateMappingData", () => {
       name: /Add/i,
     });
 
-    expect(addButtonElems.length).toBe(4);
+    expect(addButtonElems.length).toBe(3);
 
     await act(async () => {
-      fireEvent.click(addButtonElems[1]);
+      fireEvent.click(addButtonElems[0]);
     });
 
     // First test remove
@@ -220,7 +220,7 @@ describe("IpaCertificateMappingData", () => {
 
     // Now add for real
     await act(async () => {
-      fireEvent.click(addButtonElems[1]);
+      fireEvent.click(addButtonElems[0]);
     });
 
     // Change Certificate mapping data
@@ -236,7 +236,7 @@ describe("IpaCertificateMappingData", () => {
 
     // Click Add in Modal
     await act(async () => {
-      fireEvent.click(addButtonElems[3]);
+      fireEvent.click(addButtonElems[2]);
     });
 
     expect(addCertMapData).toHaveBeenCalledWith([
@@ -267,10 +267,10 @@ describe("IpaCertificateMappingData", () => {
       name: /Add/i,
     });
 
-    expect(addButtonElems.length).toBe(4);
+    expect(addButtonElems.length).toBe(3);
 
     await act(async () => {
-      fireEvent.click(addButtonElems[2]);
+      fireEvent.click(addButtonElems[1]);
     });
 
     // First test remove
@@ -284,7 +284,7 @@ describe("IpaCertificateMappingData", () => {
 
     // Now add for real
     await act(async () => {
-      fireEvent.click(addButtonElems[2]);
+      fireEvent.click(addButtonElems[1]);
     });
 
     // Change Certificate
@@ -300,7 +300,7 @@ describe("IpaCertificateMappingData", () => {
 
     // Click Add in Modal
     await act(async () => {
-      fireEvent.click(addButtonElems[3]);
+      fireEvent.click(addButtonElems[2]);
     });
 
     expect(addCertMapData).toHaveBeenCalledWith([
@@ -361,10 +361,10 @@ describe("IpaCertificateMappingData", () => {
       name: /Add/i,
     });
 
-    expect(addButtonElems.length).toBe(4);
+    expect(addButtonElems.length).toBe(3);
 
     await act(async () => {
-      fireEvent.click(addButtonElems[3]);
+      fireEvent.click(addButtonElems[2]);
     });
 
     expect(addCertMapData).toHaveBeenCalledWith([
@@ -396,10 +396,10 @@ describe("IpaCertificateMappingData", () => {
       name: /Add/i,
     });
 
-    expect(addButtonElems.length).toBe(4);
+    expect(addButtonElems.length).toBe(3);
 
     await act(async () => {
-      fireEvent.click(addButtonElems[1]);
+      fireEvent.click(addButtonElems[0]);
     });
 
     // First test remove
@@ -413,7 +413,7 @@ describe("IpaCertificateMappingData", () => {
 
     // Now add for real
     await act(async () => {
-      fireEvent.click(addButtonElems[1]);
+      fireEvent.click(addButtonElems[0]);
     });
 
     // Change Certificate mapping data
@@ -437,7 +437,7 @@ describe("IpaCertificateMappingData", () => {
 
     // Click Add in Modal
     await act(async () => {
-      fireEvent.click(addButtonElems[3]);
+      fireEvent.click(addButtonElems[2]);
     });
 
     // Ensure Modal is still open by looking up Cancel

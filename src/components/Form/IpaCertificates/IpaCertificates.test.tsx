@@ -194,10 +194,9 @@ describe("IpaCertificates Component", () => {
 
     expect(certificateInput).toHaveValue(mockCertificate.certificate);
 
-    // There should be two Add buttons
-    const addButtons = screen.getAllByRole("button", { name: /Add/i });
-    expect(addButtons.length).toBe(2);
-    expect(addButtons[1]).toBeEnabled();
+    // Test Add button exists
+    const addButtonModal = screen.getByRole("button", { name: /Add/i });
+    expect(addButtonModal).toBeEnabled();
 
     // Test Cancel button exists
     const cancelButton = screen.getByRole("button", { name: /Cancel/i });
@@ -435,12 +434,12 @@ describe("IpaCertificates Component", () => {
 
     expect(certificateInput).toHaveValue(mockCertificate.certificate);
 
-    // There should be two Add buttons
-    const addButtons = screen.getAllByRole("button", { name: /Add/i });
+    // Add Button exists
+    const addButtonModal = screen.getByRole("button", { name: /Add/i });
 
     // Click correct Add button
     await act(async () => {
-      fireEvent.click(addButtons[1]);
+      fireEvent.click(addButtonModal);
     });
 
     // Sadly we have no way of knowing, whether certificate has been added or not
@@ -479,8 +478,8 @@ describe("IpaCertificates Component", () => {
 
     expect(certificateInput).toHaveValue(mockCertificate.certificate);
 
-    // There should be two Add buttons
-    const addButtons = screen.getAllByRole("button", { name: /Add/i });
+    // Add Button exists
+    const addButtonModal = screen.getByRole("button", { name: /Add/i });
 
     // Mock error
     addCertificate.mockReturnValue(
@@ -491,7 +490,7 @@ describe("IpaCertificates Component", () => {
 
     // Click correct Add button
     await act(async () => {
-      fireEvent.click(addButtons[1]);
+      fireEvent.click(addButtonModal);
     });
 
     // Sadly we have no way of knowing, whether certificate has been added or not
