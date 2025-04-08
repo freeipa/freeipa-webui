@@ -651,13 +651,13 @@ When(
 Then(
   "I should not see value {string} in any of the textboxes that belong to the field {string}",
   (value: string, fieldName: string) => {
-    cy
-      .get("span[class='pf-v5-c-form__label-text'")
+    cy.get("span[class='pf-v5-c-form__label-text'")
       .contains(fieldName)
       .parent()
       .parent()
       .next()
-      .find("input[value='" + value + "']").not;
+      .find("input[value='" + value + "']")
+      .should("not.exist");
   }
 );
 
