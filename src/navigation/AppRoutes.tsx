@@ -57,6 +57,7 @@ import SubIdsTabs from "src/pages/SubordinateIDs/SubIdsTabs";
 import PasswordPoliciesTabs from "src/pages/PasswordPolicies/PasswordPoliciesTabs";
 import IdpReferences from "src/pages/IdPReferences/IdpReferences";
 import IdpReferencesTabs from "src/pages/IdPReferences/IdpReferencesTabs";
+import CertificateMappingPage from "src/pages/CertificateMapping/CertificateMapping";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -438,6 +439,9 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                     element={<IdpReferencesTabs section="settings" />}
                   />
                 </Route>
+              </Route>
+              <Route path="cert-id-mapping-rules">
+                <Route path="" element={<CertificateMappingPage />} />
               </Route>
               <Route path="configuration" element={<Configuration />} />
               {/* Redirect to Active users page if user is logged in and navigates to the root page */}
