@@ -1,5 +1,5 @@
-node_modules/*
-dist/*
-coverage/*
-vite.config.ts
+node_modules/**
+dist/**
+coverage/**
+doc/**
 tests/ipalab/_venv

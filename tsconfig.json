@@ -28,12 +28,12 @@
       ]
     }
   },
-  "include": ["src", "cypress", "cypress/plugins/index.js"],
   "exclude": [
-    "./cypress/cypress.config.ts",
-    "./cypress/**/*",
-    "cypress",
-    "node_modules"
+    "node_modules/**",
+    "dist/**",
+    "coverage/**",
+    "doc/**",
+    "tests/ipalab/_venv"
   ],
   "types": ["@testing-library/react"]
 }
