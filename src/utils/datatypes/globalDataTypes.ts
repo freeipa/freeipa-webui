@@ -710,3 +710,14 @@ export interface PasswordValidationType {
   message: string;
   pfError: ValidatedOptions;
 }
+
+export interface CertificateMapping {
+  cn: string;
+  dn: string;
+  description: string;
+  ipacertmapmaprule: string;
+  ipacertmapmatchrule: string;
+  associateddomain: string[];
+  ipacertmappriority: string;
+  ipaenabledflag: boolean;
+}

@@ -8,6 +8,8 @@ import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout";
 // React router DOM
 import { Link } from "react-router-dom";
 import EmptyBodyTable from "./EmptyBodyTable";
+// Icons
+import { CheckIcon, MinusIcon } from "@patternfly/react-icons";
 
 /**
  * This component renders a table with the specified columns and rows.
@@ -51,6 +53,7 @@ export interface PropsToTable<T> {
   elementsData?: SelectedElementsData<T>;
   buttonsData?: ButtonsData;
   paginationData?: PaginationData;
+  statusElementName?: string; // This will be used to determine the status and style the table rows (grey if disabled)
 }
 
 const MainTable = <T,>(props: PropsToTable<T>) => {
@@ -181,6 +184,35 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
     </Tr>
   );
 
+  type Status = "true" | "false";
+
+  // Helper method: Set styles depending on the status
+  const setStyleOnStatus = (status: Status) => {
+    if (status === "false") {
+      return { color: "grey" };
+    } else if (status === "true") {
+      return { color: "black" };
+    }
+  };
+
+  // Helper function to process boolean elements and return a string
+  // (used for displaying statuses values in the table)
+  const processBoolean = (value: boolean | string) => {
+    if (value === "false" || value === false) {
+      return (
+        <>
+          <MinusIcon key="minus-icon" /> {" Disabled"}
+        </>
+      );
+    } else {
+      return (
+        <>
+          <CheckIcon key="check-icon" /> {" Enabled"}
+        </>
+      );
+    }
+  };
+
   const body = shownElementsList.map((element, rowIndex) => {
     const elementName = element[props.pk].toString();
 
@@ -205,18 +237,34 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
           )}
           {/* Table rows */}
           {props.keyNames.map((keyName, idx) => (
-            <Td dataLabel={columnNames[keyName]} key={idx} id={idx.toString()}>
-              {idx === 0 && !!props.showLink ? (
-                <Link
-                  to={"/" + props.pathname + "/" + element[keyName]}
-                  state={element}
-                >
-                  {element[keyName]}
-                </Link>
-              ) : (
-                <>{element[keyName]}</>
-              )}
-            </Td>
+            <>
+              <Td
+                dataLabel={columnNames[keyName]}
+                key={idx}
+                id={idx.toString()}
+                style={setStyleOnStatus(element[keyName])}
+                aria-label={keyName}
+              >
+                {idx === 0 && !!props.showLink ? (
+                  <Link
+                    to={"/" + props.pathname + "/" + element[keyName]}
+                    state={element}
+                  >
+                    {props.statusElementName &&
+                    keyName === props.statusElementName
+                      ? processBoolean(element[keyName])
+                      : element[keyName]}
+                  </Link>
+                ) : (
+                  <>
+                    {props.statusElementName &&
+                    keyName === props.statusElementName
+                      ? processBoolean(element[keyName])
+                      : element[keyName]}
+                  </>
+                )}
+              </Td>
+            </>
           ))}
         </Tr>
       );
