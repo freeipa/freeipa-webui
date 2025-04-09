@@ -1,10 +1,6 @@
 import React from "react";
 // PatternFly
-import {
-  HelperText,
-  HelperTextItem,
-  NumberInput,
-} from "@patternfly/react-core";
+import { NumberInput } from "@patternfly/react-core";
 // IPA Object
 import {
   getParamProperties,
@@ -33,10 +29,7 @@ export interface IPAParamDefinitionNumberInput extends IPAParamDefinition {
 const IpaNumberInput = (props: IPAParamDefinitionNumberInput) => {
   const { readOnly, value, onChange } = getParamProperties(props);
 
-  const numberValue = value as number;
-
-  const [isError, setIsError] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState("");
+  const numberValue = parseInt(value?.toString() || "0");
 
   const normalizeBetween = (value, min, max) => {
     if (min !== undefined && max !== undefined) {
@@ -65,14 +58,6 @@ const IpaNumberInput = (props: IPAParamDefinitionNumberInput) => {
     } else if (props.maxValue && +value > props.maxValue) {
       onChange(props.maxValue);
     }
-
-    // Show error message if other characters are entered
-    if (isNaN(+value) || /[a-zA-Z]/.test(value)) {
-      onChange(value as string);
-      setIsError(true);
-      setErrorMessage("Only numbers are allowed.");
-      return;
-    }
   };
 
   const onBlur = (event: React.FocusEvent<HTMLInputElement>) => {
@@ -92,33 +77,26 @@ const IpaNumberInput = (props: IPAParamDefinitionNumberInput) => {
   };
 
   return (
-    <>
-      <NumberInput
-        id={props.id + "-group"}
-        name={props.name}
-        value={numberValue}
-        onMinus={onMinus}
-        onChange={onChangeHandler}
-        min={props.minValue}
-        max={props.maxValue}
-        onBlur={onBlur}
-        onPlus={onPlus}
-        aria-label={props.name}
-        inputName="input"
-        inputAriaLabel="number input"
-        minusBtnAriaLabel="minus"
-        plusBtnAriaLabel="plus"
-        isDisabled={readOnly}
-        widthChars={props.numCharsShown || 1}
-        className={props.className || ""}
-        inputProps={{ id: props.id }}
-      />
-      {isError && (
-        <HelperText>
-          <HelperTextItem>{errorMessage}</HelperTextItem>
-        </HelperText>
-      )}
-    </>
+    <NumberInput
+      id={props.id + "-group"}
+      name={props.name}
+      value={numberValue}
+      onMinus={onMinus}
+      onChange={onChangeHandler}
+      min={props.minValue}
+      max={props.maxValue}
+      onBlur={onBlur}
+      onPlus={onPlus}
+      aria-label={props.name}
+      inputName="input"
+      inputAriaLabel="number input"
+      minusBtnAriaLabel="minus"
+      plusBtnAriaLabel="plus"
+      isDisabled={readOnly}
+      widthChars={props.numCharsShown || 1}
+      className={props.className || ""}
+      inputProps={{ id: props.id }}
+    />
   );
 };
 
