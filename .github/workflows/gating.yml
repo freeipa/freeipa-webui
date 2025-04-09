@@ -12,7 +12,7 @@ env:
 jobs:
   audit-and-build:
     name: Audit and build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     container:
       image: fedora:latest
 
@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
       - name: Audit dependencies
         run: npx audit-ci --config audit-ci.json --skip-dev
@@ -57,14 +57,14 @@ jobs:
   unit-tests:
     name: Unit tests
     needs: audit-and-build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
       - name: Install project
         run: npm install
@@ -75,7 +75,7 @@ jobs:
   integration-tests:
     name: Integration tests
     needs: audit-and-build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -86,7 +86,7 @@ jobs:
           wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
           echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
           sudo apt update
-          sudo apt install vagrant vagrant-sshfs virtualbox
+          sudo apt install vagrant virtualbox
 
       - uses: actions/download-artifact@v4
         with:
