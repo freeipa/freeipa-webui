@@ -34,8 +34,7 @@ Given(
 
 // login
 Given("I am logged in as {string}", (username: string) => {
-  cy.wait(1000);
-  cy.url().then(($url) => {
+  cy.url({ timeout: 7000 }).then(($url) => {
     if ($url.includes("modern_ui/login")) {
       cy.loginAsAnUser(
         Cypress.env("admin_login"),
@@ -816,7 +815,7 @@ When("I click on the {string} number plus button", (id: string) => {
 });
 
 When("I click on the {string} number minus button", (id: string) => {
-  cy.get("div[name=" + id + "]")
+  cy.get("div[name=" + id + "]", { timeout: 6000 })
     .find('button[aria-label="minus"]')
     .click();
 });
