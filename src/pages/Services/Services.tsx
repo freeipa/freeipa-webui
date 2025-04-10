@@ -48,8 +48,12 @@ import { SerializedError } from "@reduxjs/toolkit";
 import { useSearchEntriesMutation, GenericPayload } from "../../services/rpc";
 import { useGetHostsListQuery } from "../../services/rpcHosts";
 import { useGettingServicesQuery } from "../../services/rpcServices";
+// React router
+import { useNavigate } from "react-router";
 
 const Services = () => {
+  const navigate = useNavigate();
+
   // Initialize services list (Redux)
   const [servicesList, setServicesList] = useState<Service[]>([]);
 
@@ -143,7 +147,7 @@ const Services = () => {
     } as GenericPayload).then((result) => {
       // Manage new response here
       if ("data" in result) {
-        const searchError = result.data.error as
+        const searchError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
@@ -162,9 +166,9 @@ const Services = () => {
           );
         } else {
           // Success
-          const serviceListResult = result.data.result.results;
-          const serviceListSize = result.data.result.count;
-          const totalCount = result.data.result.totalCount;
+          const serviceListResult = result.data?.result.results || [];
+          const serviceListSize = result.data?.result.count || 0;
+          const totalCount = result.data?.result.totalCount || 0;
           const serviceList: Service[] = [];
 
           for (let i = 0; i < serviceListSize; i++) {
@@ -347,7 +351,8 @@ const Services = () => {
       servicesDataResponse.error !== undefined
     ) {
       // This normally happens when the user is not authorized to view the data
-      // So instead of adding an error, refresh page
+      // So instead of adding an error, redirect to login page
+      navigate("/login");
       window.location.reload();
     }
   }, [servicesDataResponse]);

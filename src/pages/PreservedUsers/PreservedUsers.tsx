@@ -47,10 +47,13 @@ import { useGettingPreservedUserQuery } from "../../services/rpcUsers";
 import useApiError from "src/hooks/useApiError";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
+// React router
+import { useNavigate } from "react-router";
 
 const PreservedUsers = () => {
   // Initialize stage users list (Redux)
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -143,7 +146,8 @@ const PreservedUsers = () => {
       userDataResponse.error !== undefined
     ) {
       // This normally happens when the user is not authorized to view the data
-      // So instead of adding an error, refresh page
+      // So instead of adding an error, redirect to login page
+      navigate("/login");
       window.location.reload();
     }
   }, [userDataResponse]);
@@ -227,7 +231,7 @@ const PreservedUsers = () => {
     } as GenericPayload).then((result) => {
       // Manage new response here
       if ("data" in result) {
-        const searchError = result.data.error as
+        const searchError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
@@ -246,9 +250,9 @@ const PreservedUsers = () => {
           );
         } else {
           // Success
-          const usersListResult = result.data.result.results;
-          const usersListSize = result.data.result.count;
-          const totalCount = result.data.result.totalCount;
+          const usersListResult = result.data?.result.results || [];
+          const usersListSize = result.data?.result.count || 0;
+          const totalCount = result.data?.result.totalCount || 0;
           const usersList: User[] = [];
 
           for (let i = 0; i < usersListSize; i++) {

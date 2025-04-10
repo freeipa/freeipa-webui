@@ -129,7 +129,11 @@ const DualListTableLayout = (props: PropsToAddModal) => {
         entryType: props.target,
       } as GenericPayload).then((result) => {
         if (result && "data" in result) {
-          updateAvailableOptions(result.data.list);
+          if (result.data && result.data.list) {
+            updateAvailableOptions(result.data.list);
+          } else {
+            updateAvailableOptions([]);
+          }
         } else {
           updateAvailableOptions([]);
         }

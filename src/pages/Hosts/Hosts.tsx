@@ -56,10 +56,13 @@ import {
   useGettingHostQuery,
   useAutoMemberRebuildHostsMutation,
 } from "../../services/rpcHosts";
+// React router
+import { useNavigate } from "react-router";
 
 const Hosts = () => {
   // Dispatch (Redux)
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -189,7 +192,8 @@ const Hosts = () => {
       hostDataResponse.error !== undefined
     ) {
       // This normally happens when the user is not authorized to view the data
-      // So instead of adding an error, refresh page
+      // So instead of adding an error, redirect to login page
+      navigate("/login");
       window.location.reload();
     }
   }, [hostDataResponse]);
@@ -273,7 +277,7 @@ const Hosts = () => {
     } as GenericPayload).then((result) => {
       // Manage new response here
       if ("data" in result) {
-        const searchError = result.data.error as
+        const searchError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
@@ -292,9 +296,9 @@ const Hosts = () => {
           );
         } else {
           // Success
-          const hostsListResult = result.data.result.results;
-          const hostsListSize = result.data.result.count;
-          const totalCount = result.data.result.totalCount;
+          const hostsListResult = result.data?.result.results || [];
+          const hostsListSize = result.data?.result.count || 0;
+          const totalCount = result.data?.result.totalCount || 0;
           const hostsList: Host[] = [];
 
           for (let i = 0; i < hostsListSize; i++) {
@@ -382,7 +386,7 @@ const Hosts = () => {
     );
     executeAutoMemberRebuild(selectedHosts).then((result) => {
       if ("data" in result) {
-        const automemberError = result.data.error as
+        const automemberError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 

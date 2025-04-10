@@ -48,10 +48,13 @@ import { useGettingStageUserQuery } from "../../services/rpcUsers";
 import useApiError from "src/hooks/useApiError";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
+// React router
+import { useNavigate } from "react-router";
 
 const StageUsers = () => {
   // Initialize stage users list (Redux)
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "stage-users" });
@@ -144,7 +147,8 @@ const StageUsers = () => {
       userDataResponse.error !== undefined
     ) {
       // This normally happens when the user is not authorized to view the data
-      // So instead of adding an error, refresh page
+      // So instead of adding an error, redirect to login page
+      navigate("/login");
       window.location.reload();
     }
   }, [userDataResponse]);
@@ -228,7 +232,7 @@ const StageUsers = () => {
     } as GenericPayload).then((result) => {
       // Manage new response here
       if ("data" in result) {
-        const searchError = result.data.error as
+        const searchError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
@@ -247,9 +251,9 @@ const StageUsers = () => {
           );
         } else {
           // Success
-          const usersListResult = result.data.result.results;
-          const usersListSize = result.data.result.count;
-          const totalCount = result.data.result.totalCount;
+          const usersListResult = result.data?.result.results || [];
+          const usersListSize = result.data?.result.count || 0;
+          const totalCount = result.data?.result.totalCount || 0;
           const usersList: User[] = [];
 
           for (let i = 0; i < usersListSize; i++) {

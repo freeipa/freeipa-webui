@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 // PatternFly
 import "@patternfly/react-core/dist/styles/base.css";

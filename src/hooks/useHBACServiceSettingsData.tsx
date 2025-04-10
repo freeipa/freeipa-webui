@@ -45,7 +45,6 @@ const useHBACServiceSettings = (srvId: string): SettingsData => {
     modified,
     setModified,
     metadata,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     resetValues: () => {},
     originalService: service,
     service,

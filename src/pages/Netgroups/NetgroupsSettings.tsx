@@ -123,13 +123,13 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
     setSaving(true);
     saveGroup(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Show toast notification: success
           alerts.addAlert("save-success", "Netgroup modified", "success");
           props.onRefresh();
           setHostTabKey(0);
           setUserTabKey(0);
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert("save-error", errorMessage.message, "danger");

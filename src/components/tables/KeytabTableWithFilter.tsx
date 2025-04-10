@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { Td, Th, Tr } from "@patternfly/react-table";
 // React Router DOM
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 // Layout
 import DualListLayout, {
   DualListTarget,
@@ -266,7 +266,7 @@ const KeytabTableWithFilter = (props: PropsToKeytabTable) => {
       entryType: props.entityType,
     } as GenericPayload).then((result) => {
       if (result && "data" in result) {
-        setFullListElements(result.data.list);
+        setFullListElements(result.data?.list ?? []);
       } else {
         setFullListElements([]);
       }

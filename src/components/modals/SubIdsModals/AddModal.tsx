@@ -58,7 +58,11 @@ const AddModal = (props: PropsToAddModal) => {
   React.useEffect(() => {
     // On error
     if (!isLoading && error) {
-      alerts.addAlert("subid-find-error", error, "danger");
+      alerts.addAlert(
+        "subid-find-error",
+        JSON.stringify(error, null, 2),
+        "danger"
+      );
     }
 
     // On success
@@ -113,13 +117,17 @@ const AddModal = (props: PropsToAddModal) => {
 
     generateSubid(selectedItem).then((result) => {
       if ("data" in result) {
-        const data = result.data.result;
-        const error = result.data.error as
+        const data = result.data?.result;
+        const error = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
         if (error) {
-          alerts.addAlert("add-subid-error", error, "danger");
+          alerts.addAlert(
+            "add-subid-error",
+            JSON.stringify(error, null, 2),
+            "danger"
+          );
         }
 
         if (data) {

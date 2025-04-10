@@ -295,8 +295,8 @@ const AutoMemHostRules = () => {
     } as GenericPayload).then((result) => {
       if ("data" in result) {
         const automembersListResult = result.data;
-        setTotalCount(result.data.length);
-        setAutomemberRules(automembersListResult);
+        setTotalCount(result.data?.length ?? 0);
+        setAutomemberRules(automembersListResult || []);
         // Show table elements
         setShowTableRows(true);
         setSearchIsDisabled(false);

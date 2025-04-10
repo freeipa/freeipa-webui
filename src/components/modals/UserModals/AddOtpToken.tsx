@@ -492,7 +492,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
 
     addOtpToken(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Update URI
           setUri(response.data.result.result.uri as string);
           // Close modal
@@ -506,7 +506,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
           setIsQrModalOpen(true);
           // Reset fields
           resetFields();
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert("add-otp-error", errorMessage.message, "danger");

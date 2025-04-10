@@ -6,7 +6,7 @@ import TableLayout from "src/components/layouts/TableLayout";
 // Layouts
 import EmptyBodyTable from "src/components/tables/EmptyBodyTable";
 // React Router DOM
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 // Hooks
 import useShifting from "src/hooks/useShifting";
 

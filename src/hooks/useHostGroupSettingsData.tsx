@@ -45,7 +45,6 @@ const useHostGroupSettings = (groupId: string): HostGroupSettingsData => {
     modified,
     setModified,
     metadata,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     resetValues: () => {},
     originalGroup: hostGroup,
     hostGroup,

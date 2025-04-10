@@ -43,8 +43,12 @@ import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 // Modals
 import AddModal from "src/components/modals/IdpReferences/AddModal";
 import DeleteModal from "src/components/modals/IdpReferences/DeleteModal";
+// React router
+import { useNavigate } from "react-router";
 
 const IdpReferences = () => {
+  const navigate = useNavigate();
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({
     pathname: "identity-provider-references",
@@ -125,9 +129,9 @@ const IdpReferences = () => {
       idpsResponse.isError &&
       idpsResponse.error !== undefined
     ) {
-      idpsResponse;
       // This normally happens when the user is not authorized to view the data
-      // So instead of adding an error, refresh page
+      // So instead of adding an error, redirect to login page
+      navigate("/login");
       window.location.reload();
     }
   }, [idpsResponse]);
@@ -237,7 +241,7 @@ const IdpReferences = () => {
       stopIdx: 200, // Search will consider a max. of elements
     }).then((result) => {
       if ("data" in result) {
-        const searchError = result.data.error as
+        const searchError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
@@ -256,9 +260,9 @@ const IdpReferences = () => {
           );
         } else {
           // Success
-          const listResult = result.data.result.results;
-          const listSize = result.data.result.count;
-          const totalCount = result.data.result.totalCount;
+          const listResult = result.data?.result.results || [];
+          const listSize = result.data?.result.count || 0;
+          const totalCount = result.data?.result.totalCount || 0;
           const elementsList: IDPServer[] = [];
 
           for (let i = 0; i < listSize; i++) {

@@ -150,7 +150,7 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
     // Call API
     certRevoke(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Close modal
           props.onClose();
           alerts.addAlert(
@@ -158,7 +158,7 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
             "Certificate revoked",
             "success"
           );
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert(

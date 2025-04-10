@@ -41,8 +41,12 @@ import { isPwPolicySelectable } from "src/utils/utils";
 // Modals
 import AddModal from "src/components/modals/PwPoliciesModals/AddModal";
 import DeleteModal from "src/components/modals/PwPoliciesModals/DeleteModal";
+// React router
+import { useNavigate } from "react-router";
 
 const PasswordPolicies = () => {
+  const navigate = useNavigate();
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "password-policies" });
 
@@ -125,9 +129,9 @@ const PasswordPolicies = () => {
       pwPoliciesResponse.isError &&
       pwPoliciesResponse.error !== undefined
     ) {
-      pwPoliciesResponse;
       // This normally happens when the user is not authorized to view the data
-      // So instead of adding an error, refresh page
+      // So instead of adding an error, redirect to login page
+      navigate("/login");
       window.location.reload();
     }
   }, [pwPoliciesResponse]);
@@ -270,7 +274,7 @@ const PasswordPolicies = () => {
       stopIdx: 200, // Search will consider a max. of elements
     }).then((result) => {
       if ("data" in result) {
-        const searchError = result.data.error as
+        const searchError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
@@ -289,9 +293,9 @@ const PasswordPolicies = () => {
           );
         } else {
           // Success
-          const listResult = result.data.result.results;
-          const listSize = result.data.result.count;
-          const totalCount = result.data.result.totalCount;
+          const listResult = result.data?.result.results || [];
+          const listSize = result.data?.result.count || 0;
+          const totalCount = result.data?.result.totalCount || 0;
           const elementsList: PwPolicy[] = [];
 
           for (let i = 0; i < listSize; i++) {

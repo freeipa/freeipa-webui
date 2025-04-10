@@ -17,7 +17,7 @@ import { useGetUserByUidQuery } from "src/services/rpcUsers";
 // Utils
 import { convertToString } from "src/utils/ipaObjectUtils";
 // Navigation
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 

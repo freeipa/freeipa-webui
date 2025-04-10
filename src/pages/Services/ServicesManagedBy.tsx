@@ -12,7 +12,7 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 // RPC
 import { useGetServiceByIdQuery } from "src/services/rpcServices";
 // Navigation
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 interface PropsToServicesManagedBy {
   service: Service;

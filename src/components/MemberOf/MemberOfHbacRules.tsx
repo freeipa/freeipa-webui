@@ -221,7 +221,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
     addMemberToHbacRules([props.id, entityType, newHbacRuleNames]).then(
       (response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             if (response.data.result.results[0].error) {
               const errorMessage = response.data.result.results[0]
                 .error as string;
@@ -238,7 +238,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
             props.onRefreshData();
             // Close modal
             setShowAddModal(false);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
             alerts.addAlert("add-member-error", errorMessage.message, "danger");
@@ -255,7 +255,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
     removeMembersFromHbacRules([props.id, entityType, hbacRulesSelected]).then(
       (response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Set alert: success
             alerts.addAlert(
               "remove-hbac-rules-success",
@@ -270,7 +270,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
             setShowDeleteModal(false);
             // Back to page 1
             setPage(1);
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
             alerts.addAlert(
@@ -291,7 +291,6 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
         onSearch={() => {}}
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshData}

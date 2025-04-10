@@ -34,8 +34,7 @@ Given(
 
 // login
 Given("I am logged in as {string}", (username: string) => {
-  cy.wait(1000);
-  cy.url().then(($url) => {
+  cy.url({ timeout: 7000 }).then(($url) => {
     if ($url.includes("modern_ui/login")) {
       cy.loginAsAnUser(
         Cypress.env("admin_login"),
@@ -63,7 +62,6 @@ When(
   }
 );
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
 When("I logout", () => {});
 
 // Side menu
@@ -652,13 +650,13 @@ When(
 Then(
   "I should not see value {string} in any of the textboxes that belong to the field {string}",
   (value: string, fieldName: string) => {
-    cy
-      .get("span[class='pf-v5-c-form__label-text'")
+    cy.get("span[class='pf-v5-c-form__label-text'")
       .contains(fieldName)
       .parent()
       .parent()
       .next()
-      .find("input[value='" + value + "']").not;
+      .find("input[value='" + value + "']")
+      .should("not.exist");
   }
 );
 
@@ -817,7 +815,7 @@ When("I click on the {string} number plus button", (id: string) => {
 });
 
 When("I click on the {string} number minus button", (id: string) => {
-  cy.get("div[name=" + id + "]")
+  cy.get("div[name=" + id + "]", { timeout: 6000 })
     .find('button[aria-label="minus"]')
     .click();
 });

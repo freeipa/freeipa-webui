@@ -47,7 +47,6 @@ const useSubidSettings = (subidId: string): SubidSettingsData => {
     modified,
     setModified,
     metadata,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     resetValues: () => {},
     originalSubid: subid,
     setSubid,

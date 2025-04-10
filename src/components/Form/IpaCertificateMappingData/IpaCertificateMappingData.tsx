@@ -152,7 +152,6 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
 
   // Add 'Certificate mapping data' (through 'issuer and subject' option)
   const preparePayloadByIssuerAndSubject = () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const certMapData = {
       issuer: issuer,
       subject: subject,
@@ -197,7 +196,7 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
 
     addCertMapData(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Close the modal
           setIsOpen(false);
           // Set alert: success
@@ -208,7 +207,7 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
           );
           // Reset fields' values
           resetFields();
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert(
@@ -236,7 +235,7 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
 
     removeCertMapData(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Close the modal
           setIsOpen(false);
           // Set alert: success
@@ -250,7 +249,7 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
           // Reset fields' values
           resetFields();
           setIsDeletionModalOpen(false);
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert(

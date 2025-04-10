@@ -57,7 +57,7 @@ import RestorePreservedUsers from "src/components/modals/UserModals/RestorePrese
 // Utils
 import { API_VERSION_BACKUP } from "src/utils/utils";
 // Navigate
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 export interface PropsToUserSettings {
   originalUser: Partial<User>;
@@ -236,7 +236,7 @@ const UserSettings = (props: PropsToUserSettings) => {
     // Make API call
     generateSubIds(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Disable kebab option
           setIsDisabledAutoAssignSubIds(true);
           // Refresh page
@@ -247,7 +247,7 @@ const UserSettings = (props: PropsToUserSettings) => {
             response.data.result.summary,
             "success"
           );
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert("auto-assign-error", errorMessage.message, "danger");
@@ -382,10 +382,10 @@ const UserSettings = (props: PropsToUserSettings) => {
     // Make API call
     saveUser(modifiedValues).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Show toast notification: success
           alerts.addAlert("save-success", "User modified", "success");
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert("save-error", errorMessage.message, "danger");
@@ -438,8 +438,8 @@ const UserSettings = (props: PropsToUserSettings) => {
             props.from === "active-users"
               ? activeDropdownItems
               : props.from === "stage-users"
-              ? stageDropdownItems
-              : preservedDropdownItems
+                ? stageDropdownItems
+                : preservedDropdownItems
           }
         />
       ),

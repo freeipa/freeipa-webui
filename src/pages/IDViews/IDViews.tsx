@@ -56,8 +56,12 @@ import {
   useUnapplyHostsMutation,
   useUnapplyHostgroupsMutation,
 } from "../../services/rpcIDViews";
+// React router
+import { useNavigate } from "react-router";
 
 const IDViews = () => {
+  const navigate = useNavigate();
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "id-views" });
 
@@ -180,7 +184,8 @@ const IDViews = () => {
       viewsDataResponse.error !== undefined
     ) {
       // This normally happens when the user is not authorized to view the data
-      // So instead of adding an error, refresh page
+      // So instead of adding an error, redirect to login page
+      navigate("/login");
       window.location.reload();
     }
   }, [viewsDataResponse]);
@@ -231,7 +236,7 @@ const IDViews = () => {
     } as GenericPayload).then((result) => {
       // Manage new response here
       if ("data" in result) {
-        const searchError = result.data.error as
+        const searchError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
@@ -250,9 +255,9 @@ const IDViews = () => {
           );
         } else {
           // Success
-          const viewsListResult = result.data.result.results;
-          const viewsListSize = result.data.result.count;
-          const totalCount = result.data.result.totalCount;
+          const viewsListResult = result.data?.result.results || [];
+          const viewsListSize = result.data?.result.count || 0;
+          const totalCount = result.data?.result.totalCount || 0;
           const idViewsList: IDView[] = [];
 
           for (let i = 0; i < viewsListSize; i++) {
@@ -370,7 +375,7 @@ const IDViews = () => {
     // unapply views from hosts
     executeUnapplyHosts(selectedHosts).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           alerts.addAlert(
             "unapply-id-views-hosts-success",
             "ID views unapplied from " +
@@ -380,7 +385,7 @@ const IDViews = () => {
           );
           // Refresh data
           refreshViewsData();
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert(
@@ -402,7 +407,7 @@ const IDViews = () => {
     // unapply views from host groups
     executeUnapplyHostgroups(selectedHostgroups).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           alerts.addAlert(
             "unapply-id-views-hosts-success",
             "ID views unapplied from " +
@@ -412,7 +417,7 @@ const IDViews = () => {
           );
           // Refresh data
           refreshViewsData();
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert(
