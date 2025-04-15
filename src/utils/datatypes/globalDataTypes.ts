@@ -721,3 +721,7 @@ export interface CertificateMapping {
   ipacertmappriority: string;
   ipaenabledflag: boolean;
 }
+
+export interface CertificateMappingConfig {
+  ipacertmappromptusername: boolean;
+}
