@@ -3,6 +3,7 @@ import React from "react";
 import { Checkbox } from "@patternfly/react-core";
 // Utils
 import {
+  BasicType,
   IPAParamDefinition,
   getParamProperties,
   updateIpaObject,
@@ -34,14 +35,20 @@ const IpaCheckbox = (props: CheckboxOption) => {
     }
   };
 
-  const checked =
-    value &&
-    ((typeof value === "string" &&
-      (value.toLowerCase() === "true" ||
-        (props.altTrue && props.altTrue === value))) ||
-      value === true)
-      ? true
-      : false;
+  const determineIfChecked = (value: BasicType) => {
+    const valueToString =
+      value === undefined || value === null ? "" : String(value);
+    if (
+      (valueToString && valueToString.toLowerCase() === "true") ||
+      (props.altTrue && props.altTrue === value)
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const checked = determineIfChecked(value);
 
   return (
     <Checkbox

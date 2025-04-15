@@ -58,6 +58,7 @@ import PasswordPoliciesTabs from "src/pages/PasswordPolicies/PasswordPoliciesTab
 import IdpReferences from "src/pages/IdPReferences/IdpReferences";
 import IdpReferencesTabs from "src/pages/IdPReferences/IdpReferencesTabs";
 import CertificateMappingPage from "src/pages/CertificateMapping/CertificateMapping";
+import CertificateMappingGlobalConfig from "src/pages/CertificateMapping/CertificateMappingGlobalConfig";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -442,6 +443,9 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="cert-id-mapping-rules">
                 <Route path="" element={<CertificateMappingPage />} />
+              </Route>
+              <Route path="cert-id-mapping-global-config">
+                <Route path="" element={<CertificateMappingGlobalConfig />} />
               </Route>
               <Route path="configuration" element={<Configuration />} />
               {/* Redirect to Active users page if user is logged in and navigates to the root page */}

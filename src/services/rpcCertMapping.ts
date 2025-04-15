@@ -9,7 +9,10 @@ import {
 // utils
 import { API_VERSION_BACKUP } from "../utils/utils";
 // Data types
-import { cnType } from "src/utils/datatypes/globalDataTypes";
+import {
+  CertificateMappingConfig,
+  cnType,
+} from "src/utils/datatypes/globalDataTypes";
 
 /**
  * Password policies-related endpoints: useCertMapRuleFindQuery, useGetCertMapRuleEntriesQuery,
@@ -33,6 +36,10 @@ export interface CertMapFullDataPayload {
   sizelimit: number;
   startIdx: number;
   stopIdx: number;
+}
+
+export interface CertMapConfigPayload {
+  ipacertmappromptusername: boolean;
 }
 
 const extendedApi = api.injectEndpoints({
@@ -218,6 +225,45 @@ const extendedApi = api.injectEndpoints({
         return { data: response };
       },
     }),
+    /**
+     * Get certificate mapping global configuration
+     * @param {void} - No payload
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    certMapConfigFind: build.query<CertificateMappingConfig, void>({
+      query: () => {
+        return getCommand({
+          method: "certmapconfig_show",
+          params: [
+            [],
+            { all: true, rights: true, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+      transformResponse: (response: FindRPCResponse) => {
+        // Create a new object with the converted value
+        return response.result.result as unknown as CertificateMappingConfig;
+      },
+    }),
+    /**
+     * Modify certificate mapping global configuration
+     * @param {CertMapConfigPayload} - Data to modify
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    certMapConfigMod: build.mutation<FindRPCResponse, CertMapConfigPayload>({
+      query: (payload) => {
+        const certMapConfigParams = {
+          ipacertmappromptusername: payload.ipacertmappromptusername,
+          all: true,
+          rights: true,
+          version: API_VERSION_BACKUP,
+        };
+        return getCommand({
+          method: "certmapconfig_mod",
+          params: [[], certMapConfigParams],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -226,4 +272,6 @@ export const {
   useCertMapRuleFindQuery,
   useGetCertMapRuleEntriesQuery,
   useSearchCertMapRuleEntriesMutation,
+  useCertMapConfigFindQuery,
+  useCertMapConfigModMutation,
 } = extendedApi;
