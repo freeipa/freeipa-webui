@@ -1,6 +1,37 @@
 // Data types
-import { CertificateMapping } from "./datatypes/globalDataTypes";
+import {
+  CertificateMapping,
+  CertificateMappingConfig,
+} from "./datatypes/globalDataTypes";
 import { convertApiObj } from "src/utils/ipaObjectUtils";
+
+export const certMapConfigAsRecord = (
+  element: Partial<CertificateMappingConfig>,
+  onElementChange: (element: Partial<CertificateMappingConfig>) => void
+) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const ipaObject = element as Record<string, any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function recordOnChange(ipaObject: Record<string, any>) {
+    onElementChange(ipaObject as CertificateMappingConfig);
+  }
+
+  return { ipaObject, recordOnChange };
+};
+
+export const certMapRuleAsRecord = (
+  element: Partial<CertificateMapping>,
+  onElementChange: (element: Partial<CertificateMapping>) => void
+) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const ipaObject = element as Record<string, any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function recordOnChange(ipaObject: Record<string, any>) {
+    onElementChange(ipaObject as CertificateMapping);
+  }
+
+  return { ipaObject, recordOnChange };
+};
 
 const simpleValues = new Set([
   "cn",
