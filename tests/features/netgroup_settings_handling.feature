@@ -45,7 +45,7 @@ Feature: Netgroup settings manipulation
     Then I click on "Save" button
     * I should see "success" alert with text "Netgroup modified"
     * I close the alert
-    Then I should not see value "newNIS" in any of the textboxes that belong to the field "NIS domain name"
+    Then I should see value "newNIS" in the field "NIS domain name"
 
   Scenario: Add user to User category
     When I click on "Users" page tab
