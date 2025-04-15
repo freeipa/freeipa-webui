@@ -93,26 +93,32 @@ describe("IpaNumberInput Component", () => {
   });
 
   it("increment number when clicking plus button", () => {
-    let value = ""; // Empty by default
-    const mockOnChange = vi.fn((newValue) => {
-      value = newValue.sudoorder2;
-    });
+    const NumberInputWrapper = () => {
+      const [value, setValue] = React.useState(0); // Initial value
 
-    render(
-      <IpaNumberInput
-        {...defaultProps}
-        onChange={mockOnChange}
-        ipaObject={{ sudoorder2: value }}
-      />
-    );
+      const handleChange = (newValue) => {
+        setValue(newValue.sudoorder2);
+      };
+
+      return (
+        <IpaNumberInput
+          {...defaultProps}
+          onChange={handleChange}
+          ipaObject={{ sudoorder2: value }}
+        />
+      );
+    };
+
+    render(<NumberInputWrapper />);
 
     const plusButton = screen.getByRole("button", { name: /plus/i });
 
-    // Increment value ("" -> "1")
-    fireEvent.click(plusButton);
-    expect(mockOnChange).toHaveBeenCalledWith({ sudoorder2: 1 });
+    // Number input with initial value
     const numberInputElem = screen.getByLabelText("number input");
-    numberInputElem.setAttribute("value", value);
+    expect(numberInputElem).toHaveValue(0);
+
+    // Decrement value ("0" -> "1")
+    fireEvent.click(plusButton);
     expect(numberInputElem).toHaveValue(1);
   });
 
