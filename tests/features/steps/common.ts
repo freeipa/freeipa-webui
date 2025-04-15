@@ -34,25 +34,10 @@ Given(
 
 // login
 Given("I am logged in as {string}", (username: string) => {
-  cy.url({ timeout: 7000 }).then(($url) => {
-    if ($url.includes("modern_ui/login")) {
-      cy.loginAsAnUser(
-        Cypress.env("admin_login"),
-        Cypress.env("admin_password")
-      );
-    }
-  });
   cy.get(
     "div.pf-v5-c-masthead__content button span.pf-v5-c-menu-toggle__text",
     { timeout: 6000 }
-  ).then(($ele) => {
-    if ($ele.text() !== username) {
-      cy.loginAsAnUser(
-        Cypress.env("admin_login"),
-        Cypress.env("admin_password")
-      );
-    }
-  });
+  ).then(($ele) => $ele.text() === username);
 });
 
 When(
