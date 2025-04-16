@@ -23,6 +23,7 @@ import {
   AutomemberEntry,
   PwPolicy,
   IDPServer,
+  CertificateMapping,
 } from "./datatypes/globalDataTypes";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
@@ -125,6 +126,9 @@ export const isPwPolicySelectable = (pwPolicy: PwPolicy) => pwPolicy.cn !== "";
 
 export const isIdpServerSelectable = (idpServer: IDPServer) =>
   idpServer.cn !== "";
+
+export const isCertMapSelectable = (certMap: CertificateMapping) =>
+  certMap.cn !== "";
 
 // Write JSX error messages into 'apiErrorsJsx' array
 export const apiErrorToJsXError = (
