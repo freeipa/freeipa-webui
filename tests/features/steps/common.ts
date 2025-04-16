@@ -832,3 +832,20 @@ Then(
       .get("button[aria-pressed=true]");
   }
 );
+
+// Assert element is on table
+Given(
+  "The {string} element exists in the table with ID {string} located in page {string}",
+  (name: string, tableId: string, page: string) => {
+    const getElementOnTable = () => {
+      cy.get("table#" + tableId)
+        .find("tr[id='" + name + "']")
+        .should("be.visible");
+    };
+    cy.url().then(($url) => {
+      if (!$url.includes(page)) {
+        cy.visit(Cypress.env("base_url") + "/" + page).then(getElementOnTable);
+      }
+    });
+  }
+);
