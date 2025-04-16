@@ -32,33 +32,38 @@ Feature: Password policies - Settings page
     When I click on "my_user_group" entry in the data table
     Given I am on the "password-policies" > "my_user_group" Settings page
     When I type in the field with ID "krbmaxpwdlife" the text "120"
-    Then I click on "Save" button
+    Then button "Save" should be enabled
+    When I click on "Save" button
     * I should see "success" alert with text "Password policy 'my_user_group' updated"
     * I close the alert
 
   Scenario: Set min lifetime
     When I type in the field with ID "krbminpwdlife" the text "24"
-    Then I click on "Save" button
+    Then button "Save" should be enabled
+    When I click on "Save" button
     * I should see "success" alert with text "Password policy 'my_user_group' updated"
     * I close the alert
 
   Scenario: Set history size
     When I type in the field with ID "krbpwdhistorylength" the text "10"
-    Then I click on "Save" button
+    Then button "Save" should be enabled
+    When I click on "Save" button
     * I should see "success" alert with text "Password policy 'my_user_group' updated"
     * I close the alert
 
   Scenario: Set character classes
     When I clear the field "krbpwdmindiffchars"
     And I type in the field with ID "krbpwdmindiffchars" the text "5"
-    Then I click on "Save" button
+    Then button "Save" should be enabled
+    When I click on "Save" button
     * I should see "success" alert with text "Password policy 'my_user_group' updated"
     * I close the alert
 
   Scenario: Check that character classes values should be between 1 and 5
     When I clear the field "krbpwdmindiffchars"
     And I type in the field with ID "krbpwdmindiffchars" the text "6"
-    Then I click on "Save" button
+    Then button "Save" should be enabled
+    When I click on "Save" button
     * I should see "danger" alert with text "invalid 'minclasses': can be at most 5"
     * I close the alert
     Then I click on "Revert" button
@@ -68,7 +73,8 @@ Feature: Password policies - Settings page
   Scenario: Set min length
     When I clear the field "krbpwdminlength"
     And I type in the field with ID "krbpwdminlength" the text "3"
-    Then I click on "Save" button
+    Then button "Save" should be enabled
+    When I click on "Save" button
     * I should see "success" alert with text "Password policy 'my_user_group' updated"
     * I close the alert
 
@@ -81,26 +87,30 @@ Feature: Password policies - Settings page
 
   Scenario: Set failure reset interval
     When I type in the field with ID "krbpwdfailurecountinterval" the text "60"
-    Then I click on "Save" button
+    Then button "Save" should be enabled
+    When I click on "Save" button
     * I should see "success" alert with text "Password policy 'my_user_group' updated"
     * I close the alert
 
   Scenario: Set lockout duration
     When I type in the field with ID "krbpwdlockoutduration" the text "120"
-    Then I click on "Save" button
+    Then button "Save" should be enabled
+    When I click on "Save" button
     * I should see "success" alert with text "Password policy 'my_user_group' updated"
     * I close the alert
 
   Scenario: Set priority
     When I clear the field "cospriority"
     And I type in the field with ID "cospriority" the text "5"
-    Then I click on "Save" button
+    Then button "Save" should be enabled
+    When I click on "Save" button
     * I should see "success" alert with text "Password policy 'my_user_group' updated"
     * I close the alert
 
   Scenario: Priority cannot be empty
     When I clear the field "cospriority"
-    Then I click on "Save" button
+    Then button "Save" should be enabled
+    When I click on "Save" button
     * I should see "danger" alert with text "'cospriority' is required"
     * I close the alert
     Then I click on "Revert" button
@@ -110,7 +120,8 @@ Feature: Password policies - Settings page
   Scenario: Set grace login limit
     When I clear the field "passwordgracelimit"
     When I type in the field with ID "passwordgracelimit" the text "2"
-    Then I click on "Save" button
+    Then button "Save" should be enabled
+    When I click on "Save" button
     * I should see "success" alert with text "Password policy 'my_user_group' updated"
     * I close the alert
 

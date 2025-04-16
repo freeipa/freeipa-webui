@@ -800,7 +800,7 @@ When("I click on the {string} number plus button", (id: string) => {
 });
 
 When("I click on the {string} number minus button", (id: string) => {
-  cy.get("div[name=" + id + "]", { timeout: 6000 })
+  cy.get("div[name=" + id + "]")
     .find('button[aria-label="minus"]')
     .click();
 });
