@@ -16,7 +16,7 @@ Feature: Sudo command groups manipulation
     Then I should see "group1" entry in the data table
     * entry "group1" should have attribute "Description" set to "my description"
 
-  Scenario Outline: Add several command grouss
+  Scenario Outline: Add several command groups
     When I click on "Add" button
     * I type in the field "Command group name" text "group2"
     * in the modal dialog I click on "Add and add another" button
