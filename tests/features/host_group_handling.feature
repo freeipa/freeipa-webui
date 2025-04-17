@@ -26,6 +26,7 @@ Feature: Host group manipulation
     * I type in the field "Group name" text "c_host_group"
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New host group added"
+    * in the modal dialog button "Adding" should not exist
     Then I type in the field "Group name" text "d_host_group"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host group added"

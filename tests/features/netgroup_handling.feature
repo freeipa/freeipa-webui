@@ -26,6 +26,7 @@ Feature: Netgroup manipulation
     * I type in the field "Netgroup name" text "c_net_group"
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New netgroup added"
+    * button "Adding" should not exist
     Then I type in the field "Netgroup name" text "d_net_group"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New netgroup added"

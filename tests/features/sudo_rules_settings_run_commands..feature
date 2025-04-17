@@ -24,6 +24,7 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         * I type in the field "Description" text "my description"
         * in the modal dialog I click on "Add and add another" button
         * I should see "success" alert with text "New sudo command added"
+        * button "Adding" should not exist
         * I close the alert
         * I type in the field "Command name" text "command2"
         * I type in the field "Description" text "my description 2"
@@ -40,6 +41,7 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         When I click on ID "add-allow-sudocmd" button
         Then I see a modal with title text "Add allow sudo commands into sudo rule 'sudoRule2'"
         And I click on the arrow icon to perform search in modal
+        Then Dual list should have item "command1"
         And I click on the dual list item "command1"
         And I click on the dual list add selected button
         And I click on the "Add" button located in the footer modal dialog
@@ -82,6 +84,7 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         And I click on ID "add-allow-sudocmdgroup" button
         Then I see a modal with title text "Add allow sudo command groups into sudo rule 'sudoRule2'"
         And I click on the arrow icon to perform search in modal
+        Then Dual list should have item "my-cmd-group"
         And I click on the dual list item "my-cmd-group"
         And I click on the dual list add selected button
         And I click on the "Add" button located in the footer modal dialog
@@ -105,6 +108,7 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         When I click on ID "add-deny-sudocmd" button
         Then I see a modal with title text "Add deny sudo commands into sudo rule 'sudoRule2'"
         And I click on the arrow icon to perform search in modal
+        Then Dual list should have item "command2"
         And I click on the dual list item "command2"
         And I click on the dual list add selected button
         And I click on the "Add" button located in the footer modal dialog
@@ -127,6 +131,7 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         And I click on ID "add-deny-sudocmdgroup" button
         Then I see a modal with title text "Add deny sudo command groups into sudo rule 'sudoRule2'"
         And I click on the arrow icon to perform search in modal
+        Then Dual list should have item "my-cmd-group-2"
         And I click on the dual list item "my-cmd-group-2"
         And I click on the dual list add selected button
         And I click on the "Add" button located in the footer modal dialog

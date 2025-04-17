@@ -33,6 +33,7 @@ Feature: Service manipulation
     * I select "service1" option in the "Host" selector
     * I click on "Force" checkbox
     * in the modal dialog I click on "Add and add another" button
+    * button "Adding" should not exist
     * I click in the "Service" selector field
     * I select "ftp" option in the "Service" selector
     * I click in the "Host" selector field

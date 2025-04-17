@@ -21,6 +21,7 @@ Feature: Sudo command groups manipulation
     * I type in the field "Command group name" text "group2"
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New sudo command group added"
+    * button "Adding" should not exist
     * I close the alert
     * I type in the field "Command group name" text "group3"
     * in the modal dialog I click on "Add" button

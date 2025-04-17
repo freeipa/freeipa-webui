@@ -23,6 +23,7 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add users" button
     * I see "Add users to HBAC rule" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "admin"
     Then I click on the dual list item "admin"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
@@ -46,6 +47,7 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add groups" button
     * I see "Add groups to HBAC rule" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "admins"
     Then I click on the dual list item "admins"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
@@ -72,6 +74,7 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add users" button
     * I see "Add users to HBAC rule" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "admin"
     Then I click on the dual list item "admin"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
@@ -81,6 +84,7 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add groups" button
     * I see "Add groups to HBAC rule" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "admins"
     Then I click on the dual list item "admins"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
@@ -118,6 +122,7 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add hosts" button
     * I see "Add hosts to HBAC rule" modal
     Then I click on the arrow icon to perform search
+    Then Dual list should have item "my-new-host"
     Then I click on the dual list item "my-new-host"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
@@ -141,6 +146,7 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add host groups" button
     * I see "Add Host groups to HBAC rule" modal
     Then I click on the arrow icon to perform search
+    Then Dual list should have item "ipaservers"
     Then I click on the dual list item "ipaservers"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
@@ -166,6 +172,7 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add hosts" button
     * I see "Add hosts to HBAC rule" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "my-new-host"
     Then I click on the dual list item "my-new-host"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
@@ -175,6 +182,7 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add host groups" button
     * I see "Add Host groups to HBAC rule" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "ipaservers"
     Then I click on the dual list item "ipaservers"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
@@ -200,6 +208,7 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add services" button
     * I see "Add Services to HBAC rule" modal
     Then I click on the arrow icon to perform search
+    Then Dual list should have item "crond"
     Then I click on the dual list item "crond"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
@@ -228,6 +237,7 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add service groups" button
     * I see "Add Service groups to HBAC rule" modal
     Then I click on the arrow icon to perform search
+    Then Dual list should have item "ftp"
     Then I click on the dual list item "ftp"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
@@ -258,6 +268,7 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add services" button
     * I see "Add Services to HBAC rule" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "crond"
     Then I click on the dual list item "crond"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
@@ -267,6 +278,7 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add service groups" button
     * I see "Add Service groups to HBAC rule" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "ftp"
     Then I click on the dual list item "ftp"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button

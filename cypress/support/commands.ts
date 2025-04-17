@@ -35,11 +35,14 @@ Cypress.Commands.add("loginAsAnUser", (username: string, password: string) => {
   cy.get("[id=pf-login-username-id]").type(username);
   cy.get("[id=pf-login-password-id").type(password);
   cy.get("button").contains("Log in").click();
-  cy.wait(1000);
-  cy.visit(Cypress.env("base_url"));
+  cy.get(
+    "div.pf-v5-c-masthead__content button span.pf-v5-c-menu-toggle__text",
+    { timeout: 6000 }
+  ).then(($ele) => $ele.text() === username);
 });
 
 Cypress.Commands.add("logout", () => {
+  cy.visit(Cypress.env("base_url"));
   cy.get(".pf-v5-c-menu-toggle__text")
     .first()
     .click()

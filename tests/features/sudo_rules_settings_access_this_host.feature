@@ -31,6 +31,7 @@ Feature: Sudo rules - Settings page > 'Access this host' section
         When I click on "Add hosts" button
         Then I see a modal with title text "Add host into sudo rule sudoRule2"
         And I click on the arrow icon to perform search in modal
+        Then Dual list should have item "my-temp-server"
         And I click on the dual list item "my-temp-server"
         And I click on the dual list add selected button
         And I click on the "Add" button located in the footer modal dialog
@@ -66,6 +67,7 @@ Feature: Sudo rules - Settings page > 'Access this host' section
         And I click on "Add hostgroups" button
         Then I see a modal with title text "Add host group into sudo rule sudoRule2"
         And I click on the arrow icon to perform search in modal
+        Then Dual list should have item "a_host_group2"
         And I click on the dual list item "a_host_group2"
         And I click on the dual list add selected button
         And I click on the "Add" button located in the footer modal dialog

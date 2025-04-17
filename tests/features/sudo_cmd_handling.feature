@@ -22,6 +22,7 @@ Feature: Sudo commands manipulation
     * I type in the field "Command name" text "cp"
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New sudo command added"
+    * button "Adding" should not exist
     * I close the alert
     * I type in the field "Command name" text "rm"
     * in the modal dialog I click on "Add" button

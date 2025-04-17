@@ -20,8 +20,10 @@ Feature: HBAC rules manipulation
     * I type in the field "Rule name" text "rule2"
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New HBAC rule added"
+    * button "Adding" should not exist
     * I type in the field "Rule name" text "rule3"
     * in the modal dialog I click on "Add and add another" button
+    * button "Adding" should not exist
     * I should see "success" alert with text "New HBAC rule added"
     * I type in the field "Rule name" text "rule4"
     * in the modal dialog I click on "Add" button

@@ -20,6 +20,7 @@ Feature: HBAC service groups manipulation
     * I type in the field "Service group name" text "a_service2"
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New HBAC service group added"
+    * button "Adding" should not exist
     * I type in the field "Service group name" text "a_service3"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New HBAC service group added"

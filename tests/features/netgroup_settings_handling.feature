@@ -10,6 +10,7 @@ Feature: Netgroup settings manipulation
     * I type in the field "Netgroup name" text "netgroup1"
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New netgroup added"
+    * button "Adding" should not exist
     * I close the alert
     Then I type in the field "Netgroup name" text "netgroup2"
     * in the modal dialog I click on "Add" button
@@ -52,6 +53,7 @@ Feature: Netgroup settings manipulation
     Then I click on "Add users" button
     * I see "Add users to netgroup" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "admin"
     Then I click on the dual list item "admin"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
@@ -75,6 +77,7 @@ Feature: Netgroup settings manipulation
     Then I click on "Add groups" button
     * I see "Add groups to netgroup" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "admins"
     Then I click on the dual list item "admins"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
@@ -98,6 +101,7 @@ Feature: Netgroup settings manipulation
     Then I click on "Add hosts" button
     * I see "Add hosts to netgroup" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "my-server.dom-server.ipa.demo"
     Then I click on the dual list item "my-server.dom-server.ipa.demo"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
@@ -122,6 +126,7 @@ Feature: Netgroup settings manipulation
     Then I click on "Add host groups" button
     * I see "Add Host groups to netgroup" modal
     Then I click on the arrow icon to perform search
+    Then Dual list should have item "ipaservers"
     Then I click on the dual list item "ipaservers"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
@@ -170,6 +175,7 @@ Feature: Netgroup settings manipulation
     Then I click on "Add users" button
     * I see "Add users to netgroup" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "admin"
     Then I click on the dual list item "admin"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
@@ -181,6 +187,7 @@ Feature: Netgroup settings manipulation
     Then I click on "Add groups" button
     * I see "Add groups to netgroup" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "admins"
     Then I click on the dual list item "admins"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
@@ -207,6 +214,7 @@ Feature: Netgroup settings manipulation
     Then I click on "Add hosts" button
     * I see "Add hosts to netgroup" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "my-server.dom-server.ipa.demo"
     Then I click on the dual list item "my-server.dom-server.ipa.demo"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
@@ -219,6 +227,7 @@ Feature: Netgroup settings manipulation
     Then I click on "Add host groups" button
     * I see "Add Host groups to netgroup" modal
     Then I click on the arrow icon to perform search
+    Then Dual list should have item "ipaservers"
     Then I click on the dual list item "ipaservers"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button

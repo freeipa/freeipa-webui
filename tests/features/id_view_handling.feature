@@ -25,6 +25,7 @@ Feature: ID View manipulation
     When I click on "Add" button
     * I type in the field "ID view name" text "c_new_view"
     * in the modal dialog I click on "Add and add another" button
+    * button "Adding" should not exist
     * I should see "success" alert with text "New ID view added"
     Then I type in the field "ID view name" text "d_new_view"
     * in the modal dialog I click on "Add" button
@@ -37,6 +38,7 @@ Feature: ID View manipulation
     When I click on the settings kebab menu and select "Unapply from hosts"
     Then I see "Unapply ID views from hosts" modal
     When I click on the arrow icon to perform search in modal
+    Then Dual list should have item "server.ipa.demo"
     * I click on the first dual list item
     * I click on the dual list add selected button
     When in the modal dialog I click on "Unapply" button
@@ -46,6 +48,7 @@ Feature: ID View manipulation
   Scenario: Unapply views from host groups
     When I click on the settings kebab menu and select "Unapply from host groups"
     Then I click on the arrow icon to perform search in modal
+    Then Dual list should have item "ipaservers"
     * I click on the first dual list item
     * I click on the dual list add selected button
     When in the modal dialog I click on "Unapply" button

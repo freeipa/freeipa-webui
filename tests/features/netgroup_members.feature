@@ -16,6 +16,7 @@ Feature: Netgroup members
     * I type in the field "Netgroup name" text "mynetgroup"
     When in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New netgroup added"
+    * button "Adding" should not exist
     Then I type in the field "Netgroup name" text "mynetgroup2"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New netgroup added"

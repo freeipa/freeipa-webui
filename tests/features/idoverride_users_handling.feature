@@ -15,6 +15,7 @@ Feature: ID Override user manipulation
     * I type in the field "New password" text "CorrectHorseBatteryStaple"
     * I type in the field "Verify password" text "CorrectHorseBatteryStaple"
     * in the modal dialog I click on "Add and add another" button
+    * button "Adding" should not exist
 
     When I type in the field "User login" text "overrideuser2"
     * I type in the field "First name" text "Chain"
@@ -49,6 +50,7 @@ Feature: ID Override user manipulation
     * I type in the field "Login shell" text "/bin/ksh"
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New override user added"
+    * button "Adding" should not exist
     When I close the alert
     And I click in the "User to override" selector field
     Then I select "overrideuser2" option in the "User to override" selector

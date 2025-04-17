@@ -49,6 +49,7 @@ Feature: Host manipulation
     * I click on "Force" checkbox in modal
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New host added"
+    * button "Adding" should not exist
     * I type in the field "Host name" text "myserver3"
     * I click on "Force" checkbox in modal
     * in the modal dialog I click on "Add" button

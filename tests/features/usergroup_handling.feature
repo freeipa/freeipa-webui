@@ -46,6 +46,7 @@ Feature: User group manipulation
     * I type in the field "Group name" text "group1"
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New user group added"
+    * button "Adding" should not exist
     Then I type in the field "Group name" text "group2"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New user group added"

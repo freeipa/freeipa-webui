@@ -11,6 +11,7 @@ Feature: ID Override group manipulation
     When I click on "Add" button
     And I type in the field "Group name" text "overridegroup1"
     Then in the modal dialog I click on "Add and add another" button
+    * button "Adding" should not exist
     When I type in the field "Group name" text "overridegroup2"
     Then in the modal dialog I click on "Add" button
     And I should see "overridegroup1" entry in the data table
@@ -37,6 +38,7 @@ Feature: ID Override group manipulation
     * I type in the field "Description" text "my description2"
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New override group added"
+    * button "Adding" should not exist
     When I close the alert
     And I click in the "Group to override" selector field
     Then I select "overridegroup2" option in the "Group to override" selector

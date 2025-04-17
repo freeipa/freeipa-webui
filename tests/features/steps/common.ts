@@ -28,7 +28,6 @@ Given(
   "I am on the {string} > {string} Settings page",
   (toPage: string, entityName: string) => {
     cy.visit(Cypress.env("base_url") + "/" + toPage + "/" + entityName);
-    cy.wait(1000);
   }
 );
 
@@ -46,8 +45,6 @@ When(
     cy.loginAsAnUser(username, password);
   }
 );
-
-When("I logout", () => {});
 
 // Side menu
 When("I open the side menu", () => {
@@ -90,6 +87,11 @@ Then("button {string} should be enabled", function (buttonText: string) {
   cy.get("button").contains(regex).should("be.enabled");
 });
 
+Then("button {string} should not exist", function (buttonText: string) {
+  const regex = new RegExp("^" + buttonText + "$", "i");
+  cy.get("button").contains(regex).should("not.exist");
+});
+
 Then("button {string} should be disabled", function (buttonText: string) {
   const regex = new RegExp("^" + buttonText + "$", "i");
   cy.get("button").contains(regex).should("be.disabled");
@@ -100,7 +102,15 @@ When(
   "in the modal dialog I click on {string} button",
   function (buttonText: string) {
     cy.get("[role=dialog] footer button").contains(buttonText).click();
-    cy.wait(1000);
+  }
+);
+
+Then(
+  "in the modal dialog button {string} should not exist",
+  function (buttonText: string) {
+    cy.get("[role=dialog] footer button")
+      .contains(buttonText)
+      .should("not.exist");
   }
 );
 
@@ -109,12 +119,6 @@ Then(
   "I click on the {string} button located in the footer modal dialog",
   (buttonName: string) => {
     cy.get("[role=dialog] footer").find("button").contains(buttonName).click();
-    cy.wait(0);
-    /**
-     * Sometimes hooks do not complete their event handlers because the
-     * Cypress test hogs the Javascript thread, and cy.wait(0) releases the
-     * thread so that React hooks can complete the click() action.
-     */
   }
 );
 
@@ -175,6 +179,16 @@ When(
       });
   }
 );
+
+Then("Field {string} should be empty", (fieldName: string) => {
+  const regex = new RegExp("^" + fieldName + "$", "i");
+  cy.get("[role=dialog] label")
+    .contains(regex)
+    .parent()
+    .then(($label) => {
+      cy.get("#" + $label.attr("for")).should("be.empty");
+    });
+});
 
 When(
   "In the modal, I type into the field with ID {string} text {string}",
@@ -346,7 +360,7 @@ Then("I should see {string} alert", (type: string) => {
 });
 
 Then("I close the alert", () => {
-  cy.get(".pf-v5-c-alert button").click().wait(200);
+  cy.get(".pf-v5-c-alert button").click();
 });
 
 // Kebab
@@ -392,7 +406,6 @@ Then("I should see the {string} checkbox unchecked", (checkboxName: string) => {
 When(
   "I click on {string} checkbox in {string} section",
   (checkboxName: string, section: string) => {
-    const sectionRegex = new RegExp("^" + section + "$", "i");
     // Intentionally not using regex matching for the checkbox name as these elements often contain parentheses
     cy.get("span[class='pf-v5-c-form__label-text']")
       .contains(section)
@@ -709,7 +722,7 @@ Then(
 );
 
 When("I click on the arrow icon to perform search", () => {
-  cy.get("button[aria-label=Search]").eq(0).click().wait(1000);
+  cy.get("button[aria-label=Search]").eq(0).click();
 });
 
 Then("I click on the X icon to clear the search field", () => {
@@ -757,8 +770,13 @@ Then("I click on the dual list add selected button", () => {
 Then("I click on the first dual list item", () => {
   cy.get("li[id=basicSelectorWithSearch-available-pane-list-option-0]")
     .eq(0)
-    .click()
-    .wait(1000);
+    .click();
+});
+
+Then("Dual list should have item {string}", (value: string) => {
+  cy.get(".pf-v5-c-dual-list-selector__item-text", { timeout: 2000 }).contains(
+    value
+  );
 });
 
 // Misc

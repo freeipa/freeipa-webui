@@ -32,6 +32,7 @@ Feature: Sudo rules - Settings page > 'As whom' section
         When I click on ID "add-runas-user" button
         Then I see a modal with title text "Add RunAs user into sudo rule sudoRule2"
         And I click on the arrow icon to perform search in modal
+        Then Dual list should have item "hsolo"
         And I click on the dual list item "hsolo"
         And I click on the dual list add selected button
         And I click on the "Add" button located in the footer modal dialog
@@ -71,6 +72,7 @@ Feature: Sudo rules - Settings page > 'As whom' section
         And I click on ID "add-runas-group" button
         Then I see a modal with title text "Add host group into sudo rule sudoRule2"
         And I click on the arrow icon to perform search in modal
+        Then Dual list should have item "admins"
         And I click on the dual list item "admins"
         And I click on the dual list add selected button
         And I click on the "Add" button located in the footer modal dialog
@@ -104,6 +106,7 @@ Feature: Sudo rules - Settings page > 'As whom' section
         When I click on ID "add-runas-group-group" button
         Then I see a modal with title text "Add RunAs groups into sudo rule sudoRule2"
         And I click on the arrow icon to perform search in modal
+        Then Dual list should have item "super_group"
         And I click on the dual list item "super_group"
         And I click on the dual list add selected button
         And I click on the "Add" button located in the footer modal dialog

@@ -30,6 +30,7 @@ Feature: User manipulation
     * I type in the field "New password" text "CorrectHorseBatteryStaple"
     * I type in the field "Verify password" text "CorrectHorseBatteryStaple"
     * in the modal dialog I click on "Add and add another" button
+    * button "Adding" should not exist
 
     When I type in the field "User login" text "chainuser2"
     * I type in the field "First name" text "Chain"

@@ -19,6 +19,7 @@ Feature: HBAC services manipulation
     When I click on "Add" button
     * I type in the field "Service name" text "a_service2"
     * in the modal dialog I click on "Add and add another" button
+    * button "Adding" should not exist
     * I should see "success" alert with text "New HBAC service added"
     * I type in the field "Service name" text "a_service3"
     * in the modal dialog I click on "Add" button

@@ -21,6 +21,7 @@ Feature: Sudo rules - Settings page > 'Who' section
         When I click on "Add users" button
         Then I see a modal with title text "Add user into sudo rule sudoRule2"
         And I click on the arrow icon to perform search in modal
+        Then Dual list should have item "admin"
         And I click on the dual list item "admin"
         And I click on the dual list add selected button
         And I click on the "Add" button located in the footer modal dialog
@@ -44,6 +45,7 @@ Feature: Sudo rules - Settings page > 'Who' section
         And I click on "Add groups" button
         Then I see a modal with title text "Add group into sudo rule sudoRule2"
         And I click on the arrow icon to perform search in modal
+        Then Dual list should have item "admins"
         And I click on the dual list item "admins"
         And I click on the dual list add selected button
         And I click on the "Add" button located in the footer modal dialog

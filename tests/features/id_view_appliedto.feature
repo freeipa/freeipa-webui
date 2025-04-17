@@ -124,6 +124,8 @@ Feature: ID View applied to manipulation
     When I click toolbar dropdown "Apply"
     And I click toolbar dropdown item "Apply host groups"
     * I click on the arrow icon to perform search
+    Then Dual list should have item "idviewhostgroup1"
+    Then Dual list should have item "idviewhostgroup2"
     Then I click on the dual list item "idviewhostgroup1"
     And I click on the dual list item "idviewhostgroup2"
     * I click on the dual list add selected button
@@ -138,6 +140,7 @@ Feature: ID View applied to manipulation
     When I click toolbar dropdown "Unapply"
     Then I click toolbar dropdown item "Unapply host groups"
     * I click on the arrow icon to perform search
+    Then Dual list should have item "idviewhostgroup1"
     Then I click on the dual list item "idviewhostgroup1"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Unapply" button
