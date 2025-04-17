@@ -16,17 +16,18 @@ Feature: Sudo command groups manipulation
     Then I should see "group1" entry in the data table
     * entry "group1" should have attribute "Description" set to "my description"
 
-  Scenario Outline: Add several command groupss
+  Scenario Outline: Add several command grouss
     When I click on "Add" button
     * I type in the field "Command group name" text "group2"
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New sudo command group added"
-    * button "Adding" should not exist
     * I close the alert
+    * button "Adding" should not exist
     * I type in the field "Command group name" text "group3"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New sudo command group added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "group2" entry in the data table
     Then I should see "group3" entry in the data table
 
