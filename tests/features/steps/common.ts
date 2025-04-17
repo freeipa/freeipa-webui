@@ -510,19 +510,13 @@ Then(
 When(
   "I select {string} option in the {string} selector",
   (option: string, selectorName: string) => {
-    const selectorNameFound = cy
-      .get("div.pf-v5-c-form__group-label")
-      .contains(selectorName);
-    if (selectorNameFound) {
-      const itemsOptionsList = selectorNameFound
-        .parent()
-        .next()
-        .get("div.pf-v5-c-menu");
-      const itemOptionSelected = itemsOptionsList.contains(option);
-      if (itemOptionSelected) {
-        itemOptionSelected.click({ force: true });
-      }
-    }
+    cy.get("div.pf-v5-c-form__group-label")
+      .contains(selectorName)
+      .parent()
+      .next()
+      .get("div.pf-v5-c-menu")
+      .contains(option)
+      .click({ force: true });
   }
 );
 
@@ -744,6 +738,14 @@ Then(
 );
 
 When("I click on the arrow icon to perform search in modal", () => {
+  /*
+   This is an anti-pattern, but we need to wait for another reload of the component.
+   It would be much clearer to fix the DualListLayout so it doesn't require a rerender 
+   in the modal tree, but that would be huge refactoring.
+   Please don't ever use this one outside of the model and ideally replace it with 
+   something more sensible
+  */
+  cy.wait(2000);
   cy.get("[role=dialog] button[aria-label=Search]").eq(0).click();
 });
 
@@ -847,15 +849,9 @@ Then(
 Given(
   "The {string} element exists in the table with ID {string} located in page {string}",
   (name: string, tableId: string, page: string) => {
-    const getElementOnTable = () => {
-      cy.get("table#" + tableId)
-        .find("tr[id='" + name + "']")
-        .should("be.visible");
-    };
-    cy.url().then(($url) => {
-      if (!$url.includes(page)) {
-        cy.visit(Cypress.env("base_url") + "/" + page).then(getElementOnTable);
-      }
-    });
+    cy.visit(Cypress.env("base_url") + "/" + page);
+    cy.get("table#" + tableId)
+      .find("tr[id='" + name + "']")
+      .should("be.visible");
   }
 );

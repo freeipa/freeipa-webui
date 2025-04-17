@@ -31,6 +31,7 @@ Feature: Sudo command is a member of
     Given I click on the Is a member of section
     Given I am on "ls" user > Is a member of > "Sudo command groups" section
     When I click on "Add" button located in the toolbar
+    * button "Adding" should not exist
     Then I should see the dialog with title "Add 'ls' to Sudo command groups"
     When I move user "sudogroup" from the available list and move it to the chosen options
     And in the modal dialog I click on "Add" button

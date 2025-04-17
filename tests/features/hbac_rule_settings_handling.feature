@@ -96,6 +96,7 @@ Feature: Hbac rule settings manipulation
     Then I click on "Save" button
     * I should see "success" alert with text "HBAC rule modified"
     * I close the alert
+    * button "Saving" should not exist
     # Members should be removed
     Then I click on "Allow anyone" inline checkbox
     When I click on "Users" page tab
@@ -194,6 +195,7 @@ Feature: Hbac rule settings manipulation
     Then I click on "Save" button
     * I should see "success" alert with text "HBAC rule modified"
     * I close the alert
+    * button "Saving" should not exist
     When I scroll down
     Then I click on "Any host" inline checkbox
     When I click on "Hosts" page tab
@@ -290,6 +292,7 @@ Feature: Hbac rule settings manipulation
     Then I click on "Save" button
     * I should see "success" alert with text "HBAC rule modified"
     * I close the alert
+    * button "Saving" should not exist
     When I scroll down
     Then I click on "Any service" inline checkbox
     When I click on "Services" page tab

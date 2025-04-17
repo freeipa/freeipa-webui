@@ -30,6 +30,7 @@ Feature: User details
 
     When I click on "Save" button
     Then I should see "success" alert with text "User modified"
+    And button "Saving" should not exist
     When I click on "Refresh" button
     Then I should see value "<firstName>" in the field "First name"
     And I should see value "<lastName>" in the field "Last name"
@@ -51,6 +52,7 @@ Feature: User details
 
     When I click on "Save" button
     Then I should see "success" alert with text "User modified"
+    And button "Saving" should not exist
     When I click on "Refresh" button
     Then I should see value "armadillo" in the field "User login"
     And I should see value "" in the field "Password"
@@ -116,6 +118,7 @@ Feature: User details
     And I put Certificate named "valid sample 1" into the text area
     And in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added certificate to 'armadillo'"
+    And button "Adding" should not exist
     And I should see 1 certificates in the Certificates section
     # empty certificate
     When I click on Add key in the Certificates section
@@ -143,6 +146,7 @@ Feature: User details
     And I put Certificate named "valid sample 2" into the text area
     And in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added certificate to 'armadillo'"
+    And button "Adding" should not exist
     And I should see 2 certificates in the Certificates section
 
     # Duplicate certificate
@@ -221,6 +225,7 @@ Feature: User details
     When in the modal dialog I click on "Add" button under the Certificate mapping data section
     When I type "Certificate test 123" into the text input in the Certificate mapping data modal
     When in the modal dialog I click on "Add" button
+    Then button "Adding" should not exist
     Then I should see certificate mappings with the "Certificate test 123" text in the Certificate mappings section
     Then I should see "success" alert with text "Added certificate mappings to user 'armadillo'"
 
@@ -252,6 +257,7 @@ Feature: User details
     When I put Certificate named "valid sample 1" into the text area with index 1 in the Certificate mapping data modal
     When in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added certificate mappings to user 'armadillo'"
+    Then button "Adding" should not exist
 
   Scenario: Add Issuer and object
     When I click on Add key in the Certificate mappings section
@@ -260,6 +266,7 @@ Feature: User details
     When I type "O=EXAMPLE.ORG,CN=Subject 123" into the "Subject" text input in the Certificate mapping data modal
     When in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added certificate mappings to user 'armadillo'"
+    Then button "Adding" should not exist
 
   Scenario: Remove certificate mapping data entry
     When I click on Delete button for certificate mapping data number 1 in the Certificate mappings section
@@ -272,6 +279,7 @@ Feature: User details
     Then I should see the "Password" checkbox checked
     When I click on "Save" button
     Then I should see "success" alert with text "User modified"
+    And button "Saving" should not exist
     And I should see the "Password" checkbox checked
     And I should see the "Two-factor authentication (password + OTP)" checkbox unchecked
     And I should see the "RADIUS" checkbox unchecked
@@ -288,6 +296,7 @@ Feature: User details
     Then I should see the "PKINIT" checkbox checked
     When I click on "Save" button
     Then I should see "success" alert with text "User modified"
+    And button "Saving" should not exist
     And I should see the "Two-factor authentication (password + OTP)" checkbox checked
     And I should see the "RADIUS" checkbox checked
     And I should see the "PKINIT" checkbox checked
@@ -303,6 +312,7 @@ Feature: User details
     Then I should see the "PKINIT" checkbox unchecked
     When I click on "Save" button
     Then I should see "success" alert with text "User modified"
+    And button "Saving" should not exist
     And I should see the "Two-factor authentication (password + OTP)" checkbox unchecked
     And I should see the "RADIUS" checkbox unchecked
     And I should see the "PKINIT" checkbox unchecked
@@ -319,6 +329,7 @@ Feature: User details
     Then I should see the option 'admin' selected in the "Manager" selector
     When I click on "Save" button
     Then I should see "success" alert with text "User modified"
+    And button "Saving" should not exist
     Then I should see the option "admin" selected in the "Manager" selector
 
   # - 'SMB home directory drive'
@@ -329,6 +340,7 @@ Feature: User details
     Then I should see the option 'H:' selected in the "SMB home directory drive" selector
     When I click on "Save" button
     Then I should see "success" alert with text "User modified"
+    And button "Saving" should not exist
     Then I should see the option "H:" selected in the "SMB home directory drive" selector
 
   # Texbox with 'Add' and 'Delete' buttons
@@ -342,6 +354,7 @@ Feature: User details
     * I type in the field with ID "mail-2" the text "testmail2"
     * I click on "Save" button
     Then I should see "success" alert with text "User modified"
+    And button "Saving" should not exist
     And I should see value "testmail1@server.ipa.demo" in any of the textboxes that belong to the field "Mail address"
     * I should see value "testmail2@dom-server.ipa.demo" in any of the textboxes that belong to the field "Mail address"
 
@@ -352,6 +365,7 @@ Feature: User details
     Then I should not see the text input field with text "testmail2@dom-server.ipa.demo" under the field "Mail address"
     When I click on "Save" button
     Then I should see "success" alert with text "User modified"
+    And button "Saving" should not exist
     And I should see value "armadillo@dom-server.ipa.demo" in any of the textboxes that belong to the field "Mail address"
 
   # - Telephone number
@@ -364,6 +378,7 @@ Feature: User details
     * I type in the field with ID "telephonenumber-1" the text "654321"
     * I click on "Save" button
     Then I should see "success" alert with text "User modified"
+    And button "Saving" should not exist
     And I should see value "123456" in any of the textboxes that belong to the field "Telephone number"
     * I should see value "654321" in any of the textboxes that belong to the field "Telephone number"
 
@@ -374,6 +389,7 @@ Feature: User details
     Then I should not see the text input field with text "654321" under the field "Telephone number"
     When I click on "Save" button
     Then I should see "success" alert with text "User modified"
+    And button "Saving" should not exist
     And I should see no textboxes under the field "Telephone number"
 
 # - Pager number
@@ -386,6 +402,7 @@ Feature: User details
     * I type in the field with ID "pager-1" the text "456"
     * I click on "Save" button
     Then I should see "success" alert with text "User modified"
+    And button "Saving" should not exist
     And I should see value "123" in any of the textboxes that belong to the field "Pager number"
     * I should see value "456" in any of the textboxes that belong to the field "Pager number"
 
@@ -396,6 +413,7 @@ Feature: User details
     Then I should not see the text input field with text "456" under the field "Pager number"
     When I click on "Save" button
     Then I should see "success" alert with text "User modified"
+    And button "Saving" should not exist
     And I should see no textboxes under the field "Pager number"
 
   # - Mobile phone number
@@ -408,6 +426,7 @@ Scenario: Add multiple mobile phone numbers
     * I type in the field with ID "mobile-1" the text "321098"
     * I click on "Save" button
     Then I should see "success" alert with text "User modified"
+    And button "Saving" should not exist
     And I should see value "987654" in any of the textboxes that belong to the field "Mobile phone number"
     And I should see value "321098" in any of the textboxes that belong to the field "Mobile phone number"
 
@@ -418,6 +437,7 @@ Scenario: Add multiple mobile phone numbers
     Then I should not see the text input field with text "321098" under the field "Mobile phone number"
     When I click on "Save" button
     Then I should see "success" alert with text "User modified"
+    And button "Saving" should not exist
     And I should see no textboxes under the field "Mobile phone number"
 
   Scenario: Password - reset - no previous password
@@ -449,6 +469,7 @@ Scenario: Add multiple mobile phone numbers
 
     When I click on "Save" button
     Then I should see "success" alert with text "User modified"
+    And button "Saving" should not exist
     And I should see value "2161-03-16" in the date selector in the "<section>" section
     And I should see value "15:26" in the time selector in the "<section>" section
 
@@ -458,6 +479,7 @@ Scenario: Add multiple mobile phone numbers
     And I type in the selected field text "1969-07-16"
     And I click on "Save" button
     Then I should see "success" alert with text "User modified"
+    And button "Saving" should not exist
     And I should see value "1969-07-16" in the date selector in the "<section>" section
     # the time value should remain unchanged
     And I should see value "15:26" in the time selector in the "<section>" section

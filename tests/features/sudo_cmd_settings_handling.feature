@@ -21,6 +21,7 @@ Feature: Sudo cmd settings manipulation
     Then I click on "Save" button
     * I should see "success" alert with text "Sudo command modified"
     * I close the alert
+    * button "Saving" should not exist
     Then Then I should see "test" in the textarea "description"
     * I click on the breadcrump link "Sudo commands"
 
