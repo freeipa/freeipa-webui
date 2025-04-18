@@ -13,6 +13,7 @@ Feature: Hbac rule settings manipulation
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New HBAC rule added"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see "rule1" entry in the data table
     * entry "rule1" should have attribute "Description" set to "my description"
 
@@ -23,11 +24,13 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add users" button
     * I see "Add users to HBAC rule" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "admin"
     Then I click on the dual list item "admin"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added user to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see "admin" entry in the data table
 
   Scenario: Remove user from Who category
@@ -39,6 +42,7 @@ Feature: Hbac rule settings manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Removed user from HBAC rule rule1"
     * I close the alert
+    Then button "Deleting" should not exist
     Then I should not see "admin" entry in the data table
 
   Scenario: Add group to Who category
@@ -46,11 +50,13 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add groups" button
     * I see "Add groups to HBAC rule" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "admins"
     Then I click on the dual list item "admins"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added group to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see "admins" entry in the data table
 
   Scenario: Remove group from Who category
@@ -62,6 +68,7 @@ Feature: Hbac rule settings manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Removed group from HBAC rule rule1"
     * I close the alert
+    Then button "Deleting" should not exist
     Then I should not see "admins" entry in the data table
 
   Scenario: Set User category to allow all users
@@ -72,26 +79,31 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add users" button
     * I see "Add users to HBAC rule" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "admin"
     Then I click on the dual list item "admin"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added user to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     Then I click on "Groups" page tab
     Then I click on "Add groups" button
     * I see "Add groups to HBAC rule" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "admins"
     Then I click on the dual list item "admins"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added group to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     # 2) Set the category to 'all'
     When I scroll up
     * I click on "Allow anyone" inline checkbox
     Then I click on "Save" button
     * I should see "success" alert with text "HBAC rule modified"
     * I close the alert
+    * button "Saving" should not exist
     # Members should be removed
     Then I click on "Allow anyone" inline checkbox
     When I click on "Users" page tab
@@ -109,6 +121,7 @@ Feature: Hbac rule settings manipulation
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host added"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see partial "my-new-host" entry in the data table
 
   Scenario: Add host to Host category and dual list search short cut
@@ -118,11 +131,13 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add hosts" button
     * I see "Add hosts to HBAC rule" modal
     Then I click on the arrow icon to perform search
+    Then Dual list should have item "my-new-host"
     Then I click on the dual list item "my-new-host"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added host to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see partial "my-new-host" entry in the data table
 
   Scenario: Remove host from Host category
@@ -134,6 +149,7 @@ Feature: Hbac rule settings manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Removed host from HBAC rule rule1"
     * I close the alert
+    Then button "Deleting" should not exist
     Then I should not see "my-new-host" entry in the data table
 
   Scenario: Add hostgroup to Host category
@@ -141,11 +157,13 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add host groups" button
     * I see "Add Host groups to HBAC rule" modal
     Then I click on the arrow icon to perform search
+    Then Dual list should have item "ipaservers"
     Then I click on the dual list item "ipaservers"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added Host group to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see "ipaservers" entry in the data table
 
   Scenario: Remove hostgroup from Host category
@@ -157,6 +175,7 @@ Feature: Hbac rule settings manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Removed Host group from HBAC rule rule1"
     * I close the alert
+    Then button "Deleting" should not exist
     Then I should not see "ipaservers" entry in the data table
 
   Scenario: Set Host category to allow all hosts
@@ -166,26 +185,31 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add hosts" button
     * I see "Add hosts to HBAC rule" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "my-new-host"
     Then I click on the dual list item "my-new-host"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added host to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     Then I click on "Host groups" page tab
     Then I click on "Add host groups" button
     * I see "Add Host groups to HBAC rule" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "ipaservers"
     Then I click on the dual list item "ipaservers"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added Host group to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     # 2) Set the category to 'all'
     When I scroll down
     * I click on "Any host" inline checkbox
     Then I click on "Save" button
     * I should see "success" alert with text "HBAC rule modified"
     * I close the alert
+    * button "Saving" should not exist
     When I scroll down
     Then I click on "Any host" inline checkbox
     When I click on "Hosts" page tab
@@ -200,11 +224,13 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add services" button
     * I see "Add Services to HBAC rule" modal
     Then I click on the arrow icon to perform search
+    Then Dual list should have item "crond"
     Then I click on the dual list item "crond"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added Service to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     Then I scroll down
     * I should see "crond" entry in the data table
 
@@ -218,6 +244,7 @@ Feature: Hbac rule settings manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Removed Service from HBAC rule rule1"
     * I close the alert
+    Then button "Deleting" should not exist
     When I scroll down
     Then I click on "Services" page tab
     Then I should not see "crond" entry in the data table
@@ -228,11 +255,13 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add service groups" button
     * I see "Add Service groups to HBAC rule" modal
     Then I click on the arrow icon to perform search
+    Then Dual list should have item "ftp"
     Then I click on the dual list item "ftp"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added Service group to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     Then I scroll down
     * I should see "ftp" entry in the data table
 
@@ -246,6 +275,7 @@ Feature: Hbac rule settings manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Removed Service group from HBAC rule rule1"
     * I close the alert
+    Then button "Deleting" should not exist
     When I scroll down
     Then I click on "Service groups" page tab
     Then I should not see "ftp" entry in the data table
@@ -258,26 +288,31 @@ Feature: Hbac rule settings manipulation
     Then I click on "Add services" button
     * I see "Add Services to HBAC rule" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "crond"
     Then I click on the dual list item "crond"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added Service to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     Then I click on "Service groups" page tab
     Then I click on "Add service groups" button
     * I see "Add Service groups to HBAC rule" modal
     * I click on the arrow icon to perform search
+    Then Dual list should have item "ftp"
     Then I click on the dual list item "ftp"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added Service group to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     # 2) Set the category to 'all'
     When I scroll down
     * I click on "Any service" inline checkbox
     Then I click on "Save" button
     * I should see "success" alert with text "HBAC rule modified"
     * I close the alert
+    * button "Saving" should not exist
     When I scroll down
     Then I click on "Any service" inline checkbox
     When I click on "Services" page tab
@@ -295,6 +330,7 @@ Feature: Hbac rule settings manipulation
     * I should see partial "my-new-host" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Hosts removed"
+    Then button "Deleting" should not exist
     Then I should not see partial "my-new-host" entry in the data table
 
   Scenario: Delete the HBAC rule for cleanup
@@ -305,3 +341,4 @@ Feature: Hbac rule settings manipulation
     * I should see "rule1" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "HBAC rules removed"
+    Then button "Deleting" should not exist

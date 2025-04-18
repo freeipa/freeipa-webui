@@ -13,6 +13,7 @@ Feature: Sudo command is a member of
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New sudo command group added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "sudogroup" entry in the data table
 
   Scenario Outline: Add a new sudo command
@@ -22,6 +23,7 @@ Feature: Sudo command is a member of
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New sudo command added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "ls" entry in the data table
 
   # Test Sudo command group memberships
@@ -31,11 +33,13 @@ Feature: Sudo command is a member of
     Given I click on the Is a member of section
     Given I am on "ls" user > Is a member of > "Sudo command groups" section
     When I click on "Add" button located in the toolbar
+    * button "Adding" should not exist
     Then I should see the dialog with title "Add 'ls' to Sudo command groups"
     When I move user "sudogroup" from the available list and move it to the chosen options
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned 'ls' to Sudo command groups"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see the element "sudogroup" in the table
 
   Scenario: Search for a Sudo command group
@@ -59,6 +63,7 @@ Feature: Sudo command is a member of
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed 'ls' from Sudo command groups"
     * I close the alert
+    * button "Deleting" should not exist
     And I should not see the element "sudogroup" in the table
 
   #
@@ -75,6 +80,7 @@ Feature: Sudo command is a member of
     * in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Sudo commands removed"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "ls" entry in the data table
 
   Scenario: Delete a command group
@@ -87,5 +93,6 @@ Feature: Sudo command is a member of
     * in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Sudo command groups removed"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "sudogroup" entry in the data table
 

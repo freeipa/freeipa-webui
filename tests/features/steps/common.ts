@@ -12,14 +12,7 @@ Given("I am on {string} page", (handle: string) => {
 Given(
   "I navigate to {string} page using the breadcrumb link",
   (to_page: string) => {
-    // I click on the breadcrump link {string}
     cy.get(".pf-v5-c-breadcrumb__item a").contains(to_page).click();
-    // Check if the page is loaded
-    cy.url().then(($url) => {
-      if (!$url.includes(to_page)) {
-        cy.visit(Cypress.env("base_url") + "/" + to_page);
-      }
-    });
   }
 );
 
@@ -28,32 +21,15 @@ Given(
   "I am on the {string} > {string} Settings page",
   (toPage: string, entityName: string) => {
     cy.visit(Cypress.env("base_url") + "/" + toPage + "/" + entityName);
-    cy.wait(1000);
   }
 );
 
 // login
 Given("I am logged in as {string}", (username: string) => {
-  cy.wait(1000);
-  cy.url().then(($url) => {
-    if ($url.includes("modern_ui/login")) {
-      cy.loginAsAnUser(
-        Cypress.env("admin_login"),
-        Cypress.env("admin_password")
-      );
-    }
-  });
   cy.get(
     "div.pf-v5-c-masthead__content button span.pf-v5-c-menu-toggle__text",
     { timeout: 6000 }
-  ).then(($ele) => {
-    if ($ele.text() !== username) {
-      cy.loginAsAnUser(
-        Cypress.env("admin_login"),
-        Cypress.env("admin_password")
-      );
-    }
-  });
+  ).then(($ele) => $ele.text() === username);
 });
 
 When(
@@ -62,9 +38,6 @@ When(
     cy.loginAsAnUser(username, password);
   }
 );
-
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-When("I logout", () => {});
 
 // Side menu
 When("I open the side menu", () => {
@@ -107,6 +80,11 @@ Then("button {string} should be enabled", function (buttonText: string) {
   cy.get("button").contains(regex).should("be.enabled");
 });
 
+Then("button {string} should not exist", function (buttonText: string) {
+  const regex = new RegExp("^" + buttonText + "$", "i");
+  cy.get("button").contains(regex).should("not.exist");
+});
+
 Then("button {string} should be disabled", function (buttonText: string) {
   const regex = new RegExp("^" + buttonText + "$", "i");
   cy.get("button").contains(regex).should("be.disabled");
@@ -117,7 +95,15 @@ When(
   "in the modal dialog I click on {string} button",
   function (buttonText: string) {
     cy.get("[role=dialog] footer button").contains(buttonText).click();
-    cy.wait(1000);
+  }
+);
+
+Then(
+  "in the modal dialog button {string} should not exist",
+  function (buttonText: string) {
+    cy.get("[role=dialog] footer button")
+      .contains(buttonText)
+      .should("not.exist");
   }
 );
 
@@ -126,12 +112,6 @@ Then(
   "I click on the {string} button located in the footer modal dialog",
   (buttonName: string) => {
     cy.get("[role=dialog] footer").find("button").contains(buttonName).click();
-    cy.wait(0);
-    /**
-     * Sometimes hooks do not complete their event handlers because the
-     * Cypress test hogs the Javascript thread, and cy.wait(0) releases the
-     * thread so that React hooks can complete the click() action.
-     */
   }
 );
 
@@ -193,6 +173,16 @@ When(
   }
 );
 
+Then("Field {string} should be empty", (fieldName: string) => {
+  const regex = new RegExp("^" + fieldName + "$", "i");
+  cy.get("[role=dialog] label")
+    .contains(regex)
+    .parent()
+    .then(($label) => {
+      cy.get("#" + $label.attr("for")).should("be.empty");
+    });
+});
+
 When(
   "In the modal, I type into the field with ID {string} text {string}",
   (id: string, text: string) => {
@@ -232,20 +222,19 @@ When(
   }
 );
 
-When("I clear the selected field", () => {
+Then("I clear the selected field", () => {
   cy.focused().clear();
+  cy.focused().should("be.empty");
 });
 
 When("I clear the field {string}", (id) => {
-  cy.get("input[id='" + id + "']")
-    .focus()
-    .clear();
+  cy.get("input[id='" + id + "']").clear();
+  cy.get("input[id='" + id + "']").should("be.empty");
 });
 
 When("I clear the textarea {string}", (id) => {
-  cy.get("textarea[id='" + id + "']")
-    .focus()
-    .clear();
+  cy.get("textarea[id='" + id + "']").clear();
+  cy.get("textarea[id='" + id + "']").should("be.empty");
 });
 
 // Data tables
@@ -363,7 +352,7 @@ Then("I should see {string} alert", (type: string) => {
 });
 
 Then("I close the alert", () => {
-  cy.get(".pf-v5-c-alert button").click().wait(200);
+  cy.get(".pf-v5-c-alert button").click();
 });
 
 // Kebab
@@ -409,7 +398,6 @@ Then("I should see the {string} checkbox unchecked", (checkboxName: string) => {
 When(
   "I click on {string} checkbox in {string} section",
   (checkboxName: string, section: string) => {
-    const sectionRegex = new RegExp("^" + section + "$", "i");
     // Intentionally not using regex matching for the checkbox name as these elements often contain parentheses
     cy.get("span[class='pf-v5-c-form__label-text']")
       .contains(section)
@@ -514,19 +502,13 @@ Then(
 When(
   "I select {string} option in the {string} selector",
   (option: string, selectorName: string) => {
-    const selectorNameFound = cy
-      .get("div.pf-v5-c-form__group-label")
-      .contains(selectorName);
-    if (selectorNameFound) {
-      const itemsOptionsList = selectorNameFound
-        .parent()
-        .next()
-        .get("div.pf-v5-c-menu");
-      const itemOptionSelected = itemsOptionsList.contains(option);
-      if (itemOptionSelected) {
-        itemOptionSelected.click({ force: true });
-      }
-    }
+    cy.get("div.pf-v5-c-form__group-label")
+      .contains(selectorName)
+      .parent()
+      .next()
+      .get("div.pf-v5-c-menu")
+      .contains(option)
+      .click({ force: true });
   }
 );
 
@@ -652,13 +634,13 @@ When(
 Then(
   "I should not see value {string} in any of the textboxes that belong to the field {string}",
   (value: string, fieldName: string) => {
-    cy
-      .get("span[class='pf-v5-c-form__label-text'")
+    cy.get("span[class='pf-v5-c-form__label-text'")
       .contains(fieldName)
       .parent()
       .parent()
       .next()
-      .find("input[value='" + value + "']").not;
+      .find("input[value='" + value + "']")
+      .should("not.exist");
   }
 );
 
@@ -726,7 +708,7 @@ Then(
 );
 
 When("I click on the arrow icon to perform search", () => {
-  cy.get("button[aria-label=Search]").eq(0).click().wait(1000);
+  cy.get("button[aria-label=Search]").eq(0).click();
 });
 
 Then("I click on the X icon to clear the search field", () => {
@@ -748,15 +730,15 @@ Then(
 );
 
 When("I click on the arrow icon to perform search in modal", () => {
-  cy.get("[role=dialog] button[aria-label=Search]", { timeout: 10000 })
-    .eq(0)
-    .click();
-  /**
-   * Sometimes hooks do not complete their event handlers because the
-   * Cypress test hogs the Javascript thread, and cy.wait(0) releases the
-   * thread so that React hooks can complete the click() action.
-   */
-  cy.wait(0);
+  /*
+   This is an anti-pattern, but we need to wait for another reload of the component.
+   It would be much clearer to fix the DualListLayout so it doesn't require a rerender 
+   in the modal tree, but that would be huge refactoring.
+   Please don't ever use this one outside of the model and ideally replace it with 
+   something more sensible
+  */
+  cy.wait(2000);
+  cy.get("[role=dialog] button[aria-label=Search]").eq(0).click();
 });
 
 Then("I click on the X icon to clear the modal search field", () => {
@@ -773,6 +755,13 @@ Then("I click on the dual list item {string}", (value: string) => {
   cy.get(".pf-v5-c-dual-list-selector__item-text", { timeout: 2000 })
     .contains(value)
     .click();
+  cy.get(".pf-v5-c-dual-list-selector__item-text")
+    .contains(value)
+    .parent()
+    .parent()
+    .parent()
+    .parent()
+    .should("have.attr", "aria-selected", "true");
 });
 
 Then("I click on the dual list add selected button", () => {
@@ -782,8 +771,16 @@ Then("I click on the dual list add selected button", () => {
 Then("I click on the first dual list item", () => {
   cy.get("li[id=basicSelectorWithSearch-available-pane-list-option-0]")
     .eq(0)
-    .click()
-    .wait(1000);
+    .click();
+  cy.get("li[id=basicSelectorWithSearch-available-pane-list-option-0]")
+    .eq(0)
+    .should("have.attr", "aria-selected", "true");
+});
+
+Then("Dual list should have item {string}", (value: string) => {
+  cy.get(".pf-v5-c-dual-list-selector__item-text", { timeout: 2000 }).contains(
+    value
+  );
 });
 
 // Misc
@@ -847,5 +844,16 @@ Then(
       .find("button")
       .contains(optionSelected)
       .get("button[aria-pressed=true]");
+  }
+);
+
+// Assert element is on table
+Given(
+  "The {string} element exists in the table with ID {string} located in page {string}",
+  (name: string, tableId: string, page: string) => {
+    cy.visit(Cypress.env("base_url") + "/" + page);
+    cy.get("table#" + tableId)
+      .find("tr[id='" + name + "']")
+      .should("be.visible");
   }
 );

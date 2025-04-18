@@ -11,6 +11,7 @@ Feature: HBAC service settings manipulation
     * I type in the field "Service name" text "a_service1"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New HBAC service added"
+    Then button "Adding" should not exist
     Then I should see "a_service1" entry in the data table
 
   Scenario: Set Description
@@ -20,6 +21,7 @@ Feature: HBAC service settings manipulation
     Then I click on "Save" button
     * I should see "success" alert with text "HBAC service modified"
     * I close the alert
+    * button "Saving" should not exist
     Then Then I should see "test" in the textarea "description"
     * I click on the breadcrump link "HBAC services"
 
@@ -31,4 +33,5 @@ Feature: HBAC service settings manipulation
     * I should see "a_service1" entry in the data table
     * in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "HBAC services removed"
+    Then button "Deleting" should not exist
     Then I should not see "a_service1" entry in the data table

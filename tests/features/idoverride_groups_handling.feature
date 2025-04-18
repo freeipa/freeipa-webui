@@ -11,8 +11,10 @@ Feature: ID Override group manipulation
     When I click on "Add" button
     And I type in the field "Group name" text "overridegroup1"
     Then in the modal dialog I click on "Add and add another" button
+    * button "Adding" should not exist
     When I type in the field "Group name" text "overridegroup2"
     Then in the modal dialog I click on "Add" button
+    Then button "Adding" should not exist
     And I should see "overridegroup1" entry in the data table
     And I should see "overridegroup2" entry in the data table
 
@@ -21,6 +23,7 @@ Feature: ID Override group manipulation
     And I type in the field "ID view name" text "override_group_view"
     Then in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "New ID view added"
+    Then button "Adding" should not exist
     And I should see "override_group_view" entry in the data table
 
   #
@@ -37,6 +40,7 @@ Feature: ID Override group manipulation
     * I type in the field "Description" text "my description2"
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New override group added"
+    * button "Adding" should not exist
     When I close the alert
     And I click in the "Group to override" selector field
     Then I select "overridegroup2" option in the "Group to override" selector
@@ -44,6 +48,7 @@ Feature: ID Override group manipulation
     * I type in the field "Description" text "my description2"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New override group added"
+    * button "Adding" should not exist
     Then I should see "overridegroup2" entry in the data table
     And I should see the "group" tab count is "2"
 
@@ -71,6 +76,7 @@ Feature: ID Override group manipulation
     * I should see "overridegroup1" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Override groups removed"
+    Then button "Deleting" should not exist
     Then I should not see "overridegroup1" entry in the data table
     And I should see the "group" tab count is "1"
 
@@ -87,6 +93,7 @@ Feature: ID Override group manipulation
     * I should see "overridegroup2" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "User groups removed"
+    Then button "Deleting" should not exist
     Then I should not see "overridegroup1" entry in the data table
     Then I should not see "overridegroup2" entry in the data table
 
@@ -99,4 +106,5 @@ Feature: ID Override group manipulation
     * I should see "override_group_view" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "ID views removed"
+    Then button "Deleting" should not exist
     Then I should not see "override_group_view" entry in the data table

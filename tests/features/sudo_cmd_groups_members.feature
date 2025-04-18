@@ -15,6 +15,7 @@ Feature: Sudo command group members
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New sudo command added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "ls" entry in the data table
 
   Given I am on "sudo-command-groups" page
@@ -23,6 +24,7 @@ Feature: Sudo command group members
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New sudo command group added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "group1" entry in the data table
 
   #
@@ -39,6 +41,7 @@ Feature: Sudo command group members
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned new sudo command members to 'group1'"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see the element "ls" in the table
     Then I should see the "cmd" tab count is "1"
 
@@ -63,6 +66,7 @@ Feature: Sudo command group members
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed sudo command members from 'group1'"
     * I close the alert
+    * button "Deleting" should not exist
     And I should not see the element "ls" in the table
     Then I should see the "cmd" tab count is "0"
 
@@ -80,6 +84,7 @@ Scenario: Cleanup - delete a command group
   * in the modal dialog I click on "Delete" button
   * I should see "success" alert with text "Sudo command groups removed"
   * I close the alert
+  * button "Deleting" should not exist
   Then I should not see "group1" entry in the data table
 
 Scenario: Cleanup - delete a command
@@ -92,4 +97,5 @@ Scenario: Cleanup - delete a command
   * in the modal dialog I click on "Delete" button
   * I should see "success" alert with text "Sudo commands removed"
   * I close the alert
+  * button "Deleting" should not exist
   Then I should not see "ls" entry in the data table

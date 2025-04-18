@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./main.css";
 // react router dom
@@ -16,13 +16,16 @@ import "@patternfly/patternfly/utilities/Accessibility/accessibility.css";
 // Navigation
 import { URL_PREFIX } from "./navigation/NavRoutes";
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLElement
+);
+
+root.render(
   <Provider store={store}>
     <React.StrictMode>
       <BrowserRouter basename={URL_PREFIX}>
         <App />
       </BrowserRouter>
     </React.StrictMode>
-  </Provider>,
-  document.getElementById("root")
+  </Provider>
 );

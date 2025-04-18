@@ -10,6 +10,7 @@ Feature: Netgroup manipulation
     * I type in the field "Netgroup name" text "a_net_group"
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New netgroup added"
+    Then button "Adding" should not exist
     Then I should see "a_net_group" entry in the data table
 
   Scenario: Add a new netgroup with description
@@ -18,6 +19,7 @@ Feature: Netgroup manipulation
     * I type in the field "Description" text "my description"
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New netgroup added"
+    Then button "Adding" should not exist
     Then I should see "b_net_group" entry in the data table
     * entry "b_net_group" should have attribute "Description" set to "my description"
 
@@ -26,9 +28,11 @@ Feature: Netgroup manipulation
     * I type in the field "Netgroup name" text "c_net_group"
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New netgroup added"
+    * button "Adding" should not exist
     Then I type in the field "Netgroup name" text "d_net_group"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New netgroup added"
+    Then button "Adding" should not exist
     Then I should see "c_net_group" entry in the data table
     Then I should see "d_net_group" entry in the data table
 
@@ -40,6 +44,7 @@ Feature: Netgroup manipulation
     * I should see "a_net_group" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Netgroups removed"
+    Then button "Deleting" should not exist
     Then I should not see "a_net_group" entry in the data table
 
   Scenario: Delete many groups
@@ -56,6 +61,7 @@ Feature: Netgroup manipulation
     * I should see "d_net_group" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Netgroups removed"
+    Then button "Deleting" should not exist
     Then I should not see "b_net_group" entry in the data table
     Then I should not see "c_net_group" entry in the data table
     Then I should not see "d_net_group" entry in the data table

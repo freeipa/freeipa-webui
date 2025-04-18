@@ -20,6 +20,7 @@ Feature: Identity provider references manipulation
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Identity provider successfully added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "idpKeycloak" entry in the data table with ID "identity-provider-references-table"
 
   Scenario: Add a new 'Keycloak or Red Hat SSO' identity provider reference (with secret)
@@ -39,6 +40,7 @@ Feature: Identity provider references manipulation
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Identity provider successfully added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "idpSecretKeycloak" entry in the data table with ID "identity-provider-references-table"
 
   Scenario: Add a new Google identity provider reference
@@ -54,6 +56,7 @@ Feature: Identity provider references manipulation
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Identity provider successfully added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "idpGoogle" entry in the data table with ID "identity-provider-references-table"
 
   Scenario: Add a new Github identity provider reference
@@ -69,6 +72,7 @@ Feature: Identity provider references manipulation
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Identity provider successfully added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "idpGithub" entry in the data table with ID "identity-provider-references-table"
 
   Scenario: Add a new 'Microsoft or Azure' identity provider reference
@@ -85,6 +89,7 @@ Feature: Identity provider references manipulation
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Identity provider successfully added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "idpMicrosoft" entry in the data table with ID "identity-provider-references-table"
 
   Scenario: Add a new 'Okta' identity provider reference
@@ -102,6 +107,7 @@ Feature: Identity provider references manipulation
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Identity provider successfully added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "idpOkta" entry in the data table with ID "identity-provider-references-table"
 
   Scenario: Add a new Custom identity provider reference
@@ -121,6 +127,7 @@ Feature: Identity provider references manipulation
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Identity provider successfully added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "idpCustom" entry in the data table with ID "identity-provider-references-table"
 
   Scenario: Delete identity provider references
@@ -141,6 +148,7 @@ Feature: Identity provider references manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Identity Providers removed"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "idpOkta" entry in the data table
     Then I should not see "idpCustom" entry in the data table
     # idpKeycloak, idpSecretKeycloak and idpGoogle are removed in the next step
@@ -155,6 +163,7 @@ Feature: Identity provider references manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Identity Providers removed"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "idpKeycloak" entry in the data table
     * I should not see "idpSecretKeycloak" entry in the data table
     * I should not see "idpGoogle" entry in the data table
@@ -168,6 +177,7 @@ Feature: Identity provider references manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Identity Providers removed"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "idpGithub" entry in the data table
     Then I should not see "idpMicrosoft" entry in the data table
 

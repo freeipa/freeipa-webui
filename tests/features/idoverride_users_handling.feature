@@ -15,6 +15,7 @@ Feature: ID Override user manipulation
     * I type in the field "New password" text "CorrectHorseBatteryStaple"
     * I type in the field "Verify password" text "CorrectHorseBatteryStaple"
     * in the modal dialog I click on "Add and add another" button
+    * button "Adding" should not exist
 
     When I type in the field "User login" text "overrideuser2"
     * I type in the field "First name" text "Chain"
@@ -22,6 +23,7 @@ Feature: ID Override user manipulation
     * I type in the field "New password" text "IncorrectHorseBatteryStaple"
     * I type in the field "Verify password" text "IncorrectHorseBatteryStaple"
     * in the modal dialog I click on "Add" button
+    * button "Adding" should not exist
     Then I should see "overrideuser1" entry in the data table
     Then I should see "overrideuser2" entry in the data table
 
@@ -30,6 +32,7 @@ Feature: ID Override user manipulation
     * I type in the field "ID view name" text "override_view"
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New ID view added"
+    Then button "Adding" should not exist
     Then I should see "override_view" entry in the data table
 
   #
@@ -49,6 +52,7 @@ Feature: ID Override user manipulation
     * I type in the field "Login shell" text "/bin/ksh"
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New override user added"
+    * button "Adding" should not exist
     When I close the alert
     And I click in the "User to override" selector field
     Then I select "overrideuser2" option in the "User to override" selector
@@ -59,6 +63,7 @@ Feature: ID Override user manipulation
     * I type in the field "Login shell" text "/bin/ksh"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New override user added"
+    * button "Adding" should not exist
     Then I should see "overrideuser2" entry in the data table
     And I should see the "user" tab count is "2"
 
@@ -86,6 +91,7 @@ Feature: ID Override user manipulation
     * I should see "overrideuser1" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Override users removed"
+    Then button "Deleting" should not exist
     Then I should not see "overrideuser1" entry in the data table
     And I should see the "user" tab count is "1"
 
@@ -102,6 +108,7 @@ Feature: ID Override user manipulation
     * I should see "overrideuser2" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Users removed"
+    Then button "Deleting" should not exist
     Then I should not see "overrideuser1" entry in the data table
     Then I should not see "overrideuser2" entry in the data table
 
@@ -114,4 +121,5 @@ Feature: ID Override user manipulation
     * I should see "override_view" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "ID views removed"
+    Then button "Deleting" should not exist
     Then I should not see "override_view" entry in the data table

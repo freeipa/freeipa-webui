@@ -81,7 +81,7 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
         const existing_groups = props.groups.map(
           (group) => group["ipaanchoruuid"][0]
         );
-        const groups = result.data.list.filter(
+        const groups = (result.data?.list || []).filter(
           (item) => !existing_groups.includes(item)
         );
         setGroupNames(groups);

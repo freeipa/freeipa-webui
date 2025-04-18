@@ -14,6 +14,7 @@ Feature: Sudo commands manipulation
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New sudo command added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "ls" entry in the data table
     * entry "ls" should have attribute "Description" set to "my description"
 
@@ -22,11 +23,13 @@ Feature: Sudo commands manipulation
     * I type in the field "Command name" text "cp"
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New sudo command added"
+    * button "Adding" should not exist
     * I close the alert
     * I type in the field "Command name" text "rm"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New sudo command added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "cp" entry in the data table
     Then I should see "rm" entry in the data table
 
@@ -49,6 +52,7 @@ Feature: Sudo commands manipulation
     * in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Sudo commands removed"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "ls" entry in the data table
 
   Scenario: Delete many commands
@@ -63,6 +67,7 @@ Feature: Sudo commands manipulation
     * in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Sudo commands removed"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "cp" entry in the data table
     Then I should not see "rm" entry in the data table
 

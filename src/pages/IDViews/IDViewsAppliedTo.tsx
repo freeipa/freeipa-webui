@@ -189,7 +189,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
     // unapply views from hosts
     executeUnapplyHosts(selectedHosts).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           const failed_response = response.data.result["failed"];
           if (failed_response.memberhost.host.length > 0) {
             const failed_hosts = failed_response.memberhost.host;
@@ -227,7 +227,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
           }
           // Refresh data
           refreshViewsData();
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert(
@@ -249,7 +249,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
     // unapply views from host groups
     executeUnapplyHostgroups(hostGroups).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           const failed_response = response.data.result["failed"];
           if (failed_response.memberhost.host.length > 0) {
             const failed_hosts = failed_response.memberhost.host;
@@ -291,7 +291,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
           }
           // Refresh data
           refreshViewsData();
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert(
@@ -323,7 +323,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
     // Apply views to hosts
     executeApplyHosts(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           const failed_response = response.data.result["failed"];
           if (failed_response.memberhost.host.length > 0) {
             const failed_hosts = failed_response.memberhost.host;
@@ -342,9 +342,9 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
                     </li>
                   ))}
                 </ul>
-                {response.data.result["completed"] > 0
+                {response.data?.result["completed"] > 0
                   ? "However " +
-                    response.data.result["completed"] +
+                    response.data?.result["completed"] +
                     " hosts were applied"
                   : ""}
               </>
@@ -354,14 +354,14 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
             alerts.addAlert(
               "apply-id-view-hosts-success",
               "ID view applied to " +
-                response.data.result["completed"] +
+                response.data?.result["completed"] +
                 " hosts",
               "success"
             );
           }
           // Refresh data
           refreshViewsData();
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert(
@@ -388,7 +388,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
     // Apply views to host groups
     executeApplyHostgroups(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           const failed_response = response.data.result["failed"];
           if (failed_response.memberhost.host.length > 0) {
             const failed_hosts = failed_response.memberhost.host;
@@ -426,7 +426,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
           }
           // Refresh data
           refreshViewsData();
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert(

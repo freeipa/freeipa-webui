@@ -14,6 +14,7 @@ Feature: Usergroup members
     * I type in the field "First name" text "Alan"
     * I type in the field "Last name" text "Turing"
     * in the modal dialog I click on "Add" button
+    * button "Adding" should not exist
     Then I should see "aturing" entry in the data table
 
   # Add a new test user group
@@ -22,6 +23,7 @@ Feature: Usergroup members
     When I click on "Add" button
     * I type in the field "Group name" text "imitation-game-group"
     When in the modal dialog I click on "Add" button
+    * button "Adding" should not exist
     Then I should see "imitation-game-group" entry in the data table
 
   #
@@ -38,6 +40,7 @@ Feature: Usergroup members
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned new users to user group 'imitation-game-group'"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see the element "aturing" in the table
     Then I should see the "user" tab count is "1"
 
@@ -68,6 +71,7 @@ Feature: Usergroup members
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed users from user group 'imitation-game-group'"
     * I close the alert
+    * button "Deleting" should not exist
     And I should not see the element "aturing" in the table
     Then I should see the "user" tab count is "0"
 
@@ -84,6 +88,7 @@ Feature: Usergroup members
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned new user groups to user group 'imitation-game-group'"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see the element "editors" in the table
     Then I should see the "usergroup" tab count is "1"
 
@@ -115,6 +120,7 @@ Feature: Usergroup members
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed user groups from user group 'imitation-game-group'"
     * I close the alert
+    * button "Deleting" should not exist
     And I should not see the element "editors" in the table
     Then I should see the "usergroup" tab count is "0"
 
@@ -162,6 +168,7 @@ Feature: Usergroup members
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed services from user group 'imitation-game-group'"
     * I close the alert
+    * button "Deleting" should not exist
     And I should not see the element "DNS" in the table
     Then I should see the "service" tab count is "0"
 
@@ -176,6 +183,7 @@ Feature: Usergroup members
     When in the modal dialog I check "Delete" radio selector
     And in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Users removed"
+    * button "Deleting" should not exist
     Then I should not see "aturing" entry in the data table
 
   Scenario: Remove testing user group imitation-game-group
@@ -187,4 +195,5 @@ Feature: Usergroup members
     * I should see "imitation-game-group" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "User groups removed"
+    * button "Deleting" should not exist
     Then I should not see "imitation-game-group" entry in the data table

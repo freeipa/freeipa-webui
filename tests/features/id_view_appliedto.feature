@@ -21,6 +21,7 @@ Feature: ID View applied to manipulation
     * I click on "Force" checkbox in modal
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host added"
+    Then button "Adding" should not exist
     Then I should see partial "idviewhost2" entry in the data table
 
   Scenario: Add a new host group
@@ -36,6 +37,7 @@ Feature: ID View applied to manipulation
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host group added"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see "idviewhostgroup2" entry in the data table
 
   Scenario: Add a Host members into the host group 1
@@ -49,6 +51,7 @@ Feature: ID View applied to manipulation
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned new hosts to host group 'idviewhostgroup1'"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see the element "idviewhost1.dom-server.ipa.demo" in the table
 
   Scenario: Add a Host members into the host group 2
@@ -62,6 +65,7 @@ Feature: ID View applied to manipulation
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned new hosts to host group 'idviewhostgroup2'"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see the element "idviewhost2.dom-server.ipa.demo" in the table
 
   Scenario: Add a new view
@@ -71,6 +75,7 @@ Feature: ID View applied to manipulation
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New ID view added"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see "a_new_view" entry in the data table
 
   #
@@ -124,6 +129,8 @@ Feature: ID View applied to manipulation
     When I click toolbar dropdown "Apply"
     And I click toolbar dropdown item "Apply host groups"
     * I click on the arrow icon to perform search
+    Then Dual list should have item "idviewhostgroup1"
+    Then Dual list should have item "idviewhostgroup2"
     Then I click on the dual list item "idviewhostgroup1"
     And I click on the dual list item "idviewhostgroup2"
     * I click on the dual list add selected button
@@ -138,6 +145,7 @@ Feature: ID View applied to manipulation
     When I click toolbar dropdown "Unapply"
     Then I click toolbar dropdown item "Unapply host groups"
     * I click on the arrow icon to perform search
+    Then Dual list should have item "idviewhostgroup1"
     Then I click on the dual list item "idviewhostgroup1"
     * I click on the dual list add selected button
     * in the modal dialog I click on "Unapply" button
@@ -155,6 +163,7 @@ Feature: ID View applied to manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "ID views removed"
     * I close the alert
+    Then button "Deleting" should not exist
     Then I should not see "a_new_view" entry in the data table
 
   Scenario: Delete hosts
@@ -170,6 +179,7 @@ Feature: ID View applied to manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Hosts removed"
     * I close the alert
+    Then button "Deleting" should not exist
     Then I should not see partial "idviewhost1" entry in the data table
     Then I should not see partial "idviewhost2" entry in the data table
 
@@ -186,5 +196,6 @@ Feature: ID View applied to manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Host groups removed"
     * I close the alert
+    Then button "Deleting" should not exist
     Then I should not see "idviewhostgroup1" entry in the data table
     And I should not see "idviewhostgroup2" entry in the data table

@@ -4,9 +4,7 @@ import { When, Then, Given } from "@badeball/cypress-cucumber-preprocessor";
 
 // direct/indirect button
 When("I click on the {string} button", (name: string) => {
-  cy.get('button[id="' + name + '"')
-    .click()
-    .wait(500);
+  cy.get('button[id="' + name + '"').click();
 });
 
 // 'Members' section
@@ -30,7 +28,6 @@ Then(
           .children()
           .get("button[name='member_group']")
           .contains(sectionName);
-        cy.wait(2000);
       }
     });
   }
@@ -112,7 +109,6 @@ Then(
           .children()
           .get("button[name='memberof_group']")
           .contains(sectionName);
-        cy.wait(3000);
       }
     });
   }
@@ -209,7 +205,6 @@ Then(
           .children()
           .get("button[name='manager_user']")
           .contains(sectionName);
-        cy.wait(2000);
       }
     });
   }

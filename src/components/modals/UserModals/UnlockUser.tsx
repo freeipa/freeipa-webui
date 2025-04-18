@@ -55,7 +55,7 @@ const UnlockUser = (props: propsToUnlockUser) => {
     } else {
       unlockUser(props.uid).then((response) => {
         if ("data" in response) {
-          if (response.data.result) {
+          if (response.data?.result) {
             // Close modal
             props.onClose();
             // Set alert: success
@@ -66,7 +66,7 @@ const UnlockUser = (props: propsToUnlockUser) => {
             );
             // Refresh data
             props.onRefresh();
-          } else if (response.data.error) {
+          } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as ErrorResult;
             alerts.addAlert(

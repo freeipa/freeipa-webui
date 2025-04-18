@@ -24,3 +24,7 @@ before(() => {
   cy.loginAsAnUser(Cypress.env("admin_login"), Cypress.env("admin_password"));
   cy.userCleanup();
 });
+
+after(() => {
+  cy.logout();
+});

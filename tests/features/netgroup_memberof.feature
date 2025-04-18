@@ -15,6 +15,7 @@ Feature: Netgroup is a member of
     * I type in the field "Netgroup name" text "my_netgroup"
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New netgroup added"
+    Then button "Adding" should not exist
     Then I should see "my_netgroup" entry in the data table
 
   Scenario: Add another new netgroup
@@ -23,6 +24,7 @@ Feature: Netgroup is a member of
     * I type in the field "Netgroup name" text "my_netgroup_2"
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New netgroup added"
+    Then button "Adding" should not exist
     Then I should see "my_netgroup_2" entry in the data table
 
   #
@@ -39,6 +41,7 @@ Feature: Netgroup is a member of
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned 'my_netgroup' to netgroups"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see the element "my_netgroup_2" in the table
 
   Scenario: Search for a netgroup member
@@ -62,6 +65,7 @@ Feature: Netgroup is a member of
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed 'my_netgroup' from netgroups"
     * I close the alert
+    Then button "Deleting" should not exist
     And I should not see the element "my_netgroup_2" in the table
 
   #
@@ -76,5 +80,6 @@ Feature: Netgroup is a member of
     * I should see partial "my_netgroup" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Netgroups removed"
+    Then button "Deleting" should not exist
     Then I should not see "my_netgroup" entry in the data table
 

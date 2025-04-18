@@ -127,9 +127,8 @@ describe("PrincipalAliasMultiTextBox Component", () => {
     });
     expect(krbTextbox).toHaveValue(TEST_VALUE);
 
-    // Two Add buttons exist
-    const addButtons = screen.getAllByRole("button", { name: "Add" });
-    expect(addButtons).toHaveLength(2);
+    // Add button exists
+    screen.getByRole("button", { name: "Add" });
 
     // Cancel button exists
     const cancelButton = screen.getByRole("button", { name: "Cancel" });
@@ -171,13 +170,12 @@ describe("PrincipalAliasMultiTextBox Component", () => {
     });
     expect(krbTextbox).toHaveValue(TEST_VALUE);
 
-    // Two Add buttons exist
-    const addButtons = screen.getAllByRole("button", { name: "Add" });
-    expect(addButtons).toHaveLength(2);
+    // Add button exists
+    const addButtonModal = screen.getByRole("button", { name: "Add" });
 
     // Click Add button
     await act(async () => {
-      fireEvent.click(addButtons[1]);
+      fireEvent.click(addButtonModal);
     });
 
     expect(addPrincipalAlias).toHaveBeenCalledWith([undefined, [TEST_VALUE]]);
@@ -215,9 +213,8 @@ describe("PrincipalAliasMultiTextBox Component", () => {
     });
     expect(krbTextbox).toHaveValue(TEST_VALUE);
 
-    // Two Add buttons exist
-    const addButtons = screen.getAllByRole("button", { name: "Add" });
-    expect(addButtons).toHaveLength(2);
+    // Add button exists
+    const addButtonModal = screen.getByRole("button", { name: "Add" });
 
     // Mock error
     addPrincipalAlias.mockReturnValue(
@@ -228,13 +225,13 @@ describe("PrincipalAliasMultiTextBox Component", () => {
 
     // Click Add button
     await act(async () => {
-      fireEvent.click(addButtons[1]);
+      fireEvent.click(addButtonModal);
     });
 
     expect(addPrincipalAlias).toHaveBeenCalledWith([undefined, [TEST_VALUE]]);
 
     // Validate error
-    const alert = screen.getByRole("alert");
+    const alert = screen.getByRole("alert", { hidden: true });
     expect(alert).toContainHTML("Danger");
   });
 

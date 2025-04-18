@@ -218,7 +218,7 @@ const SudoCmds = () => {
     } as GenericPayload).then((result) => {
       // Manage new response here
       if ("data" in result) {
-        const searchError = result.data.error as
+        const searchError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
@@ -237,9 +237,9 @@ const SudoCmds = () => {
           );
         } else {
           // Success
-          const cmdsListResult = result.data.result.results;
-          const cmdsListSize = result.data.result.count;
-          const totalCount = result.data.result.totalCount;
+          const cmdsListResult = result.data?.result.results || [];
+          const cmdsListSize = result.data?.result.count || 0;
+          const totalCount = result.data?.result.totalCount || 0;
           const cmdsList: SudoCmdGroup[] = [];
 
           for (let i = 0; i < cmdsListSize; i++) {

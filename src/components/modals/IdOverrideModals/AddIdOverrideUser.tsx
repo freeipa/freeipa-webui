@@ -87,9 +87,9 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
         const existing_users = props.users.map(
           (user) => user["ipaanchoruuid"][0]
         );
-        const users = result.data.list.filter(
-          (item) => !existing_users.includes(item)
-        );
+        const users =
+          result.data?.list.filter((item) => !existing_users.includes(item)) ||
+          [];
         setUserNames(users);
       } else {
         setUserNames([]);

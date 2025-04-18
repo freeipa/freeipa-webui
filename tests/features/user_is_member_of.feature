@@ -30,6 +30,7 @@ Feature: User is a member of
     When I move user "editors" from the available list and move it to the chosen options
     # TODO: Aditionally, add more users to the chosen options
     And in the modal dialog I click on "Add" button
+    Then button "Adding" should not exist
     Then I should see the element "editors" in the table
     And I should see the element "ipausers" in the table
     * I should not see the element "editors" in the add list
@@ -49,6 +50,7 @@ Feature: User is a member of
     And the "editors" element should be in the dialog table
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed 'armadillo' from user groups"
+    Then button "Deleting" should not exist
     And I should not see the element "editors" in the table
     * I should see the element "ipausers" in the table
     * removed element "editors" is back to the add list

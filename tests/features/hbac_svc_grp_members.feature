@@ -19,6 +19,7 @@ Feature: HBAC service group members
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned new HBAC service members to 'ftp'"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see the element "crond" in the table
     Then I should see the "service" tab count is "6"
 
@@ -43,5 +44,6 @@ Feature: HBAC service group members
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed HBAC service members from 'ftp'"
     * I close the alert
+    Then button "Deleting" should not exist
     And I should not see the element "crond" in the table
     Then I should see the "service" tab count is "5"

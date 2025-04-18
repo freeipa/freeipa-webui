@@ -12,6 +12,7 @@ Feature: User group manipulation
     * I type in the field "GID" text "77777"
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New user group added"
+    Then button "Adding" should not exist
     Then I should see "a_posix_group" entry in the data table
     * entry "a_posix_group" should have attribute "GID" set to "77777"
 
@@ -25,6 +26,7 @@ Feature: User group manipulation
     * TextInput "modal-form-group-gid" should be disabled
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New user group added"
+    Then button "Adding" should not exist
     Then I should see "a_nonposix_group" entry in the data table
     * entry "a_nonposix_group" should have attribute "Description" set to "non-posix group"
 
@@ -38,6 +40,7 @@ Feature: User group manipulation
     * TextInput "modal-form-group-gid" should be disabled
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New user group added"
+    Then button "Adding" should not exist
     Then I should see "an_external_group" entry in the data table
     * entry "an_external_group" should have attribute "Description" set to "external group"
 
@@ -46,9 +49,11 @@ Feature: User group manipulation
     * I type in the field "Group name" text "group1"
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New user group added"
+    * button "Adding" should not exist
     Then I type in the field "Group name" text "group2"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New user group added"
+    * button "Adding" should not exist
     Then I should see "group1" entry in the data table
     Then I should see "group2" entry in the data table
 
@@ -60,6 +65,7 @@ Feature: User group manipulation
     * I should see "a_posix_group" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "User groups removed"
+    * button "Deleting" should not exist
     Then I should not see "a_posix_group" entry in the data table
 
   Scenario: Delete many groups
@@ -79,6 +85,7 @@ Feature: User group manipulation
     * I should see "an_external_group" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "User groups removed"
+    * button "Deleting" should not exist
     Then I should not see "group1" entry in the data table
     Then I should not see "group2" entry in the data table
     Then I should not see "a_nonposix_group" entry in the data table

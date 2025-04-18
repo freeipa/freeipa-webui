@@ -10,6 +10,7 @@ Feature: Host group settings manipulation
     * I type in the field "Group name" text "my_host_group"
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host group added"
+    Then button "Adding" should not exist
     Then I should see "my_host_group" entry in the data table
 
   Scenario: Set Description
@@ -38,4 +39,5 @@ Feature: Host group settings manipulation
     * I should see "my_host_group" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Host groups removed"
+    Then button "Deleting" should not exist
     Then I should not see "my_host_group" entry in the data table

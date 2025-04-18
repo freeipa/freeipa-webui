@@ -14,6 +14,7 @@ Feature: Hostgroup is a member of
     * I type in the field "Netgroup name" text "a_net_group"
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New netgroup added"
+    Then button "Adding" should not exist
     Then I should see "a_net_group" entry in the data table
 
   Scenario Outline: Add a new HBAC rule
@@ -22,6 +23,7 @@ Feature: Hostgroup is a member of
     * I type in the field "Rule name" text "hbacrule1"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New HBAC rule added"
+    Then button "Adding" should not exist
     Then I should see "hbacrule1" entry in the data table
 
   Scenario Outline: Add a new sudo rule
@@ -30,6 +32,7 @@ Feature: Hostgroup is a member of
     * I type in the field "Rule name" text "sudorule1"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New sudo rule added"
+    Then button "Adding" should not exist
     Then I should see "sudorule1" entry in the data table
 
   Scenario: Add a new hostgroup
@@ -39,6 +42,7 @@ Feature: Hostgroup is a member of
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host group added"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see "a_hostgroup" entry in the data table
 
   Scenario: Add another new hostgroup
@@ -48,6 +52,7 @@ Feature: Hostgroup is a member of
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host group added"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see "a_hostgroup_2" entry in the data table
 
   #
@@ -63,6 +68,7 @@ Feature: Hostgroup is a member of
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned 'a_hostgroup' to host groups"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see the element "a_hostgroup_2" in the table
     * I should see the "group" tab count is "1"
 
@@ -93,6 +99,7 @@ Feature: Hostgroup is a member of
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed 'a_hostgroup' from host groups"
     * I close the alert
+    Then button "Deleting" should not exist
     And I should not see the element "a_hostgroup_2" in the table
     Then I should see the "group" tab count is "0"
 
@@ -109,6 +116,7 @@ Feature: Hostgroup is a member of
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned 'a_hostgroup' to netgroups"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see the element "a_net_group" in the table
     * I should see the "netgroup" tab count is "1"
 
@@ -133,6 +141,7 @@ Feature: Hostgroup is a member of
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed 'a_hostgroup' from netgroups"
     * I close the alert
+    Then button "Deleting" should not exist
     And I should not see the element "a_net_group" in the table
     Then I should see the "netgroup" tab count is "0"
 
@@ -149,6 +158,7 @@ Feature: Hostgroup is a member of
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned 'a_hostgroup' to HBAC rules"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see the element "hbacrule1" in the table
     * I should see the "hbacrule" tab count is "1"
 
@@ -179,6 +189,7 @@ Feature: Hostgroup is a member of
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed 'a_hostgroup' from HBAC rules"
     * I close the alert
+    Then button "Deleting" should not exist
     And I should not see the element "hbacrule1" in the table
     Then I should see the "hbacrule" tab count is "0"
 
@@ -195,6 +206,7 @@ Feature: Hostgroup is a member of
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned 'a_hostgroup' to sudo rules"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see the element "sudorule1" in the table
     * I should see the "sudorule" tab count is "1"
 
@@ -225,6 +237,7 @@ Feature: Hostgroup is a member of
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed 'a_hostgroup' from sudo rules"
     * I close the alert
+    Then button "Deleting" should not exist
     And I should not see the element "sudorule1" in the table
     Then I should see the "sudorule" tab count is "0"
 
@@ -244,6 +257,7 @@ Feature: Hostgroup is a member of
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Host groups removed"
     * I close the alert
+    Then button "Deleting" should not exist
     Then I should not see "a_hostgroup" entry in the data table
     * I should not see "a_hostgroup_2" entry in the data table
 
@@ -255,6 +269,7 @@ Feature: Hostgroup is a member of
     * I should see partial "a_net_group" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Netgroups removed"
+    Then button "Deleting" should not exist
     Then I should not see "a_net_group" entry in the data table
 
   Scenario: Cleanup - delete HBAC rule
@@ -265,6 +280,7 @@ Feature: Hostgroup is a member of
     * I should see partial "hbacrule1" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "HBAC rules removed"
+    Then button "Deleting" should not exist
     Then I should not see "hbacrule1" entry in the data table
 
   Scenario: Cleanup - delete Sudo rule
@@ -275,4 +291,5 @@ Feature: Hostgroup is a member of
     * I should see partial "sudorule1" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Sudo rules removed"
+    Then button "Deleting" should not exist
     Then I should not see "sudorule1" entry in the data table

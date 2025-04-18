@@ -16,9 +16,11 @@ Feature: Netgroup members
     * I type in the field "Netgroup name" text "mynetgroup"
     When in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New netgroup added"
+    * button "Adding" should not exist
     Then I type in the field "Netgroup name" text "mynetgroup2"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New netgroup added"
+    * button "Adding" should not exist
     Then I should see "mynetgroup" entry in the data table
     Then I should see "mynetgroup2" entry in the data table
 
@@ -28,6 +30,7 @@ Feature: Netgroup members
     * I type in the field "Group name" text "myhostgroup"
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host group added"
+    * button "Adding" should not exist
     Then I should see "myhostgroup" entry in the data table
 
   #
@@ -44,6 +47,7 @@ Feature: Netgroup members
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned new users to netgroup 'mynetgroup'"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see the element "armadillo" in the table
     Then I should see the "user" tab count is "1"
 
@@ -68,6 +72,7 @@ Feature: Netgroup members
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed users from netgroup 'mynetgroup'"
     * I close the alert
+    * button "Deleting" should not exist
     And I should not see the element "armadillo" in the table
     Then I should see the "user" tab count is "0"
 
@@ -84,6 +89,7 @@ Feature: Netgroup members
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned new user groups to netgroup 'mynetgroup'"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see the element "editors" in the table
     Then I should see the "group" tab count is "1"
 
@@ -109,6 +115,7 @@ Feature: Netgroup members
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed user groups from netgroup 'mynetgroup'"
     * I close the alert
+    * button "Deleting" should not exist
     And I should not see the element "editors" in the table
     Then I should see the "group" tab count is "0"
 
@@ -123,6 +130,7 @@ Feature: Netgroup members
     * I click on "Force" checkbox in modal
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host added"
+    * button "Adding" should not exist
     Then I should see partial "my-new-server" entry in the data table
   Scenario: Add a Host member into the netgroup
     Given I am on "netgroups" page
@@ -161,6 +169,7 @@ Feature: Netgroup members
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed hosts from netgroup 'mynetgroup'"
     * I close the alert
+    * button "Deleting" should not exist
     And I should not see the element "my-new-server" in the table
     Then I should see the "host" tab count is "0"
 
@@ -177,6 +186,7 @@ Feature: Netgroup members
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned new host groups to netgroup 'mynetgroup'"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "myhostgroup" entry in the data table
     Then I should see the "hostgroup" tab count is "1"
 
@@ -202,6 +212,7 @@ Feature: Netgroup members
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed host groups from netgroup 'mynetgroup'"
     * I close the alert
+    * button "Deleting" should not exist
     And I should not see the element "myhostgroup" in the table
     Then I should see the "hostgroup" tab count is "0"
 
@@ -218,6 +229,7 @@ Feature: Netgroup members
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned new netgroups to netgroup 'mynetgroup'"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "mynetgroup2" entry in the data table
     Then I should see the "netgroup" tab count is "1"
 
@@ -249,6 +261,7 @@ Feature: Netgroup members
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed netgroups from netgroup 'mynetgroup'"
     * I close the alert
+    * button "Deleting" should not exist
     And I should not see the element "mynetgroup2" in the table
     Then I should see the "netgroup" tab count is "0"
 
@@ -263,6 +276,7 @@ Feature: Netgroup members
     * I should see "myhostgroup" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Host groups removed"
+    * button "Deleting" should not exist
 
   Scenario: clean up and delete new netgroup
     Given I am on "netgroups" page
@@ -274,6 +288,7 @@ Feature: Netgroup members
     * I should see "mynetgroup2" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Netgroups removed"
+    * button "Deleting" should not exist
 
   Scenario: Cleanup - remove the test host
     Given I am on "hosts" page
@@ -283,5 +298,6 @@ Feature: Netgroup members
     * I should see partial "my-new-server" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Hosts removed"
+    * button "Deleting" should not exist
     Then I should not see "my-new-server" entry in the data table
 

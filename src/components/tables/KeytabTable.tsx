@@ -174,8 +174,8 @@ const KeytabTable = (props: PropsToTable) => {
         apiVersion: API_VERSION_BACKUP,
       } as GetEntriesPayload).then((result) => {
         if ("data" in result) {
-          const entryListResult = result.data.result.results;
-          const entryListSize = result.data.result.count;
+          const entryListResult = result.data?.result.results || [];
+          const entryListSize = result.data?.result.count || 0;
           let entriesList;
           if (props.entryType === "user") {
             entriesList = [] as User[];
@@ -265,7 +265,7 @@ const KeytabTable = (props: PropsToTable) => {
       method: add_method,
     } as KeyTabPayload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           alerts.addAlert(
             "add-" + props.entryType + "s-allow-keytab",
             "Successfully added " +
@@ -283,7 +283,7 @@ const KeytabTable = (props: PropsToTable) => {
           setShowAddModal(false);
           setEntriesTotalCount(entries.length);
           props.onRefresh();
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert(
@@ -317,7 +317,7 @@ const KeytabTable = (props: PropsToTable) => {
       method: remove_method,
     } as KeyTabPayload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           alerts.addAlert(
             "remove-" + props.entryType + "s-allow-create-keytab",
             "Removed " +
@@ -339,7 +339,7 @@ const KeytabTable = (props: PropsToTable) => {
           setShowAddModal(false);
           setEntriesTotalCount(entries.length);
           props.onRefresh();
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert(

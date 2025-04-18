@@ -14,6 +14,7 @@ Feature: Usergroup is a member of
     * I type in the field "Rule name" text "rule1"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New sudo rule added"
+    * button "Adding" should not exist
     Then I should see "rule1" entry in the data table
 
   Scenario: Add a new usergroup
@@ -24,6 +25,7 @@ Feature: Usergroup is a member of
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New user group added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "a_group" entry in the data table
     * entry "a_group" should have attribute "GID" set to "77777"
 
@@ -38,6 +40,7 @@ Feature: Usergroup is a member of
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned 'a_group' to user groups"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see the element "editors" in the table
 
   Scenario: Search for a user group
@@ -55,6 +58,7 @@ Feature: Usergroup is a member of
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed 'a_group' from user groups"
     * I close the alert
+    * button "Deleting" should not exist
     And I should not see the element "editors" in the table
 
   # Test Netgroup members
@@ -66,6 +70,7 @@ Feature: Usergroup is a member of
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New netgroup added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "a_netgroup" entry in the data table
     # Now move back to user groups
     Given I am on "user-groups" page
@@ -78,6 +83,7 @@ Feature: Usergroup is a member of
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned 'a_group' to netgroups"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see the element "a_netgroup" in the table
 
   Scenario: Delete a netgroup member from the user group
@@ -88,6 +94,7 @@ Feature: Usergroup is a member of
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed 'a_group' from netgroups"
     * I close the alert
+    * button "Deleting" should not exist
     And I should not see the element "a_netgroup" in the table
 
   # Test Role members
@@ -99,6 +106,7 @@ Feature: Usergroup is a member of
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned 'a_group' to roles"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see the element "helpdesk" in the table
 
   Scenario: Delete a role member from the user group
@@ -109,6 +117,7 @@ Feature: Usergroup is a member of
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed 'a_group' from roles"
     * I close the alert
+    * button "Deleting" should not exist
     And I should not see the element "helpdesk" in the table
 
   # Test HBAC rule members
@@ -119,6 +128,7 @@ Feature: Usergroup is a member of
     * I type in the field "Description" text "my description"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New HBAC rule added"
+    * button "Adding" should not exist
     Then I should see "rule1" entry in the data table
     * entry "rule1" should have attribute "Description" set to "my description"
 
@@ -133,6 +143,7 @@ Feature: Usergroup is a member of
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned 'a_group' to HBAC rules"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see the element "rule1" in the table
 
   Scenario: Delete a HBAC rule member from the user group
@@ -143,6 +154,7 @@ Feature: Usergroup is a member of
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed 'a_group' from HBAC rules"
     * I close the alert
+    * button "Deleting" should not exist
     And I should not see the element "rule1" in the table
 
   # Test Sudo rules
@@ -156,6 +168,7 @@ Feature: Usergroup is a member of
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned 'a_group' to sudo rules"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see the element "rule1" in the table
 
   # Cleanup
@@ -169,6 +182,7 @@ Feature: Usergroup is a member of
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "User groups removed"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "a_group" entry in the data table
 
     Given I am on "netgroups" page
@@ -180,6 +194,7 @@ Feature: Usergroup is a member of
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Netgroups removed"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "a_netgroup" entry in the data table
 
     Given I am on "hbac-rules" page
@@ -190,6 +205,7 @@ Feature: Usergroup is a member of
     * I should see "rule1" entry in the data table
     * in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "HBAC rules removed"
+    * button "Deleting" should not exist
     Then I should not see "rule1" entry in the data table
 
     Given I am on "sudo-rules" page
@@ -200,4 +216,5 @@ Feature: Usergroup is a member of
     * I should see "rule1" entry in the data table
     * in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Sudo rules removed"
+    * button "Deleting" should not exist
     Then I should not see "rule1" entry in the data table

@@ -12,6 +12,7 @@ Feature: Sudo rules manipulation
     * I type in the field "Description" text "my description"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New sudo rule added"
+    * button "Adding" should not exist
     Then I should see "rule1" entry in the data table
     * entry "rule1" should have attribute "Description" set to "my description"
 
@@ -20,12 +21,15 @@ Feature: Sudo rules manipulation
     * I type in the field "Rule name" text "rule2"
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New sudo rule added"
+    * button "Adding" should not exist
     * I type in the field "Rule name" text "rule3"
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New sudo rule added"
+    * button "Adding" should not exist
     * I type in the field "Rule name" text "rule4"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New sudo rule added"
+    * button "Adding" should not exist
     Then I should see "rule2" entry in the data table
     Then I should see "rule3" entry in the data table
     Then I should see "rule4" entry in the data table
@@ -74,6 +78,7 @@ Feature: Sudo rules manipulation
     * I should see "rule1" entry in the data table
     * in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Sudo rules removed"
+    * button "Deleting" should not exist
     Then I should not see "rule1" entry in the data table
 
   Scenario: Delete many rules
@@ -90,6 +95,7 @@ Feature: Sudo rules manipulation
     * I should see partial "rule4" entry in the data table
     * in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Sudo rules removed"
+    * button "Deleting" should not exist
     Then I should not see "rule2" entry in the data table
     Then I should not see "rule3" entry in the data table
     Then I should not see "rule4" entry in the data table

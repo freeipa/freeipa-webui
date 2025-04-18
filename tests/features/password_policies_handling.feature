@@ -13,6 +13,7 @@ Feature: Password policies manipulation
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New user group added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "my_user_group" entry in the data table
 
   Scenario: Add another user group
@@ -23,6 +24,7 @@ Feature: Password policies manipulation
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New user group added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "my_user_group2" entry in the data table
 
   Scenario: Add a new policy
@@ -35,6 +37,7 @@ Feature: Password policies manipulation
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Password policy successfully added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "my_user_group" entry in the data table with ID "password-policies-table"
 
   Scenario: Add operation fails when priority is already taken by other group
@@ -47,6 +50,7 @@ Feature: Password policies manipulation
     When in the modal dialog I click on "Add" button
     * I should see "danger" alert with text "invalid 'priority': priority must be a unique value (12 already used by my_user_group)"
     * I close the alert
+    * button "Adding" should not exist
     Then in the modal dialog I click on "Cancel" button
 
   Scenario: Delete policies
@@ -58,6 +62,7 @@ Feature: Password policies manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Password policies removed"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "my_user_group" entry in the data table
 
   Scenario: Cleanup: Delete user groups
@@ -73,5 +78,6 @@ Feature: Password policies manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "User groups removed"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "my_user_group" entry in the data table
     And I should not see "my_user_group2" entry in the data table

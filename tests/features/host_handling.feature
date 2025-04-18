@@ -11,6 +11,7 @@ Feature: Host manipulation
     * I click on "Force" checkbox in modal
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host added"
+    * button "Adding" should not exist
     Then I should see partial "myfirstserver" entry in the data table
 
   Scenario: Add a new host with all fields set
@@ -21,6 +22,7 @@ Feature: Host manipulation
     * I click on "Force" checkbox in modal
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host added"
+    * button "Adding" should not exist
     Then I should see partial "addfullhost" entry in the data table
     * entry "addfullhost" should have attribute "Description" set to "my description"
 
@@ -33,6 +35,7 @@ Feature: Host manipulation
     * I click on "Suppress processing" checkbox in modal
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host added"
+    * button "Adding" should not exist
     Then I should see partial "addchkboxhost" entry in the data table
 
   Scenario: Add a new host with 'Force' unchecked is expected to fail
@@ -49,10 +52,12 @@ Feature: Host manipulation
     * I click on "Force" checkbox in modal
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New host added"
+    * button "Adding" should not exist
     * I type in the field "Host name" text "myserver3"
     * I click on "Force" checkbox in modal
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host added"
+    * button "Adding" should not exist
     Then I should see partial "myfirstserver" entry in the data table
     Then I should see partial "myserver2" entry in the data table
     Then I should see partial "myserver3" entry in the data table
@@ -82,6 +87,7 @@ Feature: Host manipulation
     * I should see partial "addfullhost" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Hosts removed"
+    Then button "Deleting" should not exist
     Then I should not see "myfirstserver" entry in the data table
     Then I should not see "addfullhost" entry in the data table
 
@@ -99,6 +105,7 @@ Feature: Host manipulation
     * I should see partial "addchkboxhost" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Hosts removed"
+    Then button "Deleting" should not exist
     Then I should not see "myserver2" entry in the data table
     Then I should not see "myserver3" entry in the data table
     Then I should not see "addchkboxhost" entry in the data table

@@ -12,6 +12,7 @@ Feature: Sudo cmd groupsettings manipulation
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New sudo command group added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "lsgroup" entry in the data table
 
   Scenario: Set Description

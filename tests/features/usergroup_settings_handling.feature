@@ -12,11 +12,13 @@ Feature: User group settings manipulation
     * I should see a new empty text input field with ID "modal-form-group-gid"
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New user group added"
+    * button "Adding" should not exist
     Then I type in the field "Group name" text "group2"
     Then I select "Non-posix" in the "Group type" form selector field
     * I should see a new empty text input field with ID "modal-form-group-gid"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New user group added"
+    * button "Adding" should not exist
     Then I should see "group1" entry in the data table
     Then I should see "group2" entry in the data table
 
@@ -61,3 +63,4 @@ Feature: User group settings manipulation
     * I should see "group2" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "User groups removed"
+    * button "Deleting" should not exist

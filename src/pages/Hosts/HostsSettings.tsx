@@ -130,7 +130,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
 
     executeUnprovisionHost(host).then((result) => {
       if ("data" in result) {
-        const disableError = result.data.error as
+        const disableError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
@@ -175,7 +175,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
 
     executeAutoMemberRebuild([props.host]).then((result) => {
       if ("data" in result) {
-        const automemberError = result.data.error as
+        const automemberError = result.data?.error as
           | FetchBaseQueryError
           | SerializedError;
 
@@ -276,10 +276,10 @@ const HostsSettings = (props: PropsToHostsSettings) => {
 
     saveHost(modifiedValues).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Show toast notification: success
           alerts.addAlert("save-success", "Host modified", "success");
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
           alerts.addAlert("save-error", errorMessage.message, "danger");

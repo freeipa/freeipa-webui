@@ -6,6 +6,7 @@ import { verifyDownloadTasks } from "cy-verify-downloads";
 import { polyfillNode } from "esbuild-plugin-polyfill-node";
 
 export default defineConfig({
+  video: true,
   e2e: {
     specPattern: "**/*.feature",
     baseUrl: "https://server.ipa.demo/",

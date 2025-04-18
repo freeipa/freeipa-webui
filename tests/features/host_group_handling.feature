@@ -10,6 +10,7 @@ Feature: Host group manipulation
     * I type in the field "Group name" text "a_host_group"
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host group added"
+    Then button "Adding" should not exist
     Then I should see "a_host_group" entry in the data table
 
   Scenario: Add a new host group with description
@@ -18,6 +19,7 @@ Feature: Host group manipulation
     * I type in the field "Description" text "my description"
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host group added"
+    Then button "Adding" should not exist
     Then I should see "b_host_group" entry in the data table
     * entry "b_host_group" should have attribute "Description" set to "my description"
 
@@ -26,9 +28,11 @@ Feature: Host group manipulation
     * I type in the field "Group name" text "c_host_group"
     * in the modal dialog I click on "Add and add another" button
     * I should see "success" alert with text "New host group added"
+    * in the modal dialog button "Adding" should not exist
     Then I type in the field "Group name" text "d_host_group"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host group added"
+    Then button "Adding" should not exist
     Then I should see "c_host_group" entry in the data table
     Then I should see "d_host_group" entry in the data table
 
@@ -40,6 +44,7 @@ Feature: Host group manipulation
     * I should see "a_host_group" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Host groups removed"
+    Then button "Deleting" should not exist
     Then I should not see "a_host_group" entry in the data table
 
   Scenario: Delete many groups
@@ -56,6 +61,7 @@ Feature: Host group manipulation
     * I should see "d_host_group" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Host groups removed"
+    Then button "Deleting" should not exist
     Then I should not see "b_host_group" entry in the data table
     Then I should not see "c_host_group" entry in the data table
     Then I should not see "d_host_group" entry in the data table

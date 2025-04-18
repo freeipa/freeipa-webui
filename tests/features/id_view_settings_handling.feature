@@ -9,12 +9,14 @@ Feature: ID View manipulation
     * I type in the field "ID view name" text "a_new_view"
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New ID view added"
+    Then button "Adding" should not exist
     Then I should see "a_new_view" entry in the data table
 
   Scenario: Set Description
     When I click on "a_new_view" entry in the data table
     * I type in the textarea "description" text "test"
-    Then I click on "Save" button
+    Then button "Save" should be enabled
+    When I click on "Save" button
     * I should see "success" alert with text "ID view modified"
     * I close the alert
     Then Then I should see "test" in the textarea "description"
@@ -23,7 +25,8 @@ Feature: ID View manipulation
     Then I click in the field "Domain resolution order"
     * I clear the field "ipadomainresolutionorder"
     * I type in the field with ID "ipadomainresolutionorder" the text "dom-server.ipa.demo"
-    Then I click on "Save" button
+    Then button "Save" should be enabled
+    When I click on "Save" button
     * I should see "success" alert with text "ID view modified"
     * I close the alert
 
@@ -31,7 +34,9 @@ Feature: ID View manipulation
     When I click on the breadcrump link "ID views"
     Then I should see "a_new_view" entry in the data table
     * I select entry "a_new_view" in the data table
+    Then button "Delete" should be enabled
     When I click on "Delete" button
     * I should see "a_new_view" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "ID views removed"
+    Then button "Deleting" should not exist

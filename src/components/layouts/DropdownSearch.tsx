@@ -61,7 +61,7 @@ const DropdownSearch = (props: DropdownProps) => {
       entryType: props.searchType,
     } as GenericPayload).then((result) => {
       if (result && "data" in result) {
-        setOptions(result.data.list);
+        setOptions(result.data?.list ?? []);
       } else {
         setOptions([]);
       }

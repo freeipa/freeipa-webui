@@ -12,6 +12,7 @@ Feature: HBAC services manipulation
     * I type in the field "Description" text "my description"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New HBAC service added"
+    * button "Adding" should not exist
     Then I should see "a_service1" entry in the data table
     * entry "a_service1" should have attribute "Description" set to "my description"
 
@@ -19,10 +20,12 @@ Feature: HBAC services manipulation
     When I click on "Add" button
     * I type in the field "Service name" text "a_service2"
     * in the modal dialog I click on "Add and add another" button
+    * button "Adding" should not exist
     * I should see "success" alert with text "New HBAC service added"
     * I type in the field "Service name" text "a_service3"
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New HBAC service added"
+    * button "Adding" should not exist
     Then I should see "a_service2" entry in the data table
     Then I should see "a_service3" entry in the data table
 
@@ -44,6 +47,7 @@ Feature: HBAC services manipulation
     * I should see "a_service1" entry in the data table
     * in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "HBAC services removed"
+    Then button "Deleting" should not exist
     Then I should not see "a_service1" entry in the data table
 
   Scenario: Delete many services
@@ -57,6 +61,7 @@ Feature: HBAC services manipulation
     * I should see partial "a_service3" entry in the data table
     * in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "HBAC services removed"
+    Then button "Deleting" should not exist
     Then I should not see "a_service2" entry in the data table
     Then I should not see "a_service3" entry in the data table
 

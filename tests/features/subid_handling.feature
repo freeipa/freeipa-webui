@@ -14,6 +14,7 @@ Feature: Subordinate IDs manipulation
     And in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "New user added"
     When I close the alert
+    Then button "Adding" should not exist
     Then I should see "testuser" entry in the data table
 
 
@@ -24,3 +25,4 @@ Feature: Subordinate IDs manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Subordinate ID successfully added"
     When I close the alert
+    Then button "Adding" should not exist

@@ -104,9 +104,8 @@ const MembersUsers = (props: PropsToMembersUsers) => {
     return toLoad;
   };
 
-  const [userNamesToLoad, setUserNamesToLoad] = React.useState<string[]>(
-    getUsersNameToLoad()
-  );
+  const [userNamesToLoad, setUserNamesToLoad] =
+    React.useState<string[]>(getUsersNameToLoad());
 
   // Load users
   const fullUsersQuery = useGetUsersInfoByUidQuery({
@@ -241,7 +240,7 @@ const MembersUsers = (props: PropsToMembersUsers) => {
     setSpinning(true);
     addMembers(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Set alert: success
           alerts.addAlert(
             "add-member-success",
@@ -252,7 +251,7 @@ const MembersUsers = (props: PropsToMembersUsers) => {
           props.onRefreshData();
           // Close modal
           setShowAddModal(false);
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
           alerts.addAlert("add-member-error", errorMessage.message, "danger");
@@ -273,7 +272,7 @@ const MembersUsers = (props: PropsToMembersUsers) => {
     setSpinning(true);
     removeMembers(payload).then((response) => {
       if ("data" in response) {
-        if (response.data.result) {
+        if (response.data?.result) {
           // Set alert: success
           alerts.addAlert(
             "remove-users-success",
@@ -292,7 +291,7 @@ const MembersUsers = (props: PropsToMembersUsers) => {
           setShowDeleteModal(false);
           // Back to page 1
           setPage(1);
-        } else if (response.data.error) {
+        } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
           alerts.addAlert("remove-users-error", errorMessage.message, "danger");
@@ -309,7 +308,6 @@ const MembersUsers = (props: PropsToMembersUsers) => {
         <MemberOfToolbar
           searchText={searchValue}
           onSearchTextChange={setSearchValue}
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
           onSearch={() => {}}
           refreshButtonEnabled={isRefreshButtonEnabled}
           onRefreshButtonClick={props.onRefreshData}
@@ -332,7 +330,6 @@ const MembersUsers = (props: PropsToMembersUsers) => {
         <MemberOfToolbar
           searchText={searchValue}
           onSearchTextChange={setSearchValue}
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
           onSearch={() => {}}
           refreshButtonEnabled={isRefreshButtonEnabled}
           onRefreshButtonClick={props.onRefreshData}
