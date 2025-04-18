@@ -222,22 +222,19 @@ When(
   }
 );
 
-When("I clear the selected field", () => {
-  cy.focused().clear().should("be.empty");
+Then("I clear the selected field", () => {
+  cy.focused().clear();
+  cy.focused().should("be.empty");
 });
 
 When("I clear the field {string}", (id) => {
-  cy.get("input[id='" + id + "']")
-    .focus()
-    .clear()
-    .should("be.empty");
+  cy.get("input[id='" + id + "']").clear();
+  cy.get("input[id='" + id + "']").should("be.empty");
 });
 
 When("I clear the textarea {string}", (id) => {
-  cy.get("textarea[id='" + id + "']")
-    .focus()
-    .clear()
-    .should("be.empty");
+  cy.get("textarea[id='" + id + "']").clear();
+  cy.get("textarea[id='" + id + "']").should("be.empty");
 });
 
 // Data tables
