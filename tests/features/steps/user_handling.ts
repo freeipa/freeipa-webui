@@ -462,7 +462,7 @@ When(
       .parent()
       .parent()
       .parent()
-      .should("have.attr", "aria-selected", true);
+      .should("have.attr", "aria-selected", "true");
     // Add the user to the chosen list
     cy.get("button[aria-label='Add selected'").click();
     // Check if 'userName' is in the chosen list
