@@ -755,6 +755,13 @@ Then("I click on the dual list item {string}", (value: string) => {
   cy.get(".pf-v5-c-dual-list-selector__item-text", { timeout: 2000 })
     .contains(value)
     .click();
+  cy.get(".pf-v5-c-dual-list-selector__item-text")
+    .contains(value)
+    .parent()
+    .parent()
+    .parent()
+    .parent()
+    .should("have.attr", "aria-selected", "true");
 });
 
 Then("I click on the dual list add selected button", () => {
@@ -765,6 +772,9 @@ Then("I click on the first dual list item", () => {
   cy.get("li[id=basicSelectorWithSearch-available-pane-list-option-0]")
     .eq(0)
     .click();
+  cy.get("li[id=basicSelectorWithSearch-available-pane-list-option-0]")
+    .eq(0)
+    .should("have.attr", "aria-selected", "true");
 });
 
 Then("Dual list should have item {string}", (value: string) => {
