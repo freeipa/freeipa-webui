@@ -453,6 +453,16 @@ When(
       .parent()
       .parent()
       .click();
+    // Is selected
+    cy.get("div[role='dialog'")
+      .find("div.pf-v5-c-dual-list-selector__menu")
+      .find("span")
+      .contains(userName)
+      .parent()
+      .parent()
+      .parent()
+      .parent()
+      .should("have.attr", "aria-selected", true);
     // Add the user to the chosen list
     cy.get("button[aria-label='Add selected'").click();
     // Check if 'userName' is in the chosen list
