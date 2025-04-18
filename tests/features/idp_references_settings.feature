@@ -20,6 +20,7 @@ Feature: Identity Providers references - Settings page
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Identity provider successfully added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "idpKeycloak" entry in the data table with ID "identity-provider-references-table"
 
   Scenario: Set 'Client identifier' field
@@ -126,4 +127,5 @@ Feature: Identity Providers references - Settings page
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Identity Providers removed"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "idpKeycloak" entry in the data table

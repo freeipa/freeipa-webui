@@ -12,6 +12,7 @@ Feature: Sudo cmd settings manipulation
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New sudo command added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "ls" entry in the data table
 
   Scenario: Set Description
@@ -34,4 +35,5 @@ Feature: Sudo cmd settings manipulation
     * in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Sudo commands removed"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "ls" entry in the data table

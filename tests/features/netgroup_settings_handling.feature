@@ -16,6 +16,7 @@ Feature: Netgroup settings manipulation
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New netgroup added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "netgroup1" entry in the data table
     Then I should see "netgroup2" entry in the data table
 
@@ -27,6 +28,7 @@ Feature: Netgroup settings manipulation
     * I click on "Force" checkbox in modal
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host added"
+    * button "Adding" should not exist
     Then I should see partial "my-server" entry in the data table
 
   Scenario: Set Description
@@ -59,6 +61,7 @@ Feature: Netgroup settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added user to netgroup"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "admin" entry in the data table
 
   Scenario: Remove user from User category
@@ -70,6 +73,7 @@ Feature: Netgroup settings manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Removed user from netgroup"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "admin" entry in the data table
 
   Scenario: Add group to User category
@@ -83,6 +87,7 @@ Feature: Netgroup settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added group to netgroup"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "admins" entry in the data table
 
   Scenario: Remove group from User category
@@ -94,6 +99,7 @@ Feature: Netgroup settings manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Removed group from netgroup"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "admins" entry in the data table
 
   Scenario: Add host to Host category
@@ -107,6 +113,7 @@ Feature: Netgroup settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added host to netgroup"
     * I close the alert
+    * button "Adding" should not exist
     # When I scroll up
     Then I should see "my-server.dom-server.ipa.demo" entry in the data table
 
@@ -119,6 +126,7 @@ Feature: Netgroup settings manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Removed host from netgroup"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "my-server.dom-server.ipa.demo" entry in the data table
 
   Scenario: Add hostgroup to Host category
@@ -132,6 +140,7 @@ Feature: Netgroup settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added hostgroup to netgroup"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "ipaservers" entry in the data table
 
   Scenario: Remove hostgroup from Host category
@@ -143,6 +152,7 @@ Feature: Netgroup settings manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Removed hostgroup from netgroup"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "ipaservers" entry in the data table
 
   Scenario: Add external host to Host category
@@ -153,6 +163,7 @@ Feature: Netgroup settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added externalHost to netgroup"
     * I close the alert
+    * button "Adding" should not exist
     When I scroll down
     Then I should see "test.test.test" entry in the data table
 
@@ -165,6 +176,7 @@ Feature: Netgroup settings manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Removed externalHost from netgroup"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "test.test.test" entry in the data table
 
   Scenario: Set User category to allow all users
@@ -181,6 +193,7 @@ Feature: Netgroup settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added user to netgroup"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "admin" entry in the data table
     # Add group to User category (again)
     When I click on "Groups" page tab
@@ -193,6 +206,7 @@ Feature: Netgroup settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added group to netgroup"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "admins" entry in the data table
     # Set user category to allow all
     When I scroll up
@@ -220,6 +234,7 @@ Feature: Netgroup settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added host to netgroup"
     * I close the alert
+    * button "Adding" should not exist
     # When I scroll up
     Then I should see "my-server.dom-server.ipa.demo" entry in the data table
     # Add hostgroup to Host category (again)
@@ -233,6 +248,7 @@ Feature: Netgroup settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added hostgroup to netgroup"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "ipaservers" entry in the data table
     # Set Host category to allow all
     When I scroll down
@@ -260,6 +276,7 @@ Feature: Netgroup settings manipulation
     * I should see "netgroup2" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Netgroups removed"
+    * button "Deleting" should not exist
 
   # Cleanup
   Scenario: Cleanup: Remove host
@@ -270,5 +287,6 @@ Feature: Netgroup settings manipulation
     * I should see partial "my-server" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Hosts removed"
+    * button "Deleting" should not exist
     Then I should not see "my-server" entry in the data table
 

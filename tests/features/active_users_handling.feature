@@ -14,6 +14,7 @@ Feature: User manipulation
     * I type in the field "New password" text "<password>"
     * I type in the field "Verify password" text "<password>"
     * in the modal dialog I click on "Add" button
+    * button "Adding" should not exist
     Then I should see "<userLogin>" entry in the data table
     Examples:
       | userLogin | firstName | lastName | password             |
@@ -49,6 +50,7 @@ Feature: User manipulation
 
     When in the modal dialog I check "Delete" radio selector
     And in the modal dialog I click on "Delete" button
+    Then button "Deleting" should not exist
     Then I should not see "testuser1" entry in the data table
 
   Scenario: Preserve a user
@@ -59,6 +61,7 @@ Feature: User manipulation
 
     When in the modal dialog I check "Preserve" radio selector
     And in the modal dialog I click on "Preserve" button
+    Then button "Deleting" should not exist
     Then I should not see "testuser3" entry in the data table
 
   Scenario: Restore preserved user
@@ -69,6 +72,7 @@ Feature: User manipulation
     Then I see "Restore preserved user" modal
 
     When in the modal dialog I click on "Restore" button
+    Then button "Restoring" should not exist
     Then I should not see "testuser3" entry in the data table
 
     When I am on "active-users" page

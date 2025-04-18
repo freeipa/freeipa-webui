@@ -13,6 +13,7 @@ Feature: Automember > Host group rules
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host group added"
     When I close the alert
+    Then button "Adding" should not exist
     Then I should see "my_automember_hostgroup" entry in the data table
 
   # Host group rules operations
@@ -24,6 +25,7 @@ Feature: Automember > Host group rules
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Entry successfully added"
     When I close the alert
+    Then button "Adding" should not exist
     Then I should see "my_automember_hostgroup" entry in the data table
 
   Scenario: Add another automember host group rule
@@ -34,6 +36,7 @@ Feature: Automember > Host group rules
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Entry successfully added"
     When I close the alert
+    Then button "Adding" should not exist
     Then I should see "ipaservers" entry in the data table
 
   Scenario: Delete an automember host group rule
@@ -46,6 +49,7 @@ Feature: Automember > Host group rules
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "The selected rules have been removed successfully"
     When I close the alert
+    Then button "Deleting" should not exist
     Then I should not see "my_automember_hostgroup" entry in the data table
 
   Scenario: Delete another automember host group rule
@@ -58,6 +62,7 @@ Feature: Automember > Host group rules
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "The selected rules have been removed successfully"
     When I close the alert
+    Then button "Deleting" should not exist
     Then I should not see "ipaservers" entry in the data table
 
   Scenario: Set default host group rule
@@ -81,5 +86,6 @@ Feature: Automember > Host group rules
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Host groups removed"
     When I close the alert
+    Then button "Deleting" should not exist
     Then I should not see "my_automember_hostgroup" entry in the data table
 

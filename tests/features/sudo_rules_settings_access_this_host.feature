@@ -12,6 +12,7 @@ Feature: Sudo rules - Settings page > 'Access this host' section
         When in the modal dialog I click on "Add" button
         And I should see "success" alert with text "New sudo rule added"
         Then I close the alert
+        Then button "Deleting" should not exist
         And I should see "sudoRule2" entry in the data table
 
     # 'Access this host' subsection
@@ -24,6 +25,7 @@ Feature: Sudo rules - Settings page > 'Access this host' section
         * in the modal dialog I click on "Add" button
         * I should see "success" alert with text "New host added"
         Then I close the alert
+        Then button "Adding" should not exist
         Then I should see partial "my-temp-server" entry in the data table
 
     Scenario: Add a new host from the 'Sudo rules' page
@@ -37,6 +39,7 @@ Feature: Sudo rules - Settings page > 'Access this host' section
         And I click on the "Add" button located in the footer modal dialog
         And I should see "success" alert with text "Added new item(s) to 'sudoRule2'"
         Then I close the alert
+        Then button "Adding" should not exist
         And I should see partial "my-temp-server" entry in the data table
 
 
@@ -48,6 +51,7 @@ Feature: Sudo rules - Settings page > 'Access this host' section
         When in the modal dialog I click on "Delete" button
         And I should see "success" alert with text "Removed item(s) from"
         Then I close the alert
+        Then button "Deleting" should not exist
         And I should not see "my-temp-server" entry in the data table
 
 
@@ -59,6 +63,7 @@ Feature: Sudo rules - Settings page > 'Access this host' section
         When in the modal dialog I click on "Add" button
         * I should see "success" alert with text "New host group added"
         Then I close the alert
+        Then button "Adding" should not exist
         Then I should see "a_host_group2" entry in the data table
 
     Scenario: Add a new host group from the 'Sudo rules' page
@@ -73,6 +78,7 @@ Feature: Sudo rules - Settings page > 'Access this host' section
         And I click on the "Add" button located in the footer modal dialog
         And I should see "success" alert with text "Added new item(s) to 'sudoRule2'"
         Then I close the alert
+        Then button "Adding" should not exist
         And I should see "a_host_group2" entry in the data table
 
     Scenario: Remove host group from table
@@ -83,6 +89,7 @@ Feature: Sudo rules - Settings page > 'Access this host' section
         When in the modal dialog I click on "Delete" button
         And I should see "success" alert with text "Removed item(s) from"
         Then I close the alert
+        Then button "Deleting" should not exist
         And I should not see "a_host_group2" entry in the data table
 
     Scenario: Change host category - 'Specified Hosts and Groups' to 'Any host'
@@ -104,6 +111,7 @@ Feature: Sudo rules - Settings page > 'Access this host' section
         When in the modal dialog I click on "Delete" button
         * I should see "success" alert with text "Hosts removed"
         Then I close the alert
+        Then button "Deleting" should not exist
         Then I should not see "my-temp-server" entry in the data table
 
     # - Host group
@@ -117,6 +125,7 @@ Feature: Sudo rules - Settings page > 'Access this host' section
         When in the modal dialog I click on "Delete" button
         * I should see "success" alert with text "Host groups removed"
         Then I close the alert
+        Then button "Deleting" should not exist
         Then I should not see "a_host_group2" entry in the data table
 
     # - Sudo rule
@@ -130,4 +139,5 @@ Feature: Sudo rules - Settings page > 'Access this host' section
         * in the modal dialog I click on "Delete" button
         * I should see "success" alert with text "Sudo rules removed"
         Then I close the alert
+        Then button "Deleting" should not exist
         Then I should not see "sudoRule2" entry in the data table

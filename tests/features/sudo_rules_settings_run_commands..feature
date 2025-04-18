@@ -12,6 +12,7 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         When in the modal dialog I click on "Add" button
         And I should see "success" alert with text "New sudo rule added"
         Then I close the alert
+        Then button "Adding" should not exist
         And I should see "sudoRule2" entry in the data table
 
     # 'Run command' subsection
@@ -31,6 +32,7 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         * in the modal dialog I click on "Add" button
         * I should see "success" alert with text "New sudo command added"
         * I close the alert
+        * button "Adding" should not exist
         Then I should see "command1" entry in the data table
         * entry "command1" should have attribute "Description" set to "my description"
         Then I should see "command2" entry in the data table
@@ -47,6 +49,7 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         And I click on the "Add" button located in the footer modal dialog
         And I should see "success" alert with text "Added new item(s) to 'sudoRule2'"
         Then I close the alert
+        Then button "Adding" should not exist
         And I should see "command1" entry in the data table
 
     Scenario: Remove sudo allow command from table
@@ -57,6 +60,7 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         When in the modal dialog I click on "Delete" button
         And I should see "success" alert with text "Removed item(s) from"
         Then I close the alert
+        Then button "Deleting" should not exist
         And I should not see "command1" entry in the data table
 
     # -- Prep a new command group to add from the 'Sudo command groups' page
@@ -67,6 +71,7 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         * in the modal dialog I click on "Add" button
         * I should see "success" alert with text "New sudo command group added"
         * I close the alert
+        * button "Adding" should not exist
         Then I should see "my-cmd-group" entry in the data table
 
     Scenario: Add another sudo command group
@@ -76,6 +81,7 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         * in the modal dialog I click on "Add" button
         * I should see "success" alert with text "New sudo command group added"
         * I close the alert
+        * button "Adding" should not exist
         Then I should see "my-cmd-group-2" entry in the data table
 
     Scenario: Add a new sudo allow command group
@@ -90,6 +96,7 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         And I click on the "Add" button located in the footer modal dialog
         And I should see "success" alert with text "Added new item(s) to 'sudoRule2'"
         Then I close the alert
+        Then button "Adding" should not exist
         And I should see "my-cmd-group" entry in the data table
 
     Scenario: Remove sudo allow command group from table
@@ -100,6 +107,7 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         When in the modal dialog I click on "Delete" button
         And I should see "success" alert with text "Removed item(s) from"
         Then I close the alert
+        Then button "Deleting" should not exist
         And I should not see "my-cmd-group" entry in the data table
 
     # - Deny
@@ -114,6 +122,7 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         And I click on the "Add" button located in the footer modal dialog
         And I should see "success" alert with text "Added new item(s) to 'sudoRule2'"
         Then I close the alert
+        Then button "Adding" should not exist
         And I should see "command2" entry in the data table
 
     Scenario: Remove sudo deny command from table
@@ -124,6 +133,7 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         When in the modal dialog I click on "Delete" button
         And I should see "success" alert with text "Removed item(s) from"
         Then I close the alert
+        Then button "Deleting" should not exist
         And I should not see "command2" entry in the data table
 
     Scenario: Add a new sudo deny command group
@@ -137,6 +147,7 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         And I click on the "Add" button located in the footer modal dialog
         And I should see "success" alert with text "Added new item(s) to 'sudoRule2'"
         Then I close the alert
+        Then button "Adding" should not exist
         And I should see "my-cmd-group-2" entry in the data table
 
     Scenario: Remove sudo deny command group from table
@@ -147,6 +158,7 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         When in the modal dialog I click on "Delete" button
         And I should see "success" alert with text "Removed item(s) from"
         Then I close the alert
+        Then button "Deleting" should not exist
         And I should not see "my-cmd-group-2" entry in the data table
 
     Scenario: Change command category - 'Specified Commands and Groups' to 'Any command'
@@ -168,6 +180,7 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         * in the modal dialog I click on "Delete" button
         * I should see "success" alert with text "Sudo commands removed"
         * I close the alert
+        * button "Deleting" should not exist
         Then I should not see "command1" entry in the data table
 
     Scenario: Delete another command
@@ -180,6 +193,7 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         * in the modal dialog I click on "Delete" button
         * I should see "success" alert with text "Sudo commands removed"
         * I close the alert
+        * button "Deleting" should not exist
         Then I should not see "command2" entry in the data table
 
     # - Command group
@@ -195,6 +209,7 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         * in the modal dialog I click on "Delete" button
         * I should see "success" alert with text "Sudo command groups removed"
         * I close the alert
+        * button "Deleting" should not exist
         Then I should not see "my-cmd-group" entry in the data table
         Then I should not see "my-cmd-group-2" entry in the data table
 
@@ -209,4 +224,5 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         * in the modal dialog I click on "Delete" button
         * I should see "success" alert with text "Sudo rules removed"
         Then I close the alert
+        Then button "Deleting" should not exist
         Then I should not see "sudoRule2" entry in the data table

@@ -13,6 +13,7 @@ Feature: Hbac rule settings manipulation
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New HBAC rule added"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see "rule1" entry in the data table
     * entry "rule1" should have attribute "Description" set to "my description"
 
@@ -29,6 +30,7 @@ Feature: Hbac rule settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added user to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see "admin" entry in the data table
 
   Scenario: Remove user from Who category
@@ -40,6 +42,7 @@ Feature: Hbac rule settings manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Removed user from HBAC rule rule1"
     * I close the alert
+    Then button "Deleting" should not exist
     Then I should not see "admin" entry in the data table
 
   Scenario: Add group to Who category
@@ -53,6 +56,7 @@ Feature: Hbac rule settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added group to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see "admins" entry in the data table
 
   Scenario: Remove group from Who category
@@ -64,6 +68,7 @@ Feature: Hbac rule settings manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Removed group from HBAC rule rule1"
     * I close the alert
+    Then button "Deleting" should not exist
     Then I should not see "admins" entry in the data table
 
   Scenario: Set User category to allow all users
@@ -80,6 +85,7 @@ Feature: Hbac rule settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added user to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     Then I click on "Groups" page tab
     Then I click on "Add groups" button
     * I see "Add groups to HBAC rule" modal
@@ -90,6 +96,7 @@ Feature: Hbac rule settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added group to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     # 2) Set the category to 'all'
     When I scroll up
     * I click on "Allow anyone" inline checkbox
@@ -114,6 +121,7 @@ Feature: Hbac rule settings manipulation
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host added"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see partial "my-new-host" entry in the data table
 
   Scenario: Add host to Host category and dual list search short cut
@@ -129,6 +137,7 @@ Feature: Hbac rule settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added host to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see partial "my-new-host" entry in the data table
 
   Scenario: Remove host from Host category
@@ -140,6 +149,7 @@ Feature: Hbac rule settings manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Removed host from HBAC rule rule1"
     * I close the alert
+    Then button "Deleting" should not exist
     Then I should not see "my-new-host" entry in the data table
 
   Scenario: Add hostgroup to Host category
@@ -153,6 +163,7 @@ Feature: Hbac rule settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added Host group to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see "ipaservers" entry in the data table
 
   Scenario: Remove hostgroup from Host category
@@ -164,6 +175,7 @@ Feature: Hbac rule settings manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Removed Host group from HBAC rule rule1"
     * I close the alert
+    Then button "Deleting" should not exist
     Then I should not see "ipaservers" entry in the data table
 
   Scenario: Set Host category to allow all hosts
@@ -179,6 +191,7 @@ Feature: Hbac rule settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added host to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     Then I click on "Host groups" page tab
     Then I click on "Add host groups" button
     * I see "Add Host groups to HBAC rule" modal
@@ -189,6 +202,7 @@ Feature: Hbac rule settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added Host group to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     # 2) Set the category to 'all'
     When I scroll down
     * I click on "Any host" inline checkbox
@@ -216,6 +230,7 @@ Feature: Hbac rule settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added Service to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     Then I scroll down
     * I should see "crond" entry in the data table
 
@@ -229,6 +244,7 @@ Feature: Hbac rule settings manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Removed Service from HBAC rule rule1"
     * I close the alert
+    Then button "Deleting" should not exist
     When I scroll down
     Then I click on "Services" page tab
     Then I should not see "crond" entry in the data table
@@ -245,6 +261,7 @@ Feature: Hbac rule settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added Service group to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     Then I scroll down
     * I should see "ftp" entry in the data table
 
@@ -258,6 +275,7 @@ Feature: Hbac rule settings manipulation
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Removed Service group from HBAC rule rule1"
     * I close the alert
+    Then button "Deleting" should not exist
     When I scroll down
     Then I click on "Service groups" page tab
     Then I should not see "ftp" entry in the data table
@@ -276,6 +294,7 @@ Feature: Hbac rule settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added Service to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     Then I click on "Service groups" page tab
     Then I click on "Add service groups" button
     * I see "Add Service groups to HBAC rule" modal
@@ -286,6 +305,7 @@ Feature: Hbac rule settings manipulation
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Added Service group to HBAC rule"
     * I close the alert
+    Then button "Adding" should not exist
     # 2) Set the category to 'all'
     When I scroll down
     * I click on "Any service" inline checkbox
@@ -310,6 +330,7 @@ Feature: Hbac rule settings manipulation
     * I should see partial "my-new-host" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Hosts removed"
+    Then button "Deleting" should not exist
     Then I should not see partial "my-new-host" entry in the data table
 
   Scenario: Delete the HBAC rule for cleanup
@@ -320,3 +341,4 @@ Feature: Hbac rule settings manipulation
     * I should see "rule1" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "HBAC rules removed"
+    Then button "Deleting" should not exist

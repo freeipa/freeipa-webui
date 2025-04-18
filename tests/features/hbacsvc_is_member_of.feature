@@ -16,6 +16,7 @@ Feature: HBAC service is a member of
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned 'crond' to HBAC service groups"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see the element "ftp" in the table
 
   Scenario: Search for a HBAC service group
@@ -39,5 +40,6 @@ Feature: HBAC service is a member of
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed 'crond' from HBAC service groups"
     * I close the alert
+    Then button "Deleting" should not exist
     And I should not see the element "ftp" in the table
 

@@ -64,6 +64,7 @@ Feature: User details
     When I put SSH key named "valid sample 1" into the text area
     And in the modal dialog I click on "Set" button
     Then I should see "success" alert with text "Added SSH public key to 'armadillo'"
+    Then button "Setting" should not exist
     And I should see 1 SSH keys in the SSH public keys section
     When I click on Show key button for key number 1
     Then the SSH key should match "valid sample 1"
@@ -74,6 +75,7 @@ Feature: User details
     When I put SSH key named "valid sample 1" into the text area
     And in the modal dialog I click on "Set" button
     Then I should see "danger" alert with text "no modifications to be performed"
+    Then button "Setting" should not exist
     * in the modal dialog I click on "Cancel" button
     And I should see 1 SSH keys in the SSH public keys section
     # Invalid key
@@ -82,6 +84,7 @@ Feature: User details
     When I put SSH key named "invalid sample" into the text area
     And in the modal dialog I click on "Set" button
     Then I should see "danger" alert with text "invalid 'sshpubkey': invalid SSH public key"
+    Then button "Setting" should not exist
     * in the modal dialog I click on "Cancel" button
     And I should see 1 SSH keys in the SSH public keys section
     # Another valid key
@@ -90,6 +93,7 @@ Feature: User details
     When I put SSH key named "valid sample 2" into the text area
     And in the modal dialog I click on "Set" button
     Then I should see "success" alert with text "Added SSH public key to 'armadillo'"
+    Then button "Setting" should not exist
     And I should see 2 SSH keys in the SSH public keys section
     When I click on Show key button for key number 2
     Then the SSH key should match "valid sample 2"
@@ -105,6 +109,7 @@ Feature: User details
     Then I see "Remove SSH Public Key" modal
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed SSH public key from 'armadillo'"
+    Then button "Deleting" should not exist
     And I should see 1 SSH keys in the SSH public keys section
     # the order has changed, hence key number 1
     When I click on Delete button for key number 1
@@ -124,6 +129,7 @@ Feature: User details
     When I click on Add key in the Certificates section
     And in the modal dialog I click on "Add" button
     Then I should see "danger" alert with text "'usercertificate' is required"
+    And button "Adding" should not exist
     * in the modal dialog I click on "Cancel" button
     Then I should see 1 certificates in the Certificates section
     # certificate too short
@@ -131,6 +137,7 @@ Feature: User details
     And I put Certificate named "invalid sample - short" into the text area
     And in the modal dialog I click on "Add" button
     Then I should see "danger" alert with text "Certificate format error: error parsing asn1 value: ParseError { kind: ShortData }"
+    And button "Adding" should not exist
     * in the modal dialog I click on "Cancel" button
     Then I should see 1 certificates in the Certificates section
     # certificate length not divisible by 4
@@ -138,6 +145,7 @@ Feature: User details
     And I put Certificate named "invalid sample - padding" into the text area
     And in the modal dialog I click on "Add" button
     Then I should see "danger" alert with text "Base64 decoding failed: Incorrect padding"
+    And button "Adding" should not exist
     * in the modal dialog I click on "Cancel" button
     Then I should see 1 certificates in the Certificates section
 
@@ -154,6 +162,7 @@ Feature: User details
     And I put Certificate named "valid sample 2" into the text area
     And in the modal dialog I click on "Add" button
     Then I should see "danger" alert with text "'usercertificate;binary' already contains one or more values"
+    And button "Adding" should not exist
     * in the modal dialog I click on "Cancel" button
     Then I should see 2 certificates in the Certificates section
 
@@ -214,6 +223,7 @@ Feature: User details
     And I see a modal with text "<serial>"
     When in the modal dialog I click on "Delete" button
     Then I should see <remains> certificates in the Certificates section
+    And button "Deleting" should not exist
     Examples:
       | remains | name                     | serial                                          |
       | 1       | krunoslav.hrnjak@hops.hr | 264374074076456325397645183544606453821         |
@@ -239,6 +249,7 @@ Feature: User details
     When in the modal dialog I click on "Add" button under the Certificate mapping data section
     When I type "Certificate test 345" into the text input with index 2 in the Certificate mapping data modal
     When in the modal dialog I click on "Add" button
+    Then button "Adding" should not exist
     Then I should see certificate mappings with the "Certificate test 321" text in the Certificate mappings section
     Then I should see certificate mappings with the "Certificate test 234" text in the Certificate mappings section
     Then I should see certificate mappings with the "Certificate test 345" text in the Certificate mappings section
@@ -249,6 +260,7 @@ Feature: User details
     Then I see a modal with text "Certificate test 123"
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed certificate mappings from user 'armadillo'"
+    Then button "Deleting" should not exist
 
   Scenario: Add Certificate from the 'Certificate mapping data' radio button
     When I click on Add key in the Certificate mappings section
@@ -273,6 +285,7 @@ Feature: User details
     Then I see a modal with text "Certificate test"
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed certificate mappings from user 'armadillo'"
+    Then button "Deleting" should not exist
 
   Scenario: Select single user authentication type
     When I click on "Password" checkbox in "User authentication types" section

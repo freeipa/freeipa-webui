@@ -12,6 +12,7 @@ Feature: Sudo rules - Settings page
     When in the modal dialog I click on "Add" button
     And I should see "success" alert with text "New sudo rule added"
     Then I close the alert
+    Then button "Adding" should not exist
     And I should see "sudoRule1" entry in the data table
 
   # 'General' subsection
@@ -54,6 +55,7 @@ Feature: Sudo rules - Settings page
     When in the modal dialog I click on "Delete" button
     And I should see "success" alert with text "Sudo option(s) removed"
     Then I close the alert
+    Then button "Deleting" should not exist
     And I should not see "sudooption1" entry in the data table
 
   # - Sudo rule
@@ -67,6 +69,7 @@ Feature: Sudo rules - Settings page
     * in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Sudo rules removed"
     Then I close the alert
+    Then button "Deleting" should not exist
     Then I should not see "sudoRule1" entry in the data table
 
 

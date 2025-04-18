@@ -13,6 +13,7 @@ Feature: Sudo command groups manipulation
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New sudo command group added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "group1" entry in the data table
     * entry "group1" should have attribute "Description" set to "my description"
 
@@ -50,6 +51,7 @@ Feature: Sudo command groups manipulation
     * in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Sudo command groups removed"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "group1" entry in the data table
 
   Scenario: Delete many command groups
@@ -64,6 +66,7 @@ Feature: Sudo command groups manipulation
     * in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Sudo command groups removed"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "group2" entry in the data table
     Then I should not see "group3" entry in the data table
 

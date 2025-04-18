@@ -12,6 +12,7 @@ Feature: Password policies - Settings page
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New user group added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "my_user_group" entry in the data table
 
   Scenario: Prep: Add the group to password policies
@@ -24,6 +25,7 @@ Feature: Password policies - Settings page
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Password policy successfully added"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see "my_user_group" entry in the data table with ID "password-policies-table"
 
 
@@ -135,6 +137,7 @@ Feature: Password policies - Settings page
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "User groups removed"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "my_user_group" entry in the data table
 
 

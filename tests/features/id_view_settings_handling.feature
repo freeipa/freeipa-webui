@@ -9,6 +9,7 @@ Feature: ID View manipulation
     * I type in the field "ID view name" text "a_new_view"
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New ID view added"
+    Then button "Adding" should not exist
     Then I should see "a_new_view" entry in the data table
 
   Scenario: Set Description
@@ -38,3 +39,4 @@ Feature: ID View manipulation
     * I should see "a_new_view" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "ID views removed"
+    Then button "Deleting" should not exist

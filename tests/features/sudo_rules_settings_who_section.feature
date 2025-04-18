@@ -12,6 +12,7 @@ Feature: Sudo rules - Settings page > 'Who' section
         When in the modal dialog I click on "Add" button
         And I should see "success" alert with text "New sudo rule added"
         Then I close the alert
+        Then button "Adding" should not exist
         And I should see "sudoRule2" entry in the data table
 
     # 'Who' subsection
@@ -27,6 +28,7 @@ Feature: Sudo rules - Settings page > 'Who' section
         And I click on the "Add" button located in the footer modal dialog
         And I should see "success" alert with text "Added new item(s) to 'sudoRule2'"
         Then I close the alert
+        Then button "Adding" should not exist
         And I should see "admin" entry in the data table
 
     Scenario: Remove user from table
@@ -37,6 +39,7 @@ Feature: Sudo rules - Settings page > 'Who' section
         When in the modal dialog I click on "Delete" button
         And I should see "success" alert with text "Removed item(s) from"
         Then I close the alert
+        Then button "Deleting" should not exist
         And I should not see "admin" entry in the data table
 
     # - Host groups tab
@@ -51,6 +54,7 @@ Feature: Sudo rules - Settings page > 'Who' section
         And I click on the "Add" button located in the footer modal dialog
         And I should see "success" alert with text "Added new item(s) to 'sudoRule2'"
         Then I close the alert
+        Then button "Adding" should not exist
         And I should see "admins" entry in the data table
 
     Scenario: Remove user group from table
@@ -61,6 +65,7 @@ Feature: Sudo rules - Settings page > 'Who' section
         When in the modal dialog I click on "Delete" button
         And I should see "success" alert with text "Removed item(s) from"
         Then I close the alert
+        Then button "Deleting" should not exist
         And I should not see "admins" entry in the data table
 
     Scenario: Change user category - 'Specify Users and Groups' to 'Anyone'
@@ -81,4 +86,5 @@ Feature: Sudo rules - Settings page > 'Who' section
         * in the modal dialog I click on "Delete" button
         * I should see "success" alert with text "Sudo rules removed"
         Then I close the alert
+        Then button "Deleting" should not exist
         Then I should not see "sudoRule2" entry in the data table

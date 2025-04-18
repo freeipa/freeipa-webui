@@ -10,6 +10,7 @@ Feature: ID View manipulation
     * I type in the field "ID view name" text "a_new_view"
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New ID view added"
+    Then button "Adding" should not exist
     Then I should see "a_new_view" entry in the data table
 
   Scenario: Add a new ID view with a description
@@ -18,6 +19,7 @@ Feature: ID View manipulation
     * I type in the field "Description" text "my description"
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New ID view added"
+    Then button "Adding" should not exist
     Then I should see "b_new_view" entry in the data table
     * entry "b_new_view" should have attribute "Description" set to "my description"
 
@@ -31,6 +33,7 @@ Feature: ID View manipulation
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New ID view added"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see "c_new_view" entry in the data table
     Then I should see "d_new_view" entry in the data table
 
@@ -63,6 +66,7 @@ Feature: ID View manipulation
     * I should see "a_new_view" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "ID views removed"
+    Then button "Deleting" should not exist
     Then I should not see "a_new_view" entry in the data table
 
   Scenario: Delete many views
@@ -79,6 +83,7 @@ Feature: ID View manipulation
     * I should see "d_new_view" entry in the data table
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "ID views removed"
+    Then button "Deleting" should not exist
     Then I should not see "b_new_view" entry in the data table
     Then I should not see "c_new_view" entry in the data table
     Then I should not see "d_new_view" entry in the data table

@@ -13,6 +13,7 @@ Feature: Automember > User group rules
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New user group added"
     When I close the alert
+    Then button "Adding" should not exist
     Then I should see "my_automember_group" entry in the data table
 
   # User group rules operations
@@ -24,6 +25,7 @@ Feature: Automember > User group rules
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Entry successfully added"
     When I close the alert
+    Then button "Adding" should not exist
     Then I should see "my_automember_group" entry in the data table
 
   Scenario: Delete an automember user group rule
@@ -36,6 +38,7 @@ Feature: Automember > User group rules
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "The selected rules have been removed successfully"
     When I close the alert
+    Then button "Deleting" should not exist
     Then I should not see "my_automember_group" entry in the data table
 
   Scenario: Set default user group rule
@@ -59,5 +62,6 @@ Feature: Automember > User group rules
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "User groups removed"
     When I close the alert
+    Then button "Deleting" should not exist
     Then I should not see "my_automember_group" entry in the data table
 

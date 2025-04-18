@@ -13,6 +13,7 @@ Feature: Hostgroup members
     * I click on "Force" checkbox in modal
     * in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host added"
+    Then button "Adding" should not exist
     Then I should see partial "myhost" entry in the data table
 
   Scenario: Add a new test host group
@@ -20,6 +21,7 @@ Feature: Hostgroup members
     * I type in the field "Group name" text "testgroup"
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host group added"
+    Then button "Adding" should not exist
     Then I should see "testgroup" entry in the data table
 
   Scenario: Add another host group to work with
@@ -27,6 +29,7 @@ Feature: Hostgroup members
     * I type in the field "Group name" text "main-host-group"
     When in the modal dialog I click on "Add" button
     * I should see "success" alert with text "New host group added"
+    Then button "Adding" should not exist
     Then I should see "main-host-group" entry in the data table
 
   #
@@ -43,6 +46,7 @@ Feature: Hostgroup members
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned new hosts to host group 'main-host-group'"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see the element "myhost.dom-server.ipa.demo" in the table
     Then I should see the "host" tab count is "1"
 
@@ -75,6 +79,7 @@ Feature: Hostgroup members
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed hosts from host group 'main-host-group'"
     * I close the alert
+    Then button "Deleting" should not exist
     And I should not see "myhost.dom-server.ipa.demo" entry in the data table
     Then I should see the "host" tab count is "0"
 
@@ -91,6 +96,7 @@ Feature: Hostgroup members
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned new host groups to host group 'main-host-group'"
     * I close the alert
+    Then button "Adding" should not exist
     Then I should see the element "testgroup" in the table
     Then I should see the "hostgroup" tab count is "1"
 
@@ -122,6 +128,7 @@ Feature: Hostgroup members
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed host groups from host group 'main-host-group'"
     * I close the alert
+    Then button "Deleting" should not exist
     And I should not see "testgroup" entry in the data table
     Then I should see the "hostgroup" tab count is "0"
 
@@ -137,6 +144,7 @@ Feature: Hostgroup members
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Hosts removed"
     * I close the alert
+    Then button "Deleting" should not exist
     Then I should not see "myhost.dom-server.ipa.demo" entry in the data table
 
   Scenario: Cleanup - delete the test host group
@@ -148,6 +156,7 @@ Feature: Hostgroup members
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Host groups removed"
     * I close the alert
+    Then button "Deleting" should not exist
     Then I should not see "testgroup" entry in the data table
 
   Scenario: Cleanup - delete the 'main-host-group' host group
@@ -159,4 +168,5 @@ Feature: Hostgroup members
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Host groups removed"
     * I close the alert
+    Then button "Deleting" should not exist
     Then I should not see "main-host-group" entry in the data table

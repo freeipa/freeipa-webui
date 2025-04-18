@@ -14,6 +14,7 @@ Feature: Subordinate IDs - Settings page
     And in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "New user added"
     When I close the alert
+    Then button "Adding" should not exist
     Then I should see "testuser" entry in the data table
 
   Scenario: Add a new subordinate ID
@@ -22,6 +23,7 @@ Feature: Subordinate IDs - Settings page
     * I select "testuser" option in the "Owner" selector
     * in the modal dialog I click on "Add" button
     Then I should see "success" alert with text "Subordinate ID successfully added"
+    Then button "Adding" should not exist
     When I close the alert
 
   # This test assumes that there are only one single subordinate ID in the table
@@ -44,4 +46,5 @@ Feature: Subordinate IDs - Settings page
     When in the modal dialog I click on "Delete" button
     * I should see "success" alert with text "Users removed"
     * I close the alert
+    * button "Deleting" should not exist
     Then I should not see "testuser" entry in the data table

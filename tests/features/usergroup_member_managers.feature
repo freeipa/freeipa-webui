@@ -20,6 +20,7 @@ Feature: Usergroup member managers
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned new user member managers to 'admins'"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see the element "admin" in the table
     Then I should see the "user" tab count is "1"
 
@@ -44,6 +45,7 @@ Feature: Usergroup member managers
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed user member managers from 'admins'"
     * I close the alert
+    * button "Deleting" should not exist
     And I should not see the element "admin" in the table
     Then I should see the "user" tab count is "0"
 
@@ -60,6 +62,7 @@ Feature: Usergroup member managers
     And in the modal dialog I click on "Add" button
     * I should see "success" alert with text "Assigned new group member managers to 'admins'"
     * I close the alert
+    * button "Adding" should not exist
     Then I should see the element "editors" in the table
     Then I should see the "usergroup" tab count is "1"
 
@@ -85,5 +88,6 @@ Feature: Usergroup member managers
     When in the modal dialog I click on "Delete" button
     Then I should see "success" alert with text "Removed group member managers from 'admins'"
     * I close the alert
+    * button "Deleting" should not exist
     And I should not see the element "editors" in the table
     Then I should see the "usergroup" tab count is "0"
