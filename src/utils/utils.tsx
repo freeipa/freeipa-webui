@@ -435,3 +435,14 @@ export function containsAny(array1: unknown[], array2: unknown[]): boolean {
  * Returns hidden password string
  */
 export const HIDDEN_PASSWORD = "********";
+
+/**
+ * Remove certificate delimiters
+  - This is needed to process the certificate in the API call
+ */
+export const removeCertificateDelimiters = (certificate: string) => {
+  return certificate
+    .replace(/-----BEGIN CERTIFICATE-----/g, "")
+    .replace(/-----END CERTIFICATE-----/g, "")
+    .replace(/\n/g, "");
+};

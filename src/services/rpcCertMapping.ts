@@ -264,6 +264,26 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Match certificate
+     * @param {string} - Certificate to match
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    matchCertificate: build.mutation<BatchRPCResponse, string>({
+      query: (certificate) => {
+        const matchCertificateCommands: Command[] = [
+          {
+            method: "certmap_match",
+            params: [[certificate], {}],
+          },
+          {
+            method: "cert_find",
+            params: [[], { all: true, certificate: certificate }],
+          },
+        ];
+        return getBatchCommand(matchCertificateCommands, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -274,4 +294,5 @@ export const {
   useSearchCertMapRuleEntriesMutation,
   useCertMapConfigFindQuery,
   useCertMapConfigModMutation,
+  useMatchCertificateMutation,
 } = extendedApi;
