@@ -30,6 +30,8 @@ Feature: Sudo rules - Settings page > 'As whom' section
     Scenario: Add a new runAs user
         Given The "hsolo" element exists in the table with ID "active-users-table" located in page "active-users"
         Given I am on the "sudo-rules" > "sudoRule2" Settings page
+        Then I wait for 3 seconds
+        When I click on "RunAs Users" page tab
         When I click on ID "add-runas-user" button
         Then I see a modal with title text "Add RunAs user into sudo rule sudoRule2"
         And I click on the arrow icon to perform search in modal
