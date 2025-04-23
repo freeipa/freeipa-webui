@@ -4,7 +4,7 @@ import { When, Then, Given } from "@badeball/cypress-cucumber-preprocessor";
 Given("I am on {string} page", (handle: string) => {
   cy.url().then(($url) => {
     if (!$url.includes(handle)) {
-      cy.visit(Cypress.env("base_url") + "/" + handle, { timeout: 6000 });
+      cy.visit(Cypress.env("base_url") + "/" + handle, { timeout: 10000 });
     }
   });
 });

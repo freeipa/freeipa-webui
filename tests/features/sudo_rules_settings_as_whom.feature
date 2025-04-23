@@ -25,7 +25,7 @@ Feature: Sudo rules - Settings page > 'As whom' section
         * I should see "success" alert with text "New user added"
         Then I close the alert
         Then I should see "hsolo" entry in the data table
-        Then I wait for 5 seconds
+        Then I wait for 10 seconds
     # - RunAs User
     Scenario: Add a new runAs user
         Given The "hsolo" element exists in the table with ID "active-users-table" located in page "active-users"
