@@ -60,6 +60,7 @@ import IdpReferencesTabs from "src/pages/IdPReferences/IdpReferencesTabs";
 import CertificateMappingPage from "src/pages/CertificateMapping/CertificateMapping";
 import CertificateMappingGlobalConfig from "src/pages/CertificateMapping/CertificateMappingGlobalConfig";
 import CertificateMappingMatch from "src/pages/CertificateMapping/CertificateMappingMatch";
+import CertificateMappingTabs from "src/pages/CertificateMapping/CertificateMappingTabs";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -444,6 +445,12 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="cert-id-mapping-rules">
                 <Route path="" element={<CertificateMappingPage />} />
+                <Route path=":cn">
+                  <Route
+                    path=""
+                    element={<CertificateMappingTabs section="settings" />}
+                  />
+                </Route>
               </Route>
               <Route path="cert-id-mapping-global-config">
                 <Route path="" element={<CertificateMappingGlobalConfig />} />
