@@ -74,7 +74,11 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
   const onRemoveHandler = (idx: number) => {
     const listCopy = [...list];
     listCopy.splice(idx, 1);
-    setList(listCopy);
+    if (listCopy.length === 0) {
+      setInvalidList([]);
+    } else {
+      setList(listCopy);
+    }
     // Update the IPA object
     updateIpaObject(props.ipaObject, props.setIpaObject, listCopy, props.name);
   };

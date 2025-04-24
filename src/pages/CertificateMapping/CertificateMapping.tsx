@@ -455,7 +455,7 @@ const CertificateMappingPage = () => {
                   hasCheckboxes={true}
                   pathname="cert-id-mapping-rules"
                   showTableRows={showTableRows}
-                  showLink={false}
+                  showLink={true}
                   elementsData={{
                     isElementSelectable: isCertMapSelectable,
                     selectedElements,

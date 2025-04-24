@@ -8,18 +8,28 @@ import {
 } from "./rpc";
 // utils
 import { API_VERSION_BACKUP } from "../utils/utils";
+import { apiToCertificateMapping } from "src/utils/certMappingUtils";
 // Data types
 import {
+  CertificateMapping,
   CertificateMappingConfig,
   cnType,
 } from "src/utils/datatypes/globalDataTypes";
 
 /**
  * Password policies-related endpoints: useCertMapRuleFindQuery, useGetCertMapRuleEntriesQuery,
- *                             useSearchCertMapRuleEntriesMutation
+ *                             useSearchCertMapRuleEntriesMutation, useCertMapConfigFindQuery,
+ *                             useCertMapConfigModMutation, useMatchCertificateMutation,
+ *                             useCertMapShowQuery, useCertMapRuleModMutation,
  *
  * API commands:
  * - certmaprule_find: https://freeipa.readthedocs.io/en/ipa-4-11/api/certmaprule_find.html
+ * - certmaprule_show: https://freeipa.readthedocs.io/en/ipa-4-11/api/certmaprule_show.html
+ * - certmapconfig_show: https://freeipa.readthedocs.io/en/ipa-4-11/api/certmapconfig_show.html
+ * - certmapconfig_mod: https://freeipa.readthedocs.io/en/ipa-4-11/api/certmapconfig_mod.html
+ * - certmap_match: https://freeipa.readthedocs.io/en/ipa-4-11/api/certmap_match.html
+ * - certmaprule_mod: https://freeipa.readthedocs.io/en/ipa-4-11/api/certmaprule_mod.html
+ * - cert_find: https://freeipa.readthedocs.io/en/ipa-4-11/api/cert_find.html
  * - certmaprule_show: https://freeipa.readthedocs.io/en/ipa-4-11/api/certmaprule_show.html
  */
 
@@ -40,6 +50,15 @@ export interface CertMapFullDataPayload {
 
 export interface CertMapConfigPayload {
   ipacertmappromptusername: boolean;
+}
+
+export interface CertModPayload {
+  ruleId: string;
+  description?: string;
+  ipacertmapmaprule?: string;
+  ipacertmapmatchrule?: string;
+  associateddomain?: string[];
+  ipacertmappriority?: number;
 }
 
 const extendedApi = api.injectEndpoints({
@@ -284,6 +303,60 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(matchCertificateCommands, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Show certificate mapping rule
+     * @param {string} - Certificate mapping rule ID
+     * @returns {CertificateMapping} - Certificate mapping rule data
+     */
+    certMapShow: build.query<CertificateMapping, string>({
+      query: (certmapId) => {
+        return getCommand({
+          method: "certmaprule_show",
+          params: [
+            [certmapId],
+            { all: true, rights: true, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+      transformResponse: (response: FindRPCResponse) => {
+        const certMapping = apiToCertificateMapping(response.result.result);
+        return certMapping;
+      },
+    }),
+    /**
+     * Update a specific Certificate mapping rule.
+     * @param CertModPayload
+     * @returns FindRPCResponse
+     */
+    certMapRuleMod: build.mutation<FindRPCResponse, CertModPayload>({
+      query: (payload) => {
+        const params: Record<string, unknown> = {
+          all: true,
+          rights: true,
+          version: API_VERSION_BACKUP,
+        };
+
+        const optionalKeys: Array<keyof Omit<CertModPayload, "ruleId">> = [
+          "description",
+          "ipacertmapmaprule",
+          "ipacertmapmatchrule",
+          "associateddomain",
+          "ipacertmappriority",
+        ];
+
+        optionalKeys.forEach((key) => {
+          const value = payload[key];
+          if (value !== undefined) {
+            params[key] = value.toString();
+          }
+        });
+
+        return getCommand({
+          method: "certmaprule_mod",
+          params: [[payload.ruleId], params],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -295,4 +368,6 @@ export const {
   useCertMapConfigFindQuery,
   useCertMapConfigModMutation,
   useMatchCertificateMutation,
+  useCertMapShowQuery,
+  useCertMapRuleModMutation,
 } = extendedApi;
