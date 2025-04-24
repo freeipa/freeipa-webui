@@ -20,7 +20,8 @@ import {
  * Password policies-related endpoints: useCertMapRuleFindQuery, useGetCertMapRuleEntriesQuery,
  *                             useSearchCertMapRuleEntriesMutation, useCertMapConfigFindQuery,
  *                             useCertMapConfigModMutation, useMatchCertificateMutation,
- *                             useCertMapShowQuery, useCertMapRuleModMutation,
+ *                             useCertMapShowQuery, useCertMapRuleModMutation, useCertMapRuleDisableMutation,
+ *                             useCertMapRuleEnableMutation
  *
  * API commands:
  * - certmaprule_find: https://freeipa.readthedocs.io/en/ipa-4-11/api/certmaprule_find.html
@@ -31,6 +32,8 @@ import {
  * - certmaprule_mod: https://freeipa.readthedocs.io/en/ipa-4-11/api/certmaprule_mod.html
  * - cert_find: https://freeipa.readthedocs.io/en/ipa-4-11/api/cert_find.html
  * - certmaprule_show: https://freeipa.readthedocs.io/en/ipa-4-11/api/certmaprule_show.html
+ * - certmaprule_disable: https://freeipa.readthedocs.io/en/ipa-4-11/api/certmaprule_disable.html
+ * - certmaprule_enable: https://freeipa.readthedocs.io/en/ipa-4-11/api/certmaprule_enable.html
  */
 
 export interface CertMapFindPayload {
@@ -357,6 +360,45 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Disable certificate mapping rule
+     * @param {string} - Certificate mapping rule ID
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    certMapRuleDisable: build.mutation<FindRPCResponse, string>({
+      query: (certmapId) => {
+        return getCommand({
+          method: "certmaprule_disable",
+          params: [[certmapId], { version: API_VERSION_BACKUP }],
+        });
+      },
+    }),
+    /**
+     * Enable certificate mapping rule
+     * @param {string} - Certificate mapping rule ID
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    certMapRuleEnable: build.mutation<FindRPCResponse, string>({
+      query: (certmapId) => {
+        return getCommand({
+          method: "certmaprule_enable",
+          params: [[certmapId], { version: API_VERSION_BACKUP }],
+        });
+      },
+    }),
+    /**
+     * Delete certificate mapping rule
+     * @param {string} - Certificate mapping rule ID
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    certMapRuleDelete: build.mutation<FindRPCResponse, string>({
+      query: (certmapId) => {
+        return getCommand({
+          method: "certmaprule_del",
+          params: [[certmapId], { version: API_VERSION_BACKUP }],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -370,4 +412,7 @@ export const {
   useMatchCertificateMutation,
   useCertMapShowQuery,
   useCertMapRuleModMutation,
+  useCertMapRuleDisableMutation,
+  useCertMapRuleEnableMutation,
+  useCertMapRuleDeleteMutation,
 } = extendedApi;

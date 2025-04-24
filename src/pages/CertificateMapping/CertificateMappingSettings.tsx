@@ -37,6 +37,8 @@ import IpaTextArea from "src/components/Form/IpaTextArea";
 import PopoverWithIconLayout from "src/components/layouts/PopoverWithIconLayout";
 import IpaTextboxList from "src/components/Form/IpaTextboxList";
 import IpaNumberInput from "src/components/Form/IpaNumberInput";
+import EnableDisableRuleModal from "src/components/modals/CertificateMapping/EnableDisableRuleModal";
+import DeleteRuleModal from "src/components/modals/CertificateMapping/DeleteRuleModal";
 
 interface CertificateMappingSettingsProps {
   certMapping: Partial<CertificateMapping>;
@@ -60,12 +62,22 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
 
   // States
   const [isDataLoading, setIsDataLoading] = React.useState(false);
+  const [isRuleEnabled, setIsRuleEnabled] = React.useState(true);
 
   // Get 'ipaObject' and 'recordOnChange' to use in 'IpaTextInput'
   const { ipaObject, recordOnChange } = certMapRuleAsRecord(
     props.certMapping,
     props.onCertMappingChange
   );
+
+  // Determine the rule status
+  React.useEffect(() => {
+    if (props.certMapping) {
+      setIsRuleEnabled(
+        props.certMapping.ipaenabledflag?.toString() === "true" ? true : false
+      );
+    }
+  }, [props.certMapping]);
 
   // API calls
   const [saveCertMapping] = useCertMapRuleModMutation();
@@ -138,9 +150,23 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
   const [isKebabOpen, setIsKebabOpen] = React.useState(false);
 
   const kebabItems = [
-    <DropdownItem key="enable">Enable</DropdownItem>,
-    <DropdownItem key="disable">Disable</DropdownItem>,
-    <DropdownItem key="delete">Delete</DropdownItem>,
+    <DropdownItem
+      key="enable"
+      isDisabled={isRuleEnabled}
+      onClick={() => setIsEnableDisableOpen(true)}
+    >
+      Enable
+    </DropdownItem>,
+    <DropdownItem
+      key="disable"
+      isDisabled={!isRuleEnabled}
+      onClick={() => setIsEnableDisableOpen(true)}
+    >
+      Disable
+    </DropdownItem>,
+    <DropdownItem key="delete" onClick={() => setIsDeleteOpen(true)}>
+      Delete
+    </DropdownItem>,
   ];
 
   // Toolbar
@@ -201,6 +227,10 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
 
   const priorityMessage =
     "Priority of the rule (higher number means lower priority)";
+
+  // Modals
+  const [isEnableDisableOpen, setIsEnableDisableOpen] = React.useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = React.useState(false);
 
   // Render component
   return (
@@ -310,6 +340,22 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
           </SidebarContent>
         </Sidebar>
       </TabLayout>
+      <EnableDisableRuleModal
+        isOpen={isEnableDisableOpen}
+        onClose={() => setIsEnableDisableOpen(false)}
+        ruleId={props.certMapping.cn?.toString() as string}
+        operation={isRuleEnabled ? "disable" : "enable"}
+        setIsLoading={setIsDataLoading}
+        onRefresh={props.onRefresh}
+      />
+      <DeleteRuleModal
+        isOpen={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
+        ruleId={props.certMapping.cn?.toString() as string}
+        setIsLoading={setIsDataLoading}
+        onRefresh={props.onRefresh}
+        pathToMainPage={props.pathname}
+      />
     </>
   );
 };
