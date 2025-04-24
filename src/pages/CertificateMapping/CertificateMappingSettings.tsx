@@ -232,6 +232,10 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
   const [isEnableDisableOpen, setIsEnableDisableOpen] = React.useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false);
 
+  // Modals
+  const [isEnableDisableOpen, setIsEnableDisableOpen] = React.useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = React.useState(false);
+
   // Render component
   return (
     <>
