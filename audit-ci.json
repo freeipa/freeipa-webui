@@ -36,6 +36,8 @@
     "GHSA-c2qf-rxjj-qqgw|@babel/preset-env>semver",
     "GHSA-c2qf-rxjj-qqgw|babel-loader>make-dir>semver",
     "GHSA-c2qf-rxjj-qqgw|@babel/preset-env>babel-plugin-polyfill-corejs2>semver",
-    "GHSA-c2qf-rxjj-qqgw|@babel/preset-env>babel-plugin-polyfill-corejs2>@babel/helper-define-polyfill-provider>semver"
+    "GHSA-c2qf-rxjj-qqgw|@babel/preset-env>babel-plugin-polyfill-corejs2>@babel/helper-define-polyfill-provider>semver",
+    "GHSA-cpj6-fhp6-mr6j",
+    "GHSA-f46r-rw29-r322"
   ]
 }
