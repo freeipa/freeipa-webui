@@ -441,6 +441,24 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Delete multiple certificate mapping rules
+     * @param {string[]} - Certificate mapping rule IDs
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    multipleCertMapRuleDelete: build.mutation<BatchRPCResponse, string[]>({
+      query: (payload) => {
+        const commands: Command[] = [];
+        payload.forEach((certmapId) => {
+          commands.push({
+            method: "certmaprule_del",
+            params: [[certmapId], {}],
+          });
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -458,4 +476,5 @@ export const {
   useCertMapRuleEnableMutation,
   useCertMapRuleDeleteMutation,
   useCertMapRuleAddMutation,
+  useMultipleCertMapRuleDeleteMutation,
 } = extendedApi;
