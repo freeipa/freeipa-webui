@@ -64,6 +64,15 @@ export interface CertModPayload {
   ipacertmappriority?: number;
 }
 
+export interface CertMapRuleAddPayload {
+  ruleId: string;
+  description?: string;
+  ipacertmapmaprule?: string;
+  ipacertmapmatchrule?: string;
+  associateddomain?: string[];
+  ipacertmappriority?: number;
+}
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     /**
@@ -399,6 +408,39 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Add certificate mapping rule
+     * @param {CertMapRuleAddPayload} - Add payload
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    certMapRuleAdd: build.mutation<FindRPCResponse, CertMapRuleAddPayload>({
+      query: (payload) => {
+        const params: Record<string, unknown> = {
+          version: API_VERSION_BACKUP,
+        };
+
+        const optionalKeys: Array<keyof Omit<CertMapRuleAddPayload, "ruleId">> =
+          [
+            "description",
+            "ipacertmapmaprule",
+            "ipacertmapmatchrule",
+            "associateddomain",
+            "ipacertmappriority",
+          ];
+
+        optionalKeys.forEach((key) => {
+          const value = payload[key];
+          if (value !== undefined) {
+            params[key] = value.toString();
+          }
+        });
+
+        return getCommand({
+          method: "certmaprule_add",
+          params: [[payload.ruleId], params],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -415,4 +457,5 @@ export const {
   useCertMapRuleDisableMutation,
   useCertMapRuleEnableMutation,
   useCertMapRuleDeleteMutation,
+  useCertMapRuleAddMutation,
 } = extendedApi;

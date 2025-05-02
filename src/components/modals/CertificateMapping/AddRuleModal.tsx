@@ -1,0 +1,272 @@
+import React from "react";
+// PatternFly
+import { Button, TextArea, TextInput } from "@patternfly/react-core";
+// Components
+import ModalWithFormLayout, {
+  Field,
+} from "src/components/layouts/ModalWithFormLayout";
+import TextInputList from "src/components/Form/TextInputList";
+import CustomTooltip from "src/components/layouts/CustomTooltip";
+// RPC
+import {
+  CertMapRuleAddPayload,
+  useCertMapRuleAddMutation,
+} from "src/services/rpcCertMapping";
+// Hooks
+import useAlerts from "src/hooks/useAlerts";
+// Errors
+import { SerializedError } from "@reduxjs/toolkit";
+// Icons
+import { InfoCircleIcon } from "@patternfly/react-icons";
+import NumberSelector from "src/components/Form/NumberInput";
+
+interface PropsToAddRuleModal {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  onRefresh: () => void;
+}
+
+const AddRuleModal = (props: PropsToAddRuleModal) => {
+  // Alerts to show in the UI
+  const alerts = useAlerts();
+
+  // API calls
+  const [addRule] = useCertMapRuleAddMutation();
+
+  // States
+  const [isAddButtonSpinning, setIsAddButtonSpinning] = React.useState(false);
+  const [isAddAnotherButtonSpinning, setIsAddAnotherButtonSpinning] =
+    React.useState(false);
+  const [ruleName, setRuleName] = React.useState("");
+  const [mappingRule, setMappingRule] = React.useState("");
+  const [matchingRule, setMatchingRule] = React.useState("");
+  const [domainName, setDomainName] = React.useState<string[]>([]);
+  const [priority, setPriority] = React.useState<number | "">(0);
+  const [description, setDescription] = React.useState("");
+
+  // Tooltip messages
+  // - TODO: Move the strings to a single-source-of-truth file
+  const mappingRuleMessage =
+    "Rule used to map the certificate with a user entry";
+
+  const matchingRuleMessage =
+    "Rule used to check if a certificate can be used for authentication";
+
+  const domainNameMessage = "Domain where the user entry will be searched";
+
+  const priorityMessage =
+    "Priority of the rule (higher number means lower priority";
+
+  const clearFields = () => {
+    setRuleName("");
+    setMappingRule("");
+    setMatchingRule("");
+    setDomainName([]);
+    setPriority(0);
+    setDescription("");
+  };
+
+  // 'Add' button handler
+  const onAddRule = (keepModalOpen: boolean) => {
+    setIsAddButtonSpinning(true);
+    setIsAddAnotherButtonSpinning(true);
+
+    const payload: CertMapRuleAddPayload = {
+      ruleId: ruleName,
+      description: description,
+      ipacertmapmaprule: mappingRule,
+      ipacertmapmatchrule: matchingRule,
+      associateddomain: domainName,
+      ipacertmappriority: priority || 0,
+    };
+
+    addRule(payload).then((response) => {
+      if ("data" in response) {
+        const data = response.data?.result;
+        const error = response.data?.error as SerializedError;
+
+        if (error) {
+          alerts.addAlert("add-cermap-error", error.message, "danger");
+        }
+
+        if (data) {
+          alerts.addAlert("add-certmap-success", data.summary, "success");
+          // Reset selected item
+          clearFields();
+          // Update data
+          props.onRefresh();
+          // 'Add and add another' will keep the modal open
+          if (!keepModalOpen) {
+            props.onClose();
+          }
+        }
+      }
+      // Reset button spinners
+      setIsAddButtonSpinning(false);
+      setIsAddAnotherButtonSpinning(false);
+    });
+  };
+
+  // Clean and close modal
+  const cleanAndCloseModal = () => {
+    clearFields();
+    props.onClose();
+  };
+
+  const fields: Field[] = [
+    {
+      id: "rule-name",
+      name: "Rule name",
+      pfComponent: (
+        <TextInput
+          type="text"
+          id="rule-name"
+          name="cn"
+          value={ruleName}
+          aria-label="Rule name text input"
+          onChange={(_event, value: string) => setRuleName(value)}
+          isRequired
+        />
+      ),
+      fieldRequired: true,
+    },
+    {
+      id: "mapping-rule",
+      name: "Mapping rule",
+      pfComponent: (
+        <TextInput
+          type="text"
+          id="mapping-rule"
+          name="ipacertmapmaprule"
+          value={mappingRule}
+          aria-label="Mapping rule text input"
+          onChange={(_event, value: string) => setMappingRule(value)}
+          isRequired
+        />
+      ),
+      labelIcon: (
+        <CustomTooltip id="mapping-rule-tooltip" message={mappingRuleMessage}>
+          <InfoCircleIcon />
+        </CustomTooltip>
+      ),
+    },
+    {
+      id: "matching-rule",
+      name: "Matching rule",
+      pfComponent: (
+        <TextInput
+          type="text"
+          id="matching-rule"
+          name="ipacertmapmatchrule"
+          value={matchingRule}
+          aria-label="Matching rule text input"
+          onChange={(_event, value: string) => setMatchingRule(value)}
+        />
+      ),
+      labelIcon: (
+        <CustomTooltip id="matching-rule-tooltip" message={matchingRuleMessage}>
+          <InfoCircleIcon />
+        </CustomTooltip>
+      ),
+    },
+    {
+      id: "domain-name",
+      name: "Domain name",
+      pfComponent: (
+        <TextInputList
+          name="associateddomain"
+          ariaLabel="Domain name text input"
+          list={domainName}
+          setList={setDomainName}
+        />
+      ),
+      labelIcon: (
+        <CustomTooltip id="domain-name-tooltip" message={domainNameMessage}>
+          <InfoCircleIcon />
+        </CustomTooltip>
+      ),
+    },
+    {
+      id: "priority",
+      name: "Priority",
+      pfComponent: (
+        <NumberSelector
+          id="priority-number-selector"
+          name="priority"
+          value={priority}
+          setValue={(value: number | "") => setPriority(value)}
+          numCharsShown={6}
+          maxValue={2147483647}
+        />
+      ),
+      labelIcon: (
+        <CustomTooltip id="priority-tooltip" message={priorityMessage}>
+          <InfoCircleIcon />
+        </CustomTooltip>
+      ),
+    },
+    {
+      id: "description",
+      name: "Description",
+      pfComponent: (
+        <TextArea
+          type="text"
+          id="description"
+          name="description"
+          value={description}
+          aria-label="Description text input"
+          onChange={(_event, value: string) => setDescription(value)}
+        />
+      ),
+    },
+  ];
+
+  // Actions
+  const modalActions: JSX.Element[] = [
+    <Button
+      key="add-new"
+      variant="secondary"
+      isDisabled={isAddButtonSpinning || ruleName === ""}
+      form="add-modal-form"
+      onClick={() => {
+        onAddRule(false);
+      }}
+    >
+      Add
+    </Button>,
+    <Button
+      key="add-new-again"
+      variant="secondary"
+      isDisabled={isAddAnotherButtonSpinning || ruleName === ""}
+      form="add-again-modal-form"
+      onClick={() => {
+        onAddRule(true);
+      }}
+    >
+      Add and add again
+    </Button>,
+    <Button key="cancel-new" variant="link" onClick={cleanAndCloseModal}>
+      Cancel
+    </Button>,
+  ];
+
+  return (
+    <>
+      <alerts.ManagedAlerts />
+      <ModalWithFormLayout
+        variantType={"small"}
+        modalPosition={"top"}
+        offPosition={"76px"}
+        title={props.title}
+        formId="add-modal-form"
+        fields={fields}
+        show={props.isOpen}
+        onClose={cleanAndCloseModal}
+        actions={modalActions}
+      />
+    </>
+  );
+};
+
+export default AddRuleModal;
