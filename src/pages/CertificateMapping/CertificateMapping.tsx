@@ -44,6 +44,7 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import MainTable from "src/components/tables/MainTable";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import AddRuleModal from "src/components/modals/CertificateMapping/AddRuleModal";
+import DeleteMultipleRulesModal from "src/components/modals/CertificateMapping/DeleteMultipleRulesModal";
 
 const CertificateMappingPage = () => {
   const navigate = useNavigate();
@@ -325,6 +326,7 @@ const CertificateMappingPage = () => {
 
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
@@ -374,7 +376,10 @@ const CertificateMappingPage = () => {
     {
       key: 4,
       element: (
-        <SecondaryButton isDisabled={isDeleteButtonDisabled || !showTableRows}>
+        <SecondaryButton
+          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          onClickHandler={() => setShowDeleteModal(true)}
+        >
           Delete
         </SecondaryButton>
       ),
@@ -501,6 +506,17 @@ const CertificateMappingPage = () => {
         onClose={() => setShowAddModal(false)}
         title={"Add certificate identity mapping rule"}
         onRefresh={refreshData}
+      />
+      <DeleteMultipleRulesModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        elementsToDelete={selectedElements}
+        clearSelectedElements={() => setSelectedElements([])}
+        columnNames={["Rule name", "Description"]}
+        keyNames={["cn", "description"]}
+        onRefresh={refreshData}
+        updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
+        updateIsDeletion={setIsDeletion}
       />
     </Page>
   );
