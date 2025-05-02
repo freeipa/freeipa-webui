@@ -72,7 +72,7 @@ export function createEmptyCertMapping(): CertificateMapping {
     ipacertmapmaprule: "",
     ipacertmapmatchrule: "",
     associateddomain: [],
-    ipacertmappriority: "",
+    ipacertmappriority: 0,
     ipaenabledflag: false,
   };
 }
