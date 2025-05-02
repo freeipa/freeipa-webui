@@ -43,6 +43,7 @@ import TitleLayout from "src/components/layouts/TitleLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import MainTable from "src/components/tables/MainTable";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
+import AddRuleModal from "src/components/modals/CertificateMapping/AddRuleModal";
 
 const CertificateMappingPage = () => {
   const navigate = useNavigate();
@@ -322,6 +323,9 @@ const CertificateMappingPage = () => {
     updateSelectedPerPage: setSelectedPerPage,
   };
 
+  // Modals functionality
+  const [showAddModal, setShowAddModal] = React.useState(false);
+
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -378,7 +382,12 @@ const CertificateMappingPage = () => {
     {
       key: 5,
       element: (
-        <SecondaryButton isDisabled={!showTableRows}>Add</SecondaryButton>
+        <SecondaryButton
+          isDisabled={!showTableRows}
+          onClickHandler={() => setShowAddModal(true)}
+        >
+          Add
+        </SecondaryButton>
       ),
     },
     {
@@ -487,6 +496,12 @@ const CertificateMappingPage = () => {
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
         />
       </PageSection>
+      <AddRuleModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        title={"Add certificate identity mapping rule"}
+        onRefresh={refreshData}
+      />
     </Page>
   );
 };
