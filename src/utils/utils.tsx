@@ -459,3 +459,12 @@ export const removeCertificateDelimiters = (certificate: string) => {
     .replace(/-----END CERTIFICATE-----/g, "")
     .replace(/\n/g, "");
 };
+
+/**
+ * Capitalize the first letter of a string
+ * @param str String to be capitalized
+ * @returns Capitalized string
+ */
+export default function capitalizeFirstLetter(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}

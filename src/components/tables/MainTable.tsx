@@ -10,6 +10,8 @@ import { Link } from "react-router-dom";
 import EmptyBodyTable from "./EmptyBodyTable";
 // Icons
 import { CheckIcon, MinusIcon } from "@patternfly/react-icons";
+// Utils
+import { checkEqualStatusGen } from "src/utils/utils";
 
 /**
  * This component renders a table with the specified columns and rows.
@@ -136,10 +138,56 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
     }
   }, [props.buttonsData?.isDeletion]);
 
+  // Helper function: Check if selected elements have the same status
+  // - If they differ, disable both buttons (enable & disable)
+  // - Otherwise, enable the corresponding button
+  const checkStatus = (selectedElements: T[]) => {
+    if (selectedElements.length > 0 && props.statusElementName !== undefined) {
+      const equalStatus = checkEqualStatusGen(
+        selectedElements[0][props.statusElementName],
+        selectedElements,
+        props.statusElementName
+      );
+
+      const updateIsDisableButtonDisabled =
+        props.buttonsData?.updateIsDisableButtonDisabled;
+      const updateIsEnableButtonDisabled =
+        props.buttonsData?.updateIsEnableButtonDisabled;
+
+      if (updateIsDisableButtonDisabled && updateIsEnableButtonDisabled) {
+        if (equalStatus) {
+          const ipaenabledflag: string =
+            selectedElements[0][props.statusElementName];
+          if (ipaenabledflag === "true") {
+            // Enabled
+            updateIsDisableButtonDisabled(false);
+            updateIsEnableButtonDisabled(true);
+          } else if (ipaenabledflag === "false") {
+            // Disabled
+            updateIsDisableButtonDisabled(true);
+            updateIsEnableButtonDisabled(false);
+          }
+        } else {
+          // Different status selected -> Disable all buttons
+          updateIsDisableButtonDisabled(true);
+          updateIsEnableButtonDisabled(true);
+        }
+      }
+    }
+  };
+
   // Enable 'Delete' button (if any element selected)
   React.useEffect(() => {
     if (props.elementsData && props.elementsData.selectedElements.length > 0) {
       props.buttonsData?.updateIsDeleteButtonDisabled(false);
+      const selectedElements: T[] = props.elementsData.selectedElements;
+
+      if (
+        props.buttonsData?.updateIsDisableButtonDisabled !== undefined &&
+        props.buttonsData?.updateIsEnableButtonDisabled !== undefined
+      ) {
+        checkStatus(selectedElements);
+      }
     }
 
     if (
@@ -147,6 +195,13 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
       props.elementsData.selectedElements.length === 0
     ) {
       props.buttonsData?.updateIsDeleteButtonDisabled(true);
+      if (
+        props.buttonsData?.updateIsEnableButtonDisabled !== undefined &&
+        props.buttonsData?.updateIsDisableButtonDisabled !== undefined
+      ) {
+        props.buttonsData?.updateIsDisableButtonDisabled(true);
+        props.buttonsData?.updateIsEnableButtonDisabled(true);
+      }
     }
   }, [props.elementsData?.selectedElements]);
 
