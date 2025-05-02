@@ -44,6 +44,19 @@ export const checkEqualStatus = (status: boolean, usersList: User[]) => {
   return usersWithOtherStatus.length === 0;
 };
 
+// Helper method: Given an general-type (T) list and status, check if some entry has different status
+// @typescript-eslint/no-unused-vars
+export const checkEqualStatusGen = <T,>(
+  status: boolean,
+  elementsList: T[],
+  statusElementName: string
+) => {
+  const elementsWithOtherStatus = elementsList.filter(
+    (element) => element[statusElementName] !== status
+  );
+  return elementsWithOtherStatus.length === 0;
+};
+
 // Helper method: Given a rule list and status, check if some entry has different status
 export const checkEqualStatusHbacRule = (
   status: boolean,
