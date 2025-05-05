@@ -117,7 +117,6 @@ const extendedApi = api.injectEndpoints({
             params[1][key] = payloadData[key];
           }
         });
-        console.log("params", params);
 
         return getCommand({
           method: "host_add",
