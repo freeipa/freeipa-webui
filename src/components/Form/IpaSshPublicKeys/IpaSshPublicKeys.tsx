@@ -143,7 +143,6 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
           const newSshPublicKeysList = [...sshPublicKeysList];
           newSshPublicKeysList.splice(idx, 1);
           setSshPublicKeysList(newSshPublicKeysList);
-          console.log(newSshPublicKeysList);
           // Close things up and refresh
           setIsDeletionModalOpen(false);
         } else if (response.data?.error) {

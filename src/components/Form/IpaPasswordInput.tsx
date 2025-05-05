@@ -20,8 +20,6 @@ const IpaPasswordInput = (props: IPAParamDefinition) => {
   // - Some passwords are encoded, so those must be shown as hidden
   // - Undefined passwords must be shown as empty
   React.useEffect(() => {
-    console.log("value", value);
-    console.log("typeof value", typeof value);
     if (typeof value === "object") {
       setTextInputValue(HIDDEN_PASSWORD);
     } else if (typeof value === "undefined") {

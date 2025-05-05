@@ -168,7 +168,6 @@ const AppLayout = (props: PropsToAppLayout) => {
   const skipToContent = (event) => {
     event.preventDefault();
     const primaryContentContainer = document.getElementById(pageId);
-    console.log("primaryContentContainer", primaryContentContainer);
     if (primaryContentContainer) {
       return primaryContentContainer.focus();
     }
