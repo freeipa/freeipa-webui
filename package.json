@@ -53,6 +53,7 @@
     "audit-ci": "^7.1.0",
     "cy-verify-downloads": "^0.2.6",
     "cypress": "^14.2.1",
+    "cypress-otp": "^1.0.3",
     "esbuild-plugin-polyfill-node": "^0.3.0",
     "eslint": "^9.23.0",
     "eslint-config-prettier": "^10.1.1",
