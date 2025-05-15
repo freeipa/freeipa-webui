@@ -11,16 +11,12 @@ import TabLayout from "src/components/layouts/TabLayout";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // RPC
 import { useGetServiceByIdQuery } from "src/services/rpcServices";
-// Navigation
-import { useNavigate } from "react-router-dom";
 
 interface PropsToServicesManagedBy {
   service: Service;
 }
 
 const ServicesManagedBy = (props: PropsToServicesManagedBy) => {
-  const navigate = useNavigate();
-
   // Service full data
   const serviceQuery = useGetServiceByIdQuery(props.service.krbcanonicalname);
   const serviceData = serviceQuery.data || {};
@@ -40,21 +36,9 @@ const ServicesManagedBy = (props: PropsToServicesManagedBy) => {
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "services", noBreadcrumb: true });
 
-  // Encoded data to pass to the URL
-  const encodedServiceId = encodeURIComponent(props.service.krbcanonicalname);
-
   return (
     <TabLayout id="managedby">
-      <Tabs
-        activeKey={0}
-        isBox={false}
-        mountOnEnter
-        unmountOnExit
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        onSelect={(_event) => {
-          navigate("/services/" + encodedServiceId + "/managedby_host");
-        }}
-      >
+      <Tabs activeKey={0} isBox={false} mountOnEnter unmountOnExit>
         <Tab
           eventKey={0}
           name="managedby_host"

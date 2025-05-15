@@ -45,7 +45,6 @@ const IDViewsTabs = ({ section }) => {
     tabIndex: number | string
   ) => {
     const tabName = tabIndex as string;
-    setActiveTabKey(tabName);
     if (tabName === "settings") {
       navigate("/id-views/" + cn);
     } else if (tabName.startsWith("override")) {

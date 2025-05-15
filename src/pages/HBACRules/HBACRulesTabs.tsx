@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 // PatternFly
 import {
   PageSection,
@@ -33,14 +33,7 @@ const HBACRulesTabs = ({ section }) => {
     BreadCrumbItem[]
   >([]);
 
-  // Tab
-  const [activeTabKey, setActiveTabKey] = useState(section);
-
-  const handleTabClick = (
-    _event: React.MouseEvent<HTMLElement, MouseEvent>,
-    tabIndex: number | string
-  ) => {
-    setActiveTabKey(tabIndex as string);
+  const handleTabClick = () => {
     navigate("/hbac-rules/" + cn);
   };
 
@@ -62,7 +55,6 @@ const HBACRulesTabs = ({ section }) => {
         },
       ];
       setBreadcrumbItems(currentPath);
-      setActiveTabKey("settings");
       dispatch(updateBreadCrumbPath(currentPath));
     }
   }, [cn]);
@@ -72,7 +64,6 @@ const HBACRulesTabs = ({ section }) => {
     if (!section) {
       navigate(URL_PREFIX + "/hbac-rules/" + cn);
     }
-    setActiveTabKey(section);
   }, [section]);
 
   if (settingsData.isLoading || settingsData.rule.cn === undefined) {
@@ -100,7 +91,7 @@ const HBACRulesTabs = ({ section }) => {
       </PageSection>
       <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
         <Tabs
-          activeKey={activeTabKey}
+          activeKey={section}
           onSelect={handleTabClick}
           variant="light300"
           isBox

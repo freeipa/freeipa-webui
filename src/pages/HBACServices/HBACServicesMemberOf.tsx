@@ -46,7 +46,6 @@ const HBACServicesMemberOf = (props: PropsToMemberOf) => {
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as string);
     navigate("/hbac-services/" + props.hbacService.cn + "/" + tabIndex);
   };
 

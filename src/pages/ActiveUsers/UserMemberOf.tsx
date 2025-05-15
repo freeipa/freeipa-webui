@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { TabTitleText, Tab, Tabs, Badge } from "@patternfly/react-core";
 // Data types
 import { User } from "src/utils/datatypes/globalDataTypes";
@@ -57,13 +57,6 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   const onRefreshUserData = () => {
     userQuery.refetch();
   };
-
-  // Tab
-  const [activeTabKey, setActiveTabKey] = useState("group");
-
-  React.useEffect(() => {
-    setActiveTabKey(props.tab);
-  }, [props.tab]);
 
   const [groupCount, setGroupCount] = React.useState(0);
   const [netgroupCount, setNetgroupCount] = React.useState(0);
@@ -214,9 +207,8 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   return (
     <TabLayout id="memberOf">
       <Tabs
-        activeKey={activeTabKey}
+        activeKey={props.tab}
         onSelect={(_event, tabIndex) => {
-          setActiveTabKey(tabIndex as string);
           navigate(
             "/" + props.from + "/" + props.user.uid + "/memberof_" + tabIndex
           );

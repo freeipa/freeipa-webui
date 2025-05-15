@@ -46,7 +46,6 @@ const HBACSvcGroupMembers = (props: PropsToSvcGroupsMembers) => {
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as string);
     navigate("/hbac-service-groups/" + props.hbacsvcgroup.cn + "/" + tabIndex);
   };
 

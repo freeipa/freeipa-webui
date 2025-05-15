@@ -43,7 +43,6 @@ const HBACServiceGroupsTabs = ({ section }) => {
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as string);
     if (tabIndex === "settings") {
       navigate("/hbac-service-groups/" + cn);
     } else if (tabIndex === "members") {
@@ -80,7 +79,9 @@ const HBACServiceGroupsTabs = ({ section }) => {
       navigate(URL_PREFIX + "/hbac-service-groups/" + cn);
     }
     const section_string = section as string;
-    if (section_string.startsWith("member_")) {
+    if (section_string === "settings") {
+      setActiveTabKey("settings");
+    } else if (section_string.startsWith("member_")) {
       setActiveTabKey("members");
     }
   }, [section]);

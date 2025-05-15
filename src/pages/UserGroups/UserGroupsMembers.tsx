@@ -148,28 +148,20 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
     );
   }, [userGroup]);
 
-  // Tab
-  const [activeTabKey, setActiveTabKey] = useState("member_user");
-
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as string);
     // id override not implemented yet
     if (tabIndex !== "member_iduseroverride") {
       navigate("/user-groups/" + props.userGroup.cn + "/" + tabIndex);
     }
   };
 
-  React.useEffect(() => {
-    setActiveTabKey(props.tabSection);
-  }, [props.tabSection]);
-
   return (
     <TabLayout id="members">
       <Tabs
-        activeKey={activeTabKey}
+        activeKey={props.tabSection}
         onSelect={handleTabClick}
         isBox={false}
         mountOnEnter

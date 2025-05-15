@@ -45,8 +45,6 @@ const IdpReferencesTabs = ({ section }) => {
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as string);
-
     if (tabIndex === "settings") {
       navigate("/" + pathname + "/" + id);
     }

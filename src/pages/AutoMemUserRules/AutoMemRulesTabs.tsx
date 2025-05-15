@@ -45,14 +45,7 @@ const AutoMemUserRulesTabs = (props: AutoMemUserRulesTabsProps) => {
     BreadCrumbItem[]
   >([]);
 
-  // Tab
-  const [activeTabKey, setActiveTabKey] = React.useState(section);
-
-  const handleTabClick = (
-    _event: React.MouseEvent<HTMLElement, MouseEvent>,
-    tabIndex: number | string
-  ) => {
-    setActiveTabKey(tabIndex as string);
+  const handleTabClick = () => {
     navigate("/" + pathname + "/" + cn);
   };
 
@@ -115,7 +108,7 @@ const AutoMemUserRulesTabs = (props: AutoMemUserRulesTabsProps) => {
       </PageSection>
       <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
         <Tabs
-          activeKey={activeTabKey}
+          activeKey={section}
           onSelect={handleTabClick}
           variant="light300"
           isBox

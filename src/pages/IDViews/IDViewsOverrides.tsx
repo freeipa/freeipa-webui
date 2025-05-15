@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 // PatternFly
 import { Badge, Tab, Tabs, TabTitleText } from "@patternfly/react-core";
 // Data types
@@ -24,18 +24,10 @@ const IDViewsOverrides = (props: PropsToOverrides) => {
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "id-views", noBreadcrumb: true });
 
-  // Tab
-  const [activeTabKey, setActiveTabKey] = useState("override-users");
-
-  React.useEffect(() => {
-    setActiveTabKey(props.tabSection);
-  }, [props.tabSection]);
-
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as string);
     navigate("/id-views/" + props.idView.cn + "/" + tabIndex);
   };
 
@@ -43,7 +35,7 @@ const IDViewsOverrides = (props: PropsToOverrides) => {
   return (
     <TabLayout id="override sections">
       <Tabs
-        activeKey={activeTabKey}
+        activeKey={props.tabSection}
         onSelect={handleTabClick}
         isBox={false}
         mountOnEnter

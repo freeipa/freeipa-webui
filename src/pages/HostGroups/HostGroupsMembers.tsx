@@ -111,25 +111,17 @@ const HostGroupsMembers = (props: PropsToHostGroupsMembers) => {
     }
   }, [hostGroup]);
 
-  // Tab
-  const [activeTabKey, setActiveTabKey] = useState("member_host");
-
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as string);
     navigate("/host-groups/" + props.hostGroup.cn + "/" + tabIndex);
   };
-
-  React.useEffect(() => {
-    setActiveTabKey(props.tabSection);
-  }, [props.tabSection]);
 
   return (
     <TabLayout id="members">
       <Tabs
-        activeKey={activeTabKey}
+        activeKey={props.tabSection}
         onSelect={handleTabClick}
         isBox={false}
         mountOnEnter
