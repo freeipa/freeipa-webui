@@ -39,25 +39,17 @@ const SudoCmdGroupMembers = (props: PropsToSudoGroupsMembers) => {
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "sudo-command-groups", noBreadcrumb: true });
 
-  // Tab
-  const [activeTabKey, setActiveTabKey] = useState("member_sudocmd");
-
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as string);
     navigate("/sudo-command-groups/" + props.sudocmdgroup.cn + "/" + tabIndex);
   };
-
-  React.useEffect(() => {
-    setActiveTabKey(props.tabSection);
-  }, [props.tabSection]);
 
   return (
     <TabLayout id="members">
       <Tabs
-        activeKey={activeTabKey}
+        activeKey={props.tabSection}
         onSelect={handleTabClick}
         isBox={false}
         mountOnEnter

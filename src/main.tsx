@@ -21,11 +21,17 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <Provider store={store}>
-    <React.StrictMode>
-      <BrowserRouter basename={URL_PREFIX}>
+  <React.StrictMode>
+    <Provider store={store}>
+      <BrowserRouter
+        basename={URL_PREFIX}
+        future={{
+          v7_relativeSplatPath: true,
+          v7_startTransition: true,
+        }}
+      >
         <App />
       </BrowserRouter>
-    </React.StrictMode>
-  </Provider>
+    </Provider>
+  </React.StrictMode>
 );

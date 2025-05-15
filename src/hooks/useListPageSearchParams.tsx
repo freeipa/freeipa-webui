@@ -52,32 +52,31 @@ const useListPageSearchParams = () => {
 
   // Handle URLs with navigation parameters
   React.useEffect(() => {
-    let searchParamsNew = {};
+    setParams(
+      (params) => {
+        if (page > 1) {
+          params.set("p", page.toString());
+        } else {
+          params.delete("p");
+        }
 
-    if (page > 1) {
-      searchParamsNew = {
-        ...searchParamsNew,
-        p: page.toString(),
-      };
-    }
-    if (searchValue !== "") {
-      searchParamsNew = {
-        ...searchParamsNew,
-        search: searchValue,
-      };
-    }
-    if (membershipDirection !== "direct") {
-      searchParamsNew = {
-        ...searchParamsNew,
-        membership: membershipDirection,
-      };
-    }
-    searchParamsNew = {
-      ...searchParamsNew,
-      size: perPage.toString(),
-    };
+        if (searchValue !== "") {
+          params.set("search", searchValue);
+        } else {
+          params.delete("search");
+        }
 
-    setParams(searchParamsNew, { replace: true });
+        if (membershipDirection !== "direct") {
+          params.set("membership", membershipDirection);
+        } else {
+          params.delete("membership");
+        }
+
+        params.set("size", perPage.toString());
+        return params;
+      },
+      { replace: true }
+    );
   }, [page, searchValue, membershipDirection, perPage]);
 
   return {

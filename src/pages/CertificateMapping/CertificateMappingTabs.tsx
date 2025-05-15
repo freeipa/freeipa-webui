@@ -41,15 +41,10 @@ const CertificateMappingTabs = ({ section }) => {
     cn as string
   );
 
-  // Tab
-  const [activeTabKey, setActiveTabKey] = React.useState(section);
-
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as string);
-
     if (tabIndex === "settings") {
       navigate("/" + pathname + "/" + id);
     }
@@ -74,7 +69,6 @@ const CertificateMappingTabs = ({ section }) => {
         },
       ];
       setBreadcrumbItems(currentPath);
-      setActiveTabKey("settings");
     }
   }, [cn]);
 
@@ -111,7 +105,7 @@ const CertificateMappingTabs = ({ section }) => {
       </PageSection>
       <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
         <Tabs
-          activeKey={activeTabKey}
+          activeKey={section}
           onSelect={handleTabClick}
           variant="light300"
           isBox

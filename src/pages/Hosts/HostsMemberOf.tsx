@@ -46,20 +46,12 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "hosts", noBreadcrumb: true });
 
-  // Tab
-  const [activeTabKey, setActiveTabKey] = useState("memberof_hostgroup");
-
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as string);
     navigate("/hosts/" + props.host.fqdn + "/" + tabIndex);
   };
-
-  React.useEffect(() => {
-    setActiveTabKey(props.tabSection);
-  }, [props.tabSection]);
 
   const [groupCount, setGroupCount] = React.useState(0);
   const [netgroupCount, setNetgroupCount] = React.useState(0);
@@ -210,7 +202,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
   return (
     <TabLayout id="memberof">
       <Tabs
-        activeKey={activeTabKey}
+        activeKey={props.tabSection}
         onSelect={handleTabClick}
         isBox={false}
         mountOnEnter

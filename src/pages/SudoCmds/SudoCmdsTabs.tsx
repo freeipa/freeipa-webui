@@ -42,7 +42,6 @@ const SudoCmdsTabs = ({ section }) => {
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as string);
     if (tabIndex === "settings") {
       navigate("/sudo-commands/" + sudocmd);
     } else if (tabIndex === "memberof") {
@@ -80,7 +79,9 @@ const SudoCmdsTabs = ({ section }) => {
     }
     setActiveTabKey(section);
     const section_string = section as string;
-    if (section_string.startsWith("memberof")) {
+    if (section_string === "settings") {
+      setActiveTabKey("settings");
+    } else if (section_string.startsWith("memberof")) {
       setActiveTabKey("memberof");
     }
   }, [section]);

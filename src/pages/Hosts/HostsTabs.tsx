@@ -75,12 +75,15 @@ const HostsTabs = ({ section }) => {
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as string);
-
+    const tabIdx = tabIndex.toString();
     if (tabIndex === "settings") {
       navigate("/hosts/" + hostId);
-    } else if (tabIndex === "memberof") {
-      navigate("/hosts/" + hostId + "/memberof_hostgroup");
+    } else if (tabIdx.startsWith("memberof")) {
+      if (tabIdx === "memberof") {
+        navigate("/hosts/" + hostId + "/" + tabIdx + "_hostgroup");
+      } else {
+        navigate("/hosts/" + hostId + "/" + tabIdx);
+      }
     } else if (tabIndex === "managedby") {
       navigate("/hosts/" + hostId + "/managedby_host");
     }
@@ -118,7 +121,9 @@ const HostsTabs = ({ section }) => {
 
     // Case: any of the 'member of' sections is clicked
     if (section !== "settings" && section !== "managedby") {
-      setActiveTabKey("memberof");
+      setActiveTabKey("memberof_hostgroup");
+    } else {
+      setActiveTabKey(section);
     }
   }, [section]);
 
@@ -189,7 +194,7 @@ const HostsTabs = ({ section }) => {
               />
             </Tab>
             <Tab
-              eventKey={"memberof"}
+              eventKey={"memberof_hostgroup"}
               name="memberof-details"
               title={<TabTitleText>Is a member of</TabTitleText>}
             >

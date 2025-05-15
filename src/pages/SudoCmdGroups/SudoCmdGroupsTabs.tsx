@@ -42,7 +42,6 @@ const SudoCmdGroupsTabs = ({ section }) => {
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as string);
     if (tabIndex === "settings") {
       navigate("/sudo-command-groups/" + cn);
     } else if (tabIndex === "member") {
@@ -79,7 +78,9 @@ const SudoCmdGroupsTabs = ({ section }) => {
       navigate(URL_PREFIX + "/sudo-command-groups/" + cn);
     }
     const section_string = section as string;
-    if (section_string.startsWith("member_")) {
+    if (section_string === "settings") {
+      setActiveTabKey("settings");
+    } else if (section_string.startsWith("member_")) {
       setActiveTabKey("member");
     }
   }, [section]);

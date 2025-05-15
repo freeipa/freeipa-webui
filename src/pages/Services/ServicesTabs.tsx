@@ -80,7 +80,6 @@ const ServicesTabs = ({ section }) => {
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as string);
     if (tabIndex === "settings") {
       navigate("/services/" + doubleEncodedId);
     } else if (tabIndex === "memberof") {

@@ -460,10 +460,13 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="configuration" element={<Configuration />} />
               {/* Redirect to Active users page if user is logged in and navigates to the root page */}
+              <Route path="login" element={<Navigate to={"/"} replace />} />
               <Route
-                path="*"
+                path=""
                 element={<Navigate to={"active-users"} replace />}
               />
+              {/* 404 page */}
+              <Route path="*" element={<NotFound />} />
             </>
           ) : (
             <>
@@ -471,15 +474,13 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               <Route path="reset-password">
                 <Route path=":uid" element={<ResetPasswordPage />} />
               </Route>
-              <Route path="*" element={<Navigate to={"login"} replace />} />
+              <Route path="*" element={<Navigate to={"/login"} replace />} />
             </>
           )}
           {/* Browser configuration page */}
           <Route path="browser-config" element={<SetupBrowserConfig />} />
           {/* Sync OTP token page */}
           <Route path="sync-otp" element={<SyncOtpPage />} />
-          {/* 404 page */}
-          <Route path="*" element={<NotFound />} />
         </Routes>
       )}
     </>

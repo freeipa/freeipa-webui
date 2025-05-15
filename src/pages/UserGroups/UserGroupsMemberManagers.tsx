@@ -40,25 +40,17 @@ const UserGroupsMemberManagers = (props: PropsToUserGroupsMembers) => {
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "user-groups", noBreadcrumb: true });
 
-  // Tab
-  const [activeTabKey, setActiveTabKey] = useState("member_user");
-
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    setActiveTabKey(tabIndex as string);
     navigate("/user-groups/" + props.userGroup.cn + "/" + tabIndex);
   };
-
-  React.useEffect(() => {
-    setActiveTabKey(props.tabSection);
-  }, [props.tabSection]);
 
   return (
     <TabLayout id="managers">
       <Tabs
-        activeKey={activeTabKey}
+        activeKey={props.tabSection}
         onSelect={handleTabClick}
         isBox={false}
         mountOnEnter
