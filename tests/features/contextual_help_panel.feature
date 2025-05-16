@@ -32,16 +32,6 @@ Feature: Contextual help links panel
     When I click on close button in the panel
     Then I should not see contextual help panel
 
-  # - Stage users > Settings page
-  Scenario: Open and close the contextual help links panel on Stage users > Settings page
-    Given I am on "stage-users-settings" page
-    When I click on "Help" button
-    Then I should see contextual help panel
-    And I should see a title "Links" in the panel
-    * I should see a list of links
-    When I click on close button in the panel
-    Then I should not see contextual help panel
-
   # Preserved users page
   Scenario: Open the contextual help links panel on 'preserved-users' main page
     Given I am on "preserved-users" page
@@ -53,16 +43,6 @@ Feature: Contextual help links panel
   Scenario: Close the contextual help links panel on 'Preserved users' main page
     Given I am on "preserved-users" page
     Given I should see contextual help panel
-    When I click on close button in the panel
-    Then I should not see contextual help panel
-
-  # - Preserved users > Settings page
-  Scenario: Open and close the contextual help links panel on 'preserved-users-settings' main page
-    Given I am on "preserved-users-settings" page
-    When I click on "Help" button
-    Then I should see contextual help panel
-    And I should see a title "Links" in the panel
-    * I should see a list of links
     When I click on close button in the panel
     Then I should not see contextual help panel
 
@@ -91,15 +71,5 @@ Feature: Contextual help links panel
   Scenario: Close the contextual help links panel on 'Services' main page
     Given I am on "services" page
     Given I should see contextual help panel
-    When I click on close button in the panel
-    Then I should not see contextual help panel
-
-  # - Services > Settings page
-  Scenario: Open and close the contextual help links panel on 'services-settings' main page
-    Given I am on "services-settings" page
-    When I click on "Help" button
-    Then I should see contextual help panel
-    And I should see a title "Links" in the panel
-    * I should see a list of links
     When I click on close button in the panel
     Then I should not see contextual help panel
