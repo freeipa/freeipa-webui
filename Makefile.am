@@ -13,6 +13,8 @@ install-exec-local: dist
 	cp -rp "dist/assets" "$(DESTDIR)$(appdir)/assets"
 
 dist:
+	npm -v
+	node -v
 	npm i
 	npm run build
 
