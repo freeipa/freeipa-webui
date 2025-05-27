@@ -1,0 +1,57 @@
+---
+name: Build and draft
+
+on: workflow_dispatch
+
+env:
+  GITHUB_CI: true
+
+jobs:
+  audit-and-build:
+    name: Audit and build
+    runs-on: ubuntu-latest
+    container:
+      image: fedora:latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Audit dependencies
+        run: npx audit-ci --config audit-ci.json --skip-dev
+
+      - name: Get npm version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@main
+
+      - name: Cache dependencies
+        id: cache-deps
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-
+
+      - name: Install project
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
+      - name: Create distributable
+        run: tar -czvf freeipa-webui-${{ steps.package-version.outputs.current-version }}.tar.gz dist/
+
+      - name: Create draft release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          prerelease: false
+          tag_name: v${{ steps.package-version.outputs.current-version }}
+          files: |
+            freeipa-webui-${{ steps.package-version.outputs.current-version }}.tar.gz
