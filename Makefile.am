@@ -12,5 +12,9 @@ install-exec-local:
 	cp -p "dist/index.html" "$(DESTDIR)$(appdir)/index.html"
 	cp -rp "dist/assets" "$(DESTDIR)$(appdir)/assets"
 
+dist-hook:
+	npm install
+	npm run build
+
 clean-local:
 	rm -rf node_modules dist
