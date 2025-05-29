@@ -7,15 +7,12 @@ EXTRA_DIST =		\
 	$(NULL)
 
 # Move and unpack dist folder
-install-exec-local:
+install-exec-local: dist
 	mkdir -p "$(DESTDIR)$(appdir)"
 	cp -p "dist/index.html" "$(DESTDIR)$(appdir)/index.html"
 	cp -rp "dist/assets" "$(DESTDIR)$(appdir)/assets"
 
-dist-hook: dist
-
 dist:
-	npm i
 	npm run build
 
 clean-local:
