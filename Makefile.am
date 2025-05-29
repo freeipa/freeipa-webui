@@ -3,7 +3,6 @@ NULL =
 appdir = $(IPA_DATA_DIR)/freeipa-webui
 
 EXTRA_DIST =		\
-        dist		\
 	$(NULL)
 
 # Move and unpack dist folder
@@ -15,6 +14,7 @@ install-exec-local:
 dist-hook:
 	npm install
 	npm run build
+	cp -r dist/ $(distdir)/dist/
 
 clean-local:
 	rm -rf node_modules dist
