@@ -6,7 +6,7 @@ EXTRA_DIST =		\
         dist		\
 	$(NULL)
 
-dist-hook:
+install-exec-local:
 	npm install
 	npm run build
 	mkdir -p "$(DESTDIR)$(appdir)"
