@@ -15,8 +15,6 @@ install-exec-local:
 dist-hook: dist
 
 dist:
-	npm -v
-	node -v
 	npm i
 	npm run build
 
