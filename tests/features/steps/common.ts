@@ -613,6 +613,13 @@ When(
 );
 
 When(
+  "In the modal, I click on button with name attribute {string}",
+  (name: string) => {
+    cy.get("[role=dialog] button[name='" + name + "']").click();
+  }
+);
+
+When(
   "in the {string} section I click the {string} button of the text input field with text {string}",
   (section: string, button: string, text: string) => {
     const sectionRegex = new RegExp("^" + section + "$", "i");

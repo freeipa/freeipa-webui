@@ -114,8 +114,8 @@ const DeleteMultipleRulesModal = (props: DeleteMultipleRulesModalProps) => {
             props.updateIsDeletion(true);
 
             alerts.addAlert(
-              "remove-idpreferences-success",
-              "Identity Providers removed",
+              "remove-certrules-success",
+              "Certificate identity provider rules removed",
               "success"
             );
 
