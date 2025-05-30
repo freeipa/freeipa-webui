@@ -718,7 +718,7 @@ export interface CertificateMapping {
   ipacertmapmaprule: string;
   ipacertmapmatchrule: string;
   associateddomain: string[];
-  ipacertmappriority: string;
+  ipacertmappriority: number;
   ipaenabledflag: boolean;
 }
 

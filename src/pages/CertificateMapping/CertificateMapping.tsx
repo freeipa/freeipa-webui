@@ -43,6 +43,9 @@ import TitleLayout from "src/components/layouts/TitleLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import MainTable from "src/components/tables/MainTable";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
+import AddRuleModal from "src/components/modals/CertificateMapping/AddRuleModal";
+import DeleteMultipleRulesModal from "src/components/modals/CertificateMapping/DeleteMultipleRulesModal";
+import EnableDisableMultipleRulesModal from "src/components/modals/CertificateMapping/EnableDisableMultipleRules";
 
 const CertificateMappingPage = () => {
   const navigate = useNavigate();
@@ -165,10 +168,12 @@ const CertificateMappingPage = () => {
   const [isDeletion, setIsDeletion] = React.useState(false);
 
   // 'Enable' button state
-  const [isEnableButtonDisabled] = React.useState<boolean>(true);
+  const [isEnableButtonDisabled, setIsEnableButtonDisabled] =
+    React.useState<boolean>(true);
 
   // 'Disable' button state
-  const [isDisableButtonDisabled] = React.useState<boolean>(true);
+  const [isDisableButtonDisabled, setIsDisableButtonDisabled] =
+    React.useState<boolean>(true);
 
   // Table-related shared functionality
   // - Selectable checkboxes on table
@@ -322,6 +327,26 @@ const CertificateMappingPage = () => {
     updateSelectedPerPage: setSelectedPerPage,
   };
 
+  // Modals functionality
+  const [showAddModal, setShowAddModal] = React.useState(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [showEnableDisableModal, setShowEnableDisableModal] =
+    React.useState(false);
+  const [operation, setOperation] = React.useState<"enable" | "disable">(
+    "disable"
+  );
+
+  // Open modal and set operation to 'disable' or "enable"
+  const onEnableOperation = () => {
+    setOperation("enable");
+    setShowEnableDisableModal(true);
+  };
+
+  const onDisableOperation = () => {
+    setOperation("disable");
+    setShowEnableDisableModal(true);
+  };
+
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -370,7 +395,10 @@ const CertificateMappingPage = () => {
     {
       key: 4,
       element: (
-        <SecondaryButton isDisabled={isDeleteButtonDisabled || !showTableRows}>
+        <SecondaryButton
+          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          onClickHandler={() => setShowDeleteModal(true)}
+        >
           Delete
         </SecondaryButton>
       ),
@@ -378,13 +406,21 @@ const CertificateMappingPage = () => {
     {
       key: 5,
       element: (
-        <SecondaryButton isDisabled={!showTableRows}>Add</SecondaryButton>
+        <SecondaryButton
+          isDisabled={!showTableRows}
+          onClickHandler={() => setShowAddModal(true)}
+        >
+          Add
+        </SecondaryButton>
       ),
     },
     {
       key: 6,
       element: (
-        <SecondaryButton isDisabled={isDisableButtonDisabled || !showTableRows}>
+        <SecondaryButton
+          isDisabled={isDisableButtonDisabled || !showTableRows}
+          onClickHandler={onDisableOperation}
+        >
           Disable
         </SecondaryButton>
       ),
@@ -392,7 +428,10 @@ const CertificateMappingPage = () => {
     {
       key: 7,
       element: (
-        <SecondaryButton isDisabled={isEnableButtonDisabled || !showTableRows}>
+        <SecondaryButton
+          isDisabled={isEnableButtonDisabled || !showTableRows}
+          onClickHandler={onEnableOperation}
+        >
           Enable
         </SecondaryButton>
       ),
@@ -468,6 +507,11 @@ const CertificateMappingPage = () => {
                       setIsDeleteButtonDisabled(value),
                     isDeletion,
                     updateIsDeletion: (value) => setIsDeletion(value),
+                    updateIsEnableButtonDisabled: (value) =>
+                      setIsEnableButtonDisabled(value),
+                    updateIsDisableButtonDisabled: (value) =>
+                      setIsDisableButtonDisabled(value),
+                    isDisableEnableOp: true,
                   }}
                   paginationData={{
                     selectedPerPage,
@@ -487,6 +531,34 @@ const CertificateMappingPage = () => {
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
         />
       </PageSection>
+      <AddRuleModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        title={"Add certificate identity mapping rule"}
+        onRefresh={refreshData}
+      />
+      <DeleteMultipleRulesModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        elementsToDelete={selectedElements}
+        clearSelectedElements={() => setSelectedElements([])}
+        columnNames={["Rule name", "Description"]}
+        keyNames={["cn", "description"]}
+        onRefresh={refreshData}
+        updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
+        updateIsDeletion={setIsDeletion}
+      />
+      <EnableDisableMultipleRulesModal
+        isOpen={showEnableDisableModal}
+        onClose={() => setShowEnableDisableModal(false)}
+        elementsList={selectedElements.map((rule) => rule.cn)}
+        setElementsList={(value) =>
+          setSelectedElements(value.map((cn) => ({ cn }) as CertificateMapping))
+        }
+        operation={operation}
+        setShowTableRows={setShowTableRows}
+        onRefresh={refreshData}
+      />
     </Page>
   );
 };

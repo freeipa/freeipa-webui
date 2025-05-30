@@ -64,6 +64,15 @@ export interface CertModPayload {
   ipacertmappriority?: number;
 }
 
+export interface CertMapRuleAddPayload {
+  ruleId: string;
+  description?: string;
+  ipacertmapmaprule?: string;
+  ipacertmapmatchrule?: string;
+  associateddomain?: string[];
+  ipacertmappriority?: number;
+}
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     /**
@@ -399,6 +408,93 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Add certificate mapping rule
+     * @param {CertMapRuleAddPayload} - Add payload
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    certMapRuleAdd: build.mutation<FindRPCResponse, CertMapRuleAddPayload>({
+      query: (payload) => {
+        const params: Record<string, unknown> = {
+          version: API_VERSION_BACKUP,
+        };
+
+        const optionalKeys: Array<keyof Omit<CertMapRuleAddPayload, "ruleId">> =
+          [
+            "description",
+            "ipacertmapmaprule",
+            "ipacertmapmatchrule",
+            "associateddomain",
+            "ipacertmappriority",
+          ];
+
+        optionalKeys.forEach((key) => {
+          const value = payload[key];
+          if (value !== undefined) {
+            params[key] = value.toString();
+          }
+        });
+
+        return getCommand({
+          method: "certmaprule_add",
+          params: [[payload.ruleId], params],
+        });
+      },
+    }),
+    /**
+     * Delete multiple certificate mapping rules
+     * @param {string[]} - Certificate mapping rule IDs
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    multipleCertMapRuleDelete: build.mutation<BatchRPCResponse, string[]>({
+      query: (payload) => {
+        const commands: Command[] = [];
+        payload.forEach((certmapId) => {
+          commands.push({
+            method: "certmaprule_del",
+            params: [[certmapId], {}],
+          });
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Disable multiple certificate mapping rule
+     * @param {string[]} - Certificate mapping rule IDs
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    multipleCertMapRuleDisable: build.mutation<BatchRPCResponse, string[]>({
+      query: (ruleIds) => {
+        const commands: Command[] = [];
+        ruleIds.forEach((certmapId) => {
+          commands.push({
+            method: "certmaprule_disable",
+            params: [[certmapId], {}],
+          });
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Enable multiple certificate mapping rule
+     * @param {string[]} - Certificate mapping rule IDs
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    multipleCertMapRuleEnable: build.mutation<FindRPCResponse, string[]>({
+      query: (ruleIds) => {
+        const commands: Command[] = [];
+        ruleIds.forEach((certmapId) => {
+          commands.push({
+            method: "certmaprule_enable",
+            params: [[certmapId], {}],
+          });
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -415,4 +511,8 @@ export const {
   useCertMapRuleDisableMutation,
   useCertMapRuleEnableMutation,
   useCertMapRuleDeleteMutation,
+  useCertMapRuleAddMutation,
+  useMultipleCertMapRuleDeleteMutation,
+  useMultipleCertMapRuleDisableMutation,
+  useMultipleCertMapRuleEnableMutation,
 } = extendedApi;
