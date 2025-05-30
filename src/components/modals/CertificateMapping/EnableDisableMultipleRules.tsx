@@ -60,6 +60,11 @@ const EnableDisableMultipleRulesModal = (
     props.onClose();
   };
 
+  const onCloseWithoutClearingElements = () => {
+    props.setShowTableRows(true);
+    props.onClose();
+  };
+
   const modalActions: JSX.Element[] = [
     <Button
       key={props.operation + "-certmaprules"}
@@ -71,7 +76,7 @@ const EnableDisableMultipleRulesModal = (
     <Button
       key={"cancel-" + props.operation + "-certmaprules"}
       variant="secondary"
-      onClick={onClose}
+      onClick={onCloseWithoutClearingElements}
     >
       Cancel
     </Button>,
