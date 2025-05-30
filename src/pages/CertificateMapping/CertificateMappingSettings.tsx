@@ -323,6 +323,7 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
                     }
                   >
                     <IpaNumberInput
+                      id={"ipacertmappriority"}
                       name={"ipacertmappriority"}
                       aria-label={"Priority number"}
                       ipaObject={ipaObject}

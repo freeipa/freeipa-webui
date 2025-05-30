@@ -72,7 +72,7 @@ const NumberSelector = (props: NumberSelectorProps) => {
       onBlur={onBlur}
       onPlus={onPlus}
       aria-label={props.name}
-      inputName="input"
+      inputName={props.name}
       inputAriaLabel="number input"
       minusBtnAriaLabel="minus"
       plusBtnAriaLabel="plus"
