@@ -16,7 +16,7 @@ interface EnableDisableMultipleRulesModalProps {
   elementsList: string[];
   setElementsList: (elementsList: string[]) => void;
   operation: "enable" | "disable";
-  setIsLoading: (value: boolean) => void;
+  setShowTableRows: (value: boolean) => void;
   onRefresh: () => void;
 }
 
@@ -34,7 +34,7 @@ const EnableDisableMultipleRulesModal = (
   const onEnableDisable = () => {
     const operation = props.operation === "enable" ? enableRule : disableRule;
 
-    props.setIsLoading(true);
+    props.setShowTableRows(false);
     operation(props.elementsList).then((response) => {
       if ("data" in response) {
         const data = response.data;
@@ -49,13 +49,13 @@ const EnableDisableMultipleRulesModal = (
           props.onRefresh();
           onClose();
         }
-        props.setIsLoading(false);
+        props.setShowTableRows(true);
       }
     });
   };
 
   const onClose = () => {
-    props.setIsLoading(false);
+    props.setShowTableRows(true);
     props.setElementsList([]);
     props.onClose();
   };
