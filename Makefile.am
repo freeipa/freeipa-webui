@@ -12,6 +12,10 @@ install-exec-local:
 	cp -rp "dist/assets" "$(DESTDIR)$(appdir)/assets"
 
 dist-hook:
+	mkdir $(distdir)/random
+	mkdir $(srcdir)/random
+	mkdir $(top_distdir)/random
+	mkdir $(top_srcdir)/random
 	npm install
 	npm run build
 	cp -r dist/ $(distdir)/dist/
