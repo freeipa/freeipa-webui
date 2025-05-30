@@ -556,7 +556,7 @@ const CertificateMappingPage = () => {
           setSelectedElements(value.map((cn) => ({ cn }) as CertificateMapping))
         }
         operation={operation}
-        setIsLoading={setShowTableRows}
+        setShowTableRows={setShowTableRows}
         onRefresh={refreshData}
       />
     </Page>
