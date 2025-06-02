@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { Td, Tr } from "@patternfly/react-table";
 // Layouts
-import SkeletonLayout from "./SkeletonLayout";
+import SkeletonLayout from "./SkeletonLayout/SkeletonLayout";
 
 interface PropsToSkeletonTable {
   // Table-specific variables
