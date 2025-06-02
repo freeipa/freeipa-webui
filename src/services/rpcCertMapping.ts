@@ -480,9 +480,9 @@ const extendedApi = api.injectEndpoints({
     /**
      * Enable multiple certificate mapping rule
      * @param {string[]} - Certificate mapping rule IDs
-     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
      */
-    multipleCertMapRuleEnable: build.mutation<FindRPCResponse, string[]>({
+    multipleCertMapRuleEnable: build.mutation<BatchRPCResponse, string[]>({
       query: (ruleIds) => {
         const commands: Command[] = [];
         ruleIds.forEach((certmapId) => {

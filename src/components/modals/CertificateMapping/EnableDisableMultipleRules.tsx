@@ -37,9 +37,9 @@ const EnableDisableMultipleRulesModal = (
     props.setShowTableRows(false);
     operation(props.elementsList).then((response) => {
       if ("data" in response) {
-        const data = response.data;
+        const { data } = response;
         if (data?.error) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          alerts.addAlert("error", data.error, "danger");
         }
         if (data?.result) {
           alerts.addAlert("success", "Rule status changed", "success");
