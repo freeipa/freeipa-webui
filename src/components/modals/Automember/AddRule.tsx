@@ -180,7 +180,7 @@ const AddRule = (props: PropsToAddRule) => {
   const onAddAndAddAnother = () => {
     const addPayload: AddPayload = {
       group: groupSelected,
-      type: "group",
+      type: props.ruleType,
     };
 
     setAddAgainBtnSpinning(true);
