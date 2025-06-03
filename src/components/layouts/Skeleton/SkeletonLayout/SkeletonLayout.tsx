@@ -12,14 +12,16 @@ interface PropsToSkeleton {
 
 const SkeletonLayout = (propsToSkeleton: PropsToSkeleton) => {
   return (
-    <Skeleton
-      className={propsToSkeleton.className}
-      fontSize={propsToSkeleton.fontSize}
-      height={propsToSkeleton.height}
-      screenreaderText={propsToSkeleton.screenreaderText}
-      shape={propsToSkeleton.shape}
-      width={propsToSkeleton.width}
-    />
+    <div data-testid="skeleton-wrapper">
+      <Skeleton
+        className={propsToSkeleton.className}
+        fontSize={propsToSkeleton.fontSize}
+        height={propsToSkeleton.height}
+        screenreaderText={propsToSkeleton.screenreaderText}
+        shape={propsToSkeleton.shape}
+        width={propsToSkeleton.width}
+      />
+    </div>
   );
 };
 
