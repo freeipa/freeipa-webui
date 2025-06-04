@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { Td, Tr } from "@patternfly/react-table";
 // Layouts
-import SkeletonLayout from "./SkeletonLayout";
+import { Skeleton } from "@patternfly/react-core";
 
 interface PropsToSkeletonTable {
   // Table-specific variables
@@ -26,11 +26,13 @@ const SkeletonOnTableLayout = (propsToSkeletonTable: PropsToSkeletonTable) => {
       rows.push(
         <Tr key={"row" + (i + 1)}>
           <Td colSpan={propsToSkeletonTable.colSpan}>
-            <SkeletonLayout
+            <Skeleton
               className={propsToSkeletonTable.className}
               fontSize={propsToSkeletonTable.fontSize}
               height={propsToSkeletonTable.height}
-              screenreaderText={propsToSkeletonTable.screenreaderText}
+              screenreaderText={
+                propsToSkeletonTable.screenreaderText || "Loading content"
+              }
               shape={propsToSkeletonTable.shape}
               width={propsToSkeletonTable.width}
             />
