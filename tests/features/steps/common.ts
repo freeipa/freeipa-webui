@@ -275,6 +275,13 @@ Then(
 );
 
 Then(
+  "I should see {string} entry in the data table with ID {string} and no link",
+  (name: string, tableId: string) => {
+    cy.get("table#" + tableId + " tbody td").contains(name);
+  }
+);
+
+Then(
   "I should see input field with ID {string} and value {string}",
   (id: string, value: string) => {
     cy.get("input#" + id)
@@ -506,6 +513,30 @@ When(
         .next()
         .get("div.pf-v5-c-menu");
       const itemOptionSelected = itemsOptionsList.contains(option);
+      if (itemOptionSelected) {
+        itemOptionSelected.click({ force: true });
+      }
+    }
+  }
+);
+
+When(
+  "in the modal, I select {string} option in the {string} selector",
+  (option: string, selectorName: string) => {
+    const selectorNameFound = cy
+      .get("[role=dialog] div.pf-v5-c-form__group-label")
+      .contains(selectorName);
+    if (selectorNameFound) {
+      const buttonSelector = selectorNameFound
+        .parent()
+        .next()
+        .get("[role=dialog] button.pf-v5-c-menu-toggle");
+
+      buttonSelector.click();
+      const itemOptionSelected = buttonSelector
+        .next()
+        .find("span")
+        .contains(option);
       if (itemOptionSelected) {
         itemOptionSelected.click({ force: true });
       }
