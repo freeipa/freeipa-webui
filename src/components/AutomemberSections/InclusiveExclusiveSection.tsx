@@ -433,6 +433,7 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
         list={shownElements}
         entryCount={tableEntryList.length}
         entryType={"condition"}
+        extraID={props.conditionType}
       />
       {/* Add option modal */}
       <ModalWithFormLayout
