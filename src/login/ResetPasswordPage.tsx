@@ -17,7 +17,7 @@ import BrandImg from "src/assets/images/product-name.png";
 import BackgroundImg from "src/assets/images/login-screen-background.jpg";
 // RPC
 import {
-  MetaResponse,
+  ResponseOnPwdReset,
   ResetPasswordPayload,
   useResetPasswordMutation,
 } from "src/services/rpcAuth";
@@ -104,7 +104,8 @@ const ResetPasswordPage = () => {
       uid === undefined ||
       currentPassword === "" ||
       newPassword === "" ||
-      verifyPassword === ""
+      verifyPassword === "" ||
+      newPassword !== verifyPassword
     ) {
       return true;
     } else {
@@ -136,23 +137,37 @@ const ResetPasswordPage = () => {
     }
 
     resetPassword(resetPwdData).then((response) => {
-      if ("error" in response) {
-        const receivedError = response.error as MetaResponse;
-        const reason = receivedError.response?.headers.get(
+      const { response: resp, metaResponse } =
+        response.error as ResponseOnPwdReset;
+
+      if (resp !== undefined && metaResponse !== undefined) {
+        const reason = metaResponse?.response?.headers.get(
           "x-ipa-pwchange-result"
         );
+        const htmlMessage = resp.data as string;
 
-        if (reason === "invalid-password") {
-          alerts.addAlert(
-            "reset-password-error",
-            "The password or username you entered is incorrect",
-            "danger"
-          );
-          clearFields();
-          setBtnSpinning(false);
-        } else {
-          // Redirect to login page to allow the user to login with new credentials
-          navigate("/login");
+        const match = htmlMessage.match(/<strong>(.*?)<\/strong>/);
+
+        if (match && match[1]) {
+          const errorMessage = match[1];
+          if (errorMessage.includes("Password is too short")) {
+            alerts.addAlert("reset-password-error", errorMessage, "danger");
+            setBtnSpinning(false);
+          } else if (reason === "invalid-password") {
+            alerts.addAlert(
+              "reset-password-error",
+              "The password or username you entered is incorrect",
+              "danger"
+            );
+            clearFields();
+            setBtnSpinning(false);
+          } else if (reason !== "ok" && reason !== "invalid-password") {
+            alerts.addAlert("reset-password-error", reason, "danger");
+            setBtnSpinning(false);
+          } else {
+            // Redirect to login page to allow the user to login with new credentials
+            navigate("/login");
+          }
         }
       }
     });

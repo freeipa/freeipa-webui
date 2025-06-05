@@ -65,6 +65,11 @@ export interface MetaResponse {
   };
 }
 
+export interface ResponseOnPwdReset {
+  response: FetchBaseQueryError;
+  metaResponse: MetaResponse;
+}
+
 export interface SyncOtpPayload {
   user: string;
   password: string;
@@ -174,10 +179,7 @@ const extendedApi = api.injectEndpoints({
         return meta as unknown as MetaResponse;
       },
     }),
-    resetPassword: build.mutation<
-      FindRPCResponse | MetaResponse,
-      ResetPasswordPayload
-    >({
+    resetPassword: build.mutation<ResponseOnPwdReset, ResetPasswordPayload>({
       query: (payload) => {
         const encodedCredentials = encodeURIObject({
           user: payload.username,
@@ -205,7 +207,11 @@ const extendedApi = api.injectEndpoints({
         response: FetchBaseQueryError,
         meta: FetchBaseQueryMeta
       ) => {
-        return meta as unknown as MetaResponse;
+        const responseData: ResponseOnPwdReset = {
+          response: response as FetchBaseQueryError,
+          metaResponse: meta as unknown as MetaResponse,
+        };
+        return responseData;
       },
     }),
     syncOtp: build.mutation<FindRPCResponse | MetaResponse, SyncOtpPayload>({
