@@ -25,12 +25,9 @@ Feature: Sudo rules - Settings page > 'As whom' section
         * I should see "success" alert with text "New user added"
         Then I close the alert
         Then I should see "hsolo" entry in the data table
-        Then I wait for 10 seconds
     # - RunAs User
     Scenario: Add a new runAs user
-        Given The "hsolo" element exists in the table with ID "active-users-table" located in page "active-users"
         Given I am on the "sudo-rules" > "sudoRule2" Settings page
-        Then I wait for 3 seconds
         When I click on "RunAs Users" page tab
         When I click on ID "add-runas-user" button
         Then I see a modal with title text "Add RunAs user into sudo rule sudoRule2"

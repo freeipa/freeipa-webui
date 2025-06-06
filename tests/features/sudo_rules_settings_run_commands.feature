@@ -34,7 +34,6 @@ Feature: Sudo rules - Settings page > 'Run commands' section
         * entry "command1" should have attribute "Description" set to "my description"
         Then I should see "command2" entry in the data table
         * entry "command2" should have attribute "Description" set to "my description 2"
-        Then I wait for 3 seconds
 
     Scenario: Add a new sudo allow command
         Given I am on the "sudo-rules" > "sudoRule2" Settings page
