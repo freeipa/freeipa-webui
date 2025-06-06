@@ -208,7 +208,11 @@ const Hosts = () => {
     if (dnsZoneDataResponse.isFetching) {
       return;
     }
-    if (dnsZoneDataResponse.isSuccess && dnsZoneDataResponse.data) {
+    if (
+      dnsZoneDataResponse.isSuccess &&
+      dnsZoneDataResponse.data &&
+      dnsZoneDataResponse.data.result
+    ) {
       const dnsZoneListResult = dnsZoneDataResponse.data.result.result;
       const dnsZoneListSize = dnsZoneDataResponse.data.result.count;
       const dnsZones: string[] = [];
