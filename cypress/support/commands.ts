@@ -29,15 +29,18 @@ import { addCustomCommand } from "cy-verify-downloads";
 
 addCustomCommand();
 
-Cypress.Commands.add("loginAsAnUser", (username: string, password: string) => {
-  // temporary solution as the new UI doesn't have login page yet
-  cy.visit(Cypress.env("login_url"));
-  cy.get("[id=pf-login-username-id]").type(username);
-  cy.get("[id=pf-login-password-id").type(password);
-  cy.get("button").contains("Log in").click();
-  cy.wait(1000);
-  cy.visit(Cypress.env("base_url"));
-});
+Cypress.Commands.add(
+  "loginAsAnUser",
+  (username: string, password: string, otp = "") => {
+    cy.visit(Cypress.env("login_url"));
+    cy.get("[id=pf-login-username-id]").type(username);
+    cy.get("[id=pf-login-password-id]").type(password);
+    if (otp) {
+      cy.get("[id=pf-login-password-id]").type(otp);
+    }
+    cy.get("button").contains("Log in").click();
+  }
+);
 
 Cypress.Commands.add("logout", () => {
   cy.get(".pf-v5-c-menu-toggle__text")
@@ -62,7 +65,7 @@ Cypress.Commands.add("userCleanup", () => {
     });
 });
 
-Cypress.Commands.add("createTestUser", (username: string) => {
+Cypress.Commands.add("createTestUser", (username: string, password = false) => {
   cy.visit(Cypress.env("base_url") + "/active-users");
   cy.get("tr[id=admin]", { timeout: 6000 }); // wait up to 6 seconds for the user table to visible
   cy.get("tr[id=" + username + "]")
@@ -88,6 +91,20 @@ Cypress.Commands.add("createTestUser", (username: string) => {
           .then(($label) => {
             cy.get("#" + $label.attr("for")).type("Asbestos");
           });
+        if (password) {
+          cy.get("[role=dialog] label")
+            .contains("New password")
+            .parent()
+            .then(($label) => {
+              cy.get("#" + $label.attr("for")).type("Secret123");
+            });
+          cy.get("[role=dialog] label")
+            .contains("Verify password")
+            .parent()
+            .then(($label) => {
+              cy.get("#" + $label.attr("for")).type("Secret123");
+            });
+        }
         cy.get("[role=dialog] button").contains("Add").click();
       }
     });

@@ -98,6 +98,13 @@ Given("sample testing user {string} exists", (username: string) => {
   cy.createTestUser(username);
 });
 
+Given(
+  "sample testing user {string} exists and is using default password",
+  (username: string) => {
+    cy.createTestUser(username, true);
+  }
+);
+
 Then("I am on {string} user settings page", (username: string) => {
   cy.url().then(($url) => {
     if ($url.includes("settings")) {
@@ -223,7 +230,7 @@ When("I put SSH key named {string} into the text area", (keyID: string) => {
   } else if (keyID == "invalid sample") {
     selectedKey = "invalid key";
   }
-  cy.get('textarea[name="ipasshpubkey"').type(selectedKey, { delay: 0 });
+  cy.get('textarea[name="ipasshpubkey"]').type(selectedKey, { delay: 0 });
 });
 
 Then(
@@ -248,7 +255,7 @@ Then("the SSH key should match {string}", (keyID: string) => {
   } else if (keyID == "valid sample 2") {
     selectedKey = SSH_RSA_valid_2;
   }
-  cy.get('textarea[name="ipasshpubkey"').should("have.text", selectedKey);
+  cy.get('textarea[name="ipasshpubkey"]').should("have.text", selectedKey);
 });
 
 // Certificates
@@ -267,7 +274,7 @@ When("I put Certificate named {string} into the text area", (keyID: string) => {
   } else if (keyID == "invalid sample - padding") {
     selectedKey = "123";
   }
-  cy.get('textarea[name="usercertificate"').type(selectedKey, { delay: 0 });
+  cy.get('textarea[name="usercertificate"]').type(selectedKey, { delay: 0 });
 });
 
 Then(
@@ -436,7 +443,7 @@ When(
 );
 
 Then("I should see the dialog with title {string}", (dialogTitle: string) => {
-  cy.get("div[role='dialog'")
+  cy.get("div[role='dialog']")
     .find("h1")
     .contains(dialogTitle)
     .should("be.visible");
@@ -470,7 +477,7 @@ Then(
     // Open 'Add' dialog
     cy.get("div.pf-v5-c-toolbar").find("button").contains("Add").click();
     // Check if 'elementName' is in the available list
-    cy.get("div[role='dialog'")
+    cy.get("div[role='dialog']")
       .find("div.pf-v5-c-dual-list-selector__menu")
       .find("span")
       .contains(elementName)
