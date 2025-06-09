@@ -8,7 +8,7 @@ import { SudoRule } from "../../utils/datatypes/globalDataTypes";
 // Utils
 import { checkEqualStatusSudoRule } from "src/utils/utils";
 // Layouts
-import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
+import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout/SkeletonOnTableLayout";
 // React Router DOM
 import { Link } from "react-router-dom";
 

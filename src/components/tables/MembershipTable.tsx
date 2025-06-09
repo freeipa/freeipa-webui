@@ -18,7 +18,7 @@ import {
   SubId,
 } from "src/utils/datatypes/globalDataTypes";
 // Components
-import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout";
+import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout/SkeletonOnTableLayout";
 import EmptyBodyTable from "./EmptyBodyTable";
 // Utils
 import { parseEmptyString } from "src/utils/utils";
