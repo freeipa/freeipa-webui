@@ -6,7 +6,7 @@ import TableLayout from "src/components/layouts/TableLayout";
 // Data types
 import { User } from "src/utils/datatypes/globalDataTypes";
 // Layouts
-import SkeletonOnTableLayout from "src/components/layouts/Skeleton/SkeletonOnTableLayout/SkeletonOnTableLayout";
+import SkeletonOnTableLayout from "src/components/layouts/Skeleton/SkeletonOnTableLayout";
 // Utils
 import { checkEqualStatus } from "src/utils/utils";
 // React Router DOM

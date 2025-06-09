@@ -4,7 +4,7 @@ import { Td, Th, Tr } from "@patternfly/react-table";
 // Tables
 import TableLayout from "../../components/layouts/TableLayout";
 // Layouts
-import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout/SkeletonOnTableLayout";
+import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
 // Data types
 import { AutomemberEntry } from "src/utils/datatypes/globalDataTypes";
 import { Link } from "react-router-dom";
