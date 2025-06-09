@@ -6,7 +6,7 @@ import TableLayout from "../../components/layouts/TableLayout";
 // Data types
 import { IDViewOverrideUser } from "src/utils/datatypes/globalDataTypes";
 // Layouts
-import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
+import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout/SkeletonOnTableLayout";
 // Hooks
 import useShifting from "src/hooks/useShifting";
 

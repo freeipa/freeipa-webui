@@ -4,7 +4,7 @@ import { Table, Tr, Th, Td, Thead, Tbody } from "@patternfly/react-table";
 // Data types
 import { Host } from "src/utils/datatypes/globalDataTypes";
 // Components
-import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout";
+import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout/SkeletonOnTableLayout";
 import EmptyBodyTable from "../tables/EmptyBodyTable";
 
 export interface ManagedByHostsTableProps {

@@ -6,7 +6,7 @@ import TableLayout from "../../components/layouts/TableLayout";
 // Data types
 import { HBACService } from "../../utils/datatypes/globalDataTypes";
 // Layouts
-import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
+import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout/SkeletonOnTableLayout";
 import { Link } from "react-router-dom";
 
 interface ServicesData {

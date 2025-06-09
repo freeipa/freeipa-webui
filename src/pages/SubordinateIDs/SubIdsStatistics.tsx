@@ -13,7 +13,7 @@ import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import PageLayout from "src/components/layouts/PageLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import SkeletonOnTableLayout from "src/components/layouts/Skeleton/SkeletonOnTableLayout";
+import SkeletonOnTableLayout from "src/components/layouts/Skeleton/SkeletonOnTableLayout/SkeletonOnTableLayout";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // RPC
