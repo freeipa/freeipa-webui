@@ -8,7 +8,7 @@ import { HBACRule } from "../../utils/datatypes/globalDataTypes";
 // Utils
 import { checkEqualStatusHbacRule } from "src/utils/utils";
 // Layouts
-import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout/SkeletonOnTableLayout";
+import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
 // React Router DOM
 import { Link } from "react-router-dom";
 

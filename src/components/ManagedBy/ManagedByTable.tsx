@@ -15,7 +15,7 @@ import { Td, Th, Tr } from "@patternfly/react-table";
 import { SearchIcon } from "@patternfly/react-icons";
 // Layouts
 import TableLayout from "../layouts/TableLayout";
-import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout/SkeletonOnTableLayout";
+import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout";
 // Data type
 import { Host } from "src/utils/datatypes/globalDataTypes";
 

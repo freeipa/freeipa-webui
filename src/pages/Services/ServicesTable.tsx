@@ -6,7 +6,7 @@ import TableLayout from "src/components/layouts/TableLayout";
 // Data types
 import { Service } from "src/utils/datatypes/globalDataTypes";
 // Layouts
-import SkeletonOnTableLayout from "src/components/layouts/Skeleton/SkeletonOnTableLayout/SkeletonOnTableLayout";
+import SkeletonOnTableLayout from "src/components/layouts/Skeleton/SkeletonOnTableLayout";
 // React Router DOM
 import { Link } from "react-router-dom";
 
