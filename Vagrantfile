@@ -11,13 +11,13 @@ Vagrant.configure("2") do |config|
   # Needed by Cypress - optional if you edit your /etc/hosts
   config.vm.network "forwarded_port", guest: 443, host: 443
   config.vm.network "forwarded_port", guest: 80, host: 80
-  if ENV['GITHUB_CI']
-    config.vm.network "private_network",
-              :ip => "192.168.56.10",
-              :virtualbox__dhcp_enabled => false,
-              :virtualbox__network_address => '192.168.56.0/21',
-              :virtualbox__forward_mode => 'route'
-  end
+#  if ENV['GITHUB_CI']
+#    config.vm.network "private_network",
+#              :ip => "192.168.56.10",
+#              :virtualbox__dhcp_enabled => false,
+#              :virtualbox__network_address => '192.168.56.0/21',
+#              :virtualbox__forward_mode => 'route'
+#  end
 
   config.vm.provider "libvirt" do |v,override|
     v.memory = 4096
