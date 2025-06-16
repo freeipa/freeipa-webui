@@ -9,9 +9,8 @@ import {
   MenuList,
   MenuToggle,
   MenuToggleCheckbox,
+  Popper,
 } from "@patternfly/react-core";
-// Layouts
-import BulkSelectorLayout from "src/components/layouts/BulkSelectorLayout";
 
 interface EntryData<Type> {
   selected: Type[];
@@ -279,16 +278,19 @@ const BulkSelectorPrep = <Type,>(props: PropsToBulkSelectorPrep<Type>) => {
 
   // Renders component with the elements' data
   return (
-    <BulkSelectorLayout
-      menuKey="menu-all-groups-table"
-      containerRefMenu={containerRefMenu}
-      toggle={toggle}
-      menuToolbar={menuToolbar}
-      appendTo={containerRefMenu.current || undefined}
-      isOpenMenu={isOpenMenu}
-      ariaLabel="Menu toggle with checkbox split button"
+    <div
+      id={"menu-all-groups-table"}
+      ref={containerRefMenu}
       title={group_id_list.join(", ")}
-    />
+    >
+      <Popper
+        trigger={toggle}
+        popper={menuToolbar}
+        appendTo={containerRefMenu.current || undefined}
+        isVisible={isOpenMenu}
+        aria-label={"Menu toggle with checkbox split button"}
+      />
+    </div>
   );
 };
 
