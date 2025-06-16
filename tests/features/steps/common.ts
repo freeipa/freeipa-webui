@@ -532,7 +532,9 @@ When(
       .parent()
       .next()
       .get("div.pf-v5-c-menu")
+      .find("li.pf-v5-c-menu__list-item")
       .contains(option)
+      .parent()
       .click();
   }
 );
