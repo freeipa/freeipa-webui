@@ -36,7 +36,7 @@ import PaginationLayout from "src/components/layouts/PaginationLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import MainTable from "src/components/tables/MainTable";
-import BulkSelectorPrep from "src/components/BulkSelectorPrep";
+import BulkSelectorPrep from "src/components/BulkSelectorPrep/BulkSelectorPrep";
 import { isPwPolicySelectable } from "src/utils/utils";
 // Modals
 import AddModal from "src/components/modals/PwPoliciesModals/AddModal";

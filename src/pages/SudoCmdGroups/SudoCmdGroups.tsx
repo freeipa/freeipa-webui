@@ -26,7 +26,7 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SudoCmdGroupsTable from "./SudoCmdGroupsTable";
 // Components
 import PaginationLayout from "../../components/layouts/PaginationLayout";
-import BulkSelectorPrep from "src/components/BulkSelectorPrep";
+import BulkSelectorPrep from "src/components/BulkSelectorPrep/BulkSelectorPrep";
 // Modals
 import AddSudoCmdGroup from "src/components/modals/SudoModals/AddSudoCmdGroup";
 import DeleteSudoCmdGroups from "src/components/modals/SudoModals/DeleteSudoCmdGroups";

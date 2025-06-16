@@ -19,7 +19,7 @@ import SearchInputLayout from "../../components/layouts/SearchInputLayout";
 import SecondaryButton from "../../components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "../../components/layouts/HelpTextWithIconLayout";
 // Components
-import BulkSelectorPrep from "../../components/BulkSelectorPrep";
+import BulkSelectorPrep from "../../components/BulkSelectorPrep/BulkSelectorPrep";
 import PaginationLayout from "../../components/layouts/PaginationLayout";
 import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Tables
