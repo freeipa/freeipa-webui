@@ -29,7 +29,7 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import MainTable from "../AutoMemUserRules/AutomemRulesTable";
 // Components
 import PaginationLayout from "../../components/layouts/PaginationLayout";
-import BulkSelectorPrep from "src/components/BulkSelectorPrep/BulkSelectorPrep";
+import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import TypeAheadSelect from "src/components/TypeAheadSelect";
 import useApiError from "src/hooks/useApiError";
 import GlobalErrors from "src/components/errors/GlobalErrors";
