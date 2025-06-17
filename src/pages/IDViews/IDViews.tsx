@@ -22,7 +22,7 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 // Components
-import BulkSelectorPrep from "src/components/BulkSelectorPrep/BulkSelectorPrep";
+import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 // Tables
 import IDViewsTable from "src/pages/IDViews/IDViewsTable";
