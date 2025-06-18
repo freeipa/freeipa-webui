@@ -31,7 +31,7 @@ export type DualListTarget =
   | "sudocmd"
   | "sudocmdgroup";
 
-interface PropsToAddModal {
+export interface DualListProps {
   entry: string;
   target: DualListTarget;
   showModal: boolean;
@@ -49,7 +49,7 @@ interface PropsToAddModal {
 
 // Dual list layout for updating an existing table, or for performing actions
 // against entries
-const DualListTableLayout = (props: PropsToAddModal) => {
+const DualListTableLayout = (props: DualListProps) => {
   // Dual list selector
   const initialList = (
     <div onClick={doSearch}>
@@ -194,9 +194,7 @@ const DualListTableLayout = (props: PropsToAddModal) => {
   let availOptions;
   if (availableOptions.length === 0) {
     // No option, should display some info about this
-    if (searchValue === "") {
-      availOptions = [initialList];
-    }
+    availOptions = [initialList];
   } else {
     availOptions = availableOptions;
   }
