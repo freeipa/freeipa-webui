@@ -113,7 +113,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       name: "User to override",
       pfComponent: (
         <DropdownSearch
-          id="modal-form-user-name"
+          id="modal-form-override-user"
           options={userNames}
           onSelect={(value: string) => setOverrideUser(value)}
           searchType="user"
