@@ -27,7 +27,7 @@ const DropdownSearch = (props: DropdownProps) => {
   const [searchValue, setSearchValue] = React.useState("");
   const [options, setOptions] = React.useState(props.options);
 
-  const [retrieveUsers] = useGetIDListMutation({});
+  const [retrieveList] = useGetIDListMutation({});
 
   const onSelect = (
     _event: React.MouseEvent<Element, MouseEvent> | undefined,
@@ -43,7 +43,7 @@ const DropdownSearch = (props: DropdownProps) => {
     setIsOpen(!isOpen);
   };
 
-  // Search for specifc users
+  // Search for specific items
   const submitSearchValue = (value: string) => {
     if (value === "") {
       // Reset options
@@ -53,7 +53,7 @@ const DropdownSearch = (props: DropdownProps) => {
       // Searching
       setOptions(["Searching ..."]);
     }
-    retrieveUsers({
+    retrieveList({
       searchValue: value,
       sizeLimit: 200,
       startIdx: 0,
