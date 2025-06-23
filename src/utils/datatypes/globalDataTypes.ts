@@ -616,6 +616,11 @@ export interface sudoCmdType {
   description: string;
 }
 
+export interface dnsZoneType {
+  dn: string;
+  idnsname: string[];
+}
+
 export interface automemberType {
   cn: string;
   automembertargetgroup: string;
@@ -656,6 +661,30 @@ export interface SubId {
 
 export interface DNSZone {
   idnsname: string;
+  idnssoarname: string;
+  idnssoamname: string;
+  idnssoaserial: number;
+  idnssoaexpire: number;
+  idnssoarefresh: number;
+  idnsallowdynupdate: boolean;
+  idnssoaminimum: number;
+  idnsallowquery: string;
+  idnssoaretry: number;
+  nsrecord: string[];
+  idnsupdatepolicy: string;
+  idnszoneactive: boolean;
+  idnsallowtransfer: string;
+  dn: string;
+  name_from_ip: string;
+  idnsforwarders: string[];
+  idnsforwardpolicy: string;
+  managedby: string;
+  dnsttl: number;
+  dnsdefaultttl: number;
+  dnsclass: string;
+  idnsallowsyncptr: boolean;
+  idnssecinlinesigning: boolean;
+  nsec3paramrecord: string;
 }
 
 export interface Automember {

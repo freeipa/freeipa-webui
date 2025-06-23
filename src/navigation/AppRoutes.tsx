@@ -61,6 +61,7 @@ import CertificateMappingPage from "src/pages/CertificateMapping/CertificateMapp
 import CertificateMappingGlobalConfig from "src/pages/CertificateMapping/CertificateMappingGlobalConfig";
 import CertificateMappingMatch from "src/pages/CertificateMapping/CertificateMappingMatch";
 import CertificateMappingTabs from "src/pages/CertificateMapping/CertificateMappingTabs";
+import DnsZones from "src/pages/DNSZones/DnsZones";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -457,6 +458,9 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="cert-id-mapping-match">
                 <Route path="" element={<CertificateMappingMatch />} />
+              </Route>
+              <Route path="dns-zones">
+                <Route path="" element={<DnsZones />} />
               </Route>
               <Route path="configuration" element={<Configuration />} />
               {/* Redirect to Active users page if user is logged in and navigates to the root page */}
