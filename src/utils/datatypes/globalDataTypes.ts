@@ -521,13 +521,13 @@ export interface ParamMetadata {
   doc: string;
   flags: string[];
   label: string;
-  maxlength: number;
+  maxlength?: number;
   multivalue: boolean;
   name: string;
   no_convert: boolean;
   noextrawhitespace: boolean;
-  pattern_errmsg: string;
-  pattern: string;
+  pattern_errmsg?: string;
+  pattern?: string;
   primary_key: boolean;
   query: boolean;
   required: boolean;
