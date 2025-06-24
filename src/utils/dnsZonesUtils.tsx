@@ -41,7 +41,11 @@ const simpleValues = new Set([
   "nsec3paramrecord",
 ]);
 const dateValues = new Set([]);
-const complexValues = new Map([["idnsname", "__dns_name__"]]);
+const complexValues = new Map([
+  ["idnsname", "__dns_name__"],
+  ["idnssoamname", "__dns_name__"],
+  ["idnssoarname", "__dns_name__"],
+]);
 
 export function apiToDnsZone(apiRecord: Record<string, unknown>): DNSZone {
   const converted = convertApiObj(
