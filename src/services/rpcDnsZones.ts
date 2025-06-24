@@ -9,7 +9,8 @@ import {
 // utils
 import { API_VERSION_BACKUP } from "../utils/utils";
 // Data types
-import { dnsZoneType } from "src/utils/datatypes/globalDataTypes";
+import { DNSZone, dnsZoneType } from "src/utils/datatypes/globalDataTypes";
+import { apiToDnsZone } from "src/utils/dnsZonesUtils";
 
 /**
  * DNS zones-related endpoints: useDnsZonesFindQuery, useGetDnsZonesFullDataQuery,
@@ -33,6 +34,14 @@ export interface DnsZonesFullDataPayload {
   sizelimit: number;
   startIdx: number;
   stopIdx: number;
+}
+
+export interface DNSZoneBatchResponse {
+  error: string;
+  id: string;
+  principal: string;
+  version: string;
+  result: DNSZone[];
 }
 
 const extendedApi = api.injectEndpoints({
@@ -148,7 +157,7 @@ const extendedApi = api.injectEndpoints({
      * @returns {BatchRPCResponse} - List of DNS zones full data
      */
     searchDnsZonesEntries: build.mutation<
-      BatchRPCResponse,
+      DNSZoneBatchResponse,
       DnsZonesFullDataPayload
     >({
       async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
@@ -198,8 +207,10 @@ const extendedApi = api.injectEndpoints({
           const dnsZoneId = responseDataDnsZones.result.result[
             i
           ] as dnsZoneType;
-          const { idnsname } = dnsZoneId;
-          dnsZonesIds.push(idnsname[0]);
+          const dnsName = dnsZoneId.idnsname[0]["__dns_name__"];
+          if (dnsName) {
+            dnsZonesIds.push(dnsName as string);
+          }
         }
 
         // FETCH DNS ZONE DATA VIA "dnszone_show" COMMAND
@@ -220,8 +231,26 @@ const extendedApi = api.injectEndpoints({
           response.result.totalCount = dnsZonesItemsCount;
         }
 
+        // Handle the '__dns_name__' fields
+        const dnsZones: DNSZone[] = [];
+        const count = response.result.totalCount;
+        for (let i = 0; i < count; i++) {
+          const dnsZone = response.result.results[i].result as Record<
+            string,
+            unknown
+          >;
+          // Convert API object to DNSZone type
+          const convertedDnsZone: DNSZone = apiToDnsZone(dnsZone);
+          dnsZones.push(convertedDnsZone);
+        }
+
         // Return results
-        return { data: response };
+        return {
+          data: {
+            ...response,
+            result: dnsZones,
+          },
+        };
       },
     }),
   }),

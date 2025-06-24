@@ -263,17 +263,10 @@ const DnsZones = () => {
           );
         } else {
           // Success
-          const listResult = result.data?.result.results || [];
-          const listSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
-          const elementsList: DNSZone[] = [];
-
-          for (let i = 0; i < listSize; i++) {
-            elementsList.push(listResult[i].result);
-          }
+          const dnsZones = result.data?.result || [];
 
           setTotalCount(totalCount);
-          setDnsZones(elementsList);
+          setDnsZones(dnsZones);
           setShowTableRows(true);
         }
         setIsSearchDisabled(false);
