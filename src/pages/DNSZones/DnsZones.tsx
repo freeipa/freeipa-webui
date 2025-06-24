@@ -78,8 +78,9 @@ const DnsZones = () => {
 
   // States
   const [dnsZones, setDnsZones] = React.useState<DNSZone[]>([]);
-  const [isSearchDisabled, setIsSearchDisabled] = React.useState(false);
-  const [totalCount, setTotalCount] = React.useState(0);
+  const [isSearchDisabled, setIsSearchDisabled] =
+    React.useState<boolean>(false);
+  const [totalCount, setTotalCount] = React.useState<number>(0);
 
   // API calls
   const dnsZonesResponse = useGetDnsZonesFullDataQuery({
@@ -158,7 +159,7 @@ const DnsZones = () => {
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
     React.useState<boolean>(true);
 
-  const [isDeletion, setIsDeletion] = React.useState(false);
+  const [isDeletion, setIsDeletion] = React.useState<boolean>(false);
 
   // 'Enable' button state
   const [isEnableButtonDisabled, setIsEnableButtonDisabled] =
@@ -223,7 +224,7 @@ const DnsZones = () => {
   }, []);
 
   // Show table rows
-  const [showTableRows, setShowTableRows] = React.useState(!isLoading);
+  const [showTableRows, setShowTableRows] = React.useState<boolean>(!isLoading);
 
   // Show table rows only when data is fully retrieved
   React.useEffect(() => {
