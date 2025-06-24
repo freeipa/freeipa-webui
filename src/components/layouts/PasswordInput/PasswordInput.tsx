@@ -9,15 +9,14 @@ import {
 import { EyeSlashIcon } from "@patternfly/react-icons";
 import { EyeIcon } from "@patternfly/react-icons";
 
-interface PropsToPasswordInput {
-  classname?: string;
+export interface PropsToPasswordInput {
+  ariaLabel?: string;
   name?: string;
   id?: string;
   value?: string;
-  passwordHidden?: boolean | true;
-  onFocus?: React.MouseEventHandler<HTMLButtonElement> | undefined;
+  passwordHidden?: boolean;
+  onFocus?: React.MouseEventHandler<HTMLButtonElement>;
   onChange: (value: string) => void;
-  onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
   onRevealHandler: (value: boolean) => void;
   validated?: "success" | "warning" | "error" | "default";
   isRequired?: boolean;
@@ -31,6 +30,7 @@ const PasswordInput = (props: PropsToPasswordInput) => {
     <InputGroup>
       <InputGroupItem isFill>
         <TextInput
+          aria-label={props.ariaLabel ?? props.name}
           type={props.passwordHidden ? "password" : "text"}
           id={props.id}
           name={props.name}
