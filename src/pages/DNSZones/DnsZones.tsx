@@ -173,6 +173,7 @@ const DnsZones = () => {
   // - Selectable checkboxes on table
   const selectableDnsZonesTable = dnsZones.filter(isDnsZoneSelectable); // elements per Table
 
+  // - Manage the selected elements in the table (add/remove)
   const updateSelectedDnsZones = (dnsZones: DNSZone[], isSelected: boolean) => {
     let newSelectedDnsZones: DNSZone[] = [];
     if (isSelected) {

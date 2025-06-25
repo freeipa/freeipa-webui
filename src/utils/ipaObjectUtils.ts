@@ -190,6 +190,10 @@ export function convertApiObj(
           typeof complexKey === "string"
         ) {
           obj[key] = (value[0] as Record<string, unknown>)[complexKey];
+        } else {
+          console.error(
+            `Complex value for key ${key} is not an array or complexKey is not a string`
+          );
         }
       } else {
         obj[key] = value;

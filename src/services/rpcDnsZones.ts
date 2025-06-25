@@ -154,7 +154,7 @@ const extendedApi = api.injectEndpoints({
     /**
      * Search for a specific DNS zone
      * @param {DnsZonesFullDataPayload} payload - The payload containing search parameters
-     * @returns {BatchRPCResponse} - List of DNS zones full data
+     * @returns {DNSZoneBatchResponse} - List of DNS zones full data
      */
     searchDnsZonesEntries: build.mutation<
       DNSZoneBatchResponse,
