@@ -36,7 +36,7 @@ export interface DnsZonesFullDataPayload {
   stopIdx: number;
 }
 
-export interface DNSZoneBatchResponse {
+export interface DnsZoneBatchResponse {
   error: string;
   id: string;
   principal: string;
@@ -154,10 +154,10 @@ const extendedApi = api.injectEndpoints({
     /**
      * Search for a specific DNS zone
      * @param {DnsZonesFullDataPayload} payload - The payload containing search parameters
-     * @returns {DNSZoneBatchResponse} - List of DNS zones full data
+     * @returns {DnsZoneBatchResponse} - List of DNS zones full data
      */
     searchDnsZonesEntries: build.mutation<
-      DNSZoneBatchResponse,
+      DnsZoneBatchResponse,
       DnsZonesFullDataPayload
     >({
       async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
