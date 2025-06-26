@@ -44,6 +44,7 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import MainTable from "src/components/tables/MainTable";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import AddDnsZoneModal from "src/components/modals/DnsZones/AddDnsZoneModal";
+import DeleteDnsZonesModal from "src/components/modals/DnsZones/DeleteDnsZonesModal";
 
 const DnsZones = () => {
   const navigate = useNavigate();
@@ -311,7 +312,8 @@ const DnsZones = () => {
   };
 
   // Modals functionality
-  const [showAddModal, setShowAddModal] = React.useState(false);
+  const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
 
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
@@ -361,7 +363,10 @@ const DnsZones = () => {
     {
       key: 4,
       element: (
-        <SecondaryButton isDisabled={isDeleteButtonDisabled || !showTableRows}>
+        <SecondaryButton
+          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          onClickHandler={() => setShowDeleteModal(true)}
+        >
           Delete
         </SecondaryButton>
       ),
@@ -489,6 +494,17 @@ const DnsZones = () => {
         onClose={() => setShowAddModal(false)}
         title="Add DNS zone"
         onRefresh={refreshData}
+      />
+      <DeleteDnsZonesModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        elementsToDelete={selectedElements}
+        clearSelectedElements={() => setSelectedElements([])}
+        columnNames={["DNS zone name"]}
+        keyNames={["idnsname"]}
+        onRefresh={refreshData}
+        updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
+        updateIsDeletion={setIsDeletion}
       />
     </Page>
   );
