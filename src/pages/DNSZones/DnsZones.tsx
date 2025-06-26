@@ -43,6 +43,7 @@ import TitleLayout from "src/components/layouts/TitleLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import MainTable from "src/components/tables/MainTable";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
+import AddDnsZoneModal from "src/components/modals/DnsZones/AddDnsZoneModal";
 
 const DnsZones = () => {
   const navigate = useNavigate();
@@ -309,6 +310,9 @@ const DnsZones = () => {
     updateSelectedPerPage: setSelectedPerPage,
   };
 
+  // Modals functionality
+  const [showAddModal, setShowAddModal] = React.useState(false);
+
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -365,7 +369,12 @@ const DnsZones = () => {
     {
       key: 5,
       element: (
-        <SecondaryButton isDisabled={!showTableRows}>Add</SecondaryButton>
+        <SecondaryButton
+          isDisabled={!showTableRows}
+          onClickHandler={() => setShowAddModal(true)}
+        >
+          Add
+        </SecondaryButton>
       ),
     },
     {
@@ -475,6 +484,12 @@ const DnsZones = () => {
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
         />
       </PageSection>
+      <AddDnsZoneModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        title="Add DNS zone"
+        onRefresh={refreshData}
+      />
     </Page>
   );
 };
