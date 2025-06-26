@@ -14,12 +14,14 @@ import { apiToDnsZone } from "src/utils/dnsZonesUtils";
 
 /**
  * DNS zones-related endpoints: useDnsZonesFindQuery, useGetDnsZonesFullDataQuery,
-                            useSearchDnsZonesEntriesMutation, useAddDnsZoneMutation
+                            useSearchDnsZonesEntriesMutation, useAddDnsZoneMutation,
+                            useDnsZoneDeleteMutation
  *
  * API commands:
  * - dnszone_find: https://freeipa.readthedocs.io/en/latest/api/dnszone_find.html
  * - dnszone_show: https://freeipa.readthedocs.io/en/latest/api/dnszone_show.html
  * - dnszone_add: https://freeipa.readthedocs.io/en/latest/api/dnszone_add.html
+ * - dnszone_del: https://freeipa.readthedocs.io/en/latest/api/dnszone_del.html
  */
 
 export interface DnsZonesFindPayload {
@@ -292,6 +294,24 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Delete DNS zones
+     * @param {string[]} dnsZoneIds - The IDs of the DNS zones to delete
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    dnsZoneDelete: build.mutation<BatchRPCResponse, string[]>({
+      query: (dnsZoneIds) => {
+        const commands: Command[] = [];
+        dnsZoneIds.forEach((dnsZoneId) => {
+          commands.push({
+            method: "dnszone_del",
+            params: [[dnsZoneId], {}],
+          });
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -301,4 +321,5 @@ export const {
   useGetDnsZonesFullDataQuery,
   useSearchDnsZonesEntriesMutation,
   useAddDnsZoneMutation,
+  useDnsZoneDeleteMutation,
 } = extendedApi;
