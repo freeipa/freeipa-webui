@@ -34,8 +34,8 @@ import TextLayout from "src/components/layouts/TextLayout";
  * Functions that can be reusable and called by several components throughout the application.
  */
 
-// Default API version (in case this is not available in Redux ATM)
-export const API_VERSION_BACKUP = "2.251";
+// Default latest API version (in case this is not available in Redux ATM)
+export const API_VERSION_BACKUP = "2.254";
 
 // Helper method: Given an users list and status, check if some entry has different status
 export const checkEqualStatus = (status: boolean, usersList: User[]) => {
