@@ -312,6 +312,42 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(commands, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Disable DNS zones
+     * @param {string[]} dnsZoneIds - The IDs of the DNS zones to disable
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    dnsZoneDisable: build.mutation<BatchRPCResponse, string[]>({
+      query: (dnsZoneIds) => {
+        const commands: Command[] = [];
+        dnsZoneIds.forEach((dnsZoneId) => {
+          commands.push({
+            method: "dnszone_disable",
+            params: [[dnsZoneId], {}],
+          });
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Enable DNS zones
+     * @param {string[]} dnsZoneIds - The IDs of the DNS zones to enable
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    dnsZoneEnable: build.mutation<BatchRPCResponse, string[]>({
+      query: (dnsZoneIds) => {
+        const commands: Command[] = [];
+        dnsZoneIds.forEach((dnsZoneId) => {
+          commands.push({
+            method: "dnszone_enable",
+            params: [[dnsZoneId], {}],
+          });
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -322,4 +358,6 @@ export const {
   useSearchDnsZonesEntriesMutation,
   useAddDnsZoneMutation,
   useDnsZoneDeleteMutation,
+  useDnsZoneDisableMutation,
+  useDnsZoneEnableMutation,
 } = extendedApi;
