@@ -45,6 +45,7 @@ import MainTable from "src/components/tables/MainTable";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import AddDnsZoneModal from "src/components/modals/DnsZones/AddDnsZoneModal";
 import DeleteDnsZonesModal from "src/components/modals/DnsZones/DeleteDnsZonesModal";
+import EnableDisableDnsZonesModal from "src/components/modals/DnsZones/EnableDisableDnsZonesModal";
 
 const DnsZones = () => {
   const navigate = useNavigate();
@@ -314,6 +315,22 @@ const DnsZones = () => {
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
+  const [showEnableDisableModal, setShowEnableDisableModal] =
+    React.useState<boolean>(false);
+  const [operation, setOperation] = React.useState<"enable" | "disable">(
+    "disable"
+  );
+
+  // Open modal and set operation to 'disable' or "enable"
+  const onEnableOperation = () => {
+    setOperation("enable");
+    setShowEnableDisableModal(true);
+  };
+
+  const onDisableOperation = () => {
+    setOperation("disable");
+    setShowEnableDisableModal(true);
+  };
 
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
@@ -385,7 +402,10 @@ const DnsZones = () => {
     {
       key: 6,
       element: (
-        <SecondaryButton isDisabled={isDisableButtonDisabled || !showTableRows}>
+        <SecondaryButton
+          isDisabled={isDisableButtonDisabled || !showTableRows}
+          onClickHandler={onDisableOperation}
+        >
           Disable
         </SecondaryButton>
       ),
@@ -393,7 +413,10 @@ const DnsZones = () => {
     {
       key: 7,
       element: (
-        <SecondaryButton isDisabled={isEnableButtonDisabled || !showTableRows}>
+        <SecondaryButton
+          isDisabled={isEnableButtonDisabled || !showTableRows}
+          onClickHandler={onEnableOperation}
+        >
           Enable
         </SecondaryButton>
       ),
@@ -505,6 +528,19 @@ const DnsZones = () => {
         onRefresh={refreshData}
         updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
         updateIsDeletion={setIsDeletion}
+      />
+      <EnableDisableDnsZonesModal
+        isOpen={showEnableDisableModal}
+        onClose={() => setShowEnableDisableModal(false)}
+        elementsList={selectedElements.map((dnszone) => dnszone.idnsname)}
+        setElementsList={(value) =>
+          setSelectedElements(
+            value.map((idnsname) => ({ idnsname }) as DNSZone)
+          )
+        }
+        operation={operation}
+        setShowTableRows={setShowTableRows}
+        onRefresh={refreshData}
       />
     </Page>
   );
