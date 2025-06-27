@@ -14,11 +14,14 @@ import { apiToDnsZone } from "src/utils/dnsZonesUtils";
 
 /**
  * DNS zones-related endpoints: useDnsZonesFindQuery, useGetDnsZonesFullDataQuery,
-                            useSearchDnsZonesEntriesMutation,
+                            useSearchDnsZonesEntriesMutation, useAddDnsZoneMutation,
+                            useDnsZoneDeleteMutation
  *
  * API commands:
  * - dnszone_find: https://freeipa.readthedocs.io/en/latest/api/dnszone_find.html
  * - dnszone_show: https://freeipa.readthedocs.io/en/latest/api/dnszone_show.html
+ * - dnszone_add: https://freeipa.readthedocs.io/en/latest/api/dnszone_add.html
+ * - dnszone_del: https://freeipa.readthedocs.io/en/latest/api/dnszone_del.html
  */
 
 export interface DnsZonesFindPayload {
@@ -42,6 +45,13 @@ export interface DnsZoneBatchResponse {
   principal: string;
   version: string;
   result: DNSZone[];
+}
+
+export interface AddDnsZonePayload {
+  idnsname?: string;
+  nameFromIp?: string;
+  skipOverlapCheck?: boolean;
+  version?: string;
 }
 
 const extendedApi = api.injectEndpoints({
@@ -253,6 +263,91 @@ const extendedApi = api.injectEndpoints({
         };
       },
     }),
+    /**
+     * Add DNS zone
+     * @param {AddDnsZonePayload} payload - The payload containing new DNS zone data
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    addDnsZone: build.mutation<FindRPCResponse, AddDnsZonePayload>({
+      query: (payload) => {
+        const params = {
+          version: payload.version || API_VERSION_BACKUP,
+        };
+
+        // Check which parameters are provided
+        if (payload.nameFromIp !== undefined && payload.nameFromIp !== "") {
+          params["name_from_ip"] = payload.nameFromIp;
+        }
+
+        if (
+          payload.skipOverlapCheck !== undefined &&
+          payload.skipOverlapCheck !== false
+        ) {
+          params["skip_overlap_check"] = payload.skipOverlapCheck;
+        }
+
+        const idnsname = payload.idnsname !== "" ? [payload.idnsname] : [];
+
+        return getCommand({
+          method: "dnszone_add",
+          params: [idnsname, params],
+        });
+      },
+    }),
+    /**
+     * Delete DNS zones
+     * @param {string[]} dnsZoneIds - The IDs of the DNS zones to delete
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    dnsZoneDelete: build.mutation<BatchRPCResponse, string[]>({
+      query: (dnsZoneIds) => {
+        const commands: Command[] = [];
+        dnsZoneIds.forEach((dnsZoneId) => {
+          commands.push({
+            method: "dnszone_del",
+            params: [[dnsZoneId], {}],
+          });
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Disable DNS zones
+     * @param {string[]} dnsZoneIds - The IDs of the DNS zones to disable
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    dnsZoneDisable: build.mutation<BatchRPCResponse, string[]>({
+      query: (dnsZoneIds) => {
+        const commands: Command[] = [];
+        dnsZoneIds.forEach((dnsZoneId) => {
+          commands.push({
+            method: "dnszone_disable",
+            params: [[dnsZoneId], {}],
+          });
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Enable DNS zones
+     * @param {string[]} dnsZoneIds - The IDs of the DNS zones to enable
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    dnsZoneEnable: build.mutation<BatchRPCResponse, string[]>({
+      query: (dnsZoneIds) => {
+        const commands: Command[] = [];
+        dnsZoneIds.forEach((dnsZoneId) => {
+          commands.push({
+            method: "dnszone_enable",
+            params: [[dnsZoneId], {}],
+          });
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -261,4 +356,8 @@ export const {
   useDnsZonesFindQuery,
   useGetDnsZonesFullDataQuery,
   useSearchDnsZonesEntriesMutation,
+  useAddDnsZoneMutation,
+  useDnsZoneDeleteMutation,
+  useDnsZoneDisableMutation,
+  useDnsZoneEnableMutation,
 } = extendedApi;
