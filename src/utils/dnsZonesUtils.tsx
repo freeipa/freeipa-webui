@@ -17,8 +17,6 @@ export const dnsZoneAsRecord = (
 };
 
 const simpleValues = new Set([
-  "idnssoarname",
-  "idnssoamname",
   "idnssoaserial",
   "idnssoaexpire",
   "idnssoarefresh",
@@ -43,8 +41,8 @@ const simpleValues = new Set([
 const dateValues = new Set([]);
 const complexValues = new Map([
   ["idnsname", "__dns_name__"],
-  ["idnssoamname", "__dns_name__"],
   ["idnssoarname", "__dns_name__"],
+  ["idnssoamname", "__dns_name__"],
 ]);
 
 export function apiToDnsZone(apiRecord: Record<string, unknown>): DNSZone {
