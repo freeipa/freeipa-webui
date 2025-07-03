@@ -14,6 +14,7 @@ import {
  * @param {number} minValue - The minimum value allowed (Optional)
  * @param {number} maxValue - The maximum value allowed (Optional)
  * @param {IPAParamDefinition} IPAParamDefinition - IPA Object parameters
+ * @param {boolean} isDisabled - Overrides the `readOnly` value (Optional. Default: readOnly)
  * @returns {React.ReactNode} The IPA Number Input component
  *
  */
@@ -24,12 +25,16 @@ export interface IPAParamDefinitionNumberInput extends IPAParamDefinition {
   numCharsShown?: number;
   minValue?: number;
   maxValue?: number;
+  isDisabled?: boolean;
 }
 
 const IpaNumberInput = (props: IPAParamDefinitionNumberInput) => {
   const { readOnly, value, onChange } = getParamProperties(props);
 
   const numberValue = parseInt(value?.toString() || "0");
+
+  const isDisabled =
+    props.isDisabled !== undefined ? props.isDisabled : readOnly;
 
   const normalizeBetween = (value, min, max) => {
     if (min !== undefined && max !== undefined) {
@@ -92,7 +97,7 @@ const IpaNumberInput = (props: IPAParamDefinitionNumberInput) => {
       inputAriaLabel="number input"
       minusBtnAriaLabel="minus"
       plusBtnAriaLabel="plus"
-      isDisabled={readOnly}
+      isDisabled={isDisabled}
       widthChars={props.numCharsShown || 1}
       className={props.className || ""}
       inputProps={{ id: props.id }}
