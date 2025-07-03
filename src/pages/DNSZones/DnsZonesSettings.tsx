@@ -36,6 +36,7 @@ import IpaNumberInput from "src/components/Form/IpaNumberInput";
 import IpaCheckbox from "src/components/Form/IpaCheckbox";
 import IpaForwardPolicy from "src/components/Form/IpaForwardPolicy";
 import EnableDisableDnsZonesModal from "src/components/modals/DnsZones/EnableDisableDnsZonesModal";
+import DeleteDnsZonesModal from "src/components/modals/DnsZones/DeleteDnsZonesModal";
 
 interface DnsZonesSettingsProps {
   dnsZone: Partial<DNSZone>;
@@ -178,7 +179,9 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
     >
       Disable
     </DropdownItem>,
-    <DropdownItem key="delete">Delete</DropdownItem>,
+    <DropdownItem key="delete" onClick={() => setIsDeleteOpen(true)}>
+      Delete
+    </DropdownItem>,
     <DropdownItem key="add-permission" isDisabled={false}>
       Add permission
     </DropdownItem>,
@@ -236,6 +239,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
 
   // Modals
   const [isEnableDisableOpen, setIsEnableDisableOpen] = React.useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = React.useState(false);
 
   // Render component
   return (
@@ -500,6 +504,18 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
         operation={isDnsZoneEnabled ? "disable" : "enable"}
         setShowTableRows={setIsDataLoading}
         onRefresh={props.onRefresh}
+      />
+      <DeleteDnsZonesModal
+        isOpen={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
+        elementsToDelete={[props.dnsZone] as DNSZone[]}
+        clearSelectedElements={() => {}} // No need to unselect elements in this case
+        columnNames={["DNS zone name"]}
+        keyNames={["idnsname"]}
+        onRefresh={props.onRefresh}
+        updateIsDeleteButtonDisabled={() => {}} // No need to disable delete button in this case
+        updateIsDeletion={() => {}} // No need to update deletion state in this case
+        fromSettings={true}
       />
     </>
   );

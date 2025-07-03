@@ -15,6 +15,8 @@ import { useDnsZoneDeleteMutation } from "src/services/rpcDnsZones";
 import { DNSZone, ErrorData } from "src/utils/datatypes/globalDataTypes";
 import { BatchRPCResponse } from "src/services/rpc";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+// Reacr Router
+import { useNavigate } from "react-router";
 // Components
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import DeletedElementsTable from "src/components/tables/DeletedElementsTable";
@@ -31,11 +33,14 @@ interface DeleteDnsZonesModalProps {
   onRefresh: () => void;
   updateIsDeleteButtonDisabled: (value: boolean) => void;
   updateIsDeletion: (value: boolean) => void;
+  fromSettings?: boolean; // Optional, used to determine if the modal is opened from settings
 }
 
 const DeleteDnsZonesModal = (props: DeleteDnsZonesModalProps) => {
   // Alerts to show in the UI
   const alerts = useAlerts();
+
+  const navigate = useNavigate();
 
   // RPC calls
   const [deleteDnsZones] = useDnsZoneDeleteMutation();
@@ -118,6 +123,14 @@ const DeleteDnsZonesModal = (props: DeleteDnsZonesModalProps) => {
 
             setBtnSpinning(false);
             props.onClose();
+
+            // Move to main page if the modal is opened from settings
+            if (
+              props.fromSettings !== undefined &&
+              props.fromSettings === true
+            ) {
+              navigate("/dns-zones");
+            }
             // Refresh data
             props.onRefresh();
           }
