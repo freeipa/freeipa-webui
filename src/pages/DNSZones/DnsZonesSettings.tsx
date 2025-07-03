@@ -35,6 +35,7 @@ import IpaTextboxList from "src/components/Form/IpaTextboxList";
 import IpaNumberInput from "src/components/Form/IpaNumberInput";
 import IpaCheckbox from "src/components/Form/IpaCheckbox";
 import IpaForwardPolicy from "src/components/Form/IpaForwardPolicy";
+import EnableDisableDnsZonesModal from "src/components/modals/DnsZones/EnableDisableDnsZonesModal";
 
 interface DnsZonesSettingsProps {
   dnsZone: Partial<DNSZone>;
@@ -56,8 +57,32 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
 
+  // Infer the status of the DNS zone from the 'idnszoneactive' property
+  const inferStatus = () => {
+    if (props.dnsZone.idnszoneactive !== undefined) {
+      let isActive = !!props.dnsZone.idnszoneactive;
+      if (typeof props.dnsZone.idnszoneactive === "string") {
+        // Convert string to boolean
+        if (props.dnsZone.idnszoneactive === "true") {
+          isActive = true;
+        } else {
+          isActive = false;
+        }
+      }
+      return isActive;
+    }
+    return false; // Default to false if not defined
+  };
+
   // States
   const [isDataLoading, setIsDataLoading] = React.useState(false);
+  const [isDnsZoneEnabled, setIsDnsZoneEnabled] =
+    React.useState<boolean>(inferStatus);
+
+  // Keep the status updated
+  React.useEffect(() => {
+    setIsDnsZoneEnabled(inferStatus());
+  }, [props.dnsZone.idnszoneactive]);
 
   // Get 'ipaObject' and 'recordOnChange' to use in 'IpaTextInput'
   const { ipaObject, recordOnChange } = dnsZoneAsRecord(
@@ -72,7 +97,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
   const onRevert = () => {
     props.onDnsZoneChange(props.originalDnsZone);
     props.onRefresh();
-    alerts.addAlert("revert-success", "Dns zone data reverted", "success");
+    alerts.addAlert("revert-success", "DNS zone data reverted", "success");
   };
 
   // Helper method to build the payload based on values
@@ -139,10 +164,18 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
   const [isKebabOpen, setIsKebabOpen] = React.useState<boolean>(false);
 
   const kebabItems = [
-    <DropdownItem key="enable" isDisabled={true}>
+    <DropdownItem
+      key="enable"
+      isDisabled={isDnsZoneEnabled}
+      onClick={() => setIsEnableDisableOpen(true)}
+    >
       Enable
     </DropdownItem>,
-    <DropdownItem key="disable" isDisabled={false}>
+    <DropdownItem
+      key="disable"
+      isDisabled={!isDnsZoneEnabled}
+      onClick={() => setIsEnableDisableOpen(true)}
+    >
       Disable
     </DropdownItem>,
     <DropdownItem key="delete">Delete</DropdownItem>,
@@ -200,6 +233,9 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
       ),
     },
   ];
+
+  // Modals
+  const [isEnableDisableOpen, setIsEnableDisableOpen] = React.useState(false);
 
   // Render component
   return (
@@ -456,6 +492,15 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
           </SidebarContent>
         </Sidebar>
       </TabLayout>
+      <EnableDisableDnsZonesModal
+        isOpen={isEnableDisableOpen}
+        onClose={() => setIsEnableDisableOpen(false)}
+        elementsList={[props.dnsZone.idnsname || ""]}
+        setElementsList={() => {}} // No need to unselect elements in this case
+        operation={isDnsZoneEnabled ? "disable" : "enable"}
+        setShowTableRows={setIsDataLoading}
+        onRefresh={props.onRefresh}
+      />
     </>
   );
 };
