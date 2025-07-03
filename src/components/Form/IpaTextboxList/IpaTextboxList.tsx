@@ -21,15 +21,31 @@ export interface PropsToIpaTextboxList {
 }
 
 const IpaTextboxList = (props: PropsToIpaTextboxList) => {
+  // Helper to normalize the value from the IPA object (returns a string array)
+  const getNormalizedValue = (value: string | string[]): string[] => {
+    if (typeof value === "string") {
+      // Remove semicolon at the end of the string
+      const newValue = value.replace(";", "");
+      return [newValue];
+    } else {
+      return value || [];
+    }
+  };
+
+  // Side-effecting version for useEffect
+  const normalizeValue = (value: string | string[]) => {
+    setList(getNormalizedValue(value));
+  };
+
   const [list, setList] = React.useState<string[]>(
-    props.ipaObject[props.name] || []
+    getNormalizedValue(props.ipaObject[props.name])
   );
 
   const [invalidList, setInvalidList] = React.useState<number[]>([]);
 
   // Keep the values updated, thus preventing empty values
   React.useEffect(() => {
-    setList(props.ipaObject[props.name] || []);
+    normalizeValue(props.ipaObject[props.name]);
   }, [props.ipaObject]);
 
   // - Add element on list handler
