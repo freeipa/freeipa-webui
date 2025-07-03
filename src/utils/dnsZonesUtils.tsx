@@ -81,7 +81,7 @@ export function createEmptyDnsZone(): DNSZone {
     dn: "",
     name_from_ip: "",
     idnsforwarders: [],
-    idnsforwardpolicy: "",
+    idnsforwardpolicy: "first", // default value
     managedby: "",
     dnsttl: 0,
     dnsdefaultttl: 0,

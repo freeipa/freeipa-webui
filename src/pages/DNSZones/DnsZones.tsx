@@ -475,7 +475,7 @@ const DnsZones = () => {
                   hasCheckboxes={true}
                   pathname="dns-zones"
                   showTableRows={showTableRows}
-                  showLink={false}
+                  showLink={true}
                   elementsData={{
                     isElementSelectable: isDnsZoneSelectable,
                     selectedElements,
@@ -533,11 +533,7 @@ const DnsZones = () => {
         isOpen={showEnableDisableModal}
         onClose={() => setShowEnableDisableModal(false)}
         elementsList={selectedElements.map((dnszone) => dnszone.idnsname)}
-        setElementsList={(value) =>
-          setSelectedElements(
-            value.map((idnsname) => ({ idnsname }) as DNSZone)
-          )
-        }
+        setElementsList={() => {}}
         operation={operation}
         setShowTableRows={setShowTableRows}
         onRefresh={refreshData}
