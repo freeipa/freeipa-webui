@@ -437,6 +437,42 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Add permission to DNS zone
+     * @param {string} dnsZoneId - The ID of the DNS zone to add
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    addDnsZonePermission: build.mutation<FindRPCResponse, string>({
+      query: (dnsZoneId) => {
+        return getCommand({
+          method: "dnszone_add_permission",
+          params: [
+            [dnsZoneId],
+            {
+              version: API_VERSION_BACKUP,
+            },
+          ],
+        });
+      },
+    }),
+    /**
+     * Remove permission from DNS zone
+     * @param {string} dnsZoneId - The ID of the DNS zone to remove
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    removeDnsZonePermission: build.mutation<FindRPCResponse, string>({
+      query: (dnsZoneId) => {
+        return getCommand({
+          method: "dnszone_remove_permission",
+          params: [
+            [dnsZoneId],
+            {
+              version: API_VERSION_BACKUP,
+            },
+          ],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -451,4 +487,6 @@ export const {
   useDnsZoneEnableMutation,
   useDnsZoneDetailsQuery,
   useDnsZoneModMutation,
+  useAddDnsZonePermissionMutation,
+  useRemoveDnsZonePermissionMutation,
 } = extendedApi;

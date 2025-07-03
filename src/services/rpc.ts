@@ -61,6 +61,16 @@ export interface ErrorResult {
   name: string;
 }
 
+export interface KwError {
+  type: "error";
+  error: string;
+  error_code: number;
+  error_name: string;
+  error_kw: {
+    reason: string;
+  };
+}
+
 // 'FindRPCResponse' type
 //   - Has 'result' > 'result' structure
 export interface FindRPCResponse {
