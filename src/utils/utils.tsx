@@ -30,14 +30,21 @@ import { SerializedError } from "@reduxjs/toolkit";
 // PatternFly
 import TextLayout from "src/components/layouts/TextLayout";
 
-/*
+/**
  * Functions that can be reusable and called by several components throughout the application.
  */
 
-// Default latest API version (in case this is not available in Redux ATM)
+/**
+ * Default API version (in case this is not available in Redux ATM)
+ */
 export const API_VERSION_BACKUP = "2.254";
 
-// Helper method: Given an users list and status, check if some entry has different status
+/**
+ * Helper method: Given an users list and status, check if some entry has different status
+ * @param {boolean} status - The status to check against
+ * @param {User[]} usersList - Array of users to check
+ * @returns {boolean} - True if all users have the same status, false otherwise
+ */
 export const checkEqualStatus = (status: boolean, usersList: User[]) => {
   const usersWithOtherStatus = usersList.filter(
     (user) => user.nsaccountlock !== status
@@ -45,7 +52,13 @@ export const checkEqualStatus = (status: boolean, usersList: User[]) => {
   return usersWithOtherStatus.length === 0;
 };
 
-// Helper method: Given an general-type (T) list and status, check if some entry has different status
+/**
+ * Helper method: Given an general-type (T) list and status, check if some entry has different status
+ * @param {boolean} status - The status to check against
+ * @param {T[]} elementsList - Array of elements to check
+ * @param {string} statusElementName - Name of the status element to check
+ * @returns {boolean} - True if all elements have the same status, false otherwise
+ */
 // @typescript-eslint/no-unused-vars
 export const checkEqualStatusGen = <T,>(
   status: boolean,
@@ -58,7 +71,12 @@ export const checkEqualStatusGen = <T,>(
   return elementsWithOtherStatus.length === 0;
 };
 
-// Helper method: Given a rule list and status, check if some entry has different status
+/**
+ * Helper method: Given a HBAC rule list and status, check if some entry has different status
+ * @param {boolean} status - The status to check against
+ * @param {HBACRule[]} rulesList - Array of HBAC rules to check
+ * @returns {boolean} - True if all rules have the same status, false otherwise
+ */
 export const checkEqualStatusHbacRule = (
   status: boolean,
   rulesList: HBACRule[]
@@ -68,6 +86,13 @@ export const checkEqualStatusHbacRule = (
   );
   return rulesWithOtherStatus.length === 0;
 };
+
+/**
+ * Helper method: Given a Sudo rule list and status, check if some entry has different status
+ * @param {boolean} status - The status to check against
+ * @param {SudoRule[]} rulesList - Array of Sudo rules to check
+ * @returns {boolean} - True if all rules have the same status, false otherwise
+ */
 export const checkEqualStatusSudoRule = (
   status: boolean,
   rulesList: SudoRule[]
@@ -78,59 +103,91 @@ export const checkEqualStatusSudoRule = (
   return rulesWithOtherStatus.length === 0;
 };
 
-// Determine whether a user is selectable or not
+/**
+ * Determine whether a user is selectable or not
+ */
 export const isUserSelectable = (user: User) => user.uid !== "";
 
-// Determine whether a host is selectable or not
+/**
+ * Determine whether a host is selectable or not
+ */
 export const isHostSelectable = (host: Host) => host.fqdn != "";
 
-// Determine whether a netgroup is selectable or not
+/**
+ * Determine whether a netgroup is selectable or not
+ */
 export const isNetgroupSelectable = (group: Netgroup) => group.cn != "";
 
-// Determine whether a HbacRule is selectable or not
+/**
+ * Determine whether a HbacRule is selectable or not
+ */
 export const isHbacRuleSelectable = (rule: HBACRule) => rule.cn != "";
 
-// Determine whether a HbacService is selectable or not
+/**
+ * Determine whether a HbacService is selectable or not
+ */
 export const isHbacServiceSelectable = (service: HBACService) =>
   service.cn != "";
 
-// Determine whether a HbacServiceGroup is selectable or not
+/**
+ * Determine whether a HbacServiceGroup is selectable or not
+ */
 export const isHbacServiceGroupSelectable = (group: HBACServiceGroup) =>
   group.cn != "";
 
-// Determine whether a service is selectable or not
+/**
+ * Determine whether a service is selectable or not
+ */
 export const isServiceSelectable = (service: Service) =>
   service.krbcanonicalname != "";
 
-// Determine whether a sudo command is selectable or not
+/**
+ * Determine whether a sudo command is selectable or not
+ */
 export const isSudoCmdSelectable = (cmd: SudoCmd) => cmd.sudocmd != "";
 
-// Determine whether a sudo command group is selectable or not
+/**
+ * Determine whether a sudo command group is selectable or not
+ */
 export const isSudoCmdGroupSelectable = (group: SudoCmdGroup) => group.cn != "";
 
-// Determine whether a UserGroup is selectable or not
+/**
+ * Determine whether a UserGroup is selectable or not
+ */
 export const isUserGroupSelectable = (group: UserGroup) => group.cn != "";
 
-// Determine whether a hostGroup is selectable or not
+/**
+ * Determine whether a hostGroup is selectable or not
+ */
 export const isHostGroupSelectable = (hostGroup: HostGroup) =>
   hostGroup.cn != "";
 
-// Determine whether a ID view is selectable or not
+/**
+ * Determine whether a ID view is selectable or not
+ */
 export const isViewSelectable = (view: IDView) => view.cn != "";
 
-// Determine whether a HbacServiceGroup is selectable or not
+/**
+ * Determine whether a SudoRule is selectable or not
+ */
 export const isSudoRuleSelectable = (rule: SudoRule) => rule.cn != "";
 
-// Determine whether a IDViewOverrideUser is selectable or not
+/**
+ * Determine whether a IDViewOverrideUser is selectable or not
+ */
 export const isUserOverrideSelectable = (user: IDViewOverrideUser) =>
   user.ipaanchoruuid != "";
 
-// Determine whether a IDViewOverrideGroup is selectable or not
+/**
+ * Determine whether a IDViewOverrideGroup is selectable or not
+ */
 export const isGroupOverrideSelectable = (user: IDViewOverrideGroup) =>
   user.ipaanchoruuid != "";
 
-// Determine whether a Automember User group is selectable or not
-// - Also works for Automember Host group rules
+/**
+ * Determine whether a Automember User group is selectable or not
+ * - Also works for Automember Host group rules
+ */
 export const isAutomemberUserGroupSelectable = (automember: AutomemberEntry) =>
   automember.automemberRule != "";
 
@@ -145,7 +202,13 @@ export const isCertMapSelectable = (certMap: CertificateMapping) =>
 export const isDnsZoneSelectable = (dnsZone: DNSZone) =>
   dnsZone.idnsname !== "";
 
-// Write JSX error messages into 'apiErrorsJsx' array
+/**
+ * Write JSX error messages into 'apiErrorsJsx' array
+ * @param {FetchBaseQueryError | SerializedError} errorFromApiCall -  Error from the API call
+ * @param {string} contextMessage - Context error message
+ * @param {string} key - Unique key for the error element
+ * @returns {JSX.Element} - JSX element containing the error message
+ */
 export const apiErrorToJsXError = (
   errorFromApiCall: FetchBaseQueryError | SerializedError,
   contextMessage: string,
@@ -183,7 +246,11 @@ export const apiErrorToJsXError = (
   return errorJsx;
 };
 
-// Get the current realm of the user
+/**
+ * Get the current realm of the user
+ * @param {Metadata} metadata - The metadata object containing kerberos policy info
+ * @returns {string} - The realm of the user
+ */
 export const getRealmFromKrbPolicy = (metadata: Metadata) => {
   let realm = "";
   if (metadata.objects !== undefined) {
@@ -197,7 +264,9 @@ export const getRealmFromKrbPolicy = (metadata: Metadata) => {
   return realm;
 };
 
-// Date time parameters
+/**
+ * Date time parameters
+ */
 const templates = {
   human: "YYYY-MM-DD HH:mm:ssZ",
   generalized: "YYYYMMDDHHmmssZ",
@@ -217,8 +286,12 @@ const generalized_regex = /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})Z$/;
 const datetime_regex =
   /^((?:\d{8})|(?:\d{4}-\d{2}-\d{2}))(?:(T| )(\d\d:\d\d(?::\d\d)?)(Z?))?$/;
 
-// Parse full string date to UTC date format
-// '20230809120244Z' --> 'Sat Aug 09 2023 14:02:44 GMT+0200 (Central European Summer Time)'
+/**
+ * Parse full string date to UTC date format
+ * '20230809120244Z' --> 'Sat Aug 09 2023 14:02:44 GMT+0200 (Central European Summer Time)'
+ * @param {string} dateString - The date string to parse
+ * @returns {Date | null} - The parsed Date object or null if parsing fails
+ */
 export const parseFullDateStringToUTCFormat = (dateString: string) => {
   let Y = 0,
     M = 0,
@@ -288,7 +361,9 @@ export const parseFullDateStringToUTCFormat = (dateString: string) => {
   return date;
 };
 
-// Given a date, obtain the time in LDAP generalized time format
+/**
+ * Given a date, obtain the time in LDAP generalized time format
+ */
 const formatDate = (date, format, local) => {
   const fmt = format || templates.human;
   let str;
@@ -338,13 +413,22 @@ const formatDate = (date, format, local) => {
   return str;
 };
 
+/**
+ * Given a date, obtain the time in LDAP generalized time format
+ * @param {Date | null} date - The date to convert
+ * @returns {string} - The date in LDAP generalized time format or empty string if date is null
+ */
 export const toGeneralizedTime = (date: Date | null) => {
   if (!date) return "";
   const generalizedTimeDate = formatDate(date, templates.generalized, false);
   return generalizedTimeDate;
 };
 
-// Get different values from DN
+/**
+ * Get different values from DN
+ * @param {string} dn - DN to parse
+ * @returns {DN} - Parsed DN object
+ */
 export const parseDn = (dn: string) => {
   const result = {} as DN;
   if (dn === undefined) return result;
@@ -372,7 +456,11 @@ export const parseDn = (dn: string) => {
   return result as DN;
 };
 
-// Given a (potential) __datetime__ object, parse it into a Date object or null (if empty)
+/**
+ * Given a (potential) __datetime__ object, parse it into a Date object or null (if empty)
+ * @param {any} param - The parameter potentially containing datetime information
+ * @returns {Date | null} - The parsed Date object or null if parsing fails
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const parseAPIDatetime = (param: any) => {
   let parsedDate: Date | null = null;
@@ -388,6 +476,9 @@ export const parseAPIDatetime = (param: any) => {
   return parsedDate;
 };
 
+/**
+ * Validate IP address (IPv4 or IPv6)
+ */
 export const isValidIpAddress = (ipAddress: string) => {
   const regexIPv4 =
     /^(?=(?:[^.]*\.){2,3}[^.]*$)(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){1,3}(?:\.\*)?$/;
@@ -423,10 +514,10 @@ export const parseEmptyString = (str: string) => {
 
 /**
  * Get a page (slice) from a list of elements
- * @param array List of elements
- * @param page Page number
- * @param perPage Number of elements per page
- * @returns List of elements for the given page
+ * @param {Type[]} array - List of elements
+ * @param {number} page - Page number
+ * @param {number} perPage - Number of elements per page
+ * @returns {Type[]} - List of elements for the given page
  */
 export function paginate<Type>(
   array: Type[],
@@ -440,9 +531,9 @@ export function paginate<Type>(
 
 /**
  * Check if an array contains any element of another array
- * @param {unknown[]} array1 List of elements to be checked
- * @param {unknown[]} array2 List of elements to be checked against
- * @returns {boolean} True if there is any element in array1 that is also in array2
+ * @param {unknown[]} array1 - List of elements to be checked
+ * @param {unknown[]} array2 - List of elements to be checked against
+ * @returns {boolean} - True if there is any element in array1 that is also in array2
  */
 export function containsAny(array1: unknown[], array2: unknown[]): boolean {
   return array1.some((item) => array2.includes(item));
@@ -455,7 +546,7 @@ export const HIDDEN_PASSWORD = "********";
 
 /**
  * Remove certificate delimiters
-  - This is needed to process the certificate in the API call
+ * - This is needed to process the certificate in the API call
  */
 export const removeCertificateDelimiters = (certificate: string) => {
   return certificate
@@ -466,8 +557,8 @@ export const removeCertificateDelimiters = (certificate: string) => {
 
 /**
  * Capitalize the first letter of a string
- * @param str String to be capitalized
- * @returns Capitalized string
+ * @param {string} str - String to be capitalized
+ * @returns {string} - Capitalized string
  */
 export default function capitalizeFirstLetter(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
