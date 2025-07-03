@@ -54,6 +54,27 @@ export interface AddDnsZonePayload {
   version?: string;
 }
 
+export interface DnsZoneModPayload {
+  idnsname: string;
+  idnssoamname?: string;
+  idnssoarname?: string;
+  idnssoarefresh?: string;
+  idnssoaretry?: string;
+  idnssoaexpire?: string;
+  idnssoaminimum?: string;
+  dnsdefaultttl?: string;
+  dnsttl?: string;
+  idnsallowdynupdate?: boolean;
+  idnsupdatepolicy?: string;
+  idnsallowquery?: string[];
+  idnsallowtransfer?: string[];
+  idnsforwarders?: string[];
+  idnsforwardpolicy?: string;
+  idnsallowsyncptr?: boolean;
+  idnssecinlinesigning?: boolean;
+  nsec3paramrecord?: string;
+}
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     /**
@@ -348,6 +369,74 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(commands, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Get DNS zone details
+     * @param {string} dnsZoneId - DNS zone ID to fetch details for
+     * @returns {Promise<BatchResponse>} - Promise with the response data
+     */
+    dnsZoneDetails: build.query<BatchRPCResponse, string>({
+      query: (dnsZoneId) => {
+        const commands: Command[] = [];
+
+        commands.push({
+          method: "dnszone_show",
+          params: [[dnsZoneId], { all: true, rights: true }],
+        });
+
+        commands.push({
+          method: "permission_show",
+          params: [["Manage DNS zone " + dnsZoneId], {}],
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Update existing DNS zone
+     * @param {DnsZoneModPayload} payload - The payload containing DNS zone data to update
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    dnsZoneMod: build.mutation<FindRPCResponse, DnsZoneModPayload>({
+      query: (payload) => {
+        const params: Record<string, unknown> = {
+          all: true,
+          rights: true,
+          version: API_VERSION_BACKUP,
+        };
+
+        const optionalKeys: Array<keyof Omit<DnsZoneModPayload, "idnsname">> = [
+          "idnssoamname",
+          "idnssoarname",
+          "idnssoarefresh",
+          "idnssoaretry",
+          "idnssoaexpire",
+          "idnssoaminimum",
+          "dnsdefaultttl",
+          "dnsttl",
+          "idnsallowdynupdate",
+          "idnsupdatepolicy",
+          "idnsallowquery",
+          "idnsallowtransfer",
+          "idnsforwarders",
+          "idnsforwardpolicy",
+          "idnsallowsyncptr",
+          "idnssecinlinesigning",
+          "nsec3paramrecord",
+        ];
+
+        optionalKeys.forEach((key) => {
+          const value = payload[key];
+          if (value !== undefined) {
+            params[key] = value.toString();
+          }
+        });
+
+        return getCommand({
+          method: "dnszone_mod",
+          params: [[payload.idnsname], params],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -360,4 +449,6 @@ export const {
   useDnsZoneDeleteMutation,
   useDnsZoneDisableMutation,
   useDnsZoneEnableMutation,
+  useDnsZoneDetailsQuery,
+  useDnsZoneModMutation,
 } = extendedApi;

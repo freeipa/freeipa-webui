@@ -62,6 +62,7 @@ import CertificateMappingGlobalConfig from "src/pages/CertificateMapping/Certifi
 import CertificateMappingMatch from "src/pages/CertificateMapping/CertificateMappingMatch";
 import CertificateMappingTabs from "src/pages/CertificateMapping/CertificateMappingTabs";
 import DnsZones from "src/pages/DNSZones/DnsZones";
+import DnsZonesTabs from "src/pages/DNSZones/DnsZonesTabs";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -461,6 +462,12 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="dns-zones">
                 <Route path="" element={<DnsZones />} />
+                <Route path=":idnsname">
+                  <Route
+                    path=""
+                    element={<DnsZonesTabs section="settings" />}
+                  />
+                </Route>
               </Route>
               <Route path="configuration" element={<Configuration />} />
               {/* Redirect to Active users page if user is logged in and navigates to the root page */}
