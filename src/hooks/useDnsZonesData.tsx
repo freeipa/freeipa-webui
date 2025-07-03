@@ -1,9 +1,13 @@
 import React from "react";
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
+import { useGetObjectMetadataQuery, KwError } from "src/services/rpc";
 import { useDnsZoneDetailsQuery } from "src/services/rpcDnsZones";
 // Data types
-import { DNSZone, Metadata } from "src/utils/datatypes/globalDataTypes";
+import {
+  DnsPermissionType,
+  DNSZone,
+  Metadata,
+} from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { apiToDnsZone } from "src/utils/dnsZonesUtils";
 
@@ -17,6 +21,7 @@ type DnsZonesSettingsData = {
   dnsZone: Partial<DNSZone>;
   originalDnsZone: Partial<DNSZone>;
   setDnsZone: (dnsZone: Partial<DNSZone>) => void;
+  permissionsData: DnsPermissionType | KwError | null;
   refetch: () => void;
   modifiedValues: () => Partial<DNSZone>;
 };
@@ -38,6 +43,10 @@ const useDnsZonesData = (dnsZoneId: string): DnsZonesSettingsData => {
   const [dnsZone, setDnsZone] = React.useState<Partial<DNSZone>>({});
   // duplicate state to get all values parsed from the API
   const [dnsZoneDup, setDnsZoneDup] = React.useState<Partial<DNSZone>>({});
+  // Permissions data
+  const [permissionsData, setPermissionsData] = React.useState<
+    DnsPermissionType | KwError | null
+  >(null);
 
   React.useEffect(() => {
     if (dnsZoneData && !dnsZoneDetails.isFetching) {
@@ -47,6 +56,21 @@ const useDnsZonesData = (dnsZoneId: string): DnsZonesSettingsData => {
       );
       setDnsZone(zoneData);
       setDnsZoneDup(zoneData);
+
+      // Get the permissions data
+      const permissions = dnsZoneData.result.results[1];
+      if (permissions.error_code !== undefined) {
+        setPermissionsData({
+          type: "error",
+          ...permissions,
+        }) as unknown as KwError;
+      } else if (permissions.result.ipapermissiontype !== undefined) {
+        const result = permissions.result;
+        setPermissionsData({
+          type: "dns_permission",
+          ...result,
+        } as DnsPermissionType);
+      }
     }
   }, [dnsZoneData, dnsZoneDetails.isFetching]);
 
@@ -61,6 +85,7 @@ const useDnsZonesData = (dnsZoneId: string): DnsZonesSettingsData => {
     setDnsZone,
     refetch: dnsZoneDetails.refetch,
     dnsZone,
+    permissionsData: permissionsData,
     modifiedValues: () => dnsZone,
   };
 

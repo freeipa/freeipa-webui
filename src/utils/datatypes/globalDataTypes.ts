@@ -635,6 +635,13 @@ export interface CertProfile {
   dn: string;
 }
 
+export interface DnsPermissionType {
+  type: "dns_permission";
+  ipapermissiontype: string;
+  cn: string;
+  dn: string;
+}
+
 export interface OTPToken {
   ipatokenotpalgorithm: string;
   ipatokenuniqueid: string;

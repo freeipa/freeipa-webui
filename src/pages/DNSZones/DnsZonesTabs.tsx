@@ -109,6 +109,7 @@ const DnsZonesTabs = ({ section }: { section: string }) => {
             <DnsZonesSettings
               dnsZone={dnsZonesSettingsData.dnsZone}
               originalDnsZone={dnsZonesSettingsData.originalDnsZone}
+              permissionsData={dnsZonesSettingsData.permissionsData}
               metadata={dnsZonesSettingsData.metadata}
               onDnsZoneChange={dnsZonesSettingsData.setDnsZone}
               onRefresh={dnsZonesSettingsData.refetch}

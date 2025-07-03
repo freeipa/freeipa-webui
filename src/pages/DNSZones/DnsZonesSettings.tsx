@@ -11,7 +11,11 @@ import {
   SidebarPanel,
 } from "@patternfly/react-core";
 // Data types
-import { DNSZone, Metadata } from "src/utils/datatypes/globalDataTypes";
+import {
+  DnsPermissionType,
+  DNSZone,
+  Metadata,
+} from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useAlerts from "src/hooks/useAlerts";
@@ -20,6 +24,7 @@ import { dnsZoneAsRecord } from "src/utils/dnsZonesUtils";
 // Icons
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 // RPC
+import { KwError } from "src/services/rpc";
 import {
   DnsZoneModPayload,
   useDnsZoneModMutation,
@@ -37,10 +42,12 @@ import IpaCheckbox from "src/components/Form/IpaCheckbox";
 import IpaForwardPolicy from "src/components/Form/IpaForwardPolicy";
 import EnableDisableDnsZonesModal from "src/components/modals/DnsZones/EnableDisableDnsZonesModal";
 import DeleteDnsZonesModal from "src/components/modals/DnsZones/DeleteDnsZonesModal";
+import AddRemovePermission from "src/components/modals/DnsZones/AddRemovePermission";
 
 interface DnsZonesSettingsProps {
   dnsZone: Partial<DNSZone>;
   originalDnsZone: Partial<DNSZone>;
+  permissionsData: DnsPermissionType | KwError | null;
   metadata: Metadata;
   onDnsZoneChange: (dnsZone: Partial<DNSZone>) => void;
   onRefresh: () => void;
@@ -75,15 +82,33 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
     return false; // Default to false if not defined
   };
 
+  // Infer permission operation from the permissions data
+  const inferPermissionOperation = () => {
+    if (props.permissionsData?.type === "error") {
+      return "add";
+    } else if (props.permissionsData?.type === "dns_permission") {
+      return "remove";
+    }
+    return null;
+  };
+
   // States
   const [isDataLoading, setIsDataLoading] = React.useState(false);
   const [isDnsZoneEnabled, setIsDnsZoneEnabled] =
     React.useState<boolean>(inferStatus);
+  const [operation, setOperation] = React.useState<"add" | "remove" | null>(
+    inferPermissionOperation
+  );
 
   // Keep the status updated
   React.useEffect(() => {
     setIsDnsZoneEnabled(inferStatus());
   }, [props.dnsZone.idnszoneactive]);
+
+  // Keep the operation updated
+  React.useEffect(() => {
+    setOperation(inferPermissionOperation());
+  }, [props.permissionsData]);
 
   // Get 'ipaObject' and 'recordOnChange' to use in 'IpaTextInput'
   const { ipaObject, recordOnChange } = dnsZoneAsRecord(
@@ -182,10 +207,24 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
     <DropdownItem key="delete" onClick={() => setIsDeleteOpen(true)}>
       Delete
     </DropdownItem>,
-    <DropdownItem key="add-permission" isDisabled={false}>
+    <DropdownItem
+      key="add-permission"
+      isDisabled={operation !== "add"}
+      onClick={() => {
+        setOperation("add");
+        setIsAddRemovePermissionOpen(true);
+      }}
+    >
       Add permission
     </DropdownItem>,
-    <DropdownItem key="remove-permission" isDisabled={true}>
+    <DropdownItem
+      key="remove-permission"
+      isDisabled={operation !== "remove"}
+      onClick={() => {
+        setOperation("remove");
+        setIsAddRemovePermissionOpen(true);
+      }}
+    >
       Remove permission
     </DropdownItem>,
   ];
@@ -240,6 +279,8 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
   // Modals
   const [isEnableDisableOpen, setIsEnableDisableOpen] = React.useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = React.useState(false);
+  const [isAddRemovePermissionOpen, setIsAddRemovePermissionOpen] =
+    React.useState(false);
 
   // Render component
   return (
@@ -516,6 +557,14 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
         updateIsDeleteButtonDisabled={() => {}} // No need to disable delete button in this case
         updateIsDeletion={() => {}} // No need to update deletion state in this case
         fromSettings={true}
+      />
+      <AddRemovePermission
+        isOpen={isAddRemovePermissionOpen}
+        onClose={() => setIsAddRemovePermissionOpen(false)}
+        dnsZoneId={props.dnsZone.idnsname || ""}
+        operation={operation}
+        changeOperation={setOperation}
+        onRefresh={props.onRefresh}
       />
     </>
   );
