@@ -47,14 +47,6 @@ export interface DnsForwardZonesFullDataPayload {
   stopIdx: number;
 }
 
-export interface DNSForwardZoneBatchResponse {
-  error: string;
-  id: string;
-  principal: string;
-  version: string;
-  result: DNSForwardZone[];
-}
-
 /**
  * Get DNS forward zones IDs
  * @param {DnsForwardZonesFindPayload} payload - The payload containing search parameters
@@ -203,7 +195,7 @@ const extendedApi = api.injectEndpoints({
      * @returns {TBatchRPCResponse<DNSForwardZone>} - List of DNS zones full data
      */
     getDnsForwardZonesFullData: build.query<
-      TBatchRPCResponse<DNSForwardZone>,
+      ValidBatchRPCResponse<DNSForwardZone>,
       DnsForwardZonesFullDataPayload
     >({
       queryFn: async (payloadData, _queryApi, _extraOptions, fetchWithBQ) =>
@@ -216,7 +208,7 @@ const extendedApi = api.injectEndpoints({
      *
      */
     searchDnsForwardZonesEntries: build.mutation<
-      TBatchRPCResponse<DNSForwardZone>,
+      ValidBatchRPCResponse<DNSForwardZone>,
       DnsForwardZonesFullDataPayload
     >({
       queryFn: async (payloadData, _queryApi, _extraOptions, fetchWithBQ) =>

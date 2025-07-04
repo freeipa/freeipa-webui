@@ -104,8 +104,7 @@ const DnsForwardZones = () => {
     if (
       forwardDnsZonesResponse.isSuccess &&
       forwardDnsZonesResponse.data &&
-      data != undefined &&
-      data.result !== null
+      data != undefined
     ) {
       const listResult = data.result.results;
       const elementsList: DNSForwardZone[] = listResult
@@ -381,7 +380,11 @@ const DnsForwardZones = () => {
     <Page>
       <alerts.ManagedAlerts />
       <PageSection variant={PageSectionVariants.light}>
-        <TitleLayout id="DNS zones page" headingLevel="h1" text="DNS zones" />
+        <TitleLayout
+          id="DNS forward zones page"
+          headingLevel="h1"
+          text="DNS forward zones"
+        />
       </PageSection>
       <PageSection
         variant={PageSectionVariants.light}
@@ -400,7 +403,7 @@ const DnsForwardZones = () => {
                 <GlobalErrors errors={globalErrors.getAll()} />
               ) : (
                 <MainTable
-                  tableTitle="forward DNS zones table"
+                  tableTitle="DNS forward zones table"
                   shownElementsList={dnsZones}
                   pk="idnsname"
                   keyNames={["idnsname", "idnszoneactive"]}
