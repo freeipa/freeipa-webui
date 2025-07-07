@@ -33,7 +33,8 @@
     "dist/**",
     "coverage/**",
     "doc/**",
-    "tests/ipalab/_venv"
+    "tests/ipalab/_venv",
+    "eslint.config.mjs"
   ],
   "types": ["@testing-library/react"]
 }
