@@ -19,6 +19,8 @@ import {
   automemberType,
 } from "../utils/datatypes/globalDataTypes";
 
+export type MaybePromise<T> = T | PromiseLike<T>;
+
 export interface Query {
   data: FindRPCResponse | BatchRPCResponse | undefined;
   isLoading: boolean;
@@ -52,9 +54,11 @@ export interface BatchResponse {
 }
 
 export interface ErrorResult {
+  status: string;
   code: number;
   message: string;
   data: {
+    name: string;
     attr: string;
     value: string;
   };
@@ -76,6 +80,56 @@ export interface FindRPCResponse {
   };
 }
 
+export interface ErrorRPCResponse {
+  result: null;
+  error: ErrorResult;
+  id: null;
+  principal: string;
+  version: string;
+}
+
+export interface ValidRPCResponse<T> {
+  error: null;
+  id: null;
+  principal: string;
+  version: string;
+  result: {
+    result: T[]; // General object type
+    count: number;
+    truncated: boolean;
+    summary?: string;
+  };
+}
+
+interface ValidBatch<T> {
+  error: null;
+  result: T;
+  truncated: boolean;
+  summary?: string;
+}
+
+interface ErrorBatch {
+  error: string;
+  error_code: number;
+  error_kw: {
+    reason: string;
+  };
+  error_name: string;
+}
+
+export interface ValidBatchRPCResponse<T> {
+  error: null;
+  id: null;
+  principal: string;
+  version: string;
+  result: {
+    count: number;
+    results: (ValidBatch<T> | ErrorBatch)[];
+  };
+}
+
+export type TFindRPCResponse<T> = ErrorRPCResponse | ValidRPCResponse<T>;
+
 // 'BatchRPCResponse' type
 //   - Has 'result' > 'results' > 'result' structure
 //   - More data under 'result'
@@ -94,6 +148,8 @@ export interface BatchRPCResponse {
     };
   };
 }
+
+export type TBatchRPCResponse<T> = ErrorRPCResponse | ValidBatchRPCResponse<T>;
 
 export interface ListResponse {
   list: string[];

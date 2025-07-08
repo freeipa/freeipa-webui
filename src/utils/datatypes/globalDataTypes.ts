@@ -618,7 +618,9 @@ export interface sudoCmdType {
 
 export interface dnsZoneType {
   dn: string;
-  idnsname: string[];
+  idnsname: {
+    __dns_name__: string;
+  }[];
 }
 
 export interface automemberType {
@@ -659,6 +661,8 @@ export interface SubId {
   dn: string;
 }
 
+export type IDNSForwardPolicy = "only" | "first" | "none";
+
 export interface DNSZone {
   idnsname: string;
   idnssoarname: string;
@@ -677,7 +681,7 @@ export interface DNSZone {
   dn: string;
   name_from_ip: string;
   idnsforwarders: string[];
-  idnsforwardpolicy: string;
+  idnsforwardpolicy: IDNSForwardPolicy;
   managedby: string;
   dnsttl: number;
   dnsdefaultttl: number;
@@ -685,6 +689,14 @@ export interface DNSZone {
   idnsallowsyncptr: boolean;
   idnssecinlinesigning: boolean;
   nsec3paramrecord: string;
+}
+
+export interface DNSForwardZone {
+  dn: string;
+  idnsname: string;
+  idnsforwarders: string[];
+  idnsforwardpolicy: IDNSForwardPolicy;
+  idnszoneactive: boolean;
 }
 
 export interface Automember {
