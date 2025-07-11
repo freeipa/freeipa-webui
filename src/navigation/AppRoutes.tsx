@@ -467,6 +467,10 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                     path=""
                     element={<DnsZonesTabs section="settings" />}
                   />
+                  <Route
+                    path="dns-records"
+                    element={<DnsZonesTabs section="dns-records" />}
+                  />
                 </Route>
               </Route>
               <Route path="configuration" element={<Configuration />} />
