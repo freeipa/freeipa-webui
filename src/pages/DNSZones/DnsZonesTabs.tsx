@@ -21,6 +21,7 @@ import BreadCrumb, {
   BreadCrumbItem,
 } from "src/components/layouts/BreadCrumb/BreadCrumb";
 import DnsZonesSettings from "./DnsZonesSettings";
+import DnsResourceRecords from "./DnsResourceRecords";
 
 const DnsZonesTabs = ({ section }: { section: string }) => {
   const { idnsname } = useParams();
@@ -43,6 +44,8 @@ const DnsZonesTabs = ({ section }: { section: string }) => {
   ) => {
     if (tabIndex === "settings") {
       navigate("/" + pathname + "/" + id);
+    } else if (tabIndex === "dns-records") {
+      navigate("/" + pathname + "/" + id + "/dns-records");
     }
   };
 
@@ -119,6 +122,13 @@ const DnsZonesTabs = ({ section }: { section: string }) => {
               onResetValues={dnsZonesSettingsData.resetValues}
               pathname={pathname}
             />
+          </Tab>
+          <Tab
+            eventKey={"dns-records"}
+            name="dns-records"
+            title={<TabTitleText>DNS records</TabTitleText>}
+          >
+            <DnsResourceRecords dnsZoneId={id} />
           </Tab>
         </Tabs>
       </PageSection>
