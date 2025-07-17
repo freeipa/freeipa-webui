@@ -14,6 +14,7 @@ import { apiToDnsRecord } from "src/utils/dnsRecordUtils";
 // Data types
 import {
   DNSRecord,
+  DnsRecordType,
   DNSZone,
   dnsZoneType,
   RecordType,
@@ -95,6 +96,99 @@ export interface DnsRecordBatchResponse {
   principal: string;
   version: string;
   result: DNSRecord[];
+}
+
+export interface AddDnsRecordPayload {
+  dnsZoneId: string;
+  recordName: string;
+  recordType: DnsRecordType;
+  // - 'A' record
+  a_part_ip_address?: string;
+  a_extra_create_reverse?: boolean;
+  // - 'AAAA' record
+  aaaa_part_ip_address?: string;
+  aaaa_extra_create_reverse?: boolean;
+  // - 'A6' record
+  a6_part_data?: string;
+  // - 'AFSDB' record
+  afsdb_part_subtype?: number;
+  afsdb_part_hostname?: string;
+  // - 'CERT' record
+  cert_part_type?: number;
+  cert_part_key_tag?: number;
+  cert_part_algorithm?: number;
+  cert_part_certificate_or_crl?: string;
+  // - 'CNAME' record
+  cname_part_hostname?: string;
+  // - 'DNAME' record
+  dname_part_target?: string;
+  // - 'DS' record
+  ds_part_key_tag?: number;
+  ds_part_algorithm?: number;
+  ds_part_digest_type?: number;
+  ds_part_digest?: string;
+  // - 'DLV' record
+  dlv_part_key_tag?: number;
+  dlv_part_algorithm?: number;
+  dlv_part_digest_type?: number;
+  dlv_part_digest?: string;
+  // - 'KX' record
+  kx_part_preference?: number;
+  kx_part_exchanger?: string;
+  // - 'LOC' record
+  loc_part_lat_deg?: number;
+  loc_part_lat_min?: number;
+  loc_part_lat_sec?: number;
+  loc_part_lat_dir?: "N" | "S";
+  loc_part_lon_deg?: number;
+  loc_part_lon_min?: number;
+  loc_part_lon_sec?: number;
+  loc_part_lon_dir?: "E" | "W";
+  loc_part_altitude?: number;
+  loc_part_size?: number;
+  loc_part_h_precision?: number;
+  loc_part_v_precision?: number;
+  // - 'MX' record
+  mx_part_preference?: number;
+  mx_part_exchange?: string;
+  // - 'NAPTR' record
+  naptr_part_order?: number;
+  naptr_part_preference?: number;
+  naptr_part_flags?: string;
+  naptr_part_service?: string;
+  naptr_part_regexp?: string;
+  naptr_part_replacement?: string;
+  // - 'NS' record
+  ns_part_hostname?: string;
+  // - 'PTR' record
+  ptr_part_hostname?: string;
+  // - 'SRV' record
+  srv_part_priority?: number;
+  srv_part_weight?: number;
+  srv_part_port?: number;
+  srv_part_target?: string;
+  // - 'SSHFP' record
+  sshfp_part_algorithm?: number;
+  sshfp_part_fp_type?: number;
+  sshfp_part_fingerprint?: string;
+  // - 'TLSA' record
+  tlsa_part_cert_usage?: number;
+  tlsa_part_selector?: number;
+  tlsa_part_matching_type?: number;
+  tlsa_part_cert_association_data?: string;
+  // - 'TXT' record
+  txt_part_data?: string;
+  // - 'URI' record
+  uri_part_priority?: number;
+  uri_part_weight?: number;
+  uri_part_target?: string;
+  version?: string;
+}
+
+export interface DeleteDnsRecordPayload {
+  dnsZoneId: string;
+  recordNames: string[];
+  version?: string;
 }
 
 const extendedApi = api.injectEndpoints({
@@ -700,6 +794,129 @@ const extendedApi = api.injectEndpoints({
         };
       },
     }),
+    /**
+     * Add DNS record
+     * @param {AddDnsRecordPayload} payload - The payload containing DNS zone ID and record data
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    addDnsRecord: build.mutation<FindRPCResponse, AddDnsRecordPayload>({
+      query: (payload) => {
+        const apiVersion = payload.version || API_VERSION_BACKUP;
+
+        const params = {
+          version: apiVersion,
+        };
+
+        if (payload.recordType === "A") {
+          params["a_part_ip_address"] = payload.a_part_ip_address;
+          params["a_extra_create_reverse"] = payload.a_extra_create_reverse;
+        }
+        if (payload.recordType === "AAAA") {
+          params["aaaa_part_ip_address"] = payload.aaaa_part_ip_address;
+          params["aaaa_extra_create_reverse"] =
+            payload.aaaa_extra_create_reverse;
+        }
+        if (payload.recordType === "A6") {
+          params["a6_part_data"] = payload.a6_part_data;
+        }
+        if (payload.recordType === "AFSDB") {
+          params["afsdb_part_subtype"] = payload.afsdb_part_subtype;
+          params["afsdb_part_hostname"] = payload.afsdb_part_hostname;
+        }
+        if (payload.recordType === "CERT") {
+          params["cert_part_type"] = payload.cert_part_type;
+          params["cert_part_key_tag"] = payload.cert_part_key_tag;
+          params["cert_part_algorithm"] = payload.cert_part_algorithm;
+          params["cert_part_certificate_or_crl"] =
+            payload.cert_part_certificate_or_crl;
+        }
+        if (payload.recordType === "CNAME") {
+          params["cname_part_hostname"] = payload.cname_part_hostname;
+        }
+        if (payload.recordType === "DNAME") {
+          params["dname_part_target"] = payload.dname_part_target;
+        }
+        if (payload.recordType === "DS") {
+          params["ds_part_key_tag"] = payload.ds_part_key_tag;
+          params["ds_part_algorithm"] = payload.ds_part_algorithm;
+          params["ds_part_digest_type"] = payload.ds_part_digest_type;
+          params["ds_part_digest"] = payload.ds_part_digest;
+        }
+        if (payload.recordType === "DLV") {
+          params["dlv_part_key_tag"] = payload.dlv_part_key_tag;
+          params["dlv_part_algorithm"] = payload.dlv_part_algorithm;
+          params["dlv_part_digest_type"] = payload.dlv_part_digest_type;
+          params["dlv_part_digest"] = payload.dlv_part_digest;
+        }
+        if (payload.recordType === "KX") {
+          params["kx_part_preference"] = payload.kx_part_preference;
+          params["kx_part_exchanger"] = payload.kx_part_exchanger;
+        }
+        if (payload.recordType === "LOC") {
+          params["loc_part_lat_deg"] = payload.loc_part_lat_deg;
+          params["loc_part_lat_min"] = payload.loc_part_lat_min;
+          params["loc_part_lat_sec"] = payload.loc_part_lat_sec;
+          params["loc_part_lat_dir"] = payload.loc_part_lat_dir;
+          params["loc_part_lon_deg"] = payload.loc_part_lon_deg;
+          params["loc_part_lon_min"] = payload.loc_part_lon_min;
+          params["loc_part_lon_sec"] = payload.loc_part_lon_sec;
+          params["loc_part_lon_dir"] = payload.loc_part_lon_dir;
+          params["loc_part_altitude"] = payload.loc_part_altitude;
+          params["loc_part_size"] = payload.loc_part_size;
+          params["loc_part_h_precision"] = payload.loc_part_h_precision;
+          params["loc_part_v_precision"] = payload.loc_part_v_precision;
+        }
+        if (payload.recordType === "MX") {
+          params["mx_part_preference"] = payload.mx_part_preference;
+          params["mx_part_exchange"] = payload.mx_part_exchange;
+        }
+        if (payload.recordType === "NAPTR") {
+          params["naptr_part_order"] = payload.naptr_part_order;
+          params["naptr_part_preference"] = payload.naptr_part_preference;
+          params["naptr_part_flags"] = payload.naptr_part_flags;
+          params["naptr_part_service"] = payload.naptr_part_service;
+          params["naptr_part_regexp"] = payload.naptr_part_regexp;
+          params["naptr_part_replacement"] = payload.naptr_part_replacement;
+        }
+        if (payload.recordType === "NS") {
+          params["ns_part_hostname"] = payload.ns_part_hostname;
+        }
+        if (payload.recordType === "PTR") {
+          params["ptr_part_hostname"] = payload.ptr_part_hostname;
+        }
+        if (payload.recordType === "SRV") {
+          params["srv_part_priority"] = payload.srv_part_priority;
+          params["srv_part_weight"] = payload.srv_part_weight;
+          params["srv_part_port"] = payload.srv_part_port;
+          params["srv_part_target"] = payload.srv_part_target;
+        }
+        if (payload.recordType === "SSHFP") {
+          params["sshfp_part_algorithm"] = payload.sshfp_part_algorithm;
+          params["sshfp_part_fp_type"] = payload.sshfp_part_fp_type;
+          params["sshfp_part_fingerprint"] = payload.sshfp_part_fingerprint;
+        }
+        if (payload.recordType === "TLSA") {
+          params["tlsa_part_cert_usage"] = payload.tlsa_part_cert_usage;
+          params["tlsa_part_selector"] = payload.tlsa_part_selector;
+          params["tlsa_part_matching_type"] = payload.tlsa_part_matching_type;
+          params["tlsa_part_cert_association_data"] =
+            payload.tlsa_part_cert_association_data;
+        }
+        if (payload.recordType === "TXT") {
+          params["txt_part_data"] = payload.txt_part_data;
+        }
+        if (payload.recordType === "URI") {
+          params["uri_part_priority"] = payload.uri_part_priority;
+          params["uri_part_weight"] = payload.uri_part_weight;
+          params["uri_part_target"] = payload.uri_part_target;
+        }
+
+        return getCommand({
+          method: "dnsrecord_add",
+          params: [[payload.dnsZoneId, payload.recordName], params],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -718,4 +935,5 @@ export const {
   useRemoveDnsZonePermissionMutation,
   useDnsRecordFindQuery,
   useSearchDnsRecordsEntriesMutation,
+  useAddDnsRecordMutation,
 } = extendedApi;
