@@ -35,8 +35,6 @@ import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
-import TitleLayout from "src/components/layouts/TitleLayout";
-import { apiToDnsRecord } from "src/utils/dnsRecordUtils";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
@@ -45,6 +43,7 @@ import PaginationLayout from "src/components/layouts/PaginationLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import MainTable from "src/components/tables/MainTable";
+import AddDnsRecordsModal from "src/components/modals/DnsZones/AddDnsRecordsModal";
 
 interface DnsResourceRecordsProps {
   dnsZoneId: string;
@@ -282,6 +281,9 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     updateSelectedPerPage: setSelectedPerPage,
   };
 
+  // Modals functionality
+  const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
+
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -338,7 +340,12 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     {
       key: 5,
       element: (
-        <SecondaryButton isDisabled={!showTableRows}>Add</SecondaryButton>
+        <SecondaryButton
+          isDisabled={!showTableRows}
+          onClickHandler={() => setShowAddModal(true)}
+        >
+          Add
+        </SecondaryButton>
       ),
     },
     {
@@ -443,6 +450,12 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
         />
       </PageSection>
+      <AddDnsRecordsModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onRefresh={refreshData}
+        dnsZoneId={props.dnsZoneId}
+      />
     </Page>
   );
 };

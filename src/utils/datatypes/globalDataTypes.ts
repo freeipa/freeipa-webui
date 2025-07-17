@@ -766,11 +766,11 @@ export interface DNSRecord {
   loc_part_lat_deg: number; // Maximum value: 90
   loc_part_lat_min: number; // Maximum value: 59
   loc_part_lat_sec: number; // Maximum value: 59.999
-  loc_part_lat_dir: string; // Values: 'N' or 'S'
+  loc_part_lat_dir: "N" | "S"; // Values: 'N' or 'S'
   loc_part_lon_deg: number; // Maximum value: 180
   loc_part_lon_min: number; // Maximum value: 59
   loc_part_lon_sec: number; // Maximum value: 59.999
-  loc_part_lon_dir: string; // Values: 'E' or 'W'
+  loc_part_lon_dir: "E" | "W"; // Values: 'E' or 'W'
   loc_part_altitude: number; // Minimum value: -100000.00 | Maximum value: 42849672.95
   loc_part_size: number; // Minimum value: 0.00 | Maximum value: 90000000.00
   loc_part_h_precision: number; // Minimum value: 0.00 | Maximum value: 90000000.00
@@ -781,7 +781,7 @@ export interface DNSRecord {
   naptrrecord: string[];
   naptr_part_order: number; // Maximum value: 65535
   naptr_part_preference: number; // Maximum value: 65535
-  naptr_part_flags: string;
+  naptr_part_flags: "S" | "U" | "P" | "A";
   naptr_part_service: string;
   naptr_part_regexp: string;
   naptr_part_replacement: string;
@@ -815,6 +815,28 @@ export interface DNSRecord {
   uri_part_weight: number; // Maximum value: 65535
   uri_part_target: string;
 }
+
+export type DnsRecordType =
+  | "A"
+  | "AAAA"
+  | "A6"
+  | "AFSDB"
+  | "CERT"
+  | "CNAME"
+  | "DNAME"
+  | "DS"
+  | "DLV"
+  | "KX"
+  | "LOC"
+  | "MX"
+  | "NAPTR"
+  | "NS"
+  | "PTR"
+  | "SRV"
+  | "SSHFP"
+  | "TLSA"
+  | "TXT"
+  | "URI";
 
 export interface Automember {
   cn: string;
