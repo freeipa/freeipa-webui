@@ -44,6 +44,7 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import MainTable from "src/components/tables/MainTable";
 import AddDnsRecordsModal from "src/components/modals/DnsZones/AddDnsRecordsModal";
+import DeleteDnsRecordsModal from "src/components/modals/DnsZones/DeleteDnsRecords";
 
 interface DnsResourceRecordsProps {
   dnsZoneId: string;
@@ -283,6 +284,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
 
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
 
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
@@ -332,7 +334,10 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     {
       key: 4,
       element: (
-        <SecondaryButton isDisabled={isDeleteButtonDisabled || !showTableRows}>
+        <SecondaryButton
+          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          onClickHandler={() => setShowDeleteModal(true)}
+        >
           Delete
         </SecondaryButton>
       ),
@@ -455,6 +460,18 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
         onClose={() => setShowAddModal(false)}
         onRefresh={refreshData}
         dnsZoneId={props.dnsZoneId}
+      />
+      <DeleteDnsRecordsModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onRefresh={refreshData}
+        dnsZoneId={props.dnsZoneId}
+        elementsToDelete={selectedElements}
+        clearSelectedElements={() => setSelectedElements([])}
+        columnNames={["Record name", "Record type"]}
+        keyNames={["idnsname", "dnsrecord_types"]}
+        updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
+        updateIsDeletion={setIsDeletion}
       />
     </Page>
   );
