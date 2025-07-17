@@ -917,6 +917,24 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Delete DNS records
+     * @param {DeleteDnsRecordPayload} payload - The payload containing DNS zone ID and record data
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    dnsRecordDelete: build.mutation<BatchRPCResponse, DeleteDnsRecordPayload>({
+      query: (payload) => {
+        const commands: Command[] = [];
+        payload.recordNames.forEach((recordName) => {
+          commands.push({
+            method: "dnsrecord_del",
+            params: [[payload.dnsZoneId, recordName], { del_all: true }],
+          });
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -936,4 +954,5 @@ export const {
   useDnsRecordFindQuery,
   useSearchDnsRecordsEntriesMutation,
   useAddDnsRecordMutation,
+  useDnsRecordDeleteMutation,
 } = extendedApi;
