@@ -5,7 +5,7 @@ import {
   Thead,
 } from "@patternfly/react-table";
 import React from "react";
-import EmptyBodyTable from "../tables/EmptyBodyTable";
+import EmptyBodyTable from "../../tables/EmptyBodyTable";
 
 export interface PropsToTable {
   ariaLabel: string;
