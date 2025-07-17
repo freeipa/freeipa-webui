@@ -19,6 +19,7 @@ const ConfigSearchOptions = (props: PropsToSearchOPtions) => {
     <Form className="pf-v5-u-mb-lg pf-v5-u-mt-lg" isHorizontal>
       <FormGroup label="Search size limit" fieldId="ipasearchrecordslimit">
         <IpaNumberInput
+          dataCy="configuration-textbox-ipasearchrecordslimit"
           id="ipasearchrecordslimit"
           name="ipasearchrecordslimit"
           aria-label="search size limit"
@@ -33,6 +34,7 @@ const ConfigSearchOptions = (props: PropsToSearchOPtions) => {
       </FormGroup>
       <FormGroup label="Search time limit" fieldId="ipasearchtimelimit">
         <IpaNumberInput
+          dataCy="configuration-textbox-ipasearchtimelimit"
           id="ipasearchtimelimit"
           name="ipasearchtimelimit"
           aria-label="search time limit"

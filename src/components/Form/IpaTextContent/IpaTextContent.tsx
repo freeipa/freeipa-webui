@@ -11,6 +11,7 @@ import {
 import { Link } from "react-router-dom";
 
 export interface IpaTextContentProps extends IPAParamDefinition {
+  dataCy: string;
   linkTo?: string;
 }
 
@@ -29,6 +30,7 @@ const IpaTextContent = (props: IpaTextContentProps) => {
     <>
       {props.linkTo ? (
         <TextContent
+          data-cy={props.dataCy}
           readOnly={readOnly}
           required={required}
           aria-label={props.ariaLabel}
@@ -38,6 +40,7 @@ const IpaTextContent = (props: IpaTextContentProps) => {
         </TextContent>
       ) : (
         <TextContent
+          data-cy={props.dataCy}
           readOnly={readOnly}
           required={required}
           aria-label={props.ariaLabel}

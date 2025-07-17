@@ -94,19 +94,36 @@ const AppLayout = (props: PropsToAppLayout) => {
   };
 
   const dropdownItems = [
-    <DropdownItem key="profile" component="button">
+    <DropdownItem
+      key="profile"
+      component="button"
+      data-cy="toolbar-button-profile"
+    >
       <UserIcon /> Profile
     </DropdownItem>,
-    <DropdownItem key="change-password" component="button">
+    <DropdownItem
+      key="change-password"
+      component="button"
+      data-cy="toolbar-button-change-password"
+    >
       <KeyIcon /> Change password
     </DropdownItem>,
-    <DropdownItem key="customization" component="button">
+    <DropdownItem
+      key="customization"
+      component="button"
+      data-cy="toolbar-button-customization"
+    >
       <CogIcon /> Customization
     </DropdownItem>,
-    <DropdownItem key="about" component="button">
+    <DropdownItem key="about" component="button" data-cy="toolbar-button-about">
       <UnknownIcon /> About
     </DropdownItem>,
-    <DropdownItem key="logout" component="button" onClick={onLogout}>
+    <DropdownItem
+      key="logout"
+      component="button"
+      onClick={onLogout}
+      data-cy="toolbar-button-logout"
+    >
       <ShareSquareIcon /> Log out
     </DropdownItem>,
   ];
@@ -114,9 +131,11 @@ const AppLayout = (props: PropsToAppLayout) => {
   // TODO: Show the proper user login
   const dropdown = (
     <Dropdown
+      data-cy="toolbar-dropdown"
       onSelect={onDropdownSelect}
       toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
         <MenuToggle
+          data-cy="toolbar-username"
           ref={toggleRef}
           id="toggle-plain-text"
           onClick={onDropdownToggle}
@@ -136,7 +155,11 @@ const AppLayout = (props: PropsToAppLayout) => {
   const Header = (
     <Masthead>
       <MastheadToggle>
-        <PageToggleButton variant="plain" aria-label="Global navigation">
+        <PageToggleButton
+          data-cy="toolbar-button-toggle"
+          variant="plain"
+          aria-label="Global navigation"
+        >
           <BarsIcon />
         </PageToggleButton>
       </MastheadToggle>

@@ -79,6 +79,7 @@ const AddService = (props: PropsToAddService) => {
   // Toggle
   const toggleService = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
+      data-cy="modal-select-service-toggle"
       ref={toggleRef}
       onClick={serviceOnToggle}
       className="pf-v5-u-w-100"
@@ -125,6 +126,7 @@ const AddService = (props: PropsToAddService) => {
   // Toggle
   const toggleHost = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
+      data-cy="modal-select-host-name-toggle"
       ref={toggleRef}
       onClick={hostNameOnToggle}
       className="pf-v5-u-w-100"
@@ -236,6 +238,7 @@ const AddService = (props: PropsToAddService) => {
       pfComponent: (
         <>
           <Select
+            data-cy="modal-select-service"
             id="service"
             aria-label="Select service"
             toggle={toggleService}
@@ -245,7 +248,11 @@ const AddService = (props: PropsToAddService) => {
             aria-labelledby="service"
           >
             {serviceOptions.map((option, index) => (
-              <SelectOption key={index} value={option}>
+              <SelectOption
+                data-cy={"modal-select-service-" + option}
+                key={index}
+                value={option}
+              >
                 {option}
               </SelectOption>
             ))}
@@ -270,6 +277,7 @@ const AddService = (props: PropsToAddService) => {
       pfComponent: (
         <>
           <Select
+            data-cy="modal-select-host-name"
             id="host"
             aria-label="Select host name"
             toggle={toggleHost}
@@ -279,7 +287,11 @@ const AddService = (props: PropsToAddService) => {
             aria-labelledby="host name"
           >
             {props.hostsList.map((option, index) => (
-              <SelectOption key={index} value={option}>
+              <SelectOption
+                data-cy={"modal-select-host-name-" + option}
+                key={index}
+                value={option}
+              >
                 {option}
               </SelectOption>
             ))}
@@ -302,6 +314,7 @@ const AddService = (props: PropsToAddService) => {
       name: "",
       pfComponent: (
         <Checkbox
+          data-cy="modal-checkbox-force-service"
           label="Force"
           isChecked={forceCheckbox}
           aria-label="force service checkbox"
@@ -317,6 +330,7 @@ const AddService = (props: PropsToAddService) => {
       name: "",
       pfComponent: (
         <Checkbox
+          data-cy="modal-checkbox-skip-host-check-service"
           label="Skip host check"
           isChecked={skipHostCheckbox}
           aria-label="skip host check checkbox"
@@ -485,10 +499,19 @@ const AddService = (props: PropsToAddService) => {
   };
 
   const errorModalActions = [
-    <SecondaryButton key="retry" onClickHandler={onRetry}>
+    <SecondaryButton
+      dataCy="modal-button-retry"
+      key="retry"
+      onClickHandler={onRetry}
+    >
       Retry
     </SecondaryButton>,
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       Cancel
     </Button>,
   ];
@@ -506,6 +529,7 @@ const AddService = (props: PropsToAddService) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <SecondaryButton
+      dataCy="modal-button-add"
       key="add-new-service"
       name="add"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
@@ -518,6 +542,7 @@ const AddService = (props: PropsToAddService) => {
       {addSpinning ? "Adding" : "Add"}
     </SecondaryButton>,
     <SecondaryButton
+      dataCy="modal-button-add-and-add-another"
       key="add-and-add-another-new-service"
       name="add_and_add_another"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
@@ -530,6 +555,7 @@ const AddService = (props: PropsToAddService) => {
       {addAgainSpinning ? "Adding" : "Add and add another"}
     </SecondaryButton>,
     <Button
+      data-cy="modal-button-cancel"
       key="cancel-new-service"
       variant="link"
       onClick={cleanAndCloseModal}
@@ -543,6 +569,7 @@ const AddService = (props: PropsToAddService) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="add-service-modal"
         variantType="small"
         modalPosition="top"
         offPosition="76px"
@@ -555,6 +582,7 @@ const AddService = (props: PropsToAddService) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="add-service-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

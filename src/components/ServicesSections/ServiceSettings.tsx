@@ -73,6 +73,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
               role="group"
             >
               <PrincipalAliasMultiTextBox
+                dataCy="service-tab-settings-principal-alias"
                 ipaObject={ipaObject}
                 metadata={props.metadata}
                 onRefresh={props.onRefresh}
@@ -81,6 +82,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
             </FormGroup>
             <FormGroup label="Service" fieldId="service">
               <TextInput
+                data-cy="services-tab-settings-textbox-service"
                 id="service"
                 name="service"
                 value={service}
@@ -91,6 +93,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
             </FormGroup>
             <FormGroup label="Host name" fieldId="host-name">
               <TextInput
+                data-cy="services-tab-settings-textbox-host"
                 id="host-name"
                 name="host"
                 value={host}
@@ -101,6 +104,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
             </FormGroup>
             <FormGroup label="PAC type" fieldId="pac-type" role="group">
               <IpaPACType
+                dataCy="service-tab-settings-pac-type"
                 name="ipakrbauthzdata"
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
@@ -121,6 +125,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
               }
             >
               <IpaCheckboxes
+                dataCy="service-tab-settings-checkbox-authentication-indicators"
                 name="krbprincipalauthind"
                 options={[
                   {
@@ -157,6 +162,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
               role="group"
             >
               <IpaCheckbox
+                dataCy="service-tab-settings-checkbox-trusted-delegation"
                 name="ipakrbokasdelegate"
                 value="trustedForDelegation"
                 text="Trusted for delegation"
@@ -172,6 +178,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
               role="group"
             >
               <IpaCheckbox
+                dataCy="service-tab-settings-checkbox-trusted-auth-as-user"
                 name="ipakrboktoauthasdelegate"
                 value="trustedAuthAsUser"
                 text="Trusted to authenticate as a user"
@@ -187,6 +194,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
               role="group"
             >
               <IpaCheckbox
+                dataCy="service-tab-settings-checkbox-requires-pre-authentication"
                 name="ipakrbrequirespreauth"
                 value="requiresPreAuth"
                 text="Requires pre-authentication"

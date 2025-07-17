@@ -339,6 +339,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
       <FlexItem>User category the rule applies to: </FlexItem>
       <FlexItem>
         <IpaToggleGroup
+          dataCy="sudo-rule-toggle-group-user-category"
           ipaObject={props.ipaObject}
           name="usercategory"
           options={options}

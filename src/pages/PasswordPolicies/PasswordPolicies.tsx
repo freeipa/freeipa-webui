@@ -381,6 +381,7 @@ const PasswordPolicies = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search subIds"
           placeholder="Search"
@@ -399,6 +400,7 @@ const PasswordPolicies = () => {
       key: 3,
       element: (
         <SecondaryButton
+          dataCy="password-policies-button-refresh"
           onClickHandler={refreshData}
           isDisabled={!showTableRows}
         >
@@ -410,6 +412,7 @@ const PasswordPolicies = () => {
       key: 4,
       element: (
         <SecondaryButton
+          dataCy="password-policies-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onOpenDeleteModal}
         >
@@ -421,6 +424,7 @@ const PasswordPolicies = () => {
       key: 5,
       element: (
         <SecondaryButton
+          dataCy="password-policies-button-add"
           isDisabled={!showTableRows}
           onClickHandler={onOpenAddModal}
         >

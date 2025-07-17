@@ -35,6 +35,7 @@ const HostCertificate = (props: PropsToHostSettings) => {
             role="group"
           >
             <IpaCertificates
+              dataCy="host-certificate"
               ipaObject={ipaObject}
               onChange={recordOnChange}
               metadata={props.metadata}

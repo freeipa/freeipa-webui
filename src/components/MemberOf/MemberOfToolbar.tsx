@@ -71,6 +71,7 @@ const MemberOfToolbar = (props: MemberOfToolbarProps) => {
           spacer={{ default: "spacerMd" }}
         >
           <SearchInputLayout
+            dataCy="search"
             name="search"
             ariaLabel="Search user"
             placeholder="Search"
@@ -87,6 +88,7 @@ const MemberOfToolbar = (props: MemberOfToolbarProps) => {
         />
         <ToolbarItem id="refresh-button">
           <Button
+            data-cy="member-of-button-refresh"
             variant="secondary"
             name="refresh"
             isDisabled={!props.refreshButtonEnabled}
@@ -97,6 +99,7 @@ const MemberOfToolbar = (props: MemberOfToolbarProps) => {
         </ToolbarItem>
         <ToolbarItem id="delete-button">
           <Button
+            data-cy="member-of-button-delete"
             variant="secondary"
             name="remove"
             isDisabled={!props.deleteButtonEnabled}
@@ -107,6 +110,7 @@ const MemberOfToolbar = (props: MemberOfToolbarProps) => {
         </ToolbarItem>
         <ToolbarItem id="add-button">
           <Button
+            data-cy="member-of-button-add"
             variant="secondary"
             name="add"
             isDisabled={!props.addButtonEnabled}

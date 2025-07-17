@@ -70,6 +70,7 @@ const AddHBACRule = (props: PropsToAddGroup) => {
                 ? ValidatedOptions.error
                 : ValidatedOptions.default
             }
+            data-cy="modal-textbox-rule-name"
           />
           <HelperText>
             {ruleName === "" && <HelperTextItem>Required value</HelperTextItem>}
@@ -88,6 +89,7 @@ const AddHBACRule = (props: PropsToAddGroup) => {
           onChange={(_event, value) => setDescription(value)}
           aria-label="Rule description"
           autoResize
+          data-cy="modal-textbox-description"
         />
       ),
     },
@@ -217,10 +219,19 @@ const AddHBACRule = (props: PropsToAddGroup) => {
   };
 
   const errorModalActions = [
-    <SecondaryButton key="retry" onClickHandler={onRetry}>
+    <SecondaryButton
+      dataCy="modal-button-retry"
+      key="retry"
+      onClickHandler={onRetry}
+    >
       Retry
     </SecondaryButton>,
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       Cancel
     </Button>,
   ];
@@ -238,6 +249,7 @@ const AddHBACRule = (props: PropsToAddGroup) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <SecondaryButton
+      dataCy="modal-button-add"
       key="add-new-rule"
       name="add"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
@@ -250,6 +262,7 @@ const AddHBACRule = (props: PropsToAddGroup) => {
       {addSpinning ? "Adding" : "Add"}
     </SecondaryButton>,
     <SecondaryButton
+      dataCy="modal-button-add-and-add-another"
       key="add-and-add-another-new-rule"
       name="add_and_add_another"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
@@ -261,7 +274,12 @@ const AddHBACRule = (props: PropsToAddGroup) => {
     >
       {addAgainSpinning ? "Adding" : "Add and add another"}
     </SecondaryButton>,
-    <Button key="cancel-new-rule" variant="link" onClick={cleanAndCloseModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-new-rule"
+      variant="link"
+      onClick={cleanAndCloseModal}
+    >
       Cancel
     </Button>,
   ];
@@ -271,6 +289,7 @@ const AddHBACRule = (props: PropsToAddGroup) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="add-hbac-rule-modal"
         variantType="small"
         modalPosition="top"
         offPosition="76px"
@@ -283,6 +302,7 @@ const AddHBACRule = (props: PropsToAddGroup) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="add-hbac-rule-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

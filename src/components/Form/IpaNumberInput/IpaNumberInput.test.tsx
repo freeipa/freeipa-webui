@@ -54,6 +54,7 @@ describe("IpaNumberInput Component", () => {
   };
 
   const defaultProps: IPAParamDefinitionNumberInput = {
+    dataCy: "ipa-number-input",
     ariaLabel: "sudoorder2",
     ipaObject: { sudoorder2: "" }, // Default value
     maxValue: 2147483647,

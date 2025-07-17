@@ -423,6 +423,7 @@ const Hosts = () => {
 
   const membershipModalActions: JSX.Element[] = [
     <Button
+      data-cy="modal-button-ok"
       key="rebuild-auto-membership"
       variant="primary"
       onClick={onRebuildAutoMembership}
@@ -431,6 +432,7 @@ const Hosts = () => {
       OK
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key="cancel-rebuild-auto-membership"
       variant="link"
       onClick={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
@@ -457,6 +459,7 @@ const Hosts = () => {
 
   const dropdownItems = [
     <DropdownItem
+      data-cy="hosts-kebab-rebuild-auto-membership"
       key="rebuild auto membership"
       component="button"
       onClick={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
@@ -599,6 +602,7 @@ const Hosts = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search hosts"
           placeholder="Search"
@@ -619,6 +623,7 @@ const Hosts = () => {
         <SecondaryButton
           onClickHandler={refreshHostsData}
           isDisabled={!showTableRows}
+          dataCy="hosts-button-refresh"
         >
           Refresh
         </SecondaryButton>
@@ -630,6 +635,7 @@ const Hosts = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
+          dataCy="hosts-button-delete"
         >
           Delete
         </SecondaryButton>
@@ -641,6 +647,7 @@ const Hosts = () => {
         <SecondaryButton
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows || isDisabledDueError}
+          dataCy="hosts-button-add"
         >
           Add
         </SecondaryButton>
@@ -655,6 +662,7 @@ const Hosts = () => {
           idKebab="main-dropdown-kebab"
           isKebabOpen={kebabIsOpen}
           dropdownItems={!showTableRows ? [] : dropdownItems}
+          dataCy="hosts-kebab"
         />
       ),
     },
@@ -733,7 +741,7 @@ const Hosts = () => {
             className="pf-v5-u-pb-0 pf-v5-u-pr-md"
           />
         </PageSection>
-        <ModalErrors errors={modalErrors.getAll()} />
+        <ModalErrors errors={modalErrors.getAll()} dataCy="hosts-modal-error" />
         {isMembershipModalOpen && (
           <ModalWithFormLayout
             variantType="medium"
@@ -745,6 +753,7 @@ const Hosts = () => {
             show={isMembershipModalOpen}
             onClose={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
             actions={membershipModalActions}
+            dataCy="hosts-rebuild-auto-membership-modal"
           />
         )}
         <AddHost

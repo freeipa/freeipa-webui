@@ -3,6 +3,8 @@ import React from "react";
 import { Form, FormGroup, Modal, ModalVariant } from "@patternfly/react-core";
 
 export interface PropsToModal {
+  // Data cypress
+  dataCy: string;
   // Modal variant
   variantType: "small" | "medium" | "large" | "default";
   // Position
@@ -66,6 +68,7 @@ const ModalWithFormLayout = (props: PropsToModal) => {
   // Render 'ModalWithFormLayout'
   return (
     <Modal
+      data-cy={props.dataCy}
       variant={variant}
       title={props.title}
       description={props.description}

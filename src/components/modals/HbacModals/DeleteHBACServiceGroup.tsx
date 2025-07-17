@@ -102,7 +102,12 @@ const DeleteHBACServiceGroup = (props: PropsToDeleteServices) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+      data-cy="modal-button-ok"
+    >
       OK
     </Button>,
   ];
@@ -185,6 +190,7 @@ const DeleteHBACServiceGroup = (props: PropsToDeleteServices) => {
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
       isDisabled={spinning}
+      data-cy="modal-button-delete"
     >
       {spinning ? "Deleting" : "Delete"}
     </Button>,
@@ -192,6 +198,7 @@ const DeleteHBACServiceGroup = (props: PropsToDeleteServices) => {
       key="cancel-delete-hbacservicegroups"
       variant="link"
       onClick={closeModal}
+      data-cy="modal-button-cancel"
     >
       Cancel
     </Button>,
@@ -201,6 +208,7 @@ const DeleteHBACServiceGroup = (props: PropsToDeleteServices) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="delete-hbac-service-groups-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"
@@ -213,6 +221,7 @@ const DeleteHBACServiceGroup = (props: PropsToDeleteServices) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="delete-hbac-service-groups-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

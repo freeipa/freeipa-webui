@@ -3,6 +3,7 @@ import React from "react";
 import { NumberInput } from "@patternfly/react-core";
 
 export interface NumberSelectorProps {
+  dataCy: string;
   id: string;
   name: string;
   value: number | "";
@@ -79,7 +80,7 @@ const NumberSelector = (props: NumberSelectorProps) => {
       isDisabled={props.isDisabled || false}
       widthChars={props.numCharsShown || 1}
       className={props.className || ""}
-      inputProps={{ id: props.id }}
+      inputProps={{ id: props.id, "data-cy": props.dataCy }}
     />
   );
 };

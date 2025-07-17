@@ -113,6 +113,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
             <Text component={TextVariants.p}>Remove mode</Text>
           </TextContent>
           <Radio
+            data-cy="modal-radio-delete"
             id="radio-delete"
             label="Delete"
             name="radio-delete"
@@ -120,6 +121,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
             onChange={manageRadioButtons}
           />
           <Radio
+            data-cy="modal-radio-preserve"
             id="radio-preserve"
             label="Preserve"
             name="radio-preserve"
@@ -166,7 +168,12 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-ok"
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       OK
     </Button>,
   ];
@@ -298,6 +305,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
   // Set the Modal and Action buttons for 'Delete' option
   const modalActionsDelete: JSX.Element[] = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-users"
       variant="danger"
       onClick={() => {
@@ -311,7 +319,12 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
     >
       {spinning ? "Deleting" : "Delete"}
     </Button>,
-    <Button key="cancel-new-user" variant="link" onClick={closeModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-new-user"
+      variant="link"
+      onClick={closeModal}
+    >
       Cancel
     </Button>,
   ];
@@ -329,6 +342,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
 
   const modalDelete: JSX.Element = (
     <ModalWithFormLayout
+      dataCy="delete-users-modal"
       variantType="medium"
       modalPosition="top"
       offPosition="76px"
@@ -344,6 +358,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
   // Set the Modal and Action buttons for 'Preserve' option
   const modalActionsPreserve: JSX.Element[] = [
     <Button
+      data-cy="modal-button-preserve"
       key="preserve-users"
       variant="primary"
       onClick={() => {
@@ -357,13 +372,19 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
     >
       {spinning ? "Preserving" : "Preserve"}
     </Button>,
-    <Button key="cancel-new-user" variant="link" onClick={closeModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-new-user"
+      variant="link"
+      onClick={closeModal}
+    >
       Cancel
     </Button>,
   ];
 
   const modalPreserve: JSX.Element = (
     <ModalWithFormLayout
+      dataCy="preserve-users-modal"
       variantType="medium"
       modalPosition="top"
       offPosition="76px"
@@ -383,6 +404,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
       {isDeleteChecked ? modalDelete : modalPreserve}
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="delete-users-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

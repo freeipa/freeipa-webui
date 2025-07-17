@@ -39,6 +39,7 @@ const MemberOfSubIdToolbar = (props: MemberOfSubIdToolbarProps) => {
       <ToolbarContent>
         <ToolbarItem id="refresh-button">
           <Button
+            data-cy="member-of-sub-id-button-refresh"
             variant="secondary"
             name="refresh"
             isDisabled={!props.refreshButtonEnabled}
@@ -49,6 +50,7 @@ const MemberOfSubIdToolbar = (props: MemberOfSubIdToolbarProps) => {
         </ToolbarItem>
         <ToolbarItem id="auto-assign-button">
           <Button
+            data-cy="member-of-sub-id-button-auto-assign"
             variant="secondary"
             name="auto-assign"
             isDisabled={!props.autoAssignButtonEnabled}

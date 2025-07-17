@@ -469,6 +469,7 @@ const Services = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search services"
           placeholder="Search"
@@ -489,6 +490,7 @@ const Services = () => {
         <SecondaryButton
           onClickHandler={refreshServicesData}
           isDisabled={!showTableRows}
+          dataCy="services-button-refresh"
         >
           Refresh
         </SecondaryButton>
@@ -500,6 +502,7 @@ const Services = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled}
           onClickHandler={onDeleteHandler}
+          dataCy="services-button-delete"
         >
           Delete
         </SecondaryButton>
@@ -511,6 +514,7 @@ const Services = () => {
         <SecondaryButton
           isDisabled={!showTableRows}
           onClickHandler={onAddClickHandler}
+          dataCy="services-button-add"
         >
           Add
         </SecondaryButton>
@@ -592,7 +596,10 @@ const Services = () => {
             className="pf-v5-u-pb-0 pf-v5-u-pr-md"
           />
         </PageSection>
-        <ModalErrors errors={modalErrors.getAll()} />
+        <ModalErrors
+          errors={modalErrors.getAll()}
+          dataCy="services-modal-error"
+        />
         <AddService
           show={showAddModal}
           handleModalToggle={onAddModalToggle}

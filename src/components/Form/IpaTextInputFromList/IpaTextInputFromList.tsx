@@ -11,6 +11,7 @@ import useAlerts from "src/hooks/useAlerts";
 import { getParamProperties } from "src/utils/ipaObjectUtils";
 
 export interface PropsToTextInputFromList {
+  dataCy: string;
   name: string;
   elementsList: string[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -59,6 +60,7 @@ const IpaTextInputFromList = (props: PropsToTextInputFromList) => {
                 className="pf-v5-u-ml-lg"
               >
                 <TextInput
+                  data-cy={props.dataCy + "-textbox-" + element}
                   key={idx}
                   name={props.name}
                   value={element}
@@ -78,6 +80,7 @@ const IpaTextInputFromList = (props: PropsToTextInputFromList) => {
                 }
               >
                 <SecondaryButton
+                  dataCy={props.dataCy + "-button-remove-" + element}
                   name={"remove-principal-alias-" + idx}
                   onClickHandler={() => props.onRemove(idx)}
                   isDisabled={readOnly || isDisabled(idx)}
@@ -89,6 +92,7 @@ const IpaTextInputFromList = (props: PropsToTextInputFromList) => {
           ))}
       </Flex>
       <SecondaryButton
+        dataCy={props.dataCy + "-button-add"}
         classname="pf-v5-u-mt-md"
         name="add-principal-alias"
         onClickHandler={props.onOpenModal}

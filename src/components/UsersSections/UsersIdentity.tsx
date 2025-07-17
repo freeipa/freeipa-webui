@@ -23,6 +23,7 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
 
   const firstNameTextInput = (
     <IpaTextInput
+      dataCy="user-tab-settings-textbox-givenname"
       name={"givenname"}
       ariaLabel={"Given name"}
       ipaObject={ipaObject}
@@ -35,6 +36,7 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
   // - Last name
   const lastNameTextInput = (
     <IpaTextInput
+      dataCy="user-tab-settings-textbox-lastname"
       name={"sn"}
       ariaLabel={"Last name"}
       ipaObject={ipaObject}
@@ -47,6 +49,7 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
   // - Full name
   const fullNameTextInput = (
     <IpaTextInput
+      dataCy="user-tab-settings-textbox-fullname"
       name={"cn"}
       ariaLabel={"Full name"}
       ipaObject={ipaObject}
@@ -59,6 +62,7 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
   // - Job title
   const jobTitleTextInput = (
     <IpaTextInput
+      dataCy="user-tab-settings-textbox-jobtitle"
       name={"title"}
       ariaLabel={"Job title"}
       ipaObject={ipaObject}
@@ -71,6 +75,7 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
   // - GECOS
   const gecosTextInput = (
     <IpaTextInput
+      dataCy="user-tab-settings-textbox-gecos"
       name={"gecos"}
       ariaLabel={"GECOS"}
       ipaObject={ipaObject}
@@ -83,6 +88,7 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
   // - User class
   const userClassTextInput = (
     <IpaTextInput
+      dataCy="user-tab-settings-textbox-userclass"
       name={"userclass"}
       ariaLabel={"User Class"}
       ipaObject={ipaObject}

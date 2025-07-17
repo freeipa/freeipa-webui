@@ -120,6 +120,7 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
       name: "Rule name",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-rule-name"
           type="text"
           id="rule-name"
           name="cn"
@@ -136,6 +137,7 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
       name: "Mapping rule",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-mapping-rule"
           type="text"
           id="mapping-rule"
           name="ipacertmapmaprule"
@@ -156,6 +158,7 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
       name: "Matching rule",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-matching-rule"
           type="text"
           id="matching-rule"
           name="ipacertmapmatchrule"
@@ -175,6 +178,7 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
       name: "Domain name",
       pfComponent: (
         <TextInputList
+          dataCy="modal-domain-name"
           name="associateddomain"
           ariaLabel="Domain name text input"
           list={domainName}
@@ -192,6 +196,7 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
       name: "Priority",
       pfComponent: (
         <NumberSelector
+          dataCy="modal-number-selector-priority"
           id="priority-number-selector"
           name="priority"
           value={priority}
@@ -211,6 +216,7 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
       name: "Description",
       pfComponent: (
         <TextArea
+          data-cy="modal-textbox-description"
           type="text"
           id="description"
           name="description"
@@ -225,6 +231,7 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
   // Actions
   const modalActions: JSX.Element[] = [
     <Button
+      data-cy="modal-button-add"
       key="add-new"
       variant="secondary"
       isDisabled={isAddButtonSpinning || ruleName === ""}
@@ -236,6 +243,7 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
       Add
     </Button>,
     <Button
+      data-cy="modal-button-add-and-add-another"
       key="add-new-again"
       variant="secondary"
       isDisabled={isAddAnotherButtonSpinning || ruleName === ""}
@@ -246,7 +254,12 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
     >
       Add and add again
     </Button>,
-    <Button key="cancel-new" variant="link" onClick={cleanAndCloseModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-new"
+      variant="link"
+      onClick={cleanAndCloseModal}
+    >
       Cancel
     </Button>,
   ];
@@ -255,6 +268,7 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="add-rule-modal"
         variantType={"small"}
         modalPosition={"top"}
         offPosition={"76px"}

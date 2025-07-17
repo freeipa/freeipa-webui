@@ -81,7 +81,10 @@ const HostGroupsSettings = (props: PropsToGroupsSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton onClickHandler={props.onRefresh}>
+        <SecondaryButton
+          dataCy="host-groups-tab-settings-button-refresh"
+          onClickHandler={props.onRefresh}
+        >
           Refresh
         </SecondaryButton>
       ),
@@ -90,6 +93,7 @@ const HostGroupsSettings = (props: PropsToGroupsSettings) => {
       key: 1,
       element: (
         <SecondaryButton
+          dataCy="host-groups-tab-settings-button-revert"
           isDisabled={!props.isModified}
           onClickHandler={onRevert}
         >
@@ -101,6 +105,7 @@ const HostGroupsSettings = (props: PropsToGroupsSettings) => {
       key: 2,
       element: (
         <SecondaryButton
+          dataCy="host-groups-tab-settings-button-save"
           isDisabled={!props.isModified || isSaving}
           onClickHandler={onSave}
           isLoading={isSaving}
@@ -131,6 +136,7 @@ const HostGroupsSettings = (props: PropsToGroupsSettings) => {
         >
           <FormGroup label="Description" fieldId="description">
             <IpaTextArea
+              dataCy="host-groups-tab-settings-textbox-description"
               name="description"
               ipaObject={ipaObject}
               onChange={recordOnChange}

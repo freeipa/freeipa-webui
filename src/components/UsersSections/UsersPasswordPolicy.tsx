@@ -20,6 +20,7 @@ const UsersPasswordPolicy = (props: PropsToPasswordPolicy) => {
         <Form className="pf-v5-u-mb-lg">
           <FormGroup label="Max lifetime (days)" fieldId="max-lifetime-days">
             <TextInput
+              data-cy="user-tab-settings-textbox-max-lifetime-days"
               id="max-lifetime-days"
               name="krbmaxpwdlife"
               value={props.pwdPolicyData.krbmaxpwdlife}
@@ -30,6 +31,7 @@ const UsersPasswordPolicy = (props: PropsToPasswordPolicy) => {
           </FormGroup>
           <FormGroup label="Min lifetime (hours)" fieldId="min-lifetime-hours">
             <TextInput
+              data-cy="user-tab-settings-textbox-min-lifetime-hours"
               id="min-lifetime-hours"
               name="krbminpwdlife"
               value={props.pwdPolicyData.krbminpwdlife}
@@ -43,6 +45,7 @@ const UsersPasswordPolicy = (props: PropsToPasswordPolicy) => {
             fieldId="history-size"
           >
             <TextInput
+              data-cy="user-tab-settings-textbox-history-size"
               id="history-size"
               name="krbpwdhistorylength"
               value={props.pwdPolicyData.krbpwdhistorylength}
@@ -53,6 +56,7 @@ const UsersPasswordPolicy = (props: PropsToPasswordPolicy) => {
           </FormGroup>
           <FormGroup label="Character classes" fieldId="character-classes">
             <TextInput
+              data-cy="user-tab-settings-textbox-character-classes"
               id="character-classes"
               name="krbpwdmindiffchars"
               value={props.pwdPolicyData.krbpwdmindiffchars}
@@ -63,6 +67,7 @@ const UsersPasswordPolicy = (props: PropsToPasswordPolicy) => {
           </FormGroup>
           <FormGroup label="Min length" fieldId="min-length">
             <TextInput
+              data-cy="user-tab-settings-textbox-min-length"
               id="min-length"
               name="krbpwdminlength"
               value={props.pwdPolicyData.krbpwdminlength}
@@ -77,6 +82,7 @@ const UsersPasswordPolicy = (props: PropsToPasswordPolicy) => {
         <Form className="pf-v5-u-mb-lg">
           <FormGroup label="Max failures" fieldId="max-failures">
             <TextInput
+              data-cy="user-tab-settings-textbox-max-failures"
               id="max-failures"
               name="krbpwdmaxfailure"
               value={props.pwdPolicyData.krbpwdmaxfailure}
@@ -90,6 +96,7 @@ const UsersPasswordPolicy = (props: PropsToPasswordPolicy) => {
             fieldId="future-reset-interval"
           >
             <TextInput
+              data-cy="user-tab-settings-textbox-future-reset-interval"
               id="future-reset-interval"
               name="krbpwdfailurecountinterval"
               value={props.pwdPolicyData.krbpwdfailurecountinterval}
@@ -103,6 +110,7 @@ const UsersPasswordPolicy = (props: PropsToPasswordPolicy) => {
             fieldId="lockout-duration"
           >
             <TextInput
+              data-cy="user-tab-settings-textbox-lockout-duration"
               id="lockout-duration"
               name="krbpwdlockoutduration"
               value={props.pwdPolicyData.krbpwdlockoutduration}
@@ -113,6 +121,7 @@ const UsersPasswordPolicy = (props: PropsToPasswordPolicy) => {
           </FormGroup>
           <FormGroup label="Grace login limit" fieldId="grace-login-limit">
             <TextInput
+              data-cy="user-tab-settings-textbox-grace-login-limit"
               id="grace-login-limit"
               name="passwordgracelimit"
               value={props.pwdPolicyData.passwordgracelimit}

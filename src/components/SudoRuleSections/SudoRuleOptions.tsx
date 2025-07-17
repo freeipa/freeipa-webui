@@ -265,6 +265,7 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
       name: "Sudo option",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-sudo-option"
           type="text"
           id="sudo-option"
           name="ipasudoopt"
@@ -279,6 +280,7 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
 
   const addModalActions: JSX.Element[] = [
     <Button
+      data-cy="modal-button-add"
       key="delete-groups"
       variant="primary"
       form={"add-sudo-option-modal"}
@@ -291,6 +293,7 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
       {spinningOnAdd ? "Adding" : "Add"}
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key="cancel-remove-group"
       variant="link"
       onClick={onChangeAddModalVisibility}
@@ -365,6 +368,7 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
       />
       {/* Add option modal */}
       <ModalWithFormLayout
+        dataCy="add-sudo-option-modal"
         variantType="medium"
         modalPosition="top"
         title={"Add sudo option"}

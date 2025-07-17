@@ -170,6 +170,7 @@ const ActiveUsersTabs = ({ memberof }) => {
             unmountOnExit
           >
             <Tab
+              data-cy="active-users-tab-settings"
               eventKey={"settings"}
               name="details"
               title={<TabTitleText>Settings</TabTitleText>}
@@ -196,6 +197,7 @@ const ActiveUsersTabs = ({ memberof }) => {
               />
             </Tab>
             <Tab
+              data-cy="active-users-tab-memberof"
               eventKey={"memberof"}
               name="memberof-details"
               title={<TabTitleText>Is a member of</TabTitleText>}

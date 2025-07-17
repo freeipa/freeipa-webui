@@ -86,6 +86,7 @@ const KeytabElementsDeleteModal = (props: PropsToDelete) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <SecondaryButton
+      dataCy="modal-button-delete"
       key={"delete-" + props.elementType}
       form="modal-form"
       onClickHandler={removeElementFromList}
@@ -93,6 +94,7 @@ const KeytabElementsDeleteModal = (props: PropsToDelete) => {
       Delete
     </SecondaryButton>,
     <Button
+      data-cy="modal-button-cancel"
       key={"cancel-delete-" + props.elementType}
       variant="link"
       onClick={closeModal}
@@ -104,6 +106,7 @@ const KeytabElementsDeleteModal = (props: PropsToDelete) => {
   // Render component
   return (
     <ModalWithFormLayout
+      dataCy="keytab-elements-delete-modal"
       variantType="medium"
       modalPosition="top"
       title={

@@ -20,6 +20,7 @@ interface ToggleOptions {
 }
 
 export interface ToggleOptionProps extends IPAParamDefinition {
+  dataCy: string;
   options: ToggleOptions[];
   optionSelected: string;
   setOptionSelected: (value: string) => void;
@@ -64,6 +65,7 @@ const IpaToggleGroup = (props: ToggleOptionProps) => {
     <ToggleGroup isCompact={props.isCompact} className={props.className}>
       {props.options.map((option) => (
         <ToggleGroupItem
+          data-cy={props.dataCy + "-" + option.value}
           key={option.label}
           text={option.label}
           buttonId={option.label}

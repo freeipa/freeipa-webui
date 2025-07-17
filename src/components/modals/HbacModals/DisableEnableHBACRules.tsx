@@ -102,7 +102,12 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
   };
 
   const errorModalActions = [
-    <Button key="ok" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-ok"
+      key="ok"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       OK
     </Button>,
   ];
@@ -267,16 +272,23 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
         )
       }
       form="hbacrules-enable-disable-hbacrules-modal"
+      data-cy="modal-button-disable"
     >
       Disable
     </Button>,
-    <Button key="cancel-disable-hacbrule" variant="link" onClick={closeModal}>
+    <Button
+      key="cancel-disable-hacbrule"
+      variant="link"
+      onClick={closeModal}
+      data-cy="modal-button-cancel"
+    >
       Cancel
     </Button>,
   ];
 
   const modalDisable: JSX.Element = (
     <ModalWithFormLayout
+      dataCy="disable-hbac-rules-modal"
       variantType="medium"
       modalPosition="top"
       offPosition="76px"
@@ -301,16 +313,23 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
         )
       }
       form="hbacrules-enable-disable-hbacrules-modal"
+      data-cy="modal-button-enable"
     >
       Enable
     </Button>,
-    <Button key="cancel-enable-hbacrule" variant="link" onClick={closeModal}>
+    <Button
+      key="cancel-enable-hbacrule"
+      variant="link"
+      onClick={closeModal}
+      data-cy="modal-button-cancel"
+    >
       Cancel
     </Button>,
   ];
 
   const modalEnable: JSX.Element = (
     <ModalWithFormLayout
+      dataCy="enable-hbac-rules-modal"
       variantType="medium"
       modalPosition="top"
       offPosition="76px"
@@ -330,6 +349,7 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
       {!props.optionSelected ? modalEnable : modalDisable}
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="disable-enable-hbac-rules-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

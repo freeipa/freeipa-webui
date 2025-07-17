@@ -419,6 +419,7 @@ const UserGroups = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search user groups"
           placeholder="Search"
@@ -439,6 +440,7 @@ const UserGroups = () => {
         <SecondaryButton
           onClickHandler={refreshGroupsData}
           isDisabled={!showTableRows}
+          dataCy="user-groups-button-refresh"
         >
           Refresh
         </SecondaryButton>
@@ -450,6 +452,7 @@ const UserGroups = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
+          dataCy="user-groups-button-delete"
         >
           Delete
         </SecondaryButton>
@@ -461,6 +464,7 @@ const UserGroups = () => {
         <SecondaryButton
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows}
+          dataCy="user-groups-button-add"
         >
           Add
         </SecondaryButton>
@@ -531,7 +535,10 @@ const UserGroups = () => {
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
         />
       </PageSection>
-      <ModalErrors errors={modalErrors.getAll()} />
+      <ModalErrors
+        errors={modalErrors.getAll()}
+        dataCy="user-groups-modal-error"
+      />
       <AddUserGroup
         show={showAddModal}
         handleModalToggle={onAddModalToggle}

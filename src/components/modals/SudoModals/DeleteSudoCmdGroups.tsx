@@ -99,7 +99,12 @@ const DeleteSudoCmdGroups = (props: PropsToDeleteRules) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-ok"
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       OK
     </Button>,
   ];
@@ -174,6 +179,7 @@ const DeleteSudoCmdGroups = (props: PropsToDeleteRules) => {
   // Set the Modal and Action buttons for 'Delete' option
   const modalActionsDelete: JSX.Element[] = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-sudo-command-groups"
       variant="danger"
       onClick={deleteRules}
@@ -186,6 +192,7 @@ const DeleteSudoCmdGroups = (props: PropsToDeleteRules) => {
       {spinning ? "Deleting" : "Delete"}
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key="cancel-delete-sudo-command-groups"
       variant="link"
       onClick={closeModal}
@@ -198,6 +205,7 @@ const DeleteSudoCmdGroups = (props: PropsToDeleteRules) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="delete-sudo-command-groups-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"
@@ -210,6 +218,7 @@ const DeleteSudoCmdGroups = (props: PropsToDeleteRules) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="delete-sudo-command-groups-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

@@ -105,7 +105,12 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-ok"
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       OK
     </Button>,
   ];
@@ -185,6 +190,7 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
   // Set the Modal and Action buttons for 'Delete' option
   const modalActionsDelete: JSX.Element[] = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-hosts"
       variant="danger"
       onClick={deleteHosts}
@@ -196,7 +202,12 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
     >
       {spinning ? "Deleting" : "Delete"}
     </Button>,
-    <Button key="cancel-delete-hosts" variant="link" onClick={closeModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-delete-hosts"
+      variant="link"
+      onClick={closeModal}
+    >
       Cancel
     </Button>,
   ];
@@ -205,6 +216,7 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="delete-hosts-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"
@@ -217,6 +229,7 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="delete-hosts-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

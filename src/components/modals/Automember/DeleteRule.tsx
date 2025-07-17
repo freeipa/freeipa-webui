@@ -134,6 +134,7 @@ const DeleteRule = (props: PropsToDeleteRule) => {
   // Set the Modal and Action buttons for 'Delete' option
   const modalActionsDelete: JSX.Element[] = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-rules"
       variant="danger"
       onClick={onDelete}
@@ -145,7 +146,12 @@ const DeleteRule = (props: PropsToDeleteRule) => {
     >
       {spinning ? "Deleting" : "Delete"}
     </Button>,
-    <Button key="cancel-delete-rules" variant="link" onClick={closeModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-delete-rules"
+      variant="link"
+      onClick={closeModal}
+    >
       Cancel
     </Button>,
   ];
@@ -154,6 +160,7 @@ const DeleteRule = (props: PropsToDeleteRule) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="delete-rule-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"

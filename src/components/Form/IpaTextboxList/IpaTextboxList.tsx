@@ -12,6 +12,7 @@ import SecondaryButton from "../../layouts/SecondaryButton";
 import { updateIpaObject } from "src/utils/ipaObjectUtils";
 
 export interface PropsToIpaTextboxList {
+  dataCy: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ipaObject: Record<string, any>;
   setIpaObject: (value: Record<string, unknown>) => void;
@@ -113,6 +114,7 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
               flex={{ default: "flex_1" }}
             >
               <TextInput
+                data-cy={props.dataCy + "-textbox-" + idx}
                 id={props.name + "-" + idx}
                 value={item}
                 type="text"
@@ -128,6 +130,7 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
             </FlexItem>
             <FlexItem key={props.name + "-" + idx + "-delete-button"}>
               <SecondaryButton
+                dataCy={props.dataCy + "-button-delete-" + idx}
                 name={"remove-" + props.name + "-" + idx}
                 onClickHandler={() => onRemoveHandler(idx)}
               >
@@ -138,6 +141,7 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
         ))}
       </Flex>
       <SecondaryButton
+        dataCy={props.dataCy + "-button-add"}
         classname="pf-v5-u-mt-sm"
         name={"add-" + props.name}
         onClickHandler={onAddHandler}

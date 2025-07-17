@@ -279,12 +279,14 @@ const UserSettings = (props: PropsToUserSettings) => {
 
   const activeDropdownItems = [
     <DropdownItem
+      data-cy="user-tab-settings-kebab-reset-password"
       key="reset password"
       onClick={() => setIsResetPasswordModalOpen(true)}
     >
       Reset password
     </DropdownItem>,
     <DropdownItem
+      data-cy="user-tab-settings-kebab-enable"
       key="enable"
       isDisabled={!props.user.nsaccountlock}
       onClick={() => setIsDisableEnableModalOpen(true)}
@@ -292,16 +294,22 @@ const UserSettings = (props: PropsToUserSettings) => {
       Enable
     </DropdownItem>,
     <DropdownItem
+      data-cy="user-tab-settings-kebab-disable"
       key="disable"
       isDisabled={props.user.nsaccountlock}
       onClick={() => setIsDisableEnableModalOpen(true)}
     >
       Disable
     </DropdownItem>,
-    <DropdownItem key="delete" onClick={() => setIsDeleteModalOpen(true)}>
+    <DropdownItem
+      data-cy="user-tab-settings-kebab-delete"
+      key="delete"
+      onClick={() => setIsDeleteModalOpen(true)}
+    >
       Delete
     </DropdownItem>,
     <DropdownItem
+      data-cy="user-tab-settings-kebab-unlock"
       key="unlock"
       isDisabled={!getUnlockStatus()}
       onClick={() => setIsUnlockModalOpen(true)}
@@ -309,24 +317,28 @@ const UserSettings = (props: PropsToUserSettings) => {
       Unlock
     </DropdownItem>,
     <DropdownItem
+      data-cy="user-tab-settings-kebab-add-otp-token"
       key="add otp token"
       onClick={() => setIsAddOtpTokenModalOpen(true)}
     >
       Add OTP token
     </DropdownItem>,
     <DropdownItem
+      data-cy="user-tab-settings-kebab-rebuild-auto-membership"
       key="rebuild auto membership"
       onClick={() => setIsRebuildAutoMembershipModalOpen(true)}
     >
       Rebuild auto membership
     </DropdownItem>,
     <DropdownItem
+      data-cy="user-tab-settings-kebab-new-certificate"
       key="new certificate"
       onClick={() => setIsNewCertificateModalOpen(true)}
     >
       New certificate
     </DropdownItem>,
     <DropdownItem
+      data-cy="user-tab-settings-kebab-auto-assign-subordinate-ids"
       key="auto assign subordinate ids"
       isDisabled={isDisabledAutoAssignSubIds}
       onClick={onClickAutoAssignSubIds}
@@ -336,22 +348,42 @@ const UserSettings = (props: PropsToUserSettings) => {
   ];
 
   const stageDropdownItems = [
-    <DropdownItem key="activate" onClick={() => setIsActivateModalOpen(true)}>
+    <DropdownItem
+      data-cy="user-tab-settings-kebab-activate"
+      key="activate"
+      onClick={() => setIsActivateModalOpen(true)}
+    >
       Activate
     </DropdownItem>,
-    <DropdownItem key="delete" onClick={() => setIsDeleteModalOpen(true)}>
+    <DropdownItem
+      data-cy="user-tab-settings-kebab-delete"
+      key="delete"
+      onClick={() => setIsDeleteModalOpen(true)}
+    >
       Delete
     </DropdownItem>,
   ];
 
   const preservedDropdownItems = [
-    <DropdownItem key="stage" onClick={() => setIsStageModalOpen(true)}>
+    <DropdownItem
+      data-cy="user-tab-settings-kebab-stage"
+      key="stage"
+      onClick={() => setIsStageModalOpen(true)}
+    >
       Stage
     </DropdownItem>,
-    <DropdownItem key="restore" onClick={() => setIsRestoreModalOpen(true)}>
+    <DropdownItem
+      data-cy="user-tab-settings-kebab-restore"
+      key="restore"
+      onClick={() => setIsRestoreModalOpen(true)}
+    >
       Restore
     </DropdownItem>,
-    <DropdownItem key="delete" onClick={() => setIsDeleteModalOpen(true)}>
+    <DropdownItem
+      data-cy="user-tab-settings-kebab-delete"
+      key="delete"
+      onClick={() => setIsDeleteModalOpen(true)}
+    >
       Delete
     </DropdownItem>,
   ];
@@ -401,7 +433,10 @@ const UserSettings = (props: PropsToUserSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton onClickHandler={props.onRefresh}>
+        <SecondaryButton
+          dataCy="user-tab-settings-button-refresh"
+          onClickHandler={props.onRefresh}
+        >
           Refresh
         </SecondaryButton>
       ),
@@ -410,6 +445,7 @@ const UserSettings = (props: PropsToUserSettings) => {
       key: 1,
       element: (
         <SecondaryButton
+          dataCy="user-tab-settings-button-revert"
           isDisabled={!props.isModified}
           onClickHandler={onRevert}
         >
@@ -420,7 +456,11 @@ const UserSettings = (props: PropsToUserSettings) => {
     {
       key: 2,
       element: (
-        <SecondaryButton isDisabled={!props.isModified} onClickHandler={onSave}>
+        <SecondaryButton
+          dataCy="user-tab-settings-button-save"
+          isDisabled={!props.isModified}
+          onClickHandler={onSave}
+        >
           Save
         </SecondaryButton>
       ),
@@ -441,6 +481,7 @@ const UserSettings = (props: PropsToUserSettings) => {
                 ? stageDropdownItems
                 : preservedDropdownItems
           }
+          dataCy="user-tab-settings-kebab"
         />
       ),
     },

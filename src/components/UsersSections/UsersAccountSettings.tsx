@@ -84,10 +84,15 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
   };
 
   const certificatesOptions = [
-    <SecondaryButton key="add" onClickHandler={onClickAddTextAreaCertificates}>
+    <SecondaryButton
+      dataCy="modal-button-add"
+      key="add"
+      onClickHandler={onClickAddTextAreaCertificates}
+    >
       Add
     </SecondaryButton>,
     <Button
+      data-cy="modal-button-cancel"
       key="cancel"
       variant="link"
       onClick={onClickCancelTextAreaCertificates}
@@ -130,6 +135,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
           <Form className="pf-v5-u-mb-lg">
             <FormGroup label="User login" fieldId="uid">
               <IpaTextInput
+                dataCy="user-tab-settings-textbox-uid"
                 name={"uid"}
                 ariaLabel={"User login"}
                 ipaObject={ipaObject}
@@ -140,6 +146,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             </FormGroup>
             <FormGroup label="Password" fieldId="password">
               <TextInput
+                data-cy="user-tab-settings-textbox-password"
                 id="password"
                 name="has_password"
                 value={password}
@@ -160,10 +167,12 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 onChange={recordOnChange}
                 objectName="user"
                 metadata={props.metadata}
+                dataCy="user-tab-settings-calendar-krbpasswordexpiration"
               />
             </FormGroup>
             <FormGroup label="UID" fieldId="uidnumber">
               <IpaTextInput
+                dataCy="user-tab-settings-textbox-uidnumber"
                 name={"uidnumber"}
                 ariaLabel={"UID number"}
                 ipaObject={ipaObject}
@@ -174,6 +183,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             </FormGroup>
             <FormGroup label="GID" fieldId="gidnumber">
               <IpaTextInput
+                dataCy="user-tab-settings-textbox-gidnumber"
                 name={"gidnumber"}
                 ariaLabel={"GID number"}
                 ipaObject={ipaObject}
@@ -188,6 +198,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               role="group"
             >
               <PrincipalAliasMultiTextBox
+                dataCy="user-tab-settings-kerberos-principal-alias"
                 ipaObject={ipaObject}
                 metadata={props.metadata}
                 onRefresh={props.onRefresh}
@@ -200,6 +211,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               role="group"
             >
               <IpaCalendar
+                dataCy="user-tab-settings-calendar-krbprincipalexpiration"
                 name={"krbprincipalexpiration"}
                 ariaLabel={"Kerberos principal expiration date"}
                 ipaObject={ipaObject}
@@ -210,6 +222,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             </FormGroup>
             <FormGroup label="Login shell" fieldId="loginshell">
               <IpaTextInput
+                dataCy="user-tab-settings-textbox-loginshell"
                 name={"loginshell"}
                 ariaLabel={"Login shell"}
                 ipaObject={ipaObject}
@@ -224,6 +237,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
           <Form className="pf-v5-u-mb-lg">
             <FormGroup label="Home directory" fieldId="homedirectory">
               <IpaTextInput
+                dataCy="user-tab-settings-textbox-homedirectory"
                 name={"homedirectory"}
                 ariaLabel={"Home directory"}
                 ipaObject={ipaObject}
@@ -238,6 +252,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               role="group"
             >
               <IpaSshPublicKeys
+                dataCy="user-tab-settings-ssh-public-keys"
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
                 metadata={props.metadata}
@@ -251,6 +266,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               role="group"
             >
               <IpaCertificates
+                dataCy="user-tab-settings-certificates"
                 ipaObject={ipaObject}
                 objectType="user"
                 onChange={recordOnChange}
@@ -291,6 +307,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               }
             >
               <IpaCheckboxes
+                dataCy="user-tab-settings-checkbox-ipauserauthtype"
                 name="ipauserauthtype"
                 options={[
                   {
@@ -329,6 +346,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               fieldId="ipatokenradiusconfiglink"
             >
               <IpaSelect
+                dataCy="user-tab-settings-ipatokenradiusconfiglink"
                 id="ipatokenradiusconfiglink"
                 name="ipatokenradiusconfiglink"
                 options={radiusProxyList}
@@ -343,6 +361,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               fieldId="ipatokenradiususername"
             >
               <IpaTextInput
+                dataCy="user-tab-settings-textbox-ipatokenradiususername"
                 name={"ipatokenradiususername"}
                 ariaLabel={"Radius proxy username"}
                 ipaObject={ipaObject}
@@ -356,6 +375,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               fieldId="ipaidpconfiglink"
             >
               <IpaSelect
+                dataCy="user-tab-settings-ipaidpconfiglink"
                 id="ipaidpconfiglink"
                 name="ipaidpconfiglink"
                 options={idpConfOptions}
@@ -367,6 +387,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
             </FormGroup>
             <FormGroup label="External IdP user identifier" fieldId="ipaidpsub">
               <IpaTextInput
+                dataCy="user-tab-settings-textbox-ipaidpsub"
                 name={"ipaidpsub"}
                 ariaLabel={"External IdP user identifier"}
                 ipaObject={ipaObject}
@@ -379,6 +400,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
         </FlexItem>
       </Flex>
       <ModalWithTextAreaLayout
+        dataCy="usercertificate-modal"
         id="certificate-textarea"
         value={textAreaCertificatesValue}
         onChange={onChangeTextAreaCertificatesValue}

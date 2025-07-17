@@ -59,6 +59,7 @@ const HostSetPassword = (props: PropsToResetPassword) => {
       name: "New Password",
       pfComponent: (
         <PasswordInput
+          dataCy="reset-password-new-password"
           id="reset-password-new-password"
           name="password"
           value={newPassword}
@@ -76,6 +77,7 @@ const HostSetPassword = (props: PropsToResetPassword) => {
       pfComponent: (
         <>
           <PasswordInput
+            dataCy="set-password-verify-password"
             id="set-password-verify-password"
             name="password2"
             value={verifyPassword}
@@ -153,6 +155,7 @@ const HostSetPassword = (props: PropsToResetPassword) => {
 
   const actions = [
     <Button
+      data-cy="modal-button-set-password"
       key={"set-password"}
       variant="primary"
       onClick={onSetPassword}
@@ -165,6 +168,7 @@ const HostSetPassword = (props: PropsToResetPassword) => {
       Reset password
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key={"cancel-set-password"}
       variant="link"
       onClick={resetFieldsAndCloseModal}
@@ -176,6 +180,7 @@ const HostSetPassword = (props: PropsToResetPassword) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="host-set-password-modal"
         variantType="small"
         modalPosition="top"
         title="Set password"

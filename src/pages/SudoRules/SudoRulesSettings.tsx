@@ -77,16 +77,25 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
   const [isKebabOpen, setIsKebabOpen] = React.useState(false);
 
   const dropdownItems = [
-    <DropdownItem key="enable-sudo-rule" onClick={() => onChangeEnableModal()}>
+    <DropdownItem
+      key="enable-sudo-rule"
+      onClick={() => onChangeEnableModal()}
+      data-cy="sudo-rules-tab-settings-kebab-enable"
+    >
       Enable
     </DropdownItem>,
     <DropdownItem
       key="disable-sudo-rule"
       onClick={() => onChangeDisableModal()}
+      data-cy="sudo-rules-tab-settings-kebab-disable"
     >
       Disable
     </DropdownItem>,
-    <DropdownItem key="delete-sudo-rule" onClick={() => onChangeDeleteModal()}>
+    <DropdownItem
+      key="delete-sudo-rule"
+      onClick={() => onChangeDeleteModal()}
+      data-cy="sudo-rules-tab-settings-kebab-delete"
+    >
       Delete
     </DropdownItem>,
   ];
@@ -627,7 +636,10 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton onClickHandler={props.onRefresh}>
+        <SecondaryButton
+          dataCy="sudo-rules-tab-settings-button-refresh"
+          onClickHandler={props.onRefresh}
+        >
           Refresh
         </SecondaryButton>
       ),
@@ -636,6 +648,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
       key: 1,
       element: (
         <SecondaryButton
+          dataCy="sudo-rules-tab-settings-button-revert"
           isDisabled={!props.isModified}
           onClickHandler={onRevert}
         >
@@ -647,6 +660,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
       key: 2,
       element: (
         <SecondaryButton
+          dataCy="sudo-rules-tab-settings-button-save"
           isDisabled={!props.isModified || isSaving}
           onClickHandler={onSave}
           isLoading={isSaving}
@@ -662,6 +676,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
       key: 3,
       element: (
         <KebabLayout
+          dataCy="sudo-rules-tab-settings-kebab"
           direction={"up"}
           onDropdownSelect={onKebabSelect}
           onKebabToggle={onKebabToggle}

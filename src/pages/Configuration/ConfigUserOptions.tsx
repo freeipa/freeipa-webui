@@ -60,6 +60,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             isRequired
           >
             <IpaTextArea
+              dataCy="configuration-textbox-ipausersearchfields"
               name="ipausersearchfields"
               ipaObject={props.ipaObject}
               onChange={props.recordOnChange}
@@ -72,6 +73,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             fieldId="ipadefaultemaildomain"
           >
             <IpaTextInput
+              dataCy="configuration-textbox-ipadefaultemaildomain"
               name={"ipadefaultemaildomain"}
               ariaLabel={"Default e-mail domain"}
               ipaObject={props.ipaObject}
@@ -88,6 +90,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             }
           >
             <IpaTextArea
+              dataCy="configuration-textbox-ipadomainresolutionorder"
               name={"ipadomainresolutionorder"}
               ariaLabel={"Domain resolution order"}
               ipaObject={props.ipaObject}
@@ -101,6 +104,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             fieldId="ipadefaultprimarygroup"
           >
             <IpaDropdownSearch
+              dataCy="configuration-dropdown-ipadefaultprimarygroup"
               id="ipadefaultprimarygroup"
               name="ipadefaultprimarygroup"
               options={props.groups}
@@ -117,6 +121,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             isRequired
           >
             <IpaTextInput
+              dataCy="configuration-textbox-ipahomesrootdir"
               name={"ipahomesrootdir"}
               ariaLabel={"Home directory base"}
               ipaObject={props.ipaObject}
@@ -131,6 +136,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             isRequired
           >
             <IpaTextInput
+              dataCy="configuration-textbox-ipadefaultloginshell"
               name={"ipadefaultloginshell"}
               ariaLabel={"Default shell"}
               ipaObject={props.ipaObject}
@@ -145,6 +151,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             isRequired
           >
             <IpaNumberInput
+              dataCy="configuration-textbox-ipamaxusernamelength"
               id="ipamaxusernamelength"
               name="ipamaxusernamelength"
               aria-label="Maximum username length"
@@ -163,6 +170,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             isRequired
           >
             <IpaNumberInput
+              dataCy="configuration-textbox-ipapwdexpadvnotify"
               id="ipapwdexpadvnotify"
               name="ipapwdexpadvnotify"
               aria-label="Password Expiration Notification (days)"
@@ -181,6 +189,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             role="group"
           >
             <IpaCheckboxes
+              dataCy="configuration-checkboxes-ipaconfigstring"
               name="ipaconfigstring"
               options={[
                 {
@@ -212,6 +221,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             }
           >
             <IpaCheckboxes
+              dataCy="configuration-checkboxes-ipauserauthtype"
               name="ipauserauthtype"
               options={[
                 {
@@ -258,6 +268,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             fieldId="ipamigrationenabled-ipamigrationenabled"
           >
             <IpaCheckbox
+              dataCy="configuration-checkbox-ipamigrationenabled"
               name="ipamigrationenabled"
               value="ipamigrationenabled"
               text=""
@@ -273,6 +284,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             fieldId="ipauserdefaultsubordinateid-ipauserdefaultsubordinateid"
           >
             <IpaCheckbox
+              dataCy="configuration-checkbox-ipauserdefaultsubordinateid"
               name="ipauserdefaultsubordinateid"
               value="ipauserdefaultsubordinateid"
               text=""

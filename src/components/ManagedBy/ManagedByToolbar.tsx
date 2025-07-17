@@ -97,13 +97,21 @@ const ManagedByToolbar = (props: PropsToToolbar) => {
     {
       id: hostsToolbarData.refreshButton.id,
       key: 0,
-      element: <SecondaryButton name="refresh">Refresh</SecondaryButton>,
+      element: (
+        <SecondaryButton
+          dataCy="hosts-tab-managed-by-button-refresh"
+          name="refresh"
+        >
+          Refresh
+        </SecondaryButton>
+      ),
     },
     {
       id: hostsToolbarData.deleteButton.id,
       key: 1,
       element: (
         <SecondaryButton
+          dataCy="hosts-tab-managed-by-button-delete"
           name="remove"
           isDisabled={hostsToolbarData.deleteButton.isDisabledHandler}
           onClickHandler={hostsToolbarData.deleteButton.onClickHandler}
@@ -117,6 +125,7 @@ const ManagedByToolbar = (props: PropsToToolbar) => {
       key: 2,
       element: (
         <SecondaryButton
+          dataCy="hosts-tab-managed-by-button-add"
           name="add"
           onClickHandler={hostsToolbarData.addButton.onClickHandler}
         >

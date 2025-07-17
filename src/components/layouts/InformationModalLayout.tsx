@@ -3,6 +3,7 @@ import React from "react";
 import { Modal } from "@patternfly/react-core";
 
 interface PropsToModalLayout {
+  dataCy: string;
   isOpen: boolean;
   onClose: () => void;
   actions: JSX.Element[];
@@ -14,6 +15,7 @@ interface PropsToModalLayout {
 const InformationModalLayout = (props: PropsToModalLayout) => {
   return (
     <Modal
+      data-cy={props.dataCy}
       variant={props.variant || "small"}
       title={props.title}
       isOpen={props.isOpen}

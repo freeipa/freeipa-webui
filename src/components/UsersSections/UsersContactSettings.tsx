@@ -27,6 +27,7 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
         <Form className="pf-v5-u-mb-lg">
           <FormGroup label="Mail address" fieldId="mail" role="group">
             <IpaTextboxList
+              dataCy="user-tab-settings-mail"
               ipaObject={ipaObject}
               setIpaObject={recordOnChange}
               name={"mail"}
@@ -39,6 +40,7 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
             role="group"
           >
             <IpaTextboxList
+              dataCy="user-tab-settings-telephonenumber"
               ipaObject={ipaObject}
               setIpaObject={recordOnChange}
               name={"telephonenumber"}
@@ -47,6 +49,7 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
           </FormGroup>
           <FormGroup label="Pager number" fieldId="pager" role="group">
             <IpaTextboxList
+              dataCy="user-tab-settings-pager"
               ipaObject={ipaObject}
               setIpaObject={recordOnChange}
               name={"pager"}
@@ -59,6 +62,7 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
         <Form className="pf-v5-u-mb-lg">
           <FormGroup label="Mobile phone number" fieldId="mobile" role="group">
             <IpaTextboxList
+              dataCy="user-tab-settings-mobile"
               ipaObject={ipaObject}
               setIpaObject={recordOnChange}
               name={"mobile"}

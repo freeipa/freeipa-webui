@@ -87,6 +87,7 @@ const ResetIdpPassword = (props: PropsToResetIdpPassword) => {
           onChange={setNewPassword}
           onRevealHandler={setPasswordHidden}
           passwordHidden={passwordHidden}
+          dataCy="modal-textbox-new-password"
         />
       ),
     },
@@ -105,6 +106,7 @@ const ResetIdpPassword = (props: PropsToResetIdpPassword) => {
             onRevealHandler={setVerifyPasswordHidden}
             passwordHidden={verifyPasswordHidden}
             validated={passwordValidationResult.pfError}
+            dataCy="modal-textbox-verify-password"
           />
           <HelperText>
             <HelperTextItem variant="error">
@@ -163,6 +165,7 @@ const ResetIdpPassword = (props: PropsToResetIdpPassword) => {
 
   const actions = [
     <Button
+      data-cy="modal-button-reset-password"
       key={"reset-password"}
       variant="primary"
       onClick={onResetPassword}
@@ -175,6 +178,7 @@ const ResetIdpPassword = (props: PropsToResetIdpPassword) => {
       Reset password
     </Button>,
     <Button
+      data-cy="modal-button-cancel-reset-password"
       key={"cancel-reset-password"}
       variant="link"
       onClick={resetFieldsAndCloseModal}
@@ -188,6 +192,7 @@ const ResetIdpPassword = (props: PropsToResetIdpPassword) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="reset-password-modal"
         variantType="small"
         modalPosition="top"
         title="Reset password"

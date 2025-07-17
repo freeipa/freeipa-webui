@@ -96,7 +96,12 @@ const DeleteIdOverrideUsersModal = (props: PropsToDelete) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-ok"
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       OK
     </Button>,
   ];
@@ -170,6 +175,7 @@ const DeleteIdOverrideUsersModal = (props: PropsToDelete) => {
   // Set the Modal and Action buttons for 'Delete' option
   const modalActionsDelete: JSX.Element[] = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-id-override"
       variant="danger"
       onClick={deleteViews}
@@ -181,7 +187,12 @@ const DeleteIdOverrideUsersModal = (props: PropsToDelete) => {
     >
       {spinning ? "Deleting" : "Delete"}
     </Button>,
-    <Button key="cancel-delete-id-override" variant="link" onClick={closeModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-delete-id-override"
+      variant="link"
+      onClick={closeModal}
+    >
       Cancel
     </Button>,
   ];
@@ -190,6 +201,7 @@ const DeleteIdOverrideUsersModal = (props: PropsToDelete) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="delete-id-override-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"
@@ -202,6 +214,7 @@ const DeleteIdOverrideUsersModal = (props: PropsToDelete) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="delete-id-override-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

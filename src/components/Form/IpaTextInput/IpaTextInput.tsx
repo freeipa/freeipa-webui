@@ -7,7 +7,11 @@ import {
   convertToString,
 } from "src/utils/ipaObjectUtils";
 
-const IpaTextInput = (props: IPAParamDefinition) => {
+export interface IpaTextInputProps extends IPAParamDefinition {
+  dataCy: string;
+}
+
+const IpaTextInput = (props: IpaTextInputProps) => {
   const { required, readOnly, value, onChange } = getParamProperties(props);
 
   const [textInputValue, setTextInputValue] = React.useState<string>(
@@ -20,6 +24,7 @@ const IpaTextInput = (props: IPAParamDefinition) => {
 
   return (
     <TextInput
+      data-cy={props.dataCy}
       id={props.name}
       name={props.name}
       value={textInputValue}

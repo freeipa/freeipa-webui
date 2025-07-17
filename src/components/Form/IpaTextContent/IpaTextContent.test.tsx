@@ -44,6 +44,7 @@ describe("IpaTextContent Component", () => {
 
   const mockCn = "TEST VALUE";
   const defaultProps: IpaTextContentProps = {
+    dataCy: "ipa-text-content",
     ariaLabel: "test",
     name: "cn",
     objectName: "pwpolicy",

@@ -21,6 +21,7 @@ const SudoRuleGeneral = (props: PropsToSudoRuleGeneral) => {
     <Form className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md" isHorizontal>
       <FormGroup label="Rule name" fieldId="cn">
         <IpaTextInput
+          dataCy="sudo-rule-textbox-rule-name"
           name="cn"
           aria-label="rule name"
           ipaObject={props.ipaObject}
@@ -31,6 +32,7 @@ const SudoRuleGeneral = (props: PropsToSudoRuleGeneral) => {
       </FormGroup>
       <FormGroup label="Sudo order" fieldId="sudo-order">
         <IpaNumberInput
+          dataCy="sudo-rule-textbox-sudo-order"
           id="sudo-order"
           name="sudoorder"
           aria-label="sudo order"
@@ -45,6 +47,7 @@ const SudoRuleGeneral = (props: PropsToSudoRuleGeneral) => {
       </FormGroup>
       <FormGroup label="Description" fieldId="description">
         <IpaTextArea
+          dataCy="sudo-rule-textbox-description"
           name="description"
           ipaObject={props.ipaObject}
           onChange={props.recordOnChange}

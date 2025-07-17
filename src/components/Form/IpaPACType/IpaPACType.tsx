@@ -10,7 +10,11 @@ import {
   updateIpaObject,
 } from "src/utils/ipaObjectUtils";
 
-const IpaPACType = (props: IPAParamDefinition) => {
+export interface IpaPACTypeProps extends IPAParamDefinition {
+  dataCy: string;
+}
+
+const IpaPACType = (props: IpaPACTypeProps) => {
   const { readOnly, value } = getParamProperties(props);
 
   // States
@@ -106,6 +110,7 @@ const IpaPACType = (props: IPAParamDefinition) => {
   return (
     <>
       <Radio
+        data-cy={props.dataCy + "-inherited"}
         isChecked={isInheritedChecked}
         name="inherited"
         onChange={(_event, value) => updateList(value, "inherited")}
@@ -114,6 +119,7 @@ const IpaPACType = (props: IPAParamDefinition) => {
         isDisabled={readOnly}
       />
       <Radio
+        data-cy={props.dataCy + "-override"}
         isChecked={isOverrideChecked}
         name="override"
         onChange={(_event, value) => updateList(value, "override")}
@@ -122,6 +128,7 @@ const IpaPACType = (props: IPAParamDefinition) => {
         isDisabled={readOnly}
       />
       <Checkbox
+        data-cy={props.dataCy + "-ms-pac"}
         label="MS-PAC"
         isChecked={isMsPacChecked}
         onChange={(_event, value) => updateList(value, "MS-PAC")}
@@ -131,6 +138,7 @@ const IpaPACType = (props: IPAParamDefinition) => {
         className="pf-v5-u-ml-lg"
       />
       <Checkbox
+        data-cy={props.dataCy + "-pad"}
         label="PAD"
         isChecked={isPadChecked}
         onChange={(_event, value) => updateList(value, "PAD")}

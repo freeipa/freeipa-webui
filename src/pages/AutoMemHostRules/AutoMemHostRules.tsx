@@ -185,6 +185,7 @@ const AutoMemHostRules = () => {
       // Add empty entry as an option
       const groupsToSelector = [
         {
+          "data-cy": "typeahead-select-no-selection",
           value: NO_SELECTION,
           children: NO_SELECTION,
         },
@@ -192,6 +193,7 @@ const AutoMemHostRules = () => {
 
       // Add the rest of the data from hostgroups
       const tempGroupsToSelector = hostGroups.map((group) => ({
+        "data-cy": "typeahead-select-" + group,
         value: group,
         children: group,
       }));
@@ -510,6 +512,7 @@ const AutoMemHostRules = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search rules"
           placeholder="Search"
@@ -540,6 +543,7 @@ const AutoMemHostRules = () => {
       key: 4,
       element: (
         <SecondaryButton
+          dataCy="auto-member-host-rules-button-refresh"
           onClickHandler={refreshData}
           isDisabled={!showTableRows}
         >
@@ -551,6 +555,7 @@ const AutoMemHostRules = () => {
       key: 5,
       element: (
         <SecondaryButton
+          dataCy="auto-member-host-rules-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onOpenDeleteModal}
         >
@@ -562,6 +567,7 @@ const AutoMemHostRules = () => {
       key: 6,
       element: (
         <SecondaryButton
+          dataCy="auto-member-host-rules-button-add"
           isDisabled={!showTableRows}
           onClickHandler={onOpenAddModal}
         >
@@ -656,11 +662,13 @@ const AutoMemHostRules = () => {
         ruleType="hostgroup"
       />
       <ConfirmationModal
+        dataCy="auto-member-default-host-rules-modal"
         title="Default hostgroup"
         isOpen={showChangeConfirmationModal}
         onClose={onCloseConfirmationModal}
         actions={[
           <Button
+            data-cy="modal-button-ok"
             variant="primary"
             key="change-default"
             onClick={() => {
@@ -669,7 +677,11 @@ const AutoMemHostRules = () => {
           >
             OK
           </Button>,
-          <SecondaryButton key="cancel" onClickHandler={onCancelDefaultGroup}>
+          <SecondaryButton
+            key="cancel"
+            onClickHandler={onCancelDefaultGroup}
+            dataCy="modal-button-cancel"
+          >
             Cancel
           </SecondaryButton>,
         ]}

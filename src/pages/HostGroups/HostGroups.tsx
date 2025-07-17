@@ -430,6 +430,7 @@ const HostGroups = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search host groups"
           placeholder="Search"
@@ -450,6 +451,7 @@ const HostGroups = () => {
         <SecondaryButton
           onClickHandler={refreshGroupsData}
           isDisabled={!showTableRows}
+          dataCy="host-groups-button-refresh"
         >
           Refresh
         </SecondaryButton>
@@ -461,6 +463,7 @@ const HostGroups = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
+          dataCy="host-groups-button-delete"
         >
           Delete
         </SecondaryButton>
@@ -472,6 +475,7 @@ const HostGroups = () => {
         <SecondaryButton
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows || isDisabledDueError}
+          dataCy="host-groups-button-add"
         >
           Add
         </SecondaryButton>
@@ -542,7 +546,10 @@ const HostGroups = () => {
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
         />
       </PageSection>
-      <ModalErrors errors={modalErrors.getAll()} />
+      <ModalErrors
+        errors={modalErrors.getAll()}
+        dataCy="host-groups-modal-error"
+      />
       <AddHostGroup
         show={showAddModal}
         handleModalToggle={onAddModalToggle}

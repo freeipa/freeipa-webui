@@ -420,6 +420,7 @@ const Netgroups = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search netgroups"
           placeholder="Search"
@@ -440,6 +441,7 @@ const Netgroups = () => {
         <SecondaryButton
           onClickHandler={refreshGroupsData}
           isDisabled={!showTableRows}
+          dataCy="netgroups-button-refresh"
         >
           Refresh
         </SecondaryButton>
@@ -451,6 +453,7 @@ const Netgroups = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
+          dataCy="netgroups-button-delete"
         >
           Delete
         </SecondaryButton>
@@ -462,6 +465,7 @@ const Netgroups = () => {
         <SecondaryButton
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows}
+          dataCy="netgroups-button-add"
         >
           Add
         </SecondaryButton>
@@ -532,7 +536,10 @@ const Netgroups = () => {
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
         />
       </PageSection>
-      <ModalErrors errors={modalErrors.getAll()} />
+      <ModalErrors
+        errors={modalErrors.getAll()}
+        dataCy="netgroups-modal-error"
+      />
       <AddNetgroup
         show={showAddModal}
         handleModalToggle={onAddModalToggle}

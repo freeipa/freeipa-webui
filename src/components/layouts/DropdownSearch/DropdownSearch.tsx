@@ -14,6 +14,7 @@ import {
 import { useGetIDListMutation, GenericPayload } from "src/services/rpc";
 
 interface DropdownProps {
+  dataCy: string;
   id?: string;
   onSelect: (value: string) => void;
   options: string[];
@@ -74,12 +75,14 @@ const DropdownSearch = (props: DropdownProps) => {
 
   return (
     <Dropdown
+      data-cy={props.dataCy + "-dropdown"}
       id={props.id || "dropdown-search"}
       isOpen={isOpen}
       onSelect={onSelect}
       onOpenChange={(isOpen: boolean) => setIsOpen(isOpen)}
       toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
         <MenuToggle
+          data-cy={props.dataCy + "-dropdown-toggle"}
           ref={toggleRef}
           isFullWidth
           onClick={onToggleClick}
@@ -95,6 +98,7 @@ const DropdownSearch = (props: DropdownProps) => {
       <MenuSearch>
         <MenuSearchInput>
           <SearchInput
+            data-cy={props.dataCy + "-dropdown-search"}
             value={searchValue}
             placeholder="Search"
             onChange={(_event, value) => setSearchValue(value)}
@@ -108,7 +112,11 @@ const DropdownSearch = (props: DropdownProps) => {
       <Divider />
       <DropdownList>
         {filteredOptions.map((option, index) => (
-          <DropdownItem value={option} key={index}>
+          <DropdownItem
+            data-cy={props.dataCy + "-dropdown-" + option}
+            value={option}
+            key={index}
+          >
             {option}
           </DropdownItem>
         ))}

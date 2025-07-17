@@ -15,6 +15,7 @@ import { updateIpaObject } from "src/utils/ipaObjectUtils";
 import { NO_SELECTION_OPTION } from "src/utils/constUtils";
 
 export interface IPAParamDefinitionSelect extends IPAParamDefinition {
+  dataCy: string;
   id?: string;
   setIpaObject?: (ipaObject: Record<string, unknown>) => void;
   variant?:
@@ -77,6 +78,7 @@ const IpaSelect = (props: IPAParamDefinitionSelect) => {
   // Toggle
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
+      data-cy={props.dataCy}
       id={props.id}
       ref={toggleRef}
       onClick={onToggle}
@@ -112,6 +114,7 @@ const IpaSelect = (props: IPAParamDefinitionSelect) => {
 
   return (
     <Select
+      data-cy={props.dataCy + "-select"}
       aria-label={props.name}
       onOpenChange={(isOpen) => setIsOpen(isOpen)}
       toggle={toggle}
@@ -122,7 +125,11 @@ const IpaSelect = (props: IPAParamDefinitionSelect) => {
     >
       {optionsToSelect.map((option, index) => {
         return (
-          <SelectOption key={index} value={option}>
+          <SelectOption
+            data-cy={props.dataCy + "-select-" + option}
+            key={index}
+            value={option}
+          >
             {option}
           </SelectOption>
         );

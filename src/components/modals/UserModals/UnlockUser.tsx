@@ -87,10 +87,16 @@ const UnlockUser = (props: propsToUnlockUser) => {
       variant="primary"
       onClick={onUnlockUser}
       form="unlock-user-modal"
+      data-cy="modal-button-ok"
     >
       Ok
     </Button>,
-    <Button key="cancel-unlock-user" variant="link" onClick={props.onClose}>
+    <Button
+      key="cancel-unlock-user"
+      variant="link"
+      onClick={props.onClose}
+      data-cy="modal-button-cancel"
+    >
       Cancel
     </Button>,
   ];
@@ -99,6 +105,7 @@ const UnlockUser = (props: propsToUnlockUser) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="unlock-user-modal"
         variantType="small"
         modalPosition="top"
         title="Unlock user"

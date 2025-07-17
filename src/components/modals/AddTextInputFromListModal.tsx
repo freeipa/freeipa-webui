@@ -9,6 +9,7 @@ import {
 } from "@patternfly/react-core";
 
 interface PropsToAddModal {
+  dataCy: string;
   id: string;
   newValue: string;
   setNewValue: (newValue: string) => void;
@@ -33,6 +34,7 @@ const AddTextInputFromListModal = (props: PropsToAddModal) => {
 
   return (
     <Modal
+      data-cy={props.dataCy}
       variant={props.variant || "small"}
       title={props.title}
       isOpen={props.isOpen}
@@ -46,6 +48,7 @@ const AddTextInputFromListModal = (props: PropsToAddModal) => {
           fieldId={props.id}
         >
           <TextInput
+            data-cy="modal-textbox-new-kerberos-principal-alias"
             id={props.id}
             name={props.textInputName}
             value={props.newValue}

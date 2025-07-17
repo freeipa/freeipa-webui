@@ -20,6 +20,7 @@ const PrincipalAliasAddModal = (props: PropsToPrincipalAliasModal) => {
       name: "New kerberos principal alias",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-new-kerberos-principal-alias"
           id="new-kerberos-alias"
           name="krbprincalname"
           value={props.data.newKrbAlias}
@@ -33,6 +34,7 @@ const PrincipalAliasAddModal = (props: PropsToPrincipalAliasModal) => {
 
   return (
     <ModalWithFormLayout
+      dataCy="principal-alias-add-modal"
       variantType="small"
       modalPosition="top"
       title="Add Kerberos Principal Alias"

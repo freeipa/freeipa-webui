@@ -476,6 +476,7 @@ const HBACRules = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search user"
           placeholder="Search"
@@ -496,6 +497,7 @@ const HBACRules = () => {
         <SecondaryButton
           onClickHandler={refreshRulesData}
           isDisabled={!showTableRows}
+          dataCy="hbac-rules-button-refresh"
         >
           Refresh
         </SecondaryButton>
@@ -507,6 +509,7 @@ const HBACRules = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
+          dataCy="hbac-rules-button-delete"
         >
           Delete
         </SecondaryButton>
@@ -518,6 +521,7 @@ const HBACRules = () => {
         <SecondaryButton
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows}
+          dataCy="hbac-rules-button-add"
         >
           Add
         </SecondaryButton>
@@ -529,6 +533,7 @@ const HBACRules = () => {
         <SecondaryButton
           isDisabled={isDisableButtonDisabled || !showTableRows}
           onClickHandler={() => onEnableDisableHandler(true)}
+          dataCy="hbac-rules-button-disable"
         >
           Disable
         </SecondaryButton>
@@ -540,6 +545,7 @@ const HBACRules = () => {
         <SecondaryButton
           isDisabled={isEnableButtonDisabled || !showTableRows}
           onClickHandler={() => onEnableDisableHandler(false)}
+          dataCy="hbac-rules-button-enable"
         >
           Enable
         </SecondaryButton>
@@ -632,7 +638,10 @@ const HBACRules = () => {
         buttonsData={disableEnableButtonsData}
         onRefresh={refreshRulesData}
       />
-      <ModalErrors errors={modalErrors.getAll()} />
+      <ModalErrors
+        errors={modalErrors.getAll()}
+        dataCy="hbac-rules-modal-error"
+      />
     </Page>
   );
 };

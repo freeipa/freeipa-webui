@@ -106,7 +106,10 @@ const SubidSettings = (props: PropsToSubidSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton onClickHandler={props.onRefresh}>
+        <SecondaryButton
+          dataCy="subids-tab-settings-button-refresh"
+          onClickHandler={props.onRefresh}
+        >
           Refresh
         </SecondaryButton>
       ),
@@ -115,6 +118,7 @@ const SubidSettings = (props: PropsToSubidSettings) => {
       key: 1,
       element: (
         <SecondaryButton
+          dataCy="subids-tab-settings-button-revert"
           isDisabled={!props.isModified || isDataLoading}
           onClickHandler={onRevert}
         >
@@ -126,6 +130,7 @@ const SubidSettings = (props: PropsToSubidSettings) => {
       key: 2,
       element: (
         <SecondaryButton
+          dataCy="subids-tab-settings-button-save"
           isDisabled={!props.isModified || isDataLoading}
           onClickHandler={onSave}
         >
@@ -154,6 +159,7 @@ const SubidSettings = (props: PropsToSubidSettings) => {
                 <Form className="pf-v5-u-mb-lg">
                   <FormGroup label="Unique ID" fieldId="ipauniqueid">
                     <IpaTextInput
+                      dataCy="subids-tab-settings-textbox-unique-id"
                       name={"ipauniqueid"}
                       ariaLabel={"Unique ID"}
                       ipaObject={ipaObject}
@@ -164,6 +170,7 @@ const SubidSettings = (props: PropsToSubidSettings) => {
                   </FormGroup>
                   <FormGroup label="Description" fieldId="description">
                     <IpaTextInput
+                      dataCy="subids-tab-settings-textbox-description"
                       name={"description"}
                       ariaLabel={"Description"}
                       ipaObject={ipaObject}
@@ -174,6 +181,7 @@ const SubidSettings = (props: PropsToSubidSettings) => {
                   </FormGroup>
                   <FormGroup label="Owner" fieldId="ipaowner" role="group">
                     <IpaTextContent
+                      dataCy="subids-tab-settings-textbox-owner"
                       name={"ipaowner"}
                       ariaLabel={"Owner"}
                       ipaObject={ipaObject}
@@ -190,6 +198,7 @@ const SubidSettings = (props: PropsToSubidSettings) => {
                     fieldId="ipasubgidnumber"
                   >
                     <IpaTextInput
+                      dataCy="subids-tab-settings-textbox-subgid-range-start"
                       name={"ipasubgidnumber"}
                       ariaLabel={"SubGID range start"}
                       ipaObject={ipaObject}
@@ -200,6 +209,7 @@ const SubidSettings = (props: PropsToSubidSettings) => {
                   </FormGroup>
                   <FormGroup label="SubGID range size" fieldId="ipasubgidcount">
                     <IpaTextInput
+                      dataCy="subids-tab-settings-textbox-subgid-range-size"
                       name={"ipasubgidcount"}
                       ariaLabel={"SubGID range size"}
                       ipaObject={ipaObject}
@@ -213,6 +223,7 @@ const SubidSettings = (props: PropsToSubidSettings) => {
                     fieldId="ipasubuidnumber"
                   >
                     <IpaTextInput
+                      dataCy="subids-tab-settings-textbox-subuid-range-start"
                       name={"ipasubuidnumber"}
                       ariaLabel={"SubUID range start"}
                       ipaObject={ipaObject}
@@ -223,6 +234,7 @@ const SubidSettings = (props: PropsToSubidSettings) => {
                   </FormGroup>
                   <FormGroup label="SubUID range size" fieldId="ipasubuidcount">
                     <IpaTextInput
+                      dataCy="subids-tab-settings-textbox-subuid-range-size"
                       name={"ipasubuidcount"}
                       ariaLabel={"SubUID range size"}
                       ipaObject={ipaObject}

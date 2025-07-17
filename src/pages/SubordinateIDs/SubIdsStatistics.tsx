@@ -75,7 +75,11 @@ const SubIdsStatistics = () => {
     {
       key: 0,
       element: (
-        <SecondaryButton onClickHandler={onRefresh} isDisabled={!showTableRows}>
+        <SecondaryButton
+          dataCy="subids-statistics-button-refresh"
+          onClickHandler={onRefresh}
+          isDisabled={!showTableRows}
+        >
           Refresh
         </SecondaryButton>
       ),

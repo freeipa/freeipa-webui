@@ -159,12 +159,23 @@ const CertificateMappingMatch = () => {
   const toolbarFields = [
     {
       key: 0,
-      element: <Button onClick={onMatchCertificate}>Match</Button>,
+      element: (
+        <Button
+          data-cy="certificate-identity-mapping-match-button-match"
+          onClick={onMatchCertificate}
+        >
+          Match
+        </Button>
+      ),
     },
     {
       key: 1,
       element: (
-        <Button variant="secondary" onClick={onClearCertificate}>
+        <Button
+          data-cy="certificate-identity-mapping-match-button-clear"
+          variant="secondary"
+          onClick={onClearCertificate}
+        >
           Clear
         </Button>
       ),
@@ -223,6 +234,7 @@ const CertificateMappingMatch = () => {
                 <Form className="pf-v5-u-mb-lg">
                   <FormGroup label="Certificate" fieldId="cert_textarea">
                     <TextArea
+                      data-cy="certificate-identity-mapping-match-textbox-certificate"
                       name="cert_textarea"
                       aria-label="Certificate"
                       value={certificateText}
@@ -244,6 +256,7 @@ const CertificateMappingMatch = () => {
                 <Form className="pf-v5-u-mb-lg">
                   <FormGroup label="Issued by" fieldId="issuer">
                     <TextInput
+                      data-cy="certificate-identity-mapping-match-textbox-issuer"
                       name="issuer"
                       aria-label="Issued by text input"
                       type="text"
@@ -253,6 +266,7 @@ const CertificateMappingMatch = () => {
                   </FormGroup>
                   <FormGroup label="Issued to" fieldId="subject">
                     <TextInput
+                      data-cy="certificate-identity-mapping-match-textbox-subject"
                       name="subject"
                       aria-label="Issued to text input"
                       type="text"
@@ -262,6 +276,7 @@ const CertificateMappingMatch = () => {
                   </FormGroup>
                   <FormGroup label="Serial number" fieldId="serial_number">
                     <TextInput
+                      data-cy="certificate-identity-mapping-match-textbox-serial-number"
                       name="serial_number"
                       aria-label="Serial number text input"
                       type="text"
@@ -274,6 +289,7 @@ const CertificateMappingMatch = () => {
                     fieldId="serial_number_hex"
                   >
                     <TextInput
+                      data-cy="certificate-identity-mapping-match-textbox-serial-number-hex"
                       name="serial_number_hex"
                       aria-label="Serial number in hexadecimal text input"
                       type="text"
@@ -283,6 +299,7 @@ const CertificateMappingMatch = () => {
                   </FormGroup>
                   <FormGroup label="Valid from" fieldId="valid_not_before">
                     <TextInput
+                      data-cy="certificate-identity-mapping-match-textbox-valid-from"
                       name="valid_not_before"
                       aria-label="Valid from text input"
                       type="text"
@@ -292,6 +309,7 @@ const CertificateMappingMatch = () => {
                   </FormGroup>
                   <FormGroup label="Valid to" fieldId="valid_not_after">
                     <TextInput
+                      data-cy="certificate-identity-mapping-match-textbox-valid-to"
                       name="valid_not_after"
                       aria-label="Valid to text input"
                       type="text"
@@ -304,6 +322,7 @@ const CertificateMappingMatch = () => {
                     fieldId="sha1_fingerprint"
                   >
                     <TextArea
+                      data-cy="certificate-identity-mapping-match-textbox-sha1-fingerprint"
                       name="sha1_fingerprint"
                       aria-label="SHA1 Fingerprint text input"
                       value={fingerprintSha1}
@@ -317,6 +336,7 @@ const CertificateMappingMatch = () => {
                     fieldId="sha256_fingerprint"
                   >
                     <TextArea
+                      data-cy="certificate-identity-mapping-match-textbox-sha256-fingerprint"
                       name="sha256_fingerprint"
                       aria-label="SHA256 Fingerprint text input"
                       value={fingerprintSha256}

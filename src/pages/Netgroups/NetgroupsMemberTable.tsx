@@ -489,12 +489,14 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
         />
       )}
       <Modal
+        data-cy="add-external-host-modal"
         variant="small"
         title={"Add external host"}
         isOpen={modalOpen}
         onClose={closeExternalModal}
         actions={[
           <Button
+            data-cy="modal-button-add"
             key="add-new-host"
             isDisabled={
               externalHostName === "" ||
@@ -509,6 +511,7 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
             {addSpinning ? "Adding" : "Add"}
           </Button>,
           <Button
+            data-cy="modal-button-cancel"
             key="cancel-new-host"
             variant="link"
             onClick={closeExternalModal}
@@ -525,6 +528,7 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
             isRequired
           >
             <TextInput
+              data-cy="modal-textbox-external-host-name"
               type="text"
               id="externalHostName"
               name="externalHostName"

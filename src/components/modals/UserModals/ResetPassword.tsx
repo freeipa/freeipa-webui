@@ -82,6 +82,7 @@ const ResetPassword = (props: PropsToResetPassword) => {
           onChange={setNewPassword}
           onRevealHandler={setPasswordHidden}
           passwordHidden={passwordHidden}
+          dataCy="modal-textbox-new-password"
         />
       ),
     },
@@ -100,6 +101,7 @@ const ResetPassword = (props: PropsToResetPassword) => {
             onRevealHandler={setVerifyPasswordHidden}
             passwordHidden={verifyPasswordHidden}
             validated={passwordValidationResult.pfError}
+            dataCy="modal-textbox-verify-password"
           />
           <HelperText>
             <HelperTextItem variant="error">
@@ -125,6 +127,7 @@ const ResetPassword = (props: PropsToResetPassword) => {
           onChange={setCurrentPassword}
           onRevealHandler={setCurrentPasswordHidden}
           passwordHidden={currentPasswordHidden}
+          dataCy="modal-textbox-current-password"
         />
       ),
     },
@@ -141,6 +144,7 @@ const ResetPassword = (props: PropsToResetPassword) => {
           onChange={setNewPassword}
           onRevealHandler={setPasswordHidden}
           passwordHidden={passwordHidden}
+          dataCy="modal-textbox-new-password"
         />
       ),
     },
@@ -159,6 +163,7 @@ const ResetPassword = (props: PropsToResetPassword) => {
             onRevealHandler={setVerifyPasswordHidden}
             passwordHidden={verifyPasswordHidden}
             validated={passwordValidationResult.pfError}
+            dataCy="modal-textbox-verify-password"
           />
           <HelperText>
             <HelperTextItem variant="error">
@@ -178,6 +183,7 @@ const ResetPassword = (props: PropsToResetPassword) => {
           value={otp}
           aria-label="otp text input"
           onChange={(_event, newValue) => setOtp(newValue)}
+          data-cy="modal-textbox-reset-password-otp"
         />
       ),
     },
@@ -280,6 +286,7 @@ const ResetPassword = (props: PropsToResetPassword) => {
         newPassword === "" ||
         verifyPassword === ""
       }
+      data-cy="modal-button-reset-password"
     >
       Reset password
     </Button>,
@@ -287,6 +294,7 @@ const ResetPassword = (props: PropsToResetPassword) => {
       key={"cancel-reset-password"}
       variant="link"
       onClick={resetFieldsAndCloseModal}
+      data-cy="modal-button-cancel"
     >
       Cancel
     </Button>,
@@ -295,6 +303,7 @@ const ResetPassword = (props: PropsToResetPassword) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="reset-password-modal"
         variantType="small"
         modalPosition="top"
         title="Reset password"

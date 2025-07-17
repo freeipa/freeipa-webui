@@ -102,7 +102,12 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
   };
 
   const errorModalActions = [
-    <Button key="ok" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-ok"
+      key="ok"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       OK
     </Button>,
   ];
@@ -258,6 +263,7 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
   // Set the Modal and Action buttons for 'Disable' option
   const modalActionsDisable: JSX.Element[] = [
     <Button
+      data-cy="modal-button-disable"
       key="disable-sudorules"
       variant="primary"
       onClick={() =>
@@ -270,13 +276,19 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
     >
       Disable
     </Button>,
-    <Button key="cancel-disable-sudorule" variant="link" onClick={closeModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-disable-sudorule"
+      variant="link"
+      onClick={closeModal}
+    >
       Cancel
     </Button>,
   ];
 
   const modalDisable: JSX.Element = (
     <ModalWithFormLayout
+      dataCy="disable-enable-sudo-rules-modal"
       variantType="medium"
       modalPosition="top"
       offPosition="76px"
@@ -292,6 +304,7 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
   // Set the Modal and Action buttons for 'Enable' option
   const modalActionsEnable: JSX.Element[] = [
     <Button
+      data-cy="modal-button-enable"
       key="enable-sudorules"
       variant="primary"
       onClick={() =>
@@ -304,13 +317,19 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
     >
       Enable
     </Button>,
-    <Button key="cancel-enable-sudorule" variant="link" onClick={closeModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-enable-sudorule"
+      variant="link"
+      onClick={closeModal}
+    >
       Cancel
     </Button>,
   ];
 
   const modalEnable: JSX.Element = (
     <ModalWithFormLayout
+      dataCy="disable-enable-sudo-rules-modal"
       variantType="medium"
       modalPosition="top"
       offPosition="76px"
@@ -329,6 +348,7 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
       {!props.optionSelected ? modalEnable : modalDisable}
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="disable-enable-sudo-rules-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

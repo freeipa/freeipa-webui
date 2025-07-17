@@ -61,6 +61,7 @@ const ActivateStageUsers = (props: PropsToActivateUsers) => {
       id: "no-members",
       pfComponent: (
         <Checkbox
+          data-cy="modal-checkbox-suppress-membership"
           label="Suppress processing of membership attributes"
           isChecked={noMembersChecked}
           onChange={() => {
@@ -121,10 +122,16 @@ const ActivateStageUsers = (props: PropsToActivateUsers) => {
       variant="primary"
       onClick={activateUsers}
       form="stage-users-modal"
+      data-cy="modal-button-activate"
     >
       Activate
     </Button>,
-    <Button key="cancel-stage-user" variant="link" onClick={closeModal}>
+    <Button
+      key="cancel-stage-user"
+      variant="link"
+      onClick={closeModal}
+      data-cy="modal-button-cancel"
+    >
       Cancel
     </Button>,
   ];
@@ -134,6 +141,7 @@ const ActivateStageUsers = (props: PropsToActivateUsers) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="activate-stage-users-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"

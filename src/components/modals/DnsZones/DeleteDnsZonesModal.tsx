@@ -60,7 +60,12 @@ const DeleteDnsZonesModal = (props: DeleteDnsZonesModalProps) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={closeAndCleanErrorParameters}>
+    <Button
+      data-cy="modal-button-ok"
+      key="cancel"
+      variant="link"
+      onClick={closeAndCleanErrorParameters}
+    >
       OK
     </Button>,
   ];
@@ -168,6 +173,7 @@ const DeleteDnsZonesModal = (props: DeleteDnsZonesModalProps) => {
 
   const modalActions: JSX.Element[] = [
     <Button
+      data-cy="modal-button-ok"
       key="delete-dnszones"
       variant="danger"
       onClick={onDelete}
@@ -186,7 +192,12 @@ const DeleteDnsZonesModal = (props: DeleteDnsZonesModalProps) => {
         "Delete"
       )}
     </Button>,
-    <Button key="cancel-delete-dnszones" variant="link" onClick={props.onClose}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-delete-dnszones"
+      variant="link"
+      onClick={props.onClose}
+    >
       Cancel
     </Button>,
   ];
@@ -196,6 +207,7 @@ const DeleteDnsZonesModal = (props: DeleteDnsZonesModalProps) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="dns-zones-delete-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"
@@ -208,6 +220,7 @@ const DeleteDnsZonesModal = (props: DeleteDnsZonesModalProps) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="dns-zones-delete-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={closeAndCleanErrorParameters}

@@ -32,6 +32,7 @@ const ServiceCertificate = (props: PropsToServiceSettings) => {
         <Form className="pf-v5-u-mb-lg">
           <FormGroup label="Certificates" fieldId="certificates" role="group">
             <IpaCertificates
+              dataCy="service-tab-certificates"
               ipaObject={ipaObject}
               onChange={recordOnChange}
               metadata={props.metadata}

@@ -35,6 +35,7 @@ const UsersEmployeeInfo = (props: PropsToEmployeeInfo) => {
         <Form className="pf-v5-u-mb-lg">
           <FormGroup label="Org. unit" fieldId="ou">
             <IpaTextInput
+              dataCy="user-tab-settings-textbox-ou"
               name={"ou"}
               ariaLabel={"Org. unit"}
               ipaObject={ipaObject}
@@ -45,6 +46,7 @@ const UsersEmployeeInfo = (props: PropsToEmployeeInfo) => {
           </FormGroup>
           <FormGroup label="Manager" fieldId="manager">
             <IpaSelect
+              dataCy="user-tab-settings-select-manager"
               id="manager"
               name="manager"
               options={managerOptions}
@@ -60,6 +62,7 @@ const UsersEmployeeInfo = (props: PropsToEmployeeInfo) => {
             role="group"
           >
             <IpaTextboxList
+              dataCy="user-tab-settings-textbox-departmentnumber"
               ipaObject={ipaObject}
               setIpaObject={recordOnChange}
               name={"departmentnumber"}
@@ -70,8 +73,9 @@ const UsersEmployeeInfo = (props: PropsToEmployeeInfo) => {
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
         <Form className="pf-v5-u-mb-lg">
-          <FormGroup label="Employee number" fieldId="employeenumber">
+          <FormGroup label="Employee number" fieldId="employee-number">
             <IpaTextInput
+              dataCy="user-tab-settings-textbox-employeenumber"
               name={"employeenumber"}
               ariaLabel={"Employee number"}
               ipaObject={ipaObject}
@@ -82,6 +86,7 @@ const UsersEmployeeInfo = (props: PropsToEmployeeInfo) => {
           </FormGroup>
           <FormGroup label="Employee type" fieldId="employeetype">
             <IpaTextInput
+              dataCy="user-tab-settings-textbox-employee-type"
               name={"employeetype"}
               ariaLabel={"Employee type"}
               ipaObject={ipaObject}
@@ -92,6 +97,7 @@ const UsersEmployeeInfo = (props: PropsToEmployeeInfo) => {
           </FormGroup>
           <FormGroup label="Preferred language" fieldId="preferredlanguage">
             <IpaTextInput
+              dataCy="user-tab-settings-textbox-preferred-language"
               name={"preferredlanguage"}
               ariaLabel={"Preferred language"}
               ipaObject={ipaObject}

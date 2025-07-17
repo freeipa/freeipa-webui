@@ -26,6 +26,7 @@ const ConfigGroupOptions = (props: PropsToGroupOptions) => {
             isRequired
           >
             <IpaTextArea
+              dataCy="configuration-textbox-ipagroupsearchfields"
               name="ipagroupsearchfields"
               ipaObject={props.ipaObject}
               onChange={props.recordOnChange}

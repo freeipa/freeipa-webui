@@ -20,6 +20,7 @@ const UsersKerberosTicket = (props: PropsToKrbTicket) => {
         <Form className="pf-v5-u-mb-lg">
           <FormGroup label="Max renew (seconds)" fieldId="max-renew">
             <TextInput
+              data-cy="user-tab-settings-textbox-max-renew"
               id="max-renew"
               name="krbmaxrenewableage"
               value={props.krbPolicyData.krbmaxrenewableage}
@@ -34,6 +35,7 @@ const UsersKerberosTicket = (props: PropsToKrbTicket) => {
         <Form className="pf-v5-u-mb-lg">
           <FormGroup label="Max life (seconds)" fieldId="max-life">
             <TextInput
+              data-cy="user-tab-settings-textbox-max-life"
               id="max-life"
               name="krbmaxticketlife"
               value={props.krbPolicyData.krbmaxticketlife}

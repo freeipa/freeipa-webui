@@ -7,7 +7,11 @@ import {
   convertToString,
 } from "src/utils/ipaObjectUtils";
 
-const IpaTextArea = (props: IPAParamDefinition) => {
+export interface IpaTextAreaProps extends IPAParamDefinition {
+  dataCy: string;
+}
+
+const IpaTextArea = (props: IpaTextAreaProps) => {
   const { required, readOnly, value, onChange } = getParamProperties(props);
 
   const [textareaValue, setTextareaValue] = React.useState<string>(
@@ -20,6 +24,7 @@ const IpaTextArea = (props: IPAParamDefinition) => {
 
   return (
     <TextArea
+      data-cy={props.dataCy}
       id={props.name}
       name={props.name}
       value={textareaValue}

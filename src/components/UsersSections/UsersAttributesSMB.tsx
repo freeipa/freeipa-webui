@@ -81,6 +81,7 @@ const UsersAttributesSMB = (props: PropsToSmbServices) => {
             }
           >
             <IpaTextInput
+              dataCy="user-tab-settings-textbox-smb-logon-script-path"
               name={"ipantlogonscript"}
               ariaLabel={"SMB logon script path"}
               ipaObject={ipaObject}
@@ -97,6 +98,7 @@ const UsersAttributesSMB = (props: PropsToSmbServices) => {
             }
           >
             <IpaTextInput
+              dataCy="user-tab-settings-textbox-smb-profile-path"
               name={"ipantprofilepath"}
               ariaLabel={"SMB profile path"}
               ipaObject={ipaObject}
@@ -120,6 +122,7 @@ const UsersAttributesSMB = (props: PropsToSmbServices) => {
             }
           >
             <IpaTextInput
+              dataCy="user-tab-settings-textbox-smb-home-directory"
               name={"ipanthomedirectory"}
               ariaLabel={"SMB home directory"}
               ipaObject={ipaObject}
@@ -139,6 +142,7 @@ const UsersAttributesSMB = (props: PropsToSmbServices) => {
             }
           >
             <IpaSelect
+              dataCy="user-tab-settings-smb-home-directory-drive"
               id="ipanthomedirectorydrive"
               name="ipanthomedirectorydrive"
               options={SMBHomeDirectoryDriveOptions}

@@ -103,6 +103,7 @@ describe("IpaSshPublicKeys Component", () => {
   };
 
   const defaultProps: PropsToSshPublicKeysModal = {
+    dataCy: "ipa-ssh-public-keys",
     ipaObject: {},
     onChange: mockOnChange,
     metadata: mockMetadata,

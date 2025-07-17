@@ -57,7 +57,12 @@ const DeleteMultipleRulesModal = (props: DeleteMultipleRulesModalProps) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={closeAndCleanErrorParameters}>
+    <Button
+      data-cy="modal-button-ok"
+      key="cancel"
+      variant="link"
+      onClick={closeAndCleanErrorParameters}
+    >
       OK
     </Button>,
   ];
@@ -158,6 +163,7 @@ const DeleteMultipleRulesModal = (props: DeleteMultipleRulesModalProps) => {
 
   const modalActions: JSX.Element[] = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-certmaprules"
       variant="danger"
       onClick={onDelete}
@@ -170,6 +176,7 @@ const DeleteMultipleRulesModal = (props: DeleteMultipleRulesModalProps) => {
       {spinning ? "Deleting" : "Delete"}
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key="cancel-delete-certmaprules"
       variant="link"
       onClick={props.onClose}
@@ -183,6 +190,7 @@ const DeleteMultipleRulesModal = (props: DeleteMultipleRulesModalProps) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="delete-multiple-rules-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"
@@ -195,6 +203,7 @@ const DeleteMultipleRulesModal = (props: DeleteMultipleRulesModalProps) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="delete-multiple-rules-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={closeAndCleanErrorParameters}

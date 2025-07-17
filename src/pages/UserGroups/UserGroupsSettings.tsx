@@ -92,14 +92,22 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
   const [isKebabOpen, setIsKebabOpen] = useState(false);
 
   const dropdownItems = [
-    <DropdownItem key="delete-user-group" onClick={() => onOpenDeleteModal()}>
+    <DropdownItem
+      key="delete-user-group"
+      onClick={() => onOpenDeleteModal()}
+      data-cy="user-groups-tab-settings-kebab-delete"
+    >
       Delete group
     </DropdownItem>,
   ];
   if (groupType === "") {
     dropdownItems.push(<Divider key="separator" />);
     dropdownItems.push(
-      <DropdownItem key="change-to-posix" onClick={() => onOpenPOSIXModal()}>
+      <DropdownItem
+        key="change-to-posix"
+        onClick={() => onOpenPOSIXModal()}
+        data-cy="user-groups-tab-settings-kebab-change-to-posix"
+      >
         Change to POSIX group
       </DropdownItem>
     );
@@ -107,6 +115,7 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
       <DropdownItem
         key="change-to-external"
         onClick={() => onOpenExternalModal()}
+        data-cy="user-groups-tab-settings-kebab-change-to-external"
       >
         Change to external group
       </DropdownItem>
@@ -226,6 +235,7 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
 
   const deleteModalActions = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-host"
       variant="danger"
       onClick={doDelete}
@@ -237,13 +247,19 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
     >
       {modalSpinning ? "Deleting" : "Delete"}
     </Button>,
-    <Button key="cancel" variant="link" onClick={onCloseDeleteModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel"
+      variant="link"
+      onClick={onCloseDeleteModal}
+    >
       Cancel
     </Button>,
   ];
 
   const posixModalActions = [
     <Button
+      data-cy="modal-button-change"
       key="change-posix"
       variant="primary"
       onClick={doChangeToPosix}
@@ -255,13 +271,19 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
     >
       {modalSpinning ? "Changing" : "Change Group"}
     </Button>,
-    <Button key="cancel" variant="link" onClick={onClosePOSIXModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel"
+      variant="link"
+      onClick={onClosePOSIXModal}
+    >
       Cancel
     </Button>,
   ];
 
   const externalModalActions = [
     <Button
+      data-cy="modal-button-change"
       key="change-external"
       variant="primary"
       onClick={doChangeToExternal}
@@ -273,7 +295,12 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
     >
       {modalSpinning ? "Changing" : "Change Group"}
     </Button>,
-    <Button key="cancel" variant="link" onClick={onCloseExternalModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel"
+      variant="link"
+      onClick={onCloseExternalModal}
+    >
       Cancel
     </Button>,
   ];
@@ -312,7 +339,10 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton onClickHandler={props.onRefresh}>
+        <SecondaryButton
+          onClickHandler={props.onRefresh}
+          dataCy="user-groups-tab-settings-button-refresh"
+        >
           Refresh
         </SecondaryButton>
       ),
@@ -323,6 +353,7 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
         <SecondaryButton
           isDisabled={!props.isModified}
           onClickHandler={onRevert}
+          dataCy="user-groups-tab-settings-button-revert"
         >
           Revert
         </SecondaryButton>
@@ -334,6 +365,7 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
         <SecondaryButton
           isDisabled={!props.isModified || isSaving}
           onClickHandler={onSave}
+          dataCy="user-groups-tab-settings-button-save"
           isLoading={isSaving}
           spinnerAriaValueText="Saving"
           spinnerAriaLabelledBy="Saving"
@@ -347,6 +379,7 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
       key: 3,
       element: (
         <KebabLayout
+          dataCy="user-groups-tab-settings-kebab"
           direction={"up"}
           onDropdownSelect={onKebabSelect}
           onKebabToggle={onKebabToggle}
@@ -375,6 +408,7 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
         >
           <FormGroup label="Description" fieldId="description">
             <IpaTextArea
+              dataCy="user-groups-tab-settings-textbox-description"
               name="description"
               ipaObject={ipaObject}
               onChange={recordOnChange}
@@ -384,6 +418,7 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
           </FormGroup>
           <FormGroup label="Group type" fieldId="group-type">
             <TextInput
+              data-cy="user-groups-tab-settings-textbox-group-type"
               id="group-type"
               name="grouptype"
               value={groupType}
@@ -394,6 +429,7 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
           </FormGroup>
           <FormGroup label="GID" fieldId="gid">
             <TextInput
+              data-cy="user-groups-tab-settings-textbox-gid"
               id="gid"
               name="gid"
               value={props.userGroup.gidnumber}
@@ -413,6 +449,7 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
         </Form>
       </Flex>
       <ConfirmationModal
+        dataCy="delete-user-group-modal"
         title={"Delete user group"}
         isOpen={isDeleteModalOpen}
         onClose={onCloseDeleteModal}
@@ -421,6 +458,7 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
         messageObj={cn}
       />
       <ConfirmationModal
+        dataCy="change-group-type-posix-modal"
         title={"Change group type"}
         isOpen={isPOSIXModalOpen}
         onClose={onClosePOSIXModal}
@@ -431,6 +469,7 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
         messageObj={cn}
       />
       <ConfirmationModal
+        dataCy="change-group-type-external-modal"
         title={"Change group type"}
         isOpen={isExternalModalOpen}
         onClose={onCloseExternalModal}

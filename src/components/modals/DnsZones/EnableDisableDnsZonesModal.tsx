@@ -68,6 +68,7 @@ const EnableDisableDnsZonesModal = (props: EnableDisableDnsZonesModalProps) => {
 
   const modalActions: JSX.Element[] = [
     <Button
+      data-cy="modal-button-ok"
       key={props.operation + "-dnszones"}
       variant="primary"
       onClick={onEnableDisable}
@@ -75,6 +76,7 @@ const EnableDisableDnsZonesModal = (props: EnableDisableDnsZonesModalProps) => {
       OK
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key={"cancel-" + props.operation + "-dnszones"}
       variant="secondary"
       onClick={onCloseWithoutClearingElements}
@@ -88,6 +90,7 @@ const EnableDisableDnsZonesModal = (props: EnableDisableDnsZonesModalProps) => {
     <>
       <alerts.ManagedAlerts />
       <ConfirmationModal
+        dataCy="dns-zones-enable-disable-modal"
         title={capitalizeFirstLetter(props.operation) + " confirmation"}
         isOpen={props.isOpen}
         onClose={onClose}

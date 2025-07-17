@@ -8,6 +8,7 @@ import {
 } from "@patternfly/react-core";
 
 interface PropsToDateTimeSelector {
+  dataCy: string;
   datetime: Date | null;
   onChange?: (timeValue: Date | null) => void;
   name: string;
@@ -109,6 +110,9 @@ const DateTimeSelector = (props: PropsToDateTimeSelector) => {
   return (
     <InputGroup>
       <DatePicker
+        inputProps={{
+          "data-cy": props.dataCy + "-date",
+        }}
         name={props.name}
         value={dateText}
         onChange={onDateChange}
@@ -117,6 +121,9 @@ const DateTimeSelector = (props: PropsToDateTimeSelector) => {
         isDisabled={props.isDisabled || false}
       />
       <TimePicker
+        inputProps={{
+          "data-cy": props.dataCy + "-time",
+        }}
         name={props.name}
         time={timeText}
         aria-label={props.ariaLabel || props.name}

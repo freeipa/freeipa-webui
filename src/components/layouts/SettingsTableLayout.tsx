@@ -71,6 +71,7 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
         <FlexItem>
           {props.entryCount > 0 && props.onSearchChange !== undefined && (
             <SearchInput
+              data-cy="search"
               placeholder={"Filter by ..."}
               value={props.searchValue}
               onChange={(_event, value: string) =>
@@ -84,6 +85,7 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
           <>
             <FlexItem>
               <SecondaryButton
+                dataCy="settings-button-delete"
                 classname="pf-v5-u-mr-sm"
                 isDisabled={props.isDeleteDisabled || false}
                 onClickHandler={props.onDeleteModal}
@@ -91,6 +93,7 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
                 Delete
               </SecondaryButton>
               <SecondaryButton
+                dataCy="settings-button-add"
                 classname="pf-v5-u-mr-sm"
                 isDisabled={props.isAddDisabled || false}
                 onClickHandler={props.onAddModal}
@@ -139,6 +142,7 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
           <EmptyStateBody>
             <EmptyStateActions>
               <SecondaryButton
+                dataCy="settings-button-add"
                 onClickHandler={props.onAddModal}
                 isDisabled={props.isAddDisabled || false}
                 id={addButtonId}

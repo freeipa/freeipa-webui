@@ -494,6 +494,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
       key: 0,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search user"
           placeholder="Search"
@@ -514,7 +515,11 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
       id: toolbarData().refreshButton.id,
       key: 2,
       element: (
-        <Button variant="secondary" name="refresh">
+        <Button
+          data-cy="member-of-button-refresh"
+          variant="secondary"
+          name="refresh"
+        >
           Refresh
         </Button>
       ),
@@ -524,6 +529,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
       key: 3,
       element: (
         <Button
+          data-cy="member-of-button-delete"
           variant="secondary"
           name="remove"
           isDisabled={toolbarData().deleteButton.isDisabledHandler}
@@ -538,6 +544,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
       key: 4,
       element: (
         <Button
+          data-cy="member-of-button-add"
           variant="secondary"
           name="add"
           onClick={toolbarData().addButton.onClickHandler}

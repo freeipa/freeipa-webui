@@ -10,6 +10,7 @@ import { EyeSlashIcon } from "@patternfly/react-icons";
 import { EyeIcon } from "@patternfly/react-icons";
 
 export interface PropsToPasswordInput {
+  dataCy: string;
   ariaLabel?: string;
   name?: string;
   id?: string;
@@ -30,6 +31,7 @@ const PasswordInput = (props: PropsToPasswordInput) => {
     <InputGroup>
       <InputGroupItem isFill>
         <TextInput
+          data-cy={props.dataCy}
           aria-label={props.ariaLabel ?? props.name}
           type={props.passwordHidden ? "password" : "text"}
           id={props.id}
@@ -44,6 +46,7 @@ const PasswordInput = (props: PropsToPasswordInput) => {
       </InputGroupItem>
       <InputGroupItem>
         <Button
+          data-cy={props.dataCy + "-reveal-button"}
           variant="control"
           onClick={() => props.onRevealHandler(!props.passwordHidden)}
           aria-label={props.passwordHidden ? "Show password" : "Hide password"}

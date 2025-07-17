@@ -104,6 +104,7 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
 
   const deletionModalActions = [
     <Button
+      data-cy="modal-button-delete"
       key="del-certificate-mapping-data"
       variant="danger"
       onClick={() => onRemoveCertificateMappingData(idxToDelete)}
@@ -115,7 +116,12 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
     >
       {modalSpinning ? "Deleting" : "Delete"}
     </Button>,
-    <Button key="cancel" variant="link" onClick={onCloseDeletionModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel"
+      variant="link"
+      onClick={onCloseDeletionModal}
+    >
       Cancel
     </Button>,
   ];
@@ -269,6 +275,7 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
 
   const actions = [
     <SecondaryButton
+      dataCy="modal-button-add"
       key="add"
       onClickHandler={onAddCertificateMappingData}
       isDisabled={isAddButtonDisabled}
@@ -281,6 +288,7 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
       {modalSpinning ? "Adding" : "Add"}
     </SecondaryButton>,
     <Button
+      data-cy="modal-button-cancel"
       key="cancel"
       variant="link"
       onClick={onClose}
@@ -309,6 +317,7 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
                 </FlexItem>
                 <FlexItem>
                   <SecondaryButton
+                    dataCy="user-tab-settings-button-delete-certificate-mapping-data"
                     onClickHandler={() => onDeleteCertMapData(idx)}
                     name={"remove-certificate-mapping-data-" + idx}
                   >
@@ -321,12 +330,14 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
         : null}
 
       <SecondaryButton
+        dataCy="user-tab-settings-button-add-certificate-mapping-data"
         name={"add-certificate-mapping-data"}
         onClickHandler={() => setIsOpen(true)}
       >
         Add
       </SecondaryButton>
       <Modal
+        data-cy={"add-certificate-mapping-data-modal"}
         variant="small"
         title="Add certificate mapping data"
         isOpen={isOpen}
@@ -335,6 +346,7 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
       >
         <>
           <CertificateMappingDataOption
+            dataCy="modal-cert-map-data"
             isCertMappingDataChecked={isCertMappingDataChecked}
             onChangeCertMappingDataCheck={onChangeCertMappingDataCheck}
             setIsAddButtonDisabled={setIsAddButtonDisabled}
@@ -355,6 +367,7 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
         </>
       </Modal>
       <ConfirmationModal
+        dataCy={"remove-certificate-mapping-data-modal"}
         title={"Remove certificate mapping data"}
         isOpen={isDeletionModalOpen}
         onClose={onCloseDeletionModal}

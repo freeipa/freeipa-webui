@@ -99,7 +99,12 @@ const DeleteIDViewsModal = (props: PropsToDeleteViews) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-ok"
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       OK
     </Button>,
   ];
@@ -174,6 +179,7 @@ const DeleteIDViewsModal = (props: PropsToDeleteViews) => {
   // Set the Modal and Action buttons for 'Delete' option
   const modalActionsDelete: JSX.Element[] = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-id-views"
       variant="danger"
       onClick={deleteViews}
@@ -185,7 +191,12 @@ const DeleteIDViewsModal = (props: PropsToDeleteViews) => {
     >
       {spinning ? "Deleting" : "Delete"}
     </Button>,
-    <Button key="cancel-delete-id-views" variant="link" onClick={closeModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-delete-id-views"
+      variant="link"
+      onClick={closeModal}
+    >
       Cancel
     </Button>,
   ];
@@ -194,6 +205,7 @@ const DeleteIDViewsModal = (props: PropsToDeleteViews) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="delete-id-views-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"
@@ -206,6 +218,7 @@ const DeleteIDViewsModal = (props: PropsToDeleteViews) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="delete-id-views-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

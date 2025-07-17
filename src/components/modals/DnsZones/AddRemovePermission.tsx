@@ -56,6 +56,7 @@ const AddRemovePermission = (props: AddRemovePermissionProps) => {
 
   const modalActions: JSX.Element[] = [
     <Button
+      data-cy="modal-button-ok"
       key={"delete-" + props.dnsZoneId}
       variant="primary"
       onClick={onAddRemovePermission}
@@ -63,6 +64,7 @@ const AddRemovePermission = (props: AddRemovePermissionProps) => {
       OK
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key={"cancel-delete-" + props.dnsZoneId}
       variant="secondary"
       onClick={props.onClose}
@@ -76,6 +78,7 @@ const AddRemovePermission = (props: AddRemovePermissionProps) => {
     <>
       <alerts.ManagedAlerts />
       <ConfirmationModal
+        dataCy="dns-zones-add-remove-permission-modal"
         title={"Confirmation"}
         isOpen={props.isOpen}
         onClose={props.onClose}

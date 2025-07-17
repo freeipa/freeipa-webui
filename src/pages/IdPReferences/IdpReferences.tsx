@@ -346,6 +346,7 @@ const IdpReferences = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search subIds"
           placeholder="Search"
@@ -364,6 +365,7 @@ const IdpReferences = () => {
       key: 3,
       element: (
         <SecondaryButton
+          dataCy="idp-references-button-refresh"
           onClickHandler={refreshData}
           isDisabled={!showTableRows}
         >
@@ -375,6 +377,7 @@ const IdpReferences = () => {
       key: 4,
       element: (
         <SecondaryButton
+          dataCy="idp-references-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onOpenDeleteModal}
         >
@@ -386,6 +389,7 @@ const IdpReferences = () => {
       key: 5,
       element: (
         <SecondaryButton
+          dataCy="idp-references-button-add"
           isDisabled={!showTableRows}
           onClickHandler={onOpenAddModal}
         >

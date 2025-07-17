@@ -33,6 +33,7 @@ import { getRealmFromKrbPolicy } from "src/utils/utils";
 import { IPAObject } from "src/utils/ipaObjectUtils";
 
 export interface PrincipalAliasMultiTextBoxProps {
+  dataCy: string;
   ipaObject: Record<string, unknown>;
   metadata: Metadata;
   onRefresh: () => void;
@@ -145,6 +146,7 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
 
   const deletionConfModalActions = [
     <Button
+      data-cy="modal-button-delete"
       key="del-principal-alias"
       variant="danger"
       onClick={() => onRemovePrincipalAlias(aliasIdxToDelete)}
@@ -156,7 +158,12 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
     >
       {modalSpinning ? " Deleting" : "Delete"}
     </Button>,
-    <Button key="cancel" variant="link" onClick={onCloseDeletionConfModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel"
+      variant="link"
+      onClick={onCloseDeletionConfModal}
+    >
       Cancel
     </Button>,
   ];
@@ -223,6 +230,7 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
 
   const textInputModalActions = [
     <SecondaryButton
+      dataCy="modal-button-add"
       key="add-principal-alias"
       onClickHandler={onAddPrincipalAlias}
       // isDisabled={newAliasValue === "" ? true : false}
@@ -240,7 +248,12 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
     >
       {modalSpinning ? "Adding" : "Add"}
     </SecondaryButton>,
-    <Button key="cancel" variant="link" onClick={onCloseTextInputModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel"
+      variant="link"
+      onClick={onCloseTextInputModal}
+    >
       Cancel
     </Button>,
   ];
@@ -249,6 +262,7 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
     <>
       <alerts.ManagedAlerts />
       <IpaTextInputFromList
+        dataCy={props.dataCy}
         name="krbprincipalname"
         elementsList={krbprincipalname}
         ipaObject={props.ipaObject}
@@ -259,6 +273,7 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
         isPrincipalAlias
       />
       <AddTextInputFromListModal
+        dataCy={props.dataCy}
         id="kerberos-principal-textinput"
         newValue={newAliasValue}
         setNewValue={setNewAliasValue}
@@ -271,6 +286,7 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
         textInputValidator={areRealmsMatching}
       />
       <ConfirmationModal
+        dataCy="remove-kerberos-alias-modal"
         title={"Remove kerberos alias"}
         isOpen={isDeleteConfModalOpen}
         onClose={onCloseDeletionConfModal}

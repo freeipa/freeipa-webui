@@ -14,6 +14,7 @@ describe("DateTimeSelector Component", () => {
   const mockOnChange = vi.fn();
 
   const defaultProps = {
+    dataCy: "date-time-selector",
     datetime: null,
     onChange: mockOnChange,
     name: "krbpasswordexpiration",

@@ -188,13 +188,19 @@ const Configuration = () => {
     {
       key: 0,
       element: (
-        <SecondaryButton onClickHandler={onRefresh}>Refresh</SecondaryButton>
+        <SecondaryButton
+          dataCy="configuration-button-refresh"
+          onClickHandler={onRefresh}
+        >
+          Refresh
+        </SecondaryButton>
       ),
     },
     {
       key: 1,
       element: (
         <SecondaryButton
+          dataCy="configuration-button-revert"
           isDisabled={!configData.modified}
           onClickHandler={onRevert}
         >
@@ -206,6 +212,7 @@ const Configuration = () => {
       key: 2,
       element: (
         <SecondaryButton
+          dataCy="configuration-button-save"
           isDisabled={!configData.modified || isSaving}
           onClickHandler={onSave}
           isLoading={isSaving}

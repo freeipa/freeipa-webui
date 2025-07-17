@@ -23,6 +23,7 @@ const ConfigServiceOptions = (props: PropsToServiceOptions) => {
         role="group"
       >
         <IpaCheckboxes
+          dataCy="configuration-checkbox-ipakrbauthzdata"
           name="ipakrbauthzdata"
           options={[
             {

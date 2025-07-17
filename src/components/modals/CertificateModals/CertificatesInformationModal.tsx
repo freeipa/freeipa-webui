@@ -31,7 +31,12 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
 
   // Actions
   const infoModalActions = [
-    <Button key="close" variant="primary" onClick={props.onClose}>
+    <Button
+      data-cy="modal-button-close"
+      key="close"
+      variant="primary"
+      onClick={props.onClose}
+    >
       Close
     </Button>,
   ];
@@ -112,6 +117,7 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
 
   return (
     <InformationModalLayout
+      dataCy="certificates-information-modal"
       title={"Certificate for " + certName}
       variant="medium"
       actions={infoModalActions}

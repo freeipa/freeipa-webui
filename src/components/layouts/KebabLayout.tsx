@@ -10,6 +10,7 @@ import {
 import { EllipsisVIcon } from "@patternfly/react-icons";
 
 interface PropsToKebab {
+  dataCy: string;
   // Dropdown
   onDropdownSelect?:
     | ((event?: React.MouseEvent<Element, MouseEvent> | undefined) => void)
@@ -28,6 +29,7 @@ const KebabLayout = (props: PropsToKebab) => {
   // Toggle
   const toggleKebab = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
+      data-cy={props.dataCy}
       ref={toggleRef}
       id={props.idKebab}
       aria-label="kebab dropdown toggle"
@@ -41,6 +43,7 @@ const KebabLayout = (props: PropsToKebab) => {
 
   return (
     <Dropdown
+      data-cy={props.dataCy + "-kebab"}
       onSelect={props.onDropdownSelect}
       className={props.className}
       toggle={toggleKebab}

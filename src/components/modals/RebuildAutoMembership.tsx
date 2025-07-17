@@ -69,6 +69,7 @@ const RebuildAutoMembership = (props: PropsToRebuildAutoMembership) => {
   // Actions
   const membershipModalActions: JSX.Element[] = [
     <Button
+      data-cy="modal-button-ok"
       key="rebuild-auto-membership"
       variant="primary"
       onClick={onRebuildAutoMembership}
@@ -77,6 +78,7 @@ const RebuildAutoMembership = (props: PropsToRebuildAutoMembership) => {
       OK
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key="cancel-rebuild-auto-membership"
       variant="link"
       onClick={props.onClose}
@@ -106,6 +108,7 @@ const RebuildAutoMembership = (props: PropsToRebuildAutoMembership) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="rebuild-auto-membership-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"

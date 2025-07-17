@@ -46,6 +46,7 @@ export function useAlerts() {
     return alerts.map((alert) => (
       <Alert
         key={alert.name}
+        data-cy={alert.name}
         variant={alert.variant}
         title={alert.title}
         role="alert"
@@ -54,6 +55,7 @@ export function useAlerts() {
         onTimeout={() => removeAlert(alert.name)}
         actionClose={
           <AlertActionCloseButton
+            data-cy={"alert-button-close"}
             variantLabel={`${alert.variant} alert`}
             onClose={() => removeAlert(alert.name)}
           />

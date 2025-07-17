@@ -66,6 +66,7 @@ describe("IpaCheckboxes Component", () => {
   };
 
   const defaultProps: IPAParamDefinitionCheckboxes = {
+    dataCy: "ipa-checkboxes",
     name: "ipauserauthtype2",
     ariaLabel: "ipauserauthtype2",
     ipaObject: {},

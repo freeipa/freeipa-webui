@@ -108,6 +108,7 @@ const MemberOfAddModal = (props: PropsToAdd) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <Button
+      data-cy="modal-button-add"
       key="add-new-user"
       variant="secondary"
       isDisabled={buttonDisabled || props.spinning}
@@ -119,13 +120,19 @@ const MemberOfAddModal = (props: PropsToAdd) => {
     >
       {props.spinning ? "Adding" : "Add"}
     </Button>,
-    <Button key="cancel-new-user" variant="link" onClick={props.onCloseModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-new-user"
+      variant="link"
+      onClick={props.onCloseModal}
+    >
       Cancel
     </Button>,
   ];
 
   return (
     <Modal
+      data-cy="member-of-add-modal"
       variant={"medium"}
       position={"top"}
       positionOffset={"76px"}

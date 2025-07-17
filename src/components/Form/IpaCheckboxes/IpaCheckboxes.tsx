@@ -15,6 +15,7 @@ interface CheckboxOption {
 }
 
 export interface IPAParamDefinitionCheckboxes extends IPAParamDefinition {
+  dataCy: string;
   options: CheckboxOption[];
 }
 
@@ -45,6 +46,7 @@ const IpaCheckboxes = (props: IPAParamDefinitionCheckboxes) => {
     <>
       {props.options.map((option, idx) => (
         <Checkbox
+          data-cy={props.dataCy + "-" + option.value}
           key={props.name + "-" + option.value}
           id={props.name + "-" + option.value} // Mandatory
           name={props.name}

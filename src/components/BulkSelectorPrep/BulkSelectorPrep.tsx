@@ -142,6 +142,7 @@ const BulkSelectorPrep = <Type,>(props: PropsToBulkSelectorPrep<Type>) => {
   // Menu toggle element with checkbox
   const toggle = (
     <MenuToggle
+      data-cy="bulk-selector-prep"
       ref={toggleRefMenu}
       onClick={onToggleClick}
       isExpanded={isOpenMenu}

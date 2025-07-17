@@ -72,10 +72,20 @@ const RemoveHoldCertificate = (props: PropsToRemoveHoldCertificate) => {
   };
 
   const infoModalActions = [
-    <Button key="remove-hold" variant="danger" onClick={onRemoveHold}>
+    <Button
+      data-cy="modal-button-remove-hold"
+      key="remove-hold"
+      variant="danger"
+      onClick={onRemoveHold}
+    >
       Remove hold
     </Button>,
-    <Button key="close" variant="link" onClick={props.onClose}>
+    <Button
+      data-cy="modal-button-close"
+      key="close"
+      variant="link"
+      onClick={props.onClose}
+    >
       Close
     </Button>,
   ];
@@ -88,6 +98,7 @@ const RemoveHoldCertificate = (props: PropsToRemoveHoldCertificate) => {
     <>
       <alerts.ManagedAlerts />
       <InformationModalLayout
+        dataCy="remove-hold-certificate-modal"
         title={"Certificate for " + certName}
         variant="medium"
         actions={infoModalActions}

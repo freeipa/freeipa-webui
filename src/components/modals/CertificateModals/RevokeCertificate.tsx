@@ -84,6 +84,7 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
   // Toggle
   const toggleRevReason = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
+      data-cy="modal-select-rev-reason-toggle"
       ref={toggleRef}
       onClick={onToggleRevReason}
       className="pf-v5-u-w-100"
@@ -123,7 +124,12 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
 
   // Toggle
   const toggleCASelect = (toggleRef: React.Ref<MenuToggleElement>) => (
-    <MenuToggle ref={toggleRef} onClick={onCAToggle} className="pf-v5-u-w-100">
+    <MenuToggle
+      data-cy="modal-select-ca-toggle"
+      ref={toggleRef}
+      onClick={onCAToggle}
+      className="pf-v5-u-w-100"
+    >
       {CASelected}
     </MenuToggle>
   );
@@ -174,10 +180,19 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
   };
 
   const modalActions = [
-    <SecondaryButton key="revoke" onClickHandler={onRevokeCert}>
+    <SecondaryButton
+      dataCy="modal-button-revoke"
+      key="revoke"
+      onClickHandler={onRevokeCert}
+    >
       Revoke
     </SecondaryButton>,
-    <Button key="cancel" variant="link" onClick={onCancel}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel"
+      variant="link"
+      onClick={onCancel}
+    >
       Cancel
     </Button>,
   ];
@@ -188,6 +203,7 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
       name: "Revocation reason",
       pfComponent: (
         <Select
+          data-cy="modal-select-rev-reason"
           id="revocation-reasons"
           aria-label="Select a revocation reason"
           aria-labelledby="revocation-reasons"
@@ -197,7 +213,11 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
           onSelect={onSelectRevReason}
         >
           {Object.entries(REVOCATION_REASONS).map((value) => (
-            <SelectOption key={value[0]} value={value[1]}>
+            <SelectOption
+              data-cy={"modal-select-rev-reason-" + value[1]}
+              key={value[0]}
+              value={value[1]}
+            >
               {value[1]}
             </SelectOption>
           ))}
@@ -209,6 +229,7 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
       name: "CA",
       pfComponent: (
         <Select
+          data-cy="modal-select-rev-ca"
           id="revocation-certificate-authority"
           aria-label="Select a certificate authority for the revocation"
           aria-labelledby="revocation certificate authority"
@@ -218,7 +239,11 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
           onSelect={onCASelect}
         >
           {CAOptions.map((option, index) => (
-            <SelectOption key={index} value={option}>
+            <SelectOption
+              data-cy={"modal-select-rev-ca-option-" + option}
+              key={index}
+              value={option}
+            >
               {option}
             </SelectOption>
           ))}
@@ -231,6 +256,7 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="revoke-certificate-modal"
         variantType="small"
         modalPosition="top"
         title={"Certificate for " + certName}
