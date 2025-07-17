@@ -7,7 +7,7 @@ import {
   SidebarContent,
   SidebarPanel,
 } from "@patternfly/react-core";
-import HelpTextWithIconLayout from "./HelpTextWithIconLayout";
+import HelpTextWithIconLayout from "../HelpTextWithIconLayout";
 
 interface SidebarLayoutProps {
   itemNames: string[];
