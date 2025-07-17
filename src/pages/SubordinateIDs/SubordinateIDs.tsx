@@ -268,6 +268,7 @@ const SubordinateIDs = () => {
       key: 0,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search subIds"
           placeholder="Search"
@@ -286,6 +287,7 @@ const SubordinateIDs = () => {
       key: 2,
       element: (
         <SecondaryButton
+          dataCy="subids-button-refresh"
           onClickHandler={refreshData}
           isDisabled={!showTableRows}
         >
@@ -297,6 +299,7 @@ const SubordinateIDs = () => {
       key: 3,
       element: (
         <SecondaryButton
+          dataCy="subids-button-add"
           isDisabled={!showTableRows}
           onClickHandler={onOpenAddModal}
         >

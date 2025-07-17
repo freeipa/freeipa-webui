@@ -52,6 +52,7 @@ describe("IpaCheckbox Component", () => {
   };
 
   const defaultProps: CheckboxOption = {
+    dataCy: "ipa-checkbox",
     name: "ipakrbokasdelegate2",
     ariaLabel: "ipakrbokasdelegate2",
     ipaObject: {},

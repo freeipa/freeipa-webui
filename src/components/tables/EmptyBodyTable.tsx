@@ -33,7 +33,11 @@ const EmptyBodyTable = (props: EmptyBodyTableProps) => {
             <EmptyStateBody>Clear all filters and try again.</EmptyStateBody>
             {props.onClickFilter && (
               <EmptyStateFooter>
-                <Button variant="link" onClick={props.onClickFilter}>
+                <Button
+                  data-cy="button-clear-all-filters"
+                  variant="link"
+                  onClick={props.onClickFilter}
+                >
                   Clear all filters
                 </Button>
               </EmptyStateFooter>

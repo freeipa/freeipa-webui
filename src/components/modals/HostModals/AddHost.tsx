@@ -94,6 +94,7 @@ const AddHost = (props: PropsToAddHost) => {
   // Toggle
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
+      data-cy="modal-select-dns-zone-toggle"
       ref={toggleRef}
       onClick={dnsZoneOnToggle}
       className="pf-v5-u-w-100"
@@ -261,6 +262,7 @@ const AddHost = (props: PropsToAddHost) => {
       pfComponent: (
         <>
           <TextInput
+            data-cy="modal-textbox-host-name"
             type="text"
             id="modal-form-host-name"
             name="modal-form-host-name"
@@ -288,6 +290,7 @@ const AddHost = (props: PropsToAddHost) => {
       pfComponent: (
         <>
           <Select
+            data-cy="modal-select-dns-zone"
             id="dnszone"
             aria-label="Select DNS zone selector"
             toggle={toggle}
@@ -298,6 +301,7 @@ const AddHost = (props: PropsToAddHost) => {
           >
             {dnsZoneOptions.map((option, index) => (
               <SelectOption
+                data-cy={"modal-select-dns-zone-" + option.value}
                 isDisabled={option.disabled}
                 key={index}
                 value={option.value}
@@ -324,6 +328,7 @@ const AddHost = (props: PropsToAddHost) => {
       name: "Description",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-host-desc"
           type="text"
           id="modal-form-host-desc"
           name="modal-form-host-desc"
@@ -338,6 +343,7 @@ const AddHost = (props: PropsToAddHost) => {
       name: "Class",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-host-class"
           type="text"
           id="modal-form-host-class"
           name="modal-form-host-class"
@@ -353,6 +359,7 @@ const AddHost = (props: PropsToAddHost) => {
       pfComponent: (
         <>
           <TextInput
+            data-cy="modal-textbox-host-ip-address"
             type="text"
             id="modal-form-host-ip-address"
             name="modal-form-host-ip-address"
@@ -379,6 +386,7 @@ const AddHost = (props: PropsToAddHost) => {
       pfComponent: (
         <div title="Skip the DNS check, but requires a valid IP address">
           <Checkbox
+            data-cy="modal-checkbox-force-host"
             label="Force"
             isChecked={forceCheckbox}
             aria-label="force host name checkbox"
@@ -402,6 +410,7 @@ const AddHost = (props: PropsToAddHost) => {
       name: "",
       pfComponent: (
         <Checkbox
+          data-cy="modal-checkbox-generate-otp"
           label="Generate OTP"
           isChecked={generateOtpCheckbox}
           aria-label="Generate OTP checkbox"
@@ -417,6 +426,7 @@ const AddHost = (props: PropsToAddHost) => {
       name: "",
       pfComponent: (
         <Checkbox
+          data-cy="modal-checkbox-suppress-membership"
           label="Suppress processing of membership attributes"
           isChecked={noMembershipCheckbox}
           aria-label="Suppress membership attributes checkbox"
@@ -612,10 +622,19 @@ const AddHost = (props: PropsToAddHost) => {
   };
 
   const errorModalActions = [
-    <SecondaryButton key="retry" onClickHandler={onRetry}>
+    <SecondaryButton
+      dataCy="modal-button-retry"
+      key="retry"
+      onClickHandler={onRetry}
+    >
       Retry
     </SecondaryButton>,
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       Cancel
     </Button>,
   ];
@@ -633,6 +652,7 @@ const AddHost = (props: PropsToAddHost) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <SecondaryButton
+      dataCy="modal-button-add"
       key="add-new-host"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
       onClickHandler={addHostHandler}
@@ -644,6 +664,7 @@ const AddHost = (props: PropsToAddHost) => {
       {addSpinning ? "Adding" : "Add"}
     </SecondaryButton>,
     <SecondaryButton
+      dataCy="modal-button-add-and-add-another"
       key="add-and-add-another-host"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
       onClickHandler={addAndAddAnotherHandler}
@@ -653,7 +674,12 @@ const AddHost = (props: PropsToAddHost) => {
     >
       {addAgainSpinning ? "Adding" : "Add and add another"}
     </SecondaryButton>,
-    <Button key="cancel-new-host" variant="link" onClick={cleanAndCloseModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-new-host"
+      variant="link"
+      onClick={cleanAndCloseModal}
+    >
       Cancel
     </Button>,
   ];
@@ -663,6 +689,7 @@ const AddHost = (props: PropsToAddHost) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="add-host-modal"
         variantType="small"
         modalPosition="top"
         offPosition="76px"
@@ -675,6 +702,7 @@ const AddHost = (props: PropsToAddHost) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="add-host-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

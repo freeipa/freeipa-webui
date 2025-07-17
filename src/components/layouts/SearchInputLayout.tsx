@@ -11,6 +11,7 @@ interface SearchValueData {
 
 interface PropsToSearchInput {
   name?: string;
+  dataCy: string;
   ariaLabel?: string;
   placeholder?: string;
   searchValueData: SearchValueData;
@@ -31,6 +32,7 @@ const SearchInputLayout = (props: PropsToSearchInput) => {
 
   return (
     <SearchInput
+      data-cy={props.dataCy}
       name={props.name}
       aria-label={props.ariaLabel}
       placeholder={props.placeholder}

@@ -32,6 +32,7 @@ describe("DropdownSearch Component", () => {
   it("renders the DropdownSearch component with items", async () => {
     render(
       <DropdownSearch
+        dataCy="dropdown-search"
         id="test"
         onSelect={mockOnSelect}
         options={mockList}
@@ -57,6 +58,7 @@ describe("DropdownSearch Component", () => {
   it("select in DropdownSearch Component works", async () => {
     render(
       <DropdownSearch
+        dataCy="dropdown-search"
         id="test"
         onSelect={mockOnSelect}
         options={mockList}
@@ -85,6 +87,7 @@ describe("DropdownSearch Component", () => {
   it("search in DropdownSearch Component works", async () => {
     render(
       <DropdownSearch
+        dataCy="dropdown-search"
         id="test"
         onSelect={mockOnSelect}
         options={mockList}
@@ -137,6 +140,7 @@ describe("DropdownSearch Component", () => {
   it("failing search in DropdownSearch Component works", async () => {
     render(
       <DropdownSearch
+        dataCy="dropdown-search"
         id="test"
         onSelect={mockOnSelect}
         options={mockList}

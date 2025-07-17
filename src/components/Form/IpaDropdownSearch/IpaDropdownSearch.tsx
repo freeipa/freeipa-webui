@@ -19,6 +19,7 @@ import {
 import { updateIpaObject } from "src/utils/ipaObjectUtils";
 
 export interface IPAParamDefinitionDropdown extends IPAParamDefinition {
+  dataCy: string;
   id?: string;
   setIpaObject?: (ipaObject: Record<string, unknown>) => void;
   onSelect?: (username: string) => void; // For non-ipaObjects
@@ -59,11 +60,13 @@ const IpaDropdownSearch = (props: IPAParamDefinitionDropdown) => {
 
   return (
     <Dropdown
+      data-cy={props.dataCy + "-dropdown"}
       isOpen={isOpen}
       onSelect={onSelect}
       onOpenChange={(isOpen: boolean) => setIsOpen(isOpen)}
       toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
         <MenuToggle
+          data-cy={props.dataCy + "-dropdown-toggle"}
           id={props.id || "dropdown-search"}
           ref={toggleRef}
           isFullWidth
@@ -80,6 +83,7 @@ const IpaDropdownSearch = (props: IPAParamDefinitionDropdown) => {
       <MenuSearch>
         <MenuSearchInput>
           <SearchInput
+            data-cy={props.dataCy + "-dropdown-search"}
             id={"search-" + props.id || "dropdown-search"}
             value={searchValue}
             placeholder="Search"
@@ -96,7 +100,11 @@ const IpaDropdownSearch = (props: IPAParamDefinitionDropdown) => {
       <Divider />
       <DropdownList>
         {options.map((option, index) => (
-          <DropdownItem value={option} key={index}>
+          <DropdownItem
+            data-cy={props.dataCy + "-dropdown-" + option}
+            value={option}
+            key={index}
+          >
             {option}
           </DropdownItem>
         ))}

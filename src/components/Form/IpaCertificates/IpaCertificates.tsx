@@ -33,6 +33,7 @@ import useAlerts from "src/hooks/useAlerts";
 import { parseDn } from "src/utils/utils";
 
 export interface PropsToIpaCertificates {
+  dataCy: string;
   ipaObject: Record<string, unknown>;
   onChange: (ipaObject: Record<string, unknown>) => void;
   metadata: Metadata;
@@ -204,6 +205,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
   const getDropdownItems = (idx: number) => {
     return [
       <DropdownItem
+        data-cy="ipa-certificates-dropdown-view"
         key="view"
         component="button"
         onClick={() => onViewCertificate(idx)}
@@ -211,6 +213,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         View
       </DropdownItem>,
       <DropdownItem
+        data-cy="ipa-certificates-dropdown-get"
         key="get"
         component="button"
         onClick={() => onGetCertificate(idx)}
@@ -218,6 +221,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         Get
       </DropdownItem>,
       <DropdownItem
+        data-cy="ipa-certificates-dropdown-download"
         key="download"
         component="button"
         onClick={() => onDownloadCertificate(idx)}
@@ -225,6 +229,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         Download
       </DropdownItem>,
       <DropdownItem
+        data-cy="ipa-certificates-dropdown-revoke"
         key="revoke"
         component="button"
         isDisabled={!canBeRevoked(idx)}
@@ -233,6 +238,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         Revoke
       </DropdownItem>,
       <DropdownItem
+        data-cy="ipa-certificates-dropdown-remove-hold"
         key="remove-hold"
         component="button"
         isDisabled={!canHoldBeRemoved(idx)}
@@ -242,6 +248,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
       </DropdownItem>,
       <Divider component="li" key="separator" />,
       <DropdownItem
+        data-cy="ipa-certificates-dropdown-delete"
         key="delete"
         component="button"
         onClick={() => onRemoveCert(idx)}
@@ -437,6 +444,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
 
   const deletionConfModalActions = [
     <Button
+      data-cy="modal-button-delete"
       key="del-certificate-conf"
       variant="danger"
       onClick={() => onDeleteCertificate(idxToDelete)}
@@ -448,7 +456,12 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
     >
       {modalSpinning ? "Deleting" : "Delete"}
     </Button>,
-    <Button key="cancel" variant="link" onClick={onCloseDeletionConfModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel"
+      variant="link"
+      onClick={onCloseDeletionConfModal}
+    >
       Cancel
     </Button>,
   ];
@@ -579,6 +592,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
           })
         : null}
       <SecondaryButton
+        dataCy="modal-button-add"
         name={"add-certificate"}
         onClickHandler={onOpenModal}
         isDisabled={readOnly}
@@ -586,6 +600,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         Add
       </SecondaryButton>
       <ModalWithTextAreaLayout
+        dataCy="ipa-certificates-modal"
         id="certificate-textarea"
         value={textAreaValue}
         onChange={onChangeTextAreaValue}
@@ -595,6 +610,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
           textareaModalOption === "add"
             ? [
                 <SecondaryButton
+                  dataCy="modal-button-add"
                   key="add-certificate"
                   onClickHandler={onAddCertificate}
                   isDisabled={modalSpinning}
@@ -605,12 +621,22 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
                 >
                   {modalSpinning ? "Adding" : "Add"}
                 </SecondaryButton>,
-                <Button key="cancel" variant="link" onClick={onClickCancel}>
+                <Button
+                  data-cy="modal-button-cancel"
+                  key="cancel"
+                  variant="link"
+                  onClick={onClickCancel}
+                >
                   Cancel
                 </Button>,
               ]
             : [
-                <Button key="close" variant="link" onClick={onClickCancel}>
+                <Button
+                  data-cy="modal-button-close"
+                  key="close"
+                  variant="link"
+                  onClick={onClickCancel}
+                >
                   Close
                 </Button>,
               ]
@@ -640,6 +666,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         isTextareaDisabled={textareaModalOption === "get"}
       />
       <ConfirmationModal
+        dataCy="remove-certificate-modal"
         title={"Remove certificate"}
         isOpen={isDeleteConfModalOpen}
         onClose={onCloseDeletionConfModal}

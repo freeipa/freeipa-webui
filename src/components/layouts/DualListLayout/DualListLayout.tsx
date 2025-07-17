@@ -204,6 +204,7 @@ const DualListTableLayout = (props: DualListProps) => {
       id: "dual-list-search",
       pfComponent: (
         <SearchInputLayout
+          dataCy="modal-search"
           name="search"
           ariaLabel="Search dual select list"
           placeholder="Search for entries"
@@ -253,6 +254,7 @@ const DualListTableLayout = (props: DualListProps) => {
             <Flex>
               <FlexItem>
                 <TextInput
+                  data-cy="modal-textbox-external"
                   type="text"
                   id="dual-list-external"
                   name="dual-list-external"
@@ -263,6 +265,7 @@ const DualListTableLayout = (props: DualListProps) => {
               </FlexItem>
               <FlexItem>
                 <Button
+                  data-cy="modal-button-external-add"
                   title="Add external item to the chosen list"
                   size="sm"
                   variant="secondary"
@@ -319,6 +322,7 @@ const DualListTableLayout = (props: DualListProps) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <SecondaryButton
+      dataCy="modal-button-add"
       key={"dual-list-" + props.target}
       isDisabled={buttonDisabled || props.spinning}
       form="modal-form"
@@ -330,6 +334,7 @@ const DualListTableLayout = (props: DualListProps) => {
       {props.spinning ? props.addSpinningBtnName : props.addBtnName}
     </SecondaryButton>,
     <Button
+      data-cy="modal-button-cancel"
       key={"cancel-new-" + props.target}
       variant="link"
       onClick={closeModal}
@@ -341,6 +346,7 @@ const DualListTableLayout = (props: DualListProps) => {
   // Render component
   return (
     <ModalWithFormLayout
+      dataCy="dual-list-modal"
       variantType="medium"
       modalPosition="top"
       title={props.title}

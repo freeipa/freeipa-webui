@@ -196,7 +196,9 @@ const ManagedByTable = (props: PropsToTable) => {
             />
             <EmptyStateBody>Clear all filters and try again.</EmptyStateBody>
             <EmptyStateFooter>
-              <Button variant="link">Clear all filters</Button>
+              <Button data-cy="clear-all-filters" variant="link">
+                Clear all filters
+              </Button>
             </EmptyStateFooter>
           </EmptyState>
         </Bullseye>

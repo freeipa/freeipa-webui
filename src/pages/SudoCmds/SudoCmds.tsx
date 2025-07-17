@@ -419,6 +419,7 @@ const SudoCmds = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search commands"
           placeholder="Search"
@@ -439,6 +440,7 @@ const SudoCmds = () => {
         <SecondaryButton
           onClickHandler={refreshData}
           isDisabled={!showTableRows}
+          dataCy="sudo-commands-button-refresh"
         >
           Refresh
         </SecondaryButton>
@@ -450,6 +452,7 @@ const SudoCmds = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
+          dataCy="sudo-commands-button-delete"
         >
           Delete
         </SecondaryButton>
@@ -461,6 +464,7 @@ const SudoCmds = () => {
         <SecondaryButton
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows}
+          dataCy="sudo-commands-button-add"
         >
           Add
         </SecondaryButton>
@@ -548,7 +552,10 @@ const SudoCmds = () => {
         buttonsData={deleteCmdsButtonsData}
         onRefresh={refreshData}
       />
-      <ModalErrors errors={modalErrors.getAll()} />
+      <ModalErrors
+        errors={modalErrors.getAll()}
+        dataCy="sudo-cmds-modal-error"
+      />
     </Page>
   );
 };

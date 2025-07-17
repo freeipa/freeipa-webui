@@ -141,7 +141,10 @@ const KrbTicketPolicy = () => {
     {
       key: 0,
       element: (
-        <SecondaryButton onClickHandler={krbTicketPolicyData.refetch}>
+        <SecondaryButton
+          dataCy="krb-ticket-policy-button-refresh"
+          onClickHandler={krbTicketPolicyData.refetch}
+        >
           Refresh
         </SecondaryButton>
       ),
@@ -150,6 +153,7 @@ const KrbTicketPolicy = () => {
       key: 1,
       element: (
         <SecondaryButton
+          dataCy="krb-ticket-policy-button-revert"
           isDisabled={!krbTicketPolicyData.modified || isDataLoading}
           onClickHandler={onRevert}
         >
@@ -161,6 +165,7 @@ const KrbTicketPolicy = () => {
       key: 2,
       element: (
         <SecondaryButton
+          dataCy="krb-ticket-policy-button-save"
           isDisabled={!krbTicketPolicyData.modified || isDataLoading}
           onClickHandler={onSave}
         >
@@ -232,6 +237,7 @@ const KrbTicketPolicy = () => {
                     fieldId="krbmaxrenewableage"
                   >
                     <IpaTextInput
+                      dataCy="krb-ticket-policy-textbox-max-renew"
                       name={"krbmaxrenewableage"}
                       ariaLabel={"Max renew (seconds)"}
                       ipaObject={ipaObject}
@@ -249,6 +255,7 @@ const KrbTicketPolicy = () => {
                     fieldId="krbmaxticketlife"
                   >
                     <IpaTextInput
+                      dataCy="krb-ticket-policy-textbox-max-life"
                       name={"krbmaxticketlife"}
                       ariaLabel={"Max life (seconds)"}
                       ipaObject={ipaObject}
@@ -275,6 +282,7 @@ const KrbTicketPolicy = () => {
                     fieldId="krbauthindmaxrenewableage_radius"
                   >
                     <IpaTextInput
+                      dataCy="krb-ticket-policy-textbox-radius-max-renew"
                       name={"krbauthindmaxrenewableage_radius"}
                       ariaLabel={"RADIUS max renew (seconds)"}
                       ipaObject={ipaObject}
@@ -288,6 +296,7 @@ const KrbTicketPolicy = () => {
                     fieldId="krbauthindmaxticketlife_radius"
                   >
                     <IpaTextInput
+                      dataCy="krb-ticket-policy-textbox-radius-max-life"
                       name={"krbauthindmaxticketlife_radius"}
                       ariaLabel={"RADIUS max life (seconds)"}
                       ipaObject={ipaObject}
@@ -301,6 +310,7 @@ const KrbTicketPolicy = () => {
                     fieldId="krbauthindmaxrenewableage_otp"
                   >
                     <IpaTextInput
+                      dataCy="krb-ticket-policy-textbox-otp-max-renew"
                       name={"krbauthindmaxrenewableage_otp"}
                       ariaLabel={"OTP max renew (seconds)"}
                       ipaObject={ipaObject}
@@ -314,6 +324,7 @@ const KrbTicketPolicy = () => {
                     fieldId="krbauthindmaxticketlife_otp"
                   >
                     <IpaTextInput
+                      dataCy="krb-ticket-policy-textbox-otp-max-life"
                       name={"krbauthindmaxticketlife_otp"}
                       ariaLabel={"OTP max life (seconds)"}
                       ipaObject={ipaObject}
@@ -327,6 +338,7 @@ const KrbTicketPolicy = () => {
                     fieldId="krbauthindmaxrenewableage_pkinit"
                   >
                     <IpaTextInput
+                      dataCy="krb-ticket-policy-textbox-pkinit-max-renew"
                       name={"krbauthindmaxrenewableage_pkinit"}
                       ariaLabel={"PKINIT max renew (seconds)"}
                       ipaObject={ipaObject}
@@ -340,6 +352,7 @@ const KrbTicketPolicy = () => {
                     fieldId="krbauthindmaxticketlife_pkinit"
                   >
                     <IpaTextInput
+                      dataCy="krb-ticket-policy-textbox-pkinit-max-life"
                       name={"krbauthindmaxticketlife_pkinit"}
                       ariaLabel={"PKINIT max life (seconds)"}
                       ipaObject={ipaObject}
@@ -357,6 +370,7 @@ const KrbTicketPolicy = () => {
                     fieldId="krbauthindmaxrenewableage_hardened"
                   >
                     <IpaTextInput
+                      dataCy="krb-ticket-policy-textbox-hardened-max-renew"
                       name={"krbauthindmaxrenewableage_hardened"}
                       ariaLabel={"Hardened max renew (seconds)"}
                       ipaObject={ipaObject}
@@ -370,6 +384,7 @@ const KrbTicketPolicy = () => {
                     fieldId="krbauthindmaxticketlife_hardened"
                   >
                     <IpaTextInput
+                      dataCy="krb-ticket-policy-textbox-hardened-max-life"
                       name={"krbauthindmaxticketlife_hardened"}
                       ariaLabel={"Hardened max life (seconds)"}
                       ipaObject={ipaObject}
@@ -383,6 +398,7 @@ const KrbTicketPolicy = () => {
                     fieldId="krbauthindmaxrenewableage_idp"
                   >
                     <IpaTextInput
+                      dataCy="krb-ticket-policy-textbox-idp-max-renew"
                       name={"krbauthindmaxrenewableage_idp"}
                       ariaLabel={"IdP max renew (seconds)"}
                       ipaObject={ipaObject}
@@ -396,6 +412,7 @@ const KrbTicketPolicy = () => {
                     fieldId="krbauthindmaxticketlife_idp"
                   >
                     <IpaTextInput
+                      dataCy="krb-ticket-policy-textbox-idp-max-life"
                       name={"krbauthindmaxticketlife_idp"}
                       ariaLabel={"IdP max life (seconds)"}
                       ipaObject={ipaObject}
@@ -409,6 +426,7 @@ const KrbTicketPolicy = () => {
                     fieldId="krbauthindmaxrenewableage_passkey"
                   >
                     <IpaTextInput
+                      dataCy="krb-ticket-policy-textbox-passkey-max-renew"
                       name={"krbauthindmaxrenewableage_passkey"}
                       ariaLabel={"Passkey max renew (seconds)"}
                       ipaObject={ipaObject}
@@ -422,6 +440,7 @@ const KrbTicketPolicy = () => {
                     fieldId="krbauthindmaxticketlife_passkey"
                   >
                     <IpaTextInput
+                      dataCy="krb-ticket-policy-textbox-passkey-max-life"
                       name={"krbauthindmaxticketlife_passkey"}
                       ariaLabel={"Passkey max life (seconds)"}
                       ipaObject={ipaObject}

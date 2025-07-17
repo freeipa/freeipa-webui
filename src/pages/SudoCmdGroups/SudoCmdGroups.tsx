@@ -418,6 +418,7 @@ const SudoCmds = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search command groups"
           placeholder="Search"
@@ -438,6 +439,7 @@ const SudoCmds = () => {
         <SecondaryButton
           onClickHandler={refreshData}
           isDisabled={!showTableRows}
+          dataCy="sudo-command-groups-button-refresh"
         >
           Refresh
         </SecondaryButton>
@@ -449,6 +451,7 @@ const SudoCmds = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
+          dataCy="sudo-command-groups-button-delete"
         >
           Delete
         </SecondaryButton>
@@ -460,6 +463,7 @@ const SudoCmds = () => {
         <SecondaryButton
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows}
+          dataCy="sudo-command-groups-button-add"
         >
           Add
         </SecondaryButton>
@@ -547,7 +551,10 @@ const SudoCmds = () => {
         buttonsData={deleteCmdsButtonsData}
         onRefresh={refreshData}
       />
-      <ModalErrors errors={modalErrors.getAll()} />
+      <ModalErrors
+        errors={modalErrors.getAll()}
+        dataCy="sudo-cmd-groups-modal-error"
+      />
     </Page>
   );
 };

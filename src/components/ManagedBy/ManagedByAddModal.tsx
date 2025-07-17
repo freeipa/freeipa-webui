@@ -119,6 +119,7 @@ const ManagedByAddModal = (props: PropsToAddModal) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <SecondaryButton
+      dataCy="modal-button-add"
       key={"add-new-" + convertedTabName}
       isDisabled={buttonDisabled || props.spinning}
       form="modal-form"
@@ -130,6 +131,7 @@ const ManagedByAddModal = (props: PropsToAddModal) => {
       {props.spinning ? "Adding" : "Add"}
     </SecondaryButton>,
     <Button
+      data-cy="modal-button-cancel"
       key={"cancel-add-new-" + convertedTabName}
       variant="link"
       onClick={cleanAndCloseModal}
@@ -141,6 +143,7 @@ const ManagedByAddModal = (props: PropsToAddModal) => {
   // Render component
   return (
     <ModalWithFormLayout
+      dataCy="add-managed-by-modal"
       variantType="medium"
       modalPosition="top"
       offPosition="76px"

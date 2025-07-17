@@ -85,6 +85,7 @@ describe("IpaDropdownSearch Component", () => {
   };
 
   const defaultProps: IPAParamDefinitionDropdown = {
+    dataCy: "ipa-dropdown-search",
     name: "ca_renewal_master_server",
     ariaLabel: "IPA CA renewal master",
     ipaObject: mockIpaObject,

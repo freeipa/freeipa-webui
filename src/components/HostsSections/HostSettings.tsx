@@ -95,6 +95,7 @@ const HostSettings = (props: PropsToHostSettings) => {
           <Form className="pf-v5-u-mb-lg">
             <FormGroup label="Host name" fieldId="host-name">
               <TextInput
+                data-cy="hosts-tab-settings-textbox-host-name"
                 id="host-name"
                 name="hostname"
                 value={hostName}
@@ -109,6 +110,7 @@ const HostSettings = (props: PropsToHostSettings) => {
               role="group"
             >
               <PrincipalAliasMultiTextBox
+                dataCy="host-tab-settings-principal-alias"
                 ipaObject={ipaObject}
                 metadata={props.metadata}
                 onRefresh={props.onRefresh}
@@ -117,6 +119,7 @@ const HostSettings = (props: PropsToHostSettings) => {
             </FormGroup>
             <FormGroup label="Description" fieldId="description">
               <IpaTextArea
+                dataCy="host-tab-settings-textbox-description"
                 name="description"
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
@@ -126,6 +129,7 @@ const HostSettings = (props: PropsToHostSettings) => {
             </FormGroup>
             <FormGroup label="Class" fieldId="userclass">
               <IpaTextInput
+                dataCy="host-tab-settings-textbox-userclass"
                 name={"userclass"}
                 ariaLabel={"User class"}
                 ipaObject={ipaObject}
@@ -136,6 +140,7 @@ const HostSettings = (props: PropsToHostSettings) => {
             </FormGroup>
             <FormGroup label="Locality" fieldId="l">
               <IpaTextInput
+                dataCy="host-tab-settings-textbox-locality"
                 name={"l"}
                 ariaLabel={"Locality"}
                 ipaObject={ipaObject}
@@ -146,6 +151,7 @@ const HostSettings = (props: PropsToHostSettings) => {
             </FormGroup>
             <FormGroup label="Location" fieldId="nshostlocation">
               <IpaTextInput
+                dataCy="host-tab-settings-textbox-location"
                 name={"nshostlocation"}
                 ariaLabel={"Location"}
                 ipaObject={ipaObject}
@@ -156,6 +162,7 @@ const HostSettings = (props: PropsToHostSettings) => {
             </FormGroup>
             <FormGroup label="Platform" fieldId="nshardwareplatform">
               <IpaTextInput
+                dataCy="host-tab-settings-textbox-platform"
                 name={"nshardwareplatform"}
                 ariaLabel={"Platform"}
                 ipaObject={ipaObject}
@@ -166,6 +173,7 @@ const HostSettings = (props: PropsToHostSettings) => {
             </FormGroup>
             <FormGroup label="Operating system" fieldId="nsosversion">
               <IpaTextInput
+                dataCy="host-tab-settings-textbox-os-version"
                 name={"nsosversion"}
                 ariaLabel={"Operating system"}
                 ipaObject={ipaObject}
@@ -184,6 +192,7 @@ const HostSettings = (props: PropsToHostSettings) => {
               role="group"
             >
               <IpaSshPublicKeys
+                dataCy="host-tab-settings-ssh-public-keys"
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
                 metadata={props.metadata}
@@ -193,6 +202,7 @@ const HostSettings = (props: PropsToHostSettings) => {
             </FormGroup>
             <FormGroup label="MAC address" fieldId="macaddress" role="group">
               <IpaTextboxList
+                dataCy="host-tab-settings-textbox-mac-address"
                 ipaObject={ipaObject}
                 setIpaObject={recordOnChange}
                 name={"macaddress"}
@@ -209,6 +219,7 @@ const HostSettings = (props: PropsToHostSettings) => {
               }
             >
               <IpaCheckboxes
+                dataCy="host-tab-settings-checkbox-auth-indicators"
                 name="krbprincipalauthind"
                 options={[
                   {
@@ -245,6 +256,7 @@ const HostSettings = (props: PropsToHostSettings) => {
               role="group"
             >
               <IpaCheckbox
+                dataCy="host-tab-settings-checkbox-trusted-for-delegation"
                 name="ipakrbokasdelegate"
                 value="trustedForDelegation"
                 text="Trusted for delegation"
@@ -260,6 +272,7 @@ const HostSettings = (props: PropsToHostSettings) => {
               role="group"
             >
               <IpaCheckbox
+                dataCy="host-tab-settings-checkbox-trusted-auth-as-user"
                 name="ipakrboktoauthasdelegate"
                 value="trustedAuthAsUser"
                 text="Trusted to authenticate as a user"
@@ -271,6 +284,7 @@ const HostSettings = (props: PropsToHostSettings) => {
             </FormGroup>
             <FormGroup label="Assigned ID view" fieldId="assigned-id-view">
               <TextInput
+                data-cy="host-tab-settings-textbox-assigned-id-view"
                 id="assigned-id-view"
                 name="ipaassignedidview"
                 value={assignedIDView}

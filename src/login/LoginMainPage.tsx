@@ -134,12 +134,14 @@ const LoginMainPage = () => {
     if (errorMessage !== "") {
       return (
         <Modal
+          data-cy="authentication-modal-error"
           variant={ModalVariant.small}
           title="Authentication error"
           isOpen={showErrorModal}
           onClose={() => setShowErrorModal(false)}
           actions={[
             <Button
+              data-cy="modal-button-ok"
               key="confirm"
               variant="primary"
               onClick={() => setShowErrorModal(false)}

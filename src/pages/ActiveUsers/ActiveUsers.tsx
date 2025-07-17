@@ -368,6 +368,7 @@ const ActiveUsers = () => {
 
   const membershipModalActions: JSX.Element[] = [
     <Button
+      data-cy="modal-button-ok"
       key="rebuild-auto-membership"
       variant="primary"
       onClick={onRebuildAutoMembership}
@@ -376,6 +377,7 @@ const ActiveUsers = () => {
       OK
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key="cancel-rebuild-auto-membership"
       variant="link"
       onClick={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
@@ -405,6 +407,7 @@ const ActiveUsers = () => {
 
   const dropdownItems = [
     <DropdownItem
+      data-cy="active-users-kebab-rebuild-auto-membership"
       key="action"
       component="button"
       onClick={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
@@ -626,6 +629,7 @@ const ActiveUsers = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search user"
           placeholder="Search"
@@ -644,6 +648,7 @@ const ActiveUsers = () => {
       key: 3,
       element: (
         <SecondaryButton
+          dataCy="active-users-button-refresh"
           onClickHandler={refreshUsersData}
           isDisabled={!showTableRows}
         >
@@ -655,6 +660,7 @@ const ActiveUsers = () => {
       key: 4,
       element: (
         <SecondaryButton
+          dataCy="active-users-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
         >
@@ -666,6 +672,7 @@ const ActiveUsers = () => {
       key: 5,
       element: (
         <SecondaryButton
+          dataCy="active-users-button-add"
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows}
         >
@@ -677,6 +684,7 @@ const ActiveUsers = () => {
       key: 6,
       element: (
         <SecondaryButton
+          dataCy="active-users-button-disable"
           isDisabled={isDisableButtonDisabled || !showTableRows}
           onClickHandler={() => onEnableDisableHandler(true)}
         >
@@ -688,6 +696,7 @@ const ActiveUsers = () => {
       key: 7,
       element: (
         <SecondaryButton
+          dataCy="active-users-button-enable"
           isDisabled={isEnableButtonDisabled || !showTableRows}
           onClickHandler={() => onEnableDisableHandler(false)}
         >
@@ -699,6 +708,7 @@ const ActiveUsers = () => {
       key: 8,
       element: (
         <KebabLayout
+          dataCy="active-users-kebab"
           onDropdownSelect={onDropdownSelect}
           onKebabToggle={onKebabToggle}
           idKebab="main-dropdown-kebab"
@@ -814,9 +824,13 @@ const ActiveUsers = () => {
           buttonsData={disableEnableButtonsData}
           onRefresh={refreshUsersData}
         />
-        <ModalErrors errors={modalErrors.getAll()} />
+        <ModalErrors
+          errors={modalErrors.getAll()}
+          dataCy="active-users-modal-error"
+        />
         {isMembershipModalOpen && (
           <ModalWithFormLayout
+            dataCy="modal-rebuild-auto-membership"
             variantType="medium"
             modalPosition="top"
             offPosition="76px"

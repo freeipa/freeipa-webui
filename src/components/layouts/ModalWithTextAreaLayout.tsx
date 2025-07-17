@@ -5,6 +5,7 @@ import { Form, FormGroup, Modal, TextArea } from "@patternfly/react-core";
 import { Metadata } from "src/utils/datatypes/globalDataTypes";
 
 interface PropsToPKModal {
+  dataCy: string;
   id: string;
   value: string;
   onChange: (value: string) => void;
@@ -28,6 +29,7 @@ interface PropsToPKModal {
 const ModalWithTextAreaLayout = (props: PropsToPKModal) => {
   return (
     <Modal
+      data-cy={props.dataCy + "-modal"}
       variant={props.variant || "small"}
       title={props.title}
       isOpen={props.isOpen}
@@ -42,6 +44,7 @@ const ModalWithTextAreaLayout = (props: PropsToPKModal) => {
           isRequired={props.isRequired}
         >
           <TextArea
+            data-cy={"modal-textbox-" + props.dataCy}
             id={props.id}
             value={props.value}
             name={props.name}

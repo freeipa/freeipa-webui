@@ -2,9 +2,9 @@ import React from "react";
 import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import { vi, describe, it, expect, afterEach } from "vitest";
 // Component
-import IpaCalendar from "./IpaCalendar";
+import IpaCalendar, { IpaCalendarProps } from "./IpaCalendar";
 // Utils
-import { IPAParamDefinition, updateIpaObject } from "src/utils/ipaObjectUtils";
+import { updateIpaObject } from "src/utils/ipaObjectUtils";
 
 // Mock of util function: updateIpaObject
 vi.mock("src/utils/ipaObjectUtils", async () => ({
@@ -51,7 +51,8 @@ describe("IpaCalendar Component", () => {
     },
   };
 
-  const defaultProps: IPAParamDefinition = {
+  const defaultProps: IpaCalendarProps = {
+    dataCy: "ipa-calendar",
     name: "krbpasswordexpiration2",
     ariaLabel: "Kerberos password expiration date 2",
     ipaObject: {},

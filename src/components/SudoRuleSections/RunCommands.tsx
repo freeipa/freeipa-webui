@@ -506,6 +506,7 @@ const RunCommands = (props: PropsToRunCommands) => {
       <FlexItem>Command category the rule applies to: </FlexItem>
       <FlexItem>
         <IpaToggleGroup
+          dataCy="sudo-rule-toggle-group-cmd-category"
           ipaObject={props.ipaObject}
           name="cmdcategory"
           options={options}

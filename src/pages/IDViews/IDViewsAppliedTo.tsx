@@ -495,6 +495,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
       key: 1,
       element: (
         <SearchInput
+          data-cy="search"
           name="search"
           placeholder="Search hosts"
           value={searchValue}
@@ -512,7 +513,11 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
     {
       key: 3,
       element: (
-        <Button variant="secondary" onClick={refreshViewsData}>
+        <Button
+          data-cy="id-views-tab-applied-to-refresh"
+          variant="secondary"
+          onClick={refreshViewsData}
+        >
           Refresh
         </Button>
       ),
@@ -521,11 +526,13 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
       key: 4,
       element: (
         <Dropdown
+          data-cy="id-views-tab-applied-to-kebab"
           isOpen={isApplyOpen}
           onSelect={onSelectApply}
           onOpenChange={(isApplyOpen: boolean) => setIsApplyOpen(isApplyOpen)}
           toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
             <MenuToggle
+              data-cy="id-views-tab-applied-to-kebab-apply-toggle"
               className="pf-m-small"
               ref={toggleRef}
               onClick={onToggleClickApply}
@@ -541,6 +548,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
         >
           <DropdownList>
             <DropdownItem
+              data-cy="id-views-tab-applied-to-kebab-apply-hosts"
               value={1}
               key="apply-hosts"
               onClick={() => setShowApplyHostModal(true)}
@@ -548,6 +556,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
               Apply hosts
             </DropdownItem>
             <DropdownItem
+              data-cy="id-views-tab-applied-to-kebab-apply-host-groups"
               value={2}
               key="apply-host-groups"
               onClick={() => setShowApplyHostGroupModal(true)}
@@ -562,6 +571,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
       key: 5,
       element: (
         <Dropdown
+          data-cy="id-views-tab-applied-to-kebab-unapply"
           isOpen={isUnapplyOpen}
           onSelect={onSelectUnapply}
           onOpenChange={(isUnapplyOpen: boolean) =>
@@ -569,6 +579,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
           }
           toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
             <MenuToggle
+              data-cy="id-views-tab-applied-to-kebab-unapply-toggle"
               ref={toggleRef}
               onClick={onToggleClickUnapply}
               isExpanded={isUnapplyOpen}
@@ -582,6 +593,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
         >
           <DropdownList>
             <DropdownItem
+              data-cy="id-views-tab-applied-to-kebab-unapply-hosts"
               value={1}
               key="unapply-hosts"
               onClick={() => setShowUnapplyHostsModal(true)}
@@ -590,6 +602,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
               Unapply hosts
             </DropdownItem>
             <DropdownItem
+              data-cy="id-views-tab-applied-to-kebab-unapply-host-groups"
               value={2}
               key="unapply-host-groups"
               onClick={() => setShowUnapplyHostGroupModal(true)}
@@ -656,7 +669,10 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
           className="pf-v5-u-pb-0 pf-v5-u-pr-md pf-v5-u-mt-md"
         />
       </PageSection>
-      <ModalErrors errors={modalErrors.getAll()} />
+      <ModalErrors
+        errors={modalErrors.getAll()}
+        dataCy="id-views-tab-applied-to-modal-error"
+      />
       <DualListLayout
         entry={""}
         target={"hostgroup"}

@@ -151,7 +151,10 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton onClickHandler={props.onRefresh}>
+        <SecondaryButton
+          dataCy="netgroups-tab-settings-button-refresh"
+          onClickHandler={props.onRefresh}
+        >
           Refresh
         </SecondaryButton>
       ),
@@ -160,6 +163,7 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
       key: 1,
       element: (
         <SecondaryButton
+          dataCy="netgroups-tab-settings-button-revert"
           isDisabled={!props.isModified}
           onClickHandler={onRevert}
         >
@@ -171,6 +175,7 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
       key: 2,
       element: (
         <SecondaryButton
+          dataCy="netgroups-tab-settings-button-save"
           isDisabled={!props.isModified || isSaving}
           onClickHandler={onSave}
           isLoading={isSaving}
@@ -201,6 +206,7 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
         >
           <FormGroup label="Description" fieldId="description">
             <IpaTextArea
+              dataCy="netgroups-tab-settings-textbox-description"
               name="description"
               ipaObject={ipaObject}
               onChange={recordOnChange}
@@ -210,6 +216,7 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
           </FormGroup>
           <FormGroup label="NIS domain name" fieldId="nisdomainname">
             <IpaTextInput
+              dataCy="netgroups-tab-settings-textbox-nisdomainname"
               name="nisdomainname"
               ariaLabel={"NIS domain name"}
               ipaObject={ipaObject}
@@ -227,6 +234,7 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
           className="pf-v5-u-mt-lg"
         />
         <IpaCheckbox
+          dataCy="netgroups-tab-settings-checkbox-usercategory"
           name="usercategory"
           value="usercategory"
           text="Allow anyone"
@@ -292,6 +300,7 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
           className="pf-v5-u-mt-xl"
         />
         <IpaCheckbox
+          dataCy="netgroups-tab-settings-checkbox-hostcategory"
           name="hostcategory"
           value="hostcategory"
           text="Allow any host"

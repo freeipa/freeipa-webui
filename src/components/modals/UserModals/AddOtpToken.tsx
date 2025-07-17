@@ -111,6 +111,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
     <Flex>
       <FlexItem>
         <Radio
+          data-cy="modal-radio-totp"
           isChecked={tokenType === "totp"}
           name="totp"
           onChange={(_event, checked) => onTokenTypeChange(checked, "totp")}
@@ -120,6 +121,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       </FlexItem>
       <FlexItem>
         <Radio
+          data-cy="modal-radio-hotp"
           isChecked={tokenType === "hotp"}
           name="hotp"
           onChange={(_event, checked) => onTokenTypeChange(checked, "hotp")}
@@ -134,6 +136,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
     <Flex>
       <FlexItem>
         <Radio
+          data-cy="modal-radio-sha1"
           isChecked={tokenAlgorithm === "sha1"}
           name="sha1"
           onChange={(_event, checked) =>
@@ -145,6 +148,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       </FlexItem>
       <FlexItem>
         <Radio
+          data-cy="modal-radio-sha256"
           isChecked={tokenAlgorithm === "sha256"}
           name="sha256"
           onChange={(_event, checked) =>
@@ -156,6 +160,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       </FlexItem>
       <FlexItem>
         <Radio
+          data-cy="modal-radio-sha384"
           isChecked={tokenAlgorithm === "sha384"}
           name="sha384"
           onChange={(_event, checked) =>
@@ -167,6 +172,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       </FlexItem>
       <FlexItem>
         <Radio
+          data-cy="modal-radio-sha512"
           isChecked={tokenAlgorithm === "sha512"}
           name="sha512"
           onChange={(_event, checked) =>
@@ -183,6 +189,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
     <Flex>
       <FlexItem>
         <Radio
+          data-cy="modal-radio-6"
           isChecked={tokenDigits === "6"}
           name="6"
           onChange={(_event, checked) => onTokenDigitsChange(checked, "6")}
@@ -192,6 +199,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       </FlexItem>
       <FlexItem>
         <Radio
+          data-cy="modal-radio-8"
           isChecked={tokenDigits === "8"}
           name="8"
           onChange={(_event, checked) => onTokenDigitsChange(checked, "8")}
@@ -244,6 +252,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
   // Toggle
   const toggleOwnersToSelect = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
+      data-cy="modal-select-owner-toggle"
       ref={toggleRef}
       onClick={onToggle}
       isExpanded={isOwnerOpen}
@@ -256,6 +265,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
 
   const ownerComponent: JSX.Element = (
     <Select
+      data-cy="modal-select-owner"
       id={"owner"}
       aria-label={"Selector for owner"}
       toggle={toggleOwnersToSelect}
@@ -265,7 +275,11 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
     >
       {ownersToSelect.map((option, index) => {
         return (
-          <SelectOption key={index} value={option}>
+          <SelectOption
+            data-cy={"modal-select-owner-" + option}
+            key={index}
+            value={option}
+          >
             {option}
           </SelectOption>
         );
@@ -294,6 +308,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       name: "Unique ID",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-unique-id"
           id="unique-id"
           type="text"
           aria-label="text input for unique-id"
@@ -307,6 +322,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       name: "Description",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-description"
           id="description"
           type="text"
           aria-label="text input for description"
@@ -325,6 +341,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       name: "Validity start",
       pfComponent: (
         <DateTimeSelector
+          dataCy="modal-textbox-validity-start"
           datetime={validityStart}
           onChange={setValidityStart}
           name="ipatokennotbefore"
@@ -337,6 +354,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       name: "Validity end",
       pfComponent: (
         <DateTimeSelector
+          dataCy="modal-textbox-validity-end"
           datetime={validityEnd}
           onChange={setValidityEnd}
           name="ipatokennotafter"
@@ -349,6 +367,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       name: "Vendor",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-vendor"
           id="vendor"
           name="ipatokenvendor"
           type="text"
@@ -363,6 +382,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       name: "Model",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-model"
           id="model"
           name="ipatokenmodel"
           type="text"
@@ -377,6 +397,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       name: "Serial",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-serial"
           id="serial"
           name="ipatokenserial"
           type="text"
@@ -391,6 +412,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       name: "Key",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-key"
           id="key"
           name="ipatokenotpkey"
           type="text"
@@ -415,6 +437,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       name: "Clock interval (seconds)",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-clock-interval"
           id="clock-interval"
           name="ipatokentotptimestep"
           type="text"
@@ -549,6 +572,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
 
   const actions = [
     <Button
+      data-cy="modal-button-add"
       key={"add-otp-token"}
       variant="primary"
       onClick={() => onAddOtpToken(false)}
@@ -556,6 +580,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       Add
     </Button>,
     <Button
+      data-cy="modal-button-add-and-add-another"
       key={"add-and-add-another-otp-token"}
       variant="primary"
       onClick={() => onAddOtpToken(true)}
@@ -563,6 +588,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       Add and add another
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key={"cancel-reset-password"}
       variant="link"
       onClick={onResetFieldsAndCloseModal}
@@ -576,6 +602,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="add-otp-token-modal"
         variantType="small"
         modalPosition="top"
         title="Add OTP token"

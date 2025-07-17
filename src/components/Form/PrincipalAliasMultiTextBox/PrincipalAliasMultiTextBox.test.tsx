@@ -88,6 +88,7 @@ describe("PrincipalAliasMultiTextBox Component", () => {
   };
 
   const defaultProps: PrincipalAliasMultiTextBoxProps = {
+    dataCy: "principal-alias-multi-textbox",
     ipaObject: mockIpaObject,
     metadata: mockMetadata,
     onRefresh: mockOnRefresh,

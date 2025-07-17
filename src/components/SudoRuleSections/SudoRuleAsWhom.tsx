@@ -517,6 +517,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
       <FlexItem>RunAs User category the rule applies to: </FlexItem>
       <FlexItem>
         <IpaToggleGroup
+          dataCy="sudo-rule-toggle-group-sudo-run-as-user-category"
           ipaObject={props.ipaObject}
           name="ipasudorunasusercategory"
           options={userOptions}
@@ -549,6 +550,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
       <FlexItem>RunAs Group category the rule applies to: </FlexItem>
       <FlexItem>
         <IpaToggleGroup
+          dataCy="sudo-rule-toggle-group-sudo-run-as-group-category"
           ipaObject={props.ipaObject}
           name="ipasudorunasgroupcategory"
           options={groupOptions}

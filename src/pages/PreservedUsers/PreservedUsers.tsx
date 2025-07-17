@@ -446,6 +446,7 @@ const PreservedUsers = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search user"
           placeholder="Search"
@@ -466,6 +467,7 @@ const PreservedUsers = () => {
         <SecondaryButton
           onClickHandler={refreshUsersData}
           isDisabled={!showTableRows}
+          dataCy="preserved-users-button-refresh"
         >
           Refresh
         </SecondaryButton>
@@ -477,6 +479,7 @@ const PreservedUsers = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
+          dataCy="preserved-users-button-delete"
         >
           Delete
         </SecondaryButton>
@@ -488,6 +491,7 @@ const PreservedUsers = () => {
         <SecondaryButton
           isDisabled={!showTableRows || selectedUsers.length === 0}
           onClickHandler={onRestoreHandler}
+          dataCy="preserved-users-button-restore"
         >
           Restore
         </SecondaryButton>
@@ -499,6 +503,7 @@ const PreservedUsers = () => {
         <SecondaryButton
           isDisabled={!showTableRows || selectedUsers.length === 0}
           onClickHandler={onStageHandler}
+          dataCy="preserved-users-button-stage"
         >
           Stage
         </SecondaryButton>
@@ -584,7 +589,10 @@ const PreservedUsers = () => {
             className="pf-v5-u-pb-0 pf-v5-u-pr-md"
           />
         </PageSection>
-        <ModalErrors errors={modalErrors.getAll()} />
+        <ModalErrors
+          errors={modalErrors.getAll()}
+          dataCy="preserved-users-modal-error"
+        />
         <DeleteUsers
           show={showDeleteModal}
           from="preserved-users"

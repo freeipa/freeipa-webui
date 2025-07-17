@@ -87,7 +87,12 @@ const StagePreservedUsers = (props: PropsToStagePreservedUsers) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+      data-cy="modal-button-ok"
+    >
       OK
     </Button>,
   ];
@@ -187,16 +192,23 @@ const StagePreservedUsers = (props: PropsToStagePreservedUsers) => {
       spinnerAriaLabel="Staging"
       isLoading={spinning}
       isDisabled={spinning}
+      data-cy="modal-button-stage"
     >
       {spinning ? "Staging" : "Stage"}
     </Button>,
-    <Button key="cancel-stage-user" variant="link" onClick={closeModal}>
+    <Button
+      key="cancel-stage-user"
+      variant="link"
+      onClick={closeModal}
+      data-cy="modal-button-cancel"
+    >
       Cancel
     </Button>,
   ];
 
   const modalStage: JSX.Element = (
     <ModalWithFormLayout
+      dataCy="stage-preserved-users-modal"
       variantType="medium"
       modalPosition="top"
       offPosition="76px"
@@ -215,6 +227,7 @@ const StagePreservedUsers = (props: PropsToStagePreservedUsers) => {
       {modalStage}
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="stage-preserved-users-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

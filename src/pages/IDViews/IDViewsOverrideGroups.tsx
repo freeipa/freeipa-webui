@@ -307,7 +307,12 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
       key: 0,
       element: (
         <Tooltip aria="none" aria-live="polite" content={tooltipMsg}>
-          <Button aria-label="Search tips" variant="plain" id="search_tip">
+          <Button
+            data-cy="search"
+            aria-label="Search tips"
+            variant="plain"
+            id="search_tip"
+          >
             <OutlinedQuestionCircleIcon />
           </Button>
         </Tooltip>
@@ -318,6 +323,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search groups"
           placeholder="Search"
@@ -335,7 +341,10 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
     {
       key: 3,
       element: (
-        <SecondaryButton onClickHandler={props.onRefresh}>
+        <SecondaryButton
+          dataCy="id-views-tab-override-groups-button-refresh"
+          onClickHandler={props.onRefresh}
+        >
           Refresh
         </SecondaryButton>
       ),
@@ -344,6 +353,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
       key: 4,
       element: (
         <SecondaryButton
+          dataCy="id-views-tab-override-groups-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
         >
@@ -355,6 +365,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
       key: 5,
       element: (
         <SecondaryButton
+          dataCy="id-views-tab-override-groups-button-add"
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows}
         >

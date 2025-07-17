@@ -341,6 +341,7 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
       <FlexItem>Host category the rule applies to: </FlexItem>
       <FlexItem>
         <IpaToggleGroup
+          dataCy="access-this-host-toggle-group-hostcategory"
           ipaObject={props.ipaObject}
           name="hostcategory"
           options={options}

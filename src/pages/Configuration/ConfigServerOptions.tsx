@@ -35,6 +35,7 @@ const ConfigServerOptions = (props: PropsToServerOptions) => {
         fieldId="ca_renewal_master_server"
       >
         <IpaDropdownSearch
+          dataCy="configuration-dropdown-renewal-master"
           id="ca_renewal_master_server"
           name="ca_renewal_master_server"
           options={options}
@@ -50,6 +51,7 @@ const ConfigServerOptions = (props: PropsToServerOptions) => {
         fieldId="pkinit_server_server"
       >
         <TextArea
+          data-cy="configuration-textbox-pkinit-server"
           id="pkinit_server_server"
           name="pkinit_server_server"
           aria-label="master capable of PKINIT"

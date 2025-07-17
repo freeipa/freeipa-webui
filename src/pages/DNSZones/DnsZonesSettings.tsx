@@ -191,6 +191,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
 
   const kebabItems = [
     <DropdownItem
+      data-cy="dns-zones-tab-settings-kebab-enable"
       key="enable"
       isDisabled={isDnsZoneEnabled}
       onClick={() => setIsEnableDisableOpen(true)}
@@ -198,16 +199,22 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
       Enable
     </DropdownItem>,
     <DropdownItem
+      data-cy="dns-zones-tab-settings-kebab-disable"
       key="disable"
       isDisabled={!isDnsZoneEnabled}
       onClick={() => setIsEnableDisableOpen(true)}
     >
       Disable
     </DropdownItem>,
-    <DropdownItem key="delete" onClick={() => setIsDeleteOpen(true)}>
+    <DropdownItem
+      data-cy="dns-zones-tab-settings-kebab-delete"
+      key="delete"
+      onClick={() => setIsDeleteOpen(true)}
+    >
       Delete
     </DropdownItem>,
     <DropdownItem
+      data-cy="dns-zones-tab-settings-kebab-add-permission"
       key="add-permission"
       isDisabled={operation !== "add"}
       onClick={() => {
@@ -218,6 +225,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
       Add permission
     </DropdownItem>,
     <DropdownItem
+      data-cy="dns-zones-tab-settings-kebab-remove-permission"
       key="remove-permission"
       isDisabled={operation !== "remove"}
       onClick={() => {
@@ -234,7 +242,10 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
     {
       key: 0,
       element: (
-        <SecondaryButton onClickHandler={props.onRefresh}>
+        <SecondaryButton
+          dataCy="dns-zones-tab-settings-button-refresh"
+          onClickHandler={props.onRefresh}
+        >
           Refresh
         </SecondaryButton>
       ),
@@ -243,6 +254,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
       key: 1,
       element: (
         <SecondaryButton
+          dataCy="dns-zones-tab-settings-button-revert"
           isDisabled={!props.isModified || isDataLoading}
           onClickHandler={onRevert}
         >
@@ -254,6 +266,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
       key: 2,
       element: (
         <SecondaryButton
+          dataCy="dns-zones-tab-settings-button-save"
           isDisabled={!props.isModified || isDataLoading}
           onClickHandler={onSave}
         >
@@ -265,6 +278,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
       key: 3,
       element: (
         <KebabLayout
+          dataCy="dns-zones-tab-settings-kebab"
           direction={"up"}
           onDropdownSelect={() => setIsKebabOpen(!isKebabOpen)}
           onKebabToggle={() => setIsKebabOpen(!isKebabOpen)}
@@ -302,6 +316,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                 <Form className="pf-v5-u-mb-lg">
                   <FormGroup label="Zone name" role="idnsname">
                     <IpaTextInput
+                      dataCy="dns-zones-tab-settings-textbox-idnsname"
                       name={"idnsname"}
                       ariaLabel={"Zone name text input"}
                       ipaObject={ipaObject}
@@ -316,6 +331,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                     isRequired
                   >
                     <IpaTextInput
+                      dataCy="dns-zones-tab-settings-textbox-idnssoamname"
                       name={"idnssoamname"}
                       ariaLabel={"Authoritative nameserver text input"}
                       ipaObject={ipaObject}
@@ -330,6 +346,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                     isRequired
                   >
                     <IpaTextInput
+                      dataCy="dns-zones-tab-settings-textbox-idnssoarname"
                       name={"idnssoarname"}
                       ariaLabel={"Administrator e-mail address text input"}
                       ipaObject={ipaObject}
@@ -340,6 +357,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                   </FormGroup>
                   <FormGroup label="SOA serial" role="idnssoaserial">
                     <IpaNumberInput
+                      dataCy="dns-zones-tab-settings-textbox-idnssoaserial"
                       name={"idnssoaserial"}
                       ariaLabel={"SOA serial number input"}
                       ipaObject={ipaObject}
@@ -357,6 +375,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                     isRequired
                   >
                     <IpaNumberInput
+                      dataCy="dns-zones-tab-settings-textbox-idnssoarefresh"
                       name={"idnssoarefresh"}
                       ariaLabel={"SOA refresh in seconds number input"}
                       ipaObject={ipaObject}
@@ -373,6 +392,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                     isRequired
                   >
                     <IpaNumberInput
+                      dataCy="dns-zones-tab-settings-textbox-idnssoaretry"
                       name={"idnssoaretry"}
                       ariaLabel={"SOA retry  in seconds number input"}
                       ipaObject={ipaObject}
@@ -385,6 +405,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                   </FormGroup>
                   <FormGroup label="SOA expire (seconds)" role="idnssoaexpire">
                     <IpaNumberInput
+                      dataCy="dns-zones-tab-settings-textbox-idnssoaexpire"
                       name={"idnssoaexpire"}
                       ariaLabel={"SOA expire in seconds number input"}
                       ipaObject={ipaObject}
@@ -401,6 +422,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                     isRequired
                   >
                     <IpaNumberInput
+                      dataCy="dns-zones-tab-settings-textbox-idnssoaminimum"
                       name={"idnssoaminimum"}
                       ariaLabel={"SOA minimum in seconds number input"}
                       ipaObject={ipaObject}
@@ -416,6 +438,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                     role="dnsdefaultttl"
                   >
                     <IpaNumberInput
+                      dataCy="dns-zones-tab-settings-textbox-dnsdefaultttl"
                       name={"dnsdefaultttl"}
                       ariaLabel={"Default time to live in seconds number input"}
                       ipaObject={ipaObject}
@@ -428,6 +451,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                   </FormGroup>
                   <FormGroup label="Time to live (seconds)" role="dnsttl">
                     <IpaNumberInput
+                      dataCy="dns-zones-tab-settings-textbox-dnsttl"
                       name={"dnsttl"}
                       ariaLabel={"Time to live in seconds number input"}
                       ipaObject={ipaObject}
@@ -440,6 +464,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                   </FormGroup>
                   <FormGroup label="Dynamic update" role="idnsallowdynupdate">
                     <IpaCheckbox
+                      dataCy="dns-zones-tab-settings-checkbox-idnsallowdynupdate"
                       name={"idnsallowdynupdate"}
                       value={"dynamic-update"}
                       text={"Dynamic update"}
@@ -452,6 +477,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                   </FormGroup>
                   <FormGroup label="BIND update policy" role="idnsupdatepolicy">
                     <IpaTextArea
+                      dataCy="dns-zones-tab-settings-textbox-idnsupdatepolicy"
                       name={"idnsupdatepolicy"}
                       ariaLabel={"BIND update policy"}
                       ipaObject={ipaObject}
@@ -462,6 +488,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                   </FormGroup>
                   <FormGroup label="Allow query" role="idnsallowquery">
                     <IpaTextboxList
+                      dataCy="dns-zones-tab-settings-textbox-idnsallowquery"
                       name={"idnsallowquery"}
                       ariaLabel={"Allow query textbox list"}
                       ipaObject={ipaObject}
@@ -470,6 +497,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                   </FormGroup>
                   <FormGroup label="Allow transfer" role="idnsallowtransfer">
                     <IpaTextboxList
+                      dataCy="dns-zones-tab-settings-textbox-idnsallowtransfer"
                       name={"idnsallowtransfer"}
                       ariaLabel={"Allow transfer textbox list"}
                       ipaObject={ipaObject}
@@ -478,6 +506,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                   </FormGroup>
                   <FormGroup label="Zone forwarders" role="idnsforwarders">
                     <IpaTextboxList
+                      dataCy="dns-zones-tab-settings-textbox-idnsforwarders"
                       name={"idnsforwarders"}
                       ariaLabel={"Zone forwarders textbox list"}
                       ipaObject={ipaObject}
@@ -496,6 +525,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                   </FormGroup>
                   <FormGroup label="Allow PTR sync" role="idnsallowsyncptr">
                     <IpaCheckbox
+                      dataCy="dns-zones-tab-settings-checkbox-idnsallowsyncptr"
                       name={"idnsallowsyncptr"}
                       value={"allow-sync-ptr"}
                       text={"Allow PTR sync"}
@@ -511,6 +541,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                     role="idnssecinlinesigning"
                   >
                     <IpaCheckbox
+                      dataCy="dns-zones-tab-settings-checkbox-idnssecinlinesigning"
                       name={"idnssecinlinesigning"}
                       value={"inline-signing"}
                       text={"Allow in-line DNSSEC signing"}
@@ -523,6 +554,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                   </FormGroup>
                   <FormGroup label="NSEC3PARAM record" role="nsec3paramrecord">
                     <IpaTextInput
+                      dataCy="dns-zones-tab-settings-textbox-nsec3paramrecord"
                       name={"nsec3paramrecord"}
                       ariaLabel={"NSEC3PARAM record text input"}
                       ipaObject={ipaObject}

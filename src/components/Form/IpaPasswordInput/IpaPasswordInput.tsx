@@ -9,7 +9,11 @@ import {
 } from "src/utils/ipaObjectUtils";
 import { HIDDEN_PASSWORD } from "src/utils/utils";
 
-const IpaPasswordInput = (props: IPAParamDefinition) => {
+export interface IpaPasswordInputProps extends IPAParamDefinition {
+  dataCy: string;
+}
+
+const IpaPasswordInput = (props: IpaPasswordInputProps) => {
   const { required, readOnly, value, onChange } = getParamProperties(props);
 
   const [textInputValue, setTextInputValue] = React.useState<string>(
@@ -31,6 +35,7 @@ const IpaPasswordInput = (props: IPAParamDefinition) => {
 
   return (
     <TextInput
+      data-cy={props.dataCy}
       type="password"
       id={props.name}
       name={props.name}

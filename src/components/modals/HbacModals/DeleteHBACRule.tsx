@@ -99,7 +99,12 @@ const DeleteHBACRule = (props: PropsToDeleteRules) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+      data-cy="modal-button-ok"
+    >
       OK
     </Button>,
   ];
@@ -182,10 +187,16 @@ const DeleteHBACRule = (props: PropsToDeleteRules) => {
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
       isDisabled={spinning}
+      data-cy="modal-button-delete"
     >
       {spinning ? "Deleting" : "Delete"}
     </Button>,
-    <Button key="cancel-delete-hbacrules" variant="link" onClick={closeModal}>
+    <Button
+      key="cancel-delete-hbacrules"
+      variant="link"
+      onClick={closeModal}
+      data-cy="modal-button-cancel"
+    >
       Cancel
     </Button>,
   ];
@@ -194,6 +205,7 @@ const DeleteHBACRule = (props: PropsToDeleteRules) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="delete-hbac-rules-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"
@@ -206,6 +218,7 @@ const DeleteHBACRule = (props: PropsToDeleteRules) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="delete-hbac-rules-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

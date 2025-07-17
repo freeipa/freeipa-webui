@@ -450,6 +450,7 @@ const StageUsers = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search user"
           placeholder="Search"
@@ -470,6 +471,7 @@ const StageUsers = () => {
         <SecondaryButton
           onClickHandler={refreshUsersData}
           isDisabled={!showTableRows}
+          dataCy="stage-users-button-refresh"
         >
           Refresh
         </SecondaryButton>
@@ -481,6 +483,7 @@ const StageUsers = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
+          dataCy="stage-users-button-delete"
         >
           Delete
         </SecondaryButton>
@@ -492,6 +495,7 @@ const StageUsers = () => {
         <SecondaryButton
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows}
+          dataCy="stage-users-button-add"
         >
           Add
         </SecondaryButton>
@@ -503,6 +507,7 @@ const StageUsers = () => {
         <SecondaryButton
           isDisabled={!showTableRows || selectedUsers.length === 0}
           onClickHandler={onActivateHandler}
+          dataCy="stage-users-button-activate"
         >
           Activate
         </SecondaryButton>
@@ -588,7 +593,10 @@ const StageUsers = () => {
             className="pf-v5-u-pb-0 pf-v5-u-pr-md"
           />
         </PageSection>
-        <ModalErrors errors={modalErrors.getAll()} />
+        <ModalErrors
+          errors={modalErrors.getAll()}
+          dataCy="stage-users-modal-error"
+        />
         <AddUser
           show={showAddModal}
           from="stage-users"

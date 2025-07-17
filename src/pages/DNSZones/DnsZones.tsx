@@ -352,6 +352,7 @@ const DnsZones = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search dns zones"
           placeholder="Search"
@@ -370,6 +371,7 @@ const DnsZones = () => {
       key: 3,
       element: (
         <SecondaryButton
+          dataCy="dns-zones-button-refresh"
           onClickHandler={refreshData}
           isDisabled={!showTableRows}
         >
@@ -383,6 +385,7 @@ const DnsZones = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={() => setShowDeleteModal(true)}
+          dataCy="dns-zones-button-delete"
         >
           Delete
         </SecondaryButton>
@@ -394,6 +397,7 @@ const DnsZones = () => {
         <SecondaryButton
           isDisabled={!showTableRows}
           onClickHandler={() => setShowAddModal(true)}
+          dataCy="dns-zones-button-add"
         >
           Add
         </SecondaryButton>
@@ -405,6 +409,7 @@ const DnsZones = () => {
         <SecondaryButton
           isDisabled={isDisableButtonDisabled || !showTableRows}
           onClickHandler={onDisableOperation}
+          dataCy="dns-zones-button-disable"
         >
           Disable
         </SecondaryButton>
@@ -416,6 +421,7 @@ const DnsZones = () => {
         <SecondaryButton
           isDisabled={isEnableButtonDisabled || !showTableRows}
           onClickHandler={onEnableOperation}
+          dataCy="dns-zones-button-enable"
         >
           Enable
         </SecondaryButton>

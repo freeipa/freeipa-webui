@@ -70,6 +70,7 @@ const AddHBACService = (props: PropsToAddGroup) => {
                 ? ValidatedOptions.error
                 : ValidatedOptions.default
             }
+            data-cy="modal-textbox-service-name"
           />
           <HelperText>
             {serviceName === "" && (
@@ -88,6 +89,7 @@ const AddHBACService = (props: PropsToAddGroup) => {
           name="modal-form-service-desc"
           value={description}
           onChange={(_event, value) => setDescription(value)}
+          data-cy="modal-textbox-description"
           aria-label="Service description"
           autoResize
         />
@@ -221,10 +223,19 @@ const AddHBACService = (props: PropsToAddGroup) => {
   };
 
   const errorModalActions = [
-    <SecondaryButton key="retry" onClickHandler={onRetry}>
+    <SecondaryButton
+      key="retry"
+      onClickHandler={onRetry}
+      dataCy="modal-button-retry"
+    >
       Retry
     </SecondaryButton>,
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+      data-cy="modal-button-cancel"
+    >
       Cancel
     </Button>,
   ];
@@ -242,6 +253,7 @@ const AddHBACService = (props: PropsToAddGroup) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <SecondaryButton
+      dataCy="modal-button-add"
       key="add-new-service"
       name="add"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
@@ -254,6 +266,7 @@ const AddHBACService = (props: PropsToAddGroup) => {
       {addSpinning ? "Adding" : "Add"}
     </SecondaryButton>,
     <SecondaryButton
+      dataCy="modal-button-add-and-add-another"
       key="add-and-add-another-new-service"
       name="add_and_add_another"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
@@ -266,6 +279,7 @@ const AddHBACService = (props: PropsToAddGroup) => {
       {addAgainSpinning ? "Adding" : "Add and add another"}
     </SecondaryButton>,
     <Button
+      data-cy="modal-button-cancel"
       key="cancel-new-service"
       variant="link"
       onClick={cleanAndCloseModal}
@@ -279,6 +293,7 @@ const AddHBACService = (props: PropsToAddGroup) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="add-hbac-service-modal"
         variantType="small"
         modalPosition="top"
         offPosition="76px"
@@ -291,6 +306,7 @@ const AddHBACService = (props: PropsToAddGroup) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="add-hbac-service-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

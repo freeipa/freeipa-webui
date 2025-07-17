@@ -151,6 +151,7 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
 
   const kebabItems = [
     <DropdownItem
+      data-cy="certificate-mapping-tab-settings-kebab-enable"
       key="enable"
       isDisabled={isRuleEnabled}
       onClick={() => setIsEnableDisableOpen(true)}
@@ -158,13 +159,18 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
       Enable
     </DropdownItem>,
     <DropdownItem
+      data-cy="certificate-mapping-tab-settings-kebab-disable"
       key="disable"
       isDisabled={!isRuleEnabled}
       onClick={() => setIsEnableDisableOpen(true)}
     >
       Disable
     </DropdownItem>,
-    <DropdownItem key="delete" onClick={() => setIsDeleteOpen(true)}>
+    <DropdownItem
+      data-cy="certificate-mapping-tab-settings-kebab-delete"
+      key="delete"
+      onClick={() => setIsDeleteOpen(true)}
+    >
       Delete
     </DropdownItem>,
   ];
@@ -174,7 +180,10 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
     {
       key: 0,
       element: (
-        <SecondaryButton onClickHandler={props.onRefresh}>
+        <SecondaryButton
+          dataCy="certificate-mapping-tab-settings-button-refresh"
+          onClickHandler={props.onRefresh}
+        >
           Refresh
         </SecondaryButton>
       ),
@@ -183,6 +192,7 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
       key: 1,
       element: (
         <SecondaryButton
+          dataCy="certificate-mapping-tab-settings-button-revert"
           isDisabled={!props.isModified || isDataLoading}
           onClickHandler={onRevert}
         >
@@ -194,6 +204,7 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
       key: 2,
       element: (
         <SecondaryButton
+          dataCy="certificate-mapping-tab-settings-button-save"
           isDisabled={!props.isModified || isDataLoading}
           onClickHandler={onSave}
         >
@@ -205,6 +216,7 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
       key: 3,
       element: (
         <KebabLayout
+          dataCy="certificate-mapping-tab-settings-kebab"
           direction={"up"}
           onDropdownSelect={() => setIsKebabOpen(!isKebabOpen)}
           onKebabToggle={() => setIsKebabOpen(!isKebabOpen)}
@@ -252,6 +264,7 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
                 <Form className="pf-v5-u-mb-lg">
                   <FormGroup label="Rule name" role="group">
                     <IpaTextInput
+                      dataCy="certificate-mapping-tab-settings-textbox-cn"
                       name={"cn"}
                       ariaLabel={"Rule name"}
                       ipaObject={ipaObject}
@@ -261,6 +274,7 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
                   </FormGroup>
                   <FormGroup label="Description" fieldId="description">
                     <IpaTextArea
+                      dataCy="certificate-mapping-tab-settings-textbox-description"
                       name={"description"}
                       ariaLabel={"Description"}
                       ipaObject={ipaObject}
@@ -277,6 +291,7 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
                     }
                   >
                     <IpaTextInput
+                      dataCy="certificate-mapping-tab-settings-textbox-ipacertmapmaprule"
                       name={"ipacertmapmaprule"}
                       ariaLabel={"Mapping rule"}
                       ipaObject={ipaObject}
@@ -293,6 +308,7 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
                     }
                   >
                     <IpaTextInput
+                      dataCy="certificate-mapping-tab-settings-textbox-ipacertmapmatchrule"
                       name={"ipacertmapmatchrule"}
                       ariaLabel={"Matching rule"}
                       ipaObject={ipaObject}
@@ -309,6 +325,7 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
                     }
                   >
                     <IpaTextboxList
+                      dataCy="certificate-mapping-tab-settings-textbox-associateddomain"
                       ipaObject={ipaObject}
                       setIpaObject={recordOnChange}
                       name={"associateddomain"}
@@ -323,6 +340,7 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
                     }
                   >
                     <IpaNumberInput
+                      dataCy="certificate-mapping-tab-settings-textbox-ipacertmappriority"
                       id={"ipacertmappriority"}
                       name={"ipacertmappriority"}
                       aria-label={"Priority number"}

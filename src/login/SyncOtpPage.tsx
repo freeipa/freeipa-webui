@@ -122,6 +122,7 @@ const SyncOtpPage = () => {
     <Form isHorizontal>
       <FormGroup label="Username" fieldId="username" required>
         <TextInput
+          data-cy="sync-otp-textbox-username"
           id="username"
           name="user"
           type="text"
@@ -132,6 +133,7 @@ const SyncOtpPage = () => {
       </FormGroup>
       <FormGroup label="Password" fieldId="password" required>
         <PasswordInput
+          dataCy="sync-otp-textbox-password"
           id="form-password"
           name="password"
           value={password}
@@ -143,6 +145,7 @@ const SyncOtpPage = () => {
       </FormGroup>
       <FormGroup label="First OTP" fieldId="firstotp" required>
         <PasswordInput
+          dataCy="sync-otp-textbox-first-otp"
           id="form-first-otp"
           name="first_code"
           value={firstOtp}
@@ -154,6 +157,7 @@ const SyncOtpPage = () => {
       </FormGroup>
       <FormGroup label="Second OTP" fieldId="secondotp" required>
         <PasswordInput
+          dataCy="sync-otp-textbox-second-otp"
           id="form-second-otp"
           name="second_code"
           value={secondOtp}
@@ -165,6 +169,7 @@ const SyncOtpPage = () => {
       </FormGroup>
       <FormGroup label="Token ID" fieldId="tokenid">
         <TextInput
+          data-cy="sync-otp-textbox-token-id"
           id="form-token-id"
           name="token"
           value={tokenId}
@@ -172,10 +177,15 @@ const SyncOtpPage = () => {
         />
       </FormGroup>
       <ActionGroup>
-        <Button variant="link" onClick={() => navigate(-1)}>
+        <Button
+          data-cy="sync-otp-button-cancel"
+          variant="link"
+          onClick={() => navigate(-1)}
+        >
           Cancel
         </Button>
         <Button
+          data-cy="sync-otp-button-sync"
           variant="primary"
           isDisabled={isSyncButtonDisabled || btnSpinning}
           onClick={onSyncOtp}

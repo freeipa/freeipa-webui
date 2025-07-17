@@ -147,6 +147,7 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
       <div className="pf-v5-u-ml-lg pf-v5-u-mb-md">
         <Form id="add-modal-form-zone-name">
           <Radio
+            data-cy="modal-radio-dns-zone-name"
             name="dnszone_name_type"
             id="dnszone_name_type"
             onChange={() => {
@@ -164,6 +165,7 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
             isRequired={isZoneNameRadioChecked}
           >
             <TextInput
+              data-cy="modal-textbox-dns-zone-name"
               type="text"
               id="dns-name"
               name="idnsname"
@@ -181,6 +183,7 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
       <div className="pf-v5-u-ml-lg pf-v5-u-mb-md">
         <Form id="add-modal-form-reverse-zone">
           <Radio
+            data-cy="modal-radio-reverse-zone-ip"
             name="reverse_zone_type"
             id="reverse_zone_type"
             onChange={() => {
@@ -200,6 +203,7 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
           >
             <>
               <TextInput
+                data-cy="modal-textbox-reverse-zone-ip"
                 type="text"
                 id="reverse-zone-ip"
                 name="name_from_ip"
@@ -261,6 +265,7 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
   // Actions
   const modalActions: JSX.Element[] = [
     <Button
+      data-cy="modal-button-ok"
       key="add-new"
       variant="secondary"
       isDisabled={
@@ -283,6 +288,7 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
       )}
     </Button>,
     <Button
+      data-cy="modal-button-ok"
       key="add-new-another"
       variant="secondary"
       isDisabled={
@@ -304,7 +310,12 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
         "Add and add another"
       )}
     </Button>,
-    <Button key="cancel-new" variant="link" onClick={cleanAndCloseModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-new"
+      variant="link"
+      onClick={cleanAndCloseModal}
+    >
       Cancel
     </Button>,
   ];

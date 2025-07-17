@@ -152,6 +152,7 @@ describe("IpaCertificates Component", () => {
   };
 
   const defaultProps: PropsToIpaCertificates = {
+    dataCy: "ipa-certificates",
     ipaObject: {},
     onChange: mockOnChange,
     metadata: mockMetadata,

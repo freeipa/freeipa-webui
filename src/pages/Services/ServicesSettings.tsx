@@ -97,6 +97,7 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
 
   const unprovisionModalActions = [
     <Button
+      data-cy="modal-button-unprovision"
       key="unprov-host"
       variant="danger"
       onClick={() => onUnprovision()}
@@ -108,7 +109,12 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
     >
       {modalSpinning ? "Unprovisioning" : "Unprovision"}
     </Button>,
-    <Button key="cancel" variant="link" onClick={onCloseUnprovisionModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel"
+      variant="link"
+      onClick={onCloseUnprovisionModal}
+    >
       Cancel
     </Button>,
   ];
@@ -156,6 +162,7 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
 
   const dropdownItems = [
     <DropdownItem
+      data-cy="services-tab-settings-kebab-new-certificate"
       key="new certificate"
       onClick={() => setIsCertModalOpen(true)}
     >
@@ -166,6 +173,7 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
   if (props.service.has_keytab) {
     dropdownItems.unshift(
       <DropdownItem
+        data-cy="services-tab-settings-kebab-delete-key-unprovision"
         key="delete-key-unprovision"
         onClick={() => setIsUnprovisionModalOpen(true)}
       >
@@ -222,7 +230,10 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton onClickHandler={props.onRefresh}>
+        <SecondaryButton
+          dataCy="services-tab-settings-button-refresh"
+          onClickHandler={props.onRefresh}
+        >
           Refresh
         </SecondaryButton>
       ),
@@ -231,6 +242,7 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
       key: 1,
       element: (
         <SecondaryButton
+          dataCy="services-tab-settings-button-revert"
           isDisabled={!props.isModified}
           onClickHandler={onRevert}
         >
@@ -242,6 +254,7 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
       key: 2,
       element: (
         <SecondaryButton
+          dataCy="services-tab-settings-button-save"
           isDisabled={!props.isModified || isSaving}
           onClickHandler={onSave}
           isLoading={isSaving}
@@ -257,6 +270,7 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
       key: 3,
       element: (
         <KebabLayout
+          dataCy="services-tab-settings-kebab"
           direction={"up"}
           onDropdownSelect={onKebabSelect}
           onKebabToggle={onKebabToggle}
@@ -359,8 +373,12 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
           </Flex>
         </SidebarContent>
       </Sidebar>
-      <ModalErrors errors={modalErrors.getAll()} />
+      <ModalErrors
+        errors={modalErrors.getAll()}
+        dataCy="services-modal-error"
+      />
       <ConfirmationModal
+        dataCy="services-unprovision-modal"
         title={"Unprovision service"}
         isOpen={isUnprovisionModalOpen}
         onClose={onCloseUnprovisionModal}

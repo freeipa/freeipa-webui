@@ -99,7 +99,12 @@ const DeleteSudoCmd = (props: PropsToDeleteRules) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+      data-cy="modal-button-ok"
+    >
       OK
     </Button>,
   ];
@@ -182,6 +187,7 @@ const DeleteSudoCmd = (props: PropsToDeleteRules) => {
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
       isDisabled={spinning}
+      data-cy="modal-button-delete"
     >
       {spinning ? "Deleting" : "Delete"}
     </Button>,
@@ -189,6 +195,7 @@ const DeleteSudoCmd = (props: PropsToDeleteRules) => {
       key="cancel-delete-sudo-commands"
       variant="link"
       onClick={closeModal}
+      data-cy="modal-button-cancel"
     >
       Cancel
     </Button>,
@@ -198,6 +205,7 @@ const DeleteSudoCmd = (props: PropsToDeleteRules) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="delete-sudo-commands-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"
@@ -210,6 +218,7 @@ const DeleteSudoCmd = (props: PropsToDeleteRules) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="delete-sudo-commands-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

@@ -140,7 +140,10 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton onClickHandler={props.onRefresh}>
+        <SecondaryButton
+          onClickHandler={props.onRefresh}
+          dataCy="password-policies-button-refresh"
+        >
           Refresh
         </SecondaryButton>
       ),
@@ -151,6 +154,7 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
         <SecondaryButton
           isDisabled={!props.isModified || isDataLoading}
           onClickHandler={onRevert}
+          dataCy="password-policies-button-revert"
         >
           Revert
         </SecondaryButton>
@@ -162,6 +166,7 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
         <SecondaryButton
           isDisabled={!props.isModified || isDataLoading}
           onClickHandler={onSave}
+          dataCy="password-policies-button-save"
         >
           Save
         </SecondaryButton>
@@ -189,6 +194,7 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
                 <Form className="pf-v5-u-mb-lg">
                   <FormGroup label="Group" fieldId="group" role="group">
                     <IpaTextContent
+                      dataCy="password-policies-text-group"
                       name={"cn"}
                       ariaLabel={"Group"}
                       ipaObject={ipaObject}
@@ -204,6 +210,7 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
                     fieldId="krbmaxpwdlife"
                   >
                     <IpaTextInput
+                      dataCy="password-policies-tab-settings-textbox-max-lifetime"
                       name={"krbmaxpwdlife"}
                       ariaLabel={"Max lifetime in days"}
                       ipaObject={ipaObject}
@@ -217,6 +224,7 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
                     fieldId="krbminpwdlife"
                   >
                     <IpaTextInput
+                      dataCy="password-policies-tab-settings-textbox-min-lifetime"
                       name={"krbminpwdlife"}
                       ariaLabel={"Min lifetime in hours"}
                       ipaObject={ipaObject}
@@ -230,6 +238,7 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
                     fieldId="krbpwdhistorylength"
                   >
                     <IpaTextInput
+                      dataCy="password-policies-tab-settings-textbox-history-size"
                       name={"krbpwdhistorylength"}
                       ariaLabel={"History size by number of passwords"}
                       ipaObject={ipaObject}
@@ -243,6 +252,7 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
                     fieldId="krbpwdmindiffchars"
                   >
                     <IpaTextInput
+                      dataCy="password-policies-tab-settings-textbox-character-classes"
                       name={"krbpwdmindiffchars"}
                       ariaLabel={"Character classes"}
                       ipaObject={ipaObject}
@@ -253,6 +263,7 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
                   </FormGroup>
                   <FormGroup label="Min length" fieldId="krbpwdminlength">
                     <IpaTextInput
+                      dataCy="password-policies-tab-settings-textbox-min-length"
                       name={"krbpwdminlength"}
                       ariaLabel={"Min length"}
                       ipaObject={ipaObject}
@@ -263,6 +274,7 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
                   </FormGroup>
                   <FormGroup label="Max failures" fieldId="krbpwdmaxfailure">
                     <IpaTextInput
+                      dataCy="password-policies-tab-settings-textbox-max-failures"
                       name={"krbpwdmaxfailure"}
                       ariaLabel={"Max failures"}
                       ipaObject={ipaObject}
@@ -276,6 +288,7 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
                     fieldId="krbpwdfailurecountinterval"
                   >
                     <IpaTextInput
+                      dataCy="password-policies-tab-settings-textbox-failure-reset-interval"
                       name={"krbpwdfailurecountinterval"}
                       ariaLabel={"Failure reset interval in seconds"}
                       ipaObject={ipaObject}
@@ -289,6 +302,7 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
                     fieldId="krbpwdlockoutduration"
                   >
                     <IpaTextInput
+                      dataCy="password-policies-tab-settings-textbox-lockout-duration"
                       name={"krbpwdlockoutduration"}
                       ariaLabel={"Lockout duration in seconds"}
                       ipaObject={ipaObject}
@@ -299,6 +313,7 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
                   </FormGroup>
                   <FormGroup label="Priority" fieldId="cospriority" isRequired>
                     <IpaTextInput
+                      dataCy="password-policies-tab-settings-textbox-priority"
                       name={"cospriority"}
                       ariaLabel={"Priority"}
                       ipaObject={ipaObject}
@@ -312,6 +327,7 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
                     fieldId="passwordgracelimit"
                   >
                     <IpaTextInput
+                      dataCy="password-policies-tab-settings-textbox-grace-login-limit"
                       name={"passwordgracelimit"}
                       ariaLabel={"Grace login limit"}
                       ipaObject={ipaObject}

@@ -67,6 +67,7 @@ const EnableDisableMultipleRulesModal = (
 
   const modalActions: JSX.Element[] = [
     <Button
+      data-cy="modal-button-ok"
       key={props.operation + "-certmaprules"}
       variant="primary"
       onClick={onEnableDisable}
@@ -74,6 +75,7 @@ const EnableDisableMultipleRulesModal = (
       OK
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key={"cancel-" + props.operation + "-certmaprules"}
       variant="secondary"
       onClick={onCloseWithoutClearingElements}
@@ -87,6 +89,7 @@ const EnableDisableMultipleRulesModal = (
     <>
       <alerts.ManagedAlerts />
       <ConfirmationModal
+        dataCy="enable-disable-multiple-rules-modal"
         title={capitalizeFirstLetter(props.operation) + " confirmation"}
         isOpen={props.isOpen}
         onClose={onClose}

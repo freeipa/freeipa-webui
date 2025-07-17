@@ -113,6 +113,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       name: "User to override",
       pfComponent: (
         <DropdownSearch
+          dataCy="modal-form-override-user"
           id="modal-form-override-user"
           options={userNames}
           onSelect={(value: string) => setOverrideUser(value)}
@@ -126,6 +127,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       name: "User login",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-user-login"
           type="text"
           id="modal-form-user-login"
           name="modal-form-user-login"
@@ -140,6 +142,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       name: "GECOS",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-user-gecos"
           type="text"
           id="modal-form-user-gecos"
           name="modal-form-user-gecos"
@@ -154,6 +157,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       name: "UID",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-user-uidnumber"
           type="text"
           id="modal-form-user-uidnumber"
           name="modal-form-user-uidnumber"
@@ -173,6 +177,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       name: "GID",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-user-gidnumber"
           type="text"
           id="modal-form-user-gidnumber"
           name="modal-form-user-gidnumber"
@@ -192,6 +197,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       name: "Login shell",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-user-shell"
           type="text"
           id="modal-form-user-shell"
           name="modal-form-user-shell"
@@ -206,6 +212,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       name: "Home directory",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-user-homedir"
           type="text"
           id="modal-form-user-homedir"
           name="modal-form-user-homedir"
@@ -220,6 +227,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       name: "Certificate",
       pfComponent: (
         <TextArea
+          data-cy="modal-textbox-user-cert"
           id="modal-form-user-cert"
           name="modal-form-user-cert"
           value={usercertificate}
@@ -232,6 +240,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       name: "SSH public key",
       pfComponent: (
         <TextArea
+          data-cy="modal-textbox-user-ssh"
           id="modal-form-user-ssh"
           name="modal-form-user-ssh"
           value={ipasshpubkey}
@@ -244,6 +253,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       name: "Description",
       pfComponent: (
         <TextArea
+          data-cy="modal-textbox-user-desc"
           id="modal-form-user-desc"
           name="modal-form-user-desc"
           value={description}
@@ -394,10 +404,19 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
   };
 
   const errorModalActions = [
-    <SecondaryButton key="retry" onClickHandler={onRetry}>
+    <SecondaryButton
+      key="retry"
+      onClickHandler={onRetry}
+      dataCy="modal-button-retry"
+    >
       Retry
     </SecondaryButton>,
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+      data-cy="modal-button-cancel"
+    >
       Cancel
     </Button>,
   ];
@@ -428,6 +447,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <SecondaryButton
+      dataCy="modal-button-add"
       key="add-new-user"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
       onClickHandler={addHandler}
@@ -439,6 +459,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       {addSpinning ? "Adding" : "Add"}
     </SecondaryButton>,
     <SecondaryButton
+      dataCy="modal-button-add-and-add-another"
       key="add-and-add-another-user"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
       onClickHandler={addAndAddAnotherHandler}
@@ -448,7 +469,12 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
     >
       {addAgainSpinning ? "Adding" : "Add and add another"}
     </SecondaryButton>,
-    <Button key="cancel-new-user" variant="link" onClick={cleanAndCloseModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-new-user"
+      variant="link"
+      onClick={cleanAndCloseModal}
+    >
       Cancel
     </Button>,
   ];
@@ -473,6 +499,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="add-id-override-user-modal"
         variantType="small"
         modalPosition="top"
         offPosition="76px"
@@ -486,6 +513,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="add-id-override-user-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

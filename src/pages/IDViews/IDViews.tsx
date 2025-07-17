@@ -508,6 +508,7 @@ const IDViews = () => {
   };
   const dropdownItems = [
     <DropdownItem
+      data-cy="id-views-kebab-unapply-hosts"
       key="unapply-hosts"
       onClick={openUnapplyHostModal}
       isDisabled={!showTableRows || totalCount === 0}
@@ -515,6 +516,7 @@ const IDViews = () => {
       Unapply from hosts
     </DropdownItem>,
     <DropdownItem
+      data-cy="id-views-kebab-unapply-hostgroups"
       key="unapply-hostgroups"
       onClick={openUnapplyHostgroupModal}
       isDisabled={!showTableRows || totalCount === 0}
@@ -541,6 +543,7 @@ const IDViews = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search ID views"
           placeholder="Search"
@@ -559,6 +562,7 @@ const IDViews = () => {
       key: 3,
       element: (
         <SecondaryButton
+          dataCy="id-views-button-refresh"
           onClickHandler={refreshViewsData}
           isDisabled={!showTableRows}
         >
@@ -570,6 +574,7 @@ const IDViews = () => {
       key: 4,
       element: (
         <SecondaryButton
+          dataCy="id-views-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
         >
@@ -581,6 +586,7 @@ const IDViews = () => {
       key: 5,
       element: (
         <SecondaryButton
+          dataCy="id-views-button-add"
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows}
         >
@@ -592,6 +598,7 @@ const IDViews = () => {
       key: 6,
       element: (
         <KebabLayout
+          dataCy="id-views-kebab"
           onDropdownSelect={onKebabSelect}
           onKebabToggle={onKebabToggle}
           idKebab="toggle-action-buttons"
@@ -665,7 +672,10 @@ const IDViews = () => {
           className="pf-v5-u-pb-0 pf-v5-u-pr-md"
         />
       </PageSection>
-      <ModalErrors errors={modalErrors.getAll()} />
+      <ModalErrors
+        errors={modalErrors.getAll()}
+        dataCy="id-views-modal-error"
+      />
       <AddIDViewModal
         show={showAddModal}
         handleModalToggle={onAddModalToggle}

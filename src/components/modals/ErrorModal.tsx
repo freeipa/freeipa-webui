@@ -4,6 +4,7 @@ import { Modal } from "@patternfly/react-core";
 import TextLayout from "../layouts/TextLayout";
 
 interface PropsToErrorModal {
+  dataCy: string;
   title: string;
   isOpen: boolean;
   onClose: () => void;
@@ -15,6 +16,7 @@ const ErrorModal = (props: PropsToErrorModal) => {
   return (
     <Modal
       variant="small"
+      data-cy={props.dataCy}
       title={props.title}
       isOpen={props.isOpen}
       onClose={props.onClose}

@@ -86,7 +86,10 @@ const IDViewSettings = (props: PropsToIDViewSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton onClickHandler={props.onRefresh}>
+        <SecondaryButton
+          dataCy="id-views-tab-settings-button-refresh"
+          onClickHandler={props.onRefresh}
+        >
           Refresh
         </SecondaryButton>
       ),
@@ -95,6 +98,7 @@ const IDViewSettings = (props: PropsToIDViewSettings) => {
       key: 1,
       element: (
         <SecondaryButton
+          dataCy="id-views-tab-settings-button-revert"
           isDisabled={!props.isModified}
           onClickHandler={onRevert}
         >
@@ -106,6 +110,7 @@ const IDViewSettings = (props: PropsToIDViewSettings) => {
       key: 2,
       element: (
         <SecondaryButton
+          dataCy="id-views-tab-settings-button-save"
           isDisabled={!props.isModified || isSaving}
           onClickHandler={onSave}
           isLoading={isSaving}
@@ -153,6 +158,7 @@ const IDViewSettings = (props: PropsToIDViewSettings) => {
             }
           >
             <IpaTextInput
+              dataCy="id-views-tab-settings-textbox-ipadomainresolutionorder"
               name="ipadomainresolutionorder"
               ariaLabel={"Domain resolution order"}
               ipaObject={ipaObject}
@@ -163,6 +169,7 @@ const IDViewSettings = (props: PropsToIDViewSettings) => {
           </FormGroup>
           <FormGroup label="Description" fieldId="description">
             <IpaTextArea
+              dataCy="id-views-tab-settings-textbox-description"
               name="description"
               ipaObject={ipaObject}
               onChange={recordOnChange}

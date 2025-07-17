@@ -476,6 +476,7 @@ const SudoRules = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search rules"
           placeholder="Search"
@@ -496,6 +497,7 @@ const SudoRules = () => {
         <SecondaryButton
           onClickHandler={refreshRulesData}
           isDisabled={!showTableRows}
+          dataCy="sudo-rules-button-refresh"
         >
           Refresh
         </SecondaryButton>
@@ -507,6 +509,7 @@ const SudoRules = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
+          dataCy="sudo-rules-button-delete"
         >
           Delete
         </SecondaryButton>
@@ -518,6 +521,7 @@ const SudoRules = () => {
         <SecondaryButton
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows}
+          dataCy="sudo-rules-button-add"
         >
           Add
         </SecondaryButton>
@@ -529,6 +533,7 @@ const SudoRules = () => {
         <SecondaryButton
           isDisabled={isDisableButtonDisabled || !showTableRows}
           onClickHandler={() => onEnableDisableHandler(true)}
+          dataCy="sudo-rules-button-disable"
         >
           Disable
         </SecondaryButton>
@@ -540,6 +545,7 @@ const SudoRules = () => {
         <SecondaryButton
           isDisabled={isEnableButtonDisabled || !showTableRows}
           onClickHandler={() => onEnableDisableHandler(false)}
+          dataCy="sudo-rules-button-enable"
         >
           Enable
         </SecondaryButton>
@@ -631,7 +637,10 @@ const SudoRules = () => {
         buttonsData={disableEnableButtonsData}
         onRefresh={refreshRulesData}
       />
-      <ModalErrors errors={modalErrors.getAll()} />
+      <ModalErrors
+        errors={modalErrors.getAll()}
+        dataCy="sudo-rules-modal-error"
+      />
     </Page>
   );
 };

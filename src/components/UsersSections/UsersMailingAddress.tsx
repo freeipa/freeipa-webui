@@ -27,6 +27,7 @@ const UsersMailingAddress = (props: PropsToUsersMailingAddress) => {
         <Form className="pf-v5-u-mb-lg">
           <FormGroup label="Street address" fieldId="street">
             <IpaTextInput
+              dataCy="user-tab-settings-textbox-street"
               name={"street"}
               ariaLabel={"Street address"}
               ipaObject={ipaObject}
@@ -37,6 +38,7 @@ const UsersMailingAddress = (props: PropsToUsersMailingAddress) => {
           </FormGroup>
           <FormGroup label="City" fieldId="l">
             <IpaTextInput
+              dataCy="user-tab-settings-textbox-city"
               name={"l"}
               ariaLabel={"City"}
               ipaObject={ipaObject}
@@ -51,6 +53,7 @@ const UsersMailingAddress = (props: PropsToUsersMailingAddress) => {
         <Form className="pf-v5-u-mb-lg">
           <FormGroup label="State/province" fieldId="st">
             <IpaTextInput
+              dataCy="user-tab-settings-textbox-state"
               name={"st"}
               ariaLabel={"State/province"}
               ipaObject={ipaObject}
@@ -61,6 +64,7 @@ const UsersMailingAddress = (props: PropsToUsersMailingAddress) => {
           </FormGroup>
           <FormGroup label="ZIP" fieldId="postalcode">
             <IpaTextInput
+              dataCy="user-tab-settings-textbox-postalcode"
               name={"postalcode"}
               ariaLabel={"Postal code"}
               ipaObject={ipaObject}

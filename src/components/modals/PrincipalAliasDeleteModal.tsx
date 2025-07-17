@@ -25,6 +25,7 @@ const PrincipalAliasDeleteModal = (props: PropsToPrincipalAliasModal) => {
 
   return (
     <ModalWithFormLayout
+      dataCy="principal-alias-delete-modal"
       variantType="small"
       modalPosition="top"
       title="Remove Kerberos Principal Alias"

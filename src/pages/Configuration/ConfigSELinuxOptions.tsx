@@ -24,6 +24,7 @@ const ConfigSELinuxOptions = (props: PropsToSELinuxOptions) => {
         isRequired
       >
         <IpaTextArea
+          dataCy="configuration-textbox-ipaselinuxusermaporder"
           name={"ipaselinuxusermaporder"}
           ariaLabel={"SELinux user map order"}
           ipaObject={props.ipaObject}
@@ -37,6 +38,7 @@ const ConfigSELinuxOptions = (props: PropsToSELinuxOptions) => {
         fieldId="ipaselinuxusermapdefault"
       >
         <IpaTextInput
+          dataCy="configuration-textbox-ipaselinuxusermapdefault"
           name={"ipaselinuxusermapdefault"}
           ariaLabel={"Default SELinux user"}
           ipaObject={props.ipaObject}

@@ -185,6 +185,7 @@ const AutoMemUserRules = () => {
       // Add empty entry as an option
       const groupsToSelector = [
         {
+          "data-cy": "typeahead-select-no-selection",
           value: NO_SELECTION,
           children: NO_SELECTION,
         },
@@ -192,6 +193,7 @@ const AutoMemUserRules = () => {
 
       // Add the rest of the data from usergroups
       const tempGroupsToSelector = userGroups.map((group) => ({
+        "data-cy": "typeahead-select-" + group,
         value: group,
         children: group,
       }));
@@ -510,6 +512,7 @@ const AutoMemUserRules = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search rules"
           placeholder="Search"
@@ -540,6 +543,7 @@ const AutoMemUserRules = () => {
       key: 4,
       element: (
         <SecondaryButton
+          dataCy="auto-member-user-rules-button-refresh"
           onClickHandler={refreshData}
           isDisabled={!showTableRows}
         >
@@ -551,6 +555,7 @@ const AutoMemUserRules = () => {
       key: 5,
       element: (
         <SecondaryButton
+          dataCy="auto-member-user-rules-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onOpenDeleteModal}
         >
@@ -562,6 +567,7 @@ const AutoMemUserRules = () => {
       key: 6,
       element: (
         <SecondaryButton
+          dataCy="auto-member-user-rules-button-add"
           isDisabled={!showTableRows}
           onClickHandler={onOpenAddModal}
         >
@@ -656,11 +662,13 @@ const AutoMemUserRules = () => {
         ruleType="group"
       />
       <ConfirmationModal
+        dataCy="auto-member-default-user-rules-modal"
         title="Default user group"
         isOpen={showChangeConfirmationModal}
         onClose={onCloseConfirmationModal}
         actions={[
           <Button
+            data-cy="modal-button-ok"
             variant="primary"
             key="change-default"
             onClick={() => {
@@ -669,7 +677,11 @@ const AutoMemUserRules = () => {
           >
             OK
           </Button>,
-          <SecondaryButton key="cancel" onClickHandler={onCancelDefaultGroup}>
+          <SecondaryButton
+            dataCy="modal-button-cancel"
+            key="cancel"
+            onClickHandler={onCancelDefaultGroup}
+          >
             Cancel
           </SecondaryButton>,
         ]}

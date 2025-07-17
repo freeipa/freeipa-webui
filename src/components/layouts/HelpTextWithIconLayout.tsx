@@ -13,6 +13,7 @@ interface PropsToHelpTextLayout {
 const HelpTextWithIconLayout = (props: PropsToHelpTextLayout) => {
   return (
     <Button
+      data-cy="help-text-with-icon-button"
       variant="link"
       icon={props.icon || <OutlinedQuestionCircleIcon />}
       onClick={props.onClick}

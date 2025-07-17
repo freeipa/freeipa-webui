@@ -94,7 +94,12 @@ const DeleteModal = (props: PropsToDelete) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-ok"
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       OK
     </Button>,
   ];
@@ -168,6 +173,7 @@ const DeleteModal = (props: PropsToDelete) => {
   // Set the Modal and Action buttons for 'Delete' option
   const modalActionsDelete: JSX.Element[] = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-pwpolicies"
       variant="danger"
       onClick={deletePasswordPolicies}
@@ -180,6 +186,7 @@ const DeleteModal = (props: PropsToDelete) => {
       {spinning ? "Deleting" : "Delete"}
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key="cancel-delete-pwpolicies"
       variant="link"
       onClick={props.onClose}
@@ -192,6 +199,7 @@ const DeleteModal = (props: PropsToDelete) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="delete-pwpolicy-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"
@@ -204,6 +212,7 @@ const DeleteModal = (props: PropsToDelete) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="delete-pwpolicy-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

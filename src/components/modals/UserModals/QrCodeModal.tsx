@@ -37,7 +37,12 @@ const QrCodeModal = (props: PropsToQrCodeModal) => {
   // Generate QR code
   const qrCode = (
     <>
-      <a href={props.QrUri} target="_blank" rel="noreferrer">
+      <a
+        href={props.QrUri}
+        target="_blank"
+        rel="noreferrer"
+        data-cy="qr-code-link"
+      >
         <QRCodeCanvas
           id="qrCode"
           value={props.QrUri}
@@ -73,7 +78,12 @@ const QrCodeModal = (props: PropsToQrCodeModal) => {
 
   // Actions
   const actions = [
-    <Button key="ok" variant="link" onClick={props.onClose}>
+    <Button
+      data-cy="modal-button-ok"
+      key="ok"
+      variant="link"
+      onClick={props.onClose}
+    >
       Ok
     </Button>,
   ];
@@ -81,6 +91,7 @@ const QrCodeModal = (props: PropsToQrCodeModal) => {
   // Render component
   return (
     <ModalWithFormLayout
+      dataCy="configure-your-token-modal"
       variantType="small"
       modalPosition="top"
       title="Configure your token"

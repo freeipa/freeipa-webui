@@ -88,6 +88,7 @@ const AddRule = (props: PropsToAddRule) => {
   // Toggle
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
+      data-cy="modal-select-automember-toggle"
       ref={toggleRef}
       onClick={() => setIsSelectOpen(!isSelectOpen)}
       className="pf-v5-u-w-100"
@@ -109,6 +110,7 @@ const AddRule = (props: PropsToAddRule) => {
       name: "Automember",
       pfComponent: (
         <Select
+          data-cy="modal-select-automember"
           id="automember"
           toggle={toggle}
           onSelect={onSelectGroup}
@@ -117,7 +119,11 @@ const AddRule = (props: PropsToAddRule) => {
           aria-labelledby="automember-group-add"
         >
           {props.groupsAvailableToAdd.map((option, index) => (
-            <SelectOption key={index} value={option}>
+            <SelectOption
+              data-cy={"modal-select-automember-" + option}
+              key={index}
+              value={option}
+            >
               {option}
             </SelectOption>
           ))}
@@ -214,6 +220,7 @@ const AddRule = (props: PropsToAddRule) => {
 
   const modalActions = [
     <SecondaryButton
+      dataCy="modal-button-add"
       key="add"
       onClickHandler={onAdd}
       isLoading={addSpinning}
@@ -224,6 +231,7 @@ const AddRule = (props: PropsToAddRule) => {
       Add
     </SecondaryButton>,
     <SecondaryButton
+      dataCy="modal-button-add-and-add-another"
       key="add-another"
       onClickHandler={onAddAndAddAnother}
       isLoading={addAgainSpinning}
@@ -233,7 +241,12 @@ const AddRule = (props: PropsToAddRule) => {
     >
       Add and add another
     </SecondaryButton>,
-    <Button key="cancel-new-rule" variant="link" onClick={cleanAndCloseModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-new-rule"
+      variant="link"
+      onClick={cleanAndCloseModal}
+    >
       Cancel
     </Button>,
   ];
@@ -243,6 +256,7 @@ const AddRule = (props: PropsToAddRule) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="add-rule-modal"
         variantType="small"
         modalPosition="top"
         offPosition="76px"

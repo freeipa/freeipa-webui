@@ -367,6 +367,7 @@ const CertificateMappingPage = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search certificate mapping rules"
           placeholder="Search"
@@ -385,6 +386,7 @@ const CertificateMappingPage = () => {
       key: 3,
       element: (
         <SecondaryButton
+          dataCy="certificate-mapping-button-refresh"
           onClickHandler={refreshData}
           isDisabled={!showTableRows}
         >
@@ -396,6 +398,7 @@ const CertificateMappingPage = () => {
       key: 4,
       element: (
         <SecondaryButton
+          dataCy="certificate-mapping-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={() => setShowDeleteModal(true)}
         >
@@ -407,6 +410,7 @@ const CertificateMappingPage = () => {
       key: 5,
       element: (
         <SecondaryButton
+          dataCy="certificate-mapping-button-add"
           isDisabled={!showTableRows}
           onClickHandler={() => setShowAddModal(true)}
         >
@@ -418,6 +422,7 @@ const CertificateMappingPage = () => {
       key: 6,
       element: (
         <SecondaryButton
+          dataCy="certificate-mapping-button-disable"
           isDisabled={isDisableButtonDisabled || !showTableRows}
           onClickHandler={onDisableOperation}
         >
@@ -429,6 +434,7 @@ const CertificateMappingPage = () => {
       key: 7,
       element: (
         <SecondaryButton
+          dataCy="certificate-mapping-button-enable"
           isDisabled={isEnableButtonDisabled || !showTableRows}
           onClickHandler={onEnableOperation}
         >

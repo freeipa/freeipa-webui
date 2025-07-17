@@ -92,6 +92,7 @@ const ManagedByDeleteModal = (props: PropsToDeleteModal) => {
   // Set the Modal and Action buttons for 'Delete' option
   const modalActionsDelete: JSX.Element[] = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-groups"
       variant="danger"
       onClick={deleteGroups}
@@ -103,7 +104,12 @@ const ManagedByDeleteModal = (props: PropsToDeleteModal) => {
     >
       {props.spinning ? "Deleting" : "Delete"}
     </Button>,
-    <Button key="cancel-remove-group" variant="link" onClick={closeModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-remove-group"
+      variant="link"
+      onClick={closeModal}
+    >
       Cancel
     </Button>,
   ];
@@ -115,6 +121,7 @@ const ManagedByDeleteModal = (props: PropsToDeleteModal) => {
   // Render component
   return (
     <ModalWithFormLayout
+      dataCy="managed-by-delete-modal"
       variantType="medium"
       modalPosition="top"
       offPosition="76px"

@@ -298,6 +298,7 @@ const AddUser = (props: PropsToAddUser) => {
     });
 
     newGidOptions.unshift({
+      "data-cy": "modal-useradd-gid-select",
       value: "",
       children: NO_SELECTION_OPTION,
     });
@@ -351,6 +352,7 @@ const AddUser = (props: PropsToAddUser) => {
         <>
           <TextInput
             type="text"
+            data-cy="modal-textbox-login"
             id="modal-form-user-login"
             name="modal-form-user-login"
             onFocus={resetUserLoginError}
@@ -381,6 +383,7 @@ const AddUser = (props: PropsToAddUser) => {
           <TextInput
             isRequired
             type="text"
+            data-cy="modal-textbox-first-name"
             id="modal-form-first-name"
             name="modal-form-first-name"
             onFocus={resetFirstNameError}
@@ -407,6 +410,7 @@ const AddUser = (props: PropsToAddUser) => {
           <TextInput
             isRequired
             type="text"
+            data-cy="modal-textbox-last-name"
             id="modal-form-last-name"
             name="modal-form-last-name"
             onFocus={resetLastNameError}
@@ -431,6 +435,7 @@ const AddUser = (props: PropsToAddUser) => {
       pfComponent: (
         <TextInput
           type="text"
+          data-cy="modal-textbox-user-class"
           id="modal-form-user-class"
           name="modal-form-user-class"
           value={userClass}
@@ -450,6 +455,7 @@ const AddUser = (props: PropsToAddUser) => {
       pfComponent: (
         <Flex>
           <Checkbox
+            data-cy="modal-checkbox-no-private-group"
             label="No private group"
             id="no-private-group"
             isChecked={isNoPrivateGroupChecked}
@@ -463,6 +469,7 @@ const AddUser = (props: PropsToAddUser) => {
       name: "GID",
       pfComponent: (
         <TypeAheadSelectWithCreate
+          data-cy="modal-useradd-gid"
           id={"modal-form-gid"}
           options={gidOptions}
           selected={gidSelected}
@@ -475,6 +482,7 @@ const AddUser = (props: PropsToAddUser) => {
       name: "New password",
       pfComponent: (
         <PasswordInput
+          dataCy="modal-textbox-new-password"
           id="modal-form-new-password"
           name="modal-form-new-password"
           value={newPassword}
@@ -491,6 +499,7 @@ const AddUser = (props: PropsToAddUser) => {
       pfComponent: (
         <>
           <PasswordInput
+            dataCy="modal-textbox-verify-password"
             id="modal-form-verify-password"
             name="modal-form-verify-password"
             value={verifyNewPassword}
@@ -720,10 +729,19 @@ const AddUser = (props: PropsToAddUser) => {
   };
 
   const errorModalActions = [
-    <SecondaryButton key="retry" onClickHandler={onRetry}>
+    <SecondaryButton
+      key="retry"
+      onClickHandler={onRetry}
+      dataCy="modal-button-retry"
+    >
       Retry
     </SecondaryButton>,
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       Cancel
     </Button>,
   ];
@@ -741,6 +759,7 @@ const AddUser = (props: PropsToAddUser) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <Button
+      data-cy="modal-button-add"
       key="add-new-user"
       variant="secondary"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
@@ -753,6 +772,7 @@ const AddUser = (props: PropsToAddUser) => {
       {addSpinning ? "Adding" : "Add"}
     </Button>,
     <Button
+      data-cy="modal-button-add-and-add-another"
       key="add-and-add-another-user"
       variant="secondary"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
@@ -763,7 +783,12 @@ const AddUser = (props: PropsToAddUser) => {
     >
       {addAgainSpinning ? "Adding" : "Add and add another"}
     </Button>,
-    <Button key="cancel-new-user" variant="link" onClick={cleanAndCloseModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-new-user"
+      variant="link"
+      onClick={cleanAndCloseModal}
+    >
       Cancel
     </Button>,
   ];
@@ -773,6 +798,7 @@ const AddUser = (props: PropsToAddUser) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="add-user-modal"
         variantType="small"
         modalPosition="top"
         offPosition="76px"
@@ -785,6 +811,7 @@ const AddUser = (props: PropsToAddUser) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="add-user-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

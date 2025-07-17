@@ -295,6 +295,7 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search users"
           placeholder="Search"
@@ -312,7 +313,10 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
     {
       key: 3,
       element: (
-        <SecondaryButton onClickHandler={props.onRefresh}>
+        <SecondaryButton
+          dataCy="id-views-tab-override-users-button-refresh"
+          onClickHandler={props.onRefresh}
+        >
           Refresh
         </SecondaryButton>
       ),
@@ -321,6 +325,7 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
       key: 4,
       element: (
         <SecondaryButton
+          dataCy="id-views-tab-override-users-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
         >
@@ -332,6 +337,7 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
       key: 5,
       element: (
         <SecondaryButton
+          dataCy="id-views-tab-override-users-button-add"
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows}
         >

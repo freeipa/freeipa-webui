@@ -2,8 +2,7 @@ import React from "react";
 import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import { vi, describe, it, expect, afterEach } from "vitest";
 // Component
-import IpaPACType from "./IpaPACType";
-import { IPAParamDefinition } from "src/utils/ipaObjectUtils";
+import IpaPACType, { IpaPACTypeProps } from "./IpaPACType";
 import { updateIpaObject } from "src/utils/ipaObjectUtils";
 
 // Mock of util function: updateIpaObject
@@ -82,7 +81,8 @@ describe("IpaPACType Component", () => {
     ipakrboktoauthasdelegate: false,
   };
 
-  const defaultProps: IPAParamDefinition = {
+  const defaultProps: IpaPACTypeProps = {
+    dataCy: "ipa-pac-type",
     name: "ipakrbauthzdata",
     required: false,
     readOnly: false,

@@ -8,6 +8,7 @@ const mockOnChange = vi.fn();
 const mockOnRevealHandler = vi.fn();
 
 const initialProps: PropsToPasswordInput = {
+  dataCy: "password-input",
   name: "Password",
   onChange: mockOnChange,
   onRevealHandler: mockOnRevealHandler,

@@ -429,6 +429,7 @@ const HBACServiceGroups = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search services"
           placeholder="Search"
@@ -449,6 +450,7 @@ const HBACServiceGroups = () => {
         <SecondaryButton
           onClickHandler={refreshServicesData}
           isDisabled={!showTableRows}
+          dataCy="hbac-service-groups-button-refresh"
         >
           Refresh
         </SecondaryButton>
@@ -460,6 +462,7 @@ const HBACServiceGroups = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
+          dataCy="hbac-service-groups-button-delete"
         >
           Delete
         </SecondaryButton>
@@ -471,6 +474,7 @@ const HBACServiceGroups = () => {
         <SecondaryButton
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows}
+          dataCy="hbac-service-groups-button-add"
         >
           Add
         </SecondaryButton>
@@ -558,7 +562,10 @@ const HBACServiceGroups = () => {
         buttonsData={deleteServicesButtonsData}
         onRefresh={refreshServicesData}
       />
-      <ModalErrors errors={modalErrors.getAll()} />
+      <ModalErrors
+        errors={modalErrors.getAll()}
+        dataCy="hbac-service-groups-modal-error"
+      />
     </Page>
   );
 };

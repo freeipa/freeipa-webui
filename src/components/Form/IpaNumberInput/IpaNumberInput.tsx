@@ -20,6 +20,7 @@ import {
  */
 
 export interface IPAParamDefinitionNumberInput extends IPAParamDefinition {
+  dataCy: string;
   id?: string;
   className?: string;
   numCharsShown?: number;
@@ -100,7 +101,7 @@ const IpaNumberInput = (props: IPAParamDefinitionNumberInput) => {
       isDisabled={isDisabled}
       widthChars={props.numCharsShown || 1}
       className={props.className || ""}
-      inputProps={{ id: props.id }}
+      inputProps={{ id: props.id, "data-cy": props.dataCy }}
     />
   );
 };

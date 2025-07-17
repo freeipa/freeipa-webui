@@ -25,6 +25,7 @@ const MemberOfDeleteModal = (props: React.PropsWithChildren<PropsToDelete>) => {
 
   const modalActionsDelete: JSX.Element[] = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-groups"
       variant="danger"
       onClick={onDelete}
@@ -37,6 +38,7 @@ const MemberOfDeleteModal = (props: React.PropsWithChildren<PropsToDelete>) => {
       {props.spinning ? "Deleting" : "Delete"}
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key="cancel-remove-group"
       variant="link"
       onClick={props.onCloseModal}
@@ -47,6 +49,7 @@ const MemberOfDeleteModal = (props: React.PropsWithChildren<PropsToDelete>) => {
 
   return (
     <Modal
+      data-cy="member-of-delete-modal"
       variant={"medium"}
       position={"top"}
       positionOffset={"76px"}

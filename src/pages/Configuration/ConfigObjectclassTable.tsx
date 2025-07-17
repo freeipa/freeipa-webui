@@ -51,6 +51,7 @@ const ConfigObjectclassTable = (props: PropsToTable) => {
             const removeButton = (
               <TableText>
                 <Button
+                  data-cy="configuration-table-button-remove"
                   id={props.name + "-" + item}
                   onClick={() => removeOC(item)}
                   variant="secondary"
@@ -72,6 +73,7 @@ const ConfigObjectclassTable = (props: PropsToTable) => {
         </Tbody>
       </Table>
       <Button
+        data-cy="configuration-table-button-add"
         id={props.name + "-" + "addoc"}
         onClick={() => {
           setNewOC("");
@@ -83,12 +85,14 @@ const ConfigObjectclassTable = (props: PropsToTable) => {
         Add objectclass
       </Button>
       <Modal
+        data-cy="add-objectclass-modal"
         variant="small"
         title={"Add objectclass"}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         actions={[
           <Button
+            data-cy="modal-button-add"
             key="add-new-oc"
             isDisabled={
               newOC === "" || values.indexOf(newOC.toLowerCase()) !== -1
@@ -98,6 +102,7 @@ const ConfigObjectclassTable = (props: PropsToTable) => {
             Add
           </Button>,
           <Button
+            data-cy="modal-button-cancel"
             key="cancel-new-host"
             variant="link"
             onClick={() => setIsOpen(false)}
@@ -114,6 +119,7 @@ const ConfigObjectclassTable = (props: PropsToTable) => {
             isRequired
           >
             <TextInput
+              data-cy="modal-textbox-objectclass"
               id="oc"
               type="text"
               value={newOC}

@@ -51,6 +51,7 @@ const IssuerAndSubjectOption = (props: PropsToIssuerAndSubjectOption) => {
   return (
     <>
       <Radio
+        data-cy="modal-radio-issuer-and-subject"
         isChecked={props.isIssuerAndSubjectChecked}
         name="issuer-and-subject-radio"
         onChange={(_event, value) => props.onChangeIssuerAndSubjectCheck(value)}
@@ -73,6 +74,7 @@ const IssuerAndSubjectOption = (props: PropsToIssuerAndSubjectOption) => {
             name="issuer-formgroup"
           >
             <TextInput
+              data-cy="modal-textbox-issuer"
               id="issuer"
               value={props.issuerValue}
               type="text"
@@ -96,6 +98,7 @@ const IssuerAndSubjectOption = (props: PropsToIssuerAndSubjectOption) => {
             name="subject-formgroup"
           >
             <TextInput
+              data-cy="modal-textbox-subject"
               id="subject-textbox"
               value={props.subjectValue}
               type="text"

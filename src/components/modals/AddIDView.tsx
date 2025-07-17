@@ -63,6 +63,7 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
       pfComponent: (
         <>
           <TextInput
+            data-cy="modal-textbox-id-view-name"
             type="text"
             id="modal-form-id-view-name"
             name="modal-form-id-view-name"
@@ -85,6 +86,7 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
       name: "Description",
       pfComponent: (
         <TextArea
+          data-cy="modal-textbox-id-view-description"
           id="modal-form-id-view-desc"
           name="modal-form-id-view-desc"
           value={description}
@@ -225,10 +227,19 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
   };
 
   const errorModalActions = [
-    <SecondaryButton key="retry" onClickHandler={onRetry}>
+    <SecondaryButton
+      dataCy="modal-button-retry"
+      key="retry"
+      onClickHandler={onRetry}
+    >
       Retry
     </SecondaryButton>,
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       Cancel
     </Button>,
   ];
@@ -246,6 +257,7 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <SecondaryButton
+      dataCy="modal-button-add"
       key="add-new-id-view"
       name="add"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
@@ -258,6 +270,7 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
       {addSpinning ? "Adding" : "Add"}
     </SecondaryButton>,
     <SecondaryButton
+      dataCy="modal-button-add-and-add-another"
       key="add-and-add-another-new-view"
       name="add_and_add_another"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
@@ -269,7 +282,12 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
     >
       {addAgainSpinning ? "Adding" : "Add and add another"}
     </SecondaryButton>,
-    <Button key="cancel-new-view" variant="link" onClick={cleanAndCloseModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-new-view"
+      variant="link"
+      onClick={cleanAndCloseModal}
+    >
       Cancel
     </Button>,
   ];
@@ -279,6 +297,7 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="add-id-view-modal"
         variantType="small"
         modalPosition="top"
         offPosition="76px"
@@ -291,6 +310,7 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="add-id-view-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

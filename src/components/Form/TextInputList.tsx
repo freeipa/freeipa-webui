@@ -3,6 +3,7 @@ import React from "react";
 import { TextInput, Button, Flex, FlexItem } from "@patternfly/react-core";
 
 interface TextInputListProps {
+  dataCy: string;
   name: string;
   ariaLabel: string;
   list: string[];
@@ -52,6 +53,7 @@ const TextInputList = (props: TextInputListProps) => {
               flex={{ default: "flex_1" }}
             >
               <TextInput
+                data-cy={props.dataCy + "-" + item}
                 id={props.name + "-" + idx}
                 value={item}
                 type="text"
@@ -62,6 +64,7 @@ const TextInputList = (props: TextInputListProps) => {
             </FlexItem>
             <FlexItem key={props.name + "-" + idx + "-delete-button"}>
               <Button
+                data-cy={props.dataCy + "-" + item + "-delete-button"}
                 variant="secondary"
                 name={"remove-" + props.name + "-" + idx}
                 onClick={() => onRemoveHandler(idx)}
@@ -73,6 +76,7 @@ const TextInputList = (props: TextInputListProps) => {
         ))}
       </Flex>
       <Button
+        data-cy={props.dataCy + "-add-button"}
         variant="secondary"
         className="pf-v5-u-mt-sm"
         name={"add-" + props.name}

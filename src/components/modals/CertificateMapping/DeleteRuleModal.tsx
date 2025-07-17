@@ -52,10 +52,16 @@ const DeleteRuleModal = (props: DeleteRuleModalProps) => {
   };
 
   const modalActions: JSX.Element[] = [
-    <Button key={"delete-" + props.ruleId} variant="primary" onClick={onDelete}>
+    <Button
+      data-cy="modal-button-ok"
+      key={"delete-" + props.ruleId}
+      variant="primary"
+      onClick={onDelete}
+    >
       OK
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key={"cancel-delete-" + props.ruleId}
       variant="secondary"
       onClick={onClose}
@@ -69,6 +75,7 @@ const DeleteRuleModal = (props: DeleteRuleModalProps) => {
     <>
       <alerts.ManagedAlerts />
       <ConfirmationModal
+        dataCy="delete-rule-modal"
         title={"Confirmation"}
         isOpen={props.isOpen}
         onClose={onClose}

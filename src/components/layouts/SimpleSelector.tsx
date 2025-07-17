@@ -6,10 +6,15 @@ import {
   Select,
   SelectList,
   SelectOption,
-  SelectOptionProps,
 } from "@patternfly/react-core";
 
+export interface SelectOptionProps {
+  key: string;
+  value: string;
+}
+
 interface PropsToSimpleSelector {
+  dataCy: string;
   id: string;
   selected: string;
   options: SelectOptionProps[];
@@ -36,6 +41,7 @@ const SimpleSelector = (props: PropsToSimpleSelector) => {
 
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
+      data-cy={props.dataCy + "-select-toggle"}
       id={props.id}
       ref={toggleRef}
       aria-label={
@@ -51,6 +57,7 @@ const SimpleSelector = (props: PropsToSimpleSelector) => {
 
   return (
     <Select
+      data-cy={props.dataCy + "-select"}
       id={props.id + "-select"}
       isOpen={isOpen}
       selected={props.selected}
@@ -62,6 +69,7 @@ const SimpleSelector = (props: PropsToSimpleSelector) => {
       <SelectList id={props.id + "-selector-list"}>
         {props.options.map((option, idx) => (
           <SelectOption
+            data-cy={props.dataCy + "-select-" + option.key}
             id={option.key + "-" + idx}
             key={option.key + "-" + idx}
             tabIndex={idx}
