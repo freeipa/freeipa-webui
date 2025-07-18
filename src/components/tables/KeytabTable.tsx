@@ -556,7 +556,6 @@ const KeytabTable = (props: PropsToTable) => {
         searchValue={searchValue}
         paginationData={paginationData}
         list={tableEntriesFilteredList}
-        entryCount={tableEntryList.length}
         entryType={props.entryType}
       />
       <DualListLayout

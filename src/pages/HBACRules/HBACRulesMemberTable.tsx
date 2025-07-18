@@ -395,7 +395,6 @@ const HBACRulesMemberTable = (props: PropsToTable) => {
         searchValue={searchValue}
         paginationData={paginationData}
         list={props.members}
-        entryCount={props.members.length}
         entryType={props.fromLabel ? props.fromLabel : props.from}
       />
       {showAddModal && (
