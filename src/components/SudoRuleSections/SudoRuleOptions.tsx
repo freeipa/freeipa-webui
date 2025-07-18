@@ -363,7 +363,6 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
         searchValue={searchValue}
         paginationData={paginationData}
         list={tableEntryList} // Filtered list
-        entryCount={tableEntryList.length}
         entryType={"option"}
       />
       {/* Add option modal */}
