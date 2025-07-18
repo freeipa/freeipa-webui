@@ -12,9 +12,9 @@ import {
 } from "@patternfly/react-core";
 import { TableVariant } from "@patternfly/react-table";
 // Layout
-import SecondaryButton from "./SecondaryButton";
-import TableLayout from "./TableLayout";
-import PaginationLayout from "./PaginationLayout";
+import SecondaryButton from "../SecondaryButton";
+import TableLayout from "../TableLayout";
+import PaginationLayout from "../PaginationLayout";
 
 export interface PropsToSettingsTableLayout {
   // Table
@@ -37,7 +37,6 @@ export interface PropsToSettingsTableLayout {
   paginationData: PaginationData;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   list: any[];
-  entryCount: number;
   entryType: string;
   extraID?: string;
 }
@@ -69,7 +68,7 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
     <>
       <Flex>
         <FlexItem>
-          {props.entryCount > 0 && props.onSearchChange !== undefined && (
+          {props.list.length > 0 && props.onSearchChange !== undefined && (
             <SearchInput
               data-cy="search"
               placeholder={"Filter by ..."}
@@ -135,7 +134,7 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
               "No " +
               props.entryType.toLowerCase() +
               "s " +
-              (props.entryCount > 0 ? " found" : "")
+              (props.list.length > 0 ? " found" : "")
             }
             headingLevel="h6"
           />

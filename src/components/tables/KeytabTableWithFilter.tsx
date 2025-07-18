@@ -273,9 +273,6 @@ const KeytabTableWithFilter = (props: PropsToKeytabTable) => {
     });
   }, [props.entityType]);
 
-  // Entry count
-  const entryCount = tableEntryList.map((entry) => entry.entry).length;
-
   // Entry elements
   const entryElements = tableEntryList.map((element) => element.entry);
 
@@ -306,7 +303,6 @@ const KeytabTableWithFilter = (props: PropsToKeytabTable) => {
         searchValue={searchValue}
         paginationData={paginationData}
         list={tableEntriesFilteredList}
-        entryCount={entryCount}
         entryType={props.entityType}
         extraID={props.extraId}
       />
