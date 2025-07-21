@@ -555,6 +555,7 @@ const KeytabTable = (props: PropsToTable) => {
         onSearchChange={onSearchChange}
         searchValue={searchValue}
         paginationData={paginationData}
+        entryCount={tableEntryList.length}
         list={tableEntriesFilteredList}
         entryType={props.entryType}
       />
