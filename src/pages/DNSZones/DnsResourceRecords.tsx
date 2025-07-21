@@ -311,6 +311,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
           placeholder="Search"
           searchValueData={searchValueData}
           isDisabled={isSearchDisabled}
+          dataCy="search-dns-records"
         />
       ),
       toolbarItemVariant: "search-filter",
@@ -326,6 +327,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
         <SecondaryButton
           onClickHandler={refreshData}
           isDisabled={!showTableRows}
+          dataCy="refresh-dns-records"
         >
           Refresh
         </SecondaryButton>
@@ -337,6 +339,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={() => setShowDeleteModal(true)}
+          dataCy="delete-dns-records"
         >
           Delete
         </SecondaryButton>
@@ -348,6 +351,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
         <SecondaryButton
           isDisabled={!showTableRows}
           onClickHandler={() => setShowAddModal(true)}
+          dataCy="add-dns-records"
         >
           Add
         </SecondaryButton>

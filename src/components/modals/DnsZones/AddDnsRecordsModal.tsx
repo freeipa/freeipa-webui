@@ -49,6 +49,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       name: "a_part_ip_address",
       label: "IP address",
       isRequired: true,
+      dataCy: "modal-text-input-a-part-ip-address",
     },
     {
       type: "checkbox",
@@ -56,6 +57,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       label: "Create reverse record",
       tooltip: "Create reverse record for this IP Address",
       defaultValue: false,
+      dataCy: "modal-checkbox-a-extra-create-reverse",
     },
   ],
   AAAA: [
@@ -64,6 +66,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       name: "aaaa_part_ip_address",
       label: "IP address",
       isRequired: true,
+      dataCy: "modal-text-input-aaaa-part-ip-address",
     },
     {
       type: "checkbox",
@@ -71,6 +74,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       label: "Create reverse record",
       tooltip: "Create reverse record for this IP Address",
       defaultValue: false,
+      dataCy: "modal-checkbox-aaaa-extra-create-reverse",
     },
   ],
   A6: [
@@ -79,6 +83,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       name: "a6_part_data",
       label: "Record data",
       isRequired: true,
+      dataCy: "modal-textarea-a6-part-data",
     },
   ],
   AFSDB: [
@@ -88,12 +93,14 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       label: "Subtype",
       numCharsShown: 6,
       defaultValue: 0,
+      dataCy: "modal-number-input-afsdb-part-subtype",
     },
     {
       type: "text",
       name: "afsdb_part_hostname",
       label: "Hostname",
       isRequired: true,
+      dataCy: "modal-text-input-afsdb-part-hostname",
     },
   ],
   CERT: [
@@ -105,6 +112,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       numCharsShown: 6,
       maxValue: 65535,
       defaultValue: 0,
+      dataCy: "modal-number-input-cert-part-type",
     },
     {
       type: "number",
@@ -114,6 +122,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       numCharsShown: 6,
       maxValue: 65535,
       defaultValue: 0,
+      dataCy: "modal-number-input-cert-part-key-tag",
     },
     {
       type: "number",
@@ -123,6 +132,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       numCharsShown: 4,
       maxValue: 255,
       defaultValue: 0,
+      dataCy: "modal-number-input-cert-part-algorithm",
     },
     {
       type: "textarea",
@@ -130,6 +140,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       label: "Certificate or CRL",
       isRequired: true,
       rows: 8,
+      dataCy: "modal-textarea-cert-part-certificate-or-crl",
     },
   ],
   CNAME: [
@@ -139,6 +150,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       label: "Hostname",
       isRequired: true,
       tooltip: "A hostname which this alias hostname points to",
+      dataCy: "modal-text-input-cname-part-hostname",
     },
   ],
   DNAME: [
@@ -147,6 +159,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       name: "dname_part_target",
       label: "Target",
       isRequired: true,
+      dataCy: "modal-text-input-dname-part-target",
     },
   ],
   DS: [
@@ -158,6 +171,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 65535,
       numCharsShown: 6,
       defaultValue: 0,
+      dataCy: "modal-number-input-ds-part-key-tag",
     },
     {
       type: "number",
@@ -167,6 +181,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 255,
       numCharsShown: 4,
       defaultValue: 0,
+      dataCy: "modal-number-input-ds-part-algorithm",
     },
     {
       type: "number",
@@ -176,6 +191,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 255,
       numCharsShown: 4,
       defaultValue: 0,
+      dataCy: "modal-number-input-ds-part-digest-type",
     },
     {
       type: "textarea",
@@ -183,6 +199,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       label: "Digest",
       isRequired: true,
       rows: 8,
+      dataCy: "modal-textarea-ds-part-digest",
     },
   ],
   DLV: [
@@ -194,6 +211,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 65535,
       numCharsShown: 6,
       defaultValue: 0,
+      dataCy: "modal-number-input-dlv-part-key-tag",
     },
     {
       type: "number",
@@ -203,6 +221,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 255,
       numCharsShown: 4,
       defaultValue: 0,
+      dataCy: "modal-number-input-dlv-part-algorithm",
     },
     {
       type: "number",
@@ -212,6 +231,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 255,
       numCharsShown: 4,
       defaultValue: 0,
+      dataCy: "modal-number-input-dlv-part-digest-type",
     },
     {
       type: "textarea",
@@ -219,6 +239,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       label: "Digest",
       isRequired: true,
       rows: 8,
+      dataCy: "modal-textarea-dlv-part-digest",
     },
   ],
   KX: [
@@ -232,6 +253,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 65535,
       numCharsShown: 6,
       defaultValue: 0,
+      dataCy: "modal-number-input-kx-part-preference",
     },
     {
       type: "text",
@@ -239,6 +261,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       label: "Exchanger",
       isRequired: true,
       tooltip: "A host willing to act as a key exchanger",
+      dataCy: "modal-text-input-kx-part-exchanger",
     },
   ],
   LOC: [
@@ -250,6 +273,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 90,
       numCharsShown: 6,
       defaultValue: 0,
+      dataCy: "modal-number-input-loc-part-lat-deg",
     },
     {
       type: "number",
@@ -258,6 +282,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 59,
       numCharsShown: 6,
       defaultValue: 0,
+      dataCy: "modal-number-input-loc-part-lat-min",
     },
     {
       type: "number",
@@ -266,6 +291,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 59.999,
       numCharsShown: 6,
       defaultValue: 0,
+      dataCy: "modal-number-input-loc-part-lat-sec",
     },
     {
       type: "radio",
@@ -276,6 +302,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
         { label: "S", value: "S" },
       ],
       defaultValue: "N",
+      dataCy: "modal-radio-loc-part-lat-dir",
     },
     {
       type: "number",
@@ -285,6 +312,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 180,
       numCharsShown: 6,
       defaultValue: 0,
+      dataCy: "modal-number-input-loc-part-lon-deg",
     },
     {
       type: "number",
@@ -293,6 +321,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 59,
       numCharsShown: 6,
       defaultValue: 0,
+      dataCy: "modal-number-input-loc-part-lon-min",
     },
     {
       type: "number",
@@ -301,6 +330,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 59.999,
       numCharsShown: 6,
       defaultValue: 0,
+      dataCy: "modal-number-input-loc-part-lon-sec",
     },
     {
       type: "radio",
@@ -311,6 +341,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
         { label: "W", value: "W" },
       ],
       defaultValue: "E",
+      dataCy: "modal-radio-loc-part-lon-dir",
     },
     {
       type: "number",
@@ -321,6 +352,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       numCharsShown: 11,
       defaultValue: 0,
       isRequired: true,
+      dataCy: "modal-number-input-loc-part-altitude",
     },
     {
       type: "number",
@@ -330,6 +362,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 90000000.0,
       numCharsShown: 11,
       defaultValue: 0,
+      dataCy: "modal-number-input-loc-part-size",
     },
     {
       type: "number",
@@ -339,6 +372,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 90000000.0,
       numCharsShown: 11,
       defaultValue: 0,
+      dataCy: "modal-number-input-loc-part-h-precision",
     },
     {
       type: "number",
@@ -348,6 +382,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 90000000.0,
       numCharsShown: 11,
       defaultValue: 0,
+      dataCy: "modal-number-input-loc-part-v-precision",
     },
   ],
   MX: [
@@ -361,6 +396,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 65535,
       numCharsShown: 6,
       defaultValue: 0,
+      dataCy: "modal-number-input-mx-part-preference",
     },
     {
       type: "text",
@@ -368,6 +404,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       label: "Exchanger",
       isRequired: true,
       tooltip: "A host willing to act as a key exchanger",
+      dataCy: "modal-text-input-mx-part-exchanger",
     },
   ],
   NAPTR: [
@@ -379,6 +416,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 65535,
       numCharsShown: 6,
       defaultValue: 0,
+      dataCy: "modal-number-input-naptr-part-order",
     },
     {
       type: "number",
@@ -388,6 +426,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 65535,
       numCharsShown: 6,
       defaultValue: 0,
+      dataCy: "modal-number-input-naptr-part-preference",
     },
     {
       type: "select",
@@ -401,24 +440,28 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
         { key: "A", value: "A" },
       ],
       defaultValue: "S",
+      dataCy: "modal-select-naptr-part-flags",
     },
     {
       type: "text",
       name: "naptr_part_service",
       label: "Service",
       isRequired: true,
+      dataCy: "modal-text-input-naptr-part-service",
     },
     {
       type: "text",
       name: "naptr_part_regexp",
       label: "Regular expression",
       isRequired: true,
+      dataCy: "modal-text-input-naptr-part-regexp",
     },
     {
       type: "text",
       name: "naptr_part_replacement",
       label: "Replacement",
       isRequired: true,
+      dataCy: "modal-text-input-naptr-part-replacement",
     },
   ],
   NS: [
@@ -427,12 +470,14 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       name: "ns_part_hostname",
       label: "Hostname",
       isRequired: true,
+      dataCy: "modal-text-input-ns-part-hostname",
     },
     {
       type: "checkbox",
       name: "ns_part_skip_dns_check",
       label: "Skip DNS check",
       defaultValue: false,
+      dataCy: "modal-checkbox-ns-part-skip-dns-check",
     },
   ],
   PTR: [
@@ -442,6 +487,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       label: "Hostname",
       isRequired: true,
       tooltip: "The hostname this reverse record points to",
+      dataCy: "modal-text-input-ptr-part-hostname",
     },
   ],
   SRV: [
@@ -455,6 +501,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 65535,
       numCharsShown: 6,
       defaultValue: 0,
+      dataCy: "modal-number-input-srv-part-priority",
     },
     {
       type: "number",
@@ -465,6 +512,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 65535,
       numCharsShown: 6,
       defaultValue: 0,
+      dataCy: "modal-number-input-srv-part-weight",
     },
     {
       type: "number",
@@ -474,6 +522,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 65535,
       numCharsShown: 6,
       defaultValue: 0,
+      dataCy: "modal-number-input-srv-part-port",
     },
     {
       type: "text",
@@ -482,6 +531,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       isRequired: true,
       tooltip:
         "The domain name of the target host or '.' if the service is decidedly not available at this domain",
+      dataCy: "modal-text-input-srv-part-target",
     },
   ],
   SSHFP: [
@@ -493,6 +543,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 255,
       numCharsShown: 4,
       defaultValue: 0,
+      dataCy: "modal-number-input-sshfp-part-algorithm",
     },
     {
       type: "number",
@@ -502,6 +553,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 255,
       numCharsShown: 4,
       defaultValue: 0,
+      dataCy: "modal-number-input-sshfp-part-fp-type",
     },
     {
       type: "textarea",
@@ -509,6 +561,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       label: "Fingerprint",
       isRequired: true,
       rows: 6,
+      dataCy: "modal-textarea-sshfp-part-fingerprint",
     },
   ],
   TLSA: [
@@ -520,6 +573,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 255,
       numCharsShown: 4,
       defaultValue: 0,
+      dataCy: "modal-number-input-tlsa-part-cert-usage",
     },
     {
       type: "number",
@@ -529,6 +583,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 255,
       numCharsShown: 4,
       defaultValue: 0,
+      dataCy: "modal-number-input-tlsa-part-selector",
     },
     {
       type: "number",
@@ -538,6 +593,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 255,
       numCharsShown: 4,
       defaultValue: 0,
+      dataCy: "modal-number-input-tlsa-part-matching-type",
     },
     {
       type: "textarea",
@@ -545,6 +601,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       label: "Certificate association data",
       isRequired: true,
       rows: 6,
+      dataCy: "modal-textarea-tlsa-part-cert-association-data",
     },
   ],
   TXT: [
@@ -553,6 +610,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       name: "txt_part_data",
       label: "Text data",
       isRequired: true,
+      dataCy: "modal-textarea-txt-part-data",
     },
   ],
   URI: [
@@ -566,6 +624,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 65535,
       numCharsShown: 6,
       defaultValue: 0,
+      dataCy: "modal-number-input-uri-part-priority",
     },
     {
       type: "number",
@@ -576,6 +635,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       maxValue: 65535,
       numCharsShown: 6,
       defaultValue: 0,
+      dataCy: "modal-number-input-uri-part-weight",
     },
     {
       type: "text",
@@ -583,6 +643,7 @@ const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
       label: "Target uniform resource identifier",
       isRequired: true,
       tooltip: "Target Uniform Resource Identifier according to RFC 3986",
+      dataCy: "modal-text-input-uri-part-target",
     },
   ],
 };
@@ -1036,6 +1097,7 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
             setBasicFormValues({ ...basicFormValues, recordName: value })
           }
           aria-label="Record name text input"
+          data-cy="record-name"
         />
       </FormGroup>
       <FormGroup label="Record type">
@@ -1056,6 +1118,7 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
               onClick={() => setIsRecordTypeOpen(!isRecordTypeOpen)}
               isExpanded={isRecordTypeOpen}
               className="pf-v5-u-w-100"
+              data-cy="record-type-toggle"
             >
               {basicFormValues.recordType}
             </MenuToggle>
@@ -1063,9 +1126,14 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
           aria-label="Record type select"
           isOpen={isRecordTypeOpen}
           isScrollable
+          data-cy="record-type"
         >
           {recordTypeOptions.map((option) => (
-            <SelectOption key={option.value} value={option.value}>
+            <SelectOption
+              key={option.value}
+              value={option.value}
+              data-cy="record-type-option"
+            >
               {option.key}
             </SelectOption>
           ))}
@@ -1089,6 +1157,7 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
       isDisabled={isAddButtonSpinning || !areMandatoryFieldsFilled}
       form="add-modal-form"
       onClick={() => onAddOperation(false)}
+      data-cy="add-dns-records-modal-add-button"
     >
       {isAddButtonSpinning ? (
         <>
@@ -1105,6 +1174,7 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
       isDisabled={isAddAnotherButtonSpinning || !areMandatoryFieldsFilled}
       form="add-another-modal-form"
       onClick={() => onAddOperation(true)}
+      data-cy="add-dns-records-modal-add-another-button"
     >
       {isAddAnotherButtonSpinning ? (
         <>
@@ -1115,7 +1185,12 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
         "Add and add another"
       )}
     </Button>,
-    <Button key="cancel-new" variant="link" onClick={cleanAndCloseModal}>
+    <Button
+      key="cancel-new"
+      variant="link"
+      onClick={cleanAndCloseModal}
+      data-cy="add-dns-records-modal-cancel-button"
+    >
       Cancel
     </Button>,
   ];
