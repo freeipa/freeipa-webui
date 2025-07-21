@@ -1,5 +1,79 @@
 # Cypress rules
 
+## Writing Tests
+
+Tests follow a three-part structure for better maintainability and re-execution capabilities. Each part is tagged separately and runs in isolation with cleared cache and storage.
+
+You don't have to use all parts, if they do not make sense for your scenario.
+
+Every events needs to be followed by state validation, this can be either handled in
+cypress directly, in case of more complex step definitions or via Gherkin When, Then.
+
+When implementing Given steps, make sure to reuse shared lines from When and Then steps where it makes sense! We should ideally replace Given steps by networking calls, but reusing other steps is also fine.
+
+**Test Isolation**: All scenarios start fresh - login is always required, however database state is never reset between tests.
+
+### Seeding (@seed)
+
+Database preparation phase focused on efficiency and minimal steps.
+
+**Purpose**: Prepare test data with maximum amount of shortcuts
+**Syntax**: Always begin steps with `Given`
+**Common patterns**:
+
+- Add new users for user-focused tests
+- Create custom test data as needed
+
+**Example**:
+
+```gherkin
+@seed
+Scenario: Create user
+  Given User "jdoe" "John" "Doe" exists and is using password "Secret123"
+```
+
+### Test (@test)
+
+Primary test execution phase with explicit, comprehensive testing.
+
+**Purpose**: Execute actual test scenarios with minimal shortcuts
+**Syntax**: Use `When` followed by one or more `Then` statements
+**Approach**: Be explicit and thorough in test steps
+
+**Example**:
+
+```gherkin
+@test
+Scenario: Fill in reset password form
+  When I type in the "reset-password-textbox-current-password" textbox text "Secret123"
+  Then I should see "Secret123" in the "reset-password-textbox-current-password" textbox
+
+  When I type in the "reset-password-textbox-new-password" textbox text "NewSecret123"
+  Then I should see "NewSecret123" in the "reset-password-textbox-new-password" textbox
+
+  When I type in the "reset-password-textbox-verify-password" textbox text "NewSecret123"
+  Then I should see "NewSecret123" in the "reset-password-textbox-verify-password" textbox
+```
+
+### Cleanup (@cleanup)
+
+Database cleanup phase focused on efficient teardown.
+
+**Purpose**: Remove test data using maximum shortcuts
+**Syntax**: Always begin steps with `Given`
+**Common patterns**:
+
+- Custom cleanup steps for specific test scenarios
+- Bulk removal operations where possible
+
+**Example**:
+
+```gherkin
+@cleanup
+Scenario: Delete user "jdoe"
+  Given I delete user "jdoe"
+```
+
 ## Attribute Usage
 
 **PatternFly components**: Use `data-cy` directly
@@ -309,7 +383,7 @@ login-button-submit
 
 1. **Consistency**: Always use kebab-case
 2. **Hierarchy**: Follow the naming hierarchy for clarity
-3. **Uniqueness**: Ensure each data-cy value is unique across the application
+3. **Uniqueness**: Ensure each data-cy value is unique across the visible page
 4. **Descriptive**: Use clear, descriptive names that indicate purpose
 5. **Avoid Ambiguity**: Don't use generic terms like "button" or "input" alone
 6. **Component Reuse**: For reusable components, accept `dataCy` as a prop
@@ -322,3 +396,5 @@ login-button-submit
 - Test both success and error scenarios
 - Verify modal opening/closing behavior
 - Test form validation and submission
+- Always validate state after an event
+- Features have to follow When -> Then structure

@@ -26,7 +26,7 @@ export default defineConfig([
     "tests/ipalab/_venv",
     "eslint.config.mjs",
   ]),
-  // pluginCypress.configs.recommended,
+  pluginCypress.configs.recommended,
   {
     extends: compat.extends(
       "eslint:recommended",
@@ -69,7 +69,7 @@ export default defineConfig([
 
     rules: {
       "prettier/prettier": "error",
-      // "cypress/no-unnecessary-waiting": "error",
+      "cypress/no-unnecessary-waiting": "error",
     },
   },
 ]);

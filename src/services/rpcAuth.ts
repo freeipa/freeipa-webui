@@ -185,11 +185,8 @@ const extendedApi = api.injectEndpoints({
           user: payload.username,
           old_password: payload.oldPassword,
           new_password: payload.newPassword,
+          ...(payload.otp && { otp: payload.otp }),
         });
-
-        if (payload.otp) {
-          encodedCredentials.concat("&otp=" + payload.otp);
-        }
 
         const resetPasswordRequest = {
           url: RESET_PASSWORD_URL,

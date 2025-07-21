@@ -22,8 +22,8 @@
     "dev:prepare": "rm -rf dist && mkdir dist && cp index.dev.html dist/index.html && cp favicon.ico dist/favicon.ico",
     "build": "tsc -b && vite build",
     "audit-ci": "audit-ci --config audit-ci.json",
-    "cypress": "cypress run --config-file cypress/cypress.config.ts",
-    "cypress:open": "cypress open --config-file cypress/cypress.config.ts",
+    "cypress": "cypress run",
+    "cypress:open": "cypress open",
     "lint": "eslint --color --max-warnings 0",
     "lint:fix": "eslint --fix",
     "prettier": "prettier --check .",
@@ -71,7 +71,8 @@
   },
   "cypress-cucumber-preprocessor": {
     "stepDefinitions": [
-      "tests/features/steps/*.{js,ts}"
+      "cypress/e2e/common/**/*.ts",
+      "cypress/e2e/[filepart]/**/*.ts"
     ]
   },
   "engines": {
