@@ -373,7 +373,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
         </Form>
       </Modal>
       <SecondaryButton
-        dataCy="modal-button-add"
+        dataCy={props.dataCy + "-button-add-ssh-public-key"}
         onClickHandler={openSshPublicKeysModal}
         name={"add-ssh-public-key"}
         isDisabled={readOnly}

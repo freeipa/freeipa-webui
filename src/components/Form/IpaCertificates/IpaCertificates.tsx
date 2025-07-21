@@ -592,7 +592,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
           })
         : null}
       <SecondaryButton
-        dataCy="modal-button-add"
+        dataCy={props.dataCy + "-button-add-certificate"}
         name={"add-certificate"}
         onClickHandler={onOpenModal}
         isDisabled={readOnly}
