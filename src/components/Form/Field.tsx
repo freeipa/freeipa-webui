@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-case-declarations */
 import {
   FormGroup,
   TextInput,
@@ -23,6 +24,7 @@ export interface BaseField {
   label: string;
   isRequired?: boolean;
   tooltip?: string;
+  dataCy: string;
 }
 
 export interface TextInputField extends BaseField {
@@ -108,6 +110,7 @@ export const GenericField = ({
             onChange={(_event, val: string) => onChange(val)}
             aria-label={ariaLabel}
             placeholder={field.placeholder}
+            data-cy={field.dataCy}
           />
         </FormGroup>
       );
@@ -128,6 +131,7 @@ export const GenericField = ({
             minValue={field.minValue}
             maxValue={field.maxValue}
             numCharsShown={field.numCharsShown}
+            dataCy={field.dataCy}
           />
         </FormGroup>
       );
@@ -146,6 +150,7 @@ export const GenericField = ({
             onChange={(_event, val: string) => onChange(val)}
             aria-label={ariaLabel}
             rows={field.rows || 4}
+            data-cy={field.dataCy}
           />
         </FormGroup>
       );
@@ -159,6 +164,7 @@ export const GenericField = ({
             isChecked={value ?? field.defaultValue ?? false}
             onChange={(_event, val: boolean) => onChange(val)}
             aria-label={`${field.label} checkbox`}
+            data-cy={field.dataCy}
           />
         </FormGroup>
       );
@@ -183,6 +189,7 @@ export const GenericField = ({
                 onClick={() => selectState?.setIsOpen(!selectState.isOpen)}
                 isExpanded={selectState?.isOpen}
                 aria-label={`${field.label} select toggle`}
+                data-cy={field.dataCy}
               >
                 {value ?? field.defaultValue}
               </MenuToggle>
@@ -190,12 +197,14 @@ export const GenericField = ({
             aria-label={`${field.label} select`}
             isOpen={selectState?.isOpen}
             isScrollable
+            data-cy={field.dataCy}
           >
             {field.options.map((option) => (
               <SelectOption
                 key={option.key}
                 id={`${fieldId}-${option.value}`}
                 value={option.value}
+                data-cy={`${field.dataCy}-option-${option.key}`}
               >
                 {option.key}
               </SelectOption>
@@ -226,6 +235,7 @@ export const GenericField = ({
                       if (checked) onChange(option.value);
                     }}
                     aria-label={`${field.label} radio ${displayText}`}
+                    data-cy={`${field.dataCy}-radio-${option.value}`}
                   />
                 </FlexItem>
               );

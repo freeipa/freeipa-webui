@@ -59,7 +59,12 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={closeAndCleanErrorParameters}>
+    <Button
+      key="cancel"
+      variant="link"
+      onClick={closeAndCleanErrorParameters}
+      data-cy="modal-button-error-modal-ok"
+    >
       OK
     </Button>,
   ];
@@ -162,7 +167,12 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
   ];
 
   const modalActions: JSX.Element[] = [
-    <Button key="cancel" variant="secondary" onClick={props.onClose}>
+    <Button
+      key="cancel"
+      variant="secondary"
+      onClick={props.onClose}
+      data-cy="modal-button-cancel"
+    >
       Cancel
     </Button>,
     <Button
@@ -170,6 +180,7 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
       variant="danger"
       onClick={onDelete}
       isDisabled={spinning}
+      data-cy="modal-button-delete"
     >
       {spinning ? <Spinner size="sm" /> : "Delete"}
     </Button>,
@@ -188,6 +199,7 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
         show={props.isOpen}
         onClose={props.onClose}
         actions={modalActions}
+        dataCy="modal-delete-dns-records"
       />
       {isModalErrorOpen && (
         <ErrorModal
@@ -196,6 +208,7 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
           onClose={closeAndCleanErrorParameters}
           actions={errorModalActions}
           errorMessage={errorMessage}
+          dataCy="modal-error-modal"
         />
       )}
     </>
