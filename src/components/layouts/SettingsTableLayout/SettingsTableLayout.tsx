@@ -37,6 +37,7 @@ export interface PropsToSettingsTableLayout {
   paginationData: PaginationData;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   list: any[];
+  entryCount?: number;
   entryType: string;
   extraID?: string;
 }
@@ -58,6 +59,7 @@ interface PaginationData {
 
 const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
   const extraId = props.extraID ? props.extraID : "";
+  const entryCount = props.entryCount ?? props.list.length;
   // Prepare ID for the Add buttons
   // - Should contain the entry type in lowercase and spaces replaced by dashes
   const addButtonId = extraId
@@ -68,7 +70,7 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
     <>
       <Flex>
         <FlexItem>
-          {props.list.length > 0 && props.onSearchChange !== undefined && (
+          {entryCount > 0 && props.onSearchChange !== undefined && (
             <SearchInput
               data-cy="search"
               placeholder={"Filter by ..."}
@@ -134,7 +136,7 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
               "No " +
               props.entryType.toLowerCase() +
               "s " +
-              (props.list.length > 0 ? " found" : "")
+              (entryCount > 0 ? " found" : "")
             }
             headingLevel="h6"
           />

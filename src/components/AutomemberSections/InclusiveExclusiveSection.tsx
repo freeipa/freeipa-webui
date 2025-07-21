@@ -436,6 +436,7 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
         onAddModal={onChangeAddModalVisibility}
         paginationData={paginationData}
         list={shownElements}
+        entryCount={tableEntryList.length}
         entryType={"condition"}
         extraID={props.conditionType}
       />
