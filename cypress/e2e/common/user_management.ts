@@ -31,7 +31,7 @@ export const fillUser = (
   cy.dataCy("modal-textbox-verify-password").should("have.value", password);
 };
 
-const createUser = (
+export const createUser = (
   firstName: string,
   lastName: string,
   password: string,
@@ -46,7 +46,7 @@ const createUser = (
   cy.dataCy("add-user-modal").should("not.exist");
 };
 
-const validateUser = (login: string) => {
+export const validateUser = (login: string) => {
   searchForEntry(login);
   entryExists(login);
 };
