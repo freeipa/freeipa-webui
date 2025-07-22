@@ -72,7 +72,7 @@
   "cypress-cucumber-preprocessor": {
     "stepDefinitions": [
       "cypress/e2e/common/**/*.ts",
-      "cypress/e2e/[filepart]/**/*.ts"
+      "cypress/e2e/[filepart]/*.ts"
     ]
   },
   "engines": {
