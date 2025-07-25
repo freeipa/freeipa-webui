@@ -168,14 +168,6 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
 
   const modalActions: JSX.Element[] = [
     <Button
-      key="cancel"
-      variant="secondary"
-      onClick={props.onClose}
-      data-cy="modal-button-cancel"
-    >
-      Cancel
-    </Button>,
-    <Button
       key="delete"
       variant="danger"
       onClick={onDelete}
@@ -183,6 +175,14 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
       data-cy="modal-button-delete"
     >
       {spinning ? <Spinner size="sm" /> : "Delete"}
+    </Button>,
+    <Button
+      key="cancel"
+      variant="secondary"
+      onClick={props.onClose}
+      data-cy="modal-button-cancel"
+    >
+      Cancel
     </Button>,
   ];
 

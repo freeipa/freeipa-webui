@@ -701,6 +701,10 @@ export interface RecordType {
   dnsdata: string;
 }
 
+/**
+ * NOTE: This will be split to follow the same pattern and it is used in the server
+ * i.e. https://github.com/freeipa/freeipa/blob/master/ipaserver/plugins/dns.py#L680
+ */
 export interface DNSRecord {
   idnsname: string;
   idnssoarname: string;
