@@ -87,6 +87,8 @@ export interface FindDnsRecordPayload {
   dnsZoneId: string;
   recordName: string;
   sizeLimit?: number;
+  startIdx?: number;
+  stopIdx?: number;
   version?: string;
 }
 
@@ -522,11 +524,23 @@ const extendedApi = api.injectEndpoints({
      * @returns {DnsRecordBatchResponse} - Promise with the response data
      */
     dnsRecordFind: build.query<DnsRecordBatchResponse, FindDnsRecordPayload>({
+      // Force cache invalidation for pagination by including pagination params in serializeQueryArgs
+      serializeQueryArgs: ({ queryArgs }) => {
+        return `${queryArgs.dnsZoneId}-${queryArgs.recordName}-${queryArgs.startIdx}-${queryArgs.stopIdx}-${queryArgs.sizeLimit}`;
+      },
       async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { dnsZoneId, recordName, sizeLimit, version } = payloadData;
+        const {
+          dnsZoneId,
+          recordName,
+          sizeLimit,
+          startIdx = 0,
+          stopIdx,
+          version,
+        } = payloadData;
 
         const apiVersion = version || API_VERSION_BACKUP;
-        const limit = sizeLimit || 100; // Default size limit if not provided
+        // For pagination, we need to fetch enough records to cover the requested range
+        const limit = stopIdx ? Math.max(stopIdx, 100) : sizeLimit || 100;
 
         // FETCH DNS RECORDS DATA VIA "dnsrecord_find" COMMAND
         // Prepare search parameters
@@ -558,7 +572,14 @@ const extendedApi = api.injectEndpoints({
         const dnsRecordsItemsCount = responseDataDnsRecords.result.result
           .length as number;
 
-        for (let i = 0; i < dnsRecordsItemsCount; i++) {
+        // Apply pagination using startIdx and stopIdx
+        const effectiveStopIdx = stopIdx || dnsRecordsItemsCount;
+
+        for (
+          let i = startIdx;
+          i < dnsRecordsItemsCount && i < effectiveStopIdx;
+          i++
+        ) {
           const dnsRecordId = responseDataDnsRecords.result.result[
             i
           ] as dnsZoneType;
@@ -639,7 +660,14 @@ const extendedApi = api.injectEndpoints({
       FindDnsRecordPayload
     >({
       async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { dnsZoneId, recordName, sizeLimit, version } = payloadData;
+        const {
+          dnsZoneId,
+          recordName,
+          sizeLimit,
+          startIdx = 0,
+          stopIdx,
+          version,
+        } = payloadData;
 
         const apiVersion = version || API_VERSION_BACKUP;
         const limit = sizeLimit || 100; // Default size limit if not provided
@@ -674,7 +702,14 @@ const extendedApi = api.injectEndpoints({
         const dnsRecordsItemsCount = responseDataDnsRecords.result.result
           .length as number;
 
-        for (let i = 0; i < dnsRecordsItemsCount; i++) {
+        // Apply pagination using startIdx and stopIdx
+        const effectiveStopIdx = stopIdx || dnsRecordsItemsCount;
+
+        for (
+          let i = startIdx;
+          i < dnsRecordsItemsCount && i < effectiveStopIdx;
+          i++
+        ) {
           const dnsRecordId = responseDataDnsRecords.result.result[
             i
           ] as dnsZoneType;
