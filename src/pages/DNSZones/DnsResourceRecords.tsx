@@ -71,11 +71,17 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
   const [isSearchDisabled, setIsSearchDisabled] = React.useState(false);
   const [totalCount, setTotalCount] = React.useState(0);
 
+  // Calculate pagination parameters for server-side pagination
+  const startIdx = (page - 1) * perPage;
+  const stopIdx = startIdx + perPage;
+
   // API calls
   const dnsRecordsResponse = useDnsRecordFindQuery({
     dnsZoneId: props.dnsZoneId,
     recordName: searchValue,
     sizeLimit: perPage,
+    startIdx: startIdx,
+    stopIdx: stopIdx,
   });
 
   const { data, isLoading, error } = dnsRecordsResponse;
@@ -96,9 +102,8 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
       dnsRecordsResponse.data &&
       data !== undefined
     ) {
-      setTotalCount(data.result.length);
-      // Update the list of elements
       setDnsRecords(data.result);
+      setTotalCount(data.count);
       // Show table elements
       setShowTableRows(true);
     }
@@ -129,6 +134,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
 
     // Reset selected elements on refresh
     setTotalCount(0);
+    setSelectedElements([]);
 
     dnsRecordsResponse.refetch().then(() => {
       setShowTableRows(true);
@@ -143,7 +149,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
 
   // Table-related shared functionality
   // - Selectable checkboxes on table
-  const selectableDnsRecordsTable = dnsRecords.filter(isDnsRecordSelectable); // elements per Table
+  const selectableDnsRecordsTable = dnsRecords.filter(isDnsRecordSelectable); // Current page selectable elements
 
   // - Manage the selected elements in the table (add/remove)
   const updateSelectedDnsRecords = (
@@ -215,8 +221,14 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
   const submitSearchValue = () => {
     const payload: FindDnsRecordPayload = {
       dnsZoneId: props.dnsZoneId,
-      recordName: "",
+      recordName: searchValue,
+      sizeLimit: perPage,
+      startIdx: 0, // Reset to first page for search
+      stopIdx: perPage,
     };
+
+    setIsSearchDisabled(true);
+
     searchDnsRecords(payload).then((result) => {
       if ("data" in result) {
         const searchError = result.data?.error as
@@ -238,11 +250,12 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
           );
         } else {
           // Success
-          const dnsRecords = result.data?.result || [];
-
-          setTotalCount(totalCount);
-          setDnsRecords(dnsRecords);
+          const records = result.data?.result || [];
+          setDnsRecords(records);
+          setTotalCount(records.length);
           setShowTableRows(true);
+          // Reset to first page
+          setPage(1);
         }
         setIsSearchDisabled(false);
       }
@@ -250,7 +263,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
   };
 
   // Data wrappers
-  // TODO: Better separation of concerts
+  // TODO: Better separation of concerns
   // - 'PaginationLayout'
   const paginationData = {
     page,
@@ -269,7 +282,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     submitSearchValue,
   };
 
-  // - 'BulkSelectorrep'
+  // - 'BulkSelectorPrep'
   const bulkSelectorData = {
     selected: selectedElements,
     updateSelected: updateSelectedDnsRecords,
