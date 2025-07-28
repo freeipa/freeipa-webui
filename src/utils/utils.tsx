@@ -24,6 +24,7 @@ import {
   CertificateMapping,
   DNSZone,
   DNSRecord,
+  DNSForwardZone,
 } from "./datatypes/globalDataTypes";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
@@ -205,6 +206,9 @@ export const isDnsZoneSelectable = (dnsZone: DNSZone) =>
 
 export const isDnsRecordSelectable = (dnsRecord: DNSRecord) =>
   dnsRecord.idnsname !== "";
+
+export const isDnsForwardZoneSelectable = (dnsForwardZone: DNSForwardZone) =>
+  dnsForwardZone.idnsname !== "";
 
 /**
  * Write JSX error messages into 'apiErrorsJsx' array

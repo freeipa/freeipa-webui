@@ -52,9 +52,11 @@ export interface BatchResponse {
 }
 
 export interface ErrorResult {
+  status: string;
   code: number;
   message: string;
   data: {
+    name: string;
     attr: string;
     value: string;
   };
