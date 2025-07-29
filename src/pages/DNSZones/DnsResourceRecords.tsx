@@ -21,6 +21,8 @@ import {
   useDnsRecordFindQuery,
   useSearchDnsRecordsEntriesMutation,
 } from "src/services/rpcDnsZones";
+// API for cache invalidation
+import { api } from "src/services/rpc";
 // React router
 import { useNavigate } from "react-router";
 // Utils
@@ -30,6 +32,8 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useAlerts from "src/hooks/useAlerts";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Components
 import ToolbarLayout, {
   ToolbarItem,
@@ -52,6 +56,7 @@ interface DnsResourceRecordsProps {
 
 const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   // Alerts to show in the UI
   const alerts = useAlerts();
@@ -70,6 +75,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
   const [dnsRecords, setDnsRecords] = React.useState<DNSRecord[]>([]);
   const [isSearchDisabled, setIsSearchDisabled] = React.useState(false);
   const [totalCount, setTotalCount] = React.useState(0);
+  const [refreshKey, setRefreshKey] = React.useState(0); // Force refresh by changing query key
 
   // Calculate pagination parameters for server-side pagination
   const startIdx = (page - 1) * perPage;
@@ -82,6 +88,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     sizeLimit: perPage,
     startIdx: startIdx,
     stopIdx: stopIdx,
+    refreshKey: refreshKey, // Force new query when refreshKey changes
   });
 
   const { data, isLoading, error } = dnsRecordsResponse;
@@ -136,9 +143,24 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     setTotalCount(0);
     setSelectedElements([]);
 
-    dnsRecordsResponse.refetch().then(() => {
-      setShowTableRows(true);
-    });
+    // Force refresh by incrementing refresh key (forces new query)
+    setRefreshKey((prev) => prev + 1);
+
+    // Also invalidate cache and refetch
+    dispatch(api.util.invalidateTags(["DNSZones"]));
+
+    // Wait a bit for state update and cache invalidation, then refetch
+    setTimeout(() => {
+      dnsRecordsResponse
+        .refetch()
+        .then(() => {
+          setShowTableRows(true);
+        })
+        .catch(() => {
+          console.error("Error refreshing DNS records:", error);
+          setShowTableRows(true); // Show table even if there's an error
+        });
+    }, 100);
   };
 
   // 'Delete' button state
@@ -436,9 +458,9 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
                       ]}
                       columnNames={["Record name", "Record type", "Data"]}
                       hasCheckboxes={true}
-                      pathname="dns-records"
+                      pathname={`dns-zones/${props.dnsZoneId}/dns-records`}
                       showTableRows={showTableRows}
-                      showLink={false}
+                      showLink={true}
                       elementsData={{
                         isElementSelectable: isDnsRecordSelectable,
                         selectedElements,

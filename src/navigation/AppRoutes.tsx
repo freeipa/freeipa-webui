@@ -63,6 +63,7 @@ import CertificateMappingMatch from "src/pages/CertificateMapping/CertificateMap
 import CertificateMappingTabs from "src/pages/CertificateMapping/CertificateMappingTabs";
 import DnsZones from "src/pages/DNSZones/DnsZones";
 import DnsZonesTabs from "src/pages/DNSZones/DnsZonesTabs";
+import DnsResourceRecordsPreSettings from "src/pages/DNSZones/DnsResourceRecordsPreSettings";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -469,8 +470,33 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                   />
                   <Route
                     path="dns-records"
-                    element={<DnsZonesTabs section="dns-records" />}
-                  />
+                    // element={<DnsZonesTabs section="dns-records" />}
+                  >
+                    <Route
+                      path=""
+                      element={<DnsZonesTabs section="dns-records" />}
+                    />
+                    <Route
+                      path=":recordName"
+                      // element={<DnsResourceRecordsSettings />}
+                      element={<DnsResourceRecordsPreSettings />}
+                    >
+                      {/* <Route
+                        path=":recordName"
+                        element={<DnsResourceRecordsSettings />}
+                      /> */}
+                    </Route>
+                  </Route>
+                  {/* <Route
+                    path=":recordName"
+                    element={
+                      <DnsResourceRecordsSettings
+                      // dnsZoneId=":idnsname"
+                      // recordName=":recordName"
+                      // pathname="dns-records/:recordName"
+                      />
+                    }
+                  /> */}
                 </Route>
               </Route>
               <Route path="configuration" element={<Configuration />} />
