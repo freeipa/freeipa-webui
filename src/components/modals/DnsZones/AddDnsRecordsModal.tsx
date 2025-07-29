@@ -33,6 +33,11 @@ import {
   RadioGroupField,
   SelectField,
 } from "src/components/Form/Field";
+import {
+  getConfigValue,
+  hasDefaultValue,
+  setInitialValue,
+} from "src/utils/utils";
 
 interface PropsToAddModal {
   isOpen: boolean;
@@ -105,13 +110,18 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
     React.useState<boolean>(false);
 
   // Basic form values
-  const [basicFormValues, setBasicFormValues] = React.useState({
+  const [basicFormValues, setBasicFormValues] = React.useState<{
+    recordName: string;
+    recordType: DnsRecordType;
+  }>({
     recordName: props.defaultRecordName || "",
-    recordType: (props.defaultSelectedRecordType || "A") as DnsRecordType,
+    recordType: props.defaultSelectedRecordType || "A",
   });
 
   // Dynamic field values - unified state management
-  const [fieldValues, setFieldValues] = React.useState<Record<string, any>>({});
+  const [fieldValues, setFieldValues] = React.useState<Record<string, unknown>>(
+    {}
+  );
 
   // Select states for dropdowns
   const [selectStates, setSelectStates] = React.useState<
@@ -170,41 +180,23 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
         let defaultValue;
 
         if (fieldConfig) {
-          if (
-            fieldConfig.type === "checkbox" &&
-            (fieldConfig as CheckboxField).defaultValue !== undefined
-          ) {
-            hasDefaultValue = true;
-            defaultValue = (fieldConfig as CheckboxField).defaultValue;
-          } else if (
-            fieldConfig.type === "number" &&
-            (fieldConfig as NumberInputField).defaultValue !== undefined
-          ) {
-            hasDefaultValue = true;
-            defaultValue = (fieldConfig as NumberInputField).defaultValue;
-          } else if (
-            fieldConfig.type === "select" &&
-            (fieldConfig as SelectField).defaultValue !== undefined
-          ) {
-            hasDefaultValue = true;
-            defaultValue = (fieldConfig as SelectField).defaultValue;
-          } else if (
-            fieldConfig.type === "radio" &&
-            (fieldConfig as RadioGroupField).defaultValue !== undefined
-          ) {
-            hasDefaultValue = true;
-            defaultValue = (fieldConfig as RadioGroupField).defaultValue;
-          }
+          const {
+            newInitialValue: newDefaultValue,
+            hasDefaultValue: newHasDefaultValue,
+          } = setInitialValue(fieldConfig);
+
+          defaultValue = newDefaultValue;
+          hasDefaultValue = newHasDefaultValue;
         }
 
         // If field has a default value and user hasn't set a value, consider it filled with default
         if (hasDefaultValue && (value === undefined || value === null)) {
-          return true; // Field is "filled" with its default value
+          return true;
         }
 
         // If field has a default value and user value equals default, consider it filled
         if (hasDefaultValue && value === defaultValue) {
-          return true; // Field is "filled" with its default value
+          return true;
         }
 
         // Standard validation for explicitly set values
@@ -246,31 +238,13 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
     const newFieldValues: Record<string, any> = {};
 
     currentConfig.forEach((field) => {
-      if (
-        field.type === "checkbox" &&
-        (field as CheckboxField).defaultValue !== undefined
-      ) {
-        newFieldValues[field.name] = (field as CheckboxField).defaultValue;
-      } else if (
-        field.type === "number" &&
-        (field as NumberInputField).defaultValue !== undefined
-      ) {
-        newFieldValues[field.name] = (field as NumberInputField).defaultValue;
-      } else if (
-        field.type === "select" &&
-        (field as SelectField).defaultValue !== undefined
-      ) {
-        newFieldValues[field.name] = (field as SelectField).defaultValue;
-      } else if (
-        field.type === "radio" &&
-        (field as RadioGroupField).defaultValue !== undefined
-      ) {
-        newFieldValues[field.name] = (field as RadioGroupField).defaultValue;
-      }
+      const { newInitialValue: newDefaultValue } = setInitialValue(field);
+
+      newFieldValues[field.name] = newDefaultValue;
     });
 
     setFieldValues(newFieldValues);
-  }, []); // Only run on mount
+  }, []);
 
   // Helper method to build the payload based on values
   const buildPayload = (): DynamicAddDnsRecordPayload => {
@@ -280,44 +254,23 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
       recordType: basicFormValues.recordType,
     };
 
-    // Get current record type configuration to access default values
     const currentConfig = dnsRecordConfigs[basicFormValues.recordType];
 
-    // First, set all default values for the current record type
-    // This ensures that fields like loc_part_lat_deg, loc_part_lon_deg, loc_part_lat_dir, etc.
-    // are ALWAYS included in the payload with their defaults, even if user never touched them
     currentConfig.forEach((field) => {
-      let defaultValue;
-
-      if (
-        field.type === "checkbox" &&
-        (field as CheckboxField).defaultValue !== undefined
-      ) {
-        defaultValue = (field as CheckboxField).defaultValue;
-      } else if (
-        field.type === "number" &&
-        (field as NumberInputField).defaultValue !== undefined
-      ) {
-        defaultValue = (field as NumberInputField).defaultValue;
-      } else if (
-        field.type === "select" &&
-        (field as SelectField).defaultValue !== undefined
-      ) {
-        defaultValue = (field as SelectField).defaultValue;
-      } else if (
-        field.type === "radio" &&
-        (field as RadioGroupField).defaultValue !== undefined
-      ) {
-        defaultValue = (field as RadioGroupField).defaultValue;
-      }
+      const { newInitialValue } = setInitialValue(field, undefined);
 
       // ALWAYS set default value if field has one (including 0, false, etc.)
-      if (defaultValue !== undefined) {
-        payload[field.name] = defaultValue;
+      if (
+        newInitialValue !== undefined &&
+        (typeof newInitialValue === "string" ||
+          typeof newInitialValue === "number" ||
+          typeof newInitialValue === "boolean")
+      ) {
+        payload[field.name] = newInitialValue;
       }
     });
 
-    // Then, override with any user-modified values
+    // Override with any user-modified values
     // This ensures user choices take precedence over defaults
     Object.entries(fieldValues).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
@@ -325,12 +278,7 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
 
         if (typeof value === "string") {
           // For strings, include if not empty OR if it's a field with a default value
-          const hasDefault =
-            fieldConfig &&
-            ((fieldConfig.type === "select" &&
-              (fieldConfig as SelectField).defaultValue !== undefined) ||
-              (fieldConfig.type === "radio" &&
-                (fieldConfig as RadioGroupField).defaultValue !== undefined));
+          const hasDefault = fieldConfig ? hasDefaultValue(fieldConfig) : false;
 
           if (value !== "" || hasDefault) {
             payload[key] = value;
@@ -338,7 +286,7 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
         } else {
           // For non-string values (numbers, booleans), ALWAYS include them
           // This ensures 0 values are included (important for LOC records)
-          payload[key] = value;
+          payload[key] = value as number | boolean;
         }
       }
     });
@@ -355,7 +303,7 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
   const clearFields = () => {
     setBasicFormValues({
       recordName: props.defaultRecordName || "",
-      recordType: (props.defaultSelectedRecordType || "A") as DnsRecordType,
+      recordType: props.defaultSelectedRecordType || "A",
     });
 
     // Initialize with default values for the default record type
@@ -364,27 +312,9 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
     const defaultConfig = dnsRecordConfigs[defaultRecordType];
 
     defaultConfig.forEach((field) => {
-      if (
-        field.type === "checkbox" &&
-        (field as CheckboxField).defaultValue !== undefined
-      ) {
-        newFieldValues[field.name] = (field as CheckboxField).defaultValue;
-      } else if (
-        field.type === "number" &&
-        (field as NumberInputField).defaultValue !== undefined
-      ) {
-        newFieldValues[field.name] = (field as NumberInputField).defaultValue;
-      } else if (
-        field.type === "select" &&
-        (field as SelectField).defaultValue !== undefined
-      ) {
-        newFieldValues[field.name] = (field as SelectField).defaultValue;
-      } else if (
-        field.type === "radio" &&
-        (field as RadioGroupField).defaultValue !== undefined
-      ) {
-        newFieldValues[field.name] = (field as RadioGroupField).defaultValue;
-      }
+      const { newInitialValue } = setInitialValue(field);
+
+      newFieldValues[field.name] = newInitialValue;
     });
 
     setFieldValues(newFieldValues);
@@ -468,18 +398,7 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
       <GenericField
         key={field.name}
         field={field}
-        value={getFieldValue(
-          field.name,
-          field.type === "checkbox"
-            ? (field as CheckboxField).defaultValue
-            : field.type === "number"
-              ? (field as NumberInputField).defaultValue
-              : field.type === "select"
-                ? (field as SelectField).defaultValue
-                : field.type === "radio"
-                  ? (field as RadioGroupField).defaultValue
-                  : ""
-        )}
+        value={getFieldValue(field.name, getConfigValue(field))}
         onChange={(value) => updateFieldValue(field.name, value)}
         selectStates={selectStates}
       />

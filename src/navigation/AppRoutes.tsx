@@ -64,6 +64,7 @@ import CertificateMappingTabs from "src/pages/CertificateMapping/CertificateMapp
 import DnsZones from "src/pages/DNSZones/DnsZones";
 import DnsZonesTabs from "src/pages/DNSZones/DnsZonesTabs";
 import DnsForwardZones from "src/pages/DNSZones/DnsForwardZones";
+import DnsResourceRecordsPreSettings from "src/pages/DNSZones/DnsResourceRecordsPreSettings";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -468,10 +469,16 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                     path=""
                     element={<DnsZonesTabs section="settings" />}
                   />
-                  <Route
-                    path="dns-records"
-                    element={<DnsZonesTabs section="dns-records" />}
-                  />
+                  <Route path="dns-records">
+                    <Route
+                      path=""
+                      element={<DnsZonesTabs section="dns-records" />}
+                    />
+                    <Route
+                      path=":recordName"
+                      element={<DnsResourceRecordsPreSettings />}
+                    />
+                  </Route>
                 </Route>
               </Route>
               <Route path="dns-forward-zones">

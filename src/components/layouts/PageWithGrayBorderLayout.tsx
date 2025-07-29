@@ -1,6 +1,11 @@
 import React from "react";
 // PatternFly
-import { PageSection, PageSectionVariants } from "@patternfly/react-core";
+import {
+  FlexItem,
+  Flex,
+  PageSection,
+  PageSectionVariants,
+} from "@patternfly/react-core";
 // Components
 import TitleLayout from "src/components/layouts/TitleLayout";
 import ToolbarLayout, { ToolbarItem } from "./ToolbarLayout";
@@ -11,16 +16,10 @@ interface PropsToPageWithGrayBorderLayout {
   id: string;
   toolbarItems?: ToolbarItem[];
   breadcrumbItems?: BreadCrumbItem[];
-  height?: string;
   children: React.ReactNode;
 }
 
 const PageWithGrayBorderLayout = (props: PropsToPageWithGrayBorderLayout) => {
-  const style: React.CSSProperties = {
-    overflowY: "auto",
-    height: props.height || `calc(100vh - 278.2px)`,
-  };
-
   return (
     <>
       <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
@@ -43,19 +42,22 @@ const PageWithGrayBorderLayout = (props: PropsToPageWithGrayBorderLayout) => {
         isFilled
         className="pf-v5-u-m-lg pf-v5-u-mb-0 pf-v5-u-pb-0"
       >
-        <>
+        <Flex direction={{ default: "column" }}>
           <PageSection
             id={props.id}
             variant={PageSectionVariants.light}
-            style={style}
             className="pf-v5-u-mb-0"
           >
             {props.children}
           </PageSection>
           {props.toolbarItems && (
-            <ToolbarLayout isSticky toolbarItems={props.toolbarItems} />
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <ToolbarLayout toolbarItems={props.toolbarItems} />
+            </FlexItem>
           )}
-        </>
+        </Flex>
       </PageSection>
     </>
   );

@@ -82,11 +82,11 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
       if (error.message !== undefined) {
         setErrorMessage(error.message);
       }
-    } else if ("data" in error) {
+    } else if ("data" in error && error.data) {
       const errorData = error.data as ErrorData;
-      const errorCode = errorData.code;
-      const errorName = errorData.name;
-      const errorMessage = errorData.error;
+      const errorCode: string = errorData.code;
+      const errorName: string = errorData.name;
+      const errorMessage: string = errorData.error;
 
       setErrorTitle("IPA error " + errorCode + ": " + errorName);
       setErrorMessage(errorMessage);
@@ -114,7 +114,7 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
 
           if (data.error) {
             // Handle error at the response level
-            const errorData = {
+            const errorData: ErrorData = {
               code:
                 typeof data.error === "object"
                   ? data.error.code.toString()
@@ -127,22 +127,18 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
                 typeof data.error === "string"
                   ? data.error
                   : data.error.message,
-            } as ErrorData;
+            };
 
-            const error = {
+            const error: FetchBaseQueryError = {
+              error: "Custom error",
               status: "CUSTOM_ERROR",
               data: errorData,
-            } as FetchBaseQueryError;
+            };
 
             handleAPIError(error);
           } else {
-            props.clearSelectedElements();
-            if (props.updateIsDeleteButtonDisabled) {
-              props.updateIsDeleteButtonDisabled(true);
-            }
-            if (props.updateIsDeletion) {
-              props.updateIsDeletion(true);
-            }
+            props.updateIsDeleteButtonDisabled?.(true);
+            props.updateIsDeletion?.(true);
 
             alerts.addAlert(
               "remove-dnsrecords-success",
