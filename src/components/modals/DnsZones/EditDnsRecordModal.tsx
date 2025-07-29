@@ -13,13 +13,7 @@ import {
 import { DnsRecordType } from "src/utils/datatypes/globalDataTypes";
 import { dnsRecordConfigs } from "src/utils/datatypes/DnsRecordTypes";
 // Components
-import {
-  CheckboxField,
-  GenericField,
-  NumberInputField,
-  RadioGroupField,
-  SelectField,
-} from "src/components/Form/Field";
+import { GenericField } from "src/components/Form/Field";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // RPC
@@ -28,6 +22,11 @@ import {
   useModDnsRecordMutation,
 } from "src/services/rpcDnsZones";
 import { mandatoryFields } from "./AddDnsRecordsModal";
+import {
+  getConfigValue,
+  hasDefaultValue,
+  setInitialValue,
+} from "src/utils/utils";
 
 interface EditDnsRecordModalProps {
   recordName: string;
@@ -62,9 +61,9 @@ const EditDnsRecordModal = (props: EditDnsRecordModalProps) => {
   // Some fields from `dnsRecordConfigs` won't be shown in the modal for editing
   // These are typically creation-specific fields that don't make sense when editing existing records
   const fieldsToHide = [
-    "a_extra_create_reverse", // A record: create reverse record option
-    "aaaa_extra_create_reverse", // AAAA record: create reverse record option
-    "ns_part_skip_dns_check", // NS record: skip DNS check option
+    "a_extra_create_reverse",
+    "aaaa_extra_create_reverse",
+    "ns_part_skip_dns_check",
   ];
 
   // Initialize field values and select states
@@ -86,28 +85,12 @@ const EditDnsRecordModal = (props: EditDnsRecordModalProps) => {
       let initialValue = props.initialValues?.[field.name];
 
       if (initialValue === undefined) {
-        // Set default values for new fields
-        if (
-          field.type === "checkbox" &&
-          (field as CheckboxField).defaultValue !== undefined
-        ) {
-          initialValue = (field as CheckboxField).defaultValue;
-        } else if (
-          field.type === "number" &&
-          (field as NumberInputField).defaultValue !== undefined
-        ) {
-          initialValue = (field as NumberInputField).defaultValue;
-        } else if (
-          field.type === "select" &&
-          (field as SelectField).defaultValue !== undefined
-        ) {
-          initialValue = (field as SelectField).defaultValue;
-        } else if (
-          field.type === "radio" &&
-          (field as RadioGroupField).defaultValue !== undefined
-        ) {
-          initialValue = (field as RadioGroupField).defaultValue;
-        }
+        const { newInitialValue: newInitialValue } = setInitialValue(
+          field,
+          initialValue
+        );
+
+        initialValue = newInitialValue;
       }
 
       if (initialValue !== undefined) {
@@ -161,31 +144,13 @@ const EditDnsRecordModal = (props: EditDnsRecordModalProps) => {
       let defaultValue;
 
       if (fieldConfig) {
-        if (
-          fieldConfig.type === "checkbox" &&
-          (fieldConfig as CheckboxField).defaultValue !== undefined
-        ) {
-          hasDefaultValue = true;
-          defaultValue = (fieldConfig as CheckboxField).defaultValue;
-        } else if (
-          fieldConfig.type === "number" &&
-          (fieldConfig as NumberInputField).defaultValue !== undefined
-        ) {
-          hasDefaultValue = true;
-          defaultValue = (fieldConfig as NumberInputField).defaultValue;
-        } else if (
-          fieldConfig.type === "select" &&
-          (fieldConfig as SelectField).defaultValue !== undefined
-        ) {
-          hasDefaultValue = true;
-          defaultValue = (fieldConfig as SelectField).defaultValue;
-        } else if (
-          fieldConfig.type === "radio" &&
-          (fieldConfig as RadioGroupField).defaultValue !== undefined
-        ) {
-          hasDefaultValue = true;
-          defaultValue = (fieldConfig as RadioGroupField).defaultValue;
-        }
+        const {
+          newInitialValue: newDefaultValue,
+          hasDefaultValue: newHasDefaultValue,
+        } = setInitialValue(fieldConfig);
+
+        hasDefaultValue = newHasDefaultValue;
+        defaultValue = newDefaultValue;
       }
 
       // If field has a default value and user hasn't set a value, consider it filled with default
@@ -246,34 +211,11 @@ const EditDnsRecordModal = (props: EditDnsRecordModalProps) => {
       if (fieldsToHide.includes(field.name)) {
         return;
       }
-
-      let defaultValue;
-
-      if (
-        field.type === "checkbox" &&
-        (field as CheckboxField).defaultValue !== undefined
-      ) {
-        defaultValue = (field as CheckboxField).defaultValue;
-      } else if (
-        field.type === "number" &&
-        (field as NumberInputField).defaultValue !== undefined
-      ) {
-        defaultValue = (field as NumberInputField).defaultValue;
-      } else if (
-        field.type === "select" &&
-        (field as SelectField).defaultValue !== undefined
-      ) {
-        defaultValue = (field as SelectField).defaultValue;
-      } else if (
-        field.type === "radio" &&
-        (field as RadioGroupField).defaultValue !== undefined
-      ) {
-        defaultValue = (field as RadioGroupField).defaultValue;
-      }
+      const { newInitialValue } = setInitialValue(field);
 
       // Set default value if field has one
-      if (defaultValue !== undefined) {
-        payload[field.name] = defaultValue;
+      if (newInitialValue !== undefined) {
+        payload[field.name] = newInitialValue;
       }
     });
 
@@ -288,19 +230,14 @@ const EditDnsRecordModal = (props: EditDnsRecordModalProps) => {
         const fieldConfig = currentConfig.find((f) => f.name === key);
 
         if (typeof value === "string") {
-          const hasDefault =
-            fieldConfig &&
-            ((fieldConfig.type === "select" &&
-              (fieldConfig as SelectField).defaultValue !== undefined) ||
-              (fieldConfig.type === "radio" &&
-                (fieldConfig as RadioGroupField).defaultValue !== undefined));
+          const hasDefault = fieldConfig ? hasDefaultValue(fieldConfig) : false;
 
           if (value !== "" || hasDefault) {
             payload[key] = value;
           }
         } else {
           // For non-string values (numbers, booleans), always include them
-          payload[key] = value;
+          payload[key] = value as number | boolean;
         }
       }
     });
@@ -350,18 +287,7 @@ const EditDnsRecordModal = (props: EditDnsRecordModalProps) => {
         <GenericField
           key={field.name}
           field={field}
-          value={getFieldValue(
-            field.name,
-            field.type === "checkbox"
-              ? (field as CheckboxField).defaultValue
-              : field.type === "number"
-                ? (field as NumberInputField).defaultValue
-                : field.type === "select"
-                  ? (field as SelectField).defaultValue
-                  : field.type === "radio"
-                    ? (field as RadioGroupField).defaultValue
-                    : ""
-          )}
+          value={getFieldValue(field.name, getConfigValue(field))}
           onChange={(value) => updateFieldValue(field.name, value)}
           selectStates={selectStates}
         />

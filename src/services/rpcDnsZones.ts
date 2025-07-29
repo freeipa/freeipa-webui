@@ -18,6 +18,7 @@ import {
   DNSZone,
   dnsZoneType,
   RecordType,
+  RecordTypeData,
 } from "src/utils/datatypes/globalDataTypes";
 
 /**
@@ -89,6 +90,13 @@ export interface FindDnsRecordPayload {
   sizeLimit?: number;
   startIdx?: number;
   stopIdx?: number;
+  refreshKey?: number; // For forcing cache invalidation
+  version?: string;
+}
+
+export interface ShowDnsRecordPayload {
+  dnsZoneId: string;
+  recordName: string;
   version?: string;
 }
 
@@ -106,20 +114,130 @@ export interface AddDnsRecordPayload {
   dnsZoneId: string;
   recordName: string;
   recordType: DnsRecordType;
+  structured?: boolean;
   version?: string;
 }
 
 // Extended interface with dynamic field support and all DNS record fields
-export interface DynamicAddDnsRecordPayload extends AddDnsRecordPayload {
-  // Dynamic fields - allows any additional DNS record field
-  [key: string]: string | number | boolean | undefined;
-}
+export type DynamicAddDnsRecordPayload = AddDnsRecordPayload & RecordTypeData;
 
 export interface DeleteDnsRecordPayload {
   dnsZoneId: string;
   recordNames: string[];
   version?: string;
 }
+
+export interface DynamicDeleteDnsRecordPayload {
+  dnsZoneId: string;
+  recordName: string;
+  recordTypeName: string; // E.g. 'arecord', 'cnamerecord', etc.
+  dataToDelete: string[];
+  version?: string;
+}
+
+export interface ModDnsRecordPayload {
+  dnsZoneId: string;
+  recordName: string;
+  dnsttl?: number;
+  all?: boolean;
+  rights?: boolean;
+  version?: string;
+}
+
+export interface DynamicModDnsRecordPayload extends ModDnsRecordPayload {
+  [key: string]: string | number | boolean | undefined;
+}
+
+interface ModDnsRecordParams {
+  dnsttl?: number;
+  all?: boolean;
+  rights?: boolean;
+  version?: string;
+  [key: string]: string | number | boolean | undefined;
+}
+
+const recordTypeNames = [
+  {
+    name: "A",
+    type: "arecord",
+  },
+  {
+    name: "AAAA",
+    type: "aaaarecord",
+  },
+  {
+    name: "A6",
+    type: "a6record",
+  },
+  {
+    name: "AFSDB",
+    type: "afsdbrecord",
+  },
+  {
+    name: "CERT",
+    type: "certrecord",
+  },
+  {
+    name: "CNAME",
+    type: "cnamerecord",
+  },
+  {
+    name: "DNAME",
+    type: "dnamerecord",
+  },
+  {
+    name: "DS",
+    type: "dsrecord",
+  },
+  {
+    name: "DLV",
+    type: "dlvrecord",
+  },
+  {
+    name: "KX",
+    type: "kxrecord",
+  },
+  {
+    name: "LOC",
+    type: "locrecord",
+  },
+  {
+    name: "MX",
+    type: "mxrecord",
+  },
+  {
+    name: "NAPTR",
+    type: "naptrrecord",
+  },
+  {
+    name: "NS",
+    type: "nsrecord",
+  },
+  {
+    name: "PTR",
+    type: "ptrrecord",
+  },
+  {
+    name: "SRV",
+    type: "srvrecord",
+  },
+  {
+    name: "SSHFP",
+    type: "sshfprecord",
+  },
+  {
+    name: "TLSA",
+    type: "tlsarecord",
+  },
+  {
+    name: "TXT",
+    type: "txtrecord",
+  },
+  {
+    name: "URI",
+    type: "urirecord",
+  },
+];
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -761,7 +879,7 @@ const extendedApi = api.injectEndpoints({
     }),
     /**
      * Add DNS record
-     * @param {AddDnsRecordPayload} payload - The payload containing DNS zone ID and record data
+     * @param {DynamicAddDnsRecordPayload} payload - The payload containing DNS zone ID and record data
      * @returns {Promise<FindRPCResponse>} - Promise with the response data
      */
     addDnsRecord: build.mutation<FindRPCResponse, DynamicAddDnsRecordPayload>({
@@ -785,6 +903,8 @@ const extendedApi = api.injectEndpoints({
             params[key] = value;
           }
         });
+
+        params.structured = payload?.structured;
 
         return getCommand({
           method: "dnsrecord_add",
@@ -810,6 +930,98 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(commands, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Show details of a DNS record
+     * @param {ShowDnsRecordPayload} payload - The payload containing DNS zone ID and record name
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    showDnsRecord: build.query<FindRPCResponse, ShowDnsRecordPayload>({
+      query: (payload) => {
+        const apiVersion = payload.version || API_VERSION_BACKUP;
+
+        return getCommand({
+          method: "dnsrecord_show",
+          params: [
+            [payload.dnsZoneId, payload.recordName],
+            { all: true, rights: true, structured: true, version: apiVersion },
+          ],
+        });
+      },
+    }),
+    /**
+     * Modify DNS record
+     * @param {ModDnsRecordPayload | DynamicModDnsRecordPayload} payload - The payload containing DNS zone ID and record data
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    modDnsRecord: build.mutation<
+      FindRPCResponse,
+      ModDnsRecordPayload | DynamicModDnsRecordPayload
+    >({
+      query: (payload) => {
+        const apiVersion = payload.version || API_VERSION_BACKUP;
+        const params: ModDnsRecordParams = {
+          ...payload,
+          structured: true,
+          version: apiVersion,
+        };
+
+        if (payload.all) {
+          params.all = true;
+        }
+        if (payload.rights) {
+          params.rights = true;
+        }
+
+        // Add the record type to the params based on the record type name
+        const recordType = recordTypeNames.find(
+          (recordType) =>
+            recordType.name ===
+            (payload as DynamicModDnsRecordPayload).recordType
+        );
+
+        const recordTypeForApi = recordType?.type;
+        if (recordTypeForApi !== undefined) {
+          params[recordTypeForApi] = (
+            payload as DynamicModDnsRecordPayload
+          ).originalValue;
+        }
+
+        // Remove unnecessary params to dump the rest of them to the API
+        if ("recordName" in params) delete params.recordName;
+        if ("dnsZoneId" in params) delete params.dnsZoneId;
+        if ("recordType" in params) delete params.recordType;
+        if ("originalValue" in params) delete params.originalValue;
+
+        return getCommand({
+          method: "dnsrecord_mod",
+          params: [[payload.dnsZoneId, payload.recordName], params],
+        });
+      },
+    }),
+    /**
+     * Delete DNS record (from the Settings page)
+     * @param {DynamicDeleteDnsRecordPayload} payload - The payload containing DNS zone ID and record data
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    deleteDnsRecordFromSettings: build.mutation<
+      FindRPCResponse,
+      DynamicDeleteDnsRecordPayload
+    >({
+      query: (payload) => {
+        const arecord = payload.recordTypeName;
+        return getCommand({
+          method: "dnsrecord_del",
+          params: [
+            [payload.dnsZoneId, payload.recordName],
+            {
+              [arecord]: payload.dataToDelete,
+              structured: true,
+              version: payload.version || API_VERSION_BACKUP,
+            },
+          ],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -830,4 +1042,7 @@ export const {
   useSearchDnsRecordsEntriesMutation,
   useAddDnsRecordMutation,
   useDnsRecordDeleteMutation,
+  useShowDnsRecordQuery,
+  useModDnsRecordMutation,
+  useDeleteDnsRecordFromSettingsMutation,
 } = extendedApi;

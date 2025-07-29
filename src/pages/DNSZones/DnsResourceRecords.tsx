@@ -136,9 +136,19 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     setTotalCount(0);
     setSelectedElements([]);
 
-    dnsRecordsResponse.refetch().then(() => {
-      setShowTableRows(true);
-    });
+    dnsRecordsResponse
+      .refetch()
+      .then(() => {
+        setShowTableRows(true);
+      })
+      .catch(() => {
+        alerts.addAlert(
+          "refresh-dns-records-error",
+          "Error refreshing DNS records",
+          "danger"
+        );
+        setShowTableRows(true); // Show table even if there's an error
+      });
   };
 
   // 'Delete' button state
@@ -436,9 +446,9 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
                       ]}
                       columnNames={["Record name", "Record type", "Data"]}
                       hasCheckboxes={true}
-                      pathname="dns-records"
+                      pathname={`dns-zones/${props.dnsZoneId}/dns-records`}
                       showTableRows={showTableRows}
-                      showLink={false}
+                      showLink={true}
                       elementsData={{
                         isElementSelectable: isDnsRecordSelectable,
                         selectedElements,

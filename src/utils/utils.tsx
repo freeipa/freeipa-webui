@@ -31,6 +31,13 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // PatternFly
 import TextLayout from "src/components/layouts/TextLayout";
+import {
+  CheckboxField,
+  FieldConfig,
+  NumberInputField,
+  RadioGroupField,
+  SelectField,
+} from "src/components/Form/Field";
 
 /**
  * Functions that can be reusable and called by several components throughout the application.
@@ -571,3 +578,110 @@ export const removeCertificateDelimiters = (certificate: string) => {
 export default function capitalizeFirstLetter(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+/**
+ * Helper function to get API record type name from display name
+ * E.g. "A" -> "arecord"
+ * @param {string} recordType - The display name of the record type
+ * @returns {string} - The API record type name
+ */
+export const getRecordTypeName = (recordType: string): string => {
+  const recordTypeMapping = {
+    A: "arecord",
+    AAAA: "aaaarecord",
+    A6: "a6record",
+    AFSDB: "afsdbrecord",
+    CERT: "certrecord",
+    CNAME: "cnamerecord",
+    DNAME: "dnamerecord",
+    DS: "dsrecord",
+    DLV: "dlvrecord",
+    KX: "kxrecord",
+    LOC: "locrecord",
+    MX: "mxrecord",
+    NAPTR: "naptrrecord",
+    NS: "nsrecord",
+    PTR: "ptrrecord",
+    SRV: "srvrecord",
+    SSHFP: "sshfprecord",
+    TLSA: "tlsarecord",
+    TXT: "txtrecord",
+    URI: "urirecord",
+  };
+
+  return recordTypeMapping[recordType];
+};
+
+/**
+ * Set initial value for a field
+ * @param {FieldConfig} field - Field configuration
+ * @param {unknown} initialValues - Initial values
+ * @returns {unknown} - Initial value
+ * @returns {boolean} - Whether the field has a default value or not
+ */
+export const setInitialValue = (
+  field: FieldConfig,
+  initialValue?: boolean | number | string // | RecordTypeData
+) => {
+  let hasDefaultValue = false;
+  let newInitialValue = initialValue ?? undefined;
+
+  if (
+    field.type === "checkbox" &&
+    (field as CheckboxField).defaultValue !== undefined
+  ) {
+    newInitialValue = (field as CheckboxField).defaultValue as boolean;
+    hasDefaultValue = true;
+  } else if (
+    field.type === "number" &&
+    (field as NumberInputField).defaultValue !== undefined
+  ) {
+    newInitialValue = (field as NumberInputField).defaultValue as number;
+    hasDefaultValue = true;
+  } else if (
+    field.type === "select" &&
+    (field as SelectField).defaultValue !== undefined
+  ) {
+    newInitialValue = (field as SelectField).defaultValue as string;
+    hasDefaultValue = true;
+  } else if (
+    field.type === "radio" &&
+    (field as RadioGroupField).defaultValue !== undefined
+  ) {
+    newInitialValue = (field as RadioGroupField).defaultValue as string;
+    hasDefaultValue = true;
+  }
+  return { newInitialValue, hasDefaultValue };
+};
+
+/**
+ * Determine if a field has a default value
+ * @param {FieldConfig} fieldConfig - Field configuration
+ * @returns {boolean} - Whether the field has a default value or not
+ */
+export const hasDefaultValue = (fieldConfig: FieldConfig) => {
+  return (
+    fieldConfig &&
+    ((fieldConfig.type === "select" &&
+      (fieldConfig as SelectField).defaultValue !== undefined) ||
+      (fieldConfig.type === "radio" &&
+        (fieldConfig as RadioGroupField).defaultValue !== undefined))
+  );
+};
+
+/**
+ * Get the config value for a field
+ * @param {FieldConfig} field - Field configuration
+ * @returns {unknown} - The config value for the field
+ */
+export const getConfigValue = (field: FieldConfig) => {
+  return field.type === "checkbox"
+    ? (field as CheckboxField).defaultValue
+    : field.type === "number"
+      ? (field as NumberInputField).defaultValue
+      : field.type === "select"
+        ? (field as SelectField).defaultValue
+        : field.type === "radio"
+          ? (field as RadioGroupField).defaultValue
+          : "";
+};
