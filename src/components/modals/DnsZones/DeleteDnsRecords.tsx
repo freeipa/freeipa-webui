@@ -13,16 +13,19 @@ import useAlerts from "src/hooks/useAlerts";
 import {
   DeleteDnsRecordPayload,
   useDnsRecordDeleteMutation,
+  useDeleteDnsRecordFromSettingsMutation,
+  DynamicDeleteDnsRecordPayload,
 } from "src/services/rpcDnsZones";
 // Data types
 import { DNSRecord, ErrorData } from "src/utils/datatypes/globalDataTypes";
-import { BatchRPCResponse } from "src/services/rpc";
+import { BatchRPCResponse, FindRPCResponse } from "src/services/rpc";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 // Components
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import DeletedElementsTable from "src/components/tables/DeletedElementsTable";
 import { SerializedError } from "@reduxjs/toolkit";
 import ErrorModal from "../ErrorModal";
+import { API_VERSION_BACKUP } from "src/utils/utils";
 
 interface DeleteDnsRecordsModalProps {
   isOpen: boolean;
@@ -32,9 +35,11 @@ interface DeleteDnsRecordsModalProps {
   columnNames: string[]; // E.g. ["Record Name", "Record Type"]
   keyNames: string[]; // E.g. for dns_record.name, dns_record.type --> ["name", "type"]
   onRefresh: () => void;
-  updateIsDeleteButtonDisabled: (value: boolean) => void;
-  updateIsDeletion: (value: boolean) => void;
+  updateIsDeleteButtonDisabled?: (value: boolean) => void;
+  updateIsDeletion?: (value: boolean) => void;
   dnsZoneId: string;
+  recordName?: string;
+  recordTypeName?: string;
 }
 
 const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
@@ -43,6 +48,8 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
 
   // RPC calls
   const [deleteDnsRecords] = useDnsRecordDeleteMutation();
+  const [deleteDnsRecordFromSettings] =
+    useDeleteDnsRecordFromSettingsMutation();
 
   // States
   const [spinning, setBtnSpinning] = React.useState<boolean>(false);
@@ -90,24 +97,36 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
   const onDelete = () => {
     setBtnSpinning(true);
 
-    const payload: DeleteDnsRecordPayload = {
-      dnsZoneId: props.dnsZoneId,
-      recordNames: props.elementsToDelete.map((element) =>
-        element.idnsname.toString()
-      ),
-    };
+    // Use conditional logic to call the correct API with the right payload type
+    if (props.recordName && props.recordTypeName) {
+      // Delete specific record data from settings page
+      const payload: DynamicDeleteDnsRecordPayload = {
+        dnsZoneId: props.dnsZoneId,
+        recordName: props.recordName,
+        recordTypeName: props.recordTypeName,
+        dataToDelete: props.elementsToDelete.map((element) => element.dnsdata),
+        version: API_VERSION_BACKUP,
+      };
 
-    deleteDnsRecords(payload).then((response) => {
-      if ("data" in response) {
-        const data = response.data as BatchRPCResponse;
-        const result = data.result;
+      deleteDnsRecordFromSettings(payload).then((response) => {
+        if ("data" in response) {
+          const data = response.data as FindRPCResponse;
 
-        if (result) {
-          if ("error" in result.results[0] && result.results[0].error) {
+          if (data.error) {
+            // Handle error at the response level
             const errorData = {
-              code: result.results[0].error_code,
-              name: result.results[0].error_name,
-              error: result.results[0].error,
+              code:
+                typeof data.error === "object"
+                  ? data.error.code.toString()
+                  : "500",
+              name:
+                typeof data.error === "object"
+                  ? data.error.name
+                  : "Unknown Error",
+              error:
+                typeof data.error === "string"
+                  ? data.error
+                  : data.error.message,
             } as ErrorData;
 
             const error = {
@@ -115,12 +134,15 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
               data: errorData,
             } as FetchBaseQueryError;
 
-            // Handle error
             handleAPIError(error);
           } else {
             props.clearSelectedElements();
-            props.updateIsDeleteButtonDisabled(true);
-            props.updateIsDeletion(true);
+            if (props.updateIsDeleteButtonDisabled) {
+              props.updateIsDeleteButtonDisabled(true);
+            }
+            if (props.updateIsDeletion) {
+              props.updateIsDeletion(true);
+            }
 
             alerts.addAlert(
               "remove-dnsrecords-success",
@@ -135,8 +157,61 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
             props.onRefresh();
           }
         }
-      }
-    });
+      });
+    } else {
+      // Delete entire records
+      const payload: DeleteDnsRecordPayload = {
+        dnsZoneId: props.dnsZoneId,
+        recordNames: props.elementsToDelete.map((element) =>
+          element.idnsname.toString()
+        ),
+      };
+
+      deleteDnsRecords(payload).then((response) => {
+        if ("data" in response) {
+          const data = response.data as BatchRPCResponse;
+          const result = data.result;
+
+          if (result) {
+            if ("error" in result.results[0] && result.results[0].error) {
+              const errorData = {
+                code: result.results[0].error_code,
+                name: result.results[0].error_name,
+                error: result.results[0].error,
+              } as ErrorData;
+
+              const error = {
+                status: "CUSTOM_ERROR",
+                data: errorData,
+              } as FetchBaseQueryError;
+
+              // Handle error
+              handleAPIError(error);
+            } else {
+              props.clearSelectedElements();
+              if (props.updateIsDeleteButtonDisabled) {
+                props.updateIsDeleteButtonDisabled(true);
+              }
+              if (props.updateIsDeletion) {
+                props.updateIsDeletion(true);
+              }
+
+              alerts.addAlert(
+                "remove-dnsrecords-success",
+                "DNS records removed",
+                "success"
+              );
+
+              setBtnSpinning(false);
+              props.onClose();
+
+              // Refresh data
+              props.onRefresh();
+            }
+          }
+        }
+      });
+    }
   };
 
   // List of fields
