@@ -292,34 +292,32 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
           )}
           {/* Table rows */}
           {props.keyNames.map((keyName, idx) => (
-            <>
-              <Td
-                dataLabel={columnNames[keyName]}
-                key={idx}
-                id={idx.toString()}
-                style={setStyleOnStatus(element[keyName])}
-                aria-label={keyName}
-              >
-                {idx === 0 && !!props.showLink ? (
-                  <Link
-                    to={"/" + props.pathname + "/" + element[keyName]}
-                    state={element}
-                  >
-                    {props.statusElementName &&
-                    keyName === props.statusElementName
-                      ? processBoolean(element[keyName])
-                      : element[keyName]}
-                  </Link>
-                ) : (
-                  <>
-                    {props.statusElementName &&
-                    keyName === props.statusElementName
-                      ? processBoolean(element[keyName])
-                      : element[keyName]}
-                  </>
-                )}
-              </Td>
-            </>
+            <Td
+              dataLabel={columnNames[keyName]}
+              key={idx}
+              id={idx.toString()}
+              style={setStyleOnStatus(element[keyName])}
+              aria-label={keyName}
+            >
+              {idx === 0 && !!props.showLink ? (
+                <Link
+                  to={"/" + props.pathname + "/" + element[keyName]}
+                  state={element}
+                >
+                  {props.statusElementName &&
+                  keyName === props.statusElementName
+                    ? processBoolean(element[keyName])
+                    : element[keyName]}
+                </Link>
+              ) : (
+                <>
+                  {props.statusElementName &&
+                  keyName === props.statusElementName
+                    ? processBoolean(element[keyName])
+                    : element[keyName]}
+                </>
+              )}
+            </Td>
           ))}
         </Tr>
       );
