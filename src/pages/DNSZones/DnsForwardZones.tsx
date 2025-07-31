@@ -424,8 +424,18 @@ const DnsForwardZones = () => {
                   tableTitle="DNS forward zones table"
                   shownElementsList={dnsForwardZones}
                   pk="idnsname"
-                  keyNames={["idnsname", "idnszoneactive"]}
-                  columnNames={["Zone name", "Status"]}
+                  keyNames={[
+                    "idnsname",
+                    "idnszoneactive",
+                    "idnsforwarders",
+                    "idnsforwardpolicy",
+                  ]}
+                  columnNames={[
+                    "Zone name",
+                    "Status",
+                    "Zone Forwarders",
+                    "Forward policy",
+                  ]}
                   hasCheckboxes={true}
                   pathname="dns-forward-zones"
                   showTableRows={showTableRows}
