@@ -842,6 +842,16 @@ export type DnsRecordType =
   | "TXT"
   | "URI";
 
+export interface DNSForwardZone {
+  dn: string;
+  idnsname: string;
+  idnsforwarders: string[];
+  idnsforwardpolicy: IDNSForwardPolicy;
+  idnszoneactive: boolean;
+  name_from_ip?: string;
+  managedby?: string;
+}
+
 export interface Automember {
   cn: string;
   description: string;
