@@ -152,7 +152,7 @@ const AddHost = (props: PropsToAddHost) => {
       const hostNameVal = {
         hostname,
         isError: true,
-        message: "Invalid host name, must be a single domain component",
+        message: "Invalid host name. Host name must be a single domain component, like idmhost.",
         pfError: ValidatedOptions.error,
       };
       setHostNameValidation(hostNameVal);
@@ -398,7 +398,7 @@ const AddHost = (props: PropsToAddHost) => {
           />
           <HelperText>
             <HelperTextItem variant="indeterminate">
-              Allow adding host objects that does not have DNS entries
+              Enable adding host objects that do not have DNS entries
               associated with them
             </HelperTextItem>
           </HelperText>
