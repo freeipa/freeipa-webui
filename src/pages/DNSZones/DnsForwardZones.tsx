@@ -179,7 +179,7 @@ const DnsForwardZones = () => {
     isSelected: boolean
   ) => {
     if (isSelected) {
-      setSelectedElements((current) => [...current, ...dnsZones]);
+      setSelectedElements((current) => [...new Set([...current, ...dnsZones])]);
     } else {
       const newSelectedDnsZones = selectedElements.filter(
         (current) =>
