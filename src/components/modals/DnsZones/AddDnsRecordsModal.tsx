@@ -39,10 +39,12 @@ interface PropsToAddModal {
   onClose: () => void;
   onRefresh: () => void;
   dnsZoneId: string;
+  defaultSelectedRecordType?: DnsRecordType; // If not provided, the first record type will be selected
+  defaultRecordName?: string; // If not provided, the record name will be empty
 }
 
 // Mandatory fields per record type (for validation)
-const mandatoryFields: Record<DnsRecordType, string[]> = {
+export const mandatoryFields: Record<DnsRecordType, string[]> = {
   A: ["a_part_ip_address"],
   AAAA: ["aaaa_part_ip_address"],
   A6: ["a6_part_data"],
@@ -104,8 +106,8 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
 
   // Basic form values
   const [basicFormValues, setBasicFormValues] = React.useState({
-    recordName: "",
-    recordType: "A" as DnsRecordType,
+    recordName: props.defaultRecordName || "",
+    recordType: (props.defaultSelectedRecordType || "A") as DnsRecordType,
   });
 
   // Dynamic field values - unified state management
@@ -341,19 +343,25 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
       }
     });
 
+    // Some fields are structured, so we need to set the structured flag
+    if (basicFormValues.recordType === "TLSA") {
+      payload.structured = true;
+    }
+
     return payload;
   };
 
   // Clear form fields
   const clearFields = () => {
     setBasicFormValues({
-      recordName: "",
-      recordType: "A",
+      recordName: props.defaultRecordName || "",
+      recordType: (props.defaultSelectedRecordType || "A") as DnsRecordType,
     });
 
-    // Initialize with default values for A record type
+    // Initialize with default values for the default record type
     const newFieldValues: Record<string, any> = {};
-    const defaultConfig = dnsRecordConfigs["A"];
+    const defaultRecordType = props.defaultSelectedRecordType || "A";
+    const defaultConfig = dnsRecordConfigs[defaultRecordType];
 
     defaultConfig.forEach((field) => {
       if (
@@ -486,6 +494,7 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
           value={basicFormValues.recordName}
           id="record-name"
           name="recordName"
+          isDisabled={props.defaultRecordName !== undefined}
           onChange={(_event, value: string) =>
             setBasicFormValues({ ...basicFormValues, recordName: value })
           }
@@ -526,6 +535,10 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
               key={option.value}
               value={option.value}
               data-cy="record-type-option"
+              isDisabled={
+                props.defaultSelectedRecordType !== undefined &&
+                option.value !== basicFormValues.recordType
+              }
             >
               {option.key}
             </SelectOption>

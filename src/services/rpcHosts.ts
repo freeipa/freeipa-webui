@@ -221,7 +221,9 @@ const extendedApi = api.injectEndpoints({
         });
       },
       transformResponse: (response: FindRPCResponse): Host =>
-        apiToHost(response.result.result),
+        response.result?.result !== undefined
+          ? apiToHost(response.result?.result)
+          : ({} as Host),
     }),
     /**
      * Add entity to hosts

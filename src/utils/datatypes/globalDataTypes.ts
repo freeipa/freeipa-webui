@@ -699,6 +699,7 @@ export interface DNSZone {
 export interface RecordType {
   dnstype: string;
   dnsdata: string;
+  [key: string]: string;
 }
 
 /**
