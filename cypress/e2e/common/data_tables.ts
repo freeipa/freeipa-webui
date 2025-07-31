@@ -23,6 +23,14 @@ export const selectEntry = (name: string) => {
   cy.get("tr[id='" + name + "'] input[type=checkbox]").should("be.checked");
 };
 
+export const isSelected = (name: string) => {
+  cy.get("tr[id='" + name + "'] input[type=checkbox]").should("be.checked");
+};
+
+export const isNotSelected = (name: string) => {
+  cy.get("tr[id='" + name + "'] input[type=checkbox]").should("not.be.checked");
+};
+
 When("I search for {string} in the data table", (name: string) => {
   searchForEntry(name);
 });
@@ -42,15 +50,13 @@ When("I select entry {string} in the data table", (name: string) => {
 Then(
   "I should see {string} entry selected in the data table",
   (name: string) => {
-    cy.get("tr[id='" + name + "'] input[type=checkbox]").should("be.checked");
+    isSelected(name);
   }
 );
 
 Then(
   "I should see {string} entry not selected in the data table",
   (name: string) => {
-    cy.get("tr[id='" + name + "'] input[type=checkbox]").should(
-      "not.be.checked"
-    );
+    isNotSelected(name);
   }
 );

@@ -830,7 +830,7 @@ const ActiveUsers = () => {
         />
         {isMembershipModalOpen && (
           <ModalWithFormLayout
-            dataCy="modal-rebuild-auto-membership"
+            dataCy="rebuild-auto-membership-modal"
             variantType="medium"
             modalPosition="top"
             offPosition="76px"

@@ -398,3 +398,17 @@ login-button-submit
 - Test form validation and submission
 - Always validate state after an event
 - Features have to follow When -> Then structure
+
+## Caveats
+
+- In case you're running out of memory
+
+```
+V8 javascript OOM (Reached heap limit).
+```
+
+You can [increase the limit](https://stackoverflow.com/questions/38558989/node-js-heap-out-of-memory), preferably by:
+
+```
+export NODE_OPTIONS=--max_old_space_size=8192
+```
