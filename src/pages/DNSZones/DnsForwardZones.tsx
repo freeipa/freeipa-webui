@@ -86,7 +86,6 @@ const DnsForwardZones = () => {
   const forwardDnsZonesResponse = useGetDnsForwardZonesFullDataQuery({
     searchValue,
     apiVersion,
-    sizeLimit: perPage,
     startIdx: firstUserIdx,
     stopIdx: lastUserIdx,
   });
@@ -116,7 +115,7 @@ const DnsForwardZones = () => {
         .filter((result) => "result" in result)
         .map((result) => apiToDnsForwardZone(result.result));
 
-      setTotalCount(elementsList.length);
+      setTotalCount(forwardDnsZonesResponse.data.result.totalCount);
       // Update the list of elements
       setDnsForwardZones(elementsList);
       // Show table elements
@@ -220,7 +219,6 @@ const DnsForwardZones = () => {
     searchEntry({
       searchValue: searchValue,
       apiVersion,
-      sizeLimit: 100,
       startIdx: 0,
       stopIdx: 200, // Search will consider a max. of elements
     }).then((result) => {

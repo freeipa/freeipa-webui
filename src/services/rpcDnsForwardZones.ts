@@ -27,14 +27,12 @@ import { apiToDnsForwardZone } from "src/utils/dnsForwardZonesUtils";
 export interface DnsForwardZonesFindPayload {
   searchValue: string;
   pkeyOnly: boolean;
-  sizeLimit: number;
   version?: string;
 }
 
 export interface DnsForwardZonesFullDataPayload {
   searchValue: string;
   apiVersion: string;
-  sizeLimit: number;
   startIdx: number;
   stopIdx: number;
 }
@@ -59,7 +57,6 @@ const dnsForwardZonesFind = (
 ) => {
   const dnsForwardZonesParams = {
     pkey_only: payload.pkeyOnly,
-    sizelimit: payload.sizeLimit,
     version: payload.version || API_VERSION_BACKUP,
   };
 
@@ -73,7 +70,7 @@ const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     /**
      * Get DNS zones IDs
-     * @param {DnsZonesFindPayload} payload - The payload containing search parameters
+     * @param {DnsForwardZonesFindPayload} payload - The payload containing search parameters
      * @returns {Command<FindRPCResponse<DNSZone>>} - Promise with the response data
      *
      */
@@ -87,7 +84,7 @@ const extendedApi = api.injectEndpoints({
     }),
     /**
      * Find DNS zones full data
-     * @param {DnsZonesFullDataPayload} payload - The payload containing search parameters
+     * @param {DnsForwardZonesFullDataPayload} payload - The payload containing search parameters
      * @returns {BatchRPCResponse} - List of DNS zones full data
      *
      */
@@ -96,8 +93,7 @@ const extendedApi = api.injectEndpoints({
       DnsForwardZonesFullDataPayload
     >({
       async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { searchValue, apiVersion, sizeLimit, startIdx, stopIdx } =
-          payloadData;
+        const { searchValue, apiVersion, startIdx, stopIdx } = payloadData;
 
         if (apiVersion === undefined) {
           return {
@@ -113,7 +109,6 @@ const extendedApi = api.injectEndpoints({
         // Prepare search parameters
         const dnsForwardZonesIdsParams: DnsForwardZonesFindPayload = {
           pkeyOnly: true,
-          sizeLimit: sizeLimit,
           version: apiVersion,
           searchValue,
         };
@@ -144,7 +139,7 @@ const extendedApi = api.injectEndpoints({
           }
         }
 
-        // FETCH DNS ZONE DATA VIA "dnszone_show" COMMAND
+        // FETCH DNS FORWARD ZONE DATA VIA "dnsforwardzone_show" COMMAND
         const commands: Command[] = [];
         dnsZonesIds.forEach((dnsZoneId) => {
           commands.push({
@@ -168,7 +163,7 @@ const extendedApi = api.injectEndpoints({
     }),
     /**
      * Search for a specific DNS zone
-     * @param {DnsZonesFullDataPayload} payload - The payload containing search parameters
+     * @param {DnsForwardZonesFullDataPayload} payload - The payload containing search parameters
      * @returns {DnsForwardZoneBatchResponse} - List of DNS zones full data
      */
     searchDnsForwardZonesEntries: build.mutation<
@@ -176,8 +171,7 @@ const extendedApi = api.injectEndpoints({
       DnsForwardZonesFullDataPayload
     >({
       async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { searchValue, apiVersion, sizeLimit, startIdx, stopIdx } =
-          payloadData;
+        const { searchValue, apiVersion, startIdx, stopIdx } = payloadData;
 
         if (apiVersion === undefined) {
           return {
@@ -193,7 +187,6 @@ const extendedApi = api.injectEndpoints({
         // Prepare search parameters
         const dnsForwardZonesIdsParams: DnsForwardZonesFindPayload = {
           pkeyOnly: true,
-          sizeLimit: sizeLimit,
           version: apiVersion,
           searchValue,
         };
@@ -250,7 +243,7 @@ const extendedApi = api.injectEndpoints({
             string,
             unknown
           >;
-          // Convert API object to DNSZone type
+          // Convert API object to DNSForwardZone type
           const convertedDnsForwardZone: DNSForwardZone =
             apiToDnsForwardZone(dnsZone);
           dnsForwardZones.push(convertedDnsForwardZone);
