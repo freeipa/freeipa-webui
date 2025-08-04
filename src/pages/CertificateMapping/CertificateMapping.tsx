@@ -90,7 +90,7 @@ const CertificateMappingPage = () => {
   const certMapsResponse = useGetCertMapRuleEntriesQuery({
     searchValue,
     apiVersion,
-    sizelimit: perPage,
+    sizelimit: 100,
     startIdx: firstUserIdx,
     stopIdx: lastUserIdx,
   });
@@ -114,7 +114,6 @@ const CertificateMappingPage = () => {
       data !== undefined
     ) {
       const listResult = data.result.results;
-      const totalCount = data.result.totalCount;
       const listSize = data.result.count;
       const elementsList: CertificateMapping[] = [];
 
@@ -122,7 +121,7 @@ const CertificateMappingPage = () => {
         elementsList.push(apiToCertificateMapping(listResult[i].result));
       }
 
-      setTotalCount(totalCount);
+      setTotalCount(certMapsResponse.data.result.totalCount);
       // Update the list of elements
       setCertMapRules(elementsList);
       // Show table elements
