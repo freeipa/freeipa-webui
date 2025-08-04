@@ -89,7 +89,7 @@ const DnsZones = () => {
   const dnsZonesResponse = useGetDnsZonesFullDataQuery({
     searchValue,
     apiVersion,
-    sizelimit: perPage,
+    sizelimit: 100,
     startIdx: firstUserIdx,
     stopIdx: lastUserIdx,
   });
@@ -113,7 +113,6 @@ const DnsZones = () => {
       data !== undefined
     ) {
       const listResult = data.result.results;
-      const totalCount = data.result.totalCount;
       const listSize = data.result.count;
       const elementsList: DNSZone[] = [];
 
@@ -121,7 +120,7 @@ const DnsZones = () => {
         elementsList.push(apiToDnsZone(listResult[i].result));
       }
 
-      setTotalCount(totalCount);
+      setTotalCount(dnsZonesResponse.data.result.totalCount);
       // Update the list of elements
       setDnsZones(elementsList);
       // Show table elements
