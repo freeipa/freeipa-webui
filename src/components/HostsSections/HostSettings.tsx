@@ -214,7 +214,7 @@ const HostSettings = (props: PropsToHostSettings) => {
               label="Authentication indicators"
               fieldId="krbprincipalauthind"
               role="group"
-              labelIcon={
+              labelHelp={
                 <PopoverWithIconLayout message={AuthIndicatorsTypesMessage} />
               }
             >

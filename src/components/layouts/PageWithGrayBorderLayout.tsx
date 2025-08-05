@@ -1,6 +1,6 @@
 import React from "react";
 // PatternFly
-import { PageSection, PageSectionVariants } from "@patternfly/react-core";
+import { PageSection } from "@patternfly/react-core";
 // Components
 import TitleLayout from "src/components/layouts/TitleLayout";
 import ToolbarLayout, { ToolbarItem } from "./ToolbarLayout";
@@ -20,7 +20,7 @@ const PageWithGrayBorderLayout = (props: PropsToPageWithGrayBorderLayout) => {
 
   return (
     <>
-      <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
+      <PageSection hasBodyWrapper={false} className="pf-v5-u-pr-0">
         <TitleLayout
           id={props.id}
           text={props.pageTitle}
@@ -29,15 +29,15 @@ const PageWithGrayBorderLayout = (props: PropsToPageWithGrayBorderLayout) => {
         />
       </PageSection>
       <PageSection
+        hasBodyWrapper={false}
         type="default"
-        variant={PageSectionVariants.light}
         isFilled
         className="pf-v5-u-m-lg pf-v5-u-mb-0 pf-v5-u-pb-0"
       >
         <>
           <PageSection
+            hasBodyWrapper={false}
             id={props.id}
-            variant={PageSectionVariants.light}
             style={style}
             className="pf-v5-u-mb-0"
           >

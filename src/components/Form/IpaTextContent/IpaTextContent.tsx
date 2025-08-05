@@ -1,6 +1,6 @@
 import React from "react";
 // PatternFly
-import { TextContent, Text, TextVariants } from "@patternfly/react-core";
+import { Content, ContentVariants } from "@patternfly/react-core";
 // Utils
 import {
   IPAParamDefinition,
@@ -29,7 +29,7 @@ const IpaTextContent = (props: IpaTextContentProps) => {
   return (
     <>
       {props.linkTo ? (
-        <TextContent
+        <Content
           data-cy={props.dataCy}
           readOnly={readOnly}
           required={required}
@@ -37,17 +37,17 @@ const IpaTextContent = (props: IpaTextContentProps) => {
           name={props.name}
         >
           <Link to={props.linkTo}>{textValue}</Link>
-        </TextContent>
+        </Content>
       ) : (
-        <TextContent
+        <Content
           data-cy={props.dataCy}
           readOnly={readOnly}
           required={required}
           aria-label={props.ariaLabel}
           name={props.name}
         >
-          <Text component={TextVariants.p}>{textValue}</Text>
-        </TextContent>
+          <Content component={ContentVariants.p}>{textValue}</Content>
+        </Content>
       )}
     </>
   );

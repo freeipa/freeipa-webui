@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
-import { Form, FormGroup, Modal, ModalVariant } from "@patternfly/react-core";
+import { Form, FormGroup } from "@patternfly/react-core";
+import { Modal, ModalVariant } from "@patternfly/react-core/deprecated";
 
 export interface PropsToModal {
   // Data cypress
@@ -85,7 +86,7 @@ const ModalWithFormLayout = (props: PropsToModal) => {
             label={field.name}
             fieldId={field.id}
             isRequired={field.fieldRequired}
-            labelIcon={field.labelIcon}
+            labelHelp={field.labelIcon}
           >
             {field.pfComponent}
           </FormGroup>

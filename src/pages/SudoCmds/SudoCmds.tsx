@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
-import {
-  Page,
-  PageSection,
-  PageSectionVariants,
-  PaginationVariant,
-} from "@patternfly/react-core";
+import { Page, PageSection, PaginationVariant } from "@patternfly/react-core";
 // PatternFly table
 import {
   InnerScrollContainer,
@@ -495,7 +490,7 @@ const SudoCmds = () => {
   return (
     <Page>
       <alerts.ManagedAlerts />
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id="sudocmd title"
           headingLevel="h1"
@@ -503,7 +498,7 @@ const SudoCmds = () => {
         />
       </PageSection>
       <PageSection
-        variant={PageSectionVariants.light}
+        hasBodyWrapper={false}
         isFilled={false}
         className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
       >

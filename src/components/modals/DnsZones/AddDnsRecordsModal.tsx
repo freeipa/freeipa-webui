@@ -7,12 +7,12 @@ import {
   FormGroup,
   MenuToggle,
   MenuToggleElement,
-  Modal,
   Select,
   SelectOption,
   Spinner,
   TextInput,
 } from "@patternfly/react-core";
+import { Modal } from "@patternfly/react-core/deprecated";
 // Data types
 import { DnsRecordType } from "src/utils/datatypes/globalDataTypes";
 import { dnsRecordConfigs } from "src/utils/datatypes/DnsRecordTypes";

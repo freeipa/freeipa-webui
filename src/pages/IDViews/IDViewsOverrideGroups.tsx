@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import {
   Button,
   PageSection,
-  PageSectionVariants,
   PaginationVariant,
   Tooltip,
 } from "@patternfly/react-core";
@@ -308,13 +307,12 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
       element: (
         <Tooltip aria="none" aria-live="polite" content={tooltipMsg}>
           <Button
+            icon={<OutlinedQuestionCircleIcon />}
             data-cy="search"
             aria-label="Search tips"
             variant="plain"
             id="search_tip"
-          >
-            <OutlinedQuestionCircleIcon />
-          </Button>
+          />
         </Tooltip>
       ),
       toolbarItemSpacer: { default: "spacerNone" },
@@ -389,7 +387,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
 
   // Render component
   return (
-    <PageSection variant={PageSectionVariants.light} isFilled={false}>
+    <PageSection hasBodyWrapper={false} isFilled={false}>
       <ToolbarLayout
         className="pf-v5-u-pt-0 pf-v5-u-pr-md"
         contentClassName="pf-v5-u-p-0"

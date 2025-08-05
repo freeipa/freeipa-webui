@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
-import {
-  TextContent,
-  Text,
-  TextVariants,
-  Button,
-} from "@patternfly/react-core";
+import { Content, ContentVariants, Button } from "@patternfly/react-core";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { removeGroup } from "src/store/Identity/userGroups-slice";
@@ -63,12 +58,12 @@ const DeleteUserGroups = (props: PropsToDeleteGroups) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
+        <Content>
+          <Content component={ContentVariants.p}>
             Are you sure you want to remove the selected entries from User
             groups?
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
       ),
     },
     {

@@ -1,11 +1,6 @@
 import React from "react";
 // PatternFly
-import {
-  Button,
-  TextContent,
-  Text,
-  TextVariants,
-} from "@patternfly/react-core";
+import { Button, Content, ContentVariants } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
@@ -30,11 +25,11 @@ const RemoveNetgroupMembersModal = (props: PropsToDelete) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
+        <Content>
+          <Content component={ContentVariants.p}>
             Are you sure you want to remove the selected entries?
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
       ),
     },
     {

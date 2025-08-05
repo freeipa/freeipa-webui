@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
-import { Button, Flex, FlexItem, Modal } from "@patternfly/react-core";
+import { Button, Flex, FlexItem } from "@patternfly/react-core";
+import { Modal } from "@patternfly/react-core/deprecated";
 // Data types
 import { Metadata } from "src/utils/datatypes/globalDataTypes";
 // Utils

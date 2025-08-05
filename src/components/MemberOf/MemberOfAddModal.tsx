@@ -1,12 +1,7 @@
 import React, { ReactNode, useEffect, useState } from "react";
 // PatternFly
-import {
-  Button,
-  DualListSelector,
-  Form,
-  FormGroup,
-  Modal,
-} from "@patternfly/react-core";
+import { Button, Form, FormGroup } from "@patternfly/react-core";
+import { Modal, DualListSelector } from "@patternfly/react-core/deprecated";
 
 export interface AvailableItems {
   key: string;

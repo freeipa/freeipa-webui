@@ -2,9 +2,8 @@ import React from "react";
 // PatternFly
 import {
   Button,
-  TextContent,
-  Text,
-  TextVariants,
+  Content,
+  ContentVariants,
   Spinner,
 } from "@patternfly/react-core";
 // Hooks
@@ -149,11 +148,11 @@ const DeleteDnsZonesModal = (props: DeleteDnsZonesModalProps) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
+        <Content>
+          <Content component={ContentVariants.p}>
             Are you sure you want to delete the selected entries?
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
       ),
     },
     {

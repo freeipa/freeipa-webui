@@ -1,11 +1,6 @@
 import React from "react";
 // PatternFly
-import {
-  TextContent,
-  Text,
-  TextVariants,
-  Button,
-} from "@patternfly/react-core";
+import { Content, ContentVariants, Button } from "@patternfly/react-core";
 // Components
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import DeletedElementsTable from "src/components/tables/DeletedElementsTable";
@@ -56,11 +51,11 @@ const DeleteModal = (props: PropsToDelete) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
+        <Content>
+          <Content component={ContentVariants.p}>
             Are you sure you want to delete the selected Identity Provider(s)?
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
       ),
     },
     {

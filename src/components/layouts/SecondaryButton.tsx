@@ -34,7 +34,7 @@ const SecondaryButton = (props: PropsToSecondaryButton) => {
       name={props.name}
       variant="secondary"
       isDisabled={props.isDisabled}
-      isActive={props.isActive}
+      isClicked={props.isActive}
       isBlock={props.isBlock}
       isInline={props.isInLine}
       size="sm"

@@ -1,14 +1,13 @@
 import React from "react";
 // PatternFly
 import {
-  TextContent,
-  Text,
-  TextVariants,
+  Content,
+  ContentVariants,
   Button,
-  Modal,
   Form,
   FormGroup,
 } from "@patternfly/react-core";
+import { Modal } from "@patternfly/react-core/deprecated";
 
 interface PropsToDelete {
   title: string;
@@ -61,11 +60,11 @@ const MemberOfDeleteModal = (props: React.PropsWithChildren<PropsToDelete>) => {
     >
       <Form id={"is-member-of-delete-modal"}>
         <FormGroup key={"question-text"} fieldId={"question-text"}>
-          <TextContent>
-            <Text component={TextVariants.p}>
+          <Content>
+            <Content component={ContentVariants.p}>
               Are you sure you want to remove the following entries?
-            </Text>
-          </TextContent>
+            </Content>
+          </Content>
         </FormGroup>
         <FormGroup key={"deleted-users-table"} fieldId={"deleted-users-table"}>
           {props.children}

@@ -1,11 +1,6 @@
 import React from "react";
 // PatternFly
-import {
-  Page,
-  PageSection,
-  PageSectionVariants,
-  PaginationVariant,
-} from "@patternfly/react-core";
+import { Page, PageSection, PaginationVariant } from "@patternfly/react-core";
 import {
   InnerScrollContainer,
   OuterScrollContainer,
@@ -333,7 +328,7 @@ const SubordinateIDs = () => {
   return (
     <Page>
       <alerts.ManagedAlerts />
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id="Subordinate IDs page"
           headingLevel="h1"
@@ -341,7 +336,7 @@ const SubordinateIDs = () => {
         />
       </PageSection>
       <PageSection
-        variant={PageSectionVariants.light}
+        hasBodyWrapper={false}
         isFilled={false}
         className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
       >

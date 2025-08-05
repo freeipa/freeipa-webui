@@ -3,10 +3,10 @@ import React from "react";
 import {
   Form,
   FormGroup,
-  Modal,
   TextInput,
   ValidatedOptions,
 } from "@patternfly/react-core";
+import { Modal } from "@patternfly/react-core/deprecated";
 
 interface PropsToAddModal {
   dataCy: string;

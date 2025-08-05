@@ -1,11 +1,6 @@
 import React from "react";
 // PatternFly
-import {
-  Button,
-  Text,
-  TextContent,
-  TextVariants,
-} from "@patternfly/react-core";
+import { Button, Content, ContentVariants } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
@@ -44,11 +39,11 @@ const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
+        <Content>
+          <Content component={ContentVariants.p}>
             Are you sure you want to restore the preserved entries?
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
       ),
     },
     {

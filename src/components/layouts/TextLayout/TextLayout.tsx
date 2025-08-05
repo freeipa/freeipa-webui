@@ -1,5 +1,5 @@
 // For further information, visit the PatternFly page: https://www.patternfly.org/v4/components/text
-import { TextContent, Text } from "@patternfly/react-core";
+import { Content } from "@patternfly/react-core";
 import React from "react";
 
 interface PropsToTextLayout {
@@ -29,12 +29,12 @@ interface PropsToTextLayout {
 
 const TextLayout = (props: PropsToTextLayout) => {
   return (
-    <TextContent
+    <Content
       className={props.textContentClassName}
-      isVisited={props.textContentIsVisited}
+      isVisitedLink={props.textContentIsVisited}
     >
       {props.textContentChildren}
-      <Text
+      <Content
         component={props.component}
         isVisitedLink={props.isvisitedLink}
         ouiaId={props.ouiaId}
@@ -42,8 +42,8 @@ const TextLayout = (props: PropsToTextLayout) => {
         className={props.className}
       >
         {props.children}
-      </Text>
-    </TextContent>
+      </Content>
+    </Content>
   );
 };
 

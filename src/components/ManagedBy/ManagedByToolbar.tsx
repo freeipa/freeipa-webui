@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 // PatternFly
-import { Pagination, ToolbarItemVariant, Text } from "@patternfly/react-core";
+import {
+  Pagination,
+  ToolbarItemVariant,
+  Content,
+} from "@patternfly/react-core";
 // Icons
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 // Data types
@@ -144,9 +148,9 @@ const ManagedByToolbar = (props: PropsToToolbar) => {
       element: (
         <TextLayout component="p">
           <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
-          <Text component="a" isVisitedLink>
+          <Content component="a" isVisitedLink>
             Help
-          </Text>
+          </Content>
         </TextLayout>
       ),
     },

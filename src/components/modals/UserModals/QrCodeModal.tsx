@@ -2,7 +2,7 @@ import React from "react";
 // Modals
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // PatternFly
-import { Button, Text, TextVariants } from "@patternfly/react-core";
+import { Button, Content, ContentVariants } from "@patternfly/react-core";
 // Components
 import HelperTextWithIcon from "src/components/layouts/HelperTextWithIcon";
 // qrcode.react
@@ -25,13 +25,13 @@ const QrCodeModal = (props: PropsToQrCodeModal) => {
     "Configure your token by scanning the QR code below. Click on the QR code if you see this on the device you want to configure.";
 
   const messageQrViaFreeOtp = (
-    <Text component={TextVariants.p}>
+    <Content component={ContentVariants.p}>
       You can use{" "}
       <a href="https://freeotp.github.io/" target="_blank" rel="noreferrer">
         FreeOTP
       </a>{" "}
       as a software OTP token application.
-    </Text>
+    </Content>
   );
 
   // Generate QR code

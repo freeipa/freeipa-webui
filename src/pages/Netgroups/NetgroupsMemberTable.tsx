@@ -4,10 +4,10 @@ import {
   Button,
   Form,
   FormGroup,
-  Modal,
   TextInput,
   ValidatedOptions,
 } from "@patternfly/react-core";
+import { Modal } from "@patternfly/react-core/deprecated";
 import { Td, Th, Tr } from "@patternfly/react-table";
 // Layout
 import SettingsTableLayout from "src/components/layouts/SettingsTableLayout";

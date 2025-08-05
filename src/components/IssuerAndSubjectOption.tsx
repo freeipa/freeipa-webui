@@ -64,7 +64,7 @@ const IssuerAndSubjectOption = (props: PropsToIssuerAndSubjectOption) => {
           <FormGroup
             label="Issuer"
             fieldId="issuer"
-            labelIcon={
+            labelHelp={
               <PopoverWithIconLayout
                 message={issuerMessage}
                 hasAutoWidth={true}
@@ -88,7 +88,7 @@ const IssuerAndSubjectOption = (props: PropsToIssuerAndSubjectOption) => {
           <FormGroup
             label="Subject"
             fieldId="subject-textbox"
-            labelIcon={
+            labelHelp={
               <PopoverWithIconLayout
                 message={subjectMessage}
                 hasAutoWidth={true}

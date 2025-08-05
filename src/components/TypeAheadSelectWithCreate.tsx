@@ -205,6 +205,7 @@ const TypeAheadSelectWithCreate = (props: PropsToTypeAheadSelectWithCreate) => {
         <TextInputGroupUtilities>
           {!!inputValue && (
             <Button
+              icon={<TimesIcon aria-hidden />}
               data-cy={props.id + "-select-clear-input"}
               variant="plain"
               onClick={() => {
@@ -214,9 +215,7 @@ const TypeAheadSelectWithCreate = (props: PropsToTypeAheadSelectWithCreate) => {
                 textInputRef?.current?.focus();
               }}
               aria-label="Clear input value"
-            >
-              <TimesIcon aria-hidden />
-            </Button>
+            />
           )}
         </TextInputGroupUtilities>
       </TextInputGroup>

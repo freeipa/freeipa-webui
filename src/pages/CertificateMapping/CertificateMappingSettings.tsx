@@ -286,7 +286,7 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
                   <FormGroup
                     label="Mapping rule"
                     fieldId="ipacertmapmaprule"
-                    labelIcon={
+                    labelHelp={
                       <PopoverWithIconLayout message={mappingRuleMessage} />
                     }
                   >
@@ -303,7 +303,7 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
                   <FormGroup
                     label="Matching rule"
                     fieldId="ipacertmapmatchrule"
-                    labelIcon={
+                    labelHelp={
                       <PopoverWithIconLayout message={matchingRuleMessage} />
                     }
                   >
@@ -320,7 +320,7 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
                   <FormGroup
                     label="Domain name"
                     fieldId="associateddomain"
-                    labelIcon={
+                    labelHelp={
                       <PopoverWithIconLayout message={domainNameMessage} />
                     }
                   >
@@ -335,7 +335,7 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
                   <FormGroup
                     label="Priority"
                     fieldId="ipacertmappriority"
-                    labelIcon={
+                    labelHelp={
                       <PopoverWithIconLayout message={priorityMessage} />
                     }
                   >

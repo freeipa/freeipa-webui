@@ -1,11 +1,6 @@
 import React from "react";
 // PatternFly
-import {
-  TextContent,
-  Text,
-  TextVariants,
-  Button,
-} from "@patternfly/react-core";
+import { Content, ContentVariants, Button } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
@@ -64,11 +59,11 @@ const DeleteRule = (props: PropsToDeleteRule) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
+        <Content>
+          <Content component={ContentVariants.p}>
             Are you sure you want to remove the selected rules?
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
       ),
     },
     {

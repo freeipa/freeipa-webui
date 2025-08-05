@@ -7,12 +7,10 @@ import {
   LoginPage,
   ListItem,
   ListVariant,
-  TextContent,
-  Text,
-  Modal,
+  Content,
   Button,
-  ModalVariant,
 } from "@patternfly/react-core";
+import { Modal, ModalVariant } from "@patternfly/react-core/deprecated";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // Icons
@@ -296,15 +294,19 @@ const LoginMainPage = () => {
 
   const socialMediaLoginContent = (
     <React.Fragment>
-      <LoginMainFooterLinksItem
-        href=""
-        linkComponentProps={{
-          "aria-label": "Login using personal Certificate",
-        }}
-      >
-        <TextContent onClick={onLoginWithCertClick} name="cert_auth">
-          <Text>Login using Certificate</Text>
-        </TextContent>
+      <LoginMainFooterLinksItem data-codemods="true">
+        <Button
+          variant="link"
+          component="a"
+          href=""
+          {...{
+            "aria-label": "Login using personal Certificate",
+          }}
+        >
+          <Content onClick={onLoginWithCertClick} name="cert_auth">
+            <Content component="p">Login using Certificate</Content>
+          </Content>
+        </Button>
       </LoginMainFooterLinksItem>
       <Link aria-label="Synchronize otp token" to="/sync-otp">
         Sync OTP Token
