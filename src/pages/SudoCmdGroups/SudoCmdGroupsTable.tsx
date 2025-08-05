@@ -157,7 +157,7 @@ const SudoCmdGroupsTable = (props: PropsToTable) => {
   // to the Table Layout
   const header = (
     <Tr>
-      <Th modifier="wrap"></Th>
+      <Th modifier="wrap" aria-label="Select rows"></Th>
       <Th modifier="wrap">{columnNames.cn}</Th>
       <Th modifier="wrap">{columnNames.description}</Th>
     </Tr>

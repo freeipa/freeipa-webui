@@ -230,7 +230,9 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
   // Defining table header and body from here to avoid passing specific names to the Table Layout
   const header = (
     <Tr key="header" id="table-header">
-      {props.hasCheckboxes && <Th modifier="wrap"></Th>}
+      {props.hasCheckboxes && (
+        <Th modifier="wrap" aria-label="Select rows"></Th>
+      )}
       {props.columnNames.map((columnName, idx) => (
         <Th modifier="wrap" key={columnName + "-" + idx}>
           {columnName}
