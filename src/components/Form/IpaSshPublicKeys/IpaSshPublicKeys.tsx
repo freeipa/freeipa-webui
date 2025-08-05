@@ -6,9 +6,9 @@ import {
   FlexItem,
   Form,
   FormGroup,
-  Modal,
   TextArea,
 } from "@patternfly/react-core";
+import { Modal } from "@patternfly/react-core/deprecated";
 // Components
 import SecondaryButton from "../../layouts/SecondaryButton";
 import TextLayout from "../../layouts/TextLayout";

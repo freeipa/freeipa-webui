@@ -5,9 +5,9 @@ import {
   PageSection,
   Masthead,
   MastheadMain,
+  MastheadLogo,
   MastheadBrand,
   Brand,
-  PageSectionVariants,
   List,
   ListComponent,
   OrderType,
@@ -39,8 +39,10 @@ const SetupBrowserConfig = () => {
   const header = (
     <Masthead>
       <MastheadMain>
-        <MastheadBrand>
-          <Brand src={HeaderLogo} alt="FreeIPA" />
+        <MastheadBrand data-codemods>
+          <MastheadLogo data-codemods>
+            <Brand src={HeaderLogo} alt="FreeIPA" />
+          </MastheadLogo>
         </MastheadBrand>
       </MastheadMain>
     </Masthead>
@@ -259,27 +261,27 @@ const SetupBrowserConfig = () => {
   );
 
   return (
-    <Page header={header}>
-      <PageSection>
+    <Page masthead={header}>
+      <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id="page-title"
           headingLevel="h1"
           text="Browser Kerberos Setup"
         />
       </PageSection>
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <TextLayout component="h1" className="pf-v5-u-mb-md">
           Firefox
         </TextLayout>
         {firefoxPanel}
       </PageSection>
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <TextLayout component="h1" className="pf-v5-u-mb-md">
           Chrome
         </TextLayout>
         {chromePanel}
       </PageSection>
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <TextLayout component="h1" className="pf-v5-u-mb-md">
           Internet Explorer
         </TextLayout>

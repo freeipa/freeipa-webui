@@ -3,10 +3,8 @@ import React from "react";
 import {
   Page,
   PageSection,
-  PageSectionVariants,
   PaginationVariant,
-  TextContent,
-  Text,
+  Content,
   Spinner,
 } from "@patternfly/react-core";
 import {
@@ -403,12 +401,12 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
   ];
 
   const spinner = (
-    <TextContent className="pf-v5-u-m-xl">
-      <Text component="h3">
+    <Content className="pf-v5-u-m-xl">
+      <Content component="h3">
         <i>Loading data</i>
         <Spinner isInline size="xl" className="pf-v5-u-ml-md" />
-      </Text>
-    </TextContent>
+      </Content>
+    </Content>
   );
 
   // Render component
@@ -416,7 +414,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     <Page>
       <alerts.ManagedAlerts />
       <PageSection
-        variant={PageSectionVariants.light}
+        hasBodyWrapper={false}
         isFilled={false}
         className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
       >

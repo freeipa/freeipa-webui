@@ -1,6 +1,6 @@
 import React from "react";
 // PatternFly
-import { Modal } from "@patternfly/react-core";
+import { Modal } from "@patternfly/react-core/deprecated";
 
 interface PropsToModalLayout {
   dataCy: string;

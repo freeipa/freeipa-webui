@@ -5,10 +5,10 @@ import {
   FormGroup,
   HelperText,
   HelperTextItem,
-  Modal,
   TextInput,
   ValidatedOptions,
 } from "@patternfly/react-core";
+import { Modal } from "@patternfly/react-core/deprecated";
 import { Table, TableText, Tr, Tbody, Td } from "@patternfly/react-table";
 // Utils
 import {

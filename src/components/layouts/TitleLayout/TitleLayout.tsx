@@ -1,6 +1,6 @@
 import React from "react";
 // PatternFly
-import { TextContent, Title } from "@patternfly/react-core";
+import { Content, Title } from "@patternfly/react-core";
 
 interface PropsToTitleLayout {
   headingLevel: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
@@ -23,7 +23,7 @@ const TitleLayout = (props: PropsToTitleLayout) => {
     <>{props.text}</>
   );
   return (
-    <TextContent key={props.id}>
+    <Content key={props.id}>
       <Title
         headingLevel={props.headingLevel}
         id={props.id}
@@ -34,7 +34,7 @@ const TitleLayout = (props: PropsToTitleLayout) => {
       >
         {titleText}
       </Title>
-    </TextContent>
+    </Content>
   );
 };
 

@@ -5,9 +5,8 @@ import {
   Form,
   FormGroup,
   Pagination,
-  Text,
-  TextContent,
-  TextVariants,
+  Content,
+  ContentVariants,
   ToggleGroup,
   ToggleGroupItem,
   Toolbar,
@@ -65,11 +64,7 @@ const MemberOfToolbar = (props: MemberOfToolbarProps) => {
   return (
     <Toolbar>
       <ToolbarContent>
-        <ToolbarItem
-          id="search-input"
-          variant={ToolbarItemVariant["search-filter"]}
-          spacer={{ default: "spacerMd" }}
-        >
+        <ToolbarItem id="search-input" gap={{ default: "gapMd" }}>
           <SearchInputLayout
             dataCy="search"
             name="search"
@@ -170,19 +165,19 @@ const MemberOfToolbar = (props: MemberOfToolbarProps) => {
         <ToolbarItem id="help-icon">
           <>
             {props.helpIconEnabled && (
-              <TextContent>
-                <Text component={TextVariants.p}>
+              <Content>
+                <Content component={ContentVariants.p}>
                   <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
-                  <Text component={TextVariants.a} isVisitedLink>
+                  <Content component={ContentVariants.a} isVisitedLink>
                     Help
-                  </Text>
-                </Text>
-              </TextContent>
+                  </Content>
+                </Content>
+              </Content>
             )}
           </>
         </ToolbarItem>
         {props.totalItems > 0 && (
-          <ToolbarItem id="pagination" align={{ default: "alignRight" }}>
+          <ToolbarItem id="pagination" align={{ default: "alignEnd" }}>
             <Pagination
               itemCount={props.totalItems}
               perPage={props.perPage}

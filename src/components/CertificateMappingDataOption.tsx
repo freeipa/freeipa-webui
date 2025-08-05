@@ -243,7 +243,7 @@ const CertificateMappingDataOption = (
             label="Certificate"
             fieldId="certificate"
             role="group"
-            labelIcon={
+            labelHelp={
               <PopoverWithIconLayout
                 message={certificateMessage}
                 hasAutoWidth={true}

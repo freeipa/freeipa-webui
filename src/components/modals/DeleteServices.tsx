@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
-import {
-  TextContent,
-  Text,
-  TextVariants,
-  Button,
-} from "@patternfly/react-core";
+import { Content, ContentVariants, Button } from "@patternfly/react-core";
 // Redux
 import { useAppDispatch } from "../../store/hooks";
 import { removeService } from "../../store/Identity/services-slice";
@@ -63,11 +58,11 @@ const DeleteServices = (props: PropsToDeleteServices) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
+        <Content>
+          <Content component={ContentVariants.p}>
             Are you sure you want to remove the selected entries from Services?
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
       ),
     },
     {

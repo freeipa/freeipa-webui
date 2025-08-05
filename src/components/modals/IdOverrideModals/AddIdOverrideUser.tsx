@@ -3,8 +3,7 @@ import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import {
   Button,
   Spinner,
-  Text,
-  TextContent,
+  Content,
   TextInput,
   TextArea,
   ValidatedOptions,
@@ -484,12 +483,12 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       id: "Loading",
       name: "",
       pfComponent: (
-        <TextContent className="pf-v5-u-m-xl">
-          <Text component="h3">
+        <Content className="pf-v5-u-m-xl">
+          <Content component="h3">
             <i>Loading users</i>
             <Spinner isInline size="xl" className="pf-v5-u-ml-md" />
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
       ),
     },
   ];

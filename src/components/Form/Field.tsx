@@ -101,7 +101,7 @@ export const GenericField = ({
         <FormGroup
           label={field.label}
           isRequired={field.isRequired}
-          labelIcon={labelIcon}
+          labelHelp={labelIcon}
         >
           <TextInput
             value={value || ""}
@@ -120,7 +120,7 @@ export const GenericField = ({
         <FormGroup
           label={field.label}
           isRequired={field.isRequired}
-          labelIcon={labelIcon}
+          labelHelp={labelIcon}
         >
           <NumberSelector
             id={fieldId}
@@ -141,7 +141,7 @@ export const GenericField = ({
         <FormGroup
           label={field.label}
           isRequired={field.isRequired}
-          labelIcon={labelIcon}
+          labelHelp={labelIcon}
         >
           <TextArea
             value={value || ""}
@@ -157,7 +157,7 @@ export const GenericField = ({
 
     case "checkbox":
       return (
-        <FormGroup label={field.label} labelIcon={labelIcon}>
+        <FormGroup label={field.label} labelHelp={labelIcon}>
           <Checkbox
             id={fieldId}
             name={field.name}
@@ -175,7 +175,7 @@ export const GenericField = ({
         <FormGroup
           label={field.label}
           isRequired={field.isRequired}
-          labelIcon={labelIcon}
+          labelHelp={labelIcon}
         >
           <Select
             selected={value ?? field.defaultValue}
@@ -215,7 +215,7 @@ export const GenericField = ({
 
     case "radio":
       return (
-        <FormGroup label={field.label} labelIcon={labelIcon}>
+        <FormGroup label={field.label} labelHelp={labelIcon}>
           <Flex>
             {field.options.map((option) => {
               // Handle both label (for radio) and key (if using select structure)

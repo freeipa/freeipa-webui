@@ -1,11 +1,6 @@
 import React from "react";
 // PatternFly
-import {
-  Grid,
-  GridItem,
-  PageSection,
-  PageSectionVariants,
-} from "@patternfly/react-core";
+import { Grid, GridItem, PageSection } from "@patternfly/react-core";
 import TableLayout from "src/components/layouts/TableLayout";
 import { Td, Th, Tr } from "@patternfly/react-table";
 // components
@@ -143,7 +138,7 @@ const SubIdsStatistics = () => {
       hasAlerts={true}
       toolbarItems={toolbarItems}
     >
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <Grid hasGutter>
           <GridItem span={12}>
             <TableLayout

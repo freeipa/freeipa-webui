@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
-import {
-  TextContent,
-  Text,
-  TextVariants,
-  Button,
-} from "@patternfly/react-core";
+import { Content, ContentVariants, Button } from "@patternfly/react-core";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { removeHost } from "src/store/Identity/hosts-slice";
@@ -63,11 +58,11 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
+        <Content>
+          <Content component={ContentVariants.p}>
             Are you sure you want to remove the selected entries from Hosts?
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
       ),
     },
     {

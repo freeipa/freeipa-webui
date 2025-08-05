@@ -1,5 +1,5 @@
 import React from "react";
-import { PageSection, PageSectionVariants } from "@patternfly/react-core";
+import { PageSection } from "@patternfly/react-core";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 
@@ -25,11 +25,7 @@ const TabLayout = (props: PropsToTab) => {
   return (
     <>
       <div className="pf-v5-u-pt-lg pf-v5-u-pl-lg pf-v5-u-pr-lg">
-        <PageSection
-          id={props.id}
-          variant={PageSectionVariants.light}
-          style={style}
-        >
+        <PageSection hasBodyWrapper={false} id={props.id} style={style}>
           {props.children}
         </PageSection>
       </div>

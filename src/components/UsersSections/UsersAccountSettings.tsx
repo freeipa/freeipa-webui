@@ -279,7 +279,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               label="Certificate mapping data"
               fieldId="ipacertmapdata"
               role="group"
-              labelIcon={
+              labelHelp={
                 <PopoverWithIconLayout
                   message={certificateMappingDataMessage}
                 />
@@ -302,7 +302,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
               label="User authentication types"
               fieldId="ipauserauthtype"
               role="group"
-              labelIcon={
+              labelHelp={
                 <PopoverWithIconLayout message={userAuthTypesMessage} />
               }
             >

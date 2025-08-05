@@ -6,10 +6,9 @@ import {
   Form,
   FormGroup,
   ToggleGroupItem,
-  Text,
+  Content,
   ToolbarItemVariant,
-  TextContent,
-  TextVariants,
+  ContentVariants,
   Pagination,
 } from "@patternfly/react-core";
 // Icons
@@ -603,14 +602,14 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
       id: toolbarData().helpIcon.id,
       key: 9,
       element: (
-        <TextContent>
-          <Text component={TextVariants.p}>
+        <Content>
+          <Content component={ContentVariants.p}>
             <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
-            <Text component={TextVariants.a} isVisitedLink>
+            <Content component={ContentVariants.a} isVisitedLink>
               Help
-            </Text>
-          </Text>
-        </TextContent>
+            </Content>
+          </Content>
+        </Content>
       ),
     },
     {

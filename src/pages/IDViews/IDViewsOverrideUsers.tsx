@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
-import {
-  PageSection,
-  PageSectionVariants,
-  PaginationVariant,
-} from "@patternfly/react-core";
+import { PageSection, PaginationVariant } from "@patternfly/react-core";
 import {
   InnerScrollContainer,
   OuterScrollContainer,
@@ -361,7 +357,7 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
 
   // Render component
   return (
-    <PageSection variant={PageSectionVariants.light} isFilled={false}>
+    <PageSection hasBodyWrapper={false} isFilled={false}>
       <ToolbarLayout
         className="pf-v5-u-pt-0 pf-v5-u-pr-md"
         contentClassName="pf-v5-u-p-0"

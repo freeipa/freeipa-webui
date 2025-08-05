@@ -4,8 +4,7 @@ import {
   Icon,
   Title,
   PageSection,
-  PageSectionVariants,
-  TextContent,
+  Content,
   Tabs,
   Tab,
   TabTitleText,
@@ -123,15 +122,12 @@ const ActiveUsersTabs = ({ memberof }) => {
         isExpanded={isContextualPanelExpanded}
         onClose={onCloseContextualPanel}
       >
-        <PageSection
-          variant={PageSectionVariants.light}
-          className="pf-v5-u-pr-0"
-        >
+        <PageSection hasBodyWrapper={false} className="pf-v5-u-pr-0">
           <BreadCrumb
             className="pf-v5-u-mb-md"
             breadcrumbItems={breadcrumbItems}
           />
-          <TextContent>
+          <Content>
             <Title headingLevel="h1">
               <div
                 className="pf-v5-u-display-flex"
@@ -151,9 +147,9 @@ const ActiveUsersTabs = ({ memberof }) => {
                 )}
               </div>
             </Title>
-          </TextContent>
+          </Content>
         </PageSection>
-        <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
+        <PageSection hasBodyWrapper={false} type="tabs" isFilled>
           <Tabs
             activeKey={activeTab}
             onSelect={(_event, tabIndex) => {
@@ -163,7 +159,7 @@ const ActiveUsersTabs = ({ memberof }) => {
                 navigate("memberof_group");
               }
             }}
-            variant="light300"
+            variant="secondary"
             isBox
             className="pf-v5-u-ml-lg"
             mountOnEnter

@@ -1,10 +1,11 @@
 import {
   Avatar,
   Masthead,
-  MastheadBrand,
+  MastheadLogo,
   MastheadContent,
   MastheadMain,
   MastheadToggle,
+  MastheadBrand,
   Page,
   PageSidebar,
   PageToggleButton,
@@ -18,7 +19,7 @@ import {
 } from "@patternfly/react-core";
 import React from "react";
 // Icons
-import { BarsIcon } from "@patternfly/react-icons";
+
 import { UserIcon } from "@patternfly/react-icons";
 import { KeyIcon } from "@patternfly/react-icons";
 import { CogIcon } from "@patternfly/react-icons";
@@ -154,18 +155,19 @@ const AppLayout = (props: PropsToAppLayout) => {
 
   const Header = (
     <Masthead>
-      <MastheadToggle>
-        <PageToggleButton
-          data-cy="toolbar-button-toggle"
-          variant="plain"
-          aria-label="Global navigation"
-        >
-          <BarsIcon />
-        </PageToggleButton>
-      </MastheadToggle>
       <MastheadMain>
-        <MastheadBrand component="a">
-          <img src={headerLogo} alt="FreeIPA Logo" />
+        <MastheadToggle>
+          <PageToggleButton
+            isHamburgerButton
+            data-cy="toolbar-button-toggle"
+            variant="plain"
+            aria-label="Global navigation"
+          />
+        </MastheadToggle>
+        <MastheadBrand data-codemods>
+          <MastheadLogo data-codemods component="a">
+            <img src={headerLogo} alt="FreeIPA Logo" />
+          </MastheadLogo>
         </MastheadBrand>
       </MastheadMain>
       <MastheadContent>
@@ -205,7 +207,7 @@ const AppLayout = (props: PropsToAppLayout) => {
   return (
     <Page
       mainContainerId={pageId}
-      header={Header}
+      masthead={Header}
       sidebar={Sidebar}
       isManagedSidebar={true}
       skipToContent={PageSkipToContent}

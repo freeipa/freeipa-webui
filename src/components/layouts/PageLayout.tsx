@@ -1,6 +1,6 @@
 import React from "react";
 // PatternFly
-import { Page, PageSection, PageSectionVariants } from "@patternfly/react-core";
+import { Page, PageSection } from "@patternfly/react-core";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
@@ -33,7 +33,7 @@ const PageLayout = (props: PageLayoutProps) => {
   return (
     <Page>
       {props.hasAlerts && <alerts.ManagedAlerts />}
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id={props.title + " title"}
           headingLevel="h1"
@@ -41,7 +41,7 @@ const PageLayout = (props: PageLayoutProps) => {
         />
       </PageSection>
       <PageSection
-        variant={PageSectionVariants.light}
+        hasBodyWrapper={false}
         isFilled={false}
         className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
       >

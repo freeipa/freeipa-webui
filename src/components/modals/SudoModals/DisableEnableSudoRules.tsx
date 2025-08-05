@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  Button,
-  TextContent,
-  Text,
-  TextVariants,
-} from "@patternfly/react-core";
+import { Button, Content, ContentVariants } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import { SudoRule } from "src/utils/datatypes/globalDataTypes";
@@ -69,14 +64,14 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
+        <Content>
+          <Content component={ContentVariants.p}>
             Are you sure you want to {action} selected entries?
-          </Text>
-          <Text component={TextVariants.p}>
+          </Content>
+          <Content component={ContentVariants.p}>
             <i>{rules.join(", ")}</i>
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
       ),
     },
   ];

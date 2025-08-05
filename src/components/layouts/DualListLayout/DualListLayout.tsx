@@ -4,7 +4,6 @@ import {
   Flex,
   FlexItem,
   Button,
-  DualListSelector,
   FormGroup,
   TextInput,
   DualListSelectorPane,
@@ -13,6 +12,7 @@ import {
   DualListSelectorControlsWrapper,
   DualListSelectorControl,
 } from "@patternfly/react-core";
+import { DualListSelector } from "@patternfly/react-core/deprecated";
 // Layout
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";

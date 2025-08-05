@@ -6,7 +6,6 @@ import {
   JumpLinks,
   JumpLinksItem,
   PageSection,
-  PageSectionVariants,
   Sidebar,
   SidebarPanel,
   SidebarContent,
@@ -240,16 +239,13 @@ const Configuration = () => {
   return (
     <>
       <alerts.ManagedAlerts />
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <TitleLayout id="config title" headingLevel="h1" text="Configuration" />
       </PageSection>
-      <PageSection
-        variant={PageSectionVariants.light}
-        className="pf-v5-u-m-lg pf-v5-u-p-0"
-      >
+      <PageSection hasBodyWrapper={false} className="pf-v5-u-m-lg pf-v5-u-p-0">
         <PageSection
+          hasBodyWrapper={false}
           id="settings-page"
-          variant={PageSectionVariants.light}
           style={style}
           className="pf-v5-u-mt-0 pf-v5-u-ml-lg pf-v5-u-mr-lg pf-v5-u-pl-0 pf-v5-u-pr-0"
         >

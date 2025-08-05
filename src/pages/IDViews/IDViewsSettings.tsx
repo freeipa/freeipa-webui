@@ -142,7 +142,7 @@ const IDViewSettings = (props: PropsToIDViewSettings) => {
           <FormGroup
             label="Domain resolution order"
             fieldId="ipadomainresolutionorder"
-            labelIcon={
+            labelHelp={
               <Tooltip
                 content={
                   <div>

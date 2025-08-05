@@ -120,7 +120,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
               label="Authentication indicators"
               fieldId="authentication-indicators"
               role="group"
-              labelIcon={
+              labelHelp={
                 <PopoverWithIconLayout message={AuthIndicatorsTypesMessage} />
               }
             >

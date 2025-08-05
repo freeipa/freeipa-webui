@@ -9,7 +9,6 @@ import {
   MenuToggleElement,
   Page,
   PageSection,
-  PageSectionVariants,
   PaginationVariant,
   SearchInput,
 } from "@patternfly/react-core";
@@ -639,7 +638,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
     <Page>
       <alerts.ManagedAlerts />
       <PageSection
-        variant={PageSectionVariants.light}
+        hasBodyWrapper={false}
         isFilled={false}
         className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
       >

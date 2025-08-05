@@ -1,11 +1,6 @@
 import React from "react";
 // PatternFly
-import {
-  Button,
-  TextContent,
-  Text,
-  TextVariants,
-} from "@patternfly/react-core";
+import { Button, Content, ContentVariants } from "@patternfly/react-core";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // RPC
@@ -139,11 +134,11 @@ const DeleteMultipleRulesModal = (props: DeleteMultipleRulesModalProps) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
+        <Content>
+          <Content component={ContentVariants.p}>
             Are you sure you want to delete the selected entries?
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
       ),
     },
     {
