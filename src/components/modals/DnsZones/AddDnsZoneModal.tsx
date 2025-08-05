@@ -7,12 +7,12 @@ import {
   FormGroup,
   HelperText,
   HelperTextItem,
-  Modal,
   Radio,
   Spinner,
   TextInput,
   ValidatedOptions,
 } from "@patternfly/react-core";
+import { Modal } from "@patternfly/react-core/deprecated";
 // Components
 import CustomTooltip from "src/components/layouts/CustomTooltip";
 // RPC
@@ -237,7 +237,7 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
         <FormGroup
           key="skip-overlap-check"
           fieldId="skip-overlap-check"
-          labelIcon={
+          labelHelp={
             <CustomTooltip
               message={skipOverlapCheckMessage}
               id="skip-overlap-check-tooltip"

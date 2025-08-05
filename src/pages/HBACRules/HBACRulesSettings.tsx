@@ -13,9 +13,8 @@ import {
   Tab,
   Tabs,
   TabTitleText,
-  Text,
-  TextContent,
-  TextVariants,
+  Content,
+  ContentVariants,
   Title,
 } from "@patternfly/react-core";
 // Forms
@@ -212,9 +211,15 @@ const HBACRulesSettings = (props: PropsToSettings) => {
     },
   ];
 
-  const whoLabel = <Text component={TextVariants.small}>Allow anyone</Text>;
-  const whatLabel = <Text component={TextVariants.small}>Any host</Text>;
-  const howLabel = <Text component={TextVariants.small}>Any service</Text>;
+  const whoLabel = (
+    <Content component={ContentVariants.small}>Allow anyone</Content>
+  );
+  const whatLabel = (
+    <Content component={ContentVariants.small}>Any host</Content>
+  );
+  const howLabel = (
+    <Content component={ContentVariants.small}>Any service</Content>
+  );
 
   // Render component
   return (
@@ -269,7 +274,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
                 />
               </FormGroup>
             </Form>
-            <TextContent key="usercategory">
+            <Content key="usercategory">
               <Title
                 headingLevel="h2"
                 id="usercategory"
@@ -291,7 +296,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
                   altFalse={""}
                 />
               </Title>
-            </TextContent>
+            </Content>
             {ipaObject.usercategory === "" && (
               <Tabs
                 activeKey={userTabKey}
@@ -342,7 +347,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
                 </Tab>
               </Tabs>
             )}
-            <TextContent key="hostcategory">
+            <Content key="hostcategory">
               <Title
                 headingLevel="h2"
                 id="hostcategory"
@@ -364,7 +369,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
                   altFalse={""}
                 />
               </Title>
-            </TextContent>
+            </Content>
             {ipaObject.hostcategory === "" && (
               <Tabs
                 activeKey={hostTabKey}
@@ -417,7 +422,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
                 </Tab>
               </Tabs>
             )}
-            <TextContent key="servicecategory">
+            <Content key="servicecategory">
               <Title
                 headingLevel="h2"
                 id="servicecategory"
@@ -439,7 +444,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
                   altFalse={""}
                 />
               </Title>
-            </TextContent>
+            </Content>
             {ipaObject.servicecategory === "" && (
               <Tabs
                 activeKey={srvTabKey}

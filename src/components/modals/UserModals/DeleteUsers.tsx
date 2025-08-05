@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 // PatternFly
 import {
-  TextContent,
-  Text,
-  TextVariants,
+  Content,
+  ContentVariants,
   Radio,
   Button,
 } from "@patternfly/react-core";
@@ -89,12 +88,12 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
+        <Content>
+          <Content component={ContentVariants.p}>
             Are you sure you want to remove the selected entries from{" "}
             {getUserPageName()}?
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
       ),
     },
     {
@@ -109,9 +108,9 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
       id: "radio-buttons",
       pfComponent: (
         <>
-          <TextContent>
-            <Text component={TextVariants.p}>Remove mode</Text>
-          </TextContent>
+          <Content>
+            <Content component={ContentVariants.p}>Remove mode</Content>
+          </Content>
           <Radio
             data-cy="modal-radio-delete"
             id="radio-delete"

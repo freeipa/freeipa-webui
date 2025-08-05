@@ -85,7 +85,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
           <FormGroup
             label="Domain resolution order"
             fieldId="ipadomainresolutionorder"
-            labelIcon={
+            labelHelp={
               <PopoverWithIconLayout message={DomainMessage} triggerHover />
             }
           >
@@ -216,7 +216,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             label="Default user authentication types"
             fieldId="ipauserauthtype"
             role="group"
-            labelIcon={
+            labelHelp={
               <PopoverWithIconLayout message={AuthTypesMessage} triggerHover />
             }
           >

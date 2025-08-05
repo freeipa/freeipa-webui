@@ -1,11 +1,6 @@
 import React from "react";
 // PatternFly
-import {
-  Button,
-  TextContent,
-  Text,
-  TextVariants,
-} from "@patternfly/react-core";
+import { Button, Content, ContentVariants } from "@patternfly/react-core";
 // Modals
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // RPC
@@ -33,11 +28,11 @@ const UnlockUser = (props: propsToUnlockUser) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
+        <Content>
+          <Content component={ContentVariants.p}>
             {"Are you sure you want to unlock user '" + props.uid + "'?"}
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
       ),
     },
   ];

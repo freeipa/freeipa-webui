@@ -4,7 +4,6 @@ import {
   Button,
   Page,
   PageSection,
-  PageSectionVariants,
   PaginationVariant,
   SelectOptionProps,
 } from "@patternfly/react-core";
@@ -600,7 +599,7 @@ const AutoMemUserRules = () => {
   return (
     <Page>
       <alerts.ManagedAlerts />
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id="Automember user groups title"
           headingLevel="h1"
@@ -608,7 +607,7 @@ const AutoMemUserRules = () => {
         />
       </PageSection>
       <PageSection
-        variant={PageSectionVariants.light}
+        hasBodyWrapper={false}
         isFilled={false}
         className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
       >

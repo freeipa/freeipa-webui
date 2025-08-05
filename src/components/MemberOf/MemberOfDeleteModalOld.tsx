@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
-import {
-  TextContent,
-  Text,
-  TextVariants,
-  Button,
-} from "@patternfly/react-core";
+import { Content, ContentVariants, Button } from "@patternfly/react-core";
 // Modals
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
@@ -72,11 +67,11 @@ const MemberOfDeleteModal = (props: PropsToDelete) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
+        <Content>
+          <Content component={ContentVariants.p}>
             Are you sure you want to remove the selected entries from the list?
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
       ),
     },
     {

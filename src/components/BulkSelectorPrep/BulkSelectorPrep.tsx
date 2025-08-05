@@ -146,29 +146,27 @@ const BulkSelectorPrep = <Type,>(props: PropsToBulkSelectorPrep<Type>) => {
       ref={toggleRefMenu}
       onClick={onToggleClick}
       isExpanded={isOpenMenu}
-      splitButtonOptions={{
-        items: [
-          <MenuToggleCheckbox
-            id="split-button-checkbox-with-text-disabled-example"
-            key="split-checkbox-with-text-disabled"
-            aria-label="Select all"
-            onChange={(
-              isSelecting: boolean | undefined,
-              event: FormEvent<HTMLInputElement>
-            ) =>
-              selectAllElementsPage(
-                isSelecting,
-                props.elementData.selectableTable
-              )
-            }
-            isChecked={areAllElementsSelected}
-          >
-            {props.elementData.selected.length > 0 && (
-              <p>{props.elementData.selected.length + " selected"}</p>
-            )}
-          </MenuToggleCheckbox>,
-        ],
-      }}
+      splitButtonItems={[
+        <MenuToggleCheckbox
+          id="split-button-checkbox-with-text-disabled-example"
+          key="split-checkbox-with-text-disabled"
+          aria-label="Select all"
+          onChange={(
+            isSelecting: boolean | undefined,
+            event: FormEvent<HTMLInputElement>
+          ) =>
+            selectAllElementsPage(
+              isSelecting,
+              props.elementData.selectableTable
+            )
+          }
+          isChecked={areAllElementsSelected}
+        >
+          {props.elementData.selected.length > 0 && (
+            <p>{props.elementData.selected.length + " selected"}</p>
+          )}
+        </MenuToggleCheckbox>,
+      ]}
       aria-label="Menu toggle with checkbox split button and text"
     />
   );

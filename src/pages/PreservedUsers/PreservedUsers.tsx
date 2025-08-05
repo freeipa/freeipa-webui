@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
-import {
-  Page,
-  PaginationVariant,
-  PageSection,
-  PageSectionVariants,
-} from "@patternfly/react-core";
+import { Page, PaginationVariant, PageSection } from "@patternfly/react-core";
 // PatternFly table
 import {
   InnerScrollContainer,
@@ -545,7 +540,7 @@ const PreservedUsers = () => {
     >
       <Page>
         <alerts.ManagedAlerts />
-        <PageSection variant={PageSectionVariants.light}>
+        <PageSection hasBodyWrapper={false}>
           <TitleLayout
             id="preserved users title"
             headingLevel="h1"
@@ -553,7 +548,7 @@ const PreservedUsers = () => {
           />
         </PageSection>
         <PageSection
-          variant={PageSectionVariants.light}
+          hasBodyWrapper={false}
           isFilled={false}
           className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
         >

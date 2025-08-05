@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect, useState } from "react";
 // PaternFly
-import { Button, DualListSelector } from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core";
+import { DualListSelector } from "@patternfly/react-core/deprecated";
 // Data types
 import { Host } from "src/utils/datatypes/globalDataTypes";
 // Layouts

@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
-import { Form, FormGroup, Modal, TextArea } from "@patternfly/react-core";
+import { Form, FormGroup, TextArea } from "@patternfly/react-core";
+import { Modal } from "@patternfly/react-core/deprecated";
 // Data types
 import { Metadata } from "src/utils/datatypes/globalDataTypes";
 

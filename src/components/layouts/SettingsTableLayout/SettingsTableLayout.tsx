@@ -4,7 +4,6 @@ import {
   EmptyState,
   EmptyStateActions,
   EmptyStateBody,
-  EmptyStateHeader,
   EmptyStateVariant,
   Flex,
   FlexItem,
@@ -130,16 +129,16 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
           />
         </>
       ) : (
-        <EmptyState variant={EmptyStateVariant.xs}>
-          <EmptyStateHeader
-            titleText={
-              "No " +
-              props.entryType.toLowerCase() +
-              "s " +
-              (entryCount > 0 ? " found" : "")
-            }
-            headingLevel="h6"
-          />
+        <EmptyState
+          headingLevel="h6"
+          titleText={
+            "No " +
+            props.entryType.toLowerCase() +
+            "s " +
+            (entryCount > 0 ? " found" : "")
+          }
+          variant={EmptyStateVariant.xs}
+        >
           <EmptyStateBody>
             <EmptyStateActions>
               <SecondaryButton

@@ -37,13 +37,14 @@ const PageWithGrayBorderLayout = (props: PropsToPageWithGrayBorderLayout) => {
         />
       </PageSection>
       <PageSection
+        hasBodyWrapper={false}
         type="default"
-        variant={PageSectionVariants.light}
         isFilled
         className="pf-v5-u-m-lg pf-v5-u-mb-0 pf-v5-u-pb-0"
       >
         <Flex direction={{ default: "column" }}>
           <PageSection
+            hasBodyWrapper={false}
             id={props.id}
             variant={PageSectionVariants.light}
             className="pf-v5-u-mb-0"

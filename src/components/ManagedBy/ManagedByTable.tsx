@@ -3,11 +3,9 @@ import React, { useEffect, useState } from "react";
 import {
   Bullseye,
   EmptyState,
-  EmptyStateIcon,
   EmptyStateVariant,
   EmptyStateBody,
   Button,
-  EmptyStateHeader,
   EmptyStateFooter,
 } from "@patternfly/react-core";
 import { Td, Th, Tr } from "@patternfly/react-table";
@@ -188,12 +186,12 @@ const ManagedByTable = (props: PropsToTable) => {
     <Tr>
       <Td colSpan={8}>
         <Bullseye>
-          <EmptyState variant={EmptyStateVariant.sm}>
-            <EmptyStateHeader
-              titleText="No results found"
-              icon={<EmptyStateIcon icon={SearchIcon} />}
-              headingLevel="h2"
-            />
+          <EmptyState
+            headingLevel="h2"
+            icon={SearchIcon}
+            titleText="No results found"
+            variant={EmptyStateVariant.sm}
+          >
             <EmptyStateBody>Clear all filters and try again.</EmptyStateBody>
             <EmptyStateFooter>
               <Button data-cy="clear-all-filters" variant="link">

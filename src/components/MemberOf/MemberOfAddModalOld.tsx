@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect, useState } from "react";
 // PatternFly
-import { Button, DualListSelector } from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core";
+import { DualListSelector } from "@patternfly/react-core/deprecated";
 // Modals
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Data types
