@@ -99,8 +99,7 @@ describe("DualListLayout Component", () => {
       name: /Click here.*/i,
     });
     expect(clickButton).toBeInTheDocument();
-    // Click the link, not the item
-    fireEvent.click(clickButton.querySelector("a")!);
+    fireEvent.click(clickButton);
 
     // Await search disappearance
     await waitForElementToBeRemoved(() =>
@@ -122,8 +121,7 @@ describe("DualListLayout Component", () => {
       name: /Click here.*/i,
     });
     expect(clickButton).toBeInTheDocument();
-    // Click the link, not the item
-    fireEvent.click(clickButton.querySelector("a")!);
+    fireEvent.click(clickButton);
 
     // Await search disappearance
     await waitForElementToBeRemoved(() =>
@@ -172,8 +170,7 @@ describe("DualListLayout Component", () => {
       name: /Click here.*/i,
     });
     expect(clickButton).toBeInTheDocument();
-    // Click the link, not the item
-    fireEvent.click(clickButton.querySelector("a")!);
+    fireEvent.click(clickButton);
 
     // Await search disappearance
     await waitForElementToBeRemoved(() =>

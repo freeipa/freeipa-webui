@@ -25,7 +25,7 @@ interface PropsToDelete {
   tableElementsList: string[];
   updateTableElementsList: (newElementsList: string[]) => void;
   availableData: string[];
-  updateAvailableData: (newFilteredElements: unknown[]) => void;
+  updateAvailableData: (newFilteredElements: string[]) => void;
 }
 
 const KeytabElementsDeleteModal = (props: PropsToDelete) => {
