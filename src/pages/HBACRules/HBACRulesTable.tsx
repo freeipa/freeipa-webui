@@ -214,7 +214,7 @@ const HBACRulesTable = (props: PropsToTable) => {
   // Defining table header and body from here to avoid passing specific names to the Table Layout
   const header = (
     <Tr>
-      <Th modifier="wrap"></Th>
+      <Th modifier="wrap" aria-label="Select rows"></Th>
       <Th modifier="wrap">{columnNames.cn}</Th>
       <Th modifier="wrap">{columnNames.ipaenabledflag}</Th>
       <Th modifier="wrap">{columnNames.description}</Th>
