@@ -1,37 +1,22 @@
 import React from "react";
 // PatternFly
-import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core";
+import {
+  Toolbar,
+  ToolbarContent,
+  ToolbarItem,
+  ToolbarItemProps,
+  ToolbarItemVariant,
+} from "@patternfly/react-core";
 
-export interface ToolbarItemSpacer {
-  default?: "spacerNone" | "spacerSm" | "spacerMd" | "spacerLg";
-  md?: "spacerNone" | "spacerSm" | "spacerMd" | "spacerLg";
-  lg?: "spacerNone" | "spacerSm" | "spacerMd" | "spacerLg";
-  xl?: "spacerNone" | "spacerSm" | "spacerMd" | "spacerLg";
-  "2xl"?: "spacerNone" | "spacerSm" | "spacerMd" | "spacerLg";
-}
-
-export interface ToolbarItemAlignment {
-  default?: "alignRight" | "alignLeft";
-  md?: "alignRight" | "alignLeft";
-  lg?: "alignRight" | "alignLeft";
-  xl?: "alignRight" | "alignLeft";
-  "2xl"?: "alignRight" | "alignLeft";
-}
+export type ToolbarItemGap = ToolbarItemProps["gap"];
+export type ToolbarItemAlignment = ToolbarItemProps["align"];
 
 export interface ToolbarItem {
   key: number;
   id?: string;
   element?: JSX.Element;
-  toolbarItemVariant?:
-    | "bulk-select"
-    | "overflow-menu"
-    | "pagination"
-    | "search-filter"
-    | "label"
-    | "chip-group"
-    | "separator"
-    | "expand-all";
-  toolbarItemSpacer?: ToolbarItemSpacer;
+  toolbarItemVariant?: ToolbarItemVariant;
+  toolbarItemGap?: ToolbarItemGap;
   toolbarItemAlignment?: ToolbarItemAlignment;
 }
 
@@ -52,7 +37,7 @@ const ToolbarLayout = (props: PropsToToolbar) => {
             id={elem.key.toString()}
             variant={elem.toolbarItemVariant}
             align={elem.toolbarItemAlignment}
-            spacer={elem.toolbarItemSpacer}
+            gap={elem.toolbarItemGap}
           >
             {elem.element}
           </ToolbarItem>

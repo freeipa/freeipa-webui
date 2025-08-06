@@ -1,6 +1,11 @@
 import React from "react";
 // PatternFly
-import { Grid, GridItem, PageSection } from "@patternfly/react-core";
+import {
+  Grid,
+  GridItem,
+  PageSection,
+  ToolbarItemVariant,
+} from "@patternfly/react-core";
 import TableLayout from "src/components/layouts/TableLayout";
 import { Td, Th, Tr } from "@patternfly/react-table";
 // components
@@ -81,7 +86,7 @@ const SubIdsStatistics = () => {
     },
     {
       key: 1,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 2,

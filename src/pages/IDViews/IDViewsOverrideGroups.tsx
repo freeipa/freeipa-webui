@@ -4,6 +4,7 @@ import {
   Button,
   PageSection,
   PaginationVariant,
+  ToolbarItemVariant,
   Tooltip,
 } from "@patternfly/react-core";
 import {
@@ -315,7 +316,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
           />
         </Tooltip>
       ),
-      toolbarItemSpacer: { default: "spacerNone" },
+      toolbarItemGap: { default: "gapNone" },
     },
     {
       key: 1,
@@ -329,12 +330,12 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
           isDisabled={searchDisabled}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 2,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 3,
@@ -381,7 +382,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 

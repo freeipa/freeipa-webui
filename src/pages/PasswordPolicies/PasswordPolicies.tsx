@@ -1,6 +1,11 @@
 import React from "react";
 // PatternFly
-import { Page, PageSection, PaginationVariant } from "@patternfly/react-core";
+import {
+  Page,
+  PageSection,
+  PaginationVariant,
+  ToolbarItemVariant,
+} from "@patternfly/react-core";
 import {
   InnerScrollContainer,
   OuterScrollContainer,
@@ -384,12 +389,12 @@ const PasswordPolicies = () => {
           isDisabled={searchIsDisabled}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 2,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 3,
@@ -429,7 +434,7 @@ const PasswordPolicies = () => {
     },
     {
       key: 6,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 7,
@@ -445,7 +450,7 @@ const PasswordPolicies = () => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 

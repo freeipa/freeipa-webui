@@ -11,6 +11,7 @@ import {
   PageSection,
   PaginationVariant,
   SearchInput,
+  ToolbarItemVariant,
 } from "@patternfly/react-core";
 import {
   InnerScrollContainer,
@@ -502,12 +503,12 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
           onClear={() => setSearchValue("")}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 2,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 3,
@@ -614,7 +615,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
     },
     {
       key: 6,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 7,
@@ -630,7 +631,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 

@@ -15,8 +15,7 @@ import {
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 // Toolbar layout
 import ToolbarLayout, {
-  ToolbarItemAlignment,
-  ToolbarItemSpacer,
+  ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
 // Data types
 import {
@@ -487,7 +486,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
   // Toolbar fields data structure
   // - Depending on the 'toolbarData' response, a
   //   specific set of data will be shown.
-  const toolbarFields = [
+  const toolbarFields: ToolbarItem[] = [
     {
       id: toolbarData().searchId,
       key: 0,
@@ -501,9 +500,9 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
         />
       ),
       toolbarItemVariant: ToolbarItemVariant["search-filter"],
-      toolbarItemSpacer: {
-        default: "spacerMd",
-      } as ToolbarItemSpacer,
+      toolbarItemGap: {
+        default: "gapMd",
+      },
     },
     {
       id: toolbarData().separator1Id,
@@ -626,7 +625,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
           isCompact
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" } as ToolbarItemAlignment,
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 

@@ -1,6 +1,11 @@
 import React from "react";
 // PatternFly
-import { Page, PageSection, PaginationVariant } from "@patternfly/react-core";
+import {
+  Page,
+  PageSection,
+  PaginationVariant,
+  ToolbarItemVariant,
+} from "@patternfly/react-core";
 import {
   InnerScrollContainer,
   OuterScrollContainer,
@@ -271,12 +276,12 @@ const SubordinateIDs = () => {
           isDisabled={searchDisabled}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 1,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 2,
@@ -304,7 +309,7 @@ const SubordinateIDs = () => {
     },
     {
       key: 4,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 5,
@@ -320,7 +325,7 @@ const SubordinateIDs = () => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 

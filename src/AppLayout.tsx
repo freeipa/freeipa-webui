@@ -211,6 +211,7 @@ const AppLayout = (props: PropsToAppLayout) => {
       sidebar={Sidebar}
       isManagedSidebar={true}
       skipToContent={PageSkipToContent}
+      className="--pf-t--global--text--color--regular"
     >
       {props.children}
     </Page>
