@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PaginationVariant,
   Button,
   DropdownItem,
+  ToolbarItemVariant,
+  PageSectionVariants,
 } from "@patternfly/react-core";
 // PatternFly table
 import {
@@ -636,12 +637,12 @@ const ActiveUsers = () => {
           isDisabled={searchDisabled}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 2,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 3,
@@ -718,7 +719,7 @@ const ActiveUsers = () => {
     },
     {
       key: 9,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 10,
@@ -739,7 +740,7 @@ const ActiveUsers = () => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 
@@ -750,9 +751,12 @@ const ActiveUsers = () => {
       isExpanded={isContextualPanelExpanded}
       onClose={onCloseContextualPanel}
     >
-      <Page>
+      <>
         <alerts.ManagedAlerts />
-        <PageSection hasBodyWrapper={false}>
+        <PageSection
+          hasBodyWrapper={false}
+          variant={PageSectionVariants.default}
+        >
           <TitleLayout
             id="active users title"
             headingLevel="h1"
@@ -841,7 +845,7 @@ const ActiveUsers = () => {
             actions={membershipModalActions}
           />
         )}
-      </Page>
+      </>
     </ContextualHelpPanel>
   );
 };

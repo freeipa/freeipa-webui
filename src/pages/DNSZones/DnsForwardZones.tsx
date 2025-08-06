@@ -1,6 +1,11 @@
 import React from "react";
 // PatternFly
-import { Page, PageSection, PaginationVariant } from "@patternfly/react-core";
+import {
+  Page,
+  PageSection,
+  PaginationVariant,
+  ToolbarItemVariant,
+} from "@patternfly/react-core";
 import {
   InnerScrollContainer,
   OuterScrollContainer,
@@ -303,12 +308,12 @@ const DnsForwardZones = () => {
           dataCy={"search"}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 2,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 3,
@@ -368,7 +373,7 @@ const DnsForwardZones = () => {
     },
     {
       key: 8,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 9,
@@ -384,7 +389,7 @@ const DnsForwardZones = () => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 

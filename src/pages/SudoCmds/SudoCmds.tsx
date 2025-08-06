@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
-import { Page, PageSection, PaginationVariant } from "@patternfly/react-core";
+import {
+  Page,
+  PageSection,
+  PaginationVariant,
+  ToolbarItemVariant,
+} from "@patternfly/react-core";
 // PatternFly table
 import {
   InnerScrollContainer,
@@ -422,12 +427,12 @@ const SudoCmds = () => {
           isDisabled={searchDisabled}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 2,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 3,
@@ -467,7 +472,7 @@ const SudoCmds = () => {
     },
     {
       key: 6,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 7,
@@ -483,7 +488,7 @@ const SudoCmds = () => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 
