@@ -87,7 +87,7 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
       data-cy="modal-select-rev-reason-toggle"
       ref={toggleRef}
       onClick={onToggleRevReason}
-      className="pf-v5-u-w-100"
+      className="pf-v6-u-w-100"
     >
       {revReasonSelected}
     </MenuToggle>
@@ -128,7 +128,7 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
       data-cy="modal-select-ca-toggle"
       ref={toggleRef}
       onClick={onCAToggle}
-      className="pf-v5-u-w-100"
+      className="pf-v6-u-w-100"
     >
       {CASelected}
     </MenuToggle>

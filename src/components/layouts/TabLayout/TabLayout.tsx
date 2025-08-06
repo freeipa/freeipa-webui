@@ -24,7 +24,7 @@ const TabLayout = (props: PropsToTab) => {
 
   return (
     <>
-      <div className="pf-v5-u-pt-lg pf-v5-u-pl-lg pf-v5-u-pr-lg">
+      <div className="pf-v6-u-pt-lg pf-v6-u-pl-lg pf-v6-u-pr-lg">
         <PageSection hasBodyWrapper={false} id={props.id} style={style}>
           {props.children}
         </PageSection>
@@ -32,7 +32,7 @@ const TabLayout = (props: PropsToTab) => {
       {props.toolbarItems && (
         <ToolbarLayout
           isSticky
-          className={"pf-v5-u-p-md pf-v5-u-ml-lg pf-v5-u-mr-lg"}
+          className={"pf-v6-u-p-md pf-v6-u-ml-lg pf-v6-u-mr-lg"}
           toolbarItems={props.toolbarItems}
         />
       )}

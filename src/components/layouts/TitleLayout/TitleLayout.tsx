@@ -15,9 +15,9 @@ interface PropsToTitleLayout {
 
 const TitleLayout = (props: PropsToTitleLayout) => {
   const titleText = props.preText ? (
-    <div className="pf-v5-u-display-flex">
-      <div className="pf-v5-u-color-400">{props.preText}</div>
-      <div className="pf-v5-u-ml-sm">{props.text}</div>
+    <div className="pf-v6-u-display-flex">
+      <div className="pf-v6-u-color-400">{props.preText}</div>
+      <div className="pf-v6-u-ml-sm">{props.text}</div>
     </div>
   ) : (
     <>{props.text}</>

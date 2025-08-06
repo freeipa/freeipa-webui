@@ -78,7 +78,7 @@ const TextInputList = (props: TextInputListProps) => {
       <Button
         data-cy={props.dataCy + "-add-button"}
         variant="secondary"
-        className="pf-v5-u-mt-sm"
+        className="pf-v6-u-mt-sm"
         name={"add-" + props.name}
         onClick={onAddHandler}
       >

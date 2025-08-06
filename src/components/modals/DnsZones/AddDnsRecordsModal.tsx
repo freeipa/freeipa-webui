@@ -438,7 +438,7 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
               ref={toggleRef}
               onClick={() => setIsRecordTypeOpen(!isRecordTypeOpen)}
               isExpanded={isRecordTypeOpen}
-              className="pf-v5-u-w-100"
+              className="pf-v6-u-w-100"
               data-cy="record-type-toggle"
             >
               {basicFormValues.recordType}

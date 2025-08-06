@@ -43,8 +43,8 @@ const PageLayout = (props: PageLayoutProps) => {
       <PageSection>
         {props.toolbarItems && props.toolbarItems.length > 0 && (
           <ToolbarLayout
-            className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-            contentClassName="pf-v5-u-p-0"
+            className="pf-v6-u-pt-0 pf-v6-u-pl-lg pf-v6-u-pr-md"
+            contentClassName="pf-v6-u-p-0"
             toolbarItems={props.toolbarItems}
           />
         )}

@@ -546,7 +546,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
     runAsGroupOptionSelected === "Any Group";
 
   const filterRunAsGroup = (
-    <Flex className="pf-v5-u-mt-lg" name="ipasudorunasgroupcategory">
+    <Flex className="pf-v6-u-mt-lg" name="ipasudorunasgroupcategory">
       <FlexItem>RunAs Group category the rule applies to: </FlexItem>
       <FlexItem>
         <IpaToggleGroup
@@ -576,12 +576,12 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         activeKey={activeRunAsUsersTabKey}
         onSelect={handleRunAsUsersTabClick}
         aria-label="Tabs for RunAs user category"
-        className="pf-v5-u-mt-md"
+        className="pf-v6-u-mt-md"
       >
         <Tab
           key={0}
           eventKey={0}
-          className="pf-v5-u-mt-sm"
+          className="pf-v6-u-mt-sm"
           title={
             <TabTitleText>
               RunAs Users <Label isCompact>{runAsUsersList.length}</Label>
@@ -590,7 +590,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
           aria-label="RunAs users in the as whom section of the sudo rule"
         >
           <KeytabTableWithFilter
-            className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+            className="pf-v6-u-ml-md pf-v6-u-mt-sm"
             id={props.rule.cn as string}
             extraId="runas"
             from="sudo rule"
@@ -612,7 +612,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         <Tab
           key={1}
           eventKey={1}
-          className="pf-v5-u-mt-sm"
+          className="pf-v6-u-mt-sm"
           title={
             <TabTitleText>
               Groups of RunAs Users{" "}
@@ -622,7 +622,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
           aria-label="RunAs user groups in the as whom section of the sudo rule"
         >
           <KeytabTableWithFilter
-            className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+            className="pf-v6-u-ml-md pf-v6-u-mt-sm"
             id={props.rule.cn as string}
             extraId="runas"
             from="sudo rule"
@@ -649,12 +649,12 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         activeKey={activeRunAsGroupsTabKey}
         onSelect={handleRunAsGroupsTabClick}
         aria-label="Tabs for RunAs Group category"
-        className="pf-v5-u-mt-md"
+        className="pf-v6-u-mt-md"
       >
         <Tab
           key={0}
           eventKey={0}
-          className="pf-v5-u-mt-sm"
+          className="pf-v6-u-mt-sm"
           title={
             <TabTitleText>
               RunAs Groups <Label isCompact>{runAsGroupsList.length}</Label>
@@ -663,7 +663,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
           aria-label="RunAs Groups in the as whom section of the sudo rule"
         >
           <KeytabTableWithFilter
-            className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+            className="pf-v6-u-ml-md pf-v6-u-mt-sm"
             id={props.rule.cn as string}
             extraId="runas-group"
             from="sudo rule"

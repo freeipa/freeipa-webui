@@ -348,7 +348,7 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
       ariaLabel={props.tableTitle}
       variant={"compact"}
       hasBorders={true}
-      classes={"pf-v5-u-mt-md"}
+      classes={"pf-v6-u-mt-md"}
       tableId={props.pathname + "-table"}
       isStickyHeader={true}
       tableHeader={header}

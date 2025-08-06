@@ -16,9 +16,9 @@ code {
   height: 100%;
 }
 
-.pf-v5-c-background-image {
-  --pf-v5-c-background-image--BackgroundSize: cover;
-  --pf-v5-c-background-image--BackgroundPosition: center;
+.pf-v6-c-background-image {
+  --pf-v6-c-background-image--BackgroundSize: cover;
+  --pf-v6-c-background-image--BackgroundPosition: center;
 }
 
 code {

@@ -97,7 +97,7 @@ const AddHost = (props: PropsToAddHost) => {
       data-cy="modal-select-dns-zone-toggle"
       ref={toggleRef}
       onClick={dnsZoneOnToggle}
-      className="pf-v5-u-w-100"
+      className="pf-v6-u-w-100"
     >
       {dnsZoneSelected}
     </MenuToggle>
@@ -434,7 +434,7 @@ const AddHost = (props: PropsToAddHost) => {
           name="noMembershipCheckbox"
           value="nomembership"
           onChange={handleNoMembershipCheckbox}
-          className="pf-v5-u-mb-md"
+          className="pf-v6-u-mb-md"
         />
       ),
     },

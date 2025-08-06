@@ -135,7 +135,7 @@ const IpaPACType = (props: IpaPACTypeProps) => {
         isDisabled={!isOverrideChecked && readOnly}
         id="ms-pac-checkbox"
         name="ms-pac"
-        className="pf-v5-u-ml-lg"
+        className="pf-v6-u-ml-lg"
       />
       <Checkbox
         data-cy={props.dataCy + "-pad"}
@@ -145,7 +145,7 @@ const IpaPACType = (props: IpaPACTypeProps) => {
         isDisabled={!isOverrideChecked && readOnly}
         id="pad-checkbox"
         name="pad"
-        className="pf-v5-u-ml-lg"
+        className="pf-v6-u-ml-lg"
       />
     </>
   );

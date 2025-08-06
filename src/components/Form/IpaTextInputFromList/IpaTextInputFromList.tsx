@@ -57,7 +57,7 @@ const IpaTextInputFromList = (props: PropsToTextInputFromList) => {
               <FlexItem
                 key={idx}
                 flex={{ default: "flex_1" }}
-                className="pf-v5-u-ml-lg"
+                className="pf-v6-u-ml-lg"
               >
                 <TextInput
                   data-cy={props.dataCy + "-textbox-" + element}
@@ -93,7 +93,7 @@ const IpaTextInputFromList = (props: PropsToTextInputFromList) => {
       </Flex>
       <SecondaryButton
         dataCy={props.dataCy + "-button-add"}
-        classname="pf-v5-u-mt-md"
+        classname="pf-v6-u-mt-md"
         name="add-principal-alias"
         onClickHandler={props.onOpenModal}
         isDisabled={readOnly}

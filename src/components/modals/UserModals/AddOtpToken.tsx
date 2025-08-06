@@ -257,7 +257,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       onClick={onToggle}
       isExpanded={isOwnerOpen}
       variant={"default"}
-      className="pf-v5-u-w-100"
+      className="pf-v6-u-w-100"
     >
       {selectedOwner}
     </MenuToggle>

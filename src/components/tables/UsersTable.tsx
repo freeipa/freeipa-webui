@@ -310,7 +310,7 @@ const UsersTable = (props: PropsToTable) => {
       ariaLabel={props.from.replace("-", " ") + " table"}
       variant={"compact"}
       hasBorders={true}
-      classes={"pf-v5-u-mt-md"}
+      classes={"pf-v6-u-mt-md"}
       tableId={props.from + "-table"}
       isStickyHeader={true}
       tableHeader={header}

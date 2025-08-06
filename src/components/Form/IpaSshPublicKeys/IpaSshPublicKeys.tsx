@@ -324,7 +324,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
                           Show Key
                         </SecondaryButton>
                       </FlexItem>
-                      <FlexItem className="pf-v5-u-mb-md">
+                      <FlexItem className="pf-v6-u-mb-md">
                         <SecondaryButton
                           dataCy={props.dataCy + "-remove-ssh-public-key"}
                           onClickHandler={() => onDeleteSshKey(idx)}

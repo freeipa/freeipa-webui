@@ -201,7 +201,7 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
           text="Netgroup settings"
         />
         <Form
-          className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md"
+          className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md"
           isHorizontal
         >
           <FormGroup label="Description" fieldId="description">
@@ -231,14 +231,14 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
           headingLevel="h2"
           id="user-category-tabs"
           text="User category"
-          className="pf-v5-u-mt-lg"
+          className="pf-v6-u-mt-lg"
         />
         <IpaCheckbox
           dataCy="netgroups-tab-settings-checkbox-usercategory"
           name="usercategory"
           value="usercategory"
           text="Allow anyone"
-          className="pf-v5-u-ml-lg"
+          className="pf-v6-u-ml-lg"
           ipaObject={ipaObject}
           onChange={recordOnChange}
           objectName="netgroup"
@@ -250,7 +250,7 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
           <Tabs
             activeKey={userTabKey}
             onSelect={handleUserTabClick}
-            className="pf-v5-u-ml-md pf-v5-u-mr-md"
+            className="pf-v6-u-ml-md pf-v6-u-mr-md"
           >
             <Tab
               eventKey={0}
@@ -297,14 +297,14 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
           headingLevel="h2"
           id="host-category-tabs"
           text="Host category"
-          className="pf-v5-u-mt-xl"
+          className="pf-v6-u-mt-xl"
         />
         <IpaCheckbox
           dataCy="netgroups-tab-settings-checkbox-hostcategory"
           name="hostcategory"
           value="hostcategory"
           text="Allow any host"
-          className="pf-v5-u-ml-lg"
+          className="pf-v6-u-ml-lg"
           ipaObject={ipaObject}
           onChange={recordOnChange}
           objectName="netgroup"
@@ -316,7 +316,7 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
           <Tabs
             activeKey={hostTabKey}
             onSelect={handleHostTabClick}
-            className="pf-v5-u-ml-md pf-v5-u-mr-md"
+            className="pf-v6-u-ml-md pf-v6-u-mr-md"
           >
             <Tab
               eventKey={0}

@@ -483,10 +483,10 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       id: "Loading",
       name: "",
       pfComponent: (
-        <Content className="pf-v5-u-m-xl">
+        <Content className="pf-v6-u-m-xl">
           <Content component="h3">
             <i>Loading users</i>
-            <Spinner isInline size="xl" className="pf-v5-u-ml-md" />
+            <Spinner isInline size="xl" className="pf-v6-u-ml-md" />
           </Content>
         </Content>
       ),

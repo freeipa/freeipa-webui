@@ -369,10 +369,10 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
       id: "Loading",
       name: "",
       pfComponent: (
-        <Content className="pf-v5-u-m-xl">
+        <Content className="pf-v6-u-m-xl">
           <Content component="h3">
             <i>Loading groups</i>
-            <Spinner isInline size="xl" className="pf-v5-u-ml-md" />
+            <Spinner isInline size="xl" className="pf-v6-u-ml-md" />
           </Content>
         </Content>
       ),

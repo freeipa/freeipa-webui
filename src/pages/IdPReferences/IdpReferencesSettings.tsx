@@ -219,7 +219,7 @@ const IdpRefSettings = (props: PropsToIdpRefSettings) => {
             <HelpTextWithIconLayout
               textContent="Help"
               icon={
-                <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
+                <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
               }
             />
             <JumpLinks
@@ -228,7 +228,7 @@ const IdpRefSettings = (props: PropsToIdpRefSettings) => {
               scrollableSelector="#idp-reference-page"
               offset={220} // for masthead
               expandable={{ default: "expandable", md: "nonExpandable" }}
-              className="pf-v5-u-mt-md"
+              className="pf-v6-u-mt-md"
             >
               <JumpLinksItem key={0} href="#oauth-client-settings">
                 OAuth 2.0 client details
@@ -238,17 +238,17 @@ const IdpRefSettings = (props: PropsToIdpRefSettings) => {
               </JumpLinksItem>
             </JumpLinks>
           </SidebarPanel>
-          <SidebarContent className="pf-v5-u-mr-xl">
+          <SidebarContent className="pf-v6-u-mr-xl">
             <TitleLayout
               key={0}
               id="oauth-client-settings"
               text="OAuth 2.0 client details"
               headingLevel="h2"
-              className="pf-v5-u-mt-lg pf-v5-u-mb-md"
+              className="pf-v6-u-mt-lg pf-v6-u-mb-md"
             />
             <Flex direction={{ default: "column", lg: "row" }}>
               <FlexItem flex={{ default: "flex_1" }}>
-                <Form className="pf-v5-u-mb-lg">
+                <Form className="pf-v6-u-mb-lg">
                   <FormGroup
                     label="Identity Provider reference name"
                     role="group"
@@ -296,11 +296,11 @@ const IdpRefSettings = (props: PropsToIdpRefSettings) => {
               headingLevel="h2"
               id="idp-details"
               text="Identity provider details"
-              className="pf-v5-u-mt-lg pf-v5-u-mb-md"
+              className="pf-v6-u-mt-lg pf-v6-u-mb-md"
             />
             <Flex direction={{ default: "column", lg: "row" }}>
               <FlexItem flex={{ default: "flex_1" }}>
-                <Form className="pf-v5-u-mb-lg">
+                <Form className="pf-v6-u-mb-lg">
                   <FormGroup label="Scope" fieldId="ipaidpscope">
                     <IpaTextInput
                       dataCy="idp-references-tab-settings-textbox-ipaidpscope"

@@ -40,7 +40,7 @@ const SidebarLayout = (props: SidebarLayoutProps) => {
             ))}
           </JumpLinks>
         </SidebarPanel>
-        <SidebarContent className="pf-v5-u-mr-xl">
+        <SidebarContent className="pf-v6-u-mr-xl">
           {props.children}
         </SidebarContent>
       </Sidebar>

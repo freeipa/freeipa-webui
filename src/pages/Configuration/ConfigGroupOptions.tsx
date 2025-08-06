@@ -19,7 +19,7 @@ const ConfigGroupOptions = (props: PropsToGroupOptions) => {
   return (
     <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-v5-u-mb-lg pf-v5-u-mt-lg" isHorizontal>
+        <Form className="pf-v6-u-mb-lg pf-v6-u-mt-lg" isHorizontal>
           <FormGroup
             label="Group search fields"
             fieldId="ipagroupsearchfields"
@@ -35,7 +35,7 @@ const ConfigGroupOptions = (props: PropsToGroupOptions) => {
             />
           </FormGroup>
         </Form>
-        <Form className="pf-v5-u-mb-lg pf-v5-u-mt-lg">
+        <Form className="pf-v6-u-mb-lg pf-v6-u-mt-lg">
           <FormGroup
             label="Default group objectclasses"
             fieldId="ipagroupobjectclasses"

@@ -560,12 +560,12 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
       id: "membership-form",
       key: 6,
       element: (
-        <Form isHorizontal maxWidth="93px" className="pf-v5-u-pb-xs">
+        <Form isHorizontal maxWidth="93px" className="pf-v6-u-pb-xs">
           <FormGroup
             fieldId="membership"
             role="group"
             label="Membership"
-            className="pf-v5-u-pt-0"
+            className="pf-v6-u-pt-0"
           ></FormGroup>
         </Form>
       ),
@@ -603,7 +603,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
       element: (
         <Content>
           <Content component={ContentVariants.p}>
-            <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
+            <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
             <Content component={ContentVariants.a} isVisitedLink>
               Help
             </Content>
