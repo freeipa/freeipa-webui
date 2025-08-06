@@ -165,7 +165,8 @@ const AddHBACRule = (props: PropsToAddGroup) => {
     });
   };
 
-  const addRuleHandler = () => {
+  const addRuleHandler = (event: React.FormEvent) => {
+    event.preventDefault();
     onAddRuleClicked = true;
     setAddBtnSpinning(true);
     addRuleData().then(() => {
@@ -201,7 +202,7 @@ const AddHBACRule = (props: PropsToAddGroup) => {
     }
   };
 
-  const onRetry = () => {
+  const onRetry = (event: React.FormEvent) => {
     // Keep the add modal closed until the operation is done...
     if (props.onCloseAddModal !== undefined) {
       props.onCloseAddModal();
@@ -212,7 +213,7 @@ const AddHBACRule = (props: PropsToAddGroup) => {
 
     // Repeats the same previous operation
     if (onAddRuleClicked) {
-      addRuleHandler();
+      addRuleHandler(event);
     } else {
       addAndAddAnotherHandler();
     }
@@ -248,19 +249,20 @@ const AddHBACRule = (props: PropsToAddGroup) => {
 
   // Buttons that will be shown at the end of the form
   const modalActions = [
-    <SecondaryButton
-      dataCy="modal-button-add"
+    <Button
+      data-cy="modal-button-add"
       key="add-new-rule"
       name="add"
+      type="submit"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClickHandler={addRuleHandler}
+      onClick={addRuleHandler}
       form="modal-form"
       spinnerAriaValueText="Adding"
       spinnerAriaLabel="Adding"
       isLoading={addSpinning}
     >
       {addSpinning ? "Adding" : "Add"}
-    </SecondaryButton>,
+    </Button>,
     <SecondaryButton
       dataCy="modal-button-add-and-add-another"
       key="add-and-add-another-new-rule"
@@ -298,6 +300,7 @@ const AddHBACRule = (props: PropsToAddGroup) => {
         fields={fields}
         show={props.show}
         onClose={cleanAndCloseModal}
+        onSubmit={addRuleHandler}
         actions={modalActions}
       />
       {isModalErrorOpen && (
