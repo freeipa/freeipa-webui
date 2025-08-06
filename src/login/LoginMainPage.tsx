@@ -294,10 +294,11 @@ const LoginMainPage = () => {
 
   const socialMediaLoginContent = (
     <React.Fragment>
-      <LoginMainFooterLinksItem data-codemods="true">
+      <LoginMainFooterLinksItem>
         <Button
           variant="link"
           component="a"
+          data-cy="login-button-cert"
           href=""
           {...{
             "aria-label": "Login using personal Certificate",

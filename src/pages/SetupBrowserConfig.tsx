@@ -39,8 +39,8 @@ const SetupBrowserConfig = () => {
   const header = (
     <Masthead>
       <MastheadMain>
-        <MastheadBrand data-codemods>
-          <MastheadLogo data-codemods>
+        <MastheadBrand>
+          <MastheadLogo>
             <Brand src={HeaderLogo} alt="FreeIPA" />
           </MastheadLogo>
         </MastheadBrand>

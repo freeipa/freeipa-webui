@@ -16,6 +16,10 @@ import {
   Dropdown,
   MenuToggleElement,
   MenuToggle,
+  ToolbarItem,
+  ToolbarGroup,
+  ToolbarContent,
+  Brand,
 } from "@patternfly/react-core";
 import React from "react";
 // Icons
@@ -68,9 +72,6 @@ const AppLayout = (props: PropsToAppLayout) => {
       });
     }
   }, [props.loggedInUser]);
-
-  // Toolbar
-  const headerToolbar = <Toolbar id="toolbar" />;
 
   // On logout handler
   const onLogout = () => {
@@ -129,11 +130,12 @@ const AppLayout = (props: PropsToAppLayout) => {
     </DropdownItem>,
   ];
 
-  // TODO: Show the proper user login
+  // Dropdown with user login
   const dropdown = (
     <Dropdown
       data-cy="toolbar-dropdown"
       onSelect={onDropdownSelect}
+      popperProps={{ position: "right" }}
       toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
         <MenuToggle
           data-cy="toolbar-username"
@@ -142,7 +144,7 @@ const AppLayout = (props: PropsToAppLayout) => {
           onClick={onDropdownToggle}
           isExpanded={isDropdownOpen}
           className="pf-v5-u-mr-md"
-          variant="plainText"
+          icon={<Avatar src={avatarImg} alt="avatar" size="sm" />}
         >
           {fullName}
         </MenuToggle>
@@ -151,6 +153,21 @@ const AppLayout = (props: PropsToAppLayout) => {
     >
       {dropdownItems}
     </Dropdown>
+  );
+
+  // Header toolbar
+  const headerToolbar = (
+    <Toolbar id="toolbar" isStatic>
+      <ToolbarContent>
+        <ToolbarGroup
+          variant="action-group-plain"
+          align={{ default: "alignEnd" }}
+          gap={{ default: "gapNone", md: "gapMd" }}
+        >
+          <ToolbarItem>{dropdown}</ToolbarItem>
+        </ToolbarGroup>
+      </ToolbarContent>
+    </Toolbar>
   );
 
   const Header = (
@@ -164,19 +181,13 @@ const AppLayout = (props: PropsToAppLayout) => {
             aria-label="Global navigation"
           />
         </MastheadToggle>
-        <MastheadBrand data-codemods>
-          <MastheadLogo data-codemods component="a">
-            <img src={headerLogo} alt="FreeIPA Logo" />
+        <MastheadBrand>
+          <MastheadLogo>
+            <Brand src={headerLogo} alt="FreeIPA Logo" />
           </MastheadLogo>
         </MastheadBrand>
       </MastheadMain>
-      <MastheadContent>
-        <>
-          {headerToolbar}
-          {dropdown}
-          <Avatar src={avatarImg} alt="avatar" size="md" />
-        </>
-      </MastheadContent>
+      <MastheadContent>{headerToolbar}</MastheadContent>
     </Masthead>
   );
 
