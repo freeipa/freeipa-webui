@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PaginationVariant,
   ToolbarItemVariant,
@@ -575,7 +574,7 @@ const HBACRules = () => {
 
   // Render 'Active users'
   return (
-    <Page>
+    <div>
       <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout id="hbacrules title" headingLevel="h1" text="HBAC rules" />
@@ -642,7 +641,7 @@ const HBACRules = () => {
         errors={modalErrors.getAll()}
         dataCy="hbac-rules-modal-error"
       />
-    </Page>
+    </div>
   );
 };
 

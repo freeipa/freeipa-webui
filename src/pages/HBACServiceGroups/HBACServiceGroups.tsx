@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PaginationVariant,
   ToolbarItemVariant,
@@ -503,7 +502,7 @@ const HBACServiceGroups = () => {
   ];
 
   return (
-    <Page>
+    <div>
       <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout
@@ -566,7 +565,7 @@ const HBACServiceGroups = () => {
         errors={modalErrors.getAll()}
         dataCy="hbac-service-groups-modal-error"
       />
-    </Page>
+    </div>
   );
 };
 

@@ -1,7 +1,6 @@
 import React from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PaginationVariant,
   ToolbarItemVariant,
@@ -331,7 +330,7 @@ const SubordinateIDs = () => {
 
   // Render component
   return (
-    <Page>
+    <div>
       <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout
@@ -395,7 +394,7 @@ const SubordinateIDs = () => {
         onRefresh={refreshData}
         title="Add Subordinate ID"
       />
-    </Page>
+    </div>
   );
 };
 

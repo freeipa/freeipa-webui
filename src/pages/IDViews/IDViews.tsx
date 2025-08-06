@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   DropdownItem,
-  Page,
   PageSection,
   PaginationVariant,
   ToolbarItemVariant,
@@ -630,7 +629,7 @@ const IDViews = () => {
   ];
 
   return (
-    <Page>
+    <div>
       <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout id="Views title" headingLevel="h1" text="ID views" />
@@ -718,7 +717,7 @@ const IDViews = () => {
         addBtnName="Unapply"
         addSpinningBtnName="Unapplying"
       />
-    </Page>
+    </div>
   );
 };
 

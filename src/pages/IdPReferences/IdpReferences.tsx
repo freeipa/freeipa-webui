@@ -1,7 +1,6 @@
 import React from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PaginationVariant,
   ToolbarItemVariant,
@@ -421,7 +420,7 @@ const IdpReferences = () => {
 
   // Render component
   return (
-    <Page>
+    <div>
       <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout
@@ -515,7 +514,7 @@ const IdpReferences = () => {
         keyNames={["cn", "ipaidpclientid", "ipaidpscope"]}
         onRefresh={refreshData}
       />
-    </Page>
+    </div>
   );
 };
 

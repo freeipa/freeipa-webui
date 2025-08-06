@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Grid,
   GridItem,
   PageSection,
@@ -10,7 +11,6 @@ import TableLayout from "src/components/layouts/TableLayout";
 import { Td, Th, Tr } from "@patternfly/react-table";
 // components
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import PageLayout from "src/components/layouts/PageLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import SkeletonOnTableLayout from "src/components/layouts/Skeleton/SkeletonOnTableLayout";
@@ -75,13 +75,14 @@ const SubIdsStatistics = () => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="subids-statistics-button-refresh"
-          onClickHandler={onRefresh}
+        <Button
+          variant="secondary"
+          data-cy="subids-statistics-button-refresh"
+          onClick={onRefresh}
           isDisabled={!showTableRows}
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

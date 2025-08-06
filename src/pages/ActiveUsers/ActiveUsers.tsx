@@ -751,7 +751,7 @@ const ActiveUsers = () => {
       isExpanded={isContextualPanelExpanded}
       onClose={onCloseContextualPanel}
     >
-      <>
+      <div>
         <alerts.ManagedAlerts />
         <PageSection
           hasBodyWrapper={false}
@@ -845,7 +845,7 @@ const ActiveUsers = () => {
             actions={membershipModalActions}
           />
         )}
-      </>
+      </div>
     </ContextualHelpPanel>
   );
 };

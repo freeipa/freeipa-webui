@@ -2,7 +2,6 @@ import React from "react";
 // PatternFly
 import {
   Button,
-  Page,
   PageSection,
   PaginationVariant,
   SelectOptionProps,
@@ -598,7 +597,7 @@ const AutoMemUserRules = () => {
   ];
 
   return (
-    <Page>
+    <div>
       <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout
@@ -688,7 +687,7 @@ const AutoMemUserRules = () => {
         messageText="Are you sure you want to change default group?"
         messageObj={defaultGroup}
       />
-    </Page>
+    </div>
   );
 };
 
