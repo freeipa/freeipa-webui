@@ -46,9 +46,9 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
       <Flex
         direction={{ default: "column", md: "row" }}
         justifyContent={{ default: "justifyContentFlexStart" }}
-        className="pf-v5-u-mt-sm"
+        className="pf-v6-u-mt-sm"
       >
-        <FlexItem className="pf-v5-u-mb-0" style={{ width: "200px" }}>
+        <FlexItem className="pf-v6-u-mb-0" style={{ width: "200px" }}>
           <TextLayout>{key}:</TextLayout>
         </FlexItem>
         <FlexItem flex={{ default: "flex_1" }}>
@@ -83,7 +83,7 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
             id={"info-modal-issued-by"}
             headingLevel="h2"
             text={"Issued by"}
-            className="pf-v5-u-mt-md"
+            className="pf-v6-u-mt-md"
           />
           {parseKeyValue("Common name", parseDn(certInfo.issuer).cn || "")}
           {parseKeyValue("Organization", parseDn(certInfo.issuer).o || "")}
@@ -95,7 +95,7 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
             id={"info-modal-validity"}
             headingLevel="h2"
             text={"Validity"}
-            className="pf-v5-u-mt-md"
+            className="pf-v6-u-mt-md"
           />
           {parseKeyValue("Issued on", certInfo.valid_not_before || "")}
           {parseKeyValue("Expires on", certInfo.valid_not_after || "")}
@@ -103,7 +103,7 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
             id={"info-modal-fingerprints"}
             headingLevel="h2"
             text={"Fingerprints"}
-            className="pf-v5-u-mt-md"
+            className="pf-v6-u-mt-md"
           />
           {parseKeyValue("SHA1 Fingerprint", certInfo.sha1_fingerprint || "")}
           {parseKeyValue(

@@ -27,7 +27,7 @@ const ConfirmationModal = (props: PropsToConfModal) => {
       actions={props.actions}
     >
       <TextLayout component="p">{props.messageText}</TextLayout>
-      <Card className="pf-v5-u-mt-md" isCompact>
+      <Card className="pf-v6-u-mt-md" isCompact>
         <CardTitle>{props.messageObj}</CardTitle>
       </Card>
     </Modal>

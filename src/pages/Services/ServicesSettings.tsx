@@ -286,7 +286,7 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
   return (
     <TabLayout id="settings-page" toolbarItems={toolbarFields}>
       <alerts.ManagedAlerts />
-      <Sidebar isPanelRight className="pf-v5-u-mt-lg">
+      <Sidebar isPanelRight className="pf-v6-u-mt-lg">
         <SidebarPanel variant="sticky">
           <HelpTextWithIconLayout
             textContent="Help"
@@ -316,7 +316,7 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
             </JumpLinksItem>
           </JumpLinks>
         </SidebarPanel>
-        <SidebarContent className="pf-v5-u-mr-xl">
+        <SidebarContent className="pf-v6-u-mr-xl">
           <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
             <TitleLayout
               key={0}

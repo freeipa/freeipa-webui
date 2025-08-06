@@ -242,12 +242,12 @@ const Configuration = () => {
       <PageSection hasBodyWrapper={false}>
         <TitleLayout id="config title" headingLevel="h1" text="Configuration" />
       </PageSection>
-      <PageSection hasBodyWrapper={false} className="pf-v5-u-m-lg pf-v5-u-p-0">
+      <PageSection hasBodyWrapper={false} className="pf-v6-u-m-lg pf-v6-u-p-0">
         <PageSection
           hasBodyWrapper={false}
           id="settings-page"
           style={style}
-          className="pf-v5-u-mt-0 pf-v5-u-ml-lg pf-v5-u-mr-lg pf-v5-u-pl-0 pf-v5-u-pr-0"
+          className="pf-v6-u-mt-0 pf-v6-u-ml-lg pf-v6-u-mr-lg pf-v6-u-pl-0 pf-v6-u-pr-0"
         >
           <Sidebar isPanelRight>
             <SidebarPanel variant="sticky">
@@ -279,7 +279,7 @@ const Configuration = () => {
                 </JumpLinksItem>
               </JumpLinks>
             </SidebarPanel>
-            <SidebarContent className="pf-v5-u-mr-xl">
+            <SidebarContent className="pf-v6-u-mr-xl">
               <Flex
                 direction={{ default: "column", lg: "row" }}
                 flex={{ default: "flex_1" }}
@@ -315,7 +315,7 @@ const Configuration = () => {
               <Flex
                 direction={{ default: "column", lg: "row" }}
                 flex={{ default: "flex_1" }}
-                className="pf-v5-u-mt-lg"
+                className="pf-v6-u-mt-lg"
               >
                 <FlexItem flex={{ default: "flex_1" }}>
                   <TitleLayout
@@ -336,7 +336,7 @@ const Configuration = () => {
               <Flex
                 direction={{ default: "column", lg: "row" }}
                 flex={{ default: "flex_1" }}
-                className="pf-v5-u-mt-lg"
+                className="pf-v6-u-mt-lg"
               >
                 <FlexItem flex={{ default: "flex_1" }}>
                   <TitleLayout
@@ -375,7 +375,7 @@ const Configuration = () => {
                         headingLevel="h2"
                         id="service-options"
                         text="Service options"
-                        className="pf-v5-u-mt-lg"
+                        className="pf-v6-u-mt-lg"
                       />
                       <ConfigServiceOptions
                         ipaObject={ipaObject}

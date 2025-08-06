@@ -18,7 +18,7 @@ interface PropsToSudoRuleGeneral {
 
 const SudoRuleGeneral = (props: PropsToSudoRuleGeneral) => {
   return (
-    <Form className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md" isHorizontal>
+    <Form className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md" isHorizontal>
       <FormGroup label="Rule name" fieldId="cn">
         <IpaTextInput
           dataCy="sudo-rule-textbox-rule-name"

@@ -402,10 +402,10 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
   ];
 
   const spinner = (
-    <Content className="pf-v5-u-m-xl">
+    <Content className="pf-v6-u-m-xl">
       <Content component="h3">
         <i>Loading data</i>
-        <Spinner isInline size="xl" className="pf-v5-u-ml-md" />
+        <Spinner isInline size="xl" className="pf-v6-u-ml-md" />
       </Content>
     </Content>
   );
@@ -417,11 +417,11 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
       <PageSection
         hasBodyWrapper={false}
         isFilled={false}
-        className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
+        className="pf-v6-u-m-lg pf-v6-u-pb-md pf-v6-u-pl-0 pf-v6-u-pr-0"
       >
         <ToolbarLayout
-          className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-          contentClassName="pf-v5-u-p-0"
+          className="pf-v6-u-pt-0 pf-v6-u-pl-lg pf-v6-u-pr-md"
+          contentClassName="pf-v6-u-p-0"
           toolbarItems={toolbarItems}
         />
         <div style={{ height: `calc(100vh - 352.2px)` }}>
@@ -478,7 +478,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
           paginationData={paginationData}
           variant={PaginationVariant.bottom}
           widgetId="pagination-options-menu-bottom"
-          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+          className="pf-v6-u-pb-0 pf-v6-u-pr-md"
         />
       </PageSection>
       <AddDnsRecordsModal

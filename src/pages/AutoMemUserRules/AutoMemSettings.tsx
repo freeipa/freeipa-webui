@@ -202,7 +202,7 @@ const AutoMemSettings = (props: PropsToSettings) => {
           <HelpTextWithIconLayout
             textContent="Help"
             icon={
-              <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
+              <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
             }
           />
           <JumpLinks
@@ -223,7 +223,7 @@ const AutoMemSettings = (props: PropsToSettings) => {
             </JumpLinksItem>
           </JumpLinks>
         </SidebarPanel>
-        <SidebarContent className="pf-v5-u-mr-xl">
+        <SidebarContent className="pf-v6-u-mr-xl">
           <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
             <TitleLayout
               key={0}
@@ -231,7 +231,7 @@ const AutoMemSettings = (props: PropsToSettings) => {
               id="rule-general"
               text="General"
             />
-            <Form className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md">
+            <Form className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md">
               <FormGroup label="Description" fieldId="description" role="group">
                 <IpaTextArea
                   dataCy="auto-member-tab-settings-textbox-description"
@@ -243,7 +243,7 @@ const AutoMemSettings = (props: PropsToSettings) => {
                 />
               </FormGroup>
             </Form>
-            <Form className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md">
+            <Form className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md">
               <TitleLayout
                 key={1}
                 headingLevel="h1"
@@ -260,7 +260,7 @@ const AutoMemSettings = (props: PropsToSettings) => {
                 onRefresh={props.onRefresh}
               />
             </Form>
-            <Form className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md">
+            <Form className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md">
               <TitleLayout
                 key={1}
                 headingLevel="h1"

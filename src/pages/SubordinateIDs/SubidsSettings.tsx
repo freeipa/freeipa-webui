@@ -149,14 +149,14 @@ const SubidSettings = (props: PropsToSubidSettings) => {
             <HelpTextWithIconLayout
               textContent="Help"
               icon={
-                <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
+                <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
               }
             />
           </SidebarPanel>
-          <SidebarContent className="pf-v5-u-mr-xl">
+          <SidebarContent className="pf-v6-u-mr-xl">
             <Flex direction={{ default: "column", lg: "row" }}>
               <FlexItem flex={{ default: "flex_1" }}>
-                <Form className="pf-v5-u-mb-lg">
+                <Form className="pf-v6-u-mb-lg">
                   <FormGroup label="Unique ID" fieldId="ipauniqueid">
                     <IpaTextInput
                       dataCy="subids-tab-settings-textbox-unique-id"

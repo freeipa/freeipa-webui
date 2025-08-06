@@ -109,9 +109,9 @@ const ActiveUsersTabs = ({ memberof }) => {
   const disabled = userSettingsData.user.nsaccountlock;
   const user = userSettingsData.user;
   const titleText = (
-    <div className="pf-v5-u-display-flex">
-      <div className="pf-v5-u-color-400">User:</div>
-      <div className="pf-v5-u-ml-sm">{uid}</div>
+    <div className="pf-v6-u-display-flex">
+      <div className="pf-v6-u-color-400">User:</div>
+      <div className="pf-v6-u-ml-sm">{uid}</div>
     </div>
   );
 
@@ -122,21 +122,21 @@ const ActiveUsersTabs = ({ memberof }) => {
         isExpanded={isContextualPanelExpanded}
         onClose={onCloseContextualPanel}
       >
-        <PageSection hasBodyWrapper={false} className="pf-v5-u-pr-0">
+        <PageSection hasBodyWrapper={false} className="pf-v6-u-pr-0">
           <BreadCrumb
-            className="pf-v5-u-mb-md"
+            className="pf-v6-u-mb-md"
             breadcrumbItems={breadcrumbItems}
           />
           <Content>
             <Title headingLevel="h1">
               <div
-                className="pf-v5-u-display-flex"
+                className="pf-v6-u-display-flex"
                 title={disabled ? "User is disabled" : ""}
               >
                 {titleText}
                 {disabled ? (
                   <Icon
-                    className="pf-v5-u-ml-sm pf-v5-u-mt-sm"
+                    className="pf-v6-u-ml-sm pf-v6-u-mt-sm"
                     status="info"
                     size="md"
                   >
@@ -161,7 +161,7 @@ const ActiveUsersTabs = ({ memberof }) => {
             }}
             variant="secondary"
             isBox
-            className="pf-v5-u-ml-lg"
+            className="pf-v6-u-ml-lg"
             mountOnEnter
             unmountOnExit
           >

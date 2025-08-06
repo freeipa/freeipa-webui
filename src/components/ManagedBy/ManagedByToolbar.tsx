@@ -147,7 +147,7 @@ const ManagedByToolbar = (props: PropsToToolbar) => {
       key: 7,
       element: (
         <TextLayout component="p">
-          <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
+          <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
           <Content component="a" isVisitedLink>
             Help
           </Content>

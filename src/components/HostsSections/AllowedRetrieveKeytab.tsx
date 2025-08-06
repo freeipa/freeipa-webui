@@ -60,7 +60,7 @@ const AllowedRetrieveKeytab = (props: PropsToAllowRetrieveKeytab) => {
           id={fqdn}
           entry={props.host}
           onRefresh={props.onRefresh}
-          className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+          className="pf-v6-u-ml-md pf-v6-u-mt-sm"
           opType="retrieve"
           entryAttr="ipaallowedtoperform_read_keys_user"
           entryType="user"
@@ -81,7 +81,7 @@ const AllowedRetrieveKeytab = (props: PropsToAllowRetrieveKeytab) => {
           id={fqdn}
           entry={props.host}
           onRefresh={props.onRefresh}
-          className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+          className="pf-v6-u-ml-md pf-v6-u-mt-sm"
           opType="retrieve"
           entryAttr="ipaallowedtoperform_read_keys_group"
           entryType="group"
@@ -102,7 +102,7 @@ const AllowedRetrieveKeytab = (props: PropsToAllowRetrieveKeytab) => {
           id={fqdn}
           entry={props.host}
           onRefresh={props.onRefresh}
-          className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+          className="pf-v6-u-ml-md pf-v6-u-mt-sm"
           opType="retrieve"
           entryAttr="ipaallowedtoperform_read_keys_host"
           entryType="host"
@@ -123,7 +123,7 @@ const AllowedRetrieveKeytab = (props: PropsToAllowRetrieveKeytab) => {
           id={fqdn}
           entry={props.host}
           onRefresh={props.onRefresh}
-          className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+          className="pf-v6-u-ml-md pf-v6-u-mt-sm"
           opType="retrieve"
           entryAttr="ipaallowedtoperform_read_keys_hostgroup"
           entryType="hostgroup"

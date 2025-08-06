@@ -390,11 +390,11 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
   return (
     <PageSection hasBodyWrapper={false} isFilled={false}>
       <ToolbarLayout
-        className="pf-v5-u-pt-0 pf-v5-u-pr-md"
-        contentClassName="pf-v5-u-p-0"
+        className="pf-v6-u-pt-0 pf-v6-u-pr-md"
+        contentClassName="pf-v6-u-p-0"
         toolbarItems={toolbarItems}
       />
-      <div className="pf-v5-u-ml-md pf-v5-u-mr-md">
+      <div className="pf-v6-u-ml-md pf-v6-u-mr-md">
         <OuterScrollContainer>
           <InnerScrollContainer>
             {batchError !== undefined && batchError ? (
@@ -417,7 +417,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
         paginationData={paginationData}
         variant={PaginationVariant.bottom}
         widgetId="pagination-options-menu-bottom"
-        className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+        className="pf-v6-u-pb-0 pf-v6-u-pr-md"
       />
       <AddIdOverrideGroupModal
         show={showAddModal}

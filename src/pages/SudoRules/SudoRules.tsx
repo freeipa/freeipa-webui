@@ -581,11 +581,11 @@ const SudoRules = () => {
       <PageSection
         hasBodyWrapper={false}
         isFilled={false}
-        className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
+        className="pf-v6-u-m-lg pf-v6-u-pb-md pf-v6-u-pl-0 pf-v6-u-pr-0"
       >
         <ToolbarLayout
-          className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-          contentClassName="pf-v5-u-p-0"
+          className="pf-v6-u-pt-0 pf-v6-u-pl-lg pf-v6-u-pr-md"
+          contentClassName="pf-v6-u-p-0"
           toolbarItems={toolbarItems}
         />
         <div style={{ height: `calc(100vh - 352.2px)` }}>
@@ -611,7 +611,7 @@ const SudoRules = () => {
           paginationData={paginationData}
           variant={PaginationVariant.bottom}
           widgetId="pagination-options-menu-bottom"
-          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+          className="pf-v6-u-pb-0 pf-v6-u-pr-md"
         />
       </PageSection>
       <AddSudoRule

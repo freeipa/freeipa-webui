@@ -212,16 +212,16 @@ const CertificateMappingMatch = () => {
     >
       <>
         <alerts.ManagedAlerts />
-        <Sidebar isPanelRight className="pf-v5-u-mb-0">
-          <SidebarPanel variant="sticky" className="pf-v5-u-pl-md">
+        <Sidebar isPanelRight className="pf-v6-u-mb-0">
+          <SidebarPanel variant="sticky" className="pf-v6-u-pl-md">
             <HelpTextWithIconLayout
               textContent="Help"
               icon={
-                <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
+                <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
               }
             />
           </SidebarPanel>
-          <SidebarContent className="pf-v5-u-mt-0">
+          <SidebarContent className="pf-v6-u-mt-0">
             <Flex direction={{ default: "column", lg: "row" }}>
               <FlexItem flex={{ default: "flex_1" }}>
                 <TitleLayout
@@ -229,9 +229,9 @@ const CertificateMappingMatch = () => {
                   headingLevel="h1"
                   id="certificate-for-match"
                   text="Certificate for match"
-                  className="pf-v5-u-mt-0 pf-v5-u-ml-0 pf-v5-u-mb-md"
+                  className="pf-v6-u-mt-0 pf-v6-u-ml-0 pf-v6-u-mb-md"
                 />
-                <Form className="pf-v5-u-mb-lg">
+                <Form className="pf-v6-u-mb-lg">
                   <FormGroup label="Certificate" fieldId="cert_textarea">
                     <TextArea
                       data-cy="certificate-identity-mapping-match-textbox-certificate"
@@ -251,9 +251,9 @@ const CertificateMappingMatch = () => {
                   headingLevel="h1"
                   id="certificate-data"
                   text="Certificate data"
-                  className="pf-v5-u-mt-lg pf-v5-u-mb-md"
+                  className="pf-v6-u-mt-lg pf-v6-u-mb-md"
                 />
-                <Form className="pf-v5-u-mb-lg">
+                <Form className="pf-v6-u-mb-lg">
                   <FormGroup label="Issued by" fieldId="issuer">
                     <TextInput
                       data-cy="certificate-identity-mapping-match-textbox-issuer"
@@ -354,13 +354,13 @@ const CertificateMappingMatch = () => {
               headingLevel="h1"
               id="matched-users"
               text="Matched users"
-              className="pf-v5-u-mt-lg pf-v5-u-mb-md"
+              className="pf-v6-u-mt-lg pf-v6-u-mb-md"
             />
             <TableLayout
               ariaLabel={"Matched users"}
               variant={"compact"}
               hasBorders={true}
-              classes={"pf-v5-u-mt-md"}
+              classes={"pf-v6-u-mt-md"}
               tableId={"matched-users-table"}
               isStickyHeader={true}
               tableHeader={header}

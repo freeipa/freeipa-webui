@@ -91,7 +91,7 @@ const AddRule = (props: PropsToAddRule) => {
       data-cy="modal-select-automember-toggle"
       ref={toggleRef}
       onClick={() => setIsSelectOpen(!isSelectOpen)}
-      className="pf-v5-u-w-100"
+      className="pf-v6-u-w-100"
     >
       {groupSelected}
     </MenuToggle>

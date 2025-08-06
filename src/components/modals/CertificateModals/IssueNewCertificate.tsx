@@ -124,7 +124,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
       data-cy="modal-select-ca-toggle"
       ref={toggleRef}
       onClick={onCAToggle}
-      className="pf-v5-u-w-100"
+      className="pf-v6-u-w-100"
     >
       {selectedCA}
     </MenuToggle>
@@ -151,7 +151,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
       data-cy="modal-select-profile-toggle"
       ref={toggleRef}
       onClick={onProfileToggle}
-      className="pf-v5-u-w-100"
+      className="pf-v6-u-w-100"
     >
       {selectedProfile}
     </MenuToggle>
@@ -297,7 +297,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
         <List
           component={ListComponent.ol}
           type={OrderType.number}
-          className="pf-v5-u-font-size-md"
+          className="pf-v6-u-font-size-md"
         >
           <ListItem>
             Create a certificate database or use an existing one. To create a

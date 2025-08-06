@@ -62,7 +62,7 @@ const SetupBrowserConfig = () => {
       <List
         component={ListComponent.ol}
         type={OrderType.number}
-        className="pf-v5-u-mt-md pf-v5-u-ml-md"
+        className="pf-v6-u-mt-md pf-v6-u-ml-md"
       >
         <ListItem>
           Import{" "}
@@ -112,13 +112,13 @@ const SetupBrowserConfig = () => {
       instructions will guide you in configuring your web browser to send your
       Kerberos credentials to the appropriate Key Distribution Center which
       enables Single Sign-on.
-      <TextLayout component="h2" className="pf-v5-u-mt-md">
+      <TextLayout component="h2" className="pf-v6-u-mt-md">
         Import CA certificate
       </TextLayout>
       <List
         component={ListComponent.ol}
         type={OrderType.number}
-        className="pf-v5-u-mt-md pf-v5-u-ml-md"
+        className="pf-v6-u-mt-md pf-v6-u-ml-md"
       >
         <ListItem>
           Download the{" "}
@@ -151,14 +151,14 @@ const SetupBrowserConfig = () => {
           </TextLayout>
         </ListItem>
       </List>
-      <TextLayout component="h2" className="pf-v5-u-mt-md">
+      <TextLayout component="h2" className="pf-v6-u-mt-md">
         Enable SPNEGO (Simple and Protected GSSAPI Negotiation Mechanism) to Use
         Kerberos Authentication in Chrome
       </TextLayout>
       <List
         component={ListComponent.ol}
         type={OrderType.number}
-        className="pf-v5-u-mt-md pf-v5-u-ml-md"
+        className="pf-v6-u-mt-md pf-v6-u-ml-md"
       >
         <ListItem>
           Make sure you have the necessary directory created by running: <br />
@@ -210,7 +210,7 @@ const SetupBrowserConfig = () => {
       <List
         component={ListComponent.ol}
         type={OrderType.number}
-        className="pf-v5-u-mt-md pf-v5-u-ml-md"
+        className="pf-v6-u-mt-md pf-v6-u-ml-md"
       >
         <ListItem>
           Click the <i>Security tab</i>
@@ -229,7 +229,7 @@ const SetupBrowserConfig = () => {
       <List
         component={ListComponent.ol}
         type={OrderType.number}
-        className="pf-v5-u-mt-md pf-v5-u-ml-md"
+        className="pf-v6-u-mt-md pf-v6-u-ml-md"
       >
         <ListItem>
           Click the <i>Security tab</i>
@@ -247,7 +247,7 @@ const SetupBrowserConfig = () => {
       <List
         component={ListComponent.ol}
         type={OrderType.number}
-        className="pf-v5-u-mt-md pf-v5-u-ml-md"
+        className="pf-v6-u-mt-md pf-v6-u-ml-md"
       >
         <ListItem>
           Visit a kerberized web site using IE (You must use the fully-qualified
@@ -270,19 +270,19 @@ const SetupBrowserConfig = () => {
         />
       </PageSection>
       <PageSection hasBodyWrapper={false}>
-        <TextLayout component="h1" className="pf-v5-u-mb-md">
+        <TextLayout component="h1" className="pf-v6-u-mb-md">
           Firefox
         </TextLayout>
         {firefoxPanel}
       </PageSection>
       <PageSection hasBodyWrapper={false}>
-        <TextLayout component="h1" className="pf-v5-u-mb-md">
+        <TextLayout component="h1" className="pf-v6-u-mb-md">
           Chrome
         </TextLayout>
         {chromePanel}
       </PageSection>
       <PageSection hasBodyWrapper={false}>
-        <TextLayout component="h1" className="pf-v5-u-mb-md">
+        <TextLayout component="h1" className="pf-v6-u-mb-md">
           Internet Explorer
         </TextLayout>
         {iePanel}

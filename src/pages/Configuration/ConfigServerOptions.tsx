@@ -29,7 +29,7 @@ const ConfigServerOptions = (props: PropsToServerOptions) => {
   };
 
   return (
-    <Form className="pf-v5-u-mb-lg pf-v5-u-mt-lg" isHorizontal>
+    <Form className="pf-v6-u-mb-lg pf-v6-u-mt-lg" isHorizontal>
       <FormGroup
         label="IPA CA renewal master"
         fieldId="ca_renewal_master_server"

@@ -878,7 +878,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
         <Flex
           direction={{ default: "column" }}
           flex={{ default: "flex_1" }}
-          className="pf-v5-u-mt-xl"
+          className="pf-v6-u-mt-xl"
         >
           <TitleLayout headingLevel="h2" id="who" text="Who" />
           <SudoRulesWho
@@ -897,7 +897,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
         <Flex
           direction={{ default: "column" }}
           flex={{ default: "flex_1" }}
-          className="pf-v5-u-mt-xl"
+          className="pf-v6-u-mt-xl"
         >
           <TitleLayout headingLevel="h2" id="who" text="Access this host" />
           <AccessThisHost
@@ -916,7 +916,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
         <Flex
           direction={{ default: "column" }}
           flex={{ default: "flex_1" }}
-          className="pf-v5-u-mt-xl"
+          className="pf-v6-u-mt-xl"
         >
           <TitleLayout
             headingLevel="h2"
@@ -941,7 +941,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
         <Flex
           direction={{ default: "column" }}
           flex={{ default: "flex_1" }}
-          className="pf-v5-u-mt-xl"
+          className="pf-v6-u-mt-xl"
         >
           <TitleLayout headingLevel="h2" id="as-whom" text="As whom" />
           <SudoRuleAsWhom

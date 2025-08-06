@@ -230,7 +230,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
           <HelpTextWithIconLayout
             textContent="Help"
             icon={
-              <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
+              <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
             }
           />
           <JumpLinks
@@ -254,7 +254,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
             </JumpLinksItem>
           </JumpLinks>
         </SidebarPanel>
-        <SidebarContent className="pf-v5-u-mr-xl">
+        <SidebarContent className="pf-v6-u-mr-xl">
           <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
             <TitleLayout
               key={0}
@@ -262,7 +262,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
               id="hbacrule-settings"
               text="HBAC rule settings"
             />
-            <Form className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md">
+            <Form className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md">
               <FormGroup label="Description" fieldId="description">
                 <IpaTextArea
                   dataCy="hbac-rules-tab-settings-textbox-description"
@@ -278,7 +278,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
               <Title
                 headingLevel="h2"
                 id="usercategory"
-                className="pf-v5-u-mt-lg pf-v5-u-display-flex"
+                className="pf-v6-u-mt-lg pf-v6-u-display-flex"
               >
                 Who the rule applies to
                 <IpaCheckbox
@@ -287,7 +287,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
                   value="usercategory"
                   text="Allow anyone"
                   textNode={whoLabel}
-                  className="pf-v5-u-ml-lg pf-v5-u-mt-xs"
+                  className="pf-v6-u-ml-lg pf-v6-u-mt-xs"
                   ipaObject={ipaObject}
                   onChange={recordOnChange}
                   objectName="hbacrule"
@@ -301,7 +301,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
               <Tabs
                 activeKey={userTabKey}
                 onSelect={handleUserTabClick}
-                className="pf-v5-u-ml-md pf-v5-u-mr-md"
+                className="pf-v6-u-ml-md pf-v6-u-mr-md"
               >
                 <Tab
                   eventKey={0}
@@ -351,7 +351,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
               <Title
                 headingLevel="h2"
                 id="hostcategory"
-                className="pf-v5-u-mt-xl pf-v5-u-display-flex"
+                className="pf-v6-u-mt-xl pf-v6-u-display-flex"
               >
                 Gives access to
                 <IpaCheckbox
@@ -360,7 +360,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
                   value="hostcategory"
                   text="Any host"
                   textNode={whatLabel}
-                  className="pf-v5-u-ml-lg pf-v5-u-mt-xs"
+                  className="pf-v6-u-ml-lg pf-v6-u-mt-xs"
                   ipaObject={ipaObject}
                   onChange={recordOnChange}
                   objectName="hbacrule"
@@ -374,7 +374,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
               <Tabs
                 activeKey={hostTabKey}
                 onSelect={handleHostTabClick}
-                className="pf-v5-u-ml-md pf-v5-u-mr-md"
+                className="pf-v6-u-ml-md pf-v6-u-mr-md"
               >
                 <Tab
                   eventKey={0}
@@ -426,7 +426,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
               <Title
                 headingLevel="h2"
                 id="servicecategory"
-                className="pf-v5-u-mt-xl pf-v5-u-display-flex"
+                className="pf-v6-u-mt-xl pf-v6-u-display-flex"
               >
                 Via the following services
                 <IpaCheckbox
@@ -435,7 +435,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
                   value="servicecategory"
                   text="Any service"
                   textNode={howLabel}
-                  className="pf-v5-u-ml-lg pf-v5-u-mt-xs"
+                  className="pf-v6-u-ml-lg pf-v6-u-mt-xs"
                   ipaObject={ipaObject}
                   onChange={recordOnChange}
                   objectName="hbacrule"
@@ -449,7 +449,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
               <Tabs
                 activeKey={srvTabKey}
                 onSelect={handleSrvTabClick}
-                className="pf-v5-u-ml-md pf-v5-u-mr-md"
+                className="pf-v6-u-ml-md pf-v6-u-mr-md"
               >
                 <Tab
                   eventKey={0}

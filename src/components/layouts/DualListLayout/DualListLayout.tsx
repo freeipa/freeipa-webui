@@ -68,7 +68,7 @@ const searchItem = (onClick?: () => void) => {
       onOptionSelect={() => {}}
     >
       <div key="initial-list" data-cy="dual-list-search-link">
-        <InfoCircleIcon className="pf-v5-u-info-color-100 pf-v5-u-mr-sm" />{" "}
+        <InfoCircleIcon className="pf-v6-u-info-color-100 pf-v6-u-mr-sm" />{" "}
         Click here, or use the search field to find entries
       </div>
     </DualListSelectorListItem>
@@ -84,7 +84,7 @@ const searchingItem = () => {
       onOptionSelect={() => {}}
     >
       <div>
-        <InfoCircleIcon className="pf-v5-u-info-color-100 pf-v5-u-mr-sm" />{" "}
+        <InfoCircleIcon className="pf-v6-u-info-color-100 pf-v6-u-mr-sm" />{" "}
         Searching ...
       </div>
     </DualListSelectorListItem>
@@ -100,7 +100,7 @@ const emptyItem = () => {
       onOptionSelect={() => {}}
     >
       <div id="disabled" data-cy="dual-list-no-matching-results">
-        <ExclamationTriangleIcon className="pf-v5-u-warning-color-100 pf-v5-u-mr-sm" />{" "}
+        <ExclamationTriangleIcon className="pf-v6-u-warning-color-100 pf-v6-u-mr-sm" />{" "}
         No matching results
       </div>
     </DualListSelectorListItem>

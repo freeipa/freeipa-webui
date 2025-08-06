@@ -195,7 +195,7 @@ const NetgroupsTable = (props: PropsToTable) => {
       ariaLabel={"Netgroups table"}
       variant={"compact"}
       hasBorders={true}
-      classes={"pf-v5-u-mt-md"}
+      classes={"pf-v6-u-mt-md"}
       tableId={"netgroups-table"}
       isStickyHeader={true}
       tableHeader={header}

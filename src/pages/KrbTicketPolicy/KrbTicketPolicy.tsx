@@ -197,12 +197,12 @@ const KrbTicketPolicy = () => {
     >
       <>
         <alerts.ManagedAlerts />
-        <Sidebar isPanelRight className="pf-v5-u-mb-0">
+        <Sidebar isPanelRight className="pf-v6-u-mb-0">
           <SidebarPanel variant="sticky">
             <HelpTextWithIconLayout
               textContent="Help"
               icon={
-                <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
+                <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
               }
             />
             <JumpLinks
@@ -211,7 +211,7 @@ const KrbTicketPolicy = () => {
               scrollableSelector="#krb-ticket-policy-page"
               offset={220} // for masthead
               expandable={{ default: "expandable", md: "nonExpandable" }}
-              className="pf-v5-u-mt-md"
+              className="pf-v6-u-mt-md"
             >
               <JumpLinksItem key={0} href="#krb-ticket-policy">
                 Kerberos Ticket Policy
@@ -221,17 +221,17 @@ const KrbTicketPolicy = () => {
               </JumpLinksItem>
             </JumpLinks>
           </SidebarPanel>
-          <SidebarContent className="pf-v5-u-mr-xl">
+          <SidebarContent className="pf-v6-u-mr-xl">
             <TitleLayout
               key={0}
               headingLevel="h2"
               id="krb-ticket-policy"
               text="Kerberos Ticket Policy"
-              className="pf-v5-u-mt-0 pf-v5-u-ml-0 pf-v5-u-mb-md"
+              className="pf-v6-u-mt-0 pf-v6-u-ml-0 pf-v6-u-mb-md"
             />
             <Flex direction={{ default: "column", lg: "row" }}>
               <FlexItem flex={{ default: "flex_1" }}>
-                <Form className="pf-v5-u-mb-lg">
+                <Form className="pf-v6-u-mb-lg">
                   <FormGroup
                     label="Max renew (seconds)"
                     fieldId="krbmaxrenewableage"
@@ -249,7 +249,7 @@ const KrbTicketPolicy = () => {
                 </Form>
               </FlexItem>
               <FlexItem flex={{ default: "flex_1" }}>
-                <Form className="pf-v5-u-mb-lg">
+                <Form className="pf-v6-u-mb-lg">
                   <FormGroup
                     label="Max life (seconds)"
                     fieldId="krbmaxticketlife"
@@ -272,11 +272,11 @@ const KrbTicketPolicy = () => {
               headingLevel="h2"
               id="authentication-indicators"
               text="Authentication indicators"
-              className="pf-v5-u-mt-lg pf-v5-u-mb-md"
+              className="pf-v6-u-mt-lg pf-v6-u-mb-md"
             />
             <Flex direction={{ default: "column", lg: "row" }}>
               <FlexItem flex={{ default: "flex_1" }}>
-                <Form className="pf-v5-u-mb-lg">
+                <Form className="pf-v6-u-mb-lg">
                   <FormGroup
                     label="RADIUS max renew (seconds)"
                     fieldId="krbauthindmaxrenewableage_radius"
@@ -364,7 +364,7 @@ const KrbTicketPolicy = () => {
                 </Form>
               </FlexItem>
               <FlexItem flex={{ default: "flex_1" }}>
-                <Form className="pf-v5-u-mb-lg">
+                <Form className="pf-v6-u-mb-lg">
                   <FormGroup
                     label="Hardened max renew (seconds)"
                     fieldId="krbauthindmaxrenewableage_hardened"

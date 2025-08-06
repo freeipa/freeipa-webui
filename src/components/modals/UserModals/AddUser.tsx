@@ -445,7 +445,7 @@ const AddUser = (props: PropsToAddUser) => {
       ),
       labelIcon:
         props.from !== "stage-users" ? (
-          <HelpIcon className="pf-v5-u-ml-xs" />
+          <HelpIcon className="pf-v6-u-ml-xs" />
         ) : (
           <div />
         ),

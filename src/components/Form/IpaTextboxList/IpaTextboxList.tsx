@@ -142,7 +142,7 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
       </Flex>
       <SecondaryButton
         dataCy={props.dataCy + "-button-add"}
-        classname="pf-v5-u-mt-sm"
+        classname="pf-v6-u-mt-sm"
         name={"add-" + props.name}
         onClickHandler={onAddHandler}
       >

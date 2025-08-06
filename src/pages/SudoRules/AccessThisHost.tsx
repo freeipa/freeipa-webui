@@ -379,7 +379,7 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
           aria-label="hosts in the who section of the sudo rule"
         >
           <KeytabTableWithFilter
-            className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+            className="pf-v6-u-ml-md pf-v6-u-mt-sm"
             id={props.rule.cn as string}
             from="sudo rule"
             name="memberhost_host"
@@ -408,7 +408,7 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
           aria-label="user groups in the who section of the sudo rule"
         >
           <KeytabTableWithFilter
-            className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+            className="pf-v6-u-ml-md pf-v6-u-mt-sm"
             id={props.rule.cn as string}
             from="sudo rule"
             name="memberuser_group"

@@ -142,7 +142,7 @@ const HBACServiceGroupsSettings = (props: PropsToSettings) => {
           id="hbacservice-group-settings"
           text="HBAC service group settings"
         />
-        <Form className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md">
+        <Form className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md">
           <FormGroup label="Description" fieldId="description">
             <IpaTextArea
               dataCy="hbac-service-groups-tab-settings-textbox-description"

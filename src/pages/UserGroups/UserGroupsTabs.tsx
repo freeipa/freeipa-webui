@@ -120,9 +120,9 @@ const UserGroupsTabs = ({ section }) => {
 
   return (
     <>
-      <PageSection hasBodyWrapper={false} className="pf-v5-u-pr-0">
+      <PageSection hasBodyWrapper={false} className="pf-v6-u-pr-0">
         <BreadCrumb
-          className="pf-v5-u-mb-md"
+          className="pf-v6-u-mb-md"
           breadcrumbItems={breadcrumbItems}
         />
         <TitleLayout
@@ -138,7 +138,7 @@ const UserGroupsTabs = ({ section }) => {
           onSelect={handleTabClick}
           variant="secondary"
           isBox
-          className="pf-v5-u-ml-lg"
+          className="pf-v6-u-ml-lg"
           mountOnEnter
           unmountOnExit
         >
