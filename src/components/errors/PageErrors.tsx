@@ -5,7 +5,7 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons";
 const ErrorPage = (text: string) => {
   return (
     <>
-      <div style={{ alignSelf: "center" }}>
+      <div style={{ alignSelf: "center", marginTop: "100px" }}>
         <Icon status="warning" size="xl" className="pf-v5-u-mt-4xl">
           <ExclamationTriangleIcon />
         </Icon>

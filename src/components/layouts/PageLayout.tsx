@@ -1,6 +1,6 @@
 import React from "react";
 // PatternFly
-import { Page, PageSection } from "@patternfly/react-core";
+import { PageSection } from "@patternfly/react-core";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
@@ -31,20 +31,16 @@ const PageLayout = (props: PageLayoutProps) => {
   }, [browserTitle]);
 
   return (
-    <Page>
+    <>
       {props.hasAlerts && <alerts.ManagedAlerts />}
-      <PageSection hasBodyWrapper={false}>
+      <PageSection>
         <TitleLayout
           id={props.title + " title"}
           headingLevel="h1"
           text={props.title}
         />
       </PageSection>
-      <PageSection
-        hasBodyWrapper={false}
-        isFilled={false}
-        className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-      >
+      <PageSection>
         {props.toolbarItems && props.toolbarItems.length > 0 && (
           <ToolbarLayout
             className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
@@ -56,7 +52,7 @@ const PageLayout = (props: PageLayoutProps) => {
         {props.pagination && props.pagination}
       </PageSection>
       {props.modals && props.modals}
-    </Page>
+    </>
   );
 };
 

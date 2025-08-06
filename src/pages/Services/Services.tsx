@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PaginationVariant,
   ToolbarItemVariant,
@@ -554,7 +553,7 @@ const Services = () => {
       isExpanded={isContextualPanelExpanded}
       onClose={onCloseContextualPanel}
     >
-      <Page>
+      <>
         <alerts.ManagedAlerts />
         <PageSection hasBodyWrapper={false}>
           <TitleLayout id="Services title" headingLevel="h1" text="Services" />
@@ -615,7 +614,7 @@ const Services = () => {
           buttonsData={deleteElementsButtonsData}
           onRefresh={refreshServicesData}
         />
-      </Page>
+      </>
     </ContextualHelpPanel>
   );
 };

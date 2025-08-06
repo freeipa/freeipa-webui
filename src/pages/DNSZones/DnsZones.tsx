@@ -1,7 +1,6 @@
 import React from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PaginationVariant,
   ToolbarItemVariant,
@@ -450,7 +449,7 @@ const DnsZones = () => {
 
   // Render component
   return (
-    <Page>
+    <>
       <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout id="DNS zones page" headingLevel="h1" text="DNS zones" />
@@ -543,7 +542,7 @@ const DnsZones = () => {
         setShowTableRows={setShowTableRows}
         onRefresh={refreshData}
       />
-    </Page>
+    </>
   );
 };
 

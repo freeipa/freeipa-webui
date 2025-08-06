@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PaginationVariant,
   ToolbarItemVariant,
@@ -547,7 +546,7 @@ const StageUsers = () => {
       isExpanded={isContextualPanelExpanded}
       onClose={onCloseContextualPanel}
     >
-      <Page>
+      <>
         <alerts.ManagedAlerts />
         <PageSection hasBodyWrapper={false}>
           <TitleLayout
@@ -620,7 +619,7 @@ const StageUsers = () => {
           selectedUsers={selectedUsers}
           onSuccess={refreshUsersData}
         />
-      </Page>
+      </>
     </ContextualHelpPanel>
   );
 };
