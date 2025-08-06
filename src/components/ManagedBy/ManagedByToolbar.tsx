@@ -12,7 +12,7 @@ import { Host } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import SecondaryButton from "../layouts/SecondaryButton";
 import TextLayout from "src/components/layouts/TextLayout";
-import ToolbarLayout, { ToolbarItemAlignment } from "../layouts/ToolbarLayout";
+import ToolbarLayout, { ToolbarItem } from "../layouts/ToolbarLayout";
 
 interface PageData {
   page: number;
@@ -97,7 +97,7 @@ const ManagedByToolbar = (props: PropsToToolbar) => {
     paginationId: "hosts-pagination",
   };
 
-  const toolbarFields = [
+  const toolbarFields: ToolbarItem[] = [
     {
       id: hostsToolbarData.refreshButton.id,
       key: 0,
@@ -168,7 +168,7 @@ const ManagedByToolbar = (props: PropsToToolbar) => {
           isCompact
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" } as ToolbarItemAlignment,
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 
