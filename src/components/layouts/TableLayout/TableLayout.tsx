@@ -1,9 +1,4 @@
-import {
-  Table /* data-codemods */,
-  TableVariant,
-  Tbody,
-  Thead,
-} from "@patternfly/react-table";
+import { Table, TableVariant, Tbody, Thead } from "@patternfly/react-table";
 import React from "react";
 import EmptyBodyTable from "../../tables/EmptyBodyTable";
 
