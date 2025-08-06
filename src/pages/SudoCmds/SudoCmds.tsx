@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PaginationVariant,
   ToolbarItemVariant,
@@ -493,7 +492,7 @@ const SudoCmds = () => {
   ];
 
   return (
-    <Page>
+    <div>
       <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout
@@ -556,7 +555,7 @@ const SudoCmds = () => {
         errors={modalErrors.getAll()}
         dataCy="sudo-cmds-modal-error"
       />
-    </Page>
+    </div>
   );
 };
 

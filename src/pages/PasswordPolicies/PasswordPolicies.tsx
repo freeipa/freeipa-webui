@@ -1,7 +1,6 @@
 import React from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PaginationVariant,
   ToolbarItemVariant,
@@ -456,7 +455,7 @@ const PasswordPolicies = () => {
 
   // Render component
   return (
-    <Page>
+    <div>
       <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout
@@ -541,7 +540,7 @@ const PasswordPolicies = () => {
         keyNames={["cn", "cospriority"]}
         onRefresh={refreshData}
       />
-    </Page>
+    </div>
   );
 };
 

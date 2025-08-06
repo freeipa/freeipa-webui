@@ -1,7 +1,6 @@
 import React from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PaginationVariant,
   ToolbarItemVariant,
@@ -465,7 +464,7 @@ const CertificateMappingPage = () => {
 
   // Render component
   return (
-    <Page>
+    <div>
       <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout
@@ -564,7 +563,7 @@ const CertificateMappingPage = () => {
         setShowTableRows={setShowTableRows}
         onRefresh={refreshData}
       />
-    </Page>
+    </div>
   );
 };
 

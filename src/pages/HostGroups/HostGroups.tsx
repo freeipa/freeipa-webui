@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
   PaginationVariant,
   ToolbarItemVariant,
@@ -504,7 +503,7 @@ const HostGroups = () => {
   ];
 
   return (
-    <Page>
+    <div>
       <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout id="Groups title" headingLevel="h1" text="Host groups" />
@@ -564,7 +563,7 @@ const HostGroups = () => {
         buttonsData={deleteGroupsButtonsData}
         onRefresh={refreshGroupsData}
       />
-    </Page>
+    </div>
   );
 };
 

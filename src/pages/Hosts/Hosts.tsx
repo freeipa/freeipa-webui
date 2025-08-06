@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import {
   Button,
   DropdownItem,
-  Page,
   PageSection,
   PaginationVariant,
   ToolbarItemVariant,
@@ -699,7 +698,7 @@ const Hosts = () => {
       isExpanded={isContextualPanelExpanded}
       onClose={onCloseContextualPanel}
     >
-      <Page>
+      <div>
         <alerts.ManagedAlerts />
         <PageSection hasBodyWrapper={false}>
           <TitleLayout id="Hosts title" headingLevel="h1" text="Hosts" />
@@ -771,7 +770,7 @@ const Hosts = () => {
           buttonsData={deleteHostsButtonsData}
           onRefresh={refreshHostsData}
         />
-      </Page>
+      </div>
     </ContextualHelpPanel>
   );
 };
