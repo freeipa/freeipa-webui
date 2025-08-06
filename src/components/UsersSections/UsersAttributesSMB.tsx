@@ -72,7 +72,7 @@ const UsersAttributesSMB = (props: PropsToSmbServices) => {
   return (
     <Flex direction={{ default: "column", md: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-v5-u-mb-lg">
+        <Form className="pf-v6-u-mb-lg">
           <FormGroup
             label="SMB logon script path"
             fieldId="ipantlogonscript"
@@ -110,7 +110,7 @@ const UsersAttributesSMB = (props: PropsToSmbServices) => {
         </Form>
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-v5-u-mb-lg">
+        <Form className="pf-v6-u-mb-lg">
           <FormGroup
             label="SMB home directory"
             fieldId="ipanthomedirectory"

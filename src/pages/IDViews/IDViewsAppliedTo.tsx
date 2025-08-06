@@ -203,7 +203,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
                 {failed_msgs.length > 1 ? "s" : ""}:
                 <ul>
                   {failed_msgs.map((item) => (
-                    <li className="pf-v5-u-ml-sm" key={item}>
+                    <li className="pf-v6-u-ml-sm" key={item}>
                       &#8226; {item}
                     </li>
                   ))}
@@ -263,7 +263,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
                 {failed_msgs.length > 1 ? "s" : ""}:
                 <ul>
                   {failed_msgs.map((item) => (
-                    <li className="pf-v5-u-ml-sm" key={item}>
+                    <li className="pf-v6-u-ml-sm" key={item}>
                       &#8226; {item}
                     </li>
                   ))}
@@ -337,7 +337,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
                 {failed_msgs.length > 1 ? "s" : ""}:
                 <ul>
                   {failed_msgs.map((item) => (
-                    <li className="pf-v5-u-ml-sm" key={item}>
+                    <li className="pf-v6-u-ml-sm" key={item}>
                       &#8226; {item}
                     </li>
                   ))}
@@ -402,7 +402,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
                 {failed_msgs.length > 1 ? "s" : ""}:
                 <ul>
                   {failed_msgs.map((item) => (
-                    <li className="pf-v5-u-ml-sm" key={item}>
+                    <li className="pf-v6-u-ml-sm" key={item}>
                       &#8226; {item}
                     </li>
                   ))}
@@ -641,14 +641,14 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
       <PageSection
         hasBodyWrapper={false}
         isFilled={false}
-        className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
+        className="pf-v6-u-m-lg pf-v6-u-pb-md pf-v6-u-pl-0 pf-v6-u-pr-0"
       >
         <ToolbarLayout
-          className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-          contentClassName="pf-v5-u-p-0"
+          className="pf-v6-u-pt-0 pf-v6-u-pl-lg pf-v6-u-pr-md"
+          contentClassName="pf-v6-u-p-0"
           toolbarItems={toolbarItems}
         />
-        <div className="pf-v5-u-ml-md pf-v5-u-mr-md">
+        <div className="pf-v6-u-ml-md pf-v6-u-mr-md">
           <OuterScrollContainer>
             <InnerScrollContainer>
               <IDViewsAppliedToTable
@@ -666,7 +666,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
           paginationData={paginationData}
           variant={PaginationVariant.bottom}
           widgetId="pagination-options-menu-bottom"
-          className="pf-v5-u-pb-0 pf-v5-u-pr-md pf-v5-u-mt-md"
+          className="pf-v6-u-pb-0 pf-v6-u-pr-md pf-v6-u-mt-md"
         />
       </PageSection>
       <ModalErrors

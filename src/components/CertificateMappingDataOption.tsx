@@ -123,7 +123,7 @@ const CertificateMappingDataOption = (
       <SecondaryButton
         dataCy="modal-button-add-ipacertmapdata"
         name={"add-ipacertmapdata"}
-        classname="pf-v5-u-mt-sm pf-v5-u-mb-0"
+        classname="pf-v6-u-mt-sm pf-v6-u-mb-0"
         isDisabled={!props.isCertMappingDataChecked}
         onClickHandler={onAddCertificateMappingDataHandler}
       >
@@ -202,7 +202,7 @@ const CertificateMappingDataOption = (
       <SecondaryButton
         dataCy="modal-button-add-certificate"
         name={"add-certificate"}
-        classname="pf-v5-u-mt-sm"
+        classname="pf-v6-u-mt-sm"
         isDisabled={!props.isCertMappingDataChecked}
         onClickHandler={onAddCertificateHandler}
       >
@@ -227,9 +227,9 @@ const CertificateMappingDataOption = (
         onChange={(_event, value) => props.onChangeCertMappingDataCheck(value)}
         label="Certificate mapping data"
         id="certificate-mapping-data"
-        className="pf-v5-u-mb-md"
+        className="pf-v6-u-mb-md"
       />
-      <div className="pf-v5-u-ml-lg pf-v5-u-mb-md">
+      <div className="pf-v6-u-ml-lg pf-v6-u-mb-md">
         <Form>
           <FormGroup
             label="Certificate mapping data"

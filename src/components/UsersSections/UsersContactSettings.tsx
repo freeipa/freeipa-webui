@@ -24,7 +24,7 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
   return (
     <Flex direction={{ default: "column", md: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-v5-u-mb-lg">
+        <Form className="pf-v6-u-mb-lg">
           <FormGroup label="Mail address" fieldId="mail" role="group">
             <IpaTextboxList
               dataCy="user-tab-settings-mail"
@@ -59,7 +59,7 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
         </Form>
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-v5-u-mb-lg">
+        <Form className="pf-v6-u-mb-lg">
           <FormGroup label="Mobile phone number" fieldId="mobile" role="group">
             <IpaTextboxList
               dataCy="user-tab-settings-mobile"

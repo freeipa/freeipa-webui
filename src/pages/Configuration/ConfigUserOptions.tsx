@@ -53,7 +53,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
       flex={{ default: "flex_1" }}
     >
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-v5-u-mb-lg pf-v5-u-mt-lg" isHorizontal>
+        <Form className="pf-v6-u-mb-lg pf-v6-u-mt-lg" isHorizontal>
           <FormGroup
             label="User search fields"
             fieldId="ipausersearchfields"
@@ -276,7 +276,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
               onChange={props.recordOnChange}
               objectName="config"
               metadata={props.metadata}
-              className="pf-v5-u-pt-sm"
+              className="pf-v6-u-pt-sm"
             />
           </FormGroup>
           <FormGroup
@@ -292,13 +292,13 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
               onChange={props.recordOnChange}
               objectName="config"
               metadata={props.metadata}
-              className="pf-v5-u-pt-sm"
+              className="pf-v6-u-pt-sm"
             />
           </FormGroup>
         </Form>
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-v5-u-mb-lg pf-v5-u-mt-lg">
+        <Form className="pf-v6-u-mb-lg pf-v6-u-mt-lg">
           <FormGroup
             label="Default user objectclasses"
             fieldId="ipauserobjectclasses"

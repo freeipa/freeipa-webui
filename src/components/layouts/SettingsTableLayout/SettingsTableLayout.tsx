@@ -86,7 +86,7 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
             <FlexItem>
               <SecondaryButton
                 dataCy="settings-button-delete"
-                classname="pf-v5-u-mr-sm"
+                classname="pf-v6-u-mr-sm"
                 isDisabled={props.isDeleteDisabled || false}
                 onClickHandler={props.onDeleteModal}
               >
@@ -94,7 +94,7 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
               </SecondaryButton>
               <SecondaryButton
                 dataCy="settings-button-add"
-                classname="pf-v5-u-mr-sm"
+                classname="pf-v6-u-mr-sm"
                 isDisabled={props.isAddDisabled || false}
                 onClickHandler={props.onAddModal}
                 id={addButtonId}
@@ -107,7 +107,7 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
                 list={props.list}
                 paginationData={props.paginationData}
                 widgetId="pagination-options-menu-bottom"
-                className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+                className="pf-v6-u-pb-0 pf-v6-u-pr-md"
                 perPageSize="sm"
               />
             </FlexItem>

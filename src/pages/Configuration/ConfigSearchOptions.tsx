@@ -16,7 +16,7 @@ interface PropsToSearchOPtions {
 
 const ConfigSearchOptions = (props: PropsToSearchOPtions) => {
   return (
-    <Form className="pf-v5-u-mb-lg pf-v5-u-mt-lg" isHorizontal>
+    <Form className="pf-v6-u-mb-lg pf-v6-u-mt-lg" isHorizontal>
       <FormGroup label="Search size limit" fieldId="ipasearchrecordslimit">
         <IpaNumberInput
           dataCy="configuration-textbox-ipasearchrecordslimit"

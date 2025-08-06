@@ -92,7 +92,7 @@ const HostSettings = (props: PropsToHostSettings) => {
     <>
       <Flex direction={{ default: "column", lg: "row" }}>
         <FlexItem flex={{ default: "flex_1" }}>
-          <Form className="pf-v5-u-mb-lg">
+          <Form className="pf-v6-u-mb-lg">
             <FormGroup label="Host name" fieldId="host-name">
               <TextInput
                 data-cy="hosts-tab-settings-textbox-host-name"

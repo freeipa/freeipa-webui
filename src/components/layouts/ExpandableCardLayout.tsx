@@ -71,7 +71,7 @@ const ExpandableCardLayout = (props: PropsToCardLayout) => {
 
   return (
     <Card
-      className={"pf-v5-u-mb-sm " + props.className}
+      className={"pf-v6-u-mb-sm " + props.className}
       isCompact={props.isCompact}
       isExpanded={isExpanded}
     >

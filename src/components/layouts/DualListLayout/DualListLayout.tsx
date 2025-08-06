@@ -53,7 +53,7 @@ const DualListTableLayout = (props: DualListProps) => {
   // Dual list selector
   const initialList = (
     <div onClick={doSearch}>
-      <InfoCircleIcon className="pf-v5-u-info-color-100 pf-v5-u-mr-sm" />{" "}
+      <InfoCircleIcon className="pf-v6-u-info-color-100 pf-v6-u-mr-sm" />{" "}
       <a>Click here, or use the search field to find entries</a>
     </div>
   );
@@ -78,7 +78,7 @@ const DualListTableLayout = (props: DualListProps) => {
     if (newList.length === 0) {
       const emptyList = (
         <div id="disabled">
-          <ExclamationTriangleIcon className="pf-v5-u-warning-color-100 pf-v5-u-mr-sm" />{" "}
+          <ExclamationTriangleIcon className="pf-v6-u-warning-color-100 pf-v6-u-mr-sm" />{" "}
           No matching results
         </div>
       );
@@ -107,7 +107,7 @@ const DualListTableLayout = (props: DualListProps) => {
     if (cleanList.length === 0) {
       emptyList = (
         <div id="disabled">
-          <ExclamationTriangleIcon className="pf-v5-u-warning-color-100 pf-v5-u-mr-sm" />{" "}
+          <ExclamationTriangleIcon className="pf-v6-u-warning-color-100 pf-v6-u-mr-sm" />{" "}
           No matching results
         </div>
       );
@@ -158,7 +158,7 @@ const DualListTableLayout = (props: DualListProps) => {
   function doSearch() {
     const newPlaceholder = (
       <div>
-        <InfoCircleIcon className="pf-v5-u-info-color-100 pf-v5-u-mr-sm" />{" "}
+        <InfoCircleIcon className="pf-v6-u-info-color-100 pf-v6-u-mr-sm" />{" "}
         Searching ...
       </div>
     );

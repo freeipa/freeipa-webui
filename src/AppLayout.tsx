@@ -143,7 +143,7 @@ const AppLayout = (props: PropsToAppLayout) => {
           id="toggle-plain-text"
           onClick={onDropdownToggle}
           isExpanded={isDropdownOpen}
-          className="pf-v5-u-mr-md"
+          className="pf-v6-u-mr-md"
           icon={<Avatar src={avatarImg} alt="avatar" size="sm" />}
         >
           {fullName}

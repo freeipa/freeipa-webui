@@ -61,7 +61,7 @@ const AllowedCreateKeytab = (props: PropsToAllowCreateKeytab) => {
           id={fqdn}
           entry={props.host}
           onRefresh={props.onRefresh}
-          className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+          className="pf-v6-u-ml-md pf-v6-u-mt-sm"
           opType="create"
           entryAttr="ipaallowedtoperform_write_keys_user"
           entryType="user"
@@ -82,7 +82,7 @@ const AllowedCreateKeytab = (props: PropsToAllowCreateKeytab) => {
           id={fqdn}
           entry={props.host}
           onRefresh={props.onRefresh}
-          className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+          className="pf-v6-u-ml-md pf-v6-u-mt-sm"
           opType="create"
           entryAttr="ipaallowedtoperform_write_keys_group"
           entryType="group"
@@ -103,7 +103,7 @@ const AllowedCreateKeytab = (props: PropsToAllowCreateKeytab) => {
           id={fqdn}
           entry={props.host}
           onRefresh={props.onRefresh}
-          className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+          className="pf-v6-u-ml-md pf-v6-u-mt-sm"
           opType="create"
           entryAttr="ipaallowedtoperform_write_keys_host"
           entryType="host"
@@ -124,7 +124,7 @@ const AllowedCreateKeytab = (props: PropsToAllowCreateKeytab) => {
           id={fqdn}
           entry={props.host}
           onRefresh={props.onRefresh}
-          className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+          className="pf-v6-u-ml-md pf-v6-u-mt-sm"
           opType="create"
           entryAttr="ipaallowedtoperform_write_keys_hostgroup"
           entryType="hostgroup"

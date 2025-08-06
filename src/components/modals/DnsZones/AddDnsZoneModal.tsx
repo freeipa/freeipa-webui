@@ -136,7 +136,7 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
         id="skip-overlap-check-tooltip"
         ariaLabel="Skip overlap check tooltip with message"
       >
-        <InfoCircleIcon className="pf-v5-u-ml-sm" />
+        <InfoCircleIcon className="pf-v6-u-ml-sm" />
       </CustomTooltip>
     </>
   );
@@ -144,7 +144,7 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
   // Form fields
   const formFields = (
     <>
-      <div className="pf-v5-u-ml-lg pf-v5-u-mb-md">
+      <div className="pf-v6-u-ml-lg pf-v6-u-mb-md">
         <Form id="add-modal-form-zone-name">
           <Radio
             data-cy="modal-radio-dns-zone-name"
@@ -180,7 +180,7 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
           </FormGroup>
         </Form>
       </div>
-      <div className="pf-v5-u-ml-lg pf-v5-u-mb-md">
+      <div className="pf-v6-u-ml-lg pf-v6-u-mb-md">
         <Form id="add-modal-form-reverse-zone">
           <Radio
             data-cy="modal-radio-reverse-zone-ip"
@@ -193,7 +193,7 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
             }}
             isChecked={isReverseZoneIpRadioChecked}
             aria-label="Reverse zone IP radio button"
-            className="pf-v5-u-mt-md"
+            className="pf-v6-u-mt-md"
             label={reverseZoneLabel}
           />
           <FormGroup
@@ -243,10 +243,10 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
               id="skip-overlap-check-tooltip"
               ariaLabel="Skip overlap check tooltip with message"
             >
-              <InfoCircleIcon className="pf-v5-u-ml-sm" />
+              <InfoCircleIcon className="pf-v6-u-ml-sm" />
             </CustomTooltip>
           }
-          className="pf-v5-u-ml-lg pf-v5-u-mt-md pf-v5-u-mb-md"
+          className="pf-v6-u-ml-lg pf-v6-u-mt-md pf-v6-u-mb-md"
         >
           <Checkbox
             id="skip-overlap-check"

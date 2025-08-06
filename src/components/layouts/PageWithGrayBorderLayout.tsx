@@ -20,26 +20,26 @@ const PageWithGrayBorderLayout = (props: PropsToPageWithGrayBorderLayout) => {
 
   return (
     <>
-      <PageSection hasBodyWrapper={false} className="pf-v5-u-pr-0">
+      <PageSection hasBodyWrapper={false} className="pf-v6-u-pr-0">
         <TitleLayout
           id={props.id}
           text={props.pageTitle}
           headingLevel="h1"
-          className="pf-v5-u-mt-md pf-v5-u-ml-md"
+          className="pf-v6-u-mt-md pf-v6-u-ml-md"
         />
       </PageSection>
       <PageSection
         hasBodyWrapper={false}
         type="default"
         isFilled
-        className="pf-v5-u-m-lg pf-v5-u-mb-0 pf-v5-u-pb-0"
+        className="pf-v6-u-m-lg pf-v6-u-mb-0 pf-v6-u-pb-0"
       >
         <>
           <PageSection
             hasBodyWrapper={false}
             id={props.id}
             style={style}
-            className="pf-v5-u-mb-0"
+            className="pf-v6-u-mb-0"
           >
             {props.children}
           </PageSection>

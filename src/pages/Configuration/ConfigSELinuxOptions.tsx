@@ -17,7 +17,7 @@ interface PropsToSELinuxOptions {
 
 const ConfigSELinuxOptions = (props: PropsToSELinuxOptions) => {
   return (
-    <Form className="pf-v5-u-mb-lg pf-v5-u-mt-lg" isHorizontal>
+    <Form className="pf-v6-u-mb-lg pf-v6-u-mt-lg" isHorizontal>
       <FormGroup
         label="SELinux user map order"
         fieldId="ipaselinuxusermaporder"

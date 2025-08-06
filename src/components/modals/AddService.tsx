@@ -82,7 +82,7 @@ const AddService = (props: PropsToAddService) => {
       data-cy="modal-select-service-toggle"
       ref={toggleRef}
       onClick={serviceOnToggle}
-      className="pf-v5-u-w-100"
+      className="pf-v6-u-w-100"
     >
       {serviceSelected}
     </MenuToggle>
@@ -129,7 +129,7 @@ const AddService = (props: PropsToAddService) => {
       data-cy="modal-select-host-name-toggle"
       ref={toggleRef}
       onClick={hostNameOnToggle}
-      className="pf-v5-u-w-100"
+      className="pf-v6-u-w-100"
     >
       {hostNameSelected}
     </MenuToggle>

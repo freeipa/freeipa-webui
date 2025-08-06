@@ -131,7 +131,7 @@ const HostGroupsSettings = (props: PropsToGroupsSettings) => {
           text="Host group settings"
         />
         <Form
-          className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md"
+          className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md"
           isHorizontal
         >
           <FormGroup label="Description" fieldId="description">

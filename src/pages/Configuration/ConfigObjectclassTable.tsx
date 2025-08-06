@@ -79,7 +79,7 @@ const ConfigObjectclassTable = (props: PropsToTable) => {
           setNewOC("");
           setIsOpen(true);
         }}
-        className="pf-v5-u-mt-md"
+        className="pf-v6-u-mt-md"
         size="sm"
       >
         Add objectclass

@@ -101,7 +101,7 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
   return (
     <Flex direction={{ default: "column", lg: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-v5-u-mb-lg">
+        <Form className="pf-v6-u-mb-lg">
           <FormGroup label="First name" fieldId="givenname" isRequired>
             {firstNameTextInput}
           </FormGroup>
@@ -114,7 +114,7 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
         </Form>
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-v5-u-mb-lg">
+        <Form className="pf-v6-u-mb-lg">
           <FormGroup label="Job title" fieldId="title">
             {jobTitleTextInput}
           </FormGroup>

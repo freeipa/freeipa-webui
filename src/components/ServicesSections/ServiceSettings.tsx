@@ -66,7 +66,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
     <>
       <Flex direction={{ default: "column", lg: "row" }}>
         <FlexItem flex={{ default: "flex_1" }}>
-          <Form className="pf-v5-u-mb-lg">
+          <Form className="pf-v6-u-mb-lg">
             <FormGroup
               label="Principal alias"
               fieldId="principal-alias"
@@ -115,7 +115,7 @@ const ServiceSettings = (props: PropsToServiceSettings) => {
           </Form>
         </FlexItem>
         <FlexItem flex={{ default: "flex_1" }}>
-          <Form className="pf-v5-u-mb-lg">
+          <Form className="pf-v6-u-mb-lg">
             <FormGroup
               label="Authentication indicators"
               fieldId="authentication-indicators"

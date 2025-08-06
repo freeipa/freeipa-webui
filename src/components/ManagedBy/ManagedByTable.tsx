@@ -252,7 +252,7 @@ const ManagedByTable = (props: PropsToTable) => {
       name="fqdn"
       variant={"compact"}
       hasBorders={true}
-      classes={"pf-v5-u-mt-md"}
+      classes={"pf-v6-u-mt-md"}
       tableId={props.tableName.replace(" ", "-").toLowerCase() + "-table"}
       isStickyHeader={true}
       tableHeader={props.list.length === 0 ? undefined : header}

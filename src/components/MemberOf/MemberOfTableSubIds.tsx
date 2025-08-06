@@ -65,7 +65,7 @@ export default function MemberOfSubIdsTable(props: MemberOfSubIdsTableProps) {
         name="cn"
         variant="compact"
         borders
-        className={"pf-v5-u-mt-md"}
+        className={"pf-v6-u-mt-md"}
         id="member-of-table"
         isStickyHeader
       >
@@ -100,7 +100,7 @@ export default function MemberOfSubIdsTable(props: MemberOfSubIdsTableProps) {
       name="cn"
       variant="compact"
       borders
-      className={"pf-v5-u-mt-md"}
+      className={"pf-v6-u-mt-md"}
       id="member-of-table"
       isStickyHeader
     >

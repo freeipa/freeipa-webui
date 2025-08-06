@@ -60,7 +60,7 @@ const IpaCheckboxes = (props: IPAParamDefinitionCheckboxes) => {
           aria-label={props.name}
           className={
             idx !== props.options.length - 1
-              ? "pf-v5-u-mt-xs pf-v5-u-mb-sm"
+              ? "pf-v6-u-mt-xs pf-v6-u-mb-sm"
               : ""
           }
           isDisabled={readOnly}
