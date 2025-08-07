@@ -17,7 +17,7 @@ import useAlerts from "src/hooks/useAlerts";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 // Images
 import BrandImg from "src/assets/images/product-name.png";
-import BackgroundImg from "src/assets/images/login-screen-background.jpg";
+import BackgroundImg from "src/assets/images/login-screen-background-3.jpg";
 // RPC
 import {
   MetaResponse,
@@ -31,6 +31,7 @@ import { setIsLogin } from "src/store/Global/auth-slice";
 // Navigation
 import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { URL_PREFIX } from "src/navigation/NavRoutes";
 
 interface StateFromSyncOtpPage {
   alertMessage: string;
@@ -309,9 +310,19 @@ const LoginMainPage = () => {
           </Content>
         </Button>
       </LoginMainFooterLinksItem>
-      <Link aria-label="Synchronize otp token" to="/sync-otp">
-        Sync OTP Token
-      </Link>
+      <LoginMainFooterLinksItem>
+        <Button
+          variant="link"
+          component="a"
+          data-cy="login-button-sync-otp"
+          href={URL_PREFIX + "/sync-otp"}
+          {...{
+            "aria-label": "Synchronize otp token",
+          }}
+        >
+          <Content component="p">Sync OTP Token</Content>
+        </Button>
+      </LoginMainFooterLinksItem>
     </React.Fragment>
   );
 

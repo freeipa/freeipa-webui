@@ -11,7 +11,7 @@ import {
 } from "@patternfly/react-core";
 // Images
 import BrandImg from "src/assets/images/product-name.png";
-import BackgroundImg from "src/assets/images/login-screen-background.jpg";
+import BackgroundImg from "src/assets/images/login-screen-background-3.jpg";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // RPC
