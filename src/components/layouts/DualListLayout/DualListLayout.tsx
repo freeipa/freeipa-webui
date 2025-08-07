@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useState } from "react";
 // PatternFly
 import {
   Flex,
@@ -7,15 +7,26 @@ import {
   DualListSelector,
   FormGroup,
   TextInput,
+  DualListSelectorPane,
+  DualListSelectorList,
+  DualListSelectorListItem,
+  DualListSelectorControlsWrapper,
+  DualListSelectorControl,
 } from "@patternfly/react-core";
 // Layout
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 //Icons
-import { InfoCircleIcon } from "@patternfly/react-icons";
-import { ExclamationTriangleIcon } from "@patternfly/react-icons";
-import { ArrowRightIcon } from "@patternfly/react-icons";
+import {
+  AngleRightIcon,
+  AngleDoubleRightIcon,
+  AngleDoubleLeftIcon,
+  AngleLeftIcon,
+  InfoCircleIcon,
+  ExclamationTriangleIcon,
+  ArrowRightIcon,
+} from "@patternfly/react-icons";
 // RPC client
 import { useGetIDListMutation, GenericPayload } from "src/services/rpc";
 
@@ -47,73 +58,106 @@ export interface DualListProps {
   addExternalsOption?: boolean;
 }
 
+const searchItem = (onClick?: () => void) => {
+  return (
+    <DualListSelectorListItem
+      key={"search"}
+      data-cy={"item-search"}
+      onClick={onClick}
+      /* Omitting this will throw an error when selected */
+      onOptionSelect={() => {}}
+    >
+      <div key="initial-list" data-cy="dual-list-search-link">
+        <InfoCircleIcon className="pf-v5-u-info-color-100 pf-v5-u-mr-sm" />{" "}
+        Click here, or use the search field to find entries
+      </div>
+    </DualListSelectorListItem>
+  );
+};
+
+const searchingItem = () => {
+  return (
+    <DualListSelectorListItem
+      key={"searching"}
+      data-cy={"item-searching"}
+      /* Omitting this will throw an error when selected */
+      onOptionSelect={() => {}}
+    >
+      <div>
+        <InfoCircleIcon className="pf-v5-u-info-color-100 pf-v5-u-mr-sm" />{" "}
+        Searching ...
+      </div>
+    </DualListSelectorListItem>
+  );
+};
+
+const emptyItem = () => {
+  return (
+    <DualListSelectorListItem
+      key={"empty"}
+      data-cy={"item-empty"}
+      /* Omitting this will throw an error when selected */
+      onOptionSelect={() => {}}
+    >
+      <div id="disabled" data-cy="dual-list-no-matching-results">
+        <ExclamationTriangleIcon className="pf-v5-u-warning-color-100 pf-v5-u-mr-sm" />{" "}
+        No matching results
+      </div>
+    </DualListSelectorListItem>
+  );
+};
+
+type Status = "toSearch" | "searching" | "empty" | "valid";
+
+interface Item {
+  id: string;
+  item: string;
+  isSelected: boolean;
+  dataCy: string;
+}
+
+const asItems = (options: string[]): Item[] =>
+  options.map((option) => ({
+    id: option,
+    item: option,
+    isSelected: false,
+    dataCy: `item-${option}`,
+  }));
+
 // Dual list layout for updating an existing table, or for performing actions
 // against entries
-const DualListTableLayout = (props: DualListProps) => {
-  // Dual list selector
-  const initialList = (
-    <div onClick={doSearch}>
-      <InfoCircleIcon className="pf-v5-u-info-color-100 pf-v5-u-mr-sm" />{" "}
-      <a>Click here, or use the search field to find entries</a>
-    </div>
+const DualListTableLayoutInner = (props: DualListProps) => {
+  const [availableOptions, setAvailableOptions] = useState<Item[]>(
+    asItems(props.availableOptions ?? [])
   );
-
-  const [availableOptions, setAvailableOptions] = useState<
-    string[] | ReactNode[]
-  >([]);
-  const [chosenOptions, setChosenOptions] = useState<string[]>([]);
+  const [chosenOptions, setChosenOptions] = useState<Item[]>([]);
   const [searchValue, setSearchValue] = React.useState("");
   const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
-
-  // Show available options if they are defined. Otherwise, show the initial list
-  React.useEffect(() => {
-    if (availableOptions === undefined) {
-      setAvailableOptions([initialList]);
-    } else {
-      setAvailableOptions(availableOptions);
-    }
-  }, []);
+  const [status, setStatus] = useState<Status>(
+    props.availableOptions !== undefined ? "valid" : "toSearch"
+  );
 
   const updateAvailableOptions = (newList: string[]) => {
-    if (newList.length === 0) {
-      const emptyList = (
-        <div id="disabled">
-          <ExclamationTriangleIcon className="pf-v5-u-warning-color-100 pf-v5-u-mr-sm" />{" "}
-          No matching results
-        </div>
-      );
-      setAvailableOptions([emptyList]);
-      return;
-    }
-
-    // Filter out options already in the table
     const filterData = newList.filter((item) => {
       if (item === props.entry) {
         return false;
       }
-      return !props.tableElementsList.some((itm) => {
-        return item === itm;
-      });
+      return !props.tableElementsList.includes(item);
     });
 
     // Filter out options that have already been chosen
-    let cleanList = filterData.filter((item) => {
+    const cleanList = filterData.filter((item) => {
       return !chosenOptions.some((itm) => {
-        return item === itm || item === props.entry;
+        return item === itm.item || item === props.entry;
       });
     });
 
-    let emptyList;
     if (cleanList.length === 0) {
-      emptyList = (
-        <div id="disabled">
-          <ExclamationTriangleIcon className="pf-v5-u-warning-color-100 pf-v5-u-mr-sm" />{" "}
-          No matching results
-        </div>
-      );
-      cleanList = [emptyList];
+      setStatus("empty");
+    } else {
+      setAvailableOptions(asItems(cleanList));
+      setStatus("valid");
     }
-    setAvailableOptions(cleanList);
   };
 
   // Issue a search using a specific search value
@@ -145,59 +189,145 @@ const DualListTableLayout = (props: DualListProps) => {
     }
   };
 
-  const updateSearchValue = (value: string) => {
-    setSearchValue(value);
-  };
-
-  const searchValueData = {
-    searchValue: searchValue,
-    updateSearchValue: updateSearchValue,
-    submitSearchValue: doSearch,
-  };
-
   function doSearch() {
-    const newPlaceholder = (
-      <div>
-        <InfoCircleIcon className="pf-v5-u-info-color-100 pf-v5-u-mr-sm" />{" "}
-        Searching ...
-      </div>
-    );
-    setAvailableOptions([newPlaceholder]);
+    setStatus("searching");
     submitSearchValue();
   }
 
-  const listChange = (
-    newAvailableOptions: ReactNode[],
-    newChosenOptions: ReactNode[]
-  ) => {
-    // Only "message" options are actually react nodes,
-    // revise the lists as needed.
-    for (let idx = 0; idx < newChosenOptions.length; idx++) {
-      // if not typeof string, remove from list
-      if (typeof newChosenOptions[idx] !== "string") {
-        return;
-      }
-    }
-    const newAvailOptions: string[] = [];
-    for (let idx = 0; idx < newAvailableOptions.length; idx++) {
-      // Revise avail list to only include valid string options
-      if (typeof newAvailableOptions[idx] === "string") {
-        const option = newAvailableOptions[idx] as string;
-        newAvailOptions.push(option);
-      }
-    }
-
-    setAvailableOptions(newAvailOptions.sort() as string[]);
-    setChosenOptions(newChosenOptions.sort() as string[]);
+  const searchValueData = {
+    searchValue: searchValue,
+    updateSearchValue: setSearchValue,
+    submitSearchValue: doSearch,
   };
 
-  let availOptions;
-  if (availableOptions.length === 0) {
-    // No option, should display some info about this
-    availOptions = [initialList];
-  } else {
-    availOptions = availableOptions;
-  }
+  const onButtonClick = () => {
+    props.action(
+      chosenOptions
+        .map((item) => item.item)
+        .filter((item) => item !== null && item !== undefined)
+    );
+    props.onCloseModal();
+  };
+
+  const onOptionSelect = (
+    _event: React.MouseEvent | React.ChangeEvent | React.KeyboardEvent,
+    index: number,
+    isChosen: boolean
+  ) => {
+    if (isChosen) {
+      const newChosen = [...chosenOptions];
+      newChosen[index].isSelected = !chosenOptions[index].isSelected;
+      setChosenOptions(newChosen);
+    } else {
+      const newAvailable = [...availableOptions];
+      newAvailable[index].isSelected = !availableOptions[index].isSelected;
+      setAvailableOptions(newAvailable);
+    }
+  };
+
+  // Buttons that will be shown at the end of the form
+  const modalActions = [
+    <SecondaryButton
+      dataCy="modal-button-add"
+      key={"dual-list-" + props.target}
+      isDisabled={chosenOptions.length === 0 || props.spinning}
+      form="modal-form"
+      onClickHandler={onButtonClick}
+      spinnerAriaValueText={props.addSpinningBtnName}
+      spinnerAriaLabel={props.addSpinningBtnName}
+      isLoading={props.spinning}
+    >
+      {props.spinning ? props.addSpinningBtnName : props.addBtnName}
+    </SecondaryButton>,
+    <Button
+      data-cy="modal-button-cancel"
+      key={"cancel-new-" + props.target}
+      variant="link"
+      onClick={props.onCloseModal}
+    >
+      Cancel
+    </Button>,
+  ];
+
+  const moveSelected = (fromAvailable: boolean) => {
+    const sourceOptions = fromAvailable ? availableOptions : chosenOptions;
+    const destinationOptions = fromAvailable ? chosenOptions : availableOptions;
+    for (let i = 0; i < sourceOptions.length; i++) {
+      const option = sourceOptions[i];
+      if (option.isSelected) {
+        sourceOptions.splice(i, 1);
+        destinationOptions.push(option);
+        option.isSelected = false;
+        i--;
+      }
+    }
+
+    if (fromAvailable) {
+      setAvailableOptions([...sourceOptions]);
+      setChosenOptions([...destinationOptions]);
+    } else {
+      setChosenOptions([...sourceOptions]);
+      setAvailableOptions([...destinationOptions]);
+    }
+
+    setStatus("valid");
+  };
+
+  const moveAll = (fromAvailable: boolean) => {
+    availableOptions.forEach((option) => {
+      option.isSelected = false;
+    });
+    chosenOptions.forEach((option) => {
+      option.isSelected = false;
+    });
+
+    if (fromAvailable) {
+      setChosenOptions([...availableOptions, ...chosenOptions]);
+      setAvailableOptions([]);
+    } else {
+      setAvailableOptions([...chosenOptions, ...availableOptions]);
+      setChosenOptions([]);
+    }
+
+    setStatus("valid");
+  };
+
+  const getListItems = (status: Status): ReactNode[] => {
+    switch (status) {
+      case "toSearch":
+        return [searchItem(doSearch)];
+      case "searching":
+        return [searchingItem()];
+      case "empty":
+        return [emptyItem()];
+      case "valid":
+        return availableOptions.map((option, index) => (
+          <DualListSelectorListItem
+            key={option.id}
+            onOptionSelect={(e) => onOptionSelect(e, index, false)}
+            isSelected={option.isSelected}
+            data-cy={option.dataCy}
+          >
+            {option.item}
+          </DualListSelectorListItem>
+        ));
+    }
+  };
+
+  const getChosenOptionsStatus = (): string => {
+    const selectedOptions = chosenOptions.filter((option) => option.isSelected);
+    return `${selectedOptions.length} of ${chosenOptions.length} options selected`;
+  };
+
+  const getAvailableOptionsStatus = (): string => {
+    if (status === "valid") {
+      const selectedOptions = availableOptions.filter(
+        (option) => option.isSelected
+      );
+      return `${selectedOptions.length} of ${availableOptions.length} options selected`;
+    }
+    return "";
+  };
 
   const fields = [
     {
@@ -216,132 +346,110 @@ const DualListTableLayout = (props: DualListProps) => {
     {
       id: "dual-list-selector",
       pfComponent: (
-        <DualListSelector
-          availableOptions={availOptions}
-          chosenOptions={chosenOptions}
-          onListChange={(
-            _event,
-            newAvailableOptions: ReactNode[],
-            newChosenOptions: ReactNode[]
-          ) => listChange(newAvailableOptions, newChosenOptions)}
-          id="basicSelectorWithSearch"
-        />
+        <DualListSelector>
+          <DualListSelectorPane status={getAvailableOptionsStatus()}>
+            <DualListSelectorList>{getListItems(status)}</DualListSelectorList>
+          </DualListSelectorPane>
+          <DualListSelectorControlsWrapper>
+            <DualListSelectorControl
+              isDisabled={!availableOptions.some((option) => option.isSelected)}
+              onClick={() => moveSelected(true)}
+              aria-label="Add selected"
+              data-cy="dual-list-add-selected"
+            >
+              <AngleRightIcon />
+            </DualListSelectorControl>
+            <DualListSelectorControl
+              isDisabled={availableOptions.length === 0}
+              onClick={() => moveAll(true)}
+              aria-label="Add all"
+              data-cy="dual-list-add-all"
+            >
+              <AngleDoubleRightIcon />
+            </DualListSelectorControl>
+            <DualListSelectorControl
+              isDisabled={chosenOptions.length === 0}
+              onClick={() => moveAll(false)}
+              aria-label="Remove all"
+              data-cy="dual-list-remove-all"
+            >
+              <AngleDoubleLeftIcon />
+            </DualListSelectorControl>
+            <DualListSelectorControl
+              isDisabled={!chosenOptions.some((option) => option.isSelected)}
+              onClick={() => moveSelected(false)}
+              aria-label="Remove selected"
+              data-cy="dual-list-remove-selected"
+            >
+              <AngleLeftIcon />
+            </DualListSelectorControl>
+          </DualListSelectorControlsWrapper>
+          <DualListSelectorPane isChosen status={getChosenOptionsStatus()}>
+            <DualListSelectorList>
+              {chosenOptions.map((option, index) => (
+                <DualListSelectorListItem
+                  key={option.id}
+                  onOptionSelect={(e) => onOptionSelect(e, index, true)}
+                  isSelected={option.isSelected}
+                  data-cy={option.dataCy}
+                >
+                  {option.item}
+                </DualListSelectorListItem>
+              ))}
+            </DualListSelectorList>
+          </DualListSelectorPane>
+        </DualListSelector>
       ),
     },
   ];
 
-  // Show the possibility of adding externals if this is defined
-  const [externalValue, setExternalValue] = React.useState("");
+  if (props.addExternalsOption) {
+    const [externalValue, setExternalValue] = React.useState("");
 
-  // Change the external value string and show it in the list to enable the "addition" arrow button
-  const onAddExternalValue = () => {
-    const newChosenOptions = [...chosenOptions];
-    newChosenOptions.push(externalValue);
-    listChange(availableOptions, newChosenOptions);
-    setExternalValue("");
-  };
+    const onAddExternalValue = () => {
+      setChosenOptions([...chosenOptions, ...asItems([externalValue])]);
+      setExternalValue("");
+    };
 
-  if (props.addExternalsOption === true) {
     fields.push({
       id: "form-externals",
       pfComponent: (
-        <>
-          <FormGroup
-            label="External"
-            fieldId="dual-list-external"
-            style={{ width: "45%" }}
-          >
-            <Flex>
-              <FlexItem>
-                <TextInput
-                  data-cy="modal-textbox-external"
-                  type="text"
-                  id="dual-list-external"
-                  name="dual-list-external"
-                  aria-label="dual list external"
-                  value={externalValue}
-                  onChange={(_event, value) => setExternalValue(value)}
-                />
-              </FlexItem>
-              <FlexItem>
-                <Button
-                  data-cy="modal-button-external-add"
-                  title="Add external item to the chosen list"
-                  size="sm"
-                  variant="secondary"
-                  icon={<ArrowRightIcon />}
-                  iconPosition="right"
-                  onClick={onAddExternalValue}
-                  isDisabled={externalValue === ""}
-                >
-                  Add
-                </Button>
-              </FlexItem>
-            </Flex>
-          </FormGroup>
-        </>
+        <FormGroup
+          label="External"
+          fieldId="dual-list-external"
+          style={{ width: "45%" }}
+        >
+          <Flex>
+            <FlexItem>
+              <TextInput
+                data-cy="modal-textbox-external"
+                type="text"
+                id="dual-list-external"
+                name="dual-list-external"
+                aria-label="dual list external"
+                value={externalValue}
+                onChange={(_event, value) => setExternalValue(value)}
+              />
+            </FlexItem>
+            <FlexItem>
+              <Button
+                data-cy="modal-button-external-add"
+                title="Add external item to the chosen list"
+                size="sm"
+                variant="secondary"
+                icon={<ArrowRightIcon />}
+                iconPosition="right"
+                onClick={onAddExternalValue}
+                isDisabled={externalValue === ""}
+              >
+                Add
+              </Button>
+            </FlexItem>
+          </Flex>
+        </FormGroup>
       ),
     });
   }
-
-  // Buttons are disabled until all the required fields are filled
-  const [buttonDisabled, setButtonDisabled] = useState(true);
-  useEffect(() => {
-    if (chosenOptions.length > 0) {
-      setButtonDisabled(false);
-    } else {
-      setButtonDisabled(true);
-    }
-  }, [chosenOptions]);
-
-  // Close modal and reset lists
-  const closeModal = () => {
-    props.onCloseModal();
-    setSearchValue("");
-    setAvailableOptions([]);
-    setChosenOptions([]);
-  };
-
-  // Add element to the list
-  const doAction = () => {
-    const itemsToAdd: string[] = [];
-    chosenOptions.map((opt) => {
-      if (opt !== undefined && opt !== null) {
-        itemsToAdd.push(opt.toString());
-      }
-    });
-    // External value (if any)
-    if (props.addExternalsOption && externalValue !== "") {
-      availOptions.push(externalValue);
-    }
-    // Action update
-    props.action(itemsToAdd);
-    closeModal();
-  };
-
-  // Buttons that will be shown at the end of the form
-  const modalActions = [
-    <SecondaryButton
-      dataCy="modal-button-add"
-      key={"dual-list-" + props.target}
-      isDisabled={buttonDisabled || props.spinning}
-      form="modal-form"
-      onClickHandler={doAction}
-      spinnerAriaValueText={props.addSpinningBtnName}
-      spinnerAriaLabel={props.addSpinningBtnName}
-      isLoading={props.spinning}
-    >
-      {props.spinning ? props.addSpinningBtnName : props.addBtnName}
-    </SecondaryButton>,
-    <Button
-      data-cy="modal-button-cancel"
-      key={"cancel-new-" + props.target}
-      variant="link"
-      onClick={closeModal}
-    >
-      Cancel
-    </Button>,
-  ];
 
   // Render component
   return (
@@ -353,10 +461,15 @@ const DualListTableLayout = (props: DualListProps) => {
       formId={"dual-list-" + props.target + "-modal"}
       fields={fields}
       show={props.showModal}
-      onClose={closeModal}
+      onClose={props.onCloseModal}
       actions={modalActions}
     />
   );
+};
+
+const DualListTableLayout = (props: DualListProps) => {
+  if (!props.showModal) return null;
+  return <DualListTableLayoutInner {...props} />;
 };
 
 export default DualListTableLayout;
