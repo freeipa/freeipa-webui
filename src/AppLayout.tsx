@@ -32,7 +32,7 @@ import { ShareSquareIcon } from "@patternfly/react-icons";
 // Navigation
 import Navigation from "./navigation/Nav";
 // Images
-import headerLogo from "src/assets/images/header-logo.png";
+import headerLogo from "src/assets/images/header-logo-black.png";
 import avatarImg from "src/assets/images/avatarImg.svg";
 // Redux
 import { useAppDispatch } from "./store/hooks";
@@ -181,7 +181,7 @@ const AppLayout = (props: PropsToAppLayout) => {
             aria-label="Global navigation"
           />
         </MastheadToggle>
-        <MastheadBrand>
+        <MastheadBrand className="pf-v6-u-mt-sm">
           <MastheadLogo>
             <Brand src={headerLogo} alt="FreeIPA Logo" />
           </MastheadLogo>

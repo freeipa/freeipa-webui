@@ -15,7 +15,7 @@ import {
   ExpandableSection,
 } from "@patternfly/react-core";
 // Images
-import HeaderLogo from "src/assets/images/header-logo.png";
+import HeaderLogo from "src/assets/images/header-logo-black.png";
 // Components
 import TextLayout from "src/components/layouts/TextLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
