@@ -6,6 +6,9 @@ EXTRA_DIST =		\
 	$(NULL)
 
 install-exec-local:
+	## We don't want to run this code in prci
+	test -d "dist" || npm install
+	test -d "dist" || npm run build
 	mkdir -p "$(DESTDIR)$(appdir)"
 	cp -p "dist/index.html" "$(DESTDIR)$(appdir)/index.html"
 	cp -rp "dist/assets" "$(DESTDIR)$(appdir)/assets"
