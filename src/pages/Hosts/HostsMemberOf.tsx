@@ -200,126 +200,128 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
 
   // Render component
   return (
-    <TabLayout id="memberof">
-      <Tabs
-        activeKey={props.tabSection}
-        onSelect={handleTabClick}
-        isBox={false}
-        mountOnEnter
-        unmountOnExit
-      >
-        <Tab
-          eventKey={"memberof_hostgroup"}
-          name="memberof_hostgroup"
-          title={
-            <TabTitleText>
-              Host groups{" "}
-              <Badge key={0} isRead>
-                {groupCount}
-              </Badge>
-            </TabTitleText>
-          }
+    <div style={{ height: `var(--memberof-calc)` }}>
+      <TabLayout id="memberof">
+        <Tabs
+          activeKey={props.tabSection}
+          onSelect={handleTabClick}
+          isBox={false}
+          mountOnEnter
+          unmountOnExit
         >
-          <MemberOfHostGroups
-            entity={host}
-            id={host.fqdn as string}
-            from={"hosts"}
-            isDataLoading={hostQuery.isFetching}
-            onRefreshData={onRefreshHostData}
-            setDirection={updateGroupDirection}
-            direction={groupDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"memberof_role"}
-          name="memberof_role"
-          title={
-            <TabTitleText>
-              Roles{" "}
-              <Badge key={0} isRead>
-                {roleCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfRoles
-            entity={host}
-            id={host.fqdn as string}
-            from={"roles"}
-            isDataLoading={hostQuery.isFetching}
-            onRefreshData={onRefreshHostData}
-            setDirection={updateRoleDirection}
-            direction={groupDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"memberof_netgroup"}
-          name="memberof_netgroup"
-          title={
-            <TabTitleText>
-              Netgroups{" "}
-              <Badge key={1} isRead>
-                {netgroupCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfNetgroups
-            entity={host}
-            id={host.fqdn as string}
-            from={"hosts"}
-            isDataLoading={hostQuery.isFetching}
-            onRefreshData={onRefreshHostData}
-            setDirection={updateNetgroupDirection}
-            direction={netgroupDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"memberof_hbacrule"}
-          name="memberof_hbacrule"
-          title={
-            <TabTitleText>
-              HBAC rules{" "}
-              <Badge key={3} isRead>
-                {hbacCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfHbacRules
-            entity={host}
-            id={host.fqdn as string}
-            from={"hosts"}
-            isDataLoading={hostQuery.isFetching}
-            onRefreshData={onRefreshHostData}
-            setDirection={updateHbacDirection}
-            direction={hbacDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"memberof_sudorule"}
-          name="memberof_sudorule"
-          title={
-            <TabTitleText>
-              Sudo rules{" "}
-              <Badge key={4} isRead>
-                {sudoCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfSudoRules
-            entity={host}
-            id={host.fqdn as string}
-            from={"hosts"}
-            isDataLoading={hostQuery.isFetching}
-            onRefreshData={onRefreshHostData}
-            setDirection={updateSudoDirection}
-            direction={sudoDirection}
-          />
-        </Tab>
-      </Tabs>
-    </TabLayout>
+          <Tab
+            eventKey={"memberof_hostgroup"}
+            name="memberof_hostgroup"
+            title={
+              <TabTitleText>
+                Host groups{" "}
+                <Badge key={0} isRead>
+                  {groupCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfHostGroups
+              entity={host}
+              id={host.fqdn as string}
+              from={"hosts"}
+              isDataLoading={hostQuery.isFetching}
+              onRefreshData={onRefreshHostData}
+              setDirection={updateGroupDirection}
+              direction={groupDirection}
+            />
+          </Tab>
+          <Tab
+            eventKey={"memberof_role"}
+            name="memberof_role"
+            title={
+              <TabTitleText>
+                Roles{" "}
+                <Badge key={0} isRead>
+                  {roleCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfRoles
+              entity={host}
+              id={host.fqdn as string}
+              from={"roles"}
+              isDataLoading={hostQuery.isFetching}
+              onRefreshData={onRefreshHostData}
+              setDirection={updateRoleDirection}
+              direction={groupDirection}
+            />
+          </Tab>
+          <Tab
+            eventKey={"memberof_netgroup"}
+            name="memberof_netgroup"
+            title={
+              <TabTitleText>
+                Netgroups{" "}
+                <Badge key={1} isRead>
+                  {netgroupCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfNetgroups
+              entity={host}
+              id={host.fqdn as string}
+              from={"hosts"}
+              isDataLoading={hostQuery.isFetching}
+              onRefreshData={onRefreshHostData}
+              setDirection={updateNetgroupDirection}
+              direction={netgroupDirection}
+            />
+          </Tab>
+          <Tab
+            eventKey={"memberof_hbacrule"}
+            name="memberof_hbacrule"
+            title={
+              <TabTitleText>
+                HBAC rules{" "}
+                <Badge key={3} isRead>
+                  {hbacCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfHbacRules
+              entity={host}
+              id={host.fqdn as string}
+              from={"hosts"}
+              isDataLoading={hostQuery.isFetching}
+              onRefreshData={onRefreshHostData}
+              setDirection={updateHbacDirection}
+              direction={hbacDirection}
+            />
+          </Tab>
+          <Tab
+            eventKey={"memberof_sudorule"}
+            name="memberof_sudorule"
+            title={
+              <TabTitleText>
+                Sudo rules{" "}
+                <Badge key={4} isRead>
+                  {sudoCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfSudoRules
+              entity={host}
+              id={host.fqdn as string}
+              from={"hosts"}
+              isDataLoading={hostQuery.isFetching}
+              onRefreshData={onRefreshHostData}
+              setDirection={updateSudoDirection}
+              direction={sudoDirection}
+            />
+          </Tab>
+        </Tabs>
+      </TabLayout>
+    </div>
   );
 };
 

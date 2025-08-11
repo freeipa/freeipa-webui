@@ -33,52 +33,54 @@ const IDViewsOverrides = (props: PropsToOverrides) => {
 
   // Render component
   return (
-    <TabLayout id="override sections">
-      <Tabs
-        activeKey={props.tabSection}
-        onSelect={handleTabClick}
-        isBox={false}
-        mountOnEnter
-        unmountOnExit
-      >
-        <Tab
-          eventKey={"override-users"}
-          name="users"
-          title={
-            <TabTitleText>
-              Users{" "}
-              <Badge key={0} id="user_count" isRead>
-                {props.idView.useroverrides.length}
-              </Badge>
-            </TabTitleText>
-          }
+    <div style={{ height: `var(--subsettings-calc)` }}>
+      <TabLayout id="override sections">
+        <Tabs
+          activeKey={props.tabSection}
+          onSelect={handleTabClick}
+          isBox={false}
+          mountOnEnter
+          unmountOnExit
         >
-          <IDViewsOverrideUsers
-            idview={props.idView.cn}
-            users={props.idView.useroverrides}
-            onRefresh={props.onRefresh}
-          />
-        </Tab>
-        <Tab
-          eventKey={"override-groups"}
-          name="groups"
-          title={
-            <TabTitleText>
-              User groups{" "}
-              <Badge key={1} id="group_count" isRead>
-                {props.idView.groupoverrides.length}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <IDViewsOverrideGroups
-            idview={props.idView.cn}
-            groups={props.idView.groupoverrides}
-            onRefresh={props.onRefresh}
-          />
-        </Tab>
-      </Tabs>
-    </TabLayout>
+          <Tab
+            eventKey={"override-users"}
+            name="users"
+            title={
+              <TabTitleText>
+                Users{" "}
+                <Badge key={0} id="user_count" isRead>
+                  {props.idView.useroverrides.length}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <IDViewsOverrideUsers
+              idview={props.idView.cn}
+              users={props.idView.useroverrides}
+              onRefresh={props.onRefresh}
+            />
+          </Tab>
+          <Tab
+            eventKey={"override-groups"}
+            name="groups"
+            title={
+              <TabTitleText>
+                User groups{" "}
+                <Badge key={1} id="group_count" isRead>
+                  {props.idView.groupoverrides.length}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <IDViewsOverrideGroups
+              idview={props.idView.cn}
+              groups={props.idView.groupoverrides}
+              onRefresh={props.onRefresh}
+            />
+          </Tab>
+        </Tabs>
+      </TabLayout>
+    </div>
   );
 };
 

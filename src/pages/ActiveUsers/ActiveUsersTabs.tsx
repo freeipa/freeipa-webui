@@ -122,11 +122,8 @@ const ActiveUsersTabs = ({ memberof }) => {
         isExpanded={isContextualPanelExpanded}
         onClose={onCloseContextualPanel}
       >
-        <PageSection hasBodyWrapper={false} className="pf-v6-u-pr-0">
-          <BreadCrumb
-            className="pf-v6-u-mb-md"
-            breadcrumbItems={breadcrumbItems}
-          />
+        <PageSection hasBodyWrapper={false}>
+          <BreadCrumb breadcrumbItems={breadcrumbItems} />
           <Content>
             <Title headingLevel="h1">
               <div

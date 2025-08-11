@@ -7,6 +7,8 @@ import {
   DropdownItem,
   ToolbarItemVariant,
   PageSectionVariants,
+  FlexItem,
+  Flex,
 } from "@patternfly/react-core";
 // PatternFly table
 import {
@@ -763,42 +765,41 @@ const ActiveUsers = () => {
             text="Active Users"
           />
         </PageSection>
-        <PageSection
-          hasBodyWrapper={false}
-          isFilled={false}
-          className="pf-v6-u-m-lg pf-v6-u-pb-md pf-v6-u-pl-0 pf-v6-u-pr-0"
-        >
-          <ToolbarLayout
-            className="pf-v6-u-pt-0 pf-v6-u-pl-lg pf-v6-u-pr-md"
-            contentClassName="pf-v6-u-p-0"
-            toolbarItems={toolbarItems}
-          />
-          <div style={{ height: `calc(100vh - 352.2px)` }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer>
-                {batchError !== undefined && batchError ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <UsersTable
-                    shownElementsList={activeUsersList}
-                    from="active-users"
-                    showTableRows={showTableRows}
-                    usersData={usersTableData}
-                    buttonsData={usersTableButtonsData}
-                    paginationData={selectedPerPageData}
-                    searchValue={searchValue}
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </div>
-          <PaginationLayout
-            list={activeUsersList}
-            paginationData={paginationData}
-            variant={PaginationVariant.bottom}
-            widgetId="pagination-options-menu-bottom"
-            className="pf-v6-u-pb-0 pf-v6-u-pr-md"
-          />
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem>
+              <OuterScrollContainer>
+                <InnerScrollContainer>
+                  {batchError !== undefined && batchError ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <UsersTable
+                      shownElementsList={activeUsersList}
+                      from="active-users"
+                      showTableRows={showTableRows}
+                      usersData={usersTableData}
+                      buttonsData={usersTableButtonsData}
+                      paginationData={selectedPerPageData}
+                      searchValue={searchValue}
+                    />
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={activeUsersList}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+              />
+            </FlexItem>
+          </Flex>
         </PageSection>
         <AddUser
           show={showAddModal}

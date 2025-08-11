@@ -119,64 +119,68 @@ const HostGroupsMembers = (props: PropsToHostGroupsMembers) => {
   };
 
   return (
-    <TabLayout id="members">
-      <Tabs
-        activeKey={props.tabSection}
-        onSelect={handleTabClick}
-        isBox={false}
-        mountOnEnter
-        unmountOnExit
-      >
-        <Tab
-          eventKey={"member_host"}
-          name="member_host"
-          title={
-            <TabTitleText>
-              Hosts{" "}
-              <Badge key={0} id="host_count" isRead>
-                {hostCount}
-              </Badge>
-            </TabTitleText>
-          }
+    <div style={{ height: `var(--subsettings-calc)` }}>
+      <TabLayout id="members">
+        <Tabs
+          activeKey={props.tabSection}
+          onSelect={handleTabClick}
+          isBox={false}
+          mountOnEnter
+          unmountOnExit
         >
-          <MembersHosts
-            entity={hostGroup}
-            id={hostGroup.cn as string}
-            from="host-groups"
-            isDataLoading={hostGroupQuery.isFetching}
-            onRefreshData={onRefreshHostGroupData}
-            member_host={hostGroup.member_host || []}
-            memberindirect_host={hostGroup.memberindirect_host || []}
-            setDirection={updateHostDirection}
-            direction={hostDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"member_hostgroup"}
-          name="member_hostgroup"
-          title={
-            <TabTitleText>
-              Host groups{" "}
-              <Badge key={1} id="hostgroup_count" isRead>
-                {groupCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MembersHostGroups
-            entity={hostGroup}
-            id={hostGroup.cn as string}
-            from="host-groups"
-            isDataLoading={hostGroupQuery.isFetching}
-            onRefreshData={onRefreshHostGroupData}
-            member_hostgroup={hostGroup.member_hostgroup || []}
-            memberindirect_hostgroup={hostGroup.memberindirect_hostgroup || []}
-            setDirection={updateGroupDirection}
-            direction={groupDirection}
-          />
-        </Tab>
-      </Tabs>
-    </TabLayout>
+          <Tab
+            eventKey={"member_host"}
+            name="member_host"
+            title={
+              <TabTitleText>
+                Hosts{" "}
+                <Badge key={0} id="host_count" isRead>
+                  {hostCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MembersHosts
+              entity={hostGroup}
+              id={hostGroup.cn as string}
+              from="host-groups"
+              isDataLoading={hostGroupQuery.isFetching}
+              onRefreshData={onRefreshHostGroupData}
+              member_host={hostGroup.member_host || []}
+              memberindirect_host={hostGroup.memberindirect_host || []}
+              setDirection={updateHostDirection}
+              direction={hostDirection}
+            />
+          </Tab>
+          <Tab
+            eventKey={"member_hostgroup"}
+            name="member_hostgroup"
+            title={
+              <TabTitleText>
+                Host groups{" "}
+                <Badge key={1} id="hostgroup_count" isRead>
+                  {groupCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MembersHostGroups
+              entity={hostGroup}
+              id={hostGroup.cn as string}
+              from="host-groups"
+              isDataLoading={hostGroupQuery.isFetching}
+              onRefreshData={onRefreshHostGroupData}
+              member_hostgroup={hostGroup.member_hostgroup || []}
+              memberindirect_hostgroup={
+                hostGroup.memberindirect_hostgroup || []
+              }
+              setDirection={updateGroupDirection}
+              direction={groupDirection}
+            />
+          </Tab>
+        </Tabs>
+      </TabLayout>
+    </div>
   );
 };
 

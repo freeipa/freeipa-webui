@@ -5,8 +5,6 @@ import {
   Form,
   FormGroup,
   Pagination,
-  Content,
-  ContentVariants,
   ToggleGroup,
   ToggleGroupItem,
   Toolbar,
@@ -14,10 +12,9 @@ import {
   ToolbarItem,
   ToolbarItemVariant,
 } from "@patternfly/react-core";
-// Icons
-import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 // Components
 import SearchInputLayout from "../layouts/SearchInputLayout";
+import HelpTextWithIconLayout from "../layouts/HelpTextWithIconLayout";
 
 export type MembershipDirection = "direct" | "indirect";
 
@@ -165,14 +162,7 @@ const MemberOfToolbar = (props: MemberOfToolbarProps) => {
         <ToolbarItem id="help-icon">
           <>
             {props.helpIconEnabled && (
-              <Content>
-                <Content component={ContentVariants.p}>
-                  <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
-                  <Content component={ContentVariants.a} isVisitedLink>
-                    Help
-                  </Content>
-                </Content>
-              </Content>
+              <HelpTextWithIconLayout textContent="Help" />
             )}
           </>
         </ToolbarItem>

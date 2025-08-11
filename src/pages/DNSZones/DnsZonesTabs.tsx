@@ -81,11 +81,8 @@ const DnsZonesTabs = ({ section }: { section: string }) => {
   // Return component
   return (
     <>
-      <PageSection hasBodyWrapper={false} className="pf-v6-u-pr-0">
-        <BreadCrumb
-          className="pf-v6-u-mb-md"
-          breadcrumbItems={breadcrumbItems}
-        />
+      <PageSection hasBodyWrapper={false}>
+        <BreadCrumb breadcrumbItems={breadcrumbItems} />
         <TitleLayout id={id} preText="DNS zone:" text={id} headingLevel="h1" />
       </PageSection>
       <PageSection hasBodyWrapper={false} type="tabs" isFilled>

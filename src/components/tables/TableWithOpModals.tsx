@@ -270,7 +270,7 @@ const TableWithOpModals = (props: PropsToTableWithOpModals) => {
             </Button>
           </ToolbarItem>
         )}
-        <ToolbarItem align={{ default: "alignRight" }}>
+        <ToolbarItem align={{ default: "alignEnd" }}>
           {selectedRows.size > 0 && (
             <span data-cy="selection-count">
               {selectedRows.size} of {props.rows.length} selected

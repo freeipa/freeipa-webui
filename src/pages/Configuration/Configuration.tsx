@@ -227,7 +227,7 @@ const Configuration = () => {
 
   const style: React.CSSProperties = {
     overflowY: "auto",
-    height: `calc(100vh - 250px)`,
+    height: "64.6vh",
   };
 
   // Get 'ipaObject' and 'recordOnChange'
@@ -242,13 +242,8 @@ const Configuration = () => {
       <PageSection hasBodyWrapper={false}>
         <TitleLayout id="config title" headingLevel="h1" text="Configuration" />
       </PageSection>
-      <PageSection hasBodyWrapper={false} className="pf-v6-u-m-lg pf-v6-u-p-0">
-        <PageSection
-          hasBodyWrapper={false}
-          id="settings-page"
-          style={style}
-          className="pf-v6-u-mt-0 pf-v6-u-ml-lg pf-v6-u-mr-lg pf-v6-u-pl-0 pf-v6-u-pr-0"
-        >
+      <PageSection hasBodyWrapper={false}>
+        <PageSection hasBodyWrapper={false} id="settings-page" style={style}>
           <Sidebar isPanelRight>
             <SidebarPanel variant="sticky">
               <HelpTextWithIconLayout textContent="Help" />
