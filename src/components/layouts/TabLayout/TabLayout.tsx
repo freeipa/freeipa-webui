@@ -1,5 +1,5 @@
 import React from "react";
-import { PageSection } from "@patternfly/react-core";
+import { Flex, FlexItem, PageSection } from "@patternfly/react-core";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 
@@ -11,31 +11,31 @@ interface PropsToTab {
 
 // Float the tab content
 const TabLayout = (props: PropsToTab) => {
-  // When having toolbar, make the page section to use the whole real estate.
-  // Otherwise let the page section size be based on its content but limit
-  // the height to the viewport.
-  let style: React.CSSProperties = {
+  const style: React.CSSProperties = {
     overflowY: "auto",
-    height: `calc(100vh - 319.2px)`,
+    height: `var(--tab-layout-calc)`,
   };
-  if (!props.toolbarItems) {
-    style = { overflowY: "auto", maxHeight: `calc(100vh - 275px)` };
-  }
 
   return (
     <>
-      <div className="pf-v6-u-pt-lg pf-v6-u-pl-lg pf-v6-u-pr-lg">
-        <PageSection hasBodyWrapper={false} id={props.id} style={style}>
-          {props.children}
-        </PageSection>
-      </div>
-      {props.toolbarItems && (
-        <ToolbarLayout
-          isSticky
-          className={"pf-v6-u-p-md pf-v6-u-ml-lg pf-v6-u-mr-lg"}
-          toolbarItems={props.toolbarItems}
-        />
-      )}
+      <Flex direction={{ default: "column" }}>
+        <div className="pf-v6-u-pt-lg pf-v6-u-pl-lg pf-v6-u-pr-lg">
+          <PageSection hasBodyWrapper={false} id={props.id} style={style}>
+            {props.children}
+          </PageSection>
+        </div>
+        {props.toolbarItems && (
+          <FlexItem
+            style={{ marginTop: "auto", position: "sticky", bottom: 0 }}
+          >
+            <ToolbarLayout
+              isSticky
+              className={"pf-v6-u-p-md pf-v6-u-pl-xl"}
+              toolbarItems={props.toolbarItems}
+            />
+          </FlexItem>
+        )}
+      </Flex>
     </>
   );
 };

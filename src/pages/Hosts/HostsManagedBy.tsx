@@ -43,39 +43,41 @@ const HostsManagedBy = (props: PropsToHostsManagedBy) => {
 
   // Render component
   return (
-    <TabLayout id="managedby">
-      <Tabs
-        activeKey={"managedby_host"}
-        isBox={false}
-        mountOnEnter
-        unmountOnExit
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        onSelect={(_event) => {
-          navigate("/hosts/" + props.host.fqdn + "/managedby_host");
-        }}
-      >
-        <Tab
-          eventKey={"managedby_host"}
-          name="managedby_host"
-          title={
-            <TabTitleText>
-              Hosts{" "}
-              <Badge key={0} isRead>
-                {host && host.managedby_host ? host.managedby_host.length : 0}
-              </Badge>
-            </TabTitleText>
-          }
+    <div style={{ height: `var(--memberof-calc)` }}>
+      <TabLayout id="managedby">
+        <Tabs
+          activeKey={"managedby_host"}
+          isBox={false}
+          mountOnEnter
+          unmountOnExit
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          onSelect={(_event) => {
+            navigate("/hosts/" + props.host.fqdn + "/managedby_host");
+          }}
         >
-          <ManagedByHosts
-            entity={host}
-            id={host.fqdn as string}
-            from="host"
-            isDataLoading={hostQuery.isFetching}
-            onRefreshData={onRefreshHostData}
-          />
-        </Tab>
-      </Tabs>
-    </TabLayout>
+          <Tab
+            eventKey={"managedby_host"}
+            name="managedby_host"
+            title={
+              <TabTitleText>
+                Hosts{" "}
+                <Badge key={0} isRead>
+                  {host && host.managedby_host ? host.managedby_host.length : 0}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <ManagedByHosts
+              entity={host}
+              id={host.fqdn as string}
+              from="host"
+              isDataLoading={hostQuery.isFetching}
+              onRefreshData={onRefreshHostData}
+            />
+          </Tab>
+        </Tabs>
+      </TabLayout>
+    </div>
   );
 };
 

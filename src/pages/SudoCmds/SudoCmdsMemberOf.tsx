@@ -49,37 +49,43 @@ const SudoCmdsMemberOf = (props: PropsToMemberOf) => {
 
   // Render component
   return (
-    <TabLayout id="memberof">
-      <Tabs
-        activeKey={props.tabSection}
-        onSelect={handleTabClick}
-        isBox={false}
-        mountOnEnter
-        unmountOnExit
-      >
-        <Tab
-          eventKey={"memberof_sudocmdgroup"}
-          name="memberof_sudocmdgroup"
-          title={
-            <TabTitleText>
-              Sudo command groups{" "}
-              <Badge key={0} id="svcgroup_count" isRead>
-                {sudocmd && sudocmd.memberof_sudocmdgroup
-                  ? sudocmd.memberof_sudocmdgroup.length
-                  : 0}
-              </Badge>
-            </TabTitleText>
-          }
+    <div
+      style={{
+        height: `var(--subsettings-calc)`,
+      }}
+    >
+      <TabLayout id="memberof">
+        <Tabs
+          activeKey={props.tabSection}
+          onSelect={handleTabClick}
+          isBox={false}
+          mountOnEnter
+          unmountOnExit
         >
-          <MemberOfSudoCmdGroups
-            entity={sudocmd}
-            id={sudocmd.sudocmd as string}
-            isDataLoading={sudoQuery.isFetching}
-            onRefreshData={onRefreshData}
-          />
-        </Tab>
-      </Tabs>
-    </TabLayout>
+          <Tab
+            eventKey={"memberof_sudocmdgroup"}
+            name="memberof_sudocmdgroup"
+            title={
+              <TabTitleText>
+                Sudo command groups{" "}
+                <Badge key={0} id="svcgroup_count" isRead>
+                  {sudocmd && sudocmd.memberof_sudocmdgroup
+                    ? sudocmd.memberof_sudocmdgroup.length
+                    : 0}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfSudoCmdGroups
+              entity={sudocmd}
+              id={sudocmd.sudocmd as string}
+              isDataLoading={sudoQuery.isFetching}
+              onRefreshData={onRefreshData}
+            />
+          </Tab>
+        </Tabs>
+      </TabLayout>
+    </div>
   );
 };
 

@@ -48,62 +48,64 @@ const HostGroupsMemberManagers = (props: PropsToHostGroupsMembers) => {
   };
 
   return (
-    <TabLayout id="managers">
-      <Tabs
-        activeKey={props.tabSection}
-        onSelect={handleTabClick}
-        isBox={false}
-        mountOnEnter
-        unmountOnExit
-      >
-        <Tab
-          eventKey={"manager_user"}
-          name="manager_user"
-          title={
-            <TabTitleText>
-              Users{" "}
-              <Badge key={0} id="user_count" isRead>
-                {hostGroup && hostGroup.membermanager_user
-                  ? hostGroup.membermanager_user.length
-                  : 0}
-              </Badge>
-            </TabTitleText>
-          }
+    <div style={{ height: `var(--subsettings-calc)` }}>
+      <TabLayout id="managers">
+        <Tabs
+          activeKey={props.tabSection}
+          onSelect={handleTabClick}
+          isBox={false}
+          mountOnEnter
+          unmountOnExit
         >
-          <ManagersUsers
-            entity={hostGroup}
-            id={hostGroup.cn as string}
-            from="host-groups"
-            isDataLoading={hostGroupQuery.isFetching}
-            onRefreshData={onRefreshHostGroupData}
-            manager_users={hostGroup.membermanager_user || []}
-          />
-        </Tab>
-        <Tab
-          eventKey={"manager_usergroup"}
-          name="manager_usergroup"
-          title={
-            <TabTitleText>
-              User groups{" "}
-              <Badge key={1} id="usergroup_count" isRead>
-                {hostGroup && hostGroup.membermanager_group
-                  ? hostGroup.membermanager_group.length
-                  : 0}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <ManagersUserGroups
-            entity={hostGroup}
-            id={hostGroup.cn as string}
-            from="host-groups"
-            isDataLoading={hostGroupQuery.isFetching}
-            onRefreshData={onRefreshHostGroupData}
-            manager_groups={hostGroup.membermanager_group || []}
-          />
-        </Tab>
-      </Tabs>
-    </TabLayout>
+          <Tab
+            eventKey={"manager_user"}
+            name="manager_user"
+            title={
+              <TabTitleText>
+                Users{" "}
+                <Badge key={0} id="user_count" isRead>
+                  {hostGroup && hostGroup.membermanager_user
+                    ? hostGroup.membermanager_user.length
+                    : 0}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <ManagersUsers
+              entity={hostGroup}
+              id={hostGroup.cn as string}
+              from="host-groups"
+              isDataLoading={hostGroupQuery.isFetching}
+              onRefreshData={onRefreshHostGroupData}
+              manager_users={hostGroup.membermanager_user || []}
+            />
+          </Tab>
+          <Tab
+            eventKey={"manager_usergroup"}
+            name="manager_usergroup"
+            title={
+              <TabTitleText>
+                User groups{" "}
+                <Badge key={1} id="usergroup_count" isRead>
+                  {hostGroup && hostGroup.membermanager_group
+                    ? hostGroup.membermanager_group.length
+                    : 0}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <ManagersUserGroups
+              entity={hostGroup}
+              id={hostGroup.cn as string}
+              from="host-groups"
+              isDataLoading={hostGroupQuery.isFetching}
+              onRefreshData={onRefreshHostGroupData}
+              manager_groups={hostGroup.membermanager_group || []}
+            />
+          </Tab>
+        </Tabs>
+      </TabLayout>
+    </div>
   );
 };
 

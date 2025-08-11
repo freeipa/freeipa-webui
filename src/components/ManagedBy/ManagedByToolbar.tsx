@@ -1,18 +1,12 @@
 import React, { useState } from "react";
 // PatternFly
-import {
-  Pagination,
-  ToolbarItemVariant,
-  Content,
-} from "@patternfly/react-core";
-// Icons
-import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
+import { Pagination, ToolbarItemVariant } from "@patternfly/react-core";
 // Data types
 import { Host } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import SecondaryButton from "../layouts/SecondaryButton";
-import TextLayout from "src/components/layouts/TextLayout";
 import ToolbarLayout, { ToolbarItem } from "../layouts/ToolbarLayout";
+import HelpTextWithIconLayout from "../layouts/HelpTextWithIconLayout";
 
 interface PageData {
   page: number;
@@ -145,14 +139,7 @@ const ManagedByToolbar = (props: PropsToToolbar) => {
     {
       id: hostsToolbarData.helpIcon.id,
       key: 7,
-      element: (
-        <TextLayout component="p">
-          <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
-          <Content component="a" isVisitedLink>
-            Help
-          </Content>
-        </TextLayout>
-      ),
+      element: <HelpTextWithIconLayout textContent="Help" />,
     },
     {
       id: hostsToolbarData.paginationId,

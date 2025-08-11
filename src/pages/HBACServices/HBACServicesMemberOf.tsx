@@ -55,37 +55,43 @@ const HBACServicesMemberOf = (props: PropsToMemberOf) => {
 
   // Render component
   return (
-    <TabLayout id="memberof">
-      <Tabs
-        activeKey={activeTabKey}
-        onSelect={handleTabClick}
-        isBox={false}
-        mountOnEnter
-        unmountOnExit
-      >
-        <Tab
-          eventKey={"memberof_hbacsvcgroup"}
-          name="memberof_hbacsvcgroup"
-          title={
-            <TabTitleText>
-              Host service groups{" "}
-              <Badge key={0} id="svcgroup_count" isRead>
-                {service && service.memberof_hbacsvcgroup
-                  ? service.memberof_hbacsvcgroup.length
-                  : 0}
-              </Badge>
-            </TabTitleText>
-          }
+    <div
+      style={{
+        height: `var(--subsettings-calc)`,
+      }}
+    >
+      <TabLayout id="memberof">
+        <Tabs
+          activeKey={activeTabKey}
+          onSelect={handleTabClick}
+          isBox={false}
+          mountOnEnter
+          unmountOnExit
         >
-          <MemberOfHBACServiceGroups
-            entity={service}
-            id={service.cn as string}
-            isDataLoading={svcQuery.isFetching}
-            onRefreshData={onRefreshData}
-          />
-        </Tab>
-      </Tabs>
-    </TabLayout>
+          <Tab
+            eventKey={"memberof_hbacsvcgroup"}
+            name="memberof_hbacsvcgroup"
+            title={
+              <TabTitleText>
+                Host service groups{" "}
+                <Badge key={0} id="svcgroup_count" isRead>
+                  {service && service.memberof_hbacsvcgroup
+                    ? service.memberof_hbacsvcgroup.length
+                    : 0}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfHBACServiceGroups
+              entity={service}
+              id={service.cn as string}
+              isDataLoading={svcQuery.isFetching}
+              onRefreshData={onRefreshData}
+            />
+          </Tab>
+        </Tabs>
+      </TabLayout>
+    </div>
   );
 };
 

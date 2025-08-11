@@ -159,123 +159,125 @@ const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
   };
 
   return (
-    <TabLayout id="members">
-      <Tabs
-        activeKey={props.tabSection}
-        onSelect={handleTabClick}
-        isBox={false}
-        mountOnEnter
-        unmountOnExit
-      >
-        <Tab
-          eventKey={"member_user"}
-          name="member_user"
-          title={
-            <TabTitleText>
-              Users{" "}
-              <Badge key={0} id="user_count" isRead>
-                {userCount}
-              </Badge>
-            </TabTitleText>
-          }
+    <div style={{ height: `var(--memberof-calc)` }}>
+      <TabLayout id="members">
+        <Tabs
+          activeKey={props.tabSection}
+          onSelect={handleTabClick}
+          isBox={false}
+          mountOnEnter
+          unmountOnExit
         >
-          <MembersUsers
-            entity={userGroup}
-            id={userGroup.cn as string}
-            from="user-groups"
-            isDataLoading={userGroupQuery.isFetching}
-            onRefreshData={onRefreshUserGroupData}
-            member_user={userGroup.member_user || []}
-            memberindirect_user={userGroup.memberindirect_user || []}
-            setDirection={updateUserDirection}
-            direction={userDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"member_group"}
-          name="member_group"
-          title={
-            <TabTitleText>
-              User groups{" "}
-              <Badge key={1} id="usergroup_count" isRead>
-                {groupCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MembersUserGroups
-            entity={userGroup}
-            id={userGroup.cn as string}
-            from="user-groups"
-            isDataLoading={userGroupQuery.isFetching}
-            onRefreshData={onRefreshUserGroupData}
-            member_group={userGroup.member_group || []}
-            memberindirect_group={userGroup.memberindirect_group || []}
-            setDirection={updateGroupDirection}
-            direction={groupDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"member_service"}
-          name="member_service"
-          title={
-            <TabTitleText>
-              Services{" "}
-              <Badge key={2} id="service_count" isRead>
-                {serviceCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MembersServices
-            entity={userGroup}
-            id={userGroup.cn as string}
-            from="user-groups"
-            isDataLoading={userGroupQuery.isFetching}
-            onRefreshData={onRefreshUserGroupData}
-            member_service={userGroup.member_service || []}
-            memberindirect_service={userGroup.memberindirect_service || []}
-            setDirection={updateServiceDirection}
-            direction={serviceDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"member_external"}
-          name="member_external"
-          title={
-            <TabTitleText>
-              External{" "}
-              <Badge key={3} id="external_count" isRead>
-                {userGroup.member_external
-                  ? userGroup.member_external.length
-                  : 0}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MembersExternal
-            entity={userGroup}
-            id={userGroup.cn as string}
-            from="user-groups"
-            isDataLoading={userGroupQuery.isFetching}
-            onRefreshData={onRefreshUserGroupData}
-            member_external={userGroup.member_external || []}
-          />
-        </Tab>
-        <Tab
-          eventKey={"member_iduseroverride"}
-          name="idoverrideuser"
-          title={
-            <TabTitleText>
-              User ID overrides{" "}
-              <Badge key={4} id="override_count" isRead>
-                {overrideCount}
-              </Badge>
-            </TabTitleText>
-          }
-        ></Tab>
-      </Tabs>
-    </TabLayout>
+          <Tab
+            eventKey={"member_user"}
+            name="member_user"
+            title={
+              <TabTitleText>
+                Users{" "}
+                <Badge key={0} id="user_count" isRead>
+                  {userCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MembersUsers
+              entity={userGroup}
+              id={userGroup.cn as string}
+              from="user-groups"
+              isDataLoading={userGroupQuery.isFetching}
+              onRefreshData={onRefreshUserGroupData}
+              member_user={userGroup.member_user || []}
+              memberindirect_user={userGroup.memberindirect_user || []}
+              setDirection={updateUserDirection}
+              direction={userDirection}
+            />
+          </Tab>
+          <Tab
+            eventKey={"member_group"}
+            name="member_group"
+            title={
+              <TabTitleText>
+                User groups{" "}
+                <Badge key={1} id="usergroup_count" isRead>
+                  {groupCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MembersUserGroups
+              entity={userGroup}
+              id={userGroup.cn as string}
+              from="user-groups"
+              isDataLoading={userGroupQuery.isFetching}
+              onRefreshData={onRefreshUserGroupData}
+              member_group={userGroup.member_group || []}
+              memberindirect_group={userGroup.memberindirect_group || []}
+              setDirection={updateGroupDirection}
+              direction={groupDirection}
+            />
+          </Tab>
+          <Tab
+            eventKey={"member_service"}
+            name="member_service"
+            title={
+              <TabTitleText>
+                Services{" "}
+                <Badge key={2} id="service_count" isRead>
+                  {serviceCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MembersServices
+              entity={userGroup}
+              id={userGroup.cn as string}
+              from="user-groups"
+              isDataLoading={userGroupQuery.isFetching}
+              onRefreshData={onRefreshUserGroupData}
+              member_service={userGroup.member_service || []}
+              memberindirect_service={userGroup.memberindirect_service || []}
+              setDirection={updateServiceDirection}
+              direction={serviceDirection}
+            />
+          </Tab>
+          <Tab
+            eventKey={"member_external"}
+            name="member_external"
+            title={
+              <TabTitleText>
+                External{" "}
+                <Badge key={3} id="external_count" isRead>
+                  {userGroup.member_external
+                    ? userGroup.member_external.length
+                    : 0}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MembersExternal
+              entity={userGroup}
+              id={userGroup.cn as string}
+              from="user-groups"
+              isDataLoading={userGroupQuery.isFetching}
+              onRefreshData={onRefreshUserGroupData}
+              member_external={userGroup.member_external || []}
+            />
+          </Tab>
+          <Tab
+            eventKey={"member_iduseroverride"}
+            name="idoverrideuser"
+            title={
+              <TabTitleText>
+                User ID overrides{" "}
+                <Badge key={4} id="override_count" isRead>
+                  {overrideCount}
+                </Badge>
+              </TabTitleText>
+            }
+          ></Tab>
+        </Tabs>
+      </TabLayout>
+    </div>
   );
 };
 

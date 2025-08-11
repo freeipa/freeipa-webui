@@ -71,9 +71,9 @@ const HBACRulesTabs = ({ section }) => {
 
   return (
     <>
-      <PageSection hasBodyWrapper={false} className="pf-v6-u-pr-0">
+      <PageSection hasBodyWrapper={false}>
         <BreadCrumb
-          className="pf-v6-u-mb-md"
+          className="pf-v6-u-mb-sm"
           breadcrumbItems={breadcrumbItems}
         />
         <TitleLayout
