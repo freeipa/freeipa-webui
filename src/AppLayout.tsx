@@ -181,9 +181,13 @@ const AppLayout = (props: PropsToAppLayout) => {
             aria-label="Global navigation"
           />
         </MastheadToggle>
-        <MastheadBrand className="pf-v6-u-mt-sm">
-          <MastheadLogo>
-            <Brand src={headerLogo} alt="FreeIPA Logo" />
+        <MastheadBrand>
+          <MastheadLogo className="pf-v6-u-mt-sm">
+            <MastheadBrand>
+              <MastheadLogo>
+                <Brand src={headerLogo} alt="FreeIPA Logo" />
+              </MastheadLogo>
+            </MastheadBrand>
           </MastheadLogo>
         </MastheadBrand>
       </MastheadMain>
