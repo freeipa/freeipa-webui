@@ -1,6 +1,11 @@
 import React from "react";
 // PatternFly
-import { Pagination, PaginationVariant } from "@patternfly/react-core";
+import {
+  FlexItem,
+  Flex,
+  Pagination,
+  PaginationVariant,
+} from "@patternfly/react-core";
 // Data types
 import { User, UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Components
@@ -265,61 +270,65 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
-      <MemberOfToolbar
-        searchText={searchValue}
-        onSearchTextChange={setSearchValue}
-        onSearch={() => {}}
-        refreshButtonEnabled={isRefreshButtonEnabled}
-        onRefreshButtonClick={props.onRefreshUserData}
-        deleteButtonEnabled={
-          membershipDirection === "direct"
-            ? userGroupsSelected.length > 0
-            : indirectUserGroupsSelected.length > 0
-        }
-        onDeleteButtonClick={() => setShowDeleteModal(true)}
-        addButtonEnabled={isAddButtonEnabled}
-        onAddButtonClick={() => setShowAddModal(true)}
-        membershipDirectionEnabled={true}
-        membershipDirection={membershipDirection}
-        onMembershipDirectionChange={setMembershipDirection}
-        helpIconEnabled={true}
-        totalItems={userGroupNames.length}
-        perPage={perPage}
-        page={page}
-        onPerPageChange={setPerPage}
-        onPageChange={setPage}
-      />
-      <MemberTable
-        entityList={userGroups}
-        idKey="cn"
-        from="user-groups"
-        columnNamesToShow={columnNames}
-        propertiesToShow={properties}
-        checkedItems={
-          membershipDirection === "direct"
-            ? userGroupsSelected
-            : indirectUserGroupsSelected
-        }
-        onCheckItemsChange={
-          membershipDirection === "direct"
-            ? setUserGroupsSelected
-            : setIndirectUserGroupsSelected
-        }
-        showTableRows={showTableRows}
-      />
-      {userGroupNames.length > 0 && (
-        <Pagination
-          className="pf-v6-u-pb-0 pf-v6-u-pr-md"
-          itemCount={userGroupNames.length}
-          widgetId="pagination-options-menu-bottom"
+      <Flex direction={{ default: "column" }}>
+        <alerts.ManagedAlerts />
+        <MemberOfToolbar
+          searchText={searchValue}
+          onSearchTextChange={setSearchValue}
+          onSearch={() => {}}
+          refreshButtonEnabled={isRefreshButtonEnabled}
+          onRefreshButtonClick={props.onRefreshUserData}
+          deleteButtonEnabled={
+            membershipDirection === "direct"
+              ? userGroupsSelected.length > 0
+              : indirectUserGroupsSelected.length > 0
+          }
+          onDeleteButtonClick={() => setShowDeleteModal(true)}
+          addButtonEnabled={isAddButtonEnabled}
+          onAddButtonClick={() => setShowAddModal(true)}
+          membershipDirectionEnabled={true}
+          membershipDirection={membershipDirection}
+          onMembershipDirectionChange={setMembershipDirection}
+          helpIconEnabled={true}
+          totalItems={userGroupNames.length}
           perPage={perPage}
           page={page}
-          variant={PaginationVariant.bottom}
-          onSetPage={(_e, page) => setPage(page)}
-          onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
+          onPerPageChange={setPerPage}
+          onPageChange={setPage}
         />
-      )}
+        <MemberTable
+          entityList={userGroups}
+          idKey="cn"
+          from="user-groups"
+          columnNamesToShow={columnNames}
+          propertiesToShow={properties}
+          checkedItems={
+            membershipDirection === "direct"
+              ? userGroupsSelected
+              : indirectUserGroupsSelected
+          }
+          onCheckItemsChange={
+            membershipDirection === "direct"
+              ? setUserGroupsSelected
+              : setIndirectUserGroupsSelected
+          }
+          showTableRows={showTableRows}
+        />
+        {userGroupNames.length > 0 && (
+          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
+            <Pagination
+              // className="pf-v6-u-pb-0 pf-v6-u-pr-md"
+              itemCount={userGroupNames.length}
+              widgetId="pagination-options-menu-bottom"
+              perPage={perPage}
+              page={page}
+              variant={PaginationVariant.bottom}
+              onSetPage={(_e, page) => setPage(page)}
+              onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
+            />
+          </FlexItem>
+        )}
+      </Flex>
       <MemberOfAddModal
         showModal={showAddModal}
         onCloseModal={() => setShowAddModal(false)}

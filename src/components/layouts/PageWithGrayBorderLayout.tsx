@@ -1,9 +1,13 @@
 import React from "react";
 // PatternFly
-import { PageSection } from "@patternfly/react-core";
+import { Flex, FlexItem, PageSection } from "@patternfly/react-core";
 // Components
 import TitleLayout from "src/components/layouts/TitleLayout";
 import ToolbarLayout, { ToolbarItem } from "./ToolbarLayout";
+import {
+  InnerScrollContainer,
+  OuterScrollContainer,
+} from "@patternfly/react-table";
 
 interface PropsToPageWithGrayBorderLayout {
   pageTitle: string;
@@ -15,38 +19,34 @@ interface PropsToPageWithGrayBorderLayout {
 const PageWithGrayBorderLayout = (props: PropsToPageWithGrayBorderLayout) => {
   const style: React.CSSProperties = {
     overflowY: "auto",
-    height: `calc(100vh - 278.2px)`,
+    height: "65vh",
   };
 
   return (
     <>
-      <PageSection hasBodyWrapper={false} className="pf-v6-u-pr-0">
-        <TitleLayout
-          id={props.id}
-          text={props.pageTitle}
-          headingLevel="h1"
-          className="pf-v6-u-mt-md pf-v6-u-ml-md"
-        />
+      <PageSection hasBodyWrapper={false}>
+        <TitleLayout id={props.id} text={props.pageTitle} headingLevel="h1" />
       </PageSection>
       <PageSection
         hasBodyWrapper={false}
         type="default"
         isFilled
-        className="pf-v6-u-m-lg pf-v6-u-mb-0 pf-v6-u-pb-0"
+        className="pf-v6-u-ml-lg"
       >
-        <>
-          <PageSection
-            hasBodyWrapper={false}
-            id={props.id}
-            style={style}
-            className="pf-v6-u-mb-0"
+        <Flex direction={{ default: "column" }}>
+          <OuterScrollContainer>
+            <InnerScrollContainer style={style}>
+              <FlexItem>{props.children}</FlexItem>
+            </InnerScrollContainer>
+          </OuterScrollContainer>
+          <FlexItem
+            style={{ marginTop: "auto", position: "sticky", bottom: 0 }}
           >
-            {props.children}
-          </PageSection>
-          {props.toolbarItems && (
-            <ToolbarLayout isSticky toolbarItems={props.toolbarItems} />
-          )}
-        </>
+            {props.toolbarItems && (
+              <ToolbarLayout isSticky toolbarItems={props.toolbarItems} />
+            )}
+          </FlexItem>
+        </Flex>
       </PageSection>
     </>
   );

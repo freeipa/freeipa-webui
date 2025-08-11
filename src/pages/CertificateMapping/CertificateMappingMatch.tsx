@@ -212,16 +212,16 @@ const CertificateMappingMatch = () => {
     >
       <>
         <alerts.ManagedAlerts />
-        <Sidebar isPanelRight className="pf-v6-u-mb-0">
+        <Sidebar isPanelRight>
           <SidebarPanel variant="sticky" className="pf-v6-u-pl-md">
             <HelpTextWithIconLayout
               textContent="Help"
               icon={
-                <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
+                <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100" />
               }
             />
           </SidebarPanel>
-          <SidebarContent className="pf-v6-u-mt-0">
+          <SidebarContent>
             <Flex direction={{ default: "column", lg: "row" }}>
               <FlexItem flex={{ default: "flex_1" }}>
                 <TitleLayout

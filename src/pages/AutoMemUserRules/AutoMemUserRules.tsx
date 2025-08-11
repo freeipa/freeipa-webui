@@ -2,6 +2,8 @@ import React from "react";
 // PatternFly
 import {
   Button,
+  Flex,
+  FlexItem,
   PageSection,
   PaginationVariant,
   SelectOptionProps,
@@ -606,42 +608,41 @@ const AutoMemUserRules = () => {
           text="User group rules"
         />
       </PageSection>
-      <PageSection
-        hasBodyWrapper={false}
-        isFilled={false}
-        className="pf-v6-u-m-lg pf-v6-u-pb-md pf-v6-u-pl-0 pf-v6-u-pr-0"
-      >
-        <ToolbarLayout
-          className="pf-v6-u-pt-0 pf-v6-u-pl-lg pf-v6-u-pr-md"
-          contentClassName="pf-v6-u-p-0"
-          toolbarItems={toolbarItems}
-        />
-        <div style={{ height: `calc(100vh - 352.2px)` }}>
-          <OuterScrollContainer>
-            <InnerScrollContainer>
-              {errors !== undefined && errors.length > 0 ? (
-                <GlobalErrors errors={globalErrors.getAll()} />
-              ) : (
-                <MainTable
-                  shownElementsList={automemberRules}
-                  showTableRows={showTableRows}
-                  elementsData={automembersTableData}
-                  buttonsData={automembersTableButtonsData}
-                  paginationData={selectedPerPageData}
-                  searchValue={searchValue}
-                  automemberType="user-group"
-                />
-              )}
-            </InnerScrollContainer>
-          </OuterScrollContainer>
-        </div>
-        <PaginationLayout
-          list={automemberRules}
-          paginationData={paginationData}
-          variant={PaginationVariant.bottom}
-          widgetId="pagination-options-menu-bottom"
-          className="pf-v6-u-pb-0 pf-v6-u-pr-md"
-        />
+      <PageSection hasBodyWrapper={false} isFilled={false}>
+        <Flex direction={{ default: "column" }}>
+          <FlexItem>
+            <ToolbarLayout toolbarItems={toolbarItems} />
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto" }}>
+            <OuterScrollContainer>
+              <InnerScrollContainer
+                style={{ height: "55vh", overflow: "auto" }}
+              >
+                {errors !== undefined && errors.length > 0 ? (
+                  <GlobalErrors errors={globalErrors.getAll()} />
+                ) : (
+                  <MainTable
+                    shownElementsList={automemberRules}
+                    showTableRows={showTableRows}
+                    elementsData={automembersTableData}
+                    buttonsData={automembersTableButtonsData}
+                    paginationData={selectedPerPageData}
+                    searchValue={searchValue}
+                    automemberType="user-group"
+                  />
+                )}
+              </InnerScrollContainer>
+            </OuterScrollContainer>
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
+            <PaginationLayout
+              list={automemberRules}
+              paginationData={paginationData}
+              variant={PaginationVariant.bottom}
+              widgetId="pagination-options-menu-bottom"
+            />
+          </FlexItem>
+        </Flex>
       </PageSection>
       <AddRule
         show={showAddModal}

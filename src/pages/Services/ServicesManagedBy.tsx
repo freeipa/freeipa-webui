@@ -37,32 +37,34 @@ const ServicesManagedBy = (props: PropsToServicesManagedBy) => {
   useUpdateRoute({ pathname: "services", noBreadcrumb: true });
 
   return (
-    <TabLayout id="managedby">
-      <Tabs activeKey={0} isBox={false} mountOnEnter unmountOnExit>
-        <Tab
-          eventKey={0}
-          name="managedby_host"
-          title={
-            <TabTitleText>
-              Hosts{" "}
-              <Badge key={0} isRead>
-                {service && service.managedby_host
-                  ? service.managedby_host.length
-                  : 0}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <ManagedByHosts
-            entity={service}
-            id={service.krbcanonicalname as string}
-            from="service"
-            isDataLoading={serviceQuery.isFetching}
-            onRefreshData={onRefreshServiceData}
-          />
-        </Tab>
-      </Tabs>
-    </TabLayout>
+    <div style={{ height: `var(--memberof-calc)` }}>
+      <TabLayout id="managedby">
+        <Tabs activeKey={0} isBox={false} mountOnEnter unmountOnExit>
+          <Tab
+            eventKey={0}
+            name="managedby_host"
+            title={
+              <TabTitleText>
+                Hosts{" "}
+                <Badge key={0} isRead>
+                  {service && service.managedby_host
+                    ? service.managedby_host.length
+                    : 0}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <ManagedByHosts
+              entity={service}
+              id={service.krbcanonicalname as string}
+              from="service"
+              isDataLoading={serviceQuery.isFetching}
+              onRefreshData={onRefreshServiceData}
+            />
+          </Tab>
+        </Tabs>
+      </TabLayout>
+    </div>
   );
 };
 

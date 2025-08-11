@@ -12,8 +12,24 @@ code {
     source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
-#root {
-  height: 100%;
+:root {
+  --masthead-height: 53px;
+  --settings-main-title-height: 89.2px;
+  --settings-tabs-height: 45px;
+  --footer-buttons-height: 53px;
+  --tab-layout-calc: calc(
+    100vh - var(--masthead-height) - (var(--settings-main-title-height) * 2) -
+      var(--settings-tabs-height) - var(--footer-buttons-height) - 24px
+  );
+  --memberof-calc: calc(
+    100vh - var(--masthead-height) - var(--settings-main-title-height) -
+      var(--settings-tabs-height) - 64px
+  );
+  --subsettings-calc: calc(
+    100vh - var(--masthead-height) - var(--settings-main-title-height) -
+      var(--settings-tabs-height) - 72px
+  );
+  --idview-appliedto-toolbar-height: 53px;
 }
 
 .pf-v6-c-background-image {
@@ -26,4 +42,3 @@ code {
   background-color: rgb(222, 243, 255);
   padding: 0.2em;
 }
-

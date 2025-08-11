@@ -1,6 +1,8 @@
 import React from "react";
 // PatternFly
 import {
+  Flex,
+  FlexItem,
   PageSection,
   PaginationVariant,
   ToolbarItemVariant,
@@ -464,60 +466,59 @@ const PasswordPolicies = () => {
           text="Password policies"
         />
       </PageSection>
-      <PageSection
-        hasBodyWrapper={false}
-        isFilled={false}
-        className="pf-v6-u-m-lg pf-v6-u-pb-md pf-v6-u-pl-0 pf-v6-u-pr-0"
-      >
-        <ToolbarLayout
-          className="pf-v6-u-pt-0 pf-v6-u-pl-lg pf-v6-u-pr-md"
-          contentClassName="pf-v6-u-p-0"
-          toolbarItems={toolbarItems}
-        />
-        <div style={{ height: `calc(100vh - 352.2px)` }}>
-          <OuterScrollContainer>
-            <InnerScrollContainer>
-              {error !== undefined && error ? (
-                <GlobalErrors errors={globalErrors.getAll()} />
-              ) : (
-                <MainTable
-                  tableTitle="Password policies table"
-                  shownElementsList={pwPolicies}
-                  pk="cn"
-                  keyNames={["cn", "cospriority"]}
-                  columnNames={["Group", "Priority"]}
-                  hasCheckboxes={true}
-                  pathname="password-policies"
-                  showTableRows={showTableRows}
-                  showLink={true}
-                  elementsData={{
-                    isElementSelectable: isPwPolicySelectable,
-                    selectedElements,
-                    selectableElementsTable: selectablePwPoliciesTable,
-                    setElementsSelected: setPwPoliciesSelected,
-                    clearSelectedElements,
-                  }}
-                  buttonsData={{
-                    updateIsDeleteButtonDisabled,
-                    isDeletion,
-                    updateIsDeletion,
-                  }}
-                  paginationData={{
-                    selectedPerPage,
-                    updateSelectedPerPage,
-                  }}
-                />
-              )}
-            </InnerScrollContainer>
-          </OuterScrollContainer>
-        </div>
-        <PaginationLayout
-          list={pwPolicies}
-          paginationData={paginationData}
-          variant={PaginationVariant.bottom}
-          widgetId="pagination-options-menu-bottom"
-          className="pf-v6-u-pb-0 pf-v6-u-pr-md"
-        />
+      <PageSection hasBodyWrapper={false} isFilled={false}>
+        <Flex direction={{ default: "column" }}>
+          <FlexItem>
+            <ToolbarLayout toolbarItems={toolbarItems} />
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto" }}>
+            <OuterScrollContainer>
+              <InnerScrollContainer
+                style={{ height: "60vh", overflow: "auto" }}
+              >
+                {error !== undefined && error ? (
+                  <GlobalErrors errors={globalErrors.getAll()} />
+                ) : (
+                  <MainTable
+                    tableTitle="Password policies table"
+                    shownElementsList={pwPolicies}
+                    pk="cn"
+                    keyNames={["cn", "cospriority"]}
+                    columnNames={["Group", "Priority"]}
+                    hasCheckboxes={true}
+                    pathname="password-policies"
+                    showTableRows={showTableRows}
+                    showLink={true}
+                    elementsData={{
+                      isElementSelectable: isPwPolicySelectable,
+                      selectedElements,
+                      selectableElementsTable: selectablePwPoliciesTable,
+                      setElementsSelected: setPwPoliciesSelected,
+                      clearSelectedElements,
+                    }}
+                    buttonsData={{
+                      updateIsDeleteButtonDisabled,
+                      isDeletion,
+                      updateIsDeletion,
+                    }}
+                    paginationData={{
+                      selectedPerPage,
+                      updateSelectedPerPage,
+                    }}
+                  />
+                )}
+              </InnerScrollContainer>
+            </OuterScrollContainer>
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
+            <PaginationLayout
+              list={pwPolicies}
+              paginationData={paginationData}
+              variant={PaginationVariant.bottom}
+              widgetId="pagination-options-menu-bottom"
+            />
+          </FlexItem>
+        </Flex>
       </PageSection>
       <AddModal
         isOpen={showAddModal}

@@ -111,10 +111,10 @@ const HostGroupsTabs = ({ section }) => {
 
   return (
     <>
-      <PageSection hasBodyWrapper={false} className="pf-v6-u-pr-0">
+      <PageSection hasBodyWrapper={false}>
         <BreadCrumb
-          className="pf-v6-u-mb-md"
           breadcrumbItems={breadcrumbItems}
+          className="pf-v6-u-mb-sm"
         />
         <TitleLayout
           id={hostgroup.cn}

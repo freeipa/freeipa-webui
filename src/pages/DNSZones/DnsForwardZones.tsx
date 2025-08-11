@@ -1,6 +1,8 @@
 import React from "react";
 // PatternFly
 import {
+  Flex,
+  FlexItem,
   PageSection,
   PaginationVariant,
   ToolbarItemVariant,
@@ -403,77 +405,76 @@ const DnsForwardZones = () => {
           text="DNS forward zones"
         />
       </PageSection>
-      <PageSection
-        hasBodyWrapper={false}
-        isFilled={false}
-        className="pf-v6-u-m-lg pf-v6-u-pb-md pf-v6-u-pl-0 pf-v6-u-pr-0"
-      >
-        <ToolbarLayout
-          className="pf-v6-u-pt-0 pf-v6-u-pl-lg pf-v6-u-pr-md"
-          contentClassName="pf-v6-u-p-0"
-          toolbarItems={toolbarItems}
-        />
-        <div style={{ height: `calc(100vh - 352.2px)` }}>
-          <OuterScrollContainer>
-            <InnerScrollContainer>
-              {error !== undefined && error ? (
-                <GlobalErrors errors={globalErrors.getAll()} />
-              ) : (
-                <MainTable
-                  tableTitle="DNS forward zones table"
-                  shownElementsList={dnsForwardZones}
-                  pk="idnsname"
-                  keyNames={[
-                    "idnsname",
-                    "idnszoneactive",
-                    "idnsforwarders",
-                    "idnsforwardpolicy",
-                  ]}
-                  columnNames={[
-                    "Zone name",
-                    "Status",
-                    "Zone Forwarders",
-                    "Forward policy",
-                  ]}
-                  hasCheckboxes={true}
-                  pathname="dns-forward-zones"
-                  showTableRows={showTableRows}
-                  showLink={false}
-                  elementsData={{
-                    isElementSelectable: isDnsForwardZoneSelectable,
-                    selectedElements,
-                    selectableElementsTable: selectableDnsZonesTable,
-                    setElementsSelected: setDnsZonesSelected,
-                    clearSelectedElements: () => setSelectedElements([]),
-                  }}
-                  buttonsData={{
-                    updateIsDeleteButtonDisabled: (value) =>
-                      setIsDeleteButtonDisabled(value),
-                    isDeletion,
-                    updateIsDeletion: (value) => setIsDeletion(value),
-                    updateIsEnableButtonDisabled: (value) =>
-                      setIsEnableButtonDisabled(value),
-                    updateIsDisableButtonDisabled: (value) =>
-                      setIsDisableButtonDisabled(value),
-                    isDisableEnableOp: true,
-                  }}
-                  paginationData={{
-                    selectedPerPage,
-                    updateSelectedPerPage: setSelectedPerPage,
-                  }}
-                  statusElementName="idnszoneactive"
-                />
-              )}
-            </InnerScrollContainer>
-          </OuterScrollContainer>
-        </div>
-        <PaginationLayout
-          list={dnsForwardZones}
-          paginationData={paginationData}
-          variant={PaginationVariant.bottom}
-          widgetId="pagination-options-menu-bottom"
-          className="pf-v6-u-pb-0 pf-v6-u-pr-md"
-        />
+      <PageSection hasBodyWrapper={false} isFilled={false}>
+        <Flex direction={{ default: "column" }}>
+          <FlexItem>
+            <ToolbarLayout toolbarItems={toolbarItems} />
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto" }}>
+            <OuterScrollContainer>
+              <InnerScrollContainer
+                style={{ height: "55vh", overflow: "auto" }}
+              >
+                {error !== undefined && error ? (
+                  <GlobalErrors errors={globalErrors.getAll()} />
+                ) : (
+                  <MainTable
+                    tableTitle="DNS forward zones table"
+                    shownElementsList={dnsForwardZones}
+                    pk="idnsname"
+                    keyNames={[
+                      "idnsname",
+                      "idnszoneactive",
+                      "idnsforwarders",
+                      "idnsforwardpolicy",
+                    ]}
+                    columnNames={[
+                      "Zone name",
+                      "Status",
+                      "Zone Forwarders",
+                      "Forward policy",
+                    ]}
+                    hasCheckboxes={true}
+                    pathname="dns-forward-zones"
+                    showTableRows={showTableRows}
+                    showLink={false}
+                    elementsData={{
+                      isElementSelectable: isDnsForwardZoneSelectable,
+                      selectedElements,
+                      selectableElementsTable: selectableDnsZonesTable,
+                      setElementsSelected: setDnsZonesSelected,
+                      clearSelectedElements: () => setSelectedElements([]),
+                    }}
+                    buttonsData={{
+                      updateIsDeleteButtonDisabled: (value) =>
+                        setIsDeleteButtonDisabled(value),
+                      isDeletion,
+                      updateIsDeletion: (value) => setIsDeletion(value),
+                      updateIsEnableButtonDisabled: (value) =>
+                        setIsEnableButtonDisabled(value),
+                      updateIsDisableButtonDisabled: (value) =>
+                        setIsDisableButtonDisabled(value),
+                      isDisableEnableOp: true,
+                    }}
+                    paginationData={{
+                      selectedPerPage,
+                      updateSelectedPerPage: setSelectedPerPage,
+                    }}
+                    statusElementName="idnszoneactive"
+                  />
+                )}
+              </InnerScrollContainer>
+            </OuterScrollContainer>
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
+            <PaginationLayout
+              list={dnsForwardZones}
+              paginationData={paginationData}
+              variant={PaginationVariant.bottom}
+              widgetId="pagination-options-menu-bottom"
+            />
+          </FlexItem>
+        </Flex>
       </PageSection>
     </>
   );

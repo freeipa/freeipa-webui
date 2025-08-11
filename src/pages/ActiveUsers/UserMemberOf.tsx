@@ -205,147 +205,153 @@ const UserMemberOf = (props: PropsToUserMemberOf) => {
   }, [user]);
 
   return (
-    <TabLayout id="memberOf">
-      <Tabs
-        activeKey={props.tab}
-        onSelect={(_event, tabIndex) => {
-          navigate(
-            "/" + props.from + "/" + props.user.uid + "/memberof_" + tabIndex
-          );
-        }}
-        isBox={false}
-        mountOnEnter
-        unmountOnExit
-      >
-        <Tab
-          eventKey={"group"}
-          name="memberof_group"
-          title={
-            <TabTitleText>
-              User groups{" "}
-              <Badge key={0} isRead>
-                {groupCount}
-              </Badge>
-            </TabTitleText>
-          }
+    <div
+      style={{
+        height: `var(--memberof-calc)`,
+      }}
+    >
+      <TabLayout id="memberOf">
+        <Tabs
+          activeKey={props.tab}
+          onSelect={(_event, tabIndex) => {
+            navigate(
+              "/" + props.from + "/" + props.user.uid + "/memberof_" + tabIndex
+            );
+          }}
+          isBox={false}
+          mountOnEnter
+          unmountOnExit
         >
-          <MemberOfUserGroups
-            entry={user}
-            from={props.from}
-            isUserDataLoading={userQuery.isFetching}
-            onRefreshUserData={onRefreshUserData}
-            setDirection={updateGroupDirection}
-            direction={groupDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"netgroup"}
-          name="memberof_netgroup"
-          title={
-            <TabTitleText>
-              Netgroups{" "}
-              <Badge key={1} isRead>
-                {netgroupCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfNetgroups
-            entity={user}
-            id={user.uid as string}
-            from={props.from}
-            isDataLoading={userQuery.isFetching}
-            onRefreshData={onRefreshUserData}
-            setDirection={updateNetgroupDirection}
-            direction={netgroupDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"role"}
-          name="memberof_role"
-          title={
-            <TabTitleText>
-              Roles{" "}
-              <Badge key={2} isRead>
-                {roleCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfRoles
-            entity={user}
-            id={user.uid as string}
-            from={props.from}
-            isDataLoading={userQuery.isFetching}
-            onRefreshData={onRefreshUserData}
-            setDirection={updateRoleDirection}
-            direction={roleDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"hbacrule"}
-          name="memberof_hbacrule"
-          title={
-            <TabTitleText>
-              HBAC rules{" "}
-              <Badge key={3} isRead>
-                {hbacCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfHbacRules
-            entity={user}
-            id={user.uid as string}
-            from={props.from}
-            isDataLoading={userQuery.isFetching}
-            onRefreshData={onRefreshUserData}
-            setDirection={updateHbacDirection}
-            direction={hbacDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"sudorule"}
-          name="memberof_sudorule"
-          title={
-            <TabTitleText>
-              Sudo rules{" "}
-              <Badge key={4} isRead>
-                {sudoCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfSudoRules
-            entity={user}
-            id={user.uid as string}
-            from={props.from}
-            isDataLoading={userQuery.isFetching}
-            onRefreshData={onRefreshUserData}
-            setDirection={updateSudoDirection}
-            direction={sudoDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"subid"}
-          name="memberof_subid"
-          title={
-            <TabTitleText>
-              Subordinate IDs{" "}
-              <Badge key={5} isRead>
-                {user && user.memberof_subid ? user.memberof_subid.length : 0}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfSubIds
-            user={user}
-            isUserDataLoading={userQuery.isFetching}
-            onRefreshUserData={onRefreshUserData}
-          />
-        </Tab>
-      </Tabs>
-    </TabLayout>
+          <Tab
+            eventKey={"group"}
+            name="memberof_group"
+            title={
+              <TabTitleText>
+                User groups{" "}
+                <Badge key={0} isRead>
+                  {groupCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfUserGroups
+              entry={user}
+              from={props.from}
+              isUserDataLoading={userQuery.isFetching}
+              onRefreshUserData={onRefreshUserData}
+              setDirection={updateGroupDirection}
+              direction={groupDirection}
+            />
+          </Tab>
+          <Tab
+            eventKey={"netgroup"}
+            name="memberof_netgroup"
+            title={
+              <TabTitleText>
+                Netgroups{" "}
+                <Badge key={1} isRead>
+                  {netgroupCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfNetgroups
+              entity={user}
+              id={user.uid as string}
+              from={props.from}
+              isDataLoading={userQuery.isFetching}
+              onRefreshData={onRefreshUserData}
+              setDirection={updateNetgroupDirection}
+              direction={netgroupDirection}
+            />
+          </Tab>
+          <Tab
+            eventKey={"role"}
+            name="memberof_role"
+            title={
+              <TabTitleText>
+                Roles{" "}
+                <Badge key={2} isRead>
+                  {roleCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfRoles
+              entity={user}
+              id={user.uid as string}
+              from={props.from}
+              isDataLoading={userQuery.isFetching}
+              onRefreshData={onRefreshUserData}
+              setDirection={updateRoleDirection}
+              direction={roleDirection}
+            />
+          </Tab>
+          <Tab
+            eventKey={"hbacrule"}
+            name="memberof_hbacrule"
+            title={
+              <TabTitleText>
+                HBAC rules{" "}
+                <Badge key={3} isRead>
+                  {hbacCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfHbacRules
+              entity={user}
+              id={user.uid as string}
+              from={props.from}
+              isDataLoading={userQuery.isFetching}
+              onRefreshData={onRefreshUserData}
+              setDirection={updateHbacDirection}
+              direction={hbacDirection}
+            />
+          </Tab>
+          <Tab
+            eventKey={"sudorule"}
+            name="memberof_sudorule"
+            title={
+              <TabTitleText>
+                Sudo rules{" "}
+                <Badge key={4} isRead>
+                  {sudoCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfSudoRules
+              entity={user}
+              id={user.uid as string}
+              from={props.from}
+              isDataLoading={userQuery.isFetching}
+              onRefreshData={onRefreshUserData}
+              setDirection={updateSudoDirection}
+              direction={sudoDirection}
+            />
+          </Tab>
+          <Tab
+            eventKey={"subid"}
+            name="memberof_subid"
+            title={
+              <TabTitleText>
+                Subordinate IDs{" "}
+                <Badge key={5} isRead>
+                  {user && user.memberof_subid ? user.memberof_subid.length : 0}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfSubIds
+              user={user}
+              isUserDataLoading={userQuery.isFetching}
+              onRefreshUserData={onRefreshUserData}
+            />
+          </Tab>
+        </Tabs>
+      </TabLayout>
+    </div>
   );
 };
 
