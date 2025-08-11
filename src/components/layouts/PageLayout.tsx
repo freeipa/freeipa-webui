@@ -33,14 +33,14 @@ const PageLayout = (props: PageLayoutProps) => {
   return (
     <div>
       {props.hasAlerts && <alerts.ManagedAlerts />}
-      <PageSection>
+      <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id={props.title + " title"}
           headingLevel="h1"
           text={props.title}
         />
       </PageSection>
-      <PageSection>
+      <PageSection hasBodyWrapper={false}>
         {props.toolbarItems && props.toolbarItems.length > 0 && (
           <ToolbarLayout
             className="pf-v6-u-pt-0 pf-v6-u-pl-lg pf-v6-u-pr-md"

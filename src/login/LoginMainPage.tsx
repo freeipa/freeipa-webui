@@ -296,31 +296,35 @@ const LoginMainPage = () => {
   const socialMediaLoginContent = (
     <React.Fragment>
       <LoginMainFooterLinksItem>
-        <Button
-          variant="link"
-          component="a"
-          data-cy="login-button-cert"
-          href=""
-          {...{
-            "aria-label": "Login using personal Certificate",
-          }}
-        >
-          <Content onClick={onLoginWithCertClick} name="cert_auth">
-            <Content component="p">Login using Certificate</Content>
-          </Content>
+        <Button variant="link" component="a" data-cy="login-button-cert">
+          <Button
+            variant="link"
+            component="a"
+            data-cy="login-button-cert"
+            href=""
+            {...{
+              "aria-label": "Login using personal Certificate",
+            }}
+          >
+            <Content onClick={onLoginWithCertClick} name="cert_auth">
+              <Content component="p">Login using Certificate</Content>
+            </Content>
+          </Button>
         </Button>
       </LoginMainFooterLinksItem>
       <LoginMainFooterLinksItem>
-        <Button
-          variant="link"
-          component="a"
-          data-cy="login-button-sync-otp"
-          href={URL_PREFIX + "/sync-otp"}
-          {...{
-            "aria-label": "Synchronize otp token",
-          }}
-        >
-          <Content component="p">Sync OTP Token</Content>
+        <Button variant="link" component="a" data-cy="login-button-sync-otp">
+          <Button
+            variant="link"
+            component="a"
+            data-cy="login-button-sync-otp"
+            href={URL_PREFIX + "/sync-otp"}
+            {...{
+              "aria-label": "Synchronize otp token",
+            }}
+          >
+            <Content component="p">Sync OTP Token</Content>
+          </Button>
         </Button>
       </LoginMainFooterLinksItem>
     </React.Fragment>
