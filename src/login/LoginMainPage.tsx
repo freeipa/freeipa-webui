@@ -9,6 +9,7 @@ import {
   ListVariant,
   Content,
   Button,
+  ContentVariants,
 } from "@patternfly/react-core";
 import { Modal, ModalVariant } from "@patternfly/react-core/deprecated";
 // Hooks
@@ -296,35 +297,31 @@ const LoginMainPage = () => {
   const socialMediaLoginContent = (
     <React.Fragment>
       <LoginMainFooterLinksItem>
-        <Button variant="link" component="a" data-cy="login-button-cert">
-          <Button
-            variant="link"
-            component="a"
-            data-cy="login-button-cert"
-            href=""
-            {...{
-              "aria-label": "Login using personal Certificate",
-            }}
+        <Button
+          variant="link"
+          component="a"
+          data-cy="login-button-cert"
+          aria-label="Login using personal Certificate"
+          href=""
+        >
+          <Content
+            component={ContentVariants.p}
+            onClick={onLoginWithCertClick}
+            name="cert_auth"
           >
-            <Content onClick={onLoginWithCertClick} name="cert_auth">
-              <Content component="p">Login using Certificate</Content>
-            </Content>
-          </Button>
+            Login using Certificate
+          </Content>
         </Button>
       </LoginMainFooterLinksItem>
       <LoginMainFooterLinksItem>
-        <Button variant="link" component="a" data-cy="login-button-sync-otp">
-          <Button
-            variant="link"
-            component="a"
-            data-cy="login-button-sync-otp"
-            href={URL_PREFIX + "/sync-otp"}
-            {...{
-              "aria-label": "Synchronize otp token",
-            }}
-          >
-            <Content component="p">Sync OTP Token</Content>
-          </Button>
+        <Button
+          variant="link"
+          component="a"
+          data-cy="login-button-sync-otp"
+          aria-label="Synchronize otp token"
+          href={URL_PREFIX + "/sync-otp"}
+        >
+          <Content component="p">Sync OTP Token</Content>
         </Button>
       </LoginMainFooterLinksItem>
     </React.Fragment>
