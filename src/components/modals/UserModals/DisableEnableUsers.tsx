@@ -78,14 +78,14 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
     {
       id: "question-text",
       pfComponent: (
-        <Content>
+        <>
           <Content component={ContentVariants.p}>
             Are you sure you want to {action} selected entries?
           </Content>
           <Content component={ContentVariants.p}>
             <i>{users.join(", ")}</i>
           </Content>
-        </Content>
+        </>
       ),
     },
   ];

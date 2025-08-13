@@ -49,10 +49,8 @@ const DeleteIdOverrideGroupsModal = (props: PropsToDelete) => {
     {
       id: "question-text",
       pfComponent: (
-        <Content>
-          <Content component={ContentVariants.p}>
-            Are you sure you want to remove the selected groups?
-          </Content>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to remove the selected groups?
         </Content>
       ),
     },

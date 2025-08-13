@@ -60,10 +60,8 @@ const MemberOfDeleteModal = (props: React.PropsWithChildren<PropsToDelete>) => {
     >
       <Form id={"is-member-of-delete-modal"}>
         <FormGroup key={"question-text"} fieldId={"question-text"}>
-          <Content>
-            <Content component={ContentVariants.p}>
-              Are you sure you want to remove the following entries?
-            </Content>
+          <Content component={ContentVariants.p}>
+            Are you sure you want to remove the following entries?
           </Content>
         </FormGroup>
         <FormGroup key={"deleted-users-table"} fieldId={"deleted-users-table"}>

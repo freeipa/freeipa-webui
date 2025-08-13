@@ -52,10 +52,8 @@ const DeleteHBACService = (props: PropsToDeleteServices) => {
     {
       id: "question-text",
       pfComponent: (
-        <Content>
-          <Content component={ContentVariants.p}>
-            Are you sure you want to remove the selected services?
-          </Content>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to remove the selected services?
         </Content>
       ),
     },

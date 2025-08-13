@@ -52,10 +52,8 @@ const DeleteIDViewsModal = (props: PropsToDeleteViews) => {
     {
       id: "question-text",
       pfComponent: (
-        <Content>
-          <Content component={ContentVariants.p}>
-            Are you sure you want to remove the selected ID views?
-          </Content>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to remove the selected ID views?
         </Content>
       ),
     },

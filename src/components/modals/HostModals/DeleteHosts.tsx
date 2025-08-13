@@ -58,10 +58,8 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
     {
       id: "question-text",
       pfComponent: (
-        <Content>
-          <Content component={ContentVariants.p}>
-            Are you sure you want to remove the selected entries from Hosts?
-          </Content>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to remove the selected entries from Hosts?
         </Content>
       ),
     },

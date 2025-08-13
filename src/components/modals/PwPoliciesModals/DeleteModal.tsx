@@ -51,10 +51,8 @@ const DeleteModal = (props: PropsToDelete) => {
     {
       id: "question-text",
       pfComponent: (
-        <Content>
-          <Content component={ContentVariants.p}>
-            Are you sure you want to remove the selected rules?
-          </Content>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to remove the selected rules?
         </Content>
       ),
     },

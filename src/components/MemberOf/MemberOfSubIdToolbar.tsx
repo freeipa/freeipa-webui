@@ -65,12 +65,10 @@ const MemberOfSubIdToolbar = (props: MemberOfSubIdToolbarProps) => {
         <ToolbarItem id="help-icon">
           <>
             {props.helpIconEnabled && (
-              <Content>
-                <Content component={ContentVariants.p}>
-                  <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
-                  <Content component={ContentVariants.a} isVisitedLink>
-                    Help
-                  </Content>
+              <Content component={ContentVariants.p}>
+                <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
+                <Content component={ContentVariants.a} isVisitedLink>
+                  Help
                 </Content>
               </Content>
             )}
