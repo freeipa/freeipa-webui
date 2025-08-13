@@ -9,6 +9,7 @@ import {
   PageSectionVariants,
   FlexItem,
   Flex,
+  Content,
 } from "@patternfly/react-core";
 // PatternFly table
 import {
@@ -28,7 +29,6 @@ import KebabLayout from "src/components/layouts/KebabLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
-import TextLayout from "src/components/layouts/TextLayout";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
 import UsersTable from "../../components/tables/UsersTable";
@@ -393,13 +393,13 @@ const ActiveUsers = () => {
     {
       id: "question-text",
       pfComponent: (
-        <TextLayout component="p">
+        <Content component="p">
           <b>Warning</b> In case of a high number of users, hosts or groups, the
           rebuild task may require high CPU usage. This can severely impact
           server performance. Typically this only needs to be done once after
           importing raw data into the server. Are you sure you want to rebuild
           the auto memberships?
-        </TextLayout>
+        </Content>
       ),
     },
   ];

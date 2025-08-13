@@ -13,11 +13,11 @@ import {
   OrderType,
   ListItem,
   ExpandableSection,
+  Content,
 } from "@patternfly/react-core";
 // Images
 import HeaderLogo from "src/assets/images/header-logo-black.png";
 // Components
-import TextLayout from "src/components/layouts/TextLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
 //
 import { Link } from "react-router-dom";
@@ -79,27 +79,27 @@ const SetupBrowserConfig = () => {
           display the list of current configuration options
         </ListItem>
         <ListItem>
-          <TextLayout component="p">
+          <Content component="p">
             In the Filter field, type <code>negotiate</code> to restrict the
             list of options
-          </TextLayout>
+          </Content>
         </ListItem>
         <ListItem>
-          <TextLayout component="p">
+          <Content component="p">
             Double-click the <code>network.negotiate-auth.trusted-uris</code>{" "}
             entry to display the Enter string value dialog box
-          </TextLayout>
+          </Content>
         </ListItem>
         <ListItem>
-          <TextLayout component="p">
+          <Content component="p">
             Enter the name of the domain against which you want to authenticate,
             for example, <code>.example.com</code>.
-          </TextLayout>
+          </Content>
         </ListItem>
         <ListItem>
-          <TextLayout component="p">
+          <Content component="p">
             Return to <Link to="login">WebUI</Link>
-          </TextLayout>
+          </Content>
         </ListItem>
       </List>
     </ExpandableSection>
@@ -116,9 +116,9 @@ const SetupBrowserConfig = () => {
       instructions will guide you in configuring your web browser to send your
       Kerberos credentials to the appropriate Key Distribution Center which
       enables Single Sign-on.
-      <TextLayout component="h2" className="pf-v6-u-mt-md">
+      <Content component="h2" className="pf-v6-u-mt-md">
         Import CA certificate
-      </TextLayout>
+      </Content>
       <List
         component={ListComponent.ol}
         type={OrderType.number}
@@ -131,34 +131,34 @@ const SetupBrowserConfig = () => {
           certificate in <i>/etc/ipa/ca.crt</i>
         </ListItem>
         <ListItem>
-          <TextLayout component="p">
+          <Content component="p">
             Click the menu button with the <i>Customize</i> and <i>control</i>{" "}
             Google Chrome tooltip, which is by default in the top right-hand
             corner of Chrome, and click <i>Settings</i>
-          </TextLayout>
+          </Content>
         </ListItem>
         <ListItem>
-          <TextLayout component="p">
+          <Content component="p">
             Click Show <i>advanced settings</i> to display more options, and
             then click the <i>Manage certificates</i> button located under the
             HTTPS/SSL heading
-          </TextLayout>
+          </Content>
         </ListItem>
         <ListItem>
-          <TextLayout component="p">
+          <Content component="p">
             In the Authorities tab, click the <i>Import</i> button at the bottom
-          </TextLayout>
+          </Content>
         </ListItem>
         <ListItem>
-          <TextLayout component="p">
+          <Content component="p">
             Select the CA certificate file that you downloaded in the first step
-          </TextLayout>
+          </Content>
         </ListItem>
       </List>
-      <TextLayout component="h2" className="pf-v6-u-mt-md">
+      <Content component="h2" className="pf-v6-u-mt-md">
         Enable SPNEGO (Simple and Protected GSSAPI Negotiation Mechanism) to Use
         Kerberos Authentication in Chrome
-      </TextLayout>
+      </Content>
       <List
         component={ListComponent.ol}
         type={OrderType.number}
@@ -193,24 +193,24 @@ const SetupBrowserConfig = () => {
       isExpanded={isIEExpanded}
       displaySize="lg"
     >
-      <TextLayout component="p">
+      <Content component="p">
         <b>WARNING:</b> Internet Explorer is no longer a supported browser.
-      </TextLayout>
-      <TextLayout component="p">
+      </Content>
+      <Content component="p">
         Once you are able to log into the workstation with your kerberos key you
         are now able to use that ticket in Internet Explorer.
-      </TextLayout>
-      <TextLayout component="p">
+      </Content>
+      <Content component="p">
         <b>
           Log into the Windows machine using an account of your Kerberos realm
           (administrative domain)
         </b>
-      </TextLayout>
-      <TextLayout component="p">
+      </Content>
+      <Content component="p">
         <b>
           In Internet Explorer, click Tools, and then click Internet Options.
         </b>
-      </TextLayout>
+      </Content>
       <List
         component={ListComponent.ol}
         type={OrderType.number}
@@ -274,21 +274,21 @@ const SetupBrowserConfig = () => {
         />
       </PageSection>
       <PageSection hasBodyWrapper={false}>
-        <TextLayout component="h1" className="pf-v6-u-mb-md">
+        <Content component="h1" className="pf-v6-u-mb-md">
           Firefox
-        </TextLayout>
+        </Content>
         {firefoxPanel}
       </PageSection>
       <PageSection hasBodyWrapper={false}>
-        <TextLayout component="h1" className="pf-v6-u-mb-md">
+        <Content component="h1" className="pf-v6-u-mb-md">
           Chrome
-        </TextLayout>
+        </Content>
         {chromePanel}
       </PageSection>
       <PageSection hasBodyWrapper={false}>
-        <TextLayout component="h1" className="pf-v6-u-mb-md">
+        <Content component="h1" className="pf-v6-u-mb-md">
           Internet Explorer
-        </TextLayout>
+        </Content>
         {iePanel}
       </PageSection>
     </Page>

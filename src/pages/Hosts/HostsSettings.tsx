@@ -2,6 +2,7 @@ import React, { useState } from "react";
 // PatternFly
 import {
   Button,
+  Content,
   DropdownItem,
   Flex,
   JumpLinks,
@@ -29,7 +30,6 @@ import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import KebabLayout from "src/components/layouts/KebabLayout";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
-import TextLayout from "src/components/layouts/TextLayout";
 import TabLayout from "src/components/layouts/TabLayout";
 // Field sections
 import HostSettings from "src/components/HostsSections/HostSettings";
@@ -314,13 +314,13 @@ const HostsSettings = (props: PropsToHostsSettings) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextLayout component="p">
+        <Content component="p">
           <b>Warning</b> In case of a high number of users, hosts or groups, the
           rebuild task may require high CPU usage. This can severely impact
           server performance. Typically this only needs to be done once after
           importing raw data into the server. Are you sure you want to rebuild
           the auto memberships?
-        </TextLayout>
+        </Content>
       ),
     },
   ];

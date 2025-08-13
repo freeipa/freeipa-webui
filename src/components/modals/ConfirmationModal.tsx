@@ -1,9 +1,7 @@
 import React from "react";
 // PatternFly
-import { Card, CardTitle } from "@patternfly/react-core";
+import { Card, CardTitle, Content } from "@patternfly/react-core";
 import { Modal } from "@patternfly/react-core/deprecated";
-// Components
-import TextLayout from "../layouts/TextLayout";
 
 interface PropsToConfModal {
   dataCy: string;
@@ -26,7 +24,7 @@ const ConfirmationModal = (props: PropsToConfModal) => {
       onClose={props.onClose}
       actions={props.actions}
     >
-      <TextLayout component="p">{props.messageText}</TextLayout>
+      <Content component="p">{props.messageText}</Content>
       <Card className="pf-v6-u-mt-md" isCompact>
         <CardTitle>{props.messageObj}</CardTitle>
       </Card>

@@ -2,6 +2,7 @@ import React from "react";
 // PatternFly
 import {
   Button,
+  Content,
   Flex,
   FlexItem,
   Form,
@@ -11,7 +12,6 @@ import {
 import { Modal } from "@patternfly/react-core/deprecated";
 // Components
 import SecondaryButton from "../../layouts/SecondaryButton";
-import TextLayout from "../../layouts/TextLayout";
 // Modals
 import ConfirmationModal from "../../modals/ConfirmationModal";
 // Data types
@@ -308,10 +308,10 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
                   {publicKey !== "" && (
                     <>
                       <FlexItem>
-                        <TextLayout component="small">
+                        <Content component="small">
                           <KeyIcon /> Key (
                           {sshPublicKeysList[idx].split(" ")[0]})
-                        </TextLayout>
+                        </Content>
                       </FlexItem>
                       <FlexItem>
                         <SecondaryButton

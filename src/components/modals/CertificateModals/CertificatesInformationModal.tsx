@@ -1,9 +1,8 @@
 import React from "react";
 // PatternFly
-import { Button, Flex, FlexItem } from "@patternfly/react-core";
+import { Button, Content, Flex, FlexItem } from "@patternfly/react-core";
 // Components
 import TitleLayout from "src/components/layouts/TitleLayout";
-import TextLayout from "src/components/layouts/TextLayout";
 // Modals
 import InformationModalLayout from "src/components/layouts/InformationModalLayout";
 // Data types
@@ -49,10 +48,10 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
         className="pf-v6-u-mt-sm"
       >
         <FlexItem className="pf-v6-u-mb-0" style={{ width: "200px" }}>
-          <TextLayout>{key}:</TextLayout>
+          <Content>{key}:</Content>
         </FlexItem>
         <FlexItem flex={{ default: "flex_1" }}>
-          <TextLayout>{value}</TextLayout>
+          <Content>{value}</Content>
         </FlexItem>
       </Flex>
     );
