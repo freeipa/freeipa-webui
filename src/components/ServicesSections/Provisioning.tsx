@@ -1,8 +1,13 @@
 import React from "react";
 // PatternFly
-import { Flex, FlexItem, Form, FormGroup, Icon } from "@patternfly/react-core";
-// Layouts
-import TextLayout from "../layouts/TextLayout";
+import {
+  Content,
+  Flex,
+  FlexItem,
+  Form,
+  FormGroup,
+  Icon,
+} from "@patternfly/react-core";
 // Icons
 import { CheckIcon } from "@patternfly/react-icons";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons";
@@ -31,7 +36,10 @@ const Provisioning = (props: PropsToServiceProvisioning) => {
 
   // TODO: Implement the logic to show the correct message
   return (
-    <Flex direction={{ default: "column", lg: "row" }}>
+    <Flex
+      direction={{ default: "column", lg: "row" }}
+      className="pf-v6-u-mb-lg"
+    >
       <FlexItem flex={{ default: "flex_1" }}>
         <Form>
           <FormGroup label="Kerberos key" fieldId="kerberos-key" role="group">
@@ -40,16 +48,14 @@ const Provisioning = (props: PropsToServiceProvisioning) => {
                 <>
                   <FlexItem>{kerberosKeyIcon}</FlexItem>
                   <FlexItem>
-                    <TextLayout>
-                      Kerberos key present, Host provisioned
-                    </TextLayout>
+                    <Content>Kerberos key present, Host provisioned</Content>
                   </FlexItem>
                 </>
               ) : (
                 <>
                   <FlexItem>{noKerberosKeyIcon}</FlexItem>
                   <FlexItem>
-                    <TextLayout>Kerberos key not present</TextLayout>
+                    <Content>Kerberos key not present</Content>
                   </FlexItem>
                 </>
               )}

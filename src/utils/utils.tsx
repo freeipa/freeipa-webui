@@ -30,7 +30,6 @@ import {
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // PatternFly
-import TextLayout from "src/components/layouts/TextLayout";
 import {
   CheckboxField,
   FieldConfig,
@@ -38,6 +37,7 @@ import {
   RadioGroupField,
   SelectField,
 } from "src/components/Form/Field";
+import { Content } from "@patternfly/react-core";
 
 /**
  * Functions that can be reusable and called by several components throughout the application.
@@ -234,26 +234,26 @@ export const apiErrorToJsXError = (
   if ("originalStatus" in errorFromApiCall) {
     // The original status is accessible here (error 401)
     errorJsx = (
-      <TextLayout component="p" key={key}>
+      <Content component="p" key={key}>
         {errorFromApiCall.originalStatus + " " + contextMessage}
-      </TextLayout>
+      </Content>
     );
   } else if ("status" in errorFromApiCall) {
     // you can access all properties of `FetchBaseQueryError` here
     errorJsx = (
-      <TextLayout component="p" key={key}>
+      <Content component="p" key={key}>
         {errorFromApiCall.status + " " + contextMessage}
-      </TextLayout>
+      </Content>
     );
   } else {
     // you can access all properties of `SerializedError` here
     errorJsx = (
       <div key={key} style={{ alignSelf: "center", marginTop: "16px" }}>
-        <TextLayout component="p">{contextMessage}</TextLayout>
-        <TextLayout component="p">
+        <Content component="p">{contextMessage}</Content>
+        <Content component="p">
           {"ERROR CODE: " + errorFromApiCall.code}
-        </TextLayout>
-        <TextLayout component="p">{errorFromApiCall.message}</TextLayout>
+        </Content>
+        <Content component="p">{errorFromApiCall.message}</Content>
       </div>
     );
   }

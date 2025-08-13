@@ -1,12 +1,10 @@
 import React from "react";
 // PatternFly
-import { Button } from "@patternfly/react-core";
+import { Button, Content } from "@patternfly/react-core";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // Modals
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
-// Components
-import TextLayout from "../layouts/TextLayout";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import { useAutoMemberRebuildHostsMutation } from "src/services/rpcHosts";
@@ -92,13 +90,13 @@ const RebuildAutoMembership = (props: PropsToRebuildAutoMembership) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextLayout component="p">
+        <Content component="p">
           <b>Warning</b> In case of a high number of users, hosts or groups, the
           rebuild task may require high CPU usage. This can severely impact
           server performance. Typically this only needs to be done once after
           importing raw data into the server. Are you sure you want to rebuild
           the auto memberships?
-        </TextLayout>
+        </Content>
       ),
     },
   ];

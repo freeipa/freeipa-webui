@@ -1,10 +1,8 @@
 import React from "react";
 // PatternFly
-import { Button } from "@patternfly/react-core";
+import { Button, Content } from "@patternfly/react-core";
 // Modals
 import InformationModalLayout from "src/components/layouts/InformationModalLayout";
-// Components
-import TextLayout from "src/components/layouts/TextLayout";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // Data types
@@ -91,7 +89,7 @@ const RemoveHoldCertificate = (props: PropsToRemoveHoldCertificate) => {
   ];
 
   const contentMessage = (
-    <TextLayout>Do you want to remove the certificate hold?</TextLayout>
+    <Content>Do you want to remove the certificate hold?</Content>
   );
 
   return (

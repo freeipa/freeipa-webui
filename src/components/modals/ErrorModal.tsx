@@ -1,7 +1,7 @@
 import React from "react";
 // PatternFly
 import { Modal } from "@patternfly/react-core/deprecated";
-import TextLayout from "../layouts/TextLayout";
+import { Content } from "@patternfly/react-core";
 
 interface PropsToErrorModal {
   dataCy: string;
@@ -22,7 +22,7 @@ const ErrorModal = (props: PropsToErrorModal) => {
       onClose={props.onClose}
       actions={props.actions}
     >
-      <TextLayout>{props.errorMessage}</TextLayout>
+      <Content>{props.errorMessage}</Content>
     </Modal>
   );
 };

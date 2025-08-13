@@ -1,7 +1,7 @@
 import React from "react";
 // Layouts
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
-import TextLayout from "../layouts/TextLayout";
+import { Content } from "@patternfly/react-core";
 
 interface PropsToPrincipalAliasModal {
   isOpen: boolean;
@@ -16,9 +16,9 @@ const PrincipalAliasDeleteModal = (props: PropsToPrincipalAliasModal) => {
     {
       id: "confirmation-question",
       pfComponent: (
-        <TextLayout>
+        <Content>
           Do you want to remove kerberos alias {props.hostToRemove}
-        </TextLayout>
+        </Content>
       ),
     },
   ];
