@@ -48,10 +48,8 @@ const StagePreservedUsers = (props: PropsToStagePreservedUsers) => {
     {
       id: "question-text",
       pfComponent: (
-        <Content>
-          <Content component={ContentVariants.p}>
-            Are you sure you want to stage the selected preserved entries?
-          </Content>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to stage the selected preserved entries?
         </Content>
       ),
     },

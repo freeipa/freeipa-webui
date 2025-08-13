@@ -39,10 +39,8 @@ const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
     {
       id: "question-text",
       pfComponent: (
-        <Content>
-          <Content component={ContentVariants.p}>
-            Are you sure you want to restore the preserved entries?
-          </Content>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to restore the preserved entries?
         </Content>
       ),
     },

@@ -88,11 +88,9 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
     {
       id: "question-text",
       pfComponent: (
-        <Content>
-          <Content component={ContentVariants.p}>
-            Are you sure you want to remove the selected entries from{" "}
-            {getUserPageName()}?
-          </Content>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to remove the selected entries from{" "}
+          {getUserPageName()}?
         </Content>
       ),
     },
@@ -108,9 +106,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
       id: "radio-buttons",
       pfComponent: (
         <>
-          <Content>
-            <Content component={ContentVariants.p}>Remove mode</Content>
-          </Content>
+          <Content component={ContentVariants.p}>Remove mode</Content>
           <Radio
             data-cy="modal-radio-delete"
             id="radio-delete"

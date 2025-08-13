@@ -28,10 +28,8 @@ const UnlockUser = (props: propsToUnlockUser) => {
     {
       id: "question-text",
       pfComponent: (
-        <Content>
-          <Content component={ContentVariants.p}>
-            {"Are you sure you want to unlock user '" + props.uid + "'?"}
-          </Content>
+        <Content component={ContentVariants.p}>
+          {"Are you sure you want to unlock user '" + props.uid + "'?"}
         </Content>
       ),
     },

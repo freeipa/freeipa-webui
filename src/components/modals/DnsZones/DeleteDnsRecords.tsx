@@ -214,10 +214,8 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
     {
       id: "question-text",
       pfComponent: (
-        <Content>
-          <Content component={ContentVariants.p}>
-            Are you sure you want to delete the selected entries?
-          </Content>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to delete the selected entries?
         </Content>
       ),
     },

@@ -601,12 +601,10 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
       id: toolbarData().helpIcon.id,
       key: 9,
       element: (
-        <Content>
-          <Content component={ContentVariants.p}>
-            <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
-            <Content component={ContentVariants.a} isVisitedLink>
-              Help
-            </Content>
+        <Content component={ContentVariants.p}>
+          <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
+          <Content component={ContentVariants.a} isVisitedLink>
+            Help
           </Content>
         </Content>
       ),

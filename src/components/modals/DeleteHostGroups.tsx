@@ -58,11 +58,8 @@ const DeleteHostGroups = (props: PropsToDeleteGroups) => {
     {
       id: "question-text",
       pfComponent: (
-        <Content>
-          <Content component={ContentVariants.p}>
-            Are you sure you want to remove the selected entries from Host
-            groups?
-          </Content>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to remove the selected entries from Host groups?
         </Content>
       ),
     },

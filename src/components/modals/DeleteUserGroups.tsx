@@ -58,11 +58,8 @@ const DeleteUserGroups = (props: PropsToDeleteGroups) => {
     {
       id: "question-text",
       pfComponent: (
-        <Content>
-          <Content component={ContentVariants.p}>
-            Are you sure you want to remove the selected entries from User
-            groups?
-          </Content>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to remove the selected entries from User groups?
         </Content>
       ),
     },

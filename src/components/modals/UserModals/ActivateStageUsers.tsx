@@ -45,10 +45,8 @@ const ActivateStageUsers = (props: PropsToActivateUsers) => {
     {
       id: "question-text",
       pfComponent: (
-        <Content>
-          <Content component={ContentVariants.p}>
-            Are you sure you want to activate the selected stage users?
-          </Content>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to activate the selected stage users?
         </Content>
       ),
     },

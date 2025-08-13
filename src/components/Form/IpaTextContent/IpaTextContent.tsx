@@ -45,8 +45,9 @@ const IpaTextContent = (props: IpaTextContentProps) => {
           required={required}
           aria-label={props.ariaLabel}
           name={props.name}
+          component={ContentVariants.p}
         >
-          <Content component={ContentVariants.p}>{textValue}</Content>
+          {textValue}
         </Content>
       )}
     </>
