@@ -7,3 +7,7 @@ When("I click on the {string} button", (button: string) => {
 Then("I should see the {string} button is disabled", (button: string) => {
   cy.dataCy(button).should("be.disabled");
 });
+
+Then("I should see the {string} button is enabled", (button: string) => {
+  cy.dataCy(button).should("be.enabled");
+});
