@@ -1,7 +1,13 @@
 import React from "react";
 // PatternFly
-import { Form, FormGroup } from "@patternfly/react-core";
-import { Modal, ModalVariant } from "@patternfly/react-core/deprecated";
+import {
+  Form,
+  FormGroup,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+} from "@patternfly/react-core";
 
 export interface PropsToModal {
   // Data cypress
@@ -14,8 +20,6 @@ export interface PropsToModal {
   offPosition?: string;
   // Modal title
   title: string;
-  // Description
-  description?: string;
   // Form id
   formId: string;
   // List of fields
@@ -44,54 +48,32 @@ export interface Field {
 }
 
 const ModalWithFormLayout = (props: PropsToModal) => {
-  // -- Transform the 'variant: string' to 'ModalVariant' type as specified in PF.
-  const [variant, setVariant] = React.useState(ModalVariant.default);
-  // 'ModalVariant' is re-evaluated everytime the 'variant' property changes.
-  React.useEffect(() => {
-    switch (props.variantType) {
-      case "small":
-        setVariant(ModalVariant.small);
-        break;
-      case "medium":
-        setVariant(ModalVariant.medium);
-        break;
-      case "large":
-        setVariant(ModalVariant.large);
-        break;
-      case "default":
-        setVariant(ModalVariant.default);
-        break;
-      default:
-        setVariant(ModalVariant.default);
-    }
-  }, [props.variantType]);
-
-  // Render 'ModalWithFormLayout'
   return (
     <Modal
       data-cy={props.dataCy}
-      variant={variant}
-      title={props.title}
-      description={props.description}
+      variant={props.variantType}
       position={props.modalPosition}
       positionOffset={props.offPosition}
       isOpen={props.show}
       onClose={props.onClose}
-      actions={props.actions}
     >
-      <Form id={props.formId} isHorizontal={props.isHorizontal || false}>
-        {props.fields.map((field) => (
-          <FormGroup
-            key={field.id}
-            label={field.name}
-            fieldId={field.id}
-            isRequired={field.fieldRequired}
-            labelHelp={field.labelIcon}
-          >
-            {field.pfComponent}
-          </FormGroup>
-        ))}
-      </Form>
+      <ModalHeader title={props.title} labelId={props.dataCy} />
+      <ModalBody id={props.dataCy + "-modal-body"}>
+        <Form id={props.formId} isHorizontal={props.isHorizontal || false}>
+          {props.fields.map((field) => (
+            <FormGroup
+              key={field.id}
+              label={field.name}
+              fieldId={field.id}
+              isRequired={field.fieldRequired}
+              labelHelp={field.labelIcon}
+            >
+              {field.pfComponent}
+            </FormGroup>
+          ))}
+        </Form>
+      </ModalBody>
+      <ModalFooter>{props.actions}</ModalFooter>
     </Modal>
   );
 };

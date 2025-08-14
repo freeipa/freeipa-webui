@@ -1,12 +1,7 @@
 import React from "react";
 // PatternFly
-import {
-  Form,
-  FormGroup,
-  TextInput,
-  ValidatedOptions,
-} from "@patternfly/react-core";
-import { Modal } from "@patternfly/react-core/deprecated";
+import { FormGroup, TextInput, ValidatedOptions } from "@patternfly/react-core";
+import ModalWithFormLayout, { Field } from "../layouts/ModalWithFormLayout";
 
 interface PropsToAddModal {
   dataCy: string;
@@ -32,40 +27,42 @@ const AddTextInputFromListModal = (props: PropsToAddModal) => {
     }
   }, [props.isOpen]);
 
-  return (
-    <Modal
-      data-cy={props.dataCy}
-      variant={props.variant || "small"}
-      title={props.title}
-      isOpen={props.isOpen}
-      onClose={props.onClose}
-      actions={props.actions}
-    >
-      <Form>
-        <FormGroup
-          label={props.textInputTitle}
-          type="string"
-          fieldId={props.id}
-        >
+  const fields: Field[] = [
+    {
+      id: props.id,
+      pfComponent: (
+        <FormGroup label={props.textInputTitle} fieldId={props.id}>
           <TextInput
             data-cy="modal-textbox-new-kerberos-principal-alias"
             id={props.id}
             name={props.textInputName}
             value={props.newValue}
-            onChange={(_event, value) => props.setNewValue(value)}
-            type="text"
-            aria-label={props.textInputName}
-            isRequired={true}
+            onChange={(_, v) => props.setNewValue(v)}
             validated={
-              (props.newValue !== "" && !props.newValue.includes("@")) ||
+              !(props.newValue && !props.newValue.includes("@")) ||
               props.textInputValidator
                 ? ValidatedOptions.default
                 : ValidatedOptions.error
             }
+            isRequired
           />
         </FormGroup>
-      </Form>
-    </Modal>
+      ),
+    },
+  ];
+
+  return (
+    <ModalWithFormLayout
+      formId={props.id}
+      dataCy={props.dataCy}
+      variantType={props.variant || "small"}
+      modalPosition="top"
+      title={props.title}
+      show={props.isOpen}
+      onClose={props.onClose}
+      actions={props.actions}
+      fields={fields}
+    />
   );
 };
 

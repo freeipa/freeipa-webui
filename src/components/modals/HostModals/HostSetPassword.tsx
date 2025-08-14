@@ -184,7 +184,6 @@ const HostSetPassword = (props: PropsToResetPassword) => {
         variantType="small"
         modalPosition="top"
         title="Set password"
-        description="Set the one-time password for the host"
         formId="reset-password-form"
         fields={fields}
         show={props.isOpen}

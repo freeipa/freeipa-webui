@@ -1,7 +1,14 @@
 import React from "react";
 // PatternFly
-import { Card, CardTitle, Content } from "@patternfly/react-core";
-import { Modal } from "@patternfly/react-core/deprecated";
+import {
+  Card,
+  CardTitle,
+  Content,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+} from "@patternfly/react-core";
 
 interface PropsToConfModal {
   dataCy: string;
@@ -19,15 +26,17 @@ const ConfirmationModal = (props: PropsToConfModal) => {
     <Modal
       data-cy={props.dataCy}
       variant={props.variant || "small"}
-      title={props.title}
       isOpen={props.isOpen}
       onClose={props.onClose}
-      actions={props.actions}
     >
-      <Content component="p">{props.messageText}</Content>
-      <Card className="pf-v6-u-mt-md" isCompact>
-        <CardTitle>{props.messageObj}</CardTitle>
-      </Card>
+      <ModalHeader title={props.title} labelId="confirmation-modal-title" />
+      <ModalBody id="confirmation-modal-body">
+        <Content component="p">{props.messageText}</Content>
+        <Card className="pf-v6-u-mt-md" isCompact>
+          <CardTitle>{props.messageObj}</CardTitle>
+        </Card>
+      </ModalBody>
+      <ModalFooter>{props.actions}</ModalFooter>
     </Modal>
   );
 };

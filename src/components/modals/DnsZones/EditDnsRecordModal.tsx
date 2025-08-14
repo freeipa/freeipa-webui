@@ -5,10 +5,13 @@ import {
   Button,
   Form,
   FormGroup,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Spinner,
   TextInput,
 } from "@patternfly/react-core";
-import { Modal } from "@patternfly/react-core/deprecated";
 // Data types
 import { DnsRecordType } from "src/utils/datatypes/globalDataTypes";
 import { dnsRecordConfigs } from "src/utils/datatypes/DnsRecordTypes";
@@ -355,14 +358,17 @@ const EditDnsRecordModal = (props: EditDnsRecordModalProps) => {
       <alerts.ManagedAlerts />
       <Modal
         variant="small"
-        title="Edit DNS resource record"
         position="top"
         positionOffset="76px"
         isOpen={props.isOpen}
         onClose={props.onClose}
-        actions={modalActions}
       >
-        {formFields}
+        <ModalHeader
+          title="Edit DNS resource record"
+          labelId="edit-dns-record-modal-title"
+        />
+        <ModalBody id="edit-dns-record-modal-body">{formFields}</ModalBody>
+        <ModalFooter>{modalActions}</ModalFooter>
       </Modal>
     </>
   );

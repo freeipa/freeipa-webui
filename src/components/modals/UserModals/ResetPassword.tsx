@@ -307,7 +307,6 @@ const ResetPassword = (props: PropsToResetPassword) => {
         variantType="small"
         modalPosition="top"
         title="Reset password"
-        description="Reset the password for the selected user"
         formId="reset-password-form"
         fields={
           props.uid && props.uid === loggedInUser

@@ -6,8 +6,11 @@ import {
   Button,
   Form,
   FormGroup,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  ModalFooter,
 } from "@patternfly/react-core";
-import { Modal } from "@patternfly/react-core/deprecated";
 
 interface PropsToDelete {
   title: string;
@@ -52,22 +55,27 @@ const MemberOfDeleteModal = (props: React.PropsWithChildren<PropsToDelete>) => {
       variant={"medium"}
       position={"top"}
       positionOffset={"76px"}
-      title={props.title}
       isOpen={props.showModal}
       onClose={props.onCloseModal}
-      actions={modalActionsDelete}
       aria-label="Delete member modal"
     >
-      <Form id={"is-member-of-delete-modal"}>
-        <FormGroup key={"question-text"} fieldId={"question-text"}>
-          <Content component={ContentVariants.p}>
-            Are you sure you want to remove the following entries?
-          </Content>
-        </FormGroup>
-        <FormGroup key={"deleted-users-table"} fieldId={"deleted-users-table"}>
-          {props.children}
-        </FormGroup>
-      </Form>
+      <ModalHeader title={props.title} labelId="member-of-delete-modal-title" />
+      <ModalBody id="member-of-delete-modal-body">
+        <Form id={"is-member-of-delete-modal"}>
+          <FormGroup key={"question-text"} fieldId={"question-text"}>
+            <Content component={ContentVariants.p}>
+              Are you sure you want to remove the following entries?
+            </Content>
+          </FormGroup>
+          <FormGroup
+            key={"deleted-users-table"}
+            fieldId={"deleted-users-table"}
+          >
+            {props.children}
+          </FormGroup>
+        </Form>
+      </ModalBody>
+      <ModalFooter>{modalActionsDelete}</ModalFooter>
     </Modal>
   );
 };
