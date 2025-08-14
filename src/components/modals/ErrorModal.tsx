@@ -1,7 +1,12 @@
 import React from "react";
 // PatternFly
-import { Modal } from "@patternfly/react-core/deprecated";
-import { Content } from "@patternfly/react-core";
+import {
+  Content,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+} from "@patternfly/react-core";
 
 interface PropsToErrorModal {
   dataCy: string;
@@ -17,12 +22,14 @@ const ErrorModal = (props: PropsToErrorModal) => {
     <Modal
       variant="small"
       data-cy={props.dataCy}
-      title={props.title}
       isOpen={props.isOpen}
       onClose={props.onClose}
-      actions={props.actions}
     >
-      <Content>{props.errorMessage}</Content>
+      <ModalHeader title={props.title} labelId="error-modal-title" />
+      <ModalBody id="error-modal-body">
+        <Content>{props.errorMessage}</Content>
+      </ModalBody>
+      <ModalFooter>{props.actions}</ModalFooter>
     </Modal>
   );
 };

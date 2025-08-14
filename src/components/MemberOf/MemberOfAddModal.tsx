@@ -1,7 +1,15 @@
 import React, { ReactNode, useEffect, useState } from "react";
 // PatternFly
-import { Button, Form, FormGroup } from "@patternfly/react-core";
-import { Modal, DualListSelector } from "@patternfly/react-core/deprecated";
+import {
+  Button,
+  Form,
+  FormGroup,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+} from "@patternfly/react-core";
+import { DualListSelector } from "@patternfly/react-core/deprecated";
 
 export interface AvailableItems {
   key: string;
@@ -133,17 +141,19 @@ const MemberOfAddModal = (props: PropsToAdd) => {
       positionOffset={"76px"}
       isOpen={props.showModal}
       onClose={props.onCloseModal}
-      actions={modalActions}
-      title={props.title}
       aria-label={props.ariaLabel}
     >
-      <Form id={"is-member-of-add-modal"}>
-        {fields.map((field) => (
-          <FormGroup key={field.id} fieldId={field.id}>
-            {field.pfComponent}
-          </FormGroup>
-        ))}
-      </Form>
+      <ModalHeader title={props.title} labelId="member-of-add-modal-title" />
+      <ModalBody id="member-of-add-modal-body">
+        <Form id={"is-member-of-add-modal"}>
+          {fields.map((field) => (
+            <FormGroup key={field.id} fieldId={field.id}>
+              {field.pfComponent}
+            </FormGroup>
+          ))}
+        </Form>
+      </ModalBody>
+      <ModalFooter>{modalActions}</ModalFooter>
     </Modal>
   );
 };

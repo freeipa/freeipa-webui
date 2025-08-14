@@ -11,8 +11,8 @@ import {
   DualListSelectorListItem,
   DualListSelectorControlsWrapper,
   DualListSelectorControl,
+  DualListSelector,
 } from "@patternfly/react-core";
-import { DualListSelector } from "@patternfly/react-core/deprecated";
 // Layout
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";

@@ -5,10 +5,13 @@ import {
   FormGroup,
   HelperText,
   HelperTextItem,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   TextInput,
   ValidatedOptions,
 } from "@patternfly/react-core";
-import { Modal } from "@patternfly/react-core/deprecated";
 import { Table, TableText, Tr, Tbody, Td } from "@patternfly/react-table";
 // Utils
 import {
@@ -87,10 +90,41 @@ const ConfigObjectclassTable = (props: PropsToTable) => {
       <Modal
         data-cy="add-objectclass-modal"
         variant="small"
-        title={"Add objectclass"}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        actions={[
+      >
+        <ModalHeader title={"Add objectclass"} labelId="add-oc-modal-title" />
+        <ModalBody id="add-oc-modal-body">
+          <Form id={"add-oc-modal"}>
+            <FormGroup
+              key={"oc"}
+              label={"New objectclass"}
+              fieldId={"oc"}
+              isRequired
+            >
+              <TextInput
+                data-cy="modal-textbox-objectclass"
+                id="oc"
+                type="text"
+                value={newOC}
+                validated={
+                  newOC === "" || values.indexOf(newOC.toLowerCase()) !== -1
+                    ? ValidatedOptions.error
+                    : ValidatedOptions.default
+                }
+                onChange={(_event, value: string) => setNewOC(value)}
+              />
+              {values.indexOf(newOC.toLowerCase()) !== -1 && (
+                <HelperText>
+                  <HelperTextItem variant="error">
+                    This objectclass is already defined
+                  </HelperTextItem>
+                </HelperText>
+              )}
+            </FormGroup>
+          </Form>
+        </ModalBody>
+        <ModalFooter>
           <Button
             data-cy="modal-button-add"
             key="add-new-oc"
@@ -100,7 +134,8 @@ const ConfigObjectclassTable = (props: PropsToTable) => {
             onClick={addOC}
           >
             Add
-          </Button>,
+          </Button>
+          ,
           <Button
             data-cy="modal-button-cancel"
             key="cancel-new-host"
@@ -108,37 +143,8 @@ const ConfigObjectclassTable = (props: PropsToTable) => {
             onClick={() => setIsOpen(false)}
           >
             Cancel
-          </Button>,
-        ]}
-      >
-        <Form id={"add-oc-modal"}>
-          <FormGroup
-            key={"oc"}
-            label={"New objectclass"}
-            fieldId={"oc"}
-            isRequired
-          >
-            <TextInput
-              data-cy="modal-textbox-objectclass"
-              id="oc"
-              type="text"
-              value={newOC}
-              validated={
-                newOC === "" || values.indexOf(newOC.toLowerCase()) !== -1
-                  ? ValidatedOptions.error
-                  : ValidatedOptions.default
-              }
-              onChange={(_event, value: string) => setNewOC(value)}
-            />
-            {values.indexOf(newOC.toLowerCase()) !== -1 && (
-              <HelperText>
-                <HelperTextItem variant="error">
-                  This objectclass is already defined
-                </HelperTextItem>
-              </HelperText>
-            )}
-          </FormGroup>
-        </Form>
+          </Button>
+        </ModalFooter>
       </Modal>
     </React.Fragment>
   );
