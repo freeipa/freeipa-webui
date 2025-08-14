@@ -328,7 +328,7 @@ const AddHost = (props: PropsToAddHost) => {
       name: "Description",
       pfComponent: (
         <TextInput
-          data-cy="modal-textbox-host-desc"
+          data-cy="modal-textbox-host-description"
           type="text"
           id="modal-form-host-desc"
           name="modal-form-host-desc"

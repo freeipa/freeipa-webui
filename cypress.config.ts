@@ -12,7 +12,7 @@ export default defineConfig({
     baseUrl: "https://server.ipa.demo/",
     testIsolation: true,
     experimentalMemoryManagement: true,
-    numTestsKeptInMemory: 5,
+    numTestsKeptInMemory: 1,
     async setupNodeEvents(
       on: Cypress.PluginEvents,
       config: Cypress.PluginConfigOptions
@@ -37,6 +37,7 @@ export default defineConfig({
     BASE_URL: "/ipa/modern_ui",
     ADMIN_LOGIN: "admin",
     ADMIN_PASSWORD: "Secret123",
+    HOSTNAME: "dom-server.ipa.demo",
     TAGS: "not @ignore",
   },
 });
