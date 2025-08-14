@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React from "react";
 // PatternFly
 import {
   Button,
@@ -9,7 +9,11 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@patternfly/react-core";
-import { DualListSelector } from "@patternfly/react-core/deprecated";
+// Components
+import DualListSelectorGeneric, {
+  DualListOption,
+  optionsToDualListOptions,
+} from "../layouts/DualListSelectorGeneric";
 
 export interface AvailableItems {
   key: string;
@@ -31,49 +35,40 @@ const MemberOfAddModal = (props: PropsToAdd) => {
   // Dual list data
   const data = props.availableItems.map((d) => d.key);
 
-  // Dual list selector
-  const [availableOptions, setAvailableOptions] = useState<ReactNode[]>(data);
-  const [chosenOptions, setChosenOptions] = useState<ReactNode[]>([]);
+  // States
+  const [availableOptions, setAvailableOptions] = React.useState<
+    DualListOption[]
+  >(optionsToDualListOptions(data));
+  const [chosenOptions, setChosenOptions] = React.useState<DualListOption[]>(
+    []
+  );
 
   // Update available and chosen options when props.availableItems changes
-  useEffect(() => {
-    const newAval = data.filter((d) => !chosenOptions.includes(d));
-    setAvailableOptions(newAval);
+  React.useEffect(() => {
+    const newAval = data.filter(
+      (d) => !chosenOptions.map((o) => o.text).includes(d)
+    );
+    setAvailableOptions(optionsToDualListOptions(newAval));
   }, [props.availableItems]);
 
   // reset dialog on close
-  useEffect(() => {
+  React.useEffect(() => {
     if (!props.showModal) {
       cleanData();
     }
   }, [props.showModal]);
-
-  const listChange = (
-    newAvailableOptions: ReactNode[],
-    newChosenOptions: ReactNode[]
-  ) => {
-    setAvailableOptions(newAvailableOptions.sort());
-    setChosenOptions(newChosenOptions.sort());
-  };
 
   const fields = [
     {
       id: "dual-list-selector",
       name: "Available options",
       pfComponent: (
-        <DualListSelector
-          isSearchable
+        <DualListSelectorGeneric
+          id="add-modal-dual-list-selector"
           availableOptions={availableOptions}
+          setAvailableOptions={setAvailableOptions}
           chosenOptions={chosenOptions}
-          onAvailableOptionsSearchInputChanged={(_event, searchText) =>
-            props.onSearchTextChange(searchText)
-          }
-          onListChange={(
-            _event,
-            newAvailableOptions: ReactNode[],
-            newChosenOptions: ReactNode[]
-          ) => listChange(newAvailableOptions, newChosenOptions)}
-          id="basicSelectorWithSearch"
+          setChosenOptions={setChosenOptions}
         />
       ),
     },
@@ -81,13 +76,13 @@ const MemberOfAddModal = (props: PropsToAdd) => {
 
   // When clean data, set to original values
   const cleanData = () => {
-    setAvailableOptions(data);
+    setAvailableOptions(optionsToDualListOptions(data));
     setChosenOptions([]);
   };
 
   // Buttons are disabled until the user fills the required fields
-  const [buttonDisabled, setButtonDisabled] = useState(true);
-  useEffect(() => {
+  const [buttonDisabled, setButtonDisabled] = React.useState(true);
+  React.useEffect(() => {
     if (chosenOptions.length > 0) {
       setButtonDisabled(false);
     } else {
@@ -100,8 +95,8 @@ const MemberOfAddModal = (props: PropsToAdd) => {
     const optionsToAdd: AvailableItems[] = [];
     chosenOptions.map((opt) => {
       optionsToAdd.push({
-        key: opt as string,
-        title: opt as string,
+        key: opt.text,
+        title: opt.text,
       });
     });
     props.onAdd(optionsToAdd);
