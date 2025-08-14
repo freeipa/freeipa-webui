@@ -690,21 +690,19 @@ const IDViews = () => {
         buttonsData={deleteViewsButtonsData}
         onRefresh={refreshViewsData}
       />
-      {showHostModal && (
-        <DualListLayout
-          entry={""}
-          target={"host"}
-          showModal={showHostModal}
-          onCloseModal={closeUnapplyHostModal}
-          onOpenModal={openUnapplyHostModal}
-          tableElementsList={[]}
-          action={onUnapplyHosts}
-          title={"Unapply ID views from hosts"}
-          spinning={unapplySpinning}
-          addBtnName="Unapply"
-          addSpinningBtnName="Unappling"
-        />
-      )}
+      <DualListLayout
+        entry={""}
+        target={"host"}
+        showModal={showHostModal}
+        onCloseModal={closeUnapplyHostModal}
+        onOpenModal={openUnapplyHostModal}
+        tableElementsList={[]}
+        action={onUnapplyHosts}
+        title={"Unapply ID views from hosts"}
+        spinning={unapplySpinning}
+        addBtnName="Unapply"
+        addSpinningBtnName="Unappling"
+      />
       <DualListLayout
         entry={""}
         target={"hostgroup"}
