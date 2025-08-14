@@ -347,7 +347,10 @@ const DualListTableLayoutInner = (props: DualListProps) => {
       id: "dual-list-selector",
       pfComponent: (
         <DualListSelector>
-          <DualListSelectorPane status={getAvailableOptionsStatus()}>
+          <DualListSelectorPane
+            status={getAvailableOptionsStatus()}
+            data-cy="dual-list-left"
+          >
             <DualListSelectorList>{getListItems(status)}</DualListSelectorList>
           </DualListSelectorPane>
           <DualListSelectorControlsWrapper>
@@ -384,7 +387,11 @@ const DualListTableLayoutInner = (props: DualListProps) => {
               <AngleLeftIcon />
             </DualListSelectorControl>
           </DualListSelectorControlsWrapper>
-          <DualListSelectorPane isChosen status={getChosenOptionsStatus()}>
+          <DualListSelectorPane
+            isChosen
+            status={getChosenOptionsStatus()}
+            data-cy="dual-list-right"
+          >
             <DualListSelectorList>
               {chosenOptions.map((option, index) => (
                 <DualListSelectorListItem
