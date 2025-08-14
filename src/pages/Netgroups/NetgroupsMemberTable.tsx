@@ -4,10 +4,13 @@ import {
   Button,
   Form,
   FormGroup,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   TextInput,
   ValidatedOptions,
 } from "@patternfly/react-core";
-import { Modal } from "@patternfly/react-core/deprecated";
 import { Td, Th, Tr } from "@patternfly/react-table";
 // Layout
 import SettingsTableLayout from "src/components/layouts/SettingsTableLayout";
@@ -490,10 +493,38 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
       <Modal
         data-cy="add-external-host-modal"
         variant="small"
-        title={"Add external host"}
         isOpen={modalOpen}
         onClose={closeExternalModal}
-        actions={[
+      >
+        <ModalHeader
+          title={"Add external host"}
+          labelId="add-external-host-modal-title"
+        />
+        <ModalBody id="add-external-host-modal-body">
+          <Form id={"external-modal"}>
+            <FormGroup
+              key={"externalHostName"}
+              label={"External hostname"}
+              fieldId={"externalHostName"}
+              isRequired
+            >
+              <TextInput
+                data-cy="modal-textbox-external-host-name"
+                type="text"
+                id="externalHostName"
+                name="externalHostName"
+                value={externalHostName}
+                validated={
+                  externalHostName === "" || !externalHostName.includes(".")
+                    ? ValidatedOptions.error
+                    : ValidatedOptions.default
+                }
+                onChange={(_event, value: string) => setExternalHost(value)}
+              />
+            </FormGroup>
+          </Form>
+        </ModalBody>
+        <ModalFooter>
           <Button
             data-cy="modal-button-add"
             key="add-new-host"
@@ -508,7 +539,7 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
             isLoading={addSpinning}
           >
             {addSpinning ? "Adding" : "Add"}
-          </Button>,
+          </Button>
           <Button
             data-cy="modal-button-cancel"
             key="cancel-new-host"
@@ -516,31 +547,8 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
             onClick={closeExternalModal}
           >
             Cancel
-          </Button>,
-        ]}
-      >
-        <Form id={"external-modal"}>
-          <FormGroup
-            key={"externalHostName"}
-            label={"External hostname"}
-            fieldId={"externalHostName"}
-            isRequired
-          >
-            <TextInput
-              data-cy="modal-textbox-external-host-name"
-              type="text"
-              id="externalHostName"
-              name="externalHostName"
-              value={externalHostName}
-              validated={
-                externalHostName === "" || !externalHostName.includes(".")
-                  ? ValidatedOptions.error
-                  : ValidatedOptions.default
-              }
-              onChange={(_event, value: string) => setExternalHost(value)}
-            />
-          </FormGroup>
-        </Form>
+          </Button>
+        </ModalFooter>
       </Modal>
     </div>
   );

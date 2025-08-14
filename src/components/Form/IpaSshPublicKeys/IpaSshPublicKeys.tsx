@@ -7,9 +7,12 @@ import {
   FlexItem,
   Form,
   FormGroup,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   TextArea,
 } from "@patternfly/react-core";
-import { Modal } from "@patternfly/react-core/deprecated";
 // Components
 import SecondaryButton from "../../layouts/SecondaryButton";
 // Modals
@@ -348,29 +351,35 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
         title={idxSelected !== null ? "SSH Key" : "Set SSH key"}
         isOpen={isTextAreaSshPublicKeysOpen}
         onClose={onClickCancelTextAreaSshPublicKeys}
-        actions={modal_actions}
       >
-        <Form>
-          <FormGroup
-            label="SSH public key:"
-            type="string"
-            fieldId="ipasshpubkey"
-          >
-            <TextArea
-              data-cy="modal-textbox-ssh-public-key"
-              id="ipasshpubkey"
-              value={textAreaSshPublicKeysValue}
-              name="ipasshpubkey"
-              onChange={(_event, value: string) =>
-                onChangeTextAreaSshPublicKeysValue(value)
-              }
-              aria-label="new ssh public key modal text area"
-              resizeOrientation="vertical"
-              style={{ height: "422px" }}
-              isDisabled={idxSelected !== null}
-            />
-          </FormGroup>
-        </Form>
+        <ModalHeader
+          title={idxSelected !== null ? "SSH Key" : "Set SSH key"}
+          labelId="ssh-public-key-title"
+        />
+        <ModalBody id="modal-box-body-basic">
+          <Form>
+            <FormGroup
+              label="SSH public key:"
+              type="string"
+              fieldId="ipasshpubkey"
+            >
+              <TextArea
+                data-cy="modal-textbox-ssh-public-key"
+                id="ipasshpubkey"
+                value={textAreaSshPublicKeysValue}
+                name="ipasshpubkey"
+                onChange={(_event, value: string) =>
+                  onChangeTextAreaSshPublicKeysValue(value)
+                }
+                aria-label="new ssh public key modal text area"
+                resizeOrientation="vertical"
+                style={{ height: "422px" }}
+                isDisabled={idxSelected !== null}
+              />
+            </FormGroup>
+          </Form>
+        </ModalBody>
+        <ModalFooter>{modal_actions}</ModalFooter>
       </Modal>
       <SecondaryButton
         dataCy={props.dataCy + "-button-add-ssh-public-key"}

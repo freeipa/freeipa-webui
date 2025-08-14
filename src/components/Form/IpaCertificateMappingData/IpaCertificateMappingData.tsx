@@ -1,7 +1,14 @@
 import React from "react";
 // PatternFly
-import { Button, Flex, FlexItem } from "@patternfly/react-core";
-import { Modal } from "@patternfly/react-core/deprecated";
+import {
+  Button,
+  Flex,
+  FlexItem,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+} from "@patternfly/react-core";
 // Data types
 import { Metadata } from "src/utils/datatypes/globalDataTypes";
 // Utils
@@ -340,31 +347,37 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
       <Modal
         data-cy={"add-certificate-mapping-data-modal"}
         variant="small"
-        title="Add certificate mapping data"
+        // title="Add certificate mapping data"
         isOpen={isOpen}
         onClose={onClose}
-        actions={actions}
       >
         <>
-          <CertificateMappingDataOption
-            dataCy="modal-cert-map-data"
-            isCertMappingDataChecked={isCertMappingDataChecked}
-            onChangeCertMappingDataCheck={onChangeCertMappingDataCheck}
-            setIsAddButtonDisabled={setIsAddButtonDisabled}
-            certificatesList={certificatesList}
-            setCertificateList={setCertificatesList}
-            certificateMappingDataList={certificateMappingDataList}
-            setCertificateMappingDataList={setCertificateMappingDataList}
+          <ModalHeader
+            title="Add certificate mapping data"
+            labelId="add-certificate-mapping-data-modal"
           />
-          <IssuerAndSubjectOption
-            isIssuerAndSubjectChecked={isIssuerAndSubjectChecked}
-            onChangeIssuerAndSubjectCheck={onChangeIssuerAndSubjectCheck}
-            setIsAddButtonDisabled={setIsAddButtonDisabled}
-            issuerValue={issuer}
-            setIssuerValue={setIssuer}
-            subjectValue={subject}
-            setSubjectValue={setSubject}
-          />
+          <ModalBody id="add-certificate-mapping-data-modal-body">
+            <CertificateMappingDataOption
+              dataCy="modal-cert-map-data"
+              isCertMappingDataChecked={isCertMappingDataChecked}
+              onChangeCertMappingDataCheck={onChangeCertMappingDataCheck}
+              setIsAddButtonDisabled={setIsAddButtonDisabled}
+              certificatesList={certificatesList}
+              setCertificateList={setCertificatesList}
+              certificateMappingDataList={certificateMappingDataList}
+              setCertificateMappingDataList={setCertificateMappingDataList}
+            />
+            <IssuerAndSubjectOption
+              isIssuerAndSubjectChecked={isIssuerAndSubjectChecked}
+              onChangeIssuerAndSubjectCheck={onChangeIssuerAndSubjectCheck}
+              setIsAddButtonDisabled={setIsAddButtonDisabled}
+              issuerValue={issuer}
+              setIssuerValue={setIssuer}
+              subjectValue={subject}
+              setSubjectValue={setSubject}
+            />
+          </ModalBody>
+          <ModalFooter>{actions}</ModalFooter>
         </>
       </Modal>
       <ConfirmationModal

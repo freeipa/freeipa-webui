@@ -7,12 +7,15 @@ import {
   FormGroup,
   MenuToggle,
   MenuToggleElement,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Select,
   SelectOption,
   Spinner,
   TextInput,
 } from "@patternfly/react-core";
-import { Modal } from "@patternfly/react-core/deprecated";
 // Data types
 import { DnsRecordType } from "src/utils/datatypes/globalDataTypes";
 import { dnsRecordConfigs } from "src/utils/datatypes/DnsRecordTypes";
@@ -526,14 +529,17 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
       <alerts.ManagedAlerts />
       <Modal
         variant="small"
-        title={"Add DNS resource record"}
         position="top"
         positionOffset="76px"
         isOpen={props.isOpen}
         onClose={props.onClose}
-        actions={modalActions}
       >
-        {formFields}
+        <ModalHeader
+          title={"Add DNS resource record"}
+          labelId="add-dns-records-modal-title"
+        />
+        <ModalBody id="add-dns-records-modal-body">{formFields}</ModalBody>
+        <ModalFooter>{modalActions}</ModalFooter>
       </Modal>
     </>
   );

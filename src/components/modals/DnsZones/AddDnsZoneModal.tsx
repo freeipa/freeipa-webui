@@ -7,12 +7,15 @@ import {
   FormGroup,
   HelperText,
   HelperTextItem,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Radio,
   Spinner,
   TextInput,
   ValidatedOptions,
 } from "@patternfly/react-core";
-import { Modal } from "@patternfly/react-core/deprecated";
 // Components
 import CustomTooltip from "src/components/layouts/CustomTooltip";
 // RPC
@@ -326,14 +329,14 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
       <alerts.ManagedAlerts />
       <Modal
         variant="small"
-        title={props.title}
         position="top"
         positionOffset="76px"
         isOpen={props.isOpen}
         onClose={props.onClose}
-        actions={modalActions}
       >
-        {formFields}
+        <ModalHeader title={props.title} labelId="add-dns-zone-modal-title" />
+        <ModalBody id="add-dns-zone-modal-body">{formFields}</ModalBody>
+        <ModalFooter>{modalActions}</ModalFooter>
       </Modal>
     </>
   );

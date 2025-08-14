@@ -10,8 +10,11 @@ import {
   Content,
   Button,
   ContentVariants,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  ModalFooter,
 } from "@patternfly/react-core";
-import { Modal, ModalVariant } from "@patternfly/react-core/deprecated";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // Icons
@@ -135,11 +138,18 @@ const LoginMainPage = () => {
       return (
         <Modal
           data-cy="authentication-modal-error"
-          variant={ModalVariant.small}
-          title="Authentication error"
+          variant={"small"}
           isOpen={showErrorModal}
           onClose={() => setShowErrorModal(false)}
-          actions={[
+        >
+          <ModalHeader
+            title="Authentication error"
+            labelId="authentication-modal-error-title"
+          />
+          <ModalBody id="authentication-modal-error-body">
+            {errorMessage}
+          </ModalBody>
+          <ModalFooter>
             <Button
               data-cy="modal-button-ok"
               key="confirm"
@@ -147,10 +157,8 @@ const LoginMainPage = () => {
               onClick={() => setShowErrorModal(false)}
             >
               OK
-            </Button>,
-          ]}
-        >
-          {errorMessage}
+            </Button>
+          </ModalFooter>
         </Modal>
       );
     }
