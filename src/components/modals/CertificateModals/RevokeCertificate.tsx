@@ -260,9 +260,6 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
         variantType="small"
         modalPosition="top"
         title={"Certificate for " + certName}
-        description={
-          "Do you want to revoke this certificate? Select a reason from the pull-down list."
-        }
         formId={"revoke-certificate"}
         fields={fields}
         show={props.isOpen}

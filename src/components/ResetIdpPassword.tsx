@@ -196,11 +196,6 @@ const ResetIdpPassword = (props: PropsToResetIdpPassword) => {
         variantType="small"
         modalPosition="top"
         title="Reset password"
-        description={
-          "Reset the password for the selected Identity Provider '" +
-          props.idpId +
-          "'"
-        }
         formId="reset-password-form"
         fields={fields}
         show={props.isOpen}

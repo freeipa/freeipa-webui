@@ -1,7 +1,14 @@
 import React from "react";
 // PatternFly
-import { Button, Flex, FlexItem } from "@patternfly/react-core";
-import { Modal } from "@patternfly/react-core/deprecated";
+import {
+  Button,
+  Flex,
+  FlexItem,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+} from "@patternfly/react-core";
 // Data types
 import { Metadata } from "src/utils/datatypes/globalDataTypes";
 // Utils
@@ -340,12 +347,14 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
       <Modal
         data-cy={"add-certificate-mapping-data-modal"}
         variant="small"
-        title="Add certificate mapping data"
         isOpen={isOpen}
         onClose={onClose}
-        actions={actions}
       >
-        <>
+        <ModalHeader
+          title="Add certificate mapping data"
+          labelId="add-certificate-mapping-data-modal"
+        />
+        <ModalBody id="add-certificate-mapping-data-modal-body">
           <CertificateMappingDataOption
             dataCy="modal-cert-map-data"
             isCertMappingDataChecked={isCertMappingDataChecked}
@@ -365,7 +374,8 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
             subjectValue={subject}
             setSubjectValue={setSubject}
           />
-        </>
+        </ModalBody>
+        <ModalFooter>{actions}</ModalFooter>
       </Modal>
       <ConfirmationModal
         dataCy={"remove-certificate-mapping-data-modal"}
