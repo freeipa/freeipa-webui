@@ -43,6 +43,17 @@ Then("I should not see {string} entry in the data table", (name: string) => {
   entryDoesNotExist(name);
 });
 
+Then(
+  "I should see {string} entry in the data table with attribute {string} set to {string}",
+  (name: string, attribute: string, value: string) => {
+    entryExists(name);
+    cy.get("tr[id='" + name + "'] td[data-label='" + attribute + "']").should(
+      "have.text",
+      value
+    );
+  }
+);
+
 When("I select entry {string} in the data table", (name: string) => {
   selectEntry(name);
 });

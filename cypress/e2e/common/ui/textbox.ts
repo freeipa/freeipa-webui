@@ -1,11 +1,15 @@
 import { Then, When } from "@badeball/cypress-cucumber-preprocessor";
 
+export const typeInTextbox = (textbox: string, text: string) => {
+  cy.dataCy(textbox).clear();
+  cy.dataCy(textbox).should("have.value", "");
+  cy.dataCy(textbox).type(text);
+};
+
 When(
   "I type in the {string} textbox text {string}",
   (textbox: string, text: string) => {
-    cy.dataCy(textbox).clear();
-    cy.dataCy(textbox).should("have.value", "");
-    cy.dataCy(textbox).type(text);
+    typeInTextbox(textbox, text);
   }
 );
 
