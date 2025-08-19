@@ -445,18 +445,18 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
 
   // Buttons that will be shown at the end of the form
   const modalActions = [
-    <SecondaryButton
-      dataCy="modal-button-add"
+    <Button
+      data-cy="modal-button-add"
       key="add-new-user"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClickHandler={addHandler}
-      form="modal-form"
+      type="submit"
+      form="override-user-add-modal"
       spinnerAriaValueText="Adding"
       spinnerAriaLabel="Adding"
       isLoading={addSpinning}
     >
       {addSpinning ? "Adding" : "Add"}
-    </SecondaryButton>,
+    </Button>,
     <SecondaryButton
       dataCy="modal-button-add-and-add-another"
       key="add-and-add-another-user"
@@ -506,6 +506,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
         formId="override-user-add-modal"
         fields={loading ? loadingUsers : fields}
         show={props.show}
+        onSubmit={addHandler}
         onClose={cleanAndCloseModal}
         actions={modalActions}
         isHorizontal

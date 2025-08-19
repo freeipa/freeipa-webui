@@ -288,7 +288,7 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
       spinnerAriaLabel="Adding"
       isLoading={spinningOnAdd}
       isDisabled={newOption === "" || spinningOnAdd}
-      onClick={onAddOption}
+      type="submit"
     >
       {spinningOnAdd ? "Adding" : "Add"}
     </Button>,
@@ -374,6 +374,7 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
         formId={"add-sudo-option-modal"}
         fields={addModalFields}
         show={showAddModal}
+        onSubmit={onAddOption}
         onClose={onChangeAddModalVisibility}
         actions={addModalActions}
         isHorizontal={true}

@@ -270,19 +270,19 @@ const AddHostGroup = (props: PropsToAddGroup) => {
 
   // Buttons that will be shown at the end of the form
   const modalActions = [
-    <SecondaryButton
-      dataCy="modal-button-add"
+    <Button
+      data-cy="modal-button-add"
       key="add-new-hostgroup"
       name="add"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClickHandler={addGroupHandler}
       form="modal-form-add-hostgroup"
+      type="submit"
       spinnerAriaValueText="Adding"
       spinnerAriaLabel="Adding"
       isLoading={addSpinning}
     >
       {addSpinning ? "Adding" : "Add"}
-    </SecondaryButton>,
+    </Button>,
     <SecondaryButton
       dataCy="modal-button-add-and-add-another"
       key="add-and-add-another-new-group"
@@ -319,6 +319,7 @@ const AddHostGroup = (props: PropsToAddGroup) => {
         formId="modal-form-add-hostgroup"
         fields={fields}
         show={props.show}
+        onSubmit={addGroupHandler}
         onClose={cleanAndCloseModal}
         actions={modalActions}
       />

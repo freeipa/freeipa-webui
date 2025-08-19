@@ -248,19 +248,19 @@ const AddSudoRule = (props: PropsToAddGroup) => {
 
   // Buttons that will be shown at the end of the form
   const modalActions = [
-    <SecondaryButton
-      dataCy="modal-button-add"
+    <Button
+      data-cy="modal-button-add"
       key="add-new-rule"
       name="add"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClickHandler={addRuleHandler}
-      form="modal-form"
+      type="submit"
+      form="add-sudo-rule-modal"
       spinnerAriaValueText="Adding"
       spinnerAriaLabel="Adding"
       isLoading={addSpinning}
     >
       {addSpinning ? "Adding" : "Add"}
-    </SecondaryButton>,
+    </Button>,
     <SecondaryButton
       dataCy="modal-button-add-and-add-another"
       key="add-and-add-another-new-rule"
@@ -297,6 +297,7 @@ const AddSudoRule = (props: PropsToAddGroup) => {
         formId="add-sudo-rule-modal"
         fields={fields}
         show={props.show}
+        onSubmit={addRuleHandler}
         onClose={cleanAndCloseModal}
         actions={modalActions}
       />

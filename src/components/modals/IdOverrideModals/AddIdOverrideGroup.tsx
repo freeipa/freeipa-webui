@@ -331,18 +331,18 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
 
   // Buttons that will be shown at the end of the form
   const modalActions = [
-    <SecondaryButton
-      dataCy="modal-button-add"
+    <Button
+      data-cy="modal-button-add"
       key="add-new-group"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClickHandler={addHandler}
-      form="modal-form"
+      type="submit"
+      form="override-group-add-modal"
       spinnerAriaValueText="Adding"
       spinnerAriaLabel="Adding"
       isLoading={addSpinning}
     >
       {addSpinning ? "Adding" : "Add"}
-    </SecondaryButton>,
+    </Button>,
     <SecondaryButton
       dataCy="modal-button-add-and-add-another"
       key="add-and-add-another-group"
@@ -392,6 +392,7 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
         formId="override-group-add-modal"
         fields={loading ? loadingGroups : fields}
         show={props.show}
+        onSubmit={addHandler}
         onClose={cleanAndCloseModal}
         actions={modalActions}
         isHorizontal

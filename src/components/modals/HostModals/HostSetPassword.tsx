@@ -158,7 +158,8 @@ const HostSetPassword = (props: PropsToResetPassword) => {
       data-cy="modal-button-set-password"
       key={"set-password"}
       variant="primary"
-      onClick={onSetPassword}
+      type="submit"
+      form="reset-password-form"
       isDisabled={
         passwordValidationResult.isError ||
         newPassword === "" ||
@@ -187,6 +188,7 @@ const HostSetPassword = (props: PropsToResetPassword) => {
         formId="reset-password-form"
         fields={fields}
         show={props.isOpen}
+        onSubmit={onSetPassword}
         onClose={resetFieldsAndCloseModal}
         actions={actions}
       />

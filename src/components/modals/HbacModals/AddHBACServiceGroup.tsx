@@ -252,19 +252,18 @@ const AddHBACServiceGroup = (props: PropsToAddGroup) => {
 
   // Buttons that will be shown at the end of the form
   const modalActions = [
-    <SecondaryButton
-      dataCy="modal-button-add"
+    <Button
+      data-cy="modal-button-add"
       key="add-new-service-group"
-      name="add"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClickHandler={addServiceHandler}
-      form="modal-form"
+      type="submit"
+      form="add-hbac-service-group-modal"
       spinnerAriaValueText="Adding"
       spinnerAriaLabel="Adding"
       isLoading={addSpinning}
     >
       {addSpinning ? "Adding" : "Add"}
-    </SecondaryButton>,
+    </Button>,
     <SecondaryButton
       dataCy="modal-button-add-and-add-another"
       key="add-and-add-another-new-service-group"
@@ -301,6 +300,7 @@ const AddHBACServiceGroup = (props: PropsToAddGroup) => {
         formId="add-hbac-service-group-modal"
         fields={fields}
         show={props.show}
+        onSubmit={addServiceHandler}
         onClose={cleanAndCloseModal}
         actions={modalActions}
       />

@@ -168,7 +168,8 @@ const ResetIdpPassword = (props: PropsToResetIdpPassword) => {
       data-cy="modal-button-reset-password"
       key={"reset-password"}
       variant="primary"
-      onClick={onResetPassword}
+      type="submit"
+      form="reset-password-form"
       isDisabled={
         passwordValidationResult.isError ||
         newPassword === "" ||
@@ -199,6 +200,7 @@ const ResetIdpPassword = (props: PropsToResetIdpPassword) => {
         formId="reset-password-form"
         fields={fields}
         show={props.isOpen}
+        onSubmit={onResetPassword}
         onClose={resetFieldsAndCloseModal}
         actions={actions}
       />

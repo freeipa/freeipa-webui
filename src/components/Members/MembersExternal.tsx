@@ -119,8 +119,8 @@ const MembersExternal = (props: PropsToMembersExternal) => {
       key="add-new-external"
       variant="secondary"
       isDisabled={newMember.length === 0}
-      form="new-external-member"
-      onClick={() => onAddExternal([{ key: newMember, title: newMember }])}
+      form={props.id}
+      type="submit"
     >
       Add
     </Button>,
@@ -257,6 +257,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
           modalPosition="top"
           title={"Add external member"}
           formId={props.id}
+          onSubmit={() => onAddExternal([{ key: newMember, title: newMember }])}
           fields={fieldsToAddModal}
           show={showAddModal}
           onClose={() => setShowAddModal(false)}

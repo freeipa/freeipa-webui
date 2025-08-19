@@ -256,19 +256,19 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
 
   // Buttons that will be shown at the end of the form
   const modalActions = [
-    <SecondaryButton
-      dataCy="modal-button-add"
+    <Button
+      data-cy="modal-button-add"
       key="add-new-id-view"
       name="add"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClickHandler={addViewHandler}
-      form="modal-form"
+      form="add-id-view-modal"
+      type="submit"
       spinnerAriaValueText="Adding"
       spinnerAriaLabel="Adding"
       isLoading={addSpinning}
     >
       {addSpinning ? "Adding" : "Add"}
-    </SecondaryButton>,
+    </Button>,
     <SecondaryButton
       dataCy="modal-button-add-and-add-another"
       key="add-and-add-another-new-view"
@@ -305,6 +305,7 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
         formId="add-id-view-modal"
         fields={fields}
         show={props.show}
+        onSubmit={addViewHandler}
         onClose={cleanAndCloseModal}
         actions={modalActions}
       />

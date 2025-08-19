@@ -348,12 +348,12 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
       data-cy="modal-button-add"
       key="add-inclusive"
       variant="primary"
-      form={"add-" + props.conditionType + "-option-modal"}
+      form={"add-sudo-option-modal"}
       spinnerAriaValueText="Adding"
       spinnerAriaLabel="Adding"
       isLoading={spinningOnAdd}
+      type="submit"
       isDisabled={expression === "" || spinningOnAdd}
-      onClick={onAddOption}
     >
       {spinningOnAdd ? "Adding" : "Add"}
     </Button>,
@@ -449,6 +449,7 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
         formId={"add-sudo-option-modal"}
         fields={addModalFields}
         show={showAddModal}
+        onSubmit={onAddOption}
         onClose={onChangeAddModalVisibility}
         actions={addModalActions}
         isHorizontal={true}

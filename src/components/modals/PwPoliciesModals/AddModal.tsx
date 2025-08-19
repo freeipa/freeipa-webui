@@ -203,9 +203,7 @@ const AddModal = (props: PropsToAddModal) => {
       variant="secondary"
       isDisabled={isAddButtonSpinning || selectedItem === ""}
       form="add-modal-form"
-      onClick={() => {
-        onAdd(false);
-      }}
+      type="submit"
     >
       Add
     </Button>,
@@ -244,6 +242,7 @@ const AddModal = (props: PropsToAddModal) => {
         formId="add-modal-form"
         fields={fields}
         show={props.isOpen}
+        onSubmit={() => onAdd(false)}
         onClose={cleanAndCloseModal}
         actions={modalActions}
       />
