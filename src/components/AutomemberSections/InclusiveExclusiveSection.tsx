@@ -165,6 +165,7 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
             isSelected: areAllEntriesSelected,
             isDisabled: headerNames.length === 0 ? true : false,
           }}
+          aria-label="Select entries"
         />
         {headerNames.map((headerName, index) => (
           <Th key={index} width={10}>
