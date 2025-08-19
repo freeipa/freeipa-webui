@@ -1089,3 +1089,10 @@ export interface CertificateMapping {
 export interface CertificateMappingConfig {
   ipacertmappromptusername: boolean;
 }
+
+export interface DnsServer {
+  idnsserverid: string;
+  idnssoamname: string;
+  idnsforwardersmultivalued: string[];
+  idnsforwardpolicy: IDNSForwardPolicy;
+}
