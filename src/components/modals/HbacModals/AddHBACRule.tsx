@@ -248,19 +248,19 @@ const AddHBACRule = (props: PropsToAddGroup) => {
 
   // Buttons that will be shown at the end of the form
   const modalActions = [
-    <SecondaryButton
-      dataCy="modal-button-add"
+    <Button
+      data-cy="modal-button-add"
       key="add-new-rule"
       name="add"
+      type="submit"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClickHandler={addRuleHandler}
-      form="modal-form"
+      form="add-hbac-rule-modal"
       spinnerAriaValueText="Adding"
       spinnerAriaLabel="Adding"
       isLoading={addSpinning}
     >
       {addSpinning ? "Adding" : "Add"}
-    </SecondaryButton>,
+    </Button>,
     <SecondaryButton
       dataCy="modal-button-add-and-add-another"
       key="add-and-add-another-new-rule"
@@ -298,6 +298,7 @@ const AddHBACRule = (props: PropsToAddGroup) => {
         fields={fields}
         show={props.show}
         onClose={cleanAndCloseModal}
+        onSubmit={addRuleHandler}
         actions={modalActions}
       />
       {isModalErrorOpen && (

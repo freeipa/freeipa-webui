@@ -575,7 +575,8 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       data-cy="modal-button-add"
       key={"add-otp-token"}
       variant="primary"
-      onClick={() => onAddOtpToken(false)}
+      type="submit"
+      form="add-otp-token-form"
     >
       Add
     </Button>,
@@ -609,6 +610,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
         formId="add-otp-token-form"
         fields={fields}
         show={props.isOpen}
+        onSubmit={() => onAddOtpToken(false)}
         onClose={props.onClose}
         actions={actions}
       />

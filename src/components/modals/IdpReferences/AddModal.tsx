@@ -651,9 +651,7 @@ const AddModal = (props: PropsToAddModal) => {
         secret !== verifySecret
       }
       form="add-modal-form"
-      onClick={() => {
-        onAdd(false);
-      }}
+      type="submit"
     >
       Add
     </Button>,
@@ -695,6 +693,7 @@ const AddModal = (props: PropsToAddModal) => {
         formId="add-modal-form"
         fields={generateFields()}
         show={props.isOpen}
+        onSubmit={() => onAdd(false)}
         onClose={cleanAndCloseModal}
         actions={modalActions}
       />

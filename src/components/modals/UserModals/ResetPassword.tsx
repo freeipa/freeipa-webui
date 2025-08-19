@@ -280,7 +280,8 @@ const ResetPassword = (props: PropsToResetPassword) => {
     <Button
       key={"reset-password"}
       variant="primary"
-      onClick={onResetPassword}
+      type="submit"
+      form="reset-password-form"
       isDisabled={
         passwordValidationResult.isError ||
         newPassword === "" ||
@@ -314,6 +315,7 @@ const ResetPassword = (props: PropsToResetPassword) => {
             : notLoggedInfields
         }
         show={props.isOpen}
+        onSubmit={onResetPassword}
         onClose={resetFieldsAndCloseModal}
         actions={actions}
       />

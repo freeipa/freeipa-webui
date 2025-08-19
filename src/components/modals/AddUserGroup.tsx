@@ -344,19 +344,18 @@ const AddUserGroup = (props: PropsToAddGroup) => {
 
   // Buttons that will be shown at the end of the form
   const modalActions = [
-    <SecondaryButton
-      dataCy="modal-button-add"
+    <Button
+      data-cy="modal-button-add"
       key="add-new-group"
-      name="add"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClickHandler={addGroupHandler}
-      form="modal-form"
+      type="submit"
+      form="add-user-group-modal"
       spinnerAriaValueText="Adding"
       spinnerAriaLabel="Adding"
       isLoading={addSpinning}
     >
       {addSpinning ? "Adding" : "Add"}
-    </SecondaryButton>,
+    </Button>,
     <SecondaryButton
       dataCy="modal-button-add-and-add-another"
       key="add-and-add-another-new-group"
@@ -393,6 +392,7 @@ const AddUserGroup = (props: PropsToAddGroup) => {
         formId="add-user-group-modal"
         fields={fields}
         show={props.show}
+        onSubmit={addGroupHandler}
         onClose={cleanAndCloseModal}
         actions={modalActions}
       />

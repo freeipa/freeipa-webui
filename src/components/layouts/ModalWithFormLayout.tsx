@@ -28,6 +28,8 @@ export interface PropsToModal {
   show: boolean;
   // onClose method
   onClose: () => void;
+  // onSubmit method
+  onSubmit?: (event: React.FormEvent) => void;
   // Action buttons
   actions: JSX.Element[];
   // is horizontal
@@ -48,6 +50,11 @@ export interface Field {
 }
 
 const ModalWithFormLayout = (props: PropsToModal) => {
+  const onSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    props.onSubmit?.(event);
+  };
+
   return (
     <Modal
       data-cy={props.dataCy}
@@ -59,7 +66,11 @@ const ModalWithFormLayout = (props: PropsToModal) => {
     >
       <ModalHeader title={props.title} labelId={props.dataCy} />
       <ModalBody id={props.dataCy + "-modal-body"}>
-        <Form id={props.formId} isHorizontal={props.isHorizontal || false}>
+        <Form
+          onSubmit={onSubmit}
+          id={props.formId}
+          isHorizontal={props.isHorizontal || false}
+        >
           {props.fields.map((field) => (
             <FormGroup
               key={field.id}

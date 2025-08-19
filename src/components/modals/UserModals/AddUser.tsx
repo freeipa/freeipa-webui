@@ -763,8 +763,8 @@ const AddUser = (props: PropsToAddUser) => {
       key="add-new-user"
       variant="secondary"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClick={onAddUser}
-      form="modal-form"
+      type="submit"
+      form="users-add-user-modal"
       spinnerAriaValueText="Adding"
       spinnerAriaLabel="Adding"
       isLoading={addSpinning}
@@ -806,6 +806,7 @@ const AddUser = (props: PropsToAddUser) => {
         formId="users-add-user-modal"
         fields={fields}
         show={props.show}
+        onSubmit={onAddUser}
         onClose={cleanAndCloseModal}
         actions={modalActions}
       />

@@ -367,7 +367,8 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
       data-cy="modal-button-issue"
       key={"issue-new-certificate"}
       variant="primary"
-      onClick={onAddCertificate}
+      type="submit"
+      form="issue-new-certificate-form"
       isDisabled={certificate === ""}
     >
       Issue
@@ -393,6 +394,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
         formId="issue-new-certificate-form"
         fields={fields}
         show={props.isOpen}
+        onSubmit={onAddCertificate}
         onClose={resetFieldsAndClose}
         actions={actions}
       />
