@@ -217,6 +217,9 @@ export const isDnsRecordSelectable = (dnsRecord: DNSRecord) =>
 export const isDnsForwardZoneSelectable = (dnsForwardZone: DNSForwardZone) =>
   dnsForwardZone.idnsname !== "";
 
+export const isDnsServerSelectable = (dnsServerId: string) =>
+  dnsServerId !== "";
+
 /**
  * Write JSX error messages into 'apiErrorsJsx' array
  * @param {FetchBaseQueryError | SerializedError} errorFromApiCall -  Error from the API call
