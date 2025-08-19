@@ -54,6 +54,11 @@ export interface HostShowPayload {
   version: string;
 }
 
+export type RemoveHostsPayload = {
+  hosts: Host[];
+  updateDns: boolean;
+};
+
 export interface MemberPayload {
   host: string;
   idsToAdd: string[];
@@ -140,13 +145,13 @@ const extendedApi = api.injectEndpoints({
       },
       invalidatesTags: ["FullHost"],
     }),
-    removeHosts: build.mutation<BatchRPCResponse, Host[]>({
-      query: (hosts) => {
+    removeHosts: build.mutation<BatchRPCResponse, RemoveHostsPayload>({
+      query: (payload) => {
         const hostsToDeletePayload: Command[] = [];
-        hosts.map((host) => {
+        payload.hosts.map((host) => {
           const payloadItem = {
             method: "host_del",
-            params: [[host.fqdn[0]], {}],
+            params: [[host.fqdn[0]], { updatedns: payload.updateDns }],
           } as Command;
           hostsToDeletePayload.push(payloadItem);
         });

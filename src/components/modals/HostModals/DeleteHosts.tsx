@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 // PatternFly
-import { Content, ContentVariants, Button } from "@patternfly/react-core";
+import {
+  Content,
+  ContentVariants,
+  Button,
+  Checkbox,
+} from "@patternfly/react-core";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { removeHost } from "src/store/Identity/hosts-slice";
@@ -52,6 +57,7 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
   const [executeHostsDelCommand] = useRemoveHostsMutation();
 
   const [spinning, setBtnSpinning] = React.useState<boolean>(false);
+  const [updateDns, setUpdateDns] = useState(false);
 
   // List of fields
   const fields = [
@@ -72,6 +78,21 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
           columnNames={deleteHostsColumnNames}
           elementType="hosts"
           idAttr="fqdn"
+        />
+      ),
+    },
+    {
+      id: "update-dns-checkbox",
+      pfComponent: (
+        <Checkbox
+          data-cy="modal-checkbox-update-dns"
+          id="update-dns-checkbox"
+          label="Remove A, AAAA, SSHFP and PTR records of the host managed by IPA DNS"
+          aria-label="update dns checkbox"
+          name="update-dns"
+          value="update-dns"
+          onChange={(_event, checked) => setUpdateDns(checked)}
+          isChecked={updateDns}
         />
       ),
     },
@@ -128,57 +149,49 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
 
   const deleteHosts = () => {
     setBtnSpinning(true);
-
     // Delete elements
-    executeHostsDelCommand(props.selectedHostsData.selectedHosts).then(
-      (response) => {
-        if ("data" in response) {
-          const data = response.data as BatchRPCResponse;
-          const result = data.result;
+    executeHostsDelCommand({
+      hosts: props.selectedHostsData.selectedHosts,
+      updateDns,
+    }).then((response) => {
+      if ("data" in response) {
+        const data = response.data as BatchRPCResponse;
+        const result = data.result;
+        if (result) {
+          if ("error" in result.results[0] && result.results[0].error) {
+            const errorData = {
+              code: result.results[0].error_code,
+              name: result.results[0].error_name,
+              error: result.results[0].error,
+            } as ErrorData;
 
-          if (result) {
-            if ("error" in result.results[0] && result.results[0].error) {
-              const errorData = {
-                code: result.results[0].error_code,
-                name: result.results[0].error_name,
-                error: result.results[0].error,
-              } as ErrorData;
+            const error = {
+              status: "CUSTOM_ERROR",
+              data: errorData,
+            } as FetchBaseQueryError;
+            handleAPIError(error);
+          } else {
+            // Update data from Redux
+            props.selectedHostsData.selectedHosts.map((host) => {
+              dispatch(removeHost(host.fqdn[0]));
+            });
 
-              const error = {
-                status: "CUSTOM_ERROR",
-                data: errorData,
-              } as FetchBaseQueryError;
+            props.selectedHostsData.clearSelectedHosts();
+            props.buttonsData.updateIsDeleteButtonDisabled(true);
+            props.buttonsData.updateIsDeletion(true);
 
-              // Handle error
-              handleAPIError(error);
-            } else {
-              // Update data from Redux
-              props.selectedHostsData.selectedHosts.map((host) => {
-                dispatch(removeHost(host.fqdn[0]));
-              });
+            alerts.addAlert("remove-hosts-success", "Hosts removed", "success");
 
-              props.selectedHostsData.clearSelectedHosts();
-              props.buttonsData.updateIsDeleteButtonDisabled(true);
-              props.buttonsData.updateIsDeletion(true);
-
-              alerts.addAlert(
-                "remove-hosts-success",
-                "Hosts removed",
-                "success"
-              );
-
-              setBtnSpinning(false);
-              closeModal();
-              // Refresh data
-              if (props.onRefresh !== undefined) {
-                props.onRefresh();
-              }
+            setBtnSpinning(false);
+            closeModal();
+            if (props.onRefresh !== undefined) {
+              props.onRefresh();
             }
           }
         }
-        setBtnSpinning(false);
       }
-    );
+      setBtnSpinning(false);
+    });
   };
 
   // Set the Modal and Action buttons for 'Delete' option
