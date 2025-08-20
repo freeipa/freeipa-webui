@@ -27,7 +27,7 @@ import {
   useSearchDnsServersEntriesMutation,
 } from "src/services/rpcDnsServers";
 // React router
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 // Components
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -282,7 +282,9 @@ const DnsServers = () => {
           key={`body-row-${dnsServerId}`}
           id={`table-body-row-${dnsServerId}`}
         >
-          <Td key={`idnsserverid-${dnsServerId}`}>{dnsServerId}</Td>
+          <Td key={`idnsserverid-${dnsServerId}`}>
+            <Link to={`/dns-servers/${dnsServerId}`}>{dnsServerId}</Link>
+          </Td>
         </Tr>
       ))}
     </>

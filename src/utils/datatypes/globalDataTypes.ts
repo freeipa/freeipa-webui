@@ -1093,6 +1093,6 @@ export interface CertificateMappingConfig {
 export interface DnsServer {
   idnsserverid: string;
   idnssoamname: string;
-  idnsforwardersmultivalued: string[];
+  idnsforwarders: string[];
   idnsforwardpolicy: IDNSForwardPolicy;
 }
