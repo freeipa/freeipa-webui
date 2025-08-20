@@ -311,6 +311,10 @@ export interface Host {
   enrolledby: string;
   fqdn: string;
   ip_address: string;
+  ipaallowedtoperform_write_keys_user: string[];
+  ipaallowedtoperform_write_keys_group: string[];
+  ipaallowedtoperform_write_keys_host: string[];
+  ipaallowedtoperform_write_keys_hostgroup: string[];
   nshardwareplatform: string;
   nsosversion: string;
   krbcanonicalname: string;
