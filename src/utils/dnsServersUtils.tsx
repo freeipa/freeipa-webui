@@ -16,18 +16,16 @@ export const dnsServerAsRecord = (
   return { ipaObject, recordOnChange };
 };
 
-const simpleValues = new Set([
-  "idnsserverid",
-  "idnssoamname",
-  "idnsforwardpolicy",
-]);
+const simpleValues = new Set(["idnsserverid", "idnsforwardpolicy"]);
 const dateValues = new Set([]);
+const complexValues = new Map([["idnssoamname", "__dns_name__"]]);
 
 export function apiToDnsServer(apiRecord: Record<string, unknown>): DnsServer {
   const converted = convertApiObj(
     apiRecord,
     simpleValues,
-    dateValues
+    dateValues,
+    complexValues
   ) as Partial<DnsServer>;
   return partialDnsServerToDnsServer(converted);
 }
@@ -45,7 +43,7 @@ export function createEmptyDnsServer(): DnsServer {
   return {
     idnsserverid: "",
     idnssoamname: "",
-    idnsforwardersmultivalued: [],
+    idnsforwarders: [],
     idnsforwardpolicy: "none",
   };
 }
