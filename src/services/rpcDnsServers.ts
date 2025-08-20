@@ -4,8 +4,9 @@ import { API_VERSION_BACKUP } from "../utils/utils";
 
 /**
  * DNS servers-related endpoints: useDnsServersFindQuery, useSearchDnsServersEntriesMutation
+ *                                useDnsServersShowQuery
  *
- * API commands: dnsserver_find
+ * API commands: dnsserver_find, dnsserver_show
  */
 
 export interface DnsServersFindPayload {
@@ -23,6 +24,14 @@ export interface DnsServersFindResult {
 export interface DnsServersFindResponse {
   data: string[];
   error: string | null;
+}
+
+export interface DnsServerModPayload {
+  idnsserverid: string;
+  idnssoamname?: string[];
+  idnsforwarders?: string[];
+  idnsforwardpolicy?: string[];
+  version?: string;
 }
 
 const extendedApi = api.injectEndpoints({
@@ -108,9 +117,61 @@ const extendedApi = api.injectEndpoints({
         return { data: dnsServerIdList, error: null };
       },
     }),
+    /**
+     * Get DNS servers details
+     * @param {string} dnsServerId - The ID of the DNS server
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    dnsServersShow: build.query<FindRPCResponse, string>({
+      query: (dnsServerId) => {
+        const dnsServersParams = {
+          all: true,
+          rights: true,
+          version: API_VERSION_BACKUP,
+        };
+        return getCommand({
+          method: "dnsserver_show",
+          params: [[dnsServerId], dnsServersParams],
+        });
+      },
+    }),
+    /**
+     * Update DNS server
+     * @param {DnsServerModPayload} payload - The payload containing the DNS server data
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    dnsServersMod: build.mutation<FindRPCResponse, DnsServerModPayload>({
+      query: (payload) => {
+        const params = {
+          all: true,
+          rights: true,
+          version: payload.version || API_VERSION_BACKUP,
+        };
+
+        const optionalKeys: Array<
+          keyof Omit<DnsServerModPayload, "idnsserverid">
+        > = ["idnssoamname", "idnsforwarders", "idnsforwardpolicy"];
+
+        optionalKeys.forEach((key) => {
+          const value = payload[key];
+          if (value !== undefined) {
+            params[key] = value;
+          }
+        });
+
+        return getCommand({
+          method: "dnsserver_mod",
+          params: [[payload.idnsserverid], params],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useDnsServersFindQuery, useSearchDnsServersEntriesMutation } =
-  extendedApi;
+export const {
+  useDnsServersFindQuery,
+  useSearchDnsServersEntriesMutation,
+  useDnsServersShowQuery,
+  useDnsServersModMutation,
+} = extendedApi;
