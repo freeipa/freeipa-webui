@@ -170,7 +170,7 @@ export default function MemberTable(props: MemberTableProps) {
         name="cn"
         variant="compact"
         borders
-        className={"pf-v5-u-mt-md"}
+        className={"pf-v6-u-mt-md"}
         id="membership-table"
         isStickyHeader
       >
@@ -202,7 +202,7 @@ export default function MemberTable(props: MemberTableProps) {
       name="cn"
       variant="compact"
       borders
-      className={"pf-v5-u-mt-md"}
+      className={"pf-v6-u-mt-md"}
       id="membership-table"
       isStickyHeader
     >

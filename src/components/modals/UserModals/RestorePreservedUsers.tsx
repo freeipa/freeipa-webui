@@ -1,11 +1,6 @@
 import React from "react";
 // PatternFly
-import {
-  Button,
-  Text,
-  TextContent,
-  TextVariants,
-} from "@patternfly/react-core";
+import { Button, Content, ContentVariants } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
@@ -44,11 +39,9 @@ const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
-            Are you sure you want to restore the preserved entries?
-          </Text>
-        </TextContent>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to restore the preserved entries?
+        </Content>
       ),
     },
     {
@@ -121,10 +114,16 @@ const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
       spinnerAriaLabel="Restoring"
       isLoading={spinning}
       isDisabled={spinning}
+      data-cy="modal-button-restore"
     >
       {spinning ? "Restoring" : "Restore"}
     </Button>,
-    <Button key="cancel-restore-user" variant="link" onClick={closeModal}>
+    <Button
+      key="cancel-restore-user"
+      variant="link"
+      onClick={closeModal}
+      data-cy="modal-button-cancel"
+    >
       Cancel
     </Button>,
   ];
@@ -133,6 +132,7 @@ const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="restore-preserved-users-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"

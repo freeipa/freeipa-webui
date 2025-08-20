@@ -341,6 +341,7 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
       <FlexItem>Host category the rule applies to: </FlexItem>
       <FlexItem>
         <IpaToggleGroup
+          dataCy="access-this-host-toggle-group-hostcategory"
           ipaObject={props.ipaObject}
           name="hostcategory"
           options={options}
@@ -378,7 +379,7 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
           aria-label="hosts in the who section of the sudo rule"
         >
           <KeytabTableWithFilter
-            className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+            className="pf-v6-u-ml-md pf-v6-u-mt-sm"
             id={props.rule.cn as string}
             from="sudo rule"
             name="memberhost_host"
@@ -407,7 +408,7 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
           aria-label="user groups in the who section of the sudo rule"
         >
           <KeytabTableWithFilter
-            className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+            className="pf-v6-u-ml-md pf-v6-u-mt-sm"
             id={props.rule.cn as string}
             from="sudo rule"
             name="memberuser_group"

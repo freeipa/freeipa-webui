@@ -1,11 +1,6 @@
 import React from "react";
 // PatternFly
-import {
-  TextContent,
-  Text,
-  TextVariants,
-  Button,
-} from "@patternfly/react-core";
+import { Content, ContentVariants, Button } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
 // Data type
@@ -44,11 +39,9 @@ const ManagedByDeleteModal = (props: PropsToDeleteModal) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
-            Are you sure you want to remove the selected entries from the list?
-          </Text>
-        </TextContent>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to remove the selected entries from the list?
+        </Content>
       ),
     },
     {
@@ -92,6 +85,7 @@ const ManagedByDeleteModal = (props: PropsToDeleteModal) => {
   // Set the Modal and Action buttons for 'Delete' option
   const modalActionsDelete: JSX.Element[] = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-groups"
       variant="danger"
       onClick={deleteGroups}
@@ -103,7 +97,12 @@ const ManagedByDeleteModal = (props: PropsToDeleteModal) => {
     >
       {props.spinning ? "Deleting" : "Delete"}
     </Button>,
-    <Button key="cancel-remove-group" variant="link" onClick={closeModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-remove-group"
+      variant="link"
+      onClick={closeModal}
+    >
       Cancel
     </Button>,
   ];
@@ -115,6 +114,7 @@ const ManagedByDeleteModal = (props: PropsToDeleteModal) => {
   // Render component
   return (
     <ModalWithFormLayout
+      dataCy="managed-by-delete-modal"
       variantType="medium"
       modalPosition="top"
       offPosition="76px"

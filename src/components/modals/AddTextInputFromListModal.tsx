@@ -4,11 +4,15 @@ import {
   Form,
   FormGroup,
   Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   TextInput,
   ValidatedOptions,
 } from "@patternfly/react-core";
 
 interface PropsToAddModal {
+  dataCy: string;
   id: string;
   newValue: string;
   setNewValue: (newValue: string) => void;
@@ -33,35 +37,39 @@ const AddTextInputFromListModal = (props: PropsToAddModal) => {
 
   return (
     <Modal
+      data-cy={props.dataCy}
       variant={props.variant || "small"}
-      title={props.title}
       isOpen={props.isOpen}
       onClose={props.onClose}
-      actions={props.actions}
     >
-      <Form>
-        <FormGroup
-          label={props.textInputTitle}
-          type="string"
-          fieldId={props.id}
-        >
-          <TextInput
-            id={props.id}
-            name={props.textInputName}
-            value={props.newValue}
-            onChange={(_event, value) => props.setNewValue(value)}
-            type="text"
-            aria-label={props.textInputName}
-            isRequired={true}
-            validated={
-              (props.newValue !== "" && !props.newValue.includes("@")) ||
-              props.textInputValidator
-                ? ValidatedOptions.default
-                : ValidatedOptions.error
-            }
-          />
-        </FormGroup>
-      </Form>
+      <ModalHeader title={props.title} labelId={props.title} />
+      <ModalBody id="modal-box-body-basic">
+        <Form>
+          <FormGroup
+            label={props.textInputTitle}
+            type="string"
+            fieldId={props.id}
+          >
+            <TextInput
+              data-cy="modal-textbox-new-kerberos-principal-alias"
+              id={props.id}
+              name={props.textInputName}
+              value={props.newValue}
+              onChange={(_event, value) => props.setNewValue(value)}
+              type="text"
+              aria-label={props.textInputName}
+              isRequired={true}
+              validated={
+                (props.newValue !== "" && !props.newValue.includes("@")) ||
+                props.textInputValidator
+                  ? ValidatedOptions.default
+                  : ValidatedOptions.error
+              }
+            />
+          </FormGroup>
+        </Form>
+      </ModalBody>
+      <ModalFooter>{props.actions}</ModalFooter>
     </Modal>
   );
 };

@@ -54,6 +54,7 @@ const EnableDisableRuleModal = (props: EnableDisableRuleModalProps) => {
 
   const modalActions: JSX.Element[] = [
     <Button
+      data-cy="modal-button-ok"
       key={props.operation + "-" + props.ruleId}
       variant="primary"
       onClick={onEnableDisable}
@@ -61,6 +62,7 @@ const EnableDisableRuleModal = (props: EnableDisableRuleModalProps) => {
       OK
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key={"cancel-" + props.operation + "-" + props.ruleId}
       variant="secondary"
       onClick={onClose}
@@ -74,6 +76,7 @@ const EnableDisableRuleModal = (props: EnableDisableRuleModalProps) => {
     <>
       <alerts.ManagedAlerts />
       <ConfirmationModal
+        dataCy="enable-disable-rule-modal"
         title={"Confirmation"}
         isOpen={props.isOpen}
         onClose={onClose}

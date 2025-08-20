@@ -2,6 +2,7 @@ import React, { useState } from "react";
 // PatternFly
 import {
   Button,
+  Content,
   DropdownItem,
   Flex,
   JumpLinks,
@@ -29,7 +30,6 @@ import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import KebabLayout from "src/components/layouts/KebabLayout";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
-import TextLayout from "src/components/layouts/TextLayout";
 import TabLayout from "src/components/layouts/TabLayout";
 // Field sections
 import HostSettings from "src/components/HostsSections/HostSettings";
@@ -106,6 +106,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
 
   const unprovisionHostModalActions = [
     <Button
+      data-cy="modal-button-unprovision"
       key="unprov-host"
       variant="danger"
       onClick={() => onUnprovisionHost(props.host.fqdn ? props.host.fqdn : "")}
@@ -117,7 +118,12 @@ const HostsSettings = (props: PropsToHostsSettings) => {
     >
       {modalSpinning ? "Unprovisioning" : "Unprovision"}
     </Button>,
-    <Button key="cancel" variant="link" onClick={onCloseUnprovisionHostModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel"
+      variant="link"
+      onClick={onCloseUnprovisionHostModal}
+    >
       Cancel
     </Button>,
   ];
@@ -209,6 +215,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
 
   const membershipModalActions: JSX.Element[] = [
     <Button
+      data-cy="modal-button-ok"
       key="rebuild-auto-membership"
       variant="primary"
       onClick={onRebuildAutoMembership}
@@ -217,6 +224,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
       OK
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key="cancel-rebuild-auto-membership"
       variant="link"
       onClick={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
@@ -228,6 +236,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
   const dropdownItems = [
     <DropdownItem
       key="rebuild auto membership"
+      data-cy="hosts-tab-settings-kebab-rebuild-auto-membership"
       component="button"
       onClick={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
     >
@@ -235,6 +244,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
     </DropdownItem>,
     <DropdownItem
       key="unprovision"
+      data-cy="hosts-tab-settings-kebab-unprovision"
       onClick={() => setIsUnprovisionHostModalOpen(true)}
       component="button"
       isDisabled={!props.host.has_keytab}
@@ -243,6 +253,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
     </DropdownItem>,
     <DropdownItem
       key="set-one-time-password"
+      data-cy="hosts-tab-settings-kebab-set-one-time-password"
       onClick={() => setIsPasswordModalOpen(true)}
       component="button"
     >
@@ -251,6 +262,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
     <DropdownItem
       key="new certificate"
       component="button"
+      data-cy="hosts-tab-settings-kebab-new-certificate"
       onClick={() => setIsCertModalOpen(true)}
     >
       New certificate
@@ -302,13 +314,13 @@ const HostsSettings = (props: PropsToHostsSettings) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextLayout component="p">
+        <Content component="p">
           <b>Warning</b> In case of a high number of users, hosts or groups, the
           rebuild task may require high CPU usage. This can severely impact
           server performance. Typically this only needs to be done once after
           importing raw data into the server. Are you sure you want to rebuild
           the auto memberships?
-        </TextLayout>
+        </Content>
       ),
     },
   ];
@@ -318,7 +330,10 @@ const HostsSettings = (props: PropsToHostsSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton onClickHandler={props.onRefresh}>
+        <SecondaryButton
+          dataCy="hosts-tab-settings-button-refresh"
+          onClickHandler={props.onRefresh}
+        >
           Refresh
         </SecondaryButton>
       ),
@@ -327,6 +342,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
       key: 1,
       element: (
         <SecondaryButton
+          dataCy="hosts-tab-settings-button-revert"
           isDisabled={!props.isModified}
           onClickHandler={onRevert}
         >
@@ -338,6 +354,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
       key: 2,
       element: (
         <SecondaryButton
+          dataCy="hosts-tab-settings-button-save"
           isDisabled={!props.isModified || isSaving}
           onClickHandler={onSave}
           isLoading={isSaving}
@@ -353,6 +370,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
       key: 3,
       element: (
         <KebabLayout
+          dataCy="hosts-tab-settings-kebab"
           direction={"up"}
           onDropdownSelect={onKebabSelect}
           onKebabToggle={onKebabToggle}
@@ -397,7 +415,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
             </JumpLinksItem>
           </JumpLinks>
         </SidebarPanel>
-        <SidebarContent className="pf-v5-u-mr-xl">
+        <SidebarContent className="pf-v6-u-mr-xl">
           <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
             <TitleLayout
               key={0}
@@ -454,9 +472,10 @@ const HostsSettings = (props: PropsToHostsSettings) => {
           </Flex>
         </SidebarContent>
       </Sidebar>
-      <ModalErrors errors={modalErrors.getAll()} />
+      <ModalErrors errors={modalErrors.getAll()} dataCy="hosts-modal-error" />
       {isMembershipModalOpen && (
         <ModalWithFormLayout
+          dataCy="rebuild-auto-membership-modal"
           variantType="medium"
           modalPosition="top"
           offPosition="76px"
@@ -485,6 +504,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
         }
       />
       <ConfirmationModal
+        dataCy="unprovision-host-modal"
         title={"Unprovision host"}
         isOpen={isUnprovisionHostModalOpen}
         onClose={onCloseUnprovisionHostModal}

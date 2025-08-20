@@ -1,6 +1,7 @@
 import React, { ReactNode, useEffect, useState } from "react";
 // PatternFly
-import { Button, DualListSelector } from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core";
+import { DualListSelector } from "@patternfly/react-core/deprecated";
 // Modals
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Data types
@@ -208,6 +209,7 @@ const MemberOfAddModal = (props: PropsToAdd) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <Button
+      data-cy="modal-button-add"
       key="add-new-user"
       variant="secondary"
       isDisabled={buttonDisabled}
@@ -216,7 +218,12 @@ const MemberOfAddModal = (props: PropsToAdd) => {
     >
       Add
     </Button>,
-    <Button key="cancel-new-user" variant="link" onClick={cleanAndCloseModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-new-user"
+      variant="link"
+      onClick={cleanAndCloseModal}
+    >
       Cancel
     </Button>,
   ];
@@ -224,6 +231,7 @@ const MemberOfAddModal = (props: PropsToAdd) => {
   // Render 'MemberOfaddModal'
   return (
     <ModalWithFormLayout
+      dataCy="member-of-add-modal"
       variantType="medium"
       modalPosition="top"
       offPosition="76px"

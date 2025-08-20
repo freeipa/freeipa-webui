@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
-import {
-  TextContent,
-  Text,
-  TextVariants,
-  Button,
-} from "@patternfly/react-core";
+import { Content, ContentVariants, Button } from "@patternfly/react-core";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { removeNetgroup } from "src/store/Identity/netgroups-slice";
@@ -63,11 +58,9 @@ const DeleteNetgroups = (props: PropsToDeleteGroups) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
-            Are you sure you want to remove the selected entries from Netgroups?
-          </Text>
-        </TextContent>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to remove the selected entries from Netgroups?
+        </Content>
       ),
     },
     {
@@ -105,7 +98,12 @@ const DeleteNetgroups = (props: PropsToDeleteGroups) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-ok"
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       OK
     </Button>,
   ];
@@ -185,6 +183,7 @@ const DeleteNetgroups = (props: PropsToDeleteGroups) => {
   // Set the Modal and Action buttons for 'Delete' option
   const modalActionsDelete: JSX.Element[] = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-netgroups"
       variant="danger"
       onClick={deleteGroups}
@@ -196,7 +195,12 @@ const DeleteNetgroups = (props: PropsToDeleteGroups) => {
     >
       {spinning ? "Deleting" : "Delete"}
     </Button>,
-    <Button key="cancel-delete-netgroups" variant="link" onClick={closeModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-delete-netgroups"
+      variant="link"
+      onClick={closeModal}
+    >
       Cancel
     </Button>,
   ];
@@ -205,6 +209,7 @@ const DeleteNetgroups = (props: PropsToDeleteGroups) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="delete-netgroups-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"
@@ -217,6 +222,7 @@ const DeleteNetgroups = (props: PropsToDeleteGroups) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="delete-netgroups-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

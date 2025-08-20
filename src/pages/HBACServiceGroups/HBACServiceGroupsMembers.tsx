@@ -54,39 +54,45 @@ const HBACSvcGroupMembers = (props: PropsToSvcGroupsMembers) => {
   }, [props.tabSection]);
 
   return (
-    <TabLayout id="members">
-      <Tabs
-        activeKey={activeTabKey}
-        onSelect={handleTabClick}
-        isBox={false}
-        mountOnEnter
-        unmountOnExit
-      >
-        <Tab
-          eventKey={"member_hbacsvc"}
-          name="member_hbacsvc"
-          title={
-            <TabTitleText>
-              HBAC services{" "}
-              <Badge key={0} id="service_count" isRead>
-                {serviceGroup && serviceGroup.member_hbacsvc
-                  ? serviceGroup.member_hbacsvc.length
-                  : 0}
-              </Badge>
-            </TabTitleText>
-          }
+    <div
+      style={{
+        height: `var(--subsettings-calc)`,
+      }}
+    >
+      <TabLayout id="members">
+        <Tabs
+          activeKey={activeTabKey}
+          onSelect={handleTabClick}
+          isBox={false}
+          mountOnEnter
+          unmountOnExit
         >
-          <MembersHbacServices
-            entity={serviceGroup}
-            id={serviceGroup.cn as string}
-            from="hbac-service-groups"
-            isDataLoading={groupQuery.isFetching}
-            onRefreshData={onRefreshHbacSvcData}
-            member_hbacsvc={serviceGroup.member_hbacsvc || []}
-          />
-        </Tab>
-      </Tabs>
-    </TabLayout>
+          <Tab
+            eventKey={"member_hbacsvc"}
+            name="member_hbacsvc"
+            title={
+              <TabTitleText>
+                HBAC services{" "}
+                <Badge key={0} id="service_count" isRead>
+                  {serviceGroup && serviceGroup.member_hbacsvc
+                    ? serviceGroup.member_hbacsvc.length
+                    : 0}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MembersHbacServices
+              entity={serviceGroup}
+              id={serviceGroup.cn as string}
+              from="hbac-service-groups"
+              isDataLoading={groupQuery.isFetching}
+              onRefreshData={onRefreshHbacSvcData}
+              member_hbacsvc={serviceGroup.member_hbacsvc || []}
+            />
+          </Tab>
+        </Tabs>
+      </TabLayout>
+    </div>
   );
 };
 

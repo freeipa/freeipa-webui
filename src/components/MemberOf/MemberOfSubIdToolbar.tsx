@@ -3,9 +3,8 @@ import React from "react";
 import {
   Button,
   Pagination,
-  Text,
-  TextContent,
-  TextVariants,
+  Content,
+  ContentVariants,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
@@ -39,6 +38,7 @@ const MemberOfSubIdToolbar = (props: MemberOfSubIdToolbarProps) => {
       <ToolbarContent>
         <ToolbarItem id="refresh-button">
           <Button
+            data-cy="member-of-sub-id-button-refresh"
             variant="secondary"
             name="refresh"
             isDisabled={!props.refreshButtonEnabled}
@@ -49,6 +49,7 @@ const MemberOfSubIdToolbar = (props: MemberOfSubIdToolbarProps) => {
         </ToolbarItem>
         <ToolbarItem id="auto-assign-button">
           <Button
+            data-cy="member-of-sub-id-button-auto-assign"
             variant="secondary"
             name="auto-assign"
             isDisabled={!props.autoAssignButtonEnabled}
@@ -64,19 +65,17 @@ const MemberOfSubIdToolbar = (props: MemberOfSubIdToolbarProps) => {
         <ToolbarItem id="help-icon">
           <>
             {props.helpIconEnabled && (
-              <TextContent>
-                <Text component={TextVariants.p}>
-                  <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
-                  <Text component={TextVariants.a} isVisitedLink>
-                    Help
-                  </Text>
-                </Text>
-              </TextContent>
+              <Content component={ContentVariants.p}>
+                <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
+                <Content component={ContentVariants.a} isVisitedLink>
+                  Help
+                </Content>
+              </Content>
             )}
           </>
         </ToolbarItem>
         {props.totalItems > 0 && (
-          <ToolbarItem id="pagination" align={{ default: "alignRight" }}>
+          <ToolbarItem id="pagination" align={{ default: "alignEnd" }}>
             <Pagination
               itemCount={props.totalItems}
               perPage={props.perPage}

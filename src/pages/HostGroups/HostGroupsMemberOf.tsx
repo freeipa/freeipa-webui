@@ -145,104 +145,106 @@ const HostGroupsMemberOf = (props: PropsToMemberOf) => {
 
   // Render component
   return (
-    <TabLayout id="memberof">
-      <Tabs
-        activeKey={props.tabSection}
-        onSelect={handleTabClick}
-        isBox={false}
-        mountOnEnter
-        unmountOnExit
-      >
-        <Tab
-          eventKey={"memberof_hostgroup"}
-          name="memberof_hostgroup"
-          title={
-            <TabTitleText>
-              Host groups{" "}
-              <Badge key={0} id="group_count" isRead>
-                {groupCount}
-              </Badge>
-            </TabTitleText>
-          }
+    <div style={{ height: `var(--subsettings-calc)` }}>
+      <TabLayout id="memberof">
+        <Tabs
+          activeKey={props.tabSection}
+          onSelect={handleTabClick}
+          isBox={false}
+          mountOnEnter
+          unmountOnExit
         >
-          <MemberOfHostGroups
-            entity={group}
-            from="host-groups"
-            id={group.cn as string}
-            isDataLoading={groupQuery.isFetching}
-            onRefreshData={onRefreshData}
-            setDirection={updateGroupDirection}
-            direction={groupDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"memberof_netgroup"}
-          name="memberof_netgroup"
-          title={
-            <TabTitleText>
-              Netgroups{" "}
-              <Badge key={1} id="netgroup_count" isRead>
-                {group && group.memberof_netgroup
-                  ? group.memberof_netgroup.length
-                  : 0}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfNetgroups
-            entity={group}
-            id={group.cn as string}
-            from={"host-groups"}
-            isDataLoading={groupQuery.isFetching}
-            onRefreshData={onRefreshData}
-          />
-        </Tab>
-        <Tab
-          eventKey={"memberof_hbacrule"}
-          name="memberof_hbacrule"
-          title={
-            <TabTitleText>
-              HBAC rules{" "}
-              <Badge key={3} id="hbacrule_count" isRead>
-                {hbacCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfHbacRules
-            entity={group}
-            id={group.cn as string}
-            from={"host-groups"}
-            isDataLoading={groupQuery.isFetching}
-            onRefreshData={onRefreshData}
-            setDirection={updateHbacDirection}
-            direction={hbacDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"memberof_sudorule"}
-          name="memberof_sudorule"
-          title={
-            <TabTitleText>
-              Sudo rules{" "}
-              <Badge key={4} id="sudorule_count" isRead>
-                {sudoCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfSudoRules
-            entity={group}
-            id={group.cn as string}
-            from={"host-groups"}
-            isDataLoading={groupQuery.isFetching}
-            onRefreshData={onRefreshData}
-            setDirection={updateSudoDirection}
-            direction={sudoDirection}
-          />
-        </Tab>
-      </Tabs>
-    </TabLayout>
+          <Tab
+            eventKey={"memberof_hostgroup"}
+            name="memberof_hostgroup"
+            title={
+              <TabTitleText>
+                Host groups{" "}
+                <Badge key={0} id="group_count" isRead>
+                  {groupCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfHostGroups
+              entity={group}
+              from="host-groups"
+              id={group.cn as string}
+              isDataLoading={groupQuery.isFetching}
+              onRefreshData={onRefreshData}
+              setDirection={updateGroupDirection}
+              direction={groupDirection}
+            />
+          </Tab>
+          <Tab
+            eventKey={"memberof_netgroup"}
+            name="memberof_netgroup"
+            title={
+              <TabTitleText>
+                Netgroups{" "}
+                <Badge key={1} id="netgroup_count" isRead>
+                  {group && group.memberof_netgroup
+                    ? group.memberof_netgroup.length
+                    : 0}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfNetgroups
+              entity={group}
+              id={group.cn as string}
+              from={"host-groups"}
+              isDataLoading={groupQuery.isFetching}
+              onRefreshData={onRefreshData}
+            />
+          </Tab>
+          <Tab
+            eventKey={"memberof_hbacrule"}
+            name="memberof_hbacrule"
+            title={
+              <TabTitleText>
+                HBAC rules{" "}
+                <Badge key={3} id="hbacrule_count" isRead>
+                  {hbacCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfHbacRules
+              entity={group}
+              id={group.cn as string}
+              from={"host-groups"}
+              isDataLoading={groupQuery.isFetching}
+              onRefreshData={onRefreshData}
+              setDirection={updateHbacDirection}
+              direction={hbacDirection}
+            />
+          </Tab>
+          <Tab
+            eventKey={"memberof_sudorule"}
+            name="memberof_sudorule"
+            title={
+              <TabTitleText>
+                Sudo rules{" "}
+                <Badge key={4} id="sudorule_count" isRead>
+                  {sudoCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfSudoRules
+              entity={group}
+              id={group.cn as string}
+              from={"host-groups"}
+              isDataLoading={groupQuery.isFetching}
+              onRefreshData={onRefreshData}
+              setDirection={updateSudoDirection}
+              direction={sudoDirection}
+            />
+          </Tab>
+        </Tabs>
+      </TabLayout>
+    </div>
   );
 };
 

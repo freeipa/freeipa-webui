@@ -52,13 +52,25 @@ export interface BatchResponse {
 }
 
 export interface ErrorResult {
+  status: string;
   code: number;
   message: string;
   data: {
+    name: string;
     attr: string;
     value: string;
   };
   name: string;
+}
+
+export interface KwError {
+  type: "error";
+  error: string;
+  error_code: number;
+  error_name: string;
+  error_kw: {
+    reason: string;
+  };
 }
 
 // 'FindRPCResponse' type

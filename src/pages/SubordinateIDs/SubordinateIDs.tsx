@@ -1,10 +1,11 @@
 import React from "react";
 // PatternFly
 import {
-  Page,
+  Flex,
+  FlexItem,
   PageSection,
-  PageSectionVariants,
   PaginationVariant,
+  ToolbarItemVariant,
 } from "@patternfly/react-core";
 import {
   InnerScrollContainer,
@@ -268,6 +269,7 @@ const SubordinateIDs = () => {
       key: 0,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search subIds"
           placeholder="Search"
@@ -275,17 +277,18 @@ const SubordinateIDs = () => {
           isDisabled={searchDisabled}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 1,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 2,
       element: (
         <SecondaryButton
+          dataCy="subids-button-refresh"
           onClickHandler={refreshData}
           isDisabled={!showTableRows}
         >
@@ -297,6 +300,7 @@ const SubordinateIDs = () => {
       key: 3,
       element: (
         <SecondaryButton
+          dataCy="subids-button-add"
           isDisabled={!showTableRows}
           onClickHandler={onOpenAddModal}
         >
@@ -306,7 +310,7 @@ const SubordinateIDs = () => {
     },
     {
       key: 4,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 5,
@@ -322,69 +326,68 @@ const SubordinateIDs = () => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 
   // Render component
   return (
-    <Page>
+    <div>
       <alerts.ManagedAlerts />
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id="Subordinate IDs page"
           headingLevel="h1"
           text="Subordinate IDs"
         />
       </PageSection>
-      <PageSection
-        variant={PageSectionVariants.light}
-        isFilled={false}
-        className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-      >
-        <ToolbarLayout
-          className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-          contentClassName="pf-v5-u-p-0"
-          toolbarItems={toolbarItems}
-        />
-        <div style={{ height: `calc(100vh - 352.2px)` }}>
-          <OuterScrollContainer>
-            <InnerScrollContainer>
-              {batchError !== undefined && batchError ? (
-                <GlobalErrors errors={globalErrors.getAll()} />
-              ) : (
-                <MainTable
-                  tableTitle="Subordinate IDs table"
-                  shownElementsList={subIds}
-                  pk="ipauniqueid"
-                  keyNames={[
-                    "ipauniqueid",
-                    "ipaowner",
-                    "ipasubgidnumber",
-                    "ipasubuidnumber",
-                  ]}
-                  columnNames={[
-                    "Unique ID",
-                    "Owner",
-                    "SubGID range start",
-                    "SubUID range start",
-                  ]}
-                  hasCheckboxes={false}
-                  pathname="subordinate-ids"
-                  showTableRows={showTableRows}
-                  showLink={true}
-                />
-              )}
-            </InnerScrollContainer>
-          </OuterScrollContainer>
-        </div>
-        <PaginationLayout
-          list={subIds}
-          paginationData={paginationData}
-          variant={PaginationVariant.bottom}
-          widgetId="pagination-options-menu-bottom"
-          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        />
+      <PageSection hasBodyWrapper={false} isFilled={false}>
+        <Flex direction={{ default: "column" }}>
+          <FlexItem>
+            <ToolbarLayout toolbarItems={toolbarItems} />
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto" }}>
+            <OuterScrollContainer>
+              <InnerScrollContainer
+                style={{ height: "60vh", overflow: "auto" }}
+              >
+                {batchError !== undefined && batchError ? (
+                  <GlobalErrors errors={globalErrors.getAll()} />
+                ) : (
+                  <MainTable
+                    tableTitle="Subordinate IDs table"
+                    shownElementsList={subIds}
+                    pk="ipauniqueid"
+                    keyNames={[
+                      "ipauniqueid",
+                      "ipaowner",
+                      "ipasubgidnumber",
+                      "ipasubuidnumber",
+                    ]}
+                    columnNames={[
+                      "Unique ID",
+                      "Owner",
+                      "SubGID range start",
+                      "SubUID range start",
+                    ]}
+                    hasCheckboxes={false}
+                    pathname="subordinate-ids"
+                    showTableRows={showTableRows}
+                    showLink={true}
+                  />
+                )}
+              </InnerScrollContainer>
+            </OuterScrollContainer>
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
+            <PaginationLayout
+              list={subIds}
+              paginationData={paginationData}
+              variant={PaginationVariant.bottom}
+              widgetId="pagination-options-menu-bottom"
+            />
+          </FlexItem>
+        </Flex>
       </PageSection>
       <AddModal
         isOpen={showAddModal}
@@ -392,7 +395,7 @@ const SubordinateIDs = () => {
         onRefresh={refreshData}
         title="Add Subordinate ID"
       />
-    </Page>
+    </div>
   );
 };
 

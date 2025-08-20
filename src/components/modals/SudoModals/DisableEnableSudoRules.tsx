@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  Button,
-  TextContent,
-  Text,
-  TextVariants,
-} from "@patternfly/react-core";
+import { Button, Content, ContentVariants } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import { SudoRule } from "src/utils/datatypes/globalDataTypes";
@@ -69,14 +64,14 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
+        <>
+          <Content component={ContentVariants.p}>
             Are you sure you want to {action} selected entries?
-          </Text>
-          <Text component={TextVariants.p}>
+          </Content>
+          <Content component={ContentVariants.p}>
             <i>{rules.join(", ")}</i>
-          </Text>
-        </TextContent>
+          </Content>
+        </>
       ),
     },
   ];
@@ -102,7 +97,12 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
   };
 
   const errorModalActions = [
-    <Button key="ok" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-ok"
+      key="ok"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       OK
     </Button>,
   ];
@@ -258,6 +258,7 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
   // Set the Modal and Action buttons for 'Disable' option
   const modalActionsDisable: JSX.Element[] = [
     <Button
+      data-cy="modal-button-disable"
       key="disable-sudorules"
       variant="primary"
       onClick={() =>
@@ -270,13 +271,19 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
     >
       Disable
     </Button>,
-    <Button key="cancel-disable-sudorule" variant="link" onClick={closeModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-disable-sudorule"
+      variant="link"
+      onClick={closeModal}
+    >
       Cancel
     </Button>,
   ];
 
   const modalDisable: JSX.Element = (
     <ModalWithFormLayout
+      dataCy="disable-enable-sudo-rules-modal"
       variantType="medium"
       modalPosition="top"
       offPosition="76px"
@@ -292,6 +299,7 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
   // Set the Modal and Action buttons for 'Enable' option
   const modalActionsEnable: JSX.Element[] = [
     <Button
+      data-cy="modal-button-enable"
       key="enable-sudorules"
       variant="primary"
       onClick={() =>
@@ -304,13 +312,19 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
     >
       Enable
     </Button>,
-    <Button key="cancel-enable-sudorule" variant="link" onClick={closeModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-enable-sudorule"
+      variant="link"
+      onClick={closeModal}
+    >
       Cancel
     </Button>,
   ];
 
   const modalEnable: JSX.Element = (
     <ModalWithFormLayout
+      dataCy="disable-enable-sudo-rules-modal"
       variantType="medium"
       modalPosition="top"
       offPosition="76px"
@@ -329,6 +343,7 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
       {!props.optionSelected ? modalEnable : modalDisable}
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="disable-enable-sudo-rules-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

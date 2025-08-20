@@ -70,6 +70,7 @@ const AddSudoRule = (props: PropsToAddGroup) => {
                 ? ValidatedOptions.error
                 : ValidatedOptions.default
             }
+            data-cy="modal-textbox-rule-name"
           />
           <HelperText>
             {ruleName === "" && <HelperTextItem>Required value</HelperTextItem>}
@@ -86,6 +87,7 @@ const AddSudoRule = (props: PropsToAddGroup) => {
           name="modal-form-rule-desc"
           value={description}
           onChange={(_event, value) => setDescription(value)}
+          data-cy="modal-textbox-description"
           aria-label="Rule description"
           autoResize
         />
@@ -217,10 +219,19 @@ const AddSudoRule = (props: PropsToAddGroup) => {
   };
 
   const errorModalActions = [
-    <SecondaryButton key="retry" onClickHandler={onRetry}>
+    <SecondaryButton
+      key="retry"
+      onClickHandler={onRetry}
+      dataCy="modal-button-retry"
+    >
       Retry
     </SecondaryButton>,
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+      data-cy="modal-button-cancel"
+    >
       Cancel
     </Button>,
   ];
@@ -238,6 +249,7 @@ const AddSudoRule = (props: PropsToAddGroup) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <SecondaryButton
+      dataCy="modal-button-add"
       key="add-new-rule"
       name="add"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
@@ -250,6 +262,7 @@ const AddSudoRule = (props: PropsToAddGroup) => {
       {addSpinning ? "Adding" : "Add"}
     </SecondaryButton>,
     <SecondaryButton
+      dataCy="modal-button-add-and-add-another"
       key="add-and-add-another-new-rule"
       name="add_and_add_another"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
@@ -261,7 +274,12 @@ const AddSudoRule = (props: PropsToAddGroup) => {
     >
       {addAgainSpinning ? "Adding" : "Add and add another"}
     </SecondaryButton>,
-    <Button key="cancel-new-rule" variant="link" onClick={cleanAndCloseModal}>
+    <Button
+      key="cancel-new-rule"
+      variant="link"
+      onClick={cleanAndCloseModal}
+      data-cy="modal-button-cancel"
+    >
       Cancel
     </Button>,
   ];
@@ -271,6 +289,7 @@ const AddSudoRule = (props: PropsToAddGroup) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="add-sudo-rule-modal"
         variantType="small"
         modalPosition="top"
         offPosition="76px"
@@ -283,6 +302,7 @@ const AddSudoRule = (props: PropsToAddGroup) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="add-sudo-rule-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

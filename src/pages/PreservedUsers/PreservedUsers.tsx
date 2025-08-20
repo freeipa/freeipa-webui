@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
-  Page,
   PaginationVariant,
   PageSection,
-  PageSectionVariants,
+  ToolbarItemVariant,
+  Flex,
+  FlexItem,
 } from "@patternfly/react-core";
 // PatternFly table
 import {
@@ -446,6 +447,7 @@ const PreservedUsers = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search user"
           placeholder="Search"
@@ -453,12 +455,12 @@ const PreservedUsers = () => {
           isDisabled={searchDisabled}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 2,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 3,
@@ -466,6 +468,7 @@ const PreservedUsers = () => {
         <SecondaryButton
           onClickHandler={refreshUsersData}
           isDisabled={!showTableRows}
+          dataCy="preserved-users-button-refresh"
         >
           Refresh
         </SecondaryButton>
@@ -477,6 +480,7 @@ const PreservedUsers = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
+          dataCy="preserved-users-button-delete"
         >
           Delete
         </SecondaryButton>
@@ -488,6 +492,7 @@ const PreservedUsers = () => {
         <SecondaryButton
           isDisabled={!showTableRows || selectedUsers.length === 0}
           onClickHandler={onRestoreHandler}
+          dataCy="preserved-users-button-restore"
         >
           Restore
         </SecondaryButton>
@@ -499,6 +504,7 @@ const PreservedUsers = () => {
         <SecondaryButton
           isDisabled={!showTableRows || selectedUsers.length === 0}
           onClickHandler={onStageHandler}
+          dataCy="preserved-users-button-stage"
         >
           Stage
         </SecondaryButton>
@@ -506,7 +512,7 @@ const PreservedUsers = () => {
     },
     {
       key: 7,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 8,
@@ -527,7 +533,7 @@ const PreservedUsers = () => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 
@@ -538,53 +544,57 @@ const PreservedUsers = () => {
       isExpanded={isContextualPanelExpanded}
       onClose={onCloseContextualPanel}
     >
-      <Page>
+      <div>
         <alerts.ManagedAlerts />
-        <PageSection variant={PageSectionVariants.light}>
+        <PageSection hasBodyWrapper={false}>
           <TitleLayout
             id="preserved users title"
             headingLevel="h1"
             text="Preserved users"
           />
         </PageSection>
-        <PageSection
-          variant={PageSectionVariants.light}
-          isFilled={false}
-          className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-        >
-          <ToolbarLayout
-            className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-            contentClassName="pf-v5-u-p-0"
-            toolbarItems={toolbarItems}
-          />
-          <div style={{ height: `calc(100vh - 352.2px)` }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer>
-                {batchError !== undefined && batchError ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <UsersTable
-                    shownElementsList={preservedUsersList}
-                    from="preserved-users"
-                    showTableRows={showTableRows}
-                    usersData={usersTableData}
-                    buttonsData={usersTableButtonsData}
-                    paginationData={selectedPerPageData}
-                    searchValue={searchValue}
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </div>
-          <PaginationLayout
-            list={preservedUsersList}
-            paginationData={paginationData}
-            variant={PaginationVariant.bottom}
-            widgetId="pagination-options-menu-bottom"
-            className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-          />
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem style={{ flex: "0 0 auto" }}>
+              <OuterScrollContainer>
+                <InnerScrollContainer
+                  style={{ height: "60vh", overflow: "auto" }}
+                >
+                  {batchError !== undefined && batchError ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <UsersTable
+                      shownElementsList={preservedUsersList}
+                      from="preserved-users"
+                      showTableRows={showTableRows}
+                      usersData={usersTableData}
+                      buttonsData={usersTableButtonsData}
+                      paginationData={selectedPerPageData}
+                      searchValue={searchValue}
+                    />
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={preservedUsersList}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+              />
+            </FlexItem>
+          </Flex>
         </PageSection>
-        <ModalErrors errors={modalErrors.getAll()} />
+        <ModalErrors
+          errors={modalErrors.getAll()}
+          dataCy="preserved-users-modal-error"
+        />
         <DeleteUsers
           show={showDeleteModal}
           from="preserved-users"
@@ -607,7 +617,7 @@ const PreservedUsers = () => {
           clearSelectedUsers={clearSelectedUsers}
           onSuccess={refreshUsersData}
         />
-      </Page>
+      </div>
     </ContextualHelpPanel>
   );
 };

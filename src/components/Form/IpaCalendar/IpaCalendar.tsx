@@ -25,6 +25,10 @@ export interface ParamPropertiesDateTime {
   paramMetadata: ParamMetadata;
 }
 
+export interface IpaCalendarProps extends IPAParamDefinition {
+  dataCy: string;
+}
+
 function getParamPropertiesDateTime(
   parDef: IPAParamDefinition
 ): ParamPropertiesDateTime {
@@ -48,7 +52,7 @@ function getParamPropertiesDateTime(
   };
 }
 
-const IpaCalendar = (props: IPAParamDefinition) => {
+const IpaCalendar = (props: IpaCalendarProps) => {
   const { readOnly, value } = getParamPropertiesDateTime(props);
 
   const onDateChange = (date: Date | null) => {
@@ -59,6 +63,7 @@ const IpaCalendar = (props: IPAParamDefinition) => {
 
   return (
     <DateTimeSelector
+      dataCy={props.dataCy}
       datetime={value}
       onChange={onDateChange}
       name={props.name}

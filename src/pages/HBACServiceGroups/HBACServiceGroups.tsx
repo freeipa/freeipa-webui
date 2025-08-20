@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
-  Page,
+  Flex,
+  FlexItem,
   PageSection,
-  PageSectionVariants,
   PaginationVariant,
+  ToolbarItemVariant,
 } from "@patternfly/react-core";
 // PatternFly table
 import {
@@ -429,6 +430,7 @@ const HBACServiceGroups = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search services"
           placeholder="Search"
@@ -436,12 +438,12 @@ const HBACServiceGroups = () => {
           isDisabled={searchDisabled}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 2,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 3,
@@ -449,6 +451,7 @@ const HBACServiceGroups = () => {
         <SecondaryButton
           onClickHandler={refreshServicesData}
           isDisabled={!showTableRows}
+          dataCy="hbac-service-groups-button-refresh"
         >
           Refresh
         </SecondaryButton>
@@ -460,6 +463,7 @@ const HBACServiceGroups = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
+          dataCy="hbac-service-groups-button-delete"
         >
           Delete
         </SecondaryButton>
@@ -471,6 +475,7 @@ const HBACServiceGroups = () => {
         <SecondaryButton
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows}
+          dataCy="hbac-service-groups-button-add"
         >
           Add
         </SecondaryButton>
@@ -478,7 +483,7 @@ const HBACServiceGroups = () => {
     },
     {
       key: 6,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 7,
@@ -494,55 +499,54 @@ const HBACServiceGroups = () => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 
   return (
-    <Page>
+    <div>
       <alerts.ManagedAlerts />
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id="hbacservicegroups title"
           headingLevel="h1"
           text="HBAC service groups"
         />
       </PageSection>
-      <PageSection
-        variant={PageSectionVariants.light}
-        isFilled={false}
-        className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-      >
-        <ToolbarLayout
-          className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-          contentClassName="pf-v5-u-p-0"
-          toolbarItems={toolbarItems}
-        />
-        <div style={{ height: `calc(100vh - 352.2px)` }}>
-          <OuterScrollContainer>
-            <InnerScrollContainer>
-              {batchError !== undefined && batchError ? (
-                <GlobalErrors errors={globalErrors.getAll()} />
-              ) : (
-                <HBACServiceGroupsTable
-                  shownElementsList={servicesList}
-                  showTableRows={showTableRows}
-                  servicesData={servicesTableData}
-                  buttonsData={servicesTableButtonsData}
-                  paginationData={selectedPerPageData}
-                  searchValue={searchValue}
-                />
-              )}
-            </InnerScrollContainer>
-          </OuterScrollContainer>
-        </div>
-        <PaginationLayout
-          list={servicesList}
-          paginationData={paginationData}
-          variant={PaginationVariant.bottom}
-          widgetId="pagination-options-menu-bottom"
-          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        />
+      <PageSection hasBodyWrapper={false} isFilled={false}>
+        <Flex direction={{ default: "column" }}>
+          <FlexItem>
+            <ToolbarLayout toolbarItems={toolbarItems} />
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto" }}>
+            <OuterScrollContainer>
+              <InnerScrollContainer
+                style={{ height: "60vh", overflow: "auto" }}
+              >
+                {batchError !== undefined && batchError ? (
+                  <GlobalErrors errors={globalErrors.getAll()} />
+                ) : (
+                  <HBACServiceGroupsTable
+                    shownElementsList={servicesList}
+                    showTableRows={showTableRows}
+                    servicesData={servicesTableData}
+                    buttonsData={servicesTableButtonsData}
+                    paginationData={selectedPerPageData}
+                    searchValue={searchValue}
+                  />
+                )}
+              </InnerScrollContainer>
+            </OuterScrollContainer>
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
+            <PaginationLayout
+              list={servicesList}
+              paginationData={paginationData}
+              variant={PaginationVariant.bottom}
+              widgetId="pagination-options-menu-bottom"
+            />
+          </FlexItem>
+        </Flex>
       </PageSection>
       <AddHBACServiceGroup
         show={showAddModal}
@@ -558,8 +562,11 @@ const HBACServiceGroups = () => {
         buttonsData={deleteServicesButtonsData}
         onRefresh={refreshServicesData}
       />
-      <ModalErrors errors={modalErrors.getAll()} />
-    </Page>
+      <ModalErrors
+        errors={modalErrors.getAll()}
+        dataCy="hbac-service-groups-modal-error"
+      />
+    </div>
   );
 };
 

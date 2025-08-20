@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
-import {
-  TextContent,
-  Text,
-  TextVariants,
-  Button,
-} from "@patternfly/react-core";
+import { Content, ContentVariants, Button } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
@@ -57,11 +52,9 @@ const DeleteSudoRule = (props: PropsToDeleteRules) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
-            Are you sure you want to remove the selected rules?
-          </Text>
-        </TextContent>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to remove the selected rules?
+        </Content>
       ),
     },
     {
@@ -99,7 +92,12 @@ const DeleteSudoRule = (props: PropsToDeleteRules) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-ok"
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       OK
     </Button>,
   ];
@@ -174,6 +172,7 @@ const DeleteSudoRule = (props: PropsToDeleteRules) => {
   // Set the Modal and Action buttons for 'Delete' option
   const modalActionsDelete: JSX.Element[] = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-sudorules"
       variant="danger"
       onClick={deleteRules}
@@ -185,7 +184,12 @@ const DeleteSudoRule = (props: PropsToDeleteRules) => {
     >
       {spinning ? "Deleting" : "Delete"}
     </Button>,
-    <Button key="cancel-delete-sudorules" variant="link" onClick={closeModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-delete-sudorules"
+      variant="link"
+      onClick={closeModal}
+    >
       Cancel
     </Button>,
   ];
@@ -194,6 +198,7 @@ const DeleteSudoRule = (props: PropsToDeleteRules) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="delete-sudo-rules-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"
@@ -206,6 +211,7 @@ const DeleteSudoRule = (props: PropsToDeleteRules) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="delete-sudo-rules-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

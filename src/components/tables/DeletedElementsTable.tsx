@@ -67,8 +67,8 @@ const DeletedElementsTable = <T,>(props: PropsToDeletedElementsTable<T>) => {
     const colNamesArray: string[] = [];
     if (props.mode === "passing_full_data") {
       props.columnNames.map((column) => {
-        const result = column.replace(/([A-Z])/g, " $1");
-        const simplifiedName = result.charAt(0).toUpperCase() + result.slice(1);
+        // Simplify the column name to have the first letter capital
+        const simplifiedName = column.charAt(0).toUpperCase() + column.slice(1);
         colNamesArray.push(simplifiedName);
       });
       setColumnNames(colNamesArray);

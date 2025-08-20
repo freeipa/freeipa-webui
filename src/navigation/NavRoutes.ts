@@ -52,6 +52,11 @@ const IdentityProviderReferencesGroupRef = "identity-provider-references";
 const CertificateMappingGroupRef = "cert-id-mapping-rules";
 const CertificateMappingConfigGroupRef = "cert-id-mapping-global-config";
 const CertificateMappingMatchGroupRef = "cert-id-mapping-match";
+// NETWORK SERVICES
+// - DNS zones
+const DNSZonesGroupRef = "dns-zones";
+const DNSForwardZonesGroupRef = "dns-forward-zones";
+const DNSServersGroupRef = "dns-servers";
 // IPA SERVER
 // - Configuration
 const ConfigRef = "configuration";
@@ -328,6 +333,43 @@ export const navigationRoutes = [
             group: CertificateMappingMatchGroupRef,
             title: `${BASE_TITLE} - Certificate identity mapping match`,
             path: "cert-id-mapping-match",
+            items: [],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    label: "Network services",
+    group: "",
+    title: `${BASE_TITLE} - Network services`,
+    path: "",
+    items: [
+      {
+        label: "DNS",
+        group: DNSZonesGroupRef,
+        title: `${BASE_TITLE} - DNS`,
+        path: "",
+        items: [
+          {
+            label: "DNS zones",
+            group: DNSZonesGroupRef,
+            title: `${BASE_TITLE} - DNS zones`,
+            path: "dns-zones",
+            items: [],
+          },
+          {
+            label: "DNS forward zones",
+            group: DNSForwardZonesGroupRef,
+            title: `${BASE_TITLE} - DNS forward zones`,
+            path: "dns-forward-zones",
+            items: [],
+          },
+          {
+            label: "DNS servers",
+            group: DNSServersGroupRef,
+            title: `${BASE_TITLE} - DNS servers`,
+            path: "dns-servers",
             items: [],
           },
         ],

@@ -72,15 +72,16 @@ const UsersAttributesSMB = (props: PropsToSmbServices) => {
   return (
     <Flex direction={{ default: "column", md: "row" }}>
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-v5-u-mb-lg">
+        <Form className="pf-v6-u-mb-lg">
           <FormGroup
             label="SMB logon script path"
             fieldId="ipantlogonscript"
-            labelIcon={
+            labelHelp={
               <PopoverWithIconLayout message={SBMLogonScriptPathMessage} />
             }
           >
             <IpaTextInput
+              dataCy="user-tab-settings-textbox-smb-logon-script-path"
               name={"ipantlogonscript"}
               ariaLabel={"SMB logon script path"}
               ipaObject={ipaObject}
@@ -92,11 +93,12 @@ const UsersAttributesSMB = (props: PropsToSmbServices) => {
           <FormGroup
             label="SMB profile path"
             fieldId="ipantprofilepath"
-            labelIcon={
+            labelHelp={
               <PopoverWithIconLayout message={SMBProfilePathMessage} />
             }
           >
             <IpaTextInput
+              dataCy="user-tab-settings-textbox-smb-profile-path"
               name={"ipantprofilepath"}
               ariaLabel={"SMB profile path"}
               ipaObject={ipaObject}
@@ -108,11 +110,11 @@ const UsersAttributesSMB = (props: PropsToSmbServices) => {
         </Form>
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-v5-u-mb-lg">
+        <Form className="pf-v6-u-mb-lg">
           <FormGroup
             label="SMB home directory"
             fieldId="ipanthomedirectory"
-            labelIcon={
+            labelHelp={
               <PopoverWithIconLayout
                 message={SMBHomeDirectoryMessage}
                 hasAutoWidth={true}
@@ -120,6 +122,7 @@ const UsersAttributesSMB = (props: PropsToSmbServices) => {
             }
           >
             <IpaTextInput
+              dataCy="user-tab-settings-textbox-smb-home-directory"
               name={"ipanthomedirectory"}
               ariaLabel={"SMB home directory"}
               ipaObject={ipaObject}
@@ -131,7 +134,7 @@ const UsersAttributesSMB = (props: PropsToSmbServices) => {
           <FormGroup
             label="SMB home directory drive"
             fieldId="ipanthomedirectorydrive"
-            labelIcon={
+            labelHelp={
               <PopoverWithIconLayout
                 message={SMBHomeDirectoryDriveMessage}
                 hasAutoWidth={true}
@@ -139,6 +142,7 @@ const UsersAttributesSMB = (props: PropsToSmbServices) => {
             }
           >
             <IpaSelect
+              dataCy="user-tab-settings-smb-home-directory-drive"
               id="ipanthomedirectorydrive"
               name="ipanthomedirectorydrive"
               options={SMBHomeDirectoryDriveOptions}

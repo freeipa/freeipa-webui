@@ -93,7 +93,10 @@ const HBACServiceGroupsSettings = (props: PropsToSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton onClickHandler={props.onRefresh}>
+        <SecondaryButton
+          dataCy="hbac-service-groups-tab-settings-button-refresh"
+          onClickHandler={props.onRefresh}
+        >
           Refresh
         </SecondaryButton>
       ),
@@ -102,6 +105,7 @@ const HBACServiceGroupsSettings = (props: PropsToSettings) => {
       key: 1,
       element: (
         <SecondaryButton
+          dataCy="hbac-service-groups-tab-settings-button-revert"
           isDisabled={!props.isModified}
           onClickHandler={onRevert}
         >
@@ -113,6 +117,7 @@ const HBACServiceGroupsSettings = (props: PropsToSettings) => {
       key: 2,
       element: (
         <SecondaryButton
+          dataCy="hbac-service-groups-tab-settings-button-save"
           isDisabled={!props.isModified || isSaving}
           onClickHandler={onSave}
           isLoading={isSaving}
@@ -137,9 +142,10 @@ const HBACServiceGroupsSettings = (props: PropsToSettings) => {
           id="hbacservice-group-settings"
           text="HBAC service group settings"
         />
-        <Form className="pf-v5-u-mt-sm pf-v5-u-mb-lg pf-v5-u-mr-md">
+        <Form className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md">
           <FormGroup label="Description" fieldId="description">
             <IpaTextArea
+              dataCy="hbac-service-groups-tab-settings-textbox-description"
               name="description"
               ipaObject={ipaObject}
               onChange={recordOnChange}

@@ -1,14 +1,14 @@
 {
   "name": "freeipa-webui",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "homepage": ".",
   "private": true,
   "author": "",
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "@patternfly/patternfly": "^5.1.0",
-    "@patternfly/react-core": "^5.1.2",
-    "@patternfly/react-table": "^5.1.2",
+    "@patternfly/patternfly": "^6.3.0",
+    "@patternfly/react-core": "^6.3.0",
+    "@patternfly/react-table": "^6.3.0",
     "@reduxjs/toolkit": "^2.6.1",
     "qrcode.react": "^4.2.0",
     "react": "^18.0.0",
@@ -22,10 +22,10 @@
     "dev:prepare": "rm -rf dist && mkdir dist && cp index.dev.html dist/index.html && cp favicon.ico dist/favicon.ico",
     "build": "tsc -b && vite build",
     "audit-ci": "audit-ci --config audit-ci.json",
-    "cypress": "cypress run --config-file cypress/cypress.config.ts",
-    "cypress:open": "cypress open --config-file cypress/cypress.config.ts",
-    "lint": "eslint --color --max-warnings 0 src/",
-    "lint:fix": "eslint --fix src/",
+    "cypress": "cypress run",
+    "cypress:open": "cypress open",
+    "lint": "eslint --color --max-warnings 0",
+    "lint:fix": "eslint --fix",
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --write .",
     "test": "vitest run",
@@ -54,8 +54,9 @@
     "cy-verify-downloads": "^0.2.6",
     "cypress": "^14.2.1",
     "esbuild-plugin-polyfill-node": "^0.3.0",
-    "eslint": "^9.23.0",
+    "eslint": "^9.30.1",
     "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-cypress": "^5.1.0",
     "eslint-plugin-prettier": "^5.2.5",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
@@ -70,7 +71,8 @@
   },
   "cypress-cucumber-preprocessor": {
     "stepDefinitions": [
-      "tests/features/steps/*.{js,ts}"
+      "cypress/e2e/common/**/*.ts",
+      "cypress/e2e/[filepart]/*.ts"
     ]
   },
   "engines": {

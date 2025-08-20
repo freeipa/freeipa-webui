@@ -93,6 +93,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
       name: "External member",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-new-external-member"
           id="new-external-member"
           name="ipaexternalmember"
           value={newMember}
@@ -114,6 +115,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
   // - Actions
   const actionsToAddModal = [
     <Button
+      data-cy="add-new-external"
       key="add-new-external"
       variant="secondary"
       isDisabled={newMember.length === 0}
@@ -123,6 +125,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
       Add
     </Button>,
     <Button
+      data-cy="cancel-new-external"
       key="cancel-new-external"
       variant="link"
       onClick={() => setShowAddModal(false)}
@@ -238,7 +241,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
         showTableRows={showTableRows}
       />
       <Pagination
-        className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+        className="pf-v6-u-pb-0 pf-v6-u-pr-md"
         itemCount={props.member_external.length}
         widgetId="pagination-options-menu-bottom"
         perPage={perPage}
@@ -249,6 +252,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
       />
       {showAddModal && (
         <ModalWithFormLayout
+          dataCy="add-external-member-modal"
           variantType="small"
           modalPosition="top"
           title={"Add external member"}

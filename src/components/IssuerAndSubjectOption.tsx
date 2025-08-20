@@ -51,19 +51,20 @@ const IssuerAndSubjectOption = (props: PropsToIssuerAndSubjectOption) => {
   return (
     <>
       <Radio
+        data-cy="modal-radio-issuer-and-subject"
         isChecked={props.isIssuerAndSubjectChecked}
         name="issuer-and-subject-radio"
         onChange={(_event, value) => props.onChangeIssuerAndSubjectCheck(value)}
         label="Issuer and subject"
         id="issuer-and-subject"
-        className="pf-v5-u-mb-md"
+        className="pf-v6-u-mb-md"
       />
-      <div className="pf-v5-u-ml-lg pf-v5-u-mb-md" id="issuer-and-subject">
+      <div className="pf-v6-u-ml-lg pf-v6-u-mb-md" id="issuer-and-subject">
         <Form>
           <FormGroup
             label="Issuer"
             fieldId="issuer"
-            labelIcon={
+            labelHelp={
               <PopoverWithIconLayout
                 message={issuerMessage}
                 hasAutoWidth={true}
@@ -73,6 +74,7 @@ const IssuerAndSubjectOption = (props: PropsToIssuerAndSubjectOption) => {
             name="issuer-formgroup"
           >
             <TextInput
+              data-cy="modal-textbox-issuer"
               id="issuer"
               value={props.issuerValue}
               type="text"
@@ -86,7 +88,7 @@ const IssuerAndSubjectOption = (props: PropsToIssuerAndSubjectOption) => {
           <FormGroup
             label="Subject"
             fieldId="subject-textbox"
-            labelIcon={
+            labelHelp={
               <PopoverWithIconLayout
                 message={subjectMessage}
                 hasAutoWidth={true}
@@ -96,6 +98,7 @@ const IssuerAndSubjectOption = (props: PropsToIssuerAndSubjectOption) => {
             name="subject-formgroup"
           >
             <TextInput
+              data-cy="modal-textbox-subject"
               id="subject-textbox"
               value={props.subjectValue}
               type="text"

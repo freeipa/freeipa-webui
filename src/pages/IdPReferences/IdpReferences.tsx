@@ -1,10 +1,11 @@
 import React from "react";
 // PatternFly
 import {
-  Page,
+  Flex,
+  FlexItem,
   PageSection,
-  PageSectionVariants,
   PaginationVariant,
+  ToolbarItemVariant,
 } from "@patternfly/react-core";
 import {
   InnerScrollContainer,
@@ -346,6 +347,7 @@ const IdpReferences = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search subIds"
           placeholder="Search"
@@ -353,17 +355,18 @@ const IdpReferences = () => {
           isDisabled={isSearchDisabled}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 2,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 3,
       element: (
         <SecondaryButton
+          dataCy="idp-references-button-refresh"
           onClickHandler={refreshData}
           isDisabled={!showTableRows}
         >
@@ -375,6 +378,7 @@ const IdpReferences = () => {
       key: 4,
       element: (
         <SecondaryButton
+          dataCy="idp-references-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onOpenDeleteModal}
         >
@@ -386,6 +390,7 @@ const IdpReferences = () => {
       key: 5,
       element: (
         <SecondaryButton
+          dataCy="idp-references-button-add"
           isDisabled={!showTableRows}
           onClickHandler={onOpenAddModal}
         >
@@ -395,7 +400,7 @@ const IdpReferences = () => {
     },
     {
       key: 6,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 7,
@@ -411,80 +416,79 @@ const IdpReferences = () => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 
   // Render component
   return (
-    <Page>
+    <div>
       <alerts.ManagedAlerts />
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id="Identity Provider references page"
           headingLevel="h1"
           text="Identity Provider references"
         />
       </PageSection>
-      <PageSection
-        variant={PageSectionVariants.light}
-        isFilled={false}
-        className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-      >
-        <ToolbarLayout
-          className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-          contentClassName="pf-v5-u-p-0"
-          toolbarItems={toolbarItems}
-        />
-        <div style={{ height: `calc(100vh - 352.2px)` }}>
-          <OuterScrollContainer>
-            <InnerScrollContainer>
-              {error !== undefined && error ? (
-                <GlobalErrors errors={globalErrors.getAll()} />
-              ) : (
-                <MainTable
-                  tableTitle="Identity Provider references table"
-                  shownElementsList={idpReferences}
-                  pk="cn"
-                  keyNames={["cn", "ipaidpclientid", "ipaidpscope"]}
-                  columnNames={[
-                    "Identity Provider reference name",
-                    "Client identifier",
-                    "Scope",
-                  ]}
-                  hasCheckboxes={true}
-                  pathname="identity-provider-references"
-                  showTableRows={showTableRows}
-                  showLink={true}
-                  elementsData={{
-                    isElementSelectable: isIdpServerSelectable,
-                    selectedElements,
-                    selectableElementsTable: selectableIdpRefsTable,
-                    setElementsSelected: setIdpRefsSelected,
-                    clearSelectedElements,
-                  }}
-                  buttonsData={{
-                    updateIsDeleteButtonDisabled: (value) =>
-                      setIsDeleteButtonDisabled(value),
-                    isDeletion,
-                    updateIsDeletion: (value) => setIsDeletion(value),
-                  }}
-                  paginationData={{
-                    selectedPerPage,
-                    updateSelectedPerPage: setSelectedPerPage,
-                  }}
-                />
-              )}
-            </InnerScrollContainer>
-          </OuterScrollContainer>
-        </div>
-        <PaginationLayout
-          list={idpReferences}
-          paginationData={paginationData}
-          variant={PaginationVariant.bottom}
-          widgetId="pagination-options-menu-bottom"
-          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        />
+      <PageSection hasBodyWrapper={false} isFilled={false}>
+        <Flex direction={{ default: "column" }}>
+          <FlexItem>
+            <ToolbarLayout toolbarItems={toolbarItems} />
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto" }}>
+            <OuterScrollContainer>
+              <InnerScrollContainer
+                style={{ height: "60vh", overflow: "auto" }}
+              >
+                {error !== undefined && error ? (
+                  <GlobalErrors errors={globalErrors.getAll()} />
+                ) : (
+                  <MainTable
+                    tableTitle="Identity Provider references table"
+                    shownElementsList={idpReferences}
+                    pk="cn"
+                    keyNames={["cn", "ipaidpclientid", "ipaidpscope"]}
+                    columnNames={[
+                      "Identity Provider reference name",
+                      "Client identifier",
+                      "Scope",
+                    ]}
+                    hasCheckboxes={true}
+                    pathname="identity-provider-references"
+                    showTableRows={showTableRows}
+                    showLink={true}
+                    elementsData={{
+                      isElementSelectable: isIdpServerSelectable,
+                      selectedElements,
+                      selectableElementsTable: selectableIdpRefsTable,
+                      setElementsSelected: setIdpRefsSelected,
+                      clearSelectedElements,
+                    }}
+                    buttonsData={{
+                      updateIsDeleteButtonDisabled: (value) =>
+                        setIsDeleteButtonDisabled(value),
+                      isDeletion,
+                      updateIsDeletion: (value) => setIsDeletion(value),
+                    }}
+                    paginationData={{
+                      selectedPerPage,
+                      updateSelectedPerPage: setSelectedPerPage,
+                    }}
+                  />
+                )}
+              </InnerScrollContainer>
+            </OuterScrollContainer>
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
+            <PaginationLayout
+              list={idpReferences}
+              paginationData={paginationData}
+              variant={PaginationVariant.bottom}
+              widgetId="pagination-options-menu-bottom"
+            />
+          </FlexItem>
+        </Flex>
       </PageSection>
       <AddModal
         isOpen={showAddModal}
@@ -511,7 +515,7 @@ const IdpReferences = () => {
         keyNames={["cn", "ipaidpclientid", "ipaidpscope"]}
         onRefresh={refreshData}
       />
-    </Page>
+    </div>
   );
 };
 

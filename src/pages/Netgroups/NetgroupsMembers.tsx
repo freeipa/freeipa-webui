@@ -114,132 +114,134 @@ const NetgroupsMembers = (props: PropsToNetgroupsMembers) => {
   };
 
   return (
-    <TabLayout id="members">
-      <Tabs
-        activeKey={props.tabSection}
-        onSelect={handleTabClick}
-        isBox={false}
-        mountOnEnter
-        unmountOnExit
-      >
-        <Tab
-          eventKey={"member_user"}
-          name="member_user"
-          title={
-            <TabTitleText>
-              Users{" "}
-              <Badge key={0} id="user_count" isRead>
-                {userCount}
-              </Badge>
-            </TabTitleText>
-          }
+    <div style={{ height: `var(--subsettings-calc)` }}>
+      <TabLayout id="members">
+        <Tabs
+          activeKey={props.tabSection}
+          onSelect={handleTabClick}
+          isBox={false}
+          mountOnEnter
+          unmountOnExit
         >
-          <MembersUsers
-            entity={netgroup}
-            id={netgroup.cn as string}
-            from="netgroup"
-            isDataLoading={netgroupQuery.isFetching}
-            onRefreshData={onRefreshNetgroupData}
-            member_user={netgroup.memberuser_user || []}
-            setDirection={() => {}}
-            direction={"direct"}
-          />
-        </Tab>
-        <Tab
-          eventKey={"member_group"}
-          name="member_group"
-          title={
-            <TabTitleText>
-              User groups{" "}
-              <Badge key={1} id="group_count" isRead>
-                {groupCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MembersUserGroups
-            entity={netgroup}
-            id={netgroup.cn as string}
-            from="netgroup"
-            isDataLoading={netgroupQuery.isFetching}
-            onRefreshData={onRefreshNetgroupData}
-            member_group={netgroup.memberuser_group || []}
-            setDirection={() => {}}
-            direction={"direct"}
-          />
-        </Tab>
-        <Tab
-          eventKey={"member_host"}
-          name="member_host"
-          title={
-            <TabTitleText>
-              Hosts{" "}
-              <Badge key={2} id="host_count" isRead>
-                {hostCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MembersHosts
-            entity={netgroup}
-            id={netgroup.cn as string}
-            from="netgroup"
-            isDataLoading={netgroupQuery.isFetching}
-            onRefreshData={onRefreshNetgroupData}
-            member_host={netgroup.memberhost_host || []}
-            setDirection={() => {}}
-            direction={"direct"}
-          />
-        </Tab>
-        <Tab
-          eventKey={"member_hostgroup"}
-          name="member_hostgroup"
-          title={
-            <TabTitleText>
-              Host groups{" "}
-              <Badge key={3} id="hostgroup_count" isRead>
-                {hostGroupCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MembersHostGroups
-            entity={netgroup}
-            id={netgroup.cn as string}
-            from="netgroup"
-            isDataLoading={netgroupQuery.isFetching}
-            onRefreshData={onRefreshNetgroupData}
-            member_hostgroup={netgroup.memberhost_hostgroup || []}
-            setDirection={() => {}}
-            direction={"direct"}
-          />
-        </Tab>
-        <Tab
-          eventKey={"member_netgroup"}
-          name="member_netgroup"
-          title={
-            <TabTitleText>
-              Netgroups{" "}
-              <Badge key={4} id="netgroup_count" isRead>
-                {netgroupCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MembersNetgroups
-            entity={netgroup}
-            id={netgroup.cn as string}
-            from="netgroup"
-            isDataLoading={netgroupQuery.isFetching}
-            onRefreshData={onRefreshNetgroupData}
-            member_netgroup={netgroup.member_netgroup || []}
-            memberindirect_netgroup={netgroup.memberindirect_netgroup || []}
-            setDirection={updateNetgroupDirection}
-            direction={netgroupDirection}
-          />
-        </Tab>
-      </Tabs>
-    </TabLayout>
+          <Tab
+            eventKey={"member_user"}
+            name="member_user"
+            title={
+              <TabTitleText>
+                Users{" "}
+                <Badge key={0} id="user_count" isRead>
+                  {userCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MembersUsers
+              entity={netgroup}
+              id={netgroup.cn as string}
+              from="netgroup"
+              isDataLoading={netgroupQuery.isFetching}
+              onRefreshData={onRefreshNetgroupData}
+              member_user={netgroup.memberuser_user || []}
+              setDirection={() => {}}
+              direction={"direct"}
+            />
+          </Tab>
+          <Tab
+            eventKey={"member_group"}
+            name="member_group"
+            title={
+              <TabTitleText>
+                User groups{" "}
+                <Badge key={1} id="group_count" isRead>
+                  {groupCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MembersUserGroups
+              entity={netgroup}
+              id={netgroup.cn as string}
+              from="netgroup"
+              isDataLoading={netgroupQuery.isFetching}
+              onRefreshData={onRefreshNetgroupData}
+              member_group={netgroup.memberuser_group || []}
+              setDirection={() => {}}
+              direction={"direct"}
+            />
+          </Tab>
+          <Tab
+            eventKey={"member_host"}
+            name="member_host"
+            title={
+              <TabTitleText>
+                Hosts{" "}
+                <Badge key={2} id="host_count" isRead>
+                  {hostCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MembersHosts
+              entity={netgroup}
+              id={netgroup.cn as string}
+              from="netgroup"
+              isDataLoading={netgroupQuery.isFetching}
+              onRefreshData={onRefreshNetgroupData}
+              member_host={netgroup.memberhost_host || []}
+              setDirection={() => {}}
+              direction={"direct"}
+            />
+          </Tab>
+          <Tab
+            eventKey={"member_hostgroup"}
+            name="member_hostgroup"
+            title={
+              <TabTitleText>
+                Host groups{" "}
+                <Badge key={3} id="hostgroup_count" isRead>
+                  {hostGroupCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MembersHostGroups
+              entity={netgroup}
+              id={netgroup.cn as string}
+              from="netgroup"
+              isDataLoading={netgroupQuery.isFetching}
+              onRefreshData={onRefreshNetgroupData}
+              member_hostgroup={netgroup.memberhost_hostgroup || []}
+              setDirection={() => {}}
+              direction={"direct"}
+            />
+          </Tab>
+          <Tab
+            eventKey={"member_netgroup"}
+            name="member_netgroup"
+            title={
+              <TabTitleText>
+                Netgroups{" "}
+                <Badge key={4} id="netgroup_count" isRead>
+                  {netgroupCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MembersNetgroups
+              entity={netgroup}
+              id={netgroup.cn as string}
+              from="netgroup"
+              isDataLoading={netgroupQuery.isFetching}
+              onRefreshData={onRefreshNetgroupData}
+              member_netgroup={netgroup.member_netgroup || []}
+              memberindirect_netgroup={netgroup.memberindirect_netgroup || []}
+              setDirection={updateNetgroupDirection}
+              direction={netgroupDirection}
+            />
+          </Tab>
+        </Tabs>
+      </TabLayout>
+    </div>
   );
 };
 

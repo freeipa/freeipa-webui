@@ -104,7 +104,10 @@ const CertificateMappingGlobalConfig = () => {
     {
       key: 0,
       element: (
-        <SecondaryButton onClickHandler={certMapConfigData.refetch}>
+        <SecondaryButton
+          dataCy="certificate-mapping-global-config-button-refresh"
+          onClickHandler={certMapConfigData.refetch}
+        >
           Refresh
         </SecondaryButton>
       ),
@@ -113,6 +116,7 @@ const CertificateMappingGlobalConfig = () => {
       key: 1,
       element: (
         <SecondaryButton
+          dataCy="certificate-mapping-global-config-button-revert"
           isDisabled={!certMapConfigData.modified || isDataLoading}
           onClickHandler={onRevert}
         >
@@ -124,6 +128,7 @@ const CertificateMappingGlobalConfig = () => {
       key: 2,
       element: (
         <SecondaryButton
+          dataCy="certificate-mapping-global-config-button-save"
           isDisabled={!certMapConfigData.modified || isDataLoading}
           onClickHandler={onSave}
         >
@@ -159,21 +164,22 @@ const CertificateMappingGlobalConfig = () => {
     >
       <>
         <alerts.ManagedAlerts />
-        <Sidebar isPanelRight className="pf-v5-u-mb-0">
+        <Sidebar isPanelRight className="pf-v6-u-mb-0">
           <SidebarPanel variant="sticky">
             <HelpTextWithIconLayout
               textContent="Help"
               icon={
-                <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
+                <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
               }
             />
           </SidebarPanel>
-          <SidebarContent className="pf-v5-u-mr-xl">
+          <SidebarContent className="pf-v6-u-mr-xl">
             <Flex direction={{ default: "column", lg: "row" }}>
               <FlexItem flex={{ default: "flex_1" }}>
-                <Form className="pf-v5-u-mb-lg">
+                <Form className="pf-v6-u-mb-lg">
                   <FormGroup fieldId="ipacertmappromptusername" role="group">
                     <IpaCheckbox
+                      dataCy="certificate-mapping-global-config-checkbox-ipacertmappromptusername"
                       name="ipacertmappromptusername"
                       value={String(
                         certMapConfigData.certMapConfig.ipacertmappromptusername

@@ -6,10 +6,11 @@ import { ApiError } from "src/hooks/useApiError";
 import ErrorModal from "../modals/ErrorModal";
 
 interface ModalErrorProps {
+  dataCy: string;
   errors: ApiError[];
 }
 
-const ModalErrors = ({ errors }: ModalErrorProps) => {
+const ModalErrors = ({ errors, dataCy }: ModalErrorProps) => {
   const [isModalErrorOpen, setIsModalErrorOpen] = React.useState(false);
   const [errorTitle, setErrorTitle] = React.useState("");
   const [errorMessage, setErrorMessage] = React.useState("");
@@ -33,7 +34,12 @@ const ModalErrors = ({ errors }: ModalErrorProps) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       Cancel
     </Button>,
   ];
@@ -42,6 +48,7 @@ const ModalErrors = ({ errors }: ModalErrorProps) => {
     <>
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy={dataCy}
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

@@ -317,10 +317,11 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
       name: "Attribute",
       pfComponent: (
         <SimpleSelector
+          dataCy="modal-attribute"
           id="attribute"
           selected={key}
           options={userAciAttrs.map((name) => ({
-            label: name,
+            key: name,
             value: name,
           }))}
           onSelectedChange={(selected: string) => setkey(selected)}
@@ -333,6 +334,7 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
       fieldRequired: true,
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-expression"
           id="expression"
           value={expression}
           onChange={(_event, value: string) => setExpression(value)}
@@ -343,6 +345,7 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
 
   const addModalActions: JSX.Element[] = [
     <Button
+      data-cy="modal-button-add"
       key="add-inclusive"
       variant="primary"
       form={"add-" + props.conditionType + "-option-modal"}
@@ -355,6 +358,7 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
       {spinningOnAdd ? "Adding" : "Add"}
     </Button>,
     <Button
+      data-cy="modal-button-add-and-add-another"
       key="add-another-inclusive"
       variant="primary"
       form={"add-another" + props.conditionType + "option-modal"}
@@ -367,6 +371,7 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
       {spinningOnAdd ? "Adding" : "Add and add another"}
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key={"cancel-add-" + props.conditionType}
       variant="link"
       onClick={onChangeAddModalVisibility}
@@ -437,6 +442,7 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
       />
       {/* Add option modal */}
       <ModalWithFormLayout
+        dataCy="add-automember-condition-modal"
         variantType="medium"
         modalPosition="top"
         title={"Add " + props.conditionType + " conditions"}

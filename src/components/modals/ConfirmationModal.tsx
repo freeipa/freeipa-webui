@@ -1,10 +1,17 @@
 import React from "react";
 // PatternFly
-import { Card, CardTitle, Modal } from "@patternfly/react-core";
-// Components
-import TextLayout from "../layouts/TextLayout";
+import {
+  Card,
+  CardTitle,
+  Content,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+} from "@patternfly/react-core";
 
 interface PropsToConfModal {
+  dataCy: string;
   variant?: "default" | "small" | "medium" | "large";
   title: string;
   isOpen?: boolean;
@@ -17,16 +24,19 @@ interface PropsToConfModal {
 const ConfirmationModal = (props: PropsToConfModal) => {
   return (
     <Modal
+      data-cy={props.dataCy}
       variant={props.variant || "small"}
-      title={props.title}
       isOpen={props.isOpen}
       onClose={props.onClose}
-      actions={props.actions}
     >
-      <TextLayout component="p">{props.messageText}</TextLayout>
-      <Card className="pf-v5-u-mt-md" isFlat isCompact>
-        <CardTitle>{props.messageObj}</CardTitle>
-      </Card>
+      <ModalHeader title={props.title} labelId="confirmation-modal-title" />
+      <ModalBody id="confirmation-modal-body">
+        <Content component="p">{props.messageText}</Content>
+        <Card className="pf-v6-u-mt-md" isCompact>
+          <CardTitle>{props.messageObj}</CardTitle>
+        </Card>
+      </ModalBody>
+      <ModalFooter>{props.actions}</ModalFooter>
     </Modal>
   );
 };

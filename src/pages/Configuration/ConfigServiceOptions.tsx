@@ -16,13 +16,14 @@ interface PropsToServiceOptions {
 
 const ConfigServiceOptions = (props: PropsToServiceOptions) => {
   return (
-    <Form className="pf-v5-u-mt-md" isHorizontal>
+    <Form className="pf-v6-u-mt-md" isHorizontal>
       <FormGroup
         label="Default PAC types"
         fieldId="ipakrbauthzdata"
         role="group"
       >
         <IpaCheckboxes
+          dataCy="configuration-checkbox-ipakrbauthzdata"
           name="ipakrbauthzdata"
           options={[
             {

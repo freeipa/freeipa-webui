@@ -172,7 +172,8 @@ export function convertToString(value: BasicType): string {
 export function convertApiObj(
   apiRecord: Record<string, unknown>,
   simpleValues: Set<string>,
-  dateValues: Set<string>
+  dateValues: Set<string>,
+  complexValues: Map<string, string> = new Map() // E.g. [["idnsname", "__dns_name__"]]
 ) {
   const obj = {};
   if (apiRecord !== undefined) {
@@ -181,6 +182,19 @@ export function convertApiObj(
         obj[key] = convertToString(value as BasicType);
       } else if (dateValues.has(key)) {
         obj[key] = parseAPIDatetime(value);
+      } else if (complexValues.has(key)) {
+        const complexKey = complexValues.get(key);
+        if (
+          Array.isArray(value) &&
+          complexKey &&
+          typeof complexKey === "string"
+        ) {
+          obj[key] = (value[0] as Record<string, unknown>)[complexKey];
+        } else {
+          console.error(
+            `Complex value for key ${key} is not an array or complexKey is not a string`
+          );
+        }
       } else {
         obj[key] = value;
       }

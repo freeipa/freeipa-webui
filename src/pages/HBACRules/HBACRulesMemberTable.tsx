@@ -377,7 +377,7 @@ const HBACRulesMemberTable = (props: PropsToTable) => {
   };
 
   return (
-    <div className="pf-v5-u-mr-md pf-v5-u-ml-xl">
+    <div className="pf-v6-u-mr-md pf-v6-u-ml-xl">
       <alerts.ManagedAlerts />
       <SettingsTableLayout
         ariaLabel={props.from + " table in HBAC rules"}
@@ -395,7 +395,6 @@ const HBACRulesMemberTable = (props: PropsToTable) => {
         searchValue={searchValue}
         paginationData={paginationData}
         list={props.members}
-        entryCount={props.members.length}
         entryType={props.fromLabel ? props.fromLabel : props.from}
       />
       {showAddModal && (

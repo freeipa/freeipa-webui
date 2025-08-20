@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Content,
   Drawer,
   DrawerActions,
   DrawerCloseButton,
@@ -16,8 +17,6 @@ import {
 import DocumentationLinks from "src/assets/documentation/documentation-links.json";
 // Icons
 import { ExternalLinkAltIcon } from "@patternfly/react-icons";
-// Components
-import TextLayout from "../layouts/TextLayout";
 
 export interface DocLink {
   name: string;
@@ -73,7 +72,7 @@ const ContextualHelpPanel = (props: ContextualHelpPanelProps) => {
     <DrawerPanelContent>
       <DrawerHead id="contextual-help-panel-header">
         <span tabIndex={props.isExpanded ? 0 : -1} ref={drawerRef}>
-          <TextLayout component="h2">Links</TextLayout>
+          <Content component="h2">Links</Content>
         </span>
         <DrawerActions>
           <DrawerCloseButton onClick={props.onClose} />

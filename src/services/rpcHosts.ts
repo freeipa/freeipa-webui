@@ -10,7 +10,7 @@ import {
   useGettingGenericQuery,
   useGetGenericListQuery,
 } from "./rpc";
-import { apiToHost } from "../utils/hostUtils";
+import { apiToHost, createEmptyHost } from "../utils/hostUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
 import { Host } from "../utils/datatypes/globalDataTypes";
 
@@ -220,8 +220,12 @@ const extendedApi = api.injectEndpoints({
           params: [[hostId], { version: API_VERSION_BACKUP }],
         });
       },
-      transformResponse: (response: FindRPCResponse): Host =>
-        apiToHost(response.result.result),
+      transformResponse: (response: FindRPCResponse): Host => {
+        if (response.result?.result !== undefined) {
+          return apiToHost(response.result?.result);
+        }
+        return createEmptyHost();
+      },
     }),
     /**
      * Add entity to hosts

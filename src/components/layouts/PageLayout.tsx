@@ -1,6 +1,6 @@
 import React from "react";
 // PatternFly
-import { Page, PageSection, PageSectionVariants } from "@patternfly/react-core";
+import { PageSection } from "@patternfly/react-core";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
@@ -31,24 +31,20 @@ const PageLayout = (props: PageLayoutProps) => {
   }, [browserTitle]);
 
   return (
-    <Page>
+    <div>
       {props.hasAlerts && <alerts.ManagedAlerts />}
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id={props.title + " title"}
           headingLevel="h1"
           text={props.title}
         />
       </PageSection>
-      <PageSection
-        variant={PageSectionVariants.light}
-        isFilled={false}
-        className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-      >
+      <PageSection hasBodyWrapper={false}>
         {props.toolbarItems && props.toolbarItems.length > 0 && (
           <ToolbarLayout
-            className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-            contentClassName="pf-v5-u-p-0"
+            className="pf-v6-u-pt-0 pf-v6-u-pl-lg pf-v6-u-pr-md"
+            contentClassName="pf-v6-u-p-0"
             toolbarItems={props.toolbarItems}
           />
         )}
@@ -56,7 +52,7 @@ const PageLayout = (props: PageLayoutProps) => {
         {props.pagination && props.pagination}
       </PageSection>
       {props.modals && props.modals}
-    </Page>
+    </div>
   );
 };
 

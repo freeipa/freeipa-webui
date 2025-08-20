@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  Button,
-  TextContent,
-  Text,
-  TextVariants,
-} from "@patternfly/react-core";
+import { Button, Content, ContentVariants } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import { HBACRule } from "src/utils/datatypes/globalDataTypes";
@@ -69,14 +64,14 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
+        <>
+          <Content component={ContentVariants.p}>
             Are you sure you want to {action} selected entries?
-          </Text>
-          <Text component={TextVariants.p}>
+          </Content>
+          <Content component={ContentVariants.p}>
             <i>{rules.join(", ")}</i>
-          </Text>
-        </TextContent>
+          </Content>
+        </>
       ),
     },
   ];
@@ -102,7 +97,12 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
   };
 
   const errorModalActions = [
-    <Button key="ok" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-ok"
+      key="ok"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       OK
     </Button>,
   ];
@@ -267,16 +267,23 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
         )
       }
       form="hbacrules-enable-disable-hbacrules-modal"
+      data-cy="modal-button-disable"
     >
       Disable
     </Button>,
-    <Button key="cancel-disable-hacbrule" variant="link" onClick={closeModal}>
+    <Button
+      key="cancel-disable-hacbrule"
+      variant="link"
+      onClick={closeModal}
+      data-cy="modal-button-cancel"
+    >
       Cancel
     </Button>,
   ];
 
   const modalDisable: JSX.Element = (
     <ModalWithFormLayout
+      dataCy="disable-hbac-rules-modal"
       variantType="medium"
       modalPosition="top"
       offPosition="76px"
@@ -301,16 +308,23 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
         )
       }
       form="hbacrules-enable-disable-hbacrules-modal"
+      data-cy="modal-button-enable"
     >
       Enable
     </Button>,
-    <Button key="cancel-enable-hbacrule" variant="link" onClick={closeModal}>
+    <Button
+      key="cancel-enable-hbacrule"
+      variant="link"
+      onClick={closeModal}
+      data-cy="modal-button-cancel"
+    >
       Cancel
     </Button>,
   ];
 
   const modalEnable: JSX.Element = (
     <ModalWithFormLayout
+      dataCy="enable-hbac-rules-modal"
       variantType="medium"
       modalPosition="top"
       offPosition="76px"
@@ -330,6 +344,7 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
       {!props.optionSelected ? modalEnable : modalDisable}
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="disable-enable-hbac-rules-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

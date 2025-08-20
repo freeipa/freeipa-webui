@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
-  Page,
+  Flex,
+  FlexItem,
   PageSection,
-  PageSectionVariants,
   PaginationVariant,
+  ToolbarItemVariant,
 } from "@patternfly/react-core";
 // PatternFly table
 import {
@@ -419,6 +420,7 @@ const SudoCmds = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search commands"
           placeholder="Search"
@@ -426,12 +428,12 @@ const SudoCmds = () => {
           isDisabled={searchDisabled}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 2,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 3,
@@ -439,6 +441,7 @@ const SudoCmds = () => {
         <SecondaryButton
           onClickHandler={refreshData}
           isDisabled={!showTableRows}
+          dataCy="sudo-commands-button-refresh"
         >
           Refresh
         </SecondaryButton>
@@ -450,6 +453,7 @@ const SudoCmds = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
+          dataCy="sudo-commands-button-delete"
         >
           Delete
         </SecondaryButton>
@@ -461,6 +465,7 @@ const SudoCmds = () => {
         <SecondaryButton
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows}
+          dataCy="sudo-commands-button-add"
         >
           Add
         </SecondaryButton>
@@ -468,7 +473,7 @@ const SudoCmds = () => {
     },
     {
       key: 6,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 7,
@@ -484,55 +489,54 @@ const SudoCmds = () => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 
   return (
-    <Page>
+    <div>
       <alerts.ManagedAlerts />
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id="sudocmd title"
           headingLevel="h1"
           text="Sudo commands"
         />
       </PageSection>
-      <PageSection
-        variant={PageSectionVariants.light}
-        isFilled={false}
-        className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-      >
-        <ToolbarLayout
-          className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-          contentClassName="pf-v5-u-p-0"
-          toolbarItems={toolbarItems}
-        />
-        <div style={{ height: `calc(100vh - 352.2px)` }}>
-          <OuterScrollContainer>
-            <InnerScrollContainer>
-              {batchError !== undefined && batchError ? (
-                <GlobalErrors errors={globalErrors.getAll()} />
-              ) : (
-                <SudoCmdsTable
-                  shownElementsList={cmdList}
-                  showTableRows={showTableRows}
-                  cmdsData={cmdsTableData}
-                  buttonsData={cmdsTableButtonsData}
-                  paginationData={selectedPerPageData}
-                  searchValue={searchValue}
-                />
-              )}
-            </InnerScrollContainer>
-          </OuterScrollContainer>
-        </div>
-        <PaginationLayout
-          list={cmdList}
-          paginationData={paginationData}
-          variant={PaginationVariant.bottom}
-          widgetId="pagination-options-menu-bottom"
-          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        />
+      <PageSection hasBodyWrapper={false} isFilled={false}>
+        <Flex direction={{ default: "column" }}>
+          <FlexItem>
+            <ToolbarLayout toolbarItems={toolbarItems} />
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto" }}>
+            <OuterScrollContainer>
+              <InnerScrollContainer
+                style={{ height: "60vh", overflow: "auto" }}
+              >
+                {batchError !== undefined && batchError ? (
+                  <GlobalErrors errors={globalErrors.getAll()} />
+                ) : (
+                  <SudoCmdsTable
+                    shownElementsList={cmdList}
+                    showTableRows={showTableRows}
+                    cmdsData={cmdsTableData}
+                    buttonsData={cmdsTableButtonsData}
+                    paginationData={selectedPerPageData}
+                    searchValue={searchValue}
+                  />
+                )}
+              </InnerScrollContainer>
+            </OuterScrollContainer>
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
+            <PaginationLayout
+              list={cmdList}
+              paginationData={paginationData}
+              variant={PaginationVariant.bottom}
+              widgetId="pagination-options-menu-bottom"
+            />
+          </FlexItem>
+        </Flex>
       </PageSection>
       <AddSudoCmd
         show={showAddModal}
@@ -548,8 +552,11 @@ const SudoCmds = () => {
         buttonsData={deleteCmdsButtonsData}
         onRefresh={refreshData}
       />
-      <ModalErrors errors={modalErrors.getAll()} />
-    </Page>
+      <ModalErrors
+        errors={modalErrors.getAll()}
+        dataCy="sudo-cmds-modal-error"
+      />
+    </div>
   );
 };
 

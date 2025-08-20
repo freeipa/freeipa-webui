@@ -339,6 +339,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
       <FlexItem>User category the rule applies to: </FlexItem>
       <FlexItem>
         <IpaToggleGroup
+          dataCy="sudo-rule-toggle-group-user-category"
           ipaObject={props.ipaObject}
           name="usercategory"
           options={options}
@@ -376,7 +377,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
           aria-label="users in the who section of the sudo rule"
         >
           <KeytabTableWithFilter
-            className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+            className="pf-v6-u-ml-md pf-v6-u-mt-sm"
             id={props.rule.cn as string}
             from="sudo rule"
             name="memberuser_user"
@@ -405,7 +406,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
           aria-label="user groups in the who section of the sudo rule"
         >
           <KeytabTableWithFilter
-            className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+            className="pf-v6-u-ml-md pf-v6-u-mt-sm"
             id={props.rule.cn as string}
             from="sudo rule"
             name="memberuser_group"

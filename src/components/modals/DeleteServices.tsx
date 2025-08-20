@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
-import {
-  TextContent,
-  Text,
-  TextVariants,
-  Button,
-} from "@patternfly/react-core";
+import { Content, ContentVariants, Button } from "@patternfly/react-core";
 // Redux
 import { useAppDispatch } from "../../store/hooks";
 import { removeService } from "../../store/Identity/services-slice";
@@ -63,11 +58,9 @@ const DeleteServices = (props: PropsToDeleteServices) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
-            Are you sure you want to remove the selected entries from Services?
-          </Text>
-        </TextContent>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to remove the selected entries from Services?
+        </Content>
       ),
     },
     {
@@ -105,7 +98,12 @@ const DeleteServices = (props: PropsToDeleteServices) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-ok"
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       OK
     </Button>,
   ];
@@ -185,6 +183,7 @@ const DeleteServices = (props: PropsToDeleteServices) => {
   // Set the Modal and Action buttons for 'Delete' option
   const modalActionsDelete: JSX.Element[] = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-services"
       variant="danger"
       onClick={deleteServices}
@@ -196,7 +195,12 @@ const DeleteServices = (props: PropsToDeleteServices) => {
     >
       {spinning ? "Deleting" : "Delete"}
     </Button>,
-    <Button key="cancel-delete-services" variant="link" onClick={closeModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-delete-services"
+      variant="link"
+      onClick={closeModal}
+    >
       Cancel
     </Button>,
   ];
@@ -205,6 +209,7 @@ const DeleteServices = (props: PropsToDeleteServices) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="delete-services-modal"
         variantType="small"
         modalPosition="top"
         offPosition="76px"
@@ -217,6 +222,7 @@ const DeleteServices = (props: PropsToDeleteServices) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="delete-services-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

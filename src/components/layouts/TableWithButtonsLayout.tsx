@@ -31,6 +31,7 @@ const TableWithButtonsLayout = (props: PropsToTableWithButtons) => {
       <Flex>
         <FlexItem>
           <SecondaryButton
+            dataCy="table-button-delete"
             classname={props.deleteButtonClasses}
             isDisabled={props.isDeleteDisabled}
             onClickHandler={props.onDeleteModal}
@@ -38,6 +39,7 @@ const TableWithButtonsLayout = (props: PropsToTableWithButtons) => {
             Delete
           </SecondaryButton>
           <SecondaryButton
+            dataCy="table-button-add"
             classname={props.addButtonClasses}
             onClickHandler={props.onAddModal}
           >

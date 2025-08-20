@@ -1,10 +1,11 @@
 import React from "react";
 // PatternFly
 import {
-  Page,
+  Flex,
+  FlexItem,
   PageSection,
-  PageSectionVariants,
   PaginationVariant,
+  ToolbarItemVariant,
 } from "@patternfly/react-core";
 import {
   InnerScrollContainer,
@@ -90,7 +91,7 @@ const CertificateMappingPage = () => {
   const certMapsResponse = useGetCertMapRuleEntriesQuery({
     searchValue,
     apiVersion,
-    sizelimit: perPage,
+    sizelimit: 100,
     startIdx: firstUserIdx,
     stopIdx: lastUserIdx,
   });
@@ -114,7 +115,6 @@ const CertificateMappingPage = () => {
       data !== undefined
     ) {
       const listResult = data.result.results;
-      const totalCount = data.result.totalCount;
       const listSize = data.result.count;
       const elementsList: CertificateMapping[] = [];
 
@@ -122,7 +122,7 @@ const CertificateMappingPage = () => {
         elementsList.push(apiToCertificateMapping(listResult[i].result));
       }
 
-      setTotalCount(totalCount);
+      setTotalCount(certMapsResponse.data.result.totalCount);
       // Update the list of elements
       setCertMapRules(elementsList);
       // Show table elements
@@ -367,6 +367,7 @@ const CertificateMappingPage = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search certificate mapping rules"
           placeholder="Search"
@@ -374,17 +375,18 @@ const CertificateMappingPage = () => {
           isDisabled={isSearchDisabled}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 2,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 3,
       element: (
         <SecondaryButton
+          dataCy="certificate-mapping-button-refresh"
           onClickHandler={refreshData}
           isDisabled={!showTableRows}
         >
@@ -396,6 +398,7 @@ const CertificateMappingPage = () => {
       key: 4,
       element: (
         <SecondaryButton
+          dataCy="certificate-mapping-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={() => setShowDeleteModal(true)}
         >
@@ -407,6 +410,7 @@ const CertificateMappingPage = () => {
       key: 5,
       element: (
         <SecondaryButton
+          dataCy="certificate-mapping-button-add"
           isDisabled={!showTableRows}
           onClickHandler={() => setShowAddModal(true)}
         >
@@ -418,6 +422,7 @@ const CertificateMappingPage = () => {
       key: 6,
       element: (
         <SecondaryButton
+          dataCy="certificate-mapping-button-disable"
           isDisabled={isDisableButtonDisabled || !showTableRows}
           onClickHandler={onDisableOperation}
         >
@@ -429,6 +434,7 @@ const CertificateMappingPage = () => {
       key: 7,
       element: (
         <SecondaryButton
+          dataCy="certificate-mapping-button-enable"
           isDisabled={isEnableButtonDisabled || !showTableRows}
           onClickHandler={onEnableOperation}
         >
@@ -438,7 +444,7 @@ const CertificateMappingPage = () => {
     },
     {
       key: 8,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 9,
@@ -454,82 +460,81 @@ const CertificateMappingPage = () => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 
   // Render component
   return (
-    <Page>
+    <div>
       <alerts.ManagedAlerts />
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id="Certificate Identity mapping rules page"
           headingLevel="h1"
           text="Certificate Identity mapping rules"
         />
       </PageSection>
-      <PageSection
-        variant={PageSectionVariants.light}
-        isFilled={false}
-        className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-      >
-        <ToolbarLayout
-          className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-          contentClassName="pf-v5-u-p-0"
-          toolbarItems={toolbarItems}
-        />
-        <div style={{ height: `calc(100vh - 352.2px)` }}>
-          <OuterScrollContainer>
-            <InnerScrollContainer>
-              {error !== undefined && error ? (
-                <GlobalErrors errors={globalErrors.getAll()} />
-              ) : (
-                <MainTable
-                  tableTitle="Certificate Identity mapping table"
-                  shownElementsList={certMapRules}
-                  pk="cn"
-                  keyNames={["cn", "ipaenabledflag", "description"]}
-                  columnNames={["Rule name", "Status", "Description"]}
-                  hasCheckboxes={true}
-                  pathname="cert-id-mapping-rules"
-                  showTableRows={showTableRows}
-                  showLink={true}
-                  elementsData={{
-                    isElementSelectable: isCertMapSelectable,
-                    selectedElements,
-                    selectableElementsTable: selectableCertMapRulesTable,
-                    setElementsSelected: setCertMapRulesSelected,
-                    clearSelectedElements: () => setSelectedElements([]),
-                  }}
-                  buttonsData={{
-                    updateIsDeleteButtonDisabled: (value) =>
-                      setIsDeleteButtonDisabled(value),
-                    isDeletion,
-                    updateIsDeletion: (value) => setIsDeletion(value),
-                    updateIsEnableButtonDisabled: (value) =>
-                      setIsEnableButtonDisabled(value),
-                    updateIsDisableButtonDisabled: (value) =>
-                      setIsDisableButtonDisabled(value),
-                    isDisableEnableOp: true,
-                  }}
-                  paginationData={{
-                    selectedPerPage,
-                    updateSelectedPerPage: setSelectedPerPage,
-                  }}
-                  statusElementName="ipaenabledflag"
-                />
-              )}
-            </InnerScrollContainer>
-          </OuterScrollContainer>
-        </div>
-        <PaginationLayout
-          list={certMapRules}
-          paginationData={paginationData}
-          variant={PaginationVariant.bottom}
-          widgetId="pagination-options-menu-bottom"
-          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        />
+      <PageSection hasBodyWrapper={false} isFilled={false}>
+        <Flex direction={{ default: "column" }}>
+          <FlexItem>
+            <ToolbarLayout toolbarItems={toolbarItems} />
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto" }}>
+            <OuterScrollContainer>
+              <InnerScrollContainer
+                style={{ height: "55vh", overflow: "auto" }}
+              >
+                {error !== undefined && error ? (
+                  <GlobalErrors errors={globalErrors.getAll()} />
+                ) : (
+                  <MainTable
+                    tableTitle="Certificate Identity mapping table"
+                    shownElementsList={certMapRules}
+                    pk="cn"
+                    keyNames={["cn", "ipaenabledflag", "description"]}
+                    columnNames={["Rule name", "Status", "Description"]}
+                    hasCheckboxes={true}
+                    pathname="cert-id-mapping-rules"
+                    showTableRows={showTableRows}
+                    showLink={true}
+                    elementsData={{
+                      isElementSelectable: isCertMapSelectable,
+                      selectedElements,
+                      selectableElementsTable: selectableCertMapRulesTable,
+                      setElementsSelected: setCertMapRulesSelected,
+                      clearSelectedElements: () => setSelectedElements([]),
+                    }}
+                    buttonsData={{
+                      updateIsDeleteButtonDisabled: (value) =>
+                        setIsDeleteButtonDisabled(value),
+                      isDeletion,
+                      updateIsDeletion: (value) => setIsDeletion(value),
+                      updateIsEnableButtonDisabled: (value) =>
+                        setIsEnableButtonDisabled(value),
+                      updateIsDisableButtonDisabled: (value) =>
+                        setIsDisableButtonDisabled(value),
+                      isDisableEnableOp: true,
+                    }}
+                    paginationData={{
+                      selectedPerPage,
+                      updateSelectedPerPage: setSelectedPerPage,
+                    }}
+                    statusElementName="ipaenabledflag"
+                  />
+                )}
+              </InnerScrollContainer>
+            </OuterScrollContainer>
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
+            <PaginationLayout
+              list={certMapRules}
+              paginationData={paginationData}
+              variant={PaginationVariant.bottom}
+              widgetId="pagination-options-menu-bottom"
+            />
+          </FlexItem>
+        </Flex>
       </PageSection>
       <AddRuleModal
         isOpen={showAddModal}
@@ -559,7 +564,7 @@ const CertificateMappingPage = () => {
         setShowTableRows={setShowTableRows}
         onRefresh={refreshData}
       />
-    </Page>
+    </div>
   );
 };
 

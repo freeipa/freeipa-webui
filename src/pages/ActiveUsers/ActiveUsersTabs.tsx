@@ -4,8 +4,7 @@ import {
   Icon,
   Title,
   PageSection,
-  PageSectionVariants,
-  TextContent,
+  Content,
   Tabs,
   Tab,
   TabTitleText,
@@ -110,9 +109,9 @@ const ActiveUsersTabs = ({ memberof }) => {
   const disabled = userSettingsData.user.nsaccountlock;
   const user = userSettingsData.user;
   const titleText = (
-    <div className="pf-v5-u-display-flex">
-      <div className="pf-v5-u-color-400">User:</div>
-      <div className="pf-v5-u-ml-sm">{uid}</div>
+    <div className="pf-v6-u-display-flex">
+      <div className="pf-v6-u-color-400">User:</div>
+      <div className="pf-v6-u-ml-sm">{uid}</div>
     </div>
   );
 
@@ -123,24 +122,18 @@ const ActiveUsersTabs = ({ memberof }) => {
         isExpanded={isContextualPanelExpanded}
         onClose={onCloseContextualPanel}
       >
-        <PageSection
-          variant={PageSectionVariants.light}
-          className="pf-v5-u-pr-0"
-        >
-          <BreadCrumb
-            className="pf-v5-u-mb-md"
-            breadcrumbItems={breadcrumbItems}
-          />
-          <TextContent>
+        <PageSection hasBodyWrapper={false}>
+          <BreadCrumb breadcrumbItems={breadcrumbItems} />
+          <Content>
             <Title headingLevel="h1">
               <div
-                className="pf-v5-u-display-flex"
+                className="pf-v6-u-display-flex"
                 title={disabled ? "User is disabled" : ""}
               >
                 {titleText}
                 {disabled ? (
                   <Icon
-                    className="pf-v5-u-ml-sm pf-v5-u-mt-sm"
+                    className="pf-v6-u-ml-sm pf-v6-u-mt-sm"
                     status="info"
                     size="md"
                   >
@@ -151,9 +144,9 @@ const ActiveUsersTabs = ({ memberof }) => {
                 )}
               </div>
             </Title>
-          </TextContent>
+          </Content>
         </PageSection>
-        <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
+        <PageSection hasBodyWrapper={false} type="tabs" isFilled>
           <Tabs
             activeKey={activeTab}
             onSelect={(_event, tabIndex) => {
@@ -163,13 +156,14 @@ const ActiveUsersTabs = ({ memberof }) => {
                 navigate("memberof_group");
               }
             }}
-            variant="light300"
+            variant="secondary"
             isBox
-            className="pf-v5-u-ml-lg"
+            className="pf-v6-u-ml-lg"
             mountOnEnter
             unmountOnExit
           >
             <Tab
+              data-cy="active-users-tab-settings"
               eventKey={"settings"}
               name="details"
               title={<TabTitleText>Settings</TabTitleText>}
@@ -196,6 +190,7 @@ const ActiveUsersTabs = ({ memberof }) => {
               />
             </Tab>
             <Tab
+              data-cy="active-users-tab-memberof"
               eventKey={"memberof"}
               name="memberof-details"
               title={<TabTitleText>Is a member of</TabTitleText>}

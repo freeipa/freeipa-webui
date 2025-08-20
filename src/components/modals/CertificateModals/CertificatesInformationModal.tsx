@@ -1,9 +1,8 @@
 import React from "react";
 // PatternFly
-import { Button, Flex, FlexItem } from "@patternfly/react-core";
+import { Button, Content, Flex, FlexItem } from "@patternfly/react-core";
 // Components
 import TitleLayout from "src/components/layouts/TitleLayout";
-import TextLayout from "src/components/layouts/TextLayout";
 // Modals
 import InformationModalLayout from "src/components/layouts/InformationModalLayout";
 // Data types
@@ -31,7 +30,12 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
 
   // Actions
   const infoModalActions = [
-    <Button key="close" variant="primary" onClick={props.onClose}>
+    <Button
+      data-cy="modal-button-close"
+      key="close"
+      variant="primary"
+      onClick={props.onClose}
+    >
       Close
     </Button>,
   ];
@@ -41,13 +45,13 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
       <Flex
         direction={{ default: "column", md: "row" }}
         justifyContent={{ default: "justifyContentFlexStart" }}
-        className="pf-v5-u-mt-sm"
+        className="pf-v6-u-mt-sm"
       >
-        <FlexItem className="pf-v5-u-mb-0" style={{ width: "200px" }}>
-          <TextLayout>{key}:</TextLayout>
+        <FlexItem className="pf-v6-u-mb-0" style={{ width: "200px" }}>
+          <Content>{key}:</Content>
         </FlexItem>
         <FlexItem flex={{ default: "flex_1" }}>
-          <TextLayout>{value}</TextLayout>
+          <Content>{value}</Content>
         </FlexItem>
       </Flex>
     );
@@ -78,7 +82,7 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
             id={"info-modal-issued-by"}
             headingLevel="h2"
             text={"Issued by"}
-            className="pf-v5-u-mt-md"
+            className="pf-v6-u-mt-md"
           />
           {parseKeyValue("Common name", parseDn(certInfo.issuer).cn || "")}
           {parseKeyValue("Organization", parseDn(certInfo.issuer).o || "")}
@@ -90,7 +94,7 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
             id={"info-modal-validity"}
             headingLevel="h2"
             text={"Validity"}
-            className="pf-v5-u-mt-md"
+            className="pf-v6-u-mt-md"
           />
           {parseKeyValue("Issued on", certInfo.valid_not_before || "")}
           {parseKeyValue("Expires on", certInfo.valid_not_after || "")}
@@ -98,7 +102,7 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
             id={"info-modal-fingerprints"}
             headingLevel="h2"
             text={"Fingerprints"}
-            className="pf-v5-u-mt-md"
+            className="pf-v6-u-mt-md"
           />
           {parseKeyValue("SHA1 Fingerprint", certInfo.sha1_fingerprint || "")}
           {parseKeyValue(
@@ -112,6 +116,7 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
 
   return (
     <InformationModalLayout
+      dataCy="certificates-information-modal"
       title={"Certificate for " + certName}
       variant="medium"
       actions={infoModalActions}

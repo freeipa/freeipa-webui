@@ -165,9 +165,10 @@ const AddModal = (props: PropsToAddModal) => {
       name: "Group",
       pfComponent: (
         <SimpleSelector
+          dataCy="modal-simple-group"
           id="group"
           options={availableItems.map((name) => ({
-            label: name,
+            key: name,
             value: name,
           }))}
           selected={selectedItem}
@@ -181,6 +182,7 @@ const AddModal = (props: PropsToAddModal) => {
       name: "Priority",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-priority"
           id="modal-form-priority"
           name="cospriority"
           type="number"
@@ -196,6 +198,7 @@ const AddModal = (props: PropsToAddModal) => {
   // Actions
   const modalActions: JSX.Element[] = [
     <Button
+      data-cy="modal-button-add"
       key="add-new"
       variant="secondary"
       isDisabled={isAddButtonSpinning || selectedItem === ""}
@@ -207,6 +210,7 @@ const AddModal = (props: PropsToAddModal) => {
       Add
     </Button>,
     <Button
+      data-cy="modal-button-add-and-add-another"
       key="add-new-again"
       variant="secondary"
       isDisabled={isAddAnotherButtonSpinning || selectedItem === ""}
@@ -217,7 +221,12 @@ const AddModal = (props: PropsToAddModal) => {
     >
       Add and add again
     </Button>,
-    <Button key="cancel-new" variant="link" onClick={cleanAndCloseModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-new"
+      variant="link"
+      onClick={cleanAndCloseModal}
+    >
       Cancel
     </Button>,
   ];
@@ -227,6 +236,7 @@ const AddModal = (props: PropsToAddModal) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="add-pwpolicy-modal"
         variantType={"small"}
         modalPosition={"top"}
         offPosition={"76px"}

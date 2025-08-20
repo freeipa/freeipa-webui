@@ -59,6 +59,7 @@ describe("IpaSelect Component", () => {
   };
 
   const defaultProps: IPAParamDefinitionSelect = {
+    dataCy: "ipa-select",
     id: "customipaselect",
     name: "customipaselect",
     ariaLabel: "customipaselect",

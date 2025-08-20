@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
-import {
-  TextContent,
-  Text,
-  TextVariants,
-  Button,
-} from "@patternfly/react-core";
+import { Content, ContentVariants, Button } from "@patternfly/react-core";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { removeGroup } from "src/store/Identity/hostGroups-slice";
@@ -63,12 +58,9 @@ const DeleteHostGroups = (props: PropsToDeleteGroups) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
-            Are you sure you want to remove the selected entries from Host
-            groups?
-          </Text>
-        </TextContent>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to remove the selected entries from Host groups?
+        </Content>
       ),
     },
     {
@@ -106,7 +98,12 @@ const DeleteHostGroups = (props: PropsToDeleteGroups) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-ok"
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       OK
     </Button>,
   ];
@@ -186,6 +183,7 @@ const DeleteHostGroups = (props: PropsToDeleteGroups) => {
   // Set the Modal and Action buttons for 'Delete' option
   const modalActionsDelete: JSX.Element[] = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-hostgroups"
       variant="danger"
       onClick={deleteGroups}
@@ -197,7 +195,12 @@ const DeleteHostGroups = (props: PropsToDeleteGroups) => {
     >
       {spinning ? "Deleting" : "Delete"}
     </Button>,
-    <Button key="cancel-delete-hostgroups" variant="link" onClick={closeModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-delete-hostgroups"
+      variant="link"
+      onClick={closeModal}
+    >
       Cancel
     </Button>,
   ];
@@ -206,6 +209,7 @@ const DeleteHostGroups = (props: PropsToDeleteGroups) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="delete-hostgroups-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"
@@ -218,6 +222,7 @@ const DeleteHostGroups = (props: PropsToDeleteGroups) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="delete-hostgroups-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

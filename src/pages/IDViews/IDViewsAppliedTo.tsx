@@ -7,11 +7,10 @@ import {
   DropdownList,
   MenuToggle,
   MenuToggleElement,
-  Page,
   PageSection,
-  PageSectionVariants,
   PaginationVariant,
   SearchInput,
+  ToolbarItemVariant,
 } from "@patternfly/react-core";
 import {
   InnerScrollContainer,
@@ -50,6 +49,7 @@ import {
   useUnapplyHostsMutation,
   useUnapplyHostgroupsMutation,
 } from "../../services/rpcIDViews";
+import TabLayout from "src/components/layouts/TabLayout";
 
 export interface AppliesToProps {
   idView: IDView;
@@ -203,7 +203,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
                 {failed_msgs.length > 1 ? "s" : ""}:
                 <ul>
                   {failed_msgs.map((item) => (
-                    <li className="pf-v5-u-ml-sm" key={item}>
+                    <li className="pf-v6-u-ml-sm" key={item}>
                       &#8226; {item}
                     </li>
                   ))}
@@ -263,7 +263,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
                 {failed_msgs.length > 1 ? "s" : ""}:
                 <ul>
                   {failed_msgs.map((item) => (
-                    <li className="pf-v5-u-ml-sm" key={item}>
+                    <li className="pf-v6-u-ml-sm" key={item}>
                       &#8226; {item}
                     </li>
                   ))}
@@ -337,7 +337,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
                 {failed_msgs.length > 1 ? "s" : ""}:
                 <ul>
                   {failed_msgs.map((item) => (
-                    <li className="pf-v5-u-ml-sm" key={item}>
+                    <li className="pf-v6-u-ml-sm" key={item}>
                       &#8226; {item}
                     </li>
                   ))}
@@ -402,7 +402,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
                 {failed_msgs.length > 1 ? "s" : ""}:
                 <ul>
                   {failed_msgs.map((item) => (
-                    <li className="pf-v5-u-ml-sm" key={item}>
+                    <li className="pf-v6-u-ml-sm" key={item}>
                       &#8226; {item}
                     </li>
                   ))}
@@ -495,6 +495,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
       key: 1,
       element: (
         <SearchInput
+          data-cy="search"
           name="search"
           placeholder="Search hosts"
           value={searchValue}
@@ -502,17 +503,21 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
           onClear={() => setSearchValue("")}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 2,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 3,
       element: (
-        <Button variant="secondary" onClick={refreshViewsData}>
+        <Button
+          data-cy="id-views-tab-applied-to-refresh"
+          variant="secondary"
+          onClick={refreshViewsData}
+        >
           Refresh
         </Button>
       ),
@@ -521,12 +526,13 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
       key: 4,
       element: (
         <Dropdown
+          data-cy="id-views-tab-applied-to-kebab"
           isOpen={isApplyOpen}
           onSelect={onSelectApply}
           onOpenChange={(isApplyOpen: boolean) => setIsApplyOpen(isApplyOpen)}
           toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
             <MenuToggle
-              className="pf-m-small"
+              data-cy="id-views-tab-applied-to-kebab-apply-toggle"
               ref={toggleRef}
               onClick={onToggleClickApply}
               isExpanded={isApplyOpen}
@@ -537,10 +543,10 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
           )}
           ouiaId="ApplyDropdown"
           shouldFocusToggleOnSelect
-          className="pf-m-small"
         >
           <DropdownList>
             <DropdownItem
+              data-cy="id-views-tab-applied-to-kebab-apply-hosts"
               value={1}
               key="apply-hosts"
               onClick={() => setShowApplyHostModal(true)}
@@ -548,6 +554,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
               Apply hosts
             </DropdownItem>
             <DropdownItem
+              data-cy="id-views-tab-applied-to-kebab-apply-host-groups"
               value={2}
               key="apply-host-groups"
               onClick={() => setShowApplyHostGroupModal(true)}
@@ -562,6 +569,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
       key: 5,
       element: (
         <Dropdown
+          data-cy="id-views-tab-applied-to-kebab-unapply"
           isOpen={isUnapplyOpen}
           onSelect={onSelectUnapply}
           onOpenChange={(isUnapplyOpen: boolean) =>
@@ -569,6 +577,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
           }
           toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
             <MenuToggle
+              data-cy="id-views-tab-applied-to-kebab-unapply-toggle"
               ref={toggleRef}
               onClick={onToggleClickUnapply}
               isExpanded={isUnapplyOpen}
@@ -582,6 +591,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
         >
           <DropdownList>
             <DropdownItem
+              data-cy="id-views-tab-applied-to-kebab-unapply-hosts"
               value={1}
               key="unapply-hosts"
               onClick={() => setShowUnapplyHostsModal(true)}
@@ -590,6 +600,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
               Unapply hosts
             </DropdownItem>
             <DropdownItem
+              data-cy="id-views-tab-applied-to-kebab-unapply-host-groups"
               value={2}
               key="unapply-host-groups"
               onClick={() => setShowUnapplyHostGroupModal(true)}
@@ -602,7 +613,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
     },
     {
       key: 6,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 7,
@@ -618,24 +629,20 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 
   return (
-    <Page>
-      <alerts.ManagedAlerts />
-      <PageSection
-        variant={PageSectionVariants.light}
-        isFilled={false}
-        className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-      >
-        <ToolbarLayout
-          className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-          contentClassName="pf-v5-u-p-0"
-          toolbarItems={toolbarItems}
-        />
-        <div className="pf-v5-u-ml-md pf-v5-u-mr-md">
+    <div
+      style={{
+        height: `var(--subsettings-calc)`,
+      }}
+    >
+      <TabLayout id="override sections">
+        <alerts.ManagedAlerts />
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <ToolbarLayout toolbarItems={toolbarItems} />
           <OuterScrollContainer>
             <InnerScrollContainer>
               <IDViewsAppliedToTable
@@ -647,74 +654,76 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
               />
             </InnerScrollContainer>
           </OuterScrollContainer>
-        </div>
-        <PaginationLayout
-          list={hostsList}
-          paginationData={paginationData}
-          variant={PaginationVariant.bottom}
-          widgetId="pagination-options-menu-bottom"
-          className="pf-v5-u-pb-0 pf-v5-u-pr-md pf-v5-u-mt-md"
+          <PaginationLayout
+            list={hostsList}
+            paginationData={paginationData}
+            variant={PaginationVariant.bottom}
+            widgetId="pagination-options-menu-bottom"
+          />
+        </PageSection>
+        <ModalErrors
+          errors={modalErrors.getAll()}
+          dataCy="id-views-tab-applied-to-modal-error"
         />
-      </PageSection>
-      <ModalErrors errors={modalErrors.getAll()} />
-      <DualListLayout
-        entry={""}
-        target={"hostgroup"}
-        showModal={showUnapplyHostGroupModal}
-        onCloseModal={() => setShowUnapplyHostGroupModal(false)}
-        onOpenModal={() => setShowUnapplyHostGroupModal(true)}
-        tableElementsList={[]}
-        action={onUnapplyHostgroups}
-        title={"Un-apply ID Views from hosts of hostgroups"}
-        spinning={applySpinning}
-        addBtnName="Unapply"
-        addSpinningBtnName="Unapplying"
-      />
-      <DualListLayout
-        entry={""}
-        target={"host"}
-        showModal={showApplyHostModal}
-        onCloseModal={() => setShowApplyHostModal(false)}
-        onOpenModal={() => setShowApplyHostModal(true)}
-        tableElementsList={hostsList}
-        action={onApplyHosts}
-        title={"Apply ID view '" + props.idView.cn + "' on hosts"}
-        spinning={applySpinning}
-        addBtnName="Apply"
-        addSpinningBtnName="Applying"
-      />
-      <DualListLayout
-        entry={""}
-        target={"hostgroup"}
-        showModal={showApplyHostGroupModal}
-        onCloseModal={() => setShowApplyHostGroupModal(false)}
-        onOpenModal={() => setShowApplyHostGroupModal(true)}
-        tableElementsList={[]}
-        action={onApplyHostGroups}
-        title={
-          "Apply ID view '" + props.idView.cn + "' on hosts of host groups"
-        }
-        spinning={applySpinning}
-        addBtnName="Apply"
-        addSpinningBtnName="Applying"
-      />
-      {/* Delete confirmation modal - Unapply Hosts*/}
-      <MemberOfDeleteModal
-        showModal={showUnapplyHostsModal}
-        onCloseModal={() => setShowUnapplyHostsModal(false)}
-        title={"Un-apply ID view '" + props.idView.cn + "' from hosts"}
-        onDelete={onUnapplyHosts}
-        spinning={applySpinning}
-      >
-        <DeletedElementsTable
-          mode="passing_id"
-          elementsToDelete={selectedHosts}
-          columnNames={["Hosts"]}
-          elementType="Host"
-          idAttr="fqdn"
+        <DualListLayout
+          entry={""}
+          target={"hostgroup"}
+          showModal={showUnapplyHostGroupModal}
+          onCloseModal={() => setShowUnapplyHostGroupModal(false)}
+          onOpenModal={() => setShowUnapplyHostGroupModal(true)}
+          tableElementsList={[]}
+          action={onUnapplyHostgroups}
+          title={"Un-apply ID Views from hosts of hostgroups"}
+          spinning={applySpinning}
+          addBtnName="Unapply"
+          addSpinningBtnName="Unapplying"
         />
-      </MemberOfDeleteModal>
-    </Page>
+        <DualListLayout
+          entry={""}
+          target={"host"}
+          showModal={showApplyHostModal}
+          onCloseModal={() => setShowApplyHostModal(false)}
+          onOpenModal={() => setShowApplyHostModal(true)}
+          tableElementsList={hostsList}
+          action={onApplyHosts}
+          title={"Apply ID view '" + props.idView.cn + "' on hosts"}
+          spinning={applySpinning}
+          addBtnName="Apply"
+          addSpinningBtnName="Applying"
+        />
+        <DualListLayout
+          entry={""}
+          target={"hostgroup"}
+          showModal={showApplyHostGroupModal}
+          onCloseModal={() => setShowApplyHostGroupModal(false)}
+          onOpenModal={() => setShowApplyHostGroupModal(true)}
+          tableElementsList={[]}
+          action={onApplyHostGroups}
+          title={
+            "Apply ID view '" + props.idView.cn + "' on hosts of host groups"
+          }
+          spinning={applySpinning}
+          addBtnName="Apply"
+          addSpinningBtnName="Applying"
+        />
+        {/* Delete confirmation modal - Unapply Hosts*/}
+        <MemberOfDeleteModal
+          showModal={showUnapplyHostsModal}
+          onCloseModal={() => setShowUnapplyHostsModal(false)}
+          title={"Un-apply ID view '" + props.idView.cn + "' from hosts"}
+          onDelete={onUnapplyHosts}
+          spinning={applySpinning}
+        >
+          <DeletedElementsTable
+            mode="passing_id"
+            elementsToDelete={selectedHosts}
+            columnNames={["Hosts"]}
+            elementType="Host"
+            idAttr="fqdn"
+          />
+        </MemberOfDeleteModal>
+      </TabLayout>
+    </div>
   );
 };
 

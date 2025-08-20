@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
-import {
-  PageSection,
-  PageSectionVariants,
-  Tabs,
-  Tab,
-  TabTitleText,
-} from "@patternfly/react-core";
+import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate, useParams } from "react-router-dom";
 import { URL_PREFIX } from "src/navigation/NavRoutes";
@@ -98,9 +92,9 @@ const SudoCmdGroupsTabs = ({ section }) => {
 
   return (
     <>
-      <PageSection variant={PageSectionVariants.light} className="pf-v5-u-pr-0">
+      <PageSection hasBodyWrapper={false}>
         <BreadCrumb
-          className="pf-v5-u-mb-md"
+          className="pf-v6-u-mb-sm"
           breadcrumbItems={breadcrumbItems}
         />
         <TitleLayout
@@ -110,13 +104,13 @@ const SudoCmdGroupsTabs = ({ section }) => {
           preText="Sudo command group:"
         />
       </PageSection>
-      <PageSection type="tabs" variant={PageSectionVariants.light} isFilled>
+      <PageSection hasBodyWrapper={false} type="tabs" isFilled>
         <Tabs
           activeKey={activeTabKey}
           onSelect={handleTabClick}
-          variant="light300"
+          variant="secondary"
           isBox
-          className="pf-v5-u-ml-lg"
+          className="pf-v6-u-ml-lg"
           mountOnEnter
           unmountOnExit
         >

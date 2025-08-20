@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
-import {
-  TextContent,
-  Text,
-  TextVariants,
-  Button,
-} from "@patternfly/react-core";
+import { Content, ContentVariants, Button } from "@patternfly/react-core";
 // Modals
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
@@ -72,11 +67,9 @@ const MemberOfDeleteModal = (props: PropsToDelete) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
-            Are you sure you want to remove the selected entries from the list?
-          </Text>
-        </TextContent>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to remove the selected entries from the list?
+        </Content>
       ),
     },
     {
@@ -117,6 +110,7 @@ const MemberOfDeleteModal = (props: PropsToDelete) => {
   // Set the Modal and Action buttons for 'Delete' option
   const modalActionsDelete: JSX.Element[] = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-groups"
       variant="danger"
       onClick={deleteGroups}
@@ -124,7 +118,12 @@ const MemberOfDeleteModal = (props: PropsToDelete) => {
     >
       Delete
     </Button>,
-    <Button key="cancel-remove-group" variant="link" onClick={closeModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-remove-group"
+      variant="link"
+      onClick={closeModal}
+    >
       Cancel
     </Button>,
   ];
@@ -132,6 +131,7 @@ const MemberOfDeleteModal = (props: PropsToDelete) => {
   // Render 'MemberOfDeleteModal'
   return (
     <ModalWithFormLayout
+      dataCy="member-of-delete-modal"
       variantType="medium"
       modalPosition="top"
       offPosition="76px"

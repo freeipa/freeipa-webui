@@ -43,6 +43,7 @@ const ExpandableCardLayout = (props: PropsToCardLayout) => {
   // Toggle
   const KebabToggleWithRef = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
+      data-cy={props.id + "-kebab"}
       ref={toggleRef}
       id={props.id}
       aria-label="kebab dropdown toggle"
@@ -57,7 +58,11 @@ const ExpandableCardLayout = (props: PropsToCardLayout) => {
   const getDropdownItems = () => {
     if (props.dropdownItems !== undefined && props.dropdownItems.length > 0) {
       return (
-        <Dropdown toggle={KebabToggleWithRef} isOpen={isOpen}>
+        <Dropdown
+          data-cy={props.id + "-kebab-dropdown"}
+          toggle={KebabToggleWithRef}
+          isOpen={isOpen}
+        >
           <DropdownList>{props.dropdownItems}</DropdownList>
         </Dropdown>
       );
@@ -66,7 +71,7 @@ const ExpandableCardLayout = (props: PropsToCardLayout) => {
 
   return (
     <Card
-      className={"pf-v5-u-mb-sm " + props.className}
+      className={"pf-v6-u-mb-sm " + props.className}
       isCompact={props.isCompact}
       isExpanded={isExpanded}
     >

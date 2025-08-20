@@ -178,6 +178,7 @@ const ResetPasswordPage = () => {
     <Form isHorizontal>
       <FormGroup label="username" fieldId="username">
         <TextInput
+          data-cy="reset-password-textbox-username"
           id="username"
           name="username"
           type="text"
@@ -187,6 +188,7 @@ const ResetPasswordPage = () => {
       </FormGroup>
       <FormGroup label="Current password" fieldId="current-password">
         <PasswordInput
+          dataCy="reset-password-textbox-current-password"
           id="current-password"
           name="current_password"
           value={currentPassword}
@@ -198,6 +200,7 @@ const ResetPasswordPage = () => {
       </FormGroup>
       <FormGroup label="New password" fieldId="new-password">
         <PasswordInput
+          dataCy="reset-password-textbox-new-password"
           id="new-password"
           name="new_password"
           value={newPassword}
@@ -210,6 +213,7 @@ const ResetPasswordPage = () => {
       </FormGroup>
       <FormGroup label="Verify password" fieldId="verify-password">
         <PasswordInput
+          dataCy="reset-password-textbox-verify-password"
           id="verify-password"
           name="verify_password"
           value={verifyPassword}
@@ -228,6 +232,7 @@ const ResetPasswordPage = () => {
       </FormGroup>
       <FormGroup label="OTP" fieldId="otp">
         <PasswordInput
+          dataCy="reset-password-textbox-otp"
           id="otp"
           name="otp"
           value={otp}
@@ -238,10 +243,15 @@ const ResetPasswordPage = () => {
         />
       </FormGroup>
       <ActionGroup>
-        <Button variant="link" onClick={() => navigate(-1)}>
+        <Button
+          data-cy="reset-password-button-cancel"
+          variant="link"
+          onClick={() => navigate(-1)}
+        >
           Cancel
         </Button>
         <Button
+          data-cy="reset-password-button-reset"
           variant="primary"
           isDisabled={isResetButtonDisabled || spinning}
           onClick={onResetPwd}

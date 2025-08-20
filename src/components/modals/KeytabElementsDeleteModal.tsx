@@ -1,11 +1,6 @@
 import React from "react";
 // PatternFly
-import {
-  Button,
-  TextContent,
-  Text,
-  TextVariants,
-} from "@patternfly/react-core";
+import { Button, Content, ContentVariants } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
@@ -25,7 +20,7 @@ interface PropsToDelete {
   tableElementsList: string[];
   updateTableElementsList: (newElementsList: string[]) => void;
   availableData: string[];
-  updateAvailableData: (newFilteredElements: unknown[]) => void;
+  updateAvailableData: (newFilteredElements: string[]) => void;
 }
 
 const KeytabElementsDeleteModal = (props: PropsToDelete) => {
@@ -34,11 +29,9 @@ const KeytabElementsDeleteModal = (props: PropsToDelete) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
-            Are you sure you want to delete the selected entries?
-          </Text>
-        </TextContent>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to delete the selected entries?
+        </Content>
       ),
     },
     {
@@ -86,6 +79,7 @@ const KeytabElementsDeleteModal = (props: PropsToDelete) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <SecondaryButton
+      dataCy="modal-button-delete"
       key={"delete-" + props.elementType}
       form="modal-form"
       onClickHandler={removeElementFromList}
@@ -93,6 +87,7 @@ const KeytabElementsDeleteModal = (props: PropsToDelete) => {
       Delete
     </SecondaryButton>,
     <Button
+      data-cy="modal-button-cancel"
       key={"cancel-delete-" + props.elementType}
       variant="link"
       onClick={closeModal}
@@ -104,6 +99,7 @@ const KeytabElementsDeleteModal = (props: PropsToDelete) => {
   // Render component
   return (
     <ModalWithFormLayout
+      dataCy="keytab-elements-delete-modal"
       variantType="medium"
       modalPosition="top"
       title={

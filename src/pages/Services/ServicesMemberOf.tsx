@@ -70,35 +70,37 @@ const ServicesMemberOf = (props: PropsToServicesMemberOf) => {
 
   // Render component
   return (
-    <TabLayout id="memberof">
-      <Tabs activeKey={0} isBox={false} mountOnEnter unmountOnExit>
-        <Tab
-          eventKey={0}
-          name="memberof_role"
-          title={
-            <TabTitleText>
-              Roles{" "}
-              <Badge key={0} isRead>
-                {service && service.memberof_role
-                  ? service.memberof_role.length
-                  : 0}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfRoles
-            entity={service}
-            id={service.krbcanonicalname as string}
-            from={"services"}
-            isDataLoading={serviceQuery.isFetching}
-            onRefreshData={onRefreshServiceData}
-            membershipDisabled={true}
-            setDirection={() => {}}
-            direction={"direct" as MembershipDirection}
-          />
-        </Tab>
-      </Tabs>
-    </TabLayout>
+    <div style={{ height: `var(--memberof-calc)` }}>
+      <TabLayout id="memberof">
+        <Tabs activeKey={0} isBox={false} mountOnEnter unmountOnExit>
+          <Tab
+            eventKey={0}
+            name="memberof_role"
+            title={
+              <TabTitleText>
+                Roles{" "}
+                <Badge key={0} isRead>
+                  {service && service.memberof_role
+                    ? service.memberof_role.length
+                    : 0}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfRoles
+              entity={service}
+              id={service.krbcanonicalname as string}
+              from={"services"}
+              isDataLoading={serviceQuery.isFetching}
+              onRefreshData={onRefreshServiceData}
+              membershipDisabled={true}
+              setDirection={() => {}}
+              direction={"direct" as MembershipDirection}
+            />
+          </Tab>
+        </Tabs>
+      </TabLayout>
+    </div>
   );
 };
 

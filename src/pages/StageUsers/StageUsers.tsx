@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
-  Page,
+  Flex,
+  FlexItem,
   PageSection,
-  PageSectionVariants,
   PaginationVariant,
+  ToolbarItemVariant,
 } from "@patternfly/react-core";
 // PatternFly table
 import {
@@ -450,6 +451,7 @@ const StageUsers = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search user"
           placeholder="Search"
@@ -457,12 +459,12 @@ const StageUsers = () => {
           isDisabled={searchDisabled}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 2,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 3,
@@ -470,6 +472,7 @@ const StageUsers = () => {
         <SecondaryButton
           onClickHandler={refreshUsersData}
           isDisabled={!showTableRows}
+          dataCy="stage-users-button-refresh"
         >
           Refresh
         </SecondaryButton>
@@ -481,6 +484,7 @@ const StageUsers = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
+          dataCy="stage-users-button-delete"
         >
           Delete
         </SecondaryButton>
@@ -492,6 +496,7 @@ const StageUsers = () => {
         <SecondaryButton
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows}
+          dataCy="stage-users-button-add"
         >
           Add
         </SecondaryButton>
@@ -503,6 +508,7 @@ const StageUsers = () => {
         <SecondaryButton
           isDisabled={!showTableRows || selectedUsers.length === 0}
           onClickHandler={onActivateHandler}
+          dataCy="stage-users-button-activate"
         >
           Activate
         </SecondaryButton>
@@ -510,7 +516,7 @@ const StageUsers = () => {
     },
     {
       key: 7,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 8,
@@ -531,7 +537,7 @@ const StageUsers = () => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 
@@ -542,53 +548,57 @@ const StageUsers = () => {
       isExpanded={isContextualPanelExpanded}
       onClose={onCloseContextualPanel}
     >
-      <Page>
+      <div>
         <alerts.ManagedAlerts />
-        <PageSection variant={PageSectionVariants.light}>
+        <PageSection hasBodyWrapper={false}>
           <TitleLayout
             id="stage users title"
             headingLevel="h1"
             text="Stage users"
           />
         </PageSection>
-        <PageSection
-          variant={PageSectionVariants.light}
-          isFilled={false}
-          className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-        >
-          <ToolbarLayout
-            className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-            contentClassName="pf-v5-u-p-0"
-            toolbarItems={toolbarItems}
-          />
-          <div style={{ height: `calc(100vh - 352.2px)` }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer>
-                {batchError !== undefined && batchError ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <UsersTable
-                    shownElementsList={stageUsersList}
-                    from="stage-users"
-                    showTableRows={showTableRows}
-                    usersData={usersTableData}
-                    buttonsData={usersTableButtonsData}
-                    paginationData={selectedPerPageData}
-                    searchValue={searchValue}
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </div>
-          <PaginationLayout
-            list={stageUsersList}
-            paginationData={paginationData}
-            variant={PaginationVariant.bottom}
-            widgetId="pagination-options-menu-bottom"
-            className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-          />
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem style={{ flex: "0 0 auto" }}>
+              <OuterScrollContainer>
+                <InnerScrollContainer
+                  style={{ height: "60vh", overflow: "auto" }}
+                >
+                  {batchError !== undefined && batchError ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <UsersTable
+                      shownElementsList={stageUsersList}
+                      from="stage-users"
+                      showTableRows={showTableRows}
+                      usersData={usersTableData}
+                      buttonsData={usersTableButtonsData}
+                      paginationData={selectedPerPageData}
+                      searchValue={searchValue}
+                    />
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={stageUsersList}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+              />
+            </FlexItem>
+          </Flex>
         </PageSection>
-        <ModalErrors errors={modalErrors.getAll()} />
+        <ModalErrors
+          errors={modalErrors.getAll()}
+          dataCy="stage-users-modal-error"
+        />
         <AddUser
           show={showAddModal}
           from="stage-users"
@@ -612,7 +622,7 @@ const StageUsers = () => {
           selectedUsers={selectedUsers}
           onSuccess={refreshUsersData}
         />
-      </Page>
+      </div>
     </ContextualHelpPanel>
   );
 };

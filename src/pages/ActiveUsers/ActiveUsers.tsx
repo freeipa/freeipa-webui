@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
-  Page,
   PageSection,
-  PageSectionVariants,
   PaginationVariant,
   Button,
   DropdownItem,
+  ToolbarItemVariant,
+  PageSectionVariants,
+  FlexItem,
+  Flex,
+  Content,
 } from "@patternfly/react-core";
 // PatternFly table
 import {
@@ -26,7 +29,6 @@ import KebabLayout from "src/components/layouts/KebabLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
-import TextLayout from "src/components/layouts/TextLayout";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
 import UsersTable from "../../components/tables/UsersTable";
@@ -368,6 +370,7 @@ const ActiveUsers = () => {
 
   const membershipModalActions: JSX.Element[] = [
     <Button
+      data-cy="modal-button-ok"
       key="rebuild-auto-membership"
       variant="primary"
       onClick={onRebuildAutoMembership}
@@ -376,6 +379,7 @@ const ActiveUsers = () => {
       OK
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key="cancel-rebuild-auto-membership"
       variant="link"
       onClick={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
@@ -389,13 +393,13 @@ const ActiveUsers = () => {
     {
       id: "question-text",
       pfComponent: (
-        <TextLayout component="p">
+        <Content component="p">
           <b>Warning</b> In case of a high number of users, hosts or groups, the
           rebuild task may require high CPU usage. This can severely impact
           server performance. Typically this only needs to be done once after
           importing raw data into the server. Are you sure you want to rebuild
           the auto memberships?
-        </TextLayout>
+        </Content>
       ),
     },
   ];
@@ -405,6 +409,7 @@ const ActiveUsers = () => {
 
   const dropdownItems = [
     <DropdownItem
+      data-cy="active-users-kebab-rebuild-auto-membership"
       key="action"
       component="button"
       onClick={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
@@ -626,6 +631,7 @@ const ActiveUsers = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search user"
           placeholder="Search"
@@ -633,17 +639,18 @@ const ActiveUsers = () => {
           isDisabled={searchDisabled}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 2,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 3,
       element: (
         <SecondaryButton
+          dataCy="active-users-button-refresh"
           onClickHandler={refreshUsersData}
           isDisabled={!showTableRows}
         >
@@ -655,6 +662,7 @@ const ActiveUsers = () => {
       key: 4,
       element: (
         <SecondaryButton
+          dataCy="active-users-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
         >
@@ -666,6 +674,7 @@ const ActiveUsers = () => {
       key: 5,
       element: (
         <SecondaryButton
+          dataCy="active-users-button-add"
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows}
         >
@@ -677,6 +686,7 @@ const ActiveUsers = () => {
       key: 6,
       element: (
         <SecondaryButton
+          dataCy="active-users-button-disable"
           isDisabled={isDisableButtonDisabled || !showTableRows}
           onClickHandler={() => onEnableDisableHandler(true)}
         >
@@ -688,6 +698,7 @@ const ActiveUsers = () => {
       key: 7,
       element: (
         <SecondaryButton
+          dataCy="active-users-button-enable"
           isDisabled={isEnableButtonDisabled || !showTableRows}
           onClickHandler={() => onEnableDisableHandler(false)}
         >
@@ -699,6 +710,7 @@ const ActiveUsers = () => {
       key: 8,
       element: (
         <KebabLayout
+          dataCy="active-users-kebab"
           onDropdownSelect={onDropdownSelect}
           onKebabToggle={onKebabToggle}
           idKebab="main-dropdown-kebab"
@@ -709,7 +721,7 @@ const ActiveUsers = () => {
     },
     {
       key: 9,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 10,
@@ -730,7 +742,7 @@ const ActiveUsers = () => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 
@@ -741,51 +753,53 @@ const ActiveUsers = () => {
       isExpanded={isContextualPanelExpanded}
       onClose={onCloseContextualPanel}
     >
-      <Page>
+      <div>
         <alerts.ManagedAlerts />
-        <PageSection variant={PageSectionVariants.light}>
+        <PageSection
+          hasBodyWrapper={false}
+          variant={PageSectionVariants.default}
+        >
           <TitleLayout
             id="active users title"
             headingLevel="h1"
             text="Active Users"
           />
         </PageSection>
-        <PageSection
-          variant={PageSectionVariants.light}
-          isFilled={false}
-          className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-        >
-          <ToolbarLayout
-            className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-            contentClassName="pf-v5-u-p-0"
-            toolbarItems={toolbarItems}
-          />
-          <div style={{ height: `calc(100vh - 352.2px)` }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer>
-                {batchError !== undefined && batchError ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <UsersTable
-                    shownElementsList={activeUsersList}
-                    from="active-users"
-                    showTableRows={showTableRows}
-                    usersData={usersTableData}
-                    buttonsData={usersTableButtonsData}
-                    paginationData={selectedPerPageData}
-                    searchValue={searchValue}
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </div>
-          <PaginationLayout
-            list={activeUsersList}
-            paginationData={paginationData}
-            variant={PaginationVariant.bottom}
-            widgetId="pagination-options-menu-bottom"
-            className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-          />
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem>
+              <OuterScrollContainer>
+                <InnerScrollContainer>
+                  {batchError !== undefined && batchError ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <UsersTable
+                      shownElementsList={activeUsersList}
+                      from="active-users"
+                      showTableRows={showTableRows}
+                      usersData={usersTableData}
+                      buttonsData={usersTableButtonsData}
+                      paginationData={selectedPerPageData}
+                      searchValue={searchValue}
+                    />
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={activeUsersList}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+              />
+            </FlexItem>
+          </Flex>
         </PageSection>
         <AddUser
           show={showAddModal}
@@ -814,9 +828,13 @@ const ActiveUsers = () => {
           buttonsData={disableEnableButtonsData}
           onRefresh={refreshUsersData}
         />
-        <ModalErrors errors={modalErrors.getAll()} />
+        <ModalErrors
+          errors={modalErrors.getAll()}
+          dataCy="active-users-modal-error"
+        />
         {isMembershipModalOpen && (
           <ModalWithFormLayout
+            dataCy="rebuild-auto-membership-modal"
             variantType="medium"
             modalPosition="top"
             offPosition="76px"
@@ -828,7 +846,7 @@ const ActiveUsers = () => {
             actions={membershipModalActions}
           />
         )}
-      </Page>
+      </div>
     </ContextualHelpPanel>
   );
 };

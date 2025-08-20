@@ -215,7 +215,7 @@ const SudoRulesTable = (props: PropsToTable) => {
   // Defining table header and body from here to avoid passing specific names to the Table Layout
   const header = (
     <Tr>
-      <Th modifier="wrap"></Th>
+      <Th modifier="wrap" aria-label="Select rows"></Th>
       <Th modifier="wrap">{columnNames.cn}</Th>
       <Th modifier="wrap">{columnNames.sudoorder}</Th>
       <Th modifier="wrap">{columnNames.ipaenabledflag}</Th>
@@ -261,7 +261,7 @@ const SudoRulesTable = (props: PropsToTable) => {
       ariaLabel={"Sudo rules table"}
       variant={"compact"}
       hasBorders={true}
-      classes={"pf-v5-u-mt-md"}
+      classes={"pf-v6-u-mt-md"}
       tableId={"sudorules-table"}
       isStickyHeader={true}
       tableHeader={header}

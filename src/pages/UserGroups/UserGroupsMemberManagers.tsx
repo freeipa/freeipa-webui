@@ -48,62 +48,64 @@ const UserGroupsMemberManagers = (props: PropsToUserGroupsMembers) => {
   };
 
   return (
-    <TabLayout id="managers">
-      <Tabs
-        activeKey={props.tabSection}
-        onSelect={handleTabClick}
-        isBox={false}
-        mountOnEnter
-        unmountOnExit
-      >
-        <Tab
-          eventKey={"manager_user"}
-          name="manager_user"
-          title={
-            <TabTitleText>
-              Users{" "}
-              <Badge key={0} id="user_count" isRead>
-                {userGroup && userGroup.membermanager_user
-                  ? userGroup.membermanager_user.length
-                  : 0}
-              </Badge>
-            </TabTitleText>
-          }
+    <div style={{ height: `var(--memberof-calc)` }}>
+      <TabLayout id="managers">
+        <Tabs
+          activeKey={props.tabSection}
+          onSelect={handleTabClick}
+          isBox={false}
+          mountOnEnter
+          unmountOnExit
         >
-          <ManagersUsers
-            entity={userGroup}
-            id={userGroup.cn as string}
-            from="user-groups"
-            isDataLoading={userGroupQuery.isFetching}
-            onRefreshData={onRefreshUserGroupData}
-            manager_users={userGroup.membermanager_user || []}
-          />
-        </Tab>
-        <Tab
-          eventKey={"manager_usergroup"}
-          name="manager_usergroup"
-          title={
-            <TabTitleText>
-              User groups{" "}
-              <Badge key={1} id="usergroup_count" isRead>
-                {userGroup && userGroup.membermanager_group
-                  ? userGroup.membermanager_group.length
-                  : 0}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <ManagersUserGroups
-            entity={userGroup}
-            id={userGroup.cn as string}
-            from="user-groups"
-            isDataLoading={userGroupQuery.isFetching}
-            onRefreshData={onRefreshUserGroupData}
-            manager_groups={userGroup.membermanager_group || []}
-          />
-        </Tab>
-      </Tabs>
-    </TabLayout>
+          <Tab
+            eventKey={"manager_user"}
+            name="manager_user"
+            title={
+              <TabTitleText>
+                Users{" "}
+                <Badge key={0} id="user_count" isRead>
+                  {userGroup && userGroup.membermanager_user
+                    ? userGroup.membermanager_user.length
+                    : 0}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <ManagersUsers
+              entity={userGroup}
+              id={userGroup.cn as string}
+              from="user-groups"
+              isDataLoading={userGroupQuery.isFetching}
+              onRefreshData={onRefreshUserGroupData}
+              manager_users={userGroup.membermanager_user || []}
+            />
+          </Tab>
+          <Tab
+            eventKey={"manager_usergroup"}
+            name="manager_usergroup"
+            title={
+              <TabTitleText>
+                User groups{" "}
+                <Badge key={1} id="usergroup_count" isRead>
+                  {userGroup && userGroup.membermanager_group
+                    ? userGroup.membermanager_group.length
+                    : 0}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <ManagersUserGroups
+              entity={userGroup}
+              id={userGroup.cn as string}
+              from="user-groups"
+              isDataLoading={userGroupQuery.isFetching}
+              onRefreshData={onRefreshUserGroupData}
+              manager_groups={userGroup.membermanager_group || []}
+            />
+          </Tab>
+        </Tabs>
+      </TabLayout>
+    </div>
   );
 };
 

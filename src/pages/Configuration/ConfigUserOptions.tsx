@@ -53,13 +53,14 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
       flex={{ default: "flex_1" }}
     >
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-v5-u-mb-lg pf-v5-u-mt-lg" isHorizontal>
+        <Form className="pf-v6-u-mb-lg pf-v6-u-mt-lg" isHorizontal>
           <FormGroup
             label="User search fields"
             fieldId="ipausersearchfields"
             isRequired
           >
             <IpaTextArea
+              dataCy="configuration-textbox-ipausersearchfields"
               name="ipausersearchfields"
               ipaObject={props.ipaObject}
               onChange={props.recordOnChange}
@@ -72,6 +73,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             fieldId="ipadefaultemaildomain"
           >
             <IpaTextInput
+              dataCy="configuration-textbox-ipadefaultemaildomain"
               name={"ipadefaultemaildomain"}
               ariaLabel={"Default e-mail domain"}
               ipaObject={props.ipaObject}
@@ -83,11 +85,12 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
           <FormGroup
             label="Domain resolution order"
             fieldId="ipadomainresolutionorder"
-            labelIcon={
+            labelHelp={
               <PopoverWithIconLayout message={DomainMessage} triggerHover />
             }
           >
             <IpaTextArea
+              dataCy="configuration-textbox-ipadomainresolutionorder"
               name={"ipadomainresolutionorder"}
               ariaLabel={"Domain resolution order"}
               ipaObject={props.ipaObject}
@@ -101,6 +104,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             fieldId="ipadefaultprimarygroup"
           >
             <IpaDropdownSearch
+              dataCy="configuration-dropdown-ipadefaultprimarygroup"
               id="ipadefaultprimarygroup"
               name="ipadefaultprimarygroup"
               options={props.groups}
@@ -117,6 +121,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             isRequired
           >
             <IpaTextInput
+              dataCy="configuration-textbox-ipahomesrootdir"
               name={"ipahomesrootdir"}
               ariaLabel={"Home directory base"}
               ipaObject={props.ipaObject}
@@ -131,6 +136,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             isRequired
           >
             <IpaTextInput
+              dataCy="configuration-textbox-ipadefaultloginshell"
               name={"ipadefaultloginshell"}
               ariaLabel={"Default shell"}
               ipaObject={props.ipaObject}
@@ -145,6 +151,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             isRequired
           >
             <IpaNumberInput
+              dataCy="configuration-textbox-ipamaxusernamelength"
               id="ipamaxusernamelength"
               name="ipamaxusernamelength"
               aria-label="Maximum username length"
@@ -163,6 +170,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             isRequired
           >
             <IpaNumberInput
+              dataCy="configuration-textbox-ipapwdexpadvnotify"
               id="ipapwdexpadvnotify"
               name="ipapwdexpadvnotify"
               aria-label="Password Expiration Notification (days)"
@@ -181,6 +189,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             role="group"
           >
             <IpaCheckboxes
+              dataCy="configuration-checkboxes-ipaconfigstring"
               name="ipaconfigstring"
               options={[
                 {
@@ -207,11 +216,12 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             label="Default user authentication types"
             fieldId="ipauserauthtype"
             role="group"
-            labelIcon={
+            labelHelp={
               <PopoverWithIconLayout message={AuthTypesMessage} triggerHover />
             }
           >
             <IpaCheckboxes
+              dataCy="configuration-checkboxes-ipauserauthtype"
               name="ipauserauthtype"
               options={[
                 {
@@ -258,6 +268,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             fieldId="ipamigrationenabled-ipamigrationenabled"
           >
             <IpaCheckbox
+              dataCy="configuration-checkbox-ipamigrationenabled"
               name="ipamigrationenabled"
               value="ipamigrationenabled"
               text=""
@@ -265,7 +276,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
               onChange={props.recordOnChange}
               objectName="config"
               metadata={props.metadata}
-              className="pf-v5-u-pt-sm"
+              className="pf-v6-u-pt-sm"
             />
           </FormGroup>
           <FormGroup
@@ -273,6 +284,7 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
             fieldId="ipauserdefaultsubordinateid-ipauserdefaultsubordinateid"
           >
             <IpaCheckbox
+              dataCy="configuration-checkbox-ipauserdefaultsubordinateid"
               name="ipauserdefaultsubordinateid"
               value="ipauserdefaultsubordinateid"
               text=""
@@ -280,13 +292,13 @@ const ConfigUserOptions = (props: PropsToSearchOptions) => {
               onChange={props.recordOnChange}
               objectName="config"
               metadata={props.metadata}
-              className="pf-v5-u-pt-sm"
+              className="pf-v6-u-pt-sm"
             />
           </FormGroup>
         </Form>
       </FlexItem>
       <FlexItem flex={{ default: "flex_1" }}>
-        <Form className="pf-v5-u-mb-lg pf-v5-u-mt-lg">
+        <Form className="pf-v6-u-mb-lg pf-v6-u-mt-lg">
           <FormGroup
             label="Default user objectclasses"
             fieldId="ipauserobjectclasses"

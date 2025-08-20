@@ -12,6 +12,7 @@ import SecondaryButton from "../../layouts/SecondaryButton";
 import { updateIpaObject } from "src/utils/ipaObjectUtils";
 
 export interface PropsToIpaTextboxList {
+  dataCy: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ipaObject: Record<string, any>;
   setIpaObject: (value: Record<string, unknown>) => void;
@@ -21,15 +22,31 @@ export interface PropsToIpaTextboxList {
 }
 
 const IpaTextboxList = (props: PropsToIpaTextboxList) => {
+  // Helper to normalize the value from the IPA object (returns a string array)
+  const getNormalizedValue = (value: string | string[]): string[] => {
+    if (typeof value === "string") {
+      // Remove semicolon at the end of the string
+      const newValue = value.replace(";", "");
+      return [newValue];
+    } else {
+      return value || [];
+    }
+  };
+
+  // Side-effecting version for useEffect
+  const normalizeValue = (value: string | string[]) => {
+    setList(getNormalizedValue(value));
+  };
+
   const [list, setList] = React.useState<string[]>(
-    props.ipaObject[props.name] || []
+    getNormalizedValue(props.ipaObject[props.name])
   );
 
   const [invalidList, setInvalidList] = React.useState<number[]>([]);
 
   // Keep the values updated, thus preventing empty values
   React.useEffect(() => {
-    setList(props.ipaObject[props.name] || []);
+    normalizeValue(props.ipaObject[props.name]);
   }, [props.ipaObject]);
 
   // - Add element on list handler
@@ -97,6 +114,7 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
               flex={{ default: "flex_1" }}
             >
               <TextInput
+                data-cy={props.dataCy + "-textbox-" + idx}
                 id={props.name + "-" + idx}
                 value={item}
                 type="text"
@@ -112,6 +130,7 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
             </FlexItem>
             <FlexItem key={props.name + "-" + idx + "-delete-button"}>
               <SecondaryButton
+                dataCy={props.dataCy + "-button-delete-" + idx}
                 name={"remove-" + props.name + "-" + idx}
                 onClickHandler={() => onRemoveHandler(idx)}
               >
@@ -122,7 +141,8 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
         ))}
       </Flex>
       <SecondaryButton
-        classname="pf-v5-u-mt-sm"
+        dataCy={props.dataCy + "-button-add"}
+        classname="pf-v6-u-mt-sm"
         name={"add-" + props.name}
         onClickHandler={onAddHandler}
       >

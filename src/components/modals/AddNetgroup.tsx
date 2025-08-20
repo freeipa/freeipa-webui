@@ -71,6 +71,7 @@ const AddNetgroup = (props: PropsToAddGroup) => {
       pfComponent: (
         <>
           <TextInput
+            data-cy="modal-textbox-netgroup-name"
             type="text"
             id="modal-form-netgroup-name"
             name="modal-form-netgroup-name"
@@ -95,6 +96,7 @@ const AddNetgroup = (props: PropsToAddGroup) => {
       name: "Description",
       pfComponent: (
         <TextArea
+          data-cy="modal-textbox-netgroup-description"
           id="modal-form-netgroup-desc"
           name="modal-form-netgroup-desc"
           value={description}
@@ -239,10 +241,19 @@ const AddNetgroup = (props: PropsToAddGroup) => {
   };
 
   const errorModalActions = [
-    <SecondaryButton key="retry" onClickHandler={onRetry}>
+    <SecondaryButton
+      dataCy="modal-button-retry"
+      key="retry"
+      onClickHandler={onRetry}
+    >
       Retry
     </SecondaryButton>,
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       Cancel
     </Button>,
   ];
@@ -260,6 +271,7 @@ const AddNetgroup = (props: PropsToAddGroup) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <SecondaryButton
+      dataCy="modal-button-add"
       key="add-new-netgroup"
       name="add"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
@@ -272,6 +284,7 @@ const AddNetgroup = (props: PropsToAddGroup) => {
       {addSpinning ? "Adding" : "Add"}
     </SecondaryButton>,
     <SecondaryButton
+      dataCy="modal-button-add-and-add-another"
       key="add-and-add-another-new-netgroup"
       name="add_and_add_another"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
@@ -284,6 +297,7 @@ const AddNetgroup = (props: PropsToAddGroup) => {
       {addAgainSpinning ? "Adding" : "Add and add another"}
     </SecondaryButton>,
     <Button
+      data-cy="modal-button-cancel"
       key="cancel-new-netgroup"
       variant="link"
       onClick={cleanAndCloseModal}
@@ -297,6 +311,7 @@ const AddNetgroup = (props: PropsToAddGroup) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="add-netgroup-modal"
         variantType="small"
         modalPosition="top"
         offPosition="76px"
@@ -309,6 +324,7 @@ const AddNetgroup = (props: PropsToAddGroup) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="add-netgroup-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

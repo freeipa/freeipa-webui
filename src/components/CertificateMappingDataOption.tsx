@@ -14,6 +14,7 @@ import PopoverWithIconLayout from "./layouts/PopoverWithIconLayout";
 import SecondaryButton from "./layouts/SecondaryButton";
 
 interface PropsToCertificateMappingDataOption {
+  dataCy: string;
   isCertMappingDataChecked: boolean;
   onChangeCertMappingDataCheck: (value: boolean) => void;
   setIsAddButtonDisabled: (value: boolean) => void;
@@ -94,6 +95,7 @@ const CertificateMappingDataOption = (
               name={"flexitem-ipacertmapdata-" + idx + "-div"}
             >
               <TextInput
+                data-cy="modal-textbox-cert-map-data"
                 id="cert-map-data"
                 value={certMap}
                 type="text"
@@ -106,6 +108,7 @@ const CertificateMappingDataOption = (
             </FlexItem>
             <FlexItem key={"ipacertmapdata-" + idx + "-delete-button"}>
               <SecondaryButton
+                dataCy={"modal-button-delete-ipacertmapdata-" + certMap}
                 name="remove"
                 onClickHandler={() =>
                   onRemoveCertificateMappingDataHandler(idx)
@@ -118,8 +121,9 @@ const CertificateMappingDataOption = (
         ))}
       </Flex>
       <SecondaryButton
+        dataCy="modal-button-add-ipacertmapdata"
         name={"add-ipacertmapdata"}
-        classname="pf-v5-u-mt-sm pf-v5-u-mb-0"
+        classname="pf-v6-u-mt-sm pf-v6-u-mb-0"
         isDisabled={!props.isCertMappingDataChecked}
         onClickHandler={onAddCertificateMappingDataHandler}
       >
@@ -167,6 +171,7 @@ const CertificateMappingDataOption = (
               flex={{ default: "flex_1" }}
             >
               <TextArea
+                data-cy="modal-textbox-cert"
                 id="cert-map-data"
                 value={certificate}
                 type="text"
@@ -184,6 +189,7 @@ const CertificateMappingDataOption = (
               name={"certificate-" + idx + "-delete-button"}
             >
               <SecondaryButton
+                dataCy={"modal-button-delete-certificate-" + certificate}
                 name="remove"
                 onClickHandler={() => onRemoveCertificateHandler(idx)}
               >
@@ -194,8 +200,9 @@ const CertificateMappingDataOption = (
         ))}
       </Flex>
       <SecondaryButton
+        dataCy="modal-button-add-certificate"
         name={"add-certificate"}
-        classname="pf-v5-u-mt-sm"
+        classname="pf-v6-u-mt-sm"
         isDisabled={!props.isCertMappingDataChecked}
         onClickHandler={onAddCertificateHandler}
       >
@@ -214,14 +221,15 @@ const CertificateMappingDataOption = (
   return (
     <>
       <Radio
+        data-cy="modal-radio-cert-mapping-data"
         isChecked={props.isCertMappingDataChecked}
         name="cert-mapping-data-radio"
         onChange={(_event, value) => props.onChangeCertMappingDataCheck(value)}
         label="Certificate mapping data"
         id="certificate-mapping-data"
-        className="pf-v5-u-mb-md"
+        className="pf-v6-u-mb-md"
       />
-      <div className="pf-v5-u-ml-lg pf-v5-u-mb-md">
+      <div className="pf-v6-u-ml-lg pf-v6-u-mb-md">
         <Form>
           <FormGroup
             label="Certificate mapping data"
@@ -235,7 +243,7 @@ const CertificateMappingDataOption = (
             label="Certificate"
             fieldId="certificate"
             role="group"
-            labelIcon={
+            labelHelp={
               <PopoverWithIconLayout
                 message={certificateMessage}
                 hasAutoWidth={true}

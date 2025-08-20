@@ -60,6 +60,7 @@ const AddSudoCmdGroup = (props: PropsToAddGroup) => {
       pfComponent: (
         <>
           <TextInput
+            data-cy="modal-textbox-cmd-grp-name"
             type="text"
             id="modal-form-cmd-grp-name"
             name="modal-form-cmd-grp-name"
@@ -84,6 +85,7 @@ const AddSudoCmdGroup = (props: PropsToAddGroup) => {
       name: "Description",
       pfComponent: (
         <TextArea
+          data-cy="modal-textbox-cmd-grp-desc"
           id="modal-form-cmd-grp-desc"
           name="modal-form-cmd-grp-desc"
           value={description}
@@ -219,10 +221,19 @@ const AddSudoCmdGroup = (props: PropsToAddGroup) => {
   };
 
   const errorModalActions = [
-    <SecondaryButton key="retry" onClickHandler={onRetry}>
+    <SecondaryButton
+      key="retry"
+      onClickHandler={onRetry}
+      dataCy="modal-button-retry"
+    >
       Retry
     </SecondaryButton>,
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+      data-cy="modal-button-cancel"
+    >
       Cancel
     </Button>,
   ];
@@ -240,6 +251,7 @@ const AddSudoCmdGroup = (props: PropsToAddGroup) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <SecondaryButton
+      dataCy="modal-button-add"
       key="add-new-cmd"
       name="add"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
@@ -252,6 +264,7 @@ const AddSudoCmdGroup = (props: PropsToAddGroup) => {
       {addSpinning ? "Adding" : "Add"}
     </SecondaryButton>,
     <SecondaryButton
+      dataCy="modal-button-add-and-add-another"
       key="add-and-add-another-new-cmd"
       name="add_and_add_another"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
@@ -263,7 +276,12 @@ const AddSudoCmdGroup = (props: PropsToAddGroup) => {
     >
       {addAgainSpinning ? "Adding" : "Add and add another"}
     </SecondaryButton>,
-    <Button key="cancel-new-cmd" variant="link" onClick={cleanAndCloseModal}>
+    <Button
+      key="cancel-new-cmd"
+      variant="link"
+      onClick={cleanAndCloseModal}
+      data-cy="modal-button-cancel"
+    >
       Cancel
     </Button>,
   ];
@@ -273,6 +291,7 @@ const AddSudoCmdGroup = (props: PropsToAddGroup) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="add-sudo-cmd-group-modal"
         variantType="small"
         modalPosition="top"
         offPosition="76px"
@@ -285,6 +304,7 @@ const AddSudoCmdGroup = (props: PropsToAddGroup) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="add-sudo-cmd-group-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

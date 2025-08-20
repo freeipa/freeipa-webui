@@ -103,6 +103,7 @@ describe("IpaSshPublicKeys Component", () => {
   };
 
   const defaultProps: PropsToSshPublicKeysModal = {
+    dataCy: "ipa-ssh-public-keys",
     ipaObject: {},
     onChange: mockOnChange,
     metadata: mockMetadata,
@@ -159,7 +160,7 @@ describe("IpaSshPublicKeys Component", () => {
     expect(addKeyButtonElems.length).toBe(1);
 
     // Contains Add Key text
-    expect(addKeyButtonElems[0].innerHTML).toBe("Add Key");
+    expect(addKeyButtonElems[0].textContent).toBe("Add Key");
   });
 
   it("renders add key correctly", async () => {

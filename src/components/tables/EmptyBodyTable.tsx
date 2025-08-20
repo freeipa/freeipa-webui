@@ -7,8 +7,6 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateFooter,
-  EmptyStateHeader,
-  EmptyStateIcon,
   EmptyStateVariant,
 } from "@patternfly/react-core";
 // Icons
@@ -24,16 +22,20 @@ const EmptyBodyTable = (props: EmptyBodyTableProps) => {
     <Tr>
       <Td colSpan={props.colSpan || 8}>
         <Bullseye>
-          <EmptyState variant={EmptyStateVariant.sm}>
-            <EmptyStateHeader
-              titleText="No results found"
-              icon={<EmptyStateIcon icon={SearchIcon} />}
-              headingLevel="h2"
-            />
+          <EmptyState
+            headingLevel="h2"
+            icon={SearchIcon}
+            titleText="No results found"
+            variant={EmptyStateVariant.sm}
+          >
             <EmptyStateBody>Clear all filters and try again.</EmptyStateBody>
             {props.onClickFilter && (
               <EmptyStateFooter>
-                <Button variant="link" onClick={props.onClickFilter}>
+                <Button
+                  data-cy="button-clear-all-filters"
+                  variant="link"
+                  onClick={props.onClickFilter}
+                >
                   Clear all filters
                 </Button>
               </EmptyStateFooter>

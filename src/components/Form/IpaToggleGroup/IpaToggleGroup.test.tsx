@@ -61,6 +61,7 @@ describe("IpaToggleGroup Component", () => {
   };
 
   const defaultProps: ToggleOptionProps = {
+    dataCy: "ipa-toggle-group",
     name: "usercategory2",
     ariaLabel: "User Category",
     ipaObject: {},

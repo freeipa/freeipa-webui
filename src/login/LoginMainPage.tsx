@@ -7,11 +7,13 @@ import {
   LoginPage,
   ListItem,
   ListVariant,
-  TextContent,
-  Text,
-  Modal,
+  Content,
   Button,
-  ModalVariant,
+  ContentVariants,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  ModalFooter,
 } from "@patternfly/react-core";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
@@ -33,6 +35,7 @@ import { setIsLogin } from "src/store/Global/auth-slice";
 // Navigation
 import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { URL_PREFIX } from "src/navigation/NavRoutes";
 
 interface StateFromSyncOtpPage {
   alertMessage: string;
@@ -134,21 +137,28 @@ const LoginMainPage = () => {
     if (errorMessage !== "") {
       return (
         <Modal
-          variant={ModalVariant.small}
-          title="Authentication error"
+          data-cy="authentication-modal-error"
+          variant={"small"}
           isOpen={showErrorModal}
           onClose={() => setShowErrorModal(false)}
-          actions={[
+        >
+          <ModalHeader
+            title="Authentication error"
+            labelId="authentication-modal-error-title"
+          />
+          <ModalBody id="authentication-modal-error-body">
+            {errorMessage}
+          </ModalBody>
+          <ModalFooter>
             <Button
+              data-cy="modal-button-ok"
               key="confirm"
               variant="primary"
               onClick={() => setShowErrorModal(false)}
             >
               OK
-            </Button>,
-          ]}
-        >
-          {errorMessage}
+            </Button>
+          </ModalFooter>
         </Modal>
       );
     }
@@ -294,19 +304,34 @@ const LoginMainPage = () => {
 
   const socialMediaLoginContent = (
     <React.Fragment>
-      <LoginMainFooterLinksItem
-        href=""
-        linkComponentProps={{
-          "aria-label": "Login using personal Certificate",
-        }}
-      >
-        <TextContent onClick={onLoginWithCertClick} name="cert_auth">
-          <Text>Login using Certificate</Text>
-        </TextContent>
+      <LoginMainFooterLinksItem>
+        <Button
+          variant="link"
+          component="a"
+          data-cy="login-button-cert"
+          aria-label="Login using personal Certificate"
+          href=""
+        >
+          <Content
+            component={ContentVariants.p}
+            onClick={onLoginWithCertClick}
+            name="cert_auth"
+          >
+            Login using Certificate
+          </Content>
+        </Button>
       </LoginMainFooterLinksItem>
-      <Link aria-label="Synchronize otp token" to="/sync-otp">
-        Sync OTP Token
-      </Link>
+      <LoginMainFooterLinksItem>
+        <Button
+          variant="link"
+          component="a"
+          data-cy="login-button-sync-otp"
+          aria-label="Synchronize otp token"
+          href={URL_PREFIX + "/sync-otp"}
+        >
+          <Content component="p">Sync OTP Token</Content>
+        </Button>
+      </LoginMainFooterLinksItem>
     </React.Fragment>
   );
 

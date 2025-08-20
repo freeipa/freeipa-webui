@@ -3,11 +3,9 @@ import React, { useEffect, useState } from "react";
 import {
   Bullseye,
   EmptyState,
-  EmptyStateIcon,
   EmptyStateVariant,
   EmptyStateBody,
   Button,
-  EmptyStateHeader,
   EmptyStateFooter,
 } from "@patternfly/react-core";
 import { Td, Th, Tr } from "@patternfly/react-table";
@@ -188,15 +186,17 @@ const ManagedByTable = (props: PropsToTable) => {
     <Tr>
       <Td colSpan={8}>
         <Bullseye>
-          <EmptyState variant={EmptyStateVariant.sm}>
-            <EmptyStateHeader
-              titleText="No results found"
-              icon={<EmptyStateIcon icon={SearchIcon} />}
-              headingLevel="h2"
-            />
+          <EmptyState
+            headingLevel="h2"
+            icon={SearchIcon}
+            titleText="No results found"
+            variant={EmptyStateVariant.sm}
+          >
             <EmptyStateBody>Clear all filters and try again.</EmptyStateBody>
             <EmptyStateFooter>
-              <Button variant="link">Clear all filters</Button>
+              <Button data-cy="clear-all-filters" variant="link">
+                Clear all filters
+              </Button>
             </EmptyStateFooter>
           </EmptyState>
         </Bullseye>
@@ -252,7 +252,7 @@ const ManagedByTable = (props: PropsToTable) => {
       name="fqdn"
       variant={"compact"}
       hasBorders={true}
-      classes={"pf-v5-u-mt-md"}
+      classes={"pf-v6-u-mt-md"}
       tableId={props.tableName.replace(" ", "-").toLowerCase() + "-table"}
       isStickyHeader={true}
       tableHeader={props.list.length === 0 ? undefined : header}

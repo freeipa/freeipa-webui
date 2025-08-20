@@ -6,6 +6,9 @@ import {
   HelperText,
   HelperTextItem,
   Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   TextInput,
   ValidatedOptions,
 } from "@patternfly/react-core";
@@ -51,6 +54,7 @@ const ConfigObjectclassTable = (props: PropsToTable) => {
             const removeButton = (
               <TableText>
                 <Button
+                  data-cy="configuration-table-button-remove"
                   id={props.name + "-" + item}
                   onClick={() => removeOC(item)}
                   variant="secondary"
@@ -72,23 +76,57 @@ const ConfigObjectclassTable = (props: PropsToTable) => {
         </Tbody>
       </Table>
       <Button
+        data-cy="configuration-table-button-add"
         id={props.name + "-" + "addoc"}
         onClick={() => {
           setNewOC("");
           setIsOpen(true);
         }}
-        className="pf-v5-u-mt-md"
+        className="pf-v6-u-mt-md"
         size="sm"
       >
         Add objectclass
       </Button>
       <Modal
+        data-cy="add-objectclass-modal"
         variant="small"
-        title={"Add objectclass"}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        actions={[
+      >
+        <ModalHeader title={"Add objectclass"} labelId="add-oc-modal-title" />
+        <ModalBody id="add-oc-modal-body">
+          <Form id={"add-oc-modal"}>
+            <FormGroup
+              key={"oc"}
+              label={"New objectclass"}
+              fieldId={"oc"}
+              isRequired
+            >
+              <TextInput
+                data-cy="modal-textbox-objectclass"
+                id="oc"
+                type="text"
+                value={newOC}
+                validated={
+                  newOC === "" || values.indexOf(newOC.toLowerCase()) !== -1
+                    ? ValidatedOptions.error
+                    : ValidatedOptions.default
+                }
+                onChange={(_event, value: string) => setNewOC(value)}
+              />
+              {values.indexOf(newOC.toLowerCase()) !== -1 && (
+                <HelperText>
+                  <HelperTextItem variant="error">
+                    This objectclass is already defined
+                  </HelperTextItem>
+                </HelperText>
+              )}
+            </FormGroup>
+          </Form>
+        </ModalBody>
+        <ModalFooter>
           <Button
+            data-cy="modal-button-add"
             key="add-new-oc"
             isDisabled={
               newOC === "" || values.indexOf(newOC.toLowerCase()) !== -1
@@ -96,43 +134,17 @@ const ConfigObjectclassTable = (props: PropsToTable) => {
             onClick={addOC}
           >
             Add
-          </Button>,
+          </Button>
+          ,
           <Button
+            data-cy="modal-button-cancel"
             key="cancel-new-host"
             variant="link"
             onClick={() => setIsOpen(false)}
           >
             Cancel
-          </Button>,
-        ]}
-      >
-        <Form id={"add-oc-modal"}>
-          <FormGroup
-            key={"oc"}
-            label={"New objectclass"}
-            fieldId={"oc"}
-            isRequired
-          >
-            <TextInput
-              id="oc"
-              type="text"
-              value={newOC}
-              validated={
-                newOC === "" || values.indexOf(newOC.toLowerCase()) !== -1
-                  ? ValidatedOptions.error
-                  : ValidatedOptions.default
-              }
-              onChange={(_event, value: string) => setNewOC(value)}
-            />
-            {values.indexOf(newOC.toLowerCase()) !== -1 && (
-              <HelperText>
-                <HelperTextItem variant="error">
-                  This objectclass is already defined
-                </HelperTextItem>
-              </HelperText>
-            )}
-          </FormGroup>
-        </Form>
+          </Button>
+        </ModalFooter>
       </Modal>
     </React.Fragment>
   );

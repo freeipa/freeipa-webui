@@ -88,6 +88,7 @@ describe("PrincipalAliasMultiTextBox Component", () => {
   };
 
   const defaultProps: PrincipalAliasMultiTextBoxProps = {
+    dataCy: "principal-alias-multi-textbox",
     ipaObject: mockIpaObject,
     metadata: mockMetadata,
     onRefresh: mockOnRefresh,
@@ -202,9 +203,8 @@ describe("PrincipalAliasMultiTextBox Component", () => {
     // Modal should be open now
     // Validate input box
     const TEST_VALUE = "test value";
-    const krbTextbox = screen.getByRole("textbox", {
-      name: "krbprincipalname",
-    });
+    const krbTextbox = screen.getByLabelText("krbprincipalname");
+
     expect(krbTextbox).toBeEnabled();
 
     // Change input box value

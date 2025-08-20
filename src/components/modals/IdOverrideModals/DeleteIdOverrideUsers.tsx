@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
-import {
-  TextContent,
-  Text,
-  TextVariants,
-  Button,
-} from "@patternfly/react-core";
+import { Content, ContentVariants, Button } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
@@ -54,11 +49,9 @@ const DeleteIdOverrideUsersModal = (props: PropsToDelete) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
-            Are you sure you want to remove the selected users?
-          </Text>
-        </TextContent>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to remove the selected users?
+        </Content>
       ),
     },
     {
@@ -96,7 +89,12 @@ const DeleteIdOverrideUsersModal = (props: PropsToDelete) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-ok"
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       OK
     </Button>,
   ];
@@ -170,6 +168,7 @@ const DeleteIdOverrideUsersModal = (props: PropsToDelete) => {
   // Set the Modal and Action buttons for 'Delete' option
   const modalActionsDelete: JSX.Element[] = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-id-override"
       variant="danger"
       onClick={deleteViews}
@@ -181,7 +180,12 @@ const DeleteIdOverrideUsersModal = (props: PropsToDelete) => {
     >
       {spinning ? "Deleting" : "Delete"}
     </Button>,
-    <Button key="cancel-delete-id-override" variant="link" onClick={closeModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-delete-id-override"
+      variant="link"
+      onClick={closeModal}
+    >
       Cancel
     </Button>,
   ];
@@ -190,6 +194,7 @@ const DeleteIdOverrideUsersModal = (props: PropsToDelete) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="delete-id-override-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"
@@ -202,6 +207,7 @@ const DeleteIdOverrideUsersModal = (props: PropsToDelete) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="delete-id-override-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

@@ -1,13 +1,15 @@
 import React from "react";
 // PatternFly
 import {
-  TextContent,
-  Text,
-  TextVariants,
+  Content,
+  ContentVariants,
   Button,
-  Modal,
   Form,
   FormGroup,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  ModalFooter,
 } from "@patternfly/react-core";
 
 interface PropsToDelete {
@@ -25,6 +27,7 @@ const MemberOfDeleteModal = (props: React.PropsWithChildren<PropsToDelete>) => {
 
   const modalActionsDelete: JSX.Element[] = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-groups"
       variant="danger"
       onClick={onDelete}
@@ -37,6 +40,7 @@ const MemberOfDeleteModal = (props: React.PropsWithChildren<PropsToDelete>) => {
       {props.spinning ? "Deleting" : "Delete"}
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key="cancel-remove-group"
       variant="link"
       onClick={props.onCloseModal}
@@ -47,27 +51,31 @@ const MemberOfDeleteModal = (props: React.PropsWithChildren<PropsToDelete>) => {
 
   return (
     <Modal
+      data-cy="member-of-delete-modal"
       variant={"medium"}
       position={"top"}
       positionOffset={"76px"}
-      title={props.title}
       isOpen={props.showModal}
       onClose={props.onCloseModal}
-      actions={modalActionsDelete}
       aria-label="Delete member modal"
     >
-      <Form id={"is-member-of-delete-modal"}>
-        <FormGroup key={"question-text"} fieldId={"question-text"}>
-          <TextContent>
-            <Text component={TextVariants.p}>
+      <ModalHeader title={props.title} labelId="member-of-delete-modal-title" />
+      <ModalBody id="member-of-delete-modal-body">
+        <Form id={"is-member-of-delete-modal"}>
+          <FormGroup key={"question-text"} fieldId={"question-text"}>
+            <Content component={ContentVariants.p}>
               Are you sure you want to remove the following entries?
-            </Text>
-          </TextContent>
-        </FormGroup>
-        <FormGroup key={"deleted-users-table"} fieldId={"deleted-users-table"}>
-          {props.children}
-        </FormGroup>
-      </Form>
+            </Content>
+          </FormGroup>
+          <FormGroup
+            key={"deleted-users-table"}
+            fieldId={"deleted-users-table"}
+          >
+            {props.children}
+          </FormGroup>
+        </Form>
+      </ModalBody>
+      <ModalFooter>{modalActionsDelete}</ModalFooter>
     </Modal>
   );
 };

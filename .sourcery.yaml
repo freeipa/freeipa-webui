@@ -1,0 +1,25 @@
+---
+rule_settings:
+  disable: [use-object-destructuring, use-braces]
+
+rules:
+  - id: remove-debug-logs
+    pattern: console. ...(...)
+    description: Remove debug logs
+    replacement: ""
+    tests:
+      - match: console.log("test", object);
+      - match: console.log("Test");
+      - match: console.error("Error");
+      - match: console.warn("Warn");
+      - match: console.debug("Debug");
+      - no-match: send(console);
+
+  - id: prefer-redux
+    pattern: fetch(...)
+    replacement: build.query or build.mutation
+    description: Avoid using fetch, instead use reduxjs
+    tests:
+      - match: fetch(test);
+      - match: fetch(test).then(console.log);
+      - no-match: send(fetch)

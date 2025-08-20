@@ -36,7 +36,7 @@ const BreadCrumb = (props: PropsToBreadcrumb) => {
   return (
     <Breadcrumb className={props.className}>
       {breadcrumbItems.map((page, idx) =>
-        idx === 0 ? (
+        idx === 0 || !page.isActive ? (
           <BreadcrumbItem
             key={idx}
             to={page.url}

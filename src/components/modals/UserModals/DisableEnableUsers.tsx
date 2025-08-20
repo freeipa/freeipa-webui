@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  Button,
-  TextContent,
-  Text,
-  TextVariants,
-} from "@patternfly/react-core";
+import { Button, Content, ContentVariants } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import { User } from "src/utils/datatypes/globalDataTypes";
@@ -83,14 +78,14 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
+        <>
+          <Content component={ContentVariants.p}>
             Are you sure you want to {action} selected entries?
-          </Text>
-          <Text component={TextVariants.p}>
+          </Content>
+          <Content component={ContentVariants.p}>
             <i>{users.join(", ")}</i>
-          </Text>
-        </TextContent>
+          </Content>
+        </>
       ),
     },
   ];
@@ -142,7 +137,12 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
   };
 
   const errorModalActions = [
-    <Button key="ok" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-ok"
+      key="ok"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       OK
     </Button>,
   ];
@@ -340,16 +340,23 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
         )
       }
       form="users-enable-disable-users-modal"
+      data-cy="modal-button-disable"
     >
       Disable
     </Button>,
-    <Button key="cancel-disable-user" variant="link" onClick={closeModal}>
+    <Button
+      key="cancel-disable-user"
+      variant="link"
+      onClick={closeModal}
+      data-cy="modal-button-cancel"
+    >
       Cancel
     </Button>,
   ];
 
   const modalDisable: JSX.Element = (
     <ModalWithFormLayout
+      dataCy="disable-users-modal"
       variantType="medium"
       modalPosition="top"
       offPosition="76px"
@@ -379,16 +386,23 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
             )
       }
       form="active-users-enable-disable-users-modal"
+      data-cy="modal-button-enable"
     >
       Enable
     </Button>,
-    <Button key="cancel-enable-user" variant="link" onClick={closeModal}>
+    <Button
+      key="cancel-enable-user"
+      variant="link"
+      onClick={closeModal}
+      data-cy="modal-button-cancel"
+    >
       Cancel
     </Button>,
   ];
 
   const modalEnable: JSX.Element = (
     <ModalWithFormLayout
+      dataCy="enable-users-modal"
       variantType="medium"
       modalPosition="top"
       offPosition="76px"
@@ -408,6 +422,7 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
       {!props.optionSelected ? modalEnable : modalDisable}
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="disable-enable-users-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

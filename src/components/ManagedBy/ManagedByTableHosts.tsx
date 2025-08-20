@@ -62,7 +62,7 @@ export default function ManagedByHostsTable(props: ManagedByHostsTableProps) {
         name="cn"
         variant="compact"
         borders
-        className={"pf-v5-u-mt-md"}
+        className={"pf-v6-u-mt-md"}
         id="managed-by-table"
         isStickyHeader
       >
@@ -94,7 +94,7 @@ export default function ManagedByHostsTable(props: ManagedByHostsTableProps) {
       name="cn"
       variant="compact"
       borders
-      className={"pf-v5-u-mt-md"}
+      className={"pf-v6-u-mt-md"}
       id="managed-by-table"
       isStickyHeader
     >

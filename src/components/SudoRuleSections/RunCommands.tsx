@@ -506,6 +506,7 @@ const RunCommands = (props: PropsToRunCommands) => {
       <FlexItem>Command category the rule applies to: </FlexItem>
       <FlexItem>
         <IpaToggleGroup
+          dataCy="sudo-rule-toggle-group-cmd-category"
           ipaObject={props.ipaObject}
           name="cmdcategory"
           options={options}
@@ -531,7 +532,7 @@ const RunCommands = (props: PropsToRunCommands) => {
         headingLevel="h4"
         id="allow"
         text="Allow"
-        className="pf-v5-u-mt-md pf-v5-u-ml-md"
+        className="pf-v6-u-mt-md pf-v6-u-ml-md"
       />
       <Tabs
         activeKey={activeAllowTabKey}
@@ -550,7 +551,7 @@ const RunCommands = (props: PropsToRunCommands) => {
           aria-label="sudo allow commands in the Run commands section of the sudo rule settings page"
         >
           <KeytabTableWithFilter
-            className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+            className="pf-v6-u-ml-md pf-v6-u-mt-sm"
             id={props.rule.cn as string}
             extraId="allow"
             from="sudo rule"
@@ -581,7 +582,7 @@ const RunCommands = (props: PropsToRunCommands) => {
           aria-label="sudo allow commands groups in the Run commands section of the sudo rule settings page"
         >
           <KeytabTableWithFilter
-            className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+            className="pf-v6-u-ml-md pf-v6-u-mt-sm"
             id={props.rule.cn as string}
             extraId="allow"
             from="sudo rule"
@@ -608,7 +609,7 @@ const RunCommands = (props: PropsToRunCommands) => {
         headingLevel="h4"
         id="deny"
         text="Deny"
-        className="pf-v5-u-mt-md pf-v5-u-ml-md"
+        className="pf-v6-u-mt-md pf-v6-u-ml-md"
       />
       <Tabs
         activeKey={activeDenyTabKey}
@@ -627,7 +628,7 @@ const RunCommands = (props: PropsToRunCommands) => {
           aria-label="sudo deny commands in the Run commands section of the sudo rule settings page"
         >
           <KeytabTableWithFilter
-            className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+            className="pf-v6-u-ml-md pf-v6-u-mt-sm"
             id={props.rule.cn as string}
             extraId="deny"
             from="sudo rule"
@@ -658,7 +659,7 @@ const RunCommands = (props: PropsToRunCommands) => {
           aria-label="sudo deny commands groups in the Run commands section of the sudo rule settings page"
         >
           <KeytabTableWithFilter
-            className="pf-v5-u-ml-md pf-v5-u-mt-sm"
+            className="pf-v6-u-ml-md pf-v6-u-mt-sm"
             id={props.rule.cn as string}
             extraId="deny"
             from="sudo rule"

@@ -1,11 +1,6 @@
 import React from "react";
 // PatternFly
-import {
-  TextContent,
-  Text,
-  TextVariants,
-  Button,
-} from "@patternfly/react-core";
+import { Content, ContentVariants, Button } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
@@ -64,11 +59,9 @@ const DeleteRule = (props: PropsToDeleteRule) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
-            Are you sure you want to remove the selected rules?
-          </Text>
-        </TextContent>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to remove the selected rules?
+        </Content>
       ),
     },
     {
@@ -134,6 +127,7 @@ const DeleteRule = (props: PropsToDeleteRule) => {
   // Set the Modal and Action buttons for 'Delete' option
   const modalActionsDelete: JSX.Element[] = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-rules"
       variant="danger"
       onClick={onDelete}
@@ -145,7 +139,12 @@ const DeleteRule = (props: PropsToDeleteRule) => {
     >
       {spinning ? "Deleting" : "Delete"}
     </Button>,
-    <Button key="cancel-delete-rules" variant="link" onClick={closeModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-delete-rules"
+      variant="link"
+      onClick={closeModal}
+    >
       Cancel
     </Button>,
   ];
@@ -154,6 +153,7 @@ const DeleteRule = (props: PropsToDeleteRule) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="delete-rule-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"

@@ -366,7 +366,7 @@ const MembersHosts = (props: PropsToMembersHosts) => {
         showTableRows={showTableRows}
       />
       <Pagination
-        className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+        className="pf-v6-u-pb-0 pf-v6-u-pr-md"
         itemCount={hostNames.length}
         widgetId="pagination-options-menu-bottom"
         perPage={perPage}

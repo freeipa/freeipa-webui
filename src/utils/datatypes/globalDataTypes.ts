@@ -521,13 +521,13 @@ export interface ParamMetadata {
   doc: string;
   flags: string[];
   label: string;
-  maxlength: number;
+  maxlength?: number;
   multivalue: boolean;
   name: string;
   no_convert: boolean;
   noextrawhitespace: boolean;
-  pattern_errmsg: string;
-  pattern: string;
+  pattern_errmsg?: string;
+  pattern?: string;
   primary_key: boolean;
   query: boolean;
   required: boolean;
@@ -616,6 +616,11 @@ export interface sudoCmdType {
   description: string;
 }
 
+export interface dnsZoneType {
+  dn: string;
+  idnsname: string[];
+}
+
 export interface automemberType {
   cn: string;
   automembertargetgroup: string;
@@ -627,6 +632,13 @@ export interface CertProfile {
   cn: string;
   description: string;
   ipacertprofilestoreissued: boolean;
+  dn: string;
+}
+
+export interface DnsPermissionType {
+  type: "dns_permission";
+  ipapermissiontype: string;
+  cn: string;
   dn: string;
 }
 
@@ -654,9 +666,361 @@ export interface SubId {
   dn: string;
 }
 
+export type IDNSForwardPolicy = "only" | "first" | "none";
+
 export interface DNSZone {
   idnsname: string;
+  idnssoarname: string;
+  idnssoamname: string;
+  idnssoaserial: number;
+  idnssoaexpire: number;
+  idnssoarefresh: number;
+  idnsallowdynupdate: boolean;
+  idnssoaminimum: number;
+  idnsallowquery: string;
+  idnssoaretry: number;
+  nsrecord: string[];
+  idnsupdatepolicy: string;
+  idnszoneactive: boolean;
+  idnsallowtransfer: string;
+  dn: string;
+  name_from_ip: string;
+  idnsforwarders: string[];
+  idnsforwardpolicy: IDNSForwardPolicy;
+  managedby: string;
+  dnsttl: number;
+  dnsdefaultttl: number;
+  dnsclass: string;
+  idnsallowsyncptr: boolean;
+  idnssecinlinesigning: boolean;
+  nsec3paramrecord: string;
 }
+
+export type RecordType = {
+  dnstype: string;
+  dnsdata: string;
+  // [key: string]: string;
+} & RecordTypeData;
+
+/**
+ * NOTE: This will be split to follow the same pattern and it is used in the server
+ * i.e. https://github.com/freeipa/freeipa/blob/master/ipaserver/plugins/dns.py#L680
+ */
+export interface DNSRecord {
+  idnsname: string;
+  idnssoarname: string;
+  idnssoarefresh: number;
+  idnssoaretry: number;
+  idnssoaexpire: number;
+  idnssoaminimum: number;
+  idnssoaserial: number;
+  idnsupdatepolicy: string;
+  idnsallowdynupdate: boolean;
+  idnsallowquery: string;
+  idnsallowtransfer: string;
+  idnszoneactive: boolean;
+  idnssoamname: string;
+  dnsrecords: RecordType[];
+  dnsrecord_types: string; // Direct access to the 'dnsrecord.type' data
+  dnsrecord_data: string; // Direct access to the 'dnsrecord.data' data
+  dn: string;
+  // - Extended values
+  dnsttl: number; // Maximum value: 2147483647
+  dnsclass: string;
+  dnstype: string;
+  dnsdata: string;
+  arecord: string[];
+  a_part_ip_address: string[];
+  a_extra_create_reverse: boolean;
+  aaaarecord: string[];
+  aaaa_part_ip_address: string;
+  aaaa_extra_create_reverse: boolean;
+  a6record: string[];
+  a6_part_data: string;
+  afsdbrecord: string[];
+  afsdb_part_subtype: number;
+  afsdb_part_hostname: string;
+  aplrecord: string[];
+  certrecord: string[];
+  cert_part_type: number; // Maximum value: 65535
+  cert_part_key_tag: number; // Maximum value: 65535
+  cert_part_algorithm: number; // Maximum value: 255
+  cert_part_certificate_or_crl: string;
+  cnamerecord: string[];
+  cname_part_hostname: string;
+  dhcidrecord: string[];
+  dlvrecord: string[];
+  dlv_part_key_tag: number; // Maximum value: 65535
+  dlv_part_algorithm: number; // Maximum value: 255
+  dlv_part_digest_type: number; // Maximum value: 255
+  dlv_part_digest: string;
+  dnamerecord: string[];
+  dname_part_target: string; // Type: 'DNSName'
+  dsrecord: string[];
+  ds_part_key_tag: number; // Maximum value: 65535
+  ds_part_algorithm: number; // Maximum value: 255
+  ds_part_digest_type: number; // Maximum value: 255
+  ds_part_digest: string; // Pattern: '^[0-9a-fA-F]+$'
+  hiprecord: string[];
+  ipseckeyrecord: string[];
+  keyrecord: string[];
+  kxrecord: string[];
+  kx_part_preference: number; // Maximum value: 65535
+  kx_part_exchanger: string; // Type: 'DNSName'
+  locrecord: string[];
+  loc_part_lat_deg: number; // Maximum value: 90
+  loc_part_lat_min: number; // Maximum value: 59
+  loc_part_lat_sec: number; // Maximum value: 59.999
+  loc_part_lat_dir: "N" | "S"; // Values: 'N' or 'S'
+  loc_part_lon_deg: number; // Maximum value: 180
+  loc_part_lon_min: number; // Maximum value: 59
+  loc_part_lon_sec: number; // Maximum value: 59.999
+  loc_part_lon_dir: "E" | "W"; // Values: 'E' or 'W'
+  loc_part_altitude: number; // Minimum value: -100000.00 | Maximum value: 42849672.95
+  loc_part_size: number; // Minimum value: 0.00 | Maximum value: 90000000.00
+  loc_part_h_precision: number; // Minimum value: 0.00 | Maximum value: 90000000.00
+  loc_part_v_precision: number; // Minimum value: 0.00 | Maximum value
+  mxrecord: string[];
+  mx_part_preference: number; // Maximum value: 65535
+  mx_part_exchanger: string; // Type: 'DNSName'
+  naptrrecord: string[];
+  naptr_part_order: number; // Maximum value: 65535
+  naptr_part_preference: number; // Maximum value: 65535
+  naptr_part_flags: "S" | "U" | "P" | "A";
+  naptr_part_service: string;
+  naptr_part_regexp: string;
+  naptr_part_replacement: string;
+  nsrecord: string[];
+  ns_part_hostname: string; // Type: 'DNSName'
+  nsecrecord: string[];
+  ptrrecord: string[];
+  ptr_part_hostname: string; // Type: 'DNSName'
+  rrsigrecord: string[];
+  rprecord: string[];
+  sigrecord: string[];
+  spfrecord: string[];
+  srvrecord: string[];
+  srv_part_priority: number; // Maximum value: 65535
+  srv_part_weight: number; // Maximum value: 65535
+  srv_part_port: number; // Maximum value: 65535
+  srv_part_target: string; // Type: 'DNSName'
+  sshfprecord: string[];
+  sshfp_part_algorithm: number; // Maximum value: 255
+  sshfp_part_fp_type: number; // Maximum value: 255
+  sshfp_part_fingerprint: string;
+  tlsarecord: string[];
+  tlsa_part_cert_usage: number; // Maximum value: 255
+  tlsa_part_selector: number; // Maximum value: 255
+  tlsa_part_matching_type: number; // Maximum value: 255
+  tlsa_part_cert_association_data: string;
+  txtrecord: string[];
+  txt_part_data: string;
+  urirecord: string[];
+  uri_part_priority: number; // Maximum value: 65535
+  uri_part_weight: number; // Maximum value: 65535
+  uri_part_target: string;
+}
+
+export type DnsRecordType =
+  | "A"
+  | "AAAA"
+  | "A6"
+  | "AFSDB"
+  | "CERT"
+  | "CNAME"
+  | "DNAME"
+  | "DS"
+  | "DLV"
+  | "KX"
+  | "LOC"
+  | "MX"
+  | "NAPTR"
+  | "NS"
+  | "PTR"
+  | "SRV"
+  | "SSHFP"
+  | "TLSA"
+  | "TXT"
+  | "URI";
+
+export interface DNSForwardZone {
+  dn: string;
+  idnsname: string;
+  idnsforwarders: string[];
+  idnsforwardpolicy: IDNSForwardPolicy;
+  idnszoneactive: boolean;
+  name_from_ip?: string;
+  managedby?: string;
+}
+
+export type FieldValue = Partial<DNSRecord>;
+export type RecordConfigType = Partial<
+  Record<DnsRecordType, { columns: { key: string; label: string }[] }>
+>;
+
+// -- Specific Record types --//
+export type RecordTypeData =
+  | ARecord
+  | AAAARecord
+  | A6Record
+  | AFSDBRecord
+  | CERTRecord
+  | CNAMERecord
+  | DLVRecord
+  | DNAMERecord
+  | DSRecord
+  | KXRecord
+  | LOCRecord
+  | MXRecord
+  | NAPTRRecord
+  | NSRecord
+  | PTRRecord
+  | SRVRecord
+  | SSHFPRecord
+  | TLSARecord
+  | TXTRecord
+  | URIRecord;
+export interface ARecord {
+  arecord?: string[];
+  a_part_ip_address: string[];
+  a_extra_create_reverse?: boolean;
+}
+
+export interface AAAARecord {
+  aaaarecord?: string[];
+  aaaa_part_ip_address: string;
+  aaaa_extra_create_reverse?: boolean;
+}
+
+export interface A6Record {
+  a6record?: string[];
+  a6_part_data: string;
+}
+
+export interface AFSDBRecord {
+  afsdbrecord?: string[];
+  afsdb_part_subtype: number;
+  afsdb_part_hostname: string;
+}
+
+export interface CERTRecord {
+  certrecord?: string[];
+  cert_part_type: number; // Maximum value: 65535
+  cert_part_key_tag: number; // Maximum value: 65535
+  cert_part_algorithm: number; // Maximum value: 255
+  cert_part_certificate_or_crl: string;
+}
+
+export interface CNAMERecord {
+  cnamerecord?: string[];
+  cname_part_hostname: string;
+}
+
+export interface DLVRecord {
+  dlvrecord?: string[];
+  dlv_part_key_tag: number; // Maximum value: 65535
+  dlv_part_algorithm: number; // Maximum value: 255
+  dlv_part_digest_type: number; // Maximum value: 255
+  dlv_part_digest: string;
+}
+
+export interface DNAMERecord {
+  dnamerecord?: string[];
+  dname_part_target: string; // Type: 'DNSName'
+}
+
+export interface DSRecord {
+  dsrecord?: string[];
+  ds_part_key_tag: number; // Maximum value: 65535
+  ds_part_algorithm: number; // Maximum value: 255
+  ds_part_digest_type: number; // Maximum value: 255
+  ds_part_digest: string; // Pattern: '^[0-9a-fA-F]+$'
+}
+
+export interface KXRecord {
+  kxrecord?: string[];
+  kx_part_preference: number; // Maximum value: 65535
+  kx_part_exchanger: string; // Type: 'DNSName'
+}
+
+export interface LOCRecord {
+  locrecord?: string[];
+  loc_part_lat_deg?: number; // Maximum value: 90
+  loc_part_lat_min?: number; // Maximum value: 59
+  loc_part_lat_sec?: number; // Maximum value: 59.999
+  loc_part_lat_dir?: "N" | "S"; // Values: 'N' or 'S'
+  loc_part_lon_deg?: number; // Maximum value: 180
+  loc_part_lon_min?: number; // Maximum value: 59
+  loc_part_lon_sec?: number; // Maximum value: 59.999
+  loc_part_lon_dir?: "E" | "W"; // Values: 'E' or 'W'
+  loc_part_altitude?: number; // Minimum value: -100000.00 | Maximum value: 42849672.95
+  loc_part_size?: number; // Minimum value: 0.00 | Maximum value: 90000000.00
+  loc_part_h_precision?: number; // Minimum value: 0.00 | Maximum value: 90000000.00
+  loc_part_v_precision?: number; // Minimum value: 0.00 | Maximum value
+}
+
+export interface MXRecord {
+  mxrecord?: string[];
+  mx_part_preference: number; // Maximum value: 65535
+  mx_part_exchanger: string; // Type: 'DNSName'
+}
+
+export interface NAPTRRecord {
+  naptrrecord?: string[];
+  naptr_part_order: number; // Maximum value: 65535
+  naptr_part_preference: number; // Maximum value: 65535
+  naptr_part_flags: "S" | "U" | "P" | "A";
+  naptr_part_service: string;
+  naptr_part_regexp: string;
+  naptr_part_replacement: string;
+}
+
+export interface NSRecord {
+  nsrecord?: string[];
+  ns_part_hostname: string; // Type: 'DNSName'
+}
+
+export interface PTRRecord {
+  ptrrecord?: string[];
+  ptr_part_hostname: string; // Type: 'DNSName'
+}
+
+export interface SRVRecord {
+  srvrecord?: string[];
+  srv_part_priority: number; // Maximum value: 65535
+  srv_part_weight: number; // Maximum value: 65535
+  srv_part_port: number; // Maximum value: 65535
+  srv_part_target: string; // Type: 'DNSName'
+}
+
+export interface SSHFPRecord {
+  sshfprecord?: string[];
+  sshfp_part_algorithm: number; // Maximum value: 255
+  sshfp_part_fp_type: number; // Maximum value: 255
+  sshfp_part_fingerprint: string;
+}
+
+export interface TLSARecord {
+  tlsarecord?: string[];
+  tlsa_part_cert_usage: number; // Maximum value: 255
+  tlsa_part_selector: number; // Maximum value: 255
+  tlsa_part_matching_type: number; // Maximum value: 255
+  tlsa_part_cert_association_data: string;
+}
+
+export interface TXTRecord {
+  txtrecord?: string[];
+  txt_part_data: string;
+}
+
+export interface URIRecord {
+  urirecord?: string[];
+  uri_part_priority: number; // Maximum value: 65535
+  uri_part_weight: number; // Maximum value: 65535
+  uri_part_target: string;
+}
+
+//-- End of Record types --//
 
 export interface Automember {
   cn: string;
@@ -724,4 +1088,11 @@ export interface CertificateMapping {
 
 export interface CertificateMappingConfig {
   ipacertmappromptusername: boolean;
+}
+
+export interface DnsServer {
+  idnsserverid: string;
+  idnssoamname: string;
+  idnsforwardersmultivalued: string[];
+  idnsforwardpolicy: IDNSForwardPolicy;
 }

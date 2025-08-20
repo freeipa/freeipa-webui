@@ -54,6 +54,7 @@ describe("IpaNumberInput Component", () => {
   };
 
   const defaultProps: IPAParamDefinitionNumberInput = {
+    dataCy: "ipa-number-input",
     ariaLabel: "sudoorder2",
     ipaObject: { sudoorder2: "" }, // Default value
     maxValue: 2147483647,
@@ -71,7 +72,7 @@ describe("IpaNumberInput Component", () => {
   });
 
   it("renders the NumberInput component with correct props", () => {
-    render(<IpaNumberInput {...defaultProps} />);
+    render(<IpaNumberInput {...defaultProps} ipaObject={{ sudoorder2: 0 }} />);
 
     // Verify the component exists
     const numberInputElem = screen.getByLabelText("sudoorder2");
@@ -88,8 +89,8 @@ describe("IpaNumberInput Component", () => {
 
     expect(plusButton).toBeInTheDocument();
     expect(minusButton).toBeInTheDocument();
-    expect(plusButton).toHaveAttribute("aria-disabled", "false");
-    expect(minusButton).toHaveAttribute("aria-disabled", "true"); // Disabled
+    expect(plusButton).toBeEnabled();
+    expect(minusButton).toBeDisabled();
   });
 
   it("increment number when clicking plus button", () => {

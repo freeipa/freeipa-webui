@@ -6,18 +6,16 @@ import {
   Form,
   FormGroup,
   ToggleGroupItem,
-  Text,
+  Content,
   ToolbarItemVariant,
-  TextContent,
-  TextVariants,
+  ContentVariants,
   Pagination,
 } from "@patternfly/react-core";
 // Icons
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 // Toolbar layout
 import ToolbarLayout, {
-  ToolbarItemAlignment,
-  ToolbarItemSpacer,
+  ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
 // Data types
 import {
@@ -488,12 +486,13 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
   // Toolbar fields data structure
   // - Depending on the 'toolbarData' response, a
   //   specific set of data will be shown.
-  const toolbarFields = [
+  const toolbarFields: ToolbarItem[] = [
     {
       id: toolbarData().searchId,
       key: 0,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search user"
           placeholder="Search"
@@ -501,9 +500,9 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
         />
       ),
       toolbarItemVariant: ToolbarItemVariant["search-filter"],
-      toolbarItemSpacer: {
-        default: "spacerMd",
-      } as ToolbarItemSpacer,
+      toolbarItemGap: {
+        default: "gapMd",
+      },
     },
     {
       id: toolbarData().separator1Id,
@@ -514,7 +513,11 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
       id: toolbarData().refreshButton.id,
       key: 2,
       element: (
-        <Button variant="secondary" name="refresh">
+        <Button
+          data-cy="member-of-button-refresh"
+          variant="secondary"
+          name="refresh"
+        >
           Refresh
         </Button>
       ),
@@ -524,6 +527,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
       key: 3,
       element: (
         <Button
+          data-cy="member-of-button-delete"
           variant="secondary"
           name="remove"
           isDisabled={toolbarData().deleteButton.isDisabledHandler}
@@ -538,6 +542,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
       key: 4,
       element: (
         <Button
+          data-cy="member-of-button-add"
           variant="secondary"
           name="add"
           onClick={toolbarData().addButton.onClickHandler}
@@ -555,12 +560,12 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
       id: "membership-form",
       key: 6,
       element: (
-        <Form isHorizontal maxWidth="93px" className="pf-v5-u-pb-xs">
+        <Form isHorizontal maxWidth="93px" className="pf-v6-u-pb-xs">
           <FormGroup
             fieldId="membership"
             role="group"
             label="Membership"
-            className="pf-v5-u-pt-0"
+            className="pf-v6-u-pt-0"
           ></FormGroup>
         </Form>
       ),
@@ -596,14 +601,12 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
       id: toolbarData().helpIcon.id,
       key: 9,
       element: (
-        <TextContent>
-          <Text component={TextVariants.p}>
-            <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
-            <Text component={TextVariants.a} isVisitedLink>
-              Help
-            </Text>
-          </Text>
-        </TextContent>
+        <Content component={ContentVariants.p}>
+          <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
+          <Content component={ContentVariants.a} isVisitedLink>
+            Help
+          </Content>
+        </Content>
       ),
     },
     {
@@ -620,7 +623,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
           isCompact
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" } as ToolbarItemAlignment,
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 

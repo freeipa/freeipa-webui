@@ -120,7 +120,12 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
   };
 
   const toggleCA = (toggleRef: React.Ref<MenuToggleElement>) => (
-    <MenuToggle ref={toggleRef} onClick={onCAToggle} className="pf-v5-u-w-100">
+    <MenuToggle
+      data-cy="modal-select-ca-toggle"
+      ref={toggleRef}
+      onClick={onCAToggle}
+      className="pf-v6-u-w-100"
+    >
       {selectedCA}
     </MenuToggle>
   );
@@ -143,9 +148,10 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
 
   const toggleProfile = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
+      data-cy="modal-select-profile-toggle"
       ref={toggleRef}
       onClick={onProfileToggle}
-      className="pf-v5-u-w-100"
+      className="pf-v6-u-w-100"
     >
       {selectedProfile}
     </MenuToggle>
@@ -160,6 +166,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
     name: "Principal",
     pfComponent: (
       <TextInput
+        data-cy="modal-textbox-principal"
         id="principal"
         name="principal"
         type="text"
@@ -175,6 +182,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
     labelIcon: <PopoverWithIconLayout message={addPrincipalTooltipMessage} />,
     pfComponent: (
       <Checkbox
+        data-cy="modal-checkbox-add-principal"
         label="Add principal"
         id="add-principal"
         name="add-principal"
@@ -234,6 +242,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
       fieldRequired: true,
       pfComponent: (
         <Select
+          data-cy="modal-ca-select"
           id={"ca-selector"}
           aria-label={"Selector for certificate authority"}
           toggle={toggleCA}
@@ -243,7 +252,11 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
         >
           {certAuthList.map((option, index) => {
             return (
-              <SelectOption key={index} value={option.cn}>
+              <SelectOption
+                data-cy={"modal-ca-select-" + option.cn}
+                key={index}
+                value={option.cn}
+              >
                 {option.cn}
               </SelectOption>
             );
@@ -256,6 +269,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
       name: "Profile ID",
       pfComponent: (
         <Select
+          data-cy="modal-profile-select"
           id={"profile-selector"}
           aria-label={"Selector for profile ID"}
           toggle={toggleProfile}
@@ -265,7 +279,11 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
         >
           {certProfileList.map((option, index) => {
             return (
-              <SelectOption key={index} value={option.cn}>
+              <SelectOption
+                data-cy={"modal-profile-select-" + option.cn}
+                key={index}
+                value={option.cn}
+              >
                 {option.cn}
               </SelectOption>
             );
@@ -279,7 +297,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
         <List
           component={ListComponent.ol}
           type={OrderType.number}
-          className="pf-v5-u-font-size-md"
+          className="pf-v6-u-font-size-md"
         >
           <ListItem>
             Create a certificate database or use an existing one. To create a
@@ -315,6 +333,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
       id: "certificate-textarea-field",
       pfComponent: (
         <TextArea
+          data-cy="modal-textbox-certificate"
           id="certificate-textarea"
           name="csr"
           aria-label="Text area for certificate"
@@ -345,6 +364,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
   // Actions
   const actions = [
     <Button
+      data-cy="modal-button-issue"
       key={"issue-new-certificate"}
       variant="primary"
       onClick={onAddCertificate}
@@ -353,6 +373,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
       Issue
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key={"cancel-issue-new-certificate"}
       variant="link"
       onClick={resetFieldsAndClose}
@@ -365,6 +386,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="issue-new-certificate-modal"
         variantType="medium"
         modalPosition="top"
         title={"Issue new certificate for '" + props.id + "'"}

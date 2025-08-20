@@ -8,6 +8,7 @@ describe("IpaTextboxList Component", () => {
   const mockSetIpaObject = vi.fn();
 
   const defaultProps: PropsToIpaTextboxList = {
+    dataCy: "ipa-textbox-list",
     ipaObject: {},
     setIpaObject: mockSetIpaObject,
     name: "customipatextboxlist",

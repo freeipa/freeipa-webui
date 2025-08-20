@@ -1,16 +1,16 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Grid,
   GridItem,
   PageSection,
-  PageSectionVariants,
+  ToolbarItemVariant,
 } from "@patternfly/react-core";
 import TableLayout from "src/components/layouts/TableLayout";
 import { Td, Th, Tr } from "@patternfly/react-table";
 // components
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import PageLayout from "src/components/layouts/PageLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import SkeletonOnTableLayout from "src/components/layouts/Skeleton/SkeletonOnTableLayout";
@@ -75,14 +75,19 @@ const SubIdsStatistics = () => {
     {
       key: 0,
       element: (
-        <SecondaryButton onClickHandler={onRefresh} isDisabled={!showTableRows}>
+        <Button
+          variant="secondary"
+          data-cy="subids-statistics-button-refresh"
+          onClick={onRefresh}
+          isDisabled={!showTableRows}
+        >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 2,
@@ -139,14 +144,14 @@ const SubIdsStatistics = () => {
       hasAlerts={true}
       toolbarItems={toolbarItems}
     >
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <Grid hasGutter>
           <GridItem span={12}>
             <TableLayout
               ariaLabel={"subordinate id statistics table"}
               variant="compact"
               hasBorders={true}
-              classes={"pf-v5-u-mt-md"}
+              classes={"pf-v6-u-mt-md"}
               tableId={"subid-stats-table"}
               tableHeader={header}
               tableBody={!showTableRows ? skeleton : body}

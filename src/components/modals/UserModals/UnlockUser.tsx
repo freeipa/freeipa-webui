@@ -1,11 +1,6 @@
 import React from "react";
 // PatternFly
-import {
-  Button,
-  TextContent,
-  Text,
-  TextVariants,
-} from "@patternfly/react-core";
+import { Button, Content, ContentVariants } from "@patternfly/react-core";
 // Modals
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // RPC
@@ -33,11 +28,9 @@ const UnlockUser = (props: propsToUnlockUser) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
-            {"Are you sure you want to unlock user '" + props.uid + "'?"}
-          </Text>
-        </TextContent>
+        <Content component={ContentVariants.p}>
+          {"Are you sure you want to unlock user '" + props.uid + "'?"}
+        </Content>
       ),
     },
   ];
@@ -87,10 +80,16 @@ const UnlockUser = (props: propsToUnlockUser) => {
       variant="primary"
       onClick={onUnlockUser}
       form="unlock-user-modal"
+      data-cy="modal-button-ok"
     >
       Ok
     </Button>,
-    <Button key="cancel-unlock-user" variant="link" onClick={props.onClose}>
+    <Button
+      key="cancel-unlock-user"
+      variant="link"
+      onClick={props.onClose}
+      data-cy="modal-button-cancel"
+    >
       Cancel
     </Button>,
   ];
@@ -99,6 +98,7 @@ const UnlockUser = (props: propsToUnlockUser) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="unlock-user-modal"
         variantType="small"
         modalPosition="top"
         title="Unlock user"

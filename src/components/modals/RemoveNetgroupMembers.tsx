@@ -1,11 +1,6 @@
 import React from "react";
 // PatternFly
-import {
-  Button,
-  TextContent,
-  Text,
-  TextVariants,
-} from "@patternfly/react-core";
+import { Button, Content, ContentVariants } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
@@ -30,11 +25,9 @@ const RemoveNetgroupMembersModal = (props: PropsToDelete) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
-            Are you sure you want to remove the selected entries?
-          </Text>
-        </TextContent>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to remove the selected entries?
+        </Content>
       ),
     },
     {
@@ -54,6 +47,7 @@ const RemoveNetgroupMembersModal = (props: PropsToDelete) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <SecondaryButton
+      dataCy="modal-button-delete"
       key={"delete-" + props.elementType}
       form="modal-form"
       onClickHandler={() => props.removeMembers(props.elementsToDelete)}
@@ -65,6 +59,7 @@ const RemoveNetgroupMembersModal = (props: PropsToDelete) => {
       {props.spinning ? "Deleting" : "Delete"}
     </SecondaryButton>,
     <Button
+      data-cy="modal-button-cancel"
       key={"cancel-delete-" + props.elementType}
       variant="link"
       onClick={props.closeModal}
@@ -76,6 +71,7 @@ const RemoveNetgroupMembersModal = (props: PropsToDelete) => {
   // Render component
   return (
     <ModalWithFormLayout
+      dataCy="remove-netgroup-members-modal"
       variantType="medium"
       modalPosition="top"
       title={"Remove " + label.toLowerCase() + "s from Netgroup"}

@@ -60,36 +60,38 @@ const NetgroupsMemberOf = (props: PropsToMemberOf) => {
 
   // Render component
   return (
-    <TabLayout id="memberof">
-      <Tabs
-        activeKey={props.tabSection}
-        onSelect={handleTabClick}
-        isBox={false}
-        mountOnEnter
-        unmountOnExit
-      >
-        <Tab
-          eventKey={"memberof_netgroup"}
-          name="memberof_netgroup"
-          title={
-            <TabTitleText>
-              Netgroups{" "}
-              <Badge key={0} isRead>
-                {netgroupCount}
-              </Badge>
-            </TabTitleText>
-          }
+    <div style={{ height: `var(--subsettings-calc)` }}>
+      <TabLayout id="memberof">
+        <Tabs
+          activeKey={props.tabSection}
+          onSelect={handleTabClick}
+          isBox={false}
+          mountOnEnter
+          unmountOnExit
         >
-          <MemberOfNetgroups
-            entity={netgroup}
-            id={netgroup.cn as string}
-            from={"netgroups"}
-            isDataLoading={netgroupQuery.isFetching}
-            onRefreshData={onRefreshData}
-          />
-        </Tab>
-      </Tabs>
-    </TabLayout>
+          <Tab
+            eventKey={"memberof_netgroup"}
+            name="memberof_netgroup"
+            title={
+              <TabTitleText>
+                Netgroups{" "}
+                <Badge key={0} isRead>
+                  {netgroupCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfNetgroups
+              entity={netgroup}
+              id={netgroup.cn as string}
+              from={"netgroups"}
+              isDataLoading={netgroupQuery.isFetching}
+              onRefreshData={onRefreshData}
+            />
+          </Tab>
+        </Tabs>
+      </TabLayout>
+    </div>
   );
 };
 

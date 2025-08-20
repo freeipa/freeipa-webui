@@ -2,16 +2,19 @@ import React from "react";
 // PatternFly
 import {
   Button,
+  Content,
   Flex,
   FlexItem,
   Form,
   FormGroup,
   Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   TextArea,
 } from "@patternfly/react-core";
 // Components
 import SecondaryButton from "../../layouts/SecondaryButton";
-import TextLayout from "../../layouts/TextLayout";
 // Modals
 import ConfirmationModal from "../../modals/ConfirmationModal";
 // Data types
@@ -28,6 +31,7 @@ import {
 } from "src/services/rpc";
 
 export interface PropsToSshPublicKeysModal {
+  dataCy: string;
   ipaObject: Record<string, unknown>;
   onChange: (ipaObject: Record<string, unknown>) => void;
   metadata: Metadata;
@@ -80,6 +84,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
 
   const deletionModalActions = [
     <Button
+      data-cy="modal-button-delete"
       key="del-ssh-key"
       variant="danger"
       onClick={() => onRemoveSSHKey(idxToDelete)}
@@ -91,7 +96,12 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
     >
       {modalSpinning ? "Deleting" : "Delete"}
     </Button>,
-    <Button key="cancel" variant="link" onClick={onCloseDeletionModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel"
+      variant="link"
+      onClick={onCloseDeletionModal}
+    >
       Cancel
     </Button>,
   ];
@@ -264,6 +274,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
 
   const modal_actions = [
     <SecondaryButton
+      dataCy="modal-button-set"
       key="set"
       onClickHandler={onClickSetTextAreaSshPublicKeys}
       isDisabled={isSetButtonDisabled || modalSpinning}
@@ -275,6 +286,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
       {modalSpinning ? "Setting" : "Set"}
     </SecondaryButton>,
     <Button
+      data-cy="modal-button-cancel"
       key="cancel"
       variant="link"
       onClick={onClickCancelTextAreaSshPublicKeys}
@@ -299,13 +311,14 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
                   {publicKey !== "" && (
                     <>
                       <FlexItem>
-                        <TextLayout component="small">
+                        <Content component="small">
                           <KeyIcon /> Key (
                           {sshPublicKeysList[idx].split(" ")[0]})
-                        </TextLayout>
+                        </Content>
                       </FlexItem>
                       <FlexItem>
                         <SecondaryButton
+                          dataCy={props.dataCy + "-show-ssh-public-key"}
                           onClickHandler={() => onShowSetSshKey(idx, publicKey)}
                           name={"show-ssh-public-key-" + idx}
                           isDisabled={readOnly}
@@ -314,8 +327,9 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
                           Show Key
                         </SecondaryButton>
                       </FlexItem>
-                      <FlexItem className="pf-v5-u-mb-md">
+                      <FlexItem className="pf-v6-u-mb-md">
                         <SecondaryButton
+                          dataCy={props.dataCy + "-remove-ssh-public-key"}
                           onClickHandler={() => onDeleteSshKey(idx)}
                           name={"remove-ssh-public-key-" + idx}
                           isDisabled={readOnly}
@@ -332,34 +346,43 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
           })
         : null}
       <Modal
+        data-cy="ssh-public-key-modal"
         variant="small"
         title={idxSelected !== null ? "SSH Key" : "Set SSH key"}
         isOpen={isTextAreaSshPublicKeysOpen}
         onClose={onClickCancelTextAreaSshPublicKeys}
-        actions={modal_actions}
       >
-        <Form>
-          <FormGroup
-            label="SSH public key:"
-            type="string"
-            fieldId="ipasshpubkey"
-          >
-            <TextArea
-              id="ipasshpubkey"
-              value={textAreaSshPublicKeysValue}
-              name="ipasshpubkey"
-              onChange={(_event, value: string) =>
-                onChangeTextAreaSshPublicKeysValue(value)
-              }
-              aria-label="new ssh public key modal text area"
-              resizeOrientation="vertical"
-              style={{ height: "422px" }}
-              isDisabled={idxSelected !== null}
-            />
-          </FormGroup>
-        </Form>
+        <ModalHeader
+          title={idxSelected !== null ? "SSH Key" : "Set SSH key"}
+          labelId="ssh-public-key-title"
+        />
+        <ModalBody id="modal-box-body-basic">
+          <Form>
+            <FormGroup
+              label="SSH public key:"
+              type="string"
+              fieldId="ipasshpubkey"
+            >
+              <TextArea
+                data-cy="modal-textbox-ssh-public-key"
+                id="ipasshpubkey"
+                value={textAreaSshPublicKeysValue}
+                name="ipasshpubkey"
+                onChange={(_event, value: string) =>
+                  onChangeTextAreaSshPublicKeysValue(value)
+                }
+                aria-label="new ssh public key modal text area"
+                resizeOrientation="vertical"
+                style={{ height: "422px" }}
+                isDisabled={idxSelected !== null}
+              />
+            </FormGroup>
+          </Form>
+        </ModalBody>
+        <ModalFooter>{modal_actions}</ModalFooter>
       </Modal>
       <SecondaryButton
+        dataCy={props.dataCy + "-button-add-ssh-public-key"}
         onClickHandler={openSshPublicKeysModal}
         name={"add-ssh-public-key"}
         isDisabled={readOnly}
@@ -368,6 +391,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
         Add Key
       </SecondaryButton>
       <ConfirmationModal
+        dataCy="remove-ssh-public-key-modal"
         title={"Remove SSH Public Key"}
         isOpen={isDeletionModalOpen}
         onClose={onCloseDeletionModal}

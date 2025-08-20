@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import {
   Button,
   PageSection,
-  PageSectionVariants,
   PaginationVariant,
+  ToolbarItemVariant,
   Tooltip,
 } from "@patternfly/react-core";
 import {
@@ -307,17 +307,22 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
       key: 0,
       element: (
         <Tooltip aria="none" aria-live="polite" content={tooltipMsg}>
-          <Button aria-label="Search tips" variant="plain" id="search_tip">
-            <OutlinedQuestionCircleIcon />
-          </Button>
+          <Button
+            icon={<OutlinedQuestionCircleIcon />}
+            data-cy="search"
+            aria-label="Search tips"
+            variant="plain"
+            id="search_tip"
+          />
         </Tooltip>
       ),
-      toolbarItemSpacer: { default: "spacerNone" },
+      toolbarItemGap: { default: "gapNone" },
     },
     {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search groups"
           placeholder="Search"
@@ -325,17 +330,20 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
           isDisabled={searchDisabled}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 2,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 3,
       element: (
-        <SecondaryButton onClickHandler={props.onRefresh}>
+        <SecondaryButton
+          dataCy="id-views-tab-override-groups-button-refresh"
+          onClickHandler={props.onRefresh}
+        >
           Refresh
         </SecondaryButton>
       ),
@@ -344,6 +352,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
       key: 4,
       element: (
         <SecondaryButton
+          dataCy="id-views-tab-override-groups-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
         >
@@ -355,6 +364,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
       key: 5,
       element: (
         <SecondaryButton
+          dataCy="id-views-tab-override-groups-button-add"
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows}
         >
@@ -372,19 +382,19 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 
   // Render component
   return (
-    <PageSection variant={PageSectionVariants.light} isFilled={false}>
+    <PageSection hasBodyWrapper={false} isFilled={false}>
       <ToolbarLayout
-        className="pf-v5-u-pt-0 pf-v5-u-pr-md"
-        contentClassName="pf-v5-u-p-0"
+        className="pf-v6-u-pt-0 pf-v6-u-pr-md"
+        contentClassName="pf-v6-u-p-0"
         toolbarItems={toolbarItems}
       />
-      <div className="pf-v5-u-ml-md pf-v5-u-mr-md">
+      <div className="pf-v6-u-ml-md pf-v6-u-mr-md">
         <OuterScrollContainer>
           <InnerScrollContainer>
             {batchError !== undefined && batchError ? (
@@ -407,7 +417,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
         paginationData={paginationData}
         variant={PaginationVariant.bottom}
         widgetId="pagination-options-menu-bottom"
-        className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+        className="pf-v6-u-pb-0 pf-v6-u-pr-md"
       />
       <AddIdOverrideGroupModal
         show={showAddModal}

@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   DropdownItem,
-  Page,
+  Flex,
+  FlexItem,
   PageSection,
-  PageSectionVariants,
   PaginationVariant,
+  ToolbarItemVariant,
 } from "@patternfly/react-core";
 import {
   InnerScrollContainer,
@@ -508,6 +509,7 @@ const IDViews = () => {
   };
   const dropdownItems = [
     <DropdownItem
+      data-cy="id-views-kebab-unapply-hosts"
       key="unapply-hosts"
       onClick={openUnapplyHostModal}
       isDisabled={!showTableRows || totalCount === 0}
@@ -515,6 +517,7 @@ const IDViews = () => {
       Unapply from hosts
     </DropdownItem>,
     <DropdownItem
+      data-cy="id-views-kebab-unapply-hostgroups"
       key="unapply-hostgroups"
       onClick={openUnapplyHostgroupModal}
       isDisabled={!showTableRows || totalCount === 0}
@@ -541,6 +544,7 @@ const IDViews = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search ID views"
           placeholder="Search"
@@ -548,17 +552,18 @@ const IDViews = () => {
           isDisabled={searchDisabled}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 2,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 3,
       element: (
         <SecondaryButton
+          dataCy="id-views-button-refresh"
           onClickHandler={refreshViewsData}
           isDisabled={!showTableRows}
         >
@@ -570,6 +575,7 @@ const IDViews = () => {
       key: 4,
       element: (
         <SecondaryButton
+          dataCy="id-views-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
         >
@@ -581,6 +587,7 @@ const IDViews = () => {
       key: 5,
       element: (
         <SecondaryButton
+          dataCy="id-views-button-add"
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows}
         >
@@ -592,6 +599,7 @@ const IDViews = () => {
       key: 6,
       element: (
         <KebabLayout
+          dataCy="id-views-kebab"
           onDropdownSelect={onKebabSelect}
           onKebabToggle={onKebabToggle}
           idKebab="toggle-action-buttons"
@@ -602,7 +610,7 @@ const IDViews = () => {
     },
     {
       key: 7,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 8,
@@ -618,54 +626,56 @@ const IDViews = () => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 
   return (
-    <Page>
+    <div>
       <alerts.ManagedAlerts />
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <TitleLayout id="Views title" headingLevel="h1" text="ID views" />
       </PageSection>
-      <PageSection
-        variant={PageSectionVariants.light}
-        isFilled={false}
-        className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-      >
-        <ToolbarLayout
-          className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-          contentClassName="pf-v5-u-p-0"
-          toolbarItems={toolbarItems}
-        />
-        <div style={{ height: `calc(100vh - 350px)` }}>
-          <OuterScrollContainer>
-            <InnerScrollContainer>
-              {batchError !== undefined && batchError ? (
-                <GlobalErrors errors={globalErrors.getAll()} />
-              ) : (
-                <IDViewsTable
-                  elementsList={viewsList}
-                  shownElementsList={viewsList}
-                  showTableRows={showTableRows}
-                  idViewsData={viewsTableData}
-                  buttonsData={viewsTableButtonsData}
-                  paginationData={selectedPerPageData}
-                  searchValue={searchValue}
-                />
-              )}
-            </InnerScrollContainer>
-          </OuterScrollContainer>
-        </div>
-        <PaginationLayout
-          list={viewsList}
-          paginationData={paginationData}
-          variant={PaginationVariant.bottom}
-          widgetId="pagination-options-menu-bottom"
-          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        />
+      <PageSection hasBodyWrapper={false} isFilled={false}>
+        <Flex direction={{ default: "column" }}>
+          <FlexItem>
+            <ToolbarLayout toolbarItems={toolbarItems} />
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto" }}>
+            <OuterScrollContainer>
+              <InnerScrollContainer
+                style={{ height: "60vh", overflow: "auto" }}
+              >
+                {batchError !== undefined && batchError ? (
+                  <GlobalErrors errors={globalErrors.getAll()} />
+                ) : (
+                  <IDViewsTable
+                    elementsList={viewsList}
+                    shownElementsList={viewsList}
+                    showTableRows={showTableRows}
+                    idViewsData={viewsTableData}
+                    buttonsData={viewsTableButtonsData}
+                    paginationData={selectedPerPageData}
+                    searchValue={searchValue}
+                  />
+                )}
+              </InnerScrollContainer>
+            </OuterScrollContainer>
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
+            <PaginationLayout
+              list={viewsList}
+              paginationData={paginationData}
+              variant={PaginationVariant.bottom}
+              widgetId="pagination-options-menu-bottom"
+            />
+          </FlexItem>
+        </Flex>
       </PageSection>
-      <ModalErrors errors={modalErrors.getAll()} />
+      <ModalErrors
+        errors={modalErrors.getAll()}
+        dataCy="id-views-modal-error"
+      />
       <AddIDViewModal
         show={showAddModal}
         handleModalToggle={onAddModalToggle}
@@ -708,7 +718,7 @@ const IDViews = () => {
         addBtnName="Unapply"
         addSpinningBtnName="Unapplying"
       />
-    </Page>
+    </div>
   );
 };
 

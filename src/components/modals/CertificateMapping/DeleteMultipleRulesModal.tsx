@@ -1,11 +1,6 @@
 import React from "react";
 // PatternFly
-import {
-  Button,
-  TextContent,
-  Text,
-  TextVariants,
-} from "@patternfly/react-core";
+import { Button, Content, ContentVariants } from "@patternfly/react-core";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // RPC
@@ -57,7 +52,12 @@ const DeleteMultipleRulesModal = (props: DeleteMultipleRulesModalProps) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={closeAndCleanErrorParameters}>
+    <Button
+      data-cy="modal-button-ok"
+      key="cancel"
+      variant="link"
+      onClick={closeAndCleanErrorParameters}
+    >
       OK
     </Button>,
   ];
@@ -134,11 +134,9 @@ const DeleteMultipleRulesModal = (props: DeleteMultipleRulesModalProps) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
-            Are you sure you want to delete the selected entries?
-          </Text>
-        </TextContent>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to delete the selected entries?
+        </Content>
       ),
     },
     {
@@ -158,6 +156,7 @@ const DeleteMultipleRulesModal = (props: DeleteMultipleRulesModalProps) => {
 
   const modalActions: JSX.Element[] = [
     <Button
+      data-cy="modal-button-delete"
       key="delete-certmaprules"
       variant="danger"
       onClick={onDelete}
@@ -170,6 +169,7 @@ const DeleteMultipleRulesModal = (props: DeleteMultipleRulesModalProps) => {
       {spinning ? "Deleting" : "Delete"}
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key="cancel-delete-certmaprules"
       variant="link"
       onClick={props.onClose}
@@ -183,6 +183,7 @@ const DeleteMultipleRulesModal = (props: DeleteMultipleRulesModalProps) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="delete-multiple-rules-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"
@@ -195,6 +196,7 @@ const DeleteMultipleRulesModal = (props: DeleteMultipleRulesModalProps) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="delete-multiple-rules-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={closeAndCleanErrorParameters}

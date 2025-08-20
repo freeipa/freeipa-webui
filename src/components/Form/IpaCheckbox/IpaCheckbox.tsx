@@ -10,6 +10,7 @@ import {
 } from "../../../utils/ipaObjectUtils";
 
 export interface CheckboxOption extends IPAParamDefinition {
+  dataCy: string;
   value: string;
   text: string;
   textNode?: React.ReactNode;
@@ -52,6 +53,7 @@ const IpaCheckbox = (props: CheckboxOption) => {
 
   return (
     <Checkbox
+      data-cy={props.dataCy}
       id={props.name + "-" + props.value}
       className={props.className}
       name={props.name}

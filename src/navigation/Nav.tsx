@@ -33,7 +33,9 @@ const renderNavItem = (
         dispatch(updateBreadCrumbPath([{ name: item.label, url: item.path }]));
       }}
     >
-      <NavLink to={item.path}>{item.label}</NavLink>
+      <NavLink to={item.path} data-cy={`nav-link-${item.group}`}>
+        {item.label}
+      </NavLink>
     </NavItem>
   );
 };
@@ -59,6 +61,7 @@ const Navigation = () => {
               isExpanded={section.items.some(
                 (route) => route.group === activeFirstLevel
               )}
+              data-cy={`nav-${section.label.toLowerCase()}`}
             >
               {section.items.map((subsection, sid) => {
                 if (subsection.items && subsection.items.length > 0) {
@@ -68,6 +71,7 @@ const Navigation = () => {
                       title={subsection.label}
                       isActive={activeFirstLevel === subsection.group}
                       isExpanded={activeFirstLevel === subsection.group}
+                      data-cy={`nav-${subsection.group}`}
                     >
                       {subsection.items.map(
                         (linkItem, lid) =>

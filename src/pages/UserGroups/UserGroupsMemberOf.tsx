@@ -205,125 +205,127 @@ const UserGroupsMemberOf = (props: PropsToMemberOf) => {
 
   // Render component
   return (
-    <TabLayout id="memberof">
-      <Tabs
-        activeKey={props.tabSection}
-        onSelect={handleTabClick}
-        isBox={false}
-        mountOnEnter
-        unmountOnExit
-      >
-        <Tab
-          eventKey={"memberof_usergroup"}
-          name="memberof_usergroup"
-          title={
-            <TabTitleText>
-              User groups{" "}
-              <Badge key={0} isRead>
-                {groupCount}
-              </Badge>
-            </TabTitleText>
-          }
+    <div style={{ height: `var(--memberof-calc)` }}>
+      <TabLayout id="memberof">
+        <Tabs
+          activeKey={props.tabSection}
+          onSelect={handleTabClick}
+          isBox={false}
+          mountOnEnter
+          unmountOnExit
         >
-          <MemberOfUserGroups
-            entry={group}
-            from="User groups"
-            isUserDataLoading={groupQuery.isFetching}
-            onRefreshUserData={onRefreshData}
-            setDirection={updateGroupDirection}
-            direction={groupDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"memberof_netgroup"}
-          name="memberof_netgroup"
-          title={
-            <TabTitleText>
-              Netgroups{" "}
-              <Badge key={1} isRead>
-                {netgroupCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfNetgroups
-            entity={group}
-            id={group.cn as string}
-            from={"user-groups"}
-            isDataLoading={groupQuery.isFetching}
-            onRefreshData={onRefreshData}
-            setDirection={updateNetgroupDirection}
-            direction={netgroupDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"memberof_role"}
-          name="memberof_role"
-          title={
-            <TabTitleText>
-              Roles{" "}
-              <Badge key={2} isRead>
-                {roleCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfRoles
-            entity={group}
-            id={group.cn as string}
-            from={"user-groups"}
-            isDataLoading={groupQuery.isFetching}
-            onRefreshData={onRefreshData}
-            setDirection={updateRoleDirection}
-            direction={roleDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"memberof_hbacrule"}
-          name="memberof_hbacrule"
-          title={
-            <TabTitleText>
-              HBAC rules{" "}
-              <Badge key={3} isRead>
-                {hbacCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfHbacRules
-            entity={group}
-            id={group.cn as string}
-            from={"user-groups"}
-            isDataLoading={groupQuery.isFetching}
-            onRefreshData={onRefreshData}
-            setDirection={updateHbacDirection}
-            direction={hbacDirection}
-          />
-        </Tab>
-        <Tab
-          eventKey={"memberof_sudorule"}
-          name="memberof_sudorule"
-          title={
-            <TabTitleText>
-              Sudo rules{" "}
-              <Badge key={4} isRead>
-                {sudoCount}
-              </Badge>
-            </TabTitleText>
-          }
-        >
-          <MemberOfSudoRules
-            entity={group}
-            id={group.cn as string}
-            from={"user-groups"}
-            isDataLoading={groupQuery.isFetching}
-            onRefreshData={onRefreshData}
-            setDirection={updateSudoDirection}
-            direction={sudoDirection}
-          />
-        </Tab>
-      </Tabs>
-    </TabLayout>
+          <Tab
+            eventKey={"memberof_usergroup"}
+            name="memberof_usergroup"
+            title={
+              <TabTitleText>
+                User groups{" "}
+                <Badge key={0} isRead>
+                  {groupCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfUserGroups
+              entry={group}
+              from="User groups"
+              isUserDataLoading={groupQuery.isFetching}
+              onRefreshUserData={onRefreshData}
+              setDirection={updateGroupDirection}
+              direction={groupDirection}
+            />
+          </Tab>
+          <Tab
+            eventKey={"memberof_netgroup"}
+            name="memberof_netgroup"
+            title={
+              <TabTitleText>
+                Netgroups{" "}
+                <Badge key={1} isRead>
+                  {netgroupCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfNetgroups
+              entity={group}
+              id={group.cn as string}
+              from={"user-groups"}
+              isDataLoading={groupQuery.isFetching}
+              onRefreshData={onRefreshData}
+              setDirection={updateNetgroupDirection}
+              direction={netgroupDirection}
+            />
+          </Tab>
+          <Tab
+            eventKey={"memberof_role"}
+            name="memberof_role"
+            title={
+              <TabTitleText>
+                Roles{" "}
+                <Badge key={2} isRead>
+                  {roleCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfRoles
+              entity={group}
+              id={group.cn as string}
+              from={"user-groups"}
+              isDataLoading={groupQuery.isFetching}
+              onRefreshData={onRefreshData}
+              setDirection={updateRoleDirection}
+              direction={roleDirection}
+            />
+          </Tab>
+          <Tab
+            eventKey={"memberof_hbacrule"}
+            name="memberof_hbacrule"
+            title={
+              <TabTitleText>
+                HBAC rules{" "}
+                <Badge key={3} isRead>
+                  {hbacCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfHbacRules
+              entity={group}
+              id={group.cn as string}
+              from={"user-groups"}
+              isDataLoading={groupQuery.isFetching}
+              onRefreshData={onRefreshData}
+              setDirection={updateHbacDirection}
+              direction={hbacDirection}
+            />
+          </Tab>
+          <Tab
+            eventKey={"memberof_sudorule"}
+            name="memberof_sudorule"
+            title={
+              <TabTitleText>
+                Sudo rules{" "}
+                <Badge key={4} isRead>
+                  {sudoCount}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MemberOfSudoRules
+              entity={group}
+              id={group.cn as string}
+              from={"user-groups"}
+              isDataLoading={groupQuery.isFetching}
+              onRefreshData={onRefreshData}
+              setDirection={updateSudoDirection}
+              direction={sudoDirection}
+            />
+          </Tab>
+        </Tabs>
+      </TabLayout>
+    </div>
   );
 };
 

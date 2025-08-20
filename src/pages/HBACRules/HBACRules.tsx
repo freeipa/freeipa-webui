@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
-  Page,
+  Flex,
+  FlexItem,
   PageSection,
-  PageSectionVariants,
   PaginationVariant,
+  ToolbarItemVariant,
 } from "@patternfly/react-core";
 // PatternFly table
 import {
@@ -476,6 +477,7 @@ const HBACRules = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search user"
           placeholder="Search"
@@ -483,12 +485,12 @@ const HBACRules = () => {
           isDisabled={searchDisabled}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 2,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 3,
@@ -496,6 +498,7 @@ const HBACRules = () => {
         <SecondaryButton
           onClickHandler={refreshRulesData}
           isDisabled={!showTableRows}
+          dataCy="hbac-rules-button-refresh"
         >
           Refresh
         </SecondaryButton>
@@ -507,6 +510,7 @@ const HBACRules = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
+          dataCy="hbac-rules-button-delete"
         >
           Delete
         </SecondaryButton>
@@ -518,6 +522,7 @@ const HBACRules = () => {
         <SecondaryButton
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows}
+          dataCy="hbac-rules-button-add"
         >
           Add
         </SecondaryButton>
@@ -529,6 +534,7 @@ const HBACRules = () => {
         <SecondaryButton
           isDisabled={isDisableButtonDisabled || !showTableRows}
           onClickHandler={() => onEnableDisableHandler(true)}
+          dataCy="hbac-rules-button-disable"
         >
           Disable
         </SecondaryButton>
@@ -540,6 +546,7 @@ const HBACRules = () => {
         <SecondaryButton
           isDisabled={isEnableButtonDisabled || !showTableRows}
           onClickHandler={() => onEnableDisableHandler(false)}
+          dataCy="hbac-rules-button-enable"
         >
           Enable
         </SecondaryButton>
@@ -547,7 +554,7 @@ const HBACRules = () => {
     },
     {
       key: 9,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 10,
@@ -563,52 +570,51 @@ const HBACRules = () => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 
   // Render 'Active users'
   return (
-    <Page>
+    <div>
       <alerts.ManagedAlerts />
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <TitleLayout id="hbacrules title" headingLevel="h1" text="HBAC rules" />
       </PageSection>
-      <PageSection
-        variant={PageSectionVariants.light}
-        isFilled={false}
-        className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-      >
-        <ToolbarLayout
-          className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-          contentClassName="pf-v5-u-p-0"
-          toolbarItems={toolbarItems}
-        />
-        <div style={{ height: `calc(100vh - 352.2px)` }}>
-          <OuterScrollContainer>
-            <InnerScrollContainer>
-              {batchError !== undefined && batchError ? (
-                <GlobalErrors errors={globalErrors.getAll()} />
-              ) : (
-                <HBACRulesTable
-                  shownElementsList={rulesList}
-                  showTableRows={showTableRows}
-                  rulesData={rulesTableData}
-                  buttonsData={rulesTableButtonsData}
-                  paginationData={selectedPerPageData}
-                  searchValue={searchValue}
-                />
-              )}
-            </InnerScrollContainer>
-          </OuterScrollContainer>
-        </div>
-        <PaginationLayout
-          list={rulesList}
-          paginationData={paginationData}
-          variant={PaginationVariant.bottom}
-          widgetId="pagination-options-menu-bottom"
-          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        />
+      <PageSection hasBodyWrapper={false} isFilled={false}>
+        <Flex direction={{ default: "column" }}>
+          <FlexItem>
+            <ToolbarLayout toolbarItems={toolbarItems} />
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto" }}>
+            <OuterScrollContainer>
+              <InnerScrollContainer
+                style={{ height: "60vh", overflow: "auto" }}
+              >
+                {batchError !== undefined && batchError ? (
+                  <GlobalErrors errors={globalErrors.getAll()} />
+                ) : (
+                  <HBACRulesTable
+                    shownElementsList={rulesList}
+                    showTableRows={showTableRows}
+                    rulesData={rulesTableData}
+                    buttonsData={rulesTableButtonsData}
+                    paginationData={selectedPerPageData}
+                    searchValue={searchValue}
+                  />
+                )}
+              </InnerScrollContainer>
+            </OuterScrollContainer>
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
+            <PaginationLayout
+              list={rulesList}
+              paginationData={paginationData}
+              variant={PaginationVariant.bottom}
+              widgetId="pagination-options-menu-bottom"
+            />
+          </FlexItem>
+        </Flex>
       </PageSection>
       <AddHBACRule
         show={showAddModal}
@@ -632,8 +638,11 @@ const HBACRules = () => {
         buttonsData={disableEnableButtonsData}
         onRefresh={refreshRulesData}
       />
-      <ModalErrors errors={modalErrors.getAll()} />
-    </Page>
+      <ModalErrors
+        errors={modalErrors.getAll()}
+        dataCy="hbac-rules-modal-error"
+      />
+    </div>
   );
 };
 

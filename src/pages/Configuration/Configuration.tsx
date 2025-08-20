@@ -6,7 +6,6 @@ import {
   JumpLinks,
   JumpLinksItem,
   PageSection,
-  PageSectionVariants,
   Sidebar,
   SidebarPanel,
   SidebarContent,
@@ -188,13 +187,19 @@ const Configuration = () => {
     {
       key: 0,
       element: (
-        <SecondaryButton onClickHandler={onRefresh}>Refresh</SecondaryButton>
+        <SecondaryButton
+          dataCy="configuration-button-refresh"
+          onClickHandler={onRefresh}
+        >
+          Refresh
+        </SecondaryButton>
       ),
     },
     {
       key: 1,
       element: (
         <SecondaryButton
+          dataCy="configuration-button-revert"
           isDisabled={!configData.modified}
           onClickHandler={onRevert}
         >
@@ -206,6 +211,7 @@ const Configuration = () => {
       key: 2,
       element: (
         <SecondaryButton
+          dataCy="configuration-button-save"
           isDisabled={!configData.modified || isSaving}
           onClickHandler={onSave}
           isLoading={isSaving}
@@ -221,7 +227,7 @@ const Configuration = () => {
 
   const style: React.CSSProperties = {
     overflowY: "auto",
-    height: `calc(100vh - 250px)`,
+    height: "64.6vh",
   };
 
   // Get 'ipaObject' and 'recordOnChange'
@@ -233,19 +239,11 @@ const Configuration = () => {
   return (
     <>
       <alerts.ManagedAlerts />
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <TitleLayout id="config title" headingLevel="h1" text="Configuration" />
       </PageSection>
-      <PageSection
-        variant={PageSectionVariants.light}
-        className="pf-v5-u-m-lg pf-v5-u-p-0"
-      >
-        <PageSection
-          id="settings-page"
-          variant={PageSectionVariants.light}
-          style={style}
-          className="pf-v5-u-mt-0 pf-v5-u-ml-lg pf-v5-u-mr-lg pf-v5-u-pl-0 pf-v5-u-pr-0"
-        >
+      <PageSection hasBodyWrapper={false}>
+        <PageSection hasBodyWrapper={false} id="settings-page" style={style}>
           <Sidebar isPanelRight>
             <SidebarPanel variant="sticky">
               <HelpTextWithIconLayout textContent="Help" />
@@ -276,7 +274,7 @@ const Configuration = () => {
                 </JumpLinksItem>
               </JumpLinks>
             </SidebarPanel>
-            <SidebarContent className="pf-v5-u-mr-xl">
+            <SidebarContent className="pf-v6-u-mr-xl">
               <Flex
                 direction={{ default: "column", lg: "row" }}
                 flex={{ default: "flex_1" }}
@@ -312,7 +310,7 @@ const Configuration = () => {
               <Flex
                 direction={{ default: "column", lg: "row" }}
                 flex={{ default: "flex_1" }}
-                className="pf-v5-u-mt-lg"
+                className="pf-v6-u-mt-lg"
               >
                 <FlexItem flex={{ default: "flex_1" }}>
                   <TitleLayout
@@ -333,7 +331,7 @@ const Configuration = () => {
               <Flex
                 direction={{ default: "column", lg: "row" }}
                 flex={{ default: "flex_1" }}
-                className="pf-v5-u-mt-lg"
+                className="pf-v6-u-mt-lg"
               >
                 <FlexItem flex={{ default: "flex_1" }}>
                   <TitleLayout
@@ -372,7 +370,7 @@ const Configuration = () => {
                         headingLevel="h2"
                         id="service-options"
                         text="Service options"
-                        className="pf-v5-u-mt-lg"
+                        className="pf-v6-u-mt-lg"
                       />
                       <ConfigServiceOptions
                         ipaObject={ipaObject}

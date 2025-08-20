@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
-import {
-  TextContent,
-  Text,
-  TextVariants,
-  Button,
-} from "@patternfly/react-core";
+import { Content, ContentVariants, Button } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
@@ -57,11 +52,9 @@ const DeleteHBACService = (props: PropsToDeleteServices) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
-            Are you sure you want to remove the selected services?
-          </Text>
-        </TextContent>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to remove the selected services?
+        </Content>
       ),
     },
     {
@@ -99,7 +92,12 @@ const DeleteHBACService = (props: PropsToDeleteServices) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+      data-cy="modal-button-ok"
+    >
       OK
     </Button>,
   ];
@@ -182,6 +180,7 @@ const DeleteHBACService = (props: PropsToDeleteServices) => {
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
       isDisabled={spinning}
+      data-cy="modal-button-delete"
     >
       {spinning ? "Deleting" : "Delete"}
     </Button>,
@@ -189,6 +188,7 @@ const DeleteHBACService = (props: PropsToDeleteServices) => {
       key="cancel-delete-hbacservices"
       variant="link"
       onClick={closeModal}
+      data-cy="modal-button-cancel"
     >
       Cancel
     </Button>,
@@ -198,6 +198,7 @@ const DeleteHBACService = (props: PropsToDeleteServices) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="delete-hbac-services-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"
@@ -210,6 +211,7 @@ const DeleteHBACService = (props: PropsToDeleteServices) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="delete-hbac-services-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

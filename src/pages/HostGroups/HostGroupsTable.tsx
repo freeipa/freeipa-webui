@@ -155,7 +155,7 @@ const HostGroupsTable = (props: PropsToTable) => {
   // Defining table header and body from here to avoid passing specific names to the Table Layout
   const header = (
     <Tr>
-      <Th modifier="wrap"></Th>
+      <Th modifier="wrap" aria-label="Select rows"></Th>
       <Th modifier="wrap">{columnNames.cn}</Th>
       <Th modifier="wrap">{columnNames.description}</Th>
     </Tr>
@@ -195,7 +195,7 @@ const HostGroupsTable = (props: PropsToTable) => {
       ariaLabel={"Host groups table"}
       variant={"compact"}
       hasBorders={true}
-      classes={"pf-v5-u-mt-md"}
+      classes={"pf-v6-u-mt-md"}
       tableId={"hostgroups-table"}
       isStickyHeader={true}
       tableHeader={header}

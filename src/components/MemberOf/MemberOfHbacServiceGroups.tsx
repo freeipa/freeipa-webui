@@ -265,7 +265,7 @@ const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
       />
       {memberof_hbacsvcgroup.length > 0 && (
         <Pagination
-          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
+          className="pf-v6-u-pb-0 pf-v6-u-pr-md"
           itemCount={memberof_hbacsvcgroup.length}
           widgetId="pagination-options-menu-bottom"
           perPage={perPage}

@@ -17,13 +17,14 @@ interface PropsToSELinuxOptions {
 
 const ConfigSELinuxOptions = (props: PropsToSELinuxOptions) => {
   return (
-    <Form className="pf-v5-u-mb-lg pf-v5-u-mt-lg" isHorizontal>
+    <Form className="pf-v6-u-mb-lg pf-v6-u-mt-lg" isHorizontal>
       <FormGroup
         label="SELinux user map order"
         fieldId="ipaselinuxusermaporder"
         isRequired
       >
         <IpaTextArea
+          dataCy="configuration-textbox-ipaselinuxusermaporder"
           name={"ipaselinuxusermaporder"}
           ariaLabel={"SELinux user map order"}
           ipaObject={props.ipaObject}
@@ -37,6 +38,7 @@ const ConfigSELinuxOptions = (props: PropsToSELinuxOptions) => {
         fieldId="ipaselinuxusermapdefault"
       >
         <IpaTextInput
+          dataCy="configuration-textbox-ipaselinuxusermapdefault"
           name={"ipaselinuxusermapdefault"}
           ariaLabel={"Default SELinux user"}
           ipaObject={props.ipaObject}

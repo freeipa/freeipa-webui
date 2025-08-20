@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   Button,
+  Content,
   DropdownItem,
-  Page,
+  Flex,
+  FlexItem,
   PageSection,
-  PageSectionVariants,
   PaginationVariant,
+  ToolbarItemVariant,
 } from "@patternfly/react-core";
 import {
   InnerScrollContainer,
@@ -18,7 +20,6 @@ import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
-import TextLayout from "src/components/layouts/TextLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import KebabLayout from "src/components/layouts/KebabLayout";
@@ -423,6 +424,7 @@ const Hosts = () => {
 
   const membershipModalActions: JSX.Element[] = [
     <Button
+      data-cy="modal-button-ok"
       key="rebuild-auto-membership"
       variant="primary"
       onClick={onRebuildAutoMembership}
@@ -431,6 +433,7 @@ const Hosts = () => {
       OK
     </Button>,
     <Button
+      data-cy="modal-button-cancel"
       key="cancel-rebuild-auto-membership"
       variant="link"
       onClick={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
@@ -444,19 +447,20 @@ const Hosts = () => {
     {
       id: "question-text",
       pfComponent: (
-        <TextLayout component="p">
+        <Content component="p">
           <b>Warning</b> In case of a high number of users, hosts or groups, the
           rebuild task may require high CPU usage. This can severely impact
           server performance. Typically this only needs to be done once after
           importing raw data into the server. Are you sure you want to rebuild
           the auto memberships?
-        </TextLayout>
+        </Content>
       ),
     },
   ];
 
   const dropdownItems = [
     <DropdownItem
+      data-cy="hosts-kebab-rebuild-auto-membership"
       key="rebuild auto membership"
       component="button"
       onClick={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
@@ -599,6 +603,7 @@ const Hosts = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search hosts"
           placeholder="Search"
@@ -606,12 +611,12 @@ const Hosts = () => {
           isDisabled={searchDisabled}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 2,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 3,
@@ -619,6 +624,7 @@ const Hosts = () => {
         <SecondaryButton
           onClickHandler={refreshHostsData}
           isDisabled={!showTableRows}
+          dataCy="hosts-button-refresh"
         >
           Refresh
         </SecondaryButton>
@@ -630,6 +636,7 @@ const Hosts = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
+          dataCy="hosts-button-delete"
         >
           Delete
         </SecondaryButton>
@@ -641,6 +648,7 @@ const Hosts = () => {
         <SecondaryButton
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows || isDisabledDueError}
+          dataCy="hosts-button-add"
         >
           Add
         </SecondaryButton>
@@ -655,12 +663,13 @@ const Hosts = () => {
           idKebab="main-dropdown-kebab"
           isKebabOpen={kebabIsOpen}
           dropdownItems={!showTableRows ? [] : dropdownItems}
+          dataCy="hosts-kebab"
         />
       ),
     },
     {
       key: 7,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 8,
@@ -681,7 +690,7 @@ const Hosts = () => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 
@@ -691,49 +700,50 @@ const Hosts = () => {
       isExpanded={isContextualPanelExpanded}
       onClose={onCloseContextualPanel}
     >
-      <Page>
+      <div>
         <alerts.ManagedAlerts />
-        <PageSection variant={PageSectionVariants.light}>
+        <PageSection hasBodyWrapper={false}>
           <TitleLayout id="Hosts title" headingLevel="h1" text="Hosts" />
         </PageSection>
-        <PageSection
-          variant={PageSectionVariants.light}
-          isFilled={false}
-          className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-        >
-          <ToolbarLayout
-            className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-            contentClassName="pf-v5-u-p-0"
-            toolbarItems={toolbarItems}
-          />
-          <div style={{ height: `calc(100vh - 350px)` }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer>
-                {batchError !== undefined && batchError ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <HostsTable
-                    elementsList={hostsList}
-                    shownElementsList={hostsList}
-                    showTableRows={showTableRows}
-                    hostsData={hostsTableData}
-                    buttonsData={hostsTableButtonsData}
-                    paginationData={selectedPerPageData}
-                    searchValue={searchValue}
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </div>
-          <PaginationLayout
-            list={hostsList}
-            paginationData={paginationData}
-            variant={PaginationVariant.bottom}
-            widgetId="pagination-options-menu-bottom"
-            className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-          />
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem style={{ flex: "0 0 auto" }}>
+              <OuterScrollContainer>
+                <InnerScrollContainer
+                  style={{ height: "60vh", overflow: "auto" }}
+                >
+                  {batchError !== undefined && batchError ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <HostsTable
+                      elementsList={hostsList}
+                      shownElementsList={hostsList}
+                      showTableRows={showTableRows}
+                      hostsData={hostsTableData}
+                      buttonsData={hostsTableButtonsData}
+                      paginationData={selectedPerPageData}
+                      searchValue={searchValue}
+                    />
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={hostsList}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+              />
+            </FlexItem>
+          </Flex>
         </PageSection>
-        <ModalErrors errors={modalErrors.getAll()} />
+        <ModalErrors errors={modalErrors.getAll()} dataCy="hosts-modal-error" />
         {isMembershipModalOpen && (
           <ModalWithFormLayout
             variantType="medium"
@@ -745,6 +755,7 @@ const Hosts = () => {
             show={isMembershipModalOpen}
             onClose={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
             actions={membershipModalActions}
+            dataCy="hosts-rebuild-auto-membership-modal"
           />
         )}
         <AddHost
@@ -762,7 +773,7 @@ const Hosts = () => {
           buttonsData={deleteHostsButtonsData}
           onRefresh={refreshHostsData}
         />
-      </Page>
+      </div>
     </ContextualHelpPanel>
   );
 };

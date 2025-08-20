@@ -14,17 +14,9 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import "./commands";
+
 import { addCustomCommand } from "cy-verify-downloads";
 
 addCustomCommand();
 
-before(() => {
-  Cypress.session.clearCurrentSessionData().then();
-  cy.loginAsAnUser(Cypress.env("admin_login"), Cypress.env("admin_password"));
-  cy.userCleanup();
-});
-
-after(() => {
-  cy.logout();
-});
+import "./commands";

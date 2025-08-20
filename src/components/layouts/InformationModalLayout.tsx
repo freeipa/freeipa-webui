@@ -1,8 +1,14 @@
 import React from "react";
 // PatternFly
-import { Modal } from "@patternfly/react-core";
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "@patternfly/react-core";
 
 interface PropsToModalLayout {
+  dataCy: string;
   isOpen: boolean;
   onClose: () => void;
   actions: JSX.Element[];
@@ -14,13 +20,14 @@ interface PropsToModalLayout {
 const InformationModalLayout = (props: PropsToModalLayout) => {
   return (
     <Modal
+      data-cy={props.dataCy}
       variant={props.variant || "small"}
-      title={props.title}
       isOpen={props.isOpen}
       onClose={props.onClose}
-      actions={props.actions}
     >
-      {props.content}
+      <ModalHeader title={props.title} labelId={props.dataCy} />
+      <ModalBody>{props.content}</ModalBody>
+      <ModalFooter>{props.actions}</ModalFooter>
     </Modal>
   );
 };

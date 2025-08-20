@@ -1,9 +1,15 @@
 import React from "react";
 // PatternFly
-import { Modal } from "@patternfly/react-core";
-import TextLayout from "../layouts/TextLayout";
+import {
+  Content,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+} from "@patternfly/react-core";
 
 interface PropsToErrorModal {
+  dataCy: string;
   title: string;
   isOpen: boolean;
   onClose: () => void;
@@ -15,12 +21,15 @@ const ErrorModal = (props: PropsToErrorModal) => {
   return (
     <Modal
       variant="small"
-      title={props.title}
+      data-cy={props.dataCy}
       isOpen={props.isOpen}
       onClose={props.onClose}
-      actions={props.actions}
     >
-      <TextLayout>{props.errorMessage}</TextLayout>
+      <ModalHeader title={props.title} labelId="error-modal-title" />
+      <ModalBody id="error-modal-body">
+        <Content>{props.errorMessage}</Content>
+      </ModalBody>
+      <ModalFooter>{props.actions}</ModalFooter>
     </Modal>
   );
 };

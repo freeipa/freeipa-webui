@@ -1,8 +1,13 @@
 import React from "react";
 // PatternFly
-import { Flex, FlexItem, Form, FormGroup, Icon } from "@patternfly/react-core";
-// Layouts
-import TextLayout from "../layouts/TextLayout";
+import {
+  Content,
+  Flex,
+  FlexItem,
+  Form,
+  FormGroup,
+  Icon,
+} from "@patternfly/react-core";
 // Icons
 import { CheckIcon } from "@patternfly/react-icons";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons";
@@ -37,11 +42,11 @@ const Enrollment = (props: PropsToEnrollment) => {
                 {props.host.has_keytab ? presentIcon : missingIcon}
               </FlexItem>
               <FlexItem>
-                <TextLayout>
+                <Content>
                   {props.host.has_keytab
                     ? "Kerberos key present, Host provisioned"
                     : "Kerberos key not present, Host not provisioned"}
-                </TextLayout>
+                </Content>
               </FlexItem>
             </Flex>
           </FormGroup>
@@ -59,11 +64,11 @@ const Enrollment = (props: PropsToEnrollment) => {
                 {props.host.has_password ? presentIcon : missingIcon}
               </FlexItem>
               <FlexItem>
-                <TextLayout>
+                <Content>
                   {props.host.has_password
                     ? "One-Time Password Present"
                     : "One-Time Password Not Present"}
-                </TextLayout>
+                </Content>
               </FlexItem>
             </Flex>
           </FormGroup>

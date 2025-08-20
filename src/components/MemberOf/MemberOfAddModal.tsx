@@ -1,12 +1,19 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React from "react";
 // PatternFly
 import {
   Button,
-  DualListSelector,
   Form,
   FormGroup,
   Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
 } from "@patternfly/react-core";
+// Components
+import DualListSelectorGeneric, {
+  DualListOption,
+  optionsToDualListOptions,
+} from "../layouts/DualListSelectorGeneric";
 
 export interface AvailableItems {
   key: string;
@@ -28,49 +35,40 @@ const MemberOfAddModal = (props: PropsToAdd) => {
   // Dual list data
   const data = props.availableItems.map((d) => d.key);
 
-  // Dual list selector
-  const [availableOptions, setAvailableOptions] = useState<ReactNode[]>(data);
-  const [chosenOptions, setChosenOptions] = useState<ReactNode[]>([]);
+  // States
+  const [availableOptions, setAvailableOptions] = React.useState<
+    DualListOption[]
+  >(optionsToDualListOptions(data));
+  const [chosenOptions, setChosenOptions] = React.useState<DualListOption[]>(
+    []
+  );
 
   // Update available and chosen options when props.availableItems changes
-  useEffect(() => {
-    const newAval = data.filter((d) => !chosenOptions.includes(d));
-    setAvailableOptions(newAval);
+  React.useEffect(() => {
+    const newAval = data.filter(
+      (d) => !chosenOptions.map((o) => o.text).includes(d)
+    );
+    setAvailableOptions(optionsToDualListOptions(newAval));
   }, [props.availableItems]);
 
   // reset dialog on close
-  useEffect(() => {
+  React.useEffect(() => {
     if (!props.showModal) {
       cleanData();
     }
   }, [props.showModal]);
-
-  const listChange = (
-    newAvailableOptions: ReactNode[],
-    newChosenOptions: ReactNode[]
-  ) => {
-    setAvailableOptions(newAvailableOptions.sort());
-    setChosenOptions(newChosenOptions.sort());
-  };
 
   const fields = [
     {
       id: "dual-list-selector",
       name: "Available options",
       pfComponent: (
-        <DualListSelector
-          isSearchable
+        <DualListSelectorGeneric
+          id="add-modal-dual-list-selector"
           availableOptions={availableOptions}
+          setAvailableOptions={setAvailableOptions}
           chosenOptions={chosenOptions}
-          onAvailableOptionsSearchInputChanged={(_event, searchText) =>
-            props.onSearchTextChange(searchText)
-          }
-          onListChange={(
-            _event,
-            newAvailableOptions: ReactNode[],
-            newChosenOptions: ReactNode[]
-          ) => listChange(newAvailableOptions, newChosenOptions)}
-          id="basicSelectorWithSearch"
+          setChosenOptions={setChosenOptions}
         />
       ),
     },
@@ -78,13 +76,13 @@ const MemberOfAddModal = (props: PropsToAdd) => {
 
   // When clean data, set to original values
   const cleanData = () => {
-    setAvailableOptions(data);
+    setAvailableOptions(optionsToDualListOptions(data));
     setChosenOptions([]);
   };
 
   // Buttons are disabled until the user fills the required fields
-  const [buttonDisabled, setButtonDisabled] = useState(true);
-  useEffect(() => {
+  const [buttonDisabled, setButtonDisabled] = React.useState(true);
+  React.useEffect(() => {
     if (chosenOptions.length > 0) {
       setButtonDisabled(false);
     } else {
@@ -97,8 +95,8 @@ const MemberOfAddModal = (props: PropsToAdd) => {
     const optionsToAdd: AvailableItems[] = [];
     chosenOptions.map((opt) => {
       optionsToAdd.push({
-        key: opt as string,
-        title: opt as string,
+        key: opt.text,
+        title: opt.text,
       });
     });
     props.onAdd(optionsToAdd);
@@ -108,6 +106,7 @@ const MemberOfAddModal = (props: PropsToAdd) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <Button
+      data-cy="modal-button-add"
       key="add-new-user"
       variant="secondary"
       isDisabled={buttonDisabled || props.spinning}
@@ -119,29 +118,37 @@ const MemberOfAddModal = (props: PropsToAdd) => {
     >
       {props.spinning ? "Adding" : "Add"}
     </Button>,
-    <Button key="cancel-new-user" variant="link" onClick={props.onCloseModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-new-user"
+      variant="link"
+      onClick={props.onCloseModal}
+    >
       Cancel
     </Button>,
   ];
 
   return (
     <Modal
+      data-cy="member-of-add-modal"
       variant={"medium"}
       position={"top"}
       positionOffset={"76px"}
       isOpen={props.showModal}
       onClose={props.onCloseModal}
-      actions={modalActions}
-      title={props.title}
       aria-label={props.ariaLabel}
     >
-      <Form id={"is-member-of-add-modal"}>
-        {fields.map((field) => (
-          <FormGroup key={field.id} fieldId={field.id}>
-            {field.pfComponent}
-          </FormGroup>
-        ))}
-      </Form>
+      <ModalHeader title={props.title} labelId="member-of-add-modal-title" />
+      <ModalBody id="member-of-add-modal-body">
+        <Form id={"is-member-of-add-modal"}>
+          {fields.map((field) => (
+            <FormGroup key={field.id} fieldId={field.id}>
+              {field.pfComponent}
+            </FormGroup>
+          ))}
+        </Form>
+      </ModalBody>
+      <ModalFooter>{modalActions}</ModalFooter>
     </Modal>
   );
 };

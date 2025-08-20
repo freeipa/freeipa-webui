@@ -91,6 +91,7 @@ const AddUserGroup = (props: PropsToAddGroup) => {
       pfComponent: (
         <>
           <TextInput
+            data-cy="modal-textbox-group-name"
             type="text"
             id="modal-form-group-name"
             name="modal-form-group-name"
@@ -115,6 +116,7 @@ const AddUserGroup = (props: PropsToAddGroup) => {
       name: "Description",
       pfComponent: (
         <TextArea
+          data-cy="modal-textbox-group-desc"
           id="modal-form-group-desc"
           name="modal-form-group-desc"
           value={description}
@@ -147,6 +149,7 @@ const AddUserGroup = (props: PropsToAddGroup) => {
       pfComponent: (
         <>
           <TextInput
+            data-cy="modal-textbox-group-gid"
             type="text"
             id="modal-form-group-gid"
             name="modal-form-group-gid"
@@ -312,10 +315,19 @@ const AddUserGroup = (props: PropsToAddGroup) => {
   };
 
   const errorModalActions = [
-    <SecondaryButton key="retry" onClickHandler={onRetry}>
+    <SecondaryButton
+      dataCy="modal-button-retry"
+      key="retry"
+      onClickHandler={onRetry}
+    >
       Retry
     </SecondaryButton>,
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+    >
       Cancel
     </Button>,
   ];
@@ -333,6 +345,7 @@ const AddUserGroup = (props: PropsToAddGroup) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <SecondaryButton
+      dataCy="modal-button-add"
       key="add-new-group"
       name="add"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
@@ -345,6 +358,7 @@ const AddUserGroup = (props: PropsToAddGroup) => {
       {addSpinning ? "Adding" : "Add"}
     </SecondaryButton>,
     <SecondaryButton
+      dataCy="modal-button-add-and-add-another"
       key="add-and-add-another-new-group"
       name="add_and_add_another"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
@@ -356,7 +370,12 @@ const AddUserGroup = (props: PropsToAddGroup) => {
     >
       {addAgainSpinning ? "Adding" : "Add and add another"}
     </SecondaryButton>,
-    <Button key="cancel-new-group" variant="link" onClick={cleanAndCloseModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-new-group"
+      variant="link"
+      onClick={cleanAndCloseModal}
+    >
       Cancel
     </Button>,
   ];
@@ -366,6 +385,7 @@ const AddUserGroup = (props: PropsToAddGroup) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="add-user-group-modal"
         variantType="small"
         modalPosition="top"
         offPosition="76px"
@@ -378,6 +398,7 @@ const AddUserGroup = (props: PropsToAddGroup) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="add-user-group-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

@@ -1,11 +1,15 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React from "react";
 // PaternFly
-import { Button, DualListSelector } from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core";
 // Data types
 import { Host } from "src/utils/datatypes/globalDataTypes";
-// Layouts
+// Components
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
 import SecondaryButton from "../layouts/SecondaryButton";
+import DualListSelectorGeneric, {
+  DualListOption,
+  optionsToDualListOptions,
+} from "../layouts/DualListSelectorGeneric";
 
 interface ModalData {
   showModal: boolean;
@@ -36,32 +40,23 @@ const ManagedByAddModal = (props: PropsToAddModal) => {
   const data = props.availableData.map((d) => d.fqdn);
 
   // Dual list selector
-  const [availableOptions, setAvailableOptions] = useState<ReactNode[]>(data);
-  const [chosenOptions, setChosenOptions] = useState<ReactNode[]>([]);
-
-  const listChange = (
-    newAvailableOptions: ReactNode[],
-    newChosenOptions: ReactNode[]
-  ) => {
-    setAvailableOptions(newAvailableOptions.sort());
-    setChosenOptions(newChosenOptions.sort());
-    props.updateAvOptionsList(newAvailableOptions.sort());
-  };
+  const [availableOptions, setAvailableOptions] = React.useState<
+    DualListOption[]
+  >(optionsToDualListOptions(data));
+  const [chosenOptions, setChosenOptions] = React.useState<DualListOption[]>(
+    []
+  );
 
   const fields = [
     {
       id: "dual-list-selector",
       pfComponent: (
-        <DualListSelector
-          isSearchable
+        <DualListSelectorGeneric
+          id="managed-by-add-modal-dual-list-selector"
           availableOptions={availableOptions}
+          setAvailableOptions={setAvailableOptions}
           chosenOptions={chosenOptions}
-          onListChange={(
-            _event,
-            newAvailableOptions: ReactNode[],
-            newChosenOptions: ReactNode[]
-          ) => listChange(newAvailableOptions, newChosenOptions)}
-          id="basicSelectorWithSearch"
+          setChosenOptions={setChosenOptions}
         />
       ),
     },
@@ -69,7 +64,7 @@ const ManagedByAddModal = (props: PropsToAddModal) => {
 
   // When clean data, set to original values
   const cleanData = () => {
-    setAvailableOptions(data);
+    setAvailableOptions(optionsToDualListOptions(data));
     setChosenOptions([]);
   };
 
@@ -80,8 +75,8 @@ const ManagedByAddModal = (props: PropsToAddModal) => {
   };
 
   // Buttons are disabled until the user fills the required fields
-  const [buttonDisabled, setButtonDisabled] = useState(true);
-  useEffect(() => {
+  const [buttonDisabled, setButtonDisabled] = React.useState(true);
+  React.useEffect(() => {
     if (chosenOptions.length > 0) {
       setButtonDisabled(false);
     } else {
@@ -119,6 +114,7 @@ const ManagedByAddModal = (props: PropsToAddModal) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <SecondaryButton
+      dataCy="modal-button-add"
       key={"add-new-" + convertedTabName}
       isDisabled={buttonDisabled || props.spinning}
       form="modal-form"
@@ -130,6 +126,7 @@ const ManagedByAddModal = (props: PropsToAddModal) => {
       {props.spinning ? "Adding" : "Add"}
     </SecondaryButton>,
     <Button
+      data-cy="modal-button-cancel"
       key={"cancel-add-new-" + convertedTabName}
       variant="link"
       onClick={cleanAndCloseModal}
@@ -141,6 +138,7 @@ const ManagedByAddModal = (props: PropsToAddModal) => {
   // Render component
   return (
     <ModalWithFormLayout
+      dataCy="add-managed-by-modal"
       variantType="medium"
       modalPosition="top"
       offPosition="76px"

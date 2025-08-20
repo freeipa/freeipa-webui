@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
-import {
-  TextContent,
-  Text,
-  TextVariants,
-  Button,
-} from "@patternfly/react-core";
+import { Content, ContentVariants, Button } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
@@ -57,11 +52,9 @@ const DeleteSudoCmd = (props: PropsToDeleteRules) => {
     {
       id: "question-text",
       pfComponent: (
-        <TextContent>
-          <Text component={TextVariants.p}>
-            Are you sure you want to remove the selected sudo commands?
-          </Text>
-        </TextContent>
+        <Content component={ContentVariants.p}>
+          Are you sure you want to remove the selected sudo commands?
+        </Content>
       ),
     },
     {
@@ -99,7 +92,12 @@ const DeleteSudoCmd = (props: PropsToDeleteRules) => {
   };
 
   const errorModalActions = [
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+      data-cy="modal-button-ok"
+    >
       OK
     </Button>,
   ];
@@ -182,6 +180,7 @@ const DeleteSudoCmd = (props: PropsToDeleteRules) => {
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
       isDisabled={spinning}
+      data-cy="modal-button-delete"
     >
       {spinning ? "Deleting" : "Delete"}
     </Button>,
@@ -189,6 +188,7 @@ const DeleteSudoCmd = (props: PropsToDeleteRules) => {
       key="cancel-delete-sudo-commands"
       variant="link"
       onClick={closeModal}
+      data-cy="modal-button-cancel"
     >
       Cancel
     </Button>,
@@ -198,6 +198,7 @@ const DeleteSudoCmd = (props: PropsToDeleteRules) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="delete-sudo-commands-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"
@@ -210,6 +211,7 @@ const DeleteSudoCmd = (props: PropsToDeleteRules) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="delete-sudo-commands-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

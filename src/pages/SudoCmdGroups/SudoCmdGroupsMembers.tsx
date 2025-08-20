@@ -47,39 +47,45 @@ const SudoCmdGroupMembers = (props: PropsToSudoGroupsMembers) => {
   };
 
   return (
-    <TabLayout id="members">
-      <Tabs
-        activeKey={props.tabSection}
-        onSelect={handleTabClick}
-        isBox={false}
-        mountOnEnter
-        unmountOnExit
-      >
-        <Tab
-          eventKey={"member_sudocmd"}
-          name="member_sudocmd"
-          title={
-            <TabTitleText>
-              Sudo commands{" "}
-              <Badge key={0} id="cmd_count" isRead>
-                {cmdGroup && cmdGroup.member_sudocmd
-                  ? cmdGroup.member_sudocmd.length
-                  : 0}
-              </Badge>
-            </TabTitleText>
-          }
+    <div
+      style={{
+        height: `var(--subsettings-calc)`,
+      }}
+    >
+      <TabLayout id="members">
+        <Tabs
+          activeKey={props.tabSection}
+          onSelect={handleTabClick}
+          isBox={false}
+          mountOnEnter
+          unmountOnExit
         >
-          <MembersSudoCommands
-            entity={cmdGroup}
-            id={cmdGroup.cn as string}
-            from="sudo-command-groups"
-            isDataLoading={groupQuery.isFetching}
-            onRefreshData={onRefreshSudoCmdData}
-            member_sudocmd={cmdGroup.member_sudocmd || []}
-          />
-        </Tab>
-      </Tabs>
-    </TabLayout>
+          <Tab
+            eventKey={"member_sudocmd"}
+            name="member_sudocmd"
+            title={
+              <TabTitleText>
+                Sudo commands{" "}
+                <Badge key={0} id="cmd_count" isRead>
+                  {cmdGroup && cmdGroup.member_sudocmd
+                    ? cmdGroup.member_sudocmd.length
+                    : 0}
+                </Badge>
+              </TabTitleText>
+            }
+          >
+            <MembersSudoCommands
+              entity={cmdGroup}
+              id={cmdGroup.cn as string}
+              from="sudo-command-groups"
+              isDataLoading={groupQuery.isFetching}
+              onRefreshData={onRefreshSudoCmdData}
+              member_sudocmd={cmdGroup.member_sudocmd || []}
+            />
+          </Tab>
+        </Tabs>
+      </TabLayout>
+    </div>
   );
 };
 

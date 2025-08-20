@@ -3,8 +3,7 @@ import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import {
   Button,
   Spinner,
-  Text,
-  TextContent,
+  Content,
   TextInput,
   TextArea,
   ValidatedOptions,
@@ -103,6 +102,7 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
       name: "Group to override",
       pfComponent: (
         <DropdownSearch
+          dataCy="modal-override-group"
           id="modal-form-override-group"
           options={groupNames}
           onSelect={(value: string) => setOverrideGroup(value)}
@@ -116,6 +116,7 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
       name: "Group name",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-group-name"
           type="text"
           id="modal-form-group-name"
           name="modal-form-group-name"
@@ -130,6 +131,7 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
       name: "GID",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-gidnumber"
           type="text"
           id="modal-form-gidnumber"
           name="modal-form-gidnumber"
@@ -149,6 +151,7 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
       name: "Description",
       pfComponent: (
         <TextArea
+          data-cy="modal-textbox-group-description"
           id="modal-form-group-desc"
           name="modal-form-group-desc"
           value={description}
@@ -287,10 +290,19 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
   };
 
   const errorModalActions = [
-    <SecondaryButton key="retry" onClickHandler={onRetry}>
+    <SecondaryButton
+      key="retry"
+      onClickHandler={onRetry}
+      dataCy="modal-button-retry"
+    >
       Retry
     </SecondaryButton>,
-    <Button key="cancel" variant="link" onClick={onCloseErrorModal}>
+    <Button
+      key="cancel"
+      variant="link"
+      onClick={onCloseErrorModal}
+      data-cy="modal-button-cancel"
+    >
       Cancel
     </Button>,
   ];
@@ -320,6 +332,7 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <SecondaryButton
+      dataCy="modal-button-add"
       key="add-new-group"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
       onClickHandler={addHandler}
@@ -331,6 +344,7 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
       {addSpinning ? "Adding" : "Add"}
     </SecondaryButton>,
     <SecondaryButton
+      dataCy="modal-button-add-and-add-another"
       key="add-and-add-another-group"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
       onClickHandler={addAndAddAnotherHandler}
@@ -340,7 +354,12 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
     >
       {addAgainSpinning ? "Adding" : "Add and add another"}
     </SecondaryButton>,
-    <Button key="cancel-new-group" variant="link" onClick={cleanAndCloseModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-new-group"
+      variant="link"
+      onClick={cleanAndCloseModal}
+    >
       Cancel
     </Button>,
   ];
@@ -350,12 +369,12 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
       id: "Loading",
       name: "",
       pfComponent: (
-        <TextContent className="pf-v5-u-m-xl">
-          <Text component="h3">
+        <Content className="pf-v6-u-m-xl">
+          <Content component="h3">
             <i>Loading groups</i>
-            <Spinner isInline size="xl" className="pf-v5-u-ml-md" />
-          </Text>
-        </TextContent>
+            <Spinner isInline size="xl" className="pf-v6-u-ml-md" />
+          </Content>
+        </Content>
       ),
     },
   ];
@@ -365,6 +384,7 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="add-id-override-group-modal"
         variantType="small"
         modalPosition="top"
         offPosition="76px"
@@ -378,6 +398,7 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
+          dataCy="add-id-override-group-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}

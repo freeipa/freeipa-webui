@@ -2,11 +2,12 @@ import React from "react";
 // PatternFly
 import {
   Button,
-  Page,
+  Flex,
+  FlexItem,
   PageSection,
-  PageSectionVariants,
   PaginationVariant,
   SelectOptionProps,
+  ToolbarItemVariant,
 } from "@patternfly/react-core";
 // PatternFly table
 import {
@@ -185,6 +186,7 @@ const AutoMemUserRules = () => {
       // Add empty entry as an option
       const groupsToSelector = [
         {
+          "data-cy": "typeahead-select-no-selection",
           value: NO_SELECTION,
           children: NO_SELECTION,
         },
@@ -192,6 +194,7 @@ const AutoMemUserRules = () => {
 
       // Add the rest of the data from usergroups
       const tempGroupsToSelector = userGroups.map((group) => ({
+        "data-cy": "typeahead-select-" + group,
         value: group,
         children: group,
       }));
@@ -510,6 +513,7 @@ const AutoMemUserRules = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search rules"
           placeholder="Search"
@@ -517,8 +521,8 @@ const AutoMemUserRules = () => {
           isDisabled={searchDisabled}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 2,
@@ -534,12 +538,13 @@ const AutoMemUserRules = () => {
     },
     {
       key: 3,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 4,
       element: (
         <SecondaryButton
+          dataCy="auto-member-user-rules-button-refresh"
           onClickHandler={refreshData}
           isDisabled={!showTableRows}
         >
@@ -551,6 +556,7 @@ const AutoMemUserRules = () => {
       key: 5,
       element: (
         <SecondaryButton
+          dataCy="auto-member-user-rules-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onOpenDeleteModal}
         >
@@ -562,6 +568,7 @@ const AutoMemUserRules = () => {
       key: 6,
       element: (
         <SecondaryButton
+          dataCy="auto-member-user-rules-button-add"
           isDisabled={!showTableRows}
           onClickHandler={onOpenAddModal}
         >
@@ -571,7 +578,7 @@ const AutoMemUserRules = () => {
     },
     {
       key: 7,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 8,
@@ -587,56 +594,55 @@ const AutoMemUserRules = () => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 
   return (
-    <Page>
+    <div>
       <alerts.ManagedAlerts />
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id="Automember user groups title"
           headingLevel="h1"
           text="User group rules"
         />
       </PageSection>
-      <PageSection
-        variant={PageSectionVariants.light}
-        isFilled={false}
-        className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-      >
-        <ToolbarLayout
-          className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-          contentClassName="pf-v5-u-p-0"
-          toolbarItems={toolbarItems}
-        />
-        <div style={{ height: `calc(100vh - 352.2px)` }}>
-          <OuterScrollContainer>
-            <InnerScrollContainer>
-              {errors !== undefined && errors.length > 0 ? (
-                <GlobalErrors errors={globalErrors.getAll()} />
-              ) : (
-                <MainTable
-                  shownElementsList={automemberRules}
-                  showTableRows={showTableRows}
-                  elementsData={automembersTableData}
-                  buttonsData={automembersTableButtonsData}
-                  paginationData={selectedPerPageData}
-                  searchValue={searchValue}
-                  automemberType="user-group"
-                />
-              )}
-            </InnerScrollContainer>
-          </OuterScrollContainer>
-        </div>
-        <PaginationLayout
-          list={automemberRules}
-          paginationData={paginationData}
-          variant={PaginationVariant.bottom}
-          widgetId="pagination-options-menu-bottom"
-          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        />
+      <PageSection hasBodyWrapper={false} isFilled={false}>
+        <Flex direction={{ default: "column" }}>
+          <FlexItem>
+            <ToolbarLayout toolbarItems={toolbarItems} />
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto" }}>
+            <OuterScrollContainer>
+              <InnerScrollContainer
+                style={{ height: "55vh", overflow: "auto" }}
+              >
+                {errors !== undefined && errors.length > 0 ? (
+                  <GlobalErrors errors={globalErrors.getAll()} />
+                ) : (
+                  <MainTable
+                    shownElementsList={automemberRules}
+                    showTableRows={showTableRows}
+                    elementsData={automembersTableData}
+                    buttonsData={automembersTableButtonsData}
+                    paginationData={selectedPerPageData}
+                    searchValue={searchValue}
+                    automemberType="user-group"
+                  />
+                )}
+              </InnerScrollContainer>
+            </OuterScrollContainer>
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
+            <PaginationLayout
+              list={automemberRules}
+              paginationData={paginationData}
+              variant={PaginationVariant.bottom}
+              widgetId="pagination-options-menu-bottom"
+            />
+          </FlexItem>
+        </Flex>
       </PageSection>
       <AddRule
         show={showAddModal}
@@ -656,11 +662,13 @@ const AutoMemUserRules = () => {
         ruleType="group"
       />
       <ConfirmationModal
+        dataCy="auto-member-default-user-rules-modal"
         title="Default user group"
         isOpen={showChangeConfirmationModal}
         onClose={onCloseConfirmationModal}
         actions={[
           <Button
+            data-cy="modal-button-ok"
             variant="primary"
             key="change-default"
             onClick={() => {
@@ -669,14 +677,18 @@ const AutoMemUserRules = () => {
           >
             OK
           </Button>,
-          <SecondaryButton key="cancel" onClickHandler={onCancelDefaultGroup}>
+          <SecondaryButton
+            dataCy="modal-button-cancel"
+            key="cancel"
+            onClickHandler={onCancelDefaultGroup}
+          >
             Cancel
           </SecondaryButton>,
         ]}
         messageText="Are you sure you want to change default group?"
         messageObj={defaultGroup}
       />
-    </Page>
+    </div>
   );
 };
 

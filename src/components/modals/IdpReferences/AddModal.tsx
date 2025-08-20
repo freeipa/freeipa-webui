@@ -8,12 +8,13 @@ import {
   TextInput,
   ValidatedOptions,
 } from "@patternfly/react-core";
-import { SelectOptionProps } from "@patternfly/react-core";
 // Components
 import ModalWithFormLayout, {
   Field,
 } from "src/components/layouts/ModalWithFormLayout";
-import SimpleSelector from "src/components/layouts/SimpleSelector";
+import SimpleSelector, {
+  SelectOptionProps,
+} from "src/components/layouts/SimpleSelector";
 // RPC
 import {
   CustomIdpAddPayload,
@@ -62,23 +63,23 @@ const AddModal = (props: PropsToAddModal) => {
   );
   const providerOptions: SelectOptionProps[] = [
     {
-      label: "keycloak",
+      key: "keycloak",
       value: "Keycloak or Red Hat SSO",
     },
     {
-      label: "google",
+      key: "google",
       value: "Google",
     },
     {
-      label: "github",
+      key: "github",
       value: "Github",
     },
     {
-      label: "microsoft",
+      key: "microsoft",
       value: "Microsoft or Azure",
     },
     {
-      label: "okta",
+      key: "okta",
       value: "Okta",
     },
   ];
@@ -254,6 +255,7 @@ const AddModal = (props: PropsToAddModal) => {
       name: "Identity Provider reference name",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-idp-ref-name"
           type="text"
           id="identity-provider-reference-name"
           name="cn"
@@ -270,6 +272,7 @@ const AddModal = (props: PropsToAddModal) => {
       name: "Client identifier",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-client-id"
           type="text"
           id="client-id"
           name="ipaidpclientid"
@@ -286,6 +289,7 @@ const AddModal = (props: PropsToAddModal) => {
       name: "Secret",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-secret"
           type="text"
           id="secret"
           name="ipaidpclientsecret"
@@ -301,6 +305,7 @@ const AddModal = (props: PropsToAddModal) => {
       pfComponent: (
         <>
           <TextInput
+            data-cy="modal-textbox-verify-secret"
             type="text"
             id="verify-secret"
             name="ipaidpclientsecret_verify"
@@ -342,6 +347,7 @@ const AddModal = (props: PropsToAddModal) => {
       pfComponent: (
         <>
           <Radio
+            data-cy="modal-radio-predefined-idp"
             isChecked={isPreDefinedChecked}
             name="predefined-idp"
             onChange={(_event, isChecked) => onPreDefinedChange(isChecked)}
@@ -350,6 +356,7 @@ const AddModal = (props: PropsToAddModal) => {
             aria-label="Pre-defined IdP template"
           />
           <Radio
+            data-cy="modal-radio-custom-idp"
             isChecked={isCustomChecked}
             name="custom-idp"
             onChange={(_event, isChecked) => onCustomChange(isChecked)}
@@ -368,6 +375,7 @@ const AddModal = (props: PropsToAddModal) => {
       name: "Provider type",
       pfComponent: (
         <SimpleSelector
+          dataCy="modal-simple-provider-type"
           id="provider-type-selector"
           options={providerOptions}
           selected={selectedProvider}
@@ -388,6 +396,7 @@ const AddModal = (props: PropsToAddModal) => {
       name: "Organization",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-org"
           type="text"
           id="org"
           name="ipaidporg"
@@ -403,6 +412,7 @@ const AddModal = (props: PropsToAddModal) => {
       name: "Base URL",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-base-url"
           type="text"
           id="base-url"
           name="ipaidpbaseurl"
@@ -422,6 +432,7 @@ const AddModal = (props: PropsToAddModal) => {
       name: "Organization",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-org"
           type="text"
           id="org"
           name="ipaidporg"
@@ -440,6 +451,7 @@ const AddModal = (props: PropsToAddModal) => {
       name: "Authorization URI",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-auth-uri"
           type="text"
           id="auth-uri"
           name="ipaidpauthendpoint"
@@ -455,6 +467,7 @@ const AddModal = (props: PropsToAddModal) => {
       name: "Device authorization URI",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-dev-auth-uri"
           type="text"
           id="dev-auth-uri"
           name="ipaidpdevauthendpoint"
@@ -470,6 +483,7 @@ const AddModal = (props: PropsToAddModal) => {
       name: "Token URI",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-token-uri"
           type="text"
           id="token-uri"
           name="ipaidptokenendpoint"
@@ -485,6 +499,7 @@ const AddModal = (props: PropsToAddModal) => {
       name: "User info URI",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-user-info-uri"
           type="text"
           id="user-info-uri"
           name="ipaidpuserinfoendpoint"
@@ -500,6 +515,7 @@ const AddModal = (props: PropsToAddModal) => {
       name: "JWKS URI",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-jwks-uri"
           type="text"
           id="jwks-uri"
           name="ipaidpkeysendpoint"
@@ -518,6 +534,7 @@ const AddModal = (props: PropsToAddModal) => {
       name: "Scope",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-scope"
           type="text"
           id="scope"
           name="ipaidpscope"
@@ -532,6 +549,7 @@ const AddModal = (props: PropsToAddModal) => {
       name: "External IdP UID attribute",
       pfComponent: (
         <TextInput
+          data-cy="modal-textbox-ext-idp-uid-attr"
           type="text"
           id="ext-idp-uid-attr"
           name="ipaidpsub"
@@ -624,6 +642,7 @@ const AddModal = (props: PropsToAddModal) => {
   // Actions
   const modalActions: JSX.Element[] = [
     <Button
+      data-cy="modal-button-add"
       key="add-new"
       variant="secondary"
       isDisabled={
@@ -639,6 +658,7 @@ const AddModal = (props: PropsToAddModal) => {
       Add
     </Button>,
     <Button
+      data-cy="modal-button-add-and-add-another"
       key="add-new-again"
       variant="secondary"
       isDisabled={
@@ -653,7 +673,12 @@ const AddModal = (props: PropsToAddModal) => {
     >
       Add and add again
     </Button>,
-    <Button key="cancel-new" variant="link" onClick={cleanAndCloseModal}>
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-new"
+      variant="link"
+      onClick={cleanAndCloseModal}
+    >
       Cancel
     </Button>,
   ];
@@ -662,6 +687,7 @@ const AddModal = (props: PropsToAddModal) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
+        dataCy="add-idp-reference-modal"
         variantType={"small"}
         modalPosition={"top"}
         offPosition={"76px"}

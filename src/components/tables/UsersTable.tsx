@@ -208,7 +208,7 @@ const UsersTable = (props: PropsToTable) => {
   // Defining table header and body from here to avoid passing specific names to the Table Layout
   const header = (
     <Tr>
-      <Th modifier="wrap"></Th>
+      <Th modifier="wrap" aria-label="Select rows"></Th>
       <Th modifier="wrap">{columnNames.uid}</Th>
       <Th modifier="wrap">{columnNames.givenname}</Th>
       <Th modifier="wrap">{columnNames.sn}</Th>
@@ -310,7 +310,7 @@ const UsersTable = (props: PropsToTable) => {
       ariaLabel={props.from.replace("-", " ") + " table"}
       variant={"compact"}
       hasBorders={true}
-      classes={"pf-v5-u-mt-md"}
+      classes={"pf-v6-u-mt-md"}
       tableId={props.from + "-table"}
       isStickyHeader={true}
       tableHeader={header}

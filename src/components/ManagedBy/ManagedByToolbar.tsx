@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 // PatternFly
-import { Pagination, ToolbarItemVariant, Text } from "@patternfly/react-core";
-// Icons
-import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
+import { Pagination, ToolbarItemVariant } from "@patternfly/react-core";
 // Data types
 import { Host } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import SecondaryButton from "../layouts/SecondaryButton";
-import TextLayout from "src/components/layouts/TextLayout";
-import ToolbarLayout, { ToolbarItemAlignment } from "../layouts/ToolbarLayout";
+import ToolbarLayout, { ToolbarItem } from "../layouts/ToolbarLayout";
+import HelpTextWithIconLayout from "../layouts/HelpTextWithIconLayout";
 
 interface PageData {
   page: number;
@@ -93,17 +91,25 @@ const ManagedByToolbar = (props: PropsToToolbar) => {
     paginationId: "hosts-pagination",
   };
 
-  const toolbarFields = [
+  const toolbarFields: ToolbarItem[] = [
     {
       id: hostsToolbarData.refreshButton.id,
       key: 0,
-      element: <SecondaryButton name="refresh">Refresh</SecondaryButton>,
+      element: (
+        <SecondaryButton
+          dataCy="hosts-tab-managed-by-button-refresh"
+          name="refresh"
+        >
+          Refresh
+        </SecondaryButton>
+      ),
     },
     {
       id: hostsToolbarData.deleteButton.id,
       key: 1,
       element: (
         <SecondaryButton
+          dataCy="hosts-tab-managed-by-button-delete"
           name="remove"
           isDisabled={hostsToolbarData.deleteButton.isDisabledHandler}
           onClickHandler={hostsToolbarData.deleteButton.onClickHandler}
@@ -117,6 +123,7 @@ const ManagedByToolbar = (props: PropsToToolbar) => {
       key: 2,
       element: (
         <SecondaryButton
+          dataCy="hosts-tab-managed-by-button-add"
           name="add"
           onClickHandler={hostsToolbarData.addButton.onClickHandler}
         >
@@ -132,14 +139,7 @@ const ManagedByToolbar = (props: PropsToToolbar) => {
     {
       id: hostsToolbarData.helpIcon.id,
       key: 7,
-      element: (
-        <TextLayout component="p">
-          <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
-          <Text component="a" isVisitedLink>
-            Help
-          </Text>
-        </TextLayout>
-      ),
+      element: <HelpTextWithIconLayout textContent="Help" />,
     },
     {
       id: hostsToolbarData.paginationId,
@@ -155,7 +155,7 @@ const ManagedByToolbar = (props: PropsToToolbar) => {
           isCompact
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" } as ToolbarItemAlignment,
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 

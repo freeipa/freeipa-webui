@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
-  Page,
+  Flex,
+  FlexItem,
   PageSection,
-  PageSectionVariants,
   PaginationVariant,
+  ToolbarItemVariant,
 } from "@patternfly/react-core";
 // PatternFly table
 import {
@@ -476,6 +477,7 @@ const SudoRules = () => {
       key: 1,
       element: (
         <SearchInputLayout
+          dataCy="search"
           name="search"
           ariaLabel="Search rules"
           placeholder="Search"
@@ -483,12 +485,12 @@ const SudoRules = () => {
           isDisabled={searchDisabled}
         />
       ),
-      toolbarItemVariant: "search-filter",
-      toolbarItemSpacer: { default: "spacerMd" },
+      toolbarItemVariant: ToolbarItemVariant.label,
+      toolbarItemGap: { default: "gapMd" },
     },
     {
       key: 2,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 3,
@@ -496,6 +498,7 @@ const SudoRules = () => {
         <SecondaryButton
           onClickHandler={refreshRulesData}
           isDisabled={!showTableRows}
+          dataCy="sudo-rules-button-refresh"
         >
           Refresh
         </SecondaryButton>
@@ -507,6 +510,7 @@ const SudoRules = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onDeleteHandler}
+          dataCy="sudo-rules-button-delete"
         >
           Delete
         </SecondaryButton>
@@ -518,6 +522,7 @@ const SudoRules = () => {
         <SecondaryButton
           onClickHandler={onAddClickHandler}
           isDisabled={!showTableRows}
+          dataCy="sudo-rules-button-add"
         >
           Add
         </SecondaryButton>
@@ -529,6 +534,7 @@ const SudoRules = () => {
         <SecondaryButton
           isDisabled={isDisableButtonDisabled || !showTableRows}
           onClickHandler={() => onEnableDisableHandler(true)}
+          dataCy="sudo-rules-button-disable"
         >
           Disable
         </SecondaryButton>
@@ -540,6 +546,7 @@ const SudoRules = () => {
         <SecondaryButton
           isDisabled={isEnableButtonDisabled || !showTableRows}
           onClickHandler={() => onEnableDisableHandler(false)}
+          dataCy="sudo-rules-button-enable"
         >
           Enable
         </SecondaryButton>
@@ -547,7 +554,7 @@ const SudoRules = () => {
     },
     {
       key: 9,
-      toolbarItemVariant: "separator",
+      toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
       key: 10,
@@ -563,51 +570,50 @@ const SudoRules = () => {
           isCompact={true}
         />
       ),
-      toolbarItemAlignment: { default: "alignRight" },
+      toolbarItemAlignment: { default: "alignEnd" },
     },
   ];
 
   return (
-    <Page>
+    <div>
       <alerts.ManagedAlerts />
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection hasBodyWrapper={false}>
         <TitleLayout id="sudorules title" headingLevel="h1" text="Sudo rules" />
       </PageSection>
-      <PageSection
-        variant={PageSectionVariants.light}
-        isFilled={false}
-        className="pf-v5-u-m-lg pf-v5-u-pb-md pf-v5-u-pl-0 pf-v5-u-pr-0"
-      >
-        <ToolbarLayout
-          className="pf-v5-u-pt-0 pf-v5-u-pl-lg pf-v5-u-pr-md"
-          contentClassName="pf-v5-u-p-0"
-          toolbarItems={toolbarItems}
-        />
-        <div style={{ height: `calc(100vh - 352.2px)` }}>
-          <OuterScrollContainer>
-            <InnerScrollContainer>
-              {batchError !== undefined && batchError ? (
-                <GlobalErrors errors={globalErrors.getAll()} />
-              ) : (
-                <SudoRulesTable
-                  shownElementsList={rulesList}
-                  showTableRows={showTableRows}
-                  rulesData={rulesTableData}
-                  buttonsData={rulesTableButtonsData}
-                  paginationData={selectedPerPageData}
-                  searchValue={searchValue}
-                />
-              )}
-            </InnerScrollContainer>
-          </OuterScrollContainer>
-        </div>
-        <PaginationLayout
-          list={rulesList}
-          paginationData={paginationData}
-          variant={PaginationVariant.bottom}
-          widgetId="pagination-options-menu-bottom"
-          className="pf-v5-u-pb-0 pf-v5-u-pr-md"
-        />
+      <PageSection hasBodyWrapper={false} isFilled={false}>
+        <Flex direction={{ default: "column" }}>
+          <FlexItem>
+            <ToolbarLayout toolbarItems={toolbarItems} />
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto" }}>
+            <OuterScrollContainer>
+              <InnerScrollContainer
+                style={{ height: "60vh", overflow: "auto" }}
+              >
+                {batchError !== undefined && batchError ? (
+                  <GlobalErrors errors={globalErrors.getAll()} />
+                ) : (
+                  <SudoRulesTable
+                    shownElementsList={rulesList}
+                    showTableRows={showTableRows}
+                    rulesData={rulesTableData}
+                    buttonsData={rulesTableButtonsData}
+                    paginationData={selectedPerPageData}
+                    searchValue={searchValue}
+                  />
+                )}
+              </InnerScrollContainer>
+            </OuterScrollContainer>
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
+            <PaginationLayout
+              list={rulesList}
+              paginationData={paginationData}
+              variant={PaginationVariant.bottom}
+              widgetId="pagination-options-menu-bottom"
+            />
+          </FlexItem>
+        </Flex>
       </PageSection>
       <AddSudoRule
         show={showAddModal}
@@ -631,8 +637,11 @@ const SudoRules = () => {
         buttonsData={disableEnableButtonsData}
         onRefresh={refreshRulesData}
       />
-      <ModalErrors errors={modalErrors.getAll()} />
-    </Page>
+      <ModalErrors
+        errors={modalErrors.getAll()}
+        dataCy="sudo-rules-modal-error"
+      />
+    </div>
   );
 };
 

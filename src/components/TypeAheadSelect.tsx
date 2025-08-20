@@ -60,6 +60,7 @@ const TypeAheadSelect = (props: PropsToTypeAheadSelect) => {
       if (!newSelectOptions.length) {
         newSelectOptions = [
           {
+            "data-cy": "typeahead-select-no-results",
             isAriaDisabled: true,
             children: `No results found for "${filterValue}"`,
             value: NO_RESULTS,
@@ -233,6 +234,7 @@ const TypeAheadSelect = (props: PropsToTypeAheadSelect) => {
       onClick={onToggleClick}
       isExpanded={isOpen}
       isFullWidth
+      data-cy="typeahead-select-toggle"
     >
       <TextInputGroup isPlain>
         <TextInputGroupMain
@@ -259,6 +261,7 @@ const TypeAheadSelect = (props: PropsToTypeAheadSelect) => {
 
   return (
     <Select
+      data-cy={props.id + "-typeahead-select"}
       id={props.id + "-typeahead-select"}
       isOpen={isOpen}
       selected={props.selected}

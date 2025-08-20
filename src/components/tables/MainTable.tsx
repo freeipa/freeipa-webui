@@ -230,9 +230,11 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
   // Defining table header and body from here to avoid passing specific names to the Table Layout
   const header = (
     <Tr key="header" id="table-header">
-      {props.hasCheckboxes && <Th modifier="wrap"></Th>}
+      {props.hasCheckboxes && (
+        <Th modifier="wrap" aria-label="Select rows"></Th>
+      )}
       {props.columnNames.map((columnName, idx) => (
-        <Th modifier="wrap" key={idx}>
+        <Th modifier="wrap" key={columnName + "-" + idx}>
           {columnName}
         </Th>
       ))}
@@ -273,11 +275,15 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
 
     if (element !== undefined && element !== null) {
       return (
-        <Tr key={"row-" + rowIndex} id={elementName} aria-label={elementName}>
+        <Tr
+          key={"row-" + rowIndex + "-" + elementName}
+          id={elementName}
+          aria-label={elementName}
+        >
           {/* Checkboxes (if specified) */}
           {props.hasCheckboxes && (
             <Td
-              key={rowIndex}
+              key={"checkbox-" + rowIndex + "-" + elementName}
               id={rowIndex.toString()}
               dataLabel="checkbox"
               aria-label="Select row"
@@ -292,34 +298,32 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
           )}
           {/* Table rows */}
           {props.keyNames.map((keyName, idx) => (
-            <>
-              <Td
-                dataLabel={columnNames[keyName]}
-                key={idx}
-                id={idx.toString()}
-                style={setStyleOnStatus(element[keyName])}
-                aria-label={keyName}
-              >
-                {idx === 0 && !!props.showLink ? (
-                  <Link
-                    to={"/" + props.pathname + "/" + element[keyName]}
-                    state={element}
-                  >
-                    {props.statusElementName &&
-                    keyName === props.statusElementName
-                      ? processBoolean(element[keyName])
-                      : element[keyName]}
-                  </Link>
-                ) : (
-                  <>
-                    {props.statusElementName &&
-                    keyName === props.statusElementName
-                      ? processBoolean(element[keyName])
-                      : element[keyName]}
-                  </>
-                )}
-              </Td>
-            </>
+            <Td
+              dataLabel={columnNames[keyName]}
+              key={keyName + "-" + idx + "-" + elementName}
+              id={idx.toString()}
+              style={setStyleOnStatus(element[keyName])}
+              aria-label={keyName}
+            >
+              {idx === 0 && !!props.showLink ? (
+                <Link
+                  to={"/" + props.pathname + "/" + element[keyName]}
+                  state={element}
+                >
+                  {props.statusElementName &&
+                  keyName === props.statusElementName
+                    ? processBoolean(element[keyName])
+                    : element[keyName]}
+                </Link>
+              ) : (
+                <>
+                  {props.statusElementName &&
+                  keyName === props.statusElementName
+                    ? processBoolean(element[keyName])
+                    : element[keyName]}
+                </>
+              )}
+            </Td>
           ))}
         </Tr>
       );
@@ -346,7 +350,7 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
       ariaLabel={props.tableTitle}
       variant={"compact"}
       hasBorders={true}
-      classes={"pf-v5-u-mt-md"}
+      classes={"pf-v6-u-mt-md"}
       tableId={props.pathname + "-table"}
       isStickyHeader={true}
       tableHeader={header}

@@ -1,10 +1,11 @@
 import {
   Avatar,
   Masthead,
-  MastheadBrand,
+  MastheadLogo,
   MastheadContent,
   MastheadMain,
   MastheadToggle,
+  MastheadBrand,
   Page,
   PageSidebar,
   PageToggleButton,
@@ -15,10 +16,14 @@ import {
   Dropdown,
   MenuToggleElement,
   MenuToggle,
+  ToolbarItem,
+  ToolbarGroup,
+  ToolbarContent,
+  Brand,
 } from "@patternfly/react-core";
 import React from "react";
 // Icons
-import { BarsIcon } from "@patternfly/react-icons";
+
 import { UserIcon } from "@patternfly/react-icons";
 import { KeyIcon } from "@patternfly/react-icons";
 import { CogIcon } from "@patternfly/react-icons";
@@ -27,7 +32,7 @@ import { ShareSquareIcon } from "@patternfly/react-icons";
 // Navigation
 import Navigation from "./navigation/Nav";
 // Images
-import headerLogo from "src/assets/images/header-logo.png";
+import headerLogo from "src/assets/images/header-logo-black.png";
 import avatarImg from "src/assets/images/avatarImg.svg";
 // Redux
 import { useAppDispatch } from "./store/hooks";
@@ -68,9 +73,6 @@ const AppLayout = (props: PropsToAppLayout) => {
     }
   }, [props.loggedInUser]);
 
-  // Toolbar
-  const headerToolbar = <Toolbar id="toolbar" />;
-
   // On logout handler
   const onLogout = () => {
     logout().then((response) => {
@@ -94,35 +96,55 @@ const AppLayout = (props: PropsToAppLayout) => {
   };
 
   const dropdownItems = [
-    <DropdownItem key="profile" component="button">
+    <DropdownItem
+      key="profile"
+      component="button"
+      data-cy="toolbar-button-profile"
+    >
       <UserIcon /> Profile
     </DropdownItem>,
-    <DropdownItem key="change-password" component="button">
+    <DropdownItem
+      key="change-password"
+      component="button"
+      data-cy="toolbar-button-change-password"
+    >
       <KeyIcon /> Change password
     </DropdownItem>,
-    <DropdownItem key="customization" component="button">
+    <DropdownItem
+      key="customization"
+      component="button"
+      data-cy="toolbar-button-customization"
+    >
       <CogIcon /> Customization
     </DropdownItem>,
-    <DropdownItem key="about" component="button">
+    <DropdownItem key="about" component="button" data-cy="toolbar-button-about">
       <UnknownIcon /> About
     </DropdownItem>,
-    <DropdownItem key="logout" component="button" onClick={onLogout}>
+    <DropdownItem
+      key="logout"
+      component="button"
+      onClick={onLogout}
+      data-cy="toolbar-button-logout"
+    >
       <ShareSquareIcon /> Log out
     </DropdownItem>,
   ];
 
-  // TODO: Show the proper user login
+  // Dropdown with user login
   const dropdown = (
     <Dropdown
+      data-cy="toolbar-dropdown"
       onSelect={onDropdownSelect}
+      popperProps={{ position: "right" }}
       toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
         <MenuToggle
+          data-cy="toolbar-username"
           ref={toggleRef}
           id="toggle-plain-text"
           onClick={onDropdownToggle}
           isExpanded={isDropdownOpen}
-          className="pf-v5-u-mr-md"
-          variant="plainText"
+          className="pf-v6-u-mr-md"
+          icon={<Avatar src={avatarImg} alt="avatar" size="sm" />}
         >
           {fullName}
         </MenuToggle>
@@ -133,25 +155,43 @@ const AppLayout = (props: PropsToAppLayout) => {
     </Dropdown>
   );
 
+  // Header toolbar
+  const headerToolbar = (
+    <Toolbar id="toolbar" isStatic>
+      <ToolbarContent>
+        <ToolbarGroup
+          variant="action-group-plain"
+          align={{ default: "alignEnd" }}
+          gap={{ default: "gapNone", md: "gapMd" }}
+        >
+          <ToolbarItem>{dropdown}</ToolbarItem>
+        </ToolbarGroup>
+      </ToolbarContent>
+    </Toolbar>
+  );
+
   const Header = (
     <Masthead>
-      <MastheadToggle>
-        <PageToggleButton variant="plain" aria-label="Global navigation">
-          <BarsIcon />
-        </PageToggleButton>
-      </MastheadToggle>
       <MastheadMain>
-        <MastheadBrand component="a">
-          <img src={headerLogo} alt="FreeIPA Logo" />
+        <MastheadToggle>
+          <PageToggleButton
+            isHamburgerButton
+            data-cy="toolbar-button-toggle"
+            variant="plain"
+            aria-label="Global navigation"
+          />
+        </MastheadToggle>
+        <MastheadBrand>
+          <MastheadLogo className="pf-v6-u-mt-sm">
+            <MastheadBrand>
+              <MastheadLogo>
+                <Brand src={headerLogo} alt="FreeIPA Logo" />
+              </MastheadLogo>
+            </MastheadBrand>
+          </MastheadLogo>
         </MastheadBrand>
       </MastheadMain>
-      <MastheadContent>
-        <>
-          {headerToolbar}
-          {dropdown}
-          <Avatar src={avatarImg} alt="avatar" size="md" />
-        </>
-      </MastheadContent>
+      <MastheadContent>{headerToolbar}</MastheadContent>
     </Masthead>
   );
 
@@ -182,10 +222,12 @@ const AppLayout = (props: PropsToAppLayout) => {
   return (
     <Page
       mainContainerId={pageId}
-      header={Header}
+      masthead={Header}
       sidebar={Sidebar}
       isManagedSidebar={true}
       skipToContent={PageSkipToContent}
+      className="--pf-t--global--text--color--regular"
+      isContentFilled
     >
       {props.children}
     </Page>

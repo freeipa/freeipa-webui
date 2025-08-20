@@ -50,6 +50,7 @@ describe("IpaTextInputFromList Component", () => {
   afterEach(cleanup);
 
   const defaultProps: PropsToTextInputFromList = {
+    dataCy: "ipa-text-input-from-list",
     name: "krbprincipalname",
     elementsList: ["test1", "test2"],
     ipaObject: { krbprincipalname: ["test1", "test2"] },

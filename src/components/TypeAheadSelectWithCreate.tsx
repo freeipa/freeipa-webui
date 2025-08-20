@@ -54,6 +54,7 @@ const TypeAheadSelectWithCreate = (props: PropsToTypeAheadSelectWithCreate) => {
       if (!newSelectOptions.length) {
         newSelectOptions = [
           {
+            "data-cy": "typeahead-select-create-option",
             isDisabled: false,
             children: `Create new option "${filterValue}"`,
             value: "create",
@@ -179,6 +180,7 @@ const TypeAheadSelectWithCreate = (props: PropsToTypeAheadSelectWithCreate) => {
 
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
+      data-cy={props.id + "-select-toggle"}
       ref={toggleRef}
       variant="typeahead"
       onClick={onToggleClick}
@@ -203,6 +205,8 @@ const TypeAheadSelectWithCreate = (props: PropsToTypeAheadSelectWithCreate) => {
         <TextInputGroupUtilities>
           {!!inputValue && (
             <Button
+              icon={<TimesIcon aria-hidden />}
+              data-cy={props.id + "-select-clear-input"}
               variant="plain"
               onClick={() => {
                 props.onSelectedChange("");
@@ -211,9 +215,7 @@ const TypeAheadSelectWithCreate = (props: PropsToTypeAheadSelectWithCreate) => {
                 textInputRef?.current?.focus();
               }}
               aria-label="Clear input value"
-            >
-              <TimesIcon aria-hidden />
-            </Button>
+            />
           )}
         </TextInputGroupUtilities>
       </TextInputGroup>
@@ -222,6 +224,7 @@ const TypeAheadSelectWithCreate = (props: PropsToTypeAheadSelectWithCreate) => {
 
   return (
     <Select
+      data-cy={props.id + "-select"}
       id={props.id + "-select"}
       isOpen={isOpen}
       selected={props.selected}
