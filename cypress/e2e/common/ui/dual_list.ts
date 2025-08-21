@@ -21,11 +21,24 @@ Then("I should see {string} dual list item not selected", (item: string) => {
 });
 
 Then("I should see {string} dual list item on the left", (item: string) => {
-  cy.get("[data-cy=dual-list-left]").get(`[data-cy='${item}']`).should("exist");
+  cy.dataCy("dual-list-left").find(`[data-cy='${item}']`).should("exist");
 });
 
 Then("I should see {string} dual list item on the right", (item: string) => {
-  cy.get("[data-cy=dual-list-right]")
-    .get(`[data-cy='${item}']`)
-    .should("exist");
+  cy.dataCy("dual-list-right").find(`[data-cy='${item}']`).should("exist");
 });
+
+export const addItemToRightList = (item: string) => {
+  const dualListItem = `item-${item}`;
+  cy.dataCy("dual-list-search-link").click();
+  cy.dataCy(dualListItem).should("exist");
+
+  cy.dataCy(dualListItem).click();
+  cy.dataCy(dualListItem).should("have.attr", "aria-selected", "true");
+
+  cy.dataCy("dual-list-add-selected").click();
+  cy.dataCy("dual-list-right")
+    .find(`[data-cy='${dualListItem}']`)
+    .should("exist");
+  cy.dataCy(dualListItem).should("have.attr", "aria-selected", "false");
+};
