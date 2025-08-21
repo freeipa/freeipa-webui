@@ -29,3 +29,18 @@ Then("I should see {string} dual list item on the right", (item: string) => {
     .get(`[data-cy='${item}']`)
     .should("exist");
 });
+
+export const addItemToRightList = (item: string) => {
+  const dualListItem = `item-${item}`;
+  cy.dataCy("dual-list-search-link").click();
+  cy.dataCy(dualListItem).should("exist");
+
+  cy.dataCy(dualListItem).click();
+  cy.dataCy(dualListItem).should("have.attr", "aria-selected", "true");
+
+  cy.dataCy("dual-list-add-selected").click();
+  cy.get("[data-cy=dual-list-right]")
+    .get(`[data-cy='${dualListItem}']`)
+    .should("exist");
+  cy.dataCy(dualListItem).should("have.attr", "aria-selected", "false");
+};

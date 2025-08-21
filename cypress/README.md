@@ -129,11 +129,20 @@ Most pages consist of search bar, table and buttons.
 
 ### Search Bar
 
-Each page has a search bar, that is always identified simply as
+Each page includes a search bar, which can always be identified simply as:
 
 ```
 search
 ```
+
+In some cases, tables may include their own dedicated search fields.
+When that happens, the identifier follows the format:
+
+```
+search-{table_name}
+```
+
+Currently, the only known example is the settings table layout.
 
 ### Page Buttons
 

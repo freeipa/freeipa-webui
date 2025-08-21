@@ -306,6 +306,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
                 <Tab
                   eventKey={0}
                   name="users"
+                  data-cy="hbac-rules-tab-settings-tab-users"
                   title={
                     <TabTitleText>
                       Users <Label isCompact>{memberUsers.length}</Label>
@@ -327,6 +328,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
                 <Tab
                   eventKey={1}
                   name="groups"
+                  data-cy="hbac-rules-tab-settings-tab-groups"
                   title={
                     <TabTitleText>
                       Groups <Label isCompact>{memberGroups.length}</Label>
@@ -379,6 +381,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
                 <Tab
                   eventKey={0}
                   name="memberHosts"
+                  data-cy="hbac-rules-tab-settings-tab-hosts"
                   title={
                     <TabTitleText>
                       Hosts <Label isCompact>{memberHosts.length}</Label>
@@ -400,6 +403,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
                 <Tab
                   eventKey={1}
                   name="memberHostGroups"
+                  data-cy="hbac-rules-tab-settings-tab-hostgroups"
                   title={
                     <TabTitleText>
                       Host groups{" "}
@@ -454,6 +458,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
                 <Tab
                   eventKey={0}
                   name="services"
+                  data-cy="hbac-rules-tab-settings-tab-services"
                   title={
                     <TabTitleText>
                       Services <Label isCompact>{memberServices.length}</Label>
@@ -476,6 +481,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
                 <Tab
                   eventKey={1}
                   name="servicegroups"
+                  data-cy="hbac-rules-tab-settings-tab-servicegroups"
                   title={
                     <TabTitleText>
                       Service groups{" "}

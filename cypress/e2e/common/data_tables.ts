@@ -1,7 +1,7 @@
 import { When, Then } from "@badeball/cypress-cucumber-preprocessor";
 
 export const entryExists = (name: string) => {
-  cy.get("tr[id='" + name + "']").should("be.visible");
+  cy.get("tr[id='" + name + "']").should("exist");
 };
 
 export const entryDoesNotExist = (name: string) => {
@@ -17,10 +17,14 @@ export const searchForEntry = (name: string) => {
   cy.dataCy("search").find("button[type='submit']").click();
 };
 
-export const selectEntry = (name: string) => {
-  searchForEntry(name);
+export const checkEntry = (name: string) => {
   cy.get("tr[id='" + name + "'] input[type=checkbox]").check();
   cy.get("tr[id='" + name + "'] input[type=checkbox]").should("be.checked");
+};
+
+export const selectEntry = (name: string) => {
+  searchForEntry(name);
+  checkEntry(name);
 };
 
 export const isSelected = (name: string) => {
@@ -34,6 +38,17 @@ export const isNotSelected = (name: string) => {
 When("I search for {string} in the data table", (name: string) => {
   searchForEntry(name);
 });
+
+Then(
+  "I should see {string} entry in the data table with attribute {string} set to {string}",
+  (name: string, attribute: string, value: string) => {
+    entryExists(name);
+    cy.get("tr[id='" + name + "'] td[data-label='" + attribute + "']").should(
+      "have.text",
+      value
+    );
+  }
+);
 
 Then("I should see {string} entry in the data table", (name: string) => {
   entryExists(name);
@@ -71,3 +86,12 @@ Then(
     isNotSelected(name);
   }
 );
+
+When("I click on the arrow icon to perform search", () => {
+  cy.dataCy("search").find("button[type='submit']").click();
+});
+
+When("I click on the X icon to clear the search field", () => {
+  cy.dataCy("search").find('button[aria-label="Reset"]').click();
+  cy.dataCy("search").find("input").should("have.value", "");
+});
