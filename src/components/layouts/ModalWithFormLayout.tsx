@@ -64,8 +64,8 @@ const ModalWithFormLayout = (props: PropsToModal) => {
       isOpen={props.show}
       onClose={props.onClose}
     >
-      <ModalHeader title={props.title} labelId={props.dataCy} />
-      <ModalBody id={props.dataCy + "-modal-body"}>
+      <ModalHeader title={props.title} labelId={props.formId + "-header"} />
+      <ModalBody id={props.formId + "-modal-body"}>
         <Form
           onSubmit={onSubmit}
           id={props.formId}
