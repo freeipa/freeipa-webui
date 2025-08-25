@@ -1096,3 +1096,17 @@ export interface DnsServer {
   idnsforwarders: string[];
   idnsforwardpolicy: IDNSForwardPolicy;
 }
+
+export interface DnsConfig {
+  idnsforwarders: string[];
+  idnsforwardpolicy: IDNSForwardPolicy;
+  idnsallowsyncptr: boolean;
+  idnszonerefresh: number; // Maximum value: 2147483647
+  ipadnsversion: number; // Minimum value: -2147483648 | Maximum value: 2147483647
+  dns_server_server: string;
+  dns_server_server_id: string;
+  dn: string;
+  cn: string;
+  ipaconfigstring: string;
+  aci: string[];
+}

@@ -57,6 +57,7 @@ const CertificateMappingMatchGroupRef = "cert-id-mapping-match";
 const DNSZonesGroupRef = "dns-zones";
 const DNSForwardZonesGroupRef = "dns-forward-zones";
 const DNSServersGroupRef = "dns-servers";
+const DNSGlobalConfigGroupRef = "dns-global-config";
 // IPA SERVER
 // - Configuration
 const ConfigRef = "configuration";
@@ -370,6 +371,13 @@ export const navigationRoutes = [
             group: DNSServersGroupRef,
             title: `${BASE_TITLE} - DNS servers`,
             path: "dns-servers",
+            items: [],
+          },
+          {
+            label: "DNS global config",
+            group: DNSGlobalConfigGroupRef,
+            title: `${BASE_TITLE} - DNS global config`,
+            path: "dns-global-config",
             items: [],
           },
         ],
