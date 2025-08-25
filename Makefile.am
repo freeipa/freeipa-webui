@@ -1,6 +1,6 @@
 NULL =
 
-appdir = $(IPA_DATA_DIR)/freeipa-webui
+appdir = $(IPA_DATA_DIR)/modern-ui
 
 EXTRA_DIST =		\
 	$(NULL)
