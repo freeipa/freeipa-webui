@@ -33,7 +33,7 @@ export default defineConfig({
     },
   },
   env: {
-    BASE_URL: "/ipa/modern_ui",
+    BASE_URL: "/ipa/modern-ui",
     ADMIN_LOGIN: "admin",
     ADMIN_PASSWORD: "Secret123",
     TAGS: "not @ignore",

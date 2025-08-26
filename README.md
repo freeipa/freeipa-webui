@@ -78,7 +78,7 @@ $ npm run build
 ```
 
 Now your dev environment is ready, you can do changes and see them at:
-`https://server.ipa.demo/ipa/modern_ui/`
+`https://server.ipa.demo/ipa/modern-ui/`
 
 The default credentials are **admin** and **Secret123**.
 
