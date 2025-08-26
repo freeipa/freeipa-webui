@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   Button,
-  FormSelect,
-  FormSelectOption,
   HelperText,
   HelperTextItem,
   TextArea,
@@ -30,6 +28,7 @@ import {
   GroupAddPayload,
   useAddGroupMutation,
 } from "../../services/rpcUserGroups";
+import SimpleSelector, { SelectOptionProps } from "../layouts/SimpleSelector";
 interface PropsToAddGroup {
   show: boolean;
   handleModalToggle: () => void;
@@ -37,6 +36,21 @@ interface PropsToAddGroup {
   onCloseAddModal?: () => void;
   onRefresh?: () => void;
 }
+
+const groupTypeOptions: SelectOptionProps[] = [
+  {
+    key: "posix",
+    value: "posix",
+  },
+  {
+    key: "non-posix",
+    value: "non-posix",
+  },
+  {
+    key: "external",
+    value: "external",
+  },
+];
 
 const AddUserGroup = (props: PropsToAddGroup) => {
   // Set dispatch (Redux)
@@ -75,13 +89,6 @@ const AddUserGroup = (props: PropsToAddGroup) => {
       setGID("");
     }
   }, [groupType]);
-
-  const onGroupTypeSelect = (
-    _event: React.FormEvent<HTMLSelectElement>,
-    value: string
-  ) => {
-    setGroupType(value);
-  };
 
   // List of fields
   const fields = [
@@ -130,17 +137,14 @@ const AddUserGroup = (props: PropsToAddGroup) => {
       id: "modal-form-group-type",
       name: "Group type",
       pfComponent: (
-        <FormSelect
-          id="modal-form-group-type"
-          value={groupType}
-          onChange={onGroupTypeSelect}
-          aria-label="Group type selection"
-          ouiaId="GroupTypeSelect"
-        >
-          <FormSelectOption value="posix" label="Posix" />
-          <FormSelectOption value="non-posix" label="Non-posix" />
-          <FormSelectOption value="external" label="External" />
-        </FormSelect>
+        <SimpleSelector
+          dataCy="modal-simple-provider-type"
+          id="provider-type-selector"
+          options={groupTypeOptions}
+          selected={groupType}
+          onSelectedChange={(selected: string) => setGroupType(selected)}
+          ariaLabel="Group type selector"
+        />
       ),
     },
     {
