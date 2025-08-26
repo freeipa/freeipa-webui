@@ -58,7 +58,7 @@ Vagrant.configure("2") do |config|
     set -e
     cat >> /etc/httpd/conf.d/ipa.conf <<EOF
 
-    Alias /ipa/modern_ui "/usr/src/freeipa-webui/dist"
+    Alias /ipa/modern-ui "/usr/src/freeipa-webui/dist"
     <Directory "/usr/src/freeipa-webui/dist">
       SetHandler None
       AllowOverride None

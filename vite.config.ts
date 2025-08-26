@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: "/ipa/modern_ui",
+  base: "/ipa/modern-ui",
   build: {
     sourcemap: true,
   },

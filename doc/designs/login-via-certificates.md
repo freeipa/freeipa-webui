@@ -71,4 +71,4 @@ As a final step, you must enable the post-handshake auth parameter:
 
 ## Try certificate authentication in the modern WebUI
 
-To test the certificate authentication, go to the [modern WebUI login page](https://server.ipa.demo/ipa/modern_ui/login), write the username `mshelley` and click `Login using Certificate`.
+To test the certificate authentication, go to the [modern WebUI login page](https://server.ipa.demo/ipa/modern-ui/login), write the username `mshelley` and click `Login using Certificate`.
