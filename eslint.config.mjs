@@ -10,6 +10,7 @@ import { fileURLToPath } from "node:url";
 import js from "@eslint/js";
 import { FlatCompat } from "@eslint/eslintrc";
 import pluginCypress from "eslint-plugin-cypress";
+import reactPlugin from "@eslint-react/eslint-plugin";
 
 const compat = new FlatCompat({
   baseDirectory: path.dirname(fileURLToPath(import.meta.url)),
@@ -27,6 +28,7 @@ export default defineConfig([
     "eslint.config.mjs",
   ]),
   pluginCypress.configs.recommended,
+  reactPlugin.configs.recommended,
   {
     extends: compat.extends(
       "eslint:recommended",
@@ -70,6 +72,8 @@ export default defineConfig([
     rules: {
       "prettier/prettier": "error",
       "cypress/no-unnecessary-waiting": "error",
+      // Temporarily set as warn, so we can refactor when needed
+      "@eslint-react/no-nested-component-definitions": "warn",
     },
   },
 ]);
