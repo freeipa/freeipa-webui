@@ -3,7 +3,6 @@ import React from "react";
 import { Button, Content, ContentVariants } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 // Tables
 import DeletedElementsTable from "src/components/tables/DeletedElementsTable";
 
@@ -46,18 +45,18 @@ const RemoveHBACRuleMembersModal = (props: PropsToDelete) => {
 
   // Buttons that will be shown at the end of the form
   const modalActions = [
-    <SecondaryButton
-      dataCy="modal-button-delete"
+    <Button
+      data-cy="modal-button-delete"
       key={"delete-" + props.elementType}
-      form="modal-form"
-      onClickHandler={() => props.removeMembers(props.elementsToDelete)}
+      form={props.elementType + "-delete-modal"}
+      type="submit"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={props.spinning}
       isDisabled={props.spinning}
     >
       {props.spinning ? "Deleting" : "Delete"}
-    </SecondaryButton>,
+    </Button>,
     <Button
       data-cy="modal-button-cancel"
       key={"cancel-delete-" + props.elementType}
@@ -77,6 +76,7 @@ const RemoveHBACRuleMembersModal = (props: PropsToDelete) => {
       title={"Remove " + label.toLowerCase() + "s from HBAC rule"}
       formId={props.elementType + "-delete-modal"}
       fields={fields}
+      onSubmit={() => props.removeMembers(props.elementsToDelete)}
       show={props.showModal}
       onClose={props.closeModal}
       actions={modalActions}

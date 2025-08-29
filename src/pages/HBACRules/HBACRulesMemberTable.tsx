@@ -397,25 +397,23 @@ const HBACRulesMemberTable = (props: PropsToTable) => {
         list={props.members}
         entryType={props.fromLabel ? props.fromLabel : props.from}
       />
-      {showAddModal && (
-        <DualListLayout
-          entry={props.id}
-          target={props.from}
-          title={
-            "Add " +
-            (props.fromLabel ? props.fromLabel : props.from) +
-            "s to HBAC rule"
-          }
-          showModal={showAddModal}
-          onCloseModal={onCloseAddHandler}
-          onOpenModal={onClickAddHandler}
-          action={addMembers}
-          spinning={addSpinning}
-          addBtnName="Add"
-          addSpinningBtnName="Adding"
-          tableElementsList={tableMembers}
-        />
-      )}
+      <DualListLayout
+        entry={props.id}
+        target={props.from}
+        title={
+          "Add " +
+          (props.fromLabel ? props.fromLabel : props.from) +
+          "s to HBAC rule"
+        }
+        showModal={showAddModal}
+        onCloseModal={onCloseAddHandler}
+        onOpenModal={onClickAddHandler}
+        action={addMembers}
+        spinning={addSpinning}
+        addBtnName="Add"
+        addSpinningBtnName="Adding"
+        tableElementsList={tableMembers}
+      />
       {showDeleteModal && (
         <RemoveHBACRuleMembersModal
           elementType={props.from}
