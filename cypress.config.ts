@@ -9,7 +9,7 @@ export default defineConfig({
   video: true,
   e2e: {
     specPattern: "cypress/e2e/**/*.feature",
-    baseUrl: "https://server.ipa.demo/",
+    baseUrl: "https://webui.ipa.test/",
     testIsolation: true,
     experimentalMemoryManagement: true,
     numTestsKeptInMemory: 1,
@@ -37,7 +37,7 @@ export default defineConfig({
     BASE_URL: "/ipa/modern-ui",
     ADMIN_LOGIN: "admin",
     ADMIN_PASSWORD: "Secret123",
-    HOSTNAME: "dom-server.ipa.demo",
+    HOSTNAME: "ipa.test",
     TAGS: "not @ignore",
   },
 });
