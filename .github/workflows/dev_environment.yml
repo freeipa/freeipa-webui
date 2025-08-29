@@ -1,0 +1,30 @@
+name: dev_environment
+
+on:
+  # schedule:
+  #   - chron: 0 0 * * 6
+  pull_request:
+  push:
+    banches: ["main"]
+
+jobs:
+  build-and-push-image:
+    name: Build and Push Development Container
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: quay.io
+          username: ${{ vars.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_ROBOT_TOKEN }}
+
+      - name: Build and Push
+        run: |
+          developer/dev-env.sh -B
+          podman push webui-dev:base quay.io/ansible-freeeipa/webui-dev:base
+          podman push webui-dev:latest quay.io/asnible-freeeipa/webui-dev:latest
+
