@@ -529,6 +529,7 @@ const AutoMemHostRules = () => {
       element: (
         <TypeAheadSelect
           id="host-group"
+          dataCy="auto-member-host-rules-typeahead-select"
           options={hostGroupsOptions}
           selected={defaultGroup}
           placeholder="Default host group"
