@@ -11,7 +11,10 @@ Feature: DNS Zones
     @cleanup
     Scenario: Delete DNS zones
         Given I delete DNS zone "my-dnszone."
+    <<<<<<< HEAD
 
+    =======
+    >>>>>>> b3b1be3b (Add DNS zones main page tests)
     @test
     Scenario: Create a new reverse DNS zone
         Given I am logged in as admin
@@ -57,7 +60,7 @@ Feature: DNS Zones
         Given I am logged in as admin
         And I am on "dns-zones" page
         When I create an invalid DNS reverse zone that triggers a validation error
-        Then I close the add DNS zone modal
+        And I close the add DNS zone modal
 
     @seed
     Scenario: Create a new DNS zone to disable/enable
