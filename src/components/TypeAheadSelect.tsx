@@ -14,6 +14,7 @@ import {
 
 interface PropsToTypeAheadSelect {
   id: string;
+  dataCy: string;
   options: SelectOptionProps[];
   selected: string;
   onSelectedChange: (selected: string) => void;
@@ -243,6 +244,7 @@ const TypeAheadSelect = (props: PropsToTypeAheadSelect) => {
           onChange={onTextInputChange}
           onKeyDown={onInputKeyDown}
           id="typeahead-select-input"
+          data-cy="typeahead-select-input"
           autoComplete="off"
           innerRef={textInputRef}
           placeholder={props.placeholder || ""}
@@ -261,7 +263,7 @@ const TypeAheadSelect = (props: PropsToTypeAheadSelect) => {
 
   return (
     <Select
-      data-cy={props.id + "-typeahead-select"}
+      data-cy={props.dataCy}
       id={props.id + "-typeahead-select"}
       isOpen={isOpen}
       selected={props.selected}
@@ -278,6 +280,7 @@ const TypeAheadSelect = (props: PropsToTypeAheadSelect) => {
             id={createItemId(option.value)}
             {...option}
             ref={null}
+            data-cy={option["data-cy"]}
           />
         ))}
       </SelectList>

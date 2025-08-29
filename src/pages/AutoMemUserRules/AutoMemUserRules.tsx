@@ -533,6 +533,7 @@ const AutoMemUserRules = () => {
           selected={defaultGroup}
           placeholder="Default user group"
           onSelectedChange={onShowDefaultGroupOnModal}
+          dataCy="auto-member-user-rules-typeahead-select"
         />
       ),
     },
