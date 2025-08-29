@@ -68,6 +68,8 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
     setDnsZoneName("");
     setReverseZoneIp("");
     setSkipOverlapCheck(false);
+    setIsZoneNameRadioChecked(true);
+    setIsReverseZoneIpRadioChecked(false);
   };
 
   // Error message
@@ -225,7 +227,7 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
                     : ValidatedOptions.default
                 }
               />
-              <HelperText>
+              <HelperText data-cy="modal-helper-text-reverse-zone-ip">
                 {reverseZoneIp !== "" &&
                   isReverseZoneIpRadioChecked &&
                   !validateReverseZoneIp(reverseZoneIp) && (
@@ -254,6 +256,7 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
           <Checkbox
             id="skip-overlap-check"
             name="skip_overlap_check"
+            data-cy="modal-checkbox-skip-overlap-check"
             isChecked={skipOverlapCheck}
             onChange={(_event, checked: boolean) =>
               setSkipOverlapCheck(checked)
@@ -268,7 +271,7 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
   // Actions
   const modalActions: JSX.Element[] = [
     <Button
-      data-cy="modal-button-ok"
+      data-cy="modal-button-add"
       key="add-new"
       variant="secondary"
       isDisabled={
@@ -291,7 +294,7 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
       )}
     </Button>,
     <Button
-      data-cy="modal-button-ok"
+      data-cy="modal-button-add-and-add-another"
       key="add-new-another"
       variant="secondary"
       isDisabled={
@@ -333,6 +336,7 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
         positionOffset="76px"
         isOpen={props.isOpen}
         onClose={props.onClose}
+        data-cy="add-dns-zone-modal"
       >
         <ModalHeader title={props.title} labelId="add-dns-zone-modal-title" />
         <ModalBody id="add-dns-zone-modal-body">{formFields}</ModalBody>
