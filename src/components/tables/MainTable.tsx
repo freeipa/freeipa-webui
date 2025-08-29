@@ -231,10 +231,19 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
   const header = (
     <Tr key="header" id="table-header">
       {props.hasCheckboxes && (
-        <Th modifier="wrap" aria-label="Select rows"></Th>
+        <Th
+          modifier="wrap"
+          dataLabel="Select rows"
+          aria-label="Select rows"
+        ></Th>
       )}
       {props.columnNames.map((columnName, idx) => (
-        <Th modifier="wrap" key={columnName + "-" + idx}>
+        <Th
+          modifier="wrap"
+          key={columnName + "-" + idx}
+          dataLabel={columnName}
+          aria-label={columnName}
+        >
           {columnName}
         </Th>
       ))}
@@ -304,6 +313,7 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
               id={idx.toString()}
               style={setStyleOnStatus(element[keyName])}
               aria-label={keyName}
+              data-label={keyName}
             >
               {idx === 0 && !!props.showLink ? (
                 <Link
