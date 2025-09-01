@@ -70,6 +70,7 @@ const HBACSvcGroupMembers = (props: PropsToSvcGroupsMembers) => {
           <Tab
             eventKey={"member_hbacsvc"}
             name="member_hbacsvc"
+            data-cy="hbac-service-groups-tab-members-tab-hbacservices"
             title={
               <TabTitleText>
                 HBAC services{" "}
