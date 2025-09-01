@@ -138,6 +138,7 @@ const HBACServiceGroupsTabs = ({ section }) => {
           <Tab
             eventKey={"members"}
             name="members-details"
+            data-cy="hbac-service-groups-tab-members"
             title={<TabTitleText>Members</TabTitleText>}
           >
             <HBACSvcGroupMembers

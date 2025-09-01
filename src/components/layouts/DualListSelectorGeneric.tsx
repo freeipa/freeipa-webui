@@ -17,6 +17,7 @@ import {
 export interface DualListOption {
   text: string;
   selected: boolean;
+  dataCy: string;
 }
 
 interface DualListGenericProps {
@@ -37,6 +38,7 @@ export const optionsToDualListOptions = (
   return options.map((option) => ({
     text: option,
     selected: false,
+    dataCy: `item-${option}`,
   }));
 };
 
@@ -107,12 +109,14 @@ const DualListSelectorGeneric = (props: DualListGenericProps) => {
     <DualListSelector
       id={props.id}
       aria-label={props.ariaLabel || "Dual list selector"}
+      data-cy="dual-list-selector"
     >
       <DualListSelectorPane
         title={props.availableOptionsTitle || "Available options"}
         status={`${availableOptions.filter((option) => option.selected).length} of ${
           availableOptions.length
         } options selected`}
+        data-cy="dual-list-left"
       >
         <DualListSelectorList>
           {availableOptions.map((option, index) => (
@@ -121,6 +125,7 @@ const DualListSelectorGeneric = (props: DualListGenericProps) => {
               isSelected={option.selected}
               id={`basic-available-option-${index}`}
               onOptionSelect={(e) => onOptionSelect(e, index, false)}
+              data-cy={option.dataCy}
             >
               {option.text}
             </DualListSelectorListItem>
@@ -132,24 +137,28 @@ const DualListSelectorGeneric = (props: DualListGenericProps) => {
           isDisabled={!availableOptions.some((option) => option.selected)}
           onClick={() => moveSelected(true)}
           aria-label="Add selected"
+          data-cy="dual-list-add-selected"
           icon={<AngleRightIcon />}
         />
         <DualListSelectorControl
           isDisabled={availableOptions.length === 0}
           onClick={() => moveAll(true)}
           aria-label="Add all"
+          data-cy="dual-list-add-all"
           icon={<AngleDoubleRightIcon />}
         />
         <DualListSelectorControl
           isDisabled={chosenOptions.length === 0}
           onClick={() => moveAll(false)}
           aria-label="Remove all"
+          data-cy="dual-list-remove-all"
           icon={<AngleDoubleLeftIcon />}
         />
         <DualListSelectorControl
           onClick={() => moveSelected(false)}
           isDisabled={!chosenOptions.some((option) => option.selected)}
           aria-label="Remove selected"
+          data-cy="dual-list-remove-selected"
           icon={<AngleLeftIcon />}
         />
       </DualListSelectorControlsWrapper>
@@ -159,6 +168,7 @@ const DualListSelectorGeneric = (props: DualListGenericProps) => {
           chosenOptions.length
         } options selected`}
         isChosen
+        data-cy="dual-list-right"
       >
         <DualListSelectorList>
           {chosenOptions.map((option, index) => (
@@ -167,6 +177,7 @@ const DualListSelectorGeneric = (props: DualListGenericProps) => {
               isSelected={option.selected}
               id={`composable-basic-chosen-option-${index}`}
               onOptionSelect={(e) => onOptionSelect(e, index, true)}
+              data-cy={option.dataCy}
             >
               {option.text}
             </DualListSelectorListItem>

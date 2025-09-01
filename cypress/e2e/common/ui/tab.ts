@@ -11,3 +11,7 @@ Then("I should not see {string} tab", (tab: string) => {
 Then("I should see {string} tab", (tab: string) => {
   cy.dataCy(tab).should("exist");
 });
+
+Then("I should see {string} tab selected", (tab: string) => {
+  cy.dataCy(tab).should("have.attr", "aria-selected", "true");
+});

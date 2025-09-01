@@ -346,7 +346,7 @@ const DualListTableLayoutInner = (props: DualListProps) => {
     {
       id: "dual-list-selector",
       pfComponent: (
-        <DualListSelector>
+        <DualListSelector data-cy="dual-list-selector">
           <DualListSelectorPane
             status={getAvailableOptionsStatus()}
             data-cy="dual-list-left"
