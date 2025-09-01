@@ -30,7 +30,6 @@ Then("I should see {string} dual list item on the right", (item: string) => {
 
 export const addItemToRightList = (item: string) => {
   const dualListItem = `item-${item}`;
-  cy.dataCy("dual-list-search-link").click();
   cy.dataCy(dualListItem).should("exist");
 
   cy.dataCy(dualListItem).click();
