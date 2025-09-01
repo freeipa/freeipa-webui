@@ -1,16 +1,16 @@
 import { Given } from "@badeball/cypress-cucumber-preprocessor";
-import { loginAsAdmin, logout } from "../common/authentication";
+import { loginAsAdmin, logout } from "../../common/authentication";
 import {
   selectEntry,
   searchForEntry,
   entryDoesNotExist,
   entryExists,
   checkEntry,
-} from "../common/data_tables";
-import { navigateTo } from "../common/navigation";
-import { typeInTextbox } from "../common/ui/textbox";
-import { findEntryInTable } from "../common/settings_table";
-import { addItemToRightList } from "../common/ui/dual_list";
+} from "../../common/data_tables";
+import { navigateTo } from "../../common/navigation";
+import { typeInTextbox } from "../../common/ui/textbox";
+import { findEntryInTable } from "../../common/settings_table";
+import { addItemToRightList } from "../../common/ui/dual_list";
 
 Given("rule {string} exists", (ruleName: string) => {
   loginAsAdmin();
