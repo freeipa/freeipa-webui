@@ -60,6 +60,7 @@ Given(
     cy.dataCy(`settings-button-add-${elementType}`).click();
     cy.dataCy("dual-list-modal").should("exist");
 
+    cy.dataCy("dual-list-search-link").click();
     addItemToRightList(element);
 
     cy.dataCy("modal-button-add").click();
@@ -114,6 +115,7 @@ Given(
     cy.dataCy("settings-button-add-host").click();
     cy.dataCy("dual-list-modal").should("exist");
 
+    cy.dataCy("dual-list-search-link").click();
     addItemToRightList(hostFqdn);
 
     cy.dataCy("modal-button-add").click();
@@ -166,6 +168,7 @@ Given(
     cy.dataCy("settings-button-add-hbacsvc").click();
     cy.dataCy("dual-list-modal").should("exist");
 
+    cy.dataCy("dual-list-search-link").click();
     addItemToRightList(service);
 
     cy.dataCy("modal-button-add").click();
@@ -218,6 +221,7 @@ Given(
     cy.dataCy("settings-button-add-hbacsvcgroup").click();
     cy.dataCy("dual-list-modal").should("exist");
 
+    cy.dataCy("dual-list-search-link").click();
     addItemToRightList(svcGroup);
 
     cy.dataCy("modal-button-add").click();
