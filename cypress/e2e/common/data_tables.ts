@@ -35,6 +35,11 @@ export const isNotSelected = (name: string) => {
   cy.get("tr[id='" + name + "'] input[type=checkbox]").should("not.be.checked");
 };
 
+export const validateEntry = (name: string) => {
+  searchForEntry(name);
+  entryExists(name);
+};
+
 When("I search for {string} in the data table", (name: string) => {
   searchForEntry(name);
 });
