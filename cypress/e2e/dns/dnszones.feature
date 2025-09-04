@@ -11,10 +11,7 @@ Feature: DNS Zones
     @cleanup
     Scenario: Delete DNS zones
         Given I delete DNS zone "my-dnszone."
-    <<<<<<< HEAD
 
-    =======
-    >>>>>>> b3b1be3b (Add DNS zones main page tests)
     @test
     Scenario: Create a new reverse DNS zone
         Given I am logged in as admin
