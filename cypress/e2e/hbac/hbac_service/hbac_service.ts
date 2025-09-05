@@ -8,6 +8,7 @@ import {
   selectEntry,
 } from "../../common/data_tables";
 import { typeInTextbox } from "cypress/e2e/common/ui/textbox";
+import { addItemToRightList } from "cypress/e2e/common/ui/dual_list";
 
 Given("HBAC service {string} exists", (serviceName: string) => {
   loginAsAdmin();
@@ -47,3 +48,62 @@ Given("I delete service {string}", (serviceName: string) => {
 
   logout();
 });
+
+Given(
+  "I add service group member {string} to service {string}",
+  (groupName: string, serviceName: string) => {
+    loginAsAdmin();
+    navigateTo(`hbac-services/${serviceName}`);
+
+    cy.dataCy("hbac-service-is-member-of-tab").click();
+    cy.dataCy("hbac-service-is-member-of-tab").should(
+      "have.attr",
+      "aria-selected",
+      "true"
+    );
+
+    cy.dataCy("member-of-button-add").click();
+    cy.dataCy("member-of-add-modal").should("exist");
+
+    addItemToRightList(groupName);
+
+    cy.dataCy("modal-button-add").click();
+    cy.dataCy("member-of-add-modal").should("not.exist");
+    cy.dataCy("add-member-success").should("exist");
+
+    searchForEntry(groupName);
+    entryExists(groupName);
+
+    logout();
+  }
+);
+
+Given(
+  "I delete service group member {string} from service {string}",
+  (groupName: string, serviceName: string) => {
+    loginAsAdmin();
+    navigateTo(`hbac-services/${serviceName}`);
+
+    cy.dataCy("hbac-service-is-member-of-tab").click();
+    cy.dataCy("hbac-service-is-member-of-tab").should(
+      "have.attr",
+      "aria-selected",
+      "true"
+    );
+
+    searchForEntry(groupName);
+    selectEntry(groupName);
+
+    cy.dataCy("member-of-button-delete").click();
+    cy.dataCy("member-of-delete-modal").should("exist");
+
+    cy.dataCy("modal-button-delete").click();
+    cy.dataCy("member-of-delete-modal").should("not.exist");
+    cy.dataCy("remove-hbac-services-success").should("exist");
+
+    searchForEntry(groupName);
+    entryDoesNotExist(groupName);
+
+    logout();
+  }
+);
