@@ -71,6 +71,7 @@ const HBACServicesMemberOf = (props: PropsToMemberOf) => {
           <Tab
             eventKey={"memberof_hbacsvcgroup"}
             name="memberof_hbacsvcgroup"
+            data-cy="hbac-service-is-member-of-tab-hbacservicegroups"
             title={
               <TabTitleText>
                 Host service groups{" "}
