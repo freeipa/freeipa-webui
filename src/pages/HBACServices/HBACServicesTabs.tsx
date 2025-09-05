@@ -138,6 +138,7 @@ const HBACServicesTabs = ({ section }) => {
             eventKey={"memberof"}
             name="memberof-details"
             title={<TabTitleText>Is member of</TabTitleText>}
+            data-cy="hbac-service-is-member-of-tab"
           >
             <HBACServicesMemberOf hbacService={hbacSrv} tabSection={section} />
           </Tab>
