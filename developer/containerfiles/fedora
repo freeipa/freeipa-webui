@@ -1,0 +1,41 @@
+ARG distro_image=fedora
+ARG distro_tag=latest
+FROM ${distro_image}:${distro_tag}
+
+ENV container=podman
+
+RUN dnf update -y
+
+RUN dnf install -y \
+    sudo \
+    bash \
+    systemd \
+    procps-ng \
+    hostname \
+    iputils \
+    bind-utils \
+    iproute \
+    python3-libdnf5 \
+    `# Useful tools` \
+    vim \
+    `# Packages required by dev-evn.sh script` \
+    nc \
+    nodejs \
+    `# FreeIPA packages` \
+    freeipa-server \
+    python3-libselinux \
+    freeipa-server-dns \
+    freeipa-server-trust-ad \
+    freeipa-server-encrypted-dns \
+    firewalld \
+    ;
+
+RUN  dnf clean all && rm -rf "/var/cache/dnf/"
+
+STOPSIGNAL RTMIN+3
+
+VOLUME [/webui]
+
+WORKDIR /webui
+
+CMD ["/usr/sbin/init"]

@@ -1,0 +1,39 @@
+---
+- name: Deploy IPA server for WebUI development
+  hosts: ipaserver
+  gather_facts: true
+  become: true
+
+  roles:
+    - name: Deploy IPA server
+      role: freeipa.ansible_freeipa.ipaserver
+      state: present
+
+- name: Configure modern-ui alias in httpd
+  hosts: ipaserver
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Ensure webui is configured in ipa.conf
+      ansible.builtin.blockinfile:
+        path: /etc/httpd/conf.d/ipa.conf
+        insertafter: "EOF"
+        marker: "# {mark} Webui Development configuration"
+        prepend_newline: true
+        block: |+
+          Alias /ipa/modern-ui "/webui/dist"
+          <Directory "/webui/dist">
+            SetHandler None
+            AllowOverride None
+            Satisfy Any
+            Require all granted
+            RewriteEngine On
+            RewriteRule ^(.*)/assets/(.*)$ assets/$2 [L]
+            RewriteCond %{REQUEST_FILENAME} !-f
+            RewriteRule ^ index.html [QSA,L]
+          </Directory>
+
+    - name: Restart web server
+      ansible.builtin.systemd_service:
+        name: httpd.service
+        state: restarted

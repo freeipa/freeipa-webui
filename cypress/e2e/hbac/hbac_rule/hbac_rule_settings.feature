@@ -9,11 +9,11 @@ Feature: Hbac rule settings manipulation
   Scenario: Add user to Who category
     Given I am logged in as admin
     And I am on "hbac-rules/rule1" page
-    
+
     When I click on the "hbac-rules-tab-settings-tab-users" tab
     Then I click on the "settings-button-add-user" button
     Then I should see "dual-list-modal" modal
-    
+
     When I click on search link in dual list
     Then I should see "item-admin" dual list item on the left
 
@@ -158,19 +158,19 @@ Feature: Hbac rule settings manipulation
     Then I click on the "settings-button-add-host" button
     Then I should see "dual-list-modal" modal
     When I click on search link in dual list
-    Then I should see "item-my-new-host.dom-server.ipa.demo" dual list item on the left
+    Then I should see "item-my-new-host.ipa.test" dual list item on the left
 
-    When I click on "item-my-new-host.dom-server.ipa.demo" dual list item
-    Then I should see "item-my-new-host.dom-server.ipa.demo" dual list item selected
+    When I click on "item-my-new-host.ipa.test" dual list item
+    Then I should see "item-my-new-host.ipa.test" dual list item selected
 
     When I click on the "dual-list-add-selected" button
-    Then I should see "item-my-new-host.dom-server.ipa.demo" dual list item on the right
-    And I should see "item-my-new-host.dom-server.ipa.demo" dual list item not selected
+    Then I should see "item-my-new-host.ipa.test" dual list item on the right
+    And I should see "item-my-new-host.ipa.test" dual list item not selected
 
     When I click on the "modal-button-add" button
     Then I should not see "dual-list-modal" modal
     And I should see "add-member-success" alert
-    Then I should see "my-new-host.dom-server.ipa.demo" entry in the data table
+    Then I should see "my-new-host.ipa.test" entry in the data table
 
   @cleanup
   Scenario: Delete the host from the rule
@@ -185,19 +185,19 @@ Feature: Hbac rule settings manipulation
     Then I click on the "settings-button-add-host" button
     Then I should see "dual-list-modal" modal
     When I click on search link in dual list
-    Then I should see "item-my-new-host.dom-server.ipa.demo" dual list item on the left
+    Then I should see "item-my-new-host.ipa.test" dual list item on the left
 
-    When I click on "item-my-new-host.dom-server.ipa.demo" dual list item
-    Then I should see "item-my-new-host.dom-server.ipa.demo" dual list item selected
+    When I click on "item-my-new-host.ipa.test" dual list item
+    Then I should see "item-my-new-host.ipa.test" dual list item selected
 
     When I click on the "dual-list-add-selected" button
-    Then I should see "item-my-new-host.dom-server.ipa.demo" dual list item on the right
-    And I should see "item-my-new-host.dom-server.ipa.demo" dual list item not selected
+    Then I should see "item-my-new-host.ipa.test" dual list item on the right
+    And I should see "item-my-new-host.ipa.test" dual list item not selected
 
     When I click on the "modal-button-add" button
     Then I should not see "dual-list-modal" modal
     And I should see "add-member-success" alert
-    Then I should see "my-new-host.dom-server.ipa.demo" entry in the data table
+    Then I should see "my-new-host.ipa.test" entry in the data table
 
   @test
   Scenario: Remove host from Host category
@@ -205,14 +205,14 @@ Feature: Hbac rule settings manipulation
     And I am on "hbac-rules/rule1" page
 
     When I click on the "hbac-rules-tab-settings-tab-hosts" tab
-    Then I should see "my-new-host.dom-server.ipa.demo" entry in the data table
-    When I select entry "my-new-host.dom-server.ipa.demo" in the settings data table "host"
+    Then I should see "my-new-host.ipa.test" entry in the data table
+    When I select entry "my-new-host.ipa.test" in the settings data table "host"
     When I click on the "settings-button-delete-host" button
     Then I should see "remove-hbac-rule-members-modal" modal
-    Then I should see "my-new-host.dom-server.ipa.demo" entry in the data table
+    Then I should see "my-new-host.ipa.test" entry in the data table
     When I click on the "modal-button-delete" button
     Then I should see "remove-member-success" alert
-    Then I should not see "my-new-host.dom-server.ipa.demo" entry in the data table
+    Then I should not see "my-new-host.ipa.test" entry in the data table
 
   @test
   Scenario: Add hostgroup to Host category
@@ -244,7 +244,7 @@ Feature: Hbac rule settings manipulation
   @seed
   Scenario: Add a hostgroup to the rule
     Given I have element "hostgroup" named "ipaservers" in rule "rule1"
- 
+
   @test
   Scenario: Remove hostgroup from Host category
     Given I am logged in as admin
@@ -271,19 +271,19 @@ Feature: Hbac rule settings manipulation
     Then I click on the "settings-button-add-host" button
     Then I should see "dual-list-modal" modal
     When I click on search link in dual list
-    Then I should see "item-my-new-host.dom-server.ipa.demo" dual list item on the left
+    Then I should see "item-my-new-host.ipa.test" dual list item on the left
 
-    When I click on "item-my-new-host.dom-server.ipa.demo" dual list item
-    Then I should see "item-my-new-host.dom-server.ipa.demo" dual list item selected
+    When I click on "item-my-new-host.ipa.test" dual list item
+    Then I should see "item-my-new-host.ipa.test" dual list item selected
 
     When I click on the "dual-list-add-selected" button
-    Then I should see "item-my-new-host.dom-server.ipa.demo" dual list item on the right
-    And I should see "item-my-new-host.dom-server.ipa.demo" dual list item not selected
+    Then I should see "item-my-new-host.ipa.test" dual list item on the right
+    And I should see "item-my-new-host.ipa.test" dual list item not selected
 
     When I click on the "modal-button-add" button
     Then I should not see "dual-list-modal" modal
     And I should see "add-member-success" alert
-    Then I should see "my-new-host.dom-server.ipa.demo" entry in the data table
+    Then I should see "my-new-host.ipa.test" entry in the data table
 
     When I click on the "hbac-rules-tab-settings-tab-hostgroups" tab
     Then I click on the "settings-button-add-hostgroup" button
@@ -395,7 +395,7 @@ Feature: Hbac rule settings manipulation
     And I am on "hbac-rules/rule1" page
 
     When I click on the "hbac-rules-tab-settings-tab-servicegroups" tab
-    Then I should see "ftp" entry in the data table 
+    Then I should see "ftp" entry in the data table
     When I select entry "ftp" in the settings data table "hbacsvcgroup"
     When I click on the "settings-button-delete-hbacsvcgroup" button
     Then I should see "remove-hbac-rule-members-modal" modal

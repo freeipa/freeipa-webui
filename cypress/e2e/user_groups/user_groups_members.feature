@@ -172,19 +172,19 @@ Feature: User group members
 
     When I click on the "member-of-button-add" button
     Then I should see "member-of-add-modal" modal
-    And I should see "item-DNS/server.ipa.demo@DOM-IPA.DEMO" dual list item on the left
+    And I should see "item-DNS/webui.ipa.test@IPA.TEST" dual list item on the left
 
-    When I click on "item-DNS/server.ipa.demo@DOM-IPA.DEMO" dual list item
-    Then I should see "item-DNS/server.ipa.demo@DOM-IPA.DEMO" dual list item selected
+    When I click on "item-DNS/webui.ipa.test@IPA.TEST" dual list item
+    Then I should see "item-DNS/webui.ipa.test@IPA.TEST" dual list item selected
     When I click on the "dual-list-add-selected" button
-    Then I should see "item-DNS/server.ipa.demo@DOM-IPA.DEMO" dual list item on the right
+    Then I should see "item-DNS/webui.ipa.test@IPA.TEST" dual list item on the right
 
     When I click on the "modal-button-add" button
     Then I should not see "member-of-add-modal" modal
     And I should see "add-member-success" alert
 
     When I search for "DNS" in the data table
-    Then I should see "DNS/server.ipa.demo@DOM-IPA.DEMO" entry in the data table
+    Then I should see "DNS/webui.ipa.test@IPA.TEST" entry in the data table
 
   @cleanup
   Scenario: Cleanup seed data
@@ -215,15 +215,15 @@ Feature: User group members
   @seed
   Scenario: Create seed data (user group)
     Given user group "imitation-game-group" exists
-    And service "DNS/server.ipa.demo@DOM-IPA.DEMO" is member of group "imitation-game-group"
+    And service "DNS/webui.ipa.test@IPA.TEST" is member of group "imitation-game-group"
 
   @test
   Scenario: Remove Service from the user group
     Given I am logged in as admin
     And I am on "user-groups/imitation-game-group/member_service" page
 
-    When I select entry "DNS/server.ipa.demo@DOM-IPA.DEMO" in the data table
-    Then I should see "DNS/server.ipa.demo@DOM-IPA.DEMO" entry selected in the data table
+    When I select entry "DNS/webui.ipa.test@IPA.TEST" in the data table
+    Then I should see "DNS/webui.ipa.test@IPA.TEST" entry selected in the data table
 
     When I click on the "member-of-button-delete" button
     Then I should see "member-of-delete-modal" modal
@@ -233,7 +233,7 @@ Feature: User group members
     And I should see "remove-services-success" alert
 
     When I search for "DNS" in the data table
-    Then I should not see "DNS/server.ipa.demo@DOM-IPA.DEMO" entry in the data table
+    Then I should not see "DNS/webui.ipa.test@IPA.TEST" entry in the data table
 
   @cleanup
   Scenario: Cleanup seed data
