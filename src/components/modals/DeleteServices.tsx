@@ -151,6 +151,7 @@ const DeleteServices = (props: PropsToDeleteServices) => {
 
               // Handle error
               handleAPIError(error);
+              setBtnSpinning(false);
             } else {
               // Update data from Redux
               props.selectedServicesData.selectedElements.map((service) => {

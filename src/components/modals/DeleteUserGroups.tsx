@@ -151,6 +151,7 @@ const DeleteUserGroups = (props: PropsToDeleteGroups) => {
 
               // Handle error
               handleAPIError(error);
+              setBtnSpinning(false);
             } else {
               // Update data from Redux
               props.selectedGroupsData.selectedGroups.map((group) => {

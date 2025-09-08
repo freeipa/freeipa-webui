@@ -145,6 +145,7 @@ const DeleteSudoCmd = (props: PropsToDeleteRules) => {
 
               // Handle error
               handleAPIError(error);
+              setBtnSpinning(false);
             } else {
               props.selectedCmdsData.clearSelectedCmds();
               props.buttonsData.updateIsDeleteButtonDisabled(true);

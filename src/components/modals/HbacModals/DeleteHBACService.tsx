@@ -145,6 +145,7 @@ const DeleteHBACService = (props: PropsToDeleteServices) => {
 
               // Handle error
               handleAPIError(error);
+              setBtnSpinning(false);
             } else {
               props.selectedServicesData.clearSelectedServices();
               props.buttonsData.updateIsDeleteButtonDisabled(true);
