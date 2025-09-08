@@ -1,0 +1,46 @@
+---
+name: Container Image
+
+on:
+  schedule:
+    - cron: 0 0 * * 6
+
+jobs:
+  build-and-push-image:
+    name: Build and Push Development Container
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5.1.0
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: |
+          pip install 'ansible-core<2.19'
+          ansible-galaxy collection install -r developer/requirements.yml
+
+      - name: Build container and deploy IPA
+        run: developer/dev-env.sh -B webui-dev
+
+      - name: Tag images
+        run: |
+          podman tag webui-dev:base quay.io/ansible-freeipa/webui-dev:base
+          podman tag webui-dev:latest quay.io/ansible-freeipa/webui-dev:latest
+
+      - name: Login to Container Registry
+        # Pin to v3.5.0 SHA
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1
+        with:
+          registry: quay.io
+          username: ${{ vars.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_ROBOT_TOKEN }}
+
+      - name: Push images
+        run: |
+          podman push quay.io/ansible-freeipa/webui-dev:base
+          podman push quay.io/ansible-freeipa/webui-dev:latest
