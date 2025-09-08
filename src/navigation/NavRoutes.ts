@@ -22,6 +22,7 @@ const HostGroupsGroupRef = "host-groups";
 const NetgroupsGroupRef = "netgroups";
 // - Views
 const IdViewsGroupRef = "id-views";
+const IdRangesGroupRef = "id-ranges";
 // - Automember
 const AutomemberGroupRef = "automember";
 const UserGroupRulesGroupRef = "user-group-rules";
@@ -390,6 +391,13 @@ export const navigationRoutes = [
     title: `${BASE_TITLE} - IPA Server`,
     path: "",
     items: [
+      {
+        label: "ID ranges",
+        group: IdRangesGroupRef,
+        title: `${BASE_TITLE} - ID ranges`,
+        path: "id-ranges",
+        items: [],
+      },
       {
         label: "Configuration",
         group: ConfigRef,
