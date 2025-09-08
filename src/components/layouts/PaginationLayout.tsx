@@ -7,8 +7,8 @@ interface PaginationData {
   perPage: number;
   updatePage: (newPage: number) => void;
   updatePerPage: (newSetPerPage: number) => void;
-  updateSelectedPerPage: (selected: number) => void;
-  updateShownElementsList: (newShownElementsList: any[]) => void;
+  updateSelectedPerPage?: (selected: number) => void;
+  updateShownElementsList?: (newShownElementsList: any[]) => void;
   totalCount: number;
 }
 
@@ -40,11 +40,15 @@ const PaginationLayout = (props: PropsToPaginationPrep) => {
     endIdx: number | undefined
   ) => {
     props.paginationData.updatePage(newPage);
-    props.paginationData.updateShownElementsList(
-      props.list.slice(startIdx, endIdx)
-    );
+    if (props.paginationData.updateShownElementsList) {
+      props.paginationData.updateShownElementsList(
+        props.list.slice(startIdx, endIdx)
+      );
+    }
     // Reset 'selectedPerPage'
-    props.paginationData.updateSelectedPerPage(0);
+    if (props.paginationData.updateSelectedPerPage) {
+      props.paginationData.updateSelectedPerPage(0);
+    }
   };
 
   // Handle content on 'perPageSelect'
@@ -57,11 +61,15 @@ const PaginationLayout = (props: PropsToPaginationPrep) => {
   ) => {
     props.paginationData.updatePerPage(newPerPage);
     props.paginationData.updatePage(newPage);
-    props.paginationData.updateShownElementsList(
-      props.list.slice(startIdx, endIdx)
-    );
+    if (props.paginationData.updateShownElementsList) {
+      props.paginationData.updateShownElementsList(
+        props.list.slice(startIdx, endIdx)
+      );
+    }
     // Reset 'selectedPerPage'
-    props.paginationData.updateSelectedPerPage(0);
+    if (props.paginationData.updateSelectedPerPage) {
+      props.paginationData.updateSelectedPerPage(0);
+    }
   };
 
   if (props.perPageSize !== undefined && props.perPageSize === "sm") {

@@ -68,6 +68,7 @@ import DnsResourceRecordsPreSettings from "src/pages/DNSZones/DnsResourceRecords
 import DnsServers from "src/pages/DNSZones/DnsServers";
 import DnsServersTabs from "src/pages/DNSZones/DnsServersTabs";
 import DnsGlobalConfig from "src/pages/DNSZones/DnsGlobalConfig";
+import IdRanges from "src/pages/IdRanges/IdRanges";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -498,6 +499,9 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="dns-global-config">
                 <Route path="" element={<DnsGlobalConfig />} />
+              </Route>
+              <Route path="id-ranges">
+                <Route path="" element={<IdRanges />} />
               </Route>
               <Route path="configuration" element={<Configuration />} />
               {/* Redirect to Active users page if user is logged in and navigates to the root page */}
