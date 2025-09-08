@@ -1,0 +1,129 @@
+#!/bin/bash -eu
+
+# shellcheck disable=SC2312
+SCRIPTDIR="$(dirname "$(realpath "$0")")"
+# shellcheck disable=SC2034
+TOPDIR="$(dirname "${SCRIPTDIR}")"
+
+die() {
+    >&2 echo -en "\033[31;1mFATAL: $*\033[0m\n"
+    exit 1
+}
+
+quiet() {
+    "$@" >/dev/null 2>&1
+}
+
+detach() {
+    nohup "$@" >/dev/null 2>&1 </dev/null &
+}
+
+usage() {
+    cat <<EOF
+usage: $(basename "$0") [-c CONTAINER] [-p PROFILE] [-r] [URL]"
+
+Open URL in Firefox with the given profile (defaults to 'freeipa-webui').
+
+Options:
+
+    -b BROWSER     browser to open {firefox, chrome}
+    -p PROFILE     use the given profile name
+    -c CONTAINER   Import IPA CA root from CONTAINER
+    -r             remove the profile
+
+EOF
+}
+
+get_default_browser() {
+    if command -v xdg-settings >/dev/null
+    then
+        local default_browser
+        default_browser="$(xdg-settings get default-web-browser)"
+        grep -q -v "firefox" <<< "${default_browser}" \
+            && echo "firefox" && return 0
+        grep -q -v "chrome" <<< "${default_browser}" \
+            && echo "chrome" && return 0
+    fi
+    return 1
+}
+
+copy_certificate() {
+    ipa_ca_node="${1:-}"
+    local profile_dir
+    # shellcheck disable=SC2154
+    profile_dir="${CONTAINER_PROFILE_DIR}"
+    CERTUTIL="$(command -v certutil)"
+    if [ -n "${CERTUTIL}" ] && [ -n "${ipa_ca_node}" ]
+    then
+        has_container="$(podman ps -f "name=${ipa_ca_node}" --format "{{.Names}}")"
+        if [ -n "${has_container}" ]
+        then
+            if [ ! -f "${profile_dir}/cert9.db" ]
+            then
+                certutil -N --empty-password -d "${profile_dir}"
+            fi
+
+            certificate_name="Certificate Authority - IPA dev ${profile_name}"
+            if grep -q "${certificate_name}" <(certutil -L -d "${profile_dir}")
+            then
+                certutil -D -d "${profile_dir}" -n "${certificate_name}"
+            fi
+            podman cp "${ipa_ca_node}:/etc/ipa/ca.crt" "${profile_dir}/ca.crt"
+            certutil -A \
+                -i "${profile_dir}/ca.crt" \
+                -d "${profile_dir}" \
+                -n "${certificate_name}" \
+                -t "CT,C,"
+        fi
+    fi
+}
+
+check_no_flatpak() {
+    quiet command -v "${1}" && return 0
+    [ -z "${flatpak_app}" ] && return 0
+    quiet command -v flatpak || return 0
+    quiet flatpak info "${flatpak_app}" && return 1
+    return 0
+}
+
+config_dir="${HOME}/.config/webui-dev-env"
+browser="$(get_default_browser || echo "firefox")"
+profile_name="webui-profile"
+cmd="open"
+ipa_ca_node="webui"
+
+[ -d "${config_dir}" ] || mkdir -p "${config_dir}"
+
+while getopts ":hb:c:p:r" option
+do
+    case "${option}" in
+        h) usage && exit 0 ;;
+        b) browser="${OPTARG}" ;;
+        c) ipa_ca_node="${OPTARG}" ;;
+        p) profile_name="${OPTARG}" ;;
+        r) cmd="remove" ;;
+        *) die -u "Invalid option: ${OPTARG}" ;;
+    esac
+done
+shift "$((OPTIND - 1))"
+
+[ $# -gt 1 ] && die "Only one URL can be used."
+
+# shellcheck disable=SC1090
+source "${SCRIPTDIR}/${browser}_config.sh" \
+    || die "Can't find '${browser}' config script."
+
+echo "Using profile ${profile_name}"
+export profile_name
+
+if [ "${cmd}" == "remove" ]
+then
+    remove_profile
+    exit
+else
+    create_profile
+    [ -z "${ipa_ca_node:-}" ] || copy_certificate "${ipa_ca_node}"
+    # shellcheck disable=SC2154
+    detach podman unshare --rootless-netns "${browser_cmd[@]}" "$@"
+fi
+
