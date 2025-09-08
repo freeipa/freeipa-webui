@@ -1,0 +1,26 @@
+---
+container:
+  vars:
+    ansible_connection: podman
+  hosts:
+    ipaserver:
+      ansible_host: webui
+      ipaserver_domain: ipa.test
+      ipaserver_realm: IPA.TEST
+      ipaserver_hostname: webui.ipa.test
+      ipaadmin_password: Secret123
+      ipadm_password: Secret123
+      ipaserver_setup_firewalld: false
+      ipaserver_no_host_dns: true # Ease installation due to podman DNS
+      ipaclient_no_ntp: false
+      # Optional tools
+      # DNS
+      ipaserver_setup_dns: true
+      ipaserver_auto_forwarders: true
+      # KRA
+      ipaserver_setup_kra: true
+      # These ranges are required to run on a rootless container
+      ipaserver_idstart: 60001
+      ipaserver_idmax: 62000
+      ipaserver_rid_base: 63000
+      ipaserver_secondary_rid_base: 65000
