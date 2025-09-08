@@ -10,6 +10,7 @@ import {
   IDView,
   IDViewOverrideUser,
   IDViewOverrideGroup,
+  IdRange,
   Metadata,
   Netgroup,
   Service,
@@ -219,6 +220,8 @@ export const isDnsForwardZoneSelectable = (dnsForwardZone: DNSForwardZone) =>
 
 export const isDnsServerSelectable = (dnsServerId: string) =>
   dnsServerId !== "";
+
+export const isIdRangeSelectable = (idRange: IdRange) => idRange.cn !== "";
 
 /**
  * Write JSX error messages into 'apiErrorsJsx' array
