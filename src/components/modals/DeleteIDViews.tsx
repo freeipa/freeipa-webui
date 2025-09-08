@@ -145,6 +145,7 @@ const DeleteIDViewsModal = (props: PropsToDeleteViews) => {
 
               // Handle error
               handleAPIError(error);
+              setBtnSpinning(false);
             } else {
               props.selectedViewsData.clearSelectedViews();
               props.buttonsData.updateIsDeleteButtonDisabled(true);

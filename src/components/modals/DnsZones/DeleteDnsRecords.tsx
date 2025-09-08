@@ -135,6 +135,7 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
             };
 
             handleAPIError(error);
+            setBtnSpinning(false);
           } else {
             props.updateIsDeleteButtonDisabled?.(true);
             props.updateIsDeletion?.(true);

@@ -265,6 +265,7 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
+          setSpinning(false);
           alerts.addAlert(
             "remove-host-groups-error",
             errorMessage.message,

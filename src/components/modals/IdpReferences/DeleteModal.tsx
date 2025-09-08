@@ -142,6 +142,7 @@ const DeleteModal = (props: PropsToDelete) => {
 
             // Handle error
             handleAPIError(error);
+            setBtnSpinning(false);
           } else {
             props.selectedData.clearSelectedElements();
             props.buttonsData.updateIsDeleteButtonDisabled(true);

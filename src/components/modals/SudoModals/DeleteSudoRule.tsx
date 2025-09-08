@@ -145,6 +145,7 @@ const DeleteSudoRule = (props: PropsToDeleteRules) => {
 
               // Handle error
               handleAPIError(error);
+              setBtnSpinning(false);
             } else {
               props.selectedRulesData.clearSelectedRules();
               props.buttonsData.updateIsDeleteButtonDisabled(true);

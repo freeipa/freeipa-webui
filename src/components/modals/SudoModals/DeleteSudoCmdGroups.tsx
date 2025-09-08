@@ -145,6 +145,7 @@ const DeleteSudoCmdGroups = (props: PropsToDeleteRules) => {
 
               // Handle error
               handleAPIError(error);
+              setBtnSpinning(false);
             } else {
               props.selectedCmdGroupsData.clearSelectedCmdGroups();
               props.buttonsData.updateIsDeleteButtonDisabled(true);
