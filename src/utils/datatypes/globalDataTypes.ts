@@ -488,6 +488,14 @@ export interface IDPServer {
   ipaidpuserinfoendpoint: string[];
 }
 
+export interface IdRange {
+  cn: string;
+  ipabaseid?: number | string;
+  ipaidrangesize?: number | string;
+  iparangetype?: string;
+  dn?: string;
+}
+
 export interface Metadata {
   commands?: Record<string, unknown>;
   methods?: Record<string, unknown>;
