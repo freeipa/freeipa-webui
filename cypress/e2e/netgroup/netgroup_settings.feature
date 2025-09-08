@@ -37,7 +37,7 @@ Feature: Netgroup settings manipulation
         When I click on the "netgroups-tab-settings-button-save" button
         Then I should see "save-success" alert
         And I should see "newNIS" in the "netgroups-tab-settings-textbox-nisdomainname" textbox
-    
+
     @cleanup
     Scenario: Cleanup netgroup
         Given I delete netgroup "netgroup1"
@@ -169,19 +169,19 @@ Feature: Netgroup settings manipulation
         Then I should see "dual-list-modal" modal
 
         When I click on search link in dual list
-        Then I should see "item-my-server.dom-server.ipa.demo" dual list item on the left
+        Then I should see "item-my-server.webui.ipa.test" dual list item on the left
 
-        When I click on "item-my-server.dom-server.ipa.demo" dual list item
-        Then I should see "item-my-server.dom-server.ipa.demo" dual list item selected
+        When I click on "item-my-server.webui.ipa.test" dual list item
+        Then I should see "item-my-server.webui.ipa.test" dual list item selected
 
         When I click on the "dual-list-add-selected" button
-        Then I should see "item-my-server.dom-server.ipa.demo" dual list item on the right
-        And I should see "item-my-server.dom-server.ipa.demo" dual list item not selected
+        Then I should see "item-my-server.webui.ipa.test" dual list item on the right
+        And I should see "item-my-server.webui.ipa.test" dual list item not selected
 
         When I click on the "modal-button-add" button
         Then I should not see "dual-list-modal" modal
         And I should see "add-member-success" alert
-        And I should see "my-server.dom-server.ipa.demo" entry in the data table
+        And I should see "my-server.webui.ipa.test" entry in the data table
 
     @cleanup
     Scenario: Cleanup host from Host category
@@ -199,19 +199,19 @@ Feature: Netgroup settings manipulation
         Then I should see "dual-list-modal" modal
 
         When I click on search link in dual list
-        Then I should see "item-my-server.dom-server.ipa.demo" dual list item on the left
+        Then I should see "item-my-server.webui.ipa.test" dual list item on the left
 
-        When I click on "item-my-server.dom-server.ipa.demo" dual list item
-        Then I should see "item-my-server.dom-server.ipa.demo" dual list item selected
+        When I click on "item-my-server.webui.ipa.test" dual list item
+        Then I should see "item-my-server.webui.ipa.test" dual list item selected
 
         When I click on the "dual-list-add-selected" button
-        Then I should see "item-my-server.dom-server.ipa.demo" dual list item on the right
-        And I should see "item-my-server.dom-server.ipa.demo" dual list item not selected
+        Then I should see "item-my-server.webui.ipa.test" dual list item on the right
+        And I should see "item-my-server.webui.ipa.test" dual list item not selected
 
         When I click on the "modal-button-add" button
         Then I should not see "dual-list-modal" modal
         And I should see "add-member-success" alert
-        And I should see "my-server.dom-server.ipa.demo" entry in the data table
+        And I should see "my-server.webui.ipa.test" entry in the data table
 
     @test
     Scenario: Remove host from Host category
@@ -221,16 +221,16 @@ Feature: Netgroup settings manipulation
         When I click on the "netgroups-tab-settings-tab-hosts" tab
         Then I should see "netgroups-tab-settings-tab-hosts" tab
 
-        Then I should see "my-server.dom-server.ipa.demo" entry in the data table
-        When I select entry "my-server.dom-server.ipa.demo" in the settings data table "host"
-        Then I should see "my-server.dom-server.ipa.demo" entry selected in the data table
+        Then I should see "my-server.webui.ipa.test" entry in the data table
+        When I select entry "my-server.webui.ipa.test" in the settings data table "host"
+        Then I should see "my-server.webui.ipa.test" entry selected in the data table
         When I click on the "settings-button-delete-host" button
         Then I should see "remove-netgroup-members-modal" modal
 
         When I click on the "modal-button-delete" button
         Then I should not see "remove-netgroup-members-modal" modal
         And I should see "remove-netgroups-success" alert
-        And I should not see "my-server.dom-server.ipa.demo" entry in the data table
+        And I should not see "my-server.webui.ipa.test" entry in the data table
 
     @cleanup
     Scenario: Cleanup host

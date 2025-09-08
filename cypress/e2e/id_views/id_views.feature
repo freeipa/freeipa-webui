@@ -15,7 +15,7 @@ Feature: ID View manipulation
     When I click on the "modal-button-add" button
     Then I should not see "add-id-view-modal" modal
     And I should see "add-id-view-success" alert
-    
+
     When I search for "a_new_view" in the data table
     Then I should see "a_new_view" entry in the data table
 
@@ -66,7 +66,7 @@ Feature: ID View manipulation
 
     When I click on the "modal-button-cancel" button
     Then I should not see "add-id-view-modal" modal
-    
+
     When I search for "a_new_view" in the data table
     Then I should see "a_new_view" entry in the data table
 
@@ -90,14 +90,14 @@ Feature: ID View manipulation
     Then I should see "dual-list-modal" modal
 
     When I click on search link in dual list
-    Then I should see "item-server\.ipa\.demo" dual list item on the left
+    Then I should see "item-webui\.ipa\.test" dual list item on the left
 
-    When I click on "item-server\.ipa\.demo" dual list item
-    Then I should see "item-server\.ipa\.demo" dual list item selected
+    When I click on "item-webui\.ipa\.test" dual list item
+    Then I should see "item-webui\.ipa\.test" dual list item selected
 
     When I click on the "dual-list-add-selected" button
-    Then I should see "item-server\.ipa\.demo" dual list item on the right
-    And I should see "item-server\.ipa\.demo" dual list item not selected
+    Then I should see "item-webui\.ipa\.test" dual list item on the right
+    And I should see "item-webui\.ipa\.test" dual list item not selected
 
     When I click on the "modal-button-add" button
     Then I should not see "dual-list-modal" modal
@@ -205,6 +205,6 @@ Feature: ID View manipulation
 
     When I click on the "modal-button-cancel" button
     Then I should not see "add-id-view-modal" modal
-    
+
     When I search for "a_new_view" in the data table
     Then I should not see "a_new_view" entry in the data table

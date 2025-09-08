@@ -2,15 +2,13 @@
 
 # FreeIPA Web UI
 
-New version of the web application for administration of FreeIPA built using
-[React](https://reactjs.org/) and [PatternFly 5](https://v5-archive.patternfly.org/).
+New version of the web application for administration of FreeIPA built using [React](https://reactjs.org/) and [PatternFly](https://www.patternfly.org/).
 
 You can read more about the plans [here](https://github.com/freeipa/freeipa-webui/discussions/34).
 
 ## Mock-ups
 
-**Note**: these mockups are for general direction we're taking the Web UI.
-Some finer details and interactions will be worked out as we develop the application.
+**Note**: these mockups are for general direction we're taking the Web UI. Some finer details and interactions will be worked out as we develop the application.
 
 ![Mockup of the Vertical navigation](doc/mockup-navigation.png)
 ![Mockup of the Delete dialog](doc/mockup-delete.png)
@@ -19,68 +17,96 @@ Some finer details and interactions will be worked out as we develop the applica
 
 ## Development environment
 
-This project relies on Vagrant to set-up a virtual machine with FreeIPA installed
-and configured.
+This project relies on containers to set-up a development environment with FreeIPA installed and configured.
 
-1. Install requirements
-
-> Although these instructions target Fedora as host, any OS with Vagrant can be used,
-> `sshfs` and `libvirt` are the preffered options, if you plan to use a different distro,
-> please update `Vagrantfile` accordingly.
-
-```bash
-$ sudo dnf install vagrant vagrant-libvirt vagrant-sshfs
-```
-
-2. Clone this repository
-
-3. Start and provision the guest virtual machine: `vagrant up`
-
-4. Add guest machine's IP address to your `/etc/hosts` pointing to its hostname, e.g:
+1. Clone this repository
 
 ```
-192.168.122.5 server.ipa.demo
+git clone https://github.com/freeipa/freeipa-webui
+cd freeipa-webui
 ```
 
-You can get the VM ip for the running VM by:
+2. Install the requirements
 
-```bash
-vagrant ssh-config | grep HostName | awk '{print $2}'
+These instructions assume that [`podman`](https://podman.io) is available on the system. Installation of `podman` is not in the scope of this document, but the alternative method with a Python virtual environment can be used:
+
+```
+python3 -m venv /tmp/webui
+. /tmp/webui/bin/activate
+pip install podman
 ```
 
-At this point you can access your live instance at `https://server.ipa.demo/ipa/ui/`.
-However, you still need to configure your front-end environment.
+Optionally, if you want to rebuild the container image locally, Ansible and the ansible-freeipa collection are needed. Assuming the virtual environment is being used:
 
-We strongly recommend using [nvm](https://github.com/nvm-sh/nvm) to ensure you are
-using the correct `node` version.
-
-```bash
-$ nvm install
-$ nvm use
+```
+pip install ansible-core
+ansible-galaxy collection install -r developer/requirements.yml
 ```
 
-Now you can install the project's dependencies:
+3. Start the container
 
-```bash
-$ npm install
+```
+./developer/dev-env.sh
 ```
 
-To start a development server (and watch the project for changes), run:
+4. Add the container IP address to `/etc/hosts`
 
-```bash
-$ npm run dev
+```
+grep -q "webui.ipa.test" /etc/hosts || sudo tee -a /etc/hosts < developer/hosts
 ```
 
-You can also build the project for production using the following command:
+5. Prepare the webui to execute:
 
-```bash
-$ npm run build
+```
+podman exec webui npm install
 ```
 
-Now your dev environment is ready, you can do changes and see them at:
-`https://server.ipa.demo/ipa/modern-ui/`
+6. Starting the webui
 
-The default credentials are **admin** and **Secret123**.
+To start the webui development server (and watch the project for changes), run:
+
+```
+./developer/dev-env.sh -d
+```
+
+or directly through `podman` with:
+
+```
+podman exec -it webui npm run dev
+```
+
+> Note that changes to the project can be made outside of the container that they will be notified to the development server running in the container, if using Linux. There's currently a limitation in macOS and Windows that may prevent the development webserver to be notified of file changes. This limitation currently affects all container environments (podman, docker and Apple's container).
+
+Instead of the development server, you can build the project for production using either
+
+```
+./developer/dev-env.sh -p
+```
+
+or directly on the host with:
+
+```
+npm run build
+```
+
+7. Accessing the webui
+
+As the containers are executing as rootless containers, in its own network namespace, it is needed to use `podman unshare --rootless-netns` to start a browser that is able to access the container network. It is also necessary to use a separate profile. Also the IPA CA certificate is not trusted by the host, so an exception need to be granted.
+
+To ease the process a script is provided:
+
+```
+./developer/open-browser.sh https://webui.ipa.test/ipa/modern-ui
+```
+
+The script will create a new profile (`webui-profile`), if needed, trust the IPA CA certificate, and open the webui in a new browser window.
+Both Mozilla's Firefox and Google's Chrome are supported.
+
+When using browsers deployed via Flatpak, some additional settings may be required. Currently, only Firefox is supported as Flatpak.
+
+It may happen the the keyboard does not work when running the browser with permission to access the container's network. This will mostly happen with browsers deployed with Flatpak. A workaround is provided for this issue by using the `open-browser.sh` option`-w`. The workaround requires `sudo`.
+
+The default credentials for the development environment are **admin** and **Secret123**.
 
 ## Testing
 
@@ -90,25 +116,34 @@ Integration testing uses [Cypress](https://www.cypress.io) library, which runs [
 
 #### Launching the existing tests
 
-> [!WARNING]  
-> Never run integration tests on production server. Clean-up step would delete all existing entries, e.g. users.
+> [!WARNING]
+> Never run integration tests on a production server. Clean-up step would delete all existing entries, e.g. users.
 
-1. Prepare a vagrant server as in `Development Environment`
-2. if you want to launch all the tests in headless mode, execute
+This instructions assume you are running the integration tests against the development container.
 
-```bash
-$ npm run cypress
+> Note: The integration tests, currently, do not cleanup the test environment, it is recommended that you restart the container (`developer/dev-env.sh -r`) before running the integration tests.
+
+Run the integration tests in headless mode with:
+
+```
+./developer/dev-env.sh -c
 ```
 
-if you want to open graphical debugger, execute
+You can provide arguments to Cypress using the _long options_. For example, you can run only the hosts tests with:
 
-```bash
-$ npm run cypress:open
+```
+./developer/dev-env.sh -c --spec cypress/e2e/hosts/hosts.feature
 ```
 
-and select desired feature file you want to execute.
+If you want to open the graphical debugger use:
 
-#### Adding new tests
+```
+./developer/dev-env.sh -C
+```
+
+Once the graphical debugger opens, select the desired feature file you want to execute.
+
+#### Adding new integration tests
 
 The integration tests use the **.feature** suffix and can be found in the _tests_ subfolder, together with the steps describing each feature.
 
@@ -120,9 +155,17 @@ Unit tests use [vitest](https://vitest.dev).
 
 The existing tests can be launched by executing
 
-```bash
-$ npm test
 ```
+podman exec webui npm test
+```
+
+You can also run the unit tests on your host machine with:
+
+```
+npm test
+```
+
+> For ensuring proper package versions, we suggest running unit tests inside of the container.
 
 #### Adding new tests
 

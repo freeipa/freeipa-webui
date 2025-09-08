@@ -24,9 +24,10 @@ export default defineConfig({
     },
   },
   server: {
+    host: "0.0.0.0",
     origin: "http://localhost:5173",
     cors: {
-      origin: "https://server.ipa.demo",
+      origin: "https://webui.ipa.test",
     },
   },
   test: {

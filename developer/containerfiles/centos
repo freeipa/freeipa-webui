@@ -1,0 +1,37 @@
+ARG distro_tag=latest
+FROM quay.io/centos/centos:${distro_tag}
+
+ENV container=podman
+
+RUN dnf update -y
+
+RUN dnf --assumeyes install \
+    sudo \
+    bash \
+    systemd \
+    procps-ng \
+    hostname \
+    iputils \
+    bind-utils \
+    iproute \
+    `# Useful tools` \
+    vim \
+    `# Packages required by dev-evn.sh script` \
+    nc \
+    nodejs \
+    `# FreeIPA packages` \
+    ipa-server \
+    python3-libselinux \
+    ipa-server-dns \
+    ipa-server-trust-ad \
+    firewalld
+
+RUN dnf clean all && rm -rf "/var/cache/dnf/"
+
+STOPSIGNAL RTMIN+3
+
+VOLUME [/webui]
+
+WORKDIR /webui
+
+CMD ["/usr/sbin/init"]
