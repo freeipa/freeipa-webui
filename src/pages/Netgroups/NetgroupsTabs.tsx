@@ -126,6 +126,7 @@ const NetgroupsTabs = ({ section }) => {
           unmountOnExit
         >
           <Tab
+            data-cy="netgroups-tab-settings"
             eventKey={"settings"}
             name="settings-details"
             title={<TabTitleText>Settings</TabTitleText>}
@@ -143,6 +144,7 @@ const NetgroupsTabs = ({ section }) => {
             />
           </Tab>
           <Tab
+            data-cy={"netgroups-tab-member"}
             eventKey={"member"}
             name={"members-details"}
             title={<TabTitleText>Members</TabTitleText>}
@@ -150,6 +152,7 @@ const NetgroupsTabs = ({ section }) => {
             <NetgroupsMembers netgroup={netgroup} tabSection={section} />
           </Tab>
           <Tab
+            data-cy="netgroups-tab-memberof"
             eventKey={"memberof"}
             name="memberof-details"
             title={<TabTitleText>Is a member of</TabTitleText>}
