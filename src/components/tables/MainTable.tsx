@@ -314,6 +314,7 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
               style={setStyleOnStatus(element[keyName])}
               aria-label={keyName}
               data-label={keyName}
+              data-cy={`table-row-${elementName}-${keyName}`}
             >
               {idx === 0 && !!props.showLink ? (
                 <Link

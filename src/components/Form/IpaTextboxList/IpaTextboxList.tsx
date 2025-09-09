@@ -101,13 +101,14 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
   };
 
   return (
-    <>
+    <div data-cy={props.dataCy}>
       <Flex direction={{ default: "column" }} name={props.name}>
         {list.map((item, idx) => (
           <Flex
             direction={{ default: "row" }}
             key={props.name + "-" + idx + "-div"}
             name="value"
+            data-cy={props.dataCy + "-div-" + idx}
           >
             <FlexItem
               key={props.name + "-" + idx + "-textbox"}
@@ -148,7 +149,7 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
       >
         Add
       </SecondaryButton>
-    </>
+    </div>
   );
 };
 

@@ -7,6 +7,7 @@ interface PropsToTab {
   id: string;
   children: React.ReactNode;
   toolbarItems?: ToolbarItem[];
+  dataCy?: string;
 }
 
 // Float the tab content
@@ -17,7 +18,7 @@ const TabLayout = (props: PropsToTab) => {
   };
 
   return (
-    <>
+    <div data-cy={props.dataCy}>
       <Flex direction={{ default: "column" }}>
         <div className="pf-v6-u-pt-lg pf-v6-u-pl-lg pf-v6-u-pr-lg">
           <PageSection hasBodyWrapper={false} id={props.id} style={style}>
@@ -36,7 +37,7 @@ const TabLayout = (props: PropsToTab) => {
           </FlexItem>
         )}
       </Flex>
-    </>
+    </div>
   );
 };
 
