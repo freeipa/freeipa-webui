@@ -255,6 +255,7 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
             <Tab
               eventKey={0}
               name="users"
+              data-cy="netgroups-tab-settings-tab-users"
               title={
                 <TabTitleText>
                   Users <Label isCompact>{memberUsers.length}</Label>
@@ -274,6 +275,7 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
             <Tab
               eventKey={1}
               name="groups"
+              data-cy="netgroups-tab-settings-tab-groups"
               title={
                 <TabTitleText>
                   Groups <Label isCompact>{memberGroups.length}</Label>
@@ -321,6 +323,7 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
             <Tab
               eventKey={0}
               name="memberHosts"
+              data-cy="netgroups-tab-settings-tab-hosts"
               title={
                 <TabTitleText>
                   Hosts <Label isCompact>{memberHosts.length}</Label>
@@ -340,6 +343,7 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
             <Tab
               eventKey={1}
               name="memberHostGroups"
+              data-cy="netgroups-tab-settings-tab-hostgroups"
               title={
                 <TabTitleText>
                   Host groups <Label isCompact>{memberHostGroups.length}</Label>
@@ -360,6 +364,7 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
             <Tab
               eventKey={2}
               name="memberExternalHosts"
+              data-cy="netgroups-tab-settings-tab-externalhosts"
               title={
                 <TabTitleText>
                   External hosts{" "}
