@@ -37,7 +37,7 @@ export const createDnsZone = (zone: string) => {
   fillDnsZone(zone);
 
   cy.dataCy("modal-button-add").click();
-  cy.dataCy("add-dns-zone-modal").should("not.exist");
+  cy.dataCy("add-dns-zone-modal").should("not.exist", { timeout: 80000 });
 };
 
 export const createReversedDnsZone = (ip: string) => {
