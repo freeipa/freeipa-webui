@@ -3,7 +3,6 @@ import { loginAsAdmin, logout } from "../common/authentication";
 import { navigateTo } from "../common/navigation";
 import {
   selectEntry,
-  searchForEntry,
   entryDoesNotExist,
   entryExists,
   checkEntry,
@@ -11,6 +10,8 @@ import {
 import { typeInTextbox } from "../common/ui/textbox";
 import { findEntryInTable } from "../common/settings_table";
 import { addItemToRightList } from "../common/ui/dual_list";
+import { MemberEntity, assertMemberEntity } from "../common/member_of";
+import { searchForMembersEntry } from "../common/members_table";
 
 Given("netgroup {string} exists", (groupName: string) => {
   loginAsAdmin();
@@ -26,7 +27,7 @@ Given("netgroup {string} exists", (groupName: string) => {
   cy.dataCy("add-netgroup-modal").should("not.exist");
   cy.dataCy("add-netgroup-success").should("exist");
 
-  searchForEntry(groupName);
+  searchForMembersEntry(groupName);
   entryExists(groupName);
   logout();
 });
@@ -43,27 +44,12 @@ Given("I delete netgroup {string}", (groupName: string) => {
   cy.dataCy("delete-netgroups-modal").should("not.exist");
   cy.dataCy("remove-netgroups-success").should("exist");
 
-  searchForEntry(groupName);
+  searchForMembersEntry(groupName);
   entryDoesNotExist(groupName);
   logout();
 });
 
-type ElementType = "user" | "group" | "host" | "hostgroup" | "externalhost";
-
-const assertElementType = (elementType: string) => {
-  const validElementTypes: ElementType[] = [
-    "user",
-    "group",
-    "host",
-    "hostgroup",
-    "externalhost",
-  ];
-  if (!validElementTypes.includes(elementType as ElementType)) {
-    throw new Error(`Invalid element type: ${elementType}`);
-  }
-};
-
-const ensureTabVisibleAndOpen = (elementType: string) => {
+const ensureTabVisibleAndOpen = (elementType: MemberEntity) => {
   const tabDataCy = `netgroups-tab-settings-tab-${elementType}s`;
   cy.dataCy(tabDataCy).click();
 };
@@ -74,8 +60,8 @@ Given(
     loginAsAdmin();
     navigateTo(`netgroups/${groupName}`);
 
-    assertElementType(elementType);
-    ensureTabVisibleAndOpen(elementType);
+    assertMemberEntity(elementType);
+    ensureTabVisibleAndOpen(elementType as MemberEntity);
 
     cy.dataCy(`settings-button-add-${elementType}`).click();
     cy.dataCy("dual-list-modal").should("exist");
@@ -105,8 +91,8 @@ Given(
     loginAsAdmin();
     navigateTo(`netgroups/${groupName}`);
 
-    assertElementType(elementType);
-    ensureTabVisibleAndOpen(elementType);
+    assertMemberEntity(elementType);
+    ensureTabVisibleAndOpen(elementType as MemberEntity);
 
     const itemToDelete =
       elementType === "host"
@@ -137,7 +123,7 @@ Given(
     loginAsAdmin();
     navigateTo(`netgroups/${groupName}`);
 
-    assertElementType("externalhost");
+    assertMemberEntity("externalhost");
     ensureTabVisibleAndOpen("externalhost");
 
     cy.dataCy("settings-button-add-externalHost").click();
@@ -162,7 +148,7 @@ Given(
     loginAsAdmin();
     navigateTo(`netgroups/${groupName}`);
 
-    assertElementType("externalhost");
+    assertMemberEntity("externalhost");
     ensureTabVisibleAndOpen("externalhost");
 
     findEntryInTable(externalHost, "externalHost");
