@@ -1,7 +1,8 @@
 import { When, Given, Then } from "@badeball/cypress-cucumber-preprocessor";
+import { navigateTo } from "./navigation";
 
 const login = (username: string, password: string) => {
-  cy.visit(Cypress.env("BASE_URL") + "/login");
+  navigateTo("login");
 
   cy.get("#pf-login-username-id").type(username);
   cy.get("#pf-login-username-id").should("have.value", username);
