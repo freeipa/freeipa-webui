@@ -124,6 +124,7 @@ const NetgroupsMembers = (props: PropsToNetgroupsMembers) => {
           unmountOnExit
         >
           <Tab
+            data-cy="members-tab-users"
             eventKey={"member_user"}
             name="member_user"
             title={
@@ -147,6 +148,7 @@ const NetgroupsMembers = (props: PropsToNetgroupsMembers) => {
             />
           </Tab>
           <Tab
+            data-cy="members-tab-user-groups"
             eventKey={"member_group"}
             name="member_group"
             title={
@@ -170,6 +172,7 @@ const NetgroupsMembers = (props: PropsToNetgroupsMembers) => {
             />
           </Tab>
           <Tab
+            data-cy="members-tab-hosts"
             eventKey={"member_host"}
             name="member_host"
             title={
@@ -193,6 +196,7 @@ const NetgroupsMembers = (props: PropsToNetgroupsMembers) => {
             />
           </Tab>
           <Tab
+            data-cy="members-tab-host-groups"
             eventKey={"member_hostgroup"}
             name="member_hostgroup"
             title={
@@ -216,6 +220,7 @@ const NetgroupsMembers = (props: PropsToNetgroupsMembers) => {
             />
           </Tab>
           <Tab
+            data-cy="members-tab-netgroups"
             eventKey={"member_netgroup"}
             name="member_netgroup"
             title={
