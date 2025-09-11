@@ -377,6 +377,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
           idKebab="toggle-action-buttons"
           isKebabOpen={isKebabOpen}
           dropdownItems={dropdownItems}
+          isDisabled={isSaving}
         />
       ),
     },

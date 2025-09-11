@@ -14,7 +14,12 @@ export const searchForEntry = (name: string) => {
   cy.dataCy("search").find("input").type(name);
   cy.dataCy("search").find("input").should("have.value", name);
 
+  cy.intercept("POST", "/ipa/session/json").as("search");
+
   cy.dataCy("search").find("button[type='submit']").click();
+
+  cy.wait("@search");
+  cy.dataCy("search").find("button[type='submit']").should("be.enabled");
 };
 
 export const checkEntry = (name: string) => {

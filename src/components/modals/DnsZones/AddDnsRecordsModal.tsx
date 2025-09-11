@@ -12,6 +12,7 @@ import {
   ModalFooter,
   ModalHeader,
   Select,
+  SelectList,
   SelectOption,
   Spinner,
   TextInput,
@@ -452,19 +453,21 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
           isScrollable
           data-cy="record-type"
         >
-          {recordTypeOptions.map((option) => (
-            <SelectOption
-              key={option.value}
-              value={option.value}
-              data-cy="record-type-option"
-              isDisabled={
-                props.defaultSelectedRecordType !== undefined &&
-                option.value !== basicFormValues.recordType
-              }
-            >
-              {option.key}
-            </SelectOption>
-          ))}
+          <SelectList>
+            {recordTypeOptions.map((option) => (
+              <SelectOption
+                key={option.value}
+                value={option.value}
+                data-cy="record-type-option"
+                isDisabled={
+                  props.defaultSelectedRecordType !== undefined &&
+                  option.value !== basicFormValues.recordType
+                }
+              >
+                {option.key}
+              </SelectOption>
+            ))}
+          </SelectList>
         </Select>
       </FormGroup>
       {renderRecordTypeFields()}

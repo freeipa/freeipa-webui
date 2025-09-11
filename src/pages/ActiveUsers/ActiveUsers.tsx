@@ -716,6 +716,7 @@ const ActiveUsers = () => {
           idKebab="main-dropdown-kebab"
           isKebabOpen={kebabIsOpen}
           dropdownItems={showTableRows ? dropdownItems : []}
+          isDisabled={!showTableRows}
         />
       ),
     },
