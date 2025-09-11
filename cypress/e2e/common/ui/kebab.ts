@@ -11,3 +11,7 @@ Then("I should see {string} kebab menu expanded", (kebab: string) => {
 Then("I should see {string} kebab menu collapsed", (kebab: string) => {
   cy.dataCy(kebab).should("have.attr", "aria-expanded", "false");
 });
+
+Then("I click on the {string} kebab menu item", (kebabOption: string) => {
+  cy.dataCy(kebabOption).click();
+});
