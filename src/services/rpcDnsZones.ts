@@ -749,11 +749,13 @@ const extendedApi = api.injectEndpoints({
           });
           const dataString = data.join(", ");
 
-          convertedDnsRecord.dnsrecords = nsrecordsTypesList.map(() => ({
-            dnstype: typesString,
-            dnsdata: dataString,
-          }));
-          dnsRecords.push(convertedDnsRecord);
+          if (nsrecordsTypesList !== undefined) {
+            convertedDnsRecord.dnsrecords = nsrecordsTypesList.map(() => ({
+              dnstype: typesString,
+              dnsdata: dataString,
+            }));
+            dnsRecords.push(convertedDnsRecord);
+          }
 
           // Add 'dnsrecord_type' and 'dnsrecord_data' to the 'convertedDnsRecord'
           convertedDnsRecord.dnsrecord_types = typesString;
