@@ -749,11 +749,18 @@ const extendedApi = api.injectEndpoints({
           });
           const dataString = data.join(", ");
 
-          convertedDnsRecord.dnsrecords = nsrecordsTypesList.map(() => ({
-            dnstype: typesString,
-            dnsdata: dataString,
-          }));
-          dnsRecords.push(convertedDnsRecord);
+          /** Due to an issue affecting the CERT records not being shown in
+           * the DNS records table (as `undefined` is returned by the API call
+           * response), we need to check if the `dnsrecords` is `undefined`
+           * before mapping over it.
+           */
+          if (nsrecordsTypesList !== undefined) {
+            convertedDnsRecord.dnsrecords = nsrecordsTypesList.map(() => ({
+              dnstype: typesString,
+              dnsdata: dataString,
+            }));
+            dnsRecords.push(convertedDnsRecord);
+          }
 
           // Add 'dnsrecord_type' and 'dnsrecord_data' to the 'convertedDnsRecord'
           convertedDnsRecord.dnsrecord_types = typesString;
