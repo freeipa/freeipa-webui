@@ -21,5 +21,5 @@ Feature: Hostgroup management
         Given I am logged in as admin
         And I am on "host-groups" page
 
-        When I delete hostgroup "my_automember_hostgroup"
+        When I try to delete hostgroup "my_automember_hostgroup"
         Then I should not see hostgroup "my_automember_hostgroup" in the data table

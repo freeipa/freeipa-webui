@@ -482,6 +482,7 @@ const UserSettings = (props: PropsToUserSettings) => {
                 : preservedDropdownItems
           }
           dataCy="user-tab-settings-kebab"
+          isDisabled={props.user.uid === undefined}
         />
       ),
     },

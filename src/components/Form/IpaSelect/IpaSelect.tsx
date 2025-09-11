@@ -4,6 +4,7 @@ import {
   MenuToggle,
   MenuToggleElement,
   Select,
+  SelectList,
   SelectOption,
 } from "@patternfly/react-core";
 // Utils
@@ -123,17 +124,19 @@ const IpaSelect = (props: IPAParamDefinitionSelect) => {
       isOpen={isOpen}
       aria-labelledby={props.ariaLabelledBy || props.id}
     >
-      {optionsToSelect.map((option, index) => {
-        return (
-          <SelectOption
-            data-cy={props.dataCy + "-select-" + option}
-            key={index}
-            value={option}
-          >
-            {option}
-          </SelectOption>
-        );
-      })}
+      <SelectList>
+        {optionsToSelect.map((option, index) => {
+          return (
+            <SelectOption
+              data-cy={props.dataCy + "-select-" + option}
+              key={index}
+              value={option}
+            >
+              {option}
+            </SelectOption>
+          );
+        })}
+      </SelectList>
     </Select>
   );
 };

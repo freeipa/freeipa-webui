@@ -10,6 +10,7 @@ import {
   Button,
   MenuToggleElement,
   MenuToggle,
+  SelectList,
 } from "@patternfly/react-core";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
@@ -273,17 +274,19 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       selected={selectedOwner}
       isOpen={isOwnerOpen}
     >
-      {ownersToSelect.map((option, index) => {
-        return (
-          <SelectOption
-            data-cy={"modal-select-owner-" + option}
-            key={index}
-            value={option}
-          >
-            {option}
-          </SelectOption>
-        );
-      })}
+      <SelectList>
+        {ownersToSelect.map((option, index) => {
+          return (
+            <SelectOption
+              data-cy={"modal-select-owner-" + option}
+              key={index}
+              value={option}
+            >
+              {option}
+            </SelectOption>
+          );
+        })}
+      </SelectList>
     </Select>
   );
 
