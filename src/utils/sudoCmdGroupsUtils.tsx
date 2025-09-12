@@ -27,7 +27,7 @@ export function partialSudoCmdGroupToSudoCmdGroup(
 }
 
 // Get empty object initialized with default values
-export function createEmptySudoCmdGroup(): SudoCmdGroup {
+function createEmptySudoCmdGroup(): SudoCmdGroup {
   const sudoCmdGroup: SudoCmdGroup = {
     cn: "",
     dn: "",

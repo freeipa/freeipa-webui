@@ -39,16 +39,14 @@ export function apiToDnsConfig(apiRecord: Record<string, unknown>): DnsConfig {
   return partialDnsConfigToDnsConfig(converted);
 }
 
-export function partialDnsConfigToDnsConfig(
-  partialDnsConfig: Partial<DnsConfig>
-) {
+function partialDnsConfigToDnsConfig(partialDnsConfig: Partial<DnsConfig>) {
   return {
     ...createEmptyDnsConfig(),
     ...partialDnsConfig,
   };
 }
 
-export function createEmptyDnsConfig(): DnsConfig {
+function createEmptyDnsConfig(): DnsConfig {
   return {
     idnsforwarders: [],
     idnsforwardpolicy: "none",

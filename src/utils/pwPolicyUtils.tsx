@@ -31,14 +31,14 @@ export function apiToPwPolicy(apiRecord: Record<string, unknown>): PwPolicy {
   return partialPwPolicyToPwPolicy(converted);
 }
 
-export function partialPwPolicyToPwPolicy(partialPwPolicy: Partial<PwPolicy>) {
+function partialPwPolicyToPwPolicy(partialPwPolicy: Partial<PwPolicy>) {
   return {
     ...createEmptyPwPolicy(),
     ...partialPwPolicy,
   };
 }
 
-export function createEmptyPwPolicy(): PwPolicy {
+function createEmptyPwPolicy(): PwPolicy {
   return {
     attributelevelrights: {},
     cospriority: "",

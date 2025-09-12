@@ -19,7 +19,7 @@ import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // Hooks
 import { updateUsersList } from "src/store/Identity/stageUsers-slice";
-import { useAlerts } from "src/hooks/useAlerts";
+import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Layouts
