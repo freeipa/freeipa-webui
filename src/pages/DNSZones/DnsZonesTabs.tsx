@@ -99,6 +99,7 @@ const DnsZonesTabs = ({ section }: { section: string }) => {
             eventKey={"settings"}
             name="settings-details"
             title={<TabTitleText>Settings</TabTitleText>}
+            data-cy="dns-zones-tab-settings"
           >
             <DnsZonesSettings
               dnsZone={dnsZonesSettingsData.dnsZone}
@@ -118,6 +119,7 @@ const DnsZonesTabs = ({ section }: { section: string }) => {
             eventKey={"dns-records"}
             name="dns-records"
             title={<TabTitleText>DNS records</TabTitleText>}
+            data-cy="dns-zones-tab-dns-records"
           >
             <DnsResourceRecords dnsZoneId={id} />
           </Tab>
