@@ -12,7 +12,7 @@ import { navigateTo } from "../common/navigation";
 import { loginAsAdmin, logout } from "../common/authentication";
 import { createHostgroup } from "../hostgroups/hostgroup";
 
-export const fillHostgroupRule = (hostgroupName: string) => {
+const fillHostgroupRule = (hostgroupName: string) => {
   cy.dataCy("modal-select-automember-toggle").click();
   cy.dataCy("modal-select-automember-" + hostgroupName).click();
   cy.get("[data-cy='typeahead-select-toggle'] input").should(
@@ -21,7 +21,7 @@ export const fillHostgroupRule = (hostgroupName: string) => {
   );
 };
 
-export const createHostgroupRule = (hostgroupName: string) => {
+const createHostgroupRule = (hostgroupName: string) => {
   cy.dataCy("auto-member-host-rules-button-add").click();
   cy.dataCy("add-rule-modal").should("exist");
 
@@ -31,7 +31,7 @@ export const createHostgroupRule = (hostgroupName: string) => {
   cy.dataCy("add-hostgroup-rule-modal").should("not.exist");
 };
 
-export const deleteHostgroupRule = (hostgroupName: string) => {
+const deleteHostgroupRule = (hostgroupName: string) => {
   selectEntry(hostgroupName);
 
   cy.dataCy("auto-member-host-rules-button-delete").click();
@@ -45,7 +45,7 @@ export const deleteHostgroupRule = (hostgroupName: string) => {
   cy.dataCy("delete-rule-success").should("exist");
 };
 
-export const setDefaultHostgroupRule = (hostgroupName: string) => {
+const setDefaultHostgroupRule = (hostgroupName: string) => {
   cy.dataCy("typeahead-select-toggle").click();
   cy.dataCy("typeahead-select-" + hostgroupName).click();
   cy.dataCy("auto-member-default-host-rules-modal").should("exist");

@@ -7,7 +7,7 @@ import DualListLayout from "src/components/layouts/DualListLayout";
 // Modals
 import KeytabElementsDeleteModal from "src/components/modals/KeytabElementsDeleteModal";
 // Hooks
-import { useAlerts } from "src/hooks/useAlerts";
+import useAlerts from "src/hooks/useAlerts";
 // Data types
 import {
   Host,

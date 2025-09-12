@@ -37,7 +37,7 @@ export function partialSudoRuleToSudoRule(
 }
 
 // Get empty User object initialized with default values
-export function createEmptySudoRule(): SudoRule {
+function createEmptySudoRule(): SudoRule {
   const sudoRule: SudoRule = {
     cn: "",
     ipaenabledflag: true,

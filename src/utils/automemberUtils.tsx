@@ -3,22 +3,6 @@ import { Automember } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { convertApiObj } from "./ipaObjectUtils";
 
-// Parse the 'textInputField' data into expected data type
-// - TODO: Adapt it to work with many types of data
-export const asRecord = (
-  element: Partial<Automember>,
-  onElementChange: (element: Partial<Automember>) => void
-) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const ipaObject = element as Record<string, any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function recordOnChange(ipaObject: Record<string, any>) {
-    onElementChange(ipaObject as Automember);
-  }
-
-  return { ipaObject, recordOnChange };
-};
-
 const simpleValues = new Set(["cn", "description", "automemberdefaultgroup"]);
 const dateValues = new Set([]);
 
@@ -33,7 +17,7 @@ export function apiToAutomember(
   return partialAutomemberToAutomember(converted) as Automember;
 }
 
-export function partialAutomemberToAutomember(
+function partialAutomemberToAutomember(
   partialSudoRule: Partial<Automember>
 ): Automember {
   return {
@@ -43,7 +27,7 @@ export function partialAutomemberToAutomember(
 }
 
 // Get empty User object initialized with default values
-export function createEmptyAutomember(): Automember {
+function createEmptyAutomember(): Automember {
   const automember: Automember = {
     cn: "",
     description: "",

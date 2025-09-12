@@ -33,7 +33,7 @@ export interface PwPolicyFindPayload {
   version?: string;
 }
 
-export interface PwPolicyFullDataPayload {
+interface PwPolicyFullDataPayload {
   searchValue: string;
   apiVersion: string;
   sizelimit: number;

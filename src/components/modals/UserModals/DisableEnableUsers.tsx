@@ -39,7 +39,7 @@ interface SelectedUsersData {
   clearSelectedUsers: () => void;
 }
 
-export interface PropsToDisableEnableUsers {
+interface PropsToDisableEnableUsers {
   show: boolean;
   from: "active-users" | "stage-users" | "preserved-users";
   handleModalToggle: () => void;

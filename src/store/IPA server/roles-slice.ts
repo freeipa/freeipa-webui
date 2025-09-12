@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { RootState } from "../store";
 import rolesJson from "./roles.json";
 // Data type
 import { RolesOld } from "src/utils/datatypes/globalDataTypes";
@@ -18,5 +17,4 @@ const rolesSlice = createSlice({
   reducers: {},
 });
 
-export const selectNetgroups = (state: RootState) => state.roles.roleList;
 export default rolesSlice.reducer;

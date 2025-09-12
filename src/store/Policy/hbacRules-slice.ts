@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { RootState } from "../store";
 import HBACRulesJson from "./hbacRules.json";
 // Data type
 import { HBACRulesOld } from "src/utils/datatypes/globalDataTypes";
@@ -18,6 +17,4 @@ const hbacRulesSlice = createSlice({
   reducers: {},
 });
 
-export const selectHBACRules = (state: RootState) =>
-  state.hbacrules.hbacRulesList;
 export default hbacRulesSlice.reducer;

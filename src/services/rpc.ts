@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // RTK Query
-import { SerializedError } from "@reduxjs/toolkit";
 import {
   createApi,
   fetchBaseQuery,
@@ -19,13 +18,7 @@ import {
   automemberType,
 } from "../utils/datatypes/globalDataTypes";
 
-export interface Query {
-  data: FindRPCResponse | BatchRPCResponse | undefined;
-  isLoading: boolean;
-  error: FetchBaseQueryError | SerializedError | undefined;
-}
-
-export interface ShowRPCResponse {
+interface ShowRPCResponse {
   error: string;
   id: string;
   principal?: string;
@@ -107,23 +100,14 @@ export interface BatchRPCResponse {
   };
 }
 
-export interface ListResponse {
+interface ListResponse {
   list: string[];
   count: number;
-}
-
-export interface CommandWithSingleParam {
-  command: string;
-  param: string;
 }
 
 export interface Command {
   method: string;
   params: any[];
-}
-
-export interface BatchCommand {
-  batch: CommandWithSingleParam[];
 }
 
 // Basic Payload for getting lists of entries
@@ -260,9 +244,6 @@ export const api = createApi({
     "FullAutomember",
   ],
   endpoints: (build) => ({
-    simpleCommand: build.query<FindRPCResponse, Command | void>({
-      query: (payloadData: Command) => getCommand(payloadData),
-    }),
     simpleMutCommand: build.mutation<
       FindRPCResponse | BatchRPCResponse,
       Command
@@ -847,7 +828,6 @@ export const api = createApi({
 });
 
 export const {
-  useSimpleCommandQuery,
   useSimpleMutCommandMutation,
   useBatchCommandQuery,
   useBatchMutCommandMutation,

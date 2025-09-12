@@ -7,7 +7,7 @@ import { Host } from "src/utils/datatypes/globalDataTypes";
 import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout";
 import EmptyBodyTable from "../tables/EmptyBodyTable";
 
-export interface ManagedByHostsTableProps {
+interface ManagedByHostsTableProps {
   hosts: Host[];
   checkedItems?: string[];
   onCheckItemsChange?: (checkedItems: string[]) => void;
