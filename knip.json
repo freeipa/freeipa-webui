@@ -1,0 +1,35 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/main.tsx!",
+    "cypress/e2e/**/*.ts",
+    "!cypress/e2e/common/**/*.ts"
+  ],
+  "project": [
+    "src/**/*.ts!",
+    "src/**/*.tsx!",
+    "cypress/e2e/**/*.ts",
+    "!cypress/e2e/common/**/*.ts"
+  ],
+  "includeEntryExports": true,
+  "rules": {
+    "files": "error",
+    "dependencies": "off",
+    "unlisted": "off",
+    "binaries": "error",
+    "unresolved": "off",
+    "exports": "error",
+    "types": "error",
+    "nsExports": "error",
+    "nsTypes": "error",
+    "enumMembers": "error",
+    "classMembers": "error",
+    "duplicates": "error"
+  },
+  "ignore": [
+    "src/utils/*.ts",
+    "src/utils/*.tsx",
+    "src/utils/**/*.ts",
+    "src/utils/**/*.tsx"
+  ]
+}
