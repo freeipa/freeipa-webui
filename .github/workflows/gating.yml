@@ -4,7 +4,7 @@ name: Gating tests
 on:
   pull_request:
   push:
-    branches: [main, devel]
+    branches: [main]
 
 env:
   GITHUB_CI: true
