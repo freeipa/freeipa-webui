@@ -56,7 +56,7 @@ import {
  * - idp_find: https://freeipa.readthedocs.io/en/latest/api/idp_find.html
  */
 
-export type UserFullData = {
+type UserFullData = {
   user?: Partial<User>;
   pwPolicy?: Partial<PwPolicy>;
   krbtPolicy?: Partial<KrbPolicy>;
@@ -70,7 +70,7 @@ export interface PasswordChangePayload {
   otp?: string;
 }
 
-export interface UserGetInfoPayload {
+interface UserGetInfoPayload {
   uidsList: string[];
   noMembers?: boolean;
 }

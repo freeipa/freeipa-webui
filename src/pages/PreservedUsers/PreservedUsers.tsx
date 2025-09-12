@@ -35,7 +35,7 @@ import StagePreservedUsers from "src/components/modals/UserModals/StagePreserved
 import RestorePreservedUsers from "src/components/modals/UserModals/RestorePreservedUsers";
 // Hooks
 import { updateUsersList } from "src/store/Identity/preservedUsers-slice";
-import { useAlerts } from "src/hooks/useAlerts";
+import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors

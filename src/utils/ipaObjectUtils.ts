@@ -27,7 +27,7 @@ export interface ParamProperties {
   paramMetadata: ParamMetadata;
 }
 
-export function getParamMetadata(
+function getParamMetadata(
   metadata: Metadata,
   objectName: string,
   paramName: string
@@ -58,7 +58,7 @@ function isFieldWritable(acis: Record<string, string>, attr: string): boolean {
   return false;
 }
 
-export function isWritable(
+function isWritable(
   paramMetadata: ParamMetadata,
   ipaObject?: IPAObject,
   alwaysWritable?: boolean
@@ -95,7 +95,7 @@ export function isWritable(
   return true; // we don't know, assume writable
 }
 
-export function isRequired(
+function isRequired(
   parDef: IPAParamDefinition,
   param: ParamMetadata,
   writable: boolean
@@ -106,7 +106,7 @@ export function isRequired(
   return (param && param.required) || false;
 }
 
-export function getValue(
+function getValue(
   ipaObject: Record<string, unknown> | undefined,
   name: string
 ): BasicType {

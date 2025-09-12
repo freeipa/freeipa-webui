@@ -55,7 +55,7 @@ export function apiToCertificateMapping(
   return partialCertMappingToCertMapping(converted);
 }
 
-export function partialCertMappingToCertMapping(
+function partialCertMappingToCertMapping(
   partialcertMapping: Partial<CertificateMapping>
 ) {
   return {
@@ -64,7 +64,7 @@ export function partialCertMappingToCertMapping(
   };
 }
 
-export function createEmptyCertMapping(): CertificateMapping {
+function createEmptyCertMapping(): CertificateMapping {
   return {
     cn: "",
     dn: "",

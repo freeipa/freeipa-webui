@@ -32,7 +32,7 @@ import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import AddHBACService from "src/components/modals/HbacModals/AddHBACService";
 import DeleteHBACService from "src/components/modals/HbacModals/DeleteHBACService";
 // Hooks
-import { useAlerts } from "src/hooks/useAlerts";
+import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Utils
 import { API_VERSION_BACKUP, isHbacServiceSelectable } from "src/utils/utils";

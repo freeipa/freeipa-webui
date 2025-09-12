@@ -9,7 +9,7 @@ import {
   ModalHeader,
 } from "@patternfly/react-core";
 
-export interface PropsToModal {
+interface PropsToModal {
   // Data cypress
   dataCy: string;
   // Modal variant

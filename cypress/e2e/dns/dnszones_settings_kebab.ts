@@ -9,7 +9,7 @@ import {
   parseZoneName,
 } from "./dnszones";
 
-export const addPermissionToDnsZone = (dnsZoneName: string) => {
+const addPermissionToDnsZone = (dnsZoneName: string) => {
   navigateTo("dns-zones/" + dnsZoneName);
 
   cy.dataCy("dns-zones-settings").should("be.visible");
@@ -26,26 +26,26 @@ export const addPermissionToDnsZone = (dnsZoneName: string) => {
   cy.dataCy("success").should("be.visible");
 };
 
-export const removePermissionFromDnsZone = (dnsZoneName: string) => {
-  navigateTo("dns-zones/" + dnsZoneName);
+// const removePermissionFromDnsZone = (dnsZoneName: string) => {
+//   navigateTo("dns-zones/" + dnsZoneName);
 
-  cy.dataCy("dns-zones-settings").should("be.visible");
-  cy.dataCy("dns-zones-tab-settings-kebab").click();
-  cy.dataCy("dns-zones-tab-settings-kebab").should(
-    "have.attr",
-    "aria-expanded",
-    "true"
-  );
+//   cy.dataCy("dns-zones-settings").should("be.visible");
+//   cy.dataCy("dns-zones-tab-settings-kebab").click();
+//   cy.dataCy("dns-zones-tab-settings-kebab").should(
+//     "have.attr",
+//     "aria-expanded",
+//     "true"
+//   );
 
-  cy.dataCy("dns-zones-tab-settings-kebab-remove-permission")
-    .find("button")
-    .click();
-  cy.dataCy("dns-zones-add-remove-permission-modal").should("be.visible");
+//   cy.dataCy("dns-zones-tab-settings-kebab-remove-permission")
+//     .find("button")
+//     .click();
+//   cy.dataCy("dns-zones-add-remove-permission-modal").should("be.visible");
 
-  cy.dataCy("modal-button-ok").click();
-  cy.dataCy("dns-zones-add-remove-permission-modal").should("not.exist");
-  cy.dataCy("success").should("be.visible");
-};
+//   cy.dataCy("modal-button-ok").click();
+//   cy.dataCy("dns-zones-add-remove-permission-modal").should("not.exist");
+//   cy.dataCy("success").should("be.visible");
+// };
 
 Given("DNS zone {string} exists and it is enabled", (dnsZoneName: string) => {
   loginAsAdmin();

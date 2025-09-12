@@ -15,7 +15,7 @@ export function apiToRole(apiRecord: Record<string, unknown>): Role {
   return partialRoleToRole(converted) as Role;
 }
 
-export function partialRoleToRole(partialGroup: Partial<Role>): Role {
+function partialRoleToRole(partialGroup: Partial<Role>): Role {
   return {
     ...createEmptyRole(),
     ...partialGroup,
@@ -23,7 +23,7 @@ export function partialRoleToRole(partialGroup: Partial<Role>): Role {
 }
 
 // Get empty User object initialized with default values
-export function createEmptyRole(): Role {
+function createEmptyRole(): Role {
   const group: Role = {
     cn: "",
     description: "",

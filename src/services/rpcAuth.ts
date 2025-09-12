@@ -12,7 +12,7 @@ import {
  * - session_logout: https://freeipa.readthedocs.io/en/latest/api/session_logout.html
  */
 
-export interface UserPasswordPayload {
+interface UserPasswordPayload {
   username: string;
   password: string;
 }
@@ -22,15 +22,6 @@ export interface ResetPasswordPayload {
   oldPassword: string;
   newPassword: string;
   otp?: string;
-}
-
-export interface ResponseOnLogin {
-  error: {
-    data: string;
-    error: string;
-    originalStatus: number;
-    status: string;
-  };
 }
 
 export interface MetaResponse {
@@ -52,14 +43,14 @@ export interface SyncOtpPayload {
 }
 
 // List of URLs
-export const LOGIN_URL = "/ipa/session/login_password";
-export const KERBEROS_URL = "/ipa/session/login_kerberos";
-export const X509_URL = "/ipa/session/login_x509";
-export const RESET_PASSWORD_URL = "/ipa/session/change_password";
-export const SYNC_OTP_URL = "/ipa/session/sync_token";
+const LOGIN_URL = "/ipa/session/login_password";
+const KERBEROS_URL = "/ipa/session/login_kerberos";
+const X509_URL = "/ipa/session/login_x509";
+const RESET_PASSWORD_URL = "/ipa/session/change_password";
+const SYNC_OTP_URL = "/ipa/session/sync_token";
 
 // Utils
-export const encodeURIObject = (obj: Record<string, string>) => {
+const encodeURIObject = (obj: Record<string, string>) => {
   return Object.keys(obj)
     .map((key) => {
       return encodeURIComponent(key) + "=" + encodeURIComponent(obj[key]);
