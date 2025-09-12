@@ -96,7 +96,7 @@ export function userToApi(user: Partial<User>): Record<string, unknown> {
 }
 
 // Get empty User object initialized with default values
-export function createEmptyUser(): User {
+function createEmptyUser(): User {
   const user: User = {
     // identity
     title: "",

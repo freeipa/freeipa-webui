@@ -111,16 +111,14 @@ export function apiToDnsRecord(apiRecord: Record<string, unknown>): DNSRecord {
   return partialDnsRecordToDnsRecord(converted);
 }
 
-export function partialDnsRecordToDnsRecord(
-  partialDnsRecord: Partial<DNSRecord>
-) {
+function partialDnsRecordToDnsRecord(partialDnsRecord: Partial<DNSRecord>) {
   return {
     ...createEmptyDnsRecord(),
     ...partialDnsRecord,
   };
 }
 
-export function createEmptyDnsRecord(): DNSRecord {
+function createEmptyDnsRecord(): DNSRecord {
   return {
     idnsname: "",
     idnssoarname: "",

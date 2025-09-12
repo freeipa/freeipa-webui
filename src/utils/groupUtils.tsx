@@ -32,7 +32,7 @@ export function partialGroupToGroup(
 }
 
 // Get empty User object initialized with default values
-export function createEmptyGroup(): UserGroup {
+function createEmptyGroup(): UserGroup {
   const group: UserGroup = {
     cn: "",
     gidnumber: "",

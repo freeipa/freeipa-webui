@@ -40,12 +40,6 @@ export function apiToService(apiRecord: Record<string, unknown>): Service {
   return partialServiceToService(converted) as Service;
 }
 
-// Determines whether a given property name is a simple value or is it multivalue (Array)
-//  - Returns: boolean
-export const isSimpleValue = (propertyName) => {
-  return simpleValues.has(propertyName);
-};
-
 export function partialServiceToService(
   partialService: Partial<Service>
 ): Service {
@@ -57,7 +51,7 @@ export function partialServiceToService(
 
 // Covert an partial Service object into a full Sservice object
 // (initializing the undefined params with default empty values)
-export function createEmptyService(): Service {
+function createEmptyService(): Service {
   const service: Service = {
     serviceType: "",
     dn: "",

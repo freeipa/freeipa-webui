@@ -10,7 +10,7 @@ import {
 import { navigateTo } from "../common/navigation";
 import { createUser, validateUser } from "../common/user_management";
 
-export const preserveUser = (username: string) => {
+const preserveUser = (username: string) => {
   searchForEntry(username);
   entryExists(username);
 
