@@ -683,6 +683,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
           idKebab="toggle-action-buttons"
           isKebabOpen={isKebabOpen}
           dropdownItems={dropdownItems}
+          isDisabled={isSaving}
         />
       ),
     },

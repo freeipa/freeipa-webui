@@ -605,6 +605,7 @@ const IDViews = () => {
           idKebab="toggle-action-buttons"
           isKebabOpen={isKebabOpen}
           dropdownItems={dropdownItems}
+          isDisabled={!showTableRows}
         />
       ),
     },

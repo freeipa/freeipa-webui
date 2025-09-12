@@ -8,6 +8,7 @@ import {
   MenuToggle,
   MenuToggleElement,
   Select,
+  SelectList,
   SelectOption,
   TextInput,
   ValidatedOptions,
@@ -98,6 +99,7 @@ const AddHost = (props: PropsToAddHost) => {
       ref={toggleRef}
       onClick={dnsZoneOnToggle}
       className="pf-v6-u-w-100"
+      isExpanded={isDnsZoneOpen}
     >
       {dnsZoneSelected}
     </MenuToggle>
@@ -299,16 +301,18 @@ const AddHost = (props: PropsToAddHost) => {
             isOpen={isDnsZoneOpen}
             aria-labelledby="dns zone"
           >
-            {dnsZoneOptions.map((option, index) => (
-              <SelectOption
-                data-cy={"modal-select-dns-zone-" + option.value}
-                isDisabled={option.disabled}
-                key={index}
-                value={option.value}
-              >
-                {option.value}
-              </SelectOption>
-            ))}
+            <SelectList>
+              {dnsZoneOptions.map((option, index) => (
+                <SelectOption
+                  data-cy={"modal-select-dns-zone-" + option.value}
+                  isDisabled={option.disabled}
+                  key={index}
+                  value={option.value}
+                >
+                  {option.value}
+                </SelectOption>
+              ))}
+            </SelectList>
           </Select>
           <HelperText>
             {!hostDnsZoneValidation.isError && (
