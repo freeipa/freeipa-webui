@@ -25,7 +25,7 @@ export function partialGroupToGroup(
 }
 
 // Get empty User object initialized with default values
-export function createEmptyGroup(): HostGroup {
+function createEmptyGroup(): HostGroup {
   const group: HostGroup = {
     dn: "",
     cn: "",

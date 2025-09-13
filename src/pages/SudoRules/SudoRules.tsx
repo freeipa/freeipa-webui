@@ -33,7 +33,7 @@ import AddSudoRule from "src/components/modals/SudoModals/AddSudoRule";
 import DeleteSudoRule from "src/components/modals/SudoModals/DeleteSudoRule";
 import DisableEnableSudoRules from "src/components/modals/SudoModals/DisableEnableSudoRules";
 // Hooks
-import { useAlerts } from "src/hooks/useAlerts";
+import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils

@@ -29,7 +29,7 @@ interface SelectedGroupsData {
   clearSelectedGroups: () => void;
 }
 
-export interface PropsToDeleteGroups {
+interface PropsToDeleteGroups {
   show: boolean;
   handleModalToggle: () => void;
   selectedGroupsData: SelectedGroupsData;

@@ -23,7 +23,7 @@ export function apiToHBACRule(apiRecord: Record<string, unknown>): HBACRule {
   return partialHBACRuleToHBACRule(converted) as HBACRule;
 }
 
-export function partialHBACRuleToHBACRule(
+function partialHBACRuleToHBACRule(
   partialHbacRule: Partial<HBACRule>
 ): HBACRule {
   return {
@@ -33,7 +33,7 @@ export function partialHBACRuleToHBACRule(
 }
 
 // Get empty User object initialized with default values
-export function createEmptyHBACRule(): HBACRule {
+function createEmptyHBACRule(): HBACRule {
   const hbacRule: HBACRule = {
     hostcategory: "",
     servicecategory: "",

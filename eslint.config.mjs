@@ -57,7 +57,6 @@ export default defineConfig([
         js: true,
         useJSXTextNode: true,
         project: ["./tsconfig.json"],
-        tsconfigRootDir: ".",
       },
     },
 

@@ -30,16 +30,14 @@ export function apiToDnsServer(apiRecord: Record<string, unknown>): DnsServer {
   return partialDnsServerToDnsServer(converted);
 }
 
-export function partialDnsServerToDnsServer(
-  partialDnsServer: Partial<DnsServer>
-) {
+function partialDnsServerToDnsServer(partialDnsServer: Partial<DnsServer>) {
   return {
     ...createEmptyDnsServer(),
     ...partialDnsServer,
   };
 }
 
-export function createEmptyDnsServer(): DnsServer {
+function createEmptyDnsServer(): DnsServer {
   return {
     idnsserverid: "",
     idnssoamname: "",
