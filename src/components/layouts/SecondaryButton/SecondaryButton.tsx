@@ -3,7 +3,7 @@ import React from "react";
 // PatternFly
 import { Button } from "@patternfly/react-core";
 
-interface PropsToSecondaryButton {
+export interface PropsToSecondaryButton {
   dataCy: string;
   id?: string;
   classname?: string;
