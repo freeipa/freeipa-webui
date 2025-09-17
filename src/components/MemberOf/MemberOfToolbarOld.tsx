@@ -581,6 +581,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
             buttonId="direct"
             isSelected={toolbarData().membership.isDirectSelected}
             onChange={toolbarData().membership.onDirectChange}
+            data-cy="member-of-toggle-group-item-direct"
           />
           <ToggleGroupItem
             text="Indirect"
@@ -588,6 +589,7 @@ const MemberOfToolbar = (props: PropsToToolbar) => {
             buttonId="indirect"
             isSelected={toolbarData().membership.isIndirectSelected}
             onChange={toolbarData().membership.onIndirectChange}
+            data-cy="member-of-toggle-group-item-indirect"
           />
         </ToggleGroup>
       ),
