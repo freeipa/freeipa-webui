@@ -158,19 +158,19 @@ Feature: Hbac rule settings manipulation
     Then I click on the "settings-button-add-host" button
     Then I should see "dual-list-modal" modal
     When I click on search link in dual list
-    Then I should see "item-my-new-host\.dom-server\.ipa\.demo" dual list item on the left
+    Then I should see "item-my-new-host.dom-server.ipa.demo" dual list item on the left
 
-    When I click on "item-my-new-host\.dom-server\.ipa\.demo" dual list item
-    Then I should see "item-my-new-host\.dom-server\.ipa\.demo" dual list item selected
+    When I click on "item-my-new-host.dom-server.ipa.demo" dual list item
+    Then I should see "item-my-new-host.dom-server.ipa.demo" dual list item selected
 
     When I click on the "dual-list-add-selected" button
-    Then I should see "item-my-new-host\.dom-server\.ipa\.demo" dual list item on the right
-    And I should see "item-my-new-host\.dom-server\.ipa\.demo" dual list item not selected
+    Then I should see "item-my-new-host.dom-server.ipa.demo" dual list item on the right
+    And I should see "item-my-new-host.dom-server.ipa.demo" dual list item not selected
 
     When I click on the "modal-button-add" button
     Then I should not see "dual-list-modal" modal
     And I should see "add-member-success" alert
-    Then I should see "my-new-host\.dom-server\.ipa\.demo" entry in the data table
+    Then I should see "my-new-host.dom-server.ipa.demo" entry in the data table
 
   @cleanup
   Scenario: Delete the host from the rule
@@ -185,19 +185,19 @@ Feature: Hbac rule settings manipulation
     Then I click on the "settings-button-add-host" button
     Then I should see "dual-list-modal" modal
     When I click on search link in dual list
-    Then I should see "item-my-new-host\.dom-server\.ipa\.demo" dual list item on the left
+    Then I should see "item-my-new-host.dom-server.ipa.demo" dual list item on the left
 
-    When I click on "item-my-new-host\.dom-server\.ipa\.demo" dual list item
-    Then I should see "item-my-new-host\.dom-server\.ipa\.demo" dual list item selected
+    When I click on "item-my-new-host.dom-server.ipa.demo" dual list item
+    Then I should see "item-my-new-host.dom-server.ipa.demo" dual list item selected
 
     When I click on the "dual-list-add-selected" button
-    Then I should see "item-my-new-host\.dom-server\.ipa\.demo" dual list item on the right
-    And I should see "item-my-new-host\.dom-server\.ipa\.demo" dual list item not selected
+    Then I should see "item-my-new-host.dom-server.ipa.demo" dual list item on the right
+    And I should see "item-my-new-host.dom-server.ipa.demo" dual list item not selected
 
     When I click on the "modal-button-add" button
     Then I should not see "dual-list-modal" modal
     And I should see "add-member-success" alert
-    Then I should see "my-new-host\.dom-server\.ipa\.demo" entry in the data table
+    Then I should see "my-new-host.dom-server.ipa.demo" entry in the data table
 
   @test
   Scenario: Remove host from Host category
@@ -271,19 +271,19 @@ Feature: Hbac rule settings manipulation
     Then I click on the "settings-button-add-host" button
     Then I should see "dual-list-modal" modal
     When I click on search link in dual list
-    Then I should see "item-my-new-host\.dom-server\.ipa\.demo" dual list item on the left
+    Then I should see "item-my-new-host.dom-server.ipa.demo" dual list item on the left
 
-    When I click on "item-my-new-host\.dom-server\.ipa\.demo" dual list item
-    Then I should see "item-my-new-host\.dom-server\.ipa\.demo" dual list item selected
+    When I click on "item-my-new-host.dom-server.ipa.demo" dual list item
+    Then I should see "item-my-new-host.dom-server.ipa.demo" dual list item selected
 
     When I click on the "dual-list-add-selected" button
-    Then I should see "item-my-new-host\.dom-server\.ipa\.demo" dual list item on the right
-    And I should see "item-my-new-host\.dom-server\.ipa\.demo" dual list item not selected
+    Then I should see "item-my-new-host.dom-server.ipa.demo" dual list item on the right
+    And I should see "item-my-new-host.dom-server.ipa.demo" dual list item not selected
 
     When I click on the "modal-button-add" button
     Then I should not see "dual-list-modal" modal
     And I should see "add-member-success" alert
-    Then I should see "my-new-host\.dom-server\.ipa\.demo" entry in the data table
+    Then I should see "my-new-host.dom-server.ipa.demo" entry in the data table
 
     When I click on the "hbac-rules-tab-settings-tab-hostgroups" tab
     Then I click on the "settings-button-add-hostgroup" button
