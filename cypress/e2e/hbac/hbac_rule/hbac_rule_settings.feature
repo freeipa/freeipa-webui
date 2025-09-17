@@ -3,7 +3,7 @@ Feature: Hbac rule settings manipulation
 
   @seed
   Scenario: Add a new rule
-    Given rule "rule1" exists
+    Given hbac rule "rule1" exists
 
   @test
   Scenario: Add user to Who category
@@ -452,4 +452,4 @@ Feature: Hbac rule settings manipulation
 
   @cleanup
   Scenario: Delete the HBAC rule for cleanup
-    Given I delete rule "rule1"
+    Given I delete hbac rule "rule1"

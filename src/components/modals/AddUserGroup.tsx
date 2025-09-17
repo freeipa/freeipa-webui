@@ -123,9 +123,9 @@ const AddUserGroup = (props: PropsToAddGroup) => {
       name: "Description",
       pfComponent: (
         <TextArea
-          data-cy="modal-textbox-group-desc"
-          id="modal-form-group-desc"
-          name="modal-form-group-desc"
+          data-cy="modal-textbox-group-description"
+          id="modal-form-group-description"
+          name="modal-form-group-description"
           value={description}
           onChange={(_event, value) => setDescription(value)}
           aria-label="Group description"
@@ -138,8 +138,8 @@ const AddUserGroup = (props: PropsToAddGroup) => {
       name: "Group type",
       pfComponent: (
         <SimpleSelector
-          dataCy="modal-simple-provider-type"
-          id="provider-type-selector"
+          dataCy="modal-group-type"
+          id="group-type-selector"
           options={groupTypeOptions}
           selected={groupType}
           onSelectedChange={(selected: string) => setGroupType(selected)}

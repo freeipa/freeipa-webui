@@ -163,7 +163,7 @@ const DeleteUserGroups = (props: PropsToDeleteGroups) => {
               props.buttonsData.updateIsDeletion(true);
 
               alerts.addAlert(
-                "remove-usergroups-success",
+                "remove-user-groups-success",
                 "User groups removed",
                 "success"
               );
@@ -188,7 +188,7 @@ const DeleteUserGroups = (props: PropsToDeleteGroups) => {
       key="delete-usergroups"
       variant="danger"
       onClick={deleteGroups}
-      form="delete-usergroups-modal"
+      form="delete-user-groups-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -210,12 +210,12 @@ const DeleteUserGroups = (props: PropsToDeleteGroups) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
-        dataCy="delete-usergroups-modal"
+        dataCy="delete-user-groups-modal"
         variantType="medium"
         modalPosition="top"
         offPosition="76px"
         title="Remove user groups"
-        formId="remove-usergroups-modal"
+        formId="remove-user-groups-modal"
         fields={fields}
         show={props.show}
         onClose={closeModal}
@@ -223,7 +223,7 @@ const DeleteUserGroups = (props: PropsToDeleteGroups) => {
       />
       {isModalErrorOpen && (
         <ErrorModal
-          dataCy="delete-usergroups-modal-error"
+          dataCy="delete-user-groups-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
           onClose={onCloseErrorModal}
