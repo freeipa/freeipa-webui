@@ -293,7 +293,7 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
           alerts.addAlert(
-            "remove-usergroups-error",
+            "remove-user-groups-error",
             errorMessage.message,
             "danger"
           );

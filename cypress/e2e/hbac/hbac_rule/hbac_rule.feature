@@ -25,7 +25,7 @@ Feature: HBAC rules manipulation
 
   @cleanup
     Scenario: Delete a rule
-    Given I delete rule "rule1"
+    Given I delete hbac rule "rule1"
 
   @test
   Scenario: Add several rules
@@ -68,13 +68,13 @@ Feature: HBAC rules manipulation
 
   @cleanup
   Scenario: Delete a rule
-    Given I delete rule "rule2"
-    And I delete rule "rule3"
-    And I delete rule "rule4"
+    Given I delete hbac rule "rule2"
+    And I delete hbac rule "rule3"
+    And I delete hbac rule "rule4"
 
   @seed
   Scenario: Create rules
-    Given rule "rule1" exists
+    Given hbac rule "rule1" exists
 
   @test
   Scenario: Search for a rule
@@ -87,11 +87,11 @@ Feature: HBAC rules manipulation
   
   @cleanup
   Scenario: Delete a rule
-    Given I delete rule "rule1"
+    Given I delete hbac rule "rule1"
 
   @seed 
   Scenario: Create a rule
-    Given rule "rule4" exists
+    Given hbac rule "rule4" exists
 
   @test
     Scenario: Disable a rule
@@ -132,11 +132,11 @@ Feature: HBAC rules manipulation
 
   @cleanup
   Scenario: Delete a rule
-    Given I delete rule "rule4"
+    Given I delete hbac rule "rule4"
 
   @seed 
   Scenario: Create a rule
-    Given rule "rule1" exists
+    Given hbac rule "rule1" exists
 
   @test
   Scenario: Delete a rule
@@ -156,9 +156,9 @@ Feature: HBAC rules manipulation
 
   @seed
   Scenario: Create a rule
-    Given rule "rule2" exists
-    Given rule "rule3" exists
-    Given rule "rule4" exists
+    Given hbac rule "rule2" exists
+    Given hbac rule "rule3" exists
+    Given hbac rule "rule4" exists
 
   @test
   Scenario: Delete many rules
