@@ -21,16 +21,14 @@ export function apiToIdpServer(apiRecord: Record<string, unknown>): IDPServer {
   return partialIdpServerToIdpServer(converted);
 }
 
-export function partialIdpServerToIdpServer(
-  partialIdpServer: Partial<IDPServer>
-) {
+function partialIdpServerToIdpServer(partialIdpServer: Partial<IDPServer>) {
   return {
     ...createEmptyIdpServer(),
     ...partialIdpServer,
   };
 }
 
-export function createEmptyIdpServer(): IDPServer {
+function createEmptyIdpServer(): IDPServer {
   return {
     cn: "",
     dn: "",

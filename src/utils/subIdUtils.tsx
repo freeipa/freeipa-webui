@@ -38,7 +38,7 @@ export function apiToSubId(apiRecord: Record<string, unknown>): SubId {
   return partialSubIdToSubId(converted) as SubId;
 }
 
-export function partialSubIdToSubId(partialSudoRule: Partial<SubId>): SubId {
+function partialSubIdToSubId(partialSudoRule: Partial<SubId>): SubId {
   return {
     ...createEmptySubId(),
     ...partialSudoRule,
@@ -46,7 +46,7 @@ export function partialSubIdToSubId(partialSudoRule: Partial<SubId>): SubId {
 }
 
 // Get empty User object initialized with default values
-export function createEmptySubId(): SubId {
+function createEmptySubId(): SubId {
   const subId: SubId = {
     ipauniqueid: "",
     ipaowner: "",

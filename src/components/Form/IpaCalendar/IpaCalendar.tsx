@@ -12,11 +12,7 @@ import { ParamMetadata } from "src/utils/datatypes/globalDataTypes";
 // Components
 import DateTimeSelector from "../DateTimeSelector";
 
-export interface DateParam {
-  __datetime__: string;
-}
-
-export interface ParamPropertiesDateTime {
+interface ParamPropertiesDateTime {
   writable: boolean;
   required: boolean;
   readOnly: boolean;

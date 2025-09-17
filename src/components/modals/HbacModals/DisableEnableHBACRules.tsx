@@ -34,7 +34,7 @@ interface SelectedRulesData {
   clearSelectedRules: () => void;
 }
 
-export interface PropsToDisableEnableHBACRules {
+interface PropsToDisableEnableHBACRules {
   show: boolean;
   handleModalToggle: () => void;
   optionSelected: boolean; // 'enable': false | 'disable': true

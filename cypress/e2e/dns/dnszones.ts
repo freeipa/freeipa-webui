@@ -8,29 +8,29 @@ import {
 import { navigateTo } from "../common/navigation";
 import { loginAsAdmin, logout } from "../common/authentication";
 
-export const fillDnsZone = (zone: string) => {
+const fillDnsZone = (zone: string) => {
   cy.dataCy("modal-textbox-dns-zone-name").type(zone);
   cy.dataCy("modal-textbox-dns-zone-name").should("have.value", zone);
 };
 
-export const fillReversedDnsZone = (ip: string) => {
+const fillReversedDnsZone = (ip: string) => {
   cy.dataCy("modal-textbox-reverse-zone-ip").type(ip);
   cy.dataCy("modal-textbox-reverse-zone-ip").should("have.value", ip);
 };
 
-export const fillDnsZoneWithSkipOverlapCheck = (zone: string) => {
+const fillDnsZoneWithSkipOverlapCheck = (zone: string) => {
   fillDnsZone(zone);
   cy.dataCy("modal-checkbox-skip-overlap-check").click();
   cy.dataCy("modal-checkbox-skip-overlap-check").should("be.checked");
 };
 
-export const fillReversedDnsZoneWithSkipOverlapCheck = (ip: string) => {
+const fillReversedDnsZoneWithSkipOverlapCheck = (ip: string) => {
   fillReversedDnsZone(ip);
   cy.dataCy("modal-checkbox-skip-overlap-check").click();
   cy.dataCy("modal-checkbox-skip-overlap-check").should("be.checked");
 };
 
-export const createDnsZone = (zone: string) => {
+const createDnsZone = (zone: string) => {
   cy.dataCy("dns-zones-button-add").click();
   cy.dataCy("add-dns-zone-modal").should("exist");
 
@@ -40,7 +40,7 @@ export const createDnsZone = (zone: string) => {
   cy.dataCy("add-dns-zone-modal").should("not.exist");
 };
 
-export const createReversedDnsZone = (ip: string) => {
+const createReversedDnsZone = (ip: string) => {
   cy.dataCy("dns-zones-button-add").click();
   cy.dataCy("add-dns-zone-modal").should("exist");
   cy.dataCy("modal-radio-reverse-zone-ip").click();
@@ -52,7 +52,7 @@ export const createReversedDnsZone = (ip: string) => {
   cy.dataCy("add-dns-zone-modal").should("not.exist");
 };
 
-export const createDnsZoneWithSkipOverlapCheck = (zone: string) => {
+const createDnsZoneWithSkipOverlapCheck = (zone: string) => {
   cy.dataCy("dns-zones-button-add").click();
   cy.dataCy("add-dns-zone-modal").should("exist");
 
@@ -62,7 +62,7 @@ export const createDnsZoneWithSkipOverlapCheck = (zone: string) => {
   cy.dataCy("add-dns-zone-modal").should("not.exist");
 };
 
-export const createReversedDnsZoneWithSkipOverlapCheck = (ip: string) => {
+const createReversedDnsZoneWithSkipOverlapCheck = (ip: string) => {
   cy.dataCy("dns-zones-button-add").click();
   cy.dataCy("add-dns-zone-modal").should("exist");
   cy.dataCy("modal-radio-reverse-zone-ip").click();
@@ -74,7 +74,7 @@ export const createReversedDnsZoneWithSkipOverlapCheck = (ip: string) => {
   cy.dataCy("add-dns-zone-modal").should("not.exist");
 };
 
-export const deleteDnsZone = (zoneName: string) => {
+const deleteDnsZone = (zoneName: string) => {
   selectEntry(zoneName);
 
   cy.dataCy("dns-zones-button-delete").click();
@@ -84,19 +84,19 @@ export const deleteDnsZone = (zoneName: string) => {
   cy.dataCy("dns-zones-delete-modal").should("not.exist");
 };
 
-export const isDisabled = (name: string) => {
+const isDisabled = (name: string) => {
   cy.get("tr[id='" + name + "'] td[data-label=idnszoneactive]").contains(
     "Disabled"
   );
 };
 
-export const isEnabled = (name: string) => {
+const isEnabled = (name: string) => {
   cy.get("tr[id='" + name + "'] td[data-label=idnszoneactive]").contains(
     "Enabled"
   );
 };
 
-export const disableDnsZone = (zoneName: string) => {
+const disableDnsZone = (zoneName: string) => {
   selectEntry(zoneName);
 
   cy.dataCy("dns-zones-button-disable").click();
@@ -107,7 +107,7 @@ export const disableDnsZone = (zoneName: string) => {
   isDisabled(zoneName);
 };
 
-export const enableDnsZone = (zoneName: string) => {
+const enableDnsZone = (zoneName: string) => {
   selectEntry(zoneName);
 
   cy.dataCy("dns-zones-button-enable").click();
@@ -119,7 +119,7 @@ export const enableDnsZone = (zoneName: string) => {
 };
 
 // E.g. "my-dnszone" -> "my-dnszone."
-export const parseZoneName = (zoneName: string) => {
+const parseZoneName = (zoneName: string) => {
   return zoneName + ".";
 };
 

@@ -32,7 +32,7 @@ import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import AddSudoCmdGroup from "src/components/modals/SudoModals/AddSudoCmdGroup";
 import DeleteSudoCmdGroups from "src/components/modals/SudoModals/DeleteSudoCmdGroups";
 // Hooks
-import { useAlerts } from "src/hooks/useAlerts";
+import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils

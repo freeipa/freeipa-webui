@@ -25,16 +25,14 @@ export function apiToKrbPolicy(apiRecord: Record<string, unknown>) {
   return partialKrbPolicyToKrbPolicy(converted);
 }
 
-export function partialKrbPolicyToKrbPolicy(
-  partialKrbPolicy: Partial<KrbPolicy>
-) {
+function partialKrbPolicyToKrbPolicy(partialKrbPolicy: Partial<KrbPolicy>) {
   return {
     ...createEmptyKrbPolicy(),
     ...partialKrbPolicy,
   };
 }
 
-export function createEmptyKrbPolicy(): KrbPolicy {
+function createEmptyKrbPolicy(): KrbPolicy {
   return {
     attributelevelrights: {},
     cn: "",

@@ -24,13 +24,6 @@ const routesSlice = createSlice({
     updateBreadCrumbPath: (state, action: PayloadAction<BreadCrumbItem[]>) => {
       state.breadCrumbPath = action.payload;
     },
-    addPathToBreadcrumb: (state, action: PayloadAction<BreadCrumbItem>) => {
-      if (state.breadCrumbPath) {
-        state.breadCrumbPath.push(action.payload);
-      } else {
-        state.breadCrumbPath = [action.payload];
-      }
-    },
     updateActivePageName: (state, action: PayloadAction<string>) => {
       state.activePageName = action.payload;
     },
@@ -48,7 +41,6 @@ const routesSlice = createSlice({
 
 export const {
   updateBreadCrumbPath,
-  addPathToBreadcrumb,
   updateActivePageName,
   updateActiveFirstLevel,
   updateActiveSecondLevel,

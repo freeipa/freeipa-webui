@@ -32,7 +32,7 @@ import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import AddHBACServiceGroup from "src/components/modals/HbacModals/AddHBACServiceGroup";
 import DeleteHBACServiceGroup from "src/components/modals/HbacModals/DeleteHBACServiceGroup";
 // Hooks
-import { useAlerts } from "src/hooks/useAlerts";
+import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Utils
 import {
