@@ -55,4 +55,8 @@ declare module "@patternfly/react-core" {
   interface MenuToggleProps {
     "data-cy": string;
   }
+
+  interface ToggleGroupItemProps {
+    "data-cy": string;
+  }
 }

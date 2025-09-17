@@ -134,6 +134,7 @@ const MemberOfToolbar = (props: MemberOfToolbarProps) => {
                 aria-label="Toggle group with single selectable"
               >
                 <ToggleGroupItem
+                  data-cy="member-of-toggle-group-item-direct"
                   text="Direct"
                   name="user-memberof-group-type-radio-direct"
                   buttonId="direct"
@@ -143,6 +144,7 @@ const MemberOfToolbar = (props: MemberOfToolbarProps) => {
                   }
                 />
                 <ToggleGroupItem
+                  data-cy="member-of-toggle-group-item-indirect"
                   text="Indirect"
                   name="user-memberof-group-type-radio-indirect"
                   buttonId="indirect"
