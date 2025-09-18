@@ -23,7 +23,7 @@ import IssueNewCertificate from "src/components/modals/CertificateModals/IssueNe
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
-import KebabLayout from "src/components/layouts/KebabLayout";
+import KebabLayout from "src/components/layouts/KebabLayout/KebabLayout";
 import ModalErrors from "src/components/errors/ModalErrors";
 import TabLayout from "src/components/layouts/TabLayout";
 // Field sections

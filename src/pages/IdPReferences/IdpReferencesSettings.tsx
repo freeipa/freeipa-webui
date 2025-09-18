@@ -31,7 +31,7 @@ import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayou
 import IpaTextContent from "src/components/Form/IpaTextContent/IpaTextContent";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import IpaPasswordInput from "src/components/Form/IpaPasswordInput";
-import KebabLayout from "src/components/layouts/KebabLayout";
+import KebabLayout from "src/components/layouts/KebabLayout/KebabLayout";
 import ResetIdpPassword from "src/components/ResetIdpPassword";
 
 interface PropsToIdpRefSettings {
