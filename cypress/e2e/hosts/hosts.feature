@@ -20,7 +20,7 @@ Feature: Host manipulation
     And I should see "add-host-success" alert
 
     When I search for "myfirstserver" in the data table
-    Then I should see "myfirstserver.dom-server.ipa.demo" entry in the data table
+    Then I should see "myfirstserver.ipa.test" entry in the data table
 
   @cleanup
   Scenario: Delete a host
@@ -50,8 +50,8 @@ Feature: Host manipulation
     Then I should not see "add-host-modal" modal
     And I should see "add-host-success" alert
 
-    When I search for "myfirstserver.dom-server.ipa.demo" in the data table
-    Then I should see "myfirstserver.dom-server.ipa.demo" entry in the data table
+    When I search for "myfirstserver.ipa.test" in the data table
+    Then I should see "myfirstserver.ipa.test" entry in the data table
 
   @cleanup
   Scenario: Delete a host
@@ -87,8 +87,8 @@ Feature: Host manipulation
     Then I should not see "add-host-modal" modal
     And I should see "add-host-success" alert
 
-    When I search for "myfirstserver.dom-server.ipa.demo" in the data table
-    Then I should see "myfirstserver.dom-server.ipa.demo" entry in the data table
+    When I search for "myfirstserver.ipa.test" in the data table
+    Then I should see "myfirstserver.ipa.test" entry in the data table
 
   @cleanup
   Scenario: Delete a host
@@ -115,8 +115,8 @@ Feature: Host manipulation
     When I click on the "modal-button-cancel" button
     Then I should not see "add-host-modal" modal
 
-    When I search for "forcehost.dom-server.ipa.demo" in the data table
-    Then I should not see "forcehost.dom-server.ipa.demo" entry in the data table
+    When I search for "forcehost.ipa.test" in the data table
+    Then I should not see "forcehost.ipa.test" entry in the data table
 
   @test
   Scenario: Add one host after another
@@ -146,11 +146,11 @@ Feature: Host manipulation
     Then I should see "add-host-modal" modal
     And I should see "add-host-success" alert
 
-    When I search for "myfirstserver.dom-server.ipa.demo" in the data table
-    Then I should see "myfirstserver.dom-server.ipa.demo" entry in the data table
+    When I search for "myfirstserver.ipa.test" in the data table
+    Then I should see "myfirstserver.ipa.test" entry in the data table
 
-    When I search for "mysecondserver.dom-server.ipa.demo" in the data table
-    Then I should see "mysecondserver.dom-server.ipa.demo" entry in the data table
+    When I search for "mysecondserver.ipa.test" in the data table
+    Then I should see "mysecondserver.ipa.test" entry in the data table
 
   @cleanup
   Scenario: Delete hosts
@@ -181,8 +181,8 @@ Feature: Host manipulation
     Given I am logged in as admin
     And I am on "hosts" page
 
-    When I select entry "myfirstserver.dom-server.ipa.demo" in the data table
-    Then I should see "myfirstserver.dom-server.ipa.demo" entry selected in the data table
+    When I select entry "myfirstserver.ipa.test" in the data table
+    Then I should see "myfirstserver.ipa.test" entry selected in the data table
 
     When I click on the "hosts-button-delete" button
     Then I should see "delete-hosts-modal" modal
@@ -191,8 +191,8 @@ Feature: Host manipulation
     Then I should not see "delete-hosts-modal" modal
     And I should see "remove-hosts-success" alert
 
-    When I search for "myfirstserver.dom-server.ipa.demo" in the data table
-    Then I should not see "myfirstserver.dom-server.ipa.demo" entry in the data table
+    When I search for "myfirstserver.ipa.test" in the data table
+    Then I should not see "myfirstserver.ipa.test" entry in the data table
 
   @seed
   Scenario: Create hosts
@@ -204,11 +204,11 @@ Feature: Host manipulation
     Given I am logged in as admin
     And I am on "hosts" page
 
-    When I select entry "myfirstserver.dom-server.ipa.demo" in the data table
-    Then I should see "myfirstserver.dom-server.ipa.demo" entry selected in the data table
+    When I select entry "myfirstserver.ipa.test" in the data table
+    Then I should see "myfirstserver.ipa.test" entry selected in the data table
 
-    When I select entry "mysecondserver.dom-server.ipa.demo" in the data table
-    Then I should see "mysecondserver.dom-server.ipa.demo" entry selected in the data table
+    When I select entry "mysecondserver.ipa.test" in the data table
+    Then I should see "mysecondserver.ipa.test" entry selected in the data table
 
     When I click on the "hosts-button-delete" button
     Then I should see "delete-hosts-modal" modal
@@ -217,11 +217,11 @@ Feature: Host manipulation
     Then I should not see "delete-hosts-modal" modal
     And I should see "remove-hosts-success" alert
 
-    When I search for "myfirstserver.dom-server.ipa.demo" in the data table
-    Then I should not see "myfirstserver.dom-server.ipa.demo" entry in the data table
+    When I search for "myfirstserver.ipa.test" in the data table
+    Then I should not see "myfirstserver.ipa.test" entry in the data table
 
-    When I search for "mysecondserver.dom-server.ipa.demo" in the data table
-    Then I should not see "mysecondserver.dom-server.ipa.demo" entry in the data table
+    When I search for "mysecondserver.ipa.test" in the data table
+    Then I should not see "mysecondserver.ipa.test" entry in the data table
 
   @test
   Scenario: Cancel creation of a host
@@ -240,5 +240,5 @@ Feature: Host manipulation
     When I click on the "modal-button-cancel" button
     Then I should not see "add-host-modal" modal
 
-    When I search for "myfirstserver.dom-server.ipa.demo" in the data table
-    Then I should not see "myfirstserver.dom-server.ipa.demo" entry in the data table
+    When I search for "myfirstserver.ipa.test" in the data table
+    Then I should not see "myfirstserver.ipa.test" entry in the data table
