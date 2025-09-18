@@ -156,17 +156,23 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
     // Generate payload
     const payload = buildPayload(modifiedValues, [
       "idnszone",
-      "idnszoneid",
-      "idnsforwarders",
-      "idnsforwardpolicy",
-      "idnsallowquery",
-      "idnsupdatepolicy",
-      "idnssoaemail",
-      "idnssoaserver",
+      "idnssoamname",
+      "idnssoarname",
       "idnssoarefresh",
       "idnssoaretry",
+      "idnssoaexpire",
       "idnssoaminimum",
-      "idnssoadefaultttl",
+      "dnsdefaultttl",
+      "dnsttl",
+      "idnsallowdynupdate",
+      "idnsupdatepolicy",
+      "idnsallowquery",
+      "idnsallowtransfer",
+      "idnsforwarders",
+      "idnsforwardpolicy",
+      "idnsallowsyncptr",
+      "idnssecinlinesigning",
+      "nsec3paramrecord",
     ]);
 
     saveDnsZone(payload).then((response) => {
@@ -299,7 +305,11 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
   // Render component
   return (
     <>
-      <TabLayout id="settings-page" toolbarItems={toolbarFields}>
+      <TabLayout
+        id="settings-page"
+        toolbarItems={toolbarFields}
+        dataCy="dns-zones-settings"
+      >
         <alerts.ManagedAlerts />
         <Sidebar isPanelRight>
           <SidebarPanel variant="sticky">
