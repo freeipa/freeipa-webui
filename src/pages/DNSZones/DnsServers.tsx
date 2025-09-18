@@ -37,7 +37,7 @@ import ToolbarLayout, {
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import PaginationLayout from "src/components/layouts/PaginationLayout";
+import PaginationLayout from "src/components/layouts/PaginationLayout/PaginationLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import TableLayout from "src/components/layouts/TableLayout";

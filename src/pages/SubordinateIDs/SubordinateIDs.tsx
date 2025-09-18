@@ -24,7 +24,7 @@ import TitleLayout from "src/components/layouts/TitleLayout";
 import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
-import PaginationLayout from "src/components/layouts/PaginationLayout";
+import PaginationLayout from "src/components/layouts/PaginationLayout/PaginationLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";

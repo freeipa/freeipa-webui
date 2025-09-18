@@ -13,7 +13,7 @@ import { TableVariant } from "@patternfly/react-table";
 // Layout
 import SecondaryButton from "../SecondaryButton";
 import TableLayout from "../TableLayout";
-import PaginationLayout from "../PaginationLayout";
+import PaginationLayout from "../PaginationLayout/PaginationLayout";
 
 export interface PropsToSettingsTableLayout {
   // Table
