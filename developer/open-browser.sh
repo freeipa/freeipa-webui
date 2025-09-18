@@ -113,9 +113,27 @@ then
     remove_profile
     exit
 else
+    echo "Refreshing sudo credential..."
+    sudo -v
+
     create_profile
     [ -z "${ipa_ca_node:-}" ] || copy_certificate "${ipa_ca_node}"
-    # shellcheck disable=SC2154
-    detach podman unshare --rootless-netns "${browser_cmd[@]}" "$@"
-fi
 
+    echo "Finding PID of the container '${ipa_ca_node}'..."
+    PID=$(podman inspect --format '{{.State.Pid}}' "${ipa_ca_node}")
+
+    if [ -z "${PID}" ] || [ "${PID}" -le 0 ]; then
+        die "The PID for container '${ipa_ca_node}' could not be found. Is it running?"
+    fi
+
+    echo "Launching browser..."
+    sudo nsenter -t "${PID}" --net -- \
+        sudo -u "$USER" \
+        HOME="$HOME" \
+        DISPLAY="$DISPLAY" \
+        WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-}" \
+        XDG_RUNTIME_DIR="$XDG_RUNTIME_DIR" \
+        DBUS_SESSION_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS" \
+        bash -c 'cd "$1"; shift; exec "$@"' -- \
+        "$PWD" "${browser_cmd[@]}" "$@"
+fi
