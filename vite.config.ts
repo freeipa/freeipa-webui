@@ -1,5 +1,7 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react-swc";
+import license from "rollup-plugin-license";
+import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -7,7 +9,15 @@ export default defineConfig({
   build: {
     sourcemap: true,
   },
-  plugins: [react()],
+  plugins: [
+    react(),
+    license({
+      thirdParty: {
+        output: path.join(__dirname, "dist", "COPYING"),
+        includePrivate: true, // Default is false.
+      },
+    }),
+  ],
   resolve: {
     alias: {
       src: "/src",
