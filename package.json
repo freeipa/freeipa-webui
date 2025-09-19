@@ -63,6 +63,7 @@
     "globals": "^16.0.0",
     "otpauth": "^9.4.0",
     "prettier": "^3.5.3",
+    "rollup-plugin-license": "^3.6.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.34.0",
