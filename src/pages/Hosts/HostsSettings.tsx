@@ -28,7 +28,7 @@ import ConfirmationModal from "src/components/modals/ConfirmationModal";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
-import KebabLayout from "src/components/layouts/KebabLayout";
+import KebabLayout from "src/components/layouts/KebabLayout/KebabLayout";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import TabLayout from "src/components/layouts/TabLayout";
 // Field sections

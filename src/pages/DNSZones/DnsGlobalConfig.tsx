@@ -36,7 +36,7 @@ import IpaTextInput from "src/components/Form/IpaTextInput";
 import IpaTextboxList from "src/components/Form/IpaTextboxList";
 import IpaForwardPolicy from "src/components/Form/IpaForwardPolicy";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
-import KebabLayout from "src/components/layouts/KebabLayout";
+import KebabLayout from "src/components/layouts/KebabLayout/KebabLayout";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 
 const DnsGlobalConfig = () => {

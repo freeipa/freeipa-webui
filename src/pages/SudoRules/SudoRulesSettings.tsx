@@ -28,7 +28,7 @@ import { containsAny } from "src/utils/utils";
 // Components
 import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
-import KebabLayout from "src/components/layouts/KebabLayout";
+import KebabLayout from "src/components/layouts/KebabLayout/KebabLayout";
 import TabLayout from "src/components/layouts/TabLayout";
 import SudoRuleGeneral from "src/components/SudoRuleSections/SudoRuleGeneral";
 import SidebarLayout from "src/components/layouts/SidebarLayout";

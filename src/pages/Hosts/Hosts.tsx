@@ -22,7 +22,7 @@ import ToolbarLayout, {
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import KebabLayout from "src/components/layouts/KebabLayout";
+import KebabLayout from "src/components/layouts/KebabLayout/KebabLayout";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Components
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
