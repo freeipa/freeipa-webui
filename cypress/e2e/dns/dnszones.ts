@@ -223,6 +223,10 @@ When(
     cy.dataCy("modal-radio-reverse-zone-ip").should("be.checked");
     cy.dataCy("modal-textbox-reverse-zone-ip").type("192.168.1.xx");
     cy.dataCy("modal-textbox-reverse-zone-ip").should(
+      "have.value",
+      "192.168.1.xx"
+    );
+    cy.dataCy("modal-textbox-reverse-zone-ip").should(
       "have.attr",
       "aria-invalid",
       "true"

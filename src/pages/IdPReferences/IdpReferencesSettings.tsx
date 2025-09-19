@@ -204,6 +204,7 @@ const IdpRefSettings = (props: PropsToIdpRefSettings) => {
           idKebab="toggle-action-buttons"
           isKebabOpen={isKebabOpen}
           dropdownItems={kebabItems}
+          isDisabled={isDataLoading}
         />
       ),
     },

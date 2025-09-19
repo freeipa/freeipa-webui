@@ -125,6 +125,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
       ref={toggleRef}
       onClick={onCAToggle}
       className="pf-v6-u-w-100"
+      isExpanded={isCAOpen}
     >
       {selectedCA}
     </MenuToggle>
@@ -152,6 +153,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
       ref={toggleRef}
       onClick={onProfileToggle}
       className="pf-v6-u-w-100"
+      isExpanded={isProfileOpen}
     >
       {selectedProfile}
     </MenuToggle>
