@@ -11,12 +11,13 @@ install-exec-local:
 	test -d "dist" || npm run build
 	mkdir -p "$(DESTDIR)$(appdir)"
 	cp -p "dist/index.html" "$(DESTDIR)$(appdir)/index.html"
+	cp -p "dist/LICENSE-dependencies.txt" "$(DESTDIR)$(appdir)/LICENSE-dependencies.txt"
 	cp -rp "dist/assets" "$(DESTDIR)$(appdir)/assets"
 
 dist-hook:
 	npm install
 	npm run build
-	cp -r "dist/" "$(distdir)/dist/"
+	cp -r "." "$(distdir)/"
 
 clean-local:
 	rm -rf node_modules dist
