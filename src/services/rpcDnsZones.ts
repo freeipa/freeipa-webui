@@ -797,10 +797,9 @@ const extendedApi = api.injectEndpoints({
         } = payloadData;
 
         const apiVersion = version || API_VERSION_BACKUP;
-        const limit = sizeLimit || 100; // Default size limit if not provided
+        const limit = stopIdx ? Math.max(stopIdx, 100) : sizeLimit || 100;
 
         // FETCH DNS RECORDS DATA VIA "dnsrecord_find" COMMAND
-        // Prepare search parameters
         const dnsRecordParams = {
           pkey_only: true,
           sizelimit: limit,
@@ -825,7 +824,7 @@ const extendedApi = api.injectEndpoints({
         const responseDataDnsRecords =
           getResultDnsRecords.data as FindRPCResponse;
 
-        const dnsRecordsIds: Map<string, string> = new Map();
+        const dnsRecordsIds: string[] = [];
         const dnsRecordsItemsCount = responseDataDnsRecords.result.result
           .length as number;
 
@@ -842,16 +841,19 @@ const extendedApi = api.injectEndpoints({
           ] as dnsZoneType;
           const dnsRecordType = dnsRecordId.idnsname[0]["__dns_name__"];
           if (dnsRecordType) {
-            dnsRecordsIds.set(dnsZoneId[i], dnsRecordType);
+            dnsRecordsIds.push(dnsRecordType);
           }
         }
 
         // FETCH DNS RECORDS DATA VIA "dnsrecord_show" COMMAND
         const commands: Command[] = [];
-        dnsRecordsIds.forEach((dnsName, recordType) => {
+        dnsRecordsIds.forEach((recordType) => {
           commands.push({
             method: "dnsrecord_show",
-            params: [[dnsName, recordType], { all: true }],
+            params: [
+              [dnsZoneId, recordType],
+              { all: true, rights: true, structured: true },
+            ],
           });
         });
 
@@ -863,18 +865,40 @@ const extendedApi = api.injectEndpoints({
 
         // Handle the '__dns_name__' fields
         const dnsRecords: DNSRecord[] = [];
-        const count = response.result.totalCount;
-        for (let i = 0; i < count; i++) {
-          const dnsRecord = response.result.results[i].result as Record<
-            string,
-            unknown
-          >;
-          // Convert API object to DNSRecord type
-          const convertedDnsRecord: DNSRecord = apiToDnsRecord(dnsRecord);
-          dnsRecords.push(convertedDnsRecord);
-        }
+        const records = response.result.results as unknown as BatchResult[];
 
-        // Return results
+        records.forEach((dnsRec) => {
+          // Convert API object to 'DNSRecord' type
+          const convertedDnsRecord: DNSRecord = apiToDnsRecord(dnsRec.result);
+          const nsrecordsTypesList = dnsRec.result.dnsrecords as RecordType[];
+
+          // Extract the types into a string format (e.g. "A, NS, ...")
+          const types: string[] = [];
+          convertedDnsRecord.dnsrecords.map((dnsRecord) => {
+            types.push(dnsRecord.dnstype);
+          });
+          const typesString = types.join(", ");
+
+          // Extract the data into a string format (e.g. "dns1.example.com, dns2.example.com, ...")
+          const data: string[] = [];
+          convertedDnsRecord.dnsrecords.map((dnsRecord) => {
+            data.push(dnsRecord.dnsdata);
+          });
+          const dataString = data.join(", ");
+
+          if (nsrecordsTypesList !== undefined) {
+            convertedDnsRecord.dnsrecords = nsrecordsTypesList.map(() => ({
+              dnstype: typesString,
+              dnsdata: dataString,
+            }));
+            dnsRecords.push(convertedDnsRecord);
+          }
+
+          // Add 'dnsrecord_type' and 'dnsrecord_data' to the 'convertedDnsRecord'
+          convertedDnsRecord.dnsrecord_types = typesString;
+          convertedDnsRecord.dnsrecord_data = dataString;
+        });
+
         return {
           data: {
             ...response,
