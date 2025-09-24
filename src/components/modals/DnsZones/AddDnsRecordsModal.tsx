@@ -422,7 +422,7 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
             setBasicFormValues({ ...basicFormValues, recordName: value })
           }
           aria-label="Record name text input"
-          data-cy="record-name"
+          data-cy={"record-name"}
         />
       </FormGroup>
       <FormGroup label="Record type">
@@ -451,14 +451,14 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
           aria-label="Record type select"
           isOpen={isRecordTypeOpen}
           isScrollable
-          data-cy="record-type"
+          data-cy={"record-type"}
         >
           <SelectList>
             {recordTypeOptions.map((option) => (
               <SelectOption
                 key={option.value}
                 value={option.value}
-                data-cy="record-type-option"
+                data-cy={"record-type-option"}
                 isDisabled={
                   props.defaultSelectedRecordType !== undefined &&
                   option.value !== basicFormValues.recordType
@@ -488,7 +488,7 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
       isDisabled={isAddButtonSpinning || !areMandatoryFieldsFilled}
       form="add-modal-form"
       onClick={() => onAddOperation(false)}
-      data-cy="add-dns-records-modal-add-button"
+      data-cy={"add-dns-records-modal-add-button"}
     >
       {isAddButtonSpinning ? (
         <>
@@ -505,7 +505,7 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
       isDisabled={isAddAnotherButtonSpinning || !areMandatoryFieldsFilled}
       form="add-another-modal-form"
       onClick={() => onAddOperation(true)}
-      data-cy="add-dns-records-modal-add-another-button"
+      data-cy={"add-dns-records-modal-add-another-button"}
     >
       {isAddAnotherButtonSpinning ? (
         <>
@@ -520,7 +520,7 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
       key="cancel-new"
       variant="link"
       onClick={cleanAndCloseModal}
-      data-cy="add-dns-records-modal-cancel-button"
+      data-cy={"add-dns-records-modal-cancel-button"}
     >
       Cancel
     </Button>,
@@ -536,6 +536,7 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
         positionOffset="76px"
         isOpen={props.isOpen}
         onClose={props.onClose}
+        data-cy={"add-dns-records-modal"}
       >
         <ModalHeader
           title={"Add DNS resource record"}
