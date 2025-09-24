@@ -24,17 +24,8 @@ export const clearAndAddAdjustedNumberValue = (
   dataCy: string,
   value: string
 ) => {
-  if (value !== "0") {
-    cy.dataCy(dataCy).clear();
-    cy.dataCy(dataCy).should("have.value", "0");
-
-    cy.dataCy(dataCy).type(value);
-    cy.dataCy(dataCy).type("{backspace}");
-  } else {
-    cy.dataCy(dataCy).clear();
-    cy.dataCy(dataCy).should("have.value", "");
-    cy.dataCy(dataCy).type(value);
-  }
+  cy.dataCy(dataCy).type(`{selectall}${value}`);
+  cy.dataCy(dataCy).should("have.value", value);
 };
 
 export const setDnsZoneAuthNameserver = (nameserver: string) => {
