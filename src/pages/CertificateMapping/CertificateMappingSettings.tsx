@@ -223,6 +223,7 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
           idKebab="toggle-action-buttons"
           isKebabOpen={isKebabOpen}
           dropdownItems={kebabItems}
+          isDisabled={isDataLoading}
         />
       ),
     },

@@ -9,6 +9,10 @@ import {
 } from "../../common/data_tables";
 import { typeInTextbox } from "cypress/e2e/common/ui/textbox";
 import { addItemToRightList } from "cypress/e2e/common/ui/dual_list";
+import {
+  searchForMembersEntry,
+  selectMembersEntry,
+} from "cypress/e2e/common/members_table";
 
 Given("HBAC service {string} exists", (serviceName: string) => {
   loginAsAdmin();
@@ -71,7 +75,7 @@ Given(
     cy.dataCy("member-of-add-modal").should("not.exist");
     cy.dataCy("add-member-success").should("exist");
 
-    searchForEntry(groupName);
+    searchForMembersEntry(groupName);
     entryExists(groupName);
 
     logout();
@@ -91,8 +95,8 @@ Given(
       "true"
     );
 
-    searchForEntry(groupName);
-    selectEntry(groupName);
+    searchForMembersEntry(groupName);
+    selectMembersEntry(groupName);
 
     cy.dataCy("member-of-button-delete").click();
     cy.dataCy("member-of-delete-modal").should("exist");
@@ -101,7 +105,7 @@ Given(
     cy.dataCy("member-of-delete-modal").should("not.exist");
     cy.dataCy("remove-hbac-services-success").should("exist");
 
-    searchForEntry(groupName);
+    searchForMembersEntry(groupName);
     entryDoesNotExist(groupName);
 
     logout();

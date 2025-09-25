@@ -24,7 +24,7 @@ Feature: User group members
     Then I should not see "member-of-add-modal" modal
     And I should see "add-member-success" alert
 
-    When I search for "aturing" in the data table
+    When I search for "aturing" in the members table
     Then I should see "aturing" entry in the data table
 
   @cleanup
@@ -65,7 +65,7 @@ Feature: User group members
     Given I am logged in as admin
     And I am on "user-groups/imitation-game-group/member_user" page
 
-    When I select entry "aturing" in the data table
+    When I select entry "aturing" in the members table
     Then I should see "aturing" entry selected in the data table
 
     When I click on the "member-of-button-delete" button
@@ -75,7 +75,7 @@ Feature: User group members
     Then I should not see "member-of-delete-modal" modal
     And I should see "remove-users-success" alert
 
-    When I search for "aturing" in the data table
+    When I search for "aturing" in the members table
     Then I should not see "aturing" entry in the data table
 
   @cleanup
@@ -105,7 +105,7 @@ Feature: User group members
     Then I should not see "member-of-add-modal" modal
     And I should see "add-member-success" alert
 
-    When I search for "editors" in the data table
+    When I search for "editors" in the members table
     Then I should see "editors" entry in the data table
 
   @cleanup
@@ -144,7 +144,7 @@ Feature: User group members
     Given I am logged in as admin
     And I am on "user-groups/imitation-game-group/member_group" page
 
-    When I select entry "editors" in the data table
+    When I select entry "editors" in the members table
     Then I should see "editors" entry selected in the data table
 
     When I click on the "member-of-button-delete" button
@@ -154,7 +154,7 @@ Feature: User group members
     Then I should not see "member-of-delete-modal" modal
     And I should see "remove-usersgroups-success" alert
 
-    When I search for "editors" in the data table
+    When I search for "editors" in the members table
     Then I should not see "editors" entry in the data table
 
   @cleanup
@@ -183,7 +183,7 @@ Feature: User group members
     Then I should not see "member-of-add-modal" modal
     And I should see "add-member-success" alert
 
-    When I search for "DNS" in the data table
+    When I search for "DNS" in the members table
     Then I should see "DNS/webui.ipa.test@IPA.TEST" entry in the data table
 
   @cleanup
@@ -222,7 +222,7 @@ Feature: User group members
     Given I am logged in as admin
     And I am on "user-groups/imitation-game-group/member_service" page
 
-    When I select entry "DNS/webui.ipa.test@IPA.TEST" in the data table
+    When I select entry "DNS/webui.ipa.test@IPA.TEST" in the members table
     Then I should see "DNS/webui.ipa.test@IPA.TEST" entry selected in the data table
 
     When I click on the "member-of-button-delete" button
@@ -232,7 +232,7 @@ Feature: User group members
     Then I should not see "member-of-delete-modal" modal
     And I should see "remove-services-success" alert
 
-    When I search for "DNS" in the data table
+    When I search for "DNS" in the members table
     Then I should not see "DNS/webui.ipa.test@IPA.TEST" entry in the data table
 
   @cleanup

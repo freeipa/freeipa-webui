@@ -34,7 +34,6 @@ Feature: HBAC service group members
   Scenario: Seed: Ensure service exists
     Given I add service group member "crond" to service group "ftp"
 
-
   @test
   Scenario: Search within HBAC service members
     Given I am logged in as admin
@@ -43,18 +42,16 @@ Feature: HBAC service group members
     When I click on the "hbac-service-groups-tab-members" tab
     Then I should see "hbac-service-groups-tab-members" tab selected
 
-    When I search for "crond" in the data table
+    When I search for "crond" in the members table
     Then I should see "crond" entry in the data table
 
   @cleanup
   Scenario: Cleanup: Remove HBAC service member
     Given I delete service group member "crond" from service group "ftp"
 
-
   @seed
   Scenario: Seed: Ensure service exists
     Given I add service group member "crond" to service group "ftp"
-
 
   @test
   Scenario: Remove HBAC service member
@@ -65,7 +62,7 @@ Feature: HBAC service group members
     Then I should see "hbac-service-groups-tab-members" tab selected
 
     Then I should see "crond" entry in the data table
-    When I select entry "crond" in the data table
+    When I select entry "crond" in the members table
 
     When I click on the "member-of-button-delete" button
     Then I should see "member-of-delete-modal" modal

@@ -37,11 +37,11 @@ Feature: Netgroup Member Of manipulation
         When I click on the "netgroups-tab-memberof" tab
         Then I should see "netgroups-tab-memberof" tab
 
-        When I search for "my_netgroup_2" in the data table
+        When I search for "my_netgroup_2" in the members table
         Then I should see "my_netgroup_2" entry in the data table
         And I should not see "my_netgroup" entry in the data table
 
-        When I search for "notthere" in the data table
+        When I search for "notthere" in the members table
         Then I should not see "notthere" entry in the data table
         And I should not see "my_netgroup_2" entry in the data table
 
@@ -53,7 +53,7 @@ Feature: Netgroup Member Of manipulation
         When I click on the "netgroups-tab-memberof" tab
         Then I should see "netgroups-tab-memberof" tab
 
-        When I select entry "my_netgroup_2" in the data table
+        When I select entry "my_netgroup_2" in the members table
         Then I should see "my_netgroup_2" entry selected in the data table
         When I click on the "member-of-button-delete" button
         Then I should see "member-of-delete-modal" modal

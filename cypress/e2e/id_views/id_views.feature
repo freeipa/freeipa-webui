@@ -90,14 +90,14 @@ Feature: ID View manipulation
     Then I should see "dual-list-modal" modal
 
     When I click on search link in dual list
-    Then I should see "item-webui\.ipa\.test" dual list item on the left
+    Then I should see "item-webui.ipa.test" dual list item on the left
 
-    When I click on "item-webui\.ipa\.test" dual list item
-    Then I should see "item-webui\.ipa\.test" dual list item selected
+    When I click on "item-webui.ipa.test" dual list item
+    Then I should see "item-webui.ipa.test" dual list item selected
 
     When I click on the "dual-list-add-selected" button
-    Then I should see "item-webui\.ipa\.test" dual list item on the right
-    And I should see "item-webui\.ipa\.test" dual list item not selected
+    Then I should see "item-webui.ipa.test" dual list item on the right
+    And I should see "item-webui.ipa.test" dual list item not selected
 
     When I click on the "modal-button-add" button
     Then I should not see "dual-list-modal" modal

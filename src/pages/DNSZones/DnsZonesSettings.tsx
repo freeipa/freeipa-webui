@@ -291,6 +291,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
           idKebab="toggle-action-buttons"
           isKebabOpen={isKebabOpen}
           dropdownItems={kebabItems}
+          isDisabled={isDataLoading}
         />
       ),
     },

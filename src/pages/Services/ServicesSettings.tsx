@@ -277,6 +277,7 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
           idKebab="toggle-action-buttons"
           isKebabOpen={isKebabOpen}
           dropdownItems={dropdownItems}
+          isDisabled={isSaving}
         />
       ),
     },

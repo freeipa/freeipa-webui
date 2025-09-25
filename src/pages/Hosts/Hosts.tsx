@@ -664,6 +664,7 @@ const Hosts = () => {
           isKebabOpen={kebabIsOpen}
           dropdownItems={!showTableRows ? [] : dropdownItems}
           dataCy="hosts-kebab"
+          isDisabled={!showTableRows}
         />
       ),
     },

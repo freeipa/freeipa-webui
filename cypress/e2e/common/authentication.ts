@@ -18,7 +18,13 @@ export const loginAsAdmin = () => {
 };
 
 export const logout = () => {
+  logoutStep();
+  cy.location("pathname").should("match", new RegExp(`.*login$`));
+};
+
+const logoutStep = () => {
   cy.dataCy("toolbar-username").click();
+  cy.dataCy("toolbar-username").should("have.attr", "aria-expanded", "true");
   cy.dataCy("toolbar-button-logout").click();
 };
 
@@ -36,9 +42,9 @@ Then("I should be logged in as {string}", (username: string) => {
 });
 
 When("I log out", () => {
-  logout();
+  logoutStep();
 });
 
 Then("I should be logged out", () => {
-  cy.dataCy("toolbar-username").should("not.exist");
+  cy.location("pathname").should("match", new RegExp(`.*login$`));
 });

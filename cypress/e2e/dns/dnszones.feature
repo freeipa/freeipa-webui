@@ -57,7 +57,7 @@ Feature: DNS Zones
         Given I am logged in as admin
         And I am on "dns-zones" page
         When I create an invalid DNS reverse zone that triggers a validation error
-        Then I should see "error" alert
+        Then I should see "add-dnszone-error" alert
 
     @seed
     Scenario: Create a new DNS zone to disable/enable

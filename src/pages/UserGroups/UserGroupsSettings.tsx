@@ -386,6 +386,7 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
           idKebab="toggle-action-buttons"
           isKebabOpen={isKebabOpen}
           dropdownItems={dropdownItems}
+          isDisabled={isSaving}
         />
       ),
     },

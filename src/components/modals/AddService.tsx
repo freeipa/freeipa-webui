@@ -9,6 +9,7 @@ import {
   MenuToggle,
   MenuToggleElement,
   Select,
+  SelectList,
   SelectOption,
   ValidatedOptions,
 } from "@patternfly/react-core";
@@ -83,6 +84,7 @@ const AddService = (props: PropsToAddService) => {
       ref={toggleRef}
       onClick={serviceOnToggle}
       className="pf-v6-u-w-100"
+      isExpanded={isServiceOpen}
     >
       {serviceSelected}
     </MenuToggle>
@@ -130,6 +132,7 @@ const AddService = (props: PropsToAddService) => {
       ref={toggleRef}
       onClick={hostNameOnToggle}
       className="pf-v6-u-w-100"
+      isExpanded={isHostNameOpen}
     >
       {hostNameSelected}
     </MenuToggle>
@@ -247,15 +250,17 @@ const AddService = (props: PropsToAddService) => {
             isOpen={isServiceOpen}
             aria-labelledby="service"
           >
-            {serviceOptions.map((option, index) => (
-              <SelectOption
-                data-cy={"modal-select-service-" + option}
-                key={index}
-                value={option}
-              >
-                {option}
-              </SelectOption>
-            ))}
+            <SelectList>
+              {serviceOptions.map((option, index) => (
+                <SelectOption
+                  data-cy={"modal-select-service-" + option}
+                  key={index}
+                  value={option}
+                >
+                  {option}
+                </SelectOption>
+              ))}
+            </SelectList>
           </Select>
           <HelperText>
             {!serviceValidation.isError && (
@@ -286,15 +291,17 @@ const AddService = (props: PropsToAddService) => {
             isOpen={isHostNameOpen}
             aria-labelledby="host name"
           >
-            {props.hostsList.map((option, index) => (
-              <SelectOption
-                data-cy={"modal-select-host-name-" + option}
-                key={index}
-                value={option}
-              >
-                {option}
-              </SelectOption>
-            ))}
+            <SelectList>
+              {props.hostsList.map((option, index) => (
+                <SelectOption
+                  data-cy={"modal-select-host-name-" + option}
+                  key={index}
+                  value={option}
+                >
+                  {option}
+                </SelectOption>
+              ))}
+            </SelectList>
           </Select>
           <HelperText>
             {!hostNameValidation.isError && (

@@ -10,7 +10,7 @@ Feature: HBAC service groups manipulation
     Then I should see "add-hbac-service-group-modal" modal
 
     When I type in the "modal-textbox-service-group-name" textbox text "a_service_group1"
-    Then I should see "a_service_group1" in the "modal-textbox-service-group-name" textbox  
+    Then I should see "a_service_group1" in the "modal-textbox-service-group-name" textbox
 
     When I type in the "modal-textbox-description" textbox text "my description"
     Then I should see "my description" in the "modal-textbox-description" textbox

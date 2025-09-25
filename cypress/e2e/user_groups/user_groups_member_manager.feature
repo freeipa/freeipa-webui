@@ -24,7 +24,7 @@ Feature: Usergroup member managers
     Then I should not see "member-of-add-modal" modal
     And I should see "add-member-managers-success" alert
 
-    When I search for "mmuser" in the data table
+    When I search for "mmuser" in the members table
     Then I should see "mmuser" entry in the data table
 
   @cleanup
@@ -43,7 +43,7 @@ Feature: Usergroup member managers
     Given I am logged in as admin
     And I am on "user-groups/member-managers-group/manager_user" page
 
-    When I select entry "mmuser" in the data table
+    When I select entry "mmuser" in the members table
     Then I should see "mmuser" entry selected in the data table
 
     When I click on the "member-of-button-delete" button
@@ -53,7 +53,7 @@ Feature: Usergroup member managers
     Then I should not see "member-of-delete-modal" modal
     And I should see "remove-member-managers-success" alert
 
-    When I search for "mmuser" in the data table
+    When I search for "mmuser" in the members table
     Then I should not see "mmuser" entry in the data table
 
   @cleanup
@@ -83,7 +83,7 @@ Feature: Usergroup member managers
     Then I should not see "member-of-add-modal" modal
     And I should see "add-member-managers-success" alert
 
-    When I search for "editors" in the data table
+    When I search for "editors" in the members table
     Then I should see "editors" entry in the data table
 
   @test
@@ -91,7 +91,7 @@ Feature: Usergroup member managers
     Given I am logged in as admin
     And I am on "user-groups/member-managers-group/manager_usergroup" page
 
-    When I select entry "editors" in the data table
+    When I select entry "editors" in the members table
     Then I should see "editors" entry selected in the data table
 
     When I click on the "member-of-button-delete" button
@@ -101,7 +101,7 @@ Feature: Usergroup member managers
     Then I should not see "member-of-delete-modal" modal
     And I should see "remove-member-managers-success" alert
 
-    When I search for "editors" in the data table
+    When I search for "editors" in the members table
     Then I should not see "editors" entry in the data table
 
   @cleanup
