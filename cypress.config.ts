@@ -38,6 +38,7 @@ export default defineConfig({
     ADMIN_LOGIN: "admin",
     ADMIN_PASSWORD: "Secret123",
     HOSTNAME: "ipa.test",
+    SERVER_NAME: "webui.ipa.test",
     TAGS: "not @ignore",
   },
 });
