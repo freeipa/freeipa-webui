@@ -26,7 +26,7 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
 import UsersTable from "../../components/tables/UsersTable";
 // Components
-import PaginationLayout from "src/components/layouts/PaginationLayout";
+import PaginationLayout from "src/components/layouts/PaginationLayout/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Modals

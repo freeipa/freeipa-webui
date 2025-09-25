@@ -20,7 +20,7 @@ import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
-import PaginationLayout from "src/components/layouts/PaginationLayout";
+import PaginationLayout from "src/components/layouts/PaginationLayout/PaginationLayout";
 // Errors
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";

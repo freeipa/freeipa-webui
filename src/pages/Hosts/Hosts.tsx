@@ -26,7 +26,7 @@ import KebabLayout from "src/components/layouts/KebabLayout";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Components
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
-import PaginationLayout from "src/components/layouts/PaginationLayout";
+import PaginationLayout from "src/components/layouts/PaginationLayout/PaginationLayout";
 import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Tables
 import HostsTable from "./HostsTable";
