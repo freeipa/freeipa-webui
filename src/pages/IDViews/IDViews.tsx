@@ -15,7 +15,7 @@ import {
 // Layouts
 import DualListLayout from "src/components/layouts/DualListLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
-import KebabLayout from "src/components/layouts/KebabLayout";
+import KebabLayout from "src/components/layouts/KebabLayout/KebabLayout";
 import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";

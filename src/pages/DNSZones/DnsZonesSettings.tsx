@@ -34,7 +34,7 @@ import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
 import TabLayout from "src/components/layouts/TabLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import KebabLayout from "src/components/layouts/KebabLayout";
+import KebabLayout from "src/components/layouts/KebabLayout/KebabLayout";
 import IpaTextArea from "src/components/Form/IpaTextArea";
 import IpaTextboxList from "src/components/Form/IpaTextboxList";
 import IpaNumberInput from "src/components/Form/IpaNumberInput";
