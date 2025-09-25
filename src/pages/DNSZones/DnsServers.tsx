@@ -278,10 +278,7 @@ const DnsServers = () => {
   const body = (
     <>
       {dnsServersId.map((dnsServerId) => (
-        <Tr
-          key={`body-row-${dnsServerId}`}
-          id={`table-body-row-${dnsServerId}`}
-        >
+        <Tr key={`body-row-${dnsServerId}`} id={dnsServerId}>
           <Td key={`idnsserverid-${dnsServerId}`}>
             <Link to={`/dns-servers/${dnsServerId}`}>{dnsServerId}</Link>
           </Td>

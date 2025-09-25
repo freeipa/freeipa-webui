@@ -27,12 +27,11 @@ export const removeElementFromTextboxList = (
   dataCy: string
 ) => {
   cy.dataCy(dataCy)
-    .children()
-    .find(`div[name="value"]:has(input[value="${elementToRemove}"])`)
+    .find(`input[value="${elementToRemove}"]`)
+    .closest('div[name="value"]')
     .find('button:contains("Delete")')
     .click();
   cy.dataCy(dataCy)
-    .children()
     .find(`input[value="${elementToRemove}"]`)
     .should("not.exist");
 };
