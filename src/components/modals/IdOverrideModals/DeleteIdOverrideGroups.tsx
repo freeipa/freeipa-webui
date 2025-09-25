@@ -26,7 +26,7 @@ interface SelectedData {
   clearSelectedGroups: () => void;
 }
 
-export interface PropsToDelete {
+interface PropsToDelete {
   show: boolean;
   idview: string;
   handleModalToggle: () => void;

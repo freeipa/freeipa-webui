@@ -35,7 +35,7 @@ import TableLayout from "src/components/layouts/TableLayout";
  *     · The attribute in the entry that is used as its identifier.
  */
 
-export interface PropsToDeletedElementsTable<T> {
+interface PropsToDeletedElementsTable<T> {
   mode: "passing_id" | "passing_full_data";
   elementsToDelete: T[];
   columnNames: string[];

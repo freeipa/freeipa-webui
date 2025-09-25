@@ -25,7 +25,7 @@ export function partialSudoCmdToSudoCmd(
 }
 
 // Get empty User object initialized with default values
-export function createEmptySudoCmd(): SudoCmd {
+function createEmptySudoCmd(): SudoCmd {
   const sudoCmd: SudoCmd = {
     sudocmd: "",
     dn: "",

@@ -23,11 +23,11 @@ import { HBACService } from "../utils/datatypes/globalDataTypes";
  * - hbacsvc_del: https://freeipa.readthedocs.io/en/latest/api/hbacsvc_del.html
  */
 
-export type ServiceFullData = {
+type ServiceFullData = {
   service?: Partial<HBACService>;
 };
 
-export interface ShowPayload {
+interface ShowPayload {
   serviceNamesList: string[];
   no_members?: boolean;
   version: string;
@@ -129,97 +129,6 @@ const extendedApi = api.injectEndpoints({
       transformResponse: (response: FindRPCResponse): HBACService =>
         apiToHBACService(response.result.result),
     }),
-
-    /**
-     * Add entity to HBAC rule
-     * @param {string} toId - ID of the HBAC rule
-     * @param {string} type - Type of the entity
-     *    Available types:
-     *        user | group |
-     *        host | hostgroup |
-     *        hbacsrv | hbacsvcgroup |
-     *        sourcehost
-     * @param {string[]} listOfMembers - List of members to add to the HBAC rule
-     * @param {boolean} unsetCategory - set the category from "all" to ""
-     */
-    addMembersToHbacService: build.mutation<
-      BatchRPCResponse,
-      [string, string, string[], boolean]
-    >({
-      query: (payload) => {
-        const actions: Command[] = [];
-        const id = payload[0];
-        const memberType = payload[1];
-        const members = payload[2];
-        const unsetCategory = payload[3];
-        let methodType = "";
-        let catAttr = "";
-
-        if (memberType === "user" || memberType === "group") {
-          methodType = "hbacrule_add_user";
-          catAttr = "usercategory";
-        } else if (memberType === "host" || memberType === "hostgroup") {
-          methodType = "hbacrule_add_host";
-          catAttr = "hostcategory";
-        } else if (memberType === "hbacsvc" || memberType === "hbacsvcgroup") {
-          methodType = "hbacrule_add_service";
-          catAttr = "servicecategory";
-        } else if (memberType === "sourcehost") {
-          methodType = "hbacrule_add_sourcehost";
-          catAttr = "sourcehostcategory";
-        }
-
-        if (unsetCategory) {
-          actions.push({
-            method: "hbacrule_mod",
-            params: [[id], { [catAttr]: "" }],
-          } as Command);
-        }
-        actions.push({
-          method: methodType,
-          params: [[id], { [memberType]: members }],
-        } as Command);
-
-        return getBatchCommand(actions, API_VERSION_BACKUP);
-      },
-    }),
-    /**
-     * Remove entity from HBAC rule
-     * @param {string} toId - ID of the HBAC rule
-     * @param {string} type - Type of the entity
-     *    Available types:
-     *        user | group |
-     *        host | hostgroup |
-     *        hbacsrc | hbacsvcgroup |
-     *        sourcehost
-     * @param {string[]} listOfMembers - List of members to remove
-     */
-    removeMembersFromHbacService: build.mutation<
-      FindRPCResponse,
-      [string, string, string[]]
-    >({
-      query: (payload) => {
-        const id = payload[0];
-        const memberType = payload[1];
-        const members = payload[2];
-
-        let methodType = "";
-        if (memberType === "user" || memberType === "group") {
-          methodType = "hbacrule_remove_user";
-        } else if (memberType === "host" || memberType === "hostgroup") {
-          methodType = "hbacrule_remove_host";
-        } else if (memberType === "hbacsvc" || memberType === "hbacsvcgroup") {
-          methodType = "hbacrule_remove_service";
-        } else if (memberType === "sourcehost") {
-          methodType = "hbacrule_remove_sourcehost";
-        }
-
-        return getCommand({
-          method: methodType,
-          params: [[id], { [memberType]: members }],
-        });
-      },
-    }),
     /**
      * Given a list of group names, show the full data of those groups
      * @param {string[]} groupNames - List of group names
@@ -263,8 +172,6 @@ export const {
   useRemoveHbacServicesMutation,
   useSaveHbacServiceMutation,
   useGetHbacServiceFullDataQuery,
-  useRemoveMembersFromHbacServiceMutation,
-  useAddMembersToHbacServiceMutation,
   useGetHbacServiceByIdQuery,
   useGetHBACServicesInfoByNameQuery,
 } = extendedApi;

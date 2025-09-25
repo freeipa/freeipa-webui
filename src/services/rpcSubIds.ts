@@ -3,7 +3,6 @@ import {
   Command,
   getBatchCommand,
   BatchRPCResponse,
-  useGettingGenericQuery,
   FindRPCResponse,
   getCommand,
 } from "./rpc";
@@ -23,20 +22,9 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
  * - subid_mod: https://freeipa.readthedocs.io/en/latest/api/subid_mod.html
  */
 
-export interface SubIdsShowPayload {
+interface SubIdsShowPayload {
   subIdsList: string[];
   version: string;
-}
-
-export interface SubIdPayload {
-  ipauniqueid?: string;
-  description?: string;
-  ipaowner?: string;
-  ipasubuidnumber?: string;
-  ipasubgidnumber?: string;
-  timelimit?: number;
-  sizelimit?: number;
-  version?: string;
 }
 
 export interface SubIdDataPayload {
@@ -333,12 +321,6 @@ const extendedApi = api.injectEndpoints({
   }),
   overrideExisting: false,
 });
-
-export const useGettingSubIdsQuery = (payloadData) => {
-  payloadData["objName"] = "subid";
-  payloadData["objAttr"] = "ipauniqueid";
-  return useGettingGenericQuery(payloadData);
-};
 
 export const {
   useGetSubIdsInfoByNameQuery,

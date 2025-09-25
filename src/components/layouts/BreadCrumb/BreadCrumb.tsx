@@ -10,7 +10,7 @@ export interface BreadCrumbItem {
   isActive?: boolean;
 }
 
-export interface PropsToBreadcrumb {
+interface PropsToBreadcrumb {
   className?: string;
   preText?: string;
   breadcrumbItems?: BreadCrumbItem[];

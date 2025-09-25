@@ -19,7 +19,7 @@ import CustomTooltip from "src/components/layouts/CustomTooltip";
 import NumberSelector from "src/components/Form/NumberInput";
 
 // Generic field types
-export interface BaseField {
+interface BaseField {
   name: string;
   label: string;
   isRequired?: boolean;
@@ -27,7 +27,7 @@ export interface BaseField {
   dataCy: string;
 }
 
-export interface TextInputField extends BaseField {
+interface TextInputField extends BaseField {
   type: "text";
   placeholder?: string;
 }
@@ -40,7 +40,7 @@ export interface NumberInputField extends BaseField {
   defaultValue?: number;
 }
 
-export interface TextAreaField extends BaseField {
+interface TextAreaField extends BaseField {
   type: "textarea";
   rows?: number;
 }
@@ -71,7 +71,7 @@ export type FieldConfig =
   | RadioGroupField;
 
 // Generic Field Components
-export interface GenericFieldProps {
+interface GenericFieldProps {
   field: FieldConfig;
   value: any;
   onChange: (value: any) => void;

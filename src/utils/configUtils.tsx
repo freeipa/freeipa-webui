@@ -37,7 +37,7 @@ export function apiToConfig(apiRecord: Record<string, unknown>): Config {
   return partialConfigToConfig(converted) as Config;
 }
 
-export function partialConfigToConfig(partialConfig: Partial<Config>): Config {
+function partialConfigToConfig(partialConfig: Partial<Config>): Config {
   return {
     ...createEmptyConfig(),
     ...partialConfig,
@@ -45,7 +45,7 @@ export function partialConfigToConfig(partialConfig: Partial<Config>): Config {
 }
 
 // Get empty User object initialized with default values
-export function createEmptyConfig(): Config {
+function createEmptyConfig(): Config {
   const config: Config = {
     dn: "",
     cn: "",
