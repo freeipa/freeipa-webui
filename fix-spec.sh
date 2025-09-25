@@ -28,22 +28,22 @@ replace() {
         # only replace the *last* occurrence of @, not e.g. the one in @patternfly/..
         sed 's/^/Provides: bundled(npm(/; s/\(.*\)@/\1)) = /')
 
-    awk -v p="$PROVIDES" 'gsub(/#NPM_PROVIDES/, p) 1' "$spec" > "$spec".new
+    awk -v p="${PROVIDES}" 'gsub(/#NPM_PROVIDES/, p) 1' "${spec}" > "${spec}".new
 
-    if [ "$backup" = false ]; then
-        mv -f "$spec".new "$spec"
+    if [ "${backup}" = false ]; then
+        mv -f "${spec}".new "${spec}"
     fi
 }
 
 revert() {
     # Delete all lines but the first one containing "Provides: bundled(npm(
-    sed '/^Provides: bundled(npm(/{x;/^$/!d;g;}' < "$spec" > "$spec".new
+    sed '/^Provides: bundled(npm(/{x;/^$/!d;g;}' < "${spec}" > "${spec}".new
 
     # Replace the first line containing "Provides: bundled(npm(" with "#NPM_PROVIDES"
-    sed -i 's/^Provides: bundled(npm(.*/#NPM_PROVIDES/' "$spec".new
+    sed -i 's/^Provides: bundled(npm(.*/#NPM_PROVIDES/' "${spec}".new
 
-    if [ "$backup" = false ]; then
-        mv -f "$spec".new "$spec"
+    if [ "${backup}" = false ]; then
+        mv -f "${spec}".new "${spec}"
     fi
 }
 
@@ -51,15 +51,15 @@ update() {
     revert
 
     # We need to use the backup file for the next step if not in-place
-    if [ "$backup" = true ]; then
-        spec="$spec".new
+    if [ "${backup}" = true ]; then
+        spec="${spec}".new
     fi
 
     replace
 
     # There is no need for two backups, we can just move the replace backup to the original revert backup
-    if [ "$backup" = true ]; then
-        mv -f "$spec".new "$spec"
+    if [ "${backup}" = true ]; then
+        mv -f "${spec}".new "${spec}"
     fi
 }
 
@@ -75,14 +75,14 @@ do
             exit 0
             ;;
         "-r")
-            if [ "$action_set" = true ]; then
+            if [ "${action_set}" = true ]; then
                 usage
                 exit 1
             fi
             action_set=true
             ;;
         "-f")
-            if [ "$action_set" = true ]; then
+            if [ "${action_set}" = true ]; then
                 usage
                 exit 1
             fi
@@ -90,7 +90,7 @@ do
             action="revert"
             ;;
         "-u")
-            if [ "$action_set" = true ]; then
+            if [ "${action_set}" = true ]; then
                 usage
                 exit 1
             fi
@@ -110,12 +110,12 @@ done
 
 spec="${1:-../../freeipa.spec.in}"
 
-if [[ ! -f "$spec" ]]; then
-    echo "Spec file $spec does not exist"
+if [[ ! -f "${spec}" ]]; then
+    echo "Spec file ${spec} does not exist"
     exit 1
 fi
 
-case $action in
+case "${action}" in
     "replace")
         replace
         ;;
@@ -124,5 +124,9 @@ case $action in
         ;;
     "update")
         update
+        ;;
+    *)
+        echo "Error: Unknown action '${action}'" >&2
+        exit 1
         ;;
 esac
