@@ -5,6 +5,7 @@ import {
   MenuToggle,
   MenuToggleElement,
   Select,
+  SelectList,
   SelectOption,
 } from "@patternfly/react-core";
 // Layouts
@@ -92,6 +93,7 @@ const AddRule = (props: PropsToAddRule) => {
       ref={toggleRef}
       onClick={() => setIsSelectOpen(!isSelectOpen)}
       className="pf-v6-u-w-100"
+      isExpanded={isSelectOpen}
     >
       {groupSelected}
     </MenuToggle>
@@ -118,15 +120,17 @@ const AddRule = (props: PropsToAddRule) => {
           isOpen={isSelectOpen}
           aria-labelledby="automember-group-add"
         >
-          {props.groupsAvailableToAdd.map((option, index) => (
-            <SelectOption
-              data-cy={"modal-select-automember-" + option}
-              key={index}
-              value={option}
-            >
-              {option}
-            </SelectOption>
-          ))}
+          <SelectList>
+            {props.groupsAvailableToAdd.map((option, index) => (
+              <SelectOption
+                data-cy={"modal-select-automember-" + option}
+                key={index}
+                value={option}
+              >
+                {option}
+              </SelectOption>
+            ))}
+          </SelectList>
         </Select>
       ),
     },

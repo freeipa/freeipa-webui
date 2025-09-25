@@ -5,6 +5,7 @@ import {
   MenuToggle,
   MenuToggleElement,
   Select,
+  SelectList,
   SelectOption,
 } from "@patternfly/react-core";
 // Modals
@@ -88,6 +89,7 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
       ref={toggleRef}
       onClick={onToggleRevReason}
       className="pf-v6-u-w-100"
+      isExpanded={isRevReasonOpen}
     >
       {revReasonSelected}
     </MenuToggle>
@@ -129,6 +131,7 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
       ref={toggleRef}
       onClick={onCAToggle}
       className="pf-v6-u-w-100"
+      isExpanded={isCAOpen}
     >
       {CASelected}
     </MenuToggle>
@@ -212,15 +215,17 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
           toggle={toggleRevReason}
           onSelect={onSelectRevReason}
         >
-          {Object.entries(REVOCATION_REASONS).map((value) => (
-            <SelectOption
-              data-cy={"modal-select-rev-reason-" + value[1]}
-              key={value[0]}
-              value={value[1]}
-            >
-              {value[1]}
-            </SelectOption>
-          ))}
+          <SelectList>
+            {Object.entries(REVOCATION_REASONS).map((value) => (
+              <SelectOption
+                data-cy={"modal-select-rev-reason-" + value[1]}
+                key={value[0]}
+                value={value[1]}
+              >
+                {value[1]}
+              </SelectOption>
+            ))}
+          </SelectList>
         </Select>
       ),
     },
@@ -238,15 +243,17 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
           toggle={toggleCASelect}
           onSelect={onCASelect}
         >
-          {CAOptions.map((option, index) => (
-            <SelectOption
-              data-cy={"modal-select-rev-ca-option-" + option}
-              key={index}
-              value={option}
-            >
-              {option}
-            </SelectOption>
-          ))}
+          <SelectList>
+            {CAOptions.map((option, index) => (
+              <SelectOption
+                data-cy={"modal-select-rev-ca-option-" + option}
+                key={index}
+                value={option}
+              >
+                {option}
+              </SelectOption>
+            ))}
+          </SelectList>
         </Select>
       ),
     },

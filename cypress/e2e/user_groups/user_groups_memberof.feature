@@ -23,7 +23,7 @@ Feature: Usergroup is a member of
     Then I should not see "member-of-add-modal" modal
     And I should see "add-member-success" alert
 
-    When I search for "editors" in the data table
+    When I search for "editors" in the members table
     Then I should see "editors" entry in the data table
 
   @cleanup
@@ -40,7 +40,7 @@ Feature: Usergroup is a member of
     Given I am logged in as admin
     And I am on "user-groups/a-group/memberof_usergroup" page
 
-    When I select entry "editors" in the data table
+    When I select entry "editors" in the members table
     Then I should see "editors" entry selected in the data table
 
     When I click on the "member-of-button-delete" button
@@ -50,7 +50,7 @@ Feature: Usergroup is a member of
     Then I should not see "member-of-delete-modal" modal
     And I should see "remove-user-groups-success" alert
 
-    When I search for "editors" in the data table
+    When I search for "editors" in the members table
     Then I should not see "editors" entry in the data table
 
   @cleanup
@@ -81,7 +81,7 @@ Feature: Usergroup is a member of
     Then I should not see "member-of-add-modal" modal
     And I should see "add-member-success" alert
 
-    When I search for "helpdesk" in the data table
+    When I search for "helpdesk" in the members table
     Then I should see "helpdesk" entry in the data table
 
   @cleanup
@@ -98,7 +98,7 @@ Feature: Usergroup is a member of
     Given I am logged in as admin
     And I am on "user-groups/a-group/memberof_role" page
 
-    When I select entry "helpdesk" in the data table
+    When I select entry "helpdesk" in the members table
     Then I should see "helpdesk" entry selected in the data table
 
     When I click on the "member-of-button-delete" button
@@ -108,7 +108,7 @@ Feature: Usergroup is a member of
     Then I should not see "member-of-delete-modal" modal
     And I should see "remove-roles-success" alert
 
-    When I search for "helpdesk" in the data table
+    When I search for "helpdesk" in the members table
     Then I should not see "helpdesk" entry in the data table
 
   @cleanup
@@ -138,7 +138,7 @@ Feature: Usergroup is a member of
     Then I should not see "member-of-add-modal" modal
     And I should see "add-member-success" alert
 
-    When I search for "test" in the data table
+    When I search for "test" in the members table
     Then I should see "test" entry in the data table
 
   @cleanup
@@ -157,7 +157,7 @@ Feature: Usergroup is a member of
     Given I am logged in as admin
     And I am on "user-groups/a-group/memberof_hbacrule" page
 
-    When I select entry "test" in the data table
+    When I select entry "test" in the members table
     Then I should see "test" entry selected in the data table
 
     When I click on the "member-of-button-delete" button
@@ -167,7 +167,7 @@ Feature: Usergroup is a member of
     Then I should not see "member-of-delete-modal" modal
     And I should see "remove-hbac-rules-success" alert
 
-    When I search for "test" in the data table
+    When I search for "test" in the members table
     Then I should not see "test" entry in the data table
 
   @cleanup

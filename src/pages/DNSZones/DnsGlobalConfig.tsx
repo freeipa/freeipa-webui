@@ -205,6 +205,7 @@ const DnsGlobalConfig = () => {
           idKebab="toggle-action-buttons"
           isKebabOpen={isKebabOpen}
           dropdownItems={dropdownItems}
+          isDisabled={isDataLoading}
         />
       ),
     },

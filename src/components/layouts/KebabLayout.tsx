@@ -17,6 +17,7 @@ interface PropsToKebab {
     | undefined;
   isKebabOpen?: boolean;
   className?: string;
+  isDisabled: boolean;
   isPlain?: boolean;
   dropdownItems?: any[] | undefined;
   // Toggle
@@ -36,6 +37,7 @@ const KebabLayout = (props: PropsToKebab) => {
       variant="plain"
       onClick={props.onKebabToggle}
       isExpanded={props.isKebabOpen}
+      isDisabled={props.isDisabled}
     >
       <EllipsisVIcon />
     </MenuToggle>

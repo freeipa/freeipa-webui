@@ -11,14 +11,11 @@ import "../common/data_tables";
 import { navigateTo } from "../common/navigation";
 import { loginAsAdmin, logout } from "../common/authentication";
 import { createHostgroup } from "../hostgroups/hostgroup";
+import { isOptionSelected, selectOption } from "../common/ui/select";
 
 export const fillHostgroupRule = (hostgroupName: string) => {
-  cy.dataCy("modal-select-automember-toggle").click();
-  cy.dataCy("modal-select-automember-" + hostgroupName).click();
-  cy.get("[data-cy='typeahead-select-toggle'] input").should(
-    "have.value",
-    hostgroupName
-  );
+  selectOption(hostgroupName, "modal-select-automember");
+  isOptionSelected(hostgroupName, "modal-select-automember");
 };
 
 export const createHostgroupRule = (hostgroupName: string) => {
@@ -92,7 +89,12 @@ Then(
 Then(
   "I should see hostgroup rule {string} as the default hostgroup rule",
   (hostgroupName: string) => {
-    cy.dataCy("typeahead-select-toggle").click();
+    cy.get("[data-cy='typeahead-select-toggle'] > button").click();
+    cy.get("[data-cy='typeahead-select-toggle'] > button").should(
+      "have.attr",
+      "aria-expanded",
+      "true"
+    );
     cy.dataCy("typeahead-select-" + hostgroupName).click();
     cy.dataCy("auto-member-default-host-rules-modal").should("exist");
   }

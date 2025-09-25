@@ -12,6 +12,7 @@ import {
   FlexItem,
   Radio,
   MenuToggleElement,
+  SelectList,
 } from "@patternfly/react-core";
 import { InfoCircleIcon } from "@patternfly/react-icons";
 import React from "react";
@@ -199,16 +200,18 @@ export const GenericField = ({
             isScrollable
             data-cy={field.dataCy}
           >
-            {field.options.map((option) => (
-              <SelectOption
-                key={option.key}
-                id={`${fieldId}-${option.value}`}
-                value={option.value}
-                data-cy={`${field.dataCy}-option-${option.key}`}
-              >
-                {option.key}
-              </SelectOption>
-            ))}
+            <SelectList>
+              {field.options.map((option) => (
+                <SelectOption
+                  key={option.key}
+                  id={`${fieldId}-${option.value}`}
+                  value={option.value}
+                  data-cy={`${field.dataCy}-option-${option.key}`}
+                >
+                  {option.key}
+                </SelectOption>
+              ))}
+            </SelectList>
           </Select>
         </FormGroup>
       );
