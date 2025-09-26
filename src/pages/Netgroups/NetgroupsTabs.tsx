@@ -2,7 +2,7 @@ import React, { useState } from "react";
 // PatternFly
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Layouts
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
@@ -18,14 +18,15 @@ import { NotFound } from "src/components/errors/PageErrors";
 import NetgroupsMembers from "./NetgroupsMembers";
 import NetgroupsSettings from "./NetgroupsSettings";
 import NetgroupsMemberOf from "./NetgroupsMemberOf";
+import { CnParams, useSafeParams } from "src/utils/paramsUtils";
 
 // eslint-disable-next-line react/prop-types
 const NetgroupsTabs = ({ section }) => {
   // Get location (React Router DOM) and get state data
-  const { cn } = useParams();
+  const { cn } = useSafeParams<CnParams>(["cn"]);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const netgroupSettingsData = useNetgroupSettings(cn as string);
+  const netgroupSettingsData = useNetgroupSettings(cn);
   const [breadcrumbItems, setBreadcrumbItems] = React.useState<
     BreadCrumbItem[]
   >([]);
@@ -47,26 +48,21 @@ const NetgroupsTabs = ({ section }) => {
   };
 
   React.useEffect(() => {
-    if (!cn) {
-      // Redirect to the main page
-      navigate("/netgroups");
-    } else {
-      // Update breadcrumb route
-      const currentPath: BreadCrumbItem[] = [
-        {
-          name: "Netgroups",
-          url: URL_PREFIX + "/netgroups",
-        },
-        {
-          name: cn,
-          url: URL_PREFIX + "/netgroups/" + cn,
-          isActive: true,
-        },
-      ];
-      setBreadcrumbItems(currentPath);
-      setActiveTabKey("settings");
-      dispatch(updateBreadCrumbPath(currentPath));
-    }
+    // Update breadcrumb route
+    const currentPath: BreadCrumbItem[] = [
+      {
+        name: "Netgroups",
+        url: URL_PREFIX + "/netgroups",
+      },
+      {
+        name: cn,
+        url: URL_PREFIX + "/netgroups/" + cn,
+        isActive: true,
+      },
+    ];
+    setBreadcrumbItems(currentPath);
+    setActiveTabKey("settings");
+    dispatch(updateBreadCrumbPath(currentPath));
   }, [cn]);
 
   // Redirect to the settings page if the section is not defined

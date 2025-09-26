@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 // Components
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -17,6 +17,7 @@ import { NotFound } from "src/components/errors/PageErrors";
 
 import AutoMemSettings from "./AutoMemSettings";
 import { useAutomemberSettingsData } from "src/hooks/useAutomemberSettingsData";
+import { CnParams, useSafeParams } from "src/utils/paramsUtils";
 
 interface AutoMemUserRulesTabsProps {
   section: string;
@@ -25,7 +26,7 @@ interface AutoMemUserRulesTabsProps {
 
 const AutoMemUserRulesTabs = (props: AutoMemUserRulesTabsProps) => {
   const { section, automemberType } = props;
-  const { cn } = useParams();
+  const { cn } = useSafeParams<CnParams>(["cn"]);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -43,28 +44,23 @@ const AutoMemUserRulesTabs = (props: AutoMemUserRulesTabsProps) => {
     navigate("/" + pathname + "/" + cn);
   };
 
-  const settingsData = useAutomemberSettingsData(cn as string, automemberType);
+  const settingsData = useAutomemberSettingsData(cn, automemberType);
 
   React.useEffect(() => {
-    if (!cn) {
-      // Redirect to the User group rule page
-      navigate("/" + pathname);
-    } else {
-      // Update breadcrumb route
-      const currentPath: BreadCrumbItem[] = [
-        {
-          name: sectionName,
-          url: URL_PREFIX + "/" + pathname,
-        },
-        {
-          name: cn,
-          url: URL_PREFIX + "/" + pathname + "/" + cn,
-          isActive: true,
-        },
-      ];
-      setBreadcrumbItems(currentPath);
-      dispatch(updateBreadCrumbPath(currentPath));
-    }
+    // Update breadcrumb route
+    const currentPath: BreadCrumbItem[] = [
+      {
+        name: sectionName,
+        url: URL_PREFIX + "/" + pathname,
+      },
+      {
+        name: cn,
+        url: URL_PREFIX + "/" + pathname + "/" + cn,
+        isActive: true,
+      },
+    ];
+    setBreadcrumbItems(currentPath);
+    dispatch(updateBreadCrumbPath(currentPath));
   }, [cn]);
 
   // If the section is not defined, redirect to the User group rule page
@@ -94,9 +90,9 @@ const AutoMemUserRulesTabs = (props: AutoMemUserRulesTabsProps) => {
           breadcrumbItems={breadcrumbItems}
         />
         <TitleLayout
-          id={cn as string}
+          id={cn}
           preText={sectionName}
-          text={cn as string}
+          text={cn}
           headingLevel="h1"
         />
       </PageSection>

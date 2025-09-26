@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
-// React Router DOM
-import { useNavigate, useParams } from "react-router";
 // Components
 import UserSettings from "src/components/UsersSections/UserSettings";
 import DataSpinner from "src/components/layouts/DataSpinner";
@@ -17,11 +15,11 @@ import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
+import { UidParams, useSafeParams } from "src/utils/paramsUtils";
 
 const PreservedUsersTabs = () => {
   // Get location (React Router DOM) and get state data
-  const { uid } = useParams();
-  const navigate = useNavigate();
+  const { uid } = useSafeParams<UidParams>(["uid"]);
   const dispatch = useAppDispatch();
 
   const [breadcrumbItems, setBreadcrumbItems] = React.useState<
@@ -29,26 +27,21 @@ const PreservedUsersTabs = () => {
   >([]);
 
   React.useEffect(() => {
-    if (!uid) {
-      // Redirect to the preserved users page
-      navigate(URL_PREFIX + "/preserved-users");
-    } else {
-      // Update breadcrumb route
-      const currentPath: BreadCrumbItem[] = [
-        {
-          name: "Preserved users",
-          url: URL_PREFIX + "/preserved-users",
-        },
-        {
-          name: uid,
-          url: URL_PREFIX + "/preserved-users/" + uid,
-          isActive: true,
-        },
-      ];
-      setBreadcrumbItems(currentPath);
-      setActiveTabKey(0);
-      dispatch(updateBreadCrumbPath(currentPath));
-    }
+    // Update breadcrumb route
+    const currentPath: BreadCrumbItem[] = [
+      {
+        name: "Preserved users",
+        url: URL_PREFIX + "/preserved-users",
+      },
+      {
+        name: uid,
+        url: URL_PREFIX + "/preserved-users/" + uid,
+        isActive: true,
+      },
+    ];
+    setBreadcrumbItems(currentPath);
+    setActiveTabKey(0);
+    dispatch(updateBreadCrumbPath(currentPath));
   }, [uid]);
 
   // Contextual links panel
@@ -71,7 +64,7 @@ const PreservedUsersTabs = () => {
   };
 
   // Data loaded from DB
-  const userSettingsData = useUserSettings(uid as string);
+  const userSettingsData = useUserSettings(uid);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(0);
@@ -105,9 +98,9 @@ const PreservedUsersTabs = () => {
         <PageSection hasBodyWrapper={false}>
           <BreadCrumb breadcrumbItems={breadcrumbItems} />
           <TitleLayout
-            id={uid ? uid : ""}
+            id={uid}
             preText="Preserved user:"
-            text={uid ? uid : ""}
+            text={uid}
             headingLevel="h1"
           />
         </PageSection>

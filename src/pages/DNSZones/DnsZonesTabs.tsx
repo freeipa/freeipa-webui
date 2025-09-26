@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
@@ -16,9 +16,14 @@ import BreadCrumb, {
 } from "src/components/layouts/BreadCrumb/BreadCrumb";
 import DnsZonesSettings from "./DnsZonesSettings";
 import DnsResourceRecords from "./DnsResourceRecords";
+import { useSafeParams } from "src/utils/paramsUtils";
+
+type DnsParams = {
+  idnsname: string;
+};
 
 const DnsZonesTabs = ({ section }: { section: string }) => {
-  const { idnsname } = useParams();
+  const { idnsname } = useSafeParams<DnsParams>(["idnsname"]);
   const navigate = useNavigate();
   const pathname = "dns-zones";
 
@@ -30,7 +35,7 @@ const DnsZonesTabs = ({ section }: { section: string }) => {
   const [id, setId] = React.useState("");
 
   // Data loaded from the API
-  const dnsZonesSettingsData = useDnsZonesData(idnsname as string);
+  const dnsZonesSettingsData = useDnsZonesData(idnsname);
 
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
@@ -44,25 +49,20 @@ const DnsZonesTabs = ({ section }: { section: string }) => {
   };
 
   React.useEffect(() => {
-    if (!idnsname) {
-      // Redirect to the main page
-      navigate(URL_PREFIX + "/" + pathname);
-    } else {
-      setId(idnsname);
-      // Update breadcrumb route
-      const currentPath: BreadCrumbItem[] = [
-        {
-          name: "DNS zones",
-          url: URL_PREFIX + "/" + pathname,
-        },
-        {
-          name: idnsname,
-          url: URL_PREFIX + "/" + pathname + "/" + idnsname,
-          isActive: true,
-        },
-      ];
-      setBreadcrumbItems(currentPath);
-    }
+    setId(idnsname);
+    // Update breadcrumb route
+    const currentPath: BreadCrumbItem[] = [
+      {
+        name: "DNS zones",
+        url: URL_PREFIX + "/" + pathname,
+      },
+      {
+        name: idnsname,
+        url: URL_PREFIX + "/" + pathname + "/" + idnsname,
+        isActive: true,
+      },
+    ];
+    setBreadcrumbItems(currentPath);
   }, [idnsname]);
 
   // Handling of the API data

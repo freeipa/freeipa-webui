@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
@@ -13,10 +13,11 @@ import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import PasswordPoliciesSettings from "./PasswordPoliciesSettings";
+import { CnParams, useSafeParams } from "src/utils/paramsUtils";
 
 // eslint-disable-next-line react/prop-types
 const PasswordPoliciesTabs = ({ section }) => {
-  const { cn } = useParams();
+  const { cn } = useSafeParams<CnParams>(["cn"]);
   const navigate = useNavigate();
   const pathname = "password-policies";
 
@@ -28,7 +29,7 @@ const PasswordPoliciesTabs = ({ section }) => {
   const [id, setId] = React.useState("");
 
   // Data loaded from the API
-  const pwPolicySettingsData = usePasswordPolicySettings(cn as string);
+  const pwPolicySettingsData = usePasswordPolicySettings(cn);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = React.useState(section);
@@ -45,26 +46,21 @@ const PasswordPoliciesTabs = ({ section }) => {
   };
 
   React.useEffect(() => {
-    if (!cn) {
-      // Redirect to the main page
-      navigate(URL_PREFIX + "/" + pathname);
-    } else {
-      setId(cn);
-      // Update breadcrumb route
-      const currentPath: BreadCrumbItem[] = [
-        {
-          name: "Password policies",
-          url: URL_PREFIX + "/" + pathname,
-        },
-        {
-          name: cn,
-          url: URL_PREFIX + "/" + pathname + "/" + cn,
-          isActive: true,
-        },
-      ];
-      setBreadcrumbItems(currentPath);
-      setActiveTabKey("settings");
-    }
+    setId(cn);
+    // Update breadcrumb route
+    const currentPath: BreadCrumbItem[] = [
+      {
+        name: "Password policies",
+        url: URL_PREFIX + "/" + pathname,
+      },
+      {
+        name: cn,
+        url: URL_PREFIX + "/" + pathname + "/" + cn,
+        isActive: true,
+      },
+    ];
+    setBreadcrumbItems(currentPath);
+    setActiveTabKey("settings");
   }, [cn]);
 
   // Handling of the API data
