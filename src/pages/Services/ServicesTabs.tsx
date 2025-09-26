@@ -2,7 +2,7 @@ import React, { useState } from "react";
 // PatternFly
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 // Components
 import ServicesSettings from "./ServicesSettings";
 import ServicesMemberOf from "./ServicesMemberOf";
@@ -22,13 +22,18 @@ import DataSpinner from "src/components/layouts/DataSpinner";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
+import { useSafeParams } from "src/utils/paramsUtils";
+
+type ServicesParams = {
+  id: string;
+};
 
 // eslint-disable-next-line react/prop-types
 const ServicesTabs = ({ section }) => {
-  const { id } = useParams();
+  const { id } = useSafeParams<ServicesParams>(["id"]);
 
   // As the id is sent by React Router DOM partially decoded, this should be fixed
-  const decodedId = decodeURIComponent(id as string); // original ID
+  const decodedId = decodeURIComponent(id); // original ID
   const doubleEncodedId = encodeURIComponent(encodeURIComponent(decodedId)); // double encoded ID
 
   const navigate = useNavigate();
@@ -84,26 +89,21 @@ const ServicesTabs = ({ section }) => {
   };
 
   React.useEffect(() => {
-    if (!id) {
-      // Redirect to the main page
-      navigate("/services");
-    } else {
-      // Update breadcrumb route
-      const currentPath: BreadCrumbItem[] = [
-        {
-          name: "Services",
-          url: URL_PREFIX + "/services",
-        },
-        {
-          name: decodedId,
-          url: URL_PREFIX + "/services/" + doubleEncodedId,
-          isActive: true,
-        },
-      ];
-      setBreadcrumbItems(currentPath);
-      setActiveTabKey("settings");
-      dispatch(updateBreadCrumbPath(currentPath));
-    }
+    // Update breadcrumb route
+    const currentPath: BreadCrumbItem[] = [
+      {
+        name: "Services",
+        url: URL_PREFIX + "/services",
+      },
+      {
+        name: decodedId,
+        url: URL_PREFIX + "/services/" + doubleEncodedId,
+        isActive: true,
+      },
+    ];
+    setBreadcrumbItems(currentPath);
+    setActiveTabKey("settings");
+    dispatch(updateBreadCrumbPath(currentPath));
   }, [id]);
 
   // Redirect to the settings page if the section is not defined

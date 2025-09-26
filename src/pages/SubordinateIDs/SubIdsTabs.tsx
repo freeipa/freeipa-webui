@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
@@ -13,10 +13,15 @@ import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import SubidSettings from "./SubidsSettings";
+import { useSafeParams } from "src/utils/paramsUtils";
+
+type SubIdParams = {
+  ipauniqueid: string;
+};
 
 // eslint-disable-next-line react/prop-types
 const SubIdTabs = ({ section }) => {
-  const { ipauniqueid } = useParams();
+  const { ipauniqueid } = useSafeParams<SubIdParams>(["ipauniqueid"]);
   const navigate = useNavigate();
   const pathname = "subordinate-ids";
 
@@ -27,7 +32,7 @@ const SubIdTabs = ({ section }) => {
   const [id, setId] = React.useState("");
 
   // Data loaded from the API
-  const subidSettingsData = useSubidSettings(ipauniqueid as string);
+  const subidSettingsData = useSubidSettings(ipauniqueid);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = React.useState(section);
@@ -44,26 +49,21 @@ const SubIdTabs = ({ section }) => {
   };
 
   React.useEffect(() => {
-    if (!ipauniqueid) {
-      // Redirect to the main page
-      navigate(URL_PREFIX + "/" + pathname);
-    } else {
-      setId(ipauniqueid);
-      // Update breadcrumb route
-      const currentPath: BreadCrumbItem[] = [
-        {
-          name: "Subordinate IDs",
-          url: URL_PREFIX + "/" + pathname,
-        },
-        {
-          name: ipauniqueid,
-          url: URL_PREFIX + "/" + pathname + "/" + ipauniqueid,
-          isActive: true,
-        },
-      ];
-      setBreadcrumbItems(currentPath);
-      setActiveTabKey("settings");
-    }
+    setId(ipauniqueid);
+    // Update breadcrumb route
+    const currentPath: BreadCrumbItem[] = [
+      {
+        name: "Subordinate IDs",
+        url: URL_PREFIX + "/" + pathname,
+      },
+      {
+        name: ipauniqueid,
+        url: URL_PREFIX + "/" + pathname + "/" + ipauniqueid,
+        isActive: true,
+      },
+    ];
+    setBreadcrumbItems(currentPath);
+    setActiveTabKey("settings");
   }, [ipauniqueid]);
 
   if (subidSettingsData.isLoading || !subidSettingsData.subid) {

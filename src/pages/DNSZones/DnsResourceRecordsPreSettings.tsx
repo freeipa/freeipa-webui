@@ -1,6 +1,4 @@
 import React from "react";
-// React Router DOM
-import { useNavigate, useParams } from "react-router";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
@@ -10,19 +8,24 @@ import { useDnsRecordsData } from "src/hooks/useDnsRecordsData";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import { BreadCrumbItem } from "src/components/layouts/BreadCrumb/BreadCrumb";
 import DnsResourceRecordsSettings from "./DnsResourceRecordsSettings";
+import { useSafeParams } from "src/utils/paramsUtils";
+
+type DnsParams = {
+  idnsname: string;
+  recordName: string;
+};
 
 const DnsResourceRecordsPreSettings = () => {
-  const navigate = useNavigate();
   const pathname = "dns-zones";
 
   // Params
-  const { idnsname, recordName } = useParams();
+  const { idnsname, recordName } = useSafeParams<DnsParams>([
+    "idnsname",
+    "recordName",
+  ]);
 
   // Data loaded from the API
-  const dnsrecordsSettingsData = useDnsRecordsData(
-    idnsname as string,
-    recordName as string
-  );
+  const dnsrecordsSettingsData = useDnsRecordsData(idnsname, recordName);
 
   // Breadcrumbs
   const [breadcrumbItems, setBreadcrumbItems] = React.useState<
@@ -30,28 +33,23 @@ const DnsResourceRecordsPreSettings = () => {
   >([]);
 
   React.useEffect(() => {
-    if (!idnsname || !recordName) {
-      // Redirect to the main page
-      navigate(URL_PREFIX + "/" + pathname);
-    } else {
-      // Update breadcrumb route
-      const currentPath: BreadCrumbItem[] = [
-        {
-          name: "DNS zones",
-          url: URL_PREFIX + "/" + pathname,
-        },
-        {
-          name: idnsname,
-          url: URL_PREFIX + "/" + pathname + "/" + idnsname,
-        },
-        {
-          name: recordName,
-          url: URL_PREFIX + "/" + pathname + "/" + idnsname + "/" + recordName,
-          isActive: true,
-        },
-      ];
-      setBreadcrumbItems(currentPath);
-    }
+    // Update breadcrumb route
+    const currentPath: BreadCrumbItem[] = [
+      {
+        name: "DNS zones",
+        url: URL_PREFIX + "/" + pathname,
+      },
+      {
+        name: idnsname,
+        url: URL_PREFIX + "/" + pathname + "/" + idnsname,
+      },
+      {
+        name: recordName,
+        url: URL_PREFIX + "/" + pathname + "/" + idnsname + "/" + recordName,
+        isActive: true,
+      },
+    ];
+    setBreadcrumbItems(currentPath);
   }, [idnsname, recordName]);
 
   // Handling of the API data
@@ -70,8 +68,8 @@ const DnsResourceRecordsPreSettings = () => {
   // Return component
   return (
     <DnsResourceRecordsSettings
-      idnsname={idnsname as string}
-      recordName={recordName as string}
+      idnsname={idnsname}
+      recordName={recordName}
       dnsRecord={dnsrecordsSettingsData.dnsRecord}
       originalDnsRecord={dnsrecordsSettingsData.originalDnsRecord}
       host={dnsrecordsSettingsData.host}

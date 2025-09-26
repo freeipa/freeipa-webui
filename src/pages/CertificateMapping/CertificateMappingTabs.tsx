@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
@@ -16,10 +16,11 @@ import BreadCrumb, {
   BreadCrumbItem,
 } from "src/components/layouts/BreadCrumb/BreadCrumb";
 import CertificateMappingSettings from "./CertificateMappingSettings";
+import { CnParams, useSafeParams } from "src/utils/paramsUtils";
 
 // eslint-disable-next-line react/prop-types
 const CertificateMappingTabs = ({ section }) => {
-  const { cn } = useParams();
+  const { cn } = useSafeParams<CnParams>(["cn"]);
   const navigate = useNavigate();
   const pathname = "cert-id-mapping-rules";
 
@@ -31,9 +32,7 @@ const CertificateMappingTabs = ({ section }) => {
   const [id, setId] = React.useState("");
 
   // Data loaded from the API
-  const certMappingSettingsData = useCertificateMappingSettingsData(
-    cn as string
-  );
+  const certMappingSettingsData = useCertificateMappingSettingsData(cn);
 
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
@@ -45,25 +44,20 @@ const CertificateMappingTabs = ({ section }) => {
   };
 
   React.useEffect(() => {
-    if (!cn) {
-      // Redirect to the main page
-      navigate(URL_PREFIX + "/" + pathname);
-    } else {
-      setId(cn);
-      // Update breadcrumb route
-      const currentPath: BreadCrumbItem[] = [
-        {
-          name: "Certificate Identity Mapping Rule",
-          url: URL_PREFIX + "/" + pathname,
-        },
-        {
-          name: cn,
-          url: URL_PREFIX + "/" + pathname + "/" + cn,
-          isActive: true,
-        },
-      ];
-      setBreadcrumbItems(currentPath);
-    }
+    setId(cn);
+    // Update breadcrumb route
+    const currentPath: BreadCrumbItem[] = [
+      {
+        name: "Certificate Identity Mapping Rule",
+        url: URL_PREFIX + "/" + pathname,
+      },
+      {
+        name: cn,
+        url: URL_PREFIX + "/" + pathname + "/" + cn,
+        isActive: true,
+      },
+    ];
+    setBreadcrumbItems(currentPath);
   }, [cn]);
 
   // Handling of the API data

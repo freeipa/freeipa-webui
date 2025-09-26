@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
@@ -15,9 +15,14 @@ import BreadCrumb, {
   BreadCrumbItem,
 } from "src/components/layouts/BreadCrumb/BreadCrumb";
 import DnsServersSettings from "src/pages/DNSZones/DnsServersSettings";
+import { useSafeParams } from "src/utils/paramsUtils";
+
+type DnsParams = {
+  idnsserverid: string;
+};
 
 const DnsServersTabs = ({ section }: { section: string }) => {
-  const { idnsserverid } = useParams();
+  const { idnsserverid } = useSafeParams<DnsParams>(["idnsserverid"]);
   const navigate = useNavigate();
   const pathname = "dns-servers";
 
@@ -25,9 +30,7 @@ const DnsServersTabs = ({ section }: { section: string }) => {
     BreadCrumbItem[]
   >([]);
 
-  const dnsServersSettingsData = useDnsServersSettingsData(
-    idnsserverid as string
-  );
+  const dnsServersSettingsData = useDnsServersSettingsData(idnsserverid);
 
   // States - Identifier of the entity (DNS Zone -> idnsname)
   const [id, setId] = React.useState("");
@@ -42,23 +45,19 @@ const DnsServersTabs = ({ section }: { section: string }) => {
   };
 
   React.useEffect(() => {
-    if (!idnsserverid) {
-      navigate(URL_PREFIX + "/" + pathname);
-    } else {
-      setId(idnsserverid);
-      const currentPath: BreadCrumbItem[] = [
-        {
-          name: "DNS servers",
-          url: URL_PREFIX + "/" + pathname,
-        },
-        {
-          name: idnsserverid,
-          url: URL_PREFIX + "/" + pathname + "/" + idnsserverid,
-          isActive: true,
-        },
-      ];
-      setBreadcrumbItems(currentPath);
-    }
+    setId(idnsserverid);
+    const currentPath: BreadCrumbItem[] = [
+      {
+        name: "DNS servers",
+        url: URL_PREFIX + "/" + pathname,
+      },
+      {
+        name: idnsserverid,
+        url: URL_PREFIX + "/" + pathname + "/" + idnsserverid,
+        isActive: true,
+      },
+    ];
+    setBreadcrumbItems(currentPath);
   }, [idnsserverid]);
 
   // Handling of the API data

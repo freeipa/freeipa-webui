@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
-// React Router DOM
-import { useNavigate, useParams } from "react-router";
 // Components
 import UserSettings from "src/components/UsersSections/UserSettings";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
@@ -17,10 +15,10 @@ import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
+import { UidParams, useSafeParams } from "src/utils/paramsUtils";
 
 const StageUsersTabs = () => {
-  const { uid } = useParams();
-  const navigate = useNavigate();
+  const { uid } = useSafeParams<UidParams>(["uid"]);
   const dispatch = useAppDispatch();
 
   const [breadcrumbItems, setBreadcrumbItems] = React.useState<
@@ -28,26 +26,21 @@ const StageUsersTabs = () => {
   >([]);
 
   React.useEffect(() => {
-    if (!uid) {
-      // Redirect to the stage users page
-      navigate(URL_PREFIX + "stage-users");
-    } else {
-      // Update breadcrumb route
-      const currentPath: BreadCrumbItem[] = [
-        {
-          name: "Stage users",
-          url: URL_PREFIX + "/stage-users",
-        },
-        {
-          name: uid,
-          url: URL_PREFIX + "/stage-users/" + uid,
-          isActive: true,
-        },
-      ];
-      setBreadcrumbItems(currentPath);
-      setActiveTabKey(0);
-      dispatch(updateBreadCrumbPath(currentPath));
-    }
+    // Update breadcrumb route
+    const currentPath: BreadCrumbItem[] = [
+      {
+        name: "Stage users",
+        url: URL_PREFIX + "/stage-users",
+      },
+      {
+        name: uid,
+        url: URL_PREFIX + "/stage-users/" + uid,
+        isActive: true,
+      },
+    ];
+    setBreadcrumbItems(currentPath);
+    setActiveTabKey(0);
+    dispatch(updateBreadCrumbPath(currentPath));
   }, [uid]);
 
   // Contextual links panel
@@ -70,7 +63,7 @@ const StageUsersTabs = () => {
   };
 
   // Data loaded from DB
-  const userSettingsData = useStageUserSettings(uid as string);
+  const userSettingsData = useStageUserSettings(uid);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(0);
@@ -104,9 +97,9 @@ const StageUsersTabs = () => {
         <PageSection hasBodyWrapper={false}>
           <BreadCrumb breadcrumbItems={breadcrumbItems} />
           <TitleLayout
-            id={uid ? uid : ""}
+            id={uid}
             preText="Staged user:"
-            text={uid ? uid : ""}
+            text={uid}
             headingLevel="h1"
           />
         </PageSection>
