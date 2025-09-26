@@ -2,7 +2,7 @@ import React, { useState } from "react";
 // PatternFly
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Layouts
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
@@ -17,14 +17,19 @@ import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { NotFound } from "src/components/errors/PageErrors";
 import SudoCmdsSettings from "./SudoCmdsSettings";
 import SudoCmdsMemberOf from "./SudoCmdsMemberOf";
+import { useSafeParams } from "src/utils/paramsUtils";
+
+type SudoCmdsParams = {
+  sudocmd: string;
+};
 
 // eslint-disable-next-line react/prop-types
 const SudoCmdsTabs = ({ section }) => {
   // Get location (React Router DOM) and get state data
-  const { sudocmd } = useParams();
+  const { sudocmd } = useSafeParams<SudoCmdsParams>(["sudocmd"]);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const settingsData = useSudoCmdsSettings(sudocmd as string);
+  const settingsData = useSudoCmdsSettings(sudocmd);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(section);
@@ -44,26 +49,21 @@ const SudoCmdsTabs = ({ section }) => {
   };
 
   React.useEffect(() => {
-    if (!sudocmd) {
-      // Redirect to the main page
-      navigate("/sudo-commands");
-    } else {
-      // Update breadcrumb route
-      const currentPath: BreadCrumbItem[] = [
-        {
-          name: "Sudo commands",
-          url: URL_PREFIX + "/sudo-commands",
-        },
-        {
-          name: sudocmd,
-          url: URL_PREFIX + "/sudo-commands/" + sudocmd,
-          isActive: true,
-        },
-      ];
-      setBreadcrumbItems(currentPath);
-      setActiveTabKey("settings");
-      dispatch(updateBreadCrumbPath(currentPath));
-    }
+    // Update breadcrumb route
+    const currentPath: BreadCrumbItem[] = [
+      {
+        name: "Sudo commands",
+        url: URL_PREFIX + "/sudo-commands",
+      },
+      {
+        name: sudocmd,
+        url: URL_PREFIX + "/sudo-commands/" + sudocmd,
+        isActive: true,
+      },
+    ];
+    setBreadcrumbItems(currentPath);
+    setActiveTabKey("settings");
+    dispatch(updateBreadCrumbPath(currentPath));
   }, [sudocmd]);
 
   // Redirect to the settings page if the section is not defined

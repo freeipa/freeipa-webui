@@ -2,7 +2,7 @@ import React, { useState } from "react";
 // PatternFly
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 // Components
 import HostsSettings from "./HostsSettings";
 import HostsMemberOf from "./HostsMemberOf";
@@ -23,10 +23,15 @@ import { partialHostToHost } from "src/utils/hostUtils";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
+import { useSafeParams } from "src/utils/paramsUtils";
+
+type HostsParams = {
+  fqdn: string;
+};
 
 // eslint-disable-next-line react/prop-types
 const HostsTabs = ({ section }) => {
-  const { fqdn } = useParams();
+  const { fqdn } = useSafeParams<HostsParams>(["fqdn"]);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -60,7 +65,7 @@ const HostsTabs = ({ section }) => {
   }, [section]);
 
   // Data loaded from DB
-  const hostSettingsData = useHostSettings(fqdn as string);
+  const hostSettingsData = useHostSettings(fqdn);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(section);
@@ -84,27 +89,22 @@ const HostsTabs = ({ section }) => {
   };
 
   React.useEffect(() => {
-    if (!fqdn) {
-      // Redirect to the main page
-      navigate(URL_PREFIX + "/hosts");
-    } else {
-      setHostId(fqdn);
-      // Update breadcrumb route
-      const currentPath: BreadCrumbItem[] = [
-        {
-          name: "Hosts",
-          url: URL_PREFIX + "/hosts",
-        },
-        {
-          name: fqdn,
-          url: URL_PREFIX + "/hosts/" + fqdn,
-          isActive: true,
-        },
-      ];
-      setBreadcrumbItems(currentPath);
-      setActiveTabKey("settings");
-      dispatch(updateBreadCrumbPath(currentPath));
-    }
+    setHostId(fqdn);
+    // Update breadcrumb route
+    const currentPath: BreadCrumbItem[] = [
+      {
+        name: "Hosts",
+        url: URL_PREFIX + "/hosts",
+      },
+      {
+        name: fqdn,
+        url: URL_PREFIX + "/hosts/" + fqdn,
+        isActive: true,
+      },
+    ];
+    setBreadcrumbItems(currentPath);
+    setActiveTabKey("settings");
+    dispatch(updateBreadCrumbPath(currentPath));
   }, [fqdn]);
 
   // Redirect to the settings page if the section is not defined
