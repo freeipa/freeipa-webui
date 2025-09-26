@@ -11,6 +11,7 @@ import {
 import { typeInTextbox } from "../common/ui/textbox";
 import { findEntryInTable } from "../common/settings_table";
 import { addItemToRightList } from "../common/ui/dual_list";
+import "../common/member_of";
 
 Given("netgroup {string} exists", (groupName: string) => {
   loginAsAdmin();
