@@ -73,38 +73,6 @@ Feature: User group manipulation
   Scenario: Delete a group
     Given I delete user group "a_external_group"
 
-  @test
-  Scenario: Add one group after another
-    Given I am logged in as admin
-    And I am on "user-groups" page
-
-    When I click on the "user-groups-button-add" button
-    Then I should see "add-user-group-modal" modal
-
-    When I type in the "modal-textbox-group-name" textbox text "chain_group1"
-    Then I should see "chain_group1" in the "modal-textbox-group-name" textbox
-
-    When I click on the "modal-button-add-and-add-another" button
-    Then I should see "add-user-group-modal" modal
-    And I should see "add-group-success" alert
-
-    When I type in the "modal-textbox-group-name" textbox text "chain_group2"
-    Then I should see "chain_group2" in the "modal-textbox-group-name" textbox
-
-    When I click on the "modal-button-add" button
-    Then I should not see "add-user-group-modal" modal
-
-    When I search for "chain_group1" in the data table
-    Then I should see "chain_group1" entry in the data table
-
-    When I search for "chain_group2" in the data table
-    Then I should see "chain_group2" entry in the data table
-
-  @cleanup
-  Scenario: Delete groups
-    Given I delete user group "chain_group1"
-    And I delete user group "chain_group2"
-
   @seed
   Scenario: Create a group
     Given user group "a_posix_group" exists

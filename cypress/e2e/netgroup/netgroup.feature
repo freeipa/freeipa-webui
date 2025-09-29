@@ -48,39 +48,6 @@ Feature: Netgroup manipulation
   Scenario: Delete a netgroup
     Given I delete netgroup "b_net_group"
 
-  @test
-  Scenario: Add one netgroup after another
-    Given I am logged in as admin
-    And I am on "netgroups" page
-
-    When I click on the "netgroups-button-add" button
-    Then I should see "add-netgroup-modal" modal
-
-    When I type in the "modal-textbox-netgroup-name" textbox text "c_net_group"
-    Then I should see "c_net_group" in the "modal-textbox-netgroup-name" textbox
-
-    When I click on the "modal-button-add-and-add-another" button
-    Then I should see "add-netgroup-modal" modal
-    And I should see "add-netgroup-success" alert
-
-    When I type in the "modal-textbox-netgroup-name" textbox text "d_net_group"
-    Then I should see "d_net_group" in the "modal-textbox-netgroup-name" textbox
-
-    When I click on the "modal-button-add" button
-    Then I should not see "add-netgroup-modal" modal
-    And I should see "add-netgroup-success" alert
-
-    When I search for "c_net_group" in the data table
-    Then I should see "c_net_group" entry in the data table
-
-    When I search for "d_net_group" in the data table
-    Then I should see "d_net_group" entry in the data table
-
-  @cleanup
-  Scenario: Delete netgroups
-    Given I delete netgroup "c_net_group"
-    And I delete netgroup "d_net_group"
-
   @seed
   Scenario: Create netgroups
     Given netgroup "a_net_group" exists

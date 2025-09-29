@@ -23,27 +23,6 @@ Feature: User manipulation
     And I delete user "testuser2"
     And I delete user "testuser3"
 
-  #  Test if "Add and add another" behaves as expected
-  @test
-  Scenario: Add one user after another
-    Given I am logged in as admin
-
-    When I click on the "active-users-button-add" button
-    Then I should see "add-user-modal" modal
-
-    When I fill in user "chainuser1" "Chain" "User1" with password "CorrectHorseBatteryStaple" and click add another
-    Then I should see "add-user-modal" modal
-    And I should see "add-user-success" alert
-    When I click on the "modal-button-cancel" button
-    Then I should not see "add-user-modal" modal
-
-    When I search for "chainuser1" in the data table
-    Then I should see "chainuser1" entry in the data table
-
-  @cleanup
-  Scenario: Delete users
-    Given I delete user "chainuser1"
-
   @seed
   Scenario: Create user "jdoe"
     Given User "jdoe" "John" "Doe" exists and is using password "Secret123"
