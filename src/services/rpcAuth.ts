@@ -34,35 +34,8 @@ export interface ResponseOnLogin {
 }
 
 export interface MetaResponse {
-  request: {
-    body: ReadableStream<Uint8Array> | null;
-    bodyUsed: boolean;
-    cache: RequestCache;
-    credentials: RequestCredentials;
-    destination: RequestDestination;
-    headers: Headers;
-    integrity: string;
-    isHistoryNavigation: boolean;
-    keepalive: boolean;
-    method: string;
-    mode: RequestMode;
-    redirect: RequestRedirect;
-    referrer: string;
-    referrerPolicy: ReferrerPolicy;
-    signal: AbortSignal;
-    url: string;
-  };
-  response: {
-    body: ReadableStream<Uint8Array> | null;
-    bodyUsed: boolean;
-    headers: Headers;
-    ok: boolean;
-    redirected: boolean;
-    status: number;
-    statusText: string;
-    type: ResponseType;
-    url: string;
-  };
+  request: Request;
+  response: Response;
 }
 
 export interface ResponseOnPwdReset {
