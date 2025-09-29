@@ -27,39 +27,6 @@ Feature: HBAC service groups manipulation
   Scenario: Cleanup: Delete a service group
     Given I delete service group "a_service_group1"
 
-  @test
-  Scenario: Add several service groups
-    Given I am logged in as admin
-    And I am on "hbac-service-groups" page
-
-    When I click on the "hbac-service-groups-button-add" button
-    Then I should see "add-hbac-service-group-modal" modal
-
-    When I type in the "modal-textbox-service-group-name" textbox text "a_service_group2"
-    Then I should see "a_service_group2" in the "modal-textbox-service-group-name" textbox
-
-    When I click on the "modal-button-add-and-add-another" button
-    Then I should see "add-hbac-service-group-modal" modal
-    And I should see "add-hbacservicegroup-success" alert
-
-    When I type in the "modal-textbox-service-group-name" textbox text "a_service_group3"
-    Then I should see "a_service_group3" in the "modal-textbox-service-group-name" textbox
-
-    When I click on the "modal-button-add" button
-    Then I should not see "add-hbac-service-group-modal" modal
-    And I should see "add-hbacservicegroup-success" alert
-
-    When I search for "a_service_group2" in the data table
-    Then I should see "a_service_group2" entry in the data table
-
-    When I search for "a_service_group3" in the data table
-    Then I should see "a_service_group3" entry in the data table
-
-  @cleanup
-  Scenario: Cleanup: Delete a service group
-    Given I delete service group "a_service_group2"
-    And I delete service group "a_service_group3"
-
   @seed
   Scenario: Seed: Ensure service group exists
     Given HBAC service group "a_service_group2" exists

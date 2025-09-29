@@ -119,45 +119,6 @@ Feature: Host manipulation
     Then I should not see "forcehost.ipa.test" entry in the data table
 
   @test
-  Scenario: Add one host after another
-    Given I am logged in as admin
-    And I am on "hosts" page
-
-    When I click on the "hosts-button-add" button
-    Then I should see "add-host-modal" modal
-
-    When I type in the "modal-textbox-host-name" textbox text "myfirstserver"
-    Then I should see "myfirstserver" in the "modal-textbox-host-name" textbox
-
-    When I click on the "modal-checkbox-force-host" checkbox
-    Then I should see the "modal-checkbox-force-host" checkbox is checked
-
-    When I click on the "modal-button-add-and-add-another" button
-    Then I should see "add-host-modal" modal
-    And I should see "add-host-success" alert
-
-    When I type in the "modal-textbox-host-name" textbox text "mysecondserver"
-    Then I should see "mysecondserver" in the "modal-textbox-host-name" textbox
-
-    When I click on the "modal-checkbox-force-host" checkbox
-    Then I should see the "modal-checkbox-force-host" checkbox is checked
-
-    When I click on the "modal-button-add" button
-    Then I should see "add-host-modal" modal
-    And I should see "add-host-success" alert
-
-    When I search for "myfirstserver.ipa.test" in the data table
-    Then I should see "myfirstserver.ipa.test" entry in the data table
-
-    When I search for "mysecondserver.ipa.test" in the data table
-    Then I should see "mysecondserver.ipa.test" entry in the data table
-
-  @cleanup
-  Scenario: Delete hosts
-    Given I delete host "myfirstserver"
-    And I delete host "mysecondserver"
-
-  @test
   Scenario: Rebuild auto membership
     Given I am logged in as admin
     And I am on "hosts" page

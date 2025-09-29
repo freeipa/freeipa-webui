@@ -7,7 +7,7 @@ import {
   selectEntry,
 } from "./data_tables";
 
-export const fillUser = (
+const fillUser = (
   firstName: string,
   lastName: string,
   password: string,

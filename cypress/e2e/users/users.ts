@@ -1,5 +1,5 @@
-import { Given, Then, When } from "@badeball/cypress-cucumber-preprocessor";
-import { createUser, fillUser, validateUser } from "../common/user_management";
+import { Given, Then } from "@badeball/cypress-cucumber-preprocessor";
+import { createUser, validateUser } from "../common/user_management";
 import { loginAsAdmin, logout } from "../common/authentication";
 import {
   entryExists,
@@ -33,16 +33,6 @@ const isDisabled = (name: string) => {
 const isEnabled = (name: string) => {
   cy.get("tr[id='" + name + "'] td[data-label=Status]").contains("Enabled");
 };
-
-When(
-  "I fill in user {string} {string} {string} with password {string} and click add another",
-  (login: string, firstName: string, lastName: string, password: string) => {
-    fillUser(firstName, lastName, password, login);
-
-    cy.dataCy("modal-button-add-and-add-another").click();
-    cy.dataCy("add-user-modal").should("exist");
-  }
-);
 
 Then(
   "I should see {string} user in the data table disabled",

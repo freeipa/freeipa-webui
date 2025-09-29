@@ -34,7 +34,7 @@ Feature: User group members
 
   @seed
   Scenario: Create seed data (user and user group)
-    And user group "imitation-game-group" exists
+    Given user group "imitation-game-group" exists
 
   @test
   Scenario: Switch between direct and indirect memberships (Users)
@@ -52,7 +52,7 @@ Feature: User group members
 
   @cleanup
   Scenario: Cleanup seed data
-    And I delete user group "imitation-game-group"
+    Given I delete user group "imitation-game-group"
 
   @seed
   Scenario: Create seed data (user and user group)

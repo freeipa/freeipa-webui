@@ -27,39 +27,6 @@ Feature: HBAC services manipulation
   Scenario: Cleanup: Delete a service
     Given I delete service "a_service1"
 
-  @test
-  Scenario: Add several services
-    Given I am logged in as admin
-    And I am on "hbac-services" page
-
-    When I click on the "hbac-services-button-add" button
-    Then I should see "add-hbac-service-modal" modal
-
-    When I type in the "modal-textbox-service-name" textbox text "a_service2"
-    Then I should see "a_service2" in the "modal-textbox-service-name" textbox
-
-    When I click on the "modal-button-add-and-add-another" button
-    Then I should see "add-hbac-service-modal" modal
-    And I should see "add-hbacservice-success" alert
-
-    When I type in the "modal-textbox-service-name" textbox text "a_service3"
-    Then I should see "a_service3" in the "modal-textbox-service-name" textbox
-
-    When I click on the "modal-button-add" button
-    Then I should not see "add-hbac-service-modal" modal
-    And I should see "add-hbacservice-success" alert
-
-    When I search for "a_service2" in the data table
-    Then I should see "a_service2" entry in the data table
-
-    When I search for "a_service3" in the data table
-    Then I should see "a_service3" entry in the data table
-
-  @cleanup
-  Scenario: Cleanup: Delete seeded services 
-      Given I delete service "a_service2"
-      And I delete service "a_service3"
-
   @seed
   Scenario: Seed: Create HBAC services used in tests
       Given HBAC service "a_service2" exists

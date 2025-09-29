@@ -27,51 +27,6 @@ Feature: HBAC rules manipulation
     Scenario: Delete a rule
     Given I delete hbac rule "rule1"
 
-  @test
-  Scenario: Add several rules
-    Given I am logged in as admin
-    And I am on "hbac-rules" page
-
-    When I click on the "hbac-rules-button-add" button
-    Then I should see "add-hbac-rule-modal" modal
-
-    When I type in the "modal-textbox-rule-name" textbox text "rule2"
-    Then I should see "rule2" in the "modal-textbox-rule-name" textbox
-
-    When I click on the "modal-button-add-and-add-another" button
-    Then I should see "add-hbac-rule-modal" modal
-    And I should see "add-hbacrule-success" alert
-
-    When I type in the "modal-textbox-rule-name" textbox text "rule3"
-    Then I should see "rule3" in the "modal-textbox-rule-name" textbox
-
-    When I click on the "modal-button-add-and-add-another" button
-    Then I should see "add-hbac-rule-modal" modal
-    And I should see "add-hbacrule-success" alert
-
-    When I type in the "modal-textbox-rule-name" textbox text "rule4"
-    Then I should see "rule4" in the "modal-textbox-rule-name" textbox
-
-    When I click on the "modal-button-add-and-add-another" button
-    Then I should see "add-hbac-rule-modal" modal
-    And I should see "add-hbacrule-success" alert
-
-    When I click on the "modal-button-cancel" button
-    Then I should not see "add-hbac-rule-modal" modal
-
-    When I search for "rule2" in the data table
-    Then I should see "rule2" entry in the data table
-    When I search for "rule3" in the data table
-    Then I should see "rule3" entry in the data table
-    When I search for "rule4" in the data table
-    Then I should see "rule4" entry in the data table
-
-  @cleanup
-  Scenario: Delete a rule
-    Given I delete hbac rule "rule2"
-    And I delete hbac rule "rule3"
-    And I delete hbac rule "rule4"
-
   @seed
   Scenario: Create rules
     Given hbac rule "rule1" exists

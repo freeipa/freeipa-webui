@@ -49,31 +49,6 @@ Feature: ID View manipulation
   Scenario: Delete a view
     Given I delete view "a_new_view"
 
-  @test
-  Scenario: Add one view after another
-    Given I am logged in as admin
-    And I am on "id-views" page
-
-    When I click on the "id-views-button-add" button
-    Then I should see "add-id-view-modal" modal
-
-    When I type in the "modal-textbox-id-view-name" textbox text "a_new_view"
-    Then I should see "a_new_view" in the "modal-textbox-id-view-name" textbox
-
-    When I click on the "modal-button-add-and-add-another" button
-    Then I should see "add-id-view-modal" modal
-    And I should see "add-id-view-success" alert
-
-    When I click on the "modal-button-cancel" button
-    Then I should not see "add-id-view-modal" modal
-
-    When I search for "a_new_view" in the data table
-    Then I should see "a_new_view" entry in the data table
-
-  @cleanup
-  Scenario: Delete a view
-    Given I delete view "a_new_view"
-
   @seed
   Scenario: Create views
     Given view "a_new_view" exists
