@@ -37,21 +37,22 @@ export const removeElementFromTextboxList = (
 };
 
 export const removeAllElementsFromTextboxList = (dataCy: string) => {
-  cy.dataCy(dataCy)
-    .find(`[data-cy^="${dataCy}-button-delete-"]`)
-    .then(($buttons) => {
-      if ($buttons.length > 0) {
-        cy.wrap($buttons).each(($btn) => {
-          cy.wrap($btn).click();
-        });
-      }
-    });
+  const deleteButtonSelector = `[data-cy^="${dataCy}-button-delete-"]`;
+
+  cy.get("body").then(($body) => {
+    if ($body.find(deleteButtonSelector).length > 0) {
+      cy.get(deleteButtonSelector).first().click();
+
+      removeAllElementsFromTextboxList(dataCy);
+    }
+  });
 };
 
 When(
-  "I add {string} to {string} textbox list ",
+  "I add {string} to {string} textbox list",
   (elementToAdd: string, dataCyList: string) => {
-    addElementToTextboxList(elementToAdd, dataCyList, elementToAdd);
+    const addButtonSelector = `${dataCyList}-button-add`;
+    addElementToTextboxList(addButtonSelector, dataCyList, elementToAdd);
   }
 );
 
@@ -61,6 +62,13 @@ Then(
     cy.get(`[data-cy^='${dataCyList}']`)
       .filter(`[value="${element}"]`)
       .should("exist");
+  }
+);
+
+When(
+  "I remove all elements from the {string} textbox list",
+  (dataCyList: string) => {
+    removeAllElementsFromTextboxList(dataCyList);
   }
 );
 
