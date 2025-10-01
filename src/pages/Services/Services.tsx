@@ -21,7 +21,7 @@ import SecondaryButton from "../../components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "../../components/layouts/HelpTextWithIconLayout";
 // Components
 import BulkSelectorPrep from "../../components/BulkSelectorPrep";
-import PaginationLayout from "../../components/layouts/PaginationLayout";
+import PaginationLayout from "../../components/layouts/PaginationLayout/PaginationLayout";
 import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Tables
 import ServicesTable from "./ServicesTable";

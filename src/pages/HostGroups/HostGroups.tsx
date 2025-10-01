@@ -21,7 +21,7 @@ import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 // Components
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
-import PaginationLayout from "src/components/layouts/PaginationLayout";
+import PaginationLayout from "src/components/layouts/PaginationLayout/PaginationLayout";
 // Tables
 import HostGroupsTable from "src/pages/HostGroups/HostGroupsTable";
 // Modal

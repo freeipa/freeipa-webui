@@ -23,7 +23,7 @@ import ToolbarLayout, {
 } from "src/components/layouts/ToolbarLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 // Components
-import PaginationLayout from "src/components/layouts/PaginationLayout";
+import PaginationLayout from "src/components/layouts/PaginationLayout/PaginationLayout";
 import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModal";
 // Tables
 import IDViewsAppliedToTable from "src/pages/IDViews/IDViewsAppliedToTable";

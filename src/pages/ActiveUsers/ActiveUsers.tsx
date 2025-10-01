@@ -33,7 +33,7 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
 import UsersTable from "../../components/tables/UsersTable";
 // Components
-import PaginationLayout from "../../components/layouts/PaginationLayout";
+import PaginationLayout from "../../components/layouts/PaginationLayout/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Modals

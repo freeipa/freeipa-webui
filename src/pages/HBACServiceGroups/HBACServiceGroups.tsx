@@ -26,7 +26,7 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
 import HBACServiceGroupsTable from "./HBACServiceGroupsTable";
 // Components
-import PaginationLayout from "../../components/layouts/PaginationLayout";
+import PaginationLayout from "../../components/layouts/PaginationLayout/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 // Modals
 import AddHBACServiceGroup from "src/components/modals/HbacModals/AddHBACServiceGroup";
