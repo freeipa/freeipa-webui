@@ -37,7 +37,7 @@ jobs:
           restore-keys: npm-
 
       - name: Install project
-        run: npm install
+        run: npm clean-install
 
       - name: Prettier
         run: npm run prettier
@@ -61,7 +61,7 @@ jobs:
           node-version: "22"
 
       - name: Install project
-        run: npm install
+        run: npm clean-install
 
       - name: Run vitest
         run: npm test

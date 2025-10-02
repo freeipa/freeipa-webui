@@ -21,7 +21,7 @@ jobs:
           node-version: "22"
 
       - name: Install dependencies
-        run: npm install
+        run: npm clean-install
 
       - name: Add IPA Server's IP to /etc/hosts
         run: cat developer/hosts | sudo tee -a /etc/hosts
