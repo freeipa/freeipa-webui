@@ -11,6 +11,7 @@ import {
 import { typeInTextbox } from "../common/ui/textbox";
 import { findEntryInTable } from "../common/settings_table";
 import { addItemToRightList } from "../common/ui/dual_list";
+import { MemberEntity, isMemberEntity } from "../common/member_of";
 
 Given("netgroup {string} exists", (groupName: string) => {
   loginAsAdmin();
@@ -48,22 +49,7 @@ Given("I delete netgroup {string}", (groupName: string) => {
   logout();
 });
 
-type ElementType = "user" | "group" | "host" | "hostgroup" | "externalhost";
-
-const assertElementType = (elementType: string) => {
-  const validElementTypes: ElementType[] = [
-    "user",
-    "group",
-    "host",
-    "hostgroup",
-    "externalhost",
-  ];
-  if (!validElementTypes.includes(elementType as ElementType)) {
-    throw new Error(`Invalid element type: ${elementType}`);
-  }
-};
-
-const ensureTabVisibleAndOpen = (elementType: string) => {
+const ensureTabVisibleAndOpen = (elementType: MemberEntity) => {
   const tabDataCy = `netgroups-tab-settings-tab-${elementType}s`;
   cy.dataCy(tabDataCy).click();
 };
@@ -74,8 +60,10 @@ Given(
     loginAsAdmin();
     navigateTo(`netgroups/${groupName}`);
 
-    assertElementType(elementType);
-    ensureTabVisibleAndOpen(elementType);
+    if (!isMemberEntity(elementType)) {
+      throw new Error(`Invalid member entity: ${elementType}`);
+    }
+    ensureTabVisibleAndOpen(elementType as MemberEntity);
 
     cy.dataCy(`settings-button-add-${elementType}`).click();
     cy.dataCy("dual-list-modal").should("exist");
@@ -105,8 +93,10 @@ Given(
     loginAsAdmin();
     navigateTo(`netgroups/${groupName}`);
 
-    assertElementType(elementType);
-    ensureTabVisibleAndOpen(elementType);
+    if (!isMemberEntity(elementType)) {
+      throw new Error(`Invalid member entity: ${elementType}`);
+    }
+    ensureTabVisibleAndOpen(elementType as MemberEntity);
 
     const itemToDelete =
       elementType === "host"
@@ -137,7 +127,9 @@ Given(
     loginAsAdmin();
     navigateTo(`netgroups/${groupName}`);
 
-    assertElementType("externalhost");
+    if (!isMemberEntity("externalhost")) {
+      throw new Error(`Invalid member entity: externalhost`);
+    }
     ensureTabVisibleAndOpen("externalhost");
 
     cy.dataCy("settings-button-add-externalHost").click();
@@ -162,7 +154,9 @@ Given(
     loginAsAdmin();
     navigateTo(`netgroups/${groupName}`);
 
-    assertElementType("externalhost");
+    if (!isMemberEntity("externalhost")) {
+      throw new Error(`Invalid member entity: externalhost`);
+    }
     ensureTabVisibleAndOpen("externalhost");
 
     findEntryInTable(externalHost, "externalHost");

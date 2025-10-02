@@ -245,7 +245,7 @@ const MembersNetgroups = (props: PropsToMembersNetgroups) => {
         if (response.data?.result) {
           // Set alert: success
           alerts.addAlert(
-            "remove-hnetgroups-success",
+            "remove-netgroups-success",
             "Removed netgroups from netgroup '" + props.id + "'",
             "success"
           );
