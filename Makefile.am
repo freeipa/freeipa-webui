@@ -8,8 +8,8 @@ EXTRA_DIST =		\
 
 install-exec-local:
 	## We don't want to run this code in prci, prci runs those commands before make install
-	test -d "dist" || npm install
-	test -d "dist" || ( npm run build && rm -rf node_modules && npm install --omit=dev )
+	test -d "dist" || npm clean-install
+	test -d "dist" || ( npm run build && rm -rf node_modules && npm clean-install --omit=dev )
 	mkdir -p "$(DESTDIR)$(appdir)"
 	cp -p "dist/index.html" "$(DESTDIR)$(appdir)/index.html"
 	mkdir -p "$(licensedir)"
@@ -17,9 +17,9 @@ install-exec-local:
 	cp -rp "dist/assets" "$(DESTDIR)$(appdir)/assets"
 
 dist-hook:
-	npm install
+	npm clean-install
 	## We need to build, but we only want the distributable dependencies in the .src.rpm
-	npm run build && rm -rf node_modules && npm install --omit=dev
+	npm run build && rm -rf node_modules && npm clean-install --omit=dev
 	cp -r "." "$(distdir)/"
 
 clean-local:
