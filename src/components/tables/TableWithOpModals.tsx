@@ -26,7 +26,7 @@ import {
 } from "src/utils/datatypes/globalDataTypes";
 
 // Column definition interface
-export interface TableColumn {
+interface TableColumn {
   key: string;
   label: string;
   sortable?: boolean;
@@ -40,7 +40,7 @@ export type TableRow = {
 } & RecordTypeData;
 
 // Action item interface
-export interface TableAction {
+interface TableAction {
   label: string;
   onClick: (item: TableRow) => void;
   isDisabled?: (item: TableRow) => boolean;

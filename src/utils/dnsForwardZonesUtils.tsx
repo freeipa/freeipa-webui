@@ -2,20 +2,6 @@
 import { DNSForwardZone } from "./datatypes/globalDataTypes";
 import { convertApiObj } from "src/utils/ipaObjectUtils";
 
-export const dnsForwardZoneAsRecord = (
-  element: Partial<DNSForwardZone>,
-  onElementChange: (element: Partial<DNSForwardZone>) => void
-) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const ipaObject = element as Record<string, any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const recordOnChange = (ipaObject: Record<string, any>) => {
-    onElementChange(ipaObject as DNSForwardZone);
-  };
-
-  return { ipaObject, recordOnChange };
-};
-
 const simpleValues = new Set<keyof DNSForwardZone>([
   "dn",
   "idnsforwardpolicy",
@@ -38,7 +24,7 @@ export function apiToDnsForwardZone(apiRecord: unknown): DNSForwardZone {
   return partialDnsForwardZoneToDnsForwardZone(converted);
 }
 
-export function partialDnsForwardZoneToDnsForwardZone(
+function partialDnsForwardZoneToDnsForwardZone(
   partialDnsZone: Partial<DNSForwardZone>
 ): DNSForwardZone {
   return {
@@ -47,7 +33,7 @@ export function partialDnsForwardZoneToDnsForwardZone(
   };
 }
 
-export function createEmptyDnsForwardZone(): DNSForwardZone {
+function createEmptyDnsForwardZone(): DNSForwardZone {
   return {
     dn: "",
     idnsname: "",

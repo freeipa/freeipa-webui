@@ -108,6 +108,55 @@ It may happen the the keyboard does not work when running the browser with permi
 
 The default credentials for the development environment are **admin** and **Secret123**.
 
+## Development pre-checks
+
+We use handful of tools to help us with code quality, all of these tools are being run on the pipeline, you can and should run them locally as well.
+
+### Eslint
+
+We use [eslint](https://eslint.org) to check for linting errors.
+To run eslint, execute the following command:
+
+```bash
+$ npm run lint
+```
+
+To fix eslint errors, execute the following command:
+
+```bash
+$ npm run lint:fix
+```
+
+Not all of these can be fixed automatically, you should fix errors manually as well.
+
+### Prettier
+
+We use [prettier](https://prettier.io) to check for formatting errors.
+Prettier is integrated to eslint, so if the changes only concern TypeScript, running eslint is usually enough.
+
+To run prettier, execute the following command:
+
+```bash
+$ npm run prettier
+```
+
+To fix prettier errors, execute the following command:
+
+```bash
+$ npm run prettier:fix
+```
+
+### Knip
+
+We use [knip](https://knip.dev) to check for unused imports, exports and dead code.
+To run knip, execute the following command:
+
+```bash
+$ npm run knip
+```
+
+These errors should be fixed manually.
+
 ## Testing
 
 ### Integration tests

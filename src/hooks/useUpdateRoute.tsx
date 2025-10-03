@@ -27,10 +27,7 @@ interface UpdateRouteProps {
   noBreadcrumb?: boolean;
 }
 
-export const useUpdateRoute = ({
-  pathname,
-  noBreadcrumb,
-}: UpdateRouteProps) => {
+const useUpdateRoute = ({ pathname, noBreadcrumb }: UpdateRouteProps) => {
   const dispatch = useAppDispatch();
 
   const [loadedGroup, setLoadedGroup] = React.useState<string[]>([]);

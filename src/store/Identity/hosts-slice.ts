@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { RootState } from "../../store/store";
 // Data types
 import { Host } from "../../utils/datatypes/globalDataTypes";
 
@@ -37,6 +36,4 @@ const hostsSlice = createSlice({
 });
 
 export const { updateHostsList, addHost, removeHost } = hostsSlice.actions;
-export const selectHosts = (state: RootState) =>
-  state.hosts.hostsList as Host[];
 export default hostsSlice.reducer;

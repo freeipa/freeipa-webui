@@ -33,7 +33,7 @@ import { partialViewToView } from "src/utils/idViewUtils";
 // Data types
 import { IDView } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import { useAlerts } from "src/hooks/useAlerts";
+import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors
@@ -51,7 +51,7 @@ import {
 } from "../../services/rpcIDViews";
 import TabLayout from "src/components/layouts/TabLayout";
 
-export interface AppliesToProps {
+interface AppliesToProps {
   idView: IDView;
   onRefresh: () => void;
 }

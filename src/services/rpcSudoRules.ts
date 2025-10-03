@@ -29,41 +29,22 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
  * - sudorule_enable: https://freeipa.readthedocs.io/en/latest/api/sudorule_enable.html
  */
 
-export type RuleFullData = {
+type RuleFullData = {
   rule?: Partial<SudoRule>;
 };
 
-export interface SudoRulesShowPayload {
+interface SudoRulesShowPayload {
   sudoRuleNamesList: string[];
   no_members: boolean | true;
   version: string;
 }
 
-export interface SudoRulePayload {
-  no_members: boolean | true;
-  cn?: string;
-  description?: string;
-  ipaenabledflag?: boolean;
-  usercategory?: "all";
-  hostcategory?: "all";
-  cmdcategory?: "all";
-  ipasudorunasusercategory?: "all";
-  ipasudorunasgroupcategory?: "all";
-  sudoorder?: number | 0;
-  externaluser?: string;
-  externalhost?: string;
-  ipasudorunasextuser?: string;
-  ipasudorunasextgroup?: string;
-  timelimit?: number;
-  sizelimit?: number;
-}
-
-export interface AddOptionPayload {
+interface AddOptionPayload {
   option: string;
   toSudoRule: string;
 }
 
-export interface RemoveOptionsPayload {
+interface RemoveOptionsPayload {
   options: string[];
   fromSudoRule: string;
 }
@@ -196,16 +177,6 @@ export interface BatchDeleteAllCommandsResult {
     memberallowcmd_sudocmdgroup: string[];
     memberdenycmd_sudocmd: string[];
     memberdenycmd_sudocmdgroup: string[];
-  };
-}
-
-export interface BatchDeleteAllCommandsResponse {
-  error: Record<string, unknown> | null;
-  id: string | null;
-  principal: string;
-  result: {
-    count: number;
-    results: BatchDeleteAllCommandsResult[];
   };
 }
 

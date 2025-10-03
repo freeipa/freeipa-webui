@@ -8,8 +8,8 @@ import {
   ToolbarItemVariant,
 } from "@patternfly/react-core";
 
-export type ToolbarItemGap = ToolbarItemProps["gap"];
-export type ToolbarItemAlignment = ToolbarItemProps["align"];
+type ToolbarItemGap = ToolbarItemProps["gap"];
+type ToolbarItemAlignment = ToolbarItemProps["align"];
 
 export interface ToolbarItem {
   key: number;
