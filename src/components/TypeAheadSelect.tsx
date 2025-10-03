@@ -235,7 +235,7 @@ const TypeAheadSelect = (props: PropsToTypeAheadSelect) => {
       onClick={onToggleClick}
       isExpanded={isOpen}
       isFullWidth
-      data-cy="typeahead-select-toggle"
+      data-cy={"typeahead-select-toggle"}
     >
       <TextInputGroup isPlain>
         <TextInputGroupMain
@@ -244,7 +244,7 @@ const TypeAheadSelect = (props: PropsToTypeAheadSelect) => {
           onChange={onTextInputChange}
           onKeyDown={onInputKeyDown}
           id="typeahead-select-input"
-          data-cy="typeahead-select-input"
+          data-cy={"typeahead-select-input"}
           autoComplete="off"
           innerRef={textInputRef}
           placeholder={props.placeholder || ""}
