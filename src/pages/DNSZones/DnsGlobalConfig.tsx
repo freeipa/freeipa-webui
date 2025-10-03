@@ -79,7 +79,8 @@ const DnsGlobalConfig = () => {
   };
 
   // on Save handler method
-  const onSave = () => {
+  const onSave = (event: React.FormEvent) => {
+    event.preventDefault();
     setIsDataLoading(true);
     const modifiedValues = dnsConfigData.modifiedValues();
 
