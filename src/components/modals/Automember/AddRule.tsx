@@ -224,7 +224,7 @@ const AddRule = (props: PropsToAddRule) => {
 
   const modalActions = [
     <SecondaryButton
-      dataCy="modal-button-add"
+      dataCy={"modal-button-add"}
       key="add"
       onClickHandler={onAdd}
       isLoading={addSpinning}
@@ -235,7 +235,7 @@ const AddRule = (props: PropsToAddRule) => {
       Add
     </SecondaryButton>,
     <SecondaryButton
-      dataCy="modal-button-add-and-add-another"
+      dataCy={"modal-button-add-and-add-another"}
       key="add-another"
       onClickHandler={onAddAndAddAnother}
       isLoading={addAgainSpinning}
@@ -246,7 +246,7 @@ const AddRule = (props: PropsToAddRule) => {
       Add and add another
     </SecondaryButton>,
     <Button
-      data-cy="modal-button-cancel"
+      data-cy={"modal-button-cancel"}
       key="cancel-new-rule"
       variant="link"
       onClick={cleanAndCloseModal}
@@ -260,7 +260,7 @@ const AddRule = (props: PropsToAddRule) => {
     <>
       <alerts.ManagedAlerts />
       <ModalWithFormLayout
-        dataCy="add-rule-modal"
+        dataCy={"add-rule-modal"}
         variantType="small"
         modalPosition="top"
         offPosition="76px"
