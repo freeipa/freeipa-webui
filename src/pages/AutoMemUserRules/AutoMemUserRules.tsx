@@ -513,7 +513,7 @@ const AutoMemUserRules = () => {
       key: 1,
       element: (
         <SearchInputLayout
-          dataCy="search"
+          dataCy={"search"}
           name="search"
           ariaLabel="Search rules"
           placeholder="Search"
@@ -533,7 +533,7 @@ const AutoMemUserRules = () => {
           selected={defaultGroup}
           placeholder="Default user group"
           onSelectedChange={onShowDefaultGroupOnModal}
-          dataCy="auto-member-user-rules-typeahead-select"
+          dataCy={"auto-member-user-rules-typeahead-select"}
         />
       ),
     },
@@ -545,7 +545,7 @@ const AutoMemUserRules = () => {
       key: 4,
       element: (
         <SecondaryButton
-          dataCy="auto-member-user-rules-button-refresh"
+          dataCy={"auto-member-user-rules-button-refresh"}
           onClickHandler={refreshData}
           isDisabled={!showTableRows}
         >
@@ -557,7 +557,7 @@ const AutoMemUserRules = () => {
       key: 5,
       element: (
         <SecondaryButton
-          dataCy="auto-member-user-rules-button-delete"
+          dataCy={"auto-member-user-rules-button-delete"}
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           onClickHandler={onOpenDeleteModal}
         >
@@ -569,7 +569,7 @@ const AutoMemUserRules = () => {
       key: 6,
       element: (
         <SecondaryButton
-          dataCy="auto-member-user-rules-button-add"
+          dataCy={"auto-member-user-rules-button-add"}
           isDisabled={!showTableRows}
           onClickHandler={onOpenAddModal}
         >
@@ -663,7 +663,7 @@ const AutoMemUserRules = () => {
         ruleType="group"
       />
       <ConfirmationModal
-        dataCy="auto-member-default-user-rules-modal"
+        dataCy={"auto-member-default-user-rules-modal"}
         title="Default user group"
         isOpen={showChangeConfirmationModal}
         onClose={onCloseConfirmationModal}
