@@ -536,6 +536,7 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
         positionOffset="76px"
         isOpen={props.isOpen}
         onClose={props.onClose}
+        data-cy={"add-dns-records-modal"}
       >
         <ModalHeader
           title={"Add DNS resource record"}

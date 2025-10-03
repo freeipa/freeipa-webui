@@ -334,7 +334,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
           placeholder="Search"
           searchValueData={searchValueData}
           isDisabled={isSearchDisabled}
-          dataCy="search-dns-records"
+          dataCy="search"
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,
@@ -417,6 +417,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
       style={{
         height: `var(--subsettings-calc)`,
       }}
+      data-cy={"dns-zones-dns-records"}
     >
       <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false} isFilled={false}>
