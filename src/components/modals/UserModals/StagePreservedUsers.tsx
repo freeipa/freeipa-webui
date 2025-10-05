@@ -14,7 +14,7 @@ import {
   BatchRPCResponse,
   useBatchMutCommandMutation,
 } from "src/services/rpc";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Data types
 import { User } from "src/utils/datatypes/globalDataTypes";

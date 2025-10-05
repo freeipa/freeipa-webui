@@ -1,6 +1,6 @@
 import React from "react";
 // Redux toolkit
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 
 type RawApiError = FetchBaseQueryError | SerializedError;

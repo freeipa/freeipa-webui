@@ -43,7 +43,7 @@ import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "../../hooks/useApiError";
 import GlobalErrors from "../../components/errors/GlobalErrors";
 import ModalErrors from "../../components/errors/ModalErrors";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // RPC client
 import { useSearchEntriesMutation, GenericPayload } from "../../services/rpc";

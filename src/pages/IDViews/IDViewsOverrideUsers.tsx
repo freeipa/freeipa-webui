@@ -21,7 +21,7 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 // Errors
 import GlobalErrors from "src/components/errors/GlobalErrors";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Utils
 import { isUserOverrideSelectable } from "src/utils/utils";
