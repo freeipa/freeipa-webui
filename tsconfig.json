@@ -20,7 +20,7 @@
     "skipLibCheck": true,
     "noEmit": false,
     "resolveJsonModule": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "isolatedModules": true,
     "paths": {
       "@badeball/cypress-cucumber-preprocessor/*": [
