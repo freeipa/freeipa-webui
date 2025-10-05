@@ -41,7 +41,7 @@ import ActivateStageUsers from "src/components/modals/UserModals/ActivateStageUs
 // Utils
 import { API_VERSION_BACKUP, isUserSelectable } from "src/utils/utils";
 // Errors
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // RPC client
 import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";

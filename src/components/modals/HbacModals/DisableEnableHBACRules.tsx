@@ -15,7 +15,7 @@ import {
   useEnableHbacRuleMutation,
 } from "src/services/rpcHBACRules";
 // Errors
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 import ErrorModal from "src/components/modals/ErrorModal";
 // Data types

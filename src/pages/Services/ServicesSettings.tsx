@@ -36,7 +36,7 @@ import AllowedCreateKeytab from "src/components/ServicesSections/AllowedCreateKe
 import useAlerts from "src/hooks/useAlerts";
 import useApiError from "src/hooks/useApiError";
 // Errors
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // RPC
 import {

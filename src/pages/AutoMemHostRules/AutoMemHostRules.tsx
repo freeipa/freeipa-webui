@@ -52,7 +52,7 @@ import {
   isAutomemberUserGroupSelectable,
 } from "src/utils/utils";
 // Errors
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Modals
 import AddRule from "src/components/modals/Automember/AddRule";

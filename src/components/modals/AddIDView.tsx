@@ -14,7 +14,7 @@ import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
 // Modals
 import ErrorModal from "./ErrorModal";
 // Errors
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Hooks
 import useAlerts from "../../hooks/useAlerts";

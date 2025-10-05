@@ -19,7 +19,7 @@ import ErrorModal from "./ErrorModal";
 import { useAppDispatch } from "../../store/hooks";
 import { addGroup } from "../../store/Identity/userGroups-slice";
 // Errors
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Hooks
 import useAlerts from "../../hooks/useAlerts";

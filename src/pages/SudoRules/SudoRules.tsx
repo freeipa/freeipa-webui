@@ -42,7 +42,7 @@ import { API_VERSION_BACKUP, isSudoRuleSelectable } from "src/utils/utils";
 import { GenericPayload, useSearchEntriesMutation } from "src/services/rpc";
 import { useGettingSudoRulesQuery } from "src/services/rpcSudoRules";
 // Errors
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
 import GlobalErrors from "src/components/errors/GlobalErrors";

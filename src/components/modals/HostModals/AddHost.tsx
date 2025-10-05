@@ -21,7 +21,7 @@ import { Host } from "src/utils/datatypes/globalDataTypes";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { addHost } from "src/store/Identity/hosts-slice";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Modals
 import ErrorModal from "src/components/modals/ErrorModal";

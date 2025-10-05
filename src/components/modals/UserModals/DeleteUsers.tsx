@@ -21,7 +21,7 @@ import {
   BatchRPCResponse,
   useBatchMutCommandMutation,
 } from "src/services/rpc";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Modals
 import ErrorModal from "src/components/modals/ErrorModal";

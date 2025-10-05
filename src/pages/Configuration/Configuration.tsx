@@ -27,7 +27,7 @@ import { useConfigSettings } from "src/hooks/useConfigSettingsData";
 import { API_VERSION_BACKUP } from "src/utils/utils";
 import { asRecord } from "../../utils/hostUtils";
 // Errors
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Option components
 import ConfigSearchOptions from "./ConfigSearchOptions";

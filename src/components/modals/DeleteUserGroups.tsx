@@ -10,7 +10,7 @@ import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
 import DeletedElementsTable from "src/components/tables/DeletedElementsTable";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Data types
 import { ErrorData, UserGroup } from "src/utils/datatypes/globalDataTypes";
