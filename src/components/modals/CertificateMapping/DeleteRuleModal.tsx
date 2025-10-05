@@ -7,7 +7,7 @@ import useAlerts from "src/hooks/useAlerts";
 import { useCertMapRuleDeleteMutation } from "src/services/rpcCertMapping";
 import ConfirmationModal from "../ConfirmationModal";
 // React router
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 interface DeleteRuleModalProps {
   isOpen: boolean;

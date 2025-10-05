@@ -29,7 +29,7 @@ import {
 import { isCertMapSelectable } from "src/utils/utils";
 import { apiToCertificateMapping } from "src/utils/certMappingUtils";
 // React router
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 // Components
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";

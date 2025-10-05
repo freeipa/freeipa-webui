@@ -22,7 +22,7 @@ import {
   useSearchDnsRecordsEntriesMutation,
 } from "src/services/rpcDnsZones";
 // React router
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 // Utils
 import { isDnsRecordSelectable } from "src/utils/utils";
 // Hooks
