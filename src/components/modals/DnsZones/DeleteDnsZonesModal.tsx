@@ -15,7 +15,7 @@ import { DNSZone, ErrorData } from "src/utils/datatypes/globalDataTypes";
 import { BatchRPCResponse } from "src/services/rpc";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 // Reacr Router
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 // Components
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import DeletedElementsTable from "src/components/tables/DeletedElementsTable";

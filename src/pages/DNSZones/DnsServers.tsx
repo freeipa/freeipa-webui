@@ -27,7 +27,7 @@ import {
   useSearchDnsServersEntriesMutation,
 } from "src/services/rpcDnsServers";
 // React router
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router-dom";
 // Components
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";

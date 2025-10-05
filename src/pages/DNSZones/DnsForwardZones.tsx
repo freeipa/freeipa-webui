@@ -28,7 +28,7 @@ import {
 // Utils
 import { isDnsForwardZoneSelectable } from "src/utils/utils";
 // React router
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 // Components
 import ToolbarLayout, {
   ToolbarItem,
