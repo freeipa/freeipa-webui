@@ -1,13 +1,6 @@
 import React from "react";
 // PatternFly
-import {
-  Button,
-  HelperText,
-  HelperTextItem,
-  Radio,
-  TextInput,
-  ValidatedOptions,
-} from "@patternfly/react-core";
+import { Button, Radio, TextInput } from "@patternfly/react-core";
 // Components
 import ModalWithFormLayout, {
   Field,
@@ -29,6 +22,8 @@ import useAlerts from "src/hooks/useAlerts";
 import { SerializedError } from "@reduxjs/toolkit";
 // Components
 import TitleLayout from "src/components/layouts/TitleLayout";
+import InputWithHelperText from "src/components/layouts/InputWithHelperText";
+import InputWithValidation from "src/components/layouts/InputWithValidation";
 
 interface PropsToAddModal {
   isOpen: boolean;
@@ -254,15 +249,14 @@ const AddModal = (props: PropsToAddModal) => {
       id: "identity-provider-reference-name",
       name: "Identity Provider reference name",
       pfComponent: (
-        <TextInput
-          data-cy="modal-textbox-idp-ref-name"
-          type="text"
+        <InputWithHelperText
+          dataCy="modal-textbox-idp-ref-name"
           id="identity-provider-reference-name"
           name="cn"
           value={idpRefName}
-          aria-label="Identity Provider reference name"
-          onChange={(_event, value: string) => setIdpRefName(value)}
+          onChange={setIdpRefName}
           isRequired
+          requiredHelperText="Required value"
         />
       ),
       fieldRequired: true,
@@ -271,15 +265,14 @@ const AddModal = (props: PropsToAddModal) => {
       id: "client-id",
       name: "Client identifier",
       pfComponent: (
-        <TextInput
-          data-cy="modal-textbox-client-id"
-          type="text"
+        <InputWithHelperText
+          dataCy="modal-textbox-client-id"
           id="client-id"
           name="ipaidpclientid"
           value={clientId}
-          aria-label="Client identifier"
-          onChange={(_event, value) => setClientId(value)}
+          onChange={setClientId}
           isRequired
+          requiredHelperText="Required value"
         />
       ),
       fieldRequired: true,
@@ -304,25 +297,21 @@ const AddModal = (props: PropsToAddModal) => {
       name: "Verify secret",
       pfComponent: (
         <>
-          <TextInput
-            data-cy="modal-textbox-verify-secret"
-            type="text"
+          <InputWithValidation
+            dataCy="modal-textbox-verify-secret"
             id="verify-secret"
             name="ipaidpclientsecret_verify"
             value={verifySecret}
             aria-label="Verify secret"
-            onChange={(_event, value) => setVerifySecret(value)}
-            validated={
-              secret !== "" && verifySecret !== secret
-                ? ValidatedOptions.error
-                : ValidatedOptions.default
-            }
+            onChange={setVerifySecret}
+            rules={[
+              {
+                id: "secret-match",
+                message: "Secret should match",
+                validate: (v: string) => v === secret,
+              },
+            ]}
           />
-          <HelperText>
-            {secret !== "" && verifySecret !== secret && (
-              <HelperTextItem>Secret should match</HelperTextItem>
-            )}
-          </HelperText>
         </>
       ),
     },
@@ -395,14 +384,15 @@ const AddModal = (props: PropsToAddModal) => {
       id: "org",
       name: "Organization",
       pfComponent: (
-        <TextInput
-          data-cy="modal-textbox-org"
-          type="text"
+        <InputWithHelperText
+          dataCy="modal-textbox-org"
           id="org"
           name="ipaidporg"
           value={org}
           aria-label="Organization"
-          onChange={(_event, value) => setOrg(value)}
+          onChange={setOrg}
+          isRequired
+          requiredHelperText="Required value"
         />
       ),
       fieldRequired: true,
@@ -411,14 +401,15 @@ const AddModal = (props: PropsToAddModal) => {
       id: "base-url",
       name: "Base URL",
       pfComponent: (
-        <TextInput
-          data-cy="modal-textbox-base-url"
-          type="text"
+        <InputWithHelperText
+          dataCy="modal-textbox-base-url"
           id="base-url"
           name="ipaidpbaseurl"
           value={baseUrl}
           aria-label="Base URL"
-          onChange={(_event, value) => setBaseUrl(value)}
+          onChange={setBaseUrl}
+          isRequired
+          requiredHelperText="Required value"
         />
       ),
       fieldRequired: true,
@@ -431,14 +422,15 @@ const AddModal = (props: PropsToAddModal) => {
       id: "org",
       name: "Organization",
       pfComponent: (
-        <TextInput
-          data-cy="modal-textbox-org"
-          type="text"
+        <InputWithHelperText
+          dataCy="modal-textbox-org"
           id="org"
           name="ipaidporg"
           value={org}
           aria-label="Organization"
-          onChange={(_event, value) => setOrg(value)}
+          onChange={setOrg}
+          isRequired
+          requiredHelperText="Required value"
         />
       ),
       fieldRequired: true,
@@ -450,14 +442,15 @@ const AddModal = (props: PropsToAddModal) => {
       id: "auth-uri",
       name: "Authorization URI",
       pfComponent: (
-        <TextInput
-          data-cy="modal-textbox-auth-uri"
-          type="text"
+        <InputWithHelperText
+          dataCy="modal-textbox-auth-uri"
           id="auth-uri"
           name="ipaidpauthendpoint"
           value={authUri}
           aria-label="Authorization URI"
-          onChange={(_event, value) => setAuthUri(value)}
+          onChange={setAuthUri}
+          isRequired
+          requiredHelperText="Required value"
         />
       ),
       fieldRequired: true,
@@ -466,14 +459,15 @@ const AddModal = (props: PropsToAddModal) => {
       id: "dev-auth-uri",
       name: "Device authorization URI",
       pfComponent: (
-        <TextInput
-          data-cy="modal-textbox-dev-auth-uri"
-          type="text"
+        <InputWithHelperText
+          dataCy="modal-textbox-dev-auth-uri"
           id="dev-auth-uri"
           name="ipaidpdevauthendpoint"
           value={devAuthUri}
           aria-label="Device authorization URI"
-          onChange={(_event, value) => setDevAuthUri(value)}
+          onChange={setDevAuthUri}
+          isRequired
+          requiredHelperText="Required value"
         />
       ),
       fieldRequired: true,
@@ -482,14 +476,15 @@ const AddModal = (props: PropsToAddModal) => {
       id: "token-uri",
       name: "Token URI",
       pfComponent: (
-        <TextInput
-          data-cy="modal-textbox-token-uri"
-          type="text"
+        <InputWithHelperText
+          dataCy="modal-textbox-token-uri"
           id="token-uri"
           name="ipaidptokenendpoint"
           value={tokenUri}
           aria-label="Token URI"
-          onChange={(_event, value) => setTokenUri(value)}
+          onChange={setTokenUri}
+          isRequired
+          requiredHelperText="Required value"
         />
       ),
       fieldRequired: true,
@@ -498,14 +493,15 @@ const AddModal = (props: PropsToAddModal) => {
       id: "user-info-uri",
       name: "User info URI",
       pfComponent: (
-        <TextInput
-          data-cy="modal-textbox-user-info-uri"
-          type="text"
+        <InputWithHelperText
+          dataCy="modal-textbox-user-info-uri"
           id="user-info-uri"
           name="ipaidpuserinfoendpoint"
           value={userInfoUri}
           aria-label="User info URI"
-          onChange={(_event, value) => setUserInfoUri(value)}
+          onChange={setUserInfoUri}
+          isRequired
+          requiredHelperText="Required value"
         />
       ),
       fieldRequired: true,
@@ -514,14 +510,15 @@ const AddModal = (props: PropsToAddModal) => {
       id: "jwks-uri",
       name: "JWKS URI",
       pfComponent: (
-        <TextInput
-          data-cy="modal-textbox-jwks-uri"
-          type="text"
+        <InputWithHelperText
+          dataCy="modal-textbox-jwks-uri"
           id="jwks-uri"
           name="ipaidpkeysendpoint"
           value={jwksUri}
           aria-label="JWKS URI"
-          onChange={(_event, value) => setJwksUri(value)}
+          onChange={setJwksUri}
+          isRequired
+          requiredHelperText="Required value"
         />
       ),
       fieldRequired: true,

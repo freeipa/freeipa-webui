@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
-import {
-  Button,
-  HelperText,
-  HelperTextItem,
-  TextArea,
-  TextInput,
-  ValidatedOptions,
-} from "@patternfly/react-core";
+import { Button, TextArea } from "@patternfly/react-core";
 // Layouts
 import SecondaryButton from "../layouts/SecondaryButton";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
+import InputWithHelperText from "../layouts/InputWithHelperText";
 // Data types
 import { Netgroup } from "../../utils/datatypes/globalDataTypes";
 // Modals
@@ -69,27 +63,17 @@ const AddNetgroup = (props: PropsToAddGroup) => {
       id: "modal-form-netgroup-name",
       name: "Netgroup name",
       pfComponent: (
-        <>
-          <TextInput
-            data-cy="modal-textbox-netgroup-name"
-            type="text"
-            id="modal-form-netgroup-name"
-            name="modal-form-netgroup-name"
-            value={groupName}
-            onChange={(_event, value: string) => setGroupName(value)}
-            validated={
-              groupName === ""
-                ? ValidatedOptions.error
-                : ValidatedOptions.default
-            }
-          />
-          <HelperText>
-            {groupName === "" && (
-              <HelperTextItem>Required value</HelperTextItem>
-            )}
-          </HelperText>
-        </>
+        <InputWithHelperText
+          dataCy="modal-textbox-netgroup-name"
+          id="modal-form-netgroup-name"
+          name="modal-form-netgroup-name"
+          value={groupName}
+          onChange={setGroupName}
+          isRequired
+          requiredHelperText="Required value"
+        />
       ),
+      fieldRequired: true,
     },
     {
       id: "modal-form-netgroup-desc",

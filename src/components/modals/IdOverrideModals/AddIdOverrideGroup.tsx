@@ -4,13 +4,13 @@ import {
   Button,
   Spinner,
   Content,
-  TextInput,
   TextArea,
-  ValidatedOptions,
+  TextInput,
 } from "@patternfly/react-core";
 // Layout
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
+import InputWithValidation from "src/components/layouts/InputWithValidation";
 // Redux
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -93,7 +93,6 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
 
   // Refs
   const loginRef = useRef() as MutableRefObject<HTMLInputElement>;
-  const gidNumberRef = useRef() as MutableRefObject<HTMLInputElement>;
 
   // List of fields
   const fields = [
@@ -130,19 +129,19 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
       id: "modal-form-gidnumber",
       name: "GID",
       pfComponent: (
-        <TextInput
-          data-cy="modal-textbox-gidnumber"
-          type="text"
+        <InputWithValidation
+          dataCy="modal-textbox-gidnumber"
           id="modal-form-gidnumber"
           name="modal-form-gidnumber"
           value={gidnumber}
-          onChange={(_event, value: string) => setGidNumber(value)}
-          ref={gidNumberRef}
-          validated={
-            gidnumber !== "" && isNaN(Number(gidnumber))
-              ? ValidatedOptions.error
-              : ValidatedOptions.default
-          }
+          onChange={setGidNumber}
+          rules={[
+            {
+              id: "ruleGid",
+              message: "Must be empty or a number",
+              validate: (v: string) => v === "" || !isNaN(Number(v)),
+            },
+          ]}
         />
       ),
     },

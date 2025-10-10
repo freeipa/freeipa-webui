@@ -19,6 +19,7 @@ import { SerializedError } from "@reduxjs/toolkit";
 // Icons
 import { InfoCircleIcon } from "@patternfly/react-icons";
 import NumberSelector from "src/components/Form/NumberInput";
+import InputWithHelperText from "src/components/layouts/InputWithHelperText";
 
 interface PropsToAddRuleModal {
   isOpen: boolean;
@@ -119,15 +120,14 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
       id: "rule-name",
       name: "Rule name",
       pfComponent: (
-        <TextInput
-          data-cy="modal-textbox-rule-name"
-          type="text"
+        <InputWithHelperText
+          dataCy="modal-textbox-rule-name"
           id="rule-name"
           name="cn"
           value={ruleName}
-          aria-label="Rule name text input"
-          onChange={(_event, value: string) => setRuleName(value)}
+          onChange={setRuleName}
           isRequired
+          requiredHelperText="Required value"
         />
       ),
       fieldRequired: true,
