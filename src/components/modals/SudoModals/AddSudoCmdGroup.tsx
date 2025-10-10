@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
-import {
-  Button,
-  HelperText,
-  HelperTextItem,
-  TextArea,
-  TextInput,
-  ValidatedOptions,
-} from "@patternfly/react-core";
+import { Button, TextArea } from "@patternfly/react-core";
 // Layouts
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
+import InputRequiredText from "src/components/layouts/InputRequiredText";
 // Modals
 import ErrorModal from "src/components/modals/ErrorModal";
 // Errors
@@ -58,27 +52,16 @@ const AddSudoCmdGroup = (props: PropsToAddGroup) => {
       id: "modal-form-cmd-grp-name",
       name: "Command group name",
       pfComponent: (
-        <>
-          <TextInput
-            data-cy="modal-textbox-cmd-grp-name"
-            type="text"
-            id="modal-form-cmd-grp-name"
-            name="modal-form-cmd-grp-name"
-            value={cmdGroupName}
-            onChange={(_event, value: string) => setCmdGroupName(value)}
-            validated={
-              cmdGroupName === ""
-                ? ValidatedOptions.error
-                : ValidatedOptions.default
-            }
-          />
-          <HelperText>
-            {cmdGroupName === "" && (
-              <HelperTextItem>Required value</HelperTextItem>
-            )}
-          </HelperText>
-        </>
+        <InputRequiredText
+          dataCy="modal-textbox-cmd-grp-name"
+          id="modal-form-cmd-grp-name"
+          name="modal-form-cmd-grp-name"
+          value={cmdGroupName}
+          onChange={setCmdGroupName}
+          requiredHelperText="Required value"
+        />
       ),
+      fieldRequired: true,
     },
     {
       id: "modal-form-cmd-grp-desc",

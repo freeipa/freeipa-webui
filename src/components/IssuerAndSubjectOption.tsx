@@ -1,8 +1,9 @@
 import React from "react";
 // PatternFly
-import { Form, FormGroup, Radio, TextInput } from "@patternfly/react-core";
+import { Form, FormGroup, Radio } from "@patternfly/react-core";
 // Components
 import PopoverWithIconLayout from "./layouts/PopoverWithIconLayout";
+import InputRequiredText from "./layouts/InputRequiredText";
 
 interface PropsToIssuerAndSubjectOption {
   isIssuerAndSubjectChecked: boolean;
@@ -73,16 +74,13 @@ const IssuerAndSubjectOption = (props: PropsToIssuerAndSubjectOption) => {
             isRequired={props.isIssuerAndSubjectChecked}
             name="issuer-formgroup"
           >
-            <TextInput
-              data-cy="modal-textbox-issuer"
+            <InputRequiredText
+              dataCy="modal-textbox-issuer"
               id="issuer"
+              name="issuer textbox"
               value={props.issuerValue}
-              type="text"
-              name="issuer"
-              aria-label="issuer textbox"
-              onChange={(_event, value: string) => onChangeIssuer(value)}
               isDisabled={!props.isIssuerAndSubjectChecked}
-              placeholder="O=EXAMPLE.ORG,CN=Issuer Example CA"
+              onChange={onChangeIssuer}
             />
           </FormGroup>
           <FormGroup
@@ -97,16 +95,13 @@ const IssuerAndSubjectOption = (props: PropsToIssuerAndSubjectOption) => {
             isRequired={props.isIssuerAndSubjectChecked}
             name="subject-formgroup"
           >
-            <TextInput
-              data-cy="modal-textbox-subject"
+            <InputRequiredText
+              dataCy="modal-textbox-subject"
               id="subject-textbox"
+              name="subject textbox"
               value={props.subjectValue}
-              type="text"
-              name="subject"
-              aria-label="subject textbox"
-              onChange={(_event, value: string) => onChangeSubject(value)}
               isDisabled={!props.isIssuerAndSubjectChecked}
-              placeholder="CN=Subject example,O=EXAMPLE.ORG"
+              onChange={onChangeSubject}
             />
           </FormGroup>
         </Form>

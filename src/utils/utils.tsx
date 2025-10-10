@@ -521,6 +521,17 @@ export const isValidIpAddress = (ipAddress: string) => {
 };
 
 /**
+ * Validate that a string is empty or represents a number
+ */
+export const isEmptyOrNumber = (value: string) =>
+  value === "" || !isNaN(Number(value));
+
+/**
+ * Default validation message for empty-or-number fields
+ */
+export const EMPTY_OR_NUMBER_MESSAGE = "Must be empty or a number";
+
+/**
  * Some values in a table might not have a specific value defined
  *
  * (i.e. empty string ""). This is not allowed by the table component.

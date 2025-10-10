@@ -139,6 +139,7 @@ describe("IpaCertificateMappingData", () => {
     await act(async () => {
       fireEvent.click(radioButtonsElems[1]);
     });
+    expect(radioButtonsElems[1]).toBeChecked();
 
     // Validate Issuer exists
     const issuerInputBox = screen.getByRole("textbox", {

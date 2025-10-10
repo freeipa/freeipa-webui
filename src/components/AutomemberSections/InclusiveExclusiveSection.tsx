@@ -1,7 +1,7 @@
 import React from "react";
 // Patternfly
 import { Td, Th, Tr } from "@patternfly/react-table";
-import { Button, TextInput } from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // RPC
@@ -16,6 +16,7 @@ import {
 import { Metadata } from "src/utils/datatypes/globalDataTypes";
 // Components
 import SettingsTableLayout from "../layouts/SettingsTableLayout";
+import InputRequiredText from "../layouts/InputRequiredText";
 import ModalWithFormLayout, { Field } from "../layouts/ModalWithFormLayout";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 import DeletedElementsTable from "../tables/DeletedElementsTable";
@@ -334,11 +335,12 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
       name: "Expression",
       fieldRequired: true,
       pfComponent: (
-        <TextInput
-          data-cy="modal-textbox-expression"
+        <InputRequiredText
+          dataCy="modal-textbox-expression"
           id="expression"
+          name="expression"
           value={expression}
-          onChange={(_event, value: string) => setExpression(value)}
+          onChange={setExpression}
         />
       ),
     },

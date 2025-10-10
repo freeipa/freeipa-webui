@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
-import {
-  Button,
-  HelperText,
-  HelperTextItem,
-  TextArea,
-  TextInput,
-  ValidatedOptions,
-} from "@patternfly/react-core";
+import { Button, TextArea } from "@patternfly/react-core";
 // Layouts
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
+import InputRequiredText from "src/components/layouts/InputRequiredText";
 // Modals
 import ErrorModal from "src/components/modals/ErrorModal";
 // Errors
@@ -57,23 +51,16 @@ const AddSudoCmd = (props: PropsToAddGroup) => {
       id: "modal-form-cmd-name",
       name: "Command name",
       pfComponent: (
-        <>
-          <TextInput
-            type="text"
-            id="modal-form-cmd-name"
-            name="modal-form-cmd-name"
-            value={cmdName}
-            onChange={(_event, value: string) => setCmdName(value)}
-            validated={
-              cmdName === "" ? ValidatedOptions.error : ValidatedOptions.default
-            }
-            data-cy="modal-textbox-command"
-          />
-          <HelperText>
-            {cmdName === "" && <HelperTextItem>Required value</HelperTextItem>}
-          </HelperText>
-        </>
+        <InputRequiredText
+          dataCy="modal-textbox-command"
+          id="modal-form-cmd-name"
+          name="modal-form-cmd-name"
+          value={cmdName}
+          onChange={setCmdName}
+          requiredHelperText="Required value"
+        />
       ),
+      fieldRequired: true,
     },
     {
       id: "modal-form-cmd-desc",

@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 // PatternFly
 import {
   Button,
@@ -6,11 +6,11 @@ import {
   HelperText,
   HelperTextItem,
   TextInput,
-  ValidatedOptions,
 } from "@patternfly/react-core";
 // Layout
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
+import InputWithValidation from "src/components/layouts/InputWithValidation";
 // Data types
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -43,20 +43,6 @@ const AddHost = (props: PropsToAddHost) => {
   const [hostIpAddress, setHostIpAddress] = useState("");
   const [description, setDescription] = useState("");
 
-  // TextInput setters
-  const hostNameHandler = (value: string) => {
-    setHostName(value);
-  };
-  const hostClassHandler = (value: string) => {
-    setHostClass(value);
-  };
-  const hostIpAddressHandler = (value: string) => {
-    setHostIpAddress(value);
-  };
-  const hostDescHandler = (value: string) => {
-    setDescription(value);
-  };
-
   const [addSpinning, setAddBtnSpinning] = React.useState<boolean>(false);
   const [addAgainSpinning, setAddAgainBtnSpinning] =
     React.useState<boolean>(false);
@@ -65,111 +51,25 @@ const AddHost = (props: PropsToAddHost) => {
   const [forceCheckbox, setForceCheckbox] = useState(false);
   const [generateOtpCheckbox, setGenerateOtpCheckbox] = useState(false);
   const [noMembershipCheckbox, setNoMembershipCheckbox] = useState(false);
+  const [isForceDisabled, setIsForceDisabled] = useState(false);
 
-  // Refs
-  const hostNameRef = useRef() as MutableRefObject<HTMLInputElement>;
-  const hostClassRef = useRef() as MutableRefObject<HTMLInputElement>;
-  const hostDescRef = useRef() as MutableRefObject<HTMLInputElement>;
-  const hostIpAddressRef = useRef() as MutableRefObject<HTMLInputElement>;
-
-  // Validation fields
-  const [hostNameValidation, setHostNameValidation] = useState({
-    isError: false,
-    message: "",
-    pfError: ValidatedOptions.default,
-  });
-
-  const [hostIpAddressValidation, setHostIpAddressValidation] = useState({
-    isError: false,
-    message: "",
-    pfError: ValidatedOptions.default,
-  });
-
-  const hostNameValidationHandler = (hostname: string) => {
-    if (hostname === "") {
-      const hostNameVal = {
-        isError: true,
-        message: "Required field",
-        pfError: ValidatedOptions.error,
-      };
-      setHostNameValidation(hostNameVal);
-      return true;
-    }
-    // Check for valid characters.
-    const validCharsRegex = /^[a-zA-Z0-9-.]+$/;
-    if (!validCharsRegex.test(hostname)) {
-      const hostNameVal = {
-        isError: true,
-        message: "Invalid characters in host name",
-        pfError: ValidatedOptions.error,
-      };
-      setHostNameValidation(hostNameVal);
-      return true;
-    }
-    // Check for FQDN compatible string
-    // The domain name should require at least two labels,
-    // but IPA accepts names like 'a.b'.
-    const validHostNameRegex =
-      /^([^-][a-zA-Z0-9-]*[^-]?)([.][^-][a-zA-Z0-9-]*[^-]?)+[.]?$/;
-    if (!validHostNameRegex.test(hostname)) {
-      const hostNameVal = {
-        isError: true,
-        message: "Host name must be a FQDN",
-        pfError: ValidatedOptions.error,
-      };
-      setHostNameValidation(hostNameVal);
-      return true;
-    }
-    // host name is good
-    resetHostNameError();
-    return false;
-  };
+  // Check for FQDN compatible string
+  // The domain name should require at least two labels,
+  // but IPA accepts names like 'a.b'.
+  const validHostNameRegex =
+    /^([^-][a-zA-Z0-9-]*[^-]?)([.][^-][a-zA-Z0-9-]*[^-]?)+[.]?$/;
 
   // Buttons are disabled until the user fills the required fields
   const [buttonDisabled, setButtonDisabled] = useState(true);
   useEffect(() => {
-    if (
-      !hostNameValidationHandler(hostName) &&
-      hostName.length > 0 &&
-      isValidIpAddress(hostIpAddress)
-    ) {
+    if (hostName.length > 0 && isValidIpAddress(hostIpAddress)) {
       setButtonDisabled(false);
+      setIsForceDisabled(false);
     } else {
+      setIsForceDisabled(true);
       setButtonDisabled(true);
     }
-
-    // Handle IP address errors
-    if (isValidIpAddress(hostIpAddress)) {
-      // All good or empty (which is allowed)
-      resetHostIpAddressError();
-    } else {
-      const ipVal = {
-        isError: true,
-        message: "Invalid IP address",
-        pfError: ValidatedOptions.error,
-      };
-      setHostIpAddressValidation(ipVal);
-    }
-  }, [hostName, hostIpAddress]);
-
-  // Reset validation methods
-  // - Host name
-  const resetHostNameError = () => {
-    setHostNameValidation({
-      isError: false,
-      message: "",
-      pfError: ValidatedOptions.default,
-    });
-  };
-
-  // - IP Address
-  const resetHostIpAddressError = () => {
-    setHostIpAddressValidation({
-      isError: false,
-      message: "",
-      pfError: ValidatedOptions.default,
-    });
-  };
+  });
 
   const handleForceCheckbox = () => {
     setForceCheckbox(!forceCheckbox);
@@ -188,28 +88,24 @@ const AddHost = (props: PropsToAddHost) => {
       name: "Host name",
       pfComponent: (
         <>
-          <TextInput
-            data-cy="modal-textbox-host-name"
-            type="text"
+          <InputWithValidation
+            dataCy="modal-textbox-host-name"
             id="modal-form-host-name"
             name="modal-form-host-name"
             value={hostName}
-            onChange={(_event, value: string) => hostNameHandler(value)}
-            validated={hostNameValidation.pfError}
-            ref={hostNameRef}
+            onChange={setHostName}
+            isRequired
+            rules={[
+              {
+                id: "valid-chars",
+                message: "Allowed characters are a-z, A-Z, 0-9, and -",
+                validate: (value: string) => validHostNameRegex.test(value),
+              },
+            ]}
           />
-          <HelperText>
-            {!hostNameValidation.isError && (
-              <HelperTextItem>{hostNameValidation.message}</HelperTextItem>
-            )}
-            {hostNameValidation.isError && (
-              <HelperTextItem variant="error">
-                {hostNameValidation.message}
-              </HelperTextItem>
-            )}
-          </HelperText>
         </>
       ),
+      fieldRequired: true,
     },
     {
       id: "modal-form-host-desc",
@@ -221,8 +117,7 @@ const AddHost = (props: PropsToAddHost) => {
           id="modal-form-host-desc"
           name="modal-form-host-desc"
           value={description}
-          onChange={(_event, value: string) => hostDescHandler(value)}
-          ref={hostDescRef}
+          onChange={(_event, value: string) => setDescription(value)}
         />
       ),
     },
@@ -236,8 +131,7 @@ const AddHost = (props: PropsToAddHost) => {
           id="modal-form-host-class"
           name="modal-form-host-class"
           value={hostClass}
-          onChange={(_event, value: string) => hostClassHandler(value)}
-          ref={hostClassRef}
+          onChange={(_event, value: string) => setHostClass(value)}
         />
       ),
     },
@@ -245,27 +139,20 @@ const AddHost = (props: PropsToAddHost) => {
       id: "modal-form-host-ip-address",
       name: "IP address",
       pfComponent: (
-        <>
-          <TextInput
-            data-cy="modal-textbox-host-ip-address"
-            type="text"
-            id="modal-form-host-ip-address"
-            name="modal-form-host-ip-address"
-            value={hostIpAddress}
-            onChange={(_event, value: string) => hostIpAddressHandler(value)}
-            ref={hostIpAddressRef}
-          />
-          <HelperText>
-            {!hostIpAddressValidation.isError && (
-              <HelperTextItem>{hostIpAddressValidation.message}</HelperTextItem>
-            )}
-            {hostIpAddressValidation.isError && (
-              <HelperTextItem variant="error">
-                {hostIpAddressValidation.message}
-              </HelperTextItem>
-            )}
-          </HelperText>
-        </>
+        <InputWithValidation
+          dataCy="modal-textbox-host-ip-address"
+          id="modal-form-host-ip-address"
+          name="modal-form-host-ip-address"
+          value={hostIpAddress}
+          onChange={setHostIpAddress}
+          rules={[
+            {
+              id: "ruleIp",
+              message: "Must be a valid IPv4 or IPv6 address",
+              validate: (v: string) => (v === "" ? false : isValidIpAddress(v)),
+            },
+          ]}
+        />
       ),
     },
     {
@@ -282,7 +169,7 @@ const AddHost = (props: PropsToAddHost) => {
             name="forceCheckbox"
             value="force"
             onChange={handleForceCheckbox}
-            isDisabled={hostIpAddressValidation.isError}
+            isDisabled={isForceDisabled}
           />
           <HelperText>
             <HelperTextItem variant="indeterminate">
@@ -342,26 +229,15 @@ const AddHost = (props: PropsToAddHost) => {
   // Clean fields and close modal (To prevent data persistence when reopen modal)
   const cleanAndCloseModal = () => {
     cleanAllFields();
-    resetValidations();
     if (props.onCloseAddModal !== undefined) {
       props.onCloseAddModal();
     }
   };
 
-  // Helper method to reset validation values
-  const resetValidations = () => {
-    resetHostNameError();
-    resetHostIpAddressError();
-  };
-
   // List of field validations
   const validateFields = () => {
-    resetValidations();
-    const hostNameError = hostNameValidationHandler(hostName);
     const hostIpError = !isValidIpAddress(hostIpAddress);
-    if (hostNameError || hostIpError) {
-      return false;
-    } else return true;
+    return !hostIpError;
   };
 
   // Define status flags to determine user added successfully or error
@@ -429,9 +305,8 @@ const AddHost = (props: PropsToAddHost) => {
       setAddAgainBtnSpinning(true);
       addHostData().then(() => {
         if (isAdditionSuccess) {
-          // Do not close the modal, but clean fields & reset validations
+          // Do not close the modal, but clean fields
           cleanAllFields();
-          resetValidations();
         } else {
           // Close the modal without cleaning fields
           if (props.onCloseAddModal !== undefined) {
