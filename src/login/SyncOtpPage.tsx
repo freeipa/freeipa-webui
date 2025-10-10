@@ -21,7 +21,7 @@ import {
   useSyncOtpMutation,
 } from "src/services/rpcAuth";
 // React router DOM
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 // Components
 import PasswordInput from "src/components/layouts/PasswordInput";
 

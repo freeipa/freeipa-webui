@@ -6,7 +6,7 @@ import TableLayout from "../layouts/TableLayout";
 // Layouts
 import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout";
 // React router DOM
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import EmptyBodyTable from "./EmptyBodyTable";
 // Icons
 import { CheckIcon, MinusIcon } from "@patternfly/react-icons";

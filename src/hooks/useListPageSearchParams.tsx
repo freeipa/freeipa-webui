@@ -1,5 +1,5 @@
 import React from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 
 const useListPageSearchParams = () => {

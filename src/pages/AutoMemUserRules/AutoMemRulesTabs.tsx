@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 // Components
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";

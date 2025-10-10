@@ -10,7 +10,7 @@ import SkeletonOnTableLayout from "src/components/layouts/Skeleton/SkeletonOnTab
 // Utils
 import { checkEqualStatus } from "src/utils/utils";
 // React Router DOM
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 // Icons
 import { CheckIcon } from "@patternfly/react-icons";
 import { MinusIcon } from "@patternfly/react-icons";

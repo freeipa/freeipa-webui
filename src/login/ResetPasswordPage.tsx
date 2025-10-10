@@ -25,7 +25,7 @@ import {
 import useAlerts from "src/hooks/useAlerts";
 // Components
 import PasswordInput from "src/components/layouts/PasswordInput";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
 
 const ResetPasswordPage = () => {
   // Get user Id

@@ -3,7 +3,7 @@ import { render, screen, act, cleanup } from "@testing-library/react";
 import { describe, it, expect, afterEach } from "vitest";
 // Component
 import IpaTextContent, { IpaTextContentProps } from "./IpaTextContent";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router";
 
 describe("IpaTextContent Component", () => {
   const mockMetadata = {

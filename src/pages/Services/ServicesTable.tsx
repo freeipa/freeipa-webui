@@ -8,7 +8,7 @@ import { Service } from "src/utils/datatypes/globalDataTypes";
 // Layouts
 import SkeletonOnTableLayout from "src/components/layouts/Skeleton/SkeletonOnTableLayout";
 // React Router DOM
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 interface ServicesData {
   isServiceSelectable: (service: Service) => boolean;
