@@ -4,7 +4,7 @@ import { Badge, Tab, Tabs, TabTitleText } from "@patternfly/react-core";
 // Data types
 import { Host } from "src/utils/datatypes/globalDataTypes";
 // Navigation
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 // Layouts
 import TabLayout from "src/components/layouts/TabLayout";
 // Hooks

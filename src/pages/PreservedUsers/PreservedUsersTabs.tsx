@@ -2,7 +2,7 @@ import React, { useState } from "react";
 // PatternFly
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 // Components
 import UserSettings from "src/components/UsersSections/UserSettings";
 import DataSpinner from "src/components/layouts/DataSpinner";

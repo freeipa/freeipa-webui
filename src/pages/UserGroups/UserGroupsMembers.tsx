@@ -7,7 +7,7 @@ import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Layouts
 import TabLayout from "src/components/layouts/TabLayout";
 // Navigation
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // RPC

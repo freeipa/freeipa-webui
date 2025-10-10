@@ -8,7 +8,7 @@ import RemoveHBACRuleMembersModal from "src/components/modals/HbacModals/RemoveH
 // Hooks
 import { useAlerts } from "../../hooks/useAlerts";
 // React Router DOM
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 // RPC
 import { ErrorResult } from "../../services/rpc";
 import {

@@ -10,7 +10,7 @@ import { checkEqualStatusSudoRule } from "src/utils/utils";
 // Layouts
 import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
 // React Router DOM
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 interface RulesData {
   isSudoRuleSelectable: (rule: SudoRule) => boolean;

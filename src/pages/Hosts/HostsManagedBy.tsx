@@ -10,7 +10,7 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 // RPC
 import { useGetHostByIdQuery } from "src/services/rpcHosts";
 // Navigation
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 // Layouts
 import TabLayout from "src/components/layouts/TabLayout";
 

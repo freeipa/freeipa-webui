@@ -16,7 +16,7 @@ import {
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 // React Router DOM
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 
 interface MemberOfSubIdsProps {
   user: Partial<User>;

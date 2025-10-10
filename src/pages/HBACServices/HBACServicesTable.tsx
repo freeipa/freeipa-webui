@@ -7,7 +7,7 @@ import TableLayout from "../../components/layouts/TableLayout";
 import { HBACService } from "../../utils/datatypes/globalDataTypes";
 // Layouts
 import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 interface ServicesData {
   isHbacServiceSelectable: (service: HBACService) => boolean;

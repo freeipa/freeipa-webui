@@ -26,7 +26,7 @@ import { parseEmptyString } from "src/utils/utils";
 import { CheckIcon } from "@patternfly/react-icons";
 import { MinusIcon } from "@patternfly/react-icons";
 // React Router DOM
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 type EntryDataTypes =
   | HBACRule

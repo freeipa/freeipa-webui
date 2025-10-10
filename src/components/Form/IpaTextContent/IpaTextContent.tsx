@@ -8,7 +8,7 @@ import {
   convertToString,
 } from "src/utils/ipaObjectUtils";
 // React Router DOM
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 export interface IpaTextContentProps extends IPAParamDefinition {
   dataCy: string;
