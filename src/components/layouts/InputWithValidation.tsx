@@ -6,7 +6,10 @@ import {
   HelperTextItem,
   TextInput,
 } from "@patternfly/react-core";
-import type { HelperTextItemProps } from "@patternfly/react-core";
+import type {
+  HelperTextItemProps,
+  TextInputProps,
+} from "@patternfly/react-core";
 
 type HelperTextVariant = NonNullable<HelperTextItemProps["variant"]>;
 type RuleState = {
@@ -14,7 +17,7 @@ type RuleState = {
   state: HelperTextVariant;
   message: string;
 };
-type RuleProps = {
+export type RuleProps = {
   id: string;
   message: string;
   validate: (value: string) => boolean;
@@ -31,6 +34,7 @@ interface InputWithValidationProps {
   placeholder?: string;
   rules: Array<RuleProps>;
   showAlways?: boolean; // if true, show helper text even if value is empty
+  type?: TextInputProps["type"];
 }
 
 const InputWithValidation = (props: InputWithValidationProps) => {
@@ -73,7 +77,7 @@ const InputWithValidation = (props: InputWithValidationProps) => {
         id={props.id}
         name={props.name}
         value={props.value}
-        type="text"
+        type={props.type || "text"}
         isRequired={props.isRequired}
         isDisabled={props.isDisabled}
         aria-label={props.name}

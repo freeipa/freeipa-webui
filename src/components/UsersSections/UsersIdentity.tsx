@@ -30,6 +30,7 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
       onChange={recordOnChange}
       objectName="user"
       metadata={props.metadata}
+      helperTextMessage="Please enter a first name"
     />
   );
 
@@ -43,6 +44,7 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
       onChange={recordOnChange}
       objectName="user"
       metadata={props.metadata}
+      helperTextMessage="Please enter a last name"
     />
   );
 
@@ -56,6 +58,7 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
       onChange={recordOnChange}
       objectName="user"
       metadata={props.metadata}
+      helperTextMessage="Please enter a full name"
     />
   );
 
