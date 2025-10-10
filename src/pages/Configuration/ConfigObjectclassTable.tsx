@@ -3,14 +3,10 @@ import {
   Button,
   Form,
   FormGroup,
-  HelperText,
-  HelperTextItem,
   Modal,
   ModalBody,
   ModalFooter,
   ModalHeader,
-  TextInput,
-  ValidatedOptions,
 } from "@patternfly/react-core";
 import { Table, TableText, Tr, Tbody, Td } from "@patternfly/react-table";
 // Utils
@@ -19,6 +15,7 @@ import {
   getParamProperties,
   updateIpaObject,
 } from "../../utils/ipaObjectUtils";
+import InputWithValidation from "src/components/layouts/InputWithValidation";
 
 interface PropsToTable extends IPAParamDefinition {
   title: string;
@@ -102,25 +99,22 @@ const ConfigObjectclassTable = (props: PropsToTable) => {
               fieldId={"oc"}
               isRequired
             >
-              <TextInput
-                data-cy="modal-textbox-objectclass"
+              <InputWithValidation
+                dataCy="modal-textbox-objectclass"
                 id="oc"
-                type="text"
+                name="oc"
                 value={newOC}
-                validated={
-                  newOC === "" || values.indexOf(newOC.toLowerCase()) !== -1
-                    ? ValidatedOptions.error
-                    : ValidatedOptions.default
-                }
-                onChange={(_event, value: string) => setNewOC(value)}
+                onChange={setNewOC}
+                isRequired
+                rules={[
+                  {
+                    id: "unique",
+                    message: "Must be unique",
+                    validate: (value: string) =>
+                      values.indexOf(value.toLowerCase()) === -1,
+                  },
+                ]}
               />
-              {values.indexOf(newOC.toLowerCase()) !== -1 && (
-                <HelperText>
-                  <HelperTextItem variant="error">
-                    This objectclass is already defined
-                  </HelperTextItem>
-                </HelperText>
-              )}
             </FormGroup>
           </Form>
         </ModalBody>

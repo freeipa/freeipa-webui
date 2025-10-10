@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
-import {
-  Button,
-  HelperText,
-  HelperTextItem,
-  TextArea,
-  TextInput,
-  ValidatedOptions,
-} from "@patternfly/react-core";
+import { Button, TextArea } from "@patternfly/react-core";
 // Layouts
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
+import InputRequiredText from "src/components/layouts/InputRequiredText";
 // Modals
 import ErrorModal from "src/components/modals/ErrorModal";
 // Errors
@@ -58,25 +52,16 @@ const AddSudoRule = (props: PropsToAddGroup) => {
       id: "modal-form-rule-name",
       name: "Rule name",
       pfComponent: (
-        <>
-          <TextInput
-            type="text"
-            id="modal-form-rule-name"
-            name="modal-form-rule-name"
-            value={ruleName}
-            onChange={(_event, value: string) => setRuleName(value)}
-            validated={
-              ruleName === ""
-                ? ValidatedOptions.error
-                : ValidatedOptions.default
-            }
-            data-cy="modal-textbox-rule-name"
-          />
-          <HelperText>
-            {ruleName === "" && <HelperTextItem>Required value</HelperTextItem>}
-          </HelperText>
-        </>
+        <InputRequiredText
+          dataCy="modal-textbox-rule-name"
+          id="modal-form-rule-name"
+          name="modal-form-rule-name"
+          value={ruleName}
+          onChange={setRuleName}
+          requiredHelperText="Required value"
+        />
       ),
+      fieldRequired: true,
     },
     {
       id: "modal-form-rule-desc",

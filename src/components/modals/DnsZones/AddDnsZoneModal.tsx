@@ -5,8 +5,6 @@ import {
   Checkbox,
   Form,
   FormGroup,
-  HelperText,
-  HelperTextItem,
   Modal,
   ModalBody,
   ModalFooter,
@@ -14,7 +12,6 @@ import {
   Radio,
   Spinner,
   TextInput,
-  ValidatedOptions,
 } from "@patternfly/react-core";
 // Components
 import CustomTooltip from "src/components/layouts/CustomTooltip";
@@ -29,6 +26,7 @@ import useAlerts from "src/hooks/useAlerts";
 import { SerializedError } from "@reduxjs/toolkit";
 // Icons
 import { InfoCircleIcon } from "@patternfly/react-icons";
+import InputWithValidation from "src/components/layouts/InputWithValidation";
 
 interface PropsToAddModal {
   isOpen: boolean;
@@ -207,33 +205,25 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
             isRequired={isReverseZoneIpRadioChecked}
           >
             <>
-              <TextInput
-                data-cy="modal-textbox-reverse-zone-ip"
-                type="text"
+              <InputWithValidation
+                dataCy="modal-textbox-reverse-zone-ip"
                 id="reverse-zone-ip"
                 name="name_from_ip"
                 value={reverseZoneIp}
                 aria-label="Reverse zone IP text input"
-                onChange={(_event, value: string) => setReverseZoneIp(value)}
+                onChange={setReverseZoneIp}
                 isDisabled={
                   !isReverseZoneIpRadioChecked && isZoneNameRadioChecked
                 }
                 isRequired={isReverseZoneIpRadioChecked}
-                validated={
-                  reverseZoneIp !== "" &&
-                  isReverseZoneIpRadioChecked &&
-                  !validateReverseZoneIp(reverseZoneIp)
-                    ? ValidatedOptions.error
-                    : ValidatedOptions.default
-                }
+                rules={[
+                  {
+                    id: "reverse-zone-ip",
+                    message: reverseZoneIpErrorMessage,
+                    validate: validateReverseZoneIp,
+                  },
+                ]}
               />
-              <HelperText data-cy="modal-helper-text-reverse-zone-ip">
-                {reverseZoneIp !== "" &&
-                  isReverseZoneIpRadioChecked &&
-                  !validateReverseZoneIp(reverseZoneIp) && (
-                    <HelperTextItem>{reverseZoneIpErrorMessage}</HelperTextItem>
-                  )}
-              </HelperText>
             </>
           </FormGroup>
         </Form>

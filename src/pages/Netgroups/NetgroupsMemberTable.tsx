@@ -8,8 +8,6 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
-  TextInput,
-  ValidatedOptions,
 } from "@patternfly/react-core";
 import { Td, Th, Tr } from "@patternfly/react-table";
 // Layout
@@ -29,6 +27,7 @@ import {
   useAddMemberToNetgroupsMutation,
   useRemoveMemberFromNetgroupsMutation,
 } from "../../services/rpcNetgroups";
+import InputWithValidation from "src/components/layouts/InputWithValidation";
 
 // These name spaces can be reused as the params to RPC (do not change them)
 interface PropsToTable {
@@ -508,18 +507,20 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
               fieldId={"externalHostName"}
               isRequired
             >
-              <TextInput
-                data-cy="modal-textbox-external-host-name"
-                type="text"
+              <InputWithValidation
+                dataCy="modal-textbox-external-host-name"
                 id="externalHostName"
                 name="externalHostName"
                 value={externalHostName}
-                validated={
-                  externalHostName === "" || !externalHostName.includes(".")
-                    ? ValidatedOptions.error
-                    : ValidatedOptions.default
-                }
-                onChange={(_event, value: string) => setExternalHost(value)}
+                isRequired
+                rules={[
+                  {
+                    id: "external-host-name",
+                    message: "Must contain a period",
+                    validate: (value: string) => value.includes("."),
+                  },
+                ]}
+                onChange={setExternalHost}
               />
             </FormGroup>
           </Form>
