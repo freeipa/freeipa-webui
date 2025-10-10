@@ -36,7 +36,13 @@ export const createDnsZone = (zone: string) => {
 
   fillDnsZone(zone);
 
+  cy.intercept({ method: "POST", url: "**/ipa/session/json" }, (req) => {
+    if (req.body.method === "dnszone_add") {
+      req.alias = "apiCall";
+    }
+  });
   cy.dataCy("modal-button-add").click();
+  cy.wait("@apiCall");
   cy.dataCy("add-dns-zone-modal").should("not.exist");
 };
 

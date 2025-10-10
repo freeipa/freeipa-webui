@@ -436,7 +436,7 @@ export const dnsRecordConfigs: Record<DnsRecordType, FieldConfig[]> = {
     },
     {
       type: "checkbox",
-      name: "ns_part_skip_dns_check",
+      name: "force",
       label: "Skip DNS check",
       defaultValue: false,
       dataCy: "modal-checkbox-ns-part-skip-dns-check",
