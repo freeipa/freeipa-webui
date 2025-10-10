@@ -4,11 +4,8 @@ import {
   Button,
   Checkbox,
   Flex,
-  HelperText,
-  HelperTextItem,
   SelectOptionProps,
   TextInput,
-  ValidatedOptions,
 } from "@patternfly/react-core";
 // Icons
 import { HelpIcon } from "@patternfly/react-icons";
@@ -76,18 +73,6 @@ const AddUser = (props: PropsToAddUser) => {
   const [newPassword, setNewPassword] = React.useState("");
   const [verifyNewPassword, setVerifyNewPassword] = React.useState("");
   const [addSpinning, setAddBtnSpinning] = React.useState<boolean>(false);
-  const [addAgainSpinning, setAddAgainBtnSpinning] =
-    React.useState<boolean>(false);
-
-  // Verify the passwords are the same when we update a password value
-  useEffect(() => {
-    verifyPasswordValidationHandler();
-  }, [newPassword, verifyNewPassword]);
-  const [verifyPasswordValidation, setVerifyPasswordValidation] = useState({
-    isError: false,
-    message: "",
-    pfError: ValidatedOptions.default,
-  });
 
   const newPasswordValueHandler = (value: string) => {
     setNewPassword(value);
@@ -105,34 +90,6 @@ const AddUser = (props: PropsToAddUser) => {
   const format = /[`!@#$%^&*()_+=[\]{};':"\\|,.<>/?~]/;
   // Valid characters: '-' symbols only
   const formatWithoutSpaces = /[`!@#$%^&*()_+=[\]{};':"\\|,.<>/?~\s]/;
-
-  // TextInput validation handlers
-  //   Returns true | false if error
-
-  const verifyPasswordValidationHandler = () => {
-    if (newPassword !== verifyNewPassword) {
-      const verifyPassVal = {
-        isError: true,
-        message: "Passwords must match",
-        pfError: ValidatedOptions.error,
-      };
-      setVerifyPasswordValidation(verifyPassVal);
-      return true; // is error
-    }
-    resetVerifyPassword();
-    return false;
-  };
-
-  // Reset validation methods (password only)
-
-  // Verify password
-  const resetVerifyPassword = () => {
-    setVerifyPasswordValidation({
-      isError: false,
-      message: "",
-      pfError: ValidatedOptions.default,
-    });
-  };
 
   // [API call] Get GIDs
   const getGIDs = () => {
@@ -197,19 +154,11 @@ const AddUser = (props: PropsToAddUser) => {
     (newPassword.length === 0 && verifyNewPassword.length === 0);
 
   // Buttons are disabled until the user fills the required fields
-  const [buttonDisabled, setButtonDisabled] = useState(true);
-  useEffect(() => {
-    if (
-      firstName.length > 0 &&
-      lastName.length > 0 &&
-      verifiedPasswords &&
-      validateFields()
-    ) {
-      setButtonDisabled(false);
-    } else {
-      setButtonDisabled(true);
-    }
-  }, [userLogin, firstName, lastName, newPassword, verifyNewPassword]);
+  const buttonDisabled = !(
+    firstName.length > 0 &&
+    lastName.length > 0 &&
+    verifiedPasswords
+  );
 
   // If modal is shown, load GID data to show in the selector (only once)
   useEffect(() => {
@@ -353,7 +302,6 @@ const AddUser = (props: PropsToAddUser) => {
           id="modal-form-new-password"
           name="modal-form-new-password"
           value={newPassword}
-          onFocus={resetVerifyPassword}
           onChange={newPasswordValueHandler}
           onRevealHandler={setPasswordHidden}
           passwordHidden={passwordHidden}
@@ -370,20 +318,17 @@ const AddUser = (props: PropsToAddUser) => {
             id="modal-form-verify-password"
             name="modal-form-verify-password"
             value={verifyNewPassword}
-            onFocus={resetVerifyPassword}
             onChange={verifyNewPasswordValueHandler}
             onRevealHandler={setVerifyPasswordHidden}
             passwordHidden={verifyPasswordHidden}
-            validated={verifyPasswordValidation.pfError}
+            rules={[
+              {
+                id: "verify-match",
+                message: "Passwords must match",
+                validate: (v: string) => v === newPassword,
+              },
+            ]}
           />
-          {verifyPasswordValidation.isError &&
-            verifyPasswordValidation.message !== "" && (
-              <HelperText>
-                <HelperTextItem variant="error">
-                  {verifyPasswordValidation.message}
-                </HelperTextItem>
-              </HelperText>
-            )}
         </>
       ),
     },
@@ -397,22 +342,12 @@ const AddUser = (props: PropsToAddUser) => {
     fields = new_fields;
   }
 
-  // Helper method to reset validation values
-  const resetValidations = () => {
-    resetVerifyPassword();
-  };
-
-  // List of field validations
-  const validateFields = () => {
-    resetValidations();
-    const verifyPasswordError = verifyPasswordValidationHandler();
-    return !verifyPasswordError;
-  };
+  // List of field validations handled inline via rules
 
   // Define status flags to determine user added successfully or error
   let isAdditionSuccess = true;
 
-  // Track which button has been clicked ('onAddUser' or 'onAddAndAddAnother')
+  // Track which button has been clicked ('onAddUser')
   //  to better handle the 'retry' function and its behavior
   let onAddUserClicked = true;
 
@@ -477,14 +412,12 @@ const AddUser = (props: PropsToAddUser) => {
         }
       }
       setAddBtnSpinning(false);
-      setAddAgainBtnSpinning(false);
     });
   };
 
   const onAddUser = () => {
     onAddUserClicked = true;
-    const validation = validateFields();
-    if (validation) {
+    if (verifiedPasswords) {
       setAddBtnSpinning(true);
       addUserData().then(() => {
         if (!isAdditionSuccess) {
@@ -515,29 +448,8 @@ const AddUser = (props: PropsToAddUser) => {
   // Clean fields and close modal (To prevent data persistence when reopen modal)
   const cleanAndCloseModal = () => {
     cleanAllFields();
-    resetValidations();
     if (props.onCloseAddModal !== undefined) {
       props.onCloseAddModal();
-    }
-  };
-
-  const onAddAndAddAnother = () => {
-    onAddUserClicked = false;
-    const validation = validateFields();
-    if (validation) {
-      setAddAgainBtnSpinning(true);
-      addUserData().then(() => {
-        if (isAdditionSuccess) {
-          // Do not close the modal, but clean fields & reset validations
-          cleanAllFields();
-          resetValidations();
-        } else {
-          // Close the modal without cleaning fields
-          if (props.onCloseAddModal !== undefined) {
-            props.onCloseAddModal();
-          }
-        }
-      });
     }
   };
 
@@ -572,8 +484,6 @@ const AddUser = (props: PropsToAddUser) => {
     // Repeats the same previous operation
     if (onAddUserClicked) {
       onAddUser();
-    } else {
-      onAddAndAddAnother();
     }
   };
 
@@ -611,7 +521,7 @@ const AddUser = (props: PropsToAddUser) => {
       data-cy="modal-button-add"
       key="add-new-user"
       variant="secondary"
-      isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
+      isDisabled={buttonDisabled || addSpinning}
       type="submit"
       form="users-add-user-modal"
       spinnerAriaValueText="Adding"
@@ -619,18 +529,6 @@ const AddUser = (props: PropsToAddUser) => {
       isLoading={addSpinning}
     >
       {addSpinning ? "Adding" : "Add"}
-    </Button>,
-    <Button
-      data-cy="modal-button-add-and-add-another"
-      key="add-and-add-another-user"
-      variant="secondary"
-      isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClick={onAddAndAddAnother}
-      spinnerAriaValueText="Adding again"
-      spinnerAriaLabel="Adding again"
-      isLoading={addAgainSpinning}
-    >
-      {addAgainSpinning ? "Adding" : "Add and add another"}
     </Button>,
     <Button
       data-cy="modal-button-cancel"

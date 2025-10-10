@@ -1,11 +1,6 @@
 import React from "react";
 // PatternFly
-import {
-  Button,
-  HelperText,
-  HelperTextItem,
-  ValidatedOptions,
-} from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core";
 // Modals
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Components
@@ -37,22 +32,6 @@ const HostSetPassword = (props: PropsToResetPassword) => {
   const [passwordHidden, setPasswordHidden] = React.useState(true);
   const [verifyPasswordHidden, setVerifyPasswordHidden] = React.useState(true);
 
-  // Verify password
-  const [passwordValidationResult, setPasswordValidationResult] =
-    React.useState({
-      isError: false,
-      message: "",
-      pfError: ValidatedOptions.default,
-    });
-
-  const resetVerifyPassword = () => {
-    setPasswordValidationResult({
-      isError: false,
-      message: "",
-      pfError: ValidatedOptions.default,
-    });
-  };
-
   // Fields
   const fields = [
     {
@@ -65,7 +44,6 @@ const HostSetPassword = (props: PropsToResetPassword) => {
           name="password"
           value={newPassword}
           aria-label="new password text input"
-          onFocus={resetVerifyPassword}
           onChange={setNewPassword}
           onRevealHandler={setPasswordHidden}
           passwordHidden={passwordHidden}
@@ -83,41 +61,21 @@ const HostSetPassword = (props: PropsToResetPassword) => {
             name="password2"
             value={verifyPassword}
             aria-label="verify password text input"
-            onFocus={resetVerifyPassword}
             onChange={setVerifyPassword}
             onRevealHandler={setVerifyPasswordHidden}
             passwordHidden={verifyPasswordHidden}
-            validated={passwordValidationResult.pfError}
+            rules={[
+              {
+                id: "verify-match",
+                message: "Passwords must match",
+                validate: (v: string) => v === newPassword,
+              },
+            ]}
           />
-          <HelperText>
-            <HelperTextItem variant="error">
-              {passwordValidationResult.message}
-            </HelperTextItem>
-          </HelperText>
         </>
       ),
     },
   ];
-
-  // Checks that the passwords are the same
-  const validatePasswords = () => {
-    if (newPassword !== verifyPassword) {
-      const verifyPassVal = {
-        isError: true,
-        message: "Passwords must match",
-        pfError: ValidatedOptions.error,
-      };
-      setPasswordValidationResult(verifyPassVal);
-      return true; // is error
-    }
-    resetVerifyPassword();
-    return false;
-  };
-
-  // Verify the passwords are the same when we update a password value
-  React.useEffect(() => {
-    validatePasswords();
-  }, [newPassword, verifyPassword]);
 
   // Reset fields and close modal
   const resetFieldsAndCloseModal = () => {
@@ -170,9 +128,9 @@ const HostSetPassword = (props: PropsToResetPassword) => {
       type="submit"
       form="reset-password-form"
       isDisabled={
-        passwordValidationResult.isError ||
         newPassword === "" ||
-        verifyPassword === ""
+        verifyPassword === "" ||
+        newPassword !== verifyPassword
       }
     >
       Reset password
