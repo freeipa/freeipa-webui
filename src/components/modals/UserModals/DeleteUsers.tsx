@@ -30,7 +30,7 @@ import { ErrorData, User } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // Routing
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 interface ButtonsData {
   updateIsDeleteButtonDisabled?: (value: boolean) => void;

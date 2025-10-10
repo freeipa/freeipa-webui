@@ -17,7 +17,7 @@ import {
   UserGroup,
 } from "src/utils/datatypes/globalDataTypes";
 // React Router DOM
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 // Utils
 import { API_VERSION_BACKUP } from "src/utils/utils";
 // RPC

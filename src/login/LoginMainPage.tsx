@@ -33,8 +33,8 @@ import {
 import { useAppDispatch } from "src/store/hooks";
 import { setIsLogin } from "src/store/Global/auth-slice";
 // Navigation
-import { useLocation, useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 
 interface StateFromSyncOtpPage {

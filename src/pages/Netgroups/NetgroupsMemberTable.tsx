@@ -20,7 +20,7 @@ import RemoveNetgroupMembersModal from "src/components/modals/RemoveNetgroupMemb
 // Hooks
 import { useAlerts } from "../../hooks/useAlerts";
 // React Router DOM
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { Netgroup } from "../../utils/datatypes/globalDataTypes";
 // RPC
 import { ErrorResult } from "../../services/rpc";

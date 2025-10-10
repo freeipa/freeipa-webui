@@ -7,7 +7,7 @@ import TableLayout from "../../components/layouts/TableLayout";
 import SkeletonOnTableLayout from "../../components/layouts/Skeleton/SkeletonOnTableLayout";
 // Data types
 import { AutomemberEntry } from "src/utils/datatypes/globalDataTypes";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 interface ElementData {
   isElementSelectable: (element: AutomemberEntry) => boolean;

@@ -29,7 +29,7 @@ import {
 import { isDnsZoneSelectable } from "src/utils/utils";
 import { apiToDnsZone } from "src/utils/dnsZonesUtils";
 // React router
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 // Components
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";

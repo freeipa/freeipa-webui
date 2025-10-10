@@ -10,7 +10,7 @@ import {
   TabTitleText,
 } from "@patternfly/react-core";
 // React Router DOM
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 // Components
 import UserSettings from "src/components/UsersSections/UserSettings";
 import UserMemberOf from "./UserMemberOf";

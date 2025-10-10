@@ -1,6 +1,6 @@
 import React from "react";
 // Routing
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 // RPC
 import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useShowDnsRecordQuery } from "src/services/rpcDnsZones";

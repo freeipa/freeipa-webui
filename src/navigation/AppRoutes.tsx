@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import * as React from "react";
 // React router dom
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router";
 import { NotFound } from "src/components/errors/PageErrors";
 // Layouts
 import DataSpinner from "src/components/layouts/DataSpinner";

@@ -14,7 +14,7 @@ import {
 import ConfirmationModal from "../../components/modals/ConfirmationModal";
 // Forms
 import IpaTextArea from "../../components/Form/IpaTextArea";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";

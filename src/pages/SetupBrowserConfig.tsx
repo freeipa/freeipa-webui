@@ -20,7 +20,7 @@ import HeaderLogo from "src/assets/images/header-logo-black.png";
 // Components
 import TitleLayout from "src/components/layouts/TitleLayout";
 //
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 const SetupBrowserConfig = () => {
   const [isFirefoxExpanded, setIsFirefoxExpanded] = React.useState(false);
