@@ -33,7 +33,7 @@ import AddHBACRule from "src/components/modals/HbacModals/AddHBACRule";
 import DeleteHBACRule from "src/components/modals/HbacModals/DeleteHBACRule";
 import DisableEnableHBACRules from "src/components/modals/HbacModals/DisableEnableHBACRules";
 // Hooks
-import { useAlerts } from "src/hooks/useAlerts";
+import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Utils
 import { API_VERSION_BACKUP, isHbacRuleSelectable } from "src/utils/utils";

@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { RootState } from "src/store/store";
 // Data types
 import { User } from "src/utils/datatypes/globalDataTypes";
 
@@ -63,6 +62,4 @@ const preservedUsersSlice = createSlice({
 
 export const { updateUsersList, addUser, removeUser, changeStatus } =
   preservedUsersSlice.actions;
-export const selectUsers = (state: RootState) =>
-  state.preservedUsers.usersList as User[];
 export default preservedUsersSlice.reducer;

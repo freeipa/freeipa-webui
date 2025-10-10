@@ -16,7 +16,7 @@ import { useRestoreUserMutation } from "src/services/rpcUsers";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 
-export interface PropsToPreservedUsers {
+interface PropsToPreservedUsers {
   show: boolean;
   handleModalToggle: () => void;
   selectedUsers: User[];

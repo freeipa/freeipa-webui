@@ -34,7 +34,7 @@ interface SelectedRulesData {
   clearSelectedRules: () => void;
 }
 
-export interface PropsToDisableEnableRules {
+interface PropsToDisableEnableRules {
   show: boolean;
   handleModalToggle: () => void;
   optionSelected: boolean; // 'enable': false | 'disable': true

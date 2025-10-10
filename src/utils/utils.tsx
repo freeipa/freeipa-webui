@@ -218,9 +218,6 @@ export const isDnsRecordSelectable = (dnsRecord: DNSRecord) =>
 export const isDnsForwardZoneSelectable = (dnsForwardZone: DNSForwardZone) =>
   dnsForwardZone.idnsname !== "";
 
-export const isDnsServerSelectable = (dnsServerId: string) =>
-  dnsServerId !== "";
-
 export const isIdRangeSelectable = (idRange: IdRange) => idRange.cn !== "";
 
 /**

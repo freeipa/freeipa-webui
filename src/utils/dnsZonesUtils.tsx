@@ -55,14 +55,14 @@ export function apiToDnsZone(apiRecord: Record<string, unknown>): DNSZone {
   return partialDnsZoneToDnsZone(converted);
 }
 
-export function partialDnsZoneToDnsZone(partialDnsZone: Partial<DNSZone>) {
+function partialDnsZoneToDnsZone(partialDnsZone: Partial<DNSZone>) {
   return {
     ...createEmptyDnsZone(),
     ...partialDnsZone,
   };
 }
 
-export function createEmptyDnsZone(): DNSZone {
+function createEmptyDnsZone(): DNSZone {
   return {
     idnsname: "",
     idnssoarname: "",

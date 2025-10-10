@@ -26,7 +26,7 @@ interface SelectedServicesData {
   clearSelectedServices: () => void;
 }
 
-export interface PropsToDeleteServices {
+interface PropsToDeleteServices {
   show: boolean;
   handleModalToggle: () => void;
   selectedServicesData: SelectedServicesData;

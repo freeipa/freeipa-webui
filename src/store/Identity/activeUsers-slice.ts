@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { RootState } from "src/store/store";
 // Data types
 import { User } from "src/utils/datatypes/globalDataTypes";
 
@@ -64,6 +63,4 @@ const activeUsersSlice = createSlice({
 
 export const { updateUsersList, addUser, removeUser, changeStatus } =
   activeUsersSlice.actions;
-export const selectUsers = (state: RootState) =>
-  state.activeUsers.usersList as User[];
 export default activeUsersSlice.reducer;

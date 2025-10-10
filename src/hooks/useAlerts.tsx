@@ -7,15 +7,15 @@ import {
   AlertActionCloseButton,
 } from "@patternfly/react-core";
 
-export type AlertVariant = "custom" | "danger" | "warning" | "success" | "info";
+type AlertVariant = "custom" | "danger" | "warning" | "success" | "info";
 
-export interface AlertInfo {
+interface AlertInfo {
   name: string;
   title: string | React.ReactNode;
   variant: AlertVariant;
 }
 
-export function useAlerts() {
+function useAlerts() {
   const [alerts, setAlerts] = React.useState<AlertInfo[]>([]);
 
   const removeAlertInternal = (name: string) => {

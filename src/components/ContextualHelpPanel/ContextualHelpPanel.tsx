@@ -18,7 +18,7 @@ import DocumentationLinks from "src/assets/documentation/documentation-links.jso
 // Icons
 import { ExternalLinkAltIcon } from "@patternfly/react-icons";
 
-export interface DocLink {
+interface DocLink {
   name: string;
   url: string;
 }

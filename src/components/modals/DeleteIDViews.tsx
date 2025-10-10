@@ -26,7 +26,7 @@ interface SelectedViewsData {
   clearSelectedViews: () => void;
 }
 
-export interface PropsToDeleteViews {
+interface PropsToDeleteViews {
   show: boolean;
   handleModalToggle: () => void;
   selectedViewsData: SelectedViewsData;
