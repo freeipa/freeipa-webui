@@ -4,9 +4,8 @@ import {
   Button,
   Spinner,
   Content,
-  TextInput,
   TextArea,
-  ValidatedOptions,
+  TextInput,
 } from "@patternfly/react-core";
 // Layout
 import SecondaryButton from "src/components/layouts/SecondaryButton";
@@ -31,6 +30,7 @@ import {
   useAddIDOverrideUserMutation,
   AddUserPayload,
 } from "src/services/rpcIdOverrides";
+import InputWithValidation from "src/components/layouts/InputWithValidation";
 
 export interface PropsToAddUser {
   show: boolean;
@@ -100,8 +100,6 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
   // Refs
   const loginRef = useRef() as MutableRefObject<HTMLInputElement>;
   const gecosRef = useRef() as MutableRefObject<HTMLInputElement>;
-  const uidNumberRef = useRef() as MutableRefObject<HTMLInputElement>;
-  const gidNumberRef = useRef() as MutableRefObject<HTMLInputElement>;
   const shellRef = useRef() as MutableRefObject<HTMLInputElement>;
   const homedirRef = useRef() as MutableRefObject<HTMLInputElement>;
 
@@ -155,19 +153,19 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       id: "modal-form-user-uidnumber",
       name: "UID",
       pfComponent: (
-        <TextInput
-          data-cy="modal-textbox-user-uidnumber"
-          type="text"
+        <InputWithValidation
+          dataCy="modal-textbox-user-uidnumber"
           id="modal-form-user-uidnumber"
           name="modal-form-user-uidnumber"
           value={uidnumber}
-          onChange={(_event, value: string) => setUidNumber(value)}
-          ref={uidNumberRef}
-          validated={
-            uidnumber !== "" && isNaN(Number(uidnumber))
-              ? ValidatedOptions.error
-              : ValidatedOptions.default
-          }
+          onChange={setUidNumber}
+          rules={[
+            {
+              id: "ruleUid",
+              message: "Must be empty or a number",
+              validate: (v: string) => v === "" || !isNaN(Number(v)),
+            },
+          ]}
         />
       ),
     },
@@ -175,19 +173,19 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       id: "modal-form-user-gidnumber",
       name: "GID",
       pfComponent: (
-        <TextInput
-          data-cy="modal-textbox-user-gidnumber"
-          type="text"
+        <InputWithValidation
+          dataCy="modal-textbox-user-gidnumber"
           id="modal-form-user-gidnumber"
           name="modal-form-user-gidnumber"
           value={gidnumber}
-          onChange={(_event, value: string) => setGidNumber(value)}
-          ref={gidNumberRef}
-          validated={
-            gidnumber !== "" && isNaN(Number(gidnumber))
-              ? ValidatedOptions.error
-              : ValidatedOptions.default
-          }
+          onChange={setGidNumber}
+          rules={[
+            {
+              id: "ruleGid",
+              message: "Must be empty or a number",
+              validate: (v: string) => v === "" || !isNaN(Number(v)),
+            },
+          ]}
         />
       ),
     },

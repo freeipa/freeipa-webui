@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
-import {
-  Button,
-  HelperText,
-  HelperTextItem,
-  TextArea,
-  TextInput,
-  ValidatedOptions,
-} from "@patternfly/react-core";
+import { Button, TextArea } from "@patternfly/react-core";
 // Layouts
 import SecondaryButton from "../layouts/SecondaryButton";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
+import InputWithHelperText from "../layouts/InputWithHelperText";
 // Modals
 import ErrorModal from "./ErrorModal";
 // Errors
@@ -61,25 +55,17 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
       id: "modal-form-id-view-name",
       name: "ID view name",
       pfComponent: (
-        <>
-          <TextInput
-            data-cy="modal-textbox-id-view-name"
-            type="text"
-            id="modal-form-id-view-name"
-            name="modal-form-id-view-name"
-            value={viewName}
-            onChange={(_event, value: string) => setViewName(value)}
-            validated={
-              viewName === ""
-                ? ValidatedOptions.error
-                : ValidatedOptions.default
-            }
-          />
-          <HelperText>
-            {viewName === "" && <HelperTextItem>Required value</HelperTextItem>}
-          </HelperText>
-        </>
+        <InputWithHelperText
+          dataCy="modal-textbox-id-view-name"
+          id="modal-form-id-view-name"
+          name="modal-form-id-view-name"
+          value={viewName}
+          onChange={setViewName}
+          isRequired
+          requiredHelperText="Required value"
+        />
       ),
+      fieldRequired: true,
     },
     {
       id: "modal-form-id-view-desc",

@@ -39,6 +39,7 @@ import useAlerts from "src/hooks/useAlerts";
 import { NO_SELECTION_OPTION } from "src/utils/constUtils";
 // Components
 import TypeAheadSelectWithCreate from "src/components/TypeAheadSelectWithCreate";
+import InputWithValidation from "src/components/layouts/InputWithValidation";
 
 interface GroupId {
   cn: string;
@@ -91,55 +92,11 @@ const AddUser = (props: PropsToAddUser) => {
   useEffect(() => {
     verifyPasswordValidationHandler();
   }, [newPassword, verifyNewPassword]);
-
-  // refs
-  const userLoginRef =
-    React.useRef() as React.MutableRefObject<HTMLInputElement>;
-  const firstNameRef =
-    React.useRef() as React.MutableRefObject<HTMLInputElement>;
-  const lastNameRef =
-    React.useRef() as React.MutableRefObject<HTMLInputElement>;
-  const userClassRef =
-    React.useRef() as React.MutableRefObject<HTMLInputElement>;
-
-  // Validation fields
-  const [userLoginValidation, setUserLoginValidation] = useState({
-    isError: false,
-    message: "Only alphanumeric and special characters _-.$",
-    pfError: ValidatedOptions.default,
-  });
-  const [firstNameValidation, setFirstNameValidation] = useState({
-    isError: false,
-    message: "",
-    pfError: ValidatedOptions.default,
-  });
-  const [lastNameValidation, setLastNameValidation] = useState({
-    isError: false,
-    message: "",
-    pfError: ValidatedOptions.default,
-  });
   const [verifyPasswordValidation, setVerifyPasswordValidation] = useState({
     isError: false,
     message: "",
     pfError: ValidatedOptions.default,
   });
-
-  // TextInput setters
-  const userLoginValueHandler = (value: string) => {
-    setUserLogin(value);
-  };
-
-  const firstNameValueHandler = (value: string) => {
-    setFirstName(value);
-  };
-
-  const lastNameValueHandler = (value: string) => {
-    setLastName(value);
-  };
-
-  const userClassValueHandler = (value: string) => {
-    setUserClass(value);
-  };
 
   const newPasswordValueHandler = (value: string) => {
     setNewPassword(value);
@@ -151,8 +108,8 @@ const AddUser = (props: PropsToAddUser) => {
 
   // User login: Valid characters in first char: ., _
   const userLoginFormatFirst = /^([A-Za-z._]).*$/;
-  // User login: Valid characters in body: '_', '-', '.', '$'
-  const userLoginFormatBody = /^.*([A-Za-z.-_$\d])$/;
+  // User login: Valid characters in body (every char must be in set): letters, digits, '_', '-', '.', '$'
+  const userLoginFormatBody = /^[A-Za-z0-9._\-$]*$/;
   // Valid characters: spaces and '-' symbols only
   const format = /[`!@#$%^&*()_+=[\]{};':"\\|,.<>/?~]/;
   // Valid characters: '-' symbols only
@@ -160,48 +117,6 @@ const AddUser = (props: PropsToAddUser) => {
 
   // TextInput validation handlers
   //   Returns true | false if error
-  const userLoginValidationHandler = () => {
-    if (
-      (!userLoginFormatFirst.test(userLogin.charAt(0)) ||
-        !userLoginFormatBody.test(userLogin.substring(1))) &&
-      userLogin.length > 0
-    ) {
-      const userLoginVal = {
-        isError: true,
-        message: "Only alphanumeric and special characters _-.$",
-        pfError: ValidatedOptions.error,
-      };
-      setUserLoginValidation(userLoginVal);
-      return true; // is error
-    }
-    return false;
-  };
-
-  const firstNameValidationHandler = () => {
-    if (format.test(firstName)) {
-      const firstNameVal = {
-        isError: true,
-        message: "First name should not contain special characters",
-        pfError: ValidatedOptions.error,
-      };
-      setFirstNameValidation(firstNameVal);
-      return true; // is error
-    }
-    return false;
-  };
-
-  const lastNameValidationHandler = () => {
-    if (formatWithoutSpaces.test(lastName)) {
-      const lastNameVal = {
-        isError: true,
-        message: "Last name should not contain special characters",
-        pfError: ValidatedOptions.error,
-      };
-      setLastNameValidation(lastNameVal);
-      return true; // is error
-    }
-    return false;
-  };
 
   const verifyPasswordValidationHandler = () => {
     if (newPassword !== verifyNewPassword) {
@@ -217,33 +132,7 @@ const AddUser = (props: PropsToAddUser) => {
     return false;
   };
 
-  // Reset validation methods
-  // - User login
-  const resetUserLoginError = () => {
-    setUserLoginValidation({
-      isError: false,
-      message: "Only alphanumeric and special characters _-.$",
-      pfError: ValidatedOptions.default,
-    });
-  };
-
-  // First name
-  const resetFirstNameError = () => {
-    setFirstNameValidation({
-      isError: false,
-      message: "",
-      pfError: ValidatedOptions.default,
-    });
-  };
-
-  // Last name
-  const resetLastNameError = () => {
-    setLastNameValidation({
-      isError: false,
-      message: "",
-      pfError: ValidatedOptions.default,
-    });
-  };
+  // Reset validation methods (password only)
 
   // Verify password
   const resetVerifyPassword = () => {
@@ -349,56 +238,49 @@ const AddUser = (props: PropsToAddUser) => {
       id: "modal-form-user-login",
       name: "User login",
       pfComponent: (
-        <>
-          <TextInput
-            type="text"
-            data-cy="modal-textbox-login"
-            id="modal-form-user-login"
-            name="modal-form-user-login"
-            onFocus={resetUserLoginError}
-            onBlur={userLoginValidationHandler}
-            value={userLogin}
-            onChange={(_event, value: string) => userLoginValueHandler(value)}
-            validated={userLoginValidation.pfError}
-            ref={userLoginRef}
-          />
-          <HelperText>
-            {!userLoginValidation.isError && (
-              <HelperTextItem>{userLoginValidation.message}</HelperTextItem>
-            )}
-            {userLoginValidation.isError && (
-              <HelperTextItem variant="error">
-                {userLoginValidation.message}
-              </HelperTextItem>
-            )}
-          </HelperText>
-        </>
+        <InputWithValidation
+          dataCy="modal-textbox-login"
+          id="modal-form-user-login"
+          name="modal-form-user-login"
+          isRequired
+          value={userLogin}
+          onChange={setUserLogin}
+          rules={[
+            {
+              id: "ruleLength",
+              message: "Must be at least 3 characters in length",
+              validate: (v: string) => v.length >= 3,
+            },
+            {
+              id: "ruleCharacters",
+              message: "Only alphanumeric and special characters _-.$",
+              validate: (v: string) =>
+                userLoginFormatFirst.test(v.charAt(0)) &&
+                userLoginFormatBody.test(v.substring(1)),
+            },
+          ]}
+        />
       ),
     },
     {
       id: "modal-form-first-name",
       name: "First name",
       pfComponent: (
-        <>
-          <TextInput
-            isRequired
-            type="text"
-            data-cy="modal-textbox-first-name"
-            id="modal-form-first-name"
-            name="modal-form-first-name"
-            onFocus={resetFirstNameError}
-            onBlur={firstNameValidationHandler}
-            value={firstName}
-            onChange={(_event, value: string) => firstNameValueHandler(value)}
-            validated={firstNameValidation.pfError}
-            ref={firstNameRef}
-          />
-          <HelperText>
-            <HelperTextItem variant="error">
-              {firstNameValidation.message}
-            </HelperTextItem>
-          </HelperText>
-        </>
+        <InputWithValidation
+          dataCy="modal-textbox-first-name"
+          id="modal-form-first-name"
+          name="modal-form-first-name"
+          value={firstName}
+          onChange={setFirstName}
+          isRequired
+          rules={[
+            {
+              id: "ruleCharacters",
+              message: "First name should not contain special characters",
+              validate: (v: string) => !format.test(v),
+            },
+          ]}
+        />
       ),
       fieldRequired: true,
     },
@@ -406,26 +288,22 @@ const AddUser = (props: PropsToAddUser) => {
       id: "modal-form-last-name",
       name: "Last name",
       pfComponent: (
-        <>
-          <TextInput
-            isRequired
-            type="text"
-            data-cy="modal-textbox-last-name"
-            id="modal-form-last-name"
-            name="modal-form-last-name"
-            onFocus={resetLastNameError}
-            onBlur={lastNameValidationHandler}
-            value={lastName}
-            onChange={(_event, value: string) => lastNameValueHandler(value)}
-            validated={lastNameValidation.pfError}
-            ref={lastNameRef}
-          />
-          <HelperText>
-            <HelperTextItem variant="error">
-              {lastNameValidation.message}
-            </HelperTextItem>
-          </HelperText>
-        </>
+        <InputWithValidation
+          dataCy="modal-textbox-last-name"
+          id="modal-form-last-name"
+          name="modal-form-last-name"
+          value={lastName}
+          onChange={setLastName}
+          isRequired
+          rules={[
+            {
+              id: "ruleCharacters",
+              message:
+                "Last name should not contain special characters or spaces",
+              validate: (v: string) => !formatWithoutSpaces.test(v),
+            },
+          ]}
+        />
       ),
       fieldRequired: true,
     },
@@ -434,13 +312,11 @@ const AddUser = (props: PropsToAddUser) => {
       name: "Class",
       pfComponent: (
         <TextInput
-          type="text"
           data-cy="modal-textbox-user-class"
           id="modal-form-user-class"
           name="modal-form-user-class"
           value={userClass}
-          onChange={(_event, value: string) => userClassValueHandler(value)}
-          ref={userClassRef}
+          onChange={(_event, value: string) => setUserClass(value)}
         />
       ),
       labelIcon:
@@ -509,11 +385,14 @@ const AddUser = (props: PropsToAddUser) => {
             passwordHidden={verifyPasswordHidden}
             validated={verifyPasswordValidation.pfError}
           />
-          <HelperText>
-            <HelperTextItem variant="error">
-              {verifyPasswordValidation.message}
-            </HelperTextItem>
-          </HelperText>
+          {verifyPasswordValidation.isError &&
+            verifyPasswordValidation.message !== "" && (
+              <HelperText>
+                <HelperTextItem variant="error">
+                  {verifyPasswordValidation.message}
+                </HelperTextItem>
+              </HelperText>
+            )}
         </>
       ),
     },
@@ -529,25 +408,14 @@ const AddUser = (props: PropsToAddUser) => {
 
   // Helper method to reset validation values
   const resetValidations = () => {
-    resetUserLoginError();
-    resetFirstNameError();
-    resetLastNameError();
     resetVerifyPassword();
   };
 
   // List of field validations
   const validateFields = () => {
     resetValidations();
-    const userLoginError = userLoginValidationHandler();
-    const firstNameError = firstNameValidationHandler();
-    const lastNameError = lastNameValidationHandler();
     const verifyPasswordError = verifyPasswordValidationHandler();
-    if (
-      userLoginError ||
-      firstNameError ||
-      lastNameError ||
-      verifyPasswordError
-    ) {
+    if (verifyPasswordError) {
       return false;
     } else return true;
   };

@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
-import {
-  Button,
-  HelperText,
-  HelperTextItem,
-  TextArea,
-  TextInput,
-  ValidatedOptions,
-} from "@patternfly/react-core";
+import { Button, TextArea } from "@patternfly/react-core";
 // Layouts
 import SecondaryButton from "../layouts/SecondaryButton";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
+import InputWithHelperText from "../layouts/InputWithHelperText";
+import InputWithValidation from "../layouts/InputWithValidation";
 // Data types
 import { UserGroup } from "../../utils/datatypes/globalDataTypes";
 // Modals
@@ -96,27 +91,17 @@ const AddUserGroup = (props: PropsToAddGroup) => {
       id: "modal-form-group-name",
       name: "Group name",
       pfComponent: (
-        <>
-          <TextInput
-            data-cy="modal-textbox-group-name"
-            type="text"
-            id="modal-form-group-name"
-            name="modal-form-group-name"
-            value={groupName}
-            onChange={(_event, value: string) => setGroupName(value)}
-            validated={
-              groupName === ""
-                ? ValidatedOptions.error
-                : ValidatedOptions.default
-            }
-          />
-          <HelperText>
-            {groupName === "" && (
-              <HelperTextItem>Required value</HelperTextItem>
-            )}
-          </HelperText>
-        </>
+        <InputWithHelperText
+          dataCy="modal-textbox-group-name"
+          id="modal-form-group-name"
+          name="modal-form-group-name"
+          value={groupName}
+          onChange={setGroupName}
+          isRequired={true}
+          requiredHelperText="Please enter a group name"
+        />
       ),
+      fieldRequired: true,
     },
     {
       id: "modal-form-group-desc",
@@ -151,33 +136,24 @@ const AddUserGroup = (props: PropsToAddGroup) => {
       id: "modal-form-group-gid",
       name: "GID",
       pfComponent: (
-        <>
-          <TextInput
-            data-cy="modal-textbox-group-gid"
-            type="text"
-            id="modal-form-group-gid"
-            name="modal-form-group-gid"
-            value={gidNumber}
-            onChange={(_event, value: string) => setGID(value)}
-            isDisabled={groupType !== "posix"}
-            validated={
-              groupType === "posix" &&
-              gidNumber !== "" &&
-              isNaN(Number(gidNumber))
-                ? ValidatedOptions.error
-                : ValidatedOptions.default
-            }
-          />
-          <HelperText>
-            {groupType === "posix" &&
-              gidNumber !== "" &&
-              isNaN(Number(gidNumber)) && (
-                <HelperTextItem>
-                  Invalid GID value, must be empty or a number
-                </HelperTextItem>
-              )}
-          </HelperText>
-        </>
+        <InputWithValidation
+          dataCy="modal-textbox-group-gid"
+          id="modal-form-group-gid"
+          name="modal-form-group-gid"
+          value={gidNumber}
+          onChange={setGID}
+          rules={
+            groupType === "posix"
+              ? [
+                  {
+                    id: "ruleGid",
+                    message: "Must be empty or a number",
+                    validate: (v: string) => v === "" || !isNaN(Number(v)),
+                  },
+                ]
+              : []
+          }
+        />
       ),
     },
   ];
