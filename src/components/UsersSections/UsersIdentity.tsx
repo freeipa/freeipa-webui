@@ -30,6 +30,8 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
       onChange={recordOnChange}
       objectName="user"
       metadata={props.metadata}
+      helperTextMessage="Please enter a first name"
+      errorMessage="First name already exists"
     />
   );
 
@@ -43,6 +45,8 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
       onChange={recordOnChange}
       objectName="user"
       metadata={props.metadata}
+      helperTextMessage="Please enter a last name"
+      errorMessage="Last name already exists"
     />
   );
 
@@ -56,6 +60,8 @@ const UsersIdentity = (props: PropsToUsersIdentity) => {
       onChange={recordOnChange}
       objectName="user"
       metadata={props.metadata}
+      helperTextMessage="Please enter a full name"
+      errorMessage="Full name already exists"
     />
   );
 
