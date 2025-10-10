@@ -7,9 +7,8 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
-  TextInput,
-  ValidatedOptions,
 } from "@patternfly/react-core";
+import InputWithValidation from "../layouts/InputWithValidation";
 
 interface PropsToAddModal {
   dataCy: string;
@@ -49,21 +48,25 @@ const AddTextInputFromListModal = (props: PropsToAddModal) => {
             label={props.textInputTitle}
             type="string"
             fieldId={props.id}
+            isRequired={true}
           >
-            <TextInput
-              data-cy="modal-textbox-new-kerberos-principal-alias"
+            <InputWithValidation
+              dataCy="modal-textbox-new-kerberos-principal-alias"
               id={props.id}
               name={props.textInputName}
               value={props.newValue}
-              onChange={(_event, value) => props.setNewValue(value)}
-              type="text"
-              aria-label={props.textInputName}
+              onChange={props.setNewValue}
               isRequired={true}
-              validated={
-                (props.newValue !== "" && !props.newValue.includes("@")) ||
+              rules={
                 props.textInputValidator
-                  ? ValidatedOptions.default
-                  : ValidatedOptions.error
+                  ? []
+                  : [
+                      {
+                        id: "no-at",
+                        message: "Must not contain '@'",
+                        validate: (value: string) => !value.includes("@"),
+                      },
+                    ]
               }
             />
           </FormGroup>

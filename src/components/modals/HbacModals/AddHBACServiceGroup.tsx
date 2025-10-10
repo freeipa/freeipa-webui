@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
-import {
-  Button,
-  HelperText,
-  HelperTextItem,
-  TextArea,
-  TextInput,
-  ValidatedOptions,
-} from "@patternfly/react-core";
+import { Button, TextArea } from "@patternfly/react-core";
 // Layouts
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
+import InputRequiredText from "src/components/layouts/InputRequiredText";
 // Modals
 import ErrorModal from "src/components/modals/ErrorModal";
 // Errors
@@ -58,27 +52,16 @@ const AddHBACServiceGroup = (props: PropsToAddGroup) => {
       id: "modal-form-service-group-name",
       name: "Service group name",
       pfComponent: (
-        <>
-          <TextInput
-            type="text"
-            id="modal-form-service-group-name"
-            name="modal-form-service-group-name"
-            value={serviceName}
-            onChange={(_event, value: string) => setServiceName(value)}
-            validated={
-              serviceName === ""
-                ? ValidatedOptions.error
-                : ValidatedOptions.default
-            }
-            data-cy="modal-textbox-service-group-name"
-          />
-          <HelperText>
-            {serviceName === "" && (
-              <HelperTextItem>Required value</HelperTextItem>
-            )}
-          </HelperText>
-        </>
+        <InputRequiredText
+          dataCy="modal-textbox-service-group-name"
+          id="modal-form-service-group-name"
+          name="modal-form-service-group-name"
+          value={serviceName}
+          onChange={setServiceName}
+          requiredHelperText="Required value"
+        />
       ),
+      fieldRequired: true,
     },
     {
       id: "modal-form-service-group-desc",
