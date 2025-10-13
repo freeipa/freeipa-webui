@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
 import { Content, ContentVariants, Button } from "@patternfly/react-core";
-// Redux
-import { useAppDispatch } from "../../store/hooks";
-import { removeService } from "../../store/Identity/services-slice";
 // Layouts
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
 // Tables
@@ -38,9 +35,6 @@ interface PropsToDeleteServices {
 }
 
 const DeleteServices = (props: PropsToDeleteServices) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
-
   // Alerts
   const alerts = useAlerts();
 
@@ -153,11 +147,6 @@ const DeleteServices = (props: PropsToDeleteServices) => {
               handleAPIError(error);
               setBtnSpinning(false);
             } else {
-              // Update data from Redux
-              props.selectedServicesData.selectedElements.map((service) => {
-                dispatch(removeService(service.krbcanonicalname));
-              });
-
               props.selectedServicesData.clearSelectedServices();
               props.buttonsData.updateIsDeleteButtonDisabled(true);
               props.buttonsData.updateIsDeletion(true);

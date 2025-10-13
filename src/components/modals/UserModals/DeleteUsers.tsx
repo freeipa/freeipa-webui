@@ -10,11 +10,6 @@ import {
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
 import UsersDisplayTable from "src/components/tables/UsersDisplayTable";
-// Redux
-import { useAppDispatch } from "src/store/hooks";
-import { removeUser as removeActiveUser } from "src/store/Identity/activeUsers-slice";
-import { removeUser as removeStageUser } from "src/store/Identity/stageUsers-slice";
-import { removeUser as removePreservedUser } from "src/store/Identity/preservedUsers-slice";
 // RPC
 import {
   Command,
@@ -55,9 +50,6 @@ export interface PropsToDeleteUsers {
 }
 
 const DeleteUsers = (props: PropsToDeleteUsers) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
-
   // Redirect
   const navigate = useNavigate();
 
@@ -132,19 +124,6 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
   const closeModal = () => {
     setIsDeleteChecked(true);
     props.handleModalToggle();
-  };
-
-  // Redux: Delete user
-  const deleteUsersFromRedux = () => {
-    props.selectedUsersData.selectedUsers.map((user) => {
-      if (props.from === "active-users") {
-        dispatch(removeActiveUser(user.uid[0]));
-      } else if (props.from === "stage-users") {
-        dispatch(removeStageUser(user.uid[0]));
-      } else if (props.from === "preserved-users") {
-        dispatch(removePreservedUser(user.uid[0]));
-      }
-    });
   };
 
   // Handle API error data
@@ -243,9 +222,6 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
             // Handle error
             handleAPIError(error);
           } else {
-            // Update data from Redux
-            deleteUsersFromRedux();
-
             // Reset selected values
             props.selectedUsersData.clearSelectedUsers();
 

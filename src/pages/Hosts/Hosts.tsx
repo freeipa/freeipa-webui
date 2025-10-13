@@ -34,8 +34,7 @@ import HostsTable from "./HostsTable";
 import AddHost from "src/components/modals/HostModals/AddHost";
 import DeleteHosts from "src/components/modals/HostModals/DeleteHosts";
 // Redux
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
-import { updateHostsList } from "src/store/Identity/hosts-slice";
+import { useAppSelector } from "src/store/hooks";
 // Data types
 import { Host, DNSZone } from "src/utils/datatypes/globalDataTypes";
 // Utils
@@ -59,9 +58,6 @@ import {
 } from "../../services/rpcHosts";
 
 const Hosts = () => {
-  // Dispatch (Redux)
-  const dispatch = useAppDispatch();
-
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
     useListPageSearchParams();
@@ -175,8 +171,6 @@ const Hosts = () => {
         hostsList.push(hostsListResult[i].result);
       }
 
-      // Update 'Hosts' slice data
-      dispatch(updateHostsList(hostsList));
       setHostsList(hostsList);
       setHostsTotalCount(totalCount);
       // Show table elements
@@ -306,8 +300,6 @@ const Hosts = () => {
             hostsList.push(hostsListResult[i].result);
           }
 
-          // Update 'Hosts' slice data
-          dispatch(updateHostsList(hostsList));
           setHostsList(hostsList);
           setHostsTotalCount(totalCount);
           // Show table elements

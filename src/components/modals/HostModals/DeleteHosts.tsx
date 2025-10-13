@@ -6,9 +6,6 @@ import {
   Button,
   Checkbox,
 } from "@patternfly/react-core";
-// Redux
-import { useAppDispatch } from "src/store/hooks";
-import { removeHost } from "src/store/Identity/hosts-slice";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
@@ -43,9 +40,6 @@ export interface PropsToDeleteHosts {
 }
 
 const DeleteHosts = (props: PropsToDeleteHosts) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
-
   // Alerts
   const alerts = useAlerts();
 
@@ -171,11 +165,6 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
             } as FetchBaseQueryError;
             handleAPIError(error);
           } else {
-            // Update data from Redux
-            props.selectedHostsData.selectedHosts.map((host) => {
-              dispatch(removeHost(host.fqdn[0]));
-            });
-
             props.selectedHostsData.clearSelectedHosts();
             props.buttonsData.updateIsDeleteButtonDisabled(true);
             props.buttonsData.updateIsDeletion(true);

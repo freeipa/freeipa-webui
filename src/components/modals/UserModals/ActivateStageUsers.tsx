@@ -12,9 +12,6 @@ import { User } from "src/utils/datatypes/globalDataTypes";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
 import UsersDisplayTable from "src/components/tables/UsersDisplayTable";
-// Redux
-import { useAppDispatch } from "src/store/hooks";
-import { removeUser as removeStageUser } from "src/store/Identity/stageUsers-slice";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import { useActivateUserMutation } from "src/services/rpcUsers";
@@ -29,9 +26,6 @@ export interface PropsToActivateUsers {
 }
 
 const ActivateStageUsers = (props: PropsToActivateUsers) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
-
   // Alerts
   const alerts = useAlerts();
 
@@ -87,10 +81,6 @@ const ActivateStageUsers = (props: PropsToActivateUsers) => {
         if (response.data?.result) {
           // Close modal
           props.handleModalToggle();
-          // Update data from Redux
-          props.selectedUsers.map((user) => {
-            dispatch(removeStageUser(user.uid[0]));
-          });
           // Set alert: success
           alerts.addAlert(
             "activate-users-success",

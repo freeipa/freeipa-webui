@@ -16,13 +16,8 @@ import { HelpIcon } from "@patternfly/react-icons";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import PasswordInput from "src/components/layouts/PasswordInput";
-// Data types
-import { User } from "src/utils/datatypes/globalDataTypes";
 // Redux
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
-import { addUser as addActiveUser } from "src/store/Identity/activeUsers-slice";
-import { addUser as addStageUser } from "src/store/Identity/stageUsers-slice";
-import { addUser as addPreservedUser } from "src/store/Identity/preservedUsers-slice";
+import { useAppSelector } from "src/store/hooks";
 // RPC
 import {
   useSimpleMutCommandMutation,
@@ -58,9 +53,6 @@ export interface PropsToAddUser {
 }
 
 const AddUser = (props: PropsToAddUser) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
-
   // Alerts to show in the UI
   const alerts = useAlerts();
 
@@ -552,17 +544,6 @@ const AddUser = (props: PropsToAddUser) => {
     } else return true;
   };
 
-  // Add new user data to user Redux slice
-  const newUserToRedux = (userData: User) => {
-    if (props.from === "active-users") {
-      dispatch(addActiveUser(userData));
-    } else if (props.from === "stage-users") {
-      dispatch(addStageUser(userData));
-    } else if (props.from === "preserved-users") {
-      dispatch(addPreservedUser(userData));
-    }
-  };
-
   // Define status flags to determine user added successfully or error
   let isAdditionSuccess = true;
 
@@ -608,9 +589,6 @@ const AddUser = (props: PropsToAddUser) => {
         const error = data.error as FetchBaseQueryError | SerializedError;
 
         if (result) {
-          const updatedUsersList = result.result as unknown as User;
-          // Dispatch user data to redux
-          newUserToRedux(updatedUsersList);
           // Set status flag: success
           isAdditionSuccess = true;
           // Refresh data
