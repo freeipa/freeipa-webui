@@ -5,11 +5,8 @@ import { Button, Content, ContentVariants } from "@patternfly/react-core";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
 import UsersDisplayTable from "src/components/tables/UsersDisplayTable";
-// Redux
-import { useAppDispatch } from "src/store/hooks";
 // Data types
 import { User } from "src/utils/datatypes/globalDataTypes";
-import { removeUser as removePreservedUser } from "src/store/Identity/preservedUsers-slice";
 // RPC
 import { BatchRPCResponse } from "src/services/rpc";
 import { useRestoreUserMutation } from "src/services/rpcUsers";
@@ -25,9 +22,6 @@ export interface PropsToPreservedUsers {
 }
 
 const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
-
   // Alerts
   const alerts = useAlerts();
 
@@ -74,11 +68,6 @@ const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
         if (result) {
           // Close modal
           closeModal();
-
-          // Update data from Redux
-          props.selectedUsers.map((user) => {
-            dispatch(removePreservedUser(user.uid[0]));
-          });
 
           // Reset selected values
           props.clearSelectedUsers();

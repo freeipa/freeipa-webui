@@ -20,8 +20,7 @@ import {
 import { User } from "src/utils/datatypes/globalDataTypes";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 // Redux
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
-import { updateUsersList } from "src/store/Identity/activeUsers-slice";
+import { useAppSelector } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
@@ -60,9 +59,6 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 
 const ActiveUsers = () => {
-  // Dispatch (Redux)
-  const dispatch = useAppDispatch();
-
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "active-users" });
 
@@ -141,8 +137,6 @@ const ActiveUsers = () => {
       }
 
       setUsersTotalCount(totalCount);
-      // Update 'Active users' slice data
-      dispatch(updateUsersList(usersList));
       // Update the list of users
       setActiveUsersList(usersList);
       // Show table elements
@@ -299,8 +293,6 @@ const ActiveUsers = () => {
           }
 
           setUsersTotalCount(totalCount);
-          // Update slice data
-          dispatch(updateUsersList(usersList));
           setActiveUsersList(usersList);
           // Show table elements
           setShowTableRows(true);

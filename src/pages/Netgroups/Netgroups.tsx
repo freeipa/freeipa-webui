@@ -28,8 +28,7 @@ import NetgroupsTable from "src/pages/Netgroups/NetgroupsTable";
 import AddNetgroup from "src/components/modals/AddNetgroup";
 import DeleteNetgroups from "src/components/modals/DeleteNetgroups";
 // Redux
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
-import { updateNetgroupsList } from "src/store/Identity/netgroups-slice";
+import { useAppSelector } from "src/store/hooks";
 // Data types
 import { Netgroup } from "src/utils/datatypes/globalDataTypes";
 // Utils
@@ -49,9 +48,6 @@ import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
 import { useGettingNetgroupsQuery } from "../../services/rpcNetgroups";
 
 const Netgroups = () => {
-  // Dispatch (Redux)
-  const dispatch = useAppDispatch();
-
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "netgroups" });
 
@@ -157,8 +153,6 @@ const Netgroups = () => {
         groupsList.push(groupsListResult[i].result);
       }
 
-      // Update 'Groups' slice data
-      dispatch(updateNetgroupsList(groupsList));
       setGroupsList(groupsList);
       setGroupsTotalCount(totalCount);
       // Show table elements
@@ -250,9 +244,7 @@ const Netgroups = () => {
             groupsList.push(groupsListResult[i].result);
           }
 
-          // Update 'netgroups' slice data
           setPage(1);
-          dispatch(updateNetgroupsList(groupsList));
           setGroupsList(groupsList);
           setGroupsTotalCount(totalCount);
           // Show table elements

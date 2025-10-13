@@ -26,8 +26,7 @@ import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHe
 // Tables
 import ServicesTable from "./ServicesTable";
 // Redux
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { updateServicesList } from "../../store/Identity/services-slice";
+import { useAppSelector } from "../../store/hooks";
 // Data types
 import { Host, Service } from "../../utils/datatypes/globalDataTypes";
 // Utils
@@ -53,9 +52,6 @@ import { useGettingServicesQuery } from "../../services/rpcServices";
 const Services = () => {
   // Initialize services list (Redux)
   const [servicesList, setServicesList] = useState<Service[]>([]);
-
-  // Dispatch (Redux)
-  const dispatch = useAppDispatch();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "services" });
@@ -172,8 +168,6 @@ const Services = () => {
             serviceList.push(serviceListResult[i].result);
           }
 
-          // Update slice data
-          dispatch(updateServicesList(serviceList));
           setServicesList(serviceList);
           setServicesTotalCount(totalCount);
           // Show table elements
@@ -333,8 +327,6 @@ const Services = () => {
         servicesList.push(servicesListResult[i].result);
       }
 
-      // Update slice data
-      dispatch(updateServicesList(servicesList));
       setServicesList(servicesList);
       setServicesTotalCount(totalCount);
       // Show table elements

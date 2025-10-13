@@ -3,11 +3,6 @@ import { Button, Content, ContentVariants } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import { User } from "src/utils/datatypes/globalDataTypes";
-// Redux
-import { useAppDispatch } from "src/store/hooks";
-import { changeStatus as changeStatusActiveUser } from "src/store/Identity/activeUsers-slice";
-import { changeStatus as changeStatusStageUser } from "src/store/Identity/stageUsers-slice";
-import { changeStatus as changeStatusPreservedUser } from "src/store/Identity/preservedUsers-slice";
 // RPC
 import {
   Command,
@@ -56,9 +51,6 @@ export interface PropsToDisableEnableUsers {
 }
 
 const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
-
   // Alerts to show in the UI
   const alerts = useAlerts();
 
@@ -93,32 +85,6 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
   // Close modal
   const closeModal = () => {
     props.handleModalToggle();
-  };
-
-  // Update changes in Redux
-  const dispatchToRedux = (newStatus: boolean, selectedUsers: User[]) => {
-    if (props.from === "active-users") {
-      dispatch(
-        changeStatusActiveUser({
-          newStatus,
-          selectedUsers,
-        })
-      );
-    } else if (props.from === "stage-users") {
-      dispatch(
-        changeStatusStageUser({
-          newStatus,
-          selectedUsers,
-        })
-      );
-    } else if (props.from === "preserved-users") {
-      dispatch(
-        changeStatusPreservedUser({
-          newStatus,
-          selectedUsers,
-        })
-      );
-    }
   };
 
   // Handle API error data
@@ -165,33 +131,6 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
     setIsModalErrorOpen(true);
   };
 
-  // Modify user status for those pages not adapted to the C.L.
-  // TODO: Remove this function when the C.L. is set in all user pages
-  const oldModifyStatus = (newStatus: boolean, selectedUsers: User[]) => {
-    // Update changes to Redux
-    dispatchToRedux(newStatus, selectedUsers);
-
-    if (props.buttonsData !== undefined) {
-      // Update 'isDisbleEnableOp' to notify table that an updating operation is performed
-      props.buttonsData.updateIsDisableEnableOp(true);
-
-      // Update buttons
-      if (!props.optionSelected) {
-        // Enable
-        props.buttonsData.updateIsEnableButtonDisabled(true);
-        props.buttonsData.updateIsDisableButtonDisabled(false);
-      } else if (props.optionSelected) {
-        // Disable
-        props.buttonsData.updateIsEnableButtonDisabled(false);
-        props.buttonsData.updateIsDisableButtonDisabled(true);
-      }
-    }
-
-    // Reset selected users
-    props.selectedUsersData.clearSelectedUsers();
-    closeModal();
-  };
-
   // Modify user status using IPA commands
   // TODO: Better Adapt this function to several use-cases
   const modifyStatus = (newStatus: boolean, selectedUsers: User[]) => {
@@ -234,9 +173,6 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
                 // Handle error
                 handleAPIError(error);
               } else {
-                // Update changes to Redux
-                dispatchToRedux(newStatus, selectedUsers);
-
                 if (props.buttonsData !== undefined) {
                   // Update 'isDisbleEnableOp' to notify table that an updating operation is performed
                   props.buttonsData.updateIsDisableEnableOp(true);
@@ -296,8 +232,6 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
       command(payload).then((response) => {
         if ("data" in response) {
           if (response.data.result) {
-            // Update changes to Redux
-            dispatchToRedux(newStatus, selectedUsers);
             // Close modal
             closeModal();
             // Set alert: success
@@ -375,15 +309,10 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
       key="enable-users"
       variant="primary"
       onClick={() =>
-        props.from === "active-users"
-          ? modifyStatus(
-              props.optionSelected,
-              props.selectedUsersData.selectedUsers
-            )
-          : oldModifyStatus(
-              props.optionSelected,
-              props.selectedUsersData.selectedUsers
-            )
+        modifyStatus(
+          props.optionSelected,
+          props.selectedUsersData.selectedUsers
+        )
       }
       form="active-users-enable-disable-users-modal"
       data-cy="modal-button-enable"

@@ -16,7 +16,7 @@ import {
 import { User } from "src/utils/datatypes/globalDataTypes";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 // Redux
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
@@ -34,8 +34,7 @@ import DeleteUsers from "src/components/modals/UserModals/DeleteUsers";
 import StagePreservedUsers from "src/components/modals/UserModals/StagePreservedUsers";
 import RestorePreservedUsers from "src/components/modals/UserModals/RestorePreservedUsers";
 // Hooks
-import { updateUsersList } from "src/store/Identity/preservedUsers-slice";
-import { useAlerts } from "src/hooks/useAlerts";
+import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors
@@ -50,9 +49,6 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 
 const PreservedUsers = () => {
-  // Initialize stage users list (Redux)
-  const dispatch = useAppDispatch();
-
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
     useListPageSearchParams();
@@ -129,8 +125,6 @@ const PreservedUsers = () => {
       }
 
       setUsersTotalCount(totalCount);
-      // Update 'Active users' slice data
-      dispatch(updateUsersList(usersList));
       // Update the list of users
       setPreservedUsersList(usersList);
       // Show table elements
@@ -256,8 +250,6 @@ const PreservedUsers = () => {
             usersList.push(usersListResult[i].result);
           }
 
-          // Update slice data
-          dispatch(updateUsersList(usersList));
           setPreservedUsersList(usersList);
           setUsersTotalCount(totalCount);
           // Show table elements

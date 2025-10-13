@@ -28,8 +28,7 @@ import UserGroupsTable from "./UserGroupsTable";
 import AddUserGroup from "src/components/modals/AddUserGroup";
 import DeleteUserGroups from "src/components/modals/DeleteUserGroups";
 // Redux
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
-import { updateGroupsList } from "src/store/Identity/userGroups-slice";
+import { useAppSelector } from "src/store/hooks";
 // Data types
 import { UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Utils
@@ -49,9 +48,6 @@ import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
 import { useGettingGroupsQuery } from "../../services/rpcUserGroups";
 
 const UserGroups = () => {
-  // Dispatch (Redux)
-  const dispatch = useAppDispatch();
-
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "user-groups" });
 
@@ -158,7 +154,6 @@ const UserGroups = () => {
       }
 
       // Update 'Groups' slice data
-      dispatch(updateGroupsList(groupsList));
       setGroupsList(groupsList);
       setGroupsTotalCount(totalCount);
       // Show table elements
@@ -251,7 +246,6 @@ const UserGroups = () => {
 
           // Update 'user groups' slice data
           setPage(1);
-          dispatch(updateGroupsList(groupsList));
           setGroupsList(groupsList);
           setGroupsTotalCount(totalCount);
           // Show table elements

@@ -11,13 +11,8 @@ import {
 // Layouts
 import SecondaryButton from "../layouts/SecondaryButton";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
-// Data types
-import { Netgroup } from "../../utils/datatypes/globalDataTypes";
 // Modals
 import ErrorModal from "./ErrorModal";
-// Redux
-import { useAppDispatch } from "../../store/hooks";
-import { addNetgroup } from "../../store/Identity/netgroups-slice";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -37,9 +32,6 @@ interface PropsToAddGroup {
 }
 
 const AddNetgroup = (props: PropsToAddGroup) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
-
   // Alerts to show in the UI
   const alerts = useAlerts();
 
@@ -141,7 +133,6 @@ const AddNetgroup = (props: PropsToAddGroup) => {
       if ("data" in group) {
         const data = group.data as FindRPCResponse;
         const error = data.error as FetchBaseQueryError | SerializedError;
-        const result = data.result;
 
         if (error) {
           // Set status flag: error
@@ -156,9 +147,6 @@ const AddNetgroup = (props: PropsToAddGroup) => {
             "success"
           );
 
-          // Dispatch host data to redux
-          const newGroup = result.result as unknown as Netgroup;
-          dispatch(addNetgroup(newGroup));
           // Set status flag: success
           isAdditionSuccess = true;
           // Refresh data

@@ -17,10 +17,6 @@ import {
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Data types
-import { Host } from "src/utils/datatypes/globalDataTypes";
-// Redux
-import { useAppDispatch } from "src/store/hooks";
-import { addHost } from "src/store/Identity/hosts-slice";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Modals
@@ -41,9 +37,6 @@ export interface PropsToAddHost {
 }
 
 const AddHost = (props: PropsToAddHost) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
-
   // Alerts to show in the UI
   const alerts = useAlerts();
 
@@ -523,7 +516,6 @@ const AddHost = (props: PropsToAddHost) => {
       if ("data" in host) {
         const data = host.data as FindRPCResponse;
         const error = data.error as FetchBaseQueryError | SerializedError;
-        const result = data.result;
 
         if (error) {
           // Set status flag: error
@@ -534,9 +526,6 @@ const AddHost = (props: PropsToAddHost) => {
           // Set alert: success
           alerts.addAlert("add-host-success", "New host added", "success");
 
-          // Dispatch host data to redux
-          const updatedHostList = result.result as unknown as Host;
-          dispatch(addHost(updatedHostList));
           // Set status flag: success
           isAdditionSuccess = true;
           // Refresh data

@@ -28,8 +28,7 @@ import HostGroupsTable from "src/pages/HostGroups/HostGroupsTable";
 import AddHostGroup from "src/components/modals/AddHostGroup";
 import DeleteHostGroups from "src/components/modals/DeleteHostGroups";
 // Redux
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
-import { updateGroupsList } from "src/store/Identity/hostGroups-slice";
+import { useAppSelector } from "src/store/hooks";
 // Data types
 import { HostGroup } from "src/utils/datatypes/globalDataTypes";
 // Utils
@@ -49,9 +48,6 @@ import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
 import { useGettingHostGroupsQuery } from "../../services/rpcHostGroups";
 
 const HostGroups = () => {
-  // Dispatch (Redux)
-  const dispatch = useAppDispatch();
-
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "host-groups" });
 
@@ -161,8 +157,6 @@ const HostGroups = () => {
         groupsList.push(groupsListResult[i].result);
       }
 
-      // Update 'Groups' slice data
-      dispatch(updateGroupsList(groupsList));
       setGroupsList(groupsList);
       setGroupsTotalCount(totalCount);
       // Show table elements
@@ -260,9 +254,7 @@ const HostGroups = () => {
             groupsList.push(groupsListResult[i].result);
           }
 
-          // Update 'host groups' slice data
           setPage(1);
-          dispatch(updateGroupsList(groupsList));
           setGroupsList(groupsList);
           setGroupsTotalCount(totalCount);
           // Show table elements

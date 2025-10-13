@@ -16,10 +16,9 @@ import {
 import { User } from "src/utils/datatypes/globalDataTypes";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 // Redux
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
+import { useAppSelector } from "src/store/hooks";
 // Hooks
-import { updateUsersList } from "src/store/Identity/stageUsers-slice";
-import { useAlerts } from "src/hooks/useAlerts";
+import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Layouts
@@ -51,9 +50,6 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 
 const StageUsers = () => {
-  // Initialize stage users list (Redux)
-  const dispatch = useAppDispatch();
-
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "stage-users" });
 
@@ -130,8 +126,6 @@ const StageUsers = () => {
       }
 
       setUsersTotalCount(totalCount);
-      // Update 'Stage users' slice data
-      dispatch(updateUsersList(usersList));
       // Update the list of users
       setStageUsersList(usersList);
       // Show table elements
@@ -257,8 +251,6 @@ const StageUsers = () => {
             usersList.push(usersListResult[i].result);
           }
 
-          // Update slice data
-          dispatch(updateUsersList(usersList));
           setStageUsersList(usersList);
           setUsersTotalCount(totalCount);
           // Show table elements

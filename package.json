@@ -24,7 +24,7 @@
     "audit-ci": "audit-ci --config audit-ci.json",
     "cypress": "cypress run",
     "cypress:open": "cypress open",
-    "lint": "eslint --color --max-warnings 815",
+    "lint": "eslint --color --max-warnings 805",
     "lint:fix": "eslint --fix",
     "prettier": "prettier --check .",
     "prettier:fix": "prettier --write .",

@@ -16,13 +16,8 @@ import {
 // Layout
 import SecondaryButton from "../layouts/SecondaryButton";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
-// Data types
-import { Service } from "../../utils/datatypes/globalDataTypes";
 // Modals
 import ErrorModal from "./ErrorModal";
-// Redux
-import { useAppDispatch } from "../../store/hooks";
-import { addService } from "../../store/Identity/services-slice";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -44,9 +39,6 @@ interface PropsToAddService {
 }
 
 const AddService = (props: PropsToAddService) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
-
   // Alerts to show in the UI
   const alerts = useAlerts();
 
@@ -399,7 +391,6 @@ const AddService = (props: PropsToAddService) => {
       if ("data" in service) {
         const data = service.data as FindRPCResponse;
         const error = data.error as FetchBaseQueryError | SerializedError;
-        const result = data.result;
 
         if (error) {
           // Set status flag: error
@@ -414,9 +405,6 @@ const AddService = (props: PropsToAddService) => {
             "success"
           );
 
-          // Dispatch host data to redux
-          const updatedServiceList = result.result as unknown as Service;
-          dispatch(addService(updatedServiceList));
           // Set status flag: success
           isAdditionSuccess = true;
           // Refresh data

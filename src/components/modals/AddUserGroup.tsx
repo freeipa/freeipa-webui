@@ -11,13 +11,8 @@ import {
 // Layouts
 import SecondaryButton from "../layouts/SecondaryButton";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
-// Data types
-import { UserGroup } from "../../utils/datatypes/globalDataTypes";
 // Modals
 import ErrorModal from "./ErrorModal";
-// Redux
-import { useAppDispatch } from "../../store/hooks";
-import { addGroup } from "../../store/Identity/userGroups-slice";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -53,9 +48,6 @@ const groupTypeOptions: SelectOptionProps[] = [
 ];
 
 const AddUserGroup = (props: PropsToAddGroup) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
-
   // Alerts to show in the UI
   const alerts = useAlerts();
 
@@ -219,7 +211,6 @@ const AddUserGroup = (props: PropsToAddGroup) => {
       if ("data" in group) {
         const data = group.data as FindRPCResponse;
         const error = data.error as FetchBaseQueryError | SerializedError;
-        const result = data.result;
 
         if (error) {
           // Set status flag: error
@@ -234,9 +225,6 @@ const AddUserGroup = (props: PropsToAddGroup) => {
             "success"
           );
 
-          // Dispatch host data to redux
-          const newGroup = result.result as unknown as UserGroup;
-          dispatch(addGroup(newGroup));
           // Set status flag: success
           isAdditionSuccess = true;
           // Refresh data

@@ -5,9 +5,6 @@ import { Button, Content, ContentVariants } from "@patternfly/react-core";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
 import UsersDisplayTable from "src/components/tables/UsersDisplayTable";
-// Redux
-import { useAppDispatch } from "src/store/hooks";
-import { removeUser as removePreservedUser } from "src/store/Identity/preservedUsers-slice";
 // RPC
 import {
   Command,
@@ -34,9 +31,6 @@ export interface PropsToStagePreservedUsers {
 }
 
 const StagePreservedUsers = (props: PropsToStagePreservedUsers) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
-
   // Alerts
   const alerts = useAlerts();
 
@@ -148,11 +142,6 @@ const StagePreservedUsers = (props: PropsToStagePreservedUsers) => {
             // Handle error
             handleAPIError(error);
           } else {
-            // Update data from Redux
-            props.selectedUsers.map((user) => {
-              dispatch(removePreservedUser(user.uid));
-            });
-
             // Reset selected values
             props.clearSelectedUsers();
 

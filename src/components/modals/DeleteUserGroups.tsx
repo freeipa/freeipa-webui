@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
 import { Content, ContentVariants, Button } from "@patternfly/react-core";
-// Redux
-import { useAppDispatch } from "src/store/hooks";
-import { removeGroup } from "src/store/Identity/userGroups-slice";
 // Layouts
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
 // Tables
@@ -38,9 +35,6 @@ export interface PropsToDeleteGroups {
 }
 
 const DeleteUserGroups = (props: PropsToDeleteGroups) => {
-  // Set dispatch (Redux)
-  const dispatch = useAppDispatch();
-
   // Alerts
   const alerts = useAlerts();
 
@@ -153,11 +147,6 @@ const DeleteUserGroups = (props: PropsToDeleteGroups) => {
               handleAPIError(error);
               setBtnSpinning(false);
             } else {
-              // Update data from Redux
-              props.selectedGroupsData.selectedGroups.map((group) => {
-                dispatch(removeGroup(group.cn[0]));
-              });
-
               props.selectedGroupsData.clearSelectedGroups();
               props.buttonsData.updateIsDeleteButtonDisabled(true);
               props.buttonsData.updateIsDeletion(true);
