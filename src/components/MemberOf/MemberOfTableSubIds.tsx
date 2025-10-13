@@ -7,7 +7,7 @@ import { SubId } from "src/utils/datatypes/globalDataTypes";
 import SkeletonOnTableLayout from "../layouts/Skeleton/SkeletonOnTableLayout";
 import EmptyBodyTable from "../tables/EmptyBodyTable";
 
-export interface MemberOfSubIdsTableProps {
+interface MemberOfSubIdsTableProps {
   subIds: SubId[];
   checkedItems?: string[];
   onCheckItemsChange?: (checkedItems: string[]) => void;

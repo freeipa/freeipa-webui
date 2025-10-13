@@ -36,7 +36,7 @@ export interface ServiceAddPayload {
   force: boolean; // skip DNS check
 }
 
-export type ServiceFullData = {
+type ServiceFullData = {
   service?: Partial<Service>;
   cert?: Certificate[];
 };

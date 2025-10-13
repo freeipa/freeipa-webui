@@ -41,29 +41,14 @@ import { HBACRule } from "../utils/datatypes/globalDataTypes";
  * - hbacrule_enable: https://freeipa.readthedocs.io/en/latest/api/hbacrule_enable.html
  */
 
-export type RuleFullData = {
+type RuleFullData = {
   rule?: Partial<HBACRule>;
 };
 
-export interface HbacRulesShowPayload {
+interface HbacRulesShowPayload {
   hbacRuleNamesList: string[];
   no_members: boolean | true;
   version: string;
-}
-
-export interface HBACRulePayload {
-  no_members: boolean | true;
-  cn?: string;
-  accessruletype?: "allow" | "deny";
-  usercategory?: "all";
-  hostcategory?: "all";
-  sourcehostcategory?: "all";
-  servicecategory?: "all";
-  description: string;
-  ipaenabledflag?: boolean;
-  externalhost?: string;
-  timelimit?: number;
-  sizelimit?: number;
 }
 
 // Selecting allow any/all requires removing old members first
@@ -387,21 +372,6 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
-    saveHbacRule: build.mutation<FindRPCResponse, Partial<HBACRule>>({
-      query: (rule) => {
-        const params = {
-          version: API_VERSION_BACKUP,
-          ...rule,
-        };
-        delete params["cn"];
-        const cn = rule.cn !== undefined ? rule.cn : "";
-        return getCommand({
-          method: "hbacrule_mod",
-          params: [[cn], params],
-        });
-      },
-      invalidatesTags: ["FullHBACRule"],
-    }),
     /*
      * In order to set the user/host/service category to "all" all the previous
      * members must be removed first before setting the attribute
@@ -500,7 +470,6 @@ export const {
   useDisableHbacRuleMutation,
   useEnableHbacRuleMutation,
   useGetHbacRuleFullDataQuery,
-  useSaveHbacRuleMutation,
   useSaveAndCleanHbacRuleMutation,
   useRemoveMembersFromHbacRuleMutation,
   useAddMembersToHbacRuleMutation,

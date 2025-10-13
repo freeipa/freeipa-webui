@@ -26,7 +26,7 @@ interface SelectedData {
   clearSelectedElements: () => void;
 }
 
-export interface PropsToDelete {
+interface PropsToDelete {
   show: boolean;
   onClose: () => void;
   selectedData: SelectedData;

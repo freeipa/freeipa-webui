@@ -12,7 +12,7 @@ import TitleLayout from "src/components/layouts/TitleLayout";
 import { partialServiceToService } from "src/utils/serviceUtils";
 import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Hooks
-import { useAlerts } from "../../hooks/useAlerts";
+import useAlerts from "../../hooks/useAlerts";
 // Hooks
 import { useServiceSettings } from "src/hooks/useServiceSettingsData";
 // Redux

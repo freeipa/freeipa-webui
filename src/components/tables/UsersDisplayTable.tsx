@@ -6,7 +6,7 @@ import TableLayout from "src/components/layouts/TableLayout";
 // Data types
 import { User } from "src/utils/datatypes/globalDataTypes";
 
-export interface PropsToDisplayUsersTable {
+interface PropsToDisplayUsersTable {
   usersToDisplay: User[];
 }
 

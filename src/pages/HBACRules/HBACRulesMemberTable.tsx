@@ -6,7 +6,7 @@ import SettingsTableLayout from "src/components/layouts/SettingsTableLayout";
 import DualListLayout from "src/components/layouts/DualListLayout";
 import RemoveHBACRuleMembersModal from "src/components/modals/HbacModals/RemoveHBACRuleMembers";
 // Hooks
-import { useAlerts } from "../../hooks/useAlerts";
+import useAlerts from "../../hooks/useAlerts";
 // React Router DOM
 import { Link } from "react-router";
 // RPC

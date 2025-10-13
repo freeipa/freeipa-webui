@@ -32,7 +32,7 @@ import {
   AddUserPayload,
 } from "src/services/rpcIdOverrides";
 
-export interface PropsToAddUser {
+interface PropsToAddUser {
   show: boolean;
   idview: string;
   users: IDViewOverrideUser[];

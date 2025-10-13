@@ -35,7 +35,7 @@ interface PaginationData {
   updateSelectedPerPage: (selected: number) => void;
 }
 
-export interface PropsToTable {
+interface PropsToTable {
   shownElementsList: SudoRule[];
   showTableRows: boolean;
   rulesData: RulesData;

@@ -9,19 +9,19 @@ import { API_VERSION_BACKUP } from "../utils/utils";
  * API commands: dnsserver_find, dnsserver_show
  */
 
-export interface DnsServersFindPayload {
+interface DnsServersFindPayload {
   searchValue: string;
   sizeLimit: number;
   pkeyOnly?: boolean;
   version?: string;
 }
 
-export interface DnsServersFindResult {
+interface DnsServersFindResult {
   dn: string;
   idnsserverid: string;
 }
 
-export interface DnsServersFindResponse {
+interface DnsServersFindResponse {
   data: string[];
   error: string | null;
 }

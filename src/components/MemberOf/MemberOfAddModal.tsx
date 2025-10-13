@@ -20,7 +20,7 @@ export interface AvailableItems {
   title: string;
 }
 
-export interface PropsToAdd {
+interface PropsToAdd {
   showModal: boolean;
   onCloseModal: () => void;
   availableItems: AvailableItems[];

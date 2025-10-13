@@ -42,7 +42,7 @@ interface PaginationData {
   updateSelectedPerPage: (selected: number) => void;
 }
 
-export interface PropsToTable<T> {
+interface PropsToTable<T> {
   tableTitle: string;
   shownElementsList: T[];
   pk: string; // E.g. Primary key for users --> "uid"

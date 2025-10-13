@@ -36,14 +36,7 @@ import {
  * - certmaprule_enable: https://freeipa.readthedocs.io/en/ipa-4-11/api/certmaprule_enable.html
  */
 
-export interface CertMapFindPayload {
-  searchValue: string;
-  pkeyOnly: boolean;
-  sizeLimit: number;
-  version?: string;
-}
-
-export interface CertMapFullDataPayload {
+interface CertMapFullDataPayload {
   searchValue: string;
   apiVersion: string;
   sizelimit: number;
@@ -75,26 +68,6 @@ export interface CertMapRuleAddPayload {
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
-    /**
-     * Get certificate mapping IDs
-     * @param {CertMapFindPayload} - Payload with search value and options
-     * @returns {Promise<FindRPCResponse>} - Promise with the response data
-     *
-     */
-    certMapRuleFind: build.query<FindRPCResponse, CertMapFindPayload>({
-      query: (payload) => {
-        const certmapruleParams = {
-          pkey_only: payload.pkeyOnly,
-          sizelimit: payload.sizeLimit,
-          version: payload.version || API_VERSION_BACKUP,
-        };
-
-        return getCommand({
-          method: "certmaprule_find",
-          params: [[payload.searchValue], certmapruleParams],
-        });
-      },
-    }),
     /**
      * Find certificate mapping full data.
      * @param CertMapFullDataPayload
@@ -500,7 +473,6 @@ const extendedApi = api.injectEndpoints({
 });
 
 export const {
-  useCertMapRuleFindQuery,
   useGetCertMapRuleEntriesQuery,
   useSearchCertMapRuleEntriesMutation,
   useCertMapConfigFindQuery,

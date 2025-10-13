@@ -22,7 +22,7 @@ import { ErrorData } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 
-export interface PropsToStagePreservedUsers {
+interface PropsToStagePreservedUsers {
   show: boolean;
   handleModalToggle: () => void;
   selectedUsers: User[];

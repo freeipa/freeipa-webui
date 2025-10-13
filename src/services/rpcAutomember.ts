@@ -4,7 +4,6 @@ import {
   Command,
   getCommand,
   FindRPCResponse,
-  useGettingGenericQuery,
   GenericPayload,
   BatchRPCResponse,
   getBatchCommand,
@@ -39,10 +38,6 @@ import { apiToAutomember } from "src/utils/automemberUtils";
  * - automember_mod: https://freeipa.readthedocs.io/en/latest/api/automember_mod.html
  *
  */
-
-export type AutomemberFullData = {
-  automember?: Partial<Automember>;
-};
 
 export interface AutomemberShowPayload {
   automemberNamesList: string[];
@@ -97,32 +92,6 @@ export interface RemoveConditionPayload {
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
-    /**
-     * Find automembers
-     * @param string Type of automember to retrieve ("group" or "hostgroup")
-     * @returns List of automember IDs
-     */
-    automemberFind: build.query<string[], string>({
-      query: (automemberType) => {
-        const params = [
-          [],
-          { type: automemberType, version: API_VERSION_BACKUP },
-        ];
-        return getCommand({
-          method: "automember_find",
-          params: params,
-        });
-      },
-      transformResponse: (response: FindRPCResponse): string[] => {
-        const automembersResult = response.result
-          .result as unknown as automemberType[];
-        const automemberIdsList: string[] = [];
-        automembersResult.map((automember) => {
-          automemberIdsList.push(automember.cn.toString());
-        });
-        return automemberIdsList;
-      },
-    }),
     /**
      * Find automembers basic information (cn and description) and returns it as 'AutomemberEntry' data type
      * @param string Type of automember to retrieve ("group" or "hostgroup")
@@ -543,14 +512,7 @@ const extendedApi = api.injectEndpoints({
   overrideExisting: false,
 });
 
-export const useGettingAutomembersQuery = (payloadData) => {
-  payloadData["objName"] = "automember";
-  payloadData["objAttr"] = "cn";
-  return useGettingGenericQuery(payloadData);
-};
-
 export const {
-  useAutomemberFindQuery,
   useDefaultGroupShowQuery,
   useSearchUserGroupRulesEntriesMutation,
   useAutomemberFindBasicInfoQuery,

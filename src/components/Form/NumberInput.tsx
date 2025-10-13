@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { NumberInput } from "@patternfly/react-core";
 
-export interface NumberSelectorProps {
+interface NumberSelectorProps {
   dataCy: string;
   id: string;
   name: string;

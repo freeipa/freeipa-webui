@@ -29,7 +29,7 @@ interface PaginationData {
   updateSelectedPerPage: (selected: number) => void;
 }
 
-export interface PropsToTable {
+interface PropsToTable {
   elementsList: UserGroup[];
   shownElementsList: UserGroup[];
   showTableRows: boolean;

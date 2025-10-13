@@ -31,7 +31,7 @@ interface SelectedHostsData {
   clearSelectedHosts: () => void;
 }
 
-export interface PropsToDeleteHosts {
+interface PropsToDeleteHosts {
   show: boolean;
   handleModalToggle: () => void;
   selectedHostsData: SelectedHostsData;

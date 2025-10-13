@@ -42,7 +42,7 @@ interface GroupId {
   gidnumber: string;
 }
 
-export interface PropsToAddUser {
+interface PropsToAddUser {
   show: boolean;
   from: "active-users" | "stage-users" | "preserved-users";
   setShowTableRows?: (value: boolean) => void;

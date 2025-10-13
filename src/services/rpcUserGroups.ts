@@ -38,7 +38,7 @@ import { PwPolicy, UserGroup } from "../utils/datatypes/globalDataTypes";
  * - group_remove_member_manager: https://freeipa.readthedocs.io/en/latest/api/group_remove_member_manager.html
  */
 
-export interface GroupShowPayload {
+interface GroupShowPayload {
   groupNamesList: string[];
   no_members?: boolean;
   version: string;
@@ -52,13 +52,7 @@ export interface GroupAddPayload {
   groupType: "posix" | "non-posix" | "external";
 }
 
-export interface GroupModPayload {
-  groupName: string;
-  version?: string;
-  groupType: "posix" | "external";
-}
-
-export type GroupFullData = {
+type GroupFullData = {
   userGroup?: Partial<UserGroup>;
   pwPolicy?: Partial<PwPolicy>;
 };

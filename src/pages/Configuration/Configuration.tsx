@@ -20,7 +20,7 @@ import DataSpinner from "src/components/layouts/DataSpinner";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 // Hooks
-import { useAlerts } from "src/hooks/useAlerts";
+import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import { useConfigSettings } from "src/hooks/useConfigSettingsData";
 // Utils

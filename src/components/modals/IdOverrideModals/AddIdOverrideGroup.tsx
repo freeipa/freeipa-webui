@@ -32,7 +32,7 @@ import {
   AddGroupPayload,
 } from "src/services/rpcIdOverrides";
 
-export interface PropsToAddGroup {
+interface PropsToAddGroup {
   show: boolean;
   idview: string;
   groups: IDViewOverrideGroup[];

@@ -8,10 +8,7 @@ import {
 import { navigateTo } from "../common/navigation";
 import { loginAsAdmin, logout } from "../common/authentication";
 
-export const fillHostgroup = (
-  hostgroupName: string,
-  hostgroupDescription: string
-) => {
+const fillHostgroup = (hostgroupName: string, hostgroupDescription: string) => {
   cy.dataCy("modal-textbox-hostgroup-name").type(hostgroupName);
   cy.dataCy("modal-textbox-hostgroup-name").should("have.value", hostgroupName);
 
@@ -35,7 +32,7 @@ export const createHostgroup = (
   cy.dataCy("add-hostgroup-modal").should("not.exist");
 };
 
-export const deleteHostgroup = (hostgroupName: string) => {
+const deleteHostgroup = (hostgroupName: string) => {
   selectEntry(hostgroupName);
 
   cy.dataCy("host-groups-button-delete").click();
@@ -48,7 +45,7 @@ export const deleteHostgroup = (hostgroupName: string) => {
   entryDoesNotExist(hostgroupName);
 };
 
-export const validateHostgroup = (hostgroupName: string) => {
+const validateHostgroup = (hostgroupName: string) => {
   searchForEntry(hostgroupName);
   entryExists(hostgroupName);
 };

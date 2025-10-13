@@ -18,7 +18,7 @@ import { Role } from "../utils/datatypes/globalDataTypes";
  * - role_show: https://freeipa.readthedocs.io/en/latest/api/role_show.html
  */
 
-export interface RoleShowPayload {
+interface RoleShowPayload {
   roleNamesList: string[];
   no_members?: boolean;
   version: string;
@@ -110,12 +110,6 @@ export const useGettingRolesQuery = (payloadData, options) => {
   payloadData["objName"] = "role";
   payloadData["objAttr"] = "cn";
   return useGettingGenericQuery(payloadData, options);
-};
-
-export const useGettingHbacRulesQuery = (payloadData) => {
-  payloadData["objName"] = "hbacRule";
-  payloadData["objAttr"] = "cn";
-  return useGettingGenericQuery(payloadData);
 };
 
 export const {

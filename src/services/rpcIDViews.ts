@@ -26,18 +26,13 @@ import { IDView } from "src/utils/datatypes/globalDataTypes";
  * - idview_unapply: https://freeipa.readthedocs.io/en/latest/api/idview_unapply.html
  */
 
-export interface ViewShowPayload {
-  viewNamesList: string[];
-  version: string;
-}
-
 export interface ViewAddPayload {
   viewName: string;
   version?: string;
   description?: string;
 }
 
-export type ViewFullData = {
+type ViewFullData = {
   idView?: Partial<IDView>;
 };
 
@@ -125,33 +120,6 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(viewsToDeletePayload, API_VERSION_BACKUP);
       },
     }),
-    /**
-     * Given a list of view names, show the full data of those views
-     * @param {string[]} groupNames - List of group names
-     * @param {boolean} noMembers - Whether to show members or not
-     * @returns {BatchRPCResponse} - Batch response
-     */
-    getIDViewInfoByName: build.query<IDView[], ViewShowPayload>({
-      query: (payload) => {
-        const viewNames = payload.viewNamesList;
-        const apiVersion = payload.version || API_VERSION_BACKUP;
-        const viewShowCommands: Command[] = viewNames.map((groupName) => ({
-          method: "idview_show",
-          params: [[groupName], {}],
-        }));
-        return getBatchCommand(viewShowCommands, apiVersion);
-      },
-      transformResponse: (response: BatchRPCResponse): IDView[] => {
-        const viewList: IDView[] = [];
-        const results = response.result.results;
-        const count = response.result.count;
-        for (let i = 0; i < count; i++) {
-          const viewData = apiToIDView(results[i].result);
-          viewList.push(viewData);
-        }
-        return viewList;
-      },
-    }),
     saveIDView: build.mutation<FindRPCResponse, Partial<IDView>>({
       query: (view) => {
         const params = {
@@ -225,7 +193,6 @@ export const useGettingIDViewsQuery = (payloadData) => {
 export const {
   useAddIDViewMutation,
   useRemoveIDViewsMutation,
-  useGetIDViewInfoByNameQuery,
   useGetIDViewsFullDataQuery,
   useSaveIDViewMutation,
   useUnapplyHostsMutation,

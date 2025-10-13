@@ -15,7 +15,7 @@ import SecondaryButton from "../SecondaryButton";
 import TableLayout from "../TableLayout";
 import PaginationLayout from "../PaginationLayout";
 
-export interface PropsToSettingsTableLayout {
+interface PropsToSettingsTableLayout {
   // Table
   ariaLabel: string;
   name?: string;

@@ -37,7 +37,7 @@ interface SelectedUsersData {
   clearSelectedUsers: () => void;
 }
 
-export interface PropsToDeleteUsers {
+interface PropsToDeleteUsers {
   show: boolean;
   from: "active-users" | "stage-users" | "preserved-users";
   handleModalToggle: () => void;

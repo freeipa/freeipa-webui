@@ -12,12 +12,12 @@ import { navigateTo } from "../common/navigation";
 import { loginAsAdmin, logout } from "../common/authentication";
 import { isOptionSelected, selectOption } from "../common/ui/select";
 
-export const fillUserGroupRule = (userGroupName: string, selector: string) => {
+const fillUserGroupRule = (userGroupName: string, selector: string) => {
   selectOption(userGroupName, selector);
   isOptionSelected(userGroupName, selector);
 };
 
-export const createUserGroupRule = (userGroupName: string) => {
+const createUserGroupRule = (userGroupName: string) => {
   cy.dataCy("auto-member-user-rules-button-add").click();
   cy.dataCy("add-rule-modal").should("exist");
 
@@ -29,7 +29,7 @@ export const createUserGroupRule = (userGroupName: string) => {
   entryExists(userGroupName);
 };
 
-export const deleteUserGroupRule = (userGroupName: string) => {
+const deleteUserGroupRule = (userGroupName: string) => {
   selectEntry(userGroupName);
 
   cy.dataCy("auto-member-user-rules-button-delete").click();
@@ -43,7 +43,7 @@ export const deleteUserGroupRule = (userGroupName: string) => {
   cy.dataCy("delete-rule-success").should("exist");
 };
 
-export const setDefaultUserGroupRule = (userGroupName: string) => {
+const setDefaultUserGroupRule = (userGroupName: string) => {
   cy.dataCy("typeahead-select-toggle").click();
   cy.dataCy("typeahead-select-" + userGroupName).click();
   cy.dataCy("auto-member-default-user-rules-modal").should("exist");
