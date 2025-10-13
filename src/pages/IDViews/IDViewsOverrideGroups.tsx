@@ -14,7 +14,7 @@ import {
 // Hooks
 import useApiError from "src/hooks/useApiError";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
-import { useAlerts } from "src/hooks/useAlerts";
+import useAlerts from "src/hooks/useAlerts";
 // Layouts
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";

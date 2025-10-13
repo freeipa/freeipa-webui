@@ -27,7 +27,7 @@ import { HostGroup } from "src/utils/datatypes/globalDataTypes";
  * - hostgroup_mod: https://freeipa.readthedocs.io/en/latest/api/hostgroup_mod.html
  */
 
-export interface GroupShowPayload {
+interface GroupShowPayload {
   groupNamesList: string[];
   no_members?: boolean;
   version: string;
@@ -39,7 +39,7 @@ export interface GroupAddPayload {
   description?: string;
 }
 
-export type GroupFullData = {
+type GroupFullData = {
   hostGroup?: Partial<HostGroup>;
 };
 

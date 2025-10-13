@@ -16,38 +16,12 @@ import { API_VERSION_BACKUP } from "../utils/utils";
  * API commands: idrange_find, idrange_show
  */
 
-export interface IdRangesFindPayload {
-  searchValue: string;
-  sizeLimit: number;
-  pkeyOnly?: boolean;
-  version?: string;
-  cn?: string;
-  ipabaseid?: number;
-  ipaidrangesize?: number;
-  ipabaserid?: number;
-  ipasecondarybaserid?: number;
-  ipanttrusteddomainsid?: string;
-  iparangetype?: "ipa-ad-trust" | "ipa-ad-trust-posix" | "ipa-local";
-  ipaautoprivategroups?: "true" | "false" | "hybrid";
-  timelimit?: number;
-  all?: boolean; // required flag in docs (default false)
-  raw?: boolean; // required flag in docs (default false)
-}
-
-export interface IdRangesFindResult {
+interface IdRangesFindResult {
   dn: string;
   cn: string[];
 }
 
-export interface IdRangesShowPayload {
-  cn: string;
-  rights?: boolean;
-  all?: boolean;
-  raw?: boolean;
-  version?: string;
-}
-
-export interface IdRangeDataPayload {
+interface IdRangeDataPayload {
   searchValue: string;
   apiVersion: string;
   sizelimit: number;
@@ -57,52 +31,6 @@ export interface IdRangeDataPayload {
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
-    /**
-     * Get ID range IDs
-     * @param {IdRangesFindPayload} payload - The payload containing search parameters
-     * @returns {IdRangesFindResponse} - Response data or error
-     */
-    idRangesFind: build.query<FindRPCResponse, IdRangesFindPayload>({
-      query: (payload) => {
-        const params: Record<string, unknown> = {
-          pkey_only: payload.pkeyOnly || true,
-          sizelimit: payload.sizeLimit,
-          version: payload.version || API_VERSION_BACKUP,
-          all: payload.all ?? false,
-          raw: payload.raw ?? false,
-        };
-
-        // Add optional filters if provided
-        const optionalKeys: Array<
-          keyof Omit<
-            IdRangesFindPayload,
-            "searchValue" | "sizeLimit" | "pkeyOnly" | "version" | "all" | "raw"
-          >
-        > = [
-          "cn",
-          "ipabaseid",
-          "ipaidrangesize",
-          "ipabaserid",
-          "ipasecondarybaserid",
-          "ipanttrusteddomainsid",
-          "iparangetype",
-          "ipaautoprivategroups",
-          "timelimit",
-        ];
-
-        optionalKeys.forEach((key) => {
-          const value = payload[key];
-          if (value !== undefined) {
-            params[key] = value;
-          }
-        });
-
-        return getCommand({
-          method: "idrange_find",
-          params: [[payload.searchValue], params],
-        });
-      },
-    }),
     /**
      * Search for specific ID ranges (Mutation)
      * @param {IdRangesFindPayload} payload - The payload containing search parameters
@@ -163,25 +91,6 @@ const extendedApi = api.injectEndpoints({
       }
     ),
     /**
-     * Get ID range details
-     * @param {IdRangesShowPayload} payload - The payload containing ID range identifier and flags
-     * @returns {Promise<FindRPCResponse>} - Promise with the response data
-     */
-    idRangesShow: build.query<FindRPCResponse, IdRangesShowPayload>({
-      query: (payload) => {
-        const params = {
-          rights: payload.rights ?? false,
-          all: payload.all ?? false,
-          raw: payload.raw ?? false,
-          version: payload.version || API_VERSION_BACKUP,
-        };
-        return getCommand({
-          method: "idrange_show",
-          params: [[payload.cn], params],
-        });
-      },
-    }),
-    /**
      * Get a paginated list of ID Range entries with details (batch of idrange_show)
      */
     getIdRangeEntries: build.query<BatchRPCResponse, IdRangeDataPayload>({
@@ -239,9 +148,5 @@ const extendedApi = api.injectEndpoints({
   }),
 });
 
-export const {
-  useIdRangesFindQuery,
-  useSearchIdRangesEntriesMutation,
-  useIdRangesShowQuery,
-  useGetIdRangeEntriesQuery,
-} = extendedApi;
+export const { useSearchIdRangesEntriesMutation, useGetIdRangeEntriesQuery } =
+  extendedApi;

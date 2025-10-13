@@ -1,9 +1,6 @@
 import React from "react";
 
-export const useShifting = (
-  tableEntryList,
-  changeRowSelected: (newValue) => void
-) => {
+const useShifting = (tableEntryList, changeRowSelected: (newValue) => void) => {
   const [shifting, setShifting] = React.useState(false);
   const [recentSelectedRowIndex, setRecentSelectedRowIndex] = React.useState<
     number | null

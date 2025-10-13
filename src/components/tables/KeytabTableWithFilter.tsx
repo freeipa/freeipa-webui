@@ -8,7 +8,7 @@ import DualListLayout, {
   DualListTarget,
 } from "src/components/layouts/DualListLayout";
 // Hooks
-import { useAlerts } from "src/hooks/useAlerts";
+import useAlerts from "src/hooks/useAlerts";
 import { usePagination } from "src/hooks/usePagination";
 import useShifting from "src/hooks/useShifting";
 // RPC

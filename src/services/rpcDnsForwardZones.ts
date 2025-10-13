@@ -24,20 +24,20 @@ import { apiToDnsForwardZone } from "src/utils/dnsForwardZonesUtils";
  * - dnsforwardzone_show: https://freeipa.readthedocs.io/en/latest/api/dnsforwardzone_show.html
  */
 
-export interface DnsForwardZonesFindPayload {
+interface DnsForwardZonesFindPayload {
   searchValue: string;
   pkeyOnly: boolean;
   version?: string;
 }
 
-export interface DnsForwardZonesFullDataPayload {
+interface DnsForwardZonesFullDataPayload {
   searchValue: string;
   apiVersion: string;
   startIdx: number;
   stopIdx: number;
 }
 
-export interface DnsForwardZoneBatchResponse {
+interface DnsForwardZoneBatchResponse {
   error: string;
   id: string;
   principal: string;
@@ -68,20 +68,6 @@ const dnsForwardZonesFind = (
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
-    /**
-     * Get DNS zones IDs
-     * @param {DnsForwardZonesFindPayload} payload - The payload containing search parameters
-     * @returns {Command<FindRPCResponse<DNSZone>>} - Promise with the response data
-     *
-     */
-    dnsForwardZonesFind: build.query<
-      FindRPCResponse,
-      DnsForwardZonesFindPayload
-    >({
-      query: (payload) => {
-        return dnsForwardZonesFind(payload, "dnsforwardzone_find");
-      },
-    }),
     /**
      * Find DNS zones full data
      * @param {DnsForwardZonesFullDataPayload} payload - The payload containing search parameters
@@ -263,7 +249,6 @@ const extendedApi = api.injectEndpoints({
 });
 
 export const {
-  useDnsForwardZonesFindQuery,
   useGetDnsForwardZonesFullDataQuery,
   useSearchDnsForwardZonesEntriesMutation,
 } = extendedApi;

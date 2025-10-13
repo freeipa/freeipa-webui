@@ -58,7 +58,7 @@ type FromTypes =
   | "user-groups"
   | "external";
 
-export interface MemberTableProps {
+interface MemberTableProps {
   entityList: EntryDataTypes[]; // More types can be added here
   from: FromTypes;
   idKey: string; // Users: uid, Groups: cn, etc.

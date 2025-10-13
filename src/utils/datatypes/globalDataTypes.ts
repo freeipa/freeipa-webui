@@ -142,12 +142,6 @@ export interface KrbPolicy {
   usercertificatebinary: string[];
 }
 
-export interface UserGroupOld {
-  name: string;
-  gid: string;
-  description: string;
-}
-
 export interface UserGroup {
   cn: string;
   gidnumber: string;
@@ -182,11 +176,6 @@ export interface UserGroup {
   // Member managers
   membermanager_group: string[];
   membermanager_user: string[];
-}
-
-export interface NetgroupOld {
-  name: string;
-  description: string;
 }
 
 export interface Netgroup {
@@ -344,11 +333,6 @@ export interface Host {
   ipakrbrequirespreauth: boolean;
   ipakrbokasdelegate: boolean;
   ipakrboktoauthasdelegate: boolean;
-}
-
-export interface HostGroupOld {
-  name: string;
-  description: string;
 }
 
 export interface HostGroup {
@@ -509,11 +493,11 @@ export interface Metadata {
   objects?: ObjectsMetadata;
 }
 
-export interface ObjectsMetadata {
+interface ObjectsMetadata {
   [key: string]: ObjectMetadata;
 }
 
-export interface ObjectMetadata {
+interface ObjectMetadata {
   name: string;
   aciattrs?: string[];
   attribute_members?: { [key: string]: string[] };
@@ -654,19 +638,6 @@ export interface DnsPermissionType {
   type: "dns_permission";
   ipapermissiontype: string;
   cn: string;
-  dn: string;
-}
-
-export interface OTPToken {
-  ipatokenotpalgorithm: string;
-  ipatokenuniqueid: string;
-  ipatokenotpkey: string;
-  ipatokenowner: string;
-  ipatokentotptimestep: string;
-  ipatokentotpclockoffset: string;
-  ipatokenotpdigits: string;
-  uri: string;
-  type: string;
   dn: string;
 }
 
@@ -868,7 +839,6 @@ export interface DNSForwardZone {
   managedby?: string;
 }
 
-export type FieldValue = Partial<DNSRecord>;
 export type RecordConfigType = Partial<
   Record<DnsRecordType, { columns: { key: string; label: string }[] }>
 >;
@@ -895,30 +865,30 @@ export type RecordTypeData =
   | TLSARecord
   | TXTRecord
   | URIRecord;
-export interface ARecord {
+interface ARecord {
   arecord?: string[];
   a_part_ip_address: string[];
   a_extra_create_reverse?: boolean;
 }
 
-export interface AAAARecord {
+interface AAAARecord {
   aaaarecord?: string[];
   aaaa_part_ip_address: string;
   aaaa_extra_create_reverse?: boolean;
 }
 
-export interface A6Record {
+interface A6Record {
   a6record?: string[];
   a6_part_data: string;
 }
 
-export interface AFSDBRecord {
+interface AFSDBRecord {
   afsdbrecord?: string[];
   afsdb_part_subtype: number;
   afsdb_part_hostname: string;
 }
 
-export interface CERTRecord {
+interface CERTRecord {
   certrecord?: string[];
   cert_part_type: number; // Maximum value: 65535
   cert_part_key_tag: number; // Maximum value: 65535
@@ -926,12 +896,12 @@ export interface CERTRecord {
   cert_part_certificate_or_crl: string;
 }
 
-export interface CNAMERecord {
+interface CNAMERecord {
   cnamerecord?: string[];
   cname_part_hostname: string;
 }
 
-export interface DLVRecord {
+interface DLVRecord {
   dlvrecord?: string[];
   dlv_part_key_tag: number; // Maximum value: 65535
   dlv_part_algorithm: number; // Maximum value: 255
@@ -939,12 +909,12 @@ export interface DLVRecord {
   dlv_part_digest: string;
 }
 
-export interface DNAMERecord {
+interface DNAMERecord {
   dnamerecord?: string[];
   dname_part_target: string; // Type: 'DNSName'
 }
 
-export interface DSRecord {
+interface DSRecord {
   dsrecord?: string[];
   ds_part_key_tag: number; // Maximum value: 65535
   ds_part_algorithm: number; // Maximum value: 255
@@ -952,13 +922,13 @@ export interface DSRecord {
   ds_part_digest: string; // Pattern: '^[0-9a-fA-F]+$'
 }
 
-export interface KXRecord {
+interface KXRecord {
   kxrecord?: string[];
   kx_part_preference: number; // Maximum value: 65535
   kx_part_exchanger: string; // Type: 'DNSName'
 }
 
-export interface LOCRecord {
+interface LOCRecord {
   locrecord?: string[];
   loc_part_lat_deg?: number; // Maximum value: 90
   loc_part_lat_min?: number; // Maximum value: 59
@@ -974,13 +944,13 @@ export interface LOCRecord {
   loc_part_v_precision?: number; // Minimum value: 0.00 | Maximum value
 }
 
-export interface MXRecord {
+interface MXRecord {
   mxrecord?: string[];
   mx_part_preference: number; // Maximum value: 65535
   mx_part_exchanger: string; // Type: 'DNSName'
 }
 
-export interface NAPTRRecord {
+interface NAPTRRecord {
   naptrrecord?: string[];
   naptr_part_order: number; // Maximum value: 65535
   naptr_part_preference: number; // Maximum value: 65535
@@ -990,17 +960,17 @@ export interface NAPTRRecord {
   naptr_part_replacement: string;
 }
 
-export interface NSRecord {
+interface NSRecord {
   nsrecord?: string[];
   ns_part_hostname: string; // Type: 'DNSName'
 }
 
-export interface PTRRecord {
+interface PTRRecord {
   ptrrecord?: string[];
   ptr_part_hostname: string; // Type: 'DNSName'
 }
 
-export interface SRVRecord {
+interface SRVRecord {
   srvrecord?: string[];
   srv_part_priority: number; // Maximum value: 65535
   srv_part_weight: number; // Maximum value: 65535
@@ -1008,14 +978,14 @@ export interface SRVRecord {
   srv_part_target: string; // Type: 'DNSName'
 }
 
-export interface SSHFPRecord {
+interface SSHFPRecord {
   sshfprecord?: string[];
   sshfp_part_algorithm: number; // Maximum value: 255
   sshfp_part_fp_type: number; // Maximum value: 255
   sshfp_part_fingerprint: string;
 }
 
-export interface TLSARecord {
+interface TLSARecord {
   tlsarecord?: string[];
   tlsa_part_cert_usage: number; // Maximum value: 255
   tlsa_part_selector: number; // Maximum value: 255
@@ -1023,12 +993,12 @@ export interface TLSARecord {
   tlsa_part_cert_association_data: string;
 }
 
-export interface TXTRecord {
+interface TXTRecord {
   txtrecord?: string[];
   txt_part_data: string;
 }
 
-export interface URIRecord {
+interface URIRecord {
   urirecord?: string[];
   uri_part_priority: number; // Maximum value: 65535
   uri_part_weight: number; // Maximum value: 65535

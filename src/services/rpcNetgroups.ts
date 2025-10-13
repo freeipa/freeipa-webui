@@ -26,7 +26,7 @@ import { Netgroup } from "../utils/datatypes/globalDataTypes";
  * - netgroup_mod: https://freeipa.readthedocs.io/en/latest/api/netgroup_mod.html
  */
 
-export interface NetgroupShowPayload {
+interface NetgroupShowPayload {
   netgroupNamesList: string[];
   no_members?: boolean;
   version: string;
@@ -38,7 +38,7 @@ export interface GroupAddPayload {
   description?: string;
 }
 
-export type GroupFullData = {
+type GroupFullData = {
   netgroup?: Partial<Netgroup>;
 };
 

@@ -51,7 +51,7 @@ export interface CertificateData {
   certInfo?: Certificate;
 }
 
-export interface DictWithName {
+interface DictWithName {
   key: string | React.ReactNode;
   name: string;
   value: string | React.ReactNode;

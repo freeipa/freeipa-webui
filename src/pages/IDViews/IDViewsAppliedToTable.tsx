@@ -28,7 +28,7 @@ interface PaginationData {
   updateSelectedPerPage: (selected: number) => void;
 }
 
-export interface PropsToTable {
+interface PropsToTable {
   hosts: string[];
   shownHosts: string[];
   hostsData: HostsData;

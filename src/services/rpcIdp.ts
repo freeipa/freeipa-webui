@@ -26,14 +26,7 @@ import { apiToIdpServer } from "src/utils/ipdServerUtils";
  * - idp_mod: https://freeipa.readthedocs.io/en/latest/api/idp_mod.html
  */
 
-export interface IdpFindPayload {
-  searchValue: string;
-  pkeyOnly: boolean;
-  sizeLimit: number;
-  version?: string;
-}
-
-export interface IdpFullDataPayload {
+interface IdpFullDataPayload {
   searchValue: string;
   apiVersion: string;
   sizelimit: number;
@@ -59,7 +52,7 @@ export interface CustomIdpAddPayload extends AddParams {
   ipaidpkeysendpoint: string;
 }
 
-export interface AddParams {
+interface AddParams {
   ipaidpclientid: string;
   // Selector option
   ipaidpprovider?: string;

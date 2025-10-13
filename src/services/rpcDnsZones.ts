@@ -33,14 +33,7 @@ import {
  * - dnszone_del: https://freeipa.readthedocs.io/en/latest/api/dnszone_del.html
  */
 
-export interface DnsZonesFindPayload {
-  searchValue: string;
-  pkeyOnly: boolean;
-  sizeLimit: number;
-  version?: string;
-}
-
-export interface DnsZonesFullDataPayload {
+interface DnsZonesFullDataPayload {
   searchValue: string;
   apiVersion: string;
   sizelimit: number;
@@ -48,7 +41,7 @@ export interface DnsZonesFullDataPayload {
   stopIdx: number;
 }
 
-export interface DnsZoneBatchResponse {
+interface DnsZoneBatchResponse {
   error: string;
   id: string;
   principal: string;
@@ -94,13 +87,13 @@ export interface FindDnsRecordPayload {
   version?: string;
 }
 
-export interface ShowDnsRecordPayload {
+interface ShowDnsRecordPayload {
   dnsZoneId: string;
   recordName: string;
   version?: string;
 }
 
-export interface DnsRecordBatchResponse {
+interface DnsRecordBatchResponse {
   error: string;
   id: string;
   principal: string;
@@ -110,7 +103,7 @@ export interface DnsRecordBatchResponse {
 }
 
 // Base interface with required fields
-export interface AddDnsRecordPayload {
+interface AddDnsRecordPayload {
   dnsZoneId: string;
   recordName: string;
   recordType: DnsRecordType;
@@ -241,26 +234,6 @@ const recordTypeNames = [
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
-    /**
-     * Get DNS zones IDs
-     * @param {DnsZonesFindPayload} payload - The payload containing search parameters
-     * @returns {Command<FindRPCResponse<DNSZone>>} - Promise with the response data
-     *
-     */
-    dnsZonesFind: build.query<FindRPCResponse, DnsZonesFindPayload>({
-      query: (payload) => {
-        const dnsZonesParams = {
-          pkey_only: payload.pkeyOnly,
-          sizelimit: payload.sizeLimit,
-          version: payload.version || API_VERSION_BACKUP,
-        };
-
-        return getCommand({
-          method: "dnszone_find",
-          params: [[payload.searchValue], dnsZonesParams],
-        });
-      },
-    }),
     /**
      * Find DNS zones full data
      * @param {DnsZonesFullDataPayload} payload - The payload containing search parameters
@@ -1058,7 +1031,6 @@ const extendedApi = api.injectEndpoints({
 });
 
 export const {
-  useDnsZonesFindQuery,
   useGetDnsZonesFullDataQuery,
   useSearchDnsZonesEntriesMutation,
   useAddDnsZoneMutation,

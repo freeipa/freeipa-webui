@@ -3,7 +3,7 @@ import React from "react";
 import { Td, Th, Tr } from "@patternfly/react-table";
 import { Button, TextInput } from "@patternfly/react-core";
 // Hooks
-import { useAlerts } from "src/hooks/useAlerts";
+import useAlerts from "src/hooks/useAlerts";
 // RPC
 import {
   AddConditionPayload,

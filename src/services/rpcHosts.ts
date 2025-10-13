@@ -43,27 +43,21 @@ export interface HostAddPayload {
   description?: string;
 }
 
-export type HostFullData = {
+type HostFullData = {
   host?: Partial<Host>;
   cert?: Record<string, unknown>;
 };
 
-export interface HostShowPayload {
+interface HostShowPayload {
   hostNamesList: string[];
   no_members?: boolean;
   version: string;
 }
 
-export type RemoveHostsPayload = {
+type RemoveHostsPayload = {
   hosts: Host[];
   updateDns: boolean;
 };
-
-export interface MemberPayload {
-  host: string;
-  idsToAdd: string[];
-  entityType: string;
-}
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({

@@ -35,7 +35,7 @@ import { API_VERSION_BACKUP, isServiceSelectable } from "../../utils/utils";
 import AddService from "../../components/modals/AddService";
 import DeleteServices from "../../components/modals/DeleteServices";
 // Hooks
-import { useAlerts } from "../../hooks/useAlerts";
+import useAlerts from "../../hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors

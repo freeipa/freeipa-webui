@@ -2,7 +2,7 @@ import { Table, TableVariant, Tbody, Thead } from "@patternfly/react-table";
 import React from "react";
 import EmptyBodyTable from "../../tables/EmptyBodyTable";
 
-export interface PropsToTable {
+interface PropsToTable {
   ariaLabel: string;
   name?: string;
   variant: TableVariant | "compact";

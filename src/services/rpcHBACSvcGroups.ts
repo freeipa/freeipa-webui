@@ -23,13 +23,13 @@ import { HBACServiceGroup } from "../utils/datatypes/globalDataTypes";
  * - hbacsvcgroup_show: https://freeipa.readthedocs.io/en/latest/api/hbacsvcgroup_show.html
  */
 
-export interface GroupShowPayload {
+interface GroupShowPayload {
   groupNamesList: string[];
   no_members?: boolean;
   version: string;
 }
 
-export type SvcGroupFullData = {
+type SvcGroupFullData = {
   svcGrp?: Partial<HBACServiceGroup>;
 };
 

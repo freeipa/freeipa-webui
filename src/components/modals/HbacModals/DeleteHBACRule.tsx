@@ -26,7 +26,7 @@ interface SelectedRulesData {
   clearSelectedRules: () => void;
 }
 
-export interface PropsToDeleteRules {
+interface PropsToDeleteRules {
   show: boolean;
   handleModalToggle: () => void;
   selectedRulesData: SelectedRulesData;

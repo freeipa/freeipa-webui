@@ -27,7 +27,7 @@ import { FindRPCResponse } from "src/services/rpc";
 import { useAddHostMutation, HostAddPayload } from "src/services/rpcHosts";
 import { isValidIpAddress } from "src/utils/utils";
 
-export interface PropsToAddHost {
+interface PropsToAddHost {
   show: boolean;
   handleModalToggle: () => void;
   onOpenAddModal?: () => void;

@@ -40,7 +40,7 @@ import AddUser from "src/components/modals/UserModals/AddUser";
 import DeleteUsers from "src/components/modals/UserModals/DeleteUsers";
 import DisableEnableUsers from "src/components/modals/UserModals/DisableEnableUsers";
 // Hooks
-import { useAlerts } from "src/hooks/useAlerts";
+import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils

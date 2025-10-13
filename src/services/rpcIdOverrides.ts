@@ -3,14 +3,9 @@ import {
   Command,
   getCommand,
   getBatchCommand,
-  BatchResponse,
   BatchRPCResponse,
   FindRPCResponse,
 } from "./rpc";
-import {
-  apiToOverrideUser,
-  apiToOverrideGroup,
-} from "src/utils/idOverrideUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
 // Data types
 import {
@@ -37,11 +32,6 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
  * - idoverridegroup_mod: https://freeipa.readthedocs.io/en/latest/api/idoverridegroup_mod.html
  */
 
-export interface ShowPayload {
-  list: string[];
-  version: string;
-}
-
 export interface AddUserPayload {
   idview: string;
   name: string;
@@ -66,23 +56,12 @@ export interface AddGroupPayload {
   version?: string;
 }
 
-export type OverrideFullData = {
-  user?: Partial<IDViewOverrideUser>;
-  group?: Partial<IDViewOverrideGroup>;
-};
-
-export type ModPayload = {
-  idview: string;
-  user?: Partial<IDViewOverrideUser>;
-  group?: Partial<IDViewOverrideGroup>;
-};
-
-export type DelUserPayload = {
+type DelUserPayload = {
   idview: string;
   users: string[];
 };
 
-export type DelGroupPayload = {
+type DelGroupPayload = {
   idview: string;
   groups: string[];
 };
@@ -103,58 +82,6 @@ interface OverrideType {
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getIDOverrideUserFullData: build.query<OverrideFullData, string>({
-      query: (name) => {
-        const showCommand: Command = {
-          method: "idoverrideuser_show",
-          params: [[name], { all: true, rights: true }],
-        };
-        const batchPayload: Command[] = [showCommand];
-
-        return getBatchCommand(batchPayload, API_VERSION_BACKUP);
-      },
-      transformResponse: (response: BatchResponse): OverrideFullData => {
-        const [overrideResponse] = response.result.results;
-
-        // Initialize data (to prevent 'undefined' values)
-        const overrideData = overrideResponse.result;
-        let overrideObject = {};
-        if (!overrideResponse.error) {
-          overrideObject = apiToOverrideUser(overrideData);
-        }
-
-        return {
-          user: overrideObject,
-        };
-      },
-      providesTags: ["FullOverrideUser"],
-    }),
-    getIDOverrideGroupFullData: build.query<OverrideFullData, string[]>({
-      query: (name) => {
-        const showCommand: Command = {
-          method: "idoverridegroup_show",
-          params: [[name], { all: true, rights: true }],
-        };
-        const batchPayload: Command[] = [showCommand];
-
-        return getBatchCommand(batchPayload, API_VERSION_BACKUP);
-      },
-      transformResponse: (response: BatchResponse): OverrideFullData => {
-        const [overrideResponse] = response.result.results;
-
-        // Initialize data (to prevent 'undefined' values)
-        const overrideData = overrideResponse.result;
-        let overrideObject = {};
-        if (!overrideResponse.error) {
-          overrideObject = apiToOverrideGroup(overrideData);
-        }
-
-        return {
-          group: overrideObject,
-        };
-      },
-      providesTags: ["FullOverrideGroup"],
-    }),
     /**
      * Add an ID override user
      * @param {object} AddUserPayload - ID overrdie payload parameters
@@ -291,99 +218,6 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(groupsToDeletePayload, API_VERSION_BACKUP);
       },
     }),
-    /**
-     * Given a list of user names, show the full data of those users
-     * @param {string[]} groupNames - List of user names
-     * @param {boolean} noMembers - Whether to show members or not
-     * @returns {BatchRPCResponse} - Batch response
-     */
-    getIDOverrideUsersInfoByName: build.query<
-      IDViewOverrideUser[],
-      ShowPayload
-    >({
-      query: (payload) => {
-        const names = payload.list;
-        const apiVersion = payload.version || API_VERSION_BACKUP;
-        const viewShowCommands: Command[] = names.map((groupName) => ({
-          method: "idoverrideuser_show",
-          params: [[groupName], {}],
-        }));
-        return getBatchCommand(viewShowCommands, apiVersion);
-      },
-      transformResponse: (response: BatchRPCResponse): IDViewOverrideUser[] => {
-        const list: IDViewOverrideUser[] = [];
-        const results = response.result.results;
-        const count = response.result.count;
-        for (let i = 0; i < count; i++) {
-          const data = apiToOverrideUser(results[i].result);
-          list.push(data);
-        }
-        return list;
-      },
-    }),
-    /**
-     * Given a list of group names, show the full data of those groups
-     * @param {string[]} groupNames - List of group names
-     * @param {boolean} noMembers - Whether to show members or not
-     * @returns {BatchRPCResponse} - Batch response
-     */
-    getIDOverrideGroupsInfoByName: build.query<
-      IDViewOverrideGroup[],
-      ShowPayload
-    >({
-      query: (payload) => {
-        const names = payload.list;
-        const apiVersion = payload.version || API_VERSION_BACKUP;
-        const viewShowCommands: Command[] = names.map((groupName) => ({
-          method: "idoverridegroupshow",
-          params: [[groupName], {}],
-        }));
-        return getBatchCommand(viewShowCommands, apiVersion);
-      },
-      transformResponse: (
-        response: BatchRPCResponse
-      ): IDViewOverrideGroup[] => {
-        const list: IDViewOverrideGroup[] = [];
-        const results = response.result.results;
-        const count = response.result.count;
-        for (let i = 0; i < count; i++) {
-          const data = apiToOverrideGroup(results[i].result);
-          list.push(data);
-        }
-        return list;
-      },
-    }),
-    saveIDOverrideUser: build.mutation<FindRPCResponse, ModPayload>({
-      query: (payload) => {
-        const user = payload["user"] ? payload["user"] : "";
-        const params = {
-          version: API_VERSION_BACKUP,
-          ...user,
-        };
-        const id = user["ipaanchoruuid"];
-        return getCommand({
-          method: "idoverrideuser_mod",
-          params: [[payload["idview"], id], params],
-        });
-      },
-      invalidatesTags: ["FullOverrideUser"],
-    }),
-    saveIDOverrideGroup: build.mutation<FindRPCResponse, ModPayload>({
-      query: (payload) => {
-        const group = payload["group"] ? payload["group"] : {};
-        const params = {
-          version: API_VERSION_BACKUP,
-          ...group,
-        };
-
-        const id = group["ipaanchoruuid"];
-        return getCommand({
-          method: "idoverridegroup_mod",
-          params: [[payload["idview"], id], params],
-        });
-      },
-      invalidatesTags: ["FullOverrideGroup"],
-    }),
     gettingIDOverrideUsers: build.query<IDViewOverrideUser[], string>({
       query: (idview) => {
         const findCmd: Command = {
@@ -477,12 +311,6 @@ export const {
   useAddIDOverrideUserMutation,
   useRemoveIDOverrideGroupsMutation,
   useRemoveIDOverrideUsersMutation,
-  useGetIDOverrideUsersInfoByNameQuery,
-  useGetIDOverrideGroupsInfoByNameQuery,
-  useGetIDOverrideUserFullDataQuery,
-  useGetIDOverrideGroupFullDataQuery,
-  useSaveIDOverrideUserMutation,
-  useSaveIDOverrideGroupMutation,
   useGettingIDOverrideUsersQuery,
   useGettingIDOverrideGroupsQuery,
   useSearchOverrideEntriesMutation,

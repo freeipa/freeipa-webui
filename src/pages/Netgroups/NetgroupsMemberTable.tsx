@@ -18,7 +18,7 @@ import SettingsTableLayout from "src/components/layouts/SettingsTableLayout";
 import DualListLayout from "src/components/layouts/DualListLayout";
 import RemoveNetgroupMembersModal from "src/components/modals/RemoveNetgroupMembers";
 // Hooks
-import { useAlerts } from "../../hooks/useAlerts";
+import useAlerts from "../../hooks/useAlerts";
 // React Router DOM
 import { Link } from "react-router";
 import { Netgroup } from "../../utils/datatypes/globalDataTypes";

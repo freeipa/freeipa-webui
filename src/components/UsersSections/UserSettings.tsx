@@ -59,7 +59,7 @@ import { API_VERSION_BACKUP } from "src/utils/utils";
 // Navigate
 import { useNavigate } from "react-router";
 
-export interface PropsToUserSettings {
+interface PropsToUserSettings {
   originalUser: Partial<User>;
   user: Partial<User>; // TODO: Replace with `userData` in all subsections
   onUserChange: (user: Partial<User>) => void;

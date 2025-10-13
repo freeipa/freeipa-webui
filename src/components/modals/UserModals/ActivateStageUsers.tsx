@@ -18,7 +18,7 @@ import { useActivateUserMutation } from "src/services/rpcUsers";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 
-export interface PropsToActivateUsers {
+interface PropsToActivateUsers {
   show: boolean;
   handleModalToggle: () => void;
   selectedUsers: User[];

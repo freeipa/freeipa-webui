@@ -23,22 +23,14 @@ import { SudoCmd } from "../utils/datatypes/globalDataTypes";
  * - sudocmd_mod: https://freeipa.readthedocs.io/en/latest/api/sudocmd_mod.html
  */
 
-export type CmdFullData = {
+type CmdFullData = {
   cmd?: Partial<SudoCmd>;
 };
 
-export interface SudoCmdsShowPayload {
+interface SudoCmdsShowPayload {
   sudoCmdNamesList: string[];
   no_members: boolean | true;
   version: string;
-}
-
-export interface SudoCmdPayload {
-  no_members: boolean | true;
-  sudocmd?: string;
-  description?: string;
-  timelimit?: number;
-  sizelimit?: number;
 }
 
 const extendedApi = api.injectEndpoints({
