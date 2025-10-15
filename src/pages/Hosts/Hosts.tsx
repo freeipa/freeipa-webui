@@ -36,7 +36,7 @@ import DeleteHosts from "src/components/modals/HostModals/DeleteHosts";
 // Redux
 import { useAppSelector } from "src/store/hooks";
 // Data types
-import { Host, DNSZone } from "src/utils/datatypes/globalDataTypes";
+import { Host } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { API_VERSION_BACKUP, isHostSelectable } from "src/utils/utils";
 // Hooks
@@ -52,7 +52,6 @@ import ModalErrors from "src/components/errors/ModalErrors";
 // RPC client
 import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
 import {
-  useGetDNSZonesQuery,
   useGettingHostQuery,
   useAutoMemberRebuildHostsMutation,
 } from "../../services/rpcHosts";
@@ -91,7 +90,6 @@ const Hosts = () => {
   // Table comps
   const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
   const [totalCount, setHostsTotalCount] = useState<number>(0);
-  const [dnsZones, setDNSZones] = useState<string[]>([]);
   const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   const updateSelectedPerPage = (selected: number) => {
@@ -194,44 +192,6 @@ const Hosts = () => {
   useEffect(() => {
     hostDataResponse.refetch();
   }, []);
-
-  // Get dns zones
-  const dnsZoneDataResponse = useGetDNSZonesQuery();
-
-  // Handle data when the API call is finished
-  useEffect(() => {
-    if (dnsZoneDataResponse.isFetching) {
-      return;
-    }
-    if (
-      dnsZoneDataResponse.isSuccess &&
-      dnsZoneDataResponse.data &&
-      dnsZoneDataResponse.data.result
-    ) {
-      const dnsZoneListResult = dnsZoneDataResponse.data.result.result;
-      const dnsZoneListSize = dnsZoneDataResponse.data.result.count;
-      const dnsZones: string[] = [];
-      for (let i = 0; i < dnsZoneListSize; i++) {
-        const dnsZone = dnsZoneListResult[i] as DNSZone;
-        dnsZones.push(dnsZone["idnsname"][0]["__dns_name__"]);
-      }
-      setDNSZones(dnsZones);
-    }
-
-    // API response: Error
-    if (
-      !hostDataResponse.isLoading &&
-      hostDataResponse.isError &&
-      hostDataResponse.error !== undefined
-    ) {
-      setIsDisabledDueError(true);
-      globalErrors.addError(
-        batchError,
-        "Error when loading dns zones",
-        "error-dns-zones"
-      );
-    }
-  }, [dnsZoneDataResponse]);
 
   // Refresh button handling
   const refreshHostsData = () => {
@@ -756,7 +716,6 @@ const Hosts = () => {
           handleModalToggle={onAddModalToggle}
           onOpenAddModal={onAddClickHandler}
           onCloseAddModal={onCloseAddModal}
-          dnsZones={dnsZones}
           onRefresh={refreshHostsData}
         />
         <DeleteHosts

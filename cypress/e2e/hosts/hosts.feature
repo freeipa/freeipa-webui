@@ -9,8 +9,8 @@ Feature: Host manipulation
     When I click on the "hosts-button-add" button
     Then I should see "add-host-modal" modal
 
-    When I type in the "modal-textbox-host-name" textbox text "myfirstserver"
-    Then I should see "myfirstserver" in the "modal-textbox-host-name" textbox
+    When I type in the "modal-textbox-host-name" textbox text "myfirstserver.ipa.test"
+    Then I should see "myfirstserver.ipa.test" in the "modal-textbox-host-name" textbox
 
     When I click on the "modal-checkbox-force-host" checkbox
     Then I should see the "modal-checkbox-force-host" checkbox is checked
@@ -19,12 +19,12 @@ Feature: Host manipulation
     Then I should not see "add-host-modal" modal
     And I should see "add-host-success" alert
 
-    When I search for "myfirstserver" in the data table
+    When I search for "myfirstserver.ipa.test" in the data table
     Then I should see "myfirstserver.ipa.test" entry in the data table
 
   @cleanup
   Scenario: Delete a host
-    Given I delete host "myfirstserver"
+    Given I delete host "myfirstserver.ipa.test"
 
   @test
   Scenario: Add a new host with all fields set
@@ -34,8 +34,8 @@ Feature: Host manipulation
     When I click on the "hosts-button-add" button
     Then I should see "add-host-modal" modal
 
-    When I type in the "modal-textbox-host-name" textbox text "myfirstserver"
-    Then I should see "myfirstserver" in the "modal-textbox-host-name" textbox
+    When I type in the "modal-textbox-host-name" textbox text "myfirstserver.ipa.test"
+    Then I should see "myfirstserver.ipa.test" in the "modal-textbox-host-name" textbox
 
     When I type in the "modal-textbox-host-description" textbox text "my description"
     Then I should see "my description" in the "modal-textbox-host-description" textbox
@@ -55,7 +55,7 @@ Feature: Host manipulation
 
   @cleanup
   Scenario: Delete a host
-    Given I delete host "myfirstserver"
+    Given I delete host "myfirstserver.ipa.test"
 
   @test
   Scenario: Add a new host with all checkboxes set
@@ -65,8 +65,8 @@ Feature: Host manipulation
     When I click on the "hosts-button-add" button
     Then I should see "add-host-modal" modal
 
-    When I type in the "modal-textbox-host-name" textbox text "myfirstserver"
-    Then I should see "myfirstserver" in the "modal-textbox-host-name" textbox
+    When I type in the "modal-textbox-host-name" textbox text "myfirstserver.ipa.test"
+    Then I should see "myfirstserver.ipa.test" in the "modal-textbox-host-name" textbox
 
     When I type in the "modal-textbox-host-description" textbox text "my description"
     Then I should see "my description" in the "modal-textbox-host-description" textbox
@@ -92,7 +92,7 @@ Feature: Host manipulation
 
   @cleanup
   Scenario: Delete a host
-    Given I delete host "myfirstserver"
+    Given I delete host "myfirstserver.ipa.test"
 
   @test
   Scenario: Add a new host with 'Force' unchecked is expected to fail
@@ -102,8 +102,8 @@ Feature: Host manipulation
     When I click on the "hosts-button-add" button
     Then I should see "add-host-modal" modal
 
-    When I type in the "modal-textbox-host-name" textbox text "forcehost"
-    Then I should see "forcehost" in the "modal-textbox-host-name" textbox
+    When I type in the "modal-textbox-host-name" textbox text "forcehost.ipa.test"
+    Then I should see "forcehost.ipa.test" in the "modal-textbox-host-name" textbox
 
     When I click on the "modal-button-add" button
     Then I should see "add-host-modal-error" modal
@@ -135,7 +135,7 @@ Feature: Host manipulation
 
   @seed
   Scenario: Create hosts
-    Given host "myfirstserver" exists
+    Given host "myfirstserver.ipa.test" exists
 
   @test
   Scenario: Delete a host
@@ -157,8 +157,8 @@ Feature: Host manipulation
 
   @seed
   Scenario: Create hosts
-    Given host "myfirstserver" exists
-    And host "mysecondserver" exists
+    Given host "myfirstserver.ipa.test" exists
+    And host "mysecondserver.ipa.test" exists
 
   @test
   Scenario: Delete many hosts
@@ -192,8 +192,8 @@ Feature: Host manipulation
     When I click on the "hosts-button-add" button
     Then I should see "add-host-modal" modal
 
-    When I type in the "modal-textbox-host-name" textbox text "myfirstserver"
-    Then I should see "myfirstserver" in the "modal-textbox-host-name" textbox
+    When I type in the "modal-textbox-host-name" textbox text "myfirstserver.ipa.test"
+    Then I should see "myfirstserver.ipa.test" in the "modal-textbox-host-name" textbox
 
     When I click on the "modal-checkbox-force-host" checkbox
     Then I should see the "modal-checkbox-force-host" checkbox is checked

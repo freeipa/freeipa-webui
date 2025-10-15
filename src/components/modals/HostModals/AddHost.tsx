@@ -5,11 +5,6 @@ import {
   Checkbox,
   HelperText,
   HelperTextItem,
-  MenuToggle,
-  MenuToggleElement,
-  Select,
-  SelectList,
-  SelectOption,
   TextInput,
   ValidatedOptions,
 } from "@patternfly/react-core";
@@ -32,7 +27,6 @@ interface PropsToAddHost {
   handleModalToggle: () => void;
   onOpenAddModal?: () => void;
   onCloseAddModal?: () => void;
-  dnsZones: string[];
   onRefresh?: () => void;
 }
 
@@ -67,43 +61,6 @@ const AddHost = (props: PropsToAddHost) => {
   const [addAgainSpinning, setAddAgainBtnSpinning] =
     React.useState<boolean>(false);
 
-  // DNS zone Selector
-  const dnsZoneOptions = props.dnsZones.map((zone) => {
-    return { value: zone, disabled: false };
-  });
-  const defaultDnsZone = props.dnsZones.length > 0 ? props.dnsZones[0] : "";
-  const [isDnsZoneOpen, setIsDnsZoneOpen] = useState(false);
-  const [dnsZoneSelected, setDnsZoneSelected] = useState(defaultDnsZone);
-
-  useEffect(() => {
-    if (props.dnsZones.length > 0) {
-      setDnsZoneSelected(props.dnsZones[0]);
-    }
-  }, [props.dnsZones]);
-
-  const dnsZoneOnToggle = () => {
-    setIsDnsZoneOpen(!isDnsZoneOpen);
-  };
-
-  // Toggle
-  const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
-    <MenuToggle
-      data-cy="modal-select-dns-zone-toggle"
-      ref={toggleRef}
-      onClick={dnsZoneOnToggle}
-      className="pf-v6-u-w-100"
-      isExpanded={isDnsZoneOpen}
-    >
-      {dnsZoneSelected}
-    </MenuToggle>
-  );
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dnsZoneOnSelect = (selection: any) => {
-    setDnsZoneSelected(selection.target.textContent);
-    setIsDnsZoneOpen(false);
-  };
-
   // Checkboxes
   const [forceCheckbox, setForceCheckbox] = useState(false);
   const [generateOtpCheckbox, setGenerateOtpCheckbox] = useState(false);
@@ -122,11 +79,6 @@ const AddHost = (props: PropsToAddHost) => {
     pfError: ValidatedOptions.default,
   });
 
-  const [hostDnsZoneValidation, setHostDnsZoneValidation] = useState({
-    isError: false,
-    message: "",
-    pfError: ValidatedOptions.default,
-  });
   const [hostIpAddressValidation, setHostIpAddressValidation] = useState({
     isError: false,
     message: "",
@@ -142,44 +94,34 @@ const AddHost = (props: PropsToAddHost) => {
       };
       setHostNameValidation(hostNameVal);
       return true;
-    } else if (hostname.includes(".")) {
-      // Must be single domain component (no dots)
+    }
+    // Check for valid characters.
+    const validCharsRegex = /^[a-zA-Z0-9-.]+$/;
+    if (!validCharsRegex.test(hostname)) {
       const hostNameVal = {
-        hostname,
         isError: true,
-        message: "Invalid host name, must be a single domain component",
+        message: "Invalid characters in host name",
         pfError: ValidatedOptions.error,
       };
       setHostNameValidation(hostNameVal);
       return true;
-    } else {
-      // Check for valid characters
-      const validHostNameRegex = /^[a-zA-Z0-9-]+$/;
-      if (!validHostNameRegex.test(hostName)) {
-        const hostNameVal = {
-          isError: true,
-          message: "Invalid characters in host name",
-          pfError: ValidatedOptions.error,
-        };
-        setHostNameValidation(hostNameVal);
-        return true;
-      }
+    }
+    // Check for FQDN compatible string
+    // The domain name should require at least two labels,
+    // but IPA accepts names like 'a.b'.
+    const validHostNameRegex =
+      /^([^-][a-zA-Z0-9-]*[^-]?)([.][^-][a-zA-Z0-9-]*[^-]?)+[.]?$/;
+    if (!validHostNameRegex.test(hostname)) {
+      const hostNameVal = {
+        isError: true,
+        message: "Host name must be a FQDN",
+        pfError: ValidatedOptions.error,
+      };
+      setHostNameValidation(hostNameVal);
+      return true;
     }
     // host name is good
     resetHostNameError();
-    return false;
-  };
-
-  const dnsZoneValidationHandler = () => {
-    if (dnsZoneSelected.length === 0) {
-      const dnsZoneVal = {
-        isError: true,
-        message: "Required field",
-        pfError: ValidatedOptions.error,
-      };
-      setHostDnsZoneValidation(dnsZoneVal);
-      return true;
-    }
     return false;
   };
 
@@ -189,7 +131,6 @@ const AddHost = (props: PropsToAddHost) => {
     if (
       !hostNameValidationHandler(hostName) &&
       hostName.length > 0 &&
-      dnsZoneSelected.length > 0 &&
       isValidIpAddress(hostIpAddress)
     ) {
       setButtonDisabled(false);
@@ -199,7 +140,7 @@ const AddHost = (props: PropsToAddHost) => {
 
     // Handle IP address errors
     if (isValidIpAddress(hostIpAddress)) {
-      // All good
+      // All good or empty (which is allowed)
       resetHostIpAddressError();
     } else {
       const ipVal = {
@@ -209,21 +150,12 @@ const AddHost = (props: PropsToAddHost) => {
       };
       setHostIpAddressValidation(ipVal);
     }
-  }, [hostName, dnsZoneSelected, hostIpAddress]);
+  }, [hostName, hostIpAddress]);
 
   // Reset validation methods
   // - Host name
   const resetHostNameError = () => {
     setHostNameValidation({
-      isError: false,
-      message: "",
-      pfError: ValidatedOptions.default,
-    });
-  };
-
-  // - DNS zone
-  const resetDnsZoneError = () => {
-    setHostDnsZoneValidation({
       isError: false,
       message: "",
       pfError: ValidatedOptions.default,
@@ -273,47 +205,6 @@ const AddHost = (props: PropsToAddHost) => {
             {hostNameValidation.isError && (
               <HelperTextItem variant="error">
                 {hostNameValidation.message}
-              </HelperTextItem>
-            )}
-          </HelperText>
-        </>
-      ),
-    },
-    {
-      id: "dns-zone",
-      name: "DNS zone",
-      pfComponent: (
-        <>
-          <Select
-            data-cy="modal-select-dns-zone"
-            id="dnszone"
-            aria-label="Select DNS zone selector"
-            toggle={toggle}
-            onSelect={dnsZoneOnSelect}
-            selected={dnsZoneSelected}
-            isOpen={isDnsZoneOpen}
-            aria-labelledby="dns zone"
-          >
-            <SelectList>
-              {dnsZoneOptions.map((option, index) => (
-                <SelectOption
-                  data-cy={"modal-select-dns-zone-" + option.value}
-                  isDisabled={option.disabled}
-                  key={index}
-                  value={option.value}
-                >
-                  {option.value}
-                </SelectOption>
-              ))}
-            </SelectList>
-          </Select>
-          <HelperText>
-            {!hostDnsZoneValidation.isError && (
-              <HelperTextItem>{hostDnsZoneValidation.message}</HelperTextItem>
-            )}
-            {hostDnsZoneValidation.isError && (
-              <HelperTextItem variant="error">
-                {hostDnsZoneValidation.message}
               </HelperTextItem>
             )}
           </HelperText>
@@ -440,7 +331,6 @@ const AddHost = (props: PropsToAddHost) => {
   // Helper method to clean the fields
   const cleanAllFields = () => {
     setHostName("");
-    setDnsZoneSelected(defaultDnsZone);
     setHostClass("");
     setHostIpAddress("");
     setForceCheckbox(false);
@@ -461,7 +351,6 @@ const AddHost = (props: PropsToAddHost) => {
   // Helper method to reset validation values
   const resetValidations = () => {
     resetHostNameError();
-    resetDnsZoneError();
     resetHostIpAddressError();
   };
 
@@ -469,9 +358,8 @@ const AddHost = (props: PropsToAddHost) => {
   const validateFields = () => {
     resetValidations();
     const hostNameError = hostNameValidationHandler(hostName);
-    const dnsZoneError = dnsZoneValidationHandler();
     const hostIpError = !isValidIpAddress(hostIpAddress);
-    if (hostNameError || dnsZoneError || hostIpError) {
+    if (hostNameError || hostIpError) {
       return false;
     } else return true;
   };
@@ -485,13 +373,8 @@ const AddHost = (props: PropsToAddHost) => {
 
   // Add host data
   const addHostData = async () => {
-    let dnsZone = dnsZoneSelected;
-    if (dnsZone.endsWith(".")) {
-      // Strip trailing dot
-      dnsZone = dnsZone.slice(0, -1);
-    }
     const newHostPayload = {
-      fqdn: hostName + "." + dnsZone,
+      fqdn: hostName,
     } as HostAddPayload;
 
     // Add the rest of parameters if they are not empty
