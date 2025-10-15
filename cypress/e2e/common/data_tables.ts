@@ -53,9 +53,29 @@ Then("I should see {string} entry in the data table", (name: string) => {
   entryExists(name);
 });
 
+Then(
+  "I should see {string} entry in the data table with ID {string}",
+  (name: string, tableId: string) => {
+    cy.get("#" + tableId)
+      .find("td")
+      .contains(name)
+      .should("exist");
+  }
+);
+
 Then("I should not see {string} entry in the data table", (name: string) => {
   entryDoesNotExist(name);
 });
+
+Then(
+  "I should not see {string} entry in the data table with ID {string}",
+  (name: string, tableId: string) => {
+    cy.get("#" + tableId)
+      .find("td")
+      .contains(name)
+      .should("not.exist");
+  }
+);
 
 Then(
   "I should see {string} entry in the data table with attribute {string} set to {string}",
@@ -72,10 +92,32 @@ When("I select entry {string} in the data table", (name: string) => {
   selectEntry(name);
 });
 
+When(
+  "I select {string} entry in the data table with ID {string}",
+  (name: string, tableId: string) => {
+    cy.get("#" + tableId)
+      .contains("td", name)
+      .parent("tr")
+      .find("input[type=checkbox]")
+      .check();
+  }
+);
+
 Then(
   "I should see {string} entry selected in the data table",
   (name: string) => {
     isSelected(name);
+  }
+);
+
+Then(
+  "I should see {string} entry selected in the data table with ID {string}",
+  (name: string, tableId: string) => {
+    cy.get("#" + tableId)
+      .contains("td", name)
+      .parent("tr")
+      .find("input[type=checkbox]")
+      .should("be.checked");
   }
 );
 
@@ -85,3 +127,7 @@ Then(
     isNotSelected(name);
   }
 );
+
+Then("I should see no table with ID {string}", (tableId: string) => {
+  cy.get("table#" + tableId).should("not.exist");
+});
