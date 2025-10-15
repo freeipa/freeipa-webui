@@ -12,7 +12,7 @@ import { typeInTextbox } from "./ui/textbox";
 Given("I delete host {string}", (hostName: string) => {
   loginAsAdmin();
   navigateTo("hosts");
-  selectEntry(hostName + "." + Cypress.env("HOSTNAME"));
+  selectEntry(hostName);
 
   cy.dataCy("hosts-button-delete").click();
   cy.dataCy("delete-hosts-modal").should("exist");
@@ -20,8 +20,8 @@ Given("I delete host {string}", (hostName: string) => {
   cy.dataCy("modal-button-delete").click();
   cy.dataCy("delete-hosts-modal").should("not.exist");
 
-  searchForEntry(hostName + "." + Cypress.env("HOSTNAME"));
-  entryDoesNotExist(hostName + "." + Cypress.env("HOSTNAME"));
+  searchForEntry(hostName);
+  entryDoesNotExist(hostName);
   logout();
 });
 
@@ -41,7 +41,7 @@ Given("host {string} exists", (hostName: string) => {
   cy.dataCy("modal-button-add").click();
   cy.dataCy("add-host-modal").should("not.exist");
 
-  searchForEntry(hostName + "." + Cypress.env("HOSTNAME"));
-  entryExists(hostName + "." + Cypress.env("HOSTNAME"));
+  searchForEntry(hostName);
+  entryExists(hostName);
   logout();
 });

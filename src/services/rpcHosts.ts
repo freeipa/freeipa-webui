@@ -317,10 +317,6 @@ export const useGetHostsListQuery = () => {
   return useGetGenericListQuery("host");
 };
 
-export const useGetDNSZonesQuery = () => {
-  return useGetGenericListQuery("dnszone");
-};
-
 export const {
   useRemoveHostPrincipalAliasMutation,
   useAddHostPrincipalAliasMutation,
