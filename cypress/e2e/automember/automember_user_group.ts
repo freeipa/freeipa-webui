@@ -17,7 +17,7 @@ const fillUserGroupRule = (userGroupName: string, selector: string) => {
   isOptionSelected(userGroupName, selector);
 };
 
-const createUserGroupRule = (userGroupName: string) => {
+export const createUserGroupRule = (userGroupName: string) => {
   cy.dataCy("auto-member-user-rules-button-add").click();
   cy.dataCy("add-rule-modal").should("exist");
 

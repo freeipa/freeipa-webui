@@ -11,6 +11,19 @@ import { selectOption } from "../common/ui/select";
 import { isOptionSelected } from "../common/ui/select";
 import { addItemToRightList } from "../common/ui/dual_list";
 
+export const createUserGroup = (groupName: string) => {
+  cy.dataCy("user-groups-button-add").click();
+  cy.dataCy("add-user-group-modal").should("exist");
+
+  cy.dataCy("modal-textbox-group-name").type(groupName);
+  cy.dataCy("modal-textbox-group-name").should("have.value", groupName);
+
+  cy.dataCy("modal-button-add").click();
+  cy.dataCy("add-user-group-modal").should("not.exist");
+  searchForEntry(groupName);
+  entryExists(groupName);
+};
+
 Given("I delete user group {string}", (groupName: string) => {
   loginAsAdmin();
   navigateTo("user-groups");
@@ -31,16 +44,7 @@ Given("user group {string} exists", (groupName: string) => {
   loginAsAdmin();
   navigateTo("user-groups");
 
-  cy.dataCy("user-groups-button-add").click();
-  cy.dataCy("add-user-group-modal").should("exist");
-
-  cy.dataCy("modal-textbox-group-name").type(groupName);
-  cy.dataCy("modal-textbox-group-name").should("have.value", groupName);
-
-  cy.dataCy("modal-button-add").click();
-  cy.dataCy("add-user-group-modal").should("not.exist");
-  searchForEntry(groupName);
-  entryExists(groupName);
+  createUserGroup(groupName);
   logout();
 });
 

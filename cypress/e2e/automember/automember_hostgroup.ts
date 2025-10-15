@@ -18,7 +18,7 @@ const fillHostgroupRule = (hostgroupName: string) => {
   isOptionSelected(hostgroupName, "modal-select-automember");
 };
 
-const createHostgroupRule = (hostgroupName: string) => {
+export const createHostgroupRule = (hostgroupName: string) => {
   cy.dataCy("auto-member-host-rules-button-add").click();
   cy.dataCy("add-rule-modal").should("exist");
 
