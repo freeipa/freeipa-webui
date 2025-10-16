@@ -147,7 +147,7 @@ Feature: Hbac rule settings manipulation
 
   @seed
   Scenario: Add a new host that will be used in the tests
-    Given host "my-new-host" exists
+    Given host "my-new-host.ipa.test" exists
 
   @test
   Scenario: Add host to Host category
@@ -174,7 +174,7 @@ Feature: Hbac rule settings manipulation
 
   @cleanup
   Scenario: Delete the host from the rule
-    Given I delete host "my-new-host" from rule "rule1"
+    Given I delete host "my-new-host.ipa.test" from rule "rule1"
 
   @seed
   Scenario: Add a host to the rule
@@ -310,7 +310,7 @@ Feature: Hbac rule settings manipulation
 
   @cleanup
   Scenario: Delete host for cleanup
-    Given I delete host "my-new-host"
+    Given I delete host "my-new-host.ipa.test"
 
   @test
   Scenario: Add service to Service category
