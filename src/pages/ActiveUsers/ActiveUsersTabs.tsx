@@ -10,7 +10,7 @@ import {
   TabTitleText,
 } from "@patternfly/react-core";
 // React Router DOM
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 // Components
 import UserSettings from "src/components/UsersSections/UserSettings";
 import UserMemberOf from "./UserMemberOf";
@@ -30,10 +30,11 @@ import { partialUserToUser } from "src/utils/userUtils";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
+import { UidParams, useSafeParams } from "src/utils/paramsUtils";
 
 // eslint-disable-next-line react/prop-types
 const ActiveUsersTabs = ({ memberof }) => {
-  const { uid } = useParams();
+  const { uid } = useSafeParams<UidParams>(["uid"]);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -42,25 +43,20 @@ const ActiveUsersTabs = ({ memberof }) => {
   >([]);
 
   React.useEffect(() => {
-    if (!uid) {
-      // Redirect to the active users page
-      navigate("/active-users");
-    } else {
-      // Update breadcrumb route
-      const currentPath: BreadCrumbItem[] = [
-        {
-          name: "Active users",
-          url: URL_PREFIX + "/active-users",
-        },
-        {
-          name: uid,
-          url: URL_PREFIX + "/active-users/" + uid,
-          isActive: true,
-        },
-      ];
-      setBreadcrumbItems(currentPath);
-      dispatch(updateBreadCrumbPath(currentPath));
-    }
+    // Update breadcrumb route
+    const currentPath: BreadCrumbItem[] = [
+      {
+        name: "Active users",
+        url: URL_PREFIX + "/active-users",
+      },
+      {
+        name: uid,
+        url: URL_PREFIX + "/active-users/" + uid,
+        isActive: true,
+      },
+    ];
+    setBreadcrumbItems(currentPath);
+    dispatch(updateBreadCrumbPath(currentPath));
   }, [uid]);
 
   React.useEffect(() => {
@@ -89,7 +85,7 @@ const ActiveUsersTabs = ({ memberof }) => {
   };
 
   // Data loaded from DB
-  const userSettingsData = useUserSettings(uid as string);
+  const userSettingsData = useUserSettings(uid);
 
   // Tab
   const activeTab = memberof ? "memberof" : "settings";

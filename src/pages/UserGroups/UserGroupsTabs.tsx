@@ -2,7 +2,7 @@ import React, { useState } from "react";
 // PatternFly
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -20,10 +20,11 @@ import { NotFound } from "src/components/errors/PageErrors";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
+import { CnParams, useSafeParams } from "src/utils/paramsUtils";
 
 // eslint-disable-next-line react/prop-types
 const UserGroupsTabs = ({ section }) => {
-  const { cn } = useParams();
+  const { cn } = useSafeParams<CnParams>(["cn"]);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [breadcrumbItems, setBreadcrumbItems] = React.useState<
@@ -32,7 +33,7 @@ const UserGroupsTabs = ({ section }) => {
 
   const [groupId, setGroupId] = useState("");
 
-  const userGroupSettingsData = useUserGroupSettings(cn as string);
+  const userGroupSettingsData = useUserGroupSettings(cn);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(section);
@@ -53,27 +54,22 @@ const UserGroupsTabs = ({ section }) => {
   };
 
   React.useEffect(() => {
-    if (!cn) {
-      // Redirect to the main page
-      navigate("/user-groups");
-    } else {
-      setGroupId(cn);
-      // Update breadcrumb route
-      const currentPath: BreadCrumbItem[] = [
-        {
-          name: "User groups",
-          url: URL_PREFIX + "/user-groups",
-        },
-        {
-          name: cn,
-          url: URL_PREFIX + "/user-groups/" + cn,
-          isActive: true,
-        },
-      ];
-      setBreadcrumbItems(currentPath);
-      setActiveTabKey("settings");
-      dispatch(updateBreadCrumbPath(currentPath));
-    }
+    setGroupId(cn);
+    // Update breadcrumb route
+    const currentPath: BreadCrumbItem[] = [
+      {
+        name: "User groups",
+        url: URL_PREFIX + "/user-groups",
+      },
+      {
+        name: cn,
+        url: URL_PREFIX + "/user-groups/" + cn,
+        isActive: true,
+      },
+    ];
+    setBreadcrumbItems(currentPath);
+    setActiveTabKey("settings");
+    dispatch(updateBreadCrumbPath(currentPath));
   }, [cn]);
 
   // Redirect to the settings page if the section is not defined
