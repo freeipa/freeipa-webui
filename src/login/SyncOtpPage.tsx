@@ -24,6 +24,7 @@ import {
 import { useNavigate } from "react-router";
 // Components
 import PasswordInput from "src/components/layouts/PasswordInput";
+import InputRequiredText from "src/components/layouts/InputRequiredText";
 
 const SyncOtpPage = () => {
   // Navigate
@@ -121,14 +122,13 @@ const SyncOtpPage = () => {
   const formFields = (
     <Form isHorizontal>
       <FormGroup label="Username" fieldId="username" required>
-        <TextInput
-          data-cy="sync-otp-textbox-username"
+        <InputRequiredText
+          dataCy="sync-otp-textbox-username"
           id="username"
           name="user"
-          type="text"
           value={uid}
-          onChange={(_ev, newUid) => setUid(newUid)}
-          isRequired={true}
+          onChange={setUid}
+          requiredHelperText="Required value"
         />
       </FormGroup>
       <FormGroup label="Password" fieldId="password" required>

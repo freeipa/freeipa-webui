@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
-import {
-  Button,
-  HelperText,
-  HelperTextItem,
-  TextArea,
-  TextInput,
-  ValidatedOptions,
-} from "@patternfly/react-core";
+import { Button, TextArea } from "@patternfly/react-core";
 // Layouts
 import SecondaryButton from "../layouts/SecondaryButton";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
+import InputRequiredText from "../layouts/InputRequiredText";
 // Modals
 import ErrorModal from "./ErrorModal";
 // Errors
@@ -61,27 +55,16 @@ const AddHostGroup = (props: PropsToAddGroup) => {
       id: "modal-form-hostgroup-name",
       name: "Group name",
       pfComponent: (
-        <>
-          <TextInput
-            data-cy="modal-textbox-hostgroup-name"
-            type="text"
-            id="modal-form-hostgroup-name"
-            name="modal-form-hostgroup-name"
-            value={groupName}
-            onChange={(_event, value: string) => setGroupName(value)}
-            validated={
-              groupName === ""
-                ? ValidatedOptions.error
-                : ValidatedOptions.default
-            }
-          />
-          <HelperText>
-            {groupName === "" && (
-              <HelperTextItem>Required value</HelperTextItem>
-            )}
-          </HelperText>
-        </>
+        <InputRequiredText
+          dataCy="modal-textbox-hostgroup-name"
+          id="modal-form-hostgroup-name"
+          name="modal-form-hostgroup-name"
+          value={groupName}
+          onChange={setGroupName}
+          requiredHelperText="Please enter a group name"
+        />
       ),
+      fieldRequired: true,
     },
     {
       id: "modal-form-hostgroup-desc",

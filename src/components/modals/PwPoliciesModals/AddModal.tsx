@@ -1,6 +1,6 @@
 import React from "react";
 // PatternFly
-import { Button, TextInput } from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core";
 // Components
 import ModalWithFormLayout, {
   Field,
@@ -20,6 +20,7 @@ import { useGetGenericListQuery } from "src/services/rpc";
 import useAlerts from "src/hooks/useAlerts";
 // Errors
 import { SerializedError } from "@reduxjs/toolkit";
+import InputRequiredText from "src/components/layouts/InputRequiredText";
 
 interface PropsToAddModal {
   isOpen: boolean;
@@ -181,14 +182,13 @@ const AddModal = (props: PropsToAddModal) => {
       id: "modal-form-priority",
       name: "Priority",
       pfComponent: (
-        <TextInput
-          data-cy="modal-textbox-priority"
+        <InputRequiredText
+          dataCy="modal-textbox-priority"
           id="modal-form-priority"
           name="cospriority"
-          type="number"
           value={priority}
-          onChange={(event) => setPriority(event.currentTarget.value)}
-          isRequired
+          onChange={setPriority}
+          requiredHelperText="Required value"
         />
       ),
       fieldRequired: true,

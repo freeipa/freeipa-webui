@@ -1,7 +1,7 @@
 import React from "react";
 // Patternfly
 import { Td, Th, Tr } from "@patternfly/react-table";
-import { Button, TextInput } from "@patternfly/react-core";
+import { Button } from "@patternfly/react-core";
 // Hooks
 import useAlerts from "src/hooks/useAlerts";
 // RPC
@@ -14,6 +14,7 @@ import SettingsTableLayout from "../layouts/SettingsTableLayout";
 import ModalWithFormLayout, { Field } from "../layouts/ModalWithFormLayout";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 import DeletedElementsTable from "../tables/DeletedElementsTable";
+import InputRequiredText from "../layouts/InputRequiredText";
 
 interface PropsToSudoRuleOptions {
   sudoRuleId: string;
@@ -264,15 +265,13 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
       id: "sudo-option",
       name: "Sudo option",
       pfComponent: (
-        <TextInput
-          data-cy="modal-textbox-sudo-option"
-          type="text"
+        <InputRequiredText
+          dataCy="modal-textbox-sudo-option"
           id="sudo-option"
           name="ipasudoopt"
-          aria-label="Sudo option"
           value={newOption}
-          onChange={(_event, value) => setNewOption(value)}
-          isRequired
+          onChange={setNewOption}
+          requiredHelperText="Required value"
         />
       ),
     },

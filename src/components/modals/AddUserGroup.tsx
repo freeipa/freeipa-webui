@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
-import {
-  Button,
-  HelperText,
-  HelperTextItem,
-  TextArea,
-  TextInput,
-  ValidatedOptions,
-} from "@patternfly/react-core";
+import { Button, TextArea } from "@patternfly/react-core";
 // Layouts
 import SecondaryButton from "../layouts/SecondaryButton";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
+import InputRequiredText from "../layouts/InputRequiredText";
+import InputWithValidation from "../layouts/InputWithValidation";
 // Modals
 import ErrorModal from "./ErrorModal";
 // Errors
@@ -24,6 +19,7 @@ import {
   useAddGroupMutation,
 } from "../../services/rpcUserGroups";
 import SimpleSelector, { SelectOptionProps } from "../layouts/SimpleSelector";
+import { isEmptyOrNumber, EMPTY_OR_NUMBER_MESSAGE } from "src/utils/utils";
 interface PropsToAddGroup {
   show: boolean;
   handleModalToggle: () => void;
@@ -88,27 +84,16 @@ const AddUserGroup = (props: PropsToAddGroup) => {
       id: "modal-form-group-name",
       name: "Group name",
       pfComponent: (
-        <>
-          <TextInput
-            data-cy="modal-textbox-group-name"
-            type="text"
-            id="modal-form-group-name"
-            name="modal-form-group-name"
-            value={groupName}
-            onChange={(_event, value: string) => setGroupName(value)}
-            validated={
-              groupName === ""
-                ? ValidatedOptions.error
-                : ValidatedOptions.default
-            }
-          />
-          <HelperText>
-            {groupName === "" && (
-              <HelperTextItem>Required value</HelperTextItem>
-            )}
-          </HelperText>
-        </>
+        <InputRequiredText
+          dataCy="modal-textbox-group-name"
+          id="modal-form-group-name"
+          name="modal-form-group-name"
+          value={groupName}
+          onChange={setGroupName}
+          requiredHelperText="Please enter a group name"
+        />
       ),
+      fieldRequired: true,
     },
     {
       id: "modal-form-group-desc",
@@ -143,33 +128,24 @@ const AddUserGroup = (props: PropsToAddGroup) => {
       id: "modal-form-group-gid",
       name: "GID",
       pfComponent: (
-        <>
-          <TextInput
-            data-cy="modal-textbox-group-gid"
-            type="text"
-            id="modal-form-group-gid"
-            name="modal-form-group-gid"
-            value={gidNumber}
-            onChange={(_event, value: string) => setGID(value)}
-            isDisabled={groupType !== "posix"}
-            validated={
-              groupType === "posix" &&
-              gidNumber !== "" &&
-              isNaN(Number(gidNumber))
-                ? ValidatedOptions.error
-                : ValidatedOptions.default
-            }
-          />
-          <HelperText>
-            {groupType === "posix" &&
-              gidNumber !== "" &&
-              isNaN(Number(gidNumber)) && (
-                <HelperTextItem>
-                  Invalid GID value, must be empty or a number
-                </HelperTextItem>
-              )}
-          </HelperText>
-        </>
+        <InputWithValidation
+          dataCy="modal-textbox-group-gid"
+          id="modal-form-group-gid"
+          name="modal-form-group-gid"
+          value={gidNumber}
+          onChange={setGID}
+          rules={
+            groupType === "posix"
+              ? [
+                  {
+                    id: "ruleGid",
+                    message: EMPTY_OR_NUMBER_MESSAGE,
+                    validate: isEmptyOrNumber,
+                  },
+                ]
+              : []
+          }
+        />
       ),
     },
   ];
