@@ -66,20 +66,15 @@ Given(
     cy.dataCy(`settings-button-add-${elementType}`).click();
     cy.dataCy("dual-list-modal").should("exist");
 
-    const itemToAdd =
-      elementType === "host"
-        ? `${element}.${Cypress.env("HOSTNAME")}`
-        : element;
-
     cy.dataCy("dual-list-search-link").click();
-    addItemToRightList(itemToAdd);
+    addItemToRightList(element);
 
     cy.dataCy("modal-button-add").click();
     cy.dataCy("dual-list-modal").should("not.exist");
     cy.dataCy("add-member-success").should("exist");
 
-    findEntryInTable(itemToAdd, elementType);
-    entryExists(itemToAdd);
+    findEntryInTable(element, elementType);
+    entryExists(element);
 
     logout();
   }
@@ -94,24 +89,19 @@ Given(
     assertMemberEntity(elementType);
     ensureTabVisibleAndOpen(elementType as MemberEntity);
 
-    const itemToDelete =
-      elementType === "host"
-        ? `${element}.${Cypress.env("HOSTNAME")}`
-        : element;
-
-    findEntryInTable(itemToDelete, elementType);
-    entryExists(itemToDelete);
-    checkEntry(itemToDelete);
+    findEntryInTable(element, elementType);
+    entryExists(element);
+    checkEntry(element);
 
     cy.dataCy(`settings-button-delete-${elementType}`).click();
     cy.dataCy("remove-netgroup-members-modal").should("exist");
-    entryExists(itemToDelete);
+    entryExists(element);
 
     cy.dataCy("modal-button-delete").click();
     cy.dataCy("remove-netgroup-members-modal").should("not.exist");
     cy.dataCy("remove-netgroups-success").should("exist");
 
-    entryDoesNotExist(itemToDelete);
+    entryDoesNotExist(element);
 
     logout();
   }

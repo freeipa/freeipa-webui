@@ -155,7 +155,7 @@ Feature: Netgroup settings manipulation
 
     @seed
     Scenario: Add a host
-        Given host "my-server" exists
+        Given host "my-server.ipa.test" exists
 
     @test
     Scenario: Add host to Host category
@@ -185,7 +185,7 @@ Feature: Netgroup settings manipulation
 
     @cleanup
     Scenario: Cleanup host from Host category
-        Given I delete element "host" named "my-server" from netgroup "netgroup1"
+        Given I delete element "host" named "my-server.ipa.test" from netgroup "netgroup1"
 
     @seed
     Scenario: Add host to Host category
@@ -234,7 +234,7 @@ Feature: Netgroup settings manipulation
 
     @cleanup
     Scenario: Cleanup host
-        Given I delete host "my-server"
+        Given I delete host "my-server.ipa.test"
 
     @test
     Scenario: Add hostgroup to Host category

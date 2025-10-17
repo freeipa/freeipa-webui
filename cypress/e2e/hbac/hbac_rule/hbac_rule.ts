@@ -67,8 +67,6 @@ Given(
 Given(
   "I have host {string} in rule {string}",
   (host: string, ruleName: string) => {
-    const hostFqdn = `${host}.${Cypress.env("HOSTNAME")}`;
-
     loginAsAdmin();
     navigateTo(`hbac-rules/${ruleName}`);
 
@@ -79,14 +77,14 @@ Given(
     cy.dataCy("dual-list-modal").should("exist");
 
     cy.dataCy("dual-list-search-link").click();
-    addItemToRightList(hostFqdn);
+    addItemToRightList(host);
 
     cy.dataCy("modal-button-add").click();
     cy.dataCy("dual-list-modal").should("not.exist");
     cy.dataCy("add-member-success").should("exist");
 
-    findEntryInTable(hostFqdn, "host");
-    entryExists(hostFqdn);
+    findEntryInTable(host, "host");
+    entryExists(host);
     logout();
   }
 );
@@ -97,23 +95,22 @@ Given(
     loginAsAdmin();
     navigateTo(`hbac-rules/${ruleName}`);
 
-    const fullHost = host + "." + Cypress.env("HOSTNAME");
     cy.dataCy("hbac-rules-tab-settings-tab-hosts").click();
     cy.dataCy("hbac-rules-tab-settings-tab-hosts").should("be.visible");
 
-    findEntryInTable(fullHost, "host");
-    entryExists(fullHost);
+    findEntryInTable(host, "host");
+    entryExists(host);
 
-    findEntryInTable(fullHost, "host");
-    checkEntry(fullHost);
+    findEntryInTable(host, "host");
+    checkEntry(host);
 
     cy.dataCy("settings-button-delete-host").click();
     cy.dataCy("remove-hbac-rule-members-modal").should("exist");
-    entryExists(fullHost);
+    entryExists(host);
 
     cy.dataCy("modal-button-delete").click();
     cy.dataCy("remove-member-success").should("exist");
-    entryDoesNotExist(fullHost);
+    entryDoesNotExist(host);
 
     logout();
   }
