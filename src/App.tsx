@@ -82,7 +82,8 @@ const App: React.FunctionComponent = () => {
       const envResponse = initialBatchResponse.result.results[2].result;
       dispatch(updateEnvironment(envResponse));
       // 3: DNS is enabled ("dns_is_enabled")
-      const dnsEnabledResponse = initialBatchResponse.result.results[3].result;
+      const dnsEnabledResponse: boolean =
+        initialBatchResponse.result.results[3].result;
       dispatch(updateDnsIsEnabled(dnsEnabledResponse));
       // 4: Trust configuration ("trustconfig_show")
       const trustConfigResponse = initialBatchResponse.result.results[4].result;

@@ -5,7 +5,7 @@ interface GlobalState {
   ipaServerConfiguration: Record<string, unknown>;
   loggedUserInfo: LoggedUserInfo;
   environment: Record<string, unknown>;
-  dnsIsEnabled: Record<string, unknown>;
+  dnsIsEnabled: boolean;
   trustConfiguration: Record<string, unknown>;
   domainLevel: Record<string, unknown>;
   caIsEnabled: Record<string, unknown>;
@@ -28,7 +28,7 @@ const initialState: GlobalState = {
     object: "",
   },
   environment: {},
-  dnsIsEnabled: {},
+  dnsIsEnabled: false,
   trustConfiguration: {},
   domainLevel: {},
   caIsEnabled: {},
@@ -63,10 +63,7 @@ const globalSlice = createSlice({
       const newEnv = action.payload;
       state.environment = newEnv;
     },
-    updateDnsIsEnabled: (
-      state,
-      action: PayloadAction<Record<string, unknown>>
-    ) => {
+    updateDnsIsEnabled: (state, action: PayloadAction<boolean>) => {
       const newDnsIsEnabled = action.payload;
       state.dnsIsEnabled = newDnsIsEnabled;
     },

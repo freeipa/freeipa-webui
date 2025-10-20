@@ -27,7 +27,7 @@ import {
   useSearchDnsServersEntriesMutation,
 } from "src/services/rpcDnsServers";
 // React router
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 // Components
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -44,8 +44,6 @@ import TableLayout from "src/components/layouts/TableLayout";
 import SkeletonOnTableLayout from "src/components/layouts/Skeleton/SkeletonOnTableLayout";
 
 const DnsServers = () => {
-  const navigate = useNavigate();
-
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({
     pathname: "dns-servers",
@@ -109,18 +107,6 @@ const DnsServers = () => {
       setTotalCount(data.data.length || 0);
       setDnsServersId(data.data.slice(firstUserIdx, lastUserIdx) || []);
       setShowTableRows(true);
-    }
-
-    if (
-      !dnsServersResponse.isLoading &&
-      dnsServersResponse.isError &&
-      dnsServersResponse.error !== undefined &&
-      "error" in dnsServersResponse.error
-    ) {
-      // This normally happens when the user is not authorized to view the data
-      // So instead of adding an error, refresh page
-      navigate("/login");
-      window.location.reload();
     }
   }, [dnsServersResponse]);
 
