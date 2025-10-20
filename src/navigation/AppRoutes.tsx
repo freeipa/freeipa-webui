@@ -69,11 +69,15 @@ import DnsServers from "src/pages/DNSZones/DnsServers";
 import DnsServersTabs from "src/pages/DNSZones/DnsServersTabs";
 import DnsGlobalConfig from "src/pages/DNSZones/DnsGlobalConfig";
 import IdRanges from "src/pages/IdRanges/IdRanges";
+import { useConfigurationSettings } from "src/utils/configurationSettings";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
   // Redux: Get if user is logged in
   const userLoggedIn = useAppSelector((state) => state.auth.isUserLoggedIn);
+
+  const configurationSettings = useConfigurationSettings();
+  const dnsIsEnabled = configurationSettings.dnsIsEnabled;
 
   return (
     <>
@@ -466,25 +470,27 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               <Route path="cert-id-mapping-match">
                 <Route path="" element={<CertificateMappingMatch />} />
               </Route>
-              <Route path="dns-zones">
-                <Route path="" element={<DnsZones />} />
-                <Route path=":idnsname">
-                  <Route
-                    path=""
-                    element={<DnsZonesTabs section="settings" />}
-                  />
-                  <Route path="dns-records">
+              {dnsIsEnabled && (
+                <Route path="dns-zones">
+                  <Route path="" element={<DnsZones />} />
+                  <Route path=":idnsname">
                     <Route
                       path=""
-                      element={<DnsZonesTabs section="dns-records" />}
+                      element={<DnsZonesTabs section="settings" />}
                     />
-                    <Route
-                      path=":recordName"
-                      element={<DnsResourceRecordsPreSettings />}
-                    />
+                    <Route path="dns-records">
+                      <Route
+                        path=""
+                        element={<DnsZonesTabs section="dns-records" />}
+                      />
+                      <Route
+                        path=":recordName"
+                        element={<DnsResourceRecordsPreSettings />}
+                      />
+                    </Route>
                   </Route>
                 </Route>
-              </Route>
+              )}
               <Route path="dns-forward-zones">
                 <Route path="" element={<DnsForwardZones />} />
               </Route>

@@ -21,8 +21,6 @@ import {
   useDnsRecordFindQuery,
   useSearchDnsRecordsEntriesMutation,
 } from "src/services/rpcDnsZones";
-// React router
-import { useNavigate } from "react-router";
 // Utils
 import { isDnsRecordSelectable } from "src/utils/utils";
 // Hooks
@@ -51,8 +49,6 @@ interface DnsResourceRecordsProps {
 }
 
 const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
-  const navigate = useNavigate();
-
   // Alerts to show in the UI
   const alerts = useAlerts();
 
@@ -106,18 +102,6 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
       setTotalCount(data.count);
       // Show table elements
       setShowTableRows(true);
-    }
-
-    // API response: Error
-    if (
-      !dnsRecordsResponse.isLoading &&
-      dnsRecordsResponse.isError &&
-      dnsRecordsResponse.error !== undefined
-    ) {
-      // This normally happens when the user is not authorized to view the data
-      // So instead of adding an error, refresh page
-      navigate("/login");
-      window.location.reload();
     }
   }, [dnsRecordsResponse]);
 

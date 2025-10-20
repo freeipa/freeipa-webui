@@ -27,8 +27,6 @@ import {
 } from "src/services/rpcDnsForwardZones";
 // Utils
 import { isDnsForwardZoneSelectable } from "src/utils/utils";
-// React router
-import { useNavigate } from "react-router";
 // Components
 import ToolbarLayout, {
   ToolbarItem,
@@ -44,8 +42,6 @@ import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import { apiToDnsForwardZone } from "src/utils/dnsForwardZonesUtils";
 
 const DnsForwardZones = () => {
-  const navigate = useNavigate();
-
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({
     pathname: "dns-forward-zones",
@@ -121,18 +117,6 @@ const DnsForwardZones = () => {
       setDnsForwardZones(elementsList);
       // Show table elements
       setShowTableRows(true);
-    }
-
-    // API response: Error
-    if (
-      !forwardDnsZonesResponse.isLoading &&
-      forwardDnsZonesResponse.isError &&
-      forwardDnsZonesResponse.error !== undefined
-    ) {
-      // This normally happens when the user is not authorized to view the data
-      // So instead of adding an error, refresh page
-      navigate("/login");
-      window.location.reload();
     }
   }, [forwardDnsZonesResponse]);
 

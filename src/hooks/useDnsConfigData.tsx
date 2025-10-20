@@ -43,6 +43,8 @@ const useDnsConfigData = (): DnsConfigSettingsData => {
     if (
       dnsGlobalConfigData &&
       !dnsGlobalConfigDetails.isFetching &&
+      "result" in dnsGlobalConfigData &&
+      dnsGlobalConfigData.result !== null &&
       "result" in dnsGlobalConfigData.result
     ) {
       const currentDnsConfig: DnsConfig = apiToDnsConfig(

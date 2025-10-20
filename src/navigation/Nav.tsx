@@ -2,7 +2,7 @@ import { Nav, NavExpandable, NavItem, NavList } from "@patternfly/react-core";
 import React from "react";
 import { NavLink } from "react-router";
 // Navigation (PatternFly)
-import { navigationRoutes } from "./NavRoutes";
+import { getNavigationRoutes } from "./NavRoutes";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import {
@@ -12,15 +12,16 @@ import {
   updateActiveSecondLevel,
   updateBrowserTitle,
 } from "src/store/Global/routes-slice";
+import { useConfigurationSettings } from "src/utils/configurationSettings";
 
 // Renders NavItem
 const renderNavItem = (
   item: { label: string; group: string; path: string; title: string },
   id: number,
-  superGroup: string
+  superGroup: string,
+  dispatch: ReturnType<typeof useAppDispatch>,
+  activePageName: string
 ) => {
-  const dispatch = useAppDispatch();
-  const activePageName = useAppSelector((state) => state.routes.activePageName);
   return (
     <NavItem
       key={id}
@@ -47,13 +48,22 @@ const Navigation = () => {
     (state) => state.routes.activeFirstLevel
   );
 
+  const dispatch = useAppDispatch();
+  const activePageName = useAppSelector((state) => state.routes.activePageName);
+
+  const configurationSettings = useConfigurationSettings();
+
+  const navigationRoutes = React.useMemo(() => {
+    return getNavigationRoutes(configurationSettings);
+  }, [configurationSettings]);
+
   return (
     <Nav>
       <NavList>
-        {navigationRoutes.map((section, id) => {
+        {navigationRoutes.map((section) => {
           return (
             <NavExpandable
-              key={id}
+              key={section.label}
               title={section.label}
               isActive={section.items.some(
                 (route) => route.group === activeFirstLevel
@@ -67,7 +77,7 @@ const Navigation = () => {
                 if (subsection.items && subsection.items.length > 0) {
                   return (
                     <NavExpandable
-                      key={sid}
+                      key={subsection.label}
                       title={subsection.label}
                       isActive={activeFirstLevel === subsection.group}
                       isExpanded={activeFirstLevel === subsection.group}
@@ -76,12 +86,24 @@ const Navigation = () => {
                       {subsection.items.map(
                         (linkItem, lid) =>
                           linkItem.path &&
-                          renderNavItem(linkItem, lid, subsection.group)
+                          renderNavItem(
+                            linkItem,
+                            lid,
+                            subsection.group,
+                            dispatch,
+                            activePageName
+                          )
                       )}
                     </NavExpandable>
                   );
                 } else {
-                  return renderNavItem(subsection, sid, subsection.group);
+                  return renderNavItem(
+                    subsection,
+                    sid,
+                    subsection.group,
+                    dispatch,
+                    activePageName
+                  );
                 }
               })}
             </NavExpandable>
