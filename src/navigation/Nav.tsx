@@ -2,7 +2,7 @@ import { Nav, NavExpandable, NavItem, NavList } from "@patternfly/react-core";
 import React from "react";
 import { NavLink } from "react-router";
 // Navigation (PatternFly)
-import { navigationRoutes } from "./NavRoutes";
+import { getNavigationRoutes } from "./NavRoutes";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import {
@@ -12,6 +12,7 @@ import {
   updateActiveSecondLevel,
   updateBrowserTitle,
 } from "src/store/Global/routes-slice";
+import { useConfigurationSettings } from "src/utils/configurationSettings";
 
 // Renders NavItem
 const renderNavItem = (
@@ -21,6 +22,7 @@ const renderNavItem = (
 ) => {
   const dispatch = useAppDispatch();
   const activePageName = useAppSelector((state) => state.routes.activePageName);
+
   return (
     <NavItem
       key={id}
@@ -47,13 +49,15 @@ const Navigation = () => {
     (state) => state.routes.activeFirstLevel
   );
 
+  const configurationSettings = useConfigurationSettings();
+
   return (
     <Nav>
       <NavList>
-        {navigationRoutes.map((section, id) => {
+        {getNavigationRoutes(configurationSettings).map((section) => {
           return (
             <NavExpandable
-              key={id}
+              key={section.label}
               title={section.label}
               isActive={section.items.some(
                 (route) => route.group === activeFirstLevel
@@ -67,7 +71,7 @@ const Navigation = () => {
                 if (subsection.items && subsection.items.length > 0) {
                   return (
                     <NavExpandable
-                      key={sid}
+                      key={subsection.label}
                       title={subsection.label}
                       isActive={activeFirstLevel === subsection.group}
                       isExpanded={activeFirstLevel === subsection.group}

@@ -13,6 +13,7 @@ import {
   updateBrowserTitle,
 } from "src/store/Global/routes-slice";
 import { useAppDispatch } from "src/store/hooks";
+import { useConfigurationSettings } from "src/utils/configurationSettings";
 
 /**
  * Given a pathname, this hook updates the Redux route slice with the current route data.
@@ -30,6 +31,8 @@ interface UpdateRouteProps {
 const useUpdateRoute = ({ pathname, noBreadcrumb }: UpdateRouteProps) => {
   const dispatch = useAppDispatch();
 
+  const configurationSettings = useConfigurationSettings();
+
   const [loadedGroup, setLoadedGroup] = React.useState<string[]>([]);
   const [breadCrumbPath, setBreadCrumbPath] = React.useState<BreadCrumbItem[]>(
     []
@@ -38,7 +41,7 @@ const useUpdateRoute = ({ pathname, noBreadcrumb }: UpdateRouteProps) => {
 
   // Get route data when the page is loaded
   React.useEffect(() => {
-    const loadedGroup = getGroupByPath(pathname);
+    const loadedGroup = getGroupByPath(pathname, configurationSettings);
     if (loadedGroup.length > 0) {
       let currentFirstLevel = loadedGroup[loadedGroup.length - 2];
       const currentSecondLevel = loadedGroup[loadedGroup.length - 1];
@@ -59,7 +62,10 @@ const useUpdateRoute = ({ pathname, noBreadcrumb }: UpdateRouteProps) => {
 
     // Get breadcrumb data based on current path
     if (noBreadcrumb === undefined || !noBreadcrumb) {
-      const loadedBreadCrumb = getBreadCrumbByPath(pathname);
+      const loadedBreadCrumb = getBreadCrumbByPath(
+        pathname,
+        configurationSettings
+      );
       if (loadedBreadCrumb.length > 0) {
         setBreadCrumbPath(loadedBreadCrumb);
         dispatch(updateBreadCrumbPath(loadedBreadCrumb));
@@ -67,7 +73,7 @@ const useUpdateRoute = ({ pathname, noBreadcrumb }: UpdateRouteProps) => {
     }
 
     // Get browser title based on current path
-    const currentTitle = getTitleByPath(pathname);
+    const currentTitle = getTitleByPath(pathname, configurationSettings);
     if (currentTitle) {
       setBrowserTitle(currentTitle);
       dispatch(updateBrowserTitle(currentTitle));

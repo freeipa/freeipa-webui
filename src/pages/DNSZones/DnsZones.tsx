@@ -28,8 +28,6 @@ import {
 // Utils
 import { isDnsZoneSelectable } from "src/utils/utils";
 import { apiToDnsZone } from "src/utils/dnsZonesUtils";
-// React router
-import { useNavigate } from "react-router";
 // Components
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -49,8 +47,6 @@ import DeleteDnsZonesModal from "src/components/modals/DnsZones/DeleteDnsZonesMo
 import EnableDisableDnsZonesModal from "src/components/modals/DnsZones/EnableDisableDnsZonesModal";
 
 const DnsZones = () => {
-  const navigate = useNavigate();
-
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({
     pathname: "dns-zones",
@@ -126,18 +122,6 @@ const DnsZones = () => {
       setDnsZones(elementsList);
       // Show table elements
       setShowTableRows(true);
-    }
-
-    // API response: Error
-    if (
-      !dnsZonesResponse.isLoading &&
-      dnsZonesResponse.isError &&
-      dnsZonesResponse.error !== undefined
-    ) {
-      // This normally happens when the user is not authorized to view the data
-      // So instead of adding an error, refresh page
-      navigate("/login");
-      window.location.reload();
     }
   }, [dnsZonesResponse]);
 
