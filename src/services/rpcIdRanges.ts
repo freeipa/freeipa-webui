@@ -10,10 +10,15 @@ import {
 import { API_VERSION_BACKUP } from "../utils/utils";
 
 /**
- * ID ranges-related endpoints: useIdRangesFindQuery, useSearchIdRangesEntriesMutation
- *                              useIdRangesShowQuery
+ * ID ranges-related endpoints: useIdRangesFindQuery, useSearchIdRangesEntriesMutation,
+ *                              useGetIdRangeEntriesQuery, useAddIdRangeMutation,
+ *                              useDeleteIdRangesMutation
  *
- * API commands: idrange_find, idrange_show
+ * API commands:
+ * - idrange_find: https://freeipa.readthedocs.io/en/latest/api/idrange_find.html
+ * - idrange_show: https://freeipa.readthedocs.io/en/latest/api/idrange_show.html
+ * - idrange_add: https://freeipa.readthedocs.io/en/latest/api/idrange_add.html
+ * - idrange_del: https://freeipa.readthedocs.io/en/latest/api/idrange_del.html
  */
 
 interface IdRangesFindResult {
@@ -27,6 +32,19 @@ interface IdRangeDataPayload {
   sizelimit: number;
   startIdx: number;
   stopIdx: number;
+}
+
+export interface AddIdRangePayload {
+  cn: string;
+  ipabaseid: string;
+  ipaidrangesize: string;
+  ipabaserid?: string;
+  ipasecondarybaserid?: string;
+  ipanttrusteddomainname?: string;
+  ipanttrusteddomainsid?: string;
+  ipaautoprivategroups?: string;
+  iparangetype?: string;
+  apiVersion?: string;
 }
 
 const extendedApi = api.injectEndpoints({
@@ -92,6 +110,8 @@ const extendedApi = api.injectEndpoints({
     ),
     /**
      * Get a paginated list of ID Range entries with details (batch of idrange_show)
+     * @param {IdRangeDataPayload} payload - The payload containing pagination and search parameters
+     * @returns {BatchRPCResponse} - Response data (batched idrange_show) or error
      */
     getIdRangeEntries: build.query<BatchRPCResponse, IdRangeDataPayload>({
       async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
@@ -145,8 +165,66 @@ const extendedApi = api.injectEndpoints({
         return { data: response };
       },
     }),
+    /**
+     * Add ID range
+     * @param {AddIdRangePayload} payload - The payload containing new ID range parameters
+     * @returns {FindRPCResponse} - Response data or error
+     */
+    addIdRange: build.mutation<FindRPCResponse, AddIdRangePayload>({
+      query: (payload) => {
+        const params: Record<string, unknown> = {
+          version: payload.apiVersion || API_VERSION_BACKUP,
+        };
+
+        const optionalKeys: Array<
+          keyof Omit<AddIdRangePayload, "cn" | "apiVersion">
+        > = [
+          "ipabaseid",
+          "ipaidrangesize",
+          "ipabaserid",
+          "ipasecondarybaserid",
+          "ipanttrusteddomainname",
+          "ipanttrusteddomainsid",
+          "ipaautoprivategroups",
+          "iparangetype",
+        ];
+
+        optionalKeys.forEach((key) => {
+          const value = payload[key];
+          if (value !== undefined && value !== "") {
+            params[key] = value;
+          }
+        });
+
+        const cn = payload.cn !== "" ? [payload.cn] : [];
+
+        return getCommand({
+          method: "idrange_add",
+          params: [cn, params],
+        });
+      },
+    }),
+    /**
+     * Delete ID ranges
+     * @param {string[]} payload - List of range names (cn) to delete
+     * @returns {BatchRPCResponse} - Batch response with per-item results or error
+     */
+    deleteIdRanges: build.mutation<BatchRPCResponse, string[]>({
+      query: (payload) => {
+        const commands: Command[] = payload.map((cn) => ({
+          method: "idrange_del",
+          params: [[cn], {}],
+        }));
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
   }),
 });
 
-export const { useSearchIdRangesEntriesMutation, useGetIdRangeEntriesQuery } =
-  extendedApi;
+export const {
+  useSearchIdRangesEntriesMutation,
+  useGetIdRangeEntriesQuery,
+  useAddIdRangeMutation,
+  useDeleteIdRangesMutation,
+} = extendedApi;
