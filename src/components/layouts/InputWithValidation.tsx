@@ -35,7 +35,7 @@ const InputWithValidation = (props: InputWithValidationProps) => {
   const hasRules = props.rules.length > 0;
 
   const ruleStates = React.useMemo<RuleState[]>(() => {
-    if (!hasRules) return [];
+    if (!hasRules || props.isDisabled) return [];
     if (props.value === "") {
       return props.rules.map((r) => ({
         id: r.id,

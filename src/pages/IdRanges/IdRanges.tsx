@@ -41,6 +41,8 @@ import MainTable from "src/components/tables/MainTable";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import { isIdRangeSelectable } from "src/utils/utils";
+import AddIdRangeModal from "src/components/modals/IdRanges/AddIdRangeModal";
+import DeleteModal from "src/components/modals/IdRanges/DeleteModal";
 
 const IdRanges = () => {
   const navigate = useNavigate();
@@ -66,6 +68,7 @@ const IdRanges = () => {
     useListPageSearchParams();
 
   const [selectedPerPage, setSelectedPerPage] = React.useState<number>(0);
+  const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -81,6 +84,10 @@ const IdRanges = () => {
 
   // Selection state for checkboxes
   const [selectedElements, setSelectedElements] = React.useState<IdRange[]>([]);
+  const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
+    React.useState<boolean>(true);
+  const [isDeletion, setIsDeletion] = React.useState(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
   const updateSelectedIdRanges = (idRange: IdRange[], isSelected: boolean) => {
     let newSelectedIdRanges: IdRange[] = [...selectedElements];
@@ -102,6 +109,7 @@ const IdRanges = () => {
     }
 
     setSelectedElements(newSelectedIdRanges);
+    setIsDeleteButtonDisabled(newSelectedIdRanges.length === 0);
   };
 
   // API calls (batch detailed list)
@@ -310,8 +318,9 @@ const IdRanges = () => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={selectedElements.length === 0 || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || !showTableRows}
           dataCy="id-ranges-button-delete"
+          onClickHandler={() => setShowDeleteModal(true)}
         >
           Delete
         </SecondaryButton>
@@ -323,6 +332,7 @@ const IdRanges = () => {
         <SecondaryButton
           isDisabled={!showTableRows}
           dataCy="id-ranges-button-add"
+          onClickHandler={() => setShowAddModal(true)}
         >
           Add
         </SecondaryButton>
@@ -400,6 +410,11 @@ const IdRanges = () => {
                       setElementsSelected: setIdRangesSelected,
                       clearSelectedElements: () => setSelectedElements([]),
                     }}
+                    buttonsData={{
+                      updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
+                      isDeletion,
+                      updateIsDeletion: setIsDeletion,
+                    }}
                     paginationData={{
                       selectedPerPage,
                       updateSelectedPerPage: setSelectedPerPage,
@@ -419,6 +434,32 @@ const IdRanges = () => {
           </FlexItem>
         </Flex>
       </PageSection>
+      <AddIdRangeModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        title="Add ID range"
+        onRefresh={refreshData}
+      />
+      <DeleteModal
+        show={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        selectedData={{
+          selectedElements,
+          clearSelectedElements: () => setSelectedElements([]),
+        }}
+        buttonsData={{
+          updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
+          updateIsDeletion: setIsDeletion,
+        }}
+        columnNames={[
+          "Range name",
+          "First Posix ID of the range",
+          "Number of IDs in the range",
+          "Range type",
+        ]}
+        keyNames={["cn", "ipabaseid", "ipaidrangesize", "iparangetype"]}
+        onRefresh={refreshData}
+      />
     </div>
   );
 };
