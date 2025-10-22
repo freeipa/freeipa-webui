@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
@@ -15,10 +15,11 @@ import BreadCrumb, {
   BreadCrumbItem,
 } from "src/components/layouts/BreadCrumb/BreadCrumb";
 import IdpRefSettings from "./IdpReferencesSettings";
+import { CnParams, useSafeParams } from "src/utils/paramsUtils";
 
 // eslint-disable-next-line react/prop-types
 const IdpReferencesTabs = ({ section }) => {
-  const { cn } = useParams();
+  const { cn } = useSafeParams<CnParams>(["cn"]);
   const navigate = useNavigate();
   const pathname = "identity-provider-references";
 
@@ -30,7 +31,7 @@ const IdpReferencesTabs = ({ section }) => {
   const [id, setId] = React.useState("");
 
   // Data loaded from the API
-  const idpRefSettingsData = useIdpRefSettingsData(cn as string);
+  const idpRefSettingsData = useIdpRefSettingsData(cn);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = React.useState(section);
@@ -45,26 +46,21 @@ const IdpReferencesTabs = ({ section }) => {
   };
 
   React.useEffect(() => {
-    if (!cn) {
-      // Redirect to the main page
-      navigate(URL_PREFIX + "/" + pathname);
-    } else {
-      setId(cn);
-      // Update breadcrumb route
-      const currentPath: BreadCrumbItem[] = [
-        {
-          name: "Identity provider references",
-          url: URL_PREFIX + "/" + pathname,
-        },
-        {
-          name: cn,
-          url: URL_PREFIX + "/" + pathname + "/" + cn,
-          isActive: true,
-        },
-      ];
-      setBreadcrumbItems(currentPath);
-      setActiveTabKey("settings");
-    }
+    setId(cn);
+    // Update breadcrumb route
+    const currentPath: BreadCrumbItem[] = [
+      {
+        name: "Identity provider references",
+        url: URL_PREFIX + "/" + pathname,
+      },
+      {
+        name: cn,
+        url: URL_PREFIX + "/" + pathname + "/" + cn,
+        isActive: true,
+      },
+    ];
+    setBreadcrumbItems(currentPath);
+    setActiveTabKey("settings");
   }, [cn]);
 
   // Handling of the API data

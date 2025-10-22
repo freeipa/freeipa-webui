@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Layouts
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
@@ -15,14 +15,15 @@ import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { NotFound } from "src/components/errors/PageErrors";
 import HBACRulesSettings from "./HBACRulesSettings";
+import { CnParams, useSafeParams } from "src/utils/paramsUtils";
 
 // eslint-disable-next-line react/prop-types
 const HBACRulesTabs = ({ section }) => {
   // Get location (React Router DOM) and get state data
-  const { cn } = useParams();
+  const { cn } = useSafeParams<CnParams>(["cn"]);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const settingsData = useHBACRuleSettings(cn as string);
+  const settingsData = useHBACRuleSettings(cn);
   const [breadcrumbItems, setBreadcrumbItems] = React.useState<
     BreadCrumbItem[]
   >([]);
@@ -32,25 +33,20 @@ const HBACRulesTabs = ({ section }) => {
   };
 
   React.useEffect(() => {
-    if (!cn) {
-      // Redirect to the main page
-      navigate("/hbac-rules");
-    } else {
-      // Update breadcrumb route
-      const currentPath: BreadCrumbItem[] = [
-        {
-          name: "HBAC rules",
-          url: URL_PREFIX + "/hbac-rules",
-        },
-        {
-          name: cn,
-          url: URL_PREFIX + "/hbac-rules/" + cn,
-          isActive: true,
-        },
-      ];
-      setBreadcrumbItems(currentPath);
-      dispatch(updateBreadCrumbPath(currentPath));
-    }
+    // Update breadcrumb route
+    const currentPath: BreadCrumbItem[] = [
+      {
+        name: "HBAC rules",
+        url: URL_PREFIX + "/hbac-rules",
+      },
+      {
+        name: cn,
+        url: URL_PREFIX + "/hbac-rules/" + cn,
+        isActive: true,
+      },
+    ];
+    setBreadcrumbItems(currentPath);
+    dispatch(updateBreadCrumbPath(currentPath));
   }, [cn]);
 
   // Redirect to the settings page if the section is not defined
