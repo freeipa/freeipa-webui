@@ -60,6 +60,8 @@ const DNSForwardZonesGroupRef = "dns-forward-zones";
 const DNSServersGroupRef = "dns-servers";
 const DNSGlobalConfigGroupRef = "dns-global-config";
 // IPA SERVER
+// - Trusts
+const TrustsGroupRef = "trusts";
 // - Configuration
 const ConfigRef = "configuration";
 
@@ -396,6 +398,13 @@ export const navigationRoutes = [
         group: IdRangesGroupRef,
         title: `${BASE_TITLE} - ID ranges`,
         path: "id-ranges",
+        items: [],
+      },
+      {
+        label: "Trusts",
+        group: TrustsGroupRef,
+        title: `${BASE_TITLE} - Trusts`,
+        path: "trusts",
         items: [],
       },
       {
