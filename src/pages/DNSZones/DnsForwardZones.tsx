@@ -40,6 +40,9 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import MainTable from "src/components/tables/MainTable";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import { apiToDnsForwardZone } from "src/utils/dnsForwardZonesUtils";
+import EnableDisableDnsForwardZonesModal from "src/components/modals/DnsZones/EnableDisableDnsForwardZonesModal";
+import DeleteDnsForwardZonesModal from "src/components/modals/DnsZones/DeleteDnsForwardZonesModal";
+import AddDnsForwardZoneModal from "src/components/modals/DnsZones/AddDnsForwardZoneModal";
 
 const DnsForwardZones = () => {
   const dispatch = useAppDispatch();
@@ -132,6 +135,7 @@ const DnsForwardZones = () => {
 
     // Reset selected elements on refresh
     setTotalCount(0);
+    setSelectedElements([]);
 
     forwardDnsZonesResponse.refetch().then(() => {
       setShowTableRows(true);
@@ -188,13 +192,6 @@ const DnsForwardZones = () => {
 
   // Show table rows
   const [showTableRows, setShowTableRows] = React.useState(!isLoading);
-
-  // Show table rows only when data is fully retrieved
-  React.useEffect(() => {
-    if (showTableRows !== !isLoading) {
-      setShowTableRows(!isLoading);
-    }
-  }, [isLoading]);
 
   // Search API call
   const [searchEntry] = useSearchDnsForwardZonesEntriesMutation();
@@ -266,6 +263,23 @@ const DnsForwardZones = () => {
     updateSelectedPerPage: setSelectedPerPage,
   };
 
+  const [showEnableDisableModal, setShowEnableDisableModal] =
+    React.useState(false);
+  const [operation, setOperation] = React.useState<"enable" | "disable">(
+    "enable"
+  );
+
+  const [showDeleteForwardZonesModal, setShowDeleteForwardZonesModal] =
+    React.useState(false);
+
+  const [showAddForwardZoneModal, setShowAddForwardZoneModal] =
+    React.useState(false);
+
+  const onEnableDisableHandler = (operation: "enable" | "disable") => {
+    setOperation(operation);
+    setShowEnableDisableModal(true);
+  };
+
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -319,6 +333,7 @@ const DnsForwardZones = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           dataCy={"dns-forward-zones-delete"}
+          onClickHandler={() => setShowDeleteForwardZonesModal(true)}
         >
           Delete
         </SecondaryButton>
@@ -330,6 +345,7 @@ const DnsForwardZones = () => {
         <SecondaryButton
           isDisabled={!showTableRows}
           dataCy={"dns-forward-zones-add"}
+          onClickHandler={() => setShowAddForwardZoneModal(true)}
         >
           Add
         </SecondaryButton>
@@ -339,6 +355,7 @@ const DnsForwardZones = () => {
       key: 6,
       element: (
         <SecondaryButton
+          onClickHandler={() => onEnableDisableHandler("disable")}
           isDisabled={isDisableButtonDisabled || !showTableRows}
           dataCy={"dns-forward-zones-disable"}
         >
@@ -350,6 +367,7 @@ const DnsForwardZones = () => {
       key: 7,
       element: (
         <SecondaryButton
+          onClickHandler={() => onEnableDisableHandler("enable")}
           isDisabled={isEnableButtonDisabled || !showTableRows}
           dataCy={"dns-forward-zones-enable"}
         >
@@ -460,6 +478,32 @@ const DnsForwardZones = () => {
           </FlexItem>
         </Flex>
       </PageSection>
+      <AddDnsForwardZoneModal
+        isOpen={showAddForwardZoneModal}
+        onClose={() => setShowAddForwardZoneModal(false)}
+        title="Add DNS forward zone"
+        onRefresh={refreshData}
+      />
+      <DeleteDnsForwardZonesModal
+        isOpen={showDeleteForwardZonesModal}
+        onClose={() => setShowDeleteForwardZonesModal(false)}
+        elementsToDelete={selectedElements}
+        clearSelectedElements={() => setSelectedElements([])}
+        columnNames={["DNS forward zone name"]}
+        keyNames={["idnsname"]}
+        onRefresh={refreshData}
+        updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
+        updateIsDeletion={setIsDeletion}
+      />
+      <EnableDisableDnsForwardZonesModal
+        isOpen={showEnableDisableModal}
+        onClose={() => setShowEnableDisableModal(false)}
+        elementsList={selectedElements.map((dnszone) => dnszone.idnsname)}
+        setElementsList={() => {}}
+        operation={operation}
+        setShowTableRows={setShowTableRows}
+        onRefresh={refreshData}
+      />
     </div>
   );
 };
