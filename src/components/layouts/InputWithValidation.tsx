@@ -28,7 +28,9 @@ interface InputWithValidationProps {
   onChange: (value: string) => void;
   isRequired?: boolean;
   isDisabled?: boolean;
+  placeholder?: string;
   rules: Array<RuleProps>;
+  showAlways?: boolean; // if true, show helper text even if value is empty
 }
 
 const InputWithValidation = (props: InputWithValidationProps) => {
@@ -75,11 +77,12 @@ const InputWithValidation = (props: InputWithValidationProps) => {
         isRequired={props.isRequired}
         isDisabled={props.isDisabled}
         aria-label={props.name}
+        placeholder={props.placeholder}
         aria-describedby={nonSuccessRuleIds.join(" ")}
         aria-invalid={ariaInvalid}
         onChange={(_event, value) => props.onChange(value)}
       />
-      {props.value && (
+      {(props.value || props.showAlways) && (
         <FormHelperText>
           <HelperText component="ul">
             {ruleStates.map((r) => (

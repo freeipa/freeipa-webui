@@ -12,17 +12,55 @@ import { API_VERSION_BACKUP } from "../utils/utils";
 import {
   DNSForwardZone,
   dnsZoneType,
+  IDNSForwardPolicy,
 } from "src/utils/datatypes/globalDataTypes";
 import { apiToDnsForwardZone } from "src/utils/dnsForwardZonesUtils";
 
 /**
- * Forward DNS zones-related endpoint: useDnsForwardZonesFindQuery, useGetDnsForwardZonesFullDataQuery,
-                            useSearchDnsForwardZonesEntriesMutation,
+ * Forward DNS zones-related endpoints: useAddDnsForwardZoneMutation, useDnsForwardZoneDeleteMutation,
+ *        useDnsForwardZoneDisableMutation, useDnsForwardZoneEnableMutation, useGetDnsForwardZonesFullDataQuery,
+ *        useSearchDnsForwardZonesEntriesMutation
  *
  * API commands:
+ * - dnsforwardzone_add: https://freeipa.readthedocs.io/en/latest/api/dnsforwardzone_add.html
  * - dnsforwardzone_find: https://freeipa.readthedocs.io/en/latest/api/dnsforwardzone_find.html
  * - dnsforwardzone_show: https://freeipa.readthedocs.io/en/latest/api/dnsforwardzone_show.html
+ * - dnsforwardzone_del: https://freeipa.readthedocs.io/en/latest/api/dnsforwardzone_del.html
+ * - dnsforwardzone_disable: https://freeipa.readthedocs.io/en/latest/api/dnsforwardzone_disable.html
+ * - dnsforwardzone_enable: https://freeipa.readthedocs.io/en/latest/api/dnsforwardzone_enable.html
  */
+
+export interface IPAddressWithPort {
+  ipAddress: string;
+  port: number | null;
+}
+
+const asIpa = (value: IPAddressWithPort): string => {
+  if (value.port === null) {
+    return value.ipAddress;
+  }
+
+  return `${value.ipAddress} port ${value.port}`;
+};
+
+export interface BaseDnsForwardZoneAddPayload {
+  idnsforwarders: IPAddressWithPort[];
+  idnsforwardpolicy: IDNSForwardPolicy;
+  skipOverlapCheck: boolean;
+  version?: string;
+}
+
+interface NameDnsForwardZoneAddPayload extends BaseDnsForwardZoneAddPayload {
+  idnsname: string;
+}
+
+interface FromIpDnsForwardZoneAddPayload extends BaseDnsForwardZoneAddPayload {
+  nameFromIp: string;
+}
+
+export type DnsForwardZoneAddPayload =
+  | NameDnsForwardZoneAddPayload
+  | FromIpDnsForwardZoneAddPayload;
 
 interface DnsForwardZonesFindPayload {
   searchValue: string;
@@ -69,7 +107,92 @@ const dnsForwardZonesFind = (
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     /**
-     * Find DNS zones full data
+     * Add DNS forward zone
+     * @param {DnsForwardZoneAddPayload} payload - The payload containing new DNS forward zone data
+     * @returns {Promise<FindRPCResponse>} - Promise with the response data
+     */
+    addDnsForwardZone: build.mutation<
+      FindRPCResponse,
+      DnsForwardZoneAddPayload
+    >({
+      query: (payload) => {
+        const params: Record<string, unknown> = {
+          idnsforwarders: payload.idnsforwarders.map(asIpa),
+          idnsforwardpolicy: payload.idnsforwardpolicy,
+          skip_overlap_check: payload.skipOverlapCheck,
+          version: payload.version || API_VERSION_BACKUP,
+        };
+
+        // Check which parameters are provided
+        if ("idnsname" in payload) {
+          return getCommand({
+            method: "dnsforwardzone_add",
+            params: [[payload.idnsname], params],
+          });
+        }
+
+        params["name_from_ip"] = payload.nameFromIp;
+        return getCommand({
+          method: "dnsforwardzone_add",
+          params: [[], params],
+        });
+      },
+    }),
+    /**
+     * Delete DNS forward zones
+     * @param {string[]} dnsForwardZoneIds - The IDs of the DNS forward zones to delete
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    dnsForwardZoneDelete: build.mutation<BatchRPCResponse, string[]>({
+      query: (dnsForwardZoneIds) => {
+        const commands: Command[] = dnsForwardZoneIds.map(
+          (dnsForwardZoneId) => {
+            return {
+              method: "dnsforwardzone_del",
+              params: [[dnsForwardZoneId], {}],
+            };
+          }
+        );
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Disable DNS forward zones
+     * @param {string[]} dnsForwardZoneIds - The IDs of the DNS forward zones to disable
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    dnsForwardZoneDisable: build.mutation<BatchRPCResponse, string[]>({
+      query: (dnsZoneIds) => {
+        const commands: Command[] = dnsZoneIds.map((dnsZoneId) => {
+          return {
+            method: "dnsforwardzone_disable",
+            params: [[dnsZoneId], {}],
+          };
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Enable DNS forward zones
+     * @param {string[]} dnsForwardZoneIds - The IDs of the DNS forward zones to enable
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    dnsForwardZoneEnable: build.mutation<BatchRPCResponse, string[]>({
+      query: (dnsZoneIds) => {
+        const commands: Command[] = dnsZoneIds.map((dnsZoneId) => {
+          return {
+            method: "dnsforwardzone_enable",
+            params: [[dnsZoneId], {}],
+          };
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Find DNS forward zones full data
      * @param {DnsForwardZonesFullDataPayload} payload - The payload containing search parameters
      * @returns {BatchRPCResponse} - List of DNS zones full data
      *
@@ -249,6 +372,10 @@ const extendedApi = api.injectEndpoints({
 });
 
 export const {
+  useAddDnsForwardZoneMutation,
+  useDnsForwardZoneDeleteMutation,
+  useDnsForwardZoneDisableMutation,
+  useDnsForwardZoneEnableMutation,
   useGetDnsForwardZonesFullDataQuery,
   useSearchDnsForwardZonesEntriesMutation,
 } = extendedApi;
