@@ -279,6 +279,18 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
     }
   };
 
+  const renderCellContent = (element: T, keyName: string) => {
+    if (props.statusElementName && keyName === props.statusElementName) {
+      return processBoolean(element[keyName]);
+    } else {
+      if (Array.isArray(element[keyName])) {
+        return element[keyName].join(", ");
+      }
+
+      return element[keyName];
+    }
+  };
+
   const body = shownElementsList.map((element, rowIndex) => {
     const elementName = element[props.pk].toString();
 
@@ -327,12 +339,7 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
                     : element[keyName]}
                 </Link>
               ) : (
-                <>
-                  {props.statusElementName &&
-                  keyName === props.statusElementName
-                    ? processBoolean(element[keyName])
-                    : element[keyName]}
-                </>
+                <>{renderCellContent(element, keyName)}</>
               )}
             </Td>
           ))}
