@@ -1107,3 +1107,18 @@ export interface Trust {
   truststatus: string;
   ipantadditionalsuffixes: string[];
 }
+
+export type RangeType = "detect" | "ad-domain" | "ad-domain-posix";
+
+export type ErrorValidationData = {
+  isError: boolean;
+  message: string;
+  pfError: ValidatedOptions;
+};
+
+// Field validation error data
+export const DEFAULT_ERROR_VALIDATION_DATA: ErrorValidationData = {
+  isError: false,
+  message: "",
+  pfError: ValidatedOptions.default,
+};

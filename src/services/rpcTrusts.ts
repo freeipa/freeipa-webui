@@ -13,10 +13,12 @@ import { apiToTrust } from "src/utils/trustsUtils";
 
 /**
  * Trusts-related endpoints: useGetTrustsFullDataQuery, useSearchTrustsEntriesMutation
+ *                           useAddTrustMutation
  *
  * API commands:
  * - trust_find: https://freeipa.readthedocs.io/en/latest/api/trust_find.html
  * - trust_show: https://freeipa.readthedocs.io/en/latest/api/trust_show.html
+ * - trust_add: https://freeipa.readthedocs.io/en/latest/api/trust_add.html
  */
 
 interface TrustsFullDataPayload {
@@ -33,6 +35,19 @@ interface FindTrustArgs {
   ipanttrusteddomainsid: string;
   ipantsidblacklistincoming: string[];
   ipantsidblacklistoutgoing: string[];
+}
+
+export interface TrustAddPayload {
+  domainName: string;
+  bidirectional?: boolean;
+  external?: boolean;
+  realm_admin?: string;
+  realm_passwd?: string;
+  trust_secret?: string;
+  range_type?: "" | "ipa-ad-trust" | "ipa-ad-trust-posix";
+  base_id?: number;
+  range_size?: number;
+  version?: string;
 }
 
 const extendedApi = api.injectEndpoints({
@@ -198,9 +213,47 @@ const extendedApi = api.injectEndpoints({
         return { data: response };
       },
     }),
+    /**
+     * Add a new trust
+     * @param {TrustAddPayload} payload - The payload containing the trust data
+     * @returns {FindRPCResponse} - The response from the API
+     */
+    addTrust: build.mutation<FindRPCResponse, TrustAddPayload>({
+      query: (payload) => {
+        const params: Record<string, unknown> = {
+          version: API_VERSION_BACKUP,
+        };
+
+        const optionalKeys: Array<keyof Omit<TrustAddPayload, "domainName">> = [
+          "bidirectional",
+          "external",
+          "realm_admin",
+          "realm_passwd",
+          "trust_secret",
+          "range_type",
+          "base_id",
+          "range_size",
+        ];
+
+        optionalKeys.forEach((key) => {
+          const value = payload[key];
+          if (value !== undefined) {
+            params[key] = value.toString();
+          }
+        });
+
+        return getCommand({
+          method: "trust_add",
+          params: [[payload.domainName], params],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useGetTrustsFullDataQuery, useSearchTrustsEntriesMutation } =
-  extendedApi;
+export const {
+  useGetTrustsFullDataQuery,
+  useSearchTrustsEntriesMutation,
+  useAddTrustMutation,
+} = extendedApi;

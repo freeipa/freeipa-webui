@@ -44,6 +44,7 @@ import TitleLayout from "src/components/layouts/TitleLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import MainTable from "src/components/tables/MainTable";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
+import AddTrustModal from "./AddTrustModal";
 
 const Trusts = () => {
   const navigate = useNavigate();
@@ -283,6 +284,9 @@ const Trusts = () => {
     updateSelectedPerPage: setSelectedPerPage,
   };
 
+  // Modals functionality
+  const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
+
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -344,7 +348,11 @@ const Trusts = () => {
     {
       key: 5,
       element: (
-        <SecondaryButton isDisabled={!showTableRows} dataCy="trusts-button-add">
+        <SecondaryButton
+          isDisabled={!showTableRows}
+          dataCy="trusts-button-add"
+          onClickHandler={() => setShowAddModal(true)}
+        >
           Add
         </SecondaryButton>
       ),
@@ -434,6 +442,12 @@ const Trusts = () => {
           </FlexItem>
         </Flex>
       </PageSection>
+      <AddTrustModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        title="Add trust"
+        onRefresh={refreshData}
+      />
     </div>
   );
 };
