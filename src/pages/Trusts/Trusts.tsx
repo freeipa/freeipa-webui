@@ -45,6 +45,7 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import MainTable from "src/components/tables/MainTable";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import AddTrustModal from "./AddTrustModal";
+import DeleteTrustModal from "./DeleteTrustModal";
 
 const Trusts = () => {
   const navigate = useNavigate();
@@ -286,6 +287,7 @@ const Trusts = () => {
 
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
 
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
@@ -340,6 +342,7 @@ const Trusts = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           dataCy="trusts-button-delete"
+          onClickHandler={() => setShowDeleteModal(true)}
         >
           Delete
         </SecondaryButton>
@@ -447,6 +450,17 @@ const Trusts = () => {
         onClose={() => setShowAddModal(false)}
         title="Add trust"
         onRefresh={refreshData}
+      />
+      <DeleteTrustModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        elementsToDelete={selectedElements}
+        clearSelectedElements={() => setSelectedElements([])}
+        columnNames={["Realm name"]}
+        keyNames={["cn"]}
+        onRefresh={refreshData}
+        updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
+        updateIsDeletion={setIsDeletion}
       />
     </div>
   );
