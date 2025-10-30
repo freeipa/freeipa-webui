@@ -1,16 +1,17 @@
 // Data types
+import { DnsForwardZoneModPayload } from "src/services/rpcDnsForwardZones";
 import { DNSForwardZone } from "./datatypes/globalDataTypes";
 import { convertApiObj } from "src/utils/ipaObjectUtils";
 
 export const dnsForwardZoneAsRecord = (
-  element: Partial<DNSForwardZone>,
-  onElementChange: (element: Partial<DNSForwardZone>) => void
+  element: Partial<DnsForwardZoneModPayload>,
+  onElementChange: (element: Partial<DnsForwardZoneModPayload>) => void
 ) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const ipaObject = element as Record<string, any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recordOnChange = (ipaObject: Record<string, any>) => {
-    onElementChange(ipaObject as DNSForwardZone);
+    onElementChange(ipaObject as DnsForwardZoneModPayload);
   };
 
   return { ipaObject, recordOnChange };
