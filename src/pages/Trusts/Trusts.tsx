@@ -1,4 +1,3 @@
-/* eslint-disable @eslint-react/hooks-extra/no-direct-set-state-in-use-effect */
 import React from "react";
 // PatternFly
 import {
@@ -78,9 +77,7 @@ const Trusts = () => {
   const lastUserIdx = page * perPage;
 
   // States
-  const [trusts, setTrusts] = React.useState<Trust[]>([]);
   const [isSearchDisabled, setIsSearchDisabled] = React.useState(false);
-  const [totalCount, setTotalCount] = React.useState(0);
 
   // API calls
   const trustsResponse = useGetTrustsFullDataQuery({
@@ -93,30 +90,11 @@ const Trusts = () => {
 
   const { data, isLoading, error } = trustsResponse;
 
+  // Process data and update state when response changes
   React.useEffect(() => {
     if (trustsResponse.isFetching) {
-      setShowTableRows(false);
-      // Reset selected elements on refresh
-      setTotalCount(0);
       globalErrors.clear();
       return;
-    }
-
-    // API response: Success
-    if (trustsResponse.isSuccess && trustsResponse.data && data !== undefined) {
-      const listResult = data.result.results;
-      const listSize = data.result.count;
-      const elementsList: Trust[] = [];
-
-      for (let i = 0; i < listSize; i++) {
-        elementsList.push(apiToTrust(listResult[i].result));
-      }
-
-      setTotalCount(trustsResponse.data.result.totalCount);
-      // Update the list of elements
-      setTrusts(elementsList);
-      // Show table elements
-      setShowTableRows(true);
     }
 
     // API response: Error
@@ -130,7 +108,39 @@ const Trusts = () => {
       navigate("/login");
       window.location.reload();
     }
-  }, [trustsResponse]);
+  }, [trustsResponse, navigate, globalErrors]);
+
+  // Compute trusts data from API response
+  const trusts = React.useMemo(() => {
+    if (trustsResponse.isSuccess && trustsResponse.data && data !== undefined) {
+      const listResult = data.result.results;
+      const listSize = data.result.count;
+      const elementsList: Trust[] = [];
+
+      for (let i = 0; i < listSize; i++) {
+        elementsList.push(apiToTrust(listResult[i].result));
+      }
+
+      return elementsList;
+    }
+    return [];
+  }, [data, trustsResponse.isSuccess, trustsResponse.data]);
+
+  // Compute total count from API response
+  const totalCount = React.useMemo(() => {
+    if (trustsResponse.isSuccess && trustsResponse.data) {
+      return trustsResponse.data.result.totalCount;
+    }
+    return 0;
+  }, [trustsResponse.isSuccess, trustsResponse.data]);
+
+  // Compute derived state for showTableRows
+  const showTableRows = React.useMemo(() => {
+    if (trustsResponse.isFetching) {
+      return false;
+    }
+    return !isLoading && trusts.length > 0;
+  }, [trustsResponse.isFetching, isLoading, trusts.length]);
 
   // Selected elements
   const [selectedElements, setSelectedElements] = React.useState<Trust[]>([]);
@@ -138,14 +148,10 @@ const Trusts = () => {
 
   // Refresh button handling
   const refreshData = () => {
-    // Hide table
-    setShowTableRows(false);
     // Reset selected elements on refresh
-    setTotalCount(0);
+    setSelectedElements([]);
 
-    trustsResponse.refetch().then(() => {
-      setShowTableRows(true);
-    });
+    trustsResponse.refetch();
   };
 
   // 'Delete' button state
@@ -207,21 +213,10 @@ const Trusts = () => {
     trustsResponse.refetch();
   }, []);
 
-  // Show table rows
-  const [showTableRows, setShowTableRows] = React.useState(!isLoading);
-
-  // Show table rows only when data is fully retrieved
-  React.useEffect(() => {
-    if (showTableRows !== !isLoading) {
-      setShowTableRows(!isLoading);
-    }
-  }, [isLoading]);
-
   // Search API call
   const [searchEntry] = useSearchTrustsEntriesMutation();
 
   const submitSearchValue = () => {
-    setSearchValue(searchValue);
     searchEntry({
       searchValue,
       apiVersion,
@@ -248,19 +243,8 @@ const Trusts = () => {
             "danger"
           );
         } else {
-          // Success
-          const trusts = result.data?.result.results || [];
-          const trustsListSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
-          const trustsList: Trust[] = [];
-
-          for (let i = 0; i < trustsListSize; i++) {
-            trustsList.push(apiToTrust(trusts[i].result));
-          }
-
-          setTotalCount(totalCount);
-          setTrusts(trustsList);
-          setShowTableRows(true);
+          // Success - data will be updated through the API response
+          // No need to manually set state as it's computed from the response
         }
         setIsSearchDisabled(false);
       }
@@ -276,7 +260,6 @@ const Trusts = () => {
     updatePage: setPage,
     updatePerPage: setPerPage,
     updateSelectedPerPage: setSelectedPerPage,
-    updateShownElementsList: setTrusts,
     totalCount,
   };
 
