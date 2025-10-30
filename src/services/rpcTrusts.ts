@@ -13,12 +13,13 @@ import { apiToTrust } from "src/utils/trustsUtils";
 
 /**
  * Trusts-related endpoints: useGetTrustsFullDataQuery, useSearchTrustsEntriesMutation
- *                           useAddTrustMutation
+ *                           useAddTrustMutation, useDeleteTrustsMutation
  *
  * API commands:
  * - trust_find: https://freeipa.readthedocs.io/en/latest/api/trust_find.html
  * - trust_show: https://freeipa.readthedocs.io/en/latest/api/trust_show.html
  * - trust_add: https://freeipa.readthedocs.io/en/latest/api/trust_add.html
+ * - trust_del: https://freeipa.readthedocs.io/en/latest/api/trust_del.html
  */
 
 interface TrustsFullDataPayload {
@@ -248,6 +249,24 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Delete a trust
+     * @param {string[]} payload - The IDs of the trusts to delete
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    deleteTrusts: build.mutation<BatchRPCResponse, string[]>({
+      query: (payload) => {
+        const commands: Command[] = [];
+        payload.forEach((trustId) => {
+          commands.push({
+            method: "trust_del",
+            params: [[trustId], {}],
+          });
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -256,4 +275,5 @@ export const {
   useGetTrustsFullDataQuery,
   useSearchTrustsEntriesMutation,
   useAddTrustMutation,
+  useDeleteTrustsMutation,
 } = extendedApi;
