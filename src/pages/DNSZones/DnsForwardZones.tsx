@@ -439,7 +439,7 @@ const DnsForwardZones = () => {
                     hasCheckboxes={true}
                     pathname="dns-forward-zones"
                     showTableRows={showTableRows}
-                    showLink={false}
+                    showLink={true}
                     elementsData={{
                       isElementSelectable: isDnsForwardZoneSelectable,
                       selectedElements,
