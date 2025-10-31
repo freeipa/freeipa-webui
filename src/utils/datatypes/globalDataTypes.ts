@@ -1095,3 +1095,15 @@ export interface DnsConfig {
   ipaconfigstring: string;
   aci: string[];
 }
+
+export interface Trust {
+  cn: string;
+  ipantflatname: string;
+  ipanttrusteddomainsid: string;
+  ipantsidblacklistincoming: string[];
+  ipantsidblacklistoutgoing: string[];
+  trustdirection: string;
+  trusttype: string;
+  truststatus: string;
+  ipantadditionalsuffixes: string[];
+}
