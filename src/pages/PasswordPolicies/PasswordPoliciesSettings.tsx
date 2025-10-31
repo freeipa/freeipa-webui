@@ -13,7 +13,7 @@ import {
 import { PwPolicy, Metadata } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Utils
 import { asRecord } from "src/utils/subIdUtils";
 // Icons
@@ -44,9 +44,6 @@ interface PropsToPwPolicySettings {
 }
 
 const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
 
@@ -66,11 +63,7 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
   const onRevert = () => {
     props.onPwPolicyChange(props.originalPwPolicy);
     props.onRefresh();
-    alerts.addAlert(
-      "revert-success",
-      "Password policy data reverted",
-      "success"
-    );
+    addAlert("revert-success", "Password policy data reverted", "success");
   };
 
   // Helper method to build the payload based on values
@@ -118,11 +111,11 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
       if ("data" in response) {
         const data = response.data;
         if (data?.error) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          addAlert("error", (data.error as Error).message, "danger");
         }
         if (data?.result) {
           props.onPwPolicyChange(data.result.result);
-          alerts.addAlert(
+          addAlert(
             "success",
             "Password policy '" + props.pwPolicy.cn + "' updated",
             "success"
@@ -178,7 +171,6 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
   return (
     <>
       <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-        <alerts.ManagedAlerts />
         <Sidebar isPanelRight>
           <SidebarPanel variant="sticky">
             <HelpTextWithIconLayout

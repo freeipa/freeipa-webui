@@ -16,7 +16,7 @@ import {
   useAssignSubIdsMutation,
 } from "src/services/rpcSubIds";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -30,9 +30,6 @@ interface PropsToAddModal {
 }
 
 const AddModal = (props: PropsToAddModal) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // API call
   const [generateSubid] = useAssignSubIdsMutation();
 
@@ -58,11 +55,7 @@ const AddModal = (props: PropsToAddModal) => {
   React.useEffect(() => {
     // On error
     if (!isLoading && error) {
-      alerts.addAlert(
-        "subid-find-error",
-        JSON.stringify(error, null, 2),
-        "danger"
-      );
+      addAlert("subid-find-error", JSON.stringify(error, null, 2), "danger");
     }
 
     // On success
@@ -123,15 +116,11 @@ const AddModal = (props: PropsToAddModal) => {
           | SerializedError;
 
         if (error) {
-          alerts.addAlert(
-            "add-subid-error",
-            JSON.stringify(error, null, 2),
-            "danger"
-          );
+          addAlert("add-subid-error", JSON.stringify(error, null, 2), "danger");
         }
 
         if (data) {
-          alerts.addAlert(
+          addAlert(
             "add-subid-success",
             "Subordinate ID successfully added",
             "success"
@@ -221,7 +210,6 @@ const AddModal = (props: PropsToAddModal) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-subid-modal"
         variantType={"small"}

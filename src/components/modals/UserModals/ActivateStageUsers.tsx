@@ -16,7 +16,7 @@ import UsersDisplayTable from "src/components/tables/UsersDisplayTable";
 import { ErrorResult } from "src/services/rpc";
 import { useActivateUserMutation } from "src/services/rpcUsers";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 
 interface PropsToActivateUsers {
   show: boolean;
@@ -27,7 +27,6 @@ interface PropsToActivateUsers {
 
 const ActivateStageUsers = (props: PropsToActivateUsers) => {
   // Alerts
-  const alerts = useAlerts();
 
   // Define 'executeUserStageCommand' to activate user data to IPA server
   const [activateUsersCommand] = useActivateUserMutation();
@@ -82,7 +81,7 @@ const ActivateStageUsers = (props: PropsToActivateUsers) => {
           // Close modal
           props.handleModalToggle();
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             "activate-users-success",
             response.data.result.count + " users activated",
             "success"
@@ -92,11 +91,7 @@ const ActivateStageUsers = (props: PropsToActivateUsers) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
-            "activate-users-error",
-            errorMessage.message,
-            "danger"
-          );
+          addAlert("activate-users-error", errorMessage.message, "danger");
         }
       }
     });
@@ -126,7 +121,6 @@ const ActivateStageUsers = (props: PropsToActivateUsers) => {
   // Render 'ActivateStageUsers'
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="activate-stage-users-modal"
         variantType="medium"

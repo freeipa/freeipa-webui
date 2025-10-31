@@ -35,7 +35,7 @@ import { API_VERSION_BACKUP, isServiceSelectable } from "../../utils/utils";
 import AddService from "../../components/modals/AddService";
 import DeleteServices from "../../components/modals/DeleteServices";
 // Hooks
-import useAlerts from "../../hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors
@@ -65,9 +65,6 @@ const Services = () => {
   const apiVersion = useAppSelector(
     (state) => state.global.environment.api_version
   ) as string;
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -152,7 +149,7 @@ const Services = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
+          addAlert(
             "submit-search-value-error",
             error || "Error when searching for services",
             "danger"
@@ -227,11 +224,7 @@ const Services = () => {
       hostDataResponse.isError &&
       hostDataResponse.error !== undefined
     ) {
-      alerts.addAlert(
-        "get-host-list-error",
-        "Failed to get host list",
-        "danger"
-      );
+      addAlert("get-host-list-error", "Failed to get host list", "danger");
     }
   }, [hostDataResponse]);
 
@@ -548,7 +541,6 @@ const Services = () => {
       onClose={onCloseContextualPanel}
     >
       <div>
-        <alerts.ManagedAlerts />
         <PageSection hasBodyWrapper={false}>
           <TitleLayout id="Services title" headingLevel="h1" text="Services" />
         </PageSection>

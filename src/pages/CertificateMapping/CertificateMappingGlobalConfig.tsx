@@ -11,7 +11,7 @@ import {
 } from "@patternfly/react-core";
 // Hooks
 import { useCertMapConfigData } from "src/hooks/useCertMapConfigData";
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // RPC
 import {
@@ -31,9 +31,6 @@ import PageWithGrayBorderLayout from "src/components/layouts/PageWithGrayBorderL
 import IpaCheckbox from "src/components/Form/IpaCheckbox";
 
 const CertificateMappingGlobalConfig = () => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // API calls
   const certMapConfigData = useCertMapConfigData();
   const [saveConfigInfo] = useCertMapConfigModMutation();
@@ -61,7 +58,7 @@ const CertificateMappingGlobalConfig = () => {
   const onRevert = () => {
     certMapConfigData.setCertMapConfig(certMapConfigData.originalCertMapConfig);
     certMapConfigData.refetch();
-    alerts.addAlert(
+    addAlert(
       "revert-success",
       "Certificate mapping configuration data reverted",
       "success"
@@ -82,11 +79,11 @@ const CertificateMappingGlobalConfig = () => {
       if ("data" in response) {
         const data = response.data;
         if (data?.error) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          addAlert("error", (data.error as Error).message, "danger");
         }
         if (data?.result) {
           certMapConfigData.setCertMapConfig(data.result.result);
-          alerts.addAlert(
+          addAlert(
             "success",
             "Certificate mapping configuration updated",
             "success"
@@ -163,7 +160,6 @@ const CertificateMappingGlobalConfig = () => {
       toolbarItems={toolbarFields}
     >
       <>
-        <alerts.ManagedAlerts />
         <Sidebar isPanelRight className="pf-v6-u-mb-0">
           <SidebarPanel variant="sticky">
             <HelpTextWithIconLayout

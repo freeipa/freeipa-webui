@@ -11,7 +11,7 @@ import ErrorModal from "src/components/modals/ErrorModal";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import { BatchRPCResponse } from "src/services/rpc";
 import { useAddSudoRuleMutation } from "src/services/rpcSudoRules";
 interface PropsToAddGroup {
@@ -23,9 +23,6 @@ interface PropsToAddGroup {
 }
 
 const AddSudoRule = (props: PropsToAddGroup) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   const [executeRuleAddCommand] = useAddSudoRuleMutation();
 
   // Set rules names list
@@ -116,11 +113,7 @@ const AddSudoRule = (props: PropsToAddGroup) => {
           handleAPIError(error);
         } else {
           // Set alert: success
-          alerts.addAlert(
-            "add-sudorule-success",
-            "New sudo rule added",
-            "success"
-          );
+          addAlert("add-sudorule-success", "New sudo rule added", "success");
 
           // Set status flag: success
           isAdditionSuccess = true;
@@ -272,7 +265,6 @@ const AddSudoRule = (props: PropsToAddGroup) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-sudo-rule-modal"
         variantType="small"

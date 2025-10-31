@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { Button } from "@patternfly/react-core";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // RPC
 import {
   useDnsZoneDisableMutation,
@@ -24,9 +24,6 @@ interface EnableDisableDnsZonesModalProps {
 }
 
 const EnableDisableDnsZonesModal = (props: EnableDisableDnsZonesModalProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // RPC calls
   const [disableRule] = useDnsZoneDisableMutation();
   const [enableRule] = useDnsZoneEnableMutation();
@@ -40,10 +37,10 @@ const EnableDisableDnsZonesModal = (props: EnableDisableDnsZonesModalProps) => {
       if ("data" in response) {
         const { data } = response;
         if (data?.error) {
-          alerts.addAlert("error", data.error, "danger");
+          addAlert("error", data.error, "danger");
         }
         if (data?.result) {
-          alerts.addAlert("success", "DNS zone status changed", "success");
+          addAlert("success", "DNS zone status changed", "success");
           // Clear selected elements
           props.setElementsList([]);
           // Refresh data
@@ -88,7 +85,6 @@ const EnableDisableDnsZonesModal = (props: EnableDisableDnsZonesModalProps) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ConfirmationModal
         dataCy="dns-zones-enable-disable-modal"
         title={capitalizeFirstLetter(props.operation) + " confirmation"}

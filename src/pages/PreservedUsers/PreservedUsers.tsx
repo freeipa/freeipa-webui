@@ -34,7 +34,7 @@ import DeleteUsers from "src/components/modals/UserModals/DeleteUsers";
 import StagePreservedUsers from "src/components/modals/UserModals/StagePreservedUsers";
 import RestorePreservedUsers from "src/components/modals/UserModals/RestorePreservedUsers";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors
@@ -60,9 +60,6 @@ const PreservedUsers = () => {
   React.useEffect(() => {
     document.title = browserTitle;
   }, [browserTitle]);
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // Retrieve API version from environment data
   const apiVersion = useAppSelector(
@@ -234,7 +231,7 @@ const PreservedUsers = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
+          addAlert(
             "submit-search-value-error",
             error || "Error when searching for preserved users",
             "danger"
@@ -537,7 +534,6 @@ const PreservedUsers = () => {
       onClose={onCloseContextualPanel}
     >
       <div>
-        <alerts.ManagedAlerts />
         <PageSection hasBodyWrapper={false}>
           <TitleLayout
             id="preserved users title"

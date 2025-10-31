@@ -7,7 +7,7 @@ import { SubId, User } from "src/utils/datatypes/globalDataTypes";
 import MemberOfTableSubIds from "./MemberOfTableSubIds";
 import MemberOfSubIdToolbar from "./MemberOfSubIdToolbar";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // RPC
 import {
   useAssignSubIdsMutation,
@@ -25,9 +25,6 @@ interface MemberOfSubIdsProps {
 }
 
 const MemberOfSubIds = (props: MemberOfSubIdsProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   const [searchParams, setSearchParams] = useSearchParams();
 
   // API calls
@@ -106,24 +103,20 @@ const MemberOfSubIds = (props: MemberOfSubIdsProps) => {
   // Assign Subordinate IDs
   const onAssignSubIds = () => {
     if (!props.user.uid) {
-      alerts.addAlert(
-        "assign-ids-error-missing-uid",
-        "User ID is missing",
-        "danger"
-      );
+      addAlert("assign-ids-error-missing-uid", "User ID is missing", "danger");
       return;
     }
     assignSubIds(props.user.uid).then((response) => {
       if ("data" in response) {
         if (response.data?.error) {
-          alerts.addAlert(
+          addAlert(
             "assign-ids-error",
             "Error assigning Subordinate IDs",
             "danger"
           );
         } else {
           const data = response.data?.result;
-          alerts.addAlert("assign-ids-success", data?.summary, "success");
+          addAlert("assign-ids-success", data?.summary, "success");
           props.onRefreshUserData();
         }
       }
@@ -132,7 +125,6 @@ const MemberOfSubIds = (props: MemberOfSubIdsProps) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <MemberOfSubIdToolbar
         refreshButtonEnabled={!props.isUserDataLoading}
         onRefreshButtonClick={props.onRefreshUserData}

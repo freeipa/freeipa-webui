@@ -14,7 +14,7 @@ import PasswordInput from "src/components/layouts/PasswordInput";
 import { ErrorResult } from "src/services/rpc";
 import { useSetHostPasswordMutation } from "src/services/rpcHosts";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 
 interface PropsToResetPassword {
   host: string;
@@ -24,9 +24,6 @@ interface PropsToResetPassword {
 }
 
 const HostSetPassword = (props: PropsToResetPassword) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // RPC hooks
   const [setPassword] = useSetHostPasswordMutation();
 
@@ -139,7 +136,7 @@ const HostSetPassword = (props: PropsToResetPassword) => {
           // Refresh data
           props.onRefresh();
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             "set-password-success",
             "Set one-time password for host '" + props.host + "'",
             "success"
@@ -147,7 +144,7 @@ const HostSetPassword = (props: PropsToResetPassword) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("set-password-error", errorMessage.message, "danger");
+          addAlert("set-password-error", errorMessage.message, "danger");
         }
       }
     });
@@ -179,7 +176,6 @@ const HostSetPassword = (props: PropsToResetPassword) => {
   ];
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="host-set-password-modal"
         variantType="small"

@@ -15,7 +15,7 @@ import {
   TextInput,
 } from "@patternfly/react-core";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import { useAppSelector } from "src/store/hooks";
 // Modals
 import ModalWithFormLayout, {
@@ -47,9 +47,6 @@ interface PropsToIssueNewCertificate {
 }
 
 const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // RPC hooks
   const [addCertRequest] = useAddCertRequestMutation();
   const certAuthQuery = useGetCertificateAuthorityQuery();
@@ -216,7 +213,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
           // Close modal
           resetFieldsAndClose();
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             "add-certificate-success",
             "Added certificate to '" + props.id + "'",
             "success"
@@ -224,11 +221,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
-            "add-certificate-error",
-            errorMessage.message,
-            "danger"
-          );
+          addAlert("add-certificate-error", errorMessage.message, "danger");
         }
         // Refresh data to show new changes in the UI
         props.onRefresh();
@@ -387,7 +380,6 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="issue-new-certificate-modal"
         variantType="medium"

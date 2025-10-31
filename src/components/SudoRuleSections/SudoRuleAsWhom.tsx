@@ -27,7 +27,7 @@ import {
 // Utils
 import { containsAny } from "src/utils/utils";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 
 interface SudoRuleAsWhomProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -66,9 +66,6 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
   ) => {
     setActiveRunAsGroupsTabKey(tabIndex);
   };
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // API calls
   const [addRunAs] = useAddRunAsMutation();
@@ -115,7 +112,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         results.forEach((result) => {
           // Check if any errors
           if (result.error !== null) {
-            alerts.addAlert(
+            addAlert(
               "as-whom-add-user-external-error",
               "Error: " + result.error,
               "danger"
@@ -130,7 +127,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
               containsAny(externalsFromResponse, newUsersToAdd)
             ) {
               // Set alert: success
-              alerts.addAlert(
+              addAlert(
                 "as-whom-add-user-external-success",
                 "Added new item(s) to '" + props.rule.cn + "'",
                 "success"
@@ -142,7 +139,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         });
       } else {
         // Assume error
-        alerts.addAlert(
+        addAlert(
           "as-whom-add-user-external-error",
           "Error: " + (response.error ? response.error : "Unknown error"),
           "danger"
@@ -162,14 +159,14 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Show toast notification: success
-            alerts.addAlert("save-success", "Sudo rule modified", "success");
+            addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new runAs users
             onAddRunAsUser(newUsersToAdd);
           } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert("save-error", errorMessage.message, "danger");
+            addAlert("save-error", errorMessage.message, "danger");
           }
         }
       });
@@ -202,7 +199,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
             !containsAny(externalsFromResponse, usersToDelete)
           ) {
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               "as-whom-remove-user-external-success",
               "Removed item(s) from " + props.rule.cn,
               "success"
@@ -215,7 +212,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
             results.error ||
             results.failed.ipasudorunas.user.length > 0
           ) {
-            alerts.addAlert(
+            addAlert(
               "as-whom-remove-user-external-error",
               "Error: " + results.error,
               "danger"
@@ -245,7 +242,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         results.forEach((result) => {
           // Check if any errors
           if (result.error !== null) {
-            alerts.addAlert(
+            addAlert(
               "as-whom-add-user-group-external-error",
               "Error: " + result.error,
               "danger"
@@ -260,7 +257,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
               containsAny(externalsFromResponse, newGroupsToAdd)
             ) {
               // Set alert: success
-              alerts.addAlert(
+              addAlert(
                 "as-whom-add-user-group-external-success",
                 "Added new item(s) to '" + props.rule.cn + "'",
                 "success"
@@ -272,7 +269,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         });
       } else {
         // Assume error
-        alerts.addAlert(
+        addAlert(
           "as-whom-add-user-group-external-error",
           "Error: " + (response.error ? response.error : "Unknown error"),
           "danger"
@@ -292,14 +289,14 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Show toast notification: success
-            alerts.addAlert("save-success", "Sudo rule modified", "success");
+            addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new runAs users
             onAddRunAsUsersGroups(newGroupsToAdd);
           } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert("save-error", errorMessage.message, "danger");
+            addAlert("save-error", errorMessage.message, "danger");
           }
         }
       });
@@ -332,7 +329,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
             !containsAny(externalsFromResponse, groupsToDelete)
           ) {
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               "as-whom-remove-user-group-external-success",
               "Removed item(s) from " + props.rule.cn,
               "success"
@@ -345,7 +342,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
             results.error ||
             results.failed.ipasudorunas.group.length > 0
           ) {
-            alerts.addAlert(
+            addAlert(
               "as-whom-remove-user-group-external-error",
               "Error: " + results.error,
               "danger"
@@ -375,7 +372,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         results.forEach((result) => {
           // Check if any errors
           if (result.error !== null) {
-            alerts.addAlert(
+            addAlert(
               "as-whom-add-user-group-external-error",
               "Error: " + result.error,
               "danger"
@@ -391,7 +388,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
               containsAny(externalsFromResponse, newGroupsToAdd)
             ) {
               // Set alert: success
-              alerts.addAlert(
+              addAlert(
                 "as-whom-add-group-external-success",
                 "Added new item(s) to '" + props.rule.cn + "'",
                 "success"
@@ -403,7 +400,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         });
       } else {
         // Assume error
-        alerts.addAlert(
+        addAlert(
           "as-whom-add-group-external-error",
           "Error: " + (response.error ? response.error : "Unknown error"),
           "danger"
@@ -423,14 +420,14 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Show toast notification: success
-            alerts.addAlert("save-success", "Sudo rule modified", "success");
+            addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new runAs users
             onAddRunAsGroups(newGroupsToAdd);
           } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert("save-error", errorMessage.message, "danger");
+            addAlert("save-error", errorMessage.message, "danger");
           }
         }
       });
@@ -464,7 +461,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
             !containsAny(externalsFromResponse, groupsToDelete)
           ) {
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               "as-whom-remove-group-external-success",
               "Removed item(s) from " + props.rule.cn,
               "success"
@@ -477,7 +474,7 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
             results.error ||
             results.failed.ipasudorunas.group.length > 0
           ) {
-            alerts.addAlert(
+            addAlert(
               "as-whom-remove-group-external-error",
               "Error: " + results.error,
               "danger"
@@ -568,7 +565,6 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       {/* Filter: toggle RunAs Users */}
       {filterRunAsUser}
       {/* Tabs RunAs users*/}

@@ -18,7 +18,7 @@ import PasswordInput from "src/components/layouts/PasswordInput";
 // RPC
 import { IdpModPayload, useIdpModMutation } from "src/services/rpcIdp";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 
 interface PropsToResetIdpPassword {
   idpId: string;
@@ -29,9 +29,6 @@ interface PropsToResetIdpPassword {
 }
 
 const ResetIdpPassword = (props: PropsToResetIdpPassword) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // RPC
   const [resetPassword] = useIdpModMutation();
 
@@ -145,11 +142,11 @@ const ResetIdpPassword = (props: PropsToResetIdpPassword) => {
       if ("data" in response) {
         const data = response.data;
         if (data?.error) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          addAlert("error", (data.error as Error).message, "danger");
         }
         if (data?.result) {
           props.onIdpRefChange(data.result.result);
-          alerts.addAlert(
+          addAlert(
             "success",
             "Identity Provider password successfully updated",
             "success"
@@ -190,21 +187,18 @@ const ResetIdpPassword = (props: PropsToResetIdpPassword) => {
 
   // Return component
   return (
-    <>
-      <alerts.ManagedAlerts />
-      <ModalWithFormLayout
-        dataCy="reset-password-modal"
-        variantType="small"
-        modalPosition="top"
-        title="Reset password"
-        formId="reset-password-form"
-        fields={fields}
-        show={props.isOpen}
-        onSubmit={onResetPassword}
-        onClose={resetFieldsAndCloseModal}
-        actions={actions}
-      />
-    </>
+    <ModalWithFormLayout
+      dataCy="reset-password-modal"
+      variantType="small"
+      modalPosition="top"
+      title="Reset password"
+      formId="reset-password-form"
+      fields={fields}
+      show={props.isOpen}
+      onSubmit={onResetPassword}
+      onClose={resetFieldsAndCloseModal}
+      actions={actions}
+    />
   );
 };
 

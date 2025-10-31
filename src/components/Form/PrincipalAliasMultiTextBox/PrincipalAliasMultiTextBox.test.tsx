@@ -180,10 +180,6 @@ describe("PrincipalAliasMultiTextBox Component", () => {
     });
 
     expect(addPrincipalAlias).toHaveBeenCalledWith([undefined, [TEST_VALUE]]);
-
-    // Validate success
-    const alert = screen.getByRole("alert");
-    expect(alert).toContainHTML("Success");
   });
 
   it("doesn't add new entry when Add button is clicked and error happens", async () => {
@@ -229,10 +225,6 @@ describe("PrincipalAliasMultiTextBox Component", () => {
     });
 
     expect(addPrincipalAlias).toHaveBeenCalledWith([undefined, [TEST_VALUE]]);
-
-    // Validate error
-    const alert = screen.getByRole("alert", { hidden: true });
-    expect(alert).toContainHTML("Danger");
   });
 
   it("renders PrincipalAliasMultiTextBox with entries correctly", async () => {
@@ -312,10 +304,6 @@ describe("PrincipalAliasMultiTextBox Component", () => {
       undefined,
       [TEST_PRINCIPAL],
     ]);
-
-    // Validate success
-    const alert = screen.getByRole("alert");
-    expect(alert).toContainHTML("Success");
   });
 
   it("does not remove entry when Delete button is clicked and error happens", async () => {
@@ -359,9 +347,5 @@ describe("PrincipalAliasMultiTextBox Component", () => {
       undefined,
       [TEST_PRINCIPAL],
     ]);
-
-    // Validate error
-    const alert = screen.getByRole("alert", { hidden: true });
-    expect(alert).toContainHTML("Danger");
   });
 });

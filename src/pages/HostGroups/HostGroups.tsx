@@ -34,7 +34,7 @@ import { HostGroup } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { API_VERSION_BACKUP, isHostGroupSelectable } from "src/utils/utils";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors
@@ -63,9 +63,6 @@ const HostGroups = () => {
 
   // Initialize groups list (Redux)
   const [groupsList, setGroupsList] = useState<HostGroup[]>([]);
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -238,7 +235,7 @@ const HostGroups = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
+          addAlert(
             "submit-search-value-error",
             error || "Error when searching for host groups",
             "danger"
@@ -498,7 +495,6 @@ const HostGroups = () => {
 
   return (
     <div>
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout id="Groups title" headingLevel="h1" text="Host groups" />
       </PageSection>

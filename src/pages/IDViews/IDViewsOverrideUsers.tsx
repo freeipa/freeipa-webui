@@ -12,7 +12,7 @@ import {
 // Hooks
 import useApiError from "src/hooks/useApiError";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Layouts
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
@@ -45,7 +45,6 @@ interface PropsToOverrides {
 }
 
 const IDViewsOverrideUsers = (props: PropsToOverrides) => {
-  const alerts = useAlerts();
   const globalErrors = useApiError([]);
 
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -158,7 +157,7 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
+          addAlert(
             "submit-search-value-error",
             error || "Error when searching for override users",
             "danger"
@@ -224,7 +223,7 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
       dataResponse.isError &&
       dataResponse.error !== undefined
     ) {
-      alerts.addAlert(
+      addAlert(
         "add-user-error",
         "Failed to query override users: " + dataResponse.error,
         "danger"

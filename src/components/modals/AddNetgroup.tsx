@@ -11,7 +11,7 @@ import ErrorModal from "./ErrorModal";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Hooks
-import useAlerts from "../../hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import { FindRPCResponse } from "../../services/rpc";
 import {
   GroupAddPayload,
@@ -26,9 +26,6 @@ interface PropsToAddGroup {
 }
 
 const AddNetgroup = (props: PropsToAddGroup) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   const [executeGroupAddCommand] = useAddNetgroupMutation();
 
   // Set host names list
@@ -124,11 +121,7 @@ const AddNetgroup = (props: PropsToAddGroup) => {
           handleAPIError(error);
         } else {
           // Set alert: success
-          alerts.addAlert(
-            "add-netgroup-success",
-            "New netgroup added",
-            "success"
-          );
+          addAlert("add-netgroup-success", "New netgroup added", "success");
 
           // Set status flag: success
           isAdditionSuccess = true;
@@ -280,7 +273,6 @@ const AddNetgroup = (props: PropsToAddGroup) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-netgroup-modal"
         variantType="small"

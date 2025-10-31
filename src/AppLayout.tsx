@@ -22,8 +22,9 @@ import {
   Brand,
 } from "@patternfly/react-core";
 import React from "react";
+// Alerts
+import ManagedAlerts from "./components/ManagedAlerts";
 // Icons
-
 import { UserIcon } from "@patternfly/react-icons";
 import { KeyIcon } from "@patternfly/react-icons";
 import { CogIcon } from "@patternfly/react-icons";
@@ -220,17 +221,20 @@ const AppLayout = (props: PropsToAppLayout) => {
   );
 
   return (
-    <Page
-      mainContainerId={pageId}
-      masthead={Header}
-      sidebar={Sidebar}
-      isManagedSidebar={true}
-      skipToContent={PageSkipToContent}
-      className="--pf-t--global--text--color--regular"
-      isContentFilled
-    >
-      {props.children}
-    </Page>
+    <>
+      <ManagedAlerts />
+      <Page
+        mainContainerId={pageId}
+        masthead={Header}
+        sidebar={Sidebar}
+        isManagedSidebar={true}
+        skipToContent={PageSkipToContent}
+        className="--pf-t--global--text--color--regular"
+        isContentFilled
+      >
+        {props.children}
+      </Page>
+    </>
   );
 };
 

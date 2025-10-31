@@ -42,7 +42,7 @@ import {
   useChangeDefaultGroupMutation,
 } from "src/services/rpcAutomember";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { useHostGroupsRulesData } from "src/hooks/useHostGroupRules";
@@ -96,9 +96,6 @@ const AutoMemHostRules = () => {
   >([]);
   const [previousDefaultGroup, setPreviousDefaultGroup] =
     React.useState<string>(NO_SELECTION);
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -213,14 +210,10 @@ const AutoMemHostRules = () => {
       if ("data" in result) {
         setDefaultGroup(group);
         setPreviousDefaultGroup(group);
-        alerts.addAlert(
-          "default-group-success",
-          "Default group updated",
-          "success"
-        );
+        addAlert("default-group-success", "Default group updated", "success");
         onCloseConfirmationModal();
       } else {
-        alerts.addAlert(
+        addAlert(
           "default-group-failure",
           "Default group not updated",
           "danger"
@@ -601,7 +594,6 @@ const AutoMemHostRules = () => {
 
   return (
     <div>
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id="Automember host groups title"

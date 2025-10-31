@@ -18,7 +18,7 @@ import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 // Redux
 import { useAppSelector } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Layouts
@@ -57,9 +57,6 @@ const StageUsers = () => {
   React.useEffect(() => {
     document.title = browserTitle;
   }, [browserTitle]);
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -235,7 +232,7 @@ const StageUsers = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
+          addAlert(
             "submit-search-value-error",
             error || "Error when searching for stage users",
             "danger"
@@ -541,7 +538,6 @@ const StageUsers = () => {
       onClose={onCloseContextualPanel}
     >
       <div>
-        <alerts.ManagedAlerts />
         <PageSection hasBodyWrapper={false}>
           <TitleLayout
             id="stage users title"

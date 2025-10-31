@@ -12,7 +12,7 @@ import MemberTable from "src/components/tables/MembershipTable";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // RPC
 import { ErrorResult } from "src/services/rpc";
@@ -34,9 +34,6 @@ interface MemberOfHbacServicesProps {
 }
 
 const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
     useListPageSearchParams();
 
@@ -173,10 +170,10 @@ const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
             if (response.data.result.results[0].error) {
               const errorMessage = response.data.result.results[0]
                 .error as string;
-              alerts.addAlert("add-member-error", errorMessage, "danger");
+              addAlert("add-member-error", errorMessage, "danger");
             } else {
               // Set alert: success
-              alerts.addAlert(
+              addAlert(
                 "add-member-success",
                 `Assigned '${props.id}' to HBAC service groups`,
                 "success"
@@ -189,7 +186,7 @@ const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert("add-member-error", errorMessage.message, "danger");
+            addAlert("add-member-error", errorMessage.message, "danger");
           }
         }
         setSpinning(false);
@@ -205,7 +202,7 @@ const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               "remove-hbac-services-success",
               `Removed '${props.id}' from HBAC service groups`,
               "success"
@@ -221,7 +218,7 @@ const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert(
+            addAlert(
               "remove-hbac-services-error",
               errorMessage.message,
               "danger"
@@ -235,7 +232,6 @@ const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}

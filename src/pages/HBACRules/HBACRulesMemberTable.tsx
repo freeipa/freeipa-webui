@@ -6,7 +6,7 @@ import SettingsTableLayout from "src/components/layouts/SettingsTableLayout";
 import DualListLayout from "src/components/layouts/DualListLayout";
 import RemoveHBACRuleMembersModal from "src/components/modals/HbacModals/RemoveHBACRuleMembers";
 // Hooks
-import useAlerts from "../../hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // React Router DOM
 import { Link } from "react-router";
 // RPC
@@ -27,9 +27,6 @@ interface PropsToTable {
 }
 
 const HBACRulesMemberTable = (props: PropsToTable) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   const [addMemberToHbacRule] = useAddMembersToHbacRuleMutation();
   const [removeMembersFromHbacRule] = useRemoveMembersFromHbacRuleMutation();
 
@@ -131,11 +128,7 @@ const HBACRulesMemberTable = (props: PropsToTable) => {
         const results = response.data?.result.results;
         for (const result in results) {
           if (results[result].error) {
-            alerts.addAlert(
-              "add-member-error",
-              results[result].error,
-              "danger"
-            );
+            addAlert("add-member-error", results[result].error, "danger");
             setAddSpinning(false);
             return;
           }
@@ -145,7 +138,7 @@ const HBACRulesMemberTable = (props: PropsToTable) => {
         setMembers(newRuleMembers);
         setSearchValue("");
         // Set alert: success
-        alerts.addAlert(
+        addAlert(
           "add-member-success",
           "Added " +
             (props.fromLabel ? props.fromLabel : props.from) +
@@ -168,7 +161,7 @@ const HBACRulesMemberTable = (props: PropsToTable) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               "remove-member-success",
               "Removed " +
                 (props.fromLabel ? props.fromLabel : props.from) +
@@ -191,11 +184,7 @@ const HBACRulesMemberTable = (props: PropsToTable) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert(
-              "remove-member-error",
-              errorMessage.message,
-              "danger"
-            );
+            addAlert("remove-member-error", errorMessage.message, "danger");
           }
         }
         setDeleteSpinning(false);
@@ -378,7 +367,6 @@ const HBACRulesMemberTable = (props: PropsToTable) => {
 
   return (
     <div className="pf-v6-u-mr-md pf-v6-u-ml-xl">
-      <alerts.ManagedAlerts />
       <SettingsTableLayout
         ariaLabel={props.from + " table in HBAC rules"}
         variant="compact"

@@ -6,7 +6,7 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
 import DeletedElementsTable from "src/components/tables/DeletedElementsTable";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Data types
@@ -38,7 +38,6 @@ interface PropsToDeleteRule {
 
 const DeleteRule = (props: PropsToDeleteRule) => {
   // Alerts
-  const alerts = useAlerts();
 
   // RPC
   const [deleteRuleCommand] = useDeleteFromAutomemberMutation();
@@ -98,14 +97,14 @@ const DeleteRule = (props: PropsToDeleteRule) => {
         const error = data?.error as FetchBaseQueryError | SerializedError;
 
         if (error) {
-          alerts.addAlert(
+          addAlert(
             "delete-rule-error",
             JSON.stringify(error, null, 2),
             "danger"
           );
         } else {
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             "delete-rule-success",
             "The selected rules have been removed successfully",
             "success"
@@ -151,7 +150,6 @@ const DeleteRule = (props: PropsToDeleteRule) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="delete-rule-modal"
         variantType="medium"

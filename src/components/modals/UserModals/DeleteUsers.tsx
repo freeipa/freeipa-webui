@@ -23,7 +23,7 @@ import ErrorModal from "src/components/modals/ErrorModal";
 // Data types
 import { ErrorData, User } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Routing
 import { useNavigate } from "react-router";
 
@@ -54,7 +54,6 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
   const navigate = useNavigate();
 
   // Alerts
-  const alerts = useAlerts();
 
   // Define 'executeUserDelCommand' to add user data to IPA server
   const [executeUserDelCommand] = useBatchMutCommandMutation();
@@ -241,17 +240,9 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
 
             // Show alert: success
             if (isDeleteChecked) {
-              alerts.addAlert(
-                "remove-users-success",
-                "Users removed",
-                "success"
-              );
+              addAlert("remove-users-success", "Users removed", "success");
             } else {
-              alerts.addAlert(
-                "preserve-users-success",
-                "Users preserved",
-                "success"
-              );
+              addAlert("preserve-users-success", "Users preserved", "success");
             }
             // Redirect to main page
             if (props.from === "active-users") {
@@ -371,7 +362,6 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
   // Render 'DeleteUsers'
   return (
     <>
-      <alerts.ManagedAlerts />
       {isDeleteChecked ? modalDelete : modalPreserve}
       {isModalErrorOpen && (
         <ErrorModal

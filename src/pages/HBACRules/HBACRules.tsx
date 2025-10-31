@@ -33,7 +33,7 @@ import AddHBACRule from "src/components/modals/HbacModals/AddHBACRule";
 import DeleteHBACRule from "src/components/modals/HbacModals/DeleteHBACRule";
 import DisableEnableHBACRules from "src/components/modals/HbacModals/DisableEnableHBACRules";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Utils
 import { API_VERSION_BACKUP, isHbacRuleSelectable } from "src/utils/utils";
@@ -62,9 +62,6 @@ const HBACRules = () => {
   ) as string;
 
   const [rulesList, setRulesList] = useState<HBACRule[]>([]);
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -259,7 +256,7 @@ const HBACRules = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
+          addAlert(
             "submit-search-value-error",
             error || "Error when searching for HBAC rules",
             "danger"
@@ -577,7 +574,6 @@ const HBACRules = () => {
   // Render 'Active users'
   return (
     <div>
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout id="hbacrules title" headingLevel="h1" text="HBAC rules" />
       </PageSection>

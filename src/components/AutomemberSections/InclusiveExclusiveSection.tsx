@@ -3,7 +3,7 @@ import React from "react";
 import { Td, Th, Tr } from "@patternfly/react-table";
 import { Button } from "@patternfly/react-core";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // RPC
 import {
   AddConditionPayload,
@@ -33,9 +33,6 @@ interface PropsToInclusiveExclusiveSection {
 }
 
 const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // ACI attributes to use in Inclusive/Exclusive sections
   const userAciAttrs = props.metadata.objects?.user?.aciattrs || [];
 
@@ -259,7 +256,7 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
       if ("data" in response) {
         const responseData = response.data;
         if (responseData?.result) {
-          alerts.addAlert(
+          addAlert(
             "add-automember-condition-success",
             "Automember condition added",
             "success"
@@ -268,7 +265,7 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
           resetValues();
           onChangeAddModalVisibility();
         } else if (responseData?.error) {
-          alerts.addAlert(
+          addAlert(
             "add-automember-condition-error",
             "Failed to add Automember condition: " + responseData.error,
             "danger"
@@ -294,7 +291,7 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
       if ("data" in response) {
         const responseData = response.data;
         if (responseData?.result) {
-          alerts.addAlert(
+          addAlert(
             "add-automember-condition-success",
             "Automember condition added",
             "success"
@@ -302,7 +299,7 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
           props.onRefresh();
           resetValues();
         } else if (responseData?.error) {
-          alerts.addAlert(
+          addAlert(
             "add-automember-condition-error",
             "Failed to add Automember condition: " + responseData.error,
             "danger"
@@ -402,16 +399,12 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
       if ("data" in response) {
         const responseData = response.data;
         if (responseData?.result) {
-          alerts.addAlert(
-            "remove-condition-success",
-            "Item(s) removed",
-            "success"
-          );
+          addAlert("remove-condition-success", "Item(s) removed", "success");
           props.onRefresh();
           setSelectedEntries([]);
           onChangeDeleteModalVisibility();
         } else if (responseData?.error) {
-          alerts.addAlert(
+          addAlert(
             "remove-condition-error",
             "Failed to remove item(s): " + responseData.error,
             "danger"
@@ -424,7 +417,6 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <SettingsTableLayout
         ariaLabel={"Options table in sudo rules settings page"}
         variant="compact"

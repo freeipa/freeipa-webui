@@ -14,7 +14,7 @@ import {
 import { DnsServer, Metadata } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Utils
 import { dnsServerAsRecord } from "src/utils/dnsServersUtils";
 // Icons
@@ -45,9 +45,6 @@ interface DnsServersSettingsProps {
 }
 
 const DnsServersSettings = (props: DnsServersSettingsProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
 
@@ -70,7 +67,7 @@ const DnsServersSettings = (props: DnsServersSettingsProps) => {
   const onRevert = () => {
     props.onDnsServerChange(props.originalDnsServer);
     props.onRefresh();
-    alerts.addAlert("revert-success", "DNS server data reverted", "success");
+    addAlert("revert-success", "DNS server data reverted", "success");
   };
 
   // Helper method to build the payload based on values
@@ -111,11 +108,11 @@ const DnsServersSettings = (props: DnsServersSettingsProps) => {
       if ("data" in response) {
         const data = response.data;
         if (data?.error) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          addAlert("error", (data.error as Error).message, "danger");
         }
         if (data?.result) {
           props.onDnsServerChange(data.result.result);
-          alerts.addAlert("success", "DNS server data updated", "success");
+          addAlert("success", "DNS server data updated", "success");
           props.onRefresh();
         }
       }
@@ -168,7 +165,6 @@ const DnsServersSettings = (props: DnsServersSettingsProps) => {
 
   return (
     <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-      <alerts.ManagedAlerts />
       <Sidebar isPanelRight>
         <SidebarPanel variant="sticky">
           <HelpTextWithIconLayout
