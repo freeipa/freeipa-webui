@@ -23,7 +23,6 @@ import {
 } from "@patternfly/react-core";
 import React from "react";
 // Icons
-
 import { UserIcon } from "@patternfly/react-icons";
 import { KeyIcon } from "@patternfly/react-icons";
 import { CogIcon } from "@patternfly/react-icons";

@@ -13,7 +13,7 @@ import {
   SidebarPanel,
 } from "@patternfly/react-core";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import { useDnsConfigData } from "src/hooks/useDnsConfigData";
 // RPC
@@ -40,8 +40,6 @@ import KebabLayout from "src/components/layouts/KebabLayout";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 
 const DnsGlobalConfig = () => {
-  const alerts = useAlerts();
-
   // API calls
   const dnsConfigData = useDnsConfigData();
   const [saveConfigInfo] = useDnsGlobalConfigModMutation();
@@ -71,7 +69,7 @@ const DnsGlobalConfig = () => {
   const onRevert = () => {
     dnsConfigData.setDnsConfig(dnsConfigData.originalDnsConfig);
     dnsConfigData.refetch();
-    alerts.addAlert(
+    addAlert(
       "revert-success",
       "DNS global configuration data reverted",
       "success"
@@ -94,15 +92,11 @@ const DnsGlobalConfig = () => {
       if ("data" in response) {
         const data = response.data;
         if (data?.error) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          addAlert("error", (data.error as Error).message, "danger");
         }
         if (data?.result) {
           dnsConfigData.setDnsConfig(data.result.result);
-          alerts.addAlert(
-            "success",
-            "DNS global configuration updated",
-            "success"
-          );
+          addAlert("success", "DNS global configuration updated", "success");
         }
         // Reset values. Disable 'revert' and 'save' buttons
         dnsConfigData.refetch();
@@ -120,10 +114,10 @@ const DnsGlobalConfig = () => {
       if ("data" in response) {
         const data = response.data;
         if (data && "error" in data && data.error !== null) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          addAlert("error", (data.error as Error).message, "danger");
         }
         if (data && "result" in data) {
-          alerts.addAlert("success", "System DNS records updated", "success");
+          addAlert("success", "System DNS records updated", "success");
         }
       }
       setShowUpdateSystemDnsRecordsModal(false);
@@ -236,7 +230,6 @@ const DnsGlobalConfig = () => {
       toolbarItems={toolbarItems}
     >
       <>
-        <alerts.ManagedAlerts />
         <Sidebar isPanelRight className="pf-v6-u-mb-0">
           <SidebarPanel variant="sticky">
             <HelpTextWithIconLayout

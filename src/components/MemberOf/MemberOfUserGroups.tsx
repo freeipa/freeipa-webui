@@ -14,7 +14,7 @@ import MemberTable from "src/components/tables/MembershipTable";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // RPC
@@ -39,9 +39,6 @@ interface MemberOfUserGroupsProps {
 }
 
 const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   const {
     page,
     setPage,
@@ -209,7 +206,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               "add-member-success",
               `Assigned '${id}' to user groups`,
               "success"
@@ -221,7 +218,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert("add-member-error", errorMessage.message, "danger");
+            addAlert("add-member-error", errorMessage.message, "danger");
           }
         }
         setSpinning(false);
@@ -238,7 +235,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
           if ("data" in response) {
             if (response.data?.result) {
               // Set alert: success
-              alerts.addAlert(
+              addAlert(
                 "remove-user-groups-success",
                 `Removed '${id}' from user groups`,
                 "success"
@@ -255,7 +252,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
               // Set alert: error
               const errorMessage = response.data
                 .error as unknown as ErrorResult;
-              alerts.addAlert(
+              addAlert(
                 "remove-entry-groups-error",
                 errorMessage.message,
                 "danger"
@@ -271,7 +268,6 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   return (
     <>
       <Flex direction={{ default: "column" }}>
-        <alerts.ManagedAlerts />
         <MemberOfToolbar
           searchText={searchValue}
           onSearchTextChange={setSearchValue}

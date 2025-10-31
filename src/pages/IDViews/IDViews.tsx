@@ -37,7 +37,7 @@ import { IDView } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { API_VERSION_BACKUP, isViewSelectable } from "src/utils/utils";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors
@@ -78,9 +78,6 @@ const IDViews = () => {
 
   // Initialize views (Redux)
   const [viewsList, setViewsList] = useState<IDView[]>([]);
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -244,7 +241,7 @@ const IDViews = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
+          addAlert(
             "submit-search-value-error",
             error || "Error when searching for ID views",
             "danger"
@@ -372,7 +369,7 @@ const IDViews = () => {
     executeUnapplyHosts(selectedHosts).then((response) => {
       if ("data" in response) {
         if (response.data?.result) {
-          alerts.addAlert(
+          addAlert(
             "unapply-id-views-hosts-success",
             "ID views unapplied from " +
               response.data.result["completed"] +
@@ -384,7 +381,7 @@ const IDViews = () => {
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
+          addAlert(
             "unapply-id-views-hosts-error",
             "ID views unapplied from hosts failed: " + errorMessage.message,
             "danger"
@@ -404,7 +401,7 @@ const IDViews = () => {
     executeUnapplyHostgroups(selectedHostgroups).then((response) => {
       if ("data" in response) {
         if (response.data?.result) {
-          alerts.addAlert(
+          addAlert(
             "unapply-id-views-hosts-success",
             "ID views unapplied from " +
               response.data.result["completed"] +
@@ -416,7 +413,7 @@ const IDViews = () => {
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
+          addAlert(
             "unapply-id-views-hosts-error",
             "ID views unapplied from host groups failed: " +
               errorMessage.message,
@@ -633,7 +630,6 @@ const IDViews = () => {
 
   return (
     <div>
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout id="Views title" headingLevel="h1" text="ID views" />
       </PageSection>

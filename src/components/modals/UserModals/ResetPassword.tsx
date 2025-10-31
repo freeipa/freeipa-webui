@@ -18,7 +18,7 @@ import {
   useChangePasswordMutation,
 } from "src/services/rpcUsers";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import { useAppSelector } from "src/store/hooks";
 
 interface PropsToResetPassword {
@@ -29,9 +29,6 @@ interface PropsToResetPassword {
 }
 
 const ResetPassword = (props: PropsToResetPassword) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // Get current logged-in user info
   const loggedInUser = useAppSelector(
     (state) => state.global.loggedUserInfo.arguments
@@ -225,7 +222,7 @@ const ResetPassword = (props: PropsToResetPassword) => {
     // API call to reset password
     if (props.uid === undefined) {
       // Alert error: no uid
-      alerts.addAlert(
+      addAlert(
         "undefined-uid-error",
         "No user selected to reset password",
         "danger"
@@ -257,7 +254,7 @@ const ResetPassword = (props: PropsToResetPassword) => {
             // Refresh data
             props.onRefresh();
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               "reset-password-success",
               "Changed password for user '" + props.uid + "'",
               "success"
@@ -265,11 +262,7 @@ const ResetPassword = (props: PropsToResetPassword) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert(
-              "reset-password-error",
-              errorMessage.message,
-              "danger"
-            );
+            addAlert("reset-password-error", errorMessage.message, "danger");
           }
         }
       });
@@ -302,7 +295,6 @@ const ResetPassword = (props: PropsToResetPassword) => {
   ];
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="reset-password-modal"
         variantType="small"

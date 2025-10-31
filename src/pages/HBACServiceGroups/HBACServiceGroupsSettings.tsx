@@ -10,7 +10,7 @@ import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Data types
 import {
@@ -34,8 +34,6 @@ interface PropsToSettings {
 }
 
 const HBACServiceGroupsSettings = (props: PropsToSettings) => {
-  const alerts = useAlerts();
-
   // API
   const [saveService] = useSaveHbacServiceGroupMutation();
 
@@ -60,16 +58,12 @@ const HBACServiceGroupsSettings = (props: PropsToSettings) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Show toast notification: success
-          alerts.addAlert(
-            "save-success",
-            "HBAC service group modified",
-            "success"
-          );
+          addAlert("save-success", "HBAC service group modified", "success");
           props.onRefresh();
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("save-error", errorMessage.message, "danger");
+          addAlert("save-error", errorMessage.message, "danger");
           // Reset values. Disable 'revert' and 'save' buttons
           props.onResetValues();
         }
@@ -81,11 +75,7 @@ const HBACServiceGroupsSettings = (props: PropsToSettings) => {
   // 'Revert' handler method
   const onRevert = () => {
     props.onSvcGrpChange(props.originalSvcGrp);
-    alerts.addAlert(
-      "revert-success",
-      "HBAC service group data reverted",
-      "success"
-    );
+    addAlert("revert-success", "HBAC service group data reverted", "success");
   };
 
   // Toolbar
@@ -134,7 +124,6 @@ const HBACServiceGroupsSettings = (props: PropsToSettings) => {
   // Render component
   return (
     <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-      <alerts.ManagedAlerts />
       <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
         <TitleLayout
           key={0}

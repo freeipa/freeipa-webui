@@ -7,7 +7,7 @@ import {
   Spinner,
 } from "@patternfly/react-core";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // RPC
 import { useDnsZoneDeleteMutation } from "src/services/rpcDnsZones";
 // Data types
@@ -36,9 +36,6 @@ interface DeleteDnsZonesModalProps {
 }
 
 const DeleteDnsZonesModal = (props: DeleteDnsZonesModalProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   const navigate = useNavigate();
 
   // RPC calls
@@ -119,11 +116,7 @@ const DeleteDnsZonesModal = (props: DeleteDnsZonesModalProps) => {
             props.updateIsDeleteButtonDisabled(true);
             props.updateIsDeletion(true);
 
-            alerts.addAlert(
-              "remove-dnszones-success",
-              "DNS zones removed",
-              "success"
-            );
+            addAlert("remove-dnszones-success", "DNS zones removed", "success");
 
             setBtnSpinning(false);
             props.onClose();
@@ -202,7 +195,6 @@ const DeleteDnsZonesModal = (props: DeleteDnsZonesModalProps) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="dns-zones-delete-modal"
         variantType="medium"

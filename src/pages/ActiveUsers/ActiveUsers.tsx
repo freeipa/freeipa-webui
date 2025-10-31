@@ -40,7 +40,7 @@ import AddUser from "src/components/modals/UserModals/AddUser";
 import DeleteUsers from "src/components/modals/UserModals/DeleteUsers";
 import DisableEnableUsers from "src/components/modals/UserModals/DisableEnableUsers";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils
@@ -76,9 +76,6 @@ const ActiveUsers = () => {
 
   // Define 'executeCommand' to execute simple commands (via Mutation)
   const [executeAutoMemberRebuild] = useAutoMemberRebuildUsersMutation();
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -276,7 +273,7 @@ const ActiveUsers = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
+          addAlert(
             "submit-search-value-error",
             error || "Error when searching for users",
             "danger"
@@ -316,7 +313,7 @@ const ActiveUsers = () => {
   const onRebuildAutoMembership = () => {
     // Task can potentially run for a very long time, give feed back that we
     // at least started the task
-    alerts.addAlert(
+    addAlert(
       "rebuild-automember-start",
       "Starting automember rebuild membership task (this may take a long " +
         "time to complete) ...",
@@ -338,14 +335,14 @@ const ActiveUsers = () => {
             error = automemberError.message;
           }
 
-          alerts.addAlert(
+          addAlert(
             "rebuild-automember-error",
             error || "Error when rebuilding membership",
             "danger"
           );
         } else {
           // alert: success
-          alerts.addAlert(
+          addAlert(
             "rebuild-automember-success",
             "Automember rebuild membership task completed",
             "success"
@@ -747,7 +744,6 @@ const ActiveUsers = () => {
       onClose={onCloseContextualPanel}
     >
       <div>
-        <alerts.ManagedAlerts />
         <PageSection
           hasBodyWrapper={false}
           variant={PageSectionVariants.default}

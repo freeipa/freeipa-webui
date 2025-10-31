@@ -18,7 +18,7 @@ import {
 } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Utils
 import { dnsZoneAsRecord } from "src/utils/dnsZonesUtils";
 // Icons
@@ -59,9 +59,6 @@ interface DnsZonesSettingsProps {
 }
 
 const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
 
@@ -123,7 +120,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
   const onRevert = () => {
     props.onDnsZoneChange(props.originalDnsZone);
     props.onRefresh();
-    alerts.addAlert("revert-success", "DNS zone data reverted", "success");
+    addAlert("revert-success", "DNS zone data reverted", "success");
   };
 
   // Helper method to build the payload based on values
@@ -179,11 +176,11 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
       if ("data" in response) {
         const data = response.data;
         if (data?.error) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          addAlert("error", (data.error as Error).message, "danger");
         }
         if (data?.result) {
           props.onDnsZoneChange(data.result.result);
-          alerts.addAlert("success", "DNS zone data updated", "success");
+          addAlert("success", "DNS zone data updated", "success");
           // Disable 'revert' and 'save' buttons
           props.onRefresh();
         }
@@ -311,7 +308,6 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
         toolbarItems={toolbarFields}
         dataCy="dns-zones-settings"
       >
-        <alerts.ManagedAlerts />
         <Sidebar isPanelRight>
           <SidebarPanel variant="sticky">
             <HelpTextWithIconLayout

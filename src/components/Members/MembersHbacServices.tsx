@@ -11,7 +11,7 @@ import {
   HBACServiceGroup,
 } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
@@ -38,9 +38,6 @@ interface PropsToMembersHBACServices {
 }
 
 const MembersHBACServices = (props: PropsToMembersHBACServices) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // Get parameters from URL
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
     useListPageSearchParams();
@@ -184,7 +181,7 @@ const MembersHBACServices = (props: PropsToMembersHBACServices) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             "add-member-success",
             "Assigned new HBAC service members to '" + props.id + "'",
             "success"
@@ -196,7 +193,7 @@ const MembersHBACServices = (props: PropsToMembersHBACServices) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert("add-member-error", errorMessage.message, "danger");
+          addAlert("add-member-error", errorMessage.message, "danger");
         }
       }
       setSpinning(false);
@@ -216,7 +213,7 @@ const MembersHBACServices = (props: PropsToMembersHBACServices) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             "remove-members-success",
             "Removed HBAC service members from '" + props.id + "'",
             "success"
@@ -232,11 +229,7 @@ const MembersHBACServices = (props: PropsToMembersHBACServices) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert(
-            "remove-members-error",
-            errorMessage.message,
-            "danger"
-          );
+          addAlert("remove-members-error", errorMessage.message, "danger");
         }
       }
       setSpinning(false);
@@ -245,7 +238,6 @@ const MembersHBACServices = (props: PropsToMembersHBACServices) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}

@@ -10,7 +10,7 @@ import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Data types
 import { HostGroup, Metadata } from "../../utils/datatypes/globalDataTypes";
@@ -31,8 +31,6 @@ interface PropsToGroupsSettings {
 }
 
 const HostGroupsSettings = (props: PropsToGroupsSettings) => {
-  const alerts = useAlerts();
-
   // API
   const [saveGroup] = useSaveHostGroupMutation();
 
@@ -57,11 +55,11 @@ const HostGroupsSettings = (props: PropsToGroupsSettings) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Show toast notification: success
-          alerts.addAlert("save-success", "Host group modified", "success");
+          addAlert("save-success", "Host group modified", "success");
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("save-error", errorMessage.message, "danger");
+          addAlert("save-error", errorMessage.message, "danger");
         }
         // Reset values. Disable 'revert' and 'save' buttons
         props.onResetValues();
@@ -73,7 +71,7 @@ const HostGroupsSettings = (props: PropsToGroupsSettings) => {
   // 'Revert' handler method
   const onRevert = () => {
     props.onGroupChange(props.originalGroup);
-    alerts.addAlert("revert-success", "Host group data reverted", "success");
+    addAlert("revert-success", "Host group data reverted", "success");
   };
 
   // Toolbar
@@ -122,7 +120,6 @@ const HostGroupsSettings = (props: PropsToGroupsSettings) => {
   // Render component
   return (
     <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-      <alerts.ManagedAlerts />
       <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
         <TitleLayout
           key={0}

@@ -2,7 +2,6 @@ import React from "react";
 // PatternFly
 import { PageSection } from "@patternfly/react-core";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Components
 import TitleLayout from "./TitleLayout";
@@ -19,9 +18,6 @@ interface PageLayoutProps {
 }
 
 const PageLayout = (props: PageLayoutProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: props.pathname });
 
@@ -32,7 +28,6 @@ const PageLayout = (props: PageLayoutProps) => {
 
   return (
     <div>
-      {props.hasAlerts && <alerts.ManagedAlerts />}
       <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id={props.title + " title"}

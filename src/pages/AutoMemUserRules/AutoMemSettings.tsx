@@ -20,7 +20,7 @@ import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Data types
 import { Automember, Metadata } from "../../utils/datatypes/globalDataTypes";
@@ -49,8 +49,6 @@ interface PropsToSettings {
 }
 
 const AutoMemSettings = (props: PropsToSettings) => {
-  const alerts = useAlerts();
-
   // RPC calls
   const [saveAutomember] = useSaveAutomemberMutation();
 
@@ -124,13 +122,13 @@ const AutoMemSettings = (props: PropsToSettings) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Show toast notification: success
-          alerts.addAlert("save-success", "Entry updated", "success");
+          addAlert("save-success", "Entry updated", "success");
           // Refresh the page
           props.onRefresh();
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("save-error", errorMessage.message, "danger");
+          addAlert("save-error", errorMessage.message, "danger");
           // Reset values. Disable 'revert' and 'save' buttons
           props.onResetValues();
         }
@@ -143,11 +141,7 @@ const AutoMemSettings = (props: PropsToSettings) => {
   const onRevert = () => {
     props.onAutomemberChange(props.originalAutomemberRule);
     props.onRefresh();
-    alerts.addAlert(
-      "revert-success",
-      "Automember rule data reverted",
-      "success"
-    );
+    addAlert("revert-success", "Automember rule data reverted", "success");
   };
 
   // Toolbar
@@ -196,7 +190,6 @@ const AutoMemSettings = (props: PropsToSettings) => {
   // Render component
   return (
     <TabLayout id="automember-settings-page" toolbarItems={toolbarFields}>
-      <alerts.ManagedAlerts />
       <Sidebar isPanelRight>
         <SidebarPanel variant="sticky">
           <HelpTextWithIconLayout

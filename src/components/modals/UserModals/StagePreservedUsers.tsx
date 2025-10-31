@@ -20,7 +20,7 @@ import ErrorModal from "src/components/modals/ErrorModal";
 // Data types
 import { ErrorData } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 
 interface PropsToStagePreservedUsers {
   show: boolean;
@@ -32,7 +32,6 @@ interface PropsToStagePreservedUsers {
 
 const StagePreservedUsers = (props: PropsToStagePreservedUsers) => {
   // Alerts
-  const alerts = useAlerts();
 
   // Define 'executeUserStageCommand' to stage a preserved user
   const [executeUserStageCommand] = useBatchMutCommandMutation();
@@ -146,7 +145,7 @@ const StagePreservedUsers = (props: PropsToStagePreservedUsers) => {
             props.clearSelectedUsers();
 
             // Show alert: success
-            alerts.addAlert("stage-users-success", "Users staged", "success");
+            addAlert("stage-users-success", "Users staged", "success");
 
             // Close modal
             closeModal();
@@ -205,7 +204,6 @@ const StagePreservedUsers = (props: PropsToStagePreservedUsers) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       {modalStage}
       {isModalErrorOpen && (
         <ErrorModal

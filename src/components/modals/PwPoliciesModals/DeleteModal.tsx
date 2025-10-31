@@ -5,7 +5,7 @@ import { Content, ContentVariants, Button } from "@patternfly/react-core";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import DeletedElementsTable from "src/components/tables/DeletedElementsTable";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // RPC
@@ -38,7 +38,6 @@ interface PropsToDelete {
 
 const DeleteModal = (props: PropsToDelete) => {
   // Alerts
-  const alerts = useAlerts();
 
   // API calls
   const [deletePwPolicies] = usePwPolicyDeleteMutation();
@@ -147,7 +146,7 @@ const DeleteModal = (props: PropsToDelete) => {
             props.buttonsData.updateIsDeleteButtonDisabled(true);
             props.buttonsData.updateIsDeletion(true);
 
-            alerts.addAlert(
+            addAlert(
               "remove-pwpolicy-success",
               "Password policies removed",
               "success"
@@ -190,7 +189,6 @@ const DeleteModal = (props: PropsToDelete) => {
 
   const modalDelete: JSX.Element = (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="delete-pwpolicy-modal"
         variantType="medium"

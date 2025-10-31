@@ -29,7 +29,7 @@ import {
 // Utils
 import { containsAny } from "src/utils/utils";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import TitleLayout from "../layouts/TitleLayout";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -72,9 +72,6 @@ const RunCommands = (props: PropsToRunCommands) => {
   ) => {
     setActiveDenyTabKey(tabIndex);
   };
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // API calls
   const [addAllowCommand] = useAddAllowCommandToSudoRuleMutation();
@@ -137,7 +134,7 @@ const RunCommands = (props: PropsToRunCommands) => {
       results.forEach((result) => {
         // Check if any errors
         if (result.error !== null) {
-          alerts.addAlert(id + "-error", "Error: " + result.error, "danger");
+          addAlert(id + "-error", "Error: " + result.error, "danger");
         } else {
           // Infer the type of the result
           // Some values can be undefined after addition
@@ -154,7 +151,7 @@ const RunCommands = (props: PropsToRunCommands) => {
 
           if (containsAny(cmdsFromResponse, commandList)) {
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               id + "-success",
               "Added new item(s) to '" + props.rule.cn + "'",
               "success"
@@ -166,7 +163,7 @@ const RunCommands = (props: PropsToRunCommands) => {
       });
     } else {
       // Assume error
-      alerts.addAlert(
+      addAlert(
         id + "-error",
         "Error: " + (response.error ? response.error : "Unknown error"),
         "danger"
@@ -211,7 +208,7 @@ const RunCommands = (props: PropsToRunCommands) => {
 
         if (!containsAny(cmdsFromResponse, cmdListToRemove)) {
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             id + "-success",
             "Removed item(s) from " + props.rule.cn,
             "success"
@@ -227,7 +224,7 @@ const RunCommands = (props: PropsToRunCommands) => {
           result.failed.memberdenycmd.sudocmd.length > 0 ||
           result.failed.memberdenycmd.sudocmdgroup.length > 0
         ) {
-          alerts.addAlert(id + "-error", "Error: " + result.error, "danger");
+          addAlert(id + "-error", "Error: " + result.error, "danger");
         }
       }
     }
@@ -283,14 +280,14 @@ const RunCommands = (props: PropsToRunCommands) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Show toast notification: success
-            alerts.addAlert("save-success", "Sudo rule modified", "success");
+            addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new users
             onAddNewAllowCommand(commandsToAdd);
           } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert("save-error", errorMessage.message, "danger");
+            addAlert("save-error", errorMessage.message, "danger");
           }
         }
       });
@@ -345,14 +342,14 @@ const RunCommands = (props: PropsToRunCommands) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Show toast notification: success
-            alerts.addAlert("save-success", "Sudo rule modified", "success");
+            addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new users
             onAddNewAllowCommandGroup(cmdGroupsToAdd);
           } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert("save-error", errorMessage.message, "danger");
+            addAlert("save-error", errorMessage.message, "danger");
           }
         }
       });
@@ -407,14 +404,14 @@ const RunCommands = (props: PropsToRunCommands) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Show toast notification: success
-            alerts.addAlert("save-success", "Sudo rule modified", "success");
+            addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new users
             onAddNewDenyCommand(commandsToAdd);
           } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert("save-error", errorMessage.message, "danger");
+            addAlert("save-error", errorMessage.message, "danger");
           }
         }
       });
@@ -469,14 +466,14 @@ const RunCommands = (props: PropsToRunCommands) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Show toast notification: success
-            alerts.addAlert("save-success", "Sudo rule modified", "success");
+            addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new users
             onAddNewDenyCommandGroup(cmdGroupsToAdd);
           } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert("save-error", errorMessage.message, "danger");
+            addAlert("save-error", errorMessage.message, "danger");
           }
         }
       });
@@ -524,7 +521,6 @@ const RunCommands = (props: PropsToRunCommands) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       {/* Filter: toggle group */}
       {filter}
       {/* Tabs - Allow Commands */}

@@ -16,7 +16,7 @@ import { Th, Tr } from "@patternfly/react-table";
 // Data types
 import { Certificate } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Icons
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
@@ -37,9 +37,6 @@ interface TableEntry {
 }
 
 const CertificateMappingMatch = () => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({
     pathname: "cert-id-mapping-match",
@@ -96,7 +93,7 @@ const CertificateMappingMatch = () => {
       if ("data" in response && response.data?.result) {
         if (response.data.result.results[0].error) {
           const errorMessage = response.data.result.results[0].error as string;
-          alerts.addAlert("match-certificate-error-1", errorMessage, "danger");
+          addAlert("match-certificate-error-1", errorMessage, "danger");
         } else {
           const certData = response.data.result.results[1]
             .result[0] as Certificate;
@@ -123,7 +120,7 @@ const CertificateMappingMatch = () => {
           setTableElements(matchedUsers);
 
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             "match-certificate-success",
             response.data.result.results[0].summary,
             "success"
@@ -132,11 +129,7 @@ const CertificateMappingMatch = () => {
       } else if ("data" in response && response.data?.error) {
         // Set alert: error
         const errorMessage = response.data.error as unknown as ErrorResult;
-        alerts.addAlert(
-          "match-certificate-error",
-          errorMessage.message,
-          "danger"
-        );
+        addAlert("match-certificate-error", errorMessage.message, "danger");
       }
     });
   };
@@ -211,7 +204,6 @@ const CertificateMappingMatch = () => {
       toolbarItems={toolbarFields}
     >
       <>
-        <alerts.ManagedAlerts />
         <Sidebar isPanelRight>
           <SidebarPanel variant="sticky" className="pf-v6-u-pl-md">
             <HelpTextWithIconLayout

@@ -14,7 +14,7 @@ import MemberTable from "src/components/tables/MembershipTable";
 // Data types
 import { UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // RPC
 import { ErrorResult, MemberPayload } from "src/services/rpc";
@@ -36,9 +36,6 @@ interface PropsToMembersExternal {
 }
 
 const MembersExternal = (props: PropsToMembersExternal) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // Get parameters from URL
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
     useListPageSearchParams();
@@ -151,7 +148,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             "add-member-success",
             "Assigned new externals to " + entityType + " " + props.id,
             "success"
@@ -163,7 +160,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert("add-member-error", errorMessage.message, "danger");
+          addAlert("add-member-error", errorMessage.message, "danger");
         }
       }
       setSpinning(false);
@@ -183,7 +180,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             "remove-members-success",
             "Removed members from " + entityType + " '" + props.id + "'",
             "success"
@@ -199,11 +196,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert(
-            "remove-externals-error",
-            errorMessage.message,
-            "danger"
-          );
+          addAlert("remove-externals-error", errorMessage.message, "danger");
         }
       }
       setSpinning(false);
@@ -212,7 +205,6 @@ const MembersExternal = (props: PropsToMembersExternal) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}

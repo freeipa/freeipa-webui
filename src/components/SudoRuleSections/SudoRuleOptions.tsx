@@ -3,7 +3,7 @@ import React from "react";
 import { Td, Th, Tr } from "@patternfly/react-table";
 import { Button } from "@patternfly/react-core";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // RPC
 import {
   useAddOptionToSudoRuleMutation,
@@ -22,9 +22,6 @@ interface PropsToSudoRuleOptions {
 }
 
 const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // States
   const [selectedEntries, setSelectedEntries] = React.useState<string[]>([]);
   const [tableEntryList, setTableEntryList] = React.useState<string[]>(
@@ -239,17 +236,13 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
       if ("data" in response) {
         const responseData = response.data;
         if (responseData?.result) {
-          alerts.addAlert(
-            "add-sudo-option-success",
-            "Sudo option added",
-            "success"
-          );
+          addAlert("add-sudo-option-success", "Sudo option added", "success");
           setTableEntryList([...tableEntryList, newOption]);
           fullEntryList = [...fullEntryList, newOption];
           setNewOption("");
           onChangeAddModalVisibility();
         } else if (responseData?.error) {
-          alerts.addAlert(
+          addAlert(
             "add-sudo-option-error",
             "Failed to add sudo option: " + responseData.error,
             "danger"
@@ -318,7 +311,7 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
       if ("data" in response) {
         const responseData = response.data;
         if (responseData?.result) {
-          alerts.addAlert(
+          addAlert(
             "remove-sudo-option-success",
             "Sudo option(s) removed",
             "success"
@@ -332,7 +325,7 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
           setSelectedEntries([]);
           onChangeDeleteModalVisibility();
         } else if (responseData?.error) {
-          alerts.addAlert(
+          addAlert(
             "remove-sudo-option-error",
             "Failed to remove sudo option: " + responseData.error,
             "danger"
@@ -345,7 +338,6 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <SettingsTableLayout
         ariaLabel={"Options table in sudo rules settings page"}
         variant="compact"

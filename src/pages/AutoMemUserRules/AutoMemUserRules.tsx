@@ -42,7 +42,7 @@ import {
   useChangeDefaultGroupMutation,
 } from "src/services/rpcAutomember";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { useUserGroupsRulesData } from "src/hooks/useUserGroupsRules";
@@ -96,9 +96,6 @@ const AutoMemUserRules = () => {
   const [groupsAvailableToAdd, setGroupsAvailableToAdd] = React.useState<
     string[]
   >([]);
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -213,14 +210,10 @@ const AutoMemUserRules = () => {
       if ("data" in result) {
         setDefaultGroup(group);
         setPreviousDefaultGroup(group);
-        alerts.addAlert(
-          "default-group-success",
-          "Default group updated",
-          "success"
-        );
+        addAlert("default-group-success", "Default group updated", "success");
         onCloseConfirmationModal();
       } else {
-        alerts.addAlert(
+        addAlert(
           "default-group-failure",
           "Default group not updated",
           "danger"
@@ -601,7 +594,6 @@ const AutoMemUserRules = () => {
 
   return (
     <div>
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id="Automember user groups title"

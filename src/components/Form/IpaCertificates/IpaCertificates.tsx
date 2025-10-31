@@ -28,7 +28,7 @@ import {
 // Components
 import ExpandableCardLayout from "../../layouts/ExpandableCardLayout";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Utils
 import { parseDn } from "src/utils/utils";
 
@@ -58,9 +58,6 @@ interface DictWithName {
 }
 
 const IpaCertificates = (props: PropsToIpaCertificates) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // RTK hooks
   const [addCertificate] = useAddCertificateMutation();
   const [removeCertificate] = useRemoveCertificateMutation();
@@ -148,7 +145,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
           // Close modal
           setIsDeleteConfModalOpen(false);
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             "remove-certificate-success",
             "Removed certificates from user '" + idParam + "'",
             "success"
@@ -156,11 +153,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
-            "remove-certificate-error",
-            errorMessage.message,
-            "danger"
-          );
+          addAlert("remove-certificate-error", errorMessage.message, "danger");
         }
         // Refresh data to show new changes in the UI
         props.onRefresh();
@@ -390,7 +383,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
           // Close modal
           setIsModalOpen(false);
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             "add-certificate-success",
             "Added certificate to '" + idParam + "'",
             "success"
@@ -398,11 +391,7 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
-            "add-certificate-error",
-            errorMessage.message,
-            "danger"
-          );
+          addAlert("add-certificate-error", errorMessage.message, "danger");
         }
         // Refresh data to show new changes in the UI
         props.onRefresh();
@@ -557,7 +546,6 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       {certificatesList !== undefined && certificatesList.length > 0
         ? certificatesList.map((cert, idx) => {
             const innerCertificate = () => {

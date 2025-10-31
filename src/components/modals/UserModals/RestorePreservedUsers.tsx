@@ -11,7 +11,7 @@ import { User } from "src/utils/datatypes/globalDataTypes";
 import { BatchRPCResponse } from "src/services/rpc";
 import { useRestoreUserMutation } from "src/services/rpcUsers";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 
 interface PropsToPreservedUsers {
   show: boolean;
@@ -23,7 +23,6 @@ interface PropsToPreservedUsers {
 
 const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
   // Alerts
-  const alerts = useAlerts();
 
   // Define 'executeUserRestoreCommand' to restore a preserved user
   const [executeUserRestoreCommand] = useRestoreUserMutation();
@@ -79,13 +78,13 @@ const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
           } else if (result.count === 1) {
             successMessage = result.results[0].summary;
           }
-          alerts.addAlert("restore-users-success", successMessage, "success");
+          addAlert("restore-users-success", successMessage, "success");
 
           // Refresh data or navigate
           props.onSuccess();
         } else if (error) {
           // Handle error
-          alerts.addAlert("restore-users-error", error, "danger");
+          addAlert("restore-users-error", error, "danger");
         }
       }
       setBtnSpinning(false);
@@ -119,7 +118,6 @@ const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="restore-preserved-users-modal"
         variantType="medium"

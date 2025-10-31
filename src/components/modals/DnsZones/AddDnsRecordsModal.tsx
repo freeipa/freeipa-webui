@@ -26,7 +26,7 @@ import {
   useAddDnsRecordMutation,
 } from "src/services/rpcDnsZones";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Errors
 import { SerializedError } from "@reduxjs/toolkit";
 // Components
@@ -77,9 +77,6 @@ export const mandatoryFields: Record<DnsRecordType, string[]> = {
 };
 
 const AddDnsRecordsModal = (props: PropsToAddModal) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // Options
   const recordTypeOptions = [
     { key: "A", value: "A" },
@@ -370,11 +367,11 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
         const error = response.data?.error as SerializedError;
 
         if (error) {
-          alerts.addAlert("add-dnsrecord-error", error.message, "danger");
+          addAlert("add-dnsrecord-error", error.message, "danger");
         }
 
         if (data) {
-          alerts.addAlert(
+          addAlert(
             "add-dnsrecord-success",
             "DNS Record successfully added",
             "success"
@@ -529,7 +526,6 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <Modal
         variant="small"
         position="top"

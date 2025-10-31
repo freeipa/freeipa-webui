@@ -8,7 +8,7 @@ import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 import MemberTable from "src/components/tables/MembershipTable"; // Data types
 import { SudoCmd, SudoCmdGroup } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
@@ -35,9 +35,6 @@ interface PropsToMembersSudoGroups {
 }
 
 const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // Get parameters from URL
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
     useListPageSearchParams();
@@ -178,7 +175,7 @@ const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             "add-member-success",
             "Assigned new sudo command members to '" + props.id + "'",
             "success"
@@ -190,7 +187,7 @@ const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert("add-member-error", errorMessage.message, "danger");
+          addAlert("add-member-error", errorMessage.message, "danger");
         }
       }
       setSpinning(false);
@@ -210,7 +207,7 @@ const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             "remove-members-success",
             "Removed sudo command members from '" + props.id + "'",
             "success"
@@ -226,11 +223,7 @@ const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert(
-            "remove-members-error",
-            errorMessage.message,
-            "danger"
-          );
+          addAlert("remove-members-error", errorMessage.message, "danger");
         }
       }
       setSpinning(false);
@@ -239,7 +232,6 @@ const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}

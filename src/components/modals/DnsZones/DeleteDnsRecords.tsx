@@ -7,7 +7,7 @@ import {
   Spinner,
 } from "@patternfly/react-core";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // RPC
 import {
   DeleteDnsRecordPayload,
@@ -42,9 +42,6 @@ interface DeleteDnsRecordsModalProps {
 }
 
 const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // RPC calls
   const [deleteDnsRecords] = useDnsRecordDeleteMutation();
   const [deleteDnsRecordFromSettings] =
@@ -140,7 +137,7 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
             props.updateIsDeleteButtonDisabled?.(true);
             props.updateIsDeletion?.(true);
 
-            alerts.addAlert(
+            addAlert(
               "remove-dnsrecords-success",
               "DNS records removed",
               "success"
@@ -192,7 +189,7 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
                 props.updateIsDeletion(true);
               }
 
-              alerts.addAlert(
+              addAlert(
                 "remove-dnsrecords-success",
                 "DNS records removed",
                 "success"
@@ -257,7 +254,6 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         variantType="medium"
         modalPosition="top"

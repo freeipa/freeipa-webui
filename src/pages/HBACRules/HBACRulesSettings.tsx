@@ -28,7 +28,7 @@ import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Data types
 import { HBACRule, Metadata } from "../../utils/datatypes/globalDataTypes";
@@ -55,8 +55,6 @@ interface PropsToSettings {
 }
 
 const HBACRulesSettings = (props: PropsToSettings) => {
-  const alerts = useAlerts();
-
   // API
   const [saveRule] = useSaveAndCleanHbacRuleMutation();
 
@@ -145,7 +143,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Show toast notification: success
-          alerts.addAlert("save-success", "HBAC rule modified", "success");
+          addAlert("save-success", "HBAC rule modified", "success");
           setHostTabKey(0);
           setUserTabKey(0);
           setSrvTabKey(0);
@@ -153,7 +151,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("save-error", errorMessage.message, "danger");
+          addAlert("save-error", errorMessage.message, "danger");
           // Reset values. Disable 'revert' and 'save' buttons
           props.onResetValues();
         }
@@ -165,7 +163,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
   // 'Revert' handler method
   const onRevert = () => {
     props.onRuleChange(props.originalRule);
-    alerts.addAlert("revert-success", "HBAC rule data reverted", "success");
+    addAlert("revert-success", "HBAC rule data reverted", "success");
   };
 
   // Toolbar
@@ -224,7 +222,6 @@ const HBACRulesSettings = (props: PropsToSettings) => {
   // Render component
   return (
     <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-      <alerts.ManagedAlerts />
       <Sidebar isPanelRight>
         <SidebarPanel variant="sticky">
           <HelpTextWithIconLayout

@@ -23,7 +23,7 @@ import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Data types
 import {
@@ -54,7 +54,6 @@ interface PropsToGroupsSettings {
 }
 
 const UserGroupsSettings = (props: PropsToGroupsSettings) => {
-  const alerts = useAlerts();
   const navigate = useNavigate();
 
   // API
@@ -163,13 +162,13 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
     convertGroupPOSIX(cn).then((response) => {
       if ("data" in response) {
         if (response.data?.result) {
-          alerts.addAlert(
+          addAlert(
             "posix-usergroup-success",
             "User group changed to POSIX group",
             "success"
           );
         } else if (response.data?.error) {
-          alerts.addAlert(
+          addAlert(
             "posix-error",
             "Failed to convert group: " + response.data.error,
             "danger"
@@ -188,13 +187,13 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
     convertGroupExternal(cn).then((response) => {
       if ("data" in response) {
         if (response.data?.result) {
-          alerts.addAlert(
+          addAlert(
             "external-usergroup-success",
             "User group changed to external group",
             "success"
           );
         } else if (response.data?.error) {
-          alerts.addAlert(
+          addAlert(
             "external-error",
             "Failed to convert group: " + response.data.error,
             "danger"
@@ -213,15 +212,11 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
     deleteGroup(cn).then((response) => {
       if ("data" in response) {
         if (response.data?.result) {
-          alerts.addAlert(
-            "remove-usergroup-success",
-            "User group removed",
-            "success"
-          );
+          addAlert("remove-usergroup-success", "User group removed", "success");
           // Redirect to the main page
           navigate("/user-groups");
         } else if (response.data?.error) {
-          alerts.addAlert(
+          addAlert(
             "delete-error",
             "Failed to delete group: " + response.data.error,
             "danger"
@@ -315,11 +310,11 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Show toast notification: success
-          alerts.addAlert("save-success", "User group modified", "success");
+          addAlert("save-success", "User group modified", "success");
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("save-error", errorMessage.message, "danger");
+          addAlert("save-error", errorMessage.message, "danger");
         }
         // Reset values. Disable 'revert' and 'save' buttons
         props.onResetValues();
@@ -331,7 +326,7 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
   // 'Revert' handler method
   const onRevert = () => {
     props.onGroupChange(props.originalGroup);
-    alerts.addAlert("revert-success", "User group data reverted", "success");
+    addAlert("revert-success", "User group data reverted", "success");
   };
 
   // Toolbar
@@ -395,7 +390,6 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
   // Render component
   return (
     <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-      <alerts.ManagedAlerts />
       <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
         <TitleLayout
           key={0}

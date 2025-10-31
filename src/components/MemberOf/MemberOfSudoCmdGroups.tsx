@@ -9,7 +9,7 @@ import MemberTable from "src/components/tables/MembershipTable";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // RPC
 import { ErrorResult } from "src/services/rpc";
@@ -32,9 +32,6 @@ interface MemberOfSudoCmdGroupsProps {
 }
 
 const MemberOfSudoCmdGroups = (props: MemberOfSudoCmdGroupsProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
     useListPageSearchParams();
 
@@ -170,10 +167,10 @@ const MemberOfSudoCmdGroups = (props: MemberOfSudoCmdGroupsProps) => {
             if (response.data.result.results[0].error) {
               const errorMessage = response.data.result.results[0]
                 .error as string;
-              alerts.addAlert("add-member-error", errorMessage, "danger");
+              addAlert("add-member-error", errorMessage, "danger");
             } else {
               // Set alert: success
-              alerts.addAlert(
+              addAlert(
                 "add-member-success",
                 `Assigned '${props.id}' to Sudo command groups`,
                 "success"
@@ -186,7 +183,7 @@ const MemberOfSudoCmdGroups = (props: MemberOfSudoCmdGroupsProps) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert("add-member-error", errorMessage.message, "danger");
+            addAlert("add-member-error", errorMessage.message, "danger");
           }
         }
         setSpinning(false);
@@ -202,7 +199,7 @@ const MemberOfSudoCmdGroups = (props: MemberOfSudoCmdGroupsProps) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               "remove-sudo-cmds-success",
               `Removed '${props.id}' from Sudo command groups`,
               "success"
@@ -218,11 +215,7 @@ const MemberOfSudoCmdGroups = (props: MemberOfSudoCmdGroupsProps) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert(
-              "remove-sudo-cmds-error",
-              errorMessage.message,
-              "danger"
-            );
+            addAlert("remove-sudo-cmds-error", errorMessage.message, "danger");
           }
           setSpinning(false);
         }
@@ -232,7 +225,6 @@ const MemberOfSudoCmdGroups = (props: MemberOfSudoCmdGroupsProps) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}

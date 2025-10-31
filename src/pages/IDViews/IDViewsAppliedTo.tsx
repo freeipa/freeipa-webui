@@ -33,7 +33,7 @@ import { partialViewToView } from "src/utils/idViewUtils";
 // Data types
 import { IDView } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors
@@ -77,9 +77,6 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
   // Initialize views (Redux)
   const [hostsList, setHostsList] = useState<string[]>([]);
   const [shownHostsList, setShownHostsList] = useState<string[]>([]);
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -215,9 +212,9 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
                   : ""}
               </>
             );
-            alerts.addAlert("unapply-id-view-hosts-error", alert_msg, "danger");
+            addAlert("unapply-id-view-hosts-error", alert_msg, "danger");
           } else {
-            alerts.addAlert(
+            addAlert(
               "unapply-id-view-hosts-success",
               "ID view unapplied from " +
                 response.data.result["completed"] +
@@ -230,7 +227,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
+          addAlert(
             "unapply-id-view-hosts-error",
             "ID view unapplied from hosts failed: " + errorMessage.message,
             "danger"
@@ -275,13 +272,9 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
                   : ""}
               </>
             );
-            alerts.addAlert(
-              "unapply-id-view-host-groups-error",
-              alert_msg,
-              "danger"
-            );
+            addAlert("unapply-id-view-host-groups-error", alert_msg, "danger");
           } else {
-            alerts.addAlert(
+            addAlert(
               "unapply-id-view-hosts-success",
               "ID view unapplied from " +
                 response.data.result["completed"] +
@@ -294,7 +287,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
+          addAlert(
             "unapply-id-view-hosts-error",
             "ID view unapplied from host groups failed: " +
               errorMessage.message,
@@ -349,9 +342,9 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
                   : ""}
               </>
             );
-            alerts.addAlert("apply-id-view-hosts-error", alert_msg, "danger");
+            addAlert("apply-id-view-hosts-error", alert_msg, "danger");
           } else {
-            alerts.addAlert(
+            addAlert(
               "apply-id-view-hosts-success",
               "ID view applied to " +
                 response.data?.result["completed"] +
@@ -364,7 +357,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
+          addAlert(
             "apply-id-view-hosts-error",
             "ID view applied to hosts failed: " + errorMessage.message,
             "danger"
@@ -414,9 +407,9 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
                   : ""}
               </>
             );
-            alerts.addAlert("apply-id-view-hosts-error", alert_msg, "danger");
+            addAlert("apply-id-view-hosts-error", alert_msg, "danger");
           } else {
-            alerts.addAlert(
+            addAlert(
               "apply-id-view-host-groups-success",
               "ID view applied to " +
                 response.data.result["completed"] +
@@ -429,7 +422,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
+          addAlert(
             "apply-id-view-host-groups-error",
             "ID view applied to host groups failed: " + errorMessage.message,
             "danger"
@@ -640,7 +633,6 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
       }}
     >
       <TabLayout id="override sections">
-        <alerts.ManagedAlerts />
         <PageSection hasBodyWrapper={false} isFilled={false}>
           <ToolbarLayout toolbarItems={toolbarItems} />
           <OuterScrollContainer>
