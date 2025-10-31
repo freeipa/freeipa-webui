@@ -13,7 +13,7 @@ import {
 import { SubId, Metadata } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Utils
 import { asRecord } from "src/utils/subIdUtils";
 // Icons
@@ -40,9 +40,6 @@ interface PropsToSubidSettings {
 }
 
 const SubidSettings = (props: PropsToSubidSettings) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "subordinate-ids" });
 
@@ -62,11 +59,7 @@ const SubidSettings = (props: PropsToSubidSettings) => {
   const onRevert = () => {
     props.onSubIdChange(props.originalSubId);
     props.onRefresh();
-    alerts.addAlert(
-      "revert-success",
-      "Subordinate ID data reverted",
-      "success"
-    );
+    addAlert("revert-success", "Subordinate ID data reverted", "success");
   };
 
   // on Save handler method
@@ -83,12 +76,12 @@ const SubidSettings = (props: PropsToSubidSettings) => {
       if ("data" in response) {
         const data = response.data;
         if (data?.error) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          addAlert("error", (data.error as Error).message, "danger");
         }
 
         if (data?.result) {
           props.onSubIdChange(data.result.result);
-          alerts.addAlert(
+          addAlert(
             "success",
             "Subordinate ID " + props.subId.ipauniqueid + " updated",
             "success"
@@ -143,7 +136,6 @@ const SubidSettings = (props: PropsToSubidSettings) => {
   return (
     <>
       <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-        <alerts.ManagedAlerts />
         <Sidebar isPanelRight>
           <SidebarPanel variant="sticky">
             <HelpTextWithIconLayout

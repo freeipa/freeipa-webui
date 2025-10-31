@@ -7,7 +7,7 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import { ErrorResult } from "src/services/rpc";
 import { useUnlockUserMutation } from "src/services/rpcUsers";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 
 interface propsToUnlockUser {
   uid: string | undefined;
@@ -17,9 +17,6 @@ interface propsToUnlockUser {
 }
 
 const UnlockUser = (props: propsToUnlockUser) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // RPC hooks
   const [unlockUser] = useUnlockUserMutation();
 
@@ -40,11 +37,7 @@ const UnlockUser = (props: propsToUnlockUser) => {
     // API call to reset password
     if (props.uid === undefined) {
       // Alert error: no uid
-      alerts.addAlert(
-        "undefined-uid-error",
-        "No user selected to unlock",
-        "danger"
-      );
+      addAlert("undefined-uid-error", "No user selected to unlock", "danger");
     } else {
       unlockUser(props.uid).then((response) => {
         if ("data" in response) {
@@ -52,7 +45,7 @@ const UnlockUser = (props: propsToUnlockUser) => {
             // Close modal
             props.onClose();
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               "unlock-user-success",
               "Unlocked account '" + props.uid + "'",
               "success"
@@ -62,11 +55,7 @@ const UnlockUser = (props: propsToUnlockUser) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert(
-              "unlock-user-error",
-              errorMessage.message,
-              "danger"
-            );
+            addAlert("unlock-user-error", errorMessage.message, "danger");
           }
         }
       });
@@ -96,7 +85,6 @@ const UnlockUser = (props: propsToUnlockUser) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="unlock-user-modal"
         variantType="small"

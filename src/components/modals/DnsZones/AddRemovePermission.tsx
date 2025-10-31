@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { Button } from "@patternfly/react-core";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // RPC
 import {
   useAddDnsZonePermissionMutation,
@@ -20,9 +20,6 @@ interface AddRemovePermissionProps {
 }
 
 const AddRemovePermission = (props: AddRemovePermissionProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // RPC calls
   const [addPermission] = useAddDnsZonePermissionMutation();
   const [removePermission] = useRemoveDnsZonePermissionMutation();
@@ -36,10 +33,10 @@ const AddRemovePermission = (props: AddRemovePermissionProps) => {
       if ("data" in response) {
         const { data } = response;
         if (data?.error) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          addAlert("error", (data.error as Error).message, "danger");
         }
         if (data?.result) {
-          alerts.addAlert("success", data.result.summary, "success");
+          addAlert("success", data.result.summary, "success");
           // Change the operation type (e.g. 'add' --> 'remove')
           if (props.operation === "add") {
             props.changeOperation("remove");
@@ -76,7 +73,6 @@ const AddRemovePermission = (props: AddRemovePermissionProps) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ConfirmationModal
         dataCy="dns-zones-add-remove-permission-modal"
         title={"Confirmation"}

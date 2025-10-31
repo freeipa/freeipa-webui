@@ -12,7 +12,7 @@ import {
 import { DNSRecord, Host, Metadata } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Icons
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 // RPC
@@ -52,8 +52,6 @@ interface DnsResourceRecordsSettingsProps {
 }
 
 const DnsResourceRecordsSettings = (props: DnsResourceRecordsSettingsProps) => {
-  const alerts = useAlerts();
-
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
 
@@ -72,7 +70,7 @@ const DnsResourceRecordsSettings = (props: DnsResourceRecordsSettingsProps) => {
     props.onHostChange(props.originalHost);
     props.onResetValues();
     props.onRefresh();
-    alerts.addAlert("revert-success", "DNS record data reverted", "success");
+    addAlert("revert-success", "DNS record data reverted", "success");
   };
 
   // Refresh handler - let parent handle the loading state
@@ -93,10 +91,10 @@ const DnsResourceRecordsSettings = (props: DnsResourceRecordsSettingsProps) => {
       if ("data" in response) {
         const data = response.data;
         if (data?.error) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          addAlert("error", (data.error as Error).message, "danger");
         }
         if (data?.result) {
-          alerts.addAlert("success", "DNS record data saved", "success");
+          addAlert("success", "DNS record data saved", "success");
           // Update local state and trigger parent refresh to get latest data
           props.onDnsRecordChange(data.result.result);
           props.onRefresh();
@@ -153,7 +151,6 @@ const DnsResourceRecordsSettings = (props: DnsResourceRecordsSettingsProps) => {
         toolbarItems={toolbarFields}
         breadcrumbItems={props.breadcrumbItems}
       >
-        <alerts.ManagedAlerts />
         <Sidebar isPanelRight>
           <SidebarPanel variant="sticky">
             <HelpTextWithIconLayout

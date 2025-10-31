@@ -17,7 +17,7 @@ import { SerializedError } from "@reduxjs/toolkit";
 // Modals
 import ErrorModal from "src/components/modals/ErrorModal";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import { FindRPCResponse } from "src/services/rpc";
 import { useAddHostMutation, HostAddPayload } from "src/services/rpcHosts";
 import { isValidIpAddress } from "src/utils/utils";
@@ -31,9 +31,6 @@ interface PropsToAddHost {
 }
 
 const AddHost = (props: PropsToAddHost) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // Define 'executeCommand' to add user data to IPA server
   const [executeHostAddCommand] = useAddHostMutation();
 
@@ -283,7 +280,7 @@ const AddHost = (props: PropsToAddHost) => {
           handleAPIError(error);
         } else {
           // Set alert: success
-          alerts.addAlert("add-host-success", "New host added", "success");
+          addAlert("add-host-success", "New host added", "success");
 
           // Set status flag: success
           isAdditionSuccess = true;
@@ -438,7 +435,6 @@ const AddHost = (props: PropsToAddHost) => {
   // Render 'AddHost'
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-host-modal"
         variantType="small"

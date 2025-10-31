@@ -10,7 +10,7 @@ import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // RPC
 import {
@@ -35,9 +35,6 @@ interface MemberOfSudoRulesProps {
 }
 
 const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   const {
     page,
     setPage,
@@ -219,7 +216,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               "add-member-success",
               `Assigned '${props.id}' to sudo rules`,
               "success"
@@ -239,7 +236,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert("add-member-error", errorMessage.message, "danger");
+            addAlert("add-member-error", errorMessage.message, "danger");
           }
         }
         setSpinning(false);
@@ -255,7 +252,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               "remove-sudo-rules-success",
               `Removed '${props.id}' from sudo rules'`,
               "success"
@@ -271,11 +268,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert(
-              "remove-sudo-rules-error",
-              errorMessage.message,
-              "danger"
-            );
+            addAlert("remove-sudo-rules-error", errorMessage.message, "danger");
           }
         }
         setSpinning(false);
@@ -285,7 +278,6 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}

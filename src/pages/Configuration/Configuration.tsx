@@ -20,7 +20,7 @@ import DataSpinner from "src/components/layouts/DataSpinner";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import { useConfigSettings } from "src/hooks/useConfigSettingsData";
 // Utils
@@ -58,9 +58,6 @@ const Configuration = () => {
   const apiVersion = useAppSelector(
     (state) => state.global.environment.api_version
   ) as string;
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // Data loaded from DB
   const configData = useConfigSettings();
@@ -126,7 +123,7 @@ const Configuration = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
+          addAlert(
             "submit-search-value-error",
             error || "Error when searching for user groups",
             "danger"
@@ -156,11 +153,11 @@ const Configuration = () => {
       if ("data" in response) {
         if (response.data?.result) {
           // Show toast notification: success
-          alerts.addAlert("save-success", "Configuration updated", "success");
+          addAlert("save-success", "Configuration updated", "success");
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("save-error", errorMessage.message, "danger");
+          addAlert("save-error", errorMessage.message, "danger");
         }
         onRefresh();
       }
@@ -171,7 +168,7 @@ const Configuration = () => {
   // 'Revert' handler method
   const onRevert = () => {
     configData.setConfig(configData.originalConfig);
-    alerts.addAlert("revert-success", "Configuration data reverted", "success");
+    addAlert("revert-success", "Configuration data reverted", "success");
   };
 
   const onRefresh = () => {
@@ -238,7 +235,6 @@ const Configuration = () => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout id="config title" headingLevel="h1" text="Configuration" />
       </PageSection>

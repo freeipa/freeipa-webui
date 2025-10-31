@@ -23,7 +23,7 @@ import {
   useRemoveCertMapDataMutation,
 } from "src/services/rpcUsers";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Modals
 import ConfirmationModal from "../../modals/ConfirmationModal";
 // Icons
@@ -44,10 +44,6 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
     objectName: "user",
   });
   // TODO: Use 'readOnly' in the fields (right now is 'undefined')
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // RPC hooks
   const [addCertMapData] = useAddCertMapDataMutation();
   const [removeCertMapData] = useRemoveCertMapDataMutation();
@@ -214,7 +210,7 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
           // Close the modal
           setIsOpen(false);
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             "add-cert-mapping-data-success",
             "Added certificate mappings to user '" + props.ipaObject.uid + "'",
             "success"
@@ -224,7 +220,7 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
+          addAlert(
             "add-cert-mapping-data-error",
             errorMessage.message,
             "danger"
@@ -253,7 +249,7 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
           // Close the modal
           setIsOpen(false);
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             "remove-cert-mapping-data-success",
             "Removed certificate mappings from user '" +
               props.ipaObject.uid +
@@ -266,7 +262,7 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
+          addAlert(
             "remove-cert-mapping-data-error",
             errorMessage.message,
             "danger"
@@ -308,7 +304,6 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       {certificateMappingDataMainList !== undefined &&
       certificateMappingDataMainList.length > 0
         ? certificateMappingDataMainList.map((certMapData, idx) => {

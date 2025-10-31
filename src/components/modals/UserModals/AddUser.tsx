@@ -29,7 +29,7 @@ import { SerializedError } from "@reduxjs/toolkit";
 // Modals
 import ErrorModal from "src/components/modals/ErrorModal";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Utils
 import { NO_SELECTION_OPTION } from "src/utils/constUtils";
 // Components
@@ -54,9 +54,6 @@ interface PropsToAddUser {
 }
 
 const AddUser = (props: PropsToAddUser) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // Retrieve API version from environment data
   const apiVersion = useAppSelector(
     (state) => state.global.environment.api_version
@@ -463,7 +460,7 @@ const AddUser = (props: PropsToAddUser) => {
           }
 
           // Set alert: success
-          alerts.addAlert("add-user-success", "New user added", "success");
+          addAlert("add-user-success", "New user added", "success");
         } else if (error) {
           // Set status flag: error
           isAdditionSuccess = false;
@@ -640,7 +637,6 @@ const AddUser = (props: PropsToAddUser) => {
   // Render 'AddUser'
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-user-modal"
         variantType="small"

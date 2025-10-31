@@ -14,7 +14,7 @@ type RuleState = {
   state: HelperTextVariant;
   message: string;
 };
-type RuleProps = {
+export type RuleProps = {
   id: string;
   message: string;
   validate: (value: string) => boolean;

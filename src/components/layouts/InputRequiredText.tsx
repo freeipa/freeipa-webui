@@ -35,7 +35,7 @@ const InputRequiredText = (props: InputRequiredTextProps) => {
         onChange={(_event, value) => props.onChange(value)}
         isDisabled={props.isDisabled}
       />
-      {props.value === "" && (
+      {props.value === "" && !props.isDisabled && (
         <FormHelperText>
           <HelperText id={helperTextId} aria-live="polite">
             <HelperTextItem variant={ValidatedOptions.default}>

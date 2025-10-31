@@ -4,7 +4,7 @@ import { DropdownItem, Flex } from "@patternfly/react-core";
 // Data types
 import { Metadata, SudoRule } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // RPC
 import {
@@ -52,8 +52,6 @@ interface PropsToSudoRulesSettings {
 }
 
 const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
-  const alerts = useAlerts();
-
   // API calls
   const [saveService] = useSaveSudoRuleMutation();
   const [onRemoveFromUsers] = useRemoveFromSudoRuleMutation();
@@ -134,12 +132,12 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Show toast notification: success
-          alerts.addAlert("save-success", "Sudo rule modified", "success");
+          addAlert("save-success", "Sudo rule modified", "success");
           props.onRefresh();
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("save-error", errorMessage.message, "danger");
+          addAlert("save-error", errorMessage.message, "danger");
           // Reset values. Disable 'revert' and 'save' buttons
           props.onResetValues();
         }
@@ -164,7 +162,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
           const usersFromResponse = results.result.memberuser_group || [];
           if (!containsAny(usersFromResponse, userGroupsToDelete)) {
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               "remove-who-group-success",
               "Removed item(s) from " + props.rule.cn,
               "success"
@@ -179,7 +177,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             results.error ||
             results.failed.memberuser.group.length > 0
           ) {
-            alerts.addAlert(
+            addAlert(
               "remove-who-group-error",
               "Error: " + results.error,
               "danger"
@@ -208,7 +206,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             results.result.memberhost_hostgroup || [];
           if (!containsAny(hostGroupsFromResponse, hostGroupsToDelete)) {
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               "remove-acces-host-hostgroup-success",
               "Removed item(s) from " + props.rule.cn,
               "success"
@@ -223,7 +221,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             results.error ||
             results.failed.memberhost.hostgroup.length > 0
           ) {
-            alerts.addAlert(
+            addAlert(
               "remove-acces-host-hostgroup-error",
               "Error: " + results.error,
               "danger"
@@ -257,7 +255,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             !containsAny(externalsFromResponse, usersToDelete)
           ) {
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               "remove-who-user-external-success",
               "Removed item(s) from " + props.rule.cn,
               "success"
@@ -269,7 +267,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
           }
           // Check if any errors
           else if (results.error || results.failed.memberuser.user.length > 0) {
-            alerts.addAlert(
+            addAlert(
               "remove-who-user-external-error",
               "Error: " + results.error,
               "danger"
@@ -304,7 +302,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             !containsAny(externalsFromResponse, hostsToDelete)
           ) {
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               "remove-who-user-external-success",
               "Removed item(s) from " + props.rule.cn,
               "success"
@@ -316,7 +314,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
           }
           // Check if any errors
           else if (results.error || results.failed.memberhost.host.length > 0) {
-            alerts.addAlert(
+            addAlert(
               "remove-who-host-external-error",
               "Error: " + results.error,
               "danger"
@@ -361,7 +359,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
                   ("memberdenycmd" in result.failed &&
                     result.failed.memberdenycmd.sudocmdgroup.length > 0)))
             ) {
-              alerts.addAlert(
+              addAlert(
                 "remove-run-commands-error",
                 "Error: " + result.error,
                 "danger"
@@ -371,7 +369,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
           // Set alert: success
           if (!data?.error) {
             props.onRefresh();
-            alerts.addAlert(
+            addAlert(
               "remove-run-commands-success",
               "Removed item(s) from '" + props.rule.cn + "' and saved",
               "success"
@@ -416,7 +414,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             results.error ||
             results.failed.ipasudorunas.group.length > 0
           ) {
-            alerts.addAlert(
+            addAlert(
               "as-whom-remove-user-group-external-error",
               "Error: " + results.error,
               "danger"
@@ -463,7 +461,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             results.error ||
             results.failed.ipasudorunas.user.length > 0
           ) {
-            alerts.addAlert(
+            addAlert(
               "as-whom-remove-user-external-error",
               "Error: " + results.error,
               "danger"
@@ -508,7 +506,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             results.error ||
             results.failed.ipasudorunas.group.length > 0
           ) {
-            alerts.addAlert(
+            addAlert(
               "as-whom-remove-group-external-error",
               "Error: " + results.error,
               "danger"
@@ -610,12 +608,12 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Show toast notification: success
-            alerts.addAlert("save-success", "Sudo rule modified", "success");
+            addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
           } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert("save-error", errorMessage.message, "danger");
+            addAlert("save-error", errorMessage.message, "danger");
             // Reset values. Disable 'revert' and 'save' buttons
             props.onResetValues();
           }
@@ -628,7 +626,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
   // 'Revert' handler method
   const onRevert = () => {
     props.onRuleChange(props.originalRule);
-    alerts.addAlert("revert-success", "Sudo rule data reverted", "success");
+    addAlert("revert-success", "Sudo rule data reverted", "success");
   };
 
   // Toolbar
@@ -856,7 +854,6 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
   // Render component
   return (
     <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-      <alerts.ManagedAlerts />
       <SidebarLayout itemNames={itemNames}>
         {/* General */}
         <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>

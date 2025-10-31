@@ -3,6 +3,7 @@ import React from "react";
 import {
   Button,
   Checkbox,
+  Flex,
   Form,
   FormGroup,
   Modal,
@@ -11,22 +12,24 @@ import {
   ModalHeader,
   Radio,
   Spinner,
-  TextInput,
 } from "@patternfly/react-core";
-// Components
-import CustomTooltip from "src/components/layouts/CustomTooltip";
 // RPC
 import {
   AddDnsZonePayload,
   useAddDnsZoneMutation,
 } from "src/services/rpcDnsZones";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Errors
 import { SerializedError } from "@reduxjs/toolkit";
 // Icons
-import { InfoCircleIcon } from "@patternfly/react-icons";
+import {
+  isValidReverseZoneIp,
+  REVERSE_ZONE_IP_ERROR_MESSAGE,
+  SKIP_OVERLAP_CHECK_MESSAGE,
+} from "./dnsLabels";
 import InputWithValidation from "src/components/layouts/InputWithValidation";
+import InputRequiredText from "src/components/layouts/InputRequiredText";
 
 interface PropsToAddModal {
   isOpen: boolean;
@@ -36,9 +39,6 @@ interface PropsToAddModal {
 }
 
 const AddDnsZoneModal = (props: PropsToAddModal) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // API calls
   const [addDnsZone] = useAddDnsZoneMutation();
 
@@ -57,10 +57,6 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
   const [isReverseZoneIpRadioChecked, setIsReverseZoneIpRadioChecked] =
     React.useState<boolean>(false);
 
-  // Tooltip messages
-  const skipOverlapCheckMessage =
-    "Force DNS zone creation even if it will overlap with an existing zone.";
-
   // Clear form fields
   const clearFields = () => {
     setDnsZoneName("");
@@ -68,17 +64,6 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
     setSkipOverlapCheck(false);
     setIsZoneNameRadioChecked(true);
     setIsReverseZoneIpRadioChecked(false);
-  };
-
-  // Error message
-  const reverseZoneIpErrorMessage =
-    "Not a valid network address (examples: 2001:db8::/64, 192.0.2.0/24)";
-
-  const validateReverseZoneIp = (value: string): boolean => {
-    // Regular expression to validate format. Examples: 2001:db8::/64, 192.0.2.0/24, etc.
-    const regex =
-      /^(?:(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|(?:[0-9]{1,3}\.){3}[0-9]{1,3}\/\d{1,2})$/;
-    return regex.test(value);
   };
 
   // Add DNS zone handler
@@ -98,11 +83,11 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
         const error = response.data?.error as SerializedError;
 
         if (error) {
-          alerts.addAlert("add-dnszone-error", error.message, "danger");
+          addAlert("add-dnszone-error", error.message, "danger");
         }
 
         if (data) {
-          alerts.addAlert(
+          addAlert(
             "add-dnszone-success",
             "DNS Zone successfully added",
             "success"
@@ -131,118 +116,85 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
 
   const zoneNameLabel = <b>Zone name</b>;
   const reverseZoneLabel = <b>Reverse zone</b>;
-  const skipLabel = (
-    <>
-      Skip overlap check
-      <CustomTooltip
-        message={skipOverlapCheckMessage}
-        id="skip-overlap-check-tooltip"
-        ariaLabel="Skip overlap check tooltip with message"
-      >
-        <InfoCircleIcon className="pf-v6-u-ml-sm" />
-      </CustomTooltip>
-    </>
-  );
 
   // Form fields
   const formFields = (
-    <>
-      <div className="pf-v6-u-ml-lg pf-v6-u-mb-md">
-        <Form id="add-modal-form-zone-name">
-          <Radio
-            data-cy="modal-radio-dns-zone-name"
-            name="dnszone_name_type"
-            id="dnszone_name_type"
-            onChange={() => {
-              setIsZoneNameRadioChecked(true);
-              setIsReverseZoneIpRadioChecked(false);
-              setReverseZoneIp(""); // Clear reverse zone IP when switching to DNS zone name
-            }}
-            isChecked={isZoneNameRadioChecked}
-            aria-label="DNS zone name radio button"
-            label={zoneNameLabel}
-          />
-          <FormGroup
-            key="zone-name"
-            fieldId="zone-name"
-            isRequired={isZoneNameRadioChecked}
-          >
-            <TextInput
-              data-cy="modal-textbox-dns-zone-name"
-              type="text"
-              id="dns-name"
-              name="idnsname"
-              value={dnsZoneName}
-              aria-label="DNS zone text input"
-              onChange={(_event, value: string) => setDnsZoneName(value)}
-              isDisabled={
-                !isZoneNameRadioChecked && isReverseZoneIpRadioChecked
-              }
-              isRequired={isZoneNameRadioChecked}
-            />
-          </FormGroup>
-        </Form>
-      </div>
-      <div className="pf-v6-u-ml-lg pf-v6-u-mb-md">
-        <Form id="add-modal-form-reverse-zone">
-          <Radio
-            data-cy="modal-radio-reverse-zone-ip"
-            name="reverse_zone_type"
-            id="reverse_zone_type"
-            onChange={() => {
-              setIsZoneNameRadioChecked(false);
-              setIsReverseZoneIpRadioChecked(true);
-              setDnsZoneName(""); // Clear DNS zone name when switching to reverse zone IP
-            }}
-            isChecked={isReverseZoneIpRadioChecked}
-            aria-label="Reverse zone IP radio button"
-            className="pf-v6-u-mt-md"
-            label={reverseZoneLabel}
-          />
-          <FormGroup
-            key="reverse-zone"
-            fieldId="reverse-zone"
-            isRequired={isReverseZoneIpRadioChecked}
-          >
-            <>
-              <InputWithValidation
-                dataCy="modal-textbox-reverse-zone-ip"
-                id="reverse-zone-ip"
-                name="name_from_ip"
-                value={reverseZoneIp}
-                aria-label="Reverse zone IP text input"
-                onChange={setReverseZoneIp}
-                isDisabled={
-                  !isReverseZoneIpRadioChecked && isZoneNameRadioChecked
-                }
-                isRequired={isReverseZoneIpRadioChecked}
-                rules={[
-                  {
-                    id: "reverse-zone-ip",
-                    message: reverseZoneIpErrorMessage,
-                    validate: validateReverseZoneIp,
-                  },
-                ]}
-              />
-            </>
-          </FormGroup>
-        </Form>
-      </div>
-      <Form>
+    <Form id="add-modal-form-zone-name">
+      <Flex
+        direction={{ default: "column" }}
+        className="pf-v6-u-ml-lg pf-v6-u-mb-md"
+        gap={{ default: "gapMd" }}
+      >
         <FormGroup
-          key="skip-overlap-check"
-          fieldId="skip-overlap-check"
-          labelHelp={
-            <CustomTooltip
-              message={skipOverlapCheckMessage}
-              id="skip-overlap-check-tooltip"
-              ariaLabel="Skip overlap check tooltip with message"
-            >
-              <InfoCircleIcon className="pf-v6-u-ml-sm" />
-            </CustomTooltip>
+          key="zone-name"
+          label={
+            <Radio
+              data-cy="modal-radio-dns-zone-name"
+              name="dnszone_name_type"
+              id="dnszone_name_type"
+              onChange={() => {
+                setIsZoneNameRadioChecked(true);
+                setIsReverseZoneIpRadioChecked(false);
+                setReverseZoneIp(""); // Clear reverse zone IP when switching to DNS zone name
+              }}
+              isChecked={isZoneNameRadioChecked}
+              aria-label="DNS zone name radio button"
+              className="pf-v6-u-display-inline-flex"
+              label={zoneNameLabel}
+            />
           }
-          className="pf-v6-u-ml-lg pf-v6-u-mt-md pf-v6-u-mb-md"
+          fieldId="zone-name"
+          isRequired={isZoneNameRadioChecked}
         >
+          <InputRequiredText
+            dataCy="modal-textbox-dns-zone-name"
+            id="dns-name"
+            name="idnsname"
+            value={dnsZoneName}
+            onChange={setDnsZoneName}
+            isDisabled={!isZoneNameRadioChecked && isReverseZoneIpRadioChecked}
+          />
+        </FormGroup>
+        <FormGroup
+          key="reverse-zone"
+          fieldId="reverse-zone"
+          isRequired={isReverseZoneIpRadioChecked}
+          label={
+            <Radio
+              data-cy="modal-radio-reverse-zone-ip"
+              name="reverse_zone_type"
+              id="reverse_zone_type"
+              onChange={() => {
+                setIsZoneNameRadioChecked(false);
+                setIsReverseZoneIpRadioChecked(true);
+                setDnsZoneName(""); // Clear DNS zone name when switching to reverse zone IP
+              }}
+              isChecked={isReverseZoneIpRadioChecked}
+              aria-label="Reverse zone IP radio button"
+              className="pf-v6-u-display-inline-flex"
+              label={reverseZoneLabel}
+            />
+          }
+        >
+          <InputWithValidation
+            dataCy="modal-textbox-reverse-zone-ip"
+            id="reverse-zone-ip"
+            name="name_from_ip"
+            value={reverseZoneIp}
+            aria-label="Reverse zone IP text input"
+            onChange={setReverseZoneIp}
+            isDisabled={!isReverseZoneIpRadioChecked && isZoneNameRadioChecked}
+            isRequired={isReverseZoneIpRadioChecked}
+            rules={[
+              {
+                id: "reverse-zone-ip",
+                message: REVERSE_ZONE_IP_ERROR_MESSAGE,
+                validate: isValidReverseZoneIp,
+              },
+            ]}
+          />
+        </FormGroup>
+        <FormGroup key="skip-overlap-check" fieldId="skip-overlap-check">
           <Checkbox
             id="skip-overlap-check"
             name="skip_overlap_check"
@@ -251,11 +203,12 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
             onChange={(_event, checked: boolean) =>
               setSkipOverlapCheck(checked)
             }
-            label={skipLabel}
+            label="Skip overlap check"
+            description={SKIP_OVERLAP_CHECK_MESSAGE}
           />
         </FormGroup>
-      </Form>
-    </>
+      </Flex>
+    </Form>
   );
 
   // Actions
@@ -319,7 +272,6 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
   // Return component
   return (
     <>
-      <alerts.ManagedAlerts />
       <Modal
         variant="small"
         position="top"

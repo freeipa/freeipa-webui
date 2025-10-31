@@ -11,7 +11,7 @@ import ErrorModal from "src/components/modals/ErrorModal";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import { BatchRPCResponse } from "src/services/rpc";
 import { useAddHbacRuleMutation } from "src/services/rpcHBACRules";
 interface PropsToAddGroup {
@@ -23,9 +23,6 @@ interface PropsToAddGroup {
 }
 
 const AddHBACRule = (props: PropsToAddGroup) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   const [executeRuleAddCommand] = useAddHbacRuleMutation();
 
   // Set host names list
@@ -116,11 +113,7 @@ const AddHBACRule = (props: PropsToAddGroup) => {
           handleAPIError(error);
         } else {
           // Set alert: success
-          alerts.addAlert(
-            "add-hbacrule-success",
-            "New HBAC rule added",
-            "success"
-          );
+          addAlert("add-hbacrule-success", "New HBAC rule added", "success");
 
           // Set status flag: success
           isAdditionSuccess = true;
@@ -272,7 +265,6 @@ const AddHBACRule = (props: PropsToAddGroup) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-hbac-rule-modal"
         variantType="small"

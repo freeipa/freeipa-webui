@@ -4,7 +4,7 @@ import { Button, Content } from "@patternfly/react-core";
 // Modals
 import InformationModalLayout from "src/components/layouts/InformationModalLayout";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Data types
 import { CertificateData } from "src/components/Form/IpaCertificates";
 // Utils
@@ -29,9 +29,6 @@ const RemoveHoldCertificate = (props: PropsToRemoveHoldCertificate) => {
     }
   }, [props.certificate]);
 
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // Prepare "cert_remove_hold" API call
   const [certRemoveHold] = useRemoveHoldCertificateMutation();
 
@@ -49,7 +46,7 @@ const RemoveHoldCertificate = (props: PropsToRemoveHoldCertificate) => {
           // Close modal
           props.onClose();
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             "remove-hold-certificate-success",
             "Certificate hold removed",
             "success"
@@ -57,7 +54,7 @@ const RemoveHoldCertificate = (props: PropsToRemoveHoldCertificate) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
+          addAlert(
             "remove-hold-certificate-error",
             errorMessage.message,
             "danger"
@@ -94,7 +91,6 @@ const RemoveHoldCertificate = (props: PropsToRemoveHoldCertificate) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <InformationModalLayout
         dataCy="remove-hold-certificate-modal"
         title={"Certificate for " + certName}

@@ -10,7 +10,7 @@ import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Data types
 import { Service, UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
@@ -40,9 +40,6 @@ interface PropsToMembersServices {
 }
 
 const MembersServices = (props: PropsToMembersServices) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   const membershipDisabled =
     props.membershipDisabled === undefined ? false : props.membershipDisabled;
 
@@ -214,7 +211,7 @@ const MembersServices = (props: PropsToMembersServices) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             "add-member-success",
             "Assigned new services to user group '" + props.id + "'",
             "success"
@@ -226,7 +223,7 @@ const MembersServices = (props: PropsToMembersServices) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert("add-member-error", errorMessage.message, "danger");
+          addAlert("add-member-error", errorMessage.message, "danger");
         }
       }
       setSpinning(false);
@@ -246,7 +243,7 @@ const MembersServices = (props: PropsToMembersServices) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             "remove-services-success",
             "Removed services from user group '" + props.id + "'",
             "success"
@@ -266,11 +263,7 @@ const MembersServices = (props: PropsToMembersServices) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert(
-            "remove-services-error",
-            errorMessage.message,
-            "danger"
-          );
+          addAlert("remove-services-error", errorMessage.message, "danger");
         }
       }
       setSpinning(false);
@@ -279,7 +272,6 @@ const MembersServices = (props: PropsToMembersServices) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       {membershipDisabled ? (
         <MemberOfToolbar
           searchText={searchValue}

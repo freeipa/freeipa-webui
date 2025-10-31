@@ -18,8 +18,6 @@ import {
   ActionsColumn,
   TableVariant,
 } from "@patternfly/react-table";
-// Hooks
-import useAlerts from "src/hooks/useAlerts";
 import {
   RecordType,
   RecordTypeData,
@@ -80,9 +78,6 @@ interface PropsToTableWithOpModals {
 }
 
 const TableWithOpModals = (props: PropsToTableWithOpModals) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // States
   const [selectedRows, setSelectedRows] = React.useState<Set<string | number>>(
     new Set()
@@ -283,8 +278,6 @@ const TableWithOpModals = (props: PropsToTableWithOpModals) => {
 
   return (
     <div data-cy="table-with-op-modals">
-      <alerts.ManagedAlerts />
-
       {/* Toolbar */}
       {renderToolbar()}
 

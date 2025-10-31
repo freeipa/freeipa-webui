@@ -40,7 +40,7 @@ import { Host } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { API_VERSION_BACKUP, isHostSelectable } from "src/utils/utils";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors
@@ -79,9 +79,6 @@ const Hosts = () => {
 
   // Initialize hosts list (Redux)
   const [hostsList, setHostsList] = useState<Host[]>([]);
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -244,7 +241,7 @@ const Hosts = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
+          addAlert(
             "submit-search-value-error",
             error || "Error when searching for hosts",
             "danger"
@@ -331,7 +328,7 @@ const Hosts = () => {
   const onRebuildAutoMembership = () => {
     // Task can potentially run for a very long time, give feed back that we
     // at least started the task
-    alerts.addAlert(
+    addAlert(
       "rebuild-automember-start",
       "Starting automember rebuild membership task (this may take a long " +
         "time to complete) ...",
@@ -352,14 +349,14 @@ const Hosts = () => {
             error = automemberError.message;
           }
 
-          alerts.addAlert(
+          addAlert(
             "rebuild-automember-error",
             error || "Error when rebuilding membership",
             "danger"
           );
         } else {
           // alert: success
-          alerts.addAlert(
+          addAlert(
             "rebuild-automember-success",
             "Automember rebuild membership task completed",
             "success"
@@ -654,7 +651,6 @@ const Hosts = () => {
       onClose={onCloseContextualPanel}
     >
       <div>
-        <alerts.ManagedAlerts />
         <PageSection hasBodyWrapper={false}>
           <TitleLayout id="Hosts title" headingLevel="h1" text="Hosts" />
         </PageSection>

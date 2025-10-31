@@ -26,7 +26,7 @@ import {
 // Utils
 import { containsAny } from "src/utils/utils";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import { ErrorResult } from "src/services/rpc";
 
 interface PropsToSudoRulesWho {
@@ -52,9 +52,6 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
   ) => {
     setActiveTabKey(tabIndex);
   };
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // API calls
   const [onAdd] = useAddToSudoRuleMutation();
@@ -95,7 +92,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
         results.forEach((result) => {
           // Check if any errors
           if (result.error !== null) {
-            alerts.addAlert(
+            addAlert(
               "add-who-user-external-error",
               "Error: " + result.error,
               "danger"
@@ -109,7 +106,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
               containsAny(externalsFromResponse, newUsers)
             ) {
               // Set alert: success
-              alerts.addAlert(
+              addAlert(
                 "add-who-user-external-success",
                 "Added new item(s) to '" + props.rule.cn + "'",
                 "success"
@@ -121,7 +118,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
         });
       } else {
         // Assume error
-        alerts.addAlert(
+        addAlert(
           "add-who-user-external-error",
           "Error: " + (response.error ? response.error : "Unknown error"),
           "danger"
@@ -143,14 +140,14 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Show toast notification: success
-            alerts.addAlert("save-success", "Sudo rule modified", "success");
+            addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new users
             onAddNewUser(usersToAdd);
           } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert("save-error", errorMessage.message, "danger");
+            addAlert("save-error", errorMessage.message, "danger");
           }
         }
       });
@@ -181,7 +178,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
             !containsAny(externalsFromResponse, usersToDelete)
           ) {
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               "remove-who-user-external-success",
               "Removed item(s) from " + props.rule.cn,
               "success"
@@ -191,7 +188,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
           }
           // Check if any errors
           else if (results.error || results.failed.memberuser.user.length > 0) {
-            alerts.addAlert(
+            addAlert(
               "remove-who-user-external-error",
               "Error: " + results.error,
               "danger"
@@ -221,7 +218,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
           const groupsFromResponse = result.result.memberuser_group;
           if (containsAny(groupsFromResponse, newGroups)) {
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               "add-who-group-external-success",
               "Added new item(s) to '" + props.rule.cn + "'",
               "success"
@@ -231,7 +228,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
           }
           // Check if any errors
           if (result.error !== null) {
-            alerts.addAlert(
+            addAlert(
               "add-who-group-external-error",
               "Error: " + result.error,
               "danger"
@@ -255,14 +252,14 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Show toast notification: success
-            alerts.addAlert("save-success", "Sudo rule modified", "success");
+            addAlert("save-success", "Sudo rule modified", "success");
             props.onRefresh();
             // Add new users
             onAddNewGroup(groupsoAdd);
           } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert("save-error", errorMessage.message, "danger");
+            addAlert("save-error", errorMessage.message, "danger");
           }
         }
       });
@@ -291,7 +288,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
             !containsAny(groupsFromResponse, groupsToDelete)
           ) {
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               "remove-who-group-external-success",
               "Removed item(s) from " + props.rule.cn,
               "success"
@@ -304,7 +301,7 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
             results.error ||
             results.failed.memberuser.group.length > 0
           ) {
-            alerts.addAlert(
+            addAlert(
               "remove-who-group-external-error",
               "Error: " + results.error,
               "danger"
@@ -357,7 +354,6 @@ const SudoRulesWho = (props: PropsToSudoRulesWho) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       {/* Filter: toggle group */}
       {filter}
       {/* Tabs */}

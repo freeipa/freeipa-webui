@@ -14,7 +14,7 @@ import {
 // Data types
 import { Host, Metadata } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -62,8 +62,6 @@ interface PropsToHostsSettings {
 }
 
 const HostsSettings = (props: PropsToHostsSettings) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
   const modalErrors = useApiError([]);
 
   // API save the host
@@ -149,14 +147,14 @@ const HostsSettings = (props: PropsToHostsSettings) => {
             error = disableError.message;
           }
 
-          alerts.addAlert(
+          addAlert(
             "unprovision-error",
             error || "Error when unprovisioning host",
             "danger"
           );
         } else {
           // alert: success
-          alerts.addAlert(
+          addAlert(
             "unprovision--success",
             "Host successfully unprovisioned",
             "success"
@@ -172,7 +170,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
   const onRebuildAutoMembership = () => {
     // Task can potentially run for a very long time, give feed back that we
     // at least started the task
-    alerts.addAlert(
+    addAlert(
       "rebuild-automember-start",
       "Starting automember rebuild membership task (this may take a long " +
         "time to complete) ...",
@@ -194,14 +192,14 @@ const HostsSettings = (props: PropsToHostsSettings) => {
             error = automemberError.message;
           }
 
-          alerts.addAlert(
+          addAlert(
             "rebuild-automember-error",
             error || "Error when rebuilding membership",
             "danger"
           );
         } else {
           // alert: success
-          alerts.addAlert(
+          addAlert(
             "rebuild-automember-success",
             "Automember rebuild membership task completed",
             "success"
@@ -290,11 +288,11 @@ const HostsSettings = (props: PropsToHostsSettings) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Show toast notification: success
-          alerts.addAlert("save-success", "Host modified", "success");
+          addAlert("save-success", "Host modified", "success");
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("save-error", errorMessage.message, "danger");
+          addAlert("save-error", errorMessage.message, "danger");
         }
         // Reset values. Disable 'revert' and 'save' buttons
         props.onResetValues();
@@ -306,7 +304,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
   // 'Revert' handler method
   const onRevert = () => {
     props.onHostChange(props.originalHost);
-    alerts.addAlert("revert-success", "Host data reverted", "success");
+    addAlert("revert-success", "Host data reverted", "success");
   };
 
   // 'Rebuild auto membership' modal fields: Confirmation question
@@ -385,7 +383,6 @@ const HostsSettings = (props: PropsToHostsSettings) => {
 
   return (
     <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-      <alerts.ManagedAlerts />
       <Sidebar isPanelRight>
         <SidebarPanel variant="sticky">
           <HelpTextWithIconLayout

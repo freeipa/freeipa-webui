@@ -14,7 +14,7 @@ import {
 // Data types
 import { DNSForwardZone } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
@@ -40,6 +40,9 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import MainTable from "src/components/tables/MainTable";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import { apiToDnsForwardZone } from "src/utils/dnsForwardZonesUtils";
+import EnableDisableDnsForwardZonesModal from "src/components/modals/DnsZones/EnableDisableDnsForwardZonesModal";
+import DeleteDnsForwardZonesModal from "src/components/modals/DnsZones/DeleteDnsForwardZonesModal";
+import AddDnsForwardZoneModal from "src/components/modals/DnsZones/AddDnsForwardZoneModal";
 
 const DnsForwardZones = () => {
   // Update current route data to Redux and highlight the current page in the Nav bar
@@ -56,9 +59,6 @@ const DnsForwardZones = () => {
   const apiVersion = useAppSelector(
     (state) => state.global.environment.api_version
   ) as string;
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -133,6 +133,7 @@ const DnsForwardZones = () => {
 
     // Reset selected elements on refresh
     setTotalCount(0);
+    setSelectedElements([]);
 
     forwardDnsZonesResponse.refetch().then(() => {
       setShowTableRows(true);
@@ -190,13 +191,6 @@ const DnsForwardZones = () => {
   // Show table rows
   const [showTableRows, setShowTableRows] = React.useState(!isLoading);
 
-  // Show table rows only when data is fully retrieved
-  React.useEffect(() => {
-    if (showTableRows !== !isLoading) {
-      setShowTableRows(!isLoading);
-    }
-  }, [isLoading]);
-
   // Search API call
   const [searchEntry] = useSearchDnsForwardZonesEntriesMutation();
 
@@ -215,7 +209,7 @@ const DnsForwardZones = () => {
         } else if ("message" in searchError) {
           error = searchError.message;
         }
-        alerts.addAlert(
+        addAlert(
           "submit-search-value-error",
           error || "Error when searching for elements",
           "danger"
@@ -263,6 +257,23 @@ const DnsForwardZones = () => {
   const selectedPerPageData = {
     selectedPerPage,
     updateSelectedPerPage: setSelectedPerPage,
+  };
+
+  const [showEnableDisableModal, setShowEnableDisableModal] =
+    React.useState(false);
+  const [operation, setOperation] = React.useState<"enable" | "disable">(
+    "enable"
+  );
+
+  const [showDeleteForwardZonesModal, setShowDeleteForwardZonesModal] =
+    React.useState(false);
+
+  const [showAddForwardZoneModal, setShowAddForwardZoneModal] =
+    React.useState(false);
+
+  const onEnableDisableHandler = (operation: "enable" | "disable") => {
+    setOperation(operation);
+    setShowEnableDisableModal(true);
   };
 
   // List of Toolbar items
@@ -318,6 +329,7 @@ const DnsForwardZones = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           dataCy={"dns-forward-zones-delete"}
+          onClickHandler={() => setShowDeleteForwardZonesModal(true)}
         >
           Delete
         </SecondaryButton>
@@ -329,6 +341,7 @@ const DnsForwardZones = () => {
         <SecondaryButton
           isDisabled={!showTableRows}
           dataCy={"dns-forward-zones-add"}
+          onClickHandler={() => setShowAddForwardZoneModal(true)}
         >
           Add
         </SecondaryButton>
@@ -338,6 +351,7 @@ const DnsForwardZones = () => {
       key: 6,
       element: (
         <SecondaryButton
+          onClickHandler={() => onEnableDisableHandler("disable")}
           isDisabled={isDisableButtonDisabled || !showTableRows}
           dataCy={"dns-forward-zones-disable"}
         >
@@ -349,6 +363,7 @@ const DnsForwardZones = () => {
       key: 7,
       element: (
         <SecondaryButton
+          onClickHandler={() => onEnableDisableHandler("enable")}
           isDisabled={isEnableButtonDisabled || !showTableRows}
           dataCy={"dns-forward-zones-enable"}
         >
@@ -381,7 +396,6 @@ const DnsForwardZones = () => {
   // Render component
   return (
     <div>
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id="DNS forward zones page"
@@ -460,6 +474,32 @@ const DnsForwardZones = () => {
           </FlexItem>
         </Flex>
       </PageSection>
+      <AddDnsForwardZoneModal
+        isOpen={showAddForwardZoneModal}
+        onClose={() => setShowAddForwardZoneModal(false)}
+        title="Add DNS forward zone"
+        onRefresh={refreshData}
+      />
+      <DeleteDnsForwardZonesModal
+        isOpen={showDeleteForwardZonesModal}
+        onClose={() => setShowDeleteForwardZonesModal(false)}
+        elementsToDelete={selectedElements}
+        clearSelectedElements={() => setSelectedElements([])}
+        columnNames={["DNS forward zone name"]}
+        keyNames={["idnsname"]}
+        onRefresh={refreshData}
+        updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
+        updateIsDeletion={setIsDeletion}
+      />
+      <EnableDisableDnsForwardZonesModal
+        isOpen={showEnableDisableModal}
+        onClose={() => setShowEnableDisableModal(false)}
+        elementsList={selectedElements.map((dnszone) => dnszone.idnsname)}
+        setElementsList={() => {}}
+        operation={operation}
+        setShowTableRows={setShowTableRows}
+        onRefresh={refreshData}
+      />
     </div>
   );
 };
