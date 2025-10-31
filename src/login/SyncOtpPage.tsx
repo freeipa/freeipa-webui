@@ -13,7 +13,7 @@ import {
 import BrandImg from "src/assets/images/product-name.png";
 import BackgroundImg from "src/assets/images/login-screen-background.jpg";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // RPC
 import {
   MetaResponse,
@@ -29,9 +29,6 @@ import InputRequiredText from "src/components/layouts/InputRequiredText";
 const SyncOtpPage = () => {
   // Navigate
   const navigate = useNavigate();
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // API calls
   const [syncOtpToken] = useSyncOtpMutation();
@@ -94,14 +91,14 @@ const SyncOtpPage = () => {
         );
 
         if (reason === "invalid-credentials") {
-          alerts.addAlert(
+          addAlert(
             "sync-otp-error",
             "Token sync rejected. The username, password or token codes are not correct.",
             "danger"
           );
           clearFields();
         } else if (reason === "ok") {
-          alerts.addAlert(
+          addAlert(
             "sync-otp-success",
             "OTP token synced successfully",
             "success"
@@ -199,7 +196,6 @@ const SyncOtpPage = () => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <LoginPage
         style={{ whiteSpace: "pre-line" }}
         footerListVariants={ListVariant.inline}

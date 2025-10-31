@@ -9,7 +9,7 @@ import MemberOfHostsTable from "./ManagedByTableHosts";
 import MemberOfAddModal, { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // RPC
 import { ErrorResult, FindRPCResponse } from "src/services/rpc";
@@ -39,9 +39,6 @@ interface ManagedByHostsProps {
 }
 
 const ManagedByHosts = (props: ManagedByHostsProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // Get parameters from URL
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
     useListPageSearchParams();
@@ -193,7 +190,7 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
     if ("data" in response) {
       if (response.data.result) {
         // Set alert: success
-        alerts.addAlert(
+        addAlert(
           "add-member-success",
           "Assigned " + props.from + " '" + props.id + "' to hosts",
           "success"
@@ -205,7 +202,7 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
       } else if (response.data.error) {
         // Set alert: error
         const errorMessage = response.data.error as unknown as ErrorResult;
-        alerts.addAlert("add-member-error", errorMessage.message, "danger");
+        addAlert("add-member-error", errorMessage.message, "danger");
       }
     }
     setSpinning(false);
@@ -249,7 +246,7 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
     if ("data" in response) {
       if (response.data.result) {
         // Set alert: success
-        alerts.addAlert(
+        addAlert(
           "remove-hosts-success",
           "Removed members from " + props.from + " '" + props.id + "'",
           "success"
@@ -263,7 +260,7 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
       } else if (response.data.error) {
         // Set alert: error
         const errorMessage = response.data.error as unknown as ErrorResult;
-        alerts.addAlert("remove-hosts-error", errorMessage.message, "danger");
+        addAlert("remove-hosts-error", errorMessage.message, "danger");
       }
     }
     setSpinning(false);
@@ -294,7 +291,6 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}

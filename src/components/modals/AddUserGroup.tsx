@@ -12,7 +12,7 @@ import ErrorModal from "./ErrorModal";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Hooks
-import useAlerts from "../../hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import { FindRPCResponse } from "../../services/rpc";
 import {
   GroupAddPayload,
@@ -44,9 +44,6 @@ const groupTypeOptions: SelectOptionProps[] = [
 ];
 
 const AddUserGroup = (props: PropsToAddGroup) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   const [executeGroupAddCommand] = useAddGroupMutation();
 
   // Set host names list
@@ -195,11 +192,7 @@ const AddUserGroup = (props: PropsToAddGroup) => {
           handleAPIError(error);
         } else {
           // Set alert: success
-          alerts.addAlert(
-            "add-group-success",
-            "New user group added",
-            "success"
-          );
+          addAlert("add-group-success", "New user group added", "success");
 
           // Set status flag: success
           isAdditionSuccess = true;
@@ -350,7 +343,6 @@ const AddUserGroup = (props: PropsToAddGroup) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-user-group-modal"
         variantType="small"

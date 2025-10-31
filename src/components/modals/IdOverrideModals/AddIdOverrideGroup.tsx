@@ -19,7 +19,7 @@ import ErrorModal from "src/components/modals/ErrorModal";
 // Forms
 import DropdownSearch from "src/components/layouts/DropdownSearch";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Data types
 import { IDViewOverrideGroup } from "src/utils/datatypes/globalDataTypes";
 import {
@@ -44,9 +44,6 @@ interface PropsToAddGroup {
 }
 
 const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // Define 'executeCommand' to add group data to IPA server
   const [executeAddCommand] = useAddIDOverrideGroupMutation();
   const [retrieveGroups] = useGetIDListMutation({});
@@ -204,11 +201,7 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
           handleAPIError(error);
         } else {
           // Set alert: success
-          alerts.addAlert(
-            "add-group-success",
-            "New override group added",
-            "success"
-          );
+          addAlert("add-group-success", "New override group added", "success");
 
           // Set status flag: success
           isAdditionSuccess = true;
@@ -382,7 +375,6 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
   // Render
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-id-override-group-modal"
         variantType="small"

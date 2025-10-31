@@ -11,7 +11,7 @@ import ErrorModal from "src/components/modals/ErrorModal";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import { BatchRPCResponse } from "src/services/rpc";
 import { useAddSudoCmdMutation } from "src/services/rpcSudoCmds";
 interface PropsToAddGroup {
@@ -23,9 +23,6 @@ interface PropsToAddGroup {
 }
 
 const AddSudoCmd = (props: PropsToAddGroup) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   const [executeCmdAddCommand] = useAddSudoCmdMutation();
 
   const [addSpinning, setAddBtnSpinning] = React.useState<boolean>(false);
@@ -115,11 +112,7 @@ const AddSudoCmd = (props: PropsToAddGroup) => {
           handleAPIError(error);
         } else {
           // Set alert: success
-          alerts.addAlert(
-            "add-sudo-cmd-success",
-            "New sudo command added",
-            "success"
-          );
+          addAlert("add-sudo-cmd-success", "New sudo command added", "success");
 
           // Set status flag: success
           isAdditionSuccess = true;
@@ -271,7 +264,6 @@ const AddSudoCmd = (props: PropsToAddGroup) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-sudo-cmd-modal"
         variantType="small"

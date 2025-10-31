@@ -15,7 +15,7 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // RPC
 import {
   AddPayload,
@@ -36,9 +36,6 @@ interface PropsToAddRule {
 }
 
 const AddRule = (props: PropsToAddRule) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // API calls
   const [addRuleCommand] = useAddToAutomemberMutation();
 
@@ -78,7 +75,7 @@ const AddRule = (props: PropsToAddRule) => {
   // Set alery on error
   React.useEffect(() => {
     if (groupsError) {
-      alerts.addAlert(
+      addAlert(
         "retrieve-groups-error",
         "Error while retrieving groups",
         "danger"
@@ -163,18 +160,10 @@ const AddRule = (props: PropsToAddRule) => {
         const error = data?.error as FetchBaseQueryError | SerializedError;
 
         if (error) {
-          alerts.addAlert(
-            "add-rule-error",
-            JSON.stringify(error, null, 2),
-            "danger"
-          );
+          addAlert("add-rule-error", JSON.stringify(error, null, 2), "danger");
         } else {
           // Set alert: success
-          alerts.addAlert(
-            "add-rule-success",
-            "Entry successfully added",
-            "success"
-          );
+          addAlert("add-rule-success", "Entry successfully added", "success");
           setAddBtnSpinning(true);
 
           // Refresh table content
@@ -200,18 +189,10 @@ const AddRule = (props: PropsToAddRule) => {
         const error = data?.error as FetchBaseQueryError | SerializedError;
 
         if (error) {
-          alerts.addAlert(
-            "add-rule-error",
-            JSON.stringify(error, null, 2),
-            "danger"
-          );
+          addAlert("add-rule-error", JSON.stringify(error, null, 2), "danger");
         } else {
           // Set alert: success
-          alerts.addAlert(
-            "add-rule-success",
-            "Entry successfully added",
-            "success"
-          );
+          addAlert("add-rule-success", "Entry successfully added", "success");
           setAddAgainBtnSpinning(false);
 
           // Clean fields and refresh table
@@ -258,7 +239,6 @@ const AddRule = (props: PropsToAddRule) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy={"add-rule-modal"}
         variantType="small"

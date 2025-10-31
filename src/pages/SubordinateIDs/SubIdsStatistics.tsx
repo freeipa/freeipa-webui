@@ -15,7 +15,7 @@ import PageLayout from "src/components/layouts/PageLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import SkeletonOnTableLayout from "src/components/layouts/Skeleton/SkeletonOnTableLayout";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // RPC
 import { useSubidStatsQuery } from "src/services/rpcSubIds";
 
@@ -28,9 +28,6 @@ interface SubidStats {
 }
 
 const SubIdsStatistics = () => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // States
   const [subidStats, setSubidStats] = React.useState<SubidStats>({
     assigned_subids: 0,
@@ -49,11 +46,7 @@ const SubIdsStatistics = () => {
     setShowTableRows(!isLoading);
 
     if (!isLoading && error) {
-      alerts.addAlert(
-        "Error fetching data",
-        JSON.stringify(error, null, 2),
-        "danger"
-      );
+      addAlert("Error fetching data", JSON.stringify(error, null, 2), "danger");
     }
 
     if (!isLoading && data) {

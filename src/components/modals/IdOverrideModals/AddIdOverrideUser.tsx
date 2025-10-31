@@ -18,7 +18,7 @@ import ErrorModal from "src/components/modals/ErrorModal";
 // Forms
 import DropdownSearch from "src/components/layouts/DropdownSearch";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Data types
 import { IDViewOverrideUser } from "src/utils/datatypes/globalDataTypes";
 import {
@@ -44,9 +44,6 @@ interface PropsToAddUser {
 }
 
 const AddIDOverrideUserModal = (props: PropsToAddUser) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // Define 'executeCommand' to add user data to IPA server
   const [executeAddCommand] = useAddIDOverrideUserMutation();
   const [retrieveUsers] = useGetIDListMutation({});
@@ -316,11 +313,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
           handleAPIError(error);
         } else {
           // Set alert: success
-          alerts.addAlert(
-            "add-user-success",
-            "New override user added",
-            "success"
-          );
+          addAlert("add-user-success", "New override user added", "success");
 
           // Set status flag: success
           isAdditionSuccess = true;
@@ -495,7 +488,6 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
   // Render
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-id-override-user-modal"
         variantType="small"

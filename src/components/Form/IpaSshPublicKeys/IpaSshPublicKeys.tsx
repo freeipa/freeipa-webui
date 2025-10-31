@@ -23,7 +23,7 @@ import { Metadata } from "src/utils/datatypes/globalDataTypes";
 import { getParamProperties } from "src/utils/ipaObjectUtils";
 import { KeyIcon } from "@patternfly/react-icons";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import {
   Command,
   ErrorResult,
@@ -46,9 +46,6 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
     metadata: props.metadata,
     objectName: "user",
   });
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // States
   const [textAreaSshPublicKeysValue, setTextAreaSshPublicKeysValue] =
@@ -144,7 +141,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             "remove-ssh-public-key-success",
             "Removed SSH public key from '" + id + "'",
             "success"
@@ -158,7 +155,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
+          addAlert(
             "remove-ssh-public-key-error",
             errorMessage.message,
             "danger"
@@ -211,7 +208,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
           // Close the modal
           setIsTextAreaSshPublicKeysOpen(false);
           // Set alert: success
-          alerts.addAlert(
+          addAlert(
             "add-ssh-public-key-success",
             "Added SSH public key to '" + id + "'",
             "success"
@@ -223,11 +220,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
-            "add-ssh-public-key-error",
-            errorMessage.message,
-            "danger"
-          );
+          addAlert("add-ssh-public-key-error", errorMessage.message, "danger");
         }
         // Refresh data to show new changes in the UI
         props.onRefresh();
@@ -302,7 +295,6 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       {sshPublicKeysList !== undefined
         ? sshPublicKeysList.map((publicKey, idx) => {
             return (

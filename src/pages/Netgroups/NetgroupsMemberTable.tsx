@@ -16,7 +16,7 @@ import SettingsTableLayout from "src/components/layouts/SettingsTableLayout";
 import DualListLayout from "src/components/layouts/DualListLayout";
 import RemoveNetgroupMembersModal from "src/components/modals/RemoveNetgroupMembers";
 // Hooks
-import useAlerts from "../../hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // React Router DOM
 import { Link } from "react-router";
 import { Netgroup } from "../../utils/datatypes/globalDataTypes";
@@ -40,9 +40,6 @@ interface PropsToTable {
 }
 
 const NetgroupsMemberTable = (props: PropsToTable) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   const [saveNetgroup] = useSaveNetgroupMutation();
   const [addMemberToNetgroups] = useAddMemberToNetgroupsMutation();
   const [removeMembersFromNetgroups] = useRemoveMemberFromNetgroupsMutation();
@@ -169,7 +166,7 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
                 if (modResponse.data?.error) {
                   const errorMessage = modResponse.data
                     .error as unknown as ErrorResult;
-                  alerts.addAlert(
+                  addAlert(
                     "update-netgroup-error",
                     errorMessage.message,
                     "danger"
@@ -178,7 +175,7 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
                   return;
                 } else {
                   // Set alert: success
-                  alerts.addAlert(
+                  addAlert(
                     "update-success",
                     "Added " + props.from + " to netgroup",
                     "success"
@@ -193,7 +190,7 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
             });
           } else {
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               "add-member-success",
               "Added " + props.from + " to netgroup",
               "success"
@@ -207,7 +204,7 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert("add-member-error", errorMessage.message, "danger");
+          addAlert("add-member-error", errorMessage.message, "danger");
           setAddSpinning(false);
         }
       }
@@ -225,7 +222,7 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Set alert: success
-            alerts.addAlert(
+            addAlert(
               "remove-netgroups-success",
               "Removed " + props.from + " from netgroup " + props.id,
               "success"
@@ -245,11 +242,7 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert(
-              "remove-netgroups-error",
-              errorMessage.message,
-              "danger"
-            );
+            addAlert("remove-netgroups-error", errorMessage.message, "danger");
           }
         }
         setDeleteSpinning(false);
@@ -438,7 +431,6 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
 
   return (
     <div className="pf-v6-u-mr-md pf-v6-u-ml-xl">
-      <alerts.ManagedAlerts />
       <SettingsTableLayout
         ariaLabel={props.from + " table in netgroups"}
         variant="compact"

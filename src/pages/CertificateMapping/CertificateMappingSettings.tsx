@@ -17,7 +17,7 @@ import {
 } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Utils
 import { certMapRuleAsRecord } from "src/utils/certMappingUtils";
 // Icons
@@ -54,9 +54,6 @@ interface CertificateMappingSettingsProps {
 }
 
 const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
 
@@ -86,7 +83,7 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
   const onRevert = () => {
     props.onCertMappingChange(props.originalCertMapping);
     props.onRefresh();
-    alerts.addAlert(
+    addAlert(
       "revert-success",
       "Certificate mapping rule data reverted",
       "success"
@@ -133,11 +130,11 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
       if ("data" in response) {
         const data = response.data;
         if (data?.error) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          addAlert("error", (data.error as Error).message, "danger");
         }
         if (data?.result) {
           props.onCertMappingChange(data.result.result);
-          alerts.addAlert("success", response.data.result.summary, "success");
+          addAlert("success", response.data.result.summary, "success");
           // Disable 'revert' and 'save' buttons
           props.onRefresh();
         }
@@ -249,7 +246,6 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
   return (
     <>
       <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-        <alerts.ManagedAlerts />
         <Sidebar isPanelRight>
           <SidebarPanel variant="sticky">
             <HelpTextWithIconLayout

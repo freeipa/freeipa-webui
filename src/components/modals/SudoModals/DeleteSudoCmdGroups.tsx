@@ -6,7 +6,7 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
 import DeletedElementsTable from "src/components/tables/DeletedElementsTable";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Data types
@@ -36,7 +36,6 @@ interface PropsToDeleteRules {
 
 const DeleteSudoCmdGroups = (props: PropsToDeleteRules) => {
   // Alerts
-  const alerts = useAlerts();
 
   // Define the column names that will be displayed on the confirmation table.
   // - NOTE: Camel-case should match with the property to show as it is defined in the data.
@@ -151,7 +150,7 @@ const DeleteSudoCmdGroups = (props: PropsToDeleteRules) => {
               props.buttonsData.updateIsDeleteButtonDisabled(true);
               props.buttonsData.updateIsDeletion(true);
 
-              alerts.addAlert(
+              addAlert(
                 "remove-sudo-command-groups-success",
                 "Sudo command groups removed",
                 "success"
@@ -197,7 +196,6 @@ const DeleteSudoCmdGroups = (props: PropsToDeleteRules) => {
 
   const modalDelete: JSX.Element = (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="delete-sudo-command-groups-modal"
         variantType="medium"

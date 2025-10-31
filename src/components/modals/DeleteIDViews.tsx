@@ -6,7 +6,7 @@ import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
 // Tables
 import DeletedElementsTable from "src/components/tables/DeletedElementsTable";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Data types
@@ -36,7 +36,6 @@ interface PropsToDeleteViews {
 
 const DeleteIDViewsModal = (props: PropsToDeleteViews) => {
   // Alerts
-  const alerts = useAlerts();
 
   // Define the column names that will be displayed on the confirmation table.
   const deleteColumnNames = ["ID view name", "Description"];
@@ -151,7 +150,7 @@ const DeleteIDViewsModal = (props: PropsToDeleteViews) => {
               props.buttonsData.updateIsDeleteButtonDisabled(true);
               props.buttonsData.updateIsDeletion(true);
 
-              alerts.addAlert(
+              addAlert(
                 "remove-id-views-success",
                 "ID views removed",
                 "success"
@@ -197,7 +196,6 @@ const DeleteIDViewsModal = (props: PropsToDeleteViews) => {
 
   const modalDelete: JSX.Element = (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="delete-id-views-modal"
         variantType="medium"

@@ -25,7 +25,7 @@ import {
   useRevokeCertificateMutation,
 } from "src/services/rpcCerts";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 
 interface PropsToRevokeCertificate {
   certificate: CertificateData;
@@ -47,9 +47,6 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
     9: "Privilege Withdrawn",
     10: "AA Compromise",
   };
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   const [certName, setCertName] = React.useState<string>("");
 
@@ -162,7 +159,7 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
         if (response.data?.result) {
           // Close modal
           props.onClose();
-          alerts.addAlert(
+          addAlert(
             "revoke-certificate-success",
             "Certificate revoked",
             "success"
@@ -170,11 +167,7 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
-            "revoke-certificate-error",
-            errorMessage.message,
-            "danger"
-          );
+          addAlert("revoke-certificate-error", errorMessage.message, "danger");
         }
         // Refresh data to show new changes in the UI
         props.onRefresh();
@@ -261,7 +254,6 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="revoke-certificate-modal"
         variantType="small"

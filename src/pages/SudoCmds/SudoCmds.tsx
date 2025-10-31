@@ -32,7 +32,7 @@ import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import AddSudoCmd from "src/components/modals/SudoModals/AddSudoCmd";
 import DeleteSudoCmd from "src/components/modals/SudoModals/DeleteSudoCmd";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils
@@ -62,9 +62,6 @@ const SudoCmds = () => {
   ) as string;
 
   const [cmdList, setCmdsList] = useState<SudoCmd[]>([]);
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -233,7 +230,7 @@ const SudoCmds = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
+          addAlert(
             "submit-search-value-error",
             error || "Error when searching for sudo commands",
             "danger"
@@ -495,7 +492,6 @@ const SudoCmds = () => {
 
   return (
     <div>
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id="sudocmd title"

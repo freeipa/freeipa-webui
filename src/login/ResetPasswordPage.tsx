@@ -22,7 +22,7 @@ import {
   useResetPasswordMutation,
 } from "src/services/rpcAuth";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Components
 import PasswordInput from "src/components/layouts/PasswordInput";
 import { useLocation, useNavigate } from "react-router";
@@ -36,15 +36,12 @@ const ResetPasswordPage = () => {
   // Show error message from login page when the page is loaded the first time
   React.useEffect(() => {
     if (msg) {
-      alerts.addAlert("reset-password-error", msg, "danger");
+      addAlert("reset-password-error", msg, "danger");
     }
   }, []);
 
   // Navigate
   const navigate = useNavigate();
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // API calls
   const [resetPassword] = useResetPasswordMutation();
@@ -151,10 +148,10 @@ const ResetPasswordPage = () => {
         if (match && match[1]) {
           const errorMessage = match[1];
           if (errorMessage.includes("Password is too short")) {
-            alerts.addAlert("reset-password-error", errorMessage, "danger");
+            addAlert("reset-password-error", errorMessage, "danger");
             setBtnSpinning(false);
           } else if (reason === "invalid-password") {
-            alerts.addAlert(
+            addAlert(
               "reset-password-error",
               "The password or username you entered is incorrect",
               "danger"
@@ -162,7 +159,7 @@ const ResetPasswordPage = () => {
             clearFields();
             setBtnSpinning(false);
           } else if (reason !== "ok" && reason !== "invalid-password") {
-            alerts.addAlert("reset-password-error", reason, "danger");
+            addAlert("reset-password-error", reason, "danger");
             setBtnSpinning(false);
           } else {
             // Redirect to login page to allow the user to login with new credentials
@@ -265,7 +262,6 @@ const ResetPasswordPage = () => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <LoginPage
         style={{ whiteSpace: "pre-line" }}
         footerListVariants={ListVariant.inline}

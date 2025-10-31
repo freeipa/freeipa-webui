@@ -17,7 +17,7 @@ import {
 } from "src/services/rpcPwdPolicies";
 import { useGetGenericListQuery } from "src/services/rpc";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Errors
 import { SerializedError } from "@reduxjs/toolkit";
 import InputRequiredText from "src/components/layouts/InputRequiredText";
@@ -30,9 +30,6 @@ interface PropsToAddModal {
 }
 
 const AddModal = (props: PropsToAddModal) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // API calls
   const [addPwPolicy] = usePwPolicyAddMutation();
 
@@ -53,11 +50,7 @@ const AddModal = (props: PropsToAddModal) => {
   React.useEffect(() => {
     // On error
     if (!isLoading && error) {
-      alerts.addAlert(
-        "group-find-error",
-        JSON.stringify(error, null, 2),
-        "danger"
-      );
+      addAlert("group-find-error", JSON.stringify(error, null, 2), "danger");
     }
 
     // On success
@@ -125,11 +118,11 @@ const AddModal = (props: PropsToAddModal) => {
         const error = result.data?.error as SerializedError;
 
         if (error) {
-          alerts.addAlert("add-pwpolicy-error", error.message, "danger");
+          addAlert("add-pwpolicy-error", error.message, "danger");
         }
 
         if (data) {
-          alerts.addAlert(
+          addAlert(
             "add-pwpolicy-success",
             "Password policy successfully added",
             "success"
@@ -232,7 +225,6 @@ const AddModal = (props: PropsToAddModal) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-pwpolicy-modal"
         variantType={"small"}

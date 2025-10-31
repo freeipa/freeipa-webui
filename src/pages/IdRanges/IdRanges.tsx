@@ -12,7 +12,7 @@ import {
   OuterScrollContainer,
 } from "@patternfly/react-table";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useApiError from "src/hooks/useApiError";
 // Redux
@@ -57,9 +57,6 @@ const IdRanges = () => {
   const apiVersion = useAppSelector(
     (state) => state.global.environment.api_version
   ) as string;
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -194,7 +191,7 @@ const IdRanges = () => {
           if ("error" in searchError) {
             errMsg = searchError.error;
           }
-          alerts.addAlert(
+          addAlert(
             "submit-search-value-error",
             errMsg || "Error when searching for elements",
             "danger"
@@ -353,7 +350,6 @@ const IdRanges = () => {
   // Render component
   return (
     <div>
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout id="ID ranges page" headingLevel="h1" text="ID ranges" />
       </PageSection>

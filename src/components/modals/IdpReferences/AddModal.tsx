@@ -17,7 +17,7 @@ import {
   useIdpAddMutation,
 } from "src/services/rpcIdp";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/alerts";
 // Errors
 import { SerializedError } from "@reduxjs/toolkit";
 // Components
@@ -33,9 +33,6 @@ interface PropsToAddModal {
 }
 
 const AddModal = (props: PropsToAddModal) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // API calls
   const [addIdp] = useIdpAddMutation();
 
@@ -201,11 +198,11 @@ const AddModal = (props: PropsToAddModal) => {
         const error = result.data?.error as SerializedError;
 
         if (error) {
-          alerts.addAlert("add-idp-error", error.message, "danger");
+          addAlert("add-idp-error", error.message, "danger");
         }
 
         if (data) {
-          alerts.addAlert(
+          addAlert(
             "add-idp-success",
             "Identity provider successfully added",
             "success"
@@ -670,7 +667,6 @@ const AddModal = (props: PropsToAddModal) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-idp-reference-modal"
         variantType={"small"}
