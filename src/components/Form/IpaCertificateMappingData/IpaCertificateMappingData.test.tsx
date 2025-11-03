@@ -1,16 +1,12 @@
 import React from "react";
-import {
-  render,
-  screen,
-  fireEvent,
-  act,
-  cleanup,
-} from "@testing-library/react";
+import { screen, fireEvent, act, cleanup } from "@testing-library/react";
 import { Mock, vi, describe, afterEach, it, expect } from "vitest";
 // Component
 import IpaCertificateMappingData, {
   PropsToIpaCertificateMappingData,
 } from "./IpaCertificateMappingData";
+// Redux
+import { renderWithAlerts } from "src/utils/testAlertsUtils";
 
 interface MockReturn {
   data:
@@ -94,7 +90,7 @@ describe("IpaCertificateMappingData", () => {
 
   it("should render the component", async () => {
     await act(async () => {
-      render(<IpaCertificateMappingData {...defaultProps} />);
+      renderWithAlerts(<IpaCertificateMappingData {...defaultProps} />);
     });
 
     // Validate Add button
@@ -186,7 +182,7 @@ describe("IpaCertificateMappingData", () => {
     const TEST_NAME = "test_certificate";
 
     await act(async () => {
-      render(<IpaCertificateMappingData {...defaultProps} />);
+      renderWithAlerts(<IpaCertificateMappingData {...defaultProps} />);
     });
 
     // Validate Add button
@@ -250,7 +246,7 @@ describe("IpaCertificateMappingData", () => {
     const TEST_NAME = "test_certificate";
 
     await act(async () => {
-      render(<IpaCertificateMappingData {...defaultProps} />);
+      renderWithAlerts(<IpaCertificateMappingData {...defaultProps} />);
     });
 
     // Validate Add button
@@ -315,7 +311,7 @@ describe("IpaCertificateMappingData", () => {
     const TEST_SUBJECT = "test_subject";
 
     await act(async () => {
-      render(<IpaCertificateMappingData {...defaultProps} />);
+      renderWithAlerts(<IpaCertificateMappingData {...defaultProps} />);
     });
 
     // Validate Add button
@@ -379,7 +375,7 @@ describe("IpaCertificateMappingData", () => {
     const TEST_ERROR_MESSAGE = "test error message";
 
     await act(async () => {
-      render(<IpaCertificateMappingData {...defaultProps} />);
+      renderWithAlerts(<IpaCertificateMappingData {...defaultProps} />);
     });
 
     // Validate Add button
@@ -455,7 +451,7 @@ describe("IpaCertificateMappingData", () => {
     };
 
     await act(async () => {
-      render(<IpaCertificateMappingData {...props} />);
+      renderWithAlerts(<IpaCertificateMappingData {...props} />);
     });
 
     // Contains record
@@ -509,7 +505,7 @@ describe("IpaCertificateMappingData", () => {
     };
 
     await act(async () => {
-      render(<IpaCertificateMappingData {...props} />);
+      renderWithAlerts(<IpaCertificateMappingData {...props} />);
     });
 
     // Contains record

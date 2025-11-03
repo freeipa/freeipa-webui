@@ -1,16 +1,12 @@
 import React from "react";
-import {
-  render,
-  screen,
-  fireEvent,
-  act,
-  cleanup,
-} from "@testing-library/react";
+import { screen, fireEvent, act, cleanup } from "@testing-library/react";
 import { vi, describe, expect, it, afterEach } from "vitest";
 // Component
 import IpaSshPublicKeys, {
   PropsToSshPublicKeysModal,
 } from "./IpaSshPublicKeys";
+// Redux
+import { renderWithAlerts } from "src/utils/testAlertsUtils";
 
 /**
  * Checks whether payload argument for updateSSHKey contains string *fail create*
@@ -35,8 +31,10 @@ const shouldFail = (payload) => {
 };
 
 // Mock of rpc: useSimpleMutCommandMutation
-vi.mock("src/services/rpc", () => ({
-  useSimpleMutCommandMutation: vi.fn(() => [
+vi.mock(import("src/services/rpc"), async (original) => {
+  const module = await original();
+  // The function doesn't match the expected type, however the body of the function is correct.
+  const useSimpleMutCommandMutation = vi.fn(() => [
     // updateSSHKey
     async (payload) => {
       console.log("updateSSHKey called with:", payload);
@@ -57,8 +55,13 @@ vi.mock("src/services/rpc", () => ({
         },
       };
     },
-  ]),
-}));
+  ]) as unknown as (typeof module)["useSimpleMutCommandMutation"];
+
+  return {
+    ...module,
+    useSimpleMutCommandMutation: useSimpleMutCommandMutation,
+  };
+});
 
 describe("IpaSshPublicKeys Component", () => {
   const mockOnChange = vi.fn((ipaObject) => {
@@ -112,7 +115,7 @@ describe("IpaSshPublicKeys Component", () => {
   };
 
   const genericAddKey = async (key: string) => {
-    render(<IpaSshPublicKeys {...defaultProps} />);
+    renderWithAlerts(<IpaSshPublicKeys {...defaultProps} />);
 
     // Verify Add Key exists
     const addKeyButton = screen.getByRole("button");
@@ -148,7 +151,7 @@ describe("IpaSshPublicKeys Component", () => {
   afterEach(cleanup);
 
   it("renders empty keys correctly", () => {
-    render(<IpaSshPublicKeys {...defaultProps} />);
+    renderWithAlerts(<IpaSshPublicKeys {...defaultProps} />);
 
     // Add Key Button
     const addKeyButtonElems = screen.getAllByRole("button");
@@ -165,7 +168,7 @@ describe("IpaSshPublicKeys Component", () => {
 
   it("renders add key correctly", async () => {
     const TEST_KEY = "test";
-    render(<IpaSshPublicKeys {...defaultProps} />);
+    renderWithAlerts(<IpaSshPublicKeys {...defaultProps} />);
 
     // Verify Add Key exists
     const addKeyButton = screen.getByRole("button");
