@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  render,
-  screen,
-  fireEvent,
-  act,
-  cleanup,
-} from "@testing-library/react";
+import { screen, fireEvent, act, cleanup } from "@testing-library/react";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 // Component
 import IpaCertificates, { PropsToIpaCertificates } from "./IpaCertificates";
@@ -15,6 +9,8 @@ import {
   CertificateAuthority,
 } from "src/utils/datatypes/globalDataTypes";
 import { parseDn } from "src/utils/utils";
+// Redux
+import { renderWithAlerts } from "src/utils/testAlertsUtils";
 
 interface MockReturn {
   data: { result: boolean } | { error: { message: string } };
@@ -167,7 +163,7 @@ describe("IpaCertificates Component", () => {
 
   it("renders the IpaCertificates with correct props", async () => {
     await act(async () => {
-      render(<IpaCertificates {...defaultProps} />);
+      renderWithAlerts(<IpaCertificates {...defaultProps} />);
     });
 
     // Add button exists
@@ -245,7 +241,7 @@ describe("IpaCertificates Component", () => {
     vi.useFakeTimers().setSystemTime(new Date("2030-02-02"));
 
     await act(async () => {
-      render(<IpaCertificates {...props} />);
+      renderWithAlerts(<IpaCertificates {...props} />);
     });
 
     // Add button exists
@@ -409,7 +405,7 @@ describe("IpaCertificates Component", () => {
 
   it("adds new certificate when Add is clicked", async () => {
     await act(async () => {
-      render(<IpaCertificates {...defaultProps} />);
+      renderWithAlerts(<IpaCertificates {...defaultProps} />);
     });
 
     // Add button exists
@@ -453,7 +449,7 @@ describe("IpaCertificates Component", () => {
 
   it("does not add new certificate when error is encountered after clicking Add", async () => {
     await act(async () => {
-      render(<IpaCertificates {...defaultProps} />);
+      renderWithAlerts(<IpaCertificates {...defaultProps} />);
     });
 
     // Add button exists
@@ -530,7 +526,7 @@ describe("IpaCertificates Component", () => {
     vi.useFakeTimers().setSystemTime(new Date("2030-02-02"));
 
     await act(async () => {
-      render(<IpaCertificates {...props} />);
+      renderWithAlerts(<IpaCertificates {...props} />);
     });
 
     // Validate Kebab menu exists
@@ -615,7 +611,7 @@ describe("IpaCertificates Component", () => {
     vi.useFakeTimers().setSystemTime(new Date("2030-02-02"));
 
     await act(async () => {
-      render(<IpaCertificates {...props} />);
+      renderWithAlerts(<IpaCertificates {...props} />);
     });
 
     // Validate Kebab menu exists
@@ -691,7 +687,7 @@ describe("IpaCertificates Component", () => {
     vi.useFakeTimers().setSystemTime(new Date("2030-02-02"));
 
     await act(async () => {
-      render(<IpaCertificates {...props} />);
+      renderWithAlerts(<IpaCertificates {...props} />);
     });
 
     // Validate Kebab menu exists
@@ -783,7 +779,7 @@ describe("IpaCertificates Component", () => {
     vi.useFakeTimers().setSystemTime(new Date("2030-02-02"));
 
     await act(async () => {
-      render(<IpaCertificates {...props} />);
+      renderWithAlerts(<IpaCertificates {...props} />);
     });
 
     // Validate Kebab menu exists
@@ -859,7 +855,7 @@ describe("IpaCertificates Component", () => {
     vi.useFakeTimers().setSystemTime(new Date("2030-02-02"));
 
     await act(async () => {
-      render(<IpaCertificates {...props} />);
+      renderWithAlerts(<IpaCertificates {...props} />);
     });
 
     // Certificate exists
@@ -930,7 +926,7 @@ describe("IpaCertificates Component", () => {
     vi.useFakeTimers().setSystemTime(new Date("2030-02-02"));
 
     await act(async () => {
-      render(<IpaCertificates {...props} />);
+      renderWithAlerts(<IpaCertificates {...props} />);
     });
 
     // Certificate exists

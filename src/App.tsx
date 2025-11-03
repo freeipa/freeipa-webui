@@ -21,6 +21,8 @@ import {
   updateVaultConfiguration,
 } from "src/store/Global/global-slice";
 import { setIsLogin, setIsLogout } from "./store/Global/auth-slice";
+// Alerts
+import ManagedAlerts from "./components/ManagedAlerts";
 
 const App: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
@@ -121,6 +123,7 @@ const App: React.FunctionComponent = () => {
   }
   return (
     <>
+      <ManagedAlerts />
       {hasUser && userLoggedIn && (
         <AppLayout loggedInUser={loggedInUser}>
           <AppRoutes isInitialDataLoaded={isDataLoaded} />

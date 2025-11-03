@@ -1,16 +1,11 @@
 import React from "react";
-import {
-  render,
-  screen,
-  fireEvent,
-  act,
-  cleanup,
-} from "@testing-library/react";
+import { screen, fireEvent, act, cleanup } from "@testing-library/react";
 import { Mock, vi, describe, afterEach, it, expect } from "vitest";
 // Component
 import PrincipalAliasMultiTextBox, {
   PrincipalAliasMultiTextBoxProps,
 } from "./PrincipalAliasMultiTextBox";
+import { renderWithAlerts } from "src/utils/testAlertsUtils";
 
 interface MockReturn {
   data: { result: boolean } | { error: { message: string } };
@@ -102,7 +97,7 @@ describe("PrincipalAliasMultiTextBox Component", () => {
 
   it("renders empty PrincipalAliasMultiTextBox", async () => {
     await act(async () => {
-      render(<PrincipalAliasMultiTextBox {...defaultProps} />);
+      renderWithAlerts(<PrincipalAliasMultiTextBox {...defaultProps} />);
     });
 
     // Add button exists
@@ -145,7 +140,7 @@ describe("PrincipalAliasMultiTextBox Component", () => {
 
   it("adds new entry when Add button is clicked", async () => {
     await act(async () => {
-      render(<PrincipalAliasMultiTextBox {...defaultProps} />);
+      renderWithAlerts(<PrincipalAliasMultiTextBox {...defaultProps} />);
     });
 
     // Add button exists
@@ -188,7 +183,7 @@ describe("PrincipalAliasMultiTextBox Component", () => {
 
   it("doesn't add new entry when Add button is clicked and error happens", async () => {
     await act(async () => {
-      render(<PrincipalAliasMultiTextBox {...defaultProps} />);
+      renderWithAlerts(<PrincipalAliasMultiTextBox {...defaultProps} />);
     });
 
     // Add button exists
@@ -243,7 +238,7 @@ describe("PrincipalAliasMultiTextBox Component", () => {
     };
 
     await act(async () => {
-      render(<PrincipalAliasMultiTextBox {...props} />);
+      renderWithAlerts(<PrincipalAliasMultiTextBox {...props} />);
     });
 
     // Principal textbox exists
@@ -286,7 +281,7 @@ describe("PrincipalAliasMultiTextBox Component", () => {
     };
 
     await act(async () => {
-      render(<PrincipalAliasMultiTextBox {...props} />);
+      renderWithAlerts(<PrincipalAliasMultiTextBox {...props} />);
     });
 
     // Add Delete exists
@@ -326,7 +321,7 @@ describe("PrincipalAliasMultiTextBox Component", () => {
     };
 
     await act(async () => {
-      render(<PrincipalAliasMultiTextBox {...props} />);
+      renderWithAlerts(<PrincipalAliasMultiTextBox {...props} />);
     });
 
     // Add Delete exists
