@@ -8,8 +8,10 @@ import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 import MemberTable from "src/components/tables/MembershipTable";
 // Data types
 import { UserGroup } from "src/utils/datatypes/globalDataTypes";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
@@ -37,8 +39,7 @@ interface PropsToManagersUsergroups {
 }
 
 const ManagersUserGroups = (props: PropsToManagersUsergroups) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // Get parameters from URL
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -207,10 +208,12 @@ const ManagersUserGroups = (props: PropsToManagersUsergroups) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
-            "add-member-managers-success",
-            "Assigned new group member managers to '" + props.id + "'",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-member-managers-success",
+              title: "Assigned new group member managers to '" + props.id + "'",
+              variant: "success",
+            })
           );
           // Refresh data
           props.onRefreshData();
@@ -219,10 +222,12 @@ const ManagersUserGroups = (props: PropsToManagersUsergroups) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert(
-            "add-member-managers-error",
-            errorMessage.message,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "add-member-managers-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
           );
         }
       }
@@ -243,10 +248,12 @@ const ManagersUserGroups = (props: PropsToManagersUsergroups) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
-            "remove-member-managers-success",
-            "Removed group member managers from '" + props.id + "'",
-            "success"
+          dispatch(
+            addAlert({
+              name: "remove-member-managers-success",
+              title: "Removed group member managers from '" + props.id + "'",
+              variant: "success",
+            })
           );
           // Refresh
           props.onRefreshData();
@@ -259,10 +266,12 @@ const ManagersUserGroups = (props: PropsToManagersUsergroups) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert(
-            "remove-member-managers-error",
-            errorMessage.message,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "remove-member-managers-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
           );
         }
       }
@@ -272,7 +281,6 @@ const ManagersUserGroups = (props: PropsToManagersUsergroups) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}

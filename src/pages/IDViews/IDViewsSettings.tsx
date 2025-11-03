@@ -10,8 +10,10 @@ import SecondaryButton from "src/components/layouts/SecondaryButton";
 import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Icons
 import { HelpIcon } from "@patternfly/react-icons";
@@ -36,7 +38,7 @@ interface PropsToIDViewSettings {
 // WIP - placeholder until settings page is actually fully implemented
 
 const IDViewSettings = (props: PropsToIDViewSettings) => {
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // API
   const [saveView] = useSaveIDViewMutation();
@@ -62,11 +64,23 @@ const IDViewSettings = (props: PropsToIDViewSettings) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Show toast notification: success
-          alerts.addAlert("save-success", "ID view modified", "success");
+          dispatch(
+            addAlert({
+              name: "save-success",
+              title: "ID view modified",
+              variant: "success",
+            })
+          );
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("save-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "save-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
         }
         // Reset values. Disable 'revert' and 'save' buttons
         props.onResetValues();
@@ -78,7 +92,13 @@ const IDViewSettings = (props: PropsToIDViewSettings) => {
   // 'Revert' handler method
   const onRevert = () => {
     props.onIDViewChange(props.originalIDView);
-    alerts.addAlert("revert-success", "ID view data reverted", "success");
+    dispatch(
+      addAlert({
+        name: "revert-success",
+        title: "ID view data reverted",
+        variant: "success",
+      })
+    );
   };
 
   // Toolbar
@@ -127,7 +147,6 @@ const IDViewSettings = (props: PropsToIDViewSettings) => {
   // Render component
   return (
     <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-      <alerts.ManagedAlerts />
       <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
         <TitleLayout
           key={0}

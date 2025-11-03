@@ -41,8 +41,10 @@ import {
   ChangeDefaultPayload,
   useChangeDefaultGroupMutation,
 } from "src/services/rpcAutomember";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { useHostGroupsRulesData } from "src/hooks/useHostGroupRules";
@@ -61,6 +63,8 @@ import ConfirmationModal from "src/components/modals/ConfirmationModal";
 
 // Automembership host group rules
 const AutoMemHostRules = () => {
+  const dispatch = useAppDispatch();
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({
     pathname: "host-group-rules",
@@ -96,9 +100,6 @@ const AutoMemHostRules = () => {
   >([]);
   const [previousDefaultGroup, setPreviousDefaultGroup] =
     React.useState<string>(NO_SELECTION);
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -213,17 +214,21 @@ const AutoMemHostRules = () => {
       if ("data" in result) {
         setDefaultGroup(group);
         setPreviousDefaultGroup(group);
-        alerts.addAlert(
-          "default-group-success",
-          "Default group updated",
-          "success"
+        dispatch(
+          addAlert({
+            name: "default-group-success",
+            title: "Default group updated",
+            variant: "success",
+          })
         );
         onCloseConfirmationModal();
       } else {
-        alerts.addAlert(
-          "default-group-failure",
-          "Default group not updated",
-          "danger"
+        dispatch(
+          addAlert({
+            name: "default-group-failure",
+            title: "Default group not updated",
+            variant: "danger",
+          })
         );
       }
     });
@@ -601,7 +606,6 @@ const AutoMemHostRules = () => {
 
   return (
     <div>
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id="Automember host groups title"

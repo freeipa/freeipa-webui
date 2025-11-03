@@ -12,8 +12,10 @@ import {
   MenuToggle,
   SelectList,
 } from "@patternfly/react-core";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // Modals
 import ModalWithFormLayout, {
   Field,
@@ -40,8 +42,7 @@ interface PropsToAddOtpToken {
 }
 
 const AddOtpToken = (props: PropsToAddOtpToken) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // RPC hooks
   const activeUsersListQuery = useGetActiveUsersQuery();
@@ -535,7 +536,13 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("add-otp-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "add-otp-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
         }
       }
     });
@@ -604,7 +611,6 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-otp-token-modal"
         variantType="small"

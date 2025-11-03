@@ -5,8 +5,10 @@ import { Content, ContentVariants, Button } from "@patternfly/react-core";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
 // Tables
 import DeletedElementsTable from "src/components/tables/DeletedElementsTable";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Data types
@@ -35,8 +37,7 @@ interface PropsToDeleteGroups {
 }
 
 const DeleteNetgroups = (props: PropsToDeleteGroups) => {
-  // Alerts
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // Define the column names that will be displayed on the confirmation table.
   // - NOTE: Camel-case should match with the property to show as it is defined in the data.
@@ -151,10 +152,12 @@ const DeleteNetgroups = (props: PropsToDeleteGroups) => {
               props.buttonsData.updateIsDeleteButtonDisabled(true);
               props.buttonsData.updateIsDeletion(true);
 
-              alerts.addAlert(
-                "remove-netgroups-success",
-                "Netgroups removed",
-                "success"
+              dispatch(
+                addAlert({
+                  name: "remove-netgroups-success",
+                  title: "Netgroups removed",
+                  variant: "success",
+                })
               );
 
               setBtnSpinning(false);
@@ -197,7 +200,6 @@ const DeleteNetgroups = (props: PropsToDeleteGroups) => {
 
   const modalDelete: JSX.Element = (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="delete-netgroups-modal"
         variantType="medium"

@@ -8,8 +8,10 @@ import MemberOfToolbar from "./MemberOfToolbar";
 import MemberTable from "src/components/tables/MembershipTable";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // RPC
 import { ErrorResult } from "src/services/rpc";
@@ -19,7 +21,6 @@ import {
   useRemoveFromSudoCmdGroupsMutation,
   useGetSudoCmdGroupsInfoByNameQuery,
 } from "src/services/rpcSudoCmdGroups";
-
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToSudoCmdGroup } from "src/utils/sudoCmdGroupsUtils";
@@ -32,8 +33,7 @@ interface MemberOfSudoCmdGroupsProps {
 }
 
 const MemberOfSudoCmdGroups = (props: MemberOfSudoCmdGroupsProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
     useListPageSearchParams();
@@ -170,13 +170,21 @@ const MemberOfSudoCmdGroups = (props: MemberOfSudoCmdGroupsProps) => {
             if (response.data.result.results[0].error) {
               const errorMessage = response.data.result.results[0]
                 .error as string;
-              alerts.addAlert("add-member-error", errorMessage, "danger");
+              dispatch(
+                addAlert({
+                  name: "add-member-error",
+                  title: errorMessage,
+                  variant: "danger",
+                })
+              );
             } else {
               // Set alert: success
-              alerts.addAlert(
-                "add-member-success",
-                `Assigned '${props.id}' to Sudo command groups`,
-                "success"
+              dispatch(
+                addAlert({
+                  name: "add-member-success",
+                  title: `Assigned '${props.id}' to Sudo command groups`,
+                  variant: "success",
+                })
               );
             }
             // Refresh data
@@ -186,7 +194,13 @@ const MemberOfSudoCmdGroups = (props: MemberOfSudoCmdGroupsProps) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert("add-member-error", errorMessage.message, "danger");
+            dispatch(
+              addAlert({
+                name: "add-member-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
+            );
           }
         }
         setSpinning(false);
@@ -202,10 +216,12 @@ const MemberOfSudoCmdGroups = (props: MemberOfSudoCmdGroupsProps) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Set alert: success
-            alerts.addAlert(
-              "remove-sudo-cmds-success",
-              `Removed '${props.id}' from Sudo command groups`,
-              "success"
+            dispatch(
+              addAlert({
+                name: "remove-sudo-cmds-success",
+                title: `Removed '${props.id}' from Sudo command groups`,
+                variant: "success",
+              })
             );
             // Refresh
             props.onRefreshData();
@@ -218,10 +234,12 @@ const MemberOfSudoCmdGroups = (props: MemberOfSudoCmdGroupsProps) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert(
-              "remove-sudo-cmds-error",
-              errorMessage.message,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "remove-sudo-cmds-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
             );
           }
           setSpinning(false);
@@ -232,7 +250,6 @@ const MemberOfSudoCmdGroups = (props: MemberOfSudoCmdGroupsProps) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}

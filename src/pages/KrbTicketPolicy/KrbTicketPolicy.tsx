@@ -13,8 +13,10 @@ import {
 } from "@patternfly/react-core";
 // Data types
 import { KrbTicket } from "src/utils/datatypes/globalDataTypes";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import { useKrbTicketPolicyData } from "src/hooks/useKrbTicketPolicyData";
 // Icons
@@ -35,8 +37,7 @@ import IpaTextInput from "src/components/Form/IpaTextInput";
 import PageWithGrayBorderLayout from "src/components/layouts/PageWithGrayBorderLayout";
 
 const KrbTicketPolicy = () => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // API calls
   const krbTicketPolicyData = useKrbTicketPolicyData();
@@ -85,10 +86,12 @@ const KrbTicketPolicy = () => {
   const onRevert = () => {
     krbTicketPolicyData.setKrbTicket(krbTicketPolicyData.originalPwPolicy);
     krbTicketPolicyData.refetch();
-    alerts.addAlert(
-      "revert-success",
-      "Password policy data reverted",
-      "success"
+    dispatch(
+      addAlert({
+        name: "revert-success",
+        title: "Password policy data reverted",
+        variant: "success",
+      })
     );
   };
 
@@ -119,14 +122,22 @@ const KrbTicketPolicy = () => {
       if ("data" in response) {
         const data = response.data;
         if (data?.error) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          dispatch(
+            addAlert({
+              name: "error",
+              title: (data.error as Error).message,
+              variant: "danger",
+            })
+          );
         }
         if (data?.result) {
           krbTicketPolicyData.setKrbTicket(data.result.result);
-          alerts.addAlert(
-            "success",
-            "Kerberos ticket policy updated",
-            "success"
+          dispatch(
+            addAlert({
+              name: "success",
+              title: "Kerberos ticket policy updated",
+              variant: "success",
+            })
           );
           // Reset values. Disable 'revert' and 'save' buttons
           krbTicketPolicyData.resetValues();
@@ -196,7 +207,6 @@ const KrbTicketPolicy = () => {
       toolbarItems={toolbarFields}
     >
       <>
-        <alerts.ManagedAlerts />
         <Sidebar isPanelRight className="pf-v6-u-mb-0">
           <SidebarPanel variant="sticky">
             <HelpTextWithIconLayout

@@ -13,8 +13,10 @@ import MemberOfToolbar from "./MemberOfToolbar";
 import MemberTable from "src/components/tables/MembershipTable";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // RPC
@@ -39,8 +41,7 @@ interface MemberOfUserGroupsProps {
 }
 
 const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   const {
     page,
@@ -209,10 +210,12 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Set alert: success
-            alerts.addAlert(
-              "add-member-success",
-              `Assigned '${id}' to user groups`,
-              "success"
+            dispatch(
+              addAlert({
+                name: "add-member-success",
+                title: `Assigned '${id}' to user groups`,
+                variant: "success",
+              })
             );
             // Refresh data
             props.onRefreshUserData();
@@ -221,7 +224,13 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert("add-member-error", errorMessage.message, "danger");
+            dispatch(
+              addAlert({
+                name: "add-member-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
+            );
           }
         }
         setSpinning(false);
@@ -238,10 +247,12 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
           if ("data" in response) {
             if (response.data?.result) {
               // Set alert: success
-              alerts.addAlert(
-                "remove-user-groups-success",
-                `Removed '${id}' from user groups`,
-                "success"
+              dispatch(
+                addAlert({
+                  name: "remove-user-groups-success",
+                  title: `Removed '${id}' from user groups`,
+                  variant: "success",
+                })
               );
               // Refresh
               props.onRefreshUserData();
@@ -255,10 +266,12 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
               // Set alert: error
               const errorMessage = response.data
                 .error as unknown as ErrorResult;
-              alerts.addAlert(
-                "remove-entry-groups-error",
-                errorMessage.message,
-                "danger"
+              dispatch(
+                addAlert({
+                  name: "remove-entry-groups-error",
+                  title: errorMessage.message,
+                  variant: "danger",
+                })
               );
             }
           }
@@ -271,7 +284,6 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   return (
     <>
       <Flex direction={{ default: "column" }}>
-        <alerts.ManagedAlerts />
         <MemberOfToolbar
           searchText={searchValue}
           onSearchTextChange={setSearchValue}

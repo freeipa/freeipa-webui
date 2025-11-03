@@ -9,10 +9,12 @@ import {
   InnerScrollContainer,
   OuterScrollContainer,
 } from "@patternfly/react-table";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import useApiError from "src/hooks/useApiError";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // Layouts
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
@@ -45,7 +47,8 @@ interface PropsToOverrides {
 }
 
 const IDViewsOverrideUsers = (props: PropsToOverrides) => {
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
+
   const globalErrors = useApiError([]);
 
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -158,10 +161,12 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
-            "submit-search-value-error",
-            error || "Error when searching for override users",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "submit-search-value-error",
+              title: error || "Error when searching for override users",
+              variant: "danger",
+            })
           );
         } else {
           // Success
@@ -224,10 +229,12 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
       dataResponse.isError &&
       dataResponse.error !== undefined
     ) {
-      alerts.addAlert(
-        "add-user-error",
-        "Failed to query override users: " + dataResponse.error,
-        "danger"
+      dispatch(
+        addAlert({
+          name: "add-user-error",
+          title: "Failed to query override users: " + dataResponse.error,
+          variant: "danger",
+        })
       );
     }
   }, [dataResponse]);

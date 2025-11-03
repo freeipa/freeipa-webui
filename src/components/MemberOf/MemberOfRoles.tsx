@@ -9,8 +9,10 @@ import MemberTable from "src/components/tables/MembershipTable";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // RPC
 import { ErrorResult } from "src/services/rpc";
@@ -35,8 +37,7 @@ interface MemberOfRolesProps {
   direction: MembershipDirection;
 }
 const MemberOfRoles = (props: MemberOfRolesProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   const membershipDisabled =
     props.membershipDisabled === undefined ? false : props.membershipDisabled;
@@ -220,10 +221,12 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
-            "add-member-success",
-            `Assigned '${props.id}' to roles`,
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-member-success",
+              title: `Assigned '${props.id}' to roles`,
+              variant: "success",
+            })
           );
           // Refresh data
           props.onRefreshData();
@@ -232,7 +235,13 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert("add-member-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "add-member-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
         }
       }
       setSpinning(false);
@@ -247,10 +256,12 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Set alert: success
-            alerts.addAlert(
-              "remove-roles-success",
-              `Removed '${props.id}' from roles`,
-              "success"
+            dispatch(
+              addAlert({
+                name: "remove-roles-success",
+                title: `Removed '${props.id}' from roles`,
+                variant: "success",
+              })
             );
             // Refresh
             props.onRefreshData();
@@ -263,10 +274,12 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert(
-              "remove-roles-error",
-              errorMessage.message,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "remove-roles-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
             );
           }
         }
@@ -277,7 +290,6 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       {membershipDisabled ? (
         <MemberOfToolbar
           searchText={searchValue}

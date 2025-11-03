@@ -24,8 +24,10 @@ import {
 } from "src/services/rpcServices";
 // Layouts
 import SecondaryButton from "../../layouts/SecondaryButton";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // Data types
 import { Metadata } from "src/utils/datatypes/globalDataTypes";
 // Utils
@@ -73,8 +75,7 @@ const getObjectID = (from: string, ipaObject: IPAObject) => {
 };
 
 const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // RTK hooks
   const [addPrincipalAlias, removePrincipalAlias] = getPrincipalAliasMutations(
@@ -180,15 +181,23 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
           setIsTextInputModalOpen(false);
           setModalSpinning(false);
           // Set alert: success
-          alerts.addAlert(
-            "add-alias-success",
-            "Added new aliases to '" + objectID + "'",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-alias-success",
+              title: "Added new aliases to '" + objectID + "'",
+              variant: "success",
+            })
           );
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("add-alias-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "add-alias-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
         }
         // Refresh data to show new changes in the UI
         setModalSpinning(false);
@@ -211,15 +220,23 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
           // Close modal
           setIsDeleteConfModalOpen(false);
           // Show toast notification: success
-          alerts.addAlert(
-            "remove-alias-success",
-            "Removed aliases from '" + objectID + "'",
-            "success"
+          dispatch(
+            addAlert({
+              name: "remove-alias-success",
+              title: "Removed aliases from '" + objectID + "'",
+              variant: "success",
+            })
           );
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("remove-alias-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "remove-alias-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
         }
         // Refresh data to show new changes in the UI
         setModalSpinning(false);
@@ -260,7 +277,6 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <IpaTextInputFromList
         dataCy={props.dataCy}
         name="krbprincipalname"

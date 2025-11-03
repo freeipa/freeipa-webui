@@ -22,8 +22,10 @@ import {
   useAddCertMapDataMutation,
   useRemoveCertMapDataMutation,
 } from "src/services/rpcUsers";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // Modals
 import ConfirmationModal from "../../modals/ConfirmationModal";
 // Icons
@@ -37,6 +39,8 @@ export interface PropsToIpaCertificateMappingData {
 }
 
 const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
+  const dispatch = useAppDispatch();
+
   const { value } = getParamProperties({
     name: "ipacertmapdata",
     ipaObject: props.ipaObject,
@@ -44,10 +48,6 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
     objectName: "user",
   });
   // TODO: Use 'readOnly' in the fields (right now is 'undefined')
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // RPC hooks
   const [addCertMapData] = useAddCertMapDataMutation();
   const [removeCertMapData] = useRemoveCertMapDataMutation();
@@ -214,20 +214,27 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
           // Close the modal
           setIsOpen(false);
           // Set alert: success
-          alerts.addAlert(
-            "add-cert-mapping-data-success",
-            "Added certificate mappings to user '" + props.ipaObject.uid + "'",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-cert-mapping-data-success",
+              title:
+                "Added certificate mappings to user '" +
+                props.ipaObject.uid +
+                "'",
+              variant: "success",
+            })
           );
           // Reset fields' values
           resetFields();
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
-            "add-cert-mapping-data-error",
-            errorMessage.message,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "add-cert-mapping-data-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
           );
         }
         // Refresh data to show new changes in the UI
@@ -253,12 +260,15 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
           // Close the modal
           setIsOpen(false);
           // Set alert: success
-          alerts.addAlert(
-            "remove-cert-mapping-data-success",
-            "Removed certificate mappings from user '" +
-              props.ipaObject.uid +
-              "'",
-            "success"
+          dispatch(
+            addAlert({
+              name: "remove-cert-mapping-data-success",
+              title:
+                "Removed certificate mappings from user '" +
+                props.ipaObject.uid +
+                "'",
+              variant: "success",
+            })
           );
           // Reset fields' values
           resetFields();
@@ -266,10 +276,12 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
-            "remove-cert-mapping-data-error",
-            errorMessage.message,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "remove-cert-mapping-data-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
           );
           // Reset fields' values
           resetFields();
@@ -308,7 +320,6 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       {certificateMappingDataMainList !== undefined &&
       certificateMappingDataMainList.length > 0
         ? certificateMappingDataMainList.map((certMapData, idx) => {

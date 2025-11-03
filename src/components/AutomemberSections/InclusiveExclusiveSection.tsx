@@ -2,8 +2,10 @@ import React from "react";
 // Patternfly
 import { Td, Th, Tr } from "@patternfly/react-table";
 import { Button } from "@patternfly/react-core";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // RPC
 import {
   AddConditionPayload,
@@ -33,8 +35,7 @@ interface PropsToInclusiveExclusiveSection {
 }
 
 const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // ACI attributes to use in Inclusive/Exclusive sections
   const userAciAttrs = props.metadata.objects?.user?.aciattrs || [];
@@ -259,19 +260,24 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
       if ("data" in response) {
         const responseData = response.data;
         if (responseData?.result) {
-          alerts.addAlert(
-            "add-automember-condition-success",
-            "Automember condition added",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-automember-condition-success",
+              title: "Automember condition added",
+              variant: "success",
+            })
           );
           props.onRefresh();
           resetValues();
           onChangeAddModalVisibility();
         } else if (responseData?.error) {
-          alerts.addAlert(
-            "add-automember-condition-error",
-            "Failed to add Automember condition: " + responseData.error,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "add-automember-condition-error",
+              title:
+                "Failed to add Automember condition: " + responseData.error,
+              variant: "danger",
+            })
           );
         }
       }
@@ -294,18 +300,23 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
       if ("data" in response) {
         const responseData = response.data;
         if (responseData?.result) {
-          alerts.addAlert(
-            "add-automember-condition-success",
-            "Automember condition added",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-automember-condition-success",
+              title: "Automember condition added",
+              variant: "success",
+            })
           );
           props.onRefresh();
           resetValues();
         } else if (responseData?.error) {
-          alerts.addAlert(
-            "add-automember-condition-error",
-            "Failed to add Automember condition: " + responseData.error,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "add-automember-condition-error",
+              title:
+                "Failed to add Automember condition: " + responseData.error,
+              variant: "danger",
+            })
           );
         }
       }
@@ -402,19 +413,23 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
       if ("data" in response) {
         const responseData = response.data;
         if (responseData?.result) {
-          alerts.addAlert(
-            "remove-condition-success",
-            "Item(s) removed",
-            "success"
+          dispatch(
+            addAlert({
+              name: "remove-condition-success",
+              title: "Item(s) removed",
+              variant: "success",
+            })
           );
           props.onRefresh();
           setSelectedEntries([]);
           onChangeDeleteModalVisibility();
         } else if (responseData?.error) {
-          alerts.addAlert(
-            "remove-condition-error",
-            "Failed to remove item(s): " + responseData.error,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "remove-condition-error",
+              title: "Failed to remove item(s): " + responseData.error,
+              variant: "danger",
+            })
           );
         }
         setSpinningOnDelete(false);
@@ -424,7 +439,6 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <SettingsTableLayout
         ariaLabel={"Options table in sudo rules settings page"}
         variant="compact"

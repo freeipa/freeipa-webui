@@ -9,8 +9,10 @@ import MemberTable from "src/components/tables/MembershipTable";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Data types
 import { User, UserGroup } from "src/utils/datatypes/globalDataTypes";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
@@ -44,9 +46,7 @@ interface PropsToMembersUsers {
 }
 
 const MembersUsers = (props: PropsToMembersUsers) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
+  const dispatch = useAppDispatch();
   const membershipDisabled =
     props.membershipDisabled === undefined ? false : props.membershipDisabled;
 
@@ -242,10 +242,13 @@ const MembersUsers = (props: PropsToMembersUsers) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
-            "add-member-success",
-            "Assigned new users to " + entityType + " '" + props.id + "'",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-member-success",
+              title:
+                "Assigned new users to " + entityType + " '" + props.id + "'",
+              variant: "success",
+            })
           );
           // Refresh data
           props.onRefreshData();
@@ -254,7 +257,13 @@ const MembersUsers = (props: PropsToMembersUsers) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert("add-member-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "add-member-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
         }
       }
       setSpinning(false);
@@ -274,10 +283,12 @@ const MembersUsers = (props: PropsToMembersUsers) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
-            "remove-users-success",
-            "Removed users from " + entityType + " '" + props.id + "'",
-            "success"
+          dispatch(
+            addAlert({
+              name: "remove-users-success",
+              title: "Removed users from " + entityType + " '" + props.id + "'",
+              variant: "success",
+            })
           );
           // Refresh
           props.onRefreshData();
@@ -294,7 +305,13 @@ const MembersUsers = (props: PropsToMembersUsers) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert("remove-users-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "remove-users-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
         }
       }
       setSpinning(false);
@@ -303,7 +320,6 @@ const MembersUsers = (props: PropsToMembersUsers) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       {membershipDisabled ? (
         <MemberOfToolbar
           searchText={searchValue}

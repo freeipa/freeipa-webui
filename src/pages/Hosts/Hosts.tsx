@@ -34,13 +34,13 @@ import HostsTable from "./HostsTable";
 import AddHost from "src/components/modals/HostModals/AddHost";
 import DeleteHosts from "src/components/modals/HostModals/DeleteHosts";
 // Redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // Data types
 import { Host } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { API_VERSION_BACKUP, isHostSelectable } from "src/utils/utils";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors
@@ -57,6 +57,8 @@ import {
 } from "../../services/rpcHosts";
 
 const Hosts = () => {
+  const dispatch = useAppDispatch();
+
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
     useListPageSearchParams();
@@ -79,9 +81,6 @@ const Hosts = () => {
 
   // Initialize hosts list (Redux)
   const [hostsList, setHostsList] = useState<Host[]>([]);
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -244,10 +243,12 @@ const Hosts = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
-            "submit-search-value-error",
-            error || "Error when searching for hosts",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "submit-search-value-error",
+              title: error || "Error when searching for hosts",
+              variant: "danger",
+            })
           );
         } else {
           // Success
@@ -331,11 +332,14 @@ const Hosts = () => {
   const onRebuildAutoMembership = () => {
     // Task can potentially run for a very long time, give feed back that we
     // at least started the task
-    alerts.addAlert(
-      "rebuild-automember-start",
-      "Starting automember rebuild membership task (this may take a long " +
-        "time to complete) ...",
-      "info"
+    dispatch(
+      addAlert({
+        name: "rebuild-automember-start",
+        title:
+          "Starting automember rebuild membership task (this may take a long " +
+          "time to complete) ...",
+        variant: "info",
+      })
     );
     executeAutoMemberRebuild(selectedHosts).then((result) => {
       if ("data" in result) {
@@ -352,17 +356,21 @@ const Hosts = () => {
             error = automemberError.message;
           }
 
-          alerts.addAlert(
-            "rebuild-automember-error",
-            error || "Error when rebuilding membership",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "rebuild-automember-error",
+              title: error || "Error when rebuilding membership",
+              variant: "danger",
+            })
           );
         } else {
           // alert: success
-          alerts.addAlert(
-            "rebuild-automember-success",
-            "Automember rebuild membership task completed",
-            "success"
+          dispatch(
+            addAlert({
+              name: "rebuild-automember-success",
+              title: "Automember rebuild membership task completed",
+              variant: "success",
+            })
           );
         }
         // Hide modal
@@ -654,7 +662,6 @@ const Hosts = () => {
       onClose={onCloseContextualPanel}
     >
       <div>
-        <alerts.ManagedAlerts />
         <PageSection hasBodyWrapper={false}>
           <TitleLayout id="Hosts title" headingLevel="h1" text="Hosts" />
         </PageSection>

@@ -11,6 +11,7 @@ import {
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Redux
+import { useAppDispatch } from "src/store/hooks";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Modals
@@ -18,7 +19,7 @@ import ErrorModal from "src/components/modals/ErrorModal";
 // Forms
 import DropdownSearch from "src/components/layouts/DropdownSearch";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // Data types
 import { IDViewOverrideUser } from "src/utils/datatypes/globalDataTypes";
 import {
@@ -44,8 +45,7 @@ interface PropsToAddUser {
 }
 
 const AddIDOverrideUserModal = (props: PropsToAddUser) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // Define 'executeCommand' to add user data to IPA server
   const [executeAddCommand] = useAddIDOverrideUserMutation();
@@ -316,10 +316,12 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
           handleAPIError(error);
         } else {
           // Set alert: success
-          alerts.addAlert(
-            "add-user-success",
-            "New override user added",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-user-success",
+              title: "New override user added",
+              variant: "success",
+            })
           );
 
           // Set status flag: success
@@ -495,7 +497,6 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
   // Render
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-id-override-user-modal"
         variantType="small"

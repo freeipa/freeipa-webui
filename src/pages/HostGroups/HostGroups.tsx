@@ -28,13 +28,13 @@ import HostGroupsTable from "src/pages/HostGroups/HostGroupsTable";
 import AddHostGroup from "src/components/modals/AddHostGroup";
 import DeleteHostGroups from "src/components/modals/DeleteHostGroups";
 // Redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // Data types
 import { HostGroup } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { API_VERSION_BACKUP, isHostGroupSelectable } from "src/utils/utils";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors
@@ -48,6 +48,8 @@ import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
 import { useGettingHostGroupsQuery } from "../../services/rpcHostGroups";
 
 const HostGroups = () => {
+  const dispatch = useAppDispatch();
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "host-groups" });
 
@@ -63,9 +65,6 @@ const HostGroups = () => {
 
   // Initialize groups list (Redux)
   const [groupsList, setGroupsList] = useState<HostGroup[]>([]);
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -238,10 +237,12 @@ const HostGroups = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
-            "submit-search-value-error",
-            error || "Error when searching for host groups",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "submit-search-value-error",
+              title: error || "Error when searching for host groups",
+              variant: "danger",
+            })
           );
         } else {
           // Success
@@ -498,7 +499,6 @@ const HostGroups = () => {
 
   return (
     <div>
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout id="Groups title" headingLevel="h1" text="Host groups" />
       </PageSection>

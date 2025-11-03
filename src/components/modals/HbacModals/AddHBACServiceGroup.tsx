@@ -10,8 +10,10 @@ import ErrorModal from "src/components/modals/ErrorModal";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import { BatchRPCResponse } from "src/services/rpc";
 import { useAddHbacServiceGroupMutation } from "src/services/rpcHBACSvcGroups";
 interface PropsToAddGroup {
@@ -23,9 +25,7 @@ interface PropsToAddGroup {
 }
 
 const AddHBACServiceGroup = (props: PropsToAddGroup) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
+  const dispatch = useAppDispatch();
   const [executeServiceAddCommand] = useAddHbacServiceGroupMutation();
 
   // Set host names list
@@ -117,10 +117,12 @@ const AddHBACServiceGroup = (props: PropsToAddGroup) => {
             handleAPIError(error);
           } else {
             // Set alert: success
-            alerts.addAlert(
-              "add-hbacservicegroup-success",
-              "New HBAC service group added",
-              "success"
+            dispatch(
+              addAlert({
+                name: "add-hbacservicegroup-success",
+                title: "New HBAC service group added",
+                variant: "success",
+              })
             );
 
             // Set status flag: success
@@ -273,7 +275,6 @@ const AddHBACServiceGroup = (props: PropsToAddGroup) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-hbac-service-group-modal"
         variantType="small"

@@ -12,8 +12,6 @@ import TitleLayout from "src/components/layouts/TitleLayout";
 import { partialServiceToService } from "src/utils/serviceUtils";
 import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Hooks
-import useAlerts from "../../hooks/useAlerts";
-// Hooks
 import { useServiceSettings } from "src/hooks/useServiceSettingsData";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
@@ -68,9 +66,6 @@ const ServicesTabs = ({ section }) => {
 
   // Data loaded from DB
   const serviceSettingsData = useServiceSettings(decodedId as string);
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState("settings");
@@ -136,7 +131,6 @@ const ServicesTabs = ({ section }) => {
         isExpanded={isContextualPanelExpanded}
         onClose={onCloseContextualPanel}
       >
-        <alerts.ManagedAlerts />
         <PageSection hasBodyWrapper={false}>
           <BreadCrumb breadcrumbItems={breadcrumbItems} />
           <TitleLayout

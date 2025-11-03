@@ -15,8 +15,10 @@ import {
   useSubidFindQuery,
   useAssignSubIdsMutation,
 } from "src/services/rpcSubIds";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -30,8 +32,7 @@ interface PropsToAddModal {
 }
 
 const AddModal = (props: PropsToAddModal) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // API call
   const [generateSubid] = useAssignSubIdsMutation();
@@ -58,10 +59,12 @@ const AddModal = (props: PropsToAddModal) => {
   React.useEffect(() => {
     // On error
     if (!isLoading && error) {
-      alerts.addAlert(
-        "subid-find-error",
-        JSON.stringify(error, null, 2),
-        "danger"
+      dispatch(
+        addAlert({
+          name: "subid-find-error",
+          title: JSON.stringify(error, null, 2),
+          variant: "danger",
+        })
       );
     }
 
@@ -123,18 +126,22 @@ const AddModal = (props: PropsToAddModal) => {
           | SerializedError;
 
         if (error) {
-          alerts.addAlert(
-            "add-subid-error",
-            JSON.stringify(error, null, 2),
-            "danger"
+          dispatch(
+            addAlert({
+              name: "add-subid-error",
+              title: JSON.stringify(error, null, 2),
+              variant: "danger",
+            })
           );
         }
 
         if (data) {
-          alerts.addAlert(
-            "add-subid-success",
-            "Subordinate ID successfully added",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-subid-success",
+              title: "Subordinate ID successfully added",
+              variant: "success",
+            })
           );
           // Reset selected item
           setSelectedItem("");
@@ -221,7 +228,6 @@ const AddModal = (props: PropsToAddModal) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-subid-modal"
         variantType={"small"}

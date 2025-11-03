@@ -40,8 +40,10 @@ import {
   useSaveUserMutation,
   useSaveStageUserMutation,
 } from "src/services/rpcUsers";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Modals
 import DisableEnableUsers from "src/components/modals/UserModals/DisableEnableUsers";
@@ -82,8 +84,7 @@ interface PropsToUserSettings {
 }
 
 const UserSettings = (props: PropsToUserSettings) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // Navigate
   const navigate = useNavigate();
@@ -242,15 +243,23 @@ const UserSettings = (props: PropsToUserSettings) => {
           // Refresh page
           props.onRefresh();
           // Show toast notification: success
-          alerts.addAlert(
-            "auto-assign-success",
-            response.data.result.summary,
-            "success"
+          dispatch(
+            addAlert({
+              name: "auto-assign-success",
+              title: response.data.result.summary,
+              variant: "success",
+            })
           );
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("auto-assign-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "auto-assign-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
         }
       }
     });
@@ -402,7 +411,13 @@ const UserSettings = (props: PropsToUserSettings) => {
   // 'Revert' handler method
   const onRevert = () => {
     props.onUserChange(props.originalUser);
-    alerts.addAlert("revert-success", "User data reverted", "success");
+    dispatch(
+      addAlert({
+        name: "revert-success",
+        title: "User data reverted",
+        variant: "success",
+      })
+    );
   };
 
   // 'Save' handler method
@@ -416,11 +431,23 @@ const UserSettings = (props: PropsToUserSettings) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Show toast notification: success
-          alerts.addAlert("save-success", "User modified", "success");
+          dispatch(
+            addAlert({
+              name: "save-success",
+              title: "User modified",
+              variant: "success",
+            })
+          );
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("save-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "save-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
         }
         // Reset values. Disable 'revert' and 'save' buttons
         props.onResetValues();
@@ -491,7 +518,6 @@ const UserSettings = (props: PropsToUserSettings) => {
   // 'UserSettings' render
   return (
     <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-      <alerts.ManagedAlerts />
       <Sidebar isPanelRight>
         <SidebarPanel variant="sticky">
           <HelpTextWithIconLayout

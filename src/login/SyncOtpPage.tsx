@@ -12,8 +12,10 @@ import {
 // Images
 import BrandImg from "src/assets/images/product-name.png";
 import BackgroundImg from "src/assets/images/login-screen-background.jpg";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // RPC
 import {
   MetaResponse,
@@ -27,11 +29,10 @@ import PasswordInput from "src/components/layouts/PasswordInput";
 import InputRequiredText from "src/components/layouts/InputRequiredText";
 
 const SyncOtpPage = () => {
+  const dispatch = useAppDispatch();
+
   // Navigate
   const navigate = useNavigate();
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // API calls
   const [syncOtpToken] = useSyncOtpMutation();
@@ -94,17 +95,22 @@ const SyncOtpPage = () => {
         );
 
         if (reason === "invalid-credentials") {
-          alerts.addAlert(
-            "sync-otp-error",
-            "Token sync rejected. The username, password or token codes are not correct.",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "sync-otp-error",
+              title:
+                "Token sync rejected. The username, password or token codes are not correct.",
+              variant: "danger",
+            })
           );
           clearFields();
         } else if (reason === "ok") {
-          alerts.addAlert(
-            "sync-otp-success",
-            "OTP token synced successfully",
-            "success"
+          dispatch(
+            addAlert({
+              name: "sync-otp-success",
+              title: "OTP token synced successfully",
+              variant: "success",
+            })
           );
           navigate("/login", {
             replace: true,
@@ -199,7 +205,6 @@ const SyncOtpPage = () => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <LoginPage
         style={{ whiteSpace: "pre-line" }}
         footerListVariants={ListVariant.inline}

@@ -4,8 +4,10 @@ import { Content, ContentVariants, Button } from "@patternfly/react-core";
 // Components
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import DeletedElementsTable from "src/components/tables/DeletedElementsTable";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // RPC
@@ -37,8 +39,7 @@ interface PropsToDelete {
 }
 
 const DeleteModal = (props: PropsToDelete) => {
-  // Alerts
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // API calls
   const [deleteIdps] = useIdpDeleteMutation();
@@ -148,10 +149,12 @@ const DeleteModal = (props: PropsToDelete) => {
             props.buttonsData.updateIsDeleteButtonDisabled(true);
             props.buttonsData.updateIsDeletion(true);
 
-            alerts.addAlert(
-              "remove-idpreferences-success",
-              "Identity Providers removed",
-              "success"
+            dispatch(
+              addAlert({
+                name: "remove-idpreferences-success",
+                title: "Identity Providers removed",
+                variant: "success",
+              })
             );
 
             setBtnSpinning(false);
@@ -191,7 +194,6 @@ const DeleteModal = (props: PropsToDelete) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="delete-idpreferences-modal"
         variantType="medium"

@@ -26,7 +26,7 @@ import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHe
 // Tables
 import ServicesTable from "./ServicesTable";
 // Redux
-import { useAppSelector } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 // Data types
 import { Host, Service } from "../../utils/datatypes/globalDataTypes";
 // Utils
@@ -35,7 +35,7 @@ import { API_VERSION_BACKUP, isServiceSelectable } from "../../utils/utils";
 import AddService from "../../components/modals/AddService";
 import DeleteServices from "../../components/modals/DeleteServices";
 // Hooks
-import useAlerts from "../../hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors
@@ -50,6 +50,8 @@ import { useGetHostsListQuery } from "../../services/rpcHosts";
 import { useGettingServicesQuery } from "../../services/rpcServices";
 
 const Services = () => {
+  const dispatch = useAppDispatch();
+
   // Initialize services list (Redux)
   const [servicesList, setServicesList] = useState<Service[]>([]);
 
@@ -65,9 +67,6 @@ const Services = () => {
   const apiVersion = useAppSelector(
     (state) => state.global.environment.api_version
   ) as string;
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -152,10 +151,12 @@ const Services = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
-            "submit-search-value-error",
-            error || "Error when searching for services",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "submit-search-value-error",
+              title: error || "Error when searching for services",
+              variant: "danger",
+            })
           );
         } else {
           // Success
@@ -227,10 +228,12 @@ const Services = () => {
       hostDataResponse.isError &&
       hostDataResponse.error !== undefined
     ) {
-      alerts.addAlert(
-        "get-host-list-error",
-        "Failed to get host list",
-        "danger"
+      dispatch(
+        addAlert({
+          name: "get-host-list-error",
+          title: "Failed to get host list",
+          variant: "danger",
+        })
       );
     }
   }, [hostDataResponse]);
@@ -548,7 +551,6 @@ const Services = () => {
       onClose={onCloseContextualPanel}
     >
       <div>
-        <alerts.ManagedAlerts />
         <PageSection hasBodyWrapper={false}>
           <TitleLayout id="Services title" headingLevel="h1" text="Services" />
         </PageSection>

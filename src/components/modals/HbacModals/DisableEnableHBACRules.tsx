@@ -21,7 +21,9 @@ import ErrorModal from "src/components/modals/ErrorModal";
 // Data types
 import { ErrorData } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 
 interface ButtonsData {
   updateIsEnableButtonDisabled: (value: boolean) => void;
@@ -45,8 +47,7 @@ interface PropsToDisableEnableHBACRules {
 }
 
 const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // Define 'executeEnableDisableCommand' to add rules to IPA server
   const [executeEnableDisableCommand] = useBatchMutCommandMutation();
@@ -177,20 +178,24 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
                   props.buttonsData.updateIsEnableButtonDisabled(true);
                   props.buttonsData.updateIsDisableButtonDisabled(false);
                   // Set alert: success
-                  alerts.addAlert(
-                    "enable-hbacrule-success",
-                    "HBAC rule enabled",
-                    "success"
+                  dispatch(
+                    addAlert({
+                      name: "enable-hbacrule-success",
+                      title: "HBAC rule enabled",
+                      variant: "success",
+                    })
                   );
                 } else if (props.optionSelected) {
                   // Disable
                   props.buttonsData.updateIsEnableButtonDisabled(false);
                   props.buttonsData.updateIsDisableButtonDisabled(true);
                   // Set alert: success
-                  alerts.addAlert(
-                    "disable-hbacrule-success",
-                    "HBAC rule disabled",
-                    "success"
+                  dispatch(
+                    addAlert({
+                      name: "disable-hbacrule-success",
+                      title: "HBAC rule disabled",
+                      variant: "success",
+                    })
                   );
                 }
               }
@@ -228,12 +233,15 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
             // Close modal
             closeModal();
             // Set alert: success
-            alerts.addAlert(
-              "enable-hbacrule-success",
-              "Enabled HBAC rule '" +
-                props.selectedRulesData.selectedRules[0].cn +
-                "'",
-              "success"
+            dispatch(
+              addAlert({
+                name: "enable-hbacrule-success",
+                title:
+                  "Enabled HBAC rule '" +
+                  props.selectedRulesData.selectedRules[0].cn +
+                  "'",
+                variant: "success",
+              })
             );
             // Reset selected rules
             props.selectedRulesData.clearSelectedRules();
@@ -244,10 +252,12 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
           } else if (response.data.error) {
             // Set alert: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert(
-              "enable-hbacrule-error",
-              errorMessage.message,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "enable-hbacrule-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
             );
           }
         }
@@ -340,7 +350,6 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
   // Render 'DisableEnableHBACRules'
   return (
     <>
-      <alerts.ManagedAlerts />
       {!props.optionSelected ? modalEnable : modalDisable}
       {isModalErrorOpen && (
         <ErrorModal

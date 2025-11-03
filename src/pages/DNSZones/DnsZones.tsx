@@ -14,12 +14,12 @@ import {
 // Data types
 import { DNSZone } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
 // Redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // RPC
 import {
   useGetDnsZonesFullDataQuery,
@@ -47,6 +47,8 @@ import DeleteDnsZonesModal from "src/components/modals/DnsZones/DeleteDnsZonesMo
 import EnableDisableDnsZonesModal from "src/components/modals/DnsZones/EnableDisableDnsZonesModal";
 
 const DnsZones = () => {
+  const dispatch = useAppDispatch();
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({
     pathname: "dns-zones",
@@ -61,9 +63,6 @@ const DnsZones = () => {
   const apiVersion = useAppSelector(
     (state) => state.global.environment.api_version
   ) as string;
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -245,10 +244,12 @@ const DnsZones = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
-            "submit-search-value-error",
-            error || "Error when searching for elements",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "submit-search-value-error",
+              title: error || "Error when searching for elements",
+              variant: "danger",
+            })
           );
         } else {
           // Success
@@ -436,7 +437,6 @@ const DnsZones = () => {
   // Render component
   return (
     <div>
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout id="DNS zones page" headingLevel="h1" text="DNS zones" />
       </PageSection>

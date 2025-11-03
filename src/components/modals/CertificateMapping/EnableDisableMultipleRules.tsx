@@ -1,7 +1,9 @@
 import React from "react";
 import { Button } from "@patternfly/react-core";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // RPC
 import {
   useMultipleCertMapRuleDisableMutation,
@@ -23,8 +25,7 @@ interface EnableDisableMultipleRulesModalProps {
 const EnableDisableMultipleRulesModal = (
   props: EnableDisableMultipleRulesModalProps
 ) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // RPC calls
   const [enableRule] = useMultipleCertMapRuleEnableMutation();
@@ -39,10 +40,18 @@ const EnableDisableMultipleRulesModal = (
       if ("data" in response) {
         const { data } = response;
         if (data?.error) {
-          alerts.addAlert("error", data.error, "danger");
+          dispatch(
+            addAlert({ name: "error", title: data.error, variant: "danger" })
+          );
         }
         if (data?.result) {
-          alerts.addAlert("success", "Rule status changed", "success");
+          dispatch(
+            addAlert({
+              name: "success",
+              title: "Rule status changed",
+              variant: "success",
+            })
+          );
           // Clear selected elements
           props.setElementsList([]);
           // Refresh data
@@ -87,7 +96,6 @@ const EnableDisableMultipleRulesModal = (
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ConfirmationModal
         dataCy="enable-disable-multiple-rules-modal"
         title={capitalizeFirstLetter(props.operation) + " confirmation"}

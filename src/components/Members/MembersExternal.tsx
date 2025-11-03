@@ -13,12 +13,13 @@ import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 import MemberTable from "src/components/tables/MembershipTable";
 // Data types
 import { UserGroup } from "src/utils/datatypes/globalDataTypes";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // RPC
 import { ErrorResult, MemberPayload } from "src/services/rpc";
-
 import {
   useAddAsMemberMutation,
   useRemoveAsMemberMutation,
@@ -36,8 +37,7 @@ interface PropsToMembersExternal {
 }
 
 const MembersExternal = (props: PropsToMembersExternal) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // Get parameters from URL
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -151,10 +151,12 @@ const MembersExternal = (props: PropsToMembersExternal) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
-            "add-member-success",
-            "Assigned new externals to " + entityType + " " + props.id,
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-member-success",
+              title: "Assigned new externals to " + entityType + " " + props.id,
+              variant: "success",
+            })
           );
           // Refresh data
           props.onRefreshData();
@@ -163,7 +165,13 @@ const MembersExternal = (props: PropsToMembersExternal) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert("add-member-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "add-member-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
         }
       }
       setSpinning(false);
@@ -183,10 +191,13 @@ const MembersExternal = (props: PropsToMembersExternal) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
-            "remove-members-success",
-            "Removed members from " + entityType + " '" + props.id + "'",
-            "success"
+          dispatch(
+            addAlert({
+              name: "remove-members-success",
+              title:
+                "Removed members from " + entityType + " '" + props.id + "'",
+              variant: "success",
+            })
           );
           // Refresh
           props.onRefreshData();
@@ -199,10 +210,12 @@ const MembersExternal = (props: PropsToMembersExternal) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert(
-            "remove-externals-error",
-            errorMessage.message,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "remove-externals-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
           );
         }
       }
@@ -212,7 +225,6 @@ const MembersExternal = (props: PropsToMembersExternal) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}

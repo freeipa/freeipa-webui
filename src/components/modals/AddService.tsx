@@ -21,8 +21,10 @@ import ErrorModal from "./ErrorModal";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "../../hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import { FindRPCResponse } from "../../services/rpc";
 import {
   ServiceAddPayload,
@@ -39,9 +41,7 @@ interface PropsToAddService {
 }
 
 const AddService = (props: PropsToAddService) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
+  const dispatch = useAppDispatch();
   const [executeServiceAddCommand] = useAddServiceMutation();
 
   // Set host names list
@@ -399,10 +399,12 @@ const AddService = (props: PropsToAddService) => {
           handleAPIError(error);
         } else {
           // Set alert: success
-          alerts.addAlert(
-            "add-service-success",
-            "New service added",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-service-success",
+              title: "New service added",
+              variant: "success",
+            })
           );
 
           // Set status flag: success
@@ -562,7 +564,6 @@ const AddService = (props: PropsToAddService) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-service-modal"
         variantType="small"

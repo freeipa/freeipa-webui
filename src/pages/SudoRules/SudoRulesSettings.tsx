@@ -3,8 +3,10 @@ import React from "react";
 import { DropdownItem, Flex } from "@patternfly/react-core";
 // Data types
 import { Metadata, SudoRule } from "src/utils/datatypes/globalDataTypes";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // RPC
 import {
@@ -52,7 +54,7 @@ interface PropsToSudoRulesSettings {
 }
 
 const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // API calls
   const [saveService] = useSaveSudoRuleMutation();
@@ -134,12 +136,24 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Show toast notification: success
-          alerts.addAlert("save-success", "Sudo rule modified", "success");
+          dispatch(
+            addAlert({
+              name: "save-success",
+              title: "Sudo rule modified",
+              variant: "success",
+            })
+          );
           props.onRefresh();
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("save-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "save-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
           // Reset values. Disable 'revert' and 'save' buttons
           props.onResetValues();
         }
@@ -164,10 +178,12 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
           const usersFromResponse = results.result.memberuser_group || [];
           if (!containsAny(usersFromResponse, userGroupsToDelete)) {
             // Set alert: success
-            alerts.addAlert(
-              "remove-who-group-success",
-              "Removed item(s) from " + props.rule.cn,
-              "success"
+            dispatch(
+              addAlert({
+                name: "remove-who-group-success",
+                title: "Removed item(s) from " + props.rule.cn,
+                variant: "success",
+              })
             );
             // Refresh page
             props.onRefresh();
@@ -179,10 +195,12 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             results.error ||
             results.failed.memberuser.group.length > 0
           ) {
-            alerts.addAlert(
-              "remove-who-group-error",
-              "Error: " + results.error,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "remove-who-group-error",
+                title: "Error: " + results.error,
+                variant: "danger",
+              })
             );
           }
         }
@@ -208,10 +226,12 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             results.result.memberhost_hostgroup || [];
           if (!containsAny(hostGroupsFromResponse, hostGroupsToDelete)) {
             // Set alert: success
-            alerts.addAlert(
-              "remove-acces-host-hostgroup-success",
-              "Removed item(s) from " + props.rule.cn,
-              "success"
+            dispatch(
+              addAlert({
+                name: "remove-acces-host-hostgroup-success",
+                title: "Removed item(s) from " + props.rule.cn,
+                variant: "success",
+              })
             );
             // Refresh page
             props.onRefresh();
@@ -223,10 +243,12 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             results.error ||
             results.failed.memberhost.hostgroup.length > 0
           ) {
-            alerts.addAlert(
-              "remove-acces-host-hostgroup-error",
-              "Error: " + results.error,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "remove-acces-host-hostgroup-error",
+                title: "Error: " + results.error,
+                variant: "danger",
+              })
             );
           }
         }
@@ -257,10 +279,12 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             !containsAny(externalsFromResponse, usersToDelete)
           ) {
             // Set alert: success
-            alerts.addAlert(
-              "remove-who-user-external-success",
-              "Removed item(s) from " + props.rule.cn,
-              "success"
+            dispatch(
+              addAlert({
+                name: "remove-who-user-external-success",
+                title: "Removed item(s) from " + props.rule.cn,
+                variant: "success",
+              })
             );
             // Refresh page
             props.onRefresh();
@@ -269,10 +293,12 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
           }
           // Check if any errors
           else if (results.error || results.failed.memberuser.user.length > 0) {
-            alerts.addAlert(
-              "remove-who-user-external-error",
-              "Error: " + results.error,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "remove-who-user-external-error",
+                title: "Error: " + results.error,
+                variant: "danger",
+              })
             );
           }
         }
@@ -304,10 +330,12 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             !containsAny(externalsFromResponse, hostsToDelete)
           ) {
             // Set alert: success
-            alerts.addAlert(
-              "remove-who-user-external-success",
-              "Removed item(s) from " + props.rule.cn,
-              "success"
+            dispatch(
+              addAlert({
+                name: "remove-who-user-external-success",
+                title: "Removed item(s) from " + props.rule.cn,
+                variant: "success",
+              })
             );
             // Refresh page
             props.onRefresh();
@@ -316,10 +344,12 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
           }
           // Check if any errors
           else if (results.error || results.failed.memberhost.host.length > 0) {
-            alerts.addAlert(
-              "remove-who-host-external-error",
-              "Error: " + results.error,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "remove-who-host-external-error",
+                title: "Error: " + results.error,
+                variant: "danger",
+              })
             );
           }
         }
@@ -361,20 +391,24 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
                   ("memberdenycmd" in result.failed &&
                     result.failed.memberdenycmd.sudocmdgroup.length > 0)))
             ) {
-              alerts.addAlert(
-                "remove-run-commands-error",
-                "Error: " + result.error,
-                "danger"
+              dispatch(
+                addAlert({
+                  name: "remove-run-commands-error",
+                  title: "Error: " + result.error,
+                  variant: "danger",
+                })
               );
             }
           });
           // Set alert: success
           if (!data?.error) {
             props.onRefresh();
-            alerts.addAlert(
-              "remove-run-commands-success",
-              "Removed item(s) from '" + props.rule.cn + "' and saved",
-              "success"
+            dispatch(
+              addAlert({
+                name: "remove-run-commands-success",
+                title: "Removed item(s) from '" + props.rule.cn + "' and saved",
+                variant: "success",
+              })
             );
           }
           setSaving(false);
@@ -416,10 +450,12 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             results.error ||
             results.failed.ipasudorunas.group.length > 0
           ) {
-            alerts.addAlert(
-              "as-whom-remove-user-group-external-error",
-              "Error: " + results.error,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "as-whom-remove-user-group-external-error",
+                title: "Error: " + results.error,
+                variant: "danger",
+              })
             );
           }
         }
@@ -463,10 +499,12 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             results.error ||
             results.failed.ipasudorunas.user.length > 0
           ) {
-            alerts.addAlert(
-              "as-whom-remove-user-external-error",
-              "Error: " + results.error,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "as-whom-remove-user-external-error",
+                title: "Error: " + results.error,
+                variant: "danger",
+              })
             );
           }
         }
@@ -508,10 +546,12 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
             results.error ||
             results.failed.ipasudorunas.group.length > 0
           ) {
-            alerts.addAlert(
-              "as-whom-remove-group-external-error",
-              "Error: " + results.error,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "as-whom-remove-group-external-error",
+                title: "Error: " + results.error,
+                variant: "danger",
+              })
             );
           }
         }
@@ -610,12 +650,24 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Show toast notification: success
-            alerts.addAlert("save-success", "Sudo rule modified", "success");
+            dispatch(
+              addAlert({
+                name: "save-success",
+                title: "Sudo rule modified",
+                variant: "success",
+              })
+            );
             props.onRefresh();
           } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert("save-error", errorMessage.message, "danger");
+            dispatch(
+              addAlert({
+                name: "save-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
+            );
             // Reset values. Disable 'revert' and 'save' buttons
             props.onResetValues();
           }
@@ -628,7 +680,13 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
   // 'Revert' handler method
   const onRevert = () => {
     props.onRuleChange(props.originalRule);
-    alerts.addAlert("revert-success", "Sudo rule data reverted", "success");
+    dispatch(
+      addAlert({
+        name: "revert-success",
+        title: "Sudo rule data reverted",
+        variant: "success",
+      })
+    );
   };
 
   // Toolbar
@@ -856,7 +914,6 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
   // Render component
   return (
     <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-      <alerts.ManagedAlerts />
       <SidebarLayout itemNames={itemNames}>
         {/* General */}
         <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>

@@ -6,8 +6,10 @@ import { SubId, User } from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfTableSubIds from "./MemberOfTableSubIds";
 import MemberOfSubIdToolbar from "./MemberOfSubIdToolbar";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // RPC
 import {
   useAssignSubIdsMutation,
@@ -25,8 +27,7 @@ interface MemberOfSubIdsProps {
 }
 
 const MemberOfSubIds = (props: MemberOfSubIdsProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -106,24 +107,34 @@ const MemberOfSubIds = (props: MemberOfSubIdsProps) => {
   // Assign Subordinate IDs
   const onAssignSubIds = () => {
     if (!props.user.uid) {
-      alerts.addAlert(
-        "assign-ids-error-missing-uid",
-        "User ID is missing",
-        "danger"
+      dispatch(
+        addAlert({
+          name: "assign-ids-error-missing-uid",
+          title: "User ID is missing",
+          variant: "danger",
+        })
       );
       return;
     }
     assignSubIds(props.user.uid).then((response) => {
       if ("data" in response) {
         if (response.data?.error) {
-          alerts.addAlert(
-            "assign-ids-error",
-            "Error assigning Subordinate IDs",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "assign-ids-error",
+              title: "Error assigning Subordinate IDs",
+              variant: "danger",
+            })
           );
         } else {
           const data = response.data?.result;
-          alerts.addAlert("assign-ids-success", data?.summary, "success");
+          dispatch(
+            addAlert({
+              name: "assign-ids-success",
+              title: data?.summary,
+              variant: "success",
+            })
+          );
           props.onRefreshUserData();
         }
       }
@@ -132,7 +143,6 @@ const MemberOfSubIds = (props: MemberOfSubIdsProps) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <MemberOfSubIdToolbar
         refreshButtonEnabled={!props.isUserDataLoading}
         onRefreshButtonClick={props.onRefreshUserData}

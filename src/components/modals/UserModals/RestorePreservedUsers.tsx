@@ -10,8 +10,10 @@ import { User } from "src/utils/datatypes/globalDataTypes";
 // RPC
 import { BatchRPCResponse } from "src/services/rpc";
 import { useRestoreUserMutation } from "src/services/rpcUsers";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 
 interface PropsToPreservedUsers {
   show: boolean;
@@ -22,8 +24,7 @@ interface PropsToPreservedUsers {
 }
 
 const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
-  // Alerts
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // Define 'executeUserRestoreCommand' to restore a preserved user
   const [executeUserRestoreCommand] = useRestoreUserMutation();
@@ -79,13 +80,25 @@ const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
           } else if (result.count === 1) {
             successMessage = result.results[0].summary;
           }
-          alerts.addAlert("restore-users-success", successMessage, "success");
+          dispatch(
+            addAlert({
+              name: "restore-users-success",
+              title: successMessage,
+              variant: "success",
+            })
+          );
 
           // Refresh data or navigate
           props.onSuccess();
         } else if (error) {
           // Handle error
-          alerts.addAlert("restore-users-error", error, "danger");
+          dispatch(
+            addAlert({
+              name: "restore-users-error",
+              title: error,
+              variant: "danger",
+            })
+          );
         }
       }
       setBtnSpinning(false);
@@ -119,7 +132,6 @@ const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="restore-preserved-users-modal"
         variantType="medium"

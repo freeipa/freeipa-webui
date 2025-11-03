@@ -15,9 +15,11 @@ import {
   CertificateMapping,
   Metadata,
 } from "src/utils/datatypes/globalDataTypes";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // Utils
 import { certMapRuleAsRecord } from "src/utils/certMappingUtils";
 // Icons
@@ -54,8 +56,7 @@ interface CertificateMappingSettingsProps {
 }
 
 const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
@@ -86,10 +87,12 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
   const onRevert = () => {
     props.onCertMappingChange(props.originalCertMapping);
     props.onRefresh();
-    alerts.addAlert(
-      "revert-success",
-      "Certificate mapping rule data reverted",
-      "success"
+    dispatch(
+      addAlert({
+        name: "revert-success",
+        title: "Certificate mapping rule data reverted",
+        variant: "success",
+      })
     );
   };
 
@@ -133,11 +136,23 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
       if ("data" in response) {
         const data = response.data;
         if (data?.error) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          dispatch(
+            addAlert({
+              name: "error",
+              title: (data.error as Error).message,
+              variant: "danger",
+            })
+          );
         }
         if (data?.result) {
           props.onCertMappingChange(data.result.result);
-          alerts.addAlert("success", response.data.result.summary, "success");
+          dispatch(
+            addAlert({
+              name: "success",
+              title: response.data.result.summary,
+              variant: "success",
+            })
+          );
           // Disable 'revert' and 'save' buttons
           props.onRefresh();
         }
@@ -249,7 +264,6 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
   return (
     <>
       <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-        <alerts.ManagedAlerts />
         <Sidebar isPanelRight>
           <SidebarPanel variant="sticky">
             <HelpTextWithIconLayout

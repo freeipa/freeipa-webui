@@ -10,8 +10,10 @@ import ErrorModal from "./ErrorModal";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "../../hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import { FindRPCResponse } from "../../services/rpc";
 import {
   GroupAddPayload,
@@ -26,9 +28,7 @@ interface PropsToAddGroup {
 }
 
 const AddHostGroup = (props: PropsToAddGroup) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
+  const dispatch = useAppDispatch();
   const [executeGroupAddCommand] = useAddHostGroupMutation();
 
   // Set host names list
@@ -124,10 +124,12 @@ const AddHostGroup = (props: PropsToAddGroup) => {
           handleAPIError(error);
         } else {
           // Set alert: success
-          alerts.addAlert(
-            "add-hostgroup-success",
-            "New host group added",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-hostgroup-success",
+              title: "New host group added",
+              variant: "success",
+            })
           );
 
           // Set status flag: success
@@ -280,7 +282,6 @@ const AddHostGroup = (props: PropsToAddGroup) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-hostgroup-modal"
         variantType="small"

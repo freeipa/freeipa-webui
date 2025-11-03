@@ -20,8 +20,10 @@ import { SerializedError } from "@reduxjs/toolkit";
 import ErrorModal from "src/components/modals/ErrorModal";
 // Data types
 import { ErrorData } from "src/utils/datatypes/globalDataTypes";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 
 interface ButtonsData {
   updateIsEnableButtonDisabled: (value: boolean) => void;
@@ -45,8 +47,7 @@ interface PropsToDisableEnableRules {
 }
 
 const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // Define 'executeEnableDisableCommand' to add rules to IPA server
   const [executeEnableDisableCommand] = useBatchMutCommandMutation();
@@ -177,20 +178,24 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
                   props.buttonsData.updateIsEnableButtonDisabled(true);
                   props.buttonsData.updateIsDisableButtonDisabled(false);
                   // Set alert: success
-                  alerts.addAlert(
-                    "enable-sudorule-success",
-                    "Sudo rule enabled",
-                    "success"
+                  dispatch(
+                    addAlert({
+                      name: "enable-sudorule-success",
+                      title: "Sudo rule enabled",
+                      variant: "success",
+                    })
                   );
                 } else if (props.optionSelected) {
                   // Disable
                   props.buttonsData.updateIsEnableButtonDisabled(false);
                   props.buttonsData.updateIsDisableButtonDisabled(true);
                   // Set alert: success
-                  alerts.addAlert(
-                    "disable-sudorule-success",
-                    "Sudo rule disabled",
-                    "success"
+                  dispatch(
+                    addAlert({
+                      name: "disable-sudorule-success",
+                      title: "Sudo rule disabled",
+                      variant: "success",
+                    })
                   );
                 }
               }
@@ -228,12 +233,15 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
             // Close modal
             closeModal();
             // Set alert: success
-            alerts.addAlert(
-              "enable-sudorule-success",
-              "Enabled Sudo rule '" +
-                props.selectedRulesData.selectedRules[0].cn +
-                "'",
-              "success"
+            dispatch(
+              addAlert({
+                name: "enable-sudorule-success",
+                title:
+                  "Enabled Sudo rule '" +
+                  props.selectedRulesData.selectedRules[0].cn +
+                  "'",
+                variant: "success",
+              })
             );
             // Reset selected rules
             props.selectedRulesData.clearSelectedRules();
@@ -244,10 +252,12 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
           } else if (response.data.error) {
             // Set alert: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert(
-              "enable-sudorule-error",
-              errorMessage.message,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "enable-sudorule-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
             );
           }
         }
@@ -339,7 +349,6 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       {!props.optionSelected ? modalEnable : modalDisable}
       {isModalErrorOpen && (
         <ErrorModal

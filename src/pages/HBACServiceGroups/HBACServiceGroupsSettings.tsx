@@ -9,8 +9,10 @@ import SecondaryButton from "src/components/layouts/SecondaryButton";
 import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Data types
 import {
@@ -34,7 +36,7 @@ interface PropsToSettings {
 }
 
 const HBACServiceGroupsSettings = (props: PropsToSettings) => {
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // API
   const [saveService] = useSaveHbacServiceGroupMutation();
@@ -60,16 +62,24 @@ const HBACServiceGroupsSettings = (props: PropsToSettings) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Show toast notification: success
-          alerts.addAlert(
-            "save-success",
-            "HBAC service group modified",
-            "success"
+          dispatch(
+            addAlert({
+              name: "save-success",
+              title: "HBAC service group modified",
+              variant: "success",
+            })
           );
           props.onRefresh();
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("save-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "save-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
           // Reset values. Disable 'revert' and 'save' buttons
           props.onResetValues();
         }
@@ -81,10 +91,12 @@ const HBACServiceGroupsSettings = (props: PropsToSettings) => {
   // 'Revert' handler method
   const onRevert = () => {
     props.onSvcGrpChange(props.originalSvcGrp);
-    alerts.addAlert(
-      "revert-success",
-      "HBAC service group data reverted",
-      "success"
+    dispatch(
+      addAlert({
+        name: "revert-success",
+        title: "HBAC service group data reverted",
+        variant: "success",
+      })
     );
   };
 
@@ -134,7 +146,6 @@ const HBACServiceGroupsSettings = (props: PropsToSettings) => {
   // Render component
   return (
     <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-      <alerts.ManagedAlerts />
       <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
         <TitleLayout
           key={0}

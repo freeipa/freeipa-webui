@@ -15,8 +15,10 @@ import UsersDisplayTable from "src/components/tables/UsersDisplayTable";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import { useActivateUserMutation } from "src/services/rpcUsers";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 
 interface PropsToActivateUsers {
   show: boolean;
@@ -26,8 +28,7 @@ interface PropsToActivateUsers {
 }
 
 const ActivateStageUsers = (props: PropsToActivateUsers) => {
-  // Alerts
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // Define 'executeUserStageCommand' to activate user data to IPA server
   const [activateUsersCommand] = useActivateUserMutation();
@@ -82,20 +83,24 @@ const ActivateStageUsers = (props: PropsToActivateUsers) => {
           // Close modal
           props.handleModalToggle();
           // Set alert: success
-          alerts.addAlert(
-            "activate-users-success",
-            response.data.result.count + " users activated",
-            "success"
+          dispatch(
+            addAlert({
+              name: "activate-users-success",
+              title: response.data.result.count + " users activated",
+              variant: "success",
+            })
           );
           // Refresh data ('Stage users' main page) or redirect ('Settings' page)
           props.onSuccess();
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
-            "activate-users-error",
-            errorMessage.message,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "activate-users-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
           );
         }
       }
@@ -126,7 +131,6 @@ const ActivateStageUsers = (props: PropsToActivateUsers) => {
   // Render 'ActivateStageUsers'
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="activate-stage-users-modal"
         variantType="medium"

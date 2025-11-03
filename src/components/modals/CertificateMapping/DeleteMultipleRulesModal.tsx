@@ -1,8 +1,10 @@
 import React from "react";
 // PatternFly
 import { Button, Content, ContentVariants } from "@patternfly/react-core";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // RPC
 import { useMultipleCertMapRuleDeleteMutation } from "src/services/rpcCertMapping";
 // Data types
@@ -31,8 +33,7 @@ interface DeleteMultipleRulesModalProps {
 }
 
 const DeleteMultipleRulesModal = (props: DeleteMultipleRulesModalProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // RPC calls
   const [deleteRules] = useMultipleCertMapRuleDeleteMutation();
@@ -113,10 +114,12 @@ const DeleteMultipleRulesModal = (props: DeleteMultipleRulesModalProps) => {
             props.updateIsDeleteButtonDisabled(true);
             props.updateIsDeletion(true);
 
-            alerts.addAlert(
-              "remove-certrules-success",
-              "Certificate identity provider rules removed",
-              "success"
+            dispatch(
+              addAlert({
+                name: "remove-certrules-success",
+                title: "Certificate identity provider rules removed",
+                variant: "success",
+              })
             );
 
             setBtnSpinning(false);
@@ -181,7 +184,6 @@ const DeleteMultipleRulesModal = (props: DeleteMultipleRulesModalProps) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="delete-multiple-rules-modal"
         variantType="medium"

@@ -16,7 +16,7 @@ import {
 import { SudoCmdGroup } from "src/utils/datatypes/globalDataTypes";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 // Redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
@@ -32,7 +32,7 @@ import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import AddSudoCmdGroup from "src/components/modals/SudoModals/AddSudoCmdGroup";
 import DeleteSudoCmdGroups from "src/components/modals/SudoModals/DeleteSudoCmdGroups";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils
@@ -48,6 +48,8 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 
 const SudoCmds = () => {
+  const dispatch = useAppDispatch();
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "sudo-command-groups" });
 
@@ -62,9 +64,6 @@ const SudoCmds = () => {
   ) as string;
 
   const [cmdList, setCmdGroupsList] = useState<SudoCmdGroup[]>([]);
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -231,10 +230,12 @@ const SudoCmds = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
-            "submit-search-value-error",
-            error || "Error when searching for sudo command groups",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "submit-search-value-error",
+              title: error || "Error when searching for sudo command groups",
+              variant: "danger",
+            })
           );
         } else {
           // Success
@@ -494,7 +495,6 @@ const SudoCmds = () => {
 
   return (
     <div>
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id="sudocmdgroup title"

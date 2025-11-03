@@ -16,7 +16,7 @@ import {
 import { HBACServiceGroup } from "src/utils/datatypes/globalDataTypes";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 // Redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
@@ -32,7 +32,7 @@ import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import AddHBACServiceGroup from "src/components/modals/HbacModals/AddHBACServiceGroup";
 import DeleteHBACServiceGroup from "src/components/modals/HbacModals/DeleteHBACServiceGroup";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Utils
 import {
@@ -50,6 +50,8 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 
 const HBACServiceGroups = () => {
+  const dispatch = useAppDispatch();
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "hbac-service-groups" });
 
@@ -64,9 +66,6 @@ const HBACServiceGroups = () => {
   ) as string;
 
   const [servicesList, setServicesList] = useState<HBACServiceGroup[]>([]);
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -237,10 +236,12 @@ const HBACServiceGroups = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
-            "submit-search-value-error",
-            error || "Error when searching for HBAC service groups",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "submit-search-value-error",
+              title: error || "Error when searching for HBAC service groups",
+              variant: "danger",
+            })
           );
         } else {
           // Success
@@ -505,7 +506,6 @@ const HBACServiceGroups = () => {
 
   return (
     <div>
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id="hbacservicegroups title"

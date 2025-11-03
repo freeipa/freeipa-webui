@@ -1,7 +1,9 @@
 import React from "react";
 import { Button } from "@patternfly/react-core";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // RPC
 import {
   useCertMapRuleDisableMutation,
@@ -19,8 +21,7 @@ interface EnableDisableRuleModalProps {
 }
 
 const EnableDisableRuleModal = (props: EnableDisableRuleModalProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // RPC calls
   const [enableRule] = useCertMapRuleEnableMutation();
@@ -35,10 +36,22 @@ const EnableDisableRuleModal = (props: EnableDisableRuleModalProps) => {
       if ("data" in response) {
         const data = response.data;
         if (data?.error) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          dispatch(
+            addAlert({
+              name: "error",
+              title: (data.error as Error).message,
+              variant: "danger",
+            })
+          );
         }
         if (data?.result) {
-          alerts.addAlert("success", data.result.summary, "success");
+          dispatch(
+            addAlert({
+              name: "success",
+              title: data.result.summary,
+              variant: "success",
+            })
+          );
           // Refresh data
           props.onRefresh();
           onClose();
@@ -74,7 +87,6 @@ const EnableDisableRuleModal = (props: EnableDisableRuleModalProps) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ConfirmationModal
         dataCy="enable-disable-rule-modal"
         title={"Confirmation"}

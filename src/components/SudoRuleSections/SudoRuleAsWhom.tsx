@@ -26,8 +26,10 @@ import {
 } from "src/services/rpcSudoRules";
 // Utils
 import { containsAny } from "src/utils/utils";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 
 interface SudoRuleAsWhomProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -46,6 +48,7 @@ interface SudoRuleAsWhomProps {
 }
 
 const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
+  const dispatch = useAppDispatch();
   const [activeRunAsUsersTabKey, setActiveRunAsUsersTabKey] = React.useState<
     string | number
   >(0);
@@ -66,9 +69,6 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
   ) => {
     setActiveRunAsGroupsTabKey(tabIndex);
   };
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // API calls
   const [addRunAs] = useAddRunAsMutation();
@@ -115,10 +115,12 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         results.forEach((result) => {
           // Check if any errors
           if (result.error !== null) {
-            alerts.addAlert(
-              "as-whom-add-user-external-error",
-              "Error: " + result.error,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "as-whom-add-user-external-error",
+                title: "Error: " + result.error,
+                variant: "danger",
+              })
             );
           } else {
             // Some values can be undefined after addition
@@ -130,10 +132,12 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
               containsAny(externalsFromResponse, newUsersToAdd)
             ) {
               // Set alert: success
-              alerts.addAlert(
-                "as-whom-add-user-external-success",
-                "Added new item(s) to '" + props.rule.cn + "'",
-                "success"
+              dispatch(
+                addAlert({
+                  name: "as-whom-add-user-external-success",
+                  title: "Added new item(s) to '" + props.rule.cn + "'",
+                  variant: "success",
+                })
               );
               // Refresh page
               props.onRefresh();
@@ -142,10 +146,13 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         });
       } else {
         // Assume error
-        alerts.addAlert(
-          "as-whom-add-user-external-error",
-          "Error: " + (response.error ? response.error : "Unknown error"),
-          "danger"
+        dispatch(
+          addAlert({
+            name: "as-whom-add-user-external-error",
+            title:
+              "Error: " + (response.error ? response.error : "Unknown error"),
+            variant: "danger",
+          })
         );
       }
       setModalSpinning(false);
@@ -162,14 +169,26 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Show toast notification: success
-            alerts.addAlert("save-success", "Sudo rule modified", "success");
+            dispatch(
+              addAlert({
+                name: "save-success",
+                title: "Sudo rule modified",
+                variant: "success",
+              })
+            );
             props.onRefresh();
             // Add new runAs users
             onAddRunAsUser(newUsersToAdd);
           } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert("save-error", errorMessage.message, "danger");
+            dispatch(
+              addAlert({
+                name: "save-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
+            );
           }
         }
       });
@@ -202,10 +221,12 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
             !containsAny(externalsFromResponse, usersToDelete)
           ) {
             // Set alert: success
-            alerts.addAlert(
-              "as-whom-remove-user-external-success",
-              "Removed item(s) from " + props.rule.cn,
-              "success"
+            dispatch(
+              addAlert({
+                name: "as-whom-remove-user-external-success",
+                title: "Removed item(s) from " + props.rule.cn,
+                variant: "success",
+              })
             );
             // Refresh page
             props.onRefresh();
@@ -215,10 +236,12 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
             results.error ||
             results.failed.ipasudorunas.user.length > 0
           ) {
-            alerts.addAlert(
-              "as-whom-remove-user-external-error",
-              "Error: " + results.error,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "as-whom-remove-user-external-error",
+                title: "Error: " + results.error,
+                variant: "danger",
+              })
             );
           }
         }
@@ -245,10 +268,12 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         results.forEach((result) => {
           // Check if any errors
           if (result.error !== null) {
-            alerts.addAlert(
-              "as-whom-add-user-group-external-error",
-              "Error: " + result.error,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "as-whom-add-user-group-external-error",
+                title: "Error: " + result.error,
+                variant: "danger",
+              })
             );
           } else {
             // Some values can be undefined after addition
@@ -260,10 +285,12 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
               containsAny(externalsFromResponse, newGroupsToAdd)
             ) {
               // Set alert: success
-              alerts.addAlert(
-                "as-whom-add-user-group-external-success",
-                "Added new item(s) to '" + props.rule.cn + "'",
-                "success"
+              dispatch(
+                addAlert({
+                  name: "as-whom-add-user-group-external-success",
+                  title: "Added new item(s) to '" + props.rule.cn + "'",
+                  variant: "success",
+                })
               );
               // Refresh page
               props.onRefresh();
@@ -272,10 +299,13 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         });
       } else {
         // Assume error
-        alerts.addAlert(
-          "as-whom-add-user-group-external-error",
-          "Error: " + (response.error ? response.error : "Unknown error"),
-          "danger"
+        dispatch(
+          addAlert({
+            name: "as-whom-add-user-group-external-error",
+            title:
+              "Error: " + (response.error ? response.error : "Unknown error"),
+            variant: "danger",
+          })
         );
       }
       setModalSpinning(false);
@@ -292,14 +322,26 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Show toast notification: success
-            alerts.addAlert("save-success", "Sudo rule modified", "success");
+            dispatch(
+              addAlert({
+                name: "save-success",
+                title: "Sudo rule modified",
+                variant: "success",
+              })
+            );
             props.onRefresh();
             // Add new runAs users
             onAddRunAsUsersGroups(newGroupsToAdd);
           } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert("save-error", errorMessage.message, "danger");
+            dispatch(
+              addAlert({
+                name: "save-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
+            );
           }
         }
       });
@@ -332,10 +374,12 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
             !containsAny(externalsFromResponse, groupsToDelete)
           ) {
             // Set alert: success
-            alerts.addAlert(
-              "as-whom-remove-user-group-external-success",
-              "Removed item(s) from " + props.rule.cn,
-              "success"
+            dispatch(
+              addAlert({
+                name: "as-whom-remove-user-group-external-success",
+                title: "Removed item(s) from " + props.rule.cn,
+                variant: "success",
+              })
             );
             // Refresh page
             props.onRefresh();
@@ -345,10 +389,12 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
             results.error ||
             results.failed.ipasudorunas.group.length > 0
           ) {
-            alerts.addAlert(
-              "as-whom-remove-user-group-external-error",
-              "Error: " + results.error,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "as-whom-remove-user-group-external-error",
+                title: "Error: " + results.error,
+                variant: "danger",
+              })
             );
           }
         }
@@ -375,10 +421,12 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         results.forEach((result) => {
           // Check if any errors
           if (result.error !== null) {
-            alerts.addAlert(
-              "as-whom-add-user-group-external-error",
-              "Error: " + result.error,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "as-whom-add-user-group-external-error",
+                title: "Error: " + result.error,
+                variant: "danger",
+              })
             );
           } else {
             // Some values can be undefined after addition
@@ -391,10 +439,12 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
               containsAny(externalsFromResponse, newGroupsToAdd)
             ) {
               // Set alert: success
-              alerts.addAlert(
-                "as-whom-add-group-external-success",
-                "Added new item(s) to '" + props.rule.cn + "'",
-                "success"
+              dispatch(
+                addAlert({
+                  name: "as-whom-add-group-external-success",
+                  title: "Added new item(s) to '" + props.rule.cn + "'",
+                  variant: "success",
+                })
               );
               // Refresh page
               props.onRefresh();
@@ -403,10 +453,13 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         });
       } else {
         // Assume error
-        alerts.addAlert(
-          "as-whom-add-group-external-error",
-          "Error: " + (response.error ? response.error : "Unknown error"),
-          "danger"
+        dispatch(
+          addAlert({
+            name: "as-whom-add-group-external-error",
+            title:
+              "Error: " + (response.error ? response.error : "Unknown error"),
+            variant: "danger",
+          })
         );
       }
       setModalSpinning(false);
@@ -423,14 +476,26 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Show toast notification: success
-            alerts.addAlert("save-success", "Sudo rule modified", "success");
+            dispatch(
+              addAlert({
+                name: "save-success",
+                title: "Sudo rule modified",
+                variant: "success",
+              })
+            );
             props.onRefresh();
             // Add new runAs users
             onAddRunAsGroups(newGroupsToAdd);
           } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert("save-error", errorMessage.message, "danger");
+            dispatch(
+              addAlert({
+                name: "save-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
+            );
           }
         }
       });
@@ -464,10 +529,12 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
             !containsAny(externalsFromResponse, groupsToDelete)
           ) {
             // Set alert: success
-            alerts.addAlert(
-              "as-whom-remove-group-external-success",
-              "Removed item(s) from " + props.rule.cn,
-              "success"
+            dispatch(
+              addAlert({
+                name: "as-whom-remove-group-external-success",
+                title: "Removed item(s) from " + props.rule.cn,
+                variant: "success",
+              })
             );
             // Refresh page
             props.onRefresh();
@@ -477,10 +544,12 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
             results.error ||
             results.failed.ipasudorunas.group.length > 0
           ) {
-            alerts.addAlert(
-              "as-whom-remove-group-external-error",
-              "Error: " + results.error,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "as-whom-remove-group-external-error",
+                title: "Error: " + results.error,
+                variant: "danger",
+              })
             );
           }
         }
@@ -568,7 +637,6 @@ const SudoRuleAsWhom = (props: SudoRuleAsWhomProps) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       {/* Filter: toggle RunAs Users */}
       {filterRunAsUser}
       {/* Tabs RunAs users*/}

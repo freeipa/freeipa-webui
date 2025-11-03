@@ -9,8 +9,10 @@ import SecondaryButton from "src/components/layouts/SecondaryButton";
 import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Data types
 import { SudoCmd, Metadata } from "../../utils/datatypes/globalDataTypes";
@@ -31,7 +33,7 @@ interface PropsToSettings {
 }
 
 const SudoCmdsSettings = (props: PropsToSettings) => {
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // API
   const [saveService] = useSaveSudoCmdMutation();
@@ -54,12 +56,24 @@ const SudoCmdsSettings = (props: PropsToSettings) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Show toast notification: success
-          alerts.addAlert("save-success", "Sudo command modified", "success");
+          dispatch(
+            addAlert({
+              name: "save-success",
+              title: "Sudo command modified",
+              variant: "success",
+            })
+          );
           props.onRefresh();
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("save-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "save-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
           // Reset values. Disable 'revert' and 'save' buttons
           props.onResetValues();
         }
@@ -71,7 +85,13 @@ const SudoCmdsSettings = (props: PropsToSettings) => {
   // 'Revert' handler method
   const onRevert = () => {
     props.onChange(props.originalCmd);
-    alerts.addAlert("revert-success", "Sudo command data reverted", "success");
+    dispatch(
+      addAlert({
+        name: "revert-success",
+        title: "Sudo command data reverted",
+        variant: "success",
+      })
+    );
   };
 
   // Toolbar
@@ -120,7 +140,6 @@ const SudoCmdsSettings = (props: PropsToSettings) => {
   // Render component
   return (
     <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-      <alerts.ManagedAlerts />
       <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
         <TitleLayout
           key={0}

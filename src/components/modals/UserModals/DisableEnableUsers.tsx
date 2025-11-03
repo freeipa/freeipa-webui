@@ -20,8 +20,10 @@ import { SerializedError } from "@reduxjs/toolkit";
 import ErrorModal from "src/components/modals/ErrorModal";
 // Data types
 import { ErrorData } from "src/utils/datatypes/globalDataTypes";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 
 interface ButtonsData {
   updateIsEnableButtonDisabled: (value: boolean) => void;
@@ -51,8 +53,7 @@ interface PropsToDisableEnableUsers {
 }
 
 const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // Define 'executeEnableDisableCommand' to add user data to IPA server
   const [executeEnableDisableCommand] = useBatchMutCommandMutation();
@@ -183,20 +184,24 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
                     props.buttonsData.updateIsEnableButtonDisabled(true);
                     props.buttonsData.updateIsDisableButtonDisabled(false);
                     // Set alert: success
-                    alerts.addAlert(
-                      "enable-user-success",
-                      "Users enabled",
-                      "success"
+                    dispatch(
+                      addAlert({
+                        name: "enable-user-success",
+                        title: "Users enabled",
+                        variant: "success",
+                      })
                     );
                   } else if (props.optionSelected) {
                     // Disable
                     props.buttonsData.updateIsEnableButtonDisabled(false);
                     props.buttonsData.updateIsDisableButtonDisabled(true);
                     // Set alert: success
-                    alerts.addAlert(
-                      "disable-user-success",
-                      "Users disabled",
-                      "success"
+                    dispatch(
+                      addAlert({
+                        name: "disable-user-success",
+                        title: "Users disabled",
+                        variant: "success",
+                      })
                     );
                   }
                 }
@@ -235,12 +240,15 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
             // Close modal
             closeModal();
             // Set alert: success
-            alerts.addAlert(
-              "enable-user-success",
-              "Enabled user account '" +
-                props.selectedUsersData.selectedUsers[0].uid +
-                "'",
-              "success"
+            dispatch(
+              addAlert({
+                name: "enable-user-success",
+                title:
+                  "Enabled user account '" +
+                  props.selectedUsersData.selectedUsers[0].uid +
+                  "'",
+                variant: "success",
+              })
             );
             // Reset selected users
             props.selectedUsersData.clearSelectedUsers();
@@ -251,10 +259,12 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
           } else if (response.data.error) {
             // Set alert: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert(
-              "enable-user-error",
-              errorMessage.message,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "enable-user-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
             );
           }
         }
@@ -347,7 +357,6 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
   // Render 'DisableEnableUsers'
   return (
     <>
-      <alerts.ManagedAlerts />
       {!props.optionSelected ? modalEnable : modalDisable}
       {isModalErrorOpen && (
         <ErrorModal

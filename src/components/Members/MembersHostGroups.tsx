@@ -10,10 +10,12 @@ import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Data types
 import { HostGroup } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // RPC
 import { ErrorResult, MemberPayload } from "src/services/rpc";
 import {
@@ -42,8 +44,7 @@ interface PropsToMembersHostGroups {
 }
 
 const MembersHostGroups = (props: PropsToMembersHostGroups) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   const membershipDisabled =
     props.membershipDisabled === undefined ? false : props.membershipDisabled;
@@ -242,10 +243,17 @@ const MembersHostGroups = (props: PropsToMembersHostGroups) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
-            "add-member-success",
-            "Assigned new host groups to " + entityType + " '" + props.id + "'",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-member-success",
+              title:
+                "Assigned new host groups to " +
+                entityType +
+                " '" +
+                props.id +
+                "'",
+              variant: "success",
+            })
           );
           // Refresh data
           props.onRefreshData();
@@ -254,7 +262,13 @@ const MembersHostGroups = (props: PropsToMembersHostGroups) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert("add-member-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "add-member-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
         }
       }
       setSpinning(false);
@@ -274,10 +288,17 @@ const MembersHostGroups = (props: PropsToMembersHostGroups) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
-            "remove-hostgroups-success",
-            "Removed host groups from " + entityType + " '" + props.id + "'",
-            "success"
+          dispatch(
+            addAlert({
+              name: "remove-hostgroups-success",
+              title:
+                "Removed host groups from " +
+                entityType +
+                " '" +
+                props.id +
+                "'",
+              variant: "success",
+            })
           );
           // Refresh
           props.onRefreshData();
@@ -294,10 +315,12 @@ const MembersHostGroups = (props: PropsToMembersHostGroups) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert(
-            "remove-hostgroups-error",
-            errorMessage.message,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "remove-hostgroups-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
           );
         }
       }
@@ -307,7 +330,6 @@ const MembersHostGroups = (props: PropsToMembersHostGroups) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       {membershipDisabled ? (
         <MemberOfToolbar
           searchText={searchValue}

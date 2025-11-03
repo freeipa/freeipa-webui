@@ -16,7 +16,7 @@ import {
 import { HBACService } from "src/utils/datatypes/globalDataTypes";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 // Redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
@@ -32,7 +32,7 @@ import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import AddHBACService from "src/components/modals/HbacModals/AddHBACService";
 import DeleteHBACService from "src/components/modals/HbacModals/DeleteHBACService";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Utils
 import { API_VERSION_BACKUP, isHbacServiceSelectable } from "src/utils/utils";
@@ -47,6 +47,8 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 
 const HBACServices = () => {
+  const dispatch = useAppDispatch();
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "hbac-services" });
 
@@ -61,9 +63,6 @@ const HBACServices = () => {
   ) as string;
 
   const [servicesList, setServicesList] = useState<HBACService[]>([]);
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -235,10 +234,12 @@ const HBACServices = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
-            "submit-search-value-error",
-            error || "Error when searching for HBAC services",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "submit-search-value-error",
+              title: error || "Error when searching for HBAC services",
+              variant: "danger",
+            })
           );
         } else {
           // Success
@@ -501,7 +502,6 @@ const HBACServices = () => {
 
   return (
     <div>
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id="hbacservices title"

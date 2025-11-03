@@ -23,9 +23,11 @@ import {
 } from "src/services/rpcDnsZones";
 // Utils
 import { isDnsRecordSelectable } from "src/utils/utils";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
 // Components
@@ -49,8 +51,7 @@ interface DnsResourceRecordsProps {
 }
 
 const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "dns-records" });
@@ -126,10 +127,12 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
         setShowTableRows(true);
       })
       .catch(() => {
-        alerts.addAlert(
-          "refresh-dns-records-error",
-          "Error refreshing DNS records",
-          "danger"
+        dispatch(
+          addAlert({
+            name: "refresh-dns-records-error",
+            title: "Error refreshing DNS records",
+            variant: "danger",
+          })
         );
         setShowTableRows(true); // Show table even if there's an error
       });
@@ -237,10 +240,12 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
-            "submit-search-value-error",
-            error || "Error when searching for elements",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "submit-search-value-error",
+              title: error || "Error when searching for elements",
+              variant: "danger",
+            })
           );
         } else {
           // Success
@@ -403,7 +408,6 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
       }}
       data-cy={"dns-zones-dns-records"}
     >
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false} isFilled={false}>
         <Flex direction={{ default: "column" }}>
           <FlexItem>

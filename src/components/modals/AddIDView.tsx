@@ -10,8 +10,10 @@ import ErrorModal from "./ErrorModal";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "../../hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import { FindRPCResponse } from "../../services/rpc";
 import {
   ViewAddPayload,
@@ -26,9 +28,7 @@ interface PropsToAddIDView {
 }
 
 const AddIDViewModal = (props: PropsToAddIDView) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
+  const dispatch = useAppDispatch();
   const [executeViewAddCommand] = useAddIDViewMutation();
 
   // Set host names list
@@ -124,10 +124,12 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
           handleAPIError(error);
         } else {
           // Set alert: success
-          alerts.addAlert(
-            "add-id-view-success",
-            "New ID view added",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-id-view-success",
+              title: "New ID view added",
+              variant: "success",
+            })
           );
 
           // Set status flag: success
@@ -280,7 +282,6 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-id-view-modal"
         variantType="small"
