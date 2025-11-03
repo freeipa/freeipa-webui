@@ -19,8 +19,10 @@ import SecondaryButton from "src/components/layouts/SecondaryButton";
 import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Data types
 import { Netgroup, Metadata } from "../../utils/datatypes/globalDataTypes";
@@ -45,7 +47,7 @@ interface PropsToGroupsSettings {
 }
 
 const NetgroupsSettings = (props: PropsToGroupsSettings) => {
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // API
   const [saveGroup] = useSaveAndCleanNetgroupMutation();
@@ -125,14 +127,26 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Show toast notification: success
-          alerts.addAlert("save-success", "Netgroup modified", "success");
+          dispatch(
+            addAlert({
+              name: "save-success",
+              title: "Netgroup modified",
+              variant: "success",
+            })
+          );
           props.onRefresh();
           setHostTabKey(0);
           setUserTabKey(0);
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("save-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "save-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
           props.onResetValues();
         }
       }
@@ -143,7 +157,13 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
   // 'Revert' handler method
   const onRevert = () => {
     props.onGroupChange(props.originalGroup);
-    alerts.addAlert("revert-success", "Netgroup data reverted", "success");
+    dispatch(
+      addAlert({
+        name: "revert-success",
+        title: "Netgroup data reverted",
+        variant: "success",
+      })
+    );
   };
 
   // Toolbar
@@ -192,7 +212,6 @@ const NetgroupsSettings = (props: PropsToGroupsSettings) => {
   // Render component
   return (
     <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-      <alerts.ManagedAlerts />
       <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
         <TitleLayout
           key={0}

@@ -19,10 +19,11 @@ import CustomTooltip from "src/components/layouts/CustomTooltip";
 import InputRequiredText from "src/components/layouts/InputRequiredText";
 import NumberSelector from "src/components/Form/NumberInput";
 import PasswordInput from "src/components/layouts/PasswordInput";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // RPC
+import { addAlert } from "src/store/Global/alerts-slice";
 import { TrustAddPayload, useAddTrustMutation } from "src/services/rpcTrusts";
-// Hooks
-import useAlerts from "src/hooks/useAlerts";
 // Errors
 import { SerializedError } from "@reduxjs/toolkit";
 // Icons
@@ -48,8 +49,7 @@ const externalTrustCheckboxMessage =
   "Establish external trust to a domain in another forest. The trust is not transitive beyond the domain.";
 
 const AddTrustModal = (props: PropsToAddTrustModal) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // API calls
   const [addTrust] = useAddTrustMutation();
@@ -172,11 +172,23 @@ const AddTrustModal = (props: PropsToAddTrustModal) => {
             const error = response.data?.error as SerializedError;
 
             if (error) {
-              alerts.addAlert("add-trust-error", error.message, "danger");
+              dispatch(
+                addAlert({
+                  name: "add-trust-error",
+                  title: error.message!,
+                  variant: "danger",
+                })
+              );
             }
 
             if (data) {
-              alerts.addAlert("add-trust-success", data.summary, "success");
+              dispatch(
+                addAlert({
+                  name: "add-trust-success",
+                  title: data.summary,
+                  variant: "success",
+                })
+              );
               // Reset selected item
               clearFields();
               // Update data
@@ -510,7 +522,6 @@ const AddTrustModal = (props: PropsToAddTrustModal) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy={"add-trust-modal"}
         variantType={"small"}

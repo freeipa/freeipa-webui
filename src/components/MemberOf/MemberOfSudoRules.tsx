@@ -9,8 +9,10 @@ import MemberTable from "src/components/tables/MembershipTable";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // RPC
 import {
@@ -35,8 +37,7 @@ interface MemberOfSudoRulesProps {
 }
 
 const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   const {
     page,
@@ -219,10 +220,12 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Set alert: success
-            alerts.addAlert(
-              "add-member-success",
-              `Assigned '${props.id}' to sudo rules`,
-              "success"
+            dispatch(
+              addAlert({
+                name: "add-member-success",
+                title: `Assigned '${props.id}' to sudo rules`,
+                variant: "success",
+              })
             );
             // Update displayed Sudo Rules before they are updated via refresh
             const newSudoRules = sudoRules.concat(
@@ -239,7 +242,13 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert("add-member-error", errorMessage.message, "danger");
+            dispatch(
+              addAlert({
+                name: "add-member-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
+            );
           }
         }
         setSpinning(false);
@@ -255,10 +264,12 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Set alert: success
-            alerts.addAlert(
-              "remove-sudo-rules-success",
-              `Removed '${props.id}' from sudo rules'`,
-              "success"
+            dispatch(
+              addAlert({
+                name: "remove-sudo-rules-success",
+                title: `Removed '${props.id}' from sudo rules'`,
+                variant: "success",
+              })
             );
             // Refresh
             props.onRefreshData();
@@ -271,10 +282,12 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert(
-              "remove-sudo-rules-error",
-              errorMessage.message,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "remove-sudo-rules-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
             );
           }
         }
@@ -285,7 +298,6 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}

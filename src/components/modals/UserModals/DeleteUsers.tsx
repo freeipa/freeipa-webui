@@ -22,8 +22,10 @@ import { SerializedError } from "@reduxjs/toolkit";
 import ErrorModal from "src/components/modals/ErrorModal";
 // Data types
 import { ErrorData, User } from "src/utils/datatypes/globalDataTypes";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // Routing
 import { useNavigate } from "react-router";
 
@@ -50,11 +52,10 @@ interface PropsToDeleteUsers {
 }
 
 const DeleteUsers = (props: PropsToDeleteUsers) => {
+  const dispatch = useAppDispatch();
+
   // Redirect
   const navigate = useNavigate();
-
-  // Alerts
-  const alerts = useAlerts();
 
   // Define 'executeUserDelCommand' to add user data to IPA server
   const [executeUserDelCommand] = useBatchMutCommandMutation();
@@ -241,16 +242,20 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
 
             // Show alert: success
             if (isDeleteChecked) {
-              alerts.addAlert(
-                "remove-users-success",
-                "Users removed",
-                "success"
+              dispatch(
+                addAlert({
+                  name: "remove-users-success",
+                  title: "Users removed",
+                  variant: "success",
+                })
               );
             } else {
-              alerts.addAlert(
-                "preserve-users-success",
-                "Users preserved",
-                "success"
+              dispatch(
+                addAlert({
+                  name: "preserve-users-success",
+                  title: "Users preserved",
+                  variant: "success",
+                })
               );
             }
             // Redirect to main page
@@ -371,7 +376,6 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
   // Render 'DeleteUsers'
   return (
     <>
-      <alerts.ManagedAlerts />
       {isDeleteChecked ? modalDelete : modalPreserve}
       {isModalErrorOpen && (
         <ErrorModal

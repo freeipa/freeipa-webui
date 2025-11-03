@@ -9,9 +9,11 @@ import {
   SidebarContent,
   SidebarPanel,
 } from "@patternfly/react-core";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { useCertMapConfigData } from "src/hooks/useCertMapConfigData";
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // RPC
 import {
@@ -31,8 +33,7 @@ import PageWithGrayBorderLayout from "src/components/layouts/PageWithGrayBorderL
 import IpaCheckbox from "src/components/Form/IpaCheckbox";
 
 const CertificateMappingGlobalConfig = () => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // API calls
   const certMapConfigData = useCertMapConfigData();
@@ -61,10 +62,12 @@ const CertificateMappingGlobalConfig = () => {
   const onRevert = () => {
     certMapConfigData.setCertMapConfig(certMapConfigData.originalCertMapConfig);
     certMapConfigData.refetch();
-    alerts.addAlert(
-      "revert-success",
-      "Certificate mapping configuration data reverted",
-      "success"
+    dispatch(
+      addAlert({
+        name: "revert-success",
+        title: "Certificate mapping configuration data reverted",
+        variant: "success",
+      })
     );
   };
 
@@ -82,14 +85,22 @@ const CertificateMappingGlobalConfig = () => {
       if ("data" in response) {
         const data = response.data;
         if (data?.error) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          dispatch(
+            addAlert({
+              name: "error",
+              title: (data.error as Error).message,
+              variant: "danger",
+            })
+          );
         }
         if (data?.result) {
           certMapConfigData.setCertMapConfig(data.result.result);
-          alerts.addAlert(
-            "success",
-            "Certificate mapping configuration updated",
-            "success"
+          dispatch(
+            addAlert({
+              name: "success",
+              title: "Certificate mapping configuration updated",
+              variant: "success",
+            })
           );
           // Reset values. Disable 'revert' and 'save' buttons
           certMapConfigData.resetValues();
@@ -163,7 +174,6 @@ const CertificateMappingGlobalConfig = () => {
       toolbarItems={toolbarFields}
     >
       <>
-        <alerts.ManagedAlerts />
         <Sidebar isPanelRight className="pf-v6-u-mb-0">
           <SidebarPanel variant="sticky">
             <HelpTextWithIconLayout

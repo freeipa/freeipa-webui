@@ -14,8 +14,10 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // RPC
 import {
   AddPayload,
@@ -36,8 +38,7 @@ interface PropsToAddRule {
 }
 
 const AddRule = (props: PropsToAddRule) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // API calls
   const [addRuleCommand] = useAddToAutomemberMutation();
@@ -78,10 +79,12 @@ const AddRule = (props: PropsToAddRule) => {
   // Set alery on error
   React.useEffect(() => {
     if (groupsError) {
-      alerts.addAlert(
-        "retrieve-groups-error",
-        "Error while retrieving groups",
-        "danger"
+      dispatch(
+        addAlert({
+          name: "retrieve-groups-error",
+          title: "Error while retrieving groups",
+          variant: "danger",
+        })
       );
     }
   }, [groupsError]);
@@ -163,17 +166,21 @@ const AddRule = (props: PropsToAddRule) => {
         const error = data?.error as FetchBaseQueryError | SerializedError;
 
         if (error) {
-          alerts.addAlert(
-            "add-rule-error",
-            JSON.stringify(error, null, 2),
-            "danger"
+          dispatch(
+            addAlert({
+              name: "add-rule-error",
+              title: JSON.stringify(error, null, 2),
+              variant: "danger",
+            })
           );
         } else {
           // Set alert: success
-          alerts.addAlert(
-            "add-rule-success",
-            "Entry successfully added",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-rule-success",
+              title: "Entry successfully added",
+              variant: "success",
+            })
           );
           setAddBtnSpinning(true);
 
@@ -200,17 +207,21 @@ const AddRule = (props: PropsToAddRule) => {
         const error = data?.error as FetchBaseQueryError | SerializedError;
 
         if (error) {
-          alerts.addAlert(
-            "add-rule-error",
-            JSON.stringify(error, null, 2),
-            "danger"
+          dispatch(
+            addAlert({
+              name: "add-rule-error",
+              title: JSON.stringify(error, null, 2),
+              variant: "danger",
+            })
           );
         } else {
           // Set alert: success
-          alerts.addAlert(
-            "add-rule-success",
-            "Entry successfully added",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-rule-success",
+              title: "Entry successfully added",
+              variant: "success",
+            })
           );
           setAddAgainBtnSpinning(false);
 
@@ -258,7 +269,6 @@ const AddRule = (props: PropsToAddRule) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy={"add-rule-modal"}
         variantType="small"

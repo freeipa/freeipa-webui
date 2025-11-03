@@ -10,8 +10,10 @@ import {
   HBACService,
   HBACServiceGroup,
 } from "src/utils/datatypes/globalDataTypes";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
@@ -25,7 +27,6 @@ import {
   useAddMembersToHbacSvcGroupMutation,
   useRemoveMembersFromHbacSvcGroupMutation,
 } from "src/services/rpcHBACSvcGroups";
-
 import { apiToHBACService } from "src/utils/hbacServicesUtils";
 
 interface PropsToMembersHBACServices {
@@ -38,8 +39,7 @@ interface PropsToMembersHBACServices {
 }
 
 const MembersHBACServices = (props: PropsToMembersHBACServices) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // Get parameters from URL
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -184,10 +184,12 @@ const MembersHBACServices = (props: PropsToMembersHBACServices) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
-            "add-member-success",
-            "Assigned new HBAC service members to '" + props.id + "'",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-member-success",
+              title: "Assigned new HBAC service members to '" + props.id + "'",
+              variant: "success",
+            })
           );
           // Refresh data
           props.onRefreshData();
@@ -196,7 +198,13 @@ const MembersHBACServices = (props: PropsToMembersHBACServices) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert("add-member-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "add-member-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
         }
       }
       setSpinning(false);
@@ -216,10 +224,12 @@ const MembersHBACServices = (props: PropsToMembersHBACServices) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
-            "remove-members-success",
-            "Removed HBAC service members from '" + props.id + "'",
-            "success"
+          dispatch(
+            addAlert({
+              name: "remove-members-success",
+              title: "Removed HBAC service members from '" + props.id + "'",
+              variant: "success",
+            })
           );
           // Refresh
           props.onRefreshData();
@@ -232,10 +242,12 @@ const MembersHBACServices = (props: PropsToMembersHBACServices) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert(
-            "remove-members-error",
-            errorMessage.message,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "remove-members-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
           );
         }
       }
@@ -245,7 +257,6 @@ const MembersHBACServices = (props: PropsToMembersHBACServices) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}

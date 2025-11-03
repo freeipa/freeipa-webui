@@ -17,8 +17,10 @@ import { DnsRecordType } from "src/utils/datatypes/globalDataTypes";
 import { dnsRecordConfigs } from "src/utils/datatypes/DnsRecordTypes";
 // Components
 import { GenericField } from "src/components/Form/Field";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // RPC
 import {
   DynamicModDnsRecordPayload,
@@ -43,8 +45,7 @@ interface EditDnsRecordModalProps {
 }
 
 const EditDnsRecordModal = (props: EditDnsRecordModalProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // API calls
   const [modDnsRecord] = useModDnsRecordMutation();
@@ -264,14 +265,22 @@ const EditDnsRecordModal = (props: EditDnsRecordModalProps) => {
             typeof error === "string"
               ? error
               : error.message || "An error occurred";
-          alerts.addAlert("edit-dnsrecord-error", errorMessage, "danger");
+          dispatch(
+            addAlert({
+              name: "edit-dnsrecord-error",
+              title: errorMessage,
+              variant: "danger",
+            })
+          );
         }
 
         if (data) {
-          alerts.addAlert(
-            "edit-dnsrecord-success",
-            "DNS Record successfully updated",
-            "success"
+          dispatch(
+            addAlert({
+              name: "edit-dnsrecord-success",
+              title: "DNS Record successfully updated",
+              variant: "success",
+            })
           );
           props.onRefresh();
           props.onClose();
@@ -355,7 +364,6 @@ const EditDnsRecordModal = (props: EditDnsRecordModalProps) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <Modal
         variant="small"
         position="top"

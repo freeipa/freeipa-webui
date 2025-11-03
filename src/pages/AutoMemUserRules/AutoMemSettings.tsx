@@ -19,8 +19,10 @@ import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayou
 import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Data types
 import { Automember, Metadata } from "../../utils/datatypes/globalDataTypes";
@@ -49,7 +51,7 @@ interface PropsToSettings {
 }
 
 const AutoMemSettings = (props: PropsToSettings) => {
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // RPC calls
   const [saveAutomember] = useSaveAutomemberMutation();
@@ -124,13 +126,25 @@ const AutoMemSettings = (props: PropsToSettings) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Show toast notification: success
-          alerts.addAlert("save-success", "Entry updated", "success");
+          dispatch(
+            addAlert({
+              name: "save-success",
+              title: "Entry updated",
+              variant: "success",
+            })
+          );
           // Refresh the page
           props.onRefresh();
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("save-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "save-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
           // Reset values. Disable 'revert' and 'save' buttons
           props.onResetValues();
         }
@@ -143,10 +157,12 @@ const AutoMemSettings = (props: PropsToSettings) => {
   const onRevert = () => {
     props.onAutomemberChange(props.originalAutomemberRule);
     props.onRefresh();
-    alerts.addAlert(
-      "revert-success",
-      "Automember rule data reverted",
-      "success"
+    dispatch(
+      addAlert({
+        name: "revert-success",
+        title: "Automember rule data reverted",
+        variant: "success",
+      })
     );
   };
 
@@ -196,7 +212,6 @@ const AutoMemSettings = (props: PropsToSettings) => {
   // Render component
   return (
     <TabLayout id="automember-settings-page" toolbarItems={toolbarFields}>
-      <alerts.ManagedAlerts />
       <Sidebar isPanelRight>
         <SidebarPanel variant="sticky">
           <HelpTextWithIconLayout

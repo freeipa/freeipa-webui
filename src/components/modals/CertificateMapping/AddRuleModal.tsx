@@ -12,8 +12,10 @@ import {
   CertMapRuleAddPayload,
   useCertMapRuleAddMutation,
 } from "src/services/rpcCertMapping";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // Errors
 import { SerializedError } from "@reduxjs/toolkit";
 // Icons
@@ -29,8 +31,7 @@ interface PropsToAddRuleModal {
 }
 
 const AddRuleModal = (props: PropsToAddRuleModal) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // API calls
   const [addRule] = useCertMapRuleAddMutation();
@@ -88,11 +89,23 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
         const error = response.data?.error as SerializedError;
 
         if (error) {
-          alerts.addAlert("add-cermap-error", error.message, "danger");
+          dispatch(
+            addAlert({
+              name: "add-cermap-error",
+              title: error.message,
+              variant: "danger",
+            })
+          );
         }
 
         if (data) {
-          alerts.addAlert("add-certmap-success", data.summary, "success");
+          dispatch(
+            addAlert({
+              name: "add-certmap-success",
+              title: data.summary,
+              variant: "success",
+            })
+          );
           // Reset selected item
           clearFields();
           // Update data
@@ -262,7 +275,6 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-rule-modal"
         variantType={"small"}

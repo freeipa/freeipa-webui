@@ -27,8 +27,10 @@ import {
 } from "src/services/rpcCerts";
 // Components
 import ExpandableCardLayout from "../../layouts/ExpandableCardLayout";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // Utils
 import { parseDn } from "src/utils/utils";
 
@@ -58,8 +60,7 @@ interface DictWithName {
 }
 
 const IpaCertificates = (props: PropsToIpaCertificates) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // RTK hooks
   const [addCertificate] = useAddCertificateMutation();
@@ -148,18 +149,22 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
           // Close modal
           setIsDeleteConfModalOpen(false);
           // Set alert: success
-          alerts.addAlert(
-            "remove-certificate-success",
-            "Removed certificates from user '" + idParam + "'",
-            "success"
+          dispatch(
+            addAlert({
+              name: "remove-certificate-success",
+              title: "Removed certificates from user '" + idParam + "'",
+              variant: "success",
+            })
           );
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
-            "remove-certificate-error",
-            errorMessage.message,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "remove-certificate-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
           );
         }
         // Refresh data to show new changes in the UI
@@ -390,18 +395,22 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
           // Close modal
           setIsModalOpen(false);
           // Set alert: success
-          alerts.addAlert(
-            "add-certificate-success",
-            "Added certificate to '" + idParam + "'",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-certificate-success",
+              title: "Added certificate to '" + idParam + "'",
+              variant: "success",
+            })
           );
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
-            "add-certificate-error",
-            errorMessage.message,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "add-certificate-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
           );
         }
         // Refresh data to show new changes in the UI
@@ -557,7 +566,6 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       {certificatesList !== undefined && certificatesList.length > 0
         ? certificatesList.map((cert, idx) => {
             const innerCertificate = () => {

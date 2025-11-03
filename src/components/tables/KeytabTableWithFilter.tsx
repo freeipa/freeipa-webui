@@ -8,7 +8,6 @@ import DualListLayout, {
   DualListTarget,
 } from "src/components/layouts/DualListLayout";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
 import { usePagination } from "src/hooks/usePagination";
 import useShifting from "src/hooks/useShifting";
 // RPC
@@ -45,9 +44,6 @@ interface PropsToKeytabTable {
 }
 
 const KeytabTableWithFilter = (props: PropsToKeytabTable) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   // URL handling
   let entryURL = "";
   if (props.entityType === "user") {
@@ -284,7 +280,6 @@ const KeytabTableWithFilter = (props: PropsToKeytabTable) => {
   // Render component
   return (
     <div className={props.className}>
-      <alerts.ManagedAlerts />
       {/* Table */}
       <SettingsTableLayout
         ariaLabel={props.entityType + " table in " + props.from + " keytabs"}

@@ -6,8 +6,10 @@ import {
   ContentVariants,
   Spinner,
 } from "@patternfly/react-core";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // RPC
 import {
   DeleteDnsRecordPayload,
@@ -42,8 +44,7 @@ interface DeleteDnsRecordsModalProps {
 }
 
 const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // RPC calls
   const [deleteDnsRecords] = useDnsRecordDeleteMutation();
@@ -140,10 +141,12 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
             props.updateIsDeleteButtonDisabled?.(true);
             props.updateIsDeletion?.(true);
 
-            alerts.addAlert(
-              "remove-dnsrecords-success",
-              "DNS records removed",
-              "success"
+            dispatch(
+              addAlert({
+                name: "remove-dnsrecords-success",
+                title: "DNS records removed",
+                variant: "success",
+              })
             );
 
             setBtnSpinning(false);
@@ -192,10 +195,12 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
                 props.updateIsDeletion(true);
               }
 
-              alerts.addAlert(
-                "remove-dnsrecords-success",
-                "DNS records removed",
-                "success"
+              dispatch(
+                addAlert({
+                  name: "remove-dnsrecords-success",
+                  title: "DNS records removed",
+                  variant: "success",
+                })
               );
 
               setBtnSpinning(false);
@@ -257,7 +262,6 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         variantType="medium"
         modalPosition="top"

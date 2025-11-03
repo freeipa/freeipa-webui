@@ -12,8 +12,10 @@ import {
 import MemberOfToolbar from "./MemberOfToolbar";
 import MemberTable from "src/components/tables/MembershipTable";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // RPC
 import { ErrorResult } from "src/services/rpc";
@@ -42,8 +44,7 @@ interface MemberOfNetgroupsProps {
 }
 
 const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   const membershipDisabled =
     props.membershipDisabled === undefined ? false : props.membershipDisabled;
@@ -239,10 +240,12 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Set alert: success
-            alerts.addAlert(
-              "add-member-success",
-              `Assigned '${props.id}' to netgroups`,
-              "success"
+            dispatch(
+              addAlert({
+                name: "add-member-success",
+                title: `Assigned '${props.id}' to netgroups`,
+                variant: "success",
+              })
             );
             // Refresh data
             props.onRefreshData();
@@ -251,7 +254,13 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert("add-member-error", errorMessage.message, "danger");
+            dispatch(
+              addAlert({
+                name: "add-member-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
+            );
           }
         }
         setSpinning(false);
@@ -267,10 +276,12 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Set alert: success
-            alerts.addAlert(
-              "remove-netgroups-success",
-              `Removed '${props.id}' from netgroups`,
-              "success"
+            dispatch(
+              addAlert({
+                name: "remove-netgroups-success",
+                title: `Removed '${props.id}' from netgroups`,
+                variant: "success",
+              })
             );
             // Refresh
             props.onRefreshData();
@@ -283,10 +294,12 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert(
-              "remove-netgroups-error",
-              errorMessage.message,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "remove-netgroups-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
             );
           }
         }
@@ -297,7 +310,6 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       {membershipDisabled ? (
         <MemberOfToolbar
           searchText={searchValue}

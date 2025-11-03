@@ -11,7 +11,7 @@ import {
   SidebarContent,
 } from "@patternfly/react-core";
 // Redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
@@ -20,7 +20,7 @@ import DataSpinner from "src/components/layouts/DataSpinner";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import { useConfigSettings } from "src/hooks/useConfigSettingsData";
 // Utils
@@ -46,6 +46,8 @@ import { useSaveConfigMutation } from "src/services/rpcConfig";
 import { useGettingGroupsQuery } from "src/services/rpcUserGroups";
 
 const Configuration = () => {
+  const dispatch = useAppDispatch();
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "configuration" });
 
@@ -58,9 +60,6 @@ const Configuration = () => {
   const apiVersion = useAppSelector(
     (state) => state.global.environment.api_version
   ) as string;
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // Data loaded from DB
   const configData = useConfigSettings();
@@ -126,10 +125,12 @@ const Configuration = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
-            "submit-search-value-error",
-            error || "Error when searching for user groups",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "submit-search-value-error",
+              title: error || "Error when searching for user groups",
+              variant: "danger",
+            })
           );
         } else {
           // Success
@@ -156,11 +157,23 @@ const Configuration = () => {
       if ("data" in response) {
         if (response.data?.result) {
           // Show toast notification: success
-          alerts.addAlert("save-success", "Configuration updated", "success");
+          dispatch(
+            addAlert({
+              name: "save-success",
+              title: "Configuration updated",
+              variant: "success",
+            })
+          );
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("save-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "save-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
         }
         onRefresh();
       }
@@ -171,7 +184,13 @@ const Configuration = () => {
   // 'Revert' handler method
   const onRevert = () => {
     configData.setConfig(configData.originalConfig);
-    alerts.addAlert("revert-success", "Configuration data reverted", "success");
+    dispatch(
+      addAlert({
+        name: "revert-success",
+        title: "Configuration data reverted",
+        variant: "success",
+      })
+    );
   };
 
   const onRefresh = () => {
@@ -238,7 +257,6 @@ const Configuration = () => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout id="config title" headingLevel="h1" text="Configuration" />
       </PageSection>

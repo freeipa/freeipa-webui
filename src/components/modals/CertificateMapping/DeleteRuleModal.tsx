@@ -1,8 +1,10 @@
 import React from "react";
 // PatternFly
 import { Button } from "@patternfly/react-core";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // RPC
 import { useCertMapRuleDeleteMutation } from "src/services/rpcCertMapping";
 import ConfirmationModal from "../ConfirmationModal";
@@ -19,9 +21,7 @@ interface DeleteRuleModalProps {
 }
 
 const DeleteRuleModal = (props: DeleteRuleModalProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   // RPC calls
@@ -34,10 +34,22 @@ const DeleteRuleModal = (props: DeleteRuleModalProps) => {
       if ("data" in response) {
         const data = response.data;
         if (data?.error) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          dispatch(
+            addAlert({
+              name: "error",
+              title: (data.error as Error).message,
+              variant: "danger",
+            })
+          );
         }
         if (data?.result) {
-          alerts.addAlert("success", data.result.summary, "success");
+          dispatch(
+            addAlert({
+              name: "success",
+              title: data.result.summary,
+              variant: "success",
+            })
+          );
           props.onClose();
           // Redirect to the main page
           navigate("/" + props.pathToMainPage);
@@ -73,7 +85,6 @@ const DeleteRuleModal = (props: DeleteRuleModalProps) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ConfirmationModal
         dataCy="delete-rule-modal"
         title={"Confirmation"}

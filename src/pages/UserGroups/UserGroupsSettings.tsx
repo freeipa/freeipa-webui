@@ -22,8 +22,10 @@ import KebabLayout from "src/components/layouts/KebabLayout";
 import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Data types
 import {
@@ -54,8 +56,9 @@ interface PropsToGroupsSettings {
 }
 
 const UserGroupsSettings = (props: PropsToGroupsSettings) => {
-  const alerts = useAlerts();
   const navigate = useNavigate();
+
+  const dispatch = useAppDispatch();
 
   // API
   const [saveGroup] = useSaveGroupMutation();
@@ -163,16 +166,20 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
     convertGroupPOSIX(cn).then((response) => {
       if ("data" in response) {
         if (response.data?.result) {
-          alerts.addAlert(
-            "posix-usergroup-success",
-            "User group changed to POSIX group",
-            "success"
+          dispatch(
+            addAlert({
+              name: "posix-usergroup-success",
+              title: "User group changed to POSIX group",
+              variant: "success",
+            })
           );
         } else if (response.data?.error) {
-          alerts.addAlert(
-            "posix-error",
-            "Failed to convert group: " + response.data.error,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "posix-error",
+              title: "Failed to convert group: " + response.data.error,
+              variant: "danger",
+            })
           );
         }
       }
@@ -188,16 +195,20 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
     convertGroupExternal(cn).then((response) => {
       if ("data" in response) {
         if (response.data?.result) {
-          alerts.addAlert(
-            "external-usergroup-success",
-            "User group changed to external group",
-            "success"
+          dispatch(
+            addAlert({
+              name: "external-usergroup-success",
+              title: "User group changed to external group",
+              variant: "success",
+            })
           );
         } else if (response.data?.error) {
-          alerts.addAlert(
-            "external-error",
-            "Failed to convert group: " + response.data.error,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "external-error",
+              title: "Failed to convert group: " + response.data.error,
+              variant: "danger",
+            })
           );
         }
       }
@@ -213,18 +224,22 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
     deleteGroup(cn).then((response) => {
       if ("data" in response) {
         if (response.data?.result) {
-          alerts.addAlert(
-            "remove-usergroup-success",
-            "User group removed",
-            "success"
+          dispatch(
+            addAlert({
+              name: "remove-usergroup-success",
+              title: "User group removed",
+              variant: "success",
+            })
           );
           // Redirect to the main page
           navigate("/user-groups");
         } else if (response.data?.error) {
-          alerts.addAlert(
-            "delete-error",
-            "Failed to delete group: " + response.data.error,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "delete-error",
+              title: "Failed to delete group: " + response.data.error,
+              variant: "danger",
+            })
           );
         }
       }
@@ -315,11 +330,23 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Show toast notification: success
-          alerts.addAlert("save-success", "User group modified", "success");
+          dispatch(
+            addAlert({
+              name: "save-success",
+              title: "User group modified",
+              variant: "success",
+            })
+          );
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("save-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "save-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
         }
         // Reset values. Disable 'revert' and 'save' buttons
         props.onResetValues();
@@ -331,7 +358,13 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
   // 'Revert' handler method
   const onRevert = () => {
     props.onGroupChange(props.originalGroup);
-    alerts.addAlert("revert-success", "User group data reverted", "success");
+    dispatch(
+      addAlert({
+        name: "revert-success",
+        title: "User group data reverted",
+        variant: "success",
+      })
+    );
   };
 
   // Toolbar
@@ -395,7 +428,6 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
   // Render component
   return (
     <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-      <alerts.ManagedAlerts />
       <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
         <TitleLayout
           key={0}

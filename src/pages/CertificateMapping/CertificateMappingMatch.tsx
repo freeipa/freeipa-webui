@@ -15,8 +15,10 @@ import {
 import { Th, Tr } from "@patternfly/react-table";
 // Data types
 import { Certificate } from "src/utils/datatypes/globalDataTypes";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Icons
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
@@ -37,8 +39,7 @@ interface TableEntry {
 }
 
 const CertificateMappingMatch = () => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({
@@ -96,7 +97,13 @@ const CertificateMappingMatch = () => {
       if ("data" in response && response.data?.result) {
         if (response.data.result.results[0].error) {
           const errorMessage = response.data.result.results[0].error as string;
-          alerts.addAlert("match-certificate-error-1", errorMessage, "danger");
+          dispatch(
+            addAlert({
+              name: "match-certificate-error-1",
+              title: errorMessage,
+              variant: "danger",
+            })
+          );
         } else {
           const certData = response.data.result.results[1]
             .result[0] as Certificate;
@@ -123,19 +130,23 @@ const CertificateMappingMatch = () => {
           setTableElements(matchedUsers);
 
           // Set alert: success
-          alerts.addAlert(
-            "match-certificate-success",
-            response.data.result.results[0].summary,
-            "success"
+          dispatch(
+            addAlert({
+              name: "match-certificate-success",
+              title: response.data.result.results[0].summary,
+              variant: "success",
+            })
           );
         }
       } else if ("data" in response && response.data?.error) {
         // Set alert: error
         const errorMessage = response.data.error as unknown as ErrorResult;
-        alerts.addAlert(
-          "match-certificate-error",
-          errorMessage.message,
-          "danger"
+        dispatch(
+          addAlert({
+            name: "match-certificate-error",
+            title: errorMessage.message,
+            variant: "danger",
+          })
         );
       }
     });
@@ -211,7 +222,6 @@ const CertificateMappingMatch = () => {
       toolbarItems={toolbarFields}
     >
       <>
-        <alerts.ManagedAlerts />
         <Sidebar isPanelRight>
           <SidebarPanel variant="sticky" className="pf-v6-u-pl-md">
             <HelpTextWithIconLayout

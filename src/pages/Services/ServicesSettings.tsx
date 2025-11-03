@@ -32,8 +32,10 @@ import Provisioning from "src/components/ServicesSections/Provisioning";
 import ServiceCertificate from "src/components/ServicesSections/ServiceCertificate";
 import AllowedRetrieveKeytab from "src/components/ServicesSections/AllowedRetrieveKeytab";
 import AllowedCreateKeytab from "src/components/ServicesSections/AllowedCreateKeytab";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useApiError from "src/hooks/useApiError";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -64,7 +66,8 @@ interface PropsToServicesSettings {
 }
 
 const ServicesSettings = (props: PropsToServicesSettings) => {
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
+
   const modalErrors = useApiError([]);
 
   // API call: Save the Service
@@ -141,17 +144,21 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
             error = disableError.message;
           }
 
-          alerts.addAlert(
-            "unprovision-error",
-            error || "Error when unprovisioning service",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "unprovision-error",
+              title: error || "Error when unprovisioning service",
+              variant: "danger",
+            })
           );
         } else {
           // alert: success
-          alerts.addAlert(
-            "unprovision-success",
-            "Service successfully unprovisioned",
-            "success"
+          dispatch(
+            addAlert({
+              name: "unprovision-success",
+              title: "Service successfully unprovisioned",
+              variant: "success",
+            })
           );
         }
         setModalSpinning(false);
@@ -206,11 +213,23 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Show toast notification: success
-          alerts.addAlert("save-success", "Service modified", "success");
+          dispatch(
+            addAlert({
+              name: "save-success",
+              title: "Service modified",
+              variant: "success",
+            })
+          );
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("save-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "save-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
         }
         // Reset values. Disable 'revert' and 'save' buttons
         props.onResetValues();
@@ -222,7 +241,13 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
   // 'Revert' handler method
   const onRevert = () => {
     props.onServiceChange(props.originalService);
-    alerts.addAlert("revert-success", "Service data reverted", "success");
+    dispatch(
+      addAlert({
+        name: "revert-success",
+        title: "Service data reverted",
+        variant: "success",
+      })
+    );
   };
 
   // Toolbar
@@ -286,7 +311,6 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
   // Render component
   return (
     <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-      <alerts.ManagedAlerts />
       <Sidebar isPanelRight className="pf-v6-u-mt-lg">
         <SidebarPanel variant="sticky">
           <HelpTextWithIconLayout

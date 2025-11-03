@@ -24,8 +24,10 @@ import {
   useGetCertificateAuthorityQuery,
   useRevokeCertificateMutation,
 } from "src/services/rpcCerts";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 
 interface PropsToRevokeCertificate {
   certificate: CertificateData;
@@ -35,6 +37,7 @@ interface PropsToRevokeCertificate {
 }
 
 const RevokeCertificate = (props: PropsToRevokeCertificate) => {
+  const dispatch = useAppDispatch();
   const REVOCATION_REASONS = {
     0: "Unspecified",
     1: "Key Compromise",
@@ -47,9 +50,6 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
     9: "Privilege Withdrawn",
     10: "AA Compromise",
   };
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   const [certName, setCertName] = React.useState<string>("");
 
@@ -162,18 +162,22 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
         if (response.data?.result) {
           // Close modal
           props.onClose();
-          alerts.addAlert(
-            "revoke-certificate-success",
-            "Certificate revoked",
-            "success"
+          dispatch(
+            addAlert({
+              name: "revoke-certificate-success",
+              title: "Certificate revoked",
+              variant: "success",
+            })
           );
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
-            "revoke-certificate-error",
-            errorMessage.message,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "revoke-certificate-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
           );
         }
         // Refresh data to show new changes in the UI
@@ -261,7 +265,6 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="revoke-certificate-modal"
         variantType="small"

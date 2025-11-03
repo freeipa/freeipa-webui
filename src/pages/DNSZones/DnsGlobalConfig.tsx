@@ -12,8 +12,10 @@ import {
   SidebarContent,
   SidebarPanel,
 } from "@patternfly/react-core";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import { useDnsConfigData } from "src/hooks/useDnsConfigData";
 // RPC
@@ -40,7 +42,7 @@ import KebabLayout from "src/components/layouts/KebabLayout";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 
 const DnsGlobalConfig = () => {
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // API calls
   const dnsConfigData = useDnsConfigData();
@@ -71,10 +73,12 @@ const DnsGlobalConfig = () => {
   const onRevert = () => {
     dnsConfigData.setDnsConfig(dnsConfigData.originalDnsConfig);
     dnsConfigData.refetch();
-    alerts.addAlert(
-      "revert-success",
-      "DNS global configuration data reverted",
-      "success"
+    dispatch(
+      addAlert({
+        name: "revert-success",
+        title: "DNS global configuration data reverted",
+        variant: "success",
+      })
     );
   };
 
@@ -94,14 +98,22 @@ const DnsGlobalConfig = () => {
       if ("data" in response) {
         const data = response.data;
         if (data?.error) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          dispatch(
+            addAlert({
+              name: "error",
+              title: (data.error as Error).message,
+              variant: "danger",
+            })
+          );
         }
         if (data?.result) {
           dnsConfigData.setDnsConfig(data.result.result);
-          alerts.addAlert(
-            "success",
-            "DNS global configuration updated",
-            "success"
+          dispatch(
+            addAlert({
+              name: "success",
+              title: "DNS global configuration updated",
+              variant: "success",
+            })
           );
         }
         // Reset values. Disable 'revert' and 'save' buttons
@@ -120,10 +132,22 @@ const DnsGlobalConfig = () => {
       if ("data" in response) {
         const data = response.data;
         if (data && "error" in data && data.error !== null) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          dispatch(
+            addAlert({
+              name: "error",
+              title: (data.error as Error).message,
+              variant: "danger",
+            })
+          );
         }
         if (data && "result" in data) {
-          alerts.addAlert("success", "System DNS records updated", "success");
+          dispatch(
+            addAlert({
+              name: "success",
+              title: "System DNS records updated",
+              variant: "success",
+            })
+          );
         }
       }
       setShowUpdateSystemDnsRecordsModal(false);
@@ -236,7 +260,6 @@ const DnsGlobalConfig = () => {
       toolbarItems={toolbarItems}
     >
       <>
-        <alerts.ManagedAlerts />
         <Sidebar isPanelRight className="pf-v6-u-mb-0">
           <SidebarPanel variant="sticky">
             <HelpTextWithIconLayout

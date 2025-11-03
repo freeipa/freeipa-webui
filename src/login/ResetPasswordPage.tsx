@@ -21,13 +21,17 @@ import {
   ResetPasswordPayload,
   useResetPasswordMutation,
 } from "src/services/rpcAuth";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // Components
 import PasswordInput from "src/components/layouts/PasswordInput";
 import { useLocation, useNavigate } from "react-router";
 
 const ResetPasswordPage = () => {
+  const dispatch = useAppDispatch();
+
   // Get user Id
   const location = useLocation();
   const uid = location.state.username as string;
@@ -36,15 +40,18 @@ const ResetPasswordPage = () => {
   // Show error message from login page when the page is loaded the first time
   React.useEffect(() => {
     if (msg) {
-      alerts.addAlert("reset-password-error", msg, "danger");
+      dispatch(
+        addAlert({
+          name: "reset-password-error",
+          title: msg,
+          variant: "danger",
+        })
+      );
     }
   }, []);
 
   // Navigate
   const navigate = useNavigate();
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // API calls
   const [resetPassword] = useResetPasswordMutation();
@@ -151,18 +158,32 @@ const ResetPasswordPage = () => {
         if (match && match[1]) {
           const errorMessage = match[1];
           if (errorMessage.includes("Password is too short")) {
-            alerts.addAlert("reset-password-error", errorMessage, "danger");
+            dispatch(
+              addAlert({
+                name: "reset-password-error",
+                title: errorMessage,
+                variant: "danger",
+              })
+            );
             setBtnSpinning(false);
           } else if (reason === "invalid-password") {
-            alerts.addAlert(
-              "reset-password-error",
-              "The password or username you entered is incorrect",
-              "danger"
+            dispatch(
+              addAlert({
+                name: "reset-password-error",
+                title: "The password or username you entered is incorrect",
+                variant: "danger",
+              })
             );
             clearFields();
             setBtnSpinning(false);
           } else if (reason !== "ok" && reason !== "invalid-password") {
-            alerts.addAlert("reset-password-error", reason, "danger");
+            dispatch(
+              addAlert({
+                name: "reset-password-error",
+                title: reason,
+                variant: "danger",
+              })
+            );
             setBtnSpinning(false);
           } else {
             // Redirect to login page to allow the user to login with new credentials
@@ -265,7 +286,6 @@ const ResetPasswordPage = () => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <LoginPage
         style={{ whiteSpace: "pre-line" }}
         footerListVariants={ListVariant.inline}

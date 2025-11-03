@@ -24,11 +24,12 @@ import {
   useRemoveHostFromSudoRuleMutation,
   useSaveSudoRuleMutation,
 } from "src/services/rpcSudoRules";
-
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Utils
 import { containsAny } from "src/utils/utils";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 
 interface PropsToAccessThisHost {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -46,6 +47,8 @@ interface PropsToAccessThisHost {
 }
 
 const AccessThisHost = (props: PropsToAccessThisHost) => {
+  const dispatch = useAppDispatch();
+
   const [activeTabKey, setActiveTabKey] = React.useState<string | number>(0);
 
   const handleTabClick = (
@@ -54,9 +57,6 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
   ) => {
     setActiveTabKey(tabIndex);
   };
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // API calls
   const [onAdd] = useAddHostToSudoRuleMutation();
@@ -97,10 +97,12 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
         results.forEach((result) => {
           // Check if any errors
           if (result.error !== null) {
-            alerts.addAlert(
-              "access-this-host-add-host-external-error",
-              "Error: " + result.error,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "access-this-host-add-host-external-error",
+                title: "Error: " + result.error,
+                variant: "danger",
+              })
             );
           } else {
             // Some values can be undefined after addition
@@ -111,10 +113,12 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
               containsAny(externalsFromResponse, newHosts)
             ) {
               // Set alert: success
-              alerts.addAlert(
-                "access-this-host-add-host-external-success",
-                "Added new item(s) to '" + props.rule.cn + "'",
-                "success"
+              dispatch(
+                addAlert({
+                  name: "access-this-host-add-host-external-success",
+                  title: "Added new item(s) to '" + props.rule.cn + "'",
+                  variant: "success",
+                })
               );
               // Refresh page
               props.onRefresh();
@@ -123,10 +127,13 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
         });
       } else {
         // Assume error
-        alerts.addAlert(
-          "add-who-user-external-error",
-          "Error: " + (response.error ? response.error : "Unknown error"),
-          "danger"
+        dispatch(
+          addAlert({
+            name: "add-who-user-external-error",
+            title:
+              "Error: " + (response.error ? response.error : "Unknown error"),
+            variant: "danger",
+          })
         );
       }
       setModalSpinning(false);
@@ -145,14 +152,26 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Show toast notification: success
-            alerts.addAlert("save-success", "Sudo rule modified", "success");
+            dispatch(
+              addAlert({
+                name: "save-success",
+                title: "Sudo rule modified",
+                variant: "success",
+              })
+            );
             props.onRefresh();
             // Add new hosts
             onAddNewHost(hostsToAdd);
           } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert("save-error", errorMessage.message, "danger");
+            dispatch(
+              addAlert({
+                name: "save-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
+            );
           }
         }
       });
@@ -184,20 +203,24 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
             !containsAny(externalsFromResponse, hostsToDelete)
           ) {
             // Set alert: success
-            alerts.addAlert(
-              "access-this-host-remove-host-external-success",
-              "Removed item(s) from " + props.rule.cn,
-              "success"
+            dispatch(
+              addAlert({
+                name: "access-this-host-remove-host-external-success",
+                title: "Removed item(s) from " + props.rule.cn,
+                variant: "success",
+              })
             );
             // Refresh page
             props.onRefresh();
           }
           // Check if any errors
           else if (results.error || results.failed.memberhost.host.length > 0) {
-            alerts.addAlert(
-              "access-this-host-remove-host-external-error",
-              "Error: " + results.error,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "access-this-host-remove-host-external-error",
+                title: "Error: " + results.error,
+                variant: "danger",
+              })
             );
           }
         }
@@ -225,20 +248,24 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
             result.result.memberhost_hostgroup || [];
           if (containsAny(hostGroupsFromResponse, newHostGroups)) {
             // Set alert: success
-            alerts.addAlert(
-              "access-this-host-add-hostgroup-external-success",
-              "Added new item(s) to '" + props.rule.cn + "'",
-              "success"
+            dispatch(
+              addAlert({
+                name: "access-this-host-add-hostgroup-external-success",
+                title: "Added new item(s) to '" + props.rule.cn + "'",
+                variant: "success",
+              })
             );
             // Refresh page
             props.onRefresh();
           }
           // Check if any errors
           if (result.error !== null) {
-            alerts.addAlert(
-              "access-this-host-add-hostgroup-external-error",
-              "Error: " + result.error,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "access-this-host-add-hostgroup-external-error",
+                title: "Error: " + result.error,
+                variant: "danger",
+              })
             );
           }
         });
@@ -259,14 +286,26 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Show toast notification: success
-            alerts.addAlert("save-success", "Sudo rule modified", "success");
+            dispatch(
+              addAlert({
+                name: "save-success",
+                title: "Sudo rule modified",
+                variant: "success",
+              })
+            );
             props.onRefresh();
             // Add new users
             onAddNewHostGroup(hostGroupsToAdd);
           } else if (response.data?.error) {
             // Show toast notification: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert("save-error", errorMessage.message, "danger");
+            dispatch(
+              addAlert({
+                name: "save-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
+            );
           }
         }
       });
@@ -293,10 +332,12 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
           const groupsFromResponse = results.result.memberhost_hostgroup || [];
           if (!containsAny(groupsFromResponse, hostGroupsToDelete)) {
             // Set alert: success
-            alerts.addAlert(
-              "access-this-host-remove-hostgroup-external-success",
-              "Removed item(s) from " + props.rule.cn,
-              "success"
+            dispatch(
+              addAlert({
+                name: "access-this-host-remove-hostgroup-external-success",
+                title: "Removed item(s) from " + props.rule.cn,
+                variant: "success",
+              })
             );
             // Refresh page
             props.onRefresh();
@@ -306,10 +347,12 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
             results.error ||
             results.failed.memberhost.hostgroup.length > 0
           ) {
-            alerts.addAlert(
-              "access-this-host-remove-hostgroup-external-error",
-              "Error: " + results.error,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "access-this-host-remove-hostgroup-external-error",
+                title: "Error: " + results.error,
+                variant: "danger",
+              })
             );
           }
         }
@@ -359,7 +402,6 @@ const AccessThisHost = (props: PropsToAccessThisHost) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       {/* Filter: toggle group */}
       {filter}
       {/* Tabs */}

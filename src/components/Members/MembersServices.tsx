@@ -9,8 +9,10 @@ import MemberTable from "src/components/tables/MembershipTable";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Data types
 import { Service, UserGroup } from "src/utils/datatypes/globalDataTypes";
+// Dispatch
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
@@ -40,8 +42,7 @@ interface PropsToMembersServices {
 }
 
 const MembersServices = (props: PropsToMembersServices) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   const membershipDisabled =
     props.membershipDisabled === undefined ? false : props.membershipDisabled;
@@ -214,10 +215,12 @@ const MembersServices = (props: PropsToMembersServices) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
-            "add-member-success",
-            "Assigned new services to user group '" + props.id + "'",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-member-success",
+              title: "Assigned new services to user group '" + props.id + "'",
+              variant: "success",
+            })
           );
           // Refresh data
           props.onRefreshData();
@@ -226,7 +229,13 @@ const MembersServices = (props: PropsToMembersServices) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert("add-member-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "add-member-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
         }
       }
       setSpinning(false);
@@ -246,10 +255,12 @@ const MembersServices = (props: PropsToMembersServices) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Set alert: success
-          alerts.addAlert(
-            "remove-services-success",
-            "Removed services from user group '" + props.id + "'",
-            "success"
+          dispatch(
+            addAlert({
+              name: "remove-services-success",
+              title: "Removed services from user group '" + props.id + "'",
+              variant: "success",
+            })
           );
           // Refresh
           props.onRefreshData();
@@ -266,10 +277,12 @@ const MembersServices = (props: PropsToMembersServices) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as unknown as ErrorResult;
-          alerts.addAlert(
-            "remove-services-error",
-            errorMessage.message,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "remove-services-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
           );
         }
       }
@@ -279,7 +292,6 @@ const MembersServices = (props: PropsToMembersServices) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       {membershipDisabled ? (
         <MemberOfToolbar
           searchText={searchValue}

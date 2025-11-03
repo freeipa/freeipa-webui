@@ -1,8 +1,10 @@
 import React from "react";
 // PatternFly
 import { Button, Content } from "@patternfly/react-core";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // Modals
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
 // RPC
@@ -19,8 +21,7 @@ interface PropsToRebuildAutoMembership {
 
 // TODO: Use this component in those places where the Rebuild auto membership modal is used
 const RebuildAutoMembership = (props: PropsToRebuildAutoMembership) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // RPC hook
   const [rebuildAutoMembership] =
@@ -33,11 +34,14 @@ const RebuildAutoMembership = (props: PropsToRebuildAutoMembership) => {
   const onRebuildAutoMembership = () => {
     // Task can potentially run for a very long time, give feed back that we
     // at least started the task
-    alerts.addAlert(
-      "rebuild-automember-start",
-      "Starting automember rebuild membership task (this may take a long " +
-        "time to complete) ...",
-      "info"
+    dispatch(
+      addAlert({
+        name: "rebuild-automember-start",
+        title:
+          "Starting automember rebuild membership task (this may take a long " +
+          "time to complete) ...",
+        variant: "info",
+      })
     );
 
     rebuildAutoMembership(props.entriesToRebuild).then((response) => {
@@ -46,18 +50,22 @@ const RebuildAutoMembership = (props: PropsToRebuildAutoMembership) => {
           // Close modal
           props.onClose();
           // Set alert: success
-          alerts.addAlert(
-            "rebuild-auto-membership-success",
-            "Automember rebuild membership task completed",
-            "success"
+          dispatch(
+            addAlert({
+              name: "rebuild-auto-membership-success",
+              title: "Automember rebuild membership task completed",
+              variant: "success",
+            })
           );
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
-            "rebuild-auto-membership-error",
-            errorMessage.message,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "rebuild-auto-membership-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
           );
         }
       }
@@ -104,7 +112,6 @@ const RebuildAutoMembership = (props: PropsToRebuildAutoMembership) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="rebuild-auto-membership-modal"
         variantType="medium"

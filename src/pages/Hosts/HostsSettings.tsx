@@ -13,8 +13,10 @@ import {
 } from "@patternfly/react-core";
 // Data types
 import { Host, Metadata } from "src/utils/datatypes/globalDataTypes";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -62,8 +64,7 @@ interface PropsToHostsSettings {
 }
 
 const HostsSettings = (props: PropsToHostsSettings) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
   const modalErrors = useApiError([]);
 
   // API save the host
@@ -149,17 +150,21 @@ const HostsSettings = (props: PropsToHostsSettings) => {
             error = disableError.message;
           }
 
-          alerts.addAlert(
-            "unprovision-error",
-            error || "Error when unprovisioning host",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "unprovision-error",
+              title: error || "Error when unprovisioning host",
+              variant: "danger",
+            })
           );
         } else {
           // alert: success
-          alerts.addAlert(
-            "unprovision--success",
-            "Host successfully unprovisioned",
-            "success"
+          dispatch(
+            addAlert({
+              name: "unprovision--success",
+              title: "Host successfully unprovisioned",
+              variant: "success",
+            })
           );
         }
         setModalSpinning(false);
@@ -172,11 +177,14 @@ const HostsSettings = (props: PropsToHostsSettings) => {
   const onRebuildAutoMembership = () => {
     // Task can potentially run for a very long time, give feed back that we
     // at least started the task
-    alerts.addAlert(
-      "rebuild-automember-start",
-      "Starting automember rebuild membership task (this may take a long " +
-        "time to complete) ...",
-      "info"
+    dispatch(
+      addAlert({
+        name: "rebuild-automember-start",
+        title:
+          "Starting automember rebuild membership task (this may take a long " +
+          "time to complete) ...",
+        variant: "info",
+      })
     );
 
     executeAutoMemberRebuild([props.host]).then((result) => {
@@ -194,17 +202,21 @@ const HostsSettings = (props: PropsToHostsSettings) => {
             error = automemberError.message;
           }
 
-          alerts.addAlert(
-            "rebuild-automember-error",
-            error || "Error when rebuilding membership",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "rebuild-automember-error",
+              title: error || "Error when rebuilding membership",
+              variant: "danger",
+            })
           );
         } else {
           // alert: success
-          alerts.addAlert(
-            "rebuild-automember-success",
-            "Automember rebuild membership task completed",
-            "success"
+          dispatch(
+            addAlert({
+              name: "rebuild-automember-success",
+              title: "Automember rebuild membership task completed",
+              variant: "success",
+            })
           );
         }
         // Hide modal
@@ -290,11 +302,23 @@ const HostsSettings = (props: PropsToHostsSettings) => {
       if ("data" in response) {
         if (response.data?.result) {
           // Show toast notification: success
-          alerts.addAlert("save-success", "Host modified", "success");
+          dispatch(
+            addAlert({
+              name: "save-success",
+              title: "Host modified",
+              variant: "success",
+            })
+          );
         } else if (response.data?.error) {
           // Show toast notification: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert("save-error", errorMessage.message, "danger");
+          dispatch(
+            addAlert({
+              name: "save-error",
+              title: errorMessage.message,
+              variant: "danger",
+            })
+          );
         }
         // Reset values. Disable 'revert' and 'save' buttons
         props.onResetValues();
@@ -306,7 +330,13 @@ const HostsSettings = (props: PropsToHostsSettings) => {
   // 'Revert' handler method
   const onRevert = () => {
     props.onHostChange(props.originalHost);
-    alerts.addAlert("revert-success", "Host data reverted", "success");
+    dispatch(
+      addAlert({
+        name: "revert-success",
+        title: "Host data reverted",
+        variant: "success",
+      })
+    );
   };
 
   // 'Rebuild auto membership' modal fields: Confirmation question
@@ -385,7 +415,6 @@ const HostsSettings = (props: PropsToHostsSettings) => {
 
   return (
     <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-      <alerts.ManagedAlerts />
       <Sidebar isPanelRight>
         <SidebarPanel variant="sticky">
           <HelpTextWithIconLayout

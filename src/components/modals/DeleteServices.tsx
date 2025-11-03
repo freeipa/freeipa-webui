@@ -6,11 +6,13 @@ import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
 // Tables
 import DeletedElementsTable from "../../components/tables/DeletedElementsTable";
 // Hooks
-import useAlerts from "../../hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Data types
 import { ErrorData, Service } from "../../utils/datatypes/globalDataTypes";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Modals
 import ErrorModal from "./ErrorModal";
 import { BatchRPCResponse } from "../../services/rpc";
@@ -35,8 +37,7 @@ interface PropsToDeleteServices {
 }
 
 const DeleteServices = (props: PropsToDeleteServices) => {
-  // Alerts
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // Define the column names that will be displayed on the confirmation table.
   // - NOTE: Camel-case should match with the property to show as it is defined in the data.
@@ -151,10 +152,12 @@ const DeleteServices = (props: PropsToDeleteServices) => {
               props.buttonsData.updateIsDeleteButtonDisabled(true);
               props.buttonsData.updateIsDeletion(true);
 
-              alerts.addAlert(
-                "remove-services-success",
-                "Services removed",
-                "success"
+              dispatch(
+                addAlert({
+                  name: "remove-services-success",
+                  title: "Services removed",
+                  variant: "success",
+                })
               );
 
               setBtnSpinning(false);
@@ -197,7 +200,6 @@ const DeleteServices = (props: PropsToDeleteServices) => {
 
   const modalDelete: JSX.Element = (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="delete-services-modal"
         variantType="small"

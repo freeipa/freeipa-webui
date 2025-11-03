@@ -17,7 +17,7 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import PasswordInput from "src/components/layouts/PasswordInput";
 // Redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // RPC
 import {
   useSimpleMutCommandMutation,
@@ -29,7 +29,7 @@ import { SerializedError } from "@reduxjs/toolkit";
 // Modals
 import ErrorModal from "src/components/modals/ErrorModal";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // Utils
 import { NO_SELECTION_OPTION } from "src/utils/constUtils";
 // Components
@@ -54,8 +54,7 @@ interface PropsToAddUser {
 }
 
 const AddUser = (props: PropsToAddUser) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // Retrieve API version from environment data
   const apiVersion = useAppSelector(
@@ -463,7 +462,13 @@ const AddUser = (props: PropsToAddUser) => {
           }
 
           // Set alert: success
-          alerts.addAlert("add-user-success", "New user added", "success");
+          dispatch(
+            addAlert({
+              name: "add-user-success",
+              title: "New user added",
+              variant: "success",
+            })
+          );
         } else if (error) {
           // Set status flag: error
           isAdditionSuccess = false;
@@ -640,7 +645,6 @@ const AddUser = (props: PropsToAddUser) => {
   // Render 'AddUser'
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-user-modal"
         variantType="small"

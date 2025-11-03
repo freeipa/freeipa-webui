@@ -12,11 +12,11 @@ import {
   OuterScrollContainer,
 } from "@patternfly/react-table";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useApiError from "src/hooks/useApiError";
 // Redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // RPC
 import {
   useGetIdRangeEntriesQuery,
@@ -43,6 +43,7 @@ import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import { isIdRangeSelectable } from "src/utils/utils";
 
 const IdRanges = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
@@ -57,9 +58,6 @@ const IdRanges = () => {
   const apiVersion = useAppSelector(
     (state) => state.global.environment.api_version
   ) as string;
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -194,10 +192,12 @@ const IdRanges = () => {
           if ("error" in searchError) {
             errMsg = searchError.error;
           }
-          alerts.addAlert(
-            "submit-search-value-error",
-            errMsg || "Error when searching for elements",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "submit-search-value-error",
+              title: errMsg || "Error when searching for elements",
+              variant: "danger",
+            })
           );
         } else {
           // Success
@@ -353,7 +353,6 @@ const IdRanges = () => {
   // Render component
   return (
     <div>
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout id="ID ranges page" headingLevel="h1" text="ID ranges" />
       </PageSection>

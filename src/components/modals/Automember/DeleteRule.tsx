@@ -5,8 +5,10 @@ import { Content, ContentVariants, Button } from "@patternfly/react-core";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
 import DeletedElementsTable from "src/components/tables/DeletedElementsTable";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Data types
@@ -37,8 +39,7 @@ interface PropsToDeleteRule {
 }
 
 const DeleteRule = (props: PropsToDeleteRule) => {
-  // Alerts
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // RPC
   const [deleteRuleCommand] = useDeleteFromAutomemberMutation();
@@ -98,17 +99,21 @@ const DeleteRule = (props: PropsToDeleteRule) => {
         const error = data?.error as FetchBaseQueryError | SerializedError;
 
         if (error) {
-          alerts.addAlert(
-            "delete-rule-error",
-            JSON.stringify(error, null, 2),
-            "danger"
+          dispatch(
+            addAlert({
+              name: "delete-rule-error",
+              title: JSON.stringify(error, null, 2),
+              variant: "danger",
+            })
           );
         } else {
           // Set alert: success
-          alerts.addAlert(
-            "delete-rule-success",
-            "The selected rules have been removed successfully",
-            "success"
+          dispatch(
+            addAlert({
+              name: "delete-rule-success",
+              title: "The selected rules have been removed successfully",
+              variant: "success",
+            })
           );
           setBtnSpinning(false);
 
@@ -151,7 +156,6 @@ const DeleteRule = (props: PropsToDeleteRule) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="delete-rule-modal"
         variantType="medium"

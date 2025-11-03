@@ -20,7 +20,7 @@ import {
 import { User } from "src/utils/datatypes/globalDataTypes";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 // Redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
@@ -40,7 +40,7 @@ import AddUser from "src/components/modals/UserModals/AddUser";
 import DeleteUsers from "src/components/modals/UserModals/DeleteUsers";
 import DisableEnableUsers from "src/components/modals/UserModals/DisableEnableUsers";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils
@@ -59,6 +59,8 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 
 const ActiveUsers = () => {
+  const dispatch = useAppDispatch();
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "active-users" });
 
@@ -76,9 +78,6 @@ const ActiveUsers = () => {
 
   // Define 'executeCommand' to execute simple commands (via Mutation)
   const [executeAutoMemberRebuild] = useAutoMemberRebuildUsersMutation();
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -276,10 +275,12 @@ const ActiveUsers = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
-            "submit-search-value-error",
-            error || "Error when searching for users",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "submit-search-value-error",
+              title: error || "Error when searching for users",
+              variant: "danger",
+            })
           );
         } else {
           // Success
@@ -316,11 +317,13 @@ const ActiveUsers = () => {
   const onRebuildAutoMembership = () => {
     // Task can potentially run for a very long time, give feed back that we
     // at least started the task
-    alerts.addAlert(
-      "rebuild-automember-start",
-      "Starting automember rebuild membership task (this may take a long " +
-        "time to complete) ...",
-      "info"
+    dispatch(
+      addAlert({
+        name: "rebuild-automember-start",
+        title:
+          "Starting automember rebuild membership task (this may take a long time to complete) ...",
+        variant: "info",
+      })
     );
 
     executeAutoMemberRebuild(selectedUsers).then((result) => {
@@ -338,17 +341,21 @@ const ActiveUsers = () => {
             error = automemberError.message;
           }
 
-          alerts.addAlert(
-            "rebuild-automember-error",
-            error || "Error when rebuilding membership",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "rebuild-automember-error",
+              title: error || "Error when rebuilding membership",
+              variant: "danger",
+            })
           );
         } else {
           // alert: success
-          alerts.addAlert(
-            "rebuild-automember-success",
-            "Automember rebuild membership task completed",
-            "success"
+          dispatch(
+            addAlert({
+              name: "rebuild-automember-success",
+              title: "Automember rebuild membership task completed",
+              variant: "success",
+            })
           );
         }
         // Hide modal
@@ -747,7 +754,6 @@ const ActiveUsers = () => {
       onClose={onCloseContextualPanel}
     >
       <div>
-        <alerts.ManagedAlerts />
         <PageSection
           hasBodyWrapper={false}
           variant={PageSectionVariants.default}

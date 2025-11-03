@@ -16,8 +16,10 @@ import {
   usePwPolicyFindQuery,
 } from "src/services/rpcPwdPolicies";
 import { useGetGenericListQuery } from "src/services/rpc";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // Errors
 import { SerializedError } from "@reduxjs/toolkit";
 import InputRequiredText from "src/components/layouts/InputRequiredText";
@@ -30,8 +32,7 @@ interface PropsToAddModal {
 }
 
 const AddModal = (props: PropsToAddModal) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // API calls
   const [addPwPolicy] = usePwPolicyAddMutation();
@@ -53,10 +54,12 @@ const AddModal = (props: PropsToAddModal) => {
   React.useEffect(() => {
     // On error
     if (!isLoading && error) {
-      alerts.addAlert(
-        "group-find-error",
-        JSON.stringify(error, null, 2),
-        "danger"
+      dispatch(
+        addAlert({
+          name: "group-find-error",
+          title: JSON.stringify(error, null, 2),
+          variant: "danger",
+        })
       );
     }
 
@@ -125,14 +128,22 @@ const AddModal = (props: PropsToAddModal) => {
         const error = result.data?.error as SerializedError;
 
         if (error) {
-          alerts.addAlert("add-pwpolicy-error", error.message, "danger");
+          dispatch(
+            addAlert({
+              name: "add-pwpolicy-error",
+              title: error.message,
+              variant: "danger",
+            })
+          );
         }
 
         if (data) {
-          alerts.addAlert(
-            "add-pwpolicy-success",
-            "Password policy successfully added",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-pwpolicy-success",
+              title: "Password policy successfully added",
+              variant: "success",
+            })
           );
           // Reset selected item
           setSelectedItem("");
@@ -232,7 +243,6 @@ const AddModal = (props: PropsToAddModal) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-pwpolicy-modal"
         variantType={"small"}

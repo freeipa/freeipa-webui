@@ -14,9 +14,11 @@ import {
 } from "@patternfly/react-core";
 // Data types
 import { IDPServer, Metadata } from "src/utils/datatypes/globalDataTypes";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // Utils
 import { asRecord } from "src/utils/subIdUtils";
 // Icons
@@ -48,8 +50,7 @@ interface PropsToIdpRefSettings {
 }
 
 const IdpRefSettings = (props: PropsToIdpRefSettings) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
@@ -70,10 +71,12 @@ const IdpRefSettings = (props: PropsToIdpRefSettings) => {
   const onRevert = () => {
     props.onIdpRefChange(props.originalIdpRef);
     props.onRefresh();
-    alerts.addAlert(
-      "revert-success",
-      "Identity Provider data reverted",
-      "success"
+    dispatch(
+      addAlert({
+        name: "revert-success",
+        title: "Identity Provider data reverted",
+        variant: "success",
+      })
     );
   };
 
@@ -122,14 +125,22 @@ const IdpRefSettings = (props: PropsToIdpRefSettings) => {
       if ("data" in response) {
         const data = response.data;
         if (data?.error) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          dispatch(
+            addAlert({
+              name: "error",
+              title: (data.error as Error).message,
+              variant: "danger",
+            })
+          );
         }
         if (data?.result) {
           props.onIdpRefChange(data.result.result);
-          alerts.addAlert(
-            "success",
-            "Identity Provider '" + props.idpRef.cn + "' updated",
-            "success"
+          dispatch(
+            addAlert({
+              name: "success",
+              title: "Identity Provider '" + props.idpRef.cn + "' updated",
+              variant: "success",
+            })
           );
           // Reset values. Disable 'revert' and 'save' buttons
           props.onResetValues();
@@ -214,7 +225,6 @@ const IdpRefSettings = (props: PropsToIdpRefSettings) => {
   return (
     <>
       <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-        <alerts.ManagedAlerts />
         <Sidebar isPanelRight>
           <SidebarPanel variant="sticky">
             <HelpTextWithIconLayout

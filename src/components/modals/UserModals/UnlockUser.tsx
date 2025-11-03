@@ -6,8 +6,10 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import { useUnlockUserMutation } from "src/services/rpcUsers";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 
 interface propsToUnlockUser {
   uid: string | undefined;
@@ -17,8 +19,7 @@ interface propsToUnlockUser {
 }
 
 const UnlockUser = (props: propsToUnlockUser) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // RPC hooks
   const [unlockUser] = useUnlockUserMutation();
@@ -40,10 +41,12 @@ const UnlockUser = (props: propsToUnlockUser) => {
     // API call to reset password
     if (props.uid === undefined) {
       // Alert error: no uid
-      alerts.addAlert(
-        "undefined-uid-error",
-        "No user selected to unlock",
-        "danger"
+      dispatch(
+        addAlert({
+          name: "undefined-uid-error",
+          title: "No user selected to unlock",
+          variant: "danger",
+        })
       );
     } else {
       unlockUser(props.uid).then((response) => {
@@ -52,20 +55,24 @@ const UnlockUser = (props: propsToUnlockUser) => {
             // Close modal
             props.onClose();
             // Set alert: success
-            alerts.addAlert(
-              "unlock-user-success",
-              "Unlocked account '" + props.uid + "'",
-              "success"
+            dispatch(
+              addAlert({
+                name: "unlock-user-success",
+                title: "Unlocked account '" + props.uid + "'",
+                variant: "success",
+              })
             );
             // Refresh data
             props.onRefresh();
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as ErrorResult;
-            alerts.addAlert(
-              "unlock-user-error",
-              errorMessage.message,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "unlock-user-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
             );
           }
         }
@@ -96,7 +103,6 @@ const UnlockUser = (props: propsToUnlockUser) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="unlock-user-modal"
         variantType="small"

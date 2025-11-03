@@ -17,7 +17,7 @@ import {
 // Data types
 import { AutomemberEntry } from "src/utils/datatypes/globalDataTypes";
 // Redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
@@ -42,7 +42,7 @@ import {
   useChangeDefaultGroupMutation,
 } from "src/services/rpcAutomember";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { useUserGroupsRulesData } from "src/hooks/useUserGroupsRules";
@@ -61,6 +61,8 @@ import ConfirmationModal from "src/components/modals/ConfirmationModal";
 
 // Automembership user group rules
 const AutoMemUserRules = () => {
+  const dispatch = useAppDispatch();
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({
     pathname: "user-group-rules",
@@ -96,9 +98,6 @@ const AutoMemUserRules = () => {
   const [groupsAvailableToAdd, setGroupsAvailableToAdd] = React.useState<
     string[]
   >([]);
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -213,17 +212,21 @@ const AutoMemUserRules = () => {
       if ("data" in result) {
         setDefaultGroup(group);
         setPreviousDefaultGroup(group);
-        alerts.addAlert(
-          "default-group-success",
-          "Default group updated",
-          "success"
+        dispatch(
+          addAlert({
+            name: "default-group-success",
+            title: "Default group updated",
+            variant: "success",
+          })
         );
         onCloseConfirmationModal();
       } else {
-        alerts.addAlert(
-          "default-group-failure",
-          "Default group not updated",
-          "danger"
+        dispatch(
+          addAlert({
+            name: "default-group-failure",
+            title: "Default group not updated",
+            variant: "danger",
+          })
         );
       }
     });
@@ -601,7 +604,6 @@ const AutoMemUserRules = () => {
 
   return (
     <div>
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout
           id="Automember user groups title"

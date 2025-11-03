@@ -1,8 +1,10 @@
 import React from "react";
 // PatternFly
 import { Button } from "@patternfly/react-core";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // RPC
 import {
   useAddDnsZonePermissionMutation,
@@ -20,8 +22,7 @@ interface AddRemovePermissionProps {
 }
 
 const AddRemovePermission = (props: AddRemovePermissionProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // RPC calls
   const [addPermission] = useAddDnsZonePermissionMutation();
@@ -36,10 +37,22 @@ const AddRemovePermission = (props: AddRemovePermissionProps) => {
       if ("data" in response) {
         const { data } = response;
         if (data?.error) {
-          alerts.addAlert("error", (data.error as Error).message, "danger");
+          dispatch(
+            addAlert({
+              name: "error",
+              title: (data.error as Error).message,
+              variant: "danger",
+            })
+          );
         }
         if (data?.result) {
-          alerts.addAlert("success", data.result.summary, "success");
+          dispatch(
+            addAlert({
+              name: "success",
+              title: data.result.summary,
+              variant: "success",
+            })
+          );
           // Change the operation type (e.g. 'add' --> 'remove')
           if (props.operation === "add") {
             props.changeOperation("remove");
@@ -76,7 +89,6 @@ const AddRemovePermission = (props: AddRemovePermissionProps) => {
   // Render component
   return (
     <>
-      <alerts.ManagedAlerts />
       <ConfirmationModal
         dataCy="dns-zones-add-remove-permission-modal"
         title={"Confirmation"}

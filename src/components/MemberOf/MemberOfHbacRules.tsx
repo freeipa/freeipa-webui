@@ -14,8 +14,10 @@ import MemberTable from "src/components/tables/MembershipTable";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // RPC
 import { ErrorResult } from "src/services/rpc";
@@ -40,8 +42,7 @@ interface MemberOfHbacRulesProps {
 }
 
 const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   const {
     page,
@@ -225,13 +226,21 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
             if (response.data.result.results[0].error) {
               const errorMessage = response.data.result.results[0]
                 .error as string;
-              alerts.addAlert("add-member-error", errorMessage, "danger");
+              dispatch(
+                addAlert({
+                  name: "add-member-error",
+                  title: errorMessage,
+                  variant: "danger",
+                })
+              );
             } else {
               // Set alert: success
-              alerts.addAlert(
-                "add-member-success",
-                `Assigned '${props.id}' to HBAC rules`,
-                "success"
+              dispatch(
+                addAlert({
+                  name: "add-member-success",
+                  title: `Assigned '${props.id}' to HBAC rules`,
+                  variant: "success",
+                })
               );
             }
             // Refresh data
@@ -241,7 +250,13 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert("add-member-error", errorMessage.message, "danger");
+            dispatch(
+              addAlert({
+                name: "add-member-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
+            );
           }
         }
         setSpinning(false);
@@ -257,10 +272,12 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
         if ("data" in response) {
           if (response.data?.result) {
             // Set alert: success
-            alerts.addAlert(
-              "remove-hbac-rules-success",
-              `Removed '${props.id}' from HBAC rules`,
-              "success"
+            dispatch(
+              addAlert({
+                name: "remove-hbac-rules-success",
+                title: `Removed '${props.id}' from HBAC rules`,
+                variant: "success",
+              })
             );
             // Refresh
             props.onRefreshData();
@@ -273,10 +290,12 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
           } else if (response.data?.error) {
             // Set alert: error
             const errorMessage = response.data.error as unknown as ErrorResult;
-            alerts.addAlert(
-              "remove-hbac-rules-error",
-              errorMessage.message,
-              "danger"
+            dispatch(
+              addAlert({
+                name: "remove-hbac-rules-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
             );
           }
           setSpinning(false);
@@ -287,7 +306,6 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}

@@ -12,6 +12,7 @@ import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import InputWithValidation from "src/components/layouts/InputWithValidation";
 // Redux
+import { useAppDispatch } from "src/store/hooks";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Modals
@@ -19,7 +20,7 @@ import ErrorModal from "src/components/modals/ErrorModal";
 // Forms
 import DropdownSearch from "src/components/layouts/DropdownSearch";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // Data types
 import { IDViewOverrideGroup } from "src/utils/datatypes/globalDataTypes";
 import {
@@ -44,8 +45,7 @@ interface PropsToAddGroup {
 }
 
 const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // Define 'executeCommand' to add group data to IPA server
   const [executeAddCommand] = useAddIDOverrideGroupMutation();
@@ -204,10 +204,12 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
           handleAPIError(error);
         } else {
           // Set alert: success
-          alerts.addAlert(
-            "add-group-success",
-            "New override group added",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-group-success",
+              title: "New override group added",
+              variant: "success",
+            })
           );
 
           // Set status flag: success
@@ -382,7 +384,6 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
   // Render
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="add-id-override-group-modal"
         variantType="small"

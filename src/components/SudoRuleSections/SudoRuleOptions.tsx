@@ -2,8 +2,10 @@ import React from "react";
 // Patternfly
 import { Td, Th, Tr } from "@patternfly/react-table";
 import { Button } from "@patternfly/react-core";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // RPC
 import {
   useAddOptionToSudoRuleMutation,
@@ -22,8 +24,7 @@ interface PropsToSudoRuleOptions {
 }
 
 const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // States
   const [selectedEntries, setSelectedEntries] = React.useState<string[]>([]);
@@ -239,20 +240,24 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
       if ("data" in response) {
         const responseData = response.data;
         if (responseData?.result) {
-          alerts.addAlert(
-            "add-sudo-option-success",
-            "Sudo option added",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-sudo-option-success",
+              title: "Sudo option added",
+              variant: "success",
+            })
           );
           setTableEntryList([...tableEntryList, newOption]);
           fullEntryList = [...fullEntryList, newOption];
           setNewOption("");
           onChangeAddModalVisibility();
         } else if (responseData?.error) {
-          alerts.addAlert(
-            "add-sudo-option-error",
-            "Failed to add sudo option: " + responseData.error,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "add-sudo-option-error",
+              title: "Failed to add sudo option: " + responseData.error,
+              variant: "danger",
+            })
           );
         }
       }
@@ -318,10 +323,12 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
       if ("data" in response) {
         const responseData = response.data;
         if (responseData?.result) {
-          alerts.addAlert(
-            "remove-sudo-option-success",
-            "Sudo option(s) removed",
-            "success"
+          dispatch(
+            addAlert({
+              name: "remove-sudo-option-success",
+              title: "Sudo option(s) removed",
+              variant: "success",
+            })
           );
           setTableEntryList(
             tableEntryList.filter((entry) => !selectedEntries.includes(entry))
@@ -332,10 +339,12 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
           setSelectedEntries([]);
           onChangeDeleteModalVisibility();
         } else if (responseData?.error) {
-          alerts.addAlert(
-            "remove-sudo-option-error",
-            "Failed to remove sudo option: " + responseData.error,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "remove-sudo-option-error",
+              title: "Failed to remove sudo option: " + responseData.error,
+              variant: "danger",
+            })
           );
         }
         setSpinningOnDelete(false);
@@ -345,7 +354,6 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <SettingsTableLayout
         ariaLabel={"Options table in sudo rules settings page"}
         variant="compact"

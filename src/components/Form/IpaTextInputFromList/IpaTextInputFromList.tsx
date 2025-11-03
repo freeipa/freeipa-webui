@@ -5,8 +5,6 @@ import { Button, Flex, FlexItem, TextInput } from "@patternfly/react-core";
 import SecondaryButton from "../../layouts/SecondaryButton";
 // Data types
 import { Metadata } from "src/utils/datatypes/globalDataTypes";
-// Hooks
-import useAlerts from "src/hooks/useAlerts";
 // ipaObject utils
 import { getParamProperties } from "src/utils/ipaObjectUtils";
 
@@ -33,9 +31,6 @@ const IpaTextInputFromList = (props: PropsToTextInputFromList) => {
     metadata: props.metadata,
   });
 
-  // Alerts to show in the UI
-  const alerts = useAlerts();
-
   const isDisabled = (idx: number) => {
     if (props.isPrincipalAlias) {
       return (
@@ -49,7 +44,6 @@ const IpaTextInputFromList = (props: PropsToTextInputFromList) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <Flex direction={{ default: "column" }} name={props.name}>
         {props.elementsList !== undefined &&
           props.elementsList.map((element, idx) => (

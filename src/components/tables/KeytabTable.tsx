@@ -6,8 +6,10 @@ import SettingsTableLayout from "src/components/layouts/SettingsTableLayout";
 import DualListLayout from "src/components/layouts/DualListLayout";
 // Modals
 import KeytabElementsDeleteModal from "src/components/modals/KeytabElementsDeleteModal";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // Data types
 import {
   Host,
@@ -43,13 +45,12 @@ interface PropsToTable {
 }
 
 const KeytabTable = (props: PropsToTable) => {
+  const dispatch = useAppDispatch();
+
   let entries: string[] = [];
   if (props.entry[props.entryAttr] !== undefined) {
     entries = [...props.entry[props.entryAttr]].sort();
   }
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // Users list on the table
   const [tableEntryList, setTableList] = useState<string[]>(entries);
@@ -266,14 +267,17 @@ const KeytabTable = (props: PropsToTable) => {
     } as KeyTabPayload).then((response) => {
       if ("data" in response) {
         if (response.data?.result) {
-          alerts.addAlert(
-            "add-" + props.entryType + "s-allow-keytab",
-            "Successfully added " +
-              props.entryType +
-              "s that are allowed to " +
-              props.opType +
-              " keytabs",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-" + props.entryType + "s-allow-keytab",
+              title:
+                "Successfully added " +
+                props.entryType +
+                "s that are allowed to " +
+                props.opType +
+                " keytabs",
+              variant: "success",
+            })
           );
           // Update table
           const entries = [...tableEntryList, ...newEntries].sort();
@@ -286,15 +290,18 @@ const KeytabTable = (props: PropsToTable) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
-            "add-" + props.entryType + "s-keytab",
-            "Failed to add " +
-              props.entryType +
-              "s that are allowed to " +
-              props.opType +
-              " keytabs: " +
-              errorMessage.message,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "add-" + props.entryType + "s-keytab",
+              title:
+                "Failed to add " +
+                props.entryType +
+                "s that are allowed to " +
+                props.opType +
+                " keytabs: " +
+                errorMessage.message,
+              variant: "danger",
+            })
           );
         }
       }
@@ -318,14 +325,17 @@ const KeytabTable = (props: PropsToTable) => {
     } as KeyTabPayload).then((response) => {
       if ("data" in response) {
         if (response.data?.result) {
-          alerts.addAlert(
-            "remove-" + props.entryType + "s-allow-create-keytab",
-            "Removed " +
-              props.entryType +
-              "s that are allowed to " +
-              props.opType +
-              " keytabs",
-            "success"
+          dispatch(
+            addAlert({
+              name: "remove-" + props.entryType + "s-allow-create-keytab",
+              title:
+                "Removed " +
+                props.entryType +
+                "s that are allowed to " +
+                props.opType +
+                " keytabs",
+              variant: "success",
+            })
           );
           // Filter out removed users
           const entries = tableEntryList.filter(function (entry) {
@@ -342,15 +352,18 @@ const KeytabTable = (props: PropsToTable) => {
         } else if (response.data?.error) {
           // Set alert: error
           const errorMessage = response.data.error as ErrorResult;
-          alerts.addAlert(
-            "remove-" + props.entryType + "s-allow-create-keytab",
-            "Failed to remove " +
-              props.entryType +
-              "s that are allowed to " +
-              props.opType +
-              " keytabs: " +
-              errorMessage.message,
-            "danger"
+          dispatch(
+            addAlert({
+              name: "remove-" + props.entryType + "s-allow-create-keytab",
+              title:
+                "Failed to remove " +
+                props.entryType +
+                "s that are allowed to " +
+                props.opType +
+                " keytabs: " +
+                errorMessage.message,
+              variant: "danger",
+            })
           );
         }
       }
@@ -539,7 +552,6 @@ const KeytabTable = (props: PropsToTable) => {
 
   return (
     <div className={props.className}>
-      <alerts.ManagedAlerts />
       <SettingsTableLayout
         ariaLabel={props.entryType + " table in host create keytabs"}
         variant="compact"

@@ -33,8 +33,10 @@ import { useAppSelector } from "src/store/hooks";
 import { UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { API_VERSION_BACKUP, isUserGroupSelectable } from "src/utils/utils";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors
@@ -51,6 +53,8 @@ const UserGroups = () => {
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "user-groups" });
 
+  const dispatch = useAppDispatch();
+
   // Set the page title to be shown in the browser tab
   React.useEffect(() => {
     document.title = browserTitle;
@@ -63,9 +67,6 @@ const UserGroups = () => {
 
   // Initialize groups list (Redux)
   const [groupsList, setGroupsList] = useState<UserGroup[]>([]);
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -228,10 +229,12 @@ const UserGroups = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
-            "submit-search-value-error",
-            error || "Error when searching for user groups",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "submit-search-value-error",
+              title: error || "Error when searching for user groups",
+              variant: "danger",
+            })
           );
         } else {
           // Success
@@ -489,7 +492,6 @@ const UserGroups = () => {
 
   return (
     <div>
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout id="Groups title" headingLevel="h1" text="User groups" />
       </PageSection>

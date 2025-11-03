@@ -28,13 +28,13 @@ import NetgroupsTable from "src/pages/Netgroups/NetgroupsTable";
 import AddNetgroup from "src/components/modals/AddNetgroup";
 import DeleteNetgroups from "src/components/modals/DeleteNetgroups";
 // Redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // Data types
 import { Netgroup } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { API_VERSION_BACKUP, isNetgroupSelectable } from "src/utils/utils";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors
@@ -48,6 +48,8 @@ import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
 import { useGettingNetgroupsQuery } from "../../services/rpcNetgroups";
 
 const Netgroups = () => {
+  const dispatch = useAppDispatch();
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "netgroups" });
 
@@ -63,9 +65,6 @@ const Netgroups = () => {
 
   // Initialize groups list (Redux)
   const [groupsList, setGroupsList] = useState<Netgroup[]>([]);
-
-  // Alerts to show in the UI
-  const alerts = useAlerts();
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -228,10 +227,12 @@ const Netgroups = () => {
           } else if ("message" in searchError) {
             error = searchError.message;
           }
-          alerts.addAlert(
-            "submit-search-value-error",
-            error || "Error when searching for netgroups",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "submit-search-value-error",
+              title: error || "Error when searching for netgroups",
+              variant: "danger",
+            })
           );
         } else {
           // Success
@@ -488,7 +489,6 @@ const Netgroups = () => {
 
   return (
     <div>
-      <alerts.ManagedAlerts />
       <PageSection hasBodyWrapper={false}>
         <TitleLayout id="Netgroups title" headingLevel="h1" text="Netgroups" />
       </PageSection>

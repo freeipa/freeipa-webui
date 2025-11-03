@@ -8,8 +8,10 @@ import MemberOfToolbar from "../MemberOf/MemberOfToolbar";
 import MemberOfHostsTable from "./ManagedByTableHosts";
 import MemberOfAddModal, { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // RPC
 import { ErrorResult, FindRPCResponse } from "src/services/rpc";
@@ -39,8 +41,7 @@ interface ManagedByHostsProps {
 }
 
 const ManagedByHosts = (props: ManagedByHostsProps) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // Get parameters from URL
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -193,10 +194,12 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
     if ("data" in response) {
       if (response.data.result) {
         // Set alert: success
-        alerts.addAlert(
-          "add-member-success",
-          "Assigned " + props.from + " '" + props.id + "' to hosts",
-          "success"
+        dispatch(
+          addAlert({
+            name: "add-member-success",
+            title: "Assigned " + props.from + " '" + props.id + "' to hosts",
+            variant: "success",
+          })
         );
         // Refresh data
         props.onRefreshData();
@@ -205,7 +208,13 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
       } else if (response.data.error) {
         // Set alert: error
         const errorMessage = response.data.error as unknown as ErrorResult;
-        alerts.addAlert("add-member-error", errorMessage.message, "danger");
+        dispatch(
+          addAlert({
+            name: "add-member-error",
+            title: errorMessage.message,
+            variant: "danger",
+          })
+        );
       }
     }
     setSpinning(false);
@@ -249,10 +258,12 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
     if ("data" in response) {
       if (response.data.result) {
         // Set alert: success
-        alerts.addAlert(
-          "remove-hosts-success",
-          "Removed members from " + props.from + " '" + props.id + "'",
-          "success"
+        dispatch(
+          addAlert({
+            name: "remove-hosts-success",
+            title: "Removed members from " + props.from + " '" + props.id + "'",
+            variant: "success",
+          })
         );
         // Refresh
         props.onRefreshData();
@@ -263,7 +274,13 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
       } else if (response.data.error) {
         // Set alert: error
         const errorMessage = response.data.error as unknown as ErrorResult;
-        alerts.addAlert("remove-hosts-error", errorMessage.message, "danger");
+        dispatch(
+          addAlert({
+            name: "remove-hosts-error",
+            title: errorMessage.message,
+            variant: "danger",
+          })
+        );
       }
     }
     setSpinning(false);
@@ -294,7 +311,6 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}

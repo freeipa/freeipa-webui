@@ -20,8 +20,10 @@ import {
   AddDnsZonePayload,
   useAddDnsZoneMutation,
 } from "src/services/rpcDnsZones";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
 // Errors
 import { SerializedError } from "@reduxjs/toolkit";
 // Icons
@@ -36,8 +38,7 @@ interface PropsToAddModal {
 }
 
 const AddDnsZoneModal = (props: PropsToAddModal) => {
-  // Alerts to show in the UI
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // API calls
   const [addDnsZone] = useAddDnsZoneMutation();
@@ -98,14 +99,22 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
         const error = response.data?.error as SerializedError;
 
         if (error) {
-          alerts.addAlert("add-dnszone-error", error.message, "danger");
+          dispatch(
+            addAlert({
+              name: "add-dnszone-error",
+              title: error.message,
+              variant: "danger",
+            })
+          );
         }
 
         if (data) {
-          alerts.addAlert(
-            "add-dnszone-success",
-            "DNS Zone successfully added",
-            "success"
+          dispatch(
+            addAlert({
+              name: "add-dnszone-success",
+              title: "DNS Zone successfully added",
+              variant: "success",
+            })
           );
           // Reset selected item
           clearFields();
@@ -319,7 +328,6 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
   // Return component
   return (
     <>
-      <alerts.ManagedAlerts />
       <Modal
         variant="small"
         position="top"
