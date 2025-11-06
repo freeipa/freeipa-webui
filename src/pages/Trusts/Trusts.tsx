@@ -140,8 +140,8 @@ const Trusts = () => {
     if (trustsResponse.isFetching) {
       return false;
     }
-    return !isLoading;
-  }, [trustsResponse.isFetching, isLoading]);
+    return !isLoading && trusts.length >= 0;
+  }, [trustsResponse.isFetching, isLoading, trusts.length]);
 
   // Selected elements
   const [selectedElements, setSelectedElements] = React.useState<Trust[]>([]);
