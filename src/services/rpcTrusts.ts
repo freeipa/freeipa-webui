@@ -13,13 +13,15 @@ import { apiToTrust } from "src/utils/trustsUtils";
 
 /**
  * Trusts-related endpoints: useGetTrustsFullDataQuery, useSearchTrustsEntriesMutation
- *                           useAddTrustMutation, useDeleteTrustsMutation
+ *                           useAddTrustMutation, useDeleteTrustsMutation, useTrustShowQuery
+ *                           useTrustModMutation
  *
  * API commands:
  * - trust_find: https://freeipa.readthedocs.io/en/latest/api/trust_find.html
  * - trust_show: https://freeipa.readthedocs.io/en/latest/api/trust_show.html
  * - trust_add: https://freeipa.readthedocs.io/en/latest/api/trust_add.html
  * - trust_del: https://freeipa.readthedocs.io/en/latest/api/trust_del.html
+ * - trust_mod: https://freeipa.readthedocs.io/en/latest/api/trust_mod.html
  */
 
 interface TrustsFullDataPayload {
@@ -49,6 +51,13 @@ export interface TrustAddPayload {
   base_id?: number;
   range_size?: number;
   version?: string;
+}
+
+export interface TrustModPayload {
+  cn: string;
+  ipantadditionalsuffixes?: string[];
+  ipantsidblacklistincoming?: string[];
+  ipantsidblacklistoutgoing?: string[];
 }
 
 const extendedApi = api.injectEndpoints({
@@ -172,6 +181,7 @@ const extendedApi = api.injectEndpoints({
         if (getResultTrusts.error) {
           return { error: getResultTrusts.error };
         }
+
         // If no error: cast and assign 'ids'
         const responseDataTrusts = getResultTrusts.data as FindRPCResponse;
         const trustsIds: string[] = [];
@@ -182,6 +192,7 @@ const extendedApi = api.injectEndpoints({
           const trustId = responseDataTrusts.result.result[i] as FindTrustArgs;
           trustsIds.push(trustId.cn[0]);
         }
+
         // FETCH TRUST DATA VIA "trust_show" COMMAND
         const commands: Command[] = [];
         trustsIds.map((trustId) => {
@@ -190,13 +201,16 @@ const extendedApi = api.injectEndpoints({
             params: [[trustId], {}],
           });
         });
+
         const trustsShowResult = await fetchWithBQ(
           getBatchCommand(commands, apiVersionUsed)
         );
+
         const response = trustsShowResult.data as BatchRPCResponse;
         if (response) {
           response.result.totalCount = trustsItemsCount;
         }
+
         // Return results
         const results: Trust[] = [];
         for (
@@ -267,6 +281,51 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(commands, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Get trust details
+     * @param {string} trustId - The ID of the trust
+     * @returns {FindRPCResponse} - Promise with the response data
+     */
+    trustShow: build.query<FindRPCResponse, string>({
+      query: (trustId) => {
+        return getCommand({
+          method: "trust_show",
+          params: [[trustId], { all: true, rights: true }],
+        });
+      },
+    }),
+    /**
+     * Modify a trust
+     * @param {TrustModPayload} payload - The payload containing the trust data
+     * @returns {FindRPCResponse} - Promise with the response data
+     */
+    trustMod: build.mutation<FindRPCResponse, TrustModPayload>({
+      query: (payload) => {
+        const params: Record<string, unknown> = {
+          all: true,
+          rights: true,
+          version: API_VERSION_BACKUP,
+        };
+
+        const optionalKeys: Array<keyof Omit<TrustModPayload, "cn">> = [
+          "ipantadditionalsuffixes",
+          "ipantsidblacklistincoming",
+          "ipantsidblacklistoutgoing",
+        ];
+
+        optionalKeys.forEach((key) => {
+          const value = payload[key];
+          if (value !== undefined) {
+            params[key] = value.toString();
+          }
+        });
+
+        return getCommand({
+          method: "trust_mod",
+          params: [[payload.cn], params],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -276,4 +335,6 @@ export const {
   useSearchTrustsEntriesMutation,
   useAddTrustMutation,
   useDeleteTrustsMutation,
+  useTrustShowQuery,
+  useTrustModMutation,
 } = extendedApi;

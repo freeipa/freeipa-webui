@@ -71,6 +71,7 @@ import DnsGlobalConfig from "src/pages/DNSZones/DnsGlobalConfig";
 import IdRanges from "src/pages/IdRanges/IdRanges";
 import { useConfigurationSettings } from "src/utils/configurationSettings";
 import Trusts from "src/pages/Trusts/Trusts";
+import TrustsTabs from "src/pages/Trusts/TrustsTabs";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -512,6 +513,9 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="trusts">
                 <Route path="" element={<Trusts />} />
+                <Route path=":cn">
+                  <Route path="" element={<TrustsTabs section="settings" />} />
+                </Route>
               </Route>
               <Route path="configuration" element={<Configuration />} />
               {/* Redirect to Active users page if user is logged in and navigates to the root page */}

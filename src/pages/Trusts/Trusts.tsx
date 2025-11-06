@@ -411,7 +411,7 @@ const Trusts = () => {
                     hasCheckboxes={true}
                     pathname="trusts"
                     showTableRows={showTableRows}
-                    showLink={false}
+                    showLink={true}
                     elementsData={{
                       isElementSelectable: isTrustSelectable,
                       selectedElements,
