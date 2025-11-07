@@ -47,6 +47,7 @@ const RemoveHBACRuleMembersModal = (props: PropsToDelete) => {
   const modalActions = [
     <Button
       data-cy="modal-button-delete"
+      variant="danger"
       key={"delete-" + props.elementType}
       form={props.elementType + "-delete-modal"}
       type="submit"

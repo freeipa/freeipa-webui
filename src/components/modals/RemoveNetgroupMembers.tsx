@@ -3,7 +3,6 @@ import React from "react";
 import { Button, Content, ContentVariants } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 // Tables
 import DeletedElementsTable from "src/components/tables/DeletedElementsTable";
 
@@ -46,18 +45,19 @@ const RemoveNetgroupMembersModal = (props: PropsToDelete) => {
 
   // Buttons that will be shown at the end of the form
   const modalActions = [
-    <SecondaryButton
-      dataCy="modal-button-delete"
+    <Button
+      variant="danger"
+      data-cy="modal-button-delete"
       key={"delete-" + props.elementType}
       form="modal-form"
-      onClickHandler={() => props.removeMembers(props.elementsToDelete)}
+      onClick={() => props.removeMembers(props.elementsToDelete)}
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={props.spinning}
       isDisabled={props.spinning}
     >
       {props.spinning ? "Deleting" : "Delete"}
-    </SecondaryButton>,
+    </Button>,
     <Button
       data-cy="modal-button-cancel"
       key={"cancel-delete-" + props.elementType}

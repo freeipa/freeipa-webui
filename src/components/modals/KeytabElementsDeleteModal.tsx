@@ -3,7 +3,6 @@ import React from "react";
 import { Button, Content, ContentVariants } from "@patternfly/react-core";
 // Layouts
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 // Tables
 import DeletedElementsTable from "src/components/tables/DeletedElementsTable";
 
@@ -78,14 +77,15 @@ const KeytabElementsDeleteModal = (props: PropsToDelete) => {
 
   // Buttons that will be shown at the end of the form
   const modalActions = [
-    <SecondaryButton
-      dataCy="modal-button-delete"
+    <Button
+      data-cy="modal-button-delete"
+      variant="danger"
       key={"delete-" + props.elementType}
       form="modal-form"
-      onClickHandler={removeElementFromList}
+      onClick={removeElementFromList}
     >
       Delete
-    </SecondaryButton>,
+    </Button>,
     <Button
       data-cy="modal-button-cancel"
       key={"cancel-delete-" + props.elementType}
