@@ -233,7 +233,6 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
       dataCy="modal-button-add"
       key="add-principal-alias"
       onClickHandler={onAddPrincipalAlias}
-      // isDisabled={newAliasValue === "" ? true : false}
       isDisabled={
         (newAliasValue !== "" && !newAliasValue.includes("@")) ||
         modalSpinning ||

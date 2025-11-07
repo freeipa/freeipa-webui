@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   Form,
@@ -107,15 +108,14 @@ const CertificateMappingDataOption = (
               />
             </FlexItem>
             <FlexItem key={"ipacertmapdata-" + idx + "-delete-button"}>
-              <SecondaryButton
-                dataCy={"modal-button-delete-ipacertmapdata-" + certMap}
+              <Button
+                variant="danger"
+                data-cy={"modal-button-delete-ipacertmapdata-" + certMap}
                 name="remove"
-                onClickHandler={() =>
-                  onRemoveCertificateMappingDataHandler(idx)
-                }
+                onClick={() => onRemoveCertificateMappingDataHandler(idx)}
               >
                 Delete
-              </SecondaryButton>
+              </Button>
             </FlexItem>
           </Flex>
         ))}
@@ -188,13 +188,14 @@ const CertificateMappingDataOption = (
               key={"certificate-" + idx + "-delete-button"}
               name={"certificate-" + idx + "-delete-button"}
             >
-              <SecondaryButton
-                dataCy={"modal-button-delete-certificate-" + certificate}
+              <Button
+                variant="danger"
+                data-cy={"modal-button-delete-certificate-" + certificate}
                 name="remove"
-                onClickHandler={() => onRemoveCertificateHandler(idx)}
+                onClick={() => onRemoveCertificateHandler(idx)}
               >
                 Delete
-              </SecondaryButton>
+              </Button>
             </FlexItem>
           </Flex>
         ))}

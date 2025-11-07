@@ -54,11 +54,11 @@ const DeleteRuleModal = (props: DeleteRuleModalProps) => {
   const modalActions: JSX.Element[] = [
     <Button
       data-cy="modal-button-ok"
+      variant="danger"
       key={"delete-" + props.ruleId}
-      variant="primary"
       onClick={onDelete}
     >
-      OK
+      Delete
     </Button>,
     <Button
       data-cy="modal-button-cancel"

@@ -65,7 +65,7 @@ const TextInputList = (props: TextInputListProps) => {
             <FlexItem key={props.name + "-" + idx + "-delete-button"}>
               <Button
                 data-cy={props.dataCy + "-" + item + "-delete-button"}
-                variant="secondary"
+                variant="danger"
                 name={"remove-" + props.name + "-" + idx}
                 onClick={() => onRemoveHandler(idx)}
               >

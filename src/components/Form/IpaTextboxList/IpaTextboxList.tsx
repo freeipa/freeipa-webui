@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   TextInput,
@@ -130,13 +131,15 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
               />
             </FlexItem>
             <FlexItem key={props.name + "-" + idx + "-delete-button"}>
-              <SecondaryButton
-                dataCy={props.dataCy + "-button-delete-" + idx}
+              <Button
+                data-cy={props.dataCy + "-button-delete-" + idx}
+                variant="secondary"
                 name={"remove-" + props.name + "-" + idx}
-                onClickHandler={() => onRemoveHandler(idx)}
+                onClick={() => onRemoveHandler(idx)}
+                size="sm"
               >
                 Delete
-              </SecondaryButton>
+              </Button>
             </FlexItem>
           </Flex>
         ))}

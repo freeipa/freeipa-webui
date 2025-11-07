@@ -1,6 +1,6 @@
 import React from "react";
 // Patternfly
-import { Flex, FlexItem, TextInput } from "@patternfly/react-core";
+import { Button, Flex, FlexItem, TextInput } from "@patternfly/react-core";
 // Layouts
 import SecondaryButton from "../../layouts/SecondaryButton";
 // Data types
@@ -79,14 +79,16 @@ const IpaTextInputFromList = (props: PropsToTextInputFromList) => {
                     : ""
                 }
               >
-                <SecondaryButton
-                  dataCy={props.dataCy + "-button-remove-" + element}
+                <Button
+                  data-cy={props.dataCy + "-button-remove-" + element}
+                  variant="secondary"
+                  size="sm"
                   name={"remove-principal-alias-" + idx}
-                  onClickHandler={() => props.onRemove(idx)}
+                  onClick={() => props.onRemove(idx)}
                   isDisabled={readOnly || isDisabled(idx)}
                 >
                   Delete
-                </SecondaryButton>
+                </Button>
               </FlexItem>
             </Flex>
           ))}
