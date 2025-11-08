@@ -8,6 +8,7 @@ on:
 jobs:
   build-and-push-image:
     name: Build and Push Development Container
+    if: github.repository_owner == 'freeipa'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
