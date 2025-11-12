@@ -6,12 +6,34 @@ SCRIPT_DIR="$(realpath "$(dirname "$0")")"
 REPO_DIR="$(realpath "${SCRIPT_DIR}/..")"
 
 log() {
-    echo -e "\\033[37;1m$*\\033[0m"
+    local C_RST="\033[0m"
+    local C_DEBUG="\033[30;1m"
+    local C_INFO="\033[37;1m"
+    local C_WARN="\033[33;1m"
+    local C_ERROR="\033[31;1m"
+    local L_COLOR="${C_INFO}"
+    local L_LEVEL=0
+    local MIN_LEVEL="${LOGLEVEL:-4}"
+    local MSG_PREFIX=""
+    local OPTIND OPTARG option
+    while getopts ":deiw" option "$@"
+    do
+        case "${option}" in
+            "d") L_COLOR="${C_DEBUG}" ; L_LEVEL=5 ; MSG_PREFIX="DEBUG: " ;;
+            "e") L_COLOR="${C_ERROR}" ; L_LEVEL=0 ; MSG_PREFIX="ERROR: " ;;
+            "i") L_COLOR="${C_INFO}" ; L_LEVEL=4; MSG_PREFIX="INFO: " ;;
+            "w") L_COLOR="${C_WARN}" ; L_LEVEL=1; MSG_PREFIX="WARNING: " ;;
+            *) die "Internal Error: Invalid log option ${OPTARG}" ;;
+        esac
+    done
+    [[ "${L_LEVEL}" -gt "${MIN_LEVEL}" ]] && return 0
+    shift $((OPTIND - 1))
+    echo -e "${L_COLOR}${MSG_PREFIX}$*${C_RST}"
 }
 
 die() {
     [ $# -gt 0 ] && msg="FATAL: $*"
-    echo -e "\\033[31;1m${msg:-}\\033[0m"
+    echo -e "\033[31;1m${msg:-}\033[0m"
     exit 1
 }
 
