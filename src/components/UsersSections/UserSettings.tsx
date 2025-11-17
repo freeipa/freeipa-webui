@@ -702,21 +702,21 @@ const UserSettings = (props: PropsToUserSettings) => {
         show={isActivateModalOpen}
         handleModalToggle={onCloseActivateModal}
         selectedUsers={[props.user] as User[]}
-        onSuccess={() => navigate("stage-users")}
+        onSuccess={() => navigate("/stage-users")}
       />
       <StagePreservedUsers
         show={isStageModalOpen}
         handleModalToggle={onCloseStageModal}
         selectedUsers={[props.user] as User[]}
         clearSelectedUsers={clearSelectedUsers}
-        onSuccess={() => navigate("preserved-users")}
+        onSuccess={() => navigate("/preserved-users")}
       />
       <RestorePreservedUsers
         show={isRestoreModalOpen}
         handleModalToggle={onCloseRestoreModal}
         selectedUsers={[props.user] as User[]}
         clearSelectedUsers={clearSelectedUsers}
-        onSuccess={() => navigate("preserved-users")}
+        onSuccess={() => navigate("/preserved-users")}
       />
     </TabLayout>
   );
