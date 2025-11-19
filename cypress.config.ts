@@ -28,7 +28,10 @@ export default defineConfig({
           ],
         })
       );
-      on("task", verifyDownloadTasks);
+
+      on("task", {
+        ...verifyDownloadTasks,
+      });
 
       return config;
     },

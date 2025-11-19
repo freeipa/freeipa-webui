@@ -3,6 +3,7 @@ Feature: Automember > Settings page
 
     @seed
     Scenario: Prep: Create a new user group to work with
+        Given user group "my_automember_usergroup" exists
         Given user group rule "my_automember_usergroup" exists
 
     @test
@@ -24,6 +25,7 @@ Feature: Automember > Settings page
 
     @seed
     Scenario: Prep: Create a new user group to work with
+        Given user group "my_automember_usergroup" exists
         Given user group rule "my_automember_usergroup" exists
 
     @test
@@ -51,6 +53,7 @@ Feature: Automember > Settings page
 
     @seed
     Scenario: Prep: Create a new user group to work with
+        Given user group "my_automember_usergroup" exists
         Given user group rule "my_automember_usergroup" exists
 
     @test
@@ -78,6 +81,7 @@ Feature: Automember > Settings page
 
     @seed
     Scenario: Prep: Create a new host group rule to work with
+        Given hostgroup "my_automember_hostgroup" with description "desc" exists
         Given hostgroup rule "my_automember_hostgroup" exists
 
     @test
@@ -99,9 +103,11 @@ Feature: Automember > Settings page
 
     @seed
     Scenario: Prep: Create a new host group to work with
+        Given hostgroup "my_automember_hostgroup" with description "desc" exists
         Given hostgroup rule "my_automember_hostgroup" exists
 
     # 'Inclusive' subsection
+    @test
     Scenario: Add a new inclusive host group rule
         Given I am logged in as admin
         And I am on "host-group-rules/my_automember_hostgroup" page
@@ -122,7 +128,6 @@ Feature: Automember > Settings page
     @cleanup
     Scenario: Delete host group rule
         Given I delete hostgroup rule "my_automember_hostgroup"
-        And I delete hostgroup "my_automember_hostgroup"
 
     @seed
     Scenario: Prep: Create a new host group to work with
@@ -153,6 +158,7 @@ Feature: Automember > Settings page
 
     @seed
     Scenario: Prep: Create a new host group to work with
+        Given hostgroup "my_automember_hostgroup" with description "desc" exists
         Given hostgroup rule "my_automember_hostgroup" exists and has inclusive entry "my-department" with category "businesscategory"
 
     @test
@@ -177,6 +183,7 @@ Feature: Automember > Settings page
 
     @seed
     Scenario: Prep: Create a new user group to work with
+        Given user group "my_automember_usergroup" exists
         Given user group rule "my_automember_usergroup" exists and has inclusive entry "my-department" with category "businesscategory"
 
     @test

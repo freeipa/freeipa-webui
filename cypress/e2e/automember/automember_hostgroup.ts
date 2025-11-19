@@ -1,7 +1,6 @@
 import { When, Then, Given } from "@badeball/cypress-cucumber-preprocessor";
 import {
   entryDoesNotExist,
-  entryExists,
   searchForEntry,
   selectEntry,
   validateEntry,
@@ -10,7 +9,6 @@ import "../hostgroups/hostgroup";
 import "../common/data_tables";
 import { navigateTo } from "../common/navigation";
 import { loginAsAdmin, logout } from "../common/authentication";
-import { createHostgroup } from "../hostgroups/hostgroup";
 import { isOptionSelected, selectOption } from "../common/ui/select";
 
 const fillHostgroupRule = (hostgroupName: string) => {
@@ -18,7 +16,7 @@ const fillHostgroupRule = (hostgroupName: string) => {
   isOptionSelected(hostgroupName, "modal-select-automember");
 };
 
-export const createHostgroupRule = (hostgroupName: string) => {
+const createHostgroupRule = (hostgroupName: string) => {
   cy.dataCy("auto-member-host-rules-button-add").click();
   cy.dataCy("add-rule-modal").should("exist");
 
@@ -26,6 +24,14 @@ export const createHostgroupRule = (hostgroupName: string) => {
 
   cy.dataCy("modal-button-add").click();
   cy.dataCy("add-hostgroup-rule-modal").should("not.exist");
+};
+
+export const createHostgroupRuleExec = (hostgroupName: string) => {
+  cy.ipa({
+    command: "automember-add",
+    name: hostgroupName,
+    specificOptions: "--type hostgroup",
+  });
 };
 
 const deleteHostgroupRule = (hostgroupName: string) => {
@@ -57,19 +63,7 @@ const setDefaultHostgroupRule = (hostgroupName: string) => {
 };
 
 Given("hostgroup rule {string} exists", (hostgroupName: string) => {
-  loginAsAdmin();
-  navigateTo("host-groups");
-
-  createHostgroup(hostgroupName, "test");
-  searchForEntry(hostgroupName);
-  entryExists(hostgroupName);
-
-  navigateTo("host-group-rules");
-  createHostgroupRule(hostgroupName);
-
-  searchForEntry(hostgroupName);
-  entryExists(hostgroupName);
-  logout();
+  createHostgroupRuleExec(hostgroupName);
 });
 
 When(

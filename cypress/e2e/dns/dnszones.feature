@@ -58,6 +58,7 @@ Feature: DNS Zones
         And I am on "dns-zones" page
         When I create an invalid DNS reverse zone that triggers a validation error
         Then I should see "add-dnszone-error" alert
+        And I close the add DNS zone modal
 
     @seed
     Scenario: Create a new DNS zone to disable/enable
@@ -69,6 +70,15 @@ Feature: DNS Zones
         And I am on "dns-zones" page
         When I disable DNS zone "my-dnszone."
         Then I should see DNS zone "my-dnszone." in the list disabled
+
+    @cleanup
+    Scenario: Delete DNS zones
+        Given I delete DNS zone "my-dnszone."
+
+    @seed
+    Scenario: my-dnszone is exists and is disabled
+        Given DNS zone "my-dnszone" exists
+        And DNS zone "my-dnszone" is disabled
 
     @test
     Scenario: Enable DNS zone

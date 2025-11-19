@@ -23,13 +23,11 @@ Feature: Automember user group management
     @cleanup
     Scenario: Delete user group rule
         Given I delete user group rule "my_automember_usergroup"
-
-    @cleanup
-    Scenario: Delete user group
         Given I delete user group "my_automember_usergroup"
 
     @seed
     Scenario: Create new automember user group
+        Given user group "my_automember_usergroup" exists
         Given user group rule "my_automember_usergroup" exists
 
     @test

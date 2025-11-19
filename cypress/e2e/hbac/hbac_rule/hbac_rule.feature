@@ -24,7 +24,7 @@ Feature: HBAC rules manipulation
     And I should see "rule1" entry in the data table with attribute "Description" set to "my description"
 
   @cleanup
-    Scenario: Delete a rule
+  Scenario: Delete a rule
     Given I delete hbac rule "rule1"
 
   @seed
@@ -39,17 +39,17 @@ Feature: HBAC rules manipulation
     When I search for "rule1" in the data table
     Then I should see "rule1" entry in the data table
     And I should not see "rule2" entry in the data table
-  
+
   @cleanup
   Scenario: Delete a rule
     Given I delete hbac rule "rule1"
 
-  @seed 
+  @seed
   Scenario: Create a rule
     Given hbac rule "rule4" exists
 
   @test
-    Scenario: Disable a rule
+  Scenario: Disable a rule
     Given I am logged in as admin
     And I am on "hbac-rules" page
 
@@ -67,6 +67,7 @@ Feature: HBAC rules manipulation
     Then I should see "rule4" entry in the data table
     Then I should see "rule4" entry in the data table with attribute "Status" set to "Disabled"
 
+  @test
   Scenario: Re-enable a rule
     Given I am logged in as admin
     And I am on "hbac-rules" page
@@ -89,7 +90,7 @@ Feature: HBAC rules manipulation
   Scenario: Delete a rule
     Given I delete hbac rule "rule4"
 
-  @seed 
+  @seed
   Scenario: Create a rule
     Given hbac rule "rule1" exists
 
@@ -99,7 +100,7 @@ Feature: HBAC rules manipulation
     And I am on "hbac-rules" page
 
     When I search for "rule1" in the data table
-    Then I should see "rule1" entry in the data table  
+    Then I should see "rule1" entry in the data table
     When I select entry "rule1" in the data table
     Then I should see "rule1" entry selected in the data table
     When I click on the "hbac-rules-button-delete" button

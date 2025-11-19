@@ -297,8 +297,8 @@ Feature: DNS Records
 
     @seed
     Scenario: Create new DNS zone
-        Given DNS zone "my-other-dns-zone" exists and has record "A" with name "my-a-dns-record" and data "192.168.66.67"
-
+        Given DNS zone "my-other-dns-zone" exists
+        Given DNS zone "my-other-dns-zone" has record A with name "my-a-dns-record" and data "192.168.66.67"
     @test
     Scenario: Remove DNS record
         Given I am logged in as admin

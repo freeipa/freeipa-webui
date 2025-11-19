@@ -19,7 +19,7 @@ const fillHostgroup = (hostgroupName: string, hostgroupDescription: string) => {
   );
 };
 
-export const createHostgroup = (
+const createHostgroup = (
   hostgroupName: string,
   hostgroupDescription: string
 ) => {
@@ -73,15 +73,13 @@ Then(
 );
 
 Given(
-  "Hostgroup {string} with description {string} exists",
+  "hostgroup {string} with description {string} exists",
   (hostgroupName: string, hostgroupDescription: string) => {
-    loginAsAdmin();
-    navigateTo("host-groups");
-
-    createHostgroup(hostgroupName, hostgroupDescription);
-    validateHostgroup(hostgroupName);
-
-    logout();
+    cy.ipa({
+      command: "hostgroup-add",
+      name: hostgroupName,
+      specificOptions: `--desc="${hostgroupDescription}"`,
+    });
   }
 );
 

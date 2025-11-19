@@ -49,12 +49,10 @@ Feature: ID View manipulation
   Scenario: Delete a view
     Given I delete view "a_new_view"
 
-  @seed
-  Scenario: Create views
-    Given view "a_new_view" exists
-
   @test
   Scenario: Unapply views from hosts
+    Given view "a_new_view" exists
+
     Given I am logged in as admin
     And I am on "id-views" page
 
