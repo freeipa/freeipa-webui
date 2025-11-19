@@ -4,7 +4,6 @@ import {
   entryDoesNotExist,
   searchForEntry,
   selectEntry,
-  validateEntry,
 } from "../common/data_tables";
 import { navigateTo } from "../common/navigation";
 import { typeInTextbox } from "../common/ui/textbox";
@@ -21,11 +20,7 @@ export const addSudoRule = (ruleName: string) => {
 };
 
 Given("sudo rule {string} exists", (ruleName: string) => {
-  loginAsAdmin();
-  navigateTo("sudo-rules");
-  addSudoRule(ruleName);
-  validateEntry(ruleName);
-  logout();
+  cy.ipa("sudorule-add", ruleName, { failOnNonZeroExit: false });
 });
 
 Given("I delete sudo rule {string}", (ruleName: string) => {

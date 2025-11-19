@@ -25,6 +25,28 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 //
 
+import { IPA_PREFIX } from "./utils";
+
 Cypress.Commands.add("dataCy", (value: string) => {
   return cy.get(`[data-cy='${value}']`);
 });
+
+// Register a helper to run IPA commands inside the webui container.
+// Automatically runs kinit before each IPA command.
+// Usage:
+//   cy.ipa("hbacsvc-show", "my_service", { failOnNonZeroExit: false })
+//   cy.ipa("hbacsvc-add", "my_service")
+// Returns the result of cy.exec so you can inspect code/stdout/stderr.
+Cypress.Commands.add(
+  "ipa",
+  (
+    subCommand: string,
+    name?: string,
+    specificOptions?: string,
+    options?: Partial<Cypress.ExecOptions>
+  ): Cypress.Chainable<Cypress.Exec> => {
+    const safeName = name?.replace(/"/g, '\\"');
+    const ipaCmd = `${IPA_PREFIX} ${subCommand} "${safeName}" ${specificOptions}`;
+    return cy.exec(ipaCmd, options);
+  }
+);
