@@ -4,6 +4,7 @@ import { addCucumberPreprocessorPlugin } from "@badeball/cypress-cucumber-prepro
 import createEsbuildPlugin from "@badeball/cypress-cucumber-preprocessor/esbuild";
 import { verifyDownloadTasks } from "cy-verify-downloads";
 import { polyfillNode } from "esbuild-plugin-polyfill-node";
+import { ipaCleanup } from "./cypress/support/ipaCleanup";
 
 export default defineConfig({
   video: true,
@@ -28,7 +29,11 @@ export default defineConfig({
           ],
         })
       );
-      on("task", verifyDownloadTasks);
+
+      on("task", {
+        ...verifyDownloadTasks,
+        ipaCleanup,
+      });
 
       return config;
     },
