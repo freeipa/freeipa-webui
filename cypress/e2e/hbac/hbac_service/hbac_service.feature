@@ -29,7 +29,7 @@ Feature: HBAC services manipulation
 
   @seed
   Scenario: Seed: Create HBAC services used in tests
-      Given HBAC service "a_service2" exists
+    Given HBAC service "a_service2" exists
 
   @test
   Scenario: Search for a service
@@ -41,7 +41,7 @@ Feature: HBAC services manipulation
     And I should not see "a_service1" entry in the data table
 
   @cleanup
-    Scenario: Cleanup: Delete seeded services
+  Scenario: Cleanup: Delete seeded services
     Given I delete service "a_service2"
 
   @seed

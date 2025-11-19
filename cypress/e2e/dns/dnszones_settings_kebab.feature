@@ -3,7 +3,8 @@ Feature: DNS Zones Settings > Kebab
 
     @seed
     Scenario: Create DNS zone 'my-dns-zone' for settings testing
-        Given DNS zone "my-dns-zone" exists and it is enabled
+        Given DNS zone "my-dns-zone" exists
+        And DNS zone "my-dns-zone" is enabled
 
     @test
     Scenario: Disable DNS zone from settings page kebab menu
@@ -25,7 +26,8 @@ Feature: DNS Zones Settings > Kebab
 
     @seed
     Scenario: Create DNS zone 'my-dns-zone-2' for settings testing
-        Given DNS zone "my-dns-zone-2" exists and it is disabled
+        Given DNS zone "my-dns-zone-2" exists
+        And DNS zone "my-dns-zone-2" is disabled
 
     @test
     Scenario: Enable DNS zone from settings page kebab menu
@@ -47,7 +49,8 @@ Feature: DNS Zones Settings > Kebab
 
     @seed
     Scenario: Create DNS zone 'my-dns-zone' for settings testing
-        Given DNS zone "my-dns-zone" exists and it is enabled
+        Given DNS zone "my-dns-zone" exists
+        Given DNS zone "my-dns-zone" is enabled
 
     @test
     Scenario: Add permission to DNS zone from settings page kebab menu
@@ -69,7 +72,8 @@ Feature: DNS Zones Settings > Kebab
 
     @seed
     Scenario: Create DNS zone 'my-dns-zone' for settings testing
-        Given DNS zone "my-dns-zone" exists and has permission
+        Given DNS zone "my-dns-zone" exists
+        And DNS zone "my-dns-zone" has permission
 
     @test
     Scenario: Remove permission from DNS zone from settings page kebab menu
@@ -91,7 +95,8 @@ Feature: DNS Zones Settings > Kebab
 
     @seed
     Scenario: Create DNS zone 'my-dns-zone' for settings testing
-        Given DNS zone "my-dns-zone" exists and it is enabled
+        Given DNS zone "my-dns-zone" exists
+        And DNS zone "my-dns-zone" is enabled
 
     @test
     Scenario: Delete DNS zone from settings page kebab menu

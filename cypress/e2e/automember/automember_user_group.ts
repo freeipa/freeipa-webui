@@ -17,7 +17,7 @@ const fillUserGroupRule = (userGroupName: string, selector: string) => {
   isOptionSelected(userGroupName, selector);
 };
 
-export const createUserGroupRule = (userGroupName: string) => {
+const createUserGroupRule = (userGroupName: string) => {
   cy.dataCy("auto-member-user-rules-button-add").click();
   cy.dataCy("add-rule-modal").should("exist");
 
@@ -27,6 +27,14 @@ export const createUserGroupRule = (userGroupName: string) => {
   cy.dataCy("add-rule-modal").should("not.exist");
   searchForEntry(userGroupName);
   entryExists(userGroupName);
+};
+
+export const createUserGroupRuleExec = (userGroupName: string) => {
+  cy.ipa({
+    command: "automember-add",
+    name: userGroupName,
+    specificOptions: "--type group",
+  });
 };
 
 const deleteUserGroupRule = (userGroupName: string) => {
@@ -58,26 +66,7 @@ const setDefaultUserGroupRule = (userGroupName: string) => {
 };
 
 Given("user group rule {string} exists", (userGroupName: string) => {
-  loginAsAdmin();
-  navigateTo("user-groups");
-
-  cy.dataCy("user-groups-button-add").click();
-  cy.dataCy("add-user-group-modal").should("exist");
-
-  cy.dataCy("modal-textbox-group-name").type(userGroupName);
-  cy.dataCy("modal-textbox-group-name").should("have.value", userGroupName);
-
-  cy.dataCy("modal-button-add").click();
-  cy.dataCy("add-user-group-modal").should("not.exist");
-  searchForEntry(userGroupName);
-  entryExists(userGroupName);
-
-  navigateTo("user-group-rules");
-  createUserGroupRule(userGroupName);
-
-  searchForEntry(userGroupName);
-  entryExists(userGroupName);
-  logout();
+  createUserGroupRuleExec(userGroupName);
 });
 
 When(

@@ -27,8 +27,8 @@ Feature: HBAC service groups manipulation
   Scenario: Cleanup: Delete a service group
     Given I delete service group "a_service_group1"
 
-  @seed
-  Scenario: Seed: Ensure service group exists
+  @test
+  Scenario: Search for a service group
     Given HBAC service group "a_service_group2" exists
 
   @test

@@ -9,19 +9,12 @@ import {
 import { navigateTo } from "../common/navigation";
 import { selectOption } from "../common/ui/select";
 import { isOptionSelected } from "../common/ui/select";
-import { addItemToRightList } from "../common/ui/dual_list";
 
-export const createUserGroup = (groupName: string) => {
-  cy.dataCy("user-groups-button-add").click();
-  cy.dataCy("add-user-group-modal").should("exist");
-
-  cy.dataCy("modal-textbox-group-name").type(groupName);
-  cy.dataCy("modal-textbox-group-name").should("have.value", groupName);
-
-  cy.dataCy("modal-button-add").click();
-  cy.dataCy("add-user-group-modal").should("not.exist");
-  searchForEntry(groupName);
-  entryExists(groupName);
+const createUserGroupExec = (groupName: string) => {
+  cy.ipa({
+    command: "group-add",
+    name: groupName,
+  });
 };
 
 Given("I delete user group {string}", (groupName: string) => {
@@ -41,11 +34,7 @@ Given("I delete user group {string}", (groupName: string) => {
 });
 
 Given("user group {string} exists", (groupName: string) => {
-  loginAsAdmin();
-  navigateTo("user-groups");
-
-  createUserGroup(groupName);
-  logout();
+  createUserGroupExec(groupName);
 });
 
 type MemberType = "member_user" | "member_group" | "member_service";
@@ -64,20 +53,78 @@ const addMember = (
   member: string,
   group: string
 ) => {
-  loginAsAdmin();
-  navigateTo("user-groups/" + group + "/" + type);
-
-  cy.dataCy("member-of-button-add").click();
-  cy.dataCy("member-of-add-modal").should("exist");
-
-  addItemToRightList(member);
-
-  cy.dataCy("modal-button-add").click();
-  cy.dataCy("member-of-add-modal").should("not.exist");
-
-  searchForEntry(member);
-  entryExists(member);
-  logout();
+  switch (type) {
+    case "member_user":
+      cy.ipa({
+        command: "group-add-member",
+        name: group,
+        specificOptions: `--users=${member}`,
+      });
+      break;
+    case "member_group":
+      cy.ipa({
+        command: "group-add-member",
+        name: group,
+        specificOptions: `--groups=${member}`,
+      });
+      break;
+    case "member_service":
+      cy.ipa({
+        command: "group-add-member",
+        name: group,
+        specificOptions: `--services=${member}`,
+      });
+      break;
+    case "manager_user":
+      cy.ipa({
+        command: "group-add-member-manager",
+        name: group,
+        specificOptions: `--users=${member}`,
+      });
+      break;
+    case "manager_group":
+      cy.ipa({
+        command: "group-add-member-manager",
+        name: group,
+        specificOptions: `--groups=${member}`,
+      });
+      break;
+    case "memberof_usergroup":
+      cy.ipa({
+        command: "group-add-member",
+        name: member,
+        specificOptions: `--groups=${group}`,
+      });
+      break;
+    case "memberof_netgroup":
+      cy.ipa({
+        command: "netgroup-add-member",
+        name: member,
+        specificOptions: `--groups=${group}`,
+      });
+      break;
+    case "memberof_role":
+      cy.ipa({
+        command: "role-add-member",
+        name: member,
+        specificOptions: `--groups=${group}`,
+      });
+      break;
+    case "memberof_hbacrule":
+      cy.ipa({
+        command: "hbacrule-add-user",
+        name: member,
+        specificOptions: `--groups=${group}`,
+      });
+      break;
+    case "memberof_sudorule":
+      cy.ipa({
+        command: "sudorule-add-user",
+        name: member,
+        specificOptions: `--groups=${group}`,
+      });
+      break;
+  }
 };
 
 Given(

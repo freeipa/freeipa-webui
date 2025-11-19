@@ -2,7 +2,7 @@ Feature: Automember hostgroup management
 
     @seed
     Scenario: Create new host group
-        Given Hostgroup "my_automember_hostgroup" with description "test" exists
+        Given hostgroup "my_automember_hostgroup" with description "test" exists
 
     @test
     Scenario: Create new hostgroup rule
@@ -24,13 +24,11 @@ Feature: Automember hostgroup management
     @cleanup
     Scenario: Delete host group rule
         Given I delete hostgroup rule "my_automember_hostgroup"
-
-    @cleanup
-    Scenario: Delete host group
         Given I delete hostgroup "my_automember_hostgroup"
 
     @seed
     Scenario: Create new automember host group
+        Given hostgroup "my_automember_hostgroup" with description "test" exists
         Given hostgroup rule "my_automember_hostgroup" exists
 
     @test
@@ -40,7 +38,7 @@ Feature: Automember hostgroup management
         When I try to delete hostgroup rule "my_automember_hostgroup"
         Then I should not see hostgroup rule "my_automember_hostgroup" in the hostgroup rule list
 
-        # Given I am on "host-groups" page
+        Given I am on "host-groups" page
         When I try to delete hostgroup "my_automember_hostgroup"
         Then I should not see hostgroup "my_automember_hostgroup" in the data table
 

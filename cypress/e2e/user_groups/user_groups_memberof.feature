@@ -114,7 +114,7 @@ Feature: Usergroup is a member of
   @cleanup
   Scenario: Cleanup seed data
     Given I delete user group "a-group"
-  
+
   @seed
   Scenario: Create seed data (User group and HBAC rule)
     Given hbac rule "test" exists
@@ -175,4 +175,4 @@ Feature: Usergroup is a member of
     Given I delete user group "a-group"
     And I delete hbac rule "test"
 
-  # Add Sudo rules
+# Add Sudo rules

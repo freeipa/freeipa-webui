@@ -14,7 +14,7 @@ Feature: Hostgroup management
 
     @seed
     Scenario: Create new host group
-        Given Hostgroup "my_automember_hostgroup" with description "test" exists
+        Given hostgroup "my_automember_hostgroup" with description "test" exists
 
     @test
     Scenario: Delete host group

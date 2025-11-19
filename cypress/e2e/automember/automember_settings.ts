@@ -1,13 +1,10 @@
 import { Given } from "@badeball/cypress-cucumber-preprocessor";
 import { loginAsAdmin, logout } from "../common/authentication";
 import { navigateTo } from "../common/navigation";
-import { entryExists, searchForEntry } from "../common/data_tables";
-import { createHostgroup } from "../hostgroups/hostgroup";
-import { createHostgroupRule } from "./automember_hostgroup";
-import { createUserGroupRule } from "./automember_user_group";
+import { createHostgroupRuleExec } from "./automember_hostgroup";
+import { createUserGroupRuleExec } from "./automember_user_group";
 import { isOptionSelected } from "../common/ui/select";
 import { typeInTextbox } from "../common/ui/textbox";
-import { createUserGroup } from "../user_groups/user_groups";
 import { EntryType } from "./parameter_types";
 
 const addEntryTableToGroupRule = (
@@ -47,19 +44,8 @@ Given(
     entry: string,
     category: string
   ) => {
+    createHostgroupRuleExec(hostGroupName);
     loginAsAdmin();
-    navigateTo("host-groups");
-
-    createHostgroup(hostGroupName, "test");
-    searchForEntry(hostGroupName);
-    entryExists(hostGroupName);
-
-    navigateTo("host-group-rules");
-    createHostgroupRule(hostGroupName);
-
-    searchForEntry(hostGroupName);
-    entryExists(hostGroupName);
-
     navigateTo("host-group-rules/" + hostGroupName);
     addEntryTableToGroupRule(entryType, entry, category);
     logout();
@@ -74,17 +60,8 @@ Given(
     entry: string,
     category: string
   ) => {
+    createUserGroupRuleExec(userGroupName);
     loginAsAdmin();
-    navigateTo("user-groups");
-
-    createUserGroup(userGroupName);
-
-    navigateTo("user-group-rules");
-    createUserGroupRule(userGroupName);
-
-    searchForEntry(userGroupName);
-    entryExists(userGroupName);
-
     navigateTo("user-group-rules/" + userGroupName);
     addEntryTableToGroupRule(entryType, entry, category);
     logout();
