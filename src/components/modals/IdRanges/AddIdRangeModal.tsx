@@ -14,8 +14,9 @@ import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout, {
   Field,
 } from "src/components/layouts/ModalWithFormLayout";
-// Hooks
-import useAlerts from "src/hooks/useAlerts";
+// Redux
+import { addAlert } from "src/store/Global/alerts-slice";
+import { useAppDispatch } from "src/store/hooks";
 // RPC
 import {
   AddIdRangePayload,
@@ -44,8 +45,7 @@ const autoPrivateGroupsOptions = [
 // Fields will follow the shared ModalWithFormLayout.Field shape
 
 const AddIdRangeModal = (props: PropsToAddModal) => {
-  // Alerts
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // API
   const [addIdRange] = useAddIdRangeMutation();
@@ -147,14 +147,22 @@ const AddIdRangeModal = (props: PropsToAddModal) => {
           const error = result.data?.error as SerializedError;
 
           if (error) {
-            alerts.addAlert("add-idrange-error", error.message, "danger");
+            dispatch(
+              addAlert({
+                name: "add-idrange-error",
+                title: error.message,
+                variant: "danger",
+              })
+            );
           }
 
           if (data) {
-            alerts.addAlert(
-              "add-idrange-success",
-              "ID range successfully added",
-              "success"
+            dispatch(
+              addAlert({
+                name: "add-idrange-success",
+                title: "ID range successfully added",
+                variant: "success",
+              })
             );
             clearFields();
             props.onRefresh();
@@ -371,21 +379,18 @@ const AddIdRangeModal = (props: PropsToAddModal) => {
   ];
 
   return (
-    <>
-      <alerts.ManagedAlerts />
-      <ModalWithFormLayout
-        dataCy="add-id-range-modal"
-        variantType="small"
-        modalPosition="top"
-        offPosition="76px"
-        title={props.title}
-        formId="add-id-range-modal"
-        fields={fields}
-        show={props.isOpen}
-        onClose={cleanAndClose}
-        actions={modalActions}
-      />
-    </>
+    <ModalWithFormLayout
+      dataCy="add-id-range-modal"
+      variantType="small"
+      modalPosition="top"
+      offPosition="76px"
+      title={props.title}
+      formId="add-id-range-modal"
+      fields={fields}
+      show={props.isOpen}
+      onClose={cleanAndClose}
+      actions={modalActions}
+    />
   );
 };
 

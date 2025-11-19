@@ -5,7 +5,6 @@ import { Content, ContentVariants, Button } from "@patternfly/react-core";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import DeletedElementsTable from "src/components/tables/DeletedElementsTable";
 // Hooks
-import useAlerts from "src/hooks/useAlerts";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // RPC
@@ -15,6 +14,9 @@ import { useDeleteIdRangesMutation } from "src/services/rpcIdRanges";
 import { ErrorData, IdRange } from "src/utils/datatypes/globalDataTypes";
 // Modals
 import ErrorModal from "src/components/modals/ErrorModal";
+// Redux
+import { addAlert } from "src/store/Global/alerts-slice";
+import { useAppDispatch } from "src/store/hooks";
 
 interface ButtonsData {
   updateIsDeleteButtonDisabled: (value: boolean) => void;
@@ -37,8 +39,7 @@ interface PropsToDelete {
 }
 
 const DeleteModal = (props: PropsToDelete) => {
-  // Alerts
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // API calls
   const [deleteIdRanges] = useDeleteIdRangesMutation();
@@ -147,10 +148,12 @@ const DeleteModal = (props: PropsToDelete) => {
               props.buttonsData.updateIsDeleteButtonDisabled(true);
               props.buttonsData.updateIsDeletion(true);
 
-              alerts.addAlert(
-                "remove-idranges-success",
-                "ID ranges removed",
-                "success"
+              dispatch(
+                addAlert({
+                  name: "remove-idranges-success",
+                  title: "ID ranges removed",
+                  variant: "success",
+                })
               );
               props.onClose();
               props.onRefresh();
@@ -189,7 +192,6 @@ const DeleteModal = (props: PropsToDelete) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <ModalWithFormLayout
         dataCy="delete-idranges-modal"
         variantType="medium"
