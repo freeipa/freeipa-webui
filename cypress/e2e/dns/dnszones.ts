@@ -172,14 +172,13 @@ Then("I should not see DNS zone {string} in the list", (zoneName: string) => {
 });
 
 Given("DNS zone {string} exists", (zoneName: string) => {
-  loginAsAdmin();
-  navigateTo("dns-zones");
-
-  createDnsZone(zoneName);
-
-  searchForEntry(parseZoneName(zoneName));
-  entryExists(parseZoneName(zoneName));
-  logout();
+  cy.ipa({
+    command: "dnszone-add",
+    name: zoneName,
+  }).then((result) => {
+    cy.log(result.stderr);
+    cy.log(result.stdout);
+  });
 });
 
 Then(

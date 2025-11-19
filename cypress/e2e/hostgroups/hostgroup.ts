@@ -75,13 +75,18 @@ Then(
 Given(
   "Hostgroup {string} with description {string} exists",
   (hostgroupName: string, hostgroupDescription: string) => {
-    loginAsAdmin();
-    navigateTo("host-groups");
-
-    createHostgroup(hostgroupName, hostgroupDescription);
-    validateHostgroup(hostgroupName);
-
-    logout();
+    try {
+      cy.ipa({
+        command: "hostgroup-add",
+        name: hostgroupName,
+        specificOptions: `--desc="${hostgroupDescription}"`,
+      }).then((result) => {
+        cy.log(result.stderr);
+        cy.log(result.stdout);
+      });
+    } catch (e) {
+      console.log("error in ipa command: " + String(e));
+    }
   }
 );
 

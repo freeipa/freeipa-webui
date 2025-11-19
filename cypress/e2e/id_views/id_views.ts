@@ -4,10 +4,8 @@ import {
   selectEntry,
   searchForEntry,
   entryDoesNotExist,
-  entryExists,
 } from "../common/data_tables";
 import { navigateTo } from "../common/navigation";
-import { typeInTextbox } from "../common/ui/textbox";
 
 Given("I delete view {string}", (viewName: string) => {
   loginAsAdmin();
@@ -26,19 +24,12 @@ Given("I delete view {string}", (viewName: string) => {
 });
 
 Given("view {string} exists", (viewName: string) => {
-  loginAsAdmin();
-  navigateTo("id-views");
-
-  cy.dataCy("id-views-button-add").click();
-  cy.dataCy("add-id-view-modal").should("exist");
-
-  typeInTextbox("modal-textbox-id-view-name", viewName);
-  cy.dataCy("modal-textbox-id-view-name").should("have.value", viewName);
-
-  cy.dataCy("modal-button-add").click();
-  cy.dataCy("add-id-view-modal").should("not.exist");
-
-  searchForEntry(viewName);
-  entryExists(viewName);
-  logout();
+  cy.log(`Ensuring view ${viewName} exists`);
+  cy.ipa({
+    command: "idview-add",
+    name: viewName,
+  }).then((result) => {
+    cy.log(result.stderr);
+    cy.log(result.stdout);
+  });
 });
