@@ -19,10 +19,6 @@ Feature: ID View manipulation
     When I search for "a_new_view" in the data table
     Then I should see "a_new_view" entry in the data table
 
-  @cleanup
-  Scenario: Delete a view
-    Given I delete view "a_new_view"
-
   @test
   Scenario: Add a new view with description
     Given I am logged in as admin
@@ -45,16 +41,11 @@ Feature: ID View manipulation
     Then I should see "a_new_view" entry in the data table
     And I should see "a_new_view" entry in the data table with attribute "Description" set to "my description"
 
-  @cleanup
-  Scenario: Delete a view
-    Given I delete view "a_new_view"
-
-  @seed
-  Scenario: Create views
-    Given view "a_new_view" exists
 
   @test
   Scenario: Unapply views from hosts
+    Given view "a_new_view" exists
+
     Given I am logged in as admin
     And I am on "id-views" page
 
@@ -80,6 +71,8 @@ Feature: ID View manipulation
 
   @test
   Scenario: Unapply views from host groups
+    Given view "a_new_view" exists
+
     Given I am logged in as admin
     And I am on "id-views" page
 
@@ -103,16 +96,9 @@ Feature: ID View manipulation
     Then I should not see "dual-list-modal" modal
     And I should see "unapply-id-views-hosts-success" alert
 
-  @cleanup
-  Scenario: Delete a view
-    Given I delete view "a_new_view"
-
-  @seed
-  Scenario: Create view "a_new_view"
-    Given view "a_new_view" exists
-
   @test
   Scenario: Delete a view
+    Given view "a_new_view" exists
     Given I am logged in as admin
     And I am on "id-views" page
 
@@ -132,13 +118,10 @@ Feature: ID View manipulation
     When I search for "a_new_view" in the data table
     Then I should not see "a_new_view" entry in the data table
 
-  @seed
-  Scenario: Create views
-    Given view "a_new_view" exists
-    Given view "b_new_view" exists
-
   @test
   Scenario: Delete many views
+    Given view "a_new_view" exists
+    Given view "b_new_view" exists
     Given I am logged in as admin
     And I am on "id-views" page
 
