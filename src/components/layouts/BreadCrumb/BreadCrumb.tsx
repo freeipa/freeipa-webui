@@ -17,20 +17,12 @@ interface PropsToBreadcrumb {
 }
 
 const BreadCrumb = (props: PropsToBreadcrumb) => {
-  const [breadcrumbItems, setBreadcrumbItems] = React.useState<
-    BreadCrumbItem[]
-  >([]);
-
-  // Posibility of retrieving the 'breadcrumbItems' from the props or via Redux
+  // Possibility of retrieving the 'breadcrumbItems' from the props or via Redux
   const pagesVisited = !props.breadcrumbItems
     ? useAppSelector((state) => state.routes.breadCrumbPath)
     : props.breadcrumbItems;
 
-  React.useEffect(() => {
-    if (pagesVisited) {
-      setBreadcrumbItems(pagesVisited);
-    }
-  }, [pagesVisited]);
+  const breadcrumbItems = pagesVisited || [];
 
   // When rendering the elements, the last item can contain some text before the name
   return (
@@ -38,14 +30,14 @@ const BreadCrumb = (props: PropsToBreadcrumb) => {
       {breadcrumbItems.map((page, idx) =>
         idx === 0 || !page.isActive ? (
           <BreadcrumbItem
-            key={idx}
+            key={page.url}
             to={page.url}
             isActive={page.isActive || false}
           >
             {page.name}
           </BreadcrumbItem>
         ) : (
-          <BreadcrumbItem key={idx} isActive={page.isActive || false}>
+          <BreadcrumbItem key={page.url} isActive={page.isActive || false}>
             {props.preText && props.preText + " "}
             {page.name}
           </BreadcrumbItem>
