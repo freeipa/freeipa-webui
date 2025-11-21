@@ -4,6 +4,7 @@ IP_LOCAL_NETWORK="192.168.56"
 
 SCRIPT_DIR="$(realpath "$(dirname "$0")")"
 REPO_DIR="$(realpath "${SCRIPT_DIR}/..")"
+export SCRIPT_DIR REPO_DIR # required for containerfiles
 
 log() {
     local C_RST="\033[0m"
@@ -43,28 +44,34 @@ quiet() {
 
 usage() {
     cat <<EOF
-usage: $(basename "$0") [-h] [options] [arguments]
+usage: $(basename "$0") [-h] [options] [arguments] [SCENARIO] [-- EXTRA]
 
-Manage FreeIPA WebUI development container.
+Manage FreeIPA WebUI development scenarios.
 
 Options:
     -h          Show this message and exit
 
-    -s          Start development container (default)
-    -k          Kill development container
+    -s          Start development scenario (default)
+    -k          Kill currently running scenario
     -r          Restart (kill+start) development container
-    -f          Force fetching container image from external registry
 
-    -B [NAME]   Build local container image and exit
-                (default name: webui-dev)
+    -B          Build scenario (allow EXTRA options)
+    -f          Force fetching images from external registries
 
-    -c          Run Cypress integration tests
-    -C          Run Cypress integration tests with graphical debugger
+    -l          List available scenarios
+    -i          Show information for a given or running scenario
+
     -d          Run development web server
     -p          Perform production build of webui
 
-
+    -c          Run Cypress integration tests
+    -C          Run Cypress integration tests with graphical debugger
 EOF
+}
+
+check_command() {
+    [[ -n "$1" ]] ||  die "Internal error: (check_command) command not provided"
+    quiet command -v "${1}"
 }
 
 start_container() {
@@ -75,7 +82,7 @@ start_container() {
         --disable-dns \
         --subnet "${IP_LOCAL_NETWORK}.0/24" \
         --ignore \
-        webui-net > /dev/null || die "Failed to configured network."
+        webui-ipa-single-server > /dev/null || die "Failed to configured network."
 
     log "=== Starting container for ${image_id} ==="
     podman run \
@@ -86,7 +93,7 @@ start_container() {
         --security-opt label=disable \
         --cap-add SYS_ADMIN \
         --cap-add DAC_READ_SEARCH \
-        --network=webui-net:ip="${IP_LOCAL_NETWORK}.10",alias=webui.ipa.test \
+        --network=webui-ipa-single-server:ip="${IP_LOCAL_NETWORK}.10",alias=webui.ipa.test \
         --add-host "webui.ipa.test:${IP_LOCAL_NETWORK}.10" \
         --hostname webui.ipa.test \
         --publish 5173:5173 \
@@ -94,14 +101,23 @@ start_container() {
 }
 
 stop_container() {
+    is_container_created "webui" || return 0
     log "=== Stopping container: ${1:-"webui"} ==="
-    podman stop "${1:-webui}" > /dev/null && echo "Container stopped."
+    podman stop "${1:-webui}" > /dev/null && log "Container stopped."
+    quiet podman rm "${1:-webui}" ||:
+    if is_container_created "webui"
+    then
+        die "Failed to remove container."
+    else
+        quiet podman network rm --force "webui-ipa-single-server" ||:
+        log "Container removed."
+    fi
 }
 
 build_container() {
     image_name="${1:-"webui-dev"}"
     distro="${distro:-"fedora"}"
-    is_container_running && stop_container "webui" >/dev/null 2>/dev/null
+    is_container_created && stop_container "webui" >/dev/null 2>/dev/null
     log "=== Building '${image_name}:base' image ==="
     # Build base image. This image can be used to deploy FreeIPA
     podman build -t "${image_name}:base" \
@@ -122,12 +138,131 @@ build_container() {
     stop_container "webui"
 }
 
+start_scenario() {
+    local scenario="${1:-}"
+
+    if ! check_command podman-compose
+    then
+        if [[ -z "${scenario}" ]] || [[ "${scenario}" == "single-server" ]]
+        then
+            if [[ -n "${fetch_image}" ]]
+            then
+                fetch_image "${fetch_image}" && image_id="$(basename "${fetch_image}")"
+            fi
+            start_container "${image_id:-"webui-dev:latest"}"
+            return 0
+        else
+            die "Could not find executable for 'podman-compose'."
+        fi
+    fi
+    log "=== Starting scenario: ${scenario:-"single-server"} ==="
+    compose_output="$(podman-compose -f "${SCRIPT_DIR}/scenarios/${scenario}/compose.yml" up -d "${extra[@]}" 2>&1)"
+    if grep -iq "^Error" <<< "${compose_output}"
+    then
+        grep -i "^Error" <<< "${compose_output}" >&2
+        die "Error(s) found while starting scenario ${scenario}."
+    else
+        log "Running containers:"
+        # shellcheck disable=SC2312
+        podman-compose -f "${SCRIPT_DIR}/scenarios/${scenario}/compose.yml" \
+            ps --format '{{.Names}}' | awk '{print "    ",$0}'
+    fi
+
+}
+
+stop_scenario() {
+    local scenario="${1:-"single-server"}"
+
+    if ! check_command podman-compose
+    then
+        if [[ "${scenario}" == "single-server" ]]
+        then
+            stop_container "webui"
+            return 0
+        else
+            die "Could not find executable for 'podman-compose'."
+        fi
+    fi
+    pod_exists="$(podman pod ps --filter name="${scenario}" --format="{{.Name}}")"
+    if [[ -n "${pod_exists}" ]]
+    then
+        log "=== Stopping scenario: ${scenario:-"single-server"} ==="
+        compose_output="$(podman-compose -f "${SCRIPT_DIR}/scenarios/${scenario}/compose.yml" down 2>&1)"
+        if grep -iq "^Error" <<< "${compose_output}"
+        then
+            grep -i "^Error" <<< "${compose_output}" >&2
+            die "Error(s) found while shutting down ${scenario}."
+        fi
+        log "Scenario is down"
+    else
+        stop_container "webui"
+    fi
+}
+
+info_scenario() {
+    local name="${1}"
+    local scenario_dir="${SCRIPT_DIR}/scenarios/${name}"
+    declare -a readme=("README.md" "README" "README.txt")
+    for doc in "${readme[@]}"
+    do
+        doc="${scenario_dir}/${doc}"
+        if [[ -f "${doc}" ]]
+        then
+            log "=== Scenario '${name}' information ==="
+            awk '{print "    ",$0}' < "${doc}"
+            return 0
+        fi
+    done
+    log -w "Scenario '${name}' does not provide a README"
+}
+
+build_scenario() {
+    [[ -z "${1:-}" ]] && die "Scenario to be built was not provided."
+    local scenario="${1}"
+    check_command ansible-playbook \
+        || die "Command 'ansible-playbook' is required for building scenarios"
+    if ! check_command podman-compose
+    then
+        [[ "${scenario}" == "single-server" ]] \
+            || die "Command 'podman-compose' is required for building scenarios"
+        build_container
+        return $?
+    fi
+    scenario_dir="${SCRIPT_DIR}/scenarios/${scenario}"
+    podman-compose -f "${scenario_dir}/compose.yml" build "${extra[@]}"
+    podman-compose -f "${scenario_dir}/compose.yml" up -d
+    ansible-playbook -i "${scenario_dir}/inventory.yml" \
+        "${SCRIPT_DIR}/deploy-ipaserver.yml" || die "Failed to deploy IPA"
+    # shellcheck disable=SC2312
+    while IFS= read -r -d '' playbook
+    do
+        ansible-playbook -i "${scenario_dir}/inventory.yml" "${playbook}" \
+            || die "Failed to to execute playbook:\n\t${playbook}"
+    done < <(find "${scenario_dir}/playbooks" -name "*.yml" -print0)
+    # tag images
+    # shellcheck disable=SC2312
+    podman-compose -f "${scenario_dir}/compose.yml" images \
+        | tr "\t" " " \
+        | sed "s/  */ /g" \
+        | cut -d " " -f1,2 \
+        | sed "1d" \
+    | while read -r info
+    do
+        container="$(cut -d " " -f 1 <<< "${info}")"
+        registry="$(cut -d " " -f 2 <<< "${info}")"
+        log -d podman commit "${container}" "${registry}:latest"
+        podman commit "${container}" "${registry}:latest"
+    done
+    # cleanup
+    stop_scenario "${scenario}"
+}
+
 fetch_image() {
     [ -z "${1:-}" ] && return 1
     podman pull "${1}"
 }
 
-is_container_running() {
+is_container_created() {
     local name
     name="${1:-"webui"}"
     # shellcheck disable=SC2312
@@ -151,69 +286,112 @@ has_ui_available() {
     is_production_build_available || is_webserver_running
 }
 
+check_command podman || die "Could not find a binary for 'podman'."
+
+running="$(podman inspect webui 2>/dev/null || echo "")"
+running_webui="$(podman ps --filter name=webui --format "{{.Names}}")"
+if [[ -n "${running}" ]]
+then
+    # shellcheck disable=SC2312
+    running="$(grep -- "--pod" <<<"${running}" | cut -d_ -f2 | sed 's/".*$//g' | sed "s/webui-//")"
+    running_scenario="YES"
+else
+    running_scenario="NO"
+    [[ -z "${running_webui}" ]] || running="single-server"
+fi
 
 default_image="quay.io/ansible-freeipa/webui-dev:latest"
 image_id="$(podman images -f "reference=webui-dev:latest" --format="{{ .Id }}")"
 [ -z "${image_id}" ] && fetch_image="${default_image}" || fetch_image=""
 action="start"
 
-while getopts ":hB:cCdfkprs" option "$@"
+while getopts ":-hBcCdfiklprs" option "$@"
 do
     case "${option}" in
         "h") usage && exit ;;
-        "B") build_container "${OPTARG}" && exit ;;
+        "B") action="build_scenario" ;;
         "c") action="cypress:run" ;;
         "C") action="cypress:open" ;;
         "d") action="dev" ;;
         "f") fetch_image="${default_image}" ;;
+        "i") action="info" ;;
         "k") action="kill" ;;
+        "l")
+            action="list"
+            log "Available scenarios:"
+            # shellcheck disable=SC2312
+            find "${SCRIPT_DIR}"/scenarios/* -maxdepth 0 -type d \
+                | awk -F "/" '{ print "    ", $NF; }'
+            exit 0
+            ;;
         "p") action="build" ;;
         "r") action="restart" ;;
         "s") action="start" ;;
-        *)
-            if [ "${option}" == ":" ]  # An optional argument?
-            then
-                case "${OPTARG}" in
-                    "B") build_container && exit ;;
-                    *) ;;  # fallback
-                esac
-            fi
-            # assume tool long options started.
-            [ "${OPTARG}" == "-" ] && break
-            die "Invalid option: ${OPTARG}"  # abort any other case.
-        ;;
+        "-") break ;;
+        *) die "Invalid option: ${OPTARG}" ;;
     esac
 done
 
-declare -a extra=("${@:${OPTIND}}")
+shift $((OPTIND - 1))
+if [ "${1:-}" != "--" ]
+then
+    scenario="${1:-"single-server"}"
+    shift ||:
+fi
+
+# Skip "--" and get extra arguments
+if [[ -n "${1:-}" ]]
+then
+    if [[ "${1}" == "--" ]]
+    then
+        shift
+    else
+        die "Unexpected option: ${1}"
+    fi
+fi
+declare -a extra=("$@")
 
 case "${action}" in
+    "info")
+        [[ -z "${scenario:-}" ]] && log -w "No scenario given. Querying running scenario."
+        [[ "${running_scenario:-}" == "YES" ]] || log -w "No scenario running."
+        [[ -z "${scenario:-${running:-}}" ]] && die "No environment running. Provide scenario name."
+        info_scenario "${scenario:-${running:-"single-server"}}"
+        ;;
     "start")
-        if is_container_running "webui"
+        if is_container_created "webui"
         then
-            log "Container is already running."
-        else
-            if [ -n "${fetch_image}" ]
+            if [[ -z "${running:-}" ]]
             then
-                fetch_image "${fetch_image}" && image_id="$(basename "${fetch_image}")"
+                log "Container 'webui' is already running."
+            else
+                log "Scenario '${running}' is running."
             fi
-            start_container "${image_id:-"webui-dev:latest"}"
+        else
+            start_scenario "${scenario:-}"
+            info_scenario "${scenario:-"single-server"}"
         fi
         ;;
-    "kill") is_container_running "webui" && stop_container "webui" ;;
+    "kill") stop_scenario "${running:-${scenario:-"single-server"}}" ;;
     "restart")
-        is_container_running "webui" && stop_container "webui"
-        start_container "${image_id:-"webui-dev:latest"}"
+        is_container_created "webui" && stop_scenario "${running:-}"
+        start_scenario "${scenario}"
         ;;
     "cypress"*)
-        is_container_running "webui" || die "Container is not running."
+        is_container_created "webui" || die "Webui container is not running."
         has_ui_available || die "Cannot find webui dev server or production build."
         read -r -a cypress_cmd <<< "${action/:/ }"
         podman unshare --rootless-netns npx "${cypress_cmd[@]}" "${extra[@]}"
         ;;
     "dev") is_webserver_running || podman exec -it webui npm run dev ;;
     "build")
+        is_container_created "webui" || die "Webui container is not running."
         is_webserver_running && die "Development webserver is running."
-        podman exec webui npm run build ;;
+        podman exec webui npm run build
+        ;;
+    "build_scenario")
+        is_container_created "webui" && die "Can't build while webui is running."
+        build_scenario "${scenario}"
+        ;;
     *) die "Invalid action: ${action}" ;;  # there's a bug in the code
 esac
