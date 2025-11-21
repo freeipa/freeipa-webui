@@ -233,11 +233,13 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
             // Close modal
             closeModal();
             // Set alert: success
+            const operation = props.optionSelected ? "Disabled" : "Enabled";
             dispatch(
               addAlert({
-                name: "enable-sudorule-success",
+                name: "enabledisable-sudorule-success",
                 title:
-                  "Enabled Sudo rule '" +
+                  operation +
+                  " Sudo rule '" +
                   props.selectedRulesData.selectedRules[0].cn +
                   "'",
                 variant: "success",

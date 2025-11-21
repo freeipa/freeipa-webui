@@ -40,7 +40,7 @@ export function partialSudoRuleToSudoRule(
 export function createEmptySudoRule(): SudoRule {
   const sudoRule: SudoRule = {
     cn: "",
-    ipaenabledflag: true,
+    ipaenabledflag: "true",
     dn: "",
     description: "",
     sudoorder: "",

@@ -250,7 +250,7 @@ export interface SudoRulesOld {
 
 export interface SudoRule {
   cn: string;
-  ipaenabledflag: boolean;
+  ipaenabledflag: string; // "true" | "false"
   externaluser: string[];
   dn: string;
   description: string;

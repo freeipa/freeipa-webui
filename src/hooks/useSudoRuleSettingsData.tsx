@@ -33,11 +33,16 @@ const useSudoRuleSettings = (ruleId: string): SettingsData => {
   const [modified, setModified] = useState(false);
   const [rule, setRule] = useState<Partial<SudoRule>>({});
 
+  // Refetch when ruleId changes to ensure fresh data when navigating to the page
   useEffect(() => {
-    if (ruleFullData && !ruleFullDataQuery.isFetching) {
+    ruleFullDataQuery.refetch();
+  }, [ruleId]);
+
+  useEffect(() => {
+    if (ruleFullData?.rule && !ruleFullDataQuery.isFetching) {
       setRule({ ...ruleFullData.rule });
     }
-  }, [ruleFullData, ruleFullDataQuery.isFetching]);
+  }, [ruleFullData?.rule, ruleFullDataQuery.isFetching]);
 
   const settings = {
     isLoading: metadataLoading || isFullDataLoading,
