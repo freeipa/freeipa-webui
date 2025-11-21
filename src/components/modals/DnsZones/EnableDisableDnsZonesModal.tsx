@@ -14,12 +14,14 @@ import {
 import ConfirmationModal from "../ConfirmationModal";
 // Utils
 import capitalizeFirstLetter from "src/utils/utils";
+// Data types
+import { DNSZone } from "src/utils/datatypes/globalDataTypes";
 
 interface EnableDisableDnsZonesModalProps {
   isOpen: boolean;
   onClose: () => void;
   elementsList: string[];
-  setElementsList: (elementsList: string[]) => void;
+  setElementsList: (elementsList: DNSZone[]) => void;
   operation: "enable" | "disable";
   setShowTableRows: (value: boolean) => void;
   onRefresh: () => void;
@@ -36,7 +38,6 @@ const EnableDisableDnsZonesModal = (props: EnableDisableDnsZonesModalProps) => {
   const onEnableDisable = () => {
     const operation = props.operation === "enable" ? enableRule : disableRule;
 
-    props.setShowTableRows(false);
     operation(props.elementsList).then((response) => {
       if ("data" in response) {
         const { data } = response;
@@ -59,19 +60,16 @@ const EnableDisableDnsZonesModal = (props: EnableDisableDnsZonesModalProps) => {
           props.onRefresh();
           onClose();
         }
-        props.setShowTableRows(true);
       }
     });
   };
 
   const onClose = () => {
-    props.setShowTableRows(true);
     props.setElementsList([]);
     props.onClose();
   };
 
   const onCloseWithoutClearingElements = () => {
-    props.setShowTableRows(true);
     props.onClose();
   };
 
