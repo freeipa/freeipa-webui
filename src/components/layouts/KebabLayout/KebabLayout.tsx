@@ -17,7 +17,7 @@ interface PropsToKebab {
     | undefined;
   isKebabOpen?: boolean;
   className?: string;
-  isDisabled: boolean;
+  isDisabled?: boolean;
   isPlain?: boolean;
   dropdownItems?: any[] | undefined;
   // Toggle

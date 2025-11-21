@@ -100,12 +100,12 @@ export const checkEqualStatusHbacRule = (
 
 /**
  * Helper method: Given a Sudo rule list and status, check if some entry has different status
- * @param {boolean} status - The status to check against
+ * @param {string} status - The status to check against
  * @param {SudoRule[]} rulesList - Array of Sudo rules to check
  * @returns {boolean} - True if all rules have the same status, false otherwise
  */
 export const checkEqualStatusSudoRule = (
-  status: boolean,
+  status: string,
   rulesList: SudoRule[]
 ) => {
   const rulesWithOtherStatus = rulesList.filter(
