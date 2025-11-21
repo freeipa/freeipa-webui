@@ -246,7 +246,7 @@ const HostsMemberOf = (props: PropsToHostsMemberOf) => {
             <MemberOfRoles
               entity={host}
               id={host.fqdn as string}
-              from={"roles"}
+              from={"hosts"}
               isDataLoading={hostQuery.isFetching}
               onRefreshData={onRefreshHostData}
               setDirection={updateRoleDirection}
