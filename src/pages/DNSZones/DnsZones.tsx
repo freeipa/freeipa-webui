@@ -522,7 +522,9 @@ const DnsZones = () => {
         isOpen={showEnableDisableModal}
         onClose={() => setShowEnableDisableModal(false)}
         elementsList={selectedElements.map((dnszone) => dnszone.idnsname)}
-        setElementsList={() => {}}
+        setElementsList={(newElementsList: DNSZone[]) =>
+          setSelectedElements(newElementsList)
+        }
         operation={operation}
         setShowTableRows={setShowTableRows}
         onRefresh={refreshData}
