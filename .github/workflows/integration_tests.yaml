@@ -24,7 +24,7 @@ jobs:
         run: npm clean-install
 
       - name: Add IPA Server's IP to /etc/hosts
-        run: cat developer/hosts | sudo tee -a /etc/hosts
+        run: cat developer/scenarios/single-server/hosts | sudo tee -a /etc/hosts
 
       - name: Start testing container
         run: developer/dev-env.sh -s

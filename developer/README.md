@@ -1,18 +1,18 @@
 # FreeIPA WebUI development environment
 
-Run the container:
+Run the default development scenario (single-server):
 
 ```
-dev-env.sh
+dev-env.sh -s
 ```
 
-Run the container, forcing to fetch the webui container image:
+To run a specific scenario available locally (see `Building the development environments` below):
 
 ```
-dev-env.sh -f
+dev-env.sh -s <scenario>
 ```
 
-Kill the container:
+Kill the currently running scenario:
 
 ```
 dev-env.sh -k
@@ -44,36 +44,38 @@ Run Cypress integration tests through graphical debugger:
 dev-env.sh -C
 ```
 
-## Building the container
+## Building the development environments
 
-To be able to build the container you'll need to have Ansible installed on your system and the ansible-freeipa collection (you can use Python's virtual environments):
+To be able to build the development environments you'll need `ansible-playbook` and `podman-compose` installed on your system and the ansible-freeipa collection (you can use Python's virtual environments):
 
 ```
-pip install ansible-core
+pip install ansible-core podman-compose
 ansible-galaxy collection install -r developer/requirements.yml
 ```
 
-Build the container image locally:
+Build the development environment:
 
 ```
-dev-env.sh -B
+dev-env.sh -B <scenario>
 ```
 
-To build a local container image for a specific version of Fedora, use:
+To build with a specific version of Fedora, use:
 
 ```
-distro_tag=42 ./developer/dev-env.sh -B
+distro_tag=42 ./developer/dev-env.sh -B <scenario>
 ```
 
-It is also possible to build the local container image to use CentOS Stream:
+It is also possible to build scenarios using CentOS Stream:
 
 ```
-distro=centos distro_tag=stream10 ./developer/dev-env.sh -B
+distro=centos distro_tag=stream10 ./developer/dev-env.sh -B <scenario>
 ```
 
 > Note: Currently, the development server does not work with CentOS Stream, so testing should be done by building the production code with `npm run build`, on the host.
 
-## Using the container
+## Using the 'webui' container
+
+All scenarios provide a 'webui' container, which is the initial IPA server, and have a shared directory ("/webui") containing the project repository.
 
 To run any command inside the container:
 

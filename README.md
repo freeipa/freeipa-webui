@@ -17,7 +17,7 @@ You can read more about the plans [here](https://github.com/freeipa/freeipa-webu
 
 ## Development environment
 
-This project relies on containers to set-up a development environment with FreeIPA installed and configured.
+This project relies on containers to set up a development environment with FreeIPA installed and configured. The development environment is based on testing scenarios and only one scenario can be run at a time. More information on the development scenarios can be found in the [developer/README.md](developer/README.md) file.
 
 1. Clone this repository
 
@@ -36,24 +36,41 @@ python3 -m venv /tmp/webui
 pip install podman
 ```
 
-Optionally, if you want to rebuild the container image locally, Ansible and the ansible-freeipa collection are needed. Assuming the virtual environment is being used:
+If you want to use any non-default scenario, or you want to rebuild a modified version of the default scenario, you'll also need [`podman-compose`](https://github.com/containers/podman-compose) and [Ansible](https://ansible.com). You'll also need the ansible-freeipa and podman Ansible collections. Assuming the virtual environment is being used:
 
 ```
-pip install ansible-core
+pip install ansible-core podman-compose
 ansible-galaxy collection install -r developer/requirements.yml
 ```
 
-3. Start the container
+3. Start the default scenario
 
 ```
 ./developer/dev-env.sh
 ```
 
-4. Add the container IP address to `/etc/hosts`
+To run a different scenario, you need to build it first, and then start it:
 
 ```
-grep -q "webui.ipa.test" /etc/hosts || sudo tee -a /etc/hosts < developer/hosts
+./developer/dev-env.sh -B no-dns
+./developer/dev-env.sh -s no-dns
 ```
+
+You can list the available scenarios:
+
+```
+./developer/dev-env.sh -l
+```
+
+> Note: once a scenario is built, the images are kept in the localhost registry, and the scenario can be started again, without building again.
+
+4. Add the default scenario container IP addresses to `/etc/hosts`
+
+```
+sudo tee -a /etc/hosts < developer/scenarios/single-server/hosts
+```
+
+> Note: You must add the specific `hosts` file for the scenario (the example uses the scenario `single-server`). Each scenario uses a different CIDR, and some may have different hostnames for the webui. Cleaning up old entries is a good practice.
 
 5. Prepare the webui to execute:
 
