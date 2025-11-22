@@ -46,7 +46,7 @@ dev-env.sh -C
 
 ## Building the development environments
 
-To be able to build the development environmnets you'll need `ansible-playbook` and `podman-compose` installed on your system and the ansible-freeipa collection (you can use Python's virtual environments):
+To be able to build the development environments you'll need `ansible-playbook` and `podman-compose` installed on your system and the ansible-freeipa collection (you can use Python's virtual environments):
 
 ```
 pip install ansible-core podman-compose
