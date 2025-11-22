@@ -1,0 +1,200 @@
+---
+- name: Deploy Samba AD DC
+  hosts: role_addc
+  become: true
+  gather_facts: false
+
+  vars:
+    addc_forwarder: "{{ forwarder | default(omit) }}"
+
+  tasks:
+    - name: Ensure DNS facts are available
+      ansible.builtin.setup:
+        gather_subset:
+          - dns
+          - all_ipv4_addresses
+
+    - name: Set argument addc_hostname
+      ansible.builtin.set_fact:
+        addc_hostname: "{{ hostname | default(ansible_facts['fqdn']) }}"
+
+    - name: Set argument addc_domain
+      ansible.builtin.set_fact:
+        addc_domain: "{{ domain | default('.'.join(addc_hostname.split('.')[1:]) | lower ) }}"
+
+    - name: Set argument addc_netbios
+      ansible.builtin.set_fact:
+        addc_netbios: "{{ netbios | default(addc_hostname.split('.',1)[0] | upper) }}"
+
+    - name: Set argument addc_realm
+      ansible.builtin.set_fact:
+        addc_realm: "{{ ad_realm | default(addc_domain | upper) }}"
+
+    - name: Set argument addc_ip_address
+      ansible.builtin.set_fact:
+        addc_ip_address: "{{ ip_address | default(ansible_facts['all_ipv4_addresses'][0]) }}"
+
+    - name: Set argument addc_admin_pass
+      ansible.builtin.set_fact:
+        addc_admin_pass: "{{ admin_pass | default('Secret123') }}"
+
+    - name: Set argument addc_krb5_pass
+      ansible.builtin.set_fact:
+        addc_krb5_pass: "{{ krb5_pass | default(addc_admin_pass) }}"
+
+    - name: Set argument addc_install_packages
+      ansible.builtin.set_fact:
+        addc_install_packages: "{{ install_packages | default(true) | bool }}"
+
+    - name: Set argument addc_ptr_zone
+      ansible.builtin.set_fact:
+        addc_ptr_zone: "{{ '.'.join(addc_ip_address.split('.')[:-1][::-1]) }}.in-addr.arpa."
+
+    - name: Display configuration
+      debug:
+        var: config
+      vars:
+        config:
+          addc_hostname: "{{ addc_hostname }}"
+          addc_netbios: "{{ addc_netbios }}"
+          addc_realm: "{{ addc_realm }}"
+          addc_ip_address: "{{ addc_ip_address }}"
+          addc_admin_pass: "{{ addc_admin_pass }}"
+          addc_krb5_pass: "{{ addc_krb5_pass }}"
+          addc_install_packages: "{{ addc_install_packages }}"
+          addc_ptr_zone: "{{ addc_ptr_zone }}"
+          addc_forwarder: "{{ addc_forwarder | default(omit) }}"
+
+    - name: Disable systemd-resolved
+      ansible.builtin.systemd_service:
+        name: systemd-resolved
+        masked: true
+        enabled: false
+        state: stopped
+
+    - name: Install packages
+      when: addc_install_packages
+      ansible.builtin.package:
+        name:
+          - samba
+          - samba-dc
+          - iproute
+          - iputils
+          - bind-utils
+          - hostname
+          - krb5-workstation
+
+    - name: Ensure default smb.conf is removed
+      ansible.builtin.file:
+        path: /etc/samba/smb.conf
+        state: absent
+
+    - name: Limit used UIDs for rootless containers
+      block:
+        - name: Limit minimum UID
+          ansible.builtin.lineinfile:
+            path: /usr/share/samba/setup/idmap_init.ldif
+            regexp: "lowerBound:"
+            line: "lowerBound: 20000"
+        - name: Limit maximum UID
+          ansible.builtin.lineinfile:
+            path: /usr/share/samba/setup/idmap_init.ldif
+            regexp: "upperBound:"
+            line: "upperBound: 60000"
+
+    - name: Provision AD DC
+      ansible.builtin.shell:
+        cmd: |
+          samba-tool domain provision \
+            --domain={{ addc_netbios }} \
+            --realm={{ addc_realm }} \
+            --host-name={{ addc_hostname }} \
+            --host-ip={{ addc_ip_address }}\
+            --adminpass={{ addc_admin_pass }} \
+            --krbtgtpass={{ addc_krb5_pass }} \
+            --use-rfc2307 \
+            --server-role=dc \
+            --base-schema=2019 \
+            --dns-backend=SAMBA_INTERNAL \
+            --option="acl_xattr:security_acl_name = user.NTACL"
+
+    - name: Disable password complexity
+      ansible.builtin.shell:
+        cmd: samba-tool domain passwordsettings set --complexity=off
+
+    - name: Setup KRB5
+      ansible.builtin.shell:
+        cmd: |
+          cp "$(smbd -b | grep "PRIVATE_DIR" | cut -d: -f2 | sed "s/^ *//")/krb5.conf" \
+             /etc/krb5.conf
+
+    - name: Setup KDC
+      ansible.builtin.shell:
+        cmd: |
+          cp "$(smbd -b | grep "PRIVATE_DIR" | cut -d: -f2 | sed "s/^ *//")/kdc.conf" \
+             /etc/kdc.conf
+
+    - name: Set addc_forwarder to IPA DNS
+      when: addc_forwarder is defined
+      ansible.builtin.lineinfile:
+        path: /etc/samba/smb.conf
+        regexp: "dns forwarder ="
+        line: "\tdns forwarder = {{ addc_forwarder }}"
+
+    - name: Add script to fix resolve.conf
+      ansible.builtin.copy:
+        dest: "/fix-resolve.sh"
+        mode: "0700"
+        content: |
+          #!/bin/sh
+          echo -e "search {{ addc_domain }}\nnameserver 127.0.0.1" > /etc/resolv.conf
+          echo "resolv.conf:"
+          cat /etc/resolv.conf
+
+    - name: Add service to fix nameserver on container start
+      ansible.builtin.copy:
+        dest: "/etc/systemd/system/fix-resolve.service"
+        content: |
+          [Unit]
+          Description=Ensure host uses localhost as nameserver
+          PartOf=samba.service
+          Before=samba.service samba-bgqd.service
+
+          [Service]
+          Type=oneshot
+          ExecStart=/fix-resolve.sh
+          StandardOutput=journal
+          StandardError=journal
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Reload systemd daemons
+      ansible.builtin.systemd_service:
+        daemon-reload: true
+
+    - name: Enable and start DNS resolve workaround
+      ansible.builtin.systemd_service:
+        name: "fix-resolve.service"
+        enabled: true
+        state: started
+
+    - name: Enable and start samba
+      ansible.builtin.systemd_service:
+        name: samba
+        enabled: true
+        state: started
+
+    # These must be executed with a "fixed" DNS resolver
+    - name: Configure Samba DNS
+      ansible.builtin.shell:
+        executable: /bin/bash
+        cmd: |
+          samba-tool dns add {{ addc_ip_address }} {{ addc_domain }} \
+              {{ addc_hostname.split('.')[0] }} A {{ addc_ip_address }} \
+              -U Administrator <<< {{ addc_admin_pass }}
+          samba-tool dns zonecreate {{ addc_ip_address }} {{ addc_ptr_zone }} \
+              -U Administrator <<< {{ addc_admin_pass }}
+          samba-tool dns add {{ addc_ip_address }} {{ addc_ptr_zone }} \
+              {{ addc_ip_address.split('.')[-1] }} PTR {{addc_hostname }}. \
+              -U Administrator <<< {{ addc_admin_pass }}

@@ -1,0 +1,43 @@
+---
+ipa_ad_trust:
+  vars:
+    ansible_connection: podman
+  hosts:
+    addc:
+      forwarder: 192.168.57.100
+    webui:
+      ipaserver_idstart: 60000
+      ipaserver_idmax: 62000
+      ipaserver_rid_base: 63000
+      ipaserver_secondary_rid_base: 70000
+      ipaserver_hostname: webui.linux.ipa.test
+      ipaadmin_password: Secret123
+      ipadm_password: Secret123
+      ipaserver_realm: LINUX.IPA.TEST
+      ipaclient_no_ntp: false
+      ipaserver_domain: linux.ipa.test
+      ipaserver_setup_dns: true
+      ipaserver_auto_forwarders: true
+      ipaserver_forward_policy: first
+      ipaserver_no_dnssec_validation: true
+      ipaserver_auto_reverse: true
+      ipaserver_setup_adtrust: true
+      ipaserver_setup_firewalld: false
+      ipaserver_no_host_dns: true
+      ipaserver_netbios_name: IPA
+  children:
+    external:
+      hosts:
+        addc:
+    role_addc:
+      hosts:
+        addc:
+    ipaserver:
+      hosts:
+        webui:
+    ipa:
+      hosts:
+        webui:
+    ipa_deployments:
+      children:
+        ipa:

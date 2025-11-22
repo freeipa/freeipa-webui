@@ -1,0 +1,49 @@
+---
+- name: Disable systemd-resolved and fix resolv.conf on ipaserver
+  hosts: ipaserver
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Disable systemd-resolved
+      ansible.builtin.systemd_service:
+        name: "systemd-resolved.service"
+        enabled: false
+        state: stopped
+
+    - name: Add script to fix resolve.conf
+      ansible.builtin.copy:
+        dest: "/fix-resolve.sh"
+        mode: "0700"
+        content: |
+          #!/bin/sh
+          echo -e "search {{ ipaserver_domain }}\nnameserver 127.0.0.1" > /etc/resolv.conf
+          echo "resolv.conf:"
+          cat /etc/resolv.conf
+
+    - name: Add service to fix nameserver on container start
+      ansible.builtin.copy:
+        dest: "/etc/systemd/system/fix-resolve.service"
+        content: |
+          [Unit]
+          Description=Ensure host uses localhost as nameserver
+          Before=ipa.service
+
+          [Service]
+          Type=oneshot
+          ExecStart=/fix-resolve.sh
+          StandardOutput=journal
+          StandardError=journal
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Reload systemd daemons
+      ansible.builtin.systemd_service:
+        daemon-reload: true
+
+    - name: Enable and start DNS resolve workaround
+      ansible.builtin.systemd_service:
+        name: "fix-resolve.service"
+        enabled: true
+        state: started
