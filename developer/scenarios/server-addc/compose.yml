@@ -1,0 +1,57 @@
+---
+name: server-addc
+services:
+  addc:
+    container_name: addc
+    restart: "no"
+    cap_add:
+      - SYS_ADMIN
+      - DAC_READ_SEARCH
+    security_opt:
+      - label=disable
+    hostname: dc.ad.ipa.test
+    extra_hosts:
+      - dc.ad.ipa.test:192.168.57.250
+    networks:
+      ipanet:
+        ipv4_address: 192.168.57.250
+    image: localhost/samba-addc
+    build:
+      # You may set the desired distro/version setting:
+      # args: {distro_image: external-nodes, distro_tag: latest}
+      context: "${SCRIPT_DIR}/containerfiles"
+      dockerfile: external-nodes
+      args:
+        packages: systemd
+    command: /usr/sbin/init
+  webui:
+    container_name: webui
+    restart: "no"
+    cap_add:
+      - SYS_ADMIN
+      - DAC_READ_SEARCH
+    security_opt:
+      - label=disable
+    hostname: webui.linux.ipa.test
+    extra_hosts:
+      - webui.linux.ipa.test:192.168.57.100
+    ports:
+      - "5173:5173/tcp"
+    networks:
+      ipanet:
+        ipv4_address: 192.168.57.100
+    image: localhost/webui-server-addc-ipaserver:latest
+    volumes:
+      - "${REPO_DIR}:/webui:Z"
+    build:
+      # You may set the desired distro/version setting:
+      # args: {distro_image: fedora, distro_tag: latest}
+      context: "${SCRIPT_DIR}/containerfiles"
+      dockerfile: fedora
+networks:
+  ipanet:
+    name: webui-ipa-ad-trust
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.57.0/24

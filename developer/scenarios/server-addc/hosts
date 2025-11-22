@@ -1,0 +1,4 @@
+
+# FreeIPA webui hosts for 'server-addc'
+192.168.57.250    dc.ad.ipa.test
+192.168.57.100    webui.linux.ipa.test
