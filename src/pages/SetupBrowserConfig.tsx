@@ -16,7 +16,7 @@ import {
   Content,
 } from "@patternfly/react-core";
 // Images
-import HeaderLogo from "src/assets/images/header-logo-black.png";
+import HeaderLogo from "/assets/images/header-logo.png";
 // Components
 import TitleLayout from "src/components/layouts/TitleLayout";
 //
