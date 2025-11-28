@@ -12,6 +12,7 @@ install-exec-local:
 	test -d "dist" || ( npm run build && rm -rf node_modules && npm clean-install --omit=dev )
 	mkdir -p "$(DESTDIR)$(appdir)"
 	cp -p "dist/index.html" "$(DESTDIR)$(appdir)/index.html"
+	cp -p "dist/favicon.ico" "$(DESTDIR)$(appdir)/favicon.ico"
 	mkdir -p "$(licensedir)"
 	cp -p "dist/COPYING" "$(licensedir)/COPYING"
 	cp -rp "dist/assets" "$(DESTDIR)$(appdir)/assets"

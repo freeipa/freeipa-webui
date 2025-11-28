@@ -20,7 +20,7 @@
   },
   "scripts": {
     "dev": "npm run dev:prepare && vite",
-    "dev:prepare": "rm -rf dist && mkdir dist && cp index.dev.html dist/index.html && cp favicon.ico dist/favicon.ico",
+    "dev:prepare": "rm -rf dist && mkdir dist && cp index.dev.html dist/index.html && cp public/favicon.ico dist/favicon.ico",
     "build": "tsc -b && vite build",
     "audit-ci": "audit-ci --config audit-ci.json",
     "cypress": "cypress run",
