@@ -1,13 +1,7 @@
 import { Given } from "@badeball/cypress-cucumber-preprocessor";
 import { loginAsAdmin, logout } from "./authentication";
-import {
-  selectEntry,
-  searchForEntry,
-  entryDoesNotExist,
-  entryExists,
-} from "./data_tables";
+import { selectEntry, searchForEntry, entryDoesNotExist } from "./data_tables";
 import { navigateTo } from "./navigation";
-import { typeInTextbox } from "./ui/textbox";
 
 Given("I delete host {string}", (hostName: string) => {
   loginAsAdmin();
@@ -26,22 +20,13 @@ Given("I delete host {string}", (hostName: string) => {
 });
 
 Given("host {string} exists", (hostName: string) => {
-  loginAsAdmin();
-  navigateTo("hosts");
-
-  cy.dataCy("hosts-button-add").click();
-  cy.dataCy("add-host-modal").should("exist");
-
-  typeInTextbox("modal-textbox-host-name", hostName);
-  cy.dataCy("modal-textbox-host-name").should("have.value", hostName);
-
-  cy.dataCy("modal-checkbox-force-host").check();
-  cy.dataCy("modal-checkbox-force-host").should("be.checked");
-
-  cy.dataCy("modal-button-add").click();
-  cy.dataCy("add-host-modal").should("not.exist");
-
-  searchForEntry(hostName);
-  entryExists(hostName);
-  logout();
+  cy.ipa("host-show", hostName, { failOnNonZeroExit: false }).then((result) => {
+    if (result.code !== 0) {
+      cy.ipa("host-add --force", hostName).then((addResult) => {
+        if (addResult.code !== 0) {
+          throw new Error(`Failed to add host ${hostName} ${addResult.stderr}`);
+        }
+      });
+    }
+  });
 });

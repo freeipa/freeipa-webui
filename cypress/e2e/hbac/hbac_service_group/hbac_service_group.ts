@@ -7,7 +7,6 @@ import {
   searchForEntry,
   selectEntry,
 } from "../../common/data_tables";
-import { typeInTextbox } from "../../common/ui/textbox";
 import { addItemToRightList } from "cypress/e2e/common/ui/dual_list";
 import {
   searchForMembersEntry,
@@ -15,25 +14,19 @@ import {
 } from "cypress/e2e/common/members_table";
 
 Given("HBAC service group {string} exists", (groupName: string) => {
-  loginAsAdmin();
-  navigateTo("hbac-service-groups");
-
-  searchForEntry(groupName);
-
-  cy.dataCy("hbac-service-groups-button-add").click();
-  cy.dataCy("add-hbac-service-group-modal").should("exist");
-
-  typeInTextbox("modal-textbox-service-group-name", groupName);
-  cy.dataCy("modal-textbox-service-group-name").should("have.value", groupName);
-
-  cy.dataCy("modal-button-add").click();
-  cy.dataCy("add-hbac-service-group-modal").should("not.exist");
-  cy.dataCy("add-hbacservicegroup-success").should("exist");
-
-  searchForEntry(groupName);
-  entryExists(groupName);
-
-  logout();
+  cy.ipa("hbacsvcgroup-show", groupName, { failOnNonZeroExit: false }).then(
+    (result) => {
+      if (result.code !== 0) {
+        cy.ipa("hbacsvcgroup-add", groupName).then((addResult) => {
+          if (addResult.code !== 0) {
+            throw new Error(
+              `Failed to add HBAC service group ${groupName} ${addResult.stderr}`
+            );
+          }
+        });
+      }
+    }
+  );
 });
 
 Given("I delete service group {string}", (groupName: string) => {
