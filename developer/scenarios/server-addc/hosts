@@ -1,0 +1,4 @@
+
+# ipalab-config hosts for 'ipa-ad-trust'
+192.168.57.250    dc.ad.ipa.test
+192.168.57.100    server.linux.ipa.test

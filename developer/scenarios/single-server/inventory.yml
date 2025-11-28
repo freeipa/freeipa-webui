@@ -3,8 +3,7 @@ container:
   vars:
     ansible_connection: podman
   hosts:
-    ipaserver:
-      ansible_host: webui
+    webui:
       ipaserver_domain: ipa.test
       ipaserver_realm: IPA.TEST
       ipaserver_hostname: webui.ipa.test
@@ -14,7 +13,7 @@ container:
       ipaserver_no_host_dns: true # Ease installation due to podman DNS
       ipaclient_no_ntp: false
       # Optional tools
-      # DNS
+      # DNS - to disable DNS set both to false
       ipaserver_setup_dns: true
       ipaserver_auto_forwarders: true
       # KRA
@@ -24,3 +23,13 @@ container:
       ipaserver_idmax: 62000
       ipaserver_rid_base: 63000
       ipaserver_secondary_rid_base: 65000
+  children:
+    ipaserver:
+      hosts:
+        webui:
+    ipa:
+      hosts:
+        webui:
+    ipa_deployments:
+      children:
+        ipa:
