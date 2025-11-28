@@ -10,8 +10,8 @@ import {
   ListVariant,
 } from "@patternfly/react-core";
 // Images
-import BrandImg from "src/assets/images/product-name.png";
-import BackgroundImg from "src/assets/images/login-screen-background.jpg";
+import BrandImg from "/assets/images/product-name.png";
+import BackgroundImg from "/assets/images/login-screen-background.jpg";
 // RPC
 import {
   ResponseOnPwdReset,

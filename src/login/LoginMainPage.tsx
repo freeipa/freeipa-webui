@@ -20,8 +20,8 @@ import { addAlert } from "src/store/Global/alerts-slice";
 // Icons
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 // Images
-import BrandImg from "src/assets/images/product-name.png";
-import BackgroundImg from "src/assets/images/login-screen-background.jpg";
+import BrandImg from "/assets/images/product-name.png";
+import BackgroundImg from "/assets/images/login-screen-background.jpg";
 // RPC
 import {
   MetaResponse,

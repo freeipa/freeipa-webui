@@ -31,8 +31,8 @@ import { ShareSquareIcon } from "@patternfly/react-icons";
 // Navigation
 import Navigation from "./navigation/Nav";
 // Images
-import headerLogo from "src/assets/images/header-logo-black.png";
-import avatarImg from "src/assets/images/avatarImg.svg";
+import headerLogo from "/assets/images/header-logo.png";
+import avatarImg from "/assets/images/avatarImg.svg";
 // Redux
 import { useAppDispatch } from "./store/hooks";
 import { setIsLogout } from "./store/Global/auth-slice";
