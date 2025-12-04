@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   EmptyState,
   EmptyStateActions,
   EmptyStateBody,
@@ -11,7 +12,6 @@ import {
 } from "@patternfly/react-core";
 import { TableVariant } from "@patternfly/react-table";
 // Layout
-import SecondaryButton from "../SecondaryButton";
 import TableLayout from "../TableLayout";
 import PaginationLayout from "../PaginationLayout";
 
@@ -84,23 +84,27 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
         {props.paginationData.totalCount > 0 && (
           <>
             <FlexItem>
-              <SecondaryButton
-                dataCy={"settings-button-delete-" + props.name}
-                classname="pf-v6-u-mr-sm"
+              <Button
+                data-cy={"settings-button-delete-" + props.name}
+                className="pf-v6-u-mr-sm"
                 isDisabled={props.isDeleteDisabled || false}
-                onClickHandler={props.onDeleteModal}
+                onClick={props.onDeleteModal}
+                variant="secondary"
+                size="sm"
               >
                 Delete
-              </SecondaryButton>
-              <SecondaryButton
-                dataCy={"settings-button-add-" + props.name}
-                classname="pf-v6-u-mr-sm"
+              </Button>
+              <Button
+                data-cy={"settings-button-add-" + props.name}
+                className="pf-v6-u-mr-sm"
                 isDisabled={props.isAddDisabled || false}
-                onClickHandler={props.onAddModal}
+                onClick={props.onAddModal}
                 id={addButtonId}
+                variant="secondary"
+                size="sm"
               >
                 Add {props.entryType.toLowerCase()}s
-              </SecondaryButton>
+              </Button>
             </FlexItem>
             <FlexItem align={{ default: "alignRight" }}>
               <PaginationLayout
@@ -141,14 +145,16 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
         >
           <EmptyStateBody>
             <EmptyStateActions>
-              <SecondaryButton
-                dataCy={"settings-button-add-" + props.name}
-                onClickHandler={props.onAddModal}
+              <Button
+                data-cy={"settings-button-add-" + props.name}
+                onClick={props.onAddModal}
                 isDisabled={props.isAddDisabled || false}
                 id={addButtonId}
+                variant="secondary"
+                size="sm"
               >
                 Add {props.entryType.toLowerCase()}s
-              </SecondaryButton>
+              </Button>
             </EmptyStateActions>
           </EmptyStateBody>
         </EmptyState>
