@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   Form,
@@ -25,7 +26,6 @@ import { SubidModPayload, useSubidModMutation } from "src/services/rpcSubIds";
 // Components
 import IpaTextInput from "src/components/Form/IpaTextInput";
 import TabLayout from "src/components/layouts/TabLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import IpaTextContent from "src/components/Form/IpaTextContent";
 
@@ -117,36 +117,39 @@ const SubidSettings = (props: PropsToSubidSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="subids-tab-settings-button-refresh"
-          onClickHandler={props.onRefresh}
+        <Button
+          data-cy="subids-tab-settings-button-refresh"
+          onClick={props.onRefresh}
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="subids-tab-settings-button-revert"
+        <Button
+          data-cy="subids-tab-settings-button-revert"
           isDisabled={!props.isModified || isDataLoading}
-          onClickHandler={onRevert}
+          onClick={onRevert}
+          variant="secondary"
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="subids-tab-settings-button-save"
+        <Button
+          data-cy="subids-tab-settings-button-save"
           isDisabled={!props.isModified || isDataLoading}
-          onClickHandler={onSave}
+          onClick={onSave}
+          variant="secondary"
         >
           Save
-        </SecondaryButton>
+        </Button>
       ),
     },
   ];

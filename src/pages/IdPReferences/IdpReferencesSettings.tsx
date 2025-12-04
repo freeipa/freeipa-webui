@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   DropdownItem,
   Flex,
   FlexItem,
@@ -28,7 +29,6 @@ import { IdpModPayload, useIdpModMutation } from "src/services/rpcIdp";
 // Components
 import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
 import TabLayout from "src/components/layouts/TabLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import IpaTextContent from "src/components/Form/IpaTextContent/IpaTextContent";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -172,36 +172,39 @@ const IdpRefSettings = (props: PropsToIdpRefSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="idp-references-tab-settings-button-refresh"
-          onClickHandler={props.onRefresh}
+        <Button
+          data-cy="idp-references-tab-settings-button-refresh"
+          onClick={props.onRefresh}
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="idp-references-tab-settings-button-revert"
+        <Button
+          data-cy="idp-references-tab-settings-button-revert"
           isDisabled={!props.isModified || isDataLoading}
-          onClickHandler={onRevert}
+          onClick={onRevert}
+          variant="secondary"
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="idp-references-tab-settings-button-save"
+        <Button
+          data-cy="idp-references-tab-settings-button-save"
           isDisabled={!props.isModified || isDataLoading}
-          onClickHandler={onSave}
+          onClick={onSave}
+          variant="secondary"
         >
           Save
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

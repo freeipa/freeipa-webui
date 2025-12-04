@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   PageSection,
   PaginationVariant,
   Content,
@@ -37,7 +38,6 @@ import ToolbarLayout, {
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
@@ -336,37 +336,40 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     {
       key: 3,
       element: (
-        <SecondaryButton
-          onClickHandler={refreshData}
+        <Button
+          onClick={refreshData}
           isDisabled={!showTableRows}
-          dataCy="refresh-dns-records"
+          data-cy="refresh-dns-records"
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 4,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={isDeleteButtonDisabled || !showTableRows}
-          onClickHandler={() => setShowDeleteModal(true)}
-          dataCy="delete-dns-records"
+          onClick={() => setShowDeleteModal(true)}
+          data-cy="delete-dns-records"
+          variant="secondary"
         >
           Delete
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 5,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={!showTableRows}
-          onClickHandler={() => setShowAddModal(true)}
-          dataCy="add-dns-records"
+          onClick={() => setShowAddModal(true)}
+          data-cy="add-dns-records"
+          variant="secondary"
         >
           Add
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

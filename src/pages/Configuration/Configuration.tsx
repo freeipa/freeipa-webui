@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   JumpLinks,
@@ -14,7 +15,6 @@ import {
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import DataSpinner from "src/components/layouts/DataSpinner";
 // Components
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
@@ -206,40 +206,43 @@ const Configuration = () => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="configuration-button-refresh"
-          onClickHandler={onRefresh}
+        <Button
+          data-cy="configuration-button-refresh"
+          onClick={onRefresh}
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="configuration-button-revert"
+        <Button
+          data-cy="configuration-button-revert"
           isDisabled={!configData.modified}
-          onClickHandler={onRevert}
+          onClick={onRevert}
+          variant="secondary"
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="configuration-button-save"
+        <Button
+          data-cy="configuration-button-save"
           isDisabled={!configData.modified || isSaving}
-          onClickHandler={onSave}
+          onClick={onSave}
           isLoading={isSaving}
           spinnerAriaValueText="Saving"
           spinnerAriaLabelledBy="Saving"
           spinnerAriaLabel="Saving"
+          variant="secondary"
         >
           {isSaving ? "Saving" : "Save"}
-        </SecondaryButton>
+        </Button>
       ),
     },
   ];

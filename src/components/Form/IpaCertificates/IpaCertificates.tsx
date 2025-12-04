@@ -17,8 +17,6 @@ import ConfirmationModal from "../../modals/ConfirmationModal";
 import CertificatesInformationModal from "../../modals/CertificateModals/CertificatesInformationModal";
 import RevokeCertificate from "../../modals/CertificateModals/RevokeCertificate";
 import RemoveHoldCertificate from "../../modals/CertificateModals/RemoveHoldCertificate";
-// Components
-import SecondaryButton from "../../layouts/SecondaryButton";
 // RTK
 import { ErrorResult } from "src/services/rpc";
 import {
@@ -599,14 +597,16 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
             return <div key={idx}>{innerCertificate()}</div>;
           })
         : null}
-      <SecondaryButton
-        dataCy={props.dataCy + "-button-add-certificate"}
+      <Button
+        data-cy={props.dataCy + "-button-add-certificate"}
         name={"add-certificate"}
-        onClickHandler={onOpenModal}
+        onClick={onOpenModal}
         isDisabled={readOnly}
+        variant="secondary"
+        size="sm"
       >
         Add
-      </SecondaryButton>
+      </Button>
       <ModalWithTextAreaLayout
         dataCy="ipa-certificates-modal"
         id="certificate-textarea"
@@ -617,18 +617,19 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         actions={
           textareaModalOption === "add"
             ? [
-                <SecondaryButton
-                  dataCy="modal-button-add"
+                <Button
+                  data-cy="modal-button-add"
                   key="add-certificate"
-                  onClickHandler={onAddCertificate}
+                  onClick={onAddCertificate}
                   isDisabled={modalSpinning}
                   isLoading={modalSpinning}
                   spinnerAriaValueText="Adding"
                   spinnerAriaLabelledBy="Adding"
                   spinnerAriaLabel="Adding"
+                  variant="secondary"
                 >
                   {modalSpinning ? "Adding" : "Add"}
-                </SecondaryButton>,
+                </Button>,
                 <Button
                   data-cy="modal-button-cancel"
                   key="cancel"

@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Form,
   FormGroup,
   Sidebar,
@@ -25,7 +26,6 @@ import {
 // Utils
 import { dnsRecordAsRecord } from "src/utils/dnsRecordUtils";
 // Components
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -130,36 +130,39 @@ const DnsResourceRecordsSettings = (props: DnsResourceRecordsSettingsProps) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="dns-zones-tab-settings-button-refresh"
-          onClickHandler={onRefresh}
+        <Button
+          data-cy="dns-zones-tab-settings-button-refresh"
+          onClick={onRefresh}
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="dns-zones-tab-settings-button-revert"
+        <Button
+          data-cy="dns-zones-tab-settings-button-revert"
           isDisabled={!props.isModified || props.isDataLoading}
-          onClickHandler={onRevert}
+          onClick={onRevert}
+          variant="secondary"
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="dns-zones-tab-settings-button-save"
+        <Button
+          data-cy="dns-zones-tab-settings-button-save"
           isDisabled={!props.isModified || props.isDataLoading}
-          onClickHandler={onSave}
+          onClick={onSave}
+          variant="secondary"
         >
           Save
-        </SecondaryButton>
+        </Button>
       ),
     },
   ];

@@ -25,7 +25,6 @@ import { useAppSelector, useAppDispatch } from "src/store/hooks";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import KebabLayout from "src/components/layouts/KebabLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
@@ -648,61 +647,66 @@ const ActiveUsers = () => {
     {
       key: 3,
       element: (
-        <SecondaryButton
-          dataCy="active-users-button-refresh"
-          onClickHandler={refreshUsersData}
+        <Button
+          data-cy="active-users-button-refresh"
+          onClick={refreshUsersData}
           isDisabled={!showTableRows}
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 4,
       element: (
-        <SecondaryButton
-          dataCy="active-users-button-delete"
+        <Button
+          data-cy="active-users-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
-          onClickHandler={onDeleteHandler}
+          onClick={onDeleteHandler}
+          variant="secondary"
         >
           Delete
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 5,
       element: (
-        <SecondaryButton
-          dataCy="active-users-button-add"
-          onClickHandler={onAddClickHandler}
+        <Button
+          data-cy="active-users-button-add"
+          onClick={onAddClickHandler}
           isDisabled={!showTableRows}
+          variant="secondary"
         >
           Add
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 6,
       element: (
-        <SecondaryButton
-          dataCy="active-users-button-disable"
+        <Button
+          data-cy="active-users-button-disable"
           isDisabled={isDisableButtonDisabled || !showTableRows}
-          onClickHandler={() => onEnableDisableHandler(true)}
+          onClick={() => onEnableDisableHandler(true)}
+          variant="secondary"
         >
           Disable
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 7,
       element: (
-        <SecondaryButton
-          dataCy="active-users-button-enable"
+        <Button
+          data-cy="active-users-button-enable"
           isDisabled={isEnableButtonDisabled || !showTableRows}
-          onClickHandler={() => onEnableDisableHandler(false)}
+          onClick={() => onEnableDisableHandler(false)}
+          variant="secondary"
         >
           Enable
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

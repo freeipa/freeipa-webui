@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   Form,
@@ -28,7 +29,6 @@ import {
 // Components
 import IpaTextInput from "src/components/Form/IpaTextInput";
 import TabLayout from "src/components/layouts/TabLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import IpaTextContent from "src/components/Form/IpaTextContent";
 
@@ -151,36 +151,39 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          onClickHandler={props.onRefresh}
-          dataCy="password-policies-button-refresh"
+        <Button
+          onClick={props.onRefresh}
+          data-cy="password-policies-button-refresh"
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={!props.isModified || isDataLoading}
-          onClickHandler={onRevert}
-          dataCy="password-policies-button-revert"
+          onClick={onRevert}
+          data-cy="password-policies-button-revert"
+          variant="secondary"
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={!props.isModified || isDataLoading}
-          onClickHandler={onSave}
-          dataCy="password-policies-button-save"
+          onClick={onSave}
+          data-cy="password-policies-button-save"
+          variant="secondary"
         >
           Save
-        </SecondaryButton>
+        </Button>
       ),
     },
   ];

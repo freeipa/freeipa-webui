@@ -12,7 +12,6 @@ import {
 } from "@patternfly/react-core";
 // Components
 import PopoverWithIconLayout from "./layouts/PopoverWithIconLayout";
-import SecondaryButton from "./layouts/SecondaryButton";
 
 interface PropsToCertificateMappingDataOption {
   dataCy: string;
@@ -120,15 +119,15 @@ const CertificateMappingDataOption = (
           </Flex>
         ))}
       </Flex>
-      <SecondaryButton
-        dataCy="modal-button-add-ipacertmapdata"
+      <Button
+        data-cy="modal-button-add-ipacertmapdata"
         name={"add-ipacertmapdata"}
-        classname="pf-v6-u-mt-sm pf-v6-u-mb-0"
+        className="pf-v6-u-mt-sm pf-v6-u-mb-0"
         isDisabled={!props.isCertMappingDataChecked}
-        onClickHandler={onAddCertificateMappingDataHandler}
+        onClick={onAddCertificateMappingDataHandler}
       >
         Add
-      </SecondaryButton>
+      </Button>
     </>
   );
 
@@ -200,15 +199,15 @@ const CertificateMappingDataOption = (
           </Flex>
         ))}
       </Flex>
-      <SecondaryButton
-        dataCy="modal-button-add-certificate"
+      <Button
+        data-cy="modal-button-add-certificate"
         name={"add-certificate"}
-        classname="pf-v6-u-mt-sm"
+        className="pf-v6-u-mt-sm"
         isDisabled={!props.isCertMappingDataChecked}
-        onClickHandler={onAddCertificateHandler}
+        onClick={onAddCertificateHandler}
       >
         Add
-      </SecondaryButton>
+      </Button>
     </>
   );
 

@@ -14,7 +14,6 @@ import { Metadata } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { getParamProperties } from "src/utils/ipaObjectUtils";
 // Components
-import SecondaryButton from "../../layouts/SecondaryButton";
 import CertificateMappingDataOption from "../../CertificateMappingDataOption";
 import IssuerAndSubjectOption from "../../IssuerAndSubjectOption";
 import { ErrorResult } from "src/services/rpc";
@@ -294,19 +293,20 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
   };
 
   const actions = [
-    <SecondaryButton
-      dataCy="modal-button-add"
+    <Button
+      data-cy="modal-button-add"
       key="add"
-      onClickHandler={onAddCertificateMappingData}
+      onClick={onAddCertificateMappingData}
       isDisabled={isAddButtonDisabled}
       isLoading={modalSpinning}
       spinnerAriaValueText="Adding"
       spinnerAriaLabelledBy="Adding"
       spinnerAriaLabel="Adding"
       name={"add-certificate-mapping-data-modal"}
+      variant="secondary"
     >
       {modalSpinning ? "Adding" : "Add"}
-    </SecondaryButton>,
+    </Button>,
     <Button
       data-cy="modal-button-cancel"
       key="cancel"
@@ -335,26 +335,28 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
                   <MapIcon /> {certMapData}
                 </FlexItem>
                 <FlexItem>
-                  <SecondaryButton
-                    dataCy="user-tab-settings-button-delete-certificate-mapping-data"
-                    onClickHandler={() => onDeleteCertMapData(idx)}
+                  <Button
+                    data-cy="user-tab-settings-button-delete-certificate-mapping-data"
+                    onClick={() => onDeleteCertMapData(idx)}
                     name={"remove-certificate-mapping-data-" + idx}
+                    variant="secondary"
                   >
                     Delete
-                  </SecondaryButton>
+                  </Button>
                 </FlexItem>
               </Flex>
             );
           })
         : null}
 
-      <SecondaryButton
-        dataCy="user-tab-settings-button-add-certificate-mapping-data"
+      <Button
+        data-cy="user-tab-settings-button-add-certificate-mapping-data"
         name={"add-certificate-mapping-data"}
-        onClickHandler={() => setIsOpen(true)}
+        onClick={() => setIsOpen(true)}
+        variant="secondary"
       >
         Add
-      </SecondaryButton>
+      </Button>
       <Modal
         data-cy={"add-certificate-mapping-data-modal"}
         variant="small"

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   PageSection,
@@ -24,7 +25,6 @@ import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
@@ -462,49 +462,53 @@ const StageUsers = () => {
     {
       key: 3,
       element: (
-        <SecondaryButton
-          onClickHandler={refreshUsersData}
+        <Button
+          onClick={refreshUsersData}
           isDisabled={!showTableRows}
-          dataCy="stage-users-button-refresh"
+          data-cy="stage-users-button-refresh"
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 4,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={isDeleteButtonDisabled || !showTableRows}
-          onClickHandler={onDeleteHandler}
-          dataCy="stage-users-button-delete"
+          onClick={onDeleteHandler}
+          data-cy="stage-users-button-delete"
+          variant="secondary"
         >
           Delete
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 5,
       element: (
-        <SecondaryButton
-          onClickHandler={onAddClickHandler}
+        <Button
+          onClick={onAddClickHandler}
           isDisabled={!showTableRows}
-          dataCy="stage-users-button-add"
+          data-cy="stage-users-button-add"
+          variant="secondary"
         >
           Add
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 6,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={!showTableRows || selectedUsers.length === 0}
-          onClickHandler={onActivateHandler}
-          dataCy="stage-users-button-activate"
+          onClick={onActivateHandler}
+          data-cy="stage-users-button-activate"
+          variant="secondary"
         >
           Activate
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   Form,
@@ -32,7 +33,6 @@ import DataSpinner from "src/components/layouts/DataSpinner";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import { asRecord } from "src/utils/krbTicketUtils";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import IpaTextInput from "src/components/Form/IpaTextInput";
 import PageWithGrayBorderLayout from "src/components/layouts/PageWithGrayBorderLayout";
 
@@ -152,36 +152,39 @@ const KrbTicketPolicy = () => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="krb-ticket-policy-button-refresh"
-          onClickHandler={krbTicketPolicyData.refetch}
+        <Button
+          data-cy="krb-ticket-policy-button-refresh"
+          onClick={krbTicketPolicyData.refetch}
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="krb-ticket-policy-button-revert"
+        <Button
+          data-cy="krb-ticket-policy-button-revert"
           isDisabled={!krbTicketPolicyData.modified || isDataLoading}
-          onClickHandler={onRevert}
+          onClick={onRevert}
+          variant="secondary"
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="krb-ticket-policy-button-save"
+        <Button
+          data-cy="krb-ticket-policy-button-save"
           isDisabled={!krbTicketPolicyData.modified || isDataLoading}
-          onClickHandler={onSave}
+          onClick={onSave}
+          variant="secondary"
         >
           Save
-        </SecondaryButton>
+        </Button>
       ),
     },
   ];

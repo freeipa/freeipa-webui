@@ -2,7 +2,6 @@ import React from "react";
 // Patternfly
 import { Button, Flex, FlexItem, TextInput } from "@patternfly/react-core";
 // Layouts
-import SecondaryButton from "../../layouts/SecondaryButton";
 // Data types
 import { Metadata } from "src/utils/datatypes/globalDataTypes";
 // ipaObject utils
@@ -87,15 +86,17 @@ const IpaTextInputFromList = (props: PropsToTextInputFromList) => {
             </Flex>
           ))}
       </Flex>
-      <SecondaryButton
-        dataCy={props.dataCy + "-button-add"}
-        classname="pf-v6-u-mt-md"
+      <Button
+        data-cy={props.dataCy + "-button-add"}
+        className="pf-v6-u-mt-md"
         name="add-principal-alias"
-        onClickHandler={props.onOpenModal}
+        onClick={props.onOpenModal}
         isDisabled={readOnly}
+        variant="secondary"
+        size="sm"
       >
         Add
-      </SecondaryButton>
+      </Button>
     </>
   );
 };

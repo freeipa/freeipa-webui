@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   PageSection,
@@ -32,7 +33,6 @@ import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -305,37 +305,40 @@ const IdRanges = () => {
     {
       key: 3,
       element: (
-        <SecondaryButton
-          dataCy="id-ranges-button-refresh"
-          onClickHandler={refreshData}
+        <Button
+          data-cy="id-ranges-button-refresh"
+          onClick={refreshData}
           isDisabled={!showTableRows}
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 4,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={isDeleteButtonDisabled || !showTableRows}
-          dataCy="id-ranges-button-delete"
-          onClickHandler={() => setShowDeleteModal(true)}
+          data-cy="id-ranges-button-delete"
+          onClick={() => setShowDeleteModal(true)}
+          variant="secondary"
         >
           Delete
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 5,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={!showTableRows}
-          dataCy="id-ranges-button-add"
-          onClickHandler={() => setShowAddModal(true)}
+          data-cy="id-ranges-button-add"
+          onClick={() => setShowAddModal(true)}
+          variant="secondary"
         >
           Add
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

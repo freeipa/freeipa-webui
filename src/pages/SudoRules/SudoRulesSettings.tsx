@@ -1,6 +1,6 @@
 import React from "react";
 // PatternFly
-import { DropdownItem, Flex } from "@patternfly/react-core";
+import { Button, DropdownItem, Flex } from "@patternfly/react-core";
 // Data types
 import { Metadata, SudoRule } from "src/utils/datatypes/globalDataTypes";
 // Redux
@@ -29,7 +29,6 @@ import { asRecord } from "src/utils/sudoRulesUtils";
 import { containsAny } from "src/utils/utils";
 // Components
 import TitleLayout from "src/components/layouts/TitleLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import KebabLayout from "src/components/layouts/KebabLayout";
 import TabLayout from "src/components/layouts/TabLayout";
 import SudoRuleGeneral from "src/components/SudoRuleSections/SudoRuleGeneral";
@@ -695,40 +694,43 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="sudo-rules-tab-settings-button-refresh"
-          onClickHandler={props.onRefresh}
+        <Button
+          data-cy="sudo-rules-tab-settings-button-refresh"
+          onClick={props.onRefresh}
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="sudo-rules-tab-settings-button-revert"
+        <Button
+          data-cy="sudo-rules-tab-settings-button-revert"
           isDisabled={!props.isModified}
-          onClickHandler={onRevert}
+          onClick={onRevert}
+          variant="secondary"
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="sudo-rules-tab-settings-button-save"
+        <Button
+          data-cy="sudo-rules-tab-settings-button-save"
           isDisabled={!props.isModified || isSaving}
-          onClickHandler={onSave}
+          onClick={onSave}
           isLoading={isSaving}
           spinnerAriaValueText="Saving"
           spinnerAriaLabelledBy="Saving"
           spinnerAriaLabel="Saving"
+          variant="secondary"
         >
           {isSaving ? "Saving" : "Save"}
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

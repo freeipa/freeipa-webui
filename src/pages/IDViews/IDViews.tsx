@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
+  Button,
   DropdownItem,
   Flex,
   FlexItem,
@@ -20,7 +21,6 @@ import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 // Components
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
@@ -575,37 +575,40 @@ const IDViews = () => {
     {
       key: 3,
       element: (
-        <SecondaryButton
-          dataCy="id-views-button-refresh"
-          onClickHandler={refreshViewsData}
+        <Button
+          data-cy="id-views-button-refresh"
+          onClick={refreshViewsData}
           isDisabled={!showTableRows}
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 4,
       element: (
-        <SecondaryButton
-          dataCy="id-views-button-delete"
+        <Button
+          data-cy="id-views-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
-          onClickHandler={onDeleteHandler}
+          onClick={onDeleteHandler}
+          variant="secondary"
         >
           Delete
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 5,
       element: (
-        <SecondaryButton
-          dataCy="id-views-button-add"
-          onClickHandler={onAddClickHandler}
+        <Button
+          data-cy="id-views-button-add"
+          onClick={onAddClickHandler}
           isDisabled={!showTableRows}
+          variant="secondary"
         >
           Add
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

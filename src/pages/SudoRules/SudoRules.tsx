@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   PageSection,
@@ -20,7 +21,6 @@ import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
@@ -496,61 +496,66 @@ const SudoRules = () => {
     {
       key: 3,
       element: (
-        <SecondaryButton
-          onClickHandler={refreshRulesData}
+        <Button
+          onClick={refreshRulesData}
           isDisabled={!showTableRows}
-          dataCy="sudo-rules-button-refresh"
+          data-cy="sudo-rules-button-refresh"
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 4,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={isDeleteButtonDisabled || !showTableRows}
-          onClickHandler={onDeleteHandler}
-          dataCy="sudo-rules-button-delete"
+          onClick={onDeleteHandler}
+          data-cy="sudo-rules-button-delete"
+          variant="secondary"
         >
           Delete
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 5,
       element: (
-        <SecondaryButton
-          onClickHandler={onAddClickHandler}
+        <Button
+          onClick={onAddClickHandler}
           isDisabled={!showTableRows}
-          dataCy="sudo-rules-button-add"
+          data-cy="sudo-rules-button-add"
+          variant="secondary"
         >
           Add
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 6,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={isDisableButtonDisabled || !showTableRows}
-          onClickHandler={() => onEnableDisableHandler(true)}
-          dataCy="sudo-rules-button-disable"
+          onClick={() => onEnableDisableHandler(true)}
+          data-cy="sudo-rules-button-disable"
+          variant="secondary"
         >
           Disable
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 7,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={isEnableButtonDisabled || !showTableRows}
-          onClickHandler={() => onEnableDisableHandler(false)}
-          dataCy="sudo-rules-button-enable"
+          onClick={() => onEnableDisableHandler(false)}
+          data-cy="sudo-rules-button-enable"
+          variant="secondary"
         >
           Enable
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

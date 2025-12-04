@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   PageSection,
@@ -17,7 +18,6 @@ import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 // Components
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
@@ -432,37 +432,40 @@ const Netgroups = () => {
     {
       key: 3,
       element: (
-        <SecondaryButton
-          onClickHandler={refreshGroupsData}
+        <Button
+          onClick={refreshGroupsData}
           isDisabled={!showTableRows}
-          dataCy="netgroups-button-refresh"
+          data-cy="netgroups-button-refresh"
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 4,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={isDeleteButtonDisabled || !showTableRows}
-          onClickHandler={onDeleteHandler}
-          dataCy="netgroups-button-delete"
+          onClick={onDeleteHandler}
+          data-cy="netgroups-button-delete"
+          variant="secondary"
         >
           Delete
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 5,
       element: (
-        <SecondaryButton
-          onClickHandler={onAddClickHandler}
+        <Button
+          onClick={onAddClickHandler}
           isDisabled={!showTableRows}
-          dataCy="netgroups-button-add"
+          data-cy="netgroups-button-add"
+          variant="secondary"
         >
           Add
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

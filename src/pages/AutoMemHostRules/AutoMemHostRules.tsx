@@ -21,7 +21,6 @@ import { useAppSelector } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
@@ -549,37 +548,40 @@ const AutoMemHostRules = () => {
     {
       key: 4,
       element: (
-        <SecondaryButton
-          dataCy="auto-member-host-rules-button-refresh"
-          onClickHandler={refreshData}
+        <Button
+          data-cy="auto-member-host-rules-button-refresh"
+          onClick={refreshData}
           isDisabled={!showTableRows}
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 5,
       element: (
-        <SecondaryButton
-          dataCy="auto-member-host-rules-button-delete"
+        <Button
+          data-cy="auto-member-host-rules-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
-          onClickHandler={onOpenDeleteModal}
+          onClick={onOpenDeleteModal}
+          variant="secondary"
         >
           Delete
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 6,
       element: (
-        <SecondaryButton
-          dataCy="auto-member-host-rules-button-add"
+        <Button
+          data-cy="auto-member-host-rules-button-add"
           isDisabled={!showTableRows}
-          onClickHandler={onOpenAddModal}
+          onClick={onOpenAddModal}
+          variant="secondary"
         >
           Add
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
@@ -682,13 +684,14 @@ const AutoMemHostRules = () => {
           >
             OK
           </Button>,
-          <SecondaryButton
+          <Button
             key="cancel"
-            onClickHandler={onCancelDefaultGroup}
-            dataCy="modal-button-cancel"
+            onClick={onCancelDefaultGroup}
+            data-cy="modal-button-cancel"
+            variant="secondary"
           >
             Cancel
-          </SecondaryButton>,
+          </Button>,
         ]}
         messageText="Are you sure you want to change default group?"
         messageObj={defaultGroup}

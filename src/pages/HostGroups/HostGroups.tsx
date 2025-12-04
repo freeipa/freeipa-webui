@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   PageSection,
@@ -17,7 +18,6 @@ import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 // Components
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
@@ -442,37 +442,40 @@ const HostGroups = () => {
     {
       key: 3,
       element: (
-        <SecondaryButton
-          onClickHandler={refreshGroupsData}
+        <Button
+          onClick={refreshGroupsData}
           isDisabled={!showTableRows}
-          dataCy="host-groups-button-refresh"
+          data-cy="host-groups-button-refresh"
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 4,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={isDeleteButtonDisabled || !showTableRows}
-          onClickHandler={onDeleteHandler}
-          dataCy="host-groups-button-delete"
+          onClick={onDeleteHandler}
+          data-cy="host-groups-button-delete"
+          variant="secondary"
         >
           Delete
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 5,
       element: (
-        <SecondaryButton
-          onClickHandler={onAddClickHandler}
+        <Button
+          onClick={onAddClickHandler}
           isDisabled={!showTableRows || isDisabledDueError}
-          dataCy="host-groups-button-add"
+          data-cy="host-groups-button-add"
+          variant="secondary"
         >
           Add
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

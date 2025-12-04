@@ -55,7 +55,6 @@ const ConfigObjectclassTable = (props: PropsToTable) => {
                   id={props.name + "-" + item}
                   onClick={() => removeOC(item)}
                   variant="secondary"
-                  size="sm"
                   isDisabled={values.length < 2}
                 >
                   Remove
@@ -80,7 +79,6 @@ const ConfigObjectclassTable = (props: PropsToTable) => {
           setIsOpen(true);
         }}
         className="pf-v6-u-mt-md"
-        size="sm"
       >
         Add objectclass
       </Button>
