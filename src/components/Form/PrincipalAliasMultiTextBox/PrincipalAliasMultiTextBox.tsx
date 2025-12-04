@@ -23,7 +23,6 @@ import {
   useRemoveServicePrincipalAliasMutation,
 } from "src/services/rpcServices";
 // Layouts
-import SecondaryButton from "../../layouts/SecondaryButton";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
@@ -246,10 +245,10 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
   };
 
   const textInputModalActions = [
-    <SecondaryButton
-      dataCy="modal-button-add"
+    <Button
+      data-cy="modal-button-add"
       key="add-principal-alias"
-      onClickHandler={onAddPrincipalAlias}
+      onClick={onAddPrincipalAlias}
       isDisabled={
         (newAliasValue !== "" && !newAliasValue.includes("@")) ||
         modalSpinning ||
@@ -261,9 +260,11 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
       spinnerAriaValueText="Adding"
       spinnerAriaLabelledBy="Adding"
       spinnerAriaLabel="Adding"
+      variant="secondary"
+      size="sm"
     >
       {modalSpinning ? "Adding" : "Add"}
-    </SecondaryButton>,
+    </Button>,
     <Button
       data-cy="modal-button-cancel"
       key="cancel"

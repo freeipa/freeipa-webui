@@ -17,7 +17,6 @@ import {
   Certificate,
 } from "src/utils/datatypes/globalDataTypes";
 // Layouts
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import PopoverWithIconLayout from "src/components/layouts/PopoverWithIconLayout";
 import ModalWithTextAreaLayout from "src/components/layouts/ModalWithTextAreaLayout";
 // Utils
@@ -84,13 +83,15 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
   };
 
   const certificatesOptions = [
-    <SecondaryButton
-      dataCy="modal-button-add"
+    <Button
+      data-cy="modal-button-add"
       key="add"
-      onClickHandler={onClickAddTextAreaCertificates}
+      onClick={onClickAddTextAreaCertificates}
+      variant="secondary"
+      size="sm"
     >
       Add
-    </SecondaryButton>,
+    </Button>,
     <Button
       data-cy="modal-button-cancel"
       key="cancel"
