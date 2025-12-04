@@ -178,7 +178,7 @@ const AddRule = (props: PropsToAddRule) => {
           dispatch(
             addAlert({
               name: "add-rule-success",
-              title: "Entry successfully added",
+              title: "User group rule successfully added",
               variant: "success",
             })
           );
