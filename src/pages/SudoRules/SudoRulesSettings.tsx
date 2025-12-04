@@ -40,6 +40,8 @@ import { TableEntry } from "src/components/tables/KeytabTableWithFilter";
 import AccessThisHost from "./AccessThisHost";
 import RunCommands from "src/components/SudoRuleSections/RunCommands";
 import SudoRuleAsWhom from "src/components/SudoRuleSections/SudoRuleAsWhom";
+import DeleteSudoRule from "src/components/modals/SudoModals/DeleteSudoRule";
+import DisableEnableSudoRules from "src/components/modals/SudoModals/DisableEnableSudoRules";
 
 interface PropsToSudoRulesSettings {
   rule: Partial<SudoRule>;
@@ -75,27 +77,35 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
     props.onRuleChange
   );
 
+  // Computed states
+  const isRuleEnabled = React.useMemo<boolean>(
+    () => props.rule.ipaenabledflag === "true",
+    [props.rule.ipaenabledflag]
+  );
+
   // Kebab
   const [isKebabOpen, setIsKebabOpen] = React.useState(false);
 
   const dropdownItems = [
     <DropdownItem
       key="enable-sudo-rule"
-      onClick={() => onChangeEnableModal()}
+      onClick={() => setIsEnableDisableModalOpen(true)}
       data-cy="sudo-rules-tab-settings-kebab-enable"
+      isDisabled={isRuleEnabled}
     >
       Enable
     </DropdownItem>,
     <DropdownItem
       key="disable-sudo-rule"
-      onClick={() => onChangeDisableModal()}
+      onClick={() => setIsEnableDisableModalOpen(true)}
       data-cy="sudo-rules-tab-settings-kebab-disable"
+      isDisabled={!isRuleEnabled}
     >
       Disable
     </DropdownItem>,
     <DropdownItem
       key="delete-sudo-rule"
-      onClick={() => onChangeDeleteModal()}
+      onClick={() => setIsDeleteModalOpen(true)}
       data-cy="sudo-rules-tab-settings-kebab-delete"
     >
       Delete
@@ -115,17 +125,8 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
 
   // Confirmation modals
   const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
-  const [isDisableModalOpen, setIsDisableModalOpen] = React.useState(false);
-  const [isEnableModalOpen, setIsEnableModalOpen] = React.useState(false);
-  const onChangeDeleteModal = () => {
-    setIsDeleteModalOpen(!isDeleteModalOpen);
-  };
-  const onChangeDisableModal = () => {
-    setIsDisableModalOpen(!isDisableModalOpen);
-  };
-  const onChangeEnableModal = () => {
-    setIsEnableModalOpen(!isEnableModalOpen);
-  };
+  const [isEnableDisableModalOpen, setIsEnableDisableModalOpen] =
+    React.useState(false);
 
   const onSaveRule = () => {
     // Save the rule
@@ -741,7 +742,6 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
           idKebab="toggle-action-buttons"
           isKebabOpen={isKebabOpen}
           dropdownItems={dropdownItems}
-          isDisabled={isSaving}
         />
       ),
     },
@@ -913,110 +913,144 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
 
   // Render component
   return (
-    <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-      <SidebarLayout itemNames={itemNames}>
-        {/* General */}
-        <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
-          <TitleLayout headingLevel="h2" id="general" text="General" />
-          <SudoRuleGeneral
-            ipaObject={ipaObject}
-            recordOnChange={recordOnChange}
-            metadata={props.metadata}
-          />
-        </Flex>
-        {/* Options */}
-        <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
-          <TitleLayout headingLevel="h2" id="options" text="Options" />
-          <SudoRuleOptions
-            sudoRuleId={props.rule.cn as string}
-            options={sudoOptions}
-          />
-        </Flex>
-        {/* Who */}
-        <Flex
-          direction={{ default: "column" }}
-          flex={{ default: "flex_1" }}
-          className="pf-v6-u-mt-xl"
-        >
-          <TitleLayout headingLevel="h2" id="who" text="Who" />
-          <SudoRulesWho
-            rule={props.rule}
-            ipaObject={ipaObject}
-            onRefresh={props.onRefresh}
-            usersList={usersAndExternalsList}
-            userGroupsList={usergroupsList}
-            recordOnChange={recordOnChange}
-            metadata={props.metadata}
-            onSave={onSave}
-            modifiedValues={props.modifiedValues}
-          />
-        </Flex>
-        {/* Access this host */}
-        <Flex
-          direction={{ default: "column" }}
-          flex={{ default: "flex_1" }}
-          className="pf-v6-u-mt-xl"
-        >
-          <TitleLayout headingLevel="h2" id="who" text="Access this host" />
-          <AccessThisHost
-            rule={props.rule}
-            ipaObject={ipaObject}
-            onRefresh={props.onRefresh}
-            hostsList={hostsAndExternalsList}
-            hostGroupsList={hostgroupsList}
-            recordOnChange={recordOnChange}
-            metadata={props.metadata}
-            onSave={onSave}
-            modifiedValues={props.modifiedValues}
-          />
-        </Flex>
-        {/* Run commands */}
-        <Flex
-          direction={{ default: "column" }}
-          flex={{ default: "flex_1" }}
-          className="pf-v6-u-mt-xl"
-        >
-          <TitleLayout
-            headingLevel="h2"
-            id="run-commands"
-            text="Run commands"
-          />
-          <RunCommands
-            rule={props.rule}
-            ipaObject={ipaObject}
-            onRefresh={props.onRefresh}
-            allowCommandsList={allowCommandsList}
-            allowCommandGroupsList={allowCommandGroupsList}
-            denyCommandsList={denyCommandsList}
-            denyCommandGroupsList={denyCommandGroupsList}
-            recordOnChange={recordOnChange}
-            metadata={props.metadata}
-            onSave={onSave}
-            modifiedValues={props.modifiedValues}
-          />
-        </Flex>
-        {/* As whom */}
-        <Flex
-          direction={{ default: "column" }}
-          flex={{ default: "flex_1" }}
-          className="pf-v6-u-mt-xl"
-        >
-          <TitleLayout headingLevel="h2" id="as-whom" text="As whom" />
-          <SudoRuleAsWhom
-            rule={props.rule}
-            ipaObject={ipaObject}
-            runasuser_users={runAsUsersAndExternalsList}
-            runasuser_groups={runAsUsersGroupsAndExternalsList}
-            runasgroup_group={runAsGroupsAndExternalsList}
-            onRefresh={props.onRefresh}
-            recordOnChange={recordOnChange}
-            metadata={props.metadata}
-            onSave={onSave}
-            modifiedValues={props.modifiedValues}
-          />
-        </Flex>
-      </SidebarLayout>
-    </TabLayout>
+    <>
+      <TabLayout id="settings-page" toolbarItems={toolbarFields}>
+        <SidebarLayout itemNames={itemNames}>
+          {/* General */}
+          <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
+            <TitleLayout headingLevel="h2" id="general" text="General" />
+            <SudoRuleGeneral
+              ipaObject={ipaObject}
+              recordOnChange={recordOnChange}
+              metadata={props.metadata}
+            />
+          </Flex>
+          {/* Options */}
+          <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
+            <TitleLayout headingLevel="h2" id="options" text="Options" />
+            <SudoRuleOptions
+              sudoRuleId={props.rule.cn as string}
+              options={sudoOptions}
+            />
+          </Flex>
+          {/* Who */}
+          <Flex
+            direction={{ default: "column" }}
+            flex={{ default: "flex_1" }}
+            className="pf-v6-u-mt-xl"
+          >
+            <TitleLayout headingLevel="h2" id="who" text="Who" />
+            <SudoRulesWho
+              rule={props.rule}
+              ipaObject={ipaObject}
+              onRefresh={props.onRefresh}
+              usersList={usersAndExternalsList}
+              userGroupsList={usergroupsList}
+              recordOnChange={recordOnChange}
+              metadata={props.metadata}
+              onSave={onSave}
+              modifiedValues={props.modifiedValues}
+            />
+          </Flex>
+          {/* Access this host */}
+          <Flex
+            direction={{ default: "column" }}
+            flex={{ default: "flex_1" }}
+            className="pf-v6-u-mt-xl"
+          >
+            <TitleLayout headingLevel="h2" id="who" text="Access this host" />
+            <AccessThisHost
+              rule={props.rule}
+              ipaObject={ipaObject}
+              onRefresh={props.onRefresh}
+              hostsList={hostsAndExternalsList}
+              hostGroupsList={hostgroupsList}
+              recordOnChange={recordOnChange}
+              metadata={props.metadata}
+              onSave={onSave}
+              modifiedValues={props.modifiedValues}
+            />
+          </Flex>
+          {/* Run commands */}
+          <Flex
+            direction={{ default: "column" }}
+            flex={{ default: "flex_1" }}
+            className="pf-v6-u-mt-xl"
+          >
+            <TitleLayout
+              headingLevel="h2"
+              id="run-commands"
+              text="Run commands"
+            />
+            <RunCommands
+              rule={props.rule}
+              ipaObject={ipaObject}
+              onRefresh={props.onRefresh}
+              allowCommandsList={allowCommandsList}
+              allowCommandGroupsList={allowCommandGroupsList}
+              denyCommandsList={denyCommandsList}
+              denyCommandGroupsList={denyCommandGroupsList}
+              recordOnChange={recordOnChange}
+              metadata={props.metadata}
+              onSave={onSave}
+              modifiedValues={props.modifiedValues}
+            />
+          </Flex>
+          {/* As whom */}
+          <Flex
+            direction={{ default: "column" }}
+            flex={{ default: "flex_1" }}
+            className="pf-v6-u-mt-xl"
+          >
+            <TitleLayout headingLevel="h2" id="as-whom" text="As whom" />
+            <SudoRuleAsWhom
+              rule={props.rule}
+              ipaObject={ipaObject}
+              runasuser_users={runAsUsersAndExternalsList}
+              runasuser_groups={runAsUsersGroupsAndExternalsList}
+              runasgroup_group={runAsGroupsAndExternalsList}
+              onRefresh={props.onRefresh}
+              recordOnChange={recordOnChange}
+              metadata={props.metadata}
+              onSave={onSave}
+              modifiedValues={props.modifiedValues}
+            />
+          </Flex>
+        </SidebarLayout>
+      </TabLayout>
+      <DeleteSudoRule
+        show={isDeleteModalOpen}
+        handleModalToggle={() => setIsDeleteModalOpen(!isDeleteModalOpen)}
+        selectedRulesData={{
+          selectedRules: [props.rule as SudoRule],
+          clearSelectedRules: () => {},
+        }}
+        buttonsData={{
+          updateIsDeleteButtonDisabled: () => {},
+          updateIsDeletion: () => {},
+        }}
+        onRefresh={props.onRefresh}
+        from="settings"
+      />
+      <DisableEnableSudoRules
+        show={isEnableDisableModalOpen}
+        handleModalToggle={() =>
+          setIsEnableDisableModalOpen(!isEnableDisableModalOpen)
+        }
+        optionSelected={isRuleEnabled}
+        selectedRulesData={{
+          selectedRules: [props.rule as SudoRule],
+          clearSelectedRules: () => {},
+        }}
+        buttonsData={{
+          updateIsEnableButtonDisabled: () => {},
+          updateIsDisableButtonDisabled: () => {},
+          updateIsDisableEnableOp: () => {},
+        }}
+        onRefresh={props.onRefresh}
+        singleRule={true}
+      />
+    </>
   );
 };
 
