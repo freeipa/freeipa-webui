@@ -28,3 +28,22 @@
 Cypress.Commands.add("dataCy", (value: string) => {
   return cy.get(`[data-cy='${value}']`);
 });
+
+// Register a helper to run IPA commands inside the webui container.
+// Usage:
+//   cy.ipa("hbacsvc-show", "my_service", { failOnNonZeroExit: false })
+//   cy.ipa("hbacsvc-add", "my_service")
+// Returns the result of cy.exec so you can inspect code/stdout/stderr.
+Cypress.Commands.add(
+  "ipa",
+  (
+    subCommand: string,
+    name?: string,
+    options?: Partial<Cypress.ExecOptions>
+  ): Cypress.Chainable<Cypress.Exec> => {
+    // Ensure any quotes in the name are escaped to avoid breaking the shell
+    const safeName = name?.replace(/"/g, '\\"');
+    const cmd = `podman exec webui ipa ${subCommand} "${safeName}"`;
+    return cy.exec(cmd, options);
+  }
+);
