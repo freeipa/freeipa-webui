@@ -173,40 +173,38 @@ const CertificateMappingGlobalConfig = () => {
       pageTitle="Certificate Identity Mapping Global Configuration"
       toolbarItems={toolbarFields}
     >
-      <>
-        <Sidebar isPanelRight className="pf-v6-u-mb-0">
-          <SidebarPanel variant="sticky">
-            <HelpTextWithIconLayout
-              textContent="Help"
-              icon={
-                <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
-              }
-            />
-          </SidebarPanel>
-          <SidebarContent className="pf-v6-u-mr-xl">
-            <Flex direction={{ default: "column", lg: "row" }}>
-              <FlexItem flex={{ default: "flex_1" }}>
-                <Form className="pf-v6-u-mb-lg">
-                  <FormGroup fieldId="ipacertmappromptusername" role="group">
-                    <IpaCheckbox
-                      dataCy="certificate-mapping-global-config-checkbox-ipacertmappromptusername"
-                      name="ipacertmappromptusername"
-                      value={String(
-                        certMapConfigData.certMapConfig.ipacertmappromptusername
-                      )}
-                      text="Prompt for the username"
-                      ipaObject={ipaObject}
-                      onChange={recordOnChange}
-                      objectName="certmapconfig"
-                      metadata={certMapConfigData.metadata}
-                    />
-                  </FormGroup>
-                </Form>
-              </FlexItem>
-            </Flex>
-          </SidebarContent>
-        </Sidebar>
-      </>
+      <Sidebar isPanelRight className="pf-v6-u-mb-0">
+        <SidebarPanel variant="sticky">
+          <HelpTextWithIconLayout
+            textContent="Help"
+            icon={
+              <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
+            }
+          />
+        </SidebarPanel>
+        <SidebarContent className="pf-v6-u-mr-xl">
+          <Flex direction={{ default: "column", lg: "row" }}>
+            <FlexItem flex={{ default: "flex_1" }}>
+              <Form className="pf-v6-u-mb-lg">
+                <FormGroup fieldId="ipacertmappromptusername" role="group">
+                  <IpaCheckbox
+                    dataCy="certificate-mapping-global-config-checkbox-ipacertmappromptusername"
+                    name="ipacertmappromptusername"
+                    value={String(
+                      certMapConfigData.certMapConfig.ipacertmappromptusername
+                    )}
+                    text="Prompt for the username"
+                    ipaObject={ipaObject}
+                    onChange={recordOnChange}
+                    objectName="certmapconfig"
+                    metadata={certMapConfigData.metadata}
+                  />
+                </FormGroup>
+              </Form>
+            </FlexItem>
+          </Flex>
+        </SidebarContent>
+      </Sidebar>
     </PageWithGrayBorderLayout>
   );
 };
