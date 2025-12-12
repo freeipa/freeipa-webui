@@ -20,3 +20,10 @@ import { addCustomCommand } from "cy-verify-downloads";
 addCustomCommand();
 
 import "./commands";
+
+// Authenticate with Kerberos once before running any tests
+before(() => {
+  const password = Cypress.env("ADMIN_PASSWORD");
+  const kinitCmd = `echo "${password}" | podman exec -i webui kinit admin`;
+  cy.exec(kinitCmd, { failOnNonZeroExit: true });
+});
