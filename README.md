@@ -195,10 +195,10 @@ Run the integration tests in headless mode with:
 ./developer/dev-env.sh -c
 ```
 
-You can provide arguments to Cypress using the _long options_. For example, you can run only the hosts tests with:
+You can provide arguments to Cypress using the _long options_. Altough not specifically required, it is suggested that these extra options are added after '--'. For example, you can run only the hosts tests with:
 
 ```
-./developer/dev-env.sh -c --spec cypress/e2e/hosts/hosts.feature
+./developer/dev-env.sh -c --  --spec cypress/e2e/hosts/hosts.feature
 ```
 
 If you want to open the graphical debugger use:
