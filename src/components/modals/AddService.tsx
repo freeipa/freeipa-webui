@@ -14,7 +14,6 @@ import {
   ValidatedOptions,
 } from "@patternfly/react-core";
 // Layout
-import SecondaryButton from "../layouts/SecondaryButton";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
 // Modals
 import ErrorModal from "./ErrorModal";
@@ -496,13 +495,15 @@ const AddService = (props: PropsToAddService) => {
   };
 
   const errorModalActions = [
-    <SecondaryButton
-      dataCy="modal-button-retry"
+    <Button
+      data-cy="modal-button-retry"
       key="retry"
-      onClickHandler={onRetry}
+      onClick={onRetry}
+      variant="secondary"
+      size="sm"
     >
       Retry
-    </SecondaryButton>,
+    </Button>,
     <Button
       data-cy="modal-button-cancel"
       key="cancel"
@@ -525,32 +526,36 @@ const AddService = (props: PropsToAddService) => {
 
   // Buttons that will be shown at the end of the form
   const modalActions = [
-    <SecondaryButton
-      dataCy="modal-button-add"
+    <Button
+      data-cy="modal-button-add"
       key="add-new-service"
       name="add"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClickHandler={addServiceHandler}
+      onClick={addServiceHandler}
       form="modal-form"
       spinnerAriaValueText="Adding"
       spinnerAriaLabel="Adding"
       isLoading={addSpinning}
+      variant="secondary"
+      size="sm"
     >
       {addSpinning ? "Adding" : "Add"}
-    </SecondaryButton>,
-    <SecondaryButton
-      dataCy="modal-button-add-and-add-another"
+    </Button>,
+    <Button
+      data-cy="modal-button-add-and-add-another"
       key="add-and-add-another-new-service"
       name="add_and_add_another"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClickHandler={addAndAddAnotherHandler}
+      onClick={addAndAddAnotherHandler}
       form="modal-form"
       spinnerAriaValueText="Adding again"
       spinnerAriaLabel="Adding again"
       isLoading={addAgainSpinning}
+      variant="secondary"
+      size="sm"
     >
       {addAgainSpinning ? "Adding" : "Add and add another"}
-    </SecondaryButton>,
+    </Button>,
     <Button
       data-cy="modal-button-cancel"
       key="cancel-new-service"
