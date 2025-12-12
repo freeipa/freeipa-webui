@@ -327,13 +327,14 @@ do
         "p") action="build" ;;
         "r") action="restart" ;;
         "s") action="start" ;;
-        "-") break ;;
+        "-") OPTIND=$((OPTIND - 1)) ; break ;;
         *) die "Invalid option: ${OPTARG}" ;;
     esac
 done
 
 shift $((OPTIND - 1))
-if [ "${1:-}" != "--" ]
+
+if [[ ! "${1:-}" =~ ^-- ]]
 then
     scenario="${1:-"single-server"}"
     shift ||:
@@ -342,10 +343,8 @@ fi
 # Skip "--" and get extra arguments
 if [[ -n "${1:-}" ]]
 then
-    if [[ "${1}" == "--" ]]
+    if [[ ! "${1}" =~ ^--.* ]]
     then
-        shift
-    else
         die "Unexpected option: ${1}"
     fi
 fi
