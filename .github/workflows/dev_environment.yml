@@ -26,12 +26,7 @@ jobs:
           ansible-galaxy collection install -r developer/requirements.yml
 
       - name: Build container and deploy IPA
-        run: developer/dev-env.sh -B webui-dev
-
-      - name: Tag images
-        run: |
-          podman tag webui-dev:base quay.io/ansible-freeipa/webui-dev:base
-          podman tag webui-dev:latest quay.io/ansible-freeipa/webui-dev:latest
+        run: developer/dev-env.sh -B
 
       - name: Login to Container Registry
         # Pin to v3.5.0 SHA
@@ -43,5 +38,4 @@ jobs:
 
       - name: Push images
         run: |
-          podman push quay.io/ansible-freeipa/webui-dev:base
           podman push quay.io/ansible-freeipa/webui-dev:latest
