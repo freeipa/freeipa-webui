@@ -2,6 +2,7 @@
 name: Container Image
 
 on:
+  pull_request:
   schedule:
     - cron: 0 0 * * 6
 
