@@ -27,7 +27,7 @@ jobs:
           ansible-galaxy collection install -r developer/requirements.yml
 
       - name: Build container and deploy IPA
-        run: developer/dev-env.sh -B -- --pull-always --no-cache
+        run: developer/dev-env.sh -B -- single-server --pull-always --no-cache
 
       - name: Tag images
         run: |
