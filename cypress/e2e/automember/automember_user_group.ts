@@ -58,26 +58,14 @@ const setDefaultUserGroupRule = (userGroupName: string) => {
 };
 
 Given("user group rule {string} exists", (userGroupName: string) => {
-  loginAsAdmin();
-  navigateTo("user-groups");
-
-  cy.dataCy("user-groups-button-add").click();
-  cy.dataCy("add-user-group-modal").should("exist");
-
-  cy.dataCy("modal-textbox-group-name").type(userGroupName);
-  cy.dataCy("modal-textbox-group-name").should("have.value", userGroupName);
-
-  cy.dataCy("modal-button-add").click();
-  cy.dataCy("add-user-group-modal").should("not.exist");
-  searchForEntry(userGroupName);
-  entryExists(userGroupName);
-
-  navigateTo("user-group-rules");
-  createUserGroupRule(userGroupName);
-
-  searchForEntry(userGroupName);
-  entryExists(userGroupName);
-  logout();
+  cy.ipa({
+    command: "automember-add",
+    name: userGroupName,
+    specificOptions: "--type group",
+  }).then((result) => {
+    cy.log(result.stderr);
+    cy.log(result.stdout);
+  });
 });
 
 When(

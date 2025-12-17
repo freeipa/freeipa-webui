@@ -23,16 +23,10 @@ Feature: HBAC service groups manipulation
     Then I should see "a_service_group1" entry in the data table
     And I should see "a_service_group1" entry in the data table with attribute "Description" set to "my description"
 
-  @cleanup
-  Scenario: Cleanup: Delete a service group
-    Given I delete service group "a_service_group1"
-
-  @seed
-  Scenario: Seed: Ensure service group exists
-    Given HBAC service group "a_service_group2" exists
-
   @test
   Scenario: Search for a service group
+    Given HBAC service group "a_service_group2" exists
+
     Given I am logged in as admin
     And I am on "hbac-service-groups" page
 
@@ -40,17 +34,11 @@ Feature: HBAC service groups manipulation
     Then I should see "a_service_group2" entry in the data table
     And I should not see "a_service_group1" entry in the data table
 
-  @cleanup
-  Scenario: Cleanup: Delete a service group
-    Given I delete service group "a_service_group2"
-
-  @seed
-  Scenario: Seed: Ensure service group exists
-    Given HBAC service group "a_service_group2" exists
-    And HBAC service group "a_service_group3" exists
 
   @test
   Scenario: Delete many service groups
+    Given HBAC service group "a_service_group2" exists
+    And HBAC service group "a_service_group3" exists
     Given I am logged in as admin
     And I am on "hbac-service-groups" page
 

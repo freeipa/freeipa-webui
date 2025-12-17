@@ -1,12 +1,10 @@
 Feature: DNS Zones Settings
     Configure DNS zone settings including SOA records, TTL, security policies, and forwarders
 
-    @seed
-    Scenario: Create DNS zone for settings testing
-        Given DNS zone "my-dns-zone" exists
-
     @test
     Scenario: Configure DNS zone authoritative values
+        Given DNS zone "my-dns-zone" exists
+
         Given I am logged in as admin
         And I am on "dns-zones/my-dns-zone." page
 
@@ -15,18 +13,11 @@ Feature: DNS Zones Settings
 
         When I click on the "dns-zones-tab-settings-button-save" button
         Then I should see "admin.example.com" in the "dns-zones-tab-settings-textbox-idnssoarname" textbox
-        Then I should see "success" alert
 
-    @cleanup
-    Scenario: Delete test DNS zone
-        Given I delete DNS zone "my-dns-zone."
-
-    @seed
-    Scenario: Create DNS zone for settings testing
-        Given DNS zone "my-dns-zone" exists
 
     @test
     Scenario: Configure DNS zone SOA settings
+        Given DNS zone "my-dns-zone" exists
         Given I am logged in as admin
         And I am on "dns-zones/my-dns-zone." page
 
@@ -48,16 +39,9 @@ Feature: DNS Zones Settings
         Then I should see "3600" in the "dns-zones-tab-settings-textbox-idnssoaminimum" textbox
         Then I should see "success" alert
 
-    @cleanup
-    Scenario: Delete test DNS zone
-        Given I delete DNS zone "my-dns-zone."
-
-    @seed
-    Scenario: Create DNS zone for settings testing
-        Given DNS zone "my-dns-zone" exists
-
     @test
     Scenario: Configure DNS zone TTL settings
+        Given DNS zone "my-dns-zone" exists
         Given I am logged in as admin
         And I am on "dns-zones/my-dns-zone." page
 
@@ -72,16 +56,9 @@ Feature: DNS Zones Settings
         Then I should see "1800" in the "dns-zones-tab-settings-textbox-dnsttl" textbox
         Then I should see "success" alert
 
-    @cleanup
-    Scenario: Delete test DNS zone
-        Given I delete DNS zone "my-dns-zone."
-
-    @seed
-    Scenario: Create DNS zone for settings testing
-        Given DNS zone "my-dns-zone" exists
-
     @test
     Scenario: Configure DNS zone dynamic update settings
+        Given DNS zone "my-dns-zone" exists
         Given I am logged in as admin
         And I am on "dns-zones/my-dns-zone." page
 
@@ -96,16 +73,9 @@ Feature: DNS Zones Settings
         Then I should see "example text" in the "dns-zones-tab-settings-textbox-idnsupdatepolicy" textbox
         Then I should see "success" alert
 
-    @cleanup
-    Scenario: Delete test DNS zone
-        Given I delete DNS zone "my-dns-zone."
-
-    @seed
-    Scenario: Create DNS zone for settings testing
-        Given DNS zone "my-dns-zone" exists
-
     @test
     Scenario: Configure DNS zone allow query settings
+        Given DNS zone "my-dns-zone" exists
         Given I am logged in as admin
         And I am on "dns-zones/my-dns-zone." page
 
@@ -119,16 +89,9 @@ Feature: DNS Zones Settings
         Then I should see "192.168.1.0/24" in the "dns-zones-tab-settings-textbox-idnsallowquery" textbox list
         Then I should see "success" alert
 
-    @cleanup
-    Scenario: Delete test DNS zone
-        Given I delete DNS zone "my-dns-zone."
-
-    @seed
-    Scenario: Create DNS zone for settings testing
-        Given DNS zone "my-dns-zone" exists
-
     @test
     Scenario: Configure DNS zone allow transfer settings
+        Given DNS zone "my-dns-zone" exists
         Given I am logged in as admin
         And I am on "dns-zones/my-dns-zone." page
 
@@ -142,16 +105,9 @@ Feature: DNS Zones Settings
         Then I should see "10.0.0.0/8" in the "dns-zones-tab-settings-textbox-idnsallowtransfer" textbox list
         Then I should see "success" alert
 
-    @cleanup
-    Scenario: Delete test DNS zone
-        Given I delete DNS zone "my-dns-zone."
-
-    @seed
-    Scenario: Create DNS zone for settings testing
-        Given DNS zone "my-dns-zone" exists
-
     @test
     Scenario: Configure DNS zone forwarder settings
+        Given DNS zone "my-dns-zone" exists
         Given I am logged in as admin
         And I am on "dns-zones/my-dns-zone." page
 
@@ -166,16 +122,9 @@ Feature: DNS Zones Settings
         Then I should see the "dns-zone-tab-settings-radio-forward-only" radio button is selected
         Then I should see "success" alert
 
-    @cleanup
-    Scenario: Delete test DNS zone
-        Given I delete DNS zone "my-dns-zone."
-
-    @seed
-    Scenario: Create DNS zone for settings testing
-        Given DNS zone "my-dns-zone" exists
-
     @test
     Scenario: Configure DNS zone security settings
+        Given DNS zone "my-dns-zone" exists
         Given I am logged in as admin
         And I am on "dns-zones/my-dns-zone." page
 
@@ -194,16 +143,9 @@ Feature: DNS Zones Settings
         Then I should see "1 0 10 1234567890ABCDEF" in the "dns-zones-tab-settings-textbox-nsec3paramrecord" textbox
         Then I should see "success" alert
 
-    @cleanup
-    Scenario: Delete test DNS zone
-        Given I delete DNS zone "my-dns-zone."
-
-    @seed
-    Scenario: Create DNS zone for settings testing
-        Given DNS zone "my-dns-zone" exists
-
     @test
     Scenario: Validate invalid NSEC3PARAM record
+        Given DNS zone "my-dns-zone" exists
         Given I am logged in as admin
         And I am on "dns-zones/my-dns-zone." page
 
@@ -211,16 +153,9 @@ Feature: DNS Zones Settings
         And I click on the "dns-zones-tab-settings-button-save" button
         Then I should see "error" alert
 
-    @cleanup
-    Scenario: Delete test DNS zone
-        Given I delete DNS zone "my-dns-zone."
-
-    @seed
-    Scenario: Create DNS zone for settings testing
-        Given DNS zone "my-dns-zone" exists
-
     @test
     Scenario: Validate invalid allow query record
+        Given DNS zone "my-dns-zone" exists
         Given I am logged in as admin
         And I am on "dns-zones/my-dns-zone." page
 
@@ -228,16 +163,9 @@ Feature: DNS Zones Settings
         And I click on the "dns-zones-tab-settings-button-save" button
         Then I should see "error" alert
 
-    @cleanup
-    Scenario: Delete test DNS zone
-        Given I delete DNS zone "my-dns-zone."
-
-    @seed
-    Scenario: Create DNS zone for settings testing
-        Given DNS zone "my-dns-zone" exists
-
     @test
     Scenario: Validate invalid zone forwarder
+        Given DNS zone "my-dns-zone" exists
         Given I am logged in as admin
         And I am on "dns-zones/my-dns-zone." page
 
@@ -245,23 +173,12 @@ Feature: DNS Zones Settings
         And I click on the "dns-zones-tab-settings-button-save" button
         Then I should see "error" alert
 
-    @cleanup
-    Scenario: Delete test DNS zone
-        Given I delete DNS zone "my-dns-zone."
-
-    @seed
-    Scenario: Create DNS zone for settings testing
-        Given DNS zone "my-dns-zone" exists
-
     @test
     Scenario: Validate invalid zone allow transfer
+        Given DNS zone "my-dns-zone" exists
         Given I am logged in as admin
         And I am on "dns-zones/my-dns-zone." page
 
         When I try to add invalid zone allow transfer to zone
         And I click on the "dns-zones-tab-settings-button-save" button
         Then I should see "error" alert
-
-    @cleanup
-    Scenario: Delete test DNS zone
-        Given I delete DNS zone "my-dns-zone."

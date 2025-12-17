@@ -30,7 +30,7 @@ const fillReversedDnsZoneWithSkipOverlapCheck = (ip: string) => {
   cy.dataCy("modal-checkbox-skip-overlap-check").should("be.checked");
 };
 
-export const createDnsZone = (zone: string) => {
+const createDnsZone = (zone: string) => {
   cy.dataCy("dns-zones-button-add").click();
   cy.dataCy("add-dns-zone-modal").should("exist");
 
@@ -96,13 +96,13 @@ const isDisabled = (name: string) => {
   );
 };
 
-export const isEnabled = (name: string) => {
+const isEnabled = (name: string) => {
   cy.get("tr[id='" + name + "'] td[data-label=idnszoneactive]").contains(
     "Enabled"
   );
 };
 
-export const disableDnsZone = (zoneName: string) => {
+const disableDnsZone = (zoneName: string) => {
   selectEntry(zoneName);
 
   cy.dataCy("dns-zones-button-disable").click();
@@ -122,11 +122,6 @@ const enableDnsZone = (zoneName: string) => {
   cy.dataCy("dns-zones-enable-disable-modal").should("not.exist");
 
   isEnabled(zoneName);
-};
-
-// E.g. "my-dnszone" -> "my-dnszone."
-export const parseZoneName = (zoneName: string) => {
-  return zoneName + ".";
 };
 
 When("I create a DNS zone {string}", (zoneName: string) => {
