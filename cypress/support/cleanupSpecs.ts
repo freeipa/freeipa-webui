@@ -1,11 +1,14 @@
 import { CleanupMetadata } from "./ipaCleanup";
 
 export const CLEANUP_SPECS: CleanupMetadata[] = [
-  // TODO: Check - "Could not get Grouping Type interactively" error
-  // {
-  //   find: ["automember-find", "--pkey-only"],
-  //   del: ["automember-del"],
-  // },
+  {
+    find: ["automember-find", "--pkey-only", "--type group"],
+    del: ["automember-del", "--type group"],
+  },
+  {
+    find: ["automember-find", "--pkey-only", "--type hostgroup"],
+    del: ["automember-del", "--type hostgroup"],
+  },
   {
     find: ["certmaprule-find", "--pkey-only"],
     del: ["certmaprule-del"],

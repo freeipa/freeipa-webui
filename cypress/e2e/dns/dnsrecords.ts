@@ -1,10 +1,7 @@
 import { Given, Then, When } from "@badeball/cypress-cucumber-preprocessor";
 import { DnsRecordType } from "src/utils/datatypes/globalDataTypes";
-import { checkEntry, entryExists, searchForEntry } from "../common/data_tables";
-import { navigateTo } from "../common/navigation";
-import { loginAsAdmin, logout } from "../common/authentication";
+import { checkEntry, searchForEntry } from "../common/data_tables";
 import { clearAndAddAdjustedNumberValue } from "./dnszones_settings";
-import { createDnsZone, parseZoneName } from "./dnszones";
 
 const checkNewDnsRecord = (
   dnsRecordName: string,
@@ -661,23 +658,15 @@ Then("I should not see DNS record {string}", (recordName: string) => {
 });
 
 Given(
-  "DNS zone {string} exists and has record {string} with name {string} and data {string}",
-  (
-    dnsZoneName: string,
-    recordType: DnsRecordType,
-    recordName: string,
-    recordData: string
-  ) => {
-    loginAsAdmin();
-    navigateTo("dns-zones");
-
-    createDnsZone(dnsZoneName);
-    searchForEntry(parseZoneName(dnsZoneName));
-    entryExists(parseZoneName(dnsZoneName));
-
-    navigateTo("dns-zones/" + dnsZoneName + "./dns-records");
-    createDnsRecord(recordName, recordType);
-    checkNewDnsRecord(recordName, recordType, recordData);
-    logout();
+  "DNS zone {string} has record A with name {string} and data {string}",
+  (dnsZoneName: string, recordName: string, recordData: string) => {
+    cy.ipa({
+      command: "dnsrecord-add",
+      name: dnsZoneName,
+      specificOptions: `${recordName} --a-ip-address "${recordData}"`,
+    }).then((result) => {
+      cy.log(result.stderr);
+      cy.log(result.stdout);
+    });
   }
 );

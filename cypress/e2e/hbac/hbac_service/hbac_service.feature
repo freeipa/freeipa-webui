@@ -23,16 +23,10 @@ Feature: HBAC services manipulation
     Then I should see "a_service1" entry in the data table
     And I should see "a_service1" entry in the data table with attribute "Description" set to "my description"
 
-  @cleanup
-  Scenario: Cleanup: Delete a service
-    Given I delete service "a_service1"
-
-  @seed
-  Scenario: Seed: Create HBAC services used in tests
-      Given HBAC service "a_service2" exists
-
   @test
   Scenario: Search for a service
+    Given HBAC service "a_service2" exists
+
     Given I am logged in as admin
     And I am on "hbac-services" page
 
@@ -40,16 +34,10 @@ Feature: HBAC services manipulation
     Then I should see "a_service2" entry in the data table
     And I should not see "a_service1" entry in the data table
 
-  @cleanup
-    Scenario: Cleanup: Delete seeded services
-    Given I delete service "a_service2"
-
-  @seed
-  Scenario: Seed: Create HBAC services used in tests
-    Given HBAC service "a_service1" exists
-
   @test
   Scenario: Delete a service
+    Given HBAC service "a_service1" exists
+
     Given I am logged in as admin
     And I am on "hbac-services" page
 
@@ -68,13 +56,10 @@ Feature: HBAC services manipulation
     And I should not see "delete-hbac-services-modal" modal
     And I should not see "a_service1" entry in the data table
 
-  @seed
-  Scenario: Seed: Create HBAC services used in tests
-    Given HBAC service "a_service2" exists
-    And HBAC service "a_service3" exists
-
   @test
   Scenario: Delete many services
+    Given HBAC service "a_service2" exists
+    And HBAC service "a_service3" exists
     Given I am logged in as admin
     And I am on "hbac-services" page
 

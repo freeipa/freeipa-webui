@@ -1,12 +1,11 @@
 Feature: HBAC service settings manipulation
   Modify a HBAC service
 
-  @seed
-  Scenario: Seed: Ensure service exists
-    Given HBAC service "a_service_settings" exists
 
   @test
   Scenario: Set Description in settings
+    Given HBAC service "a_service_settings" exists
+
     Given I am logged in as admin
     And I am on "hbac-services/a_service_settings" page
 
@@ -20,6 +19,3 @@ Feature: HBAC service settings manipulation
     When I am on "hbac-services" page
     Then I should see "a_service_settings" entry in the data table with attribute "Description" set to "test"
 
-  @cleanup
-  Scenario: Cleanup: Delete a service
-    Given I delete service "a_service_settings"
