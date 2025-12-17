@@ -30,6 +30,7 @@ code {
       var(--settings-tabs-height) - 72px
   );
   --idview-appliedto-toolbar-height: 53px;
+  background-color: var(--pf-t--color--gray--10);
 }
 
 .pf-v6-c-background-image {
