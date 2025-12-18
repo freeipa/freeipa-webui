@@ -1,12 +1,11 @@
 Feature: HBAC service group settings manipulation
   Modify a HBAC service group
 
-  @seed
-  Scenario: Seed: Ensure service group exists
-    Given HBAC service group "a_service_group_settings" exists
 
   @test
   Scenario: Set Description in settings
+    Given HBAC service group "a_service_group_settings" exists
+
     Given I am logged in as admin
     And I am on "hbac-service-groups/a_service_group_settings" page
 
@@ -20,6 +19,3 @@ Feature: HBAC service group settings manipulation
     When I am on "hbac-service-groups" page
     Then I should see "a_service_group_settings" entry in the data table with attribute "Description" set to "test"
 
-  @cleanup
-  Scenario: Cleanup: Delete a service group
-    Given I delete service group "a_service_group_settings"

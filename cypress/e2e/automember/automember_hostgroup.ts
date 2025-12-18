@@ -1,7 +1,6 @@
 import { When, Then, Given } from "@badeball/cypress-cucumber-preprocessor";
 import {
   entryDoesNotExist,
-  entryExists,
   searchForEntry,
   selectEntry,
   validateEntry,
@@ -10,7 +9,6 @@ import "../hostgroups/hostgroup";
 import "../common/data_tables";
 import { navigateTo } from "../common/navigation";
 import { loginAsAdmin, logout } from "../common/authentication";
-import { createHostgroup } from "../hostgroups/hostgroup";
 import { isOptionSelected, selectOption } from "../common/ui/select";
 
 const fillHostgroupRule = (hostgroupName: string) => {
@@ -57,19 +55,14 @@ const setDefaultHostgroupRule = (hostgroupName: string) => {
 };
 
 Given("hostgroup rule {string} exists", (hostgroupName: string) => {
-  loginAsAdmin();
-  navigateTo("host-groups");
-
-  createHostgroup(hostgroupName, "test");
-  searchForEntry(hostgroupName);
-  entryExists(hostgroupName);
-
-  navigateTo("host-group-rules");
-  createHostgroupRule(hostgroupName);
-
-  searchForEntry(hostgroupName);
-  entryExists(hostgroupName);
-  logout();
+  cy.ipa({
+    command: "automember-add",
+    name: hostgroupName,
+    specificOptions: "--type hostgroup",
+  }).then((result) => {
+    cy.log(result.stderr);
+    cy.log(result.stdout);
+  });
 });
 
 When(

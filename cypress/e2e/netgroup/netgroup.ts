@@ -14,22 +14,13 @@ import { MemberEntity, assertMemberEntity } from "../common/member_of";
 import { searchForMembersEntry } from "../common/members_table";
 
 Given("netgroup {string} exists", (groupName: string) => {
-  loginAsAdmin();
-  navigateTo("netgroups");
-
-  cy.dataCy("netgroups-button-add").click();
-  cy.dataCy("add-netgroup-modal").should("exist");
-
-  typeInTextbox("modal-textbox-netgroup-name", groupName);
-  cy.dataCy("modal-textbox-netgroup-name").should("have.value", groupName);
-
-  cy.dataCy("modal-button-add").click();
-  cy.dataCy("add-netgroup-modal").should("not.exist");
-  cy.dataCy("add-netgroup-success").should("exist");
-
-  searchForMembersEntry(groupName);
-  entryExists(groupName);
-  logout();
+  cy.ipa({
+    command: "netgroup-add",
+    name: groupName,
+  }).then((result) => {
+    cy.log(result.stderr);
+    cy.log(result.stdout);
+  });
 });
 
 Given("I delete netgroup {string}", (groupName: string) => {

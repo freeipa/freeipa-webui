@@ -1,12 +1,12 @@
 Feature: Automember > Settings page
     Modify automember settings
 
-    @seed
-    Scenario: Prep: Create a new user group to work with
-        Given user group rule "my_automember_usergroup" exists
 
     @test
     Scenario: Set 'Description' textarea field
+        Given user group "my_automember_usergroup" exists
+        Given user group rule "my_automember_usergroup" exists
+
         Given I am logged in as admin
         And I am on "user-group-rules/my_automember_usergroup" page
 
@@ -17,17 +17,12 @@ Feature: Automember > Settings page
         Then I should see "save-success" alert
         And I should see "This is a test user group rule" in the "auto-member-tab-settings-textbox-description" textbox
 
-    @cleanup
-    Scenario: Delete user group rule
-        Given I delete user group rule "my_automember_usergroup"
-        And I delete user group "my_automember_usergroup"
-
-    @seed
-    Scenario: Prep: Create a new user group to work with
-        Given user group rule "my_automember_usergroup" exists
 
     @test
     Scenario: Add a new inclusive user group rule
+        Given user group "my_automember_usergroup" exists
+        Given user group rule "my_automember_usergroup" exists
+
         Given I am logged in as admin
         And I am on "user-group-rules/my_automember_usergroup" page
 
@@ -44,17 +39,12 @@ Feature: Automember > Settings page
         Then I should see "add-automember-condition-success" alert
         And I should see "my-department" entry in the data table with ID "automemberinclusiveregex-table"
 
-    @cleanup
-    Scenario: Delete user group rule
-        Given I delete user group rule "my_automember_usergroup"
-        And I delete user group "my_automember_usergroup"
-
-    @seed
-    Scenario: Prep: Create a new user group to work with
-        Given user group rule "my_automember_usergroup" exists
 
     @test
     Scenario: Add a new exclusive user group rule
+        Given user group "my_automember_usergroup" exists
+        Given user group rule "my_automember_usergroup" exists
+
         Given I am logged in as admin
         And I am on "user-group-rules/my_automember_usergroup" page
 
@@ -71,17 +61,11 @@ Feature: Automember > Settings page
         Then I should see "add-automember-condition-success" alert
         And I should see "license123" entry in the data table with ID "automemberexclusiveregex-table"
 
-    @cleanup
-    Scenario: Delete user group rule
-        Given I delete user group rule "my_automember_usergroup"
-        And I delete user group "my_automember_usergroup"
-
-    @seed
-    Scenario: Prep: Create a new host group rule to work with
-        Given hostgroup rule "my_automember_hostgroup" exists
-
     @test
     Scenario: Set 'Description' textarea field for host group rule
+        Given Hostgroup "my_automember_hostgroup" with description "test" exists
+        Given hostgroup rule "my_automember_hostgroup" exists
+
         Given I am logged in as admin
         And I am on "host-group-rules/my_automember_hostgroup" page
 
@@ -92,17 +76,13 @@ Feature: Automember > Settings page
         Then I should see "save-success" alert
         And I should see "This is a test host group rule" in the "auto-member-tab-settings-textbox-description" textbox
 
-    @cleanup
-    Scenario: Delete host group rule
-        Given I delete hostgroup rule "my_automember_hostgroup"
-        And I delete hostgroup "my_automember_hostgroup"
-
-    @seed
-    Scenario: Prep: Create a new host group to work with
-        Given hostgroup rule "my_automember_hostgroup" exists
 
     # 'Inclusive' subsection
+    @test
     Scenario: Add a new inclusive host group rule
+        Given Hostgroup "my_automember_hostgroup" with description "test" exists
+        Given hostgroup rule "my_automember_hostgroup" exists
+
         Given I am logged in as admin
         And I am on "host-group-rules/my_automember_hostgroup" page
 
@@ -119,17 +99,11 @@ Feature: Automember > Settings page
         Then I should see "add-automember-condition-success" alert
         And I should see "my-department" entry in the data table with ID "automemberinclusiveregex-table"
 
-    @cleanup
-    Scenario: Delete host group rule
-        Given I delete hostgroup rule "my_automember_hostgroup"
-        And I delete hostgroup "my_automember_hostgroup"
-
-    @seed
-    Scenario: Prep: Create a new host group to work with
-        Given hostgroup rule "my_automember_hostgroup" exists
-
     @test
     Scenario: Add a new exclusive host group rule
+        Given Hostgroup "my_automember_hostgroup" with description "test" exists
+        Given hostgroup rule "my_automember_hostgroup" exists
+
         Given I am logged in as admin
         And I am on "host-group-rules/my_automember_hostgroup" page
 
@@ -146,17 +120,10 @@ Feature: Automember > Settings page
         Then I should see "add-automember-condition-success" alert
         And I should see "Software engineer" entry in the data table with ID "automemberexclusiveregex-table"
 
-    @cleanup
-    Scenario: Delete host group rule
-        Given I delete hostgroup rule "my_automember_hostgroup"
-        And I delete hostgroup "my_automember_hostgroup"
-
-    @seed
-    Scenario: Prep: Create a new host group to work with
-        Given hostgroup rule "my_automember_hostgroup" exists and has inclusive entry "my-department" with category "businesscategory"
-
     @test
     Scenario: Host group rule: Delete inclusive entry from table
+        Given hostgroup rule "my_automember_hostgroup" exists and has inclusive entry "my-department" with category "businesscategory"
+
         Given I am logged in as admin
         And I am on "host-group-rules/my_automember_hostgroup" page
 
@@ -170,17 +137,10 @@ Feature: Automember > Settings page
         Then I should see "remove-condition-success" alert
         Then I should see no table with ID "automemberinclusiveregex-table"
 
-    @cleanup
-    Scenario: Delete host group rule
-        Given I delete hostgroup rule "my_automember_hostgroup"
-        And I delete hostgroup "my_automember_hostgroup"
-
-    @seed
-    Scenario: Prep: Create a new user group to work with
-        Given user group rule "my_automember_usergroup" exists and has inclusive entry "my-department" with category "businesscategory"
-
     @test
     Scenario: User group rule: Delete inclusive entry from table
+        Given user group rule "my_automember_usergroup" exists and has inclusive entry "my-department" with category "businesscategory"
+
         Given I am logged in as admin
         And I am on "user-group-rules/my_automember_usergroup" page
 
@@ -193,8 +153,3 @@ Feature: Automember > Settings page
         When I click on the "modal-button-delete" button
         Then I should see "remove-condition-success" alert
         Then I should see no table with ID "automemberinclusiveregex-table"
-
-    @cleanup
-    Scenario: Delete user group rule
-        Given I delete user group rule "my_automember_usergroup"
-        And I delete user group "my_automember_usergroup"

@@ -1,12 +1,10 @@
 Feature: DNS Zones Settings > Kebab
     Configure DNS zones > Settings > Kebab menu options
 
-    @seed
-    Scenario: Create DNS zone 'my-dns-zone' for settings testing
-        Given DNS zone "my-dns-zone" exists and it is enabled
-
     @test
     Scenario: Disable DNS zone from settings page kebab menu
+        Given DNS zone "my-dns-zone" exists
+        And DNS zone "my-dns-zone" is enabled
         Given I am logged in as admin
         And I am on "dns-zones/my-dns-zone." page
 
@@ -19,16 +17,11 @@ Feature: DNS Zones Settings > Kebab
         When I click on the "modal-button-ok" button
         Then I should see "success" alert
 
-    @cleanup
-    Scenario: Delete DNS zone 'my-dns-zone'
-        Given I delete DNS zone "my-dns-zone."
-
-    @seed
-    Scenario: Create DNS zone 'my-dns-zone-2' for settings testing
-        Given DNS zone "my-dns-zone-2" exists and it is disabled
 
     @test
     Scenario: Enable DNS zone from settings page kebab menu
+        Given DNS zone "my-dns-zone-2" exists
+        And DNS zone "my-dns-zone-2" is disabled
         Given I am logged in as admin
         And I am on "dns-zones/my-dns-zone-2." page
 
@@ -41,16 +34,10 @@ Feature: DNS Zones Settings > Kebab
         When I click on the "modal-button-ok" button
         Then I should see "success" alert
 
-    @cleanup
-    Scenario: Delete DNS zone 'my-dns-zone-2'
-        Given I delete DNS zone "my-dns-zone-2."
-
-    @seed
-    Scenario: Create DNS zone 'my-dns-zone' for settings testing
-        Given DNS zone "my-dns-zone" exists and it is enabled
-
     @test
     Scenario: Add permission to DNS zone from settings page kebab menu
+        Given DNS zone "my-dns-zone" exists
+        Given DNS zone "my-dns-zone" is enabled
         Given I am logged in as admin
         And I am on "dns-zones/my-dns-zone." page
 
@@ -63,16 +50,10 @@ Feature: DNS Zones Settings > Kebab
         When I click on the "modal-button-ok" button
         Then I should see "success" alert
 
-    @cleanup
-    Scenario: Delete DNS zone 'my-dns-zone'
-        Given I delete DNS zone "my-dns-zone."
-
-    @seed
-    Scenario: Create DNS zone 'my-dns-zone' for settings testing
-        Given DNS zone "my-dns-zone" exists and has permission
-
     @test
     Scenario: Remove permission from DNS zone from settings page kebab menu
+        Given DNS zone "my-dns-zone" exists
+        And DNS zone "my-dns-zone" has permission
         Given I am logged in as admin
         And I am on "dns-zones/my-dns-zone." page
 
@@ -85,16 +66,10 @@ Feature: DNS Zones Settings > Kebab
         When I click on the "modal-button-ok" button
         Then I should see "success" alert
 
-    @cleanup
-    Scenario: Delete DNS zone 'my-dns-zone'
-        Given I delete DNS zone "my-dns-zone."
-
-    @seed
-    Scenario: Create DNS zone 'my-dns-zone' for settings testing
-        Given DNS zone "my-dns-zone" exists and it is enabled
-
     @test
     Scenario: Delete DNS zone from settings page kebab menu
+        Given DNS zone "my-dns-zone" exists
+        And DNS zone "my-dns-zone" is enabled
         Given I am logged in as admin
         And I am on "dns-zones/my-dns-zone." page
 
