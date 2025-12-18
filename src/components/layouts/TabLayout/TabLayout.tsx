@@ -14,20 +14,29 @@ interface PropsToTab {
 const TabLayout = (props: PropsToTab) => {
   const style: React.CSSProperties = {
     overflowY: "auto",
-    height: `var(--tab-layout-calc)`,
+    maxHeight: "100dvh",
+    minHeight: `var(--tab-layout-calc)`,
   };
 
   return (
-    <div data-cy={props.dataCy}>
+    <div id={props.id + "-container"} data-cy={props.dataCy}>
       <Flex direction={{ default: "column" }}>
-        <div className="pf-v6-u-pt-lg pf-v6-u-pl-lg pf-v6-u-pr-lg">
-          <PageSection hasBodyWrapper={false} id={props.id} style={style}>
-            {props.children}
-          </PageSection>
-        </div>
+        <PageSection
+          hasBodyWrapper={false}
+          id={props.id}
+          style={style}
+          isFilled
+          className="pf-v6-u-pl-xl pf-v6-u-mb-0" // Slightly centers the content and removes the bottom margin
+        >
+          {props.children}
+        </PageSection>
         {props.toolbarItems && (
           <FlexItem
-            style={{ marginTop: "auto", position: "sticky", bottom: 0 }}
+            style={{
+              marginTop: 0,
+              position: "sticky",
+              bottom: 0,
+            }}
           >
             <ToolbarLayout
               isSticky

@@ -4,10 +4,6 @@ import { Flex, FlexItem, PageSection } from "@patternfly/react-core";
 // Components
 import TitleLayout from "src/components/layouts/TitleLayout";
 import ToolbarLayout, { ToolbarItem } from "./ToolbarLayout";
-import {
-  InnerScrollContainer,
-  OuterScrollContainer,
-} from "@patternfly/react-table";
 import { BreadCrumbItem } from "./BreadCrumb";
 
 interface PropsToPageWithGrayBorderLayout {
@@ -19,10 +15,6 @@ interface PropsToPageWithGrayBorderLayout {
 }
 
 const PageWithGrayBorderLayout = (props: PropsToPageWithGrayBorderLayout) => {
-  const style: React.CSSProperties = {
-    overflowY: "auto",
-    height: "65vh",
-  };
   return (
     <>
       <PageSection hasBodyWrapper={false}>
@@ -32,16 +24,13 @@ const PageWithGrayBorderLayout = (props: PropsToPageWithGrayBorderLayout) => {
         hasBodyWrapper={false}
         type="default"
         isFilled
-        className="pf-v6-u-ml-lg"
+        className="pf-v6-u-pl-xl pf-v6-u-pb-0"
       >
         <Flex direction={{ default: "column" }}>
-          <OuterScrollContainer>
-            <InnerScrollContainer style={style}>
-              <FlexItem>{props.children}</FlexItem>
-            </InnerScrollContainer>
-          </OuterScrollContainer>
+          <FlexItem>{props.children}</FlexItem>
           <FlexItem
-            style={{ marginTop: "auto", position: "sticky", bottom: 0 }}
+            className="pf-v6-u-mt-auto"
+            style={{ position: "sticky", bottom: 0 }}
           >
             {props.toolbarItems && (
               <ToolbarLayout isSticky toolbarItems={props.toolbarItems} />

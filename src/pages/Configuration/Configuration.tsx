@@ -257,153 +257,160 @@ const Configuration = () => {
 
   return (
     <>
-      <PageSection hasBodyWrapper={false}>
+      <PageSection hasBodyWrapper={false} isFilled>
         <TitleLayout id="config title" headingLevel="h1" text="Configuration" />
       </PageSection>
-      <PageSection hasBodyWrapper={false}>
-        <PageSection hasBodyWrapper={false} id="settings-page" style={style}>
-          <Sidebar isPanelRight>
-            <SidebarPanel variant="sticky">
-              <HelpTextWithIconLayout textContent="Help" />
-              <JumpLinks
-                isVertical
-                label="Jump to section"
-                scrollableSelector="#settings-page"
-                offset={220} // for masthead
-                expandable={{ default: "expandable", md: "nonExpandable" }}
-              >
-                <JumpLinksItem key={0} href="#search-options">
-                  Search options
-                </JumpLinksItem>
-                <JumpLinksItem key={1} href="#server-options">
-                  Server options
-                </JumpLinksItem>
-                <JumpLinksItem key={2} href="#user-options">
-                  User options
-                </JumpLinksItem>
-                <JumpLinksItem key={3} href="#group-options">
-                  Group options
-                </JumpLinksItem>
-                <JumpLinksItem key={4} href="#selinux-options">
-                  Selinux options
-                </JumpLinksItem>
-                <JumpLinksItem key={5} href="#service-options">
-                  Service options
-                </JumpLinksItem>
-              </JumpLinks>
-            </SidebarPanel>
-            <SidebarContent className="pf-v6-u-mr-xl">
-              <Flex
-                direction={{ default: "column", lg: "row" }}
-                flex={{ default: "flex_1" }}
-              >
-                <FlexItem flex={{ default: "flex_1" }}>
-                  <TitleLayout
-                    key={0}
-                    headingLevel="h2"
-                    id="search-options"
-                    text="Search options"
-                  />
-                  <ConfigSearchOptions
-                    ipaObject={ipaObject}
-                    recordOnChange={recordOnChange}
-                    metadata={configData.metadata}
-                  />
-                </FlexItem>
-                <FlexItem flex={{ default: "flex_1" }}>
-                  <TitleLayout
-                    key={1}
-                    headingLevel="h2"
-                    id="server-options"
-                    text="Server options"
-                  />
-                  <ConfigServerOptions
-                    config={configData.config}
-                    ipaObject={ipaObject}
-                    recordOnChange={recordOnChange}
-                    metadata={configData.metadata}
-                  />
-                </FlexItem>
-              </Flex>
-              <Flex
-                direction={{ default: "column", lg: "row" }}
-                flex={{ default: "flex_1" }}
-                className="pf-v6-u-mt-lg"
-              >
-                <FlexItem flex={{ default: "flex_1" }}>
-                  <TitleLayout
-                    key={2}
-                    headingLevel="h2"
-                    id="user-options"
-                    text="User options"
-                  />
-                  <ConfigUserOptions
-                    ipaObject={ipaObject}
-                    recordOnChange={recordOnChange}
-                    metadata={configData.metadata}
-                    groups={groups}
-                    onSearch={submitSearchValue}
-                  />
-                </FlexItem>
-              </Flex>
-              <Flex
-                direction={{ default: "column", lg: "row" }}
-                flex={{ default: "flex_1" }}
-                className="pf-v6-u-mt-lg"
-              >
-                <FlexItem flex={{ default: "flex_1" }}>
-                  <TitleLayout
-                    key={3}
-                    headingLevel="h2"
-                    id="group-options"
-                    text="Group options"
-                  />
-                  <ConfigGroupOptions
-                    ipaObject={ipaObject}
-                    recordOnChange={recordOnChange}
-                    metadata={configData.metadata}
-                  />
-                </FlexItem>
-                <FlexItem flex={{ default: "flex_1" }}>
-                  <Flex
-                    direction={{ default: "column" }}
-                    flex={{ default: "flex_1" }}
-                  >
-                    <FlexItem flex={{ default: "flex_1" }}>
-                      <TitleLayout
-                        key={4}
-                        headingLevel="h2"
-                        id="selinux-options"
-                        text="SELinux options"
-                      />
-                      <ConfigSELinuxOptions
-                        ipaObject={ipaObject}
-                        recordOnChange={recordOnChange}
-                        metadata={configData.metadata}
-                      />
-                    </FlexItem>
-                    <FlexItem flex={{ default: "flex_1" }}>
-                      <TitleLayout
-                        key={5}
-                        headingLevel="h2"
-                        id="service-options"
-                        text="Service options"
-                        className="pf-v6-u-mt-lg"
-                      />
-                      <ConfigServiceOptions
-                        ipaObject={ipaObject}
-                        recordOnChange={recordOnChange}
-                        metadata={configData.metadata}
-                      />
-                    </FlexItem>
-                  </Flex>
-                </FlexItem>
-              </Flex>
-            </SidebarContent>
-          </Sidebar>
-        </PageSection>
-        <ToolbarLayout isSticky toolbarItems={toolbarFields} />
+      <PageSection
+        hasBodyWrapper={false}
+        id="settings-page"
+        style={style}
+        isFilled
+      >
+        <Sidebar isPanelRight>
+          <SidebarPanel variant="sticky">
+            <HelpTextWithIconLayout textContent="Help" />
+            <JumpLinks
+              isVertical
+              label="Jump to section"
+              scrollableSelector="#settings-page"
+              offset={220} // for masthead
+              expandable={{ default: "expandable", md: "nonExpandable" }}
+            >
+              <JumpLinksItem key={0} href="#search-options">
+                Search options
+              </JumpLinksItem>
+              <JumpLinksItem key={1} href="#server-options">
+                Server options
+              </JumpLinksItem>
+              <JumpLinksItem key={2} href="#user-options">
+                User options
+              </JumpLinksItem>
+              <JumpLinksItem key={3} href="#group-options">
+                Group options
+              </JumpLinksItem>
+              <JumpLinksItem key={4} href="#selinux-options">
+                Selinux options
+              </JumpLinksItem>
+              <JumpLinksItem key={5} href="#service-options">
+                Service options
+              </JumpLinksItem>
+            </JumpLinks>
+          </SidebarPanel>
+          <SidebarContent className="pf-v6-u-mr-xl">
+            <Flex
+              direction={{ default: "column", lg: "row" }}
+              flex={{ default: "flex_1" }}
+            >
+              <FlexItem flex={{ default: "flex_1" }}>
+                <TitleLayout
+                  key={0}
+                  headingLevel="h2"
+                  id="search-options"
+                  text="Search options"
+                />
+                <ConfigSearchOptions
+                  ipaObject={ipaObject}
+                  recordOnChange={recordOnChange}
+                  metadata={configData.metadata}
+                />
+              </FlexItem>
+              <FlexItem flex={{ default: "flex_1" }}>
+                <TitleLayout
+                  key={1}
+                  headingLevel="h2"
+                  id="server-options"
+                  text="Server options"
+                />
+                <ConfigServerOptions
+                  config={configData.config}
+                  ipaObject={ipaObject}
+                  recordOnChange={recordOnChange}
+                  metadata={configData.metadata}
+                />
+              </FlexItem>
+            </Flex>
+            <Flex
+              direction={{ default: "column", lg: "row" }}
+              flex={{ default: "flex_1" }}
+              className="pf-v6-u-mt-lg"
+            >
+              <FlexItem flex={{ default: "flex_1" }}>
+                <TitleLayout
+                  key={2}
+                  headingLevel="h2"
+                  id="user-options"
+                  text="User options"
+                />
+                <ConfigUserOptions
+                  ipaObject={ipaObject}
+                  recordOnChange={recordOnChange}
+                  metadata={configData.metadata}
+                  groups={groups}
+                  onSearch={submitSearchValue}
+                />
+              </FlexItem>
+            </Flex>
+            <Flex
+              direction={{ default: "column", lg: "row" }}
+              flex={{ default: "flex_1" }}
+              className="pf-v6-u-mt-lg"
+            >
+              <FlexItem flex={{ default: "flex_1" }}>
+                <TitleLayout
+                  key={3}
+                  headingLevel="h2"
+                  id="group-options"
+                  text="Group options"
+                />
+                <ConfigGroupOptions
+                  ipaObject={ipaObject}
+                  recordOnChange={recordOnChange}
+                  metadata={configData.metadata}
+                />
+              </FlexItem>
+              <FlexItem flex={{ default: "flex_1" }}>
+                <Flex
+                  direction={{ default: "column" }}
+                  flex={{ default: "flex_1" }}
+                >
+                  <FlexItem flex={{ default: "flex_1" }}>
+                    <TitleLayout
+                      key={4}
+                      headingLevel="h2"
+                      id="selinux-options"
+                      text="SELinux options"
+                    />
+                    <ConfigSELinuxOptions
+                      ipaObject={ipaObject}
+                      recordOnChange={recordOnChange}
+                      metadata={configData.metadata}
+                    />
+                  </FlexItem>
+                  <FlexItem flex={{ default: "flex_1" }}>
+                    <TitleLayout
+                      key={5}
+                      headingLevel="h2"
+                      id="service-options"
+                      text="Service options"
+                      className="pf-v6-u-mt-lg"
+                    />
+                    <ConfigServiceOptions
+                      ipaObject={ipaObject}
+                      recordOnChange={recordOnChange}
+                      metadata={configData.metadata}
+                    />
+                  </FlexItem>
+                </Flex>
+              </FlexItem>
+            </Flex>
+          </SidebarContent>
+        </Sidebar>
       </PageSection>
+      <ToolbarLayout
+        isSticky
+        toolbarItems={toolbarFields}
+        className="pf-v6-u-ml-lg"
+      />
     </>
   );
 };

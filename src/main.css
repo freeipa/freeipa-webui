@@ -19,7 +19,7 @@ code {
   --footer-buttons-height: 53px;
   --tab-layout-calc: calc(
     100vh - var(--masthead-height) - (var(--settings-main-title-height) * 2) -
-      var(--settings-tabs-height) - var(--footer-buttons-height) - 24px
+      var(--settings-tabs-height) - var(--footer-buttons-height) + 10px
   );
   --memberof-calc: calc(
     100vh - var(--masthead-height) - var(--settings-main-title-height) -
