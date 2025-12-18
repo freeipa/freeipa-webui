@@ -343,8 +343,11 @@ fi
 # Skip "--" and get extra arguments
 if [[ -n "${1:-}" ]]
 then
-    if [[ ! "${1}" =~ ^--.* ]]
+    if [[ "${1}" =~ ^--.* ]]
     then
+        # ensure a scenario name is available
+        scenario="${scenario:-"single-server"}"
+    else
         die "Unexpected option: ${1}"
     fi
 fi

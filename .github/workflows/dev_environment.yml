@@ -2,6 +2,7 @@
 name: Container Image
 
 on:
+  pull_request:
   schedule:
     - cron: 0 0 * * 6
 
@@ -22,11 +23,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install 'ansible-core<2.19'
+          pip install 'ansible-core<2.19' 'podman-compose>=1.5.0'
           ansible-galaxy collection install -r developer/requirements.yml
 
       - name: Build container and deploy IPA
-        run: developer/dev-env.sh -B webui-dev
+        run: developer/dev-env.sh -B -- single-server --pull-always --no-cache
 
       - name: Tag images
         run: |
