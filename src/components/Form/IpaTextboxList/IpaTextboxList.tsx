@@ -8,7 +8,6 @@ import {
   ValidatedOptions,
 } from "@patternfly/react-core";
 // Components
-import SecondaryButton from "../../layouts/SecondaryButton";
 // Utils
 import { updateIpaObject } from "src/utils/ipaObjectUtils";
 
@@ -144,14 +143,15 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
           </Flex>
         ))}
       </Flex>
-      <SecondaryButton
-        dataCy={props.dataCy + "-button-add"}
-        classname="pf-v6-u-mt-sm"
+      <Button
+        data-cy={props.dataCy + "-button-add"}
+        className="pf-v6-u-mt-sm"
         name={"add-" + props.name}
-        onClickHandler={onAddHandler}
+        onClick={onAddHandler}
+        variant="secondary"
       >
         Add
-      </SecondaryButton>
+      </Button>
     </div>
   );
 };

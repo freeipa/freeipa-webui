@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   Form,
@@ -28,7 +29,6 @@ import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import { NotFound } from "src/components/errors/PageErrors";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import PageWithGrayBorderLayout from "src/components/layouts/PageWithGrayBorderLayout";
 import IpaCheckbox from "src/components/Form/IpaCheckbox";
 
@@ -115,36 +115,39 @@ const CertificateMappingGlobalConfig = () => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="certificate-mapping-global-config-button-refresh"
-          onClickHandler={certMapConfigData.refetch}
+        <Button
+          data-cy="certificate-mapping-global-config-button-refresh"
+          onClick={certMapConfigData.refetch}
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="certificate-mapping-global-config-button-revert"
+        <Button
+          data-cy="certificate-mapping-global-config-button-revert"
           isDisabled={!certMapConfigData.modified || isDataLoading}
-          onClickHandler={onRevert}
+          onClick={onRevert}
+          variant="secondary"
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="certificate-mapping-global-config-button-save"
+        <Button
+          data-cy="certificate-mapping-global-config-button-save"
           isDisabled={!certMapConfigData.modified || isDataLoading}
-          onClickHandler={onSave}
+          onClick={onSave}
+          variant="secondary"
         >
           Save
-        </SecondaryButton>
+        </Button>
       ),
     },
   ];

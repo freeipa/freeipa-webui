@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   PageSection,
@@ -20,7 +21,6 @@ import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
@@ -439,37 +439,40 @@ const SudoCmds = () => {
     {
       key: 3,
       element: (
-        <SecondaryButton
-          onClickHandler={refreshData}
+        <Button
+          onClick={refreshData}
           isDisabled={!showTableRows}
-          dataCy="sudo-commands-button-refresh"
+          data-cy="sudo-commands-button-refresh"
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 4,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={isDeleteButtonDisabled || !showTableRows}
-          onClickHandler={onDeleteHandler}
-          dataCy="sudo-commands-button-delete"
+          onClick={onDeleteHandler}
+          data-cy="sudo-commands-button-delete"
+          variant="secondary"
         >
           Delete
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 5,
       element: (
-        <SecondaryButton
-          onClickHandler={onAddClickHandler}
+        <Button
+          onClick={onAddClickHandler}
           isDisabled={!showTableRows}
-          dataCy="sudo-commands-button-add"
+          data-cy="sudo-commands-button-add"
+          variant="secondary"
         >
           Add
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

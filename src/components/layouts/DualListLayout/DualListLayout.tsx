@@ -14,7 +14,6 @@ import {
   DualListSelector,
 } from "@patternfly/react-core";
 // Layout
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 //Icons
@@ -227,18 +226,19 @@ const DualListTableLayoutInner = (props: DualListProps) => {
 
   // Buttons that will be shown at the end of the form
   const modalActions = [
-    <SecondaryButton
-      dataCy="modal-button-add"
+    <Button
+      data-cy="modal-button-add"
       key={"dual-list-" + props.target}
       isDisabled={chosenOptions.length === 0 || props.spinning}
       form="modal-form"
-      onClickHandler={onButtonClick}
+      onClick={onButtonClick}
       spinnerAriaValueText={props.addSpinningBtnName}
       spinnerAriaLabel={props.addSpinningBtnName}
       isLoading={props.spinning}
+      variant="secondary"
     >
       {props.spinning ? props.addSpinningBtnName : props.addBtnName}
-    </SecondaryButton>,
+    </Button>,
     <Button
       data-cy="modal-button-cancel"
       key={"cancel-new-" + props.target}

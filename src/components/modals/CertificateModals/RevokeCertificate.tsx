@@ -14,8 +14,6 @@ import ModalWithFormLayout, {
 } from "src/components/layouts/ModalWithFormLayout";
 // Data types
 import { CertificateData } from "src/components/Form/IpaCertificates";
-// Components
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 // Utils
 import { parseDn } from "src/utils/utils";
 // RPC
@@ -187,13 +185,14 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
   };
 
   const modalActions = [
-    <SecondaryButton
-      dataCy="modal-button-revoke"
+    <Button
+      data-cy="modal-button-revoke"
       key="revoke"
-      onClickHandler={onRevokeCert}
+      onClick={onRevokeCert}
+      variant="secondary"
     >
       Revoke
-    </SecondaryButton>,
+    </Button>,
     <Button
       data-cy="modal-button-cancel"
       key="cancel"

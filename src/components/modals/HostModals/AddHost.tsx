@@ -8,7 +8,6 @@ import {
   TextInput,
 } from "@patternfly/react-core";
 // Layout
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import InputWithValidation from "src/components/layouts/InputWithValidation";
 // Data types
@@ -380,13 +379,14 @@ const AddHost = (props: PropsToAddHost) => {
   };
 
   const errorModalActions = [
-    <SecondaryButton
-      dataCy="modal-button-retry"
+    <Button
+      data-cy="modal-button-retry"
       key="retry"
-      onClickHandler={onRetry}
+      onClick={onRetry}
+      variant="secondary"
     >
       Retry
-    </SecondaryButton>,
+    </Button>,
     <Button
       data-cy="modal-button-cancel"
       key="cancel"
@@ -421,17 +421,18 @@ const AddHost = (props: PropsToAddHost) => {
     >
       {addSpinning ? "Adding" : "Add"}
     </Button>,
-    <SecondaryButton
-      dataCy="modal-button-add-and-add-another"
+    <Button
+      data-cy="modal-button-add-and-add-another"
       key="add-and-add-another-host"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClickHandler={addAndAddAnotherHandler}
+      onClick={addAndAddAnotherHandler}
       spinnerAriaValueText="Adding again"
       spinnerAriaLabel="Adding again"
       isLoading={addAgainSpinning}
+      variant="secondary"
     >
       {addAgainSpinning ? "Adding" : "Add and add another"}
-    </SecondaryButton>,
+    </Button>,
     <Button
       data-cy="modal-button-cancel"
       key="cancel-new-host"

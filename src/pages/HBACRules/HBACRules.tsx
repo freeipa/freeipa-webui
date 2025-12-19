@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   PageSection,
@@ -20,7 +21,6 @@ import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
@@ -496,61 +496,66 @@ const HBACRules = () => {
     {
       key: 3,
       element: (
-        <SecondaryButton
-          onClickHandler={refreshRulesData}
+        <Button
+          onClick={refreshRulesData}
           isDisabled={!showTableRows}
-          dataCy="hbac-rules-button-refresh"
+          data-cy="hbac-rules-button-refresh"
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 4,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={isDeleteButtonDisabled || !showTableRows}
-          onClickHandler={onDeleteHandler}
-          dataCy="hbac-rules-button-delete"
+          onClick={onDeleteHandler}
+          data-cy="hbac-rules-button-delete"
+          variant="secondary"
         >
           Delete
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 5,
       element: (
-        <SecondaryButton
-          onClickHandler={onAddClickHandler}
+        <Button
+          onClick={onAddClickHandler}
           isDisabled={!showTableRows}
-          dataCy="hbac-rules-button-add"
+          data-cy="hbac-rules-button-add"
+          variant="secondary"
         >
           Add
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 6,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={isDisableButtonDisabled || !showTableRows}
-          onClickHandler={() => onEnableDisableHandler(true)}
-          dataCy="hbac-rules-button-disable"
+          onClick={() => onEnableDisableHandler(true)}
+          data-cy="hbac-rules-button-disable"
+          variant="secondary"
         >
           Disable
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 7,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={isEnableButtonDisabled || !showTableRows}
-          onClickHandler={() => onEnableDisableHandler(false)}
-          dataCy="hbac-rules-button-enable"
+          onClick={() => onEnableDisableHandler(false)}
+          data-cy="hbac-rules-button-enable"
+          variant="secondary"
         >
           Enable
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

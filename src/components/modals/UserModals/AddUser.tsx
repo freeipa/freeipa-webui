@@ -11,7 +11,6 @@ import {
 import { HelpIcon } from "@patternfly/react-icons";
 // Layout
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import PasswordInput from "src/components/layouts/PasswordInput";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
@@ -488,13 +487,14 @@ const AddUser = (props: PropsToAddUser) => {
   };
 
   const errorModalActions = [
-    <SecondaryButton
+    <Button
       key="retry"
-      onClickHandler={onRetry}
-      dataCy="modal-button-retry"
+      onClick={onRetry}
+      data-cy="modal-button-retry"
+      variant="secondary"
     >
       Retry
-    </SecondaryButton>,
+    </Button>,
     <Button
       data-cy="modal-button-cancel"
       key="cancel"

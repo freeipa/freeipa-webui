@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   Form,
   FormGroup,
@@ -22,7 +23,6 @@ import IpaTextArea from "src/components/Form/IpaTextArea";
 import IpaCheckbox from "src/components/Form/IpaCheckbox";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import TabLayout from "src/components/layouts/TabLayout";
 // Utils
@@ -193,40 +193,43 @@ const HBACRulesSettings = (props: PropsToSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="hbac-rules-tab-settings-button-refresh"
-          onClickHandler={props.onRefresh}
+        <Button
+          data-cy="hbac-rules-tab-settings-button-refresh"
+          onClick={props.onRefresh}
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="hbac-rules-tab-settings-button-revert"
+        <Button
+          data-cy="hbac-rules-tab-settings-button-revert"
           isDisabled={!props.isModified}
-          onClickHandler={onRevert}
+          onClick={onRevert}
+          variant="secondary"
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="hbac-rules-tab-settings-button-save"
+        <Button
+          data-cy="hbac-rules-tab-settings-button-save"
           isDisabled={!props.isModified || isSaving}
-          onClickHandler={onSave}
+          onClick={onSave}
           isLoading={isSaving}
           spinnerAriaValueText="Saving"
           spinnerAriaLabelledBy="Saving"
           spinnerAriaLabel="Saving"
+          variant="secondary"
         >
           {isSaving ? "Saving" : "Save"}
-        </SecondaryButton>
+        </Button>
       ),
     },
   ];

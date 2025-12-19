@@ -13,8 +13,6 @@ import {
   ModalHeader,
   TextArea,
 } from "@patternfly/react-core";
-// Components
-import SecondaryButton from "../../layouts/SecondaryButton";
 // Modals
 import ConfirmationModal from "../../modals/ConfirmationModal";
 // Data types
@@ -282,18 +280,19 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
   };
 
   const modal_actions = [
-    <SecondaryButton
-      dataCy="modal-button-set"
+    <Button
+      data-cy="modal-button-set"
       key="set"
-      onClickHandler={onClickSetTextAreaSshPublicKeys}
+      onClick={onClickSetTextAreaSshPublicKeys}
       isDisabled={isSetButtonDisabled || modalSpinning}
       isLoading={modalSpinning}
       spinnerAriaValueText="Setting"
       spinnerAriaLabelledBy="Setting"
       spinnerAriaLabel="Setting"
+      variant="secondary"
     >
       {modalSpinning ? "Setting" : "Set"}
-    </SecondaryButton>,
+    </Button>,
     <Button
       data-cy="modal-button-cancel"
       key="cancel"
@@ -325,26 +324,28 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
                         </Content>
                       </FlexItem>
                       <FlexItem>
-                        <SecondaryButton
-                          dataCy={props.dataCy + "-show-ssh-public-key"}
-                          onClickHandler={() => onShowSetSshKey(idx, publicKey)}
+                        <Button
+                          data-cy={props.dataCy + "-show-ssh-public-key"}
+                          onClick={() => onShowSetSshKey(idx, publicKey)}
                           name={"show-ssh-public-key-" + idx}
                           isDisabled={readOnly}
-                          isSmall
+                          variant="secondary"
+                          size="sm"
                         >
                           Show Key
-                        </SecondaryButton>
+                        </Button>
                       </FlexItem>
                       <FlexItem className="pf-v6-u-mb-md">
-                        <SecondaryButton
-                          dataCy={props.dataCy + "-remove-ssh-public-key"}
-                          onClickHandler={() => onDeleteSshKey(idx)}
+                        <Button
+                          data-cy={props.dataCy + "-remove-ssh-public-key"}
+                          onClick={() => onDeleteSshKey(idx)}
                           name={"remove-ssh-public-key-" + idx}
                           isDisabled={readOnly}
-                          isSmall
+                          variant="secondary"
+                          size="sm"
                         >
                           Delete
-                        </SecondaryButton>
+                        </Button>
                       </FlexItem>
                     </>
                   )}
@@ -389,15 +390,16 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
         </ModalBody>
         <ModalFooter>{modal_actions}</ModalFooter>
       </Modal>
-      <SecondaryButton
-        dataCy={props.dataCy + "-button-add-ssh-public-key"}
-        onClickHandler={openSshPublicKeysModal}
+      <Button
+        data-cy={props.dataCy + "-button-add-ssh-public-key"}
+        onClick={openSshPublicKeysModal}
         name={"add-ssh-public-key"}
         isDisabled={readOnly}
-        isSmall
+        variant="secondary"
+        size="sm"
       >
         Add Key
-      </SecondaryButton>
+      </Button>
       <ConfirmationModal
         dataCy="remove-ssh-public-key-modal"
         title={"Remove SSH Public Key"}

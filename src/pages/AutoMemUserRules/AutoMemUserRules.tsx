@@ -21,7 +21,6 @@ import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
@@ -547,37 +546,40 @@ const AutoMemUserRules = () => {
     {
       key: 4,
       element: (
-        <SecondaryButton
-          dataCy={"auto-member-user-rules-button-refresh"}
-          onClickHandler={refreshData}
+        <Button
+          data-cy="auto-member-user-rules-button-refresh"
+          onClick={refreshData}
           isDisabled={!showTableRows}
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 5,
       element: (
-        <SecondaryButton
-          dataCy={"auto-member-user-rules-button-delete"}
+        <Button
+          data-cy="auto-member-user-rules-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
-          onClickHandler={onOpenDeleteModal}
+          onClick={onOpenDeleteModal}
+          variant="secondary"
         >
           Delete
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 6,
       element: (
-        <SecondaryButton
-          dataCy={"auto-member-user-rules-button-add"}
+        <Button
+          data-cy="auto-member-user-rules-button-add"
           isDisabled={!showTableRows}
-          onClickHandler={onOpenAddModal}
+          onClick={onOpenAddModal}
+          variant="secondary"
         >
           Add
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
@@ -680,13 +682,14 @@ const AutoMemUserRules = () => {
           >
             OK
           </Button>,
-          <SecondaryButton
-            dataCy="modal-button-cancel"
+          <Button
+            data-cy="modal-button-cancel"
             key="cancel"
-            onClickHandler={onCancelDefaultGroup}
+            onClick={onCancelDefaultGroup}
+            variant="secondary"
           >
             Cancel
-          </SecondaryButton>,
+          </Button>,
         ]}
         messageText="Are you sure you want to change default group?"
         messageObj={defaultGroup}

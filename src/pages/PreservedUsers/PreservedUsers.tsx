@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
+  Button,
   PaginationVariant,
   PageSection,
   ToolbarItemVariant,
@@ -20,7 +21,6 @@ import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
@@ -458,49 +458,53 @@ const PreservedUsers = () => {
     {
       key: 3,
       element: (
-        <SecondaryButton
-          onClickHandler={refreshUsersData}
+        <Button
+          onClick={refreshUsersData}
           isDisabled={!showTableRows}
-          dataCy="preserved-users-button-refresh"
+          data-cy="preserved-users-button-refresh"
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 4,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={isDeleteButtonDisabled || !showTableRows}
-          onClickHandler={onDeleteHandler}
-          dataCy="preserved-users-button-delete"
+          onClick={onDeleteHandler}
+          data-cy="preserved-users-button-delete"
+          variant="secondary"
         >
           Delete
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 5,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={!showTableRows || selectedUsers.length === 0}
-          onClickHandler={onRestoreHandler}
-          dataCy="preserved-users-button-restore"
+          onClick={onRestoreHandler}
+          data-cy="preserved-users-button-restore"
+          variant="secondary"
         >
           Restore
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 6,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={!showTableRows || selectedUsers.length === 0}
-          onClickHandler={onStageHandler}
-          dataCy="preserved-users-button-stage"
+          onClick={onStageHandler}
+          data-cy="preserved-users-button-stage"
+          variant="secondary"
         >
           Stage
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   PageSection,
@@ -26,7 +27,6 @@ import ToolbarLayout, {
 } from "src/components/layouts/ToolbarLayout";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import MainTable from "src/components/tables/MainTable";
 // Errors
@@ -288,25 +288,27 @@ const SubordinateIDs = () => {
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="subids-button-refresh"
-          onClickHandler={refreshData}
+        <Button
+          data-cy="subids-button-refresh"
+          onClick={refreshData}
           isDisabled={!showTableRows}
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 3,
       element: (
-        <SecondaryButton
-          dataCy="subids-button-add"
+        <Button
+          data-cy="subids-button-add"
           isDisabled={!showTableRows}
-          onClickHandler={onOpenAddModal}
+          onClick={onOpenAddModal}
+          variant="secondary"
         >
           Add
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

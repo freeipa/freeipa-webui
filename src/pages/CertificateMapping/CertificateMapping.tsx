@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   PageSection,
@@ -37,7 +38,6 @@ import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -385,61 +385,66 @@ const CertificateMappingPage = () => {
     {
       key: 3,
       element: (
-        <SecondaryButton
-          dataCy="certificate-mapping-button-refresh"
-          onClickHandler={refreshData}
+        <Button
+          data-cy="certificate-mapping-button-refresh"
+          onClick={refreshData}
           isDisabled={!showTableRows}
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 4,
       element: (
-        <SecondaryButton
-          dataCy="certificate-mapping-button-delete"
+        <Button
+          data-cy="certificate-mapping-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
-          onClickHandler={() => setShowDeleteModal(true)}
+          onClick={() => setShowDeleteModal(true)}
+          variant="secondary"
         >
           Delete
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 5,
       element: (
-        <SecondaryButton
-          dataCy="certificate-mapping-button-add"
+        <Button
+          data-cy="certificate-mapping-button-add"
           isDisabled={!showTableRows}
-          onClickHandler={() => setShowAddModal(true)}
+          onClick={() => setShowAddModal(true)}
+          variant="secondary"
         >
           Add
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 6,
       element: (
-        <SecondaryButton
-          dataCy="certificate-mapping-button-disable"
+        <Button
+          data-cy="certificate-mapping-button-disable"
           isDisabled={isDisableButtonDisabled || !showTableRows}
-          onClickHandler={onDisableOperation}
+          onClick={onDisableOperation}
+          variant="secondary"
         >
           Disable
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 7,
       element: (
-        <SecondaryButton
-          dataCy="certificate-mapping-button-enable"
+        <Button
+          data-cy="certificate-mapping-button-enable"
           isDisabled={isEnableButtonDisabled || !showTableRows}
-          onClickHandler={onEnableOperation}
+          onClick={onEnableOperation}
+          variant="secondary"
         >
           Enable
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

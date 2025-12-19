@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 // PatternFly
-import { Flex, Form, FormGroup } from "@patternfly/react-core";
+import { Button, Flex, Form, FormGroup } from "@patternfly/react-core";
 // Forms
 import IpaTextArea from "../../components/Form/IpaTextArea";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
@@ -101,40 +100,43 @@ const HostGroupsSettings = (props: PropsToGroupsSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="host-groups-tab-settings-button-refresh"
-          onClickHandler={props.onRefresh}
+        <Button
+          data-cy="host-groups-tab-settings-button-refresh"
+          onClick={props.onRefresh}
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="host-groups-tab-settings-button-revert"
+        <Button
+          data-cy="host-groups-tab-settings-button-revert"
           isDisabled={!props.isModified}
-          onClickHandler={onRevert}
+          onClick={onRevert}
+          variant="secondary"
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="host-groups-tab-settings-button-save"
+        <Button
+          data-cy="host-groups-tab-settings-button-save"
           isDisabled={!props.isModified || isSaving}
-          onClickHandler={onSave}
+          onClick={onSave}
           isLoading={isSaving}
           spinnerAriaValueText="Saving"
           spinnerAriaLabelledBy="Saving"
           spinnerAriaLabel="Saving"
+          variant="secondary"
         >
           {isSaving ? "Saving" : "Save"}
-        </SecondaryButton>
+        </Button>
       ),
     },
   ];

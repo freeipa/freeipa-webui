@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   PageSection,
@@ -32,7 +33,6 @@ import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -318,61 +318,66 @@ const DnsForwardZones = () => {
     {
       key: 3,
       element: (
-        <SecondaryButton
-          onClickHandler={refreshData}
+        <Button
+          onClick={refreshData}
           isDisabled={!showTableRows}
-          dataCy={"dns-forward-zones-refresh"}
+          data-cy="dns-forward-zones-refresh"
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 4,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={isDeleteButtonDisabled || !showTableRows}
-          dataCy={"dns-forward-zones-delete"}
-          onClickHandler={() => setShowDeleteForwardZonesModal(true)}
+          data-cy="dns-forward-zones-delete"
+          onClick={() => setShowDeleteForwardZonesModal(true)}
+          variant="secondary"
         >
           Delete
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 5,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={!showTableRows}
-          dataCy={"dns-forward-zones-add"}
-          onClickHandler={() => setShowAddForwardZoneModal(true)}
+          data-cy="dns-forward-zones-add"
+          onClick={() => setShowAddForwardZoneModal(true)}
+          variant="secondary"
         >
           Add
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 6,
       element: (
-        <SecondaryButton
-          onClickHandler={() => onEnableDisableHandler("disable")}
+        <Button
+          onClick={() => onEnableDisableHandler("disable")}
           isDisabled={isDisableButtonDisabled || !showTableRows}
-          dataCy={"dns-forward-zones-disable"}
+          data-cy="dns-forward-zones-disable"
+          variant="secondary"
         >
           Disable
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 7,
       element: (
-        <SecondaryButton
-          onClickHandler={() => onEnableDisableHandler("enable")}
+        <Button
+          onClick={() => onEnableDisableHandler("enable")}
           isDisabled={isEnableButtonDisabled || !showTableRows}
-          dataCy={"dns-forward-zones-enable"}
+          data-cy="dns-forward-zones-enable"
+          variant="secondary"
         >
           Enable
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

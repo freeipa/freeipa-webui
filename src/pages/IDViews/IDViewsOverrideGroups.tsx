@@ -19,7 +19,6 @@ import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { addAlert } from "src/store/Global/alerts-slice";
 // Layouts
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
@@ -346,36 +345,39 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
     {
       key: 3,
       element: (
-        <SecondaryButton
-          dataCy="id-views-tab-override-groups-button-refresh"
-          onClickHandler={props.onRefresh}
+        <Button
+          data-cy="id-views-tab-override-groups-button-refresh"
+          onClick={props.onRefresh}
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 4,
       element: (
-        <SecondaryButton
-          dataCy="id-views-tab-override-groups-button-delete"
+        <Button
+          data-cy="id-views-tab-override-groups-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
-          onClickHandler={onDeleteHandler}
+          onClick={onDeleteHandler}
+          variant="secondary"
         >
           Delete
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 5,
       element: (
-        <SecondaryButton
-          dataCy="id-views-tab-override-groups-button-add"
-          onClickHandler={onAddClickHandler}
+        <Button
+          data-cy="id-views-tab-override-groups-button-add"
+          onClick={onAddClickHandler}
           isDisabled={!showTableRows}
+          variant="secondary"
         >
           Add
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

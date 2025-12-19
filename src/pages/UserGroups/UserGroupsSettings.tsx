@@ -17,7 +17,6 @@ import IpaTextArea from "../../components/Form/IpaTextArea";
 import { useNavigate } from "react-router";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import KebabLayout from "src/components/layouts/KebabLayout";
 import TabLayout from "src/components/layouts/TabLayout";
 // Utils
@@ -372,40 +371,43 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          onClickHandler={props.onRefresh}
-          dataCy="user-groups-tab-settings-button-refresh"
+        <Button
+          onClick={props.onRefresh}
+          data-cy="user-groups-tab-settings-button-refresh"
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={!props.isModified}
-          onClickHandler={onRevert}
-          dataCy="user-groups-tab-settings-button-revert"
+          onClick={onRevert}
+          data-cy="user-groups-tab-settings-button-revert"
+          variant="secondary"
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={!props.isModified || isSaving}
-          onClickHandler={onSave}
-          dataCy="user-groups-tab-settings-button-save"
+          onClick={onSave}
+          data-cy="user-groups-tab-settings-button-save"
           isLoading={isSaving}
           spinnerAriaValueText="Saving"
           spinnerAriaLabelledBy="Saving"
           spinnerAriaLabel="Saving"
+          variant="secondary"
         >
           {isSaving ? "Saving" : "Save"}
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

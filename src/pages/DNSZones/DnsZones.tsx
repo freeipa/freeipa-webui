@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   PageSection,
@@ -35,7 +36,6 @@ import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -355,61 +355,66 @@ const DnsZones = () => {
     {
       key: 3,
       element: (
-        <SecondaryButton
-          dataCy="dns-zones-button-refresh"
-          onClickHandler={refreshData}
+        <Button
+          data-cy="dns-zones-button-refresh"
+          onClick={refreshData}
           isDisabled={!showTableRows}
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 4,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={isDeleteButtonDisabled || !showTableRows}
-          onClickHandler={() => setShowDeleteModal(true)}
-          dataCy="dns-zones-button-delete"
+          onClick={() => setShowDeleteModal(true)}
+          data-cy="dns-zones-button-delete"
+          variant="secondary"
         >
           Delete
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 5,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={!showTableRows}
-          onClickHandler={() => setShowAddModal(true)}
-          dataCy="dns-zones-button-add"
+          onClick={() => setShowAddModal(true)}
+          data-cy="dns-zones-button-add"
+          variant="secondary"
         >
           Add
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 6,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={isDisableButtonDisabled || !showTableRows}
-          onClickHandler={onDisableOperation}
-          dataCy="dns-zones-button-disable"
+          onClick={onDisableOperation}
+          data-cy="dns-zones-button-disable"
+          variant="secondary"
         >
           Disable
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 7,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={isEnableButtonDisabled || !showTableRows}
-          onClickHandler={onEnableOperation}
-          dataCy="dns-zones-button-enable"
+          onClick={onEnableOperation}
+          data-cy="dns-zones-button-enable"
+          variant="secondary"
         >
           Enable
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

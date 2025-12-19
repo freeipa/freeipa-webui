@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 // PatternFly
 import { Button, TextArea } from "@patternfly/react-core";
 // Layouts
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import InputRequiredText from "src/components/layouts/InputRequiredText";
 // Modals
@@ -206,13 +205,14 @@ const AddHBACRule = (props: PropsToAddGroup) => {
   };
 
   const errorModalActions = [
-    <SecondaryButton
-      dataCy="modal-button-retry"
+    <Button
+      data-cy="modal-button-retry"
       key="retry"
-      onClickHandler={onRetry}
+      onClick={onRetry}
+      variant="secondary"
     >
       Retry
-    </SecondaryButton>,
+    </Button>,
     <Button
       data-cy="modal-button-cancel"
       key="cancel"
@@ -248,19 +248,20 @@ const AddHBACRule = (props: PropsToAddGroup) => {
     >
       {addSpinning ? "Adding" : "Add"}
     </Button>,
-    <SecondaryButton
-      dataCy="modal-button-add-and-add-another"
+    <Button
+      data-cy="modal-button-add-and-add-another"
       key="add-and-add-another-new-rule"
       name="add_and_add_another"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClickHandler={addAndAddAnotherHandler}
+      onClick={addAndAddAnotherHandler}
       form="modal-form"
       spinnerAriaValueText="Adding again"
       spinnerAriaLabel="Adding again"
       isLoading={addAgainSpinning}
+      variant="secondary"
     >
       {addAgainSpinning ? "Adding" : "Add and add another"}
-    </SecondaryButton>,
+    </Button>,
     <Button
       data-cy="modal-button-cancel"
       key="cancel-new-rule"

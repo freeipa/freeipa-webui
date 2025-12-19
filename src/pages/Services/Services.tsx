@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   PageSection,
@@ -17,7 +18,6 @@ import ToolbarLayout, {
   ToolbarItem,
 } from "../../components/layouts/ToolbarLayout";
 import SearchInputLayout from "../../components/layouts/SearchInputLayout";
-import SecondaryButton from "../../components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "../../components/layouts/HelpTextWithIconLayout";
 // Components
 import BulkSelectorPrep from "../../components/BulkSelectorPrep";
@@ -483,37 +483,40 @@ const Services = () => {
     {
       key: 3,
       element: (
-        <SecondaryButton
-          onClickHandler={refreshServicesData}
+        <Button
+          onClick={refreshServicesData}
           isDisabled={!showTableRows}
-          dataCy="services-button-refresh"
+          data-cy="services-button-refresh"
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 4,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={isDeleteButtonDisabled}
-          onClickHandler={onDeleteHandler}
-          dataCy="services-button-delete"
+          onClick={onDeleteHandler}
+          data-cy="services-button-delete"
+          variant="secondary"
         >
           Delete
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 5,
       element: (
-        <SecondaryButton
+        <Button
           isDisabled={!showTableRows}
-          onClickHandler={onAddClickHandler}
-          dataCy="services-button-add"
+          onClick={onAddClickHandler}
+          data-cy="services-button-add"
+          variant="secondary"
         >
           Add
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

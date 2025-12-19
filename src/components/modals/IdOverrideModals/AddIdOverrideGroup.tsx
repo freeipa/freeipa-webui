@@ -8,7 +8,6 @@ import {
   TextInput,
 } from "@patternfly/react-core";
 // Layout
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import InputWithValidation from "src/components/layouts/InputWithValidation";
 // Redux
@@ -292,13 +291,14 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
   };
 
   const errorModalActions = [
-    <SecondaryButton
+    <Button
       key="retry"
-      onClickHandler={onRetry}
-      dataCy="modal-button-retry"
+      onClick={onRetry}
+      data-cy="modal-button-retry"
+      variant="secondary"
     >
       Retry
-    </SecondaryButton>,
+    </Button>,
     <Button
       key="cancel"
       variant="link"
@@ -345,17 +345,18 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
     >
       {addSpinning ? "Adding" : "Add"}
     </Button>,
-    <SecondaryButton
-      dataCy="modal-button-add-and-add-another"
+    <Button
+      data-cy="modal-button-add-and-add-another"
       key="add-and-add-another-group"
       isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClickHandler={addAndAddAnotherHandler}
+      onClick={addAndAddAnotherHandler}
       spinnerAriaValueText="Adding again"
       spinnerAriaLabel="Adding again"
       isLoading={addAgainSpinning}
+      variant="secondary"
     >
       {addAgainSpinning ? "Adding" : "Add and add another"}
-    </SecondaryButton>,
+    </Button>,
     <Button
       data-cy="modal-button-cancel"
       key="cancel-new-group"

@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   PageSection,
@@ -34,7 +35,6 @@ import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -366,37 +366,40 @@ const IdpReferences = () => {
     {
       key: 3,
       element: (
-        <SecondaryButton
-          dataCy="idp-references-button-refresh"
-          onClickHandler={refreshData}
+        <Button
+          data-cy="idp-references-button-refresh"
+          onClick={refreshData}
           isDisabled={!showTableRows}
+          variant="secondary"
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 4,
       element: (
-        <SecondaryButton
-          dataCy="idp-references-button-delete"
+        <Button
+          data-cy="idp-references-button-delete"
           isDisabled={isDeleteButtonDisabled || !showTableRows}
-          onClickHandler={onOpenDeleteModal}
+          onClick={onOpenDeleteModal}
+          variant="secondary"
         >
           Delete
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 5,
       element: (
-        <SecondaryButton
-          dataCy="idp-references-button-add"
+        <Button
+          data-cy="idp-references-button-add"
           isDisabled={!showTableRows}
-          onClickHandler={onOpenAddModal}
+          onClick={onOpenAddModal}
+          variant="secondary"
         >
           Add
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
