@@ -189,11 +189,6 @@ const AddUser = (props: PropsToAddUser) => {
           onChange={setUserLogin}
           rules={[
             {
-              id: "ruleLength",
-              message: "Must be at least 3 characters in length",
-              validate: (v: string) => v.length >= 3,
-            },
-            {
               id: "ruleCharacters",
               message: "Only alphanumeric and special characters _-.$",
               validate: (v: string) =>
