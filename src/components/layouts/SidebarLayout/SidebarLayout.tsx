@@ -30,7 +30,6 @@ const SidebarLayout = (props: SidebarLayoutProps) => {
             isVertical
             label="Jump to section"
             scrollableSelector="#settings-page"
-            offset={220} // for masthead
             expandable={{ default: "expandable", md: "nonExpandable" }}
           >
             {props.itemNames.map((item, index) => (

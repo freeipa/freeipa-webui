@@ -219,7 +219,6 @@ const KrbTicketPolicy = () => {
               isVertical
               label="Jump to section"
               scrollableSelector="#krb-ticket-policy-page"
-              offset={220} // for masthead
               expandable={{ default: "expandable", md: "nonExpandable" }}
               className="pf-v6-u-mt-md"
             >

@@ -183,7 +183,6 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
             isVertical
             label="Jump to section"
             scrollableSelector="#settings-page"
-            offset={220} // for masthead
             expandable={{ default: "expandable", md: "nonExpandable" }}
           >
             <JumpLinksItem key={0} href="#trusts-settings">
