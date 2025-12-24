@@ -8,7 +8,6 @@ import {
   MastheadBrand,
   Page,
   PageSidebar,
-  PageToggleButton,
   SkipToContent,
   Toolbar,
   PageSidebarBody,
@@ -20,6 +19,7 @@ import {
   ToolbarGroup,
   ToolbarContent,
   Brand,
+  Button,
 } from "@patternfly/react-core";
 import React from "react";
 // Icons
@@ -173,20 +173,16 @@ const AppLayout = (props: PropsToAppLayout) => {
     <Masthead>
       <MastheadMain>
         <MastheadToggle>
-          <PageToggleButton
-            isHamburgerButton
+          <Button
+            isHamburger
             data-cy="toolbar-button-toggle"
             variant="plain"
             aria-label="Global navigation"
           />
         </MastheadToggle>
         <MastheadBrand>
-          <MastheadLogo className="pf-v6-u-mt-sm">
-            <MastheadBrand>
-              <MastheadLogo>
-                <Brand src={headerLogo} alt="FreeIPA Logo" />
-              </MastheadLogo>
-            </MastheadBrand>
+          <MastheadLogo>
+            <Brand src={headerLogo} alt="FreeIPA Logo" />
           </MastheadLogo>
         </MastheadBrand>
       </MastheadMain>
