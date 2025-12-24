@@ -382,7 +382,85 @@ case "${action}" in
         read -r -a cypress_cmd <<< "${action/:/ }"
         podman unshare --rootless-netns npx "${cypress_cmd[@]}" "${extra[@]}"
         ;;
-    "dev") is_webserver_running || podman exec -it webui npm run dev ;;
+    "dev")
+        if ! is_webserver_running; then
+            IPA_CONF="/etc/httpd/conf.d/ipa.conf"
+            
+            # Python script to inject in-place at the beginning
+            podman exec -i webui python3 <<EOF
+import re
+import sys
+
+config_path = '${IPA_CONF}'
+
+proxy_config = """
+# ==============================================================================
+# VITE DEV CONFIGURATION
+# ==============================================================================
+SSLProxyEngine on
+
+# Global Alias for legacy assets (loader.js)
+# Needed to avoid 404 errors for old images and scripts
+Alias "/ui" "/usr/share/ipa/ui"
+<Directory "/usr/share/ipa/ui">
+    SetHandler None
+    AllowOverride None
+    Require all granted
+    Header set Expires 0
+</Directory>
+
+# We use ProxyPassMatch: Gains from WSGI and handles deep paths (E.g. '/active-users', '/active-users/123', etc.)
+ProxyPassMatch ^/ipa/modern-ui/(.*)$ http://127.0.0.1:5173/ipa/modern-ui/\$1 upgrade=websocket
+
+ProxyPassReverse /ipa/modern-ui http://127.0.0.1:5173/ipa/modern-ui
+
+<Location "/ipa/modern-ui">
+    SetHandler None
+    
+    AuthType None
+    Require all granted
+    Satisfy Any
+    
+    RequestHeader set X-Forwarded-Proto "https"
+    RequestHeader set X-Forwarded-Port "443"
+    RequestHeader set X-Forwarded-Host "webui.ipa.test"
+    
+    Header unset ETag
+    Header set Cache-Control "no-cache, no-store"
+    Header set Pragma "no-cache"
+</Location>
+# ==============================================================================
+"""
+
+try:
+    with open(config_path, 'r') as f:
+        content = f.read()
+
+    if "VITE DEV CONFIGURATION" in content:
+        print("Config already patched.")
+        sys.exit(0)
+
+    # Remove the original Alias for cleanup
+    content = re.sub(r'(^\s*Alias\s+/ipa/modern-ui.*$)', r'# \1', content, flags=re.MULTILINE)
+
+    # Inject at the beginning
+    with open(config_path, 'w') as f:
+        f.write(proxy_config + "\n" + content)
+    
+    print("Patched ipa.conf successfully.")
+
+except Exception as e:
+    print(f"Error: {e}")
+    sys.exit(1)
+EOF
+
+            log "Restarting Apache..."
+            podman exec webui systemctl restart httpd
+            
+            log "Starting Vite..."
+            podman exec -it webui npm run dev
+        fi
+        ;;
     "build")
         is_container_created "webui" || die "Webui container is not running."
         is_webserver_running && die "Development webserver is running."

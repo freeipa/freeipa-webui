@@ -36,8 +36,18 @@ export default defineConfig(async ({ mode }) => {
     server: {
       host: "0.0.0.0",
       origin: "http://localhost:5173",
+      allowedHosts: ["webui.ipa.test"],
+      hmr: {
+        protocol: "wss",
+        host: "webui.ipa.test",
+        clientPort: 443,
+        path: "/ipa/modern-ui",
+      },
       cors: {
         origin: "https://webui.ipa.test",
+      },
+      watch: {
+        usePolling: true,
       },
     },
     test: {
