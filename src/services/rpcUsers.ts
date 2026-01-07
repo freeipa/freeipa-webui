@@ -269,20 +269,16 @@ const extendedApi = api.injectEndpoints({
         response.result.result as unknown as User[],
       providesTags: ["ActiveUsers"],
     }),
-    // Autommeber Users
-    autoMemberRebuildUsers: build.mutation<FindRPCResponse, any[]>({
+    // Automember Users
+    autoMemberRebuildUsers: build.mutation<FindRPCResponse, string[]>({
       query: (users) => {
-        let user_list = users.map((user) => user.uid);
-        // user.uid might be an array
-        if (users.length > 0 && Array.isArray(users[0].uid)) {
-          user_list = users.map((user) => user.uid[0]);
-        }
-
         const paramArgs =
           users.length === 0
-            ? { type: "group", version: API_VERSION_BACKUP }
-            : {
-                users: user_list,
+            ? // from user's main page
+              { type: "group", version: API_VERSION_BACKUP }
+            : // from user's settings page
+              {
+                users: users,
                 version: API_VERSION_BACKUP,
               };
 

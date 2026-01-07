@@ -326,7 +326,10 @@ const ActiveUsers = () => {
       })
     );
 
-    executeAutoMemberRebuild(selectedUsers).then((result) => {
+    // Prepare payload
+    const userList = selectedUsers.map((user) => user.uid[0]);
+
+    executeAutoMemberRebuild(userList).then((result) => {
       if ("data" in result) {
         const automemberError = result.data?.error as
           | FetchBaseQueryError
