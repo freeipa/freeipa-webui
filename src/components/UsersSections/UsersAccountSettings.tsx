@@ -260,21 +260,23 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 from={props.from}
               />
             </FormGroup>
-            <FormGroup
-              label="Certificates"
-              fieldId="usercertificate"
-              role="group"
-            >
-              <IpaCertificates
-                dataCy="user-tab-settings-certificates"
-                ipaObject={ipaObject}
-                objectType="user"
-                onChange={recordOnChange}
-                metadata={props.metadata}
-                certificates={props.certData}
-                onRefresh={props.onRefresh}
-              />
-            </FormGroup>
+            {props.from === "active-users" && (
+              <FormGroup
+                label="Certificates"
+                fieldId="usercertificate"
+                role="group"
+              >
+                <IpaCertificates
+                  dataCy="user-tab-settings-certificates"
+                  ipaObject={ipaObject}
+                  objectType="user"
+                  onChange={recordOnChange}
+                  metadata={props.metadata}
+                  certificates={props.certData}
+                  onRefresh={props.onRefresh}
+                />
+              </FormGroup>
+            )}
             <FormGroup
               label="Certificate mapping data"
               fieldId="ipacertmapdata"
