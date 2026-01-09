@@ -87,6 +87,17 @@ interface UserFindPayload {
   noMembers?: boolean;
 }
 
+export interface AddUserPayload {
+  type: "user" | "stageuser";
+  givenname: string;
+  sn: string;
+  uid?: string;
+  userclass?: string;
+  noprivate?: boolean;
+  gidnumber?: string;
+  userpassword?: string;
+}
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     getGenericUsersFullData: build.query<UserFullData, object>({
@@ -536,6 +547,21 @@ const extendedApi = api.injectEndpoints({
         }
       },
     }),
+    /**
+     * Add new user
+     * @param {AddUserPayload} payload - Add user payload
+     * @returns {FindRPCResponse} - Find response
+     */
+    addUser: build.mutation<FindRPCResponse, AddUserPayload>({
+      query: (payload) => {
+        const { type, ...params } = payload;
+
+        return getCommand({
+          method: type === "user" ? "user_add" : "stageuser_add",
+          params: [[], params],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -604,4 +630,5 @@ export const {
   useGetUsersInfoByUidQuery,
   useGetUserDetailsByUidMutation,
   useUserFindQuery,
+  useAddUserMutation,
 } = extendedApi;

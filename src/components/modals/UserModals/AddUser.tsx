@@ -4,11 +4,10 @@ import {
   Button,
   Checkbox,
   Flex,
+  FlexItem,
   SelectOptionProps,
   TextInput,
 } from "@patternfly/react-core";
-// Icons
-import { HelpIcon } from "@patternfly/react-icons";
 // Layout
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
@@ -32,6 +31,8 @@ import { NO_SELECTION_OPTION } from "src/utils/constUtils";
 // Components
 import TypeAheadSelectWithCreate from "src/components/TypeAheadSelectWithCreate";
 import InputWithValidation from "src/components/layouts/InputWithValidation";
+import { AddUserPayload, useAddUserMutation } from "src/services/rpcUsers";
+import PopoverWithIconLayout from "src/components/layouts/PopoverWithIconLayout";
 
 interface GroupId {
   cn: string;
@@ -59,7 +60,7 @@ const AddUser = (props: PropsToAddUser) => {
   ) as string;
 
   // Define 'executeCommand' to add user data to IPA server
-  const [executeUserAddCommand] = useSimpleMutCommandMutation();
+  const [addUser] = useAddUserMutation();
   // Define handler to execute when getting gids
   const [retrieveGIDs] = useSimpleMutCommandMutation();
 
@@ -157,7 +158,8 @@ const AddUser = (props: PropsToAddUser) => {
   const buttonDisabled = !(
     firstName.length > 0 &&
     lastName.length > 0 &&
-    verifiedPasswords
+    verifiedPasswords &&
+    (isNoPrivateGroupChecked === true ? gidSelected !== "" : true)
   );
 
   // If modal is shown, load GID data to show in the selector (only once)
@@ -259,24 +261,32 @@ const AddUser = (props: PropsToAddUser) => {
           onChange={(_event, value: string) => setUserClass(value)}
         />
       ),
-      labelIcon:
-        props.from !== "stage-users" ? (
-          <HelpIcon className="pf-v6-u-ml-xs" />
-        ) : (
-          <div />
-        ),
     },
     {
       id: "no-private-group",
       pfComponent: (
-        <Flex>
-          <Checkbox
-            data-cy="modal-checkbox-no-private-group"
-            label="No private group"
-            id="no-private-group"
-            isChecked={isNoPrivateGroupChecked}
-          />
-          <HelpIcon />
+        <Flex
+          direction={{ default: "row" }}
+          alignItems={{ default: "alignItemsCenter" }}
+        >
+          <FlexItem>
+            <Checkbox
+              data-cy="modal-checkbox-no-private-group"
+              label="No private group"
+              id="no-private-group"
+              isChecked={isNoPrivateGroupChecked}
+              onChange={(_event, checked: boolean) =>
+                setIsNoPrivateGroupChecked(checked)
+              }
+            />
+          </FlexItem>
+          <FlexItem>
+            <PopoverWithIconLayout
+              message={
+                "A GID must be specified when 'No private group' is selected"
+              }
+            />
+          </FlexItem>
         </Flex>
       ),
     },
@@ -292,6 +302,7 @@ const AddUser = (props: PropsToAddUser) => {
           onSelectedChange={setGidSelected}
         />
       ),
+      fieldRequired: isNoPrivateGroupChecked,
     },
     {
       id: "modal-form-new-password",
@@ -342,94 +353,74 @@ const AddUser = (props: PropsToAddUser) => {
     fields = new_fields;
   }
 
-  // List of field validations handled inline via rules
-
-  // Define status flags to determine user added successfully or error
-  let isAdditionSuccess = true;
-
   // Track which button has been clicked ('onAddUser')
   //  to better handle the 'retry' function and its behavior
   let onAddUserClicked = true;
 
-  // Add user data
-  const addUserData = async () => {
-    // If 'userLogin' is not provided, use empty array
-    const usLogin = userLogin !== "" ? [userLogin] : [];
-    const newUserData = {
-      givenname: firstName,
-      sn: lastName,
-      userclass: userClass !== "" ? userClass : undefined,
-      userpassword: newPassword,
-      version: apiVersion,
-    };
-
-    // Define payload data
-    let method = "user_add";
-    if (props.from === "stage-users") {
-      method = "stageuser_add";
-    } else {
-      // Non-stage users use noprivate
-      newUserData["noprivate"] = isNoPrivateGroupChecked;
-      // Add gidNumber for non-stage users
-      newUserData["gidnumber"] = gidSelected;
-    }
-    // Prepare the command data
-    const newUserCommandData = [usLogin, newUserData];
-
-    const newUserPayload: Command = {
-      method: method,
-      params: newUserCommandData,
-    };
-
-    // Add user via API call
-    await executeUserAddCommand(newUserPayload).then((user) => {
-      if ("data" in user) {
-        const data = user.data as FindRPCResponse;
-        const result = data.result;
-        const error = data.error as FetchBaseQueryError | SerializedError;
-
-        if (result) {
-          // Set status flag: success
-          isAdditionSuccess = true;
-          // Refresh data
-          if (props.onRefresh !== undefined) {
-            props.onRefresh();
-          }
-
-          // Set alert: success
-          dispatch(
-            addAlert({
-              name: "add-user-success",
-              title: "New user added",
-              variant: "success",
-            })
-          );
-        } else if (error) {
-          // Set status flag: error
-          isAdditionSuccess = false;
-          // Handle error
-          handleAPIError(error);
-        }
-      }
-      setAddBtnSpinning(false);
-    });
-  };
-
   const onAddUser = () => {
     onAddUserClicked = true;
+
+    // Prepare payload
+    const newUserPayload: AddUserPayload = {
+      type: props.from === "stage-users" ? "stageuser" : "user",
+      givenname: firstName,
+      sn: lastName,
+    };
+
+    if (userLogin !== "") {
+      newUserPayload.uid = userLogin;
+    }
+
+    if (userClass !== "") {
+      newUserPayload.userclass = userClass;
+    }
+
+    if (isNoPrivateGroupChecked === true) {
+      newUserPayload.noprivate = true;
+    }
+
+    if (gidSelected !== "") {
+      newUserPayload.gidnumber = gidSelected;
+    }
+
+    if (newPassword !== "") {
+      newUserPayload.userpassword = newPassword;
+    }
+
     if (verifiedPasswords) {
       setAddBtnSpinning(true);
-      addUserData().then(() => {
-        if (!isAdditionSuccess) {
-          // Close the modal without cleaning fields
-          if (props.onCloseAddModal !== undefined) {
-            props.onCloseAddModal();
+
+      addUser(newUserPayload)
+        .then((user) => {
+          if ("data" in user) {
+            const data = user.data as FindRPCResponse;
+            const result = data.result;
+            const error = data.error as FetchBaseQueryError | SerializedError;
+
+            if (result) {
+              // Refresh data
+              if (props.onRefresh !== undefined) {
+                props.onRefresh();
+              }
+
+              // Set alert: success
+              dispatch(
+                addAlert({
+                  name: "add-user-success",
+                  title: "New user added",
+                  variant: "success",
+                })
+              );
+              cleanAndCloseModal();
+            } else if (error) {
+              // Handle error
+              handleAPIError(error);
+            }
           }
-        } else {
-          // Clean data and close modal
-          cleanAndCloseModal();
-        }
-      });
+        })
+        .finally(() => {
+          setAddBtnSpinning(false);
+        });
     }
   };
 
