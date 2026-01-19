@@ -168,6 +168,7 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                 objectName="user"
                 metadata={props.metadata}
                 dataCy="user-tab-settings-calendar-krbpasswordexpiration"
+                isDisabled={true}
               />
             </FormGroup>
             <FormGroup label="UID" fieldId="uidnumber">

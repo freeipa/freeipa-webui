@@ -23,6 +23,7 @@ interface ParamPropertiesDateTime {
 
 export interface IpaCalendarProps extends IPAParamDefinition {
   dataCy: string;
+  isDisabled?: boolean;
 }
 
 function getParamPropertiesDateTime(
@@ -64,7 +65,7 @@ const IpaCalendar = (props: IpaCalendarProps) => {
       onChange={onDateChange}
       name={props.name}
       ariaLabel={props.ariaLabel}
-      isDisabled={readOnly}
+      isDisabled={props.isDisabled || readOnly}
     />
   );
 };
