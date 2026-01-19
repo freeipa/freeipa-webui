@@ -196,43 +196,45 @@ const AddModal = (props: PropsToAddModal) => {
       payload.customFields = customData;
     }
 
-    addIdp(payload).then((result) => {
-      if ("data" in result) {
-        const data = result.data?.result;
-        const error = result.data?.error as SerializedError;
+    addIdp(payload)
+      .then((result) => {
+        if ("data" in result) {
+          const data = result.data?.result;
+          const error = result.data?.error as SerializedError;
 
-        if (error) {
-          dispatch(
-            addAlert({
-              name: "add-idp-error",
-              title: error.message,
-              variant: "danger",
-            })
-          );
-        }
-
-        if (data) {
-          dispatch(
-            addAlert({
-              name: "add-idp-success",
-              title: "Identity provider successfully added",
-              variant: "success",
-            })
-          );
-          // Reset selected item
-          clearAllFields();
-          // Update data
-          props.onRefresh();
-          // 'Add and add another' will keep the modal open
-          if (!keepModalOpen) {
-            props.onCloseModal();
+          if (error) {
+            dispatch(
+              addAlert({
+                name: "add-idp-error",
+                title: error.message,
+                variant: "danger",
+              })
+            );
           }
-          // Reset button spinners
-          setIsAddButtonSpinning(false);
-          setIsAddAnotherButtonSpinning(false);
+
+          if (data) {
+            dispatch(
+              addAlert({
+                name: "add-idp-success",
+                title: "Identity provider successfully added",
+                variant: "success",
+              })
+            );
+            // Reset selected item
+            clearAllFields();
+            // Update data
+            props.onRefresh();
+            // 'Add and add another' will keep the modal open
+            if (!keepModalOpen) {
+              props.onCloseModal();
+            }
+          }
         }
-      }
-    });
+      })
+      .finally(() => {
+        setIsAddButtonSpinning(false);
+        setIsAddAnotherButtonSpinning(false);
+      });
   };
 
   // Clean and close modal
