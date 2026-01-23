@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 // PatternFly
 import { Badge, Tab, Tabs, TabTitleText } from "@patternfly/react-core";
 // Data types
@@ -22,18 +22,17 @@ interface PropsToSudoGroupsMembers {
 const SudoCmdGroupMembers = (props: PropsToSudoGroupsMembers) => {
   const navigate = useNavigate();
 
-  const groupQuery = useGetSudoCmdGroupByIdQuery(props.sudocmdgroup.cn);
-  const groupData = groupQuery.data || {};
-  const [cmdGroup, setCmdGroup] = useState<Partial<SudoCmdGroup>>({});
+  const {
+    data: cmdGroup,
+    isFetching,
+    refetch,
+  } = useGetSudoCmdGroupByIdQuery(props.sudocmdgroup.cn);
 
-  React.useEffect(() => {
-    if (!groupQuery.isFetching && groupData) {
-      setCmdGroup({ ...groupData });
-    }
-  }, [groupData, groupQuery.isFetching]);
+  // Fallback to props.sudocmdgroup if cmdGroup is not available
+  const displayEntity = cmdGroup || props.sudocmdgroup || {};
 
   const onRefreshSudoCmdData = () => {
-    groupQuery.refetch();
+    refetch();
   };
 
   // Update current route data to Redux and highlight the current page in the Nav bar
@@ -67,20 +66,19 @@ const SudoCmdGroupMembers = (props: PropsToSudoGroupsMembers) => {
               <TabTitleText>
                 Sudo commands{" "}
                 <Badge key={0} id="cmd_count" isRead>
-                  {cmdGroup && cmdGroup.member_sudocmd
-                    ? cmdGroup.member_sudocmd.length
+                  {cmdGroup?.member_sudocmd
+                    ? cmdGroup?.member_sudocmd?.length
                     : 0}
                 </Badge>
               </TabTitleText>
             }
           >
             <MembersSudoCommands
-              entity={cmdGroup}
-              id={cmdGroup.cn as string}
+              entity={displayEntity}
+              id={props.sudocmdgroup.cn}
               from="sudo-command-groups"
-              isDataLoading={groupQuery.isFetching}
+              isDataLoading={isFetching}
               onRefreshData={onRefreshSudoCmdData}
-              member_sudocmd={cmdGroup.member_sudocmd || []}
             />
           </Tab>
         </Tabs>

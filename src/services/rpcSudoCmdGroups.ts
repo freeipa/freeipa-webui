@@ -135,7 +135,6 @@ const extendedApi = api.injectEndpoints({
           group: groupObject,
         };
       },
-      providesTags: ["FullSudoCmdGroup"],
     }),
     saveSudoCmdGroup: build.mutation<FindRPCResponse, Partial<SudoCmdGroup>>({
       query: (cmd) => {

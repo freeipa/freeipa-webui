@@ -32,7 +32,6 @@ interface PropsToMembersSudoGroups {
   from: string;
   isDataLoading: boolean;
   onRefreshData: () => void;
-  member_sudocmd: string[];
 }
 
 const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
@@ -45,56 +44,41 @@ const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
   // Other states
   const [membersSelected, setMembersSelected] = React.useState<string[]>([]);
 
-  // Loaded members based on paging and member attributes
-  const [members, setMembers] = React.useState<SudoCmd[]>([]);
+  const memberNamesToLoad = React.useMemo(() => {
+    const rawMembers = props.entity.member_sudocmd || [];
+    if (rawMembers.length === 0) return [];
 
-  const getCmdNamesToLoad = (): string[] => {
-    let toLoad = [...props.member_sudocmd];
-    toLoad.sort();
+    let toLoad = [...rawMembers].sort();
 
-    // Filter by search
     if (searchValue) {
       toLoad = toLoad.filter((name) =>
         name.toLowerCase().includes(searchValue.toLowerCase())
       );
     }
 
-    // Apply paging
-    toLoad = paginate(toLoad, page, perPage);
-
-    return toLoad;
-  };
-
-  const [memberNamesToLoad, setMemberNamesToLoad] =
-    React.useState<string[]>(getCmdNamesToLoad());
+    return paginate(toLoad, page, perPage);
+  }, [props.entity.member_sudocmd, searchValue, page, perPage]);
 
   // Load services
-  const fullServicesQuery = useGetSudoCmdsInfoByNameQuery({
-    sudoCmdNamesList: memberNamesToLoad,
-    no_members: true,
-    version: API_VERSION_BACKUP,
-  });
-
-  // Refresh services
-  React.useEffect(() => {
-    const serviceNames = getCmdNamesToLoad();
-    setMemberNamesToLoad(serviceNames);
-  }, [props.entity, searchValue, page, perPage]);
-
-  React.useEffect(() => {
-    if (memberNamesToLoad.length > 0) {
-      fullServicesQuery.refetch();
+  const fullSudoCmdsQuery = useGetSudoCmdsInfoByNameQuery(
+    {
+      sudoCmdNamesList: memberNamesToLoad,
+      no_members: true,
+      version: API_VERSION_BACKUP,
+    },
+    {
+      skip: memberNamesToLoad.length === 0 || props.isDataLoading,
+      refetchOnMountOrArgChange: true, // Ensures data is always updated when the component is mounted, ignoring the cache.
     }
-  }, [memberNamesToLoad]);
+  );
 
-  React.useEffect(() => {
-    if (fullServicesQuery.data && !fullServicesQuery.isFetching) {
-      setMembers(fullServicesQuery.data);
-    }
-  }, [fullServicesQuery.data, fullServicesQuery.isFetching]);
+  const members = React.useMemo(() => {
+    if (!fullSudoCmdsQuery.data) return [];
+    return fullSudoCmdsQuery.data.filter((m) => m.sudocmd && m.sudocmd !== "");
+  }, [fullSudoCmdsQuery.data]);
 
   // Computed "states"
-  const showTableRows = members.length > 0;
+  const showTableRows = !fullSudoCmdsQuery.isFetching && !props.isDataLoading;
   const columnNames = ["Sudo command", "Description"];
   const properties = ["cn", "description"];
 
@@ -105,7 +89,7 @@ const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
 
   // Buttons functionality
   const isRefreshButtonEnabled =
-    !fullServicesQuery.isFetching && !props.isDataLoading;
+    !fullSudoCmdsQuery.isFetching && !props.isDataLoading;
   const isAddButtonEnabled = isRefreshButtonEnabled;
 
   // API calls
@@ -150,9 +134,9 @@ const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
           title: cmd.sudocmd,
         });
       }
+
       items = items.filter(
-        (item) =>
-          !props.member_sudocmd.includes(item.key) && item.key !== props.id
+        (item) => !props.entity?.member_sudocmd?.includes(item.key)
       );
 
       setAvailableServices(avalCmds);
@@ -262,7 +246,7 @@ const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
         addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
         helpIconEnabled={true}
-        totalItems={props.member_sudocmd.length}
+        totalItems={props.entity?.member_sudocmd?.length || 0}
         perPage={perPage}
         page={page}
         onPerPageChange={setPerPage}
@@ -280,7 +264,7 @@ const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
       />
       <Pagination
         className="pf-v6-u-pb-0 pf-v6-u-pr-md"
-        itemCount={props.member_sudocmd.length}
+        itemCount={props.entity?.member_sudocmd?.length || 0}
         widgetId="pagination-options-menu-bottom"
         perPage={perPage}
         page={page}
