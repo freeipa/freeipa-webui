@@ -1,11 +1,6 @@
 import { Given } from "@badeball/cypress-cucumber-preprocessor";
 import { loginAsAdmin, logout } from "../common/authentication";
-import {
-  selectEntry,
-  searchForEntry,
-  entryDoesNotExist,
-  entryExists,
-} from "../common/data_tables";
+import { searchForEntry, entryExists } from "../common/data_tables";
 import { navigateTo } from "../common/navigation";
 import { selectOption } from "../common/ui/select";
 import { isOptionSelected } from "../common/ui/select";
@@ -18,19 +13,10 @@ const createUserGroupExec = (groupName: string) => {
 };
 
 Given("I delete user group {string}", (groupName: string) => {
-  loginAsAdmin();
-  navigateTo("user-groups");
-  selectEntry(groupName);
-
-  cy.dataCy("user-groups-button-delete").click();
-  cy.dataCy("delete-user-groups-modal").should("exist");
-
-  cy.dataCy("modal-button-delete").click();
-  cy.dataCy("delete-user-groups-modal").should("not.exist");
-
-  searchForEntry(groupName);
-  entryDoesNotExist(groupName);
-  logout();
+  cy.ipa({
+    command: "group-del",
+    name: groupName,
+  });
 });
 
 Given("user group {string} exists", (groupName: string) => {

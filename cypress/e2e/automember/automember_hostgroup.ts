@@ -8,7 +8,6 @@ import {
 import "../hostgroups/hostgroup";
 import "../common/data_tables";
 import { navigateTo } from "../common/navigation";
-import { loginAsAdmin, logout } from "../common/authentication";
 import { isOptionSelected, selectOption } from "../common/ui/select";
 
 const fillHostgroupRule = (hostgroupName: string) => {
@@ -46,6 +45,14 @@ const deleteHostgroupRule = (hostgroupName: string) => {
   searchForEntry(hostgroupName);
   entryDoesNotExist(hostgroupName);
   cy.dataCy("delete-rule-success").should("exist");
+};
+
+const deleteHostgroupRuleExec = (hostgroupName: string) => {
+  cy.ipa({
+    command: "automember-del",
+    name: hostgroupName,
+    specificOptions: "--type hostgroup",
+  });
 };
 
 const setDefaultHostgroupRule = (hostgroupName: string) => {
@@ -103,14 +110,7 @@ Then(
 );
 
 Given("I delete hostgroup rule {string}", (hostgroupName: string) => {
-  loginAsAdmin();
-  navigateTo("host-group-rules");
-
-  deleteHostgroupRule(hostgroupName);
-
-  searchForEntry(hostgroupName);
-  entryDoesNotExist(hostgroupName);
-  logout();
+  deleteHostgroupRuleExec(hostgroupName);
 });
 
 When("I try to delete hostgroup rule {string}", (hostgroupName: string) => {

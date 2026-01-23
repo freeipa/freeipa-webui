@@ -1,34 +1,4 @@
 import { Given } from "@badeball/cypress-cucumber-preprocessor";
-import { loginAsAdmin, logout } from "./authentication";
-import { navigateTo } from "./navigation";
-import { entryExists } from "./data_tables";
-import { addItemToRightList } from "./ui/dual_list";
-import { searchForMembersEntry } from "./members_table";
-
-const ensureItemExistsInMemberOfTable = (
-  itemName: string,
-  tablePath: string,
-  useDualListSearchLink: boolean = false
-) => {
-  navigateTo(`netgroups/${tablePath}`);
-
-  cy.dataCy("member-of-button-add").click();
-  cy.dataCy("member-of-add-modal").should("exist");
-
-  if (useDualListSearchLink) {
-    cy.dataCy("dual-list-search-link").click();
-  }
-
-  addItemToRightList(itemName);
-  cy.dataCy("member-of-add-modal").should("exist");
-
-  cy.dataCy("modal-button-add").click();
-  cy.dataCy("member-of-add-modal").should("not.exist");
-  cy.dataCy("add-member-success").should("exist");
-
-  searchForMembersEntry(itemName);
-  entryExists(itemName);
-};
 
 // Allowed member entity values (readonly tuple)
 const MEMBER_ENTITIES = [
@@ -53,8 +23,38 @@ export const assertMemberEntity = (value: string): void => {
   }
 };
 
+type NetgroupMemberTableType =
+  | "member_netgroup"
+  | "member_user"
+  | "member_group"
+  | "member_host"
+  | "member_hostgroup";
+
+const NETGROUP_MEMBER_OPTIONS_MAP: Readonly<
+  Record<NetgroupMemberTableType, string>
+> = {
+  member_netgroup: "--netgroups",
+  member_user: "--users",
+  member_group: "--groups",
+  member_host: "--hosts",
+  member_hostgroup: "--hostgroups",
+};
+
 Given("{string} exists in table {string}", (name: string, table: string) => {
-  loginAsAdmin();
-  ensureItemExistsInMemberOfTable(name, table);
-  logout();
+  const [netgroupName, memberType] = table.split("/");
+
+  const option =
+    NETGROUP_MEMBER_OPTIONS_MAP[memberType as NetgroupMemberTableType];
+  if (!option) {
+    throw new Error(
+      `Unsupported member type "${memberType}". ` +
+        `Update NETGROUP_MEMBER_OPTIONS_MAP in member_of.ts to support this type.`
+    );
+  }
+
+  cy.ipa({
+    command: "netgroup-add-member",
+    name: netgroupName,
+    specificOptions: `${option}=${name}`,
+  });
 });
