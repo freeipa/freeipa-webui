@@ -55,11 +55,26 @@ const extendedApi = api.injectEndpoints({
       },
       transformResponse: (response: BatchRPCResponse): SudoCmd[] => {
         const sudoRulesList: SudoCmd[] = [];
+
+        if (!response?.result?.results) return [];
+
         const results = response.result.results;
         const count = response.result.count;
+
         for (let i = 0; i < count; i++) {
-          const sudoRuleData = apiToSudoCmd(results[i].result);
-          sudoRulesList.push(sudoRuleData);
+          const currentResult = results[i];
+
+          if (
+            !currentResult ||
+            ("error" in currentResult && currentResult.error)
+          ) {
+            continue;
+          }
+
+          if (currentResult.result) {
+            const sudoRuleData = apiToSudoCmd(currentResult.result);
+            sudoRulesList.push(sudoRuleData);
+          }
         }
         return sudoRulesList;
       },
