@@ -1,12 +1,7 @@
 import { Given } from "@badeball/cypress-cucumber-preprocessor";
 import { loginAsAdmin, logout } from "../../common/authentication";
 import { navigateTo } from "../../common/navigation";
-import {
-  entryExists,
-  entryDoesNotExist,
-  searchForEntry,
-  selectEntry,
-} from "../../common/data_tables";
+import { entryExists, entryDoesNotExist } from "../../common/data_tables";
 import { addItemToRightList } from "cypress/e2e/common/ui/dual_list";
 import {
   searchForMembersEntry,
@@ -21,21 +16,10 @@ Given("HBAC service {string} exists", (serviceName: string) => {
 });
 
 Given("I delete service {string}", (serviceName: string) => {
-  loginAsAdmin();
-  navigateTo("hbac-services");
-
-  searchForEntry(serviceName);
-  selectEntry(serviceName);
-
-  cy.dataCy("hbac-services-button-delete").click();
-  cy.dataCy("delete-hbac-services-modal").should("exist");
-  entryExists(serviceName);
-
-  cy.dataCy("modal-button-delete").click();
-  cy.dataCy("remove-hbacservices-success").should("exist");
-  entryDoesNotExist(serviceName);
-
-  logout();
+  cy.ipa({
+    command: "hbacsvc-del",
+    name: serviceName,
+  });
 });
 
 Given(

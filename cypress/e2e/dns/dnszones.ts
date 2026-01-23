@@ -5,8 +5,6 @@ import {
   searchForEntry,
   selectEntry,
 } from "../common/data_tables";
-import { navigateTo } from "../common/navigation";
-import { loginAsAdmin, logout } from "../common/authentication";
 
 const fillDnsZone = (zone: string) => {
   cy.dataCy("modal-textbox-dns-zone-name").type(zone);
@@ -80,16 +78,6 @@ const createReversedDnsZoneWithSkipOverlapCheck = (ip: string) => {
   cy.dataCy("add-dns-zone-modal").should("not.exist");
 };
 
-const deleteDnsZone = (zoneName: string) => {
-  selectEntry(zoneName);
-
-  cy.dataCy("dns-zones-button-delete").click();
-  cy.dataCy("dns-zones-delete-modal").should("exist");
-
-  cy.dataCy("modal-button-ok").click();
-  cy.dataCy("dns-zones-delete-modal").should("not.exist");
-};
-
 const isDisabled = (name: string) => {
   cy.get("tr[id='" + name + "'] td[data-label=idnszoneactive]").contains(
     "Disabled"
@@ -133,14 +121,10 @@ When("I create a reverse DNS zone {string}", (ip: string) => {
 });
 
 Given("I delete DNS zone {string}", (zoneName: string) => {
-  loginAsAdmin();
-  navigateTo("dns-zones");
-
-  deleteDnsZone(zoneName);
-
-  searchForEntry(zoneName);
-  entryDoesNotExist(zoneName);
-  logout();
+  cy.ipa({
+    command: "dnszone-del",
+    name: zoneName,
+  });
 });
 
 When(

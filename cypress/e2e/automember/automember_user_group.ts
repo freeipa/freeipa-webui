@@ -9,7 +9,6 @@ import {
 import "../user_groups/user_groups";
 import "../common/data_tables";
 import { navigateTo } from "../common/navigation";
-import { loginAsAdmin, logout } from "../common/authentication";
 import { isOptionSelected, selectOption } from "../common/ui/select";
 
 const fillUserGroupRule = (userGroupName: string, selector: string) => {
@@ -49,6 +48,14 @@ const deleteUserGroupRule = (userGroupName: string) => {
   searchForEntry(userGroupName);
   entryDoesNotExist(userGroupName);
   cy.dataCy("delete-rule-success").should("exist");
+};
+
+const deleteUserGroupRuleExec = (userGroupName: string) => {
+  cy.ipa({
+    command: "automember-del",
+    name: userGroupName,
+    specificOptions: "--type group",
+  });
 };
 
 const setDefaultUserGroupRule = (userGroupName: string) => {
@@ -101,14 +108,7 @@ Then(
 );
 
 Given("I delete user group rule {string}", (userGroupName: string) => {
-  loginAsAdmin();
-  navigateTo("user-group-rules");
-
-  deleteUserGroupRule(userGroupName);
-
-  searchForEntry(userGroupName);
-  entryDoesNotExist(userGroupName);
-  logout();
+  deleteUserGroupRuleExec(userGroupName);
 });
 
 When("I try to delete user group rule {string}", (userGroupName: string) => {

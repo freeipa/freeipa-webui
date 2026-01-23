@@ -36,7 +36,7 @@ Feature: Hbac rule settings manipulation
   @seed
   Scenario: Add a user to the rule
     Given hbac rule "rule1" exists
-    Given I have element "user" named "admin" in rule "rule1"
+    Given I have element user named "admin" in rule "rule1"
 
   @test
   Scenario: Remove user from Who category
@@ -78,13 +78,12 @@ Feature: Hbac rule settings manipulation
 
   @cleanup
   Scenario: Delete the group for cleanup
-    Given I delete element "group" named "admins" from rule "rule1"
     Given I delete hbac rule "rule1"
 
   @seed
   Scenario: Add a group to the rule
     Given hbac rule "rule1" exists
-    Given I have element "group" named "admins" in rule "rule1"
+    Given I have element group named "admins" in rule "rule1"
 
   @test
   Scenario: Remove group from Who category
@@ -222,7 +221,7 @@ Feature: Hbac rule settings manipulation
   Scenario: Prep: Create rule and host
     Given host "my-new-host.ipa.test" exists
     Given hbac rule "rule1" exists
-    Given I have element "host" named "my-new-host.ipa.test" in rule "rule1"
+    Given I have host "my-new-host" in rule "rule1"
 
   @test
   Scenario: Remove host from Host category
@@ -279,7 +278,7 @@ Feature: Hbac rule settings manipulation
   @seed
   Scenario: Add a hostgroup to the rule
     Given hbac rule "rule1" exists
-    Given I have element "hostgroup" named "ipaservers" in rule "rule1"
+    Given I have hostgroup "ipaservers" in rule "rule1"
 
   @test
   Scenario: Remove hostgroup from Host category

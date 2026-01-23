@@ -6,7 +6,6 @@ import {
   selectEntry,
 } from "../common/data_tables";
 import { navigateTo } from "../common/navigation";
-import { loginAsAdmin, logout } from "../common/authentication";
 
 const fillHostgroup = (hostgroupName: string, hostgroupDescription: string) => {
   cy.dataCy("modal-textbox-hostgroup-name").type(hostgroupName);
@@ -84,14 +83,10 @@ Given(
 );
 
 Given("I delete hostgroup {string}", (hostgroupName: string) => {
-  loginAsAdmin();
-  navigateTo("host-groups");
-
-  deleteHostgroup(hostgroupName);
-
-  searchForEntry(hostgroupName);
-  entryDoesNotExist(hostgroupName);
-  logout();
+  cy.ipa({
+    command: "hostgroup-del",
+    name: hostgroupName,
+  });
 });
 
 When("I try to delete hostgroup {string}", (hostgroupName: string) => {

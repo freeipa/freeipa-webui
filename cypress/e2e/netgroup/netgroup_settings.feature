@@ -74,11 +74,11 @@ Feature: Netgroup settings manipulation
 
     @cleanup
     Scenario: Cleanup user "admin"
-        Given I delete element "user" named "admin" from netgroup "netgroup1"
+        Given I delete element user named "admin" from netgroup "netgroup1"
 
     @seed
     Scenario: Add user "admin"
-        Given I have element "user" named "admin" in netgroup "netgroup1"
+        Given I have element user named "admin" in netgroup "netgroup1"
 
     @test
     Scenario: Remove user from User category
@@ -128,11 +128,11 @@ Feature: Netgroup settings manipulation
 
     @cleanup
     Scenario: Cleanup group "admins"
-        Given I delete element "group" named "admins" from netgroup "netgroup1"
+        Given I delete element group named "admins" from netgroup "netgroup1"
 
     @seed
     Scenario: Add group "admins"
-        Given I have element "group" named "admins" in netgroup "netgroup1"
+        Given I have element group named "admins" in netgroup "netgroup1"
 
     @test
     Scenario: Remove group from User category
@@ -185,7 +185,7 @@ Feature: Netgroup settings manipulation
 
     @cleanup
     Scenario: Cleanup host from Host category
-        Given I delete element "host" named "my-server" from netgroup "netgroup1"
+        Given I delete element host named "my-server" from netgroup "netgroup1"
 
     @seed
     Scenario: Add host to Host category
@@ -264,11 +264,11 @@ Feature: Netgroup settings manipulation
 
     @cleanup
     Scenario: Cleanup hostgroup "ipaservers"
-        Given I delete element "hostgroup" named "ipaservers" from netgroup "netgroup1"
+        Given I delete element hostgroup named "ipaservers" from netgroup "netgroup1"
 
     @seed
     Scenario: Add hostgroup "ipaservers"
-        Given I have element "hostgroup" named "ipaservers" in netgroup "netgroup1"
+        Given I have element hostgroup named "ipaservers" in netgroup "netgroup1"
 
     @test
     Scenario: Remove hostgroup from Host category
@@ -309,11 +309,11 @@ Feature: Netgroup settings manipulation
 
     @cleanup
     Scenario: Cleanup external host "test.test.test"
-        Given I delete external host "test.test.test" from netgroup "netgroup1"
+        Given I delete element externalhost named "test.test.test" from netgroup "netgroup1"
 
     @seed
     Scenario: Add external host "test.test.test"
-        Given I have external host "test.test.test" in netgroup "netgroup1"
+        Given I have element externalhost named "test.test.test" in netgroup "netgroup1"
 
     @test
     Scenario: Remove external host from Host category

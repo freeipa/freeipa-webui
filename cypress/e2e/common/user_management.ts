@@ -1,11 +1,6 @@
 import { When, Then, Given } from "@badeball/cypress-cucumber-preprocessor";
 import { loginAsAdmin, logout } from "./authentication";
-import {
-  entryDoesNotExist,
-  entryExists,
-  searchForEntry,
-  selectEntry,
-} from "./data_tables";
+import { entryExists, searchForEntry } from "./data_tables";
 
 const fillUser = (
   firstName: string,
@@ -72,17 +67,13 @@ Given(
   }
 );
 
+const deleteUserExec = (username: string) => {
+  cy.ipa({
+    command: "user-del",
+    name: username,
+  });
+};
+
 Given("I delete user {string}", (username: string) => {
-  loginAsAdmin();
-  selectEntry(username);
-
-  cy.dataCy("active-users-button-delete").click();
-  cy.dataCy("delete-users-modal").should("exist");
-
-  cy.dataCy("modal-button-delete").click();
-  cy.dataCy("delete-users-modal").should("not.exist");
-
-  searchForEntry(username);
-  entryDoesNotExist(username);
-  logout();
+  deleteUserExec(username);
 });
