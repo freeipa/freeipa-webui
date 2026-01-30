@@ -87,8 +87,6 @@ const AddUser = (props: PropsToAddUser) => {
   const userLoginFormatFirst = /^([A-Za-z._]).*$/;
   // User login: Valid characters in body (every char must be in set): letters, digits, '_', '-', '.', '$'
   const userLoginFormatBody = /^[A-Za-z0-9._\-$]*$/;
-  // Valid characters: spaces and '-' symbols only
-  const format = /[`!@#$%^&*()_+=[\]{};':"\\|,.<>/?~]/;
   // Valid characters: '-' symbols only
   const formatWithoutSpaces = /[`!@#$%^&*()_+=[\]{};':"\\|,.<>/?~\s]/;
 
@@ -157,7 +155,9 @@ const AddUser = (props: PropsToAddUser) => {
   // Buttons are disabled until the user fills the required fields
   const buttonDisabled = !(
     firstName.length > 0 &&
+    !formatWithoutSpaces.test(firstName) &&
     lastName.length > 0 &&
+    !formatWithoutSpaces.test(lastName) &&
     verifiedPasswords &&
     (isNoPrivateGroupChecked === true ? gidSelected !== "" : true)
   );
@@ -213,8 +213,9 @@ const AddUser = (props: PropsToAddUser) => {
           rules={[
             {
               id: "ruleCharacters",
-              message: "First name should not contain special characters",
-              validate: (v: string) => !format.test(v),
+              message:
+                "First name should not contain special characters or spaces",
+              validate: (v: string) => !formatWithoutSpaces.test(v),
             },
           ]}
         />
