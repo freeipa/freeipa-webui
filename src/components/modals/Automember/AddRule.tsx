@@ -9,7 +9,6 @@ import {
   SelectOption,
 } from "@patternfly/react-core";
 // Layouts
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -191,17 +190,17 @@ const AddRule = (props: PropsToAddRule) => {
   };
 
   const modalActions = [
-    <SecondaryButton
-      dataCy={"modal-button-add"}
+    <Button
+      data-cy={"modal-button-add"}
       key="add"
-      onClickHandler={onAdd}
+      onClick={() => onAdd()}
       isLoading={addSpinning}
       spinnerAriaValueText="Adding"
       spinnerAriaLabel="Adding"
       isDisabled={buttonDisabled}
     >
       Add
-    </SecondaryButton>,
+    </Button>,
     <Button
       data-cy={"modal-button-cancel"}
       key="cancel-new-rule"

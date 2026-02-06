@@ -10,7 +10,6 @@ import {
   SelectOption,
 } from "@patternfly/react-core";
 // Layouts
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout, {
   Field,
 } from "src/components/layouts/ModalWithFormLayout";
@@ -355,19 +354,19 @@ const AddIdRangeModal = (props: PropsToAddModal) => {
 
   // Modal action buttons
   const modalActions = [
-    <SecondaryButton
-      dataCy="modal-button-add"
+    <Button
+      data-cy="modal-button-add"
       key="add-new"
       name="add"
       isDisabled={disabledAdd || isAddButtonSpinning}
-      onClickHandler={() => onAdd()}
+      onClick={() => onAdd()}
       form="add-id-range-modal"
       spinnerAriaValueText="Adding"
       spinnerAriaLabel="Adding"
       isLoading={isAddButtonSpinning}
     >
       {isAddButtonSpinning ? "Adding" : "Add"}
-    </SecondaryButton>,
+    </Button>,
     <Button
       data-cy="modal-button-cancel"
       key="cancel-new"

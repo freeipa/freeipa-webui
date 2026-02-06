@@ -635,7 +635,6 @@ const AddModal = (props: PropsToAddModal) => {
     <Button
       data-cy="modal-button-add"
       key="add-new"
-      variant="secondary"
       isDisabled={
         isAddButtonSpinning ||
         areMandatoryFieldsEmpty ||

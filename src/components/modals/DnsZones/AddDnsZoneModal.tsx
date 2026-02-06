@@ -221,7 +221,6 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
     <Button
       data-cy="modal-button-add"
       key="add-new"
-      variant="secondary"
       isDisabled={
         isAddButtonSpinning ||
         (isZoneNameRadioChecked && dnsZoneName === "") ||

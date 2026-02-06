@@ -491,19 +491,19 @@ const AddService = (props: PropsToAddService) => {
 
   // Buttons that will be shown at the end of the form
   const modalActions = [
-    <SecondaryButton
-      dataCy="modal-button-add"
+    <Button
+      data-cy="modal-button-add"
       key="add-new-service"
       name="add"
       isDisabled={buttonDisabled || addSpinning}
-      onClickHandler={addServiceHandler}
+      onClick={() => addServiceHandler()}
       form="modal-form"
       spinnerAriaValueText="Adding"
       spinnerAriaLabel="Adding"
       isLoading={addSpinning}
     >
       {addSpinning ? "Adding" : "Add"}
-    </SecondaryButton>,
+    </Button>,
     <Button
       data-cy="modal-button-cancel"
       key="cancel-new-service"
