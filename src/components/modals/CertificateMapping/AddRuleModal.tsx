@@ -38,8 +38,6 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
 
   // States
   const [isAddButtonSpinning, setIsAddButtonSpinning] = React.useState(false);
-  const [isAddAnotherButtonSpinning, setIsAddAnotherButtonSpinning] =
-    React.useState(false);
   const [ruleName, setRuleName] = React.useState("");
   const [mappingRule, setMappingRule] = React.useState("");
   const [matchingRule, setMatchingRule] = React.useState("");
@@ -70,9 +68,8 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
   };
 
   // 'Add' button handler
-  const onAddRule = (keepModalOpen: boolean) => {
+  const onAddRule = () => {
     setIsAddButtonSpinning(true);
-    setIsAddAnotherButtonSpinning(true);
 
     const payload: CertMapRuleAddPayload = {
       ruleId: ruleName,
@@ -110,15 +107,11 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
           clearFields();
           // Update data
           props.onRefresh();
-          // 'Add and add another' will keep the modal open
-          if (!keepModalOpen) {
-            props.onClose();
-          }
+          props.onClose();
         }
       }
       // Reset button spinners
       setIsAddButtonSpinning(false);
-      setIsAddAnotherButtonSpinning(false);
     });
   };
 
@@ -252,18 +245,6 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
       Add
     </Button>,
     <Button
-      data-cy="modal-button-add-and-add-another"
-      key="add-new-again"
-      variant="secondary"
-      isDisabled={isAddAnotherButtonSpinning || ruleName === ""}
-      form="add-again-modal-form"
-      onClick={() => {
-        onAddRule(true);
-      }}
-    >
-      Add and add again
-    </Button>,
-    <Button
       data-cy="modal-button-cancel"
       key="cancel-new"
       variant="link"
@@ -284,7 +265,7 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
         formId="add-modal-form"
         fields={fields}
         show={props.isOpen}
-        onSubmit={() => onAddRule(false)}
+        onSubmit={() => onAddRule()}
         onClose={cleanAndCloseModal}
         actions={modalActions}
       />

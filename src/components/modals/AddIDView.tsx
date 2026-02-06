@@ -33,8 +33,6 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
 
   // Set host names list
   const [addSpinning, setAddBtnSpinning] = React.useState<boolean>(false);
-  const [addAgainSpinning, setAddAgainBtnSpinning] =
-    React.useState<boolean>(false);
   const [viewName, setViewName] = React.useState("");
   const [description, setDescription] = React.useState("");
 
@@ -88,7 +86,6 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
     setViewName("");
     setDescription("");
     setAddBtnSpinning(false);
-    setAddAgainBtnSpinning(false);
   };
 
   // Clean fields and close modal (To prevent data persistence when reopen modal)
@@ -99,10 +96,6 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
 
   // Define status flags to determine user added successfully or error
   let isAdditionSuccess = true;
-
-  // Track which button has been clicked ('onAddUser' or 'onAddAndAddAnother')
-  // to better handle the 'retry' function and its behavior
-  let onAddViewClicked = true;
 
   // Add host data
   const addViewData = async () => {
@@ -143,25 +136,7 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
     });
   };
 
-  const addAndAddAnotherHandler = () => {
-    onAddViewClicked = false;
-    setAddAgainBtnSpinning(true);
-    addViewData().then(() => {
-      if (isAdditionSuccess) {
-        // Do not close the modal, but clean fields & reset validations
-        cleanAllFields();
-      } else {
-        // Close the modal without cleaning fields
-        if (props.onCloseAddModal !== undefined) {
-          props.onCloseAddModal();
-        }
-        setAddAgainBtnSpinning(false);
-      }
-    });
-  };
-
   const addViewHandler = () => {
-    onAddViewClicked = true;
     setAddBtnSpinning(true);
     addViewData().then(() => {
       if (!isAdditionSuccess) {
@@ -206,11 +181,7 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
     closeAndCleanErrorParameters();
 
     // Repeats the same previous operation
-    if (onAddViewClicked) {
-      addViewHandler();
-    } else {
-      addAndAddAnotherHandler();
-    }
+    addViewHandler();
   };
 
   const errorModalActions = [
@@ -247,7 +218,7 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
       data-cy="modal-button-add"
       key="add-new-id-view"
       name="add"
-      isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
+      isDisabled={buttonDisabled || addSpinning}
       form="add-id-view-modal"
       type="submit"
       spinnerAriaValueText="Adding"
@@ -256,19 +227,6 @@ const AddIDViewModal = (props: PropsToAddIDView) => {
     >
       {addSpinning ? "Adding" : "Add"}
     </Button>,
-    <SecondaryButton
-      dataCy="modal-button-add-and-add-another"
-      key="add-and-add-another-new-view"
-      name="add_and_add_another"
-      isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClickHandler={addAndAddAnotherHandler}
-      form="modal-form"
-      spinnerAriaValueText="Adding again"
-      spinnerAriaLabel="Adding again"
-      isLoading={addAgainSpinning}
-    >
-      {addAgainSpinning ? "Adding" : "Add and add another"}
-    </SecondaryButton>,
     <Button
       data-cy="modal-button-cancel"
       key="cancel-new-view"

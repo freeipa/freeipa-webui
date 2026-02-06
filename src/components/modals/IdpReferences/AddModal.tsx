@@ -42,8 +42,6 @@ const AddModal = (props: PropsToAddModal) => {
 
   // States
   const [isAddButtonSpinning, setIsAddButtonSpinning] = React.useState(false);
-  const [isAddAnotherButtonSpinning, setIsAddAnotherButtonSpinning] =
-    React.useState(false);
   // - Fields
   const [idpRefName, setIdpRefName] = React.useState<string>("");
   const [clientId, setClientId] = React.useState<string>("");
@@ -140,9 +138,8 @@ const AddModal = (props: PropsToAddModal) => {
   };
 
   // on Add IdP reference
-  const onAdd = (keepModalOpen: boolean) => {
+  const onAdd = () => {
     setIsAddButtonSpinning(true);
-    setIsAddAnotherButtonSpinning(true);
 
     const payload: IdpAddPayload = {
       cn: idpRefName,
@@ -224,16 +221,12 @@ const AddModal = (props: PropsToAddModal) => {
             clearAllFields();
             // Update data
             props.onRefresh();
-            // 'Add and add another' will keep the modal open
-            if (!keepModalOpen) {
-              props.onCloseModal();
-            }
+            props.onCloseModal();
           }
         }
       })
       .finally(() => {
         setIsAddButtonSpinning(false);
-        setIsAddAnotherButtonSpinning(false);
       });
   };
 
@@ -654,22 +647,6 @@ const AddModal = (props: PropsToAddModal) => {
       Add
     </Button>,
     <Button
-      data-cy="modal-button-add-and-add-another"
-      key="add-new-again"
-      variant="secondary"
-      isDisabled={
-        isAddAnotherButtonSpinning ||
-        areMandatoryFieldsEmpty ||
-        secret !== verifySecret
-      }
-      form="add-again-modal-form"
-      onClick={() => {
-        onAdd(true);
-      }}
-    >
-      Add and add again
-    </Button>,
-    <Button
       data-cy="modal-button-cancel"
       key="cancel-new"
       variant="link"
@@ -690,7 +667,7 @@ const AddModal = (props: PropsToAddModal) => {
         formId="add-modal-form"
         fields={generateFields()}
         show={props.isOpen}
-        onSubmit={() => onAdd(false)}
+        onSubmit={() => onAdd()}
         onClose={cleanAndCloseModal}
         actions={modalActions}
       />

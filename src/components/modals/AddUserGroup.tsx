@@ -51,8 +51,6 @@ const AddUserGroup = (props: PropsToAddGroup) => {
 
   // Set host names list
   const [addSpinning, setAddBtnSpinning] = React.useState<boolean>(false);
-  const [addAgainSpinning, setAddAgainBtnSpinning] =
-    React.useState<boolean>(false);
   const [groupName, setGroupName] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [gidNumber, setGID] = React.useState("");
@@ -157,7 +155,6 @@ const AddUserGroup = (props: PropsToAddGroup) => {
     setGroupType("posix");
     setGID("");
     setAddBtnSpinning(false);
-    setAddAgainBtnSpinning(false);
   };
 
   // Clean fields and close modal (To prevent data persistence when reopen modal)
@@ -168,10 +165,6 @@ const AddUserGroup = (props: PropsToAddGroup) => {
 
   // Define status flags to determine user added successfully or error
   let isAdditionSuccess = true;
-
-  // Track which button has been clicked ('onAddUser' or 'onAddAndAddAnother')
-  // to better handle the 'retry' function and its behavior
-  let onAddGroupClicked = true;
 
   // Add host data
   const addGroupData = async () => {
@@ -214,25 +207,7 @@ const AddUserGroup = (props: PropsToAddGroup) => {
     });
   };
 
-  const addAndAddAnotherHandler = () => {
-    onAddGroupClicked = false;
-    setAddAgainBtnSpinning(true);
-    addGroupData().then(() => {
-      if (isAdditionSuccess) {
-        // Do not close the modal, but clean fields & reset validations
-        cleanAllFields();
-      } else {
-        // Close the modal without cleaning fields
-        if (props.onCloseAddModal !== undefined) {
-          props.onCloseAddModal();
-        }
-        setAddAgainBtnSpinning(false);
-      }
-    });
-  };
-
   const addGroupHandler = () => {
-    onAddGroupClicked = true;
     setAddBtnSpinning(true);
     addGroupData().then(() => {
       if (!isAdditionSuccess) {
@@ -276,12 +251,7 @@ const AddUserGroup = (props: PropsToAddGroup) => {
     // Close the error modal
     closeAndCleanErrorParameters();
 
-    // Repeats the same previous operation
-    if (onAddGroupClicked) {
-      addGroupHandler();
-    } else {
-      addAndAddAnotherHandler();
-    }
+    addGroupHandler();
   };
 
   const errorModalActions = [
@@ -317,7 +287,7 @@ const AddUserGroup = (props: PropsToAddGroup) => {
     <Button
       data-cy="modal-button-add"
       key="add-new-group"
-      isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
+      isDisabled={buttonDisabled || addSpinning}
       type="submit"
       form="add-user-group-modal"
       spinnerAriaValueText="Adding"
@@ -326,19 +296,6 @@ const AddUserGroup = (props: PropsToAddGroup) => {
     >
       {addSpinning ? "Adding" : "Add"}
     </Button>,
-    <SecondaryButton
-      dataCy="modal-button-add-and-add-another"
-      key="add-and-add-another-new-group"
-      name="add_and_add_another"
-      isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClickHandler={addAndAddAnotherHandler}
-      form="modal-form"
-      spinnerAriaValueText="Adding again"
-      spinnerAriaLabel="Adding again"
-      isLoading={addAgainSpinning}
-    >
-      {addAgainSpinning ? "Adding" : "Add and add another"}
-    </SecondaryButton>,
     <Button
       data-cy="modal-button-cancel"
       key="cancel-new-group"

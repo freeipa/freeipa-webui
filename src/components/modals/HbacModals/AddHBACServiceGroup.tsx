@@ -30,8 +30,6 @@ const AddHBACServiceGroup = (props: PropsToAddGroup) => {
 
   // Set host names list
   const [addSpinning, setAddBtnSpinning] = React.useState<boolean>(false);
-  const [addAgainSpinning, setAddAgainBtnSpinning] =
-    React.useState<boolean>(false);
   const [serviceName, setServiceName] = React.useState("");
   const [description, setDescription] = React.useState("");
 
@@ -85,7 +83,6 @@ const AddHBACServiceGroup = (props: PropsToAddGroup) => {
     setServiceName("");
     setDescription("");
     setAddBtnSpinning(false);
-    setAddAgainBtnSpinning(false);
   };
 
   // Clean fields and close modal (To prevent data persistence when reopen modal)
@@ -96,10 +93,6 @@ const AddHBACServiceGroup = (props: PropsToAddGroup) => {
 
   // Define status flags to determine user added successfully or error
   let isAdditionSuccess = true;
-
-  // Track which button has been clicked ('onAddUser' or 'onAddAndAddAnother')
-  // to better handle the 'retry' function and its behavior
-  let onAddServiceClicked = true;
 
   // Add host data
   const addServiceData = async () => {
@@ -137,25 +130,7 @@ const AddHBACServiceGroup = (props: PropsToAddGroup) => {
     );
   };
 
-  const addAndAddAnotherHandler = () => {
-    onAddServiceClicked = false;
-    setAddAgainBtnSpinning(true);
-    addServiceData().then(() => {
-      if (isAdditionSuccess) {
-        // Do not close the modal, but clean fields & reset validations
-        cleanAllFields();
-      } else {
-        // Close the modal without cleaning fields
-        if (props.onCloseAddModal !== undefined) {
-          props.onCloseAddModal();
-        }
-        setAddAgainBtnSpinning(false);
-      }
-    });
-  };
-
   const addServiceHandler = () => {
-    onAddServiceClicked = true;
     setAddBtnSpinning(true);
     addServiceData().then(() => {
       if (!isAdditionSuccess) {
@@ -199,12 +174,7 @@ const AddHBACServiceGroup = (props: PropsToAddGroup) => {
     // Close the error modal
     closeAndCleanErrorParameters();
 
-    // Repeats the same previous operation
-    if (onAddServiceClicked) {
-      addServiceHandler();
-    } else {
-      addAndAddAnotherHandler();
-    }
+    addServiceHandler();
   };
 
   const errorModalActions = [
@@ -240,7 +210,7 @@ const AddHBACServiceGroup = (props: PropsToAddGroup) => {
     <Button
       data-cy="modal-button-add"
       key="add-new-service-group"
-      isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
+      isDisabled={buttonDisabled || addSpinning}
       type="submit"
       form="add-hbac-service-group-modal"
       spinnerAriaValueText="Adding"
@@ -249,19 +219,6 @@ const AddHBACServiceGroup = (props: PropsToAddGroup) => {
     >
       {addSpinning ? "Adding" : "Add"}
     </Button>,
-    <SecondaryButton
-      dataCy="modal-button-add-and-add-another"
-      key="add-and-add-another-new-service-group"
-      name="add_and_add_another"
-      isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClickHandler={addAndAddAnotherHandler}
-      form="modal-form"
-      spinnerAriaValueText="Adding again"
-      spinnerAriaLabel="Adding again"
-      isLoading={addAgainSpinning}
-    >
-      {addAgainSpinning ? "Adding" : "Add and add another"}
-    </SecondaryButton>,
     <Button
       data-cy="modal-button-cancel"
       key="cancel-new-service"

@@ -64,8 +64,6 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
   const [description, setDescription] = useState("");
 
   const [addSpinning, setAddBtnSpinning] = React.useState<boolean>(false);
-  const [addAgainSpinning, setAddAgainBtnSpinning] =
-    React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
   const [userNames, setUserNames] = useState<string[]>([]);
 
@@ -284,10 +282,6 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
   // Define status flags to determine user added successfully or error
   let isAdditionSuccess = true;
 
-  // Track which button has been clicked ('onAddUser' or 'onAddAndAddAnother')
-  // to better handle the 'retry' function and its behavior
-  let onAddClicked = true;
-
   // Add data
   const addUser = async () => {
     const newUserPayload = {
@@ -330,29 +324,11 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
           props.onRefresh();
         }
         setAddBtnSpinning(false);
-        setAddAgainBtnSpinning(false);
-      }
-    });
-  };
-
-  const addAndAddAnotherHandler = () => {
-    onAddClicked = false;
-    setAddAgainBtnSpinning(true);
-    addUser().then(() => {
-      if (isAdditionSuccess) {
-        // Do not close the modal, but clean fields & reset validations
-        cleanAllFields();
-      } else {
-        // Close the modal without cleaning fields
-        if (props.onCloseAddModal !== undefined) {
-          props.onCloseAddModal();
-        }
       }
     });
   };
 
   const addHandler = () => {
-    onAddClicked = true;
     setAddBtnSpinning(true);
     addUser().then(() => {
       if (!isAdditionSuccess) {
@@ -395,12 +371,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
     // Close the error modal
     closeAndCleanErrorParameters();
 
-    // Repeats the same previous operation
-    if (onAddClicked) {
-      addHandler();
-    } else {
-      addAndAddAnotherHandler();
-    }
+    addHandler();
   };
 
   const errorModalActions = [
@@ -449,7 +420,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
     <Button
       data-cy="modal-button-add"
       key="add-new-user"
-      isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
+      isDisabled={buttonDisabled || addSpinning}
       type="submit"
       form="override-user-add-modal"
       spinnerAriaValueText="Adding"
@@ -458,17 +429,6 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
     >
       {addSpinning ? "Adding" : "Add"}
     </Button>,
-    <SecondaryButton
-      dataCy="modal-button-add-and-add-another"
-      key="add-and-add-another-user"
-      isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClickHandler={addAndAddAnotherHandler}
-      spinnerAriaValueText="Adding again"
-      spinnerAriaLabel="Adding again"
-      isLoading={addAgainSpinning}
-    >
-      {addAgainSpinning ? "Adding" : "Add and add another"}
-    </SecondaryButton>,
     <Button
       data-cy="modal-button-cancel"
       key="cancel-new-user"

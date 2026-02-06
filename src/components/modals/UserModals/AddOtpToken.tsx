@@ -503,15 +503,13 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
 
   // QR code modal
   const [isQrModalOpen, setIsQrModalOpen] = React.useState(false);
-  const [addAndAddAnotherChecked, setAddAndAddAnotherChecked] =
-    React.useState(false);
   const onQrModalClose = () => {
     setIsQrModalOpen(false);
   };
 
   // Buttons functionality
   // - API call to add otp token
-  const onAddOtpToken = (addAndAddAnotherChecked: boolean) => {
+  const onAddOtpToken = () => {
     // Get updated values as params
     const params = getModifiedValues();
     // Payload
@@ -523,12 +521,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
           // Update URI
           setUri(response.data.result.result.uri as string);
           // Close modal
-          if (addAndAddAnotherChecked) {
-            props.onClose();
-            setAddAndAddAnotherChecked(true);
-          } else {
-            props.onClose();
-          }
+          props.onClose();
           // Show QR modal
           setIsQrModalOpen(true);
           // Reset fields
@@ -547,15 +540,6 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       }
     });
   };
-
-  // If the 'add and add another' option has been selected,
-  //  open the modal again after showing the previous generated QR code.
-  React.useEffect(() => {
-    if (!isQrModalOpen && addAndAddAnotherChecked) {
-      props.setIsOpen(true);
-      setAddAndAddAnotherChecked(false);
-    }
-  }, [isQrModalOpen, addAndAddAnotherChecked]);
 
   // Reset fields
   const resetFields = () => {
@@ -591,14 +575,6 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
       Add
     </Button>,
     <Button
-      data-cy="modal-button-add-and-add-another"
-      key={"add-and-add-another-otp-token"}
-      variant="primary"
-      onClick={() => onAddOtpToken(true)}
-    >
-      Add and add another
-    </Button>,
-    <Button
       data-cy="modal-button-cancel"
       key={"cancel-reset-password"}
       variant="link"
@@ -619,7 +595,7 @@ const AddOtpToken = (props: PropsToAddOtpToken) => {
         formId="add-otp-token-form"
         fields={fields}
         show={props.isOpen}
-        onSubmit={() => onAddOtpToken(false)}
+        onSubmit={() => onAddOtpToken()}
         onClose={props.onClose}
         actions={actions}
       />

@@ -43,8 +43,6 @@ const AddModal = (props: PropsToAddModal) => {
   const [availableItems, setAvailableItems] = React.useState<string[]>([]);
   const [priority, setPriority] = React.useState<string>("");
   const [isAddButtonSpinning, setIsAddButtonSpinning] = React.useState(false);
-  const [isAddAnotherButtonSpinning, setIsAddAnotherButtonSpinning] =
-    React.useState(false);
 
   // API call - Get user group information
   const groupIdsResponse = useGetGenericListQuery("group");
@@ -113,9 +111,8 @@ const AddModal = (props: PropsToAddModal) => {
   }, [props.isOpen]);
 
   // on Add subordinate ID
-  const onAdd = (keepModalOpen: boolean) => {
+  const onAdd = () => {
     setIsAddButtonSpinning(true);
-    setIsAddAnotherButtonSpinning(true);
 
     const payload: PwPolicyAddPayload = {
       groupId: selectedItem,
@@ -151,13 +148,9 @@ const AddModal = (props: PropsToAddModal) => {
           // Update data
           props.onRefresh();
           groupIdsResponse.refetch();
-          // 'Add and add another' will keep the modal open
-          if (!keepModalOpen) {
-            props.onCloseModal();
-          }
+          props.onCloseModal();
           // Reset button spinners
           setIsAddButtonSpinning(false);
-          setIsAddAnotherButtonSpinning(false);
         }
       }
     });
@@ -219,18 +212,6 @@ const AddModal = (props: PropsToAddModal) => {
       Add
     </Button>,
     <Button
-      data-cy="modal-button-add-and-add-another"
-      key="add-new-again"
-      variant="secondary"
-      isDisabled={isAddAnotherButtonSpinning || selectedItem === ""}
-      form="add-again-modal-form"
-      onClick={() => {
-        onAdd(true);
-      }}
-    >
-      Add and add again
-    </Button>,
-    <Button
       data-cy="modal-button-cancel"
       key="cancel-new"
       variant="link"
@@ -252,7 +233,7 @@ const AddModal = (props: PropsToAddModal) => {
         formId="add-modal-form"
         fields={fields}
         show={props.isOpen}
-        onSubmit={() => onAdd(false)}
+        onSubmit={() => onAdd()}
         onClose={cleanAndCloseModal}
         actions={modalActions}
       />

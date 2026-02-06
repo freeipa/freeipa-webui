@@ -58,8 +58,6 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
   const [description, setDescription] = useState("");
 
   const [addSpinning, setAddBtnSpinning] = React.useState<boolean>(false);
-  const [addAgainSpinning, setAddAgainBtnSpinning] =
-    React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
   const [groupNames, setGroupNames] = useState<string[]>([]);
 
@@ -178,10 +176,6 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
   // Define status flags to determine group added successfully or error
   let isAdditionSuccess = true;
 
-  // Track which button has been clicked ('onAdd' or 'onAddAndAddAnother')
-  // to better handle the 'retry' function and its behavior
-  let onAddClicked = true;
-
   // Add data
   const addGroup = async () => {
     const newGroupPayload = {
@@ -218,29 +212,11 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
           props.onRefresh();
         }
         setAddBtnSpinning(false);
-        setAddAgainBtnSpinning(false);
-      }
-    });
-  };
-
-  const addAndAddAnotherHandler = () => {
-    onAddClicked = false;
-    setAddAgainBtnSpinning(true);
-    addGroup().then(() => {
-      if (isAdditionSuccess) {
-        // Do not close the modal, but clean fields & reset validations
-        cleanAllFields();
-      } else {
-        // Close the modal without cleaning fields
-        if (props.onCloseAddModal !== undefined) {
-          props.onCloseAddModal();
-        }
       }
     });
   };
 
   const addHandler = () => {
-    onAddClicked = true;
     setAddBtnSpinning(true);
     addGroup().then(() => {
       if (!isAdditionSuccess) {
@@ -283,12 +259,7 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
     // Close the error modal
     closeAndCleanErrorParameters();
 
-    // Repeats the same previous operation
-    if (onAddClicked) {
-      addHandler();
-    } else {
-      addAndAddAnotherHandler();
-    }
+    addHandler();
   };
 
   const errorModalActions = [
@@ -336,7 +307,7 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
     <Button
       data-cy="modal-button-add"
       key="add-new-group"
-      isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
+      isDisabled={buttonDisabled || addSpinning}
       type="submit"
       form="override-group-add-modal"
       spinnerAriaValueText="Adding"
@@ -345,17 +316,6 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
     >
       {addSpinning ? "Adding" : "Add"}
     </Button>,
-    <SecondaryButton
-      dataCy="modal-button-add-and-add-another"
-      key="add-and-add-another-group"
-      isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClickHandler={addAndAddAnotherHandler}
-      spinnerAriaValueText="Adding again"
-      spinnerAriaLabel="Adding again"
-      isLoading={addAgainSpinning}
-    >
-      {addAgainSpinning ? "Adding" : "Add and add another"}
-    </SecondaryButton>,
     <Button
       data-cy="modal-button-cancel"
       key="cancel-new-group"

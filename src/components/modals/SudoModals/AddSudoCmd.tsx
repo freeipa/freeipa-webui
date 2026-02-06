@@ -29,8 +29,6 @@ const AddSudoCmd = (props: PropsToAddGroup) => {
   const [executeCmdAddCommand] = useAddSudoCmdMutation();
 
   const [addSpinning, setAddBtnSpinning] = React.useState<boolean>(false);
-  const [addAgainSpinning, setAddAgainBtnSpinning] =
-    React.useState<boolean>(false);
   const [cmdName, setCmdName] = React.useState("");
   const [description, setDescription] = React.useState("");
 
@@ -84,7 +82,6 @@ const AddSudoCmd = (props: PropsToAddGroup) => {
     setCmdName("");
     setDescription("");
     setAddBtnSpinning(false);
-    setAddAgainBtnSpinning(false);
   };
 
   // Clean fields and close modal (To prevent data persistence when reopen modal)
@@ -95,10 +92,6 @@ const AddSudoCmd = (props: PropsToAddGroup) => {
 
   // Define status flags to determine user added successfully or error
   let isAdditionSuccess = true;
-
-  // Track which button has been clicked ('onAdd' or 'onAddAndAddAnother')
-  // to better handle the 'retry' function and its behavior
-  let onAddCmdClicked = true;
 
   // Add host data
   const addCmdData = async () => {
@@ -134,25 +127,7 @@ const AddSudoCmd = (props: PropsToAddGroup) => {
     });
   };
 
-  const addAndAddAnotherHandler = () => {
-    onAddCmdClicked = false;
-    setAddAgainBtnSpinning(true);
-    addCmdData().then(() => {
-      if (isAdditionSuccess) {
-        // Do not close the modal, but clean fields & reset validations
-        cleanAllFields();
-      } else {
-        // Close the modal without cleaning fields
-        if (props.onCloseAddModal !== undefined) {
-          props.onCloseAddModal();
-        }
-        setAddAgainBtnSpinning(false);
-      }
-    });
-  };
-
   const addCmdHandler = () => {
-    onAddCmdClicked = true;
     setAddBtnSpinning(true);
     addCmdData().then(() => {
       if (!isAdditionSuccess) {
@@ -196,12 +171,7 @@ const AddSudoCmd = (props: PropsToAddGroup) => {
     // Close the error modal
     closeAndCleanErrorParameters();
 
-    // Repeats the same previous operation
-    if (onAddCmdClicked) {
-      addCmdHandler();
-    } else {
-      addAndAddAnotherHandler();
-    }
+    addCmdHandler();
   };
 
   const errorModalActions = [
@@ -238,7 +208,7 @@ const AddSudoCmd = (props: PropsToAddGroup) => {
       data-cy="modal-button-add"
       key="add-new-cmd"
       name="add"
-      isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
+      isDisabled={buttonDisabled || addSpinning}
       type="submit"
       form="add-sudo-cmd-modal"
       spinnerAriaValueText="Adding"
@@ -247,19 +217,6 @@ const AddSudoCmd = (props: PropsToAddGroup) => {
     >
       {addSpinning ? "Adding" : "Add"}
     </Button>,
-    <SecondaryButton
-      dataCy="modal-button-add-and-add-another"
-      key="add-and-add-another-new-cmd"
-      name="add_and_add_another"
-      isDisabled={buttonDisabled || addAgainSpinning || addSpinning}
-      onClickHandler={addAndAddAnotherHandler}
-      form="modal-form"
-      spinnerAriaValueText="Adding again"
-      spinnerAriaLabel="Adding again"
-      isLoading={addAgainSpinning}
-    >
-      {addAgainSpinning ? "Adding" : "Add and add another"}
-    </SecondaryButton>,
     <Button
       key="cancel-new-cmd"
       variant="link"

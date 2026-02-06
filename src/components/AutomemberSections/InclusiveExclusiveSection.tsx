@@ -285,45 +285,6 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
     });
   };
 
-  // On add and add another
-  const onAddAnotherOption = () => {
-    setSpinningOnAdd(true);
-    const payload: AddConditionPayload = {
-      automemberId: props.entityId,
-      automemberType: props.automemberType,
-      conditionType: props.conditionType,
-      key: key,
-      automemberregex: expression,
-    };
-
-    addCondition(payload).then((response) => {
-      if ("data" in response) {
-        const responseData = response.data;
-        if (responseData?.result) {
-          dispatch(
-            addAlert({
-              name: "add-automember-condition-success",
-              title: "Automember condition added",
-              variant: "success",
-            })
-          );
-          props.onRefresh();
-          resetValues();
-        } else if (responseData?.error) {
-          dispatch(
-            addAlert({
-              name: "add-automember-condition-error",
-              title:
-                "Failed to add Automember condition: " + responseData.error,
-              variant: "danger",
-            })
-          );
-        }
-      }
-      setSpinningOnAdd(false);
-    });
-  };
-
   const addModalFields: Field[] = [
     {
       id: "attribute",
@@ -370,19 +331,6 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
       isDisabled={expression === "" || spinningOnAdd}
     >
       {spinningOnAdd ? "Adding" : "Add"}
-    </Button>,
-    <Button
-      data-cy="modal-button-add-and-add-another"
-      key="add-another-inclusive"
-      variant="primary"
-      form={"add-another" + props.conditionType + "option-modal"}
-      spinnerAriaValueText="Adding"
-      spinnerAriaLabel="Adding"
-      isLoading={spinningOnAdd}
-      isDisabled={expression === "" || spinningOnAdd}
-      onClick={onAddAnotherOption}
-    >
-      {spinningOnAdd ? "Adding" : "Add and add another"}
     </Button>,
     <Button
       data-cy="modal-button-cancel"
