@@ -23,8 +23,6 @@ interface PropsToPaginationPrep {
 }
 
 const PaginationLayout = (props: PropsToPaginationPrep) => {
-  // Handle content on 'setPage'
-
   let perPageOptions = [
     { title: "10", value: 10 },
     { title: "20", value: 20 },
@@ -81,17 +79,21 @@ const PaginationLayout = (props: PropsToPaginationPrep) => {
     ];
   }
 
+  // Ensure page is always at least 1 to prevent negative display values
+  const safePage = Math.max(1, props.paginationData.page);
+
+  const itemCount =
+    props.paginationData.totalCount > 0
+      ? props.paginationData.totalCount
+      : props.list.length;
+
   return (
     <Pagination
       className={props.className}
-      itemCount={
-        props.paginationData.totalCount
-          ? props.paginationData.totalCount
-          : props.list.length
-      }
+      itemCount={itemCount}
       widgetId={props.widgetId}
       perPage={props.paginationData.perPage}
-      page={props.paginationData.page}
+      page={safePage}
       variant={props.variant}
       onSetPage={handleSetPage}
       onPerPageSelect={handlePerPageSelect}

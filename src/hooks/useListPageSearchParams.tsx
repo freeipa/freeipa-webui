@@ -13,7 +13,7 @@ const useListPageSearchParams = () => {
     if (pageParam && (parseInt(pageParam) < 1 || isNaN(parseInt(pageParam)))) {
       return 1;
     } else {
-      return parseInt(pageParam || "1");
+      return Math.max(1, parseInt(pageParam || "1"));
     }
   };
 
@@ -22,12 +22,22 @@ const useListPageSearchParams = () => {
     if (pageParam && (parseInt(pageParam) < 1 || isNaN(parseInt(pageParam)))) {
       return 10;
     } else {
-      return parseInt(pageParam || "10");
+      return Math.max(10, parseInt(pageParam || "10"));
     }
   };
 
-  const [page, setPage] = React.useState(getPageParam());
-  const [perPage, setPerPage] = React.useState(getPerPageParam());
+  const [page, _setPage] = React.useState(getPageParam());
+  const [perPage, _setPerPage] = React.useState(getPerPageParam());
+
+  // Ensure 'page' is always >= 1
+  const setPage = (newPage: number) => {
+    _setPage(Math.max(1, newPage));
+  };
+
+  // Ensure 'perPage' is always >= 1
+  const setPerPage = (newPerPage: number) => {
+    _setPerPage(Math.max(1, newPerPage));
+  };
 
   // Search value
   const [searchValue, setSearchValue] = React.useState(
