@@ -293,6 +293,9 @@ export const api = createApi({
         } = payloadData;
         let objName = payloadData.objName;
 
+        // startIdx cannot contain negative values
+        const startIdxValue = Math.max(startIdx, 0);
+
         if (objAttr === undefined || objName === undefined) {
           return {
             error: {
@@ -398,7 +401,7 @@ export const api = createApi({
         const idResponseData = getGroupIDsResult.data as FindRPCResponse;
         const ids: string[] = [];
         const itemsCount = idResponseData.result.result.length as number;
-        for (let i = startIdx; i < itemsCount && i < stopIdx; i++) {
+        for (let i = startIdxValue; i < itemsCount && i < stopIdx; i++) {
           let id;
           if (objName === "host") {
             id = idResponseData.result.result[i] as fqdnType;
@@ -433,7 +436,10 @@ export const api = createApi({
               } as FetchBaseQueryError,
             };
           }
-          ids.push(id[objAttr][0] as string);
+
+          if (id !== undefined) {
+            ids.push(id[objAttr][0] as string);
+          }
         }
 
         // 2ND CALL - GET PARTIAL INFO

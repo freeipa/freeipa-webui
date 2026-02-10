@@ -92,7 +92,8 @@ const ActiveUsers = () => {
   const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   // Page indexes
-  const firstUserIdx = (page - 1) * perPage;
+  // - Ensure 'firstUserIdx' is always >= 0
+  const firstUserIdx = Math.max(0, (page - 1) * perPage);
   const lastUserIdx = page * perPage;
 
   // Derived states - what we get from API
