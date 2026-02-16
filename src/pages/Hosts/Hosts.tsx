@@ -4,187 +4,79 @@ import {
   Button,
   Content,
   DropdownItem,
-  Flex,
-  FlexItem,
-  PageSection,
-  PaginationVariant,
   ToolbarItemVariant,
 } from "@patternfly/react-core";
-import {
-  InnerScrollContainer,
-  OuterScrollContainer,
-} from "@patternfly/react-table";
 // Layouts
-import TitleLayout from "src/components/layouts/TitleLayout";
-import ToolbarLayout, {
-  ToolbarItem,
-} from "src/components/layouts/ToolbarLayout";
-import SearchInputLayout from "src/components/layouts/SearchInputLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
+import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import PaginationLayout from "src/components/layouts/PaginationLayout";
 import KebabLayout from "src/components/layouts/KebabLayout";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
-// Components
-import BulkSelectorPrep from "src/components/BulkSelectorPrep";
-import PaginationLayout from "src/components/layouts/PaginationLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Tables
 import HostsTable from "./HostsTable";
 // Modal
 import AddHost from "src/components/modals/HostModals/AddHost";
 import DeleteHosts from "src/components/modals/HostModals/DeleteHosts";
 // Redux
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
+import { useAppDispatch } from "src/store/hooks";
 // Data types
 import { Host } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { API_VERSION_BACKUP, isHostSelectable } from "src/utils/utils";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
-import useUpdateRoute from "src/hooks/useUpdateRoute";
-import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
-import useApiError from "src/hooks/useApiError";
-import GlobalErrors from "src/components/errors/GlobalErrors";
-import ModalErrors from "src/components/errors/ModalErrors";
 // RPC client
-import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
+import { GenericPayload } from "../../services/rpc";
 import {
   useGettingHostQuery,
   useAutoMemberRebuildHostsMutation,
 } from "../../services/rpcHosts";
+// Generic main page
+import {
+  useMainPageState,
+  useDataResponseEffect,
+  GenericMainPage,
+} from "src/components/GenericMainPage";
 
 const Hosts = () => {
   const dispatch = useAppDispatch();
 
-  // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
-    useListPageSearchParams();
-
-  // Update current route data to Redux and highlight the current page in the Nav bar
-  const { browserTitle } = useUpdateRoute({ pathname: "hosts" });
-
-  // Set the page title to be shown in the browser tab
-  React.useEffect(() => {
-    document.title = browserTitle;
-  }, [browserTitle]);
+  // Common state via generic hook
+  const state = useMainPageState<Host>({
+    pathname: "hosts",
+    searchEntryType: "host",
+    nameAttr: "fqdn",
+    getKeyValue: (host) => host.fqdn[0],
+    isSelectable: isHostSelectable,
+  });
 
   // Define 'executeCommand' to execute simple commands (via Mutation)
   const [executeAutoMemberRebuild] = useAutoMemberRebuildHostsMutation();
 
-  // Retrieve API version from environment data
-  const apiVersion = useAppSelector(
-    (state) => state.global.environment.api_version
-  ) as string;
-
-  // Initialize hosts list (Redux)
-  const [hostsList, setHostsList] = useState<Host[]>([]);
-
-  // Handle API calls errors
-  const globalErrors = useApiError([]);
-  const modalErrors = useApiError([]);
-
-  // Table comps
-  const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
-  const [totalCount, setHostsTotalCount] = useState<number>(0);
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
-
-  const updateSelectedPerPage = (selected: number) => {
-    setSelectedPerPage(selected);
-  };
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
-
-  // 'Delete' button state
-  const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
-    useState<boolean>(true);
-
-  const updateIsDeleteButtonDisabled = (value: boolean) => {
-    setIsDeleteButtonDisabled(value);
-  };
-
-  // If some entries have been deleted, restore the selectedHosts list
-  const [isDeletion, setIsDeletion] = useState(false);
-
-  const updateIsDeletion = (value: boolean) => {
-    setIsDeletion(value);
-  };
-
-  const updateShownHostsList = (newShownHostsList: Host[]) => {
-    setHostsList(newShownHostsList);
-  };
-
   // Button disabled due to error
   const [isDisabledDueError, setIsDisabledDueError] = useState<boolean>(false);
 
-  // Page indexes
-  const firstHostIdx = (page - 1) * perPage;
-  const lastHostIdx = page * perPage;
-
   // Derived states - what we get from API
   const hostDataResponse = useGettingHostQuery({
-    searchValue: searchValue,
+    searchValue: state.searchValue,
     sizeLimit: 0,
-    apiVersion: apiVersion || API_VERSION_BACKUP,
-    startIdx: firstHostIdx,
-    stopIdx: lastHostIdx,
+    apiVersion: state.apiVersion || API_VERSION_BACKUP,
+    startIdx: state.firstIdx,
+    stopIdx: state.lastIdx,
   } as GenericPayload);
 
-  const {
-    data: batchResponse,
-    isLoading: isBatchLoading,
-    error: batchError,
-  } = hostDataResponse;
+  // Connect query response to state
+  useDataResponseEffect(hostDataResponse, state);
 
-  // Handle data when the API call is finished
+  // Reset isDisabledDueError when fetching
   useEffect(() => {
     if (hostDataResponse.isFetching) {
-      setShowTableRows(false);
-      // Reset selected users on refresh
-      setHostsTotalCount(0);
-      globalErrors.clear();
       setIsDisabledDueError(false);
-      return;
     }
-
-    // API response: Success
-    if (
-      hostDataResponse.isSuccess &&
-      hostDataResponse.data &&
-      batchResponse !== undefined
-    ) {
-      const hostsListResult = batchResponse.result.results;
-      const totalCount = batchResponse.result.totalCount;
-      const hostsListSize = batchResponse.result.count;
-      const hostsList: Host[] = [];
-
-      for (let i = 0; i < hostsListSize; i++) {
-        hostsList.push(hostsListResult[i].result);
-      }
-
-      setHostsList(hostsList);
-      setHostsTotalCount(totalCount);
-      // Show table elements
-      setShowTableRows(true);
-    }
-
-    // API response: Error
-    if (
-      !hostDataResponse.isLoading &&
-      hostDataResponse.isError &&
-      hostDataResponse.error !== undefined
-    ) {
-      // This normally happens when the user is not authorized to view the data
-      // So instead of adding an error, refresh page
-      window.location.reload();
-    }
-  }, [hostDataResponse]);
+  }, [hostDataResponse.isFetching]);
 
   // Always refetch data when the component is loaded.
   // This ensures the data is always up-to-date.
@@ -192,137 +84,10 @@ const Hosts = () => {
     hostDataResponse.refetch();
   }, []);
 
-  // Refresh button handling
-  const refreshHostsData = () => {
-    // Hide table
-    setShowTableRows(false);
+  // Refresh handler
+  const refreshData = () => state.refreshData(() => hostDataResponse.refetch());
 
-    // Reset selected hosts on refresh
-    setHostsTotalCount(0);
-    clearSelectedHosts();
-
-    hostDataResponse.refetch();
-  };
-
-  const updateSearchValue = (value: string) => {
-    setSearchValue(value);
-  };
-
-  const [selectedHosts, setSelectedHostsList] = useState<Host[]>([]);
-  const clearSelectedHosts = () => {
-    const emptyList: Host[] = [];
-    setSelectedHostsList(emptyList);
-  };
-
-  const [retrieveHost] = useSearchEntriesMutation({});
-
-  // Issue a search using a specific search value
-  const submitSearchValue = () => {
-    setShowTableRows(false);
-    setHostsTotalCount(0);
-    setSearchIsDisabled(true);
-    retrieveHost({
-      searchValue: searchValue,
-      sizeLimit: 0,
-      apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: firstHostIdx,
-      stopIdx: lastHostIdx,
-      entryType: "host",
-    } as GenericPayload).then((result) => {
-      // Manage new response here
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for hosts",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const hostsListResult = result.data?.result.results || [];
-          const hostsListSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
-          const hostsList: Host[] = [];
-
-          for (let i = 0; i < hostsListSize; i++) {
-            hostsList.push(hostsListResult[i].result);
-          }
-
-          setHostsList(hostsList);
-          setHostsTotalCount(totalCount);
-          // Show table elements
-          setShowTableRows(true);
-        }
-        setSearchIsDisabled(false);
-      }
-    });
-  };
-
-  // Show table rows
-  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
-
-  const updateSelectedHosts = (hosts: Host[], isSelected: boolean) => {
-    let newSelectedHosts: Host[] = [];
-    if (isSelected) {
-      newSelectedHosts = JSON.parse(JSON.stringify(selectedHosts));
-      for (let i = 0; i < hosts.length; i++) {
-        if (
-          selectedHosts.find(
-            (selectedUser) => selectedUser.fqdn[0] === hosts[i].fqdn[0]
-          )
-        ) {
-          // Already in the list
-          continue;
-        }
-        // Add user to list
-        newSelectedHosts.push(hosts[i]);
-      }
-    } else {
-      // Remove host
-      for (let i = 0; i < selectedHosts.length; i++) {
-        let found = false;
-        for (let ii = 0; ii < hosts.length; ii++) {
-          if (selectedHosts[i].fqdn[0] === hosts[ii].fqdn[0]) {
-            found = true;
-            break;
-          }
-        }
-        if (!found) {
-          // Keep this valid selected entry
-          newSelectedHosts.push(selectedHosts[i]);
-        }
-      }
-    }
-    setSelectedHostsList(newSelectedHosts);
-    setIsDeleteButtonDisabled(newSelectedHosts.length === 0);
-  };
-
-  // - Helper method to set the selected users from the table
-  const setHostSelected = (host: Host, isSelecting = true) => {
-    if (isHostSelectable(host)) {
-      updateSelectedHosts([host], isSelecting);
-    }
-  };
-
-  // Show table rows only when data is fully retrieved
-  useEffect(() => {
-    if (showTableRows !== !isBatchLoading) {
-      setShowTableRows(!isBatchLoading);
-    }
-  }, [isBatchLoading]);
+  // -- Page-specific state --
 
   // Dropdown kebab
   const [kebabIsOpen, setKebabIsOpen] = useState(false);
@@ -341,7 +106,7 @@ const Hosts = () => {
         variant: "info",
       })
     );
-    executeAutoMemberRebuild(selectedHosts).then((result) => {
+    executeAutoMemberRebuild(state.selectedElements).then((result) => {
       if ("data" in result) {
         const automemberError = result.data?.error as
           | FetchBaseQueryError
@@ -467,186 +232,62 @@ const Hosts = () => {
     setShowDeleteModal(!showDeleteModal);
   };
 
-  // Table-related shared functionality
-  // - Selectable checkboxes on table
-  const selectableHostsTable = hostsList.filter(isHostSelectable); // elements per Table
-
-  // Data wrappers
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownHostsList,
-    totalCount,
-  };
-
-  // - 'BulkSelectorPrep'
-  const hostsBulkSelectorData = {
-    selected: selectedHosts,
-    updateSelected: updateSelectedHosts,
-    selectableTable: selectableHostsTable,
-    nameAttr: "fqdn",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled,
-  };
-
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage,
-  };
-
-  // - 'DeleteHosts'
-  const deleteHostsButtonsData = {
-    updateIsDeleteButtonDisabled,
-    updateIsDeletion,
-  };
+  // -- Data wrappers for child components --
 
   const selectedHostsData = {
-    selectedHosts,
-    clearSelectedHosts,
+    selectedHosts: state.selectedElements,
+    clearSelectedHosts: state.clearSelectedElements,
   };
 
-  // - 'HostsTable'
   const hostsTableData = {
     isHostSelectable,
-    selectedHosts,
-    selectableHostsTable,
-    setHostSelected,
-    clearSelectedHosts,
+    selectedHosts: state.selectedElements,
+    selectableHostsTable: state.selectableElements,
+    setHostSelected: state.setElementSelected,
+    clearSelectedHosts: state.clearSelectedElements,
   };
 
   const hostsTableButtonsData = {
-    updateIsDeleteButtonDisabled,
-    isDeletion,
-    updateIsDeletion,
+    updateIsDeleteButtonDisabled: state.updateIsDeleteButtonDisabled,
+    isDeletion: state.isDeletion,
+    updateIsDeletion: state.updateIsDeletion,
   };
 
-  // - 'SearchInputLayout'
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
-  };
-
-  // Contextual links panel
-  const [isContextualPanelExpanded, setIsContextualPanelExpanded] =
-    React.useState(false);
-
-  const onOpenContextualPanel = () => {
-    setIsContextualPanelExpanded(!isContextualPanelExpanded);
-  };
-
-  const onCloseContextualPanel = () => {
-    setIsContextualPanelExpanded(false);
-  };
-
-  // List of toolbar items
-  const toolbarItems: ToolbarItem[] = [
+  // Extra toolbar items: Kebab, Separator, Help, Pagination
+  const extraToolbarItems: ToolbarItem[] = [
     {
-      key: 0,
-      element: (
-        <BulkSelectorPrep
-          list={hostsList}
-          shownElementsList={hostsList}
-          elementData={hostsBulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
-        />
-      ),
-    },
-    {
-      key: 1,
-      element: (
-        <SearchInputLayout
-          dataCy="search"
-          name="search"
-          ariaLabel="Search hosts"
-          placeholder="Search"
-          searchValueData={searchValueData}
-          isDisabled={searchDisabled}
-        />
-      ),
-      toolbarItemVariant: ToolbarItemVariant.label,
-      toolbarItemGap: { default: "gapMd" },
-    },
-    {
-      key: 2,
-      toolbarItemVariant: ToolbarItemVariant.separator,
-    },
-    {
-      key: 3,
-      element: (
-        <SecondaryButton
-          onClickHandler={refreshHostsData}
-          isDisabled={!showTableRows}
-          dataCy="hosts-button-refresh"
-        >
-          Refresh
-        </SecondaryButton>
-      ),
-    },
-    {
-      key: 4,
-      element: (
-        <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
-          onClickHandler={onDeleteHandler}
-          dataCy="hosts-button-delete"
-        >
-          Delete
-        </SecondaryButton>
-      ),
-    },
-    {
-      key: 5,
-      element: (
-        <SecondaryButton
-          onClickHandler={onAddClickHandler}
-          isDisabled={!showTableRows || isDisabledDueError}
-          dataCy="hosts-button-add"
-        >
-          Add
-        </SecondaryButton>
-      ),
-    },
-    {
-      key: 6,
+      key: "kebab",
       element: (
         <KebabLayout
           onDropdownSelect={onDropdownSelect}
           onKebabToggle={onKebabToggle}
           idKebab="main-dropdown-kebab"
           isKebabOpen={kebabIsOpen}
-          dropdownItems={!showTableRows ? [] : dropdownItems}
+          dropdownItems={!state.showTableRows ? [] : dropdownItems}
           dataCy="hosts-kebab"
-          isDisabled={!showTableRows}
+          isDisabled={!state.showTableRows}
         />
       ),
     },
     {
-      key: 7,
+      key: "separator",
       toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
-      key: 8,
+      key: "help",
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={onOpenContextualPanel}
+          onClick={state.toggleContextualPanel}
         />
       ),
     },
     {
-      key: 9,
+      key: "pagination-top",
       element: (
         <PaginationLayout
-          list={hostsList}
-          paginationData={paginationData}
+          list={state.elementsList}
+          paginationData={state.paginationData}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -656,84 +297,57 @@ const Hosts = () => {
   ];
 
   return (
-    <ContextualHelpPanel
-      fromPage="hosts"
-      isExpanded={isContextualPanelExpanded}
-      onClose={onCloseContextualPanel}
+    <GenericMainPage
+      state={state}
+      pageTitle="Hosts"
+      batchError={hostDataResponse.error}
+      onRefresh={refreshData}
+      onAddClick={onAddClickHandler}
+      onDeleteClick={onDeleteHandler}
+      extraToolbarItems={extraToolbarItems}
+      contextualPanelPage="hosts"
+      isAddDisabledDueError={isDisabledDueError}
+      renderTable={(s) => (
+        <HostsTable
+          elementsList={s.elementsList}
+          shownElementsList={s.elementsList}
+          showTableRows={s.showTableRows}
+          hostsData={hostsTableData}
+          buttonsData={hostsTableButtonsData}
+          paginationData={s.selectedPerPageData}
+          searchValue={s.searchValue}
+        />
+      )}
     >
-      <div>
-        <PageSection hasBodyWrapper={false}>
-          <TitleLayout id="Hosts title" headingLevel="h1" text="Hosts" />
-        </PageSection>
-        <PageSection hasBodyWrapper={false} isFilled={false}>
-          <Flex direction={{ default: "column" }}>
-            <FlexItem>
-              <ToolbarLayout toolbarItems={toolbarItems} />
-            </FlexItem>
-            <FlexItem style={{ flex: "0 0 auto" }}>
-              <OuterScrollContainer>
-                <InnerScrollContainer
-                  style={{ height: "60vh", overflow: "auto" }}
-                >
-                  {batchError !== undefined && batchError ? (
-                    <GlobalErrors errors={globalErrors.getAll()} />
-                  ) : (
-                    <HostsTable
-                      elementsList={hostsList}
-                      shownElementsList={hostsList}
-                      showTableRows={showTableRows}
-                      hostsData={hostsTableData}
-                      buttonsData={hostsTableButtonsData}
-                      paginationData={selectedPerPageData}
-                      searchValue={searchValue}
-                    />
-                  )}
-                </InnerScrollContainer>
-              </OuterScrollContainer>
-            </FlexItem>
-            <FlexItem
-              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
-            >
-              <PaginationLayout
-                list={hostsList}
-                paginationData={paginationData}
-                variant={PaginationVariant.bottom}
-                widgetId="pagination-options-menu-bottom"
-              />
-            </FlexItem>
-          </Flex>
-        </PageSection>
-        <ModalErrors errors={modalErrors.getAll()} dataCy="hosts-modal-error" />
-        {isMembershipModalOpen && (
-          <ModalWithFormLayout
-            variantType="medium"
-            modalPosition="top"
-            offPosition="76px"
-            title="Confirmation"
-            formId="rebuild-auto-membership-modal"
-            fields={confirmationQuestion}
-            show={isMembershipModalOpen}
-            onClose={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
-            actions={membershipModalActions}
-            dataCy="hosts-rebuild-auto-membership-modal"
-          />
-        )}
-        <AddHost
-          show={showAddModal}
-          handleModalToggle={onAddModalToggle}
-          onOpenAddModal={onAddClickHandler}
-          onCloseAddModal={onCloseAddModal}
-          onRefresh={refreshHostsData}
+      {isMembershipModalOpen && (
+        <ModalWithFormLayout
+          variantType="medium"
+          modalPosition="top"
+          offPosition="76px"
+          title="Confirmation"
+          formId="rebuild-auto-membership-modal"
+          fields={confirmationQuestion}
+          show={isMembershipModalOpen}
+          onClose={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
+          actions={membershipModalActions}
+          dataCy="hosts-rebuild-auto-membership-modal"
         />
-        <DeleteHosts
-          show={showDeleteModal}
-          handleModalToggle={onDeleteModalToggle}
-          selectedHostsData={selectedHostsData}
-          buttonsData={deleteHostsButtonsData}
-          onRefresh={refreshHostsData}
-        />
-      </div>
-    </ContextualHelpPanel>
+      )}
+      <AddHost
+        show={showAddModal}
+        handleModalToggle={onAddModalToggle}
+        onOpenAddModal={onAddClickHandler}
+        onCloseAddModal={onCloseAddModal}
+        onRefresh={refreshData}
+      />
+      <DeleteHosts
+        show={showDeleteModal}
+        handleModalToggle={onDeleteModalToggle}
+        selectedHostsData={selectedHostsData}
+        buttonsData={state.deleteButtonsData}
+        onRefresh={refreshData}
+      />
+    </GenericMainPage>
   );
 };
 

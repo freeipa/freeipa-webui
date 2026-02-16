@@ -12,7 +12,7 @@ type ToolbarItemGap = ToolbarItemProps["gap"];
 type ToolbarItemAlignment = ToolbarItemProps["align"];
 
 export interface ToolbarItem {
-  key: number;
+  key: number | string;
   id?: string;
   element?: JSX.Element;
   toolbarItemVariant?: ToolbarItemVariant;

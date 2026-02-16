@@ -1,52 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 // PatternFly
 import {
-  PageSection,
-  PaginationVariant,
   Button,
   DropdownItem,
-  ToolbarItemVariant,
-  PageSectionVariants,
-  FlexItem,
-  Flex,
   Content,
+  ToolbarItemVariant,
 } from "@patternfly/react-core";
-// PatternFly table
-import {
-  InnerScrollContainer,
-  OuterScrollContainer,
-} from "@patternfly/react-table";
 // Data types
 import { User } from "src/utils/datatypes/globalDataTypes";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
-// Redux
-import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // Layouts
-import TitleLayout from "src/components/layouts/TitleLayout";
-import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import KebabLayout from "src/components/layouts/KebabLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
-import ToolbarLayout from "src/components/layouts/ToolbarLayout";
-import SearchInputLayout from "src/components/layouts/SearchInputLayout";
+import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import PaginationLayout from "src/components/layouts/PaginationLayout";
+import KebabLayout from "src/components/layouts/KebabLayout";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Tables
 import UsersTable from "../../components/tables/UsersTable";
-// Components
-import PaginationLayout from "../../components/layouts/PaginationLayout";
-import BulkSelectorPrep from "src/components/BulkSelectorPrep";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Modals
 import AddUser from "src/components/modals/UserModals/AddUser";
 import DeleteUsers from "src/components/modals/UserModals/DeleteUsers";
 import DisableEnableUsers from "src/components/modals/UserModals/DisableEnableUsers";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
-import useUpdateRoute from "src/hooks/useUpdateRoute";
-import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils
 import { API_VERSION_BACKUP, isUserSelectable } from "src/utils/utils";
-// RPC client
-import { GenericPayload, useSearchEntriesMutation } from "src/services/rpc";
+// RPC
+import { GenericPayload } from "src/services/rpc";
 import {
   useGettingActiveUserQuery,
   useAutoMemberRebuildUsersMutation,
@@ -54,117 +34,34 @@ import {
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
-import useApiError from "src/hooks/useApiError";
-import GlobalErrors from "src/components/errors/GlobalErrors";
-import ModalErrors from "src/components/errors/ModalErrors";
+// Generic main page
+import {
+  useMainPageState,
+  useDataResponseEffect,
+  GenericMainPage,
+} from "src/components/GenericMainPage";
 
 const ActiveUsers = () => {
-  const dispatch = useAppDispatch();
+  // Common state via generic hook
+  const state = useMainPageState<User>({
+    pathname: "active-users",
+    searchEntryType: "user",
+    nameAttr: "uid",
+    getKeyValue: (user) => user.uid[0],
+    isSelectable: isUserSelectable,
+  });
 
-  // Update current route data to Redux and highlight the current page in the Nav bar
-  const { browserTitle } = useUpdateRoute({ pathname: "active-users" });
-
-  // Set the page title to be shown in the browser tab
-  React.useEffect(() => {
-    document.title = browserTitle;
-  }, [browserTitle]);
-
-  // Retrieve API version from environment data
-  const apiVersion = useAppSelector(
-    (state) => state.global.environment.api_version
-  ) as string;
-
-  const [activeUsersList, setActiveUsersList] = useState<User[]>([]);
-
-  // Define 'executeCommand' to execute simple commands (via Mutation)
   const [executeAutoMemberRebuild] = useAutoMemberRebuildUsersMutation();
 
-  // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
-    useListPageSearchParams();
-
-  // Handle API calls errors
-  const globalErrors = useApiError([]);
-  const modalErrors = useApiError([]);
-
-  // Main states - what user can define / what we could use in page URL
-  const [totalCount, setUsersTotalCount] = useState<number>(0);
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
-
-  // Page indexes
-  const firstUserIdx = (page - 1) * perPage;
-  const lastUserIdx = page * perPage;
-
-  // Derived states - what we get from API
   const userDataResponse = useGettingActiveUserQuery({
-    searchValue: searchValue,
+    searchValue: state.searchValue,
     sizeLimit: 0,
-    apiVersion: apiVersion || API_VERSION_BACKUP,
-    startIdx: firstUserIdx,
-    stopIdx: lastUserIdx,
+    apiVersion: state.apiVersion || API_VERSION_BACKUP,
+    startIdx: state.firstIdx,
+    stopIdx: state.lastIdx,
   } as GenericPayload);
 
-  const {
-    data: batchResponse,
-    isLoading: isBatchLoading,
-    error: batchError,
-  } = userDataResponse;
-
-  // Handle data when the API call is finished
-  useEffect(() => {
-    if (userDataResponse.isFetching) {
-      setShowTableRows(false);
-      // Reset selected users on refresh
-      setUsersTotalCount(0);
-      globalErrors.clear();
-      return;
-    }
-
-    // API response: Success
-    if (
-      userDataResponse.isSuccess &&
-      userDataResponse.data &&
-      batchResponse !== undefined
-    ) {
-      const usersListResult = batchResponse.result.results;
-      const totalCount = batchResponse.result.totalCount;
-      const usersListSize = batchResponse.result.count;
-      const usersList: User[] = [];
-
-      for (let i = 0; i < usersListSize; i++) {
-        usersList.push(usersListResult[i].result);
-      }
-
-      setUsersTotalCount(totalCount);
-      // Update the list of users
-      setActiveUsersList(usersList);
-      // Show table elements
-      setShowTableRows(true);
-    }
-
-    // API response: Error
-    if (
-      !userDataResponse.isLoading &&
-      userDataResponse.isError &&
-      userDataResponse.error !== undefined
-    ) {
-      // This normally happens when the user is not authorized to view the data
-      // So instead of adding an error, refresh page
-      window.location.reload();
-    }
-  }, [userDataResponse]);
-
-  // Refresh button handling
-  const refreshUsersData = () => {
-    // Hide table
-    setShowTableRows(false);
-
-    // Reset selected users on refresh
-    setUsersTotalCount(0);
-    clearSelectedUsers();
-
-    userDataResponse.refetch();
-  };
+  useDataResponseEffect(userDataResponse, state);
 
   // Always refetch data when the component is loaded.
   // This ensures the data is always up-to-date.
@@ -172,22 +69,9 @@ const ActiveUsers = () => {
     userDataResponse.refetch();
   }, []);
 
-  // 'Delete' button state
-  const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
-    useState<boolean>(true);
+  const refreshData = () => state.refreshData(() => userDataResponse.refetch());
 
-  const updateIsDeleteButtonDisabled = (value: boolean) => {
-    setIsDeleteButtonDisabled(value);
-  };
-
-  // If some entries have been deleted, restore the selectedUsers list
-  const [isDeletion, setIsDeletion] = useState(false);
-
-  const updateIsDeletion = (value: boolean) => {
-    setIsDeletion(value);
-  };
-
-  // 'Enable' button state
+  // Page-specific states
   const [isEnableButtonDisabled, setIsEnableButtonDisabled] =
     useState<boolean>(true);
 
@@ -195,7 +79,6 @@ const ActiveUsers = () => {
     setIsEnableButtonDisabled(value);
   };
 
-  // 'Disable' button state
   const [isDisableButtonDisabled, setIsDisableButtonDisabled] =
     useState<boolean>(true);
 
@@ -210,114 +93,61 @@ const ActiveUsers = () => {
     setIsDisableEnableOp(value);
   };
 
-  // Elements selected (per page)
-  //  - This will help to calculate the remaining elements on a specific page (bulk selector)
-  const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
+  // Modals functionality
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEnableDisableModal, setShowEnableDisableModal] = useState(false);
+  const [enableDisableOptionSelected, setEnableDisableOptionSelected] =
+    useState(false);
 
-  const updateSelectedPerPage = (selected: number) => {
-    setSelectedPerPage(selected);
+  const onAddClickHandler = () => {
+    setShowAddModal(true);
   };
 
-  // Pagination
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
+  const onCloseAddModal = () => {
+    setShowAddModal(false);
   };
 
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
+  const onAddModalToggle = () => {
+    setShowAddModal(!showAddModal);
   };
 
-  // Users displayed on the first page
-  const updateShownUsersList = (newShownUsersList: User[]) => {
-    setActiveUsersList(newShownUsersList);
+  const onDeleteHandler = () => {
+    setShowDeleteModal(true);
   };
 
-  // Update search input valie
-  const updateSearchValue = (value: string) => {
-    setSearchValue(value);
+  const onOpenDeleteModal = () => {
+    setShowDeleteModal(true);
   };
 
-  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
-
-  const clearSelectedUsers = () => {
-    const emptyList: User[] = [];
-    setSelectedUsers(emptyList);
+  const onCloseDeleteModal = () => {
+    setShowDeleteModal(false);
   };
 
-  const [retrieveUser] = useSearchEntriesMutation({});
-
-  // Issue a search using a specific search value
-  const submitSearchValue = () => {
-    setShowTableRows(false);
-    setSearchIsDisabled(true);
-    setUsersTotalCount(0);
-
-    // Make search via API call
-    retrieveUser({
-      searchValue: searchValue,
-      sizeLimit: 0,
-      apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: firstUserIdx,
-      stopIdx: lastUserIdx,
-      entryType: "user",
-    } as GenericPayload).then((result) => {
-      // Manage new response here
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for users",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const usersListResult = result.data?.result.results || [];
-          const usersListSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
-          const usersList: User[] = [];
-
-          for (let i = 0; i < usersListSize; i++) {
-            usersList.push(usersListResult[i].result);
-          }
-
-          setUsersTotalCount(totalCount);
-          setActiveUsersList(usersList);
-          // Show table elements
-          setShowTableRows(true);
-        }
-        setSearchIsDisabled(false);
-      }
-    });
+  const onDeleteModalToggle = () => {
+    setShowDeleteModal(!showDeleteModal);
   };
 
-  // Show table rows
-  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
+  const onEnableDisableHandler = (optionClicked: boolean) => {
+    state.updateIsDeleteButtonDisabled(true);
+    setIsEnableButtonDisabled(true);
+    setIsDisableButtonDisabled(true);
+    setEnableDisableOptionSelected(optionClicked);
+    setShowEnableDisableModal(true);
+  };
 
-  // Show table rows only when data is fully retrieved
-  useEffect(() => {
-    if (showTableRows !== !isBatchLoading) {
-      setShowTableRows(!isBatchLoading);
-    }
-  }, [isBatchLoading]);
+  const onEnableDisableModalToggle = () => {
+    setIsEnableButtonDisabled(true);
+    setIsDisableButtonDisabled(true);
+    setShowEnableDisableModal(!showEnableDisableModal);
+  };
 
-  // [API call] 'Rebuild auto membership'
+  const [isMembershipModalOpen, setIsMembershipModalOpen] = useState(false);
+
   const onRebuildAutoMembership = () => {
     // Task can potentially run for a very long time, give feed back that we
     // at least started the task
-    dispatch(
+    state.dispatch(
       addAlert({
         name: "rebuild-automember-start",
         title:
@@ -327,7 +157,7 @@ const ActiveUsers = () => {
     );
 
     // Prepare payload
-    const userList = selectedUsers.map((user) => user.uid[0]);
+    const userList = state.selectedElements.map((user) => user.uid[0]);
 
     executeAutoMemberRebuild(userList).then((result) => {
       if ("data" in result) {
@@ -344,7 +174,7 @@ const ActiveUsers = () => {
             error = automemberError.message;
           }
 
-          dispatch(
+          state.dispatch(
             addAlert({
               name: "rebuild-automember-error",
               title: error || "Error when rebuilding membership",
@@ -353,7 +183,7 @@ const ActiveUsers = () => {
           );
         } else {
           // alert: success
-          dispatch(
+          state.dispatch(
             addAlert({
               name: "rebuild-automember-success",
               title: "Automember rebuild membership task completed",
@@ -368,8 +198,6 @@ const ActiveUsers = () => {
   };
 
   // 'Rebuild auto membership' modal
-  const [isMembershipModalOpen, setIsMembershipModalOpen] = useState(false);
-
   const membershipModalActions: JSX.Element[] = [
     <Button
       data-cy="modal-button-ok"
@@ -426,270 +254,49 @@ const ActiveUsers = () => {
 
   const onDropdownSelect = (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    event?: React.MouseEvent<Element, MouseEvent> | undefined
+    _event?: React.MouseEvent<Element, MouseEvent> | undefined
   ) => {
     setKebabIsOpen(!kebabIsOpen);
   };
 
-  // Modals functionality
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showEnableDisableModal, setShowEnableDisableModal] = useState(false);
-  const [enableDisableOptionSelected, setEnableDisableOptionSelected] =
-    useState(false);
-  const onAddClickHandler = () => {
-    setShowAddModal(true);
+  // Data wrappers for child components
+  const selectedUsersData = {
+    selectedUsers: state.selectedElements,
+    clearSelectedUsers: state.clearSelectedElements,
   };
 
-  const onCloseAddModal = () => {
-    setShowAddModal(false);
+  const usersTableData = {
+    isUserSelectable,
+    selectedUsers: state.selectedElements,
+    selectableUsersTable: state.selectableElements,
+    setUserSelected: state.setElementSelected,
+    clearSelectedUsers: state.clearSelectedElements,
   };
 
-  const onAddModalToggle = () => {
-    setShowAddModal(!showAddModal);
-  };
-
-  const onDeleteHandler = () => {
-    setShowDeleteModal(true);
-  };
-
-  const onOpenDeleteModal = () => {
-    setShowDeleteModal(true);
-  };
-
-  const onCloseDeleteModal = () => {
-    setShowDeleteModal(false);
-  };
-
-  const onDeleteModalToggle = () => {
-    setShowDeleteModal(!showDeleteModal);
-  };
-
-  const onEnableDisableHandler = (optionClicked: boolean) => {
-    setIsDeleteButtonDisabled(true); // prevents 'Delete' button to be enabled
-    setIsEnableButtonDisabled(true); // prevents 'Enable' button to be enabled
-    setIsDisableButtonDisabled(true); // prevents 'Disable' button to be enabled
-    setEnableDisableOptionSelected(optionClicked);
-    setShowEnableDisableModal(true);
-  };
-
-  const onEnableDisableModalToggle = () => {
-    setIsEnableButtonDisabled(true); // prevents 'Enable' button to be enabled
-    setIsDisableButtonDisabled(true); // prevents 'Disable' button to be enabled
-    setShowEnableDisableModal(!showEnableDisableModal);
-  };
-
-  // Table-related shared functionality
-  // - Selectable checkboxes on table
-  const selectableUsersTable = activeUsersList.filter(isUserSelectable); // elements per Table
-
-  const updateSelectedUsers = (users: User[], isSelected: boolean) => {
-    let newSelectedUsers: User[] = [];
-    if (isSelected) {
-      newSelectedUsers = JSON.parse(JSON.stringify(selectedUsers));
-      for (let i = 0; i < users.length; i++) {
-        if (
-          selectedUsers.find(
-            (selectedUser) => selectedUser.uid[0] === users[i].uid[0]
-          )
-        ) {
-          // Already in the list
-          continue;
-        }
-        // Add user to list
-        newSelectedUsers.push(users[i]);
-      }
-    } else {
-      // Remove user
-      for (let i = 0; i < selectedUsers.length; i++) {
-        let found = false;
-        for (let ii = 0; ii < users.length; ii++) {
-          if (selectedUsers[i].uid[0] === users[ii].uid[0]) {
-            found = true;
-            break;
-          }
-        }
-        if (!found) {
-          // Keep this valid selected entry
-          newSelectedUsers.push(selectedUsers[i]);
-        }
-      }
-    }
-    setSelectedUsers(newSelectedUsers);
-    setIsDeleteButtonDisabled(newSelectedUsers.length === 0);
-  };
-
-  // - Helper method to set the selected users from the table
-  const setUserSelected = (user: User, isSelecting = true) => {
-    if (isUserSelectable(user)) {
-      updateSelectedUsers([user], isSelecting);
-    }
-  };
-
-  // Data wrappers
-  // TODO: Better separation of concerts
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownUsersList,
-    totalCount,
-  };
-
-  // - 'BulkSelectorUsersPrep'
-  const usersBulkSelectorData = {
-    selected: selectedUsers,
-    updateSelected: updateSelectedUsers,
-    selectableTable: selectableUsersTable,
-    nameAttr: "uid",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled,
+  const usersTableButtonsData = {
+    updateIsDeleteButtonDisabled: state.updateIsDeleteButtonDisabled,
     updateIsEnableButtonDisabled,
     updateIsDisableButtonDisabled,
+    isDeletion: state.isDeletion,
+    updateIsDeletion: state.updateIsDeletion,
+    isDisableEnableOp,
     updateIsDisableEnableOp,
   };
 
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage,
-  };
-
-  // 'DeleteUsers'
-  const deleteUsersButtonsData = {
-    updateIsDeleteButtonDisabled,
-    updateIsDeletion,
-  };
-
-  const selectedUsersData = {
-    selectedUsers,
-    clearSelectedUsers,
-  };
-
-  // 'DisableEnableUsers'
   const disableEnableButtonsData = {
     updateIsEnableButtonDisabled,
     updateIsDisableButtonDisabled,
     updateIsDisableEnableOp,
   };
 
-  // 'UsersTable'
-  const usersTableData = {
-    isUserSelectable,
-    selectedUsers,
-    selectableUsersTable,
-    setUserSelected,
-    clearSelectedUsers,
-  };
-
-  const usersTableButtonsData = {
-    updateIsDeleteButtonDisabled,
-    updateIsEnableButtonDisabled,
-    updateIsDisableButtonDisabled,
-    isDeletion,
-    updateIsDeletion,
-    isDisableEnableOp,
-    updateIsDisableEnableOp,
-  };
-
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
-  };
-
-  // Contextual links panel
-  const [isContextualPanelExpanded, setIsContextualPanelExpanded] =
-    React.useState(false);
-
-  const onOpenContextualPanel = () => {
-    setIsContextualPanelExpanded(!isContextualPanelExpanded);
-  };
-
-  const onCloseContextualPanel = () => {
-    setIsContextualPanelExpanded(false);
-  };
-
-  // List of Toolbar items
-  const toolbarItems: ToolbarItem[] = [
+  // Toolbar items
+  const extraToolbarItems: ToolbarItem[] = [
     {
-      key: 0,
-      element: (
-        <BulkSelectorPrep
-          list={activeUsersList}
-          shownElementsList={activeUsersList}
-          elementData={usersBulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
-        />
-      ),
-    },
-    {
-      key: 1,
-      element: (
-        <SearchInputLayout
-          dataCy="search"
-          name="search"
-          ariaLabel="Search user"
-          placeholder="Search"
-          searchValueData={searchValueData}
-          isDisabled={searchDisabled}
-        />
-      ),
-      toolbarItemVariant: ToolbarItemVariant.label,
-      toolbarItemGap: { default: "gapMd" },
-    },
-    {
-      key: 2,
-      toolbarItemVariant: ToolbarItemVariant.separator,
-    },
-    {
-      key: 3,
-      element: (
-        <SecondaryButton
-          dataCy="active-users-button-refresh"
-          onClickHandler={refreshUsersData}
-          isDisabled={!showTableRows}
-        >
-          Refresh
-        </SecondaryButton>
-      ),
-    },
-    {
-      key: 4,
-      element: (
-        <SecondaryButton
-          dataCy="active-users-button-delete"
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
-          onClickHandler={onDeleteHandler}
-        >
-          Delete
-        </SecondaryButton>
-      ),
-    },
-    {
-      key: 5,
-      element: (
-        <SecondaryButton
-          dataCy="active-users-button-add"
-          onClickHandler={onAddClickHandler}
-          isDisabled={!showTableRows}
-        >
-          Add
-        </SecondaryButton>
-      ),
-    },
-    {
-      key: 6,
+      key: "disable",
       element: (
         <SecondaryButton
           dataCy="active-users-button-disable"
-          isDisabled={isDisableButtonDisabled || !showTableRows}
+          isDisabled={isDisableButtonDisabled || !state.showTableRows}
           onClickHandler={() => onEnableDisableHandler(true)}
         >
           Disable
@@ -697,11 +304,11 @@ const ActiveUsers = () => {
       ),
     },
     {
-      key: 7,
+      key: "enable",
       element: (
         <SecondaryButton
           dataCy="active-users-button-enable"
-          isDisabled={isEnableButtonDisabled || !showTableRows}
+          isDisabled={isEnableButtonDisabled || !state.showTableRows}
           onClickHandler={() => onEnableDisableHandler(false)}
         >
           Enable
@@ -709,7 +316,7 @@ const ActiveUsers = () => {
       ),
     },
     {
-      key: 8,
+      key: "kebab",
       element: (
         <KebabLayout
           dataCy="active-users-kebab"
@@ -717,30 +324,30 @@ const ActiveUsers = () => {
           onKebabToggle={onKebabToggle}
           idKebab="main-dropdown-kebab"
           isKebabOpen={kebabIsOpen}
-          dropdownItems={showTableRows ? dropdownItems : []}
-          isDisabled={!showTableRows}
+          dropdownItems={state.showTableRows ? dropdownItems : []}
+          isDisabled={!state.showTableRows}
         />
       ),
     },
     {
-      key: 9,
+      key: "separator",
       toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
-      key: 10,
+      key: "help",
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={onOpenContextualPanel}
+          onClick={state.toggleContextualPanel}
         />
       ),
     },
     {
-      key: 11,
+      key: "pagination-top",
       element: (
         <PaginationLayout
-          list={activeUsersList}
-          paginationData={paginationData}
+          list={state.elementsList}
+          paginationData={state.paginationData}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -749,107 +356,70 @@ const ActiveUsers = () => {
     },
   ];
 
-  // Render 'Active users'
   return (
-    <ContextualHelpPanel
-      fromPage="active-users"
-      isExpanded={isContextualPanelExpanded}
-      onClose={onCloseContextualPanel}
+    <GenericMainPage
+      state={state}
+      pageTitle="Active Users"
+      batchError={userDataResponse.error}
+      onRefresh={refreshData}
+      onAddClick={onAddClickHandler}
+      onDeleteClick={onDeleteHandler}
+      extraToolbarItems={extraToolbarItems}
+      contextualPanelPage="active-users"
+      renderTable={(s) => (
+        <UsersTable
+          shownElementsList={s.elementsList}
+          from="active-users"
+          showTableRows={s.showTableRows}
+          usersData={usersTableData}
+          buttonsData={usersTableButtonsData}
+          paginationData={s.selectedPerPageData}
+          searchValue={s.searchValue}
+        />
+      )}
     >
-      <div>
-        <PageSection
-          hasBodyWrapper={false}
-          variant={PageSectionVariants.default}
-        >
-          <TitleLayout
-            id="active users title"
-            headingLevel="h1"
-            text="Active Users"
-          />
-        </PageSection>
-        <PageSection hasBodyWrapper={false} isFilled={false}>
-          <Flex direction={{ default: "column" }}>
-            <FlexItem>
-              <ToolbarLayout toolbarItems={toolbarItems} />
-            </FlexItem>
-            <FlexItem>
-              <OuterScrollContainer>
-                <InnerScrollContainer>
-                  {batchError !== undefined && batchError ? (
-                    <GlobalErrors errors={globalErrors.getAll()} />
-                  ) : (
-                    <UsersTable
-                      shownElementsList={activeUsersList}
-                      from="active-users"
-                      showTableRows={showTableRows}
-                      usersData={usersTableData}
-                      buttonsData={usersTableButtonsData}
-                      paginationData={selectedPerPageData}
-                      searchValue={searchValue}
-                    />
-                  )}
-                </InnerScrollContainer>
-              </OuterScrollContainer>
-            </FlexItem>
-            <FlexItem
-              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
-            >
-              <PaginationLayout
-                list={activeUsersList}
-                paginationData={paginationData}
-                variant={PaginationVariant.bottom}
-                widgetId="pagination-options-menu-bottom"
-              />
-            </FlexItem>
-          </Flex>
-        </PageSection>
-        <AddUser
-          show={showAddModal}
-          from="active-users"
-          handleModalToggle={onAddModalToggle}
-          onOpenAddModal={onAddClickHandler}
-          onCloseAddModal={onCloseAddModal}
-          onRefresh={refreshUsersData}
+      <AddUser
+        show={showAddModal}
+        from="active-users"
+        handleModalToggle={onAddModalToggle}
+        onOpenAddModal={onAddClickHandler}
+        onCloseAddModal={onCloseAddModal}
+        onRefresh={refreshData}
+      />
+      <DeleteUsers
+        show={showDeleteModal}
+        from="active-users"
+        handleModalToggle={onDeleteModalToggle}
+        selectedUsersData={selectedUsersData}
+        buttonsData={state.deleteButtonsData}
+        onRefresh={refreshData}
+        onCloseDeleteModal={onCloseDeleteModal}
+        onOpenDeleteModal={onOpenDeleteModal}
+      />
+      <DisableEnableUsers
+        show={showEnableDisableModal}
+        from="active-users"
+        handleModalToggle={onEnableDisableModalToggle}
+        optionSelected={enableDisableOptionSelected}
+        selectedUsersData={selectedUsersData}
+        buttonsData={disableEnableButtonsData}
+        onRefresh={refreshData}
+      />
+      {isMembershipModalOpen && (
+        <ModalWithFormLayout
+          dataCy="rebuild-auto-membership-modal"
+          variantType="medium"
+          modalPosition="top"
+          offPosition="76px"
+          title="Confirmation"
+          formId="rebuild-auto-membership-modal"
+          fields={confirmationQuestion}
+          show={isMembershipModalOpen}
+          onClose={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
+          actions={membershipModalActions}
         />
-        <DeleteUsers
-          show={showDeleteModal}
-          from="active-users"
-          handleModalToggle={onDeleteModalToggle}
-          selectedUsersData={selectedUsersData}
-          buttonsData={deleteUsersButtonsData}
-          onRefresh={refreshUsersData}
-          onCloseDeleteModal={onCloseDeleteModal}
-          onOpenDeleteModal={onOpenDeleteModal}
-        />
-        <DisableEnableUsers
-          show={showEnableDisableModal}
-          from="active-users"
-          handleModalToggle={onEnableDisableModalToggle}
-          optionSelected={enableDisableOptionSelected}
-          selectedUsersData={selectedUsersData}
-          buttonsData={disableEnableButtonsData}
-          onRefresh={refreshUsersData}
-        />
-        <ModalErrors
-          errors={modalErrors.getAll()}
-          dataCy="active-users-modal-error"
-        />
-        {isMembershipModalOpen && (
-          <ModalWithFormLayout
-            dataCy="rebuild-auto-membership-modal"
-            variantType="medium"
-            modalPosition="top"
-            offPosition="76px"
-            title="Confirmation"
-            formId="rebuild-auto-membership-modal"
-            fields={confirmationQuestion}
-            show={isMembershipModalOpen}
-            onClose={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
-            actions={membershipModalActions}
-          />
-        )}
-      </div>
-    </ContextualHelpPanel>
+      )}
+    </GenericMainPage>
   );
 };
 

@@ -1,158 +1,49 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 // PatternFly
-import {
-  PaginationVariant,
-  PageSection,
-  ToolbarItemVariant,
-  Flex,
-  FlexItem,
-} from "@patternfly/react-core";
-// PatternFly table
-import {
-  InnerScrollContainer,
-  OuterScrollContainer,
-} from "@patternfly/react-table";
+import { ToolbarItemVariant } from "@patternfly/react-core";
 // Data types
 import { User } from "src/utils/datatypes/globalDataTypes";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
-// Redux
-import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // Layouts
-import TitleLayout from "src/components/layouts/TitleLayout";
-import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
-import ToolbarLayout from "src/components/layouts/ToolbarLayout";
-import SearchInputLayout from "src/components/layouts/SearchInputLayout";
+import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import PaginationLayout from "src/components/layouts/PaginationLayout";
 // Tables
 import UsersTable from "../../components/tables/UsersTable";
-// Components
-import PaginationLayout from "src/components/layouts/PaginationLayout";
-import BulkSelectorPrep from "src/components/BulkSelectorPrep";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Modals
 import DeleteUsers from "src/components/modals/UserModals/DeleteUsers";
 import StagePreservedUsers from "src/components/modals/UserModals/StagePreservedUsers";
 import RestorePreservedUsers from "src/components/modals/UserModals/RestorePreservedUsers";
-// Hooks
-import { addAlert } from "src/store/Global/alerts-slice";
-import useUpdateRoute from "src/hooks/useUpdateRoute";
-import useListPageSearchParams from "src/hooks/useListPageSearchParams";
-// Errors
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 // Utils
 import { API_VERSION_BACKUP, isUserSelectable } from "src/utils/utils";
-import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
+// RPC client
+import { GenericPayload } from "../../services/rpc";
 import { useGettingPreservedUserQuery } from "../../services/rpcUsers";
-import useApiError from "src/hooks/useApiError";
-import GlobalErrors from "src/components/errors/GlobalErrors";
-import ModalErrors from "src/components/errors/ModalErrors";
+// Generic main page
+import {
+  useMainPageState,
+  useDataResponseEffect,
+  GenericMainPage,
+} from "src/components/GenericMainPage";
 
 const PreservedUsers = () => {
-  const dispatch = useAppDispatch();
+  const state = useMainPageState<User>({
+    pathname: "preserved-users",
+    searchEntryType: "preserved",
+    nameAttr: "uid",
+    getKeyValue: (user) => user.uid[0],
+    isSelectable: isUserSelectable,
+  });
 
-  // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
-    useListPageSearchParams();
-
-  // Update current route data to Redux and highlight the current page in the Nav bar
-  const { browserTitle } = useUpdateRoute({ pathname: "preserved-users" });
-
-  // Set the page title to be shown in the browser tab
-  React.useEffect(() => {
-    document.title = browserTitle;
-  }, [browserTitle]);
-
-  // Retrieve API version from environment data
-  const apiVersion = useAppSelector(
-    (state) => state.global.environment.api_version
-  ) as string;
-
-  // Preservered users list
-  const [preservedUsersList, setPreservedUsersList] = useState<User[]>([]);
-
-  // Handle API calls errors
-  const globalErrors = useApiError([]);
-  const modalErrors = useApiError([]);
-
-  // Main states - what user can define / what we could use in page URL
-  const [totalCount, setUsersTotalCount] = useState<number>(0);
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
-
-  // Page indexes
-  const firstUserIdx = (page - 1) * perPage;
-  const lastUserIdx = page * perPage;
-
-  // Derived states - what we get from API
   const userDataResponse = useGettingPreservedUserQuery({
-    searchValue: searchValue,
+    searchValue: state.searchValue,
     sizeLimit: 0,
-    apiVersion: apiVersion || API_VERSION_BACKUP,
-    startIdx: firstUserIdx,
-    stopIdx: lastUserIdx,
+    apiVersion: state.apiVersion || API_VERSION_BACKUP,
+    startIdx: state.firstIdx,
+    stopIdx: state.lastIdx,
   } as GenericPayload);
 
-  const {
-    data: batchResponse,
-    isLoading: isBatchLoading,
-    error: batchError,
-  } = userDataResponse;
-
-  // Handle data when the API call is finished
-  useEffect(() => {
-    if (userDataResponse.isFetching) {
-      setShowTableRows(false);
-      // Reset selected users on refresh
-      setUsersTotalCount(0);
-      globalErrors.clear();
-      return;
-    }
-
-    // API response: Success
-    if (
-      userDataResponse.isSuccess &&
-      userDataResponse.data &&
-      batchResponse !== undefined
-    ) {
-      const usersListResult = batchResponse.result.results;
-      const usersListSize = batchResponse.result.count;
-      const totalCount = batchResponse.result.totalCount;
-      const usersList: User[] = [];
-
-      for (let i = 0; i < usersListSize; i++) {
-        usersList.push(usersListResult[i].result);
-      }
-
-      setUsersTotalCount(totalCount);
-      // Update the list of users
-      setPreservedUsersList(usersList);
-      // Show table elements
-      setShowTableRows(true);
-    }
-
-    // API response: Error
-    if (
-      !userDataResponse.isLoading &&
-      userDataResponse.isError &&
-      userDataResponse.error !== undefined
-    ) {
-      // This normally happens when the user is not authorized to view the data
-      // So instead of adding an error, refresh page
-      window.location.reload();
-    }
-  }, [userDataResponse]);
-
-  // Refresh button handling
-  const refreshUsersData = () => {
-    // Hide table
-    setShowTableRows(false);
-
-    // Reset selected users on refresh
-    setUsersTotalCount(0);
-    clearSelectedUsers();
-
-    userDataResponse.refetch();
-  };
+  useDataResponseEffect(userDataResponse, state);
 
   // Always refetch data when the component is loaded.
   // This ensures the data is always up-to-date.
@@ -160,174 +51,13 @@ const PreservedUsers = () => {
     userDataResponse.refetch();
   }, []);
 
-  // 'Delete' button state
-  const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
-    useState<boolean>(true);
+  const refreshData = () => state.refreshData(() => userDataResponse.refetch());
 
-  const updateIsDeleteButtonDisabled = (value: boolean) => {
-    setIsDeleteButtonDisabled(value);
-  };
-
-  // If some entries have been deleted, restore the selectedUsers list
-  const [isDeletion, setIsDeletion] = useState(false);
-
-  const updateIsDeletion = (value: boolean) => {
-    setIsDeletion(value);
-  };
-
-  // Elements selected (per page)
-  //  - This will help to calculate the remaining elements on a specific page (bulk selector)
-  const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
-
-  const updateSelectedPerPage = (selected: number) => {
-    setSelectedPerPage(selected);
-  };
-
-  // Pagination
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
-
-  // Users displayed on the first page
-  const updateShownUsersList = (newShownUsersList: User[]) => {
-    setPreservedUsersList(newShownUsersList);
-  };
-
-  // Filter (Input search)
-  const updateSearchValue = (value: string) => {
-    setSearchValue(value);
-  };
-
-  // Issue search with filter
-  const [retrieveUser] = useSearchEntriesMutation({});
-
-  // Issue a search using a specific search value
-  const submitSearchValue = () => {
-    setShowTableRows(false);
-    setUsersTotalCount(0);
-    setSearchIsDisabled(true);
-
-    retrieveUser({
-      searchValue: searchValue,
-      sizeLimit: 0,
-      apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: firstUserIdx,
-      stopIdx: lastUserIdx,
-      entryType: "preserved",
-    } as GenericPayload).then((result) => {
-      // Manage new response here
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for preserved users",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const usersListResult = result.data?.result.results || [];
-          const usersListSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
-          const usersList: User[] = [];
-
-          for (let i = 0; i < usersListSize; i++) {
-            usersList.push(usersListResult[i].result);
-          }
-
-          setPreservedUsersList(usersList);
-          setUsersTotalCount(totalCount);
-          // Show table elements
-          setShowTableRows(true);
-        }
-        setSearchIsDisabled(false);
-      }
-    });
-  };
-
-  // Show table rows
-  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
-
-  // Show table rows only when data is fully retrieved
-  useEffect(() => {
-    if (showTableRows !== !isBatchLoading) {
-      setShowTableRows(!isBatchLoading);
-    }
-  }, [isBatchLoading]);
-
-  // Table-related shared functionality
-  // - Selectable checkboxes on table
-  const selectableUsersTable = preservedUsersList.filter(isUserSelectable); // elements per Table
-
-  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
-  const clearSelectedUsers = () => {
-    const emptyList: User[] = [];
-    setSelectedUsers(emptyList);
-  };
-
-  const updateSelectedUsers = (users: User[], isSelected: boolean) => {
-    let newSelectedUsers: User[] = [];
-    if (isSelected) {
-      newSelectedUsers = JSON.parse(JSON.stringify(selectedUsers));
-      for (let i = 0; i < users.length; i++) {
-        if (
-          selectedUsers.find(
-            (selectedUser) => selectedUser.uid[0] === users[i].uid[0]
-          )
-        ) {
-          // Already in the list
-          continue;
-        }
-        // Add user to list
-        newSelectedUsers.push(users[i]);
-      }
-    } else {
-      // Remove user
-      for (let i = 0; i < selectedUsers.length; i++) {
-        let found = false;
-        for (let ii = 0; ii < users.length; ii++) {
-          if (selectedUsers[i].uid[0] === users[ii].uid[0]) {
-            found = true;
-            break;
-          }
-        }
-        if (!found) {
-          // Keep this valid selected entry
-          newSelectedUsers.push(selectedUsers[i]);
-        }
-      }
-    }
-    setSelectedUsers(newSelectedUsers);
-    setIsDeleteButtonDisabled(newSelectedUsers.length === 0);
-  };
-
-  // - Helper method to set the selected users from the table
-  const setUserSelected = (user: User, isSelecting = true) => {
-    if (isUserSelectable(user)) {
-      updateSelectedUsers([user], isSelecting);
-    }
-  };
-
-  // Modals functionality
+  // Page-specific states
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showRestoreModal, setShowRestoreModal] = useState(false);
   const [showStageModal, setShowStageModal] = useState(false);
+
   const onDeleteHandler = () => {
     setShowDeleteModal(true);
   };
@@ -347,143 +77,36 @@ const PreservedUsers = () => {
     setShowStageModal(!showStageModal);
   };
 
-  // Data wrappers
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownUsersList,
-    totalCount,
-  };
-
-  // - 'BulkSelectorPrep'
-  const usersBulkSelectorData = {
-    selected: selectedUsers,
-    updateSelected: updateSelectedUsers,
-    selectableTable: selectableUsersTable,
-    nameAttr: "uid",
-  };
-
-  const buttonsData = {
-    isDeleteButtonDisabled,
-    updateIsDeleteButtonDisabled,
-  };
-
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage,
-  };
-
-  // 'DeleteUsers'
-  const deleteUsersButtonsData = {
-    updateIsDeleteButtonDisabled,
-    updateIsDeletion,
-  };
+  // Data wrappers for child components
 
   const selectedUsersData = {
-    selectedUsers,
-    clearSelectedUsers,
+    selectedUsers: state.selectedElements,
+    clearSelectedUsers: state.clearSelectedElements,
   };
 
-  // 'UsersTable'
   const usersTableData = {
     isUserSelectable,
-    selectedUsers,
-    selectableUsersTable,
-    setUserSelected,
-    clearSelectedUsers,
+    selectedUsers: state.selectedElements,
+    selectableUsersTable: state.selectableElements,
+    setUserSelected: state.setElementSelected,
+    clearSelectedUsers: state.clearSelectedElements,
   };
 
   const usersTableButtonsData = {
-    updateIsDeleteButtonDisabled,
-    isDeletion,
-    updateIsDeletion,
+    updateIsDeleteButtonDisabled: state.updateIsDeleteButtonDisabled,
+    isDeletion: state.isDeletion,
+    updateIsDeletion: state.updateIsDeletion,
   };
 
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
-  };
-
-  // Contextual links panel
-  const [isContextualPanelExpanded, setIsContextualPanelExpanded] =
-    React.useState(false);
-
-  const onOpenContextualPanel = () => {
-    setIsContextualPanelExpanded(!isContextualPanelExpanded);
-  };
-
-  const onCloseContextualPanel = () => {
-    setIsContextualPanelExpanded(false);
-  };
-
-  // List of Toolbar items
-  const toolbarItems: ToolbarItem[] = [
+  // Extra toolbar items
+  const extraToolbarItems: ToolbarItem[] = [
     {
-      key: 0,
-      element: (
-        <BulkSelectorPrep
-          list={preservedUsersList}
-          shownElementsList={preservedUsersList}
-          elementData={usersBulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
-        />
-      ),
-    },
-    {
-      key: 1,
-      element: (
-        <SearchInputLayout
-          dataCy="search"
-          name="search"
-          ariaLabel="Search user"
-          placeholder="Search"
-          searchValueData={searchValueData}
-          isDisabled={searchDisabled}
-        />
-      ),
-      toolbarItemVariant: ToolbarItemVariant.label,
-      toolbarItemGap: { default: "gapMd" },
-    },
-    {
-      key: 2,
-      toolbarItemVariant: ToolbarItemVariant.separator,
-    },
-    {
-      key: 3,
+      key: "restore",
       element: (
         <SecondaryButton
-          onClickHandler={refreshUsersData}
-          isDisabled={!showTableRows}
-          dataCy="preserved-users-button-refresh"
-        >
-          Refresh
-        </SecondaryButton>
-      ),
-    },
-    {
-      key: 4,
-      element: (
-        <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
-          onClickHandler={onDeleteHandler}
-          dataCy="preserved-users-button-delete"
-        >
-          Delete
-        </SecondaryButton>
-      ),
-    },
-    {
-      key: 5,
-      element: (
-        <SecondaryButton
-          isDisabled={!showTableRows || selectedUsers.length === 0}
+          isDisabled={
+            !state.showTableRows || state.selectedElements.length === 0
+          }
           onClickHandler={onRestoreHandler}
           dataCy="preserved-users-button-restore"
         >
@@ -492,10 +115,12 @@ const PreservedUsers = () => {
       ),
     },
     {
-      key: 6,
+      key: "stage",
       element: (
         <SecondaryButton
-          isDisabled={!showTableRows || selectedUsers.length === 0}
+          isDisabled={
+            !state.showTableRows || state.selectedElements.length === 0
+          }
           onClickHandler={onStageHandler}
           dataCy="preserved-users-button-stage"
         >
@@ -504,24 +129,24 @@ const PreservedUsers = () => {
       ),
     },
     {
-      key: 7,
+      key: "separator",
       toolbarItemVariant: ToolbarItemVariant.separator,
     },
     {
-      key: 8,
+      key: "help",
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={onOpenContextualPanel}
+          onClick={state.toggleContextualPanel}
         />
       ),
     },
     {
-      key: 9,
+      key: "pagination-top",
       element: (
         <PaginationLayout
-          list={preservedUsersList}
-          paginationData={paginationData}
+          list={state.elementsList}
+          paginationData={state.paginationData}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -530,87 +155,50 @@ const PreservedUsers = () => {
     },
   ];
 
-  // Render 'Preserved users'
   return (
-    <ContextualHelpPanel
-      fromPage="preserved-users"
-      isExpanded={isContextualPanelExpanded}
-      onClose={onCloseContextualPanel}
-    >
-      <div>
-        <PageSection hasBodyWrapper={false}>
-          <TitleLayout
-            id="preserved users title"
-            headingLevel="h1"
-            text="Preserved users"
-          />
-        </PageSection>
-        <PageSection hasBodyWrapper={false} isFilled={false}>
-          <Flex direction={{ default: "column" }}>
-            <FlexItem>
-              <ToolbarLayout toolbarItems={toolbarItems} />
-            </FlexItem>
-            <FlexItem style={{ flex: "0 0 auto" }}>
-              <OuterScrollContainer>
-                <InnerScrollContainer
-                  style={{ height: "60vh", overflow: "auto" }}
-                >
-                  {batchError !== undefined && batchError ? (
-                    <GlobalErrors errors={globalErrors.getAll()} />
-                  ) : (
-                    <UsersTable
-                      shownElementsList={preservedUsersList}
-                      from="preserved-users"
-                      showTableRows={showTableRows}
-                      usersData={usersTableData}
-                      buttonsData={usersTableButtonsData}
-                      paginationData={selectedPerPageData}
-                      searchValue={searchValue}
-                    />
-                  )}
-                </InnerScrollContainer>
-              </OuterScrollContainer>
-            </FlexItem>
-            <FlexItem
-              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
-            >
-              <PaginationLayout
-                list={preservedUsersList}
-                paginationData={paginationData}
-                variant={PaginationVariant.bottom}
-                widgetId="pagination-options-menu-bottom"
-              />
-            </FlexItem>
-          </Flex>
-        </PageSection>
-        <ModalErrors
-          errors={modalErrors.getAll()}
-          dataCy="preserved-users-modal-error"
-        />
-        <DeleteUsers
-          show={showDeleteModal}
+    <GenericMainPage
+      state={state}
+      pageTitle="Preserved users"
+      batchError={userDataResponse.error}
+      onRefresh={refreshData}
+      onDeleteClick={onDeleteHandler}
+      extraToolbarItems={extraToolbarItems}
+      contextualPanelPage="preserved-users"
+      renderTable={(s) => (
+        <UsersTable
+          shownElementsList={s.elementsList}
           from="preserved-users"
-          handleModalToggle={onDeleteModalToggle}
-          selectedUsersData={selectedUsersData}
-          buttonsData={deleteUsersButtonsData}
-          onRefresh={refreshUsersData}
+          showTableRows={s.showTableRows}
+          usersData={usersTableData}
+          buttonsData={usersTableButtonsData}
+          paginationData={s.selectedPerPageData}
+          searchValue={s.searchValue}
         />
-        <RestorePreservedUsers
-          show={showRestoreModal}
-          handleModalToggle={onRestoreModalToggle}
-          selectedUsers={selectedUsers}
-          clearSelectedUsers={clearSelectedUsers}
-          onSuccess={refreshUsersData}
-        />
-        <StagePreservedUsers
-          show={showStageModal}
-          handleModalToggle={onStageModalToggle}
-          selectedUsers={selectedUsers}
-          clearSelectedUsers={clearSelectedUsers}
-          onSuccess={refreshUsersData}
-        />
-      </div>
-    </ContextualHelpPanel>
+      )}
+    >
+      <DeleteUsers
+        show={showDeleteModal}
+        from="preserved-users"
+        handleModalToggle={onDeleteModalToggle}
+        selectedUsersData={selectedUsersData}
+        buttonsData={state.deleteButtonsData}
+        onRefresh={refreshData}
+      />
+      <RestorePreservedUsers
+        show={showRestoreModal}
+        handleModalToggle={onRestoreModalToggle}
+        selectedUsers={state.selectedElements}
+        clearSelectedUsers={state.clearSelectedElements}
+        onSuccess={refreshData}
+      />
+      <StagePreservedUsers
+        show={showStageModal}
+        handleModalToggle={onStageModalToggle}
+        selectedUsers={state.selectedElements}
+        clearSelectedUsers={state.clearSelectedElements}
+        onSuccess={refreshData}
+      />
+    </GenericMainPage>
   );
 };
 
