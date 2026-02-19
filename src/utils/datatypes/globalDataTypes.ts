@@ -474,17 +474,16 @@ export interface IDPServer {
 
 export interface IdRange {
   cn: string;
-  //the 4 following fields are numbers but are returned as strings
-  ipabaseid?: string;
-  ipaidrangesize?: string;
-  ipabaserid?: string;
-  ipasecondarybaserid?: string;
-
-  ipanttrusteddomainsid?: string;
-  ipanttrusteddomainname?: string;
-  iparangetype?: string;
-  ipaautoprivategroups?: string;
-  dn?: string;
+  ipabaseid: number;
+  ipaidrangesize: number;
+  ipabaserid: number;
+  ipasecondarybaserid: number;
+  ipanttrusteddomainsid: string;
+  ipanttrusteddomainname: string;
+  iparangetype: string;
+  ipaautoprivategroups: string;
+  iparangetyperaw: string;
+  dn: string;
 }
 
 export interface Metadata {

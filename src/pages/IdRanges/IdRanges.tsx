@@ -400,7 +400,7 @@ const IdRanges = () => {
                     hasCheckboxes={true}
                     pathname="id-ranges"
                     showTableRows={showTableRows}
-                    showLink={false}
+                    showLink={true}
                     elementsData={{
                       isElementSelectable: isIdRangeSelectable,
                       selectedElements,
