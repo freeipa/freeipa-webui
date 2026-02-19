@@ -219,6 +219,19 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(commands, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Show ID range details
+     * @param {string} cn - The name of the ID range to show
+     * @returns {FindRPCResponse} - Response data or error
+     */
+    idRangeShow: build.query<FindRPCResponse, string>({
+      query: (cn) => {
+        return getCommand({
+          method: "idrange_show",
+          params: [[cn], { all: true, rights: true }],
+        });
+      },
+    }),
   }),
 });
 
@@ -227,4 +240,5 @@ export const {
   useGetIdRangeEntriesQuery,
   useAddIdRangeMutation,
   useDeleteIdRangesMutation,
+  useIdRangeShowQuery,
 } = extendedApi;

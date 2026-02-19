@@ -73,6 +73,7 @@ import IdRanges from "src/pages/IdRanges/IdRanges";
 import { useConfigurationSettings } from "src/utils/configurationSettings";
 import Trusts from "src/pages/Trusts/Trusts";
 import TrustsTabs from "src/pages/Trusts/TrustsTabs";
+import IdRangesTabs from "src/pages/IdRanges/IdRangesTabs";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -517,6 +518,12 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="id-ranges">
                 <Route path="" element={<IdRanges />} />
+                <Route path=":cn">
+                  <Route
+                    path=""
+                    element={<IdRangesTabs section="settings" />}
+                  />
+                </Route>
               </Route>
               <Route path="trusts">
                 <Route path="" element={<Trusts />} />
