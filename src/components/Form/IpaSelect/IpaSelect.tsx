@@ -28,24 +28,25 @@ export interface IPAParamDefinitionSelect extends IPAParamDefinition {
     | "typeahead";
   options: string[];
   ariaLabelledBy?: string;
+  defaultValue?: string; // Custom default value (otherwise, NO_SELECTION_OPTION will be used)
 }
 
 const IpaSelect = (props: IPAParamDefinitionSelect) => {
   // Obtains the metadata of the parameter
-  const { readOnly, value } = getParamProperties(props);
+  const { readOnly, value, onChange } = getParamProperties(props);
 
   // Handle selected value
   const [valueSelected, setValueSelected] = React.useState(
     value !== undefined && value && value !== ""
       ? value.toString()
-      : NO_SELECTION_OPTION
+      : props.defaultValue || NO_SELECTION_OPTION
   );
 
   React.useEffect(() => {
     setValueSelected(
       value !== undefined && value && value !== ""
         ? value.toString()
-        : NO_SELECTION_OPTION
+        : props.defaultValue || NO_SELECTION_OPTION
     );
   }, [value]);
 
@@ -61,14 +62,23 @@ const IpaSelect = (props: IPAParamDefinitionSelect) => {
     _event: React.MouseEvent<Element, MouseEvent> | undefined,
     selection: string | number | undefined
   ) => {
-    let valueToUpdate = "";
+    let valueToUpdate = props.defaultValue || "";
 
-    if (selection !== NO_SELECTION_OPTION) {
+    if (selection !== NO_SELECTION_OPTION && selection !== props.defaultValue) {
       valueToUpdate = selection as string;
     }
 
-    setValueSelected(valueToUpdate || NO_SELECTION_OPTION);
+    setValueSelected(
+      valueToUpdate ||
+        (props.defaultValue !== undefined && props.defaultValue !== undefined
+          ? props.defaultValue
+          : NO_SELECTION_OPTION)
+    );
 
+    // Update the ipaObject via onChange (IPAParamDefinition pattern)
+    onChange(valueToUpdate);
+
+    // Also support the setIpaObject prop for backward compatibility
     if (ipaObject && props.setIpaObject !== undefined) {
       updateIpaObject(ipaObject, props.setIpaObject, valueToUpdate, props.name);
     }
@@ -98,18 +108,20 @@ const IpaSelect = (props: IPAParamDefinitionSelect) => {
   );
 
   React.useEffect(() => {
-    // Add empty option at the beginning of the list
-    if (optionsToSelect[0] !== NO_SELECTION_OPTION) {
-      optionsToSelect.unshift(NO_SELECTION_OPTION);
+    // Add empty/default option at the beginning of the list
+    const selection = props.defaultValue ?? NO_SELECTION_OPTION;
+    if (optionsToSelect[0] !== selection) {
+      setOptionsToSelect([selection, ...optionsToSelect]);
     }
   }, [optionsToSelect]);
 
   React.useEffect(() => {
-    // Add empty option at the beginning of the list
+    // Add empty/default option at the beginning of the list
     if (props.options !== optionsToSelect) {
       const optionsTemp = [...props.options];
-      setOptionsToSelect(optionsTemp || []);
-      optionsTemp.unshift(NO_SELECTION_OPTION);
+      const selection = props.defaultValue ?? NO_SELECTION_OPTION;
+      optionsTemp.unshift(selection);
+      setOptionsToSelect(optionsTemp);
     }
   }, [props.options]);
 
