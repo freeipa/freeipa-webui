@@ -87,7 +87,7 @@ describe("IpaSelect Component", () => {
 
     // Options are visible
     const selectOptions = await screen.getAllByRole("option");
-    expect(selectOptions).toHaveLength(defaultProps.options.length);
+    expect(selectOptions).toHaveLength(defaultProps.options.length + 1);
 
     // Verify the text of the options
     expect(selectOptions[0]).toHaveTextContent("No selection");
@@ -130,5 +130,41 @@ describe("IpaSelect Component", () => {
 
     const selectInput = screen.getByRole("button");
     expect(selectInput).toBeDisabled();
+  });
+
+  it("handles correctly different default value", async () => {
+    render(<IpaSelect {...defaultProps} defaultValue="customDefault" />);
+
+    // Verify there is a select input
+    const selectInput = screen.getByRole("button");
+    expect(selectInput).toBeInTheDocument();
+
+    // Click to open the dropdown
+    await act(async () => {
+      fireEvent.click(selectInput);
+    });
+
+    // Options are visible
+    const selectOptions = await screen.getAllByRole("option");
+    expect(selectOptions).toHaveLength(defaultProps.options.length + 1);
+
+    // Verify the text of the options
+    expect(selectOptions[0]).toHaveTextContent("customDefault");
+    expect(selectOptions[1]).toHaveTextContent("customOption1");
+    expect(selectOptions[2]).toHaveTextContent("customOption2");
+
+    // Click on the first option (customDefault)
+    await act(async () => {
+      fireEvent.click(selectOptions[0]);
+    });
+
+    // Check if button text has changed
+    const updatedButton = screen.getByRole("button", {
+      name: /customDefault/i,
+    });
+    expect(updatedButton).toBeInTheDocument();
+
+    // Verify the text of the button
+    expect(updatedButton).toHaveTextContent("customDefault");
   });
 });
