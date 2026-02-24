@@ -63,6 +63,7 @@ const DNSGlobalConfigGroupRef = "dns-global-config";
 // IPA SERVER
 // - Trusts
 const TrustsGroupRef = "trusts";
+const TrustsGlobalConfigGroupRef = "trusts-config";
 // - Configuration
 const ConfigRef = "configuration";
 
@@ -406,7 +407,22 @@ export const getNavigationRoutes = (
           group: TrustsGroupRef,
           title: `${BASE_TITLE} - Trusts`,
           path: "trusts",
-          items: [],
+          items: [
+            {
+              label: "Trusts",
+              group: TrustsGroupRef,
+              title: `${BASE_TITLE} - Trusts`,
+              path: "trusts",
+              items: [],
+            },
+            {
+              label: "Trusts global config",
+              group: TrustsGlobalConfigGroupRef,
+              title: `${BASE_TITLE} - Trusts global config`,
+              path: "trusts-config",
+              items: [],
+            },
+          ],
         },
         {
           label: "ID ranges",

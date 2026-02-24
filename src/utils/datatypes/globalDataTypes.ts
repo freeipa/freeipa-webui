@@ -1107,6 +1107,16 @@ export interface Trust {
   ipantadditionalsuffixes: string[];
 }
 
+export interface GlobalTrustConfig {
+  cn: string;
+  ipantsecurityidentifier: string;
+  ipantflatname: string;
+  ipantdomainguid: string;
+  ipantfallbackprimarygroup: string;
+  ad_trust_agent_server: string[];
+  ad_trust_controller_server: string[];
+}
+
 export type RangeType = "detect" | "ad-domain" | "ad-domain-posix";
 
 export type ErrorValidationData = {

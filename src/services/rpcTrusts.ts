@@ -60,6 +60,10 @@ export interface TrustModPayload {
   ipantsidblacklistoutgoing?: string[];
 }
 
+export interface GlobalTrustConfigPayload {
+  ipantfallbackprimarygroup: string;
+}
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     /**
@@ -326,6 +330,43 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Get global trust config
+     * @returns {FindRPCResponse} - Promise with the response data
+     */
+    globalTrustConfigShow: build.query<FindRPCResponse, void>({
+      query: () => {
+        return getCommand({
+          method: "trustconfig_show",
+          params: [[], { all: true, rights: true, trust_type: "ad" }],
+        });
+      },
+    }),
+    /**
+     * Modify global trust config
+     * @param {GlobalTrustConfigPayload} payload - The payload containing the global trust config data
+     * @returns {FindRPCResponse} - Promise with the response data
+     */
+    globalTrustConfigMod: build.mutation<
+      FindRPCResponse,
+      GlobalTrustConfigPayload
+    >({
+      query: (payload) => {
+        return getCommand({
+          method: "trustconfig_mod",
+          params: [
+            [],
+            {
+              ipantfallbackprimarygroup: payload.ipantfallbackprimarygroup,
+              all: true,
+              rights: true,
+              trust_type: "ad",
+              version: API_VERSION_BACKUP,
+            },
+          ],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -337,4 +378,6 @@ export const {
   useDeleteTrustsMutation,
   useTrustShowQuery,
   useTrustModMutation,
+  useGlobalTrustConfigShowQuery,
+  useGlobalTrustConfigModMutation,
 } = extendedApi;

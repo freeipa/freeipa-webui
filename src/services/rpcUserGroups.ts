@@ -12,7 +12,11 @@ import {
 import { apiToGroup } from "src/utils/groupUtils";
 import { apiToPwPolicy } from "src/utils/pwPolicyUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
-import { PwPolicy, UserGroup } from "../utils/datatypes/globalDataTypes";
+import {
+  groupType,
+  PwPolicy,
+  UserGroup,
+} from "../utils/datatypes/globalDataTypes";
 
 /**
  * User Group-related endpoints:
@@ -393,6 +397,33 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Get all user groups
+     * @returns {FindRPCResponse} - Promise with the response data
+     */
+    groupFind: build.query<groupType[], void>({
+      query: () => {
+        return getCommand({
+          method: "group_find",
+          params: [
+            [null],
+            { all: true, posix: true, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): groupType[] => {
+        if (response.error) return [];
+
+        const groupList: groupType[] = [];
+        const results = response.result.result;
+        const count = response.result.count;
+        for (let i = 0; i < count; i++) {
+          const groupData = results[i] as groupType;
+          groupList.push(groupData);
+        }
+        return groupList;
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -420,4 +451,5 @@ export const {
   useRemoveAsMemberMutation,
   useAddMemberManagersMutation,
   useRemoveMemberManagersMutation,
+  useGroupFindQuery,
 } = extendedApi;
