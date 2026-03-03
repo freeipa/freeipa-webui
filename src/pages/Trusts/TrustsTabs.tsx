@@ -42,8 +42,13 @@ const TrustsTabs = ({ section }: { section: string }) => {
         name: "Trusts",
         url: URL_PREFIX + "/" + pathname,
       },
+      {
+        name: cn,
+        url: URL_PREFIX + "/" + pathname + "/" + cn,
+        isActive: true,
+      },
     ],
-    [pathname]
+    [pathname, cn]
   );
 
   // Handling of the API data
@@ -64,9 +69,9 @@ const TrustsTabs = ({ section }: { section: string }) => {
     <>
       <PageSection hasBodyWrapper={false}>
         <BreadCrumb breadcrumbItems={breadcrumbItems} />
-      </PageSection>
-      <PageSection hasBodyWrapper={true}>
         <TitleLayout id={cn} preText="Trust:" text={cn} headingLevel="h1" />
+      </PageSection>
+      <PageSection hasBodyWrapper={true} type="tabs" isFilled>
         <Tabs
           activeKey={section}
           onSelect={handleTabClick}
