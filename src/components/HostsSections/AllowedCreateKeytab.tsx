@@ -12,7 +12,8 @@ import {
   KeyTabPayload,
   useUpdateKeyTabMutation,
 } from "src/services/rpcSettings";
-import { useAlerts } from "src/hooks/useAlerts";
+import { addAlert } from "src/store/Global/alerts-slice";
+import { useAppDispatch } from "src/store/hooks";
 
 type EntryType = "user" | "group" | "host" | "hostgroup";
 
@@ -25,7 +26,7 @@ const AllowedCreateKeytab = (props: PropsToAllowCreateKeytab) => {
   const [activeTabKey, setActiveTabKey] = React.useState<string | number>(0);
   const [modalSpinning, setModalSpinning] = React.useState<boolean>(false);
   const [executeUpdate] = useUpdateKeyTabMutation({});
-  const alerts = useAlerts();
+  const dispatch = useAppDispatch();
 
   // Helpers to build table entries
   const toTableEntries = (values: string[] | undefined): TableEntry[] => {
@@ -86,17 +87,22 @@ const AllowedCreateKeytab = (props: PropsToAllowCreateKeytab) => {
       } as KeyTabPayload)
         .then(() => {
           props.onRefresh();
-          alerts.addAlert(
-            `keytab-disallow-success-${entryType}`,
-            `Removed ${entryType}s that are allowed to create keytabs`,
-            "success"
+
+          dispatch(
+            addAlert({
+              name: `keytab-disallow-success-${entryType}`,
+              title: `Removed ${entryType}s that are allowed to create keytabs`,
+              variant: "success",
+            })
           );
         })
         .catch((err) =>
-          alerts.addAlert(
-            "keytab-disallow-error",
-            err?.data?.error || err?.message || "Operation failed",
-            "danger"
+          dispatch(
+            addAlert({
+              name: "keytab-disallow-error",
+              title: err?.data?.error || err?.message || "Operation failed",
+              variant: "danger",
+            })
           )
         )
         .finally(() => setModalSpinning(false));
@@ -112,17 +118,21 @@ const AllowedCreateKeytab = (props: PropsToAllowCreateKeytab) => {
     } as KeyTabPayload)
       .then(() => {
         props.onRefresh();
-        alerts.addAlert(
-          `keytab-allow-success-${entryType}`,
-          `Successfully added  ${entryType}s that are allowed to create keytabs`,
-          "success"
+        dispatch(
+          addAlert({
+            name: `keytab-allow-success-${entryType}`,
+            title: `Successfully added  ${entryType}s that are allowed to create keytabs`,
+            variant: "success",
+          })
         );
       })
       .catch((err) =>
-        alerts.addAlert(
-          "keytab-allow-error",
-          err?.data?.error || err?.message || "Operation failed",
-          "danger"
+        dispatch(
+          addAlert({
+            name: "keytab-allow-error",
+            title: err?.data?.error || err?.message || "Operation failed",
+            variant: "danger",
+          })
         )
       )
       .finally(() => setModalSpinning(false));
@@ -130,7 +140,6 @@ const AllowedCreateKeytab = (props: PropsToAllowCreateKeytab) => {
 
   return (
     <>
-      <alerts.ManagedAlerts />
       <Tabs
         activeKey={activeTabKey}
         onSelect={handleTabClick}
