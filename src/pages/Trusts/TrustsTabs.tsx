@@ -16,6 +16,7 @@ import BreadCrumb, {
 } from "src/components/layouts/BreadCrumb/BreadCrumb";
 import TrustsSettings from "src/pages/Trusts/TrustsSettings";
 import { CnParams, useSafeParams } from "src/utils/paramsUtils";
+import TrustedDomains from "./TrustedDomains";
 
 const TrustsTabs = ({ section }: { section: string }) => {
   const { cn } = useSafeParams<CnParams>(["cn"]);
@@ -99,6 +100,14 @@ const TrustsTabs = ({ section }: { section: string }) => {
               onResetValues={trustsSettingsData.resetValues}
               pathname={pathname}
             />
+          </Tab>
+          <Tab
+            eventKey="trusted-domains"
+            name="trusted-domains"
+            title={<TabTitleText>Trusted domains</TabTitleText>}
+            data-cy="trusts-tab-trusted-domains"
+          >
+            <TrustedDomains trustId={cn} />
           </Tab>
         </Tabs>
       </PageSection>

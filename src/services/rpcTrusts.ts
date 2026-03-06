@@ -5,6 +5,7 @@ import {
   BatchRPCResponse,
   FindRPCResponse,
   getCommand,
+  BatchResponse,
 } from "./rpc";
 // utils
 import { API_VERSION_BACKUP } from "../utils/utils";
@@ -62,6 +63,23 @@ export interface TrustModPayload {
 
 export interface GlobalTrustConfigPayload {
   ipantfallbackprimarygroup: string;
+}
+
+export interface TrustDomainFindPayload {
+  trustId: string;
+  searchValue?: string;
+  sizelimit: number;
+}
+
+export interface DisableEnableTrustDomainPayload {
+  trustId: string;
+  domainNames: string[];
+  operation: "disable" | "enable";
+}
+
+export interface DeleteTrustedDomainsPayload {
+  trustId: string;
+  domainNames: string[];
 }
 
 const extendedApi = api.injectEndpoints({
@@ -342,6 +360,20 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /*
+     * Get trusted domains
+     * @param {TrustDomainFindPayload} payload - The payload containing the search parameters
+     * @returns {FindRPCResponse} - Promise with the response data
+     */
+    trustDomainsFind: build.query<FindRPCResponse, TrustDomainFindPayload>({
+      query: (payload) => {
+        const { trustId, sizelimit } = payload;
+        return getCommand({
+          method: "trustdomain_find",
+          params: [[trustId, ""], { sizelimit }],
+        });
+      },
+    }),
     /**
      * Modify global trust config
      * @param {GlobalTrustConfigPayload} payload - The payload containing the global trust config data
@@ -367,6 +399,83 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /*
+     * Search for trusted domains
+     * @param {TrustDomainFindPayload} payload - The payload containing the search parameters
+     * @returns {FindRPCResponse} - Promise with the response data
+     */
+    searchTrustDomainsEntries: build.mutation<
+      FindRPCResponse,
+      TrustDomainFindPayload
+    >({
+      query: (payload) => {
+        const { trustId, searchValue, sizelimit } = payload;
+        return getCommand({
+          method: "trustdomain_find",
+          params: [[trustId, searchValue || ""], { sizelimit }],
+        });
+      },
+    }),
+    /**
+     * Fetch trusted domains
+     * @param {string} trustId - The ID of the trust
+     * @returns {FindRPCResponse} - Promise with the response data
+     */
+    fetchTrustDomains: build.mutation<FindRPCResponse, string>({
+      query: (trustId) => {
+        return getCommand({
+          method: "trust_fetch_domains",
+          params: [[trustId], {}],
+        });
+      },
+    }),
+    /**
+     * Enable/Disable a trust domain
+     * @param {DisableEnableTrustDomainPayload} payload - The payload containing the trust domain data
+     * @returns {BatchResponse} - Promise with the response data
+     */
+    enableDisableTrustDomains: build.mutation<
+      BatchResponse,
+      DisableEnableTrustDomainPayload
+    >({
+      query: (payload) => {
+        const method =
+          payload.operation === "disable"
+            ? "trustdomain_disable"
+            : "trustdomain_enable";
+
+        const commands: Command[] = [];
+        payload.domainNames.forEach((domainName) => {
+          commands.push({
+            method: method,
+            params: [[payload.trustId, domainName], {}],
+          });
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Delete trusted domains
+     * @param {DeleteTrustedDomainsPayload} payload - The payload containing the trusted domains data
+     * @returns {BatchResponse} - Promise with the response data
+     */
+    deleteTrustedDomains: build.mutation<
+      BatchResponse,
+      DeleteTrustedDomainsPayload
+    >({
+      query: (payload) => {
+        const commands: Command[] = [];
+        payload.domainNames.forEach((domainName) => {
+          commands.push({
+            method: "trustdomain_del",
+            params: [[payload.trustId, domainName], {}],
+          });
+        });
+
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -380,4 +489,9 @@ export const {
   useTrustModMutation,
   useGlobalTrustConfigShowQuery,
   useGlobalTrustConfigModMutation,
+  useTrustDomainsFindQuery,
+  useSearchTrustDomainsEntriesMutation,
+  useFetchTrustDomainsMutation,
+  useEnableDisableTrustDomainsMutation,
+  useDeleteTrustedDomainsMutation,
 } = extendedApi;

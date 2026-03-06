@@ -1,4 +1,4 @@
-import { Trust } from "./datatypes/globalDataTypes";
+import { Trust, TrustDomain } from "./datatypes/globalDataTypes";
 import { convertApiObj } from "src/utils/ipaObjectUtils";
 
 export const asRecord = (
@@ -48,5 +48,42 @@ export const createEmptyTrust = (): Trust => {
     trusttype: "",
     truststatus: "",
     ipantadditionalsuffixes: [],
+  };
+};
+
+// Trust domains utils
+const simpleTrustDomainValues = new Set([
+  "cn",
+  "dn",
+  "ipantflatname",
+  "ipanttrusteddomainsid",
+  "domain_enabled",
+]);
+const dateTrustDomainValues = new Set([]);
+
+export const apiToTrustDomain = (
+  apiRecord: Record<string, unknown>
+): TrustDomain => {
+  const converted = convertApiObj(
+    apiRecord,
+    simpleTrustDomainValues,
+    dateTrustDomainValues
+  ) as Partial<TrustDomain>;
+  return partialTrustDomainToTrustDomain(converted);
+};
+
+export const partialTrustDomainToTrustDomain = (
+  partialTrustDomain: Partial<TrustDomain>
+): TrustDomain => {
+  return { ...createEmptyTrustDomain(), ...partialTrustDomain };
+};
+
+export const createEmptyTrustDomain = (): TrustDomain => {
+  return {
+    cn: "",
+    dn: "",
+    ipantflatname: "",
+    ipanttrusteddomainsid: "",
+    domain_enabled: false,
   };
 };
