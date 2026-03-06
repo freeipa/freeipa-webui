@@ -530,6 +530,12 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                 <Route path="" element={<Trusts />} />
                 <Route path=":cn">
                   <Route path="" element={<TrustsTabs section="settings" />} />
+                  <Route path="trusted-domains">
+                    <Route
+                      path=""
+                      element={<TrustsTabs section="trusted-domains" />}
+                    />
+                  </Route>
                 </Route>
               </Route>
               <Route path="trusts-config">

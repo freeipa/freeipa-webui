@@ -1116,6 +1116,13 @@ export interface GlobalTrustConfig {
   ad_trust_agent_server: string[];
   ad_trust_controller_server: string[];
 }
+export interface TrustDomain {
+  cn: string;
+  dn: string;
+  ipantflatname: string;
+  ipanttrusteddomainsid: string;
+  domain_enabled: boolean;
+}
 
 export type RangeType = "detect" | "ad-domain" | "ad-domain-posix";
 

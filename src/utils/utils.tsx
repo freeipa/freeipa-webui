@@ -27,6 +27,7 @@ import {
   DNSRecord,
   DNSForwardZone,
   Trust,
+  TrustDomain,
 } from "./datatypes/globalDataTypes";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -225,6 +226,9 @@ export const isDnsServerSelectable = (dnsServerId: string) =>
 export const isIdRangeSelectable = (idRange: IdRange) => idRange.cn !== "";
 
 export const isTrustSelectable = (trust: Trust) => trust.cn !== "";
+
+export const isTrustDomainSelectable = (trustDomain: TrustDomain) =>
+  trustDomain.cn !== "";
 
 /**
  * Write JSX error messages into 'apiErrorsJsx' array
