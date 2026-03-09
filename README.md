@@ -36,12 +36,23 @@ python3 -m venv /tmp/webui
 pip install podman
 ```
 
-If you want to use any non-default scenario, or you want to rebuild a modified version of the default scenario, you'll also need [`podman-compose`](https://github.com/containers/podman-compose) and [Ansible](https://ansible.com). You'll also need the ansible-freeipa and podman Ansible collections. Assuming the virtual environment is being used:
+⚠️ **Important**
+
+The instructions below diverge depending on whether you are using the **default scenario** or a **non-default scenario**.
+
+The default scenario is **single-server**.
+
+You can list all the available scenarios with:
 
 ```
-pip install ansible-core podman-compose
-ansible-galaxy collection install -r developer/requirements.yml
+./developer/dev-env.sh -l
 ```
+
+If you want to run the default scenario (single-server) → follow **Default scenario**
+
+If you want to run another scenario → follow **Non-default scenarios**
+
+**Default Scenario**:
 
 3. Start the default scenario
 
@@ -49,28 +60,43 @@ ansible-galaxy collection install -r developer/requirements.yml
 ./developer/dev-env.sh
 ```
 
-To run a different scenario, you need to build it first, and then start it:
-
-```
-./developer/dev-env.sh -B no-dns
-./developer/dev-env.sh -s no-dns
-```
-
-You can list the available scenarios:
-
-```
-./developer/dev-env.sh -l
-```
-
-> Note: once a scenario is built, the images are kept in the localhost registry, and the scenario can be started again, without building again.
-
 4. Add the default scenario container IP addresses to `/etc/hosts`
 
 ```
 sudo tee -a /etc/hosts < developer/scenarios/single-server/hosts
 ```
 
-> Note: You must add the specific `hosts` file for the scenario (the example uses the scenario `single-server`). Each scenario uses a different CIDR, and some may have different hostnames for the webui. Cleaning up old entries is a good practice.
+**Non-default scenario**
+
+If you want to use any non-default scenario, or you want to rebuild a modified version of the default scenario, you'll also need [`podman-compose`](https://github.com/containers/podman-compose) and [Ansible](https://ansible.com). You'll also need the ansible-freeipa and podman Ansible collections. Assuming the virtual environment is being used:
+
+```
+pip install ansible-core podman-compose
+ansible-galaxy collection install -r developer/requirements.yml
+```
+
+3. To run a different scenario, you need to build it first, and then start it:
+
+```
+./developer/dev-env.sh -B <scenario>
+./developer/dev-env.sh -s <scenario>
+```
+
+> Note: once a scenario is built, the images are kept in the localhost registry, and the scenario can be started again, without building again.
+
+4. Add the scenario container IP addresses to `/etc/hosts`
+
+```
+sudo tee -a /etc/hosts < developer/scenarios/<scenario>/hosts
+```
+
+> Note: You must add the specific `hosts` file for the scenario. Each scenario uses a different CIDR, and some may have different hostnames for the webui. Cleaning up old entries is a good practice.
+
+---
+
+**Continue with the common steps**
+
+From this point on, the steps are the same for all scenarios.
 
 5. Prepare the webui to execute:
 
@@ -115,6 +141,8 @@ To ease the process a script is provided:
 ```
 ./developer/open-browser.sh https://webui.ipa.test/ipa/modern-ui
 ```
+
+> **Note:** The URL may vary depending on your environment configuration. The example above shows the default URL for the standard development setup.
 
 The script will create a new profile (`webui-profile`), if needed, trust the IPA CA certificate, and open the webui in a new browser window.
 Both Mozilla's Firefox and Google's Chrome are supported.
