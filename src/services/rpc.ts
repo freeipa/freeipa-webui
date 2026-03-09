@@ -66,6 +66,22 @@ export interface KwError {
   };
 }
 
+export type ErrorRPCResponse = {
+  result: null;
+  error: ErrorResult;
+  id: null;
+  principal: string;
+  version: string;
+};
+
+export type ValidResponse<T> = {
+  result: T;
+  error: null;
+  id: null;
+  principal: string;
+  version: string;
+};
+
 // 'FindRPCResponse' type
 //   - Has 'result' > 'result' structure
 export interface FindRPCResponse {
