@@ -1097,6 +1097,13 @@ export interface DnsConfig {
 
 export interface Trust {
   cn: string;
+  dn: string;
+  gidnumber: string;
+  homedirectory: string;
+  ipanttrustposixoffset: string;
+  ipanttrustpartner: string;
+  uid: string;
+  uidnumber: string;
   ipantflatname: string;
   ipanttrusteddomainsid: string;
   ipantsidblacklistincoming: string[];

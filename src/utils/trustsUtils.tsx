@@ -21,6 +21,13 @@ const simpleValues = new Set([
   "trustdirection",
   "trusttype",
   "truststatus",
+  "dn",
+  "gidnumber",
+  "homedirectory",
+  "ipanttrustposixoffset",
+  "ipanttrustpartner",
+  "uid",
+  "uidnumber",
 ]);
 const dateValues = new Set([]);
 
@@ -48,6 +55,13 @@ export const createEmptyTrust = (): Trust => {
     trusttype: "",
     truststatus: "",
     ipantadditionalsuffixes: [],
+    dn: "",
+    gidnumber: "",
+    homedirectory: "",
+    ipanttrustposixoffset: "",
+    ipanttrustpartner: "",
+    uid: "",
+    uidnumber: "",
   };
 };
 
