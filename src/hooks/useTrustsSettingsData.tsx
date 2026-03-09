@@ -43,8 +43,8 @@ const useTrustsSettingsData = (trustId: string): TrustsSettingsData => {
   // Detect any change between 'originalTrust' and 'trust' objects
   React.useEffect(() => {
     if (trustData && !trustDetails.isFetching) {
-      setTrust(trustDataToTrust);
-      setTrustDuplicate(trustDataToTrust);
+      setTrust(apiToTrust(trustData || {}));
+      setTrustDuplicate(apiToTrust(trustData || {}));
     }
   }, [trustData, trustDetails.isFetching]);
 
@@ -82,23 +82,23 @@ const useTrustsSettingsData = (trustId: string): TrustsSettingsData => {
 
   // Detect any change between 'originalTrust' and 'trust' objects
   React.useEffect(() => {
-    if (!trustData) {
+    if (!trustData || !trustDuplicate) {
       return;
     }
     let modified = false;
     for (const [key, value] of Object.entries(trust)) {
       if (Array.isArray(value)) {
-        if (JSON.stringify(trustData[key]) !== JSON.stringify(value)) {
+        if (JSON.stringify(trustDuplicate[key]) !== JSON.stringify(value)) {
           modified = true;
           break;
         }
-      } else if (trustData[key] !== value) {
+      } else if (trustDuplicate[key] !== value) {
         modified = true;
         break;
       }
     }
     setModified(modified);
-  }, [trust, trustData]);
+  }, [trust, trustData, trustDuplicate]);
 
   const onResetValues = () => {
     setModified(false);

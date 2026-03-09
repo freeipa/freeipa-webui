@@ -197,15 +197,15 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
           </JumpLinks>
         </SidebarPanel>
         <SidebarContent className="pf-v6-u-mr-xl">
-          <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
-            <FlexItem flex={{ default: "flex_1" }}>
-              <TitleLayout
-                key={0}
-                headingLevel="h2"
-                id="trusts-settings"
-                text="Trusts settings"
-              />
-              <Form isHorizontal>
+          <Form className="pf-v6-u-mb-lg">
+            <Flex direction={{ default: "column", lg: "row" }}>
+              <FlexItem flex={{ default: "flex_1" }}>
+                <TitleLayout
+                  key={0}
+                  headingLevel="h2"
+                  id="trusts-settings"
+                  text="Trusts settings"
+                />
                 <FormGroup label="Realm Name" fieldId="cn" role="group">
                   <IpaTextInput
                     dataCy="trusts-tab-settings-input-realm-name"
@@ -218,12 +218,12 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
                 </FormGroup>
                 <FormGroup
                   label="Domain NetBIOS name"
-                  fieldId="ipandomainnetbiosname"
+                  fieldId="ipantflatname"
                   role="group"
                 >
                   <IpaTextInput
                     dataCy="trusts-tab-settings-input-domain-netbios-name"
-                    name="ipandomainnetbiosname"
+                    name="ipantflatname"
                     objectName="trust"
                     metadata={props.metadata}
                     ipaObject={ipaObject}
@@ -240,16 +240,13 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
                     onChange={recordOnChange}
                   />
                 </FormGroup>
-              </Form>
-            </FlexItem>
-            <FlexItem flex={{ default: "flex_1" }}>
-              <TitleLayout
-                key={1}
-                headingLevel="h2"
-                id="alternative-upn-suffixes"
-                text="Alternative UPN suffixes"
-              />
-              <Form isHorizontal>
+                <TitleLayout
+                  key={1}
+                  headingLevel="h2"
+                  id="alternative-upn-suffixes"
+                  text="Alternative UPN suffixes"
+                  className="pf-v6-u-mt-lg"
+                />
                 <FormGroup
                   label="Alternative UPN suffixes"
                   fieldId="ipantadditionalsuffixes"
@@ -263,6 +260,8 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
                     ariaLabel="Alternative UPN suffixes list"
                   />
                 </FormGroup>
+              </FlexItem>
+              <FlexItem flex={{ default: "flex_1" }}>
                 <TitleLayout
                   key={2}
                   headingLevel="h2"
@@ -271,12 +270,12 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
                 />
                 <FormGroup
                   label="SID blocklists incoming"
-                  fieldId="ipantsidblocklistincoming"
+                  fieldId="ipantsidblacklistincoming"
                   role="group"
                 >
                   <IpaTextboxList
                     dataCy="trusts-tab-settings-textbox-sid-blocklists"
-                    name="ipantsidblocklistincoming"
+                    name="ipantsidblacklistincoming"
                     ipaObject={ipaObject}
                     setIpaObject={recordOnChange}
                     ariaLabel="SID blocklists incoming list"
@@ -284,20 +283,21 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
                 </FormGroup>
                 <FormGroup
                   label="SID blocklists outgoing"
-                  fieldId="ipantsidblocklistoutgoing"
+                  fieldId="ipantsidblacklistoutgoing"
                   role="group"
+                  className="pf-v6-u-mt-lg"
                 >
                   <IpaTextboxList
                     dataCy="trusts-tab-settings-textbox-sid-blocklists-outgoing"
-                    name="ipantsidblocklistoutgoing"
+                    name="ipantsidblacklistoutgoing"
                     ipaObject={ipaObject}
                     setIpaObject={recordOnChange}
                     ariaLabel="SID blocklists outgoing list"
                   />
                 </FormGroup>
-              </Form>
-            </FlexItem>
-          </Flex>
+              </FlexItem>
+            </Flex>
+          </Form>
         </SidebarContent>
       </Sidebar>
     </TabLayout>
