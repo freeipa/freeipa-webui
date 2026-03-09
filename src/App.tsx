@@ -23,6 +23,7 @@ import {
 import { setIsLogin, setIsLogout } from "./store/Global/auth-slice";
 // Alerts
 import ManagedAlerts from "./components/ManagedAlerts";
+import { useInternalization } from "./hooks/useInternalization";
 
 const App: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
@@ -118,11 +119,15 @@ const App: React.FunctionComponent = () => {
     }
   }, [isInitialBatchLoading]);
 
+  const { t, language } = useInternalization();
+
   if (isInitialBatchLoading && !initialBatchResponse) {
     return <DataSpinner />;
   }
   return (
     <>
+      {language}
+      {t("texts.actions.apply")}
       <ManagedAlerts />
       {hasUser && userLoggedIn && (
         <AppLayout loggedInUser={loggedInUser}>
