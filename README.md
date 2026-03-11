@@ -110,9 +110,10 @@ npm run build
 
 As the containers are executing as rootless containers, in its own network namespace, it is needed to use `podman unshare --rootless-netns` to start a browser that is able to access the container network. It is also necessary to use a separate profile. Also the IPA CA certificate is not trusted by the host, so an exception need to be granted.
 
-To ease the process a script is provided:
+To ease the process a script is provided (requires `certutil` provided by `nss-tools` package):
 
 ```
+dnf install -y nss-tools
 ./developer/open-browser.sh https://webui.ipa.test/ipa/modern-ui
 ```
 
