@@ -16,7 +16,7 @@ import { Trust, Metadata } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Utils
-import { asRecord } from "src/utils/trustsUtils";
+import { asRecord, isValidSID } from "src/utils/trustsUtils";
 // RPC
 import { TrustModPayload, useTrustModMutation } from "src/services/rpcTrusts";
 // Components
@@ -285,6 +285,7 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
                     objectName="trust"
                     metadata={props.metadata}
                     ariaLabel="SID blocklists incoming list"
+                    validator={isValidSID}
                   />
                 </FormGroup>
                 <FormGroup
@@ -301,6 +302,7 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
                     objectName="trust"
                     metadata={props.metadata}
                     ariaLabel="SID blocklists outgoing list"
+                    validator={isValidSID}
                   />
                 </FormGroup>
               </FlexItem>
