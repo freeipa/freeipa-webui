@@ -108,7 +108,7 @@ npm run build
 
 7. Accessing the webui
 
-As the containers are executing as rootless containers, in its own network namespace, it is needed to use `podman unshare --rootless-netns` to start a browser that is able to access the container network. It is also necessary to use a separate profile. Also the IPA CA certificate is not trusted by the host, so an exception need to be granted.
+As the containers are executing as rootless containers, in its own network namespace, it is needed to use `podman unshare --rootless-netns` to start a browser that is able to access the container network. It is also necessary to use a separate profile. Also the IPA CA certificate is not trusted by the host, so an exception needs to be granted.
 
 To ease the process a script is provided (requires `certutil` provided by `nss-tools` package):
 
