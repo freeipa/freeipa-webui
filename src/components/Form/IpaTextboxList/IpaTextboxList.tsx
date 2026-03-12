@@ -84,11 +84,23 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
 
     const newInvalidList: number[] = [];
     list.forEach((value, idx) => {
+      // Format validation
       if (props.validator !== undefined && !props.validator(value)) {
         newInvalidList.push(idx);
       }
+      // Duplicate validation
+      if (value.trim() !== "") {
+        const firstIndex = list.indexOf(value);
+        if (firstIndex !== idx) {
+          newInvalidList.push(idx);
+          newInvalidList.push(firstIndex);
+        }
+      }
     });
-    setInvalidList(newInvalidList);
+    const uniqueInvalidList = newInvalidList.filter(
+      (val, index, self) => self.indexOf(val) === index
+    );
+    setInvalidList(uniqueInvalidList);
   };
 
   useEffect(() => {
