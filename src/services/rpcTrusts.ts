@@ -338,7 +338,7 @@ const extendedApi = api.injectEndpoints({
         optionalKeys.forEach((key) => {
           const value = payload[key];
           if (value !== undefined) {
-            params[key] = value.toString();
+            params[key] = value;
           }
         });
 
