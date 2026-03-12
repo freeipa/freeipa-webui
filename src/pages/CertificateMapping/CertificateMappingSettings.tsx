@@ -342,7 +342,9 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
                     <IpaTextboxList
                       dataCy="certificate-mapping-tab-settings-textbox-associateddomain"
                       ipaObject={ipaObject}
-                      setIpaObject={recordOnChange}
+                      onChange={recordOnChange}
+                      objectName="certmaprule"
+                      metadata={props.metadata}
                       name={"associateddomain"}
                       ariaLabel={"Domain name list"}
                     />

@@ -258,7 +258,9 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
                     dataCy="trusts-tab-settings-textbox-alternative-upn-suffixes"
                     name="ipantadditionalsuffixes"
                     ipaObject={ipaObject}
-                    setIpaObject={recordOnChange}
+                    onChange={recordOnChange}
+                    objectName="trust"
+                    metadata={props.metadata}
                     ariaLabel="Alternative UPN suffixes list"
                   />
                 </FormGroup>
@@ -279,7 +281,9 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
                     dataCy="trusts-tab-settings-textbox-sid-blocklists"
                     name="ipantsidblacklistincoming"
                     ipaObject={ipaObject}
-                    setIpaObject={recordOnChange}
+                    onChange={recordOnChange}
+                    objectName="trust"
+                    metadata={props.metadata}
                     ariaLabel="SID blocklists incoming list"
                   />
                 </FormGroup>
@@ -293,7 +297,9 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
                     dataCy="trusts-tab-settings-textbox-sid-blocklists-outgoing"
                     name="ipantsidblacklistoutgoing"
                     ipaObject={ipaObject}
-                    setIpaObject={recordOnChange}
+                    onChange={recordOnChange}
+                    objectName="trust"
+                    metadata={props.metadata}
                     ariaLabel="SID blocklists outgoing list"
                   />
                 </FormGroup>

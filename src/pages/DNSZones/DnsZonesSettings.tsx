@@ -521,7 +521,9 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                       name={"idnsallowquery"}
                       ariaLabel={"Allow query textbox list"}
                       ipaObject={ipaObject}
-                      setIpaObject={recordOnChange}
+                      onChange={recordOnChange}
+                      objectName="dnszone"
+                      metadata={props.metadata}
                     />
                   </FormGroup>
                   <FormGroup label="Allow transfer" role="idnsallowtransfer">
@@ -530,7 +532,9 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                       name={"idnsallowtransfer"}
                       ariaLabel={"Allow transfer textbox list"}
                       ipaObject={ipaObject}
-                      setIpaObject={recordOnChange}
+                      onChange={recordOnChange}
+                      objectName="dnszone"
+                      metadata={props.metadata}
                     />
                   </FormGroup>
                   <FormGroup label="Zone forwarders" role="idnsforwarders">
@@ -539,7 +543,9 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                       name={"idnsforwarders"}
                       ariaLabel={"Zone forwarders textbox list"}
                       ipaObject={ipaObject}
-                      setIpaObject={recordOnChange}
+                      onChange={recordOnChange}
+                      objectName="dnszone"
+                      metadata={props.metadata}
                     />
                   </FormGroup>
                   <FormGroup label="Forward policy" role="idnsforwardpolicy">

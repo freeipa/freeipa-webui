@@ -289,7 +289,9 @@ const DnsGlobalConfig = () => {
                     <IpaTextboxList
                       dataCy="dns-global-config-textbox-forwarders"
                       ipaObject={ipaObject}
-                      setIpaObject={recordOnChange}
+                      onChange={recordOnChange}
+                      objectName="dnsconfig"
+                      metadata={dnsConfigData.metadata}
                       name="idnsforwarders"
                       ariaLabel={"Forwarders text input"}
                     />

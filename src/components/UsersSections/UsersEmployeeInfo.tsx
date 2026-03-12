@@ -64,7 +64,9 @@ const UsersEmployeeInfo = (props: PropsToEmployeeInfo) => {
             <IpaTextboxList
               dataCy="user-tab-settings-textbox-departmentnumber"
               ipaObject={ipaObject}
-              setIpaObject={recordOnChange}
+              onChange={recordOnChange}
+              objectName="user"
+              metadata={props.metadata}
               name={"departmentnumber"}
               ariaLabel={"department number"}
             />
