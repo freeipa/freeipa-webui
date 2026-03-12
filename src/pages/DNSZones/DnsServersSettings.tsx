@@ -230,7 +230,9 @@ const DnsServersSettings = (props: DnsServersSettingsProps) => {
                   <IpaTextboxList
                     dataCy="dns-servers-tab-settings-textbox-idnsforwarders"
                     ipaObject={ipaObject}
-                    setIpaObject={recordOnChange}
+                    onChange={recordOnChange}
+                    objectName="dnsserver"
+                    metadata={props.metadata}
                     name="idnsforwarders"
                     ariaLabel={"Forwarders text input"}
                   />

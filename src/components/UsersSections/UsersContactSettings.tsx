@@ -29,7 +29,9 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
             <IpaTextboxList
               dataCy="user-tab-settings-mail"
               ipaObject={ipaObject}
-              setIpaObject={recordOnChange}
+              onChange={recordOnChange}
+              objectName="user"
+              metadata={props.metadata}
               name={"mail"}
               ariaLabel={"email address list"}
             />
@@ -42,7 +44,9 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
             <IpaTextboxList
               dataCy="user-tab-settings-telephonenumber"
               ipaObject={ipaObject}
-              setIpaObject={recordOnChange}
+              onChange={recordOnChange}
+              objectName="user"
+              metadata={props.metadata}
               name={"telephonenumber"}
               ariaLabel={"telephone number list"}
             />
@@ -51,7 +55,9 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
             <IpaTextboxList
               dataCy="user-tab-settings-pager"
               ipaObject={ipaObject}
-              setIpaObject={recordOnChange}
+              onChange={recordOnChange}
+              objectName="user"
+              metadata={props.metadata}
               name={"pager"}
               ariaLabel={"pager list"}
             />
@@ -64,7 +70,9 @@ const UsersContactSettings = (props: PropsToUsersContactSettings) => {
             <IpaTextboxList
               dataCy="user-tab-settings-mobile"
               ipaObject={ipaObject}
-              setIpaObject={recordOnChange}
+              onChange={recordOnChange}
+              objectName="user"
+              metadata={props.metadata}
               name={"mobile"}
               ariaLabel={"mobile phone number list"}
             />

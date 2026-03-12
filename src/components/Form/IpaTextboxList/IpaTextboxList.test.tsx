@@ -3,15 +3,54 @@ import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import { describe, it, expect, vi, afterEach } from "vitest";
 // Component
 import IpaTextboxList, { PropsToIpaTextboxList } from "./IpaTextboxList";
+// Data types
+import { Metadata } from "src/utils/datatypes/globalDataTypes";
 
 describe("IpaTextboxList Component", () => {
-  const mockSetIpaObject = vi.fn();
+  const mockOnChange = vi.fn();
+
+  // Minimal mock metadata with the object and param definition
+  const mockMetadata: Metadata = {
+    objects: {
+      testobject: {
+        name: "testobject",
+        takes_params: [
+          {
+            name: "customipatextboxlist",
+            alwaysask: false,
+            attribute: true,
+            autofill: false,
+            class: "Str",
+            cli_metavar: "",
+            cli_name: "customipatextboxlist",
+            confirm: false,
+            deprecated_cli_aliases: [],
+            deprecated: false,
+            doc: "",
+            flags: [],
+            label: "Custom IPA Textbox List",
+            multivalue: true,
+            no_convert: false,
+            noextrawhitespace: true,
+            pattern_errmsg: "",
+            primary_key: false,
+            query: false,
+            required: false,
+            sortorder: 0,
+            type: "str",
+          },
+        ],
+      },
+    },
+  };
 
   const defaultProps: PropsToIpaTextboxList = {
     dataCy: "ipa-textbox-list",
     ipaObject: {},
-    setIpaObject: mockSetIpaObject,
+    onChange: mockOnChange,
     name: "customipatextboxlist",
+    objectName: "testobject",
+    metadata: mockMetadata,
     ariaLabel: "customipatextboxlist",
   };
 
@@ -29,14 +68,14 @@ describe("IpaTextboxList Component", () => {
   it("should add an element to the list", () => {
     render(<IpaTextboxList {...defaultProps} />);
     fireEvent.click(screen.getByText("Add"));
-    expect(mockSetIpaObject).toHaveBeenCalledTimes(1);
+    expect(mockOnChange).toHaveBeenCalledTimes(1);
   });
 
   it("should remove an element from the list", () => {
     render(<IpaTextboxList {...defaultProps} />);
     fireEvent.click(screen.getByText("Add"));
     fireEvent.click(screen.getByText("Delete"));
-    expect(mockSetIpaObject).toHaveBeenCalledTimes(2);
+    expect(mockOnChange).toHaveBeenCalledTimes(2);
   });
 
   it("should change the value of an element in the list", () => {
@@ -45,7 +84,7 @@ describe("IpaTextboxList Component", () => {
     fireEvent.change(screen.getByRole("textbox"), {
       target: { value: "test" },
     });
-    expect(mockSetIpaObject).toHaveBeenCalledTimes(2);
+    expect(mockOnChange).toHaveBeenCalledTimes(2);
     expect(screen.getByRole("textbox")).toHaveValue("test");
   });
 

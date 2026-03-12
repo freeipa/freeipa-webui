@@ -204,7 +204,9 @@ const HostSettings = (props: PropsToHostSettings) => {
               <IpaTextboxList
                 dataCy="host-tab-settings-textbox-mac-address"
                 ipaObject={ipaObject}
-                setIpaObject={recordOnChange}
+                onChange={recordOnChange}
+                objectName="host"
+                metadata={props.metadata}
                 name={"macaddress"}
                 ariaLabel={"MAC address"}
                 validator={validateMAC}

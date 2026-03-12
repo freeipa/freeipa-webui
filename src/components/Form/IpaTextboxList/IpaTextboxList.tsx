@@ -10,19 +10,20 @@ import {
 // Components
 import SecondaryButton from "../../layouts/SecondaryButton";
 // Utils
-import { updateIpaObject } from "src/utils/ipaObjectUtils";
+import {
+  IPAParamDefinition,
+  getParamProperties,
+  updateIpaObject,
+} from "src/utils/ipaObjectUtils";
 
-export interface PropsToIpaTextboxList {
+export interface PropsToIpaTextboxList extends IPAParamDefinition {
   dataCy: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ipaObject: Record<string, any>;
-  setIpaObject: (value: Record<string, unknown>) => void;
-  name: string;
-  ariaLabel: string;
   validator?: (value: string) => boolean;
 }
 
 const IpaTextboxList = (props: PropsToIpaTextboxList) => {
+  const { readOnly } = getParamProperties(props);
+
   // Helper to normalize the value from the IPA object (returns a string array)
   const getNormalizedValue = (value: string | string[]): string[] => {
     if (typeof value === "string") {
@@ -39,15 +40,17 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
     setList(getNormalizedValue(value));
   };
 
+  const ipaObject = props.ipaObject || {};
+
   const [list, setList] = React.useState<string[]>(
-    getNormalizedValue(props.ipaObject[props.name])
+    getNormalizedValue(ipaObject[props.name] as string | string[])
   );
 
   const [invalidList, setInvalidList] = React.useState<number[]>([]);
 
   // Keep the values updated, thus preventing empty values
   React.useEffect(() => {
-    normalizeValue(props.ipaObject[props.name]);
+    normalizeValue(ipaObject[props.name] as string | string[]);
   }, [props.ipaObject]);
 
   // - Add element on list handler
@@ -56,7 +59,9 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
     listCopy.push("");
     setList(listCopy);
     // Update the IPA object
-    updateIpaObject(props.ipaObject, props.setIpaObject, listCopy, props.name);
+    if (props.onChange) {
+      updateIpaObject(ipaObject, props.onChange, listCopy, props.name);
+    }
   };
 
   // - Change element on list handle
@@ -69,7 +74,9 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
     const listCopy = [...list];
     listCopy[idx] = value;
     setList(listCopy);
-    updateIpaObject(props.ipaObject, props.setIpaObject, listCopy, props.name);
+    if (props.onChange) {
+      updateIpaObject(ipaObject, props.onChange, listCopy, props.name);
+    }
   };
 
   const validateList = () => {
@@ -98,7 +105,9 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
       setList(listCopy);
     }
     // Update the IPA object
-    updateIpaObject(props.ipaObject, props.setIpaObject, listCopy, props.name);
+    if (props.onChange) {
+      updateIpaObject(ipaObject, props.onChange, listCopy, props.name);
+    }
   };
 
   return (
@@ -121,37 +130,46 @@ const IpaTextboxList = (props: PropsToIpaTextboxList) => {
                 value={item}
                 type="text"
                 name={props.name + "-" + idx}
-                aria-label={props.ariaLabel + " number " + idx}
+                aria-label={
+                  props.ariaLabel !== undefined
+                    ? props.ariaLabel + " number " + idx
+                    : props.name + " number " + idx
+                }
                 onChange={(event, value) => onChangeHandler(value, event, idx)}
                 validated={
                   invalidList.includes(idx)
                     ? ValidatedOptions.error
                     : ValidatedOptions.default
                 }
+                readOnlyVariant={readOnly ? "plain" : undefined}
               />
             </FlexItem>
-            <FlexItem key={props.name + "-" + idx + "-delete-button"}>
-              <Button
-                data-cy={props.dataCy + "-button-delete-" + idx}
-                variant="secondary"
-                name={"remove-" + props.name + "-" + idx}
-                onClick={() => onRemoveHandler(idx)}
-                size="sm"
-              >
-                Delete
-              </Button>
-            </FlexItem>
+            {!readOnly && (
+              <FlexItem key={props.name + "-" + idx + "-delete-button"}>
+                <Button
+                  data-cy={props.dataCy + "-button-delete-" + idx}
+                  variant="secondary"
+                  name={"remove-" + props.name + "-" + idx}
+                  onClick={() => onRemoveHandler(idx)}
+                  size="sm"
+                >
+                  Delete
+                </Button>
+              </FlexItem>
+            )}
           </Flex>
         ))}
       </Flex>
-      <SecondaryButton
-        dataCy={props.dataCy + "-button-add"}
-        classname="pf-v6-u-mt-sm"
-        name={"add-" + props.name}
-        onClickHandler={onAddHandler}
-      >
-        Add
-      </SecondaryButton>
+      {!readOnly && (
+        <SecondaryButton
+          dataCy={props.dataCy + "-button-add"}
+          classname="pf-v6-u-mt-sm"
+          name={"add-" + props.name}
+          onClickHandler={onAddHandler}
+        >
+          Add
+        </SecondaryButton>
+      )}
     </div>
   );
 };
