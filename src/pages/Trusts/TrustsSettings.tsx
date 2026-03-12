@@ -77,7 +77,9 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
     const payload: TrustModPayload = { cn: props.trust.cn || "" };
 
     keyArray.forEach((key) => {
-      payload[key] = modifiedValues[key];
+      if (modifiedValues[key] !== undefined) {
+        payload[key] = modifiedValues[key];
+      }
     });
     return payload;
   };
@@ -106,7 +108,7 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
           if (data?.error) {
             dispatch(
               addAlert({
-                name: "error",
+                name: "save-error",
                 title: (data.error as Error).message,
                 variant: "danger",
               })
