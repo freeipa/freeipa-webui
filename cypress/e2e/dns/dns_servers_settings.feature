@@ -51,16 +51,4 @@ Feature: DNS Servers
 
     @cleanup
     Scenario: Set DNS server to default values
-        Given I am logged in as admin
-        And I am on "dns-servers/webui.ipa.test" page
-
-        When I change SOA name to "webui.ipa.test"
-        Then I should see "webui.ipa.test" in the "dns-servers-tab-settings-textbox-idnssoamname" textbox
-
-        When I click on the "dns-zone-tab-settings-radio-forward-only" radio button
-        Then I should see the "dns-zone-tab-settings-radio-forward-only" radio button is selected
-
-        When I click on the "dns-servers-tab-settings-button-save" button
-        Then I should see "webui.ipa.test" in the "dns-servers-tab-settings-textbox-idnssoamname" textbox
-        And I should see the "dns-zone-tab-settings-radio-forward-only" radio button is selected
-        And I should see "success" alert
+        Given I reset DNS server "webui.ipa.test" SOA name to "webui.ipa.test" and forward policy to "only"

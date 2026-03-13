@@ -1,4 +1,4 @@
-import { When } from "@badeball/cypress-cucumber-preprocessor";
+import { Given, When } from "@badeball/cypress-cucumber-preprocessor";
 import { typeInTextbox } from "../common/ui/textbox";
 import {
   addElementToTextboxList,
@@ -23,3 +23,14 @@ When("I remove forwarder {string}", (forwarder: string) => {
     "dns-servers-tab-settings-textbox-idnsforwarders"
   );
 });
+
+Given(
+  "I reset DNS server {string} SOA name to {string} and forward policy to {string}",
+  (serverName: string, soaName: string, forwardPolicy: string) => {
+    cy.ipa({
+      command: "dnsserver-mod",
+      name: serverName,
+      specificOptions: `--soa-mname-override=${soaName} --forward-policy=${forwardPolicy}`,
+    });
+  }
+);
