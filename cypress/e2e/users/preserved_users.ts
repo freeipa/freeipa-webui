@@ -37,19 +37,11 @@ const preserveUser = (username: string) => {
 };
 
 Given("I delete preserved user {string}", (username: string) => {
-  loginAsAdmin();
-  navigateTo("preserved-users");
-  selectEntry(username);
-
-  cy.dataCy("preserved-users-button-delete").click();
-  cy.dataCy("delete-users-modal").should("exist");
-
-  cy.dataCy("modal-button-delete").click();
-  cy.dataCy("delete-users-modal").should("not.exist");
-
-  searchForEntry(username);
-  entryDoesNotExist(username);
-  logout();
+  cy.ipa({
+    command: "user-del",
+    name: username,
+    specificOptions: "--no-preserve",
+  });
 });
 
 Given(
