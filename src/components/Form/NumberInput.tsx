@@ -80,7 +80,7 @@ const NumberSelector = (props: NumberSelectorProps) => {
       isDisabled={props.isDisabled || false}
       widthChars={props.numCharsShown || 1}
       className={props.className || ""}
-      inputProps={{ id: props.id, "data-cy": props.dataCy }}
+      inputProps={{ id: props.id, "data-cy": props.dataCy + "-input" }}
     />
   );
 };
