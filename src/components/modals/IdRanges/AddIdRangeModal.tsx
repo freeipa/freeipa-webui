@@ -135,9 +135,13 @@ const AddIdRangeModal = (props: PropsToAddModal) => {
           : undefined,
       ipabaserid: ipabaseridStr,
       ipasecondarybaserid: ipasecondarybaseridStr,
-      ipaautoprivategroups,
       iparangetype: rangeType,
     };
+
+    // 'ipaautoprivategroups' only included when it is false. Otherwise, addition will fail.
+    if (ipaautoprivategroups === "false") {
+      newIdRangePayload.ipaautoprivategroups = ipaautoprivategroups;
+    }
 
     addIdRange(newIdRangePayload)
       .then((result) => {
