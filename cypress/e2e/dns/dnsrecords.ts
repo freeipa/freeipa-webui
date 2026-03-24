@@ -72,10 +72,10 @@ const addDnsRecordTypeA6 = (recordData: string) => {
 
 const addDnsRecordTypeAFSDB = (subtype: string, hostname: string) => {
   clearAndAddAdjustedNumberValue(
-    "modal-number-input-afsdb-part-subtype",
+    "modal-number-input-afsdb-part-subtype-input",
     subtype
   );
-  cy.dataCy("modal-number-input-afsdb-part-subtype").should(
+  cy.dataCy("modal-number-input-afsdb-part-subtype-input").should(
     "have.value",
     subtype
   );
@@ -111,23 +111,29 @@ const addDnsRecordTypeDS = (
   digestType: string,
   digest: string
 ) => {
-  clearAndAddAdjustedNumberValue("modal-number-input-ds-part-key-tag", keyTag);
-  cy.dataCy("modal-number-input-ds-part-key-tag").should("have.value", keyTag);
+  clearAndAddAdjustedNumberValue(
+    "modal-number-input-ds-part-key-tag-input",
+    keyTag
+  );
+  cy.dataCy("modal-number-input-ds-part-key-tag-input").should(
+    "have.value",
+    keyTag
+  );
 
   clearAndAddAdjustedNumberValue(
-    "modal-number-input-ds-part-algorithm",
+    "modal-number-input-ds-part-algorithm-input",
     algorithm
   );
-  cy.dataCy("modal-number-input-ds-part-algorithm").should(
+  cy.dataCy("modal-number-input-ds-part-algorithm-input").should(
     "have.value",
     algorithm
   );
 
   clearAndAddAdjustedNumberValue(
-    "modal-number-input-ds-part-digest-type",
+    "modal-number-input-ds-part-digest-type-input",
     digestType
   );
-  cy.dataCy("modal-number-input-ds-part-digest-type").should(
+  cy.dataCy("modal-number-input-ds-part-digest-type-input").should(
     "have.value",
     digestType
   );
@@ -144,25 +150,31 @@ const addDnsRecordTypeDLV = (
   digestType: string,
   digest: string
 ) => {
-  clearAndAddAdjustedNumberValue("modal-number-input-dlv-part-key-tag", keyTag);
-  cy.dataCy("modal-number-input-dlv-part-key-tag").should("have.value", keyTag);
+  clearAndAddAdjustedNumberValue(
+    "modal-number-input-dlv-part-key-tag-input",
+    keyTag
+  );
+  cy.dataCy("modal-number-input-dlv-part-key-tag-input").should(
+    "have.value",
+    keyTag
+  );
 
   clearAndAddAdjustedNumberValue(
-    "modal-number-input-dlv-part-algorithm",
+    "modal-number-input-dlv-part-algorithm-input",
     algorithm
   );
-  cy.dataCy("modal-number-input-dlv-part-algorithm").should(
+  cy.dataCy("modal-number-input-dlv-part-algorithm-input").should(
     "have.value",
     algorithm
   );
 
   clearAndAddAdjustedNumberValue(
-    "modal-number-input-dlv-part-digest-type",
+    "modal-number-input-dlv-part-digest-type-input",
     digestType
   );
-  cy.dataCy("modal-number-input-dlv-part-algorithm").should(
+  cy.dataCy("modal-number-input-dlv-part-digest-type-input").should(
     "have.value",
-    algorithm
+    digestType
   );
 
   clearAndAddAdjustedNumberValue("modal-textarea-dlv-part-digest", digest);
@@ -173,10 +185,10 @@ const addDnsRecordTypeDLV = (
 
 const addDnsRecordTypeKX = (preference: string, exchanger: string) => {
   clearAndAddAdjustedNumberValue(
-    "modal-number-input-kx-part-preference",
+    "modal-number-input-kx-part-preference-input",
     preference
   );
-  cy.dataCy("modal-number-input-kx-part-preference").should(
+  cy.dataCy("modal-number-input-kx-part-preference-input").should(
     "have.value",
     preference
   );
@@ -203,28 +215,64 @@ const addDnsRecordTypeLOC = (
   horizontalPrecision: string,
   verticalPrecision: string
 ) => {
-  clearAndAddAdjustedNumberValue("modal-number-input-loc-part-lat-deg", latDeg);
-  cy.dataCy("modal-number-input-loc-part-lat-deg").should("have.value", latDeg);
+  clearAndAddAdjustedNumberValue(
+    "modal-number-input-loc-part-lat-deg-input",
+    latDeg
+  );
+  cy.dataCy("modal-number-input-loc-part-lat-deg-input").should(
+    "have.value",
+    latDeg
+  );
 
-  clearAndAddAdjustedNumberValue("modal-number-input-loc-part-lat-min", latMin);
-  cy.dataCy("modal-number-input-loc-part-lat-min").should("have.value", latMin);
+  clearAndAddAdjustedNumberValue(
+    "modal-number-input-loc-part-lat-min-input",
+    latMin
+  );
+  cy.dataCy("modal-number-input-loc-part-lat-min-input").should(
+    "have.value",
+    latMin
+  );
 
-  clearAndAddAdjustedNumberValue("modal-number-input-loc-part-lat-sec", latSec);
-  cy.dataCy("modal-number-input-loc-part-lat-sec").should("have.value", latSec);
+  clearAndAddAdjustedNumberValue(
+    "modal-number-input-loc-part-lat-sec-input",
+    latSec
+  );
+  cy.dataCy("modal-number-input-loc-part-lat-sec-input").should(
+    "have.value",
+    latSec
+  );
 
   cy.dataCy("modal-radio-loc-part-lat-dir-radio-" + latDir).click();
   cy.dataCy("modal-radio-loc-part-lat-dir-radio-" + latDir).should(
     "be.checked"
   );
 
-  clearAndAddAdjustedNumberValue("modal-number-input-loc-part-lon-deg", lonDeg);
-  cy.dataCy("modal-number-input-loc-part-lon-deg").should("have.value", lonDeg);
+  clearAndAddAdjustedNumberValue(
+    "modal-number-input-loc-part-lon-deg-input",
+    lonDeg
+  );
+  cy.dataCy("modal-number-input-loc-part-lon-deg-input").should(
+    "have.value",
+    lonDeg
+  );
 
-  clearAndAddAdjustedNumberValue("modal-number-input-loc-part-lon-min", lonMin);
-  cy.dataCy("modal-number-input-loc-part-lon-min").should("have.value", lonMin);
+  clearAndAddAdjustedNumberValue(
+    "modal-number-input-loc-part-lon-min-input",
+    lonMin
+  );
+  cy.dataCy("modal-number-input-loc-part-lon-min-input").should(
+    "have.value",
+    lonMin
+  );
 
-  clearAndAddAdjustedNumberValue("modal-number-input-loc-part-lon-sec", lonSec);
-  cy.dataCy("modal-number-input-loc-part-lon-sec").should("have.value", lonSec);
+  clearAndAddAdjustedNumberValue(
+    "modal-number-input-loc-part-lon-sec-input",
+    lonSec
+  );
+  cy.dataCy("modal-number-input-loc-part-lon-sec-input").should(
+    "have.value",
+    lonSec
+  );
 
   cy.dataCy("modal-radio-loc-part-lon-dir-radio-" + lonDir).click();
   cy.dataCy("modal-radio-loc-part-lon-dir-radio-" + lonDir).should(
@@ -232,31 +280,37 @@ const addDnsRecordTypeLOC = (
   );
 
   clearAndAddAdjustedNumberValue(
-    "modal-number-input-loc-part-altitude",
+    "modal-number-input-loc-part-altitude-input",
     altitude
   );
-  cy.dataCy("modal-number-input-loc-part-altitude").should(
+  cy.dataCy("modal-number-input-loc-part-altitude-input").should(
     "have.value",
     altitude
   );
 
-  clearAndAddAdjustedNumberValue("modal-number-input-loc-part-size", size);
-  cy.dataCy("modal-number-input-loc-part-size").should("have.value", size);
+  clearAndAddAdjustedNumberValue(
+    "modal-number-input-loc-part-size-input",
+    size
+  );
+  cy.dataCy("modal-number-input-loc-part-size-input").should(
+    "have.value",
+    size
+  );
 
   clearAndAddAdjustedNumberValue(
-    "modal-number-input-loc-part-h-precision",
+    "modal-number-input-loc-part-h-precision-input",
     horizontalPrecision
   );
-  cy.dataCy("modal-number-input-loc-part-h-precision").should(
+  cy.dataCy("modal-number-input-loc-part-h-precision-input").should(
     "have.value",
     horizontalPrecision
   );
 
   clearAndAddAdjustedNumberValue(
-    "modal-number-input-loc-part-v-precision",
+    "modal-number-input-loc-part-v-precision-input",
     verticalPrecision
   );
-  cy.dataCy("modal-number-input-loc-part-v-precision").should(
+  cy.dataCy("modal-number-input-loc-part-v-precision-input").should(
     "have.value",
     verticalPrecision
   );
@@ -266,7 +320,7 @@ const addDnsRecordTypeLOC = (
 
 const addDnsRecordTypeMX = (preference: string, exchanger: string) => {
   clearAndAddAdjustedNumberValue(
-    "modal-number-input-mx-part-preference",
+    "modal-number-input-mx-part-preference-input",
     preference
   );
   cy.dataCy("modal-text-input-mx-part-exchanger").type(exchanger);
@@ -286,14 +340,20 @@ const addDnsRecordTypeNAPTR = (
   regexp: string,
   replacement: string
 ) => {
-  clearAndAddAdjustedNumberValue("modal-number-input-naptr-part-order", order);
-  cy.dataCy("modal-number-input-naptr-part-order").should("have.value", order);
+  clearAndAddAdjustedNumberValue(
+    "modal-number-input-naptr-part-order-input",
+    order
+  );
+  cy.dataCy("modal-number-input-naptr-part-order-input").should(
+    "have.value",
+    order
+  );
 
   clearAndAddAdjustedNumberValue(
-    "modal-number-input-naptr-part-preference",
+    "modal-number-input-naptr-part-preference-input",
     preference
   );
-  cy.dataCy("modal-number-input-naptr-part-preference").should(
+  cy.dataCy("modal-number-input-naptr-part-preference-input").should(
     "have.value",
     preference
   );
@@ -357,19 +417,31 @@ const addDnsRecordTypeSRV = (
   target: string
 ) => {
   clearAndAddAdjustedNumberValue(
-    "modal-number-input-srv-part-priority",
+    "modal-number-input-srv-part-priority-input",
     priority
   );
-  cy.dataCy("modal-number-input-srv-part-priority").should(
+  cy.dataCy("modal-number-input-srv-part-priority-input").should(
     "have.value",
     priority
   );
 
-  clearAndAddAdjustedNumberValue("modal-number-input-srv-part-weight", weight);
-  cy.dataCy("modal-number-input-srv-part-weight").should("have.value", weight);
+  clearAndAddAdjustedNumberValue(
+    "modal-number-input-srv-part-weight-input",
+    weight
+  );
+  cy.dataCy("modal-number-input-srv-part-weight-input").should(
+    "have.value",
+    weight
+  );
 
-  clearAndAddAdjustedNumberValue("modal-number-input-srv-part-port", port);
-  cy.dataCy("modal-number-input-srv-part-port").should("have.value", port);
+  clearAndAddAdjustedNumberValue(
+    "modal-number-input-srv-part-port-input",
+    port
+  );
+  cy.dataCy("modal-number-input-srv-part-port-input").should(
+    "have.value",
+    port
+  );
 
   clearAndAddAdjustedNumberValue("modal-text-input-srv-part-target", target);
   cy.dataCy("modal-text-input-srv-part-target").should("have.value", target);
@@ -383,19 +455,19 @@ const addDnsRecordTypeSSHFP = (
   fingerprint: string
 ) => {
   clearAndAddAdjustedNumberValue(
-    "modal-number-input-sshfp-part-algorithm",
+    "modal-number-input-sshfp-part-algorithm-input",
     algorithm
   );
-  cy.dataCy("modal-number-input-sshfp-part-algorithm").should(
+  cy.dataCy("modal-number-input-sshfp-part-algorithm-input").should(
     "have.value",
     algorithm
   );
 
   clearAndAddAdjustedNumberValue(
-    "modal-number-input-sshfp-part-fp-type",
+    "modal-number-input-sshfp-part-fp-type-input",
     fpType
   );
-  cy.dataCy("modal-number-input-sshfp-part-fp-type").should(
+  cy.dataCy("modal-number-input-sshfp-part-fp-type-input").should(
     "have.value",
     fpType
   );
@@ -418,28 +490,28 @@ const addDnsRecordTypeTLSA = (
   certAssociationData: string
 ) => {
   clearAndAddAdjustedNumberValue(
-    "modal-number-input-tlsa-part-cert-usage",
+    "modal-number-input-tlsa-part-cert-usage-input",
     certUsage
   );
-  cy.dataCy("modal-number-input-tlsa-part-cert-usage").should(
+  cy.dataCy("modal-number-input-tlsa-part-cert-usage-input").should(
     "have.value",
     certUsage
   );
 
   clearAndAddAdjustedNumberValue(
-    "modal-number-input-tlsa-part-selector",
+    "modal-number-input-tlsa-part-selector-input",
     selector
   );
-  cy.dataCy("modal-number-input-tlsa-part-selector").should(
+  cy.dataCy("modal-number-input-tlsa-part-selector-input").should(
     "have.value",
     selector
   );
 
   clearAndAddAdjustedNumberValue(
-    "modal-number-input-tlsa-part-matching-type",
+    "modal-number-input-tlsa-part-matching-type-input",
     matchingType
   );
-  cy.dataCy("modal-number-input-tlsa-part-matching-type").should(
+  cy.dataCy("modal-number-input-tlsa-part-matching-type-input").should(
     "have.value",
     matchingType
   );
@@ -472,16 +544,22 @@ const addDnsRecordTypeURI = (
   target: string
 ) => {
   clearAndAddAdjustedNumberValue(
-    "modal-number-input-uri-part-priority",
+    "modal-number-input-uri-part-priority-input",
     priority
   );
-  cy.dataCy("modal-number-input-uri-part-priority").should(
+  cy.dataCy("modal-number-input-uri-part-priority-input").should(
     "have.value",
     priority
   );
 
-  clearAndAddAdjustedNumberValue("modal-number-input-uri-part-weight", weight);
-  cy.dataCy("modal-number-input-uri-part-weight").should("have.value", weight);
+  clearAndAddAdjustedNumberValue(
+    "modal-number-input-uri-part-weight-input",
+    weight
+  );
+  cy.dataCy("modal-number-input-uri-part-weight-input").should(
+    "have.value",
+    weight
+  );
 
   clearAndAddAdjustedNumberValue("modal-text-input-uri-part-target", target);
   cy.dataCy("modal-text-input-uri-part-target").should("have.value", target);
