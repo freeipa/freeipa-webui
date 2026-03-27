@@ -40,7 +40,7 @@ const TextInputList = (props: TextInputListProps) => {
   };
 
   return (
-    <>
+    <div data-cy={props.dataCy}>
       <Flex direction={{ default: "column" }} name={props.name}>
         {props.list.map((item, idx) => (
           <Flex
@@ -53,7 +53,7 @@ const TextInputList = (props: TextInputListProps) => {
               flex={{ default: "flex_1" }}
             >
               <TextInput
-                data-cy={props.dataCy + "-" + item}
+                data-cy={props.dataCy + "-textbox-" + idx}
                 id={props.name + "-" + idx}
                 value={item}
                 type="text"
@@ -64,7 +64,7 @@ const TextInputList = (props: TextInputListProps) => {
             </FlexItem>
             <FlexItem key={props.name + "-" + idx + "-delete-button"}>
               <Button
-                data-cy={props.dataCy + "-" + item + "-delete-button"}
+                data-cy={props.dataCy + "-button-delete-" + idx}
                 variant="danger"
                 name={"remove-" + props.name + "-" + idx}
                 onClick={() => onRemoveHandler(idx)}
@@ -76,7 +76,7 @@ const TextInputList = (props: TextInputListProps) => {
         ))}
       </Flex>
       <Button
-        data-cy={props.dataCy + "-add-button"}
+        data-cy={props.dataCy + "-button-add"}
         variant="secondary"
         className="pf-v6-u-mt-sm"
         name={"add-" + props.name}
@@ -84,7 +84,7 @@ const TextInputList = (props: TextInputListProps) => {
       >
         Add
       </Button>
-    </>
+    </div>
   );
 };
 
