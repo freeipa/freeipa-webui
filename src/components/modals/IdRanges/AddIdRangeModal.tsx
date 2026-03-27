@@ -25,6 +25,8 @@ import {
 import { SerializedError } from "@reduxjs/toolkit";
 import InputRequiredText from "src/components/layouts/InputRequiredText";
 import NumberSelector from "src/components/Form/NumberInput";
+// Utils
+import { NO_SELECTION_OPTION } from "src/utils/constUtils";
 
 interface PropsToAddModal {
   isOpen: boolean;
@@ -36,6 +38,7 @@ interface PropsToAddModal {
 type RangeType = "ipa-local" | "ipa-ad-trust" | "ipa-ad-trust-posix";
 
 const autoPrivateGroupsOptions = [
+  { value: "", label: NO_SELECTION_OPTION },
   { value: "true", label: "true" },
   { value: "false", label: "false" },
   { value: "hybrid", label: "hybrid" },
@@ -63,8 +66,7 @@ const AddIdRangeModal = (props: PropsToAddModal) => {
   >("");
   const [ipanttrusteddomainname, setIpanttrusteddomainname] =
     React.useState("");
-  const [ipaautoprivategroups, setIpaautoprivategroups] =
-    React.useState("true");
+  const [ipaautoprivategroups, setIpaautoprivategroups] = React.useState("");
 
   const [isAutoPrivOpen, setIsAutoPrivOpen] = React.useState(false);
 
@@ -93,7 +95,7 @@ const AddIdRangeModal = (props: PropsToAddModal) => {
     setIpabaserid("");
     setIpasecondarybaserid("");
     setIpanttrusteddomainname("");
-    setIpaautoprivategroups("true");
+    setIpaautoprivategroups("");
   };
 
   // Derived validation state
@@ -138,8 +140,8 @@ const AddIdRangeModal = (props: PropsToAddModal) => {
       iparangetype: rangeType,
     };
 
-    // 'ipaautoprivategroups' only included when it is false. Otherwise, addition will fail.
-    if (ipaautoprivategroups === "false") {
+    // 'ipaautoprivategroups' only included when it is specified.
+    if (ipaautoprivategroups !== NO_SELECTION_OPTION) {
       newIdRangePayload.ipaautoprivategroups = ipaautoprivategroups;
     }
 
