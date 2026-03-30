@@ -45,6 +45,21 @@ export const validateEntry = (name: string) => {
   entryExists(name);
 };
 
+// 'MainTable' component uses 'data-label' attribute to set the status label
+// Also contains an icon followed by a space and the status text
+// So it must be handled differently than other attributes
+export const isElementDisabled = (elementName: string, label: string) => {
+  cy.get(
+    "tr[id='" + elementName + "'] td[data-label='" + label + "']"
+  ).contains("Disabled");
+};
+
+export const isElementEnabled = (elementName: string, label: string) => {
+  cy.get(
+    "tr[id='" + elementName + "'] td[data-label='" + label + "']"
+  ).contains("Enabled");
+};
+
 When("I search for {string} in the data table", (name: string) => {
   searchForEntry(name);
 });
@@ -131,3 +146,17 @@ Then(
 Then("I should see no table with ID {string}", (tableId: string) => {
   cy.get("table#" + tableId).should("not.exist");
 });
+
+Then(
+  "I should see element {string} with status label {string} in the list disabled",
+  (elementName: string, statusLabel: string) => {
+    isElementDisabled(elementName, statusLabel);
+  }
+);
+
+Then(
+  "I should see element {string} with status label {string} in the list enabled",
+  (elementName: string, statusLabel: string) => {
+    isElementEnabled(elementName, statusLabel);
+  }
+);
