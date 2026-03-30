@@ -282,7 +282,7 @@ const CertificateMappingPage = () => {
           const elementsList: CertificateMapping[] = [];
 
           for (let i = 0; i < listSize; i++) {
-            elementsList.push(listResult[i].result);
+            elementsList.push(apiToCertificateMapping(listResult[i].result));
           }
 
           setTotalCount(totalCount);
