@@ -75,6 +75,7 @@ import Trusts from "src/pages/Trusts/Trusts";
 import TrustsTabs from "src/pages/Trusts/TrustsTabs";
 import IdRangesTabs from "src/pages/IdRanges/IdRangesTabs";
 import GlobalTrustConfig from "src/pages/Trusts/GlobalTrustConfig";
+import Healthcheck from "src/pages/Healthcheck/Healthcheck";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -540,6 +541,9 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="trusts-config">
                 <Route path="" element={<GlobalTrustConfig />} />
+              </Route>
+              <Route path="healthcheck">
+                <Route path="" element={<Healthcheck />} />
               </Route>
               <Route path="configuration" element={<Configuration />} />
               {/* Redirect to Active users page if user is logged in and navigates to the root page */}

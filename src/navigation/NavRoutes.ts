@@ -66,6 +66,8 @@ const TrustsGroupRef = "trusts";
 const TrustsGlobalConfigGroupRef = "trusts-config";
 // - Configuration
 const ConfigRef = "configuration";
+// HEALTHCHECK (top-level nav; single leaf — Nav renders one row, see Nav.tsx)
+const HealthcheckGroupRef = "healthcheck";
 
 // List of navigation routes (UI)
 export const getNavigationRoutes = (
@@ -436,6 +438,21 @@ export const getNavigationRoutes = (
           group: ConfigRef,
           title: `${BASE_TITLE} - Configuration`,
           path: "configuration",
+          items: [],
+        },
+      ],
+    },
+    {
+      label: "Healthcheck",
+      group: "",
+      title: `${BASE_TITLE} - Healthcheck`,
+      path: "",
+      items: [
+        {
+          label: "Healthcheck",
+          group: HealthcheckGroupRef,
+          title: `${BASE_TITLE} - Healthcheck`,
+          path: "healthcheck",
           items: [],
         },
       ],
