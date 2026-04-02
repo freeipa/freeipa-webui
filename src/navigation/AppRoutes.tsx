@@ -75,6 +75,7 @@ import Trusts from "src/pages/Trusts/Trusts";
 import TrustsTabs from "src/pages/Trusts/TrustsTabs";
 import IdRangesTabs from "src/pages/IdRanges/IdRangesTabs";
 import GlobalTrustConfig from "src/pages/Trusts/GlobalTrustConfig";
+import OtpTokens from "src/pages/OtpTokens/OtpTokens";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -450,6 +451,9 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="kerberos-ticket-policy">
                 <Route path="" element={<KrbTicketPolicy />} />
+              </Route>
+              <Route path="otp-tokens">
+                <Route path="" element={<OtpTokens />} />
               </Route>
               <Route path="identity-provider-references">
                 <Route path="" element={<IdpReferences />} />
