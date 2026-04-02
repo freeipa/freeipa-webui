@@ -12,6 +12,7 @@ interface PropsToQrCodeModal {
   isOpen: boolean;
   onClose: () => void;
   QrUri: string;
+  onRefresh?: () => void;
 }
 
 /*
@@ -76,13 +77,21 @@ const QrCodeModal = (props: PropsToQrCodeModal) => {
     },
   ];
 
+  const onOkHandler = () => {
+    props.onClose();
+    if (props.onRefresh) {
+      props.onRefresh();
+    }
+  };
+
   // Actions
   const actions = [
     <Button
       data-cy="modal-button-ok"
+      aria-label="OK button to close the modal"
       key="ok"
       variant="link"
-      onClick={props.onClose}
+      onClick={onOkHandler}
     >
       Ok
     </Button>,
@@ -98,7 +107,7 @@ const QrCodeModal = (props: PropsToQrCodeModal) => {
       formId="configure-your-token-form"
       fields={fields}
       show={props.isOpen}
-      onClose={props.onClose}
+      onClose={onOkHandler}
       actions={actions}
     />
   );
