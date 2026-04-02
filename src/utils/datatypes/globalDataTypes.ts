@@ -651,6 +651,12 @@ export interface SubId {
   dn: string;
 }
 
+export interface OtpTokenType {
+  ipatokenuniqueid: string;
+  type: string;
+  dn: string;
+}
+
 export type IDNSForwardPolicy = "only" | "first" | "none";
 
 export interface DNSZone {
@@ -1132,6 +1138,29 @@ export interface TrustDomain {
 }
 
 export type RangeType = "detect" | "ad-domain" | "ad-domain-posix";
+
+export type AlgorithmType = "sha1" | "sha256" | "sha384" | "sha512";
+
+export interface OtpToken {
+  ipatokenuniqueid: string;
+  type: string;
+  description: string;
+  ipatokenowner: string;
+  managedby_user: string;
+  ipatokendisabled: boolean;
+  ipatokennotbefore: Date | string; // datetime
+  ipatokennotafter: Date | string; // datetime
+  ipatokenvendor: string;
+  ipatokenmodel: string;
+  ipatokenserial: string;
+  ipatokenotpkey: string; // bytes
+  ipatokenotpalgorithm: AlgorithmType; // Default: 'sha1'
+  ipatokenotpdigits: 6 | 8; // Default: 6
+  ipatokentotpclockoffset: number; // Default: 0 | Minimum value: -2147483648 | Maximum value: 2147483647
+  ipatokentotptimestep: number; // Default: 30 | Minimum value: 5 | Maximum value: 2147483647
+  ipatokenhotpcounter: number; // Default: 0 | Minimum value: 0 | Maximum value: 2147483647
+  uri: string;
+}
 
 export type ErrorValidationData = {
   isError: boolean;
