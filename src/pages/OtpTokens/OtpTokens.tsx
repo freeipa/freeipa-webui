@@ -42,6 +42,7 @@ import TitleLayout from "src/components/layouts/TitleLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import MainTable from "src/components/tables/MainTable";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
+import AddOtpToken from "src/components/modals/UserModals/AddOtpToken";
 
 const OtpTokens = () => {
   const dispatch = useAppDispatch();
@@ -306,6 +307,9 @@ const OtpTokens = () => {
     updateSelectedPerPage: setSelectedPerPage,
   };
 
+  // Modals functionality
+  const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
+
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -370,6 +374,7 @@ const OtpTokens = () => {
         <SecondaryButton
           isDisabled={!showTableRows}
           dataCy="otp-tokens-button-add"
+          onClickHandler={() => setShowAddModal(true)}
         >
           Add
         </SecondaryButton>
@@ -492,6 +497,13 @@ const OtpTokens = () => {
           </FlexItem>
         </Flex>
       </PageSection>
+      <AddOtpToken
+        uid={undefined}
+        isOpen={showAddModal}
+        setIsOpen={setShowAddModal}
+        onClose={() => setShowAddModal(false)}
+        onRefresh={refreshData}
+      />
     </div>
   );
 };
