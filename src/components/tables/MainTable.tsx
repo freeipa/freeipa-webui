@@ -56,6 +56,7 @@ interface PropsToTable<T> {
   buttonsData?: ButtonsData;
   paginationData?: PaginationData;
   statusElementName?: string; // This will be used to determine the status and style the table rows (grey if disabled)
+  invertStatusValue?: boolean; // Sometimes the status is assumed "enabled" (i.e. `ipaenabledflag`) and others is "disabled" (i.e. `ipatokendisabled`)
 }
 
 const MainTable = <T,>(props: PropsToTable<T>) => {
@@ -130,6 +131,14 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
     }
   };
 
+  // Helper function: Check if the status value is inverted
+  const invertStatusValue = (value: string) => {
+    if (props.invertStatusValue) {
+      return value === "true" ? "false" : "true";
+    }
+    return value;
+  };
+
   // Reset 'selectedElements array if a delete operation has been done
   React.useEffect(() => {
     if (props.buttonsData?.isDeletion) {
@@ -156,8 +165,11 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
 
       if (updateIsDisableButtonDisabled && updateIsEnableButtonDisabled) {
         if (equalStatus) {
-          const ipaenabledflag: string =
-            selectedElements[0][props.statusElementName];
+          let ipaenabledflag: string =
+            selectedElements[0][props.statusElementName].toString();
+
+          ipaenabledflag = invertStatusValue(ipaenabledflag);
+
           if (ipaenabledflag === "true") {
             // Enabled
             updateIsDisableButtonDisabled(false);
@@ -264,7 +276,10 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
   // Helper function to process boolean elements and return a string
   // (used for displaying statuses values in the table)
   const processBoolean = (value: boolean | string) => {
-    if (value === "false" || value === false) {
+    let valueString = value.toString();
+    valueString = invertStatusValue(valueString);
+
+    if (valueString === "false") {
       return (
         <>
           <MinusIcon key="minus-icon" /> {" Disabled"}
