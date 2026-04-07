@@ -265,12 +265,20 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
   type Status = "true" | "false";
 
   // Helper method: Set styles depending on the status
-  const setStyleOnStatus = (status: Status) => {
-    if (status === "false") {
-      return { color: "grey" };
-    } else if (status === "true") {
-      return { color: "black" };
+  const setStyleOnStatus = (keyName: string, status: Status) => {
+    if (keyName === props.statusElementName) {
+      let normalizedStatus = status;
+      if (props.invertStatusValue) {
+        normalizedStatus = status === "true" ? "false" : "true";
+      }
+
+      if (normalizedStatus === "false") {
+        return { color: "grey" };
+      } else if (normalizedStatus === "true") {
+        return { color: "black" };
+      }
     }
+    return { color: "black" };
   };
 
   // Helper function to process boolean elements and return a string
@@ -338,7 +346,7 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
               dataLabel={columnNames[keyName]}
               key={keyName + "-" + idx + "-" + elementName}
               id={idx.toString()}
-              style={setStyleOnStatus(element[keyName])}
+              style={setStyleOnStatus(keyName, element[keyName])}
               aria-label={keyName}
               data-label={keyName}
               data-cy={`table-row-${elementName}-${keyName}`}

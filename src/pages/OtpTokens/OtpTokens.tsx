@@ -44,6 +44,7 @@ import MainTable from "src/components/tables/MainTable";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import AddOtpToken from "src/components/modals/UserModals/AddOtpToken";
 import DeleteOtpTokensModal from "./DeleteOtpTokensModal";
+import EnableDisableOtpTokensModal from "./EnableDisableOtpTokensModal";
 
 const OtpTokens = () => {
   const dispatch = useAppDispatch();
@@ -311,6 +312,21 @@ const OtpTokens = () => {
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
+  const [showEnableDisableModal, setShowEnableDisableModal] =
+    React.useState<boolean>(false);
+  const [operation, setOperation] = React.useState<"enable" | "disable">(
+    "disable"
+  );
+
+  const onEnableOperation = () => {
+    setOperation("enable");
+    setShowEnableDisableModal(true);
+  };
+
+  const onDisableOperation = () => {
+    setOperation("disable");
+    setShowEnableDisableModal(true);
+  };
 
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
@@ -389,6 +405,7 @@ const OtpTokens = () => {
         <SecondaryButton
           isDisabled={isEnableButtonDisabled || !showTableRows}
           dataCy="otp-tokens-button-enable"
+          onClickHandler={onEnableOperation}
         >
           Enable
         </SecondaryButton>
@@ -400,6 +417,7 @@ const OtpTokens = () => {
         <SecondaryButton
           isDisabled={isDisableButtonDisabled || !showTableRows}
           dataCy="otp-tokens-button-disable"
+          onClickHandler={onDisableOperation}
         >
           Disable
         </SecondaryButton>
@@ -517,6 +535,17 @@ const OtpTokens = () => {
         onRefresh={refreshData}
         updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
         updateIsDeletion={setIsDeletion}
+      />
+      <EnableDisableOtpTokensModal
+        isOpen={showEnableDisableModal}
+        onClose={() => setShowEnableDisableModal(false)}
+        elementsList={selectedElements.map(
+          (element) => element.ipatokenuniqueid
+        )}
+        setElementsList={setSelectedElements}
+        operation={operation}
+        setShowTableRows={setShowTableRows}
+        onRefresh={refreshData}
       />
     </div>
   );

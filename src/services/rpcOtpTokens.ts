@@ -38,6 +38,18 @@ interface OtpTokensBatchResponse {
   totalCount: number;
 }
 
+export interface OtpTokensModifyPayload {
+  ipatokenuniqueid: string;
+  ipatokenowner?: string;
+  description?: string;
+  ipatokennotbefore?: Date | string;
+  ipatokennotafter?: Date | string;
+  ipatokenvendor?: string;
+  ipatokenmodel?: string;
+  ipatokenserial?: string;
+  ipatokendisabled?: boolean;
+}
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     /**
@@ -245,6 +257,51 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(commands, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Modify OTP tokens
+     * @param {OtpTokensModifyPayload[]} - Payload containing the OTP token IDs and the modifications
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    modifyOtpTokens: build.mutation<BatchRPCResponse, OtpTokensModifyPayload[]>(
+      {
+        query: (payload) => {
+          const commands: Command[] = [];
+
+          payload.forEach((otpToken) => {
+            const params: Record<string, unknown> = {
+              version: API_VERSION_BACKUP,
+            };
+
+            const optionalKeys: Array<
+              keyof Omit<OtpTokensModifyPayload, "ipatokenuniqueid">
+            > = [
+              "ipatokenowner",
+              "description",
+              "ipatokennotbefore",
+              "ipatokennotafter",
+              "ipatokenvendor",
+              "ipatokenmodel",
+              "ipatokenserial",
+              "ipatokendisabled",
+            ];
+
+            optionalKeys.forEach((key) => {
+              const value = otpToken[key];
+              if (value !== undefined) {
+                params[key] = value;
+              }
+            });
+
+            commands.push({
+              method: "otptoken_mod",
+              params: [[otpToken.ipatokenuniqueid], params],
+            });
+          });
+
+          return getBatchCommand(commands, API_VERSION_BACKUP);
+        },
+      }
+    ),
   }),
   overrideExisting: false,
 });
@@ -253,4 +310,5 @@ export const {
   useGetOtpTokensFullDataQuery,
   useSearchOtpTokensEntriesMutation,
   useDeleteOtpTokensMutation,
+  useModifyOtpTokensMutation,
 } = extendedApi;
