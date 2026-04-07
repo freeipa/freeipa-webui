@@ -43,6 +43,7 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import MainTable from "src/components/tables/MainTable";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import AddOtpToken from "src/components/modals/UserModals/AddOtpToken";
+import DeleteOtpTokensModal from "./DeleteOtpTokensModal";
 
 const OtpTokens = () => {
   const dispatch = useAppDispatch();
@@ -309,6 +310,7 @@ const OtpTokens = () => {
 
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
 
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
@@ -363,6 +365,7 @@ const OtpTokens = () => {
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
           dataCy="otp-tokens-button-delete"
+          onClickHandler={() => setShowDeleteModal(true)}
         >
           Delete
         </SecondaryButton>
@@ -503,6 +506,17 @@ const OtpTokens = () => {
         setIsOpen={setShowAddModal}
         onClose={() => setShowAddModal(false)}
         onRefresh={refreshData}
+      />
+      <DeleteOtpTokensModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        elementsToDelete={selectedElements}
+        clearSelectedElements={() => setSelectedElements([])}
+        columnNames={["Unique ID", "Owner", "Description"]}
+        keyNames={["ipatokenuniqueid", "ipatokenowner", "description"]}
+        onRefresh={refreshData}
+        updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
+        updateIsDeletion={setIsDeletion}
       />
     </div>
   );
