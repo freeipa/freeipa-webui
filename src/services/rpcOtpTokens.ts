@@ -10,6 +10,7 @@ import {
 import { apiToOtpToken } from "../utils/otpTokensUtils";
 // Data types
 import { OtpToken, OtpTokenType } from "../utils/datatypes/globalDataTypes";
+import { API_VERSION_BACKUP } from "src/utils/utils";
 
 /**
  * Otp tokens-related endpoints:   useGetOtpTokensFullDataQuery,
@@ -227,6 +228,23 @@ const extendedApi = api.injectEndpoints({
         };
       },
     }),
+    /**
+     * Delete OTP tokens
+     * @param {string[]} - OTP token IDs
+     * @returns {Promise<BatchRPCResponse>} - Promise with the response data
+     */
+    deleteOtpTokens: build.mutation<BatchRPCResponse, string[]>({
+      query: (payload) => {
+        const commands: Command[] = [];
+        payload.forEach((otpTokenId) => {
+          commands.push({
+            method: "otptoken_del",
+            params: [[otpTokenId], {}],
+          });
+        });
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -234,4 +252,5 @@ const extendedApi = api.injectEndpoints({
 export const {
   useGetOtpTokensFullDataQuery,
   useSearchOtpTokensEntriesMutation,
+  useDeleteOtpTokensMutation,
 } = extendedApi;
