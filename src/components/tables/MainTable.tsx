@@ -132,9 +132,9 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
   };
 
   // Helper function: Check if the status value is inverted
-  const invertStatusValue = (value: string) => {
+  const invertStatusValue = (value: boolean) => {
     if (props.invertStatusValue) {
-      return value === "true" ? "false" : "true";
+      return !value;
     }
     return value;
   };
@@ -165,17 +165,14 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
 
       if (updateIsDisableButtonDisabled && updateIsEnableButtonDisabled) {
         if (equalStatus) {
-          let ipaenabledflag: string =
-            selectedElements[0][props.statusElementName].toString();
+          const isEnabled = invertStatusValue(
+            selectedElements[0][props.statusElementName].toString() === "true"
+          );
 
-          ipaenabledflag = invertStatusValue(ipaenabledflag);
-
-          if (ipaenabledflag === "true") {
-            // Enabled
+          if (isEnabled) {
             updateIsDisableButtonDisabled(false);
             updateIsEnableButtonDisabled(true);
-          } else if (ipaenabledflag === "false") {
-            // Disabled
+          } else {
             updateIsDisableButtonDisabled(true);
             updateIsEnableButtonDisabled(false);
           }
@@ -262,24 +259,22 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
     </Tr>
   );
 
-  type Status = "true" | "false";
-
   // Helper method: Set styles depending on the status
-  const setStyleOnStatus = (status: Status) => {
-    if (status === "false") {
-      return { color: "grey" };
-    } else if (status === "true") {
-      return { color: "black" };
+  const setStyleOnStatus = (keyName: string, status: boolean | string) => {
+    if (keyName === props.statusElementName) {
+      const isEnabled = invertStatusValue(status.toString() === "true");
+
+      return { color: isEnabled ? "black" : "grey" };
     }
+    return { color: "black" };
   };
 
   // Helper function to process boolean elements and return a string
   // (used for displaying statuses values in the table)
   const processBoolean = (value: boolean | string) => {
-    let valueString = value.toString();
-    valueString = invertStatusValue(valueString);
+    const isEnabled = invertStatusValue(value.toString() === "true");
 
-    if (valueString === "false") {
+    if (!isEnabled) {
       return (
         <>
           <MinusIcon key="minus-icon" /> {" Disabled"}
@@ -338,7 +333,7 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
               dataLabel={columnNames[keyName]}
               key={keyName + "-" + idx + "-" + elementName}
               id={idx.toString()}
-              style={setStyleOnStatus(element[keyName])}
+              style={setStyleOnStatus(keyName, element[keyName])}
               aria-label={keyName}
               data-label={keyName}
               data-cy={`table-row-${elementName}-${keyName}`}
