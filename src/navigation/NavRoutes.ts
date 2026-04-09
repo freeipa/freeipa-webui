@@ -50,6 +50,7 @@ const PasswordPoliciesGroupRef = "password-policies";
 // - Kerberos ticket policy
 const KerberosTicketPolicyGroupRef = "kerberos-ticket-policy";
 // AUTHENTICATION
+const OtpTokensGroupRef = "otp-tokens";
 const IdentityProviderReferencesGroupRef = "identity-provider-references";
 const CertificateMappingGroupRef = "cert-id-mapping-rules";
 const CertificateMappingConfigGroupRef = "cert-id-mapping-global-config";
@@ -311,6 +312,13 @@ export const getNavigationRoutes = (
       title: `${BASE_TITLE} - Authentication`,
       path: "",
       items: [
+        {
+          label: "OTP tokens",
+          group: OtpTokensGroupRef,
+          title: `${BASE_TITLE} - OTP tokens`,
+          path: "otp-tokens",
+          items: [],
+        },
         {
           label: "Identity Provider references",
           group: IdentityProviderReferencesGroupRef,
