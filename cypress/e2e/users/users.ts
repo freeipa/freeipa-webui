@@ -3,6 +3,8 @@ import { createUser, validateUser } from "../common/user_management";
 import { loginAsAdmin, logout } from "../common/authentication";
 import {
   entryExists,
+  isElementDisabled,
+  isElementEnabled,
   isSelected,
   searchForEntry,
   selectEntry,
@@ -26,12 +28,14 @@ const disableUser = (login: string) => {
   isDisabled(login);
 };
 
+const USER_STATUS_LABEL = "Status";
+
 const isDisabled = (name: string) => {
-  cy.get("tr[id='" + name + "'] td[data-label=Status]").contains("Disabled");
+  isElementDisabled(name, USER_STATUS_LABEL);
 };
 
 const isEnabled = (name: string) => {
-  cy.get("tr[id='" + name + "'] td[data-label=Status]").contains("Enabled");
+  isElementEnabled(name, USER_STATUS_LABEL);
 };
 
 Then(

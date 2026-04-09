@@ -1,10 +1,12 @@
 import { Given } from "@badeball/cypress-cucumber-preprocessor";
 import { loginAsAdmin, logout } from "../common/authentication";
-import { selectEntry } from "../common/data_tables";
+import { isElementDisabled, selectEntry } from "../common/data_tables";
 import { navigateTo } from "../common/navigation";
 
+const SUDO_RULE_STATUS_LABEL = "Status";
+
 const isDisabled = (name: string) => {
-  cy.get("tr[id='" + name + "'] td[data-label=Status]").contains("Disabled");
+  isElementDisabled(name, SUDO_RULE_STATUS_LABEL);
 };
 
 Given("I disable sudo rule {string}", (ruleName: string) => {
