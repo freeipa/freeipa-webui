@@ -2,6 +2,8 @@ import { Given, Then, When } from "@badeball/cypress-cucumber-preprocessor";
 import {
   entryExists,
   entryDoesNotExist,
+  isElementDisabled,
+  isElementEnabled,
   searchForEntry,
   selectEntry,
 } from "../common/data_tables";
@@ -78,16 +80,14 @@ const createReversedDnsZoneWithSkipOverlapCheck = (ip: string) => {
   cy.dataCy("add-dns-zone-modal").should("not.exist");
 };
 
+const DNS_ZONE_STATUS_LABEL = "idnszoneactive";
+
 const isDisabled = (name: string) => {
-  cy.get("tr[id='" + name + "'] td[data-label=idnszoneactive]").contains(
-    "Disabled"
-  );
+  isElementDisabled(name, DNS_ZONE_STATUS_LABEL);
 };
 
 const isEnabled = (name: string) => {
-  cy.get("tr[id='" + name + "'] td[data-label=idnszoneactive]").contains(
-    "Enabled"
-  );
+  isElementEnabled(name, DNS_ZONE_STATUS_LABEL);
 };
 
 const disableDnsZone = (zoneName: string) => {
