@@ -175,10 +175,13 @@ const DeleteDnsForwardZonesModal = (props: DeleteDnsForwardZonesModalProps) => {
 
   const modalActions: JSX.Element[] = [
     <Button
-      data-cy="modal-button-ok"
+      data-cy="modal-button-delete"
       key="delete-dnsforwardzones"
       variant="danger"
-      onClick={onDelete}
+      onClick={(e) => {
+        e.preventDefault();
+        onDelete();
+      }}
       form="delete-dnsforwardzones-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"

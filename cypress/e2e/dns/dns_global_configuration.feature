@@ -33,8 +33,8 @@ Feature: DNS Global Configuration
         Given I am logged in as admin
         And I am on "dns-global-config" page
 
-        When I click on the "dns-zone-tab-settings-radio-forward-only" radio button
-        Then I should see the "dns-zone-tab-settings-radio-forward-only" radio button is selected
+        When I click on the "dns-global-config-radio-forward-only" radio button
+        Then I should see the "dns-global-config-radio-forward-only" radio button is selected
 
         When I click on the "dns-global-config-button-save" button
         Then I should see "success" alert
@@ -50,8 +50,8 @@ Feature: DNS Global Configuration
         When I remove all elements from the "dns-global-config-textbox-forwarders" textbox list
         Then I should see the "dns-global-config-textbox-forwarders" textbox list is empty
 
-        When I click on the "dns-zone-tab-settings-radio-forwarding-disabled" radio button
-        Then I should see the "dns-zone-tab-settings-radio-forwarding-disabled" radio button is selected
+        When I click on the "dns-global-config-radio-forwarding-disabled" radio button
+        Then I should see the "dns-global-config-radio-forwarding-disabled" radio button is selected
 
         When I click on the "dns-global-config-button-save" button
         Then I should see "success" alert

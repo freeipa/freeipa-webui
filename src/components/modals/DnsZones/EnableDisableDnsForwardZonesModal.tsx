@@ -50,7 +50,7 @@ const EnableDisableDnsForwardZonesModal = (
         if (data?.result) {
           dispatch(
             addAlert({
-              name: "success",
+              name: props.operation + "-dnsforwardzones-success",
               title: "DNS forward zone status changed",
               variant: "success",
             })
@@ -79,10 +79,13 @@ const EnableDisableDnsForwardZonesModal = (
 
   const modalActions: JSX.Element[] = [
     <Button
-      data-cy="modal-button-ok"
+      data-cy={"modal-button-" + props.operation}
       key={props.operation + "-dnsforwardzones"}
       variant="primary"
-      onClick={onEnableDisable}
+      onClick={(e) => {
+        e.preventDefault();
+        onEnableDisable();
+      }}
     >
       OK
     </Button>,

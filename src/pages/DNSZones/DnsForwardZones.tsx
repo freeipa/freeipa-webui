@@ -332,7 +332,7 @@ const DnsForwardZones = () => {
       element: (
         <SecondaryButton
           isDisabled={isDeleteButtonDisabled || !showTableRows}
-          dataCy={"dns-forward-zones-delete"}
+          dataCy={"dns-forward-zones-button-delete"}
           onClickHandler={() => setShowDeleteForwardZonesModal(true)}
         >
           Delete

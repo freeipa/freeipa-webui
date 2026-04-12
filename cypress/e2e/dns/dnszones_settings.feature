@@ -158,12 +158,12 @@ Feature: DNS Zones Settings
         When I add zone forwarder "8.8.8.8"
         Then I should see "8.8.8.8" in the "dns-zones-tab-settings-textbox-idnsforwarders" textbox list
 
-        When I click on the "dns-zone-tab-settings-radio-forward-only" radio button
-        Then I should see the "dns-zone-tab-settings-radio-forward-only" radio button is selected
+        When I click on the "dns-zones-tab-settings-radio-forward-only" radio button
+        Then I should see the "dns-zones-tab-settings-radio-forward-only" radio button is selected
 
         When I click on the "dns-zones-tab-settings-button-save" button
         Then I should see "8.8.8.8" in the "dns-zones-tab-settings-textbox-idnsforwarders" textbox list
-        Then I should see the "dns-zone-tab-settings-radio-forward-only" radio button is selected
+        Then I should see the "dns-zones-tab-settings-radio-forward-only" radio button is selected
         Then I should see "success" alert
 
     @cleanup

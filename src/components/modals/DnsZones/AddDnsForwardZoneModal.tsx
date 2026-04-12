@@ -86,7 +86,7 @@ const AddDnsForwardZoneModalInner = (props: PropsToAddModal) => {
           if (error) {
             dispatch(
               addAlert({
-                name: "add-dnszone-error",
+                name: "add-dnsforwardzones-error",
                 title: error.message,
                 variant: "danger",
               })
@@ -96,8 +96,8 @@ const AddDnsForwardZoneModalInner = (props: PropsToAddModal) => {
           if (data) {
             dispatch(
               addAlert({
-                name: "add-dnszone-success",
-                title: "DNS Zone successfully added",
+                name: "add-dnsforwardzones-success",
+                title: "DNS forward zone successfully added",
                 variant: "success",
               })
             );
@@ -262,7 +262,8 @@ const AddDnsForwardZoneModalInner = (props: PropsToAddModal) => {
         (isReverseZoneIpRadioChecked && reverseZoneIP === "")
       }
       form="add-dns-forward-zone-modal-form"
-      onClick={() => {
+      onClick={(e) => {
+        e.preventDefault();
         setIsAddButtonSpinning(true);
         onAddDnsForwardZone();
       }}

@@ -8,7 +8,11 @@ import {
   updateIpaObject,
 } from "src/utils/ipaObjectUtils";
 
-const IpaForwardPolicy = (props: IPAParamDefinition) => {
+interface IpaForwardPolicyProps extends IPAParamDefinition {
+  dataCy: string;
+}
+
+const IpaForwardPolicy = (props: IpaForwardPolicyProps) => {
   const { readOnly, value } = getParamProperties(props);
 
   // States
@@ -30,7 +34,7 @@ const IpaForwardPolicy = (props: IPAParamDefinition) => {
     <Flex>
       <FlexItem>
         <Radio
-          data-cy="dns-zone-tab-settings-radio-forward-first"
+          data-cy={props.dataCy + "-radio-forward-first"}
           id={"forward-first"}
           key={"forward-first"}
           name={props.name}
@@ -43,7 +47,7 @@ const IpaForwardPolicy = (props: IPAParamDefinition) => {
       </FlexItem>
       <FlexItem>
         <Radio
-          data-cy="dns-zone-tab-settings-radio-forward-only"
+          data-cy={props.dataCy + "-radio-forward-only"}
           id={"forward-only"}
           key={"forward-only"}
           name={props.name}
@@ -56,7 +60,7 @@ const IpaForwardPolicy = (props: IPAParamDefinition) => {
       </FlexItem>
       <FlexItem>
         <Radio
-          data-cy="dns-zone-tab-settings-radio-forwarding-disabled"
+          data-cy={props.dataCy + "-radio-forwarding-disabled"}
           id={"forwarding-disabled"}
           key={"forwarding-disabled"}
           name={props.name}

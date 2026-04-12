@@ -5,5 +5,5 @@ Then("I should see {string} modal", (modalName: string) => {
 });
 
 Then("I should not see {string} modal", (modalName: string) => {
-  cy.dataCy(modalName).should("not.exist");
+  cy.get(`[data-cy='${modalName}']`, { timeout: 30000 }).should("not.exist");
 });
