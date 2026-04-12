@@ -550,6 +550,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                   </FormGroup>
                   <FormGroup label="Forward policy" role="idnsforwardpolicy">
                     <IpaForwardPolicy
+                      dataCy="dns-zones-tab-settings"
                       name={"idnsforwardpolicy"}
                       ariaLabel={"Forward policy radio group"}
                       ipaObject={ipaObject}

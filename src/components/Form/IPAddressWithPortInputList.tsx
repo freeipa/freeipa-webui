@@ -70,7 +70,7 @@ const IPAddressWithPortInputList = (props: IPAddressWithPortInputListProps) => {
                 flex={{ default: "flex_1" }}
               >
                 <TextInput
-                  data-cy={props.dataCy + "-" + item + "-port"}
+                  data-cy={props.dataCy + "-" + idx + "-port"}
                   id={props.name + "-" + idx + "-port"}
                   name={props.name + "-" + idx + "-port"}
                   value={item.port ?? ""}
@@ -97,7 +97,7 @@ const IPAddressWithPortInputList = (props: IPAddressWithPortInputListProps) => {
               key={props.name + "-" + idx + "-delete-button"}
             >
               <Button
-                data-cy={props.dataCy + "-" + item + "-delete-button"}
+                data-cy={props.dataCy + "-" + idx + "-delete-button"}
                 variant="secondary"
                 name={"remove-" + props.name + "-" + idx}
                 onClick={() =>

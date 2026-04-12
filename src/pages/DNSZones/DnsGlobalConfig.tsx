@@ -298,6 +298,7 @@ const DnsGlobalConfig = () => {
                   </FormGroup>
                   <FormGroup label="Forward policy" role="idnsforwardpolicy">
                     <IpaForwardPolicy
+                      dataCy="dns-global-config"
                       name={"idnsforwardpolicy"}
                       ariaLabel={"Forward policy radio group"}
                       ipaObject={ipaObject}

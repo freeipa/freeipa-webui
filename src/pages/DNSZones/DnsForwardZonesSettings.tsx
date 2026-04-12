@@ -194,7 +194,7 @@ const DnsForwardZonesSettings = (props: DnsForwardZonesSettingsProps) => {
               >
                 <FormGroup label="Zone name" role="idnsname">
                   <IpaTextInput
-                    dataCy="dns-zones-tab-settings-textbox-idnsname"
+                    dataCy="dns-forward-zones-tab-settings-textbox-idnsname"
                     name={"idnsname"}
                     ariaLabel={"Zone name text input"}
                     ipaObject={ipaObject}
@@ -205,7 +205,7 @@ const DnsForwardZonesSettings = (props: DnsForwardZonesSettingsProps) => {
                 </FormGroup>
                 <FormGroup label="Forwarders" role="idnsforwarders">
                   <IPAddressWithPortInputList
-                    dataCy="modal-textbox-forwarders"
+                    dataCy="dns-forward-zones-tab-settings-textbox-idnsforwarders"
                     name="idnsforwarders"
                     ariaLabel="Forwarders text input"
                     list={ipaObject.idnsforwarders}
@@ -216,6 +216,7 @@ const DnsForwardZonesSettings = (props: DnsForwardZonesSettingsProps) => {
                 </FormGroup>
                 <FormGroup label="Forward policy" role="idnsforwardpolicy">
                   <IpaForwardPolicy
+                    dataCy="dns-forward-zones-tab-settings"
                     name={"idnsforwardpolicy"}
                     ariaLabel={"Forward policy radio group"}
                     ipaObject={ipaObject}

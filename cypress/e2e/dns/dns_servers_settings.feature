@@ -42,11 +42,11 @@ Feature: DNS Servers
         Given I am logged in as admin
         And I am on "dns-servers/webui.ipa.test" page
 
-        When I click on the "dns-zone-tab-settings-radio-forward-first" radio button
-        Then I should see the "dns-zone-tab-settings-radio-forward-first" radio button is selected
+        When I click on the "dns-servers-tab-settings-radio-forward-first" radio button
+        Then I should see the "dns-servers-tab-settings-radio-forward-first" radio button is selected
 
         When I click on the "dns-servers-tab-settings-button-save" button
-        Then I should see the "dns-zone-tab-settings-radio-forward-first" radio button is selected
+        Then I should see the "dns-servers-tab-settings-radio-forward-first" radio button is selected
         And I should see "success" alert
 
     @cleanup
