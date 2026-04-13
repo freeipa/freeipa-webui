@@ -84,6 +84,8 @@ interface PropsToUserSettings {
 }
 
 const UserSettings = (props: PropsToUserSettings) => {
+  const showPasswordPolicy = props.from !== "stage-users";
+  const showKerberosTicket = props.from === "active-users";
   const dispatch = useAppDispatch();
 
   // Navigate
@@ -537,12 +539,12 @@ const UserSettings = (props: PropsToUserSettings) => {
               <JumpLinksItem key={1} href="#account-settings">
                 Account settings
               </JumpLinksItem>,
-              props.from !== "stage-users" ? (
+              showPasswordPolicy ? (
                 <JumpLinksItem key={2} href="#password-policy">
                   Password policy
                 </JumpLinksItem>
               ) : null,
-              props.from !== "stage-users" ? (
+              showKerberosTicket ? (
                 <JumpLinksItem key={3} href="#kerberos-ticket">
                   Kerberos ticket policy
                 </JumpLinksItem>
@@ -591,7 +593,7 @@ const UserSettings = (props: PropsToUserSettings) => {
               certData={props.certData}
               from={props.from}
             />
-            {props.from !== "stage-users" && (
+            {showPasswordPolicy && (
               <>
                 <TitleLayout
                   key={2}
@@ -600,6 +602,10 @@ const UserSettings = (props: PropsToUserSettings) => {
                   text="Password policy"
                 />
                 <UsersPasswordPolicy pwdPolicyData={props.pwPolicyData || []} />
+              </>
+            )}
+            {showKerberosTicket && (
+              <>
                 <TitleLayout
                   key={3}
                   headingLevel="h2"
