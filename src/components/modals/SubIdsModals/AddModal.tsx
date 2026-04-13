@@ -176,6 +176,7 @@ const AddModal = (props: PropsToAddModal) => {
           }))}
           selected={selectedItem}
           onSelectedChange={(selected: string) => setSelectedItem(selected)}
+          noOptionsMessage="No owner available"
         />
       ),
       fieldRequired: true,
