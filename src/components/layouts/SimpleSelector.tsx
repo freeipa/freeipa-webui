@@ -20,6 +20,7 @@ interface PropsToSimpleSelector {
   options: SelectOptionProps[];
   onSelectedChange: (selected: string) => void;
   ariaLabel?: string;
+  noOptionsMessage?: string;
 }
 
 const SimpleSelector = (props: PropsToSimpleSelector) => {
@@ -67,17 +68,27 @@ const SimpleSelector = (props: PropsToSimpleSelector) => {
       isScrollable
     >
       <SelectList id={props.id + "-selector-list"}>
-        {props.options.map((option, idx) => (
+        {props.options.length === 0 ? (
           <SelectOption
-            data-cy={props.dataCy + "-select-" + option.key}
-            id={option.key + "-" + idx}
-            key={option.key + "-" + idx}
-            tabIndex={idx}
-            value={option.value}
+            data-cy={props.dataCy + "-select-no-options"}
+            isDisabled
+            value="no-options"
           >
-            {option.value}
+            {props.noOptionsMessage || "No options available"}
           </SelectOption>
-        ))}
+        ) : (
+          props.options.map((option, idx) => (
+            <SelectOption
+              data-cy={props.dataCy + "-select-" + option.key}
+              id={option.key + "-" + idx}
+              key={option.key + "-" + idx}
+              tabIndex={idx}
+              value={option.value}
+            >
+              {option.value}
+            </SelectOption>
+          ))
+        )}
       </SelectList>
     </Select>
   );
