@@ -32,7 +32,10 @@ export interface IPAParamDefinitionNumberInput extends IPAParamDefinition {
 const IpaNumberInput = (props: IPAParamDefinitionNumberInput) => {
   const { readOnly, value, onChange } = getParamProperties(props);
 
-  const numberValue = parseInt(value?.toString() || "0");
+  const numberValue =
+    value === "" || value === null || value === undefined
+      ? ""
+      : parseInt(value.toString(), 10);
 
   const isDisabled =
     props.isDisabled !== undefined ? props.isDisabled : readOnly;
