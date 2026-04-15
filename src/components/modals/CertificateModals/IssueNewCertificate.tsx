@@ -58,7 +58,6 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
   const ipaServerConfiguration = useAppSelector(
     (state) => state.global.ipaServerConfiguration
   );
-  const ipaMasterServer = ipaServerConfiguration.ipa_master_server as string;
   const ipaCertificateSubjectBase =
     ipaServerConfiguration.ipacertificatesubjectbase as string;
 
@@ -316,7 +315,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
             <i>CN=&lt;common name&gt;,O=&lt;realm&gt;</i>, for example: <br />
             <code>
               # certutil -R -d ~/certdb/ -a -g 4096 -s &apos;CN=
-              {ipaMasterServer},{ipaCertificateSubjectBase}
+              {props.id},{ipaCertificateSubjectBase}
               &apos;
             </code>
           </ListItem>
@@ -347,7 +346,7 @@ const IssueNewCertificate = (props: PropsToIssueNewCertificate) => {
           onChange={(_event, value) => setCertificate(value)}
           style={{ height: "250px" }}
           className="pf-u-mb-lg"
-          placeholder="Paste certificate text here"
+          placeholder="Paste certificate request here"
           autoFocus
         />
       ),
