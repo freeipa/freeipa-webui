@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 // PatternFly
 import { Td, Th, Tr } from "@patternfly/react-table";
 // Layout
@@ -47,42 +47,18 @@ interface PropsToDeletedElementsTable<T> {
 const DeletedElementsTable = <T,>(props: PropsToDeletedElementsTable<T>) => {
   // TODO: Check the columnNames against the actual variable name
   //   when retrieving data from the RPC server.
-  let elementsToDelete: T[] = [];
-  switch (props.mode) {
-    case "passing_full_data":
-      // We already have our list of objs to delete
-      elementsToDelete = props.elementsToDelete;
-      break;
-    case "passing_id":
-      props.elementsToDelete.map((userName) => {
-        elementsToDelete.push(userName);
-      });
-  }
+  const elementsToDelete: T[] = props.elementsToDelete;
 
-  // Generate the actual column names
-  // - Given the 'columnNames' provided via props, infer to get
-  //    the actual values that will be display in the table headers.
-  const [columnNames, setColumnNames] = useState<string[]>([]);
-  useEffect(() => {
-    const colNamesArray: string[] = [];
-    if (props.mode === "passing_full_data") {
-      props.columnNames.map((column) => {
-        // Simplify the column name to have the first letter capital
-        const simplifiedName = column.charAt(0).toUpperCase() + column.slice(1);
-        colNamesArray.push(simplifiedName);
-      });
-      setColumnNames(colNamesArray);
-    } else {
-      // In passing_id mode the comlumn names do not require adjusting
-      setColumnNames(props.columnNames);
-    }
-  }, []);
+  const columnNames =
+    props.mode === "passing_full_data"
+      ? props.columnNames.map((v) => v.charAt(0).toUpperCase() + v.slice(1))
+      : props.columnNames;
 
   // Define table header and body
   const header = (
     <Tr>
-      {columnNames.map((columnName, idx) => (
-        <Th modifier="wrap" key={idx}>
+      {columnNames.map((columnName) => (
+        <Th modifier="wrap" key={columnName}>
           {columnName}
         </Th>
       ))}
@@ -95,20 +71,20 @@ const DeletedElementsTable = <T,>(props: PropsToDeletedElementsTable<T>) => {
         return (
           <Tr key={element[props.idAttr]} id={element[props.idAttr]}>
             {props.columnIds === undefined
-              ? props.columnNames.map((columnName, idx) => {
+              ? props.columnNames.map((columnName) => {
                   // Tr elements will be based on columnNames (that should match with the object keys)
                   return (
-                    <Td key={idx} dataLabel={columnName}>
+                    <Td key={columnName} dataLabel={columnName}>
                       {element[columnName]}
                     </Td>
                   );
                 })
-              : props.columnIds.map((columnId, idx) => {
+              : props.columnIds.map((columnId) => {
                   // Tr elements will be based on columnId.
                   // This is useful when don't want to show the column names
                   //   with a customized name (and not based on its ID)
                   return (
-                    <Td key={idx} dataLabel={columnId}>
+                    <Td key={columnId} dataLabel={columnId}>
                       {element[columnId]}
                     </Td>
                   );
