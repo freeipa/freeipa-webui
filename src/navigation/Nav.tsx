@@ -24,7 +24,7 @@ const renderNavItem = (
 ) => {
   return (
     <NavItem
-      key={id}
+      key={`${item.group}-${item.path}`}
       isActive={activePageName === item.group}
       onClick={() => {
         dispatch(updateActiveSecondLevel(item.group));
@@ -61,6 +61,26 @@ const Navigation = () => {
     <Nav>
       <NavList>
         {navigationRoutes.map((section) => {
+          const sole = section.items[0];
+          const isSingleLeafSection =
+            section.items.length === 1 &&
+            sole &&
+            (!sole.items || sole.items.length === 0);
+
+          if (isSingleLeafSection) {
+            return (
+              <React.Fragment key={section.label}>
+                {renderNavItem(
+                  sole,
+                  0,
+                  sole.group,
+                  dispatch,
+                  activePageName
+                )}
+              </React.Fragment>
+            );
+          }
+
           return (
             <NavExpandable
               key={section.label}
