@@ -480,8 +480,8 @@ const HBACRules = () => {
         <SearchInputLayout
           dataCy="search"
           name="search"
-          ariaLabel="Search user"
-          placeholder="Search"
+          ariaLabel="Search HBAC rules"
+          placeholder="Search HBAC rules"
           searchValueData={searchValueData}
           isDisabled={searchDisabled}
         />

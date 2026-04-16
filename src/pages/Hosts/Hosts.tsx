@@ -566,7 +566,7 @@ const Hosts = () => {
           dataCy="search"
           name="search"
           ariaLabel="Search hosts"
-          placeholder="Search"
+          placeholder="Search hosts"
           searchValueData={searchValueData}
           isDisabled={searchDisabled}
         />

@@ -442,8 +442,8 @@ const PreservedUsers = () => {
         <SearchInputLayout
           dataCy="search"
           name="search"
-          ariaLabel="Search user"
-          placeholder="Search"
+          ariaLabel="Search preserved users"
+          placeholder="Search preserved users"
           searchValueData={searchValueData}
           isDisabled={searchDisabled}
         />

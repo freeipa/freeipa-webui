@@ -272,8 +272,8 @@ const SubordinateIDs = () => {
         <SearchInputLayout
           dataCy="search"
           name="search"
-          ariaLabel="Search subIds"
-          placeholder="Search"
+          ariaLabel="Search subordinate IDs"
+          placeholder="Search subordinate IDs"
           searchValueData={searchValueData}
           isDisabled={searchDisabled}
         />

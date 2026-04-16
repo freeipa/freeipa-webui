@@ -446,8 +446,8 @@ const StageUsers = () => {
         <SearchInputLayout
           dataCy="search"
           name="search"
-          ariaLabel="Search user"
-          placeholder="Search"
+          ariaLabel="Search stage users"
+          placeholder="Search stage users"
           searchValueData={searchValueData}
           isDisabled={searchDisabled}
         />

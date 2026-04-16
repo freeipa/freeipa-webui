@@ -301,8 +301,8 @@ const DnsForwardZones = () => {
       element: (
         <SearchInputLayout
           name="search"
-          ariaLabel="Search dns zones"
-          placeholder="Search"
+          ariaLabel="Search DNS forward zones"
+          placeholder="Search DNS forward zones"
           searchValueData={searchValueData}
           isDisabled={isSearchDisabled}
           dataCy={"search"}
