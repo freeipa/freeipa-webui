@@ -422,8 +422,8 @@ const SudoCmds = () => {
         <SearchInputLayout
           dataCy="search"
           name="search"
-          ariaLabel="Search command groups"
-          placeholder="Search"
+          ariaLabel="Search sudo command groups"
+          placeholder="Search sudo command groups"
           searchValueData={searchValueData}
           isDisabled={searchDisabled}
         />

@@ -560,7 +560,7 @@ const IDViews = () => {
           dataCy="search"
           name="search"
           ariaLabel="Search ID views"
-          placeholder="Search"
+          placeholder="Search ID views"
           searchValueData={searchValueData}
           isDisabled={searchDisabled}
         />

@@ -229,6 +229,8 @@ const MembersExternal = (props: PropsToMembersExternal) => {
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
         onSearch={() => {}}
+        searchPlaceholder="Search external members"
+        searchAriaLabel="Search external members"
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshData}
         deleteButtonEnabled={isDeleteEnabled}

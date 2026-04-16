@@ -290,7 +290,7 @@ const IdRanges = () => {
           dataCy="search"
           name="search"
           ariaLabel="Search ID ranges"
-          placeholder="Search"
+          placeholder="Search ID ranges"
           searchValueData={searchValueData}
           isDisabled={isSearchDisabled}
         />

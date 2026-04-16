@@ -385,8 +385,8 @@ const PasswordPolicies = () => {
         <SearchInputLayout
           dataCy="search"
           name="search"
-          ariaLabel="Search subIds"
-          placeholder="Search"
+          ariaLabel="Search password policies"
+          placeholder="Search password policies"
           searchValueData={searchValueData}
           isDisabled={searchIsDisabled}
         />

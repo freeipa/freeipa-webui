@@ -206,8 +206,8 @@ const DnsServers = () => {
         <SearchInputLayout
           dataCy="search"
           name="search"
-          ariaLabel="Search dns servers"
-          placeholder="Search"
+          ariaLabel="Search DNS servers"
+          placeholder="Search DNS servers"
           searchValueData={searchValueData}
           isDisabled={isSearchDisabled}
         />

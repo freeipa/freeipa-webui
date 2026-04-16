@@ -295,6 +295,8 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           searchText={searchValue}
           onSearchTextChange={setSearchValue}
           onSearch={() => {}}
+          searchPlaceholder="Search roles"
+          searchAriaLabel="Search roles"
           refreshButtonEnabled={isRefreshButtonEnabled}
           onRefreshButtonClick={props.onRefreshData}
           deleteButtonEnabled={
@@ -317,6 +319,8 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           searchText={searchValue}
           onSearchTextChange={setSearchValue}
           onSearch={() => {}}
+          searchPlaceholder="Search roles"
+          searchAriaLabel="Search roles"
           refreshButtonEnabled={isRefreshButtonEnabled}
           onRefreshButtonClick={props.onRefreshData}
           deleteButtonEnabled={

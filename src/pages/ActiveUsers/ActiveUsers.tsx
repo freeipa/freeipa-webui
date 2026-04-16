@@ -636,8 +636,8 @@ const ActiveUsers = () => {
         <SearchInputLayout
           dataCy="search"
           name="search"
-          ariaLabel="Search user"
-          placeholder="Search"
+          ariaLabel="Search users"
+          placeholder="Search users"
           searchValueData={searchValueData}
           isDisabled={searchDisabled}
         />

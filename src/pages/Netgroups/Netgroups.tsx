@@ -417,7 +417,7 @@ const Netgroups = () => {
           dataCy="search"
           name="search"
           ariaLabel="Search netgroups"
-          placeholder="Search"
+          placeholder="Search netgroups"
           searchValueData={searchValueData}
           isDisabled={searchDisabled}
         />

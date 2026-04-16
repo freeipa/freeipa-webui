@@ -288,6 +288,8 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
           searchText={searchValue}
           onSearchTextChange={setSearchValue}
           onSearch={() => {}}
+          searchPlaceholder="Search user groups"
+          searchAriaLabel="Search user groups"
           refreshButtonEnabled={isRefreshButtonEnabled}
           onRefreshButtonClick={props.onRefreshUserData}
           deleteButtonEnabled={

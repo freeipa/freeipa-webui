@@ -313,7 +313,7 @@ const Trusts = () => {
           dataCy="search"
           name="search"
           ariaLabel="Search trusts"
-          placeholder="Search"
+          placeholder="Search trusts"
           searchValueData={searchValueData}
           isDisabled={isSearchDisabled}
         />
