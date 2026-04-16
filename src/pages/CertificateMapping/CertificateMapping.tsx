@@ -370,7 +370,7 @@ const CertificateMappingPage = () => {
           dataCy="search"
           name="search"
           ariaLabel="Search certificate mapping rules"
-          placeholder="Search"
+          placeholder="Search certificate mapping rules"
           searchValueData={searchValueData}
           isDisabled={isSearchDisabled}
         />

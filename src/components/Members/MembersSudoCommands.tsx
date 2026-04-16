@@ -239,6 +239,8 @@ const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
         onSearch={() => {}}
+        searchPlaceholder="Search sudo commands"
+        searchAriaLabel="Search sudo commands"
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshData}
         deleteButtonEnabled={membersSelected.length > 0}

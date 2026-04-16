@@ -261,6 +261,8 @@ const MembersHBACServices = (props: PropsToMembersHBACServices) => {
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
         onSearch={() => {}}
+        searchPlaceholder="Search HBAC services"
+        searchAriaLabel="Search HBAC services"
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshData}
         deleteButtonEnabled={membersSelected.length > 0}

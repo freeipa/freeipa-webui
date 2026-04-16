@@ -520,8 +520,8 @@ const AutoMemHostRules = () => {
         <SearchInputLayout
           dataCy="search"
           name="search"
-          ariaLabel="Search rules"
-          placeholder="Search"
+          ariaLabel="Search host rules"
+          placeholder="Search host rules"
           searchValueData={searchValueData}
           isDisabled={searchDisabled}
         />

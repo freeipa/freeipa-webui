@@ -433,8 +433,8 @@ const HBACServiceGroups = () => {
         <SearchInputLayout
           dataCy="search"
           name="search"
-          ariaLabel="Search services"
-          placeholder="Search"
+          ariaLabel="Search HBAC service groups"
+          placeholder="Search HBAC service groups"
           searchValueData={searchValueData}
           isDisabled={searchDisabled}
         />

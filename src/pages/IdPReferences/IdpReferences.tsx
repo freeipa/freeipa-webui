@@ -350,8 +350,8 @@ const IdpReferences = () => {
         <SearchInputLayout
           dataCy="search"
           name="search"
-          ariaLabel="Search subIds"
-          placeholder="Search"
+          ariaLabel="Search IdP references"
+          placeholder="Search IdP references"
           searchValueData={searchValueData}
           isDisabled={isSearchDisabled}
         />

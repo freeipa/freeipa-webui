@@ -23,6 +23,8 @@ interface MemberOfToolbarProps {
   searchText: string;
   onSearchTextChange: (value: string) => void;
   onSearch: () => void;
+  searchPlaceholder?: string;
+  searchAriaLabel?: string;
 
   // buttons
   refreshButtonEnabled: boolean;
@@ -65,8 +67,8 @@ const MemberOfToolbar = (props: MemberOfToolbarProps) => {
           <SearchInputLayout
             dataCy="search"
             name="search"
-            ariaLabel="Search user"
-            placeholder="Search"
+            ariaLabel={props.searchAriaLabel || "Search"}
+            placeholder={props.searchPlaceholder || "Search"}
             searchValueData={{
               searchValue: props.searchText,
               updateSearchValue: props.onSearchTextChange,

@@ -258,6 +258,8 @@ const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
         onSearch={() => {}}
+        searchPlaceholder="Search HBAC service groups"
+        searchAriaLabel="Search HBAC service groups"
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshData}
         deleteButtonEnabled={hbacGroupsSelected.length > 0}

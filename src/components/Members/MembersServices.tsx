@@ -297,6 +297,8 @@ const MembersServices = (props: PropsToMembersServices) => {
           searchText={searchValue}
           onSearchTextChange={setSearchValue}
           onSearch={() => {}}
+          searchPlaceholder="Search services"
+          searchAriaLabel="Search services"
           refreshButtonEnabled={isRefreshButtonEnabled}
           onRefreshButtonClick={props.onRefreshData}
           deleteButtonEnabled={isDeleteEnabled}
@@ -315,6 +317,8 @@ const MembersServices = (props: PropsToMembersServices) => {
           searchText={searchValue}
           onSearchTextChange={setSearchValue}
           onSearch={() => {}}
+          searchPlaceholder="Search services"
+          searchAriaLabel="Search services"
           refreshButtonEnabled={isRefreshButtonEnabled}
           onRefreshButtonClick={props.onRefreshData}
           deleteButtonEnabled={

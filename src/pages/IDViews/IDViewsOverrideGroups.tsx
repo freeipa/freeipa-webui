@@ -331,7 +331,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
           dataCy="search"
           name="search"
           ariaLabel="Search groups"
-          placeholder="Search"
+          placeholder="Search groups"
           searchValueData={searchValueData}
           isDisabled={searchDisabled}
         />

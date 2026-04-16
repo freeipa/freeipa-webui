@@ -285,6 +285,8 @@ const ManagersUserGroups = (props: PropsToManagersUsergroups) => {
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
         onSearch={() => {}}
+        searchPlaceholder="Search user groups"
+        searchAriaLabel="Search user groups"
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshData}
         deleteButtonEnabled={userGroupsSelected.length > 0}

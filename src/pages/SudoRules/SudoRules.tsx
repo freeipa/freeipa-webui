@@ -480,8 +480,8 @@ const SudoRules = () => {
         <SearchInputLayout
           dataCy="search"
           name="search"
-          ariaLabel="Search rules"
-          placeholder="Search"
+          ariaLabel="Search sudo rules"
+          placeholder="Search sudo rules"
           searchValueData={searchValueData}
           isDisabled={searchDisabled}
         />

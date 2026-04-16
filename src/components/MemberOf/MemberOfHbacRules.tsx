@@ -310,6 +310,8 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
         onSearch={() => {}}
+        searchPlaceholder="Search HBAC rules"
+        searchAriaLabel="Search HBAC rules"
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshData}
         deleteButtonEnabled={

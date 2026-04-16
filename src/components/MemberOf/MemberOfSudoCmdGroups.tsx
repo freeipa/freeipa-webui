@@ -254,6 +254,8 @@ const MemberOfSudoCmdGroups = (props: MemberOfSudoCmdGroupsProps) => {
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
         onSearch={() => {}}
+        searchPlaceholder="Search sudo command groups"
+        searchAriaLabel="Search sudo command groups"
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshData}
         deleteButtonEnabled={sudoGroupsSelected.length > 0}

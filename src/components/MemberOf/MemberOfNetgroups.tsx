@@ -315,6 +315,8 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
           searchText={searchValue}
           onSearchTextChange={setSearchValue}
           onSearch={() => {}}
+          searchPlaceholder="Search netgroups"
+          searchAriaLabel="Search netgroups"
           refreshButtonEnabled={isRefreshButtonEnabled}
           onRefreshButtonClick={props.onRefreshData}
           deleteButtonEnabled={
@@ -340,6 +342,8 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
           searchText={searchValue}
           onSearchTextChange={setSearchValue}
           onSearch={() => {}}
+          searchPlaceholder="Search netgroups"
+          searchAriaLabel="Search netgroups"
           refreshButtonEnabled={isRefreshButtonEnabled}
           onRefreshButtonClick={props.onRefreshData}
           deleteButtonEnabled={

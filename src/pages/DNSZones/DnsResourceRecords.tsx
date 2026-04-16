@@ -320,7 +320,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
         <SearchInputLayout
           name="search"
           ariaLabel="Search DNS records"
-          placeholder="Search"
+          placeholder="Search DNS records"
           searchValueData={searchValueData}
           isDisabled={isSearchDisabled}
           dataCy="search"

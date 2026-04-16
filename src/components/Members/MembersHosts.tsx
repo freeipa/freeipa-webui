@@ -321,6 +321,8 @@ const MembersHosts = (props: PropsToMembersHosts) => {
           searchText={searchValue}
           onSearchTextChange={setSearchValue}
           onSearch={() => {}}
+          searchPlaceholder="Search hosts"
+          searchAriaLabel="Search hosts"
           refreshButtonEnabled={isRefreshButtonEnabled}
           onRefreshButtonClick={props.onRefreshData}
           deleteButtonEnabled={
@@ -343,6 +345,8 @@ const MembersHosts = (props: PropsToMembersHosts) => {
           searchText={searchValue}
           onSearchTextChange={setSearchValue}
           onSearch={() => {}}
+          searchPlaceholder="Search hosts"
+          searchAriaLabel="Search hosts"
           refreshButtonEnabled={isRefreshButtonEnabled}
           onRefreshButtonClick={props.onRefreshData}
           deleteButtonEnabled={
