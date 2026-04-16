@@ -28,6 +28,7 @@ import {
   DNSForwardZone,
   Trust,
   TrustDomain,
+  OtpToken,
 } from "./datatypes/globalDataTypes";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -230,6 +231,8 @@ export const isTrustSelectable = (trust: Trust) => trust.cn !== "";
 export const isTrustDomainSelectable = (trustDomain: TrustDomain) =>
   trustDomain.cn !== "";
 
+export const isOtpTokenSelectable = (otpToken: OtpToken) =>
+  otpToken.ipatokenuniqueid !== "";
 /**
  * Write JSX error messages into 'apiErrorsJsx' array
  * @param {FetchBaseQueryError | SerializedError} errorFromApiCall -  Error from the API call
