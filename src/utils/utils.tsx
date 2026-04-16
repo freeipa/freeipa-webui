@@ -28,6 +28,7 @@ import {
   DNSForwardZone,
   Trust,
   TrustDomain,
+  SELinuxUserMap,
 } from "./datatypes/globalDataTypes";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -229,6 +230,9 @@ export const isTrustSelectable = (trust: Trust) => trust.cn !== "";
 
 export const isTrustDomainSelectable = (trustDomain: TrustDomain) =>
   trustDomain.cn !== "";
+
+export const isSelinuxUserMapSelectable = (map: SELinuxUserMap) =>
+  map.cn !== "";
 
 /**
  * Write JSX error messages into 'apiErrorsJsx' array
