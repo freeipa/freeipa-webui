@@ -281,6 +281,8 @@ const ManagersUsers = (props: PropsToManagersUsers) => {
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
         onSearch={() => {}}
+        searchPlaceholder="Search users"
+        searchAriaLabel="Search users"
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshData}
         deleteButtonEnabled={usersSelected.length > 0}

@@ -304,6 +304,8 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
         onSearch={() => {}}
+        searchPlaceholder="Search hosts"
+        searchAriaLabel="Search hosts"
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshData}
         deleteButtonEnabled={isDeleteEnabled}

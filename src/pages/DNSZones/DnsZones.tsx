@@ -339,8 +339,8 @@ const DnsZones = () => {
         <SearchInputLayout
           dataCy="search"
           name="search"
-          ariaLabel="Search dns zones"
-          placeholder="Search"
+          ariaLabel="Search DNS zones"
+          placeholder="Search DNS zones"
           searchValueData={searchValueData}
           isDisabled={isSearchDisabled}
         />

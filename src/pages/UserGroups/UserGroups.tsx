@@ -420,7 +420,7 @@ const UserGroups = () => {
           dataCy="search"
           name="search"
           ariaLabel="Search user groups"
-          placeholder="Search"
+          placeholder="Search user groups"
           searchValueData={searchValueData}
           isDisabled={searchDisabled}
         />

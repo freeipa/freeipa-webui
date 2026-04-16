@@ -518,8 +518,8 @@ const AutoMemUserRules = () => {
         <SearchInputLayout
           dataCy={"search"}
           name="search"
-          ariaLabel="Search rules"
-          placeholder="Search"
+          ariaLabel="Search user rules"
+          placeholder="Search user rules"
           searchValueData={searchValueData}
           isDisabled={searchDisabled}
         />

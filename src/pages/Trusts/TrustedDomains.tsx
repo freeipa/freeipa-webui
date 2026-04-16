@@ -375,7 +375,7 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
           dataCy="search"
           name="search"
           ariaLabel="Search trusted domains"
-          placeholder="Search"
+          placeholder="Search trusted domains"
           searchValueData={searchValueData}
           isDisabled={isSearchDisabled}
         />

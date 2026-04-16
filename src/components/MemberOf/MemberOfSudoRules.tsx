@@ -302,6 +302,8 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
         onSearch={() => {}}
+        searchPlaceholder="Search sudo rules"
+        searchAriaLabel="Search sudo rules"
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={props.onRefreshData}
         deleteButtonEnabled={

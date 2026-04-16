@@ -427,7 +427,7 @@ const HostGroups = () => {
           dataCy="search"
           name="search"
           ariaLabel="Search host groups"
-          placeholder="Search"
+          placeholder="Search host groups"
           searchValueData={searchValueData}
           isDisabled={searchDisabled}
         />
