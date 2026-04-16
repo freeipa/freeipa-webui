@@ -223,16 +223,16 @@ const AutoMemSettings = (props: PropsToSettings) => {
           <JumpLinks
             isVertical
             label="Jump to section"
-            scrollableSelector="#settings-page"
+            scrollableSelector="#automember-settings-page"
             expandable={{ default: "expandable", md: "nonExpandable" }}
           >
             <JumpLinksItem key={0} href="#rule-general">
               General
             </JumpLinksItem>
-            <JumpLinksItem key={1} href="#inclusive">
+            <JumpLinksItem key={1} href="#rule-inclusive">
               Inclusive
             </JumpLinksItem>
-            <JumpLinksItem key={2} href="#exclusive">
+            <JumpLinksItem key={2} href="#rule-exclusive">
               Exclusive
             </JumpLinksItem>
           </JumpLinks>
