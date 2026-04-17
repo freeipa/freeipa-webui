@@ -39,6 +39,7 @@ import { setIsLogout } from "./store/Global/auth-slice";
 // RPC
 import { useLogoutMutation } from "./services/rpcAuth";
 import { useGetUserDetailsByUidMutation } from "./services/rpcUsers";
+import { useTranslation } from "./hooks/useTranslation";
 
 interface PropsToAppLayout {
   loggedInUser: string | null;
@@ -47,6 +48,8 @@ interface PropsToAppLayout {
 
 const AppLayout = (props: PropsToAppLayout) => {
   const dispatch = useAppDispatch();
+
+  const { t } = useTranslation();
 
   // RPC
   const [logout] = useLogoutMutation();
@@ -228,6 +231,7 @@ const AppLayout = (props: PropsToAppLayout) => {
       className="--pf-t--global--text--color--regular"
       isContentFilled
     >
+      {t("texts.actions.apply")}
       {props.children}
     </Page>
   );

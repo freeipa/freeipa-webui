@@ -23,6 +23,7 @@ import {
 import { setIsLogin, setIsLogout } from "./store/Global/auth-slice";
 // Alerts
 import ManagedAlerts from "./components/ManagedAlerts";
+import { useTranslation } from "./hooks/useTranslation";
 
 const App: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
@@ -118,11 +119,24 @@ const App: React.FunctionComponent = () => {
     }
   }, [isInitialBatchLoading]);
 
+  const { t, language } = useTranslation();
+
   if (isInitialBatchLoading && !initialBatchResponse) {
     return <DataSpinner />;
   }
   return (
     <>
+      {language}
+      {t("texts.actions.apply")}
+      {t("texts.actions.delete_confirm", { object: "rewarewa" })}
+      {
+        t("texts.association.error-key", {
+          total: "100",
+          start: "1",
+          end: "10",
+        }) /* only warns */
+      }
+      {/* {t("texts.association.removed", { error: "rewarewa" })} hard crash */}
       <ManagedAlerts />
       {hasUser && userLoggedIn && (
         <AppLayout loggedInUser={loggedInUser}>
