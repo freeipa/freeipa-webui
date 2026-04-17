@@ -30,6 +30,9 @@
     "src/utils/*.ts",
     "src/utils/*.tsx",
     "src/utils/**/*.ts",
-    "src/utils/**/*.tsx"
+    "src/utils/**/*.tsx",
+    "src/hooks/useTranslation.ts",
+    "src/services/rpci18n.ts",
+    "src/services/rpc.ts"
   ]
 }
