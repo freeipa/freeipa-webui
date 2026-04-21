@@ -85,7 +85,15 @@ const DnsServersTabs = ({ section }: { section: string }) => {
         />
       </PageSection>
       <PageSection hasBodyWrapper={false} isFilled={false}>
-        <Tabs activeKey={section} onSelect={handleTabClick}>
+        <Tabs
+          activeKey={section}
+          onSelect={handleTabClick}
+          variant="secondary"
+          isBox
+          className="pf-v6-u-ml-lg"
+          mountOnEnter
+          unmountOnExit
+        >
           <Tab
             eventKey="settings"
             title={<TabTitleText>Settings</TabTitleText>}
