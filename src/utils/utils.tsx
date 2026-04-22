@@ -29,6 +29,7 @@ import {
   Trust,
   TrustDomain,
   OtpToken,
+  SELinuxUserMap,
 } from "./datatypes/globalDataTypes";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -233,6 +234,10 @@ export const isTrustDomainSelectable = (trustDomain: TrustDomain) =>
 
 export const isOtpTokenSelectable = (otpToken: OtpToken) =>
   otpToken.ipatokenuniqueid !== "";
+
+export const isSelinuxUserMapSelectable = (map: SELinuxUserMap) =>
+  map.cn !== "";
+
 /**
  * Write JSX error messages into 'apiErrorsJsx' array
  * @param {FetchBaseQueryError | SerializedError} errorFromApiCall -  Error from the API call

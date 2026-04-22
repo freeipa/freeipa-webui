@@ -1137,6 +1137,23 @@ export interface TrustDomain {
   domain_enabled: boolean;
 }
 
+export interface SELinuxUserMap {
+  cn: string;
+  ipaselinuxuser: string;
+  seealso: string;
+  usercategory: string;
+  hostcategory: string;
+  description: string;
+  ipaenabledflag: boolean;
+  memberuser_user: string;
+  memberuser_group: string;
+  memberhost_host: string;
+  memberhost_hostgroup: string;
+  memberuser: string[];
+  memberhost: string[];
+  dn: string;
+}
+
 export type RangeType = "detect" | "ad-domain" | "ad-domain-posix";
 
 export type AlgorithmType = "sha1" | "sha256" | "sha384" | "sha512";
