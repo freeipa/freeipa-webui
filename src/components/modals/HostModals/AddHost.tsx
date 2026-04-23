@@ -56,7 +56,7 @@ const AddHost = (props: PropsToAddHost) => {
   // The domain name should require at least two labels,
   // but IPA accepts names like 'a.b'.
   const validHostNameRegex =
-    /^([^-][a-zA-Z0-9-]*[^-]?)([.][^-][a-zA-Z0-9-]*[^-]?)+[.]?$/;
+    /^([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]?)(\.([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]?))+\.?$/;
 
   // Buttons are disabled until the user fills the required fields
   const [buttonDisabled, setButtonDisabled] = useState(true);
@@ -84,7 +84,7 @@ const AddHost = (props: PropsToAddHost) => {
   const fields = [
     {
       id: "modal-form-host-name",
-      name: "Host name",
+      name: "Host FQDN",
       pfComponent: (
         <>
           <InputWithValidation
@@ -94,11 +94,19 @@ const AddHost = (props: PropsToAddHost) => {
             value={hostName}
             onChange={setHostName}
             isRequired
+            placeholder="e.g. host.example.com"
             rules={[
               {
-                id: "valid-chars",
-                message: "Allowed characters are a-z, A-Z, 0-9, and -",
+                id: "valid-fqdn",
+                message:
+                  "Must be a fully qualified domain name with at least two labels separated by a dot",
                 validate: (value: string) => validHostNameRegex.test(value),
+              },
+              {
+                id: "valid-chars",
+                message:
+                  "Allowed characters: a-z, A-Z, 0-9, hyphen (-), and dot (.) as label separator",
+                validate: (value: string) => /^[a-zA-Z0-9.-]+$/.test(value),
               },
             ]}
           />
