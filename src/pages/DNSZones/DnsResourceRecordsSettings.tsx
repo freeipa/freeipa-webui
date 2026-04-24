@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Form,
   FormGroup,
   Sidebar,
@@ -25,7 +26,6 @@ import {
 // Utils
 import { dnsRecordAsRecord } from "src/utils/dnsRecordUtils";
 // Components
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -89,7 +89,8 @@ const DnsResourceRecordsSettings = (props: DnsResourceRecordsSettingsProps) => {
   };
 
   // on save handler method
-  const onSave = () => {
+  const onSave = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     const modifiedValues = props.modifiedValues();
 
     const payload: ModDnsRecordPayload = {
@@ -130,36 +131,40 @@ const DnsResourceRecordsSettings = (props: DnsResourceRecordsSettingsProps) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="dns-zones-tab-settings-button-refresh"
-          onClickHandler={onRefresh}
+        <Button
+          variant="secondary"
+          data-cy="dns-zones-tab-settings-button-refresh"
+          onClick={onRefresh}
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="dns-zones-tab-settings-button-revert"
+        <Button
+          variant="secondary"
+          data-cy="dns-zones-tab-settings-button-revert"
           isDisabled={!props.isModified || props.isDataLoading}
-          onClickHandler={onRevert}
+          onClick={onRevert}
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="dns-zones-tab-settings-button-save"
+        <Button
+          variant="primary"
+          data-cy="dns-zones-tab-settings-button-save"
           isDisabled={!props.isModified || props.isDataLoading}
-          onClickHandler={onSave}
+          type="submit"
+          form="dns-resource-records-settings-form"
         >
           Save
-        </SecondaryButton>
+        </Button>
       ),
     },
   ];
@@ -189,7 +194,12 @@ const DnsResourceRecordsSettings = (props: DnsResourceRecordsSettingsProps) => {
               headingLevel="h1"
               className="pf-v5-u-mb-lg"
             />
-            <Form className="pf-v5-u-mb-lg" isHorizontal>
+            <Form
+              className="pf-v5-u-mb-lg"
+              isHorizontal
+              id="dns-resource-records-settings-form"
+              onSubmit={onSave}
+            >
               <FormGroup label="Record name" role="idnsname">
                 <TextInput
                   data-cy="dns-zones-tab-settings-textbox-idnsname"

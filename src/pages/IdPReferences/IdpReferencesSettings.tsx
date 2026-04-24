@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   DropdownItem,
   Flex,
   FlexItem,
@@ -28,7 +29,6 @@ import { IdpModPayload, useIdpModMutation } from "src/services/rpcIdp";
 // Components
 import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
 import TabLayout from "src/components/layouts/TabLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import IpaTextContent from "src/components/Form/IpaTextContent/IpaTextContent";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -103,7 +103,8 @@ const IdpRefSettings = (props: PropsToIdpRefSettings) => {
   };
 
   // on Save handler method
-  const onSave = () => {
+  const onSave = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setIsDataLoading(true);
     const modifiedValues = props.modifiedValues();
 
@@ -172,36 +173,40 @@ const IdpRefSettings = (props: PropsToIdpRefSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="idp-references-tab-settings-button-refresh"
-          onClickHandler={props.onRefresh}
+        <Button
+          variant="secondary"
+          data-cy="idp-references-tab-settings-button-refresh"
+          onClick={props.onRefresh}
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="idp-references-tab-settings-button-revert"
+        <Button
+          variant="secondary"
+          data-cy="idp-references-tab-settings-button-revert"
           isDisabled={!props.isModified || isDataLoading}
-          onClickHandler={onRevert}
+          onClick={onRevert}
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="idp-references-tab-settings-button-save"
+        <Button
+          variant="primary"
+          data-cy="idp-references-tab-settings-button-save"
           isDisabled={!props.isModified || isDataLoading}
-          onClickHandler={onSave}
+          type="submit"
+          form="idp-references-settings-form"
         >
           Save
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
@@ -258,7 +263,11 @@ const IdpRefSettings = (props: PropsToIdpRefSettings) => {
             />
             <Flex direction={{ default: "column", lg: "row" }}>
               <FlexItem flex={{ default: "flex_1" }}>
-                <Form className="pf-v6-u-mb-lg">
+                <Form
+                  className="pf-v6-u-mb-lg"
+                  id="idp-references-settings-form"
+                  onSubmit={onSave}
+                >
                   <FormGroup
                     label="Identity Provider reference name"
                     role="group"

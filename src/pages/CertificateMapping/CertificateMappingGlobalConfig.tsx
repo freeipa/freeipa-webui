@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   Form,
@@ -28,7 +29,6 @@ import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import { NotFound } from "src/components/errors/PageErrors";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import PageWithGrayBorderLayout from "src/components/layouts/PageWithGrayBorderLayout";
 import IpaCheckbox from "src/components/Form/IpaCheckbox";
 
@@ -72,7 +72,8 @@ const CertificateMappingGlobalConfig = () => {
   };
 
   // on Save handler method
-  const onSave = () => {
+  const onSave = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setIsDataLoading(true);
     const modifiedValues = certMapConfigData.modifiedValues();
 
@@ -115,36 +116,40 @@ const CertificateMappingGlobalConfig = () => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="certificate-mapping-global-config-button-refresh"
-          onClickHandler={certMapConfigData.refetch}
+        <Button
+          variant="secondary"
+          data-cy="certificate-mapping-global-config-button-refresh"
+          onClick={certMapConfigData.refetch}
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="certificate-mapping-global-config-button-revert"
+        <Button
+          variant="secondary"
+          data-cy="certificate-mapping-global-config-button-revert"
           isDisabled={!certMapConfigData.modified || isDataLoading}
-          onClickHandler={onRevert}
+          onClick={onRevert}
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="certificate-mapping-global-config-button-save"
+        <Button
+          variant="primary"
+          data-cy="certificate-mapping-global-config-button-save"
           isDisabled={!certMapConfigData.modified || isDataLoading}
-          onClickHandler={onSave}
+          type="submit"
+          form="certificate-mapping-global-config-form"
         >
           Save
-        </SecondaryButton>
+        </Button>
       ),
     },
   ];
@@ -185,7 +190,11 @@ const CertificateMappingGlobalConfig = () => {
         <SidebarContent className="pf-v6-u-mr-xl">
           <Flex direction={{ default: "column", lg: "row" }}>
             <FlexItem flex={{ default: "flex_1" }}>
-              <Form className="pf-v6-u-mb-lg">
+              <Form
+                className="pf-v6-u-mb-lg"
+                id="certificate-mapping-global-config-form"
+                onSubmit={onSave}
+              >
                 <FormGroup fieldId="ipacertmappromptusername" role="group">
                   <IpaCheckbox
                     dataCy="certificate-mapping-global-config-checkbox-ipacertmappromptusername"

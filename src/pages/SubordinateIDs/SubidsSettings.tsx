@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   Form,
@@ -25,7 +26,6 @@ import { SubidModPayload, useSubidModMutation } from "src/services/rpcSubIds";
 // Components
 import IpaTextInput from "src/components/Form/IpaTextInput";
 import TabLayout from "src/components/layouts/TabLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import IpaTextContent from "src/components/Form/IpaTextContent";
 
@@ -73,7 +73,8 @@ const SubidSettings = (props: PropsToSubidSettings) => {
   };
 
   // on Save handler method
-  const onSave = () => {
+  const onSave = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setIsDataLoading(true);
     const modifiedValues = props.modifiedValues();
 
@@ -117,36 +118,40 @@ const SubidSettings = (props: PropsToSubidSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="subids-tab-settings-button-refresh"
-          onClickHandler={props.onRefresh}
+        <Button
+          variant="secondary"
+          data-cy="subids-tab-settings-button-refresh"
+          onClick={props.onRefresh}
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="subids-tab-settings-button-revert"
+        <Button
+          variant="secondary"
+          data-cy="subids-tab-settings-button-revert"
           isDisabled={!props.isModified || isDataLoading}
-          onClickHandler={onRevert}
+          onClick={onRevert}
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="subids-tab-settings-button-save"
+        <Button
+          variant="primary"
+          data-cy="subids-tab-settings-button-save"
           isDisabled={!props.isModified || isDataLoading}
-          onClickHandler={onSave}
+          type="submit"
+          form="subids-settings-form"
         >
           Save
-        </SecondaryButton>
+        </Button>
       ),
     },
   ];
@@ -166,7 +171,11 @@ const SubidSettings = (props: PropsToSubidSettings) => {
           <SidebarContent className="pf-v6-u-mr-xl">
             <Flex direction={{ default: "column", lg: "row" }}>
               <FlexItem flex={{ default: "flex_1" }}>
-                <Form className="pf-v6-u-mb-lg">
+                <Form
+                  className="pf-v6-u-mb-lg"
+                  id="subids-settings-form"
+                  onSubmit={onSave}
+                >
                   <FormGroup label="Unique ID" fieldId="ipauniqueid">
                     <IpaTextInput
                       dataCy="subids-tab-settings-textbox-unique-id"

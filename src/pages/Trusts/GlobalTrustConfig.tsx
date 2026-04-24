@@ -156,7 +156,6 @@ const GlobalTrustConfig = () => {
         <Button
           variant="primary"
           data-cy="trusts-global-config-button-save"
-          onClick={onSave}
           isDisabled={!trustsConfigData.modified || isDataLoading}
           form="trusts-global-config-form"
           type="submit"
@@ -202,7 +201,7 @@ const GlobalTrustConfig = () => {
         <SidebarContent className="pf-v6-u-mr-xl">
           <Flex direction={{ default: "column", lg: "row" }}>
             <FlexItem flex={{ default: "flex_1" }}>
-              <Form id="trusts-global-config-form">
+              <Form id="trusts-global-config-form" onSubmit={onSave}>
                 <FormGroup label="Domain" fieldId="cn">
                   <IpaTextInput
                     dataCy="trusts-global-config-textbox-domain"

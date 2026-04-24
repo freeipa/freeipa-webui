@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   Form,
@@ -18,7 +19,6 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 // Components
 import TabLayout from "src/components/layouts/TabLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 
 interface IdRangesSettingsProps {
@@ -49,12 +49,13 @@ const IdRangesSettings = (props: IdRangesSettingsProps) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="id-ranges-tab-settings-button-refresh"
-          onClickHandler={props.onRefresh}
+        <Button
+          variant="secondary"
+          data-cy="id-ranges-tab-settings-button-refresh"
+          onClick={props.onRefresh}
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
   ];
