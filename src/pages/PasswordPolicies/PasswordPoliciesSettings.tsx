@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   Form,
@@ -28,7 +29,6 @@ import {
 // Components
 import IpaTextInput from "src/components/Form/IpaTextInput";
 import TabLayout from "src/components/layouts/TabLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import IpaTextContent from "src/components/Form/IpaTextContent";
 
@@ -99,7 +99,8 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
   };
 
   // on Save handler method
-  const onSave = () => {
+  const onSave = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setIsDataLoading(true);
     const modifiedValues = props.modifiedValues();
 
@@ -151,36 +152,40 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          onClickHandler={props.onRefresh}
-          dataCy="password-policies-button-refresh"
+        <Button
+          variant="secondary"
+          data-cy="password-policies-button-refresh"
+          onClick={props.onRefresh}
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
+        <Button
+          variant="secondary"
+          data-cy="password-policies-button-revert"
           isDisabled={!props.isModified || isDataLoading}
-          onClickHandler={onRevert}
-          dataCy="password-policies-button-revert"
+          onClick={onRevert}
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
+        <Button
+          variant="primary"
+          data-cy="password-policies-button-save"
           isDisabled={!props.isModified || isDataLoading}
-          onClickHandler={onSave}
-          dataCy="password-policies-button-save"
+          type="submit"
+          form="password-policies-settings-form"
         >
           Save
-        </SecondaryButton>
+        </Button>
       ),
     },
   ];
@@ -201,7 +206,11 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
           <SidebarContent className="pf-v6-u-mr-xl">
             <Flex direction={{ default: "column", lg: "row" }}>
               <FlexItem flex={{ default: "flex_1" }}>
-                <Form className="pf-v6-u-mb-lg">
+                <Form
+                  className="pf-v6-u-mb-lg"
+                  id="password-policies-settings-form"
+                  onSubmit={onSave}
+                >
                   <FormGroup label="Group" fieldId="group" role="group">
                     <IpaTextContent
                       dataCy="password-policies-text-group"

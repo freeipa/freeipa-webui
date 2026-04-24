@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   Form,
   FormGroup,
@@ -22,7 +23,6 @@ import IpaTextArea from "src/components/Form/IpaTextArea";
 import IpaCheckbox from "src/components/Form/IpaCheckbox";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import TabLayout from "src/components/layouts/TabLayout";
 // Utils
@@ -129,7 +129,8 @@ const HBACRulesSettings = (props: PropsToSettings) => {
   const [isSaving, setSaving] = useState(false);
 
   // 'Save' handler method
-  const onSave = () => {
+  const onSave = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     const modifiedValues = props.modifiedValues();
     const payload = {
       groupName: cn,
@@ -193,40 +194,43 @@ const HBACRulesSettings = (props: PropsToSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="hbac-rules-tab-settings-button-refresh"
-          onClickHandler={props.onRefresh}
+        <Button
+          variant="secondary"
+          data-cy="hbac-rules-tab-settings-button-refresh"
+          onClick={props.onRefresh}
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="hbac-rules-tab-settings-button-revert"
+        <Button
+          variant="secondary"
+          data-cy="hbac-rules-tab-settings-button-revert"
           isDisabled={!props.isModified}
-          onClickHandler={onRevert}
+          onClick={onRevert}
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="hbac-rules-tab-settings-button-save"
+        <Button
+          variant="primary"
+          data-cy="hbac-rules-tab-settings-button-save"
           isDisabled={!props.isModified || isSaving}
-          onClickHandler={onSave}
+          type="submit"
+          form="hbac-rules-settings-form"
           isLoading={isSaving}
           spinnerAriaValueText="Saving"
-          spinnerAriaLabelledBy="Saving"
           spinnerAriaLabel="Saving"
         >
           {isSaving ? "Saving" : "Save"}
-        </SecondaryButton>
+        </Button>
       ),
     },
   ];
@@ -280,7 +284,11 @@ const HBACRulesSettings = (props: PropsToSettings) => {
               id="hbacrule-settings"
               text="HBAC rule settings"
             />
-            <Form className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md">
+            <Form
+              className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md"
+              id="hbac-rules-settings-form"
+              onSubmit={onSave}
+            >
               <FormGroup label="Description" fieldId="description">
                 <IpaTextArea
                   dataCy="hbac-rules-tab-settings-textbox-description"

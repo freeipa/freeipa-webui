@@ -17,7 +17,6 @@ import IpaTextArea from "../../components/Form/IpaTextArea";
 import { useNavigate } from "react-router";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import KebabLayout from "src/components/layouts/KebabLayout";
 import TabLayout from "src/components/layouts/TabLayout";
 // Utils
@@ -321,7 +320,8 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
   ];
 
   // 'Save' handler method
-  const onSave = () => {
+  const onSave = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     const modifiedValues = props.modifiedValues();
     modifiedValues.cn = props.userGroup.cn;
     setSaving(true);
@@ -372,40 +372,43 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          onClickHandler={props.onRefresh}
-          dataCy="user-groups-tab-settings-button-refresh"
+        <Button
+          variant="secondary"
+          data-cy="user-groups-tab-settings-button-refresh"
+          onClick={props.onRefresh}
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
+        <Button
+          variant="secondary"
+          data-cy="user-groups-tab-settings-button-revert"
           isDisabled={!props.isModified}
-          onClickHandler={onRevert}
-          dataCy="user-groups-tab-settings-button-revert"
+          onClick={onRevert}
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
+        <Button
+          variant="primary"
+          data-cy="user-groups-tab-settings-button-save"
           isDisabled={!props.isModified || isSaving}
-          onClickHandler={onSave}
-          dataCy="user-groups-tab-settings-button-save"
+          type="submit"
+          form="user-groups-settings-form"
           isLoading={isSaving}
           spinnerAriaValueText="Saving"
-          spinnerAriaLabelledBy="Saving"
           spinnerAriaLabel="Saving"
         >
           {isSaving ? "Saving" : "Save"}
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
@@ -438,6 +441,8 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
         <Form
           className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md"
           isHorizontal
+          id="user-groups-settings-form"
+          onSubmit={onSave}
         >
           <FormGroup label="Description" fieldId="description">
             <IpaTextArea

@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   Form,
@@ -22,7 +23,6 @@ import { TrustModPayload, useTrustModMutation } from "src/services/rpcTrusts";
 // Components
 import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
 import TabLayout from "src/components/layouts/TabLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import IpaTextboxList from "src/components/Form/IpaTextboxList";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -91,7 +91,8 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
   );
 
   // 'Save' handler method
-  const onSave = () => {
+  const onSave = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setIsDataLoading(true);
     const modifiedValues = props.modifiedValues();
 
@@ -137,36 +138,40 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="trusts-tab-settings-button-refresh"
-          onClickHandler={props.onRefresh}
+        <Button
+          variant="secondary"
+          data-cy="trusts-tab-settings-button-refresh"
+          onClick={props.onRefresh}
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="trusts-tab-settings-button-revert"
+        <Button
+          variant="secondary"
+          data-cy="trusts-tab-settings-button-revert"
           isDisabled={!props.isModified || isDataLoading}
-          onClickHandler={onRevert}
+          onClick={onRevert}
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="trusts-tab-settings-button-save"
+        <Button
+          variant="primary"
+          data-cy="trusts-tab-settings-button-save"
           isDisabled={!props.isModified || isDataLoading}
-          onClickHandler={onSave}
+          type="submit"
+          form="trusts-settings-form"
         >
           Save
-        </SecondaryButton>
+        </Button>
       ),
     },
   ];
@@ -199,7 +204,11 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
           </JumpLinks>
         </SidebarPanel>
         <SidebarContent className="pf-v6-u-mr-xl">
-          <Form className="pf-v6-u-mb-lg">
+          <Form
+            className="pf-v6-u-mb-lg"
+            id="trusts-settings-form"
+            onSubmit={onSave}
+          >
             <Flex direction={{ default: "column", lg: "row" }}>
               <FlexItem flex={{ default: "flex_1" }}>
                 <TitleLayout

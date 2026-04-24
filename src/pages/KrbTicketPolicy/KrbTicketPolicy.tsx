@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   FlexItem,
   Form,
@@ -32,7 +33,6 @@ import DataSpinner from "src/components/layouts/DataSpinner";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import { asRecord } from "src/utils/krbTicketUtils";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import IpaTextInput from "src/components/Form/IpaTextInput";
 import PageWithGrayBorderLayout from "src/components/layouts/PageWithGrayBorderLayout";
 
@@ -96,7 +96,8 @@ const KrbTicketPolicy = () => {
   };
 
   // on Save handler method
-  const onSave = () => {
+  const onSave = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setIsDataLoading(true);
     const modifiedValues = krbTicketPolicyData.modifiedValues();
 
@@ -152,36 +153,40 @@ const KrbTicketPolicy = () => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="krb-ticket-policy-button-refresh"
-          onClickHandler={krbTicketPolicyData.refetch}
+        <Button
+          variant="secondary"
+          data-cy="krb-ticket-policy-button-refresh"
+          onClick={krbTicketPolicyData.refetch}
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="krb-ticket-policy-button-revert"
+        <Button
+          variant="secondary"
+          data-cy="krb-ticket-policy-button-revert"
           isDisabled={!krbTicketPolicyData.modified || isDataLoading}
-          onClickHandler={onRevert}
+          onClick={onRevert}
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="krb-ticket-policy-button-save"
+        <Button
+          variant="primary"
+          data-cy="krb-ticket-policy-button-save"
           isDisabled={!krbTicketPolicyData.modified || isDataLoading}
-          onClickHandler={onSave}
+          type="submit"
+          form="krb-ticket-policy-form"
         >
           Save
-        </SecondaryButton>
+        </Button>
       ),
     },
   ];
@@ -240,7 +245,11 @@ const KrbTicketPolicy = () => {
             />
             <Flex direction={{ default: "column", lg: "row" }}>
               <FlexItem flex={{ default: "flex_1" }}>
-                <Form className="pf-v6-u-mb-lg">
+                <Form
+                  className="pf-v6-u-mb-lg"
+                  id="krb-ticket-policy-form"
+                  onSubmit={onSave}
+                >
                   <FormGroup
                     label="Max renew (seconds)"
                     fieldId="krbmaxrenewableage"
