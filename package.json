@@ -34,7 +34,8 @@
     "test:coverage": "vitest run --coverage",
     "cache:verify": "npm cache verify",
     "cache:clean": "npm cache clean --force",
-    "knip": "knip"
+    "knip": "knip",
+    "i18n:generate": "node scripts/generate-i18n-types.ts"
   },
   "devDependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^24.0.0",
