@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 // PatternFly
-import { Flex, Form, FormGroup } from "@patternfly/react-core";
+import { Button, Flex, Form, FormGroup } from "@patternfly/react-core";
 // Forms
 import IpaTextArea from "src/components/Form/IpaTextArea";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
@@ -53,7 +52,8 @@ const HBACServiceGroupsSettings = (props: PropsToSettings) => {
   const [isSaving, setSaving] = useState(false);
 
   // 'Save' handler method
-  const onSave = () => {
+  const onSave = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     const modifiedValues = props.modifiedValues();
     modifiedValues.cn = props.svcGroup.cn;
     setSaving(true);
@@ -105,40 +105,43 @@ const HBACServiceGroupsSettings = (props: PropsToSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="hbac-service-groups-tab-settings-button-refresh"
-          onClickHandler={props.onRefresh}
+        <Button
+          variant="secondary"
+          data-cy="hbac-service-groups-tab-settings-button-refresh"
+          onClick={props.onRefresh}
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="hbac-service-groups-tab-settings-button-revert"
+        <Button
+          variant="secondary"
+          data-cy="hbac-service-groups-tab-settings-button-revert"
           isDisabled={!props.isModified}
-          onClickHandler={onRevert}
+          onClick={onRevert}
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="hbac-service-groups-tab-settings-button-save"
+        <Button
+          variant="primary"
+          data-cy="hbac-service-groups-tab-settings-button-save"
           isDisabled={!props.isModified || isSaving}
-          onClickHandler={onSave}
+          type="submit"
+          form="hbac-service-groups-settings-form"
           isLoading={isSaving}
           spinnerAriaValueText="Saving"
-          spinnerAriaLabelledBy="Saving"
           spinnerAriaLabel="Saving"
         >
           {isSaving ? "Saving" : "Save"}
-        </SecondaryButton>
+        </Button>
       ),
     },
   ];
@@ -153,7 +156,11 @@ const HBACServiceGroupsSettings = (props: PropsToSettings) => {
           id="hbacservice-group-settings"
           text="HBAC service group settings"
         />
-        <Form className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md">
+        <Form
+          className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md"
+          id="hbac-service-groups-settings-form"
+          onSubmit={onSave}
+        >
           <FormGroup label="Description" fieldId="description">
             <IpaTextArea
               dataCy="hbac-service-groups-tab-settings-textbox-description"

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 // PatternFly
 import {
+  Button,
   JumpLinks,
   JumpLinksItem,
   Flex,
@@ -21,7 +22,6 @@ import {
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import KebabLayout from "src/components/layouts/KebabLayout";
 import TabLayout from "src/components/layouts/TabLayout";
 // Field sections
@@ -462,36 +462,39 @@ const UserSettings = (props: PropsToUserSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="user-tab-settings-button-refresh"
-          onClickHandler={props.onRefresh}
+        <Button
+          data-cy="user-tab-settings-button-refresh"
+          variant="secondary"
+          onClick={props.onRefresh}
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="user-tab-settings-button-revert"
+        <Button
+          data-cy="user-tab-settings-button-revert"
+          variant="secondary"
           isDisabled={!props.isModified}
-          onClickHandler={onRevert}
+          onClick={onRevert}
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="user-tab-settings-button-save"
+        <Button
+          data-cy="user-tab-settings-button-save"
+          variant="primary"
           isDisabled={!props.isModified}
-          onClickHandler={onSave}
+          onClick={onSave}
         >
           Save
-        </SecondaryButton>
+        </Button>
       ),
     },
     {

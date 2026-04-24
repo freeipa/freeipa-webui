@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   Flex,
   Form,
   FormGroup,
@@ -14,7 +15,6 @@ import {
 import IpaTextArea from "src/components/Form/IpaTextArea";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import TabLayout from "src/components/layouts/TabLayout";
 // Utils
@@ -112,7 +112,8 @@ const AutoMemSettings = (props: PropsToSettings) => {
   }, [props.automemberRule]);
 
   // 'Save' handler method
-  const onSave = () => {
+  const onSave = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     const modifiedValues = props.modifiedValues();
     const payload = {
       automemberId: props.automemberRule.cn?.toString(),
@@ -171,40 +172,43 @@ const AutoMemSettings = (props: PropsToSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="auto-member-tab-settings-button-refresh"
-          onClickHandler={props.onRefresh}
+        <Button
+          variant="secondary"
+          data-cy="auto-member-tab-settings-button-refresh"
+          onClick={props.onRefresh}
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="auto-member-tab-settings-button-revert"
+        <Button
+          variant="secondary"
+          data-cy="auto-member-tab-settings-button-revert"
           isDisabled={!props.isModified}
-          onClickHandler={onRevert}
+          onClick={onRevert}
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="auto-member-tab-settings-button-save"
+        <Button
+          variant="primary"
+          data-cy="auto-member-tab-settings-button-save"
           isDisabled={!props.isModified || isSaving}
-          onClickHandler={onSave}
           isLoading={isSaving}
           spinnerAriaValueText="Saving"
-          spinnerAriaLabelledBy="Saving"
           spinnerAriaLabel="Saving"
+          type="submit"
+          form="auto-member-settings-form"
         >
           {isSaving ? "Saving" : "Save"}
-        </SecondaryButton>
+        </Button>
       ),
     },
   ];
@@ -245,7 +249,11 @@ const AutoMemSettings = (props: PropsToSettings) => {
               id="rule-general"
               text="General"
             />
-            <Form className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md">
+            <Form
+              className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md"
+              id="auto-member-settings-form"
+              onSubmit={onSave}
+            >
               <FormGroup label="Description" fieldId="description" role="group">
                 <IpaTextArea
                   dataCy="auto-member-tab-settings-textbox-description"

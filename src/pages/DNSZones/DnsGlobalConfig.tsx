@@ -211,7 +211,6 @@ const DnsGlobalConfig = () => {
         <Button
           variant="primary"
           data-cy="dns-global-config-button-save"
-          onClick={onSave}
           isDisabled={!dnsConfigData.modified || isDataLoading}
           form="dns-global-config-form"
           type="submit"
@@ -272,7 +271,7 @@ const DnsGlobalConfig = () => {
           <SidebarContent className="pf-v6-u-mr-xl">
             <Flex>
               <FlexItem>
-                <Form id="dns-global-config-form">
+                <Form id="dns-global-config-form" onSubmit={onSave}>
                   <FormGroup label="Allow PTR sync" fieldId="idnsallowsyncptr">
                     <IpaCheckbox
                       ipaObject={ipaObject}

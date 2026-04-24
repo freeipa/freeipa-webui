@@ -1,12 +1,18 @@
 import React, { useState } from "react";
 // PatternFly
-import { Flex, Form, FormGroup, Icon, Tooltip } from "@patternfly/react-core";
+import {
+  Button,
+  Flex,
+  Form,
+  FormGroup,
+  Icon,
+  Tooltip,
+} from "@patternfly/react-core";
 // Forms
 import IpaTextArea from "../../components/Form/IpaTextArea";
 import IpaTextInput from "src/components/Form/IpaTextInput";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
@@ -55,7 +61,8 @@ const IDViewSettings = (props: PropsToIDViewSettings) => {
   );
 
   // 'Save' handler method
-  const onSave = () => {
+  const onSave = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     const modifiedValues = props.modifiedValues();
     modifiedValues.cn = props.idView.cn;
     setSaving(true);
@@ -106,40 +113,43 @@ const IDViewSettings = (props: PropsToIDViewSettings) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="id-views-tab-settings-button-refresh"
-          onClickHandler={props.onRefresh}
+        <Button
+          variant="secondary"
+          data-cy="id-views-tab-settings-button-refresh"
+          onClick={props.onRefresh}
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="id-views-tab-settings-button-revert"
+        <Button
+          variant="secondary"
+          data-cy="id-views-tab-settings-button-revert"
           isDisabled={!props.isModified}
-          onClickHandler={onRevert}
+          onClick={onRevert}
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="id-views-tab-settings-button-save"
+        <Button
+          variant="primary"
+          data-cy="id-views-tab-settings-button-save"
           isDisabled={!props.isModified || isSaving}
-          onClickHandler={onSave}
           isLoading={isSaving}
           spinnerAriaValueText="Saving"
-          spinnerAriaLabelledBy="Saving"
           spinnerAriaLabel="Saving"
+          type="submit"
+          form="id-views-settings-form"
         >
           {isSaving ? "Saving" : "Save"}
-        </SecondaryButton>
+        </Button>
       ),
     },
   ];
@@ -157,6 +167,8 @@ const IDViewSettings = (props: PropsToIDViewSettings) => {
         <Form
           className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md"
           isHorizontal
+          id="id-views-settings-form"
+          onSubmit={onSave}
         >
           <FormGroup
             label="Domain resolution order"

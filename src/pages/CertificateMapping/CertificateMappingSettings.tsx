@@ -1,6 +1,7 @@
 import React from "react";
 // PatternFly
 import {
+  Button,
   DropdownItem,
   Flex,
   FlexItem,
@@ -32,7 +33,6 @@ import {
 // Components
 import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
 import TabLayout from "src/components/layouts/TabLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 import KebabLayout from "src/components/layouts/KebabLayout";
 import IpaTextArea from "src/components/Form/IpaTextArea";
@@ -119,7 +119,8 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
   };
 
   // on Save handler method
-  const onSave = () => {
+  const onSave = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setIsDataLoading(true);
     const modifiedValues = props.modifiedValues();
 
@@ -195,36 +196,40 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
     {
       key: 0,
       element: (
-        <SecondaryButton
-          dataCy="certificate-mapping-tab-settings-button-refresh"
-          onClickHandler={props.onRefresh}
+        <Button
+          variant="secondary"
+          data-cy="certificate-mapping-tab-settings-button-refresh"
+          onClick={props.onRefresh}
         >
           Refresh
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 1,
       element: (
-        <SecondaryButton
-          dataCy="certificate-mapping-tab-settings-button-revert"
+        <Button
+          variant="secondary"
+          data-cy="certificate-mapping-tab-settings-button-revert"
           isDisabled={!props.isModified || isDataLoading}
-          onClickHandler={onRevert}
+          onClick={onRevert}
         >
           Revert
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
       key: 2,
       element: (
-        <SecondaryButton
-          dataCy="certificate-mapping-tab-settings-button-save"
+        <Button
+          variant="primary"
+          data-cy="certificate-mapping-tab-settings-button-save"
           isDisabled={!props.isModified || isDataLoading}
-          onClickHandler={onSave}
+          type="submit"
+          form="certificate-mapping-settings-form"
         >
           Save
-        </SecondaryButton>
+        </Button>
       ),
     },
     {
@@ -276,7 +281,11 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
           <SidebarContent className="pf-v6-u-mr-xl">
             <Flex direction={{ default: "column", lg: "row" }}>
               <FlexItem flex={{ default: "flex_1" }}>
-                <Form className="pf-v6-u-mb-lg">
+                <Form
+                  className="pf-v6-u-mb-lg"
+                  id="certificate-mapping-settings-form"
+                  onSubmit={onSave}
+                >
                   <FormGroup label="Rule name" role="group">
                     <IpaTextInput
                       dataCy="certificate-mapping-tab-settings-textbox-cn"
