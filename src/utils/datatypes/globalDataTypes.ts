@@ -1176,3 +1176,38 @@ export const DEFAULT_ERROR_VALIDATION_DATA: ErrorValidationData = {
   message: "",
   pfError: ValidatedOptions.default,
 };
+
+export type TopologyDirection = "both" | "left-right" | "right-left";
+export type TopologyEnabled = "on" | "off";
+
+export interface TopologySegment {
+  cn: string;
+  iparepltoposegmentleftnode: string;
+  iparepltoposegmentrightnode: string;
+  iparepltoposegmentdirection: TopologyDirection;
+  nsds5replicastripattrs: string;
+  nsds5replicatedattributelist: string;
+  nsds5replicatedattributelisttotal: string;
+  nsds5replicatimeout: number; // Maximum value: 2147483647
+  nsds5replicaenabled: TopologyEnabled;
+  suffixType: string;
+}
+
+export interface TopologySuffix {
+  cn: string;
+  iparepltopoconfroot: string;
+  dn: string;
+}
+
+export interface IpaServer {
+  cn: string;
+  iparepltopomanagedsuffix: string[];
+  iparepltopomanagedsuffix_topologysuffix: TopologySuffix[];
+  ipamindomainlevel: number; // Minimum value: -2147483648 | Maximum value: 2147483647
+  ipamaxdomainlevel: number; // Minimum value: -2147483648 | Maximum value: 2147483647
+  ipalocation_location: string; // Type: DNSName
+  ipaserviceweight: number; // Maximum value: 65535
+  service_relative_weight: string;
+  enabled_role_servrole: string[];
+  dn: string;
+}
