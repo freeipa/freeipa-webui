@@ -1,0 +1,39 @@
+---
+name: i18n strings
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  i18n-check:
+    name: Check i18n types are up to date
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm clean-install
+
+      - name: Add IPA Server's IP to /etc/hosts
+        run: cat developer/scenarios/single-server/hosts | sudo tee -a /etc/hosts
+
+      - name: Start testing container
+        run: developer/dev-env.sh -s
+
+      - name: Build webui
+        run: developer/dev-env.sh -p
+
+      - name: Check i18n types are up to date
+        run: |
+          cp src/utils/datatypes/InternationalizationKeys.ts /tmp/InternationalizationKeys.bak.ts
+          npm run i18n:generate
+          diff -u /tmp/InternationalizationKeys.bak.ts src/utils/datatypes/InternationalizationKeys.ts
