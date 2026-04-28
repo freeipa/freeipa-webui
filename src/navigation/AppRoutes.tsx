@@ -77,6 +77,7 @@ import IdRangesTabs from "src/pages/IdRanges/IdRangesTabs";
 import GlobalTrustConfig from "src/pages/Trusts/GlobalTrustConfig";
 import OtpTokens from "src/pages/OtpTokens/OtpTokens";
 import TopologyGraph from "src/pages/Topology/TopologyGraph";
+import OtpTokensTabs from "src/pages/OtpTokens/OtpTokensTabs";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -455,6 +456,12 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="otp-tokens">
                 <Route path="" element={<OtpTokens />} />
+                <Route path=":ipatokenuniqueid">
+                  <Route
+                    path=""
+                    element={<OtpTokensTabs section="settings" />}
+                  />
+                </Route>
               </Route>
               <Route path="identity-provider-references">
                 <Route path="" element={<IdpReferences />} />

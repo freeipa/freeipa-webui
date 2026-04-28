@@ -2,8 +2,8 @@ import { OtpToken } from "./datatypes/globalDataTypes";
 import { convertApiObj } from "./ipaObjectUtils";
 
 export const asRecord = (
-  element: Partial<OtpToken>,
-  onElementChange: (element: Partial<OtpToken>) => void
+  element: OtpToken,
+  onElementChange: (element: OtpToken) => void
 ) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const ipaObject = element as Record<string, any>;
@@ -24,7 +24,6 @@ const simpleValues = new Set([
   "ipatokenvendor",
   "ipatokenmodel",
   "ipatokenserial",
-  "ipatokenotpkey",
   "ipatokenotpalgorithm",
   "ipatokenotpdigits",
   "ipatokentotpclockoffset",
