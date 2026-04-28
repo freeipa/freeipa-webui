@@ -476,7 +476,7 @@ const OtpTokens = () => {
                     hasCheckboxes={true}
                     pathname="otp-tokens"
                     showTableRows={showTableRows}
-                    showLink={false}
+                    showLink={true}
                     elementsData={{
                       isElementSelectable: isOtpTokenSelectable,
                       selectedElements,
