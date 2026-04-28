@@ -203,6 +203,28 @@ $ npm run knip
 
 These errors should be fixed manually.
 
+### Internationalization (i18n) type generation
+
+Translation keys used throughout the application are defined in `src/utils/datatypes/InternationalizationKeys.ts`. This file is **auto-generated** from the live FreeIPA server running in the development container and should not be edited by hand.
+
+The generator script (`scripts/generate-i18n-types.ts`) connects to the container, calls the `i18n_messages` RPC endpoint, and produces a typed constant (`TRANSLATIONS`) that maps every translation key to its list of placeholder parameters (e.g. `["primary_key"]`). These types power compile-time checks in the `useTranslation` hook, ensuring that every `t()` call uses a valid key and supplies the correct replacement arguments.
+
+To regenerate the file, make sure the development container is running and execute:
+
+```bash
+$ npm run i18n:generate
+```
+
+The command accepts optional flags:
+
+| Flag                | Description                             | Default                                           |
+| ------------------- | --------------------------------------- | ------------------------------------------------- |
+| `--container`, `-c` | Container name                          | `webui`                                           |
+| `--server`, `-s`    | FreeIPA server URL inside the container | `https://webui.ipa.test`                          |
+| `--output`, `-o`    | Output file path                        | `src/utils/datatypes/InternationalizationKeys.ts` |
+
+You should re-run this command whenever the FreeIPA server adds, removes, or changes translation keys.
+
 ## Testing
 
 ### Integration tests
