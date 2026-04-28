@@ -24,7 +24,6 @@ const simpleValues = new Set([
   "ipatokenvendor",
   "ipatokenmodel",
   "ipatokenserial",
-  "ipatokenotpkey",
   "ipatokenotpalgorithm",
   "ipatokenotpdigits",
   "ipatokentotpclockoffset",

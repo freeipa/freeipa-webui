@@ -302,6 +302,22 @@ const extendedApi = api.injectEndpoints({
         },
       }
     ),
+    /**
+     * Show OTP token
+     * @param {string} otpTokenId - The ID of the OTP token
+     * @returns {FindRPCResponse} - The OTP token
+     * */
+    showOtpToken: build.query<FindRPCResponse, string>({
+      query: (otpTokenId) => {
+        return getCommand({
+          method: "otptoken_show",
+          params: [
+            [otpTokenId],
+            { all: true, rights: true, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -311,4 +327,5 @@ export const {
   useSearchOtpTokensEntriesMutation,
   useDeleteOtpTokensMutation,
   useModifyOtpTokensMutation,
+  useShowOtpTokenQuery,
 } = extendedApi;
