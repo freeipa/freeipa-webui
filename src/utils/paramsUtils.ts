@@ -9,6 +9,10 @@ export type CnParams = {
   cn: string;
 };
 
+export type IpatokenuniqueidParams = {
+  ipatokenuniqueid: string;
+};
+
 type Params = Record<string, string | undefined>;
 
 export const useSafeParams = <T extends Params>(
