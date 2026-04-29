@@ -65,6 +65,8 @@ const DNSGlobalConfigGroupRef = "dns-global-config";
 // - Trusts
 const TrustsGroupRef = "trusts";
 const TrustsGlobalConfigGroupRef = "trusts-config";
+// - Topology
+const TopologyGroupRef = "topology";
 // - Configuration
 const ConfigRef = "configuration";
 
@@ -438,6 +440,21 @@ export const getNavigationRoutes = (
           title: `${BASE_TITLE} - ID ranges`,
           path: "id-ranges",
           items: [],
+        },
+        {
+          label: "Topology",
+          group: TopologyGroupRef,
+          title: `${BASE_TITLE} - Topology`,
+          path: "topology",
+          items: [
+            {
+              label: "Topology graph",
+              group: TopologyGroupRef,
+              title: `${BASE_TITLE} - Topology graph`,
+              path: "topology-graph",
+              items: [],
+            },
+          ],
         },
         {
           label: "Configuration",

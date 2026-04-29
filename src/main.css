@@ -43,3 +43,21 @@ code {
   background-color: rgb(222, 243, 255);
   padding: 0.2em;
 }
+
+.topology-ca-blue-edge {
+  &.pf-topology__edge,
+  .pf-topology-connector-arrow {
+    --edge--stroke: rgb(0, 128, 255);
+  }
+}
+
+.topology-domain-orange-edge {
+  &.pf-topology__edge,
+  .pf-topology-connector-arrow {
+    --edge--stroke: rgb(255, 165, 0);
+  }
+}
+
+.topology-node-server {
+  --pf-topology__node--Color: rgb(8, 152, 0);
+}
