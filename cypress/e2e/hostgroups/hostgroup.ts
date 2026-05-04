@@ -95,3 +95,47 @@ When("I try to delete hostgroup {string}", (hostgroupName: string) => {
   searchForEntry(hostgroupName);
   entryDoesNotExist(hostgroupName);
 });
+
+Given(
+  "user {string} is manager of hostgroup {string}",
+  (user: string, hostgroup: string) => {
+    cy.ipa({
+      command: "hostgroup-add-member-manager",
+      name: hostgroup,
+      specificOptions: `--users=${user}`,
+    });
+  }
+);
+
+Given(
+  "I remove user member manager {string} from hostgroup {string}",
+  (user: string, hostgroup: string) => {
+    cy.ipa({
+      command: "hostgroup-remove-member-manager",
+      name: hostgroup,
+      specificOptions: `--users=${user}`,
+    });
+  }
+);
+
+Given(
+  "user group {string} is manager of hostgroup {string}",
+  (group: string, hostgroup: string) => {
+    cy.ipa({
+      command: "hostgroup-add-member-manager",
+      name: hostgroup,
+      specificOptions: `--groups=${group}`,
+    });
+  }
+);
+
+Given(
+  "I remove group member manager {string} from hostgroup {string}",
+  (group: string, hostgroup: string) => {
+    cy.ipa({
+      command: "hostgroup-remove-member-manager",
+      name: hostgroup,
+      specificOptions: `--groups=${group}`,
+    });
+  }
+);
