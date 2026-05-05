@@ -76,11 +76,13 @@ import TrustsTabs from "src/pages/Trusts/TrustsTabs";
 import IdRangesTabs from "src/pages/IdRanges/IdRangesTabs";
 import GlobalTrustConfig from "src/pages/Trusts/GlobalTrustConfig";
 import OtpTokens from "src/pages/OtpTokens/OtpTokens";
+import Dashboard from "src/pages/Dashboard/Dashboard";
+import { usePluginRoutes } from "@freeipa/plugin-sdk";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
-  // Redux: Get if user is logged in
   const userLoggedIn = useAppSelector((state) => state.auth.isUserLoggedIn);
+  const pluginRoutes = usePluginRoutes();
 
   const configurationSettings = useConfigurationSettings();
   const dnsIsEnabled = configurationSettings.dnsIsEnabled;
@@ -546,11 +548,19 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                 <Route path="" element={<GlobalTrustConfig />} />
               </Route>
               <Route path="configuration" element={<Configuration />} />
-              {/* Redirect to Active users page if user is logged in and navigates to the root page */}
+              <Route path="dashboard" element={<Dashboard />} />
+              {/* Plugin-registered routes */}
+              {pluginRoutes.map((r) => (
+                <Route
+                  key={`plugin-${r.pluginId}-${r.path}`}
+                  path={r.path}
+                  element={<r.component />}
+                />
+              ))}
               <Route path="login" element={<Navigate to={"/"} replace />} />
               <Route
                 path=""
-                element={<Navigate to={"active-users"} replace />}
+                element={<Navigate to={"dashboard"} replace />}
               />
               {/* 404 page */}
               <Route path="*" element={<NotFound />} />
