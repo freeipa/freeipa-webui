@@ -1,0 +1,55 @@
+{
+  "name": "@freeipa/plugin-sdk",
+  "version": "0.1.0",
+  "description": "Plugin SDK for FreeIPA Modern WebUI – types, registry, loader, and build utilities for plugin authors.",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./pluginViteConfig": {
+      "import": "./dist/pluginViteConfig.js",
+      "types": "./dist/pluginViteConfig.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router": "^7.0.0",
+    "@reduxjs/toolkit": "^2.0.0",
+    "react-redux": "^9.0.0",
+    "@patternfly/react-core": "^6.0.0",
+    "@patternfly/react-icons": "^6.0.0",
+    "@patternfly/react-table": "^6.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@patternfly/react-icons": { "optional": true },
+    "@patternfly/react-table": { "optional": true }
+  },
+  "devDependencies": {
+    "@patternfly/react-core": "^6.4.0",
+    "@patternfly/react-icons": "^6.4.0",
+    "@patternfly/react-table": "^6.4.0",
+    "@reduxjs/toolkit": "^2.6.1",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.1.1",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-redux": "^9.2.0",
+    "react-router": "^7.12.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
+  }
+}
