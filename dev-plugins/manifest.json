@@ -1,0 +1,12 @@
+{
+  "apiVersion": "1",
+  "plugins": [
+    {
+      "id": "hello-world",
+      "name": "Hello World Plugin",
+      "version": "1.0.0",
+      "entrypoint": "/ipa/modern-ui/plugins/hello-world/plugin.js",
+      "enabled": true
+    }
+  ]
+}

@@ -13,6 +13,7 @@ import {
   updateBrowserTitle,
 } from "src/store/Global/routes-slice";
 import { useConfigurationSettings } from "src/utils/configurationSettings";
+import { usePluginNavItems } from "@freeipa/plugin-sdk";
 
 // Renders NavItem
 const renderNavItem = (
@@ -43,7 +44,6 @@ const renderNavItem = (
 
 // Renders 'Navigation'
 const Navigation = () => {
-  // The first level will determine if the section is expanded and highligted
   const activeFirstLevel = useAppSelector(
     (state) => state.routes.activeFirstLevel
   );
@@ -52,6 +52,7 @@ const Navigation = () => {
   const activePageName = useAppSelector((state) => state.routes.activePageName);
 
   const configurationSettings = useConfigurationSettings();
+  const pluginNavItems = usePluginNavItems();
 
   const navigationRoutes = React.useMemo(() => {
     return getNavigationRoutes(configurationSettings);
@@ -109,6 +110,41 @@ const Navigation = () => {
             </NavExpandable>
           );
         })}
+        {pluginNavItems.length > 0 && (
+          <NavExpandable
+            title="Plugins"
+            isActive={pluginNavItems.some(
+              (item) => item.path === activePageName
+            )}
+            isExpanded={pluginNavItems.some(
+              (item) => item.path === activeFirstLevel
+            )}
+          >
+            {pluginNavItems.map((item) => (
+              <NavItem
+                key={`plugin-nav-${item.pluginId}-${item.path}`}
+                isActive={activePageName === item.path}
+                onClick={() => {
+                  dispatch(updateActiveSecondLevel(item.path));
+                  dispatch(updateActivePageName(item.path));
+                  dispatch(
+                    updateBrowserTitle(
+                      item.title || `Identity Management - ${item.label}`
+                    )
+                  );
+                  dispatch(updateActiveFirstLevel(item.path));
+                  dispatch(
+                    updateBreadCrumbPath([
+                      { name: item.label, url: item.path },
+                    ])
+                  );
+                }}
+              >
+                <NavLink to={item.path}>{item.label}</NavLink>
+              </NavItem>
+            ))}
+          </NavExpandable>
+        )}
       </NavList>
     </Nav>
   );
