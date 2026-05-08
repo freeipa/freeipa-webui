@@ -76,6 +76,7 @@ import TrustsTabs from "src/pages/Trusts/TrustsTabs";
 import IdRangesTabs from "src/pages/IdRanges/IdRangesTabs";
 import GlobalTrustConfig from "src/pages/Trusts/GlobalTrustConfig";
 import OtpTokens from "src/pages/OtpTokens/OtpTokens";
+import AutomountLocations from "src/pages/AutomountLocations/AutomountLocations";
 import TopologyGraph from "src/pages/Topology/TopologyGraph";
 import OtpTokensTabs from "src/pages/OtpTokens/OtpTokensTabs";
 import Roles from "src/pages/Roles/Roles";
@@ -529,6 +530,9 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="dns-global-config">
                 <Route path="" element={<DnsGlobalConfig />} />
+              </Route>
+              <Route path="automount-locations">
+                <Route path="" element={<AutomountLocations />} />
               </Route>
               <Route path="id-ranges">
                 <Route path="" element={<IdRanges />} />
