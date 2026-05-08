@@ -21,8 +21,10 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import DeletedElementsTable from "src/components/tables/DeletedElementsTable";
 import { SerializedError } from "@reduxjs/toolkit";
 import ErrorModal from "src/components/modals/ErrorModal";
+import { useNavigate } from "react-router";
 
 interface DeleteOtpTokensModalProps {
+  from: "main" | "settings";
   isOpen: boolean;
   onClose: () => void;
   elementsToDelete: OtpToken[];
@@ -36,6 +38,7 @@ interface DeleteOtpTokensModalProps {
 
 const DeleteOtpTokensModal = (props: DeleteOtpTokensModalProps) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   // RPC calls
   const [deleteOtpTokens] = useDeleteOtpTokensMutation();
@@ -123,6 +126,11 @@ const DeleteOtpTokensModal = (props: DeleteOtpTokensModalProps) => {
                   variant: "success",
                 })
               );
+              if (props.from === "settings") {
+                navigate("/otp-tokens");
+              } else {
+                props.onRefresh();
+              }
             }
           }
         }
@@ -130,7 +138,6 @@ const DeleteOtpTokensModal = (props: DeleteOtpTokensModalProps) => {
       .finally(() => {
         setBtnSpinning(false);
         props.onClose();
-        props.onRefresh();
       });
   };
 

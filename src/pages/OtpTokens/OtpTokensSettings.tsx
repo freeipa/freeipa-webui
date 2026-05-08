@@ -2,6 +2,7 @@ import React from "react";
 // PatternFly
 import {
   Button,
+  DropdownItem,
   Flex,
   FlexItem,
   Form,
@@ -36,6 +37,9 @@ import { addAlert } from "src/store/Global/alerts-slice";
 import TitleLayout from "src/components/layouts/TitleLayout";
 // Utils
 import { toGeneralizedTime } from "src/utils/utils";
+import KebabLayout from "src/components/layouts/KebabLayout";
+import EnableDisableOtpTokensModal from "./EnableDisableOtpTokensModal";
+import DeleteOtpTokensModal from "./DeleteOtpTokensModal";
 
 interface OtpTokensSettingsProps {
   otpToken: OtpToken;
@@ -187,6 +191,46 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
       });
   };
 
+  // Kebab
+  const [isKebabOpen, setIsKebabOpen] = React.useState(false);
+  const [isEnableDisableModalOpen, setIsEnableDisableModalOpen] =
+    React.useState(false);
+  const [operation, setOperation] = React.useState<"enable" | "disable">(
+    "disable"
+  );
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
+
+  const openEnableDisableModal = (op: "enable" | "disable") => {
+    setOperation(op);
+    setIsEnableDisableModalOpen(true);
+  };
+
+  const kebabItems = [
+    <DropdownItem
+      data-cy="otp-tokens-tab-settings-kebab-enable"
+      key="enable"
+      onClick={() => openEnableDisableModal("enable")}
+      isDisabled={props.otpToken.ipatokendisabled === false}
+    >
+      Enable token
+    </DropdownItem>,
+    <DropdownItem
+      data-cy="otp-tokens-tab-settings-kebab-disable"
+      key="disable"
+      onClick={() => openEnableDisableModal("disable")}
+      isDisabled={props.otpToken.ipatokendisabled === true}
+    >
+      Disable token
+    </DropdownItem>,
+    <DropdownItem
+      data-cy="otp-tokens-tab-settings-kebab-delete"
+      key="delete"
+      onClick={() => setIsDeleteModalOpen(true)}
+    >
+      Delete
+    </DropdownItem>,
+  ];
+
   // Toolbar
   const toolbarFields = [
     {
@@ -225,6 +269,21 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
         >
           Save
         </Button>
+      ),
+    },
+    {
+      key: 3,
+      element: (
+        <KebabLayout
+          dataCy="otp-tokens-tab-settings-kebab"
+          direction={"up"}
+          onDropdownSelect={() => setIsKebabOpen(!isKebabOpen)}
+          onKebabToggle={() => setIsKebabOpen(!isKebabOpen)}
+          idKebab="toggle-action-buttons"
+          isKebabOpen={isKebabOpen}
+          dropdownItems={kebabItems}
+          isDisabled={isDataLoading}
+        />
       ),
     },
   ];
@@ -477,6 +536,27 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
           </Form>
         </SidebarContent>
       </Sidebar>
+      <EnableDisableOtpTokensModal
+        isOpen={isEnableDisableModalOpen}
+        onClose={() => setIsEnableDisableModalOpen(false)}
+        elementsList={[ipaObject["ipatokenuniqueid"]]}
+        setElementsList={() => {}}
+        operation={operation}
+        setShowTableRows={() => {}}
+        onRefresh={props.onRefresh}
+      />
+      <DeleteOtpTokensModal
+        from="settings"
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        elementsToDelete={[props.otpToken]}
+        clearSelectedElements={() => {}}
+        columnNames={["Unique ID", "Owner", "Description"]}
+        keyNames={["ipatokenuniqueid", "ipatokenowner", "description"]}
+        onRefresh={props.onRefresh}
+        updateIsDeleteButtonDisabled={() => {}}
+        updateIsDeletion={() => {}}
+      />
     </TabLayout>
   );
 };

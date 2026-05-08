@@ -152,6 +152,12 @@ const OtpTokens = () => {
     });
   };
 
+  // Refresh data every time the component is rendered to ensure
+  // the data is up to date when the user is deleting from the settings page
+  React.useEffect(() => {
+    refreshData();
+  }, []);
+
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
     React.useState<boolean>(true);
@@ -524,6 +530,7 @@ const OtpTokens = () => {
         onRefresh={refreshData}
       />
       <DeleteOtpTokensModal
+        from="main"
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         elementsToDelete={selectedElements}

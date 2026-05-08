@@ -34,9 +34,9 @@ const EnableDisableOtpTokensModal = (
 
   // RPC calls
   const [modifyOtpTokens] = useModifyOtpTokensMutation();
+
   // Enable/Disable operation
   const onEnableDisable = () => {
-    // const operation = props.operation === "enable" ? enableOtpTokens : disableOtpTokens;
     const payload: OtpTokensModifyPayload[] = props.elementsList.map(
       (element) => ({
         ipatokenuniqueid: element,
