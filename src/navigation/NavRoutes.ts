@@ -56,6 +56,8 @@ const CertificateMappingGroupRef = "cert-id-mapping-rules";
 const CertificateMappingConfigGroupRef = "cert-id-mapping-global-config";
 const CertificateMappingMatchGroupRef = "cert-id-mapping-match";
 // NETWORK SERVICES
+// - Automount
+const AutomountLocationsGroupRef = "automount-locations";
 // - DNS zones
 const DNSZonesGroupRef = "dns-zones";
 const DNSForwardZonesGroupRef = "dns-forward-zones";
@@ -366,8 +368,8 @@ export const getNavigationRoutes = (
       group: "",
       title: `${BASE_TITLE} - Network services`,
       path: "",
-      items:
-        dnsIsEnabled === true
+      items: [
+        ...(dnsIsEnabled === true
           ? [
               {
                 label: "DNS",
@@ -406,7 +408,15 @@ export const getNavigationRoutes = (
                 ],
               },
             ]
-          : [],
+          : []),
+        {
+          label: "Automount locations",
+          group: AutomountLocationsGroupRef,
+          title: `${BASE_TITLE} - Automount locations`,
+          path: "automount-locations",
+          items: [],
+        },
+      ],
     },
     {
       label: "IPA Server",
