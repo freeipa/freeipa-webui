@@ -49,11 +49,13 @@ const useOtpTokensSettingsData = (
 
   React.useEffect(() => {
     if (otpTokenData && !otpTokenQuery.isFetching) {
-      const otpTokenResult: OtpToken = apiToOtpToken(
-        otpTokenData.result.result
-      );
-      setOtpToken(otpTokenResult);
-      setOriginalOtpToken(otpTokenResult);
+      if (otpTokenData.result?.result) {
+        const otpTokenResult: OtpToken = apiToOtpToken(
+          otpTokenData.result.result
+        );
+        setOtpToken(otpTokenResult);
+        setOriginalOtpToken(otpTokenResult);
+      }
     }
   }, [otpTokenData, otpTokenQuery.isFetching]);
 

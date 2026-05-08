@@ -41,6 +41,12 @@ export function apiToOtpToken(apiRecord: Record<string, unknown>): OtpToken {
     dateValues,
     complexValues
   ) as Partial<OtpToken>;
+
+  // As `convertApiObj` converts the value to a string,
+  //  we need to convert it back to a boolean
+  converted.ipatokendisabled =
+    converted.ipatokendisabled?.toString() === "true";
+
   return partialOtpTokenToOtpToken(converted);
 }
 
