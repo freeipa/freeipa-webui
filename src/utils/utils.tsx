@@ -13,6 +13,7 @@ import {
   IdRange,
   Metadata,
   Netgroup,
+  Role,
   Service,
   SudoCmd,
   SudoCmdGroup,
@@ -206,6 +207,8 @@ export const isAutomemberUserGroupSelectable = (automember: AutomemberEntry) =>
   automember.automemberRule != "";
 
 export const isPwPolicySelectable = (pwPolicy: PwPolicy) => pwPolicy.cn !== "";
+
+export const isRoleSelectable = (role: Role) => role.cn !== "";
 
 export const isIdpServerSelectable = (idpServer: IDPServer) =>
   idpServer.cn !== "";
