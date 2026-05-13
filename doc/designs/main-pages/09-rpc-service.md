@@ -12,18 +12,20 @@ Create `src/services/rpcMyEntities.ts` with RTK Query endpoints. This file defin
 **All entity-specific endpoints must be defined in a dedicated `src/services/rpc<Entity>.ts` file**, never in `src/services/rpc.ts`. The base `rpc.ts` file is reserved for shared/generic infrastructure only:
 - The base `createApi` definition and tag types
 - Generic payloads (`GenericPayload`) and shared types (`Command`, `BatchRPCResponse`, etc.)
-- The generic `useSearchEntriesMutation` and `useGettingGenericQuery` hooks
+- The generic `useGettingGenericQuery` hook (for initial data loading)
 - Shared helper functions (`getCommand`, `getBatchCommand`)
 
-When creating a new entity, the only changes to `rpc.ts` should be:
-1. Adding the entity's `entryType` value to the `GenericPayload` union (if using the generic search mutation)
-2. Adding a cache tag to `tagTypes` (if the entity-specific service file uses `providesTags` / `invalidatesTags`)
+**Do NOT modify `rpc.ts`** when adding a new entity. Specifically:
+- Do NOT add new `entryType` values to `GenericPayload` or `useSearchEntriesMutation` — define a dedicated search mutation in the entity's `rpc<Entity>.ts` file instead
+- Only add a cache tag to `tagTypes` if the entity-specific service file uses `providesTags` / `invalidatesTags`
 
-Entity-specific queries, mutations, and hooks are defined using `api.injectEndpoints()` in the entity's own file (e.g. `rpcHBACRules.ts`, `rpcTrusts.ts`, `rpcSelinuxUserMaps.ts`).
+Entity-specific queries, mutations, and hooks are defined using `api.injectEndpoints()` in the entity's own file (e.g. `rpcRoles.ts`, `rpcTrusts.ts`, `rpcSelinuxUserMaps.ts`).
 
 ## Minimum Endpoints for a Main Page
 
-A main page needs at least a **query** for listing entries and either uses the generic `useSearchEntriesMutation` from `rpc.ts` or defines its own **search mutation**.
+A main page needs at least:
+1. A **query** for initial data loading — can use the generic `useGettingGenericQuery` wrapper from the entity's service file
+2. A **search mutation** for explicit search submissions — must be defined in `rpc<Entity>.ts` using the two-step find+show pattern
 
 ## Template
 
@@ -213,7 +215,8 @@ Individual command docs: `https://freeipa.readthedocs.io/en/latest/api/<entity>_
 
 | Entity | Service file | Key hooks |
 |--------|-------------|-----------|
-| Hosts | `src/services/rpcHosts.ts` | `useGettingHostQuery`, `useAutoMemberRebuildHostsMutation` |
+| Roles | `src/services/rpcRoles.ts` | `useGettingRolesQuery`, `useSearchRolesEntriesMutation`, `useAddRoleMutation`, `useDeleteRolesMutation` |
 | Trusts | `src/services/rpcTrusts.ts` | `useGetTrustsFullDataQuery`, `useSearchTrustsEntriesMutation`, `useAddTrustMutation` |
 | DNS Zones | `src/services/rpcDnsZones.ts` | `useGetDnsZonesFullDataQuery`, `useSearchDnsZonesEntriesMutation` |
+| Hosts | `src/services/rpcHosts.ts` | `useGettingHostQuery`, `useAutoMemberRebuildHostsMutation` |
 | HBAC Rules | `src/services/rpcHBACRules.ts` | `useGettingHbacRulesQuery` |

@@ -5,6 +5,241 @@
 
 The Add modal (`src/components/modals/<EntityModals>/Add<Entity>Modal.tsx`) is built using `ModalWithFormLayout`, which accepts a `fields` array. Each field specifies an `id`, a `name` (label), a `pfComponent` (the PatternFly/custom UI component), and optionally `fieldRequired: true`.
 
+## Standard Props Interface
+
+All Add modals use a consistent props interface with **all props required** (no optionals):
+
+```tsx
+interface PropsToAddModal {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  onRefresh: () => void;
+}
+```
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `isOpen` | `boolean` | Controls modal visibility |
+| `onClose` | `() => void` | Callback to close the modal |
+| `title` | `string` | Modal title displayed in the header |
+| `onRefresh` | `() => void` | Callback to refresh the parent table after successful addition |
+
+**Usage in the parent page:**
+
+```tsx
+<AddEntityModal
+  isOpen={showAddModal}
+  onClose={() => setShowAddModal(false)}
+  title="Add entity"
+  onRefresh={refreshData}
+/>
+```
+
+## Complete Modal Template
+
+```tsx
+import React from "react";
+// PatternFly
+import { Button, TextArea } from "@patternfly/react-core";
+// Components
+import ModalWithFormLayout, {
+  Field,
+} from "src/components/layouts/ModalWithFormLayout";
+import InputRequiredText from "src/components/layouts/InputRequiredText";
+// RPC
+import { useAddEntityMutation } from "src/services/rpcEntity";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
+// Hooks
+import { addAlert } from "src/store/Global/alerts-slice";
+// Errors
+import { SerializedError } from "@reduxjs/toolkit";
+
+interface PropsToAddModal {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  onRefresh: () => void;
+}
+
+const AddEntityModal = (props: PropsToAddModal) => {
+  const dispatch = useAppDispatch();
+
+  // API calls
+  const [addEntity] = useAddEntityMutation();
+
+  // States
+  const [isAddButtonSpinning, setIsAddButtonSpinning] = React.useState(false);
+  const [entityName, setEntityName] = React.useState("");
+  const [description, setDescription] = React.useState("");
+
+  // Clear fields
+  const clearFields = () => {
+    setEntityName("");
+    setDescription("");
+  };
+
+  // 'Add' button handler
+  const onAdd = () => {
+    setIsAddButtonSpinning(true);
+
+    addEntity({
+      cn: entityName,
+      description: description || undefined,
+    }).then((response) => {
+      if ("data" in response) {
+        const data = response.data?.result;
+        const error = response.data?.error as SerializedError;
+
+        if (error) {
+          dispatch(
+            addAlert({
+              name: "add-entity-error",
+              title: error.message,
+              variant: "danger",
+            })
+          );
+        }
+
+        if (data) {
+          dispatch(
+            addAlert({
+              name: "add-entity-success",
+              title: "New entity added",
+              variant: "success",
+            })
+          );
+          // Reset fields
+          clearFields();
+          // Update data
+          props.onRefresh();
+          props.onClose();
+        }
+      }
+      // Reset button spinner
+      setIsAddButtonSpinning(false);
+    });
+  };
+
+  // Clean and close modal
+  const cleanAndCloseModal = () => {
+    clearFields();
+    props.onClose();
+  };
+
+  const fields: Field[] = [
+    {
+      id: "modal-form-entity-name",
+      name: "Entity name",
+      pfComponent: (
+        <InputRequiredText
+          dataCy="modal-textbox-entity-name"
+          id="modal-form-entity-name"
+          name="cn"
+          value={entityName}
+          onChange={setEntityName}
+          requiredHelperText="Required value"
+        />
+      ),
+      fieldRequired: true,
+    },
+    {
+      id: "modal-form-description",
+      name: "Description",
+      pfComponent: (
+        <TextArea
+          data-cy="modal-textbox-description"
+          id="modal-form-description"
+          name="description"
+          value={description}
+          aria-label="Description"
+          onChange={(_event, value: string) => setDescription(value)}
+          autoResize
+        />
+      ),
+    },
+  ];
+
+  // Actions
+  const modalActions: JSX.Element[] = [
+    <Button
+      data-cy="modal-button-add"
+      key="add-new"
+      isDisabled={isAddButtonSpinning || entityName === ""}
+      form="add-modal-form"
+      type="submit"
+    >
+      Add
+    </Button>,
+    <Button
+      data-cy="modal-button-cancel"
+      key="cancel-new"
+      variant="link"
+      onClick={cleanAndCloseModal}
+    >
+      Cancel
+    </Button>,
+  ];
+
+  return (
+    <>
+      <ModalWithFormLayout
+        dataCy="add-entity-modal"
+        variantType={"small"}
+        modalPosition={"top"}
+        offPosition={"76px"}
+        title={props.title}
+        formId="add-modal-form"
+        fields={fields}
+        show={props.isOpen}
+        onSubmit={() => onAdd()}
+        onClose={cleanAndCloseModal}
+        actions={modalActions}
+      />
+    </>
+  );
+};
+
+export default AddEntityModal;
+```
+
+## Code Organization
+
+The Add modal follows this structure:
+
+1. **Imports** — PatternFly components, layout components, RPC hooks, Redux, alerts
+2. **Props interface** — Standard `PropsToAddModal` with four required props
+3. **Component body:**
+   - API mutation hook
+   - State declarations (spinner, form fields)
+   - `clearFields()` — resets all form fields
+   - `onAdd()` — the add handler (API call, success/error alerts, refresh, close)
+   - `cleanAndCloseModal()` — clears fields and closes modal
+   - `fields` array — form field definitions
+   - `modalActions` array — Add and Cancel buttons
+4. **Return** — `ModalWithFormLayout` component
+
+## Error Handling
+
+Use **alerts** for error handling — do not use a separate `ErrorModal` component. When an error occurs:
+
+1. Dispatch a danger alert with the error message
+2. Reset the button spinner
+3. Keep the modal open so the user can retry or cancel
+
+```tsx
+if (error) {
+  dispatch(
+    addAlert({
+      name: "add-entity-error",
+      title: error.message,
+      variant: "danger",
+    })
+  );
+}
+```
+
 When specifying **Add modal fields** in your prompt, provide each field as:
 
 ```
@@ -189,15 +424,16 @@ The Add modal must only have two action buttons: **Add** and **Cancel**. Do **no
 const modalActions: JSX.Element[] = [
   <Button
     data-cy="modal-button-add"
-    key="add-new-<entity>"
-    isDisabled={buttonDisabled}
-    onClick={onAdd}
+    key="add-new"
+    isDisabled={isAddButtonSpinning || requiredField === ""}
+    form="add-modal-form"
+    type="submit"
   >
     Add
   </Button>,
   <Button
     data-cy="modal-button-cancel"
-    key="cancel-new-<entity>"
+    key="cancel-new"
     variant="link"
     onClick={cleanAndCloseModal}
   >
@@ -208,21 +444,43 @@ const modalActions: JSX.Element[] = [
 
 ## Button Disabled Logic
 
-The Add button should be disabled until all **required** fields are non-empty:
+The Add button should be disabled until all **required** fields are non-empty. Compute the disabled state inline or as a derived variable — do not use `useEffect` + `useState` for this.
+
+**Inline (preferred for simple conditions):**
 
 ```tsx
-const [buttonDisabled, setButtonDisabled] = useState(true);
+<Button
+  isDisabled={isAddButtonSpinning || requiredField === ""}
+  // ...
+>
+```
 
-useEffect(() => {
-  if (requiredField1 === "" || requiredField2 === "") {
-    setButtonDisabled(true);
-  } else {
-    setButtonDisabled(false);
-  }
-}, [requiredField1, requiredField2]);
+**Derived variable (for complex conditions):**
+
+```tsx
+const mandatoryEmpty =
+  requiredField1 === "" ||
+  requiredField2 === "" ||
+  (someCondition && requiredField3 === "");
+
+const disabledAdd = isAddButtonSpinning || mandatoryEmpty;
+
+// In modalActions:
+<Button isDisabled={disabledAdd}>
 ```
 
 ## Existing Add Modal Examples
+
+**Reference implementations** (follow these patterns):
+
+| Entity | Modal file | Notes |
+|--------|-----------|-------|
+| Certificate Mapping Rules | `src/components/modals/CertificateMapping/AddRuleModal.tsx` | Clean pattern with alerts for errors |
+| DNS Zones | `src/components/modals/DnsZones/AddDnsZoneModal.tsx` | Uses custom Modal (not ModalWithFormLayout) |
+| DNS Forward Zones | `src/components/modals/DnsZones/AddDnsForwardZoneModal.tsx` | Uses custom Modal with radio-based field switching |
+| Roles | `src/components/modals/RoleModals/AddRoleModal.tsx` | Simple two-field modal with InputRequiredText |
+
+**Other examples:**
 
 | Entity | Modal file | Fields |
 |--------|-----------|--------|
