@@ -2,26 +2,45 @@ import {
   api,
   Command,
   getBatchCommand,
+  getCommand,
   BatchRPCResponse,
+  FindRPCResponse,
   useGettingGenericQuery,
 } from "./rpc";
 import { apiToRole } from "src/utils/rolesUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
-import { Role } from "../utils/datatypes/globalDataTypes";
+import { Role, cnType } from "../utils/datatypes/globalDataTypes";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 /**
- * Roles-related endpoints: addToRoles, removeFromRoles, getRolesInfoByName
+ * Roles-related endpoints: addToRoles, removeFromRoles, getRolesInfoByName, addRole, deleteRoles
  *
  * API commands:
+ * - role_find: https://freeipa.readthedocs.io/en/latest/api/role_find.html
+ * - role_show: https://freeipa.readthedocs.io/en/latest/api/role_show.html
+ * - role_add: https://freeipa.readthedocs.io/en/latest/api/role_add.html
+ * - role_del: https://freeipa.readthedocs.io/en/latest/api/role_del.html
  * - role_add_member: https://freeipa.readthedocs.io/en/latest/api/role_add_member.html
  * - role_remove_member: https://freeipa.readthedocs.io/en/latest/api/role_remove_member.html
- * - role_show: https://freeipa.readthedocs.io/en/latest/api/role_show.html
  */
 
 interface RoleShowPayload {
   roleNamesList: string[];
   no_members?: boolean;
   version: string;
+}
+
+interface RoleAddPayload {
+  cn: string;
+  description?: string;
+}
+
+interface RolesSearchPayload {
+  searchValue: string;
+  sizeLimit: number;
+  apiVersion: string;
+  startIdx: number;
+  stopIdx: number;
 }
 
 const extendedApi = api.injectEndpoints({
@@ -102,11 +121,101 @@ const extendedApi = api.injectEndpoints({
         return roleList;
       },
     }),
+    /**
+     * Add a new role via `role_add`
+     * @param {RoleAddPayload} - Payload with role cn and optional description
+     * @returns {FindRPCResponse} - Response from API
+     */
+    addRole: build.mutation<FindRPCResponse, RoleAddPayload>({
+      query: (payload) => {
+        const params: Record<string, unknown> = {
+          version: API_VERSION_BACKUP,
+        };
+        if (payload.description) {
+          params.description = payload.description;
+        }
+        return getCommand({
+          method: "role_add",
+          params: [[payload.cn], params],
+        });
+      },
+    }),
+    /**
+     * Delete roles via batch `role_del`
+     * @param {Role[]} - Array of roles to delete
+     * @returns {BatchRPCResponse} - Batch response
+     */
+    deleteRoles: build.mutation<BatchRPCResponse, Role[]>({
+      query: (roles) => {
+        const commands: Command[] = roles.map((role) => ({
+          method: "role_del",
+          params: [[role.cn], {}],
+        }));
+        return getBatchCommand(commands, API_VERSION_BACKUP);
+      },
+    }),
+    /**
+     * Search roles via two-step role_find + role_show pattern
+     * @param {RolesSearchPayload} - Search parameters
+     * @returns {BatchRPCResponse} - Batch response with role data
+     */
+    searchRolesEntries: build.mutation<BatchRPCResponse, RolesSearchPayload>({
+      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
+        const { searchValue, sizeLimit, apiVersion, startIdx, stopIdx } =
+          payloadData;
+
+        const params = {
+          pkey_only: true,
+          sizelimit: sizeLimit,
+          version: apiVersion,
+          all: true,
+        };
+
+        // Step 1: Find role IDs
+        const findCommand: Command = {
+          method: "role_find",
+          params: [[searchValue], params],
+        };
+
+        const findResult = await fetchWithBQ(getCommand(findCommand));
+        if (findResult.error) {
+          return { error: findResult.error as FetchBaseQueryError };
+        }
+
+        const findResponse = findResult.data as FindRPCResponse;
+        const totalCount = findResponse.result.result.length as number;
+        const ids: string[] = [];
+
+        for (let i = startIdx; i < totalCount && i < stopIdx; i++) {
+          const roleId = findResponse.result.result[i] as cnType;
+          ids.push(roleId.cn[0] as string);
+        }
+
+        // Step 2: Batch show for each role
+        const showCommands: Command[] = ids.map((id) => ({
+          method: "role_show",
+          params: [[id], { no_members: true }],
+        }));
+
+        const showResult = await fetchWithBQ(
+          getBatchCommand(showCommands, apiVersion)
+        );
+
+        const response = showResult.data as BatchRPCResponse;
+        if (response) {
+          response.result.totalCount = totalCount;
+        }
+
+        return response
+          ? { data: response }
+          : { error: showResult.error as FetchBaseQueryError };
+      },
+    }),
   }),
   overrideExisting: false,
 });
 
-export const useGettingRolesQuery = (payloadData, options) => {
+export const useGettingRolesQuery = (payloadData, options?) => {
   payloadData["objName"] = "role";
   payloadData["objAttr"] = "cn";
   return useGettingGenericQuery(payloadData, options);
@@ -116,4 +225,7 @@ export const {
   useAddToRolesMutation,
   useRemoveFromRolesMutation,
   useGetRolesInfoByNameQuery,
+  useAddRoleMutation,
+  useDeleteRolesMutation,
+  useSearchRolesEntriesMutation,
 } = extendedApi;
