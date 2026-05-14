@@ -114,6 +114,23 @@ Every entity needs a utils file at `src/utils/<entityName>Utils.tsx` (e.g. `host
 
 The conversion relies on `convertApiObj` from `src/utils/ipaObjectUtils.ts`, which classifies each field as a simple value (string), a date value, or a complex value (e.g. DNS names with nested `__dns_name__` keys).
 
+### CRITICAL: Membership Array Fields
+
+**Do NOT add membership fields to `simpleValues`**. Fields like `memberuser_user`, `memberuser_group`, `memberhost_host`, `memberhost_hostgroup`, etc. are **arrays** returned by the API and must remain arrays.
+
+| Field Pattern | Type | In `simpleValues`? | Initialize as |
+|---------------|------|-------------------|---------------|
+| `cn`, `description`, `dn` | `string` | ✅ Yes | `""` |
+| `memberuser_user`, `memberhost_host` | `string[]` | ❌ No | `[]` |
+| `memberof_group`, `member_user` | `string[]` | ❌ No | `[]` |
+
+If you add a membership field to `simpleValues`, the array will be converted to a string, causing **runtime errors** like `TypeError: X.map is not a function` when the Settings page tries to iterate over the members.
+
+**Checklist for membership fields:**
+1. Type as `string[]` in `globalDataTypes.ts`
+2. Do NOT include in `simpleValues` set
+3. Initialize as `[]` in `createEmpty<Entity>()`
+
 ### Template
 
 ```tsx
