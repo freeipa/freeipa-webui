@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 // PatternFly
 import {
   Flex,
@@ -66,13 +66,8 @@ const Roles = () => {
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
     useListPageSearchParams();
 
-  const [rolesList, setRolesList] = useState<Role[]>([]);
-
   const globalErrors = useApiError([]);
   const modalErrors = useApiError([]);
-
-  const [totalCount, setTotalCount] = useState<number>(0);
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   const firstIdx = (page - 1) * perPage;
   const lastIdx = page * perPage;
@@ -88,24 +83,31 @@ const Roles = () => {
   const {
     data: batchResponse,
     isLoading: isBatchLoading,
+    isFetching,
     error: batchError,
   } = rolesDataResponse;
 
-  useEffect(() => {
-    if (rolesDataResponse.isFetching) {
-      setShowTableRows(false);
-      setTotalCount(0);
-      globalErrors.clear();
-      return;
+  // Search state - overrides query data when active
+  const [searchRoles, searchResult] = useSearchRolesEntriesMutation({});
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [searchData, setSearchData] = useState<{
+    roles: Role[];
+    totalCount: number;
+  } | null>(null);
+
+  // Derive rolesList and totalCount from query response or search results
+  const { rolesList, totalCount } = useMemo(() => {
+    // If search is active and has results, use search data
+    if (isSearchActive && searchData) {
+      return {
+        rolesList: searchData.roles,
+        totalCount: searchData.totalCount,
+      };
     }
 
-    if (
-      rolesDataResponse.isSuccess &&
-      rolesDataResponse.data &&
-      batchResponse !== undefined
-    ) {
+    // Otherwise derive from query response
+    if (batchResponse?.result) {
       const rolesListResult = batchResponse.result.results;
-      const totalCount = batchResponse.result.totalCount;
       const rolesListSize = batchResponse.result.count;
       const roles: Role[] = [];
 
@@ -113,29 +115,53 @@ const Roles = () => {
         roles.push(rolesListResult[i].result);
       }
 
-      setTotalCount(totalCount);
-      setRolesList(roles);
-      setShowTableRows(true);
+      return {
+        rolesList: roles,
+        totalCount: batchResponse.result.totalCount,
+      };
     }
 
+    return { rolesList: [], totalCount: 0 };
+  }, [batchResponse, isSearchActive, searchData]);
+
+  // Derive showTableRows from loading states
+  const showTableRows = useMemo(() => {
+    if (isSearchActive) {
+      return !searchResult.isLoading;
+    }
+    return !isFetching && !isBatchLoading;
+  }, [isFetching, isBatchLoading, isSearchActive, searchResult.isLoading]);
+
+  // Clear errors when fetching starts
+  React.useEffect(() => {
+    if (isFetching) {
+      globalErrors.clear();
+    }
+  }, [isFetching]);
+
+  // Handle query errors
+  React.useEffect(() => {
     if (
-      !rolesDataResponse.isLoading &&
+      !isBatchLoading &&
+      !isFetching &&
       rolesDataResponse.isError &&
       rolesDataResponse.error !== undefined
     ) {
       window.location.reload();
     }
-  }, [rolesDataResponse]);
+  }, [rolesDataResponse.isError, isBatchLoading, isFetching]);
 
   const refreshData = () => {
-    setShowTableRows(false);
-    setTotalCount(0);
+    setIsSearchActive(false);
+    setSearchData(null);
     clearSelectedRoles();
     rolesDataResponse.refetch();
   };
 
   React.useEffect(() => {
-    rolesDataResponse.refetch();
+    if (!isSearchActive) {
+      rolesDataResponse.refetch();
+    }
   }, [page, perPage]);
 
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
@@ -151,12 +177,12 @@ const Roles = () => {
     setSelectedRoles([]);
   };
 
-  const [searchRoles] = useSearchRolesEntriesMutation({});
+  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   const submitSearchValue = () => {
-    setShowTableRows(false);
     setSearchIsDisabled(true);
-    setTotalCount(0);
+    setIsSearchActive(true);
+
     searchRoles({
       searchValue: searchValue,
       sizeLimit: 0,
@@ -183,31 +209,27 @@ const Roles = () => {
               variant: "danger",
             })
           );
+          setIsSearchActive(false);
+          setSearchData(null);
         } else {
           const rolesListResult = result.data?.result.results || [];
           const rolesListSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
+          const searchTotalCount = result.data?.result.totalCount || 0;
           const roles: Role[] = [];
 
           for (let i = 0; i < rolesListSize; i++) {
             roles.push(rolesListResult[i].result);
           }
-          setTotalCount(totalCount);
-          setRolesList(roles);
-          setShowTableRows(true);
+
+          setSearchData({
+            roles,
+            totalCount: searchTotalCount,
+          });
         }
         setSearchIsDisabled(false);
       }
     });
   };
-
-  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
-
-  useEffect(() => {
-    if (showTableRows !== !isBatchLoading) {
-      setShowTableRows(!isBatchLoading);
-    }
-  }, [isBatchLoading]);
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -254,7 +276,13 @@ const Roles = () => {
     updatePage: setPage,
     updatePerPage: setPerPage,
     updateSelectedPerPage: setSelectedPerPage,
-    updateShownElementsList: setRolesList,
+    updateShownElementsList: (roles: Role[]) => {
+      if (isSearchActive) {
+        setSearchData((prev) =>
+          prev ? { ...prev, roles } : { roles, totalCount: 0 }
+        );
+      }
+    },
     totalCount,
   };
 
@@ -439,8 +467,8 @@ const Roles = () => {
         onRefresh={refreshData}
       />
       <DeleteRolesModal
-        show={showDeleteModal}
-        handleModalToggle={() => setShowDeleteModal(!showDeleteModal)}
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
         elementsToDelete={selectedRoles}
         clearSelectedElements={clearSelectedRoles}
         columnNames={columnNames}
