@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 // PatternFly
 import { Content, ContentVariants, Button } from "@patternfly/react-core";
 // Layouts
@@ -18,24 +18,29 @@ import ErrorModal from "src/components/modals/ErrorModal";
 import { BatchRPCResponse } from "src/services/rpc";
 import { useDeleteRolesMutation } from "src/services/rpcRoles";
 
-interface PropsToDeleteRoles {
-  show: boolean;
-  handleModalToggle: () => void;
+interface DeleteRolesModalProps {
+  isOpen: boolean;
+  onClose: () => void;
   elementsToDelete: Role[];
   clearSelectedElements: () => void;
   columnNames: string[];
   keyNames: string[];
-  onRefresh?: () => void;
+  onRefresh: () => void;
   updateIsDeleteButtonDisabled: (value: boolean) => void;
   updateIsDeletion: (value: boolean) => void;
 }
 
-const DeleteRolesModal = (props: PropsToDeleteRoles) => {
+const DeleteRolesModal = (props: DeleteRolesModalProps) => {
   const dispatch = useAppDispatch();
 
+  // RPC calls
   const [executeRolesDelCommand] = useDeleteRolesMutation();
 
+  // States
   const [spinning, setBtnSpinning] = React.useState<boolean>(false);
+  const [isModalErrorOpen, setIsModalErrorOpen] = React.useState(false);
+  const [errorTitle, setErrorTitle] = React.useState("");
+  const [errorMessage, setErrorMessage] = React.useState("");
 
   const fields = [
     {
@@ -61,35 +66,7 @@ const DeleteRolesModal = (props: PropsToDeleteRoles) => {
     },
   ];
 
-  const closeModal = () => {
-    props.handleModalToggle();
-  };
-
-  const [isModalErrorOpen, setIsModalErrorOpen] = useState(false);
-  const [errorTitle, setErrorTitle] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const closeAndCleanErrorParameters = () => {
-    setIsModalErrorOpen(false);
-    setErrorTitle("");
-    setErrorMessage("");
-  };
-
-  const onCloseErrorModal = () => {
-    closeAndCleanErrorParameters();
-  };
-
-  const errorModalActions = [
-    <Button
-      key="cancel"
-      variant="link"
-      onClick={onCloseErrorModal}
-      data-cy="modal-button-ok"
-    >
-      OK
-    </Button>,
-  ];
-
+  // Handle API error data
   const handleAPIError = (error: FetchBaseQueryError | SerializedError) => {
     if ("code" in error) {
       setErrorTitle("IPA error " + error.code + ": " + error.name);
@@ -100,15 +77,22 @@ const DeleteRolesModal = (props: PropsToDeleteRoles) => {
       const errorData = error.data as ErrorData;
       const errorCode = errorData.code as string;
       const errorName = errorData.name as string;
-      const errorMessage = errorData.error as string;
+      const errorMsg = errorData.error as string;
 
       setErrorTitle("IPA error " + errorCode + ": " + errorName);
-      setErrorMessage(errorMessage);
+      setErrorMessage(errorMsg);
     }
     setIsModalErrorOpen(true);
   };
 
-  const deleteRoles = () => {
+  const closeAndCleanErrorParameters = () => {
+    setIsModalErrorOpen(false);
+    setErrorTitle("");
+    setErrorMessage("");
+  };
+
+  // Delete handler
+  const onDeleteRoles = () => {
     setBtnSpinning(true);
 
     executeRolesDelCommand(props.elementsToDelete).then((response) => {
@@ -130,7 +114,6 @@ const DeleteRolesModal = (props: PropsToDeleteRoles) => {
             } as FetchBaseQueryError;
 
             handleAPIError(error);
-            setBtnSpinning(false);
           } else {
             props.clearSelectedElements();
             props.updateIsDeleteButtonDisabled(true);
@@ -144,22 +127,21 @@ const DeleteRolesModal = (props: PropsToDeleteRoles) => {
               })
             );
 
-            setBtnSpinning(false);
-            closeModal();
-            if (props.onRefresh !== undefined) {
-              props.onRefresh();
-            }
+            props.onClose();
+            props.onRefresh();
           }
         }
       }
+      setBtnSpinning(false);
     });
   };
 
-  const modalActionsDelete: JSX.Element[] = [
+  // Modal actions
+  const modalActions: JSX.Element[] = [
     <Button
       key="delete-roles"
       variant="danger"
-      onClick={deleteRoles}
+      onClick={onDeleteRoles}
       form="delete-roles-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
@@ -172,10 +154,22 @@ const DeleteRolesModal = (props: PropsToDeleteRoles) => {
     <Button
       key="cancel-delete-roles"
       variant="link"
-      onClick={closeModal}
+      onClick={props.onClose}
       data-cy="modal-button-cancel"
     >
       Cancel
+    </Button>,
+  ];
+
+  // Error modal actions
+  const errorModalActions = [
+    <Button
+      key="cancel"
+      variant="link"
+      onClick={closeAndCleanErrorParameters}
+      data-cy="modal-button-ok"
+    >
+      OK
     </Button>,
   ];
 
@@ -189,16 +183,16 @@ const DeleteRolesModal = (props: PropsToDeleteRoles) => {
         title="Remove roles"
         formId="delete-roles-modal"
         fields={fields}
-        show={props.show}
-        onClose={closeModal}
-        actions={modalActionsDelete}
+        show={props.isOpen}
+        onClose={props.onClose}
+        actions={modalActions}
       />
       {isModalErrorOpen && (
         <ErrorModal
           dataCy="delete-roles-modal-error"
           title={errorTitle}
           isOpen={isModalErrorOpen}
-          onClose={onCloseErrorModal}
+          onClose={closeAndCleanErrorParameters}
           actions={errorModalActions}
           errorMessage={errorMessage}
         />

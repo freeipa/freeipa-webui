@@ -1,17 +1,13 @@
-# Main Pages — Walkthrough: Steps 1–8 (Init, State & Data Fetching)
+# Main Pages — Walkthrough: Init, State & Data Fetching
 
 > **Part of:** [Main Pages guide](../main-pages.md)
-> **See also:** [Structure & Imports](02-structure-and-anatomy.md) | [Steps 9–14: Selection & Toolbar](04-walkthrough-selection-toolbar.md)
+> **See also:** [Structure & Imports](02-structure-and-anatomy.md) | [Selection & Toolbar](04-walkthrough-selection-toolbar.md)
 
-## Step-by-Step Walkthrough
-
-### 1. Route & Browser Title
+## Step 1: Route & Browser Title
 
 ```tsx
 const MyEntities = () => {
   const dispatch = useAppDispatch();
-
-  // pathname must match the route segment in AppRoutes.tsx and NavRoutes.ts
   const { browserTitle } = useUpdateRoute({ pathname: "my-entities" });
 
   React.useEffect(() => {
@@ -19,13 +15,9 @@ const MyEntities = () => {
   }, [browserTitle]);
 ```
 
-The `pathname` value (e.g. `"my-entities"`) must be registered in:
-- `src/navigation/AppRoutes.tsx` — the `<Route>` tree
-- `src/navigation/NavRoutes.ts` — navigation metadata (group, breadcrumb, title)
+The `pathname` must be registered in `AppRoutes.tsx` and `NavRoutes.ts`.
 
-See [10-routing-and-conventions.md](10-routing-and-conventions.md) for the full routing setup.
-
-### 2. API Version & URL Parameters
+## Step 2: API Version & URL Parameters
 
 ```tsx
   const apiVersion = useAppSelector(
@@ -36,181 +28,132 @@ See [10-routing-and-conventions.md](10-routing-and-conventions.md) for the full 
     useListPageSearchParams();
 ```
 
-`useListPageSearchParams` keeps `page`, `perPage`, and `searchValue` in sync with URL query parameters (`?p=`, `?size=`, `?search=`).
-
-### 3. Core State
+## Step 3: Data Fetching Query
 
 ```tsx
-  const [entitiesList, setEntitiesList] = useState<MyEntity[]>([]);
-
-  const globalErrors = useApiError([]);
-  const modalErrors = useApiError([]);
-
-  const [totalCount, setTotalCount] = useState<number>(0);
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
-
-  // Page indexes (for server-side pagination)
-  const firstIdx = Math.max(0, (page - 1) * perPage);
+  const firstIdx = (page - 1) * perPage;
   const lastIdx = page * perPage;
-```
 
-### 4. Data Fetching (Initial Load)
-
-There are **two patterns** for the initial data query:
-
-#### Pattern A: Generic query via `useGetting*Query` (most common)
-
-Used by ActiveUsers, Hosts, HBACRules, Netgroups, Services, etc.
-
-```tsx
   const dataResponse = useGettingMyEntitiesQuery({
-    searchValue: searchValue,
+    searchValue: "",
     sizeLimit: 0,
     apiVersion: apiVersion || API_VERSION_BACKUP,
     startIdx: firstIdx,
     stopIdx: lastIdx,
   } as GenericPayload);
 
-  const {
-    data: batchResponse,
-    isLoading: isBatchLoading,
-    error: batchError,
-  } = dataResponse;
+  const { data: batchResponse, isLoading, isFetching, error } = dataResponse;
 ```
 
-#### Pattern B: Domain-specific query (newer pattern)
+## Step 4: Derive State with useMemo (Recommended)
 
-Used by DnsZones, Trusts, etc. These have their own `useGet*FullDataQuery` with custom payloads.
-
-```tsx
-  const dataResponse = useGetMyEntitiesFullDataQuery({
-    searchValue,
-    apiVersion,
-    sizelimit: 100,
-    startIdx: firstIdx,
-    stopIdx: lastIdx,
-  });
-
-  const { data, isLoading, error } = dataResponse;
-```
-
-### 5. Handle API Response
+Use `useMemo` to derive `entitiesList` and `totalCount` from the query response — **do not** use `useEffect` + `useState` to sync state:
 
 ```tsx
-  useEffect(() => {
-    if (dataResponse.isFetching) {
-      setShowTableRows(false);
-      setTotalCount(0);
-      globalErrors.clear();
-      return;
+  // Search state (for mutation-based search)
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [searchData, setSearchData] = useState<{ entities: MyEntity[]; totalCount: number } | null>(null);
+
+  // Derive entitiesList and totalCount
+  const { entitiesList, totalCount } = useMemo(() => {
+    if (isSearchActive && searchData) {
+      return { entitiesList: searchData.entities, totalCount: searchData.totalCount };
     }
 
-    // Success
-    if (dataResponse.isSuccess && dataResponse.data && batchResponse !== undefined) {
-      const listResult = batchResponse.result.results;
-      const totalCount = batchResponse.result.totalCount;
-      const listSize = batchResponse.result.count;
+    if (batchResponse?.result) {
+      const results = batchResponse.result.results;
       const entities: MyEntity[] = [];
-
-      for (let i = 0; i < listSize; i++) {
-        entities.push(listResult[i].result);
+      for (let i = 0; i < batchResponse.result.count; i++) {
+        entities.push(results[i].result);
       }
-
-      setTotalCount(totalCount);
-      setEntitiesList(entities);
-      setShowTableRows(true);
+      return { entitiesList: entities, totalCount: batchResponse.result.totalCount };
     }
 
-    // Error
-    if (!dataResponse.isLoading && dataResponse.isError && dataResponse.error !== undefined) {
+    return { entitiesList: [], totalCount: 0 };
+  }, [batchResponse, isSearchActive, searchData]);
+
+  // Derive showTableRows from loading states
+  const showTableRows = useMemo(() => {
+    if (isSearchActive) return !searchResult.isLoading;
+    return !isFetching && !isLoading;
+  }, [isFetching, isLoading, isSearchActive, searchResult.isLoading]);
+```
+
+This pattern avoids eslint warnings about calling `setState` in `useEffect`.
+
+## Step 5: Error Handling
+
+```tsx
+  const globalErrors = useApiError([]);
+
+  React.useEffect(() => {
+    if (isFetching) {
+      globalErrors.clear();
+    }
+  }, [isFetching]);
+
+  React.useEffect(() => {
+    if (!isLoading && !isFetching && dataResponse.isError) {
       window.location.reload();
     }
-  }, [dataResponse]);
+  }, [dataResponse.isError, isLoading, isFetching]);
 ```
 
-**Note:** If the entity requires transformation from API format, use a mapper function (e.g. `apiToTrust`, `apiToDnsZone`) inside the loop instead of pushing raw results. See [Entity Utils](08-delete-modal-and-utils.md).
-
-### 6. Refetch on Mount
-
-```tsx
-  React.useEffect(() => {
-    dataResponse.refetch();
-  }, []);
-```
-
-Some pages also refetch when `page` or `perPage` changes:
-
-```tsx
-  React.useEffect(() => {
-    dataResponse.refetch();
-  }, [page, perPage]);
-```
-
-### 7. Refresh Handler
+## Step 6: Refresh Handler
 
 ```tsx
   const refreshData = () => {
-    setShowTableRows(false);
-    setTotalCount(0);
+    setIsSearchActive(false);
+    setSearchData(null);
     clearSelectedEntities();
     dataResponse.refetch();
   };
+
+  React.useEffect(() => {
+    if (!isSearchActive) {
+      dataResponse.refetch();
+    }
+  }, [page, perPage]);
 ```
 
-### 8. Search (Explicit Submit)
-
-Two patterns exist:
-
-#### Pattern A: Using the generic `useSearchEntriesMutation`
+## Step 7: Search Handler
 
 ```tsx
-  const [retrieveEntries] = useSearchEntriesMutation({});
+  const [searchEntities, searchResult] = useSearchMyEntitiesEntriesMutation({});
+  const [searchDisabled, setSearchIsDisabled] = useState(false);
 
   const submitSearchValue = () => {
-    setShowTableRows(false);
     setSearchIsDisabled(true);
-    setTotalCount(0);
+    setIsSearchActive(true);
 
-    retrieveEntries({
-      searchValue: searchValue,
+    searchEntities({
+      searchValue,
       sizeLimit: 0,
       apiVersion: apiVersion || API_VERSION_BACKUP,
       startIdx: firstIdx,
       stopIdx: lastIdx,
-      entryType: "myentity",  // Must be a valid entryType in GenericPayload
-    } as GenericPayload).then((result) => {
+    }).then((result) => {
       if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
+        const searchError = result.data?.error;
 
         if (searchError) {
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for my entities",
-              variant: "danger",
-            })
-          );
+          dispatch(addAlert({
+            name: "submit-search-value-error",
+            title: searchError.message || "Error when searching",
+            variant: "danger",
+          }));
+          setIsSearchActive(false);
+          setSearchData(null);
         } else {
-          const listResult = result.data?.result.results || [];
-          const listSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
+          const results = result.data?.result.results || [];
           const entities: MyEntity[] = [];
-
-          for (let i = 0; i < listSize; i++) {
-            entities.push(listResult[i].result);
+          for (let i = 0; i < results.length; i++) {
+            entities.push(results[i].result);
           }
-
-          setTotalCount(totalCount);
-          setEntitiesList(entities);
-          setShowTableRows(true);
+          setSearchData({
+            entities,
+            totalCount: result.data?.result.totalCount || 0,
+          });
         }
         setSearchIsDisabled(false);
       }
@@ -218,22 +161,19 @@ Two patterns exist:
   };
 ```
 
-**Important:** The `entryType` value must be registered in `GenericPayload` (in `src/services/rpc.ts`) and have corresponding `*_find` / `*_show` method mappings in the `searchEntries` mutation.
+## Legacy Pattern (Avoid)
 
-#### Pattern B: Domain-specific search mutation
+The older pattern using `useEffect` + `setState` triggers eslint warnings:
 
 ```tsx
-  const [searchEntry] = useSearchMyEntitiesEntriesMutation();
-
-  const submitSearchValue = () => {
-    searchEntry({
-      searchValue,
-      apiVersion,
-      sizelimit: 100,
-      startIdx: 0,
-      stopIdx: 200,
-    }).then((result) => {
-      // Same error handling pattern...
-    });
-  };
+// AVOID: This pattern causes @eslint-react/hooks-extra/no-direct-set-state-in-use-effect warnings
+useEffect(() => {
+  if (dataResponse.isSuccess && batchResponse) {
+    setEntitiesList(/* ... */);  // Warning!
+    setTotalCount(/* ... */);    // Warning!
+    setShowTableRows(true);      // Warning!
+  }
+}, [dataResponse]);
 ```
+
+Use the `useMemo` pattern from Step 4 instead.
