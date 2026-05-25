@@ -202,5 +202,11 @@
       "name": "Associating authentication indicators with an IdM service using IdM Web UI",
       "url": "https://red.ht/associating-auth-indicators-service"
     }
+  ],
+  "user-groups": [
+    {
+      "name": "Manage user groups",
+      "url": "https://red.ht/manage-user-groups"
+    }
   ]
 }
