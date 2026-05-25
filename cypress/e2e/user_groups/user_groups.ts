@@ -5,24 +5,6 @@ import { navigateTo } from "../common/navigation";
 import { selectOption } from "../common/ui/select";
 import { isOptionSelected } from "../common/ui/select";
 
-const createUserGroupExec = (groupName: string) => {
-  cy.ipa({
-    command: "group-add",
-    name: groupName,
-  });
-};
-
-Given("I delete user group {string}", (groupName: string) => {
-  cy.ipa({
-    command: "group-del",
-    name: groupName,
-  });
-});
-
-Given("user group {string} exists", (groupName: string) => {
-  createUserGroupExec(groupName);
-});
-
 type MemberType = "member_user" | "member_group" | "member_service";
 
 type MemberOfType =
