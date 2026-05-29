@@ -79,17 +79,20 @@ const AutomountLocations = () => {
   const [isSearchDisabled, setIsSearchDisabled] = React.useState(false);
 
   // API calls
-  const locationsResponse = useGetAutomountLocationsFullDataQuery({
-    searchValue,
-    apiVersion,
-    sizelimit: 0,
-    startIdx: firstIdx,
-    stopIdx: lastIdx,
-  });
+  const locationsResponse = useGetAutomountLocationsFullDataQuery(
+    {
+      searchValue,
+      apiVersion,
+      sizelimit: 100,
+      startIdx: firstIdx,
+      stopIdx: lastIdx,
+    },
+    { refetchOnMountOrArgChange: true }
+  );
 
   const { data, isLoading, error } = locationsResponse;
 
-  // Process data and update state when response changes
+  // Handle auth errors
   React.useEffect(() => {
     if (locationsResponse.isFetching) {
       globalErrors.clear();
@@ -106,41 +109,19 @@ const AutomountLocations = () => {
     }
   }, [locationsResponse, navigate, globalErrors]);
 
-  // Compute locations data from API response
-  const locations = React.useMemo(() => {
-    if (
-      locationsResponse.isSuccess &&
-      locationsResponse.data &&
-      data !== undefined
-    ) {
-      const listResult = data.result.results;
-      const listSize = data.result.count;
-      const elementsList: AutomountLocation[] = [];
-
-      for (let i = 0; i < listSize; i++) {
-        elementsList.push(apiToAutomountLocation(listResult[i].result));
-      }
-
-      return elementsList;
+  // Derive locations from API response
+  const locations: AutomountLocation[] = [];
+  if (locationsResponse.isSuccess && data) {
+    for (let i = 0; i < data.result.count; i++) {
+      locations.push(apiToAutomountLocation(data.result.results[i].result));
     }
-    return [];
-  }, [data, locationsResponse.isSuccess, locationsResponse.data]);
+  }
 
-  // Compute total count from API response
-  const totalCount = React.useMemo(() => {
-    if (locationsResponse.isSuccess && locationsResponse.data) {
-      return locationsResponse.data.result.totalCount;
-    }
-    return 0;
-  }, [locationsResponse.isSuccess, locationsResponse.data]);
+  const totalCount =
+    locationsResponse.isSuccess && data ? data.result.totalCount : 0;
 
-  // Compute derived state for showTableRows
-  const showTableRows = React.useMemo(() => {
-    if (locationsResponse.isFetching) {
-      return false;
-    }
-    return !isLoading;
-  }, [locationsResponse.isFetching, isLoading]);
+  const showTableRows =
+    !locationsResponse.isFetching && !locationsResponse.isLoading && !isLoading;
 
   // Selected elements
   const [selectedElements, setSelectedElements] = React.useState<
@@ -169,14 +150,18 @@ const AutomountLocations = () => {
     items: AutomountLocation[],
     isSelected: boolean
   ) => {
-    let newSelected: AutomountLocation[] = [];
+    let newSelectedLocations: AutomountLocation[] = [];
     if (isSelected) {
-      newSelected = JSON.parse(JSON.stringify(selectedElements));
+      newSelectedLocations = JSON.parse(JSON.stringify(selectedElements));
       for (let i = 0; i < items.length; i++) {
-        if (selectedElements.find((selected) => selected.cn === items[i].cn)) {
+        if (
+          selectedElements.find(
+            (selectedLocation) => selectedLocation.cn === items[i].cn
+          )
+        ) {
           continue;
         }
-        newSelected.push(items[i]);
+        newSelectedLocations.push(items[i]);
       }
     } else {
       for (let i = 0; i < selectedElements.length; i++) {
@@ -188,12 +173,12 @@ const AutomountLocations = () => {
           }
         }
         if (!found) {
-          newSelected.push(selectedElements[i]);
+          newSelectedLocations.push(selectedElements[i]);
         }
       }
     }
-    setSelectedElements(newSelected);
-    setIsDeleteButtonDisabled(newSelected.length === 0);
+    setSelectedElements(newSelectedLocations);
+    setIsDeleteButtonDisabled(newSelectedLocations.length === 0);
   };
 
   const setLocationSelected = (
@@ -205,11 +190,6 @@ const AutomountLocations = () => {
     }
   };
 
-  // Always refetch data when the component is loaded.
-  React.useEffect(() => {
-    locationsResponse.refetch();
-  }, []);
-
   // Search API call
   const [searchEntry] = useSearchAutomountLocationsEntriesMutation();
 
@@ -218,7 +198,7 @@ const AutomountLocations = () => {
     searchEntry({
       searchValue,
       apiVersion,
-      sizelimit: 0,
+      sizelimit: 100,
       startIdx: 0,
       stopIdx: perPage,
     }).then((result) => {
@@ -270,11 +250,6 @@ const AutomountLocations = () => {
     nameAttr: "cn",
   };
 
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
-  };
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
@@ -291,7 +266,10 @@ const AutomountLocations = () => {
           buttonsData={{
             updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
           }}
-          selectedPerPageData={selectedPerPageData}
+          selectedPerPageData={{
+            selectedPerPage,
+            updateSelectedPerPage: setSelectedPerPage,
+          }}
         />
       ),
     },
