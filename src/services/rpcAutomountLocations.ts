@@ -196,7 +196,6 @@ const extendedApi = api.injectEndpoints({
 
 export const {
   useGetAutomountLocationsFullDataQuery,
-  useSearchAutomountLocationsEntriesMutation,
   useAddAutomountLocationMutation,
   useDeleteAutomountLocationsMutation,
 } = extendedApi;
