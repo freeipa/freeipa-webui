@@ -67,6 +67,8 @@ const TrustsGroupRef = "trusts";
 const TrustsGlobalConfigGroupRef = "trusts-config";
 // - Topology
 const TopologyGroupRef = "topology-graph";
+// - Roles
+const RolesGroupRef = "roles";
 // - Configuration
 const ConfigRef = "configuration";
 
@@ -455,6 +457,13 @@ export const getNavigationRoutes = (
               items: [],
             },
           ],
+        },
+        {
+          label: "Roles",
+          group: RolesGroupRef,
+          title: `${BASE_TITLE} - Roles`,
+          path: "roles",
+          items: [],
         },
         {
           label: "Configuration",

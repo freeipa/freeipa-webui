@@ -74,6 +74,24 @@ When rendering the delete modal from the main page, pass `columnNames` and `keyN
 />
 ```
 
+### Return Statement
+
+Always use a direct `return (...)` statement — do not assign JSX to an intermediate variable:
+
+```tsx
+// Correct:
+return (
+  <>
+    <ModalWithFormLayout ... />
+    {isModalErrorOpen && <ErrorModal ... />}
+  </>
+);
+
+// Avoid:
+const modalDelete: JSX.Element = (...);
+return modalDelete;
+```
+
 ### Existing Examples
 
 | Entity | Delete modal file | Props pattern |
