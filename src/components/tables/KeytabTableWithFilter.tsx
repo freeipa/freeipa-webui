@@ -297,6 +297,7 @@ const KeytabTableWithFilter = (props: PropsToKeytabTable) => {
         onSearchChange={onSearchChange}
         searchValue={searchValue}
         paginationData={paginationData}
+        entryCount={tableEntryList.length}
         list={tableEntriesFilteredList}
         entryType={props.entityType}
         extraID={props.extraId}
