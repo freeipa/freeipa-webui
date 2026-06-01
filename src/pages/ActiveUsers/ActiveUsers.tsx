@@ -43,6 +43,7 @@ import DisableEnableUsers from "src/components/modals/UserModals/DisableEnableUs
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Utils
 import { API_VERSION_BACKUP, isUserSelectable } from "src/utils/utils";
 // RPC client
@@ -605,16 +606,9 @@ const ActiveUsers = () => {
   };
 
   // Contextual links panel
-  const [isContextualPanelExpanded, setIsContextualPanelExpanded] =
-    React.useState(false);
-
-  const onOpenContextualPanel = () => {
-    setIsContextualPanelExpanded(!isContextualPanelExpanded);
-  };
-
-  const onCloseContextualPanel = () => {
-    setIsContextualPanelExpanded(false);
-  };
+  const contextualPanel = useContextualHelpPanel({
+    defaultPage: "active-users",
+  });
 
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
@@ -732,7 +726,7 @@ const ActiveUsers = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={onOpenContextualPanel}
+          onClick={() => contextualPanel.setIsExpanded((prev) => !prev)}
         />
       ),
     },
@@ -752,11 +746,7 @@ const ActiveUsers = () => {
 
   // Render 'Active users'
   return (
-    <ContextualHelpPanel
-      fromPage="active-users"
-      isExpanded={isContextualPanelExpanded}
-      onClose={onCloseContextualPanel}
-    >
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
       <div>
         <PageSection
           hasBodyWrapper={false}

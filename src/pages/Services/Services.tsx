@@ -38,6 +38,7 @@ import DeleteServices from "../../components/modals/DeleteServices";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Errors
 import useApiError from "../../hooks/useApiError";
 import GlobalErrors from "../../components/errors/GlobalErrors";
@@ -436,16 +437,7 @@ const Services = () => {
   };
 
   // Contextual links panel
-  const [isContextualPanelExpanded, setIsContextualPanelExpanded] =
-    React.useState(false);
-
-  const onOpenContextualPanel = () => {
-    setIsContextualPanelExpanded(!isContextualPanelExpanded);
-  };
-
-  const onCloseContextualPanel = () => {
-    setIsContextualPanelExpanded(false);
-  };
+  const contextualPanel = useContextualHelpPanel({ defaultPage: "services" });
 
   // List of toolbar items
   const toolbarItems: ToolbarItem[] = [
@@ -525,7 +517,7 @@ const Services = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={onOpenContextualPanel}
+          onClick={() => contextualPanel.setIsExpanded((prev) => !prev)}
         />
       ),
     },
@@ -545,11 +537,7 @@ const Services = () => {
 
   // Render component
   return (
-    <ContextualHelpPanel
-      fromPage="services"
-      isExpanded={isContextualPanelExpanded}
-      onClose={onCloseContextualPanel}
-    >
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
       <div>
         <PageSection hasBodyWrapper={false}>
           <TitleLayout id="Services title" headingLevel="h1" text="Services" />

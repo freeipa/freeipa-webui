@@ -9,6 +9,7 @@ import TitleLayout from "src/components/layouts/TitleLayout";
 import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Hooks
 import { useUserSettings } from "src/hooks/useUserSettingsData";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
@@ -45,23 +46,9 @@ const PreservedUsersTabs = () => {
   }, [uid]);
 
   // Contextual links panel
-  const [fromPageSelected, setFromPageSelected] = React.useState(
-    "preserved-users-settings"
-  );
-  const [isContextualPanelExpanded, setIsContextualPanelExpanded] =
-    React.useState(false);
-
-  const changeFromPage = (fromPage: string) => {
-    setFromPageSelected(fromPage);
-  };
-
-  const onOpenContextualPanel = () => {
-    setIsContextualPanelExpanded(!isContextualPanelExpanded);
-  };
-
-  const onCloseContextualPanel = () => {
-    setIsContextualPanelExpanded(false);
-  };
+  const contextualPanel = useContextualHelpPanel({
+    defaultPage: "preserved-users-settings",
+  });
 
   // Data loaded from DB
   const userSettingsData = useUserSettings(uid);
@@ -90,11 +77,7 @@ const PreservedUsersTabs = () => {
 
   return (
     <>
-      <ContextualHelpPanel
-        fromPage={fromPageSelected}
-        isExpanded={isContextualPanelExpanded}
-        onClose={onCloseContextualPanel}
-      >
+      <ContextualHelpPanel {...contextualPanel.panelProps}>
         <PageSection hasBodyWrapper={false}>
           <BreadCrumb breadcrumbItems={breadcrumbItems} />
           <TitleLayout
@@ -135,8 +118,10 @@ const PreservedUsersTabs = () => {
                 radiusProxyData={userSettingsData.radiusServers}
                 idpData={userSettingsData.idpServers}
                 from="preserved-users"
-                changeFromPage={changeFromPage}
-                onOpenContextualPanel={onOpenContextualPanel}
+                changeFromPage={contextualPanel.setFromPage}
+                onOpenContextualPanel={() =>
+                  contextualPanel.setIsExpanded((prev) => !prev)
+                }
               />
             </Tab>
           </Tabs>

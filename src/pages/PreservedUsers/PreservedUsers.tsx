@@ -37,6 +37,7 @@ import RestorePreservedUsers from "src/components/modals/UserModals/RestorePrese
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -411,16 +412,9 @@ const PreservedUsers = () => {
   };
 
   // Contextual links panel
-  const [isContextualPanelExpanded, setIsContextualPanelExpanded] =
-    React.useState(false);
-
-  const onOpenContextualPanel = () => {
-    setIsContextualPanelExpanded(!isContextualPanelExpanded);
-  };
-
-  const onCloseContextualPanel = () => {
-    setIsContextualPanelExpanded(false);
-  };
+  const contextualPanel = useContextualHelpPanel({
+    defaultPage: "preserved-users",
+  });
 
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
@@ -512,7 +506,7 @@ const PreservedUsers = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={onOpenContextualPanel}
+          onClick={() => contextualPanel.setIsExpanded((prev) => !prev)}
         />
       ),
     },
@@ -532,11 +526,7 @@ const PreservedUsers = () => {
 
   // Render 'Preserved users'
   return (
-    <ContextualHelpPanel
-      fromPage="preserved-users"
-      isExpanded={isContextualPanelExpanded}
-      onClose={onCloseContextualPanel}
-    >
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
       <div>
         <PageSection hasBodyWrapper={false}>
           <TitleLayout

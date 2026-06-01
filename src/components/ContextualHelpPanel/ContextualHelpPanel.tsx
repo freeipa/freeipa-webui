@@ -23,32 +23,29 @@ interface DocLink {
   url: string;
 }
 
-interface ContextualHelpPanelProps {
-  fromPage: string;
+export interface ContextualHelpPanelProps {
+  fromPage?: string;
   isExpanded: boolean;
   onClose: () => void;
   children: React.ReactNode;
 }
 
 const ContextualHelpPanel = (props: ContextualHelpPanelProps) => {
-  // URLs from JSON
-  const [urlList, setUrlList] = React.useState<DocLink[]>([]);
-
-  React.useEffect(() => {
-    const urlList: DocLink[] = [];
-
-    if (DocumentationLinks[props.fromPage].length === 0) {
-      setUrlList([]);
-    } else {
-      DocumentationLinks[props.fromPage].map((entry) => {
-        urlList.push({
-          name: entry.name,
-          url: entry.url,
-        });
-      });
-      setUrlList(urlList);
+  const urlList = React.useMemo<DocLink[]>(() => {
+    if (!props.fromPage) {
+      return [];
     }
-  }, []);
+
+    const links = DocumentationLinks[props.fromPage];
+    if (!links || links.length === 0) {
+      return [];
+    }
+
+    return links.map((entry) => ({
+      name: entry.name,
+      url: entry.url,
+    }));
+  }, [props.fromPage]);
 
   const drawerRef = React.useRef<HTMLDivElement>(null);
 
