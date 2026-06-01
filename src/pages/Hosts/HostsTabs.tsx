@@ -16,6 +16,7 @@ import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import { Host } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import { useHostSettings } from "src/hooks/useHostSettingsData";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
@@ -42,26 +43,13 @@ const HostsTabs = ({ section }) => {
   const [hostId, setHostId] = useState("");
 
   // Contextual links panel
-  const [fromPageSelected, setFromPageSelected] =
-    React.useState("hosts-settings");
-  const [isContextualPanelExpanded, setIsContextualPanelExpanded] =
-    React.useState(false);
-
-  const changeFromPage = (fromPage: string) => {
-    setFromPageSelected(fromPage);
-  };
-
-  const onOpenContextualPanel = () => {
-    setIsContextualPanelExpanded(!isContextualPanelExpanded);
-  };
-
-  const onCloseContextualPanel = () => {
-    setIsContextualPanelExpanded(false);
-  };
+  const contextualPanel = useContextualHelpPanel({
+    defaultPage: "hosts-settings",
+  });
 
   // - Close links panel when tab section is changed
   React.useEffect(() => {
-    setIsContextualPanelExpanded(false);
+    contextualPanel.setIsExpanded(false);
   }, [section]);
 
   // Data loaded from DB
@@ -137,11 +125,7 @@ const HostsTabs = ({ section }) => {
 
   return (
     <>
-      <ContextualHelpPanel
-        fromPage={fromPageSelected}
-        isExpanded={isContextualPanelExpanded}
-        onClose={onCloseContextualPanel}
-      >
+      <ContextualHelpPanel {...contextualPanel.panelProps}>
         <PageSection hasBodyWrapper={false}>
           <BreadCrumb breadcrumbItems={breadcrumbItems} />
           <TitleLayout
@@ -177,8 +161,10 @@ const HostsTabs = ({ section }) => {
                 isModified={hostSettingsData.modified}
                 onResetValues={hostSettingsData.resetValues}
                 modifiedValues={hostSettingsData.modifiedValues}
-                changeFromPage={changeFromPage}
-                onOpenContextualPanel={onOpenContextualPanel}
+                changeFromPage={contextualPanel.setFromPage}
+                onOpenContextualPanel={() =>
+                  contextualPanel.setIsExpanded((prev) => !prev)
+                }
               />
             </Tab>
             <Tab

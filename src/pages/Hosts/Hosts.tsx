@@ -43,6 +43,7 @@ import { API_VERSION_BACKUP, isHostSelectable } from "src/utils/utils";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -534,16 +535,7 @@ const Hosts = () => {
   };
 
   // Contextual links panel
-  const [isContextualPanelExpanded, setIsContextualPanelExpanded] =
-    React.useState(false);
-
-  const onOpenContextualPanel = () => {
-    setIsContextualPanelExpanded(!isContextualPanelExpanded);
-  };
-
-  const onCloseContextualPanel = () => {
-    setIsContextualPanelExpanded(false);
-  };
+  const contextualPanel = useContextualHelpPanel({ defaultPage: "hosts" });
 
   // List of toolbar items
   const toolbarItems: ToolbarItem[] = [
@@ -637,7 +629,7 @@ const Hosts = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={onOpenContextualPanel}
+          onClick={() => contextualPanel.setIsExpanded((prev) => !prev)}
         />
       ),
     },
@@ -656,11 +648,7 @@ const Hosts = () => {
   ];
 
   return (
-    <ContextualHelpPanel
-      fromPage="hosts"
-      isExpanded={isContextualPanelExpanded}
-      onClose={onCloseContextualPanel}
-    >
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
       <div>
         <PageSection hasBodyWrapper={false}>
           <TitleLayout id="Hosts title" headingLevel="h1" text="Hosts" />
