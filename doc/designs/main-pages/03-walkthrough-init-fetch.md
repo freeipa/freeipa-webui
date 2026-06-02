@@ -47,17 +47,32 @@ The `pathname` must be registered in `AppRoutes.tsx` and `NavRoutes.ts`.
 
 ## Step 4: Derive State with useMemo (Recommended)
 
-Use `useMemo` to derive `entitiesList` and `totalCount` from the query response — **do not** use `useEffect` + `useState` to sync state:
+Use `useMemo` to derive `elementsList` and `totalCount` from the query response — **do not** use `useEffect` + `useState` to sync state.
+
+The `SearchDataResultType<T>` generic type (from `src/utils/datatypes/globalDataTypes.ts`) standardizes the search state structure:
+
+```tsx
+export interface SearchDataResultType<T> {
+  elementsList: T[];
+  totalCount: number;
+}
+```
+
+Use it to type the search data state:
 
 ```tsx
   // Search state (for mutation-based search)
   const [isSearchActive, setIsSearchActive] = useState(false);
-  const [searchData, setSearchData] = useState<{ entities: MyEntity[]; totalCount: number } | null>(null);
+  const [searchData, setSearchData] =
+    useState<SearchDataResultType<MyEntity> | null>(null);
 
-  // Derive entitiesList and totalCount
-  const { entitiesList, totalCount } = useMemo(() => {
+  // Derive elementsList and totalCount
+  const { elementsList, totalCount } = useMemo(() => {
     if (isSearchActive && searchData) {
-      return { entitiesList: searchData.entities, totalCount: searchData.totalCount };
+      return {
+        elementsList: searchData.elementsList,
+        totalCount: searchData.totalCount,
+      };
     }
 
     if (batchResponse?.result) {
@@ -66,10 +81,10 @@ Use `useMemo` to derive `entitiesList` and `totalCount` from the query response 
       for (let i = 0; i < batchResponse.result.count; i++) {
         entities.push(results[i].result);
       }
-      return { entitiesList: entities, totalCount: batchResponse.result.totalCount };
+      return { elementsList: entities, totalCount: batchResponse.result.totalCount };
     }
 
-    return { entitiesList: [], totalCount: 0 };
+    return { elementsList: [], totalCount: 0 };
   }, [batchResponse, isSearchActive, searchData]);
 
   // Derive showTableRows from loading states
@@ -146,13 +161,14 @@ This pattern avoids eslint warnings about calling `setState` in `useEffect`.
           setSearchData(null);
         } else {
           const results = result.data?.result.results || [];
+          const searchTotalCount = result.data?.result.totalCount || 0;
           const entities: MyEntity[] = [];
           for (let i = 0; i < results.length; i++) {
             entities.push(results[i].result);
           }
           setSearchData({
-            entities,
-            totalCount: result.data?.result.totalCount || 0,
+            elementsList: entities,
+            totalCount: searchTotalCount,
           });
         }
         setSearchIsDisabled(false);
