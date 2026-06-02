@@ -220,7 +220,9 @@ The toolbar is built as an array of `ToolbarItem` objects. The standard order is
     },
     {
       key: 7,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      // Connect to contextualPanel.toggle from useContextualHelpPanel hook
+      // See "Contextual Help Panel" in 05-walkthrough-render-table-features.md
+      element: <HelpTextWithIconLayout textContent="Help" onClick={contextualPanel.toggle} />,
     },
     {
       key: 8,

@@ -182,27 +182,98 @@ For entities that support toggling status (Active Users, HBAC Rules, DNS Zones).
 
 ### Contextual Help Panel
 
-Used by ActiveUsers, Hosts. Wraps the entire page content.
+Used by ActiveUsers, Hosts, and many other pages. Wraps the entire page content and provides a slide-out panel with contextual documentation links.
+
+#### Using the `useContextualHelpPanel` Hook
+
+The `useContextualHelpPanel` hook encapsulates all the state and logic needed for the contextual help panel, reducing boilerplate and ensuring consistency.
 
 ```tsx
-  const [isContextualPanelExpanded, setIsContextualPanelExpanded] = useState(false);
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+import useContextualHelpPanel from "src/hooks/useContextualHelpPanel";
 
-  // In the toolbar, pass onClick to HelpTextWithIconLayout:
+const MyEntities = () => {
+  // Initialize the hook with an optional default page for documentation links
+  const contextualPanel = useContextualHelpPanel({ defaultPage: "my-entities" });
+
+  // In the toolbar, pass the toggle function to HelpTextWithIconLayout:
   <HelpTextWithIconLayout
     textContent="Help"
-    onClick={() => setIsContextualPanelExpanded(!isContextualPanelExpanded)}
+    onClick={contextualPanel.toggle}
   />
 
-  // Wrap the return JSX:
+  // Wrap the return JSX using the spread panelProps:
   return (
-    <ContextualHelpPanel
-      fromPage="my-entities"
-      isExpanded={isContextualPanelExpanded}
-      onClose={() => setIsContextualPanelExpanded(false)}
-    >
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
       <div>
         {/* ...normal page content... */}
       </div>
     </ContextualHelpPanel>
   );
+};
+```
+
+#### Hook API
+
+The `useContextualHelpPanel` hook accepts an optional configuration object and returns:
+
+```tsx
+interface UseContextualHelpPanelOptions {
+  defaultPage?: string;  // Initial page key for documentation links (maps to documentation-links.json)
+}
+
+interface UseContextualHelpPanelReturn {
+  isExpanded: boolean;           // Whether the panel is currently open
+  fromPage: string;              // Current page key for documentation links
+  toggle: () => void;            // Toggle panel open/close
+  close: () => void;             // Close the panel
+  changePage: (page: string) => void;  // Change the documentation page
+  panelProps: {                  // Props to spread on ContextualHelpPanel
+    fromPage: string;
+    isExpanded: boolean;
+    onClose: () => void;
+  };
+}
+```
+
+#### Adding Documentation Links
+
+Documentation links are defined in `src/assets/documentation/documentation-links.json`. Add an entry with your page key:
+
+```json
+{
+  "my-entities": [
+    {
+      "title": "My Entities Overview",
+      "link": "https://docs.example.com/my-entities"
+    },
+    {
+      "title": "Managing My Entities",
+      "link": "https://docs.example.com/managing-my-entities"
+    }
+  ]
+}
+```
+
+If no links are defined for a page, the panel will display "No documentation links available for this page."
+
+#### Usage in Nested Components
+
+The hook can also be used in nested components (like `MembersUsers`, `MemberOfUserGroups`, etc.) that need their own contextual help panel. Simply initialize the hook in the component, wrap the content with `ContextualHelpPanel`, and pass `contextualPanel.toggle` to the toolbar's help button via the `onHelpIconClick` prop:
+
+```tsx
+const MembersUsers = (props: PropsToMembersUsers) => {
+  const contextualPanel = useContextualHelpPanel();  // No defaultPage = empty panel
+
+  return (
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <MemberOfToolbar
+        // ...other props...
+        helpIconEnabled={true}
+        onHelpIconClick={contextualPanel.toggle}
+      />
+      {/* ...rest of component... */}
+    </ContextualHelpPanel>
+  );
+};
 ```
