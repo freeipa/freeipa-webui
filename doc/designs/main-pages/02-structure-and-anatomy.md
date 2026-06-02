@@ -97,8 +97,9 @@ import { DropdownItem, Button, Content } from "@patternfly/react-core";
 import KebabLayout from "src/components/layouts/KebabLayout";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 
-// For contextual help panel
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+// For contextual help panel (topic registration + toggle)
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 
 // For enable/disable operations
 import DisableEnableMyEntitiesModal from "src/components/modals/MyEntityModals/DisableEnableMyEntitiesModal";

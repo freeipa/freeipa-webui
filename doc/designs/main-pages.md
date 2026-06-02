@@ -14,7 +14,7 @@ Each file below covers a specific, self-contained topic (~100–200 lines). Load
 | [02-structure-and-anatomy.md](main-pages/02-structure-and-anatomy.md) | Folder structure, page anatomy (10-step pattern), required & optional imports | ~105 |
 | [03-walkthrough-init-fetch.md](main-pages/03-walkthrough-init-fetch.md) | Route setup, API version, data fetching with `useMemo` pattern, `SearchDataResultType`, search handler | ~195 |
 | [04-walkthrough-selection-toolbar.md](main-pages/04-walkthrough-selection-toolbar.md) | Selection management, button state, modal state, data wrappers, toolbar items | ~200 |
-| [05-walkthrough-render-table-features.md](main-pages/05-walkthrough-render-table-features.md) | JSX render, `MainTable` usage, optional features (kebab menu, enable/disable) | ~200 |
+| [05-walkthrough-render-table-features.md](main-pages/05-walkthrough-render-table-features.md) | JSX render, `MainTable` usage, optional features (kebab menu, enable/disable, contextual help panel) | ~280 |
 | [06-checklist-and-types.md](main-pages/06-checklist-and-types.md) | Files to create/modify checklist, `SearchDataResultType`, data type definition, selectability function | ~105 |
 | [07-add-modal.md](main-pages/07-add-modal.md) | Add modal structure, props interface, code organization, error handling, template | ~175 |
 | [07b-add-modal-fields.md](main-pages/07b-add-modal-fields.md) | Add modal field types, UI components, validation, naming conventions | ~130 |
@@ -37,4 +37,5 @@ See **[Component Catalog](components/00-overview.md)** for reusable components (
 - Entity utils (`apiToEntity`, `createEmpty`) → [08-delete-modal-and-utils.md](main-pages/08-delete-modal-and-utils.md)
 - RPC service file → [09-rpc-service.md](main-pages/09-rpc-service.md)
 - Navigation registration → [10-routing-and-conventions.md](main-pages/10-routing-and-conventions.md)
+- Contextual help panel (slice + hook) → [05-walkthrough-render-table-features.md](main-pages/05-walkthrough-render-table-features.md)
 - Files checklist → [06-checklist-and-types.md](main-pages/06-checklist-and-types.md)

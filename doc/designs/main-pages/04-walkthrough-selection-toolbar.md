@@ -220,7 +220,9 @@ The toolbar is built as an array of `ToolbarItem` objects. The standard order is
     },
     {
       key: 7,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      // Dispatch toggleHelpPanel() to open/close the contextual help drawer in AppLayout
+      // See "Contextual Help Panel" in 05-walkthrough-render-table-features.md
+      element: <HelpTextWithIconLayout textContent="Help" onClick={() => dispatch(toggleHelpPanel())} />,
     },
     {
       key: 8,

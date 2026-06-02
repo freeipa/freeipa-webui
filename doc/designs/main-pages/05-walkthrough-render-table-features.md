@@ -182,27 +182,100 @@ For entities that support toggling status (Active Users, HBAC Rules, DNS Zones).
 
 ### Contextual Help Panel
 
-Used by ActiveUsers, Hosts. Wraps the entire page content.
+The contextual help panel is a slide-out drawer managed globally via Redux (`contextual-help-slice`) and rendered once in `AppLayout`. Individual pages only need to:
+
+1. **Register their help topic** on mount (cleaned up on unmount).
+2. **Toggle the panel** when the user clicks the Help button.
+
+#### Architecture
+
+- **State lives in Redux** — `contextual-help-slice` exposes `setHelpTopic`, `toggleHelpPanel`, and `closeHelpPanel`.
+- **Single panel instance** — `ContextualHelpPanel` wraps `{children}` inside `AppLayout`; pages do not render their own panel.
+- **`useContextualHelpTopic(topic)` hook** — sets the topic on mount and clears it (+ closes the panel) on unmount.
+
+#### Usage in a Main Page
 
 ```tsx
-  const [isContextualPanelExpanded, setIsContextualPanelExpanded] = useState(false);
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 
-  // In the toolbar, pass onClick to HelpTextWithIconLayout:
+const MyEntities = () => {
+  const dispatch = useAppDispatch();
+  useContextualHelpTopic("my-entities");
+
+  // In the toolbar, dispatch toggleHelpPanel on Help click:
   <HelpTextWithIconLayout
     textContent="Help"
-    onClick={() => setIsContextualPanelExpanded(!isContextualPanelExpanded)}
+    onClick={() => dispatch(toggleHelpPanel())}
   />
 
-  // Wrap the return JSX:
+  // No wrapper component needed — the panel lives in AppLayout
   return (
-    <ContextualHelpPanel
-      fromPage="my-entities"
-      isExpanded={isContextualPanelExpanded}
-      onClose={() => setIsContextualPanelExpanded(false)}
-    >
-      <div>
-        {/* ...normal page content... */}
-      </div>
-    </ContextualHelpPanel>
+    <div>
+      {/* ...normal page content... */}
+    </div>
   );
+};
+```
+
+#### Hook API
+
+```tsx
+/**
+ * Sets the contextual help topic on mount and clears it on unmount.
+ * Pages still dispatch `toggleHelpPanel()` directly on their Help button click.
+ */
+const useContextualHelpTopic = (topic: string) => void;
+```
+
+Internally the hook dispatches:
+- `setHelpTopic(topic)` on mount
+- `setHelpTopic("")` + `closeHelpPanel()` on unmount
+
+#### Adding Documentation Links
+
+Documentation links are defined in `src/assets/documentation/documentation-links.json`. Add an entry with your page key:
+
+```json
+{
+  "my-entities": [
+    {
+      "name": "My Entities Overview",
+      "url": "https://docs.example.com/my-entities"
+    },
+    {
+      "name": "Managing My Entities",
+      "url": "https://docs.example.com/managing-my-entities"
+    }
+  ]
+}
+```
+
+If no links are defined for a page, the panel will display "No documentation links available for this page."
+
+#### Usage in Tabs Pages
+
+Tabs pages (e.g. `HostsTabs`, `ActiveUsersTabs`) additionally:
+- Dispatch `closeHelpPanel()` when the active tab changes.
+- Pass `dispatch(setHelpTopic(page))` as a callback so child settings components can update the topic dynamically.
+
+```tsx
+import { closeHelpPanel, setHelpTopic, toggleHelpPanel } from "src/store/Global/contextual-help-slice";
+
+const MyEntityTabs = () => {
+  const dispatch = useAppDispatch();
+  useContextualHelpTopic("my-entity-settings");
+
+  // Close panel on tab change
+  React.useEffect(() => {
+    dispatch(closeHelpPanel());
+  }, [activeTab, dispatch]);
+
+  return (
+    <MyEntitySettings
+      changeFromPage={(page) => dispatch(setHelpTopic(page))}
+      onOpenContextualPanel={() => dispatch(toggleHelpPanel())}
+    />
+  );
+};
 ```
