@@ -13,6 +13,7 @@ type HookPanelProps = Omit<ContextualHelpPanelProps, "children"> & {
 interface UseContextualHelpPanelReturn {
   isExpanded: boolean;
   setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+  toggle: () => void;
   fromPage: string;
   setFromPage: (page: string) => void;
   panelProps: HookPanelProps;
@@ -24,6 +25,8 @@ export function useContextualHelpPanel(
   const [isExpanded, setIsExpanded] = useState(false);
   const [fromPage, setFromPage] = useState(options.defaultPage ?? "");
 
+  const toggle = () => setIsExpanded((prev) => !prev);
+
   const panelProps: HookPanelProps = {
     fromPage,
     isExpanded,
@@ -33,6 +36,7 @@ export function useContextualHelpPanel(
   return {
     isExpanded,
     setIsExpanded,
+    toggle,
     fromPage,
     setFromPage,
     panelProps,

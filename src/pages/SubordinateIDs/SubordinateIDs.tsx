@@ -17,6 +17,7 @@ import { SubId } from "src/utils/datatypes/globalDataTypes";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Redux
 import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // Components
@@ -28,6 +29,7 @@ import PaginationLayout from "src/components/layouts/PaginationLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 import MainTable from "src/components/tables/MainTable";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -45,6 +47,9 @@ import AddModal from "src/components/modals/SubIdsModals/AddModal";
 
 const SubordinateIDs = () => {
   const dispatch = useAppDispatch();
+
+  // Contextual help panel
+  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "subordinate-ids" });
@@ -315,7 +320,12 @@ const SubordinateIDs = () => {
     },
     {
       key: 5,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={contextualPanel.toggle}
+        />
+      ),
     },
     {
       key: 6,
@@ -333,69 +343,73 @@ const SubordinateIDs = () => {
 
   // Render component
   return (
-    <div>
-      <PageSection hasBodyWrapper={false}>
-        <TitleLayout
-          id="Subordinate IDs page"
-          headingLevel="h1"
-          text="Subordinate IDs"
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <div>
+        <PageSection hasBodyWrapper={false}>
+          <TitleLayout
+            id="Subordinate IDs page"
+            headingLevel="h1"
+            text="Subordinate IDs"
+          />
+        </PageSection>
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem style={{ flex: "0 0 auto" }}>
+              <OuterScrollContainer>
+                <InnerScrollContainer
+                  style={{ height: "60vh", overflow: "auto" }}
+                >
+                  {batchError !== undefined && batchError ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <MainTable
+                      tableTitle="Subordinate IDs table"
+                      shownElementsList={subIds}
+                      pk="ipauniqueid"
+                      keyNames={[
+                        "ipauniqueid",
+                        "ipaowner",
+                        "ipasubgidnumber",
+                        "ipasubuidnumber",
+                      ]}
+                      columnNames={[
+                        "Unique ID",
+                        "Owner",
+                        "SubGID range start",
+                        "SubUID range start",
+                      ]}
+                      hasCheckboxes={false}
+                      pathname="subordinate-ids"
+                      showTableRows={showTableRows}
+                      showLink={true}
+                    />
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={subIds}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+              />
+            </FlexItem>
+          </Flex>
+        </PageSection>
+        <AddModal
+          isOpen={showAddModal}
+          onCloseModal={onCloseAddModal}
+          onRefresh={refreshData}
+          title="Add Subordinate ID"
         />
-      </PageSection>
-      <PageSection hasBodyWrapper={false} isFilled={false}>
-        <Flex direction={{ default: "column" }}>
-          <FlexItem>
-            <ToolbarLayout toolbarItems={toolbarItems} />
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto" }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer
-                style={{ height: "60vh", overflow: "auto" }}
-              >
-                {batchError !== undefined && batchError ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <MainTable
-                    tableTitle="Subordinate IDs table"
-                    shownElementsList={subIds}
-                    pk="ipauniqueid"
-                    keyNames={[
-                      "ipauniqueid",
-                      "ipaowner",
-                      "ipasubgidnumber",
-                      "ipasubuidnumber",
-                    ]}
-                    columnNames={[
-                      "Unique ID",
-                      "Owner",
-                      "SubGID range start",
-                      "SubUID range start",
-                    ]}
-                    hasCheckboxes={false}
-                    pathname="subordinate-ids"
-                    showTableRows={showTableRows}
-                    showLink={true}
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
-            <PaginationLayout
-              list={subIds}
-              paginationData={paginationData}
-              variant={PaginationVariant.bottom}
-              widgetId="pagination-options-menu-bottom"
-            />
-          </FlexItem>
-        </Flex>
-      </PageSection>
-      <AddModal
-        isOpen={showAddModal}
-        onCloseModal={onCloseAddModal}
-        onRefresh={refreshData}
-        title="Add Subordinate ID"
-      />
-    </div>
+      </div>
+    </ContextualHelpPanel>
   );
 };
 

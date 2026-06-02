@@ -13,11 +13,13 @@ import MemberOfToolbar from "./MemberOfToolbar";
 import MemberTable from "src/components/tables/MembershipTable";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // RPC
 import { ErrorResult } from "src/services/rpc";
@@ -42,6 +44,7 @@ interface MemberOfUserGroupsProps {
 
 const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   const dispatch = useAppDispatch();
+  const contextualPanel = useContextualHelpPanel();
 
   const {
     page,
@@ -282,7 +285,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
   };
 
   return (
-    <>
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
       <Flex direction={{ default: "column" }}>
         <MemberOfToolbar
           searchText={searchValue}
@@ -304,6 +307,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
           membershipDirection={membershipDirection}
           onMembershipDirectionChange={setMembershipDirection}
           helpIconEnabled={true}
+          onHelpIconClick={contextualPanel.toggle}
           totalItems={userGroupNames.length}
           perPage={perPage}
           page={page}
@@ -373,7 +377,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
           showTableRows
         />
       </MemberOfDeleteModal>
-    </>
+    </ContextualHelpPanel>
   );
 };
 

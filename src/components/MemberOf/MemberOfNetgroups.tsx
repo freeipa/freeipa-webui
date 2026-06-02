@@ -12,11 +12,13 @@ import {
 import MemberOfToolbar from "./MemberOfToolbar";
 import MemberTable from "src/components/tables/MembershipTable";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import {
@@ -45,6 +47,7 @@ interface MemberOfNetgroupsProps {
 
 const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
   const dispatch = useAppDispatch();
+  const contextualPanel = useContextualHelpPanel();
 
   const membershipDisabled =
     props.membershipDisabled === undefined ? false : props.membershipDisabled;
@@ -309,7 +312,7 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
   };
 
   return (
-    <>
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
       {membershipDisabled ? (
         <MemberOfToolbar
           searchText={searchValue}
@@ -331,6 +334,7 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
           membershipDirection={membershipDirection}
           onMembershipDirectionChange={setMembershipDirection}
           helpIconEnabled={true}
+          onHelpIconClick={contextualPanel.toggle}
           totalItems={netgroupNames.length}
           perPage={perPage}
           page={page}
@@ -355,6 +359,7 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
           addButtonEnabled={isAddButtonEnabled}
           onAddButtonClick={() => setShowAddModal(true)}
           helpIconEnabled={true}
+          onHelpIconClick={contextualPanel.toggle}
           totalItems={netgroupNames.length}
           perPage={perPage}
           page={page}
@@ -422,7 +427,7 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
           showTableRows
         />
       </MemberOfDeleteModal>
-    </>
+    </ContextualHelpPanel>
   );
 };
 

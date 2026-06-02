@@ -5,7 +5,9 @@ import { Pagination, PaginationVariant } from "@patternfly/react-core";
 import MemberOfToolbar from "../MemberOf/MemberOfToolbar";
 import MemberOfAddModal, { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
-import MemberTable from "src/components/tables/MembershipTable"; // Data types
+import MemberTable from "src/components/tables/MembershipTable";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+// Data types
 import {
   HBACService,
   HBACServiceGroup,
@@ -15,6 +17,7 @@ import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 // RPC
@@ -40,6 +43,7 @@ interface PropsToMembersHBACServices {
 
 const MembersHBACServices = (props: PropsToMembersHBACServices) => {
   const dispatch = useAppDispatch();
+  const contextualPanel = useContextualHelpPanel();
 
   // Get parameters from URL
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -256,7 +260,7 @@ const MembersHBACServices = (props: PropsToMembersHBACServices) => {
   };
 
   return (
-    <>
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
@@ -270,6 +274,7 @@ const MembersHBACServices = (props: PropsToMembersHBACServices) => {
         addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
         helpIconEnabled={true}
+        onHelpIconClick={contextualPanel.toggle}
         totalItems={props.member_hbacsvc.length}
         perPage={perPage}
         page={page}
@@ -324,7 +329,7 @@ const MembersHBACServices = (props: PropsToMembersHBACServices) => {
           showTableRows
         />
       </MemberOfDeleteModal>
-    </>
+    </ContextualHelpPanel>
   );
 };
 

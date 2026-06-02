@@ -11,11 +11,13 @@ import MemberOfToolbar from "./MemberOfToolbar";
 import MemberTable from "src/components/tables/MembershipTable";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import {
@@ -37,6 +39,7 @@ interface MemberOfHbacServicesProps {
 
 const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
   const dispatch = useAppDispatch();
+  const contextualPanel = useContextualHelpPanel();
 
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
     useListPageSearchParams();
@@ -253,7 +256,7 @@ const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
   };
 
   return (
-    <>
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
@@ -267,6 +270,7 @@ const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
         addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
         helpIconEnabled={true}
+        onHelpIconClick={contextualPanel.toggle}
         totalItems={memberof_hbacsvcgroup.length}
         perPage={perPage}
         page={page}
@@ -323,7 +327,7 @@ const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
           showTableRows
         />
       </MemberOfDeleteModal>
-    </>
+    </ContextualHelpPanel>
   );
 };
 

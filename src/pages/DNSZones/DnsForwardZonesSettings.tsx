@@ -16,6 +16,7 @@ import { Metadata } from "src/utils/datatypes/globalDataTypes";
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 import { addAlert } from "src/store/Global/alerts-slice";
 // Utils
 import { dnsForwardZoneAsRecord } from "src/utils/dnsForwardZonesUtils";
@@ -31,6 +32,7 @@ import {
 import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
 import TabLayout from "src/components/layouts/TabLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 import IpaForwardPolicy from "src/components/Form/IpaForwardPolicy";
 import IPAddressWithPortInputList from "src/components/Form/IPAddressWithPortInputList";
 
@@ -52,6 +54,9 @@ interface DnsForwardZonesSettingsProps {
 const DnsForwardZonesSettings = (props: DnsForwardZonesSettingsProps) => {
   // Alerts to show in the UI
   const dispatch = useAppDispatch();
+
+  // Contextual help panel
+  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
@@ -174,63 +179,66 @@ const DnsForwardZonesSettings = (props: DnsForwardZonesSettingsProps) => {
   ];
 
   return (
-    <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-      <Sidebar isPanelRight>
-        <SidebarPanel variant="sticky">
-          <HelpTextWithIconLayout
-            textContent="Help"
-            icon={
-              <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
-            }
-          />
-        </SidebarPanel>
-        <SidebarContent className="pf-v6-u-mr-xl">
-          <Flex direction={{ default: "column", lg: "row" }}>
-            <FlexItem flex={{ default: "flex_1" }}>
-              <Form
-                className="pf-v6-u-mb-lg"
-                id="dns-forward-zones-tab-settings-form"
-                onSubmit={onSave}
-              >
-                <FormGroup label="Zone name" role="idnsname">
-                  <IpaTextInput
-                    dataCy="dns-forward-zones-tab-settings-textbox-idnsname"
-                    name={"idnsname"}
-                    ariaLabel={"Zone name text input"}
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    objectName="dnsforwardzone"
-                    metadata={props.metadata}
-                  />
-                </FormGroup>
-                <FormGroup label="Forwarders" role="idnsforwarders">
-                  <IPAddressWithPortInputList
-                    dataCy="dns-forward-zones-tab-settings-textbox-idnsforwarders"
-                    name="idnsforwarders"
-                    ariaLabel="Forwarders text input"
-                    list={ipaObject.idnsforwarders}
-                    setList={(values: IPAddressWithPort[]) =>
-                      recordOnChange({ ...ipaObject, idnsforwarders: values })
-                    }
-                  />
-                </FormGroup>
-                <FormGroup label="Forward policy" role="idnsforwardpolicy">
-                  <IpaForwardPolicy
-                    dataCy="dns-forward-zones-tab-settings"
-                    name={"idnsforwardpolicy"}
-                    ariaLabel={"Forward policy radio group"}
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    metadata={props.metadata}
-                    objectName="dnsforwardzone"
-                  />
-                </FormGroup>
-              </Form>
-            </FlexItem>
-          </Flex>
-        </SidebarContent>
-      </Sidebar>
-    </TabLayout>
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <TabLayout id="settings-page" toolbarItems={toolbarFields}>
+        <Sidebar isPanelRight>
+          <SidebarPanel variant="sticky">
+            <HelpTextWithIconLayout
+              textContent="Help"
+              icon={
+                <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
+              }
+              onClick={contextualPanel.toggle}
+            />
+          </SidebarPanel>
+          <SidebarContent className="pf-v6-u-mr-xl">
+            <Flex direction={{ default: "column", lg: "row" }}>
+              <FlexItem flex={{ default: "flex_1" }}>
+                <Form
+                  className="pf-v6-u-mb-lg"
+                  id="dns-forward-zones-tab-settings-form"
+                  onSubmit={onSave}
+                >
+                  <FormGroup label="Zone name" role="idnsname">
+                    <IpaTextInput
+                      dataCy="dns-forward-zones-tab-settings-textbox-idnsname"
+                      name={"idnsname"}
+                      ariaLabel={"Zone name text input"}
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      objectName="dnsforwardzone"
+                      metadata={props.metadata}
+                    />
+                  </FormGroup>
+                  <FormGroup label="Forwarders" role="idnsforwarders">
+                    <IPAddressWithPortInputList
+                      dataCy="dns-forward-zones-tab-settings-textbox-idnsforwarders"
+                      name="idnsforwarders"
+                      ariaLabel="Forwarders text input"
+                      list={ipaObject.idnsforwarders}
+                      setList={(values: IPAddressWithPort[]) =>
+                        recordOnChange({ ...ipaObject, idnsforwarders: values })
+                      }
+                    />
+                  </FormGroup>
+                  <FormGroup label="Forward policy" role="idnsforwardpolicy">
+                    <IpaForwardPolicy
+                      dataCy="dns-forward-zones-tab-settings"
+                      name={"idnsforwardpolicy"}
+                      ariaLabel={"Forward policy radio group"}
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      metadata={props.metadata}
+                      objectName="dnsforwardzone"
+                    />
+                  </FormGroup>
+                </Form>
+              </FlexItem>
+            </Flex>
+          </SidebarContent>
+        </Sidebar>
+      </TabLayout>
+    </ContextualHelpPanel>
   );
 };
 

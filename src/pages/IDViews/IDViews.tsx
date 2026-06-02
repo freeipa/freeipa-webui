@@ -22,6 +22,7 @@ import ToolbarLayout, {
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Components
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
@@ -40,6 +41,7 @@ import { API_VERSION_BACKUP, isViewSelectable } from "src/utils/utils";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -60,6 +62,9 @@ import {
 
 const IDViews = () => {
   const dispatch = useAppDispatch();
+
+  // Contextual help panel
+  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "id-views" });
@@ -628,7 +633,12 @@ const IDViews = () => {
     },
     {
       key: 8,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={contextualPanel.toggle}
+        />
+      ),
     },
     {
       key: 9,
@@ -645,91 +655,95 @@ const IDViews = () => {
   ];
 
   return (
-    <div>
-      <PageSection hasBodyWrapper={false}>
-        <TitleLayout id="Views title" headingLevel="h1" text="ID views" />
-      </PageSection>
-      <PageSection hasBodyWrapper={false} isFilled={false}>
-        <Flex direction={{ default: "column" }}>
-          <FlexItem>
-            <ToolbarLayout toolbarItems={toolbarItems} />
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto" }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer
-                style={{ height: "60vh", overflow: "auto" }}
-              >
-                {batchError !== undefined && batchError ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <IDViewsTable
-                    elementsList={viewsList}
-                    shownElementsList={viewsList}
-                    showTableRows={showTableRows}
-                    idViewsData={viewsTableData}
-                    buttonsData={viewsTableButtonsData}
-                    paginationData={selectedPerPageData}
-                    searchValue={searchValue}
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
-            <PaginationLayout
-              list={viewsList}
-              paginationData={paginationData}
-              variant={PaginationVariant.bottom}
-              widgetId="pagination-options-menu-bottom"
-            />
-          </FlexItem>
-        </Flex>
-      </PageSection>
-      <ModalErrors
-        errors={modalErrors.getAll()}
-        dataCy="id-views-modal-error"
-      />
-      <AddIDViewModal
-        show={showAddModal}
-        handleModalToggle={onAddModalToggle}
-        onOpenAddModal={onAddClickHandler}
-        onCloseAddModal={onCloseAddModal}
-        onRefresh={refreshViewsData}
-      />
-      <DeleteIDViewsModal
-        show={showDeleteModal}
-        handleModalToggle={onDeleteModalToggle}
-        selectedViewsData={selectedViewsData}
-        buttonsData={deleteViewsButtonsData}
-        onRefresh={refreshViewsData}
-      />
-      <DualListLayout
-        entry={""}
-        target={"host"}
-        showModal={showHostModal}
-        onCloseModal={closeUnapplyHostModal}
-        onOpenModal={openUnapplyHostModal}
-        tableElementsList={[]}
-        action={onUnapplyHosts}
-        title={"Unapply ID views from hosts"}
-        spinning={unapplySpinning}
-        addBtnName="Unapply"
-        addSpinningBtnName="Unappling"
-      />
-      <DualListLayout
-        entry={""}
-        target={"hostgroup"}
-        showModal={showHostgroupModal}
-        onCloseModal={closeUnapplyHostgroupModal}
-        onOpenModal={openUnapplyHostgroupModal}
-        tableElementsList={[]}
-        action={onUnapplyHostgroups}
-        title={"Unapply ID views from host groups"}
-        spinning={unapplySpinning}
-        addBtnName="Unapply"
-        addSpinningBtnName="Unapplying"
-      />
-    </div>
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <div>
+        <PageSection hasBodyWrapper={false}>
+          <TitleLayout id="Views title" headingLevel="h1" text="ID views" />
+        </PageSection>
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem style={{ flex: "0 0 auto" }}>
+              <OuterScrollContainer>
+                <InnerScrollContainer
+                  style={{ height: "60vh", overflow: "auto" }}
+                >
+                  {batchError !== undefined && batchError ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <IDViewsTable
+                      elementsList={viewsList}
+                      shownElementsList={viewsList}
+                      showTableRows={showTableRows}
+                      idViewsData={viewsTableData}
+                      buttonsData={viewsTableButtonsData}
+                      paginationData={selectedPerPageData}
+                      searchValue={searchValue}
+                    />
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={viewsList}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+              />
+            </FlexItem>
+          </Flex>
+        </PageSection>
+        <ModalErrors
+          errors={modalErrors.getAll()}
+          dataCy="id-views-modal-error"
+        />
+        <AddIDViewModal
+          show={showAddModal}
+          handleModalToggle={onAddModalToggle}
+          onOpenAddModal={onAddClickHandler}
+          onCloseAddModal={onCloseAddModal}
+          onRefresh={refreshViewsData}
+        />
+        <DeleteIDViewsModal
+          show={showDeleteModal}
+          handleModalToggle={onDeleteModalToggle}
+          selectedViewsData={selectedViewsData}
+          buttonsData={deleteViewsButtonsData}
+          onRefresh={refreshViewsData}
+        />
+        <DualListLayout
+          entry={""}
+          target={"host"}
+          showModal={showHostModal}
+          onCloseModal={closeUnapplyHostModal}
+          onOpenModal={openUnapplyHostModal}
+          tableElementsList={[]}
+          action={onUnapplyHosts}
+          title={"Unapply ID views from hosts"}
+          spinning={unapplySpinning}
+          addBtnName="Unapply"
+          addSpinningBtnName="Unappling"
+        />
+        <DualListLayout
+          entry={""}
+          target={"hostgroup"}
+          showModal={showHostgroupModal}
+          onCloseModal={closeUnapplyHostgroupModal}
+          onOpenModal={openUnapplyHostgroupModal}
+          tableElementsList={[]}
+          action={onUnapplyHostgroups}
+          title={"Unapply ID views from host groups"}
+          spinning={unapplySpinning}
+          addBtnName="Unapply"
+          addSpinningBtnName="Unapplying"
+        />
+      </div>
+    </ContextualHelpPanel>
   );
 };
 

@@ -7,11 +7,13 @@ import MemberOfAddModal, { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 import MemberTable from "src/components/tables/MembershipTable";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Data types
 import { HostGroup } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 // Redux
@@ -49,6 +51,7 @@ interface PropsToMembersHostGroups {
 
 const MembersHostGroups = (props: PropsToMembersHostGroups) => {
   const dispatch = useAppDispatch();
+  const contextualPanel = useContextualHelpPanel();
 
   const membershipDisabled =
     props.membershipDisabled === undefined ? false : props.membershipDisabled;
@@ -341,7 +344,7 @@ const MembersHostGroups = (props: PropsToMembersHostGroups) => {
   };
 
   return (
-    <>
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
       {membershipDisabled ? (
         <MemberOfToolbar
           searchText={searchValue}
@@ -360,6 +363,7 @@ const MembersHostGroups = (props: PropsToMembersHostGroups) => {
           addButtonEnabled={isAddButtonEnabled}
           onAddButtonClick={() => setShowAddModal(true)}
           helpIconEnabled={true}
+          onHelpIconClick={contextualPanel.toggle}
           totalItems={hostGroupNames.length}
           perPage={perPage}
           page={page}
@@ -387,6 +391,7 @@ const MembersHostGroups = (props: PropsToMembersHostGroups) => {
           membershipDirection={membershipDirection}
           onMembershipDirectionChange={setMembershipDirection}
           helpIconEnabled={true}
+          onHelpIconClick={contextualPanel.toggle}
           totalItems={hostGroupNames.length}
           perPage={perPage}
           page={page}
@@ -456,7 +461,7 @@ const MembersHostGroups = (props: PropsToMembersHostGroups) => {
           />
         </MemberOfDeleteModal>
       )}
-    </>
+    </ContextualHelpPanel>
   );
 };
 

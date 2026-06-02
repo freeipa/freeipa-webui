@@ -22,6 +22,7 @@ import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Components
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModal";
@@ -38,6 +39,7 @@ import { useAppDispatch } from "src/store/hooks";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Errors
 import useApiError from "src/hooks/useApiError";
 import ModalErrors from "src/components/errors/ModalErrors";
@@ -60,6 +62,9 @@ interface AppliesToProps {
 
 const IDViewsAppliedTo = (props: AppliesToProps) => {
   const dispatch = useAppDispatch();
+
+  // Contextual help panel
+  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({
@@ -662,7 +667,12 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
     },
     {
       key: 7,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={contextualPanel.toggle}
+        />
+      ),
     },
     {
       key: 8,
@@ -679,95 +689,97 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
   ];
 
   return (
-    <div
-      style={{
-        height: `var(--subsettings-calc)`,
-      }}
-    >
-      <TabLayout id="override sections">
-        <PageSection hasBodyWrapper={false} isFilled={false}>
-          <ToolbarLayout toolbarItems={toolbarItems} />
-          <OuterScrollContainer>
-            <InnerScrollContainer>
-              <IDViewsAppliedToTable
-                hosts={hostsList}
-                shownHosts={shownHostsList}
-                hostsData={hostsTableData}
-                buttonsData={viewsTableButtonsData}
-                paginationData={selectedPerPageData}
-              />
-            </InnerScrollContainer>
-          </OuterScrollContainer>
-          <PaginationLayout
-            list={hostsList}
-            paginationData={paginationData}
-            variant={PaginationVariant.bottom}
-            widgetId="pagination-options-menu-bottom"
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <div
+        style={{
+          height: `var(--subsettings-calc)`,
+        }}
+      >
+        <TabLayout id="override sections">
+          <PageSection hasBodyWrapper={false} isFilled={false}>
+            <ToolbarLayout toolbarItems={toolbarItems} />
+            <OuterScrollContainer>
+              <InnerScrollContainer>
+                <IDViewsAppliedToTable
+                  hosts={hostsList}
+                  shownHosts={shownHostsList}
+                  hostsData={hostsTableData}
+                  buttonsData={viewsTableButtonsData}
+                  paginationData={selectedPerPageData}
+                />
+              </InnerScrollContainer>
+            </OuterScrollContainer>
+            <PaginationLayout
+              list={hostsList}
+              paginationData={paginationData}
+              variant={PaginationVariant.bottom}
+              widgetId="pagination-options-menu-bottom"
+            />
+          </PageSection>
+          <ModalErrors
+            errors={modalErrors.getAll()}
+            dataCy="id-views-tab-applied-to-modal-error"
           />
-        </PageSection>
-        <ModalErrors
-          errors={modalErrors.getAll()}
-          dataCy="id-views-tab-applied-to-modal-error"
-        />
-        <DualListLayout
-          entry={""}
-          target={"hostgroup"}
-          showModal={showUnapplyHostGroupModal}
-          onCloseModal={() => setShowUnapplyHostGroupModal(false)}
-          onOpenModal={() => setShowUnapplyHostGroupModal(true)}
-          tableElementsList={[]}
-          action={onUnapplyHostgroups}
-          title={"Un-apply ID Views from hosts of hostgroups"}
-          spinning={applySpinning}
-          addBtnName="Unapply"
-          addSpinningBtnName="Unapplying"
-        />
-        <DualListLayout
-          entry={""}
-          target={"host"}
-          showModal={showApplyHostModal}
-          onCloseModal={() => setShowApplyHostModal(false)}
-          onOpenModal={() => setShowApplyHostModal(true)}
-          tableElementsList={hostsList}
-          action={onApplyHosts}
-          title={"Apply ID view '" + props.idView.cn + "' on hosts"}
-          spinning={applySpinning}
-          addBtnName="Apply"
-          addSpinningBtnName="Applying"
-        />
-        <DualListLayout
-          entry={""}
-          target={"hostgroup"}
-          showModal={showApplyHostGroupModal}
-          onCloseModal={() => setShowApplyHostGroupModal(false)}
-          onOpenModal={() => setShowApplyHostGroupModal(true)}
-          tableElementsList={[]}
-          action={onApplyHostGroups}
-          title={
-            "Apply ID view '" + props.idView.cn + "' on hosts of host groups"
-          }
-          spinning={applySpinning}
-          addBtnName="Apply"
-          addSpinningBtnName="Applying"
-        />
-        {/* Delete confirmation modal - Unapply Hosts*/}
-        <MemberOfDeleteModal
-          showModal={showUnapplyHostsModal}
-          onCloseModal={() => setShowUnapplyHostsModal(false)}
-          title={"Un-apply ID view '" + props.idView.cn + "' from hosts"}
-          onDelete={onUnapplyHosts}
-          spinning={applySpinning}
-        >
-          <DeletedElementsTable
-            mode="passing_id"
-            elementsToDelete={selectedHosts}
-            columnNames={["Hosts"]}
-            elementType="Host"
-            idAttr="fqdn"
+          <DualListLayout
+            entry={""}
+            target={"hostgroup"}
+            showModal={showUnapplyHostGroupModal}
+            onCloseModal={() => setShowUnapplyHostGroupModal(false)}
+            onOpenModal={() => setShowUnapplyHostGroupModal(true)}
+            tableElementsList={[]}
+            action={onUnapplyHostgroups}
+            title={"Un-apply ID Views from hosts of hostgroups"}
+            spinning={applySpinning}
+            addBtnName="Unapply"
+            addSpinningBtnName="Unapplying"
           />
-        </MemberOfDeleteModal>
-      </TabLayout>
-    </div>
+          <DualListLayout
+            entry={""}
+            target={"host"}
+            showModal={showApplyHostModal}
+            onCloseModal={() => setShowApplyHostModal(false)}
+            onOpenModal={() => setShowApplyHostModal(true)}
+            tableElementsList={hostsList}
+            action={onApplyHosts}
+            title={"Apply ID view '" + props.idView.cn + "' on hosts"}
+            spinning={applySpinning}
+            addBtnName="Apply"
+            addSpinningBtnName="Applying"
+          />
+          <DualListLayout
+            entry={""}
+            target={"hostgroup"}
+            showModal={showApplyHostGroupModal}
+            onCloseModal={() => setShowApplyHostGroupModal(false)}
+            onOpenModal={() => setShowApplyHostGroupModal(true)}
+            tableElementsList={[]}
+            action={onApplyHostGroups}
+            title={
+              "Apply ID view '" + props.idView.cn + "' on hosts of host groups"
+            }
+            spinning={applySpinning}
+            addBtnName="Apply"
+            addSpinningBtnName="Applying"
+          />
+          {/* Delete confirmation modal - Unapply Hosts*/}
+          <MemberOfDeleteModal
+            showModal={showUnapplyHostsModal}
+            onCloseModal={() => setShowUnapplyHostsModal(false)}
+            title={"Un-apply ID view '" + props.idView.cn + "' from hosts"}
+            onDelete={onUnapplyHosts}
+            spinning={applySpinning}
+          >
+            <DeletedElementsTable
+              mode="passing_id"
+              elementsToDelete={selectedHosts}
+              columnNames={["Hosts"]}
+              elementType="Host"
+              idAttr="fqdn"
+            />
+          </MemberOfDeleteModal>
+        </TabLayout>
+      </div>
+    </ContextualHelpPanel>
   );
 };
 

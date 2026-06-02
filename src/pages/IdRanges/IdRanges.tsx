@@ -15,6 +15,7 @@ import {
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useApiError from "src/hooks/useApiError";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Redux
 import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // RPC
@@ -34,6 +35,7 @@ import ToolbarLayout, {
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
@@ -46,6 +48,10 @@ import DeleteModal from "src/components/modals/IdRanges/DeleteModal";
 
 const IdRanges = () => {
   const dispatch = useAppDispatch();
+
+  // Contextual help panel
+  const contextualPanel = useContextualHelpPanel();
+
   const navigate = useNavigate();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
@@ -344,7 +350,12 @@ const IdRanges = () => {
     },
     {
       key: 7,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={contextualPanel.toggle}
+        />
+      ),
     },
     {
       key: 8,
@@ -362,104 +373,108 @@ const IdRanges = () => {
 
   // Render component
   return (
-    <div>
-      <PageSection hasBodyWrapper={false}>
-        <TitleLayout id="ID ranges page" headingLevel="h1" text="ID ranges" />
-      </PageSection>
-      <PageSection hasBodyWrapper={false} isFilled={false}>
-        <Flex direction={{ default: "column" }}>
-          <FlexItem>
-            <ToolbarLayout toolbarItems={toolbarItems} />
-          </FlexItem>
-          <FlexItem style={{ flex: "1 1 auto", overflow: "hidden" }}>
-            <OuterScrollContainer
-              style={{ height: "100%", overflow: "hidden" }}
-            >
-              <InnerScrollContainer
-                style={{ height: "100%", overflow: "auto" }}
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <div>
+        <PageSection hasBodyWrapper={false}>
+          <TitleLayout id="ID ranges page" headingLevel="h1" text="ID ranges" />
+        </PageSection>
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem style={{ flex: "1 1 auto", overflow: "hidden" }}>
+              <OuterScrollContainer
+                style={{ height: "100%", overflow: "hidden" }}
               >
-                {batchError !== undefined && batchError ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <MainTable
-                    tableTitle="ID ranges table"
-                    shownElementsList={shownElementsList}
-                    pk="cn"
-                    keyNames={[
-                      "cn",
-                      "ipabaseid",
-                      "ipaidrangesize",
-                      "iparangetype",
-                    ]}
-                    columnNames={[
-                      "Range name",
-                      "First Posix ID of the range",
-                      "Number of IDs in the range",
-                      "Range type",
-                    ]}
-                    hasCheckboxes={true}
-                    pathname="id-ranges"
-                    showTableRows={showTableRows}
-                    showLink={true}
-                    elementsData={{
-                      isElementSelectable: isIdRangeSelectable,
-                      selectedElements,
-                      selectableElementsTable:
-                        shownElementsList.filter(isIdRangeSelectable),
-                      setElementsSelected: setIdRangesSelected,
-                      clearSelectedElements: () => setSelectedElements([]),
-                    }}
-                    buttonsData={{
-                      updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-                      isDeletion,
-                      updateIsDeletion: setIsDeletion,
-                    }}
-                    paginationData={{
-                      selectedPerPage,
-                      updateSelectedPerPage: setSelectedPerPage,
-                    }}
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
-            <PaginationLayout
-              list={shownElementsList}
-              paginationData={paginationData}
-              variant={PaginationVariant.bottom}
-              widgetId="pagination-options-menu-bottom"
-            />
-          </FlexItem>
-        </Flex>
-      </PageSection>
-      <AddIdRangeModal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        title="Add ID range"
-        onRefresh={refreshData}
-      />
-      <DeleteModal
-        show={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        selectedData={{
-          selectedElements,
-          clearSelectedElements: () => setSelectedElements([]),
-        }}
-        buttonsData={{
-          updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-          updateIsDeletion: setIsDeletion,
-        }}
-        columnNames={[
-          "Range name",
-          "First Posix ID of the range",
-          "Number of IDs in the range",
-          "Range type",
-        ]}
-        keyNames={["cn", "ipabaseid", "ipaidrangesize", "iparangetype"]}
-        onRefresh={refreshData}
-      />
-    </div>
+                <InnerScrollContainer
+                  style={{ height: "100%", overflow: "auto" }}
+                >
+                  {batchError !== undefined && batchError ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <MainTable
+                      tableTitle="ID ranges table"
+                      shownElementsList={shownElementsList}
+                      pk="cn"
+                      keyNames={[
+                        "cn",
+                        "ipabaseid",
+                        "ipaidrangesize",
+                        "iparangetype",
+                      ]}
+                      columnNames={[
+                        "Range name",
+                        "First Posix ID of the range",
+                        "Number of IDs in the range",
+                        "Range type",
+                      ]}
+                      hasCheckboxes={true}
+                      pathname="id-ranges"
+                      showTableRows={showTableRows}
+                      showLink={true}
+                      elementsData={{
+                        isElementSelectable: isIdRangeSelectable,
+                        selectedElements,
+                        selectableElementsTable:
+                          shownElementsList.filter(isIdRangeSelectable),
+                        setElementsSelected: setIdRangesSelected,
+                        clearSelectedElements: () => setSelectedElements([]),
+                      }}
+                      buttonsData={{
+                        updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
+                        isDeletion,
+                        updateIsDeletion: setIsDeletion,
+                      }}
+                      paginationData={{
+                        selectedPerPage,
+                        updateSelectedPerPage: setSelectedPerPage,
+                      }}
+                    />
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={shownElementsList}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+              />
+            </FlexItem>
+          </Flex>
+        </PageSection>
+        <AddIdRangeModal
+          isOpen={showAddModal}
+          onClose={() => setShowAddModal(false)}
+          title="Add ID range"
+          onRefresh={refreshData}
+        />
+        <DeleteModal
+          show={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          selectedData={{
+            selectedElements,
+            clearSelectedElements: () => setSelectedElements([]),
+          }}
+          buttonsData={{
+            updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
+            updateIsDeletion: setIsDeletion,
+          }}
+          columnNames={[
+            "Range name",
+            "First Posix ID of the range",
+            "Number of IDs in the range",
+            "Range type",
+          ]}
+          keyNames={["cn", "ipabaseid", "ipaidrangesize", "iparangetype"]}
+          onRefresh={refreshData}
+        />
+      </div>
+    </ContextualHelpPanel>
   );
 };
 

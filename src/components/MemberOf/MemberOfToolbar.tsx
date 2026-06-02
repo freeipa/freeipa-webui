@@ -166,7 +166,10 @@ const MemberOfToolbar = (props: MemberOfToolbarProps) => {
         <ToolbarItem id="help-icon">
           <>
             {props.helpIconEnabled && (
-              <HelpTextWithIconLayout textContent="Help" />
+              <HelpTextWithIconLayout
+                textContent="Help"
+                onClick={props.onHelpIconClick}
+              />
             )}
           </>
         </ToolbarItem>

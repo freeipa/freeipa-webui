@@ -7,6 +7,7 @@ import MemberOfAddModal, { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 import MemberTable from "src/components/tables/MembershipTable";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Data types
 import { Netgroup } from "src/utils/datatypes/globalDataTypes";
 // Redux
@@ -14,6 +15,7 @@ import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 // RPC
@@ -40,6 +42,7 @@ interface PropsToMembersNetgroups {
 
 const MembersNetgroups = (props: PropsToMembersNetgroups) => {
   const dispatch = useAppDispatch();
+  const contextualPanel = useContextualHelpPanel();
 
   // Get parameters from URL
   const {
@@ -289,7 +292,7 @@ const MembersNetgroups = (props: PropsToMembersNetgroups) => {
   };
 
   return (
-    <>
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
@@ -310,6 +313,7 @@ const MembersNetgroups = (props: PropsToMembersNetgroups) => {
         membershipDirection={membershipDirection}
         onMembershipDirectionChange={setMembershipDirection}
         helpIconEnabled={true}
+        onHelpIconClick={contextualPanel.toggle}
         totalItems={netgroupNames.length}
         perPage={perPage}
         page={page}
@@ -374,7 +378,7 @@ const MembersNetgroups = (props: PropsToMembersNetgroups) => {
           showTableRows
         />
       </MemberOfDeleteModal>
-    </>
+    </ContextualHelpPanel>
   );
 };
 
