@@ -73,7 +73,10 @@ import useApiError from "src/hooks/useApiError";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 // Data types
-import { MyEntity } from "src/utils/datatypes/globalDataTypes";
+import {
+  MyEntity,
+  SearchDataResultType,
+} from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { API_VERSION_BACKUP, isMyEntitySelectable } from "src/utils/utils";
 // RPC client

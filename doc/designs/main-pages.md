@@ -11,11 +11,11 @@ Each file below covers a specific, self-contained topic (~100–200 lines). Load
 | File | Contents | Lines |
 |------|----------|-------|
 | [01-overview.md](main-pages/01-overview.md) | What is a main page, required & optional inputs, example prompt, what gets generated | ~85 |
-| [02-structure-and-anatomy.md](main-pages/02-structure-and-anatomy.md) | Folder structure, page anatomy (10-step pattern), required & optional imports | ~100 |
-| [03-walkthrough-init-fetch.md](main-pages/03-walkthrough-init-fetch.md) | Route setup, API version, data fetching with `useMemo` pattern, search handler | ~160 |
+| [02-structure-and-anatomy.md](main-pages/02-structure-and-anatomy.md) | Folder structure, page anatomy (10-step pattern), required & optional imports | ~105 |
+| [03-walkthrough-init-fetch.md](main-pages/03-walkthrough-init-fetch.md) | Route setup, API version, data fetching with `useMemo` pattern, `SearchDataResultType`, search handler | ~195 |
 | [04-walkthrough-selection-toolbar.md](main-pages/04-walkthrough-selection-toolbar.md) | Selection management, button state, modal state, data wrappers, toolbar items | ~200 |
 | [05-walkthrough-render-table-features.md](main-pages/05-walkthrough-render-table-features.md) | JSX render, `MainTable` usage, optional features (kebab menu, enable/disable) | ~200 |
-| [06-checklist-and-types.md](main-pages/06-checklist-and-types.md) | Files to create/modify checklist, data type definition, selectability function | ~80 |
+| [06-checklist-and-types.md](main-pages/06-checklist-and-types.md) | Files to create/modify checklist, `SearchDataResultType`, data type definition, selectability function | ~105 |
 | [07-add-modal.md](main-pages/07-add-modal.md) | Add modal structure, props interface, code organization, error handling, template | ~175 |
 | [07b-add-modal-fields.md](main-pages/07b-add-modal-fields.md) | Add modal field types, UI components, validation, naming conventions | ~130 |
 | [08-delete-modal-and-utils.md](main-pages/08-delete-modal-and-utils.md) | Delete modal props, `DeletedElementsTable`, entity utils file template | ~195 |

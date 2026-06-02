@@ -2,6 +2,11 @@
 
 import { ValidatedOptions } from "@patternfly/react-core";
 
+export interface SearchDataResultType<T> {
+  elementsList: T[];
+  totalCount: number;
+}
+
 export interface User {
   [key: string]: unknown; // to fulfill Record<string, unknown> type
   // identity

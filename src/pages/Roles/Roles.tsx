@@ -13,7 +13,10 @@ import {
   OuterScrollContainer,
 } from "@patternfly/react-table";
 // Data types
-import { Role } from "src/utils/datatypes/globalDataTypes";
+import {
+  Role,
+  SearchDataResultType,
+} from "src/utils/datatypes/globalDataTypes";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
@@ -90,17 +93,15 @@ const Roles = () => {
   // Search state - overrides query data when active
   const [searchRoles, searchResult] = useSearchRolesEntriesMutation({});
   const [isSearchActive, setIsSearchActive] = useState(false);
-  const [searchData, setSearchData] = useState<{
-    roles: Role[];
-    totalCount: number;
-  } | null>(null);
+  const [searchData, setSearchData] =
+    useState<SearchDataResultType<Role> | null>(null);
 
   // Derive rolesList and totalCount from query response or search results
-  const { rolesList, totalCount } = useMemo(() => {
+  const { elementsList, totalCount } = useMemo(() => {
     // If search is active and has results, use search data
     if (isSearchActive && searchData) {
       return {
-        rolesList: searchData.roles,
+        elementsList: searchData.elementsList,
         totalCount: searchData.totalCount,
       };
     }
@@ -116,12 +117,12 @@ const Roles = () => {
       }
 
       return {
-        rolesList: roles,
+        elementsList: roles,
         totalCount: batchResponse.result.totalCount,
       };
     }
 
-    return { rolesList: [], totalCount: 0 };
+    return { elementsList: [], totalCount: 0 };
   }, [batchResponse, isSearchActive, searchData]);
 
   // Derive showTableRows from loading states
@@ -222,7 +223,7 @@ const Roles = () => {
           }
 
           setSearchData({
-            roles,
+            elementsList: roles,
             totalCount: searchTotalCount,
           });
         }
@@ -234,7 +235,7 @@ const Roles = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const selectableRolesTable = rolesList.filter(isRoleSelectable);
+  const selectableRolesTable = elementsList.filter(isRoleSelectable);
 
   const updateSelectedRoles = (roles: Role[], isSelected: boolean) => {
     let newSelectedRoles: Role[] = [];
@@ -279,7 +280,9 @@ const Roles = () => {
     updateShownElementsList: (roles: Role[]) => {
       if (isSearchActive) {
         setSearchData((prev) =>
-          prev ? { ...prev, roles } : { roles, totalCount: 0 }
+          prev
+            ? { ...prev, elementsList: roles }
+            : { elementsList: roles, totalCount: 0 }
         );
       }
     },
@@ -316,8 +319,8 @@ const Roles = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={rolesList}
-          shownElementsList={rolesList}
+          list={elementsList}
+          shownElementsList={elementsList}
           elementData={bulkSelectorData}
           buttonsData={buttonsData}
           selectedPerPageData={selectedPerPageData}
@@ -391,7 +394,7 @@ const Roles = () => {
       key: 8,
       element: (
         <PaginationLayout
-          list={rolesList}
+          list={elementsList}
           paginationData={paginationData}
           widgetId="pagination-options-menu-top"
           isCompact={true}
@@ -421,7 +424,7 @@ const Roles = () => {
                 ) : (
                   <MainTable
                     tableTitle="Roles table"
-                    shownElementsList={rolesList}
+                    shownElementsList={elementsList}
                     pk="cn"
                     keyNames={keyNames}
                     columnNames={columnNames}
@@ -452,7 +455,7 @@ const Roles = () => {
           </FlexItem>
           <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
             <PaginationLayout
-              list={rolesList}
+              list={elementsList}
               paginationData={paginationData}
               variant={PaginationVariant.bottom}
               widgetId="pagination-options-menu-bottom"
