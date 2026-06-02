@@ -18,6 +18,7 @@ import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Redux
 import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // RPC
@@ -39,6 +40,7 @@ import ToolbarLayout, {
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
@@ -49,6 +51,9 @@ import DeleteTrustModal from "./DeleteTrustModal";
 
 const Trusts = () => {
   const navigate = useNavigate();
+
+  // Contextual help panel
+  const contextualPanel = useContextualHelpPanel();
 
   const dispatch = useAppDispatch();
 
@@ -367,7 +372,12 @@ const Trusts = () => {
     },
     {
       key: 7,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={contextualPanel.toggle}
+        />
+      ),
     },
     {
       key: 8,
@@ -385,84 +395,88 @@ const Trusts = () => {
 
   // Render component
   return (
-    <div>
-      <PageSection hasBodyWrapper={false}>
-        <TitleLayout id="Trusts page" headingLevel="h1" text="Trusts" />
-      </PageSection>
-      <PageSection hasBodyWrapper={false} isFilled={false}>
-        <Flex direction={{ default: "column" }}>
-          <FlexItem>
-            <ToolbarLayout toolbarItems={toolbarItems} />
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto" }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer
-                style={{ height: "55vh", overflow: "auto" }}
-              >
-                {error !== undefined && error ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <MainTable
-                    tableTitle="Trusts table"
-                    shownElementsList={trusts}
-                    pk="cn"
-                    keyNames={["cn"]}
-                    columnNames={["Realm name"]}
-                    hasCheckboxes={true}
-                    pathname="trusts"
-                    showTableRows={showTableRows}
-                    showLink={true}
-                    elementsData={{
-                      isElementSelectable: isTrustSelectable,
-                      selectedElements,
-                      selectableElementsTable: selectableTrustsTable,
-                      setElementsSelected: setTrustsSelected,
-                      clearSelectedElements: () => setSelectedElements([]),
-                    }}
-                    buttonsData={{
-                      updateIsDeleteButtonDisabled: (value) =>
-                        setIsDeleteButtonDisabled(value),
-                      isDeletion,
-                      updateIsDeletion: (value) => setIsDeletion(value),
-                      isDisableEnableOp: true,
-                    }}
-                    paginationData={{
-                      selectedPerPage,
-                      updateSelectedPerPage: setSelectedPerPage,
-                    }}
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
-            <PaginationLayout
-              list={trusts}
-              paginationData={paginationData}
-              variant={PaginationVariant.bottom}
-              widgetId="pagination-options-menu-bottom"
-            />
-          </FlexItem>
-        </Flex>
-      </PageSection>
-      <AddTrustModal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        title="Add trust"
-        onRefresh={refreshData}
-      />
-      <DeleteTrustModal
-        isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        elementsToDelete={selectedElements}
-        clearSelectedElements={() => setSelectedElements([])}
-        columnNames={["Realm name"]}
-        keyNames={["cn"]}
-        onRefresh={refreshData}
-        updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
-        updateIsDeletion={setIsDeletion}
-      />
-    </div>
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <div>
+        <PageSection hasBodyWrapper={false}>
+          <TitleLayout id="Trusts page" headingLevel="h1" text="Trusts" />
+        </PageSection>
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem style={{ flex: "0 0 auto" }}>
+              <OuterScrollContainer>
+                <InnerScrollContainer
+                  style={{ height: "55vh", overflow: "auto" }}
+                >
+                  {error !== undefined && error ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <MainTable
+                      tableTitle="Trusts table"
+                      shownElementsList={trusts}
+                      pk="cn"
+                      keyNames={["cn"]}
+                      columnNames={["Realm name"]}
+                      hasCheckboxes={true}
+                      pathname="trusts"
+                      showTableRows={showTableRows}
+                      showLink={true}
+                      elementsData={{
+                        isElementSelectable: isTrustSelectable,
+                        selectedElements,
+                        selectableElementsTable: selectableTrustsTable,
+                        setElementsSelected: setTrustsSelected,
+                        clearSelectedElements: () => setSelectedElements([]),
+                      }}
+                      buttonsData={{
+                        updateIsDeleteButtonDisabled: (value) =>
+                          setIsDeleteButtonDisabled(value),
+                        isDeletion,
+                        updateIsDeletion: (value) => setIsDeletion(value),
+                        isDisableEnableOp: true,
+                      }}
+                      paginationData={{
+                        selectedPerPage,
+                        updateSelectedPerPage: setSelectedPerPage,
+                      }}
+                    />
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={trusts}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+              />
+            </FlexItem>
+          </Flex>
+        </PageSection>
+        <AddTrustModal
+          isOpen={showAddModal}
+          onClose={() => setShowAddModal(false)}
+          title="Add trust"
+          onRefresh={refreshData}
+        />
+        <DeleteTrustModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          elementsToDelete={selectedElements}
+          clearSelectedElements={() => setSelectedElements([])}
+          columnNames={["Realm name"]}
+          keyNames={["cn"]}
+          onRefresh={refreshData}
+          updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
+          updateIsDeletion={setIsDeletion}
+        />
+      </div>
+    </ContextualHelpPanel>
   );
 };
 

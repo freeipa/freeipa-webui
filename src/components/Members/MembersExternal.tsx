@@ -11,6 +11,7 @@ import MemberOfToolbar from "../MemberOf/MemberOfToolbar";
 import { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 import MemberTable from "src/components/tables/MembershipTable";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Data types
 import { UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Redux
@@ -18,6 +19,7 @@ import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // RPC
 import { ErrorResult, MemberPayload } from "src/services/rpc";
 import {
@@ -38,6 +40,7 @@ interface PropsToMembersExternal {
 
 const MembersExternal = (props: PropsToMembersExternal) => {
   const dispatch = useAppDispatch();
+  const contextualPanel = useContextualHelpPanel();
 
   // Get parameters from URL
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -224,7 +227,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
   };
 
   return (
-    <>
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
@@ -238,6 +241,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
         addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
         helpIconEnabled={true}
+        onHelpIconClick={contextualPanel.toggle}
         totalItems={props.member_external.length}
         perPage={perPage}
         page={page}
@@ -298,7 +302,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
           />
         </MemberOfDeleteModal>
       )}
-    </>
+    </ContextualHelpPanel>
   );
 };
 

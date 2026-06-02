@@ -9,11 +9,13 @@ import MemberTable from "src/components/tables/MembershipTable";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import {
@@ -38,6 +40,7 @@ interface MemberOfRolesProps {
 }
 const MemberOfRoles = (props: MemberOfRolesProps) => {
   const dispatch = useAppDispatch();
+  const contextualPanel = useContextualHelpPanel();
 
   const membershipDisabled =
     props.membershipDisabled === undefined ? false : props.membershipDisabled;
@@ -289,7 +292,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   };
 
   return (
-    <>
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
       {membershipDisabled ? (
         <MemberOfToolbar
           searchText={searchValue}
@@ -308,6 +311,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           addButtonEnabled={isAddButtonEnabled}
           onAddButtonClick={() => setShowAddModal(true)}
           helpIconEnabled={true}
+          onHelpIconClick={contextualPanel.toggle}
           totalItems={roleNames.length}
           perPage={perPage}
           page={page}
@@ -335,6 +339,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           membershipDirection={membershipDirection}
           onMembershipDirectionChange={setMembershipDirection}
           helpIconEnabled={true}
+          onHelpIconClick={contextualPanel.toggle}
           totalItems={roleNames.length}
           perPage={perPage}
           page={page}
@@ -402,7 +407,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           showTableRows
         />
       </MemberOfDeleteModal>
-    </>
+    </ContextualHelpPanel>
   );
 };
 

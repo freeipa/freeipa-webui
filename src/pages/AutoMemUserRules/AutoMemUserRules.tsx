@@ -21,6 +21,7 @@ import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout, {
   ToolbarItem,
@@ -46,6 +47,7 @@ import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { useUserGroupsRulesData } from "src/hooks/useUserGroupsRules";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Utils
 import {
   API_VERSION_BACKUP,
@@ -62,6 +64,9 @@ import ConfirmationModal from "src/components/modals/ConfirmationModal";
 // Automembership user group rules
 const AutoMemUserRules = () => {
   const dispatch = useAppDispatch();
+
+  // Contextual help panel
+  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({
@@ -586,7 +591,12 @@ const AutoMemUserRules = () => {
     },
     {
       key: 8,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={contextualPanel.toggle}
+        />
+      ),
     },
     {
       key: 9,
@@ -603,95 +613,99 @@ const AutoMemUserRules = () => {
   ];
 
   return (
-    <div>
-      <PageSection hasBodyWrapper={false}>
-        <TitleLayout
-          id="Automember user groups title"
-          headingLevel="h1"
-          text="User group rules"
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <div>
+        <PageSection hasBodyWrapper={false}>
+          <TitleLayout
+            id="Automember user groups title"
+            headingLevel="h1"
+            text="User group rules"
+          />
+        </PageSection>
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem style={{ flex: "0 0 auto" }}>
+              <OuterScrollContainer>
+                <InnerScrollContainer
+                  style={{ height: "55vh", overflow: "auto" }}
+                >
+                  {errors !== undefined && errors.length > 0 ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <MainTable
+                      shownElementsList={automemberRules}
+                      showTableRows={showTableRows}
+                      elementsData={automembersTableData}
+                      buttonsData={automembersTableButtonsData}
+                      paginationData={selectedPerPageData}
+                      searchValue={searchValue}
+                      automemberType="user-group"
+                    />
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={automemberRules}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+              />
+            </FlexItem>
+          </Flex>
+        </PageSection>
+        <AddRule
+          show={showAddModal}
+          handleModalToggle={onAddModalToggle}
+          onOpenAddModal={onOpenAddModal}
+          onCloseAddModal={onCloseAddModal}
+          onRefresh={refreshData}
+          groupsAvailableToAdd={groupsAvailableToAdd}
+          ruleType="group"
         />
-      </PageSection>
-      <PageSection hasBodyWrapper={false} isFilled={false}>
-        <Flex direction={{ default: "column" }}>
-          <FlexItem>
-            <ToolbarLayout toolbarItems={toolbarItems} />
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto" }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer
-                style={{ height: "55vh", overflow: "auto" }}
-              >
-                {errors !== undefined && errors.length > 0 ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <MainTable
-                    shownElementsList={automemberRules}
-                    showTableRows={showTableRows}
-                    elementsData={automembersTableData}
-                    buttonsData={automembersTableButtonsData}
-                    paginationData={selectedPerPageData}
-                    searchValue={searchValue}
-                    automemberType="user-group"
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
-            <PaginationLayout
-              list={automemberRules}
-              paginationData={paginationData}
-              variant={PaginationVariant.bottom}
-              widgetId="pagination-options-menu-bottom"
-            />
-          </FlexItem>
-        </Flex>
-      </PageSection>
-      <AddRule
-        show={showAddModal}
-        handleModalToggle={onAddModalToggle}
-        onOpenAddModal={onOpenAddModal}
-        onCloseAddModal={onCloseAddModal}
-        onRefresh={refreshData}
-        groupsAvailableToAdd={groupsAvailableToAdd}
-        ruleType="group"
-      />
-      <DeleteRule
-        show={showDeleteModal}
-        handleModalToggle={onToggleDeleteModal}
-        onRefresh={refreshData}
-        buttonsData={deleteButtonsData}
-        selectedData={selectedData}
-        ruleType="group"
-      />
-      <ConfirmationModal
-        dataCy={"auto-member-default-user-rules-modal"}
-        title="Default user group"
-        isOpen={showChangeConfirmationModal}
-        onClose={onCloseConfirmationModal}
-        actions={[
-          <Button
-            data-cy="modal-button-ok"
-            variant="primary"
-            key="change-default"
-            onClick={() => {
-              onSelectDefaultGroup(defaultGroup);
-            }}
-          >
-            OK
-          </Button>,
-          <SecondaryButton
-            dataCy="modal-button-cancel"
-            key="cancel"
-            onClickHandler={onCancelDefaultGroup}
-          >
-            Cancel
-          </SecondaryButton>,
-        ]}
-        messageText="Are you sure you want to change default group?"
-        messageObj={defaultGroup}
-      />
-    </div>
+        <DeleteRule
+          show={showDeleteModal}
+          handleModalToggle={onToggleDeleteModal}
+          onRefresh={refreshData}
+          buttonsData={deleteButtonsData}
+          selectedData={selectedData}
+          ruleType="group"
+        />
+        <ConfirmationModal
+          dataCy={"auto-member-default-user-rules-modal"}
+          title="Default user group"
+          isOpen={showChangeConfirmationModal}
+          onClose={onCloseConfirmationModal}
+          actions={[
+            <Button
+              data-cy="modal-button-ok"
+              variant="primary"
+              key="change-default"
+              onClick={() => {
+                onSelectDefaultGroup(defaultGroup);
+              }}
+            >
+              OK
+            </Button>,
+            <SecondaryButton
+              dataCy="modal-button-cancel"
+              key="cancel"
+              onClickHandler={onCancelDefaultGroup}
+            >
+              Cancel
+            </SecondaryButton>,
+          ]}
+          messageText="Are you sure you want to change default group?"
+          messageObj={defaultGroup}
+        />
+      </div>
+    </ContextualHelpPanel>
   );
 };
 

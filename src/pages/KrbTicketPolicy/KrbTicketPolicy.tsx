@@ -19,6 +19,7 @@ import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 import { useKrbTicketPolicyData } from "src/hooks/useKrbTicketPolicyData";
 // Icons
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
@@ -32,12 +33,16 @@ import { NotFound } from "src/components/errors/PageErrors";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 import { asRecord } from "src/utils/krbTicketUtils";
 import IpaTextInput from "src/components/Form/IpaTextInput";
 import PageWithGrayBorderLayout from "src/components/layouts/PageWithGrayBorderLayout";
 
 const KrbTicketPolicy = () => {
   const dispatch = useAppDispatch();
+
+  // Contextual help panel
+  const contextualPanel = useContextualHelpPanel();
 
   // API calls
   const krbTicketPolicyData = useKrbTicketPolicyData();
@@ -206,274 +211,277 @@ const KrbTicketPolicy = () => {
 
   // Return component
   return (
-    <PageWithGrayBorderLayout
-      id="krb-ticket-policy-page"
-      pageTitle="Kerberos ticket policy"
-      toolbarItems={toolbarFields}
-    >
-      <>
-        <Sidebar isPanelRight className="pf-v6-u-mb-0">
-          <SidebarPanel variant="sticky">
-            <HelpTextWithIconLayout
-              textContent="Help"
-              icon={
-                <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
-              }
-            />
-            <JumpLinks
-              isVertical
-              label="Jump to section"
-              scrollableSelector="#krb-ticket-policy-page"
-              expandable={{ default: "expandable", md: "nonExpandable" }}
-              className="pf-v6-u-mt-md"
-            >
-              <JumpLinksItem key={0} href="#krb-ticket-policy">
-                Kerberos Ticket Policy
-              </JumpLinksItem>
-              <JumpLinksItem key={1} href="#authentication-indicators">
-                Authentication indicators
-              </JumpLinksItem>
-            </JumpLinks>
-          </SidebarPanel>
-          <SidebarContent className="pf-v6-u-mr-xl">
-            <TitleLayout
-              key={0}
-              headingLevel="h2"
-              id="krb-ticket-policy"
-              text="Kerberos Ticket Policy"
-              className="pf-v6-u-mt-0 pf-v6-u-ml-0 pf-v6-u-mb-md"
-            />
-            <Flex direction={{ default: "column", lg: "row" }}>
-              <FlexItem flex={{ default: "flex_1" }}>
-                <Form
-                  className="pf-v6-u-mb-lg"
-                  id="krb-ticket-policy-form"
-                  onSubmit={onSave}
-                >
-                  <FormGroup
-                    label="Max renew (seconds)"
-                    fieldId="krbmaxrenewableage"
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <PageWithGrayBorderLayout
+        id="krb-ticket-policy-page"
+        pageTitle="Kerberos ticket policy"
+        toolbarItems={toolbarFields}
+      >
+        <>
+          <Sidebar isPanelRight className="pf-v6-u-mb-0">
+            <SidebarPanel variant="sticky">
+              <HelpTextWithIconLayout
+                textContent="Help"
+                onClick={contextualPanel.toggle}
+                icon={
+                  <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
+                }
+              />
+              <JumpLinks
+                isVertical
+                label="Jump to section"
+                scrollableSelector="#krb-ticket-policy-page"
+                expandable={{ default: "expandable", md: "nonExpandable" }}
+                className="pf-v6-u-mt-md"
+              >
+                <JumpLinksItem key={0} href="#krb-ticket-policy">
+                  Kerberos Ticket Policy
+                </JumpLinksItem>
+                <JumpLinksItem key={1} href="#authentication-indicators">
+                  Authentication indicators
+                </JumpLinksItem>
+              </JumpLinks>
+            </SidebarPanel>
+            <SidebarContent className="pf-v6-u-mr-xl">
+              <TitleLayout
+                key={0}
+                headingLevel="h2"
+                id="krb-ticket-policy"
+                text="Kerberos Ticket Policy"
+                className="pf-v6-u-mt-0 pf-v6-u-ml-0 pf-v6-u-mb-md"
+              />
+              <Flex direction={{ default: "column", lg: "row" }}>
+                <FlexItem flex={{ default: "flex_1" }}>
+                  <Form
+                    className="pf-v6-u-mb-lg"
+                    id="krb-ticket-policy-form"
+                    onSubmit={onSave}
                   >
-                    <IpaTextInput
-                      dataCy="krb-ticket-policy-textbox-max-renew"
-                      name={"krbmaxrenewableage"}
-                      ariaLabel={"Max renew (seconds)"}
-                      ipaObject={ipaObject}
-                      onChange={recordOnChange}
-                      objectName="krbtpolicy"
-                      metadata={krbTicketPolicyData.metadata}
-                    />
-                  </FormGroup>
-                </Form>
-              </FlexItem>
-              <FlexItem flex={{ default: "flex_1" }}>
-                <Form className="pf-v6-u-mb-lg">
-                  <FormGroup
-                    label="Max life (seconds)"
-                    fieldId="krbmaxticketlife"
-                  >
-                    <IpaTextInput
-                      dataCy="krb-ticket-policy-textbox-max-life"
-                      name={"krbmaxticketlife"}
-                      ariaLabel={"Max life (seconds)"}
-                      ipaObject={ipaObject}
-                      onChange={recordOnChange}
-                      objectName="krbtpolicy"
-                      metadata={krbTicketPolicyData.metadata}
-                    />
-                  </FormGroup>
-                </Form>
-              </FlexItem>
-            </Flex>
-            <TitleLayout
-              key={1}
-              headingLevel="h2"
-              id="authentication-indicators"
-              text="Authentication indicators"
-              className="pf-v6-u-mt-lg pf-v6-u-mb-md"
-            />
-            <Flex direction={{ default: "column", lg: "row" }}>
-              <FlexItem flex={{ default: "flex_1" }}>
-                <Form className="pf-v6-u-mb-lg">
-                  <FormGroup
-                    label="RADIUS max renew (seconds)"
-                    fieldId="krbauthindmaxrenewableage_radius"
-                  >
-                    <IpaTextInput
-                      dataCy="krb-ticket-policy-textbox-radius-max-renew"
-                      name={"krbauthindmaxrenewableage_radius"}
-                      ariaLabel={"RADIUS max renew (seconds)"}
-                      ipaObject={ipaObject}
-                      onChange={recordOnChange}
-                      objectName="krbtpolicy"
-                      metadata={krbTicketPolicyData.metadata}
-                    />
-                  </FormGroup>
-                  <FormGroup
-                    label="RADIUS max life (seconds)"
-                    fieldId="krbauthindmaxticketlife_radius"
-                  >
-                    <IpaTextInput
-                      dataCy="krb-ticket-policy-textbox-radius-max-life"
-                      name={"krbauthindmaxticketlife_radius"}
-                      ariaLabel={"RADIUS max life (seconds)"}
-                      ipaObject={ipaObject}
-                      onChange={recordOnChange}
-                      objectName="krbtpolicy"
-                      metadata={krbTicketPolicyData.metadata}
-                    />
-                  </FormGroup>
-                  <FormGroup
-                    label="OTP max renew (seconds)"
-                    fieldId="krbauthindmaxrenewableage_otp"
-                  >
-                    <IpaTextInput
-                      dataCy="krb-ticket-policy-textbox-otp-max-renew"
-                      name={"krbauthindmaxrenewableage_otp"}
-                      ariaLabel={"OTP max renew (seconds)"}
-                      ipaObject={ipaObject}
-                      onChange={recordOnChange}
-                      objectName="krbtpolicy"
-                      metadata={krbTicketPolicyData.metadata}
-                    />
-                  </FormGroup>
-                  <FormGroup
-                    label="OTP max life (seconds)"
-                    fieldId="krbauthindmaxticketlife_otp"
-                  >
-                    <IpaTextInput
-                      dataCy="krb-ticket-policy-textbox-otp-max-life"
-                      name={"krbauthindmaxticketlife_otp"}
-                      ariaLabel={"OTP max life (seconds)"}
-                      ipaObject={ipaObject}
-                      onChange={recordOnChange}
-                      objectName="krbtpolicy"
-                      metadata={krbTicketPolicyData.metadata}
-                    />
-                  </FormGroup>
-                  <FormGroup
-                    label="PKINIT max renew (seconds)"
-                    fieldId="krbauthindmaxrenewableage_pkinit"
-                  >
-                    <IpaTextInput
-                      dataCy="krb-ticket-policy-textbox-pkinit-max-renew"
-                      name={"krbauthindmaxrenewableage_pkinit"}
-                      ariaLabel={"PKINIT max renew (seconds)"}
-                      ipaObject={ipaObject}
-                      onChange={recordOnChange}
-                      objectName="krbtpolicy"
-                      metadata={krbTicketPolicyData.metadata}
-                    />
-                  </FormGroup>
-                  <FormGroup
-                    label="PKINIT max life (seconds)"
-                    fieldId="krbauthindmaxticketlife_pkinit"
-                  >
-                    <IpaTextInput
-                      dataCy="krb-ticket-policy-textbox-pkinit-max-life"
-                      name={"krbauthindmaxticketlife_pkinit"}
-                      ariaLabel={"PKINIT max life (seconds)"}
-                      ipaObject={ipaObject}
-                      onChange={recordOnChange}
-                      objectName="krbtpolicy"
-                      metadata={krbTicketPolicyData.metadata}
-                    />
-                  </FormGroup>
-                </Form>
-              </FlexItem>
-              <FlexItem flex={{ default: "flex_1" }}>
-                <Form className="pf-v6-u-mb-lg">
-                  <FormGroup
-                    label="Hardened max renew (seconds)"
-                    fieldId="krbauthindmaxrenewableage_hardened"
-                  >
-                    <IpaTextInput
-                      dataCy="krb-ticket-policy-textbox-hardened-max-renew"
-                      name={"krbauthindmaxrenewableage_hardened"}
-                      ariaLabel={"Hardened max renew (seconds)"}
-                      ipaObject={ipaObject}
-                      onChange={recordOnChange}
-                      objectName="krbtpolicy"
-                      metadata={krbTicketPolicyData.metadata}
-                    />
-                  </FormGroup>
-                  <FormGroup
-                    label="Hardened max life (seconds)"
-                    fieldId="krbauthindmaxticketlife_hardened"
-                  >
-                    <IpaTextInput
-                      dataCy="krb-ticket-policy-textbox-hardened-max-life"
-                      name={"krbauthindmaxticketlife_hardened"}
-                      ariaLabel={"Hardened max life (seconds)"}
-                      ipaObject={ipaObject}
-                      onChange={recordOnChange}
-                      objectName="krbtpolicy"
-                      metadata={krbTicketPolicyData.metadata}
-                    />
-                  </FormGroup>
-                  <FormGroup
-                    label="IdP max renew (seconds)"
-                    fieldId="krbauthindmaxrenewableage_idp"
-                  >
-                    <IpaTextInput
-                      dataCy="krb-ticket-policy-textbox-idp-max-renew"
-                      name={"krbauthindmaxrenewableage_idp"}
-                      ariaLabel={"IdP max renew (seconds)"}
-                      ipaObject={ipaObject}
-                      onChange={recordOnChange}
-                      objectName="krbtpolicy"
-                      metadata={krbTicketPolicyData.metadata}
-                    />
-                  </FormGroup>
-                  <FormGroup
-                    label="IdP max life (seconds)"
-                    fieldId="krbauthindmaxticketlife_idp"
-                  >
-                    <IpaTextInput
-                      dataCy="krb-ticket-policy-textbox-idp-max-life"
-                      name={"krbauthindmaxticketlife_idp"}
-                      ariaLabel={"IdP max life (seconds)"}
-                      ipaObject={ipaObject}
-                      onChange={recordOnChange}
-                      objectName="krbtpolicy"
-                      metadata={krbTicketPolicyData.metadata}
-                    />
-                  </FormGroup>
-                  <FormGroup
-                    label="Passkey max renew (seconds)"
-                    fieldId="krbauthindmaxrenewableage_passkey"
-                  >
-                    <IpaTextInput
-                      dataCy="krb-ticket-policy-textbox-passkey-max-renew"
-                      name={"krbauthindmaxrenewableage_passkey"}
-                      ariaLabel={"Passkey max renew (seconds)"}
-                      ipaObject={ipaObject}
-                      onChange={recordOnChange}
-                      objectName="krbtpolicy"
-                      metadata={krbTicketPolicyData.metadata}
-                    />
-                  </FormGroup>
-                  <FormGroup
-                    label="Passkey max life (seconds)"
-                    fieldId="krbauthindmaxticketlife_passkey"
-                  >
-                    <IpaTextInput
-                      dataCy="krb-ticket-policy-textbox-passkey-max-life"
-                      name={"krbauthindmaxticketlife_passkey"}
-                      ariaLabel={"Passkey max life (seconds)"}
-                      ipaObject={ipaObject}
-                      onChange={recordOnChange}
-                      objectName="krbtpolicy"
-                      metadata={krbTicketPolicyData.metadata}
-                    />
-                  </FormGroup>
-                </Form>
-              </FlexItem>
-            </Flex>
-          </SidebarContent>
-        </Sidebar>
-      </>
-    </PageWithGrayBorderLayout>
+                    <FormGroup
+                      label="Max renew (seconds)"
+                      fieldId="krbmaxrenewableage"
+                    >
+                      <IpaTextInput
+                        dataCy="krb-ticket-policy-textbox-max-renew"
+                        name={"krbmaxrenewableage"}
+                        ariaLabel={"Max renew (seconds)"}
+                        ipaObject={ipaObject}
+                        onChange={recordOnChange}
+                        objectName="krbtpolicy"
+                        metadata={krbTicketPolicyData.metadata}
+                      />
+                    </FormGroup>
+                  </Form>
+                </FlexItem>
+                <FlexItem flex={{ default: "flex_1" }}>
+                  <Form className="pf-v6-u-mb-lg">
+                    <FormGroup
+                      label="Max life (seconds)"
+                      fieldId="krbmaxticketlife"
+                    >
+                      <IpaTextInput
+                        dataCy="krb-ticket-policy-textbox-max-life"
+                        name={"krbmaxticketlife"}
+                        ariaLabel={"Max life (seconds)"}
+                        ipaObject={ipaObject}
+                        onChange={recordOnChange}
+                        objectName="krbtpolicy"
+                        metadata={krbTicketPolicyData.metadata}
+                      />
+                    </FormGroup>
+                  </Form>
+                </FlexItem>
+              </Flex>
+              <TitleLayout
+                key={1}
+                headingLevel="h2"
+                id="authentication-indicators"
+                text="Authentication indicators"
+                className="pf-v6-u-mt-lg pf-v6-u-mb-md"
+              />
+              <Flex direction={{ default: "column", lg: "row" }}>
+                <FlexItem flex={{ default: "flex_1" }}>
+                  <Form className="pf-v6-u-mb-lg">
+                    <FormGroup
+                      label="RADIUS max renew (seconds)"
+                      fieldId="krbauthindmaxrenewableage_radius"
+                    >
+                      <IpaTextInput
+                        dataCy="krb-ticket-policy-textbox-radius-max-renew"
+                        name={"krbauthindmaxrenewableage_radius"}
+                        ariaLabel={"RADIUS max renew (seconds)"}
+                        ipaObject={ipaObject}
+                        onChange={recordOnChange}
+                        objectName="krbtpolicy"
+                        metadata={krbTicketPolicyData.metadata}
+                      />
+                    </FormGroup>
+                    <FormGroup
+                      label="RADIUS max life (seconds)"
+                      fieldId="krbauthindmaxticketlife_radius"
+                    >
+                      <IpaTextInput
+                        dataCy="krb-ticket-policy-textbox-radius-max-life"
+                        name={"krbauthindmaxticketlife_radius"}
+                        ariaLabel={"RADIUS max life (seconds)"}
+                        ipaObject={ipaObject}
+                        onChange={recordOnChange}
+                        objectName="krbtpolicy"
+                        metadata={krbTicketPolicyData.metadata}
+                      />
+                    </FormGroup>
+                    <FormGroup
+                      label="OTP max renew (seconds)"
+                      fieldId="krbauthindmaxrenewableage_otp"
+                    >
+                      <IpaTextInput
+                        dataCy="krb-ticket-policy-textbox-otp-max-renew"
+                        name={"krbauthindmaxrenewableage_otp"}
+                        ariaLabel={"OTP max renew (seconds)"}
+                        ipaObject={ipaObject}
+                        onChange={recordOnChange}
+                        objectName="krbtpolicy"
+                        metadata={krbTicketPolicyData.metadata}
+                      />
+                    </FormGroup>
+                    <FormGroup
+                      label="OTP max life (seconds)"
+                      fieldId="krbauthindmaxticketlife_otp"
+                    >
+                      <IpaTextInput
+                        dataCy="krb-ticket-policy-textbox-otp-max-life"
+                        name={"krbauthindmaxticketlife_otp"}
+                        ariaLabel={"OTP max life (seconds)"}
+                        ipaObject={ipaObject}
+                        onChange={recordOnChange}
+                        objectName="krbtpolicy"
+                        metadata={krbTicketPolicyData.metadata}
+                      />
+                    </FormGroup>
+                    <FormGroup
+                      label="PKINIT max renew (seconds)"
+                      fieldId="krbauthindmaxrenewableage_pkinit"
+                    >
+                      <IpaTextInput
+                        dataCy="krb-ticket-policy-textbox-pkinit-max-renew"
+                        name={"krbauthindmaxrenewableage_pkinit"}
+                        ariaLabel={"PKINIT max renew (seconds)"}
+                        ipaObject={ipaObject}
+                        onChange={recordOnChange}
+                        objectName="krbtpolicy"
+                        metadata={krbTicketPolicyData.metadata}
+                      />
+                    </FormGroup>
+                    <FormGroup
+                      label="PKINIT max life (seconds)"
+                      fieldId="krbauthindmaxticketlife_pkinit"
+                    >
+                      <IpaTextInput
+                        dataCy="krb-ticket-policy-textbox-pkinit-max-life"
+                        name={"krbauthindmaxticketlife_pkinit"}
+                        ariaLabel={"PKINIT max life (seconds)"}
+                        ipaObject={ipaObject}
+                        onChange={recordOnChange}
+                        objectName="krbtpolicy"
+                        metadata={krbTicketPolicyData.metadata}
+                      />
+                    </FormGroup>
+                  </Form>
+                </FlexItem>
+                <FlexItem flex={{ default: "flex_1" }}>
+                  <Form className="pf-v6-u-mb-lg">
+                    <FormGroup
+                      label="Hardened max renew (seconds)"
+                      fieldId="krbauthindmaxrenewableage_hardened"
+                    >
+                      <IpaTextInput
+                        dataCy="krb-ticket-policy-textbox-hardened-max-renew"
+                        name={"krbauthindmaxrenewableage_hardened"}
+                        ariaLabel={"Hardened max renew (seconds)"}
+                        ipaObject={ipaObject}
+                        onChange={recordOnChange}
+                        objectName="krbtpolicy"
+                        metadata={krbTicketPolicyData.metadata}
+                      />
+                    </FormGroup>
+                    <FormGroup
+                      label="Hardened max life (seconds)"
+                      fieldId="krbauthindmaxticketlife_hardened"
+                    >
+                      <IpaTextInput
+                        dataCy="krb-ticket-policy-textbox-hardened-max-life"
+                        name={"krbauthindmaxticketlife_hardened"}
+                        ariaLabel={"Hardened max life (seconds)"}
+                        ipaObject={ipaObject}
+                        onChange={recordOnChange}
+                        objectName="krbtpolicy"
+                        metadata={krbTicketPolicyData.metadata}
+                      />
+                    </FormGroup>
+                    <FormGroup
+                      label="IdP max renew (seconds)"
+                      fieldId="krbauthindmaxrenewableage_idp"
+                    >
+                      <IpaTextInput
+                        dataCy="krb-ticket-policy-textbox-idp-max-renew"
+                        name={"krbauthindmaxrenewableage_idp"}
+                        ariaLabel={"IdP max renew (seconds)"}
+                        ipaObject={ipaObject}
+                        onChange={recordOnChange}
+                        objectName="krbtpolicy"
+                        metadata={krbTicketPolicyData.metadata}
+                      />
+                    </FormGroup>
+                    <FormGroup
+                      label="IdP max life (seconds)"
+                      fieldId="krbauthindmaxticketlife_idp"
+                    >
+                      <IpaTextInput
+                        dataCy="krb-ticket-policy-textbox-idp-max-life"
+                        name={"krbauthindmaxticketlife_idp"}
+                        ariaLabel={"IdP max life (seconds)"}
+                        ipaObject={ipaObject}
+                        onChange={recordOnChange}
+                        objectName="krbtpolicy"
+                        metadata={krbTicketPolicyData.metadata}
+                      />
+                    </FormGroup>
+                    <FormGroup
+                      label="Passkey max renew (seconds)"
+                      fieldId="krbauthindmaxrenewableage_passkey"
+                    >
+                      <IpaTextInput
+                        dataCy="krb-ticket-policy-textbox-passkey-max-renew"
+                        name={"krbauthindmaxrenewableage_passkey"}
+                        ariaLabel={"Passkey max renew (seconds)"}
+                        ipaObject={ipaObject}
+                        onChange={recordOnChange}
+                        objectName="krbtpolicy"
+                        metadata={krbTicketPolicyData.metadata}
+                      />
+                    </FormGroup>
+                    <FormGroup
+                      label="Passkey max life (seconds)"
+                      fieldId="krbauthindmaxticketlife_passkey"
+                    >
+                      <IpaTextInput
+                        dataCy="krb-ticket-policy-textbox-passkey-max-life"
+                        name={"krbauthindmaxticketlife_passkey"}
+                        ariaLabel={"Passkey max life (seconds)"}
+                        ipaObject={ipaObject}
+                        onChange={recordOnChange}
+                        objectName="krbtpolicy"
+                        metadata={krbTicketPolicyData.metadata}
+                      />
+                    </FormGroup>
+                  </Form>
+                </FlexItem>
+              </Flex>
+            </SidebarContent>
+          </Sidebar>
+        </>
+      </PageWithGrayBorderLayout>
+    </ContextualHelpPanel>
   );
 };
 

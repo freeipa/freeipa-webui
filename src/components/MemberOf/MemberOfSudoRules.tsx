@@ -9,11 +9,13 @@ import MemberTable from "src/components/tables/MembershipTable";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // RPC
 import {
   useGetSudoRulesInfoByNameQuery,
@@ -38,6 +40,7 @@ interface MemberOfSudoRulesProps {
 
 const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
   const dispatch = useAppDispatch();
+  const contextualPanel = useContextualHelpPanel();
 
   const {
     page,
@@ -297,7 +300,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
   };
 
   return (
-    <>
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
@@ -318,6 +321,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
         membershipDirection={membershipDirection}
         onMembershipDirectionChange={setMembershipDirection}
         helpIconEnabled={true}
+        onHelpIconClick={contextualPanel.toggle}
         totalItems={sudoRuleNames.length}
         perPage={perPage}
         page={page}
@@ -384,7 +388,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
           showTableRows
         />
       </MemberOfDeleteModal>
-    </>
+    </ContextualHelpPanel>
   );
 };
 

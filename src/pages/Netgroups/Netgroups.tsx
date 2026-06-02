@@ -19,6 +19,7 @@ import ToolbarLayout, {
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Components
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
@@ -37,6 +38,7 @@ import { API_VERSION_BACKUP, isNetgroupSelectable } from "src/utils/utils";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -49,6 +51,9 @@ import { useGettingNetgroupsQuery } from "../../services/rpcNetgroups";
 
 const Netgroups = () => {
   const dispatch = useAppDispatch();
+
+  // Contextual help panel
+  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "netgroups" });
@@ -471,7 +476,12 @@ const Netgroups = () => {
     },
     {
       key: 7,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={contextualPanel.toggle}
+        />
+      ),
     },
     {
       key: 8,
@@ -488,65 +498,73 @@ const Netgroups = () => {
   ];
 
   return (
-    <div>
-      <PageSection hasBodyWrapper={false}>
-        <TitleLayout id="Netgroups title" headingLevel="h1" text="Netgroups" />
-      </PageSection>
-      <PageSection hasBodyWrapper={false} isFilled={false}>
-        <Flex direction={{ default: "column" }}>
-          <FlexItem>
-            <ToolbarLayout toolbarItems={toolbarItems} />
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto" }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer
-                style={{ height: "60vh", overflow: "auto" }}
-              >
-                {batchError !== undefined && batchError ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <NetgroupsTable
-                    elementsList={groupsList}
-                    shownElementsList={groupsList}
-                    showTableRows={showTableRows}
-                    groupsData={groupsTableData}
-                    buttonsData={groupsTableButtonsData}
-                    paginationData={selectedPerPageData}
-                    searchValue={searchValue}
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
-            <PaginationLayout
-              list={groupsList}
-              paginationData={paginationData}
-              variant={PaginationVariant.bottom}
-              widgetId="pagination-options-menu-bottom"
-            />
-          </FlexItem>
-        </Flex>
-      </PageSection>
-      <ModalErrors
-        errors={modalErrors.getAll()}
-        dataCy="netgroups-modal-error"
-      />
-      <AddNetgroup
-        show={showAddModal}
-        handleModalToggle={onAddModalToggle}
-        onOpenAddModal={onAddClickHandler}
-        onCloseAddModal={onCloseAddModal}
-        onRefresh={refreshGroupsData}
-      />
-      <DeleteNetgroups
-        show={showDeleteModal}
-        handleModalToggle={onDeleteModalToggle}
-        selectedGroupsData={selectedGroupsData}
-        buttonsData={deleteGroupsButtonsData}
-        onRefresh={refreshGroupsData}
-      />
-    </div>
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <div>
+        <PageSection hasBodyWrapper={false}>
+          <TitleLayout
+            id="Netgroups title"
+            headingLevel="h1"
+            text="Netgroups"
+          />
+        </PageSection>
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem style={{ flex: "0 0 auto" }}>
+              <OuterScrollContainer>
+                <InnerScrollContainer
+                  style={{ height: "60vh", overflow: "auto" }}
+                >
+                  {batchError !== undefined && batchError ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <NetgroupsTable
+                      elementsList={groupsList}
+                      shownElementsList={groupsList}
+                      showTableRows={showTableRows}
+                      groupsData={groupsTableData}
+                      buttonsData={groupsTableButtonsData}
+                      paginationData={selectedPerPageData}
+                      searchValue={searchValue}
+                    />
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={groupsList}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+              />
+            </FlexItem>
+          </Flex>
+        </PageSection>
+        <ModalErrors
+          errors={modalErrors.getAll()}
+          dataCy="netgroups-modal-error"
+        />
+        <AddNetgroup
+          show={showAddModal}
+          handleModalToggle={onAddModalToggle}
+          onOpenAddModal={onAddClickHandler}
+          onCloseAddModal={onCloseAddModal}
+          onRefresh={refreshGroupsData}
+        />
+        <DeleteNetgroups
+          show={showDeleteModal}
+          handleModalToggle={onDeleteModalToggle}
+          selectedGroupsData={selectedGroupsData}
+          buttonsData={deleteGroupsButtonsData}
+          onRefresh={refreshGroupsData}
+        />
+      </div>
+    </ContextualHelpPanel>
   );
 };
 

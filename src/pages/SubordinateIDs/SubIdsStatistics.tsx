@@ -13,11 +13,13 @@ import { Td, Th, Tr } from "@patternfly/react-table";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 import PageLayout from "src/components/layouts/PageLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 import SkeletonOnTableLayout from "src/components/layouts/Skeleton/SkeletonOnTableLayout";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // RPC
 import { useSubidStatsQuery } from "src/services/rpcSubIds";
 
@@ -31,6 +33,9 @@ interface SubidStats {
 
 const SubIdsStatistics = () => {
   const dispatch = useAppDispatch();
+
+  // Contextual help panel
+  const contextualPanel = useContextualHelpPanel();
 
   // States
   const [subidStats, setSubidStats] = React.useState<SubidStats>({
@@ -94,7 +99,12 @@ const SubIdsStatistics = () => {
     },
     {
       key: 2,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={contextualPanel.toggle}
+        />
+      ),
     },
   ];
 
@@ -141,29 +151,31 @@ const SubIdsStatistics = () => {
   );
 
   return (
-    <PageLayout
-      title="Subordinate ID Statistics"
-      pathname="subordinate-id-statistics"
-      hasAlerts={true}
-      toolbarItems={toolbarItems}
-    >
-      <PageSection hasBodyWrapper={false}>
-        <Grid hasGutter>
-          <GridItem span={12}>
-            <TableLayout
-              ariaLabel={"subordinate id statistics table"}
-              variant="compact"
-              hasBorders={true}
-              classes={"pf-v6-u-mt-md"}
-              tableId={"subid-stats-table"}
-              tableHeader={header}
-              tableBody={!showTableRows ? skeleton : body}
-              isStickyHeader={false}
-            />
-          </GridItem>
-        </Grid>
-      </PageSection>
-    </PageLayout>
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <PageLayout
+        title="Subordinate ID Statistics"
+        pathname="subordinate-id-statistics"
+        hasAlerts={true}
+        toolbarItems={toolbarItems}
+      >
+        <PageSection hasBodyWrapper={false}>
+          <Grid hasGutter>
+            <GridItem span={12}>
+              <TableLayout
+                ariaLabel={"subordinate id statistics table"}
+                variant="compact"
+                hasBorders={true}
+                classes={"pf-v6-u-mt-md"}
+                tableId={"subid-stats-table"}
+                tableHeader={header}
+                tableBody={!showTableRows ? skeleton : body}
+                isStickyHeader={false}
+              />
+            </GridItem>
+          </Grid>
+        </PageSection>
+      </PageLayout>
+    </ContextualHelpPanel>
   );
 };
 

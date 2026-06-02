@@ -18,6 +18,7 @@ import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // Components
@@ -33,6 +34,7 @@ import ToolbarLayout, {
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
@@ -45,6 +47,9 @@ import DeleteModal from "src/components/modals/PwPoliciesModals/DeleteModal";
 
 const PasswordPolicies = () => {
   const dispatch = useAppDispatch();
+
+  // Contextual help panel
+  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "password-policies" });
@@ -440,7 +445,12 @@ const PasswordPolicies = () => {
     },
     {
       key: 7,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={contextualPanel.toggle}
+        />
+      ),
     },
     {
       key: 8,
@@ -458,90 +468,94 @@ const PasswordPolicies = () => {
 
   // Render component
   return (
-    <div>
-      <PageSection hasBodyWrapper={false}>
-        <TitleLayout
-          id="Password policies page"
-          headingLevel="h1"
-          text="Password policies"
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <div>
+        <PageSection hasBodyWrapper={false}>
+          <TitleLayout
+            id="Password policies page"
+            headingLevel="h1"
+            text="Password policies"
+          />
+        </PageSection>
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem style={{ flex: "0 0 auto" }}>
+              <OuterScrollContainer>
+                <InnerScrollContainer
+                  style={{ height: "60vh", overflow: "auto" }}
+                >
+                  {error !== undefined && error ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <MainTable
+                      tableTitle="Password policies table"
+                      shownElementsList={pwPolicies}
+                      pk="cn"
+                      keyNames={["cn", "cospriority"]}
+                      columnNames={["Group", "Priority"]}
+                      hasCheckboxes={true}
+                      pathname="password-policies"
+                      showTableRows={showTableRows}
+                      showLink={true}
+                      elementsData={{
+                        isElementSelectable: isPwPolicySelectable,
+                        selectedElements,
+                        selectableElementsTable: selectablePwPoliciesTable,
+                        setElementsSelected: setPwPoliciesSelected,
+                        clearSelectedElements,
+                      }}
+                      buttonsData={{
+                        updateIsDeleteButtonDisabled,
+                        isDeletion,
+                        updateIsDeletion,
+                      }}
+                      paginationData={{
+                        selectedPerPage,
+                        updateSelectedPerPage,
+                      }}
+                    />
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={pwPolicies}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+              />
+            </FlexItem>
+          </Flex>
+        </PageSection>
+        <AddModal
+          isOpen={showAddModal}
+          onCloseModal={onCloseAddModal}
+          onRefresh={refreshData}
+          title="Add password policy"
         />
-      </PageSection>
-      <PageSection hasBodyWrapper={false} isFilled={false}>
-        <Flex direction={{ default: "column" }}>
-          <FlexItem>
-            <ToolbarLayout toolbarItems={toolbarItems} />
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto" }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer
-                style={{ height: "60vh", overflow: "auto" }}
-              >
-                {error !== undefined && error ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <MainTable
-                    tableTitle="Password policies table"
-                    shownElementsList={pwPolicies}
-                    pk="cn"
-                    keyNames={["cn", "cospriority"]}
-                    columnNames={["Group", "Priority"]}
-                    hasCheckboxes={true}
-                    pathname="password-policies"
-                    showTableRows={showTableRows}
-                    showLink={true}
-                    elementsData={{
-                      isElementSelectable: isPwPolicySelectable,
-                      selectedElements,
-                      selectableElementsTable: selectablePwPoliciesTable,
-                      setElementsSelected: setPwPoliciesSelected,
-                      clearSelectedElements,
-                    }}
-                    buttonsData={{
-                      updateIsDeleteButtonDisabled,
-                      isDeletion,
-                      updateIsDeletion,
-                    }}
-                    paginationData={{
-                      selectedPerPage,
-                      updateSelectedPerPage,
-                    }}
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
-            <PaginationLayout
-              list={pwPolicies}
-              paginationData={paginationData}
-              variant={PaginationVariant.bottom}
-              widgetId="pagination-options-menu-bottom"
-            />
-          </FlexItem>
-        </Flex>
-      </PageSection>
-      <AddModal
-        isOpen={showAddModal}
-        onCloseModal={onCloseAddModal}
-        onRefresh={refreshData}
-        title="Add password policy"
-      />
-      <DeleteModal
-        show={showDeleteModal}
-        onClose={onCloseDeleteModal}
-        selectedData={{
-          selectedElements,
-          clearSelectedElements,
-        }}
-        buttonsData={{
-          updateIsDeleteButtonDisabled,
-          updateIsDeletion,
-        }}
-        columnNames={["Group", "Priority"]}
-        keyNames={["cn", "cospriority"]}
-        onRefresh={refreshData}
-      />
-    </div>
+        <DeleteModal
+          show={showDeleteModal}
+          onClose={onCloseDeleteModal}
+          selectedData={{
+            selectedElements,
+            clearSelectedElements,
+          }}
+          buttonsData={{
+            updateIsDeleteButtonDisabled,
+            updateIsDeletion,
+          }}
+          columnNames={["Group", "Priority"]}
+          keyNames={["cn", "cospriority"]}
+          onRefresh={refreshData}
+        />
+      </div>
+    </ContextualHelpPanel>
   );
 };
 

@@ -20,6 +20,7 @@ import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
@@ -36,6 +37,7 @@ import DisableEnableSudoRules from "src/components/modals/SudoModals/DisableEnab
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Utils
 import { API_VERSION_BACKUP, isSudoRuleSelectable } from "src/utils/utils";
 // RPC client
@@ -50,6 +52,9 @@ import ModalErrors from "src/components/errors/ModalErrors";
 
 const SudoRules = () => {
   const dispatch = useAppDispatch();
+
+  // Contextual help panel
+  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "sudo-rules" });
@@ -559,7 +564,12 @@ const SudoRules = () => {
     },
     {
       key: 10,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={contextualPanel.toggle}
+        />
+      ),
     },
     {
       key: 11,
@@ -576,72 +586,80 @@ const SudoRules = () => {
   ];
 
   return (
-    <div>
-      <PageSection hasBodyWrapper={false}>
-        <TitleLayout id="sudorules title" headingLevel="h1" text="Sudo rules" />
-      </PageSection>
-      <PageSection hasBodyWrapper={false} isFilled={false}>
-        <Flex direction={{ default: "column" }}>
-          <FlexItem>
-            <ToolbarLayout toolbarItems={toolbarItems} />
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto" }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer
-                style={{ height: "60vh", overflow: "auto" }}
-              >
-                {batchError !== undefined && batchError ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <SudoRulesTable
-                    shownElementsList={rulesList}
-                    showTableRows={showTableRows}
-                    rulesData={rulesTableData}
-                    buttonsData={rulesTableButtonsData}
-                    paginationData={selectedPerPageData}
-                    searchValue={searchValue}
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
-            <PaginationLayout
-              list={rulesList}
-              paginationData={paginationData}
-              variant={PaginationVariant.bottom}
-              widgetId="pagination-options-menu-bottom"
-            />
-          </FlexItem>
-        </Flex>
-      </PageSection>
-      <AddSudoRule
-        show={showAddModal}
-        handleModalToggle={onAddModalToggle}
-        onOpenAddModal={onAddClickHandler}
-        onCloseAddModal={onCloseAddModal}
-        onRefresh={refreshRulesData}
-      />
-      <DeleteSudoRule
-        show={showDeleteModal}
-        handleModalToggle={onDeleteModalToggle}
-        selectedRulesData={selectedRulesData}
-        buttonsData={deleteRulesButtonsData}
-        onRefresh={refreshRulesData}
-      />
-      <DisableEnableSudoRules
-        show={showEnableDisableModal}
-        handleModalToggle={onEnableDisableModalToggle}
-        optionSelected={enableDisableOptionSelected}
-        selectedRulesData={selectedRulesData}
-        buttonsData={disableEnableButtonsData}
-        onRefresh={refreshRulesData}
-      />
-      <ModalErrors
-        errors={modalErrors.getAll()}
-        dataCy="sudo-rules-modal-error"
-      />
-    </div>
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <div>
+        <PageSection hasBodyWrapper={false}>
+          <TitleLayout
+            id="sudorules title"
+            headingLevel="h1"
+            text="Sudo rules"
+          />
+        </PageSection>
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem style={{ flex: "0 0 auto" }}>
+              <OuterScrollContainer>
+                <InnerScrollContainer
+                  style={{ height: "60vh", overflow: "auto" }}
+                >
+                  {batchError !== undefined && batchError ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <SudoRulesTable
+                      shownElementsList={rulesList}
+                      showTableRows={showTableRows}
+                      rulesData={rulesTableData}
+                      buttonsData={rulesTableButtonsData}
+                      paginationData={selectedPerPageData}
+                      searchValue={searchValue}
+                    />
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={rulesList}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+              />
+            </FlexItem>
+          </Flex>
+        </PageSection>
+        <AddSudoRule
+          show={showAddModal}
+          handleModalToggle={onAddModalToggle}
+          onOpenAddModal={onAddClickHandler}
+          onCloseAddModal={onCloseAddModal}
+          onRefresh={refreshRulesData}
+        />
+        <DeleteSudoRule
+          show={showDeleteModal}
+          handleModalToggle={onDeleteModalToggle}
+          selectedRulesData={selectedRulesData}
+          buttonsData={deleteRulesButtonsData}
+          onRefresh={refreshRulesData}
+        />
+        <DisableEnableSudoRules
+          show={showEnableDisableModal}
+          handleModalToggle={onEnableDisableModalToggle}
+          optionSelected={enableDisableOptionSelected}
+          selectedRulesData={selectedRulesData}
+          buttonsData={disableEnableButtonsData}
+          onRefresh={refreshRulesData}
+        />
+        <ModalErrors
+          errors={modalErrors.getAll()}
+          dataCy="sudo-rules-modal-error"
+        />
+      </div>
+    </ContextualHelpPanel>
   );
 };
 

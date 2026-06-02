@@ -18,6 +18,7 @@ import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // RPC
@@ -37,6 +38,7 @@ import ToolbarLayout, {
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
@@ -48,6 +50,9 @@ import EnableDisableOtpTokensModal from "./EnableDisableOtpTokensModal";
 
 const OtpTokens = () => {
   const dispatch = useAppDispatch();
+
+  // Contextual help panel
+  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({
@@ -429,7 +434,12 @@ const OtpTokens = () => {
     },
     {
       key: 8,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={contextualPanel.toggle}
+        />
+      ),
     },
     {
       key: 9,
@@ -446,113 +456,121 @@ const OtpTokens = () => {
   ];
 
   return (
-    <div>
-      <PageSection hasBodyWrapper={false}>
-        <TitleLayout id="otp-tokens page" headingLevel="h1" text="OTP tokens" />
-      </PageSection>
-      <PageSection hasBodyWrapper={false} isFilled={false}>
-        <Flex direction={{ default: "column" }}>
-          <FlexItem>
-            <ToolbarLayout toolbarItems={toolbarItems} />
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto" }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer
-                style={{ height: "55vh", overflow: "auto" }}
-              >
-                {error !== undefined && error ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <MainTable
-                    tableTitle="OTP tokens table"
-                    shownElementsList={otpTokens}
-                    pk="ipatokenuniqueid"
-                    keyNames={[
-                      "ipatokenuniqueid",
-                      "ipatokenowner",
-                      "ipatokendisabled",
-                      "description",
-                    ]}
-                    columnNames={[
-                      "Token unique ID",
-                      "Owner",
-                      "Status",
-                      "Description",
-                    ]}
-                    hasCheckboxes={true}
-                    pathname="otp-tokens"
-                    showTableRows={showTableRows}
-                    showLink={true}
-                    elementsData={{
-                      isElementSelectable: isOtpTokenSelectable,
-                      selectedElements,
-                      selectableElementsTable: selectableOtpTokensTable,
-                      setElementsSelected: setOtpTokensSelected,
-                      clearSelectedElements: () => setSelectedElements([]),
-                    }}
-                    buttonsData={{
-                      updateIsDeleteButtonDisabled: (value) =>
-                        setIsDeleteButtonDisabled(value),
-                      isDeletion,
-                      updateIsDeletion: (value) => setIsDeletion(value),
-                      updateIsEnableButtonDisabled: (value) =>
-                        setIsEnableButtonDisabled(value),
-                      updateIsDisableButtonDisabled: (value) =>
-                        setIsDisableButtonDisabled(value),
-                      isDisableEnableOp: true,
-                    }}
-                    paginationData={{
-                      selectedPerPage,
-                      updateSelectedPerPage: setSelectedPerPage,
-                    }}
-                    statusElementName="ipatokendisabled"
-                    invertStatusValue={true}
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
-            <PaginationLayout
-              list={otpTokens}
-              paginationData={paginationData}
-              variant={PaginationVariant.bottom}
-              widgetId="pagination-options-menu-bottom"
-            />
-          </FlexItem>
-        </Flex>
-      </PageSection>
-      <AddOtpToken
-        uid={undefined}
-        isOpen={showAddModal}
-        setIsOpen={setShowAddModal}
-        onClose={() => setShowAddModal(false)}
-        onRefresh={refreshData}
-      />
-      <DeleteOtpTokensModal
-        from="main"
-        isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        elementsToDelete={selectedElements}
-        clearSelectedElements={() => setSelectedElements([])}
-        columnNames={["Unique ID", "Owner", "Description"]}
-        keyNames={["ipatokenuniqueid", "ipatokenowner", "description"]}
-        onRefresh={refreshData}
-        updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
-        updateIsDeletion={setIsDeletion}
-      />
-      <EnableDisableOtpTokensModal
-        isOpen={showEnableDisableModal}
-        onClose={() => setShowEnableDisableModal(false)}
-        elementsList={selectedElements.map(
-          (element) => element.ipatokenuniqueid
-        )}
-        setElementsList={setSelectedElements}
-        operation={operation}
-        setShowTableRows={setShowTableRows}
-        onRefresh={refreshData}
-      />
-    </div>
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <div>
+        <PageSection hasBodyWrapper={false}>
+          <TitleLayout
+            id="otp-tokens page"
+            headingLevel="h1"
+            text="OTP tokens"
+          />
+        </PageSection>
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem style={{ flex: "0 0 auto" }}>
+              <OuterScrollContainer>
+                <InnerScrollContainer
+                  style={{ height: "55vh", overflow: "auto" }}
+                >
+                  {error !== undefined && error ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <MainTable
+                      tableTitle="OTP tokens table"
+                      shownElementsList={otpTokens}
+                      pk="ipatokenuniqueid"
+                      keyNames={[
+                        "ipatokenuniqueid",
+                        "ipatokenowner",
+                        "ipatokendisabled",
+                        "description",
+                      ]}
+                      columnNames={[
+                        "Token unique ID",
+                        "Owner",
+                        "Status",
+                        "Description",
+                      ]}
+                      hasCheckboxes={true}
+                      pathname="otp-tokens"
+                      showTableRows={showTableRows}
+                      showLink={true}
+                      elementsData={{
+                        isElementSelectable: isOtpTokenSelectable,
+                        selectedElements,
+                        selectableElementsTable: selectableOtpTokensTable,
+                        setElementsSelected: setOtpTokensSelected,
+                        clearSelectedElements: () => setSelectedElements([]),
+                      }}
+                      buttonsData={{
+                        updateIsDeleteButtonDisabled: (value) =>
+                          setIsDeleteButtonDisabled(value),
+                        isDeletion,
+                        updateIsDeletion: (value) => setIsDeletion(value),
+                        updateIsEnableButtonDisabled: (value) =>
+                          setIsEnableButtonDisabled(value),
+                        updateIsDisableButtonDisabled: (value) =>
+                          setIsDisableButtonDisabled(value),
+                        isDisableEnableOp: true,
+                      }}
+                      paginationData={{
+                        selectedPerPage,
+                        updateSelectedPerPage: setSelectedPerPage,
+                      }}
+                      statusElementName="ipatokendisabled"
+                      invertStatusValue={true}
+                    />
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={otpTokens}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+              />
+            </FlexItem>
+          </Flex>
+        </PageSection>
+        <AddOtpToken
+          uid={undefined}
+          isOpen={showAddModal}
+          setIsOpen={setShowAddModal}
+          onClose={() => setShowAddModal(false)}
+          onRefresh={refreshData}
+        />
+        <DeleteOtpTokensModal
+          from="main"
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          elementsToDelete={selectedElements}
+          clearSelectedElements={() => setSelectedElements([])}
+          columnNames={["Unique ID", "Owner", "Description"]}
+          keyNames={["ipatokenuniqueid", "ipatokenowner", "description"]}
+          onRefresh={refreshData}
+          updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
+          updateIsDeletion={setIsDeletion}
+        />
+        <EnableDisableOtpTokensModal
+          isOpen={showEnableDisableModal}
+          onClose={() => setShowEnableDisableModal(false)}
+          elementsList={selectedElements.map(
+            (element) => element.ipatokenuniqueid
+          )}
+          setElementsList={setSelectedElements}
+          operation={operation}
+          setShowTableRows={setShowTableRows}
+          onRefresh={refreshData}
+        />
+      </div>
+    </ContextualHelpPanel>
   );
 };
 

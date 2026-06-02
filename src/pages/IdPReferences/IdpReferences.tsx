@@ -18,6 +18,7 @@ import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // RPC
@@ -36,6 +37,7 @@ import ToolbarLayout, {
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
@@ -47,6 +49,9 @@ import DeleteModal from "src/components/modals/IdpReferences/DeleteModal";
 
 const IdpReferences = () => {
   const dispatch = useAppDispatch();
+
+  // Contextual help panel
+  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({
@@ -405,7 +410,12 @@ const IdpReferences = () => {
     },
     {
       key: 7,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={contextualPanel.toggle}
+        />
+      ),
     },
     {
       key: 8,
@@ -423,99 +433,103 @@ const IdpReferences = () => {
 
   // Render component
   return (
-    <div>
-      <PageSection hasBodyWrapper={false}>
-        <TitleLayout
-          id="Identity Provider references page"
-          headingLevel="h1"
-          text="Identity Provider references"
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <div>
+        <PageSection hasBodyWrapper={false}>
+          <TitleLayout
+            id="Identity Provider references page"
+            headingLevel="h1"
+            text="Identity Provider references"
+          />
+        </PageSection>
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem style={{ flex: "0 0 auto" }}>
+              <OuterScrollContainer>
+                <InnerScrollContainer
+                  style={{ height: "60vh", overflow: "auto" }}
+                >
+                  {error !== undefined && error ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <MainTable
+                      tableTitle="Identity Provider references table"
+                      shownElementsList={idpReferences}
+                      pk="cn"
+                      keyNames={["cn", "ipaidpclientid", "ipaidpscope"]}
+                      columnNames={[
+                        "Identity Provider reference name",
+                        "Client identifier",
+                        "Scope",
+                      ]}
+                      hasCheckboxes={true}
+                      pathname="identity-provider-references"
+                      showTableRows={showTableRows}
+                      showLink={true}
+                      elementsData={{
+                        isElementSelectable: isIdpServerSelectable,
+                        selectedElements,
+                        selectableElementsTable: selectableIdpRefsTable,
+                        setElementsSelected: setIdpRefsSelected,
+                        clearSelectedElements,
+                      }}
+                      buttonsData={{
+                        updateIsDeleteButtonDisabled: (value) =>
+                          setIsDeleteButtonDisabled(value),
+                        isDeletion,
+                        updateIsDeletion: (value) => setIsDeletion(value),
+                      }}
+                      paginationData={{
+                        selectedPerPage,
+                        updateSelectedPerPage: setSelectedPerPage,
+                      }}
+                    />
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={idpReferences}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+              />
+            </FlexItem>
+          </Flex>
+        </PageSection>
+        <AddModal
+          isOpen={showAddModal}
+          onCloseModal={onCloseAddModal}
+          onRefresh={refreshData}
+          title="Add Identity Provider reference"
         />
-      </PageSection>
-      <PageSection hasBodyWrapper={false} isFilled={false}>
-        <Flex direction={{ default: "column" }}>
-          <FlexItem>
-            <ToolbarLayout toolbarItems={toolbarItems} />
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto" }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer
-                style={{ height: "60vh", overflow: "auto" }}
-              >
-                {error !== undefined && error ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <MainTable
-                    tableTitle="Identity Provider references table"
-                    shownElementsList={idpReferences}
-                    pk="cn"
-                    keyNames={["cn", "ipaidpclientid", "ipaidpscope"]}
-                    columnNames={[
-                      "Identity Provider reference name",
-                      "Client identifier",
-                      "Scope",
-                    ]}
-                    hasCheckboxes={true}
-                    pathname="identity-provider-references"
-                    showTableRows={showTableRows}
-                    showLink={true}
-                    elementsData={{
-                      isElementSelectable: isIdpServerSelectable,
-                      selectedElements,
-                      selectableElementsTable: selectableIdpRefsTable,
-                      setElementsSelected: setIdpRefsSelected,
-                      clearSelectedElements,
-                    }}
-                    buttonsData={{
-                      updateIsDeleteButtonDisabled: (value) =>
-                        setIsDeleteButtonDisabled(value),
-                      isDeletion,
-                      updateIsDeletion: (value) => setIsDeletion(value),
-                    }}
-                    paginationData={{
-                      selectedPerPage,
-                      updateSelectedPerPage: setSelectedPerPage,
-                    }}
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
-            <PaginationLayout
-              list={idpReferences}
-              paginationData={paginationData}
-              variant={PaginationVariant.bottom}
-              widgetId="pagination-options-menu-bottom"
-            />
-          </FlexItem>
-        </Flex>
-      </PageSection>
-      <AddModal
-        isOpen={showAddModal}
-        onCloseModal={onCloseAddModal}
-        onRefresh={refreshData}
-        title="Add Identity Provider reference"
-      />
-      <DeleteModal
-        show={showDeleteModal}
-        onClose={onCloseDeleteModal}
-        selectedData={{
-          selectedElements,
-          clearSelectedElements,
-        }}
-        buttonsData={{
-          updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-          updateIsDeletion: setIsDeletion,
-        }}
-        columnNames={[
-          "Identity Provider reference name",
-          "Client identifier",
-          "Scope",
-        ]}
-        keyNames={["cn", "ipaidpclientid", "ipaidpscope"]}
-        onRefresh={refreshData}
-      />
-    </div>
+        <DeleteModal
+          show={showDeleteModal}
+          onClose={onCloseDeleteModal}
+          selectedData={{
+            selectedElements,
+            clearSelectedElements,
+          }}
+          buttonsData={{
+            updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
+            updateIsDeletion: setIsDeletion,
+          }}
+          columnNames={[
+            "Identity Provider reference name",
+            "Client identifier",
+            "Scope",
+          ]}
+          keyNames={["cn", "ipaidpclientid", "ipaidpscope"]}
+          onRefresh={refreshData}
+        />
+      </div>
+    </ContextualHelpPanel>
   );
 };
 

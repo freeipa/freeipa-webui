@@ -20,6 +20,7 @@ import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
@@ -34,6 +35,7 @@ import DeleteHBACService from "src/components/modals/HbacModals/DeleteHBACServic
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Utils
 import { API_VERSION_BACKUP, isHbacServiceSelectable } from "src/utils/utils";
 // RPC client
@@ -48,6 +50,9 @@ import ModalErrors from "src/components/errors/ModalErrors";
 
 const HBACServices = () => {
   const dispatch = useAppDispatch();
+
+  // Contextual help panel
+  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "hbac-services" });
@@ -484,7 +489,12 @@ const HBACServices = () => {
     },
     {
       key: 7,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={contextualPanel.toggle}
+        />
+      ),
     },
     {
       key: 8,
@@ -501,68 +511,72 @@ const HBACServices = () => {
   ];
 
   return (
-    <div>
-      <PageSection hasBodyWrapper={false}>
-        <TitleLayout
-          id="hbacservices title"
-          headingLevel="h1"
-          text="HBAC services"
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <div>
+        <PageSection hasBodyWrapper={false}>
+          <TitleLayout
+            id="hbacservices title"
+            headingLevel="h1"
+            text="HBAC services"
+          />
+        </PageSection>
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem style={{ flex: "0 0 auto" }}>
+              <OuterScrollContainer>
+                <InnerScrollContainer
+                  style={{ height: "60vh", overflow: "auto" }}
+                >
+                  {batchError !== undefined && batchError ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <HBACServicesTable
+                      shownElementsList={servicesList}
+                      showTableRows={showTableRows}
+                      servicesData={servicesTableData}
+                      buttonsData={servicesTableButtonsData}
+                      paginationData={selectedPerPageData}
+                      searchValue={searchValue}
+                    />
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={servicesList}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+              />
+            </FlexItem>
+          </Flex>
+        </PageSection>
+        <AddHBACService
+          show={showAddModal}
+          handleModalToggle={onAddModalToggle}
+          onOpenAddModal={onAddClickHandler}
+          onCloseAddModal={onCloseAddModal}
+          onRefresh={refreshServicesData}
         />
-      </PageSection>
-      <PageSection hasBodyWrapper={false} isFilled={false}>
-        <Flex direction={{ default: "column" }}>
-          <FlexItem>
-            <ToolbarLayout toolbarItems={toolbarItems} />
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto" }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer
-                style={{ height: "60vh", overflow: "auto" }}
-              >
-                {batchError !== undefined && batchError ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <HBACServicesTable
-                    shownElementsList={servicesList}
-                    showTableRows={showTableRows}
-                    servicesData={servicesTableData}
-                    buttonsData={servicesTableButtonsData}
-                    paginationData={selectedPerPageData}
-                    searchValue={searchValue}
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
-            <PaginationLayout
-              list={servicesList}
-              paginationData={paginationData}
-              variant={PaginationVariant.bottom}
-              widgetId="pagination-options-menu-bottom"
-            />
-          </FlexItem>
-        </Flex>
-      </PageSection>
-      <AddHBACService
-        show={showAddModal}
-        handleModalToggle={onAddModalToggle}
-        onOpenAddModal={onAddClickHandler}
-        onCloseAddModal={onCloseAddModal}
-        onRefresh={refreshServicesData}
-      />
-      <DeleteHBACService
-        show={showDeleteModal}
-        handleModalToggle={onDeleteModalToggle}
-        selectedServicesData={selectedServicesData}
-        buttonsData={deleteServicesButtonsData}
-        onRefresh={refreshServicesData}
-      />
-      <ModalErrors
-        errors={modalErrors.getAll()}
-        dataCy="hbac-services-modal-error"
-      />
-    </div>
+        <DeleteHBACService
+          show={showDeleteModal}
+          handleModalToggle={onDeleteModalToggle}
+          selectedServicesData={selectedServicesData}
+          buttonsData={deleteServicesButtonsData}
+          onRefresh={refreshServicesData}
+        />
+        <ModalErrors
+          errors={modalErrors.getAll()}
+          dataCy="hbac-services-modal-error"
+        />
+      </div>
+    </ContextualHelpPanel>
   );
 };
 

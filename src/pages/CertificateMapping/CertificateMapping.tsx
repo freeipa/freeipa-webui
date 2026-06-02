@@ -18,6 +18,7 @@ import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // RPC
@@ -39,6 +40,7 @@ import ToolbarLayout, {
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
@@ -50,6 +52,10 @@ import EnableDisableMultipleRulesModal from "src/components/modals/CertificateMa
 
 const CertificateMappingPage = () => {
   const dispatch = useAppDispatch();
+
+  // Contextual help panel
+  const contextualPanel = useContextualHelpPanel();
+
   const navigate = useNavigate();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
@@ -448,7 +454,12 @@ const CertificateMappingPage = () => {
     },
     {
       key: 9,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={contextualPanel.toggle}
+        />
+      ),
     },
     {
       key: 10,
@@ -466,104 +477,110 @@ const CertificateMappingPage = () => {
 
   // Render component
   return (
-    <div>
-      <PageSection hasBodyWrapper={false}>
-        <TitleLayout
-          id="Certificate Identity mapping rules page"
-          headingLevel="h1"
-          text="Certificate Identity mapping rules"
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <div>
+        <PageSection hasBodyWrapper={false}>
+          <TitleLayout
+            id="Certificate Identity mapping rules page"
+            headingLevel="h1"
+            text="Certificate Identity mapping rules"
+          />
+        </PageSection>
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem style={{ flex: "0 0 auto" }}>
+              <OuterScrollContainer>
+                <InnerScrollContainer
+                  style={{ height: "55vh", overflow: "auto" }}
+                >
+                  {error !== undefined && error ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <MainTable
+                      tableTitle="Certificate Identity mapping table"
+                      shownElementsList={certMapRules}
+                      pk="cn"
+                      keyNames={["cn", "ipaenabledflag", "description"]}
+                      columnNames={["Rule name", "Status", "Description"]}
+                      hasCheckboxes={true}
+                      pathname="cert-id-mapping-rules"
+                      showTableRows={showTableRows}
+                      showLink={true}
+                      elementsData={{
+                        isElementSelectable: isCertMapSelectable,
+                        selectedElements,
+                        selectableElementsTable: selectableCertMapRulesTable,
+                        setElementsSelected: setCertMapRulesSelected,
+                        clearSelectedElements: () => setSelectedElements([]),
+                      }}
+                      buttonsData={{
+                        updateIsDeleteButtonDisabled: (value) =>
+                          setIsDeleteButtonDisabled(value),
+                        isDeletion,
+                        updateIsDeletion: (value) => setIsDeletion(value),
+                        updateIsEnableButtonDisabled: (value) =>
+                          setIsEnableButtonDisabled(value),
+                        updateIsDisableButtonDisabled: (value) =>
+                          setIsDisableButtonDisabled(value),
+                        isDisableEnableOp: true,
+                      }}
+                      paginationData={{
+                        selectedPerPage,
+                        updateSelectedPerPage: setSelectedPerPage,
+                      }}
+                      statusElementName="ipaenabledflag"
+                    />
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={certMapRules}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+              />
+            </FlexItem>
+          </Flex>
+        </PageSection>
+        <AddRuleModal
+          isOpen={showAddModal}
+          onClose={() => setShowAddModal(false)}
+          title={"Add certificate identity mapping rule"}
+          onRefresh={refreshData}
         />
-      </PageSection>
-      <PageSection hasBodyWrapper={false} isFilled={false}>
-        <Flex direction={{ default: "column" }}>
-          <FlexItem>
-            <ToolbarLayout toolbarItems={toolbarItems} />
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto" }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer
-                style={{ height: "55vh", overflow: "auto" }}
-              >
-                {error !== undefined && error ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <MainTable
-                    tableTitle="Certificate Identity mapping table"
-                    shownElementsList={certMapRules}
-                    pk="cn"
-                    keyNames={["cn", "ipaenabledflag", "description"]}
-                    columnNames={["Rule name", "Status", "Description"]}
-                    hasCheckboxes={true}
-                    pathname="cert-id-mapping-rules"
-                    showTableRows={showTableRows}
-                    showLink={true}
-                    elementsData={{
-                      isElementSelectable: isCertMapSelectable,
-                      selectedElements,
-                      selectableElementsTable: selectableCertMapRulesTable,
-                      setElementsSelected: setCertMapRulesSelected,
-                      clearSelectedElements: () => setSelectedElements([]),
-                    }}
-                    buttonsData={{
-                      updateIsDeleteButtonDisabled: (value) =>
-                        setIsDeleteButtonDisabled(value),
-                      isDeletion,
-                      updateIsDeletion: (value) => setIsDeletion(value),
-                      updateIsEnableButtonDisabled: (value) =>
-                        setIsEnableButtonDisabled(value),
-                      updateIsDisableButtonDisabled: (value) =>
-                        setIsDisableButtonDisabled(value),
-                      isDisableEnableOp: true,
-                    }}
-                    paginationData={{
-                      selectedPerPage,
-                      updateSelectedPerPage: setSelectedPerPage,
-                    }}
-                    statusElementName="ipaenabledflag"
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
-            <PaginationLayout
-              list={certMapRules}
-              paginationData={paginationData}
-              variant={PaginationVariant.bottom}
-              widgetId="pagination-options-menu-bottom"
-            />
-          </FlexItem>
-        </Flex>
-      </PageSection>
-      <AddRuleModal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        title={"Add certificate identity mapping rule"}
-        onRefresh={refreshData}
-      />
-      <DeleteMultipleRulesModal
-        isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        elementsToDelete={selectedElements}
-        clearSelectedElements={() => setSelectedElements([])}
-        columnNames={["Rule name", "Description"]}
-        keyNames={["cn", "description"]}
-        onRefresh={refreshData}
-        updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
-        updateIsDeletion={setIsDeletion}
-      />
-      <EnableDisableMultipleRulesModal
-        isOpen={showEnableDisableModal}
-        onClose={() => setShowEnableDisableModal(false)}
-        elementsList={selectedElements.map((rule) => rule.cn)}
-        setElementsList={(value) =>
-          setSelectedElements(value.map((cn) => ({ cn }) as CertificateMapping))
-        }
-        operation={operation}
-        setShowTableRows={setShowTableRows}
-        onRefresh={refreshData}
-      />
-    </div>
+        <DeleteMultipleRulesModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          elementsToDelete={selectedElements}
+          clearSelectedElements={() => setSelectedElements([])}
+          columnNames={["Rule name", "Description"]}
+          keyNames={["cn", "description"]}
+          onRefresh={refreshData}
+          updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
+          updateIsDeletion={setIsDeletion}
+        />
+        <EnableDisableMultipleRulesModal
+          isOpen={showEnableDisableModal}
+          onClose={() => setShowEnableDisableModal(false)}
+          elementsList={selectedElements.map((rule) => rule.cn)}
+          setElementsList={(value) =>
+            setSelectedElements(
+              value.map((cn) => ({ cn }) as CertificateMapping)
+            )
+          }
+          operation={operation}
+          setShowTableRows={setShowTableRows}
+          onRefresh={refreshData}
+        />
+      </div>
+    </ContextualHelpPanel>
   );
 };
 

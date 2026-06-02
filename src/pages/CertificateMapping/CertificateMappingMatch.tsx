@@ -20,6 +20,7 @@ import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Icons
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 // Utils
@@ -30,6 +31,7 @@ import { ErrorResult } from "src/services/rpc";
 // Components
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 import PageWithGrayBorderLayout from "src/components/layouts/PageWithGrayBorderLayout";
 import TableLayout from "src/components/layouts/TableLayout";
 
@@ -40,6 +42,9 @@ interface TableEntry {
 
 const CertificateMappingMatch = () => {
   const dispatch = useAppDispatch();
+
+  // Contextual help panel
+  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({
@@ -216,170 +221,173 @@ const CertificateMappingMatch = () => {
 
   // Return component
   return (
-    <PageWithGrayBorderLayout
-      id="certificate-mapping-match"
-      pageTitle="Certificate Mapping Match"
-      toolbarItems={toolbarFields}
-    >
-      <>
-        <Sidebar isPanelRight>
-          <SidebarPanel variant="sticky" className="pf-v6-u-pl-md">
-            <HelpTextWithIconLayout
-              textContent="Help"
-              icon={
-                <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100" />
-              }
-            />
-          </SidebarPanel>
-          <SidebarContent>
-            <Flex direction={{ default: "column", lg: "row" }}>
-              <FlexItem flex={{ default: "flex_1" }}>
-                <TitleLayout
-                  key={0}
-                  headingLevel="h1"
-                  id="certificate-for-match"
-                  text="Certificate for match"
-                  className="pf-v6-u-mt-0 pf-v6-u-ml-0 pf-v6-u-mb-md"
-                />
-                <Form className="pf-v6-u-mb-lg">
-                  <FormGroup label="Certificate" fieldId="cert_textarea">
-                    <TextArea
-                      data-cy="certificate-identity-mapping-match-textbox-certificate"
-                      name="cert_textarea"
-                      aria-label="Certificate"
-                      value={certificateText}
-                      onChange={(_event, value) => setCertificateText(value)}
-                      resizeOrientation="vertical"
-                      rows={15}
-                    />
-                  </FormGroup>
-                </Form>
-              </FlexItem>
-              <FlexItem flex={{ default: "flex_1" }}>
-                <TitleLayout
-                  key={1}
-                  headingLevel="h1"
-                  id="certificate-data"
-                  text="Certificate data"
-                  className="pf-v6-u-mt-lg pf-v6-u-mb-md"
-                />
-                <Form className="pf-v6-u-mb-lg">
-                  <FormGroup label="Issued by" fieldId="issuer">
-                    <TextInput
-                      data-cy="certificate-identity-mapping-match-textbox-issuer"
-                      name="issuer"
-                      aria-label="Issued by text input"
-                      type="text"
-                      value={issuedBy}
-                      isDisabled
-                    />
-                  </FormGroup>
-                  <FormGroup label="Issued to" fieldId="subject">
-                    <TextInput
-                      data-cy="certificate-identity-mapping-match-textbox-subject"
-                      name="subject"
-                      aria-label="Issued to text input"
-                      type="text"
-                      value={issuedTo}
-                      isDisabled
-                    />
-                  </FormGroup>
-                  <FormGroup label="Serial number" fieldId="serial_number">
-                    <TextInput
-                      data-cy="certificate-identity-mapping-match-textbox-serial-number"
-                      name="serial_number"
-                      aria-label="Serial number text input"
-                      type="text"
-                      value={serialNumber}
-                      isDisabled
-                    />
-                  </FormGroup>
-                  <FormGroup
-                    label="Serial number (hex)"
-                    fieldId="serial_number_hex"
-                  >
-                    <TextInput
-                      data-cy="certificate-identity-mapping-match-textbox-serial-number-hex"
-                      name="serial_number_hex"
-                      aria-label="Serial number in hexadecimal text input"
-                      type="text"
-                      value={serialNumberHex}
-                      isDisabled
-                    />
-                  </FormGroup>
-                  <FormGroup label="Valid from" fieldId="valid_not_before">
-                    <TextInput
-                      data-cy="certificate-identity-mapping-match-textbox-valid-from"
-                      name="valid_not_before"
-                      aria-label="Valid from text input"
-                      type="text"
-                      value={validFrom}
-                      isDisabled
-                    />
-                  </FormGroup>
-                  <FormGroup label="Valid to" fieldId="valid_not_after">
-                    <TextInput
-                      data-cy="certificate-identity-mapping-match-textbox-valid-to"
-                      name="valid_not_after"
-                      aria-label="Valid to text input"
-                      type="text"
-                      value={validTo}
-                      isDisabled
-                    />
-                  </FormGroup>
-                  <FormGroup
-                    label="SHA1 Fingerprint"
-                    fieldId="sha1_fingerprint"
-                  >
-                    <TextArea
-                      data-cy="certificate-identity-mapping-match-textbox-sha1-fingerprint"
-                      name="sha1_fingerprint"
-                      aria-label="SHA1 Fingerprint text input"
-                      value={fingerprintSha1}
-                      resizeOrientation="vertical"
-                      rows={2}
-                      isDisabled
-                    />
-                  </FormGroup>
-                  <FormGroup
-                    label="SHA256 Fingerprint"
-                    fieldId="sha256_fingerprint"
-                  >
-                    <TextArea
-                      data-cy="certificate-identity-mapping-match-textbox-sha256-fingerprint"
-                      name="sha256_fingerprint"
-                      aria-label="SHA256 Fingerprint text input"
-                      value={fingerprintSha256}
-                      resizeOrientation="vertical"
-                      rows={2}
-                      isDisabled
-                      autoResize={false}
-                    />
-                  </FormGroup>
-                </Form>
-              </FlexItem>
-            </Flex>
-            <TitleLayout
-              key={2}
-              headingLevel="h1"
-              id="matched-users"
-              text="Matched users"
-              className="pf-v6-u-mt-lg pf-v6-u-mb-md"
-            />
-            <TableLayout
-              ariaLabel={"Matched users"}
-              variant={"compact"}
-              hasBorders={true}
-              classes={"pf-v6-u-mt-md"}
-              tableId={"matched-users-table"}
-              isStickyHeader={true}
-              tableHeader={header}
-              tableBody={body}
-            />
-          </SidebarContent>
-        </Sidebar>
-      </>
-    </PageWithGrayBorderLayout>
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <PageWithGrayBorderLayout
+        id="certificate-mapping-match"
+        pageTitle="Certificate Mapping Match"
+        toolbarItems={toolbarFields}
+      >
+        <>
+          <Sidebar isPanelRight>
+            <SidebarPanel variant="sticky" className="pf-v6-u-pl-md">
+              <HelpTextWithIconLayout
+                textContent="Help"
+                onClick={contextualPanel.toggle}
+                icon={
+                  <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100" />
+                }
+              />
+            </SidebarPanel>
+            <SidebarContent>
+              <Flex direction={{ default: "column", lg: "row" }}>
+                <FlexItem flex={{ default: "flex_1" }}>
+                  <TitleLayout
+                    key={0}
+                    headingLevel="h1"
+                    id="certificate-for-match"
+                    text="Certificate for match"
+                    className="pf-v6-u-mt-0 pf-v6-u-ml-0 pf-v6-u-mb-md"
+                  />
+                  <Form className="pf-v6-u-mb-lg">
+                    <FormGroup label="Certificate" fieldId="cert_textarea">
+                      <TextArea
+                        data-cy="certificate-identity-mapping-match-textbox-certificate"
+                        name="cert_textarea"
+                        aria-label="Certificate"
+                        value={certificateText}
+                        onChange={(_event, value) => setCertificateText(value)}
+                        resizeOrientation="vertical"
+                        rows={15}
+                      />
+                    </FormGroup>
+                  </Form>
+                </FlexItem>
+                <FlexItem flex={{ default: "flex_1" }}>
+                  <TitleLayout
+                    key={1}
+                    headingLevel="h1"
+                    id="certificate-data"
+                    text="Certificate data"
+                    className="pf-v6-u-mt-lg pf-v6-u-mb-md"
+                  />
+                  <Form className="pf-v6-u-mb-lg">
+                    <FormGroup label="Issued by" fieldId="issuer">
+                      <TextInput
+                        data-cy="certificate-identity-mapping-match-textbox-issuer"
+                        name="issuer"
+                        aria-label="Issued by text input"
+                        type="text"
+                        value={issuedBy}
+                        isDisabled
+                      />
+                    </FormGroup>
+                    <FormGroup label="Issued to" fieldId="subject">
+                      <TextInput
+                        data-cy="certificate-identity-mapping-match-textbox-subject"
+                        name="subject"
+                        aria-label="Issued to text input"
+                        type="text"
+                        value={issuedTo}
+                        isDisabled
+                      />
+                    </FormGroup>
+                    <FormGroup label="Serial number" fieldId="serial_number">
+                      <TextInput
+                        data-cy="certificate-identity-mapping-match-textbox-serial-number"
+                        name="serial_number"
+                        aria-label="Serial number text input"
+                        type="text"
+                        value={serialNumber}
+                        isDisabled
+                      />
+                    </FormGroup>
+                    <FormGroup
+                      label="Serial number (hex)"
+                      fieldId="serial_number_hex"
+                    >
+                      <TextInput
+                        data-cy="certificate-identity-mapping-match-textbox-serial-number-hex"
+                        name="serial_number_hex"
+                        aria-label="Serial number in hexadecimal text input"
+                        type="text"
+                        value={serialNumberHex}
+                        isDisabled
+                      />
+                    </FormGroup>
+                    <FormGroup label="Valid from" fieldId="valid_not_before">
+                      <TextInput
+                        data-cy="certificate-identity-mapping-match-textbox-valid-from"
+                        name="valid_not_before"
+                        aria-label="Valid from text input"
+                        type="text"
+                        value={validFrom}
+                        isDisabled
+                      />
+                    </FormGroup>
+                    <FormGroup label="Valid to" fieldId="valid_not_after">
+                      <TextInput
+                        data-cy="certificate-identity-mapping-match-textbox-valid-to"
+                        name="valid_not_after"
+                        aria-label="Valid to text input"
+                        type="text"
+                        value={validTo}
+                        isDisabled
+                      />
+                    </FormGroup>
+                    <FormGroup
+                      label="SHA1 Fingerprint"
+                      fieldId="sha1_fingerprint"
+                    >
+                      <TextArea
+                        data-cy="certificate-identity-mapping-match-textbox-sha1-fingerprint"
+                        name="sha1_fingerprint"
+                        aria-label="SHA1 Fingerprint text input"
+                        value={fingerprintSha1}
+                        resizeOrientation="vertical"
+                        rows={2}
+                        isDisabled
+                      />
+                    </FormGroup>
+                    <FormGroup
+                      label="SHA256 Fingerprint"
+                      fieldId="sha256_fingerprint"
+                    >
+                      <TextArea
+                        data-cy="certificate-identity-mapping-match-textbox-sha256-fingerprint"
+                        name="sha256_fingerprint"
+                        aria-label="SHA256 Fingerprint text input"
+                        value={fingerprintSha256}
+                        resizeOrientation="vertical"
+                        rows={2}
+                        isDisabled
+                        autoResize={false}
+                      />
+                    </FormGroup>
+                  </Form>
+                </FlexItem>
+              </Flex>
+              <TitleLayout
+                key={2}
+                headingLevel="h1"
+                id="matched-users"
+                text="Matched users"
+                className="pf-v6-u-mt-lg pf-v6-u-mb-md"
+              />
+              <TableLayout
+                ariaLabel={"Matched users"}
+                variant={"compact"}
+                hasBorders={true}
+                classes={"pf-v6-u-mt-md"}
+                tableId={"matched-users-table"}
+                isStickyHeader={true}
+                tableHeader={header}
+                tableBody={body}
+              />
+            </SidebarContent>
+          </Sidebar>
+        </>
+      </PageWithGrayBorderLayout>
+    </ContextualHelpPanel>
   );
 };
 

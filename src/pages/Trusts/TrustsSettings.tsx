@@ -16,6 +16,7 @@ import {
 import { Trust, Metadata } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Utils
 import { asRecord, isValidSID } from "src/utils/trustsUtils";
 // RPC
@@ -24,6 +25,7 @@ import { TrustModPayload, useTrustModMutation } from "src/services/rpcTrusts";
 import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
 import TabLayout from "src/components/layouts/TabLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 import IpaTextboxList from "src/components/Form/IpaTextboxList";
 import TitleLayout from "src/components/layouts/TitleLayout";
 // Redux
@@ -46,6 +48,9 @@ interface TrustsSettingsProps {
 const TrustsSettings = (props: TrustsSettingsProps) => {
   // Alerts to show in the UI
   const dispatch = useAppDispatch();
+
+  // Contextual help panel
+  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
@@ -178,148 +183,157 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
 
   // Return component
   return (
-    <TabLayout
-      id="settings-page"
-      toolbarItems={toolbarFields}
-      dataCy="trusts-settings"
-    >
-      <Sidebar isPanelRight>
-        <SidebarPanel variant="sticky">
-          <HelpTextWithIconLayout textContent="Help" />
-          <JumpLinks
-            isVertical
-            label="Jump to section"
-            scrollableSelector="#settings-page"
-            expandable={{ default: "expandable", md: "nonExpandable" }}
-          >
-            <JumpLinksItem key={0} href="#trusts-settings">
-              Trusts settings
-            </JumpLinksItem>
-            <JumpLinksItem key={1} href="#alternative-upn-suffixes">
-              Alternative UPN suffixes
-            </JumpLinksItem>
-            <JumpLinksItem key={2} href="#sid-blocklists">
-              SID blocklists
-            </JumpLinksItem>
-          </JumpLinks>
-        </SidebarPanel>
-        <SidebarContent className="pf-v6-u-mr-xl">
-          <Form
-            className="pf-v6-u-mb-lg"
-            id="trusts-settings-form"
-            onSubmit={onSave}
-          >
-            <Flex direction={{ default: "column", lg: "row" }}>
-              <FlexItem flex={{ default: "flex_1" }}>
-                <TitleLayout
-                  key={0}
-                  headingLevel="h2"
-                  id="trusts-settings"
-                  text="Trusts settings"
-                />
-                <FormGroup label="Realm Name" fieldId="cn" role="group">
-                  <IpaTextInput
-                    dataCy="trusts-tab-settings-input-realm-name"
-                    name="cn"
-                    objectName="trust"
-                    metadata={props.metadata}
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <TabLayout
+        id="settings-page"
+        toolbarItems={toolbarFields}
+        dataCy="trusts-settings"
+      >
+        <Sidebar isPanelRight>
+          <SidebarPanel variant="sticky">
+            <HelpTextWithIconLayout
+              textContent="Help"
+              onClick={contextualPanel.toggle}
+            />
+            <JumpLinks
+              isVertical
+              label="Jump to section"
+              scrollableSelector="#settings-page"
+              expandable={{ default: "expandable", md: "nonExpandable" }}
+            >
+              <JumpLinksItem key={0} href="#trusts-settings">
+                Trusts settings
+              </JumpLinksItem>
+              <JumpLinksItem key={1} href="#alternative-upn-suffixes">
+                Alternative UPN suffixes
+              </JumpLinksItem>
+              <JumpLinksItem key={2} href="#sid-blocklists">
+                SID blocklists
+              </JumpLinksItem>
+            </JumpLinks>
+          </SidebarPanel>
+          <SidebarContent className="pf-v6-u-mr-xl">
+            <Form
+              className="pf-v6-u-mb-lg"
+              id="trusts-settings-form"
+              onSubmit={onSave}
+            >
+              <Flex direction={{ default: "column", lg: "row" }}>
+                <FlexItem flex={{ default: "flex_1" }}>
+                  <TitleLayout
+                    key={0}
+                    headingLevel="h2"
+                    id="trusts-settings"
+                    text="Trusts settings"
                   />
-                </FormGroup>
-                <FormGroup
-                  label="Domain NetBIOS name"
-                  fieldId="ipantflatname"
-                  role="group"
-                >
-                  <IpaTextInput
-                    dataCy="trusts-tab-settings-input-domain-netbios-name"
-                    name="ipantflatname"
-                    objectName="trust"
-                    metadata={props.metadata}
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
+                  <FormGroup label="Realm Name" fieldId="cn" role="group">
+                    <IpaTextInput
+                      dataCy="trusts-tab-settings-input-realm-name"
+                      name="cn"
+                      objectName="trust"
+                      metadata={props.metadata}
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                    />
+                  </FormGroup>
+                  <FormGroup
+                    label="Domain NetBIOS name"
+                    fieldId="ipantflatname"
+                    role="group"
+                  >
+                    <IpaTextInput
+                      dataCy="trusts-tab-settings-input-domain-netbios-name"
+                      name="ipantflatname"
+                      objectName="trust"
+                      metadata={props.metadata}
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                    />
+                  </FormGroup>
+                  <FormGroup
+                    label="Trust Type"
+                    fieldId="trusttype"
+                    role="group"
+                  >
+                    <IpaTextInput
+                      dataCy="trusts-tab-settings-input-trust-type"
+                      name="trusttype"
+                      objectName="trust"
+                      metadata={props.metadata}
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                    />
+                  </FormGroup>
+                  <TitleLayout
+                    key={1}
+                    headingLevel="h2"
+                    id="alternative-upn-suffixes"
+                    text="Alternative UPN suffixes"
+                    className="pf-v6-u-mt-lg"
                   />
-                </FormGroup>
-                <FormGroup label="Trust Type" fieldId="trusttype" role="group">
-                  <IpaTextInput
-                    dataCy="trusts-tab-settings-input-trust-type"
-                    name="trusttype"
-                    objectName="trust"
-                    metadata={props.metadata}
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
+                  <FormGroup
+                    label="Alternative UPN suffixes"
+                    fieldId="ipantadditionalsuffixes"
+                    role="group"
+                  >
+                    <IpaTextboxList
+                      dataCy="trusts-tab-settings-textbox-alternative-upn-suffixes"
+                      name="ipantadditionalsuffixes"
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      objectName="trust"
+                      metadata={props.metadata}
+                      ariaLabel="Alternative UPN suffixes list"
+                    />
+                  </FormGroup>
+                </FlexItem>
+                <FlexItem flex={{ default: "flex_1" }}>
+                  <TitleLayout
+                    key={2}
+                    headingLevel="h2"
+                    id="sid-blocklists"
+                    text="SID blocklists"
                   />
-                </FormGroup>
-                <TitleLayout
-                  key={1}
-                  headingLevel="h2"
-                  id="alternative-upn-suffixes"
-                  text="Alternative UPN suffixes"
-                  className="pf-v6-u-mt-lg"
-                />
-                <FormGroup
-                  label="Alternative UPN suffixes"
-                  fieldId="ipantadditionalsuffixes"
-                  role="group"
-                >
-                  <IpaTextboxList
-                    dataCy="trusts-tab-settings-textbox-alternative-upn-suffixes"
-                    name="ipantadditionalsuffixes"
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    objectName="trust"
-                    metadata={props.metadata}
-                    ariaLabel="Alternative UPN suffixes list"
-                  />
-                </FormGroup>
-              </FlexItem>
-              <FlexItem flex={{ default: "flex_1" }}>
-                <TitleLayout
-                  key={2}
-                  headingLevel="h2"
-                  id="sid-blocklists"
-                  text="SID blocklists"
-                />
-                <FormGroup
-                  label="SID blocklists incoming"
-                  fieldId="ipantsidblacklistincoming"
-                  role="group"
-                >
-                  <IpaTextboxList
-                    dataCy="trusts-tab-settings-textbox-sid-blocklists"
-                    name="ipantsidblacklistincoming"
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    objectName="trust"
-                    metadata={props.metadata}
-                    ariaLabel="SID blocklists incoming list"
-                    validator={isValidSID}
-                  />
-                </FormGroup>
-                <FormGroup
-                  label="SID blocklists outgoing"
-                  fieldId="ipantsidblacklistoutgoing"
-                  role="group"
-                  className="pf-v6-u-mt-lg"
-                >
-                  <IpaTextboxList
-                    dataCy="trusts-tab-settings-textbox-sid-blocklists-outgoing"
-                    name="ipantsidblacklistoutgoing"
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    objectName="trust"
-                    metadata={props.metadata}
-                    ariaLabel="SID blocklists outgoing list"
-                    validator={isValidSID}
-                  />
-                </FormGroup>
-              </FlexItem>
-            </Flex>
-          </Form>
-        </SidebarContent>
-      </Sidebar>
-    </TabLayout>
+                  <FormGroup
+                    label="SID blocklists incoming"
+                    fieldId="ipantsidblacklistincoming"
+                    role="group"
+                  >
+                    <IpaTextboxList
+                      dataCy="trusts-tab-settings-textbox-sid-blocklists"
+                      name="ipantsidblacklistincoming"
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      objectName="trust"
+                      metadata={props.metadata}
+                      ariaLabel="SID blocklists incoming list"
+                      validator={isValidSID}
+                    />
+                  </FormGroup>
+                  <FormGroup
+                    label="SID blocklists outgoing"
+                    fieldId="ipantsidblacklistoutgoing"
+                    role="group"
+                    className="pf-v6-u-mt-lg"
+                  >
+                    <IpaTextboxList
+                      dataCy="trusts-tab-settings-textbox-sid-blocklists-outgoing"
+                      name="ipantsidblacklistoutgoing"
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      objectName="trust"
+                      metadata={props.metadata}
+                      ariaLabel="SID blocklists outgoing list"
+                      validator={isValidSID}
+                    />
+                  </FormGroup>
+                </FlexItem>
+              </Flex>
+            </Form>
+          </SidebarContent>
+        </Sidebar>
+      </TabLayout>
+    </ContextualHelpPanel>
   );
 };
 

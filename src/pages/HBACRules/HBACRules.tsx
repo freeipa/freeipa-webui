@@ -20,6 +20,7 @@ import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
@@ -35,6 +36,7 @@ import DisableEnableHBACRules from "src/components/modals/HbacModals/DisableEnab
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Utils
 import { API_VERSION_BACKUP, isHbacRuleSelectable } from "src/utils/utils";
 // RPC client
@@ -49,6 +51,9 @@ import ModalErrors from "src/components/errors/ModalErrors";
 
 const HBACRules = () => {
   const dispatch = useAppDispatch();
+
+  // Contextual help panel
+  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "hbac-rules" });
@@ -559,7 +564,12 @@ const HBACRules = () => {
     },
     {
       key: 10,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={contextualPanel.toggle}
+        />
+      ),
     },
     {
       key: 11,
@@ -577,72 +587,80 @@ const HBACRules = () => {
 
   // Render 'Active users'
   return (
-    <div>
-      <PageSection hasBodyWrapper={false}>
-        <TitleLayout id="hbacrules title" headingLevel="h1" text="HBAC rules" />
-      </PageSection>
-      <PageSection hasBodyWrapper={false} isFilled={false}>
-        <Flex direction={{ default: "column" }}>
-          <FlexItem>
-            <ToolbarLayout toolbarItems={toolbarItems} />
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto" }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer
-                style={{ height: "60vh", overflow: "auto" }}
-              >
-                {batchError !== undefined && batchError ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <HBACRulesTable
-                    shownElementsList={rulesList}
-                    showTableRows={showTableRows}
-                    rulesData={rulesTableData}
-                    buttonsData={rulesTableButtonsData}
-                    paginationData={selectedPerPageData}
-                    searchValue={searchValue}
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
-            <PaginationLayout
-              list={rulesList}
-              paginationData={paginationData}
-              variant={PaginationVariant.bottom}
-              widgetId="pagination-options-menu-bottom"
-            />
-          </FlexItem>
-        </Flex>
-      </PageSection>
-      <AddHBACRule
-        show={showAddModal}
-        handleModalToggle={onAddModalToggle}
-        onOpenAddModal={onAddClickHandler}
-        onCloseAddModal={onCloseAddModal}
-        onRefresh={refreshRulesData}
-      />
-      <DeleteHBACRule
-        show={showDeleteModal}
-        handleModalToggle={onDeleteModalToggle}
-        selectedRulesData={selectedRulesData}
-        buttonsData={deleteRulesButtonsData}
-        onRefresh={refreshRulesData}
-      />
-      <DisableEnableHBACRules
-        show={showEnableDisableModal}
-        handleModalToggle={onEnableDisableModalToggle}
-        optionSelected={enableDisableOptionSelected}
-        selectedRulesData={selectedRulesData}
-        buttonsData={disableEnableButtonsData}
-        onRefresh={refreshRulesData}
-      />
-      <ModalErrors
-        errors={modalErrors.getAll()}
-        dataCy="hbac-rules-modal-error"
-      />
-    </div>
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <div>
+        <PageSection hasBodyWrapper={false}>
+          <TitleLayout
+            id="hbacrules title"
+            headingLevel="h1"
+            text="HBAC rules"
+          />
+        </PageSection>
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem style={{ flex: "0 0 auto" }}>
+              <OuterScrollContainer>
+                <InnerScrollContainer
+                  style={{ height: "60vh", overflow: "auto" }}
+                >
+                  {batchError !== undefined && batchError ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <HBACRulesTable
+                      shownElementsList={rulesList}
+                      showTableRows={showTableRows}
+                      rulesData={rulesTableData}
+                      buttonsData={rulesTableButtonsData}
+                      paginationData={selectedPerPageData}
+                      searchValue={searchValue}
+                    />
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={rulesList}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+              />
+            </FlexItem>
+          </Flex>
+        </PageSection>
+        <AddHBACRule
+          show={showAddModal}
+          handleModalToggle={onAddModalToggle}
+          onOpenAddModal={onAddClickHandler}
+          onCloseAddModal={onCloseAddModal}
+          onRefresh={refreshRulesData}
+        />
+        <DeleteHBACRule
+          show={showDeleteModal}
+          handleModalToggle={onDeleteModalToggle}
+          selectedRulesData={selectedRulesData}
+          buttonsData={deleteRulesButtonsData}
+          onRefresh={refreshRulesData}
+        />
+        <DisableEnableHBACRules
+          show={showEnableDisableModal}
+          handleModalToggle={onEnableDisableModalToggle}
+          optionSelected={enableDisableOptionSelected}
+          selectedRulesData={selectedRulesData}
+          buttonsData={disableEnableButtonsData}
+          onRefresh={refreshRulesData}
+        />
+        <ModalErrors
+          errors={modalErrors.getAll()}
+          dataCy="hbac-rules-modal-error"
+        />
+      </div>
+    </ContextualHelpPanel>
   );
 };
 

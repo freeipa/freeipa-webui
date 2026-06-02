@@ -7,6 +7,7 @@ import MemberOfAddModal, { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 import MemberTable from "src/components/tables/MembershipTable";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Data types
 import { UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Redux
@@ -14,6 +15,7 @@ import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 // RPC
@@ -45,6 +47,7 @@ interface PropsToMembersUsergroups {
 
 const MembersUserGroups = (props: PropsToMembersUsergroups) => {
   const dispatch = useAppDispatch();
+  const contextualPanel = useContextualHelpPanel();
   const membershipDisabled =
     props.membershipDisabled === undefined ? false : props.membershipDisabled;
 
@@ -326,7 +329,7 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
   };
 
   return (
-    <>
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
       {membershipDisabled ? (
         <MemberOfToolbar
           searchText={searchValue}
@@ -345,6 +348,7 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
           addButtonEnabled={isAddButtonEnabled}
           onAddButtonClick={() => setShowAddModal(true)}
           helpIconEnabled={true}
+          onHelpIconClick={contextualPanel.toggle}
           totalItems={userGroupNames.length}
           perPage={perPage}
           page={page}
@@ -372,6 +376,7 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
           membershipDirection={membershipDirection}
           onMembershipDirectionChange={setMembershipDirection}
           helpIconEnabled={true}
+          onHelpIconClick={contextualPanel.toggle}
           totalItems={userGroupNames.length}
           perPage={perPage}
           page={page}
@@ -441,7 +446,7 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
           />
         </MemberOfDeleteModal>
       )}
-    </>
+    </ContextualHelpPanel>
   );
 };
 

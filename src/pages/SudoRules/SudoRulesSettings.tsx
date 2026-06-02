@@ -8,6 +8,7 @@ import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
 // RPC
 import {
   AddRemoveAsRunToSudoRulesPayload,
@@ -33,6 +34,7 @@ import KebabLayout from "src/components/layouts/KebabLayout";
 import TabLayout from "src/components/layouts/TabLayout";
 import SudoRuleGeneral from "src/components/SudoRuleSections/SudoRuleGeneral";
 import SidebarLayout from "src/components/layouts/SidebarLayout";
+import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 import SudoRuleOptions from "src/components/SudoRuleSections/SudoRuleOptions";
 import SudoRulesWho from "src/components/SudoRuleSections/SudoRulesWho";
 import { TableEntry } from "src/components/tables/KeytabTableWithFilter";
@@ -56,6 +58,9 @@ interface PropsToSudoRulesSettings {
 
 const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
   const dispatch = useAppDispatch();
+
+  // Contextual help panel
+  const contextualPanel = useContextualHelpPanel();
 
   // API calls
   const [saveService] = useSaveSudoRuleMutation();
@@ -914,9 +919,12 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
 
   // Render component
   return (
-    <>
+    <ContextualHelpPanel {...contextualPanel.panelProps}>
       <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-        <SidebarLayout itemNames={itemNames}>
+        <SidebarLayout
+          itemNames={itemNames}
+          onHelpClick={contextualPanel.toggle}
+        >
           {/* General */}
           <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
             <TitleLayout headingLevel="h2" id="general" text="General" />
@@ -1051,7 +1059,7 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
         onRefresh={props.onRefresh}
         singleRule={true}
       />
-    </>
+    </ContextualHelpPanel>
   );
 };
 
