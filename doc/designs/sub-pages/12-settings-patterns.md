@@ -118,7 +118,47 @@ Toggle ("Anyone" vs "Specified") with **always-visible** tabbed tables. Tables s
    }),
    ```
 
-**Reference:** `SudoRulesWho.tsx`, `AccessThisHost.tsx`, `SELinuxUserMapsSettings.tsx`
+5. **Clear members when switching to "Anyone"** — When the category is changed from "Specified" to "All" (Anyone), all existing members in that category must be removed before saving. The `*_mod` API with `*category=all` does NOT automatically remove members:
+   ```typescript
+   const onSave = () => {
+     setSaving(true);
+     const modifiedValues = props.modifiedValues();
+     const keysInObject = Object.keys(modifiedValues);
+
+     // Check if category is being changed to "all" (Anyone)
+     if (
+       (keysInObject.includes("usercategory") &&
+         modifiedValues.usercategory === "all") ||
+       (keysInObject.includes("hostcategory") &&
+         modifiedValues.hostcategory === "all")
+     ) {
+       // Remove all users and groups first, then save
+       const usersToRemove = props.map.memberuser_user || [];
+       const groupsToRemove = props.map.memberuser_group || [];
+       if (keysInObject.includes("usercategory") && modifiedValues.usercategory === "all") {
+         onDeleteAllUsersAndSave(usersToRemove, groupsToRemove);
+       }
+
+       // Remove all hosts and host groups first, then save
+       const hostsToRemove = props.map.memberhost_host || [];
+       const hostGroupsToRemove = props.map.memberhost_hostgroup || [];
+       if (keysInObject.includes("hostcategory") && modifiedValues.hostcategory === "all") {
+         onDeleteAllHostsAndSave(hostsToRemove, hostGroupsToRemove);
+       }
+     } else {
+       // Regular save without category changes
+       onSaveRule();
+     }
+   };
+   ```
+
+   The helper functions (`onDeleteAllUsersAndSave`, `onDeleteAllHostsAndSave`) should:
+   - Remove users/hosts first via `*_remove_user` or `*_remove_host` API
+   - Then remove groups/hostgroups via the same API (with different `type` parameter)
+   - Call `props.onRefresh()` to update local state
+   - Finally call the regular save function
+
+**Reference:** `SudoRulesSettings.tsx`, `SELinuxUserMapsSettings.tsx`
 
 ## Category Checkbox + Tables
 
