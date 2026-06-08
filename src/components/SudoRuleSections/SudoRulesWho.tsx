@@ -1,20 +1,12 @@
 import React from "react";
-// PatternFly
-import {
-  Flex,
-  FlexItem,
-  Label,
-  Tab,
-  Tabs,
-  TabTitleText,
-} from "@patternfly/react-core";
 // Data types
 import { Metadata, SudoRule } from "src/utils/datatypes/globalDataTypes";
 // Components
-import KeytabTableWithFilter, {
-  TableEntry,
-} from "src/components/tables/KeytabTableWithFilter";
-import IpaToggleGroup from "src/components/Form/IpaToggleGroup";
+import { TableEntry } from "src/components/tables/KeytabTableWithFilter";
+import {
+  CategoryToggleSection,
+  CategoryTabConfig,
+} from "src/components/CategoryToggleSection";
 // RPC
 import {
   AddRemoveToSudoRulesResult,
@@ -23,20 +15,18 @@ import {
   useRemoveFromSudoRuleMutation,
   useSaveSudoRuleMutation,
 } from "src/services/rpcSudoRules";
-// Utils
-import { containsAny } from "src/utils/utils";
-// Redux
-import { useAppDispatch } from "src/store/hooks";
 // Hooks
-import { addAlert } from "src/store/Global/alerts-slice";
-import { ErrorResult } from "src/services/rpc";
+import {
+  useCategoryMembershipOperations,
+  MembershipTabConfig,
+} from "src/hooks/useCategoryMembershipOperations";
 
 interface PropsToSudoRulesWho {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ipaObject: Record<string, any>;
   rule: Partial<SudoRule>;
-  usersList: TableEntry[]; // memberuser_user + externaluser
-  userGroupsList: TableEntry[]; // memberuser_group
+  usersList: TableEntry[];
+  userGroupsList: TableEntry[];
   onRefresh: () => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   recordOnChange: (ipaObject: Record<string, any>) => void;
@@ -46,426 +36,127 @@ interface PropsToSudoRulesWho {
 }
 
 const SudoRulesWho = (props: PropsToSudoRulesWho) => {
-  const dispatch = useAppDispatch();
-  const [activeTabKey, setActiveTabKey] = React.useState<string | number>(0);
+  // API mutations
+  const [addMutation] = useAddToSudoRuleMutation();
+  const [removeMutation] = useRemoveFromSudoRuleMutation();
+  const [saveMutation] = useSaveSudoRuleMutation();
 
-  const handleTabClick = (
-    event: React.MouseEvent | React.KeyboardEvent | MouseEvent,
-    tabIndex: string | number
-  ) => {
-    setActiveTabKey(tabIndex);
-  };
-
-  // API calls
-  const [onAdd] = useAddToSudoRuleMutation();
-  const [onRemove] = useRemoveFromSudoRuleMutation();
-  const [onSave] = useSaveSudoRuleMutation();
-
-  // States
-  const [modalSpinning, setModalSpinning] = React.useState(false);
-  const [usersList, setUsersList] = React.useState<TableEntry[]>(
-    props.usersList
-  );
-  const [userGroupsList, setUserGroupsList] = React.useState<TableEntry[]>(
-    props.userGroupsList
-  );
-
-  React.useEffect(() => {
-    setUsersList(props.usersList);
-  }, [props.usersList]);
-
-  React.useEffect(() => {
-    setUserGroupsList(props.userGroupsList);
-  }, [props.userGroupsList]);
-
-  // on Add new user
-  const onAddNewUser = (newUsers: string[]) => {
-    setModalSpinning(true);
-    const payload: AddRemoveToSudoRulesPayload = {
-      toId: props.rule.cn as string,
-      type: "user",
-      listOfMembers: newUsers,
-    };
-
-    onAdd(payload).then((response) => {
-      if ("data" in response) {
-        const data = response.data;
-        const results = data?.result
-          .results as unknown as AddRemoveToSudoRulesResult[];
-        results.forEach((result) => {
-          // Check if any errors
-          if (result.error !== null) {
-            dispatch(
-              addAlert({
-                name: "add-who-user-external-error",
-                title: "Error: " + result.error,
-                variant: "danger",
-              })
-            );
-          } else {
-            // Some values can be undefined after addition
-            const usersFromResponse = result.result.memberuser_user || [];
-            const externalsFromResponse = result.result.externaluser || [];
-            if (
-              containsAny(usersFromResponse, newUsers) ||
-              containsAny(externalsFromResponse, newUsers)
-            ) {
-              // Set alert: success
-              dispatch(
-                addAlert({
-                  name: "add-who-user-external-success",
-                  title: "Added new item(s) to '" + props.rule.cn + "'",
-                  variant: "success",
-                })
-              );
-              // Refresh page
-              props.onRefresh();
-            }
-          }
-        });
-      } else {
-        // Assume error
-        dispatch(
-          addAlert({
-            name: "add-who-user-external-error",
-            title:
-              "Error: " + (response.error ? response.error : "Unknown error"),
-            variant: "danger",
-          })
-        );
-      }
-      setModalSpinning(false);
-    });
-  };
-
-  // On save and add users
-  //  - If 'specify' option is selected (just modified) and new users should be added:
-  //    save the rule first and then add the users
-  const onSaveAndAddUsers = (usersToAdd: string[]) => {
-    const modifiedValues = props.modifiedValues();
-    if (modifiedValues.usercategory === "") {
-      modifiedValues.cn = props.rule.cn;
-
-      onSave(modifiedValues).then((response) => {
-        if ("data" in response) {
-          if (response.data?.result) {
-            // Show toast notification: success
-            dispatch(
-              addAlert({
-                name: "save-success",
-                title: "Sudo rule modified",
-                variant: "success",
-              })
-            );
-            props.onRefresh();
-            // Add new users
-            onAddNewUser(usersToAdd);
-          } else if (response.data?.error) {
-            // Show toast notification: error
-            const errorMessage = response.data.error as ErrorResult;
-            dispatch(
-              addAlert({
-                name: "save-error",
-                title: errorMessage.message,
-                variant: "danger",
-              })
-            );
-          }
-        }
-      });
-    } else {
-      onAddNewUser(usersToAdd);
-    }
-  };
-
-  // on Delete user(s)
-  const onDeleteUsers = (usersToDelete: string[]) => {
-    setModalSpinning(true);
-    const payload: AddRemoveToSudoRulesPayload = {
-      toId: props.rule.cn as string,
-      type: "user",
-      listOfMembers: usersToDelete,
-    };
-
-    onRemove(payload).then((response) => {
-      if ("data" in response) {
-        const data = response.data;
-        const results = data?.result as unknown as AddRemoveToSudoRulesResult;
-        if (results) {
-          // Some values can be undefined after deletion
-          const usersFromResponse = results.result.memberuser_user || [];
-          const externalsFromResponse = results.result.externaluser || [];
-          if (
-            !containsAny(usersFromResponse, usersToDelete) ||
-            !containsAny(externalsFromResponse, usersToDelete)
-          ) {
-            // Set alert: success
-            dispatch(
-              addAlert({
-                name: "remove-who-user-external-success",
-                title: "Removed item(s) from " + props.rule.cn,
-                variant: "success",
-              })
-            );
-            // Refresh page
-            props.onRefresh();
-          }
-          // Check if any errors
-          else if (results.error || results.failed.memberuser.user.length > 0) {
-            dispatch(
-              addAlert({
-                name: "remove-who-user-external-error",
-                title: "Error: " + results.error,
-                variant: "danger",
-              })
-            );
-          }
-        }
-      }
-      setModalSpinning(false);
-    });
-  };
-
-  // on Add new group
-  const onAddNewGroup = (newGroups: string[]) => {
-    setModalSpinning(true);
-    const payload: AddRemoveToSudoRulesPayload = {
-      toId: props.rule.cn as string,
-      type: "group",
-      listOfMembers: newGroups,
-    };
-
-    onAdd(payload).then((response) => {
-      if ("data" in response) {
-        const data = response.data;
-        const results = data?.result
-          .results as unknown as AddRemoveToSudoRulesResult[];
-        results.forEach((result) => {
-          const groupsFromResponse = result.result.memberuser_group;
-          if (containsAny(groupsFromResponse, newGroups)) {
-            // Set alert: success
-            dispatch(
-              addAlert({
-                name: "add-who-group-external-success",
-                title: "Added new item(s) to '" + props.rule.cn + "'",
-                variant: "success",
-              })
-            );
-            // Refresh page
-            props.onRefresh();
-          }
-          // Check if any errors
-          if (result.error !== null) {
-            dispatch(
-              addAlert({
-                name: "add-who-group-external-error",
-                title: "Error: " + result.error,
-                variant: "danger",
-              })
-            );
-          }
-        });
-      }
-      setModalSpinning(false);
-    });
-  };
-
-  // On save and add groups
-  //  - If 'specify' option is selected (just modified) and new users should be added:
-  //    save the rule first and then add the users
-  const onSaveAndAddGroups = (groupsoAdd: string[]) => {
-    const modifiedValues = props.modifiedValues();
-    if (modifiedValues.usercategory === "") {
-      modifiedValues.cn = props.rule.cn;
-
-      onSave(modifiedValues).then((response) => {
-        if ("data" in response) {
-          if (response.data?.result) {
-            // Show toast notification: success
-            dispatch(
-              addAlert({
-                name: "save-success",
-                title: "Sudo rule modified",
-                variant: "success",
-              })
-            );
-            props.onRefresh();
-            // Add new users
-            onAddNewGroup(groupsoAdd);
-          } else if (response.data?.error) {
-            // Show toast notification: error
-            const errorMessage = response.data.error as ErrorResult;
-            dispatch(
-              addAlert({
-                name: "save-error",
-                title: errorMessage.message,
-                variant: "danger",
-              })
-            );
-          }
-        }
-      });
-    } else {
-      onAddNewGroup(groupsoAdd);
-    }
-  };
-
-  // on Delete group(s)
-  const onDeleteGroups = (groupsToDelete: string[]) => {
-    setModalSpinning(true);
-    const payload: AddRemoveToSudoRulesPayload = {
-      toId: props.rule.cn as string,
-      type: "group",
-      listOfMembers: groupsToDelete,
-    };
-
-    onRemove(payload).then((response) => {
-      if ("data" in response) {
-        const data = response.data;
-        const results = data?.result as unknown as AddRemoveToSudoRulesResult;
-        if (results) {
-          const groupsFromResponse = results.result.memberuser_group;
-          if (
-            groupsFromResponse === undefined ||
-            !containsAny(groupsFromResponse, groupsToDelete)
-          ) {
-            // Set alert: success
-            dispatch(
-              addAlert({
-                name: "remove-who-group-external-success",
-                title: "Removed item(s) from " + props.rule.cn,
-                variant: "success",
-              })
-            );
-            // Refresh page
-            props.onRefresh();
-          }
-          // Check if any errors
-          else if (
-            results.error ||
-            results.failed.memberuser.group.length > 0
-          ) {
-            dispatch(
-              addAlert({
-                name: "remove-who-group-external-error",
-                title: "Error: " + results.error,
-                variant: "danger",
-              })
-            );
-          }
-        }
-      }
-      setModalSpinning(false);
-    });
-  };
-
-  // Filter: option options
-  // - Default value: "first" (the first element)
-  // - Instead of using the name of the buttons, it will be referred
-  //   as "first" as per the 'IpaToggleGroup' component
-  const [optionSelected, setOptionSelected] = React.useState<string>(
-    props.rule.usercategory && props.rule.usercategory === "all"
-      ? "Anyone"
-      : "Specified Users and Groups"
+  // Define tab configurations for the hook
+  const membershipTabs: MembershipTabConfig<
+    AddRemoveToSudoRulesResult,
+    AddRemoveToSudoRulesResult
+  >[] = React.useMemo(
+    () => [
+      {
+        name: "user",
+        type: "user",
+        addResultExtractor: (result) => ({
+          primary: result.result.memberuser_user || [],
+          external: result.result.externaluser || [],
+        }),
+        removeResultExtractor: (result) => ({
+          remaining: result.result.memberuser_user || [],
+          external: result.result.externaluser || [],
+          failed: result.failed?.memberuser?.user || [],
+          error: result.error,
+        }),
+      },
+      {
+        name: "group",
+        type: "group",
+        addResultExtractor: (result) => ({
+          primary: result.result.memberuser_group || [],
+        }),
+        removeResultExtractor: (result) => ({
+          remaining: result.result.memberuser_group || [],
+          failed: result.failed?.memberuser?.group || [],
+          error: result.error,
+        }),
+      },
+    ],
+    []
   );
 
-  // - When 'usercategory' is "all", disable checkboxes
-  const anyoneOptionSelected = optionSelected === "Anyone";
+  // Use the generic hook for membership operations
+  const { isSpinning, onSaveAndAdd, onRemove } =
+    useCategoryMembershipOperations<
+      AddRemoveToSudoRulesPayload,
+      AddRemoveToSudoRulesPayload,
+      AddRemoveToSudoRulesResult,
+      AddRemoveToSudoRulesResult,
+      SudoRule
+    >({
+      entityId: props.rule.cn as string,
+      entityName: "Sudo rule",
+      categoryFieldName: "usercategory",
+      tabs: membershipTabs,
+      addMutation: (payload) => addMutation(payload),
+      removeMutation: (payload) => removeMutation(payload),
+      saveMutation: (entity) => saveMutation(entity),
+      createAddPayload: (type, members) => ({
+        toId: props.rule.cn as string,
+        type: type as "user" | "group" | "host" | "hostgroup",
+        listOfMembers: members,
+      }),
+      createRemovePayload: (type, members) => ({
+        toId: props.rule.cn as string,
+        type: type as "user" | "group" | "host" | "hostgroup",
+        listOfMembers: members,
+      }),
+      modifiedValues: props.modifiedValues,
+      onRefresh: props.onRefresh,
+    });
 
-  const options = [
+  // Define tab configurations for the UI component
+  const categoryTabs: CategoryTabConfig[] = React.useMemo(
+    () => [
+      {
+        key: 0,
+        name: "user",
+        label: "Users",
+        entityType: "user",
+        fieldName: "memberuser_user",
+        columnNames: ["User"],
+        entries: props.usersList,
+        externalOption: true,
+      },
+      {
+        key: 1,
+        name: "group",
+        label: "User groups",
+        entityType: "group",
+        fieldName: "memberuser_group",
+        columnNames: ["Group"],
+        entries: props.userGroupsList,
+      },
+    ],
+    [props.usersList, props.userGroupsList]
+  );
+
+  const categoryOptions = [
     { label: "Anyone", value: "all" },
     { label: "Specified Users and Groups", value: "" },
   ];
 
-  const filter = (
-    <Flex name="usercategory">
-      <FlexItem>User category the rule applies to: </FlexItem>
-      <FlexItem>
-        <IpaToggleGroup
-          dataCy="sudo-rule-toggle-group-user-category"
-          ipaObject={props.ipaObject}
-          name="usercategory"
-          options={options}
-          optionSelected={optionSelected}
-          setOptionSelected={setOptionSelected}
-          onChange={props.recordOnChange}
-          objectName="sudorule"
-          metadata={props.metadata}
-          isCompact
-        />
-      </FlexItem>
-    </Flex>
-  );
-
-  // Render component
   return (
-    <>
-      {/* Filter: toggle group */}
-      {filter}
-      {/* Tabs */}
-      <Tabs
-        activeKey={activeTabKey}
-        onSelect={handleTabClick}
-        aria-label="Tabs for types of entries that can create keytabs"
-      >
-        <Tab
-          key={0}
-          eventKey={0}
-          title={
-            <TabTitleText>
-              Users <Label isCompact>{usersList.length}</Label>
-            </TabTitleText>
-          }
-          aria-label="users in the who section of the sudo rule"
-        >
-          <KeytabTableWithFilter
-            className="pf-v6-u-ml-md pf-v6-u-mt-sm"
-            id={props.rule.cn as string}
-            from="sudo rule"
-            name="memberuser_user"
-            isSpinning={modalSpinning}
-            entityType="user"
-            // Table data
-            operationTitle={"Add user into sudo rule " + props.rule.cn}
-            tableEntryList={usersList}
-            columnNames={["User"]}
-            onRefresh={props.onRefresh}
-            onAdd={onSaveAndAddUsers}
-            onDelete={onDeleteUsers}
-            checkboxesDisabled={anyoneOptionSelected}
-            // Add external option on Add modal
-            externalOption={true}
-          />
-        </Tab>
-        <Tab
-          key={1}
-          eventKey={1}
-          title={
-            <TabTitleText>
-              User groups <Label isCompact>{userGroupsList.length}</Label>
-            </TabTitleText>
-          }
-          aria-label="user groups in the who section of the sudo rule"
-        >
-          <KeytabTableWithFilter
-            className="pf-v6-u-ml-md pf-v6-u-mt-sm"
-            id={props.rule.cn as string}
-            from="sudo rule"
-            name="memberuser_group"
-            isSpinning={modalSpinning}
-            entityType="group"
-            // Table data
-            operationTitle={"Add group into sudo rule " + props.rule.cn}
-            tableEntryList={userGroupsList}
-            columnNames={["Group"]}
-            onRefresh={props.onRefresh}
-            onAdd={onSaveAndAddGroups}
-            onDelete={onDeleteGroups}
-            checkboxesDisabled={anyoneOptionSelected}
-          />
-        </Tab>
-      </Tabs>
-    </>
+    <CategoryToggleSection
+      categoryFieldName="usercategory"
+      categoryLabel="User category the rule applies to:"
+      categoryOptions={categoryOptions}
+      categoryValue={props.rule.usercategory || ""}
+      ipaObject={props.ipaObject}
+      recordOnChange={props.recordOnChange}
+      metadata={props.metadata}
+      objectName="sudorule"
+      dataCy="sudo-rule-toggle-group-user-category"
+      tabs={categoryTabs}
+      entityId={props.rule.cn as string}
+      entityFrom="sudo rule"
+      isSpinning={isSpinning}
+      onAdd={onSaveAndAdd}
+      onDelete={onRemove}
+      onRefresh={props.onRefresh}
+    />
   );
 };
 
