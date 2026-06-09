@@ -31,7 +31,6 @@ import {
   TrustDomain,
   OtpToken,
   SELinuxUserMap,
-  AutomountLocation,
 } from "./datatypes/globalDataTypes";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -235,9 +234,6 @@ export const isTrustSelectable = (trust: Trust) => trust.cn !== "";
 
 export const isTrustDomainSelectable = (trustDomain: TrustDomain) =>
   trustDomain.cn !== "";
-
-export const isAutomountLocationSelectable = (location: AutomountLocation) =>
-  location.cn !== "";
 
 export const isOtpTokenSelectable = (otpToken: OtpToken) =>
   otpToken.ipatokenuniqueid !== "";

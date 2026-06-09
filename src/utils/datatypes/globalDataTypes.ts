@@ -1186,11 +1186,6 @@ export interface OtpToken {
   uri: string;
 }
 
-export interface AutomountLocation {
-  cn: string;
-  dn: string;
-}
-
 export type ErrorValidationData = {
   isError: boolean;
   message: string;
