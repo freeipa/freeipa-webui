@@ -14,19 +14,25 @@ import {
 // Data types
 import { AutomountLocation } from "src/utils/datatypes/globalDataTypes";
 // Hooks
+import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
 // Redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // RPC
-import { useGetAutomountLocationsFullDataQuery } from "src/services/rpcAutomountLocations";
+import {
+  useGetAutomountLocationsFullDataQuery,
+  useSearchAutomountLocationsEntriesMutation,
+} from "src/services/rpcAutomountLocations";
 // Utils
 import { apiToAutomountLocation } from "src/utils/automountLocationUtils";
 import { isAutomountLocationSelectable } from "src/utils/utils";
 // React router
 import { useNavigate } from "react-router";
 // Components
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { SerializedError } from "@reduxjs/toolkit";
 import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
@@ -43,6 +49,7 @@ import DeleteAutomountLocationsModal from "./DeleteAutomountLocationsModal";
 
 const AutomountLocations = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const { browserTitle } = useUpdateRoute({
     pathname: "automount-locations",
@@ -68,21 +75,21 @@ const AutomountLocations = () => {
   const firstIdx = (page - 1) * perPage;
   const lastIdx = page * perPage;
 
+  // States
+  const [isSearchDisabled, setIsSearchDisabled] = React.useState(false);
+
   // API calls
-  const locationsResponse = useGetAutomountLocationsFullDataQuery(
-    {
-      searchValue,
-      apiVersion,
-      sizelimit: 100,
-      startIdx: firstIdx,
-      stopIdx: lastIdx,
-    },
-    { refetchOnMountOrArgChange: true }
-  );
+  const locationsResponse = useGetAutomountLocationsFullDataQuery({
+    searchValue,
+    apiVersion,
+    sizelimit: 0,
+    startIdx: firstIdx,
+    stopIdx: lastIdx,
+  });
 
   const { data, isLoading, error } = locationsResponse;
 
-  // Handle auth errors
+  // Process data and update state when response changes
   React.useEffect(() => {
     if (locationsResponse.isFetching) {
       globalErrors.clear();
@@ -99,24 +106,41 @@ const AutomountLocations = () => {
     }
   }, [locationsResponse, navigate, globalErrors]);
 
-  // Derive locations from API response
+  // Compute locations data from API response
   const locations = React.useMemo(() => {
-    if (locationsResponse.isSuccess && data) {
+    if (
+      locationsResponse.isSuccess &&
+      locationsResponse.data &&
+      data !== undefined
+    ) {
+      const listResult = data.result.results;
+      const listSize = data.result.count;
       const elementsList: AutomountLocation[] = [];
-      for (let i = 0; i < data.result.count; i++) {
-        elementsList.push(
-          apiToAutomountLocation(data.result.results[i].result)
-        );
+
+      for (let i = 0; i < listSize; i++) {
+        elementsList.push(apiToAutomountLocation(listResult[i].result));
       }
+
       return elementsList;
     }
     return [];
-  }, [locationsResponse.isSuccess, data]);
+  }, [data, locationsResponse.isSuccess, locationsResponse.data]);
 
-  const totalCount =
-    locationsResponse.isSuccess && data ? data.result.totalCount : 0;
+  // Compute total count from API response
+  const totalCount = React.useMemo(() => {
+    if (locationsResponse.isSuccess && locationsResponse.data) {
+      return locationsResponse.data.result.totalCount;
+    }
+    return 0;
+  }, [locationsResponse.isSuccess, locationsResponse.data]);
 
-  const showTableRows = !locationsResponse.isFetching && !isLoading;
+  // Compute derived state for showTableRows
+  const showTableRows = React.useMemo(() => {
+    if (locationsResponse.isFetching) {
+      return false;
+    }
+    return !isLoading;
+  }, [locationsResponse.isFetching, isLoading]);
 
   // Selected elements
   const [selectedElements, setSelectedElements] = React.useState<
@@ -145,18 +169,14 @@ const AutomountLocations = () => {
     items: AutomountLocation[],
     isSelected: boolean
   ) => {
-    let newSelectedLocations: AutomountLocation[] = [];
+    let newSelected: AutomountLocation[] = [];
     if (isSelected) {
-      newSelectedLocations = JSON.parse(JSON.stringify(selectedElements));
+      newSelected = JSON.parse(JSON.stringify(selectedElements));
       for (let i = 0; i < items.length; i++) {
-        if (
-          selectedElements.find(
-            (selectedLocation) => selectedLocation.cn === items[i].cn
-          )
-        ) {
+        if (selectedElements.find((selected) => selected.cn === items[i].cn)) {
           continue;
         }
-        newSelectedLocations.push(items[i]);
+        newSelected.push(items[i]);
       }
     } else {
       for (let i = 0; i < selectedElements.length; i++) {
@@ -168,12 +188,12 @@ const AutomountLocations = () => {
           }
         }
         if (!found) {
-          newSelectedLocations.push(selectedElements[i]);
+          newSelected.push(selectedElements[i]);
         }
       }
     }
-    setSelectedElements(newSelectedLocations);
-    setIsDeleteButtonDisabled(newSelectedLocations.length === 0);
+    setSelectedElements(newSelected);
+    setIsDeleteButtonDisabled(newSelected.length === 0);
   };
 
   const setLocationSelected = (
@@ -183,6 +203,48 @@ const AutomountLocations = () => {
     if (isAutomountLocationSelectable(location)) {
       updateSelectedLocations([location], isSelecting);
     }
+  };
+
+  // Always refetch data when the component is loaded.
+  React.useEffect(() => {
+    locationsResponse.refetch();
+  }, []);
+
+  // Search API call
+  const [searchEntry] = useSearchAutomountLocationsEntriesMutation();
+
+  const submitSearchValue = () => {
+    setIsSearchDisabled(true);
+    searchEntry({
+      searchValue,
+      apiVersion,
+      sizelimit: 0,
+      startIdx: 0,
+      stopIdx: perPage,
+    }).then((result) => {
+      if ("data" in result) {
+        const searchError = result.data?.error as
+          | FetchBaseQueryError
+          | SerializedError;
+
+        if (searchError) {
+          let error: string | undefined = "";
+          if ("error" in searchError) {
+            error = searchError.error;
+          } else if ("message" in searchError) {
+            error = searchError.message;
+          }
+          dispatch(
+            addAlert({
+              name: "submit-search-value-error",
+              title: error || "Error when searching for automount locations",
+              variant: "danger",
+            })
+          );
+        }
+        setIsSearchDisabled(false);
+      }
+    });
   };
 
   // Data wrappers
@@ -198,6 +260,7 @@ const AutomountLocations = () => {
   const searchValueData = {
     searchValue,
     updateSearchValue: setSearchValue,
+    submitSearchValue,
   };
 
   const bulkSelectorData = {
@@ -205,6 +268,11 @@ const AutomountLocations = () => {
     updateSelected: updateSelectedLocations,
     selectableTable: selectableLocationsTable,
     nameAttr: "cn",
+  };
+
+  const selectedPerPageData = {
+    selectedPerPage,
+    updateSelectedPerPage: setSelectedPerPage,
   };
 
   // Modals functionality
@@ -223,10 +291,7 @@ const AutomountLocations = () => {
           buttonsData={{
             updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
           }}
-          selectedPerPageData={{
-            selectedPerPage,
-            updateSelectedPerPage: setSelectedPerPage,
-          }}
+          selectedPerPageData={selectedPerPageData}
         />
       ),
     },
@@ -239,6 +304,7 @@ const AutomountLocations = () => {
           ariaLabel="Search automount locations"
           placeholder="Search automount locations"
           searchValueData={searchValueData}
+          isDisabled={isSearchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,
