@@ -17,7 +17,7 @@ A comprehensive reference of all reusable components available for building Sett
 
 | Category | Components |
 |----------|------------|
-| **Form Inputs** | `IpaTextInput`, `IpaTextArea`, `IpaPasswordInput`, `IpaNumberInput`, `IpaCheckbox`, `IpaCheckboxes`, `IpaSelect`, `IpaCalendar`, `IpaToggleGroup`, `IpaDropdownSearch` |
+| **Form Inputs** | `IpaTextInput`, `IpaTextArea`, `IpaPasswordInput`, `IpaNumberInput`, `IpaCheckbox`, `IpaCheckboxes`, `IpaCheckboxListWithFilter`, `IpaSelect`, `IpaCalendar`, `IpaToggleGroup`, `IpaDropdownSearch` |
 | **Lists & Collections** | `IpaTextboxList`, `IpaTextInputFromList`, `IpaSshPublicKeys`, `IpaCertificates`, `IpaCertificateMappingData`, `PrincipalAliasMultiTextBox` |
 | **Specialized** | `IpaTextContent`, `IpaPACType`, `IpaForwardPolicy`, `DateTimeSelector` |
 | **Layout** | `TabLayout`, `SidebarLayout`, `TitleLayout`, `KebabLayout`, `HelpTextWithIconLayout`, `SettingsTableLayout` |
@@ -32,6 +32,7 @@ A comprehensive reference of all reusable components available for building Sett
 | Number with constraints | `IpaNumberInput` |
 | Yes/No option | `IpaCheckbox` |
 | Multiple options (checkboxes) | `IpaCheckboxes` |
+| Multiple options with filter | `IpaCheckboxListWithFilter` |
 | Single selection from list | `IpaSelect` |
 | Toggle between two options | `IpaToggleGroup` |
 | Selection with search | `IpaDropdownSearch` |
