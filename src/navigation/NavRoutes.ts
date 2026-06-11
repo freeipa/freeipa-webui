@@ -69,8 +69,8 @@ const TrustsGroupRef = "trusts";
 const TrustsGlobalConfigGroupRef = "trusts-config";
 // - Topology
 const TopologyGroupRef = "topology-graph";
-// - Roles
-const RolesGroupRef = "roles";
+// - Role-based access control
+const RbacGroupRef = "rbac";
 // - Configuration
 const ConfigRef = "configuration";
 
@@ -425,6 +425,21 @@ export const getNavigationRoutes = (
       path: "",
       items: [
         {
+          label: "Role-based access control",
+          group: RbacGroupRef,
+          title: `${BASE_TITLE} - Role-based access control`,
+          path: "",
+          items: [
+            {
+              label: "Roles",
+              group: RbacGroupRef,
+              title: `${BASE_TITLE} - Roles`,
+              path: "roles",
+              items: [],
+            },
+          ],
+        },
+        {
           label: "Trusts",
           group: TrustsGroupRef,
           title: `${BASE_TITLE} - Trusts`,
@@ -467,13 +482,6 @@ export const getNavigationRoutes = (
               items: [],
             },
           ],
-        },
-        {
-          label: "Roles",
-          group: RolesGroupRef,
-          title: `${BASE_TITLE} - Roles`,
-          path: "roles",
-          items: [],
         },
         {
           label: "Configuration",
