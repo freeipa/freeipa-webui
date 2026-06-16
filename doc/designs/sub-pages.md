@@ -48,6 +48,58 @@ See [17-independent-sub-pages.md](sub-pages/17-independent-sub-pages.md) for imp
 
 See [11-visual-reference.md](sub-pages/11-visual-reference.md) for ASCII diagrams.
 
+## CRITICAL: Ask Before Leaving Functionality Incomplete
+
+> ⚠️ **MANDATORY RULE:** When creating any sub-page—especially tab sections in `src/components/Members/`, `src/components/MemberOf/`, `src/components/ManagedBy/`, or `src/components/MemberManagers/`—the agent **MUST** verify the prompt contains sufficient information to implement **ALL** required functionality.
+
+### Required Information Checklist
+
+Before implementing a membership or table tab, confirm you have:
+
+| Feature | Required Information |
+|---------|---------------------|
+| **Add button** | API to fetch available items, entity type for `_add_member` |
+| **Delete button** | Entity type for `_remove_member` |
+| **Table display** | Column names, property fields, identifier key |
+| **Modals** | UI pattern (DualListSelector vs TextInput) |
+
+### If Information Is Missing: ASK, Don't Skip
+
+**NEVER** create a component with disabled Add/Delete buttons or incomplete functionality without explicit user approval. Instead:
+
+1. **Identify the gap** — What specific information is missing?
+2. **Ask a targeted question** — Examples:
+   - "Should I implement the 'Add' button functionality? If yes, which API lists available items to add?"
+   - "Which fields do you want to display in the 'Add' modal? Should I use the same component (DualListSelector) as in other components, or do you want a different pattern (e.g., TextInput)?"
+   - "Which API command is used to delete a [entity] from [parent]?"
+   - "What `entityType` value should be passed to `role_add_member` for this member type?"
+3. **Wait for the answer** before proceeding
+
+### Example: What NOT to Do
+
+```tsx
+// ❌ BAD: Disabled buttons without asking user
+<MemberOfToolbar
+  addButtonEnabled={false}      // Why disabled? User wasn't asked!
+  onAddButtonClick={() => {}}   // Empty handler - incomplete!
+  deleteButtonEnabled={false}
+  onDeleteButtonClick={() => {}}
+/>
+```
+
+### Example: What TO Do
+
+```
+Agent: "To implement the 'System accounts' Members tab, I need additional information:
+1. What API lists available system accounts? (e.g., `sysaccount_find`)
+2. What `entityType` should be used for `role_add_member`? (e.g., `sysaccount`)
+3. Should I use a DualListSelector (searchable list) or TextInput (manual entry) for the Add modal?"
+```
+
+See [06c-membership-creating-new.md](sub-pages/06c-membership-creating-new.md) for the complete list of required questions.
+
+---
+
 ## Sub-Page Structure
 
 Sub-pages live under `src/pages/<EntityName>/` and are composed of:

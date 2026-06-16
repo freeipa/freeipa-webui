@@ -14,6 +14,48 @@ Create a new component when:
 2. No similar component exists that can be reused
 3. The entity type or membership relationship is not covered by existing components
 
+---
+
+## CRITICAL: Never Leave Functionality Incomplete
+
+> 🛑 **HARD RULE:** When the prompt does not contain enough information to fully implement Add/Delete functionality, you **MUST ASK** for clarification. **NEVER** disable buttons or leave handlers empty without explicit user approval.
+
+### What "Complete" Means
+
+A membership component is **complete** when it has:
+
+| Feature | Implementation |
+|---------|---------------|
+| ✅ Add button | **Enabled**, opens a working modal |
+| ✅ Add modal | Fetches available items OR provides text input |
+| ✅ Add action | Calls the correct API mutation |
+| ✅ Delete button | **Enabled** when items are selected |
+| ✅ Delete modal | Shows confirmation with selected items |
+| ✅ Delete action | Calls the correct API mutation |
+| ✅ Success/error alerts | Displayed after operations |
+
+### What Is NOT Acceptable
+
+```tsx
+// ❌ UNACCEPTABLE: Buttons disabled without asking
+addButtonEnabled={false}
+onAddButtonClick={() => {}}  // Empty handler!
+
+// ❌ UNACCEPTABLE: Creating read-only component when Add/Delete is expected
+// Agent decided not to implement functionality instead of asking questions
+```
+
+### What To Do Instead
+
+If you don't have enough information:
+
+1. **STOP** before creating the component
+2. **ASK** the user for the missing information (see questions below)
+3. **WAIT** for the answer before implementing
+4. If user explicitly wants read-only: get confirmation ("Should I disable Add/Delete for now?")
+
+---
+
 ## Required Questions to Ask
 
 Before creating any new membership component, you **MUST** ask the user for required information. The questions depend on whether you're creating a **Standard Membership Tab** or an **Independent Sub-Page**.
@@ -166,3 +208,28 @@ After gathering information, the component MUST include:
 **Reference implementations:**
 - Standard pattern: `src/components/Members/MembersUsers.tsx`
 - TextInput pattern: `src/components/Members/MembersExternal.tsx`
+
+---
+
+## Summary: The Golden Rule
+
+> **When in doubt, ASK.** It is always better to ask one extra question than to deliver an incomplete component.
+
+### Quick Reference: Questions to Ask
+
+| Missing Info | Question to Ask |
+|--------------|-----------------|
+| API for Add modal | "What API lists available items to add? (e.g., `user_find`, `service_find`)" |
+| Entity type for mutations | "What `entityType` should I use for `_add_member`/`_remove_member`? (e.g., `user`, `host`)" |
+| Table columns | "What columns should the table display?" |
+| Add modal pattern | "Should I use a searchable list (DualListSelector) or text input for adding items?" |
+| Read-only confirmation | "Should Add/Delete functionality be disabled for this tab? (If yes, I'll make it read-only)" |
+
+### Anti-Pattern: Silent Decisions
+
+**NEVER** make silent decisions like:
+- "I'll disable the Add button because I don't know the API" ❌
+- "I'll leave the delete handler empty for now" ❌
+- "I'll skip the modal implementation" ❌
+
+**ALWAYS** communicate and get user input.
