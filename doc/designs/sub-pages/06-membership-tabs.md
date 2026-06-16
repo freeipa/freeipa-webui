@@ -3,6 +3,96 @@
 > **Part of:** [Sub-Pages guide](../sub-pages.md)
 > **See also:** [Table Tab](05-table-tab.md) | [Routing](07-routing.md)
 
+## Prompt Template for Membership Tabs
+
+Copy this template and fill in the values:
+
+```
+Based on the sub-pages guide, generate a '<TAB_SECTION_NAME>' tab section for '<ENTITY_NAME>' with:
+- IPA API object: `<entity>`
+- Primary key: `<pk>`
+- Parent pathname: `<entity-pathname>`
+- Entity data type: `<EntityType>`
+- Tab 1: "<Tab Title>" (<member_type>)
+    - Component: `<ComponentName>` [standard|custom]
+    - Membership disabled: [yes|no]
+- Tab 2: ...
+```
+
+**Template placeholders:**
+
+| Placeholder | Description | Example |
+|-------------|-------------|---------|
+| `<TAB_SECTION_NAME>` | Main tab name | `Members`, `Member Of` |
+| `<ENTITY_NAME>` | Entity display name | `Roles`, `User Groups` |
+| `<entity>` | IPA API object (lowercase) | `role`, `group` |
+| `<pk>` | Primary key field | `cn`, `uid` |
+| `<entity-pathname>` | URL path segment | `roles`, `user-groups` |
+| `<EntityType>` | TypeScript interface | `Role`, `UserGroup` |
+| `<Tab Title>` | Tab display name | `Users`, `Host groups` |
+| `<member_type>` | Data field name | `member_user`, `memberof_group` |
+| `<ComponentName>` | Reusable component | `MembersUsers`, `MemberOfUserGroups` |
+| `[standard\|custom]` | Whether component exists | `standard` = exists, `custom` = create new |
+
+### What the Agent Infers
+
+| Information | How It's Inferred |
+|-------------|-------------------|
+| Routes | Pattern: `/<pathname>/:pk/<member_type>` |
+| Component imports | Pattern: `src/components/Members/<ComponentName>` |
+| Tab titles (standard) | From component: `MembersUsers` → "Users" |
+| API mutations | Pattern: `<entity>_add_member`, `<entity>_remove_member` |
+
+### What Must Be Specified
+
+| Information | Why Required |
+|-------------|--------------|
+| Member types | IPA-specific: which relationships exist for this entity |
+| Custom components | Agent needs to know if `MembersUserIdOverride` exists or must be created |
+| Membership disabled | Whether Add/Delete buttons should be enabled |
+
+### Simplified Prompt (Standard Components Only)
+
+When using only existing standard components, you can simplify:
+
+```
+Based on the sub-pages guide, generate a 'Members' tab section for 'Roles' with:
+- IPA API object: `role`
+- Primary key: `cn`
+- Parent pathname: `roles`
+- Entity data type: `Role`
+- Tabs (all standard components, membership disabled):
+    - "Users" (member_user) → MembersUsers
+    - "User groups" (member_group) → MembersUserGroups
+    - "Hosts" (member_host) → MembersHosts
+    - "Host groups" (member_hostgroup) → MembersHostGroups
+    - "Services" (member_service) → MembersServices
+```
+
+### Full Prompt (With Custom Components)
+
+When custom components are needed, specify them explicitly:
+
+```
+Based on the sub-pages guide, generate a 'Members' tab section for 'Roles' with:
+- IPA API object: `role`
+- Primary key: `cn`
+- Parent pathname: `roles`
+- Entity data type: `Role`
+- Tab 1: "Users" (member_user)
+    - Component: `MembersUsers` [standard]
+    - Membership disabled: yes
+- Tab 2: "User ID override" (member_idoverrideuser)
+    - Component: `MembersUserIdOverride` [custom - create new]
+    - Membership disabled: yes
+    - Add modal: TextInput (manual entry, no _find API)
+    - entityType for role_add_member: `idoverrideuser`
+```
+
+> **Note:** For custom components, specify the Add modal pattern and `entityType` to avoid follow-up questions.
+
+---
+
 ## Quick Navigation: Which File Do I Need?
 
 | Task | Read This File |
