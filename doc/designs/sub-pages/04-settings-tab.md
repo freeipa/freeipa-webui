@@ -3,6 +3,60 @@
 > **Part of:** [Sub-Pages guide](../sub-pages.md)
 > **See also:** [Data Hook](03-data-hook.md) | [Settings Patterns](12-settings-patterns.md)
 
+## Prompt Template for Settings Page
+
+Copy this template and fill in the values:
+
+```
+Based on the sub-pages guide, generate a 'Settings' page for '<ENTITY_NAME>' with:
+- IPA API object: `<entity>`
+- Primary key: `<pk>`
+- Parent pathname: `<entity-pathname>`
+- Settings section: "<Section Title>"
+  - Fields:
+    - `<field1>` → "<Label 1>" (<type>)
+    - `<field2>` → "<Label 2>" (<type>)
+```
+
+**Template placeholders:**
+
+| Placeholder | Description | Example |
+|-------------|-------------|---------|
+| `<ENTITY_NAME>` | Entity display name | `Roles` |
+| `<entity>` | IPA API object (lowercase) | `role` |
+| `<pk>` | Primary key field | `cn`, `uid`, `fqdn` |
+| `<entity-pathname>` | URL path segment | `roles` |
+| `<Section Title>` | Form section heading | `Role settings` |
+| `<field>` → `<Label>` | Field name and display label | `cn` → `"Role name"` |
+| `<type>` | Field data type | `string`, `string[]`, `boolean` |
+
+### What the Agent Infers
+
+| Information | How It's Inferred |
+|-------------|-------------------|
+| Entity data type | Capitalize IPA object: `role` → `Role` |
+| Form component | From type: `string` → `IpaTextInput`, `string` (long) → `IpaTextArea` |
+| Form pattern | From field count: 1-4 fields → Horizontal Form |
+| API mutations | From IPA object: `<entity>_mod` for saving |
+| Read-only fields | Primary key fields are typically read-only |
+
+### Example Prompt
+
+```
+Based on the sub-pages guide, generate a 'Settings' page for 'Roles' with:
+- IPA API object: `role`
+- Primary key: `cn`
+- Parent pathname: `roles`
+- Settings section: "Role settings"
+  - Fields:
+    - `cn` → "Role name" (string)
+    - `description` → "Description" (string)
+```
+
+> **Note:** You don't need to specify `IpaTextInput` or `IpaTextArea` — the agent infers the component from the field type.
+
+---
+
 ## ⚠️ MANDATORY: Create Tabs Component First
 
 > **STOP!** Before creating any `<Entity>Settings.tsx` file, you **MUST** first create:

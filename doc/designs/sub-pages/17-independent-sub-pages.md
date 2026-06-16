@@ -61,6 +61,78 @@ Based on the sub-pages guide, generate a 'Privileges' page for 'Roles' with:
     - IPA command: `role_remove_privilege`
 ```
 
+### Simplified Prompt Template (Recommended)
+
+The agent can infer implementation details from the codebase. Copy this template and fill in the IPA-specific information:
+
+```
+Based on the sub-pages guide, generate a '<SUB_PAGE_NAME>' independent page for '<ENTITY_NAME>' with:
+- IPA API object: `<entity>`
+- Data field: `<field_name>` (<data_format>)
+- Table column: "<Column Display Name>"
+- Parent pathname: `<entity-pathname>`
+- Entity data type: `<EntityType>`
+- Operations: 'Refresh', 'Delete', 'Add'
+- 'Add' modal:
+    - IPA call for available options: `<related_entity>_find` with `<parameters>`
+    - IPA command: `<entity>_add_<relation>`
+- 'Delete' modal:
+    - IPA command: `<entity>_remove_<relation>`
+```
+
+**Template placeholders:**
+
+| Placeholder | Description | Example |
+|-------------|-------------|---------|
+| `<SUB_PAGE_NAME>` | Name of the new tab | `Privileges` |
+| `<ENTITY_NAME>` | Parent entity name | `Roles` |
+| `<entity>` | IPA API object name (lowercase) | `role` |
+| `<field_name>` | Field from `_show` response containing data | `memberof_privilege` |
+| `<data_format>` | Data type hint (helps agent with transformations) | `string[]`, `object[]` |
+| `<Column Display Name>` | Human-readable column header | `Privilege name` |
+| `<entity-pathname>` | URL path segment | `roles` |
+| `<EntityType>` | TypeScript interface name | `Role` |
+| `<related_entity>_find` | API to list available items | `privilege_find` |
+| `<parameters>` | API parameters for the find call | `no_members: true` |
+| `<entity>_add_<relation>` | API to add items | `role_add_privilege` |
+| `<entity>_remove_<relation>` | API to remove items | `role_remove_privilege` |
+
+### Simplified Prompt Example
+
+```
+Based on the sub-pages guide, generate a 'Privileges' independent page for 'Roles' with:
+- IPA API object: `role`
+- Data field: `memberof_privilege` (string[] of privilege names)
+- Table column: "Privilege name"
+- Parent pathname: `roles`
+- Entity data type: `Role`
+- Operations: 'Refresh', 'Delete', 'Add'
+- 'Add' modal:
+    - IPA call for available options: `privilege_find` with `no_members: true`
+    - IPA command: `role_add_privilege`
+- 'Delete' modal:
+    - IPA command: `role_remove_privilege`
+```
+
+### What the Agent Should Infer
+
+| Information | How Agent Infers It |
+|-------------|---------------------|
+| Data transformation | Check `MemberTable` - it accesses `item[idKey]`, so `string[]` must become `{cn: string}[]` |
+| Type definitions | Check `MembershipTable.tsx` - add new types to `EntryDataTypes`/`FromTypes` if needed |
+| `from` type for table | If entity has no dedicated page, create a descriptive new type (e.g., `"privileges"`) |
+| Component patterns | Follow existing `MemberOf*` and similar components in the codebase |
+| API response handling | Check how similar queries transform API responses |
+
+### What Must Be Specified
+
+| Information | Why It's Required |
+|-------------|-------------------|
+| Data field name | FreeIPA-specific: `memberof_privilege`, `member_user`, etc. |
+| Data format hint | `(string[])` helps agent know transformation is needed |
+| API commands | FreeIPA-specific: `privilege_find`, `role_add_privilege`, etc. |
+| API parameters | FreeIPA-specific: `no_members: true`, etc. |
+
 ## Implementation Structure
 
 ### Files to Create
