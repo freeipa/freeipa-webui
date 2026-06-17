@@ -431,7 +431,7 @@ const Roles = () => {
                     hasCheckboxes={true}
                     pathname="roles"
                     showTableRows={showTableRows}
-                    showLink={false}
+                    showLink={true}
                     elementsData={{
                       isElementSelectable: isRoleSelectable,
                       selectedElements: selectedRoles,
