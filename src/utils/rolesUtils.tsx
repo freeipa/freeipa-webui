@@ -3,6 +3,20 @@ import { Role } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { convertApiObj } from "./ipaObjectUtils";
 
+export const asRecord = (
+  element: Partial<Role>,
+  onElementChange: (element: Partial<Role>) => void
+) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const ipaObject = element as Record<string, any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function recordOnChange(ipaObject: Record<string, any>) {
+    onElementChange(ipaObject as Role);
+  }
+
+  return { ipaObject, recordOnChange };
+};
+
 const simpleValues = new Set(["cn", "description", "dn"]);
 const dateValues = new Set([]);
 

@@ -155,6 +155,24 @@ const extendedApi = api.injectEndpoints({
       },
     }),
     /**
+     * Modify an existing role via `role_mod`
+     * @param {Partial<Role>} - Role data to modify (must include cn)
+     * @returns {FindRPCResponse} - Response from API
+     */
+    saveRole: build.mutation<FindRPCResponse, Partial<Role>>({
+      query: (role) => {
+        const params = {
+          version: API_VERSION_BACKUP,
+          ...role,
+        };
+        delete params.cn;
+        return getCommand({
+          method: "role_mod",
+          params: [[role.cn], params],
+        });
+      },
+    }),
+    /**
      * Search roles via two-step role_find + role_show pattern
      * @param {RolesSearchPayload} - Search parameters
      * @returns {BatchRPCResponse} - Batch response with role data
@@ -221,6 +239,17 @@ export const useGettingRolesQuery = (payloadData, options?) => {
   return useGettingGenericQuery(payloadData, options);
 };
 
+export const useRoleShowQuery = (roleId: string) => {
+  return useGetRolesInfoByNameQuery(
+    {
+      roleNamesList: [roleId],
+      no_members: true,
+      version: API_VERSION_BACKUP,
+    },
+    { skip: !roleId }
+  );
+};
+
 export const {
   useAddToRolesMutation,
   useRemoveFromRolesMutation,
@@ -228,4 +257,5 @@ export const {
   useAddRoleMutation,
   useDeleteRolesMutation,
   useSearchRolesEntriesMutation,
+  useSaveRoleMutation,
 } = extendedApi;
