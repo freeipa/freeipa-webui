@@ -196,6 +196,63 @@ After gathering information, the component MUST include:
 
 ---
 
+## MembershipTable Type Registration
+
+When creating membership tabs that use the `MembershipTable` component (`src/components/tables/MembershipTable.tsx`), you must ensure the entity types are properly registered.
+
+### Required Updates to MembershipTable.tsx
+
+#### 1. FromTypes Union
+
+Add your new `from` value to the `FromTypes` union type:
+
+```tsx
+type FromTypes =
+  | "active-users"
+  | "hbac-rules"
+  // ... existing types ...
+  | "your-new-type"  // <-- Add your new type here
+  | "external";
+```
+
+#### 2. EntryDataTypes Union (Object-based entities only)
+
+If your membership data is an array of objects (e.g., `User[]`, `Host[]`, `HBACServiceGroup[]`), you must:
+
+1. Import the interface from `globalDataTypes.ts`
+2. Add it to the `EntryDataTypes` union
+
+```tsx
+import {
+  // ... existing imports ...
+  YourNewType,  // <-- Add import
+} from "src/utils/datatypes/globalDataTypes";
+
+type EntryDataTypes =
+  | HBACRule
+  // ... existing types ...
+  | YourNewType  // <-- Add to union
+  | string;
+```
+
+If your membership data is a **string array** (e.g., `member_sysaccount: string[]`), you do **NOT** need to update `EntryDataTypes`. Instead, add your `from` value to the `STRING_ARRAY_TYPES` constant:
+
+```tsx
+const STRING_ARRAY_TYPES = ["external", "sysaccount", "idoverrideuser", "your-new-type"];
+```
+
+### Why This Matters
+
+Failing to register object-based entity types in `EntryDataTypes` will cause TypeScript errors like:
+
+```
+Type 'YourType[]' is not assignable to type 'EntryDataTypes[]'.
+```
+
+These errors may not appear immediately but can surface when other type definitions in the codebase change, making them difficult to trace back to the original omission.
+
+---
+
 ## Add Modal Pattern Selection
 
 **Default (use without asking):** `MemberOfAddModal` + `DualListSelectorGeneric`
