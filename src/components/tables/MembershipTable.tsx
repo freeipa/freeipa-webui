@@ -10,6 +10,7 @@ import {
   HostGroup,
   HBACRule,
   HBACService,
+  HBACServiceGroup,
   Netgroup,
   Role,
   SudoRule,
@@ -31,6 +32,7 @@ import { Link } from "react-router";
 type EntryDataTypes =
   | HBACRule
   | HBACService
+  | HBACServiceGroup
   | Host
   | HostGroup
   | Netgroup
@@ -50,11 +52,13 @@ type FromTypes =
   | "hbac-services"
   | "hosts"
   | "host-groups"
+  | "idoverrideuser"
   | "netgroups"
-  | "roles" // Not in AppRoutes yet (no Link)
+  | "roles"
   | "services"
   | "sudo-rules"
   | "sudo-commands"
+  | "sysaccount"
   | "user-groups"
   | "external";
 
@@ -69,6 +73,9 @@ interface MemberTableProps {
   showTableRows: boolean;
 }
 
+// Types that use string arrays instead of objects
+const STRING_ARRAY_TYPES = ["external", "sysaccount", "idoverrideuser"];
+
 // Body
 const TableBody = (props: {
   list: EntryDataTypes[]; // More types can be added here
@@ -81,71 +88,82 @@ const TableBody = (props: {
   onCheckboxChange: (checked: boolean, entityName: string) => void;
 }) => {
   const { list, idKey, propertiesToShow } = props;
+
+  // Check if this is a string array type (external, sysaccount, idoverrideuser)
+  const isStringArray = STRING_ARRAY_TYPES.includes(props.from);
+
   return (
     <>
-      {list.map((item, index) => (
-        <Tr key={index} id={item[idKey]}>
-          {props.showCheckboxColumn && (
-            <Td
-              select={{
-                rowIndex: index,
-                onSelect: (_e, isSelected) =>
-                  props.onCheckboxChange(isSelected, item[idKey]),
-                isSelected: props.checkedItems.includes(item[idKey]),
-              }}
-            />
-          )}
-          <Td>
-            {props.from === "roles" ? (
-              // Temporary until Roles are implemented
-              item[idKey]
-            ) : (
-              <Link
-                to={
-                  "/" +
-                  props.from +
-                  "/" +
-                  (props.from === "services"
-                    ? encodeURIComponent(item[idKey])
-                    : item[idKey])
-                }
-                state={item}
-              >
-                {item[idKey]}
-              </Link>
+      {list.map((item, index) => {
+        // For string arrays, the item itself is the identifier
+        const itemId = isStringArray ? (item as string) : item[idKey];
+
+        return (
+          <Tr key={index} id={itemId}>
+            {props.showCheckboxColumn && (
+              <Td
+                select={{
+                  rowIndex: index,
+                  onSelect: (_e, isSelected) =>
+                    props.onCheckboxChange(isSelected, itemId),
+                  isSelected: props.checkedItems.includes(itemId),
+                }}
+              />
             )}
-          </Td>
-          {propertiesToShow.map((propertyName, index) => {
-            // Handle special cases: 'nsaccountlock' is a boolean
-            if (
-              propertyName === "nsaccountlock" ||
-              propertyName === "ipaenabledflag"
-            ) {
-              if (
-                (propertyName === "nsaccountlock" && item[propertyName]) ||
-                (propertyName === "ipaenabledflag" && !item[propertyName])
-              ) {
-                return (
-                  <Td key={index}>
-                    <MinusIcon /> {" Disabled"}
-                  </Td>
-                );
-              } else {
-                return (
-                  <Td key={index}>
-                    <CheckIcon /> {" Enabled"}
-                  </Td>
-                );
-              }
-            } else if (propertyName !== idKey) {
-              // Rest of the cases
-              return (
-                <Td key={index}>{parseEmptyString(item[propertyName])}</Td>
-              );
-            }
-          })}
-        </Tr>
-      ))}
+            <Td>
+              {props.from === "roles" || isStringArray ? (
+                // String arrays and roles don't have links
+                itemId
+              ) : (
+                <Link
+                  to={
+                    "/" +
+                    props.from +
+                    "/" +
+                    (props.from === "services"
+                      ? encodeURIComponent(itemId)
+                      : itemId)
+                  }
+                  state={item}
+                >
+                  {itemId}
+                </Link>
+              )}
+            </Td>
+            {/* For string arrays, we don't show additional columns */}
+            {!isStringArray &&
+              propertiesToShow.map((propertyName, index) => {
+                // Handle special cases: 'nsaccountlock' is a boolean
+                if (
+                  propertyName === "nsaccountlock" ||
+                  propertyName === "ipaenabledflag"
+                ) {
+                  if (
+                    (propertyName === "nsaccountlock" && item[propertyName]) ||
+                    (propertyName === "ipaenabledflag" && !item[propertyName])
+                  ) {
+                    return (
+                      <Td key={index}>
+                        <MinusIcon /> {" Disabled"}
+                      </Td>
+                    );
+                  } else {
+                    return (
+                      <Td key={index}>
+                        <CheckIcon /> {" Enabled"}
+                      </Td>
+                    );
+                  }
+                } else if (propertyName !== idKey) {
+                  // Rest of the cases
+                  return (
+                    <Td key={index}>{parseEmptyString(item[propertyName])}</Td>
+                  );
+                }
+              })}
+          </Tr>
+        );
+      })}
     </>
   );
 };

@@ -31,6 +31,10 @@ import {
   useAddAsMemberNGMutation,
   useRemoveAsMemberNGMutation,
 } from "src/services/rpcNetgroups";
+import {
+  useAddAsMemberRoleMutation,
+  useRemoveAsMemberRoleMutation,
+} from "src/services/rpcRoles";
 
 interface PropsToMembersUsers {
   entity: Partial<UserGroup>;
@@ -78,13 +82,21 @@ const MembersUsers = (props: PropsToMembersUsers) => {
     membershipDirection === "direct" ? member_user : memberindirect_user;
   userNames = [...userNames];
 
-  let [addMembers] = useAddAsMemberMutation();
+  const [addMembersUG] = useAddAsMemberMutation();
+  const [addMembersNG] = useAddAsMemberNGMutation();
+  const [addMembersRole] = useAddAsMemberRoleMutation();
+  const [removeMembersUG] = useRemoveAsMemberMutation();
+  const [removeMembersNG] = useRemoveAsMemberNGMutation();
+  const [removeMembersRole] = useRemoveAsMemberRoleMutation();
+
+  let addMembers = addMembersUG;
+  let removeMembers = removeMembersUG;
   if (props.from === "netgroup") {
-    [addMembers] = useAddAsMemberNGMutation();
-  }
-  let [removeMembers] = useRemoveAsMemberMutation();
-  if (props.from === "netgroup") {
-    [removeMembers] = useRemoveAsMemberNGMutation();
+    addMembers = addMembersNG;
+    removeMembers = removeMembersNG;
+  } else if (props.from === "roles") {
+    addMembers = addMembersRole;
+    removeMembers = removeMembersRole;
   }
 
   const getUsersNameToLoad = (): string[] => {

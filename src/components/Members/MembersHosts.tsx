@@ -30,6 +30,10 @@ import {
   useAddAsMemberNGMutation,
   useRemoveAsMemberNGMutation,
 } from "src/services/rpcNetgroups";
+import {
+  useAddAsMemberRoleMutation,
+  useRemoveAsMemberRoleMutation,
+} from "src/services/rpcRoles";
 import { apiToHost } from "src/utils/hostUtils";
 
 interface PropsToMembersHosts {
@@ -162,13 +166,21 @@ const MembersHosts = (props: PropsToMembersHosts) => {
 
   // Add new member to 'Host'
   // API calls
-  let [addMembers] = useAddAsMemberHGMutation();
+  const [addMembersHG] = useAddAsMemberHGMutation();
+  const [addMembersNG] = useAddAsMemberNGMutation();
+  const [addMembersRole] = useAddAsMemberRoleMutation();
+  const [removeMembersHG] = useRemoveAsMemberHGMutation();
+  const [removeMembersNG] = useRemoveAsMemberNGMutation();
+  const [removeMembersRole] = useRemoveAsMemberRoleMutation();
+
+  let addMembers = addMembersHG;
+  let removeMembers = removeMembersHG;
   if (props.from === "netgroup") {
-    [addMembers] = useAddAsMemberNGMutation();
-  }
-  let [removeMembers] = useRemoveAsMemberHGMutation();
-  if (props.from === "netgroup") {
-    [removeMembers] = useRemoveAsMemberNGMutation();
+    addMembers = addMembersNG;
+    removeMembers = removeMembersNG;
+  } else if (props.from === "roles") {
+    addMembers = addMembersRole;
+    removeMembers = removeMembersRole;
   }
   const [adderSearchValue, setAdderSearchValue] = React.useState("");
   const [availableHosts, setAvailableHosts] = React.useState<Host[]>([]);

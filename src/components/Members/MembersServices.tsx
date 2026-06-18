@@ -27,6 +27,10 @@ import {
   useAddAsMemberMutation,
   useRemoveAsMemberMutation,
 } from "src/services/rpcUserGroups";
+import {
+  useAddAsMemberRoleMutation,
+  useRemoveAsMemberRoleMutation,
+} from "src/services/rpcRoles";
 
 interface PropsToMembersServices {
   entity: Partial<UserGroup>;
@@ -143,8 +147,17 @@ const MembersServices = (props: PropsToMembersServices) => {
 
   // Add new member to 'Service'
   // API calls
-  const [addMemberToService] = useAddAsMemberMutation();
-  const [removeMembersFromServices] = useRemoveAsMemberMutation();
+  const [addMemberToServiceUG] = useAddAsMemberMutation();
+  const [removeMembersFromServicesUG] = useRemoveAsMemberMutation();
+  const [addMemberToServiceRole] = useAddAsMemberRoleMutation();
+  const [removeMembersFromServicesRole] = useRemoveAsMemberRoleMutation();
+
+  const addMemberToService =
+    props.from === "roles" ? addMemberToServiceRole : addMemberToServiceUG;
+  const removeMembersFromServices =
+    props.from === "roles"
+      ? removeMembersFromServicesRole
+      : removeMembersFromServicesUG;
   const [adderSearchValue, setAdderSearchValue] = React.useState("");
   const [availableServices, setAvailableServices] = React.useState<Service[]>(
     []
