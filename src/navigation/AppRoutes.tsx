@@ -564,7 +564,37 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="roles">
                 <Route path="" element={<Roles />} />
-                <Route path=":cn" element={<RolesTabs section="settings" />} />
+                <Route path=":cn">
+                  <Route path="" element={<RolesTabs section="settings" />} />
+                  <Route
+                    path="member_user"
+                    element={<RolesTabs section="member_user" />}
+                  />
+                  <Route
+                    path="member_group"
+                    element={<RolesTabs section="member_group" />}
+                  />
+                  <Route
+                    path="member_host"
+                    element={<RolesTabs section="member_host" />}
+                  />
+                  <Route
+                    path="member_hostgroup"
+                    element={<RolesTabs section="member_hostgroup" />}
+                  />
+                  <Route
+                    path="member_service"
+                    element={<RolesTabs section="member_service" />}
+                  />
+                  <Route
+                    path="member_idoverrideuser"
+                    element={<RolesTabs section="member_idoverrideuser" />}
+                  />
+                  <Route
+                    path="member_sysaccount"
+                    element={<RolesTabs section="member_sysaccount" />}
+                  />
+                </Route>
               </Route>
               <Route path="configuration" element={<Configuration />} />
               {/* Redirect to Active users page if user is logged in and navigates to the root page */}

@@ -9,15 +9,17 @@ import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 import DataSpinner from "src/components/layouts/DataSpinner";
+import RolesMembers from "./RolesMembers";
+import { partialRoleToRole } from "src/utils/rolesUtils";
 // Hooks
 import { useRoleSettings } from "src/hooks/useRolesSettingsData";
-// Redux
-import { useAppDispatch } from "src/store/hooks";
-import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
 import { CnParams, useSafeParams } from "src/utils/paramsUtils";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
+import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 
 interface RolesTabsProps {
   section: string;
@@ -61,6 +63,8 @@ const RolesTabs = ({ section }: RolesTabsProps) => {
   ) => {
     if (tabIndex === "settings") {
       navigate("/roles/" + cn);
+    } else if (tabIndex === "member") {
+      navigate("/roles/" + cn + "/member_user");
     }
   };
 
@@ -87,7 +91,11 @@ const RolesTabs = ({ section }: RolesTabsProps) => {
     if (!section) {
       navigate(URL_PREFIX + "/roles/" + cn);
     }
-    setActiveTabKey(section);
+    if (section.startsWith("member_")) {
+      setActiveTabKey("member");
+    } else {
+      setActiveTabKey(section);
+    }
   }, [section]);
 
   if (roleSettingsData.isLoading || roleSettingsData.role.cn === undefined) {
@@ -147,6 +155,16 @@ const RolesTabs = ({ section }: RolesTabsProps) => {
                 onResetValues={roleSettingsData.resetValues}
                 modifiedValues={roleSettingsData.modifiedValues}
                 onOpenContextualPanel={onOpenContextualPanel}
+              />
+            </Tab>
+            <Tab
+              eventKey={"member"}
+              name={"member-details"}
+              title={<TabTitleText>Members</TabTitleText>}
+            >
+              <RolesMembers
+                role={partialRoleToRole(roleSettingsData.role)}
+                tabSection={section}
               />
             </Tab>
           </Tabs>

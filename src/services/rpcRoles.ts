@@ -43,6 +43,12 @@ interface RolesSearchPayload {
   stopIdx: number;
 }
 
+export interface RoleMemberPayload {
+  entryName: string;
+  entityType: string;
+  idsToAdd: string[];
+}
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     /**
@@ -229,6 +235,56 @@ const extendedApi = api.injectEndpoints({
           : { error: showResult.error as FetchBaseQueryError };
       },
     }),
+    /**
+     * Get a single role by cn (with members)
+     * @param {string} cn - Role cn
+     * @returns {Role} - Role data with members
+     */
+    getRoleById: build.query<Role, string>({
+      query: (cn) => {
+        return getCommand({
+          method: "role_show",
+          params: [[cn], { all: true, rights: true }],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): Role => {
+        return apiToRole(response.result.result);
+      },
+    }),
+    /**
+     * Add members to a role
+     * @param {RoleMemberPayload} - Payload with role name, entity type, and IDs to add
+     * @returns {FindRPCResponse} - Response from API
+     */
+    addAsMemberRole: build.mutation<FindRPCResponse, RoleMemberPayload>({
+      query: (payload) => {
+        const params: Record<string, unknown> = {
+          version: API_VERSION_BACKUP,
+          [payload.entityType]: payload.idsToAdd,
+        };
+        return getCommand({
+          method: "role_add_member",
+          params: [[payload.entryName], params],
+        });
+      },
+    }),
+    /**
+     * Remove members from a role
+     * @param {RoleMemberPayload} - Payload with role name, entity type, and IDs to remove
+     * @returns {FindRPCResponse} - Response from API
+     */
+    removeAsMemberRole: build.mutation<FindRPCResponse, RoleMemberPayload>({
+      query: (payload) => {
+        const params: Record<string, unknown> = {
+          version: API_VERSION_BACKUP,
+          [payload.entityType]: payload.idsToAdd,
+        };
+        return getCommand({
+          method: "role_remove_member",
+          params: [[payload.entryName], params],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -258,4 +314,7 @@ export const {
   useDeleteRolesMutation,
   useSearchRolesEntriesMutation,
   useSaveRoleMutation,
+  useGetRoleByIdQuery,
+  useAddAsMemberRoleMutation,
+  useRemoveAsMemberRoleMutation,
 } = extendedApi;

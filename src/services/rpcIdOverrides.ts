@@ -226,8 +226,12 @@ const extendedApi = api.injectEndpoints({
         };
         return getCommand(findCmd);
       },
-      transformResponse: (response: FindRPCResponse): IDViewOverrideUser[] =>
-        response.result.result as unknown as IDViewOverrideUser[],
+      transformResponse: (response: FindRPCResponse): IDViewOverrideUser[] => {
+        if (response.result?.result) {
+          return response.result.result as unknown as IDViewOverrideUser[];
+        }
+        return [];
+      },
     }),
     gettingIDOverrideGroups: build.query<IDViewOverrideGroup[], string>({
       query: (idview) => {
@@ -237,8 +241,12 @@ const extendedApi = api.injectEndpoints({
         };
         return getCommand(findCmd);
       },
-      transformResponse: (response: FindRPCResponse): IDViewOverrideGroup[] =>
-        response.result.result as unknown as IDViewOverrideGroup[],
+      transformResponse: (response: FindRPCResponse): IDViewOverrideGroup[] => {
+        if (response.result?.result) {
+          return response.result.result as unknown as IDViewOverrideGroup[];
+        }
+        return [];
+      },
     }),
     // Refresh entries by search value (mutation instead of query)
     searchOverrideEntries: build.mutation<BatchRPCResponse, IDOverridePayload>({
@@ -302,6 +310,38 @@ const extendedApi = api.injectEndpoints({
             };
       },
     }),
+    /**
+     * Search for ID override users with search support
+     * @param {object} payload - Search parameters
+     * @param payload.idView - The ID view name (e.g., "Default Trust View")
+     * @param payload.searchValue - Search string
+     * @returns {IDViewOverrideUser[]} - List of ID override users
+     */
+    searchIdOverrideUsers: build.query<
+      IDViewOverrideUser[],
+      { idView: string; searchValue: string }
+    >({
+      query: ({ idView, searchValue }) => {
+        const findCmd: Command = {
+          method: "idoverrideuser_find",
+          params: [
+            [idView, searchValue],
+            {
+              version: API_VERSION_BACKUP,
+              no_members: true,
+              sizelimit: 100,
+            },
+          ],
+        };
+        return getCommand(findCmd);
+      },
+      transformResponse: (response: FindRPCResponse): IDViewOverrideUser[] => {
+        if (response.result?.result) {
+          return response.result.result as unknown as IDViewOverrideUser[];
+        }
+        return [];
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -314,4 +354,5 @@ export const {
   useGettingIDOverrideUsersQuery,
   useGettingIDOverrideGroupsQuery,
   useSearchOverrideEntriesMutation,
+  useSearchIdOverrideUsersQuery,
 } = extendedApi;

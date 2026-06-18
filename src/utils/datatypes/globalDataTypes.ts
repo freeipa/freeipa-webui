@@ -209,6 +209,19 @@ export interface Role {
   cn: string;
   description: string;
   dn: string;
+  member_user: string[];
+  member_group: string[];
+  member_host: string[];
+  member_hostgroup: string[];
+  member_service: string[];
+  member_idoverrideuser: string[];
+  member_sysaccount: string[];
+}
+
+export interface SysAccount {
+  uid: string;
+  dn: string;
+  description: string;
 }
 
 export interface HBACRulesOld {
