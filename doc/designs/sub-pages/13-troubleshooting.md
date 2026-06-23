@@ -1,7 +1,7 @@
 # Sub-Pages — Troubleshooting
 
 > **Part of:** [Sub-Pages guide](../sub-pages.md)
-> **See also:** [Data Hook](03-data-hook.md) | [Checklist](08-checklist.md)
+> **See also:** [Best Practices](00-best-practices.md) | [Data Hook](03-data-hook.md) | [Checklist](08-checklist.md)
 
 Common issues when creating sub-pages and their solutions. Issues are organized by category.
 
@@ -41,13 +41,6 @@ Common issues when creating sub-pages and their solutions. Issues are organized 
 
 ## Post-Generation Quality Checks
 
-**Always run these checks** after generating a sub-page:
+See [00-best-practices.md](00-best-practices.md#post-generation-quality-checks) for the required validation commands.
 
-```bash
-npm run prettier:fix   # Fix code formatting
-npm run knip           # Detect unused exports/files
-npm run lint           # Fix any errors (warnings ok)
-npm run build          # Catch TypeScript errors
-```
-
-Fix all errors before committing. See [08-checklist.md](08-checklist.md) for details.
+Fix all errors before committing.

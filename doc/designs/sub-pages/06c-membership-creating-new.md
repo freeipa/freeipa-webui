@@ -1,7 +1,7 @@
 # Sub-Pages — Creating New Membership Components
 
 > **Part of:** [Sub-Pages guide](../sub-pages.md)
-> **See also:** [Membership Tabs](06-membership-tabs.md) | [Custom Implementation](06a-membership-custom.md)
+> **See also:** [Best Practices](00-best-practices.md) | [Membership Tabs](06-membership-tabs.md) | [Custom Implementation](06a-membership-custom.md)
 
 This guide covers creating **new** membership components from scratch when no existing component matches your needs.
 
@@ -268,25 +268,11 @@ These errors may not appear immediately but can surface when other type definiti
 
 ---
 
-## Summary: The Golden Rule
+## Summary
 
-> **When in doubt, ASK.** It is always better to ask one extra question than to deliver an incomplete component.
+> **See [00-best-practices.md](00-best-practices.md)** for the complete guide on golden rules, anti-patterns, and required practices when creating sub-pages.
 
-### Quick Reference: Questions to Ask
-
-| Missing Info | Question to Ask |
-|--------------|-----------------|
-| API for Add modal | "What API lists available items to add? (e.g., `user_find`, `service_find`)" |
-| Entity type for mutations | "What `entityType` should I use for `_add_member`/`_remove_member`? (e.g., `user`, `host`)" |
-| Table columns | "What columns should the table display?" |
-| Add modal pattern | "Should I use a searchable list (DualListSelector) or text input for adding items?" |
-| Read-only confirmation | "Should Add/Delete functionality be disabled for this tab? (If yes, I'll make it read-only)" |
-
-### Anti-Pattern: Silent Decisions
-
-**NEVER** make silent decisions like:
-- "I'll disable the Add button because I don't know the API" ❌
-- "I'll leave the delete handler empty for now" ❌
-- "I'll skip the modal implementation" ❌
-
-**ALWAYS** communicate and get user input.
+Key reminders:
+- **When in doubt, ASK** — one extra question is better than an incomplete component
+- **NEVER** disable buttons or leave handlers empty without explicit user approval
+- **ALWAYS** run post-generation validation commands before committing

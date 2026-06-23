@@ -1,9 +1,11 @@
 # Sub-Pages — Checklist
 
 > **Part of:** [Sub-Pages guide](../sub-pages.md)
-> **See also:** [Overview](01-overview.md) | [Main Pages Checklist](../main-pages/06-checklist-and-types.md)
+> **See also:** [Best Practices](00-best-practices.md) | [Overview](01-overview.md) | [Main Pages Checklist](../main-pages/06-checklist-and-types.md)
 
 Use this checklist when creating a new sub-page. Items marked with ✦ are always required.
+
+> ⚠️ **Read [00-best-practices.md](00-best-practices.md) first** — it contains essential rules that prevent common mistakes.
 
 ## Files to Create
 
@@ -186,14 +188,7 @@ import OtpTokensManagedBy from "./OtpTokensManagedBy";
 
 ## Post-Generation Validation ✦
 
-**Run these checks in order:**
-
-```bash
-npm run prettier:fix   # Fix formatting
-npm run knip           # Check unused exports
-npm run lint           # Fix errors (warnings ok)
-npm run build          # Catch TypeScript errors
-```
+See [00-best-practices.md](00-best-practices.md#post-generation-quality-checks) for the required validation commands.
 
 **Quick combined check:**
 ```bash

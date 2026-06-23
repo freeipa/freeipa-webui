@@ -16,8 +16,8 @@
 >
 > **Creation order:**
 > 1. `use<Entity>SettingsData.tsx` — Data hook (see [03-data-hook.md](03-data-hook.md))
-> 2. `<Entity>Tabs.tsx` — Tabs component (this file)
-> 3. `<Entity>Settings.tsx` — Settings component (see [04-settings-tab.md](04-settings-tab.md))
+> 2. `<Entity>Settings.tsx` — Settings component (see [04-settings-tab.md](04-settings-tab.md))
+> 3. `<Entity>Tabs.tsx` — Tabs component (this file) 
 
 ## Prerequisites
 
@@ -62,7 +62,7 @@ If found → render Tabs with entity data
 
 ## Required Imports
 
-**Important:** Always use **absolute imports** (starting with `src/`) instead of relative imports (starting with `./` or `../`). This is the project convention for consistency and easier refactoring.
+**Note:** All imports must be absolute (starting with `src/`). See [00-best-practices.md § Use Absolute Imports](00-best-practices.md#6-use-absolute-imports).
 
 ```tsx
 import React from "react";

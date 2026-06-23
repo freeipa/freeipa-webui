@@ -121,8 +121,7 @@ The conversion relies on `convertApiObj` from `src/utils/ipaObjectUtils.ts`, whi
 | Field Pattern | Type | In `simpleValues`? | Initialize as |
 |---------------|------|-------------------|---------------|
 | `cn`, `description`, `dn` | `string` | ✅ Yes | `""` |
-| `memberuser_user`, `memberhost_host` | `string[]` | ❌ No | `[]` |
-| `memberof_group`, `member_user` | `string[]` | ❌ No | `[]` |
+| `memberuser_user`, `memberhost_host`, `memberof_group`, `member_user` | `string[]` | ❌ No | `[]` |
 
 If you add a membership field to `simpleValues`, the array will be converted to a string, causing **runtime errors** like `TypeError: X.map is not a function` when the Settings page tries to iterate over the members.
 

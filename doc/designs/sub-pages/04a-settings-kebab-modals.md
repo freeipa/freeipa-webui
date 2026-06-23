@@ -121,10 +121,14 @@ React.useEffect(() => {
 
 ### Status-Based Conditional Enabling
 
-Disable irrelevant actions based on current entity status:
+Disable irrelevant actions based on current entity status.
+
+**Note:** The `convertApiObj` utility converts booleans to strings, so status fields arrive as `"true"`/`"false"` rather than `true`/`false`. Always use the dual check:
 
 ```tsx
-const isEntityDisabled = props.<entity>.<statusField> === true;
+const isEntityDisabled =
+  props.<entity>.<statusField> === true ||
+  String(props.<entity>.<statusField>) === "true";
 
 const kebabItems = [
   <DropdownItem
@@ -147,11 +151,3 @@ const kebabItems = [
 | OTP Token | `ipatokendisabled` | Token is disabled |
 | User | `nsaccountlock` | User is disabled |
 | Host | `has_keytab` | Host has keytab |
-
-**Important:** The `convertApiObj` utility converts booleans to strings. Use:
-
-```tsx
-const isEntityDisabled =
-  props.<entity>.<statusField> === true ||
-  String(props.<entity>.<statusField>) === "true";
-```
