@@ -73,22 +73,6 @@ if (containsAny(membersFromResponse, newMembers)) { ... }
 
 // ❌ Checking results.error (doesn't exist in this structure!)
 if (results && !results.error) { ... }
-
-// ❌ Not refreshing on partial failures
-if (results.completed > 0) { props.onRefresh(); }  // Should always refresh!
-```
-
-**Interface definition:**
-
-```typescript
-export interface AddRemoveMemberResult {
-  completed: number;  // ← Use this for success check!
-  failed: {
-    memberuser?: { user: string[]; group: string[] };
-    memberhost?: { host: string[]; hostgroup: string[] };
-  };
-  result: Record<string, unknown>;
-}
 ```
 
 ## API Error: "Unknown option: memberuser_user"
