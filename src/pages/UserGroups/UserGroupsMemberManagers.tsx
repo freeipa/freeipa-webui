@@ -9,6 +9,12 @@ import TabLayout from "src/components/layouts/TabLayout";
 import { useNavigate } from "react-router";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+} from "src/store/Global/contextual-help-slice";
 // RPC
 import { useGetGroupByIdQuery } from "src/services/rpcUserGroups";
 // 'Members' sections
@@ -22,6 +28,16 @@ interface PropsToUserGroupsMembers {
 
 const UserGroupsMemberManagers = (props: PropsToUserGroupsMembers) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("user-groups"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   const userGroupQuery = useGetGroupByIdQuery(props.userGroup.cn);
   const userGroupData = userGroupQuery.data || {};

@@ -13,11 +13,17 @@ import { Td, Th, Tr } from "@patternfly/react-table";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 import PageLayout from "src/components/layouts/PageLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+
 import SkeletonOnTableLayout from "src/components/layouts/Skeleton/SkeletonOnTableLayout";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // RPC
 import { useSubidStatsQuery } from "src/services/rpcSubIds";
 
@@ -32,6 +38,8 @@ interface SubidStats {
 const SubIdsStatistics = () => {
   const dispatch = useAppDispatch();
 
+  // Contextual help panel
+
   // States
   const [subidStats, setSubidStats] = React.useState<SubidStats>({
     assigned_subids: 0,
@@ -45,6 +53,15 @@ const SubIdsStatistics = () => {
   // API call
   const subidStatsResponse = useSubidStatsQuery();
   const { data, isLoading, error } = subidStatsResponse;
+
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("subordinate-id-statistics"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   React.useEffect(() => {
     setShowTableRows(!isLoading);
@@ -94,7 +111,12 @@ const SubIdsStatistics = () => {
     },
     {
       key: 2,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={() => dispatch(toggleHelpPanel())}
+        />
+      ),
     },
   ];
 
@@ -141,29 +163,31 @@ const SubIdsStatistics = () => {
   );
 
   return (
-    <PageLayout
-      title="Subordinate ID Statistics"
-      pathname="subordinate-id-statistics"
-      hasAlerts={true}
-      toolbarItems={toolbarItems}
-    >
-      <PageSection hasBodyWrapper={false}>
-        <Grid hasGutter>
-          <GridItem span={12}>
-            <TableLayout
-              ariaLabel={"subordinate id statistics table"}
-              variant="compact"
-              hasBorders={true}
-              classes={"pf-v6-u-mt-md"}
-              tableId={"subid-stats-table"}
-              tableHeader={header}
-              tableBody={!showTableRows ? skeleton : body}
-              isStickyHeader={false}
-            />
-          </GridItem>
-        </Grid>
-      </PageSection>
-    </PageLayout>
+    <>
+      <PageLayout
+        title="Subordinate ID Statistics"
+        pathname="subordinate-id-statistics"
+        hasAlerts={true}
+        toolbarItems={toolbarItems}
+      >
+        <PageSection hasBodyWrapper={false}>
+          <Grid hasGutter>
+            <GridItem span={12}>
+              <TableLayout
+                ariaLabel={"subordinate id statistics table"}
+                variant="compact"
+                hasBorders={true}
+                classes={"pf-v6-u-mt-md"}
+                tableId={"subid-stats-table"}
+                tableHeader={header}
+                tableBody={!showTableRows ? skeleton : body}
+                isStickyHeader={false}
+              />
+            </GridItem>
+          </Grid>
+        </PageSection>
+      </PageLayout>
+    </>
   );
 };
 

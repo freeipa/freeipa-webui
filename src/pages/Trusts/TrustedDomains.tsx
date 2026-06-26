@@ -29,6 +29,11 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // Utils
 import { isTrustDomainSelectable } from "src/utils/utils";
 import { apiToTrustDomain } from "src/utils/trustsUtils";
@@ -41,6 +46,7 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
@@ -55,8 +61,19 @@ interface TrustedDomainsProps {
 const TrustedDomains = (props: TrustedDomainsProps) => {
   const dispatch = useAppDispatch();
 
+  // Contextual help panel
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "trusted-domains" });
+
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("trusted-domains"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -453,7 +470,12 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
     },
     {
       key: 9,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={() => dispatch(toggleHelpPanel())}
+        />
+      ),
     },
     {
       key: 10,
@@ -480,121 +502,127 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
 
   // Render component
   return (
-    <div
-      style={{
-        height: `var(--subsettings-calc)`,
-      }}
-      data-cy={"trusted-domains"}
-    >
-      <PageSection hasBodyWrapper={false} isFilled={false}>
-        <Flex direction={{ default: "column" }}>
-          <FlexItem>
-            <ToolbarLayout toolbarItems={toolbarItems} />
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto" }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer
-                style={{ height: "60vh", overflow: "auto" }}
-              >
-                {error !== undefined && error ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <>
-                    {isLoading || !showTableRows ? (
-                      spinner
-                    ) : (
-                      <MainTable
-                        tableTitle="Trusted domains table"
-                        shownElementsList={trustDomains}
-                        pk="cn"
-                        keyNames={[
-                          "cn",
-                          "domain_enabled",
-                          "ipantflatname",
-                          "ipanttrusteddomainsid",
-                        ]}
-                        columnNames={[
-                          "Domain name",
-                          "Status",
-                          "Domain NetBIOS name",
-                          "Domain security identifier",
-                        ]}
-                        hasCheckboxes={true}
-                        pathname="trusted-domains"
-                        showTableRows={showTableRows}
-                        showLink={false}
-                        elementsData={{
-                          isElementSelectable: isTrustDomainSelectable,
-                          selectedElements,
-                          selectableElementsTable: selectableTrustDomainsTable,
-                          setElementsSelected: setTrustedDomainsSelected,
-                          clearSelectedElements: () => setSelectedElements([]),
-                        }}
-                        buttonsData={{
-                          updateIsDeleteButtonDisabled:
-                            setIsDeleteButtonDisabled,
-                          isDeletion,
-                          updateIsDeletion: setIsDeletion,
-                          updateIsEnableButtonDisabled: (value) =>
-                            setIsEnableButtonDisabled(value),
-                          updateIsDisableButtonDisabled: (value) =>
-                            setIsDisableButtonDisabled(value),
-                          isDisableEnableOp: true,
-                        }}
-                        paginationData={{
-                          selectedPerPage,
-                          updateSelectedPerPage: setSelectedPerPage,
-                        }}
-                        statusElementName="domain_enabled"
-                      />
-                    )}
-                  </>
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
-            <PaginationLayout
-              list={trustDomains}
-              paginationData={paginationData}
-              variant={PaginationVariant.bottom}
-              widgetId="pagination-options-menu-bottom"
-              className="pf-v6-u-pb-0 pf-v6-u-pr-md"
-            />
-          </FlexItem>
-        </Flex>
-      </PageSection>
-      <EnableDisableTrustedDomainsModal
-        isOpen={showEnableDisableModal}
-        onClose={() => setShowEnableDisableModal(false)}
-        trustId={props.trustId}
-        domainNames={selectedElements.map((element) => element.cn)}
-        setDomainNames={(newDomainNames) =>
-          setSelectedElements(
-            newDomainNames.map((cn) => ({ cn }) as TrustDomain)
-          )
-        }
-        operation={operation}
-        setShowTableRows={setShowTableRows}
-        onRefresh={refreshData}
-      />
-      <DeleteTrustedDomainsModal
-        isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        elementsToDelete={selectedElements}
-        clearSelectedElements={() => setSelectedElements([])}
-        columnNames={[
-          "Domain Name",
-          "Domain NetBIOS name",
-          "Domain security identifier",
-        ]}
-        keyNames={["cn", "ipantflatname", "ipanttrusteddomainsid"]}
-        onRefresh={refreshData}
-        updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
-        updateIsDeletion={setIsDeletion}
-        trustId={props.trustId}
-      />
-    </div>
+    <>
+      <div
+        style={{
+          height: `var(--subsettings-calc)`,
+        }}
+        data-cy={"trusted-domains"}
+      >
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem style={{ flex: "0 0 auto" }}>
+              <OuterScrollContainer>
+                <InnerScrollContainer
+                  style={{ height: "60vh", overflow: "auto" }}
+                >
+                  {error !== undefined && error ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <>
+                      {isLoading || !showTableRows ? (
+                        spinner
+                      ) : (
+                        <MainTable
+                          tableTitle="Trusted domains table"
+                          shownElementsList={trustDomains}
+                          pk="cn"
+                          keyNames={[
+                            "cn",
+                            "domain_enabled",
+                            "ipantflatname",
+                            "ipanttrusteddomainsid",
+                          ]}
+                          columnNames={[
+                            "Domain name",
+                            "Status",
+                            "Domain NetBIOS name",
+                            "Domain security identifier",
+                          ]}
+                          hasCheckboxes={true}
+                          pathname="trusted-domains"
+                          showTableRows={showTableRows}
+                          showLink={false}
+                          elementsData={{
+                            isElementSelectable: isTrustDomainSelectable,
+                            selectedElements,
+                            selectableElementsTable:
+                              selectableTrustDomainsTable,
+                            setElementsSelected: setTrustedDomainsSelected,
+                            clearSelectedElements: () =>
+                              setSelectedElements([]),
+                          }}
+                          buttonsData={{
+                            updateIsDeleteButtonDisabled:
+                              setIsDeleteButtonDisabled,
+                            isDeletion,
+                            updateIsDeletion: setIsDeletion,
+                            updateIsEnableButtonDisabled: (value) =>
+                              setIsEnableButtonDisabled(value),
+                            updateIsDisableButtonDisabled: (value) =>
+                              setIsDisableButtonDisabled(value),
+                            isDisableEnableOp: true,
+                          }}
+                          paginationData={{
+                            selectedPerPage,
+                            updateSelectedPerPage: setSelectedPerPage,
+                          }}
+                          statusElementName="domain_enabled"
+                        />
+                      )}
+                    </>
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={trustDomains}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+                className="pf-v6-u-pb-0 pf-v6-u-pr-md"
+              />
+            </FlexItem>
+          </Flex>
+        </PageSection>
+        <EnableDisableTrustedDomainsModal
+          isOpen={showEnableDisableModal}
+          onClose={() => setShowEnableDisableModal(false)}
+          trustId={props.trustId}
+          domainNames={selectedElements.map((element) => element.cn)}
+          setDomainNames={(newDomainNames) =>
+            setSelectedElements(
+              newDomainNames.map((cn) => ({ cn }) as TrustDomain)
+            )
+          }
+          operation={operation}
+          setShowTableRows={setShowTableRows}
+          onRefresh={refreshData}
+        />
+        <DeleteTrustedDomainsModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          elementsToDelete={selectedElements}
+          clearSelectedElements={() => setSelectedElements([])}
+          columnNames={[
+            "Domain Name",
+            "Domain NetBIOS name",
+            "Domain security identifier",
+          ]}
+          keyNames={["cn", "ipantflatname", "ipanttrusteddomainsid"]}
+          onRefresh={refreshData}
+          updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
+          updateIsDeletion={setIsDeletion}
+          trustId={props.trustId}
+        />
+      </div>
+    </>
   );
 };
 

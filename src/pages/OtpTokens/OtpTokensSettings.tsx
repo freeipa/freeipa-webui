@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 // PatternFly
 import {
   Button,
@@ -23,11 +23,17 @@ import { BatchResult } from "src/services/rpc";
 import { OtpToken, Metadata, User } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // Icons
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 // Components
 import TabLayout from "src/components/layouts/TabLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+
 import IpaCalendar from "src/components/Form/IpaCalendar";
 import IpaTextArea from "src/components/Form/IpaTextArea";
 import IpaTextInput from "src/components/Form/IpaTextInput";
@@ -58,8 +64,19 @@ interface OtpTokensSettingsProps {
 const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
   const dispatch = useAppDispatch();
 
+  // Contextual help panel
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
+
+  // Set help topic on mount, clear on unmount
+  useEffect(() => {
+    dispatch(setHelpTopic("otp-tokens-settings"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // States
   const [isDataLoading, setIsDataLoading] = React.useState(false);
@@ -289,275 +306,278 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
   ];
 
   return (
-    <TabLayout
-      id="settings-page"
-      toolbarItems={toolbarFields}
-      dataCy="otp-tokens-settings"
-    >
-      <Sidebar isPanelRight>
-        <SidebarPanel variant="sticky">
-          <HelpTextWithIconLayout
-            textContent="Help"
-            icon={
-              <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
-            }
-          />
-        </SidebarPanel>
-        <SidebarContent className="pf-v6-u-mr-xl">
-          <TitleLayout
-            key={0}
-            id="otp-token-settings"
-            text="OTP token settings"
-            headingLevel="h2"
-            className="pf-v6-u-mt-md pf-v6-u-mb-lg"
-          />
-          <Form className="pf-v6-u-mb-lg">
-            <Flex direction={{ default: "column", lg: "row" }}>
-              <FlexItem flex={{ default: "flex_1" }}>
-                <FormGroup
-                  label="Unique ID"
-                  data-cy="otp-tokens-tab-settings-textbox-ipatokenuniqueid"
-                  role="ipatokenuniqueid"
-                  className="pf-v6-u-mb-md"
-                >
-                  <IpaTextInput
-                    dataCy="otp-tokens-tab-settings-textbox-ipatokenuniqueid"
-                    name={"ipatokenuniqueid"}
-                    ariaLabel={"Unique ID text input"}
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    objectName="otptoken"
-                    metadata={props.metadata}
-                  />
-                </FormGroup>
-                <FormGroup
-                  label="Type"
-                  data-cy="otp-tokens-tab-settings-textbox-type"
-                  role="type"
-                  className="pf-v6-u-mb-md"
-                >
-                  <IpaTextInput
-                    dataCy="otp-tokens-tab-settings-textbox-type"
-                    name={"type"}
-                    ariaLabel={"Type text input"}
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    objectName="otptoken"
-                    metadata={props.metadata}
-                  />
-                </FormGroup>
-                <FormGroup
-                  label="Description"
-                  data-cy="otp-tokens-tab-settings-textbox-description"
-                  role="description"
-                  className="pf-v6-u-mb-md"
-                >
-                  <IpaTextArea
-                    name={"description"}
-                    aria-label={"Description text input"}
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    objectName="otptoken"
-                    metadata={props.metadata}
-                    dataCy="otp-tokens-tab-settings-textbox-description"
-                  />
-                </FormGroup>
-                <FormGroup
-                  label="Owner"
-                  data-cy="otp-tokens-tab-settings-textbox-ipatokenowner"
-                  role="ipatokenowner"
-                  className="pf-v6-u-mb-md"
-                >
-                  <IpaSelect
-                    dataCy="otp-tokens-tab-settings-select-ipatokenowner"
-                    name={"ipatokenowner"}
-                    ariaLabel={"Owner select"}
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    objectName="otptoken"
-                    metadata={props.metadata}
-                    options={props.users.map(
-                      (user) => user.uid?.toString() || ""
-                    )}
-                  />
-                </FormGroup>
-                <FormGroup
-                  label="Validity start"
-                  data-cy="otp-tokens-tab-settings-textbox-ipatokennotbefore"
-                  role="validity-start"
-                  className="pf-v6-u-mb-md"
-                >
-                  <IpaCalendar
-                    name={"ipatokennotbefore"}
-                    ariaLabel={"Validity start date"}
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    objectName="otptoken"
-                    metadata={props.metadata}
-                    dataCy="otp-tokens-tab-settings-calendar-ipatokennotbefore"
-                  />
-                </FormGroup>
-                <FormGroup
-                  label="Validity end"
-                  data-cy="otp-tokens-tab-settings-textbox-ipatokennotafter"
-                  role="validity-end"
-                  className="pf-v6-u-mb-md"
-                >
-                  <IpaCalendar
-                    name={"ipatokennotafter"}
-                    ariaLabel={"Validity end date"}
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    objectName="otptoken"
-                    metadata={props.metadata}
-                    dataCy="otp-tokens-tab-settings-calendar-ipatokennotafter"
-                  />
-                </FormGroup>
-              </FlexItem>
-              <FlexItem flex={{ default: "flex_1" }}>
-                <FormGroup
-                  label="Vendor"
-                  data-cy="otp-tokens-tab-settings-textbox-ipatokenvendor"
-                  role="vendor"
-                  className="pf-v6-u-mb-md"
-                >
-                  <IpaTextInput
-                    dataCy="otp-tokens-tab-settings-textbox-ipatokenvendor"
-                    name={"ipatokenvendor"}
-                    ariaLabel={"Vendor text input"}
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    objectName="otptoken"
-                    metadata={props.metadata}
-                    rules={validCharsRules}
-                  />
-                </FormGroup>
-                <FormGroup
-                  label="Model"
-                  data-cy="otp-tokens-tab-settings-textbox-ipatokenmodel"
-                  role="model"
-                  className="pf-v6-u-mb-md"
-                >
-                  <IpaTextInput
-                    dataCy="otp-tokens-tab-settings-textbox-ipatokenmodel"
-                    name={"ipatokenmodel"}
-                    ariaLabel={"Model text input"}
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    objectName="otptoken"
-                    metadata={props.metadata}
-                    rules={validCharsRules}
-                  />
-                </FormGroup>
-                <FormGroup
-                  label="Serial"
-                  data-cy="otp-tokens-tab-settings-textbox-ipatokenserial"
-                  role="serial"
-                  className="pf-v6-u-mb-md"
-                >
-                  <IpaTextInput
-                    dataCy="otp-tokens-tab-settings-textbox-ipatokenmodel"
-                    name={"ipatokenserial"}
-                    ariaLabel={"Serial text input"}
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    objectName="otptoken"
-                    metadata={props.metadata}
-                    rules={validCharsRules}
-                  />
-                </FormGroup>
-                <FormGroup
-                  label="Algorithm"
-                  data-cy="otp-tokens-tab-settings-textbox-ipatokenotpalgorithm"
-                  role="algorithm"
-                  className="pf-v6-u-mb-md"
-                >
-                  <IpaTextInput
-                    dataCy="otp-tokens-tab-settings-textbox-ipatokenmodel"
-                    name={"ipatokenotpalgorithm"}
-                    ariaLabel={"Algorithm text input"}
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    objectName="otptoken"
-                    metadata={props.metadata}
-                    rules={validCharsRules}
-                  />
-                </FormGroup>
-                <FormGroup
-                  label="Digits"
-                  data-cy="otp-tokens-tab-settings-textbox-ipatokenotpdigits"
-                  role="digits"
-                  className="pf-v6-u-mb-md"
-                >
-                  <IpaTextInput
-                    dataCy="otp-tokens-tab-settings-textbox-ipatokenotpdigits"
-                    name={"ipatokenotpdigits"}
-                    ariaLabel={"Digits text input"}
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    objectName="otptoken"
-                    metadata={props.metadata}
-                  />
-                </FormGroup>
-                <FormGroup
-                  label="Clock offset (seconds)"
-                  data-cy="otp-tokens-tab-settings-textbox-ipatokentotpclockoffset"
-                  role="clock-offset"
-                  className="pf-v6-u-mb-md"
-                >
-                  <IpaTextInput
-                    dataCy="otp-tokens-tab-settings-textbox-ipatokentotpclockoffset"
-                    name={"ipatokentotpclockoffset"}
-                    ariaLabel={"Clock offset text input"}
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    objectName="otptoken"
-                    metadata={props.metadata}
-                  />
-                </FormGroup>
-                <FormGroup
-                  label="Clock interval (seconds)"
-                  data-cy="otp-tokens-tab-settings-textbox-ipatokentotptimestep"
-                  role="clock-interval"
-                  className="pf-v6-u-mb-md"
-                >
-                  <IpaTextInput
-                    dataCy="otp-tokens-tab-settings-textbox-ipatokentotptimestep"
-                    name={"ipatokentotptimestep"}
-                    ariaLabel={"Clock interval text input"}
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    objectName="otptoken"
-                    metadata={props.metadata}
-                  />
-                </FormGroup>
-              </FlexItem>
-            </Flex>
-          </Form>
-        </SidebarContent>
-      </Sidebar>
-      <EnableDisableOtpTokensModal
-        isOpen={isEnableDisableModalOpen}
-        onClose={() => setIsEnableDisableModalOpen(false)}
-        elementsList={[ipaObject["ipatokenuniqueid"]]}
-        setElementsList={() => {}}
-        operation={operation}
-        setShowTableRows={() => {}}
-        onRefresh={props.onRefresh}
-      />
-      <DeleteOtpTokensModal
-        from="settings"
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        elementsToDelete={[props.otpToken]}
-        clearSelectedElements={() => {}}
-        columnNames={["Unique ID", "Owner", "Description"]}
-        keyNames={["ipatokenuniqueid", "ipatokenowner", "description"]}
-        onRefresh={props.onRefresh}
-        updateIsDeleteButtonDisabled={() => {}}
-        updateIsDeletion={() => {}}
-      />
-    </TabLayout>
+    <>
+      <TabLayout
+        id="settings-page"
+        toolbarItems={toolbarFields}
+        dataCy="otp-tokens-settings"
+      >
+        <Sidebar isPanelRight>
+          <SidebarPanel variant="sticky">
+            <HelpTextWithIconLayout
+              textContent="Help"
+              icon={
+                <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
+              }
+              onClick={() => dispatch(toggleHelpPanel())}
+            />
+          </SidebarPanel>
+          <SidebarContent className="pf-v6-u-mr-xl">
+            <TitleLayout
+              key={0}
+              id="otp-token-settings"
+              text="OTP token settings"
+              headingLevel="h2"
+              className="pf-v6-u-mt-md pf-v6-u-mb-lg"
+            />
+            <Form className="pf-v6-u-mb-lg">
+              <Flex direction={{ default: "column", lg: "row" }}>
+                <FlexItem flex={{ default: "flex_1" }}>
+                  <FormGroup
+                    label="Unique ID"
+                    data-cy="otp-tokens-tab-settings-textbox-ipatokenuniqueid"
+                    role="ipatokenuniqueid"
+                    className="pf-v6-u-mb-md"
+                  >
+                    <IpaTextInput
+                      dataCy="otp-tokens-tab-settings-textbox-ipatokenuniqueid"
+                      name={"ipatokenuniqueid"}
+                      ariaLabel={"Unique ID text input"}
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      objectName="otptoken"
+                      metadata={props.metadata}
+                    />
+                  </FormGroup>
+                  <FormGroup
+                    label="Type"
+                    data-cy="otp-tokens-tab-settings-textbox-type"
+                    role="type"
+                    className="pf-v6-u-mb-md"
+                  >
+                    <IpaTextInput
+                      dataCy="otp-tokens-tab-settings-textbox-type"
+                      name={"type"}
+                      ariaLabel={"Type text input"}
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      objectName="otptoken"
+                      metadata={props.metadata}
+                    />
+                  </FormGroup>
+                  <FormGroup
+                    label="Description"
+                    data-cy="otp-tokens-tab-settings-textbox-description"
+                    role="description"
+                    className="pf-v6-u-mb-md"
+                  >
+                    <IpaTextArea
+                      name={"description"}
+                      aria-label={"Description text input"}
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      objectName="otptoken"
+                      metadata={props.metadata}
+                      dataCy="otp-tokens-tab-settings-textbox-description"
+                    />
+                  </FormGroup>
+                  <FormGroup
+                    label="Owner"
+                    data-cy="otp-tokens-tab-settings-textbox-ipatokenowner"
+                    role="ipatokenowner"
+                    className="pf-v6-u-mb-md"
+                  >
+                    <IpaSelect
+                      dataCy="otp-tokens-tab-settings-select-ipatokenowner"
+                      name={"ipatokenowner"}
+                      ariaLabel={"Owner select"}
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      objectName="otptoken"
+                      metadata={props.metadata}
+                      options={props.users.map(
+                        (user) => user.uid?.toString() || ""
+                      )}
+                    />
+                  </FormGroup>
+                  <FormGroup
+                    label="Validity start"
+                    data-cy="otp-tokens-tab-settings-textbox-ipatokennotbefore"
+                    role="validity-start"
+                    className="pf-v6-u-mb-md"
+                  >
+                    <IpaCalendar
+                      name={"ipatokennotbefore"}
+                      ariaLabel={"Validity start date"}
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      objectName="otptoken"
+                      metadata={props.metadata}
+                      dataCy="otp-tokens-tab-settings-calendar-ipatokennotbefore"
+                    />
+                  </FormGroup>
+                  <FormGroup
+                    label="Validity end"
+                    data-cy="otp-tokens-tab-settings-textbox-ipatokennotafter"
+                    role="validity-end"
+                    className="pf-v6-u-mb-md"
+                  >
+                    <IpaCalendar
+                      name={"ipatokennotafter"}
+                      ariaLabel={"Validity end date"}
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      objectName="otptoken"
+                      metadata={props.metadata}
+                      dataCy="otp-tokens-tab-settings-calendar-ipatokennotafter"
+                    />
+                  </FormGroup>
+                </FlexItem>
+                <FlexItem flex={{ default: "flex_1" }}>
+                  <FormGroup
+                    label="Vendor"
+                    data-cy="otp-tokens-tab-settings-textbox-ipatokenvendor"
+                    role="vendor"
+                    className="pf-v6-u-mb-md"
+                  >
+                    <IpaTextInput
+                      dataCy="otp-tokens-tab-settings-textbox-ipatokenvendor"
+                      name={"ipatokenvendor"}
+                      ariaLabel={"Vendor text input"}
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      objectName="otptoken"
+                      metadata={props.metadata}
+                      rules={validCharsRules}
+                    />
+                  </FormGroup>
+                  <FormGroup
+                    label="Model"
+                    data-cy="otp-tokens-tab-settings-textbox-ipatokenmodel"
+                    role="model"
+                    className="pf-v6-u-mb-md"
+                  >
+                    <IpaTextInput
+                      dataCy="otp-tokens-tab-settings-textbox-ipatokenmodel"
+                      name={"ipatokenmodel"}
+                      ariaLabel={"Model text input"}
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      objectName="otptoken"
+                      metadata={props.metadata}
+                      rules={validCharsRules}
+                    />
+                  </FormGroup>
+                  <FormGroup
+                    label="Serial"
+                    data-cy="otp-tokens-tab-settings-textbox-ipatokenserial"
+                    role="serial"
+                    className="pf-v6-u-mb-md"
+                  >
+                    <IpaTextInput
+                      dataCy="otp-tokens-tab-settings-textbox-ipatokenmodel"
+                      name={"ipatokenserial"}
+                      ariaLabel={"Serial text input"}
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      objectName="otptoken"
+                      metadata={props.metadata}
+                      rules={validCharsRules}
+                    />
+                  </FormGroup>
+                  <FormGroup
+                    label="Algorithm"
+                    data-cy="otp-tokens-tab-settings-textbox-ipatokenotpalgorithm"
+                    role="algorithm"
+                    className="pf-v6-u-mb-md"
+                  >
+                    <IpaTextInput
+                      dataCy="otp-tokens-tab-settings-textbox-ipatokenmodel"
+                      name={"ipatokenotpalgorithm"}
+                      ariaLabel={"Algorithm text input"}
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      objectName="otptoken"
+                      metadata={props.metadata}
+                      rules={validCharsRules}
+                    />
+                  </FormGroup>
+                  <FormGroup
+                    label="Digits"
+                    data-cy="otp-tokens-tab-settings-textbox-ipatokenotpdigits"
+                    role="digits"
+                    className="pf-v6-u-mb-md"
+                  >
+                    <IpaTextInput
+                      dataCy="otp-tokens-tab-settings-textbox-ipatokenotpdigits"
+                      name={"ipatokenotpdigits"}
+                      ariaLabel={"Digits text input"}
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      objectName="otptoken"
+                      metadata={props.metadata}
+                    />
+                  </FormGroup>
+                  <FormGroup
+                    label="Clock offset (seconds)"
+                    data-cy="otp-tokens-tab-settings-textbox-ipatokentotpclockoffset"
+                    role="clock-offset"
+                    className="pf-v6-u-mb-md"
+                  >
+                    <IpaTextInput
+                      dataCy="otp-tokens-tab-settings-textbox-ipatokentotpclockoffset"
+                      name={"ipatokentotpclockoffset"}
+                      ariaLabel={"Clock offset text input"}
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      objectName="otptoken"
+                      metadata={props.metadata}
+                    />
+                  </FormGroup>
+                  <FormGroup
+                    label="Clock interval (seconds)"
+                    data-cy="otp-tokens-tab-settings-textbox-ipatokentotptimestep"
+                    role="clock-interval"
+                    className="pf-v6-u-mb-md"
+                  >
+                    <IpaTextInput
+                      dataCy="otp-tokens-tab-settings-textbox-ipatokentotptimestep"
+                      name={"ipatokentotptimestep"}
+                      ariaLabel={"Clock interval text input"}
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      objectName="otptoken"
+                      metadata={props.metadata}
+                    />
+                  </FormGroup>
+                </FlexItem>
+              </Flex>
+            </Form>
+          </SidebarContent>
+        </Sidebar>
+        <EnableDisableOtpTokensModal
+          isOpen={isEnableDisableModalOpen}
+          onClose={() => setIsEnableDisableModalOpen(false)}
+          elementsList={[ipaObject["ipatokenuniqueid"]]}
+          setElementsList={() => {}}
+          operation={operation}
+          setShowTableRows={() => {}}
+          onRefresh={props.onRefresh}
+        />
+        <DeleteOtpTokensModal
+          from="settings"
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          elementsToDelete={[props.otpToken]}
+          clearSelectedElements={() => {}}
+          columnNames={["Unique ID", "Owner", "Description"]}
+          keyNames={["ipatokenuniqueid", "ipatokenowner", "description"]}
+          onRefresh={props.onRefresh}
+          updateIsDeleteButtonDisabled={() => {}}
+          updateIsDeletion={() => {}}
+        />
+      </TabLayout>
+    </>
   );
 };
 

@@ -99,6 +99,7 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 
 // For contextual help panel
 import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+import useContextualHelpPanel from "src/hooks/useContextualHelpPanel";
 
 // For enable/disable operations
 import DisableEnableMyEntitiesModal from "src/components/modals/MyEntityModals/DisableEnableMyEntitiesModal";

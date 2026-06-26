@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 // PatternFly
 import {
   Button,
@@ -16,6 +16,11 @@ import { PwPolicy, Metadata } from "src/utils/datatypes/globalDataTypes";
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 import { addAlert } from "src/store/Global/alerts-slice";
 // Utils
 import { asRecord } from "src/utils/subIdUtils";
@@ -30,6 +35,7 @@ import {
 import IpaTextInput from "src/components/Form/IpaTextInput";
 import TabLayout from "src/components/layouts/TabLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+
 import IpaTextContent from "src/components/Form/IpaTextContent";
 
 interface PropsToPwPolicySettings {
@@ -48,8 +54,19 @@ interface PropsToPwPolicySettings {
 const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
   const dispatch = useAppDispatch();
 
+  // Contextual help panel
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
+
+  // Set help topic on mount, clear on unmount
+  useEffect(() => {
+    dispatch(setHelpTopic("password-policies-settings"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // States
   const [isDataLoading, setIsDataLoading] = React.useState(false);
@@ -201,6 +218,7 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
               icon={
                 <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
               }
+              onClick={() => dispatch(toggleHelpPanel())}
             />
           </SidebarPanel>
           <SidebarContent className="pf-v6-u-mr-xl">

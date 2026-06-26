@@ -24,6 +24,7 @@ import IpaCheckbox from "src/components/Form/IpaCheckbox";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+
 import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
@@ -32,6 +33,11 @@ import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // Data types
 import { HBACRule, Metadata } from "../../utils/datatypes/globalDataTypes";
 import HBACRulesMemberTable from "./HBACRulesMemberTable";
@@ -59,11 +65,22 @@ interface PropsToSettings {
 const HBACRulesSettings = (props: PropsToSettings) => {
   const dispatch = useAppDispatch();
 
+  // Contextual help panel
+
   // API
   const [saveRule] = useSaveAndCleanHbacRuleMutation();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "hbac-rules", noBreadcrumb: true });
+
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("hbac-rules-settings"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   const [cn, setRuleName] = useState<string>("");
   const [memberUsers, setMemberUsers] = useState<string[]>([]);
@@ -247,293 +264,300 @@ const HBACRulesSettings = (props: PropsToSettings) => {
 
   // Render component
   return (
-    <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-      <Sidebar isPanelRight>
-        <SidebarPanel variant="sticky">
-          <HelpTextWithIconLayout
-            textContent="Help"
-            icon={
-              <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
-            }
-          />
-          <JumpLinks
-            isVertical
-            label="Jump to section"
-            scrollableSelector="#settings-page"
-            expandable={{ default: "expandable", md: "nonExpandable" }}
-          >
-            <JumpLinksItem key={0} href="#hbacrule-settings">
-              Settings
-            </JumpLinksItem>
-            <JumpLinksItem key={1} href="#usercategory">
-              Who the rule applies to
-            </JumpLinksItem>
-            <JumpLinksItem key={2} href="#hostcategory">
-              Gives access to
-            </JumpLinksItem>
-            <JumpLinksItem key={3} href="#servicecategory">
-              Via the following services
-            </JumpLinksItem>
-          </JumpLinks>
-        </SidebarPanel>
-        <SidebarContent className="pf-v6-u-mr-xl">
-          <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
-            <TitleLayout
-              key={0}
-              headingLevel="h1"
-              id="hbacrule-settings"
-              text="HBAC rule settings"
+    <>
+      <TabLayout id="settings-page" toolbarItems={toolbarFields}>
+        <Sidebar isPanelRight>
+          <SidebarPanel variant="sticky">
+            <HelpTextWithIconLayout
+              textContent="Help"
+              icon={
+                <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
+              }
+              onClick={() => dispatch(toggleHelpPanel())}
             />
-            <Form
-              className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md"
-              id="hbac-rules-settings-form"
-              onSubmit={onSave}
+            <JumpLinks
+              isVertical
+              label="Jump to section"
+              scrollableSelector="#settings-page"
+              expandable={{ default: "expandable", md: "nonExpandable" }}
             >
-              <FormGroup label="Description" fieldId="description">
-                <IpaTextArea
-                  dataCy="hbac-rules-tab-settings-textbox-description"
-                  name="description"
-                  ipaObject={ipaObject}
-                  onChange={recordOnChange}
-                  objectName="hbacrule"
-                  metadata={props.metadata}
-                />
-              </FormGroup>
-            </Form>
-            <Content key="usercategory">
-              <Title
-                headingLevel="h2"
-                id="usercategory"
-                className="pf-v6-u-mt-lg pf-v6-u-display-flex"
-              >
+              <JumpLinksItem key={0} href="#hbacrule-settings">
+                Settings
+              </JumpLinksItem>
+              <JumpLinksItem key={1} href="#usercategory">
                 Who the rule applies to
-                <IpaCheckbox
-                  dataCy="hbac-rules-tab-settings-checkbox-usercategory"
-                  name="usercategory"
-                  value="usercategory"
-                  text="Allow anyone"
-                  textNode={whoLabel}
-                  className="pf-v6-u-ml-lg pf-v6-u-mt-xs"
-                  ipaObject={ipaObject}
-                  onChange={recordOnChange}
-                  objectName="hbacrule"
-                  metadata={props.metadata}
-                  altTrue="all"
-                  altFalse={""}
-                />
-              </Title>
-            </Content>
-            {ipaObject.usercategory === "" && (
-              <Tabs
-                activeKey={userTabKey}
-                onSelect={handleUserTabClick}
-                className="pf-v6-u-ml-md pf-v6-u-mr-md"
-              >
-                <Tab
-                  eventKey={0}
-                  name="users"
-                  data-cy="hbac-rules-tab-settings-tab-users"
-                  title={
-                    <TabTitleText>
-                      Users <Label isCompact>{memberUsers.length}</Label>
-                    </TabTitleText>
-                  }
-                >
-                  <HBACRulesMemberTable
-                    from="user"
-                    id={cn}
-                    members={memberUsers}
-                    onRefresh={props.onRefresh}
-                    unsetCategory={
-                      ipaObject.usercategory !==
-                        props.originalRule.usercategory &&
-                      ipaObject.usercategory === ""
-                    }
-                  />
-                </Tab>
-                <Tab
-                  eventKey={1}
-                  name="groups"
-                  data-cy="hbac-rules-tab-settings-tab-groups"
-                  title={
-                    <TabTitleText>
-                      Groups <Label isCompact>{memberGroups.length}</Label>
-                    </TabTitleText>
-                  }
-                >
-                  <HBACRulesMemberTable
-                    from="group"
-                    id={cn}
-                    members={memberGroups}
-                    onRefresh={props.onRefresh}
-                    unsetCategory={
-                      ipaObject.usercategory !==
-                        props.originalRule.usercategory &&
-                      ipaObject.usercategory === ""
-                    }
-                  />
-                </Tab>
-              </Tabs>
-            )}
-            <Content key="hostcategory">
-              <Title
-                headingLevel="h2"
-                id="hostcategory"
-                className="pf-v6-u-mt-xl pf-v6-u-display-flex"
-              >
+              </JumpLinksItem>
+              <JumpLinksItem key={2} href="#hostcategory">
                 Gives access to
-                <IpaCheckbox
-                  dataCy="hbac-rules-tab-settings-checkbox-hostcategory"
-                  name="hostcategory"
-                  value="hostcategory"
-                  text="Any host"
-                  textNode={whatLabel}
-                  className="pf-v6-u-ml-lg pf-v6-u-mt-xs"
-                  ipaObject={ipaObject}
-                  onChange={recordOnChange}
-                  objectName="hbacrule"
-                  metadata={props.metadata}
-                  altTrue="all"
-                  altFalse={""}
-                />
-              </Title>
-            </Content>
-            {ipaObject.hostcategory === "" && (
-              <Tabs
-                activeKey={hostTabKey}
-                onSelect={handleHostTabClick}
-                className="pf-v6-u-ml-md pf-v6-u-mr-md"
-              >
-                <Tab
-                  eventKey={0}
-                  name="memberHosts"
-                  data-cy="hbac-rules-tab-settings-tab-hosts"
-                  title={
-                    <TabTitleText>
-                      Hosts <Label isCompact>{memberHosts.length}</Label>
-                    </TabTitleText>
-                  }
-                >
-                  <HBACRulesMemberTable
-                    from="host"
-                    id={cn}
-                    members={memberHosts}
-                    onRefresh={props.onRefresh}
-                    unsetCategory={
-                      ipaObject.hostcategory !==
-                        props.originalRule.hostcategory &&
-                      ipaObject.hostcategory === ""
-                    }
-                  />
-                </Tab>
-                <Tab
-                  eventKey={1}
-                  name="memberHostGroups"
-                  data-cy="hbac-rules-tab-settings-tab-hostgroups"
-                  title={
-                    <TabTitleText>
-                      Host groups{" "}
-                      <Label isCompact>{memberHostGroups.length}</Label>
-                    </TabTitleText>
-                  }
-                >
-                  <HBACRulesMemberTable
-                    from="hostgroup"
-                    id={cn}
-                    members={memberHostGroups}
-                    onRefresh={props.onRefresh}
-                    fromLabel={"Host group"}
-                    unsetCategory={
-                      ipaObject.hostcategory !==
-                        props.originalRule.hostcategory &&
-                      ipaObject.hostcategory === ""
-                    }
-                  />
-                </Tab>
-              </Tabs>
-            )}
-            <Content key="servicecategory">
-              <Title
-                headingLevel="h2"
-                id="servicecategory"
-                className="pf-v6-u-mt-xl pf-v6-u-display-flex"
-              >
+              </JumpLinksItem>
+              <JumpLinksItem key={3} href="#servicecategory">
                 Via the following services
-                <IpaCheckbox
-                  dataCy="hbac-rules-tab-settings-checkbox-servicecategory"
-                  name="servicecategory"
-                  value="servicecategory"
-                  text="Any service"
-                  textNode={howLabel}
-                  className="pf-v6-u-ml-lg pf-v6-u-mt-xs"
-                  ipaObject={ipaObject}
-                  onChange={recordOnChange}
-                  objectName="hbacrule"
-                  metadata={props.metadata}
-                  altTrue="all"
-                  altFalse={""}
-                />
-              </Title>
-            </Content>
-            {ipaObject.servicecategory === "" && (
-              <Tabs
-                activeKey={srvTabKey}
-                onSelect={handleSrvTabClick}
-                className="pf-v6-u-ml-md pf-v6-u-mr-md"
+              </JumpLinksItem>
+            </JumpLinks>
+          </SidebarPanel>
+          <SidebarContent className="pf-v6-u-mr-xl">
+            <Flex
+              direction={{ default: "column" }}
+              flex={{ default: "flex_1" }}
+            >
+              <TitleLayout
+                key={0}
+                headingLevel="h1"
+                id="hbacrule-settings"
+                text="HBAC rule settings"
+              />
+              <Form
+                className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md"
+                id="hbac-rules-settings-form"
+                onSubmit={onSave}
               >
-                <Tab
-                  eventKey={0}
-                  name="services"
-                  data-cy="hbac-rules-tab-settings-tab-services"
-                  title={
-                    <TabTitleText>
-                      Services <Label isCompact>{memberServices.length}</Label>
-                    </TabTitleText>
-                  }
-                >
-                  <HBACRulesMemberTable
-                    from="hbacsvc"
-                    fromLabel="Service"
-                    id={cn}
-                    members={memberServices}
-                    onRefresh={props.onRefresh}
-                    unsetCategory={
-                      ipaObject.servicecategory !==
-                        props.originalRule.servicecategory &&
-                      ipaObject.servicecategory === ""
-                    }
+                <FormGroup label="Description" fieldId="description">
+                  <IpaTextArea
+                    dataCy="hbac-rules-tab-settings-textbox-description"
+                    name="description"
+                    ipaObject={ipaObject}
+                    onChange={recordOnChange}
+                    objectName="hbacrule"
+                    metadata={props.metadata}
                   />
-                </Tab>
-                <Tab
-                  eventKey={1}
-                  name="servicegroups"
-                  data-cy="hbac-rules-tab-settings-tab-servicegroups"
-                  title={
-                    <TabTitleText>
-                      Service groups{" "}
-                      <Label isCompact>{memberServiceGroups.length}</Label>
-                    </TabTitleText>
-                  }
+                </FormGroup>
+              </Form>
+              <Content key="usercategory">
+                <Title
+                  headingLevel="h2"
+                  id="usercategory"
+                  className="pf-v6-u-mt-lg pf-v6-u-display-flex"
                 >
-                  <HBACRulesMemberTable
-                    from="hbacsvcgroup"
-                    fromLabel="Service group"
-                    id={cn}
-                    members={memberServiceGroups}
-                    onRefresh={props.onRefresh}
-                    unsetCategory={
-                      ipaObject.servicecategory !==
-                        props.originalRule.servicecategory &&
-                      ipaObject.servicecategory === ""
-                    }
+                  Who the rule applies to
+                  <IpaCheckbox
+                    dataCy="hbac-rules-tab-settings-checkbox-usercategory"
+                    name="usercategory"
+                    value="usercategory"
+                    text="Allow anyone"
+                    textNode={whoLabel}
+                    className="pf-v6-u-ml-lg pf-v6-u-mt-xs"
+                    ipaObject={ipaObject}
+                    onChange={recordOnChange}
+                    objectName="hbacrule"
+                    metadata={props.metadata}
+                    altTrue="all"
+                    altFalse={""}
                   />
-                </Tab>
-              </Tabs>
-            )}
-          </Flex>
-        </SidebarContent>
-      </Sidebar>
-    </TabLayout>
+                </Title>
+              </Content>
+              {ipaObject.usercategory === "" && (
+                <Tabs
+                  activeKey={userTabKey}
+                  onSelect={handleUserTabClick}
+                  className="pf-v6-u-ml-md pf-v6-u-mr-md"
+                >
+                  <Tab
+                    eventKey={0}
+                    name="users"
+                    data-cy="hbac-rules-tab-settings-tab-users"
+                    title={
+                      <TabTitleText>
+                        Users <Label isCompact>{memberUsers.length}</Label>
+                      </TabTitleText>
+                    }
+                  >
+                    <HBACRulesMemberTable
+                      from="user"
+                      id={cn}
+                      members={memberUsers}
+                      onRefresh={props.onRefresh}
+                      unsetCategory={
+                        ipaObject.usercategory !==
+                          props.originalRule.usercategory &&
+                        ipaObject.usercategory === ""
+                      }
+                    />
+                  </Tab>
+                  <Tab
+                    eventKey={1}
+                    name="groups"
+                    data-cy="hbac-rules-tab-settings-tab-groups"
+                    title={
+                      <TabTitleText>
+                        Groups <Label isCompact>{memberGroups.length}</Label>
+                      </TabTitleText>
+                    }
+                  >
+                    <HBACRulesMemberTable
+                      from="group"
+                      id={cn}
+                      members={memberGroups}
+                      onRefresh={props.onRefresh}
+                      unsetCategory={
+                        ipaObject.usercategory !==
+                          props.originalRule.usercategory &&
+                        ipaObject.usercategory === ""
+                      }
+                    />
+                  </Tab>
+                </Tabs>
+              )}
+              <Content key="hostcategory">
+                <Title
+                  headingLevel="h2"
+                  id="hostcategory"
+                  className="pf-v6-u-mt-xl pf-v6-u-display-flex"
+                >
+                  Gives access to
+                  <IpaCheckbox
+                    dataCy="hbac-rules-tab-settings-checkbox-hostcategory"
+                    name="hostcategory"
+                    value="hostcategory"
+                    text="Any host"
+                    textNode={whatLabel}
+                    className="pf-v6-u-ml-lg pf-v6-u-mt-xs"
+                    ipaObject={ipaObject}
+                    onChange={recordOnChange}
+                    objectName="hbacrule"
+                    metadata={props.metadata}
+                    altTrue="all"
+                    altFalse={""}
+                  />
+                </Title>
+              </Content>
+              {ipaObject.hostcategory === "" && (
+                <Tabs
+                  activeKey={hostTabKey}
+                  onSelect={handleHostTabClick}
+                  className="pf-v6-u-ml-md pf-v6-u-mr-md"
+                >
+                  <Tab
+                    eventKey={0}
+                    name="memberHosts"
+                    data-cy="hbac-rules-tab-settings-tab-hosts"
+                    title={
+                      <TabTitleText>
+                        Hosts <Label isCompact>{memberHosts.length}</Label>
+                      </TabTitleText>
+                    }
+                  >
+                    <HBACRulesMemberTable
+                      from="host"
+                      id={cn}
+                      members={memberHosts}
+                      onRefresh={props.onRefresh}
+                      unsetCategory={
+                        ipaObject.hostcategory !==
+                          props.originalRule.hostcategory &&
+                        ipaObject.hostcategory === ""
+                      }
+                    />
+                  </Tab>
+                  <Tab
+                    eventKey={1}
+                    name="memberHostGroups"
+                    data-cy="hbac-rules-tab-settings-tab-hostgroups"
+                    title={
+                      <TabTitleText>
+                        Host groups{" "}
+                        <Label isCompact>{memberHostGroups.length}</Label>
+                      </TabTitleText>
+                    }
+                  >
+                    <HBACRulesMemberTable
+                      from="hostgroup"
+                      id={cn}
+                      members={memberHostGroups}
+                      onRefresh={props.onRefresh}
+                      fromLabel={"Host group"}
+                      unsetCategory={
+                        ipaObject.hostcategory !==
+                          props.originalRule.hostcategory &&
+                        ipaObject.hostcategory === ""
+                      }
+                    />
+                  </Tab>
+                </Tabs>
+              )}
+              <Content key="servicecategory">
+                <Title
+                  headingLevel="h2"
+                  id="servicecategory"
+                  className="pf-v6-u-mt-xl pf-v6-u-display-flex"
+                >
+                  Via the following services
+                  <IpaCheckbox
+                    dataCy="hbac-rules-tab-settings-checkbox-servicecategory"
+                    name="servicecategory"
+                    value="servicecategory"
+                    text="Any service"
+                    textNode={howLabel}
+                    className="pf-v6-u-ml-lg pf-v6-u-mt-xs"
+                    ipaObject={ipaObject}
+                    onChange={recordOnChange}
+                    objectName="hbacrule"
+                    metadata={props.metadata}
+                    altTrue="all"
+                    altFalse={""}
+                  />
+                </Title>
+              </Content>
+              {ipaObject.servicecategory === "" && (
+                <Tabs
+                  activeKey={srvTabKey}
+                  onSelect={handleSrvTabClick}
+                  className="pf-v6-u-ml-md pf-v6-u-mr-md"
+                >
+                  <Tab
+                    eventKey={0}
+                    name="services"
+                    data-cy="hbac-rules-tab-settings-tab-services"
+                    title={
+                      <TabTitleText>
+                        Services{" "}
+                        <Label isCompact>{memberServices.length}</Label>
+                      </TabTitleText>
+                    }
+                  >
+                    <HBACRulesMemberTable
+                      from="hbacsvc"
+                      fromLabel="Service"
+                      id={cn}
+                      members={memberServices}
+                      onRefresh={props.onRefresh}
+                      unsetCategory={
+                        ipaObject.servicecategory !==
+                          props.originalRule.servicecategory &&
+                        ipaObject.servicecategory === ""
+                      }
+                    />
+                  </Tab>
+                  <Tab
+                    eventKey={1}
+                    name="servicegroups"
+                    data-cy="hbac-rules-tab-settings-tab-servicegroups"
+                    title={
+                      <TabTitleText>
+                        Service groups{" "}
+                        <Label isCompact>{memberServiceGroups.length}</Label>
+                      </TabTitleText>
+                    }
+                  >
+                    <HBACRulesMemberTable
+                      from="hbacsvcgroup"
+                      fromLabel="Service group"
+                      id={cn}
+                      members={memberServiceGroups}
+                      onRefresh={props.onRefresh}
+                      unsetCategory={
+                        ipaObject.servicecategory !==
+                          props.originalRule.servicecategory &&
+                        ipaObject.servicecategory === ""
+                      }
+                    />
+                  </Tab>
+                </Tabs>
+              )}
+            </Flex>
+          </SidebarContent>
+        </Sidebar>
+      </TabLayout>
+    </>
   );
 };
 

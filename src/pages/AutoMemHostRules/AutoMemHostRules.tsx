@@ -21,6 +21,7 @@ import { useAppSelector } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout, {
   ToolbarItem,
@@ -48,6 +49,11 @@ import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { useHostGroupsRulesData } from "src/hooks/useHostGroupRules";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // Utils
 import {
   API_VERSION_BACKUP,
@@ -65,10 +71,21 @@ import ConfirmationModal from "src/components/modals/ConfirmationModal";
 const AutoMemHostRules = () => {
   const dispatch = useAppDispatch();
 
+  // Contextual help panel
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({
     pathname: "host-group-rules",
   });
+
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("automember-host-rules"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // Set the page title to be shown in the browser tab
   React.useEffect(() => {
@@ -588,7 +605,12 @@ const AutoMemHostRules = () => {
     },
     {
       key: 8,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={() => dispatch(toggleHelpPanel())}
+        />
+      ),
     },
     {
       key: 9,
@@ -605,95 +627,99 @@ const AutoMemHostRules = () => {
   ];
 
   return (
-    <div>
-      <PageSection hasBodyWrapper={false}>
-        <TitleLayout
-          id="Automember host groups title"
-          headingLevel="h1"
-          text="Host group rules"
+    <>
+      <div>
+        <PageSection hasBodyWrapper={false}>
+          <TitleLayout
+            id="Automember host groups title"
+            headingLevel="h1"
+            text="Host group rules"
+          />
+        </PageSection>
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem style={{ flex: "0 0 auto" }}>
+              <OuterScrollContainer>
+                <InnerScrollContainer
+                  style={{ height: "55vh", overflow: "auto" }}
+                >
+                  {errors !== undefined && errors.length > 0 ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <MainTable
+                      shownElementsList={automemberRules}
+                      showTableRows={showTableRows}
+                      elementsData={automembersTableData}
+                      buttonsData={automembersTableButtonsData}
+                      paginationData={selectedPerPageData}
+                      searchValue={searchValue}
+                      automemberType="host-group"
+                    />
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={automemberRules}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+              />
+            </FlexItem>
+          </Flex>
+        </PageSection>
+        <AddRule
+          show={showAddModal}
+          handleModalToggle={onAddModalToggle}
+          onOpenAddModal={onOpenAddModal}
+          onCloseAddModal={onCloseAddModal}
+          onRefresh={refreshData}
+          groupsAvailableToAdd={groupsAvailableToAdd}
+          ruleType="hostgroup"
         />
-      </PageSection>
-      <PageSection hasBodyWrapper={false} isFilled={false}>
-        <Flex direction={{ default: "column" }}>
-          <FlexItem>
-            <ToolbarLayout toolbarItems={toolbarItems} />
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto" }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer
-                style={{ height: "55vh", overflow: "auto" }}
-              >
-                {errors !== undefined && errors.length > 0 ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <MainTable
-                    shownElementsList={automemberRules}
-                    showTableRows={showTableRows}
-                    elementsData={automembersTableData}
-                    buttonsData={automembersTableButtonsData}
-                    paginationData={selectedPerPageData}
-                    searchValue={searchValue}
-                    automemberType="host-group"
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
-            <PaginationLayout
-              list={automemberRules}
-              paginationData={paginationData}
-              variant={PaginationVariant.bottom}
-              widgetId="pagination-options-menu-bottom"
-            />
-          </FlexItem>
-        </Flex>
-      </PageSection>
-      <AddRule
-        show={showAddModal}
-        handleModalToggle={onAddModalToggle}
-        onOpenAddModal={onOpenAddModal}
-        onCloseAddModal={onCloseAddModal}
-        onRefresh={refreshData}
-        groupsAvailableToAdd={groupsAvailableToAdd}
-        ruleType="hostgroup"
-      />
-      <DeleteRule
-        show={showDeleteModal}
-        handleModalToggle={onToggleDeleteModal}
-        onRefresh={refreshData}
-        buttonsData={deleteButtonsData}
-        selectedData={selectedData}
-        ruleType="hostgroup"
-      />
-      <ConfirmationModal
-        dataCy="auto-member-default-host-rules-modal"
-        title="Default hostgroup"
-        isOpen={showChangeConfirmationModal}
-        onClose={onCloseConfirmationModal}
-        actions={[
-          <Button
-            data-cy="modal-button-ok"
-            variant="primary"
-            key="change-default"
-            onClick={() => {
-              onSelectDefaultGroup(defaultGroup);
-            }}
-          >
-            OK
-          </Button>,
-          <SecondaryButton
-            key="cancel"
-            onClickHandler={onCancelDefaultGroup}
-            dataCy="modal-button-cancel"
-          >
-            Cancel
-          </SecondaryButton>,
-        ]}
-        messageText="Are you sure you want to change default group?"
-        messageObj={defaultGroup}
-      />
-    </div>
+        <DeleteRule
+          show={showDeleteModal}
+          handleModalToggle={onToggleDeleteModal}
+          onRefresh={refreshData}
+          buttonsData={deleteButtonsData}
+          selectedData={selectedData}
+          ruleType="hostgroup"
+        />
+        <ConfirmationModal
+          dataCy="auto-member-default-host-rules-modal"
+          title="Default hostgroup"
+          isOpen={showChangeConfirmationModal}
+          onClose={onCloseConfirmationModal}
+          actions={[
+            <Button
+              data-cy="modal-button-ok"
+              variant="primary"
+              key="change-default"
+              onClick={() => {
+                onSelectDefaultGroup(defaultGroup);
+              }}
+            >
+              OK
+            </Button>,
+            <SecondaryButton
+              key="cancel"
+              onClickHandler={onCancelDefaultGroup}
+              dataCy="modal-button-cancel"
+            >
+              Cancel
+            </SecondaryButton>,
+          ]}
+          messageText="Are you sure you want to change default group?"
+          messageObj={defaultGroup}
+        />
+      </div>
+    </>
   );
 };
 

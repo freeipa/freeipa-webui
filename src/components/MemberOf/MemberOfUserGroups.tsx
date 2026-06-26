@@ -19,6 +19,7 @@ import { useAppDispatch } from "src/store/hooks";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import {
@@ -304,6 +305,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
           membershipDirection={membershipDirection}
           onMembershipDirectionChange={setMembershipDirection}
           helpIconEnabled={true}
+          onHelpIconClick={() => dispatch(toggleHelpPanel())}
           totalItems={userGroupNames.length}
           perPage={perPage}
           page={page}
