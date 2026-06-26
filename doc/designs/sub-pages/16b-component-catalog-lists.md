@@ -9,8 +9,6 @@
 
 Dynamic list of text inputs with Add/Delete functionality.
 
-**Import:** `import IpaTextboxList from "src/components/Form/IpaTextboxList"`
-
 **Additional Props:**
 | Prop | Type | Description |
 |------|------|-------------|
@@ -22,13 +20,9 @@ Dynamic list of text inputs with Add/Delete functionality.
 
 Text input that validates against a predefined list.
 
-**Import:** `import IpaTextInputFromList from "src/components/Form/IpaTextInputFromList"`
-
 ### IpaSshPublicKeys
 
 Complete SSH public key management with Add/Show/Delete modals.
-
-**Import:** `import IpaSshPublicKeys from "src/components/Form/IpaSshPublicKeys"`
 
 **Props:**
 | Prop | Type | Description |
@@ -43,8 +37,6 @@ Complete SSH public key management with Add/Show/Delete modals.
 ### IpaCertificates
 
 Complete certificate management with View/Get/Download/Revoke/Delete actions.
-
-**Import:** `import IpaCertificates from "src/components/Form/IpaCertificates"`
 
 **Props:**
 | Prop | Type | Description |
@@ -61,13 +53,9 @@ Complete certificate management with View/Get/Download/Revoke/Delete actions.
 
 Certificate mapping data management.
 
-**Import:** `import IpaCertificateMappingData from "src/components/Form/IpaCertificateMappingData"`
-
 ### PrincipalAliasMultiTextBox
 
 Kerberos principal alias management.
-
-**Import:** `import PrincipalAliasMultiTextBox from "src/components/Form/PrincipalAliasMultiTextBox"`
 
 ---
 
@@ -77,13 +65,9 @@ Kerberos principal alias management.
 
 PAC type selection for Kerberos tickets.
 
-**Import:** `import IpaPACType from "src/components/Form/IpaPACType"`
-
 ### IpaForwardPolicy
 
 DNS forward policy selection.
-
-**Import:** `import IpaForwardPolicy from "src/components/Form/IpaForwardPolicy"`
 
 ---
 
