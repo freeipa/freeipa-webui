@@ -20,7 +20,8 @@ import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Icons
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 // Utils
@@ -31,7 +32,7 @@ import { ErrorResult } from "src/services/rpc";
 // Components
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import PageWithGrayBorderLayout from "src/components/layouts/PageWithGrayBorderLayout";
 import TableLayout from "src/components/layouts/TableLayout";
 
@@ -42,9 +43,9 @@ interface TableEntry {
 
 const CertificateMappingMatch = () => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("certificate-mapping-match");
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({
@@ -221,7 +222,7 @@ const CertificateMappingMatch = () => {
 
   // Return component
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <PageWithGrayBorderLayout
         id="certificate-mapping-match"
         pageTitle="Certificate Mapping Match"
@@ -232,7 +233,7 @@ const CertificateMappingMatch = () => {
             <SidebarPanel variant="sticky" className="pf-v6-u-pl-md">
               <HelpTextWithIconLayout
                 textContent="Help"
-                onClick={contextualPanel.toggle}
+                onClick={() => dispatch(toggleHelpPanel())}
                 icon={
                   <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100" />
                 }
@@ -387,7 +388,7 @@ const CertificateMappingMatch = () => {
           </Sidebar>
         </>
       </PageWithGrayBorderLayout>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

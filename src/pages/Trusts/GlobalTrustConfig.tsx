@@ -15,8 +15,9 @@ import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 import { useTrustsConfigData } from "src/hooks/useTrustsConfigData";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 // RPC
 import {
   GlobalTrustConfigPayload,
@@ -30,16 +31,16 @@ import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import { NotFound } from "src/components/errors/PageErrors";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import PageWithGrayBorderLayout from "src/components/layouts/PageWithGrayBorderLayout";
 import IpaTextInput from "src/components/Form/IpaTextInput";
 import IpaSelect from "src/components/Form/IpaSelect";
 
 const GlobalTrustConfig = () => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("trusts-global-config");
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // API calls
   const trustsConfigData = useTrustsConfigData();
@@ -189,7 +190,7 @@ const GlobalTrustConfig = () => {
   }
 
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <PageWithGrayBorderLayout
         id="trusts-global-config-page"
         pageTitle="Global Trust Configuration"
@@ -199,7 +200,7 @@ const GlobalTrustConfig = () => {
           <SidebarPanel variant="sticky">
             <HelpTextWithIconLayout
               textContent="Help"
-              onClick={contextualPanel.toggle}
+              onClick={() => dispatch(toggleHelpPanel())}
               icon={
                 <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
               }
@@ -311,7 +312,7 @@ const GlobalTrustConfig = () => {
           </SidebarContent>
         </Sidebar>
       </PageWithGrayBorderLayout>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

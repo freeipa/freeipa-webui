@@ -76,7 +76,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
 
   // Update page to show correct links info in Contextual panel
   React.useEffect(() => {
-    props.changeFromPage("active-users-settings");
+    props.changeFromPage("hosts-settings");
   }, [props.changeFromPage]);
 
   // Kebab

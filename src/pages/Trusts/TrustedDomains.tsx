@@ -29,7 +29,8 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Utils
 import { isTrustDomainSelectable } from "src/utils/utils";
 import { apiToTrustDomain } from "src/utils/trustsUtils";
@@ -42,7 +43,7 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
@@ -56,9 +57,9 @@ interface TrustedDomainsProps {
 
 const TrustedDomains = (props: TrustedDomainsProps) => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("trusted-domains");
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "trusted-domains" });
@@ -461,7 +462,7 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={contextualPanel.toggle}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -490,7 +491,7 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
 
   // Render component
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <div
         style={{
           height: `var(--subsettings-calc)`,
@@ -610,7 +611,7 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
           trustId={props.trustId}
         />
       </div>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

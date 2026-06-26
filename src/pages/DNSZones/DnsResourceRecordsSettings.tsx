@@ -15,7 +15,8 @@ import { DNSRecord, Host, Metadata } from "src/utils/datatypes/globalDataTypes";
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 import { addAlert } from "src/store/Global/alerts-slice";
 // Icons
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
@@ -28,7 +29,7 @@ import {
 import { dnsRecordAsRecord } from "src/utils/dnsRecordUtils";
 // Components
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import PageWithGrayBorderLayout from "src/components/layouts/PageWithGrayBorderLayout";
@@ -57,9 +58,9 @@ interface DnsResourceRecordsSettingsProps {
 
 const DnsResourceRecordsSettings = (props: DnsResourceRecordsSettingsProps) => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("dns-resource-records-settings");
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
@@ -176,99 +177,95 @@ const DnsResourceRecordsSettings = (props: DnsResourceRecordsSettingsProps) => {
 
   // Render component
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
-      <>
-        <PageWithGrayBorderLayout
-          id="dns-resource-records-settings-page"
-          pageTitle="DNS Resource Record Settings"
-          toolbarItems={toolbarFields}
-          breadcrumbItems={props.breadcrumbItems}
-        >
-          <Sidebar isPanelRight>
-            <SidebarPanel variant="sticky">
-              <HelpTextWithIconLayout
-                textContent="Help"
-                onClick={contextualPanel.toggle}
-                icon={
-                  <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
-                }
+    <PageWithGrayBorderLayout
+      id="dns-resource-records-settings-page"
+      pageTitle="DNS Resource Record Settings"
+      toolbarItems={toolbarFields}
+      breadcrumbItems={props.breadcrumbItems}
+    >
+      <Sidebar isPanelRight>
+        <SidebarPanel variant="sticky">
+          <HelpTextWithIconLayout
+            textContent="Help"
+            onClick={() => dispatch(toggleHelpPanel())}
+            icon={
+              <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
+            }
+          />
+        </SidebarPanel>
+        <SidebarContent className="pf-v5-u-mr-xl">
+          <TitleLayout
+            id="identity-settings"
+            text="Identity Settings"
+            headingLevel="h1"
+            className="pf-v5-u-mb-lg"
+          />
+          <Form
+            className="pf-v5-u-mb-lg"
+            isHorizontal
+            id="dns-resource-records-settings-form"
+            onSubmit={onSave}
+          >
+            <FormGroup label="Record name" role="idnsname">
+              <TextInput
+                data-cy="dns-zones-tab-settings-textbox-idnsname"
+                name={"idnsname"}
+                aria-label={"Record name text input"}
+                value={props.recordName}
+                readOnlyVariant="plain"
               />
-            </SidebarPanel>
-            <SidebarContent className="pf-v5-u-mr-xl">
-              <TitleLayout
-                id="identity-settings"
-                text="Identity Settings"
-                headingLevel="h1"
-                className="pf-v5-u-mb-lg"
+            </FormGroup>
+          </Form>
+          <TitleLayout
+            id="record-settings"
+            text="Record Settings"
+            headingLevel="h1"
+            className="pf-v5-u-mb-lg"
+          />
+          <Form className="pf-v5-u-mb-xl" isHorizontal>
+            <FormGroup label="Time to live (seconds)" role="dnsttl">
+              <IpaNumberInput
+                dataCy="dns-zones-tab-settings-textbox-dnsttl"
+                name={"dnsttl"}
+                aria-label={"Time to live in seconds text input"}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="dnsrecord"
+                metadata={props.metadata}
+                numCharsShown={10}
+                maxValue={2147483647}
               />
-              <Form
-                className="pf-v5-u-mb-lg"
-                isHorizontal
-                id="dns-resource-records-settings-form"
-                onSubmit={onSave}
-              >
-                <FormGroup label="Record name" role="idnsname">
-                  <TextInput
-                    data-cy="dns-zones-tab-settings-textbox-idnsname"
-                    name={"idnsname"}
-                    aria-label={"Record name text input"}
-                    value={props.recordName}
-                    readOnlyVariant="plain"
-                  />
-                </FormGroup>
-              </Form>
-              <TitleLayout
-                id="record-settings"
-                text="Record Settings"
-                headingLevel="h1"
-                className="pf-v5-u-mb-lg"
-              />
-              <Form className="pf-v5-u-mb-xl" isHorizontal>
-                <FormGroup label="Time to live (seconds)" role="dnsttl">
-                  <IpaNumberInput
-                    dataCy="dns-zones-tab-settings-textbox-dnsttl"
-                    name={"dnsttl"}
-                    aria-label={"Time to live in seconds text input"}
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    objectName="dnsrecord"
-                    metadata={props.metadata}
-                    numCharsShown={10}
-                    maxValue={2147483647}
-                  />
-                </FormGroup>
-              </Form>
-              <TitleLayout
-                id="standard-record-types"
-                text="Standard Record Types"
-                headingLevel="h1"
-                className="pf-v5-u-mb-lg"
-              />
-              <StandardRecordTypes
-                idnsname={props.idnsname}
-                recordName={props.recordName}
-                isDataLoading={props.isDataLoading}
-                onRefresh={onRefresh}
-                dnsRecords={props.dnsRecord.dnsrecords || []}
-              />
-              <TitleLayout
-                id="other-record-types"
-                text="Other Record Types"
-                headingLevel="h1"
-                className="pf-v5-u-mb-lg pf-v5-u-mt-xl"
-              />
-              <OtherRecordTypes
-                idnsname={props.idnsname}
-                recordName={props.recordName}
-                isDataLoading={props.isDataLoading}
-                onRefresh={onRefresh}
-                dnsRecords={props.dnsRecord.dnsrecords || []}
-              />
-            </SidebarContent>
-          </Sidebar>
-        </PageWithGrayBorderLayout>
-      </>
-    </ContextualHelpPanel>
+            </FormGroup>
+          </Form>
+          <TitleLayout
+            id="standard-record-types"
+            text="Standard Record Types"
+            headingLevel="h1"
+            className="pf-v5-u-mb-lg"
+          />
+          <StandardRecordTypes
+            idnsname={props.idnsname}
+            recordName={props.recordName}
+            isDataLoading={props.isDataLoading}
+            onRefresh={onRefresh}
+            dnsRecords={props.dnsRecord.dnsrecords || []}
+          />
+          <TitleLayout
+            id="other-record-types"
+            text="Other Record Types"
+            headingLevel="h1"
+            className="pf-v5-u-mb-lg pf-v5-u-mt-xl"
+          />
+          <OtherRecordTypes
+            idnsname={props.idnsname}
+            recordName={props.recordName}
+            isDataLoading={props.isDataLoading}
+            onRefresh={onRefresh}
+            dnsRecords={props.dnsRecord.dnsrecords || []}
+          />
+        </SidebarContent>
+      </Sidebar>
+    </PageWithGrayBorderLayout>
   );
 };
 

@@ -7,7 +7,7 @@ import MemberOfAddModal, { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 import MemberTable from "src/components/tables/MembershipTable";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 // Data types
 import { Service, UserGroup } from "src/utils/datatypes/globalDataTypes";
 // Dispatch
@@ -15,7 +15,7 @@ import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToService } from "src/utils/serviceUtils";
@@ -49,7 +49,6 @@ interface PropsToMembersServices {
 
 const MembersServices = (props: PropsToMembersServices) => {
   const dispatch = useAppDispatch();
-  const contextualPanel = useContextualHelpPanel();
 
   const membershipDisabled =
     props.membershipDisabled === undefined ? false : props.membershipDisabled;
@@ -307,7 +306,7 @@ const MembersServices = (props: PropsToMembersServices) => {
   };
 
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       {membershipDisabled ? (
         <MemberOfToolbar
           searchText={searchValue}
@@ -322,7 +321,7 @@ const MembersServices = (props: PropsToMembersServices) => {
           addButtonEnabled={isAddButtonEnabled}
           onAddButtonClick={() => setShowAddModal(true)}
           helpIconEnabled={true}
-          onHelpIconClick={contextualPanel.toggle}
+          onHelpIconClick={() => dispatch(toggleHelpPanel())}
           totalItems={serviceNames.length}
           perPage={perPage}
           page={page}
@@ -350,7 +349,7 @@ const MembersServices = (props: PropsToMembersServices) => {
           membershipDirection={membershipDirection}
           onMembershipDirectionChange={setMembershipDirection}
           helpIconEnabled={true}
-          onHelpIconClick={contextualPanel.toggle}
+          onHelpIconClick={() => dispatch(toggleHelpPanel())}
           totalItems={serviceNames.length}
           perPage={perPage}
           page={page}
@@ -420,7 +419,7 @@ const MembersServices = (props: PropsToMembersServices) => {
           />
         </MemberOfDeleteModal>
       )}
-    </ContextualHelpPanel>
+    </>
   );
 };
 

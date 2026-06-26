@@ -17,8 +17,10 @@ import { AutomountLocation } from "src/utils/datatypes/globalDataTypes";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 // Redux
-import { useAppSelector } from "src/store/hooks";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // RPC
 import { useGetAutomountLocationsFullDataQuery } from "src/services/rpcAutomountLocations";
 // Utils
@@ -43,6 +45,8 @@ import DeleteAutomountLocationsModal from "./DeleteAutomountLocationsModal";
 
 const AutomountLocations = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  useContextualHelpTopic("automount-locations");
 
   const { browserTitle } = useUpdateRoute({
     pathname: "automount-locations",
@@ -290,7 +294,12 @@ const AutomountLocations = () => {
     },
     {
       key: 7,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={() => dispatch(toggleHelpPanel())}
+        />
+      ),
     },
     {
       key: 8,

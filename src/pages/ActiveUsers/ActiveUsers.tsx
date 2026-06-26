@@ -34,7 +34,6 @@ import UsersTable from "../../components/tables/UsersTable";
 // Components
 import PaginationLayout from "../../components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Modals
 import AddUser from "src/components/modals/UserModals/AddUser";
 import DeleteUsers from "src/components/modals/UserModals/DeleteUsers";
@@ -43,7 +42,7 @@ import DisableEnableUsers from "src/components/modals/UserModals/DisableEnableUs
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Utils
 import { API_VERSION_BACKUP, isUserSelectable } from "src/utils/utils";
 // RPC client
@@ -56,11 +55,13 @@ import {
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 
 const ActiveUsers = () => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("active-users");
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "active-users" });
@@ -605,11 +606,6 @@ const ActiveUsers = () => {
     submitSearchValue,
   };
 
-  // Contextual links panel
-  const contextualPanel = useContextualHelpPanel({
-    defaultPage: "active-users",
-  });
-
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -726,7 +722,7 @@ const ActiveUsers = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={() => contextualPanel.setIsExpanded((prev) => !prev)}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -746,101 +742,94 @@ const ActiveUsers = () => {
 
   // Render 'Active users'
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
-      <div>
-        <PageSection
-          hasBodyWrapper={false}
-          variant={PageSectionVariants.default}
-        >
-          <TitleLayout
-            id="active users title"
-            headingLevel="h1"
-            text="Active Users"
-          />
-        </PageSection>
-        <PageSection hasBodyWrapper={false} isFilled={false}>
-          <Flex direction={{ default: "column" }}>
-            <FlexItem>
-              <ToolbarLayout toolbarItems={toolbarItems} />
-            </FlexItem>
-            <FlexItem>
-              <OuterScrollContainer>
-                <InnerScrollContainer>
-                  {batchError !== undefined && batchError ? (
-                    <GlobalErrors errors={globalErrors.getAll()} />
-                  ) : (
-                    <UsersTable
-                      shownElementsList={activeUsersList}
-                      from="active-users"
-                      showTableRows={showTableRows}
-                      usersData={usersTableData}
-                      buttonsData={usersTableButtonsData}
-                      paginationData={selectedPerPageData}
-                      searchValue={searchValue}
-                    />
-                  )}
-                </InnerScrollContainer>
-              </OuterScrollContainer>
-            </FlexItem>
-            <FlexItem
-              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
-            >
-              <PaginationLayout
-                list={activeUsersList}
-                paginationData={paginationData}
-                variant={PaginationVariant.bottom}
-                widgetId="pagination-options-menu-bottom"
-              />
-            </FlexItem>
-          </Flex>
-        </PageSection>
-        <AddUser
-          show={showAddModal}
-          from="active-users"
-          handleModalToggle={onAddModalToggle}
-          onOpenAddModal={onAddClickHandler}
-          onCloseAddModal={onCloseAddModal}
-          onRefresh={refreshUsersData}
+    <div>
+      <PageSection hasBodyWrapper={false} variant={PageSectionVariants.default}>
+        <TitleLayout
+          id="active users title"
+          headingLevel="h1"
+          text="Active Users"
         />
-        <DeleteUsers
-          show={showDeleteModal}
-          from="active-users"
-          handleModalToggle={onDeleteModalToggle}
-          selectedUsersData={selectedUsersData}
-          buttonsData={deleteUsersButtonsData}
-          onRefresh={refreshUsersData}
-          onCloseDeleteModal={onCloseDeleteModal}
-          onOpenDeleteModal={onOpenDeleteModal}
+      </PageSection>
+      <PageSection hasBodyWrapper={false} isFilled={false}>
+        <Flex direction={{ default: "column" }}>
+          <FlexItem>
+            <ToolbarLayout toolbarItems={toolbarItems} />
+          </FlexItem>
+          <FlexItem>
+            <OuterScrollContainer>
+              <InnerScrollContainer>
+                {batchError !== undefined && batchError ? (
+                  <GlobalErrors errors={globalErrors.getAll()} />
+                ) : (
+                  <UsersTable
+                    shownElementsList={activeUsersList}
+                    from="active-users"
+                    showTableRows={showTableRows}
+                    usersData={usersTableData}
+                    buttonsData={usersTableButtonsData}
+                    paginationData={selectedPerPageData}
+                    searchValue={searchValue}
+                  />
+                )}
+              </InnerScrollContainer>
+            </OuterScrollContainer>
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
+            <PaginationLayout
+              list={activeUsersList}
+              paginationData={paginationData}
+              variant={PaginationVariant.bottom}
+              widgetId="pagination-options-menu-bottom"
+            />
+          </FlexItem>
+        </Flex>
+      </PageSection>
+      <AddUser
+        show={showAddModal}
+        from="active-users"
+        handleModalToggle={onAddModalToggle}
+        onOpenAddModal={onAddClickHandler}
+        onCloseAddModal={onCloseAddModal}
+        onRefresh={refreshUsersData}
+      />
+      <DeleteUsers
+        show={showDeleteModal}
+        from="active-users"
+        handleModalToggle={onDeleteModalToggle}
+        selectedUsersData={selectedUsersData}
+        buttonsData={deleteUsersButtonsData}
+        onRefresh={refreshUsersData}
+        onCloseDeleteModal={onCloseDeleteModal}
+        onOpenDeleteModal={onOpenDeleteModal}
+      />
+      <DisableEnableUsers
+        show={showEnableDisableModal}
+        from="active-users"
+        handleModalToggle={onEnableDisableModalToggle}
+        optionSelected={enableDisableOptionSelected}
+        selectedUsersData={selectedUsersData}
+        buttonsData={disableEnableButtonsData}
+        onRefresh={refreshUsersData}
+      />
+      <ModalErrors
+        errors={modalErrors.getAll()}
+        dataCy="active-users-modal-error"
+      />
+      {isMembershipModalOpen && (
+        <ModalWithFormLayout
+          dataCy="rebuild-auto-membership-modal"
+          variantType="medium"
+          modalPosition="top"
+          offPosition="76px"
+          title="Confirmation"
+          formId="rebuild-auto-membership-modal"
+          fields={confirmationQuestion}
+          show={isMembershipModalOpen}
+          onClose={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
+          actions={membershipModalActions}
         />
-        <DisableEnableUsers
-          show={showEnableDisableModal}
-          from="active-users"
-          handleModalToggle={onEnableDisableModalToggle}
-          optionSelected={enableDisableOptionSelected}
-          selectedUsersData={selectedUsersData}
-          buttonsData={disableEnableButtonsData}
-          onRefresh={refreshUsersData}
-        />
-        <ModalErrors
-          errors={modalErrors.getAll()}
-          dataCy="active-users-modal-error"
-        />
-        {isMembershipModalOpen && (
-          <ModalWithFormLayout
-            dataCy="rebuild-auto-membership-modal"
-            variantType="medium"
-            modalPosition="top"
-            offPosition="76px"
-            title="Confirmation"
-            formId="rebuild-auto-membership-modal"
-            fields={confirmationQuestion}
-            show={isMembershipModalOpen}
-            onClose={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
-            actions={membershipModalActions}
-          />
-        )}
-      </div>
-    </ContextualHelpPanel>
+      )}
+    </div>
   );
 };
 

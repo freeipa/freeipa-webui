@@ -16,7 +16,8 @@ import { DnsServer, Metadata } from "src/utils/datatypes/globalDataTypes";
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 import { addAlert } from "src/store/Global/alerts-slice";
 // Utils
 import { dnsServerAsRecord } from "src/utils/dnsServersUtils";
@@ -31,7 +32,7 @@ import {
 import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
 import TabLayout from "src/components/layouts/TabLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import IpaTextboxList from "src/components/Form/IpaTextboxList/IpaTextboxList";
 import IpaForwardPolicy from "src/components/Form/IpaForwardPolicy";
 
@@ -50,9 +51,9 @@ interface DnsServersSettingsProps {
 
 const DnsServersSettings = (props: DnsServersSettingsProps) => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("dns-servers-settings");
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
@@ -191,13 +192,13 @@ const DnsServersSettings = (props: DnsServersSettingsProps) => {
   ];
 
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <TabLayout id="settings-page" toolbarItems={toolbarFields}>
         <Sidebar isPanelRight>
           <SidebarPanel variant="sticky">
             <HelpTextWithIconLayout
               textContent="Help"
-              onClick={contextualPanel.toggle}
+              onClick={() => dispatch(toggleHelpPanel())}
               icon={
                 <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
               }
@@ -261,7 +262,7 @@ const DnsServersSettings = (props: DnsServersSettingsProps) => {
           </SidebarContent>
         </Sidebar>
       </TabLayout>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

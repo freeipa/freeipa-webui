@@ -16,7 +16,7 @@ import IpaTextArea from "src/components/Form/IpaTextArea";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
@@ -25,7 +25,8 @@ import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Data types
 import { Automember, Metadata } from "../../utils/datatypes/globalDataTypes";
 // Icons
@@ -54,9 +55,9 @@ interface PropsToSettings {
 
 const AutoMemSettings = (props: PropsToSettings) => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("automember-settings");
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // RPC calls
   const [saveAutomember] = useSaveAutomemberMutation();
@@ -220,13 +221,13 @@ const AutoMemSettings = (props: PropsToSettings) => {
 
   // Render component
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <TabLayout id="automember-settings-page" toolbarItems={toolbarFields}>
         <Sidebar isPanelRight>
           <SidebarPanel variant="sticky">
             <HelpTextWithIconLayout
               textContent="Help"
-              onClick={contextualPanel.toggle}
+              onClick={() => dispatch(toggleHelpPanel())}
               icon={
                 <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
               }
@@ -317,7 +318,7 @@ const AutoMemSettings = (props: PropsToSettings) => {
           </SidebarContent>
         </Sidebar>
       </TabLayout>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

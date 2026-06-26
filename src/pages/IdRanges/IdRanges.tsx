@@ -15,7 +15,7 @@ import {
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useApiError from "src/hooks/useApiError";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Redux
 import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // RPC
@@ -35,12 +35,13 @@ import ToolbarLayout, {
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import MainTable from "src/components/tables/MainTable";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import { isIdRangeSelectable } from "src/utils/utils";
 import AddIdRangeModal from "src/components/modals/IdRanges/AddIdRangeModal";
@@ -48,9 +49,9 @@ import DeleteModal from "src/components/modals/IdRanges/DeleteModal";
 
 const IdRanges = () => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("id-ranges");
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   const navigate = useNavigate();
 
@@ -353,7 +354,7 @@ const IdRanges = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={contextualPanel.toggle}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -373,7 +374,7 @@ const IdRanges = () => {
 
   // Render component
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <div>
         <PageSection hasBodyWrapper={false}>
           <TitleLayout id="ID ranges page" headingLevel="h1" text="ID ranges" />
@@ -474,7 +475,7 @@ const IdRanges = () => {
           onRefresh={refreshData}
         />
       </div>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

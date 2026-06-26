@@ -20,7 +20,7 @@ import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
@@ -36,7 +36,7 @@ import DisableEnableHBACRules from "src/components/modals/HbacModals/DisableEnab
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Utils
 import { API_VERSION_BACKUP, isHbacRuleSelectable } from "src/utils/utils";
 // RPC client
@@ -46,14 +46,15 @@ import { useGettingHbacRulesQuery } from "src/services/rpcHBACRules";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 
 const HBACRules = () => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("hbac-rules");
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "hbac-rules" });
@@ -567,7 +568,7 @@ const HBACRules = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={contextualPanel.toggle}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -587,7 +588,7 @@ const HBACRules = () => {
 
   // Render 'Active users'
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <div>
         <PageSection hasBodyWrapper={false}>
           <TitleLayout
@@ -660,7 +661,7 @@ const HBACRules = () => {
           dataCy="hbac-rules-modal-error"
         />
       </div>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

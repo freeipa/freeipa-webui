@@ -21,7 +21,7 @@ import { useAppSelector, useAppDispatch } from "src/store/hooks";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
@@ -33,7 +33,7 @@ import UsersTable from "../../components/tables/UsersTable";
 // Components
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 // Modals
 import DeleteUsers from "src/components/modals/UserModals/DeleteUsers";
 import AddUser from "src/components/modals/UserModals/AddUser";
@@ -47,11 +47,13 @@ import { SerializedError } from "@reduxjs/toolkit";
 import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
 import { useGettingStageUserQuery } from "../../services/rpcUsers";
 import useApiError from "src/hooks/useApiError";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 
 const StageUsers = () => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("stage-users");
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "stage-users" });
@@ -415,11 +417,6 @@ const StageUsers = () => {
     submitSearchValue,
   };
 
-  // Contextual links panel
-  const contextualPanel = useContextualHelpPanel({
-    defaultPage: "stage-users",
-  });
-
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -510,7 +507,7 @@ const StageUsers = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={() => contextualPanel.setIsExpanded((prev) => !prev)}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -530,7 +527,7 @@ const StageUsers = () => {
 
   // Render 'Stage users'
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <div>
         <PageSection hasBodyWrapper={false}>
           <TitleLayout
@@ -605,7 +602,7 @@ const StageUsers = () => {
           onSuccess={refreshUsersData}
         />
       </div>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

@@ -30,6 +30,8 @@ import { UnknownIcon } from "@patternfly/react-icons";
 import { ShareSquareIcon } from "@patternfly/react-icons";
 // Navigation
 import Navigation from "./navigation/Nav";
+// Components
+import ContextualHelpPanel from "./components/ContextualHelpPanel/ContextualHelpPanel";
 // Images
 import headerLogo from "/assets/images/header-logo.png";
 import avatarImg from "/assets/images/avatarImg.svg";
@@ -228,7 +230,7 @@ const AppLayout = (props: PropsToAppLayout) => {
       className="--pf-t--global--text--color--regular"
       isContentFilled
     >
-      {props.children}
+      <ContextualHelpPanel>{props.children}</ContextualHelpPanel>
     </Page>
   );
 };

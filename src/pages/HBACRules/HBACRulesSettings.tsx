@@ -24,7 +24,7 @@ import IpaCheckbox from "src/components/Form/IpaCheckbox";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
@@ -33,7 +33,8 @@ import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Data types
 import { HBACRule, Metadata } from "../../utils/datatypes/globalDataTypes";
 import HBACRulesMemberTable from "./HBACRulesMemberTable";
@@ -60,9 +61,9 @@ interface PropsToSettings {
 
 const HBACRulesSettings = (props: PropsToSettings) => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("hbac-rules-settings");
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // API
   const [saveRule] = useSaveAndCleanHbacRuleMutation();
@@ -252,7 +253,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
 
   // Render component
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <TabLayout id="settings-page" toolbarItems={toolbarFields}>
         <Sidebar isPanelRight>
           <SidebarPanel variant="sticky">
@@ -261,7 +262,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
               icon={
                 <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
               }
-              onClick={contextualPanel.toggle}
+              onClick={() => dispatch(toggleHelpPanel())}
             />
             <JumpLinks
               isVertical
@@ -545,7 +546,7 @@ const HBACRulesSettings = (props: PropsToSettings) => {
           </SidebarContent>
         </Sidebar>
       </TabLayout>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

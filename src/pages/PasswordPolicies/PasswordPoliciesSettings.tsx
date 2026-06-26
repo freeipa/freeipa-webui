@@ -16,7 +16,8 @@ import { PwPolicy, Metadata } from "src/utils/datatypes/globalDataTypes";
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 import { addAlert } from "src/store/Global/alerts-slice";
 // Utils
 import { asRecord } from "src/utils/subIdUtils";
@@ -31,7 +32,7 @@ import {
 import IpaTextInput from "src/components/Form/IpaTextInput";
 import TabLayout from "src/components/layouts/TabLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import IpaTextContent from "src/components/Form/IpaTextContent";
 
 interface PropsToPwPolicySettings {
@@ -49,9 +50,9 @@ interface PropsToPwPolicySettings {
 
 const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("password-policies-settings");
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
@@ -197,7 +198,7 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
 
   // Render component
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <TabLayout id="settings-page" toolbarItems={toolbarFields}>
         <Sidebar isPanelRight>
           <SidebarPanel variant="sticky">
@@ -206,7 +207,7 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
               icon={
                 <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
               }
-              onClick={contextualPanel.toggle}
+              onClick={() => dispatch(toggleHelpPanel())}
             />
           </SidebarPanel>
           <SidebarContent className="pf-v6-u-mr-xl">
@@ -367,7 +368,7 @@ const PasswordPolicySettings = (props: PropsToPwPolicySettings) => {
           </SidebarContent>
         </Sidebar>
       </TabLayout>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

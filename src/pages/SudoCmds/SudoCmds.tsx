@@ -20,7 +20,7 @@ import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
@@ -36,7 +36,7 @@ import DeleteSudoCmd from "src/components/modals/SudoModals/DeleteSudoCmd";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Utils
 import { API_VERSION_BACKUP, isSudoCmdSelectable } from "src/utils/utils";
 // RPC client
@@ -46,14 +46,15 @@ import { useGettingSudoCmdsQuery } from "src/services/rpcSudoCmds";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 
 const SudoCmds = () => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("sudo-commands");
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "sudo-commands" });
@@ -486,7 +487,7 @@ const SudoCmds = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={contextualPanel.toggle}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -505,7 +506,7 @@ const SudoCmds = () => {
   ];
 
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <div>
         <PageSection hasBodyWrapper={false}>
           <TitleLayout
@@ -570,7 +571,7 @@ const SudoCmds = () => {
           dataCy="sudo-cmds-modal-error"
         />
       </div>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

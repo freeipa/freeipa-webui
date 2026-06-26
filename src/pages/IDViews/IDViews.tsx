@@ -22,7 +22,7 @@ import ToolbarLayout, {
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 // Components
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
@@ -41,11 +41,12 @@ import { API_VERSION_BACKUP, isViewSelectable } from "src/utils/utils";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 // RPC client
@@ -62,9 +63,9 @@ import {
 
 const IDViews = () => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("id-views");
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "id-views" });
@@ -636,7 +637,7 @@ const IDViews = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={contextualPanel.toggle}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -655,7 +656,7 @@ const IDViews = () => {
   ];
 
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <div>
         <PageSection hasBodyWrapper={false}>
           <TitleLayout id="Views title" headingLevel="h1" text="ID views" />
@@ -743,7 +744,7 @@ const IDViews = () => {
           addSpinningBtnName="Unapplying"
         />
       </div>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

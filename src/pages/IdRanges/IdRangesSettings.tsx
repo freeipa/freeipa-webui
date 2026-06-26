@@ -15,13 +15,15 @@ import {
 import { IdRange, Metadata } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
+// Redux
+import { useAppDispatch } from "src/store/hooks";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Icons
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 // Components
 import TabLayout from "src/components/layouts/TabLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 
 interface IdRangesSettingsProps {
   idRange: Partial<IdRange>;
@@ -33,6 +35,9 @@ interface IdRangesSettingsProps {
 }
 
 const IdRangesSettings = (props: IdRangesSettingsProps) => {
+  const dispatch = useAppDispatch();
+  useContextualHelpTopic("id-ranges-settings");
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
 
@@ -47,7 +52,6 @@ const IdRangesSettings = (props: IdRangesSettingsProps) => {
       : "-";
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Toolbar
   const toolbarFields = [
@@ -66,7 +70,7 @@ const IdRangesSettings = (props: IdRangesSettingsProps) => {
   ];
 
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <TabLayout
         id="settings-page"
         toolbarItems={toolbarFields}
@@ -76,7 +80,7 @@ const IdRangesSettings = (props: IdRangesSettingsProps) => {
           <SidebarPanel variant="sticky">
             <HelpTextWithIconLayout
               textContent="Help"
-              onClick={contextualPanel.toggle}
+              onClick={() => dispatch(toggleHelpPanel())}
               icon={
                 <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
               }
@@ -189,7 +193,7 @@ const IdRangesSettings = (props: IdRangesSettingsProps) => {
           </SidebarContent>
         </Sidebar>
       </TabLayout>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

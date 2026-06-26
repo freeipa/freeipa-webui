@@ -5,6 +5,7 @@ import { api } from "../services/rpc";
 import routesReducer from "./Global/routes-slice";
 import authReducer from "./Global/auth-slice";
 import alertsReducer from "./Global/alerts-slice";
+import contextualHelpReducer from "./Global/contextual-help-slice";
 
 export const setupStore = () => {
   const store = configureStore({
@@ -14,6 +15,7 @@ export const setupStore = () => {
       routes: routesReducer,
       auth: authReducer,
       alerts: alertsReducer,
+      contextualHelp: contextualHelpReducer,
     },
     // Adding the api middleware enables caching, invalidation, polling,
     // and other useful features of `rtk-query`.

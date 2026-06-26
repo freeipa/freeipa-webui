@@ -21,7 +21,7 @@ import { useAppSelector } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout, {
   ToolbarItem,
@@ -49,7 +49,8 @@ import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { useHostGroupsRulesData } from "src/hooks/useHostGroupRules";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Utils
 import {
   API_VERSION_BACKUP,
@@ -66,9 +67,9 @@ import ConfirmationModal from "src/components/modals/ConfirmationModal";
 // Automembership host group rules
 const AutoMemHostRules = () => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("automember-host-rules");
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({
@@ -596,7 +597,7 @@ const AutoMemHostRules = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={contextualPanel.toggle}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -615,7 +616,7 @@ const AutoMemHostRules = () => {
   ];
 
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <div>
         <PageSection hasBodyWrapper={false}>
           <TitleLayout
@@ -707,7 +708,7 @@ const AutoMemHostRules = () => {
           messageObj={defaultGroup}
         />
       </div>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

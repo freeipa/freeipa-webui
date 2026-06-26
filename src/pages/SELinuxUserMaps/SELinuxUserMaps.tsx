@@ -18,7 +18,8 @@ import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Redux
 import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // RPC
@@ -40,7 +41,7 @@ import ToolbarLayout, {
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
@@ -54,9 +55,9 @@ const SELinuxUserMaps = () => {
   const navigate = useNavigate();
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("selinux-user-maps");
 
   const { browserTitle } = useUpdateRoute({
     pathname: "selinux-user-maps",
@@ -381,7 +382,7 @@ const SELinuxUserMaps = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={contextualPanel.toggle}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -400,7 +401,7 @@ const SELinuxUserMaps = () => {
   ];
 
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <div>
         <PageSection hasBodyWrapper={false}>
           <TitleLayout
@@ -499,7 +500,7 @@ const SELinuxUserMaps = () => {
           onRefresh={refreshData}
         />
       </div>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

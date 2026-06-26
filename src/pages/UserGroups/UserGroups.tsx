@@ -19,7 +19,7 @@ import ToolbarLayout, {
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 // Components
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
@@ -40,11 +40,12 @@ import { useAppDispatch } from "src/store/hooks";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 // RPC client
@@ -55,10 +56,8 @@ const UserGroups = () => {
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "user-groups" });
 
-  // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
-
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("user-groups");
 
   // Set the page title to be shown in the browser tab
   React.useEffect(() => {
@@ -482,7 +481,7 @@ const UserGroups = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={contextualPanel.toggle}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -501,7 +500,7 @@ const UserGroups = () => {
   ];
 
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <div>
         <PageSection hasBodyWrapper={false}>
           <TitleLayout id="Groups title" headingLevel="h1" text="User groups" />
@@ -563,7 +562,7 @@ const UserGroups = () => {
           onRefresh={refreshGroupsData}
         />
       </div>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

@@ -8,13 +8,13 @@ import MemberOfToolbar from "../MemberOf/MemberOfToolbar";
 import MemberOfHostsTable from "./ManagedByTableHosts";
 import MemberOfAddModal, { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // RPC
 import { ErrorResult, FindRPCResponse } from "src/services/rpc";
 import {
@@ -44,7 +44,6 @@ interface ManagedByHostsProps {
 
 const ManagedByHosts = (props: ManagedByHostsProps) => {
   const dispatch = useAppDispatch();
-  const contextualPanel = useContextualHelpPanel();
 
   // Get parameters from URL
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -302,7 +301,7 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
   };
 
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
@@ -316,7 +315,7 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
         addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
         helpIconEnabled={true}
-        onHelpIconClick={contextualPanel.toggle}
+        onHelpIconClick={() => dispatch(toggleHelpPanel())}
         totalItems={managedby_host.length}
         perPage={perPage}
         page={page}
@@ -367,7 +366,7 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
           />
         </MemberOfDeleteModal>
       )}
-    </ContextualHelpPanel>
+    </>
   );
 };
 

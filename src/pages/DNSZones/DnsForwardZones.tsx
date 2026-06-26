@@ -18,7 +18,8 @@ import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // RPC
@@ -35,7 +36,7 @@ import ToolbarLayout, {
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
@@ -48,9 +49,9 @@ import AddDnsForwardZoneModal from "src/components/modals/DnsZones/AddDnsForward
 
 const DnsForwardZones = () => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("dns-forward-zones");
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({
@@ -389,7 +390,7 @@ const DnsForwardZones = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={contextualPanel.toggle}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -409,7 +410,7 @@ const DnsForwardZones = () => {
 
   // Render component
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <div>
         <PageSection hasBodyWrapper={false}>
           <TitleLayout
@@ -518,7 +519,7 @@ const DnsForwardZones = () => {
           onRefresh={refreshData}
         />
       </div>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

@@ -22,7 +22,7 @@ import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 // Components
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModal";
@@ -39,9 +39,10 @@ import { useAppDispatch } from "src/store/hooks";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Errors
 import useApiError from "src/hooks/useApiError";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import ModalErrors from "src/components/errors/ModalErrors";
 // RPC client
 import { ErrorResult } from "../../services/rpc";
@@ -62,9 +63,9 @@ interface AppliesToProps {
 
 const IDViewsAppliedTo = (props: AppliesToProps) => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("id-views-applied-to");
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({
@@ -670,7 +671,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={contextualPanel.toggle}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -689,7 +690,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
   ];
 
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <div
         style={{
           height: `var(--subsettings-calc)`,
@@ -779,7 +780,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
           </MemberOfDeleteModal>
         </TabLayout>
       </div>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

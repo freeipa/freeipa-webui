@@ -28,7 +28,7 @@ import UsersTable from "../../components/tables/UsersTable";
 // Components
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 // Modals
 import DeleteUsers from "src/components/modals/UserModals/DeleteUsers";
 import StagePreservedUsers from "src/components/modals/UserModals/StagePreservedUsers";
@@ -37,7 +37,7 @@ import RestorePreservedUsers from "src/components/modals/UserModals/RestorePrese
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -46,11 +46,13 @@ import { API_VERSION_BACKUP, isUserSelectable } from "src/utils/utils";
 import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
 import { useGettingPreservedUserQuery } from "../../services/rpcUsers";
 import useApiError from "src/hooks/useApiError";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 
 const PreservedUsers = () => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("preserved-users");
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -411,11 +413,6 @@ const PreservedUsers = () => {
     submitSearchValue,
   };
 
-  // Contextual links panel
-  const contextualPanel = useContextualHelpPanel({
-    defaultPage: "preserved-users",
-  });
-
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -506,7 +503,7 @@ const PreservedUsers = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={() => contextualPanel.setIsExpanded((prev) => !prev)}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -526,7 +523,7 @@ const PreservedUsers = () => {
 
   // Render 'Preserved users'
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <div>
         <PageSection hasBodyWrapper={false}>
           <TitleLayout
@@ -600,7 +597,7 @@ const PreservedUsers = () => {
           onSuccess={refreshUsersData}
         />
       </div>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

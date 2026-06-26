@@ -13,15 +13,16 @@ import { Td, Th, Tr } from "@patternfly/react-table";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 import PageLayout from "src/components/layouts/PageLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import SkeletonOnTableLayout from "src/components/layouts/Skeleton/SkeletonOnTableLayout";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // RPC
 import { useSubidStatsQuery } from "src/services/rpcSubIds";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 
 interface SubidStats {
   assigned_subids: number;
@@ -33,9 +34,9 @@ interface SubidStats {
 
 const SubIdsStatistics = () => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("subordinate-id-statistics");
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // States
   const [subidStats, setSubidStats] = React.useState<SubidStats>({
@@ -102,7 +103,7 @@ const SubIdsStatistics = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={contextualPanel.toggle}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -151,7 +152,7 @@ const SubIdsStatistics = () => {
   );
 
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <PageLayout
         title="Subordinate ID Statistics"
         pathname="subordinate-id-statistics"
@@ -175,7 +176,7 @@ const SubIdsStatistics = () => {
           </Grid>
         </PageSection>
       </PageLayout>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

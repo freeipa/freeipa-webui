@@ -10,6 +10,7 @@ import TabLayout from "src/components/layouts/TabLayout";
 import { useNavigate } from "react-router";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 // RPC
 import { useGetGroupByIdQuery } from "src/services/rpcUserGroups";
 // 'Members' sections
@@ -25,6 +26,7 @@ interface PropsToUserGroupsMembers {
 
 const UserGroupsMembers = (props: PropsToUserGroupsMembers) => {
   const navigate = useNavigate();
+  useContextualHelpTopic("user-groups");
 
   const userGroupQuery = useGetGroupByIdQuery(props.userGroup.cn);
   const userGroupData = userGroupQuery.data || {};

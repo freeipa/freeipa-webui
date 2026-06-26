@@ -20,7 +20,8 @@ import {
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 import { addAlert } from "src/store/Global/alerts-slice";
 // Utils
 import { certMapRuleAsRecord } from "src/utils/certMappingUtils";
@@ -35,7 +36,7 @@ import {
 import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
 import TabLayout from "src/components/layouts/TabLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import KebabLayout from "src/components/layouts/KebabLayout";
 import IpaTextArea from "src/components/Form/IpaTextArea";
 import PopoverWithIconLayout from "src/components/layouts/PopoverWithIconLayout";
@@ -59,9 +60,9 @@ interface CertificateMappingSettingsProps {
 
 const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("certificate-mapping-settings");
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
@@ -272,7 +273,7 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
 
   // Render component
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <TabLayout id="settings-page" toolbarItems={toolbarFields}>
         <Sidebar isPanelRight>
           <SidebarPanel variant="sticky">
@@ -281,7 +282,7 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
               icon={
                 <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
               }
-              onClick={contextualPanel.toggle}
+              onClick={() => dispatch(toggleHelpPanel())}
             />
           </SidebarPanel>
           <SidebarContent className="pf-v6-u-mr-xl">
@@ -407,7 +408,7 @@ const CertificateMappingSettings = (props: CertificateMappingSettingsProps) => {
         onRefresh={props.onRefresh}
         pathToMainPage={props.pathname}
       />
-    </ContextualHelpPanel>
+    </>
   );
 };
 

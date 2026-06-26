@@ -7,7 +7,7 @@ import { useNavigate } from "react-router";
 import HostsSettings from "./HostsSettings";
 import HostsMemberOf from "./HostsMemberOf";
 import HostsManagedBy from "./HostsManagedBy";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
@@ -16,7 +16,12 @@ import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import { Host } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import { useHostSettings } from "src/hooks/useHostSettingsData";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
@@ -35,6 +40,7 @@ const HostsTabs = ({ section }) => {
   const { fqdn } = useSafeParams<HostsParams>(["fqdn"]);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("hosts-settings");
 
   const [breadcrumbItems, setBreadcrumbItems] = React.useState<
     BreadCrumbItem[]
@@ -42,15 +48,10 @@ const HostsTabs = ({ section }) => {
 
   const [hostId, setHostId] = useState("");
 
-  // Contextual links panel
-  const contextualPanel = useContextualHelpPanel({
-    defaultPage: "hosts-settings",
-  });
-
   // - Close links panel when tab section is changed
   React.useEffect(() => {
-    contextualPanel.setIsExpanded(false);
-  }, [section]);
+    dispatch(closeHelpPanel());
+  }, [section, dispatch]);
 
   // Data loaded from DB
   const hostSettingsData = useHostSettings(fqdn);
@@ -125,68 +126,64 @@ const HostsTabs = ({ section }) => {
 
   return (
     <>
-      <ContextualHelpPanel {...contextualPanel.panelProps}>
-        <PageSection hasBodyWrapper={false}>
-          <BreadCrumb breadcrumbItems={breadcrumbItems} />
-          <TitleLayout
-            id={hostId}
-            preText="Host:"
-            text={hostId}
-            headingLevel="h1"
-          />
-        </PageSection>
-        <PageSection hasBodyWrapper={false} type="tabs" isFilled>
-          <Tabs
-            activeKey={activeTabKey}
-            onSelect={handleTabClick}
-            variant="secondary"
-            isBox
-            className="pf-v6-u-ml-lg"
-            mountOnEnter
-            unmountOnExit
+      <PageSection hasBodyWrapper={false}>
+        <BreadCrumb breadcrumbItems={breadcrumbItems} />
+        <TitleLayout
+          id={hostId}
+          preText="Host:"
+          text={hostId}
+          headingLevel="h1"
+        />
+      </PageSection>
+      <PageSection hasBodyWrapper={false} type="tabs" isFilled>
+        <Tabs
+          activeKey={activeTabKey}
+          onSelect={handleTabClick}
+          variant="secondary"
+          isBox
+          className="pf-v6-u-ml-lg"
+          mountOnEnter
+          unmountOnExit
+        >
+          <Tab
+            eventKey={"settings"}
+            name="settings-details"
+            title={<TabTitleText>Settings</TabTitleText>}
           >
-            <Tab
-              eventKey={"settings"}
-              name="settings-details"
-              title={<TabTitleText>Settings</TabTitleText>}
-            >
-              <HostsSettings
-                host={host}
-                originalHost={hostSettingsData.originalHost}
-                metadata={hostSettingsData.metadata}
-                certData={hostSettingsData.certData}
-                onHostChange={hostSettingsData.setHost}
-                isDataLoading={hostSettingsData.isFetching}
-                onRefresh={hostSettingsData.refetch}
-                isModified={hostSettingsData.modified}
-                onResetValues={hostSettingsData.resetValues}
-                modifiedValues={hostSettingsData.modifiedValues}
-                changeFromPage={contextualPanel.setFromPage}
-                onOpenContextualPanel={() =>
-                  contextualPanel.setIsExpanded((prev) => !prev)
-                }
-              />
-            </Tab>
-            <Tab
-              eventKey={"memberof_hostgroup"}
-              name="memberof-details"
-              title={<TabTitleText>Is a member of</TabTitleText>}
-            >
-              <HostsMemberOf
-                host={partialHostToHost(host)}
-                tabSection={section}
-              />
-            </Tab>
-            <Tab
-              eventKey={"managedby"}
-              name="managedby-details"
-              title={<TabTitleText>Is managed by</TabTitleText>}
-            >
-              <HostsManagedBy host={host as Host} />
-            </Tab>
-          </Tabs>
-        </PageSection>
-      </ContextualHelpPanel>
+            <HostsSettings
+              host={host}
+              originalHost={hostSettingsData.originalHost}
+              metadata={hostSettingsData.metadata}
+              certData={hostSettingsData.certData}
+              onHostChange={hostSettingsData.setHost}
+              isDataLoading={hostSettingsData.isFetching}
+              onRefresh={hostSettingsData.refetch}
+              isModified={hostSettingsData.modified}
+              onResetValues={hostSettingsData.resetValues}
+              modifiedValues={hostSettingsData.modifiedValues}
+              changeFromPage={(page) => dispatch(setHelpTopic(page))}
+              onOpenContextualPanel={() => dispatch(toggleHelpPanel())}
+            />
+          </Tab>
+          <Tab
+            eventKey={"memberof_hostgroup"}
+            name="memberof-details"
+            title={<TabTitleText>Is a member of</TabTitleText>}
+          >
+            <HostsMemberOf
+              host={partialHostToHost(host)}
+              tabSection={section}
+            />
+          </Tab>
+          <Tab
+            eventKey={"managedby"}
+            name="managedby-details"
+            title={<TabTitleText>Is managed by</TabTitleText>}
+          >
+            <HostsManagedBy host={host as Host} />
+          </Tab>
+        </Tabs>
+      </PageSection>
     </>
   );
 };

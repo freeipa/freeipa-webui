@@ -75,7 +75,7 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
 
   // Update page to show correct links info in Contextual panel
   React.useEffect(() => {
-    props.changeFromPage("service-settings");
+    props.changeFromPage("services-settings");
   }, [props.changeFromPage]);
 
   // Kebab

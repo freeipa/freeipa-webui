@@ -17,7 +17,7 @@ import { SubId } from "src/utils/datatypes/globalDataTypes";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Redux
 import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // Components
@@ -29,12 +29,13 @@ import PaginationLayout from "src/components/layouts/PaginationLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import MainTable from "src/components/tables/MainTable";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 // RPC
 import {
@@ -47,9 +48,9 @@ import AddModal from "src/components/modals/SubIdsModals/AddModal";
 
 const SubordinateIDs = () => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("subordinate-ids");
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "subordinate-ids" });
@@ -323,7 +324,7 @@ const SubordinateIDs = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={contextualPanel.toggle}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -343,7 +344,7 @@ const SubordinateIDs = () => {
 
   // Render component
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <div>
         <PageSection hasBodyWrapper={false}>
           <TitleLayout
@@ -409,7 +410,7 @@ const SubordinateIDs = () => {
           title="Add Subordinate ID"
         />
       </div>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

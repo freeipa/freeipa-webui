@@ -36,6 +36,7 @@ import AddRoleModal from "src/components/modals/RoleModals/AddRoleModal";
 import DeleteRolesModal from "src/components/modals/RoleModals/DeleteRolesModal";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils
@@ -50,11 +51,13 @@ import {
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 
 const Roles = () => {
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("roles");
 
   const { browserTitle } = useUpdateRoute({ pathname: "roles" });
 
@@ -388,7 +391,12 @@ const Roles = () => {
     },
     {
       key: 7,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={() => dispatch(toggleHelpPanel())}
+        />
+      ),
     },
     {
       key: 8,

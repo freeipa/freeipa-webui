@@ -6,10 +6,14 @@ import UserSettings from "src/components/UsersSections/UserSettings";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 // Hooks
 import { useUserSettings } from "src/hooks/useUserSettingsData";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
+import {
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
@@ -22,6 +26,7 @@ const PreservedUsersTabs = () => {
   // Get location (React Router DOM) and get state data
   const { uid } = useSafeParams<UidParams>(["uid"]);
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("preserved-users-settings");
 
   const [breadcrumbItems, setBreadcrumbItems] = React.useState<
     BreadCrumbItem[]
@@ -44,11 +49,6 @@ const PreservedUsersTabs = () => {
     setActiveTabKey(0);
     dispatch(updateBreadCrumbPath(currentPath));
   }, [uid]);
-
-  // Contextual links panel
-  const contextualPanel = useContextualHelpPanel({
-    defaultPage: "preserved-users-settings",
-  });
 
   // Data loaded from DB
   const userSettingsData = useUserSettings(uid);
@@ -77,56 +77,52 @@ const PreservedUsersTabs = () => {
 
   return (
     <>
-      <ContextualHelpPanel {...contextualPanel.panelProps}>
-        <PageSection hasBodyWrapper={false}>
-          <BreadCrumb breadcrumbItems={breadcrumbItems} />
-          <TitleLayout
-            id={uid}
-            preText="Preserved user:"
-            text={uid}
-            headingLevel="h1"
-          />
-        </PageSection>
-        <PageSection hasBodyWrapper={false} type="tabs" isFilled>
-          <Tabs
-            activeKey={activeTabKey}
-            onSelect={handleTabClick}
-            variant="secondary"
-            isBox
-            className="pf-v6-u-ml-lg"
-            mountOnEnter
-            unmountOnExit
+      <PageSection hasBodyWrapper={false}>
+        <BreadCrumb breadcrumbItems={breadcrumbItems} />
+        <TitleLayout
+          id={uid}
+          preText="Preserved user:"
+          text={uid}
+          headingLevel="h1"
+        />
+      </PageSection>
+      <PageSection hasBodyWrapper={false} type="tabs" isFilled>
+        <Tabs
+          activeKey={activeTabKey}
+          onSelect={handleTabClick}
+          variant="secondary"
+          isBox
+          className="pf-v6-u-ml-lg"
+          mountOnEnter
+          unmountOnExit
+        >
+          <Tab
+            eventKey={0}
+            name="details"
+            title={<TabTitleText>Settings</TabTitleText>}
           >
-            <Tab
-              eventKey={0}
-              name="details"
-              title={<TabTitleText>Settings</TabTitleText>}
-            >
-              <UserSettings
-                originalUser={userSettingsData.originalUser}
-                user={userSettingsData.user}
-                metadata={userSettingsData.metadata}
-                pwPolicyData={userSettingsData.pwPolicyData}
-                krbPolicyData={userSettingsData.krbtPolicyData}
-                certData={userSettingsData.certData}
-                onUserChange={userSettingsData.setUser}
-                isDataLoading={userSettingsData.isFetching}
-                onRefresh={userSettingsData.refetch}
-                isModified={userSettingsData.modified}
-                onResetValues={userSettingsData.resetValues}
-                modifiedValues={userSettingsData.modifiedValues}
-                radiusProxyData={userSettingsData.radiusServers}
-                idpData={userSettingsData.idpServers}
-                from="preserved-users"
-                changeFromPage={contextualPanel.setFromPage}
-                onOpenContextualPanel={() =>
-                  contextualPanel.setIsExpanded((prev) => !prev)
-                }
-              />
-            </Tab>
-          </Tabs>
-        </PageSection>
-      </ContextualHelpPanel>
+            <UserSettings
+              originalUser={userSettingsData.originalUser}
+              user={userSettingsData.user}
+              metadata={userSettingsData.metadata}
+              pwPolicyData={userSettingsData.pwPolicyData}
+              krbPolicyData={userSettingsData.krbtPolicyData}
+              certData={userSettingsData.certData}
+              onUserChange={userSettingsData.setUser}
+              isDataLoading={userSettingsData.isFetching}
+              onRefresh={userSettingsData.refetch}
+              isModified={userSettingsData.modified}
+              onResetValues={userSettingsData.resetValues}
+              modifiedValues={userSettingsData.modifiedValues}
+              radiusProxyData={userSettingsData.radiusServers}
+              idpData={userSettingsData.idpServers}
+              from="preserved-users"
+              changeFromPage={(page) => dispatch(setHelpTopic(page))}
+              onOpenContextualPanel={() => dispatch(toggleHelpPanel())}
+            />
+          </Tab>
+        </Tabs>
+      </PageSection>
     </>
   );
 };
