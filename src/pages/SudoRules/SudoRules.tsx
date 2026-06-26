@@ -20,7 +20,7 @@ import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
@@ -37,7 +37,11 @@ import DisableEnableSudoRules from "src/components/modals/SudoModals/DisableEnab
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // Utils
 import { API_VERSION_BACKUP, isSudoRuleSelectable } from "src/utils/utils";
 // RPC client
@@ -54,10 +58,18 @@ const SudoRules = () => {
   const dispatch = useAppDispatch();
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "sudo-rules" });
+
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("sudo-rules"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // Set the page title to be shown in the browser tab
   React.useEffect(() => {
@@ -567,7 +579,7 @@ const SudoRules = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={contextualPanel.toggle}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -586,7 +598,7 @@ const SudoRules = () => {
   ];
 
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <div>
         <PageSection hasBodyWrapper={false}>
           <TitleLayout
@@ -659,7 +671,7 @@ const SudoRules = () => {
           dataCy="sudo-rules-modal-error"
         />
       </div>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

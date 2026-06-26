@@ -22,7 +22,7 @@ import HelpTextWithIconLayout from "../../components/layouts/HelpTextWithIconLay
 // Components
 import BulkSelectorPrep from "../../components/BulkSelectorPrep";
 import PaginationLayout from "../../components/layouts/PaginationLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 // Tables
 import ServicesTable from "./ServicesTable";
 // Redux
@@ -38,7 +38,11 @@ import DeleteServices from "../../components/modals/DeleteServices";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // Errors
 import useApiError from "../../hooks/useApiError";
 import GlobalErrors from "../../components/errors/GlobalErrors";
@@ -436,8 +440,14 @@ const Services = () => {
     clearSelectedServices,
   };
 
-  // Contextual links panel
-  const contextualPanel = useContextualHelpPanel({ defaultPage: "services" });
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("services"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // List of toolbar items
   const toolbarItems: ToolbarItem[] = [
@@ -517,7 +527,7 @@ const Services = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={() => contextualPanel.setIsExpanded((prev) => !prev)}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -537,7 +547,7 @@ const Services = () => {
 
   // Render component
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <div>
         <PageSection hasBodyWrapper={false}>
           <TitleLayout id="Services title" headingLevel="h1" text="Services" />
@@ -600,7 +610,7 @@ const Services = () => {
           onRefresh={refreshServicesData}
         />
       </div>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

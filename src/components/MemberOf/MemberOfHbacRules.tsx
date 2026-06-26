@@ -14,13 +14,12 @@ import MemberTable from "src/components/tables/MembershipTable";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import {
@@ -45,7 +44,6 @@ interface MemberOfHbacRulesProps {
 
 const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
   const dispatch = useAppDispatch();
-  const contextualPanel = useContextualHelpPanel();
 
   const {
     page,
@@ -308,7 +306,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
   };
 
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
@@ -329,7 +327,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
         membershipDirection={membershipDirection}
         onMembershipDirectionChange={setMembershipDirection}
         helpIconEnabled={true}
-        onHelpIconClick={contextualPanel.toggle}
+        onHelpIconClick={() => dispatch(toggleHelpPanel())}
         totalItems={hbacRuleNames.length}
         perPage={perPage}
         page={page}
@@ -396,7 +394,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
           showTableRows
         />
       </MemberOfDeleteModal>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

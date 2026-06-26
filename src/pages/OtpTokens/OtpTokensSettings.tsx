@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 // PatternFly
 import {
   Button,
@@ -23,13 +23,17 @@ import { BatchResult } from "src/services/rpc";
 import { OtpToken, Metadata, User } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // Icons
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 // Components
 import TabLayout from "src/components/layouts/TabLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import IpaCalendar from "src/components/Form/IpaCalendar";
 import IpaTextArea from "src/components/Form/IpaTextArea";
 import IpaTextInput from "src/components/Form/IpaTextInput";
@@ -61,10 +65,18 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
   const dispatch = useAppDispatch();
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
+
+  // Set help topic on mount, clear on unmount
+  useEffect(() => {
+    dispatch(setHelpTopic("otp-tokens-settings"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // States
   const [isDataLoading, setIsDataLoading] = React.useState(false);
@@ -294,7 +306,7 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
   ];
 
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <TabLayout
         id="settings-page"
         toolbarItems={toolbarFields}
@@ -307,7 +319,7 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
               icon={
                 <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
               }
-              onClick={contextualPanel.toggle}
+              onClick={() => dispatch(toggleHelpPanel())}
             />
           </SidebarPanel>
           <SidebarContent className="pf-v6-u-mr-xl">
@@ -565,7 +577,7 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
           updateIsDeletion={() => {}}
         />
       </TabLayout>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

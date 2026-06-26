@@ -19,7 +19,11 @@ import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // RPC
@@ -38,7 +42,7 @@ import ToolbarLayout, {
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
@@ -49,12 +53,20 @@ const DnsServers = () => {
   const dispatch = useAppDispatch();
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({
     pathname: "dns-servers",
   });
+
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("dns-servers"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // Set the page title to be shown in the browser tab
   React.useEffect(() => {
@@ -245,7 +257,7 @@ const DnsServers = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={contextualPanel.toggle}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -294,7 +306,7 @@ const DnsServers = () => {
 
   // Render component
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <div>
         <PageSection hasBodyWrapper={false}>
           <TitleLayout
@@ -343,7 +355,7 @@ const DnsServers = () => {
           </Flex>
         </PageSection>
       </div>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

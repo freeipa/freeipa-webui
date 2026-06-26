@@ -19,7 +19,11 @@ import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 import { useKrbTicketPolicyData } from "src/hooks/useKrbTicketPolicyData";
 // Icons
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
@@ -33,7 +37,7 @@ import { NotFound } from "src/components/errors/PageErrors";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import { asRecord } from "src/utils/krbTicketUtils";
 import IpaTextInput from "src/components/Form/IpaTextInput";
 import PageWithGrayBorderLayout from "src/components/layouts/PageWithGrayBorderLayout";
@@ -42,7 +46,6 @@ const KrbTicketPolicy = () => {
   const dispatch = useAppDispatch();
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // API calls
   const krbTicketPolicyData = useKrbTicketPolicyData();
@@ -52,6 +55,15 @@ const KrbTicketPolicy = () => {
   const { browserTitle } = useUpdateRoute({
     pathname: "kerberos-ticket-policy",
   });
+
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("kerberos-ticket-policy"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // Set the page title to be shown in the browser tab
   React.useEffect(() => {
@@ -211,7 +223,7 @@ const KrbTicketPolicy = () => {
 
   // Return component
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <PageWithGrayBorderLayout
         id="krb-ticket-policy-page"
         pageTitle="Kerberos ticket policy"
@@ -222,7 +234,7 @@ const KrbTicketPolicy = () => {
             <SidebarPanel variant="sticky">
               <HelpTextWithIconLayout
                 textContent="Help"
-                onClick={contextualPanel.toggle}
+                onClick={() => dispatch(toggleHelpPanel())}
                 icon={
                   <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
                 }
@@ -481,7 +493,7 @@ const KrbTicketPolicy = () => {
           </Sidebar>
         </>
       </PageWithGrayBorderLayout>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

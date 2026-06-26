@@ -30,7 +30,11 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // Components
 import ToolbarLayout, {
   ToolbarItem,
@@ -40,7 +44,7 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
@@ -56,10 +60,18 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
   const dispatch = useAppDispatch();
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "dns-records" });
+
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("dns-resource-records"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -383,7 +395,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={contextualPanel.toggle}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -412,7 +424,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
 
   // Render component
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <div
         style={{
           height: `var(--subsettings-calc)`,
@@ -508,7 +520,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
           updateIsDeletion={setIsDeletion}
         />
       </div>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

@@ -27,7 +27,7 @@ import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Components
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 // Tables
 import HostsTable from "./HostsTable";
 // Modal
@@ -43,7 +43,11 @@ import { API_VERSION_BACKUP, isHostSelectable } from "src/utils/utils";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -71,6 +75,15 @@ const Hosts = () => {
   React.useEffect(() => {
     document.title = browserTitle;
   }, [browserTitle]);
+
+  // Set help topic on mount, clear on unmount
+  useEffect(() => {
+    dispatch(setHelpTopic("hosts"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // Define 'executeCommand' to execute simple commands (via Mutation)
   const [executeAutoMemberRebuild] = useAutoMemberRebuildHostsMutation();
@@ -535,7 +548,6 @@ const Hosts = () => {
   };
 
   // Contextual links panel
-  const contextualPanel = useContextualHelpPanel({ defaultPage: "hosts" });
 
   // List of toolbar items
   const toolbarItems: ToolbarItem[] = [
@@ -629,7 +641,7 @@ const Hosts = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={() => contextualPanel.setIsExpanded((prev) => !prev)}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -648,7 +660,7 @@ const Hosts = () => {
   ];
 
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <div>
         <PageSection hasBodyWrapper={false}>
           <TitleLayout id="Hosts title" headingLevel="h1" text="Hosts" />
@@ -721,7 +733,7 @@ const Hosts = () => {
           onRefresh={refreshHostsData}
         />
       </div>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

@@ -6,10 +6,14 @@ import UserSettings from "src/components/UsersSections/UserSettings";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import TitleLayout from "src/components/layouts/TitleLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 // Hooks
 import { useStageUserSettings } from "src/hooks/useUserSettingsData";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
@@ -44,10 +48,14 @@ const StageUsersTabs = () => {
     dispatch(updateBreadCrumbPath(currentPath));
   }, [uid]);
 
-  // Contextual links panel
-  const contextualPanel = useContextualHelpPanel({
-    defaultPage: "stage-users-settings",
-  });
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("stage-users-settings"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // Data loaded from DB
   const userSettingsData = useStageUserSettings(uid);
@@ -76,7 +84,7 @@ const StageUsersTabs = () => {
 
   return (
     <>
-      <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <>
         <PageSection hasBodyWrapper={false}>
           <BreadCrumb breadcrumbItems={breadcrumbItems} />
           <TitleLayout
@@ -117,15 +125,13 @@ const StageUsersTabs = () => {
                 radiusProxyData={userSettingsData.radiusServers}
                 idpData={userSettingsData.idpServers}
                 from="stage-users"
-                changeFromPage={contextualPanel.setFromPage}
-                onOpenContextualPanel={() =>
-                  contextualPanel.setIsExpanded((prev) => !prev)
-                }
+                changeFromPage={(page) => dispatch(setHelpTopic(page))}
+                onOpenContextualPanel={() => dispatch(toggleHelpPanel())}
               />
             </Tab>
           </Tabs>
         </PageSection>
-      </ContextualHelpPanel>
+      </>
     </>
   );
 };

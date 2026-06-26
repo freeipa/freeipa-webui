@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 // PatternFly
 import {
   Button,
@@ -15,7 +15,11 @@ import { DNSRecord, Host, Metadata } from "src/utils/datatypes/globalDataTypes";
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 import { addAlert } from "src/store/Global/alerts-slice";
 // Icons
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
@@ -28,7 +32,7 @@ import {
 import { dnsRecordAsRecord } from "src/utils/dnsRecordUtils";
 // Components
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import PageWithGrayBorderLayout from "src/components/layouts/PageWithGrayBorderLayout";
@@ -59,10 +63,18 @@ const DnsResourceRecordsSettings = (props: DnsResourceRecordsSettingsProps) => {
   const dispatch = useAppDispatch();
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
+
+  // Set help topic on mount, clear on unmount
+  useEffect(() => {
+    dispatch(setHelpTopic("dns-resource-records-settings"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // RPC calls
   const [saveDnsRecord] = useModDnsRecordMutation();
@@ -176,7 +188,7 @@ const DnsResourceRecordsSettings = (props: DnsResourceRecordsSettingsProps) => {
 
   // Render component
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <>
         <PageWithGrayBorderLayout
           id="dns-resource-records-settings-page"
@@ -188,7 +200,7 @@ const DnsResourceRecordsSettings = (props: DnsResourceRecordsSettingsProps) => {
             <SidebarPanel variant="sticky">
               <HelpTextWithIconLayout
                 textContent="Help"
-                onClick={contextualPanel.toggle}
+                onClick={() => dispatch(toggleHelpPanel())}
                 icon={
                   <OutlinedQuestionCircleIcon className="pf-v5-u-primary-color-100 pf-v5-u-mr-sm" />
                 }
@@ -268,7 +280,7 @@ const DnsResourceRecordsSettings = (props: DnsResourceRecordsSettingsProps) => {
           </Sidebar>
         </PageWithGrayBorderLayout>
       </>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

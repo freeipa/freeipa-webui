@@ -10,10 +10,14 @@ import ServicesManagedBy from "./ServicesManagedBy";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import { partialServiceToService } from "src/utils/serviceUtils";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 // Hooks
 import { useServiceSettings } from "src/hooks/useServiceSettingsData";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
@@ -42,15 +46,19 @@ const ServicesTabs = ({ section }) => {
     BreadCrumbItem[]
   >([]);
 
-  // Contextual links panel
-  const contextualPanel = useContextualHelpPanel({
-    defaultPage: "services-settings",
-  });
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("services-settings"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // - Close links panel when tab section is changed
   React.useEffect(() => {
-    contextualPanel.setIsExpanded(false);
-  }, [section]);
+    dispatch(closeHelpPanel());
+  }, [section, dispatch]);
 
   // Data loaded from DB
   const serviceSettingsData = useServiceSettings(decodedId as string);
@@ -114,7 +122,7 @@ const ServicesTabs = ({ section }) => {
 
   return (
     <>
-      <ContextualHelpPanel {...contextualPanel.panelProps}>
+      <>
         <PageSection hasBodyWrapper={false}>
           <BreadCrumb breadcrumbItems={breadcrumbItems} />
           <TitleLayout
@@ -150,10 +158,8 @@ const ServicesTabs = ({ section }) => {
                 onResetValues={serviceSettingsData.resetValues}
                 modifiedValues={serviceSettingsData.modifiedValues}
                 certData={certificates}
-                changeFromPage={contextualPanel.setFromPage}
-                onOpenContextualPanel={() =>
-                  contextualPanel.setIsExpanded((prev) => !prev)
-                }
+                changeFromPage={(page) => dispatch(setHelpTopic(page))}
+                onOpenContextualPanel={() => dispatch(toggleHelpPanel())}
               />
             </Tab>
             <Tab
@@ -172,7 +178,7 @@ const ServicesTabs = ({ section }) => {
             </Tab>
           </Tabs>
         </PageSection>
-      </ContextualHelpPanel>
+      </>
     </>
   );
 };

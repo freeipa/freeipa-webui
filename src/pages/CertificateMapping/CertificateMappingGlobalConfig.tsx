@@ -16,7 +16,11 @@ import { useAppDispatch } from "src/store/hooks";
 import { useCertMapConfigData } from "src/hooks/useCertMapConfigData";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // RPC
 import {
   CertMapConfigPayload,
@@ -30,7 +34,7 @@ import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import { NotFound } from "src/components/errors/PageErrors";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import PageWithGrayBorderLayout from "src/components/layouts/PageWithGrayBorderLayout";
 import IpaCheckbox from "src/components/Form/IpaCheckbox";
 
@@ -38,7 +42,6 @@ const CertificateMappingGlobalConfig = () => {
   const dispatch = useAppDispatch();
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // API calls
   const certMapConfigData = useCertMapConfigData();
@@ -48,6 +51,15 @@ const CertificateMappingGlobalConfig = () => {
   const { browserTitle } = useUpdateRoute({
     pathname: "cert-id-mapping-global-config",
   });
+
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("certificate-mapping-global-config"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // Set the page title to be shown in the browser tab
   React.useEffect(() => {
@@ -178,7 +190,7 @@ const CertificateMappingGlobalConfig = () => {
 
   // Return component
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <PageWithGrayBorderLayout
         id="certificate-id-mapping-global-config-page"
         pageTitle="Certificate Identity Mapping Global Configuration"
@@ -188,7 +200,7 @@ const CertificateMappingGlobalConfig = () => {
           <SidebarPanel variant="sticky">
             <HelpTextWithIconLayout
               textContent="Help"
-              onClick={contextualPanel.toggle}
+              onClick={() => dispatch(toggleHelpPanel())}
               icon={
                 <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
               }
@@ -222,7 +234,7 @@ const CertificateMappingGlobalConfig = () => {
           </SidebarContent>
         </Sidebar>
       </PageWithGrayBorderLayout>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

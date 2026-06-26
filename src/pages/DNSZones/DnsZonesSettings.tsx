@@ -21,7 +21,11 @@ import {
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 import { addAlert } from "src/store/Global/alerts-slice";
 // Utils
 import { dnsZoneAsRecord } from "src/utils/dnsZonesUtils";
@@ -37,7 +41,7 @@ import {
 import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
 import TabLayout from "src/components/layouts/TabLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import KebabLayout from "src/components/layouts/KebabLayout";
 import IpaTextArea from "src/components/Form/IpaTextArea";
 import IpaTextboxList from "src/components/Form/IpaTextboxList";
@@ -66,10 +70,18 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
   const dispatch = useAppDispatch();
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
+
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("dns-zones-settings"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // Infer the status of the DNS zone from the 'idnszoneactive' property
   const inferStatus = () => {
@@ -334,7 +346,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
 
   // Render component
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <>
         <TabLayout
           id="settings-page"
@@ -345,7 +357,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
             <SidebarPanel variant="sticky">
               <HelpTextWithIconLayout
                 textContent="Help"
-                onClick={contextualPanel.toggle}
+                onClick={() => dispatch(toggleHelpPanel())}
                 icon={
                   <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
                 }
@@ -662,7 +674,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
           onRefresh={props.onRefresh}
         />
       </>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

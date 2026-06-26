@@ -21,7 +21,11 @@ import { useAppSelector, useAppDispatch } from "src/store/hooks";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
@@ -33,7 +37,7 @@ import UsersTable from "../../components/tables/UsersTable";
 // Components
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 // Modals
 import DeleteUsers from "src/components/modals/UserModals/DeleteUsers";
 import AddUser from "src/components/modals/UserModals/AddUser";
@@ -415,10 +419,14 @@ const StageUsers = () => {
     submitSearchValue,
   };
 
-  // Contextual links panel
-  const contextualPanel = useContextualHelpPanel({
-    defaultPage: "stage-users",
-  });
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("stage-users"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
@@ -510,7 +518,7 @@ const StageUsers = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={() => contextualPanel.setIsExpanded((prev) => !prev)}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -530,7 +538,7 @@ const StageUsers = () => {
 
   // Render 'Stage users'
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <div>
         <PageSection hasBodyWrapper={false}>
           <TitleLayout
@@ -605,7 +613,7 @@ const StageUsers = () => {
           onSuccess={refreshUsersData}
         />
       </div>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

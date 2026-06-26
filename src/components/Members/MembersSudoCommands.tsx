@@ -6,7 +6,7 @@ import MemberOfToolbar from "../MemberOf/MemberOfToolbar";
 import MemberOfAddModal, { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 import MemberTable from "src/components/tables/MembershipTable";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 // Data types
 import { SudoCmd, SudoCmdGroup } from "src/utils/datatypes/globalDataTypes";
 // Redux
@@ -14,7 +14,7 @@ import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 // RPC
@@ -39,7 +39,6 @@ interface PropsToMembersSudoGroups {
 
 const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
   const dispatch = useAppDispatch();
-  const contextualPanel = useContextualHelpPanel();
 
   // Get parameters from URL
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -238,7 +237,7 @@ const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
   };
 
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <MemberOfToolbar
         searchText={searchValue}
         onSearchTextChange={setSearchValue}
@@ -252,7 +251,7 @@ const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
         addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
         helpIconEnabled={true}
-        onHelpIconClick={contextualPanel.toggle}
+        onHelpIconClick={() => dispatch(toggleHelpPanel())}
         totalItems={props.entity?.member_sudocmd?.length || 0}
         perPage={perPage}
         page={page}
@@ -307,7 +306,7 @@ const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
           showTableRows
         />
       </MemberOfDeleteModal>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

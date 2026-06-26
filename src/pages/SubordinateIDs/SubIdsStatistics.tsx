@@ -13,13 +13,17 @@ import { Td, Th, Tr } from "@patternfly/react-table";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 import PageLayout from "src/components/layouts/PageLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import SkeletonOnTableLayout from "src/components/layouts/Skeleton/SkeletonOnTableLayout";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // RPC
 import { useSubidStatsQuery } from "src/services/rpcSubIds";
 
@@ -35,7 +39,6 @@ const SubIdsStatistics = () => {
   const dispatch = useAppDispatch();
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // States
   const [subidStats, setSubidStats] = React.useState<SubidStats>({
@@ -50,6 +53,15 @@ const SubIdsStatistics = () => {
   // API call
   const subidStatsResponse = useSubidStatsQuery();
   const { data, isLoading, error } = subidStatsResponse;
+
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("subordinate-id-statistics"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   React.useEffect(() => {
     setShowTableRows(!isLoading);
@@ -102,7 +114,7 @@ const SubIdsStatistics = () => {
       element: (
         <HelpTextWithIconLayout
           textContent="Help"
-          onClick={contextualPanel.toggle}
+          onClick={() => dispatch(toggleHelpPanel())}
         />
       ),
     },
@@ -151,7 +163,7 @@ const SubIdsStatistics = () => {
   );
 
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <PageLayout
         title="Subordinate ID Statistics"
         pathname="subordinate-id-statistics"
@@ -175,7 +187,7 @@ const SubIdsStatistics = () => {
           </Grid>
         </PageSection>
       </PageLayout>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

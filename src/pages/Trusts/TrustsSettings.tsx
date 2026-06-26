@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 // PatternFly
 import {
   Button,
@@ -16,7 +16,11 @@ import {
 import { Trust, Metadata } from "src/utils/datatypes/globalDataTypes";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // Utils
 import { asRecord, isValidSID } from "src/utils/trustsUtils";
 // RPC
@@ -25,7 +29,7 @@ import { TrustModPayload, useTrustModMutation } from "src/services/rpcTrusts";
 import IpaTextInput from "src/components/Form/IpaTextInput/IpaTextInput";
 import TabLayout from "src/components/layouts/TabLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 import IpaTextboxList from "src/components/Form/IpaTextboxList";
 import TitleLayout from "src/components/layouts/TitleLayout";
 // Redux
@@ -50,10 +54,18 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
   const dispatch = useAppDispatch();
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: props.pathname });
+
+  // Set help topic on mount, clear on unmount
+  useEffect(() => {
+    dispatch(setHelpTopic("trusts-settings"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // States
   const [isDataLoading, setIsDataLoading] = React.useState(false);
@@ -183,7 +195,7 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
 
   // Return component
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <TabLayout
         id="settings-page"
         toolbarItems={toolbarFields}
@@ -193,7 +205,7 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
           <SidebarPanel variant="sticky">
             <HelpTextWithIconLayout
               textContent="Help"
-              onClick={contextualPanel.toggle}
+              onClick={() => dispatch(toggleHelpPanel())}
             />
             <JumpLinks
               isVertical
@@ -333,7 +345,7 @@ const TrustsSettings = (props: TrustsSettingsProps) => {
           </SidebarContent>
         </Sidebar>
       </TabLayout>
-    </ContextualHelpPanel>
+    </>
   );
 };
 

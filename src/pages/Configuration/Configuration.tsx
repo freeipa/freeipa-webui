@@ -19,11 +19,15 @@ import DataSpinner from "src/components/layouts/DataSpinner";
 // Components
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
+
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import { useContextualHelpPanel } from "src/hooks/useContextualHelpPanel";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 import { useConfigSettings } from "src/hooks/useConfigSettingsData";
 // Utils
 import { API_VERSION_BACKUP } from "src/utils/utils";
@@ -51,10 +55,18 @@ const Configuration = () => {
   const dispatch = useAppDispatch();
 
   // Contextual help panel
-  const contextualPanel = useContextualHelpPanel();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   const { browserTitle } = useUpdateRoute({ pathname: "configuration" });
+
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("configuration"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // Set the page title to be shown in the browser tab
   React.useEffect(() => {
@@ -263,7 +275,7 @@ const Configuration = () => {
   );
 
   return (
-    <ContextualHelpPanel {...contextualPanel.panelProps}>
+    <>
       <>
         <PageSection hasBodyWrapper={false} isFilled>
           <TitleLayout
@@ -282,7 +294,7 @@ const Configuration = () => {
             <SidebarPanel variant="sticky">
               <HelpTextWithIconLayout
                 textContent="Help"
-                onClick={contextualPanel.toggle}
+                onClick={() => dispatch(toggleHelpPanel())}
               />
               <JumpLinks
                 isVertical
@@ -426,7 +438,7 @@ const Configuration = () => {
           className="pf-v6-u-ml-lg"
         />
       </>
-    </ContextualHelpPanel>
+    </>
   );
 };
 
