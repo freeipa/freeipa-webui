@@ -9,12 +9,12 @@ import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import RolesMembers from "./RolesMembers";
+import RolesPrivileges from "./RolesPrivileges";
 import { partialRoleToRole } from "src/utils/rolesUtils";
 // Hooks
 import { useRoleSettings } from "src/hooks/useRolesSettingsData";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 // Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
 import { CnParams, useSafeParams } from "src/utils/paramsUtils";
 // Redux
@@ -28,6 +28,20 @@ import {
 interface RolesTabsProps {
   section: string;
 }
+
+// Central mapping between tab keys and routes
+const TAB_ROUTES: Record<string, (cn: string) => string> = {
+  settings: (cn) => `/roles/${cn}`,
+  member: (cn) => `/roles/${cn}/member_user`,
+  privileges: (cn) => `/roles/${cn}/privileges`,
+};
+
+// Normalize section -> tab key
+const getTabKeyFromSection = (section?: string): string => {
+  if (!section) return "settings";
+  if (section.startsWith("member_")) return "member";
+  return section in TAB_ROUTES ? section : "settings";
+};
 
 const RolesTabs = ({ section }: RolesTabsProps) => {
   const { cn } = useSafeParams<CnParams>(["cn"]);
@@ -48,16 +62,18 @@ const RolesTabs = ({ section }: RolesTabsProps) => {
   const roleSettingsData = useRoleSettings(cn);
 
   // Tab
-  const [activeTabKey, setActiveTabKey] = useState("settings");
+  const [activeTabKey, setActiveTabKey] = useState(() =>
+    getTabKeyFromSection(section)
+  );
 
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    if (tabIndex === "settings") {
-      navigate("/roles/" + cn);
-    } else if (tabIndex === "member") {
-      navigate("/roles/" + cn + "/member_user");
+    const tabKey = String(tabIndex);
+    const toPath = TAB_ROUTES[tabKey];
+    if (toPath) {
+      navigate(toPath(cn));
     }
   };
 
@@ -66,11 +82,11 @@ const RolesTabs = ({ section }: RolesTabsProps) => {
     const currentPath: BreadCrumbItem[] = [
       {
         name: "Roles",
-        url: URL_PREFIX + "/roles",
+        url: "/roles",
       },
       {
         name: cn,
-        url: URL_PREFIX + "/roles/" + cn,
+        url: "/roles/" + cn,
         isActive: true,
       },
     ];
@@ -82,14 +98,10 @@ const RolesTabs = ({ section }: RolesTabsProps) => {
   // Redirect to the settings page if the section is not defined
   React.useEffect(() => {
     if (!section) {
-      navigate(URL_PREFIX + "/roles/" + cn);
+      navigate(TAB_ROUTES.settings(cn));
     }
-    if (section.startsWith("member_")) {
-      setActiveTabKey("member");
-    } else {
-      setActiveTabKey(section);
-    }
-  }, [section]);
+    setActiveTabKey(getTabKeyFromSection(section));
+  }, [section, cn, navigate]);
 
   if (roleSettingsData.isLoading || roleSettingsData.role.cn === undefined) {
     return <DataSpinner />;
@@ -154,6 +166,13 @@ const RolesTabs = ({ section }: RolesTabsProps) => {
               role={partialRoleToRole(roleSettingsData.role)}
               tabSection={section}
             />
+          </Tab>
+          <Tab
+            eventKey={"privileges"}
+            name={"privileges-details"}
+            title={<TabTitleText>Privileges</TabTitleText>}
+          >
+            <RolesPrivileges role={partialRoleToRole(roleSettingsData.role)} />
           </Tab>
         </Tabs>
       </PageSection>

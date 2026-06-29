@@ -216,6 +216,7 @@ export interface Role {
   member_service: string[];
   member_idoverrideuser: string[];
   member_sysaccount: string[];
+  memberof_privilege: string[];
 }
 
 export interface SysAccount {

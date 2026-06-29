@@ -29,6 +29,10 @@ import { MinusIcon } from "@patternfly/react-icons";
 // React Router DOM
 import { Link } from "react-router";
 
+interface PrivilegeItem {
+  cn: string;
+}
+
 type EntryDataTypes =
   | HBACRule
   | HBACService
@@ -36,6 +40,7 @@ type EntryDataTypes =
   | Host
   | HostGroup
   | Netgroup
+  | PrivilegeItem
   | Role
   | Service
   | SubId
@@ -54,6 +59,7 @@ type FromTypes =
   | "host-groups"
   | "idoverrideuser"
   | "netgroups"
+  | "privileges"
   | "roles"
   | "services"
   | "sudo-rules"
@@ -76,6 +82,9 @@ interface MemberTableProps {
 // Types that use string arrays instead of objects
 const STRING_ARRAY_TYPES = ["external", "sysaccount", "idoverrideuser"];
 
+// Track those types that don't have links
+const NO_LINK_TYPES: string[] = ["roles", "privileges"];
+
 // Body
 const TableBody = (props: {
   list: EntryDataTypes[]; // More types can be added here
@@ -92,6 +101,14 @@ const TableBody = (props: {
   // Check if this is a string array type (external, sysaccount, idoverrideuser)
   const isStringArray = STRING_ARRAY_TYPES.includes(props.from);
 
+  const shouldRenderLink = (from: string, isStringArray: boolean) =>
+    !isStringArray && !NO_LINK_TYPES.includes(from);
+
+  const getItemLink = (from: string, itemId: string) =>
+    from === "services"
+      ? `/${from}/${encodeURIComponent(itemId)}`
+      : `/${from}/${itemId}`;
+
   return (
     <>
       {list.map((item, index) => {
@@ -99,7 +116,7 @@ const TableBody = (props: {
         const itemId = isStringArray ? (item as string) : item[idKey];
 
         return (
-          <Tr key={index} id={itemId}>
+          <Tr key={itemId} id={itemId}>
             {props.showCheckboxColumn && (
               <Td
                 select={{
@@ -111,23 +128,12 @@ const TableBody = (props: {
               />
             )}
             <Td>
-              {props.from === "roles" || isStringArray ? (
-                // String arrays and roles don't have links
-                itemId
-              ) : (
-                <Link
-                  to={
-                    "/" +
-                    props.from +
-                    "/" +
-                    (props.from === "services"
-                      ? encodeURIComponent(itemId)
-                      : itemId)
-                  }
-                  state={item}
-                >
+              {shouldRenderLink(props.from, isStringArray) ? (
+                <Link to={getItemLink(props.from, itemId)} state={item}>
                   {itemId}
                 </Link>
+              ) : (
+                itemId
               )}
             </Td>
             {/* For string arrays, we don't show additional columns */}

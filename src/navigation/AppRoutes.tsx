@@ -594,6 +594,10 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                     path="member_sysaccount"
                     element={<RolesTabs section="member_sysaccount" />}
                   />
+                  <Route
+                    path="privileges"
+                    element={<RolesTabs section="privileges" />}
+                  />
                 </Route>
               </Route>
               <Route path="configuration" element={<Configuration />} />

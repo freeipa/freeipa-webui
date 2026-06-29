@@ -68,7 +68,6 @@ If found → render Tabs with entity data
 import React from "react";
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 import { useNavigate } from "react-router";
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
 import { use<Entity>Settings } from "src/hooks/use<Entity>SettingsData";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -142,8 +141,8 @@ Breadcrumbs help users understand their location in the app hierarchy. They're u
 React.useEffect(() => {
   setId(<primaryKey>);
   setBreadcrumbItems([
-    { name: "<Entity display name>", url: URL_PREFIX + "/" + pathname },
-    { name: <primaryKey>, url: URL_PREFIX + "/" + pathname + "/" + <primaryKey>, isActive: true },
+    { name: "<Entity display name>", url: "/" + pathname },
+    { name: <primaryKey>, url: "/" + pathname + "/" + <primaryKey>, isActive: true },
   ]);
 }, [<primaryKey>]);
 ```
