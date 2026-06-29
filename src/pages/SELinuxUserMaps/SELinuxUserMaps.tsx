@@ -18,6 +18,11 @@ import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // Redux
 import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // RPC
@@ -39,6 +44,7 @@ import ToolbarLayout, {
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
@@ -50,11 +56,23 @@ import EnableDisableSelinuxUserMapsModal from "src/components/modals/SelinuxUser
 
 const SELinuxUserMaps = () => {
   const navigate = useNavigate();
+
+  // Contextual help panel
+
   const dispatch = useAppDispatch();
 
   const { browserTitle } = useUpdateRoute({
     pathname: "selinux-user-maps",
   });
+
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("selinux-user-maps"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   React.useEffect(() => {
     document.title = browserTitle;
@@ -372,7 +390,12 @@ const SELinuxUserMaps = () => {
     },
     {
       key: 9,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={() => dispatch(toggleHelpPanel())}
+        />
+      ),
     },
     {
       key: 10,
@@ -389,102 +412,106 @@ const SELinuxUserMaps = () => {
   ];
 
   return (
-    <div>
-      <PageSection hasBodyWrapper={false}>
-        <TitleLayout
-          id="SELinux user maps title"
-          headingLevel="h1"
-          text="SELinux user maps"
+    <>
+      <div>
+        <PageSection hasBodyWrapper={false}>
+          <TitleLayout
+            id="SELinux user maps title"
+            headingLevel="h1"
+            text="SELinux user maps"
+          />
+        </PageSection>
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem style={{ flex: "0 0 auto" }}>
+              <OuterScrollContainer>
+                <InnerScrollContainer
+                  style={{ height: "55vh", overflow: "auto" }}
+                >
+                  {error !== undefined && error ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <MainTable
+                      tableTitle="SELinux user maps table"
+                      shownElementsList={selinuxUserMaps}
+                      pk="cn"
+                      keyNames={keyNames}
+                      columnNames={columnNames}
+                      hasCheckboxes={true}
+                      pathname="selinux-user-maps"
+                      showTableRows={showTableRows}
+                      showLink={false}
+                      elementsData={{
+                        isElementSelectable: isSelinuxUserMapSelectable,
+                        selectedElements,
+                        selectableElementsTable: selectableMapsTable,
+                        setElementsSelected: setMapSelected,
+                        clearSelectedElements: () => setSelectedElements([]),
+                      }}
+                      buttonsData={{
+                        updateIsDeleteButtonDisabled: (value) =>
+                          setIsDeleteButtonDisabled(value),
+                        isDeletion,
+                        updateIsDeletion: (value) => setIsDeletion(value),
+                        updateIsEnableButtonDisabled: (value) =>
+                          setIsEnableButtonDisabled(value),
+                        updateIsDisableButtonDisabled: (value) =>
+                          setIsDisableButtonDisabled(value),
+                        isDisableEnableOp: true,
+                      }}
+                      paginationData={{
+                        selectedPerPage,
+                        updateSelectedPerPage: setSelectedPerPage,
+                      }}
+                      statusElementName="ipaenabledflag"
+                    />
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={selinuxUserMaps}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+              />
+            </FlexItem>
+          </Flex>
+        </PageSection>
+        <AddSelinuxUserMapModal
+          isOpen={showAddModal}
+          onClose={() => setShowAddModal(false)}
+          onRefresh={refreshData}
         />
-      </PageSection>
-      <PageSection hasBodyWrapper={false} isFilled={false}>
-        <Flex direction={{ default: "column" }}>
-          <FlexItem>
-            <ToolbarLayout toolbarItems={toolbarItems} />
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto" }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer
-                style={{ height: "55vh", overflow: "auto" }}
-              >
-                {error !== undefined && error ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <MainTable
-                    tableTitle="SELinux user maps table"
-                    shownElementsList={selinuxUserMaps}
-                    pk="cn"
-                    keyNames={keyNames}
-                    columnNames={columnNames}
-                    hasCheckboxes={true}
-                    pathname="selinux-user-maps"
-                    showTableRows={showTableRows}
-                    showLink={false}
-                    elementsData={{
-                      isElementSelectable: isSelinuxUserMapSelectable,
-                      selectedElements,
-                      selectableElementsTable: selectableMapsTable,
-                      setElementsSelected: setMapSelected,
-                      clearSelectedElements: () => setSelectedElements([]),
-                    }}
-                    buttonsData={{
-                      updateIsDeleteButtonDisabled: (value) =>
-                        setIsDeleteButtonDisabled(value),
-                      isDeletion,
-                      updateIsDeletion: (value) => setIsDeletion(value),
-                      updateIsEnableButtonDisabled: (value) =>
-                        setIsEnableButtonDisabled(value),
-                      updateIsDisableButtonDisabled: (value) =>
-                        setIsDisableButtonDisabled(value),
-                      isDisableEnableOp: true,
-                    }}
-                    paginationData={{
-                      selectedPerPage,
-                      updateSelectedPerPage: setSelectedPerPage,
-                    }}
-                    statusElementName="ipaenabledflag"
-                  />
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
-            <PaginationLayout
-              list={selinuxUserMaps}
-              paginationData={paginationData}
-              variant={PaginationVariant.bottom}
-              widgetId="pagination-options-menu-bottom"
-            />
-          </FlexItem>
-        </Flex>
-      </PageSection>
-      <AddSelinuxUserMapModal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        onRefresh={refreshData}
-      />
-      <DeleteSelinuxUserMapsModal
-        isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        elementsToDelete={selectedElements}
-        clearSelectedElements={() => setSelectedElements([])}
-        columnNames={columnNames}
-        keyNames={keyNames}
-        onRefresh={refreshData}
-        updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
-        updateIsDeletion={setIsDeletion}
-      />
-      <EnableDisableSelinuxUserMapsModal
-        isOpen={showEnableDisableModal}
-        onClose={() => setShowEnableDisableModal(false)}
-        elementsList={selectedElements.map((map) => map.cn)}
-        setElementsList={(newElementsList: SELinuxUserMap[]) =>
-          setSelectedElements(newElementsList)
-        }
-        operation={operation}
-        onRefresh={refreshData}
-      />
-    </div>
+        <DeleteSelinuxUserMapsModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          elementsToDelete={selectedElements}
+          clearSelectedElements={() => setSelectedElements([])}
+          columnNames={columnNames}
+          keyNames={keyNames}
+          onRefresh={refreshData}
+          updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
+          updateIsDeletion={setIsDeletion}
+        />
+        <EnableDisableSelinuxUserMapsModal
+          isOpen={showEnableDisableModal}
+          onClose={() => setShowEnableDisableModal(false)}
+          elementsList={selectedElements.map((map) => map.cn)}
+          setElementsList={(newElementsList: SELinuxUserMap[]) =>
+            setSelectedElements(newElementsList)
+          }
+          operation={operation}
+          onRefresh={refreshData}
+        />
+      </div>
+    </>
   );
 };
 

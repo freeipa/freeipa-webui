@@ -8,11 +8,13 @@ import MemberOfToolbar from "../MemberOf/MemberOfToolbar";
 import MemberOfHostsTable from "./ManagedByTableHosts";
 import MemberOfAddModal, { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
+
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
+import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // RPC
 import { ErrorResult, FindRPCResponse } from "src/services/rpc";
 import {
@@ -313,6 +315,7 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
         addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
         helpIconEnabled={true}
+        onHelpIconClick={() => dispatch(toggleHelpPanel())}
         totalItems={managedby_host.length}
         perPage={perPage}
         page={page}

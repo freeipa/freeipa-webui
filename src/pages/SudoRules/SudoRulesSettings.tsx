@@ -8,6 +8,11 @@ import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // RPC
 import {
   AddRemoveAsRunToSudoRulesPayload,
@@ -33,6 +38,7 @@ import KebabLayout from "src/components/layouts/KebabLayout";
 import TabLayout from "src/components/layouts/TabLayout";
 import SudoRuleGeneral from "src/components/SudoRuleSections/SudoRuleGeneral";
 import SidebarLayout from "src/components/layouts/SidebarLayout";
+
 import SudoRuleOptions from "src/components/SudoRuleSections/SudoRuleOptions";
 import SudoRulesWho from "src/components/SudoRuleSections/SudoRulesWho";
 import { TableEntry } from "src/components/tables/KeytabTableWithFilter";
@@ -57,6 +63,8 @@ interface PropsToSudoRulesSettings {
 const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
   const dispatch = useAppDispatch();
 
+  // Contextual help panel
+
   // API calls
   const [saveService] = useSaveSudoRuleMutation();
   const [onRemoveFromUsers] = useRemoveFromSudoRuleMutation();
@@ -67,6 +75,15 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "sudo-rules" });
+
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("sudo-rules-settings"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   const [isSaving, setSaving] = React.useState(false);
 
@@ -916,7 +933,10 @@ const SudoRulesSettings = (props: PropsToSudoRulesSettings) => {
   return (
     <>
       <TabLayout id="settings-page" toolbarItems={toolbarFields}>
-        <SidebarLayout itemNames={itemNames}>
+        <SidebarLayout
+          itemNames={itemNames}
+          onHelpClick={() => dispatch(toggleHelpPanel())}
+        >
           {/* General */}
           <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
             <TitleLayout headingLevel="h2" id="general" text="General" />

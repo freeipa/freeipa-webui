@@ -30,6 +30,11 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // Components
 import ToolbarLayout, {
   ToolbarItem,
@@ -39,6 +44,7 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
@@ -53,8 +59,19 @@ interface DnsResourceRecordsProps {
 const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
   const dispatch = useAppDispatch();
 
+  // Contextual help panel
+
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "dns-records" });
+
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("dns-resource-records"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // URL parameters: page number, page size, search value
   const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
@@ -375,7 +392,12 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     },
     {
       key: 7,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={() => dispatch(toggleHelpPanel())}
+        />
+      ),
     },
     {
       key: 8,
@@ -402,98 +424,103 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
 
   // Render component
   return (
-    <div
-      style={{
-        height: `var(--subsettings-calc)`,
-      }}
-      data-cy={"dns-zones-dns-records"}
-    >
-      <PageSection hasBodyWrapper={false} isFilled={false}>
-        <Flex direction={{ default: "column" }}>
-          <FlexItem>
-            <ToolbarLayout toolbarItems={toolbarItems} />
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto" }}>
-            <OuterScrollContainer>
-              <InnerScrollContainer
-                style={{ height: "60vh", overflow: "auto" }}
-              >
-                {error !== undefined && error ? (
-                  <GlobalErrors errors={globalErrors.getAll()} />
-                ) : (
-                  <>
-                    {isLoading || !showTableRows ? (
-                      spinner
-                    ) : (
-                      <MainTable
-                        tableTitle="DNS records table"
-                        shownElementsList={dnsRecords}
-                        pk="idnsname"
-                        keyNames={[
-                          "idnsname",
-                          "dnsrecord_types",
-                          "dnsrecord_data",
-                        ]}
-                        columnNames={["Record name", "Record type", "Data"]}
-                        hasCheckboxes={true}
-                        pathname="dns-records"
-                        showTableRows={showTableRows}
-                        showLink={false}
-                        elementsData={{
-                          isElementSelectable: isDnsRecordSelectable,
-                          selectedElements,
-                          selectableElementsTable: selectableDnsRecordsTable,
-                          setElementsSelected: setDnsRecordsSelected,
-                          clearSelectedElements: () => setSelectedElements([]),
-                        }}
-                        buttonsData={{
-                          updateIsDeleteButtonDisabled: (value) =>
-                            setIsDeleteButtonDisabled(value),
-                          isDeletion,
-                          updateIsDeletion: (value) => setIsDeletion(value),
-                          isDisableEnableOp: true,
-                        }}
-                        paginationData={{
-                          selectedPerPage,
-                          updateSelectedPerPage: setSelectedPerPage,
-                        }}
-                      />
-                    )}
-                  </>
-                )}
-              </InnerScrollContainer>
-            </OuterScrollContainer>
-          </FlexItem>
-          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
-            <PaginationLayout
-              list={dnsRecords}
-              paginationData={paginationData}
-              variant={PaginationVariant.bottom}
-              widgetId="pagination-options-menu-bottom"
-              className="pf-v6-u-pb-0 pf-v6-u-pr-md"
-            />
-          </FlexItem>
-        </Flex>
-      </PageSection>
-      <AddDnsRecordsModal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        onRefresh={refreshData}
-        dnsZoneId={props.dnsZoneId}
-      />
-      <DeleteDnsRecordsModal
-        isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        onRefresh={refreshData}
-        dnsZoneId={props.dnsZoneId}
-        elementsToDelete={selectedElements}
-        clearSelectedElements={() => setSelectedElements([])}
-        columnNames={["Record name", "Record type"]}
-        keyNames={["idnsname", "dnsrecord_types"]}
-        updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
-        updateIsDeletion={setIsDeletion}
-      />
-    </div>
+    <>
+      <div
+        style={{
+          height: `var(--subsettings-calc)`,
+        }}
+        data-cy={"dns-zones-dns-records"}
+      >
+        <PageSection hasBodyWrapper={false} isFilled={false}>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <ToolbarLayout toolbarItems={toolbarItems} />
+            </FlexItem>
+            <FlexItem style={{ flex: "0 0 auto" }}>
+              <OuterScrollContainer>
+                <InnerScrollContainer
+                  style={{ height: "60vh", overflow: "auto" }}
+                >
+                  {error !== undefined && error ? (
+                    <GlobalErrors errors={globalErrors.getAll()} />
+                  ) : (
+                    <>
+                      {isLoading || !showTableRows ? (
+                        spinner
+                      ) : (
+                        <MainTable
+                          tableTitle="DNS records table"
+                          shownElementsList={dnsRecords}
+                          pk="idnsname"
+                          keyNames={[
+                            "idnsname",
+                            "dnsrecord_types",
+                            "dnsrecord_data",
+                          ]}
+                          columnNames={["Record name", "Record type", "Data"]}
+                          hasCheckboxes={true}
+                          pathname="dns-records"
+                          showTableRows={showTableRows}
+                          showLink={false}
+                          elementsData={{
+                            isElementSelectable: isDnsRecordSelectable,
+                            selectedElements,
+                            selectableElementsTable: selectableDnsRecordsTable,
+                            setElementsSelected: setDnsRecordsSelected,
+                            clearSelectedElements: () =>
+                              setSelectedElements([]),
+                          }}
+                          buttonsData={{
+                            updateIsDeleteButtonDisabled: (value) =>
+                              setIsDeleteButtonDisabled(value),
+                            isDeletion,
+                            updateIsDeletion: (value) => setIsDeletion(value),
+                            isDisableEnableOp: true,
+                          }}
+                          paginationData={{
+                            selectedPerPage,
+                            updateSelectedPerPage: setSelectedPerPage,
+                          }}
+                        />
+                      )}
+                    </>
+                  )}
+                </InnerScrollContainer>
+              </OuterScrollContainer>
+            </FlexItem>
+            <FlexItem
+              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
+            >
+              <PaginationLayout
+                list={dnsRecords}
+                paginationData={paginationData}
+                variant={PaginationVariant.bottom}
+                widgetId="pagination-options-menu-bottom"
+                className="pf-v6-u-pb-0 pf-v6-u-pr-md"
+              />
+            </FlexItem>
+          </Flex>
+        </PageSection>
+        <AddDnsRecordsModal
+          isOpen={showAddModal}
+          onClose={() => setShowAddModal(false)}
+          onRefresh={refreshData}
+          dnsZoneId={props.dnsZoneId}
+        />
+        <DeleteDnsRecordsModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onRefresh={refreshData}
+          dnsZoneId={props.dnsZoneId}
+          elementsToDelete={selectedElements}
+          clearSelectedElements={() => setSelectedElements([])}
+          columnNames={["Record name", "Record type"]}
+          keyNames={["idnsname", "dnsrecord_types"]}
+          updateIsDeleteButtonDisabled={setIsDeleteButtonDisabled}
+          updateIsDeletion={setIsDeletion}
+        />
+      </div>
+    </>
   );
 };
 

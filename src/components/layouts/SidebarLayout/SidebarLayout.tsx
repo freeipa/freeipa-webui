@@ -12,6 +12,7 @@ import HelpTextWithIconLayout from "../HelpTextWithIconLayout";
 interface SidebarLayoutProps {
   itemNames: string[];
   children: React.ReactNode;
+  onHelpClick?: () => void;
 }
 
 const SidebarLayout = (props: SidebarLayoutProps) => {
@@ -25,7 +26,10 @@ const SidebarLayout = (props: SidebarLayoutProps) => {
     <>
       <Sidebar isPanelRight>
         <SidebarPanel variant="sticky">
-          <HelpTextWithIconLayout textContent="Help" />
+          <HelpTextWithIconLayout
+            textContent="Help"
+            onClick={props.onHelpClick}
+          />
           <JumpLinks
             isVertical
             label="Jump to section"

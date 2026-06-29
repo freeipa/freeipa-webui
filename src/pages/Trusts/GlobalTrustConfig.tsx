@@ -15,6 +15,11 @@ import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 import { useTrustsConfigData } from "src/hooks/useTrustsConfigData";
 // RPC
 import {
@@ -29,12 +34,15 @@ import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import { NotFound } from "src/components/errors/PageErrors";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+
 import PageWithGrayBorderLayout from "src/components/layouts/PageWithGrayBorderLayout";
 import IpaTextInput from "src/components/Form/IpaTextInput";
 import IpaSelect from "src/components/Form/IpaSelect";
 
 const GlobalTrustConfig = () => {
   const dispatch = useAppDispatch();
+
+  // Contextual help panel
 
   // API calls
   const trustsConfigData = useTrustsConfigData();
@@ -44,6 +52,15 @@ const GlobalTrustConfig = () => {
   const { browserTitle } = useUpdateRoute({
     pathname: "trusts-config",
   });
+
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("trusts-global-config"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // Set the page title to be shown in the browser tab
   React.useEffect(() => {
@@ -184,126 +201,129 @@ const GlobalTrustConfig = () => {
   }
 
   return (
-    <PageWithGrayBorderLayout
-      id="trusts-global-config-page"
-      pageTitle="Global Trust Configuration"
-      toolbarItems={toolbarFields}
-    >
-      <Sidebar isPanelRight className="pf-v6-u-mb-0">
-        <SidebarPanel variant="sticky">
-          <HelpTextWithIconLayout
-            textContent="Help"
-            icon={
-              <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
-            }
-          />
-        </SidebarPanel>
-        <SidebarContent className="pf-v6-u-mr-xl">
-          <Flex direction={{ default: "column", lg: "row" }}>
-            <FlexItem flex={{ default: "flex_1" }}>
-              <Form id="trusts-global-config-form" onSubmit={onSave}>
-                <FormGroup label="Domain" fieldId="cn">
-                  <IpaTextInput
-                    dataCy="trusts-global-config-textbox-domain"
-                    ariaLabel="Domain text input"
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    name="cn"
-                    metadata={trustsConfigData.metadata}
-                    objectName="trustconfig"
-                  />
-                </FormGroup>
-                <FormGroup
-                  label="Security Identifier"
-                  fieldId="ipantsecurityidentifier"
-                >
-                  <IpaTextInput
-                    dataCy="trusts-global-config-textbox-security-identifier"
-                    ariaLabel="Security Identifier text input"
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    name="ipantsecurityidentifier"
-                    metadata={trustsConfigData.metadata}
-                    objectName="trustconfig"
-                  />
-                </FormGroup>
-                <FormGroup label="NetBIOS name" fieldId="ipantflatname">
-                  <IpaTextInput
-                    dataCy="trusts-global-config-textbox-netbios-name"
-                    ariaLabel="NetBIOS name text input"
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    name="ipantflatname"
-                    metadata={trustsConfigData.metadata}
-                    objectName="trustconfig"
-                  />
-                </FormGroup>
-                <FormGroup label="Domain GUID" fieldId="ipantdomainguid">
-                  <IpaTextInput
-                    dataCy="trusts-global-config-textbox-domain-guid"
-                    ariaLabel="Domain GUID text input"
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    name="ipantdomainguid"
-                    metadata={trustsConfigData.metadata}
-                    objectName="trustconfig"
-                  />
-                </FormGroup>
-              </Form>
-            </FlexItem>
-            <FlexItem flex={{ default: "flex_1" }}>
-              <Form>
-                <FormGroup
-                  label="Fallback primary group"
-                  fieldId="ipantfallbackprimarygroup"
-                  isRequired
-                >
-                  <IpaSelect
-                    dataCy="trusts-global-config-select-fallback-primary-group"
-                    ariaLabel="Fallback primary group select"
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    name="ipantfallbackprimarygroup"
-                    metadata={trustsConfigData.metadata}
-                    objectName="trustconfig"
-                    options={userGroupsOptions}
-                    defaultValue={"Default SMB Group"}
-                  />
-                </FormGroup>
-                <FormGroup
-                  label="IPA AD trust agents"
-                  fieldId="ad_trust_agent_server"
-                >
-                  <IpaTextInput
-                    dataCy="trusts-global-config-textbox-list-ipa-ad-trust-agents"
-                    ariaLabel="IPA AD trust agents text input"
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    name="ad_trust_agent_server"
-                    metadata={trustsConfigData.metadata}
-                    objectName="trustconfig"
-                  />
-                </FormGroup>
-                <FormGroup
-                  label="IPA AD trust controllers"
-                  fieldId="ad_trust_controller_server"
-                >
-                  <IpaTextInput
-                    dataCy="trusts-global-config-textbox-list-ipa-ad-trust-controllers"
-                    ariaLabel="IPA AD trust controllers text input"
-                    ipaObject={ipaObject}
-                    onChange={recordOnChange}
-                    name="ad_trust_controller_server"
-                    metadata={trustsConfigData.metadata}
-                    objectName="trustconfig"
-                  />
-                </FormGroup>
-              </Form>
-            </FlexItem>
-          </Flex>
-        </SidebarContent>
-      </Sidebar>
-    </PageWithGrayBorderLayout>
+    <>
+      <PageWithGrayBorderLayout
+        id="trusts-global-config-page"
+        pageTitle="Global Trust Configuration"
+        toolbarItems={toolbarFields}
+      >
+        <Sidebar isPanelRight className="pf-v6-u-mb-0">
+          <SidebarPanel variant="sticky">
+            <HelpTextWithIconLayout
+              textContent="Help"
+              onClick={() => dispatch(toggleHelpPanel())}
+              icon={
+                <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
+              }
+            />
+          </SidebarPanel>
+          <SidebarContent className="pf-v6-u-mr-xl">
+            <Flex direction={{ default: "column", lg: "row" }}>
+              <FlexItem flex={{ default: "flex_1" }}>
+                <Form id="trusts-global-config-form" onSubmit={onSave}>
+                  <FormGroup label="Domain" fieldId="cn">
+                    <IpaTextInput
+                      dataCy="trusts-global-config-textbox-domain"
+                      ariaLabel="Domain text input"
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      name="cn"
+                      metadata={trustsConfigData.metadata}
+                      objectName="trustconfig"
+                    />
+                  </FormGroup>
+                  <FormGroup
+                    label="Security Identifier"
+                    fieldId="ipantsecurityidentifier"
+                  >
+                    <IpaTextInput
+                      dataCy="trusts-global-config-textbox-security-identifier"
+                      ariaLabel="Security Identifier text input"
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      name="ipantsecurityidentifier"
+                      metadata={trustsConfigData.metadata}
+                      objectName="trustconfig"
+                    />
+                  </FormGroup>
+                  <FormGroup label="NetBIOS name" fieldId="ipantflatname">
+                    <IpaTextInput
+                      dataCy="trusts-global-config-textbox-netbios-name"
+                      ariaLabel="NetBIOS name text input"
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      name="ipantflatname"
+                      metadata={trustsConfigData.metadata}
+                      objectName="trustconfig"
+                    />
+                  </FormGroup>
+                  <FormGroup label="Domain GUID" fieldId="ipantdomainguid">
+                    <IpaTextInput
+                      dataCy="trusts-global-config-textbox-domain-guid"
+                      ariaLabel="Domain GUID text input"
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      name="ipantdomainguid"
+                      metadata={trustsConfigData.metadata}
+                      objectName="trustconfig"
+                    />
+                  </FormGroup>
+                </Form>
+              </FlexItem>
+              <FlexItem flex={{ default: "flex_1" }}>
+                <Form>
+                  <FormGroup
+                    label="Fallback primary group"
+                    fieldId="ipantfallbackprimarygroup"
+                    isRequired
+                  >
+                    <IpaSelect
+                      dataCy="trusts-global-config-select-fallback-primary-group"
+                      ariaLabel="Fallback primary group select"
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      name="ipantfallbackprimarygroup"
+                      metadata={trustsConfigData.metadata}
+                      objectName="trustconfig"
+                      options={userGroupsOptions}
+                      defaultValue={"Default SMB Group"}
+                    />
+                  </FormGroup>
+                  <FormGroup
+                    label="IPA AD trust agents"
+                    fieldId="ad_trust_agent_server"
+                  >
+                    <IpaTextInput
+                      dataCy="trusts-global-config-textbox-list-ipa-ad-trust-agents"
+                      ariaLabel="IPA AD trust agents text input"
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      name="ad_trust_agent_server"
+                      metadata={trustsConfigData.metadata}
+                      objectName="trustconfig"
+                    />
+                  </FormGroup>
+                  <FormGroup
+                    label="IPA AD trust controllers"
+                    fieldId="ad_trust_controller_server"
+                  >
+                    <IpaTextInput
+                      dataCy="trusts-global-config-textbox-list-ipa-ad-trust-controllers"
+                      ariaLabel="IPA AD trust controllers text input"
+                      ipaObject={ipaObject}
+                      onChange={recordOnChange}
+                      name="ad_trust_controller_server"
+                      metadata={trustsConfigData.metadata}
+                      objectName="trustconfig"
+                    />
+                  </FormGroup>
+                </Form>
+              </FlexItem>
+            </Flex>
+          </SidebarContent>
+        </Sidebar>
+      </PageWithGrayBorderLayout>
+    </>
   );
 };
 

@@ -36,6 +36,11 @@ import AddRoleModal from "src/components/modals/RoleModals/AddRoleModal";
 import DeleteRolesModal from "src/components/modals/RoleModals/DeleteRolesModal";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils
@@ -61,6 +66,15 @@ const Roles = () => {
   React.useEffect(() => {
     document.title = browserTitle;
   }, [browserTitle]);
+
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("roles"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   const apiVersion = useAppSelector(
     (state) => state.global.environment.api_version
@@ -388,7 +402,12 @@ const Roles = () => {
     },
     {
       key: 7,
-      element: <HelpTextWithIconLayout textContent="Help" />,
+      element: (
+        <HelpTextWithIconLayout
+          textContent="Help"
+          onClick={() => dispatch(toggleHelpPanel())}
+        />
+      ),
     },
     {
       key: 8,

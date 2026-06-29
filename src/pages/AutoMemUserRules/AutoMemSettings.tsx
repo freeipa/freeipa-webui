@@ -16,6 +16,7 @@ import IpaTextArea from "src/components/Form/IpaTextArea";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
+
 import TabLayout from "src/components/layouts/TabLayout";
 // Utils
 import { asRecord } from "../../utils/hostUtils";
@@ -24,6 +25,11 @@ import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import {
+  closeHelpPanel,
+  setHelpTopic,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 // Data types
 import { Automember, Metadata } from "../../utils/datatypes/globalDataTypes";
 // Icons
@@ -53,6 +59,8 @@ interface PropsToSettings {
 const AutoMemSettings = (props: PropsToSettings) => {
   const dispatch = useAppDispatch();
 
+  // Contextual help panel
+
   // RPC calls
   const [saveAutomember] = useSaveAutomemberMutation();
 
@@ -62,6 +70,15 @@ const AutoMemSettings = (props: PropsToSettings) => {
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: pathname, noBreadcrumb: true });
+
+  // Set help topic on mount, clear on unmount
+  React.useEffect(() => {
+    dispatch(setHelpTopic("automember-settings"));
+    return () => {
+      dispatch(setHelpTopic(""));
+      dispatch(closeHelpPanel());
+    };
+  }, [dispatch]);
 
   // Get 'ipaObject' and 'recordOnChange' to use in 'IpaTextInput'
   const { ipaObject, recordOnChange } = asRecord(
@@ -215,94 +232,104 @@ const AutoMemSettings = (props: PropsToSettings) => {
 
   // Render component
   return (
-    <TabLayout id="automember-settings-page" toolbarItems={toolbarFields}>
-      <Sidebar isPanelRight>
-        <SidebarPanel variant="sticky">
-          <HelpTextWithIconLayout
-            textContent="Help"
-            icon={
-              <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
-            }
-          />
-          <JumpLinks
-            isVertical
-            label="Jump to section"
-            scrollableSelector="#automember-settings-page"
-            expandable={{ default: "expandable", md: "nonExpandable" }}
-          >
-            <JumpLinksItem key={0} href="#rule-general">
-              General
-            </JumpLinksItem>
-            <JumpLinksItem key={1} href="#rule-inclusive">
-              Inclusive
-            </JumpLinksItem>
-            <JumpLinksItem key={2} href="#rule-exclusive">
-              Exclusive
-            </JumpLinksItem>
-          </JumpLinks>
-        </SidebarPanel>
-        <SidebarContent className="pf-v6-u-mr-xl">
-          <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
-            <TitleLayout
-              key={0}
-              headingLevel="h1"
-              id="rule-general"
-              text="General"
+    <>
+      <TabLayout id="automember-settings-page" toolbarItems={toolbarFields}>
+        <Sidebar isPanelRight>
+          <SidebarPanel variant="sticky">
+            <HelpTextWithIconLayout
+              textContent="Help"
+              onClick={() => dispatch(toggleHelpPanel())}
+              icon={
+                <OutlinedQuestionCircleIcon className="pf-v6-u-primary-color-100 pf-v6-u-mr-sm" />
+              }
             />
-            <Form
-              className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md"
-              id="auto-member-settings-form"
-              onSubmit={onSave}
+            <JumpLinks
+              isVertical
+              label="Jump to section"
+              scrollableSelector="#automember-settings-page"
+              expandable={{ default: "expandable", md: "nonExpandable" }}
             >
-              <FormGroup label="Description" fieldId="description" role="group">
-                <IpaTextArea
-                  dataCy="auto-member-tab-settings-textbox-description"
-                  name="description"
-                  ipaObject={ipaObject}
-                  onChange={recordOnChange}
-                  objectName="automember"
-                  metadata={props.metadata}
+              <JumpLinksItem key={0} href="#rule-general">
+                General
+              </JumpLinksItem>
+              <JumpLinksItem key={1} href="#rule-inclusive">
+                Inclusive
+              </JumpLinksItem>
+              <JumpLinksItem key={2} href="#rule-exclusive">
+                Exclusive
+              </JumpLinksItem>
+            </JumpLinks>
+          </SidebarPanel>
+          <SidebarContent className="pf-v6-u-mr-xl">
+            <Flex
+              direction={{ default: "column" }}
+              flex={{ default: "flex_1" }}
+            >
+              <TitleLayout
+                key={0}
+                headingLevel="h1"
+                id="rule-general"
+                text="General"
+              />
+              <Form
+                className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md"
+                id="auto-member-settings-form"
+                onSubmit={onSave}
+              >
+                <FormGroup
+                  label="Description"
+                  fieldId="description"
+                  role="group"
+                >
+                  <IpaTextArea
+                    dataCy="auto-member-tab-settings-textbox-description"
+                    name="description"
+                    ipaObject={ipaObject}
+                    onChange={recordOnChange}
+                    objectName="automember"
+                    metadata={props.metadata}
+                  />
+                </FormGroup>
+              </Form>
+              <Form className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md">
+                <TitleLayout
+                  key={1}
+                  headingLevel="h1"
+                  id="rule-inclusive"
+                  text="Inclusive"
                 />
-              </FormGroup>
-            </Form>
-            <Form className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md">
-              <TitleLayout
-                key={1}
-                headingLevel="h1"
-                id="rule-inclusive"
-                text="Inclusive"
-              />
-              <InclusiveExclusiveSection
-                entityId={props.automemberRule.cn?.toString() as string}
-                automemberType={props.automemberType}
-                conditionType={"inclusive"}
-                tableElements={inclusiveRules}
-                metadata={props.metadata}
-                columnNames={["Attribute", "Expression"]}
-                onRefresh={props.onRefresh}
-              />
-            </Form>
-            <Form className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md">
-              <TitleLayout
-                key={1}
-                headingLevel="h1"
-                id="rule-exclusive"
-                text="Exclusive"
-              />
-              <InclusiveExclusiveSection
-                entityId={props.automemberRule.cn?.toString() as string}
-                automemberType={props.automemberType}
-                conditionType={"exclusive"}
-                tableElements={exclusiveRules}
-                metadata={props.metadata}
-                columnNames={["Attribute", "Expression"]}
-                onRefresh={props.onRefresh}
-              />
-            </Form>
-          </Flex>
-        </SidebarContent>
-      </Sidebar>
-    </TabLayout>
+                <InclusiveExclusiveSection
+                  entityId={props.automemberRule.cn?.toString() as string}
+                  automemberType={props.automemberType}
+                  conditionType={"inclusive"}
+                  tableElements={inclusiveRules}
+                  metadata={props.metadata}
+                  columnNames={["Attribute", "Expression"]}
+                  onRefresh={props.onRefresh}
+                />
+              </Form>
+              <Form className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md">
+                <TitleLayout
+                  key={1}
+                  headingLevel="h1"
+                  id="rule-exclusive"
+                  text="Exclusive"
+                />
+                <InclusiveExclusiveSection
+                  entityId={props.automemberRule.cn?.toString() as string}
+                  automemberType={props.automemberType}
+                  conditionType={"exclusive"}
+                  tableElements={exclusiveRules}
+                  metadata={props.metadata}
+                  columnNames={["Attribute", "Expression"]}
+                  onRefresh={props.onRefresh}
+                />
+              </Form>
+            </Flex>
+          </SidebarContent>
+        </Sidebar>
+      </TabLayout>
+    </>
   );
 };
 
