@@ -81,7 +81,7 @@ const useRoleSettings = (roleId: string): RoleSettingsData => {
   }, [role, originalRole]);
 
   const onResetValues = () => {
-    setOriginalRole({ ...role });
+    setRole({ ...originalRole });
     setModified(false);
   };
 

@@ -37,6 +37,7 @@ export function apiToRole(apiRecord: Record<string, unknown>): Role {
     member_service: (apiRecord.member_service as string[]) || [],
     member_idoverrideuser: (apiRecord.member_idoverrideuser as string[]) || [],
     member_sysaccount: (apiRecord.member_sysaccount as string[]) || [],
+    memberof_privilege: (apiRecord.memberof_privilege as string[]) || [],
   };
 }
 
@@ -59,6 +60,7 @@ export function createEmptyRole(): Role {
     member_service: [],
     member_idoverrideuser: [],
     member_sysaccount: [],
+    memberof_privilege: [],
   };
 
   return role;

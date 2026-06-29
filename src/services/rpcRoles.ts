@@ -49,6 +49,11 @@ export interface RoleMemberPayload {
   idsToAdd: string[];
 }
 
+interface RolePrivilegePayload {
+  roleCn: string;
+  privileges: string[];
+}
+
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
     /**
@@ -285,6 +290,54 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Get available privileges via `privilege_find`
+     * @param {string} searchValue - Search value for filtering privileges
+     * @returns {FindRPCResponse} - Response from API
+     */
+    getPrivileges: build.query<FindRPCResponse, string>({
+      query: (searchValue) =>
+        getCommand({
+          method: "privilege_find",
+          params: [
+            [searchValue],
+            { no_members: true, version: API_VERSION_BACKUP },
+          ],
+        }),
+    }),
+    /**
+     * Add privilege to a role via `role_add_privilege`
+     * @param {RolePrivilegePayload} - Payload with role cn and privileges to add
+     * @returns {FindRPCResponse} - Response from API
+     */
+    addPrivilegeToRole: build.mutation<FindRPCResponse, RolePrivilegePayload>({
+      query: (payload) =>
+        getCommand({
+          method: "role_add_privilege",
+          params: [
+            [payload.roleCn],
+            { privilege: payload.privileges, version: API_VERSION_BACKUP },
+          ],
+        }),
+    }),
+    /**
+     * Remove privilege from a role via `role_remove_privilege`
+     * @param {RolePrivilegePayload} - Payload with role cn and privileges to remove
+     * @returns {FindRPCResponse} - Response from API
+     */
+    removePrivilegeFromRole: build.mutation<
+      FindRPCResponse,
+      RolePrivilegePayload
+    >({
+      query: (payload) =>
+        getCommand({
+          method: "role_remove_privilege",
+          params: [
+            [payload.roleCn],
+            { privilege: payload.privileges, version: API_VERSION_BACKUP },
+          ],
+        }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -317,4 +370,7 @@ export const {
   useGetRoleByIdQuery,
   useAddAsMemberRoleMutation,
   useRemoveAsMemberRoleMutation,
+  useGetPrivilegesQuery,
+  useAddPrivilegeToRoleMutation,
+  useRemovePrivilegeFromRoleMutation,
 } = extendedApi;
