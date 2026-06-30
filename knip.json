@@ -33,6 +33,12 @@
     "src/utils/**/*.tsx",
     "src/hooks/useTranslation.ts",
     "src/services/rpci18n.ts",
-    "src/services/rpc.ts"
+    "src/services/rpc.ts",
+    "src/components/Form/CategoryToggleSection/CategoryToggleSection.tsx",
+    "src/components/Form/CategoryToggleSection/index.ts",
+    "src/components/Form/CheckboxListWithFilter/CheckboxListWithFilter.tsx",
+    "src/components/Form/CheckboxListWithFilter/index.ts",
+    "src/components/Form/IpaCheckboxListWithFilter/IpaCheckboxListWithFilter.tsx",
+    "src/components/Form/IpaCheckboxListWithFilter/index.ts"
   ]
 }
