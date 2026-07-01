@@ -5,7 +5,7 @@ When("I click on search link in dual list", () => {
 });
 
 When("I click on {string} dual list item", (item: string) => {
-  cy.dataCy(item).click();
+  cy.dataCy(item).find(".pf-v6-c-dual-list-selector__list-item-row").click();
 });
 
 Then("I should see {string} dual list item", (item: string) => {
@@ -32,7 +32,9 @@ export const addItemToRightList = (item: string) => {
   const dualListItem = `item-${item}`;
   cy.dataCy(dualListItem).should("exist");
 
-  cy.dataCy(dualListItem).click();
+  cy.dataCy(dualListItem)
+    .find(".pf-v6-c-dual-list-selector__list-item-row")
+    .click();
   cy.dataCy(dualListItem).should("have.attr", "aria-selected", "true");
 
   cy.dataCy("dual-list-add-selected").click();
