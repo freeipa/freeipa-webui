@@ -107,6 +107,10 @@ When("I select entry {string} in the data table", (name: string) => {
   selectEntry(name);
 });
 
+When("I check entry {string} in the data table", (name: string) => {
+  checkEntry(name);
+});
+
 When(
   "I select {string} entry in the data table with ID {string}",
   (name: string, tableId: string) => {
