@@ -225,6 +225,11 @@ export interface SysAccount {
   description: string;
 }
 
+export interface Privilege {
+  cn: string;
+  description: string;
+}
+
 export interface HBACRulesOld {
   name: string;
   status: string;

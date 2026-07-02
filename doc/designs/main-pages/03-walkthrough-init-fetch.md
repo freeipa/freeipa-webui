@@ -119,13 +119,10 @@ This pattern avoids eslint warnings about calling `setState` in `useEffect`.
     clearSelectedEntities();
     dataResponse.refetch();
   };
-
-  React.useEffect(() => {
-    if (!isSearchActive) {
-      dataResponse.refetch();
-    }
-  }, [page, perPage]);
 ```
+
+> **Note:** No manual `useEffect` for pagination is needed. RTK Query automatically
+> re-fetches when `startIdx`/`stopIdx` change (derived from `page`/`perPage`).
 
 ## Step 7: Search Handler
 

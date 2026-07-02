@@ -71,6 +71,7 @@ const TrustsGlobalConfigGroupRef = "trusts-config";
 const TopologyGroupRef = "topology-graph";
 // - Role-based access control
 const RbacGroupRef = "rbac";
+const PrivilegesGroupRef = "privileges";
 // - Configuration
 const ConfigRef = "configuration";
 
@@ -435,6 +436,13 @@ export const getNavigationRoutes = (
               group: RbacGroupRef,
               title: `${BASE_TITLE} - Roles`,
               path: "roles",
+              items: [],
+            },
+            {
+              label: "Privileges",
+              group: PrivilegesGroupRef,
+              title: `${BASE_TITLE} - Privileges`,
+              path: "privileges",
               items: [],
             },
           ],
