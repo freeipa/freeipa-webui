@@ -1,7 +1,7 @@
 # Sub-Pages — Settings Tab
 
 > **Part of:** [Sub-Pages guide](../sub-pages.md)
-> **See also:** [Data Hook](03-data-hook.md) | [Settings Patterns](12-settings-patterns.md)
+> **See also:** [Data Hook](03-data-hook.md) | [Settings Patterns](12-settings-patterns.md) | [Component Catalog](../components/00-overview.md)
 
 ## Prompt Template
 

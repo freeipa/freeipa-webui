@@ -1,7 +1,7 @@
-# Sub-Pages — Component Catalog: Layout Components
+# Component Catalog — Layout Components
 
-> **Part of:** [Component Catalog](16-component-catalog.md)
-> **See also:** [Input Components](16a-component-catalog-inputs.md) | [List Components](16b-component-catalog-lists.md)
+> **Part of:** [Component Catalog](00-overview.md)
+> **See also:** [Input Components](01-inputs.md) | [List Components](02-lists.md)
 
 Layout components are located in `src/components/layouts/`.
 
@@ -100,6 +100,73 @@ Table layout for displaying key-value pairs in Settings.
 
 ---
 
+## Modal Components
+
+### ModalWithFormLayout
+
+Base modal component for forms with field definitions.
+
+**Import:** `import ModalWithFormLayout, { Field } from "src/components/layouts/ModalWithFormLayout"`
+
+**Props:**
+| Prop | Type | Description |
+|------|------|-------------|
+| `dataCy` | `string` | Test identifier |
+| `variantType` | `"small" \| "medium" \| "large"` | Modal size |
+| `modalPosition` | `"top" \| "default"` | Modal position |
+| `offPosition` | `string` | Offset from top (e.g., `"76px"`) |
+| `title` | `string` | Modal title |
+| `formId` | `string` | Form ID for submit button |
+| `fields` | `Field[]` | Form field definitions |
+| `show` | `boolean` | Controls visibility |
+| `onSubmit` | `() => void` | Submit handler |
+| `onClose` | `() => void` | Close handler |
+| `actions` | `JSX.Element[]` | Action buttons |
+
+**Field definition:**
+```tsx
+interface Field {
+  id: string;
+  name: string;
+  pfComponent: ReactNode;
+  fieldRequired?: boolean;
+}
+```
+
+**Example:**
+```tsx
+const fields: Field[] = [
+  {
+    id: "modal-form-name",
+    name: "Name",
+    pfComponent: <TextInput id="modal-form-name" value={name} onChange={setName} />,
+    fieldRequired: true,
+  },
+];
+
+<ModalWithFormLayout
+  dataCy="add-entity-modal"
+  variantType="small"
+  modalPosition="top"
+  offPosition="76px"
+  title="Add entity"
+  formId="add-modal-form"
+  fields={fields}
+  show={isOpen}
+  onSubmit={onAdd}
+  onClose={onClose}
+  actions={modalActions}
+/>
+```
+
+### ModalWithTextAreaLayout
+
+Modal with text area content.
+
+**Import:** `import ModalWithTextAreaLayout from "src/components/layouts/ModalWithTextAreaLayout"`
+
+---
+
 ## Other Layout Components
 
 | Component | Import | Use Case |
@@ -107,10 +174,9 @@ Table layout for displaying key-value pairs in Settings.
 | `PopoverWithIconLayout` | `src/components/layouts/PopoverWithIconLayout` | Info popover with icon |
 | `ExpandableCardLayout` | `src/components/layouts/ExpandableCardLayout` | Expandable card (used in certificates) |
 | `DualListLayout` | `src/components/layouts/DualListLayout` | Dual list selector |
-| `ModalWithFormLayout` | `src/components/layouts/ModalWithFormLayout` | Modal with form content |
-| `ModalWithTextAreaLayout` | `src/components/layouts/ModalWithTextAreaLayout` | Modal with text area |
 | `DataSpinner` | `src/components/layouts/DataSpinner` | Loading spinner |
 | `SecondaryButton` | `src/components/layouts/SecondaryButton` | Secondary action button |
+| `InputRequiredText` | `src/components/layouts/InputRequiredText` | Text input with required indicator |
 
 ---
 
@@ -122,4 +188,4 @@ For complex sections with the Category Toggle + Tables pattern:
 
 **Import:** `import CategoryToggleSection from "src/components/CategoryToggleSection/CategoryToggleSection"`
 
-See [15-category-toggle-sections.md](15-category-toggle-sections.md) for detailed usage.
+See [sub-pages/15-category-toggle-sections.md](../sub-pages/15-category-toggle-sections.md) for detailed usage.

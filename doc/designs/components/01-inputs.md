@@ -1,7 +1,7 @@
-# Sub-Pages — Component Catalog: Input Components
+# Component Catalog — Input Components
 
-> **Part of:** [Component Catalog](16-component-catalog.md)
-> **See also:** [Settings Tab](04-settings-tab.md) | [Settings Patterns](12-settings-patterns.md)
+> **Part of:** [Component Catalog](00-overview.md)
+> **See also:** [List Components](02-lists.md) | [Layout Components](03-layouts.md)
 
 All form components are in `src/components/Form/` and follow the **IPAParamDefinition pattern**:
 - Receive `ipaObject`, `onChange`, `metadata`, `objectName`, and `name` props

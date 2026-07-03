@@ -107,8 +107,5 @@ See [08-checklist.md](sub-pages/08-checklist.md) for full validation.
 | [15-category-toggle-sections.md](sub-pages/15-category-toggle-sections.md) | Category toggle overview |
 | ↳ [15a-category-toggle-basics.md](sub-pages/15a-category-toggle-basics.md) | RPC mutations, hook config |
 | ↳ [15b-category-toggle-advanced.md](sub-pages/15b-category-toggle-advanced.md) | Clearing members, API naming |
-| [16-component-catalog.md](sub-pages/16-component-catalog.md) | Component catalog overview |
-| ↳ [16a-component-catalog-inputs.md](sub-pages/16a-component-catalog-inputs.md) | Input components |
-| ↳ [16b-component-catalog-lists.md](sub-pages/16b-component-catalog-lists.md) | List components |
-| ↳ [16c-component-catalog-layouts.md](sub-pages/16c-component-catalog-layouts.md) | Layout components |
+| **[Component Catalog](components/00-overview.md)** | Reusable components (inputs, lists, layouts) — shared with main-pages |
 | [17-independent-sub-pages.md](sub-pages/17-independent-sub-pages.md) | Independent sub-pages |

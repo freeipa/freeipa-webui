@@ -1,7 +1,7 @@
 # Sub-Pages — Settings Section Patterns
 
 > **Part of:** [Sub-Pages guide](../sub-pages.md)
-> **See also:** [Settings Tab](04-settings-tab.md) | [Category Toggle](15-category-toggle-sections.md)
+> **See also:** [Settings Tab](04-settings-tab.md) | [Category Toggle](15-category-toggle-sections.md) | [Component Catalog](../components/00-overview.md)
 
 Reference patterns by name in prompts.
 

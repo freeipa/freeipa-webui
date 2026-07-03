@@ -22,6 +22,10 @@ Each file below covers a specific, self-contained topic (~100–200 lines). Load
 | [09-rpc-service.md](main-pages/09-rpc-service.md) | RPC service file template (find+show pattern, add/delete/show/mod endpoints) | ~190 |
 | [10-routing-and-conventions.md](main-pages/10-routing-and-conventions.md) | `AppRoutes.tsx` + `NavRoutes.ts` setup, `data-cy` naming, common pitfalls | ~130 |
 
+## Component Catalog
+
+See **[Component Catalog](components/00-overview.md)** for reusable components (inputs, lists, layouts) shared with sub-pages.
+
 ## Quick Reference
 
 **To generate a new main page:** read [01-overview.md](main-pages/01-overview.md) for input requirements, then provide all required inputs alongside this index and the relevant sub-files as context.

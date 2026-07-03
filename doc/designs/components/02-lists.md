@@ -1,7 +1,7 @@
-# Sub-Pages — Component Catalog: List & Specialized Components
+# Component Catalog — List & Specialized Components
 
-> **Part of:** [Component Catalog](16-component-catalog.md)
-> **See also:** [Input Components](16a-component-catalog-inputs.md) | [Layout Components](16c-component-catalog-layouts.md)
+> **Part of:** [Component Catalog](00-overview.md)
+> **See also:** [Input Components](01-inputs.md) | [Layout Components](03-layouts.md)
 
 ## List & Collection Components
 
