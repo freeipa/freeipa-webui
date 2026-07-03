@@ -126,7 +126,9 @@ return { ...otherProps, userOptions };
 
 ## API-Specific Limitations
 
-Not all API commands support the same options. Verify by checking [FreeIPA API docs](https://freeipa.readthedocs.io/en/latest/api/).
+Not all API commands support the same options. Verify by checking:
+- [FreeIPA API docs](https://freeipa.readthedocs.io/en/latest/api/) — General documentation
+- [API.txt](https://codeberg.org/freeipa/freeipa/src/branch/master/API.txt) — Complete command specifications (options, inputs, outputs for every IPA command). This file is auto-generated from the FreeIPA source tree and updated with every release, so it is always in sync with the actual server API.
 
 | Entity | `_find` limitations | `_show` limitations |
 |--------|---------------------|---------------------|

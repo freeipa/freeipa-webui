@@ -82,6 +82,8 @@ Without `showLink={true}`, rows are not clickable!
 
 ## RPC Endpoints Needed
 
+> **Reference:** [API.txt](https://codeberg.org/freeipa/freeipa/src/branch/master/API.txt) contains the full specification (options, inputs, outputs) for every IPA API command. Use it to determine which fields a command accepts and what parameters are required.
+
 | Tab Type | Commands |
 |----------|----------|
 | Settings | `<entity>_show`, `<entity>_mod` |
