@@ -1,7 +1,7 @@
 # Sub-Pages — Tabs Component
 
 > **Part of:** [Sub-Pages guide](../sub-pages.md)
-> **See also:** [Overview](01-overview.md) | [Data Hook](03-data-hook.md)
+> **See also:** [Overview](01-overview.md) | [Data Hook](02-data-hook.md)
 
 ## ⚠️ MANDATORY: Create This BEFORE Settings
 
@@ -15,7 +15,7 @@
 > Without `<Entity>Tabs.tsx`, a `<Entity>Settings.tsx` file is useless — it cannot be rendered or receive data.
 >
 > **Creation order:**
-> 1. `use<Entity>SettingsData.tsx` — Data hook (see [03-data-hook.md](03-data-hook.md))
+> 1. `use<Entity>SettingsData.tsx` — Data hook (see [02-data-hook.md](02-data-hook.md))
 > 2. `<Entity>Settings.tsx` — Settings component (see [04-settings-tab.md](04-settings-tab.md))
 > 3. `<Entity>Tabs.tsx` — Tabs component (this file) 
 
@@ -115,7 +115,7 @@ const [id, setId] = React.useState("");
 const <entity>SettingsData = use<Entity>SettingsData(<primaryKey>);
 ```
 
-The data hook (covered in [03-data-hook.md](03-data-hook.md)) handles all API communication and returns the entity data, loading state, and helper functions.
+The data hook (covered in [02-data-hook.md](02-data-hook.md)) handles all API communication and returns the entity data, loading state, and helper functions.
 
 ## Tab Navigation
 

@@ -1,7 +1,7 @@
 # Sub-Pages — Settings Tab
 
 > **Part of:** [Sub-Pages guide](../sub-pages.md)
-> **See also:** [Data Hook](03-data-hook.md) | [Settings Patterns](12-settings-patterns.md) | [Component Catalog](../components/00-overview.md)
+> **See also:** [Data Hook](02-data-hook.md) | [Settings Patterns](12-settings-patterns.md) | [Component Catalog](../components/00-overview.md)
 
 ## Prompt Template
 
@@ -46,7 +46,7 @@ Before `<Entity>Settings.tsx`, create:
 1. `use<Entity>SettingsData.tsx` — Data hook
 2. `<Entity>Tabs.tsx` — Entry point (renders Settings)
 
-See [02-tabs-component.md](02-tabs-component.md) and [03-data-hook.md](03-data-hook.md).
+See [03-tabs-component.md](03-tabs-component.md) and [02-data-hook.md](02-data-hook.md).
 
 ## Prerequisites Checklist
 

@@ -1,7 +1,7 @@
 # Sub-Pages — Troubleshooting: Form Issues
 
 > **Part of:** [Troubleshooting](13-troubleshooting.md)
-> **See also:** [Data Hook](03-data-hook.md) | [API Issues](13b-troubleshooting-api.md)
+> **See also:** [Data Hook](02-data-hook.md) | [API Issues](13b-troubleshooting-api.md)
 
 ## Form Fields Not Editable / Save Button Always Disabled
 

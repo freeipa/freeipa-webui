@@ -1,7 +1,7 @@
 # Sub-Pages — Troubleshooting: Save/Revert Buttons
 
 > **Part of:** [Troubleshooting](13-troubleshooting.md)
-> **See also:** [Form Issues](13a-troubleshooting-forms.md) | [Data Hook](03-data-hook.md)
+> **See also:** [Form Issues](13a-troubleshooting-forms.md) | [Data Hook](02-data-hook.md)
 
 ## Save/Revert Buttons Stay Enabled After Saving
 

@@ -1,7 +1,7 @@
 # Sub-Pages — Entity Data Types
 
 > **Part of:** [Sub-Pages guide](../sub-pages.md)
-> **See also:** [Settings Tab](04-settings-tab.md) | [Data Hook](03-data-hook.md)
+> **See also:** [Settings Tab](04-settings-tab.md) | [Data Hook](02-data-hook.md)
 
 How to use TypeScript interfaces and API metadata when generating sub-pages.
 
@@ -35,6 +35,26 @@ Apply constraints to form components:
   numCharsShown={10}  // max(String(5).length, String(2147483647).length)
 />
 ```
+
+For plain `string` fields, `IpaTextInput` needs no extra constraint props — `required` is inferred automatically from metadata. Add `rules` only when custom validation is needed:
+
+```tsx
+<IpaTextInput
+  name="cn"
+  dataCy="entity-tab-settings-textbox-cn"
+  ipaObject={ipaObject}
+  onChange={recordOnChange}
+  rules={[
+    {
+      id: "maxLength",
+      message: "Must be at most 255 characters",
+      validate: (value: string) => value.length <= 255,
+    },
+  ]}
+/>
+```
+
+Each rule provides live feedback: `indeterminate` when empty, `success`/`error` as the user types.
 
 ## Type-to-Component Mappings
 

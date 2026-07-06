@@ -1,7 +1,7 @@
 # Sub-Pages — Routing
 
 > **Part of:** [Sub-Pages guide](../sub-pages.md)
-> **See also:** [Tabs Component](02-tabs-component.md) | [Main Pages Routing](../main-pages/10-routing-and-conventions.md)
+> **See also:** [Tabs Component](03-tabs-component.md) | [Main Pages Routing](../main-pages/10-routing-and-conventions.md)
 
 ## How Sub-Page Routing Works
 

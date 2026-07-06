@@ -1,7 +1,7 @@
 # Sub-Pages — Troubleshooting
 
 > **Part of:** [Sub-Pages guide](../sub-pages.md)
-> **See also:** [Best Practices](00-best-practices.md) | [Data Hook](03-data-hook.md) | [Checklist](08-checklist.md)
+> **See also:** [Best Practices](00-best-practices.md) | [Data Hook](02-data-hook.md) | [Checklist](08-checklist.md)
 
 Common issues when creating sub-pages and their solutions. Issues are organized by category.
 

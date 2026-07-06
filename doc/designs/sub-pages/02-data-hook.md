@@ -1,7 +1,7 @@
 # Sub-Pages — Data Hook
 
 > **Part of:** [Sub-Pages guide](../sub-pages.md)
-> **See also:** [Tabs Component](02-tabs-component.md) | [Settings Tab](04-settings-tab.md)
+> **See also:** [Tabs Component](03-tabs-component.md) | [Settings Tab](04-settings-tab.md)
 
 ## What is a Data Hook?
 

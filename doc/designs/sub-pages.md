@@ -18,6 +18,7 @@ See [11-visual-reference.md](sub-pages/11-visual-reference.md) for ASCII diagram
 
 Key rules:
 - **Never** create disabled buttons or empty handlers without asking
+- **Always** use absolute imports (starting with `src/`)
 - **Always** ask for missing information before implementing
 - **Always** run post-generation validation commands
 
@@ -43,7 +44,7 @@ See [00-best-practices.md](sub-pages/00-best-practices.md) for the complete guid
 6. `AppRoutes.tsx` — Register route
 7. `<Entity>.tsx` — Enable `showLink={true}`
 
-See [02-tabs-component.md](sub-pages/02-tabs-component.md) for Tabs details.
+See [03-tabs-component.md](sub-pages/03-tabs-component.md) for Tabs details.
 
 ## Navigation Bar Highlighting
 
@@ -78,8 +79,8 @@ See [08-checklist.md](sub-pages/08-checklist.md) for full validation.
 |------|----------|
 | [00-best-practices.md](sub-pages/00-best-practices.md) | **Read first** — Golden rules, anti-patterns, required practices |
 | [01-overview.md](sub-pages/01-overview.md) | Required inputs, inference rules |
-| [02-tabs-component.md](sub-pages/02-tabs-component.md) | Tabs anatomy, URL params |
-| [03-data-hook.md](sub-pages/03-data-hook.md) | Data hook pattern |
+| [02-data-hook.md](sub-pages/02-data-hook.md) | Data hook pattern |
+| [03-tabs-component.md](sub-pages/03-tabs-component.md) | Tabs anatomy, URL params |
 | [04-settings-tab.md](sub-pages/04-settings-tab.md) | Settings form, toolbar |
 | ↳ [04a-settings-kebab-modals.md](sub-pages/04a-settings-kebab-modals.md) | Kebab menu actions, modals |
 | ↳ [04b-settings-form-fields.md](sub-pages/04b-settings-form-fields.md) | Form components, field config |

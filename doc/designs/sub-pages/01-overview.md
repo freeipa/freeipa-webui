@@ -1,7 +1,7 @@
 # Sub-Pages — Overview
 
 > **Part of:** [Sub-Pages guide](../sub-pages.md)
-> **See also:** [Best Practices](00-best-practices.md) | [Tabs Component](02-tabs-component.md) | [Checklist](08-checklist.md)
+> **See also:** [Best Practices](00-best-practices.md) | [Tabs Component](03-tabs-component.md) | [Checklist](08-checklist.md)
 
 A sub-page is a detail view for a single entity, accessed by clicking a row in a main page table.
 
