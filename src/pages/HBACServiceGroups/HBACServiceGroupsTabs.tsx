@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate } from "react-router";
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Layouts
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -50,11 +49,11 @@ const HBACServiceGroupsTabs = ({ section }) => {
     const currentPath: BreadCrumbItem[] = [
       {
         name: "HBAC service groups",
-        url: URL_PREFIX + "/hbac-service-groups",
+        url: "/hbac-service-groups",
       },
       {
         name: cn,
-        url: URL_PREFIX + "/hbac-service-groups/" + cn,
+        url: "/hbac-service-groups/" + cn,
         isActive: true,
       },
     ];
@@ -66,7 +65,7 @@ const HBACServiceGroupsTabs = ({ section }) => {
   // Redirect to the settings page if the section is not defined
   React.useEffect(() => {
     if (!section) {
-      navigate(URL_PREFIX + "/hbac-service-groups/" + cn);
+      navigate("/hbac-service-groups/" + cn);
     }
     const section_string = section as string;
     if (section_string === "settings") {

@@ -33,7 +33,6 @@ import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 // Utils
 import { partialUserToUser } from "src/utils/userUtils";
 // Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
 import { UidParams, useSafeParams } from "src/utils/paramsUtils";
 
@@ -53,11 +52,11 @@ const ActiveUsersTabs = ({ memberof }) => {
     const currentPath: BreadCrumbItem[] = [
       {
         name: "Active users",
-        url: URL_PREFIX + "/active-users",
+        url: "/active-users",
       },
       {
         name: uid,
-        url: URL_PREFIX + "/active-users/" + uid,
+        url: "/active-users/" + uid,
         isActive: true,
       },
     ];

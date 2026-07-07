@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate } from "react-router";
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Layouts
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -52,11 +51,11 @@ const NetgroupsTabs = ({ section }) => {
     const currentPath: BreadCrumbItem[] = [
       {
         name: "Netgroups",
-        url: URL_PREFIX + "/netgroups",
+        url: "/netgroups",
       },
       {
         name: cn,
-        url: URL_PREFIX + "/netgroups/" + cn,
+        url: "/netgroups/" + cn,
         isActive: true,
       },
     ];
@@ -68,7 +67,7 @@ const NetgroupsTabs = ({ section }) => {
   // Redirect to the settings page if the section is not defined
   React.useEffect(() => {
     if (!section) {
-      navigate(URL_PREFIX + "/netgroups/" + cn);
+      navigate("/netgroups/" + cn);
     }
     const section_string = section as string;
     if (section_string === "settings") {

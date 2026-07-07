@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate } from "react-router";
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Layouts
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -47,11 +46,11 @@ const SudoRulesTabs = ({ section }) => {
     const currentPath: BreadCrumbItem[] = [
       {
         name: "Sudo rules",
-        url: URL_PREFIX + "/sudo-rules",
+        url: "/sudo-rules",
       },
       {
         name: cn,
-        url: URL_PREFIX + "/sudo-rules/" + cn,
+        url: "/sudo-rules/" + cn,
         isActive: true,
       },
     ];
@@ -63,7 +62,7 @@ const SudoRulesTabs = ({ section }) => {
   // Redirect to the settings page if the section is not defined
   React.useEffect(() => {
     if (!section) {
-      navigate(URL_PREFIX + "/sudo-rules/" + cn);
+      navigate("/sudo-rules/" + cn);
     }
     setActiveTabKey(section);
   }, [section]);

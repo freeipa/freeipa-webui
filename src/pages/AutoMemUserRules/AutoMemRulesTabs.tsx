@@ -12,7 +12,6 @@ import DataSpinner from "src/components/layouts/DataSpinner";
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 // Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
 
 import AutoMemSettings from "./AutoMemSettings";
@@ -51,11 +50,11 @@ const AutoMemUserRulesTabs = (props: AutoMemUserRulesTabsProps) => {
     const currentPath: BreadCrumbItem[] = [
       {
         name: sectionName,
-        url: URL_PREFIX + "/" + pathname,
+        url: "/" + pathname,
       },
       {
         name: cn,
-        url: URL_PREFIX + "/" + pathname + "/" + cn,
+        url: "/" + pathname + "/" + cn,
         isActive: true,
       },
     ];

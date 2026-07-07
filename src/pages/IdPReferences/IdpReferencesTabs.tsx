@@ -4,7 +4,6 @@ import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate } from "react-router";
 // Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
 // Hooks
 import { useIdpRefSettingsData } from "src/hooks/useIdpRefSettingsData";
@@ -51,11 +50,11 @@ const IdpReferencesTabs = ({ section }) => {
     const currentPath: BreadCrumbItem[] = [
       {
         name: "Identity provider references",
-        url: URL_PREFIX + "/" + pathname,
+        url: "/" + pathname,
       },
       {
         name: cn,
-        url: URL_PREFIX + "/" + pathname + "/" + cn,
+        url: "/" + pathname + "/" + cn,
         isActive: true,
       },
     ];

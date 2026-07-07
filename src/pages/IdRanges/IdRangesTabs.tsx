@@ -4,7 +4,6 @@ import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate } from "react-router";
 // Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
 // Hooks
 import { useIdRangesSettingsData } from "src/hooks/useIdRangesSettingsData";
@@ -37,11 +36,11 @@ const IdRangesTabs = ({ section }: { section: string }) => {
   const breadcrumbItems: BreadCrumbItem[] = [
     {
       name: "ID ranges",
-      url: `${URL_PREFIX}/${pathname}`,
+      url: `/${pathname}`,
     },
     {
       name: cn,
-      url: `${URL_PREFIX}/${pathname}/${cn}`,
+      url: `/${pathname}/${cn}`,
       isActive: true,
     },
   ];

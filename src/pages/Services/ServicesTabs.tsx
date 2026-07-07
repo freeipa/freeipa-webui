@@ -24,7 +24,6 @@ import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import DataSpinner from "src/components/layouts/DataSpinner";
 // Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
 import { useSafeParams } from "src/utils/paramsUtils";
 
@@ -77,11 +76,11 @@ const ServicesTabs = ({ section }) => {
     const currentPath: BreadCrumbItem[] = [
       {
         name: "Services",
-        url: URL_PREFIX + "/services",
+        url: "/services",
       },
       {
         name: decodedId,
-        url: URL_PREFIX + "/services/" + doubleEncodedId,
+        url: "/services/" + doubleEncodedId,
         isActive: true,
       },
     ];
@@ -93,7 +92,7 @@ const ServicesTabs = ({ section }) => {
   // Redirect to the settings page if the section is not defined
   React.useEffect(() => {
     if (!section) {
-      navigate(URL_PREFIX + "/services/" + doubleEncodedId);
+      navigate("/services/" + doubleEncodedId);
     }
     setActiveTabKey(section);
   }, [section]);

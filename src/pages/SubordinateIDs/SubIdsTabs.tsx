@@ -4,7 +4,6 @@ import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate } from "react-router";
 // Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
 // Hooks
 import { useSubidSettings } from "src/hooks/useSubidSettingsData";
@@ -54,11 +53,11 @@ const SubIdTabs = ({ section }) => {
     const currentPath: BreadCrumbItem[] = [
       {
         name: "Subordinate IDs",
-        url: URL_PREFIX + "/" + pathname,
+        url: "/" + pathname,
       },
       {
         name: ipauniqueid,
-        url: URL_PREFIX + "/" + pathname + "/" + ipauniqueid,
+        url: "/" + pathname + "/" + ipauniqueid,
         isActive: true,
       },
     ];

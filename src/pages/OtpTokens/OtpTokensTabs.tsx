@@ -4,7 +4,6 @@ import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate } from "react-router";
 // Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
 // Hooks
 import { useOtpTokensSettingsData } from "src/hooks/useOtpTokensSettingsData";
@@ -39,11 +38,11 @@ const OtpTokensTabs = ({ section }: { section: string }) => {
   const breadcrumbItems: BreadCrumbItem[] = [
     {
       name: "Otp tokens",
-      url: URL_PREFIX + "/" + pathname,
+      url: "/" + pathname,
     },
     {
       name: ipatokenuniqueid,
-      url: URL_PREFIX + "/" + pathname + "/" + ipatokenuniqueid,
+      url: "/" + pathname + "/" + ipatokenuniqueid,
       isActive: true,
     },
   ];

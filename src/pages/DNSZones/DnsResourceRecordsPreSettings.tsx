@@ -1,6 +1,5 @@
 import React from "react";
 // Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
 // Hooks
 import { useDnsRecordsData } from "src/hooks/useDnsRecordsData";
@@ -37,15 +36,15 @@ const DnsResourceRecordsPreSettings = () => {
     const currentPath: BreadCrumbItem[] = [
       {
         name: "DNS zones",
-        url: URL_PREFIX + "/" + pathname,
+        url: "/" + pathname,
       },
       {
         name: idnsname,
-        url: URL_PREFIX + "/" + pathname + "/" + idnsname,
+        url: "/" + pathname + "/" + idnsname,
       },
       {
         name: recordName,
-        url: URL_PREFIX + "/" + pathname + "/" + idnsname + "/" + recordName,
+        url: "/" + pathname + "/" + idnsname + "/" + recordName,
         isActive: true,
       },
     ];

@@ -18,7 +18,6 @@ import {
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 // Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
 import { UidParams, useSafeParams } from "src/utils/paramsUtils";
 
@@ -36,11 +35,11 @@ const StageUsersTabs = () => {
     const currentPath: BreadCrumbItem[] = [
       {
         name: "Stage users",
-        url: URL_PREFIX + "/stage-users",
+        url: "/stage-users",
       },
       {
         name: uid,
-        url: URL_PREFIX + "/stage-users/" + uid,
+        url: "/stage-users/" + uid,
         isActive: true,
       },
     ];

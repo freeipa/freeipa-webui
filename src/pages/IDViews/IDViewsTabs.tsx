@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate } from "react-router";
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Layouts
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -54,11 +53,11 @@ const IDViewsTabs = ({ section }) => {
     const currentPath: BreadCrumbItem[] = [
       {
         name: "ID views",
-        url: URL_PREFIX + "/id-views",
+        url: "/id-views",
       },
       {
         name: cn,
-        url: URL_PREFIX + "/id-views/" + cn,
+        url: "/id-views/" + cn,
         isActive: true,
       },
     ];
@@ -70,7 +69,7 @@ const IDViewsTabs = ({ section }) => {
   // Redirect to the settings page if the section is not defined
   React.useEffect(() => {
     if (!section) {
-      navigate(URL_PREFIX + "/id-views/" + cn);
+      navigate("/id-views/" + cn);
     }
     const section_str = section as string;
     if (section_str.startsWith("override")) {

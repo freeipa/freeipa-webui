@@ -18,7 +18,6 @@ import {
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 // Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
 import { UidParams, useSafeParams } from "src/utils/paramsUtils";
 
@@ -37,11 +36,11 @@ const PreservedUsersTabs = () => {
     const currentPath: BreadCrumbItem[] = [
       {
         name: "Preserved users",
-        url: URL_PREFIX + "/preserved-users",
+        url: "/preserved-users",
       },
       {
         name: uid,
-        url: URL_PREFIX + "/preserved-users/" + uid,
+        url: "/preserved-users/" + uid,
         isActive: true,
       },
     ];

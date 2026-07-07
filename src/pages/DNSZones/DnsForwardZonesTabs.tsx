@@ -2,7 +2,6 @@ import React from "react";
 // PatternFly
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
 // Hooks
 import { useDnsForwardZonesData } from "src/hooks/useDnsForwardZonesData";
@@ -40,11 +39,11 @@ const DnsForwardZonesTabs = ({ section }: { section: string }) => {
   const breadcrumbItems: BreadCrumbItem[] = [
     {
       name: "DNS forward zones",
-      url: URL_PREFIX + "/" + pathname,
+      url: "/" + pathname,
     },
     {
       name: idnsname,
-      url: URL_PREFIX + "/" + pathname + "/" + idnsname,
+      url: "/" + pathname + "/" + idnsname,
       isActive: true,
     },
   ];

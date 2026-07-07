@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate } from "react-router";
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 // Layouts
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
@@ -49,11 +48,11 @@ const SudoCmdGroupsTabs = ({ section }) => {
     const currentPath: BreadCrumbItem[] = [
       {
         name: "Sudo command groups",
-        url: URL_PREFIX + "/sudo-command-groups",
+        url: "/sudo-command-groups",
       },
       {
         name: cn,
-        url: URL_PREFIX + "/sudo-command-groups/" + cn,
+        url: "/sudo-command-groups/" + cn,
         isActive: true,
       },
     ];
@@ -65,7 +64,7 @@ const SudoCmdGroupsTabs = ({ section }) => {
   // Redirect to the settings page if the section is not defined
   React.useEffect(() => {
     if (!section) {
-      navigate(URL_PREFIX + "/sudo-command-groups/" + cn);
+      navigate("/sudo-command-groups/" + cn);
     }
     const section_string = section as string;
     if (section_string === "settings") {

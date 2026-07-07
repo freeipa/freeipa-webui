@@ -3,6 +3,7 @@ import React from "react";
 import { Breadcrumb, BreadcrumbItem } from "@patternfly/react-core";
 // Redux
 import { useAppSelector } from "src/store/hooks";
+import { Link } from "react-router";
 
 export interface BreadCrumbItem {
   name: string;
@@ -22,20 +23,24 @@ const BreadCrumb = (props: PropsToBreadcrumb) => {
     ? useAppSelector((state) => state.routes.breadCrumbPath)
     : props.breadcrumbItems;
 
-  const breadcrumbItems = pagesVisited || [];
-
   // When rendering the elements, the last item can contain some text before the name
   return (
     <Breadcrumb className={props.className}>
-      {breadcrumbItems.map((page, idx) =>
+      {pagesVisited.map((page, idx) =>
         idx === 0 || !page.isActive ? (
           <BreadcrumbItem
             key={page.url}
-            to={page.url}
             isActive={page.isActive || false}
-          >
-            {page.name}
-          </BreadcrumbItem>
+            render={({ className, ariaCurrent }) => (
+              <Link
+                to={page.url}
+                className={className}
+                aria-current={ariaCurrent}
+              >
+                {page.name}
+              </Link>
+            )}
+          />
         ) : (
           <BreadcrumbItem key={page.url} isActive={page.isActive || false}>
             {props.preText && props.preText + " "}

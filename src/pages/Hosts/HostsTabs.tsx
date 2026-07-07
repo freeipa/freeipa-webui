@@ -27,7 +27,6 @@ import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import { partialHostToHost } from "src/utils/hostUtils";
 // Navigation
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
 import { useSafeParams } from "src/utils/paramsUtils";
 
@@ -83,11 +82,11 @@ const HostsTabs = ({ section }) => {
     const currentPath: BreadCrumbItem[] = [
       {
         name: "Hosts",
-        url: URL_PREFIX + "/hosts",
+        url: "/hosts",
       },
       {
         name: fqdn,
-        url: URL_PREFIX + "/hosts/" + fqdn,
+        url: "/hosts/" + fqdn,
         isActive: true,
       },
     ];
@@ -99,7 +98,7 @@ const HostsTabs = ({ section }) => {
   // Redirect to the settings page if the section is not defined
   React.useEffect(() => {
     if (!section) {
-      navigate(URL_PREFIX + "/hosts/" + hostId);
+      navigate("/hosts/" + hostId);
     }
 
     // Case: any of the 'member of' sections is clicked

@@ -35,7 +35,6 @@ import { setIsLogin } from "src/store/Global/auth-slice";
 // Navigation
 import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router";
-import { URL_PREFIX } from "src/navigation/NavRoutes";
 
 interface StateFromSyncOtpPage {
   alertMessage: string;
@@ -327,10 +326,9 @@ const LoginMainPage = () => {
       <LoginMainFooterLinksItem>
         <Button
           variant="link"
-          component="a"
           data-cy="login-button-sync-otp"
           aria-label="Synchronize otp token"
-          href={URL_PREFIX + "/sync-otp"}
+          onClick={() => navigate("/sync-otp")}
         >
           <Content component="p">Sync OTP Token</Content>
         </Button>

@@ -3,6 +3,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 // Component
 import BreadCrumb, { BreadCrumbItem } from "./BreadCrumb";
+import { MemoryRouter } from "react-router";
 
 describe("BreadCrumb Component", () => {
   afterEach(() => {
@@ -23,7 +24,11 @@ describe("BreadCrumb Component", () => {
       },
     ];
 
-    render(<BreadCrumb breadcrumbItems={breadCrumbItems} />);
+    render(
+      <MemoryRouter>
+        <BreadCrumb breadcrumbItems={breadCrumbItems} />
+      </MemoryRouter>
+    );
     expect(screen.getByText("Active users")).toBeInTheDocument();
     expect(screen.getByText("user1")).toBeInTheDocument();
   });
@@ -41,7 +46,11 @@ describe("BreadCrumb Component", () => {
       },
     ];
 
-    render(<BreadCrumb breadcrumbItems={breadCrumbItems} preText="User:" />);
+    render(
+      <MemoryRouter>
+        <BreadCrumb breadcrumbItems={breadCrumbItems} preText="User:" />
+      </MemoryRouter>
+    );
     expect(screen.getByText("Active users")).toBeInTheDocument();
     expect(screen.getByText("User: user1")).toBeInTheDocument();
   });
@@ -59,7 +68,11 @@ describe("BreadCrumb Component", () => {
       },
     ];
 
-    render(<BreadCrumb breadcrumbItems={breadCrumbItems} />);
+    render(
+      <MemoryRouter>
+        <BreadCrumb breadcrumbItems={breadCrumbItems} />
+      </MemoryRouter>
+    );
 
     /**
      * Vitest is simulating a browser, but it has some limitations.
