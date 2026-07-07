@@ -54,15 +54,10 @@ import { useGettingGroupsQuery } from "../../services/rpcUserGroups";
 
 const UserGroups = () => {
   // Update current route data to Redux and highlight the current page in the Nav bar
-  const { browserTitle } = useUpdateRoute({ pathname: "user-groups" });
+  useUpdateRoute({ pathname: "user-groups" });
 
   const dispatch = useAppDispatch();
   useContextualHelpTopic("user-groups");
-
-  // Set the page title to be shown in the browser tab
-  React.useEffect(() => {
-    document.title = browserTitle;
-  }, [browserTitle]);
 
   // Retrieve API version from environment data
   const apiVersion = useAppSelector(

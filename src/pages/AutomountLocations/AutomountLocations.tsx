@@ -48,13 +48,9 @@ const AutomountLocations = () => {
   const dispatch = useAppDispatch();
   useContextualHelpTopic("automount-locations");
 
-  const { browserTitle } = useUpdateRoute({
+  useUpdateRoute({
     pathname: "automount-locations",
   });
-
-  React.useEffect(() => {
-    document.title = browserTitle;
-  }, [browserTitle]);
 
   // Retrieve API version from environment data
   const apiVersion = useAppSelector(

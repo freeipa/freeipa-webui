@@ -59,12 +59,7 @@ const Services = () => {
   const [servicesList, setServicesList] = useState<Service[]>([]);
 
   // Update current route data to Redux and highlight the current page in the Nav bar
-  const { browserTitle } = useUpdateRoute({ pathname: "services" });
-
-  // Set the page title to be shown in the browser tab
-  React.useEffect(() => {
-    document.title = browserTitle;
-  }, [browserTitle]);
+  useUpdateRoute({ pathname: "services" });
 
   // Retrieve API version from environment data
   const apiVersion = useAppSelector(

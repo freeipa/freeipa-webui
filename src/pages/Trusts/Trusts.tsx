@@ -58,14 +58,9 @@ const Trusts = () => {
   const dispatch = useAppDispatch();
   useContextualHelpTopic("trusts");
 
-  const { browserTitle } = useUpdateRoute({
+  useUpdateRoute({
     pathname: "trusts",
   });
-
-  // Set the page title to be shown in the browser tab
-  React.useEffect(() => {
-    document.title = browserTitle;
-  }, [browserTitle]);
 
   // Retrieve API version from environment data
   const apiVersion = useAppSelector(

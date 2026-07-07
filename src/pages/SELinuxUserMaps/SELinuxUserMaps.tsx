@@ -59,13 +59,9 @@ const SELinuxUserMaps = () => {
   const dispatch = useAppDispatch();
   useContextualHelpTopic("selinux-user-maps");
 
-  const { browserTitle } = useUpdateRoute({
+  useUpdateRoute({
     pathname: "selinux-user-maps",
   });
-
-  React.useEffect(() => {
-    document.title = browserTitle;
-  }, [browserTitle]);
 
   const apiVersion = useAppSelector(
     (state) => state.global.environment.api_version

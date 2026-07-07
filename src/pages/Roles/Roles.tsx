@@ -59,11 +59,7 @@ const Roles = () => {
   const dispatch = useAppDispatch();
   useContextualHelpTopic("roles");
 
-  const { browserTitle } = useUpdateRoute({ pathname: "roles" });
-
-  React.useEffect(() => {
-    document.title = browserTitle;
-  }, [browserTitle]);
+  useUpdateRoute({ pathname: "roles" });
 
   const apiVersion = useAppSelector(
     (state) => state.global.environment.api_version

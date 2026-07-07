@@ -8,11 +8,7 @@
 ```tsx
 const MyEntities = () => {
   const dispatch = useAppDispatch();
-  const { browserTitle } = useUpdateRoute({ pathname: "my-entities" });
-
-  React.useEffect(() => {
-    document.title = browserTitle;
-  }, [browserTitle]);
+  useUpdateRoute({ pathname: "my-entities" });
 ```
 
 The `pathname` must be registered in `AppRoutes.tsx` and `NavRoutes.ts`.

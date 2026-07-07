@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 
 interface RoutesState {
-  breadCrumbPath: BreadCrumbItem[] | null;
+  breadCrumbPath: BreadCrumbItem[];
   activePageName: string;
   activeFirstLevel: string;
   activeSecondLevel: string;
@@ -10,7 +10,7 @@ interface RoutesState {
 }
 
 const initialState: RoutesState = {
-  breadCrumbPath: null,
+  breadCrumbPath: [],
   activePageName: "",
   activeFirstLevel: "",
   activeSecondLevel: "",
@@ -35,6 +35,7 @@ const routesSlice = createSlice({
     },
     updateBrowserTitle: (state, action: PayloadAction<string>) => {
       state.browserTitle = action.payload;
+      document.title = action.payload;
     },
   },
 });

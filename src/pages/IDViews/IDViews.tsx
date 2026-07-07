@@ -68,16 +68,11 @@ const IDViews = () => {
   // Contextual help panel
 
   // Update current route data to Redux and highlight the current page in the Nav bar
-  const { browserTitle } = useUpdateRoute({ pathname: "id-views" });
+  useUpdateRoute({ pathname: "id-views" });
 
   // API
   const [executeUnapplyHosts] = useUnapplyHostsMutation();
   const [executeUnapplyHostgroups] = useUnapplyHostgroupsMutation();
-
-  // Set the page title to be shown in the browser tab
-  React.useEffect(() => {
-    document.title = browserTitle;
-  }, [browserTitle]);
 
   // Retrieve API version from environment data
   const apiVersion = useAppSelector(

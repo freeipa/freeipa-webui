@@ -58,22 +58,12 @@ const SudoRules = () => {
   // Contextual help panel
 
   // Update current route data to Redux and highlight the current page in the Nav bar
-  const { browserTitle } = useUpdateRoute({ pathname: "sudo-rules" });
-
-  // Set the page title to be shown in the browser tab
-  React.useEffect(() => {
-    document.title = browserTitle;
-  }, [browserTitle]);
+  useUpdateRoute({ pathname: "sudo-rules" });
 
   // Retrieve API version from environment data
   const apiVersion = useAppSelector(
     (state) => state.global.environment.api_version
   ) as string;
-
-  // Set the page title to be shown in the browser tab
-  React.useEffect(() => {
-    document.title = browserTitle;
-  }, [browserTitle]);
 
   const [rulesList, setRulesList] = useState<SudoRule[]>([]);
 

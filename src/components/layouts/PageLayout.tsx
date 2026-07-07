@@ -19,12 +19,7 @@ interface PageLayoutProps {
 
 const PageLayout = (props: PageLayoutProps) => {
   // Update current route data to Redux and highlight the current page in the Nav bar
-  const { browserTitle } = useUpdateRoute({ pathname: props.pathname });
-
-  // Set the page title to be shown in the browser tab
-  React.useEffect(() => {
-    document.title = browserTitle;
-  }, [browserTitle]);
+  useUpdateRoute({ pathname: props.pathname });
 
   return (
     <div>

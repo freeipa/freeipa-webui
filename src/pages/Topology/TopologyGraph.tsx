@@ -29,12 +29,7 @@ const TopologyGraph = () => {
   const { isLoading, refetch, servers, topologySegments } = useTopologyGraph();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
-  const { browserTitle } = useUpdateRoute({ pathname: "topology-graph" });
-
-  // Set the page title to be shown in the browser tab
-  React.useEffect(() => {
-    document.title = browserTitle;
-  }, [browserTitle]);
+  useUpdateRoute({ pathname: "topology-graph" });
 
   // Transform server data to node models
   const nodes: NodeModel[] = React.useMemo(

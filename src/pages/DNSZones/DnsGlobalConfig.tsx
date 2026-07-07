@@ -57,14 +57,9 @@ const DnsGlobalConfig = () => {
     useDnsGlobalConfigUpdateSystemDnsRecordsMutation();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
-  const { browserTitle } = useUpdateRoute({
+  useUpdateRoute({
     pathname: "dns-global-config",
   });
-
-  // Set the page title to be shown in the browser tab
-  React.useEffect(() => {
-    document.title = browserTitle;
-  }, [browserTitle]);
 
   // States
   const [isDataLoading, setIsDataLoading] = React.useState(false);
