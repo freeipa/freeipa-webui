@@ -31,37 +31,22 @@ interface DocLink {
 }
 
 interface ContextualHelpPanelProps {
-  fromPage?: string;
-  isExpanded?: boolean;
-  onClose?: () => void;
   children: React.ReactNode;
 }
 
 /**
- * Contextual help panel drawer component.
- *
- * Can be used in two ways:
- * 1. At app root level (no props except children) - reads from Redux
- * 2. With explicit props - uses provided values (backward compatible)
+ * Contextual help panel drawer rendered once in AppLayout.
+ * State is managed entirely via Redux (contextual-help-slice).
  */
 const ContextualHelpPanel = (props: ContextualHelpPanelProps) => {
   const dispatch = useAppDispatch();
 
-  // Read from Redux
-  const reduxIsExpanded = useAppSelector(selectHelpPanelExpanded);
-  const reduxFromPage = useAppSelector(selectHelpTopic);
-
-  // Use props if provided, otherwise fall back to Redux state
-  const isExpanded = props.isExpanded ?? reduxIsExpanded;
-  const fromPage = props.fromPage ?? reduxFromPage;
+  const isExpanded = useAppSelector(selectHelpPanelExpanded);
+  const fromPage = useAppSelector(selectHelpTopic);
 
   const handleClose = useCallback(() => {
-    if (props.onClose) {
-      props.onClose();
-    } else {
-      dispatch(closeHelpPanel());
-    }
-  }, [dispatch, props.onClose]);
+    dispatch(closeHelpPanel());
+  }, [dispatch]);
 
   const urlList = useMemo<DocLink[]>(() => {
     if (!fromPage) {
