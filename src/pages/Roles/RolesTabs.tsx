@@ -7,12 +7,12 @@ import { useNavigate } from "react-router";
 import RolesSettings from "./RolesSettings";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
-import ContextualHelpPanel from "src/components/ContextualHelpPanel/ContextualHelpPanel";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import RolesMembers from "./RolesMembers";
 import { partialRoleToRole } from "src/utils/rolesUtils";
 // Hooks
 import { useRoleSettings } from "src/hooks/useRolesSettingsData";
+import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 // Navigation
 import { URL_PREFIX } from "src/navigation/NavRoutes";
 import { NotFound } from "src/components/errors/PageErrors";
@@ -20,6 +20,10 @@ import { CnParams, useSafeParams } from "src/utils/paramsUtils";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
+import {
+  closeHelpPanel,
+  toggleHelpPanel,
+} from "src/store/Global/contextual-help-slice";
 
 interface RolesTabsProps {
   section: string;
@@ -29,27 +33,16 @@ const RolesTabs = ({ section }: RolesTabsProps) => {
   const { cn } = useSafeParams<CnParams>(["cn"]);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  useContextualHelpTopic("roles-settings");
 
   const [breadcrumbItems, setBreadcrumbItems] = React.useState<
     BreadCrumbItem[]
   >([]);
 
-  // Contextual links panel
-  const [isContextualPanelExpanded, setIsContextualPanelExpanded] =
-    useState(false);
-
-  const onOpenContextualPanel = () => {
-    setIsContextualPanelExpanded(!isContextualPanelExpanded);
-  };
-
-  const onCloseContextualPanel = () => {
-    setIsContextualPanelExpanded(false);
-  };
-
   // Close links panel when tab section is changed
   React.useEffect(() => {
-    setIsContextualPanelExpanded(false);
-  }, [section]);
+    dispatch(closeHelpPanel());
+  }, [section, dispatch]);
 
   // Data loaded from DB
   const roleSettingsData = useRoleSettings(cn);
@@ -112,64 +105,58 @@ const RolesTabs = ({ section }: RolesTabsProps) => {
 
   return (
     <>
-      <ContextualHelpPanel
-        fromPage="roles-settings"
-        isExpanded={isContextualPanelExpanded}
-        onClose={onCloseContextualPanel}
-      >
-        <PageSection hasBodyWrapper={false}>
-          <BreadCrumb
-            className="pf-v6-u-mb-sm"
-            breadcrumbItems={breadcrumbItems}
-          />
-          <TitleLayout
-            id={roleSettingsData.role.cn}
-            preText="Role:"
-            text={roleSettingsData.role.cn}
-            headingLevel="h1"
-          />
-        </PageSection>
-        <PageSection hasBodyWrapper={false} type="tabs" isFilled>
-          <Tabs
-            activeKey={activeTabKey}
-            onSelect={handleTabClick}
-            variant="secondary"
-            isBox
-            className="pf-v6-u-ml-lg"
-            mountOnEnter
-            unmountOnExit
+      <PageSection hasBodyWrapper={false}>
+        <BreadCrumb
+          className="pf-v6-u-mb-sm"
+          breadcrumbItems={breadcrumbItems}
+        />
+        <TitleLayout
+          id={roleSettingsData.role.cn}
+          preText="Role:"
+          text={roleSettingsData.role.cn}
+          headingLevel="h1"
+        />
+      </PageSection>
+      <PageSection hasBodyWrapper={false} type="tabs" isFilled>
+        <Tabs
+          activeKey={activeTabKey}
+          onSelect={handleTabClick}
+          variant="secondary"
+          isBox
+          className="pf-v6-u-ml-lg"
+          mountOnEnter
+          unmountOnExit
+        >
+          <Tab
+            eventKey={"settings"}
+            name="settings-details"
+            title={<TabTitleText>Settings</TabTitleText>}
           >
-            <Tab
-              eventKey={"settings"}
-              name="settings-details"
-              title={<TabTitleText>Settings</TabTitleText>}
-            >
-              <RolesSettings
-                role={roleSettingsData.role}
-                originalRole={roleSettingsData.originalRole}
-                metadata={roleSettingsData.metadata}
-                onRoleChange={roleSettingsData.setRole}
-                isDataLoading={roleSettingsData.isFetching}
-                onRefresh={roleSettingsData.refetch}
-                isModified={roleSettingsData.modified}
-                onResetValues={roleSettingsData.resetValues}
-                modifiedValues={roleSettingsData.modifiedValues}
-                onOpenContextualPanel={onOpenContextualPanel}
-              />
-            </Tab>
-            <Tab
-              eventKey={"member"}
-              name={"member-details"}
-              title={<TabTitleText>Members</TabTitleText>}
-            >
-              <RolesMembers
-                role={partialRoleToRole(roleSettingsData.role)}
-                tabSection={section}
-              />
-            </Tab>
-          </Tabs>
-        </PageSection>
-      </ContextualHelpPanel>
+            <RolesSettings
+              role={roleSettingsData.role}
+              originalRole={roleSettingsData.originalRole}
+              metadata={roleSettingsData.metadata}
+              onRoleChange={roleSettingsData.setRole}
+              isDataLoading={roleSettingsData.isFetching}
+              onRefresh={roleSettingsData.refetch}
+              isModified={roleSettingsData.modified}
+              onResetValues={roleSettingsData.resetValues}
+              modifiedValues={roleSettingsData.modifiedValues}
+              onOpenContextualPanel={() => dispatch(toggleHelpPanel())}
+            />
+          </Tab>
+          <Tab
+            eventKey={"member"}
+            name={"member-details"}
+            title={<TabTitleText>Members</TabTitleText>}
+          >
+            <RolesMembers
+              role={partialRoleToRole(roleSettingsData.role)}
+              tabSection={section}
+            />
+          </Tab>
+        </Tabs>
+      </PageSection>
     </>
   );
 };
