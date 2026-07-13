@@ -318,9 +318,42 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    addManagedByOtpToken: build.mutation<
+      FindRPCResponse,
+      OtpTokenManagedByPayload
+    >({
+      query: (payload) => {
+        return getCommand({
+          method: "otptoken_add_managedby",
+          params: [
+            [payload.otpTokenId],
+            { user: payload.users, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+    }),
+    removeManagedByOtpToken: build.mutation<
+      FindRPCResponse,
+      OtpTokenManagedByPayload
+    >({
+      query: (payload) => {
+        return getCommand({
+          method: "otptoken_remove_managedby",
+          params: [
+            [payload.otpTokenId],
+            { user: payload.users, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
+
+export interface OtpTokenManagedByPayload {
+  otpTokenId: string;
+  users: string[];
+}
 
 export const {
   useGetOtpTokensFullDataQuery,
@@ -328,4 +361,6 @@ export const {
   useDeleteOtpTokensMutation,
   useModifyOtpTokensMutation,
   useGetOtpTokenQuery,
+  useAddManagedByOtpTokenMutation,
+  useRemoveManagedByOtpTokenMutation,
 } = extendedApi;

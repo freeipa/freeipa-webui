@@ -1184,7 +1184,7 @@ export interface OtpToken {
   type: OtpTokenTypeValue;
   description: string;
   ipatokenowner: string;
-  managedby_user: string;
+  managedby_user: string[];
   ipatokendisabled: boolean;
   ipatokennotbefore: Date | string; // datetime
   ipatokennotafter: Date | string; // datetime

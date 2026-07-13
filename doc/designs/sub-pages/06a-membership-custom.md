@@ -158,25 +158,132 @@ Apply this pattern to:
 - Filtering selected items for delete modals
 - Displaying values in table cells
 
-## Alert Message Patterns
+## Search Pagination Reset
 
-Include the entity ID for context:
+Reset to page 1 when the search value changes or is submitted. Without this,
+searching from page 2+ can show empty results because the filtered/queried
+set may be smaller than the current page offset.
 
 ```tsx
-// Add success
-dispatch(addAlert({
-  name: "add-managedby-user-success",
-  title: "Assigned OTP token '" + props.id + "' to users",
-  variant: "success",
-}));
+const updateSearchValue = (value: string) => {
+  setPage(1);
+  setSearchValue(value);
+};
 
-// Remove success
-dispatch(addAlert({
-  name: "remove-managedby-user-success",
-  title: "Removed elements from '" + props.id + "'",
-  variant: "success",
-}));
+const submitSearchValue = () => {
+  setPage(1);
+};
+
+// Wire into MemberOfToolbar:
+<MemberOfToolbar
+  onSearchTextChange={updateSearchValue}
+  onSearch={submitSearchValue}
+  ...
+/>
+
+// ❌ Wrong: Passes setSearchValue directly — page stays at 2+
+<MemberOfToolbar
+  onSearchTextChange={setSearchValue}
+  onSearch={() => {}}
+  ...
+/>
 ```
+
+When using client-side filtering with pagination, also use the filtered count
+for `totalItems` and `itemCount` so the pagination widget stays accurate:
+
+```tsx
+<MemberOfToolbar totalItems={filteredUsers.length} ... />
+<Pagination itemCount={filteredUsers.length} ... />
+```
+
+## Derive Available Items with useMemo
+
+Use `useMemo` (not `useState` + `useEffect`) to derive `availableUsers`
+and `availableItems` from query data. This avoids extra render cycles and
+eslint warnings about calling `setState` inside `useEffect`.
+
+```tsx
+// ✅ Correct: Derive with useMemo
+const availableUsers = React.useMemo<User[]>(() => {
+  if (!usersQuery.data || usersQuery.isFetching) return [];
+  const { count, results } = usersQuery.data.result;
+  const users: User[] = [];
+  for (let i = 0; i < count; i++) {
+    users.push(apiToUser(results[i].result));
+  }
+  return users;
+}, [usersQuery.data, usersQuery.isFetching]);
+
+const availableItems = React.useMemo<AvailableItems[]>(
+  () =>
+    availableUsers
+      .filter((user) => !managedby_user.includes(user.uid))
+      .map((user) => ({ key: user.uid, title: user.uid })),
+  [availableUsers, managedby_user]
+);
+
+// ❌ Wrong: useState + useEffect causes extra renders and lint warnings
+const [availableUsers, setAvailableUsers] = React.useState<User[]>([]);
+React.useEffect(() => {
+  if (usersQuery.data && !usersQuery.isFetching) {
+    setAvailableUsers(/* ... */);  // eslint warning!
+  }
+}, [usersQuery.data, usersQuery.isFetching]);
+```
+
+## Mutation Response Handling
+
+Always subdivide `"data" in response` into `result` and `error` paths.
+The IPA API can return a successful HTTP response that contains an
+application-level error (e.g., insufficient permissions).
+
+```tsx
+// ✅ Correct: Check result vs error within data
+addManagedBy(payload).then(
+  (
+    response:
+      | { data: { result?: unknown; error?: unknown } }
+      | { error: FetchBaseQueryError | SerializedError }
+  ) => {
+    if ("data" in response) {
+      if (response.data?.result) {
+        dispatch(addAlert({
+          name: "add-managedby-success",
+          title: "Assigned new managers to OTP token '" + props.id + "'",
+          variant: "success",
+        }));
+        props.onRefreshData();
+        setShowAddModal(false);
+      } else if (response.data?.error) {
+        const errorMessage = response.data.error as unknown as ErrorResult;
+        dispatch(addAlert({
+          name: "add-managedby-error",
+          title: errorMessage.message,
+          variant: "danger",
+        }));
+      }
+    } else if ("error" in response) {
+      dispatch(addAlert({
+        name: "add-managedby-error",
+        title: "Failed to assign managers",
+        variant: "danger",
+      }));
+    }
+    setSpinning(false);
+  }
+);
+
+// ❌ Wrong: Assumes "data" in response always means success
+if ("data" in response) {
+  dispatch(addAlert({ ..., variant: "success" }));  // May be an error!
+}
+```
+
+Apply this three-branch pattern to **both** Add and Delete handlers:
+- `response.data?.result` → success alert, refresh, close modal
+- `response.data?.error` → extract error message, danger alert
+- `"error" in response` → network/server failure fallback alert
 
 ## Examples
 

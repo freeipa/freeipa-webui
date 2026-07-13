@@ -464,6 +464,10 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                     path=""
                     element={<OtpTokensTabs section="settings" />}
                   />
+                  <Route
+                    path="managedby_user"
+                    element={<OtpTokensTabs section="managedby_user" />}
+                  />
                 </Route>
               </Route>
               <Route path="identity-provider-references">

@@ -15,6 +15,7 @@ import BreadCrumb, {
 } from "src/components/layouts/BreadCrumb/BreadCrumb";
 import { IpatokenuniqueidParams, useSafeParams } from "src/utils/paramsUtils";
 import OtpTokensSettings from "./OtpTokensSettings";
+import OtpTokensManagedBy from "./OtpTokensManagedBy";
 
 const OtpTokensTabs = ({ section }: { section: string }) => {
   const { ipatokenuniqueid } = useSafeParams<IpatokenuniqueidParams>([
@@ -26,12 +27,16 @@ const OtpTokensTabs = ({ section }: { section: string }) => {
   // Data loaded from the API
   const otpTokensSettingsData = useOtpTokensSettingsData(ipatokenuniqueid);
 
+  const activeTabKey = section.startsWith("managedby_") ? "managedby" : section;
+
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
     if (tabIndex === "settings") {
       navigate("/" + pathname + "/" + ipatokenuniqueid);
+    } else if (tabIndex === "managedby") {
+      navigate("/" + pathname + "/" + ipatokenuniqueid + "/managedby_user");
     }
   };
 
@@ -71,7 +76,7 @@ const OtpTokensTabs = ({ section }: { section: string }) => {
       </PageSection>
       <PageSection hasBodyWrapper={false} type="tabs" isFilled>
         <Tabs
-          activeKey={section}
+          activeKey={activeTabKey}
           onSelect={handleTabClick}
           variant="secondary"
           isBox
@@ -97,6 +102,17 @@ const OtpTokensTabs = ({ section }: { section: string }) => {
               modifiedValues={otpTokensSettingsData.modifiedValues}
               onResetValues={otpTokensSettingsData.resetValues}
               pathname={pathname}
+            />
+          </Tab>
+          <Tab
+            eventKey={"managedby"}
+            name="managedby-details"
+            title={<TabTitleText>Is managed by</TabTitleText>}
+            data-cy="otp-tokens-tab-managedby"
+          >
+            <OtpTokensManagedBy
+              otpToken={otpTokensSettingsData.otpToken}
+              tabSection={section}
             />
           </Tab>
         </Tabs>
