@@ -75,7 +75,7 @@ const Roles = () => {
   const lastIdx = page * perPage;
 
   const rolesDataResponse = useGettingRolesQuery({
-    searchValue: "",
+    searchValue: searchValue,
     sizeLimit: 0,
     apiVersion: apiVersion || API_VERSION_BACKUP,
     startIdx: firstIdx,
@@ -97,11 +97,13 @@ const Roles = () => {
 
   // Derive rolesList and totalCount from query response or search results
   const { elementsList, totalCount } = useMemo(() => {
-    // If search is active and has results, use search data
+    // If search is active and has results, paginate client-side
     if (isSearchActive && searchData) {
+      const start = (page - 1) * perPage;
+      const end = start + perPage;
       return {
-        elementsList: searchData.elementsList,
-        totalCount: searchData.totalCount,
+        elementsList: searchData.elementsList.slice(start, end),
+        totalCount: searchData.elementsList.length,
       };
     }
 
@@ -122,7 +124,7 @@ const Roles = () => {
     }
 
     return { elementsList: [], totalCount: 0 };
-  }, [batchResponse, isSearchActive, searchData]);
+  }, [batchResponse, isSearchActive, searchData, page, perPage]);
 
   // Derive showTableRows from loading states
   const showTableRows = useMemo(() => {
@@ -159,10 +161,8 @@ const Roles = () => {
   };
 
   React.useEffect(() => {
-    if (!isSearchActive) {
-      rolesDataResponse.refetch();
-    }
-  }, [page, perPage]);
+    rolesDataResponse.refetch();
+  }, []);
 
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
     useState<boolean>(true);
@@ -180,6 +180,7 @@ const Roles = () => {
   const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   const submitSearchValue = () => {
+    setPage(1);
     setSearchIsDisabled(true);
     setIsSearchActive(true);
 
@@ -187,8 +188,8 @@ const Roles = () => {
       searchValue: searchValue,
       sizeLimit: 0,
       apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: firstIdx,
-      stopIdx: lastIdx,
+      startIdx: 0,
+      stopIdx: 100,
     }).then((result) => {
       if ("data" in result) {
         const searchError = result.data?.error as
@@ -304,9 +305,14 @@ const Roles = () => {
     updateSelectedPerPage: setSelectedPerPage,
   };
 
+  const updateSearchValue = (value: string) => {
+    setPage(1);
+    setSearchValue(value);
+  };
+
   const searchValueData = {
     searchValue,
-    updateSearchValue: setSearchValue,
+    updateSearchValue,
     submitSearchValue,
   };
 

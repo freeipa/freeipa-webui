@@ -140,6 +140,7 @@ const DnsServers = () => {
   const [searchEntry] = useSearchDnsServersEntriesMutation();
 
   const submitSearchValue = () => {
+    setPage(1);
     searchEntry({
       searchValue: searchValue,
       pkeyOnly: true,
@@ -169,9 +170,7 @@ const DnsServers = () => {
           const dnsServers = result.data || [];
 
           setTotalCount(totalCount);
-          setDnsServersId(
-            dnsServers.data.slice(firstUserIdx, lastUserIdx) || []
-          );
+          setDnsServersId(dnsServers.data.slice(0, perPage) || []);
           setShowTableRows(true);
         }
         setIsSearchDisabled(false);
@@ -192,10 +191,15 @@ const DnsServers = () => {
     totalCount,
   };
 
+  const updateSearchValue = (value: string) => {
+    setPage(1);
+    setSearchValue(value);
+  };
+
   // SearchInputLayout
   const searchValueData = {
     searchValue,
-    updateSearchValue: setSearchValue,
+    updateSearchValue,
     submitSearchValue,
   };
 

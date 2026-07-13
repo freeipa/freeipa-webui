@@ -190,6 +190,7 @@ const UserGroups = () => {
   };
 
   const updateSearchValue = (value: string) => {
+    setPage(1);
     setSearchValue(value);
   };
 
@@ -203,6 +204,7 @@ const UserGroups = () => {
 
   // Issue a search using a specific search value
   const submitSearchValue = () => {
+    setPage(1);
     setShowTableRows(false);
     setGroupsTotalCount(0);
     setSearchIsDisabled(true);
@@ -210,8 +212,8 @@ const UserGroups = () => {
       searchValue: searchValue,
       sizeLimit: 0,
       apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: firstIdx,
-      stopIdx: lastIdx,
+      startIdx: 0,
+      stopIdx: 100,
       entryType: "usergroup",
     } as GenericPayload).then((result) => {
       // Manage new response here
@@ -247,8 +249,7 @@ const UserGroups = () => {
           }
 
           // Update 'user groups' slice data
-          setPage(1);
-          setGroupsList(groupsList);
+          setGroupsList(groupsList.slice(0, perPage));
           setGroupsTotalCount(totalCount);
           // Show table elements
           setShowTableRows(true);

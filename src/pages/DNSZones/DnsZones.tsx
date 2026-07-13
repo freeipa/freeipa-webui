@@ -225,6 +225,7 @@ const DnsZones = () => {
   const [searchEntry] = useSearchDnsZonesEntriesMutation();
 
   const submitSearchValue = () => {
+    setPage(1);
     searchEntry({
       searchValue: searchValue,
       apiVersion,
@@ -257,7 +258,7 @@ const DnsZones = () => {
           const dnsZones = result.data?.result || [];
 
           setTotalCount(totalCount);
-          setDnsZones(dnsZones);
+          setDnsZones(dnsZones.slice(0, perPage));
           setShowTableRows(true);
         }
         setIsSearchDisabled(false);
@@ -278,10 +279,15 @@ const DnsZones = () => {
     totalCount,
   };
 
+  const updateSearchValue = (value: string) => {
+    setPage(1);
+    setSearchValue(value);
+  };
+
   // SearchInputLayout
   const searchValueData = {
     searchValue,
-    updateSearchValue: setSearchValue,
+    updateSearchValue,
     submitSearchValue,
   };
 

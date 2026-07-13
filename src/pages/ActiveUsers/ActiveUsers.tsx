@@ -232,6 +232,7 @@ const ActiveUsers = () => {
 
   // Update search input valie
   const updateSearchValue = (value: string) => {
+    setPage(1);
     setSearchValue(value);
   };
 
@@ -246,6 +247,7 @@ const ActiveUsers = () => {
 
   // Issue a search using a specific search value
   const submitSearchValue = () => {
+    setPage(1);
     setShowTableRows(false);
     setSearchIsDisabled(true);
     setUsersTotalCount(0);
@@ -255,8 +257,8 @@ const ActiveUsers = () => {
       searchValue: searchValue,
       sizeLimit: 0,
       apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: firstUserIdx,
-      stopIdx: lastUserIdx,
+      startIdx: 0,
+      stopIdx: 100,
       entryType: "user",
     } as GenericPayload).then((result) => {
       // Manage new response here
@@ -292,7 +294,7 @@ const ActiveUsers = () => {
           }
 
           setUsersTotalCount(totalCount);
-          setActiveUsersList(usersList);
+          setActiveUsersList(usersList.slice(0, perPage));
           // Show table elements
           setShowTableRows(true);
         }

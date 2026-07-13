@@ -195,6 +195,7 @@ const SELinuxUserMaps = () => {
   const [searchEntry] = useSearchSelinuxUserMapsEntriesMutation();
 
   const submitSearchValue = () => {
+    setPage(1);
     searchEntry({
       searchValue,
       apiVersion,
@@ -236,9 +237,14 @@ const SELinuxUserMaps = () => {
     totalCount,
   };
 
+  const updateSearchValue = (value: string) => {
+    setPage(1);
+    setSearchValue(value);
+  };
+
   const searchValueData = {
     searchValue,
-    updateSearchValue: setSearchValue,
+    updateSearchValue,
     submitSearchValue,
   };
 

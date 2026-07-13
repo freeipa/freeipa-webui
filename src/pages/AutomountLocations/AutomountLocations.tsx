@@ -195,9 +195,14 @@ const AutomountLocations = () => {
     totalCount,
   };
 
+  const updateSearchValue = (value: string) => {
+    setPage(1);
+    setSearchValue(value);
+  };
+
   const searchValueData = {
     searchValue,
-    updateSearchValue: setSearchValue,
+    updateSearchValue,
   };
 
   const bulkSelectorData = {

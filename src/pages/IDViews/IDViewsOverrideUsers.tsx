@@ -68,10 +68,6 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
     clearSelectedUsers,
   };
 
-  // Page indexes
-  const firstIdx = (page - 1) * perPage;
-  const lastIdx = page * perPage;
-
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
     useState<boolean>(true);
@@ -130,12 +126,14 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
 
   // Update search input valie
   const updateSearchValue = (value: string) => {
+    setPage(1);
     setSearchValue(value);
   };
 
   const [retrieveEntries] = useSearchOverrideEntriesMutation({});
 
   const submitSearchValue = () => {
+    setPage(1);
     setShowTableRows(false);
     setTotalCount(0);
     setSearchIsDisabled(true);
@@ -143,8 +141,8 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
       idView: props.idview,
       searchValue: searchValue,
       sizeLimit: 0,
-      startIdx: firstIdx,
-      stopIdx: lastIdx,
+      startIdx: 0,
+      stopIdx: 100,
       entryType: "idoverrideuser",
     } as IDOverridePayload).then((result) => {
       // Manage new response here
@@ -178,7 +176,7 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
           for (let i = 0; i < usersListSize; i++) {
             userList.push(usersListResult[i].result);
           }
-          setUsersList(userList);
+          setUsersList(userList.slice(0, perPage));
           setTotalCount(totalCount);
           // Show table elements
           setShowTableRows(true);

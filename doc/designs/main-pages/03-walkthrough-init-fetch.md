@@ -31,7 +31,7 @@ The `pathname` must be registered in `AppRoutes.tsx` and `NavRoutes.ts`.
   const lastIdx = page * perPage;
 
   const dataResponse = useGettingMyEntitiesQuery({
-    searchValue: "",
+    searchValue: searchValue,
     sizeLimit: 0,
     apiVersion: apiVersion || API_VERSION_BACKUP,
     startIdx: firstIdx,
@@ -40,6 +40,11 @@ The `pathname` must be registered in `AppRoutes.tsx` and `NavRoutes.ts`.
 
   const { data: batchResponse, isLoading, isFetching, error } = dataResponse;
 ```
+
+> **Important:** Always pass `searchValue` (not `""`) to the query hook. RTK Query
+> auto-refetches whenever its parameters change (`searchValue`, `startIdx`, `stopIdx`),
+> so both pagination and filtering are handled automatically. Using a hardcoded `""`
+> causes a race condition where the unfiltered query response overwrites search results.
 
 ## Step 4: Derive State with useMemo (Recommended)
 
@@ -64,10 +69,14 @@ Use it to type the search data state:
 
   // Derive elementsList and totalCount
   const { elementsList, totalCount } = useMemo(() => {
+    // Search results are fetched with stopIdx: 100 (all matches at once),
+    // so paginate them client-side using page/perPage.
     if (isSearchActive && searchData) {
+      const start = (page - 1) * perPage;
+      const end = start + perPage;
       return {
-        elementsList: searchData.elementsList,
-        totalCount: searchData.totalCount,
+        elementsList: searchData.elementsList.slice(start, end),
+        totalCount: searchData.elementsList.length,
       };
     }
 
@@ -81,7 +90,7 @@ Use it to type the search data state:
     }
 
     return { elementsList: [], totalCount: 0 };
-  }, [batchResponse, isSearchActive, searchData]);
+  }, [batchResponse, isSearchActive, searchData, page, perPage]);
 
   // Derive showTableRows from loading states
   const showTableRows = useMemo(() => {
@@ -124,13 +133,29 @@ This pattern avoids eslint warnings about calling `setState` in `useEffect`.
 > **Note:** No manual `useEffect` for pagination is needed. RTK Query automatically
 > re-fetches when `startIdx`/`stopIdx` change (derived from `page`/`perPage`).
 
-## Step 7: Search Handler
+## Step 7: Search Value Update Handler
+
+The search input fires `updateSearchValue` on every keystroke. It must reset pagination
+to page 1 so the user always sees results from the first page:
+
+```tsx
+  const updateSearchValue = (value: string) => {
+    setPage(1);
+    setSearchValue(value);
+  };
+```
+
+## Step 8: Search Submit Handler
+
+The search input fires `submitSearchValue` when the user presses Enter or clicks the
+search button. This uses a mutation to fetch results independently of the query hook.
 
 ```tsx
   const [searchEntities, searchResult] = useSearchMyEntitiesEntriesMutation({});
   const [searchDisabled, setSearchIsDisabled] = useState(false);
 
   const submitSearchValue = () => {
+    setPage(1);
     setSearchIsDisabled(true);
     setIsSearchActive(true);
 
@@ -138,8 +163,8 @@ This pattern avoids eslint warnings about calling `setState` in `useEffect`.
       searchValue,
       sizeLimit: 0,
       apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: firstIdx,
-      stopIdx: lastIdx,
+      startIdx: 0,
+      stopIdx: 100,
     }).then((result) => {
       if ("data" in result) {
         const searchError = result.data?.error;
@@ -169,6 +194,11 @@ This pattern avoids eslint warnings about calling `setState` in `useEffect`.
     });
   };
 ```
+
+> **Important — `stopIdx: 100`:** Use a fixed upper bound (100) instead of `perPage`.
+> The LDAP backend has a size limit close to this value, and using `perPage` (e.g. 10)
+> would miss entries beyond the first page of results when searching from a page other
+> than page 1.
 
 ## Legacy Pattern (Avoid)
 

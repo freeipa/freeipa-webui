@@ -229,6 +229,7 @@ const IdpReferences = () => {
   const [searchEntry] = useSearchIdpEntriesMutation();
 
   const submitSearchValue = () => {
+    setPage(1);
     searchEntry({
       searchValue: searchValue,
       apiVersion,
@@ -268,7 +269,7 @@ const IdpReferences = () => {
           }
 
           setTotalCount(totalCount);
-          setIdpReferences(elementsList);
+          setIdpReferences(elementsList.slice(0, perPage));
           setShowTableRows(true);
         }
         setIsSearchDisabled(false);
@@ -289,10 +290,15 @@ const IdpReferences = () => {
     totalCount,
   };
 
+  const updateSearchValue = (value: string) => {
+    setPage(1);
+    setSearchValue(value);
+  };
+
   // SearchInputLayout
   const searchValueData = {
     searchValue,
-    updateSearchValue: setSearchValue,
+    updateSearchValue,
     submitSearchValue,
   };
 

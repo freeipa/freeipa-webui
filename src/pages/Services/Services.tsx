@@ -111,6 +111,7 @@ const Services = () => {
   const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   const updateSearchValue = (value: string) => {
+    setPage(1);
     setSearchValue(value);
   };
 
@@ -124,6 +125,7 @@ const Services = () => {
 
   // Issue search with filter
   const submitSearchValue = () => {
+    setPage(1);
     setShowTableRows(false);
     setServicesTotalCount(0);
     setSearchIsDisabled(true);
@@ -131,8 +133,8 @@ const Services = () => {
       searchValue: searchValue,
       sizeLimit: 0,
       apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: firstServiceIdx,
-      stopIdx: lastServiceIdx,
+      startIdx: 0,
+      stopIdx: 100,
       entryType: "service",
     } as GenericPayload).then((result) => {
       // Manage new response here
@@ -167,7 +169,7 @@ const Services = () => {
             serviceList.push(serviceListResult[i].result);
           }
 
-          setServicesList(serviceList);
+          setServicesList(serviceList.slice(0, perPage));
           setServicesTotalCount(totalCount);
           // Show table elements
           setShowTableRows(true);
@@ -290,7 +292,7 @@ const Services = () => {
 
   // Derived states - what we get from API
   const servicesDataResponse = useGettingServicesQuery({
-    searchValue: "",
+    searchValue: searchValue,
     sizeLimit: 0,
     apiVersion: apiVersion || API_VERSION_BACKUP,
     startIdx: firstServiceIdx,

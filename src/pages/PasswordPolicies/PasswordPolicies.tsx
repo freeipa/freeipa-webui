@@ -255,6 +255,7 @@ const PasswordPolicies = () => {
 
   // Update search input valie
   const updateSearchValue = (value: string) => {
+    setPage(1);
     setSearchValue(value);
   };
 
@@ -262,6 +263,7 @@ const PasswordPolicies = () => {
   const [searchEntry] = useSearchPwdPolicyEntriesMutation();
 
   const submitSearchValue = () => {
+    setPage(1);
     searchEntry({
       searchValue: searchValue,
       apiVersion,
@@ -301,7 +303,7 @@ const PasswordPolicies = () => {
           }
 
           setTotalCount(totalCount);
-          setPwPolicies(elementsList);
+          setPwPolicies(elementsList.slice(0, perPage));
           setShowTableRows(true);
         }
         setSearchIsDisabled(false);

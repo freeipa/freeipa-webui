@@ -226,6 +226,7 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
   const [searchEntry] = useSearchTrustDomainsEntriesMutation();
 
   const submitSearchValue = () => {
+    setPage(1);
     const payload: TrustDomainFindPayload = {
       trustId: props.trustId,
       searchValue: searchValue,
@@ -253,9 +254,8 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
             const trustDomains = (
               result.data?.result.result as unknown as Record<string, unknown>[]
             ).map((item) => apiToTrustDomain(item));
-            const paginatedData = trustDomains.slice(startIdx, stopIdx);
-            setTrustDomains(paginatedData);
-            setTotalCount(paginatedData.length);
+            setTrustDomains(trustDomains.slice(0, perPage));
+            setTotalCount(trustDomains.length);
             setShowTableRows(true);
           }
         } else {
@@ -319,10 +319,15 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
     totalCount,
   };
 
+  const updateSearchValue = (value: string) => {
+    setPage(1);
+    setSearchValue(value);
+  };
+
   // SearchInputLayout
   const searchValueData = {
     searchValue,
-    updateSearchValue: setSearchValue,
+    updateSearchValue,
     submitSearchValue,
   };
 

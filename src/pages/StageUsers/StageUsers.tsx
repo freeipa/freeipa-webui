@@ -198,6 +198,7 @@ const StageUsers = () => {
 
   // Filter (Input search)
   const updateSearchValue = (value: string) => {
+    setPage(1);
     setSearchValue(value);
   };
 
@@ -206,6 +207,7 @@ const StageUsers = () => {
 
   // Issue a search using a specific search value
   const submitSearchValue = () => {
+    setPage(1);
     setShowTableRows(false);
     setUsersTotalCount(0);
     setSearchIsDisabled(true);
@@ -214,8 +216,8 @@ const StageUsers = () => {
       searchValue: searchValue,
       sizeLimit: 0,
       apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: firstUserIdx,
-      stopIdx: lastUserIdx,
+      startIdx: 0,
+      stopIdx: 100,
       entryType: "stage",
     } as GenericPayload).then((result) => {
       // Manage new response here
@@ -250,7 +252,7 @@ const StageUsers = () => {
             usersList.push(usersListResult[i].result);
           }
 
-          setStageUsersList(usersList);
+          setStageUsersList(usersList.slice(0, perPage));
           setUsersTotalCount(totalCount);
           // Show table elements
           setShowTableRows(true);

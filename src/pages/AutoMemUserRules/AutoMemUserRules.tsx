@@ -266,6 +266,7 @@ const AutoMemUserRules = () => {
 
   // Update search input valie
   const updateSearchValue = (value: string) => {
+    setPage(1);
     setSearchValue(value);
   };
 
@@ -290,6 +291,7 @@ const AutoMemUserRules = () => {
 
   // Issue a search using a specific search value
   const submitSearchValue = () => {
+    setPage(1);
     setShowTableRows(false);
     setSearchIsDisabled(true);
     setTotalCount(0);
@@ -297,13 +299,13 @@ const AutoMemUserRules = () => {
       searchValue: searchValue,
       sizeLimit: 0,
       apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: firstIdx,
-      stopIdx: lastIdx,
+      startIdx: 0,
+      stopIdx: 100,
     } as GenericPayload).then((result) => {
       if ("data" in result) {
         const automembersListResult = result.data;
         setTotalCount((result.data ?? []).length);
-        setAutomemberRules(automembersListResult ?? []);
+        setAutomemberRules((automembersListResult ?? []).slice(0, perPage));
         // Show table elements
         setShowTableRows(true);
         setSearchIsDisabled(false);

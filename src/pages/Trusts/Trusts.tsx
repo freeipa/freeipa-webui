@@ -219,6 +219,7 @@ const Trusts = () => {
   const [searchEntry] = useSearchTrustsEntriesMutation();
 
   const submitSearchValue = () => {
+    setPage(1);
     searchEntry({
       searchValue,
       apiVersion,
@@ -267,10 +268,15 @@ const Trusts = () => {
     totalCount,
   };
 
+  const updateSearchValue = (value: string) => {
+    setPage(1);
+    setSearchValue(value);
+  };
+
   // SearchInputLayout
   const searchValueData = {
     searchValue,
-    updateSearchValue: setSearchValue,
+    updateSearchValue,
     submitSearchValue,
   };
 

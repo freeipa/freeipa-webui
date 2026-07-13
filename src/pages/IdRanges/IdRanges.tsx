@@ -183,6 +183,7 @@ const IdRanges = () => {
     React.useState<boolean>(false);
 
   const submitSearchValue = () => {
+    setPage(1);
     setSearchOverride(null);
     searchEntry({
       searchValue: searchValue,
@@ -220,7 +221,7 @@ const IdRanges = () => {
             elementsList.push(listResult[i].result as IdRange);
           }
 
-          setSearchOverride({ list: elementsList, total });
+          setSearchOverride({ list: elementsList.slice(0, perPage), total });
         }
         setIsSearchDisabled(false);
       }
@@ -261,6 +262,7 @@ const IdRanges = () => {
   const searchValueData = {
     searchValue,
     updateSearchValue: (v: string) => {
+      setPage(1);
       setSearchOverride(null);
       setSearchValue(v);
     },

@@ -200,6 +200,7 @@ const HostGroups = () => {
   };
 
   const updateSearchValue = (value: string) => {
+    setPage(1);
     setSearchValue(value);
   };
 
@@ -213,6 +214,7 @@ const HostGroups = () => {
 
   // Issue a search using a specific search value
   const submitSearchValue = () => {
+    setPage(1);
     setShowTableRows(false);
     setGroupsTotalCount(0);
     setSearchIsDisabled(true);
@@ -220,8 +222,8 @@ const HostGroups = () => {
       searchValue: searchValue,
       sizeLimit: 0,
       apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: firstIdx,
-      stopIdx: lastIdx,
+      startIdx: 0,
+      stopIdx: 100,
       entryType: "hostgroup",
     } as GenericPayload).then((result) => {
       // Manage new response here
@@ -256,8 +258,7 @@ const HostGroups = () => {
             groupsList.push(groupsListResult[i].result);
           }
 
-          setPage(1);
-          setGroupsList(groupsList);
+          setGroupsList(groupsList.slice(0, perPage));
           setGroupsTotalCount(totalCount);
           // Show table elements
           setShowTableRows(true);

@@ -180,6 +180,7 @@ const SubordinateIDs = () => {
 
   // Update search input valie
   const updateSearchValue = (value: string) => {
+    setPage(1);
     setSearchValue(value);
   };
 
@@ -187,6 +188,7 @@ const SubordinateIDs = () => {
   const [searchEntry] = useSearchSubIdEntriesMutation();
 
   const submitSearchValue = () => {
+    setPage(1);
     searchEntry({
       searchValue: searchValue,
       apiVersion,
@@ -226,7 +228,7 @@ const SubordinateIDs = () => {
           }
 
           setTotalCount(totalCount);
-          setSubIds(elementsList);
+          setSubIds(elementsList.slice(0, perPage));
           setShowTableRows(true);
         }
         setSearchIsDisabled(false);

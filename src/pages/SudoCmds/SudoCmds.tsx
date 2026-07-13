@@ -82,7 +82,7 @@ const SudoCmds = () => {
 
   // Derived states - what we get from API
   const cmdsDataResponse = useGettingSudoCmdsQuery({
-    searchValue: "",
+    searchValue: searchValue,
     sizeLimit: 0,
     apiVersion: apiVersion || API_VERSION_BACKUP,
     startIdx: firstIdx,
@@ -153,7 +153,7 @@ const SudoCmds = () => {
   // This ensures the data is always up-to-date.
   React.useEffect(() => {
     cmdsDataResponse.refetch();
-  }, [page, perPage]);
+  }, []);
 
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
@@ -194,6 +194,7 @@ const SudoCmds = () => {
 
   // Update search input valie
   const updateSearchValue = (value: string) => {
+    setPage(1);
     setSearchValue(value);
   };
 
@@ -208,6 +209,7 @@ const SudoCmds = () => {
 
   // Issue a search using a specific search value
   const submitSearchValue = () => {
+    setPage(1);
     setShowTableRows(false);
     setSearchIsDisabled(true);
     setCmdsTotalCount(0);
@@ -215,8 +217,8 @@ const SudoCmds = () => {
       searchValue: searchValue,
       sizeLimit: 0,
       apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: firstIdx,
-      stopIdx: lastIdx,
+      startIdx: 0,
+      stopIdx: 100,
       entryType: "sudocmd",
     } as GenericPayload).then((result) => {
       // Manage new response here
@@ -252,7 +254,7 @@ const SudoCmds = () => {
           }
 
           setCmdsTotalCount(totalCount);
-          setCmdsList(cmdsList);
+          setCmdsList(cmdsList.slice(0, perPage));
           // Show table elements
           setShowTableRows(true);
         }

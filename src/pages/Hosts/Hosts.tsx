@@ -203,6 +203,7 @@ const Hosts = () => {
   };
 
   const updateSearchValue = (value: string) => {
+    setPage(1);
     setSearchValue(value);
   };
 
@@ -216,6 +217,7 @@ const Hosts = () => {
 
   // Issue a search using a specific search value
   const submitSearchValue = () => {
+    setPage(1);
     setShowTableRows(false);
     setHostsTotalCount(0);
     setSearchIsDisabled(true);
@@ -223,8 +225,8 @@ const Hosts = () => {
       searchValue: searchValue,
       sizeLimit: 0,
       apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: firstHostIdx,
-      stopIdx: lastHostIdx,
+      startIdx: 0,
+      stopIdx: 100,
       entryType: "host",
     } as GenericPayload).then((result) => {
       // Manage new response here
@@ -259,7 +261,7 @@ const Hosts = () => {
             hostsList.push(hostsListResult[i].result);
           }
 
-          setHostsList(hostsList);
+          setHostsList(hostsList.slice(0, perPage));
           setHostsTotalCount(totalCount);
           // Show table elements
           setShowTableRows(true);

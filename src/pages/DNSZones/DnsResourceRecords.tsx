@@ -222,12 +222,13 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
   const [searchDnsRecords] = useSearchDnsRecordsEntriesMutation();
 
   const submitSearchValue = () => {
+    setPage(1);
     const payload: FindDnsRecordPayload = {
       dnsZoneId: props.dnsZoneId,
       recordName: searchValue,
-      sizeLimit: perPage,
+      sizeLimit: 100,
       startIdx: 0, // Reset to first page for search
-      stopIdx: perPage,
+      stopIdx: 100,
     };
 
     setIsSearchDisabled(true);
@@ -256,11 +257,9 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
         } else {
           // Success
           const records = result.data?.result || [];
-          setDnsRecords(records);
+          setDnsRecords(records.slice(0, perPage));
           setTotalCount(records.length);
           setShowTableRows(true);
-          // Reset to first page
-          setPage(1);
         }
         setIsSearchDisabled(false);
       }
@@ -280,10 +279,15 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     totalCount,
   };
 
+  const updateSearchValue = (value: string) => {
+    setPage(1);
+    setSearchValue(value);
+  };
+
   // SearchInputLayout
   const searchValueData = {
     searchValue,
-    updateSearchValue: setSearchValue,
+    updateSearchValue,
     submitSearchValue,
   };
 

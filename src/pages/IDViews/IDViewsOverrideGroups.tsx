@@ -71,10 +71,6 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
     clearSelectedGroups,
   };
 
-  // Page indexes
-  const firstIdx = (page - 1) * perPage;
-  const lastIdx = page * perPage;
-
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
     useState<boolean>(true);
@@ -133,12 +129,14 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
 
   // Update search input valie
   const updateSearchValue = (value: string) => {
+    setPage(1);
     setSearchValue(value);
   };
 
   const [retrieveEntries] = useSearchOverrideEntriesMutation({});
 
   const submitSearchValue = () => {
+    setPage(1);
     setShowTableRows(false);
     setTotalCount(0);
     setSearchIsDisabled(true);
@@ -146,8 +144,8 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
       idView: props.idview,
       searchValue: searchValue,
       sizeLimit: 0,
-      startIdx: firstIdx,
-      stopIdx: lastIdx,
+      startIdx: 0,
+      stopIdx: 100,
       entryType: "idoverridegroup",
     } as IDOverridePayload).then((result) => {
       // Manage new response here
@@ -181,7 +179,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
           for (let i = 0; i < groupsListSize; i++) {
             groupList.push(groupsListResult[i].result);
           }
-          setGroupsList(groupList);
+          setGroupsList(groupList.slice(0, perPage));
           setTotalCount(totalCount);
           // Show table elements
           setShowTableRows(true);

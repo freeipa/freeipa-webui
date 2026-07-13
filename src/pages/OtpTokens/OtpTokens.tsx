@@ -273,7 +273,7 @@ const OtpTokens = () => {
           // Success
           const otpTokens = result.data?.result || [];
           setTotalCount(result.data?.totalCount || otpTokens.length);
-          setOtpTokens(otpTokens);
+          setOtpTokens(otpTokens.slice(0, perPage));
           setShowTableRows(true);
         }
         setIsSearchDisabled(false);
@@ -294,10 +294,15 @@ const OtpTokens = () => {
     totalCount,
   };
 
+  const updateSearchValue = (value: string) => {
+    setPage(1);
+    setSearchValue(value);
+  };
+
   // - 'SearchInputLayout'
   const searchValueData = {
     searchValue,
-    updateSearchValue: setSearchValue,
+    updateSearchValue,
     submitSearchValue,
   };
 

@@ -160,6 +160,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
   };
 
   const updateSearchValue = (value: string) => {
+    setPage(1);
     setSearchValue(value);
   };
 

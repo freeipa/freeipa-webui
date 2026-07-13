@@ -130,7 +130,7 @@ const IDViews = () => {
 
   // Derived states - what we get from API
   const viewsDataResponse = useGettingIDViewsQuery({
-    searchValue: "",
+    searchValue: searchValue,
     sizeLimit: 0,
     apiVersion: apiVersion || API_VERSION_BACKUP,
     startIdx: firstIdx,
@@ -191,7 +191,7 @@ const IDViews = () => {
   useEffect(() => {
     viewsDataResponse.refetch();
     setIsKebabOpen(false);
-  }, [page, perPage]);
+  }, []);
 
   // Refresh button handling
   const refreshViewsData = () => {
@@ -206,6 +206,7 @@ const IDViews = () => {
   };
 
   const updateSearchValue = (value: string) => {
+    setPage(1);
     setSearchValue(value);
   };
 
@@ -219,6 +220,7 @@ const IDViews = () => {
 
   // Issue a search using a specific search value
   const submitSearchValue = () => {
+    setPage(1);
     setShowTableRows(false);
     setViewsTotalCount(0);
     setSearchIsDisabled(true);
@@ -226,8 +228,8 @@ const IDViews = () => {
       searchValue: searchValue,
       sizeLimit: 0,
       apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: firstIdx,
-      stopIdx: lastIdx,
+      startIdx: 0,
+      stopIdx: 100,
       entryType: "idview",
     } as GenericPayload).then((result) => {
       // Manage new response here
@@ -262,8 +264,7 @@ const IDViews = () => {
             idViewsList.push(viewsListResult[i].result);
           }
 
-          setPage(1);
-          setViewsList(idViewsList);
+          setViewsList(idViewsList.slice(0, perPage));
           setViewsTotalCount(totalCount);
           setIsKebabOpen(false);
           setShowTableRows(true);

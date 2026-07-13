@@ -83,7 +83,7 @@ const HBACRules = () => {
 
   // Derived states - what we get from API
   const rulesDataResponse = useGettingHbacRulesQuery({
-    searchValue: "",
+    searchValue: searchValue,
     sizeLimit: 0,
     apiVersion: apiVersion || API_VERSION_BACKUP,
     startIdx: firstUserIdx,
@@ -156,7 +156,7 @@ const HBACRules = () => {
   // This ensures the data is always up-to-date.
   React.useEffect(() => {
     rulesDataResponse.refetch();
-  }, [page, perPage]);
+  }, []);
 
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
@@ -220,6 +220,7 @@ const HBACRules = () => {
 
   // Update search input valie
   const updateSearchValue = (value: string) => {
+    setPage(1);
     setSearchValue(value);
   };
 
@@ -234,6 +235,7 @@ const HBACRules = () => {
 
   // Issue a search using a specific search value
   const submitSearchValue = () => {
+    setPage(1);
     setShowTableRows(false);
     setSearchIsDisabled(true);
     setRulesTotalCount(0);
@@ -241,8 +243,8 @@ const HBACRules = () => {
       searchValue: searchValue,
       sizeLimit: 0,
       apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: firstUserIdx,
-      stopIdx: lastUserIdx,
+      startIdx: 0,
+      stopIdx: 100,
       entryType: "hbacrule",
     } as GenericPayload).then((result) => {
       // Manage new response here
@@ -278,7 +280,7 @@ const HBACRules = () => {
           }
 
           setRulesTotalCount(totalCount);
-          setRulesList(rulesList);
+          setRulesList(rulesList.slice(0, perPage));
           // Show table elements
           setShowTableRows(true);
         }

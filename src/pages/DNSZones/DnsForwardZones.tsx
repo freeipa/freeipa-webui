@@ -198,6 +198,7 @@ const DnsForwardZones = () => {
   const [searchEntry] = useSearchDnsForwardZonesEntriesMutation();
 
   const submitSearchValue = () => {
+    setPage(1);
     searchEntry({
       searchValue: searchValue,
       apiVersion,
@@ -224,7 +225,7 @@ const DnsForwardZones = () => {
         const dnsForwardZones = result.data?.result || [];
 
         setTotalCount(dnsForwardZones.length);
-        setDnsForwardZones(dnsForwardZones);
+        setDnsForwardZones(dnsForwardZones.slice(0, perPage));
         setShowTableRows(true);
       }
       setIsSearchDisabled(false);
@@ -244,10 +245,15 @@ const DnsForwardZones = () => {
     totalCount,
   };
 
+  const updateSearchValue = (value: string) => {
+    setPage(1);
+    setSearchValue(value);
+  };
+
   // SearchInputLayout
   const searchValueData = {
     searchValue,
-    updateSearchValue: setSearchValue,
+    updateSearchValue,
     submitSearchValue,
   };
 

@@ -249,6 +249,7 @@ const CertificateMappingPage = () => {
   const [searchEntry] = useSearchCertMapRuleEntriesMutation();
 
   const submitSearchValue = () => {
+    setPage(1);
     searchEntry({
       searchValue: searchValue,
       apiVersion,
@@ -288,7 +289,7 @@ const CertificateMappingPage = () => {
           }
 
           setTotalCount(totalCount);
-          setCertMapRules(elementsList);
+          setCertMapRules(elementsList.slice(0, perPage));
           setShowTableRows(true);
         }
         setIsSearchDisabled(false);
@@ -309,10 +310,15 @@ const CertificateMappingPage = () => {
     totalCount,
   };
 
+  const updateSearchValue = (value: string) => {
+    setPage(1);
+    setSearchValue(value);
+  };
+
   // SearchInputLayout
   const searchValueData = {
     searchValue,
-    updateSearchValue: setSearchValue,
+    updateSearchValue,
     submitSearchValue,
   };
 

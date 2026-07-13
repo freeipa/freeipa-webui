@@ -85,7 +85,7 @@ const HBACServiceGroups = () => {
 
   // Derived states - what we get from API
   const servicesDataResponse = useGettingHbacServiceGroupQuery({
-    searchValue: "",
+    searchValue: searchValue,
     sizeLimit: 0,
     apiVersion: apiVersion || API_VERSION_BACKUP,
     startIdx: firstIdx,
@@ -153,7 +153,7 @@ const HBACServiceGroups = () => {
   // This ensures the data is always up-to-date.
   React.useEffect(() => {
     servicesDataResponse.refetch();
-  }, [page, perPage]);
+  }, []);
 
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
@@ -196,6 +196,7 @@ const HBACServiceGroups = () => {
 
   // Update search input value
   const updateSearchValue = (value: string) => {
+    setPage(1);
     setSearchValue(value);
   };
 
@@ -212,6 +213,7 @@ const HBACServiceGroups = () => {
 
   // Issue a search using a specific search value
   const submitSearchValue = () => {
+    setPage(1);
     setShowTableRows(false);
     setSearchIsDisabled(true);
     setServicesTotalCount(0);
@@ -219,8 +221,8 @@ const HBACServiceGroups = () => {
       searchValue: searchValue,
       sizeLimit: 0,
       apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: firstIdx,
-      stopIdx: lastIdx,
+      startIdx: 0,
+      stopIdx: 100,
       entryType: "hbacsvcgroup",
     } as GenericPayload).then((result) => {
       // Manage new response here
@@ -255,7 +257,7 @@ const HBACServiceGroups = () => {
             servicesList.push(servicesListResult[i].result);
           }
           setServicesTotalCount(totalCount);
-          setServicesList(servicesList);
+          setServicesList(servicesList.slice(0, perPage));
           setShowTableRows(true);
         }
         setSearchIsDisabled(false);
