@@ -209,5 +209,6 @@
       "url": "https://red.ht/manage-user-groups"
     }
   ],
-  "roles-settings": []
+  "roles-settings": [],
+  "privileges-settings": []
 }

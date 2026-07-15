@@ -8,6 +8,7 @@ import {
 } from "./rpc";
 import { API_VERSION_BACKUP } from "../utils/utils";
 import { Privilege, cnType } from "../utils/datatypes/globalDataTypes";
+import { apiToPrivilege } from "../utils/privilegesUtils";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 /**
@@ -18,7 +19,14 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
  * - privilege_show: https://freeipa.readthedocs.io/en/latest/api/privilege_show.html
  * - privilege_add: https://freeipa.readthedocs.io/en/latest/api/privilege_add.html
  * - privilege_del: https://freeipa.readthedocs.io/en/latest/api/privilege_del.html
+ * - privilege_mod: https://freeipa.readthedocs.io/en/latest/api/privilege_mod.html
  */
+
+interface PrivilegeShowPayload {
+  privilegeNamesList: string[];
+  no_members?: boolean;
+  version: string;
+}
 
 interface PrivilegeAddPayload {
   cn: string;
@@ -118,6 +126,51 @@ const extendedApi = api.injectEndpoints({
      * @param {Privilege[]} - Array of privileges to delete
      * @returns {BatchRPCResponse} - Batch response
      */
+    /**
+     * Given a list of privilege names, show the full data of those privileges
+     * @param {PrivilegeShowPayload} - Payload with privilege names and options
+     * @returns {BatchRPCResponse} - Batch response
+     */
+    getPrivilegesInfoByName: build.query<Privilege[], PrivilegeShowPayload>({
+      query: (payload) => {
+        const privilegeNames = payload.privilegeNamesList;
+        const noMembers = payload.no_members || false;
+        const apiVersion = payload.version || API_VERSION_BACKUP;
+        const showCommands: Command[] = privilegeNames.map((privilegeName) => ({
+          method: "privilege_show",
+          params: [[privilegeName], { no_members: noMembers }],
+        }));
+        return getBatchCommand(showCommands, apiVersion);
+      },
+      transformResponse: (response: BatchRPCResponse): Privilege[] => {
+        const privilegeList: Privilege[] = [];
+        const results = response.result.results;
+        const count = response.result.count;
+        for (let i = 0; i < count; i++) {
+          const privilegeData = apiToPrivilege(results[i].result);
+          privilegeList.push(privilegeData);
+        }
+        return privilegeList;
+      },
+    }),
+    /**
+     * Modify an existing privilege via `privilege_mod`
+     * @param {Partial<Privilege>} - Privilege data to modify (must include cn)
+     * @returns {FindRPCResponse} - Response from API
+     */
+    savePrivilege: build.mutation<FindRPCResponse, Partial<Privilege>>({
+      query: (privilege) => {
+        const params = {
+          version: API_VERSION_BACKUP,
+          ...privilege,
+        };
+        delete params.cn;
+        return getCommand({
+          method: "privilege_mod",
+          params: [[privilege.cn], params],
+        });
+      },
+    }),
     deletePrivileges: build.mutation<BatchRPCResponse, Privilege[]>({
       query: (privileges) => {
         const commands: Command[] = privileges.map((privilege) => ({
@@ -190,9 +243,22 @@ const extendedApi = api.injectEndpoints({
   overrideExisting: false,
 });
 
+export const usePrivilegeShowQuery = (privilegeId: string) => {
+  return useGetPrivilegesInfoByNameQuery(
+    {
+      privilegeNamesList: [privilegeId],
+      no_members: true,
+      version: API_VERSION_BACKUP,
+    },
+    { skip: !privilegeId }
+  );
+};
+
 export const {
   useGetPrivilegesFullDataQuery,
+  useGetPrivilegesInfoByNameQuery,
   useAddPrivilegeMutation,
   useDeletePrivilegesMutation,
   useSearchPrivilegesEntriesMutation,
+  useSavePrivilegeMutation,
 } = extendedApi;

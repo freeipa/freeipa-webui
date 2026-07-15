@@ -442,7 +442,7 @@ const Privileges = () => {
                     hasCheckboxes={true}
                     pathname="privileges"
                     showTableRows={showTableRows}
-                    showLink={false}
+                    showLink={true}
                     elementsData={{
                       isElementSelectable: isPrivilegeSelectable,
                       selectedElements: selectedPrivileges,

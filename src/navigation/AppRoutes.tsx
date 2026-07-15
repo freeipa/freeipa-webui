@@ -82,6 +82,7 @@ import OtpTokensTabs from "src/pages/OtpTokens/OtpTokensTabs";
 import Roles from "src/pages/Roles/Roles";
 import RolesTabs from "src/pages/Roles/RolesTabs";
 import Privileges from "src/pages/Privileges/Privileges";
+import PrivilegesTabs from "src/pages/Privileges/PrivilegesTabs";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -607,6 +608,12 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="privileges">
                 <Route path="" element={<Privileges />} />
+                <Route path=":cn">
+                  <Route
+                    path=""
+                    element={<PrivilegesTabs section="settings" />}
+                  />
+                </Route>
               </Route>
               <Route path="configuration" element={<Configuration />} />
               {/* Redirect to Active users page if user is logged in and navigates to the root page */}
