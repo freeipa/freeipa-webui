@@ -6,6 +6,7 @@ import {
   DualListSelectorListItem,
   DualListSelectorControlsWrapper,
   DualListSelectorControl,
+  SearchInput,
 } from "@patternfly/react-core";
 import {
   AngleDoubleLeftIcon,
@@ -17,6 +18,7 @@ import {
 export interface DualListOption {
   text: string;
   selected: boolean;
+  isVisible: boolean;
   dataCy: string;
 }
 
@@ -29,6 +31,8 @@ interface DualListGenericProps {
   availableOptionsTitle?: string;
   chosenOptionsTitle?: string;
   ariaLabel?: string;
+  isSearchable?: boolean;
+  onSearchTextChange?: (searchText: string) => void;
 }
 
 // Helper function: Parse data to 'DualListOption'
@@ -38,6 +42,7 @@ export const optionsToDualListOptions = (
   return options.map((option) => ({
     text: option,
     selected: false,
+    isVisible: true,
     dataCy: `item-${option}`,
   }));
 };
@@ -51,6 +56,27 @@ const DualListSelectorGeneric = (props: DualListGenericProps) => {
     setChosenOptions,
   } = props;
 
+  const [availableFilter, setAvailableFilter] = React.useState("");
+
+  const onInputChange = (value: string) => {
+    setAvailableFilter(value);
+    if (!props.onSearchTextChange) {
+      const toFilter = [...availableOptions];
+      toFilter.forEach((option) => {
+        option.isVisible =
+          value === "" ||
+          option.text.toLowerCase().includes(value.toLowerCase());
+      });
+      setAvailableOptions(toFilter);
+    }
+  };
+
+  const onSubmitSearch = (value: string) => {
+    if (props.onSearchTextChange) {
+      props.onSearchTextChange(value);
+    }
+  };
+
   // callback for moving selected options between lists
   const moveSelected = (fromAvailable: boolean) => {
     const sourceOptions = fromAvailable
@@ -61,7 +87,7 @@ const DualListSelectorGeneric = (props: DualListGenericProps) => {
       : props.availableOptions;
     for (let i = 0; i < sourceOptions.length; i++) {
       const option = sourceOptions[i];
-      if (option.selected) {
+      if (option.selected && option.isVisible) {
         sourceOptions.splice(i, 1);
         destinationOptions.push(option);
         option.selected = false;
@@ -80,8 +106,13 @@ const DualListSelectorGeneric = (props: DualListGenericProps) => {
   // callback for moving all options between lists
   const moveAll = (fromAvailable: boolean) => {
     if (fromAvailable) {
-      setChosenOptions([...availableOptions, ...chosenOptions]);
-      setAvailableOptions([]);
+      setChosenOptions([
+        ...availableOptions.filter((option) => option.isVisible),
+        ...chosenOptions,
+      ]);
+      setAvailableOptions([
+        ...availableOptions.filter((option) => !option.isVisible),
+      ]);
     } else {
       setAvailableOptions([...chosenOptions, ...availableOptions]);
       setChosenOptions([]);
@@ -113,35 +144,58 @@ const DualListSelectorGeneric = (props: DualListGenericProps) => {
     >
       <DualListSelectorPane
         title={props.availableOptionsTitle || "Available options"}
-        status={`${availableOptions.filter((option) => option.selected).length} of ${
-          availableOptions.length
+        status={`${availableOptions.filter((option) => option.selected && option.isVisible).length} of ${
+          availableOptions.filter((option) => option.isVisible).length
         } options selected`}
+        searchInput={
+          props.isSearchable ? (
+            <SearchInput
+              value={availableFilter}
+              onChange={(_event, value) => onInputChange(value)}
+              onSearch={(_event, value) => onSubmitSearch(value)}
+              onClear={() => {
+                onInputChange("");
+                onSubmitSearch("");
+              }}
+              aria-label="Search available options"
+              data-cy="dual-list-available-search"
+            />
+          ) : undefined
+        }
         data-cy="dual-list-left"
       >
         <DualListSelectorList>
-          {availableOptions.map((option, index) => (
-            <DualListSelectorListItem
-              key={index}
-              isSelected={option.selected}
-              id={`basic-available-option-${index}`}
-              onOptionSelect={(e) => onOptionSelect(e, index, false)}
-              data-cy={option.dataCy}
-            >
-              {option.text}
-            </DualListSelectorListItem>
-          ))}
+          {availableOptions.map((option, index) =>
+            option.isVisible ? (
+              <DualListSelectorListItem
+                key={index}
+                isSelected={option.selected}
+                id={`basic-available-option-${index}`}
+                onOptionSelect={(e) => onOptionSelect(e, index, false)}
+                data-cy={option.dataCy}
+              >
+                {option.text}
+              </DualListSelectorListItem>
+            ) : null
+          )}
         </DualListSelectorList>
       </DualListSelectorPane>
       <DualListSelectorControlsWrapper>
         <DualListSelectorControl
-          isDisabled={!availableOptions.some((option) => option.selected)}
+          isDisabled={
+            !availableOptions.some(
+              (option) => option.selected && option.isVisible
+            )
+          }
           onClick={() => moveSelected(true)}
           aria-label="Add selected"
           data-cy="dual-list-add-selected"
           icon={<AngleRightIcon />}
         />
         <DualListSelectorControl
-          isDisabled={availableOptions.length === 0}
+          isDisabled={
+            availableOptions.filter((option) => option.isVisible).length === 0
+          }
           onClick={() => moveAll(true)}
           aria-label="Add all"
           data-cy="dual-list-add-all"

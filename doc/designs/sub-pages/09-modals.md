@@ -85,6 +85,30 @@ const Add<ChildEntity>Modal = (props: Add<ChildEntity>ModalProps) => {
 export default Add<ChildEntity>Modal;
 ```
 
+### Searchable Add Modal (DualListSelector with server-side search)
+
+When the Add modal needs server-side search (e.g., searching hundreds of
+permissions), pass `isSearchable` and `onSearchTextChange` to `MemberOfAddModal`.
+The search fires on **submit** (Enter / search button), not per-keystroke.
+Do **not** add client-side filtering — the server returns already-filtered results.
+
+See [DualListSelectorGeneric](../components/02-lists.md#duallistselectorgeneric)
+for the full search behaviour table.
+
+```tsx
+<MemberOfAddModal
+  showModal={showAddModal}
+  onCloseModal={() => setShowAddModal(false)}
+  availableItems={availableItems}
+  onAdd={onAddItem}
+  onSearchTextChange={setAdderSearchValue}
+  title="Add items"
+  ariaLabel="Add items modal"
+  isSearchable
+  spinning={spinning}
+/>
+```
+
 ## Delete Modal
 
 ### Props Interface

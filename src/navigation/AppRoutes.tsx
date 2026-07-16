@@ -613,6 +613,10 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
                     path=""
                     element={<PrivilegesTabs section="settings" />}
                   />
+                  <Route
+                    path="permissions"
+                    element={<PrivilegesTabs section="permissions" />}
+                  />
                 </Route>
               </Route>
               <Route path="configuration" element={<Configuration />} />

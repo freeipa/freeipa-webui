@@ -59,6 +59,7 @@ type FromTypes =
   | "host-groups"
   | "idoverrideuser"
   | "netgroups"
+  | "permissions"
   | "privileges"
   | "roles"
   | "services"
@@ -77,13 +78,14 @@ interface MemberTableProps {
   checkedItems?: string[];
   onCheckItemsChange?: (checkedItems: string[]) => void;
   showTableRows: boolean;
+  showLink?: boolean;
 }
 
 // Types that use string arrays instead of objects
 const STRING_ARRAY_TYPES = ["external", "sysaccount", "idoverrideuser"];
 
 // Track those types that don't have links
-const NO_LINK_TYPES: string[] = ["roles", "privileges"];
+const NO_LINK_TYPES: string[] = ["roles", "privileges", "permissions"];
 
 // Body
 const TableBody = (props: {
@@ -95,14 +97,19 @@ const TableBody = (props: {
   showCheckboxColumn: boolean;
   checkedItems: string[];
   onCheckboxChange: (checked: boolean, entityName: string) => void;
+  showLink?: boolean;
 }) => {
   const { list, idKey, propertiesToShow } = props;
 
   // Check if this is a string array type (external, sysaccount, idoverrideuser)
   const isStringArray = STRING_ARRAY_TYPES.includes(props.from);
 
-  const shouldRenderLink = (from: string, isStringArray: boolean) =>
-    !isStringArray && !NO_LINK_TYPES.includes(from);
+  const shouldRenderLink = (from: string, isStringArray: boolean) => {
+    if (props.showLink === false) return false;
+    if (isStringArray) return false;
+    if (props.showLink === true) return true;
+    return !NO_LINK_TYPES.includes(from);
+  };
 
   const getItemLink = (from: string, itemId: string) =>
     from === "services"
@@ -255,6 +262,7 @@ export default function MemberTable(props: MemberTableProps) {
             showCheckboxColumn={showCheckboxColumn}
             onCheckboxChange={onCheckboxChange}
             checkedItems={props.checkedItems || []}
+            showLink={props.showLink}
           />
         )}
       </Tbody>

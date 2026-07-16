@@ -25,10 +25,11 @@ interface PropsToAdd {
   onCloseModal: () => void;
   availableItems: AvailableItems[];
   onAdd: (items: AvailableItems[]) => void;
-  onSearchTextChange: (searchText: string) => void;
+  onSearchTextChange?: (searchText: string) => void;
   title: string;
   ariaLabel: string;
   spinning: boolean;
+  isSearchable?: boolean;
 }
 
 const MemberOfAddModal = (props: PropsToAdd) => {
@@ -69,6 +70,8 @@ const MemberOfAddModal = (props: PropsToAdd) => {
           setAvailableOptions={setAvailableOptions}
           chosenOptions={chosenOptions}
           setChosenOptions={setChosenOptions}
+          isSearchable={props.isSearchable}
+          onSearchTextChange={props.onSearchTextChange}
         />
       ),
     },

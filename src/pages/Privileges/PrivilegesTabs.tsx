@@ -8,6 +8,9 @@ import PrivilegesSettings from "./PrivilegesSettings";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
+import PrivilegesPermissions from "src/pages/Privileges/PrivilegesPermissions";
+// Utils
+import { partialPrivilegeToPrivilege } from "src/utils/privilegesUtils";
 // Hooks
 import { usePrivilegeSettings } from "src/hooks/usePrivilegeSettingsData";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
@@ -25,6 +28,12 @@ import {
 interface PrivilegesTabsProps {
   section: string;
 }
+
+// Central mapping between tab keys and routes
+const TAB_ROUTES: Record<string, (cn: string) => string> = {
+  settings: (cn) => `/privileges/${cn}`,
+  permissions: (cn) => `/privileges/${cn}/permissions`,
+};
 
 const PrivilegesTabs = ({ section }: PrivilegesTabsProps) => {
   const { cn } = useSafeParams<CnParams>(["cn"]);
@@ -48,8 +57,10 @@ const PrivilegesTabs = ({ section }: PrivilegesTabsProps) => {
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    if (tabIndex === "settings") {
-      navigate("/privileges/" + cn);
+    const tabKey = String(tabIndex);
+    const toPath = TAB_ROUTES[tabKey];
+    if (toPath) {
+      navigate(toPath(cn));
     }
   };
 
@@ -124,6 +135,18 @@ const PrivilegesTabs = ({ section }: PrivilegesTabsProps) => {
               isModified={privilegeSettingsData.modified}
               onResetValues={privilegeSettingsData.resetValues}
               modifiedValues={privilegeSettingsData.modifiedValues}
+              onOpenContextualPanel={() => dispatch(toggleHelpPanel())}
+            />
+          </Tab>
+          <Tab
+            eventKey={"permissions"}
+            name="permissions-details"
+            title={<TabTitleText>Permissions</TabTitleText>}
+          >
+            <PrivilegesPermissions
+              privilege={partialPrivilegeToPrivilege(
+                privilegeSettingsData.privilege
+              )}
               onOpenContextualPanel={() => dispatch(toggleHelpPanel())}
             />
           </Tab>

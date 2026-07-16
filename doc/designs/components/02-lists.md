@@ -57,6 +57,37 @@ Certificate mapping data management.
 
 Kerberos principal alias management.
 
+### DualListSelectorGeneric
+
+Dual-pane list selector used inside `MemberOfAddModal` for picking items to add.
+
+**Search behaviour (`isSearchable` + `onSearchTextChange`):**
+
+| `onSearchTextChange` provided? | Filtering mode | `onChange` (keystroke) | `onSearch` (Enter / button) | `onClear` |
+|---|----|----|----|---|
+| **Yes** (server-side search) | Server handles filtering | Updates input text only | Calls `onSearchTextChange` → triggers RTK Query | Resets input + calls `onSearchTextChange("")` |
+| **No** (client-only) | Client-side `isVisible` | Filters local list per-keystroke | — | Resets local filter |
+
+> **Important:** When `onSearchTextChange` is connected to an RTK Query (via
+> `adderSearchValue`), `DualListSelectorGeneric` does **not** apply client-side
+> `isVisible` filtering — the server already returns filtered results. The search
+> input only fires the query on **submit** (Enter / search button), not on every
+> keystroke, matching the same pattern as `SearchInputLayout`.
+
+**Props:**
+| Prop | Type | Description |
+|------|------|-------------|
+| `id` | `string` | Component ID |
+| `availableOptions` | `DualListOption[]` | Left-pane options |
+| `setAvailableOptions` | `(options: DualListOption[]) => void` | Update available |
+| `chosenOptions` | `DualListOption[]` | Right-pane options |
+| `setChosenOptions` | `(options: DualListOption[]) => void` | Update chosen |
+| `availableOptionsTitle?` | `string` | Left-pane heading |
+| `chosenOptionsTitle?` | `string` | Right-pane heading |
+| `ariaLabel?` | `string` | Accessibility label |
+| `isSearchable?` | `boolean` | Show search input in available pane |
+| `onSearchTextChange?` | `(searchText: string) => void` | Server-side search callback (submit-only) |
+
 ---
 
 ## Specialized Components

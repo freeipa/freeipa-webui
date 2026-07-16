@@ -26,7 +26,12 @@ export function apiToPrivilege(apiRecord: Record<string, unknown>): Privilege {
     simpleValues,
     dateValues
   ) as Partial<Privilege>;
-  return partialPrivilegeToPrivilege(converted) as Privilege;
+
+  return {
+    ...createEmptyPrivilege(),
+    ...converted,
+    memberof_permission: (apiRecord.memberof_permission as string[]) || [],
+  };
 }
 
 export function partialPrivilegeToPrivilege(
@@ -42,6 +47,7 @@ export function createEmptyPrivilege(): Privilege {
   const privilege: Privilege = {
     cn: "",
     description: "",
+    memberof_permission: [],
   };
 
   return privilege;

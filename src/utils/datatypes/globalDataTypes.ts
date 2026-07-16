@@ -223,6 +223,7 @@ export interface SysAccount {
 export interface Privilege {
   cn: string;
   description: string;
+  memberof_permission: string[];
 }
 
 export interface HBACRule {

@@ -6,9 +6,9 @@ import {
   BatchRPCResponse,
   FindRPCResponse,
 } from "./rpc";
+import { apiToPrivilege } from "src/utils/privilegesUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
 import { Privilege, cnType } from "../utils/datatypes/globalDataTypes";
-import { apiToPrivilege } from "../utils/privilegesUtils";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 /**
@@ -20,6 +20,9 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
  * - privilege_add: https://freeipa.readthedocs.io/en/latest/api/privilege_add.html
  * - privilege_del: https://freeipa.readthedocs.io/en/latest/api/privilege_del.html
  * - privilege_mod: https://freeipa.readthedocs.io/en/latest/api/privilege_mod.html
+ * - privilege_add_permission: https://freeipa.readthedocs.io/en/latest/api/privilege_add_permission.html
+ * - privilege_remove_permission: https://freeipa.readthedocs.io/en/latest/api/privilege_remove_permission.html
+ * - permission_find: https://freeipa.readthedocs.io/en/latest/api/permission_find.html
  */
 
 interface PrivilegeShowPayload {
@@ -39,6 +42,11 @@ interface PrivilegesFullDataPayload {
   apiVersion: string;
   startIdx: number;
   stopIdx: number;
+}
+
+interface PrivilegePermissionPayload {
+  privilegeCn: string;
+  permissions: string[];
 }
 
 const extendedApi = api.injectEndpoints({
@@ -180,6 +188,75 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(commands, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Get a privilege by cn via `privilege_show`
+     * @param {string} cn - Privilege name
+     * @returns {Privilege} - Privilege data
+     */
+    getPrivilegeById: build.query<Privilege, string>({
+      query: (cn) =>
+        getCommand({
+          method: "privilege_show",
+          params: [[cn], { all: true, rights: true }],
+        }),
+      transformResponse: (response: FindRPCResponse): Privilege => {
+        return apiToPrivilege(response.result.result);
+      },
+    }),
+    /**
+     * Get available permissions via `permission_find`
+     * @param {string} searchValue - Search value for filtering permissions
+     * @returns {FindRPCResponse} - Response from API
+     */
+    getPermissions: build.query<FindRPCResponse, string>({
+      query: (searchValue) =>
+        getCommand({
+          method: "permission_find",
+          params: [
+            [searchValue],
+            {
+              no_members: true,
+              version: API_VERSION_BACKUP,
+            },
+          ],
+        }),
+    }),
+    /**
+     * Add permissions to a privilege via `privilege_add_permission`
+     * @param {PrivilegePermissionPayload} - Payload with privilege cn and permissions
+     * @returns {FindRPCResponse} - Response from API
+     */
+    addPermissionToPrivilege: build.mutation<
+      FindRPCResponse,
+      PrivilegePermissionPayload
+    >({
+      query: (payload) =>
+        getCommand({
+          method: "privilege_add_permission",
+          params: [
+            [payload.privilegeCn],
+            { permission: payload.permissions, version: API_VERSION_BACKUP },
+          ],
+        }),
+    }),
+    /**
+     * Remove permissions from a privilege via `privilege_remove_permission`
+     * @param {PrivilegePermissionPayload} - Payload with privilege cn and permissions
+     * @returns {FindRPCResponse} - Response from API
+     */
+    removePermissionFromPrivilege: build.mutation<
+      FindRPCResponse,
+      PrivilegePermissionPayload
+    >({
+      query: (payload) =>
+        getCommand({
+          method: "privilege_remove_permission",
+          params: [
+            [payload.privilegeCn],
+            { permission: payload.permissions, version: API_VERSION_BACKUP },
+          ],
+        }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -201,4 +278,8 @@ export const {
   useAddPrivilegeMutation,
   useDeletePrivilegesMutation,
   useSavePrivilegeMutation,
+  useGetPrivilegeByIdQuery,
+  useGetPermissionsQuery,
+  useAddPermissionToPrivilegeMutation,
+  useRemovePermissionFromPrivilegeMutation,
 } = extendedApi;
