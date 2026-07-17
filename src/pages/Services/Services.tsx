@@ -124,13 +124,14 @@ const Services = () => {
   const [retrieveServices] = useSearchEntriesMutation({});
 
   // Issue search with filter
-  const submitSearchValue = () => {
+  const submitSearchValue = (value?: string) => {
+    const search = value ?? searchValue;
     setPage(1);
     setShowTableRows(false);
     setServicesTotalCount(0);
     setSearchIsDisabled(true);
     retrieveServices({
-      searchValue: searchValue,
+      searchValue: search,
       sizeLimit: 0,
       apiVersion: apiVersion || API_VERSION_BACKUP,
       startIdx: 0,

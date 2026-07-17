@@ -135,8 +135,13 @@ This pattern avoids eslint warnings about calling `setState` in `useEffect`.
 
 ## Step 7: Search Value Update Handler
 
-The search input fires `updateSearchValue` on every keystroke. It must reset pagination
-to page 1 so the user always sees results from the first page:
+`SearchInputLayout` buffers keystrokes locally — it does **not** call `updateSearchValue`
+on every keystroke. Instead, it calls `updateSearchValue(value)` and
+`submitSearchValue(value)` only when the user presses Enter or clicks the search button.
+This avoids firing an API request on every keystroke.
+
+`updateSearchValue` resets pagination to page 1 and updates the committed search value
+(which drives the RTK Query parameter and URL sync):
 
 ```tsx
   const updateSearchValue = (value: string) => {
@@ -145,22 +150,29 @@ to page 1 so the user always sees results from the first page:
   };
 ```
 
+> **Do not** add search-as-you-type behavior by calling `setSearchValue` inside
+> `SearchInputLayout`'s `onChange`. The component deliberately buffers input locally
+> and only propagates on submit or clear.
+
 ## Step 8: Search Submit Handler
 
-The search input fires `submitSearchValue` when the user presses Enter or clicks the
-search button. This uses a mutation to fetch results independently of the query hook.
+`submitSearchValue` is called by `SearchInputLayout` when the user presses Enter or
+clicks the search button. It receives the **current input value** as an argument to
+avoid stale closures (since `updateSearchValue` and `submitSearchValue` are called in
+the same event handler, the React state from `updateSearchValue` has not yet committed).
 
 ```tsx
   const [searchEntities, searchResult] = useSearchMyEntitiesEntriesMutation({});
   const [searchDisabled, setSearchIsDisabled] = useState(false);
 
-  const submitSearchValue = () => {
+  const submitSearchValue = (value?: string) => {
+    const search = value ?? searchValue;
     setPage(1);
     setSearchIsDisabled(true);
     setIsSearchActive(true);
 
     searchEntities({
-      searchValue,
+      searchValue: search,
       sizeLimit: 0,
       apiVersion: apiVersion || API_VERSION_BACKUP,
       startIdx: 0,
@@ -194,6 +206,12 @@ search button. This uses a mutation to fetch results independently of the query 
     });
   };
 ```
+
+> **Important — `value` parameter:** Always use the `value` argument (falling back to
+> `searchValue` with `??`) instead of reading `searchValue` directly from the closure.
+> Both `updateSearchValue` and `submitSearchValue` are called in the same React event
+> handler, so the state set by `updateSearchValue` is not yet available when
+> `submitSearchValue` runs.
 
 > **Important — `stopIdx: 100`:** Use a fixed upper bound (100) instead of `perPage`.
 > The LDAP backend has a size limit close to this value, and using `perPage` (e.g. 10)

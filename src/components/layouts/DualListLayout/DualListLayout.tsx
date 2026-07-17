@@ -162,11 +162,12 @@ const DualListTableLayoutInner = (props: DualListProps) => {
 
   // Issue a search using a specific search value
   const [retrieveIDs] = useGetIDListMutation({});
-  const submitSearchValue = () => {
+  const submitSearchValue = (value?: string) => {
+    const search = value ?? searchValue;
     setSearchIsDisabled(true);
     if (props.availableOptions === undefined) {
       retrieveIDs({
-        searchValue: props.availableOptions || searchValue,
+        searchValue: props.availableOptions || search,
         sizeLimit: 200,
         startIdx: 0,
         stopIdx: 200,
@@ -189,9 +190,9 @@ const DualListTableLayoutInner = (props: DualListProps) => {
     }
   };
 
-  function doSearch() {
+  function doSearch(value?: string) {
     setStatus("searching");
-    submitSearchValue();
+    submitSearchValue(value);
   }
 
   const searchValueData = {

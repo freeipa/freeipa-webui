@@ -221,11 +221,12 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
   // Search DNS records
   const [searchDnsRecords] = useSearchDnsRecordsEntriesMutation();
 
-  const submitSearchValue = () => {
+  const submitSearchValue = (value?: string) => {
+    const search = value ?? searchValue;
     setPage(1);
     const payload: FindDnsRecordPayload = {
       dnsZoneId: props.dnsZoneId,
-      recordName: searchValue,
+      recordName: search,
       sizeLimit: 100,
       startIdx: 0, // Reset to first page for search
       stopIdx: 100,

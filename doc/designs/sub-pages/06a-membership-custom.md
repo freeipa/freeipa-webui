@@ -135,6 +135,54 @@ return (
 - Modals should be **outside** `TabLayout` to avoid z-index issues
 - Inner `Tab` title can include a `Badge` showing member count
 
+## Search Behavior in Membership Tabs
+
+`SearchInputLayout` buffers keystrokes locally — the `searchValue` state is only updated
+when the user presses Enter, clicks the search button, or clears the input. This avoids
+unnecessary re-renders and API calls on every keystroke.
+
+### Wiring the MemberOfToolbar
+
+```tsx
+<MemberOfToolbar
+  searchText={searchValue}
+  onSearchTextChange={setSearchValue}
+  onSearch={() => {}}
+  searchPlaceholder="Search members"
+  searchAriaLabel="Search members"
+  // ... other props
+/>
+```
+
+- **`onSearchTextChange`** is called by `SearchInputLayout` only on submit or clear
+  (not on every keystroke). It updates `searchValue` which drives the client-side filter.
+- **`onSearch`** can remain `() => {}` — membership tabs use client-side filtering
+  via `searchValue`, so no mutation-based search is needed.
+
+### Client-Side Filtering Pattern
+
+Use `searchValue` to filter the membership list. Since `searchValue` only changes on
+submit, the filter is applied only when the user explicitly searches:
+
+```tsx
+const filteredMembers = React.useMemo(() => {
+  let toLoad = [...memberList].sort();
+  if (searchValue) {
+    const q = searchValue.toLowerCase();
+    toLoad = toLoad.filter((name) => name.toLowerCase().includes(q));
+  }
+  return toLoad;
+}, [memberList, searchValue]);
+
+const namesToLoad = React.useMemo(
+  () => paginate(filteredMembers, page, perPage),
+  [filteredMembers, page, perPage]
+);
+```
+
+> **Do not** wire `onSearchTextChange` to trigger API calls or heavy computations.
+> It is called once per search submit, not per keystroke.
+
 ## Handling API Array Responses
 
 The IPA API often returns single values as arrays:

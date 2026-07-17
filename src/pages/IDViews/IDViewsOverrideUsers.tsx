@@ -132,14 +132,15 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
 
   const [retrieveEntries] = useSearchOverrideEntriesMutation({});
 
-  const submitSearchValue = () => {
+  const submitSearchValue = (value?: string) => {
+    const search = value ?? searchValue;
     setPage(1);
     setShowTableRows(false);
     setTotalCount(0);
     setSearchIsDisabled(true);
     retrieveEntries({
       idView: props.idview,
-      searchValue: searchValue,
+      searchValue: search,
       sizeLimit: 0,
       startIdx: 0,
       stopIdx: 100,

@@ -179,13 +179,14 @@ const Roles = () => {
 
   const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
-  const submitSearchValue = () => {
+  const submitSearchValue = (value?: string) => {
+    const search = value ?? searchValue;
     setPage(1);
     setSearchIsDisabled(true);
     setIsSearchActive(true);
 
     searchRoles({
-      searchValue: searchValue,
+      searchValue: search,
       sizeLimit: 0,
       apiVersion: apiVersion || API_VERSION_BACKUP,
       startIdx: 0,

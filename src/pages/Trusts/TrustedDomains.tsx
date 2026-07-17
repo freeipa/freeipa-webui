@@ -225,11 +225,12 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
   // Search API call
   const [searchEntry] = useSearchTrustDomainsEntriesMutation();
 
-  const submitSearchValue = () => {
+  const submitSearchValue = (value?: string) => {
+    const search = value ?? searchValue;
     setPage(1);
     const payload: TrustDomainFindPayload = {
       trustId: props.trustId,
-      searchValue: searchValue,
+      searchValue: search,
       sizelimit: 0,
     };
 

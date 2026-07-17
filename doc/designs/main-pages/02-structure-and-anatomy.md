@@ -24,7 +24,7 @@ Every main page follows the same structural pattern, in this order:
 2. **URL-synced pagination/search state** (`useListPageSearchParams`)
 3. **API version retrieval** (Redux selector)
 4. **Data fetching** (RTK Query hook for initial load)
-5. **Search mutation** (RTK Query mutation for explicit search)
+5. **Search mutation** (RTK Query mutation for submit-only search)
 6. **Selection management** (selected items, bulk selector logic)
 7. **Button state management** (delete, enable, disable disabled states)
 8. **Data wrappers** (prop bundles for child components)

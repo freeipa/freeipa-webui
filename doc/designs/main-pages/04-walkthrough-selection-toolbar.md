@@ -110,7 +110,7 @@ These objects group related props for child components:
 
   const searchValueData = {
     searchValue,
-    updateSearchValue: setSearchValue,
+    updateSearchValue,
     submitSearchValue,
   };
 

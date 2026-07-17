@@ -218,10 +218,11 @@ const Trusts = () => {
   // Search API call
   const [searchEntry] = useSearchTrustsEntriesMutation();
 
-  const submitSearchValue = () => {
+  const submitSearchValue = (value?: string) => {
+    const search = value ?? searchValue;
     setPage(1);
     searchEntry({
-      searchValue,
+      searchValue: search,
       apiVersion,
       sizelimit: 100,
       startIdx: 0,

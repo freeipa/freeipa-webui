@@ -61,7 +61,7 @@ describe("SearchInputLayout Component", () => {
     expect(searchInput).toHaveValue("current search value");
   });
 
-  it("calls updateSearchValue when input changes", () => {
+  it("does not call updateSearchValue on keystroke (buffers locally)", () => {
     render(
       <SearchInputLayout
         dataCy="search-input"
@@ -72,7 +72,8 @@ describe("SearchInputLayout Component", () => {
     const searchInput = screen.getByRole("textbox");
     fireEvent.change(searchInput, { target: { value: "new search value" } });
 
-    expect(mockUpdateSearchValue).toHaveBeenCalledWith("new search value");
+    expect(mockUpdateSearchValue).not.toHaveBeenCalled();
+    expect(searchInput).toHaveValue("new search value");
   });
 
   it("calls updateSearchValue with empty string when reset button is clicked", () => {
@@ -94,7 +95,7 @@ describe("SearchInputLayout Component", () => {
     expect(mockUpdateSearchValue).toHaveBeenCalledWith("");
   });
 
-  it("calls submitSearchValue when search button is clicked", () => {
+  it("calls updateSearchValue and submitSearchValue with input value on search submit", () => {
     render(
       <SearchInputLayout
         dataCy="search-input"
@@ -102,9 +103,13 @@ describe("SearchInputLayout Component", () => {
       />
     );
 
+    const searchInput = screen.getByRole("textbox");
+    fireEvent.change(searchInput, { target: { value: "typed value" } });
+
     const searchButton = screen.getByRole("button", { name: /search/i });
     fireEvent.click(searchButton);
 
-    expect(mockSubmitSearchValue).toHaveBeenCalled();
+    expect(mockUpdateSearchValue).toHaveBeenCalledWith("typed value");
+    expect(mockSubmitSearchValue).toHaveBeenCalledWith("typed value");
   });
 });

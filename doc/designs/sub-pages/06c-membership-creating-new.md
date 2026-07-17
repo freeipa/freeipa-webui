@@ -183,7 +183,7 @@ After gathering information, the component MUST include:
 
 | Required Feature | Description |
 |------------------|-------------|
-| **Toolbar** | `MemberOfToolbar` with search, pagination, Add/Delete buttons |
+| **Toolbar** | `MemberOfToolbar` with search (submit-only, not per-keystroke), pagination, Add/Delete buttons |
 | **Table** | `MemberTable` displaying the member list |
 | **Pagination** | Bottom pagination component |
 | **Add button** | Enabled, opens add modal |

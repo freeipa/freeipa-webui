@@ -139,10 +139,11 @@ const DnsServers = () => {
   // Search API call
   const [searchEntry] = useSearchDnsServersEntriesMutation();
 
-  const submitSearchValue = () => {
+  const submitSearchValue = (value?: string) => {
+    const search = value ?? searchValue;
     setPage(1);
     searchEntry({
-      searchValue: searchValue,
+      searchValue: search,
       pkeyOnly: true,
       sizeLimit: 100,
       version: apiVersion,

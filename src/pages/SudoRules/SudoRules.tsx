@@ -229,13 +229,14 @@ const SudoRules = () => {
   const [retrieveRules] = useSearchEntriesMutation({});
 
   // Issue a search using a specific search value
-  const submitSearchValue = () => {
+  const submitSearchValue = (value?: string) => {
+    const search = value ?? searchValue;
     setPage(1);
     setShowTableRows(false);
     setSearchIsDisabled(true);
     setRulesTotalCount(0);
     retrieveRules({
-      searchValue: searchValue,
+      searchValue: search,
       sizeLimit: 0,
       apiVersion: apiVersion || API_VERSION_BACKUP,
       startIdx: 0,

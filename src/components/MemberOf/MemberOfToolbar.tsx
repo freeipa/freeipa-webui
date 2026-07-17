@@ -22,7 +22,7 @@ interface MemberOfToolbarProps {
   // search
   searchText: string;
   onSearchTextChange: (value: string) => void;
-  onSearch: () => void;
+  onSearch: (value?: string) => void;
   searchPlaceholder: string;
   searchAriaLabel: string;
 

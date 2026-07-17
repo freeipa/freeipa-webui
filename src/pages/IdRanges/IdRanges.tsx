@@ -182,11 +182,12 @@ const IdRanges = () => {
   const [isSearchDisabled, setIsSearchDisabled] =
     React.useState<boolean>(false);
 
-  const submitSearchValue = () => {
+  const submitSearchValue = (value?: string) => {
+    const search = value ?? searchValue;
     setPage(1);
     setSearchOverride(null);
     searchEntry({
-      searchValue: searchValue,
+      searchValue: search,
       apiVersion,
       sizelimit: 100,
       startIdx: 0,

@@ -238,12 +238,13 @@ const OtpTokens = () => {
   // Search API call
   const [searchEntry] = useSearchOtpTokensEntriesMutation();
 
-  const submitSearchValue = () => {
+  const submitSearchValue = (value?: string) => {
+    const search = value ?? searchValue;
     setPage(1);
     setSearchValue(searchValue);
     setIsSearchDisabled(true);
     searchEntry({
-      searchValue: searchValue,
+      searchValue: search,
       apiVersion,
       sizelimit: 100,
       startIdx: 0,

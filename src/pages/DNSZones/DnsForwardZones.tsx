@@ -197,10 +197,11 @@ const DnsForwardZones = () => {
   // Search API call
   const [searchEntry] = useSearchDnsForwardZonesEntriesMutation();
 
-  const submitSearchValue = () => {
+  const submitSearchValue = (value?: string) => {
+    const search = value ?? searchValue;
     setPage(1);
     searchEntry({
-      searchValue: searchValue,
+      searchValue: search,
       apiVersion,
       startIdx: 0,
       stopIdx: 200, // Search will consider a max. of elements
