@@ -34,7 +34,7 @@
           <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
             <PaginationLayout
               list={entitiesList}
-              paginationData={paginationData}
+              totalCount={totalCount}
               variant={PaginationVariant.bottom}
               widgetId="pagination-options-menu-bottom"
             />

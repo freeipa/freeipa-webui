@@ -20,9 +20,13 @@ The `pathname` must be registered in `AppRoutes.tsx` and `NavRoutes.ts`.
     (state) => state.global.environment.api_version
   ) as string;
 
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
-    useListPageSearchParams();
+  // page (`p`), perPage (`size`), and searchValue (`search`) are derived from the URL
+  const { page, perPage, searchValue } = useListPageSearchParams();
 ```
+
+`SearchInputLayout` and `PaginationLayout` update those URL params themselves. Pages
+normally only **read** `page` / `perPage` / `searchValue` for the query; they do not
+need local search submit handlers or pagination prop bundles for the list case.
 
 ## Step 3: Data Fetching Query
 
@@ -50,53 +54,27 @@ The `pathname` must be registered in `AppRoutes.tsx` and `NavRoutes.ts`.
 
 Use `useMemo` to derive `elementsList` and `totalCount` from the query response — **do not** use `useEffect` + `useState` to sync state.
 
-The `SearchDataResultType<T>` generic type (from `src/utils/datatypes/globalDataTypes.ts`) standardizes the search state structure:
-
 ```tsx
-export interface SearchDataResultType<T> {
-  elementsList: T[];
-  totalCount: number;
-}
-```
-
-Use it to type the search data state:
-
-```tsx
-  // Search state (for mutation-based search)
-  const [isSearchActive, setIsSearchActive] = useState(false);
-  const [searchData, setSearchData] =
-    useState<SearchDataResultType<MyEntity> | null>(null);
-
-  // Derive elementsList and totalCount
   const { elementsList, totalCount } = useMemo(() => {
-    // Search results are fetched with stopIdx: 100 (all matches at once),
-    // so paginate them client-side using page/perPage.
-    if (isSearchActive && searchData) {
-      const start = (page - 1) * perPage;
-      const end = start + perPage;
-      return {
-        elementsList: searchData.elementsList.slice(start, end),
-        totalCount: searchData.elementsList.length,
-      };
-    }
-
     if (batchResponse?.result) {
       const results = batchResponse.result.results;
       const entities: MyEntity[] = [];
       for (let i = 0; i < batchResponse.result.count; i++) {
         entities.push(results[i].result);
       }
-      return { elementsList: entities, totalCount: batchResponse.result.totalCount };
+      return {
+        elementsList: entities,
+        totalCount: batchResponse.result.totalCount,
+      };
     }
 
     return { elementsList: [], totalCount: 0 };
-  }, [batchResponse, isSearchActive, searchData, page, perPage]);
+  }, [batchResponse]);
 
   // Derive showTableRows from loading states
   const showTableRows = useMemo(() => {
-    if (isSearchActive) return !searchResult.isLoading;
     return !isFetching && !isLoading;
-  }, [isFetching, isLoading, isSearchActive, searchResult.isLoading]);
+  }, [isFetching, isLoading]);
 ```
 
 This pattern avoids eslint warnings about calling `setState` in `useEffect`.
@@ -123,100 +101,54 @@ This pattern avoids eslint warnings about calling `setState` in `useEffect`.
 
 ```tsx
   const refreshData = () => {
-    setIsSearchActive(false);
-    setSearchData(null);
     clearSelectedEntities();
     dataResponse.refetch();
   };
 ```
 
-> **Note:** No manual `useEffect` for pagination is needed. RTK Query automatically
-> re-fetches when `startIdx`/`stopIdx` change (derived from `page`/`perPage`).
+> **Note:** No manual `useEffect` for pagination or search is needed. RTK Query
+> automatically re-fetches when `startIdx`/`stopIdx`/`searchValue` change (derived
+> from URL params via `useListPageSearchParams`).
 
-## Step 7: Search Value Update Handler
+## Step 7: Search Behaviour (`SearchInputLayout`)
 
-`SearchInputLayout` buffers keystrokes locally — it does **not** call `updateSearchValue`
-on every keystroke. Instead, it calls `updateSearchValue(value)` and
-`submitSearchValue(value)` only when the user presses Enter or clicks the search button.
-This avoids firing an API request on every keystroke.
+`SearchInputLayout` buffers keystrokes locally. It commits a search only when the
+user presses Enter, clicks the search button, or clears the input — not on every
+keystroke.
 
-`updateSearchValue` resets pagination to page 1 and updates the committed search value
-(which drives the RTK Query parameter and URL sync):
+For list pages, omit `searchValueData`. The layout then:
 
-```tsx
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-```
-
-> **Do not** add search-as-you-type behavior by calling `setSearchValue` inside
-> `SearchInputLayout`'s `onChange`. The component deliberately buffers input locally
-> and only propagates on submit or clear.
-
-## Step 8: Search Submit Handler
-
-`submitSearchValue` is called by `SearchInputLayout` when the user presses Enter or
-clicks the search button. It receives the **current input value** as an argument to
-avoid stale closures (since `updateSearchValue` and `submitSearchValue` are called in
-the same event handler, the React state from `updateSearchValue` has not yet committed).
+1. Reads the committed value from the URL `search` param
+2. Writes the new value to `search` on submit/clear
+3. Deletes `p` so results start on page 1
 
 ```tsx
-  const [searchEntities, searchResult] = useSearchMyEntitiesEntriesMutation({});
-  const [searchDisabled, setSearchIsDisabled] = useState(false);
-
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    setSearchIsDisabled(true);
-    setIsSearchActive(true);
-
-    searchEntities({
-      searchValue: search,
-      sizeLimit: 0,
-      apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: 0,
-      stopIdx: 100,
-    }).then((result) => {
-      if ("data" in result) {
-        const searchError = result.data?.error;
-
-        if (searchError) {
-          dispatch(addAlert({
-            name: "submit-search-value-error",
-            title: searchError.message || "Error when searching",
-            variant: "danger",
-          }));
-          setIsSearchActive(false);
-          setSearchData(null);
-        } else {
-          const results = result.data?.result.results || [];
-          const searchTotalCount = result.data?.result.totalCount || 0;
-          const entities: MyEntity[] = [];
-          for (let i = 0; i < results.length; i++) {
-            entities.push(results[i].result);
-          }
-          setSearchData({
-            elementsList: entities,
-            totalCount: searchTotalCount,
-          });
-        }
-        setSearchIsDisabled(false);
-      }
-    });
-  };
+  <SearchInputLayout
+    dataCy="search"
+    name="search"
+    ariaLabel="Search my entities"
+    placeholder="Search"
+  />
 ```
 
-> **Important — `value` parameter:** Always use the `value` argument (falling back to
-> `searchValue` with `??`) instead of reading `searchValue` directly from the closure.
-> Both `updateSearchValue` and `submitSearchValue` are called in the same React event
-> handler, so the state set by `updateSearchValue` is not yet available when
-> `submitSearchValue` runs.
+Non-list UIs that need local search state (for example `DualListLayout`) can pass an
+optional override:
 
-> **Important — `stopIdx: 100`:** Use a fixed upper bound (100) instead of `perPage`.
-> The LDAP backend has a size limit close to this value, and using `perPage` (e.g. 10)
-> would miss entries beyond the first page of results when searching from a page other
-> than page 1.
+```tsx
+  <SearchInputLayout
+    dataCy="search"
+    searchValueData={{
+      searchValue,
+      onSubmit: (value) => {
+        /* update local state / run a custom search */
+      },
+    }}
+  />
+```
+
+> **Do not** add search-as-you-type behaviour by writing the URL (or parent state) on
+> every `onChange`. The component deliberately buffers input locally and only
+> propagates on submit or clear.
 
 ## Legacy Pattern (Avoid)
 

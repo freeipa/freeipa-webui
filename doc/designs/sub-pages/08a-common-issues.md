@@ -9,13 +9,20 @@
 
 ```tsx
 <MemberOfToolbar
-  searchText={searchValue}
-  onSearchTextChange={setSearchValue}
-  onSearch={() => {}}              // Required!
-  searchPlaceholder="Search users" // Required!
-  searchAriaLabel="Search users"   // Required!
+  searchPlaceholder="Search users" // Required
+  searchAriaLabel="Search users"   // Required
+  refreshButtonEnabled={isRefreshButtonEnabled}
+  onRefreshButtonClick={onRefresh}
+  deleteButtonEnabled={selected.length > 0}
+  onDeleteButtonClick={() => setShowDeleteModal(true)}
+  addButtonEnabled={isAddButtonEnabled}
+  onAddButtonClick={() => setShowAddModal(true)}
+  totalItems={filteredMembers.length} // Required — drives top pagination
 />
 ```
+
+Search and pagination are URL-backed inside the toolbar; do **not** pass
+`searchText` / `onSearchTextChange` / `onSearch` (those props no longer exist).
 
 ### Wrong Table Component Import
 

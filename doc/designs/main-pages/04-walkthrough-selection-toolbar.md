@@ -93,26 +93,17 @@ Pages with enable/disable also need:
 
 ### 13. Data Wrappers (Prop Bundles)
 
-These objects group related props for child components:
+These objects group related props for child components. List search and pagination
+are URL-backed via `SearchInputLayout` / `PaginationLayout`, so you do **not** need
+`searchValueData` or `paginationData` wrappers for the main list.
 
 ```tsx
   const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
 
-  const paginationData = {
-    page,
-    perPage,
-    updatePage: setPage,
-    updatePerPage: setPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
-    updateShownElementsList: setEntitiesList,
-    totalCount,
-  };
-
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
-  };
+  // Reset selected-per-page count when page or page size changes
+  React.useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
   const bulkSelectorData = {
     selected: selectedEntities,
@@ -167,8 +158,6 @@ The toolbar is built as an array of `ToolbarItem` objects. The standard order is
           name="search"
           ariaLabel="Search my entities"
           placeholder="Search"
-          searchValueData={searchValueData}
-          isDisabled={searchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,
@@ -229,7 +218,7 @@ The toolbar is built as an array of `ToolbarItem` objects. The standard order is
       element: (
         <PaginationLayout
           list={entitiesList}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -238,3 +227,7 @@ The toolbar is built as an array of `ToolbarItem` objects. The standard order is
     },
   ];
 ```
+
+`PaginationLayout` reads/writes URL `p` and `size` when `paginationData` is omitted.
+Pass `totalCount` as a top-level prop. Use the optional `paginationData` override only
+for non-list UIs (for example `SettingsTableLayout`) that keep local page state.

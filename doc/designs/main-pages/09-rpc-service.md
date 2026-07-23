@@ -16,7 +16,7 @@ Create `src/services/rpcMyEntities.ts` with RTK Query endpoints. This file defin
 - Shared helper functions (`getCommand`, `getBatchCommand`)
 
 **Do NOT modify `rpc.ts`** when adding a new entity. Specifically:
-- Do NOT add new `entryType` values to `GenericPayload` or `useSearchEntriesMutation` — define a dedicated search mutation in the entity's `rpc<Entity>.ts` file instead
+- Do NOT add new `entryType` values to `GenericPayload` for entity list/search — put entity-specific list queries in `rpc<Entity>.ts` instead
 - Only add a cache tag to `tagTypes` if the entity-specific service file uses `providesTags` / `invalidatesTags`
 
 Entity-specific queries, mutations, and hooks are defined using `api.injectEndpoints()` in the entity's own file (e.g. `rpcRoles.ts`, `rpcTrusts.ts`, `rpcSelinuxUserMaps.ts`).
@@ -24,8 +24,10 @@ Entity-specific queries, mutations, and hooks are defined using `api.injectEndpo
 ## Minimum Endpoints for a Main Page
 
 A main page needs at least:
-1. A **query** for initial data loading — can use the generic `useGettingGenericQuery` wrapper from the entity's service file
-2. A **search mutation** for explicit search submissions — must be defined in `rpc<Entity>.ts` using the two-step find+show pattern
+1. A **query** for listing entities — paginated, and driven by URL `searchValue` / page indexes from `useListPageSearchParams`. Can use the generic `useGettingGenericQuery` wrapper from the entity's service file.
+2. **Add** and **delete** mutations for the modals
+
+A separate search mutation is **not** required for new main pages. `SearchInputLayout` commits the search string to the URL, and the list query refetches when `searchValue` changes.
 
 ## Template
 
@@ -111,16 +113,6 @@ const extendedApi = api.injectEndpoints({
         }
 
         return { data: response };
-      },
-    }),
-
-    /**
-     * Search entities (mutation variant for explicit search submit)
-     */
-    searchMyEntitiesEntries: build.mutation<BatchRPCResponse, MyEntitiesFullDataPayload>({
-      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        // Same two-step pattern as the query above
-        // ...
       },
     }),
 
@@ -215,8 +207,9 @@ Individual command docs: `https://freeipa.readthedocs.io/en/latest/api/<entity>_
 
 | Entity | Service file | Key hooks |
 |--------|-------------|-----------|
-| Roles | `src/services/rpcRoles.ts` | `useGettingRolesQuery`, `useSearchRolesEntriesMutation`, `useAddRoleMutation`, `useDeleteRolesMutation` |
-| Trusts | `src/services/rpcTrusts.ts` | `useGetTrustsFullDataQuery`, `useSearchTrustsEntriesMutation`, `useAddTrustMutation` |
-| DNS Zones | `src/services/rpcDnsZones.ts` | `useGetDnsZonesFullDataQuery`, `useSearchDnsZonesEntriesMutation` |
+| Privileges | `src/services/rpcPrivileges.ts` | `useGetPrivilegesFullDataQuery`, `useAddPrivilegeMutation`, `useRemovePrivilegesMutation` |
+| Roles | `src/services/rpcRoles.ts` | `useGettingRolesQuery`, `useAddRoleMutation`, `useDeleteRolesMutation` |
+| Trusts | `src/services/rpcTrusts.ts` | `useGetTrustsFullDataQuery`, `useAddTrustMutation` |
+| DNS Zones | `src/services/rpcDnsZones.ts` | `useGetDnsZonesFullDataQuery` |
 | Hosts | `src/services/rpcHosts.ts` | `useGettingHostQuery`, `useAutoMemberRebuildHostsMutation` |
 | HBAC Rules | `src/services/rpcHBACRules.ts` | `useGettingHbacRulesQuery` |

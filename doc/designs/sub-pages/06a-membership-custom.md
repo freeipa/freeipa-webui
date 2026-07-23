@@ -137,32 +137,42 @@ return (
 
 ## Search Behavior in Membership Tabs
 
-`SearchInputLayout` buffers keystrokes locally — the `searchValue` state is only updated
-when the user presses Enter, clicks the search button, or clears the input. This avoids
-unnecessary re-renders and API calls on every keystroke.
+`SearchInputLayout` (rendered inside `MemberOfToolbar`) buffers keystrokes locally and
+commits the value to the URL `search` param on Enter, search button, or clear.
+Membership tabs read that value via `useListPageSearchParams()` and filter client-side.
 
 ### Wiring the MemberOfToolbar
 
 ```tsx
+const { page, perPage, searchValue, membershipDirection, setMembershipDirection } =
+  useListPageSearchParams();
+
 <MemberOfToolbar
-  searchText={searchValue}
-  onSearchTextChange={setSearchValue}
-  onSearch={() => {}}
   searchPlaceholder="Search members"
   searchAriaLabel="Search members"
-  // ... other props
+  refreshButtonEnabled={isRefreshButtonEnabled}
+  onRefreshButtonClick={props.onRefresh}
+  deleteButtonEnabled={selected.length > 0}
+  onDeleteButtonClick={() => setShowDeleteModal(true)}
+  addButtonEnabled={isAddButtonEnabled}
+  onAddButtonClick={() => setShowAddModal(true)}
+  membershipDirectionEnabled={true}
+  membershipDirection={membershipDirection}
+  onMembershipDirectionChange={setMembershipDirection}
+  helpIconEnabled={true}
+  onHelpIconClick={() => dispatch(toggleHelpPanel())}
+  totalItems={filteredMembers.length}
 />
 ```
 
-- **`onSearchTextChange`** is called by `SearchInputLayout` only on submit or clear
-  (not on every keystroke). It updates `searchValue` which drives the client-side filter.
-- **`onSearch`** can remain `() => {}` — membership tabs use client-side filtering
-  via `searchValue`, so no mutation-based search is needed.
+`MemberOfToolbar` does not take search text props — search and pagination are
+URL-backed by `SearchInputLayout` / `PaginationLayout` inside the toolbar.
 
 ### Client-Side Filtering Pattern
 
-Use `searchValue` to filter the membership list. Since `searchValue` only changes on
-submit, the filter is applied only when the user explicitly searches:
+Use `searchValue` from `useListPageSearchParams` to filter the membership list.
+Since the URL `search` param only changes on submit, the filter is applied only when
+the user explicitly searches:
 
 ```tsx
 const filteredMembers = React.useMemo(() => {
@@ -179,9 +189,6 @@ const namesToLoad = React.useMemo(
   [filteredMembers, page, perPage]
 );
 ```
-
-> **Do not** wire `onSearchTextChange` to trigger API calls or heavy computations.
-> It is called once per search submit, not per keystroke.
 
 ## Handling API Array Responses
 

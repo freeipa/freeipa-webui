@@ -12,7 +12,7 @@ Each file below covers a specific, self-contained topic (~100–200 lines). Load
 |------|----------|-------|
 | [01-overview.md](main-pages/01-overview.md) | What is a main page, required & optional inputs, example prompt, what gets generated | ~85 |
 | [02-structure-and-anatomy.md](main-pages/02-structure-and-anatomy.md) | Folder structure, page anatomy (10-step pattern), required & optional imports | ~105 |
-| [03-walkthrough-init-fetch.md](main-pages/03-walkthrough-init-fetch.md) | Route setup, API version, data fetching with `useMemo` pattern, `SearchDataResultType`, search handler | ~195 |
+| [03-walkthrough-init-fetch.md](main-pages/03-walkthrough-init-fetch.md) | Route setup, API version, data fetching with `useMemo` pattern, URL-backed search | ~180 |
 | [04-walkthrough-selection-toolbar.md](main-pages/04-walkthrough-selection-toolbar.md) | Selection management, button state, modal state, data wrappers, toolbar items | ~200 |
 | [05-walkthrough-render-table-features.md](main-pages/05-walkthrough-render-table-features.md) | JSX render, `MainTable` usage, optional features (kebab menu, enable/disable, contextual help panel) | ~280 |
 | [06-checklist-and-types.md](main-pages/06-checklist-and-types.md) | Files to create/modify checklist, `SearchDataResultType`, data type definition, selectability function | ~105 |

@@ -79,18 +79,18 @@ const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
 ## Pagination and Search
 
-Use the `useListPageSearchParams` hook to manage pagination and search state in the URL:
+Use the `useListPageSearchParams` hook to **read** pagination and search state from the URL.
+`SearchInputLayout` and `PaginationLayout` write those params for you on list pages:
 
 ```tsx
-const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
-  useListPageSearchParams();
+const { page, perPage, searchValue } = useListPageSearchParams();
 
 // Calculate API query range
 const startIdx = (page - 1) * perPage;
 const stopIdx = startIdx + perPage;
 ```
 
-This keeps pagination state in the URL, so users can bookmark or share specific pages.
+This keeps pagination and search in the URL, so users can bookmark or share specific views.
 
 ## API Integration
 
@@ -140,14 +140,14 @@ Build the toolbar with all the action buttons:
 ```tsx
 const toolbarItems: ToolbarItem[] = [
   { key: 0, element: <BulkSelectorPrep bulkSelectorData={bulkSelectorData} /> },
-  { key: 1, element: <SearchInputLayout searchValueData={searchValueData} />, toolbarItemVariant: ToolbarItemVariant.label },
+  { key: 1, element: <SearchInputLayout dataCy="search" name="search" ariaLabel="Search" placeholder="Search" />, toolbarItemVariant: ToolbarItemVariant.label },
   { key: 2, toolbarItemVariant: ToolbarItemVariant.separator },
   { key: 3, element: <SecondaryButton onClickHandler={refreshData}>Refresh</SecondaryButton> },
   { key: 4, element: <SecondaryButton isDisabled={isDeleteButtonDisabled} onClickHandler={() => setShowDeleteModal(true)}>Delete</SecondaryButton> },
   { key: 5, element: <SecondaryButton onClickHandler={() => setShowAddModal(true)}>Add</SecondaryButton> },
   { key: 6, toolbarItemVariant: ToolbarItemVariant.separator },
   { key: 7, element: <HelpTextWithIconLayout textContent="Help" /> },
-  { key: 8, element: <PaginationLayout paginationData={paginationData} />, toolbarItemAlignment: { default: "alignEnd" } },
+  { key: 8, element: <PaginationLayout list={<childEntities>} totalCount={totalCount} />, toolbarItemAlignment: { default: "alignEnd" } },
 ];
 ```
 
@@ -181,7 +181,7 @@ return (
           </OuterScrollContainer>
         </FlexItem>
         <FlexItem style={{ position: "sticky", bottom: 0 }}>
-          <PaginationLayout list={<childEntities>} paginationData={paginationData} variant={PaginationVariant.bottom} />
+          <PaginationLayout list={<childEntities>} totalCount={totalCount} variant={PaginationVariant.bottom} />
         </FlexItem>
       </Flex>
     </PageSection>

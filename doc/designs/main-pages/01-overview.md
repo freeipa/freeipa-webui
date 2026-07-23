@@ -31,8 +31,7 @@ The RPC service file (`src/services/rpc<Entity>.ts`) **must be created manually 
 Every main page imports hooks from its RPC service file (e.g. `useGetDnsZonesFullDataQuery` from `src/services/rpcDnsZones.ts`, `useGettingHbacRulesQuery` from `src/services/rpcHBACRules.ts`). The main page component cannot function without them.
 
 To create the RPC service file, follow the template in [09-rpc-service.md](09-rpc-service.md). At minimum, you need:
-- A **query** for listing entities (paginated, using the two-step `*_find` + `*_show` pattern)
-- A **search mutation** for explicit search submissions (or use the generic `useSearchEntriesMutation` from `rpc.ts`)
+- A **query** for listing entities (paginated, using the two-step `*_find` + `*_show` pattern). Pass URL `searchValue` into this query so search and pagination share one data path.
 - An **add mutation** and a **delete mutation** for the modals
 
 Existing RPC service files to use as reference:

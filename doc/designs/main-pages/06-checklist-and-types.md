@@ -39,7 +39,10 @@ Add the entity interface to `src/utils/datatypes/globalDataTypes.ts`.
 
 ### SearchDataResultType (Generic)
 
-The `SearchDataResultType<T>` generic interface is used to standardize search state across main pages. It provides a consistent structure for storing search results:
+`SearchDataResultType<T>` still exists in `globalDataTypes.ts` for typing
+`{ elementsList, totalCount }` pairs, but **new main pages should not keep a
+separate mutation-based search state**. Prefer deriving both values from the list
+query response with `useMemo` (see [Walkthrough: Init & Data Fetching](03-walkthrough-init-fetch.md)).
 
 ```tsx
 export interface SearchDataResultType<T> {
@@ -47,17 +50,6 @@ export interface SearchDataResultType<T> {
   totalCount: number;
 }
 ```
-
-**Usage in main page components:**
-
-```tsx
-import { MyEntity, SearchDataResultType } from "src/utils/datatypes/globalDataTypes";
-
-const [searchData, setSearchData] =
-  useState<SearchDataResultType<MyEntity> | null>(null);
-```
-
-This type is used in conjunction with the `useMemo` pattern for deriving `elementsList` and `totalCount` from either the query response or search results. See [Walkthrough: Init & Data Fetching](03-walkthrough-init-fetch.md) for the full pattern.
 
 ### Entity Interface
 

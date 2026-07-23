@@ -23,13 +23,12 @@ Every main page follows the same structural pattern, in this order:
 1. **Route & title setup** (`useUpdateRoute`)
 2. **URL-synced pagination/search state** (`useListPageSearchParams`)
 3. **API version retrieval** (Redux selector)
-4. **Data fetching** (RTK Query hook for initial load)
-5. **Search mutation** (RTK Query mutation for submit-only search)
-6. **Selection management** (selected items, bulk selector logic)
-7. **Button state management** (delete, enable, disable disabled states)
-8. **Data wrappers** (prop bundles for child components)
-9. **Toolbar items array** (search, buttons, pagination, kebab, help)
-10. **JSX render** (title, toolbar, table, bottom pagination, modals)
+4. **Data fetching** (RTK Query hook; includes `searchValue` from the URL)
+5. **Selection management** (selected items, bulk selector logic)
+6. **Button state management** (delete, enable, disable disabled states)
+7. **Data wrappers** (prop bundles for child components)
+8. **Toolbar items array** (search, buttons, pagination, kebab, help)
+9. **JSX render** (title, toolbar, table, bottom pagination, modals)
 
 ## Imports
 
