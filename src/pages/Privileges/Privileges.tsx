@@ -55,7 +55,7 @@ const Privileges = () => {
     (state) => state.global.environment.api_version
   ) as string;
 
-  const { page, perPage } = useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   const globalErrors = useApiError([]);
   const modalErrors = useApiError([]);
@@ -64,7 +64,7 @@ const Privileges = () => {
   const lastIdx = page * perPage;
 
   const privilegesDataResponse = useGetPrivilegesFullDataQuery({
-    searchValue: "",
+    searchValue: searchValue,
     sizeLimit: 0,
     apiVersion: apiVersion || API_VERSION_BACKUP,
     startIdx: firstIdx,
