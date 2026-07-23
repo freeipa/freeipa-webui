@@ -57,8 +57,7 @@ const DnsServers = () => {
   ) as string;
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -128,19 +127,6 @@ const DnsServers = () => {
     }
   }, [dnsServersResponse.isSuccess, dnsServersResponse.data]);
 
-  // Data wrappers
-  // TODO: Better separation of concerts
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage: setPage,
-    updatePerPage: setPerPage,
-    updateSelectedPerPage: () => {},
-    updateShownElementsList: setDnsServersId,
-    totalCount,
-  };
-
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -190,7 +176,7 @@ const DnsServers = () => {
       element: (
         <PaginationLayout
           list={dnsServersId}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -271,7 +257,7 @@ const DnsServers = () => {
             >
               <PaginationLayout
                 list={dnsServersId}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
               />

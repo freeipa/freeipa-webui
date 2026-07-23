@@ -96,7 +96,6 @@ const KeytabTableWithFilter = (props: PropsToKeytabTable) => {
     setLastIdx,
     totalCount,
     setTotalCount,
-    updateSelectedPerPage,
   } = usePagination(tableEntryList, 5);
 
   const resetEntries = () => {
@@ -135,11 +134,6 @@ const KeytabTableWithFilter = (props: PropsToKeytabTable) => {
   const isDeleteDisabled = selectedEntries.length === 0;
   const isAddDisabled = props.checkboxesDisabled;
 
-  // Entries displayed on the first page
-  const updateShownEntriesList = (newShownEntriesList: TableEntry[]) => {
-    setTableEntriesFilteredList(newShownEntriesList);
-  };
-
   // on Search change
   const onSearchChange = (value: string) => {
     const entryList: TableEntry[] = [];
@@ -169,10 +163,8 @@ const KeytabTableWithFilter = (props: PropsToKeytabTable) => {
   const paginationData = {
     page,
     perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownEntriesList,
+    onUpdatePage: updatePage,
+    onUpdatePerPage: updatePerPage,
     totalCount,
   };
 

@@ -84,7 +84,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
   const [shownHostsList, setShownHostsList] = useState<string[]>([]);
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, searchValue, setSearchValue } =
     useListPageSearchParams();
 
   // Handle API calls errors
@@ -97,12 +97,11 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
   const updateSelectedPerPage = (selected: number) => {
     setSelectedPerPage(selected);
   };
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
+
+  // Reset selected-per-page count whenever the page or page size changes
+  useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
@@ -115,10 +114,6 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
   const [isUnapply, setIsUnapply] = useState(false);
   const updateIsUnapply = (value: boolean) => {
     setIsUnapply(value);
-  };
-
-  const updateShownHosts = (newShownHostsList: string[]) => {
-    setShownHostsList(newShownHostsList);
   };
 
   // Page indexes
@@ -490,17 +485,6 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
   };
 
   // Data wrappers
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownHosts,
-    totalCount,
-  };
-
   const selectedPerPageData = {
     selectedPerPage,
     updateSelectedPerPage,
@@ -676,7 +660,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
       element: (
         <PaginationLayout
           list={hostsList}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -708,7 +692,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
             </OuterScrollContainer>
             <PaginationLayout
               list={hostsList}
-              paginationData={paginationData}
+              totalCount={totalCount}
               variant={PaginationVariant.bottom}
               widgetId="pagination-options-menu-bottom"
             />

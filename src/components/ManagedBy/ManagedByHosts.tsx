@@ -1,11 +1,12 @@
 import React from "react";
 // PatternFly
-import { Pagination, PaginationVariant } from "@patternfly/react-core";
+import { PaginationVariant } from "@patternfly/react-core";
 // Data types
 import { Host, Service } from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfToolbar from "../MemberOf/MemberOfToolbar";
 import MemberOfHostsTable from "./ManagedByTableHosts";
+import PaginationLayout from "src/components/layouts/PaginationLayout";
 import MemberOfAddModal, { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 
@@ -46,8 +47,7 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
   const dispatch = useAppDispatch();
 
   // Get parameters from URL
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   // Other states
   const [hostsSelected, setHostsSelected] = React.useState<string[]>([]);
@@ -314,10 +314,6 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
         helpIconEnabled={true}
         onHelpIconClick={() => dispatch(toggleHelpPanel())}
         totalItems={managedby_host.length}
-        perPage={perPage}
-        page={page}
-        onPerPageChange={setPerPage}
-        onPageChange={setPage}
       />
       <MemberOfHostsTable
         hosts={hosts}
@@ -325,15 +321,12 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
         onCheckItemsChange={setHostsSelected}
         showTableRows={showTableRows}
       />
-      <Pagination
-        className="pf-v6-u-pb-0 pf-v6-u-pr-md"
-        itemCount={managedby_host.length}
-        widgetId="pagination-options-menu-bottom"
-        perPage={perPage}
-        page={page}
+      <PaginationLayout
+        list={[]}
+        totalCount={managedby_host.length}
         variant={PaginationVariant.bottom}
-        onSetPage={(_e, page) => setPage(page)}
-        onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
+        widgetId="pagination-options-menu-bottom"
+        className="pf-v6-u-pb-0 pf-v6-u-pr-md"
       />
       {showAddModal && (
         <MemberOfAddModal

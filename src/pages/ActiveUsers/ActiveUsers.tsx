@@ -77,8 +77,7 @@ const ActiveUsers = () => {
   const [executeAutoMemberRebuild] = useAutoMemberRebuildUsersMutation();
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -163,12 +162,6 @@ const ActiveUsers = () => {
     userDataResponse.refetch();
   };
 
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  React.useEffect(() => {
-    userDataResponse.refetch();
-  }, []);
-
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
     useState<boolean>(true);
@@ -215,19 +208,10 @@ const ActiveUsers = () => {
     setSelectedPerPage(selected);
   };
 
-  // Pagination
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
-
-  // Users displayed on the first page
-  const updateShownUsersList = (newShownUsersList: User[]) => {
-    setActiveUsersList(newShownUsersList);
-  };
+  // Reset selected-per-page count whenever the page or page size changes
+  useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
 
@@ -461,17 +445,6 @@ const ActiveUsers = () => {
 
   // Data wrappers
   // TODO: Better separation of concerts
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownUsersList,
-    totalCount,
-  };
-
   // - 'BulkSelectorUsersPrep'
   const usersBulkSelectorData = {
     selected: selectedUsers,
@@ -652,7 +625,7 @@ const ActiveUsers = () => {
       element: (
         <PaginationLayout
           list={activeUsersList}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -698,7 +671,7 @@ const ActiveUsers = () => {
           <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
             <PaginationLayout
               list={activeUsersList}
-              paginationData={paginationData}
+              totalCount={totalCount}
               variant={PaginationVariant.bottom}
               widgetId="pagination-options-menu-bottom"
             />

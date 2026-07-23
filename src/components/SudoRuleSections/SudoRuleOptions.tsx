@@ -197,29 +197,13 @@ const SudoRuleOptions = (props: PropsToSudoRuleOptions) => {
   // Pagination prep
   const [page, setPage] = React.useState<number>(1);
   const [perPage, setPerPage] = React.useState<number>(5);
-  const updateSelectedPerPage = () => {
-    // Nothing to do since we are not using bulk selector comp
-    return;
-  };
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
-  // Entries displayed on the first page
-  const updateShownElementsList = (newShownEntriesList: string[]) => {
-    setTableEntryList(newShownEntriesList);
-  };
 
   // Pagination data required by the Table Layout
   const paginationData = {
     page,
     perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList,
+    onUpdatePage: setPage,
+    onUpdatePerPage: setPerPage,
     totalCount: tableEntryList.length,
   };
 

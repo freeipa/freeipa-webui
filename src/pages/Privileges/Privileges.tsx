@@ -55,7 +55,7 @@ const Privileges = () => {
     (state) => state.global.environment.api_version
   ) as string;
 
-  const { page, setPage, perPage, setPerPage } = useListPageSearchParams();
+  const { page, perPage } = useListPageSearchParams();
 
   const globalErrors = useApiError([]);
   const modalErrors = useApiError([]);
@@ -136,6 +136,11 @@ const Privileges = () => {
 
   const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
 
+  // Reset selected-per-page count whenever the page or page size changes
+  React.useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
+
   const [selectedPrivileges, setSelectedPrivileges] = useState<Privilege[]>([]);
 
   const clearSelectedPrivileges = () => {
@@ -182,15 +187,6 @@ const Privileges = () => {
     if (isPrivilegeSelectable(privilege)) {
       updateSelectedPrivileges([privilege], isSelecting);
     }
-  };
-
-  const paginationData = {
-    page,
-    perPage,
-    updatePage: setPage,
-    updatePerPage: setPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
-    totalCount,
   };
 
   const bulkSelectorData = {
@@ -296,7 +292,7 @@ const Privileges = () => {
       element: (
         <PaginationLayout
           list={elementsList}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -361,7 +357,7 @@ const Privileges = () => {
           <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
             <PaginationLayout
               list={elementsList}
-              paginationData={paginationData}
+              totalCount={totalCount}
               variant={PaginationVariant.bottom}
               widgetId="pagination-options-menu-bottom"
             />

@@ -63,8 +63,7 @@ const Hosts = () => {
   useContextualHelpTopic("hosts");
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "hosts" });
@@ -91,12 +90,11 @@ const Hosts = () => {
   const updateSelectedPerPage = (selected: number) => {
     setSelectedPerPage(selected);
   };
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
+
+  // Reset selected-per-page count whenever the page or page size changes
+  useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
@@ -111,10 +109,6 @@ const Hosts = () => {
 
   const updateIsDeletion = (value: boolean) => {
     setIsDeletion(value);
-  };
-
-  const updateShownHostsList = (newShownHostsList: Host[]) => {
-    setHostsList(newShownHostsList);
   };
 
   // Button disabled due to error
@@ -408,17 +402,6 @@ const Hosts = () => {
   const selectableHostsTable = hostsList.filter(isHostSelectable); // elements per Table
 
   // Data wrappers
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownHostsList,
-    totalCount,
-  };
-
   // - 'BulkSelectorPrep'
   const hostsBulkSelectorData = {
     selected: selectedHosts,
@@ -563,7 +546,7 @@ const Hosts = () => {
       element: (
         <PaginationLayout
           list={hostsList}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -609,7 +592,7 @@ const Hosts = () => {
             >
               <PaginationLayout
                 list={hostsList}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
               />

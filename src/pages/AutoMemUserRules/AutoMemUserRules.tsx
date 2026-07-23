@@ -99,8 +99,7 @@ const AutoMemUserRules = () => {
   const globalErrors = useApiError([]);
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   const [totalCount, setTotalCount] = React.useState<number>(0);
 
@@ -242,21 +241,10 @@ const AutoMemUserRules = () => {
     setSelectedPerPage(selected);
   };
 
-  // Pagination
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
-
-  // Automembers displayed on the first page
-  const updateShownAutomembersList = (
-    newShownAutomembersList: AutomemberEntry[]
-  ) => {
-    setAutomemberRules(newShownAutomembersList);
-  };
+  // Reset selected-per-page count whenever the page or page size changes
+  React.useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
   const [selectedAutomembers, setSelectedAutomembers] = React.useState<
     AutomemberEntry[]
@@ -355,17 +343,6 @@ const AutoMemUserRules = () => {
 
   // Data wrappers
   // TODO: Better separation of concerts
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownAutomembersList,
-    totalCount,
-  };
-
   // - 'BulkSelectorPrep'
   const automembersBulkSelectorData = {
     selected: selectedAutomembers,
@@ -554,7 +531,7 @@ const AutoMemUserRules = () => {
       element: (
         <PaginationLayout
           list={automemberRules}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -601,7 +578,7 @@ const AutoMemUserRules = () => {
           <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
             <PaginationLayout
               list={automemberRules}
-              paginationData={paginationData}
+              totalCount={totalCount}
               variant={PaginationVariant.bottom}
               widgetId="pagination-options-menu-bottom"
             />

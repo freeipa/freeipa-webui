@@ -77,8 +77,7 @@ const IDViews = () => {
   const [viewsList, setViewsList] = useState<IDView[]>([]);
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, setPage, perPage, searchValue } = useListPageSearchParams();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -91,12 +90,11 @@ const IDViews = () => {
   const updateSelectedPerPage = (selected: number) => {
     setSelectedPerPage(selected);
   };
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
+
+  // Reset selected-per-page count whenever the page or page size changes
+  useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
@@ -111,10 +109,6 @@ const IDViews = () => {
 
   const updateIsDeletion = (value: boolean) => {
     setIsDeletion(value);
-  };
-
-  const updateShownViewsList = (newShownViewsList: IDView[]) => {
-    setViewsList(newShownViewsList);
   };
 
   // Page indexes
@@ -380,17 +374,6 @@ const IDViews = () => {
   const selectableViewsTable = viewsList.filter(isViewSelectable); // elements per Table
 
   // Data wrappers
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownViewsList,
-    totalCount,
-  };
-
   // - 'BulkSelectorIDViewPrep'
   const viewsBulkSelectorData = {
     selected: selectedViews,
@@ -563,7 +546,7 @@ const IDViews = () => {
       element: (
         <PaginationLayout
           list={viewsList}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -609,7 +592,7 @@ const IDViews = () => {
             >
               <PaginationLayout
                 list={viewsList}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
               />

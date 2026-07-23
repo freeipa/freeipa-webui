@@ -56,8 +56,7 @@ const Roles = () => {
     (state) => state.global.environment.api_version
   ) as string;
 
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   const globalErrors = useApiError([]);
   const modalErrors = useApiError([]);
@@ -138,6 +137,11 @@ const Roles = () => {
 
   const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
 
+  // Reset selected-per-page count whenever the page or page size changes
+  React.useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
+
   const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
 
   const clearSelectedRoles = () => {
@@ -181,15 +185,6 @@ const Roles = () => {
     if (isRoleSelectable(role)) {
       updateSelectedRoles([role], isSelecting);
     }
-  };
-
-  const paginationData = {
-    page,
-    perPage,
-    updatePage: setPage,
-    updatePerPage: setPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
-    totalCount,
   };
 
   const bulkSelectorData = {
@@ -295,7 +290,7 @@ const Roles = () => {
       element: (
         <PaginationLayout
           list={elementsList}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -356,7 +351,7 @@ const Roles = () => {
           <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
             <PaginationLayout
               list={elementsList}
-              paginationData={paginationData}
+              totalCount={totalCount}
               variant={PaginationVariant.bottom}
               widgetId="pagination-options-menu-bottom"
             />

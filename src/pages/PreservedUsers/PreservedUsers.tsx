@@ -51,8 +51,7 @@ const PreservedUsers = () => {
   useContextualHelpTopic("preserved-users");
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
   useUpdateRoute({ pathname: "preserved-users" });
@@ -176,19 +175,10 @@ const PreservedUsers = () => {
     setSelectedPerPage(selected);
   };
 
-  // Pagination
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
-
-  // Users displayed on the first page
-  const updateShownUsersList = (newShownUsersList: User[]) => {
-    setPreservedUsersList(newShownUsersList);
-  };
+  // Reset selected-per-page count whenever the page or page size changes
+  useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
   // Show table rows
   const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
@@ -277,17 +267,6 @@ const PreservedUsers = () => {
   };
 
   // Data wrappers
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownUsersList,
-    totalCount,
-  };
-
   // - 'BulkSelectorPrep'
   const usersBulkSelectorData = {
     selected: selectedUsers,
@@ -429,7 +408,7 @@ const PreservedUsers = () => {
       element: (
         <PaginationLayout
           list={preservedUsersList}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -480,7 +459,7 @@ const PreservedUsers = () => {
             >
               <PaginationLayout
                 list={preservedUsersList}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
               />

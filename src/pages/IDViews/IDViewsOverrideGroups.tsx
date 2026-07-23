@@ -48,8 +48,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
   const dispatch = useAppDispatch();
   const globalErrors = useApiError([]);
 
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
   const [totalCount, setTotalCount] = useState<number>(0);
   const [groupsList, setGroupsList] = useState<IDViewOverrideGroup[]>([]);
   const [selectedGroups, setSelectedGroupsList] = useState<string[]>([]);
@@ -86,6 +85,12 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
   const updateSelectedPerPage = (selected: number) => {
     setSelectedPerPage(selected);
   };
+
+  // Reset selected-per-page count whenever the page or page size changes
+  useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
+
   const selectedPerPageData = {
     selectedPerPage,
     updateSelectedPerPage,
@@ -105,19 +110,6 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
     updateIsDeleteButtonDisabled,
     isDeletion,
     updateIsDeletion,
-  };
-
-  // Pagination
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
-
-  const updateShownGroupsList = (newShownGroupsList: IDViewOverrideGroup[]) => {
-    setGroupsList(newShownGroupsList);
   };
 
   const dataResponse = useGettingIDOverrideGroupsQuery(props.idview);
@@ -202,17 +194,6 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
   };
   const onDeleteModalToggle = () => {
     setShowDeleteModal(!showDeleteModal);
-  };
-
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownGroupsList,
-    totalCount,
   };
 
   // - 'Delete modal'
@@ -303,7 +284,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
       element: (
         <PaginationLayout
           list={props.groups}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -340,7 +321,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
       </div>
       <PaginationLayout
         list={groupsList}
-        paginationData={paginationData}
+        totalCount={totalCount}
         variant={PaginationVariant.bottom}
         widgetId="pagination-options-menu-bottom"
         className="pf-v6-u-pb-0 pf-v6-u-pr-md"

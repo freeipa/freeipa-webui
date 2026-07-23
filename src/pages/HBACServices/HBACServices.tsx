@@ -68,8 +68,7 @@ const HBACServices = () => {
   const modalErrors = useApiError([]);
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   // Main states - what user can define / what we could use in page URL
   const [totalCount, setServicesTotalCount] = useState<number>(0);
@@ -178,19 +177,10 @@ const HBACServices = () => {
     setSelectedPerPage(selected);
   };
 
-  // Pagination
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
-
-  // Services displayed on the first page
-  const updateShownServicesList = (newShownServicesList: HBACService[]) => {
-    setServicesList(newShownServicesList);
-  };
+  // Reset selected-per-page count whenever the page or page size changes
+  useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
   const [selectedServices, setSelectedServices] = useState<HBACService[]>([]);
 
@@ -285,17 +275,6 @@ const HBACServices = () => {
 
   // Data wrappers
   // TODO: Better separation of concerts
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownServicesList,
-    totalCount,
-  };
-
   // - 'BulkSelectorHBACServicesPrep'
   const rulesBulkSelectorData = {
     selected: selectedServices,
@@ -424,7 +403,7 @@ const HBACServices = () => {
       element: (
         <PaginationLayout
           list={servicesList}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -473,7 +452,7 @@ const HBACServices = () => {
             >
               <PaginationLayout
                 list={servicesList}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
               />

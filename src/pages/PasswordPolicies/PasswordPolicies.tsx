@@ -55,8 +55,7 @@ const PasswordPolicies = () => {
   ) as string;
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -133,6 +132,11 @@ const PasswordPolicies = () => {
   const updateSelectedPerPage = (selected: number) => {
     setSelectedPerPage(selected);
   };
+
+  // Reset selected-per-page count whenever the page or page size changes
+  React.useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
   const clearSelectedElements = () => {
     const emptyList: PwPolicy[] = [];
@@ -231,33 +235,8 @@ const PasswordPolicies = () => {
     }
   }, [isLoading]);
 
-  // Pagination
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
-
-  // Elements displayed on the first page
-  const updateShownElementsList = (newShownElementsList: PwPolicy[]) => {
-    setPwPolicies(newShownElementsList);
-  };
-
   // Data wrappers
   // TODO: Better separation of concerts
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownElementsList,
-    totalCount,
-  };
-
   const buttonsData = {
     updateIsDeleteButtonDisabled,
   };
@@ -380,7 +359,7 @@ const PasswordPolicies = () => {
       element: (
         <PaginationLayout
           list={pwPolicies}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -449,7 +428,7 @@ const PasswordPolicies = () => {
             >
               <PaginationLayout
                 list={pwPolicies}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
               />

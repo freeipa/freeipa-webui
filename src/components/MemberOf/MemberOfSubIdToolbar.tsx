@@ -2,7 +2,6 @@ import React from "react";
 // PatternFly
 import {
   Button,
-  Pagination,
   Content,
   ContentVariants,
   Toolbar,
@@ -12,6 +11,8 @@ import {
 } from "@patternfly/react-core";
 // Icons
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
+// Components
+import PaginationLayout from "../layouts/PaginationLayout";
 
 interface MemberOfSubIdToolbarProps {
   // buttons
@@ -24,12 +25,8 @@ interface MemberOfSubIdToolbarProps {
   helpIconEnabled?: boolean;
   onHelpIconClick?: () => void;
 
-  // paging
+  // paging — page/perPage come from URL via PaginationLayout
   totalItems: number;
-  perPage: number;
-  page: number;
-  onPageChange?: (page: number) => void;
-  onPerPageChange?: (pageSize: number) => void;
 }
 
 const MemberOfSubIdToolbar = (props: MemberOfSubIdToolbarProps) => {
@@ -76,17 +73,10 @@ const MemberOfSubIdToolbar = (props: MemberOfSubIdToolbarProps) => {
         </ToolbarItem>
         {props.totalItems > 0 && (
           <ToolbarItem id="pagination" align={{ default: "alignEnd" }}>
-            <Pagination
-              itemCount={props.totalItems}
-              perPage={props.perPage}
-              page={props.page}
-              onSetPage={(_e, page) =>
-                props.onPageChange ? props.onPageChange(page) : null
-              }
+            <PaginationLayout
+              list={[]}
+              totalCount={props.totalItems}
               widgetId="pagination-options-menu-top"
-              onPerPageSelect={(_e, perPage) =>
-                props.onPerPageChange ? props.onPerPageChange(perPage) : null
-              }
               isCompact
             />
           </ToolbarItem>

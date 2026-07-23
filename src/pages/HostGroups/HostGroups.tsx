@@ -65,8 +65,7 @@ const HostGroups = () => {
   const [groupsList, setGroupsList] = useState<HostGroup[]>([]);
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, setPage, perPage, searchValue } = useListPageSearchParams();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -79,12 +78,11 @@ const HostGroups = () => {
   const updateSelectedPerPage = (selected: number) => {
     setSelectedPerPage(selected);
   };
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
+
+  // Reset selected-per-page count whenever the page or page size changes
+  useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
@@ -99,10 +97,6 @@ const HostGroups = () => {
 
   const updateIsDeletion = (value: boolean) => {
     setIsDeletion(value);
-  };
-
-  const updateShownGroupsList = (newShownGroupsList: HostGroup[]) => {
-    setGroupsList(newShownGroupsList);
   };
 
   // Button disabled due to error
@@ -280,17 +274,6 @@ const HostGroups = () => {
   const selectableGroupsTable = groupsList.filter(isHostGroupSelectable); // elements per Table
 
   // Data wrappers
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownGroupsList,
-    totalCount,
-  };
-
   // - 'BulkSelectorPrep'
   const groupsBulkSelectorData = {
     selected: selectedGroups,
@@ -419,7 +402,7 @@ const HostGroups = () => {
       element: (
         <PaginationLayout
           list={groupsList}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -465,7 +448,7 @@ const HostGroups = () => {
             >
               <PaginationLayout
                 list={groupsList}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
               />

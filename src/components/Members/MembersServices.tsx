@@ -1,12 +1,13 @@
 import React from "react";
 // PatternFly
-import { Pagination, PaginationVariant } from "@patternfly/react-core";
+import { PaginationVariant } from "@patternfly/react-core";
 // Components
 import MemberOfToolbar from "../MemberOf/MemberOfToolbar";
 import MemberOfAddModal, { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 import MemberTable from "src/components/tables/MembershipTable";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
+import PaginationLayout from "src/components/layouts/PaginationLayout";
 
 // Data types
 import { Service, UserGroup } from "src/utils/datatypes/globalDataTypes";
@@ -58,7 +59,6 @@ const MembersServices = (props: PropsToMembersServices) => {
     page,
     setPage,
     perPage,
-    setPerPage,
     searchValue,
     membershipDirection,
     setMembershipDirection,
@@ -319,10 +319,6 @@ const MembersServices = (props: PropsToMembersServices) => {
           helpIconEnabled={true}
           onHelpIconClick={() => dispatch(toggleHelpPanel())}
           totalItems={serviceNames.length}
-          perPage={perPage}
-          page={page}
-          onPerPageChange={setPerPage}
-          onPageChange={setPage}
         />
       ) : (
         <MemberOfToolbar
@@ -344,10 +340,6 @@ const MembersServices = (props: PropsToMembersServices) => {
           helpIconEnabled={true}
           onHelpIconClick={() => dispatch(toggleHelpPanel())}
           totalItems={serviceNames.length}
-          perPage={perPage}
-          page={page}
-          onPerPageChange={setPerPage}
-          onPageChange={setPage}
         />
       )}
       <MemberTable
@@ -368,15 +360,12 @@ const MembersServices = (props: PropsToMembersServices) => {
         }
         showTableRows={showTableRows}
       />
-      <Pagination
-        className="pf-v6-u-pb-0 pf-v6-u-pr-md"
-        itemCount={serviceNames.length}
-        widgetId="pagination-options-menu-bottom"
-        perPage={perPage}
-        page={page}
+      <PaginationLayout
+        list={[]}
+        totalCount={serviceNames.length}
         variant={PaginationVariant.bottom}
-        onSetPage={(_e, page) => setPage(page)}
-        onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
+        widgetId="pagination-options-menu-bottom"
+        className="pf-v6-u-pb-0 pf-v6-u-pr-md"
       />
       {showAddModal && (
         <MemberOfAddModal

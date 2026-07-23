@@ -1,24 +1,26 @@
 import React from "react";
+import { MemoryRouter } from "react-router";
 import { render, screen, cleanup, fireEvent } from "@testing-library/react";
 import { expect, it, describe, vi, afterEach } from "vitest";
 import { Tr, Th, Td } from "@patternfly/react-table";
 // Component
 import SettingsTableLayout from "./SettingsTableLayout";
 
+const renderWithRouter = (ui: React.ReactElement) =>
+  render(<MemoryRouter>{ui}</MemoryRouter>);
+
 describe("SettingsTableLayout Component", () => {
   const mockOnAddModal = vi.fn();
   const mockOnDeleteModal = vi.fn();
-  const mockUpdatePage = vi.fn();
-  const mockUpdatePerPage = vi.fn();
+  const mockOnUpdatePage = vi.fn();
+  const mockOnUpdatePerPage = vi.fn();
   const mockOnSearchChange = vi.fn();
 
   const paginationData = {
     page: 1,
     perPage: 10,
-    updatePage: mockUpdatePage,
-    updatePerPage: mockUpdatePerPage,
-    updateSelectedPerPage: vi.fn(),
-    updateShownElementsList: vi.fn(),
+    onUpdatePage: mockOnUpdatePage,
+    onUpdatePerPage: mockOnUpdatePerPage,
     totalCount: 25,
   };
 
@@ -59,7 +61,7 @@ describe("SettingsTableLayout Component", () => {
   });
 
   it("should render SettingsTableLayout with table when length of list > 0", () => {
-    render(<SettingsTableLayout {...defaultProps} />);
+    renderWithRouter(<SettingsTableLayout {...defaultProps} />);
 
     // Check table is rendered
     expect(screen.getByLabelText("Settings Table")).toBeInTheDocument();
@@ -87,7 +89,7 @@ describe("SettingsTableLayout Component", () => {
       paginationData: { ...paginationData, totalCount: 0 },
     };
 
-    render(<SettingsTableLayout {...emptyProps} />);
+    renderWithRouter(<SettingsTableLayout {...emptyProps} />);
 
     // Check EmptyState is rendered
     expect(screen.getByText("No users")).toBeInTheDocument();
@@ -104,14 +106,14 @@ describe("SettingsTableLayout Component", () => {
       paginationData: { ...paginationData, totalCount: 0 },
     };
 
-    render(<SettingsTableLayout {...emptyProps} />);
+    renderWithRouter(<SettingsTableLayout {...emptyProps} />);
 
     const addButton = screen.getByRole("button", { name: /Add users/i });
     expect(addButton).toBeDisabled();
   });
 
   it("should call onAddModal when Add button is clicked", () => {
-    render(<SettingsTableLayout {...defaultProps} />);
+    renderWithRouter(<SettingsTableLayout {...defaultProps} />);
 
     const addButton = screen.getByRole("button", { name: /add/i });
     fireEvent.click(addButton);
@@ -119,7 +121,7 @@ describe("SettingsTableLayout Component", () => {
   });
 
   it("should call onDeleteModal when Delete button is clicked", () => {
-    render(<SettingsTableLayout {...defaultProps} />);
+    renderWithRouter(<SettingsTableLayout {...defaultProps} />);
 
     const deleteButton = screen.getByRole("button", { name: /delete/i });
     fireEvent.click(deleteButton);
@@ -127,7 +129,7 @@ describe("SettingsTableLayout Component", () => {
   });
 
   it("should search for an item in the list", () => {
-    render(<SettingsTableLayout {...defaultProps} />);
+    renderWithRouter(<SettingsTableLayout {...defaultProps} />);
 
     const searchInput = screen.getByPlaceholderText(/Filter by .../i);
     fireEvent.change(searchInput, { target: { value: "item1" } });
@@ -135,7 +137,7 @@ describe("SettingsTableLayout Component", () => {
   });
 
   it("should clear the search input when clear button is clicked", () => {
-    render(<SettingsTableLayout {...defaultProps} />);
+    renderWithRouter(<SettingsTableLayout {...defaultProps} />);
 
     const searchInput = screen.getByPlaceholderText(/Filter by .../i);
     fireEvent.change(searchInput, { target: { value: "item1" } });
@@ -150,7 +152,7 @@ describe("SettingsTableLayout Component", () => {
       entryType: "User",
     };
 
-    render(<SettingsTableLayout {...propsWithExtraId} />);
+    renderWithRouter(<SettingsTableLayout {...propsWithExtraId} />);
 
     // Check that the Add button has the correct ID with extraID
     const addButton = screen.getByRole("button", { name: /add/i });
@@ -164,7 +166,7 @@ describe("SettingsTableLayout Component", () => {
       entryType: "Host Group",
     };
 
-    render(<SettingsTableLayout {...propsWithSpaces} />);
+    renderWithRouter(<SettingsTableLayout {...propsWithSpaces} />);
 
     const addButton = screen.getByRole("button", { name: /add/i });
     expect(addButton).toHaveAttribute("id", "add-host-group-host-group");

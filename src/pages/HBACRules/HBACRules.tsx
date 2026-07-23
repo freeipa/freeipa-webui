@@ -69,8 +69,7 @@ const HBACRules = () => {
   const modalErrors = useApiError([]);
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   // Main states - what user can define / what we could use in page URL
   const [totalCount, setRulesTotalCount] = useState<number>(0);
@@ -202,19 +201,10 @@ const HBACRules = () => {
     setSelectedPerPage(selected);
   };
 
-  // Pagination
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
-
-  // Rules displayed on the first page
-  const updateShownRulesList = (newShownRulesList: HBACRule[]) => {
-    setRulesList(newShownRulesList);
-  };
+  // Reset selected-per-page count whenever the page or page size changes
+  useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
   const [selectedRules, setSelectedRules] = useState<HBACRule[]>([]);
 
@@ -322,17 +312,6 @@ const HBACRules = () => {
 
   // Data wrappers
   // TODO: Better separation of concerts
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownRulesList,
-    totalCount,
-  };
-
   // - 'BulkSelectorHBACRulesPrep'
   const rulesBulkSelectorData = {
     selected: selectedRules,
@@ -499,7 +478,7 @@ const HBACRules = () => {
       element: (
         <PaginationLayout
           list={rulesList}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -549,7 +528,7 @@ const HBACRules = () => {
             >
               <PaginationLayout
                 list={rulesList}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
               />

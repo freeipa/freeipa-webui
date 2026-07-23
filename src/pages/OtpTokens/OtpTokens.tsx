@@ -60,8 +60,7 @@ const OtpTokens = () => {
   ) as string;
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -227,19 +226,12 @@ const OtpTokens = () => {
     setShowTableRows(!isLoading);
   }, [isLoading]);
 
-  // Data wrappers
-  // TODO: Better separation of concerts
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage: setPage,
-    updatePerPage: setPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
-    updateShownElementsList: setOtpTokens,
-    totalCount,
-  };
+  // Reset the selected per-page count when the page or page size changes
+  React.useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
+  // Data wrappers
   // - 'BulkSelectorrep'
   const bulkSelectorData = {
     selected: selectedElements,
@@ -379,7 +371,7 @@ const OtpTokens = () => {
       element: (
         <PaginationLayout
           list={otpTokens}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -465,7 +457,7 @@ const OtpTokens = () => {
             >
               <PaginationLayout
                 list={otpTokens}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
               />

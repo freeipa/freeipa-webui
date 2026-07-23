@@ -45,7 +45,7 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
 
   const globalErrors = useApiError([]);
 
-  const { page, setPage, perPage, setPerPage } = useListPageSearchParams();
+  const { page, perPage } = useListPageSearchParams();
   const [totalCount, setTotalCount] = useState<number>(0);
   const [usersList, setUsersList] = useState<IDViewOverrideUser[]>([]);
   const [selectedUsers, setSelectedUsersList] = useState<string[]>([]);
@@ -82,6 +82,12 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
   const updateSelectedPerPage = (selected: number) => {
     setSelectedPerPage(selected);
   };
+
+  // Reset selected-per-page count whenever the page or page size changes
+  useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
+
   const selectedPerPageData = {
     selectedPerPage,
     updateSelectedPerPage,
@@ -101,19 +107,6 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
     updateIsDeleteButtonDisabled,
     isDeletion,
     updateIsDeletion,
-  };
-
-  // Pagination
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
-
-  const updateShownUsersList = (newShownUsersList: IDViewOverrideUser[]) => {
-    setUsersList(newShownUsersList);
   };
 
   const dataResponse = useGettingIDOverrideUsersQuery(props.idview);
@@ -200,17 +193,6 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
     setShowDeleteModal(!showDeleteModal);
   };
 
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownUsersList,
-    totalCount,
-  };
-
   // - 'Delete modal'
   const deleteUsersButtonsData = {
     updateIsDeleteButtonDisabled,
@@ -276,7 +258,7 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
       element: (
         <PaginationLayout
           list={props.users}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -313,7 +295,7 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
       </div>
       <PaginationLayout
         list={usersList}
-        paginationData={paginationData}
+        totalCount={totalCount}
         variant={PaginationVariant.bottom}
         widgetId="pagination-options-menu-bottom"
         className="pf-v6-u-pb-0 pf-v6-u-pr-md"

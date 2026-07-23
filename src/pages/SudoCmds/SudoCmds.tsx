@@ -68,8 +68,7 @@ const SudoCmds = () => {
   const modalErrors = useApiError([]);
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
   const [totalCount, setCmdsTotalCount] = useState<number>(0);
 
   // Page indexes
@@ -174,19 +173,10 @@ const SudoCmds = () => {
     setSelectedPerPage(selected);
   };
 
-  // Pagination
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
-
-  // Commands displayed on the first page
-  const updateShownCmdsList = (newShownCmdsList: SudoCmd[]) => {
-    setCmdsList(newShownCmdsList);
-  };
+  // Reset selected-per-page count whenever the page or page size changes
+  useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
   const [selectedCmds, setSelectedCmds] = useState<SudoCmd[]>([]);
 
@@ -277,17 +267,6 @@ const SudoCmds = () => {
   };
 
   // Data wrappers
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownCmdsList,
-    totalCount,
-  };
-
   // - 'BulkSelector'
   const cmdsBulkSelectorData = {
     selected: selectedCmds,
@@ -416,7 +395,7 @@ const SudoCmds = () => {
       element: (
         <PaginationLayout
           list={cmdList}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -465,7 +444,7 @@ const SudoCmds = () => {
             >
               <PaginationLayout
                 list={cmdList}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
               />

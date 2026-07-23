@@ -58,8 +58,7 @@ const SubordinateIDs = () => {
   ) as string;
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -160,33 +159,6 @@ const SubordinateIDs = () => {
     }
   }, [isBatchLoading]);
 
-  // Pagination
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
-
-  // Elements displayed on the first page
-  const updateShownElementsList = (newShownElementsList: SubId[]) => {
-    setSubIds(newShownElementsList);
-  };
-
-  // Data wrappers
-  // TODO: Better separation of concerts
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage: () => {},
-    updateShownElementsList: updateShownElementsList,
-    totalCount,
-  };
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState(false);
 
@@ -259,7 +231,7 @@ const SubordinateIDs = () => {
       element: (
         <PaginationLayout
           list={subIds}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -322,7 +294,7 @@ const SubordinateIDs = () => {
             >
               <PaginationLayout
                 list={subIds}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
               />

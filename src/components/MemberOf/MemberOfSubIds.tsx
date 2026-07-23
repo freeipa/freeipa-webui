@@ -1,15 +1,17 @@
 import React from "react";
 // PatternFly
-import { Pagination, PaginationVariant } from "@patternfly/react-core";
+import { PaginationVariant } from "@patternfly/react-core";
 // Data types
 import { SubId, User } from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfTableSubIds from "./MemberOfTableSubIds";
 import MemberOfSubIdToolbar from "./MemberOfSubIdToolbar";
+import PaginationLayout from "../layouts/PaginationLayout";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
+import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // RPC
 import {
   useAssignSubIdsMutation,
@@ -17,8 +19,6 @@ import {
 } from "src/services/rpcSubIds";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
-// React Router DOM
-import { useSearchParams } from "react-router";
 
 interface MemberOfSubIdsProps {
   user: Partial<User>;
@@ -29,16 +29,10 @@ interface MemberOfSubIdsProps {
 const MemberOfSubIds = (props: MemberOfSubIdsProps) => {
   const dispatch = useAppDispatch();
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { page, perPage } = useListPageSearchParams();
 
   // API calls
   const [assignSubIds] = useAssignSubIdsMutation();
-
-  // Page indexes
-  const [page, setPage] = React.useState(
-    parseInt(searchParams.get("p") || "1")
-  );
-  const [perPage, setPerPage] = React.useState(10);
 
   // Other states
   const [subIdsSelected, setSubIdsSelected] = React.useState<string[]>([]);
@@ -66,20 +60,6 @@ const MemberOfSubIds = (props: MemberOfSubIdsProps) => {
     subIdsList: subIdsNamesToLoad,
     version: API_VERSION_BACKUP,
   });
-
-  // Handle URLs with pagination and search values
-  React.useEffect(() => {
-    let searchParamsNew = {};
-
-    if (page > 1) {
-      searchParamsNew = {
-        ...searchParamsNew,
-        p: page.toString(),
-      };
-    }
-
-    setSearchParams(searchParamsNew, { replace: true });
-  }, [page]);
 
   // Refresh Subordinate IDs
   React.useEffect(() => {
@@ -149,10 +129,6 @@ const MemberOfSubIds = (props: MemberOfSubIdsProps) => {
         autoAssignButtonEnabled={isEnabledAutoAssign}
         onAutoAssignSubIdsClick={onAssignSubIds}
         totalItems={memberof_subid.length}
-        perPage={perPage}
-        page={page}
-        onPerPageChange={setPerPage}
-        onPageChange={setPage}
       />
       <MemberOfTableSubIds
         subIds={subIds}
@@ -162,15 +138,12 @@ const MemberOfSubIds = (props: MemberOfSubIdsProps) => {
         showCheckboxColumn={false}
       />
       {memberof_subid.length > 0 && (
-        <Pagination
-          className="pf-v6-u-pb-0 pf-v6-u-pr-md"
-          itemCount={memberof_subid.length}
-          widgetId="pagination-options-menu-bottom"
-          perPage={perPage}
-          page={page}
+        <PaginationLayout
+          list={subIds}
+          totalCount={memberof_subid.length}
           variant={PaginationVariant.bottom}
-          onSetPage={(_e, page) => setPage(page)}
-          onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
+          widgetId="pagination-options-menu-bottom"
+          className="pf-v6-u-pb-0 pf-v6-u-pr-md"
         />
       )}
     </>

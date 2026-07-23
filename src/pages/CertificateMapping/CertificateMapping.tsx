@@ -64,8 +64,7 @@ const CertificateMappingPage = () => {
   ) as string;
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -140,6 +139,11 @@ const CertificateMappingPage = () => {
     CertificateMapping[]
   >([]);
   const [selectedPerPage, setSelectedPerPage] = React.useState<number>(0);
+
+  // Reset selected-per-page count whenever the page or page size changes
+  React.useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
   // Refresh button handling
   const refreshData = () => {
@@ -240,17 +244,6 @@ const CertificateMappingPage = () => {
 
   // Data wrappers
   // TODO: Better separation of concerts
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage: setPage,
-    updatePerPage: setPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
-    updateShownElementsList: setCertMapRules,
-    totalCount,
-  };
-
   // - 'BulkSelectorrep'
   const bulkSelectorData = {
     selected: selectedElements,
@@ -395,7 +388,7 @@ const CertificateMappingPage = () => {
       element: (
         <PaginationLayout
           list={certMapRules}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -468,7 +461,7 @@ const CertificateMappingPage = () => {
           <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
             <PaginationLayout
               list={certMapRules}
-              paginationData={paginationData}
+              totalCount={totalCount}
               variant={PaginationVariant.bottom}
               widgetId="pagination-options-menu-bottom"
             />

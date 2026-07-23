@@ -61,8 +61,7 @@ const SELinuxUserMaps = () => {
     (state) => state.global.environment.api_version
   ) as string;
 
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   const globalErrors = useApiError([]);
 
@@ -184,14 +183,10 @@ const SELinuxUserMaps = () => {
     mapsResponse.refetch();
   }, []);
 
-  const paginationData = {
-    page,
-    perPage,
-    updatePage: setPage,
-    updatePerPage: setPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
-    totalCount,
-  };
+  // Reset the selected per-page count when the page or page size changes
+  React.useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
   const bulkSelectorData = {
     selected: selectedElements,
@@ -336,7 +331,7 @@ const SELinuxUserMaps = () => {
       element: (
         <PaginationLayout
           list={selinuxUserMaps}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -411,7 +406,7 @@ const SELinuxUserMaps = () => {
             >
               <PaginationLayout
                 list={selinuxUserMaps}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
               />

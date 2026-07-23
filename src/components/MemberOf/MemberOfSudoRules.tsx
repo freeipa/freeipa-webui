@@ -1,11 +1,12 @@
 import React from "react";
 // PatternFly
-import { Pagination, PaginationVariant } from "@patternfly/react-core";
+import { PaginationVariant } from "@patternfly/react-core";
 // Data types
 import { User, SudoRule, Host } from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfToolbar from "./MemberOfToolbar";
 import MemberTable from "src/components/tables/MembershipTable";
+import PaginationLayout from "src/components/layouts/PaginationLayout";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
@@ -45,7 +46,6 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
     page,
     setPage,
     perPage,
-    setPerPage,
     searchValue,
     membershipDirection,
     setMembershipDirection,
@@ -318,10 +318,6 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
         helpIconEnabled={true}
         onHelpIconClick={() => dispatch(toggleHelpPanel())}
         totalItems={sudoRuleNames.length}
-        perPage={perPage}
-        page={page}
-        onPerPageChange={setPerPage}
-        onPageChange={setPage}
       />
       <MemberTable
         entityList={sudoRules}
@@ -342,15 +338,12 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
         showTableRows={showTableRows}
       />
       {sudoRuleNames.length > 0 && (
-        <Pagination
-          className="pf-v6-u-pb-0 pf-v6-u-pr-md"
-          itemCount={sudoRuleNames.length}
-          widgetId="pagination-options-menu-bottom"
-          perPage={perPage}
-          page={page}
+        <PaginationLayout
+          list={[]}
+          totalCount={sudoRuleNames.length}
           variant={PaginationVariant.bottom}
-          onSetPage={(_e, page) => setPage(page)}
-          onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
+          widgetId="pagination-options-menu-bottom"
+          className="pf-v6-u-pb-0 pf-v6-u-pr-md"
         />
       )}
       <MemberOfAddModal

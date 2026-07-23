@@ -13,7 +13,12 @@ import { TableVariant } from "@patternfly/react-table";
 // Layout
 import SecondaryButton from "../SecondaryButton";
 import TableLayout from "../TableLayout";
-import PaginationLayout from "../PaginationLayout";
+import PaginationLayout, { PaginationData } from "../PaginationLayout";
+
+/** Local pagination for settings tables; includes totalCount for empty-state gating. */
+export interface SettingsPaginationData extends PaginationData {
+  totalCount: number;
+}
 
 interface PropsToSettingsTableLayout {
   // Table
@@ -33,23 +38,12 @@ interface PropsToSettingsTableLayout {
   onSearchChange?: (value: string) => void;
   searchValue?: string;
   // pagination
-  paginationData: PaginationData;
+  paginationData: SettingsPaginationData;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   list: any[];
   entryCount?: number;
   entryType: string;
   extraID?: string;
-}
-
-interface PaginationData {
-  page: number;
-  perPage: number;
-  updatePage: (newPage: number) => void;
-  updatePerPage: (newSetPerPage: number) => void;
-  updateSelectedPerPage: (selected: number) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  updateShownElementsList: (newShownElementsList: any[]) => void;
-  totalCount: number;
 }
 
 // The settings table is meant to be used in the "settings" page for users,
@@ -64,6 +58,8 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
   const addButtonId = extraId
     ? "add-" + extraId + "-" + props.entryType.toLowerCase().replace(" ", "-")
     : "add-" + props.entryType.toLowerCase().replace(" ", "-");
+
+  const { totalCount, ...paginationOverride } = props.paginationData;
 
   return (
     <>
@@ -81,7 +77,7 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
             />
           )}
         </FlexItem>
-        {props.paginationData.totalCount > 0 && (
+        {totalCount > 0 && (
           <>
             <FlexItem>
               <SecondaryButton
@@ -105,7 +101,8 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
             <FlexItem align={{ default: "alignRight" }}>
               <PaginationLayout
                 list={props.list}
-                paginationData={props.paginationData}
+                totalCount={totalCount}
+                paginationData={paginationOverride}
                 widgetId="pagination-options-menu-bottom"
                 className="pf-v6-u-pb-0 pf-v6-u-pr-md"
                 perPageSize="sm"
@@ -114,7 +111,7 @@ const SettingsTableLayout = (props: PropsToSettingsTableLayout) => {
           </>
         )}
       </Flex>
-      {props.paginationData.totalCount > 0 ? (
+      {totalCount > 0 ? (
         <>
           <TableLayout
             ariaLabel={props.ariaLabel}

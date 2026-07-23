@@ -55,8 +55,7 @@ const StageUsers = () => {
   useUpdateRoute({ pathname: "stage-users" });
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   // Retrieve API version from environment data
   const apiVersion = useAppSelector(
@@ -177,19 +176,10 @@ const StageUsers = () => {
     setSelectedPerPage(selected);
   };
 
-  // Pagination
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
-
-  // Users displayed on the first page
-  const updateShownUsersList = (newShownUsersList: User[]) => {
-    setStageUsersList(newShownUsersList);
-  };
+  // Reset selected-per-page count whenever the page or page size changes
+  useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
   // Show table rows
   const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
@@ -282,17 +272,6 @@ const StageUsers = () => {
   const selectableUsersTable = stageUsersList.filter(isUserSelectable); // elements per Table
 
   // Data wrappers
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownUsersList,
-    totalCount,
-  };
-
   // - 'BulkSelectorPrep'
   const usersBulkSelectorData = {
     selected: selectedUsers,
@@ -433,7 +412,7 @@ const StageUsers = () => {
       element: (
         <PaginationLayout
           list={stageUsersList}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -484,7 +463,7 @@ const StageUsers = () => {
             >
               <PaginationLayout
                 list={stageUsersList}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
               />

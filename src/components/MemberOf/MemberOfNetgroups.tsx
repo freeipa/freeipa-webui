@@ -1,6 +1,6 @@
 import React from "react";
 // PatternFly
-import { Pagination, PaginationVariant } from "@patternfly/react-core";
+import { PaginationVariant } from "@patternfly/react-core";
 // Data types
 import {
   User,
@@ -11,6 +11,7 @@ import {
 // Components
 import MemberOfToolbar from "./MemberOfToolbar";
 import MemberTable from "src/components/tables/MembershipTable";
+import PaginationLayout from "src/components/layouts/PaginationLayout";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
@@ -54,7 +55,6 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
     page,
     setPage,
     perPage,
-    setPerPage,
     searchValue,
     membershipDirection,
     setMembershipDirection,
@@ -330,10 +330,6 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
           helpIconEnabled={true}
           onHelpIconClick={() => dispatch(toggleHelpPanel())}
           totalItems={netgroupNames.length}
-          perPage={perPage}
-          page={page}
-          onPerPageChange={setPerPage}
-          onPageChange={setPage}
         />
       ) : (
         <MemberOfToolbar
@@ -352,10 +348,6 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
           helpIconEnabled={true}
           onHelpIconClick={() => dispatch(toggleHelpPanel())}
           totalItems={netgroupNames.length}
-          perPage={perPage}
-          page={page}
-          onPerPageChange={setPerPage}
-          onPageChange={setPage}
         />
       )}
       <MemberTable
@@ -377,15 +369,12 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
         showTableRows={showTableRows}
       />
       {netgroupNames.length > 0 && (
-        <Pagination
-          className="pf-v6-u-pb-0 pf-v6-u-pr-md"
-          itemCount={netgroupNames.length}
-          widgetId="pagination-options-menu-bottom"
-          perPage={perPage}
-          page={page}
+        <PaginationLayout
+          list={[]}
+          totalCount={netgroupNames.length}
           variant={PaginationVariant.bottom}
-          onSetPage={(_e, page) => setPage(page)}
-          onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
+          widgetId="pagination-options-menu-bottom"
+          className="pf-v6-u-pb-0 pf-v6-u-pr-md"
         />
       )}
       <MemberOfAddModal

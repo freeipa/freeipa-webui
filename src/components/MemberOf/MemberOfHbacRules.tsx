@@ -1,6 +1,6 @@
 import React from "react";
 // PatternFly
-import { Pagination, PaginationVariant } from "@patternfly/react-core";
+import { PaginationVariant } from "@patternfly/react-core";
 // Data types
 import {
   User,
@@ -11,6 +11,7 @@ import {
 // Components
 import MemberOfToolbar from "./MemberOfToolbar";
 import MemberTable from "src/components/tables/MembershipTable";
+import PaginationLayout from "src/components/layouts/PaginationLayout";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
@@ -49,7 +50,6 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
     page,
     setPage,
     perPage,
-    setPerPage,
     searchValue,
     membershipDirection,
     setMembershipDirection,
@@ -325,10 +325,6 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
         helpIconEnabled={true}
         onHelpIconClick={() => dispatch(toggleHelpPanel())}
         totalItems={hbacRuleNames.length}
-        perPage={perPage}
-        page={page}
-        onPerPageChange={setPerPage}
-        onPageChange={setPage}
       />
       <MemberTable
         entityList={hbacRules}
@@ -349,15 +345,12 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
         showTableRows={showTableRows}
       />
       {hbacRuleNames.length > 0 && (
-        <Pagination
-          className="pf-v6-u-pb-0 pf-v6-u-pr-md"
-          itemCount={hbacRuleNames.length}
-          widgetId="pagination-options-menu-bottom"
-          perPage={perPage}
-          page={page}
+        <PaginationLayout
+          list={[]}
+          totalCount={hbacRuleNames.length}
           variant={PaginationVariant.bottom}
-          onSetPage={(_e, page) => setPage(page)}
-          onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
+          widgetId="pagination-options-menu-bottom"
+          className="pf-v6-u-pb-0 pf-v6-u-pr-md"
         />
       )}
       <MemberOfAddModal

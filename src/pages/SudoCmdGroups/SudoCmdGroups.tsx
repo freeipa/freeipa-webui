@@ -68,8 +68,7 @@ const SudoCmds = () => {
   const modalErrors = useApiError([]);
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
   const [totalCount, setCmdGroupsTotalCount] = useState<number>(0);
 
   // Page indexes
@@ -172,19 +171,10 @@ const SudoCmds = () => {
     setSelectedPerPage(selected);
   };
 
-  // Pagination
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
-
-  // Commands displayed on the first page
-  const updateShownCmdGroupsList = (newShownCmdsList: SudoCmdGroup[]) => {
-    setCmdGroupsList(newShownCmdsList);
-  };
+  // Reset selected-per-page count whenever the page or page size changes
+  useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
   const [selectedCmdGroups, setSelectedCmds] = useState<SudoCmdGroup[]>([]);
 
@@ -278,17 +268,6 @@ const SudoCmds = () => {
   };
 
   // Data wrappers
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownCmdGroupsList,
-    totalCount,
-  };
-
   // - 'BulkSelector'
   const cmdsBulkSelectorData = {
     selected: selectedCmdGroups,
@@ -415,7 +394,7 @@ const SudoCmds = () => {
       element: (
         <PaginationLayout
           list={cmdList}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -464,7 +443,7 @@ const SudoCmds = () => {
             >
               <PaginationLayout
                 list={cmdList}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
               />

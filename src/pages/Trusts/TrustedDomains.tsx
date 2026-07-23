@@ -61,7 +61,7 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
   useUpdateRoute({ pathname: "trusted-domains" });
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage } = useListPageSearchParams();
+  const { page, perPage } = useListPageSearchParams();
 
   // Calculate pagination parameters for server-side pagination
   const startIdx = (page - 1) * perPage;
@@ -250,18 +250,12 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
       });
   };
 
-  // Data wrappers
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage: setPage,
-    updatePerPage: setPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
-    updateShownElementsList: setTrustDomains,
-    totalCount,
-  };
+  // Reset the selected per-page count when the page or page size changes
+  React.useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
+  // Data wrappers
   // - 'BulkSelectorprep'
   const bulkSelectorData = {
     selected: selectedElements,
@@ -405,7 +399,7 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
       element: (
         <PaginationLayout
           list={trustDomains}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -506,7 +500,7 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
             >
               <PaginationLayout
                 list={trustDomains}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
                 className="pf-v6-u-pb-0 pf-v6-u-pr-md"

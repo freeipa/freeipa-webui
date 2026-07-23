@@ -65,8 +65,7 @@ const UserGroups = () => {
   const [groupsList, setGroupsList] = useState<UserGroup[]>([]);
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, setPage, perPage, searchValue } = useListPageSearchParams();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -79,12 +78,11 @@ const UserGroups = () => {
   const updateSelectedPerPage = (selected: number) => {
     setSelectedPerPage(selected);
   };
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
+
+  // Reset selected-per-page count whenever the page or page size changes
+  useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
@@ -99,10 +97,6 @@ const UserGroups = () => {
 
   const updateIsDeletion = (value: boolean) => {
     setIsDeletion(value);
-  };
-
-  const updateShownGroupsList = (newShownGroupsList: UserGroup[]) => {
-    setGroupsList(newShownGroupsList);
   };
 
   // Page indexes
@@ -270,17 +264,6 @@ const UserGroups = () => {
   const selectableGroupsTable = groupsList.filter(isUserGroupSelectable); // elements per Table
 
   // Data wrappers
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownGroupsList,
-    totalCount,
-  };
-
   // - 'BulkSelectorPrep'
   const groupsBulkSelectorData = {
     selected: selectedGroups,
@@ -409,7 +392,7 @@ const UserGroups = () => {
       element: (
         <PaginationLayout
           list={groupsList}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -455,7 +438,7 @@ const UserGroups = () => {
             >
               <PaginationLayout
                 list={groupsList}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
               />

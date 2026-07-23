@@ -200,30 +200,12 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
     });
   };
 
-  // Pagination prep
-  const updateSelectedPerPage = () => {
-    // Nothing to do since we are not using bulk selector comp
-    return;
-  };
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
-  // Entries displayed on the first page
-  const updateShownElementsList = (newShownEntriesList: Condition[]) => {
-    setShownElements(newShownEntriesList);
-  };
-
   // Pagination data required by the Table Layout
   const paginationData = {
     page,
     perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList,
+    onUpdatePage: setPage,
+    onUpdatePerPage: setPerPage,
     totalCount: tableEntryList.length,
   };
 

@@ -62,8 +62,7 @@ const Trusts = () => {
   ) as string;
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -206,18 +205,12 @@ const Trusts = () => {
     trustsResponse.refetch();
   }, []);
 
-  // Data wrappers
-  // TODO: Better separation of concerts
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage: setPage,
-    updatePerPage: setPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
-    totalCount,
-  };
+  // Reset the selected per-page count when the page or page size changes
+  React.useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
+  // Data wrappers
   // - 'BulkSelectorprep'
   const bulkSelectorData = {
     selected: selectedElements,
@@ -322,7 +315,7 @@ const Trusts = () => {
       element: (
         <PaginationLayout
           list={trusts}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -389,7 +382,7 @@ const Trusts = () => {
             >
               <PaginationLayout
                 list={trusts}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
               />

@@ -64,16 +64,6 @@ const HBACRulesMemberTable = (props: PropsToTable) => {
   const [totalCount, setMemberTotalCount] = useState<number>(
     props.members.length
   );
-  const updateSelectedPerPage = () => {
-    // Nothing to do since we are not using bulk selector comp
-    return;
-  };
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
 
   const resetEntries = () => {
     const firstIdx = (page - 1) * perPage;
@@ -312,18 +302,11 @@ const HBACRulesMemberTable = (props: PropsToTable) => {
     }
   }, [selectedMembers]);
 
-  // Entries displayed on the first page
-  const updateShownEntriesList = (newShownEntriesList: string[]) => {
-    setTableMembers(newShownEntriesList);
-  };
-
   const paginationData = {
     page,
     perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownEntriesList,
+    onUpdatePage: setPage,
+    onUpdatePerPage: setPerPage,
     totalCount,
   };
 

@@ -82,23 +82,6 @@ const KeytabTable = (props: PropsToTable) => {
   const [page, setPage] = useState<number>(1);
   const [perPage, setPerPage] = useState<number>(5);
   const [totalCount, setEntriesTotalCount] = useState<number>(0);
-  const updateSelectedPerPage = () => {
-    // Nothing to do since we are not using bulk selector comp
-    return;
-  };
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
-
-  // Entries displayed on the first page
-  const updateShownEntriesList = (
-    newShownEntriesList: User[] | UserGroup[] | Host[] | HostGroup[]
-  ) => {
-    setFullEntriesFiltered(newShownEntriesList);
-  };
 
   const resetEntries = () => {
     const firstIdx = (page - 1) * perPage;
@@ -478,10 +461,8 @@ const KeytabTable = (props: PropsToTable) => {
   const paginationData = {
     page,
     perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownEntriesList,
+    onUpdatePage: setPage,
+    onUpdatePerPage: setPerPage,
     totalCount,
   };
 

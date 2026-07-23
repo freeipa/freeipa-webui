@@ -1,11 +1,12 @@
 import React, { useMemo } from "react";
 // PatternFly
-import { Pagination, PaginationVariant } from "@patternfly/react-core";
+import { PaginationVariant } from "@patternfly/react-core";
 // Components
 import MemberOfToolbar from "../MemberOf/MemberOfToolbar";
 import MemberOfAddModal, { AvailableItems } from "../MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "../MemberOf/MemberOfDeleteModal";
 import MemberTable from "src/components/tables/MembershipTable";
+import PaginationLayout from "src/components/layouts/PaginationLayout";
 // Data types
 import { Role } from "src/utils/datatypes/globalDataTypes";
 // Redux
@@ -38,8 +39,7 @@ interface PropsToMembersUserIdOverride {
 const MembersUserIdOverride = (props: PropsToMembersUserIdOverride) => {
   const dispatch = useAppDispatch();
 
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, setPage, perPage, searchValue } = useListPageSearchParams();
 
   const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
 
@@ -206,10 +206,6 @@ const MembersUserIdOverride = (props: PropsToMembersUserIdOverride) => {
         onAddButtonClick={() => setShowAddModal(true)}
         helpIconEnabled={true}
         totalItems={member_idoverrideuser.length}
-        perPage={perPage}
-        page={page}
-        onPerPageChange={setPerPage}
-        onPageChange={setPage}
       />
       <MemberTable
         entityList={itemsToShow}
@@ -221,15 +217,12 @@ const MembersUserIdOverride = (props: PropsToMembersUserIdOverride) => {
         onCheckItemsChange={setSelectedItems}
         showTableRows={showTableRows}
       />
-      <Pagination
-        className="pf-v6-u-pb-0 pf-v6-u-pr-md"
-        itemCount={member_idoverrideuser.length}
-        widgetId="pagination-options-menu-bottom"
-        perPage={perPage}
-        page={page}
+      <PaginationLayout
+        list={[]}
+        totalCount={member_idoverrideuser.length}
         variant={PaginationVariant.bottom}
-        onSetPage={(_e, page) => setPage(page)}
-        onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
+        widgetId="pagination-options-menu-bottom"
+        className="pf-v6-u-pb-0 pf-v6-u-pr-md"
       />
       {showAddModal && (
         <MemberOfAddModal

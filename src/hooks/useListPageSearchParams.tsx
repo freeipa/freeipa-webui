@@ -12,7 +12,7 @@ export const parsePerPage = (value: string | null): number => {
   if (value && (parseInt(value) < 1 || isNaN(parseInt(value)))) {
     return 10;
   }
-  return Math.max(10, parseInt(value || "10"));
+  return parseInt(value || "10");
 };
 
 export const parseMembership = (value: string | null): MembershipDirection => {

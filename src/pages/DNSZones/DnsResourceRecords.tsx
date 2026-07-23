@@ -57,8 +57,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
   useUpdateRoute({ pathname: "dns-records" });
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -211,19 +210,12 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     }
   }, [isLoading]);
 
-  // Data wrappers
-  // TODO: Better separation of concerns
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage: setPage,
-    updatePerPage: setPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
-    updateShownElementsList: setDnsRecords,
-    totalCount,
-  };
+  // Reset the selected per-page count when the page or page size changes
+  React.useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
+  // Data wrappers
   // - 'BulkSelectorPrep'
   const bulkSelectorData = {
     selected: selectedElements,
@@ -328,7 +320,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
       element: (
         <PaginationLayout
           list={dnsRecords}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -417,7 +409,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
             >
               <PaginationLayout
                 list={dnsRecords}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
                 className="pf-v6-u-pb-0 pf-v6-u-pr-md"

@@ -65,8 +65,7 @@ const Services = () => {
   ) as string;
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -92,13 +91,11 @@ const Services = () => {
     setSelectedPerPage(selected);
   };
 
-  // Pagination
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
+  // Reset selected-per-page count whenever the page or page size changes
+  useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
+
   const [totalCount, setServicesTotalCount] = useState<number>(0);
 
   // Page indexes
@@ -323,17 +320,6 @@ const Services = () => {
     updateSelectedPerPage,
   };
 
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: setHostsList,
-    totalCount,
-  };
-
   // - 'ServicesTable'
   const servicesTableData = {
     isServiceSelectable,
@@ -445,7 +431,7 @@ const Services = () => {
       element: (
         <PaginationLayout
           list={servicesList}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -492,7 +478,7 @@ const Services = () => {
             >
               <PaginationLayout
                 list={servicesList}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
               />

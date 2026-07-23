@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
 // PatternFly
-import { Pagination, PaginationVariant } from "@patternfly/react-core";
+import { PaginationVariant } from "@patternfly/react-core";
 // Data types
 import { User, Role, Host, Service } from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfToolbar from "./MemberOfToolbar";
 import MemberTable from "src/components/tables/MembershipTable";
+import PaginationLayout from "src/components/layouts/PaginationLayout";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
@@ -48,7 +49,6 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
     page,
     setPage,
     perPage,
-    setPerPage,
     searchValue,
     membershipDirection,
     setMembershipDirection,
@@ -307,10 +307,6 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           helpIconEnabled={true}
           onHelpIconClick={() => dispatch(toggleHelpPanel())}
           totalItems={roleNames.length}
-          perPage={perPage}
-          page={page}
-          onPerPageChange={setPerPage}
-          onPageChange={setPage}
         />
       ) : (
         <MemberOfToolbar
@@ -332,10 +328,6 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
           helpIconEnabled={true}
           onHelpIconClick={() => dispatch(toggleHelpPanel())}
           totalItems={roleNames.length}
-          perPage={perPage}
-          page={page}
-          onPerPageChange={setPerPage}
-          onPageChange={setPage}
         />
       )}
       <MemberTable
@@ -357,15 +349,12 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
         showTableRows={showTableRows}
       />
       {roleNames.length > 0 && (
-        <Pagination
-          className="pf-v6-u-pb-0 pf-v6-u-pr-md"
-          itemCount={roleNames.length}
-          widgetId="pagination-options-menu-bottom"
-          perPage={perPage}
-          page={page}
+        <PaginationLayout
+          list={[]}
+          totalCount={roleNames.length}
           variant={PaginationVariant.bottom}
-          onSetPage={(_e, page) => setPage(page)}
-          onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
+          widgetId="pagination-options-menu-bottom"
+          className="pf-v6-u-pb-0 pf-v6-u-pr-md"
         />
       )}
       <MemberOfAddModal

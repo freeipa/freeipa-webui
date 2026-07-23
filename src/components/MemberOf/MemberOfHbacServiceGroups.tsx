@@ -1,6 +1,6 @@
 import React from "react";
 // PatternFly
-import { Pagination, PaginationVariant } from "@patternfly/react-core";
+import { PaginationVariant } from "@patternfly/react-core";
 // Data types
 import {
   HBACService,
@@ -9,6 +9,7 @@ import {
 // Components
 import MemberOfToolbar from "./MemberOfToolbar";
 import MemberTable from "src/components/tables/MembershipTable";
+import PaginationLayout from "src/components/layouts/PaginationLayout";
 import MemberOfAddModal, { AvailableItems } from "./MemberOfAddModal";
 import MemberOfDeleteModal from "./MemberOfDeleteModal";
 
@@ -40,8 +41,7 @@ interface MemberOfHbacServicesProps {
 const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
   const dispatch = useAppDispatch();
 
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, setPage, perPage, searchValue } = useListPageSearchParams();
 
   const [hbacGroupsSelected, setHbacGroupsSelected] = React.useState<string[]>(
     []
@@ -268,10 +268,6 @@ const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
         helpIconEnabled={true}
         onHelpIconClick={() => dispatch(toggleHelpPanel())}
         totalItems={memberof_hbacsvcgroup.length}
-        perPage={perPage}
-        page={page}
-        onPerPageChange={setPerPage}
-        onPageChange={setPage}
       />
       <MemberTable
         entityList={hbacGroups}
@@ -284,15 +280,12 @@ const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
         showTableRows={showTableRows}
       />
       {memberof_hbacsvcgroup.length > 0 && (
-        <Pagination
-          className="pf-v6-u-pb-0 pf-v6-u-pr-md"
-          itemCount={memberof_hbacsvcgroup.length}
-          widgetId="pagination-options-menu-bottom"
-          perPage={perPage}
-          page={page}
+        <PaginationLayout
+          list={[]}
+          totalCount={memberof_hbacsvcgroup.length}
           variant={PaginationVariant.bottom}
-          onSetPage={(_e, page) => setPage(page)}
-          onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
+          widgetId="pagination-options-menu-bottom"
+          className="pf-v6-u-pb-0 pf-v6-u-pr-md"
         />
       )}
       <MemberOfAddModal

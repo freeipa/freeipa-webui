@@ -69,8 +69,7 @@ const SudoRules = () => {
   const modalErrors = useApiError([]);
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   const [totalCount, setRulesTotalCount] = useState<number>(0);
 
@@ -195,19 +194,10 @@ const SudoRules = () => {
     setSelectedPerPage(selected);
   };
 
-  // Pagination
-  const updatePage = (newPage: number) => {
-    setPage(newPage);
-  };
-
-  const updatePerPage = (newSetPerPage: number) => {
-    setPerPage(newSetPerPage);
-  };
-
-  // Rules displayed on the first page
-  const updateShownRulesList = (newShownRulesList: SudoRule[]) => {
-    setRulesList(newShownRulesList);
-  };
+  // Reset selected-per-page count whenever the page or page size changes
+  useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
   const [selectedRules, setSelectedRules] = useState<SudoRule[]>([]);
 
@@ -315,17 +305,6 @@ const SudoRules = () => {
 
   // Data wrappers
   // TODO: Better separation of concerts
-  // - 'PaginationLayout'
-  const paginationData = {
-    page,
-    perPage,
-    updatePage,
-    updatePerPage,
-    updateSelectedPerPage,
-    updateShownElementsList: updateShownRulesList,
-    totalCount,
-  };
-
   // - 'BulkSelectorSudoRulesPrep'
   const rulesBulkSelectorData = {
     selected: selectedRules,
@@ -492,7 +471,7 @@ const SudoRules = () => {
       element: (
         <PaginationLayout
           list={rulesList}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -541,7 +520,7 @@ const SudoRules = () => {
             >
               <PaginationLayout
                 list={rulesList}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
               />

@@ -58,8 +58,7 @@ const IdRanges = () => {
   ) as string;
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   const [selectedPerPage, setSelectedPerPage] = React.useState<number>(0);
   const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
@@ -181,14 +180,10 @@ const IdRanges = () => {
     nameAttr: "cn",
   };
 
-  // Data wrappers
-  const paginationData = {
-    page,
-    perPage,
-    updatePage: setPage,
-    updatePerPage: setPerPage,
-    totalCount,
-  };
+  // Reset the selected per-page count when the page or page size changes
+  React.useEffect(() => {
+    setSelectedPerPage(0);
+  }, [page, perPage]);
 
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
@@ -279,7 +274,7 @@ const IdRanges = () => {
       element: (
         <PaginationLayout
           list={shownElementsList}
-          paginationData={paginationData}
+          totalCount={totalCount}
           widgetId="pagination-options-menu-top"
           isCompact={true}
         />
@@ -357,7 +352,7 @@ const IdRanges = () => {
             >
               <PaginationLayout
                 list={shownElementsList}
-                paginationData={paginationData}
+                totalCount={totalCount}
                 variant={PaginationVariant.bottom}
                 widgetId="pagination-options-menu-bottom"
               />
