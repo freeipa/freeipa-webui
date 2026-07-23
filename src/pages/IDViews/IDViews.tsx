@@ -43,18 +43,12 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Errors
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 // RPC client
-import {
-  ErrorResult,
-  GenericPayload,
-  useSearchEntriesMutation,
-} from "../../services/rpc";
+import { ErrorResult, GenericPayload } from "../../services/rpc";
 import {
   useGettingIDViewsQuery,
   useUnapplyHostsMutation,
@@ -83,7 +77,7 @@ const IDViews = () => {
   const [viewsList, setViewsList] = useState<IDView[]>([]);
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Handle API calls errors
@@ -93,7 +87,6 @@ const IDViews = () => {
   // Table comps
   const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
   const [totalCount, setViewsTotalCount] = useState<number>(0);
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   const updateSelectedPerPage = (selected: number) => {
     setSelectedPerPage(selected);
@@ -205,74 +198,10 @@ const IDViews = () => {
     viewsDataResponse.refetch();
   };
 
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
   const [selectedViews, setSelectedViewsList] = useState<IDView[]>([]);
   const clearSelectedViews = () => {
     const emptyList: IDView[] = [];
     setSelectedViewsList(emptyList);
-  };
-
-  const [retrieveViews] = useSearchEntriesMutation({});
-
-  // Issue a search using a specific search value
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    setShowTableRows(false);
-    setViewsTotalCount(0);
-    setSearchIsDisabled(true);
-    retrieveViews({
-      searchValue: search,
-      sizeLimit: 0,
-      apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: 0,
-      stopIdx: 100,
-      entryType: "idview",
-    } as GenericPayload).then((result) => {
-      // Manage new response here
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for ID views",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const viewsListResult = result.data?.result.results || [];
-          const viewsListSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
-          const idViewsList: IDView[] = [];
-
-          for (let i = 0; i < viewsListSize; i++) {
-            idViewsList.push(viewsListResult[i].result);
-          }
-
-          setViewsList(idViewsList.slice(0, perPage));
-          setViewsTotalCount(totalCount);
-          setIsKebabOpen(false);
-          setShowTableRows(true);
-        }
-        setSearchIsDisabled(false);
-      }
-    });
   };
 
   // Show table rows
@@ -505,13 +434,6 @@ const IDViews = () => {
     updateIsDeletion,
   };
 
-  // - 'SearchInputLayout'
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
-  };
-
   // Keybob for un-apply actions
   const [isKebabOpen, setIsKebabOpen] = React.useState(false);
   const onKebabToggle = () => {
@@ -564,8 +486,6 @@ const IDViews = () => {
           name="search"
           ariaLabel="Search ID views"
           placeholder="Search ID views"
-          searchValueData={searchValueData}
-          isDisabled={searchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

@@ -190,15 +190,15 @@ const DualListTableLayoutInner = (props: DualListProps) => {
     }
   };
 
-  function doSearch(value?: string) {
+  function doSearch(value: string) {
+    setSearchValue(value);
     setStatus("searching");
     submitSearchValue(value);
   }
 
   const searchValueData = {
     searchValue: searchValue,
-    updateSearchValue: setSearchValue,
-    submitSearchValue: doSearch,
+    onSubmit: doSearch,
   };
 
   const onButtonClick = () => {
@@ -296,7 +296,7 @@ const DualListTableLayoutInner = (props: DualListProps) => {
   const getListItems = (status: Status): ReactNode[] => {
     switch (status) {
       case "toSearch":
-        return [searchItem(doSearch)];
+        return [searchItem(() => doSearch(searchValue))];
       case "searching":
         return [searchingItem()];
       case "empty":

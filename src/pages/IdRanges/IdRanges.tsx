@@ -12,23 +12,17 @@ import {
   OuterScrollContainer,
 } from "@patternfly/react-table";
 // Hooks
-import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useApiError from "src/hooks/useApiError";
 import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Redux
 import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // RPC
-import {
-  useGetIdRangeEntriesQuery,
-  useSearchIdRangesEntriesMutation,
-} from "src/services/rpcIdRanges";
+import { useGetIdRangeEntriesQuery } from "src/services/rpcIdRanges";
 import { IdRange } from "src/utils/datatypes/globalDataTypes";
 // React router
 import { useNavigate } from "react-router";
 // Components
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
@@ -64,7 +58,7 @@ const IdRanges = () => {
   ) as string;
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   const [selectedPerPage, setSelectedPerPage] = React.useState<number>(0);
@@ -145,12 +139,6 @@ const IdRanges = () => {
     return { list: elementsList, total, ready: true };
   }, [isSuccess, batchResponse]);
 
-  // Track search override results (when using the Search input)
-  const [searchOverride, setSearchOverride] = React.useState<{
-    list: IdRange[];
-    total: number;
-  } | null>(null);
-
   // Clear alerts while fetching
   React.useEffect(() => {
     if (isFetching) {
@@ -168,72 +156,15 @@ const IdRanges = () => {
 
   // Refresh button handling
   const refreshData = () => {
-    setSearchOverride(null);
     idRangesDataResponse.refetch();
   };
 
   // Show table rows
-  const showTableRows =
-    !isFetching && (searchOverride !== null || queryDerived.ready);
-
-  // Search API call (batch)
-  const [searchEntry] = useSearchIdRangesEntriesMutation();
-
-  const [isSearchDisabled, setIsSearchDisabled] =
-    React.useState<boolean>(false);
-
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    setSearchOverride(null);
-    searchEntry({
-      searchValue: search,
-      apiVersion,
-      sizelimit: 100,
-      startIdx: 0,
-      stopIdx: 200,
-    }).then((result) => {
-      if ("data" in result && result.data !== undefined) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let errMsg: string | undefined = "";
-          if ("error" in searchError) {
-            errMsg = searchError.error;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: errMsg || "Error when searching for elements",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const listResult = result.data?.result.results || [];
-          const listSize = result.data?.result.count || 0;
-          const total = result.data?.result.totalCount || 0;
-          const elementsList: IdRange[] = [];
-
-          for (let i = 0; i < listSize; i++) {
-            elementsList.push(listResult[i].result as IdRange);
-          }
-
-          setSearchOverride({ list: elementsList.slice(0, perPage), total });
-        }
-        setIsSearchDisabled(false);
-      }
-    });
-  };
+  const showTableRows = !isFetching && queryDerived.ready;
 
   // Compute shown list and total
-  const shownElementsList = searchOverride
-    ? searchOverride.list
-    : queryDerived.list;
-  const totalCount = searchOverride ? searchOverride.total : queryDerived.total;
+  const shownElementsList = queryDerived.list;
+  const totalCount = queryDerived.total;
 
   // Selection helpers
   const selectableIdRangesTable = shownElementsList.filter(isIdRangeSelectable);
@@ -257,17 +188,6 @@ const IdRanges = () => {
     updatePage: setPage,
     updatePerPage: setPerPage,
     totalCount,
-  };
-
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue: (v: string) => {
-      setPage(1);
-      setSearchOverride(null);
-      setSearchValue(v);
-    },
-    submitSearchValue,
   };
 
   // List of Toolbar items
@@ -296,8 +216,6 @@ const IdRanges = () => {
           name="search"
           ariaLabel="Search ID ranges"
           placeholder="Search ID ranges"
-          searchValueData={searchValueData}
-          isDisabled={isSearchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

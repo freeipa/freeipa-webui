@@ -38,7 +38,7 @@ interface PropsToMembersUserIdOverride {
 const MembersUserIdOverride = (props: PropsToMembersUserIdOverride) => {
   const dispatch = useAppDispatch();
 
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
@@ -196,9 +196,6 @@ const MembersUserIdOverride = (props: PropsToMembersUserIdOverride) => {
   return (
     <>
       <MemberOfToolbar
-        searchText={searchValue}
-        onSearchTextChange={setSearchValue}
-        onSearch={() => {}}
         searchPlaceholder="Search user ID overrides"
         searchAriaLabel="Search user ID overrides"
         refreshButtonEnabled={isRefreshButtonEnabled}

@@ -14,7 +14,6 @@ import {
 // Data types
 import { PwPolicy } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
@@ -23,12 +22,7 @@ import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // Components
-import {
-  useGetPwPoliciesEntriesQuery,
-  useSearchPwdPolicyEntriesMutation,
-} from "src/services/rpcPwdPolicies";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
+import { useGetPwPoliciesEntriesQuery } from "src/services/rpcPwdPolicies";
 import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
@@ -61,7 +55,7 @@ const PasswordPolicies = () => {
   ) as string;
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Handle API calls errors
@@ -73,8 +67,6 @@ const PasswordPolicies = () => {
 
   // States
   const [pwPolicies, setPwPolicies] = React.useState<PwPolicy[]>([]);
-  const [searchIsDisabled, setSearchIsDisabled] =
-    React.useState<boolean>(false);
   const [totalCount, setTotalCount] = React.useState<number>(0);
 
   // API calls
@@ -253,65 +245,6 @@ const PasswordPolicies = () => {
     setPwPolicies(newShownElementsList);
   };
 
-  // Update search input valie
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
-  // Search API call
-  const [searchEntry] = useSearchPwdPolicyEntriesMutation();
-
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    searchEntry({
-      searchValue: search,
-      apiVersion,
-      sizelimit: 100,
-      startIdx: 0,
-      stopIdx: 200, // Search will consider a max. of elements
-    }).then((result) => {
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for subordinate IDs",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const listResult = result.data?.result.results || [];
-          const listSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
-          const elementsList: PwPolicy[] = [];
-
-          for (let i = 0; i < listSize; i++) {
-            elementsList.push(listResult[i].result);
-          }
-
-          setTotalCount(totalCount);
-          setPwPolicies(elementsList.slice(0, perPage));
-          setShowTableRows(true);
-        }
-        setSearchIsDisabled(false);
-      }
-    });
-  };
-
   // Data wrappers
   // TODO: Better separation of concerts
   // - 'PaginationLayout'
@@ -327,13 +260,6 @@ const PasswordPolicies = () => {
 
   const buttonsData = {
     updateIsDeleteButtonDisabled,
-  };
-
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
   };
 
   // - 'BulkSelectorrep'
@@ -391,8 +317,6 @@ const PasswordPolicies = () => {
           name="search"
           ariaLabel="Search password policies"
           placeholder="Search password policies"
-          searchValueData={searchValueData}
-          isDisabled={searchIsDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

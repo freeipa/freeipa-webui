@@ -46,7 +46,7 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
   const dispatch = useAppDispatch();
 
   // Get parameters from URL
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Other states
@@ -303,9 +303,6 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
   return (
     <>
       <MemberOfToolbar
-        searchText={searchValue}
-        onSearchTextChange={setSearchValue}
-        onSearch={() => {}}
         searchPlaceholder="Search hosts"
         searchAriaLabel="Search hosts"
         refreshButtonEnabled={isRefreshButtonEnabled}

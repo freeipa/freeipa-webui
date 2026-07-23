@@ -55,7 +55,7 @@ const RolesPrivileges = (props: PropsToRolesPrivileges) => {
   }, [roleData, roleQuery.isFetching]);
 
   // Get parameters from URL
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Other states
@@ -238,9 +238,6 @@ const RolesPrivileges = (props: PropsToRolesPrivileges) => {
   return (
     <TabLayout id="privileges">
       <MemberOfToolbar
-        searchText={searchValue}
-        onSearchTextChange={setSearchValue}
-        onSearch={() => {}}
         searchPlaceholder="Search privileges"
         searchAriaLabel="Search privileges"
         refreshButtonEnabled={isRefreshButtonEnabled}

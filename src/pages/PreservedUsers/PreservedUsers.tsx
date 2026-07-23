@@ -34,16 +34,12 @@ import DeleteUsers from "src/components/modals/UserModals/DeleteUsers";
 import StagePreservedUsers from "src/components/modals/UserModals/StagePreservedUsers";
 import RestorePreservedUsers from "src/components/modals/UserModals/RestorePreservedUsers";
 // Hooks
-import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
-// Errors
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 // Utils
 import { API_VERSION_BACKUP, isUserSelectable } from "src/utils/utils";
-import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
+import { GenericPayload } from "../../services/rpc";
 import { useGettingPreservedUserQuery } from "../../services/rpcUsers";
 import useApiError from "src/hooks/useApiError";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
@@ -55,7 +51,7 @@ const PreservedUsers = () => {
   useContextualHelpTopic("preserved-users");
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
@@ -75,7 +71,6 @@ const PreservedUsers = () => {
 
   // Main states - what user can define / what we could use in page URL
   const [totalCount, setUsersTotalCount] = useState<number>(0);
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   // Page indexes
   const firstUserIdx = (page - 1) * perPage;
@@ -193,73 +188,6 @@ const PreservedUsers = () => {
   // Users displayed on the first page
   const updateShownUsersList = (newShownUsersList: User[]) => {
     setPreservedUsersList(newShownUsersList);
-  };
-
-  // Filter (Input search)
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
-  // Issue search with filter
-  const [retrieveUser] = useSearchEntriesMutation({});
-
-  // Issue a search using a specific search value
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    setShowTableRows(false);
-    setUsersTotalCount(0);
-    setSearchIsDisabled(true);
-
-    retrieveUser({
-      searchValue: search,
-      sizeLimit: 0,
-      apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: 0,
-      stopIdx: 100,
-      entryType: "preserved",
-    } as GenericPayload).then((result) => {
-      // Manage new response here
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for preserved users",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const usersListResult = result.data?.result.results || [];
-          const usersListSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
-          const usersList: User[] = [];
-
-          for (let i = 0; i < usersListSize; i++) {
-            usersList.push(usersListResult[i].result);
-          }
-
-          setPreservedUsersList(usersList.slice(0, perPage));
-          setUsersTotalCount(totalCount);
-          // Show table elements
-          setShowTableRows(true);
-        }
-        setSearchIsDisabled(false);
-      }
-    });
   };
 
   // Show table rows
@@ -404,13 +332,6 @@ const PreservedUsers = () => {
     updateIsDeletion,
   };
 
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
-  };
-
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -433,8 +354,6 @@ const PreservedUsers = () => {
           name="search"
           ariaLabel="Search preserved users"
           placeholder="Search preserved users"
-          searchValueData={searchValueData}
-          isDisabled={searchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

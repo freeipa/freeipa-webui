@@ -45,7 +45,7 @@ const MembersHBACServices = (props: PropsToMembersHBACServices) => {
   const dispatch = useAppDispatch();
 
   // Get parameters from URL
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Other states
@@ -261,9 +261,6 @@ const MembersHBACServices = (props: PropsToMembersHBACServices) => {
   return (
     <>
       <MemberOfToolbar
-        searchText={searchValue}
-        onSearchTextChange={setSearchValue}
-        onSearch={() => {}}
         searchPlaceholder="Search HBAC services"
         searchAriaLabel="Search HBAC services"
         refreshButtonEnabled={isRefreshButtonEnabled}

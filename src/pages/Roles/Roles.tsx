@@ -13,10 +13,7 @@ import {
   OuterScrollContainer,
 } from "@patternfly/react-table";
 // Data types
-import {
-  Role,
-  SearchDataResultType,
-} from "src/utils/datatypes/globalDataTypes";
+import { Role } from "src/utils/datatypes/globalDataTypes";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
@@ -35,7 +32,6 @@ import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import AddRoleModal from "src/components/modals/RoleModals/AddRoleModal";
 import DeleteRolesModal from "src/components/modals/RoleModals/DeleteRolesModal";
 // Hooks
-import { addAlert } from "src/store/Global/alerts-slice";
 import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
@@ -43,13 +39,8 @@ import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { API_VERSION_BACKUP, isRoleSelectable } from "src/utils/utils";
 // RPC client
 import { GenericPayload } from "src/services/rpc";
-import {
-  useGettingRolesQuery,
-  useSearchRolesEntriesMutation,
-} from "src/services/rpcRoles";
+import { useGettingRolesQuery } from "src/services/rpcRoles";
 // Errors
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import GlobalErrors from "src/components/errors/GlobalErrors";
@@ -65,7 +56,7 @@ const Roles = () => {
     (state) => state.global.environment.api_version
   ) as string;
 
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   const globalErrors = useApiError([]);
@@ -89,25 +80,8 @@ const Roles = () => {
     error: batchError,
   } = rolesDataResponse;
 
-  // Search state - overrides query data when active
-  const [searchRoles, searchResult] = useSearchRolesEntriesMutation({});
-  const [isSearchActive, setIsSearchActive] = useState(false);
-  const [searchData, setSearchData] =
-    useState<SearchDataResultType<Role> | null>(null);
-
-  // Derive rolesList and totalCount from query response or search results
+  // Derive rolesList and totalCount from query response
   const { elementsList, totalCount } = useMemo(() => {
-    // If search is active and has results, paginate client-side
-    if (isSearchActive && searchData) {
-      const start = (page - 1) * perPage;
-      const end = start + perPage;
-      return {
-        elementsList: searchData.elementsList.slice(start, end),
-        totalCount: searchData.elementsList.length,
-      };
-    }
-
-    // Otherwise derive from query response
     if (batchResponse?.result) {
       const rolesListResult = batchResponse.result.results;
       const rolesListSize = batchResponse.result.count;
@@ -124,15 +98,10 @@ const Roles = () => {
     }
 
     return { elementsList: [], totalCount: 0 };
-  }, [batchResponse, isSearchActive, searchData, page, perPage]);
+  }, [batchResponse]);
 
   // Derive showTableRows from loading states
-  const showTableRows = useMemo(() => {
-    if (isSearchActive) {
-      return !searchResult.isLoading;
-    }
-    return !isFetching && !isBatchLoading;
-  }, [isFetching, isBatchLoading, isSearchActive, searchResult.isLoading]);
+  const showTableRows = !isFetching && !isBatchLoading;
 
   // Clear errors when fetching starts
   React.useEffect(() => {
@@ -154,8 +123,6 @@ const Roles = () => {
   }, [rolesDataResponse.isError, isBatchLoading, isFetching]);
 
   const refreshData = () => {
-    setIsSearchActive(false);
-    setSearchData(null);
     clearSelectedRoles();
     rolesDataResponse.refetch();
   };
@@ -175,62 +142,6 @@ const Roles = () => {
 
   const clearSelectedRoles = () => {
     setSelectedRoles([]);
-  };
-
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
-
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    setSearchIsDisabled(true);
-    setIsSearchActive(true);
-
-    searchRoles({
-      searchValue: search,
-      sizeLimit: 0,
-      apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: 0,
-      stopIdx: 100,
-    }).then((result) => {
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for roles",
-              variant: "danger",
-            })
-          );
-          setIsSearchActive(false);
-          setSearchData(null);
-        } else {
-          const rolesListResult = result.data?.result.results || [];
-          const rolesListSize = result.data?.result.count || 0;
-          const searchTotalCount = result.data?.result.totalCount || 0;
-          const roles: Role[] = [];
-
-          for (let i = 0; i < rolesListSize; i++) {
-            roles.push(rolesListResult[i].result);
-          }
-
-          setSearchData({
-            elementsList: roles,
-            totalCount: searchTotalCount,
-          });
-        }
-        setSearchIsDisabled(false);
-      }
-    });
   };
 
   const [showAddModal, setShowAddModal] = useState(false);
@@ -278,15 +189,6 @@ const Roles = () => {
     updatePage: setPage,
     updatePerPage: setPerPage,
     updateSelectedPerPage: setSelectedPerPage,
-    updateShownElementsList: (roles: Role[]) => {
-      if (isSearchActive) {
-        setSearchData((prev) =>
-          prev
-            ? { ...prev, elementsList: roles }
-            : { elementsList: roles, totalCount: 0 }
-        );
-      }
-    },
     totalCount,
   };
 
@@ -304,17 +206,6 @@ const Roles = () => {
   const selectedPerPageData = {
     selectedPerPage,
     updateSelectedPerPage: setSelectedPerPage,
-  };
-
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
   };
 
   const columnNames = ["Role name", "Description"];
@@ -341,8 +232,6 @@ const Roles = () => {
           name="search"
           ariaLabel="Search roles"
           placeholder="Search"
-          searchValueData={searchValueData}
-          isDisabled={searchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

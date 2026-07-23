@@ -34,17 +34,15 @@ import AddHBACRule from "src/components/modals/HbacModals/AddHBACRule";
 import DeleteHBACRule from "src/components/modals/HbacModals/DeleteHBACRule";
 import DisableEnableHBACRules from "src/components/modals/HbacModals/DisableEnableHBACRules";
 // Hooks
-import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Utils
 import { API_VERSION_BACKUP, isHbacRuleSelectable } from "src/utils/utils";
 // RPC client
-import { GenericPayload, useSearchEntriesMutation } from "src/services/rpc";
+import { GenericPayload } from "src/services/rpc";
 import { useGettingHbacRulesQuery } from "src/services/rpcHBACRules";
 // Errors
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import GlobalErrors from "src/components/errors/GlobalErrors";
@@ -70,12 +68,12 @@ const HBACRules = () => {
   const globalErrors = useApiError([]);
   const modalErrors = useApiError([]);
 
+  // URL parameters: page number, page size, search value
+  const { page, setPage, perPage, setPerPage, searchValue } =
+    useListPageSearchParams();
+
   // Main states - what user can define / what we could use in page URL
-  const [searchValue, setSearchValue] = React.useState("");
-  const [page, setPage] = useState<number>(1);
-  const [perPage, setPerPage] = useState<number>(10);
   const [totalCount, setRulesTotalCount] = useState<number>(0);
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   // Page indexes
   const firstUserIdx = (page - 1) * perPage;
@@ -218,76 +216,11 @@ const HBACRules = () => {
     setRulesList(newShownRulesList);
   };
 
-  // Update search input valie
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
   const [selectedRules, setSelectedRules] = useState<HBACRule[]>([]);
 
   const clearSelectedRules = () => {
     const emptyList: HBACRule[] = [];
     setSelectedRules(emptyList);
-  };
-
-  const [retrieveRules] = useSearchEntriesMutation({});
-
-  // Issue a search using a specific search value
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    setShowTableRows(false);
-    setSearchIsDisabled(true);
-    setRulesTotalCount(0);
-    retrieveRules({
-      searchValue: search,
-      sizeLimit: 0,
-      apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: 0,
-      stopIdx: 100,
-      entryType: "hbacrule",
-    } as GenericPayload).then((result) => {
-      // Manage new response here
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for HBAC rules",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const rulesListResult = result.data?.result.results || [];
-          const rulesListSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
-          const rulesList: HBACRule[] = [];
-
-          for (let i = 0; i < rulesListSize; i++) {
-            rulesList.push(rulesListResult[i].result);
-          }
-
-          setRulesTotalCount(totalCount);
-          setRulesList(rulesList.slice(0, perPage));
-          // Show table elements
-          setShowTableRows(true);
-        }
-        setSearchIsDisabled(false);
-      }
-    });
   };
 
   // Show table rows
@@ -457,13 +390,6 @@ const HBACRules = () => {
     updateIsDisableEnableOp,
   };
 
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
-  };
-
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -486,8 +412,6 @@ const HBACRules = () => {
           name="search"
           ariaLabel="Search HBAC rules"
           placeholder="Search HBAC rules"
-          searchValueData={searchValueData}
-          isDisabled={searchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

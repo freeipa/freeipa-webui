@@ -33,17 +33,15 @@ import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import AddHBACService from "src/components/modals/HbacModals/AddHBACService";
 import DeleteHBACService from "src/components/modals/HbacModals/DeleteHBACService";
 // Hooks
-import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
+import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Utils
 import { API_VERSION_BACKUP, isHbacServiceSelectable } from "src/utils/utils";
 // RPC client
-import { GenericPayload, useSearchEntriesMutation } from "src/services/rpc";
+import { GenericPayload } from "src/services/rpc";
 import { useGettingHbacServicesQuery } from "src/services/rpcHBACServices";
 // Errors
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import GlobalErrors from "src/components/errors/GlobalErrors";
@@ -69,12 +67,12 @@ const HBACServices = () => {
   const globalErrors = useApiError([]);
   const modalErrors = useApiError([]);
 
+  // URL parameters: page number, page size, search value
+  const { page, setPage, perPage, setPerPage, searchValue } =
+    useListPageSearchParams();
+
   // Main states - what user can define / what we could use in page URL
-  const [searchValue, setSearchValue] = React.useState("");
-  const [page, setPage] = useState<number>(1);
-  const [perPage, setPerPage] = useState<number>(10);
   const [totalCount, setServicesTotalCount] = useState<number>(0);
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   // Page indexes
   const firstIdx = (page - 1) * perPage;
@@ -194,76 +192,11 @@ const HBACServices = () => {
     setServicesList(newShownServicesList);
   };
 
-  // Update search input valie
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
   const [selectedServices, setSelectedServices] = useState<HBACService[]>([]);
 
   const clearSelectedServices = () => {
     const emptyList: HBACService[] = [];
     setSelectedServices(emptyList);
-  };
-
-  const [retrieveServices] = useSearchEntriesMutation({});
-
-  // Issue a search using a specific search value
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    setShowTableRows(false);
-    setSearchIsDisabled(true);
-    setServicesTotalCount(0);
-    retrieveServices({
-      searchValue: search,
-      sizeLimit: 0,
-      apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: 0,
-      stopIdx: 100,
-      entryType: "hbacsvc",
-    } as GenericPayload).then((result) => {
-      // Manage new response here
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for HBAC services",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const servicesListResult = result.data?.result.results || [];
-          const servicesListSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
-          const servicesList: HBACService[] = [];
-
-          for (let i = 0; i < servicesListSize; i++) {
-            servicesList.push(servicesListResult[i].result);
-          }
-
-          setServicesTotalCount(totalCount);
-          setServicesList(servicesList.slice(0, perPage));
-          // Show table elements
-          setShowTableRows(true);
-        }
-        setSearchIsDisabled(false);
-      }
-    });
   };
 
   // Show table rows
@@ -406,13 +339,6 @@ const HBACServices = () => {
     updateIsDeletion,
   };
 
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
-  };
-
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -435,8 +361,6 @@ const HBACServices = () => {
           name="search"
           ariaLabel="Search HBAC services"
           placeholder="Search HBAC services"
-          searchValueData={searchValueData}
-          isDisabled={searchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

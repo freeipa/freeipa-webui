@@ -33,18 +33,15 @@ import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import AddSudoCmdGroup from "src/components/modals/SudoModals/AddSudoCmdGroup";
 import DeleteSudoCmdGroups from "src/components/modals/SudoModals/DeleteSudoCmdGroups";
 // Hooks
-import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Utils
 import { API_VERSION_BACKUP, isSudoCmdGroupSelectable } from "src/utils/utils";
 // RPC client
-import { GenericPayload, useSearchEntriesMutation } from "src/services/rpc";
+import { GenericPayload } from "src/services/rpc";
 import { useGettingSudoCmdGroupsQuery } from "src/services/rpcSudoCmdGroups";
 // Errors
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import GlobalErrors from "src/components/errors/GlobalErrors";
@@ -71,10 +68,9 @@ const SudoCmds = () => {
   const modalErrors = useApiError([]);
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
   const [totalCount, setCmdGroupsTotalCount] = useState<number>(0);
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   // Page indexes
   const firstIdx = (page - 1) * perPage;
@@ -190,76 +186,11 @@ const SudoCmds = () => {
     setCmdGroupsList(newShownCmdsList);
   };
 
-  // Update search input valie
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
   const [selectedCmdGroups, setSelectedCmds] = useState<SudoCmdGroup[]>([]);
 
   const clearSelectedCmdGroups = () => {
     const emptyList: SudoCmdGroup[] = [];
     setSelectedCmds(emptyList);
-  };
-
-  const [retrieveCmds] = useSearchEntriesMutation({});
-
-  // Issue a search using a specific search value
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    setShowTableRows(false);
-    setSearchIsDisabled(true);
-    setCmdGroupsTotalCount(0);
-    retrieveCmds({
-      searchValue: search,
-      sizeLimit: 0,
-      apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: 0,
-      stopIdx: 100,
-      entryType: "sudocmdgroup",
-    } as GenericPayload).then((result) => {
-      // Manage new response here
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for sudo command groups",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const cmdsListResult = result.data?.result.results || [];
-          const cmdsListSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
-          const cmdsList: SudoCmdGroup[] = [];
-
-          for (let i = 0; i < cmdsListSize; i++) {
-            cmdsList.push(cmdsListResult[i].result);
-          }
-
-          setCmdGroupsTotalCount(totalCount);
-          setCmdGroupsList(cmdsList.slice(0, perPage));
-          // Show table elements
-          setShowTableRows(true);
-        }
-        setSearchIsDisabled(false);
-      }
-    });
   };
 
   // Show table rows
@@ -399,13 +330,6 @@ const SudoCmds = () => {
     updateIsDeletion,
   };
 
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
-  };
-
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -428,8 +352,6 @@ const SudoCmds = () => {
           name="search"
           ariaLabel="Search sudo command groups"
           placeholder="Search sudo command groups"
-          searchValueData={searchValueData}
-          isDisabled={searchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

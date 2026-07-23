@@ -42,7 +42,7 @@ const MembersExternal = (props: PropsToMembersExternal) => {
   const dispatch = useAppDispatch();
 
   // Get parameters from URL
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Other states
@@ -228,9 +228,6 @@ const MembersExternal = (props: PropsToMembersExternal) => {
   return (
     <>
       <MemberOfToolbar
-        searchText={searchValue}
-        onSearchTextChange={setSearchValue}
-        onSearch={() => {}}
         searchPlaceholder="Search external members"
         searchAriaLabel="Search external members"
         refreshButtonEnabled={isRefreshButtonEnabled}

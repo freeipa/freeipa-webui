@@ -16,11 +16,7 @@ import {
 // Data types
 import { DNSRecord } from "src/utils/datatypes/globalDataTypes";
 // RPC
-import {
-  FindDnsRecordPayload,
-  useDnsRecordFindQuery,
-  useSearchDnsRecordsEntriesMutation,
-} from "src/services/rpcDnsZones";
+import { useDnsRecordFindQuery } from "src/services/rpcDnsZones";
 // Utils
 import { isDnsRecordSelectable } from "src/utils/utils";
 // Redux
@@ -37,8 +33,6 @@ import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 
@@ -63,7 +57,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
   useUpdateRoute({ pathname: "dns-records" });
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Handle API calls errors
@@ -71,7 +65,6 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
 
   // States
   const [dnsRecords, setDnsRecords] = React.useState<DNSRecord[]>([]);
-  const [isSearchDisabled, setIsSearchDisabled] = React.useState(false);
   const [totalCount, setTotalCount] = React.useState(0);
 
   // Calculate pagination parameters for server-side pagination
@@ -218,55 +211,6 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     }
   }, [isLoading]);
 
-  // Search DNS records
-  const [searchDnsRecords] = useSearchDnsRecordsEntriesMutation();
-
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    const payload: FindDnsRecordPayload = {
-      dnsZoneId: props.dnsZoneId,
-      recordName: search,
-      sizeLimit: 100,
-      startIdx: 0, // Reset to first page for search
-      stopIdx: 100,
-    };
-
-    setIsSearchDisabled(true);
-
-    searchDnsRecords(payload).then((result) => {
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for elements",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const records = result.data?.result || [];
-          setDnsRecords(records.slice(0, perPage));
-          setTotalCount(records.length);
-          setShowTableRows(true);
-        }
-        setIsSearchDisabled(false);
-      }
-    });
-  };
-
   // Data wrappers
   // TODO: Better separation of concerns
   // - 'PaginationLayout'
@@ -278,18 +222,6 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     updateSelectedPerPage: setSelectedPerPage,
     updateShownElementsList: setDnsRecords,
     totalCount,
-  };
-
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
   };
 
   // - 'BulkSelectorPrep'
@@ -332,8 +264,6 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
           name="search"
           ariaLabel="Search DNS records"
           placeholder="Search DNS records"
-          searchValueData={searchValueData}
-          isDisabled={isSearchDisabled}
           dataCy="search"
         />
       ),

@@ -63,7 +63,6 @@ const MembersUsers = (props: PropsToMembersUsers) => {
     perPage,
     setPerPage,
     searchValue,
-    setSearchValue,
     membershipDirection,
     setMembershipDirection,
   } = useListPageSearchParams();
@@ -336,9 +335,6 @@ const MembersUsers = (props: PropsToMembersUsers) => {
     <>
       {membershipDisabled ? (
         <MemberOfToolbar
-          searchText={searchValue}
-          onSearchTextChange={setSearchValue}
-          onSearch={() => {}}
           searchPlaceholder="Search users"
           searchAriaLabel="Search users"
           refreshButtonEnabled={isRefreshButtonEnabled}
@@ -361,9 +357,6 @@ const MembersUsers = (props: PropsToMembersUsers) => {
         />
       ) : (
         <MemberOfToolbar
-          searchText={searchValue}
-          onSearchTextChange={setSearchValue}
-          onSearch={() => {}}
           searchPlaceholder="Search users"
           searchAriaLabel="Search users"
           refreshButtonEnabled={isRefreshButtonEnabled}

@@ -40,7 +40,7 @@ interface MemberOfHbacServicesProps {
 const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
   const dispatch = useAppDispatch();
 
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   const [hbacGroupsSelected, setHbacGroupsSelected] = React.useState<string[]>(
@@ -257,9 +257,6 @@ const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
   return (
     <>
       <MemberOfToolbar
-        searchText={searchValue}
-        onSearchTextChange={setSearchValue}
-        onSearch={() => {}}
         searchPlaceholder="Search HBAC service groups"
         searchAriaLabel="Search HBAC service groups"
         refreshButtonEnabled={isRefreshButtonEnabled}

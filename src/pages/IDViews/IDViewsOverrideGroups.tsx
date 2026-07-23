@@ -25,8 +25,6 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 // Errors
 import GlobalErrors from "src/components/errors/GlobalErrors";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 // Utils
 import { isGroupOverrideSelectable } from "src/utils/utils";
 import IDViewsOverrideGroupsTable from "src/pages/IDViews/IDViewsOverrideGroupsTable";
@@ -38,11 +36,7 @@ import { IDViewOverrideGroup } from "src/utils/datatypes/globalDataTypes";
 // Icons
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 // RPC
-import {
-  IDOverridePayload,
-  useGettingIDOverrideGroupsQuery,
-  useSearchOverrideEntriesMutation,
-} from "src/services/rpcIdOverrides";
+import { useGettingIDOverrideGroupsQuery } from "src/services/rpcIdOverrides";
 
 interface PropsToOverrides {
   idview: string;
@@ -54,12 +48,11 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
   const dispatch = useAppDispatch();
   const globalErrors = useApiError([]);
 
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
   const [totalCount, setTotalCount] = useState<number>(0);
   const [groupsList, setGroupsList] = useState<IDViewOverrideGroup[]>([]);
   const [selectedGroups, setSelectedGroupsList] = useState<string[]>([]);
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   const clearSelectedGroups = () => {
     const emptyList: string[] = [];
@@ -125,76 +118,6 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
 
   const updateShownGroupsList = (newShownGroupsList: IDViewOverrideGroup[]) => {
     setGroupsList(newShownGroupsList);
-  };
-
-  // Update search input valie
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
-  const [retrieveEntries] = useSearchOverrideEntriesMutation({});
-
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    setShowTableRows(false);
-    setTotalCount(0);
-    setSearchIsDisabled(true);
-    retrieveEntries({
-      idView: props.idview,
-      searchValue: search,
-      sizeLimit: 0,
-      startIdx: 0,
-      stopIdx: 100,
-      entryType: "idoverridegroup",
-    } as IDOverridePayload).then((result) => {
-      // Manage new response here
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for override groups",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const groupsListResult = result.data?.result.results || [];
-          const groupsListSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
-          const groupList: IDViewOverrideGroup[] = [];
-
-          for (let i = 0; i < groupsListSize; i++) {
-            groupList.push(groupsListResult[i].result);
-          }
-          setGroupsList(groupList.slice(0, perPage));
-          setTotalCount(totalCount);
-          // Show table elements
-          setShowTableRows(true);
-        }
-        setSearchIsDisabled(false);
-      }
-    });
-  };
-
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
   };
 
   const dataResponse = useGettingIDOverrideGroupsQuery(props.idview);
@@ -331,8 +254,6 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
           name="search"
           ariaLabel="Search groups"
           placeholder="Search groups"
-          searchValueData={searchValueData}
-          isDisabled={searchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

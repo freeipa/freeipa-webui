@@ -20,9 +20,6 @@ export type MembershipDirection = "direct" | "indirect";
 
 interface MemberOfToolbarProps {
   // search
-  searchText: string;
-  onSearchTextChange: (value: string) => void;
-  onSearch: (value?: string) => void;
   searchPlaceholder: string;
   searchAriaLabel: string;
 
@@ -69,11 +66,6 @@ const MemberOfToolbar = (props: MemberOfToolbarProps) => {
             name="search"
             ariaLabel={props.searchAriaLabel}
             placeholder={props.searchPlaceholder}
-            searchValueData={{
-              searchValue: props.searchText,
-              updateSearchValue: props.onSearchTextChange,
-              submitSearchValue: props.onSearch,
-            }}
           />
         </ToolbarItem>
         <ToolbarItem

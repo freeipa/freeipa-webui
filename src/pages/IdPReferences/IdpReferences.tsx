@@ -14,7 +14,6 @@ import {
 // Data types
 import { IDPServer } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
@@ -23,15 +22,10 @@ import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // RPC
-import {
-  useGetIdpEntriesQuery,
-  useSearchIdpEntriesMutation,
-} from "src/services/rpcIdp";
+import { useGetIdpEntriesQuery } from "src/services/rpcIdp";
 // Utils
 import { isIdpServerSelectable } from "src/utils/utils";
 // Components
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
@@ -65,7 +59,7 @@ const IdpReferences = () => {
   ) as string;
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Handle API calls errors
@@ -77,8 +71,6 @@ const IdpReferences = () => {
 
   // States
   const [idpReferences, setIdpReferences] = React.useState<IDPServer[]>([]);
-  const [isSearchDisabled, setIsSearchDisabled] =
-    React.useState<boolean>(false);
   const [totalCount, setTotalCount] = React.useState<number>(0);
 
   // API calls
@@ -225,59 +217,6 @@ const IdpReferences = () => {
     }
   }, [isLoading]);
 
-  // Search API call
-  const [searchEntry] = useSearchIdpEntriesMutation();
-
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    searchEntry({
-      searchValue: search,
-      apiVersion,
-      sizelimit: 100,
-      startIdx: 0,
-      stopIdx: 200, // Search will consider a max. of elements
-    }).then((result) => {
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for IdPs",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const listResult = result.data?.result.results || [];
-          const listSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
-          const elementsList: IDPServer[] = [];
-
-          for (let i = 0; i < listSize; i++) {
-            elementsList.push(listResult[i].result);
-          }
-
-          setTotalCount(totalCount);
-          setIdpReferences(elementsList.slice(0, perPage));
-          setShowTableRows(true);
-        }
-        setIsSearchDisabled(false);
-      }
-    });
-  };
-
   // Data wrappers
   // TODO: Better separation of concerts
   // - 'PaginationLayout'
@@ -289,18 +228,6 @@ const IdpReferences = () => {
     updateSelectedPerPage: setSelectedPerPage,
     updateShownElementsList: setIdpReferences,
     totalCount,
-  };
-
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
   };
 
   // - 'BulkSelectorrep'
@@ -360,8 +287,6 @@ const IdpReferences = () => {
           name="search"
           ariaLabel="Search IdP references"
           placeholder="Search IdP references"
-          searchValueData={searchValueData}
-          isDisabled={isSearchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

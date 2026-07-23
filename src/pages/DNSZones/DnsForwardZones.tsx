@@ -14,7 +14,6 @@ import {
 // Data types
 import { DNSForwardZone } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
@@ -23,10 +22,7 @@ import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // RPC
-import {
-  useGetDnsForwardZonesFullDataQuery,
-  useSearchDnsForwardZonesEntriesMutation,
-} from "src/services/rpcDnsForwardZones";
+import { useGetDnsForwardZonesFullDataQuery } from "src/services/rpcDnsForwardZones";
 // Utils
 import { isDnsForwardZoneSelectable } from "src/utils/utils";
 // Components
@@ -64,7 +60,7 @@ const DnsForwardZones = () => {
   ) as string;
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Handle API calls errors
@@ -78,8 +74,6 @@ const DnsForwardZones = () => {
   const [dnsForwardZones, setDnsForwardZones] = React.useState<
     DNSForwardZone[]
   >([]);
-  const [isSearchDisabled, setIsSearchDisabled] =
-    React.useState<boolean>(false);
   const [totalCount, setTotalCount] = React.useState<number>(0);
 
   // API calls
@@ -194,45 +188,6 @@ const DnsForwardZones = () => {
   // Show table rows
   const [showTableRows, setShowTableRows] = React.useState(!isLoading);
 
-  // Search API call
-  const [searchEntry] = useSearchDnsForwardZonesEntriesMutation();
-
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    searchEntry({
-      searchValue: search,
-      apiVersion,
-      startIdx: 0,
-      stopIdx: 200, // Search will consider a max. of elements
-    }).then((result) => {
-      if ("error" in result && !("data" in result)) {
-        const searchError = result.error;
-        let error: string | undefined = "";
-        if ("error" in searchError) {
-          error = searchError.error;
-        } else if ("message" in searchError) {
-          error = searchError.message;
-        }
-        dispatch(
-          addAlert({
-            name: "submit-search-value-error",
-            title: error || "Error when searching for elements",
-            variant: "danger",
-          })
-        );
-      } else {
-        // Success
-        const dnsForwardZones = result.data?.result || [];
-
-        setTotalCount(dnsForwardZones.length);
-        setDnsForwardZones(dnsForwardZones.slice(0, perPage));
-        setShowTableRows(true);
-      }
-      setIsSearchDisabled(false);
-    });
-  };
-
   // Data wrappers
   // TODO: Better separation of concerns
   // - 'PaginationLayout'
@@ -244,18 +199,6 @@ const DnsForwardZones = () => {
     updateSelectedPerPage: setSelectedPerPage,
     updateShownElementsList: setDnsForwardZones,
     totalCount,
-  };
-
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
   };
 
   // - 'BulkSelectorPrep'
@@ -311,8 +254,6 @@ const DnsForwardZones = () => {
           name="search"
           ariaLabel="Search DNS forward zones"
           placeholder="Search DNS forward zones"
-          searchValueData={searchValueData}
-          isDisabled={isSearchDisabled}
           dataCy={"search"}
         />
       ),

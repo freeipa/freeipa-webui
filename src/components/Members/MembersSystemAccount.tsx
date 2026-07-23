@@ -36,7 +36,7 @@ interface PropsToMembersSystemAccount {
 const MembersSystemAccount = (props: PropsToMembersSystemAccount) => {
   const dispatch = useAppDispatch();
 
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   const [selectedItems, setSelectedItems] = React.useState<string[]>([]);
@@ -185,9 +185,6 @@ const MembersSystemAccount = (props: PropsToMembersSystemAccount) => {
   return (
     <>
       <MemberOfToolbar
-        searchText={searchValue}
-        onSearchTextChange={setSearchValue}
-        onSearch={() => {}}
         searchPlaceholder="Search system accounts"
         searchAriaLabel="Search system accounts"
         refreshButtonEnabled={isRefreshButtonEnabled}

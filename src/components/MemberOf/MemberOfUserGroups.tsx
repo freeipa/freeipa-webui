@@ -50,7 +50,6 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
     perPage,
     setPerPage,
     searchValue,
-    setSearchValue,
     membershipDirection,
     setMembershipDirection,
   } = useListPageSearchParams();
@@ -286,9 +285,6 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
     <>
       <Flex direction={{ default: "column" }}>
         <MemberOfToolbar
-          searchText={searchValue}
-          onSearchTextChange={setSearchValue}
-          onSearch={() => {}}
           searchPlaceholder="Search user groups"
           searchAriaLabel="Search user groups"
           refreshButtonEnabled={isRefreshButtonEnabled}

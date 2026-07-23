@@ -14,7 +14,6 @@ import {
 // Data types
 import { Trust } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
@@ -23,18 +22,13 @@ import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Redux
 import { useAppSelector, useAppDispatch } from "src/store/hooks";
 // RPC
-import {
-  useGetTrustsFullDataQuery,
-  useSearchTrustsEntriesMutation,
-} from "src/services/rpcTrusts";
+import { useGetTrustsFullDataQuery } from "src/services/rpcTrusts";
 // Utils
 import { apiToTrust } from "src/utils/trustsUtils";
 import { isTrustSelectable } from "src/utils/utils";
 // React router
 import { useNavigate } from "react-router";
 // Components
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
@@ -68,7 +62,7 @@ const Trusts = () => {
   ) as string;
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Handle API calls errors
@@ -77,9 +71,6 @@ const Trusts = () => {
   // Page indexes
   const firstUserIdx = (page - 1) * perPage;
   const lastUserIdx = page * perPage;
-
-  // States
-  const [isSearchDisabled, setIsSearchDisabled] = React.useState(false);
 
   // API calls
   const trustsResponse = useGetTrustsFullDataQuery({
@@ -215,48 +206,6 @@ const Trusts = () => {
     trustsResponse.refetch();
   }, []);
 
-  // Search API call
-  const [searchEntry] = useSearchTrustsEntriesMutation();
-
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    searchEntry({
-      searchValue: search,
-      apiVersion,
-      sizelimit: 100,
-      startIdx: 0,
-      stopIdx: 100,
-    }).then((result) => {
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for elements",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success - data will be updated through the API response
-          // No need to manually set state as it's computed from the response
-        }
-        setIsSearchDisabled(false);
-      }
-    });
-  };
-
   // Data wrappers
   // TODO: Better separation of concerts
   // - 'PaginationLayout'
@@ -267,18 +216,6 @@ const Trusts = () => {
     updatePerPage: setPerPage,
     updateSelectedPerPage: setSelectedPerPage,
     totalCount,
-  };
-
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
   };
 
   // - 'BulkSelectorprep'
@@ -322,8 +259,6 @@ const Trusts = () => {
           name="search"
           ariaLabel="Search trusts"
           placeholder="Search trusts"
-          searchValueData={searchValueData}
-          isDisabled={isSearchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

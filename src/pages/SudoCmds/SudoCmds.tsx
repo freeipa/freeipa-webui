@@ -33,18 +33,15 @@ import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import AddSudoCmd from "src/components/modals/SudoModals/AddSudoCmd";
 import DeleteSudoCmd from "src/components/modals/SudoModals/DeleteSudoCmd";
 // Hooks
-import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Utils
 import { API_VERSION_BACKUP, isSudoCmdSelectable } from "src/utils/utils";
 // RPC client
-import { GenericPayload, useSearchEntriesMutation } from "src/services/rpc";
+import { GenericPayload } from "src/services/rpc";
 import { useGettingSudoCmdsQuery } from "src/services/rpcSudoCmds";
 // Errors
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import GlobalErrors from "src/components/errors/GlobalErrors";
@@ -71,10 +68,9 @@ const SudoCmds = () => {
   const modalErrors = useApiError([]);
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
   const [totalCount, setCmdsTotalCount] = useState<number>(0);
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   // Page indexes
   const firstIdx = (page - 1) * perPage;
@@ -192,76 +188,11 @@ const SudoCmds = () => {
     setCmdsList(newShownCmdsList);
   };
 
-  // Update search input valie
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
   const [selectedCmds, setSelectedCmds] = useState<SudoCmd[]>([]);
 
   const clearSelectedCmds = () => {
     const emptyList: SudoCmd[] = [];
     setSelectedCmds(emptyList);
-  };
-
-  const [retrieveCmds] = useSearchEntriesMutation({});
-
-  // Issue a search using a specific search value
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    setShowTableRows(false);
-    setSearchIsDisabled(true);
-    setCmdsTotalCount(0);
-    retrieveCmds({
-      searchValue: search,
-      sizeLimit: 0,
-      apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: 0,
-      stopIdx: 100,
-      entryType: "sudocmd",
-    } as GenericPayload).then((result) => {
-      // Manage new response here
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for sudo commands",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const cmdsListResult = result.data?.result.results || [];
-          const cmdsListSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
-          const cmdsList: SudoCmd[] = [];
-
-          for (let i = 0; i < cmdsListSize; i++) {
-            cmdsList.push(cmdsListResult[i].result);
-          }
-
-          setCmdsTotalCount(totalCount);
-          setCmdsList(cmdsList.slice(0, perPage));
-          // Show table elements
-          setShowTableRows(true);
-        }
-        setSearchIsDisabled(false);
-      }
-    });
   };
 
   // Show table rows
@@ -400,13 +331,6 @@ const SudoCmds = () => {
     updateIsDeletion,
   };
 
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
-  };
-
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -429,8 +353,6 @@ const SudoCmds = () => {
           name="search"
           ariaLabel="Search sudo commands"
           placeholder="Search sudo commands"
-          searchValueData={searchValueData}
-          isDisabled={searchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

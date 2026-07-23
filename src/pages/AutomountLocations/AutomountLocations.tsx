@@ -58,7 +58,7 @@ const AutomountLocations = () => {
   ) as string;
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Handle API calls errors
@@ -195,16 +195,6 @@ const AutomountLocations = () => {
     totalCount,
   };
 
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-  };
-
   const bulkSelectorData = {
     selected: selectedElements,
     updateSelected: updateSelectedLocations,
@@ -243,7 +233,6 @@ const AutomountLocations = () => {
           name="search"
           ariaLabel="Search automount locations"
           placeholder="Search automount locations"
-          searchValueData={searchValueData}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

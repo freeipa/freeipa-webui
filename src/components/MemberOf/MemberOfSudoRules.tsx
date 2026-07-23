@@ -47,7 +47,6 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
     perPage,
     setPerPage,
     searchValue,
-    setSearchValue,
     membershipDirection,
     setMembershipDirection,
   } = useListPageSearchParams();
@@ -301,9 +300,6 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
   return (
     <>
       <MemberOfToolbar
-        searchText={searchValue}
-        onSearchTextChange={setSearchValue}
-        onSearch={() => {}}
         searchPlaceholder="Search sudo rules"
         searchAriaLabel="Search sudo rules"
         refreshButtonEnabled={isRefreshButtonEnabled}

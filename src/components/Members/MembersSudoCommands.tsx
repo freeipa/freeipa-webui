@@ -41,7 +41,7 @@ const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
   const dispatch = useAppDispatch();
 
   // Get parameters from URL
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Other states
@@ -239,9 +239,6 @@ const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
   return (
     <>
       <MemberOfToolbar
-        searchText={searchValue}
-        onSearchTextChange={setSearchValue}
-        onSearch={() => {}}
         searchPlaceholder="Search sudo commands"
         searchAriaLabel="Search sudo commands"
         refreshButtonEnabled={isRefreshButtonEnabled}

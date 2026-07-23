@@ -44,10 +44,8 @@ import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 import useApiError from "../../hooks/useApiError";
 import GlobalErrors from "../../components/errors/GlobalErrors";
 import ModalErrors from "../../components/errors/ModalErrors";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 // RPC client
-import { useSearchEntriesMutation, GenericPayload } from "../../services/rpc";
+import { GenericPayload } from "../../services/rpc";
 import { useGetHostsListQuery } from "../../services/rpcHosts";
 import { useGettingServicesQuery } from "../../services/rpcServices";
 
@@ -67,7 +65,7 @@ const Services = () => {
   ) as string;
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Handle API calls errors
@@ -107,77 +105,10 @@ const Services = () => {
   const firstServiceIdx = (page - 1) * perPage;
   const lastServiceIdx = page * perPage;
 
-  // Filter (Input search)
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
-
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
   const [selectedServices, setSelectedServicesList] = useState<Service[]>([]);
   const clearSelectedServices = () => {
     const emptyList: Service[] = [];
     setSelectedServicesList(emptyList);
-  };
-
-  const [retrieveServices] = useSearchEntriesMutation({});
-
-  // Issue search with filter
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    setShowTableRows(false);
-    setServicesTotalCount(0);
-    setSearchIsDisabled(true);
-    retrieveServices({
-      searchValue: search,
-      sizeLimit: 0,
-      apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: 0,
-      stopIdx: 100,
-      entryType: "service",
-    } as GenericPayload).then((result) => {
-      // Manage new response here
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for services",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const serviceListResult = result.data?.result.results || [];
-          const serviceListSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
-          const serviceList: Service[] = [];
-
-          for (let i = 0; i < serviceListSize; i++) {
-            serviceList.push(serviceListResult[i].result);
-          }
-
-          setServicesList(serviceList.slice(0, perPage));
-          setServicesTotalCount(totalCount);
-          // Show table elements
-          setShowTableRows(true);
-        }
-        setSearchIsDisabled(false);
-      }
-    });
   };
 
   // Show table rows
@@ -375,13 +306,6 @@ const Services = () => {
   };
 
   // Data wrappers
-  // - 'SearchInputLayout'
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
-  };
-
   // - 'BulkSelectorPrep'
   const servicesBulkSelectorData = {
     selected: selectedServices,
@@ -458,8 +382,6 @@ const Services = () => {
           name="search"
           ariaLabel="Search services"
           placeholder="Search services"
-          searchValueData={searchValueData}
-          isDisabled={searchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

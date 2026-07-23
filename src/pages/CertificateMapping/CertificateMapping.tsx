@@ -14,7 +14,6 @@ import {
 // Data types
 import { CertificateMapping } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
@@ -23,18 +22,13 @@ import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // RPC
-import {
-  useGetCertMapRuleEntriesQuery,
-  useSearchCertMapRuleEntriesMutation,
-} from "src/services/rpcCertMapping";
+import { useGetCertMapRuleEntriesQuery } from "src/services/rpcCertMapping";
 // Utils
 import { isCertMapSelectable } from "src/utils/utils";
 import { apiToCertificateMapping } from "src/utils/certMappingUtils";
 // React router
 import { useNavigate } from "react-router";
 // Components
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
@@ -70,7 +64,7 @@ const CertificateMappingPage = () => {
   ) as string;
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Handle API calls errors
@@ -84,7 +78,6 @@ const CertificateMappingPage = () => {
   const [certMapRules, setCertMapRules] = React.useState<CertificateMapping[]>(
     []
   );
-  const [isSearchDisabled, setIsSearchDisabled] = React.useState(false);
   const [totalCount, setTotalCount] = React.useState(0);
 
   // API calls
@@ -245,59 +238,6 @@ const CertificateMappingPage = () => {
     }
   }, [isLoading]);
 
-  // Search API call
-  const [searchEntry] = useSearchCertMapRuleEntriesMutation();
-
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    searchEntry({
-      searchValue: search,
-      apiVersion,
-      sizelimit: 100,
-      startIdx: 0,
-      stopIdx: 200, // Search will consider a max. of elements
-    }).then((result) => {
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for IdPs",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const listResult = result.data?.result.results || [];
-          const listSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
-          const elementsList: CertificateMapping[] = [];
-
-          for (let i = 0; i < listSize; i++) {
-            elementsList.push(apiToCertificateMapping(listResult[i].result));
-          }
-
-          setTotalCount(totalCount);
-          setCertMapRules(elementsList.slice(0, perPage));
-          setShowTableRows(true);
-        }
-        setIsSearchDisabled(false);
-      }
-    });
-  };
-
   // Data wrappers
   // TODO: Better separation of concerts
   // - 'PaginationLayout'
@@ -309,18 +249,6 @@ const CertificateMappingPage = () => {
     updateSelectedPerPage: setSelectedPerPage,
     updateShownElementsList: setCertMapRules,
     totalCount,
-  };
-
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
   };
 
   // - 'BulkSelectorrep'
@@ -380,8 +308,6 @@ const CertificateMappingPage = () => {
           name="search"
           ariaLabel="Search certificate mapping rules"
           placeholder="Search certificate mapping rules"
-          searchValueData={searchValueData}
-          isDisabled={isSearchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

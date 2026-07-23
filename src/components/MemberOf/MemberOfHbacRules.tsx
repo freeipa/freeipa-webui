@@ -51,7 +51,6 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
     perPage,
     setPerPage,
     searchValue,
-    setSearchValue,
     membershipDirection,
     setMembershipDirection,
   } = useListPageSearchParams();
@@ -308,9 +307,6 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
   return (
     <>
       <MemberOfToolbar
-        searchText={searchValue}
-        onSearchTextChange={setSearchValue}
-        onSearch={() => {}}
         searchPlaceholder="Search HBAC rules"
         searchAriaLabel="Search HBAC rules"
         refreshButtonEnabled={isRefreshButtonEnabled}

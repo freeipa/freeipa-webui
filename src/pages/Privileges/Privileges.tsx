@@ -13,10 +13,7 @@ import {
   OuterScrollContainer,
 } from "@patternfly/react-table";
 // Data types
-import {
-  Privilege,
-  SearchDataResultType,
-} from "src/utils/datatypes/globalDataTypes";
+import { Privilege } from "src/utils/datatypes/globalDataTypes";
 import { ToolbarItem } from "src/components/layouts/ToolbarLayout";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
@@ -35,7 +32,6 @@ import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import AddPrivilegeModal from "src/components/modals/PrivilegeModals/AddPrivilegeModal";
 import DeletePrivilegesModal from "src/components/modals/PrivilegeModals/DeletePrivilegesModal";
 // Hooks
-import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
@@ -43,13 +39,8 @@ import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Utils
 import { API_VERSION_BACKUP, isPrivilegeSelectable } from "src/utils/utils";
 // RPC client
-import {
-  useGetPrivilegesFullDataQuery,
-  useSearchPrivilegesEntriesMutation,
-} from "src/services/rpcPrivileges";
+import { useGetPrivilegesFullDataQuery } from "src/services/rpcPrivileges";
 // Errors
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
@@ -64,8 +55,7 @@ const Privileges = () => {
     (state) => state.global.environment.api_version
   ) as string;
 
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
-    useListPageSearchParams();
+  const { page, setPage, perPage, setPerPage } = useListPageSearchParams();
 
   const globalErrors = useApiError([]);
   const modalErrors = useApiError([]);
@@ -88,27 +78,8 @@ const Privileges = () => {
     error: batchError,
   } = privilegesDataResponse;
 
-  // Search state - overrides query data when active
-  const [searchPrivileges, searchResult] = useSearchPrivilegesEntriesMutation(
-    {}
-  );
-  const [isSearchActive, setIsSearchActive] = useState(false);
-  const [searchData, setSearchData] =
-    useState<SearchDataResultType<Privilege> | null>(null);
-
-  // Derive privilegesList and totalCount from query response or search results
+  // Derive privilegesList and totalCount from query response
   const { elementsList, totalCount } = useMemo(() => {
-    // If search is active and has results, paginate client-side
-    if (isSearchActive && searchData) {
-      const start = (page - 1) * perPage;
-      const end = start + perPage;
-      return {
-        elementsList: searchData.elementsList.slice(start, end),
-        totalCount: searchData.elementsList.length,
-      };
-    }
-
-    // Otherwise derive from query response
     if (batchResponse?.result) {
       const privilegesListResult = batchResponse.result.results;
       const privilegesListSize = batchResponse.result.count;
@@ -125,15 +96,10 @@ const Privileges = () => {
     }
 
     return { elementsList: [], totalCount: 0 };
-  }, [batchResponse, isSearchActive, searchData, page, perPage]);
+  }, [batchResponse]);
 
   // Derive showTableRows from loading states
-  const showTableRows = useMemo(() => {
-    if (isSearchActive) {
-      return !searchResult.isLoading;
-    }
-    return !isFetching && !isBatchLoading;
-  }, [isFetching, isBatchLoading, isSearchActive, searchResult.isLoading]);
+  const showTableRows = !isFetching && !isBatchLoading;
 
   // Clear errors when fetching starts
   React.useEffect(() => {
@@ -159,8 +125,6 @@ const Privileges = () => {
   }, [privilegesDataResponse.isError, isBatchLoading, isFetching]);
 
   const refreshData = () => {
-    setIsSearchActive(false);
-    setSearchData(null);
     clearSelectedPrivileges();
     privilegesDataResponse.refetch();
   };
@@ -176,62 +140,6 @@ const Privileges = () => {
 
   const clearSelectedPrivileges = () => {
     setSelectedPrivileges([]);
-  };
-
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
-
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    setSearchIsDisabled(true);
-    setIsSearchActive(true);
-
-    searchPrivileges({
-      searchValue: search,
-      sizeLimit: 0,
-      apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: 0,
-      stopIdx: 100,
-    }).then((result) => {
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for privileges",
-              variant: "danger",
-            })
-          );
-          setIsSearchActive(false);
-          setSearchData(null);
-        } else {
-          const privilegesListResult = result.data?.result.results || [];
-          const privilegesListSize = result.data?.result.count || 0;
-          const searchTotalCount = result.data?.result.totalCount || 0;
-          const privileges: Privilege[] = [];
-
-          for (let i = 0; i < privilegesListSize; i++) {
-            privileges.push(privilegesListResult[i].result);
-          }
-
-          setSearchData({
-            elementsList: privileges,
-            totalCount: searchTotalCount,
-          });
-        }
-        setSearchIsDisabled(false);
-      }
-    });
   };
 
   const [showAddModal, setShowAddModal] = useState(false);
@@ -282,15 +190,6 @@ const Privileges = () => {
     updatePage: setPage,
     updatePerPage: setPerPage,
     updateSelectedPerPage: setSelectedPerPage,
-    updateShownElementsList: (privileges: Privilege[]) => {
-      if (isSearchActive) {
-        setSearchData((prev) =>
-          prev
-            ? { ...prev, elementsList: privileges }
-            : { elementsList: privileges, totalCount: 0 }
-        );
-      }
-    },
     totalCount,
   };
 
@@ -308,17 +207,6 @@ const Privileges = () => {
   const selectedPerPageData = {
     selectedPerPage,
     updateSelectedPerPage: setSelectedPerPage,
-  };
-
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
   };
 
   const columnNames = ["Privilege name", "Description"];
@@ -345,8 +233,6 @@ const Privileges = () => {
           name="search"
           ariaLabel="Search privileges"
           placeholder="Search"
-          searchValueData={searchValueData}
-          isDisabled={searchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

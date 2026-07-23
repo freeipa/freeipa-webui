@@ -37,7 +37,7 @@ interface MemberOfSudoCmdGroupsProps {
 const MemberOfSudoCmdGroups = (props: MemberOfSudoCmdGroupsProps) => {
   const dispatch = useAppDispatch();
 
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   const [sudoGroupsSelected, setSudoGroupsSelected] = React.useState<string[]>(
@@ -253,9 +253,6 @@ const MemberOfSudoCmdGroups = (props: MemberOfSudoCmdGroupsProps) => {
   return (
     <>
       <MemberOfToolbar
-        searchText={searchValue}
-        onSearchTextChange={setSearchValue}
-        onSearch={() => {}}
         searchPlaceholder="Search sudo command groups"
         searchAriaLabel="Search sudo command groups"
         refreshButtonEnabled={isRefreshButtonEnabled}

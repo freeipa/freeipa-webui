@@ -15,7 +15,6 @@ import {
   Tr,
 } from "@patternfly/react-table";
 // Hooks
-import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
@@ -24,15 +23,10 @@ import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // RPC
-import {
-  useDnsServersFindQuery,
-  useSearchDnsServersEntriesMutation,
-} from "src/services/rpcDnsServers";
+import { useDnsServersFindQuery } from "src/services/rpcDnsServers";
 // React router
 import { Link } from "react-router";
 // Components
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
@@ -63,7 +57,7 @@ const DnsServers = () => {
   ) as string;
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Handle API calls errors
@@ -75,8 +69,6 @@ const DnsServers = () => {
 
   // States
   const [dnsServersId, setDnsServersId] = React.useState<string[]>([]);
-  const [isSearchDisabled, setIsSearchDisabled] =
-    React.useState<boolean>(false);
   const [totalCount, setTotalCount] = React.useState<number>(0);
 
   // API calls
@@ -136,49 +128,6 @@ const DnsServers = () => {
     }
   }, [dnsServersResponse.isSuccess, dnsServersResponse.data]);
 
-  // Search API call
-  const [searchEntry] = useSearchDnsServersEntriesMutation();
-
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    searchEntry({
-      searchValue: search,
-      pkeyOnly: true,
-      sizeLimit: 100,
-      version: apiVersion,
-    }).then((result) => {
-      if ("data" in result && result.data !== undefined) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for elements",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const dnsServers = result.data || [];
-
-          setTotalCount(totalCount);
-          setDnsServersId(dnsServers.data.slice(0, perPage) || []);
-          setShowTableRows(true);
-        }
-        setIsSearchDisabled(false);
-      }
-    });
-  };
-
   // Data wrappers
   // TODO: Better separation of concerts
   // - 'PaginationLayout'
@@ -192,18 +141,6 @@ const DnsServers = () => {
     totalCount,
   };
 
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
-  };
-
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -214,8 +151,6 @@ const DnsServers = () => {
           name="search"
           ariaLabel="Search DNS servers"
           placeholder="Search DNS servers"
-          searchValueData={searchValueData}
-          isDisabled={isSearchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

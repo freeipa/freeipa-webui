@@ -18,8 +18,6 @@ import { TrustDomain } from "src/utils/datatypes/globalDataTypes";
 // RPC
 import {
   useTrustDomainsFindQuery,
-  useSearchTrustDomainsEntriesMutation,
-  TrustDomainFindPayload,
   useFetchTrustDomainsMutation,
 } from "src/services/rpcTrusts";
 // Redux
@@ -39,8 +37,6 @@ import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
 
@@ -65,8 +61,7 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
   useUpdateRoute({ pathname: "trusted-domains" });
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
-    useListPageSearchParams();
+  const { page, setPage, perPage, setPerPage } = useListPageSearchParams();
 
   // Calculate pagination parameters for server-side pagination
   const startIdx = (page - 1) * perPage;
@@ -77,7 +72,6 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
 
   // States
   const [trustDomains, setTrustDomains] = React.useState<TrustDomain[]>([]);
-  const [isSearchDisabled, setIsSearchDisabled] = React.useState(false);
   const [totalCount, setTotalCount] = React.useState(0);
 
   // API calls
@@ -222,58 +216,6 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
   // Show table rows
   const [showTableRows, setShowTableRows] = React.useState<boolean>(!isLoading);
 
-  // Search API call
-  const [searchEntry] = useSearchTrustDomainsEntriesMutation();
-
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    const payload: TrustDomainFindPayload = {
-      trustId: props.trustId,
-      searchValue: search,
-      sizelimit: 0,
-    };
-
-    setIsSearchDisabled(true);
-
-    searchEntry(payload)
-      .then((result) => {
-        if ("data" in result) {
-          const searchError = result.data?.error as
-            | FetchBaseQueryError
-            | SerializedError;
-
-          if (searchError) {
-            dispatch(
-              addAlert({
-                name: "submit-search-value-error",
-                title: "Error searching for trusted domains",
-                variant: "danger",
-              })
-            );
-          } else {
-            const trustDomains = (
-              result.data?.result.result as unknown as Record<string, unknown>[]
-            ).map((item) => apiToTrustDomain(item));
-            setTrustDomains(trustDomains.slice(0, perPage));
-            setTotalCount(trustDomains.length);
-            setShowTableRows(true);
-          }
-        } else {
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: "Error searching for trusted domains",
-              variant: "danger",
-            })
-          );
-        }
-      })
-      .finally(() => {
-        setIsSearchDisabled(false);
-      });
-  };
-
   // Fetch trusted domains
   const [isFetching, setIsFetching] = React.useState<boolean>(false);
 
@@ -318,18 +260,6 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
     updateSelectedPerPage: setSelectedPerPage,
     updateShownElementsList: setTrustDomains,
     totalCount,
-  };
-
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
   };
 
   // - 'BulkSelectorprep'
@@ -388,8 +318,6 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
           name="search"
           ariaLabel="Search trusted domains"
           placeholder="Search trusted domains"
-          searchValueData={searchValueData}
-          isDisabled={isSearchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

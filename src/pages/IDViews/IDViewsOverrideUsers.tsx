@@ -23,8 +23,6 @@ import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 // Errors
 import GlobalErrors from "src/components/errors/GlobalErrors";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 // Utils
 import { isUserOverrideSelectable } from "src/utils/utils";
 import IDViewsOverrideUsersTable from "src/pages/IDViews/IDViewsOverrideUsersTable";
@@ -34,11 +32,7 @@ import DeleteIdOverrideUsersModal from "src/components/modals/IdOverrideModals/D
 // Data types
 import { IDViewOverrideUser } from "src/utils/datatypes/globalDataTypes";
 // RPC
-import {
-  IDOverridePayload,
-  useGettingIDOverrideUsersQuery,
-  useSearchOverrideEntriesMutation,
-} from "src/services/rpcIdOverrides";
+import { useGettingIDOverrideUsersQuery } from "src/services/rpcIdOverrides";
 
 interface PropsToOverrides {
   idview: string;
@@ -51,12 +45,10 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
 
   const globalErrors = useApiError([]);
 
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
-    useListPageSearchParams();
+  const { page, setPage, perPage, setPerPage } = useListPageSearchParams();
   const [totalCount, setTotalCount] = useState<number>(0);
   const [usersList, setUsersList] = useState<IDViewOverrideUser[]>([]);
   const [selectedUsers, setSelectedUsersList] = useState<string[]>([]);
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   const clearSelectedUsers = () => {
     const emptyList: string[] = [];
@@ -122,76 +114,6 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
 
   const updateShownUsersList = (newShownUsersList: IDViewOverrideUser[]) => {
     setUsersList(newShownUsersList);
-  };
-
-  // Update search input valie
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
-  const [retrieveEntries] = useSearchOverrideEntriesMutation({});
-
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    setShowTableRows(false);
-    setTotalCount(0);
-    setSearchIsDisabled(true);
-    retrieveEntries({
-      idView: props.idview,
-      searchValue: search,
-      sizeLimit: 0,
-      startIdx: 0,
-      stopIdx: 100,
-      entryType: "idoverrideuser",
-    } as IDOverridePayload).then((result) => {
-      // Manage new response here
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for override users",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const usersListResult = result.data?.result.results || [];
-          const usersListSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
-          const userList: IDViewOverrideUser[] = [];
-
-          for (let i = 0; i < usersListSize; i++) {
-            userList.push(usersListResult[i].result);
-          }
-          setUsersList(userList.slice(0, perPage));
-          setTotalCount(totalCount);
-          // Show table elements
-          setShowTableRows(true);
-        }
-        setSearchIsDisabled(false);
-      }
-    });
-  };
-
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
   };
 
   const dataResponse = useGettingIDOverrideUsersQuery(props.idview);
@@ -305,8 +227,6 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
           name="search"
           ariaLabel="Search users"
           placeholder="Search users"
-          searchValueData={searchValueData}
-          isDisabled={searchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

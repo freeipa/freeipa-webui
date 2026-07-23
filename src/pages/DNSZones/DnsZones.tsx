@@ -14,7 +14,6 @@ import {
 // Data types
 import { DNSZone } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useApiError from "src/hooks/useApiError";
@@ -23,16 +22,11 @@ import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // RPC
-import {
-  useGetDnsZonesFullDataQuery,
-  useSearchDnsZonesEntriesMutation,
-} from "src/services/rpcDnsZones";
+import { useGetDnsZonesFullDataQuery } from "src/services/rpcDnsZones";
 // Utils
 import { isDnsZoneSelectable } from "src/utils/utils";
 import { apiToDnsZone } from "src/utils/dnsZonesUtils";
 // Components
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 import ToolbarLayout, {
   ToolbarItem,
 } from "src/components/layouts/ToolbarLayout";
@@ -66,7 +60,7 @@ const DnsZones = () => {
   ) as string;
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Handle API calls errors
@@ -78,8 +72,6 @@ const DnsZones = () => {
 
   // States
   const [dnsZones, setDnsZones] = React.useState<DNSZone[]>([]);
-  const [isSearchDisabled, setIsSearchDisabled] =
-    React.useState<boolean>(false);
   const [totalCount, setTotalCount] = React.useState<number>(0);
 
   // API calls
@@ -221,52 +213,6 @@ const DnsZones = () => {
     }
   }, [isLoading]);
 
-  // Search API call
-  const [searchEntry] = useSearchDnsZonesEntriesMutation();
-
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    searchEntry({
-      searchValue: search,
-      apiVersion,
-      sizelimit: 100,
-      startIdx: 0,
-      stopIdx: 200, // Search will consider a max. of elements
-    }).then((result) => {
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for elements",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const dnsZones = result.data?.result || [];
-
-          setTotalCount(totalCount);
-          setDnsZones(dnsZones.slice(0, perPage));
-          setShowTableRows(true);
-        }
-        setIsSearchDisabled(false);
-      }
-    });
-  };
-
   // Data wrappers
   // TODO: Better separation of concerts
   // - 'PaginationLayout'
@@ -278,18 +224,6 @@ const DnsZones = () => {
     updateSelectedPerPage: setSelectedPerPage,
     updateShownElementsList: setDnsZones,
     totalCount,
-  };
-
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
   };
 
   // - 'BulkSelectorrep'
@@ -349,8 +283,6 @@ const DnsZones = () => {
           name="search"
           ariaLabel="Search DNS zones"
           placeholder="Search DNS zones"
-          searchValueData={searchValueData}
-          isDisabled={isSearchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

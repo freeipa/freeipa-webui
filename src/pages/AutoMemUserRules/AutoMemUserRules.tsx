@@ -36,9 +36,7 @@ import TypeAheadSelect from "src/components/TypeAheadSelect";
 import useApiError from "src/hooks/useApiError";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 // RPC
-import { GenericPayload } from "src/services/rpc";
 import {
-  useSearchUserGroupRulesEntriesMutation,
   ChangeDefaultPayload,
   useChangeDefaultGroupMutation,
 } from "src/services/rpcAutomember";
@@ -50,10 +48,7 @@ import { useUserGroupsRulesData } from "src/hooks/useUserGroupsRules";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Utils
-import {
-  API_VERSION_BACKUP,
-  isAutomemberUserGroupSelectable,
-} from "src/utils/utils";
+import { isAutomemberUserGroupSelectable } from "src/utils/utils";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -104,11 +99,10 @@ const AutoMemUserRules = () => {
   const globalErrors = useApiError([]);
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   const [totalCount, setTotalCount] = React.useState<number>(0);
-  const [searchDisabled, setSearchIsDisabled] = React.useState<boolean>(false);
 
   // Page indexes
   const firstIdx = (page - 1) * perPage;
@@ -264,12 +258,6 @@ const AutoMemUserRules = () => {
     setAutomemberRules(newShownAutomembersList);
   };
 
-  // Update search input valie
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
   const [selectedAutomembers, setSelectedAutomembers] = React.useState<
     AutomemberEntry[]
   >([]);
@@ -285,33 +273,6 @@ const AutoMemUserRules = () => {
     setTotalCount(0);
     clearSelectedRules();
     userGroupRulesData.refetch();
-  };
-
-  const [retrieveAutomembers] = useSearchUserGroupRulesEntriesMutation({});
-
-  // Issue a search using a specific search value
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    setShowTableRows(false);
-    setSearchIsDisabled(true);
-    setTotalCount(0);
-    retrieveAutomembers({
-      searchValue: search,
-      sizeLimit: 0,
-      apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: 0,
-      stopIdx: 100,
-    } as GenericPayload).then((result) => {
-      if ("data" in result) {
-        const automembersListResult = result.data;
-        setTotalCount((result.data ?? []).length);
-        setAutomemberRules((automembersListResult ?? []).slice(0, perPage));
-        // Show table elements
-        setShowTableRows(true);
-        setSearchIsDisabled(false);
-      }
-    });
   };
 
   // Always refetch data when the component is loaded.
@@ -423,13 +384,6 @@ const AutoMemUserRules = () => {
     updateSelectedPerPage,
   };
 
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
-  };
-
   // 'Table'
   const automembersTableData = {
     isElementSelectable: isAutomemberUserGroupSelectable,
@@ -524,8 +478,6 @@ const AutoMemUserRules = () => {
           name="search"
           ariaLabel="Search user rules"
           placeholder="Search user rules"
-          searchValueData={searchValueData}
-          isDisabled={searchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

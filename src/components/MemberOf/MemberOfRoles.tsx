@@ -50,7 +50,6 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
     perPage,
     setPerPage,
     searchValue,
-    setSearchValue,
     membershipDirection,
     setMembershipDirection,
   } = useListPageSearchParams();
@@ -293,9 +292,6 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
     <>
       {membershipDisabled ? (
         <MemberOfToolbar
-          searchText={searchValue}
-          onSearchTextChange={setSearchValue}
-          onSearch={() => {}}
           searchPlaceholder="Search roles"
           searchAriaLabel="Search roles"
           refreshButtonEnabled={isRefreshButtonEnabled}
@@ -318,9 +314,6 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
         />
       ) : (
         <MemberOfToolbar
-          searchText={searchValue}
-          onSearchTextChange={setSearchValue}
-          onSearch={() => {}}
           searchPlaceholder="Search roles"
           searchAriaLabel="Search roles"
           refreshButtonEnabled={isRefreshButtonEnabled}

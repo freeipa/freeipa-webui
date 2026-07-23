@@ -35,19 +35,16 @@ import { HostGroup } from "src/utils/datatypes/globalDataTypes";
 // Utils
 import { API_VERSION_BACKUP, isHostGroupSelectable } from "src/utils/utils";
 // Hooks
-import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Errors
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 // RPC client
-import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
+import { GenericPayload } from "../../services/rpc";
 import { useGettingHostGroupsQuery } from "../../services/rpcHostGroups";
 
 const HostGroups = () => {
@@ -68,7 +65,7 @@ const HostGroups = () => {
   const [groupsList, setGroupsList] = useState<HostGroup[]>([]);
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Handle API calls errors
@@ -78,7 +75,6 @@ const HostGroups = () => {
   // Table comps
   const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
   const [totalCount, setGroupsTotalCount] = useState<number>(0);
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   const updateSelectedPerPage = (selected: number) => {
     setSelectedPerPage(selected);
@@ -199,74 +195,10 @@ const HostGroups = () => {
     groupDataResponse.refetch();
   };
 
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
   const [selectedGroups, setSelectedGroupsList] = useState<HostGroup[]>([]);
   const clearSelectedGroups = () => {
     const emptyList: HostGroup[] = [];
     setSelectedGroupsList(emptyList);
-  };
-
-  const [retrieveGroup] = useSearchEntriesMutation({});
-
-  // Issue a search using a specific search value
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    setShowTableRows(false);
-    setGroupsTotalCount(0);
-    setSearchIsDisabled(true);
-    retrieveGroup({
-      searchValue: search,
-      sizeLimit: 0,
-      apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: 0,
-      stopIdx: 100,
-      entryType: "hostgroup",
-    } as GenericPayload).then((result) => {
-      // Manage new response here
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for host groups",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const groupsListResult = result.data?.result.results || [];
-          const groupsListSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
-          const groupsList: HostGroup[] = [];
-
-          for (let i = 0; i < groupsListSize; i++) {
-            groupsList.push(groupsListResult[i].result);
-          }
-
-          setGroupsList(groupsList.slice(0, perPage));
-          setGroupsTotalCount(totalCount);
-          // Show table elements
-          setShowTableRows(true);
-        }
-        setSearchIsDisabled(false);
-      }
-    });
   };
 
   // Show table rows
@@ -402,13 +334,6 @@ const HostGroups = () => {
     updateIsDeletion,
   };
 
-  // - 'SearchInputLayout'
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
-  };
-
   // List of toolbar items
   const toolbarItems: ToolbarItem[] = [
     {
@@ -431,8 +356,6 @@ const HostGroups = () => {
           name="search"
           ariaLabel="Search host groups"
           placeholder="Search host groups"
-          searchValueData={searchValueData}
-          isDisabled={searchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

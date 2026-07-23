@@ -50,7 +50,6 @@ const MembersNetgroups = (props: PropsToMembersNetgroups) => {
     perPage,
     setPerPage,
     searchValue,
-    setSearchValue,
     membershipDirection,
     setMembershipDirection,
   } = useListPageSearchParams();
@@ -293,9 +292,6 @@ const MembersNetgroups = (props: PropsToMembersNetgroups) => {
   return (
     <>
       <MemberOfToolbar
-        searchText={searchValue}
-        onSearchTextChange={setSearchValue}
-        onSearch={() => {}}
         searchPlaceholder="Search netgroups"
         searchAriaLabel="Search netgroups"
         refreshButtonEnabled={isRefreshButtonEnabled}

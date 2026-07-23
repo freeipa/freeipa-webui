@@ -44,7 +44,7 @@ const ManagersUsers = (props: PropsToManagersUsers) => {
   const dispatch = useAppDispatch();
 
   // Get parameters from URL
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Other states
@@ -278,9 +278,6 @@ const ManagersUsers = (props: PropsToManagersUsers) => {
   return (
     <>
       <MemberOfToolbar
-        searchText={searchValue}
-        onSearchTextChange={setSearchValue}
-        onSearch={() => {}}
         searchPlaceholder="Search users"
         searchAriaLabel="Search users"
         refreshButtonEnabled={isRefreshButtonEnabled}

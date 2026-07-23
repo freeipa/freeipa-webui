@@ -42,7 +42,7 @@ const ManagersUserGroups = (props: PropsToManagersUsergroups) => {
   const dispatch = useAppDispatch();
 
   // Get parameters from URL
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Other states
@@ -282,9 +282,6 @@ const ManagersUserGroups = (props: PropsToManagersUsergroups) => {
   return (
     <>
       <MemberOfToolbar
-        searchText={searchValue}
-        onSearchTextChange={setSearchValue}
-        onSearch={() => {}}
         searchPlaceholder="Search user groups"
         searchAriaLabel="Search user groups"
         refreshButtonEnabled={isRefreshButtonEnabled}

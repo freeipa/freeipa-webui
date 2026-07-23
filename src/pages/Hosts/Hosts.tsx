@@ -52,7 +52,7 @@ import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 import ModalErrors from "src/components/errors/ModalErrors";
 // RPC client
-import { GenericPayload, useSearchEntriesMutation } from "../../services/rpc";
+import { GenericPayload } from "../../services/rpc";
 import {
   useGettingHostQuery,
   useAutoMemberRebuildHostsMutation,
@@ -63,7 +63,7 @@ const Hosts = () => {
   useContextualHelpTopic("hosts");
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
@@ -87,7 +87,6 @@ const Hosts = () => {
   // Table comps
   const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
   const [totalCount, setHostsTotalCount] = useState<number>(0);
-  const [searchDisabled, setSearchIsDisabled] = useState<boolean>(false);
 
   const updateSelectedPerPage = (selected: number) => {
     setSelectedPerPage(selected);
@@ -202,74 +201,10 @@ const Hosts = () => {
     hostDataResponse.refetch();
   };
 
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
   const [selectedHosts, setSelectedHostsList] = useState<Host[]>([]);
   const clearSelectedHosts = () => {
     const emptyList: Host[] = [];
     setSelectedHostsList(emptyList);
-  };
-
-  const [retrieveHost] = useSearchEntriesMutation({});
-
-  // Issue a search using a specific search value
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    setShowTableRows(false);
-    setHostsTotalCount(0);
-    setSearchIsDisabled(true);
-    retrieveHost({
-      searchValue: search,
-      sizeLimit: 0,
-      apiVersion: apiVersion || API_VERSION_BACKUP,
-      startIdx: 0,
-      stopIdx: 100,
-      entryType: "host",
-    } as GenericPayload).then((result) => {
-      // Manage new response here
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for hosts",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const hostsListResult = result.data?.result.results || [];
-          const hostsListSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
-          const hostsList: Host[] = [];
-
-          for (let i = 0; i < hostsListSize; i++) {
-            hostsList.push(hostsListResult[i].result);
-          }
-
-          setHostsList(hostsList.slice(0, perPage));
-          setHostsTotalCount(totalCount);
-          // Show table elements
-          setShowTableRows(true);
-        }
-        setSearchIsDisabled(false);
-      }
-    });
   };
 
   // Show table rows
@@ -527,13 +462,6 @@ const Hosts = () => {
     updateIsDeletion,
   };
 
-  // - 'SearchInputLayout'
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
-  };
-
   // Contextual links panel
 
   // List of toolbar items
@@ -558,8 +486,6 @@ const Hosts = () => {
           name="search"
           ariaLabel="Search hosts"
           placeholder="Search hosts"
-          searchValueData={searchValueData}
-          isDisabled={searchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

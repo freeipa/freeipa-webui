@@ -1,16 +1,36 @@
 import React from "react";
+import { MemoryRouter, useSearchParams } from "react-router";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 // Component
 import SearchInputLayout from "./SearchInputLayout";
 
-const mockUpdateSearchValue = vi.fn();
-const mockSubmitSearchValue = vi.fn();
+const SearchParamsProbe = ({
+  onParams,
+}: {
+  onParams: (params: URLSearchParams) => void;
+}) => {
+  const [params] = useSearchParams();
+  onParams(params);
+  return null;
+};
 
-const defaultSearchValueData = {
-  searchValue: "",
-  updateSearchValue: mockUpdateSearchValue,
-  submitSearchValue: mockSubmitSearchValue,
+const renderWithRouter = (ui: React.ReactElement, initialEntry = "/") => {
+  let latestParams = new URLSearchParams();
+  const result = render(
+    <MemoryRouter initialEntries={[initialEntry]}>
+      {ui}
+      <SearchParamsProbe
+        onParams={(params) => {
+          latestParams = params;
+        }}
+      />
+    </MemoryRouter>
+  );
+  return {
+    ...result,
+    getParams: () => latestParams,
+  };
 };
 
 describe("SearchInputLayout Component", () => {
@@ -20,20 +40,15 @@ describe("SearchInputLayout Component", () => {
   });
 
   it("renders correctly with all optional props", () => {
-    const searchValueData = {
-      ...defaultSearchValueData,
-      searchValue: "test search",
-    };
-
-    render(
+    renderWithRouter(
       <SearchInputLayout
         name="search-field"
         dataCy="search-input"
         ariaLabel="Search users"
         placeholder="Enter search term"
-        searchValueData={searchValueData}
         isDisabled={false}
-      />
+      />,
+      "/?search=test%20search"
     );
 
     const searchInput = screen.getByRole("textbox");
@@ -44,63 +59,45 @@ describe("SearchInputLayout Component", () => {
     expect(searchInput).not.toBeDisabled();
   });
 
-  it("displays the current search value", () => {
-    const searchValueData = {
-      ...defaultSearchValueData,
-      searchValue: "current search value",
-    };
-
-    render(
-      <SearchInputLayout
-        dataCy="search-input"
-        searchValueData={searchValueData}
-      />
+  it("displays the current URL search value", () => {
+    renderWithRouter(
+      <SearchInputLayout dataCy="search-input" />,
+      "/?search=current%20search%20value"
     );
 
     const searchInput = screen.getByRole("textbox");
     expect(searchInput).toHaveValue("current search value");
   });
 
-  it("does not call updateSearchValue on keystroke (buffers locally)", () => {
-    render(
-      <SearchInputLayout
-        dataCy="search-input"
-        searchValueData={defaultSearchValueData}
-      />
+  it("does not update URL on keystroke (buffers locally)", () => {
+    const { getParams } = renderWithRouter(
+      <SearchInputLayout dataCy="search-input" />
     );
 
     const searchInput = screen.getByRole("textbox");
     fireEvent.change(searchInput, { target: { value: "new search value" } });
 
-    expect(mockUpdateSearchValue).not.toHaveBeenCalled();
+    expect(getParams().get("search")).toBeNull();
     expect(searchInput).toHaveValue("new search value");
   });
 
-  it("calls updateSearchValue with empty string when reset button is clicked", () => {
-    const searchValueData = {
-      ...defaultSearchValueData,
-      searchValue: "search to clear",
-    };
-
-    render(
-      <SearchInputLayout
-        dataCy="search-input"
-        searchValueData={searchValueData}
-      />
+  it("commits empty string to URL when reset button is clicked", () => {
+    const { getParams } = renderWithRouter(
+      <SearchInputLayout dataCy="search-input" />,
+      "/?search=search%20to%20clear&p=3"
     );
 
     const clearButton = screen.getByRole("button", { name: /Reset/i });
     fireEvent.click(clearButton);
 
-    expect(mockUpdateSearchValue).toHaveBeenCalledWith("");
+    expect(getParams().get("search")).toBeNull();
+    expect(getParams().get("p")).toBeNull();
   });
 
-  it("calls updateSearchValue and submitSearchValue with input value on search submit", () => {
-    render(
-      <SearchInputLayout
-        dataCy="search-input"
-        searchValueData={defaultSearchValueData}
-      />
+  it("commits input value to URL on search submit and resets page", () => {
+    const { getParams } = renderWithRouter(
+      <SearchInputLayout dataCy="search-input" />,
+      "/?p=3"
     );
 
     const searchInput = screen.getByRole("textbox");
@@ -109,7 +106,32 @@ describe("SearchInputLayout Component", () => {
     const searchButton = screen.getByRole("button", { name: /search/i });
     fireEvent.click(searchButton);
 
-    expect(mockUpdateSearchValue).toHaveBeenCalledWith("typed value");
-    expect(mockSubmitSearchValue).toHaveBeenCalledWith("typed value");
+    expect(getParams().get("search")).toBe("typed value");
+    expect(getParams().get("p")).toBeNull();
+  });
+
+  it("uses local searchValueData override instead of URL", () => {
+    const mockOnSubmit = vi.fn();
+
+    const { getParams } = renderWithRouter(
+      <SearchInputLayout
+        dataCy="search-input"
+        searchValueData={{
+          searchValue: "local value",
+          onSubmit: mockOnSubmit,
+        }}
+      />,
+      "/?search=url%20value"
+    );
+
+    const searchInput = screen.getByRole("textbox");
+    expect(searchInput).toHaveValue("local value");
+
+    fireEvent.change(searchInput, { target: { value: "typed local" } });
+    const searchButton = screen.getByRole("button", { name: /search/i });
+    fireEvent.click(searchButton);
+
+    expect(mockOnSubmit).toHaveBeenCalledWith("typed local");
+    expect(getParams().get("search")).toBe("url value");
   });
 });

@@ -56,7 +56,6 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
     perPage,
     setPerPage,
     searchValue,
-    setSearchValue,
     membershipDirection,
     setMembershipDirection,
   } = useListPageSearchParams();
@@ -313,9 +312,6 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
     <>
       {membershipDisabled ? (
         <MemberOfToolbar
-          searchText={searchValue}
-          onSearchTextChange={setSearchValue}
-          onSearch={() => {}}
           searchPlaceholder="Search netgroups"
           searchAriaLabel="Search netgroups"
           refreshButtonEnabled={isRefreshButtonEnabled}
@@ -341,9 +337,6 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
         />
       ) : (
         <MemberOfToolbar
-          searchText={searchValue}
-          onSearchTextChange={setSearchValue}
-          onSearch={() => {}}
           searchPlaceholder="Search netgroups"
           searchAriaLabel="Search netgroups"
           refreshButtonEnabled={isRefreshButtonEnabled}

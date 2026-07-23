@@ -46,7 +46,6 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
     perPage,
     setPerPage,
     searchValue,
-    setSearchValue,
     membershipDirection,
     setMembershipDirection,
   } = useListPageSearchParams();
@@ -294,9 +293,6 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
   return (
     <>
       <MemberOfToolbar
-        searchText={searchValue}
-        onSearchTextChange={setSearchValue}
-        onSearch={() => {}}
         searchPlaceholder="Search host groups"
         searchAriaLabel="Search host groups"
         refreshButtonEnabled={isRefreshButtonEnabled}

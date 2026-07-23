@@ -32,8 +32,6 @@ import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayou
 
 import MainTable from "src/components/tables/MainTable";
 // Errors
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 import useApiError from "src/hooks/useApiError";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import GlobalErrors from "src/components/errors/GlobalErrors";
@@ -41,7 +39,6 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import {
   SubIdDataPayload,
   useGetSubIdEntriesQuery,
-  useSearchSubIdEntriesMutation,
 } from "src/services/rpcSubIds";
 // Modals
 import AddModal from "src/components/modals/SubIdsModals/AddModal";
@@ -61,7 +58,7 @@ const SubordinateIDs = () => {
   ) as string;
 
   // URL parameters: page number, page size, search value
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
+  const { page, setPage, perPage, setPerPage, searchValue } =
     useListPageSearchParams();
 
   // Handle API calls errors
@@ -73,7 +70,6 @@ const SubordinateIDs = () => {
 
   // States
   const [subIds, setSubIds] = React.useState<SubId[]>([]);
-  const [searchDisabled, setSearchIsDisabled] = React.useState<boolean>(false);
   const [totalCount, setTotalCount] = React.useState<number>(0);
 
   // API calls
@@ -178,65 +174,6 @@ const SubordinateIDs = () => {
     setSubIds(newShownElementsList);
   };
 
-  // Update search input valie
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
-  // Search API call
-  const [searchEntry] = useSearchSubIdEntriesMutation();
-
-  const submitSearchValue = (value?: string) => {
-    const search = value ?? searchValue;
-    setPage(1);
-    searchEntry({
-      searchValue: search,
-      apiVersion,
-      sizelimit: 100,
-      startIdx: 0,
-      stopIdx: 200, // Search will consider a max. of elements
-    }).then((result) => {
-      if ("data" in result) {
-        const searchError = result.data?.error as
-          | FetchBaseQueryError
-          | SerializedError;
-
-        if (searchError) {
-          // Error
-          let error: string | undefined = "";
-          if ("error" in searchError) {
-            error = searchError.error;
-          } else if ("message" in searchError) {
-            error = searchError.message;
-          }
-          dispatch(
-            addAlert({
-              name: "submit-search-value-error",
-              title: error || "Error when searching for subordinate IDs",
-              variant: "danger",
-            })
-          );
-        } else {
-          // Success
-          const listResult = result.data?.result.results || [];
-          const listSize = result.data?.result.count || 0;
-          const totalCount = result.data?.result.totalCount || 0;
-          const elementsList: SubId[] = [];
-
-          for (let i = 0; i < listSize; i++) {
-            elementsList.push(listResult[i].result);
-          }
-
-          setTotalCount(totalCount);
-          setSubIds(elementsList.slice(0, perPage));
-          setShowTableRows(true);
-        }
-        setSearchIsDisabled(false);
-      }
-    });
-  };
-
   // Data wrappers
   // TODO: Better separation of concerts
   // - 'PaginationLayout'
@@ -248,13 +185,6 @@ const SubordinateIDs = () => {
     updateSelectedPerPage: () => {},
     updateShownElementsList: updateShownElementsList,
     totalCount,
-  };
-
-  // SearchInputLayout
-  const searchValueData = {
-    searchValue,
-    updateSearchValue,
-    submitSearchValue,
   };
 
   // Modals functionality
@@ -278,8 +208,6 @@ const SubordinateIDs = () => {
           name="search"
           ariaLabel="Search subordinate IDs"
           placeholder="Search subordinate IDs"
-          searchValueData={searchValueData}
-          isDisabled={searchDisabled}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,
