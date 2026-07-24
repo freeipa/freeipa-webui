@@ -38,6 +38,10 @@ import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import { isIdRangeSelectable } from "src/utils/utils";
+import {
+  getSelectedPerPageData,
+  ipaPrimaryKey,
+} from "src/utils/selectedPerPage";
 import AddIdRangeModal from "src/components/modals/IdRanges/AddIdRangeModal";
 import DeleteModal from "src/components/modals/IdRanges/DeleteModal";
 
@@ -60,7 +64,6 @@ const IdRanges = () => {
   // URL parameters: page number, page size, search value
   const { page, perPage, searchValue } = useListPageSearchParams();
 
-  const [selectedPerPage, setSelectedPerPage] = React.useState<number>(0);
   const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
 
   // Handle API calls errors
@@ -70,12 +73,7 @@ const IdRanges = () => {
   const firstIdx = (page - 1) * perPage;
   const lastIdx = page * perPage;
 
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
-  };
-
-  // Selection state for checkboxes
+  // Handle API calls errors
   const [selectedElements, setSelectedElements] = React.useState<IdRange[]>([]);
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
     React.useState<boolean>(true);
@@ -180,10 +178,11 @@ const IdRanges = () => {
     nameAttr: "cn",
   };
 
-  // Reset the selected per-page count when the page or page size changes
-  React.useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
+  const selectedPerPageData = getSelectedPerPageData(
+    shownElementsList,
+    selectedElements.map((item) => ipaPrimaryKey(item.cn)),
+    (item) => ipaPrimaryKey(item.cn)
+  );
 
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
@@ -338,10 +337,7 @@ const IdRanges = () => {
                         isDeletion,
                         updateIsDeletion: setIsDeletion,
                       }}
-                      paginationData={{
-                        selectedPerPage,
-                        updateSelectedPerPage: setSelectedPerPage,
-                      }}
+                      paginationData={selectedPerPageData}
                     />
                   )}
                 </InnerScrollContainer>

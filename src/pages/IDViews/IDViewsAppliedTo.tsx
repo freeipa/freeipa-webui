@@ -55,6 +55,8 @@ import {
   useUnapplyHostgroupsMutation,
 } from "../../services/rpcIDViews";
 import TabLayout from "src/components/layouts/TabLayout";
+// Utils
+import { getSelectedPerPageData } from "src/utils/selectedPerPage";
 
 interface AppliesToProps {
   idView: IDView;
@@ -91,17 +93,7 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
   const modalErrors = useApiError([]);
 
   // Table comps
-  const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
   const [totalCount, setTotalCount] = useState<number>(0);
-
-  const updateSelectedPerPage = (selected: number) => {
-    setSelectedPerPage(selected);
-  };
-
-  // Reset selected-per-page count whenever the page or page size changes
-  useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
 
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
@@ -174,6 +166,12 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
     const emptyList: string[] = [];
     setSelectedHosts(emptyList);
   };
+
+  const selectedPerPageData = getSelectedPerPageData(
+    shownHostsList,
+    selectedHosts,
+    (host) => host
+  );
 
   // Unapply functions
   const [showUnapplyHostsModal, setShowUnapplyHostsModal] = useState(false);
@@ -485,11 +483,6 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
   };
 
   // Data wrappers
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage,
-  };
-
   const hostsTableData = {
     selectedHosts,
     hostsList,

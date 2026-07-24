@@ -19,6 +19,10 @@ import { DNSRecord } from "src/utils/datatypes/globalDataTypes";
 import { useDnsRecordFindQuery } from "src/services/rpcDnsZones";
 // Utils
 import { isDnsRecordSelectable } from "src/utils/utils";
+import {
+  getSelectedPerPageData,
+  ipaPrimaryKey,
+} from "src/utils/selectedPerPage";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
@@ -108,7 +112,6 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
   const [selectedElements, setSelectedElements] = React.useState<DNSRecord[]>(
     []
   );
-  const [selectedPerPage, setSelectedPerPage] = React.useState<number>(0);
 
   // Refresh button handling
   const refreshData = () => {
@@ -210,10 +213,11 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     }
   }, [isLoading]);
 
-  // Reset the selected per-page count when the page or page size changes
-  React.useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
+  const selectedPerPageData = getSelectedPerPageData(
+    dnsRecords,
+    selectedElements.map((dnsRecord) => ipaPrimaryKey(dnsRecord.idnsname)),
+    (dnsRecord) => ipaPrimaryKey(dnsRecord.idnsname)
+  );
 
   // Data wrappers
   // - 'BulkSelectorPrep'
@@ -222,11 +226,6 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     updateSelected: updateSelectedDnsRecords,
     selectableTable: selectableDnsRecordsTable,
     nameAttr: "idnsname",
-  };
-
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
   };
 
   // Modals functionality
@@ -393,10 +392,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
                             updateIsDeletion: (value) => setIsDeletion(value),
                             isDisableEnableOp: true,
                           }}
-                          paginationData={{
-                            selectedPerPage,
-                            updateSelectedPerPage: setSelectedPerPage,
-                          }}
+                          paginationData={selectedPerPageData}
                         />
                       )}
                     </>

@@ -26,6 +26,10 @@ import { useGetAutomountLocationsFullDataQuery } from "src/services/rpcAutomount
 // Utils
 import { apiToAutomountLocation } from "src/utils/automountLocationUtils";
 import { isAutomountLocationSelectable } from "src/utils/utils";
+import {
+  getSelectedPerPageData,
+  ipaPrimaryKey,
+} from "src/utils/selectedPerPage";
 // React router
 import { useNavigate } from "react-router";
 // Components
@@ -121,7 +125,6 @@ const AutomountLocations = () => {
   const [selectedElements, setSelectedElements] = React.useState<
     AutomountLocation[]
   >([]);
-  const [selectedPerPage, setSelectedPerPage] = React.useState<number>(0);
 
   // Refresh button handling
   const refreshData = () => {
@@ -184,10 +187,11 @@ const AutomountLocations = () => {
     }
   };
 
-  // Reset the selected per-page count when the page or page size changes
-  React.useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
+  const selectedPerPageData = getSelectedPerPageData(
+    locations,
+    selectedElements.map((item) => ipaPrimaryKey(item.cn)),
+    (item) => ipaPrimaryKey(item.cn)
+  );
 
   const bulkSelectorData = {
     selected: selectedElements,
@@ -212,10 +216,7 @@ const AutomountLocations = () => {
           buttonsData={{
             updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
           }}
-          selectedPerPageData={{
-            selectedPerPage,
-            updateSelectedPerPage: setSelectedPerPage,
-          }}
+          selectedPerPageData={selectedPerPageData}
         />
       ),
     },
@@ -345,10 +346,7 @@ const AutomountLocations = () => {
                       updateIsDeletion: (value) => setIsDeletion(value),
                       isDisableEnableOp: false,
                     }}
-                    paginationData={{
-                      selectedPerPage,
-                      updateSelectedPerPage: setSelectedPerPage,
-                    }}
+                    paginationData={selectedPerPageData}
                   />
                 )}
               </InnerScrollContainer>

@@ -26,6 +26,10 @@ import { useGetSelinuxUserMapsFullDataQuery } from "src/services/rpcSelinuxUserM
 // Utils
 import { apiToSelinuxUserMap } from "src/utils/selinuxUserMapUtils";
 import { isSelinuxUserMapSelectable } from "src/utils/utils";
+import {
+  getSelectedPerPageData,
+  ipaPrimaryKey,
+} from "src/utils/selectedPerPage";
 // React router
 import { useNavigate } from "react-router";
 // Components
@@ -126,7 +130,6 @@ const SELinuxUserMaps = () => {
   const [selectedElements, setSelectedElements] = React.useState<
     SELinuxUserMap[]
   >([]);
-  const [selectedPerPage, setSelectedPerPage] = React.useState<number>(0);
 
   const refreshData = () => {
     setSelectedElements([]);
@@ -179,25 +182,21 @@ const SELinuxUserMaps = () => {
     }
   };
 
+  const selectedPerPageData = getSelectedPerPageData(
+    selinuxUserMaps,
+    selectedElements.map((item) => ipaPrimaryKey(item.cn)),
+    (item) => ipaPrimaryKey(item.cn)
+  );
+
   React.useEffect(() => {
     mapsResponse.refetch();
   }, []);
-
-  // Reset the selected per-page count when the page or page size changes
-  React.useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
 
   const bulkSelectorData = {
     selected: selectedElements,
     updateSelected: updateSelectedMaps,
     selectableTable: selectableMapsTable,
     nameAttr: "cn",
-  };
-
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
   };
 
   const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
@@ -391,10 +390,7 @@ const SELinuxUserMaps = () => {
                           setIsDisableButtonDisabled(value),
                         isDisableEnableOp: true,
                       }}
-                      paginationData={{
-                        selectedPerPage,
-                        updateSelectedPerPage: setSelectedPerPage,
-                      }}
+                      paginationData={selectedPerPageData}
                       statusElementName="ipaenabledflag"
                     />
                   )}

@@ -49,6 +49,7 @@ import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Utils
 import { isAutomemberUserGroupSelectable } from "src/utils/utils";
+import { getSelectedPerPageData } from "src/utils/selectedPerPage";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -228,19 +229,6 @@ const AutoMemHostRules = () => {
     setIsDisableEnableOp(value);
   };
 
-  // Elements selected (per page)
-  //  - This will help to calculate the remaining elements on a specific page (bulk selector)
-  const [selectedPerPage, setSelectedPerPage] = React.useState<number>(0);
-
-  const updateSelectedPerPage = (selected: number) => {
-    setSelectedPerPage(selected);
-  };
-
-  // Reset selected-per-page count whenever the page or page size changes
-  React.useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
-
   const [selectedAutomembers, setSelectedAutomembers] = React.useState<
     AutomemberEntry[]
   >([]);
@@ -351,10 +339,11 @@ const AutoMemHostRules = () => {
     updateIsDisableEnableOp,
   };
 
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage,
-  };
+  const selectedPerPageData = getSelectedPerPageData(
+    automemberRules,
+    selectedAutomembers.map((rule) => rule.automemberRule),
+    (rule) => rule.automemberRule
+  );
 
   // 'Table'
   const automembersTableData = {

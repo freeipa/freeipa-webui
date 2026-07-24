@@ -31,6 +31,10 @@ import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Utils
 import { isTrustDomainSelectable } from "src/utils/utils";
+import {
+  getSelectedPerPageData,
+  ipaPrimaryKey,
+} from "src/utils/selectedPerPage";
 import { apiToTrustDomain } from "src/utils/trustsUtils";
 // Components
 import ToolbarLayout, {
@@ -111,7 +115,6 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
   const [selectedElements, setSelectedElements] = React.useState<TrustDomain[]>(
     []
   );
-  const [selectedPerPage, setSelectedPerPage] = React.useState<number>(0);
 
   // Refresh button handling
   const refreshData = () => {
@@ -250,10 +253,11 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
       });
   };
 
-  // Reset the selected per-page count when the page or page size changes
-  React.useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
+  const selectedPerPageData = getSelectedPerPageData(
+    trustDomains,
+    selectedElements.map((trustDomain) => ipaPrimaryKey(trustDomain.cn)),
+    (trustDomain) => ipaPrimaryKey(trustDomain.cn)
+  );
 
   // Data wrappers
   // - 'BulkSelectorprep'
@@ -262,11 +266,6 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
     updateSelected: updateSelectedTrustDomains,
     selectableTable: selectableTrustDomainsTable,
     nameAttr: "cn",
-  };
-
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
   };
 
   // Modals functionality
@@ -483,10 +482,7 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
                               setIsDisableButtonDisabled(value),
                             isDisableEnableOp: true,
                           }}
-                          paginationData={{
-                            selectedPerPage,
-                            updateSelectedPerPage: setSelectedPerPage,
-                          }}
+                          paginationData={selectedPerPageData}
                           statusElementName="domain_enabled"
                         />
                       )}

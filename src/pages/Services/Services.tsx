@@ -31,6 +31,10 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { Host, Service } from "../../utils/datatypes/globalDataTypes";
 // Utils
 import { API_VERSION_BACKUP, isServiceSelectable } from "../../utils/utils";
+import {
+  getSelectedPerPageData,
+  ipaPrimaryKey,
+} from "src/utils/selectedPerPage";
 // Modals
 import AddService from "../../components/modals/AddService";
 import DeleteServices from "../../components/modals/DeleteServices";
@@ -83,18 +87,6 @@ const Services = () => {
   const updateIsDeletion = (value: boolean) => {
     setIsDeletion(value);
   };
-
-  // Elements selected (per page)
-  //  - This will help to calculate the remaining elements on a specific page (bulk selector)
-  const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
-  const updateSelectedPerPage = (selected: number) => {
-    setSelectedPerPage(selected);
-  };
-
-  // Reset selected-per-page count whenever the page or page size changes
-  useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
 
   const [totalCount, setServicesTotalCount] = useState<number>(0);
 
@@ -315,10 +307,11 @@ const Services = () => {
     updateIsDeleteButtonDisabled,
   };
 
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage,
-  };
+  const selectedPerPageData = getSelectedPerPageData(
+    servicesList,
+    selectedServices.map((item) => ipaPrimaryKey(item.krbcanonicalname)),
+    (item) => ipaPrimaryKey(item.krbcanonicalname)
+  );
 
   // - 'ServicesTable'
   const servicesTableData = {

@@ -37,6 +37,10 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 // Utils
 import { API_VERSION_BACKUP, isRoleSelectable } from "src/utils/utils";
+import {
+  getSelectedPerPageData,
+  ipaPrimaryKey,
+} from "src/utils/selectedPerPage";
 // RPC client
 import { GenericPayload } from "src/services/rpc";
 import { useGettingRolesQuery } from "src/services/rpcRoles";
@@ -135,13 +139,6 @@ const Roles = () => {
 
   const [isDeletion, setIsDeletion] = useState(false);
 
-  const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
-
-  // Reset selected-per-page count whenever the page or page size changes
-  React.useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
-
   const [selectedRoles, setSelectedRoles] = useState<Role[]>([]);
 
   const clearSelectedRoles = () => {
@@ -187,6 +184,12 @@ const Roles = () => {
     }
   };
 
+  const selectedPerPageData = getSelectedPerPageData(
+    elementsList,
+    selectedRoles.map((item) => ipaPrimaryKey(item.cn)),
+    (item) => ipaPrimaryKey(item.cn)
+  );
+
   const bulkSelectorData = {
     selected: selectedRoles,
     updateSelected: updateSelectedRoles,
@@ -196,11 +199,6 @@ const Roles = () => {
 
   const buttonsData = {
     updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-  };
-
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
   };
 
   const columnNames = ["Role name", "Description"];
@@ -339,10 +337,7 @@ const Roles = () => {
                       isDeletion,
                       updateIsDeletion: setIsDeletion,
                     }}
-                    paginationData={{
-                      selectedPerPage,
-                      updateSelectedPerPage: setSelectedPerPage,
-                    }}
+                    paginationData={selectedPerPageData}
                   />
                 )}
               </InnerScrollContainer>

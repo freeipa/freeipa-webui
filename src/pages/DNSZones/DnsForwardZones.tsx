@@ -25,6 +25,10 @@ import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import { useGetDnsForwardZonesFullDataQuery } from "src/services/rpcDnsForwardZones";
 // Utils
 import { isDnsForwardZoneSelectable } from "src/utils/utils";
+import {
+  getSelectedPerPageData,
+  ipaPrimaryKey,
+} from "src/utils/selectedPerPage";
 // Components
 import ToolbarLayout, {
   ToolbarItem,
@@ -120,7 +124,6 @@ const DnsForwardZones = () => {
   const [selectedElements, setSelectedElements] = React.useState<
     DNSForwardZone[]
   >([]);
-  const [selectedPerPage, setSelectedPerPage] = React.useState<number>(0);
 
   // Refresh button handling
   const refreshData = () => {
@@ -187,10 +190,11 @@ const DnsForwardZones = () => {
   // Show table rows
   const [showTableRows, setShowTableRows] = React.useState(!isLoading);
 
-  // Reset the selected per-page count when the page or page size changes
-  React.useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
+  const selectedPerPageData = getSelectedPerPageData(
+    dnsForwardZones,
+    selectedElements.map((dnsZone) => ipaPrimaryKey(dnsZone.idnsname)),
+    (dnsZone) => ipaPrimaryKey(dnsZone.idnsname)
+  );
 
   // Data wrappers
   // - 'BulkSelectorPrep'
@@ -199,11 +203,6 @@ const DnsForwardZones = () => {
     updateSelected: updateSelectedDnsZones,
     selectableTable: selectableDnsZonesTable,
     nameAttr: "idnsname",
-  };
-
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
   };
 
   const [showEnableDisableModal, setShowEnableDisableModal] =
@@ -405,10 +404,7 @@ const DnsForwardZones = () => {
                           setIsDisableButtonDisabled(value),
                         isDisableEnableOp: true,
                       }}
-                      paginationData={{
-                        selectedPerPage,
-                        updateSelectedPerPage: setSelectedPerPage,
-                      }}
+                      paginationData={selectedPerPageData}
                       statusElementName="idnszoneactive"
                     />
                   )}

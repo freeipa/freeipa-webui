@@ -25,6 +25,10 @@ import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import { useGetCertMapRuleEntriesQuery } from "src/services/rpcCertMapping";
 // Utils
 import { isCertMapSelectable } from "src/utils/utils";
+import {
+  getSelectedPerPageData,
+  ipaPrimaryKey,
+} from "src/utils/selectedPerPage";
 import { apiToCertificateMapping } from "src/utils/certMappingUtils";
 // React router
 import { useNavigate } from "react-router";
@@ -138,12 +142,6 @@ const CertificateMappingPage = () => {
   const [selectedElements, setSelectedElements] = React.useState<
     CertificateMapping[]
   >([]);
-  const [selectedPerPage, setSelectedPerPage] = React.useState<number>(0);
-
-  // Reset selected-per-page count whenever the page or page size changes
-  React.useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
 
   // Refresh button handling
   const refreshData = () => {
@@ -226,6 +224,12 @@ const CertificateMappingPage = () => {
     }
   };
 
+  const selectedPerPageData = getSelectedPerPageData(
+    certMapRules,
+    selectedElements.map((item) => ipaPrimaryKey(item.cn)),
+    (item) => ipaPrimaryKey(item.cn)
+  );
+
   // Always refetch data when the component is loaded.
   // This ensures the data is always up-to-date.
   React.useEffect(() => {
@@ -250,11 +254,6 @@ const CertificateMappingPage = () => {
     updateSelected: updateSelectedCertMapRules,
     selectableTable: selectableCertMapRulesTable,
     nameAttr: "cn",
-  };
-
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
   };
 
   // Modals functionality
@@ -448,10 +447,7 @@ const CertificateMappingPage = () => {
                         setIsDisableButtonDisabled(value),
                       isDisableEnableOp: true,
                     }}
-                    paginationData={{
-                      selectedPerPage,
-                      updateSelectedPerPage: setSelectedPerPage,
-                    }}
+                    paginationData={selectedPerPageData}
                     statusElementName="ipaenabledflag"
                   />
                 )}

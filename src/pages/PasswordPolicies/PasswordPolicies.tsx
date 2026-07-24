@@ -36,6 +36,10 @@ import GlobalErrors from "src/components/errors/GlobalErrors";
 import MainTable from "src/components/tables/MainTable";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import { isPwPolicySelectable } from "src/utils/utils";
+import {
+  getSelectedPerPageData,
+  ipaPrimaryKey,
+} from "src/utils/selectedPerPage";
 // Modals
 import AddModal from "src/components/modals/PwPoliciesModals/AddModal";
 import DeleteModal from "src/components/modals/PwPoliciesModals/DeleteModal";
@@ -127,16 +131,6 @@ const PasswordPolicies = () => {
   const [selectedElements, setSelectedElements] = React.useState<PwPolicy[]>(
     []
   );
-  const [selectedPerPage, setSelectedPerPage] = React.useState<number>(0);
-
-  const updateSelectedPerPage = (selected: number) => {
-    setSelectedPerPage(selected);
-  };
-
-  // Reset selected-per-page count whenever the page or page size changes
-  React.useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
 
   const clearSelectedElements = () => {
     const emptyList: PwPolicy[] = [];
@@ -219,6 +213,12 @@ const PasswordPolicies = () => {
     }
   };
 
+  const selectedPerPageData = getSelectedPerPageData(
+    pwPolicies,
+    selectedElements.map((item) => ipaPrimaryKey(item.cn)),
+    (item) => ipaPrimaryKey(item.cn)
+  );
+
   // Always refetch data when the component is loaded.
   // This ensures the data is always up-to-date.
   React.useEffect(() => {
@@ -247,11 +247,6 @@ const PasswordPolicies = () => {
     updateSelected: updateSelectedPwPolicies,
     selectableTable: selectablePwPoliciesTable,
     nameAttr: "cn",
-  };
-
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage,
   };
 
   // Modals functionality
@@ -414,10 +409,7 @@ const PasswordPolicies = () => {
                         isDeletion,
                         updateIsDeletion,
                       }}
-                      paginationData={{
-                        selectedPerPage,
-                        updateSelectedPerPage,
-                      }}
+                      paginationData={selectedPerPageData}
                     />
                   )}
                 </InnerScrollContainer>

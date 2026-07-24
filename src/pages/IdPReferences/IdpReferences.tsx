@@ -25,6 +25,10 @@ import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import { useGetIdpEntriesQuery } from "src/services/rpcIdp";
 // Utils
 import { isIdpServerSelectable } from "src/utils/utils";
+import {
+  getSelectedPerPageData,
+  ipaPrimaryKey,
+} from "src/utils/selectedPerPage";
 // Components
 import ToolbarLayout, {
   ToolbarItem,
@@ -127,7 +131,6 @@ const IdpReferences = () => {
   const [selectedElements, setSelectedElements] = React.useState<IDPServer[]>(
     []
   );
-  const [selectedPerPage, setSelectedPerPage] = React.useState<number>(0);
 
   const clearSelectedElements = () => {
     const emptyList: IDPServer[] = [];
@@ -200,6 +203,12 @@ const IdpReferences = () => {
     }
   };
 
+  const selectedPerPageData = getSelectedPerPageData(
+    idpReferences,
+    selectedElements.map((item) => ipaPrimaryKey(item.cn)),
+    (item) => ipaPrimaryKey(item.cn)
+  );
+
   // Always refetch data when the component is loaded.
   // This ensures the data is always up-to-date.
   React.useEffect(() => {
@@ -216,11 +225,6 @@ const IdpReferences = () => {
     }
   }, [isLoading]);
 
-  // Reset the selected per-page count when the page or page size changes
-  React.useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
-
   // Data wrappers
   // - 'BulkSelectorrep'
   const bulkSelectorData = {
@@ -228,11 +232,6 @@ const IdpReferences = () => {
     updateSelected: updateSelectedIdpRefs,
     selectableTable: selectableIdpRefsTable,
     nameAttr: "cn",
-  };
-
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
   };
 
   // Modals functionality
@@ -402,10 +401,7 @@ const IdpReferences = () => {
                         isDeletion,
                         updateIsDeletion: (value) => setIsDeletion(value),
                       }}
-                      paginationData={{
-                        selectedPerPage,
-                        updateSelectedPerPage: setSelectedPerPage,
-                      }}
+                      paginationData={selectedPerPageData}
                     />
                   )}
                 </InnerScrollContainer>

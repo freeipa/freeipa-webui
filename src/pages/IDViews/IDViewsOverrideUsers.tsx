@@ -25,6 +25,10 @@ import PaginationLayout from "src/components/layouts/PaginationLayout";
 import GlobalErrors from "src/components/errors/GlobalErrors";
 // Utils
 import { isUserOverrideSelectable } from "src/utils/utils";
+import {
+  getSelectedPerPageData,
+  ipaPrimaryKey,
+} from "src/utils/selectedPerPage";
 import IDViewsOverrideUsersTable from "src/pages/IDViews/IDViewsOverrideUsersTable";
 // Modals
 import AddIdOverrideUserModal from "src/components/modals/IdOverrideModals/AddIdOverrideUser";
@@ -75,23 +79,11 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
     setIsDeletion(value);
   };
 
-  // Elements selected (per page)
-  //  - This will help to calculate the remaining elements on a specific page (bulk selector)
-  const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
-
-  const updateSelectedPerPage = (selected: number) => {
-    setSelectedPerPage(selected);
-  };
-
-  // Reset selected-per-page count whenever the page or page size changes
-  useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
-
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage,
-  };
+  const selectedPerPageData = getSelectedPerPageData(
+    usersList,
+    selectedUsers,
+    (user) => ipaPrimaryKey(user.ipaanchoruuid)
+  );
 
   const selectableTable = usersList.filter(isUserOverrideSelectable);
 

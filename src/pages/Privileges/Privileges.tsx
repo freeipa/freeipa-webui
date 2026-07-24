@@ -38,6 +38,10 @@ import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Utils
 import { API_VERSION_BACKUP, isPrivilegeSelectable } from "src/utils/utils";
+import {
+  getSelectedPerPageData,
+  ipaPrimaryKey,
+} from "src/utils/selectedPerPage";
 // RPC client
 import { useGetPrivilegesFullDataQuery } from "src/services/rpcPrivileges";
 // Errors
@@ -134,13 +138,6 @@ const Privileges = () => {
 
   const [isDeletion, setIsDeletion] = useState(false);
 
-  const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
-
-  // Reset selected-per-page count whenever the page or page size changes
-  React.useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
-
   const [selectedPrivileges, setSelectedPrivileges] = useState<Privilege[]>([]);
 
   const clearSelectedPrivileges = () => {
@@ -189,6 +186,12 @@ const Privileges = () => {
     }
   };
 
+  const selectedPerPageData = getSelectedPerPageData(
+    elementsList,
+    selectedPrivileges.map((item) => ipaPrimaryKey(item.cn)),
+    (item) => ipaPrimaryKey(item.cn)
+  );
+
   const bulkSelectorData = {
     selected: selectedPrivileges,
     updateSelected: updateSelectedPrivileges,
@@ -198,11 +201,6 @@ const Privileges = () => {
 
   const buttonsData = {
     updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-  };
-
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
   };
 
   const columnNames = ["Privilege name", "Description"];
@@ -345,10 +343,7 @@ const Privileges = () => {
                       isDeletion,
                       updateIsDeletion: setIsDeletion,
                     }}
-                    paginationData={{
-                      selectedPerPage,
-                      updateSelectedPerPage: setSelectedPerPage,
-                    }}
+                    paginationData={selectedPerPageData}
                   />
                 )}
               </InnerScrollContainer>

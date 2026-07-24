@@ -26,6 +26,10 @@ import { useGetTrustsFullDataQuery } from "src/services/rpcTrusts";
 // Utils
 import { apiToTrust } from "src/utils/trustsUtils";
 import { isTrustSelectable } from "src/utils/utils";
+import {
+  getSelectedPerPageData,
+  ipaPrimaryKey,
+} from "src/utils/selectedPerPage";
 // React router
 import { useNavigate } from "react-router";
 // Components
@@ -136,7 +140,6 @@ const Trusts = () => {
 
   // Selected elements
   const [selectedElements, setSelectedElements] = React.useState<Trust[]>([]);
-  const [selectedPerPage, setSelectedPerPage] = React.useState<number>(0);
 
   // Refresh button handling
   const refreshData = () => {
@@ -205,10 +208,11 @@ const Trusts = () => {
     trustsResponse.refetch();
   }, []);
 
-  // Reset the selected per-page count when the page or page size changes
-  React.useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
+  const selectedPerPageData = getSelectedPerPageData(
+    trusts,
+    selectedElements.map((trust) => ipaPrimaryKey(trust.cn)),
+    (trust) => ipaPrimaryKey(trust.cn)
+  );
 
   // Data wrappers
   // - 'BulkSelectorprep'
@@ -217,11 +221,6 @@ const Trusts = () => {
     updateSelected: updateSelectedTrusts,
     selectableTable: selectableTrustsTable,
     nameAttr: "cn",
-  };
-
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
   };
 
   // Modals functionality
@@ -368,10 +367,7 @@ const Trusts = () => {
                         updateIsDeletion: (value) => setIsDeletion(value),
                         isDisableEnableOp: true,
                       }}
-                      paginationData={{
-                        selectedPerPage,
-                        updateSelectedPerPage: setSelectedPerPage,
-                      }}
+                      paginationData={selectedPerPageData}
                     />
                   )}
                 </InnerScrollContainer>

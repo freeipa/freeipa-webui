@@ -39,6 +39,10 @@ import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Utils
 import { API_VERSION_BACKUP, isUserSelectable } from "src/utils/utils";
+import {
+  getSelectedPerPageData,
+  ipaPrimaryKey,
+} from "src/utils/selectedPerPage";
 import { GenericPayload } from "../../services/rpc";
 import { useGettingPreservedUserQuery } from "../../services/rpcUsers";
 import useApiError from "src/hooks/useApiError";
@@ -167,19 +171,6 @@ const PreservedUsers = () => {
     setIsDeletion(value);
   };
 
-  // Elements selected (per page)
-  //  - This will help to calculate the remaining elements on a specific page (bulk selector)
-  const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
-
-  const updateSelectedPerPage = (selected: number) => {
-    setSelectedPerPage(selected);
-  };
-
-  // Reset selected-per-page count whenever the page or page size changes
-  useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
-
   // Show table rows
   const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
 
@@ -280,10 +271,11 @@ const PreservedUsers = () => {
     updateIsDeleteButtonDisabled,
   };
 
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage,
-  };
+  const selectedPerPageData = getSelectedPerPageData(
+    preservedUsersList,
+    selectedUsers.map((item) => ipaPrimaryKey(item.uid)),
+    (item) => ipaPrimaryKey(item.uid)
+  );
 
   // 'DeleteUsers'
   const deleteUsersButtonsData = {

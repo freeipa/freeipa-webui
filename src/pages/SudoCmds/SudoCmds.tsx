@@ -38,6 +38,10 @@ import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Utils
 import { API_VERSION_BACKUP, isSudoCmdSelectable } from "src/utils/utils";
+import {
+  getSelectedPerPageData,
+  ipaPrimaryKey,
+} from "src/utils/selectedPerPage";
 // RPC client
 import { GenericPayload } from "src/services/rpc";
 import { useGettingSudoCmdsQuery } from "src/services/rpcSudoCmds";
@@ -165,19 +169,6 @@ const SudoCmds = () => {
     setIsDeletion(value);
   };
 
-  // Elements selected (per page)
-  //  - This will help to calculate the remaining elements on a specific page (bulk selector)
-  const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
-
-  const updateSelectedPerPage = (selected: number) => {
-    setSelectedPerPage(selected);
-  };
-
-  // Reset selected-per-page count whenever the page or page size changes
-  useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
-
   const [selectedCmds, setSelectedCmds] = useState<SudoCmd[]>([]);
 
   const clearSelectedCmds = () => {
@@ -266,6 +257,12 @@ const SudoCmds = () => {
     }
   };
 
+  const selectedPerPageData = getSelectedPerPageData(
+    cmdList,
+    selectedCmds.map((item) => ipaPrimaryKey(item.sudocmd)),
+    (item) => ipaPrimaryKey(item.sudocmd)
+  );
+
   // Data wrappers
   // - 'BulkSelector'
   const cmdsBulkSelectorData = {
@@ -277,11 +274,6 @@ const SudoCmds = () => {
 
   const buttonsData = {
     updateIsDeleteButtonDisabled,
-  };
-
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage,
   };
 
   // 'DeleteSudoCmds'

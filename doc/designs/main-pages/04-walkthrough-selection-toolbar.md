@@ -98,12 +98,7 @@ are URL-backed via `SearchInputLayout` / `PaginationLayout`, so you do **not** n
 `searchValueData` or `paginationData` wrappers for the main list.
 
 ```tsx
-  const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
-
-  // Reset selected-per-page count when page or page size changes
-  React.useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
+  import { getSelectedPerPageData, ipaPrimaryKey } from "src/utils/selectedPerPage";
 
   const bulkSelectorData = {
     selected: selectedEntities,
@@ -112,10 +107,12 @@ are URL-backed via `SearchInputLayout` / `PaginationLayout`, so you do **not** n
     nameAttr: "pk",  // The primary key field name (e.g. "uid", "cn", "fqdn")
   };
 
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
-  };
+  // Derive how many of the current page rows are selected (do not keep a manual counter)
+  const selectedPerPageData = getSelectedPerPageData(
+    entitiesList,
+    selectedEntities.map((e) => ipaPrimaryKey(e.pk)),
+    (e) => ipaPrimaryKey(e.pk)
+  );
 ```
 
 ### 14. Toolbar Items

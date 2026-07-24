@@ -39,6 +39,10 @@ import AddUser from "src/components/modals/UserModals/AddUser";
 import ActivateStageUsers from "src/components/modals/UserModals/ActivateStageUsers";
 // Utils
 import { API_VERSION_BACKUP, isUserSelectable } from "src/utils/utils";
+import {
+  getSelectedPerPageData,
+  ipaPrimaryKey,
+} from "src/utils/selectedPerPage";
 // RPC client
 import { GenericPayload } from "../../services/rpc";
 import { useGettingStageUserQuery } from "../../services/rpcUsers";
@@ -168,19 +172,6 @@ const StageUsers = () => {
     setIsDeletion(value);
   };
 
-  // Elements selected (per page)
-  //  - This will help to calculate the remaining elements on a specific page (bulk selector)
-  const [selectedPerPage, setSelectedPerPage] = useState<number>(0);
-
-  const updateSelectedPerPage = (selected: number) => {
-    setSelectedPerPage(selected);
-  };
-
-  // Reset selected-per-page count whenever the page or page size changes
-  useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
-
   // Show table rows
   const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
 
@@ -284,10 +275,11 @@ const StageUsers = () => {
     updateIsDeleteButtonDisabled,
   };
 
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage,
-  };
+  const selectedPerPageData = getSelectedPerPageData(
+    stageUsersList,
+    selectedUsers.map((item) => ipaPrimaryKey(item.uid)),
+    (item) => ipaPrimaryKey(item.uid)
+  );
 
   // 'DeleteUsers'
   const deleteUsersButtonsData = {

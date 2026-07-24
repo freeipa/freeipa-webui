@@ -25,6 +25,10 @@ import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import { useGetDnsZonesFullDataQuery } from "src/services/rpcDnsZones";
 // Utils
 import { isDnsZoneSelectable } from "src/utils/utils";
+import {
+  getSelectedPerPageData,
+  ipaPrimaryKey,
+} from "src/utils/selectedPerPage";
 import { apiToDnsZone } from "src/utils/dnsZonesUtils";
 // Components
 import ToolbarLayout, {
@@ -118,7 +122,6 @@ const DnsZones = () => {
 
   // Selected elements
   const [selectedElements, setSelectedElements] = React.useState<DNSZone[]>([]);
-  const [selectedPerPage, setSelectedPerPage] = React.useState<number>(0);
 
   // Refresh button handling
   const refreshData = () => {
@@ -212,10 +215,11 @@ const DnsZones = () => {
     }
   }, [isLoading]);
 
-  // Reset the selected per-page count when the page or page size changes
-  React.useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
+  const selectedPerPageData = getSelectedPerPageData(
+    dnsZones,
+    selectedElements.map((dnsZone) => ipaPrimaryKey(dnsZone.idnsname)),
+    (dnsZone) => ipaPrimaryKey(dnsZone.idnsname)
+  );
 
   // Data wrappers
   // - 'BulkSelectorrep'
@@ -224,11 +228,6 @@ const DnsZones = () => {
     updateSelected: updateSelectedDnsZones,
     selectableTable: selectableDnsZonesTable,
     nameAttr: "idnsname",
-  };
-
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
   };
 
   // Modals functionality
@@ -419,10 +418,7 @@ const DnsZones = () => {
                           setIsDisableButtonDisabled(value),
                         isDisableEnableOp: true,
                       }}
-                      paginationData={{
-                        selectedPerPage,
-                        updateSelectedPerPage: setSelectedPerPage,
-                      }}
+                      paginationData={selectedPerPageData}
                       statusElementName="idnszoneactive"
                     />
                   )}

@@ -103,10 +103,7 @@ New pages **must** use the `MainTable` component (`src/components/tables/MainTab
     updateIsDisableButtonDisabled: setIsDisableButtonDisabled,
     isDisableEnableOp: true,
   }}
-  paginationData={{
-    selectedPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
-  }}
+  paginationData={selectedPerPageData}
   statusElementName="myStatusField"  // Optional: field name that determines row disabled styling
 />
 ```

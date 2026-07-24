@@ -25,6 +25,10 @@ import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import { useGetOtpTokensFullDataQuery } from "src/services/rpcOtpTokens";
 // Utils
 import { isOtpTokenSelectable } from "src/utils/utils";
+import {
+  getSelectedPerPageData,
+  ipaPrimaryKey,
+} from "src/utils/selectedPerPage";
 import { apiToOtpToken } from "src/utils/otpTokensUtils";
 // Components
 import ToolbarLayout, {
@@ -129,7 +133,6 @@ const OtpTokens = () => {
   const [selectedElements, setSelectedElements] = React.useState<OtpToken[]>(
     []
   );
-  const [selectedPerPage, setSelectedPerPage] = React.useState<number>(0);
 
   // Refresh button handling
   const refreshData = () => {
@@ -226,10 +229,13 @@ const OtpTokens = () => {
     setShowTableRows(!isLoading);
   }, [isLoading]);
 
-  // Reset the selected per-page count when the page or page size changes
-  React.useEffect(() => {
-    setSelectedPerPage(0);
-  }, [page, perPage]);
+  const selectedPerPageData = getSelectedPerPageData(
+    otpTokens,
+    selectedElements.map((otpToken) =>
+      ipaPrimaryKey(otpToken.ipatokenuniqueid)
+    ),
+    (otpToken) => ipaPrimaryKey(otpToken.ipatokenuniqueid)
+  );
 
   // Data wrappers
   // - 'BulkSelectorrep'
@@ -238,11 +244,6 @@ const OtpTokens = () => {
     updateSelected: updateSelectedOtpTokens,
     selectableTable: selectableOtpTokensTable,
     nameAttr: "ipatokenuniqueid",
-  };
-
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
   };
 
   // Modals functionality
@@ -441,10 +442,7 @@ const OtpTokens = () => {
                           setIsDisableButtonDisabled(value),
                         isDisableEnableOp: true,
                       }}
-                      paginationData={{
-                        selectedPerPage,
-                        updateSelectedPerPage: setSelectedPerPage,
-                      }}
+                      paginationData={selectedPerPageData}
                       statusElementName="ipatokendisabled"
                       invertStatusValue={true}
                     />
