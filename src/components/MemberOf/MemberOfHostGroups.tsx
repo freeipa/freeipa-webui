@@ -166,9 +166,9 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
 
   // Load available Host groups
   const hostGroupsQuery = useGettingHostGroupsQuery({
-    search: adderSearchValue,
+    searchValue: adderSearchValue,
     apiVersion: API_VERSION_BACKUP,
-    sizelimit: 100,
+    sizeLimit: 100,
     startIdx: 0,
     stopIdx: 100,
   });

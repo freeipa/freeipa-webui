@@ -65,6 +65,11 @@ export interface AutomemberShowPayload {
   type: string;
 }
 
+export interface AutomemberRulesSearchResult {
+  automemberRules: AutomemberEntry[];
+  totalCount: number;
+}
+
 export interface AutomemberModPayload {
   automemberId: string;
   type: string;
@@ -148,11 +153,11 @@ const extendedApi = api.injectEndpoints({
      * Find automembers and groups.
      * Combines the data to build the 'AutomemberEntry' data type
      * @param GenericPayload
-     * @returns List of automember entries with 'automemberRule' and 'description'
+     * @returns Paginated automember rules and total match count
      *
      */
-    searchUserGroupRulesEntries: build.mutation<
-      AutomemberEntry[],
+    searchUserGroupRulesEntries: build.query<
+      AutomemberRulesSearchResult,
       GenericPayload
     >({
       async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
@@ -228,23 +233,29 @@ const extendedApi = api.injectEndpoints({
           .length as number;
 
         // COMBINE RESULTS AND RETURN
-        const fullAutomemberIdsList: AutomemberEntry[] = [];
-        for (let i = 0; i < groupsItemsCount && i < stopIdx; i++) {
-          for (let j = 0; j < automemberIds.length; j++) {
+        const automemberRules: AutomemberEntry[] = [];
+        for (let j = 0; j < automemberIds.length; j++) {
+          for (let i = 0; i < groupsItemsCount; i++) {
             const groupId = responseDataGroup.result.result[i] as groupType;
             if (groupId.cn[0] === automemberIds[j]) {
-              fullAutomemberIdsList.push({
+              automemberRules.push({
                 automemberRule: groupId.cn[0] as string,
                 description: groupId.description
                   ? (groupId.description[0] as string)
                   : "",
               });
+              break;
             }
           }
         }
 
         // Return results
-        return { data: fullAutomemberIdsList };
+        return {
+          data: {
+            automemberRules,
+            totalCount: automembersItemsCount,
+          },
+        };
       },
     }),
     /**
@@ -304,11 +315,11 @@ const extendedApi = api.injectEndpoints({
      * Find automembers and groups.
      * Combines the data to build the 'AutomemberEntry' data type
      * @param GenericPayload
-     * @returns List of automember entries with 'automemberRule' and 'description'
+     * @returns Paginated automember rules and total match count
      *
      */
-    searchHostGroupRulesEntries: build.mutation<
-      AutomemberEntry[],
+    searchHostGroupRulesEntries: build.query<
+      AutomemberRulesSearchResult,
       GenericPayload
     >({
       async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
@@ -361,7 +372,7 @@ const extendedApi = api.injectEndpoints({
           automemberIds.push(cn[0] as string);
         }
 
-        // FETCH USER GROUPS DATA
+        // FETCH HOST GROUPS DATA
         // Prepare search parameters
         const groupParams = {
           version: apiVersion,
@@ -384,23 +395,29 @@ const extendedApi = api.injectEndpoints({
           .length as number;
 
         // COMBINE RESULTS AND RETURN
-        const fullAutomemberIdsList: AutomemberEntry[] = [];
-        for (let i = 0; i < groupsItemsCount && i < stopIdx; i++) {
-          for (let j = 0; j < automemberIds.length; j++) {
+        const automemberRules: AutomemberEntry[] = [];
+        for (let j = 0; j < automemberIds.length; j++) {
+          for (let i = 0; i < groupsItemsCount; i++) {
             const groupId = responseDataGroup.result.result[i] as groupType;
             if (groupId.cn[0] === automemberIds[j]) {
-              fullAutomemberIdsList.push({
+              automemberRules.push({
                 automemberRule: groupId.cn[0] as string,
                 description: groupId.description
                   ? (groupId.description[0] as string)
                   : "",
               });
+              break;
             }
           }
         }
 
         // Return results
-        return { data: fullAutomemberIdsList };
+        return {
+          data: {
+            automemberRules,
+            totalCount: automembersItemsCount,
+          },
+        };
       },
     }),
     /**
@@ -514,12 +531,12 @@ const extendedApi = api.injectEndpoints({
 
 export const {
   useDefaultGroupShowQuery,
-  useSearchUserGroupRulesEntriesMutation,
+  useSearchUserGroupRulesEntriesQuery,
   useAutomemberFindBasicInfoQuery,
   useAddToAutomemberMutation,
   useDeleteFromAutomemberMutation,
   useChangeDefaultGroupMutation,
-  useSearchHostGroupRulesEntriesMutation,
+  useSearchHostGroupRulesEntriesQuery,
   useAutomemberShowQuery,
   useSaveAutomemberMutation,
   useAutomemberAddConditionMutation,

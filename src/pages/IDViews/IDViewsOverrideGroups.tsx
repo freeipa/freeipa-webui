@@ -40,7 +40,10 @@ import { IDViewOverrideGroup } from "src/utils/datatypes/globalDataTypes";
 // Icons
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 // RPC
-import { useGettingIDOverrideGroupsQuery } from "src/services/rpcIdOverrides";
+import {
+  IDOverridePayload,
+  useGettingIDOverrideGroupsQuery,
+} from "src/services/rpcIdOverrides";
 
 interface PropsToOverrides {
   idview: string;
@@ -52,7 +55,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
   const dispatch = useAppDispatch();
   const globalErrors = useApiError([]);
 
-  const { page, perPage } = useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
   const [totalCount, setTotalCount] = useState<number>(0);
   const [groupsList, setGroupsList] = useState<IDViewOverrideGroup[]>([]);
   const [selectedGroups, setSelectedGroupsList] = useState<string[]>([]);
@@ -104,7 +107,18 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
     updateIsDeletion,
   };
 
-  const dataResponse = useGettingIDOverrideGroupsQuery(props.idview);
+  // Page indexes
+  const firstIdx = (page - 1) * perPage;
+  const lastIdx = page * perPage;
+
+  const dataResponse = useGettingIDOverrideGroupsQuery({
+    idView: props.idview,
+    searchValue,
+    sizeLimit: 0,
+    startIdx: firstIdx,
+    stopIdx: lastIdx,
+    entryType: "idoverridegroup",
+  } as IDOverridePayload);
 
   const {
     data: batchResponse,
@@ -128,8 +142,16 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
       dataResponse.data &&
       batchResponse !== undefined
     ) {
-      setGroupsList(batchResponse);
-      setTotalCount(batchResponse.length);
+      const groupsListResult = batchResponse.result.results || [];
+      const groupsListSize = batchResponse.result.count || 0;
+      const total = batchResponse.result.totalCount || 0;
+      const groupList: IDViewOverrideGroup[] = [];
+
+      for (let i = 0; i < groupsListSize; i++) {
+        groupList.push(groupsListResult[i].result);
+      }
+      setGroupsList(groupList);
+      setTotalCount(total);
       setShowTableRows(true);
     }
     // API response: Error
@@ -155,12 +177,6 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
 
   // Show table rows
   const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
-
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  useEffect(() => {
-    dataResponse.refetch();
-  }, [page, perPage]);
 
   // Show table rows only when data is fully retrieved
   useEffect(() => {

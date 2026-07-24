@@ -8,10 +8,7 @@ import {
 } from "./rpc";
 import { API_VERSION_BACKUP } from "../utils/utils";
 // Data types
-import {
-  IDViewOverrideUser,
-  IDViewOverrideGroup,
-} from "src/utils/datatypes/globalDataTypes";
+import { IDViewOverrideUser } from "src/utils/datatypes/globalDataTypes";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
 
 /**
@@ -79,6 +76,77 @@ interface OverrideType {
   dn: string;
   ipaanchoruuid: string;
 }
+
+type FetchWithBQ = (
+  arg: ReturnType<typeof getCommand> | ReturnType<typeof getBatchCommand>
+  // RTK Query's fetchWithBQ returns MaybePromise; keep this loose for reuse.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+) => any;
+
+const searchOverrideEntriesQueryFn = async (
+  payloadData: IDOverridePayload,
+  fetchWithBQ: FetchWithBQ
+) => {
+  const { idView, searchValue, sizeLimit, startIdx, stopIdx, entryType } =
+    payloadData;
+
+  const params = {
+    sizelimit: sizeLimit,
+    version: API_VERSION_BACKUP,
+    all: true,
+  };
+
+  const findResult = await fetchWithBQ(
+    getCommand({
+      method: entryType + "_find",
+      params: [[idView, searchValue], params],
+    })
+  );
+  if (findResult.error) {
+    return { error: findResult.error as FetchBaseQueryError };
+  }
+
+  const responseData = findResult.data as FindRPCResponse;
+  const ids: string[] = [];
+  const itemsCount = responseData.result.result.length as number;
+  for (let i = startIdx; i < itemsCount && i < stopIdx; i++) {
+    const overrideId = responseData.result.result[i] as OverrideType;
+    const { ipaanchoruuid } = overrideId;
+    ids.push(ipaanchoruuid[0] as string);
+  }
+
+  const payloadDataBatch: Command[] = ids.map((id) => ({
+    method: entryType + "_show",
+    params: [[idView, id], {}],
+  }));
+
+  if (payloadDataBatch.length === 0) {
+    return {
+      data: {
+        result: {
+          results: [],
+          count: 0,
+          totalCount: itemsCount,
+        },
+      } as unknown as BatchRPCResponse,
+    };
+  }
+
+  const partialInfoResult = await fetchWithBQ(
+    getBatchCommand(payloadDataBatch, API_VERSION_BACKUP)
+  );
+
+  const response = partialInfoResult.data as BatchRPCResponse;
+  if (response) {
+    response.result.totalCount = itemsCount;
+  }
+
+  return response
+    ? { data: response }
+    : {
+        error: partialInfoResult.error as unknown as FetchBaseQueryError,
+      };
+};
 
 const extendedApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -218,96 +286,20 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(groupsToDeletePayload, API_VERSION_BACKUP);
       },
     }),
-    gettingIDOverrideUsers: build.query<IDViewOverrideUser[], string>({
-      query: (idview) => {
-        const findCmd: Command = {
-          method: "idoverrideuser_find",
-          params: [[idview], { version: API_VERSION_BACKUP }],
-        };
-        return getCommand(findCmd);
-      },
-      transformResponse: (response: FindRPCResponse): IDViewOverrideUser[] => {
-        if (response.result?.result) {
-          return response.result.result as unknown as IDViewOverrideUser[];
-        }
-        return [];
-      },
-    }),
-    gettingIDOverrideGroups: build.query<IDViewOverrideGroup[], string>({
-      query: (idview) => {
-        const findCmd: Command = {
-          method: "idoverridegroup_find",
-          params: [[idview], { version: API_VERSION_BACKUP }],
-        };
-        return getCommand(findCmd);
-      },
-      transformResponse: (response: FindRPCResponse): IDViewOverrideGroup[] => {
-        if (response.result?.result) {
-          return response.result.result as unknown as IDViewOverrideGroup[];
-        }
-        return [];
-      },
-    }),
-    // Refresh entries by search value (mutation instead of query)
-    searchOverrideEntries: build.mutation<BatchRPCResponse, IDOverridePayload>({
+    gettingIDOverrideUsers: build.query<BatchRPCResponse, IDOverridePayload>({
       async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { idView, searchValue, sizeLimit, startIdx, stopIdx, entryType } =
-          payloadData;
-
-        // Prepare search parameters
-        const params = {
-          sizelimit: sizeLimit,
-          version: API_VERSION_BACKUP,
-          all: true,
-        };
-
-        // Prepare payload
-        const payloadDataIds: Command = {
-          method: entryType + "_find",
-          params: [[idView, searchValue], params],
-        };
-
-        // Make call using 'fetchWithBQ'
-        const getGroupIDsResult = await fetchWithBQ(getCommand(payloadDataIds));
-        // Return possible errors
-        if (getGroupIDsResult.error) {
-          return { error: getGroupIDsResult.error as FetchBaseQueryError };
-        }
-        // If no error: cast and assign 'ids'
-        const responseData = getGroupIDsResult.data as FindRPCResponse;
-        const ids: string[] = [];
-        const itemsCount = responseData.result.result.length as number;
-        for (let i = startIdx; i < itemsCount && i < stopIdx; i++) {
-          const overrideId = responseData.result.result[i] as OverrideType;
-          const { ipaanchoruuid } = overrideId;
-
-          ids.push(ipaanchoruuid[0] as string);
-        }
-
-        // 2ND CALL - GET PARTIAL INFO
-        // Prepare payload
-        let payloadDataBatch: Command[] = [];
-        payloadDataBatch = ids.map((id) => ({
-          method: entryType + "_show",
-          params: [[idView, id], {}],
-        }));
-
-        // Make call using 'fetchWithBQ'
-        const partialInfoResult = await fetchWithBQ(
-          getBatchCommand(payloadDataBatch as Command[], API_VERSION_BACKUP)
+        return searchOverrideEntriesQueryFn(
+          { ...payloadData, entryType: "idoverrideuser" },
+          fetchWithBQ
         );
-
-        const response = partialInfoResult.data as BatchRPCResponse;
-        if (response) {
-          response.result.totalCount = itemsCount;
-        }
-
-        // Return results
-        return response
-          ? { data: response }
-          : {
-              error: partialInfoResult.error as unknown as FetchBaseQueryError,
-            };
+      },
+    }),
+    gettingIDOverrideGroups: build.query<BatchRPCResponse, IDOverridePayload>({
+      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
+        return searchOverrideEntriesQueryFn(
+          { ...payloadData, entryType: "idoverridegroup" },
+          fetchWithBQ
+        );
       },
     }),
     /**
@@ -353,6 +345,5 @@ export const {
   useRemoveIDOverrideUsersMutation,
   useGettingIDOverrideUsersQuery,
   useGettingIDOverrideGroupsQuery,
-  useSearchOverrideEntriesMutation,
   useSearchIdOverrideUsersQuery,
 } = extendedApi;

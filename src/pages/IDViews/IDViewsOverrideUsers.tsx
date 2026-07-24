@@ -36,7 +36,10 @@ import DeleteIdOverrideUsersModal from "src/components/modals/IdOverrideModals/D
 // Data types
 import { IDViewOverrideUser } from "src/utils/datatypes/globalDataTypes";
 // RPC
-import { useGettingIDOverrideUsersQuery } from "src/services/rpcIdOverrides";
+import {
+  IDOverridePayload,
+  useGettingIDOverrideUsersQuery,
+} from "src/services/rpcIdOverrides";
 
 interface PropsToOverrides {
   idview: string;
@@ -49,7 +52,7 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
 
   const globalErrors = useApiError([]);
 
-  const { page, perPage } = useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
   const [totalCount, setTotalCount] = useState<number>(0);
   const [usersList, setUsersList] = useState<IDViewOverrideUser[]>([]);
   const [selectedUsers, setSelectedUsersList] = useState<string[]>([]);
@@ -101,7 +104,18 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
     updateIsDeletion,
   };
 
-  const dataResponse = useGettingIDOverrideUsersQuery(props.idview);
+  // Page indexes
+  const firstIdx = (page - 1) * perPage;
+  const lastIdx = page * perPage;
+
+  const dataResponse = useGettingIDOverrideUsersQuery({
+    idView: props.idview,
+    searchValue,
+    sizeLimit: 0,
+    startIdx: firstIdx,
+    stopIdx: lastIdx,
+    entryType: "idoverrideuser",
+  } as IDOverridePayload);
 
   const {
     data: batchResponse,
@@ -125,8 +139,16 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
       dataResponse.data &&
       batchResponse !== undefined
     ) {
-      setUsersList(batchResponse);
-      setTotalCount(batchResponse.length);
+      const usersListResult = batchResponse.result.results || [];
+      const usersListSize = batchResponse.result.count || 0;
+      const total = batchResponse.result.totalCount || 0;
+      const userList: IDViewOverrideUser[] = [];
+
+      for (let i = 0; i < usersListSize; i++) {
+        userList.push(usersListResult[i].result);
+      }
+      setUsersList(userList);
+      setTotalCount(total);
       setShowTableRows(true);
     }
     // API response: Error
@@ -152,12 +174,6 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
 
   // Show table rows
   const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
-
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  useEffect(() => {
-    dataResponse.refetch();
-  }, [page, perPage]);
 
   // Show table rows only when data is fully retrieved
   useEffect(() => {

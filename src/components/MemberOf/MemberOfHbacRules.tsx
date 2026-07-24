@@ -175,9 +175,9 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
 
   // Load available HBAC rules, delay the search for opening the modal
   const hbacRulesQuery = useGettingHbacRulesQuery({
-    search: adderSearchValue,
+    searchValue: adderSearchValue,
     apiVersion: API_VERSION_BACKUP,
-    sizelimit: 100,
+    sizeLimit: 100,
     startIdx: 0,
     stopIdx: 100,
   });

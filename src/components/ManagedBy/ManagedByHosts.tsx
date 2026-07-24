@@ -135,9 +135,9 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
 
   // Load available Hosts
   const hostsQuery = useGettingHostQuery({
-    search: adderSearchValue,
+    searchValue: adderSearchValue,
     apiVersion: API_VERSION_BACKUP,
-    sizelimit: 100,
+    sizeLimit: 100,
     startIdx: 0,
     stopIdx: 100,
   });

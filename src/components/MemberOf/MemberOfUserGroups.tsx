@@ -156,9 +156,9 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
 
   // Load available User groups
   const userGroupsQuery = useGettingGroupsQuery({
-    search: adderSearchValue,
+    searchValue: adderSearchValue,
     apiVersion: API_VERSION_BACKUP,
-    sizelimit: 100,
+    sizeLimit: 100,
     startIdx: 0,
     stopIdx: 100,
   });

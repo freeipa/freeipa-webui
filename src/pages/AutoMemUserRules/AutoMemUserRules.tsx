@@ -104,7 +104,11 @@ const AutoMemUserRules = () => {
   const lastIdx = page * perPage;
 
   // API calls via custom hook
-  const userGroupRulesData = useUserGroupsRulesData();
+  const userGroupRulesData = useUserGroupsRulesData({
+    searchValue,
+    startIdx: firstIdx,
+    stopIdx: lastIdx,
+  });
   const [changeDefaultGroup] = useChangeDefaultGroupMutation();
 
   // Show table rows
@@ -127,18 +131,9 @@ const AutoMemUserRules = () => {
       if (userGroupRulesData.errors && userGroupRulesData.errors.length > 0) {
         setErrors(userGroupRulesData.errors || []);
       } else {
-        const fullAutomemberIds: AutomemberEntry[] =
-          userGroupRulesData.automembersIds;
-        const totalAutomembersCount = fullAutomemberIds.length;
-        // Paginate data based on first and last indexes
-        const shownPaginatedRulesList: AutomemberEntry[] = [];
-        if (userGroupRulesData.automembersIds.length > 0) {
-          const pagAutomemberIds = fullAutomemberIds.slice(firstIdx, lastIdx);
-          shownPaginatedRulesList.push(...pagAutomemberIds);
-        }
         // Update lists
         setUserGroups(userGroupRulesData.userGroups);
-        setAutomemberRules(shownPaginatedRulesList);
+        setAutomemberRules(userGroupRulesData.shownAutomembers);
         // If no default group is set, set it as 'No selection'
         if (userGroupRulesData.defaultGroup === "") {
           setDefaultGroup(NO_SELECTION);
@@ -148,8 +143,8 @@ const AutoMemUserRules = () => {
           setPreviousDefaultGroup(userGroupRulesData.defaultGroup);
         }
 
-        // Set available user groups to add (userGroupRulesData.userGroups and fullAutomemberIds)
-        const allAutomemberIds = fullAutomemberIds.map(
+        // Set available user groups to add (use full unfiltered rule list)
+        const allAutomemberIds = userGroupRulesData.automembersIds.map(
           (item) => item.automemberRule
         );
         const availableItems = userGroupRulesData.userGroups.filter(
@@ -157,8 +152,8 @@ const AutoMemUserRules = () => {
         );
         setGroupsAvailableToAdd(availableItems);
 
-        // Set table count
-        setTotalCount(totalAutomembersCount);
+        // Set table count from search match total
+        setTotalCount(userGroupRulesData.totalCount);
         // Show table elements
         setShowTableRows(true);
       }
@@ -166,6 +161,8 @@ const AutoMemUserRules = () => {
   }, [
     userGroupRulesData.userGroups,
     userGroupRulesData.automembersIds,
+    userGroupRulesData.shownAutomembers,
+    userGroupRulesData.totalCount,
     userGroupRulesData.defaultGroup,
   ]);
 

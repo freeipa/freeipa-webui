@@ -196,9 +196,9 @@ const MembersHostGroups = (props: PropsToMembersHostGroups) => {
 
   // Load available host groups, delay the search for opening the modal
   const hostGroupsQuery = useGettingHostGroupsQuery({
-    search: adderSearchValue,
+    searchValue: adderSearchValue,
     apiVersion: API_VERSION_BACKUP,
-    sizelimit: 100,
+    sizeLimit: 100,
     startIdx: 0,
     stopIdx: 100,
   });

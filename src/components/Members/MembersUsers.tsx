@@ -195,9 +195,9 @@ const MembersUsers = (props: PropsToMembersUsers) => {
 
   // Load available users, delay the search for opening the modal
   const usersQuery = useGettingActiveUserQuery({
-    search: adderSearchValue,
+    searchValue: adderSearchValue,
     apiVersion: API_VERSION_BACKUP,
-    sizelimit: 100,
+    sizeLimit: 100,
     startIdx: 0,
     stopIdx: 100,
   });

@@ -104,7 +104,11 @@ const AutoMemHostRules = () => {
   const lastIdx = page * perPage;
 
   // API calls via custom hook
-  const hostGroupRulesData = useHostGroupsRulesData();
+  const hostGroupRulesData = useHostGroupsRulesData({
+    searchValue,
+    startIdx: firstIdx,
+    stopIdx: lastIdx,
+  });
   const [changeDefaultGroup] = useChangeDefaultGroupMutation();
 
   // Show table rows
@@ -127,18 +131,9 @@ const AutoMemHostRules = () => {
       if (hostGroupRulesData.errors && hostGroupRulesData.errors.length > 0) {
         setErrors(hostGroupRulesData.errors || []);
       } else {
-        const fullAutomemberIds: AutomemberEntry[] =
-          hostGroupRulesData.automembersIds;
-        const totalAutomembersCount = fullAutomemberIds.length;
-        // Paginate data based on first and last indexes
-        const shownPaginatedRulesList: AutomemberEntry[] = [];
-        if (hostGroupRulesData.automembersIds.length > 0) {
-          const pagAutomemberIds = fullAutomemberIds.slice(firstIdx, lastIdx);
-          shownPaginatedRulesList.push(...pagAutomemberIds);
-        }
         // Update lists
         setHostGroups(hostGroupRulesData.hostGroups);
-        setAutomemberRules(shownPaginatedRulesList);
+        setAutomemberRules(hostGroupRulesData.shownAutomembers);
         // If no default group is set, set it as 'No selection'
         if (hostGroupRulesData.defaultGroup === "") {
           setDefaultGroup(NO_SELECTION);
@@ -148,8 +143,8 @@ const AutoMemHostRules = () => {
           setPreviousDefaultGroup(hostGroupRulesData.defaultGroup);
         }
 
-        // Set available host groups to add
-        const allAutomemberIds = fullAutomemberIds.map(
+        // Set available host groups to add (use full unfiltered rule list)
+        const allAutomemberIds = hostGroupRulesData.automembersIds.map(
           (item) => item.automemberRule
         );
         const availableItems = hostGroupRulesData.hostGroups.filter(
@@ -157,8 +152,8 @@ const AutoMemHostRules = () => {
         );
         setGroupsAvailableToAdd(availableItems);
 
-        // Set table count
-        setTotalCount(totalAutomembersCount);
+        // Set table count from search match total
+        setTotalCount(hostGroupRulesData.totalCount);
         // Show table elements
         setShowTableRows(true);
       }
@@ -166,6 +161,8 @@ const AutoMemHostRules = () => {
   }, [
     hostGroupRulesData.hostGroups,
     hostGroupRulesData.automembersIds,
+    hostGroupRulesData.shownAutomembers,
+    hostGroupRulesData.totalCount,
     hostGroupRulesData.defaultGroup,
   ]);
 

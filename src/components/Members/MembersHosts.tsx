@@ -191,9 +191,9 @@ const MembersHosts = (props: PropsToMembersHosts) => {
 
   // Load available hosts, delay the search for opening the modal
   const hostsQuery = useGettingHostQuery({
-    search: adderSearchValue,
+    searchValue: adderSearchValue,
     apiVersion: API_VERSION_BACKUP,
-    sizelimit: 100,
+    sizeLimit: 100,
     startIdx: 0,
     stopIdx: 100,
   });
