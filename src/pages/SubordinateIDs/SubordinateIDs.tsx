@@ -14,7 +14,6 @@ import {
 // Data types
 import { SubId } from "src/utils/datatypes/globalDataTypes";
 // Hooks
-import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useListPageSearchParams from "src/hooks/useListPageSearchParams";
 import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";

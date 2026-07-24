@@ -48,7 +48,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
   const dispatch = useAppDispatch();
   const globalErrors = useApiError([]);
 
-  const { page, perPage, searchValue } = useListPageSearchParams();
+  const { page, perPage } = useListPageSearchParams();
   const [totalCount, setTotalCount] = useState<number>(0);
   const [groupsList, setGroupsList] = useState<IDViewOverrideGroup[]>([]);
   const [selectedGroups, setSelectedGroupsList] = useState<string[]>([]);

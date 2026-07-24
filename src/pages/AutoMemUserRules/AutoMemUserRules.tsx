@@ -17,7 +17,7 @@ import {
 // Data types
 import { AutomemberEntry } from "src/utils/datatypes/globalDataTypes";
 // Redux
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
+import { useAppDispatch } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
@@ -68,11 +68,6 @@ const AutoMemUserRules = () => {
   useUpdateRoute({
     pathname: "user-group-rules",
   });
-
-  // Retrieve API version from environment data
-  const apiVersion = useAppSelector(
-    (state) => state.global.environment.api_version
-  ) as string;
 
   const NO_SELECTION = "No default group selected";
 

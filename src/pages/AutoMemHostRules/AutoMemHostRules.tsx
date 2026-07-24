@@ -16,8 +16,6 @@ import {
 } from "@patternfly/react-table";
 // Data types
 import { AutomemberEntry } from "src/utils/datatypes/globalDataTypes";
-// Redux
-import { useAppSelector } from "src/store/hooks";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";
@@ -70,11 +68,6 @@ const AutoMemHostRules = () => {
   useUpdateRoute({
     pathname: "host-group-rules",
   });
-
-  // Retrieve API version from environment data
-  const apiVersion = useAppSelector(
-    (state) => state.global.environment.api_version
-  ) as string;
 
   const NO_SELECTION = "No default group selected";
 
