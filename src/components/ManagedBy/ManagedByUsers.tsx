@@ -1,6 +1,6 @@
 import React from "react";
 // PatternFly
-import { Pagination, PaginationVariant } from "@patternfly/react-core";
+import { PaginationVariant } from "@patternfly/react-core";
 // Components
 import MemberOfToolbar from "../MemberOf/MemberOfToolbar";
 import MemberOfAddModal, { AvailableItems } from "../MemberOf/MemberOfAddModal";
@@ -30,6 +30,7 @@ import {
 } from "src/services/rpcOtpTokens";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
+import PaginationLayout from "../layouts/PaginationLayout";
 
 interface ManagedByUsersProps {
   entity: Partial<OtpToken>;
@@ -43,8 +44,7 @@ const ManagedByUsers = (props: ManagedByUsersProps) => {
   const dispatch = useAppDispatch();
 
   // Get parameters from URL
-  const { page, setPage, perPage, setPerPage, searchValue, setSearchValue } =
-    useListPageSearchParams();
+  const { page, perPage, searchValue } = useListPageSearchParams();
 
   // Other states
   const [usersSelected, setUsersSelected] = React.useState<string[]>([]);
@@ -76,15 +76,6 @@ const ManagedByUsers = (props: ManagedByUsersProps) => {
     () => fullUsersQuery.data ?? [],
     [fullUsersQuery.data]
   );
-
-  const updateSearchValue = (value: string) => {
-    setPage(1);
-    setSearchValue(value);
-  };
-
-  const submitSearchValue = () => {
-    setPage(1);
-  };
 
   // Computed "states"
   const someItemSelected = usersSelected.length > 0;
@@ -255,9 +246,6 @@ const ManagedByUsers = (props: ManagedByUsersProps) => {
   return (
     <>
       <MemberOfToolbar
-        searchText={searchValue}
-        onSearchTextChange={updateSearchValue}
-        onSearch={submitSearchValue}
         searchPlaceholder="Search users"
         searchAriaLabel="Search users"
         refreshButtonEnabled={isRefreshButtonEnabled}
@@ -269,10 +257,6 @@ const ManagedByUsers = (props: ManagedByUsersProps) => {
         helpIconEnabled={true}
         onHelpIconClick={() => dispatch(toggleHelpPanel())}
         totalItems={filteredUsers.length}
-        perPage={perPage}
-        page={page}
-        onPerPageChange={setPerPage}
-        onPageChange={setPage}
       />
       <MemberTable
         entityList={users}
@@ -284,15 +268,12 @@ const ManagedByUsers = (props: ManagedByUsersProps) => {
         onCheckItemsChange={setUsersSelected}
         showTableRows={showTableRows}
       />
-      <Pagination
-        className="pf-v6-u-pb-0 pf-v6-u-pr-md"
-        itemCount={filteredUsers.length}
-        widgetId="pagination-options-menu-bottom"
-        perPage={perPage}
-        page={page}
+      <PaginationLayout
+        list={[]}
+        totalCount={filteredUsers.length}
         variant={PaginationVariant.bottom}
-        onSetPage={(_e, page) => setPage(page)}
-        onPerPageSelect={(_e, perPage) => setPerPage(perPage)}
+        widgetId="pagination-options-menu-bottom"
+        className="pf-v6-u-pb-0 pf-v6-u-pr-md"
       />
       {showAddModal && (
         <MemberOfAddModal
