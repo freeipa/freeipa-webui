@@ -230,6 +230,9 @@ export const getBatchCommand = (commandData: Command[], apiVersion: string) => {
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: "/" }), // TODO: Global settings!
+  // We want to always refetch, because we've managed to mess up
+  // the caching logic and this is easier than fixing it :)
+  keepUnusedDataFor: 0,
   tagTypes: [
     "ObjectMetadata",
     "FullUser",
@@ -289,6 +292,7 @@ export const api = createApi({
       transformResponse: (response: ShowRPCResponse): Metadata =>
         response.result,
       providesTags: ["ObjectMetadata"],
+      keepUnusedDataFor: 3600,
     }),
     // Basic find/show query: Hosts, Services, ...
     gettingGeneric: build.query<BatchRPCResponse, GenericPayload>({

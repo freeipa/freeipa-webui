@@ -23,6 +23,7 @@ const extendedApi = api.injectEndpoints({
           params: [[], { version: API_VERSION_BACKUP }],
         },
       }),
+      keepUnusedDataFor: 3600,
     }),
   }),
   overrideExisting: false,
