@@ -18,7 +18,7 @@ import {
 
 /**
  * Password policies-related endpoints: useCertMapRuleFindQuery, useGetCertMapRuleEntriesQuery,
- *                             useSearchCertMapRuleEntriesMutation, useCertMapConfigFindQuery,
+ *                             useCertMapConfigFindQuery,
  *                             useCertMapConfigModMutation, useMatchCertificateMutation,
  *                             useCertMapShowQuery, useCertMapRuleModMutation, useCertMapRuleDisableMutation,
  *                             useCertMapRuleEnableMutation
@@ -75,86 +75,6 @@ const extendedApi = api.injectEndpoints({
      *
      */
     getCertMapRuleEntries: build.query<
-      BatchRPCResponse,
-      CertMapFullDataPayload
-    >({
-      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { searchValue, apiVersion, sizelimit, startIdx, stopIdx } =
-          payloadData;
-
-        if (apiVersion === undefined) {
-          return {
-            error: {
-              status: "CUSTOM_ERROR",
-              data: "",
-              error: "API version not available",
-            },
-          };
-        }
-
-        // FETCH CERT. MAPPING DATA VIA "certmaprule_find" COMMAND
-        // Prepare search parameters
-        const certMapIdsParams = {
-          pkey_only: true,
-          sizelimit: sizelimit,
-          version: apiVersion,
-        };
-
-        // Prepare payload
-        const payloadDataCertMap: Command = {
-          method: "certmaprule_find",
-          params: [[searchValue], certMapIdsParams],
-        };
-
-        // Make call using 'fetchWithBQ'
-        const getResultCertMap = await fetchWithBQ(
-          getCommand(payloadDataCertMap)
-        );
-        // Return possible errors
-        if (getResultCertMap.error) {
-          return { error: getResultCertMap.error };
-        }
-        // If no error: cast and assign 'ids'
-        const responseDataCertMap = getResultCertMap.data as FindRPCResponse;
-
-        const certMapIds: string[] = [];
-        const certMapItemsCount = responseDataCertMap.result.result
-          .length as number;
-
-        for (let i = startIdx; i < certMapItemsCount && i < stopIdx; i++) {
-          const certMapId = responseDataCertMap.result.result[i] as cnType;
-          const { cn } = certMapId;
-          certMapIds.push(cn[0] as string);
-        }
-
-        // FETCH CERT. MAPPING DATA VIA "certmaprule_show" COMMAND
-        const commands: Command[] = [];
-        certMapIds.forEach((certMapId) => {
-          commands.push({
-            method: "certmaprule_show",
-            params: [[certMapId], {}],
-          });
-        });
-
-        const certMapShowResult = await fetchWithBQ(
-          getBatchCommand(commands, apiVersion)
-        );
-
-        const response = certMapShowResult.data as BatchRPCResponse;
-        if (response) {
-          response.result.totalCount = certMapItemsCount;
-        }
-
-        // Return results
-        return { data: response };
-      },
-    }),
-    /**
-     * Search for a specific password policy.
-     * @param CertMapFullDataPayload
-     * @returns Certificate mapping entries that match with the search criteria
-     */
-    searchCertMapRuleEntries: build.mutation<
       BatchRPCResponse,
       CertMapFullDataPayload
     >({
@@ -474,7 +394,6 @@ const extendedApi = api.injectEndpoints({
 
 export const {
   useGetCertMapRuleEntriesQuery,
-  useSearchCertMapRuleEntriesMutation,
   useCertMapConfigFindQuery,
   useCertMapConfigModMutation,
   useMatchCertificateMutation,

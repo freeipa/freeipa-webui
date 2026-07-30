@@ -15,7 +15,7 @@ export const parsePerPage = (value: string | null): number => {
   return parseInt(value || "10");
 };
 
-export const parseMembership = (value: string | null): MembershipDirection => {
+const parseMembership = (value: string | null): MembershipDirection => {
   if (value === "direct" || value === "indirect") {
     return value;
   }

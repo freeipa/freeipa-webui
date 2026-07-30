@@ -180,65 +180,6 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(commands, API_VERSION_BACKUP);
       },
     }),
-    /**
-     * Search privileges via two-step privilege_find + privilege_show pattern
-     * @param {PrivilegesFullDataPayload} - Search parameters
-     * @returns {BatchRPCResponse} - Batch response with privilege data
-     */
-    searchPrivilegesEntries: build.mutation<
-      BatchRPCResponse,
-      PrivilegesFullDataPayload
-    >({
-      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { searchValue, sizeLimit, apiVersion, startIdx, stopIdx } =
-          payloadData;
-
-        const params = {
-          pkey_only: true,
-          sizelimit: sizeLimit,
-          version: apiVersion,
-        };
-
-        // Step 1: Find privilege IDs
-        const findCommand: Command = {
-          method: "privilege_find",
-          params: [[searchValue], params],
-        };
-
-        const findResult = await fetchWithBQ(getCommand(findCommand));
-        if (findResult.error) {
-          return { error: findResult.error as FetchBaseQueryError };
-        }
-
-        const findResponse = findResult.data as FindRPCResponse;
-        const totalCount = findResponse.result.result.length as number;
-        const ids: string[] = [];
-
-        for (let i = startIdx; i < totalCount && i < stopIdx; i++) {
-          const privilegeId = findResponse.result.result[i] as cnType;
-          ids.push(privilegeId.cn[0] as string);
-        }
-
-        // Step 2: Batch show for each privilege
-        const showCommands: Command[] = ids.map((id) => ({
-          method: "privilege_show",
-          params: [[id], { no_members: true }],
-        }));
-
-        const showResult = await fetchWithBQ(
-          getBatchCommand(showCommands, apiVersion)
-        );
-
-        const response = showResult.data as BatchRPCResponse;
-        if (response) {
-          response.result.totalCount = totalCount;
-        }
-
-        return response
-          ? { data: response }
-          : { error: showResult.error as FetchBaseQueryError };
-      },
-    }),
   }),
   overrideExisting: false,
 });
@@ -259,6 +200,5 @@ export const {
   useGetPrivilegesInfoByNameQuery,
   useAddPrivilegeMutation,
   useDeletePrivilegesMutation,
-  useSearchPrivilegesEntriesMutation,
   useSavePrivilegeMutation,
 } = extendedApi;

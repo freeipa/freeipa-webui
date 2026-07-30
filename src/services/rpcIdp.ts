@@ -14,7 +14,7 @@ import { API_VERSION_BACKUP } from "src/utils/utils";
 import { apiToIdpServer } from "src/utils/ipdServerUtils";
 
 /**
- * IdP-related endpoints: useGetIdpEntriesQuery, useSearchIdpEntriesMutation
+ * IdP-related endpoints: useGetIdpEntriesQuery
  *                        useIdpAddMutation, useIdpDeleteMutation, useIdpShowQuery,
  *                        useIdpModMutation
  *
@@ -105,83 +105,6 @@ const extendedApi = api.injectEndpoints({
      *
      */
     getIdpEntries: build.query<BatchRPCResponse, IdpFullDataPayload>({
-      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { searchValue, apiVersion, sizelimit, startIdx, stopIdx } =
-          payloadData;
-
-        if (apiVersion === undefined) {
-          return {
-            error: {
-              status: "CUSTOM_ERROR",
-              data: "",
-              error: "API version not available",
-            } as FetchBaseQueryError,
-          };
-        }
-
-        // FETCH IDP DATA VIA "idp_find" COMMAND
-        // Prepare search parameters
-        const idpFindParams = {
-          pkey_only: true,
-          sizelimit: sizelimit,
-          version: apiVersion,
-        };
-
-        // Prepare payload
-        const payloadDataIdpFind: Command = {
-          method: "idp_find",
-          params: [[searchValue], idpFindParams],
-        };
-
-        // Make call using 'fetchWithBQ'
-        const getResultIdpFind = await fetchWithBQ(
-          getCommand(payloadDataIdpFind)
-        );
-        // Return possible errors
-        if (getResultIdpFind.error) {
-          return { error: getResultIdpFind.error as FetchBaseQueryError };
-        }
-        // If no error: cast and assign 'ids'
-        const responseDataIdpFind = getResultIdpFind.data as FindRPCResponse;
-
-        const idpIds: string[] = [];
-        const idpItemsCount = responseDataIdpFind.result.result
-          .length as number;
-
-        for (let i = startIdx; i < idpItemsCount && i < stopIdx; i++) {
-          const idpId = responseDataIdpFind.result.result[i] as cnType;
-          const { cn } = idpId;
-          idpIds.push(cn[0] as string);
-        }
-
-        // FETCH IDP DATA VIA "idp_show" COMMAND
-        const commands: Command[] = [];
-        idpIds.forEach((idpId) => {
-          commands.push({
-            method: "idp_show",
-            params: [[idpId], {}],
-          });
-        });
-
-        const idpShowResult = await fetchWithBQ(
-          getBatchCommand(commands, apiVersion)
-        );
-
-        const response = idpShowResult.data as BatchRPCResponse;
-        if (response) {
-          response.result.totalCount = idpItemsCount;
-        }
-
-        // Return results
-        return { data: response };
-      },
-    }),
-    /**
-     * Search for a specific IdP server.
-     * @param IdpFullDataPayload
-     * @returns IdP entries that match with the search criteria
-     */
-    searchIdpEntries: build.mutation<BatchRPCResponse, IdpFullDataPayload>({
       async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
         const { searchValue, apiVersion, sizelimit, startIdx, stopIdx } =
           payloadData;
@@ -410,7 +333,6 @@ const extendedApi = api.injectEndpoints({
 
 export const {
   useGetIdpEntriesQuery,
-  useSearchIdpEntriesMutation,
   useIdpAddMutation,
   useIdpDeleteMutation,
   useIdpShowQuery,

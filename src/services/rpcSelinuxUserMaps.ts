@@ -93,62 +93,6 @@ const extendedApi = api.injectEndpoints({
         return { data: response };
       },
     }),
-
-    searchSelinuxUserMapsEntries: build.mutation<
-      BatchRPCResponse,
-      SelinuxUserMapsFullDataPayload
-    >({
-      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { searchValue, apiVersion, sizelimit, startIdx, stopIdx } =
-          payloadData;
-        const apiVersionUsed = apiVersion || API_VERSION_BACKUP;
-
-        const findParams = {
-          pkey_only: true,
-          sizelimit: sizelimit,
-          version: apiVersionUsed,
-        };
-
-        const findCommand: Command = {
-          method: "selinuxusermap_find",
-          params: [[searchValue], findParams],
-        };
-
-        const findResult = await fetchWithBQ(getCommand(findCommand));
-
-        if (findResult.error) {
-          return { error: findResult.error };
-        }
-
-        const findResponse = findResult.data as FindRPCResponse;
-        const ids: string[] = [];
-        const totalCount = findResponse.result.result.length as number;
-
-        for (let i = startIdx; i < totalCount && i < stopIdx; i++) {
-          const item = findResponse.result.result[
-            i
-          ] as unknown as FindSelinuxUserMapArgs;
-          ids.push(item.cn[0]);
-        }
-
-        const showCommands: Command[] = ids.map((id) => ({
-          method: "selinuxusermap_show",
-          params: [[id], {}],
-        }));
-
-        const showResult = await fetchWithBQ(
-          getBatchCommand(showCommands, apiVersionUsed)
-        );
-
-        const response = showResult.data as BatchRPCResponse;
-        if (response) {
-          response.result.totalCount = totalCount;
-        }
-
-        return { data: response };
-      },
-    }),
-
     addSelinuxUserMap: build.mutation<
       FindRPCResponse,
       SelinuxUserMapAddPayload
@@ -204,7 +148,6 @@ const extendedApi = api.injectEndpoints({
 
 export const {
   useGetSelinuxUserMapsFullDataQuery,
-  useSearchSelinuxUserMapsEntriesMutation,
   useAddSelinuxUserMapMutation,
   useDeleteSelinuxUserMapsMutation,
   useEnableSelinuxUserMapsMutation,

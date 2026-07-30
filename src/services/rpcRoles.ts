@@ -9,8 +9,7 @@ import {
 } from "./rpc";
 import { apiToRole } from "src/utils/rolesUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
-import { Role, cnType } from "../utils/datatypes/globalDataTypes";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { Role } from "../utils/datatypes/globalDataTypes";
 
 /**
  * Roles-related endpoints: addToRoles, removeFromRoles, getRolesInfoByName, addRole, deleteRoles
@@ -33,14 +32,6 @@ interface RoleShowPayload {
 interface RoleAddPayload {
   cn: string;
   description?: string;
-}
-
-interface RolesSearchPayload {
-  searchValue: string;
-  sizeLimit: number;
-  apiVersion: string;
-  startIdx: number;
-  stopIdx: number;
 }
 
 export interface RoleMemberPayload {
@@ -184,63 +175,6 @@ const extendedApi = api.injectEndpoints({
       },
     }),
     /**
-     * Search roles via two-step role_find + role_show pattern
-     * @param {RolesSearchPayload} - Search parameters
-     * @returns {BatchRPCResponse} - Batch response with role data
-     */
-    searchRolesEntries: build.mutation<BatchRPCResponse, RolesSearchPayload>({
-      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { searchValue, sizeLimit, apiVersion, startIdx, stopIdx } =
-          payloadData;
-
-        const params = {
-          pkey_only: true,
-          sizelimit: sizeLimit,
-          version: apiVersion,
-          all: true,
-        };
-
-        // Step 1: Find role IDs
-        const findCommand: Command = {
-          method: "role_find",
-          params: [[searchValue], params],
-        };
-
-        const findResult = await fetchWithBQ(getCommand(findCommand));
-        if (findResult.error) {
-          return { error: findResult.error as FetchBaseQueryError };
-        }
-
-        const findResponse = findResult.data as FindRPCResponse;
-        const totalCount = findResponse.result.result.length as number;
-        const ids: string[] = [];
-
-        for (let i = startIdx; i < totalCount && i < stopIdx; i++) {
-          const roleId = findResponse.result.result[i] as cnType;
-          ids.push(roleId.cn[0] as string);
-        }
-
-        // Step 2: Batch show for each role
-        const showCommands: Command[] = ids.map((id) => ({
-          method: "role_show",
-          params: [[id], { no_members: true }],
-        }));
-
-        const showResult = await fetchWithBQ(
-          getBatchCommand(showCommands, apiVersion)
-        );
-
-        const response = showResult.data as BatchRPCResponse;
-        if (response) {
-          response.result.totalCount = totalCount;
-        }
-
-        return response
-          ? { data: response }
-          : { error: showResult.error as FetchBaseQueryError };
-      },
-    }),
-    /**
      * Get a single role by cn (with members)
      * @param {string} cn - Role cn
      * @returns {Role} - Role data with members
@@ -365,7 +299,6 @@ export const {
   useGetRolesInfoByNameQuery,
   useAddRoleMutation,
   useDeleteRolesMutation,
-  useSearchRolesEntriesMutation,
   useSaveRoleMutation,
   useGetRoleByIdQuery,
   useAddAsMemberRoleMutation,

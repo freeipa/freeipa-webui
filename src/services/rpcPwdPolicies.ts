@@ -166,86 +166,6 @@ const extendedApi = api.injectEndpoints({
       },
     }),
     /**
-     * Search for a specific password policy.
-     * @param SubIdDataPayload
-     * @returns Subordinate ID entries that match with the search criteria
-     */
-    searchPwdPolicyEntries: build.mutation<
-      BatchRPCResponse,
-      PwPolicyFullDataPayload
-    >({
-      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { searchValue, apiVersion, sizelimit, startIdx, stopIdx } =
-          payloadData;
-
-        if (apiVersion === undefined) {
-          return {
-            error: {
-              status: "CUSTOM_ERROR",
-              data: "",
-              error: "API version not available",
-            } as FetchBaseQueryError,
-          };
-        }
-
-        // FETCH PWD POLICIES DATA VIA "pwpolicy_find" COMMAND
-        // Prepare search parameters
-        const pwPolicyIdsParams = {
-          pkey_only: true,
-          sizelimit: sizelimit,
-          version: apiVersion,
-        };
-
-        // Prepare payload
-        const payloadDataPwPolicy: Command = {
-          method: "pwpolicy_find",
-          params: [[searchValue], pwPolicyIdsParams],
-        };
-
-        // Make call using 'fetchWithBQ'
-        const getResultPwdPolicy = await fetchWithBQ(
-          getCommand(payloadDataPwPolicy)
-        );
-        // Return possible errors
-        if (getResultPwdPolicy.error) {
-          return { error: getResultPwdPolicy.error as FetchBaseQueryError };
-        }
-        // If no error: cast and assign 'ids'
-        const responseDataPwPolicy = getResultPwdPolicy.data as FindRPCResponse;
-
-        const pwPolicyIds: string[] = [];
-        const pwPolicyItemsCount = responseDataPwPolicy.result.result
-          .length as number;
-
-        for (let i = startIdx; i < pwPolicyItemsCount && i < stopIdx; i++) {
-          const pwPolicyId = responseDataPwPolicy.result.result[i] as cnType;
-          const { cn } = pwPolicyId;
-          pwPolicyIds.push(cn[0] as string);
-        }
-
-        // FETCH PASSWORD POLICY DATA VIA "pwpolicy_show" COMMAND
-        const commands: Command[] = [];
-        pwPolicyIds.forEach((pwPolicyId) => {
-          commands.push({
-            method: "pwpolicy_show",
-            params: [[pwPolicyId], {}],
-          });
-        });
-
-        const pwdPolicyShowResult = await fetchWithBQ(
-          getBatchCommand(commands, apiVersion)
-        );
-
-        const response = pwdPolicyShowResult.data as BatchRPCResponse;
-        if (response) {
-          response.result.totalCount = pwPolicyItemsCount;
-        }
-
-        // Return results
-        return { data: response };
-      },
-    }),
-    /**
      * Add a new password policy
      * @param {PwPolicyAddPayload} - Payload with the new password policy data
      * @returns {Promise<FindRPCResponse>} - Promise with the response data
@@ -360,7 +280,6 @@ const extendedApi = api.injectEndpoints({
 export const {
   usePwPolicyFindQuery,
   useGetPwPoliciesEntriesQuery,
-  useSearchPwdPolicyEntriesMutation,
   usePwPolicyAddMutation,
   usePwPolicyDeleteMutation,
   usePwPolicyShowQuery,

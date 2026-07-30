@@ -65,7 +65,7 @@ export interface AutomemberShowPayload {
   type: string;
 }
 
-export interface AutomemberRulesSearchResult {
+interface AutomemberRulesSearchResult {
   automemberRules: AutomemberEntry[];
   totalCount: number;
 }

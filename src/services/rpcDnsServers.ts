@@ -76,48 +76,6 @@ const extendedApi = api.injectEndpoints({
       },
     }),
     /**
-     * Search for a specific DNS server (Mutation)
-     * @param {DnsServersFindPayload} payload - The payload containing search parameters
-     * @returns {DnsServersFindResponse} - Response data or error
-     *
-     */
-    searchDnsServersEntries: build.mutation<
-      DnsServersFindResponse,
-      DnsServersFindPayload
-    >({
-      query: (payload) => {
-        const dnsServersParams = {
-          pkey_only: payload.pkeyOnly !== undefined ? payload.pkeyOnly : true,
-          sizelimit: payload.sizeLimit,
-          version: payload.version || API_VERSION_BACKUP,
-        };
-
-        return getCommand({
-          method: "dnsserver_find",
-          params: [[payload.searchValue], dnsServersParams],
-        });
-      },
-      transformResponse: (response: FindRPCResponse) => {
-        const listResult = response.result.result;
-        const listSize = response.result.count;
-        const error = response.error;
-        const dnsServerIdList: string[] = [];
-
-        if (error && typeof error === "object") {
-          return { data: [], error: error.message };
-        } else if (error && typeof error === "string") {
-          return { data: [], error: error };
-        }
-
-        for (let i = 0; i < listSize; i++) {
-          const item = listResult[i] as DnsServersFindResult;
-          dnsServerIdList.push(item.idnsserverid);
-        }
-
-        return { data: dnsServerIdList, error: null };
-      },
-    }),
-    /**
      * Get DNS servers details
      * @param {string} dnsServerId - The ID of the DNS server
      * @returns {Promise<FindRPCResponse>} - Promise with the response data
@@ -171,7 +129,6 @@ const extendedApi = api.injectEndpoints({
 
 export const {
   useDnsServersFindQuery,
-  useSearchDnsServersEntriesMutation,
   useDnsServersShowQuery,
   useDnsServersModMutation,
 } = extendedApi;

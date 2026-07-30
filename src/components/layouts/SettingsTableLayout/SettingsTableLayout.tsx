@@ -16,7 +16,7 @@ import TableLayout from "../TableLayout";
 import PaginationLayout, { PaginationData } from "../PaginationLayout";
 
 /** Local pagination for settings tables; includes totalCount for empty-state gating. */
-export interface SettingsPaginationData extends PaginationData {
+interface SettingsPaginationData extends PaginationData {
   totalCount: number;
 }
 

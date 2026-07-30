@@ -9,13 +9,11 @@ import {
 } from "./rpc";
 // utils
 import { API_VERSION_BACKUP } from "../utils/utils";
-import { apiToDnsZone } from "src/utils/dnsZonesUtils";
 import { apiToDnsRecord } from "src/utils/dnsRecordUtils";
 // Data types
 import {
   DNSRecord,
   DnsRecordType,
-  DNSZone,
   dnsZoneType,
   RecordType,
   RecordTypeData,
@@ -39,14 +37,6 @@ interface DnsZonesFullDataPayload {
   sizelimit: number;
   startIdx: number;
   stopIdx: number;
-}
-
-interface DnsZoneBatchResponse {
-  error: string;
-  id: string;
-  principal: string;
-  version: string;
-  result: DNSZone[];
 }
 
 export interface AddDnsZonePayload {
@@ -77,7 +67,7 @@ export interface DnsZoneModPayload {
   nsec3paramrecord?: string;
 }
 
-export interface FindDnsRecordPayload {
+interface FindDnsRecordPayload {
   dnsZoneId: string;
   recordName: string;
   sizeLimit?: number;
@@ -319,108 +309,6 @@ const extendedApi = api.injectEndpoints({
         },
       }
     ),
-    /**
-     * Search for a specific DNS zone
-     * @param {DnsZonesFullDataPayload} payload - The payload containing search parameters
-     * @returns {DnsZoneBatchResponse} - List of DNS zones full data
-     */
-    searchDnsZonesEntries: build.mutation<
-      DnsZoneBatchResponse,
-      DnsZonesFullDataPayload
-    >({
-      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { searchValue, apiVersion, sizelimit, startIdx, stopIdx } =
-          payloadData;
-
-        if (apiVersion === undefined) {
-          return {
-            error: {
-              status: "CUSTOM_ERROR",
-              data: "",
-              error: "API version not available",
-            },
-          };
-        }
-
-        // FETCH DNS ZONES DATA VIA "dnszone_find" COMMAND
-        // Prepare search parameters
-        const dnsZonesIdsParams = {
-          pkey_only: true,
-          sizelimit: sizelimit,
-          version: apiVersion,
-        };
-
-        // Prepare payload
-        const payloadDataDnsZones: Command = {
-          method: "dnszone_find",
-          params: [[searchValue], dnsZonesIdsParams],
-        };
-
-        // Make call using 'fetchWithBQ'
-        const getResultDnsZones = await fetchWithBQ(
-          getCommand(payloadDataDnsZones)
-        );
-        // Return possible errors
-        if (getResultDnsZones.error) {
-          return { error: getResultDnsZones.error };
-        }
-        // If no error: cast and assign 'ids'
-        const responseDataDnsZones = getResultDnsZones.data as FindRPCResponse;
-
-        const dnsZonesIds: string[] = [];
-        const dnsZonesItemsCount = responseDataDnsZones.result.result
-          .length as number;
-
-        for (let i = startIdx; i < dnsZonesItemsCount && i < stopIdx; i++) {
-          const dnsZoneId = responseDataDnsZones.result.result[
-            i
-          ] as dnsZoneType;
-          const dnsName = dnsZoneId.idnsname[0]["__dns_name__"];
-          if (dnsName) {
-            dnsZonesIds.push(dnsName as string);
-          }
-        }
-
-        // FETCH DNS ZONE DATA VIA "dnszone_show" COMMAND
-        const commands: Command[] = [];
-        dnsZonesIds.forEach((dnsZoneId) => {
-          commands.push({
-            method: "dnszone_show",
-            params: [[dnsZoneId], {}],
-          });
-        });
-
-        const dnsZonesShowResult = await fetchWithBQ(
-          getBatchCommand(commands, apiVersion)
-        );
-
-        const response = dnsZonesShowResult.data as BatchRPCResponse;
-        if (response) {
-          response.result.totalCount = dnsZonesItemsCount;
-        }
-
-        // Handle the '__dns_name__' fields
-        const dnsZones: DNSZone[] = [];
-        const count = response.result.totalCount;
-        for (let i = 0; i < count; i++) {
-          const dnsZone = response.result.results[i].result as Record<
-            string,
-            unknown
-          >;
-          // Convert API object to DNSZone type
-          const convertedDnsZone: DNSZone = apiToDnsZone(dnsZone);
-          dnsZones.push(convertedDnsZone);
-        }
-
-        // Return results
-        return {
-          data: {
-            ...response,
-            result: dnsZones,
-          },
-        };
-      },
-    }),
     /**
      * Add DNS zone
      * @param {AddDnsZonePayload} payload - The payload containing new DNS zone data
@@ -751,137 +639,6 @@ const extendedApi = api.injectEndpoints({
       },
     }),
     /**
-     * Find DNS records
-     * @param {FindDnsRecordPayload} payload - The payload containing DNS zone ID and record name
-     * @returns {DnsRecordBatchResponse} - Promise with the response data
-     */
-    searchDnsRecordsEntries: build.mutation<
-      DnsRecordBatchResponse,
-      FindDnsRecordPayload
-    >({
-      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const {
-          dnsZoneId,
-          recordName,
-          sizeLimit,
-          startIdx = 0,
-          stopIdx,
-          version,
-        } = payloadData;
-
-        const apiVersion = version || API_VERSION_BACKUP;
-        const limit = stopIdx ? Math.max(stopIdx, 100) : sizeLimit || 100;
-
-        // FETCH DNS RECORDS DATA VIA "dnsrecord_find" COMMAND
-        const dnsRecordParams = {
-          pkey_only: true,
-          sizelimit: limit,
-          version: apiVersion,
-        };
-
-        // Prepare payload
-        const payloadDataDnsRecords: Command = {
-          method: "dnsrecord_find",
-          params: [[dnsZoneId, recordName], dnsRecordParams],
-        };
-
-        // Make call using 'fetchWithBQ'
-        const getResultDnsRecords = await fetchWithBQ(
-          getCommand(payloadDataDnsRecords)
-        );
-        // Return possible errors
-        if (getResultDnsRecords.error) {
-          return { error: getResultDnsRecords.error };
-        }
-        // If no error: cast and assign 'ids'
-        const responseDataDnsRecords =
-          getResultDnsRecords.data as FindRPCResponse;
-
-        const dnsRecordsIds: string[] = [];
-        const dnsRecordsItemsCount = responseDataDnsRecords.result.result
-          .length as number;
-
-        // Apply pagination using startIdx and stopIdx
-        const effectiveStopIdx = stopIdx || dnsRecordsItemsCount;
-
-        for (
-          let i = startIdx;
-          i < dnsRecordsItemsCount && i < effectiveStopIdx;
-          i++
-        ) {
-          const dnsRecordId = responseDataDnsRecords.result.result[
-            i
-          ] as dnsZoneType;
-          const dnsRecordType = dnsRecordId.idnsname[0]["__dns_name__"];
-          if (dnsRecordType) {
-            dnsRecordsIds.push(dnsRecordType);
-          }
-        }
-
-        // FETCH DNS RECORDS DATA VIA "dnsrecord_show" COMMAND
-        const commands: Command[] = [];
-        dnsRecordsIds.forEach((recordType) => {
-          commands.push({
-            method: "dnsrecord_show",
-            params: [
-              [dnsZoneId, recordType],
-              { all: true, rights: true, structured: true },
-            ],
-          });
-        });
-
-        const dnsZonesShowResult = await fetchWithBQ(
-          getBatchCommand(commands, apiVersion)
-        );
-
-        const response = dnsZonesShowResult.data as BatchRPCResponse;
-
-        // Handle the '__dns_name__' fields
-        const dnsRecords: DNSRecord[] = [];
-        const records = response.result.results as unknown as BatchResult[];
-
-        records.forEach((dnsRec) => {
-          // Convert API object to 'DNSRecord' type
-          const convertedDnsRecord: DNSRecord = apiToDnsRecord(dnsRec.result);
-          const nsrecordsTypesList = dnsRec.result.dnsrecords as RecordType[];
-
-          // Extract the types into a string format (e.g. "A, NS, ...")
-          const types: string[] = [];
-          convertedDnsRecord.dnsrecords.map((dnsRecord) => {
-            types.push(dnsRecord.dnstype);
-          });
-          const typesString = types.join(", ");
-
-          // Extract the data into a string format (e.g. "dns1.example.com, dns2.example.com, ...")
-          const data: string[] = [];
-          convertedDnsRecord.dnsrecords.map((dnsRecord) => {
-            data.push(dnsRecord.dnsdata);
-          });
-          const dataString = data.join(", ");
-
-          if (nsrecordsTypesList !== undefined) {
-            convertedDnsRecord.dnsrecords = nsrecordsTypesList.map(() => ({
-              dnstype: typesString,
-              dnsdata: dataString,
-            }));
-            dnsRecords.push(convertedDnsRecord);
-          }
-
-          // Add 'dnsrecord_type' and 'dnsrecord_data' to the 'convertedDnsRecord'
-          convertedDnsRecord.dnsrecord_types = typesString;
-          convertedDnsRecord.dnsrecord_data = dataString;
-        });
-
-        return {
-          data: {
-            ...response,
-            count: responseDataDnsRecords.result.count,
-            result: dnsRecords,
-          },
-        };
-      },
-    }),
-    /**
      * Add DNS record
      * @param {DynamicAddDnsRecordPayload} payload - The payload containing DNS zone ID and record data
      * @returns {Promise<FindRPCResponse>} - Promise with the response data
@@ -1032,7 +789,6 @@ const extendedApi = api.injectEndpoints({
 
 export const {
   useGetDnsZonesFullDataQuery,
-  useSearchDnsZonesEntriesMutation,
   useAddDnsZoneMutation,
   useDnsZoneDeleteMutation,
   useDnsZoneDisableMutation,
@@ -1042,7 +798,6 @@ export const {
   useAddDnsZonePermissionMutation,
   useRemoveDnsZonePermissionMutation,
   useDnsRecordFindQuery,
-  useSearchDnsRecordsEntriesMutation,
   useAddDnsRecordMutation,
   useDnsRecordDeleteMutation,
   useShowDnsRecordQuery,

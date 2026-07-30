@@ -10,16 +10,13 @@ import {
 import { API_VERSION_BACKUP } from "../utils/utils";
 // Data types
 import {
-  DNSForwardZone,
   dnsZoneType,
   IDNSForwardPolicy,
 } from "src/utils/datatypes/globalDataTypes";
-import { apiToDnsForwardZone } from "src/utils/dnsForwardZonesUtils";
 
 /**
  * Forward DNS zones-related endpoints: useAddDnsForwardZoneMutation, useDnsForwardZoneDeleteMutation,
  *        useDnsForwardZoneDisableMutation, useDnsForwardZoneEnableMutation, useGetDnsForwardZonesFullDataQuery,
- *        useSearchDnsForwardZonesEntriesMutation
  *
  * API commands:
  * - dnsforwardzone_add: https://freeipa.readthedocs.io/en/latest/api/dnsforwardzone_add.html
@@ -85,14 +82,6 @@ interface DnsForwardZonesFullDataPayload {
   apiVersion: string;
   startIdx: number;
   stopIdx: number;
-}
-
-interface DnsForwardZoneBatchResponse {
-  error: string;
-  id: string;
-  principal: string;
-  version: string;
-  result: DNSForwardZone[];
 }
 
 /**
@@ -319,103 +308,6 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
-    /**
-     * Search for a specific DNS zone
-     * @param {DnsForwardZonesFullDataPayload} payload - The payload containing search parameters
-     * @returns {DnsForwardZoneBatchResponse} - List of DNS zones full data
-     */
-    searchDnsForwardZonesEntries: build.mutation<
-      DnsForwardZoneBatchResponse,
-      DnsForwardZonesFullDataPayload
-    >({
-      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { searchValue, apiVersion, startIdx, stopIdx } = payloadData;
-
-        if (apiVersion === undefined) {
-          return {
-            error: {
-              status: "CUSTOM_ERROR",
-              data: "",
-              error: "API version not available",
-            },
-          };
-        }
-
-        // FETCH DNS ZONES DATA VIA "dnszone_find" COMMAND
-        // Prepare search parameters
-        const dnsForwardZonesIdsParams: DnsForwardZonesFindPayload = {
-          pkeyOnly: true,
-          version: apiVersion,
-          searchValue,
-        };
-
-        // Make call using 'fetchWithBQ'
-        const getResultDnsForwardZones = await fetchWithBQ(
-          dnsForwardZonesFind(dnsForwardZonesIdsParams, "dnsforwardzone_find")
-        );
-        // Return possible errors
-        if (getResultDnsForwardZones.error) {
-          return { error: getResultDnsForwardZones.error };
-        }
-        // If no error: cast and assign 'ids'
-        const responseDataDnsForwardZones =
-          getResultDnsForwardZones.data as FindRPCResponse;
-
-        const dnsZonesIds: string[] = [];
-        const dnsZonesItemsCount = responseDataDnsForwardZones.result.result
-          .length as number;
-
-        for (let i = startIdx; i < dnsZonesItemsCount && i < stopIdx; i++) {
-          const dnsZoneId = responseDataDnsForwardZones.result.result[
-            i
-          ] as dnsZoneType;
-          const dnsName = dnsZoneId.idnsname[0]["__dns_name__"];
-          if (dnsName) {
-            dnsZonesIds.push(dnsName as string);
-          }
-        }
-
-        // FETCH DNS ZONE DATA VIA "dnsforwardzone_show" COMMAND
-        const commands: Command[] = [];
-        dnsZonesIds.forEach((dnsZoneId) => {
-          commands.push({
-            method: "dnsforwardzone_show",
-            params: [[dnsZoneId], {}],
-          });
-        });
-
-        const dnsForwardZonesShowResult = await fetchWithBQ(
-          getBatchCommand(commands, apiVersion)
-        );
-
-        const response = dnsForwardZonesShowResult.data as BatchRPCResponse;
-        if (response) {
-          response.result.totalCount = dnsZonesItemsCount;
-        }
-
-        // Handle the '__dns_name__' fields
-        const dnsForwardZones: DNSForwardZone[] = [];
-        const count = response.result.totalCount;
-        for (let i = 0; i < count; i++) {
-          const dnsZone = response.result.results[i].result as Record<
-            string,
-            unknown
-          >;
-          // Convert API object to DNSForwardZone type
-          const convertedDnsForwardZone: DNSForwardZone =
-            apiToDnsForwardZone(dnsZone);
-          dnsForwardZones.push(convertedDnsForwardZone);
-        }
-
-        // Return results
-        return {
-          data: {
-            ...response,
-            result: dnsForwardZones,
-          },
-        };
-      },
-    }),
   }),
   overrideExisting: false,
 });
@@ -428,5 +320,4 @@ export const {
   useDnsForwardZoneEnableMutation,
   useGetDnsForwardZoneDetailsQuery,
   useGetDnsForwardZonesFullDataQuery,
-  useSearchDnsForwardZonesEntriesMutation,
 } = extendedApi;

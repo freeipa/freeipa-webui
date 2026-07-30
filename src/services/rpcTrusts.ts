@@ -65,7 +65,7 @@ export interface GlobalTrustConfigPayload {
   ipantfallbackprimarygroup: string;
 }
 
-export interface TrustDomainFindPayload {
+interface TrustDomainFindPayload {
   trustId: string;
   searchValue?: string;
   sizelimit: number;
@@ -91,90 +91,6 @@ const extendedApi = api.injectEndpoints({
      *
      */
     getTrustsFullData: build.query<BatchRPCResponse, TrustsFullDataPayload>({
-      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
-        const { searchValue, apiVersion, sizelimit, startIdx, stopIdx } =
-          payloadData;
-        const apiVersionUsed = apiVersion || API_VERSION_BACKUP;
-
-        // FETCH TRUSTS DATA VIA "trust_find" COMMAND
-        // Prepare search parameters
-        const trustsIdsParams = {
-          pkey_only: true,
-          sizelimit: sizelimit,
-          version: apiVersionUsed,
-        };
-
-        // Prepare payload
-        const payloadDataTrusts: Command = {
-          method: "trust_find",
-          params: [[searchValue], trustsIdsParams],
-        };
-
-        // Make call using 'fetchWithBQ'
-        const getResultTrusts = await fetchWithBQ(
-          getCommand(payloadDataTrusts)
-        );
-
-        // Return possible errors
-        if (getResultTrusts.error) {
-          return { error: getResultTrusts.error };
-        }
-
-        // If no error: cast and assign 'ids'
-        const responseDataTrusts = getResultTrusts.data as FindRPCResponse;
-        const trustsIds: string[] = [];
-        const trustsItemsCount = responseDataTrusts.result.result
-          .length as number;
-
-        for (let i = startIdx; i < trustsItemsCount && i < stopIdx; i++) {
-          const trustId = responseDataTrusts.result.result[i] as FindTrustArgs;
-          trustsIds.push(trustId.cn[0]);
-        }
-
-        // FETCH TRUST DATA VIA "trust_show" COMMAND
-        const commands: Command[] = [];
-        trustsIds.map((trustId) => {
-          commands.push({
-            method: "trust_show",
-            params: [[trustId], {}],
-          });
-        });
-
-        const trustsShowResult = await fetchWithBQ(
-          getBatchCommand(commands, apiVersionUsed)
-        );
-
-        const response = trustsShowResult.data as BatchRPCResponse;
-        if (response) {
-          response.result.totalCount = trustsItemsCount;
-        }
-
-        // Return results
-        const results: Trust[] = [];
-        for (
-          let i = startIdx;
-          i < response.result.totalCount && i < stopIdx;
-          i++
-        ) {
-          const trust = response.result.results[i].result as Record<
-            string,
-            unknown
-          >;
-          results.push(apiToTrust(trust));
-        }
-
-        return { data: response };
-      },
-    }),
-    /**
-     * Search for a specific Trust
-     * @param {TrustsFullDataPayload} payload - The payload containing search parameters
-     * @returns {BatchRPCResponse} - List of Trusts full data
-     */
-    searchTrustsEntries: build.mutation<
-      BatchRPCResponse,
-      TrustsFullDataPayload
-    >({
       async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
         const { searchValue, apiVersion, sizelimit, startIdx, stopIdx } =
           payloadData;
@@ -399,23 +315,6 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
-    /*
-     * Search for trusted domains
-     * @param {TrustDomainFindPayload} payload - The payload containing the search parameters
-     * @returns {FindRPCResponse} - Promise with the response data
-     */
-    searchTrustDomainsEntries: build.mutation<
-      FindRPCResponse,
-      TrustDomainFindPayload
-    >({
-      query: (payload) => {
-        const { trustId, searchValue, sizelimit } = payload;
-        return getCommand({
-          method: "trustdomain_find",
-          params: [[trustId, searchValue || ""], { sizelimit }],
-        });
-      },
-    }),
     /**
      * Fetch trusted domains
      * @param {string} trustId - The ID of the trust
@@ -482,7 +381,6 @@ const extendedApi = api.injectEndpoints({
 
 export const {
   useGetTrustsFullDataQuery,
-  useSearchTrustsEntriesMutation,
   useAddTrustMutation,
   useDeleteTrustsMutation,
   useTrustShowQuery,
@@ -490,7 +388,6 @@ export const {
   useGlobalTrustConfigShowQuery,
   useGlobalTrustConfigModMutation,
   useTrustDomainsFindQuery,
-  useSearchTrustDomainsEntriesMutation,
   useFetchTrustDomainsMutation,
   useEnableDisableTrustDomainsMutation,
   useDeleteTrustedDomainsMutation,
