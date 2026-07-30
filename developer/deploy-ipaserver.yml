@@ -41,6 +41,12 @@
             RewriteRule ^ index.html [QSA,L]
           </Directory>
 
+    - name: Temporary fix for CryptographyDeprecationWarning
+      ansible.builtin.replace:
+        path: /usr/lib/python3.14/site-packages/ipalib/constants.py
+        regexp: '^(\s*)b"\\x00" \* 8\), modes\.CBC\(b"\\x00" \* 8\)\):'
+        replace: '\1b"\\x00" * 24), modes.CBC(b"\\x00" * 8)):'
+
     - name: Restart web server
       ansible.builtin.systemd_service:
         name: httpd.service
