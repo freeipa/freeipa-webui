@@ -2,13 +2,13 @@ import React from "react";
 import {
   cleanup,
   fireEvent,
-  render,
   screen,
   waitForElementToBeRemoved,
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, Mock, vi } from "vitest";
 // Component
 import DualListLayout, { DualListProps } from "./DualListLayout";
+import { renderWithRouter } from "src/utils/testUtils";
 
 interface MockReturn {
   data: { list: string[] } | { error: { message: string } };
@@ -28,6 +28,10 @@ const retrieveIDs: Mock<() => Promise<MockReturn>> = vi.fn(async () => {
 });
 
 vi.mock("src/services/rpc", () => ({
+  api: {
+    reducer: () => ({}),
+    middleware: () => (next) => next,
+  },
   useGetIDListMutation: () => [retrieveIDs],
 }));
 
@@ -53,7 +57,7 @@ describe("DualListLayout Component", () => {
   });
 
   it("renders the DualListLayout component", async () => {
-    render(<DualListLayout {...initialProps} />);
+    renderWithRouter(<DualListLayout {...initialProps} />);
 
     // Search exists
     const searchEntry = screen.getByRole("textbox", {
@@ -81,7 +85,7 @@ describe("DualListLayout Component", () => {
   });
 
   it("renders the DualListLayout component without items", async () => {
-    render(<DualListLayout {...initialProps} />);
+    renderWithRouter(<DualListLayout {...initialProps} />);
 
     // Mock no entries
     retrieveIDs.mockReturnValueOnce(
@@ -114,7 +118,7 @@ describe("DualListLayout Component", () => {
   });
 
   it("renders the DualListLayout component with items", async () => {
-    render(<DualListLayout {...initialProps} />);
+    renderWithRouter(<DualListLayout {...initialProps} />);
 
     // Fetch new entries
     const clickButton = screen.getByRole("option", {
@@ -138,7 +142,7 @@ describe("DualListLayout Component", () => {
   });
 
   it("renders the DualListLayout component using search", async () => {
-    render(<DualListLayout {...initialProps} />);
+    renderWithRouter(<DualListLayout {...initialProps} />);
 
     // Use search bar
     const searchEntry = screen.getByRole("textbox", {
@@ -163,7 +167,7 @@ describe("DualListLayout Component", () => {
   });
 
   it("renders the DualListLayout with moved items", async () => {
-    render(<DualListLayout {...initialProps} />);
+    renderWithRouter(<DualListLayout {...initialProps} />);
 
     // Fetch new entries
     const clickButton = screen.getByRole("option", {
@@ -200,7 +204,9 @@ describe("DualListLayout Component", () => {
   });
 
   it("renders the DualListLayout with externals correctly", async () => {
-    render(<DualListLayout {...initialProps} addExternalsOption={true} />);
+    renderWithRouter(
+      <DualListLayout {...initialProps} addExternalsOption={true} />
+    );
 
     const TEST_EXTERNAL = "test";
 

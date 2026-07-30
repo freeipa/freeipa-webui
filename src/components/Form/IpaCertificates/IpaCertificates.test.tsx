@@ -10,7 +10,7 @@ import {
 } from "src/utils/datatypes/globalDataTypes";
 import { parseDn } from "src/utils/utils";
 // Redux
-import { renderWithAlerts } from "src/utils/testAlertsUtils";
+import { renderWithAlerts } from "src/utils/testUtils";
 
 interface MockReturn {
   data: { result: boolean } | { error: { message: string } };

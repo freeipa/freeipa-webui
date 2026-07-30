@@ -6,7 +6,7 @@ import IpaSshPublicKeys, {
   PropsToSshPublicKeysModal,
 } from "./IpaSshPublicKeys";
 // Redux
-import { renderWithAlerts } from "src/utils/testAlertsUtils";
+import { renderWithAlerts } from "src/utils/testUtils";
 
 /**
  * Checks whether payload argument for updateSSHKey contains string *fail create*

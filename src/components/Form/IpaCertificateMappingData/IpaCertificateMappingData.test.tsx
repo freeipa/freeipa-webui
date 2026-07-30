@@ -6,7 +6,7 @@ import IpaCertificateMappingData, {
   PropsToIpaCertificateMappingData,
 } from "./IpaCertificateMappingData";
 // Redux
-import { renderWithAlerts } from "src/utils/testAlertsUtils";
+import { renderWithAlerts } from "src/utils/testUtils";
 
 interface MockReturn {
   data:

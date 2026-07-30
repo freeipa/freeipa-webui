@@ -1,37 +1,9 @@
 import React from "react";
-import { MemoryRouter, useSearchParams } from "react-router";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 // Component
 import PaginationLayout from "./PaginationLayout";
-
-const SearchParamsProbe = ({
-  onParams,
-}: {
-  onParams: (params: URLSearchParams) => void;
-}) => {
-  const [params] = useSearchParams();
-  onParams(params);
-  return null;
-};
-
-const renderWithRouter = (ui: React.ReactElement, initialEntry = "/") => {
-  let latestParams = new URLSearchParams();
-  const result = render(
-    <MemoryRouter initialEntries={[initialEntry]}>
-      {ui}
-      <SearchParamsProbe
-        onParams={(params) => {
-          latestParams = params;
-        }}
-      />
-    </MemoryRouter>
-  );
-  return {
-    ...result,
-    getParams: () => latestParams,
-  };
-};
+import { renderWithRouter } from "src/utils/testUtils";
 
 const list = Array.from({ length: 50 }, (_, i) => `item-${i + 1}`);
 

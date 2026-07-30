@@ -5,7 +5,7 @@ import { Mock, vi, describe, afterEach, it, expect } from "vitest";
 import PrincipalAliasMultiTextBox, {
   PrincipalAliasMultiTextBoxProps,
 } from "./PrincipalAliasMultiTextBox";
-import { renderWithAlerts } from "src/utils/testAlertsUtils";
+import { renderWithAlerts } from "src/utils/testUtils";
 
 interface MockReturn {
   data: { result: boolean } | { error: { message: string } };
