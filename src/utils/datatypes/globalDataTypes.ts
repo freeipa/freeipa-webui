@@ -224,6 +224,7 @@ export interface Privilege {
   cn: string;
   description: string;
   memberof_permission: string[];
+  member_role: string[];
 }
 
 export interface Permission {

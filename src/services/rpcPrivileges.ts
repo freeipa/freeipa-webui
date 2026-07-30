@@ -23,6 +23,8 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
  * - privilege_add_permission: https://freeipa.readthedocs.io/en/latest/api/privilege_add_permission.html
  * - privilege_remove_permission: https://freeipa.readthedocs.io/en/latest/api/privilege_remove_permission.html
  * - permission_find: https://freeipa.readthedocs.io/en/latest/api/permission_find.html
+ * - privilege_add_member: https://freeipa.readthedocs.io/en/latest/api/privilege_add_member.html
+ * - privilege_remove_member: https://freeipa.readthedocs.io/en/latest/api/privilege_remove_member.html
  */
 
 interface PrivilegeShowPayload {
@@ -34,6 +36,14 @@ interface PrivilegeShowPayload {
 interface PrivilegeAddPayload {
   cn: string;
   description?: string;
+}
+
+type PrivilegeMemberEntityType = "role";
+
+export interface PrivilegeMemberPayload {
+  entryName: string;
+  entityType: PrivilegeMemberEntityType;
+  memberIds: string[];
 }
 
 interface PrivilegesFullDataPayload {
@@ -82,10 +92,11 @@ const extendedApi = api.injectEndpoints({
         }
 
         const findResponse = findResult.data as FindRPCResponse;
-        const totalCount = findResponse.result.result.length as number;
+        const totalCount = findResponse.result.count as number;
+        const pageItemsCount = findResponse.result.result.length as number;
         const ids: string[] = [];
 
-        for (let i = startIdx; i < totalCount && i < stopIdx; i++) {
+        for (let i = startIdx; i < pageItemsCount && i < stopIdx; i++) {
           const privilegeId = findResponse.result.result[i] as cnType;
           ids.push(privilegeId.cn[0] as string);
         }
@@ -189,8 +200,8 @@ const extendedApi = api.injectEndpoints({
       },
     }),
     /**
-     * Get a privilege by cn via `privilege_show`
-     * @param {string} cn - Privilege name
+     * Get a privilege by cn via `privilege_show` with all fields
+     * @param {string} cn - Privilege cn
      * @returns {Privilege} - Privilege data
      */
     getPrivilegeById: build.query<Privilege, string>({
@@ -257,6 +268,46 @@ const extendedApi = api.injectEndpoints({
           ],
         }),
     }),
+    /**
+     * Add members to a privilege via `privilege_add_member`
+     * @param {PrivilegeMemberPayload} - Payload with privilege name, entity type, and member IDs
+     * @returns {FindRPCResponse} - Response from API
+     */
+    addAsMemberPrivilege: build.mutation<
+      FindRPCResponse,
+      PrivilegeMemberPayload
+    >({
+      query: (payload) => {
+        const params: Record<string, unknown> = {
+          version: API_VERSION_BACKUP,
+          [payload.entityType]: payload.memberIds,
+        };
+        return getCommand({
+          method: "privilege_add_member",
+          params: [[payload.entryName], params],
+        });
+      },
+    }),
+    /**
+     * Remove members from a privilege via `privilege_remove_member`
+     * @param {PrivilegeMemberPayload} - Payload with privilege name, entity type, and member IDs
+     * @returns {FindRPCResponse} - Response from API
+     */
+    removeAsMemberPrivilege: build.mutation<
+      FindRPCResponse,
+      PrivilegeMemberPayload
+    >({
+      query: (payload) => {
+        const params: Record<string, unknown> = {
+          version: API_VERSION_BACKUP,
+          [payload.entityType]: payload.memberIds,
+        };
+        return getCommand({
+          method: "privilege_remove_member",
+          params: [[payload.entryName], params],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -282,4 +333,6 @@ export const {
   useGetPermissionsQuery,
   useAddPermissionToPrivilegeMutation,
   useRemovePermissionFromPrivilegeMutation,
+  useAddAsMemberPrivilegeMutation,
+  useRemoveAsMemberPrivilegeMutation,
 } = extendedApi;

@@ -4,7 +4,8 @@ import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate } from "react-router";
 // Components
-import PrivilegesSettings from "./PrivilegesSettings";
+import PrivilegesSettings from "src/pages/Privileges/PrivilegesSettings";
+import MembersRoles from "src/components/Members/MembersRoles";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
@@ -33,6 +34,12 @@ interface PrivilegesTabsProps {
 const TAB_ROUTES: Record<string, (cn: string) => string> = {
   settings: (cn) => `/privileges/${cn}`,
   permissions: (cn) => `/privileges/${cn}/permissions`,
+  member_role: (cn) => `/privileges/${cn}/member_role`,
+};
+
+const getTabKeyFromSection = (section?: string): string => {
+  if (!section) return "settings";
+  return section in TAB_ROUTES ? section : "settings";
 };
 
 const PrivilegesTabs = ({ section }: PrivilegesTabsProps) => {
@@ -51,7 +58,9 @@ const PrivilegesTabs = ({ section }: PrivilegesTabsProps) => {
 
   const privilegeSettingsData = usePrivilegeSettings(cn);
 
-  const [activeTabKey, setActiveTabKey] = useState(section || "settings");
+  const [activeTabKey, setActiveTabKey] = useState(() =>
+    getTabKeyFromSection(section)
+  );
 
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
@@ -83,9 +92,9 @@ const PrivilegesTabs = ({ section }: PrivilegesTabsProps) => {
 
   React.useEffect(() => {
     if (!section) {
-      navigate("/privileges/" + cn);
+      navigate(TAB_ROUTES.settings(cn));
     }
-    setActiveTabKey(section || "settings");
+    setActiveTabKey(getTabKeyFromSection(section));
   }, [section, cn, navigate]);
 
   if (privilegeSettingsData.isLoading) {
@@ -149,6 +158,13 @@ const PrivilegesTabs = ({ section }: PrivilegesTabsProps) => {
               )}
               onOpenContextualPanel={() => dispatch(toggleHelpPanel())}
             />
+          </Tab>
+          <Tab
+            eventKey={"member_role"}
+            name="member-role-details"
+            title={<TabTitleText>Roles</TabTitleText>}
+          >
+            <MembersRoles privilege={privilegeSettingsData.privilege} />
           </Tab>
         </Tabs>
       </PageSection>

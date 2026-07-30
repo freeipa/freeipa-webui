@@ -31,6 +31,7 @@ export function apiToPrivilege(apiRecord: Record<string, unknown>): Privilege {
     ...createEmptyPrivilege(),
     ...converted,
     memberof_permission: (apiRecord.memberof_permission as string[]) || [],
+    member_role: (apiRecord.member_role as string[]) || [],
   };
 }
 
@@ -48,6 +49,7 @@ export function createEmptyPrivilege(): Privilege {
     cn: "",
     description: "",
     memberof_permission: [],
+    member_role: [],
   };
 
   return privilege;
