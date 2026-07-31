@@ -516,6 +516,7 @@ const ActiveUsers = () => {
           name="search"
           ariaLabel="Search users"
           placeholder="Search users"
+          isDisabled={!showTableRows}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,

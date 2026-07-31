@@ -2,25 +2,17 @@ import { useSearchParams } from "react-router";
 import { MembershipDirection } from "src/components/MemberOf/MemberOfToolbar";
 
 export const parsePage = (value: string | null): number => {
-  if (value && (parseInt(value) < 1 || isNaN(parseInt(value)))) {
-    return 1;
-  }
-  return Math.max(1, parseInt(value || "1"));
+  const parsedValue = parseInt(value || "1", 10);
+  return isNaN(parsedValue) ? 1 : parsedValue;
 };
 
 export const parsePerPage = (value: string | null): number => {
-  if (value && (parseInt(value) < 1 || isNaN(parseInt(value)))) {
-    return 10;
-  }
-  return parseInt(value || "10");
+  const parsedValue = parseInt(value || "10", 10);
+  return isNaN(parsedValue) ? 1 : parsedValue;
 };
 
-const parseMembership = (value: string | null): MembershipDirection => {
-  if (value === "direct" || value === "indirect") {
-    return value;
-  }
-  return "direct";
-};
+const parseMembership = (value: string | null): MembershipDirection =>
+  value === "indirect" ? value : "direct";
 
 const useListPageSearchParams = () => {
   const [params, setParams] = useSearchParams();
@@ -31,11 +23,11 @@ const useListPageSearchParams = () => {
   const membershipDirection = parseMembership(params.get("membership"));
 
   const setPage = (newPage: number) => {
-    const nextPage = Math.max(1, newPage);
+    const nextPage = isNaN(newPage) ? 1 : Math.max(1, newPage);
     setParams(
       (currentParams) => {
         if (nextPage > 1) {
-          currentParams.set("p", nextPage.toString());
+          currentParams.set("p", nextPage.toString(10));
         } else {
           currentParams.delete("p");
         }
@@ -46,10 +38,14 @@ const useListPageSearchParams = () => {
   };
 
   const setPerPage = (newPerPage: number) => {
-    const nextPerPage = Math.max(1, newPerPage);
+    const nextPerPage = isNaN(newPerPage) ? 10 : Math.max(10, newPerPage);
     setParams(
       (currentParams) => {
-        currentParams.set("size", nextPerPage.toString());
+        if (nextPerPage !== 10) {
+          currentParams.set("size", nextPerPage.toString(10));
+        } else {
+          currentParams.delete("size");
+        }
         return currentParams;
       },
       { replace: true }

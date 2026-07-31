@@ -295,7 +295,10 @@ export const api = createApi({
       keepUnusedDataFor: 3600,
     }),
     // Basic find/show query: Hosts, Services, ...
-    gettingGeneric: build.query<BatchRPCResponse, GenericPayload>({
+    gettingGeneric: build.query<
+      BatchRPCResponse,
+      Omit<GenericPayload, "method">
+    >({
       async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
         const {
           searchValue,

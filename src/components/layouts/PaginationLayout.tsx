@@ -100,7 +100,6 @@ const PaginationLayout = <T,>(props: PropsToPaginationPrep<T>) => {
   };
 
   // Ensure page is always at least 1 to prevent negative display values
-  const safePage = Math.max(1, page);
   const itemCount = props.totalCount > 0 ? props.totalCount : props.list.length;
 
   return (
@@ -109,7 +108,7 @@ const PaginationLayout = <T,>(props: PropsToPaginationPrep<T>) => {
       itemCount={itemCount}
       widgetId={props.widgetId}
       perPage={perPage}
-      page={safePage}
+      page={page}
       variant={props.variant}
       onSetPage={handleSetPage}
       onPerPageSelect={handlePerPageSelect}

@@ -8,6 +8,7 @@ import {
   BatchRPCResponse,
   FindRPCResponse,
   useGettingGenericQuery,
+  GenericPayload,
 } from "./rpc";
 import { apiToUser, userToApi } from "../utils/userUtils";
 import { apiToPwPolicy } from "../utils/pwPolicyUtils";
@@ -607,20 +608,25 @@ const extendedApi = api.injectEndpoints({
   overrideExisting: false,
 });
 
+type UsersPayload = Pick<
+  Omit<GenericPayload, "method">,
+  "searchValue" | "apiVersion" | "sizeLimit" | "startIdx" | "stopIdx"
+>;
+
 // Active Users
-export const useGettingActiveUserQuery = (payloadData) => {
+export const useGettingActiveUserQuery = (payloadData: UsersPayload) => {
   payloadData["objName"] = "user";
   payloadData["objAttr"] = "uid";
   return useGettingGenericQuery(payloadData);
 };
 // Stage Users
-export const useGettingStageUserQuery = (payloadData) => {
+export const useGettingStageUserQuery = (payloadData: UsersPayload) => {
   payloadData["objName"] = "stageuser";
   payloadData["objAttr"] = "uid";
   return useGettingGenericQuery(payloadData);
 };
 // Preserved users
-export const useGettingPreservedUserQuery = (payloadData) => {
+export const useGettingPreservedUserQuery = (payloadData: UsersPayload) => {
   payloadData["objName"] = "preserved";
   payloadData["objAttr"] = "uid";
   return useGettingGenericQuery(payloadData);

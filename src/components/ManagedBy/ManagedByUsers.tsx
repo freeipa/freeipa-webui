@@ -102,9 +102,9 @@ const ManagedByUsers = (props: ManagedByUsersProps) => {
 
   // Load available Users
   const usersQuery = useGettingActiveUserQuery({
-    search: adderSearchValue,
+    searchValue: adderSearchValue,
     apiVersion: API_VERSION_BACKUP,
-    sizelimit: 100,
+    sizeLimit: 100,
     startIdx: 0,
     stopIdx: 100,
   });
