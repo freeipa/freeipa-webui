@@ -211,12 +211,6 @@ const PasswordPolicies = () => {
     (item) => ipaPrimaryKey(item.cn)
   );
 
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  React.useEffect(() => {
-    pwPoliciesResponse.refetch();
-  }, []);
-
   // Show table rows
   // Data wrappers
   // TODO: Better separation of concerts

@@ -201,12 +201,6 @@ const IdpReferences = () => {
     (item) => ipaPrimaryKey(item.cn)
   );
 
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  React.useEffect(() => {
-    idpsResponse.refetch();
-  }, []);
-
   // Show table rows
   // Data wrappers
   // - 'BulkSelectorrep'

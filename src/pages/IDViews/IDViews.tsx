@@ -165,13 +165,6 @@ const IDViews = () => {
     }
   }, [viewsDataResponse]);
 
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  useEffect(() => {
-    viewsDataResponse.refetch();
-    setIsKebabOpen(false);
-  }, []);
-
   // Refresh button handling
   const refreshViewsData = () => {
     // Reset selected views on refresh

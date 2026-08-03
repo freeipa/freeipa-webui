@@ -144,12 +144,6 @@ const SudoRules = () => {
     rulesDataResponse.refetch();
   };
 
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  React.useEffect(() => {
-    rulesDataResponse.refetch();
-  }, []);
-
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
     useState<boolean>(true);

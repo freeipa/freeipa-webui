@@ -168,12 +168,6 @@ const Hosts = () => {
     }
   }, [hostDataResponse]);
 
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  useEffect(() => {
-    hostDataResponse.refetch();
-  }, []);
-
   // Refresh button handling
   const refreshHostsData = () => {
     // Reset selected hosts on refresh

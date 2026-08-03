@@ -181,10 +181,6 @@ const SELinuxUserMaps = () => {
     (item) => ipaPrimaryKey(item.cn)
   );
 
-  React.useEffect(() => {
-    mapsResponse.refetch();
-  }, []);
-
   const bulkSelectorData = {
     selected: selectedElements,
     updateSelected: updateSelectedMaps,

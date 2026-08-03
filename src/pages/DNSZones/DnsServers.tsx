@@ -106,12 +106,6 @@ const DnsServers = () => {
     dnsServersResponse.refetch();
   };
 
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  React.useEffect(() => {
-    dnsServersResponse.refetch();
-  }, []);
-
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
     {

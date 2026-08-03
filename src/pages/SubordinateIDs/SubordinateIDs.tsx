@@ -134,12 +134,6 @@ const SubordinateIDs = () => {
     subIdsDataResponse.refetch();
   };
 
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  React.useEffect(() => {
-    subIdsDataResponse.refetch();
-  }, []);
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState(false);
 

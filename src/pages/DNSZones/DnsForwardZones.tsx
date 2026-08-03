@@ -173,12 +173,6 @@ const DnsForwardZones = () => {
     }
   };
 
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  React.useEffect(() => {
-    forwardDnsZonesResponse.refetch();
-  }, []);
-
   // Show table rows
   const selectedPerPageData = getSelectedPerPageData(
     dnsForwardZones,

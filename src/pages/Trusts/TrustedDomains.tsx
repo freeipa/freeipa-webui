@@ -202,12 +202,6 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
     }
   };
 
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  React.useEffect(() => {
-    trustDomainsResponse.refetch();
-  }, []);
-
   // Fetch trusted domains
   const [isFetchingDomains, setIsFetchingDomains] =
     React.useState<boolean>(false);

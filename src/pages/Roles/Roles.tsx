@@ -125,10 +125,6 @@ const Roles = () => {
     rolesDataResponse.refetch();
   };
 
-  React.useEffect(() => {
-    rolesDataResponse.refetch();
-  }, []);
-
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
     useState<boolean>(true);
 

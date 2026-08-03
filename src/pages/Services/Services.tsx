@@ -263,12 +263,6 @@ const Services = () => {
     }
   }, [servicesDataResponse]);
 
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  useEffect(() => {
-    servicesDataResponse.refetch();
-  }, []);
-
   // Refresh button handling
   const refreshServicesData = () => {
     // Reset selected hosts on refresh

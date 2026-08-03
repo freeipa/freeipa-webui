@@ -186,12 +186,6 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
   };
 
   // Show table rows
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  React.useEffect(() => {
-    dnsRecordsResponse.refetch();
-  }, []);
-
   // Show table rows only when data is fully retrieved
   const selectedPerPageData = getSelectedPerPageData(
     dnsRecords,

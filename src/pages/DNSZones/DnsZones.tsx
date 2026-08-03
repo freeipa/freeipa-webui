@@ -191,12 +191,6 @@ const DnsZones = () => {
     }
   };
 
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  React.useEffect(() => {
-    dnsZonesResponse.refetch();
-  }, []);
-
   const selectedPerPageData = getSelectedPerPageData(
     dnsZones,
     selectedElements.map((dnsZone) => ipaPrimaryKey(dnsZone.idnsname)),
