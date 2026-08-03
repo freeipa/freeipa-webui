@@ -111,10 +111,6 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   }, [props.entity, membershipDirection, searchValue, page, perPage]);
 
   React.useEffect(() => {
-    setMembershipDirection(props.direction);
-  }, [props.entity]);
-
-  React.useEffect(() => {
     if (roleNamesToLoad.length > 0) {
       fullRolesQuery.refetch();
     }

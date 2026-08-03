@@ -128,12 +128,6 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
     }
   }, [netgroupNamesToLoad]);
 
-  React.useEffect(() => {
-    if (props.direction) {
-      setMembershipDirection(props.direction);
-    }
-  }, [props.entity]);
-
   // Update netgroups
   React.useEffect(() => {
     if (fullNetgroupsQuery.data && !fullNetgroupsQuery.isFetching) {

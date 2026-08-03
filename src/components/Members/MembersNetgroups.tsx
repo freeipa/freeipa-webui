@@ -109,10 +109,6 @@ const MembersNetgroups = (props: PropsToMembersNetgroups) => {
   }, [props.entity, membershipDirection, searchValue, page, perPage]);
 
   React.useEffect(() => {
-    setMembershipDirection(props.direction);
-  }, [props.entity]);
-
-  React.useEffect(() => {
     if (netgroupNamesToLoad.length > 0) {
       fullNetgroupsQuery.refetch();
     }

@@ -111,10 +111,6 @@ const MembersServices = (props: PropsToMembersServices) => {
   }, [props.entity, membershipDirection, searchValue, page, perPage]);
 
   React.useEffect(() => {
-    setMembershipDirection(props.direction);
-  }, [props.entity]);
-
-  React.useEffect(() => {
     if (serviceNamesToLoad.length > 0) {
       fullServicesQuery.refetch();
     }

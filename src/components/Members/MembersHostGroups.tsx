@@ -121,10 +121,6 @@ const MembersHostGroups = (props: PropsToMembersHostGroups) => {
   }, [props.entity, membershipDirection, searchValue, page, perPage]);
 
   React.useEffect(() => {
-    setMembershipDirection(props.direction);
-  }, [props.entity]);
-
-  React.useEffect(() => {
     if (hostGroupNamesToLoad.length > 0) {
       fullHostGroupsQuery.refetch();
     }

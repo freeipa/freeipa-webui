@@ -114,10 +114,6 @@ const MemberOfHostGroups = (props: MemberOfHostGroupsProps) => {
     }
   }, [hostGroupNamesToLoad]);
 
-  React.useEffect(() => {
-    setMembershipDirection(props.direction);
-  }, [props.entity]);
-
   // Update host groups
   React.useEffect(() => {
     if (fullHostGroupsQuery.data && !fullHostGroupsQuery.isFetching) {

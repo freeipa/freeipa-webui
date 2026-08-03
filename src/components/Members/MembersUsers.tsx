@@ -134,10 +134,6 @@ const MembersUsers = (props: PropsToMembersUsers) => {
   }, [props.entity, membershipDirection, searchValue, page, perPage]);
 
   React.useEffect(() => {
-    setMembershipDirection(props.direction);
-  }, [props.entity]);
-
-  React.useEffect(() => {
     if (userNamesToLoad.length > 0) {
       fullUsersQuery.refetch();
     }

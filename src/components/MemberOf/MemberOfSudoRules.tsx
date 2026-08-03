@@ -114,10 +114,6 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
     }
   }, [sudoRulesNamesToLoad]);
 
-  React.useEffect(() => {
-    setMembershipDirection(props.direction);
-  }, [props.entity]);
-
   // Update Sudo rules
   React.useEffect(() => {
     if (fullSudoRulesQuery.data && !fullSudoRulesQuery.isFetching) {

@@ -118,10 +118,6 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
     }
   }, [hbacRulesNamesToLoad]);
 
-  React.useEffect(() => {
-    setMembershipDirection(props.direction);
-  }, [props.entity]);
-
   // Update HBAC rules
   React.useEffect(() => {
     if (fullHbacRulesQuery.data && !fullHbacRulesQuery.isFetching) {
