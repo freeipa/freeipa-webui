@@ -85,12 +85,11 @@ const IdpReferences = () => {
     stopIdx: lastUserIdx,
   });
 
-  const { data, isLoading, error } = idpsResponse;
+  const { data, isFetching, error } = idpsResponse;
 
   // Handle data when the API call is finished
   React.useEffect(() => {
     if (idpsResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected elements on refresh
       setTotalCount(0);
       globalErrors.clear();
@@ -111,8 +110,6 @@ const IdpReferences = () => {
       setTotalCount(totalCount);
       // Update the list of elements
       setIdpReferences(elementsList);
-      // Show table elements
-      setShowTableRows(true);
     }
 
     // API response: Error
@@ -139,15 +136,10 @@ const IdpReferences = () => {
 
   // Refresh button handling
   const refreshData = () => {
-    // Hide table
-    setShowTableRows(false);
-
     // Reset selected elements on refresh
     setTotalCount(0);
 
-    idpsResponse.refetch().then(() => {
-      setShowTableRows(true);
-    });
+    idpsResponse.refetch();
   };
 
   // 'Delete' button state
@@ -216,15 +208,6 @@ const IdpReferences = () => {
   }, []);
 
   // Show table rows
-  const [showTableRows, setShowTableRows] = React.useState(!isLoading);
-
-  // Show table rows only when data is fully retrieved
-  React.useEffect(() => {
-    if (showTableRows !== !isLoading) {
-      setShowTableRows(!isLoading);
-    }
-  }, [isLoading]);
-
   // Data wrappers
   // - 'BulkSelectorrep'
   const bulkSelectorData = {
@@ -293,7 +276,7 @@ const IdpReferences = () => {
         <SecondaryButton
           dataCy="idp-references-button-refresh"
           onClickHandler={refreshData}
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
         >
           Refresh
         </SecondaryButton>
@@ -304,7 +287,7 @@ const IdpReferences = () => {
       element: (
         <SecondaryButton
           dataCy="idp-references-button-delete"
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isFetching}
           onClickHandler={onOpenDeleteModal}
         >
           Delete
@@ -316,7 +299,7 @@ const IdpReferences = () => {
       element: (
         <SecondaryButton
           dataCy="idp-references-button-add"
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
           onClickHandler={onOpenAddModal}
         >
           Add
@@ -386,7 +369,7 @@ const IdpReferences = () => {
                       ]}
                       hasCheckboxes={true}
                       pathname="identity-provider-references"
-                      showTableRows={showTableRows}
+                      showTableRows={!isFetching}
                       showLink={true}
                       elementsData={{
                         isElementSelectable: isIdpServerSelectable,

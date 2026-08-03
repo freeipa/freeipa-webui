@@ -44,7 +44,6 @@ interface GroupId {
 interface PropsToAddUser {
   show: boolean;
   from: "active-users" | "stage-users" | "preserved-users";
-  setShowTableRows?: (value: boolean) => void;
   handleModalToggle: () => void;
   onOpenAddModal?: () => void;
   onCloseAddModal?: () => void;

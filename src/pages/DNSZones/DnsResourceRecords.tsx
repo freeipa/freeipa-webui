@@ -83,12 +83,11 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     stopIdx: stopIdx,
   });
 
-  const { data, isLoading, error } = dnsRecordsResponse;
+  const { data, isFetching, error } = dnsRecordsResponse;
 
   // Handle data when the API call is finished
   React.useEffect(() => {
     if (dnsRecordsResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected elements on refresh
       setTotalCount(0);
       globalErrors.clear();
@@ -103,8 +102,6 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     ) {
       setDnsRecords(data.result);
       setTotalCount(data.count);
-      // Show table elements
-      setShowTableRows(true);
     }
   }, [dnsRecordsResponse]);
 
@@ -115,28 +112,19 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
 
   // Refresh button handling
   const refreshData = () => {
-    // Hide table
-    setShowTableRows(false);
-
     // Reset selected elements on refresh
     setTotalCount(0);
     setSelectedElements([]);
 
-    dnsRecordsResponse
-      .refetch()
-      .then(() => {
-        setShowTableRows(true);
-      })
-      .catch(() => {
-        dispatch(
-          addAlert({
-            name: "refresh-dns-records-error",
-            title: "Error refreshing DNS records",
-            variant: "danger",
-          })
-        );
-        setShowTableRows(true); // Show table even if there's an error
-      });
+    dnsRecordsResponse.refetch().catch(() => {
+      dispatch(
+        addAlert({
+          name: "refresh-dns-records-error",
+          title: "Error refreshing DNS records",
+          variant: "danger",
+        })
+      );
+    });
   };
 
   // 'Delete' button state
@@ -197,22 +185,14 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     }
   };
 
+  // Show table rows
   // Always refetch data when the component is loaded.
   // This ensures the data is always up-to-date.
   React.useEffect(() => {
     dnsRecordsResponse.refetch();
   }, []);
 
-  // Show table rows
-  const [showTableRows, setShowTableRows] = React.useState<boolean>(!isLoading);
-
   // Show table rows only when data is fully retrieved
-  React.useEffect(() => {
-    if (showTableRows !== !isLoading) {
-      setShowTableRows(!isLoading);
-    }
-  }, [isLoading]);
-
   const selectedPerPageData = getSelectedPerPageData(
     dnsRecords,
     selectedElements.map((dnsRecord) => ipaPrimaryKey(dnsRecord.idnsname)),
@@ -270,7 +250,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
       element: (
         <SecondaryButton
           onClickHandler={refreshData}
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
           dataCy="refresh-dns-records"
         >
           Refresh
@@ -281,7 +261,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isFetching}
           onClickHandler={() => setShowDeleteModal(true)}
           dataCy="delete-dns-records"
         >
@@ -293,7 +273,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
       key: 5,
       element: (
         <SecondaryButton
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
           onClickHandler={() => setShowAddModal(true)}
           dataCy="add-dns-records"
         >
@@ -360,7 +340,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
                     <GlobalErrors errors={globalErrors.getAll()} />
                   ) : (
                     <>
-                      {isLoading || !showTableRows ? (
+                      {isFetching ? (
                         spinner
                       ) : (
                         <MainTable
@@ -375,7 +355,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
                           columnNames={["Record name", "Record type", "Data"]}
                           hasCheckboxes={true}
                           pathname="dns-records"
-                          showTableRows={showTableRows}
+                          showTableRows={!isFetching}
                           showLink={false}
                           elementsData={{
                             isElementSelectable: isDnsRecordSelectable,

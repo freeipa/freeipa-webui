@@ -120,14 +120,13 @@ const IDViews = () => {
 
   const {
     data: batchResponse,
-    isLoading: isBatchLoading,
+    isFetching: isBatchFetching,
     error: batchError,
   } = viewsDataResponse;
 
   // Handle data when the API call is finished
   useEffect(() => {
     if (viewsDataResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected ID views on refresh
       setViewsTotalCount(0);
       globalErrors.clear();
@@ -152,7 +151,6 @@ const IDViews = () => {
       setViewsList(idViewsList);
       setViewsTotalCount(totalCount);
       setIsKebabOpen(false);
-      setShowTableRows(true);
     }
 
     // API response: Error
@@ -176,9 +174,6 @@ const IDViews = () => {
 
   // Refresh button handling
   const refreshViewsData = () => {
-    // Hide table
-    setShowTableRows(false);
-
     // Reset selected views on refresh
     setViewsTotalCount(0);
     clearSelectedViews();
@@ -193,8 +188,6 @@ const IDViews = () => {
   };
 
   // Show table rows
-  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
-
   const updateSelectedViews = (views: IDView[], isSelected: boolean) => {
     let newSelectedViews: IDView[] = [];
     if (isSelected) {
@@ -238,13 +231,6 @@ const IDViews = () => {
       updateSelectedViews([view], isSelecting);
     }
   };
-
-  // Show table rows only when data is fully retrieved
-  useEffect(() => {
-    if (showTableRows !== !isBatchLoading) {
-      setShowTableRows(!isBatchLoading);
-    }
-  }, [isBatchLoading]);
 
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
@@ -428,7 +414,7 @@ const IDViews = () => {
       data-cy="id-views-kebab-unapply-hosts"
       key="unapply-hosts"
       onClick={openUnapplyHostModal}
-      isDisabled={!showTableRows || totalCount === 0}
+      isDisabled={isBatchFetching || totalCount === 0}
     >
       Unapply from hosts
     </DropdownItem>,
@@ -436,7 +422,7 @@ const IDViews = () => {
       data-cy="id-views-kebab-unapply-hostgroups"
       key="unapply-hostgroups"
       onClick={openUnapplyHostgroupModal}
-      isDisabled={!showTableRows || totalCount === 0}
+      isDisabled={isBatchFetching || totalCount === 0}
     >
       Unapply from host groups
     </DropdownItem>,
@@ -479,7 +465,7 @@ const IDViews = () => {
         <SecondaryButton
           dataCy="id-views-button-refresh"
           onClickHandler={refreshViewsData}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
         >
           Refresh
         </SecondaryButton>
@@ -490,7 +476,7 @@ const IDViews = () => {
       element: (
         <SecondaryButton
           dataCy="id-views-button-delete"
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isBatchFetching}
           onClickHandler={onDeleteHandler}
         >
           Delete
@@ -503,7 +489,7 @@ const IDViews = () => {
         <SecondaryButton
           dataCy="id-views-button-add"
           onClickHandler={onAddClickHandler}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
         >
           Add
         </SecondaryButton>
@@ -519,7 +505,7 @@ const IDViews = () => {
           idKebab="toggle-action-buttons"
           isKebabOpen={isKebabOpen}
           dropdownItems={dropdownItems}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
         />
       ),
     },
@@ -572,7 +558,7 @@ const IDViews = () => {
                     <IDViewsTable
                       elementsList={viewsList}
                       shownElementsList={viewsList}
-                      showTableRows={showTableRows}
+                      showTableRows={!isBatchFetching}
                       idViewsData={viewsTableData}
                       buttonsData={viewsTableButtonsData}
                       paginationData={selectedPerPageData}

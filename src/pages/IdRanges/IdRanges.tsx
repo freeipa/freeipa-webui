@@ -156,9 +156,6 @@ const IdRanges = () => {
     idRangesDataResponse.refetch();
   };
 
-  // Show table rows
-  const showTableRows = !isFetching && queryDerived.ready;
-
   // Compute shown list and total
   const shownElementsList = queryDerived.list;
   const totalCount = queryDerived.total;
@@ -225,7 +222,7 @@ const IdRanges = () => {
         <SecondaryButton
           dataCy="id-ranges-button-refresh"
           onClickHandler={refreshData}
-          isDisabled={!showTableRows}
+          isDisabled={isFetching || !queryDerived.ready}
         >
           Refresh
         </SecondaryButton>
@@ -235,7 +232,9 @@ const IdRanges = () => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={
+            isDeleteButtonDisabled || isFetching || !queryDerived.ready
+          }
           dataCy="id-ranges-button-delete"
           onClickHandler={() => setShowDeleteModal(true)}
         >
@@ -247,7 +246,7 @@ const IdRanges = () => {
       key: 5,
       element: (
         <SecondaryButton
-          isDisabled={!showTableRows}
+          isDisabled={isFetching || !queryDerived.ready}
           dataCy="id-ranges-button-add"
           onClickHandler={() => setShowAddModal(true)}
         >
@@ -322,7 +321,7 @@ const IdRanges = () => {
                       ]}
                       hasCheckboxes={true}
                       pathname="id-ranges"
-                      showTableRows={showTableRows}
+                      showTableRows={!isFetching && queryDerived.ready}
                       showLink={true}
                       elementsData={{
                         isElementSelectable: isIdRangeSelectable,

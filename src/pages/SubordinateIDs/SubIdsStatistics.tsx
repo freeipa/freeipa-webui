@@ -46,16 +46,13 @@ const SubIdsStatistics = () => {
     rangesize: 0,
     remaining_subids: 0,
   });
-  const [showTableRows, setShowTableRows] = React.useState<boolean>(false);
 
   // API call
   const subidStatsResponse = useSubidStatsQuery();
-  const { data, isLoading, error } = subidStatsResponse;
+  const { data, isFetching, error } = subidStatsResponse;
 
   React.useEffect(() => {
-    setShowTableRows(!isLoading);
-
-    if (!isLoading && error) {
+    if (!isFetching && error) {
       dispatch(
         addAlert({
           name: "Error fetching data",
@@ -65,18 +62,15 @@ const SubIdsStatistics = () => {
       );
     }
 
-    if (!isLoading && data) {
+    if (!isFetching && data) {
       const subidStats = data.result.result;
       setSubidStats(subidStats as unknown as SubidStats);
     }
-  }, [data, isLoading]);
+  }, [data, error, isFetching, dispatch]);
 
   // On refresh
   const onRefresh = () => {
-    setShowTableRows(false);
-    subidStatsResponse.refetch().then(() => {
-      setShowTableRows(true);
-    });
+    subidStatsResponse.refetch();
   };
 
   // List of Toolbar items
@@ -88,7 +82,7 @@ const SubIdsStatistics = () => {
           variant="secondary"
           data-cy="subids-statistics-button-refresh"
           onClick={onRefresh}
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
         >
           Refresh
         </Button>
@@ -169,7 +163,7 @@ const SubIdsStatistics = () => {
                 classes={"pf-v6-u-mt-md"}
                 tableId={"subid-stats-table"}
                 tableHeader={header}
-                tableBody={!showTableRows ? skeleton : body}
+                tableBody={isFetching ? skeleton : body}
                 isStickyHeader={false}
               />
             </GridItem>

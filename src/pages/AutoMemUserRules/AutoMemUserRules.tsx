@@ -72,7 +72,6 @@ const AutoMemUserRules = () => {
 
   const NO_SELECTION = "No default group selected";
 
-  const [userGroups, setUserGroups] = React.useState<string[]>([]);
   const [automemberRules, setAutomemberRules] = React.useState<
     AutomemberEntry[]
   >([]);
@@ -111,23 +110,9 @@ const AutoMemUserRules = () => {
   });
   const [changeDefaultGroup] = useChangeDefaultGroupMutation();
 
-  // Show table rows
-  const [showTableRows, setShowTableRows] = React.useState(
-    !userGroupRulesData.isLoading
-  );
-
-  // Update table rows when the data is loaded
-  React.useEffect(() => {
-    if (showTableRows !== !userGroupRulesData.isLoading) {
-      setShowTableRows(!userGroupRulesData.isLoading);
-    }
-  }, [userGroupRulesData.isLoading]);
-
   // Main API call
   React.useEffect(() => {
-    if (userGroupRulesData.isFetching) {
-      setShowTableRows(false);
-    } else {
+    if (!userGroupRulesData.isFetching) {
       if (userGroupRulesData.errors && userGroupRulesData.errors.length > 0) {
         setErrors(userGroupRulesData.errors || []);
       } else {
@@ -154,8 +139,6 @@ const AutoMemUserRules = () => {
 
         // Set table count from search match total
         setTotalCount(userGroupRulesData.totalCount);
-        // Show table elements
-        setShowTableRows(true);
       }
     }
   }, [
@@ -167,7 +150,7 @@ const AutoMemUserRules = () => {
   ]);
 
   // Parse user groups to be shown in the default user group selector
-  React.useEffect(() => {
+  const setUserGroups = (userGroups: string[]) => {
     if (userGroups.length > 0) {
       // Add empty entry as an option
       const groupsToSelector = [
@@ -187,7 +170,7 @@ const AutoMemUserRules = () => {
       groupsToSelector.push(...tempGroupsToSelector);
       setUserGroupsOptions(groupsToSelector);
     }
-  }, [userGroups]);
+  };
 
   // On select default group
   const onSelectDefaultGroup = (group: string) => {
@@ -237,7 +220,6 @@ const AutoMemUserRules = () => {
 
   // Refresh button handling
   const refreshData = () => {
-    setShowTableRows(false);
     setTotalCount(0);
     clearSelectedRules();
     userGroupRulesData.refetch();
@@ -464,7 +446,7 @@ const AutoMemUserRules = () => {
         <SecondaryButton
           dataCy={"auto-member-user-rules-button-refresh"}
           onClickHandler={refreshData}
-          isDisabled={!showTableRows}
+          isDisabled={userGroupRulesData.isFetching}
         >
           Refresh
         </SecondaryButton>
@@ -475,7 +457,7 @@ const AutoMemUserRules = () => {
       element: (
         <SecondaryButton
           dataCy={"auto-member-user-rules-button-delete"}
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || userGroupRulesData.isFetching}
           onClickHandler={onOpenDeleteModal}
         >
           Delete
@@ -487,7 +469,7 @@ const AutoMemUserRules = () => {
       element: (
         <SecondaryButton
           dataCy={"auto-member-user-rules-button-add"}
-          isDisabled={!showTableRows}
+          isDisabled={userGroupRulesData.isFetching}
           onClickHandler={onOpenAddModal}
         >
           Add
@@ -545,7 +527,7 @@ const AutoMemUserRules = () => {
                 ) : (
                   <MainTable
                     shownElementsList={automemberRules}
-                    showTableRows={showTableRows}
+                    showTableRows={!userGroupRulesData.isFetching}
                     elementsData={automembersTableData}
                     buttonsData={automembersTableButtonsData}
                     paginationData={selectedPerPageData}

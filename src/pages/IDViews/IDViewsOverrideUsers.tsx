@@ -119,14 +119,13 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
 
   const {
     data: batchResponse,
-    isLoading: isBatchLoading,
+    isFetching: isBatchFetching,
     error: batchError,
   } = dataResponse;
 
   // Handle data when the API call is finished
   useEffect(() => {
     if (dataResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected on refresh
       setTotalCount(0);
       globalErrors.clear();
@@ -149,7 +148,6 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
       }
       setUsersList(userList);
       setTotalCount(total);
-      setShowTableRows(true);
     }
     // API response: Error
     if (
@@ -173,15 +171,6 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
   };
 
   // Show table rows
-  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
-
-  // Show table rows only when data is fully retrieved
-  useEffect(() => {
-    if (showTableRows !== !isBatchLoading) {
-      setShowTableRows(!isBatchLoading);
-    }
-  }, [isBatchLoading]);
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -242,7 +231,7 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
       element: (
         <SecondaryButton
           dataCy="id-views-tab-override-users-button-delete"
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isBatchFetching}
           onClickHandler={onDeleteHandler}
         >
           Delete
@@ -255,7 +244,7 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
         <SecondaryButton
           dataCy="id-views-tab-override-users-button-add"
           onClickHandler={onAddClickHandler}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
         >
           Add
         </SecondaryButton>
@@ -292,7 +281,7 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
               <IDViewsOverrideUsersTable
                 elementsList={usersList}
                 shownElementsList={usersList}
-                showTableRows={showTableRows}
+                showTableRows={!isBatchFetching}
                 overrideEntryData={usersTableData}
                 buttonsData={viewsTableButtonsData}
                 paginationData={selectedPerPageData}

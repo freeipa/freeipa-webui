@@ -83,7 +83,7 @@ const AutomountLocations = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  const { data, isLoading, error } = locationsResponse;
+  const { data, isFetching, error } = locationsResponse;
 
   // Handle auth errors
   React.useEffect(() => {
@@ -118,8 +118,6 @@ const AutomountLocations = () => {
 
   const totalCount =
     locationsResponse.isSuccess && data ? data.result.totalCount : 0;
-
-  const showTableRows = !locationsResponse.isFetching && !isLoading;
 
   // Selected elements
   const [selectedElements, setSelectedElements] = React.useState<
@@ -243,7 +241,7 @@ const AutomountLocations = () => {
         <SecondaryButton
           dataCy="automount-locations-button-refresh"
           onClickHandler={refreshData}
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
         >
           Refresh
         </SecondaryButton>
@@ -253,7 +251,7 @@ const AutomountLocations = () => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isFetching}
           dataCy="automount-locations-button-delete"
           onClickHandler={() => setShowDeleteModal(true)}
         >
@@ -265,7 +263,7 @@ const AutomountLocations = () => {
       key: 5,
       element: (
         <SecondaryButton
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
           dataCy="automount-locations-button-add"
           onClickHandler={() => setShowAddModal(true)}
         >
@@ -330,7 +328,7 @@ const AutomountLocations = () => {
                     columnNames={["Location name"]}
                     hasCheckboxes={true}
                     pathname="automount-locations"
-                    showTableRows={showTableRows}
+                    showTableRows={!isFetching}
                     showLink={false}
                     elementsData={{
                       isElementSelectable: isAutomountLocationSelectable,

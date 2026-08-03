@@ -86,12 +86,11 @@ const OtpTokens = () => {
     stopIdx: lastUserIdx,
   });
 
-  const { data, isLoading, error } = otpTokensResponse;
+  const { data, isFetching, error } = otpTokensResponse;
 
   // Handle data when the API call is finished
   React.useEffect(() => {
     if (otpTokensResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected elements on refresh
       setTotalCount(0);
       globalErrors.clear();
@@ -124,8 +123,6 @@ const OtpTokens = () => {
 
       setOtpTokens(elementsList);
       setTotalCount(otpTokensResponse.data.result.totalCount);
-      // Show table elements
-      setShowTableRows(true);
     }
   }, [otpTokensResponse]);
 
@@ -136,15 +133,10 @@ const OtpTokens = () => {
 
   // Refresh button handling
   const refreshData = () => {
-    // Hide table
-    setShowTableRows(false);
-
     // Reset selected elements on refresh
     setTotalCount(0);
 
-    otpTokensResponse.refetch().then(() => {
-      setShowTableRows(true);
-    });
+    otpTokensResponse.refetch();
   };
 
   // Refresh data every time the component is rendered to ensure
@@ -221,14 +213,6 @@ const OtpTokens = () => {
     }
   };
 
-  // Show table rows
-  const [showTableRows, setShowTableRows] = React.useState<boolean>(!isLoading);
-
-  // Show table rows only when data is fully retrieved
-  React.useEffect(() => {
-    setShowTableRows(!isLoading);
-  }, [isLoading]);
-
   const selectedPerPageData = getSelectedPerPageData(
     otpTokens,
     selectedElements.map((otpToken) =>
@@ -304,7 +288,7 @@ const OtpTokens = () => {
         <SecondaryButton
           dataCy="otp-tokens-button-refresh"
           onClickHandler={refreshData}
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
         >
           Refresh
         </SecondaryButton>
@@ -314,7 +298,7 @@ const OtpTokens = () => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isFetching}
           dataCy="otp-tokens-button-delete"
           onClickHandler={() => setShowDeleteModal(true)}
         >
@@ -326,7 +310,7 @@ const OtpTokens = () => {
       key: 5,
       element: (
         <SecondaryButton
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
           dataCy="otp-tokens-button-add"
           onClickHandler={() => setShowAddModal(true)}
         >
@@ -338,7 +322,7 @@ const OtpTokens = () => {
       key: 6,
       element: (
         <SecondaryButton
-          isDisabled={isEnableButtonDisabled || !showTableRows}
+          isDisabled={isEnableButtonDisabled || isFetching}
           dataCy="otp-tokens-button-enable"
           onClickHandler={onEnableOperation}
         >
@@ -350,7 +334,7 @@ const OtpTokens = () => {
       key: 7,
       element: (
         <SecondaryButton
-          isDisabled={isDisableButtonDisabled || !showTableRows}
+          isDisabled={isDisableButtonDisabled || isFetching}
           dataCy="otp-tokens-button-disable"
           onClickHandler={onDisableOperation}
         >
@@ -422,7 +406,7 @@ const OtpTokens = () => {
                       ]}
                       hasCheckboxes={true}
                       pathname="otp-tokens"
-                      showTableRows={showTableRows}
+                      showTableRows={!isFetching}
                       showLink={true}
                       elementsData={{
                         isElementSelectable: isOtpTokenSelectable,
@@ -489,7 +473,6 @@ const OtpTokens = () => {
           )}
           setElementsList={setSelectedElements}
           operation={operation}
-          setShowTableRows={setShowTableRows}
           onRefresh={refreshData}
         />
       </div>

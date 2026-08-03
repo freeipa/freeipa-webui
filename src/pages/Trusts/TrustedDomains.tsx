@@ -85,12 +85,11 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
     sizelimit: perPage,
   });
 
-  const { data, isLoading, error } = trustDomainsResponse;
+  const { data, isFetching, error } = trustDomainsResponse;
 
   // Handle data when the API call is finished
   React.useEffect(() => {
     if (trustDomainsResponse.isFetching) {
-      setShowTableRows(false);
       setTotalCount(0);
       globalErrors.clear();
       return;
@@ -107,7 +106,6 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
       ).slice(startIdx, stopIdx);
       setTrustDomains(paginatedData.map((item) => apiToTrustDomain(item)));
       setTotalCount(paginatedData.length);
-      setShowTableRows(true);
     }
   }, [trustDomainsResponse]);
 
@@ -121,21 +119,15 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
     // Reset selected elements on refresh
     setSelectedElements([]);
 
-    trustDomainsResponse
-      .refetch()
-      .then(() => {
-        setShowTableRows(true);
-      })
-      .catch(() => {
-        dispatch(
-          addAlert({
-            name: "refresh-trusted-domains-error",
-            title: "Error refreshing trusted domains",
-            variant: "danger",
-          })
-        );
-        setShowTableRows(true); // Show table even if there's an error
-      });
+    trustDomainsResponse.refetch().catch(() => {
+      dispatch(
+        addAlert({
+          name: "refresh-trusted-domains-error",
+          title: "Error refreshing trusted domains",
+          variant: "danger",
+        })
+      );
+    });
   };
 
   // Toolbar buttons states
@@ -216,15 +208,12 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
     trustDomainsResponse.refetch();
   }, []);
 
-  // Show table rows
-  const [showTableRows, setShowTableRows] = React.useState<boolean>(!isLoading);
-
   // Fetch trusted domains
-  const [isFetching, setIsFetching] = React.useState<boolean>(false);
+  const [isFetchingDomains, setIsFetchingDomains] =
+    React.useState<boolean>(false);
 
   const fetchTrustedDomains = () => {
-    setIsFetching(true);
-    setShowTableRows(false);
+    setIsFetchingDomains(true);
 
     fetchTrustDomains(props.trustId)
       .then((result) => {
@@ -248,10 +237,11 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
         }
       })
       .finally(() => {
-        setIsFetching(false);
-        setShowTableRows(true);
+        setIsFetchingDomains(false);
       });
   };
+
+  const isTableLoading = isFetching || isFetchingDomains;
 
   const selectedPerPageData = getSelectedPerPageData(
     trustDomains,
@@ -326,7 +316,7 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
         <SecondaryButton
           dataCy="trusted-domains-button-refresh"
           onClickHandler={refreshData}
-          isDisabled={!showTableRows}
+          isDisabled={isTableLoading}
         >
           Refresh
         </SecondaryButton>
@@ -336,7 +326,7 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isTableLoading}
           dataCy="trusted-domains-button-delete"
           onClickHandler={() => setShowDeleteModal(true)}
         >
@@ -348,7 +338,7 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
       key: 5,
       element: (
         <SecondaryButton
-          isDisabled={!showTableRows || isDisableButtonDisabled}
+          isDisabled={isTableLoading || isDisableButtonDisabled}
           dataCy="trusted-domains-button-disable"
           onClickHandler={onDisableOperation}
         >
@@ -360,7 +350,7 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
       key: 6,
       element: (
         <SecondaryButton
-          isDisabled={!showTableRows || isEnableButtonDisabled}
+          isDisabled={isTableLoading || isEnableButtonDisabled}
           dataCy="trusted-domains-button-enable"
           onClickHandler={onEnableOperation}
         >
@@ -372,7 +362,7 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
       key: 7,
       element: (
         <SecondaryButton
-          isDisabled={!showTableRows || isFetching}
+          isDisabled={isTableLoading || isFetchingDomains}
           dataCy="trusted-domains-button-fetch-domains"
           onClickHandler={fetchTrustedDomains}
         >
@@ -439,7 +429,7 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
                     <GlobalErrors errors={globalErrors.getAll()} />
                   ) : (
                     <>
-                      {isLoading || !showTableRows ? (
+                      {isTableLoading ? (
                         spinner
                       ) : (
                         <MainTable
@@ -460,7 +450,7 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
                           ]}
                           hasCheckboxes={true}
                           pathname="trusted-domains"
-                          showTableRows={showTableRows}
+                          showTableRows={!isTableLoading}
                           showLink={false}
                           elementsData={{
                             isElementSelectable: isTrustDomainSelectable,
@@ -515,7 +505,6 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
             )
           }
           operation={operation}
-          setShowTableRows={setShowTableRows}
           onRefresh={refreshData}
         />
         <DeleteTrustedDomainsModal

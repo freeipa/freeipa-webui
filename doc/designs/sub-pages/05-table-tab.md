@@ -172,7 +172,7 @@ return (
                 columnNames={["Column 1", "Column 2", ...]}
                 hasCheckboxes={true}
                 pathname="<child-pathname>"
-                showTableRows={!isLoading}
+                showTableRows={!isFetching}
                 showLink={false}
                 elementsData={{...}}
                 buttonsData={{...}}

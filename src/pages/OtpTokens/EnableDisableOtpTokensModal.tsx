@@ -23,7 +23,6 @@ interface EnableDisableOtpTokensModalProps {
   elementsList: string[];
   setElementsList: (elementsList: OtpToken[]) => void;
   operation: "enable" | "disable";
-  setShowTableRows: (value: boolean) => void;
   onRefresh: () => void;
 }
 

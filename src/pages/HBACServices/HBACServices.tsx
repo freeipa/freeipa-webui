@@ -92,14 +92,13 @@ const HBACServices = () => {
 
   const {
     data: batchResponse,
-    isLoading: isBatchLoading,
+    isFetching: isBatchFetching,
     error: batchError,
   } = servicesDataResponse;
 
   // Handle data when the API call is finished
   useEffect(() => {
     if (servicesDataResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected users on refresh
       setServicesTotalCount(0);
       globalErrors.clear();
@@ -124,8 +123,6 @@ const HBACServices = () => {
       setServicesTotalCount(totalCount);
       // Update the list
       setServicesList(servicesList);
-      // Show table elements
-      setShowTableRows(true);
     }
 
     // API response: Error
@@ -142,9 +139,6 @@ const HBACServices = () => {
 
   // Refresh button handling
   const refreshServicesData = () => {
-    // Hide table
-    setShowTableRows(false);
-
     // Reset selected users on refresh
     setServicesTotalCount(0);
     clearSelectedServices();
@@ -181,15 +175,6 @@ const HBACServices = () => {
   };
 
   // Show table rows
-  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
-
-  // Show table rows only when data is fully retrieved
-  useEffect(() => {
-    if (showTableRows !== !isBatchLoading) {
-      setShowTableRows(!isBatchLoading);
-    }
-  }, [isBatchLoading]);
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -346,7 +331,7 @@ const HBACServices = () => {
       element: (
         <SecondaryButton
           onClickHandler={refreshServicesData}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
           dataCy="hbac-services-button-refresh"
         >
           Refresh
@@ -357,7 +342,7 @@ const HBACServices = () => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isBatchFetching}
           onClickHandler={onDeleteHandler}
           dataCy="hbac-services-button-delete"
         >
@@ -370,7 +355,7 @@ const HBACServices = () => {
       element: (
         <SecondaryButton
           onClickHandler={onAddClickHandler}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
           dataCy="hbac-services-button-add"
         >
           Add
@@ -429,7 +414,7 @@ const HBACServices = () => {
                   ) : (
                     <HBACServicesTable
                       shownElementsList={servicesList}
-                      showTableRows={showTableRows}
+                      showTableRows={!isBatchFetching}
                       servicesData={servicesTableData}
                       buttonsData={servicesTableButtonsData}
                       paginationData={selectedPerPageData}

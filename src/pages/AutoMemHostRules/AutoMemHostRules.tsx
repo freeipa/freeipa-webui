@@ -72,11 +72,12 @@ const AutoMemHostRules = () => {
 
   const NO_SELECTION = "No default group selected";
 
-  const [hostGroups, setHostGroups] = React.useState<string[]>([]);
   const [automemberRules, setAutomemberRules] = React.useState<
     AutomemberEntry[]
   >([]);
   const [defaultGroup, setDefaultGroup] = React.useState<string>(NO_SELECTION);
+  const [previousDefaultGroup, setPreviousDefaultGroup] =
+    React.useState<string>(NO_SELECTION);
   const [errors, setErrors] = React.useState<
     Array<FetchBaseQueryError | SerializedError>
   >([]);
@@ -88,8 +89,6 @@ const AutoMemHostRules = () => {
   const [groupsAvailableToAdd, setGroupsAvailableToAdd] = React.useState<
     string[]
   >([]);
-  const [previousDefaultGroup, setPreviousDefaultGroup] =
-    React.useState<string>(NO_SELECTION);
 
   // Handle API calls errors
   const globalErrors = useApiError([]);
@@ -111,28 +110,35 @@ const AutoMemHostRules = () => {
   });
   const [changeDefaultGroup] = useChangeDefaultGroupMutation();
 
-  // Show table rows
-  const [showTableRows, setShowTableRows] = React.useState(
-    !hostGroupRulesData.isLoading
-  );
-
-  // Update table rows when the data is loaded
-  React.useEffect(() => {
-    if (showTableRows !== !hostGroupRulesData.isLoading) {
-      setShowTableRows(!hostGroupRulesData.isLoading);
-    }
-  }, [hostGroupRulesData.isLoading]);
-
   // Main API call
   React.useEffect(() => {
-    if (hostGroupRulesData.isFetching) {
-      setShowTableRows(false);
-    } else {
+    if (!hostGroupRulesData.isFetching) {
       if (hostGroupRulesData.errors && hostGroupRulesData.errors.length > 0) {
         setErrors(hostGroupRulesData.errors || []);
       } else {
         // Update lists
-        setHostGroups(hostGroupRulesData.hostGroups);
+        if (hostGroupRulesData.hostGroups.length > 0) {
+          // Add empty entry as an option
+          const groupsToSelector = [
+            {
+              "data-cy": "typeahead-select-no-selection",
+              value: NO_SELECTION,
+              children: NO_SELECTION,
+            },
+          ];
+
+          // Add the rest of the data from hostgroups
+          const tempGroupsToSelector = hostGroupRulesData.hostGroups.map(
+            (group) => ({
+              "data-cy": "typeahead-select-" + group,
+              value: group,
+              children: group,
+            })
+          );
+          groupsToSelector.push(...tempGroupsToSelector);
+          setHostGroupsOptions(groupsToSelector);
+        }
+
         setAutomemberRules(hostGroupRulesData.shownAutomembers);
         // If no default group is set, set it as 'No selection'
         if (hostGroupRulesData.defaultGroup === "") {
@@ -154,8 +160,6 @@ const AutoMemHostRules = () => {
 
         // Set table count from search match total
         setTotalCount(hostGroupRulesData.totalCount);
-        // Show table elements
-        setShowTableRows(true);
       }
     }
   }, [
@@ -165,29 +169,6 @@ const AutoMemHostRules = () => {
     hostGroupRulesData.totalCount,
     hostGroupRulesData.defaultGroup,
   ]);
-
-  // Parse host groups to be shown in the default host group selector
-  React.useEffect(() => {
-    if (hostGroups.length > 0) {
-      // Add empty entry as an option
-      const groupsToSelector = [
-        {
-          "data-cy": "typeahead-select-no-selection",
-          value: NO_SELECTION,
-          children: NO_SELECTION,
-        },
-      ];
-
-      // Add the rest of the data from hostgroups
-      const tempGroupsToSelector = hostGroups.map((group) => ({
-        "data-cy": "typeahead-select-" + group,
-        value: group,
-        children: group,
-      }));
-      groupsToSelector.push(...tempGroupsToSelector);
-      setHostGroupsOptions(groupsToSelector);
-    }
-  }, [hostGroups]);
 
   // On select default group
   const onSelectDefaultGroup = (group: string) => {
@@ -237,17 +218,10 @@ const AutoMemHostRules = () => {
 
   // Refresh button handling
   const refreshData = () => {
-    setShowTableRows(false);
     setTotalCount(0);
     clearSelectedRules();
     hostGroupRulesData.refetch();
   };
-
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  React.useEffect(() => {
-    hostGroupRulesData.refetch();
-  }, [page, perPage]);
 
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
@@ -342,7 +316,7 @@ const AutoMemHostRules = () => {
     (rule) => rule.automemberRule
   );
 
-  // 'Table'
+  // Data wrappers
   const automembersTableData = {
     isElementSelectable: isAutomemberUserGroupSelectable,
     selectedElements: selectedAutomembers,
@@ -464,7 +438,7 @@ const AutoMemHostRules = () => {
         <SecondaryButton
           dataCy="auto-member-host-rules-button-refresh"
           onClickHandler={refreshData}
-          isDisabled={!showTableRows}
+          isDisabled={hostGroupRulesData.isFetching}
         >
           Refresh
         </SecondaryButton>
@@ -475,7 +449,7 @@ const AutoMemHostRules = () => {
       element: (
         <SecondaryButton
           dataCy="auto-member-host-rules-button-delete"
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || hostGroupRulesData.isFetching}
           onClickHandler={onOpenDeleteModal}
         >
           Delete
@@ -487,7 +461,7 @@ const AutoMemHostRules = () => {
       element: (
         <SecondaryButton
           dataCy="auto-member-host-rules-button-add"
-          isDisabled={!showTableRows}
+          isDisabled={hostGroupRulesData.isFetching}
           onClickHandler={onOpenAddModal}
         >
           Add
@@ -522,99 +496,95 @@ const AutoMemHostRules = () => {
   ];
 
   return (
-    <>
-      <div>
-        <PageSection hasBodyWrapper={false}>
-          <TitleLayout
-            id="Automember host groups title"
-            headingLevel="h1"
-            text="Host group rules"
-          />
-        </PageSection>
-        <PageSection hasBodyWrapper={false} isFilled={false}>
-          <Flex direction={{ default: "column" }}>
-            <FlexItem>
-              <ToolbarLayout toolbarItems={toolbarItems} />
-            </FlexItem>
-            <FlexItem style={{ flex: "0 0 auto" }}>
-              <OuterScrollContainer>
-                <InnerScrollContainer
-                  style={{ height: "55vh", overflow: "auto" }}
-                >
-                  {errors !== undefined && errors.length > 0 ? (
-                    <GlobalErrors errors={globalErrors.getAll()} />
-                  ) : (
-                    <MainTable
-                      shownElementsList={automemberRules}
-                      showTableRows={showTableRows}
-                      elementsData={automembersTableData}
-                      buttonsData={automembersTableButtonsData}
-                      paginationData={selectedPerPageData}
-                      searchValue={searchValue}
-                      automemberType="host-group"
-                    />
-                  )}
-                </InnerScrollContainer>
-              </OuterScrollContainer>
-            </FlexItem>
-            <FlexItem
-              style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}
-            >
-              <PaginationLayout
-                list={automemberRules}
-                totalCount={totalCount}
-                variant={PaginationVariant.bottom}
-                widgetId="pagination-options-menu-bottom"
-              />
-            </FlexItem>
-          </Flex>
-        </PageSection>
-        <AddRule
-          show={showAddModal}
-          handleModalToggle={onAddModalToggle}
-          onOpenAddModal={onOpenAddModal}
-          onCloseAddModal={onCloseAddModal}
-          onRefresh={refreshData}
-          groupsAvailableToAdd={groupsAvailableToAdd}
-          ruleType="hostgroup"
+    <div>
+      <PageSection hasBodyWrapper={false}>
+        <TitleLayout
+          id="Automember host groups title"
+          headingLevel="h1"
+          text="Host group rules"
         />
-        <DeleteRule
-          show={showDeleteModal}
-          handleModalToggle={onToggleDeleteModal}
-          onRefresh={refreshData}
-          buttonsData={deleteButtonsData}
-          selectedData={selectedData}
-          ruleType="hostgroup"
-        />
-        <ConfirmationModal
-          dataCy="auto-member-default-host-rules-modal"
-          title="Default hostgroup"
-          isOpen={showChangeConfirmationModal}
-          onClose={onCloseConfirmationModal}
-          actions={[
-            <Button
-              data-cy="modal-button-ok"
-              variant="primary"
-              key="change-default"
-              onClick={() => {
-                onSelectDefaultGroup(defaultGroup);
-              }}
-            >
-              OK
-            </Button>,
-            <SecondaryButton
-              key="cancel"
-              onClickHandler={onCancelDefaultGroup}
-              dataCy="modal-button-cancel"
-            >
-              Cancel
-            </SecondaryButton>,
-          ]}
-          messageText="Are you sure you want to change default group?"
-          messageObj={defaultGroup}
-        />
-      </div>
-    </>
+      </PageSection>
+      <PageSection hasBodyWrapper={false} isFilled={false}>
+        <Flex direction={{ default: "column" }}>
+          <FlexItem>
+            <ToolbarLayout toolbarItems={toolbarItems} />
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto" }}>
+            <OuterScrollContainer>
+              <InnerScrollContainer
+                style={{ height: "55vh", overflow: "auto" }}
+              >
+                {errors !== undefined && errors.length > 0 ? (
+                  <GlobalErrors errors={globalErrors.getAll()} />
+                ) : (
+                  <MainTable
+                    shownElementsList={automemberRules}
+                    showTableRows={!hostGroupRulesData.isFetching}
+                    elementsData={automembersTableData}
+                    buttonsData={automembersTableButtonsData}
+                    paginationData={selectedPerPageData}
+                    searchValue={searchValue}
+                    automemberType="host-group"
+                  />
+                )}
+              </InnerScrollContainer>
+            </OuterScrollContainer>
+          </FlexItem>
+          <FlexItem style={{ flex: "0 0 auto", position: "sticky", bottom: 0 }}>
+            <PaginationLayout
+              list={automemberRules}
+              totalCount={totalCount}
+              variant={PaginationVariant.bottom}
+              widgetId="pagination-options-menu-bottom"
+            />
+          </FlexItem>
+        </Flex>
+      </PageSection>
+      <AddRule
+        show={showAddModal}
+        handleModalToggle={onAddModalToggle}
+        onOpenAddModal={onOpenAddModal}
+        onCloseAddModal={onCloseAddModal}
+        onRefresh={refreshData}
+        groupsAvailableToAdd={groupsAvailableToAdd}
+        ruleType="hostgroup"
+      />
+      <DeleteRule
+        show={showDeleteModal}
+        handleModalToggle={onToggleDeleteModal}
+        onRefresh={refreshData}
+        buttonsData={deleteButtonsData}
+        selectedData={selectedData}
+        ruleType="hostgroup"
+      />
+      <ConfirmationModal
+        dataCy="auto-member-default-host-rules-modal"
+        title="Default hostgroup"
+        isOpen={showChangeConfirmationModal}
+        onClose={onCloseConfirmationModal}
+        actions={[
+          <Button
+            data-cy="modal-button-ok"
+            variant="primary"
+            key="change-default"
+            onClick={() => {
+              onSelectDefaultGroup(defaultGroup);
+            }}
+          >
+            OK
+          </Button>,
+          <SecondaryButton
+            key="cancel"
+            onClickHandler={onCancelDefaultGroup}
+            dataCy="modal-button-cancel"
+          >
+            Cancel
+          </SecondaryButton>,
+        ]}
+        messageText="Are you sure you want to change default group?"
+        messageObj={defaultGroup}
+      />
+    </div>
   );
 };
 

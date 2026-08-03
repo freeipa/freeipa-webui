@@ -90,14 +90,13 @@ const SudoCmds = () => {
 
   const {
     data: batchResponse,
-    isLoading: isBatchLoading,
+    isFetching: isBatchFetching,
     error: batchError,
   } = cmdGroupsDataResponse;
 
   // Handle data when the API call is finished
   useEffect(() => {
     if (cmdGroupsDataResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected entries on refresh
       setCmdGroupsTotalCount(0);
       globalErrors.clear();
@@ -122,8 +121,6 @@ const SudoCmds = () => {
       setCmdGroupsTotalCount(totalCount);
       // Update the list
       setCmdGroupsList(cmdGroupsList);
-      // Show table elements
-      setShowTableRows(true);
     }
 
     // API response: Error
@@ -140,7 +137,6 @@ const SudoCmds = () => {
 
   // Refresh button handling
   const refreshData = () => {
-    setShowTableRows(false);
     setCmdGroupsTotalCount(0);
     clearSelectedCmdGroups();
     cmdGroupsDataResponse.refetch();
@@ -173,16 +169,6 @@ const SudoCmds = () => {
     const emptyList: SudoCmdGroup[] = [];
     setSelectedCmds(emptyList);
   };
-
-  // Show table rows
-  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
-
-  // Show table rows only when data is fully retrieved
-  useEffect(() => {
-    if (showTableRows !== !isBatchLoading) {
-      setShowTableRows(!isBatchLoading);
-    }
-  }, [isBatchLoading]);
 
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
@@ -337,7 +323,7 @@ const SudoCmds = () => {
       element: (
         <SecondaryButton
           onClickHandler={refreshData}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
           dataCy="sudo-command-groups-button-refresh"
         >
           Refresh
@@ -348,7 +334,7 @@ const SudoCmds = () => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isBatchFetching}
           onClickHandler={onDeleteHandler}
           dataCy="sudo-command-groups-button-delete"
         >
@@ -361,7 +347,7 @@ const SudoCmds = () => {
       element: (
         <SecondaryButton
           onClickHandler={onAddClickHandler}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
           dataCy="sudo-command-groups-button-add"
         >
           Add
@@ -420,7 +406,7 @@ const SudoCmds = () => {
                   ) : (
                     <SudoCmdGroupsTable
                       shownElementsList={cmdList}
-                      showTableRows={showTableRows}
+                      showTableRows={!isBatchFetching}
                       cmdGroupsData={cmdGroupsTableData}
                       buttonsData={cmdsTableButtonsData}
                       paginationData={selectedPerPageData}

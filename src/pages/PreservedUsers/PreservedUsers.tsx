@@ -90,14 +90,13 @@ const PreservedUsers = () => {
 
   const {
     data: batchResponse,
-    isLoading: isBatchLoading,
+    isFetching: isBatchFetching,
     error: batchError,
   } = userDataResponse;
 
   // Handle data when the API call is finished
   useEffect(() => {
     if (userDataResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected users on refresh
       setUsersTotalCount(0);
       globalErrors.clear();
@@ -122,8 +121,6 @@ const PreservedUsers = () => {
       setUsersTotalCount(totalCount);
       // Update the list of users
       setPreservedUsersList(usersList);
-      // Show table elements
-      setShowTableRows(true);
     }
 
     // API response: Error
@@ -140,9 +137,6 @@ const PreservedUsers = () => {
 
   // Refresh button handling
   const refreshUsersData = () => {
-    // Hide table
-    setShowTableRows(false);
-
     // Reset selected users on refresh
     setUsersTotalCount(0);
     clearSelectedUsers();
@@ -172,15 +166,6 @@ const PreservedUsers = () => {
   };
 
   // Show table rows
-  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
-
-  // Show table rows only when data is fully retrieved
-  useEffect(() => {
-    if (showTableRows !== !isBatchLoading) {
-      setShowTableRows(!isBatchLoading);
-    }
-  }, [isBatchLoading]);
-
   // Table-related shared functionality
   // - Selectable checkboxes on table
   const selectableUsersTable = preservedUsersList.filter(isUserSelectable); // elements per Table
@@ -339,7 +324,7 @@ const PreservedUsers = () => {
       element: (
         <SecondaryButton
           onClickHandler={refreshUsersData}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
           dataCy="preserved-users-button-refresh"
         >
           Refresh
@@ -350,7 +335,7 @@ const PreservedUsers = () => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isBatchFetching}
           onClickHandler={onDeleteHandler}
           dataCy="preserved-users-button-delete"
         >
@@ -362,7 +347,7 @@ const PreservedUsers = () => {
       key: 5,
       element: (
         <SecondaryButton
-          isDisabled={!showTableRows || selectedUsers.length === 0}
+          isDisabled={isBatchFetching || selectedUsers.length === 0}
           onClickHandler={onRestoreHandler}
           dataCy="preserved-users-button-restore"
         >
@@ -374,7 +359,7 @@ const PreservedUsers = () => {
       key: 6,
       element: (
         <SecondaryButton
-          isDisabled={!showTableRows || selectedUsers.length === 0}
+          isDisabled={isBatchFetching || selectedUsers.length === 0}
           onClickHandler={onStageHandler}
           dataCy="preserved-users-button-stage"
         >
@@ -436,7 +421,7 @@ const PreservedUsers = () => {
                     <UsersTable
                       shownElementsList={preservedUsersList}
                       from="preserved-users"
-                      showTableRows={showTableRows}
+                      showTableRows={!isBatchFetching}
                       usersData={usersTableData}
                       buttonsData={usersTableButtonsData}
                       paginationData={selectedPerPageData}

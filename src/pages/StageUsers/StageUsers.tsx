@@ -91,14 +91,13 @@ const StageUsers = () => {
 
   const {
     data: batchResponse,
-    isLoading: isBatchLoading,
+    isFetching: isBatchFetching,
     error: batchError,
   } = userDataResponse;
 
   // Handle data when the API call is finished
   useEffect(() => {
     if (userDataResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected users on refresh
       setUsersTotalCount(0);
       globalErrors.clear();
@@ -123,8 +122,6 @@ const StageUsers = () => {
       setUsersTotalCount(totalCount);
       // Update the list of users
       setStageUsersList(usersList);
-      // Show table elements
-      setShowTableRows(true);
     }
 
     // API response: Error
@@ -141,9 +138,6 @@ const StageUsers = () => {
 
   // Refresh button handling
   const refreshUsersData = () => {
-    // Hide table
-    setShowTableRows(false);
-
     // Reset selected users on refresh
     setUsersTotalCount(0);
     clearSelectedUsers();
@@ -171,16 +165,6 @@ const StageUsers = () => {
   const updateIsDeletion = (value: boolean) => {
     setIsDeletion(value);
   };
-
-  // Show table rows
-  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
-
-  // Show table rows only when data is fully retrieved
-  useEffect(() => {
-    if (showTableRows !== !isBatchLoading) {
-      setShowTableRows(!isBatchLoading);
-    }
-  }, [isBatchLoading]);
 
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
 
@@ -343,7 +327,7 @@ const StageUsers = () => {
       element: (
         <SecondaryButton
           onClickHandler={refreshUsersData}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
           dataCy="stage-users-button-refresh"
         >
           Refresh
@@ -354,7 +338,7 @@ const StageUsers = () => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isBatchFetching}
           onClickHandler={onDeleteHandler}
           dataCy="stage-users-button-delete"
         >
@@ -367,7 +351,7 @@ const StageUsers = () => {
       element: (
         <SecondaryButton
           onClickHandler={onAddClickHandler}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
           dataCy="stage-users-button-add"
         >
           Add
@@ -378,7 +362,7 @@ const StageUsers = () => {
       key: 6,
       element: (
         <SecondaryButton
-          isDisabled={!showTableRows || selectedUsers.length === 0}
+          isDisabled={isBatchFetching || selectedUsers.length === 0}
           onClickHandler={onActivateHandler}
           dataCy="stage-users-button-activate"
         >
@@ -440,7 +424,7 @@ const StageUsers = () => {
                     <UsersTable
                       shownElementsList={stageUsersList}
                       from="stage-users"
-                      showTableRows={showTableRows}
+                      showTableRows={!isBatchFetching}
                       usersData={usersTableData}
                       buttonsData={usersTableButtonsData}
                       paginationData={selectedPerPageData}
@@ -469,7 +453,6 @@ const StageUsers = () => {
         <AddUser
           show={showAddModal}
           from="stage-users"
-          setShowTableRows={setShowTableRows}
           handleModalToggle={onAddModalToggle}
           onOpenAddModal={onAddClickHandler}
           onCloseAddModal={onCloseAddModal}

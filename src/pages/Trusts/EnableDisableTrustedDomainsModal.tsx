@@ -20,7 +20,6 @@ interface EnableDisableTrustedDomainsProps {
   domainNames: string[];
   setDomainNames: (domainNames: string[]) => void;
   operation: "enable" | "disable";
-  setShowTableRows: (value: boolean) => void;
   onRefresh: () => void;
 }
 
@@ -69,19 +68,16 @@ const EnableDisableTrustedDomainsModal = (
         }
       })
       .finally(() => {
-        props.setShowTableRows(true);
         onClose();
       });
   };
 
   const onClose = () => {
-    props.setShowTableRows(true);
     props.setDomainNames([]);
     props.onClose();
   };
 
   const onCloseWithoutClearingElements = () => {
-    props.setShowTableRows(true);
     props.onClose();
   };
 

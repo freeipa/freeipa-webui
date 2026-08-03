@@ -106,14 +106,13 @@ const ActiveUsers = () => {
 
   const {
     data: batchResponse,
-    isLoading: isBatchLoading,
+    isFetching: isBatchFetching,
     error: batchError,
   } = userDataResponse;
 
   // Handle data when the API call is finished
   useEffect(() => {
     if (userDataResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected users on refresh
       setUsersTotalCount(0);
       globalErrors.clear();
@@ -138,8 +137,6 @@ const ActiveUsers = () => {
       setUsersTotalCount(totalCount);
       // Update the list of users
       setActiveUsersList(usersList);
-      // Show table elements
-      setShowTableRows(true);
     }
 
     // API response: Error
@@ -156,9 +153,6 @@ const ActiveUsers = () => {
 
   // Refresh button handling
   const refreshUsersData = () => {
-    // Hide table
-    setShowTableRows(false);
-
     // Reset selected users on refresh
     setUsersTotalCount(0);
     clearSelectedUsers();
@@ -210,16 +204,6 @@ const ActiveUsers = () => {
     const emptyList: User[] = [];
     setSelectedUsers(emptyList);
   };
-
-  // Show table rows
-  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
-
-  // Show table rows only when data is fully retrieved
-  useEffect(() => {
-    if (showTableRows !== !isBatchLoading) {
-      setShowTableRows(!isBatchLoading);
-    }
-  }, [isBatchLoading]);
 
   // [API call] 'Rebuild auto membership'
   const onRebuildAutoMembership = () => {
@@ -516,7 +500,7 @@ const ActiveUsers = () => {
           name="search"
           ariaLabel="Search users"
           placeholder="Search users"
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
         />
       ),
       toolbarItemVariant: ToolbarItemVariant.label,
@@ -532,7 +516,7 @@ const ActiveUsers = () => {
         <SecondaryButton
           dataCy="active-users-button-refresh"
           onClickHandler={refreshUsersData}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
         >
           Refresh
         </SecondaryButton>
@@ -543,7 +527,7 @@ const ActiveUsers = () => {
       element: (
         <SecondaryButton
           dataCy="active-users-button-delete"
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isBatchFetching}
           onClickHandler={onDeleteHandler}
         >
           Delete
@@ -556,7 +540,7 @@ const ActiveUsers = () => {
         <SecondaryButton
           dataCy="active-users-button-add"
           onClickHandler={onAddClickHandler}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
         >
           Add
         </SecondaryButton>
@@ -567,7 +551,7 @@ const ActiveUsers = () => {
       element: (
         <SecondaryButton
           dataCy="active-users-button-disable"
-          isDisabled={isDisableButtonDisabled || !showTableRows}
+          isDisabled={isDisableButtonDisabled || isBatchFetching}
           onClickHandler={() => onEnableDisableHandler(true)}
         >
           Disable
@@ -579,7 +563,7 @@ const ActiveUsers = () => {
       element: (
         <SecondaryButton
           dataCy="active-users-button-enable"
-          isDisabled={isEnableButtonDisabled || !showTableRows}
+          isDisabled={isEnableButtonDisabled || isBatchFetching}
           onClickHandler={() => onEnableDisableHandler(false)}
         >
           Enable
@@ -595,8 +579,8 @@ const ActiveUsers = () => {
           onKebabToggle={onKebabToggle}
           idKebab="main-dropdown-kebab"
           isKebabOpen={kebabIsOpen}
-          dropdownItems={showTableRows ? dropdownItems : []}
-          isDisabled={!showTableRows}
+          dropdownItems={isBatchFetching ? [] : dropdownItems}
+          isDisabled={isBatchFetching}
         />
       ),
     },
@@ -651,7 +635,7 @@ const ActiveUsers = () => {
                   <UsersTable
                     shownElementsList={activeUsersList}
                     from="active-users"
-                    showTableRows={showTableRows}
+                    showTableRows={!isBatchFetching}
                     usersData={usersTableData}
                     buttonsData={usersTableButtonsData}
                     paginationData={selectedPerPageData}

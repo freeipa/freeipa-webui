@@ -122,14 +122,13 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
 
   const {
     data: batchResponse,
-    isLoading: isBatchLoading,
+    isFetching: isBatchFetching,
     error: batchError,
   } = dataResponse;
 
   // Handle data when the API call is finished
   useEffect(() => {
     if (dataResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected on refresh
       setTotalCount(0);
       globalErrors.clear();
@@ -152,7 +151,6 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
       }
       setGroupsList(groupList);
       setTotalCount(total);
-      setShowTableRows(true);
     }
     // API response: Error
     if (
@@ -168,7 +166,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
         })
       );
     }
-  }, [dataResponse]);
+  }, [dataResponse.isFetching, dataResponse.data]);
 
   const onRefresh = () => {
     props.onRefresh();
@@ -176,15 +174,6 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
   };
 
   // Show table rows
-  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
-
-  // Show table rows only when data is fully retrieved
-  useEffect(() => {
-    if (showTableRows !== !isBatchLoading) {
-      setShowTableRows(!isBatchLoading);
-    }
-  }, [isBatchLoading]);
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -268,7 +257,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
       element: (
         <SecondaryButton
           dataCy="id-views-tab-override-groups-button-delete"
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isBatchFetching}
           onClickHandler={onDeleteHandler}
         >
           Delete
@@ -281,7 +270,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
         <SecondaryButton
           dataCy="id-views-tab-override-groups-button-add"
           onClickHandler={onAddClickHandler}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
         >
           Add
         </SecondaryButton>
@@ -318,7 +307,7 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
               <IDViewsOverrideGroupsTable
                 elementsList={groupsList}
                 shownElementsList={groupsList}
-                showTableRows={showTableRows}
+                showTableRows={!isBatchFetching}
                 overrideEntryData={groupsTableData}
                 buttonsData={viewsTableButtonsData}
                 paginationData={selectedPerPageData}

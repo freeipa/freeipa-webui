@@ -550,7 +550,6 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
           elementsList={[ipaObject["ipatokenuniqueid"]]}
           setElementsList={() => {}}
           operation={operation}
-          setShowTableRows={() => {}}
           onRefresh={props.onRefresh}
         />
         <DeleteOtpTokensModal

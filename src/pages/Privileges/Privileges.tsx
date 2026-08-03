@@ -102,9 +102,6 @@ const Privileges = () => {
     return { elementsList: [], totalCount: 0 };
   }, [batchResponse]);
 
-  // Derive showTableRows from loading states
-  const showTableRows = !isFetching && !isBatchLoading;
-
   // Clear errors when fetching starts
   React.useEffect(() => {
     if (isFetching) {
@@ -241,7 +238,7 @@ const Privileges = () => {
       element: (
         <SecondaryButton
           onClickHandler={refreshData}
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
           dataCy="privileges-button-refresh"
         >
           Refresh
@@ -252,7 +249,7 @@ const Privileges = () => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isFetching}
           onClickHandler={() => setShowDeleteModal(true)}
           dataCy="privileges-button-delete"
         >
@@ -265,7 +262,7 @@ const Privileges = () => {
       element: (
         <SecondaryButton
           onClickHandler={() => setShowAddModal(true)}
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
           dataCy="privileges-button-add"
         >
           Add
@@ -329,7 +326,7 @@ const Privileges = () => {
                     columnNames={columnNames}
                     hasCheckboxes={true}
                     pathname="privileges"
-                    showTableRows={showTableRows}
+                    showTableRows={!isFetching}
                     showLink={true}
                     elementsData={{
                       isElementSelectable: isPrivilegeSelectable,

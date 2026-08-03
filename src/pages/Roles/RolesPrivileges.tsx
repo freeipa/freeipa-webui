@@ -90,9 +90,6 @@ const RolesPrivileges = (props: PropsToRolesPrivileges) => {
     return toLoad.map((name) => ({ cn: name }));
   }, [privilegeNames, searchValue, page, perPage]);
 
-  // Computed "states"
-  const showTableRows = !roleQuery.isFetching;
-
   // Dialogs and actions
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
@@ -257,7 +254,7 @@ const RolesPrivileges = (props: PropsToRolesPrivileges) => {
         propertiesToShow={properties}
         checkedItems={privilegesSelected}
         onCheckItemsChange={setPrivilegesSelected}
-        showTableRows={showTableRows}
+        showTableRows={!roleQuery.isFetching}
       />
       {getFilteredCount() > 0 && (
         <PaginationLayout

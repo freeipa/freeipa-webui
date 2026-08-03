@@ -85,7 +85,7 @@ New pages **must** use the `MainTable` component (`src/components/tables/MainTab
   columnNames={["Name", "Description"]}    // Column header labels
   hasCheckboxes={true}
   pathname="my-entities"                   // Route segment (no leading '/')
-  showTableRows={showTableRows}
+  showTableRows={!isBatchFetching}
   showLink={false}                         // Default to false for new pages (no settings page yet)
   elementsData={{
     isElementSelectable: isMyEntitySelectable,
@@ -138,8 +138,8 @@ For extra actions like "Rebuild auto membership". Used by ActiveUsers and Hosts.
         onKebabToggle={() => setKebabIsOpen(!kebabIsOpen)}
         idKebab="main-dropdown-kebab"
         isKebabOpen={kebabIsOpen}
-        dropdownItems={showTableRows ? dropdownItems : []}
-        isDisabled={!showTableRows}
+        dropdownItems={isBatchFetching ? [] : dropdownItems}
+        isDisabled={isBatchFetching}
       />
     ),
   },
@@ -156,7 +156,7 @@ For entities that support toggling status (Active Users, HBAC Rules, DNS Zones).
     element: (
       <SecondaryButton
         dataCy="my-entities-button-disable"
-        isDisabled={isDisableButtonDisabled || !showTableRows}
+        isDisabled={isDisableButtonDisabled || isBatchFetching}
         onClickHandler={() => onEnableDisableHandler(true)}
       >
         Disable
@@ -168,7 +168,7 @@ For entities that support toggling status (Active Users, HBAC Rules, DNS Zones).
     element: (
       <SecondaryButton
         dataCy="my-entities-button-enable"
-        isDisabled={isEnableButtonDisabled || !showTableRows}
+        isDisabled={isEnableButtonDisabled || isBatchFetching}
         onClickHandler={() => onEnableDisableHandler(false)}
       >
         Enable

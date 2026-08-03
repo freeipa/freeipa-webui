@@ -92,14 +92,13 @@ const SudoRules = () => {
 
   const {
     data: batchResponse,
-    isLoading: isBatchLoading,
+    isFetching: isBatchFetching,
     error: batchError,
   } = rulesDataResponse;
 
   // Handle data when the API call is finished
   useEffect(() => {
     if (rulesDataResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected users on refresh
       setRulesTotalCount(0);
       globalErrors.clear();
@@ -124,8 +123,6 @@ const SudoRules = () => {
       setRulesTotalCount(totalCount);
       // Update the list
       setRulesList(rulesList);
-      // Show table elements
-      setShowTableRows(true);
     }
 
     // API response: Error
@@ -142,7 +139,6 @@ const SudoRules = () => {
 
   // Refresh button handling
   const refreshRulesData = () => {
-    setShowTableRows(false);
     setRulesTotalCount(0);
     clearSelectedRules();
     rulesDataResponse.refetch();
@@ -196,16 +192,6 @@ const SudoRules = () => {
     const emptyList: SudoRule[] = [];
     setSelectedRules(emptyList);
   };
-
-  // Show table rows
-  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
-
-  // Show table rows only when data is fully retrieved
-  useEffect(() => {
-    if (showTableRows !== !isBatchLoading) {
-      setShowTableRows(!isBatchLoading);
-    }
-  }, [isBatchLoading]);
 
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
@@ -390,7 +376,7 @@ const SudoRules = () => {
       element: (
         <SecondaryButton
           onClickHandler={refreshRulesData}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
           dataCy="sudo-rules-button-refresh"
         >
           Refresh
@@ -401,7 +387,7 @@ const SudoRules = () => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isBatchFetching}
           onClickHandler={onDeleteHandler}
           dataCy="sudo-rules-button-delete"
         >
@@ -414,7 +400,7 @@ const SudoRules = () => {
       element: (
         <SecondaryButton
           onClickHandler={onAddClickHandler}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
           dataCy="sudo-rules-button-add"
         >
           Add
@@ -425,7 +411,7 @@ const SudoRules = () => {
       key: 6,
       element: (
         <SecondaryButton
-          isDisabled={isDisableButtonDisabled || !showTableRows}
+          isDisabled={isDisableButtonDisabled || isBatchFetching}
           onClickHandler={() => onEnableDisableHandler(true)}
           dataCy="sudo-rules-button-disable"
         >
@@ -437,7 +423,7 @@ const SudoRules = () => {
       key: 7,
       element: (
         <SecondaryButton
-          isDisabled={isEnableButtonDisabled || !showTableRows}
+          isDisabled={isEnableButtonDisabled || isBatchFetching}
           onClickHandler={() => onEnableDisableHandler(false)}
           dataCy="sudo-rules-button-enable"
         >
@@ -497,7 +483,7 @@ const SudoRules = () => {
                   ) : (
                     <SudoRulesTable
                       shownElementsList={rulesList}
-                      showTableRows={showTableRows}
+                      showTableRows={!isBatchFetching}
                       rulesData={rulesTableData}
                       buttonsData={rulesTableButtonsData}
                       paginationData={selectedPerPageData}

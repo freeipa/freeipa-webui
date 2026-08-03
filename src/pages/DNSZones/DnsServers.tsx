@@ -78,12 +78,11 @@ const DnsServers = () => {
     version: apiVersion,
   });
 
-  const { data, isLoading, error } = dnsServersResponse;
+  const { data, isFetching, error } = dnsServersResponse;
 
   // Handle data when the API call is finished
   React.useEffect(() => {
     if (dnsServersResponse.isFetching) {
-      setShowTableRows(false);
       setTotalCount(0);
       globalErrors.clear();
       return;
@@ -97,18 +96,14 @@ const DnsServers = () => {
     ) {
       setTotalCount(data.data.length || 0);
       setDnsServersId(data.data.slice(firstUserIdx, lastUserIdx) || []);
-      setShowTableRows(true);
     }
   }, [dnsServersResponse]);
 
   // Refresh button handling
   const refreshData = () => {
-    setShowTableRows(false);
     setTotalCount(0);
 
-    dnsServersResponse.refetch().then(() => {
-      setShowTableRows(true);
-    });
+    dnsServersResponse.refetch();
   };
 
   // Always refetch data when the component is loaded.
@@ -116,16 +111,6 @@ const DnsServers = () => {
   React.useEffect(() => {
     dnsServersResponse.refetch();
   }, []);
-
-  // Show table rows
-  const [showTableRows, setShowTableRows] = React.useState<boolean>(!isLoading);
-
-  // Show table rows only when data is fully retrieved
-  React.useEffect(() => {
-    if (dnsServersResponse.isSuccess && dnsServersResponse.data) {
-      setShowTableRows(true);
-    }
-  }, [dnsServersResponse.isSuccess, dnsServersResponse.data]);
 
   // List of Toolbar items
   const toolbarItems: ToolbarItem[] = [
@@ -152,7 +137,7 @@ const DnsServers = () => {
         <SecondaryButton
           dataCy="dns-servers-button-refresh"
           onClickHandler={refreshData}
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
         >
           Refresh
         </SecondaryButton>
@@ -246,7 +231,7 @@ const DnsServers = () => {
                       tableId={"dns-servers-table"}
                       isStickyHeader={true}
                       tableHeader={header}
-                      tableBody={!showTableRows ? skeleton : body}
+                      tableBody={isFetching ? skeleton : body}
                     />
                   )}
                 </InnerScrollContainer>

@@ -92,12 +92,11 @@ const CertificateMappingPage = () => {
     stopIdx: lastUserIdx,
   });
 
-  const { data, isLoading, error } = certMapsResponse;
+  const { data, isFetching, error } = certMapsResponse;
 
   // Handle data when the API call is finished
   React.useEffect(() => {
     if (certMapsResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected elements on refresh
       setTotalCount(0);
       globalErrors.clear();
@@ -121,8 +120,6 @@ const CertificateMappingPage = () => {
       setTotalCount(certMapsResponse.data.result.totalCount);
       // Update the list of elements
       setCertMapRules(elementsList);
-      // Show table elements
-      setShowTableRows(true);
     }
 
     // API response: Error
@@ -145,15 +142,10 @@ const CertificateMappingPage = () => {
 
   // Refresh button handling
   const refreshData = () => {
-    // Hide table
-    setShowTableRows(false);
-
     // Reset selected elements on refresh
     setTotalCount(0);
 
-    certMapsResponse.refetch().then(() => {
-      setShowTableRows(true);
-    });
+    certMapsResponse.refetch();
   };
 
   // 'Delete' button state
@@ -237,15 +229,6 @@ const CertificateMappingPage = () => {
   }, []);
 
   // Show table rows
-  const [showTableRows, setShowTableRows] = React.useState(!isLoading);
-
-  // Show table rows only when data is fully retrieved
-  React.useEffect(() => {
-    if (showTableRows !== !isLoading) {
-      setShowTableRows(!isLoading);
-    }
-  }, [isLoading]);
-
   // Data wrappers
   // TODO: Better separation of concerts
   // - 'BulkSelectorrep'
@@ -315,7 +298,7 @@ const CertificateMappingPage = () => {
         <SecondaryButton
           dataCy="certificate-mapping-button-refresh"
           onClickHandler={refreshData}
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
         >
           Refresh
         </SecondaryButton>
@@ -326,7 +309,7 @@ const CertificateMappingPage = () => {
       element: (
         <SecondaryButton
           dataCy="certificate-mapping-button-delete"
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isFetching}
           onClickHandler={() => setShowDeleteModal(true)}
         >
           Delete
@@ -338,7 +321,7 @@ const CertificateMappingPage = () => {
       element: (
         <SecondaryButton
           dataCy="certificate-mapping-button-add"
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
           onClickHandler={() => setShowAddModal(true)}
         >
           Add
@@ -350,7 +333,7 @@ const CertificateMappingPage = () => {
       element: (
         <SecondaryButton
           dataCy="certificate-mapping-button-disable"
-          isDisabled={isDisableButtonDisabled || !showTableRows}
+          isDisabled={isDisableButtonDisabled || isFetching}
           onClickHandler={onDisableOperation}
         >
           Disable
@@ -362,7 +345,7 @@ const CertificateMappingPage = () => {
       element: (
         <SecondaryButton
           dataCy="certificate-mapping-button-enable"
-          isDisabled={isEnableButtonDisabled || !showTableRows}
+          isDisabled={isEnableButtonDisabled || isFetching}
           onClickHandler={onEnableOperation}
         >
           Enable
@@ -427,7 +410,7 @@ const CertificateMappingPage = () => {
                     columnNames={["Rule name", "Status", "Description"]}
                     hasCheckboxes={true}
                     pathname="cert-id-mapping-rules"
-                    showTableRows={showTableRows}
+                    showTableRows={!isFetching}
                     showLink={true}
                     elementsData={{
                       isElementSelectable: isCertMapSelectable,
@@ -489,7 +472,6 @@ const CertificateMappingPage = () => {
           setSelectedElements(value.map((cn) => ({ cn }) as CertificateMapping))
         }
         operation={operation}
-        setShowTableRows={setShowTableRows}
         onRefresh={refreshData}
       />
     </div>

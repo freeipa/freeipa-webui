@@ -3,17 +3,12 @@
 > **Part of:** [Main Pages guide](../main-pages.md)
 > **See also:** [Steps 1–8: Init & Fetching](03-walkthrough-init-fetch.md) | [Step 15: Render, Table & Features](05-walkthrough-render-table-features.md)
 
-### 9. Show Table Rows
+### 9. Table Visibility (Fetching State)
 
-```tsx
-  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
+Use RTK Query `isFetching` or `isBatchFetching` directly. Do not introduce a local `showTableRows` alias.
 
-  useEffect(() => {
-    if (showTableRows !== !isBatchLoading) {
-      setShowTableRows(!isBatchLoading);
-    }
-  }, [isBatchLoading]);
-```
+- Toolbar buttons: `isDisabled={isBatchFetching}` (or `isFetching`)
+- Table prop: `showTableRows={!isBatchFetching}` (or `!isFetching`)
 
 ### 10. Selection Management
 
@@ -170,7 +165,7 @@ The toolbar is built as an array of `ToolbarItem` objects. The standard order is
         <SecondaryButton
           dataCy="my-entities-button-refresh"
           onClickHandler={refreshData}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
         >
           Refresh
         </SecondaryButton>
@@ -181,7 +176,7 @@ The toolbar is built as an array of `ToolbarItem` objects. The standard order is
       element: (
         <SecondaryButton
           dataCy="my-entities-button-delete"
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isBatchFetching}
           onClickHandler={() => setShowDeleteModal(true)}
         >
           Delete
@@ -194,7 +189,7 @@ The toolbar is built as an array of `ToolbarItem` objects. The standard order is
         <SecondaryButton
           dataCy="my-entities-button-add"
           onClickHandler={() => setShowAddModal(true)}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
         >
           Add
         </SecondaryButton>

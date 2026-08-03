@@ -627,7 +627,6 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
         elementsList={[props.dnsZone.idnsname || ""]}
         setElementsList={() => {}} // No need to unselect elements in this case
         operation={isDnsZoneEnabled ? "disable" : "enable"}
-        setShowTableRows={setIsDataLoading}
         onRefresh={props.onRefresh}
       />
       <DeleteDnsZonesModal

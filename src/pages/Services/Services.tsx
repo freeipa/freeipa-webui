@@ -100,9 +100,6 @@ const Services = () => {
     setSelectedServicesList(emptyList);
   };
 
-  // Show table rows
-  const [showTableRows, setShowTableRows] = useState(false);
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -222,14 +219,13 @@ const Services = () => {
 
   const {
     data: batchResponse,
-    isLoading: isBatchLoading,
+    isFetching: isBatchFetching,
     error: batchError,
   } = servicesDataResponse;
 
   // Handle data when the API call is finished
   useEffect(() => {
     if (servicesDataResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected users on refresh
       setServicesTotalCount(0);
       globalErrors.clear();
@@ -253,8 +249,6 @@ const Services = () => {
 
       setServicesList(servicesList);
       setServicesTotalCount(totalCount);
-      // Show table elements
-      setShowTableRows(true);
     }
 
     // API response: Error
@@ -275,18 +269,8 @@ const Services = () => {
     servicesDataResponse.refetch();
   }, []);
 
-  // Show table rows only when data is fully retrieved
-  useEffect(() => {
-    if (showTableRows !== !isBatchLoading) {
-      setShowTableRows(!isBatchLoading);
-    }
-  }, [isBatchLoading]);
-
   // Refresh button handling
   const refreshServicesData = () => {
-    // Hide table
-    setShowTableRows(false);
-
     // Reset selected hosts on refresh
     setServicesTotalCount(0);
     clearSelectedServices();
@@ -375,7 +359,7 @@ const Services = () => {
       element: (
         <SecondaryButton
           onClickHandler={refreshServicesData}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
           dataCy="services-button-refresh"
         >
           Refresh
@@ -398,7 +382,7 @@ const Services = () => {
       key: 5,
       element: (
         <SecondaryButton
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
           onClickHandler={onAddClickHandler}
           dataCy="services-button-add"
         >
@@ -456,7 +440,7 @@ const Services = () => {
                     <ServicesTable
                       elementsList={servicesList}
                       shownElementsList={servicesList}
-                      showTableRows={showTableRows}
+                      showTableRows={!isBatchFetching}
                       servicesData={servicesTableData}
                       buttonsData={servicesTableButtonsData}
                       paginationData={selectedPerPageData}

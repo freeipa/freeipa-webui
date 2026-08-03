@@ -81,12 +81,11 @@ const PasswordPolicies = () => {
     stopIdx: lastUserIdx,
   });
 
-  const { data, isLoading, error } = pwPoliciesResponse;
+  const { data, isFetching, error } = pwPoliciesResponse;
 
   // Handle data when the API call is finished
   React.useEffect(() => {
     if (pwPoliciesResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected elements on refresh
       setTotalCount(0);
       globalErrors.clear();
@@ -111,8 +110,6 @@ const PasswordPolicies = () => {
       setTotalCount(totalCount);
       // Update the list of elements
       setPwPolicies(elementsList);
-      // Show table elements
-      setShowTableRows(true);
     }
 
     // API response: Error
@@ -139,15 +136,10 @@ const PasswordPolicies = () => {
 
   // Refresh button handling
   const refreshData = () => {
-    // Hide table
-    setShowTableRows(false);
-
     // Reset selected elements on refresh
     setTotalCount(0);
 
-    pwPoliciesResponse.refetch().then(() => {
-      setShowTableRows(true);
-    });
+    pwPoliciesResponse.refetch();
   };
 
   // 'Delete' button state
@@ -226,15 +218,6 @@ const PasswordPolicies = () => {
   }, []);
 
   // Show table rows
-  const [showTableRows, setShowTableRows] = React.useState(!isLoading);
-
-  // Show table rows only when data is fully retrieved
-  React.useEffect(() => {
-    if (showTableRows !== !isLoading) {
-      setShowTableRows(!isLoading);
-    }
-  }, [isLoading]);
-
   // Data wrappers
   // TODO: Better separation of concerts
   const buttonsData = {
@@ -306,7 +289,7 @@ const PasswordPolicies = () => {
         <SecondaryButton
           dataCy="password-policies-button-refresh"
           onClickHandler={refreshData}
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
         >
           Refresh
         </SecondaryButton>
@@ -317,7 +300,7 @@ const PasswordPolicies = () => {
       element: (
         <SecondaryButton
           dataCy="password-policies-button-delete"
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isFetching}
           onClickHandler={onOpenDeleteModal}
         >
           Delete
@@ -329,7 +312,7 @@ const PasswordPolicies = () => {
       element: (
         <SecondaryButton
           dataCy="password-policies-button-add"
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
           onClickHandler={onOpenAddModal}
         >
           Add
@@ -395,7 +378,7 @@ const PasswordPolicies = () => {
                       columnNames={["Group", "Priority"]}
                       hasCheckboxes={true}
                       pathname="password-policies"
-                      showTableRows={showTableRows}
+                      showTableRows={!isFetching}
                       showLink={true}
                       elementsData={{
                         isElementSelectable: isPwPolicySelectable,

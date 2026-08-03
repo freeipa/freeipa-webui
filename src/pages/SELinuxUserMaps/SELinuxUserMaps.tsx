@@ -80,7 +80,7 @@ const SELinuxUserMaps = () => {
     stopIdx: lastIdx,
   });
 
-  const { data, isLoading, error } = mapsResponse;
+  const { data, isFetching, error } = mapsResponse;
 
   React.useEffect(() => {
     if (mapsResponse.isFetching) {
@@ -119,13 +119,6 @@ const SELinuxUserMaps = () => {
     }
     return 0;
   }, [mapsResponse.isSuccess, mapsResponse.data]);
-
-  const showTableRows = React.useMemo(() => {
-    if (mapsResponse.isFetching) {
-      return false;
-    }
-    return !isLoading;
-  }, [mapsResponse.isFetching, isLoading]);
 
   const [selectedElements, setSelectedElements] = React.useState<
     SELinuxUserMap[]
@@ -258,7 +251,7 @@ const SELinuxUserMaps = () => {
         <SecondaryButton
           dataCy="selinux-user-maps-button-refresh"
           onClickHandler={refreshData}
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
         >
           Refresh
         </SecondaryButton>
@@ -268,7 +261,7 @@ const SELinuxUserMaps = () => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isFetching}
           dataCy="selinux-user-maps-button-delete"
           onClickHandler={() => setShowDeleteModal(true)}
         >
@@ -280,7 +273,7 @@ const SELinuxUserMaps = () => {
       key: 5,
       element: (
         <SecondaryButton
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
           dataCy="selinux-user-maps-button-add"
           onClickHandler={() => setShowAddModal(true)}
         >
@@ -292,7 +285,7 @@ const SELinuxUserMaps = () => {
       key: 6,
       element: (
         <SecondaryButton
-          isDisabled={isDisableButtonDisabled || !showTableRows}
+          isDisabled={isDisableButtonDisabled || isFetching}
           onClickHandler={onDisableOperation}
           dataCy="selinux-user-maps-button-disable"
         >
@@ -304,7 +297,7 @@ const SELinuxUserMaps = () => {
       key: 7,
       element: (
         <SecondaryButton
-          isDisabled={isEnableButtonDisabled || !showTableRows}
+          isDisabled={isEnableButtonDisabled || isFetching}
           onClickHandler={onEnableOperation}
           dataCy="selinux-user-maps-button-enable"
         >
@@ -370,7 +363,7 @@ const SELinuxUserMaps = () => {
                       columnNames={columnNames}
                       hasCheckboxes={true}
                       pathname="selinux-user-maps"
-                      showTableRows={showTableRows}
+                      showTableRows={!isFetching}
                       showLink={false}
                       elementsData={{
                         isElementSelectable: isSelinuxUserMapSelectable,

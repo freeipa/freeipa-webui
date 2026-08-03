@@ -70,14 +70,11 @@ Use `useMemo` to derive `elementsList` and `totalCount` from the query response 
 
     return { elementsList: [], totalCount: 0 };
   }, [batchResponse]);
-
-  // Derive showTableRows from loading states
-  const showTableRows = useMemo(() => {
-    return !isFetching && !isLoading;
-  }, [isFetching, isLoading]);
 ```
 
 This pattern avoids eslint warnings about calling `setState` in `useEffect`.
+
+> **Table visibility:** Pass `showTableRows={!isFetching}` (or `!isBatchFetching`) to the table and use `isFetching` / `isBatchFetching` directly to disable toolbar buttons. Do not keep a separate `showTableRows` local variable or sync it with `useEffect`/`useState`.
 
 ## Step 5: Error Handling
 
@@ -160,9 +157,8 @@ useEffect(() => {
   if (dataResponse.isSuccess && batchResponse) {
     setEntitiesList(/* ... */);  // Warning!
     setTotalCount(/* ... */);    // Warning!
-    setShowTableRows(true);      // Warning!
   }
 }, [dataResponse]);
 ```
 
-Use the `useMemo` pattern from Step 4 instead.
+Use the `useMemo` pattern from Step 4 instead. Drive table visibility from `isFetching` / `isBatchFetching` directly.

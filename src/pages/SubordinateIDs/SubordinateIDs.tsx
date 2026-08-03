@@ -81,14 +81,13 @@ const SubordinateIDs = () => {
 
   const {
     data: batchResponse,
-    isLoading: isBatchLoading,
+    isFetching: isBatchFetching,
     error: batchError,
   } = subIdsDataResponse;
 
   // Handle data when the API call is finished
   React.useEffect(() => {
     if (subIdsDataResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected elements on refresh
       setTotalCount(0);
       globalErrors.clear();
@@ -113,8 +112,6 @@ const SubordinateIDs = () => {
       setTotalCount(totalCount);
       // Update the list of elements
       setSubIds(elementsList);
-      // Show table elements
-      setShowTableRows(true);
     }
 
     // API response: Error
@@ -131,15 +128,10 @@ const SubordinateIDs = () => {
 
   // Refresh button handling
   const refreshData = () => {
-    // Hide table
-    setShowTableRows(false);
-
     // Reset selected elements on refresh
     setTotalCount(0);
 
-    subIdsDataResponse.refetch().then(() => {
-      setShowTableRows(true);
-    });
+    subIdsDataResponse.refetch();
   };
 
   // Always refetch data when the component is loaded.
@@ -147,16 +139,6 @@ const SubordinateIDs = () => {
   React.useEffect(() => {
     subIdsDataResponse.refetch();
   }, []);
-
-  // Show table rows
-  const [showTableRows, setShowTableRows] = React.useState(!isBatchLoading);
-
-  // Show table rows only when data is fully retrieved
-  React.useEffect(() => {
-    if (showTableRows !== !isBatchLoading) {
-      setShowTableRows(!isBatchLoading);
-    }
-  }, [isBatchLoading]);
 
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState(false);
@@ -194,7 +176,7 @@ const SubordinateIDs = () => {
         <SecondaryButton
           dataCy="subids-button-refresh"
           onClickHandler={refreshData}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
         >
           Refresh
         </SecondaryButton>
@@ -205,7 +187,7 @@ const SubordinateIDs = () => {
       element: (
         <SecondaryButton
           dataCy="subids-button-add"
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
           onClickHandler={onOpenAddModal}
         >
           Add
@@ -281,7 +263,7 @@ const SubordinateIDs = () => {
                       ]}
                       hasCheckboxes={false}
                       pathname="subordinate-ids"
-                      showTableRows={showTableRows}
+                      showTableRows={!isBatchFetching}
                       showLink={true}
                     />
                   )}

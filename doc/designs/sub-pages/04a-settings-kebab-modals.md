@@ -26,7 +26,6 @@ interface EnableDisable<Entity>ModalProps {
   elementsList: string[];
   setElementsList?: (elementsList: <Entity>[]) => void;  // Optional for settings
   operation: "enable" | "disable";
-  setShowTableRows?: (value: boolean) => void;           // Optional for settings
   onRefresh: () => void;
   from?: "main-page" | "settings-page";                  // Context
 }

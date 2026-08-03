@@ -123,14 +123,13 @@ const Hosts = () => {
 
   const {
     data: batchResponse,
-    isLoading: isBatchLoading,
+    isFetching: isBatchFetching,
     error: batchError,
   } = hostDataResponse;
 
   // Handle data when the API call is finished
   useEffect(() => {
     if (hostDataResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected users on refresh
       setHostsTotalCount(0);
       globalErrors.clear();
@@ -155,8 +154,6 @@ const Hosts = () => {
 
       setHostsList(hostsList);
       setHostsTotalCount(totalCount);
-      // Show table elements
-      setShowTableRows(true);
     }
 
     // API response: Error
@@ -179,9 +176,6 @@ const Hosts = () => {
 
   // Refresh button handling
   const refreshHostsData = () => {
-    // Hide table
-    setShowTableRows(false);
-
     // Reset selected hosts on refresh
     setHostsTotalCount(0);
     clearSelectedHosts();
@@ -196,8 +190,6 @@ const Hosts = () => {
   };
 
   // Show table rows
-  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
-
   const updateSelectedHosts = (hosts: Host[], isSelected: boolean) => {
     let newSelectedHosts: Host[] = [];
     if (isSelected) {
@@ -240,13 +232,6 @@ const Hosts = () => {
       updateSelectedHosts([host], isSelecting);
     }
   };
-
-  // Show table rows only when data is fully retrieved
-  useEffect(() => {
-    if (showTableRows !== !isBatchLoading) {
-      setShowTableRows(!isBatchLoading);
-    }
-  }, [isBatchLoading]);
 
   // Dropdown kebab
   const [kebabIsOpen, setKebabIsOpen] = useState(false);
@@ -478,7 +463,7 @@ const Hosts = () => {
       element: (
         <SecondaryButton
           onClickHandler={refreshHostsData}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
           dataCy="hosts-button-refresh"
         >
           Refresh
@@ -489,7 +474,7 @@ const Hosts = () => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isBatchFetching}
           onClickHandler={onDeleteHandler}
           dataCy="hosts-button-delete"
         >
@@ -502,7 +487,7 @@ const Hosts = () => {
       element: (
         <SecondaryButton
           onClickHandler={onAddClickHandler}
-          isDisabled={!showTableRows || isDisabledDueError}
+          isDisabled={isBatchFetching || isDisabledDueError}
           dataCy="hosts-button-add"
         >
           Add
@@ -517,9 +502,9 @@ const Hosts = () => {
           onKebabToggle={onKebabToggle}
           idKebab="main-dropdown-kebab"
           isKebabOpen={kebabIsOpen}
-          dropdownItems={!showTableRows ? [] : dropdownItems}
+          dropdownItems={isBatchFetching ? [] : dropdownItems}
           dataCy="hosts-kebab"
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
         />
       ),
     },
@@ -572,7 +557,7 @@ const Hosts = () => {
                     <HostsTable
                       elementsList={hostsList}
                       shownElementsList={hostsList}
-                      showTableRows={showTableRows}
+                      showTableRows={!isBatchFetching}
                       hostsData={hostsTableData}
                       buttonsData={hostsTableButtonsData}
                       paginationData={selectedPerPageData}

@@ -93,14 +93,13 @@ const HBACRules = () => {
 
   const {
     data: batchResponse,
-    isLoading: isBatchLoading,
+    isFetching: isBatchFetching,
     error: batchError,
   } = rulesDataResponse;
 
   // Handle data when the API call is finished
   useEffect(() => {
     if (rulesDataResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected users on refresh
       setRulesTotalCount(0);
       globalErrors.clear();
@@ -125,8 +124,6 @@ const HBACRules = () => {
       setRulesTotalCount(totalCount);
       // Update the list of users
       setRulesList(rulesList);
-      // Show table elements
-      setShowTableRows(true);
     }
 
     // API response: Error
@@ -143,9 +140,6 @@ const HBACRules = () => {
 
   // Refresh button handling
   const refreshRulesData = () => {
-    // Hide table
-    setShowTableRows(false);
-
     // Reset selected users on refresh
     setRulesTotalCount(0);
     clearSelectedRules();
@@ -203,16 +197,6 @@ const HBACRules = () => {
     const emptyList: HBACRule[] = [];
     setSelectedRules(emptyList);
   };
-
-  // Show table rows
-  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
-
-  // Show table rows only when data is fully retrieved
-  useEffect(() => {
-    if (showTableRows !== !isBatchLoading) {
-      setShowTableRows(!isBatchLoading);
-    }
-  }, [isBatchLoading]);
 
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
@@ -397,7 +381,7 @@ const HBACRules = () => {
       element: (
         <SecondaryButton
           onClickHandler={refreshRulesData}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
           dataCy="hbac-rules-button-refresh"
         >
           Refresh
@@ -408,7 +392,7 @@ const HBACRules = () => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isBatchFetching}
           onClickHandler={onDeleteHandler}
           dataCy="hbac-rules-button-delete"
         >
@@ -421,7 +405,7 @@ const HBACRules = () => {
       element: (
         <SecondaryButton
           onClickHandler={onAddClickHandler}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
           dataCy="hbac-rules-button-add"
         >
           Add
@@ -432,7 +416,7 @@ const HBACRules = () => {
       key: 6,
       element: (
         <SecondaryButton
-          isDisabled={isDisableButtonDisabled || !showTableRows}
+          isDisabled={isDisableButtonDisabled || isBatchFetching}
           onClickHandler={() => onEnableDisableHandler(true)}
           dataCy="hbac-rules-button-disable"
         >
@@ -444,7 +428,7 @@ const HBACRules = () => {
       key: 7,
       element: (
         <SecondaryButton
-          isDisabled={isEnableButtonDisabled || !showTableRows}
+          isDisabled={isEnableButtonDisabled || isBatchFetching}
           onClickHandler={() => onEnableDisableHandler(false)}
           dataCy="hbac-rules-button-enable"
         >
@@ -505,7 +489,7 @@ const HBACRules = () => {
                   ) : (
                     <HBACRulesTable
                       shownElementsList={rulesList}
-                      showTableRows={showTableRows}
+                      showTableRows={!isBatchFetching}
                       rulesData={rulesTableData}
                       buttonsData={rulesTableButtonsData}
                       paginationData={selectedPerPageData}

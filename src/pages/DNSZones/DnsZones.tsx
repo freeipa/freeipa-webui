@@ -86,12 +86,11 @@ const DnsZones = () => {
     stopIdx: lastUserIdx,
   });
 
-  const { data, isLoading, error } = dnsZonesResponse;
+  const { data, isFetching, error } = dnsZonesResponse;
 
   // Handle data when the API call is finished
   React.useEffect(() => {
     if (dnsZonesResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected elements on refresh
       setTotalCount(0);
       globalErrors.clear();
@@ -115,8 +114,6 @@ const DnsZones = () => {
       setTotalCount(dnsZonesResponse.data.result.totalCount);
       // Update the list of elements
       setDnsZones(elementsList);
-      // Show table elements
-      setShowTableRows(true);
     }
   }, [dnsZonesResponse]);
 
@@ -125,15 +122,10 @@ const DnsZones = () => {
 
   // Refresh button handling
   const refreshData = () => {
-    // Hide table
-    setShowTableRows(false);
-
     // Reset selected elements on refresh
     setTotalCount(0);
 
-    dnsZonesResponse.refetch().then(() => {
-      setShowTableRows(true);
-    });
+    dnsZonesResponse.refetch();
   };
 
   // 'Delete' button state
@@ -204,16 +196,6 @@ const DnsZones = () => {
   React.useEffect(() => {
     dnsZonesResponse.refetch();
   }, []);
-
-  // Show table rows
-  const [showTableRows, setShowTableRows] = React.useState<boolean>(!isLoading);
-
-  // Show table rows only when data is fully retrieved
-  React.useEffect(() => {
-    if (showTableRows !== !isLoading) {
-      setShowTableRows(!isLoading);
-    }
-  }, [isLoading]);
 
   const selectedPerPageData = getSelectedPerPageData(
     dnsZones,
@@ -289,7 +271,7 @@ const DnsZones = () => {
         <SecondaryButton
           dataCy="dns-zones-button-refresh"
           onClickHandler={refreshData}
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
         >
           Refresh
         </SecondaryButton>
@@ -299,7 +281,7 @@ const DnsZones = () => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isFetching}
           onClickHandler={() => setShowDeleteModal(true)}
           dataCy="dns-zones-button-delete"
         >
@@ -311,7 +293,7 @@ const DnsZones = () => {
       key: 5,
       element: (
         <SecondaryButton
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
           onClickHandler={() => setShowAddModal(true)}
           dataCy="dns-zones-button-add"
         >
@@ -323,7 +305,7 @@ const DnsZones = () => {
       key: 6,
       element: (
         <SecondaryButton
-          isDisabled={isDisableButtonDisabled || !showTableRows}
+          isDisabled={isDisableButtonDisabled || isFetching}
           onClickHandler={onDisableOperation}
           dataCy="dns-zones-button-disable"
         >
@@ -335,7 +317,7 @@ const DnsZones = () => {
       key: 7,
       element: (
         <SecondaryButton
-          isDisabled={isEnableButtonDisabled || !showTableRows}
+          isDisabled={isEnableButtonDisabled || isFetching}
           onClickHandler={onEnableOperation}
           dataCy="dns-zones-button-enable"
         >
@@ -398,7 +380,7 @@ const DnsZones = () => {
                       columnNames={["Zone name", "Status"]}
                       hasCheckboxes={true}
                       pathname="dns-zones"
-                      showTableRows={showTableRows}
+                      showTableRows={!isFetching}
                       showLink={true}
                       elementsData={{
                         isElementSelectable: isDnsZoneSelectable,
@@ -462,7 +444,6 @@ const DnsZones = () => {
             setSelectedElements(newElementsList)
           }
           operation={operation}
-          setShowTableRows={setShowTableRows}
           onRefresh={refreshData}
         />
       </div>

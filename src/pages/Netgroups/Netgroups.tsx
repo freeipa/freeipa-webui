@@ -108,14 +108,13 @@ const Netgroups = () => {
 
   const {
     data: batchResponse,
-    isLoading: isBatchLoading,
+    isFetching: isBatchFetching,
     error: batchError,
   } = groupDataResponse;
 
   // Handle data when the API call is finished
   useEffect(() => {
     if (groupDataResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected user groups on refresh
       setGroupsTotalCount(0);
       globalErrors.clear();
@@ -139,8 +138,6 @@ const Netgroups = () => {
 
       setGroupsList(groupsList);
       setGroupsTotalCount(totalCount);
-      // Show table elements
-      setShowTableRows(true);
     }
 
     // API response: Error
@@ -163,9 +160,6 @@ const Netgroups = () => {
 
   // Refresh button handling
   const refreshGroupsData = () => {
-    // Hide table
-    setShowTableRows(false);
-
     // Reset selected netgroups on refresh
     setGroupsTotalCount(0);
     clearSelectedGroups();
@@ -180,8 +174,6 @@ const Netgroups = () => {
   };
 
   // Show table rows
-  const [showTableRows, setShowTableRows] = useState(!isBatchLoading);
-
   const updateSelectedGroups = (groups: Netgroup[], isSelected: boolean) => {
     let newSelectedGroups: Netgroup[] = [];
     if (isSelected) {
@@ -224,13 +216,6 @@ const Netgroups = () => {
       updateSelectedGroups([group], isSelecting);
     }
   };
-
-  // Show table rows only when data is fully retrieved
-  useEffect(() => {
-    if (showTableRows !== !isBatchLoading) {
-      setShowTableRows(!isBatchLoading);
-    }
-  }, [isBatchLoading]);
 
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
@@ -338,7 +323,7 @@ const Netgroups = () => {
       element: (
         <SecondaryButton
           onClickHandler={refreshGroupsData}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
           dataCy="netgroups-button-refresh"
         >
           Refresh
@@ -349,7 +334,7 @@ const Netgroups = () => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isBatchFetching}
           onClickHandler={onDeleteHandler}
           dataCy="netgroups-button-delete"
         >
@@ -362,7 +347,7 @@ const Netgroups = () => {
       element: (
         <SecondaryButton
           onClickHandler={onAddClickHandler}
-          isDisabled={!showTableRows}
+          isDisabled={isBatchFetching}
           dataCy="netgroups-button-add"
         >
           Add
@@ -422,7 +407,7 @@ const Netgroups = () => {
                     <NetgroupsTable
                       elementsList={groupsList}
                       shownElementsList={groupsList}
-                      showTableRows={showTableRows}
+                      showTableRows={!isBatchFetching}
                       groupsData={groupsTableData}
                       buttonsData={groupsTableButtonsData}
                       paginationData={selectedPerPageData}

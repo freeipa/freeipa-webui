@@ -23,7 +23,6 @@ interface EnableDisableDnsZonesModalProps {
   elementsList: string[];
   setElementsList: (elementsList: DNSZone[]) => void;
   operation: "enable" | "disable";
-  setShowTableRows: (value: boolean) => void;
   onRefresh: () => void;
 }
 

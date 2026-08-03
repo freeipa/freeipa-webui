@@ -87,12 +87,11 @@ const DnsForwardZones = () => {
     stopIdx: lastUserIdx,
   });
 
-  const { data, isLoading, error } = forwardDnsZonesResponse;
+  const { data, isFetching, error } = forwardDnsZonesResponse;
 
   // Handle data when the API call is finished
   React.useEffect(() => {
     if (forwardDnsZonesResponse.isFetching) {
-      setShowTableRows(false);
       // Reset selected elements on refresh
       setTotalCount(0);
       globalErrors.clear();
@@ -115,8 +114,6 @@ const DnsForwardZones = () => {
       setTotalCount(forwardDnsZonesResponse.data.result.totalCount);
       // Update the list of elements
       setDnsForwardZones(elementsList);
-      // Show table elements
-      setShowTableRows(true);
     }
   }, [forwardDnsZonesResponse]);
 
@@ -127,16 +124,11 @@ const DnsForwardZones = () => {
 
   // Refresh button handling
   const refreshData = () => {
-    // Hide table
-    setShowTableRows(false);
-
     // Reset selected elements on refresh
     setTotalCount(0);
     setSelectedElements([]);
 
-    forwardDnsZonesResponse.refetch().then(() => {
-      setShowTableRows(true);
-    });
+    forwardDnsZonesResponse.refetch();
   };
 
   // 'Delete' button state
@@ -188,8 +180,6 @@ const DnsForwardZones = () => {
   }, []);
 
   // Show table rows
-  const [showTableRows, setShowTableRows] = React.useState(!isLoading);
-
   const selectedPerPageData = getSelectedPerPageData(
     dnsForwardZones,
     selectedElements.map((dnsZone) => ipaPrimaryKey(dnsZone.idnsname)),
@@ -260,7 +250,7 @@ const DnsForwardZones = () => {
       element: (
         <SecondaryButton
           onClickHandler={refreshData}
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
           dataCy={"dns-forward-zones-refresh"}
         >
           Refresh
@@ -271,7 +261,7 @@ const DnsForwardZones = () => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isFetching}
           dataCy={"dns-forward-zones-button-delete"}
           onClickHandler={() => setShowDeleteForwardZonesModal(true)}
         >
@@ -283,7 +273,7 @@ const DnsForwardZones = () => {
       key: 5,
       element: (
         <SecondaryButton
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
           dataCy={"dns-forward-zones-add"}
           onClickHandler={() => setShowAddForwardZoneModal(true)}
         >
@@ -296,7 +286,7 @@ const DnsForwardZones = () => {
       element: (
         <SecondaryButton
           onClickHandler={() => onEnableDisableHandler("disable")}
-          isDisabled={isDisableButtonDisabled || !showTableRows}
+          isDisabled={isDisableButtonDisabled || isFetching}
           dataCy={"dns-forward-zones-disable"}
         >
           Disable
@@ -308,7 +298,7 @@ const DnsForwardZones = () => {
       element: (
         <SecondaryButton
           onClickHandler={() => onEnableDisableHandler("enable")}
-          isDisabled={isEnableButtonDisabled || !showTableRows}
+          isDisabled={isEnableButtonDisabled || isFetching}
           dataCy={"dns-forward-zones-enable"}
         >
           Enable
@@ -384,7 +374,7 @@ const DnsForwardZones = () => {
                       ]}
                       hasCheckboxes={true}
                       pathname="dns-forward-zones"
-                      showTableRows={showTableRows}
+                      showTableRows={!isFetching}
                       showLink={true}
                       elementsData={{
                         isElementSelectable: isDnsForwardZoneSelectable,
@@ -446,7 +436,6 @@ const DnsForwardZones = () => {
           elementsList={selectedElements.map((dnszone) => dnszone.idnsname)}
           setElementsList={() => {}}
           operation={operation}
-          setShowTableRows={setShowTableRows}
           onRefresh={refreshData}
         />
       </div>

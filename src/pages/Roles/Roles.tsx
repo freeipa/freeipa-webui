@@ -78,7 +78,6 @@ const Roles = () => {
 
   const {
     data: batchResponse,
-    isLoading: isBatchLoading,
     isFetching,
     error: batchError,
   } = rolesDataResponse;
@@ -103,9 +102,6 @@ const Roles = () => {
     return { elementsList: [], totalCount: 0 };
   }, [batchResponse]);
 
-  // Derive showTableRows from loading states
-  const showTableRows = !isFetching && !isBatchLoading;
-
   // Clear errors when fetching starts
   React.useEffect(() => {
     if (isFetching) {
@@ -116,14 +112,13 @@ const Roles = () => {
   // Handle query errors
   React.useEffect(() => {
     if (
-      !isBatchLoading &&
       !isFetching &&
       rolesDataResponse.isError &&
       rolesDataResponse.error !== undefined
     ) {
       window.location.reload();
     }
-  }, [rolesDataResponse.isError, isBatchLoading, isFetching]);
+  }, [rolesDataResponse.isError, isFetching]);
 
   const refreshData = () => {
     clearSelectedRoles();
@@ -239,7 +234,7 @@ const Roles = () => {
       element: (
         <SecondaryButton
           onClickHandler={refreshData}
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
           dataCy="roles-button-refresh"
         >
           Refresh
@@ -250,7 +245,7 @@ const Roles = () => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isFetching}
           onClickHandler={() => setShowDeleteModal(true)}
           dataCy="roles-button-delete"
         >
@@ -263,7 +258,7 @@ const Roles = () => {
       element: (
         <SecondaryButton
           onClickHandler={() => setShowAddModal(true)}
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
           dataCy="roles-button-add"
         >
           Add
@@ -323,7 +318,7 @@ const Roles = () => {
                     columnNames={columnNames}
                     hasCheckboxes={true}
                     pathname="roles"
-                    showTableRows={showTableRows}
+                    showTableRows={!isFetching}
                     showLink={true}
                     elementsData={{
                       isElementSelectable: isRoleSelectable,

@@ -84,7 +84,7 @@ const Trusts = () => {
     stopIdx: lastUserIdx,
   });
 
-  const { data, isLoading, error } = trustsResponse;
+  const { data, isFetching, error } = trustsResponse;
 
   // Process data and update state when response changes
   React.useEffect(() => {
@@ -129,14 +129,6 @@ const Trusts = () => {
     }
     return 0;
   }, [trustsResponse.isSuccess, trustsResponse.data]);
-
-  // Compute derived state for showTableRows
-  const showTableRows = React.useMemo(() => {
-    if (trustsResponse.isFetching) {
-      return false;
-    }
-    return !isLoading;
-  }, [trustsResponse.isFetching, isLoading]);
 
   // Selected elements
   const [selectedElements, setSelectedElements] = React.useState<Trust[]>([]);
@@ -266,7 +258,7 @@ const Trusts = () => {
         <SecondaryButton
           dataCy="trusts-button-refresh"
           onClickHandler={refreshData}
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
         >
           Refresh
         </SecondaryButton>
@@ -276,7 +268,7 @@ const Trusts = () => {
       key: 4,
       element: (
         <SecondaryButton
-          isDisabled={isDeleteButtonDisabled || !showTableRows}
+          isDisabled={isDeleteButtonDisabled || isFetching}
           dataCy="trusts-button-delete"
           onClickHandler={() => setShowDeleteModal(true)}
         >
@@ -288,7 +280,7 @@ const Trusts = () => {
       key: 5,
       element: (
         <SecondaryButton
-          isDisabled={!showTableRows}
+          isDisabled={isFetching}
           dataCy="trusts-button-add"
           onClickHandler={() => setShowAddModal(true)}
         >
@@ -351,7 +343,7 @@ const Trusts = () => {
                       columnNames={["Realm name"]}
                       hasCheckboxes={true}
                       pathname="trusts"
-                      showTableRows={showTableRows}
+                      showTableRows={!isFetching}
                       showLink={true}
                       elementsData={{
                         isElementSelectable: isTrustSelectable,
