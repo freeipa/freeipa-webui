@@ -225,12 +225,6 @@ const AutoMemUserRules = () => {
     userGroupRulesData.refetch();
   };
 
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  React.useEffect(() => {
-    userGroupRulesData.refetch();
-  }, [page, perPage]);
-
   // 'Delete' button state
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
     React.useState<boolean>(true);

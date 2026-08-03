@@ -153,11 +153,6 @@ const UserGroups = () => {
     }
   }, [groupDataResponse]);
 
-  // Always refetch data when the page changes
-  useEffect(() => {
-    groupDataResponse.refetch();
-  }, [page, perPage]);
-
   // Refresh button handling
   const refreshGroupsData = () => {
     // Reset selected user groups on refresh

@@ -132,12 +132,6 @@ const IDViewsAppliedTo = (props: AppliesToProps) => {
     }
   }, [idViewFullData, idViewFullDataQuery.isFetching]);
 
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  useEffect(() => {
-    idViewFullDataQuery.refetch();
-  }, [page, perPage]);
-
   // Refresh button handling
   const refreshViewsData = () => {
     setTotalCount(0);

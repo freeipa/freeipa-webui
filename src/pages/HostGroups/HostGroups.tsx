@@ -162,12 +162,6 @@ const HostGroups = () => {
     }
   }, [groupDataResponse]);
 
-  // Always refetch data when the component is loaded.
-  // This ensures the data is always up-to-date.
-  useEffect(() => {
-    groupDataResponse.refetch();
-  }, [page, perPage]);
-
   // Refresh button handling
   const refreshGroupsData = () => {
     // Reset selected host groups on refresh
