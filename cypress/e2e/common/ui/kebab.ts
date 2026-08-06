@@ -11,3 +11,10 @@ Then("I should see {string} kebab menu expanded", (kebab: string) => {
 Then("I should see {string} kebab menu collapsed", (kebab: string) => {
   cy.dataCy(kebab).should("have.attr", "aria-expanded", "false");
 });
+
+Then(
+  "I should see the {string} kebab menu item is disabled",
+  (item: string) => {
+    cy.dataCy(item).find("button").should("be.disabled");
+  }
+);

@@ -17,7 +17,12 @@ Then(
 export const selectOption = (option: string, selector: string) => {
   cy.dataCy(selector + "-toggle").click();
   cy.dataCy(selector + "-toggle").should("have.attr", "aria-expanded", "true");
-  cy.dataCy(selector + "-" + option).click();
+  cy.dataCy(selector + "-" + option)
+    .find("button")
+    .scrollIntoView();
+  cy.dataCy(selector + "-" + option)
+    .find("button")
+    .click();
 };
 
 export const isOptionSelected = (option: string, selector: string) => {

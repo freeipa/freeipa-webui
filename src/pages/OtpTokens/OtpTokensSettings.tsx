@@ -324,7 +324,6 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
                 <FlexItem flex={{ default: "flex_1" }}>
                   <FormGroup
                     label="Unique ID"
-                    data-cy="otp-tokens-tab-settings-textbox-ipatokenuniqueid"
                     role="ipatokenuniqueid"
                     className="pf-v6-u-mb-md"
                   >
@@ -338,12 +337,7 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
                       metadata={props.metadata}
                     />
                   </FormGroup>
-                  <FormGroup
-                    label="Type"
-                    data-cy="otp-tokens-tab-settings-textbox-type"
-                    role="type"
-                    className="pf-v6-u-mb-md"
-                  >
+                  <FormGroup label="Type" role="type" className="pf-v6-u-mb-md">
                     <IpaTextInput
                       dataCy="otp-tokens-tab-settings-textbox-type"
                       name={"type"}
@@ -356,7 +350,6 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
                   </FormGroup>
                   <FormGroup
                     label="Description"
-                    data-cy="otp-tokens-tab-settings-textbox-description"
                     role="description"
                     className="pf-v6-u-mb-md"
                   >
@@ -372,7 +365,6 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
                   </FormGroup>
                   <FormGroup
                     label="Owner"
-                    data-cy="otp-tokens-tab-settings-textbox-ipatokenowner"
                     role="ipatokenowner"
                     className="pf-v6-u-mb-md"
                   >
@@ -391,7 +383,6 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
                   </FormGroup>
                   <FormGroup
                     label="Validity start"
-                    data-cy="otp-tokens-tab-settings-textbox-ipatokennotbefore"
                     role="validity-start"
                     className="pf-v6-u-mb-md"
                   >
@@ -407,7 +398,6 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
                   </FormGroup>
                   <FormGroup
                     label="Validity end"
-                    data-cy="otp-tokens-tab-settings-textbox-ipatokennotafter"
                     role="validity-end"
                     className="pf-v6-u-mb-md"
                   >
@@ -425,7 +415,6 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
                 <FlexItem flex={{ default: "flex_1" }}>
                   <FormGroup
                     label="Vendor"
-                    data-cy="otp-tokens-tab-settings-textbox-ipatokenvendor"
                     role="vendor"
                     className="pf-v6-u-mb-md"
                   >
@@ -442,7 +431,6 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
                   </FormGroup>
                   <FormGroup
                     label="Model"
-                    data-cy="otp-tokens-tab-settings-textbox-ipatokenmodel"
                     role="model"
                     className="pf-v6-u-mb-md"
                   >
@@ -459,7 +447,6 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
                   </FormGroup>
                   <FormGroup
                     label="Serial"
-                    data-cy="otp-tokens-tab-settings-textbox-ipatokenserial"
                     role="serial"
                     className="pf-v6-u-mb-md"
                   >
@@ -476,7 +463,6 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
                   </FormGroup>
                   <FormGroup
                     label="Algorithm"
-                    data-cy="otp-tokens-tab-settings-textbox-ipatokenotpalgorithm"
                     role="algorithm"
                     className="pf-v6-u-mb-md"
                   >
@@ -493,7 +479,6 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
                   </FormGroup>
                   <FormGroup
                     label="Digits"
-                    data-cy="otp-tokens-tab-settings-textbox-ipatokenotpdigits"
                     role="digits"
                     className="pf-v6-u-mb-md"
                   >
@@ -509,7 +494,6 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
                   </FormGroup>
                   <FormGroup
                     label="Clock offset (seconds)"
-                    data-cy="otp-tokens-tab-settings-textbox-ipatokentotpclockoffset"
                     role="clock-offset"
                     className="pf-v6-u-mb-md"
                   >
@@ -525,7 +509,6 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
                   </FormGroup>
                   <FormGroup
                     label="Clock interval (seconds)"
-                    data-cy="otp-tokens-tab-settings-textbox-ipatokentotptimestep"
                     role="clock-interval"
                     className="pf-v6-u-mb-md"
                   >

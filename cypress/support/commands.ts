@@ -50,6 +50,7 @@ Cypress.Commands.add(
     command,
     name,
     specificOptions,
+    options,
   }: IpaCommandParams): Cypress.Chainable<Cypress.Exec> => {
     const safeName = name.replace(/"/g, '\\"');
     let ipaCmd = `${IPA_PREFIX} ${command} "${safeName}"`;
@@ -57,6 +58,6 @@ Cypress.Commands.add(
       ipaCmd = `${IPA_PREFIX} ${command} "${safeName}" ${specificOptions}`;
     }
 
-    return cy.exec(ipaCmd);
+    return cy.exec(ipaCmd, options);
   }
 );
