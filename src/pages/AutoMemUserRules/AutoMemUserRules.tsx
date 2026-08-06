@@ -569,9 +569,8 @@ const AutoMemUserRules = () => {
             data-cy="modal-button-ok"
             variant="primary"
             key="change-default"
-            onClick={() => {
-              onSelectDefaultGroup(defaultGroup);
-            }}
+            type="submit"
+            form="auto-member-default-user-rules-form"
           >
             OK
           </Button>,
@@ -585,6 +584,10 @@ const AutoMemUserRules = () => {
         ]}
         messageText="Are you sure you want to change default group?"
         messageObj={defaultGroup}
+        formId="auto-member-default-user-rules-form"
+        onSubmit={() => {
+          onSelectDefaultGroup(defaultGroup);
+        }}
       />
     </div>
   );

@@ -130,7 +130,7 @@ const DeleteAutomountLocationsModal = (
       data-cy="modal-button-delete"
       key="delete-automount-locations"
       variant="danger"
-      onClick={onDelete}
+      type="submit"
       form="delete-automount-locations-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
@@ -168,6 +168,7 @@ const DeleteAutomountLocationsModal = (
         fields={fields}
         show={props.isOpen}
         onClose={props.onClose}
+        onSubmit={onDelete}
         actions={modalActionsDelete}
       />
       {ErrorModalComponent}

@@ -141,7 +141,7 @@ const DeleteRolesModal = (props: DeleteRolesModalProps) => {
     <Button
       key="delete-roles"
       variant="danger"
-      onClick={onDeleteRoles}
+      type="submit"
       form="delete-roles-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
@@ -185,6 +185,7 @@ const DeleteRolesModal = (props: DeleteRolesModalProps) => {
         fields={fields}
         show={props.isOpen}
         onClose={props.onClose}
+        onSubmit={onDeleteRoles}
         actions={modalActions}
       />
       {isModalErrorOpen && (

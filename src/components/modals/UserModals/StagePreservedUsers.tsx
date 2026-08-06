@@ -175,8 +175,8 @@ const StagePreservedUsers = (props: PropsToStagePreservedUsers) => {
     <Button
       key="stage-users"
       variant="primary"
-      onClick={stageUsers}
-      form="stage-users-modal"
+      type="submit"
+      form="preserved-users-stage-modal"
       spinnerAriaValueText="Staging"
       spinnerAriaLabel="Staging"
       isLoading={spinning}
@@ -206,6 +206,7 @@ const StagePreservedUsers = (props: PropsToStagePreservedUsers) => {
       fields={fields}
       show={props.show}
       onClose={closeModal}
+      onSubmit={stageUsers}
       actions={modalStageActions}
     />
   );

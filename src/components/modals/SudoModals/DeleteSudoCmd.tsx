@@ -178,8 +178,8 @@ const DeleteSudoCmd = (props: PropsToDeleteRules) => {
     <Button
       key="delete-sudo-commands"
       variant="danger"
-      onClick={deleteRules}
-      form="delete-sudo-commands-modal"
+      type="submit"
+      form="remove-sudo-commands-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -210,6 +210,7 @@ const DeleteSudoCmd = (props: PropsToDeleteRules) => {
         fields={fields}
         show={props.show}
         onClose={closeModal}
+        onSubmit={deleteRules}
         actions={modalActionsDelete}
       />
       {isModalErrorOpen && (

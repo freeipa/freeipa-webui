@@ -232,8 +232,8 @@ const DualListTableLayoutInner = (props: DualListProps) => {
       dataCy="modal-button-add"
       key={"dual-list-" + props.target}
       isDisabled={chosenOptions.length === 0 || props.spinning}
-      form="modal-form"
-      onClickHandler={onButtonClick}
+      type="submit"
+      form={"dual-list-" + props.target + "-modal"}
       spinnerAriaValueText={props.addSpinningBtnName}
       spinnerAriaLabel={props.addSpinningBtnName}
       isLoading={props.spinning}
@@ -470,6 +470,7 @@ const DualListTableLayoutInner = (props: DualListProps) => {
       fields={fields}
       show={props.showModal}
       onClose={props.onCloseModal}
+      onSubmit={onButtonClick}
       actions={modalActions}
     />
   );

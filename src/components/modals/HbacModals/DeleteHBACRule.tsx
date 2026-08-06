@@ -178,8 +178,8 @@ const DeleteHBACRule = (props: PropsToDeleteRules) => {
     <Button
       key="delete-hbacrules"
       variant="danger"
-      onClick={deleteRules}
-      form="delete-hbacrules-modal"
+      type="submit"
+      form="remove-hbacrules-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -210,6 +210,7 @@ const DeleteHBACRule = (props: PropsToDeleteRules) => {
         fields={fields}
         show={props.show}
         onClose={closeModal}
+        onSubmit={deleteRules}
         actions={modalActionsDelete}
       />
       {isModalErrorOpen && (

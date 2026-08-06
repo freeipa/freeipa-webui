@@ -112,8 +112,8 @@ const ActivateStageUsers = (props: PropsToActivateUsers) => {
     <Button
       key="stage-users"
       variant="primary"
-      onClick={activateUsers}
-      form="stage-users-modal"
+      type="submit"
+      form="stage-user-activate-modal"
       data-cy="modal-button-activate"
     >
       Activate
@@ -141,6 +141,7 @@ const ActivateStageUsers = (props: PropsToActivateUsers) => {
         fields={fields}
         show={props.show}
         onClose={closeModal}
+        onSubmit={activateUsers}
         actions={modalStageActions}
       />
     </>

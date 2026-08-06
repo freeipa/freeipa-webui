@@ -562,14 +562,15 @@ const AutoMemHostRules = () => {
         title="Default hostgroup"
         isOpen={showChangeConfirmationModal}
         onClose={onCloseConfirmationModal}
+        formId="auto-member-default-host-rules-form"
+        onSubmit={() => onSelectDefaultGroup(defaultGroup)}
         actions={[
           <Button
             data-cy="modal-button-ok"
             variant="primary"
             key="change-default"
-            onClick={() => {
-              onSelectDefaultGroup(defaultGroup);
-            }}
+            type="submit"
+            form="auto-member-default-host-rules-form"
           >
             OK
           </Button>,

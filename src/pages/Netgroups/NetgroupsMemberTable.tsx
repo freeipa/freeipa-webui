@@ -499,7 +499,13 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
           labelId="add-external-host-modal-title"
         />
         <ModalBody id="add-external-host-modal-body">
-          <Form id={"external-modal"}>
+          <Form
+            id={"external-modal"}
+            onSubmit={(event) => {
+              event.preventDefault();
+              addMembers([externalHostName]);
+            }}
+          >
             <FormGroup
               key={"externalHostName"}
               label={"External hostname"}
@@ -533,7 +539,8 @@ const NetgroupsMemberTable = (props: PropsToTable) => {
               !externalHostName.includes(".") ||
               addSpinning
             }
-            onClick={() => addMembers([externalHostName])}
+            type="submit"
+            form="external-modal"
             spinnerAriaValueText="Adding"
             spinnerAriaLabel="Adding"
             isLoading={addSpinning}

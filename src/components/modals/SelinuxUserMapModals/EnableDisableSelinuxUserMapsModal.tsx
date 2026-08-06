@@ -75,7 +75,8 @@ const EnableDisableSelinuxUserMapsModal = (
       data-cy="modal-button-ok"
       key={props.operation + "-selinux-user-maps"}
       variant="primary"
-      onClick={onEnableDisable}
+      type="submit"
+      form="selinux-user-maps-enable-disable-modal"
     >
       OK
     </Button>,
@@ -95,6 +96,8 @@ const EnableDisableSelinuxUserMapsModal = (
       title={capitalizeFirstLetter(props.operation) + " confirmation"}
       isOpen={props.isOpen}
       onClose={onClose}
+      formId="selinux-user-maps-enable-disable-modal"
+      onSubmit={onEnableDisable}
       actions={modalActions}
       messageText={
         "Are you sure you want to " +

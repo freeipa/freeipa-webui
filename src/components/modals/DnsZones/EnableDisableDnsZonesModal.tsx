@@ -77,7 +77,8 @@ const EnableDisableDnsZonesModal = (props: EnableDisableDnsZonesModalProps) => {
       data-cy="modal-button-ok"
       key={props.operation + "-dnszones"}
       variant="primary"
-      onClick={onEnableDisable}
+      type="submit"
+      form="enable-disable-dns-zones-modal"
     >
       OK
     </Button>,
@@ -100,6 +101,8 @@ const EnableDisableDnsZonesModal = (props: EnableDisableDnsZonesModalProps) => {
         isOpen={props.isOpen}
         onClose={onClose}
         actions={modalActions}
+        formId="enable-disable-dns-zones-modal"
+        onSubmit={onEnableDisable}
         messageText={
           "Are you sure you want to " +
           props.operation +

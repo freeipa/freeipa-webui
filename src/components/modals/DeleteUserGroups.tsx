@@ -179,8 +179,8 @@ const DeleteUserGroups = (props: PropsToDeleteGroups) => {
       data-cy="modal-button-delete"
       key="delete-usergroups"
       variant="danger"
-      onClick={deleteGroups}
-      form="delete-user-groups-modal"
+      type="submit"
+      form="remove-user-groups-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -207,6 +207,7 @@ const DeleteUserGroups = (props: PropsToDeleteGroups) => {
         offPosition="76px"
         title="Remove user groups"
         formId="remove-user-groups-modal"
+        onSubmit={deleteGroups}
         fields={fields}
         show={props.show}
         onClose={closeModal}

@@ -87,7 +87,8 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
     <SecondaryButton
       dataCy="modal-button-add"
       key="add"
-      onClickHandler={onClickAddTextAreaCertificates}
+      type="submit"
+      form="add-user-certificate-form"
     >
       Add
     </SecondaryButton>,
@@ -418,6 +419,8 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
         objectName="user"
         ipaObject={ipaObject}
         metadata={props.metadata}
+        formId="add-user-certificate-form"
+        onSubmit={onClickAddTextAreaCertificates}
       />
     </>
   );

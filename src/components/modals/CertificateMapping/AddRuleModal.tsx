@@ -237,7 +237,6 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
     <Button
       data-cy="modal-button-add"
       key="add-new"
-      variant="secondary"
       isDisabled={isAddButtonSpinning || ruleName === ""}
       form="add-modal-form"
       type="submit"

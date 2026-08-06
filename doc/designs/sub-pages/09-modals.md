@@ -57,11 +57,16 @@ const Add<ChildEntity>Modal = (props: Add<ChildEntity>ModalProps) => {
     });
   };
 
+  const onFormSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    onAdd();
+  };
+
   return (
     <Modal isOpen={props.isOpen} onClose={onClose} variant="small">
       <ModalHeader title="Add <child entity>" />
       <ModalBody>
-        <Form id="add-<child-entity>-form">
+        <Form id="add-<child-entity>-form" onSubmit={onFormSubmit}>
           <FormGroup label="Field 1" fieldId="field1" isRequired>
             <TextInput id="field1" value={field1} onChange={(_e, val) => setField1(val)} />
           </FormGroup>
@@ -69,7 +74,7 @@ const Add<ChildEntity>Modal = (props: Add<ChildEntity>ModalProps) => {
       </ModalBody>
       <ModalFooter>
         <Button variant="secondary" onClick={onClose}>Cancel</Button>
-        <Button variant="primary" onClick={onAdd} isDisabled={!field1 || spinning}>
+        <Button variant="primary" type="submit" form="add-<child-entity>-form" isDisabled={!field1 || spinning}>
           {spinning ? <Spinner size="sm" /> : "Add"}
         </Button>
       </ModalFooter>
@@ -140,7 +145,7 @@ const Delete<ChildEntity>Modal = (props: Delete<ChildEntity>ModalProps) => {
 
   const modalActions = [
     <Button key="cancel" variant="link" onClick={props.onClose}>Cancel</Button>,
-    <Button key="delete" variant="danger" onClick={onDelete} isDisabled={spinning}>
+    <Button key="delete" variant="danger" type="submit" form="delete-<child-entity>-form" isDisabled={spinning}>
       {spinning ? <Spinner size="sm" /> : "Delete"}
     </Button>,
   ];
@@ -158,6 +163,7 @@ const Delete<ChildEntity>Modal = (props: Delete<ChildEntity>ModalProps) => {
       actions={modalActions}
       isOpen={props.isOpen}
       onClose={props.onClose}
+      onSubmit={onDelete}
     />
   );
 };

@@ -135,8 +135,8 @@ const DeleteRule = (props: PropsToDeleteRule) => {
       data-cy="modal-button-delete"
       key="delete-rules"
       variant="danger"
-      onClick={onDelete}
-      form="delete-rules-modal"
+      type="submit"
+      form="remove-rules-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -163,6 +163,7 @@ const DeleteRule = (props: PropsToDeleteRule) => {
         offPosition="76px"
         title="Remove auto membership rules"
         formId="remove-rules-modal"
+        onSubmit={onDelete}
         fields={fields}
         show={props.show}
         onClose={closeModal}

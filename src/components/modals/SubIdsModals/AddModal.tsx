@@ -189,10 +189,8 @@ const AddModal = (props: PropsToAddModal) => {
       data-cy="modal-button-add"
       key="add-new"
       isDisabled={isAddButtonSpinning || selectedItem === ""}
+      type="submit"
       form="add-modal-form"
-      onClick={() => {
-        onAdd();
-      }}
     >
       Add
     </Button>,
@@ -219,6 +217,7 @@ const AddModal = (props: PropsToAddModal) => {
         fields={fields}
         show={props.isOpen}
         onClose={cleanAndCloseModal}
+        onSubmit={() => onAdd()}
         actions={modalActions}
       />
     </>

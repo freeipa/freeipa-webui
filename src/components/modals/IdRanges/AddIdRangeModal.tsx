@@ -365,7 +365,7 @@ const AddIdRangeModal = (props: PropsToAddModal) => {
       key="add-new"
       name="add"
       isDisabled={disabledAdd || isAddButtonSpinning}
-      onClick={() => onAdd()}
+      type="submit"
       form="add-id-range-modal"
       spinnerAriaValueText="Adding"
       spinnerAriaLabel="Adding"
@@ -394,6 +394,7 @@ const AddIdRangeModal = (props: PropsToAddModal) => {
       fields={fields}
       show={props.isOpen}
       onClose={cleanAndClose}
+      onSubmit={() => onAdd()}
       actions={modalActions}
     />
   );

@@ -109,7 +109,8 @@ const HostsSettings = (props: PropsToHostsSettings) => {
       data-cy="modal-button-unprovision"
       key="unprov-host"
       variant="danger"
-      onClick={() => onUnprovisionHost(props.host.fqdn ? props.host.fqdn : "")}
+      type="submit"
+      form="unprovision-host-form"
       isDisabled={modalSpinning}
       isLoading={modalSpinning}
       spinnerAriaValueText="Unprovisioning"
@@ -229,7 +230,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
       data-cy="modal-button-ok"
       key="rebuild-auto-membership"
       variant="primary"
-      onClick={onRebuildAutoMembership}
+      type="submit"
       form="rebuild-auto-membership-modal"
     >
       OK
@@ -514,6 +515,7 @@ const HostsSettings = (props: PropsToHostsSettings) => {
           fields={confirmationQuestion}
           show={isMembershipModalOpen}
           onClose={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
+          onSubmit={onRebuildAutoMembership}
           actions={membershipModalActions}
         />
       )}
@@ -541,6 +543,10 @@ const HostsSettings = (props: PropsToHostsSettings) => {
         actions={unprovisionHostModalActions}
         messageText={"Unprovision/disable this host?"}
         messageObj={props.host.fqdn ? props.host.fqdn : ""}
+        formId="unprovision-host-form"
+        onSubmit={() =>
+          onUnprovisionHost(props.host.fqdn ? props.host.fqdn : "")
+        }
       />
     </TabLayout>
   );

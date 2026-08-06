@@ -496,8 +496,8 @@ const AddService = (props: PropsToAddService) => {
       key="add-new-service"
       name="add"
       isDisabled={buttonDisabled || addSpinning}
-      onClick={() => addServiceHandler()}
-      form="modal-form"
+      type="submit"
+      form="add-service-modal"
       spinnerAriaValueText="Adding"
       spinnerAriaLabel="Adding"
       isLoading={addSpinning}
@@ -524,6 +524,7 @@ const AddService = (props: PropsToAddService) => {
         offPosition="76px"
         title="Add service"
         formId="add-service-modal"
+        onSubmit={addServiceHandler}
         fields={fields}
         show={props.show}
         onClose={cleanAndCloseModal}

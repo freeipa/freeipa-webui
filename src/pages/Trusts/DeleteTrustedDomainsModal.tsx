@@ -141,7 +141,7 @@ const DeleteTrustedDomainsModal = (props: DeleteTrustedDomainsModalProps) => {
       data-cy="modal-button-delete"
       key="delete-trusted-domains"
       variant="danger"
-      onClick={onDelete}
+      type="submit"
       form="delete-trusted-domains-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
@@ -172,6 +172,7 @@ const DeleteTrustedDomainsModal = (props: DeleteTrustedDomainsModalProps) => {
         fields={fields}
         show={props.isOpen}
         onClose={props.onClose}
+        onSubmit={onDelete}
         actions={modalActions}
       />
       {isModalErrorOpen && (

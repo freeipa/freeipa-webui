@@ -179,8 +179,8 @@ const DeleteHostGroups = (props: PropsToDeleteGroups) => {
       data-cy="modal-button-delete"
       key="delete-hostgroups"
       variant="danger"
-      onClick={deleteGroups}
-      form="delete-hostgroups-modal"
+      type="submit"
+      form="remove-hostgroups-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -207,6 +207,7 @@ const DeleteHostGroups = (props: PropsToDeleteGroups) => {
         offPosition="76px"
         title="Remove host groups"
         formId="remove-hostgroups-modal"
+        onSubmit={deleteGroups}
         fields={fields}
         show={props.show}
         onClose={closeModal}

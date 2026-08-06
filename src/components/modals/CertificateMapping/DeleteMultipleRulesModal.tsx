@@ -162,8 +162,8 @@ const DeleteMultipleRulesModal = (props: DeleteMultipleRulesModalProps) => {
       data-cy="modal-button-delete"
       key="delete-certmaprules"
       variant="danger"
-      onClick={onDelete}
-      form="delete-certmaprules-modal"
+      type="submit"
+      form="remove-certmaprule-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -191,6 +191,7 @@ const DeleteMultipleRulesModal = (props: DeleteMultipleRulesModalProps) => {
         offPosition="76px"
         title="Remove certificate identity mapping rules"
         formId="remove-certmaprule-modal"
+        onSubmit={onDelete}
         fields={fields}
         show={props.isOpen}
         onClose={props.onClose}

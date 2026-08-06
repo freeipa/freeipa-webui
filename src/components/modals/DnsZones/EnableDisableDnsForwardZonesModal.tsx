@@ -77,10 +77,8 @@ const EnableDisableDnsForwardZonesModal = (
       data-cy={"modal-button-" + props.operation}
       key={props.operation + "-dnsforwardzones"}
       variant="primary"
-      onClick={(e) => {
-        e.preventDefault();
-        onEnableDisable();
-      }}
+      type="submit"
+      form="enable-disable-dns-forward-zones-modal"
     >
       OK
     </Button>,
@@ -102,6 +100,8 @@ const EnableDisableDnsForwardZonesModal = (
       isOpen={props.isOpen}
       onClose={onClose}
       actions={modalActions}
+      formId="enable-disable-dns-forward-zones-modal"
+      onSubmit={onEnableDisable}
       messageText={
         "Are you sure you want to " +
         props.operation +

@@ -193,7 +193,8 @@ const AddRule = (props: PropsToAddRule) => {
     <Button
       data-cy={"modal-button-add"}
       key="add"
-      onClick={() => onAdd()}
+      type="submit"
+      form="add-rule-modal"
       isLoading={addSpinning}
       spinnerAriaValueText="Adding"
       spinnerAriaLabel="Adding"
@@ -221,6 +222,7 @@ const AddRule = (props: PropsToAddRule) => {
         offPosition="76px"
         title="Add rule"
         formId="add-rule-modal"
+        onSubmit={() => onAdd()}
         fields={fields}
         show={props.show}
         onClose={cleanAndCloseModal}

@@ -244,7 +244,8 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
     <Button
       key="delete"
       variant="danger"
-      onClick={onDelete}
+      type="submit"
+      form="remove-dnsrecords-modal"
       isDisabled={spinning}
       data-cy="modal-button-delete"
     >
@@ -271,6 +272,7 @@ const DeleteDnsRecordsModal = (props: DeleteDnsRecordsModalProps) => {
         fields={fields}
         show={props.isOpen}
         onClose={props.onClose}
+        onSubmit={onDelete}
         actions={modalActions}
         dataCy="modal-delete-dns-records"
       />

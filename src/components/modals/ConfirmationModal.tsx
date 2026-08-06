@@ -19,9 +19,16 @@ interface PropsToConfModal {
   actions: JSX.Element[];
   messageText: string;
   messageObj: string;
+  formId?: string;
+  onSubmit?: (event: React.FormEvent) => void;
 }
 
 const ConfirmationModal = (props: PropsToConfModal) => {
+  const onSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    props.onSubmit?.(event);
+  };
+
   return (
     <Modal
       data-cy={props.dataCy}
@@ -31,10 +38,12 @@ const ConfirmationModal = (props: PropsToConfModal) => {
     >
       <ModalHeader title={props.title} labelId="confirmation-modal-title" />
       <ModalBody id="confirmation-modal-body">
-        <Content component="p">{props.messageText}</Content>
-        <Card className="pf-v6-u-mt-md" isCompact>
-          <CardTitle>{props.messageObj}</CardTitle>
-        </Card>
+        <form onSubmit={onSubmit} id={props.formId}>
+          <Content component="p">{props.messageText}</Content>
+          <Card className="pf-v6-u-mt-md" isCompact>
+            <CardTitle>{props.messageObj}</CardTitle>
+          </Card>
+        </form>
       </ModalBody>
       <ModalFooter>{props.actions}</ModalFooter>
     </Modal>

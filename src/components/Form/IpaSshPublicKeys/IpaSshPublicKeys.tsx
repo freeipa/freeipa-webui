@@ -88,7 +88,8 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
       data-cy="modal-button-delete"
       key="del-ssh-key"
       variant="danger"
-      onClick={() => onRemoveSSHKey(idxToDelete)}
+      type="submit"
+      form="remove-ssh-public-key-form"
       isDisabled={modalSpinning}
       isLoading={modalSpinning}
       spinnerAriaValueText="Deleting"
@@ -281,11 +282,17 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
     setIsTextAreaSshPublicKeysOpen(true);
   };
 
+  const onSshKeyFormSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    onClickSetTextAreaSshPublicKeys();
+  };
+
   const modal_actions = [
     <SecondaryButton
       dataCy="modal-button-set"
       key="set"
-      onClickHandler={onClickSetTextAreaSshPublicKeys}
+      type="submit"
+      form="set-ssh-public-key-form"
       isDisabled={isSetButtonDisabled || modalSpinning}
       isLoading={modalSpinning}
       spinnerAriaValueText="Setting"
@@ -365,7 +372,7 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
           labelId="ssh-public-key-title"
         />
         <ModalBody id="modal-box-body-basic">
-          <Form>
+          <Form id="set-ssh-public-key-form" onSubmit={onSshKeyFormSubmit}>
             <FormGroup
               label="SSH public key:"
               type="string"
@@ -406,6 +413,8 @@ const IpaSshPublicKeys = (props: PropsToSshPublicKeysModal) => {
         actions={deletionModalActions}
         messageText={deletionMessage}
         messageObj={deletionMessageObj}
+        formId="remove-ssh-public-key-form"
+        onSubmit={() => onRemoveSSHKey(idxToDelete)}
       />
     </>
   );

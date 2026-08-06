@@ -78,7 +78,7 @@ const RebuildAutoMembership = (props: PropsToRebuildAutoMembership) => {
       data-cy="modal-button-ok"
       key="rebuild-auto-membership"
       variant="primary"
-      onClick={onRebuildAutoMembership}
+      type="submit"
       form="rebuild-auto-membership-modal"
     >
       OK
@@ -119,6 +119,7 @@ const RebuildAutoMembership = (props: PropsToRebuildAutoMembership) => {
         offPosition="76px"
         title="Confirmation"
         formId="rebuild-auto-membership-modal"
+        onSubmit={onRebuildAutoMembership}
         fields={confirmationQuestion}
         show={props.isOpen}
         onClose={props.onClose}

@@ -284,9 +284,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
       data-cy="modal-button-delete"
       key="delete-users"
       variant="danger"
-      onClick={() => {
-        deleteUsers(props.selectedUsersData.selectedUsers);
-      }}
+      type="submit"
       form="remove-users-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
@@ -327,6 +325,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
       fields={fields}
       show={props.show}
       onClose={closeModal}
+      onSubmit={() => deleteUsers(props.selectedUsersData.selectedUsers)}
       actions={modalActionsDelete}
     />
   );
@@ -337,9 +336,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
       data-cy="modal-button-preserve"
       key="preserve-users"
       variant="primary"
-      onClick={() => {
-        deleteUsers(props.selectedUsersData.selectedUsers);
-      }}
+      type="submit"
       form="remove-users-modal"
       spinnerAriaValueText="Preserving"
       spinnerAriaLabel="Preserving"
@@ -369,6 +366,7 @@ const DeleteUsers = (props: PropsToDeleteUsers) => {
       fields={fields}
       show={props.show}
       onClose={closeModal}
+      onSubmit={() => deleteUsers(props.selectedUsersData.selectedUsers)}
       actions={modalActionsPreserve}
     />
   );

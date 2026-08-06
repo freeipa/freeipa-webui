@@ -102,7 +102,8 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
       data-cy="modal-button-unprovision"
       key="unprov-host"
       variant="danger"
-      onClick={() => onUnprovision()}
+      type="submit"
+      form="services-unprovision-form"
       isDisabled={modalSpinning}
       isLoading={modalSpinning}
       spinnerAriaValueText="Unprovisioning"
@@ -412,6 +413,8 @@ const ServicesSettings = (props: PropsToServicesSettings) => {
         messageObj={
           props.service.krbcanonicalname ? props.service.krbcanonicalname : ""
         }
+        formId="services-unprovision-form"
+        onSubmit={() => onUnprovision()}
       />
       <IssueNewCertificate
         isOpen={isCertModalOpen}

@@ -267,7 +267,7 @@ const ActiveUsers = () => {
       data-cy="modal-button-ok"
       key="rebuild-auto-membership"
       variant="primary"
-      onClick={onRebuildAutoMembership}
+      type="submit"
       form="rebuild-auto-membership-modal"
     >
       OK
@@ -697,6 +697,7 @@ const ActiveUsers = () => {
           fields={confirmationQuestion}
           show={isMembershipModalOpen}
           onClose={() => setIsMembershipModalOpen(!isMembershipModalOpen)}
+          onSubmit={onRebuildAutoMembership}
           actions={membershipModalActions}
         />
       )}

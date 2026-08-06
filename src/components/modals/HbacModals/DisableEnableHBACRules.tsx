@@ -270,12 +270,7 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
     <Button
       key="disable-hbacrules"
       variant="primary"
-      onClick={() =>
-        modifyStatus(
-          props.optionSelected,
-          props.selectedRulesData.selectedRules
-        )
-      }
+      type="submit"
       form="hbacrules-enable-disable-hbacrules-modal"
       data-cy="modal-button-disable"
     >
@@ -302,6 +297,12 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
       fields={fields}
       show={props.show}
       onClose={closeModal}
+      onSubmit={() =>
+        modifyStatus(
+          props.optionSelected,
+          props.selectedRulesData.selectedRules
+        )
+      }
       actions={modalActionsDisable}
     />
   );
@@ -311,12 +312,7 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
     <Button
       key="enable-hbacrules"
       variant="primary"
-      onClick={() =>
-        modifyStatus(
-          props.optionSelected,
-          props.selectedRulesData.selectedRules
-        )
-      }
+      type="submit"
       form="hbacrules-enable-disable-hbacrules-modal"
       data-cy="modal-button-enable"
     >
@@ -343,6 +339,12 @@ const DisableEnableHBACRules = (props: PropsToDisableEnableHBACRules) => {
       fields={fields}
       show={props.show}
       onClose={closeModal}
+      onSubmit={() =>
+        modifyStatus(
+          props.optionSelected,
+          props.selectedRulesData.selectedRules
+        )
+      }
       actions={modalActionsEnable}
     />
   );

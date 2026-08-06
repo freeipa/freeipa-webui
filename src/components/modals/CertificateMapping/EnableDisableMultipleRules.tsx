@@ -74,14 +74,15 @@ const EnableDisableMultipleRulesModal = (
       data-cy="modal-button-ok"
       key={props.operation + "-certmaprules"}
       variant="primary"
-      onClick={onEnableDisable}
+      type="submit"
+      form={props.operation + "-certmaprules-modal"}
     >
       OK
     </Button>,
     <Button
       data-cy="modal-button-cancel"
       key={"cancel-" + props.operation + "-certmaprules"}
-      variant="secondary"
+      variant="link"
       onClick={onCloseWithoutClearingElements}
     >
       Cancel
@@ -94,6 +95,8 @@ const EnableDisableMultipleRulesModal = (
       <ConfirmationModal
         dataCy="enable-disable-multiple-rules-modal"
         title={capitalizeFirstLetter(props.operation) + " confirmation"}
+        formId={props.operation + "-certmaprules-modal"}
+        onSubmit={onEnableDisable}
         isOpen={props.isOpen}
         onClose={onClose}
         actions={modalActions}

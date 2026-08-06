@@ -181,8 +181,8 @@ const DeleteHBACServiceGroup = (props: PropsToDeleteServices) => {
     <Button
       key="delete-hbacservicegroups"
       variant="danger"
-      onClick={deleteServices}
-      form="delete-hbacservicegroups-modal"
+      type="submit"
+      form="remove-hbacservicesgroup-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -213,6 +213,7 @@ const DeleteHBACServiceGroup = (props: PropsToDeleteServices) => {
         fields={fields}
         show={props.show}
         onClose={closeModal}
+        onSubmit={deleteServices}
         actions={modalActionsDelete}
       />
       {isModalErrorOpen && (

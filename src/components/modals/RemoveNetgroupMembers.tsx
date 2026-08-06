@@ -49,8 +49,8 @@ const RemoveNetgroupMembersModal = (props: PropsToDelete) => {
       variant="danger"
       data-cy="modal-button-delete"
       key={"delete-" + props.elementType}
-      form="modal-form"
-      onClick={() => props.removeMembers(props.elementsToDelete)}
+      type="submit"
+      form={props.elementType + "-delete-modal"}
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={props.spinning}
@@ -76,6 +76,7 @@ const RemoveNetgroupMembersModal = (props: PropsToDelete) => {
       modalPosition="top"
       title={"Remove " + label.toLowerCase() + "s from Netgroup"}
       formId={props.elementType + "-delete-modal"}
+      onSubmit={() => props.removeMembers(props.elementsToDelete)}
       fields={fields}
       show={props.showModal}
       onClose={props.closeModal}

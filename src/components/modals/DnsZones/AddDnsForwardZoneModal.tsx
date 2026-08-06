@@ -113,9 +113,15 @@ const AddDnsForwardZoneModalInner = (props: PropsToAddModal) => {
       });
   };
 
+  const onFormSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    setIsAddButtonSpinning(true);
+    onAddDnsForwardZone();
+  };
+
   // Form fields
   const formFields = (
-    <Form id="add-dns-forward-zone-modal-form">
+    <Form onSubmit={onFormSubmit} id="add-dns-forward-zone-modal-form">
       <Flex
         direction={{ default: "column" }}
         className="pf-v6-u-ml-lg pf-v6-u-mb-md"
@@ -262,11 +268,6 @@ const AddDnsForwardZoneModalInner = (props: PropsToAddModal) => {
         (isReverseZoneIpRadioChecked && reverseZoneIP === "")
       }
       form="add-dns-forward-zone-modal-form"
-      onClick={(e) => {
-        e.preventDefault();
-        setIsAddButtonSpinning(true);
-        onAddDnsForwardZone();
-      }}
     >
       {isAddButtonSpinning ? (
         <>

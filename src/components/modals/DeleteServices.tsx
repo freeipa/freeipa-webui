@@ -179,8 +179,8 @@ const DeleteServices = (props: PropsToDeleteServices) => {
       data-cy="modal-button-delete"
       key="delete-services"
       variant="danger"
-      onClick={deleteServices}
-      form="delete-services-modal"
+      type="submit"
+      form="remove-services-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -207,6 +207,7 @@ const DeleteServices = (props: PropsToDeleteServices) => {
         offPosition="76px"
         title="Remove services"
         formId="remove-services-modal"
+        onSubmit={deleteServices}
         fields={fields}
         show={props.show}
         onClose={closeModal}

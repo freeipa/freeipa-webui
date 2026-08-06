@@ -141,7 +141,7 @@ const DeletePrivilegesModal = (props: DeletePrivilegesModalProps) => {
     <Button
       key="delete-privileges"
       variant="danger"
-      onClick={onDeletePrivileges}
+      type="submit"
       form="delete-privileges-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
@@ -185,6 +185,7 @@ const DeletePrivilegesModal = (props: DeletePrivilegesModalProps) => {
         fields={fields}
         show={props.isOpen}
         onClose={props.onClose}
+        onSubmit={onDeletePrivileges}
         actions={modalActions}
       />
       {isModalErrorOpen && (

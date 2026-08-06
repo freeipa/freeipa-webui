@@ -103,6 +103,11 @@ const MemberOfAddModal = (props: PropsToAdd) => {
     setChosenOptions([]);
   };
 
+  const onFormSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    onClickAddHandler();
+  };
+
   // Buttons that will be shown at the end of the form
   const modalActions = [
     <Button
@@ -110,8 +115,8 @@ const MemberOfAddModal = (props: PropsToAdd) => {
       key="add-new-user"
       variant="secondary"
       isDisabled={buttonDisabled || props.spinning}
-      form="modal-form"
-      onClick={onClickAddHandler}
+      type="submit"
+      form="is-member-of-add-modal"
       spinnerAriaValueText="Adding"
       spinnerAriaLabel="Adding"
       isLoading={props.spinning}
@@ -140,7 +145,7 @@ const MemberOfAddModal = (props: PropsToAdd) => {
     >
       <ModalHeader title={props.title} labelId="member-of-add-modal-title" />
       <ModalBody id="member-of-add-modal-body">
-        <Form id={"is-member-of-add-modal"}>
+        <Form id={"is-member-of-add-modal"} onSubmit={onFormSubmit}>
           {fields.map((field) => (
             <FormGroup key={field.id} fieldId={field.id}>
               {field.pfComponent}

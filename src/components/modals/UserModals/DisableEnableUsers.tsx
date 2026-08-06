@@ -277,12 +277,7 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
     <Button
       key="disable-users"
       variant="primary"
-      onClick={() =>
-        modifyStatus(
-          props.optionSelected,
-          props.selectedUsersData.selectedUsers
-        )
-      }
+      type="submit"
       form="users-enable-disable-users-modal"
       data-cy="modal-button-disable"
     >
@@ -309,6 +304,12 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
       fields={fields}
       show={props.show}
       onClose={closeModal}
+      onSubmit={() =>
+        modifyStatus(
+          props.optionSelected,
+          props.selectedUsersData.selectedUsers
+        )
+      }
       actions={modalActionsDisable}
     />
   );
@@ -318,13 +319,8 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
     <Button
       key="enable-users"
       variant="primary"
-      onClick={() =>
-        modifyStatus(
-          props.optionSelected,
-          props.selectedUsersData.selectedUsers
-        )
-      }
-      form="active-users-enable-disable-users-modal"
+      type="submit"
+      form="users-enable-disable-users-modal"
       data-cy="modal-button-enable"
     >
       Enable
@@ -350,6 +346,12 @@ const DisableEnableUsers = (props: PropsToDisableEnableUsers) => {
       fields={fields}
       show={props.show}
       onClose={closeModal}
+      onSubmit={() =>
+        modifyStatus(
+          props.optionSelected,
+          props.selectedUsersData.selectedUsers
+        )
+      }
       actions={modalActionsEnable}
     />
   );

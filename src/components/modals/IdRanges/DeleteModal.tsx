@@ -171,8 +171,8 @@ const DeleteModal = (props: PropsToDelete) => {
       data-cy="modal-button-delete"
       key="delete-idranges"
       variant="danger"
-      onClick={deleteRanges}
-      form="delete-idranges-modal"
+      type="submit"
+      form="remove-idranges-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -202,6 +202,7 @@ const DeleteModal = (props: PropsToDelete) => {
         fields={fields}
         show={props.show}
         onClose={props.onClose}
+        onSubmit={deleteRanges}
         actions={modalActionsDelete}
       />
       {isModalErrorOpen && (

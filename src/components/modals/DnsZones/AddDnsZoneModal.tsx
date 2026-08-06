@@ -122,9 +122,14 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
   const zoneNameLabel = <b>Zone name</b>;
   const reverseZoneLabel = <b>Reverse zone</b>;
 
+  const onFormSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    onAddDnsZone();
+  };
+
   // Form fields
   const formFields = (
-    <Form id="add-modal-form-zone-name">
+    <Form onSubmit={onFormSubmit} id="add-modal-form-zone-name">
       <Flex
         direction={{ default: "column" }}
         className="pf-v6-u-ml-lg pf-v6-u-mb-md"
@@ -221,15 +226,13 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
     <Button
       data-cy="modal-button-add"
       key="add-new"
+      type="submit"
       isDisabled={
         isAddButtonSpinning ||
         (isZoneNameRadioChecked && dnsZoneName === "") ||
         (isReverseZoneIpRadioChecked && reverseZoneIp === "")
       }
-      form="add-modal-form"
-      onClick={() => {
-        onAddDnsZone();
-      }}
+      form="add-modal-form-zone-name"
     >
       {isAddButtonSpinning ? (
         <>

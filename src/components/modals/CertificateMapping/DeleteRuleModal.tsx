@@ -68,14 +68,15 @@ const DeleteRuleModal = (props: DeleteRuleModalProps) => {
       data-cy="modal-button-ok"
       variant="danger"
       key={"delete-" + props.ruleId}
-      onClick={onDelete}
+      type="submit"
+      form="delete-certrule-modal"
     >
       Delete
     </Button>,
     <Button
       data-cy="modal-button-cancel"
       key={"cancel-delete-" + props.ruleId}
-      variant="secondary"
+      variant="link"
       onClick={onClose}
     >
       Cancel
@@ -88,6 +89,8 @@ const DeleteRuleModal = (props: DeleteRuleModalProps) => {
       <ConfirmationModal
         dataCy="delete-rule-modal"
         title={"Confirmation"}
+        formId="delete-certrule-modal"
+        onSubmit={onDelete}
         isOpen={props.isOpen}
         onClose={onClose}
         actions={modalActions}

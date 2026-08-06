@@ -179,8 +179,8 @@ const DeleteNetgroups = (props: PropsToDeleteGroups) => {
       data-cy="modal-button-delete"
       key="delete-netgroups"
       variant="danger"
-      onClick={deleteGroups}
-      form="delete-netgroups-modal"
+      type="submit"
+      form="remove-netgroups-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -207,6 +207,7 @@ const DeleteNetgroups = (props: PropsToDeleteGroups) => {
         offPosition="76px"
         title="Remove netgroups"
         formId="remove-netgroups-modal"
+        onSubmit={deleteGroups}
         fields={fields}
         show={props.show}
         onClose={closeModal}

@@ -179,8 +179,8 @@ const DeleteSudoCmdGroups = (props: PropsToDeleteRules) => {
       data-cy="modal-button-delete"
       key="delete-sudo-command-groups"
       variant="danger"
-      onClick={deleteRules}
-      form="delete-sudo-command-groups-modal"
+      type="submit"
+      form="remove-sudo-command-groups-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -210,6 +210,7 @@ const DeleteSudoCmdGroups = (props: PropsToDeleteRules) => {
         fields={fields}
         show={props.show}
         onClose={closeModal}
+        onSubmit={deleteRules}
         actions={modalActionsDelete}
       />
       {isModalErrorOpen && (

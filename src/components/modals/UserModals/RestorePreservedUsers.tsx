@@ -110,8 +110,8 @@ const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
     <Button
       key="restore-users"
       variant="primary"
-      onClick={restoreUsers}
-      form="restore-users-modal"
+      type="submit"
+      form="restore-users-stage-modal"
       spinnerAriaValueText="Restoring"
       spinnerAriaLabel="Restoring"
       isLoading={spinning}
@@ -142,6 +142,7 @@ const RestorePreservedUsers = (props: PropsToPreservedUsers) => {
         fields={fields}
         show={props.show}
         onClose={closeModal}
+        onSubmit={restoreUsers}
         actions={modalRestoreActions}
       />
     </>

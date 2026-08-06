@@ -411,9 +411,14 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
     ));
   };
 
+  const onFormSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    onAddOperation();
+  };
+
   // Form fields
   const formFields = (
-    <Form>
+    <Form onSubmit={onFormSubmit} id="add-dns-records-modal-form">
       <FormGroup label="Record name" isRequired>
         <TextInput
           value={basicFormValues.recordName}
@@ -487,9 +492,9 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
     <Button
       key="add-new"
       variant="secondary"
+      type="submit"
       isDisabled={isAddButtonSpinning || !areMandatoryFieldsFilled}
-      form="add-modal-form"
-      onClick={() => onAddOperation()}
+      form="add-dns-records-modal-form"
       data-cy={"add-dns-records-modal-add-button"}
     >
       {isAddButtonSpinning ? (

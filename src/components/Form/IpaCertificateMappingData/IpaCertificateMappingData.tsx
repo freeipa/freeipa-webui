@@ -4,6 +4,7 @@ import {
   Button,
   Flex,
   FlexItem,
+  Form,
   Modal,
   ModalBody,
   ModalFooter,
@@ -115,7 +116,8 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
       data-cy="modal-button-delete"
       key="del-certificate-mapping-data"
       variant="danger"
-      onClick={() => onRemoveCertificateMappingData(idxToDelete)}
+      type="submit"
+      form="remove-certificate-mapping-data-form"
       isDisabled={modalSpinning}
       isLoading={modalSpinning}
       spinnerAriaValueText="Deleting"
@@ -293,11 +295,17 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
     });
   };
 
+  const onAddFormSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    onAddCertificateMappingData();
+  };
+
   const actions = [
     <SecondaryButton
       dataCy="modal-button-add"
       key="add"
-      onClickHandler={onAddCertificateMappingData}
+      type="submit"
+      form="add-certificate-mapping-data-form"
       isDisabled={isAddButtonDisabled}
       isLoading={modalSpinning}
       spinnerAriaValueText="Adding"
@@ -366,25 +374,30 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
           labelId="add-certificate-mapping-data-modal"
         />
         <ModalBody id="add-certificate-mapping-data-modal-body">
-          <CertificateMappingDataOption
-            dataCy="modal-cert-map-data"
-            isCertMappingDataChecked={isCertMappingDataChecked}
-            onChangeCertMappingDataCheck={onChangeCertMappingDataCheck}
-            setIsAddButtonDisabled={setIsAddButtonDisabled}
-            certificatesList={certificatesList}
-            setCertificateList={setCertificatesList}
-            certificateMappingDataList={certificateMappingDataList}
-            setCertificateMappingDataList={setCertificateMappingDataList}
-          />
-          <IssuerAndSubjectOption
-            isIssuerAndSubjectChecked={isIssuerAndSubjectChecked}
-            onChangeIssuerAndSubjectCheck={onChangeIssuerAndSubjectCheck}
-            setIsAddButtonDisabled={setIsAddButtonDisabled}
-            issuerValue={issuer}
-            setIssuerValue={setIssuer}
-            subjectValue={subject}
-            setSubjectValue={setSubject}
-          />
+          <Form
+            id="add-certificate-mapping-data-form"
+            onSubmit={onAddFormSubmit}
+          >
+            <CertificateMappingDataOption
+              dataCy="modal-cert-map-data"
+              isCertMappingDataChecked={isCertMappingDataChecked}
+              onChangeCertMappingDataCheck={onChangeCertMappingDataCheck}
+              setIsAddButtonDisabled={setIsAddButtonDisabled}
+              certificatesList={certificatesList}
+              setCertificateList={setCertificatesList}
+              certificateMappingDataList={certificateMappingDataList}
+              setCertificateMappingDataList={setCertificateMappingDataList}
+            />
+            <IssuerAndSubjectOption
+              isIssuerAndSubjectChecked={isIssuerAndSubjectChecked}
+              onChangeIssuerAndSubjectCheck={onChangeIssuerAndSubjectCheck}
+              setIsAddButtonDisabled={setIsAddButtonDisabled}
+              issuerValue={issuer}
+              setIssuerValue={setIssuer}
+              subjectValue={subject}
+              setSubjectValue={setSubject}
+            />
+          </Form>
         </ModalBody>
         <ModalFooter>{actions}</ModalFooter>
       </Modal>
@@ -396,6 +409,8 @@ const IpaCertificateMappingData = (props: PropsToIpaCertificateMappingData) => {
         actions={deletionModalActions}
         messageText={deletionMessage}
         messageObj={deletionMessageObj}
+        formId="remove-certificate-mapping-data-form"
+        onSubmit={() => onRemoveCertificateMappingData(idxToDelete)}
       />
     </>
   );

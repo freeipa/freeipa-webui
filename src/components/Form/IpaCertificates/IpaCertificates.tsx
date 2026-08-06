@@ -456,7 +456,8 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
       data-cy="modal-button-delete"
       key="del-certificate-conf"
       variant="danger"
-      onClick={() => onDeleteCertificate(idxToDelete)}
+      type="submit"
+      form="remove-certificate-form"
       isDisabled={modalSpinning}
       isLoading={modalSpinning}
       spinnerAriaValueText="Deleting"
@@ -614,13 +615,18 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         onChange={onChangeTextAreaValue}
         isOpen={isModalOpen}
         onClose={onClickCancel}
+        formId={
+          textareaModalOption === "add" ? "add-certificate-form" : undefined
+        }
+        onSubmit={textareaModalOption === "add" ? onAddCertificate : undefined}
         actions={
           textareaModalOption === "add"
             ? [
                 <SecondaryButton
                   dataCy="modal-button-add"
                   key="add-certificate"
-                  onClickHandler={onAddCertificate}
+                  type="submit"
+                  form="add-certificate-form"
                   isDisabled={modalSpinning}
                   isLoading={modalSpinning}
                   spinnerAriaValueText="Adding"
@@ -681,6 +687,8 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         actions={deletionConfModalActions}
         messageText={messageDeletionConf}
         messageObj={messageDeletionObj}
+        formId="remove-certificate-form"
+        onSubmit={() => onDeleteCertificate(idxToDelete)}
       />
       {certificatesList[idxSelected] !== undefined && (
         <>

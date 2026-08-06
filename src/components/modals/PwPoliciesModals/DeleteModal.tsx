@@ -172,8 +172,8 @@ const DeleteModal = (props: PropsToDelete) => {
       data-cy="modal-button-delete"
       key="delete-pwpolicies"
       variant="danger"
-      onClick={deletePasswordPolicies}
-      form="delete-pwpolicies-modal"
+      type="submit"
+      form="remove-pwpolicies-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -203,6 +203,7 @@ const DeleteModal = (props: PropsToDelete) => {
         fields={fields}
         show={props.show}
         onClose={props.onClose}
+        onSubmit={deletePasswordPolicies}
         actions={modalActionsDelete}
       />
       {isModalErrorOpen && (

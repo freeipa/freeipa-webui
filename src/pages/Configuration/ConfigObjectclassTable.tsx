@@ -92,7 +92,13 @@ const ConfigObjectclassTable = (props: PropsToTable) => {
       >
         <ModalHeader title={"Add objectclass"} labelId="add-oc-modal-title" />
         <ModalBody id="add-oc-modal-body">
-          <Form id={"add-oc-modal"}>
+          <Form
+            id={"add-oc-modal"}
+            onSubmit={(event) => {
+              event.preventDefault();
+              addOC();
+            }}
+          >
             <FormGroup
               key={"oc"}
               label={"New objectclass"}
@@ -125,7 +131,8 @@ const ConfigObjectclassTable = (props: PropsToTable) => {
             isDisabled={
               newOC === "" || values.indexOf(newOC.toLowerCase()) !== -1
             }
-            onClick={addOC}
+            type="submit"
+            form="add-oc-modal"
           >
             Add
           </Button>

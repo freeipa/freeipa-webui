@@ -179,8 +179,8 @@ const DeleteIDViewsModal = (props: PropsToDeleteViews) => {
       data-cy="modal-button-delete"
       key="delete-id-views"
       variant="danger"
-      onClick={deleteViews}
-      form="delete-id-views-modal"
+      type="submit"
+      form="remove-id-views-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -207,6 +207,7 @@ const DeleteIDViewsModal = (props: PropsToDeleteViews) => {
         offPosition="76px"
         title="Remove ID views"
         formId="remove-id-views-modal"
+        onSubmit={deleteViews}
         fields={fields}
         show={props.show}
         onClose={closeModal}

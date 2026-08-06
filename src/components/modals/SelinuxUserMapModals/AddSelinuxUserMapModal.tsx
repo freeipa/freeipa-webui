@@ -147,7 +147,8 @@ const AddSelinuxUserMapModal = (props: PropsToAddSelinuxUserMapModal) => {
       key="add-new-selinux-user-map"
       isDisabled={buttonDisabled || isAddButtonSpinning}
       isLoading={isAddButtonSpinning}
-      onClick={onAdd}
+      type="submit"
+      form="add-selinux-user-map-modal"
     >
       Add
     </Button>,

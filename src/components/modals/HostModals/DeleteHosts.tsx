@@ -196,8 +196,8 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
       data-cy="modal-button-delete"
       key="delete-hosts"
       variant="danger"
-      onClick={deleteHosts}
-      form="delete-hosts-modal"
+      type="submit"
+      form="remove-hosts-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -227,6 +227,7 @@ const DeleteHosts = (props: PropsToDeleteHosts) => {
         fields={fields}
         show={props.show}
         onClose={closeModal}
+        onSubmit={deleteHosts}
         actions={modalActionsDelete}
       />
       {isModalErrorOpen && (

@@ -85,8 +85,8 @@ const UnlockUser = (props: propsToUnlockUser) => {
     <Button
       key="unlock-user"
       variant="primary"
-      onClick={onUnlockUser}
-      form="unlock-user-modal"
+      type="submit"
+      form="unlock-user-form"
       data-cy="modal-button-ok"
     >
       Ok
@@ -112,6 +112,7 @@ const UnlockUser = (props: propsToUnlockUser) => {
         fields={fields}
         show={props.isOpen}
         onClose={props.onClose}
+        onSubmit={onUnlockUser}
         actions={actions}
       />
     </>

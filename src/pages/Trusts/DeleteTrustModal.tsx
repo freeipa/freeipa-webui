@@ -132,8 +132,8 @@ const DeleteTrustModal = (props: DeleteTrustModalProps) => {
       data-cy="modal-button-ok"
       key="delete-trusts"
       variant="danger"
-      onClick={onDelete}
-      form="delete-trusts-modal"
+      type="submit"
+      form="remove-trusts-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -170,6 +170,7 @@ const DeleteTrustModal = (props: DeleteTrustModalProps) => {
         fields={fields}
         show={props.isOpen}
         onClose={props.onClose}
+        onSubmit={onDelete}
         actions={modalActionsDelete}
       />
       {ErrorModalComponent}

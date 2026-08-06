@@ -174,8 +174,8 @@ const DeleteIdOverrideGroupsModal = (props: PropsToDelete) => {
       data-cy="modal-button-delete"
       key="delete-id-override"
       variant="danger"
-      onClick={deleteViews}
-      form="delete-id-voverride-modal"
+      type="submit"
+      form="remove-id-override-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -205,6 +205,7 @@ const DeleteIdOverrideGroupsModal = (props: PropsToDelete) => {
         fields={fields}
         show={props.show}
         onClose={closeModal}
+        onSubmit={deleteViews}
         actions={modalActionsDelete}
       />
       {isModalErrorOpen && (

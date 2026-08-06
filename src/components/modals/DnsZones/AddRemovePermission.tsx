@@ -72,7 +72,8 @@ const AddRemovePermission = (props: AddRemovePermissionProps) => {
       data-cy="modal-button-ok"
       key={"delete-" + props.dnsZoneId}
       variant="primary"
-      onClick={onAddRemovePermission}
+      type="submit"
+      form="add-remove-permission-modal"
     >
       OK
     </Button>,
@@ -95,6 +96,8 @@ const AddRemovePermission = (props: AddRemovePermissionProps) => {
         isOpen={props.isOpen}
         onClose={props.onClose}
         actions={modalActions}
+        formId="add-remove-permission-modal"
+        onSubmit={onAddRemovePermission}
         messageText={
           "Are you sure you want to " +
           props.operation +

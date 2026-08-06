@@ -306,9 +306,14 @@ const EditDnsRecordModal = (props: EditDnsRecordModalProps) => {
       ));
   };
 
+  const onFormSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    onSave();
+  };
+
   // Form fields
   const formFields = (
-    <Form>
+    <Form onSubmit={onFormSubmit} id="edit-dns-record-modal-form">
       <FormGroup label="Record name" isRequired>
         <TextInput
           value={props.recordName}
@@ -338,8 +343,9 @@ const EditDnsRecordModal = (props: EditDnsRecordModalProps) => {
     <Button
       key="save"
       variant="primary"
+      type="submit"
       isDisabled={isSaveButtonSpinning || !areMandatoryFieldsFilled}
-      onClick={onSave}
+      form="edit-dns-record-modal-form"
       data-cy="edit-dns-record-modal-save-button"
     >
       {isSaveButtonSpinning ? (

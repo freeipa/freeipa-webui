@@ -82,7 +82,8 @@ const EnableDisableOtpTokensModal = (
       data-cy="modal-button-ok"
       key={props.operation + "-otp-tokens"}
       variant="primary"
-      onClick={onEnableDisable}
+      type="submit"
+      form="enable-disable-otp-tokens-form"
     >
       OK
     </Button>,
@@ -105,6 +106,8 @@ const EnableDisableOtpTokensModal = (
       actions={modalActions}
       messageText={`Are you sure you want to ${props.operation} the following OTP tokens?`}
       messageObj={props.elementsList.join(", ")}
+      formId="enable-disable-otp-tokens-form"
+      onSubmit={onEnableDisable}
     />
   );
 };

@@ -172,7 +172,7 @@ const DeleteOtpTokensModal = (props: DeleteOtpTokensModalProps) => {
       data-cy="modal-button-ok"
       key="delete-otp-tokens"
       variant="danger"
-      onClick={onDelete}
+      type="submit"
       form="delete-otp-tokens-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
@@ -210,6 +210,7 @@ const DeleteOtpTokensModal = (props: DeleteOtpTokensModalProps) => {
         fields={fields}
         show={props.isOpen}
         onClose={props.onClose}
+        onSubmit={onDelete}
         actions={modalActionsDelete}
       />
       {isModalErrorOpen && (

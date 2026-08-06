@@ -23,6 +23,7 @@ interface PropsToSecondaryButton {
   spinnerAriaValueText?: string;
   spinnerAriaLabelledBy?: string;
   spinnerAriaLabel?: string;
+  type?: "button" | "submit" | "reset";
 }
 
 const SecondaryButton = (props: PropsToSecondaryButton) => {
@@ -41,6 +42,7 @@ const SecondaryButton = (props: PropsToSecondaryButton) => {
       ouiaId={props.ouijaId}
       ouiaSafe={props.ouijaSafe}
       onClick={props.onClickHandler}
+      type={props.type}
       innerRef={props.innerRef}
       form={props.form}
       isLoading={props.isLoading}

@@ -273,12 +273,7 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
       data-cy="modal-button-disable"
       key="disable-sudorules"
       variant="primary"
-      onClick={() =>
-        modifyStatus(
-          props.optionSelected,
-          props.selectedRulesData.selectedRules
-        )
-      }
+      type="submit"
       form="sudorules-enable-disable-modal"
     >
       Disable
@@ -304,6 +299,12 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
       fields={fields}
       show={props.show}
       onClose={closeModal}
+      onSubmit={() =>
+        modifyStatus(
+          props.optionSelected,
+          props.selectedRulesData.selectedRules
+        )
+      }
       actions={modalActionsDisable}
     />
   );
@@ -314,12 +315,7 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
       data-cy="modal-button-enable"
       key="enable-sudorules"
       variant="primary"
-      onClick={() =>
-        modifyStatus(
-          props.optionSelected,
-          props.selectedRulesData.selectedRules
-        )
-      }
+      type="submit"
       form="sudorules-enable-disable-modal"
     >
       Enable
@@ -345,6 +341,12 @@ const DisableEnableSudoRules = (props: PropsToDisableEnableRules) => {
       fields={fields}
       show={props.show}
       onClose={closeModal}
+      onSubmit={() =>
+        modifyStatus(
+          props.optionSelected,
+          props.selectedRulesData.selectedRules
+        )
+      }
       actions={modalActionsEnable}
     />
   );

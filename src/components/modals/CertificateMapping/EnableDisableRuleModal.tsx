@@ -70,14 +70,15 @@ const EnableDisableRuleModal = (props: EnableDisableRuleModalProps) => {
       data-cy="modal-button-ok"
       key={props.operation + "-" + props.ruleId}
       variant="primary"
-      onClick={onEnableDisable}
+      type="submit"
+      form={props.operation + "-certrule-modal"}
     >
       OK
     </Button>,
     <Button
       data-cy="modal-button-cancel"
       key={"cancel-" + props.operation + "-" + props.ruleId}
-      variant="secondary"
+      variant="link"
       onClick={onClose}
     >
       Cancel
@@ -90,6 +91,8 @@ const EnableDisableRuleModal = (props: EnableDisableRuleModalProps) => {
       <ConfirmationModal
         dataCy="enable-disable-rule-modal"
         title={"Confirmation"}
+        formId={props.operation + "-certrule-modal"}
+        onSubmit={onEnableDisable}
         isOpen={props.isOpen}
         onClose={onClose}
         actions={modalActions}

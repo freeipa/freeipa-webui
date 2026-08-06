@@ -178,11 +178,8 @@ const DeleteDnsForwardZonesModal = (props: DeleteDnsForwardZonesModalProps) => {
       data-cy="modal-button-delete"
       key="delete-dnsforwardzones"
       variant="danger"
-      onClick={(e) => {
-        e.preventDefault();
-        onDelete();
-      }}
-      form="delete-dnsforwardzones-modal"
+      type="submit"
+      form="remove-dnsforwardzones-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -220,6 +217,7 @@ const DeleteDnsForwardZonesModal = (props: DeleteDnsForwardZonesModalProps) => {
         fields={fields}
         show={props.isOpen}
         onClose={props.onClose}
+        onSubmit={onDelete}
         actions={modalActions}
       />
       {isModalErrorOpen && (

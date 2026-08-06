@@ -86,7 +86,8 @@ const EnableDisableTrustedDomainsModal = (
       data-cy="modal-button-ok"
       key={props.operation + "-certmaprules"}
       variant="primary"
-      onClick={onEnableDisable}
+      type="submit"
+      form="enable-disable-trusted-domains-form"
     >
       OK
     </Button>,
@@ -109,6 +110,8 @@ const EnableDisableTrustedDomainsModal = (
       actions={modalActions}
       messageText={`Are you sure you want to ${props.operation} the following domains?`}
       messageObj={props.domainNames.join(", ")}
+      formId="enable-disable-trusted-domains-form"
+      onSubmit={onEnableDisable}
     />
   );
 };

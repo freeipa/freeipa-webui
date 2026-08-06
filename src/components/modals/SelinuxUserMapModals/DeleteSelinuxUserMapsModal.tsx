@@ -124,8 +124,8 @@ const DeleteSelinuxUserMapsModal = (props: DeleteSelinuxUserMapsModalProps) => {
       data-cy="modal-button-ok"
       key="delete-selinux-user-maps"
       variant="danger"
-      onClick={onDelete}
-      form="delete-selinux-user-maps-modal"
+      type="submit"
+      form="remove-selinux-user-maps-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -162,6 +162,7 @@ const DeleteSelinuxUserMapsModal = (props: DeleteSelinuxUserMapsModalProps) => {
         fields={fields}
         show={props.isOpen}
         onClose={props.onClose}
+        onSubmit={onDelete}
         actions={modalActionsDelete}
       />
       {ErrorModalComponent}

@@ -173,8 +173,8 @@ const DeleteModal = (props: PropsToDelete) => {
       data-cy="modal-button-delete"
       key="delete-idpreferences"
       variant="danger"
-      onClick={deleteIdpReferences}
-      form="delete-idpreferences-modal"
+      type="submit"
+      form="remove-idpreferences-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -204,6 +204,7 @@ const DeleteModal = (props: PropsToDelete) => {
         fields={fields}
         show={props.show}
         onClose={props.onClose}
+        onSubmit={deleteIdpReferences}
         actions={modalActionsDelete}
       />
       {isModalErrorOpen && (

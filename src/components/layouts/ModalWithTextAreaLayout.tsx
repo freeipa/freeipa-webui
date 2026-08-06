@@ -32,9 +32,16 @@ interface PropsToPKModal {
   metadata: Metadata;
   variant?: "default" | "small" | "medium" | "large";
   isTextareaDisabled?: boolean;
+  formId?: string;
+  onSubmit?: (event: React.FormEvent) => void;
 }
 
 const ModalWithTextAreaLayout = (props: PropsToPKModal) => {
+  const onSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    props.onSubmit?.(event);
+  };
+
   return (
     <Modal
       data-cy={props.dataCy + "-modal"}
@@ -44,7 +51,7 @@ const ModalWithTextAreaLayout = (props: PropsToPKModal) => {
     >
       <ModalHeader title={props.title} labelId={props.dataCy} />
       <ModalBody id={props.dataCy + "-modal-body"}>
-        <Form>
+        <Form onSubmit={onSubmit} id={props.formId}>
           <FormGroup
             label={props.subtitle}
             type="string"

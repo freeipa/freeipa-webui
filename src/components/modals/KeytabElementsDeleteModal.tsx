@@ -81,8 +81,10 @@ const KeytabElementsDeleteModal = (props: PropsToDelete) => {
       data-cy="modal-button-delete"
       variant="danger"
       key={"delete-" + props.elementType}
-      form="modal-form"
-      onClick={removeElementFromList}
+      type="submit"
+      form={
+        props.operationType + "-keytab-" + props.elementType + "s-delete-modal"
+      }
     >
       Delete
     </Button>,
@@ -113,6 +115,7 @@ const KeytabElementsDeleteModal = (props: PropsToDelete) => {
       formId={
         props.operationType + "-keytab-" + props.elementType + "s-delete-modal"
       }
+      onSubmit={removeElementFromList}
       fields={fields}
       show={props.showModal}
       onClose={closeModal}

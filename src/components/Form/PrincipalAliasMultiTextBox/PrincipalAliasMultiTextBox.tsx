@@ -150,7 +150,8 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
       data-cy="modal-button-delete"
       key="del-principal-alias"
       variant="danger"
-      onClick={() => onRemovePrincipalAlias(aliasIdxToDelete)}
+      type="submit"
+      form="remove-kerberos-alias-form"
       isDisabled={modalSpinning}
       isLoading={modalSpinning}
       spinnerAriaValueText="Deleting"
@@ -308,6 +309,8 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
         actions={deletionConfModalActions}
         messageText={messageDeletionConf}
         messageObj={messageDeletionObj}
+        formId="remove-kerberos-alias-form"
+        onSubmit={() => onRemovePrincipalAlias(aliasIdxToDelete)}
       />
     </>
   );

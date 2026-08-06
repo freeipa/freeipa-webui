@@ -25,13 +25,18 @@ const MemberOfDeleteModal = (props: React.PropsWithChildren<PropsToDelete>) => {
     props.onDelete();
   };
 
+  const onFormSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    onDelete();
+  };
+
   const modalActionsDelete: JSX.Element[] = [
     <Button
       data-cy="modal-button-delete"
       key="delete-groups"
       variant="danger"
-      onClick={onDelete}
-      form="active-users-remove-groups-modal"
+      type="submit"
+      form="is-member-of-delete-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={props.spinning}
@@ -61,7 +66,7 @@ const MemberOfDeleteModal = (props: React.PropsWithChildren<PropsToDelete>) => {
     >
       <ModalHeader title={props.title} labelId="member-of-delete-modal-title" />
       <ModalBody id="member-of-delete-modal-body">
-        <Form id={"is-member-of-delete-modal"}>
+        <Form id={"is-member-of-delete-modal"} onSubmit={onFormSubmit}>
           <FormGroup key={"question-text"} fieldId={"question-text"}>
             <Content component={ContentVariants.p}>
               Are you sure you want to remove the following entries?

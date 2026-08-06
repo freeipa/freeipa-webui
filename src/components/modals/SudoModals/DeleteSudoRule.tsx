@@ -186,8 +186,8 @@ const DeleteSudoRule = (props: PropsToDeleteRules) => {
       data-cy="modal-button-delete"
       key="delete-sudorules"
       variant="danger"
-      onClick={deleteRules}
-      form="delete-sudorules-modal"
+      type="submit"
+      form="remove-sudorules-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -217,6 +217,7 @@ const DeleteSudoRule = (props: PropsToDeleteRules) => {
         fields={fields}
         show={props.show}
         onClose={closeModal}
+        onSubmit={deleteRules}
         actions={modalActionsDelete}
       />
       {isModalErrorOpen && (

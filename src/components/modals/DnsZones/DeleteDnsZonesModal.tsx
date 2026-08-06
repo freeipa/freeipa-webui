@@ -175,8 +175,8 @@ const DeleteDnsZonesModal = (props: DeleteDnsZonesModalProps) => {
       data-cy="modal-button-ok"
       key="delete-dnszones"
       variant="danger"
-      onClick={onDelete}
-      form="delete-dnszones-modal"
+      type="submit"
+      form="remove-dnszones-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
       isLoading={spinning}
@@ -214,6 +214,7 @@ const DeleteDnsZonesModal = (props: DeleteDnsZonesModalProps) => {
         fields={fields}
         show={props.isOpen}
         onClose={props.onClose}
+        onSubmit={onDelete}
         actions={modalActions}
       />
       {isModalErrorOpen && (

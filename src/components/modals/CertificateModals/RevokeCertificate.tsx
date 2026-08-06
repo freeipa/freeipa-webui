@@ -190,7 +190,8 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
     <SecondaryButton
       dataCy="modal-button-revoke"
       key="revoke"
-      onClickHandler={onRevokeCert}
+      type="submit"
+      form="revoke-certificate"
     >
       Revoke
     </SecondaryButton>,
@@ -271,6 +272,7 @@ const RevokeCertificate = (props: PropsToRevokeCertificate) => {
         modalPosition="top"
         title={"Certificate for " + certName}
         formId={"revoke-certificate"}
+        onSubmit={onRevokeCert}
         fields={fields}
         show={props.isOpen}
         onClose={props.onClose}
