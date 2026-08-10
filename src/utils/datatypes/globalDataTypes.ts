@@ -244,6 +244,13 @@ export interface Permission {
   type: string;
 }
 
+export interface SelfServicePermission {
+  aciname: string;
+  permissions: string[];
+  attrs: string[];
+  aci: string;
+}
+
 export interface HBACRule {
   hostcategory: string;
   servicecategory: string;

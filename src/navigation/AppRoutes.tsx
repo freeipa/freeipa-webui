@@ -84,6 +84,7 @@ import RolesTabs from "src/pages/Roles/RolesTabs";
 import Privileges from "src/pages/Privileges/Privileges";
 import PrivilegesTabs from "src/pages/Privileges/PrivilegesTabs";
 import Permissions from "src/pages/Permissions/Permissions";
+import SelfServicePermissions from "src/pages/SelfServicePermissions/SelfServicePermissions";
 
 // Renders routes (React)
 export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
@@ -622,6 +623,9 @@ export const AppRoutes = ({ isInitialDataLoaded }): React.ReactElement => {
               </Route>
               <Route path="permissions">
                 <Route path="" element={<Permissions />} />
+              </Route>
+              <Route path="selfservice-permissions">
+                <Route path="" element={<SelfServicePermissions />} />
               </Route>
               <Route path="configuration" element={<Configuration />} />
               {/* Redirect to Active users page if user is logged in and navigates to the root page */}

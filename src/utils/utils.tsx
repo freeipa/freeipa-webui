@@ -16,6 +16,7 @@ import {
   Permission,
   Privilege,
   Role,
+  SelfServicePermission,
   Service,
   SudoCmd,
   SudoCmdGroup,
@@ -252,6 +253,10 @@ export const isOtpTokenSelectable = (otpToken: OtpToken) =>
 
 export const isSelinuxUserMapSelectable = (map: SELinuxUserMap) =>
   map.cn !== "";
+
+export const isSelfServicePermissionSelectable = (
+  perm: SelfServicePermission
+) => perm.aciname !== "";
 
 /**
  * Write JSX error messages into 'apiErrorsJsx' array

@@ -318,6 +318,8 @@ export const TypeAheadWithCheckbox = <T,>({
       }}
       toggle={toggle}
       variant="typeahead"
+      isScrollable
+      maxMenuHeight="300px"
     >
       <SelectList
         isAriaMultiselectable

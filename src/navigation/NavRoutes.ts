@@ -73,6 +73,7 @@ const TopologyGroupRef = "topology-graph";
 const RbacGroupRef = "rbac";
 const PrivilegesGroupRef = "privileges";
 const PermissionsGroupRef = "permissions";
+const SelfServicePermissionsGroupRef = "selfservice-permissions";
 // - Configuration
 const ConfigRef = "configuration";
 
@@ -451,6 +452,13 @@ export const getNavigationRoutes = (
               group: PermissionsGroupRef,
               title: `${BASE_TITLE} - Permissions`,
               path: "permissions",
+              items: [],
+            },
+            {
+              label: "Self service permissions",
+              group: SelfServicePermissionsGroupRef,
+              title: `${BASE_TITLE} - Self service permissions`,
+              path: "selfservice-permissions",
               items: [],
             },
           ],
