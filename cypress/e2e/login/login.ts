@@ -1,7 +1,7 @@
 import { Given, Then, When } from "@badeball/cypress-cucumber-preprocessor";
 
 import { loginAsAdmin, logout } from "../common/authentication";
-import { extractOTPSecret, generateOTP, getTokenPeriodInMs } from "./otp";
+import { extractOTPSecret, generateOTP, getMsUntilNextPeriod } from "./otp";
 
 // Used for the When and Then step of otp, as we need ensure the same token is used for both of these steps
 let otpToken: string;
@@ -20,8 +20,9 @@ Given("User {string} has OTP enabled", (login: string) => {
   cy.dataCy("user-tab-settings-kebab-add-otp-token").click();
   cy.dataCy("add-otp-token-modal").should("exist");
 
-  cy.dataCy("modal-textbox-clock-interval").type("5");
-  cy.dataCy("modal-textbox-clock-interval").should("have.value", "5");
+  cy.dataCy("modal-textbox-clock-interval").clear();
+  cy.dataCy("modal-textbox-clock-interval").type("30");
+  cy.dataCy("modal-textbox-clock-interval").should("have.value", "30");
 
   cy.dataCy("modal-button-add").click();
   cy.dataCy("add-otp-token-modal").should("not.exist");
@@ -43,13 +44,14 @@ Given("User {string} has OTP enabled", (login: string) => {
 });
 
 When("I type in the {string} textbox text otp token", (textbox: string) => {
-  cy.wait(getTokenPeriodInMs());
+  const waitMs = getMsUntilNextPeriod();
+  cy.wait(waitMs).then(() => {
+    otpToken = generateOTP();
 
-  otpToken = generateOTP();
-
-  cy.dataCy(textbox).clear();
-  cy.dataCy(textbox).should("have.value", "");
-  cy.dataCy(textbox).type(otpToken);
+    cy.dataCy(textbox).clear();
+    cy.dataCy(textbox).should("have.value", "");
+    cy.dataCy(textbox).type(otpToken);
+  });
 });
 
 Then("I should see otp token in the {string} textbox", (textbox: string) => {
@@ -64,13 +66,14 @@ When(
     cy.get("#pf-login-username-id").type(username);
     cy.get("#pf-login-username-id").should("have.value", username);
 
-    cy.wait(getTokenPeriodInMs());
+    const waitMs = getMsUntilNextPeriod();
+    cy.wait(waitMs).then(() => {
+      otpToken = generateOTP();
 
-    otpToken = generateOTP();
+      cy.get("#pf-login-password-id").type(password + otpToken);
+      cy.get("#pf-login-password-id").should("have.value", password + otpToken);
 
-    cy.get("#pf-login-password-id").type(password + otpToken);
-    cy.get("#pf-login-password-id").should("have.value", password + otpToken);
-
-    cy.get("button[type='submit']").click();
+      cy.get("button[type='submit']").click();
+    });
   }
 );

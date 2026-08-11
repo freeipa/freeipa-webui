@@ -10,8 +10,7 @@ export const generateOTP = (otp?: string) => {
   if (otp) {
     totp = new TOTP({
       secret: otp,
-      // Increase in case of flakiness
-      period: 5,
+      period: 30,
     });
   }
 
@@ -22,6 +21,17 @@ export const generateOTP = (otp?: string) => {
   return totp.generate();
 };
 
-export const getTokenPeriodInMs = () => {
-  return totp.period * 1000;
+/**
+ * Returns the number of milliseconds to wait so that the next
+ * generateOTP() call lands near the start of a fresh TOTP period.
+ * This avoids token expiration during submission and prevents replay.
+ */
+export const getMsUntilNextPeriod = () => {
+  const nowSeconds = Math.floor(Date.now() / 1000);
+  const elapsedInPeriod = nowSeconds % totp.period;
+  if (elapsedInPeriod < 2) {
+    return 500;
+  }
+  const remainingInPeriod = totp.period - elapsedInPeriod;
+  return remainingInPeriod * 1000 + 500;
 };
