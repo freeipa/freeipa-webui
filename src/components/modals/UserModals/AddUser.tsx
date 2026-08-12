@@ -17,6 +17,7 @@ import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // RPC
 import {
   useSimpleMutCommandMutation,
+  useGetObjectMetadataQuery,
   Command,
   FindRPCResponse,
 } from "src/services/rpc";
@@ -28,6 +29,7 @@ import ErrorModal from "src/components/modals/ErrorModal";
 import { addAlert } from "src/store/Global/alerts-slice";
 // Utils
 import { NO_SELECTION_OPTION } from "src/utils/constUtils";
+import { generateLogin } from "src/utils/loginUtils";
 // Components
 import TypeAheadSelectWithCreate from "src/components/TypeAheadSelectWithCreate";
 import InputWithValidation from "src/components/layouts/InputWithValidation";
@@ -58,13 +60,17 @@ const AddUser = (props: PropsToAddUser) => {
     (state) => state.global.environment.api_version
   ) as string;
 
+  // [API call] Metadata
+  const metadataQuery = useGetObjectMetadataQuery();
+  const metadata = metadataQuery.data || {};
+
   // Define 'executeCommand' to add user data to IPA server
   const [addUser] = useAddUserMutation();
   // Define handler to execute when getting gids
   const [retrieveGIDs] = useSimpleMutCommandMutation();
 
   // useStates for TextInputs
-  const [userLogin, setUserLogin] = React.useState("");
+  const [customLogin, setCustomLogin] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [userClass, setUserClass] = React.useState("");
@@ -74,6 +80,13 @@ const AddUser = (props: PropsToAddUser) => {
   const [verifyNewPassword, setVerifyNewPassword] = React.useState("");
   const [addSpinning, setAddBtnSpinning] = React.useState<boolean>(false);
 
+  // Generated login shown as placeholder; used as fallback on submit
+  const generatedLogin = generateLogin(firstName, lastName);
+
+  const handleLoginChange = (value: string) => {
+    setCustomLogin(value);
+  };
+
   const newPasswordValueHandler = (value: string) => {
     setNewPassword(value);
   };
@@ -82,12 +95,16 @@ const AddUser = (props: PropsToAddUser) => {
     setVerifyNewPassword(value);
   };
 
-  // User login: Valid characters in first char: ., _
-  const userLoginFormatFirst = /^([A-Za-z._]).*$/;
-  // User login: Valid characters in body (every char must be in set): letters, digits, '_', '-', '.', '$'
-  const userLoginFormatBody = /^[A-Za-z0-9._\-$]*$/;
-  // Valid characters: '-' symbols only
-  const formatWithoutSpaces = /[`!@#$%^&*()_+=[\]{};':"\\|,.<>/?~\s]/;
+  // User login pattern from server metadata (falls back to hardcoded default)
+  const uidParam = metadata.objects?.user?.takes_params?.find(
+    (param) => param.name === "uid"
+  );
+  const userLoginPattern = uidParam?.pattern
+    ? new RegExp(uidParam.pattern)
+    : /(?!^[0-9]+$)^[a-zA-Z0-9_.][a-zA-Z0-9_.-]*[a-zA-Z0-9_.$-]?$/;
+  const userLoginPatternErrMsg =
+    uidParam?.pattern_errmsg ||
+    "may only include letters, numbers, _, -, . and $";
 
   // [API call] Get GIDs
   const getGIDs = () => {
@@ -154,9 +171,8 @@ const AddUser = (props: PropsToAddUser) => {
   // Buttons are disabled until the user fills the required fields
   const buttonDisabled = !(
     firstName.length > 0 &&
-    !formatWithoutSpaces.test(firstName) &&
     lastName.length > 0 &&
-    !formatWithoutSpaces.test(lastName) &&
+    (customLogin === "" || userLoginPattern.test(customLogin)) &&
     verifiedPasswords &&
     (isNoPrivateGroupChecked === true ? gidSelected !== "" : true)
   );
@@ -183,16 +199,14 @@ const AddUser = (props: PropsToAddUser) => {
           dataCy="modal-textbox-login"
           id="modal-form-user-login"
           name="modal-form-user-login"
-          isRequired
-          value={userLogin}
-          onChange={setUserLogin}
+          value={customLogin}
+          placeholder={generatedLogin}
+          onChange={handleLoginChange}
           rules={[
             {
               id: "ruleCharacters",
-              message: "Only alphanumeric and special characters _-.$",
-              validate: (v: string) =>
-                userLoginFormatFirst.test(v.charAt(0)) &&
-                userLoginFormatBody.test(v.substring(1)),
+              message: userLoginPatternErrMsg,
+              validate: (v: string) => userLoginPattern.test(v),
             },
           ]}
         />
@@ -202,21 +216,13 @@ const AddUser = (props: PropsToAddUser) => {
       id: "modal-form-first-name",
       name: "First name",
       pfComponent: (
-        <InputWithValidation
-          dataCy="modal-textbox-first-name"
+        <TextInput
+          data-cy="modal-textbox-first-name"
           id="modal-form-first-name"
           name="modal-form-first-name"
           value={firstName}
-          onChange={setFirstName}
+          onChange={(_event, value: string) => setFirstName(value)}
           isRequired
-          rules={[
-            {
-              id: "ruleCharacters",
-              message:
-                "First name should not contain special characters or spaces",
-              validate: (v: string) => !formatWithoutSpaces.test(v),
-            },
-          ]}
         />
       ),
       fieldRequired: true,
@@ -225,21 +231,13 @@ const AddUser = (props: PropsToAddUser) => {
       id: "modal-form-last-name",
       name: "Last name",
       pfComponent: (
-        <InputWithValidation
-          dataCy="modal-textbox-last-name"
+        <TextInput
+          data-cy="modal-textbox-last-name"
           id="modal-form-last-name"
           name="modal-form-last-name"
           value={lastName}
-          onChange={setLastName}
+          onChange={(_event, value: string) => setLastName(value)}
           isRequired
-          rules={[
-            {
-              id: "ruleCharacters",
-              message:
-                "Last name should not contain special characters or spaces",
-              validate: (v: string) => !formatWithoutSpaces.test(v),
-            },
-          ]}
         />
       ),
       fieldRequired: true,
@@ -362,8 +360,9 @@ const AddUser = (props: PropsToAddUser) => {
       sn: lastName,
     };
 
-    if (userLogin !== "") {
-      newUserPayload.uid = userLogin;
+    const effectiveLogin = customLogin || generatedLogin;
+    if (effectiveLogin !== "") {
+      newUserPayload.uid = effectiveLogin;
     }
 
     if (userClass !== "") {
@@ -421,7 +420,7 @@ const AddUser = (props: PropsToAddUser) => {
 
   // Helper method to clean the fields
   const cleanAllFields = () => {
-    setUserLogin("");
+    setCustomLogin("");
     setFirstName("");
     setLastName("");
     setUserClass("");
