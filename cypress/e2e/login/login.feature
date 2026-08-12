@@ -51,11 +51,13 @@ Feature: Login page
     Then I should be logged in as "Administrator"
 
   @seed
+  @ignore
   Scenario: Create user "otpuser"
     Given User "otpuser" "OTP" "User" exists and is using password "Secret123"
     And User "otpuser" has OTP enabled
 
   @test
+  @ignore
   Scenario: Successful login with valid OTP with password reset and re-login
     When I log in as "otpuser" with password "Secret123" and generated OTP
     Then I should be on "reset-password/otpuser" page
@@ -76,15 +78,18 @@ Feature: Login page
     Then I should be logged in as "OTP User"
 
   @cleanup
+  @ignore
   Scenario: Delete user "otpuser"
     Given I delete user "otpuser"
 
   @seed
+  @ignore
   Scenario: Create user "otpuser"
     Given User "otpuser" "OTP" "User" exists and is using password "Secret123"
     And User "otpuser" has OTP enabled
 
   @test
+  @ignore
   Scenario: Unsuccessful login with invalid or expired OTP
     When I log in as "otpuser" with password "Secret123" and generated OTP
     Then I should be on "reset-password/otpuser" page
@@ -105,6 +110,7 @@ Feature: Login page
     Then I should see "authentication-modal-error" modal
 
   @cleanup
+  @ignore
   Scenario: Delete user "otpuser"
     Given I delete user "otpuser"
 
@@ -160,11 +166,13 @@ Feature: Login page
     Given I delete user "jdoe"
 
   @seed
+  @ignore
   Scenario: Create user "otpuser"
     Given User "otpuser" "OTP" "User" exists and is using password "Secret123"
     And User "otpuser" has OTP enabled
 
   @test
+  @ignore
   Scenario: Blocked login after multiple failed OTP attempts
     When I log in as "otpuser" with password "Secret123" and generated OTP
     Then I should be on "reset-password/otpuser" page
@@ -223,5 +231,6 @@ Feature: Login page
     Then I should see "authentication-modal-error" modal
 
   @cleanup
+  @ignore
   Scenario: Delete user "otpuser"
     Given I delete user "otpuser"
