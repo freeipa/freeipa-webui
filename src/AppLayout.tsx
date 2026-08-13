@@ -23,10 +23,6 @@ import {
 } from "@patternfly/react-core";
 import React from "react";
 // Icons
-import { UserIcon } from "@patternfly/react-icons";
-import { KeyIcon } from "@patternfly/react-icons";
-import { CogIcon } from "@patternfly/react-icons";
-import { UnknownIcon } from "@patternfly/react-icons";
 import { ShareSquareIcon } from "@patternfly/react-icons";
 // Navigation
 import Navigation from "./navigation/Nav";
@@ -97,30 +93,6 @@ const AppLayout = (props: PropsToAppLayout) => {
   };
 
   const dropdownItems = [
-    <DropdownItem
-      key="profile"
-      component="button"
-      data-cy="toolbar-button-profile"
-    >
-      <UserIcon /> Profile
-    </DropdownItem>,
-    <DropdownItem
-      key="change-password"
-      component="button"
-      data-cy="toolbar-button-change-password"
-    >
-      <KeyIcon /> Change password
-    </DropdownItem>,
-    <DropdownItem
-      key="customization"
-      component="button"
-      data-cy="toolbar-button-customization"
-    >
-      <CogIcon /> Customization
-    </DropdownItem>,
-    <DropdownItem key="about" component="button" data-cy="toolbar-button-about">
-      <UnknownIcon /> About
-    </DropdownItem>,
     <DropdownItem
       key="logout"
       component="button"
