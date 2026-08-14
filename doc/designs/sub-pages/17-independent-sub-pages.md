@@ -92,6 +92,60 @@ addPrivilegeToRole: build.mutation({
 }),
 ```
 
+## BulkSelectorPrep (Required)
+
+Independent sub-pages **must** include a `BulkSelectorPrep` component to allow
+bulk operations (select page / select all / unselect) on the table. Pass it to
+`MemberOfToolbar` via the `bulkSelector` prop.
+
+This requires tracking selected items as entity objects (not plain strings) so
+`BulkSelectorPrep` can manage them. Derive a `string[]` for `MemberTable`
+compatibility via `useMemo`.
+
+```tsx
+import BulkSelectorPrep from "src/components/BulkSelectorPrep";
+import { getSelectedPerPageData } from "src/utils/selectedPerPage";
+
+// Entity-based selection state
+const [selectedItems, setSelectedItems] = React.useState<ItemType[]>([]);
+
+// Derive string[] for MemberTable
+const selectedNames = useMemo(() => selectedItems.map((i) => i.cn), [selectedItems]);
+
+// Delete button disabled state (managed by BulkSelectorPrep and selection helpers)
+const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] = React.useState(true);
+
+// Update handler for BulkSelectorPrep
+const updateSelected = (items: ItemType[], isSelected: boolean) => {
+  let newSelected: ItemType[];
+  if (isSelected) {
+    const currentNames = new Set(selectedNames);
+    const toAdd = items.filter((item) => !currentNames.has(item.cn));
+    newSelected = [...selectedItems, ...toAdd];
+  } else {
+    const removeNames = new Set(items.map((item) => item.cn));
+    newSelected = selectedItems.filter((p) => !removeNames.has(p.cn));
+  }
+  setSelectedItems(newSelected);
+  setIsDeleteButtonDisabled(newSelected.length === 0);
+};
+
+// Adapter for MemberTable's string-based onCheckItemsChange
+const onCheckItemsChange = (checkedNames: string[]) => {
+  setSelectedItems(checkedNames.map((name) => ({ cn: name })));
+  setIsDeleteButtonDisabled(checkedNames.length === 0);
+};
+
+// BulkSelectorPrep data
+const selectedPerPageData = getSelectedPerPageData(items, selectedNames, (i) => i.cn);
+const bulkSelectorData = {
+  selected: selectedItems,
+  updateSelected,
+  selectableTable: items,
+  nameAttr: "cn",
+};
+```
+
 ## Component Structure
 
 ```tsx
@@ -100,8 +154,27 @@ const <Entity><SubPage> = (props) => {
   
   return (
     <TabLayout id="subpage">
-      <MemberOfToolbar ... />
-      <MemberTable entityList={data} idKey="cn" from="privileges" ... />
+      <MemberOfToolbar
+        bulkSelector={
+          <BulkSelectorPrep
+            list={data}
+            shownElementsList={data}
+            elementData={bulkSelectorData}
+            buttonsData={{ updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled }}
+            selectedPerPageData={selectedPerPageData}
+          />
+        }
+        deleteButtonEnabled={!isDeleteButtonDisabled && isRefreshButtonEnabled}
+        ...
+      />
+      <MemberTable
+        entityList={data}
+        idKey="cn"
+        from="privileges"
+        checkedItems={selectedNames}
+        onCheckItemsChange={onCheckItemsChange}
+        ...
+      />
       <Pagination ... />
       {showAddModal && <MemberOfAddModal ... />}
       {showDeleteModal && <MemberOfDeleteModal ... />}
@@ -119,5 +192,6 @@ const <Entity><SubPage> = (props) => {
 
 ## Reference Implementations
 
+- `src/pages/Privileges/PrivilegesPermissions.tsx` — uses `MemberOfToolbar` with `bulkSelector` prop
 - `src/pages/Roles/RolesPrivileges.tsx`
-- `src/pages/DNSZones/DnsResourceRecords.tsx`
+- `src/pages/DNSZones/DnsResourceRecords.tsx` — uses `ToolbarLayout` with `BulkSelectorPrep` as first item

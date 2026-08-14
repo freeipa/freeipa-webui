@@ -46,6 +46,25 @@ See [00-best-practices.md](sub-pages/00-best-practices.md) for the complete guid
 
 See [03-tabs-component.md](sub-pages/03-tabs-component.md) for Tabs details.
 
+## Bulk Selection (BulkSelectorPrep)
+
+Any sub-page that is **not** Settings, "Is a member of", Members, or ManagedBy
+must include a `BulkSelectorPrep` component in its toolbar to allow bulk
+operations (select page / select all / unselect) on the table.
+
+| Sub-Page Type | BulkSelectorPrep Required? |
+|---------------|---------------------------|
+| **Settings** | No |
+| **Members** | No |
+| **Is a member of** | No |
+| **ManagedBy** | No |
+| **Table tabs** (e.g., DNS Records) | **Yes** — see [05-table-tab.md](sub-pages/05-table-tab.md) |
+| **Independent** (e.g., Privileges) | **Yes** — see [17-independent-sub-pages.md](sub-pages/17-independent-sub-pages.md) |
+
+For independent sub-pages that use `MemberOfToolbar`, pass the `BulkSelectorPrep`
+via the `bulkSelector` prop. For table tabs that use `ToolbarLayout`, add it as
+the first toolbar item.
+
 ## Navigation Bar Highlighting
 
 **Every sub-page** must call `useUpdateRoute`:
