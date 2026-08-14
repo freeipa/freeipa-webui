@@ -19,6 +19,9 @@ import PaginationLayout from "../layouts/PaginationLayout";
 export type MembershipDirection = "direct" | "indirect";
 
 interface MemberOfToolbarProps {
+  // bulk selector (optional, rendered before search)
+  bulkSelector?: React.ReactNode;
+
   // search
   searchPlaceholder: string;
   searchAriaLabel: string;
@@ -56,6 +59,9 @@ const MemberOfToolbar = (props: MemberOfToolbarProps) => {
   return (
     <Toolbar>
       <ToolbarContent>
+        {props.bulkSelector && (
+          <ToolbarItem id="bulk-selector">{props.bulkSelector}</ToolbarItem>
+        )}
         <ToolbarItem id="search-input" gap={{ default: "gapMd" }}>
           <SearchInputLayout
             dataCy="search"

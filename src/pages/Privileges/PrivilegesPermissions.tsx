@@ -11,6 +11,7 @@ import MemberOfAddModal, {
 } from "src/components/MemberOf/MemberOfAddModal";
 import MemberOfDeleteModal from "src/components/MemberOf/MemberOfDeleteModal";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
+import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 // Layouts
 import TabLayout from "src/components/layouts/TabLayout";
 // Redux
@@ -29,6 +30,7 @@ import {
 } from "src/services/rpcPrivileges";
 // Utils
 import { paginate } from "src/utils/utils";
+import { getSelectedPerPageData } from "src/utils/selectedPerPage";
 
 interface PropsToPrivilegesPermissions {
   privilege: Privilege;
@@ -150,9 +152,9 @@ const PrivilegesPermissions = (props: PropsToPrivilegesPermissions) => {
   // Get parameters from URL
   const { page, setPage, perPage, searchValue } = useListPageSearchParams();
 
-  // Other states
-  const [permissionsSelected, setPermissionsSelected] = React.useState<
-    string[]
+  // Selection state (entity-based for BulkSelectorPrep compatibility)
+  const [selectedPermissions, setSelectedPermissions] = React.useState<
+    PermissionItem[]
   >([]);
 
   // Get permission names from privilege (prefer fresh query data, fallback to props)
@@ -188,6 +190,40 @@ const PrivilegesPermissions = (props: PropsToPrivilegesPermissions) => {
     return toLoad.map((name) => ({ cn: name }));
   }, [permissionNames, searchValue, page, perPage]);
 
+  // Derive string[] for MemberTable compatibility
+  const permissionsSelectedNames = useMemo(
+    () => selectedPermissions.map((p) => p.cn),
+    [selectedPermissions]
+  );
+
+  // Delete button disabled state (managed by BulkSelectorPrep and selection helpers)
+  const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
+    React.useState(true);
+
+  // Update selected permissions (used by BulkSelectorPrep and MemberTable)
+  const updateSelectedPermissions = (
+    items: PermissionItem[],
+    isSelected: boolean
+  ) => {
+    let newSelected: PermissionItem[];
+    if (isSelected) {
+      const currentNames = new Set(permissionsSelectedNames);
+      const toAdd = items.filter((item) => !currentNames.has(item.cn));
+      newSelected = [...selectedPermissions, ...toAdd];
+    } else {
+      const removeNames = new Set(items.map((item) => item.cn));
+      newSelected = selectedPermissions.filter((p) => !removeNames.has(p.cn));
+    }
+    setSelectedPermissions(newSelected);
+    setIsDeleteButtonDisabled(newSelected.length === 0);
+  };
+
+  // Adapter for MemberTable's string-based onCheckItemsChange
+  const onCheckItemsChange = (checkedNames: string[]) => {
+    setSelectedPermissions(checkedNames.map((name) => ({ cn: name })));
+    setIsDeleteButtonDisabled(checkedNames.length === 0);
+  };
+
   // Show table rows when we have data (even during background refetches)
   const showTableRows = !privilegeQuery.isFetching;
 
@@ -198,9 +234,23 @@ const PrivilegesPermissions = (props: PropsToPrivilegesPermissions) => {
 
   // Buttons functionality
   const isRefreshButtonEnabled = !privilegeQuery.isFetching;
-  const isDeleteButtonEnabled =
-    permissionsSelected.length > 0 && isRefreshButtonEnabled;
   const isAddButtonEnabled = isRefreshButtonEnabled;
+
+  // BulkSelectorPrep data
+  const selectablePermissionsTable = permissions;
+
+  const selectedPerPageData = getSelectedPerPageData(
+    permissions,
+    permissionsSelectedNames,
+    (perm) => perm.cn
+  );
+
+  const bulkSelectorData = {
+    selected: selectedPermissions,
+    updateSelected: updateSelectedPermissions,
+    selectableTable: selectablePermissionsTable,
+    nameAttr: "cn",
+  };
 
   // API calls
   const [removePermissionFromPrivilege] =
@@ -208,20 +258,24 @@ const PrivilegesPermissions = (props: PropsToPrivilegesPermissions) => {
 
   // Refresh data
   const onRefreshData = () => {
-    setPermissionsSelected([]);
+    setSelectedPermissions([]);
+    setIsDeleteButtonDisabled(true);
     privilegeQuery.refetch();
   };
 
   // Remove permissions from privilege
   const onDeletePermission = () => {
-    if (props.privilege.cn === undefined || permissionsSelected.length === 0) {
+    if (
+      props.privilege.cn === undefined ||
+      permissionsSelectedNames.length === 0
+    ) {
       return;
     }
 
     setSpinning(true);
     removePermissionFromPrivilege({
       privilegeCn: props.privilege.cn,
-      permissions: permissionsSelected,
+      permissions: permissionsSelectedNames,
     })
       .then((response) => {
         if ("data" in response) {
@@ -266,11 +320,22 @@ const PrivilegesPermissions = (props: PropsToPrivilegesPermissions) => {
   return (
     <TabLayout id="permissions">
       <MemberOfToolbar
+        bulkSelector={
+          <BulkSelectorPrep
+            list={permissions}
+            shownElementsList={permissions}
+            elementData={bulkSelectorData}
+            buttonsData={{
+              updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
+            }}
+            selectedPerPageData={selectedPerPageData}
+          />
+        }
         searchPlaceholder="Search permissions"
         searchAriaLabel="Search permissions"
         refreshButtonEnabled={isRefreshButtonEnabled}
         onRefreshButtonClick={onRefreshData}
-        deleteButtonEnabled={isDeleteButtonEnabled}
+        deleteButtonEnabled={!isDeleteButtonDisabled && isRefreshButtonEnabled}
         onDeleteButtonClick={() => setShowDeleteModal(true)}
         addButtonEnabled={isAddButtonEnabled}
         onAddButtonClick={() => setShowAddModal(true)}
@@ -284,8 +349,8 @@ const PrivilegesPermissions = (props: PropsToPrivilegesPermissions) => {
         from="permissions"
         columnNamesToShow={columnNames}
         propertiesToShow={properties}
-        checkedItems={permissionsSelected}
-        onCheckItemsChange={setPermissionsSelected}
+        checkedItems={permissionsSelectedNames}
+        onCheckItemsChange={onCheckItemsChange}
         showTableRows={showTableRows}
       />
       {getFilteredCount() > 0 && (
@@ -315,7 +380,7 @@ const PrivilegesPermissions = (props: PropsToPrivilegesPermissions) => {
       >
         <MemberTable
           entityList={permissions.filter((perm) =>
-            permissionsSelected.includes(perm.cn)
+            permissionsSelectedNames.includes(perm.cn)
           )}
           from="permissions"
           idKey="cn"
