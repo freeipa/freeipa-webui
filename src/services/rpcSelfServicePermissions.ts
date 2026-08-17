@@ -9,6 +9,7 @@ import {
 } from "./rpc";
 import { API_VERSION_BACKUP } from "../utils/utils";
 import { SelfServicePermission } from "../utils/datatypes/globalDataTypes";
+import { apiToSelfServicePermission } from "../utils/selfServicePermissionsUtils";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 /**
@@ -19,6 +20,7 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
  * - selfservice_show: https://freeipa.readthedocs.io/en/latest/api/selfservice_show.html
  * - selfservice_add:  https://freeipa.readthedocs.io/en/latest/api/selfservice_add.html
  * - selfservice_del:  https://freeipa.readthedocs.io/en/latest/api/selfservice_del.html
+ * - selfservice_mod:  https://freeipa.readthedocs.io/en/latest/api/selfservice_mod.html
  */
 
 interface SelfServicePermissionsFullDataPayload {
@@ -143,6 +145,48 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(commands, API_VERSION_BACKUP);
       },
     }),
+
+    getSelfServicePermissionById: build.query<SelfServicePermission[], string>({
+      query: (aciname) => {
+        return getCommand({
+          method: "selfservice_show",
+          params: [[aciname], {}],
+        });
+      },
+      transformResponse: (
+        response: FindRPCResponse
+      ): SelfServicePermission[] => {
+        if (response.result?.result) {
+          return [
+            apiToSelfServicePermission(
+              response.result.result as unknown as Record<string, unknown>
+            ),
+          ];
+        }
+        return [];
+      },
+    }),
+
+    saveSelfServicePermission: build.mutation<
+      FindRPCResponse,
+      Partial<SelfServicePermission>
+    >({
+      query: (permission) => {
+        const params: Record<string, unknown> = {
+          version: API_VERSION_BACKUP,
+        };
+        if (permission.attrs !== undefined) {
+          params.attrs = permission.attrs;
+        }
+        if (permission.permissions !== undefined) {
+          params.permissions = permission.permissions;
+        }
+        return getCommand({
+          method: "selfservice_mod",
+          params: [[permission.aciname], params],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -151,4 +195,6 @@ export const {
   useGetSelfServicePermissionsFullDataQuery,
   useAddSelfServicePermissionMutation,
   useDeleteSelfServicePermissionsMutation,
+  useGetSelfServicePermissionByIdQuery,
+  useSaveSelfServicePermissionMutation,
 } = extendedApi;

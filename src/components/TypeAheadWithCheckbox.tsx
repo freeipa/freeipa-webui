@@ -16,6 +16,8 @@ import { CloseIcon } from "@patternfly/react-icons";
 type CreationProps<T> = {
   // Whenever this property changes, the options will be reset
   onChangeTarget: T;
+  // Applied before matching existing options and when creating a new one
+  transformValue?: (value: string) => string;
 };
 
 type TypeAheadWithCheckboxProps<T> = {
@@ -25,10 +27,14 @@ type TypeAheadWithCheckboxProps<T> = {
   selected: string[];
   setSelected: (selected: string[]) => void;
   creationProps?: CreationProps<T>;
+  isDisabled?: boolean;
 };
 
 const NO_RESULTS = "no results";
 const CREATE_NEW = "create";
+
+const compareOptionsByLabel = (a: SelectOptionProps, b: SelectOptionProps) =>
+  String(a.children).localeCompare(String(b.children));
 
 export const TypeAheadWithCheckbox = <T,>({
   id,
@@ -37,10 +43,12 @@ export const TypeAheadWithCheckbox = <T,>({
   selected,
   setSelected,
   creationProps,
+  isDisabled,
 }: TypeAheadWithCheckboxProps<T>) => {
   // This is to allow mutations to options property
-  const [localOptions, setLocalOptions] =
-    useState<SelectOptionProps[]>(options);
+  const [localOptions, setLocalOptions] = useState<SelectOptionProps[]>(
+    [...options].sort(compareOptionsByLabel)
+  );
   // This one is actually shown, it can contain Create New options and no results
   const [availableOptions, setAvailableOptions] =
     useState<SelectOptionProps[]>(localOptions);
@@ -52,10 +60,12 @@ export const TypeAheadWithCheckbox = <T,>({
 
   const [previousTarget, setPreviousTarget] = useState<T | null>(null);
   const allowCreation = creationProps !== undefined;
+  const transformValue =
+    creationProps?.transformValue ?? ((value: string) => value);
 
   if (allowCreation && previousTarget !== creationProps?.onChangeTarget) {
     setPreviousTarget(creationProps.onChangeTarget);
-    setLocalOptions(options);
+    setLocalOptions([...options].sort(compareOptionsByLabel));
     setInputValue("");
   }
 
@@ -72,11 +82,16 @@ export const TypeAheadWithCheckbox = <T,>({
 
       // If no option matches the filter exactly, display creation option
       if (allowCreation) {
-        if (!localOptions.some((option) => option.value === inputValue)) {
+        const createdValue = transformValue(inputValue);
+        if (
+          !localOptions.some(
+            (option) => transformValue(String(option.value)) === createdValue
+          )
+        ) {
           newSelectOptions = [
             ...newSelectOptions,
             {
-              children: `Create new option "${inputValue}"`,
+              children: `Create new option "${createdValue}"`,
               value: CREATE_NEW,
               "data-cy": `${dataCy}-create-new-option`,
             },
@@ -230,20 +245,31 @@ export const TypeAheadWithCheckbox = <T,>({
   const onSelect = (value: string) => {
     if (value && value !== NO_RESULTS) {
       if (value === CREATE_NEW) {
-        if (!availableOptions.some((item) => item.value === inputValue)) {
-          setLocalOptions([
-            ...localOptions,
-            {
-              value: inputValue,
-              children: inputValue,
-              "data-cy": `${dataCy}-${inputValue}-create-new-option`,
-            },
-          ]);
+        const createdValue = transformValue(inputValue);
+        if (
+          !localOptions.some(
+            (item) => transformValue(String(item.value)) === createdValue
+          )
+        ) {
+          setLocalOptions(
+            [
+              ...localOptions,
+              {
+                value: createdValue,
+                children: createdValue,
+                "data-cy": `${dataCy}-${createdValue}-create-new-option`,
+              },
+            ].sort(compareOptionsByLabel)
+          );
         }
         setSelected(
-          selected.includes(inputValue)
-            ? selected.filter((selection) => selection !== inputValue)
-            : [...selected, inputValue]
+          selected.some(
+            (selection) => transformValue(selection) === createdValue
+          )
+            ? selected.filter(
+                (selection) => transformValue(selection) !== createdValue
+              )
+            : [...selected, createdValue]
         );
         resetActiveAndFocusedItem();
       } else {
@@ -274,6 +300,7 @@ export const TypeAheadWithCheckbox = <T,>({
       innerRef={toggleRef}
       isExpanded={isOpen}
       isFullWidth
+      isDisabled={isDisabled}
     >
       <TextInputGroup isPlain>
         <TextInputGroupMain

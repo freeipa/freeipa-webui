@@ -368,7 +368,10 @@ const AddPermissionModal = (props: PropsToAddModal) => {
           options={generateAttrs(metadataQuery.data, type)}
           selected={attrs}
           setSelected={setAttrs}
-          creationProps={{ onChangeTarget: type }}
+          creationProps={{
+            onChangeTarget: type,
+            transformValue: (value) => value.toLowerCase(),
+          }}
         />
       ),
     },

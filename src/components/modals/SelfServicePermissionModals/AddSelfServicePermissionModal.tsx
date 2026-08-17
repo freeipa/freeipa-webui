@@ -7,119 +7,10 @@ import InputWithValidation from "src/components/layouts/InputWithValidation";
 import type { RuleProps } from "src/components/layouts/InputWithValidation";
 import { TypeAheadWithCheckbox } from "src/components/TypeAheadWithCheckbox";
 import { useAddSelfServicePermissionMutation } from "src/services/rpcSelfServicePermissions";
+import { SELF_SERVICE_ATTR_OPTIONS } from "src/utils/selfServicePermissionsUtils";
 import { useAppDispatch } from "src/store/hooks";
 import { addAlert } from "src/store/Global/alerts-slice";
 import { SerializedError } from "@reduxjs/toolkit";
-
-const SELF_SERVICE_ATTRS = [
-  "audio",
-  "businesscategory",
-  "carlicense",
-  "cn",
-  "departmentnumber",
-  "description",
-  "destinationindicator",
-  "displayname",
-  "employeenumber",
-  "employeetype",
-  "facsimiletelephonenumber",
-  "gecos",
-  "gidnumber",
-  "givenname",
-  "homedirectory",
-  "homephone",
-  "homepostaladdress",
-  "inetuserhttpurl",
-  "inetuserstatus",
-  "initials",
-  "internationalisdnnumber",
-  "ipacertmapdata",
-  "ipaidpconfiglink",
-  "ipaidpsub",
-  "ipakrbauthzdata",
-  "ipanthash",
-  "ipanthomedirectory",
-  "ipanthomedirectorydrive",
-  "ipantlogonscript",
-  "ipantprofilepath",
-  "ipantsecurityidentifier",
-  "ipapasskey",
-  "ipasshpubkey",
-  "ipatokenradiusconfiglink",
-  "ipatokenradiususername",
-  "ipauniqueid",
-  "ipauserauthtype",
-  "jpegphoto",
-  "krballowedtodelegateto",
-  "krbauthindmaxrenewableage",
-  "krbauthindmaxticketlife",
-  "krbcanonicalname",
-  "krbextradata",
-  "krblastadminunlock",
-  "krblastfailedauth",
-  "krblastpwdchange",
-  "krblastsuccessfulauth",
-  "krbloginfailedcount",
-  "krbmaxrenewableage",
-  "krbmaxticketlife",
-  "krbpasswordexpiration",
-  "krbprincipalaliases",
-  "krbprincipalauthind",
-  "krbprincipalexpiration",
-  "krbprincipalkey",
-  "krbprincipalname",
-  "krbprincipaltype",
-  "krbpwdhistory",
-  "krbpwdpolicyreference",
-  "krbticketflags",
-  "krbticketpolicyreference",
-  "krbupenabled",
-  "l",
-  "labeleduri",
-  "loginshell",
-  "mail",
-  "manager",
-  "memberof",
-  "mepmanagedentry",
-  "mobile",
-  "o",
-  "objectclass",
-  "ou",
-  "pager",
-  "photo",
-  "physicaldeliveryofficename",
-  "postaladdress",
-  "postalcode",
-  "postofficebox",
-  "preferreddeliverymethod",
-  "preferredlanguage",
-  "registeredaddress",
-  "roomnumber",
-  "secretary",
-  "seealso",
-  "sn",
-  "st",
-  "street",
-  "telephonenumber",
-  "teletexterminalidentifier",
-  "telexnumber",
-  "title",
-  "uid",
-  "uidnumber",
-  "usercertificate",
-  "userclass",
-  "userpassword",
-  "userpkcs12",
-  "usersmimecertificate",
-  "x121address",
-  "x500uniqueidentifier",
-];
-
-const ATTR_OPTIONS = SELF_SERVICE_ATTRS.map((attr) => ({
-  value: attr,
-  children: attr,
-  "data-cy": `modal-select-attrs-${attr}`,
-}));
 
 interface PropsToAddModal {
   isOpen: boolean;
@@ -248,7 +139,7 @@ const AddSelfServicePermissionModal = (props: PropsToAddModal) => {
         <TypeAheadWithCheckbox
           id="modal-form-attrs"
           dataCy="modal-select-attrs"
-          options={ATTR_OPTIONS}
+          options={SELF_SERVICE_ATTR_OPTIONS}
           selected={selectedAttrs}
           setSelected={setSelectedAttrs}
         />

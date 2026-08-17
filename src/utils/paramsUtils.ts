@@ -13,6 +13,10 @@ export type IpatokenuniqueidParams = {
   ipatokenuniqueid: string;
 };
 
+export type AcinameParams = {
+  aciname: string;
+};
+
 type Params = Record<string, string | undefined>;
 
 export const useSafeParams = <T extends Params>(

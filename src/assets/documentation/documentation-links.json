@@ -210,5 +210,6 @@
     }
   ],
   "roles-settings": [],
-  "privileges-settings": []
+  "privileges-settings": [],
+  "selfservice-permissions-settings": []
 }

@@ -342,7 +342,7 @@ const SelfServicePermissions = () => {
                     hasCheckboxes={true}
                     pathname="selfservice-permissions"
                     showTableRows={!isFetching}
-                    showLink={false}
+                    showLink={true}
                     elementsData={{
                       isElementSelectable: isSelfServicePermissionSelectable,
                       selectedElements: selectedPermissions,
