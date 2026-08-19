@@ -43,18 +43,21 @@ const Add<ChildEntity>Modal = (props: Add<ChildEntity>ModalProps) => {
 
   const onAdd = () => {
     setSpinning(true);
-    add<ChildEntity>({ <parentId>: props.<parentId>, field1 }).then((response) => {
-      if ("data" in response) {
-        if (response.data?.error) {
-          dispatch(addAlert({ name: "add-error", title: response.data.error.message, variant: "danger" }));
-        } else {
-          dispatch(addAlert({ name: "add-success", title: "<ChildEntity> added", variant: "success" }));
-          props.onRefresh();
-          onClose();
+    add<ChildEntity>({ <parentId>: props.<parentId>, field1 })
+      .then((response) => {
+        if ("data" in response) {
+          if (response.data?.error) {
+            dispatch(addAlert({ name: "add-error", title: response.data.error.message, variant: "danger" }));
+          } else {
+            dispatch(addAlert({ name: "add-success", title: "<ChildEntity> added", variant: "success" }));
+            props.onRefresh();
+            onClose();
+          }
         }
-      }
-      setSpinning(false);
-    });
+      })
+      .finally(() => {
+        setSpinning(false);
+      });
   };
 
   const onFormSubmit = (event: React.FormEvent) => {
@@ -149,21 +152,24 @@ const Delete<ChildEntity>Modal = (props: Delete<ChildEntity>ModalProps) => {
     setSpinning(true);
     const idsToDelete = props.elementsToDelete.map((el) => el.<pk>);
     
-    delete<ChildEntities>({ <parentId>: props.<parentId>, ids: idsToDelete }).then((response) => {
-      if ("data" in response) {
-        const data = response.data as BatchRPCResponse;
-        if (data.result) {
-          props.clearSelectedElements();
-          props.updateIsDeleteButtonDisabled(true);
-          dispatch(addAlert({ name: "delete-success", title: "Items deleted", variant: "success" }));
-          props.onRefresh();
-          props.onClose();
+    delete<ChildEntities>({ <parentId>: props.<parentId>, ids: idsToDelete })
+      .then((response) => {
+        if ("data" in response) {
+          const data = response.data as BatchRPCResponse;
+          if (data.result) {
+            props.clearSelectedElements();
+            props.updateIsDeleteButtonDisabled(true);
+            dispatch(addAlert({ name: "delete-success", title: "Items deleted", variant: "success" }));
+            props.onRefresh();
+            props.onClose();
+          }
+        } else if ("error" in response) {
+          dispatch(addAlert({ name: "delete-error", title: "Delete failed", variant: "danger" }));
         }
-      } else if ("error" in response) {
-        dispatch(addAlert({ name: "delete-error", title: "Delete failed", variant: "danger" }));
-      }
-      setSpinning(false);
-    });
+      })
+      .finally(() => {
+        setSpinning(false);
+      });
   };
 
   const modalActions = [

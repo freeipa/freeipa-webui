@@ -97,7 +97,38 @@ When creating membership tabs using `MembershipTable`:
 
 Failing to register types causes TypeScript errors that may surface later.
 
-### 6. Use Absolute Imports
+### 6. Reset UI Flags in `.finally()`, Not Inside `.then()`
+
+When an async command (add, delete, enable, disable, save, etc.) sets a UI flag like `setSpinning(true)` or `setBtnSpinning(true)` before the API call, the reset (`setSpinning(false)`) **must** go in a `.finally()` block — **not** at the end of `.then()`.
+
+This guarantees the flag is reset even when the promise rejects with a network error or an unhandled exception, preventing the UI from staying in a stuck/spinning state.
+
+```tsx
+// ✅ Correct — flag resets regardless of outcome:
+const onAdd = () => {
+  setSpinning(true);
+  addEntity(payload)
+    .then((response) => {
+      // handle success / error from response…
+    })
+    .finally(() => {
+      setSpinning(false);
+    });
+};
+
+// ❌ Wrong — if the promise rejects, setSpinning(false) never runs:
+const onAdd = () => {
+  setSpinning(true);
+  addEntity(payload).then((response) => {
+    // handle success / error…
+    setSpinning(false);
+  });
+};
+```
+
+This rule applies to **every** command operation: add modals, delete modals, enable/disable modals, save handlers, and any other async action that toggles a loading/spinner flag.
+
+### 7. Use Absolute Imports
 
 ```tsx
 // ✅ Correct:
@@ -137,6 +168,7 @@ Fix **all errors** before committing.
 | Missing `documentation-links.json` entry | Runtime crash |
 | Unregistered types in `MembershipTable` | TypeScript errors (may appear later) |
 | Disabled buttons without user approval | Incomplete, unusable component |
+| Spinner/flag reset inside `.then()` instead of `.finally()` | UI stuck in spinning state on network error or rejection |
 | Skipping validation commands | Build failures in CI |
 
 ---
@@ -150,6 +182,7 @@ Before committing any new sub-page:
 - [ ] **Set `showLink={true}`** in main page
 - [ ] **Added documentation-links.json entry** (even if empty array)
 - [ ] **Registered types** if using MembershipTable
+- [ ] **Reset UI flags in `.finally()`** (spinner, button state — never inside `.then()`)
 - [ ] **Used absolute imports** (starting with `src/`)
 - [ ] **Ran validation commands** and fixed all errors
 

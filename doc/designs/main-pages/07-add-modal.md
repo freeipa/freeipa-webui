@@ -68,7 +68,7 @@ if (error) {
 }
 ```
 
-When an error occurs: dispatch a danger alert, reset the spinner, keep the modal open.
+When an error occurs: dispatch a danger alert and keep the modal open. The spinner reset (`setIsAddButtonSpinning(false)`) must always live in a `.finally()` block so it runs regardless of success, error, or rejection. See [Best Practices §6](../sub-pages/00-best-practices.md) for the full rule.
 
 ## Modal Action Buttons
 
@@ -143,11 +143,19 @@ const AddEntityModal = (props: PropsToAddModal) => {
 
   const onAdd = () => {
     setIsAddButtonSpinning(true);
-    addEntity({ cn: entityName, description: description || undefined }).then((response) => {
-      if ("data" in response) {
-        const error = response.data?.error as SerializedError;
-        if (error) {
-          dispatch(addAlert({ name: "add-entity-error", title: error.message, variant: "danger" }));
+    addEntity({ cn: entityName, description: description || undefined })
+      .then((response) => {
+        if ("data" in response) {
+          const error = response.data?.error as SerializedError;
+          if (error) {
+            dispatch(addAlert({ name: "add-entity-error", title: error.message, variant: "danger" }));
+          }
+          if (response.data?.result) {
+            dispatch(addAlert({ name: "add-entity-success", title: "New entity added", variant: "success" }));
+            clearFields();
+            props.onRefresh();
+            props.onClose();
+          }
         }
         if (response.data?.result) {
           dispatch(addAlert({ name: "add-entity-success", title: "New entity added", variant: "success" }));
@@ -155,6 +163,7 @@ const AddEntityModal = (props: PropsToAddModal) => {
           props.onRefresh();
         }
       }
+    }).finally(() => {
       setIsAddButtonSpinning(false);
     });
   };
