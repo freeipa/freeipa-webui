@@ -89,6 +89,28 @@ dispatch(addAlert({
 
 ## RTK Query Issues
 
+### Redundant `useEffect` + `refetch()` on Query Argument Changes
+
+RTK Query automatically re-fetches when its arguments change or when `skip`
+transitions from `true` to `false`. Do **not** wrap these triggers in a manual
+`useEffect` that calls `refetch()` — it duplicates work the hook already does.
+
+```tsx
+// ❌ Wrong: manual refetch is redundant
+const query = useGetPermissionsQuery(searchValue, { skip: !isOpen });
+
+React.useEffect(() => {
+  if (isOpen) {
+    query.refetch();
+  }
+}, [isOpen, searchValue]);
+
+// ✅ Correct: RTK Query handles both triggers automatically
+const query = useGetPermissionsQuery(searchValue, { skip: !isOpen });
+// No useEffect needed — the hook refetches when searchValue changes
+// or when skip goes from true → false.
+```
+
 ### Missing `skip` Option
 
 ```tsx

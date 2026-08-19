@@ -74,6 +74,13 @@ Based on the sub-pages guide, generate a 'Privileges' independent page for 'Role
 
 **Parent entity query:** Must include `all: true` to return data fields.
 
+> **Important:** When passing a search value as the query argument and using
+> `skip` to gate fetching, do **not** add a `useEffect` that calls `refetch()`
+> on those same values. RTK Query automatically re-fetches when its arguments
+> change or when `skip` transitions from `true` to `false`. A manual `refetch()`
+> would duplicate those requests. See [08a-common-issues.md](08a-common-issues.md#redundant-useeffect--refetch-on-query-argument-changes)
+> for the full anti-pattern.
+
 ```typescript
 // Available items query
 getPrivileges: build.query<FindRPCResponse, string>({

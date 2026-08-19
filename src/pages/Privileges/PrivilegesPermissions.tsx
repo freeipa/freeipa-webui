@@ -63,12 +63,6 @@ const PermissionsAddModal = (props: PermissionsAddModalProps) => {
   });
 
   React.useEffect(() => {
-    if (props.showModal) {
-      permissionsQuery.refetch();
-    }
-  }, [props.showModal, adderSearchValue]);
-
-  React.useEffect(() => {
     if (permissionsQuery.data && !permissionsQuery.isFetching) {
       const results = (permissionsQuery.data.result?.result ||
         []) as unknown as Array<{ cn: string[] }>;
