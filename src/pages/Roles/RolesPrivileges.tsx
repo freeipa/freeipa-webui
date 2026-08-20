@@ -270,7 +270,7 @@ const RolesPrivileges = (props: PropsToRolesPrivileges) => {
         onCloseModal={() => setShowAddModal(false)}
         availableItems={availableItems}
         onAdd={onAddPrivilege}
-        onSearchTextChange={setAdderSearchValue}
+        searchProps={{ onSearchTextChange: setAdderSearchValue }}
         title={`Add privileges to role '${props.role.cn}'`}
         ariaLabel="Add privileges to role modal"
         spinning={spinning}

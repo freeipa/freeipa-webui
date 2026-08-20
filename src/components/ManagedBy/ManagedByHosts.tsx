@@ -334,7 +334,7 @@ const ManagedByHosts = (props: ManagedByHostsProps) => {
           onCloseModal={() => setShowAddModal(false)}
           availableItems={availableItems}
           onAdd={onAddHost}
-          onSearchTextChange={setAdderSearchValue}
+          searchProps={{ onSearchTextChange: setAdderSearchValue }}
           title={`Assign hosts to user ${props.id}`}
           ariaLabel="Add user of host modal"
           spinning={spinning}

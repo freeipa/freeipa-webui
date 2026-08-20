@@ -407,7 +407,7 @@ const MembersUserGroups = (props: PropsToMembersUsergroups) => {
           onCloseModal={() => setShowAddModal(false)}
           availableItems={availableItems}
           onAdd={onAddUserGroup}
-          onSearchTextChange={setAdderSearchValue}
+          searchProps={{ onSearchTextChange: setAdderSearchValue }}
           title={"Assign user groups to " + entityType + ": " + props.id}
           ariaLabel={"Add " + entityType + " to user groups modal"}
           spinning={spinning}

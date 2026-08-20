@@ -313,7 +313,7 @@ const ManagersUsers = (props: PropsToManagersUsers) => {
           onCloseModal={() => setShowAddModal(false)}
           availableItems={availableItems}
           onAdd={onAddUser}
-          onSearchTextChange={setAdderSearchValue}
+          searchProps={{ onSearchTextChange: setAdderSearchValue }}
           title={"Assign user member managers to: " + props.id}
           ariaLabel={"Add " + entityType + " to user managers modal"}
           spinning={spinning}

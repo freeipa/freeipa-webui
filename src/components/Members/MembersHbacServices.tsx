@@ -295,7 +295,7 @@ const MembersHBACServices = (props: PropsToMembersHBACServices) => {
         onCloseModal={() => setShowAddModal(false)}
         availableItems={availableItems}
         onAdd={onAddMember}
-        onSearchTextChange={setAdderSearchValue}
+        searchProps={{ onSearchTextChange: setAdderSearchValue }}
         title={"Assign HBAC service members to: " + props.id}
         ariaLabel={"Add mHBAC service members modal"}
         spinning={spinning}

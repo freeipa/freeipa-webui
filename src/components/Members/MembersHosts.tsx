@@ -396,7 +396,7 @@ const MembersHosts = (props: PropsToMembersHosts) => {
           onCloseModal={() => setShowAddModal(false)}
           availableItems={availableItems}
           onAdd={onAddHost}
-          onSearchTextChange={setAdderSearchValue}
+          searchProps={{ onSearchTextChange: setAdderSearchValue }}
           title={"Assign hosts to " + entityType + ": " + props.id}
           ariaLabel={"Add hosts  modal"}
           spinning={spinning}

@@ -410,7 +410,7 @@ const MembersHostGroups = (props: PropsToMembersHostGroups) => {
           onCloseModal={() => setShowAddModal(false)}
           availableItems={availableItems}
           onAdd={onAddHostGroup}
-          onSearchTextChange={setAdderSearchValue}
+          searchProps={{ onSearchTextChange: setAdderSearchValue }}
           title={"Assign host groups to " + entityType + ": " + props.id}
           ariaLabel={"Add host groups modal"}
           spinning={spinning}

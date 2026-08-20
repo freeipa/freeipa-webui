@@ -293,7 +293,7 @@ const MemberOfHbacServices = (props: MemberOfHbacServicesProps) => {
         onCloseModal={() => setShowAddModal(false)}
         availableItems={availableItems}
         onAdd={onAddHbacService}
-        onSearchTextChange={setAdderSearchValue}
+        searchProps={{ onSearchTextChange: setAdderSearchValue }}
         title={`Add '${props.id}' to HBAC service groups`}
         ariaLabel={"Add HBAC service group member modal"}
         spinning={spinning}

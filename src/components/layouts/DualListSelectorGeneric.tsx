@@ -66,9 +66,7 @@ const DualListSelectorGeneric = (props: DualListGenericProps) => {
   };
 
   const onSubmitSearch = (value: string) => {
-    if (props.searchProps) {
-      props.searchProps.onSearchTextChange(value);
-    }
+    props.searchProps?.onSearchTextChange(value);
   };
 
   // callback for moving selected options between lists

@@ -369,7 +369,7 @@ const MembersServices = (props: PropsToMembersServices) => {
           onCloseModal={() => setShowAddModal(false)}
           availableItems={availableItems}
           onAdd={onAddService}
-          onSearchTextChange={setAdderSearchValue}
+          searchProps={{ onSearchTextChange: setAdderSearchValue }}
           title={"Assign services to user group: " + props.id}
           ariaLabel={"Add services to user group"}
           spinning={spinning}

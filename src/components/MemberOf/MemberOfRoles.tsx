@@ -358,7 +358,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
         onCloseModal={() => setShowAddModal(false)}
         availableItems={availableItems}
         onAdd={onAddRole}
-        onSearchTextChange={setAdderSearchValue}
+        searchProps={{ onSearchTextChange: setAdderSearchValue }}
         title={`Add '${props.id}' into roles`}
         ariaLabel={"Add " + entityType + " of role modal"}
         spinning={spinning}

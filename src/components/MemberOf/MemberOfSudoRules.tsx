@@ -347,7 +347,7 @@ const MemberOfSudoRules = (props: MemberOfSudoRulesProps) => {
         onCloseModal={() => setShowAddModal(false)}
         availableItems={availableItems}
         onAdd={onAddSudoRule}
-        onSearchTextChange={setAdderSearchValue}
+        searchProps={{ onSearchTextChange: setAdderSearchValue }}
         title={`Add '${props.id}' into sudo rules`}
         ariaLabel={"Add " + entityType + " of Sudo rule modal"}
         spinning={spinning}

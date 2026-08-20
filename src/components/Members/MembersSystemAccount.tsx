@@ -219,7 +219,7 @@ const MembersSystemAccount = (props: PropsToMembersSystemAccount) => {
           onCloseModal={() => setShowAddModal(false)}
           availableItems={availableItems}
           onAdd={onAddSystemAccount}
-          onSearchTextChange={setAdderSearchValue}
+          searchProps={{ onSearchTextChange: setAdderSearchValue }}
           title={"Assign system accounts to role: " + props.id}
           ariaLabel="Add system account to role modal"
           spinning={spinning}

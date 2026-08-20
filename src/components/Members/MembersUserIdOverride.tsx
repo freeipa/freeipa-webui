@@ -230,7 +230,7 @@ const MembersUserIdOverride = (props: PropsToMembersUserIdOverride) => {
           onCloseModal={() => setShowAddModal(false)}
           availableItems={availableItems}
           onAdd={onAddIdOverrideUser}
-          onSearchTextChange={setAdderSearchValue}
+          searchProps={{ onSearchTextChange: setAdderSearchValue }}
           title={"Assign ID override users to role: " + props.id}
           ariaLabel="Add ID override user to role modal"
           spinning={spinning}

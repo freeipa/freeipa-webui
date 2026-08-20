@@ -281,7 +281,7 @@ const ManagedByUsers = (props: ManagedByUsersProps) => {
           onCloseModal={() => setShowAddModal(false)}
           availableItems={availableItems}
           onAdd={onAddUser}
-          onSearchTextChange={setAdderSearchValue}
+          searchProps={{ onSearchTextChange: setAdderSearchValue }}
           title={`Assign users managing OTP token: ${props.id}`}
           ariaLabel="Add managed by user modal"
           spinning={spinning}

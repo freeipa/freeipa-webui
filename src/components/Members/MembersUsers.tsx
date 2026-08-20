@@ -400,7 +400,7 @@ const MembersUsers = (props: PropsToMembersUsers) => {
           onCloseModal={() => setShowAddModal(false)}
           availableItems={availableItems}
           onAdd={onAddUser}
-          onSearchTextChange={setAdderSearchValue}
+          searchProps={{ onSearchTextChange: setAdderSearchValue }}
           title={"Assign users to " + entityType + ": " + props.id}
           ariaLabel={"Add " + entityType + " of user modal"}
           spinning={spinning}

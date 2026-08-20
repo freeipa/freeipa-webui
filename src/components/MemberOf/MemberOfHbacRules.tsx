@@ -354,7 +354,7 @@ const MemberOfHbacRules = (props: MemberOfHbacRulesProps) => {
         onCloseModal={() => setShowAddModal(false)}
         availableItems={availableItems}
         onAdd={onAddHbacRule}
-        onSearchTextChange={setAdderSearchValue}
+        searchProps={{ onSearchTextChange: setAdderSearchValue }}
         title={`Add '${props.id}' into HBAC rules`}
         ariaLabel={"Add HBAC rule modal"}
         spinning={spinning}

@@ -273,7 +273,7 @@ const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
         onCloseModal={() => setShowAddModal(false)}
         availableItems={availableItems}
         onAdd={onAddMember}
-        onSearchTextChange={setAdderSearchValue}
+        searchProps={{ onSearchTextChange: setAdderSearchValue }}
         title={"Assign sudo command members to: " + props.id}
         ariaLabel={"Add sudo command members modal"}
         spinning={spinning}

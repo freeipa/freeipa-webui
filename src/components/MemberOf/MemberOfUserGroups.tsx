@@ -333,7 +333,7 @@ const MemberOfUserGroups = (props: MemberOfUserGroupsProps) => {
         onCloseModal={() => setShowAddModal(false)}
         availableItems={availableItems}
         onAdd={onAddUserGroup}
-        onSearchTextChange={setAdderSearchValue}
+        searchProps={{ onSearchTextChange: setAdderSearchValue }}
         title={`Assign '${id}' to user groups`}
         ariaLabel="Add entry of user group modal"
         spinning={spinning}

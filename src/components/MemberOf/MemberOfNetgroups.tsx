@@ -376,7 +376,7 @@ const memberOfNetgroups = (props: MemberOfNetgroupsProps) => {
         onCloseModal={() => setShowAddModal(false)}
         availableItems={availableItems}
         onAdd={onAddNetgroup}
-        onSearchTextChange={setAdderSearchValue}
+        searchProps={{ onSearchTextChange: setAdderSearchValue }}
         title={`Add '${props.id}' into netgroups`}
         ariaLabel={"Add " + entityType + " of netgroup modal"}
         spinning={spinning}
