@@ -20,16 +20,19 @@ export interface AvailableItems {
   title: string;
 }
 
+type SearchProps = {
+  onSearchTextChange: (searchText: string) => void;
+};
+
 interface PropsToAdd {
   showModal: boolean;
   onCloseModal: () => void;
   availableItems: AvailableItems[];
   onAdd: (items: AvailableItems[]) => void;
-  onSearchTextChange?: (searchText: string) => void;
   title: string;
   ariaLabel: string;
   spinning: boolean;
-  isSearchable?: boolean;
+  searchProps?: SearchProps;
 }
 
 const MemberOfAddModal = (props: PropsToAdd) => {
@@ -39,7 +42,7 @@ const MemberOfAddModal = (props: PropsToAdd) => {
   // States
   const [availableOptions, setAvailableOptions] = React.useState<
     DualListOption[]
-  >(optionsToDualListOptions(data));
+  >(() => optionsToDualListOptions(data));
   const [chosenOptions, setChosenOptions] = React.useState<DualListOption[]>(
     []
   );
@@ -70,8 +73,7 @@ const MemberOfAddModal = (props: PropsToAdd) => {
           setAvailableOptions={setAvailableOptions}
           chosenOptions={chosenOptions}
           setChosenOptions={setChosenOptions}
-          isSearchable={props.isSearchable}
-          onSearchTextChange={props.onSearchTextChange}
+          searchProps={props.searchProps}
         />
       ),
     },
@@ -84,14 +86,7 @@ const MemberOfAddModal = (props: PropsToAdd) => {
   };
 
   // Buttons are disabled until the user fills the required fields
-  const [buttonDisabled, setButtonDisabled] = React.useState(true);
-  React.useEffect(() => {
-    if (chosenOptions.length > 0) {
-      setButtonDisabled(false);
-    } else {
-      setButtonDisabled(true);
-    }
-  }, [chosenOptions]);
+  const buttonDisabled = chosenOptions.length === 0;
 
   // Add group option
   const onClickAddHandler = () => {

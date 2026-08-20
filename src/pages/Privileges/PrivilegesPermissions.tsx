@@ -125,10 +125,9 @@ const PermissionsAddModal = (props: PermissionsAddModalProps) => {
       onCloseModal={props.onClose}
       availableItems={availableItems}
       onAdd={onAddPermission}
-      onSearchTextChange={setAdderSearchValue}
       title={`Add permissions to privilege '${props.privilegeCn}'`}
       ariaLabel="Add permissions to privilege modal"
-      isSearchable
+      searchProps={{ onSearchTextChange: setAdderSearchValue }}
       spinning={spinning}
     />
   );

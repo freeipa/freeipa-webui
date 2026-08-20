@@ -61,18 +61,23 @@ Kerberos principal alias management.
 
 Dual-pane list selector used inside `MemberOfAddModal` for picking items to add.
 
-**Search behaviour (`isSearchable` + `onSearchTextChange`):**
+**Search behaviour (`searchProps`):**
 
-| `onSearchTextChange` provided? | Filtering mode | `onChange` (keystroke) | `onSearch` (Enter / button) | `onClear` |
+Pass an optional `searchProps` object to show a search input in the available
+pane. Omit it when search is not needed.
+
+| `searchProps` provided? | Search input | `onChange` (keystroke) | `onSearch` (Enter / button) | `onClear` |
 |---|----|----|----|---|
-| **Yes** (server-side search) | Server handles filtering | Updates input text only | Calls `onSearchTextChange` → triggers RTK Query | Resets input + calls `onSearchTextChange("")` |
-| **No** (client-only) | Client-side `isVisible` | Filters local list per-keystroke | — | Resets local filter |
+| **Yes** | Shown | Updates filter text; narrows the displayed list via a memoized `filteredAvailableOptions` list | Calls `searchProps.onSearchTextChange` → triggers RTK Query | Resets filter + calls `searchProps.onSearchTextChange("")` |
+| **No** | Hidden | — | — | — |
 
-> **Important:** When `onSearchTextChange` is connected to an RTK Query (via
-> `adderSearchValue`), `DualListSelectorGeneric` does **not** apply client-side
-> `isVisible` filtering — the server already returns filtered results. The search
-> input only fires the query on **submit** (Enter / search button), not on every
-> keystroke, matching the same pattern as `SearchInputLayout`.
+> **Important:** Visible options are derived from a memoized filter over
+> `availableOptions` (replacing the old per-option `isVisible` flag). When
+> `searchProps.onSearchTextChange` is connected to an RTK Query (via
+> `adderSearchValue`), the server query fires on **submit** (Enter / search
+> button), not on every keystroke — matching the same pattern as
+> `SearchInputLayout`. Keystrokes still narrow the currently loaded options
+> locally until the user submits a new search.
 
 **Props:**
 | Prop | Type | Description |
@@ -85,8 +90,7 @@ Dual-pane list selector used inside `MemberOfAddModal` for picking items to add.
 | `availableOptionsTitle?` | `string` | Left-pane heading |
 | `chosenOptionsTitle?` | `string` | Right-pane heading |
 | `ariaLabel?` | `string` | Accessibility label |
-| `isSearchable?` | `boolean` | Show search input in available pane |
-| `onSearchTextChange?` | `(searchText: string) => void` | Server-side search callback (submit-only) |
+| `searchProps?` | `{ onSearchTextChange: (searchText: string) => void }` | Enables search input; server-side callback on submit/clear |
 
 ---
 

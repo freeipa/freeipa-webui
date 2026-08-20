@@ -18,9 +18,12 @@ import {
 export interface DualListOption {
   text: string;
   selected: boolean;
-  isVisible: boolean;
   dataCy: string;
 }
+
+type SearchProps = {
+  onSearchTextChange: (searchText: string) => void;
+};
 
 interface DualListGenericProps {
   id: string;
@@ -31,8 +34,7 @@ interface DualListGenericProps {
   availableOptionsTitle?: string;
   chosenOptionsTitle?: string;
   ariaLabel?: string;
-  isSearchable?: boolean;
-  onSearchTextChange?: (searchText: string) => void;
+  searchProps?: SearchProps;
 }
 
 // Helper function: Parse data to 'DualListOption'
@@ -42,7 +44,6 @@ export const optionsToDualListOptions = (
   return options.map((option) => ({
     text: option,
     selected: false,
-    isVisible: true,
     dataCy: `item-${option}`,
   }));
 };
@@ -56,38 +57,27 @@ const DualListSelectorGeneric = (props: DualListGenericProps) => {
     setChosenOptions,
   } = props;
 
+  const isSearchable = props.searchProps !== undefined;
+
   const [availableFilter, setAvailableFilter] = React.useState("");
 
   const onInputChange = (value: string) => {
     setAvailableFilter(value);
-    if (!props.onSearchTextChange) {
-      const toFilter = [...availableOptions];
-      toFilter.forEach((option) => {
-        option.isVisible =
-          value === "" ||
-          option.text.toLowerCase().includes(value.toLowerCase());
-      });
-      setAvailableOptions(toFilter);
-    }
   };
 
   const onSubmitSearch = (value: string) => {
-    if (props.onSearchTextChange) {
-      props.onSearchTextChange(value);
+    if (props.searchProps) {
+      props.searchProps.onSearchTextChange(value);
     }
   };
 
   // callback for moving selected options between lists
   const moveSelected = (fromAvailable: boolean) => {
-    const sourceOptions = fromAvailable
-      ? props.availableOptions
-      : chosenOptions;
-    const destinationOptions = fromAvailable
-      ? chosenOptions
-      : props.availableOptions;
+    const sourceOptions = fromAvailable ? availableOptions : chosenOptions;
+    const destinationOptions = fromAvailable ? chosenOptions : availableOptions;
     for (let i = 0; i < sourceOptions.length; i++) {
       const option = sourceOptions[i];
-      if (option.selected && option.isVisible) {
+      if (option.selected) {
         sourceOptions.splice(i, 1);
         destinationOptions.push(option);
         option.selected = false;
@@ -106,13 +96,8 @@ const DualListSelectorGeneric = (props: DualListGenericProps) => {
   // callback for moving all options between lists
   const moveAll = (fromAvailable: boolean) => {
     if (fromAvailable) {
-      setChosenOptions([
-        ...availableOptions.filter((option) => option.isVisible),
-        ...chosenOptions,
-      ]);
-      setAvailableOptions([
-        ...availableOptions.filter((option) => !option.isVisible),
-      ]);
+      setChosenOptions([...availableOptions, ...chosenOptions]);
+      setAvailableOptions([]);
     } else {
       setAvailableOptions([...chosenOptions, ...availableOptions]);
       setChosenOptions([]);
@@ -144,11 +129,11 @@ const DualListSelectorGeneric = (props: DualListGenericProps) => {
     >
       <DualListSelectorPane
         title={props.availableOptionsTitle || "Available options"}
-        status={`${availableOptions.filter((option) => option.selected && option.isVisible).length} of ${
-          availableOptions.filter((option) => option.isVisible).length
+        status={`${availableOptions.filter((option) => option.selected).length} of ${
+          availableOptions.length
         } options selected`}
         searchInput={
-          props.isSearchable ? (
+          isSearchable ? (
             <SearchInput
               value={availableFilter}
               onChange={(_event, value) => onInputChange(value)}
@@ -165,37 +150,29 @@ const DualListSelectorGeneric = (props: DualListGenericProps) => {
         data-cy="dual-list-left"
       >
         <DualListSelectorList>
-          {availableOptions.map((option, index) =>
-            option.isVisible ? (
-              <DualListSelectorListItem
-                key={index}
-                isSelected={option.selected}
-                id={`basic-available-option-${index}`}
-                onOptionSelect={(e) => onOptionSelect(e, index, false)}
-                data-cy={option.dataCy}
-              >
-                {option.text}
-              </DualListSelectorListItem>
-            ) : null
-          )}
+          {availableOptions.map((option, index) => (
+            <DualListSelectorListItem
+              key={index}
+              isSelected={option.selected}
+              id={`basic-available-option-${index}`}
+              onOptionSelect={(e) => onOptionSelect(e, index, false)}
+              data-cy={option.dataCy}
+            >
+              {option.text}
+            </DualListSelectorListItem>
+          ))}
         </DualListSelectorList>
       </DualListSelectorPane>
       <DualListSelectorControlsWrapper>
         <DualListSelectorControl
-          isDisabled={
-            !availableOptions.some(
-              (option) => option.selected && option.isVisible
-            )
-          }
+          isDisabled={!availableOptions.some((option) => option.selected)}
           onClick={() => moveSelected(true)}
           aria-label="Add selected"
           data-cy="dual-list-add-selected"
           icon={<AngleRightIcon />}
         />
         <DualListSelectorControl
-          isDisabled={
-            availableOptions.filter((option) => option.isVisible).length === 0
-          }
+          isDisabled={availableOptions.length === 0}
           onClick={() => moveAll(true)}
           aria-label="Add all"
           data-cy="dual-list-add-all"
