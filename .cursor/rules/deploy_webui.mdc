@@ -1,0 +1,13 @@
+# Project Automation Rules
+
+You have access to local automation scripts to manage the FreeIPA WebUI development environment.
+
+## Tool 1: WebUI Deployment
+- **When to use it:** Whenever the user asks to spin up, deploy, or install the FreeIPA WebUI environment.
+- **How to use it:** Execute `./deploy_webui.sh <scenario>` in the integrated terminal. (Default scenario: `single-server`).
+- **Important Note:** This script is interactive. If an environment already exists, it will pause and prompt the user with "Do you want to set a new environment?". **Do not try to answer this prompt automatically**; let the human user type 'y' or 'n' in the terminal.
+
+## Tool 2: WebUI Cleanup / Teardown
+- **When to use it:** Whenever the user asks to destroy, clean, or teardown the current FreeIPA WebUI containers.
+- **Normal Cleanup:** Execute `./clean_webui.sh` for standard container removal.
+- **Deep Cleanup:** Execute `./clean_webui.sh --deep` ONLY when the user explicitly asks for a full system reset, or if a standard clean didn't fix corrupted Podman images/storage.
