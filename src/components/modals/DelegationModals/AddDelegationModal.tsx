@@ -252,6 +252,19 @@ const AddDelegationModal = (props: PropsToAddModal) => {
       fieldRequired: true,
     },
     {
+      id: "modal-form-group",
+      name: "Member user group",
+      pfComponent: (
+        <TypeAheadSelectWithCreate
+          id="modal-form-group"
+          options={groupOptions}
+          selected={group}
+          onSelectedChange={setGroup}
+        />
+      ),
+      fieldRequired: true,
+    },
+    {
       id: "modal-form-attrs",
       name: "Attributes",
       pfComponent: (
