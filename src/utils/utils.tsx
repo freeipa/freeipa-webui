@@ -1,6 +1,7 @@
 import React from "react";
 // Data type
 import {
+  Delegation,
   DN,
   HBACRule,
   HBACService,
@@ -257,6 +258,9 @@ export const isSelinuxUserMapSelectable = (map: SELinuxUserMap) =>
 export const isSelfServicePermissionSelectable = (
   perm: SelfServicePermission
 ) => perm.aciname !== "";
+
+export const isDelegationSelectable = (delegation: Delegation) =>
+  delegation.aciname !== "";
 
 /**
  * Write JSX error messages into 'apiErrorsJsx' array

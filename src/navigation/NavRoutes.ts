@@ -74,6 +74,7 @@ const RbacGroupRef = "rbac";
 const PrivilegesGroupRef = "privileges";
 const PermissionsGroupRef = "permissions";
 const SelfServicePermissionsGroupRef = "selfservice-permissions";
+const DelegationsGroupRef = "delegations";
 // - Configuration
 const ConfigRef = "configuration";
 
@@ -459,6 +460,13 @@ export const getNavigationRoutes = (
               group: SelfServicePermissionsGroupRef,
               title: `${BASE_TITLE} - Self service permissions`,
               path: "selfservice-permissions",
+              items: [],
+            },
+            {
+              label: "Delegations",
+              group: DelegationsGroupRef,
+              title: `${BASE_TITLE} - Delegations`,
+              path: "delegations",
               items: [],
             },
           ],
