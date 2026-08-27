@@ -7,6 +7,7 @@ import {
   BatchRPCResponse,
   FindRPCResponse,
 } from "./rpc";
+import { apiToDelegation } from "src/utils/delegationsUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
 import { Delegation } from "../utils/datatypes/globalDataTypes";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -19,6 +20,7 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
  * - delegation_show: https://freeipa.readthedocs.io/en/latest/api/delegation_show.html
  * - delegation_add:  https://freeipa.readthedocs.io/en/latest/api/delegation_add.html
  * - delegation_del:  https://freeipa.readthedocs.io/en/latest/api/delegation_del.html
+ * - delegation_mod:  https://freeipa.readthedocs.io/en/latest/api/delegation_mod.html
  */
 
 interface DelegationsFullDataPayload {
@@ -135,6 +137,50 @@ const extendedApi = api.injectEndpoints({
       },
     }),
 
+    getDelegationById: build.query<Delegation, string>({
+      query: (aciname) =>
+        getCommand({
+          method: "delegation_show",
+          params: [
+            [aciname],
+            {
+              all: true,
+              version: API_VERSION_BACKUP,
+            },
+          ],
+        }),
+      transformResponse: (response: FindRPCResponse): Delegation => {
+        return apiToDelegation(response.result?.result ?? {});
+      },
+    }),
+
+    delegationMod: build.mutation<FindRPCResponse, Partial<Delegation>>({
+      query: (delegation) => {
+        const params: Record<string, unknown> = {
+          version: API_VERSION_BACKUP,
+        };
+
+        if (delegation.permissions !== undefined) {
+          params.permissions = delegation.permissions;
+        }
+        if (delegation.attrs !== undefined) {
+          params.attrs = delegation.attrs;
+        }
+        if (delegation.memberof !== undefined) {
+          params.memberof =
+            delegation.memberof === "" ? [] : delegation.memberof;
+        }
+        if (delegation.group !== undefined) {
+          params.group = delegation.group === "" ? [] : delegation.group;
+        }
+
+        return getCommand({
+          method: "delegation_mod",
+          params: [[delegation.aciname], params],
+        });
+      },
+    }),
+
     deleteDelegations: build.mutation<BatchRPCResponse, Delegation[]>({
       query: (delegations) => {
         const commands: Command[] = delegations.map((del) => ({
@@ -151,5 +197,7 @@ const extendedApi = api.injectEndpoints({
 export const {
   useGetDelegationsFullDataQuery,
   useAddDelegationMutation,
+  useGetDelegationByIdQuery,
+  useDelegationModMutation,
   useDeleteDelegationsMutation,
 } = extendedApi;

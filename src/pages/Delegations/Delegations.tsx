@@ -336,7 +336,7 @@ const Delegations = () => {
                     hasCheckboxes={true}
                     pathname="delegations"
                     showTableRows={!isBatchFetching}
-                    showLink={false}
+                    showLink={true}
                     elementsData={{
                       isElementSelectable: isDelegationSelectable,
                       selectedElements: selectedDelegations,

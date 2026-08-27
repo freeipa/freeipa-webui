@@ -85,6 +85,7 @@ import SelfServicePermissions from "src/pages/SelfServicePermissions/SelfService
 import SelfServicePermissionsTabs from "src/pages/SelfServicePermissions/SelfServicePermissionsTabs";
 import { AppLayout } from "src/AppLayout";
 import Delegations from "src/pages/Delegations/Delegations";
+import DelegationsTabs from "src/pages/Delegations/DelegationsTabs";
 
 // Renders routes (React)
 export const AppRoutes = (): React.ReactElement => {
@@ -616,6 +617,12 @@ export const AppRoutes = (): React.ReactElement => {
             </Route>
             <Route path="delegations">
               <Route path="" element={<Delegations />} />
+              <Route path=":aciname">
+                <Route
+                  path=""
+                  element={<DelegationsTabs section="settings" />}
+                />
+              </Route>
             </Route>
             <Route path="configuration" element={<Configuration />} />
             {/* Redirect to Active users page if user is logged in and navigates to the root page */}
