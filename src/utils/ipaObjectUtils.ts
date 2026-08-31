@@ -12,7 +12,6 @@ export interface IPAParamDefinition {
   objectName: string;
   metadata: Metadata;
   propertyName?: string;
-  alwaysWritable?: boolean;
   readOnly?: boolean;
   required?: boolean;
   ariaLabel?: string;
@@ -60,12 +59,8 @@ function isFieldWritable(acis: Record<string, string>, attr: string): boolean {
 
 export function isWritable(
   paramMetadata: ParamMetadata,
-  ipaObject?: IPAObject,
-  alwaysWritable?: boolean
+  ipaObject?: IPAObject
 ): boolean {
-  if (alwaysWritable) {
-    return true;
-  }
   if (paramMetadata.primary_key) {
     return false;
   }
@@ -135,11 +130,7 @@ export function getParamProperties(
       paramMetadata: {} as ParamMetadata,
     };
   }
-  const writable = isWritable(
-    paramMetadata,
-    parDef.ipaObject,
-    parDef.alwaysWritable
-  );
+  const writable = isWritable(paramMetadata, parDef.ipaObject);
   const required = isRequired(parDef, paramMetadata, writable);
   const readOnly = parDef.readOnly === undefined ? !writable : parDef.readOnly;
   const value = getValue(parDef.ipaObject, propName);
