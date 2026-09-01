@@ -9,6 +9,7 @@ import {
 import { vi, describe, it, expect, afterEach } from "vitest";
 // Component
 import IpaTypeAheadWithCheckbox from "./IpaTypeAheadWithCheckbox";
+import { createMetadata } from "src/services/types/metadata";
 
 vi.mock("src/utils/ipaObjectUtils", async () => ({
   ...(await vi.importActual("src/utils/ipaObjectUtils.ts")),
@@ -17,16 +18,18 @@ vi.mock("src/utils/ipaObjectUtils", async () => ({
 describe("IpaTypeAheadWithCheckbox Component", () => {
   const mockOnChange = vi.fn();
 
-  const mockMetadata = {
+  const mockMetadata = createMetadata({
     objects: {
       selfservice: {
         name: "selfservice",
+        methods: [],
+        primary_key: "aciname",
         takes_params: [
           {
             alwaysask: false,
             attribute: true,
             autofill: false,
-            class: "String",
+            class: "Str",
             cli_metavar: "ATTRS",
             cli_name: "attrs",
             confirm: false,
@@ -46,12 +49,14 @@ describe("IpaTypeAheadWithCheckbox Component", () => {
             query: false,
             required: false,
             sortorder: 1,
-            type: "string",
+            type: "str",
           },
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   const mockOptions = [
     { value: "cn", children: "cn", "data-cy": "attrs-cn" },
@@ -228,14 +233,18 @@ describe("IpaTypeAheadWithCheckbox Component", () => {
   });
 
   it("renders as read-only when metadata indicates non-writable", () => {
-    const readOnlyMetadata = {
+    const readOnlyMetadata = createMetadata({
       objects: {
         selfservice: {
           name: "selfservice",
+          methods: [],
+          primary_key: "aciname",
           takes_params: [],
         },
       },
-    };
+      methods: {},
+      commands: {},
+    });
 
     const readOnlyProps = {
       ...defaultProps,

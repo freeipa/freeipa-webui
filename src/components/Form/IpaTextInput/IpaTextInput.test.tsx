@@ -9,20 +9,23 @@ import {
 import { describe, vi, afterEach, it, expect } from "vitest";
 // Component
 import IpaTextInput, { IpaTextInputProps } from "./IpaTextInput";
+import { createMetadata } from "src/services/types/metadata";
 
 describe("IpaTextInput Component", () => {
   const mockOnChange = vi.fn();
 
-  const mockMetadata = {
+  const mockMetadata = createMetadata({
     objects: {
       user: {
         name: "user",
+        methods: [],
+        primary_key: "uid",
         takes_params: [
           {
             alwaysask: false,
             attribute: true,
             autofill: false,
-            class: "String",
+            class: "Str",
             cli_metavar: "CUSTOMIPATEXTINPUT",
             cli_name: "customipatextinput",
             confirm: false,
@@ -42,12 +45,14 @@ describe("IpaTextInput Component", () => {
             query: false,
             required: false,
             sortorder: 1,
-            type: "string",
+            type: "str",
           },
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   const mockIpaObject = {
     attributelevelrights: {},

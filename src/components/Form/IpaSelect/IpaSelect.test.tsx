@@ -9,6 +9,7 @@ import {
 import { vi, describe, it, expect, afterEach } from "vitest";
 // Component
 import IpaSelect, { IPAParamDefinitionSelect } from "./IpaSelect";
+import { createMetadata } from "src/services/types/metadata";
 
 // Mock of util function: updateIpaObject
 vi.mock("src/utils/ipaObjectUtils", async () => ({
@@ -22,16 +23,18 @@ vi.mock("src/utils/ipaObjectUtils", async () => ({
 describe("IpaSelect Component", () => {
   const mockOnChange = vi.fn();
 
-  const mockMetadata = {
+  const mockMetadata = createMetadata({
     objects: {
       user: {
         name: "user",
+        methods: [],
+        primary_key: "uid",
         takes_params: [
           {
             alwaysask: false,
             attribute: true,
             autofill: false,
-            class: "String",
+            class: "Str",
             cli_metavar: "CUSTOMIPASELECT",
             cli_name: "customipaselect",
             confirm: false,
@@ -51,12 +54,14 @@ describe("IpaSelect Component", () => {
             query: false,
             required: false,
             sortorder: 1,
-            type: "string",
+            type: "str",
           },
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   const defaultProps: IPAParamDefinitionSelect = {
     dataCy: "ipa-select",

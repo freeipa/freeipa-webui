@@ -9,6 +9,7 @@ import {
 import { describe, afterEach, it, expect, vi } from "vitest";
 // Component
 import IpaTextArea, { IpaTextAreaProps } from "./IpaTextArea";
+import { createMetadata } from "src/services/types/metadata";
 
 describe("IpaTextArea Component", () => {
   const mockOnChange = vi.fn();
@@ -49,16 +50,18 @@ describe("IpaTextArea Component", () => {
     objectclass: [],
   };
 
-  const mockMetadata = {
+  const mockMetadata = createMetadata({
     objects: {
       group: {
         name: "group",
+        methods: [],
+        primary_key: "cn",
         takes_params: [
           {
             alwaysask: false,
             attribute: true,
             autofill: false,
-            class: "String",
+            class: "Str",
             cli_metavar: "CUSTOMIPATEXTAREA",
             cli_name: "customipatextarea",
             confirm: false,
@@ -78,12 +81,14 @@ describe("IpaTextArea Component", () => {
             query: false,
             required: false,
             sortorder: 1,
-            type: "string",
+            type: "str",
           },
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   const defaultProps: IpaTextAreaProps = {
     dataCy: "ipa-text-area",
