@@ -7,6 +7,7 @@ import IpaCertificateMappingData, {
 } from "./IpaCertificateMappingData";
 // Redux
 import { renderWithAlerts } from "src/utils/testUtils";
+import { createMetadata } from "src/services/types/metadata";
 
 interface MockReturn {
   data:
@@ -40,10 +41,12 @@ describe("IpaCertificateMappingData", () => {
     console.log("mockOnRefresh called");
   });
 
-  const mockMetadata = {
+  const mockMetadata = createMetadata({
     objects: {
       user: {
         name: "user",
+        methods: [],
+        primary_key: "uid",
         takes_params: [
           {
             alwaysask: false,
@@ -74,7 +77,9 @@ describe("IpaCertificateMappingData", () => {
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   const defaultProps: PropsToIpaCertificateMappingData = {
     ipaObject: {},

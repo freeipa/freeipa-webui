@@ -11,6 +11,7 @@ import {
 import { parseDn } from "src/utils/utils";
 // Redux
 import { renderWithAlerts } from "src/utils/testUtils";
+import { createMetadata } from "src/services/types/metadata";
 
 interface MockReturn {
   data: { result: boolean } | { error: { message: string } };
@@ -72,10 +73,12 @@ describe("IpaCertificates Component", () => {
   const mockOnChange = vi.fn();
   const mockOnRefresh = vi.fn();
 
-  const mockMetadata = {
+  const mockMetadata = createMetadata({
     objects: {
       host: {
         name: "host",
+        methods: [],
+        primary_key: "fqdn",
         takes_params: [
           {
             alwaysask: false,
@@ -90,13 +93,9 @@ describe("IpaCertificates Component", () => {
             doc: "Base-64 encoded host certificate",
             flags: [],
             label: "Certificate",
-            maxlength: 255,
             multivalue: true,
             name: "usercertificate",
             no_convert: false,
-            noextrawhitespace: true,
-            pattern_errmsg: "",
-            pattern: "",
             primary_key: false,
             query: false,
             required: false,
@@ -106,7 +105,9 @@ describe("IpaCertificates Component", () => {
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   const mockCertificate: Certificate = {
     serial_number: "722856757516404880666860043356108376880111652886",
