@@ -5,6 +5,7 @@ import { vi, describe, afterEach, it, expect } from "vitest";
 import IpaCheckboxes, { IPAParamDefinitionCheckboxes } from "./IpaCheckboxes";
 // Utils
 import { updateCheckboxList } from "src/utils/ipaObjectUtils";
+import { createMetadata } from "src/services/types/metadata";
 
 // Mock of util function: updateIpaObject
 vi.mock("src/utils/ipaObjectUtils", async () => ({
@@ -18,10 +19,12 @@ describe("IpaCheckboxes Component", () => {
     console.log("mockOnChange called with:", ipaObject);
   });
 
-  const mockMetadata = {
+  const mockMetadata = createMetadata({
     objects: {
       user: {
         name: "user",
+        methods: [],
+        primary_key: "uid",
         takes_params: [
           {
             alwaysask: false,
@@ -37,13 +40,9 @@ describe("IpaCheckboxes Component", () => {
             doc: "Types of supported user authentication",
             flags: [],
             label: "User authentication types",
-            maxlength: 255,
             multivalue: false,
             name: "ipauserauthtype2",
             no_convert: false,
-            noextrawhitespace: true,
-            pattern_errmsg: "",
-            pattern: "",
             primary_key: false,
             query: false,
             required: false,
@@ -58,12 +57,13 @@ describe("IpaCheckboxes Component", () => {
               "idp",
               "passkey",
             ],
-            writable: true,
           },
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   const defaultProps: IPAParamDefinitionCheckboxes = {
     dataCy: "ipa-checkboxes",
