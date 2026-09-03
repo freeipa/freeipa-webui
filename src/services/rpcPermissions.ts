@@ -8,6 +8,7 @@ import {
 } from "./rpc";
 import { API_VERSION_BACKUP } from "../utils/utils";
 import { Permission, cnType } from "../utils/datatypes/globalDataTypes";
+import { apiToPermission } from "../utils/permissionsUtils";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 /**
@@ -18,7 +19,21 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
  * - permission_show: https://freeipa.readthedocs.io/en/latest/api/permission_show.html
  * - permission_add: https://freeipa.readthedocs.io/en/latest/api/permission_add.html
  * - permission_del: https://freeipa.readthedocs.io/en/latest/api/permission_del.html
+ * - permission_mod: https://freeipa.readthedocs.io/en/latest/api/permission_mod.html
  */
+
+export interface PermissionModPayload {
+  cn: string;
+  ipapermright?: string[];
+  attrs?: string[];
+  ipapermbindruletype?: string;
+  ipapermlocation?: string;
+  extratargetfilter?: string[];
+  ipapermtarget?: string;
+  memberof?: string[];
+  type?: string;
+  targetgroup?: string;
+}
 
 interface PermissionAddPayload {
   cn: string;
@@ -151,6 +166,65 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(commands, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Get a single permission by cn via `permission_show`
+     * @param {string} cn - Permission name
+     * @returns {Permission[]} - Permission data
+     */
+    getPermissionById: build.query<Permission[], string>({
+      query: (cn) => {
+        return getCommand({
+          method: "permission_show",
+          params: [[cn], { all: true, rights: true }],
+        });
+      },
+      transformResponse: (response: FindRPCResponse): Permission[] => {
+        if (response.result?.result) {
+          return [
+            apiToPermission(
+              response.result.result as unknown as Record<string, unknown>
+            ),
+          ];
+        }
+        return [];
+      },
+    }),
+    /**
+     * Modify an existing permission via `permission_mod`
+     * @param {PermissionModPayload} payload - Permission data to modify
+     * @returns {FindRPCResponse} - Response from API
+     */
+    savePermission: build.mutation<FindRPCResponse, PermissionModPayload>({
+      query: (payload) => {
+        const params: Record<string, unknown> = {
+          version: API_VERSION_BACKUP,
+        };
+
+        const optionalKeys: Array<keyof Omit<PermissionModPayload, "cn">> = [
+          "ipapermright",
+          "attrs",
+          "ipapermbindruletype",
+          "ipapermlocation",
+          "extratargetfilter",
+          "ipapermtarget",
+          "memberof",
+          "type",
+          "targetgroup",
+        ];
+
+        optionalKeys.forEach((key) => {
+          const value = payload[key];
+          if (value !== undefined) {
+            params[key] = value;
+          }
+        });
+
+        return getCommand({
+          method: "permission_mod",
+          params: [[payload.cn], params],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -159,4 +233,6 @@ export const {
   useGetPermissionsFullDataQuery,
   useAddPermissionMutation,
   useDeletePermissionsMutation,
+  useGetPermissionByIdQuery,
+  useSavePermissionMutation,
 } = extendedApi;

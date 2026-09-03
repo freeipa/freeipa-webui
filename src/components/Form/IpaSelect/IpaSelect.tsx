@@ -14,6 +14,8 @@ import {
 } from "src/utils/ipaObjectUtils";
 import { updateIpaObject } from "src/utils/ipaObjectUtils";
 import { NO_SELECTION_OPTION } from "src/utils/constUtils";
+// CSS
+import "./IpaSelect.css";
 
 export interface IPAParamDefinitionSelect extends IPAParamDefinition {
   dataCy: string;
@@ -29,6 +31,7 @@ export interface IPAParamDefinitionSelect extends IPAParamDefinition {
   options: string[];
   ariaLabelledBy?: string;
   defaultValue?: string; // Custom default value (otherwise, NO_SELECTION_OPTION will be used)
+  maxHeight?: string;
 }
 
 const IpaSelect = (props: IPAParamDefinitionSelect) => {
@@ -134,9 +137,12 @@ const IpaSelect = (props: IPAParamDefinitionSelect) => {
       onSelect={onSelect}
       selected={valueSelected}
       isOpen={isOpen}
+      isScrollable
       aria-labelledby={props.ariaLabelledBy || props.id}
     >
-      <SelectList>
+      <SelectList
+        className={props.maxHeight ? "ipa-select-list--scrollable" : undefined}
+      >
         {optionsToSelect.map((option, index) => {
           return (
             <SelectOption
