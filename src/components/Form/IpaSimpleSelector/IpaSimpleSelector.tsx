@@ -17,7 +17,7 @@ import { SelectOptionProps } from "src/components/layouts/SimpleSelector";
 
 export interface IPAParamDefinitionSimpleSelector extends IPAParamDefinition {
   dataCy: string;
-  id?: string;
+  id: string;
   options: SelectOptionProps[];
   returnedProperty?: keyof SelectOptionProps;
   noOptionsMessage?: string;
@@ -25,35 +25,22 @@ export interface IPAParamDefinitionSimpleSelector extends IPAParamDefinition {
 
 const IpaSimpleSelector = (props: IPAParamDefinitionSimpleSelector) => {
   const { readOnly, value, onChange } = getParamProperties(props);
-  const id = props.id || props.name;
+  const id = props.id;
   const returnedProperty = props.returnedProperty ?? "value";
   const currentValue = convertToString(value);
 
-  const getDisplayValue = (raw: string) => {
-    const match = props.options.find(
-      (option) => option[returnedProperty] === raw || option.value === raw
-    );
-    return match?.value ?? raw;
-  };
-
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [selected, setSelected] = React.useState<string>(
-    getDisplayValue(currentValue)
-  );
-
-  React.useEffect(() => {
+  const selected = React.useMemo(() => {
     const match = props.options.find(
       (option) =>
         option[returnedProperty] === currentValue ||
         option.value === currentValue
     );
-    setSelected(match?.value ?? currentValue);
+    return match?.value ?? currentValue;
   }, [currentValue, props.options, returnedProperty]);
 
+  const [isOpen, setIsOpen] = React.useState(false);
+
   const onToggleClick = () => {
-    if (readOnly) {
-      return;
-    }
     setIsOpen(!isOpen);
   };
 
@@ -62,7 +49,6 @@ const IpaSimpleSelector = (props: IPAParamDefinitionSimpleSelector) => {
     option: SelectOptionProps
   ) => {
     onChange(option[returnedProperty]);
-    setSelected(option.value);
     setIsOpen(false);
   };
 
@@ -71,9 +57,7 @@ const IpaSimpleSelector = (props: IPAParamDefinitionSimpleSelector) => {
       data-cy={props.dataCy + "-select-toggle"}
       id={id}
       ref={toggleRef}
-      aria-label={
-        props.ariaLabel ? props.ariaLabel : "Basic selector menu toggle"
-      }
+      aria-label={props.ariaLabel ?? "Basic selector menu toggle"}
       onClick={onToggleClick}
       isExpanded={isOpen}
       isDisabled={readOnly}

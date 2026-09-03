@@ -175,10 +175,10 @@ describe("IpaCheckboxes Component", () => {
   });
 
   it("renders checkboxes in a grid when withGrid is true", () => {
-    const { container } = render(<IpaCheckboxes {...defaultProps} withGrid />);
+    render(<IpaCheckboxes {...defaultProps} withGrid />);
 
-    expect(container.querySelector(".pf-v6-l-grid")).toBeInTheDocument();
-    expect(container.querySelectorAll(".pf-v6-l-grid__item")).toHaveLength(
+    expect(screen.getByTestId("ipa-checkboxes-grid")).toBeInTheDocument();
+    expect(screen.getAllByTestId("ipa-checkboxes-grid-item")).toHaveLength(
       defaultProps.options.length
     );
     expect(screen.getAllByLabelText("ipauserauthtype2")).toHaveLength(

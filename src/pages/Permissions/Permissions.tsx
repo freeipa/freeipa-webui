@@ -334,7 +334,7 @@ const Permissions = () => {
                     hasCheckboxes={true}
                     pathname="permissions"
                     showTableRows={!isFetching}
-                    showLink={false}
+                    showLink={true}
                     elementsData={{
                       isElementSelectable: isPermissionSelectable,
                       selectedElements: selectedPermissions,

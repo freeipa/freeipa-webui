@@ -1,0 +1,339 @@
+import React, { useMemo, useState } from "react";
+import { Button, Flex, Form, FormGroup } from "@patternfly/react-core";
+import IpaTextInput from "src/components/Form/IpaTextInput";
+import IpaSelect from "src/components/Form/IpaSelect";
+import IpaCheckboxes from "src/components/Form/IpaCheckboxes";
+import IpaSimpleSelector from "src/components/Form/IpaSimpleSelector";
+import IpaTextboxList from "src/components/Form/IpaTextboxList";
+import IpaTypeAheadWithCheckbox from "src/components/Form/IpaTypeAheadWithCheckbox";
+import TitleLayout from "src/components/layouts/TitleLayout";
+import TabLayout from "src/components/layouts/TabLayout";
+import SidebarLayout from "src/components/layouts/SidebarLayout";
+import {
+  asRecord,
+  BIND_RULE_OPTIONS,
+  FILTERED_OBJECTS,
+  generateRights,
+} from "src/utils/permissionsUtils";
+import { useAppDispatch } from "src/store/hooks";
+import { addAlert } from "src/store/Global/alerts-slice";
+import useUpdateRoute from "src/hooks/useUpdateRoute";
+import { Permission, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { ErrorResult } from "src/services/rpc";
+import {
+  useSavePermissionMutation,
+  PermissionModPayload,
+} from "src/services/rpcPermissions";
+import { useFindGroupsQuery } from "src/services/rpcUserGroups";
+
+interface PropsToSettings {
+  permission: Partial<Permission>;
+  originalPermission: Partial<Permission>;
+  metadata: Metadata;
+  onPermissionChange: (permission: Partial<Permission>) => void;
+  onRefresh: () => void;
+  isModified: boolean;
+  isDataLoading?: boolean;
+  modifiedValues: () => Partial<Permission>;
+  onResetValues: () => void;
+  onOpenContextualPanel?: () => void;
+}
+
+const PermissionsSettings = (props: PropsToSettings) => {
+  const dispatch = useAppDispatch();
+
+  const [savePermission] = useSavePermissionMutation();
+  const groupsQuery = useFindGroupsQuery();
+
+  useUpdateRoute({ pathname: "permissions", noBreadcrumb: true });
+
+  const { ipaObject, recordOnChange } = asRecord(
+    props.permission,
+    props.onPermissionChange
+  );
+
+  const attrOptions = useMemo(
+    () =>
+      props.metadata.objects?.[props.permission.type || ""]?.aciattrs?.map(
+        (attr) => ({
+          children: attr,
+          value: attr,
+          "data-cy": `permissions-tab-settings-select-attrs-${attr}`,
+        })
+      ) || [],
+    [props.metadata, props.permission.type]
+  );
+
+  const rightsOptions = useMemo(
+    () =>
+      generateRights(props.metadata).map((right) => ({
+        value: right,
+        text: right,
+      })),
+    [props.metadata]
+  );
+
+  const typeOptions = useMemo(() => {
+    const options: string[] = [];
+    for (const obj of Object.values(props.metadata.objects || {})) {
+      if (FILTERED_OBJECTS.includes(obj.name)) {
+        continue;
+      }
+      if (obj.can_have_permissions) {
+        options.push(obj.name);
+      }
+    }
+    return options;
+  }, [props.metadata]);
+
+  const groupOptions = useMemo(
+    () =>
+      (
+        groupsQuery.data?.result.result as unknown as Array<{
+          cn: string[];
+        }>
+      )?.map((group) => ({
+        children: group.cn[0],
+        value: group.cn[0],
+        "data-cy": `permissions-tab-settings-select-memberof-${group.cn[0]}`,
+      })) || [],
+    [groupsQuery.data]
+  );
+
+  const [isSaving, setSaving] = useState(false);
+
+  const onSave = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const modifiedValues = props.modifiedValues();
+    const payload: PermissionModPayload = {
+      ...modifiedValues,
+      cn: props.permission.cn as string,
+    };
+    setSaving(true);
+
+    savePermission(payload)
+      .then((response) => {
+        if ("data" in response) {
+          if (response.data?.result) {
+            dispatch(
+              addAlert({
+                name: "save-success",
+                title: "Permission modified",
+                variant: "success",
+              })
+            );
+            props.onRefresh();
+          } else if (response.data?.error) {
+            const errorMessage = response.data.error as ErrorResult;
+            dispatch(
+              addAlert({
+                name: "save-error",
+                title: errorMessage.message,
+                variant: "danger",
+              })
+            );
+            props.onResetValues();
+          }
+        }
+      })
+      .finally(() => {
+        setSaving(false);
+      });
+  };
+
+  const onRevert = () => {
+    props.onPermissionChange(props.originalPermission);
+    dispatch(
+      addAlert({
+        name: "revert-success",
+        title: "Permission data reverted",
+        variant: "success",
+      })
+    );
+  };
+
+  const toolbarFields = [
+    {
+      key: 0,
+      element: (
+        <Button
+          variant="secondary"
+          data-cy="permissions-tab-settings-button-refresh"
+          onClick={props.onRefresh}
+        >
+          Refresh
+        </Button>
+      ),
+    },
+    {
+      key: 1,
+      element: (
+        <Button
+          variant="secondary"
+          data-cy="permissions-tab-settings-button-revert"
+          isDisabled={!props.isModified || isSaving || props.isDataLoading}
+          onClick={onRevert}
+        >
+          Revert
+        </Button>
+      ),
+    },
+    {
+      key: 2,
+      element: (
+        <Button
+          variant="primary"
+          data-cy="permissions-tab-settings-button-save"
+          isDisabled={!props.isModified || isSaving || props.isDataLoading}
+          type="submit"
+          form="permissions-settings-form"
+          isLoading={isSaving}
+          spinnerAriaValueText="Saving"
+          spinnerAriaLabel="Saving"
+        >
+          {isSaving ? "Saving" : "Save"}
+        </Button>
+      ),
+    },
+  ];
+
+  return (
+    <TabLayout id="settings-page" toolbarItems={toolbarFields}>
+      <SidebarLayout
+        itemNames={["Permission settings", "Target"]}
+        onHelpClick={props.onOpenContextualPanel}
+      >
+        <Form
+          className="pf-v6-u-mt-sm pf-v6-u-mb-lg pf-v6-u-mr-md"
+          id="permissions-settings-form"
+          isHorizontal
+          onSubmit={onSave}
+        >
+          <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
+            <TitleLayout
+              headingLevel="h2"
+              id="permission-settings"
+              text="Permission settings"
+            />
+            <FormGroup label="Permission name" fieldId="cn">
+              <IpaTextInput
+                dataCy="permissions-tab-settings-textbox-cn"
+                name="cn"
+                ariaLabel="Permission name"
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="permission"
+                metadata={props.metadata}
+              />
+            </FormGroup>
+            <FormGroup label="Bind rule type" fieldId="ipapermbindruletype">
+              <IpaSimpleSelector
+                id="ipapermbindruletype"
+                dataCy="permissions-tab-settings-select-ipapermbindruletype"
+                name="ipapermbindruletype"
+                ariaLabel="Bind rule type"
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="permission"
+                metadata={props.metadata}
+                options={BIND_RULE_OPTIONS}
+              />
+            </FormGroup>
+            <FormGroup label="Granted rights" fieldId="ipapermright">
+              <IpaCheckboxes
+                dataCy="permissions-tab-settings-checkbox-ipapermright"
+                name="ipapermright"
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="permission"
+                metadata={props.metadata}
+                withGrid
+                options={rightsOptions}
+              />
+            </FormGroup>
+          </Flex>
+          <Flex
+            direction={{ default: "column" }}
+            flex={{ default: "flex_1" }}
+            className="pf-v6-u-mt-xl"
+          >
+            <TitleLayout headingLevel="h2" id="target" text="Target" />
+            <FormGroup label="Type" fieldId="type">
+              <IpaSelect
+                dataCy="permissions-tab-settings-select-type"
+                name="type"
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="permission"
+                metadata={props.metadata}
+                options={typeOptions}
+                maxHeight="260px"
+              />
+            </FormGroup>
+            <FormGroup label="Subtree" fieldId="ipapermlocation">
+              <IpaTextInput
+                dataCy="permissions-tab-settings-textbox-ipapermlocation"
+                name="ipapermlocation"
+                ariaLabel="Subtree"
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="permission"
+                metadata={props.metadata}
+              />
+            </FormGroup>
+            <FormGroup label="Extra target filter" fieldId="extratargetfilter">
+              <IpaTextboxList
+                dataCy="permissions-tab-settings-textbox-extratargetfilter"
+                name="extratargetfilter"
+                ariaLabel="Extra target filter"
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="permission"
+                metadata={props.metadata}
+              />
+            </FormGroup>
+            <FormGroup label="Target DN" fieldId="ipapermtarget">
+              <IpaTextInput
+                dataCy="permissions-tab-settings-textbox-ipapermtarget"
+                name="ipapermtarget"
+                ariaLabel="Target DN"
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="permission"
+                metadata={props.metadata}
+              />
+            </FormGroup>
+            <FormGroup label="Member of group" fieldId="memberof">
+              <IpaTypeAheadWithCheckbox
+                key="memberof"
+                id="permissions-tab-settings-memberof"
+                dataCy="permissions-tab-settings-select-memberof"
+                name="memberof"
+                options={groupOptions}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="permission"
+                metadata={props.metadata}
+              />
+            </FormGroup>
+            <FormGroup label="Effective attributes" fieldId="attrs">
+              <IpaTypeAheadWithCheckbox
+                key={props.permission.type || "custom"}
+                id="permissions-tab-settings-attrs"
+                dataCy="permissions-tab-settings-select-attrs"
+                name="attrs"
+                options={attrOptions}
+                ipaObject={ipaObject}
+                onChange={recordOnChange}
+                objectName="permission"
+                metadata={props.metadata}
+              />
+            </FormGroup>
+          </Flex>
+        </Form>
+      </SidebarLayout>
+    </TabLayout>
+  );
+};
+
+export default PermissionsSettings;

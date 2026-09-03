@@ -66,9 +66,12 @@ const IpaCheckboxes = (props: IPAParamDefinitionCheckboxes) => {
 
   if (props.withGrid) {
     return (
-      <Grid sm={4}>
+      <Grid sm={4} data-testid={props.dataCy + "-grid"}>
         {props.options.map((option, idx) => (
-          <GridItem key={props.name + "-" + option.value}>
+          <GridItem
+            key={props.name + "-" + option.value}
+            data-testid={props.dataCy + "-grid-item"}
+          >
             {renderCheckbox(option, idx)}
           </GridItem>
         ))}

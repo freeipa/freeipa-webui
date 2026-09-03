@@ -53,6 +53,7 @@ describe("IpaSimpleSelector Component", () => {
   };
 
   const defaultProps: IPAParamDefinitionSimpleSelector = {
+    id: "ipapermbindruletype",
     dataCy: "ipa-simple-selector",
     name: "ipapermbindruletype",
     ariaLabel: "ipapermbindruletype",
@@ -105,7 +106,23 @@ describe("IpaSimpleSelector Component", () => {
   });
 
   it("calls onChange with the selected option", async () => {
-    render(<IpaSimpleSelector {...defaultProps} />);
+    const StatefulWrapper = () => {
+      const [ipaObject, setIpaObject] = React.useState(
+        defaultProps.ipaObject as Record<string, unknown>
+      );
+      return (
+        <IpaSimpleSelector
+          {...defaultProps}
+          ipaObject={ipaObject}
+          onChange={(updated: Record<string, unknown>) => {
+            mockOnChange(updated);
+            setIpaObject(updated);
+          }}
+        />
+      );
+    };
+
+    render(<StatefulWrapper />);
 
     const selectToggle = screen.getByRole("button", {
       name: "ipapermbindruletype",

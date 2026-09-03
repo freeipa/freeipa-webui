@@ -212,5 +212,6 @@
   "roles-settings": [],
   "privileges-settings": [],
   "selfservice-permissions-settings": [],
-  "delegations-settings": []
+  "delegations-settings": [],
+  "permissions-settings": []
 }
