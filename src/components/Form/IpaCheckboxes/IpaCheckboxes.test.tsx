@@ -173,4 +173,16 @@ describe("IpaCheckboxes Component", () => {
       "ipauserauthtype2"
     );
   });
+
+  it("renders checkboxes in a grid when withGrid is true", () => {
+    const { container } = render(<IpaCheckboxes {...defaultProps} withGrid />);
+
+    expect(container.querySelector(".pf-v6-l-grid")).toBeInTheDocument();
+    expect(container.querySelectorAll(".pf-v6-l-grid__item")).toHaveLength(
+      defaultProps.options.length
+    );
+    expect(screen.getAllByLabelText("ipauserauthtype2")).toHaveLength(
+      defaultProps.options.length
+    );
+  });
 });
