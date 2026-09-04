@@ -1,7 +1,15 @@
 import { Then, When } from "@badeball/cypress-cucumber-preprocessor";
+import { typeInTextbox } from "../ui/textbox";
 
 When("I click on search link in dual list", () => {
   cy.dataCy("dual-list-search-link").click();
+});
+
+When("I search for {string} in the dual list", (searchText: string) => {
+  cy.intercept("POST", "/ipa/session/json").as("dualListSearch");
+  typeInTextbox("dual-list-available-search", searchText);
+  cy.dataCy("dual-list-available-search").find("button[type='submit']").click();
+  cy.wait("@dualListSearch");
 });
 
 When("I click on {string} dual list item", (item: string) => {
