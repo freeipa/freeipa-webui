@@ -10,20 +10,6 @@ const OPTIONS_MAP: Readonly<Record<NetgroupMemberType, string>> = {
   externalhost: "--hosts",
 };
 
-Given("netgroup {string} exists", (groupName: string) => {
-  cy.ipa({
-    command: "netgroup-add",
-    name: groupName,
-  });
-});
-
-Given("I delete netgroup {string}", (groupName: string) => {
-  cy.ipa({
-    command: "netgroup-del",
-    name: groupName,
-  });
-});
-
 Given(
   "I have element {NetgroupMemberType} named {string} in netgroup {string}",
   (elementType: NetgroupMemberType, element: string, groupName: string) => {
