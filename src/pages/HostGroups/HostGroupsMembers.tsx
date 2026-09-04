@@ -134,7 +134,12 @@ const HostGroupsMembers = (props: PropsToHostGroupsMembers) => {
             title={
               <TabTitleText>
                 Hosts{" "}
-                <Badge key={0} id="host_count" isRead>
+                <Badge
+                  key={0}
+                  id="host_count"
+                  data-cy="host-groups-tab-member-host-count"
+                  isRead
+                >
                   {hostCount}
                 </Badge>
               </TabTitleText>
@@ -158,7 +163,12 @@ const HostGroupsMembers = (props: PropsToHostGroupsMembers) => {
             title={
               <TabTitleText>
                 Host groups{" "}
-                <Badge key={1} id="hostgroup_count" isRead>
+                <Badge
+                  key={1}
+                  id="hostgroup_count"
+                  data-cy="host-groups-tab-member-hostgroup-count"
+                  isRead
+                >
                   {groupCount}
                 </Badge>
               </TabTitleText>
