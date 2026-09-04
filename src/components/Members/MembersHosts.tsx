@@ -132,7 +132,7 @@ const MembersHosts = (props: PropsToMembersHosts) => {
 
   // Get type of the entity to show as text
   const getEntityType = () => {
-    if (props.from === "hostgroups") {
+    if (props.from === "host-groups") {
       return "host group";
     } else if (props.from === "netgroup") {
       return "netgroup";
