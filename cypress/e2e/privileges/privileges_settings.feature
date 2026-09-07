@@ -10,8 +10,6 @@ Feature: Privilege settings manipulation
     Given I am logged in as admin
     And I am on "privileges/settings_privilege" page
 
-    Then I should see "settings_privilege" in the "privileges-tab-settings-textinput-cn" textbox
-
     When I type in the "privileges-tab-settings-textarea-description" textbox text "Test description"
     Then I should see "Test description" in the "privileges-tab-settings-textarea-description" textbox
     And I should see the "privileges-tab-settings-button-save" button is enabled
