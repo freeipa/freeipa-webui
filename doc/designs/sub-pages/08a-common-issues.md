@@ -162,9 +162,45 @@ const isDisabled = props.entity.statusField === true || String(props.entity.stat
 
 ```tsx
 <MemberOfDeleteModal showModal={showDeleteModal} ...>
-  <MemberTable entityList={members.filter((m) => selectedItems.includes(m.uid))} ... />
+  <MemberTable entityList={selectedItems} ... />
 </MemberOfDeleteModal>
 ```
+
+### Delete Modal Lists Only the Current Page
+
+The on-screen table list is often **already paginated**. Selection is kept as a
+separate array and can include rows from other pages. Filtering the paginated
+list for the delete modal hides those rows even though the delete API still
+removes them.
+
+```tsx
+// ❌ Wrong: `items` is the current page only
+<MemberTable
+  entityList={items.filter((item) => selectedNames.includes(item.cn))}
+  ...
+/>
+
+// ✅ Correct: the full selection state
+<MemberTable entityList={selectedItems} ... />
+```
+
+See [17-independent-sub-pages.md](17-independent-sub-pages.md#delete-modal-full-selection-not-the-current-page).
+
+### Table Rows Driven by `isLoading` Instead of `isFetching`
+
+Use RTK Query `isFetching` to hide table rows and disable Refresh/Add while a
+request is in flight. `isLoading` is only `true` on the first request (no cached
+data), so Refresh would leave stale rows visible.
+
+```tsx
+// ✅ Correct
+<MemberTable showTableRows={!entityQuery.isFetching} ... />
+
+// ❌ Wrong
+<MemberTable showTableRows={!entityQuery.isLoading} ... />
+```
+
+See [17-independent-sub-pages.md](17-independent-sub-pages.md#table-visibility-isfetching).
 
 ### Modals Must Be Outside TabLayout
 
