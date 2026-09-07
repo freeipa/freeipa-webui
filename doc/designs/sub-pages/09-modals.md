@@ -113,6 +113,13 @@ for the full search behaviour table.
 
 ## Delete Modal
 
+Independent and membership tabs that use `MemberOfDeleteModal` must pass a
+table of the **full selection state** as children. Do not filter the paginated
+on-screen list: selected rows on other pages would disappear from the
+confirmation while still being deleted. See
+[Independent sub-pages](17-independent-sub-pages.md#delete-modal-full-selection-not-the-current-page)
+and [Common issues](08a-common-issues.md#delete-modal-lists-only-the-current-page).
+
 ### Props Interface
 
 The Delete modal also receives the parent entity ID:
