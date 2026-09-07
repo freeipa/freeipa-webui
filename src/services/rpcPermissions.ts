@@ -20,6 +20,8 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
  * - permission_add: https://freeipa.readthedocs.io/en/latest/api/permission_add.html
  * - permission_del: https://freeipa.readthedocs.io/en/latest/api/permission_del.html
  * - permission_mod: https://freeipa.readthedocs.io/en/latest/api/permission_mod.html
+ * - permission_add_member: https://freeipa.readthedocs.io/en/latest/api/permission_add_member.html
+ * - permission_remove_member: https://freeipa.readthedocs.io/en/latest/api/permission_remove_member.html
  */
 
 const PERMISSION_MOD_KEYS = [
@@ -72,6 +74,11 @@ interface PermissionsFullDataPayload {
   apiVersion: string;
   startIdx: number;
   stopIdx: number;
+}
+
+interface PermissionPrivilegePayload {
+  permissionCn: string;
+  privileges: string[];
 }
 
 const extendedApi = api.injectEndpoints({
@@ -230,6 +237,42 @@ const extendedApi = api.injectEndpoints({
         });
       },
     }),
+    /**
+     * Add privileges to a permission via `permission_add_member`
+     * @param {PermissionPrivilegePayload} - Payload with permission cn and privileges
+     * @returns {FindRPCResponse} - Response from API
+     */
+    addPrivilegeToPermission: build.mutation<
+      FindRPCResponse,
+      PermissionPrivilegePayload
+    >({
+      query: (payload) =>
+        getCommand({
+          method: "permission_add_member",
+          params: [
+            [payload.permissionCn],
+            { privilege: payload.privileges, version: API_VERSION_BACKUP },
+          ],
+        }),
+    }),
+    /**
+     * Remove privileges from a permission via `permission_remove_member`
+     * @param {PermissionPrivilegePayload} - Payload with permission cn and privileges
+     * @returns {FindRPCResponse} - Response from API
+     */
+    removePrivilegeFromPermission: build.mutation<
+      FindRPCResponse,
+      PermissionPrivilegePayload
+    >({
+      query: (payload) =>
+        getCommand({
+          method: "permission_remove_member",
+          params: [
+            [payload.permissionCn],
+            { privilege: payload.privileges, version: API_VERSION_BACKUP },
+          ],
+        }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -240,4 +283,6 @@ export const {
   useDeletePermissionsMutation,
   useGetPermissionByIdQuery,
   useSavePermissionMutation,
+  useAddPrivilegeToPermissionMutation,
+  useRemovePrivilegeFromPermissionMutation,
 } = extendedApi;

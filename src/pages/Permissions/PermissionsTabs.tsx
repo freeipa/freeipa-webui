@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 import { useNavigate } from "react-router";
 import PermissionsSettings from "src/pages/Permissions/PermissionsSettings";
+import PermissionsPrivileges from "src/pages/Permissions/PermissionsPrivileges";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
@@ -9,6 +10,7 @@ import { usePermissionSettings } from "src/hooks/usePermissionSettingsData";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import { NotFound } from "src/components/errors/PageErrors";
 import { CnParams, useSafeParams } from "src/utils/paramsUtils";
+import { partialPermissionToPermission } from "src/utils/permissionsUtils";
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
 import {
@@ -19,6 +21,11 @@ import {
 interface PermissionsTabsProps {
   section: string;
 }
+
+const TAB_ROUTES: Record<string, (cn: string) => string> = {
+  settings: (cn) => `/permissions/${cn}`,
+  privileges: (cn) => `/permissions/${cn}/privileges`,
+};
 
 const PermissionsTabs = ({ section }: PermissionsTabsProps) => {
   const { cn } = useSafeParams<CnParams>(["cn"]);
@@ -42,8 +49,10 @@ const PermissionsTabs = ({ section }: PermissionsTabsProps) => {
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
-    if (tabIndex === "settings") {
-      navigate("/permissions/" + cn);
+    const tabKey = String(tabIndex);
+    const toPath = TAB_ROUTES[tabKey];
+    if (toPath) {
+      navigate(toPath(cn));
     }
   };
 
@@ -66,7 +75,7 @@ const PermissionsTabs = ({ section }: PermissionsTabsProps) => {
 
   React.useEffect(() => {
     if (!section) {
-      navigate("/permissions/" + cn);
+      navigate(TAB_ROUTES.settings(cn));
     }
     setActiveTabKey(section || "settings");
   }, [section, cn, navigate]);
@@ -118,6 +127,18 @@ const PermissionsTabs = ({ section }: PermissionsTabsProps) => {
               isModified={permissionSettingsData.modified}
               onResetValues={permissionSettingsData.resetValues}
               modifiedValues={permissionSettingsData.modifiedValues}
+              onOpenContextualPanel={() => dispatch(toggleHelpPanel())}
+            />
+          </Tab>
+          <Tab
+            eventKey={"privileges"}
+            name="privileges-details"
+            title={<TabTitleText>Privileges</TabTitleText>}
+          >
+            <PermissionsPrivileges
+              permission={partialPermissionToPermission(
+                permissionSettingsData.permission
+              )}
               onOpenContextualPanel={() => dispatch(toggleHelpPanel())}
             />
           </Tab>
