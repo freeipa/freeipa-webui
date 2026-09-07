@@ -611,6 +611,10 @@ export const AppRoutes = (): React.ReactElement => {
                   path=""
                   element={<PermissionsTabs section="settings" />}
                 />
+                <Route
+                  path="privileges"
+                  element={<PermissionsTabs section="privileges" />}
+                />
               </Route>
             </Route>
             <Route path="selfservice-permissions">

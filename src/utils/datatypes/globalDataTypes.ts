@@ -241,6 +241,7 @@ export interface Permission {
   ipapermtargetto: string;
   ipapermtargetfrom: string;
   memberof: string[];
+  member_privilege: string[];
   targetgroup: string;
   type: string;
 }
