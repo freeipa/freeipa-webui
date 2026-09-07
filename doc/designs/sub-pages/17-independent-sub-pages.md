@@ -180,14 +180,58 @@ const <Entity><SubPage> = (props) => {
         from="privileges"
         checkedItems={selectedNames}
         onCheckItemsChange={onCheckItemsChange}
+        showTableRows={!entityQuery.isFetching}
         ...
       />
       <Pagination ... />
       {showAddModal && <MemberOfAddModal ... />}
-      {showDeleteModal && <MemberOfDeleteModal ... />}
+      {showDeleteModal && (
+        <MemberOfDeleteModal ...>
+          {/* Full selection — not the paginated `data` list */}
+          <MemberTable entityList={selectedItems} ... showTableRows />
+        </MemberOfDeleteModal>
+      )}
     </TabLayout>
   );
 };
+```
+
+## Table visibility (`isFetching`)
+
+Drive table rows and refresh/add enablement from RTK Query **`isFetching`**, not
+`isLoading`. `isFetching` is `true` on the initial request **and** on Refresh /
+refetch, so the table shows its skeleton and toolbar actions disable while data
+reloads.
+
+```tsx
+// ✅ Correct
+<MemberTable showTableRows={!entityQuery.isFetching} ... />
+const isRefreshButtonEnabled = !entityQuery.isFetching;
+
+// ❌ Wrong: `isLoading` is only true on the first request (no cached data).
+// Refresh would leave the old rows visible and keep buttons enabled.
+<MemberTable showTableRows={!entityQuery.isLoading} ... />
+```
+
+Do not introduce a `showTableRows` state variable synced with `useEffect`. Pass
+`!query.isFetching` directly (same rule as [main pages](../main-pages/03-walkthrough-init-fetch.md#table-visibility)).
+
+## Delete modal: full selection, not the current page
+
+The table list (`data` / `privileges`) is **already paginated**. Selection state
+(`selectedItems`) can include rows from other pages. The delete confirmation
+table must use that full selection. Filtering the paginated list hides selected
+rows that are not on the current page, while the delete API still removes them.
+
+```tsx
+// ✅ Correct — every selected item, including other pages
+<MemberTable entityList={selectedItems} ... />
+
+// ❌ Wrong — only selected rows that happen to be on the current page
+<MemberTable
+  entityList={data.filter((item) => selectedNames.includes(item.cn))}
+  ...
+/>
 ```
 
 ## Differences from Membership Tabs
@@ -201,4 +245,5 @@ const <Entity><SubPage> = (props) => {
 
 - `src/pages/Privileges/PrivilegesPermissions.tsx` — uses `MemberOfToolbar` with `bulkSelector` prop
 - `src/pages/Roles/RolesPrivileges.tsx`
+- `src/pages/Permissions/PermissionsPrivileges.tsx` — delete modal uses full `selectedItems`; table uses `!query.isFetching`
 - `src/pages/DNSZones/DnsResourceRecords.tsx` — uses `ToolbarLayout` with `BulkSelectorPrep` as first item

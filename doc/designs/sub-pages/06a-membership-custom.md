@@ -97,6 +97,10 @@ const [namesToLoad, setNamesToLoad] = React.useState<string[]>(getMembersToLoad(
   </MemberOfDeleteModal>
 )}
 
+> If the displayed table list is a **paginated slice**, pass the selection
+> state (`selectedItems` / `selectedPrivileges`) instead of filtering that
+> slice. See [08a-common-issues.md](08a-common-issues.md#delete-modal-lists-only-the-current-page).
+
 // ❌ Wrong: No children - modal shows empty list
 <MemberOfDeleteModal ... />
 ```

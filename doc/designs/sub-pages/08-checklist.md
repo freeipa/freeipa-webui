@@ -139,7 +139,8 @@ import OtpTokensManagedBy from "./OtpTokensManagedBy";
 - [ ] Pagination and search work
 - [ ] Add modal fetches available items from correct API
 - [ ] Add operation uses correct entity-specific API (not generic `_add_member`)
-- [ ] Delete modal shows selected items
+- [ ] Delete modal shows **all** selected items (the selection state, not a filter of the current page)
+- [ ] Table visibility uses `showTableRows={!query.isFetching}` (not `isLoading`)
 - [ ] Delete operation uses correct entity-specific API (not generic `_remove_member`)
 - [ ] Success/error alerts display correctly
 - [ ] Page wrapped in `PageSection` for proper alignment
@@ -223,4 +224,6 @@ See [08a-common-issues.md](08a-common-issues.md) for detailed solutions to:
 - API array response handling
 - RTK Query skip option
 - Modal integration issues
+- Delete modal listing only the current page
+- Table rows driven by `isLoading` instead of `isFetching`
 - Boolean status comparison failures
