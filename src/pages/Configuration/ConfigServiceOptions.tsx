@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { Form, FormGroup } from "@patternfly/react-core";
 // Data types
-import { Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Form
 import IpaCheckboxes from "src/components/Form/IpaCheckboxes";
 

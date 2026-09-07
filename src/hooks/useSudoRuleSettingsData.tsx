@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
+import { useAppSelector } from "src/store/hooks";
 
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useGetSudoRuleFullDataQuery } from "src/services/rpcSudoRules";
 // Data types
-import { SudoRule, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { SudoRule } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type SettingsData = {
   isLoading: boolean;
@@ -22,9 +23,10 @@ type SettingsData = {
 
 const useSudoRuleSettings = (ruleId: string): SettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
+  const metadata = metadataQuery.data;
 
   // [API call] Host Group
   const ruleFullDataQuery = useGetSudoRuleFullDataQuery(ruleId);
@@ -45,7 +47,7 @@ const useSudoRuleSettings = (ruleId: string): SettingsData => {
   }, [ruleFullData?.rule, ruleFullDataQuery.isFetching]);
 
   const settings = {
-    isLoading: metadataLoading || isFullDataLoading,
+    isLoading: isFullDataLoading,
     isFetching: ruleFullDataQuery.isFetching,
     modified,
     setModified,

@@ -4,12 +4,15 @@ import { describe, it, expect, afterEach } from "vitest";
 // Component
 import IpaTextContent, { IpaTextContentProps } from "./IpaTextContent";
 import { BrowserRouter } from "react-router";
+import { createMetadata } from "src/services/types/metadata";
 
 describe("IpaTextContent Component", () => {
-  const mockMetadata = {
+  const mockMetadata = createMetadata({
     objects: {
       pwpolicy: {
         name: "pwpolicy",
+        methods: [],
+        primary_key: "cn",
         takes_params: [
           {
             alwaysask: false,
@@ -40,7 +43,9 @@ describe("IpaTextContent Component", () => {
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   const mockCn = "TEST VALUE";
   const defaultProps: IpaTextContentProps = {

@@ -12,6 +12,7 @@ import {
   FetchBaseQueryMeta,
 } from "@reduxjs/toolkit/query";
 import { API_VERSION_BACKUP } from "src/utils/utils";
+import { Metadata } from "./types/metadata";
 
 /**
  * Endpoints: userPasswordLogin, logout
@@ -31,14 +32,16 @@ const BATCH_COMMANDS_AUTH = [
   "vaultconfig_show",
 ];
 
-const BATCH_COMMANDS_AUTH_PAYLOAD: Command[] = BATCH_COMMANDS_AUTH.map(
-  (method) => {
-    return {
-      method: method,
-      params: [[], {}],
-    };
-  }
-);
+const BATCH_COMMANDS_AUTH_PAYLOAD: Command[] = [
+  ...BATCH_COMMANDS_AUTH.map((method) => ({
+    method,
+    params: [[], {}],
+  })),
+  {
+    method: "json_metadata",
+    params: [[], { object: "all", method: "all", command: "all" }],
+  },
+];
 
 export interface UserMetadata {
   ipaServerConfiguration: Record<string, unknown>;
@@ -49,6 +52,7 @@ export interface UserMetadata {
   domainLevel: number;
   caIsEnabled: boolean;
   vaultConfiguration: Record<string, unknown>;
+  metadata: Metadata;
 }
 
 interface UserPasswordPayload {
@@ -261,6 +265,7 @@ const extendedApi = api.injectEndpoints({
           domainLevel: results[5].result,
           caIsEnabled: results[6].result,
           vaultConfiguration: results[7].result,
+          metadata: results[8] as Metadata,
         };
       },
     }),

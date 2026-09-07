@@ -11,18 +11,18 @@ import SimpleSelector, {
 // RPC
 import { useAddPermissionMutation } from "src/services/rpcPermissions";
 // Redux
-import { useAppDispatch } from "src/store/hooks";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 // Errors
 import { SerializedError } from "@reduxjs/toolkit";
-import { useGetObjectMetadataQuery } from "src/services/rpc";
-import { Metadata } from "src/utils/datatypes/globalDataTypes";
 import TextInputList from "src/components/Form/TextInputList";
 import { TypeAheadWithCheckbox } from "src/components/TypeAheadWithCheckbox";
 import { useFindGroupsQuery } from "src/services/rpcUserGroups";
 import InputWithValidation from "src/components/layouts/InputWithValidation";
 import { isValidDn } from "src/utils/utils";
+import { isComplexObjectMetadata, Metadata } from "src/services/types/metadata";
+import { isStrEnumParam } from "src/services/types/param";
 
 interface PropsToAddModal {
   isOpen: boolean;
@@ -42,16 +42,16 @@ const BIND_RULE_OPTIONS: SelectOptionProps[] = [
 // but shouldn't really be used by the user, remove these.
 const FILTERED_OBJECTS: readonly string[] = ["automember_default_group"];
 
-const generateTypes = (metadata: Metadata | undefined) => {
-  if (!metadata) {
-    return [];
-  }
-
+const generateTypes = (metadata: Metadata) => {
   const objects: SelectOptionProps[] = [];
 
   objects.push({ key: "", value: "Custom" });
   for (const obj of Object.values(metadata.objects || {})) {
     if (FILTERED_OBJECTS.includes(obj.name)) {
+      continue;
+    }
+
+    if (!isComplexObjectMetadata(obj)) {
       continue;
     }
 
@@ -68,36 +68,38 @@ const generateTypes = (metadata: Metadata | undefined) => {
   return objects;
 };
 
-const generateAttrs = (
-  metadata: Metadata | undefined,
-  currentObject: string
-) => {
-  if (!metadata) {
+const generateAttrs = (metadata: Metadata, currentObject: string) => {
+  const object = metadata.objects?.[currentObject];
+  if (!object || !isComplexObjectMetadata(object)) {
     return [];
   }
 
-  return (
-    metadata.objects?.[currentObject]?.aciattrs?.map((attr) => ({
-      children: attr,
-      value: attr,
-      "data-cy": `modal-select-attrs-${attr}`,
-    })) || []
-  );
+  return object.aciattrs?.map((attr) => ({
+    children: attr,
+    value: attr,
+    "data-cy": `modal-select-attrs-${attr}`,
+  }));
 };
 
-const generateRights = (metadata: Metadata | undefined) => {
-  const rightParam = metadata?.objects?.permission?.takes_params?.find(
+const generateRights = (metadata: Metadata) => {
+  const rightParam = metadata.objects?.permission?.takes_params?.find(
     (param) => param.name === "ipapermright"
   );
 
-  return rightParam?.values || [];
+  if (!rightParam || !isStrEnumParam(rightParam)) {
+    return [];
+  }
+
+  return rightParam.values;
 };
 
 const AddPermissionModal = (props: PropsToAddModal) => {
   const dispatch = useAppDispatch();
 
   // API calls
-  const metadataQuery = useGetObjectMetadataQuery();
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
   const groupsQuery = useFindGroupsQuery();
   const [addPermission] = useAddPermissionMutation();
 

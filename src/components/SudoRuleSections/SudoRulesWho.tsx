@@ -1,6 +1,7 @@
 import React from "react";
 // Data types
-import { Metadata, SudoRule } from "src/utils/datatypes/globalDataTypes";
+import { SudoRule } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Components
 import { TableEntry } from "src/components/tables/KeytabTableWithFilter";
 import {

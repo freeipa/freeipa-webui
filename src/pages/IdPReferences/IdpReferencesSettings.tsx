@@ -14,7 +14,8 @@ import {
   SidebarPanel,
 } from "@patternfly/react-core";
 // Data types
-import { IDPServer, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { IDPServer } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks

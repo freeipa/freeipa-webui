@@ -4,16 +4,18 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 // Component
 import IpaTextboxList, { PropsToIpaTextboxList } from "./IpaTextboxList";
 // Data types
-import { Metadata } from "src/utils/datatypes/globalDataTypes";
+import { createMetadata } from "src/services/types/metadata";
 
 describe("IpaTextboxList Component", () => {
   const mockOnChange = vi.fn();
 
   // Minimal mock metadata with the object and param definition
-  const mockMetadata: Metadata = {
+  const mockMetadata = createMetadata({
     objects: {
       testobject: {
         name: "testobject",
+        methods: [],
+        primary_key: "cn",
         takes_params: [
           {
             name: "customipatextboxlist",
@@ -32,6 +34,7 @@ describe("IpaTextboxList Component", () => {
             multivalue: true,
             no_convert: false,
             noextrawhitespace: true,
+            pattern: "",
             pattern_errmsg: "",
             primary_key: false,
             query: false,
@@ -42,7 +45,9 @@ describe("IpaTextboxList Component", () => {
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   const defaultProps: PropsToIpaTextboxList = {
     dataCy: "ipa-textbox-list",

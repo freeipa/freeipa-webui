@@ -2,34 +2,20 @@ import React from "react";
 // Utils
 import { parseFullDateStringToUTCFormat } from "src/utils/utils";
 import {
-  BasicType,
   IPAParamDefinition,
-  ParamProperties,
   getParamProperties,
   updateIpaObject,
 } from "src/utils/ipaObjectUtils";
-import { ParamMetadata } from "src/utils/datatypes/globalDataTypes";
 // Components
 import DateTimeSelector from "../DateTimeSelector";
-
-interface ParamPropertiesDateTime {
-  writable: boolean;
-  required: boolean;
-  readOnly: boolean;
-  value: Date | null;
-  onChange: (value: BasicType) => void;
-  paramMetadata: ParamMetadata;
-}
 
 export interface IpaCalendarProps extends IPAParamDefinition {
   dataCy: string;
   isDisabled?: boolean;
 }
 
-function getParamPropertiesDateTime(
-  parDef: IPAParamDefinition
-): ParamPropertiesDateTime {
-  const paramProms: ParamProperties = getParamProperties(parDef);
+function getParamPropertiesDateTime(parDef: IPAParamDefinition) {
+  const paramProms = getParamProperties(parDef);
 
   let valueDate: Date | null;
   if (paramProms.value instanceof Date) {
@@ -40,12 +26,8 @@ function getParamPropertiesDateTime(
     valueDate = null;
   }
   return {
-    writable: paramProms.writable,
-    required: paramProms.required,
     readOnly: paramProms.readOnly,
     value: valueDate,
-    onChange: paramProms.onChange,
-    paramMetadata: paramProms.paramMetadata,
   };
 }
 

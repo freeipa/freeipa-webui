@@ -8,7 +8,8 @@ import {
   DropdownItem,
 } from "@patternfly/react-core";
 // Data types
-import { Certificate, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Certificate } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // ipaObject utils
 import { getParamProperties } from "src/utils/ipaObjectUtils";
 // Modals
@@ -74,8 +75,8 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
   });
 
   let idParamName = "uid";
-  if (props.metadata.objects) {
-    const objMetadata = props.metadata.objects[props.objectType];
+  const objMetadata = props.metadata.objects?.[props.objectType];
+  if (objMetadata) {
     idParamName = objMetadata.primary_key as string;
   }
   const idParam = props.ipaObject[idParamName] as string;

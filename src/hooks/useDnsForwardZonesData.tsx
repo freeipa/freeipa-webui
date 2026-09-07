@@ -1,13 +1,15 @@
 import React from "react";
+import { useAppSelector } from "src/store/hooks";
+
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import {
   DnsForwardZoneModPayload,
   IPAddressWithPort,
   useGetDnsForwardZoneDetailsQuery,
 } from "src/services/rpcDnsForwardZones";
 // Data types
-import { DNSForwardZone, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { DNSForwardZone } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Utils
 import { apiToDnsForwardZone } from "src/utils/dnsForwardZonesUtils";
 
@@ -48,8 +50,10 @@ const useDnsForwardZonesData = (
   dnsForwardZoneId: string
 ): DnsForwardZonesSettingsData => {
   // [API call] Metadata
-  const { data: metadata, isLoading: metadataIsLoading } =
-    useGetObjectMetadataQuery();
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
+  const metadata = metadataQuery.data;
 
   // [API call] DNS Forward Zone
   const {
@@ -93,10 +97,10 @@ const useDnsForwardZonesData = (
   const modified = Object.keys(modifiedValues()).length > 0;
 
   return {
-    isLoading: metadataIsLoading || isDnsForwardZoneDataLoading,
+    isLoading: isDnsForwardZoneDataLoading,
     isFetching: isDnsForwardZoneDataFetching,
     modified,
-    metadata: metadata || {},
+    metadata,
     resetValues: () => setDnsForwardZone(dnsForwardZoneDataParsed),
     originalDnsForwardZone: dnsForwardZoneDataParsed,
     setDnsForwardZone,

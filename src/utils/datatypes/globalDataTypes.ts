@@ -520,26 +520,6 @@ export interface IdRange {
   dn: string;
 }
 
-export interface Metadata {
-  commands?: Record<string, unknown>;
-  methods?: Record<string, unknown>;
-  objects?: ObjectsMetadata;
-}
-
-interface ObjectsMetadata {
-  [key: string]: ObjectMetadata;
-}
-
-interface ObjectMetadata {
-  name: string;
-  aciattrs?: string[];
-  attribute_members?: { [key: string]: string[] };
-  bindable?: boolean;
-  can_have_permissions?: boolean;
-  takes_params: ParamMetadata[];
-  [key: string]: unknown; // TODO add missing properties
-}
-
 export interface ParamMetadata {
   alwaysask: boolean;
   attribute: boolean;

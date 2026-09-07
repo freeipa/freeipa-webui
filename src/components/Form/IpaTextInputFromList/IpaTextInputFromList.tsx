@@ -4,7 +4,7 @@ import { Button, Flex, FlexItem, TextInput } from "@patternfly/react-core";
 // Layouts
 import SecondaryButton from "../../layouts/SecondaryButton";
 // Data types
-import { Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // ipaObject utils
 import { getParamProperties } from "src/utils/ipaObjectUtils";
 

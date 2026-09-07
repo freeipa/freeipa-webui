@@ -21,10 +21,8 @@ import {
 import { useAppDispatch } from "src/store/hooks";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import {
-  SelfServicePermission,
-  Metadata,
-} from "src/utils/datatypes/globalDataTypes";
+import { SelfServicePermission } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 import { ErrorResult } from "src/services/rpc";
 import { useSaveSelfServicePermissionMutation } from "src/services/rpcSelfServicePermissions";
 

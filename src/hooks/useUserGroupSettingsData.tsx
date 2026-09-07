@@ -1,14 +1,11 @@
 import { useState, useEffect } from "react";
+import { useAppSelector } from "src/store/hooks";
 
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useGetUserGroupsFullDataQuery } from "src/services/rpcUserGroups";
 // Data types
-import {
-  UserGroup,
-  Metadata,
-  PwPolicy,
-} from "src/utils/datatypes/globalDataTypes";
+import { UserGroup, PwPolicy } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type UserGroupSettingsData = {
   isLoading: boolean;
@@ -27,9 +24,10 @@ type UserGroupSettingsData = {
 
 const useUserGroupSettings = (groupId: string): UserGroupSettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
+  const metadata = metadataQuery.data;
 
   // [API call] Host
   const userGroupFullDataQuery = useGetUserGroupsFullDataQuery(groupId);
@@ -48,7 +46,7 @@ const useUserGroupSettings = (groupId: string): UserGroupSettingsData => {
   }, [groupFullData, userGroupFullDataQuery.isFetching]);
 
   const settings = {
-    isLoading: metadataLoading || isFullDataLoading,
+    isLoading: isFullDataLoading,
     isFetching: userGroupFullDataQuery.isFetching,
     modified,
     setModified,

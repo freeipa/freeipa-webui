@@ -5,15 +5,18 @@ import { describe, vi, it, expect, afterEach } from "vitest";
 import IpaTextInputFromList, {
   PropsToTextInputFromList,
 } from "./IpaTextInputFromList";
+import { createMetadata } from "src/services/types/metadata";
 
 describe("IpaTextInputFromList Component", () => {
   const mockOnOpenModal = vi.fn();
   const mockOnRemove = vi.fn();
 
-  const mockMetadata = {
+  const mockMetadata = createMetadata({
     objects: {
       user: {
         name: "user",
+        methods: [],
+        primary_key: "uid",
         takes_params: [
           {
             cli_name: "principal",
@@ -37,15 +40,13 @@ describe("IpaTextInputFromList Component", () => {
             class: "Principal",
             name: "krbprincipalname",
             type: "Principal",
-            maxlength: 255,
-            noextrawhitespace: false,
-            pattern_errmsg: "",
-            pattern: "",
           },
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   afterEach(cleanup);
 

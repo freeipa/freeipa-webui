@@ -4,6 +4,7 @@ import { vi, describe, it, expect, afterEach } from "vitest";
 // Component
 import IpaPACType, { IpaPACTypeProps } from "./IpaPACType";
 import { updateIpaObject } from "src/utils/ipaObjectUtils";
+import { createMetadata } from "src/services/types/metadata";
 
 // Mock of util function: updateIpaObject
 vi.mock("src/utils/ipaObjectUtils", async () => ({
@@ -16,10 +17,12 @@ describe("IpaPACType Component", () => {
     console.log("mockOnChange called with:", ipaObject);
   });
 
-  const mockMetadata = {
+  const mockMetadata = createMetadata({
     objects: {
-      user: {
+      service: {
         name: "service",
+        methods: [],
+        primary_key: "krbprincipalname",
         takes_params: [
           {
             cli_name: "pac_type",
@@ -43,15 +46,13 @@ describe("IpaPACType Component", () => {
             class: "StrEnum",
             name: "ipakrbauthzdata",
             type: "str",
-            maxlength: 255,
-            noextrawhitespace: false,
-            pattern_errmsg: "",
-            pattern: "",
           },
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   const mockIpaObject = {
     serviceType: "",

@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
+import { useAppSelector } from "src/store/hooks";
 
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useGetSudoCmdGroupsFullDataQuery } from "src/services/rpcSudoCmdGroups";
 // Data types
-import { SudoCmdGroup, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { SudoCmdGroup } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type SettingsData = {
   isLoading: boolean;
@@ -22,9 +23,10 @@ type SettingsData = {
 
 const useSudoCmdGroupsSettings = (command: string): SettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
+  const metadata = metadataQuery.data;
 
   // [API call] Host Group
   const fullDataQuery = useGetSudoCmdGroupsFullDataQuery(command);
@@ -40,7 +42,7 @@ const useSudoCmdGroupsSettings = (command: string): SettingsData => {
   }, [fullData, fullDataQuery.isFetching]);
 
   const settings = {
-    isLoading: metadataLoading || isFullDataLoading,
+    isLoading: isFullDataLoading,
     isFetching: fullDataQuery.isFetching,
     modified,
     setModified,

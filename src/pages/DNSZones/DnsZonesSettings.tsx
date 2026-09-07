@@ -15,8 +15,8 @@ import {
 import {
   DnsPermissionType,
   DNSZone,
-  Metadata,
 } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks

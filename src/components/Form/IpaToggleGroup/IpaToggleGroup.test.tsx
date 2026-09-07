@@ -5,6 +5,7 @@ import { describe, afterEach, it, expect, vi } from "vitest";
 import IpaToggleGroup, { ToggleOptionProps } from "./IpaToggleGroup";
 // Utils
 import { updateIpaObject } from "src/utils/ipaObjectUtils";
+import { createMetadata } from "src/services/types/metadata";
 
 // Mock of util function: updateIpaObject
 vi.mock("src/utils/ipaObjectUtils", async () => ({
@@ -21,10 +22,12 @@ describe("IpaToggleGroup Component", () => {
     console.log("mockSetOptionSelected called with:", option);
   });
 
-  const mockMetadata = {
+  const mockMetadata = createMetadata({
     objects: {
       sudorule: {
         name: "sudorule",
+        methods: [],
+        primary_key: "cn",
         takes_params: [
           {
             alwaysask: false,
@@ -39,26 +42,22 @@ describe("IpaToggleGroup Component", () => {
             doc: "Types of supported user authentication",
             flags: [],
             label: "User authentication types",
-            maxlength: 255,
             multivalue: false,
             name: "usercategory2",
             no_convert: false,
-            noextrawhitespace: true,
-            optionSelected: "all",
-            pattern_errmsg: "",
-            pattern: "",
             primary_key: false,
             query: false,
             required: false,
             sortorder: 1,
             type: "str",
             values: ["all", ""],
-            writable: true,
           },
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   const defaultProps: ToggleOptionProps = {
     dataCy: "ipa-toggle-group",
