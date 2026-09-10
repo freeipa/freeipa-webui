@@ -81,6 +81,7 @@ import RolesTabs from "src/pages/Roles/RolesTabs";
 import Privileges from "src/pages/Privileges/Privileges";
 import PrivilegesTabs from "src/pages/Privileges/PrivilegesTabs";
 import Permissions from "src/pages/Permissions/Permissions";
+import PermissionsTabs from "src/pages/Permissions/PermissionsTabs";
 import SelfServicePermissions from "src/pages/SelfServicePermissions/SelfServicePermissions";
 import SelfServicePermissionsTabs from "src/pages/SelfServicePermissions/SelfServicePermissionsTabs";
 import { AppLayout } from "src/AppLayout";
@@ -605,6 +606,16 @@ export const AppRoutes = (): React.ReactElement => {
             </Route>
             <Route path="permissions">
               <Route path="" element={<Permissions />} />
+              <Route path=":cn">
+                <Route
+                  path=""
+                  element={<PermissionsTabs section="settings" />}
+                />
+                <Route
+                  path="privileges"
+                  element={<PermissionsTabs section="privileges" />}
+                />
+              </Route>
             </Route>
             <Route path="selfservice-permissions">
               <Route path="" element={<SelfServicePermissions />} />

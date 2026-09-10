@@ -215,6 +215,21 @@ const extendedApi = api.injectEndpoints({
       },
     }),
     /**
+     * Get available privileges via `privilege_find`
+     * @param {string} searchValue - Search value for filtering privileges
+     * @returns {FindRPCResponse} - Response from API
+     */
+    getAvailablePrivileges: build.query<FindRPCResponse, string>({
+      query: (searchValue) =>
+        getCommand({
+          method: "privilege_find",
+          params: [
+            [searchValue],
+            { no_members: true, version: API_VERSION_BACKUP },
+          ],
+        }),
+    }),
+    /**
      * Get available permissions via `permission_find`
      * @param {string} searchValue - Search value for filtering permissions
      * @returns {FindRPCResponse} - Response from API
@@ -330,6 +345,7 @@ export const {
   useDeletePrivilegesMutation,
   useSavePrivilegeMutation,
   useGetPrivilegeByIdQuery,
+  useGetAvailablePrivilegesQuery,
   useGetPermissionsQuery,
   useAddPermissionToPrivilegeMutation,
   useRemovePermissionFromPrivilegeMutation,

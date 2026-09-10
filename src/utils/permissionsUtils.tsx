@@ -50,6 +50,7 @@ export function apiToPermission(
     extratargetfilter: (apiRecord.extratargetfilter as string[]) || [],
     ipapermtargetfilter: (apiRecord.ipapermtargetfilter as string[]) || [],
     memberof: (apiRecord.memberof as string[]) || [],
+    member_privilege: (apiRecord.member_privilege as string[]) || [],
   };
 }
 
@@ -77,6 +78,7 @@ export function createEmptyPermission(): Permission {
     ipapermtargetto: "",
     ipapermtargetfrom: "",
     memberof: [],
+    member_privilege: [],
     targetgroup: "",
     type: "",
   };
