@@ -243,6 +243,7 @@ const TypeAheadSelectWithCreate = (props: PropsToTypeAheadSelectWithCreate) => {
             id={props.id + "-select-option-" + index}
             {...option}
             ref={null}
+            data-cy={option["data-cy"]}
           />
         ))}
       </SelectList>

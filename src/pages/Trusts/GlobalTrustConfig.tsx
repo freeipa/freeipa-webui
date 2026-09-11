@@ -262,7 +262,7 @@ const GlobalTrustConfig = () => {
                     isRequired
                   >
                     <IpaSelect
-                      dataCy="trusts-global-config-select-fallback-primary-group"
+                      dataCy="trusts-global-config-fallback-primary-group"
                       ariaLabel="Fallback primary group select"
                       ipaObject={ipaObject}
                       onChange={recordOnChange}

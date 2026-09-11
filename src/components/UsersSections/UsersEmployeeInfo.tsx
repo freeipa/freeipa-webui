@@ -46,7 +46,7 @@ const UsersEmployeeInfo = (props: PropsToEmployeeInfo) => {
           </FormGroup>
           <FormGroup label="Manager" fieldId="manager">
             <IpaSelect
-              dataCy="user-tab-settings-select-manager"
+              dataCy="user-tab-settings-manager"
               id="manager"
               name="manager"
               options={managerOptions}

@@ -369,7 +369,7 @@ const OtpTokensSettings = (props: OtpTokensSettingsProps) => {
                     className="pf-v6-u-mb-md"
                   >
                     <IpaSelect
-                      dataCy="otp-tokens-tab-settings-select-ipatokenowner"
+                      dataCy="otp-tokens-tab-settings-ipatokenowner"
                       name={"ipatokenowner"}
                       ariaLabel={"Owner select"}
                       ipaObject={ipaObject}
