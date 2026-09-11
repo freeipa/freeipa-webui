@@ -241,7 +241,7 @@ const DelegationsSettings = (props: PropsToSettings) => {
               </FormGroup>
               <FormGroup label="User group" fieldId="group">
                 <IpaSelect
-                  dataCy="delegations-tab-settings-select-group"
+                  dataCy="delegations-tab-settings-group"
                   id="delegations-settings-group"
                   name="group"
                   ipaObject={ipaObject}
@@ -254,7 +254,7 @@ const DelegationsSettings = (props: PropsToSettings) => {
               </FormGroup>
               <FormGroup label="Member user group" fieldId="memberof">
                 <IpaSelect
-                  dataCy="delegations-tab-settings-select-memberof"
+                  dataCy="delegations-tab-settings-memberof"
                   id="delegations-settings-memberof"
                   name="memberof"
                   ipaObject={ipaObject}

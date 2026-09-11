@@ -28,12 +28,6 @@ const ATTR_OPTIONS = SELF_SERVICE_ATTRS.map((attr) => ({
 
 const PERMISSION_OPTIONS = ["read", "write"];
 
-const NO_SELECTION: SelectOptionProps = {
-  value: "",
-  children: NO_SELECTION_OPTION,
-  "data-cy": "modal-select-group-no-selection",
-};
-
 interface PropsToAddModal {
   isOpen: boolean;
   onClose: () => void;
@@ -55,28 +49,33 @@ const AddDelegationModal = (props: PropsToAddModal) => {
   const [group, setGroup] = React.useState("");
   const [selectedAttrs, setSelectedAttrs] = React.useState<string[]>([]);
 
-  const groupOptions = React.useMemo((): SelectOptionProps[] => {
+  const groupNames = React.useMemo(() => {
     const rawResults = groupsQuery.data?.result.result;
     const results = Array.isArray(rawResults)
       ? (rawResults as Array<{ cn?: string | string[] }>)
       : [];
 
-    const options = results.flatMap((entry) => {
+    return results.flatMap((entry) => {
       const cn = Array.isArray(entry.cn) ? entry.cn[0] : entry.cn;
       if (typeof cn !== "string" || cn === "") {
         return [];
       }
-      return [
-        {
-          value: cn,
-          children: cn,
-          "data-cy": `modal-select-group-${cn}`,
-        },
-      ];
+      return [cn];
     });
-
-    return [NO_SELECTION, ...options];
   }, [groupsQuery.data]);
+
+  const getGroupOptions = (fieldId: string): SelectOptionProps[] => [
+    {
+      value: "",
+      children: NO_SELECTION_OPTION,
+      "data-cy": `${fieldId}-select-no-selection`,
+    },
+    ...groupNames.map((cn) => ({
+      value: cn,
+      children: cn,
+      "data-cy": `${fieldId}-select-${cn}`,
+    })),
+  ];
 
   React.useEffect(() => {
     if (props.isOpen && groupsQuery.isError) {
@@ -231,7 +230,7 @@ const AddDelegationModal = (props: PropsToAddModal) => {
       pfComponent: (
         <TypeAheadSelectWithCreate
           id="modal-form-group"
-          options={groupOptions}
+          options={getGroupOptions("modal-form-group")}
           selected={group}
           onSelectedChange={setGroup}
         />
@@ -244,7 +243,7 @@ const AddDelegationModal = (props: PropsToAddModal) => {
       pfComponent: (
         <TypeAheadSelectWithCreate
           id="modal-form-memberof"
-          options={groupOptions}
+          options={getGroupOptions("modal-form-memberof")}
           selected={memberof}
           onSelectedChange={setMemberof}
         />
