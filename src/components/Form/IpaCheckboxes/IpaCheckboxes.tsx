@@ -1,6 +1,6 @@
 import React from "react";
 // PatternFly
-import { Checkbox } from "@patternfly/react-core";
+import { Checkbox, Grid, GridItem } from "@patternfly/react-core";
 // Utils
 import {
   IPAParamDefinition,
@@ -17,6 +17,7 @@ interface CheckboxOption {
 export interface IPAParamDefinitionCheckboxes extends IPAParamDefinition {
   dataCy: string;
   options: CheckboxOption[];
+  withGrid?: boolean;
 }
 
 const IpaCheckboxes = (props: IPAParamDefinitionCheckboxes) => {
@@ -42,32 +43,40 @@ const IpaCheckboxes = (props: IPAParamDefinitionCheckboxes) => {
     }
   };
 
-  return (
-    <>
-      {props.options.map((option, idx) => (
-        <Checkbox
-          data-cy={props.dataCy + "-" + option.value}
-          key={props.name + "-" + option.value}
-          id={props.name + "-" + option.value} // Mandatory
-          name={props.name}
-          label={option.text}
-          onChange={(_event, checked) => updateList(checked, option.value)}
-          isRequired={required}
-          readOnly={readOnly}
-          isChecked={
-            valueAsArray.find((val) => val === option.value) !== undefined
-          }
-          aria-label={props.name}
-          className={
-            idx !== props.options.length - 1
-              ? "pf-v6-u-mt-xs pf-v6-u-mb-sm"
-              : ""
-          }
-          isDisabled={readOnly}
-        />
-      ))}
-    </>
+  const renderCheckbox = (option: CheckboxOption, idx: number) => (
+    <Checkbox
+      data-cy={props.dataCy + "-" + option.value}
+      key={props.name + "-" + option.value}
+      id={props.name + "-" + option.value} // Mandatory
+      name={props.name}
+      label={option.text}
+      onChange={(_event, checked) => updateList(checked, option.value)}
+      isRequired={required}
+      readOnly={readOnly}
+      isChecked={valueAsArray.find((val) => val === option.value) !== undefined}
+      aria-label={props.name}
+      className={
+        !props.withGrid && idx !== props.options.length - 1
+          ? "pf-v6-u-mt-xs pf-v6-u-mb-sm"
+          : ""
+      }
+      isDisabled={readOnly}
+    />
   );
+
+  if (props.withGrid) {
+    return (
+      <Grid sm={4}>
+        {props.options.map((option, idx) => (
+          <GridItem key={props.name + "-" + option.value}>
+            {renderCheckbox(option, idx)}
+          </GridItem>
+        ))}
+      </Grid>
+    );
+  }
+
+  return <>{props.options.map((option, idx) => renderCheckbox(option, idx))}</>;
 };
 
 export default IpaCheckboxes;
