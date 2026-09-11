@@ -28,3 +28,27 @@ export const selectOption = (option: string, selector: string) => {
 export const isOptionSelected = (option: string, selector: string) => {
   cy.dataCy(selector + "-toggle").contains(option);
 };
+
+export const selectIpaSelectOption = (dataCy: string, option: string) => {
+  cy.dataCy(dataCy).click();
+  cy.dataCy(dataCy).should("have.attr", "aria-expanded", "true");
+  cy.dataCy(`${dataCy}-select-${option}`).click();
+};
+
+export const isIpaSelectOptionSelected = (dataCy: string, option: string) => {
+  cy.dataCy(dataCy).contains(option);
+};
+
+When(
+  "I select {string} option in the {string} ipa select",
+  (option: string, dataCy: string) => {
+    selectIpaSelectOption(dataCy, option);
+  }
+);
+
+Then(
+  "I should see {string} option in the {string} ipa select",
+  (option: string, dataCy: string) => {
+    isIpaSelectOptionSelected(dataCy, option);
+  }
+);
