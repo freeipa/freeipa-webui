@@ -22,6 +22,9 @@ export const selectOption = (option: string, selector: string) => {
     .scrollIntoView();
   cy.dataCy(selector + "-" + option)
     .find("button")
+    .should("be.visible");
+  cy.dataCy(selector + "-" + option)
+    .find("button")
     .click();
 };
 

@@ -92,7 +92,7 @@ const IpaSelect = (props: IPAParamDefinitionSelect) => {
   // Toggle
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
-      data-cy={props.dataCy}
+      data-cy={props.dataCy + "-select-toggle"}
       id={props.id}
       ref={toggleRef}
       onClick={onToggle}
