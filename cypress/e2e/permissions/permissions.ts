@@ -10,6 +10,17 @@ Given("permission {string} exists", (permissionName: string) => {
 });
 
 Given(
+  "permission {string} exists with subtree {string}",
+  (permissionName: string, subtree: string) => {
+    cy.ipa({
+      command: "permission-add",
+      name: permissionName,
+      specificOptions: `--bindtype=permission --right=read --subtree="${subtree}" --attrs=uid`,
+    });
+  }
+);
+
+Given(
   "permission {string} is member of privilege {string}",
   (permissionName: string, privilegeName: string) => {
     cy.ipa({
