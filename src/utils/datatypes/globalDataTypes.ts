@@ -634,54 +634,6 @@ export interface IdRange {
   dn: string;
 }
 
-export interface Metadata {
-  commands?: Record<string, unknown>;
-  methods?: Record<string, unknown>;
-  objects?: ObjectsMetadata;
-}
-
-interface ObjectsMetadata {
-  [key: string]: ObjectMetadata;
-}
-
-interface ObjectMetadata {
-  name: string;
-  aciattrs?: string[];
-  attribute_members?: { [key: string]: string[] };
-  bindable?: boolean;
-  can_have_permissions?: boolean;
-  takes_params: ParamMetadata[];
-  [key: string]: unknown; // TODO add missing properties
-}
-
-export interface ParamMetadata {
-  alwaysask: boolean;
-  attribute: boolean;
-  autofill: boolean;
-  class: string;
-  cli_metavar: string;
-  cli_name: string;
-  confirm: boolean;
-  deprecated_cli_aliases: string[];
-  deprecated: boolean;
-  doc: string;
-  flags: string[];
-  label: string;
-  maxlength?: number;
-  multivalue: boolean;
-  name: string;
-  no_convert: boolean;
-  noextrawhitespace: boolean;
-  pattern_errmsg?: string;
-  pattern?: string;
-  primary_key: boolean;
-  query: boolean;
-  required: boolean;
-  sortorder: number;
-  type: string;
-  values?: string[];
-}
-
 export interface RadiusServer {
   ipatokenradiusserver: string;
   cn: string;
