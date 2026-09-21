@@ -15,7 +15,12 @@ verify_flatpak_permissions() {
     grep -q "filesystems.*[;=]home:ro" <<< "${flatpack_info}" && die "${err_msg}"
 }
 
+# Firefox <147
 MOZILLA_PROFILES="${HOME}/.mozilla/firefox/profiles.ini"
+if [ ! -f "${MOZILLA_PROFILES}" ]; then
+    # Firefox >=147
+    MOZILLA_PROFILES="${HOME}/.config/mozilla/firefox/profiles.ini"
+fi
 # shellcheck disable=SC2154
 CONTAINER_PROFILE_DIR="$(dirname "${MOZILLA_PROFILES}")/${profile_name}"
 
