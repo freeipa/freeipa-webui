@@ -7,6 +7,7 @@ import {
   HBACService,
   HBACServiceGroup,
   Host,
+  SysAccount,
   HostGroup,
   IDView,
   IDViewOverrideUser,
@@ -261,6 +262,9 @@ export const isSelfServicePermissionSelectable = (
 
 export const isDelegationSelectable = (delegation: Delegation) =>
   delegation.aciname !== "";
+
+export const isSysAccountSelectable = (sysAccount: SysAccount) =>
+  sysAccount.uid !== "";
 
 /**
  * Write JSX error messages into 'apiErrorsJsx' array

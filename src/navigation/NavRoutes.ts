@@ -75,6 +75,8 @@ const PrivilegesGroupRef = "privileges";
 const PermissionsGroupRef = "permissions";
 const SelfServicePermissionsGroupRef = "selfservice-permissions";
 const DelegationsGroupRef = "delegations";
+// - System accounts
+const SystemAccountsGroupRef = "system-accounts";
 // - Configuration
 const ConfigRef = "configuration";
 
@@ -226,6 +228,13 @@ export const getNavigationRoutes = (
               path: "subordinate-id-statistics",
             },
           ],
+        },
+        {
+          label: "System accounts",
+          group: SystemAccountsGroupRef,
+          title: `${BASE_TITLE} - System accounts`,
+          path: "system-accounts",
+          items: [],
         },
       ],
     },
