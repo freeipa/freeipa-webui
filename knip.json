@@ -34,6 +34,7 @@
     "src/hooks/useTranslation.ts",
     "src/services/rpci18n.ts",
     "src/services/rpc.ts",
+    "src/services/types/*.ts",
     "src/components/Form/CategoryToggleSection/CategoryToggleSection.tsx",
     "src/components/Form/CategoryToggleSection/index.ts",
     "src/components/Form/CheckboxListWithFilter/CheckboxListWithFilter.tsx",

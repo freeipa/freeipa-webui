@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
+import { useAppSelector } from "src/store/hooks";
 
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useGetHostGroupsFullDataQuery } from "src/services/rpcHostGroups";
 // Data types
-import { HostGroup, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { HostGroup } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type HostGroupSettingsData = {
   isLoading: boolean;
@@ -22,9 +23,10 @@ type HostGroupSettingsData = {
 
 const useHostGroupSettings = (groupId: string): HostGroupSettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
+  const metadata = metadataQuery.data;
 
   // [API call] Host Group
   const hostGroupFullDataQuery = useGetHostGroupsFullDataQuery(groupId);
@@ -40,7 +42,7 @@ const useHostGroupSettings = (groupId: string): HostGroupSettingsData => {
   }, [groupFullData, hostGroupFullDataQuery.isFetching]);
 
   const settings = {
-    isLoading: metadataLoading || isFullDataLoading,
+    isLoading: isFullDataLoading,
     isFetching: hostGroupFullDataQuery.isFetching,
     modified,
     setModified,

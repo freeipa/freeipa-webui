@@ -1,13 +1,15 @@
 import React from "react";
 // RPC
-import { useGetObjectMetadataQuery, KwError } from "src/services/rpc";
+import { KwError } from "src/services/rpc";
+import { useAppSelector } from "src/store/hooks";
+
 import { useDnsZoneDetailsQuery } from "src/services/rpcDnsZones";
 // Data types
 import {
   DnsPermissionType,
   DNSZone,
-  Metadata,
 } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Utils
 import { apiToDnsZone } from "src/utils/dnsZonesUtils";
 
@@ -28,9 +30,10 @@ type DnsZonesSettingsData = {
 
 const useDnsZonesData = (dnsZoneId: string): DnsZonesSettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
+  const metadata = metadataQuery.data;
 
   // [API call] DNS Zones
   const dnsZoneDetails = useDnsZoneDetailsQuery(dnsZoneId);
@@ -75,7 +78,7 @@ const useDnsZonesData = (dnsZoneId: string): DnsZonesSettingsData => {
   }, [dnsZoneData, dnsZoneDetails.isFetching]);
 
   const settings: DnsZonesSettingsData = {
-    isLoading: metadataLoading || isDnsZoneDataLoading,
+    isLoading: isDnsZoneDataLoading,
     isFetching: dnsZoneDetails.isFetching,
     modified,
     setModified,

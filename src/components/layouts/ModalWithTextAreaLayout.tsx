@@ -10,7 +10,7 @@ import {
   TextArea,
 } from "@patternfly/react-core";
 // Data types
-import { Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 interface PropsToPKModal {
   dataCy: string;

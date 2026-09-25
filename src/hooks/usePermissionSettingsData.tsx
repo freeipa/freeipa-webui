@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useGetPermissionByIdQuery } from "src/services/rpcPermissions";
-import { Permission, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { useAppSelector } from "src/store/hooks";
+import { Permission } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type PermissionSettingsData = {
   isLoading: boolean;
@@ -18,8 +19,9 @@ type PermissionSettingsData = {
 };
 
 const usePermissionSettings = (cn: string): PermissionSettingsData => {
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
 
   const permissionQuery = useGetPermissionByIdQuery(cn, {
     skip: !cn,
@@ -99,14 +101,11 @@ const usePermissionSettings = (cn: string): PermissionSettingsData => {
   };
 
   return {
-    isLoading:
-      metadataQuery.isLoading ||
-      permissionQuery.isLoading ||
-      permissionQuery.isFetching,
+    isLoading: permissionQuery.isLoading || permissionQuery.isFetching,
     isFetching: permissionQuery.isFetching,
     modified,
     setModified,
-    metadata,
+    metadata: metadataQuery.data,
     originalPermission,
     permission,
     setPermission,

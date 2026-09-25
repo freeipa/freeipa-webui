@@ -1,10 +1,13 @@
 import React from "react";
+import { useAppSelector } from "src/store/hooks";
+
 // RPC
 import { useGetOtpTokenQuery } from "src/services/rpcOtpTokens";
 import { useGetActiveUsersQuery } from "src/services/rpcUsers";
-import { useGetObjectMetadataQuery } from "src/services/rpc";
+
 // Data types
-import { Metadata, OtpToken, User } from "src/utils/datatypes/globalDataTypes";
+import { OtpToken, User } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 import { apiToOtpToken, createEmptyOtpToken } from "src/utils/otpTokensUtils";
 
 type OtpTokensSettingsData = {
@@ -26,9 +29,10 @@ const useOtpTokensSettingsData = (
   otpTokenId: string
 ): OtpTokensSettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
+  const metadata = metadataQuery.data;
 
   // [API call] OTP token
   const otpTokenQuery = useGetOtpTokenQuery(otpTokenId);
@@ -66,10 +70,9 @@ const useOtpTokensSettingsData = (
   }, [activeUsers, activeUsersQuery.isFetching]);
 
   const settings: OtpTokensSettingsData = {
-    isLoading: metadataLoading || isOtpTokenLoading || isActiveUsersLoading,
+    isLoading: isOtpTokenLoading || isActiveUsersLoading,
     isFetching: otpTokenQuery.isFetching || activeUsersQuery.isFetching,
     refetch: () => {
-      metadataQuery.refetch();
       otpTokenQuery.refetch();
       activeUsersQuery.refetch();
     },
