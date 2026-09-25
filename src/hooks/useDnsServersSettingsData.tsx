@@ -1,9 +1,11 @@
 import React from "react";
+import { useAppSelector } from "src/store/hooks";
+
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useDnsServersShowQuery } from "src/services/rpcDnsServers";
 // Data types
-import { Metadata, DnsServer } from "src/utils/datatypes/globalDataTypes";
+import { DnsServer } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 import { apiToDnsServer } from "src/utils/dnsServersUtils";
 
 type DnsServersSettingsData = {
@@ -24,9 +26,10 @@ const useDnsServersSettingsData = (
   dnsServerId: string
 ): DnsServersSettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
+  const metadata = metadataQuery.data;
 
   // [API call] DNS server
   const dnsServerDetails = useDnsServersShowQuery(dnsServerId);
@@ -56,7 +59,7 @@ const useDnsServersSettingsData = (
   }, [dnsServerData, dnsServerDetails.isFetching]);
 
   const settings: DnsServersSettingsData = {
-    isLoading: metadataLoading || isDnsServerDataLoading,
+    isLoading: isDnsServerDataLoading,
     isFetching: dnsServerDetails.isFetching,
     modified,
     setModified,

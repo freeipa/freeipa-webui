@@ -8,7 +8,8 @@ import {
   TextInput,
 } from "@patternfly/react-core";
 // Data types
-import { Host, Metadata } from "../../utils/datatypes/globalDataTypes";
+import { Host } from "../../utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Forms
 import IpaTextArea from "../Form/IpaTextArea";
 import IpaTextInput from "../Form/IpaTextInput";

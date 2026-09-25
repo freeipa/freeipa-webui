@@ -12,7 +12,8 @@ import {
 import { CheckIcon } from "@patternfly/react-icons";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons";
 // Data types
-import { Metadata, Service } from "src/utils/datatypes/globalDataTypes";
+import { Service } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 interface PropsToServiceProvisioning {
   service: Partial<Service>;
