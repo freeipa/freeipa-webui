@@ -1,14 +1,15 @@
 import React from "react";
+import { useAppSelector } from "src/store/hooks";
+
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useGlobalTrustConfigShowQuery } from "src/services/rpcTrusts";
 import { useGroupFindQuery } from "src/services/rpcUserGroups";
 // Data types
 import {
   GlobalTrustConfig,
   groupType,
-  Metadata,
 } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 import { getModifiedValues, isObjectModified } from "src/utils/ipaObjectUtils";
 import { apiToGlobalTrustConfig } from "src/utils/trustsConfigUtils";
 
@@ -29,9 +30,10 @@ type TrustsConfigSettingsData = {
 
 const useTrustsConfigData = (): TrustsConfigSettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
+  const metadata = metadataQuery.data;
 
   // [API call] Global trust config
   const globalTrustConfigDetails = useGlobalTrustConfigShowQuery();
@@ -76,7 +78,7 @@ const useTrustsConfigData = (): TrustsConfigSettingsData => {
   ]);
 
   const settings: TrustsConfigSettingsData = {
-    isLoading: metadataLoading || isGlobalTrustConfigDataLoading,
+    isLoading: isGlobalTrustConfigDataLoading,
     isFetching: globalTrustConfigDetails.isFetching,
     modified,
     setModified,

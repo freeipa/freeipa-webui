@@ -12,13 +12,13 @@ import {
 } from "@patternfly/react-core";
 // Data types
 import {
-  Metadata,
   User,
   IDPServer,
   RadiusServer,
   PwPolicy,
   KrbPolicy,
 } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Layouts
 import TitleLayout from "src/components/layouts/TitleLayout";
 import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayout";

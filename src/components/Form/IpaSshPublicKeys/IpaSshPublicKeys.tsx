@@ -18,7 +18,7 @@ import SecondaryButton from "../../layouts/SecondaryButton";
 // Modals
 import ConfirmationModal from "../../modals/ConfirmationModal";
 // Data types
-import { Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // ipaObject utils
 import { getParamProperties } from "src/utils/ipaObjectUtils";
 import { KeyIcon } from "@patternfly/react-icons";

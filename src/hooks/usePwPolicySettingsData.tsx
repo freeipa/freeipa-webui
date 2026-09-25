@@ -1,9 +1,11 @@
 import React from "react";
+import { useAppSelector } from "src/store/hooks";
+
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { usePwPolicyShowQuery } from "src/services/rpcPwdPolicies";
 // Data types
-import { PwPolicy, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { PwPolicy } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type PwPolicySettingsData = {
   isLoading: boolean;
@@ -23,9 +25,10 @@ const usePasswordPolicySettings = (
   pwPolicyId: string
 ): PwPolicySettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
+  const metadata = metadataQuery.data;
 
   // [API call] Password Policy
   const pwPolicyDetails = usePwPolicyShowQuery(pwPolicyId);
@@ -44,7 +47,7 @@ const usePasswordPolicySettings = (
   }, [pwPolicyData, pwPolicyDetails.isFetching]);
 
   const settings = {
-    isLoading: metadataLoading || isPwPolicyDataLoading,
+    isLoading: isPwPolicyDataLoading,
     isFetching: pwPolicyDetails.isFetching,
     modified,
     setModified,
