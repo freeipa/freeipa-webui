@@ -17,7 +17,6 @@ import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // RPC
 import {
   useSimpleMutCommandMutation,
-  useGetObjectMetadataQuery,
   Command,
   FindRPCResponse,
 } from "src/services/rpc";
@@ -61,8 +60,10 @@ const AddUser = (props: PropsToAddUser) => {
   ) as string;
 
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
+  const metadata = metadataQuery.data;
 
   // Define 'executeCommand' to add user data to IPA server
   const [addUser] = useAddUserMutation();
@@ -99,11 +100,12 @@ const AddUser = (props: PropsToAddUser) => {
   const uidParam = metadata.objects?.user?.takes_params?.find(
     (param) => param.name === "uid"
   );
-  const userLoginPattern = uidParam?.pattern
-    ? new RegExp(uidParam.pattern)
-    : /(?!^[0-9]+$)^[a-zA-Z0-9_.][a-zA-Z0-9_.-]*[a-zA-Z0-9_.$-]?$/;
+  const userLoginPattern =
+    uidParam && uidParam.class === "Str"
+      ? new RegExp(uidParam.pattern)
+      : /(?!^[0-9]+$)^[a-zA-Z0-9_.][a-zA-Z0-9_.-]*[a-zA-Z0-9_.$-]?$/;
   const userLoginPatternErrMsg =
-    uidParam?.pattern_errmsg ||
+    (uidParam && uidParam.class === "Str" && uidParam.pattern_errmsg) ||
     "may only include letters, numbers, _, -, . and $";
 
   // [API call] Get GIDs

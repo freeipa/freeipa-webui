@@ -2,7 +2,8 @@ import React from "react";
 // PatternFly
 import { Form, FormGroup, TextArea } from "@patternfly/react-core";
 // Data types
-import { Config, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Config } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Form
 import IpaDropdownSearch from "src/components/Form/IpaDropdownSearch";
 

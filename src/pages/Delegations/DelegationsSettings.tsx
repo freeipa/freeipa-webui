@@ -23,9 +23,9 @@ import { addAlert } from "src/store/Global/alerts-slice";
 import { useAppDispatch } from "src/store/hooks";
 import {
   Delegation,
-  Metadata,
   SELF_SERVICE_ATTRS,
 } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 import { asRecord } from "src/utils/delegationsUtils";
 import HelperTextWithIcon from "src/components/layouts/HelperTextWithIcon";
 

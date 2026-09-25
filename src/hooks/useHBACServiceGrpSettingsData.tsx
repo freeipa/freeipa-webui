@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
+import { useAppSelector } from "src/store/hooks";
 
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useGetHbacSvcGrpFullDataQuery } from "src/services/rpcHBACSvcGroups";
 // Data types
-import {
-  HBACServiceGroup,
-  Metadata,
-} from "src/utils/datatypes/globalDataTypes";
+import { HBACServiceGroup } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type SettingsData = {
   isLoading: boolean;
@@ -25,9 +23,10 @@ type SettingsData = {
 
 const useHBACServiceGroupSettings = (srvId: string): SettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
+  const metadata = metadataQuery.data;
 
   // [API call] HBAC service group
   const srvFullDataQuery = useGetHbacSvcGrpFullDataQuery(srvId);
@@ -43,7 +42,7 @@ const useHBACServiceGroupSettings = (srvId: string): SettingsData => {
   }, [srvFullData, srvFullDataQuery.isFetching]);
 
   const settings = {
-    isLoading: metadataLoading || isFullDataLoading,
+    isLoading: isFullDataLoading,
     isFetching: srvFullDataQuery.isFetching,
     modified,
     setModified,

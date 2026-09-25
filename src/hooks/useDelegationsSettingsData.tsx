@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { useGetObjectMetadataQuery } from "src/services/rpc";
+import { useAppSelector } from "src/store/hooks";
 import { useGetDelegationByIdQuery } from "src/services/rpcDelegations";
-import { Delegation, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Delegation } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type DelegationSettingsData = {
   isLoading: boolean;
@@ -20,9 +21,9 @@ type DelegationSettingsData = {
 const useDelegationSettings = (
   delegationId: string
 ): DelegationSettingsData => {
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
 
   const delegationQuery = useGetDelegationByIdQuery(delegationId, {
     skip: !delegationId,
@@ -96,11 +97,11 @@ const useDelegationSettings = (
   };
 
   return {
-    isLoading: metadataLoading || isDelegationLoading || !initialized,
+    isLoading: isDelegationLoading || !initialized,
     isFetching: delegationQuery.isFetching,
     modified,
     setModified,
-    metadata,
+    metadata: metadataQuery.data,
     originalDelegation,
     delegation,
     setDelegation,
