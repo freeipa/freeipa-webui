@@ -57,6 +57,12 @@ interface PropsToTable<T> {
   paginationData?: PaginationData;
   statusElementName?: string; // This will be used to determine the status and style the table rows (grey if disabled)
   invertStatusValue?: boolean; // Sometimes the status is assumed "enabled" (i.e. `ipaenabledflag`) and others is "disabled" (i.e. `ipatokendisabled`)
+  booleanColumns?: BooleanColumnDef[]; // Additional columns to render with Enabled/Disabled icons and grey styling
+}
+
+interface BooleanColumnDef {
+  column: string; // Key name of the column
+  invertValue?: boolean; // If true, invert the boolean (e.g. true → Disabled)
 }
 
 const MainTable = <T,>(props: PropsToTable<T>) => {
@@ -259,20 +265,36 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
     </Tr>
   );
 
+  // Helper: Find a booleanColumns definition by key name
+  const findBooleanColumnDef = (keyName: string) =>
+    props.booleanColumns?.find((def) => def.column === keyName);
+
+  // Helper: Check if a column should render as a boolean (Enabled/Disabled)
+  const isBooleanColumn = (keyName: string) =>
+    keyName === props.statusElementName || !!findBooleanColumnDef(keyName);
+
+  // Helper: Resolve whether a boolean value represents "enabled" for a given column
+  const resolveEnabled = (keyName: string, value: boolean | string) => {
+    const raw = value.toString() === "true";
+    if (keyName === props.statusElementName) {
+      return invertStatusValue(raw);
+    }
+    const def = findBooleanColumnDef(keyName);
+    return def?.invertValue ? !raw : raw;
+  };
+
   // Helper method: Set styles depending on the status
   const setStyleOnStatus = (keyName: string, status: boolean | string) => {
-    if (keyName === props.statusElementName) {
-      const isEnabled = invertStatusValue(status.toString() === "true");
-
+    if (isBooleanColumn(keyName)) {
+      const isEnabled = resolveEnabled(keyName, status);
       return { color: isEnabled ? "black" : "grey" };
     }
     return { color: "black" };
   };
 
-  // Helper function to process boolean elements and return a string
-  // (used for displaying statuses values in the table)
-  const processBoolean = (value: boolean | string) => {
-    const isEnabled = invertStatusValue(value.toString() === "true");
+  // Helper function to render a boolean value with Enabled/Disabled icons
+  const renderBoolean = (keyName: string, value: boolean | string) => {
+    const isEnabled = resolveEnabled(keyName, value);
 
     if (!isEnabled) {
       return (
@@ -290,8 +312,8 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
   };
 
   const renderCellContent = (element: T, keyName: string) => {
-    if (props.statusElementName && keyName === props.statusElementName) {
-      return processBoolean(element[keyName]);
+    if (isBooleanColumn(keyName)) {
+      return renderBoolean(keyName, element[keyName]);
     } else {
       if (Array.isArray(element[keyName])) {
         return element[keyName].join(", ");
@@ -343,9 +365,8 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
                   to={"/" + props.pathname + "/" + element[keyName]}
                   state={element}
                 >
-                  {props.statusElementName &&
-                  keyName === props.statusElementName
-                    ? processBoolean(element[keyName])
+                  {isBooleanColumn(keyName)
+                    ? renderBoolean(keyName, element[keyName])
                     : element[keyName]}
                 </Link>
               ) : (
