@@ -70,7 +70,7 @@ const SetupBrowserConfig = () => {
       >
         <ListItem>
           Import{" "}
-          <a href="https://server.ipa.demo/ipa/config/ca.crt">
+          <a href="/ipa/config/ca.crt" target="_blank">
             Certificate Authority certificate
           </a>
         </ListItem>
@@ -126,7 +126,9 @@ const SetupBrowserConfig = () => {
       >
         <ListItem>
           Download the{" "}
-          <a href="https://server.ipa.demo/ipa/config/ca.crt">CA certificate</a>
+          <a href="/ipa/config/ca.crt" target="_blank">
+            CA certificate
+          </a>
           . Alternatively, if the host is also an IdM client, you can find the
           certificate in <i>/etc/ipa/ca.crt</i>
         </ListItem>
