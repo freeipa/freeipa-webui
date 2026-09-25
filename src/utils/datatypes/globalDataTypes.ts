@@ -218,6 +218,12 @@ export interface SysAccount {
   uid: string;
   dn: string;
   description: string;
+  userpassword: string;
+  random: boolean;
+  randompassword: string;
+  privileged: boolean;
+  nsaccountlock: boolean;
+  memberof: string[];
 }
 
 export interface Privilege {

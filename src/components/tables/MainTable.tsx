@@ -57,6 +57,17 @@ interface PropsToTable<T> {
   paginationData?: PaginationData;
   statusElementName?: string; // This will be used to determine the status and style the table rows (grey if disabled)
   invertStatusValue?: boolean; // Sometimes the status is assumed "enabled" (i.e. `ipaenabledflag`) and others is "disabled" (i.e. `ipatokendisabled`)
+  booleanColumns?: BooleanColumnDef[]; // Additional columns to render with Enabled/Disabled icons and grey styling
+}
+
+interface BooleanColumnDef {
+  column: string; // Key name of the column
+  invertValue?: boolean; // If true, invert the boolean (e.g. true → Disabled)
+}
+
+interface TableCellRecord<V = unknown> {
+  key: string;
+  value: V;
 }
 
 const MainTable = <T,>(props: PropsToTable<T>) => {
@@ -259,45 +270,58 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
     </Tr>
   );
 
-  // Helper method: Set styles depending on the status
-  const setStyleOnStatus = (keyName: string, status: boolean | string) => {
-    if (keyName === props.statusElementName) {
-      const isEnabled = invertStatusValue(status.toString() === "true");
+  // Helper: Find a booleanColumns definition by key name
+  const findBooleanColumnDef = (keyName: string) =>
+    props.booleanColumns?.find((def) => def.column === keyName);
 
+  // Type guard: Check if a cell should render as a boolean (Enabled/Disabled)
+  const isBooleanCell = (
+    cell: TableCellRecord
+  ): cell is TableCellRecord<boolean | string> =>
+    cell.key === props.statusElementName || !!findBooleanColumnDef(cell.key);
+
+  // Resolve whether a boolean cell represents "enabled"
+  const resolveEnabled = (cell: TableCellRecord<boolean | string>): boolean => {
+    const raw = cell.value.toString() === "true";
+    if (cell.key === props.statusElementName) {
+      return invertStatusValue(raw);
+    }
+    const def = findBooleanColumnDef(cell.key);
+    return def?.invertValue ? !raw : raw;
+  };
+
+  // Set styles depending on the status
+  const setStyleOnStatus = (cell: TableCellRecord) => {
+    if (isBooleanCell(cell)) {
+      const isEnabled = resolveEnabled(cell);
       return { color: isEnabled ? "black" : "grey" };
     }
     return { color: "black" };
   };
 
-  // Helper function to process boolean elements and return a string
-  // (used for displaying statuses values in the table)
-  const processBoolean = (value: boolean | string) => {
-    const isEnabled = invertStatusValue(value.toString() === "true");
-
-    if (!isEnabled) {
-      return (
-        <>
-          <MinusIcon key="minus-icon" /> {" Disabled"}
-        </>
-      );
-    } else {
-      return (
-        <>
-          <CheckIcon key="check-icon" /> {" Enabled"}
-        </>
-      );
-    }
+  // Render a boolean value with Enabled/Disabled icons
+  const renderBoolean = (cell: TableCellRecord<boolean | string>) => {
+    const isEnabled = resolveEnabled(cell);
+    return isEnabled ? (
+      <>
+        <CheckIcon key="check-icon" /> {" Enabled"}
+      </>
+    ) : (
+      <>
+        <MinusIcon key="minus-icon" /> {" Disabled"}
+      </>
+    );
   };
 
-  const renderCellContent = (element: T, keyName: string) => {
-    if (props.statusElementName && keyName === props.statusElementName) {
-      return processBoolean(element[keyName]);
+  const renderCellContent = (cell: TableCellRecord) => {
+    if (isBooleanCell(cell)) {
+      return renderBoolean(cell);
     } else {
-      if (Array.isArray(element[keyName])) {
-        return element[keyName].join(", ");
+      if (Array.isArray(cell.value)) {
+        return (cell.value as string[]).join(", ");
       }
 
-      return element[keyName];
+      return cell.value as React.ReactNode;
     }
   };
 
@@ -328,31 +352,35 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
             />
           )}
           {/* Table rows */}
-          {props.keyNames.map((keyName, idx) => (
-            <Td
-              dataLabel={columnNames[keyName]}
-              key={keyName + "-" + idx + "-" + elementName}
-              id={idx.toString()}
-              style={setStyleOnStatus(keyName, element[keyName])}
-              aria-label={keyName}
-              data-label={keyName}
-              data-cy={`table-row-${elementName}-${keyName}`}
-            >
-              {idx === 0 && !!props.showLink ? (
-                <Link
-                  to={"/" + props.pathname + "/" + element[keyName]}
-                  state={element}
-                >
-                  {props.statusElementName &&
-                  keyName === props.statusElementName
-                    ? processBoolean(element[keyName])
-                    : element[keyName]}
-                </Link>
-              ) : (
-                <>{renderCellContent(element, keyName)}</>
-              )}
-            </Td>
-          ))}
+          {props.keyNames.map((keyName, idx) => {
+            const cell: TableCellRecord = {
+              key: keyName,
+              value: element[keyName],
+            };
+            const content = renderCellContent(cell);
+            return (
+              <Td
+                dataLabel={columnNames[keyName]}
+                key={keyName + "-" + idx + "-" + elementName}
+                id={idx.toString()}
+                style={setStyleOnStatus(cell)}
+                aria-label={keyName}
+                data-label={keyName}
+                data-cy={`table-row-${elementName}-${keyName}`}
+              >
+                {idx === 0 && !!props.showLink ? (
+                  <Link
+                    to={"/" + props.pathname + "/" + element[keyName]}
+                    state={element}
+                  >
+                    {content}
+                  </Link>
+                ) : (
+                  content
+                )}
+              </Td>
+            );
+          })}
         </Tr>
       );
     } else {
