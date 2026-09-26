@@ -87,6 +87,7 @@ import SelfServicePermissionsTabs from "src/pages/SelfServicePermissions/SelfSer
 import { AppLayout } from "src/AppLayout";
 import Delegations from "src/pages/Delegations/Delegations";
 import DelegationsTabs from "src/pages/Delegations/DelegationsTabs";
+import SystemAccounts from "src/pages/SystemAccounts/SystemAccounts";
 
 // Renders routes (React)
 export const AppRoutes = (): React.ReactElement => {
@@ -634,6 +635,9 @@ export const AppRoutes = (): React.ReactElement => {
                   element={<DelegationsTabs section="settings" />}
                 />
               </Route>
+            </Route>
+            <Route path="system-accounts">
+              <Route path="" element={<SystemAccounts />} />
             </Route>
             <Route path="configuration" element={<Configuration />} />
             {/* Redirect to Active users page if user is logged in and navigates to the root page */}
