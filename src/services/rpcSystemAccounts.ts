@@ -6,7 +6,7 @@ import {
   BatchRPCResponse,
   FindRPCResponse,
 } from "./rpc";
-import { apiToSysAccount } from "src/utils/SystemAccountUtils";
+import { apiToSysAccount } from "src/utils/systemAccountUtils";
 import { API_VERSION_BACKUP } from "../utils/utils";
 import { SysAccount } from "../utils/datatypes/globalDataTypes";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -35,8 +35,21 @@ interface SysAccountsFullDataResponse {
   totalCount: number;
 }
 
+interface SysAccountShowPayload {
+  uidsList: string[];
+  no_members?: boolean;
+  version: string;
+}
+
 interface SysAccountAddPayload {
   cn: string;
+  description?: string;
+  userpassword?: string;
+  privileged?: boolean;
+}
+
+export interface SysAccountModPayload {
+  uid: string;
   description?: string;
   userpassword?: string;
   privileged?: boolean;
@@ -231,9 +244,72 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(commands, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Get system account details by uid via batch `sysaccount_show`
+     * @param {SysAccountShowPayload} payloadData - Payload with uid list
+     * @returns {SysAccount[]} - System account details
+     */
+    getSysAccountsInfoByName: build.query<SysAccount[], SysAccountShowPayload>({
+      query: (payload) => {
+        const uids = payload.uidsList;
+        const noMembers = payload.no_members || false;
+        const apiVersion = payload.version || API_VERSION_BACKUP;
+        const showCommands: Command[] = uids.map((uid) => ({
+          method: "sysaccount_show",
+          params: [[uid], { no_members: noMembers }],
+        }));
+        return getBatchCommand(showCommands, apiVersion);
+      },
+      transformResponse: (response: BatchRPCResponse): SysAccount[] => {
+        const sysAccountList: SysAccount[] = [];
+        const results = response.result.results;
+        const count = response.result.count;
+        for (let i = 0; i < count; i++) {
+          const sysAccountData = apiToSysAccount(results[i].result);
+          sysAccountList.push(sysAccountData);
+        }
+        return sysAccountList;
+      },
+    }),
+    /**
+     * Modify an existing system account via `sysaccount_mod`
+     * @param {Partial<SysAccount>} - System account data to modify (must include uid)
+     * @returns {FindRPCResponse} - Response from API
+     */
+    saveSysAccount: build.mutation<FindRPCResponse, SysAccountModPayload>({
+      query: (sysAccount) => {
+        const params: Record<string, unknown> = {
+          version: API_VERSION_BACKUP,
+        };
+        if (sysAccount.description) {
+          params.description = sysAccount.description;
+        }
+        if (sysAccount.userpassword) {
+          params.userpassword = sysAccount.userpassword;
+        }
+        if (sysAccount.privileged !== undefined) {
+          params.privileged = sysAccount.privileged;
+        }
+        return getCommand({
+          method: "sysaccount_mod",
+          params: [[sysAccount.uid], params],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
+
+export const useSysAccountShowQuery = (uid: string) => {
+  return useGetSysAccountsInfoByNameQuery(
+    {
+      uidsList: [uid],
+      no_members: true,
+      version: API_VERSION_BACKUP,
+    },
+    { skip: !uid }
+  );
+};
 
 export const {
   useGetSysaccountsQuery,
@@ -242,4 +318,6 @@ export const {
   useDeleteSysAccountsMutation,
   useSysaccountEnableMutation,
   useSysaccountDisableMutation,
+  useGetSysAccountsInfoByNameQuery,
+  useSaveSysAccountMutation,
 } = extendedApi;
