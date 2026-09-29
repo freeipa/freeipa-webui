@@ -371,7 +371,7 @@ const SystemAccounts = () => {
                     hasCheckboxes={true}
                     pathname="system-accounts"
                     showTableRows={!isBatchFetching}
-                    showLink={false}
+                    showLink={true}
                     elementsData={{
                       isElementSelectable: isSysAccountSelectable,
                       selectedElements: selectedSysAccounts,

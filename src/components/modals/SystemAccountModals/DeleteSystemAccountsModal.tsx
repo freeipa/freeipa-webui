@@ -17,6 +17,7 @@ import { ErrorData, SysAccount } from "src/utils/datatypes/globalDataTypes";
 import ErrorModal from "src/components/modals/ErrorModal";
 import { BatchRPCResponse } from "src/services/rpc";
 import { useDeleteSysAccountsMutation } from "src/services/rpcSystemAccounts";
+import { useNavigate } from "react-router";
 
 interface DeleteSystemAccountsModalProps {
   isOpen: boolean;
@@ -28,10 +29,12 @@ interface DeleteSystemAccountsModalProps {
   onRefresh: () => void;
   updateIsDeleteButtonDisabled: (value: boolean) => void;
   updateIsDeletion: (value: boolean) => void;
+  fromSettings?: boolean;
 }
 
 const DeleteSystemAccountsModal = (props: DeleteSystemAccountsModalProps) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   // RPC calls
   const [executeSysAccountsDelCommand] = useDeleteSysAccountsMutation();
@@ -152,7 +155,11 @@ const DeleteSystemAccountsModal = (props: DeleteSystemAccountsModalProps) => {
           );
 
           props.onClose();
-          props.onRefresh();
+          if (props.fromSettings) {
+            navigate("/system-accounts");
+          } else {
+            props.onRefresh();
+          }
         }
       })
       .finally(() => {

@@ -213,5 +213,6 @@
   "privileges-settings": [],
   "selfservice-permissions-settings": [],
   "delegations-settings": [],
-  "permissions-settings": []
+  "permissions-settings": [],
+  "sysaccount-settings": []
 }
