@@ -39,6 +39,7 @@
             RewriteRule ^(.*)/assets/(.*)$ assets/$2 [L]
             RewriteCond %{REQUEST_FILENAME} !-f
             RewriteRule ^ index.html [QSA,L]
+            Header set Content-Security-Policy ""
           </Directory>
 
     - name: Temporary fix for CryptographyDeprecationWarning
@@ -46,6 +47,14 @@
         path: /usr/lib/python3.14/site-packages/ipalib/constants.py
         regexp: '^(\s*)b"\\x00" \* 8\), modes\.CBC\(b"\\x00" \* 8\)\):'
         replace: '\1b"\\x00" * 24), modes.CBC(b"\\x00" * 8)):'
+
+    - name: Override strict CSP in modern-ui block for dev server
+      ansible.builtin.replace:
+        path: /etc/httpd/conf.d/ipa.conf
+        after: "Alias /ipa/modern-ui"
+        before: "</Directory>"
+        regexp: '^\s*Header set(?:ifempty)? Content-Security-Policy ".*"'
+        replace: '  Header set Content-Security-Policy ""'
 
     - name: Restart web server
       ansible.builtin.systemd_service:
