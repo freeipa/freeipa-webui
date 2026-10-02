@@ -1,9 +1,11 @@
 /* eslint-disable @eslint-react/hooks-extra/no-direct-set-state-in-use-effect */
 import React from "react";
+import { useAppSelector } from "src/store/hooks";
+
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 // Data types
-import { Trust, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Trust } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Utils
 import { apiToTrust } from "src/utils/trustsUtils";
 import { useTrustShowQuery } from "src/services/rpcTrusts";
@@ -24,9 +26,10 @@ type TrustsSettingsData = {
 
 const useTrustsSettingsData = (trustId: string): TrustsSettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
+  const metadata = metadataQuery.data;
 
   // [API call] Trust
   const trustDetails = useTrustShowQuery(trustId);
@@ -49,7 +52,7 @@ const useTrustsSettingsData = (trustId: string): TrustsSettingsData => {
   }, [trustData, trustDetails.isFetching]);
 
   const settings: TrustsSettingsData = {
-    isLoading: metadataLoading || isTrustDataLoading,
+    isLoading: isTrustDataLoading,
     isFetching: trustDetails.isFetching,
     modified,
     setModified,

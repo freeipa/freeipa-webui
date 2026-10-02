@@ -20,7 +20,8 @@ import {
 } from "src/services/rpcOtpTokens";
 import { BatchResult } from "src/services/rpc";
 // Data types
-import { OtpToken, Metadata, User } from "src/utils/datatypes/globalDataTypes";
+import { OtpToken, User } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";

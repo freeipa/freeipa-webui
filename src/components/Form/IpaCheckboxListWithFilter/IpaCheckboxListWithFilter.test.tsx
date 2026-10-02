@@ -7,6 +7,7 @@ import IpaCheckboxListWithFilter, {
 } from "./IpaCheckboxListWithFilter";
 // Utils
 import { updateCheckboxList } from "src/utils/ipaObjectUtils";
+import { createMetadata } from "src/services/types/metadata";
 
 // Mock of util function: updateCheckboxList
 vi.mock("src/utils/ipaObjectUtils", async () => ({
@@ -20,10 +21,12 @@ describe("IpaCheckboxListWithFilter Component", () => {
     console.log("mockOnChange called with:", ipaObject);
   });
 
-  const mockMetadata = {
+  const mockMetadata = createMetadata({
     objects: {
       user: {
         name: "user",
+        methods: [],
+        primary_key: "uid",
         takes_params: [
           {
             alwaysask: false,
@@ -39,13 +42,9 @@ describe("IpaCheckboxListWithFilter Component", () => {
             doc: "Types of supported user authentication",
             flags: [],
             label: "User authentication types",
-            maxlength: 255,
             multivalue: false,
             name: "ipauserauthtype2",
             no_convert: false,
-            noextrawhitespace: true,
-            pattern_errmsg: "",
-            pattern: "",
             primary_key: false,
             query: false,
             required: false,
@@ -60,12 +59,13 @@ describe("IpaCheckboxListWithFilter Component", () => {
               "idp",
               "passkey",
             ],
-            writable: true,
           },
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   const defaultProps: IPAParamDefinitionCheckboxListWithFilter = {
     dataCy: "ipa-checkbox-list-filter",

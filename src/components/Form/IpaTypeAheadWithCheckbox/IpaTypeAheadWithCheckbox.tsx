@@ -4,7 +4,6 @@ import {
   IPAParamDefinition,
   getParamProperties,
   toArray,
-  getValue,
 } from "src/utils/ipaObjectUtils";
 import { TypeAheadWithCheckbox } from "src/components/TypeAheadWithCheckbox";
 
@@ -20,13 +19,9 @@ const IpaTypeAheadWithCheckbox = (
   const propName = props.propertyName || props.name;
   const { readOnly, value } = getParamProperties(props);
 
-  // getParamProperties returns value: "" when metadata is missing,
-  // so fall back to reading directly from ipaObject for array fields
-  const rawValue = value !== "" ? value : getValue(props.ipaObject, propName);
-
   const selectedValues = React.useMemo(() => {
-    return toArray(rawValue) as string[];
-  }, [rawValue]);
+    return toArray(value) as string[];
+  }, [value]);
 
   // Merge static options with any currently-selected values that are
   // not present in the predefined list (e.g., attrs added via CLI)

@@ -1,9 +1,11 @@
 import React from "react";
+import { useAppSelector } from "src/store/hooks";
+
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useSubidShowQuery } from "src/services/rpcSubIds";
 // Data types
-import { SubId, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { SubId } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type SubidSettingsData = {
   isLoading: boolean;
@@ -21,9 +23,10 @@ type SubidSettingsData = {
 
 const useSubidSettings = (subidId: string): SubidSettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
+  const metadata = metadataQuery.data;
 
   // [API call] Subordinate ID
   const subidDetails = useSubidShowQuery(subidId);
@@ -42,7 +45,7 @@ const useSubidSettings = (subidId: string): SubidSettingsData => {
   }, [subidData, subidDetails.isFetching]);
 
   const settings = {
-    isLoading: metadataLoading || isSubidDataLoading,
+    isLoading: isSubidDataLoading,
     isFetching: subidDetails.isFetching,
     modified,
     setModified,

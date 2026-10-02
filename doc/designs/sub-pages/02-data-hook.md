@@ -140,9 +140,9 @@ When unsupported option used, API returns: `{"error": {"code": 3005, "message": 
 
 ```tsx
 import React from "react";
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { use<Entity>ShowQuery } from "src/services/rpc<Entity>";
-import { <Entity>, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { <Entity> } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 ```
 
 ## Examples

@@ -1,9 +1,11 @@
 import React from "react";
+import { useAppSelector } from "src/store/hooks";
+
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useIdpShowQuery } from "src/services/rpcIdp";
 // Data types
-import { IDPServer, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { IDPServer } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type IdpRefSettingsData = {
   isLoading: boolean;
@@ -21,9 +23,10 @@ type IdpRefSettingsData = {
 
 const useIdpRefSettingsData = (idpRefId: string): IdpRefSettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
+  const metadata = metadataQuery.data;
 
   // [API call] IdP Reference
   const idpRefDetails = useIdpShowQuery(idpRefId);
@@ -42,7 +45,7 @@ const useIdpRefSettingsData = (idpRefId: string): IdpRefSettingsData => {
   }, [idpRefData, idpRefDetails.isFetching]);
 
   const settings: IdpRefSettingsData = {
-    isLoading: metadataLoading || isIdpRefDataLoading,
+    isLoading: isIdpRefDataLoading,
     isFetching: idpRefDetails.isFetching,
     modified,
     setModified,

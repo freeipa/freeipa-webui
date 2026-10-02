@@ -15,7 +15,7 @@ import {
   useAutomemberRemoveConditionMutation,
 } from "src/services/rpcAutomember";
 // Data types
-import { Metadata } from "src/utils/datatypes/globalDataTypes";
+import { isComplexObjectMetadata, Metadata } from "src/services/types/metadata";
 // Components
 import SettingsTableLayout from "../layouts/SettingsTableLayout";
 import InputRequiredText from "../layouts/InputRequiredText";
@@ -38,7 +38,11 @@ const InclusiveExclusiveSection = (props: PropsToInclusiveExclusiveSection) => {
   const dispatch = useAppDispatch();
 
   // ACI attributes to use in Inclusive/Exclusive sections
-  const userAciAttrs = props.metadata.objects?.user?.aciattrs || [];
+  const userObject = props.metadata.objects?.user;
+  const userAciAttrs =
+    userObject && isComplexObjectMetadata(userObject)
+      ? userObject.aciattrs
+      : [];
 
   // States
   const [selectedEntries, setSelectedEntries] = React.useState<Condition[]>([]);

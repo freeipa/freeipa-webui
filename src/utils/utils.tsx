@@ -12,7 +12,6 @@ import {
   IDViewOverrideUser,
   IDViewOverrideGroup,
   IdRange,
-  Metadata,
   Netgroup,
   Permission,
   Privilege,
@@ -37,6 +36,7 @@ import {
   SELinuxUserMap,
   AutomountLocation,
 } from "./datatypes/globalDataTypes";
+import { isComplexObjectMetadata, Metadata } from "src/services/types/metadata";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -313,13 +313,12 @@ export const apiErrorToJsXError = (
  */
 export const getRealmFromKrbPolicy = (metadata: Metadata) => {
   let realm = "";
-  if (metadata.objects !== undefined) {
-    const krbPolicy = metadata.objects.krbtpolicy.container_dn as string;
-    if (krbPolicy !== undefined) {
-      // Get realm from krbtpolicy
-      //  - Format: "cn=REALM, cn=kerberos"
-      realm = krbPolicy.split(",")[0].split("=")[1];
-    }
+  const krbPolicyObj = metadata.objects?.krbtpolicy;
+  if (krbPolicyObj !== undefined && isComplexObjectMetadata(krbPolicyObj)) {
+    const krbPolicy = krbPolicyObj.container_dn;
+    // Get realm from krbtpolicy
+    //  - Format: "cn=REALM, cn=kerberos"
+    realm = krbPolicy.split(",")[0].split("=")[1];
   }
   return realm;
 };

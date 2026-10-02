@@ -10,7 +10,8 @@ import {
   TextInput,
 } from "@patternfly/react-core";
 // Data types
-import { DNSRecord, Host, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { DNSRecord, Host } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks

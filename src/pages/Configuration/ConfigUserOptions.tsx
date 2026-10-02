@@ -2,7 +2,7 @@ import React from "react";
 // PatternFly
 import { Flex, FlexItem, Form, FormGroup } from "@patternfly/react-core";
 // Data types
-import { Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Components
 import PopoverWithIconLayout from "src/components/layouts/PopoverWithIconLayout";
 // Form
