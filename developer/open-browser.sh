@@ -20,7 +20,7 @@ detach() {
 
 usage() {
     cat <<EOF
-usage: $(basename "$0") [-r] [-w] [-b BROWSER] [-c CONTAINER] [-p PROFILE] [URL]"
+usage: $(basename "$0") [-r] [-w] [-k] [-b BROWSER] [-c CONTAINER] [-p PROFILE] [URL]"
 
 Open URL in Firefox with the given profile (defaults to 'freeipa-webui').
 
@@ -30,6 +30,10 @@ Options:
     -p PROFILE     use the given profile name
     -c CONTAINER   Import IPA CA root from CONTAINER
     -r             remove the profile
+    -k             obtain a Kerberos ticket (kinit devadmin) so the browser
+                   authenticates via SPNEGO automatically; without this flag
+                   the browser opens without a ticket and you must log in
+                   with username and password
 
     -w             Use Flatpak workaround (nsenter)
 
@@ -114,7 +118,7 @@ profile_name="webui-profile"
 cmd="open"
 ipa_ca_node="webui"
 
-while getopts ":hb:c:p:rw" option
+while getopts ":hb:c:p:rkw" option
 do
     case "${option}" in
         h) usage && exit 0 ;;
@@ -122,6 +126,7 @@ do
         c) ipa_ca_node="${OPTARG}" ;;
         p) profile_name="${OPTARG}" ;;
         r) cmd="remove" ;;
+        k) use_kerberos="YES" ;;
         w) use_flatpak_workaround="YES" ;;
         *) die -u "Invalid option: ${OPTARG}" ;;
     esac
@@ -143,12 +148,76 @@ then
 else
     create_profile
     [ -z "${ipa_ca_node:-}" ] || copy_certificate "${ipa_ca_node}"
+
+    # Set up Kerberos for SPNEGO authentication (used by ahdapa and IPA).
+    # Only runs when -k is passed. Without -k the browser opens without a
+    # Kerberos ticket, so the user must log in with username and password.
+    # With -k, kinit devadmin obtains a TGT and the browser authenticates
+    # automatically via SPNEGO (Negotiate).
+    setup_kerberos() {
+        local ipa_hostname ipa_realm krb5_conf krb5_ccname krb5_wrapper
+        ipa_hostname="$(podman exec "${ipa_ca_node}" hostname -f 2>/dev/null)" || return 1
+        ipa_realm="$(podman exec "${ipa_ca_node}" \
+            python3 -c "from ipalib import api; api.bootstrap(); print(api.env.realm)" 2>/dev/null)" \
+            || return 1
+        krb5_conf="${config_dir}/krb5.conf"
+        krb5_ccname="${config_dir}/krb5cc"
+        cat > "${krb5_conf}" << EOF
+[libdefaults]
+default_realm = ${ipa_realm}
+dns_lookup_realm = false
+dns_lookup_kdc = false
+rdns = false
+
+[realms]
+${ipa_realm} = {
+    kdc = ${ipa_hostname}
+    admin_server = ${ipa_hostname}
+}
+
+[domain_realm]
+.${ipa_hostname#*.} = ${ipa_realm}
+${ipa_hostname#*.} = ${ipa_realm}
+EOF
+        export KRB5_CONFIG="${krb5_conf}"
+        export KRB5CCNAME="${krb5_ccname}"
+
+        # Create a wrapper script that obtains a Kerberos ticket inside the
+        # rootless network namespace (where the KDC is reachable) before
+        # launching the browser. Uses devadmin (not admin) to keep the
+        # ahdapa session cookie small enough for browsers to store.
+        krb5_wrapper="${config_dir}/krb5-browser-wrapper.sh"
+        cat > "${krb5_wrapper}" << 'WRAPPER'
+#!/bin/bash
+if command -v kinit >/dev/null 2>&1; then
+    echo "Secret123" | kinit devadmin 2>/dev/null ||:
+fi
+exec "$@"
+WRAPPER
+        chmod +x "${krb5_wrapper}"
+        KERBEROS_WRAPPER="${krb5_wrapper}"
+    }
+    if [ "${use_kerberos:-}" == "YES" ]
+    then
+        setup_kerberos || echo -e "\033[33;1mWARN: Could not configure Kerberos (ahdapa SPNEGO may not work)\033[0m"
+    else
+        # Remove leftover Kerberos credentials from a previous -k run
+        # so the browser cannot accidentally authenticate via SPNEGO.
+        rm -f "${config_dir}/krb5cc"
+    fi
+
     if [ "${use_flatpak_workaround:-}" == "YES" ]
     then
         # shellcheck disable=SC2154
         flatpak_workaround "${browser_cmd[@]}" "$@"
     else
-        # shellcheck disable=SC2154
-        detach podman unshare --rootless-netns "${browser_cmd[@]}" "$@"
+        if [ -n "${KERBEROS_WRAPPER:-}" ]
+        then
+            # shellcheck disable=SC2154
+            detach podman unshare --rootless-netns "${KERBEROS_WRAPPER}" "${browser_cmd[@]}" "$@"
+        else
+            # shellcheck disable=SC2154
+            detach podman unshare --rootless-netns "${browser_cmd[@]}" "$@"
+        fi
     fi
 fi

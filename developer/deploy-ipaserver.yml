@@ -39,13 +39,28 @@
             RewriteRule ^(.*)/assets/(.*)$ assets/$2 [L]
             RewriteCond %{REQUEST_FILENAME} !-f
             RewriteRule ^ index.html [QSA,L]
+            Header set Content-Security-Policy ""
           </Directory>
+
+    - name: Find ipalib constants.py
+      ansible.builtin.shell:
+        cmd: python3 -c "import ipalib; print(ipalib.__file__.replace('__init__.py', 'constants.py'))"
+      register: ipalib_constants
+      changed_when: false
 
     - name: Temporary fix for CryptographyDeprecationWarning
       ansible.builtin.replace:
-        path: /usr/lib/python3.14/site-packages/ipalib/constants.py
+        path: "{{ ipalib_constants.stdout }}"
         regexp: '^(\s*)b"\\x00" \* 8\), modes\.CBC\(b"\\x00" \* 8\)\):'
         replace: '\1b"\\x00" * 24), modes.CBC(b"\\x00" * 8)):'
+
+    - name: Override strict CSP in modern-ui block for dev server
+      ansible.builtin.replace:
+        path: /etc/httpd/conf.d/ipa.conf
+        after: "Alias /ipa/modern-ui"
+        before: "</Directory>"
+        regexp: '^\s*Header set(?:ifempty)? Content-Security-Policy ".*"'
+        replace: '  Header set Content-Security-Policy ""'
 
     - name: Restart web server
       ansible.builtin.systemd_service:

@@ -66,6 +66,8 @@ Options:
 
     -c          Run Cypress integration tests
     -C          Run Cypress integration tests with graphical debugger
+
+    -a          Deploy ahdapa alongside FreeIPA (during build or post-start)
 EOF
 }
 
@@ -132,6 +134,13 @@ build_container() {
     log "=== Deploying FreeIPA ==="
     ansible-playbook -i "${SCRIPT_DIR}/scenarios/single-server/inventory.yml" \
         "${SCRIPT_DIR}/deploy-ipaserver.yml" || die "Failed to deploy IPA"
+    # Deploy ahdapa (optional)
+    if [[ -n "${deploy_ahdapa}" ]]
+    then
+        log "=== Deploying ahdapa ==="
+        ansible-playbook -i "${SCRIPT_DIR}/scenarios/single-server/inventory.yml" \
+            "${SCRIPT_DIR}/deploy-ahdapa.yml" || die "Failed to deploy ahdapa"
+    fi
     # Save image locally
     log "=== Commit container image as '${image_name}:latest' ==="
     podman commit "webui" "${image_name}:latest"
@@ -305,11 +314,13 @@ default_image="quay.io/ansible-freeipa/webui-dev:latest"
 image_id="$(podman images -f "reference=${default_image}" --format="{{ .Id }}")"
 [[ -z "${image_id}" ]] && fetch_image="${default_image}" || fetch_image=""
 action="start"
+deploy_ahdapa=""
 
-while getopts ":-hBcCdfiklprs" option "$@"
+while getopts ":-haBcCdfiklprs" option "$@"
 do
     case "${option}" in
         "h") usage && exit ;;
+        "a") deploy_ahdapa="yes" ;;
         "B") action="build_scenario" ;;
         "c") action="cypress:run" ;;
         "C") action="cypress:open" ;;
@@ -398,3 +409,14 @@ case "${action}" in
         ;;
     *) die "Invalid action: ${action}" ;;  # there's a bug in the code
 esac
+
+# Post-action: deploy ahdapa if requested and container is running
+if [[ -n "${deploy_ahdapa}" ]] && [[ "${action}" =~ ^(start|restart)$ ]]
+then
+    is_container_created "webui" || die "Cannot deploy ahdapa: container not running."
+    check_command ansible-playbook \
+        || die "Command 'ansible-playbook' is required for deploying ahdapa"
+    log "=== Deploying ahdapa ==="
+    ansible-playbook -i "${SCRIPT_DIR}/scenarios/${scenario:-single-server}/inventory.yml" \
+        "${SCRIPT_DIR}/deploy-ahdapa.yml" || log -w "ahdapa deployment failed"
+fi
