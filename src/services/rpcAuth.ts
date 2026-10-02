@@ -81,12 +81,19 @@ export interface SyncOtpPayload {
   token?: string;
 }
 
+export interface OidcLoginPayload {
+  code: string;
+  codeVerifier: string;
+  redirectUri: string;
+}
+
 // List of URLs
 const LOGIN_URL = "/ipa/session/login_password";
 const KERBEROS_URL = "/ipa/session/login_kerberos";
 const X509_URL = "/ipa/session/login_x509";
 const RESET_PASSWORD_URL = "/ipa/session/change_password";
 const SYNC_OTP_URL = "/ipa/session/sync_token";
+const OIDC_LOGIN_URL = "/ipa/session/login_oidc";
 
 // Utils
 const encodeURIObject = (obj: Record<string, string>) => {
@@ -136,6 +143,31 @@ const extendedApi = api.injectEndpoints({
           method: "session_logout",
           params: [[], {}],
         }),
+    }),
+    oidcLogin: build.mutation<void, OidcLoginPayload>({
+      query: (payload) => {
+        const loginRequest = {
+          url: OIDC_LOGIN_URL,
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "Data-Type": "html",
+            Referer: URL_PREFIX + "/login",
+          },
+          body: new URLSearchParams({
+            code: payload.code,
+            code_verifier: payload.codeVerifier,
+            redirect_uri: payload.redirectUri,
+          }),
+        };
+        return loginRequest;
+      },
+      transformErrorResponse: (
+        response: FetchBaseQueryError,
+        meta: FetchBaseQueryMeta
+      ) => {
+        return meta as unknown as MetaResponse;
+      },
     }),
     krbLogin: build.mutation<FindRPCResponse | MetaResponse, void>({
       query: () => {
@@ -277,4 +309,5 @@ export const {
   useResetPasswordMutation,
   useSyncOtpMutation,
   useUserMetadataQuery,
+  useOidcLoginMutation,
 } = authApi;

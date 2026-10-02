@@ -1,0 +1,460 @@
+---
+# Deploy ahdapa alongside FreeIPA in the development container.
+#
+# This playbook assumes FreeIPA is already installed and running.
+# The ahdapa binary must be available via one of:
+#   1. Pre-placed at /webui/developer/ahdapa-bin/ahdapa (user-provided)
+#   2. Installed via dnf (when an RPM becomes available)
+#   3. Built from source (requires network + Rust toolchain)
+#
+# NOTE – devadmin user and ahdapa cookie size:
+#   Ahdapa encodes every LDAP memberOf entry in its stateless encrypted
+#   session cookie.  IPA's 'admin' has ~247 memberOf entries (2 groups
+#   + 245 roles/privileges/permissions), producing a ~10 KB cookie that
+#   browsers silently reject.  IPA roles also inflate memberOf (each
+#   privilege/permission adds an entry), so this playbook grants
+#   devadmin full IPA write access via a direct LDAP ACI instead —
+#   no memberOf overhead, keeping the cookie at ~278 bytes.
+#   Pass -k to open-browser.sh to obtain a Kerberos ticket for
+#   devadmin and enable SPNEGO auto-login.
+#
+# Usage:
+#   ansible-playbook -i developer/scenarios/single-server/inventory.yml \
+#       developer/deploy-ahdapa.yml
+
+- name: Install ahdapa binary
+  hosts: ipaserver
+  gather_facts: true
+  become: true
+
+  vars:
+    ahdapa_bin_path: /usr/local/bin/ahdapa
+    ahdapa_source_bin: /webui/developer/ahdapa-bin/ahdapa
+    ahdapa_repo_url: https://codeberg.org/freeipa/ahdapa.git
+    ahdapa_build_from_source: true
+
+  tasks:
+    - name: Check if ahdapa is already installed
+      ansible.builtin.stat:
+        path: "{{ ahdapa_bin_path }}"
+      register: ahdapa_installed
+
+    - name: Check if user-provided binary exists
+      ansible.builtin.stat:
+        path: "{{ ahdapa_source_bin }}"
+      register: ahdapa_user_bin
+      when: not ahdapa_installed.stat.exists
+
+    - name: Copy user-provided binary
+      when:
+        - not ahdapa_installed.stat.exists
+        - ahdapa_user_bin.stat is defined
+        - ahdapa_user_bin.stat.exists
+      block:
+        - name: Install user-provided ahdapa binary
+          ansible.builtin.copy:
+            src: "{{ ahdapa_source_bin }}"
+            dest: "{{ ahdapa_bin_path }}"
+            mode: "0755"
+            remote_src: true
+
+    - name: Try installing ahdapa via dnf
+      when:
+        - not ahdapa_installed.stat.exists
+        - not (ahdapa_user_bin.stat is defined and ahdapa_user_bin.stat.exists)
+      block:
+        - name: Install ahdapa package (if available)
+          ansible.builtin.dnf:
+            name: ahdapa
+            state: present
+          register: dnf_result
+          ignore_errors: true
+
+    - name: Build ahdapa from source
+      when:
+        - not ahdapa_installed.stat.exists
+        - not (ahdapa_user_bin.stat is defined and ahdapa_user_bin.stat.exists)
+        - dnf_result is defined and dnf_result.failed
+        - ahdapa_build_from_source
+      block:
+        - name: Install Rust toolchain and build dependencies
+          ansible.builtin.dnf:
+            name:
+              - rust
+              - cargo
+              - gcc
+              - clang
+              - clang-devel
+              - git-core
+              - protobuf-compiler
+              - openssl-devel
+              - krb5-devel
+              - sqlite-devel
+              - openldap-devel
+              - cyrus-sasl-devel
+              - pkg-config
+            state: present
+
+        - name: Clone ahdapa repository
+          ansible.builtin.git:
+            repo: "{{ ahdapa_repo_url }}"
+            dest: /tmp/ahdapa-src
+            version: main
+            depth: 1
+
+        - name: Build ahdapa (release mode)
+          ansible.builtin.command:
+            cmd: cargo build --release
+            chdir: /tmp/ahdapa-src
+          environment:
+            CARGO_HOME: /tmp/cargo-home
+          changed_when: true
+
+        - name: Install built binary
+          ansible.builtin.copy:
+            src: /tmp/ahdapa-src/target/release/ahdapa
+            dest: "{{ ahdapa_bin_path }}"
+            mode: "0755"
+            remote_src: true
+
+        - name: Build ahdapa webui (frontend)
+          ansible.builtin.command:
+            cmd: npx --yes pnpm@10 install --frozen-lockfile
+            chdir: /tmp/ahdapa-src/webui
+          changed_when: true
+
+        - name: Compile ahdapa webui assets
+          ansible.builtin.command:
+            cmd: npx --yes pnpm@10 run build
+            chdir: /tmp/ahdapa-src/webui
+          changed_when: true
+
+        - name: Clean up build artifacts
+          ansible.builtin.file:
+            path: "{{ item }}"
+            state: absent
+          loop:
+            - /tmp/cargo-home
+
+    - name: Verify ahdapa binary exists
+      ansible.builtin.stat:
+        path: "{{ ahdapa_bin_path }}"
+      register: ahdapa_final
+      failed_when: not ahdapa_final.stat.exists
+
+- name: Configure ahdapa for FreeIPA development
+  hosts: ipaserver
+  gather_facts: false
+  become: true
+
+  vars:
+    ahdapa_realm: IPA.TEST
+    ahdapa_hostname: webui.ipa.test
+    ahdapa_listen: "127.0.0.1:8180"
+    ahdapa_db_path: /var/lib/ahdapa/ahdapa.db
+    ahdapa_config_dir: /etc/ahdapa
+    ahdapa_data_dir: /var/lib/ahdapa
+    ahdapa_keytab: /etc/ahdapa/ahdapa.keytab
+
+  tasks:
+    - name: Create ahdapa system user
+      ansible.builtin.user:
+        name: ahdapa
+        system: true
+        shell: /sbin/nologin
+        home: "{{ ahdapa_data_dir }}"
+        create_home: false
+
+    - name: Create ahdapa directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: ahdapa
+        group: ahdapa
+        mode: "0750"
+      loop:
+        - "{{ ahdapa_config_dir }}"
+        - "{{ ahdapa_data_dir }}"
+        - "{{ ahdapa_data_dir }}/webui"
+
+    - name: Check for built webui assets
+      ansible.builtin.stat:
+        path: /tmp/ahdapa-src/webui/dist/index.html
+      register: ahdapa_webui_dist
+
+    - name: Deploy ahdapa webui assets
+      when: ahdapa_webui_dist.stat.exists
+      block:
+        - name: Copy webui dist to static dir
+          ansible.builtin.copy:
+            src: /tmp/ahdapa-src/webui/dist/
+            dest: "{{ ahdapa_data_dir }}/webui/"
+            remote_src: true
+            owner: ahdapa
+            group: ahdapa
+
+        - name: Clean up ahdapa source tree
+          ansible.builtin.file:
+            path: /tmp/ahdapa-src
+            state: absent
+
+    - name: Copy IPA HTTP keytab for ahdapa
+      ansible.builtin.copy:
+        src: /var/lib/ipa/gssproxy/http.keytab
+        dest: "{{ ahdapa_keytab }}"
+        remote_src: true
+
+    - name: Set keytab ownership
+      ansible.builtin.file:
+        path: "{{ ahdapa_keytab }}"
+        owner: ahdapa
+        group: ahdapa
+        mode: "0640"
+
+    - name: Enable S4U2Self delegation for HTTP principal
+      ansible.builtin.command:
+        cmd: >-
+          kadmin.local -q
+          "modprinc +ok_to_auth_as_delegate HTTP/{{ ahdapa_hostname }}@{{ ahdapa_realm }}"
+      changed_when: true
+
+    # Create a 'devadmin' user used by open-browser.sh for SPNEGO login.
+    # Admin's ahdapa session cookie is ~10 KB (due to ~246 recursive group
+    # memberships) which browsers silently drop from SPNEGO responses.
+    # Devadmin has only a handful of groups, keeping the cookie small.
+    - name: Obtain IPA admin Kerberos ticket
+      ansible.builtin.shell:
+        cmd: echo Secret123 | kinit admin
+      changed_when: false
+      no_log: true
+
+    - name: Create ahdapa-admins IPA group
+      ansible.builtin.command:
+        cmd: ipa group-add ahdapa-admins --desc="Ahdapa IdP administrators"
+      register: ipa_group_result
+      failed_when: >-
+        ipa_group_result.rc != 0
+        and 'already exists' not in (ipa_group_result.stderr | default(''))
+      changed_when: ipa_group_result.rc == 0
+
+    - name: Create devadmin user for ahdapa webui access
+      ansible.builtin.shell:
+        cmd: >-
+          echo -e "Secret123\nSecret123" |
+          ipa user-add devadmin --first=Dev --last=Admin --password
+      register: ipa_user_result
+      failed_when: >-
+        ipa_user_result.rc != 0
+        and 'already exists' not in (ipa_user_result.stderr | default(''))
+      changed_when: ipa_user_result.rc == 0
+
+    - name: Add devadmin to ahdapa-admins group
+      ansible.builtin.command:
+        cmd: ipa group-add-member ahdapa-admins --users=devadmin
+      register: ipa_member_result
+      failed_when: >-
+        ipa_member_result.rc != 0
+        and 'already a member' not in (ipa_member_result.stdout | default(''))
+        and 'already a member' not in (ipa_member_result.stderr | default(''))
+      changed_when: ipa_member_result.rc == 0
+
+    - name: Prevent devadmin password from expiring
+      ansible.builtin.command:
+        cmd: kadmin.local -q "modprinc -pwexpire never devadmin@{{ ahdapa_realm }}"
+      changed_when: true
+
+    # Grant devadmin full IPA access via a raw LDAP ACI instead of an
+    # IPA role.  IPA roles add hundreds of memberOf entries (for every
+    # privilege and permission) which ahdapa encodes in its stateless
+    # session cookie, making it too large for browsers.  A direct ACI
+    # grants the same write access without any memberOf overhead.
+    - name: Grant devadmin full IPA access via LDAP ACI
+      ansible.builtin.shell:
+        cmd: |
+          ldapmodify -Y EXTERNAL \
+            -H ldapi://%2Fvar%2Frun%2Fslapd-{{ ahdapa_realm | replace('.', '-') }}.socket <<'LDIF'
+          dn: dc={{ ahdapa_realm.split('.') | join(',dc=') | lower }}
+          changetype: modify
+          add: aci
+          aci: (targetattr = "*")(version 3.0; acl "devadmin full access for webui development"; allow (all) userdn = "ldap:///uid=devadmin,cn=users,cn=accounts,dc={{ ahdapa_realm.split('.') | join(',dc=') | lower }}";)
+          LDIF
+      register: ipa_aci_result
+      failed_when: >-
+        ipa_aci_result.rc != 0
+        and 'Type or value exists' not in (ipa_aci_result.stderr | default(''))
+      changed_when: ipa_aci_result.rc == 0
+
+    - name: Write ahdapa configuration
+      ansible.builtin.copy:
+        dest: "{{ ahdapa_config_dir }}/ahdapa.toml"
+        owner: ahdapa
+        group: ahdapa
+        mode: "0640"
+        content: |
+          [server]
+          issuer = "https://{{ ahdapa_hostname }}/idp"
+          realm  = "{{ ahdapa_realm }}"
+          listen = "{{ ahdapa_listen }}"
+
+          [db]
+          url = "sqlite://{{ ahdapa_db_path }}"
+
+          [gssapi]
+          service              = "HTTP"
+          keytab               = "{{ ahdapa_keytab }}"
+          initiator_principal  = "HTTP/{{ ahdapa_hostname }}@{{ ahdapa_realm }}"
+
+          [ipa]
+          uri = "ldapi://%2Fvar%2Frun%2Fslapd-{{ ahdapa_realm | replace('.', '-') }}.socket"
+
+          [webui]
+          static_dir = "{{ ahdapa_data_dir }}/webui"
+
+          [[rbac.role]]
+          name        = "admin"
+          permissions = ["*"]
+
+          [[rbac.group_role]]
+          group = "admins"
+          role  = "admin"
+
+          [[rbac.group_role]]
+          group = "ahdapa-admins"
+          role  = "admin"
+
+          [clients]
+          file = "{{ ahdapa_config_dir }}/clients.toml"
+
+    - name: Write static OAuth2 clients file
+      ansible.builtin.copy:
+        dest: "{{ ahdapa_config_dir }}/clients.toml"
+        owner: ahdapa
+        group: ahdapa
+        mode: "0640"
+        content: |
+          [[client]]
+          client_id                  = "ipa-webui-{{ ahdapa_hostname }}"
+          client_name                = "FreeIPA Web UI"
+          token_endpoint_auth_method = "none"
+          scopes                     = ["openid", "profile", "krb5:ccache"]
+          grant_types                = ["authorization_code"]
+          redirect_uris              = ["https://{{ ahdapa_hostname }}/ipa/modern-ui/"]
+          skip_consent               = true
+
+    - name: Create ahdapa systemd service
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/ahdapa.service
+        mode: "0644"
+        content: |
+          [Unit]
+          Description=Ahdapa OAuth2/OIDC Identity Provider
+          After=network.target ipa.service
+          Wants=network.target
+
+          [Service]
+          Type=simple
+          User=ahdapa
+          Group=ahdapa
+          Environment=KRB5_CLIENT_KTNAME=/etc/ahdapa/ahdapa.keytab
+          Environment=KRB5_KTNAME=/etc/ahdapa/ahdapa.keytab
+          ExecStart=/usr/local/bin/ahdapa /etc/ahdapa/ahdapa.toml
+          Restart=on-failure
+          RestartSec=5
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Configure Apache reverse proxy for ahdapa
+      ansible.builtin.copy:
+        dest: /etc/httpd/conf.d/ahdapa-proxy.conf
+        mode: "0644"
+        content: |
+          # Reverse proxy for ahdapa IdP (strip /idp prefix)
+          ProxyPass "/idp/" "http://{{ ahdapa_listen }}/" responsefieldsize=16384
+          ProxyPassReverse "/idp/" "http://{{ ahdapa_listen }}/"
+          ProxyPassReverseCookiePath "/" "/idp/"
+
+    - name: Reload systemd daemon
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+
+    - name: Enable and start ahdapa
+      ansible.builtin.systemd_service:
+        name: ahdapa.service
+        enabled: true
+        state: started
+
+    - name: Wait for ahdapa to be ready
+      ansible.builtin.uri:
+        url: "http://{{ ahdapa_listen }}/api/auth/info"
+        return_content: true
+      register: ahdapa_health
+      retries: 10
+      delay: 2
+      until: ahdapa_health.status == 200
+
+    - name: Restart Apache to pick up proxy config
+      ansible.builtin.systemd_service:
+        name: httpd.service
+        state: restarted
+
+    - name: Verify ahdapa is accessible through Apache
+      ansible.builtin.uri:
+        url: "https://{{ ahdapa_hostname }}/idp/api/auth/info"
+        validate_certs: false
+        return_content: true
+      register: ahdapa_proxy_check
+      failed_when: ahdapa_proxy_check.status != 200
+
+    - name: Write OIDC bridge configuration
+      ansible.builtin.copy:
+        dest: /etc/ipa/oidc-bridge.json
+        owner: root
+        group: apache
+        mode: "0640"
+        content: |
+          {
+            "client_id": "ipa-webui-{{ ahdapa_hostname }}",
+            "issuer": "https://{{ ahdapa_hostname }}/idp",
+            "redirect_uri": "https://{{ ahdapa_hostname }}/ipa/modern-ui/",
+            "token_endpoint": "http://{{ ahdapa_listen }}/token",
+            "ccache_endpoint": "http://{{ ahdapa_listen }}/api/internal/ccache"
+          }
+
+    - name: Deploy OIDC login bridge CGI script
+      ansible.builtin.copy:
+        src: /webui/developer/oidc-bridge.py
+        dest: /usr/libexec/ipa/login-oidc.py
+        remote_src: true
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Configure Apache for login_oidc endpoint
+      ansible.builtin.copy:
+        dest: /etc/httpd/conf.d/oidc-bridge.conf
+        mode: "0644"
+        content: |
+          # OIDC login bridge: /ipa/session/login_oidc via ahdapa
+          # Intercepts before WSGIScriptAlias /ipa catches it.
+          # When IPA adds native login_oidc support, remove this file.
+          ScriptAlias "/ipa/session/login_oidc" "/usr/libexec/ipa/login-oidc.py"
+          <Location "/ipa/session/login_oidc">
+            Satisfy Any
+            Require all granted
+          </Location>
+
+    - name: Restart Apache to pick up OIDC bridge config
+      ansible.builtin.systemd_service:
+        name: httpd.service
+        state: restarted
+
+    - name: Display ahdapa status
+      ansible.builtin.debug:
+        msg: >-
+          Ahdapa is running!
+          Realm: {{ (ahdapa_proxy_check.content | from_json).realm }}
+          URL: https://{{ ahdapa_hostname }}/idp/
+          Webui: https://{{ ahdapa_hostname }}/idp/ui/me
+          Dev admin login: devadmin / Secret123
+          OIDC client_id: ipa-webui-{{ ahdapa_hostname }}

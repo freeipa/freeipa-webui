@@ -27,18 +27,38 @@ CONTAINER_PROFILE_DIR="$(dirname "${MOZILLA_PROFILES}")/${profile_name}"
 declare -a browser_cmd
 if quiet command -v firefox && [ "${FORCE_FLATPAK:-"0"}" -ne "1" ]
 then
-    browser_cmd=("firefox" "-P" "${profile_name}" "--new-window")
+    browser_cmd=("firefox" "--no-remote" "-P" "${profile_name}" "--new-window")
 else
     flatpak_app="org.mozilla.firefox"
     quiet flatpak info "${flatpak_app}" || die "Cannot find Firefox executable"
     verify_flatpak_permissions "${flatpak_app}"
-    browser_cmd=("flatpak" "run" "org.mozilla.firefox" "-P" "${profile_name}" "--new-window")
+    browser_cmd=("flatpak" "run" "org.mozilla.firefox" "--no-remote" "-P" "${profile_name}" "--new-window")
 fi
 export browser_cmd
 
 create_profile() {
     [ -f "${MOZILLA_PROFILES}" ] || die "Please run Firefox once, to setup basic environment."
     [ -d "${CONTAINER_PROFILE_DIR}" ] || mkdir "${CONTAINER_PROFILE_DIR}"
+
+    # Remove stale lock files left by crashed Firefox instances.
+    # A leftover lock prevents --no-remote from opening the profile.
+    rm -f "${CONTAINER_PROFILE_DIR}/lock" "${CONTAINER_PROFILE_DIR}/.parentlock"
+
+    cat > "${CONTAINER_PROFILE_DIR}/user.js" << PREFS
+user_pref("network.cookie.maxBytesPerCookie", 65536);
+user_pref("privacy.trackingprotection.enabled", false);
+PREFS
+    if [ "${use_kerberos:-}" == "YES" ]; then
+        cat >> "${CONTAINER_PROFILE_DIR}/user.js" << 'PREFS'
+user_pref("network.negotiate-auth.trusted-uris", "https://webui.ipa.test");
+user_pref("network.negotiate-auth.delegation-uris", "https://webui.ipa.test");
+PREFS
+    else
+        cat >> "${CONTAINER_PROFILE_DIR}/user.js" << 'PREFS'
+user_pref("network.negotiate-auth.trusted-uris", "");
+user_pref("network.negotiate-auth.delegation-uris", "");
+PREFS
+    fi
 
     if ! grep -q "Name=${profile_name}" "${MOZILLA_PROFILES}"
     then
