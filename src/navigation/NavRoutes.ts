@@ -57,6 +57,24 @@ const CertificateMappingConfigGroupRef = "cert-id-mapping-global-config";
 const CertificateMappingMatchGroupRef = "cert-id-mapping-match";
 // - RADIUS servers
 const RadiusServersGroupRef = "radius-servers";
+// OAUTH2 / IDP (ahdapa)
+const AhdapaOAuth2GroupRef = "ahdapa-oauth2";
+const AhdapaClientsGroupRef = "ahdapa-clients";
+const AhdapaScopesGroupRef = "ahdapa-scopes";
+const AhdapaAccessControlGroupRef = "ahdapa-access-control";
+const AhdapaHbacGroupRef = "ahdapa-hbac";
+const AhdapaWorkloadsGroupRef = "ahdapa-workloads";
+const AhdapaSpiffeGroupRef = "ahdapa-spiffe";
+const AhdapaFederationGroupRef = "ahdapa-federation";
+const AhdapaFederatedAccountsGroupRef = "ahdapa-federated-accounts";
+const AhdapaFederationPoliciesGroupRef = "ahdapa-federation-policies";
+const AhdapaIpaIdpsGroupRef = "ahdapa-ipa-idps";
+const AhdapaSaml2SpsGroupRef = "ahdapa-saml2-sps";
+const AhdapaSaml2IdpsGroupRef = "ahdapa-saml2-idps";
+const AhdapaInfraGroupRef = "ahdapa-infra";
+const AhdapaKeysGroupRef = "ahdapa-keys";
+const AhdapaNodesGroupRef = "ahdapa-nodes";
+const AhdapaAuditGroupRef = "ahdapa-audit";
 // NETWORK SERVICES
 // - Automount
 const AutomountLocationsGroupRef = "automount-locations";
@@ -87,6 +105,7 @@ export const getNavigationRoutes = (
   configurationSettings: ConfigurationSettings
 ) => {
   const dnsIsEnabled = configurationSettings.dnsIsEnabled;
+  const ahdapaIsAvailable = configurationSettings.ahdapaIsAvailable;
   return [
     {
       label: "Identity",
@@ -385,6 +404,142 @@ export const getNavigationRoutes = (
         },
       ],
     },
+    ...(ahdapaIsAvailable === true
+      ? [
+          {
+            label: "OAuth2 / IdP",
+            group: "",
+            title: `${BASE_TITLE} - OAuth2 / IdP`,
+            path: "",
+            items: [
+              {
+                label: "OAuth2",
+                group: AhdapaOAuth2GroupRef,
+                title: `${BASE_TITLE} - OAuth2`,
+                path: "",
+                items: [
+                  {
+                    label: "Clients",
+                    group: AhdapaClientsGroupRef,
+                    title: `${BASE_TITLE} - OAuth2 Clients`,
+                    path: "ahdapa-clients",
+                    items: [],
+                  },
+                  {
+                    label: "Scopes",
+                    group: AhdapaScopesGroupRef,
+                    title: `${BASE_TITLE} - OAuth2 Scopes`,
+                    path: "ahdapa-scopes",
+                    items: [],
+                  },
+                ],
+              },
+              {
+                label: "Access control",
+                group: AhdapaAccessControlGroupRef,
+                title: `${BASE_TITLE} - Identity HBAC Policy`,
+                path: "",
+                items: [
+                  {
+                    label: "Identity HBAC policy",
+                    group: AhdapaHbacGroupRef,
+                    title: `${BASE_TITLE} - Identity HBAC Policy`,
+                    path: "ahdapa-hbac",
+                    items: [],
+                  },
+                ],
+              },
+              {
+                label: "Workloads",
+                group: AhdapaWorkloadsGroupRef,
+                title: `${BASE_TITLE} - SPIFFE Workloads`,
+                path: "",
+                items: [
+                  {
+                    label: "SPIFFE workloads",
+                    group: AhdapaSpiffeGroupRef,
+                    title: `${BASE_TITLE} - SPIFFE Workloads`,
+                    path: "ahdapa-spiffe",
+                    items: [],
+                  },
+                ],
+              },
+              {
+                label: "Federation",
+                group: AhdapaFederationGroupRef,
+                title: `${BASE_TITLE} - Federation`,
+                path: "",
+                items: [
+                  {
+                    label: "Federated accounts",
+                    group: AhdapaFederatedAccountsGroupRef,
+                    title: `${BASE_TITLE} - Federated Accounts`,
+                    path: "ahdapa-federated-accounts",
+                    items: [],
+                  },
+                  {
+                    label: "Federation policies",
+                    group: AhdapaFederationPoliciesGroupRef,
+                    title: `${BASE_TITLE} - Federation Policies`,
+                    path: "ahdapa-federation-policies",
+                    items: [],
+                  },
+                  {
+                    label: "IPA upstream IdPs",
+                    group: AhdapaIpaIdpsGroupRef,
+                    title: `${BASE_TITLE} - IPA Upstream IdPs`,
+                    path: "ahdapa-ipa-idps",
+                    items: [],
+                  },
+                  {
+                    label: "SAML2 service providers",
+                    group: AhdapaSaml2SpsGroupRef,
+                    title: `${BASE_TITLE} - SAML2 Service Providers`,
+                    path: "ahdapa-saml2-sps",
+                    items: [],
+                  },
+                  {
+                    label: "SAML2 upstream IdPs",
+                    group: AhdapaSaml2IdpsGroupRef,
+                    title: `${BASE_TITLE} - SAML2 Upstream IdPs`,
+                    path: "ahdapa-saml2-idps",
+                    items: [],
+                  },
+                ],
+              },
+              {
+                label: "Infrastructure",
+                group: AhdapaInfraGroupRef,
+                title: `${BASE_TITLE} - Infrastructure`,
+                path: "",
+                items: [
+                  {
+                    label: "Signing keys",
+                    group: AhdapaKeysGroupRef,
+                    title: `${BASE_TITLE} - Signing Keys`,
+                    path: "ahdapa-keys",
+                    items: [],
+                  },
+                  {
+                    label: "Cluster nodes",
+                    group: AhdapaNodesGroupRef,
+                    title: `${BASE_TITLE} - Cluster Nodes`,
+                    path: "ahdapa-nodes",
+                    items: [],
+                  },
+                  {
+                    label: "Audit log",
+                    group: AhdapaAuditGroupRef,
+                    title: `${BASE_TITLE} - Audit Log`,
+                    path: "ahdapa-audit",
+                    items: [],
+                  },
+                ],
+              },
+            ],
+          },
+        ]
+      : []),
     {
       label: "Network services",
       group: "",

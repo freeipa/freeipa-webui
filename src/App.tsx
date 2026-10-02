@@ -7,11 +7,15 @@ import DataSpinner from "./components/layouts/DataSpinner";
 import { AppRoutes } from "./navigation/AppRoutes";
 // RPC client
 import { useUserMetadataQuery } from "./services/rpcAuth";
+import { useGetAhdapaAuthInfoQuery } from "./services/rpcAhdapa";
 // Alerts
 import ManagedAlerts from "./components/ManagedAlerts";
 
 const App: React.FunctionComponent = () => {
   const { isFetching } = useUserMetadataQuery();
+
+  // Probe ahdapa availability (non-blocking — if it fails, ahdapa nav is hidden)
+  useGetAhdapaAuthInfoQuery();
 
   if (isFetching) {
     return <DataSpinner />;
