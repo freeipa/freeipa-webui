@@ -281,7 +281,7 @@ const extendedApi = api.injectEndpoints({
         const params: Record<string, unknown> = {
           version: API_VERSION_BACKUP,
         };
-        if (sysAccount.description) {
+        if (sysAccount.description !== undefined) {
           params.description = sysAccount.description;
         }
         if (sysAccount.userpassword) {
@@ -294,6 +294,21 @@ const extendedApi = api.injectEndpoints({
           method: "sysaccount_mod",
           params: [[sysAccount.uid], params],
         });
+      },
+    }),
+    /**
+     * Get a system account by uid via `sysaccount_show` with all fields
+     * @param {string} uid - System account uid
+     * @returns {SysAccount} - System account data
+     */
+    getSysAccountById: build.query<SysAccount, string>({
+      query: (uid) =>
+        getCommand({
+          method: "sysaccount_show",
+          params: [[uid], { all: true, rights: true }],
+        }),
+      transformResponse: (response: FindRPCResponse): SysAccount => {
+        return apiToSysAccount(response.result.result);
       },
     }),
   }),
@@ -320,4 +335,5 @@ export const {
   useSysaccountDisableMutation,
   useGetSysAccountsInfoByNameQuery,
   useSaveSysAccountMutation,
+  useGetSysAccountByIdQuery,
 } = extendedApi;

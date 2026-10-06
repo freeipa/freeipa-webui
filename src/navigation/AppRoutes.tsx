@@ -644,6 +644,10 @@ export const AppRoutes = (): React.ReactElement => {
                   path=""
                   element={<SystemAccountTabs section="settings" />}
                 />
+                <Route
+                  path="member_role"
+                  element={<SystemAccountTabs section="member_role" />}
+                />
               </Route>
             </Route>
             <Route path="configuration" element={<Configuration />} />

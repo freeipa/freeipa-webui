@@ -12,6 +12,7 @@ import { MinusIcon } from "@patternfly/react-icons";
 import { useNavigate } from "react-router";
 // Components
 import SystemAccountSettings from "src/pages/SystemAccounts/SystemAccountSettings";
+import SystemAccountMemberOf from "src/pages/SystemAccounts/SystemAccountMemberOf";
 import BreadCrumb, {
   BreadCrumbItem,
 } from "src/components/layouts/BreadCrumb/BreadCrumb";
@@ -23,6 +24,8 @@ import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 // Navigation
 import { NotFound } from "src/components/errors/PageErrors";
 import { UidParams, useSafeParams } from "src/utils/paramsUtils";
+// Utils
+import { partialSysAccountToSysAccount } from "src/utils/systemAccountUtils";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
@@ -64,6 +67,8 @@ const SystemAccountTabs = ({ section }: SystemAccountTabsProps) => {
   ) => {
     if (tabIndex === "settings") {
       navigate("/" + pathname + "/" + uid);
+    } else if (tabIndex === "member_role") {
+      navigate("/" + pathname + "/" + uid + "/member_role");
     }
   };
 
@@ -83,7 +88,20 @@ const SystemAccountTabs = ({ section }: SystemAccountTabsProps) => {
     setBreadcrumbItems(currentPath);
     setActiveTabKey("settings");
     dispatch(updateBreadCrumbPath(currentPath));
-  }, [uid]);
+  }, [uid, dispatch]);
+
+  // Redirect to the settings page if the section is not defined
+  React.useEffect(() => {
+    if (!section) {
+      navigate("/" + pathname + "/" + uid);
+    }
+
+    if (section !== "settings") {
+      setActiveTabKey("member_role");
+    } else {
+      setActiveTabKey(section);
+    }
+  }, [section]);
 
   // Show 'NotFound' page if the query settled with no valid account
   if (sysAccountSettingsData.notFound) {
@@ -144,6 +162,18 @@ const SystemAccountTabs = ({ section }: SystemAccountTabsProps) => {
               onResetValues={sysAccountSettingsData.resetValues}
               modifiedValues={sysAccountSettingsData.modifiedValues}
               onOpenContextualPanel={() => dispatch(toggleHelpPanel())}
+            />
+          </Tab>
+          <Tab
+            eventKey={"member_role"}
+            name="memberof-details"
+            title={<TabTitleText>Is a member of</TabTitleText>}
+          >
+            <SystemAccountMemberOf
+              sysAccount={partialSysAccountToSysAccount(
+                sysAccountSettingsData.sysAccount
+              )}
+              tabSection={section}
             />
           </Tab>
         </Tabs>

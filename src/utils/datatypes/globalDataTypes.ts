@@ -224,6 +224,7 @@ export interface SysAccount {
   privileged: boolean;
   nsaccountlock: boolean;
   memberof: string[];
+  memberof_role: string[];
 }
 
 export interface Privilege {
