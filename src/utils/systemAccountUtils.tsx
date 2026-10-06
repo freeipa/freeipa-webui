@@ -39,6 +39,7 @@ export function apiToSysAccount(
     ...createEmptySysAccount(),
     ...converted,
     memberof: (apiRecord.memberof as string[]) || [],
+    memberof_role: (apiRecord.memberof_role as string[]) || [],
   };
 }
 
@@ -62,5 +63,6 @@ export function createEmptySysAccount(): SysAccount {
     privileged: false,
     nsaccountlock: false,
     memberof: [],
+    memberof_role: [],
   };
 }
