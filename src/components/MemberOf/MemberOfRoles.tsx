@@ -133,6 +133,8 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
       return "service";
     } else if (props.from === "user-groups") {
       return "group";
+    } else if (props.from === "system-accounts") {
+      return "sysaccount";
     } else {
       // Return 'user' as default
       return "user";
