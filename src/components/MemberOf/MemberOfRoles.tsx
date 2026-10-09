@@ -2,7 +2,13 @@ import React, { useEffect } from "react";
 // PatternFly
 import { PaginationVariant } from "@patternfly/react-core";
 // Data types
-import { User, Role, Host, Service } from "src/utils/datatypes/globalDataTypes";
+import {
+  User,
+  Role,
+  Host,
+  Service,
+  SysAccount,
+} from "src/utils/datatypes/globalDataTypes";
 // Components
 import MemberOfToolbar from "./MemberOfToolbar";
 import MemberTable from "src/components/tables/MembershipTable";
@@ -29,7 +35,11 @@ import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToRole } from "src/utils/rolesUtils";
 
 interface MemberOfRolesProps {
-  entity: Partial<User> | Partial<Host> | Partial<Service>;
+  entity:
+    | Partial<User>
+    | Partial<Host>
+    | Partial<Service>
+    | Partial<SysAccount>;
   id: string;
   from: string;
   isDataLoading: boolean;
@@ -133,6 +143,8 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
       return "service";
     } else if (props.from === "user-groups") {
       return "group";
+    } else if (props.from === "system-accounts") {
+      return "sysaccount";
     } else {
       // Return 'user' as default
       return "user";
@@ -159,7 +171,6 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
   const [addMemberToRoles] = useAddToRolesMutation();
   const [removeMembersFromRoles] = useRemoveFromRolesMutation();
   const [adderSearchValue, setAdderSearchValue] = React.useState("");
-  const [availableRoles, setAvailableRoles] = React.useState<Role[]>([]);
   const [availableItems, setAvailableItems] = React.useState<AvailableItems[]>(
     []
   );
@@ -190,10 +201,8 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
       const count = rolesQuery.data.result.count;
       const results = rolesQuery.data.result.results;
       let items: AvailableItems[] = [];
-      const avalRoles: Role[] = [];
       for (let i = 0; i < count; i++) {
         const role = apiToRole(results[i].result);
-        avalRoles.push(role);
         items.push({
           key: role.cn,
           title: role.cn,
@@ -201,7 +210,6 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
       }
       items = items.filter((item) => !memberof_role.includes(item.key));
 
-      setAvailableRoles(avalRoles);
       setAvailableItems(items);
     }
   }, [rolesQuery.data, rolesQuery.isFetching]);
@@ -371,7 +379,7 @@ const MemberOfRoles = (props: MemberOfRolesProps) => {
         spinning={spinning}
       >
         <MemberTable
-          entityList={availableRoles.filter((role) =>
+          entityList={roles.filter((role) =>
             membershipDirection === "direct"
               ? rolesSelected.includes(role.cn)
               : indirectRolesSelected.includes(role.cn)
