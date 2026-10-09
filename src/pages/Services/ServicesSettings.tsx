@@ -11,11 +11,8 @@ import {
   SidebarPanel,
 } from "@patternfly/react-core";
 // Data types
-import {
-  Certificate,
-  Metadata,
-  Service,
-} from "src/utils/datatypes/globalDataTypes";
+import { Certificate, Service } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Modals
 import ConfirmationModal from "src/components/modals/ConfirmationModal";
 import IssueNewCertificate from "src/components/modals/CertificateModals/IssueNewCertificate";

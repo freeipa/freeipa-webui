@@ -6,6 +6,7 @@ import PrincipalAliasMultiTextBox, {
   PrincipalAliasMultiTextBoxProps,
 } from "./PrincipalAliasMultiTextBox";
 import { renderWithAlerts } from "src/utils/testUtils";
+import { createMetadata } from "src/services/types/metadata";
 
 interface MockReturn {
   data: { result: boolean } | { error: { message: string } };
@@ -36,16 +37,18 @@ vi.mock("src/services/rpcHosts", () => ({
 describe("PrincipalAliasMultiTextBox Component", () => {
   const mockOnRefresh = vi.fn();
 
-  const mockMetadata = {
+  const mockMetadata = createMetadata({
     objects: {
       krbtpolicy: {
         name: "krbtpolicy",
-        container_dn: "cn=DOM-IPA.DEMO,cn=kerberos",
+        methods: [],
+        primary_key: "cn",
         takes_params: [],
       },
       host: {
         name: "host",
-        container_dn: "cn=computers,cn=accounts",
+        methods: [],
+        primary_key: "fqdn",
         takes_params: [
           {
             alwaysask: false,
@@ -60,23 +63,22 @@ describe("PrincipalAliasMultiTextBox Component", () => {
             doc: "Principal alias",
             flags: ["no_create", "no_search"],
             label: "Principal alias",
-            maxlength: 255,
             multivalue: true,
             name: "krbprincipalname",
             no_convert: false,
-            noextrawhitespace: true,
-            pattern_errmsg: "",
-            pattern: "",
             primary_key: false,
             query: false,
             required: false,
+            require_service: false,
             sortorder: 2,
             type: "Principal",
           },
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   const mockIpaObject = {
     krbprincipalname: [],

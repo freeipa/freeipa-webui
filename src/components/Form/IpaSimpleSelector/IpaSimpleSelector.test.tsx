@@ -10,14 +10,17 @@ import { vi, describe, afterEach, it, expect } from "vitest";
 import IpaSimpleSelector, {
   IPAParamDefinitionSimpleSelector,
 } from "./IpaSimpleSelector";
+import { createMetadata } from "src/services/types/metadata";
 
 describe("IpaSimpleSelector Component", () => {
   const mockOnChange = vi.fn();
 
-  const mockMetadata = {
+  const mockMetadata = createMetadata({
     objects: {
       permission: {
         name: "permission",
+        methods: [],
+        primary_key: "cn",
         takes_params: [
           {
             alwaysask: false,
@@ -32,25 +35,22 @@ describe("IpaSimpleSelector Component", () => {
             doc: "Bind rule type",
             flags: [],
             label: "Bind rule type",
-            maxlength: 255,
             multivalue: false,
             name: "ipapermbindruletype",
             no_convert: false,
-            noextrawhitespace: true,
-            pattern_errmsg: "",
-            pattern: "",
             primary_key: false,
             query: false,
             required: false,
             sortorder: 1,
             type: "str",
             values: ["permission", "all", "anonymous", "self"],
-            writable: true,
           },
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   const defaultProps: IPAParamDefinitionSimpleSelector = {
     id: "ipapermbindruletype",

@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
+import { useAppSelector } from "src/store/hooks";
 
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { usePrivilegeShowQuery } from "src/services/rpcPrivileges";
 // Data types
-import { Privilege, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Privilege } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type PrivilegeSettingsData = {
   isLoading: boolean;
@@ -21,9 +22,10 @@ type PrivilegeSettingsData = {
 };
 
 const usePrivilegeSettings = (privilegeId: string): PrivilegeSettingsData => {
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
+  const metadata = metadataQuery.data;
 
   const privilegeQuery = usePrivilegeShowQuery(privilegeId);
   const privilegeData = privilegeQuery.data;
@@ -99,7 +101,7 @@ const usePrivilegeSettings = (privilegeId: string): PrivilegeSettingsData => {
   };
 
   return {
-    isLoading: metadataLoading || isPrivilegeLoading || !initialized,
+    isLoading: isPrivilegeLoading || !initialized,
     isFetching: privilegeQuery.isFetching,
     modified,
     setModified,

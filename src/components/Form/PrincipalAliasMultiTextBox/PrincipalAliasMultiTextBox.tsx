@@ -29,7 +29,7 @@ import { useAppDispatch } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 // Data types
-import { Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Utils
 import { getRealmFromKrbPolicy } from "src/utils/utils";
 import { IPAObject } from "src/utils/ipaObjectUtils";

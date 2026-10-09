@@ -11,13 +11,11 @@ import SimpleSelector, {
 // RPC
 import { useAddPermissionMutation } from "src/services/rpcPermissions";
 // Redux
-import { useAppDispatch } from "src/store/hooks";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 // Errors
 import { SerializedError } from "@reduxjs/toolkit";
-import { useGetObjectMetadataQuery } from "src/services/rpc";
-import { Metadata } from "src/utils/datatypes/globalDataTypes";
 import {
   BIND_RULE_OPTIONS,
   FILTERED_OBJECTS,
@@ -28,6 +26,7 @@ import { TypeAheadWithCheckbox } from "src/components/TypeAheadWithCheckbox";
 import { useFindGroupsQuery } from "src/services/rpcUserGroups";
 import InputWithValidation from "src/components/layouts/InputWithValidation";
 import { isValidDn } from "src/utils/utils";
+import { isComplexObjectMetadata, Metadata } from "src/services/types/metadata";
 
 interface PropsToAddModal {
   isOpen: boolean;
@@ -36,25 +35,23 @@ interface PropsToAddModal {
   onRefresh: () => void;
 }
 
-const generateTypes = (metadata: Metadata | undefined) => {
-  if (!metadata) {
-    return [];
-  }
-
+const generateTypes = (metadata: Metadata) => {
   const objects: SelectOptionProps[] = [];
 
   objects.push({ key: "", value: "Custom" });
-  for (const obj of Object.values(metadata.objects || {})) {
+  for (const obj of Object.values(metadata.objects)) {
     if (FILTERED_OBJECTS.includes(obj.name)) {
+      continue;
+    }
+
+    if (!isComplexObjectMetadata(obj)) {
       continue;
     }
 
     if (obj.can_have_permissions) {
       objects.push({
         key: obj.name,
-        value: (obj.label_singular === "Entry"
-          ? obj.label
-          : obj.label_singular) as string,
+        value: obj.label_singular === "Entry" ? obj.label : obj.label_singular,
       });
     }
   }
@@ -62,28 +59,26 @@ const generateTypes = (metadata: Metadata | undefined) => {
   return objects;
 };
 
-const generateAttrs = (
-  metadata: Metadata | undefined,
-  currentObject: string
-) => {
-  if (!metadata) {
+const generateAttrs = (metadata: Metadata, currentObject: string) => {
+  const object = metadata.objects?.[currentObject];
+  if (!object || !isComplexObjectMetadata(object)) {
     return [];
   }
 
-  return (
-    metadata.objects?.[currentObject]?.aciattrs?.map((attr) => ({
-      children: attr,
-      value: attr,
-      "data-cy": `modal-select-attrs-${attr}`,
-    })) || []
-  );
+  return object.aciattrs.map((attr) => ({
+    children: attr,
+    value: attr,
+    "data-cy": `modal-select-attrs-${attr}`,
+  }));
 };
 
 const AddPermissionModal = (props: PropsToAddModal) => {
   const dispatch = useAppDispatch();
 
   // API calls
-  const metadataQuery = useGetObjectMetadataQuery();
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
   const groupsQuery = useFindGroupsQuery();
   const [addPermission] = useAddPermissionMutation();
 

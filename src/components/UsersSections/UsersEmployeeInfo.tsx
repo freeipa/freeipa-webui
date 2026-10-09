@@ -2,7 +2,8 @@ import React from "react";
 // PatternFly
 import { Flex, FlexItem, Form, FormGroup } from "@patternfly/react-core";
 // Data types
-import { Metadata, User } from "src/utils/datatypes/globalDataTypes";
+import { User } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Form
 import IpaTextInput from "../Form/IpaTextInput";
 import IpaSelect from "../Form/IpaSelect";

@@ -5,6 +5,7 @@ import { vi, describe, it, expect, afterEach } from "vitest";
 import IpaCalendar, { IpaCalendarProps } from "./IpaCalendar";
 // Utils
 import { updateIpaObject } from "src/utils/ipaObjectUtils";
+import { createMetadata } from "src/services/types/metadata";
 
 // Mock of util function: updateIpaObject
 vi.mock("src/utils/ipaObjectUtils", async () => ({
@@ -15,16 +16,18 @@ vi.mock("src/utils/ipaObjectUtils", async () => ({
 describe("IpaCalendar Component", () => {
   const mockOnchange = vi.fn();
 
-  const mockMetadata = {
+  const mockMetadata = createMetadata({
     objects: {
       user: {
         name: "user",
+        methods: [],
+        primary_key: "uid",
         takes_params: [
           {
             alwaysask: false,
             attribute: true,
             autofill: false,
-            class: "String",
+            class: "DateTime",
             cli_metavar: "KRBPASSWORD2",
             cli_name: "krbpasswordexpiration2",
             confirm: false,
@@ -33,23 +36,21 @@ describe("IpaCalendar Component", () => {
             doc: "The expiration date of the user's password.",
             flags: [],
             label: "Kerberos password expiration 2",
-            maxlength: 255,
             multivalue: false,
             name: "krbpasswordexpiration2",
             no_convert: false,
-            noextrawhitespace: true,
-            pattern_errmsg: "",
-            pattern: "^\\d{4}-\\d{2}-\\d{2}$",
             primary_key: false,
             query: false,
             required: true,
             sortorder: 1,
-            type: "string",
+            type: "datetime",
           },
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   const defaultProps: IpaCalendarProps = {
     dataCy: "ipa-calendar",

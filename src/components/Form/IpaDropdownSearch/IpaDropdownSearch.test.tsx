@@ -11,15 +11,18 @@ import { describe, vi, it, expect, afterEach } from "vitest";
 import IpaDropdownSearch, {
   IPAParamDefinitionDropdown,
 } from "./IpaDropdownSearch";
+import { createMetadata } from "src/services/types/metadata";
 
 describe("IpaDropdownSearch Component", () => {
   const mockOnchange = vi.fn();
   const mockOnSearch = vi.fn();
 
-  const mockMetadata = {
+  const mockMetadata = createMetadata({
     objects: {
       config: {
         name: "config",
+        methods: [],
+        primary_key: "cn",
         takes_params: [
           {
             cli_name: "ca_renewal_master_server",
@@ -50,7 +53,9 @@ describe("IpaDropdownSearch Component", () => {
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   const mockIpaObject = {
     dn: "cn=ipaConfig,cn=etc,dc=dom-ipa,dc=demo",

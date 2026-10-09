@@ -9,7 +9,8 @@ import {
   TabTitleText,
 } from "@patternfly/react-core";
 // Data types
-import { Metadata, SudoRule } from "src/utils/datatypes/globalDataTypes";
+import { SudoRule } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Components
 import KeytabTableWithFilter, {
   TableEntry,

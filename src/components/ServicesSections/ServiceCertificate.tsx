@@ -6,11 +6,8 @@ import IpaCertificates from "../Form/IpaCertificates";
 // Utils
 import { asRecord } from "src/utils/serviceUtils";
 // Data types
-import {
-  Certificate,
-  Metadata,
-  Service,
-} from "src/utils/datatypes/globalDataTypes";
+import { Certificate, Service } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 interface PropsToServiceSettings {
   service: Partial<Service>;

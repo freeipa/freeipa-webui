@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
+import { useAppSelector } from "src/store/hooks";
 
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useGetNetgroupFullDataQuery } from "src/services/rpcNetgroups";
 // Data types
-import { Netgroup, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Netgroup } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type NetgroupSettingsData = {
   isLoading: boolean;
@@ -22,9 +23,10 @@ type NetgroupSettingsData = {
 
 const useNetgroupSettings = (groupId: string): NetgroupSettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadataQuery = {
+    data: useAppSelector((state) => state.global.metadata),
+  };
+  const metadata = metadataQuery.data;
 
   // [API call] Host Group
   const netgroupFullDataQuery = useGetNetgroupFullDataQuery(groupId);
@@ -40,7 +42,7 @@ const useNetgroupSettings = (groupId: string): NetgroupSettingsData => {
   }, [groupFullData, netgroupFullDataQuery.isFetching]);
 
   const settings = {
-    isLoading: metadataLoading || isFullDataLoading,
+    isLoading: isFullDataLoading,
     isFetching: netgroupFullDataQuery.isFetching,
     modified,
     setModified,

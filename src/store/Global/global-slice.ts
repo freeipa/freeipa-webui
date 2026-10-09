@@ -10,6 +10,7 @@ const initialState: UserMetadata = {
   domainLevel: 0,
   caIsEnabled: false,
   vaultConfiguration: {},
+  metadata: { objects: {}, methods: {}, commands: {} },
 };
 
 const globalSlice = createSlice({
