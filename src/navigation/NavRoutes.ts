@@ -55,6 +55,8 @@ const IdentityProviderReferencesGroupRef = "identity-provider-references";
 const CertificateMappingGroupRef = "cert-id-mapping-rules";
 const CertificateMappingConfigGroupRef = "cert-id-mapping-global-config";
 const CertificateMappingMatchGroupRef = "cert-id-mapping-match";
+// - RADIUS servers
+const RadiusServersGroupRef = "radius-servers";
 // NETWORK SERVICES
 // - Automount
 const AutomountLocationsGroupRef = "automount-locations";
@@ -336,6 +338,13 @@ export const getNavigationRoutes = (
           group: OtpTokensGroupRef,
           title: `${BASE_TITLE} - OTP tokens`,
           path: "otp-tokens",
+          items: [],
+        },
+        {
+          label: "RADIUS servers",
+          group: RadiusServersGroupRef,
+          title: `${BASE_TITLE} - RADIUS servers`,
+          path: "radius-servers",
           items: [],
         },
         {
