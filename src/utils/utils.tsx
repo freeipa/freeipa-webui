@@ -37,6 +37,7 @@ import {
   OtpToken,
   SELinuxUserMap,
   AutomountLocation,
+  RadiusServer,
 } from "./datatypes/globalDataTypes";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -265,6 +266,9 @@ export const isDelegationSelectable = (delegation: Delegation) =>
 
 export const isSysAccountSelectable = (sysAccount: SysAccount) =>
   sysAccount.uid !== "";
+
+export const isRadiusServerSelectable = (server: RadiusServer) =>
+  server.cn !== "";
 
 /**
  * Write JSX error messages into 'apiErrorsJsx' array

@@ -1342,6 +1342,16 @@ export interface AutomountLocation {
   dn: string;
 }
 
+export interface RadiusServer {
+  cn: string;
+  description: string;
+  ipatokenradiusserver: string;
+  ipatokenradiussecret: string;
+  ipatokenradiustimeout: number;
+  ipatokenusermapattribute: string;
+  dn: string;
+}
+
 export type ErrorValidationData = {
   isError: boolean;
   message: string;
