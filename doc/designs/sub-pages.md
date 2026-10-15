@@ -83,6 +83,39 @@ useUpdateRoute({ pathname: "parent-pathname", noBreadcrumb: true });
 
 > ⚠️ Missing entries cause runtime crash. See [12-settings-patterns.md](sub-pages/12-settings-patterns.md).
 
+## Disabled Status Text in Title Bar
+
+**Every Tabs component** whose entity supports an enabled/disabled state **must** show a `(Disabled)` text label in the title bar when the entity is disabled. This is done via the `statusText` prop of `TitleLayout` in the Tabs component (not in the Settings component).
+
+### Pattern
+
+```tsx
+<TitleLayout
+  id={entityId}
+  preText="Entity type:"
+  text={entityId}
+  headingLevel="h1"
+  statusText={isDisabled ? "Disabled" : undefined}
+/>
+```
+
+The `statusText` is rendered in grey (`pf-v6-u-color-400`) after the entity name, wrapped in parentheses — e.g. **Entity type: myentity (Disabled)**.
+
+### Disabled state per entity type
+
+| Entity | Disabled when | Reference |
+|--------|--------------|-----------|
+| System accounts | `nsaccountlock === true` | `SystemAccountTabs.tsx` |
+| Active/Stage/Preserved users | `nsaccountlock === true` | `ActiveUsersTabs.tsx` |
+| HBAC rules | `ipaenabledflag === false` | `HBACRulesTabs.tsx` |
+| Sudo rules | `ipaenabledflag !== "true"` | `SudoRulesTabs.tsx` |
+| OTP tokens | `ipatokendisabled === true` | `OtpTokensTabs.tsx` |
+| Certificate mapping rules | `ipaenabledflag !== true` | `CertificateMappingTabs.tsx` |
+| DNS zones | `idnszoneactive !== true` | `DnsZonesTabs.tsx` |
+| DNS forward zones | `idnszoneactive === false` | `DnsForwardZonesTabs.tsx` |
+
+> ⚠️ When creating a new Tabs component for an entity that can be enabled/disabled, always add `statusText="Disabled"` in the title bar.
+
 ## Post-Generation Checks
 
 ```bash

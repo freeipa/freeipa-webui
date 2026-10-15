@@ -76,6 +76,7 @@ const HBACRulesTabs = ({ section }) => {
           preText="HBAC rule:"
           text={settingsData.rule.cn}
           headingLevel="h1"
+          disabled={settingsData.rule.ipaenabledflag?.toString() !== "true"}
         />
       </PageSection>
       <PageSection hasBodyWrapper={false} type="tabs" isFilled>

@@ -82,7 +82,15 @@ const DnsZonesTabs = ({ section }: { section: string }) => {
     <>
       <PageSection hasBodyWrapper={false}>
         <BreadCrumb breadcrumbItems={breadcrumbItems} />
-        <TitleLayout id={id} preText="DNS zone:" text={id} headingLevel="h1" />
+        <TitleLayout
+          id={id}
+          preText="DNS zone:"
+          text={id}
+          headingLevel="h1"
+          disabled={
+            dnsZonesSettingsData.dnsZone.idnszoneactive?.toString() !== "true"
+          }
+        />
       </PageSection>
       <PageSection hasBodyWrapper={false} type="tabs" isFilled>
         <Tabs

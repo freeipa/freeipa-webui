@@ -72,6 +72,7 @@ const OtpTokensTabs = ({ section }: { section: string }) => {
           preText="OTP token:"
           text={ipatokenuniqueid}
           headingLevel="h1"
+          disabled={otpTokensSettingsData.otpToken.ipatokendisabled}
         />
       </PageSection>
       <PageSection hasBodyWrapper={false} type="tabs" isFilled>
