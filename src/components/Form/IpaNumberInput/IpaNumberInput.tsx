@@ -13,6 +13,8 @@ import {
  * @param {number} numCharsShown - The number of characters shown in the input (Optional. Default: 1)
  * @param {number} minValue - The minimum value allowed (Optional)
  * @param {number} maxValue - The maximum value allowed (Optional)
+ * @param {number} defaultValue - Value used when the field is empty or out of boundaries (Optional.
+ *   Falls back to minValue if not specified)
  * @param {IPAParamDefinition} IPAParamDefinition - IPA Object parameters
  * @param {boolean} isDisabled - Overrides the `readOnly` value (Optional. Default: readOnly)
  * @returns {React.ReactNode} The IPA Number Input component
@@ -26,63 +28,59 @@ export interface IPAParamDefinitionNumberInput extends IPAParamDefinition {
   numCharsShown?: number;
   minValue?: number;
   maxValue?: number;
+  defaultValue?: number;
   isDisabled?: boolean;
 }
 
 const IpaNumberInput = (props: IPAParamDefinitionNumberInput) => {
   const { readOnly, value, onChange } = getParamProperties(props);
 
-  const numberValue =
-    value === "" || value === null || value === undefined
-      ? ""
-      : parseInt(value.toString(), 10);
+  const fallbackValue = props.defaultValue ?? props.minValue;
+
+  const clamp = (n: number) => {
+    if (props.minValue !== undefined && n < props.minValue)
+      return fallbackValue ?? props.minValue;
+    if (props.maxValue !== undefined && n > props.maxValue)
+      return props.maxValue;
+    return n;
+  };
+
+  const numberValue = (() => {
+    if (value === "" || value === null || value === undefined)
+      return fallbackValue ?? "";
+    const num = parseInt(value.toString(), 10);
+    return isNaN(num) ? "" : clamp(num);
+  })();
 
   const isDisabled =
     props.isDisabled !== undefined ? props.isDisabled : readOnly;
 
-  const normalizeBetween = (value, min, max) => {
-    if (min !== undefined && max !== undefined) {
-      return Math.max(Math.min(value, max), min);
-    } else if (value <= min) {
-      return min;
-    } else if (value >= max) {
-      return max;
-    }
-    return value;
-  };
-
   const onMinus = () => {
-    const num = value ? parseInt(value as string, 10) : 0;
-    const newValue = normalizeBetween(num - 1, props.minValue, props.maxValue);
-    onChange(newValue);
+    const num = value ? parseInt(value as string, 10) : (fallbackValue ?? 0);
+    onChange(clamp(num - 1));
   };
 
   const onChangeHandler = (event: React.FormEvent<HTMLInputElement>) => {
-    const value = (event.target as HTMLInputElement).value;
-    onChange(value === "" ? value : +value);
-
-    // Return to max and min values if the input is beyond those values
-    if (props.minValue && +value < props.minValue) {
-      onChange(props.minValue);
-    } else if (props.maxValue && +value > props.maxValue) {
-      onChange(props.maxValue);
+    const val = (event.target as HTMLInputElement).value;
+    if (val === "") {
+      onChange(val);
+    } else {
+      onChange(clamp(+val));
     }
   };
 
   const onBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-    const blurVal = +event.target.value;
-
-    if (props.minValue && blurVal < props.minValue) {
-      onChange(props.minValue);
-    } else if (props.maxValue && blurVal > props.maxValue) {
-      onChange(props.maxValue);
+    const blurVal = event.target.value;
+    if (blurVal === "" && fallbackValue !== undefined) {
+      onChange(fallbackValue);
+    } else if (blurVal !== "") {
+      onChange(clamp(+blurVal));
     }
   };
 
   const onPlus = () => {
-    const num = value ? parseInt(value as string, 10) : 0;
-    const newValue = normalizeBetween(num + 1, props.minValue, props.maxValue);
-    onChange(newValue);
+    const num = value ? parseInt(value as string, 10) : (fallbackValue ?? 0);
+    onChange(clamp(num + 1));
   };
 
   return (
