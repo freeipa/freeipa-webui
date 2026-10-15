@@ -83,6 +83,48 @@ useUpdateRoute({ pathname: "parent-pathname", noBreadcrumb: true });
 
 > ⚠️ Missing entries cause runtime crash. See [12-settings-patterns.md](sub-pages/12-settings-patterns.md).
 
+## Disabled Entity Icon in Title Bar
+
+**Every Tabs component** whose entity supports an enabled/disabled state **must** show a `MinusIcon` in the title bar when the entity is disabled. This icon is added via the `icon` prop of `TitleLayout` in the Tabs component (not in the Settings component).
+
+### Pattern
+
+```tsx
+import { Icon } from "@patternfly/react-core";
+import { MinusIcon } from "@patternfly/react-icons";
+
+<TitleLayout
+  id={entityId}
+  preText="Entity type:"
+  text={entityId}
+  headingLevel="h1"
+  icon={
+    isDisabled ? (
+      <Icon status="info" size="md" aria-label="Disabled entity type">
+        <MinusIcon />
+      </Icon>
+    ) : undefined
+  }
+/>
+```
+
+> ⚠️ Do **not** add a `className` to the `Icon`. Always include an `aria-label` describing the disabled entity (e.g. `"Disabled user"`, `"Disabled HBAC rule"`) for accessibility.
+
+### Disabled state per entity type
+
+| Entity | Disabled when | Reference |
+|--------|--------------|-----------|
+| System accounts | `nsaccountlock === true` | `SystemAccountTabs.tsx` |
+| Active/Stage/Preserved users | `nsaccountlock === true` | `ActiveUsersTabs.tsx` |
+| HBAC rules | `ipaenabledflag === false` | `HBACRulesTabs.tsx` |
+| Sudo rules | `ipaenabledflag !== "true"` | `SudoRulesTabs.tsx` |
+| OTP tokens | `ipatokendisabled === true` | `OtpTokensTabs.tsx` |
+| Certificate mapping rules | `ipaenabledflag !== true` | `CertificateMappingTabs.tsx` |
+| DNS zones | `idnszoneactive !== true` | `DnsZonesTabs.tsx` |
+| DNS forward zones | `idnszoneactive === false` | `DnsForwardZonesTabs.tsx` |
+
+> ⚠️ When creating a new Tabs component for an entity that can be enabled/disabled, always add the `MinusIcon` in the title bar.
+
 ## Post-Generation Checks
 
 ```bash

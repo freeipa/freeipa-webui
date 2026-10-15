@@ -129,7 +129,11 @@ const SystemAccountTabs = ({ section }: SystemAccountTabsProps) => {
           headingLevel="h1"
           icon={
             sysAccountSettingsData.sysAccount.nsaccountlock ? (
-              <Icon className="pf-v6-u-mt-sm" status="info" size="md">
+              <Icon
+                status="info"
+                size="md"
+                aria-label="Disabled system account"
+              >
                 <MinusIcon />
               </Icon>
             ) : undefined
