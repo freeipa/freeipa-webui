@@ -24,6 +24,7 @@ const simpleValues = new Set([
   "ipatokenradiussecret",
   "ipatokenradiustimeout",
   "ipatokenusermapattribute",
+  "ipatokenradiusretries",
   "dn",
 ]);
 const dateValues = new Set<string>([]);
@@ -60,6 +61,7 @@ export function createEmptyRadiusServer(): RadiusServer {
     ipatokenradiussecret: "",
     ipatokenradiustimeout: 0,
     ipatokenusermapattribute: "",
+    ipatokenradiusretries: 0,
     dn: "",
   };
 }

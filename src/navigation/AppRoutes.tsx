@@ -90,6 +90,7 @@ import DelegationsTabs from "src/pages/Delegations/DelegationsTabs";
 import SystemAccounts from "src/pages/SystemAccounts/SystemAccounts";
 import SystemAccountTabs from "src/pages/SystemAccounts/SystemAccountTabs";
 import RadiusServers from "src/pages/RadiusServers/RadiusServers";
+import RadiusServersTabs from "src/pages/RadiusServers/RadiusServersTabs";
 
 // Renders routes (React)
 export const AppRoutes = (): React.ReactElement => {
@@ -461,6 +462,12 @@ export const AppRoutes = (): React.ReactElement => {
             </Route>
             <Route path="radius-servers">
               <Route path="" element={<RadiusServers />} />
+              <Route path=":cn">
+                <Route
+                  path=""
+                  element={<RadiusServersTabs section="settings" />}
+                />
+              </Route>
             </Route>
             <Route path="identity-provider-references">
               <Route path="" element={<IdpReferences />} />

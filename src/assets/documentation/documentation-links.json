@@ -214,5 +214,6 @@
   "selfservice-permissions-settings": [],
   "delegations-settings": [],
   "permissions-settings": [],
-  "sysaccount-settings": []
+  "sysaccount-settings": [],
+  "radius-servers-settings": []
 }

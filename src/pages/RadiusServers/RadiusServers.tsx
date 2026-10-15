@@ -346,7 +346,7 @@ const RadiusServers = () => {
                     hasCheckboxes={true}
                     pathname="radius-servers"
                     showTableRows={!isFetching}
-                    showLink={false}
+                    showLink={true}
                     elementsData={{
                       isElementSelectable: isRadiusServerSelectable,
                       selectedElements: selectedRadiusServers,
