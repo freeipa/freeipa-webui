@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 // PatternFly
-import {
-  Icon,
-  PageSection,
-  Tabs,
-  Tab,
-  TabTitleText,
-} from "@patternfly/react-core";
-import { MinusIcon } from "@patternfly/react-icons";
+import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate } from "react-router";
 // Components
@@ -127,12 +120,10 @@ const SystemAccountTabs = ({ section }: SystemAccountTabsProps) => {
           preText="System account:"
           text={sysAccountSettingsData.sysAccount.uid}
           headingLevel="h1"
-          icon={
-            sysAccountSettingsData.sysAccount.nsaccountlock ? (
-              <Icon className="pf-v6-u-mt-sm" status="info" size="md">
-                <MinusIcon />
-              </Icon>
-            ) : undefined
+          statusText={
+            sysAccountSettingsData.sysAccount.nsaccountlock
+              ? "Disabled"
+              : undefined
           }
         />
       </PageSection>

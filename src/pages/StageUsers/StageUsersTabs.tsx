@@ -6,7 +6,6 @@ import UserSettings from "src/components/UsersSections/UserSettings";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import TitleLayout from "src/components/layouts/TitleLayout";
-
 // Hooks
 import { useStageUserSettings } from "src/hooks/useUserSettingsData";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
@@ -82,6 +81,9 @@ const StageUsersTabs = () => {
           preText="Staged user:"
           text={uid}
           headingLevel="h1"
+          statusText={
+            userSettingsData.user.nsaccountlock ? "Disabled" : undefined
+          }
         />
       </PageSection>
       <PageSection hasBodyWrapper={false} type="tabs" isFilled>
