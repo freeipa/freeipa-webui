@@ -87,6 +87,7 @@ const SudoRulesTabs = ({ section }) => {
           text={rule.cn}
           headingLevel="h1"
           preText="Sudo rule:"
+          disabled={rule.ipaenabledflag !== "true"}
         />
       </PageSection>
       <PageSection hasBodyWrapper={false} type="tabs" isFilled>

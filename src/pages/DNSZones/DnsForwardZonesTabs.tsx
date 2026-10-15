@@ -14,6 +14,8 @@ import BreadCrumb, {
 import DnsForwardZonesSettings from "./DnsForwardZonesSettings";
 // React Router DOM
 import { useSafeParams } from "src/utils/paramsUtils";
+// Data types
+import { DNSForwardZone } from "src/utils/datatypes/globalDataTypes";
 
 type DnsParams = {
   idnsname: string;
@@ -67,6 +69,11 @@ const DnsForwardZonesTabs = ({ section }: { section: string }) => {
           preText="DNS forward zone:"
           text={idnsname}
           headingLevel="h1"
+          disabled={
+            (
+              dnsForwardZone as Partial<DNSForwardZone>
+            ).idnszoneactive?.toString() !== "true"
+          }
         />
       </PageSection>
       <PageSection hasBodyWrapper={false} type="tabs" isFilled>
