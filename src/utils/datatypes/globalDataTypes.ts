@@ -1349,6 +1349,7 @@ export interface RadiusServer {
   ipatokenradiussecret: string;
   ipatokenradiustimeout: number;
   ipatokenusermapattribute: string;
+  ipatokenradiusretries: number;
   dn: string;
 }
 

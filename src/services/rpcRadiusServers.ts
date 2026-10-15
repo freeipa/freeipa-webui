@@ -157,6 +157,44 @@ const extendedApi = api.injectEndpoints({
         return getBatchCommand(commands, API_VERSION_BACKUP);
       },
     }),
+    /**
+     * Show a specific RADIUS server (with all its details).
+     * @param string - RADIUS server cn
+     * @returns RadiusServer
+     */
+    radiusServerShow: build.query<RadiusServer, string>({
+      query: (cn) => {
+        return getCommand({
+          method: "radiusproxy_show",
+          params: [
+            [cn],
+            { all: true, rights: true, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+      transformResponse: (response: FindRPCResponse) => {
+        return apiToRadiusServer(response.result.result);
+      },
+    }),
+    /**
+     * Modify an existing RADIUS server via `radiusproxy_mod`
+     * @param {Partial<RadiusServer>} - RADIUS server data to modify (must include cn)
+     * @returns {FindRPCResponse} - Response from API
+     */
+    saveRadiusServer: build.mutation<FindRPCResponse, Partial<RadiusServer>>({
+      query: (server) => {
+        const params = {
+          version: API_VERSION_BACKUP,
+          ...server,
+        };
+        delete params.cn;
+        delete params.dn;
+        return getCommand({
+          method: "radiusproxy_mod",
+          params: [[server.cn], params],
+        });
+      },
+    }),
   }),
   overrideExisting: false,
 });
@@ -165,4 +203,6 @@ export const {
   useGetRadiusServersFullDataQuery,
   useAddRadiusServerMutation,
   useDeleteRadiusServersMutation,
+  useRadiusServerShowQuery,
+  useSaveRadiusServerMutation,
 } = extendedApi;
