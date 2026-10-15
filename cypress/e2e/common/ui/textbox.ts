@@ -1,9 +1,7 @@
 import { Then, When } from "@badeball/cypress-cucumber-preprocessor";
 
 export const typeInTextbox = (textbox: string, text: string) => {
-  cy.dataCy(textbox).clear();
-  cy.dataCy(textbox).should("have.value", "");
-  cy.dataCy(textbox).type(text);
+  cy.dataCy(textbox).type("{selectall}" + text);
 };
 
 When(
