@@ -1,12 +1,20 @@
 import React from "react";
 // PatternFly
-import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
+import {
+  Icon,
+  PageSection,
+  Tabs,
+  Tab,
+  TabTitleText,
+} from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate } from "react-router";
 // Navigation
 import { NotFound } from "src/components/errors/PageErrors";
 // Hooks
 import { useDnsZonesData } from "src/hooks/useDnsZonesData";
+// Icons
+import { MinusIcon } from "@patternfly/react-icons";
 // Components
 import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
@@ -82,7 +90,20 @@ const DnsZonesTabs = ({ section }: { section: string }) => {
     <>
       <PageSection hasBodyWrapper={false}>
         <BreadCrumb breadcrumbItems={breadcrumbItems} />
-        <TitleLayout id={id} preText="DNS zone:" text={id} headingLevel="h1" />
+        <TitleLayout
+          id={id}
+          preText="DNS zone:"
+          text={id}
+          headingLevel="h1"
+          icon={
+            dnsZonesSettingsData.dnsZone.idnszoneactive?.toString() !==
+            "true" ? (
+              <Icon status="info" size="md" aria-label="Disabled DNS zone">
+                <MinusIcon />
+              </Icon>
+            ) : undefined
+          }
+        />
       </PageSection>
       <PageSection hasBodyWrapper={false} type="tabs" isFilled>
         <Tabs

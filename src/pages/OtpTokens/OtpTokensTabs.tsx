@@ -1,12 +1,20 @@
 import React from "react";
 // PatternFly
-import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
+import {
+  Icon,
+  PageSection,
+  Tabs,
+  Tab,
+  TabTitleText,
+} from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate } from "react-router";
 // Navigation
 import { NotFound } from "src/components/errors/PageErrors";
 // Hooks
 import { useOtpTokensSettingsData } from "src/hooks/useOtpTokensSettingsData";
+// Icons
+import { MinusIcon } from "@patternfly/react-icons";
 // Components
 import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
@@ -72,6 +80,13 @@ const OtpTokensTabs = ({ section }: { section: string }) => {
           preText="OTP token:"
           text={ipatokenuniqueid}
           headingLevel="h1"
+          icon={
+            otpTokensSettingsData.otpToken.ipatokendisabled ? (
+              <Icon status="info" size="md" aria-label="Disabled OTP token">
+                <MinusIcon />
+              </Icon>
+            ) : undefined
+          }
         />
       </PageSection>
       <PageSection hasBodyWrapper={false} type="tabs" isFilled>

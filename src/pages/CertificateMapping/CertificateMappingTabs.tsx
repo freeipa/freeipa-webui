@@ -1,6 +1,12 @@
 import React from "react";
 // PatternFly
-import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
+import {
+  Icon,
+  PageSection,
+  Tabs,
+  Tab,
+  TabTitleText,
+} from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate } from "react-router";
 // Navigation
@@ -8,6 +14,8 @@ import { NotFound } from "src/components/errors/PageErrors";
 // Hooks
 // import { useCertMappingSettingsData } from "src/hooks/useCertMappingSettingsData";
 import { useCertificateMappingSettingsData } from "src/hooks/useCertificateMappingSettingsData";
+// Icons
+import { MinusIcon } from "@patternfly/react-icons";
 // Components
 import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
@@ -85,6 +93,18 @@ const CertificateMappingTabs = ({ section }) => {
           preText="Certificate Identity Mapping Rule:"
           text={id}
           headingLevel="h1"
+          icon={
+            certMappingSettingsData.certMapping.ipaenabledflag?.toString() !==
+            "true" ? (
+              <Icon
+                status="info"
+                size="md"
+                aria-label="Disabled certificate mapping rule"
+              >
+                <MinusIcon />
+              </Icon>
+            ) : undefined
+          }
         />
       </PageSection>
       <PageSection hasBodyWrapper={false} type="tabs" isFilled>

@@ -1,12 +1,19 @@
 import React, { useState } from "react";
 // PatternFly
-import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
+import {
+  Icon,
+  PageSection,
+  Tabs,
+  Tab,
+  TabTitleText,
+} from "@patternfly/react-core";
 // Components
 import UserSettings from "src/components/UsersSections/UserSettings";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
-
+// Icons
+import { MinusIcon } from "@patternfly/react-icons";
 // Hooks
 import { useUserSettings } from "src/hooks/useUserSettingsData";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
@@ -83,6 +90,13 @@ const PreservedUsersTabs = () => {
           preText="Preserved user:"
           text={uid}
           headingLevel="h1"
+          icon={
+            userSettingsData.user.nsaccountlock ? (
+              <Icon status="info" size="md" aria-label="Disabled user">
+                <MinusIcon />
+              </Icon>
+            ) : undefined
+          }
         />
       </PageSection>
       <PageSection hasBodyWrapper={false} type="tabs" isFilled>

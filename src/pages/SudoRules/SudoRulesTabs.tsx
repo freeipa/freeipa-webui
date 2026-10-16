@@ -1,12 +1,20 @@
 import React, { useState } from "react";
 // PatternFly
-import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
+import {
+  Icon,
+  PageSection,
+  Tabs,
+  Tab,
+  TabTitleText,
+} from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate } from "react-router";
 // Layouts
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
 import DataSpinner from "src/components/layouts/DataSpinner";
+// Icons
+import { MinusIcon } from "@patternfly/react-icons";
 // Hooks
 import { useSudoRuleSettings } from "src/hooks/useSudoRuleSettingsData";
 // Redux
@@ -87,6 +95,13 @@ const SudoRulesTabs = ({ section }) => {
           text={rule.cn}
           headingLevel="h1"
           preText="Sudo rule:"
+          icon={
+            rule.ipaenabledflag !== "true" ? (
+              <Icon status="info" size="md" aria-label="Disabled sudo rule">
+                <MinusIcon />
+              </Icon>
+            ) : undefined
+          }
         />
       </PageSection>
       <PageSection hasBodyWrapper={false} type="tabs" isFilled>

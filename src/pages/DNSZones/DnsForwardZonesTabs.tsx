@@ -1,6 +1,12 @@
 import React from "react";
 // PatternFly
-import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
+import {
+  Icon,
+  PageSection,
+  Tabs,
+  Tab,
+  TabTitleText,
+} from "@patternfly/react-core";
 // Navigation
 import { NotFound } from "src/components/errors/PageErrors";
 // Hooks
@@ -12,8 +18,12 @@ import BreadCrumb, {
   BreadCrumbItem,
 } from "src/components/layouts/BreadCrumb/BreadCrumb";
 import DnsForwardZonesSettings from "./DnsForwardZonesSettings";
+// Icons
+import { MinusIcon } from "@patternfly/react-icons";
 // React Router DOM
 import { useSafeParams } from "src/utils/paramsUtils";
+// Data types
+import { DNSForwardZone } from "src/utils/datatypes/globalDataTypes";
 
 type DnsParams = {
   idnsname: string;
@@ -67,6 +77,19 @@ const DnsForwardZonesTabs = ({ section }: { section: string }) => {
           preText="DNS forward zone:"
           text={idnsname}
           headingLevel="h1"
+          icon={
+            (
+              dnsForwardZone as Partial<DNSForwardZone>
+            ).idnszoneactive?.toString() !== "true" ? (
+              <Icon
+                status="info"
+                size="md"
+                aria-label="Disabled DNS forward zone"
+              >
+                <MinusIcon />
+              </Icon>
+            ) : undefined
+          }
         />
       </PageSection>
       <PageSection hasBodyWrapper={false} type="tabs" isFilled>
