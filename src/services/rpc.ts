@@ -9,7 +9,6 @@ import {
 import { API_VERSION_BACKUP } from "../utils/utils";
 import {
   fqdnType,
-  Metadata,
   servicesType,
   UIDType,
   cnType,
@@ -17,14 +16,6 @@ import {
   sudoCmdType,
   automemberType,
 } from "../utils/datatypes/globalDataTypes";
-
-interface ShowRPCResponse {
-  error: string;
-  id: string;
-  principal?: string;
-  version?: string;
-  result: Record<string, unknown>;
-}
 
 export interface BatchResult {
   result: Record<string, unknown>;
@@ -234,7 +225,6 @@ export const api = createApi({
   // the caching logic and this is easier than fixing it :)
   keepUnusedDataFor: 0,
   tagTypes: [
-    "ObjectMetadata",
     "FullUser",
     "RadiusServer",
     "IdpServer",
@@ -276,23 +266,6 @@ export const api = createApi({
     batchMutCommand: build.mutation<BatchRPCResponse, Command[] | void>({
       query: (payloadData: Command[], apiVersion?: string) =>
         getBatchCommand(payloadData, apiVersion || API_VERSION_BACKUP),
-    }),
-    getObjectMetadata: build.query<Metadata, void>({
-      query: () => {
-        return getCommand({
-          method: "json_metadata",
-          params: [
-            [],
-            {
-              object: "all",
-            },
-          ],
-        });
-      },
-      transformResponse: (response: ShowRPCResponse): Metadata =>
-        response.result,
-      providesTags: ["ObjectMetadata"],
-      keepUnusedDataFor: 3600,
     }),
     // Basic find/show query: Hosts, Services, ...
     gettingGeneric: build.query<
@@ -860,7 +833,6 @@ export const {
   useSimpleMutCommandMutation,
   useBatchCommandQuery,
   useBatchMutCommandMutation,
-  useGetObjectMetadataQuery,
   useGettingGenericQuery,
   useGetGenericListQuery,
   useSearchEntriesMutation,

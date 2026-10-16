@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
+import { useAppSelector } from "src/store/hooks";
 
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useGetIDViewsFullDataQuery } from "src/services/rpcIDViews";
 // Data types
-import { IDView, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { IDView } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type IDViewSettingsData = {
   isLoading: boolean;
@@ -22,9 +23,7 @@ type IDViewSettingsData = {
 
 const useIDViewSettings = (viewId: string): IDViewSettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] Host Group
   const idViewFullDataQuery = useGetIDViewsFullDataQuery(viewId);
@@ -40,7 +39,7 @@ const useIDViewSettings = (viewId: string): IDViewSettingsData => {
   }, [idViewFullData, idViewFullDataQuery.isFetching]);
 
   const settings = {
-    isLoading: metadataLoading || isFullDataLoading,
+    isLoading: isFullDataLoading,
     isFetching: idViewFullDataQuery.isFetching,
     modified,
     setModified,

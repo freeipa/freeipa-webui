@@ -1,12 +1,14 @@
 import React from "react";
+import { useAppSelector } from "src/store/hooks";
+
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import {
   AutomemberShowPayload,
   useAutomemberShowQuery,
 } from "src/services/rpcAutomember";
 // Data types
-import { Automember, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Automember } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type SettingsData = {
   isLoading: boolean;
@@ -27,9 +29,7 @@ const useAutomemberSettingsData = (
   automemberType: string
 ): SettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] Automember rule
   const payload = {
@@ -51,7 +51,7 @@ const useAutomemberSettingsData = (
   }, [automemberFullData, automemberFullDataQuery.isFetching]);
 
   const settings = {
-    isLoading: metadataLoading || isFullDataLoading,
+    isLoading: isFullDataLoading,
     isFetching: automemberFullDataQuery.isFetching,
     modified,
     setModified,

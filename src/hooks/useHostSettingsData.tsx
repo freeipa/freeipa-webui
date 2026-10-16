@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
+import { useAppSelector } from "src/store/hooks";
 
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useGetHostsFullDataQuery } from "src/services/rpcHosts";
 // Data types
-import { Host, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Host } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type HostSettingsData = {
   isLoading: boolean;
@@ -23,9 +24,7 @@ type HostSettingsData = {
 
 const useHostSettings = (hostId: string): HostSettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] Host
   const hostFullDataQuery = useGetHostsFullDataQuery(hostId);
@@ -44,7 +43,7 @@ const useHostSettings = (hostId: string): HostSettingsData => {
   }, [hostFullData, hostFullDataQuery.isFetching]);
 
   const settings = {
-    isLoading: metadataLoading || isFullDataLoading,
+    isLoading: isFullDataLoading,
     isFetching: hostFullDataQuery.isFetching,
     modified,
     setModified,

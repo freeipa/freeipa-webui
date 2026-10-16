@@ -14,7 +14,8 @@ import { useAppDispatch } from "src/store/hooks";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Data types
-import { SudoCmd, Metadata } from "../../utils/datatypes/globalDataTypes";
+import { SudoCmd } from "../../utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import { useSaveSudoCmdMutation } from "src/services/rpcSudoCmds";

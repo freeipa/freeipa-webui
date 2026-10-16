@@ -1,4 +1,5 @@
-import { Metadata, ParamMetadata } from "src/utils/datatypes/globalDataTypes";
+import { ParamMetadata } from "src/services/types/param";
+import { Metadata } from "src/services/types/metadata";
 import { parseAPIDatetime, toGeneralizedTime } from "./utils";
 
 export type BasicType = string | number | boolean | null | undefined | [];
@@ -17,7 +18,7 @@ export interface IPAParamDefinition {
   ariaLabel?: string;
 }
 
-export interface ParamProperties {
+interface ParamProperties {
   writable: boolean;
   required: boolean;
   readOnly: boolean;
@@ -26,7 +27,7 @@ export interface ParamProperties {
   paramMetadata: ParamMetadata;
 }
 
-export function getParamMetadata(
+function getParamMetadata(
   metadata: Metadata,
   objectName: string,
   paramName: string
@@ -57,7 +58,7 @@ function isFieldWritable(acis: Record<string, string>, attr: string): boolean {
   return false;
 }
 
-export function isWritable(
+function isWritable(
   paramMetadata: ParamMetadata,
   ipaObject?: IPAObject
 ): boolean {
@@ -90,7 +91,7 @@ export function isWritable(
   return true; // we don't know, assume writable
 }
 
-export function isRequired(
+function isRequired(
   parDef: IPAParamDefinition,
   param: ParamMetadata,
   writable: boolean
@@ -101,7 +102,7 @@ export function isRequired(
   return (param && param.required) || false;
 }
 
-export function getValue(
+function getValue(
   ipaObject: Record<string, unknown> | undefined,
   name: string
 ): BasicType {
