@@ -23,10 +23,7 @@ type IDViewSettingsData = {
 
 const useIDViewSettings = (viewId: string): IDViewSettingsData => {
   // [API call] Metadata
-  const metadataQuery = {
-    data: useAppSelector((state) => state.global.metadata),
-  };
-  const metadata = metadataQuery.data;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] Host Group
   const idViewFullDataQuery = useGetIDViewsFullDataQuery(viewId);

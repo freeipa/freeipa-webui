@@ -24,10 +24,7 @@ type DnsConfigSettingsData = {
 
 const useDnsConfigData = (): DnsConfigSettingsData => {
   // [API call] Metadata
-  const metadataQuery = {
-    data: useAppSelector((state) => state.global.metadata),
-  };
-  const metadata = metadataQuery.data;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] DNS global config
   const dnsGlobalConfigDetails = useDnsGlobalConfigFindQuery();

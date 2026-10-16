@@ -76,16 +76,11 @@ const AddPermissionModal = (props: PropsToAddModal) => {
   const dispatch = useAppDispatch();
 
   // API calls
-  const metadataQuery = {
-    data: useAppSelector((state) => state.global.metadata),
-  };
+  const metadata = useAppSelector((state) => state.global.metadata);
   const groupsQuery = useFindGroupsQuery();
   const [addPermission] = useAddPermissionMutation();
 
-  const types = useMemo(
-    () => generateTypes(metadataQuery.data),
-    [metadataQuery.data]
-  );
+  const types = useMemo(() => generateTypes(metadata), [metadata]);
 
   // States
   const [isAddButtonSpinning, setIsAddButtonSpinning] = React.useState(false);
@@ -226,7 +221,7 @@ const AddPermissionModal = (props: PropsToAddModal) => {
       name: "Granted rights",
       pfComponent: (
         <Grid sm={4}>
-          {generateRights(metadataQuery.data).map((right) => (
+          {generateRights(metadata).map((right) => (
             <GridItem key={right}>
               <Checkbox
                 id={`modal-form-right-${right}`}
@@ -346,7 +341,7 @@ const AddPermissionModal = (props: PropsToAddModal) => {
         <TypeAheadWithCheckbox
           id="modal-form-attrs"
           dataCy="modal-select-attrs"
-          options={generateAttrs(metadataQuery.data, type)}
+          options={generateAttrs(metadata, type)}
           selected={attrs}
           setSelected={setAttrs}
           creationProps={{

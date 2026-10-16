@@ -24,10 +24,7 @@ type ServiceSettingsData = {
 
 const useServiceSettings = (serviceId: string): ServiceSettingsData => {
   // [API call] Metadata
-  const metadataQuery = {
-    data: useAppSelector((state) => state.global.metadata),
-  };
-  const metadata = metadataQuery.data;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] Service
   const serviceFullDataQuery = useGetServicesFullDataQuery(serviceId);

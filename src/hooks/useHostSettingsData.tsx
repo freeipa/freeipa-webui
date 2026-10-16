@@ -24,10 +24,7 @@ type HostSettingsData = {
 
 const useHostSettings = (hostId: string): HostSettingsData => {
   // [API call] Metadata
-  const metadataQuery = {
-    data: useAppSelector((state) => state.global.metadata),
-  };
-  const metadata = metadataQuery.data;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] Host
   const hostFullDataQuery = useGetHostsFullDataQuery(hostId);

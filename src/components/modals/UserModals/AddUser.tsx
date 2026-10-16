@@ -60,10 +60,7 @@ const AddUser = (props: PropsToAddUser) => {
   ) as string;
 
   // [API call] Metadata
-  const metadataQuery = {
-    data: useAppSelector((state) => state.global.metadata),
-  };
-  const metadata = metadataQuery.data;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // Define 'executeCommand' to add user data to IPA server
   const [addUser] = useAddUserMutation();

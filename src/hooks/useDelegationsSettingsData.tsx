@@ -21,9 +21,7 @@ type DelegationSettingsData = {
 const useDelegationSettings = (
   delegationId: string
 ): DelegationSettingsData => {
-  const metadataQuery = {
-    data: useAppSelector((state) => state.global.metadata),
-  };
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   const delegationQuery = useGetDelegationByIdQuery(delegationId, {
     skip: !delegationId,
@@ -101,7 +99,7 @@ const useDelegationSettings = (
     isFetching: delegationQuery.isFetching,
     modified,
     setModified,
-    metadata: metadataQuery.data,
+    metadata,
     originalDelegation,
     delegation,
     setDelegation,

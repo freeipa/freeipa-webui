@@ -22,10 +22,7 @@ type PrivilegeSettingsData = {
 };
 
 const usePrivilegeSettings = (privilegeId: string): PrivilegeSettingsData => {
-  const metadataQuery = {
-    data: useAppSelector((state) => state.global.metadata),
-  };
-  const metadata = metadataQuery.data;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   const privilegeQuery = usePrivilegeShowQuery(privilegeId);
   const privilegeData = privilegeQuery.data;
