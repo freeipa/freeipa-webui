@@ -23,10 +23,7 @@ type IdpRefSettingsData = {
 
 const useIdpRefSettingsData = (idpRefId: string): IdpRefSettingsData => {
   // [API call] Metadata
-  const metadataQuery = {
-    data: useAppSelector((state) => state.global.metadata),
-  };
-  const metadata = metadataQuery.data;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] IdP Reference
   const idpRefDetails = useIdpShowQuery(idpRefId);

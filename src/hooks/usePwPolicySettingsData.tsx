@@ -25,10 +25,7 @@ const usePasswordPolicySettings = (
   pwPolicyId: string
 ): PwPolicySettingsData => {
   // [API call] Metadata
-  const metadataQuery = {
-    data: useAppSelector((state) => state.global.metadata),
-  };
-  const metadata = metadataQuery.data;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] Password Policy
   const pwPolicyDetails = usePwPolicyShowQuery(pwPolicyId);

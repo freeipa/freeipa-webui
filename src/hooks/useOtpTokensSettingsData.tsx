@@ -29,10 +29,7 @@ const useOtpTokensSettingsData = (
   otpTokenId: string
 ): OtpTokensSettingsData => {
   // [API call] Metadata
-  const metadataQuery = {
-    data: useAppSelector((state) => state.global.metadata),
-  };
-  const metadata = metadataQuery.data;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] OTP token
   const otpTokenQuery = useGetOtpTokenQuery(otpTokenId);

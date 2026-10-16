@@ -19,9 +19,7 @@ type PermissionSettingsData = {
 };
 
 const usePermissionSettings = (cn: string): PermissionSettingsData => {
-  const metadataQuery = {
-    data: useAppSelector((state) => state.global.metadata),
-  };
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   const permissionQuery = useGetPermissionByIdQuery(cn, {
     skip: !cn,
@@ -105,7 +103,7 @@ const usePermissionSettings = (cn: string): PermissionSettingsData => {
     isFetching: permissionQuery.isFetching,
     modified,
     setModified,
-    metadata: metadataQuery.data,
+    metadata,
     originalPermission,
     permission,
     setPermission,

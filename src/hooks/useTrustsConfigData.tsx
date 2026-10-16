@@ -30,10 +30,7 @@ type TrustsConfigSettingsData = {
 
 const useTrustsConfigData = (): TrustsConfigSettingsData => {
   // [API call] Metadata
-  const metadataQuery = {
-    data: useAppSelector((state) => state.global.metadata),
-  };
-  const metadata = metadataQuery.data;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] Global trust config
   const globalTrustConfigDetails = useGlobalTrustConfigShowQuery();

@@ -20,10 +20,7 @@ type IdRangesSettingsData = {
 
 const useIdRangesSettingsData = (idRangeId: string): IdRangesSettingsData => {
   // [API call] Metadata
-  const metadataQuery = {
-    data: useAppSelector((state) => state.global.metadata),
-  };
-  const metadata = metadataQuery.data;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] ID range
   const idRangeDetails = useIdRangeShowQuery(idRangeId);
