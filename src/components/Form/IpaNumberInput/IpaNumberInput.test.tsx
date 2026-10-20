@@ -5,6 +5,7 @@ import { vi, describe, afterEach, it, expect } from "vitest";
 import IpaNumberInput, {
   IPAParamDefinitionNumberInput,
 } from "./IpaNumberInput";
+import { createMetadata } from "src/services/types/metadata";
 
 // Mock of util function: updateIpaObject
 vi.mock("src/utils/ipaObjectUtils", async () => ({
@@ -15,10 +16,12 @@ vi.mock("src/utils/ipaObjectUtils", async () => ({
 describe("IpaNumberInput Component", () => {
   const mockOnChange = vi.fn();
 
-  const mockMetadata = {
+  const mockMetadata = createMetadata({
     objects: {
       sudorule: {
         name: "sudorule",
+        methods: [],
+        primary_key: "cn",
         takes_params: [
           {
             alwaysask: false,
@@ -35,7 +38,6 @@ describe("IpaNumberInput Component", () => {
             label: "Mock Sudo order",
             maxvalue: 2147483647,
             minvalue: 0,
-            maxlength: 255,
             multivalue: false,
             name: "sudoorder2",
             no_convert: false,
@@ -43,15 +45,14 @@ describe("IpaNumberInput Component", () => {
             query: false,
             required: false,
             sortorder: 1,
-            type: "Int",
-            noextrawhitespace: false,
-            pattern_errmsg: "",
-            pattern: "",
+            type: "int",
           },
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   const defaultProps: IPAParamDefinitionNumberInput = {
     dataCy: "ipa-number-input",

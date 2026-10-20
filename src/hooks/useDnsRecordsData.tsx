@@ -1,12 +1,14 @@
 import React from "react";
+import { useAppSelector } from "src/store/hooks";
+
 // Routing
 import { useNavigate } from "react-router";
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useShowDnsRecordQuery } from "src/services/rpcDnsZones";
 import { useGetHostByIdQuery } from "src/services/rpcHosts";
 // Data types
-import { DNSRecord, Host, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { DNSRecord, Host } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Utils
 import { apiToDnsRecord } from "src/utils/dnsRecordUtils";
 
@@ -34,9 +36,7 @@ const useDnsRecordsData = (
   const navigate = useNavigate();
 
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] DNS Record
   const dnsRecordDetails = useShowDnsRecordQuery({
@@ -84,7 +84,7 @@ const useDnsRecordsData = (
   }, [hostData, hostDetails.isFetching]);
 
   const settings: DnsRecordsSettingsData = {
-    isLoading: metadataLoading || isDnsRecordDataLoading || isHostDataLoading,
+    isLoading: isDnsRecordDataLoading || isHostDataLoading,
     isFetching: dnsRecordDetails.isFetching,
     modified,
     setModified,

@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
+import { useAppSelector } from "src/store/hooks";
 
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useRoleShowQuery } from "src/services/rpcRoles";
 // Data types
-import { Role, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Role } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type RoleSettingsData = {
   isLoading: boolean;
@@ -22,9 +23,7 @@ type RoleSettingsData = {
 
 const useRoleSettings = (roleId: string): RoleSettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] Role
   const roleQuery = useRoleShowQuery(roleId);
@@ -86,7 +85,7 @@ const useRoleSettings = (roleId: string): RoleSettingsData => {
   };
 
   return {
-    isLoading: metadataLoading || isRoleLoading,
+    isLoading: isRoleLoading,
     isFetching: roleQuery.isFetching,
     modified,
     setModified,

@@ -11,11 +11,11 @@ import {
 // Data types
 import {
   IDPServer,
-  Metadata,
   User,
   RadiusServer,
   Certificate,
 } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Layouts
 import SecondaryButton from "src/components/layouts/SecondaryButton";
 import PopoverWithIconLayout from "src/components/layouts/PopoverWithIconLayout";

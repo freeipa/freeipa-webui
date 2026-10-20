@@ -18,7 +18,8 @@ import {
 import { useAppDispatch } from "src/store/hooks";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
-import { Permission, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Permission } from "src/utils/datatypes/globalDataTypes";
+import { isComplexObjectMetadata, Metadata } from "src/services/types/metadata";
 import { ErrorResult } from "src/services/rpc";
 import {
   useSavePermissionMutation,
@@ -52,17 +53,18 @@ const PermissionsSettings = (props: PropsToSettings) => {
     props.onPermissionChange
   );
 
-  const attrOptions = useMemo(
-    () =>
-      props.metadata.objects?.[props.permission.type || ""]?.aciattrs?.map(
-        (attr) => ({
-          children: attr,
-          value: attr,
-          "data-cy": `permissions-tab-settings-select-attrs-${attr}`,
-        })
-      ) || [],
-    [props.metadata, props.permission.type]
-  );
+  const attrOptions = useMemo(() => {
+    const obj = props.metadata.objects[props.permission.type || ""];
+    if (obj && isComplexObjectMetadata(obj)) {
+      return obj.aciattrs.map((attr) => ({
+        children: attr,
+        value: attr,
+        "data-cy": `permissions-tab-settings-select-attrs-${attr}`,
+      }));
+    }
+
+    return [];
+  }, [props.metadata, props.permission.type]);
 
   const rightsOptions = useMemo(
     () =>
@@ -75,11 +77,11 @@ const PermissionsSettings = (props: PropsToSettings) => {
 
   const typeOptions = useMemo(() => {
     const options: string[] = [];
-    for (const obj of Object.values(props.metadata.objects || {})) {
-      if (FILTERED_OBJECTS.includes(obj.name)) {
+    for (const obj of Object.values(props.metadata.objects)) {
+      if (obj && FILTERED_OBJECTS.includes(obj.name)) {
         continue;
       }
-      if (obj.can_have_permissions) {
+      if (obj && isComplexObjectMetadata(obj)) {
         options.push(obj.name);
       }
     }

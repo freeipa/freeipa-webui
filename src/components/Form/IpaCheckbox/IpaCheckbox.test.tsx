@@ -5,6 +5,7 @@ import { vi, describe, afterEach, it, expect } from "vitest";
 import IpaCheckbox, { CheckboxOption } from "./IpaCheckbox";
 // Utils
 import { updateIpaObject } from "src/utils/ipaObjectUtils";
+import { createMetadata } from "src/services/types/metadata";
 
 // Mock of util function: updateIpaObject
 vi.mock("src/utils/ipaObjectUtils", async () => ({
@@ -15,16 +16,18 @@ vi.mock("src/utils/ipaObjectUtils", async () => ({
 describe("IpaCheckbox Component", () => {
   const mockOnChange = vi.fn();
 
-  const mockMetadata = {
+  const mockMetadata = createMetadata({
     objects: {
       host: {
         name: "host",
+        methods: [],
+        primary_key: "fqdn",
         takes_params: [
           {
             alwaysask: false,
             attribute: true,
             autofill: false,
-            class: "Boolean",
+            class: "Bool",
             cli_metavar: "IPAKRBOKASDELEGATE2",
             cli_name: "ipakrbokasdelegate2",
             confirm: false,
@@ -33,23 +36,23 @@ describe("IpaCheckbox Component", () => {
             doc: "Trusted for delegation.",
             flags: [],
             label: "Trusted for delegation",
-            maxlength: 255,
             multivalue: false,
             name: "ipakrbokasdelegate2",
             no_convert: false,
-            noextrawhitespace: true,
-            pattern_errmsg: "",
-            pattern: "",
             primary_key: false,
             query: false,
             required: false,
             sortorder: 1,
-            type: "boolean",
+            type: "bool",
+            truths: [1, "1", "true", "TRUE"],
+            falsehoods: [0, "0", "false", "FALSE"],
           },
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   const defaultProps: CheckboxOption = {
     dataCy: "ipa-checkbox",
