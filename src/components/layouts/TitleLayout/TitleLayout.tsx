@@ -11,17 +11,19 @@ interface PropsToTitleLayout {
   ouiaSafe?: boolean;
   size?: "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
   preText?: string;
-  icon?: React.ReactNode;
+  statusText?: string;
 }
 
 const TitleLayout = (props: PropsToTitleLayout) => {
   const titleText = props.preText ? (
     <div className="pf-v6-u-display-flex">
-      {props.icon && (
-        <div className="pf-v6-u-mr-sm pf-v6-u-color-400">{props.icon}</div>
-      )}
       <div className="pf-v6-u-color-400">{props.preText}</div>
       <div className="pf-v6-u-ml-sm">{props.text}</div>
+      {props.statusText && (
+        <div className="pf-v6-u-ml-sm pf-v6-u-color-300">
+          ({props.statusText})
+        </div>
+      )}
     </div>
   ) : (
     <>{props.text}</>

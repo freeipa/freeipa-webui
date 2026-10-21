@@ -85,6 +85,12 @@ const CertificateMappingTabs = ({ section }) => {
           preText="Certificate Identity Mapping Rule:"
           text={id}
           headingLevel="h1"
+          statusText={
+            certMappingSettingsData.certMapping.ipaenabledflag?.toString() !==
+            "true"
+              ? "Disabled"
+              : undefined
+          }
         />
       </PageSection>
       <PageSection hasBodyWrapper={false} type="tabs" isFilled>

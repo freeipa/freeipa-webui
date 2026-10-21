@@ -1,21 +1,13 @@
 import React from "react";
 // PatternFly
-import {
-  Icon,
-  Title,
-  PageSection,
-  Content,
-  Tabs,
-  Tab,
-  TabTitleText,
-} from "@patternfly/react-core";
+import { PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 // React Router DOM
 import { useNavigate } from "react-router";
 // Components
 import UserSettings from "src/components/UsersSections/UserSettings";
 import UserMemberOf from "./UserMemberOf";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
-
+import TitleLayout from "src/components/layouts/TitleLayout";
 // Layouts
 import DataSpinner from "src/components/layouts/DataSpinner";
 // Hooks
@@ -25,8 +17,6 @@ import {
   setHelpTopic,
   toggleHelpPanel,
 } from "src/store/Global/contextual-help-slice";
-// Icons
-import { LockIcon } from "@patternfly/react-icons";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { updateBreadCrumbPath } from "src/store/Global/routes-slice";
@@ -90,38 +80,18 @@ const ActiveUsersTabs = ({ memberof }) => {
 
   const disabled = userSettingsData.user.nsaccountlock;
   const user = userSettingsData.user;
-  const titleText = (
-    <div className="pf-v6-u-display-flex">
-      <div className="pf-v6-u-color-400">User:</div>
-      <div className="pf-v6-u-ml-sm">{uid}</div>
-    </div>
-  );
 
   return (
     <>
       <PageSection hasBodyWrapper={false}>
         <BreadCrumb breadcrumbItems={breadcrumbItems} />
-        <Content>
-          <Title headingLevel="h1">
-            <div
-              className="pf-v6-u-display-flex"
-              title={disabled ? "User is disabled" : ""}
-            >
-              {titleText}
-              {disabled ? (
-                <Icon
-                  className="pf-v6-u-ml-sm pf-v6-u-mt-sm"
-                  status="info"
-                  size="md"
-                >
-                  <LockIcon />
-                </Icon>
-              ) : (
-                ""
-              )}
-            </div>
-          </Title>
-        </Content>
+        <TitleLayout
+          id={uid}
+          preText="User:"
+          text={uid}
+          headingLevel="h1"
+          statusText={disabled ? "Disabled" : undefined}
+        />
       </PageSection>
       <PageSection hasBodyWrapper={false} type="tabs" isFilled>
         <Tabs

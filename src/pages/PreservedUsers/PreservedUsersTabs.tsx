@@ -6,7 +6,6 @@ import UserSettings from "src/components/UsersSections/UserSettings";
 import DataSpinner from "src/components/layouts/DataSpinner";
 import BreadCrumb, { BreadCrumbItem } from "src/components/layouts/BreadCrumb";
 import TitleLayout from "src/components/layouts/TitleLayout";
-
 // Hooks
 import { useUserSettings } from "src/hooks/useUserSettingsData";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
@@ -83,6 +82,9 @@ const PreservedUsersTabs = () => {
           preText="Preserved user:"
           text={uid}
           headingLevel="h1"
+          statusText={
+            userSettingsData.user.nsaccountlock ? "Disabled" : undefined
+          }
         />
       </PageSection>
       <PageSection hasBodyWrapper={false} type="tabs" isFilled>
