@@ -42,6 +42,10 @@ Then("I should see {string} dual list item on the right", (item: string) => {
   cy.dataCy("dual-list-right").find(`[data-cy='${item}']`).should("exist");
 });
 
+Then("I should not see {string} dual list item", (item: string) => {
+  cy.dataCy(item).should("not.exist");
+});
+
 export const addItemToRightList = (item: string) => {
   const dualListItem = `item-${item}`;
   cy.dataCy(dualListItem).should("exist");
