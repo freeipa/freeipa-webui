@@ -144,6 +144,7 @@ const SudoCmdsTabs = ({ section }) => {
             eventKey={"memberof"}
             name="memberof-details"
             title={<TabTitleText>Is member of</TabTitleText>}
+            data-cy="sudo-cmd-is-member-of-tab"
           >
             <SudoCmdsMemberOf sudoCmd={sudoCmd} tabSection={section} />
           </Tab>
