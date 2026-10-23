@@ -76,9 +76,10 @@ const MembersSudoCommands = (props: PropsToMembersSudoGroups) => {
   );
 
   const members = React.useMemo(() => {
+    if (memberNamesToLoad.length === 0) return [];
     if (!fullSudoCmdsQuery.data) return [];
     return fullSudoCmdsQuery.data.filter((m) => m.sudocmd && m.sudocmd !== "");
-  }, [fullSudoCmdsQuery.data]);
+  }, [fullSudoCmdsQuery.data, memberNamesToLoad]);
 
   // Computed "states"
   const showTableRows = !fullSudoCmdsQuery.isFetching && !props.isDataLoading;
