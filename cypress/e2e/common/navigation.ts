@@ -16,3 +16,13 @@ When("I navigate to {string} page", (handle: string) => {
 Then("I should be on {string} page", (handle: string) => {
   cy.location("pathname").should("match", new RegExp(`.*${handle}$`));
 });
+
+Then("I should see the page heading {string}", (heading: string) => {
+  const [preText, ...nameParts] = heading.split(": ");
+  const name = nameParts.join(": ");
+  cy.contains("h1", preText + ":").should("contain.text", name);
+});
+
+When("I click on the {string} breadcrumb link", (linkText: string) => {
+  cy.get(".pf-v6-c-breadcrumb__link").contains(linkText).click();
+});
