@@ -113,6 +113,7 @@ const SudoCmdGroupsTabs = ({ section }) => {
             eventKey={"settings"}
             name="settings-details"
             title={<TabTitleText>Settings</TabTitleText>}
+            data-cy="settings-details"
           >
             <SudoCmdGroupsSettings
               group={settingsData.group}
@@ -130,6 +131,7 @@ const SudoCmdGroupsTabs = ({ section }) => {
             eventKey={"member"}
             name={"member-details"}
             title={<TabTitleText>Members</TabTitleText>}
+            data-cy="member-details"
           >
             <SudoCmdGroupMembers sudocmdgroup={cmdGroup} tabSection={section} />
           </Tab>
