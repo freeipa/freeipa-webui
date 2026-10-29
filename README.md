@@ -68,7 +68,7 @@ sudo tee -a /etc/hosts < developer/scenarios/single-server/hosts
 
 **Non-default scenario**
 
-If you want to use any non-default scenario, or you want to rebuild a modified version of the default scenario, you'll also need [`podman-compose`](https://github.com/containers/podman-compose) and [Ansible](https://ansible.com). You'll also need the ansible-freeipa and podman Ansible collections. Assuming the virtual environment is being used:
+If you want to use any non-default scenario, or you want to rebuild a modified version of the default scenario, you'll also need [`podman-compose`](https://github.com/containers/podman-compose) and [Ansible](https://ansible.com). You'll also need the podman Ansible collection. Assuming the virtual environment is being used:
 
 ```
 pip install ansible-core podman-compose
@@ -162,7 +162,7 @@ The default credentials for the development environment are **admin** and **Secr
 
 8. (Optional) Deploy ahdapa
 
-The development environment can optionally include [ahdapa](https://codeberg.org/freeipa/ahdapa), a stateless OAuth 2.0 / OpenID Connect Identity Provider for FreeIPA. When deployed, the WebUI automatically detects ahdapa and displays the **OAuth2 / IdP** management section in the sidebar.
+The development environment can optionally include [ahdapa](https://forge.fedoraproject.org/freeipa/ahdapa), a stateless OAuth 2.0 / OpenID Connect Identity Provider for FreeIPA. When deployed, the WebUI automatically detects ahdapa and displays the **OAuth2 / IdP** management section in the sidebar.
 
 To deploy ahdapa to an already running container:
 
@@ -176,7 +176,7 @@ Or include it during a fresh build:
 ./developer/dev-env.sh -Ba
 ```
 
-See the [developer/README.md](developer/README.md) file for more details on binary provisioning and configuration.
+See the [developer/README.md](developer/README.md) file for more details on configuration.
 
 ## Development pre-checks
 
