@@ -188,6 +188,7 @@ def handle_post():
         hostname = os.environ.get("SERVER_NAME", "webui.ipa.test")
         env = dict(os.environ)
         env["KRB5CCNAME"] = ccache_path
+        env["GSS_USE_PROXY"] = "1"
 
         import re
         result = subprocess.run(

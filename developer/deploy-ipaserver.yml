@@ -4,10 +4,32 @@
   gather_facts: true
   become: true
 
-  roles:
-    - name: Deploy IPA server
-      role: freeipa.ansible_freeipa.ipaserver
-      state: present
+  tasks:
+    - name: Install IPA server
+      ansible.builtin.command:
+        cmd: >-
+          ipa-server-install -U
+          --realm={{ ipaserver_realm }}
+          --domain={{ ipaserver_domain }}
+          --hostname={{ ipaserver_hostname }}
+          --admin-password={{ ipaadmin_password }}
+          --ds-password={{ ipadm_password }}
+          --idstart={{ ipaserver_idstart | default(10000) }}
+          --idmax={{ ipaserver_idmax | default(199999) }}
+          {% if ipaserver_rid_base is defined %}--rid-base={{ ipaserver_rid_base }}{% endif %}
+          {% if ipaserver_secondary_rid_base is defined %}--secondary-rid-base={{ ipaserver_secondary_rid_base }}{% endif %}
+          {% if ipaserver_setup_dns | default(false) | bool %}--setup-dns{% endif %}
+          {% if ipaserver_auto_forwarders | default(false) | bool %}--auto-forwarders{% endif %}
+          {% if ipaserver_auto_reverse | default(false) | bool %}--auto-reverse{% endif %}
+          {% if ipaserver_no_dnssec_validation | default(false) | bool %}--no-dnssec-validation{% endif %}
+          {% if ipaserver_forward_policy is defined %}--forward-policy={{ ipaserver_forward_policy }}{% endif %}
+          {% if ipaserver_setup_kra | default(false) | bool %}--setup-kra{% endif %}
+          {% if ipaserver_setup_adtrust | default(false) | bool %}--setup-adtrust{% endif %}
+          {% if ipaserver_netbios_name is defined %}--netbios-name={{ ipaserver_netbios_name }}{% endif %}
+          {% if ipaserver_no_host_dns | default(false) | bool %}--no-host-dns{% endif %}
+          {% if ipaclient_no_ntp | default(false) | bool %}--no-ntp{% endif %}
+        creates: /etc/ipa/default.conf
+      timeout: 900
 
 - name: Configure modern-ui alias in httpd
   hosts: ipaserver
