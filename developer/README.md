@@ -46,15 +46,9 @@ dev-env.sh -C
 
 ## Deploying ahdapa (OAuth2/OIDC IdP)
 
-The development environment can optionally include [ahdapa](https://codeberg.org/freeipa/ahdapa), a stateless OAuth 2.0 / OpenID Connect Identity Provider for FreeIPA.
+The development environment includes [ahdapa](https://forge.fedoraproject.org/freeipa/ahdapa), a stateless OAuth 2.0 / OpenID Connect Identity Provider for FreeIPA. Ahdapa is installed automatically as part of the `freeipa-server` package from the [COPR repo `abbra/modrnizer-darc`](https://copr.fedorainfracloud.org/coprs/abbra/modrnizer-darc/) and configured during `ipa-server-install`.
 
-Build a new environment with ahdapa:
-
-```
-dev-env.sh -Ba
-```
-
-Deploy ahdapa to an already running container:
+After the container is built and IPA is deployed, run the ahdapa configuration playbook to set up the WebUI-specific pieces (devadmin user, OAuth2 client, OIDC bridge):
 
 ```
 dev-env.sh -sa
@@ -62,19 +56,13 @@ dev-env.sh -sa
 
 The `-a` flag can be combined with `-B` (build), `-s` (start), or `-r` (restart).
 
-The ahdapa binary can be provided in three ways (tried in order):
-
-1. **Pre-built binary**: place it at `developer/ahdapa-bin/ahdapa` before running the command.
-2. **dnf package**: if an `ahdapa` RPM is available in the configured repositories.
-3. **Build from source**: automatically clones and compiles ahdapa (requires network access; adds ~5-10 minutes to the build).
-
-Once deployed, ahdapa is available at `https://webui.ipa.test/idp/` and shares the `IPA.TEST` Kerberos realm, so SSO works transparently with the WebUI.
+Once configured, ahdapa is available at `https://webui.ipa.test/idp/` and shares the `IPA.TEST` Kerberos realm, so SSO works transparently with the WebUI.
 
 > **Note**: Pass `-k` to `open-browser.sh` to obtain a Kerberos ticket for `devadmin` (not `admin`) and enable SPNEGO auto-login. The `admin` user is not used because its ahdapa session cookie (~10 KB due to ~246 recursive group memberships) exceeds the size that browsers reliably store from SPNEGO responses. Without `-k`, the browser opens without a ticket and you must log in with username and password. If ahdapa login loops (keeps returning to the login page), restart ahdapa inside the container (`podman exec webui systemctl restart ahdapa`) and remove the browser profile (`open-browser.sh -r`) to reset cookie and certificate state.
 
 ## Building the development environments
 
-To be able to build the development environments you'll need `ansible-playbook` and `podman-compose` installed on your system and the ansible-freeipa collection (you can use Python's virtual environments):
+To be able to build the development environments you'll need `ansible-playbook` and `podman-compose` installed on your system (you can use Python's virtual environments):
 
 ```
 pip install ansible-core podman-compose

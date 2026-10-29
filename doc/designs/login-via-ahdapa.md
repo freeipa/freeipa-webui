@@ -132,7 +132,7 @@ After this, the webui operates normally — all IPA API calls use the standard s
 
 ### Static client registration
 
-The webui is registered as an OAuth2 client in ahdapa via a `clients.toml` file (created by the Ansible playbook). This avoids the need for dynamic registration and gives the client a predictable `client_id`. The client is configured as a public client (`token_endpoint_auth_method = "none"`) with PKCE, which is the standard for browser-based applications.
+The webui is registered as an OAuth2 client in ahdapa via a `clients.toml` file (created automatically by `ipa-server-install`). This avoids the need for dynamic registration and gives the client a predictable `client_id`. The client is configured as a public client (`token_endpoint_auth_method = "none"`) with PKCE, which is the standard for browser-based applications.
 
 ## Login page behavior
 
@@ -193,11 +193,11 @@ Because the webui uses React StrictMode (which double-invokes effects and state 
 | `src/services/rpcAhdapa.ts` | RTK Query base API with SPNEGO negotiation |
 | `src/store/Ahdapa/ahdapa-slice.ts` | Redux state for ahdapa availability |
 | `developer/oidc-bridge.py` | Exchanges authorization codes for IPA sessions |
-| `developer/deploy-ahdapa.yml` | Ansible playbook for ahdapa deployment |
+| `developer/deploy-ahdapa.yml` | Ansible playbook for WebUI-specific ahdapa config (devadmin, OIDC bridge) |
 
 ## Known limitations
 
-- **`admin` cannot use SPNEGO through ahdapa**: the `admin` user has ~246 recursive group memberships (from IPA roles and privileges). When ahdapa serializes the Kerberos credential cache into the session cookie (`krb5:ccache` scope), the cookie exceeds browser size limits. The dev environment uses `devadmin` instead, which gets equivalent write access via a direct LDAP ACI with no `memberOf` overhead. Username/password login works for both users.
+- **`admin` session cookie is larger than other users**: the `admin` user has ~246 recursive group memberships (from IPA roles and privileges), which ahdapa encodes in its stateless session cookie. The dev environment provides a `devadmin` user with equivalent write access via a direct LDAP ACI instead of IPA roles, keeping the cookie small. Both users work with password and SPNEGO login.
 - **Ahdapa session persists across browser launches**: the ahdapa session cookie lives in the Firefox profile, so closing and reopening the browser (even without `-k`) auto-logs in if a previous session is still valid. Use `open-browser.sh -r` to clear the profile, or log out via the webui before closing.
 - **Chrome does not support SPNEGO in the dev environment**: the `open-browser.sh` script only configures SPNEGO prefs for Firefox. Chrome would require `--auth-server-allowlist` flags.
 - **SPNEGO hostname is hardcoded**: the Firefox `network.negotiate-auth.trusted-uris` pref is set to `https://webui.ipa.test`. Non-default hostnames would require manual adjustment in `developer/firefox_config.sh`.
