@@ -81,14 +81,10 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
   const idParam = props.ipaObject[idParamName] as string;
 
   // Get further details of a certificate (via the `cert_find` results)
-  const getCertificateInfo = (certificate: CertificateParam) => {
-    const certificatesInfoList = props.certificates;
-    if (certificatesInfoList !== undefined) {
-      return certificatesInfoList.find(
-        (cert) => cert.certificate === certificate.__base64__
-      );
-    }
-  };
+  const getCertificateInfo = (certificate: CertificateParam) =>
+    props.certificates?.find(
+      (cert) => cert.certificate === certificate.__base64__
+    );
 
   // Get data from 'value'
   const getCertificatesList = () => {
@@ -109,21 +105,17 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
 
   // Update certificates list when 'value' changes
   //  - This prevents the list to be empty when exiting the page and coming back
-  React.useEffect(() => {
-    setCertificatesList(getCertificatesList());
-  }, [value]);
-
   // Update certificates list when 'props.certificates' changes
   React.useEffect(() => {
     setCertificatesList(getCertificatesList());
-  }, [props.certificates]);
+  }, [props.certificates, value]);
 
   // States
   const [textAreaValue, setTextAreaValue] = React.useState("");
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [certificatesList, setCertificatesList] = React.useState<
     CertificateData[]
-  >(getCertificatesList() || []);
+  >(() => getCertificatesList() || []);
 
   const onChangeTextAreaValue = (value: string) => {
     setTextAreaValue(value);
