@@ -58,7 +58,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
   // Contextual help panel
 
   // Update current route data to Redux and highlight the current page in the Nav bar
-  useUpdateRoute({ pathname: "dns-records" });
+  useUpdateRoute({ pathname: "dns-zones" });
 
   // URL parameters: page number, page size, search value
   const { page, perPage, searchValue } = useListPageSearchParams();
