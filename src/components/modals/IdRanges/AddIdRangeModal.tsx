@@ -24,7 +24,7 @@ import {
 // Types
 import { SerializedError } from "@reduxjs/toolkit";
 import InputRequiredText from "src/components/layouts/InputRequiredText";
-import NumberSelector from "src/components/Form/NumberInput";
+import NumberSelector from "src/components/Form/NumberSelector";
 // Utils
 import { NO_SELECTION_OPTION } from "src/utils/constUtils";
 
