@@ -4,7 +4,7 @@ import { Button, Content, Flex, FlexItem } from "@patternfly/react-core";
 // Components
 import TitleLayout from "src/components/layouts/TitleLayout";
 // Modals
-import InformationModalLayout from "src/components/layouts/InformationModalLayout";
+import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Data types
 import { CertificateData } from "src/components/Form/IpaCertificates";
 // Utils
@@ -28,13 +28,16 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
     }
   }, [props.certificatesList, props.idxSelected]);
 
+  const formId = "certificates-information-modal";
+
   // Actions
   const infoModalActions = [
     <Button
       data-cy="modal-button-close"
       key="close"
       variant="primary"
-      onClick={props.onClose}
+      type="submit"
+      form={formId}
     >
       Close
     </Button>,
@@ -114,15 +117,25 @@ const CertificatesInformationModal = (props: PropsToCertificatesInfoModal) => {
     </>
   );
 
+  const fields = [
+    {
+      id: "cert-info-content",
+      pfComponent: infoModalContent,
+    },
+  ];
+
   return (
-    <InformationModalLayout
+    <ModalWithFormLayout
       dataCy="certificates-information-modal"
       title={"Certificate for " + certName}
-      variant="medium"
-      actions={infoModalActions}
-      isOpen={props.isOpen}
+      variantType="medium"
+      modalPosition={undefined}
+      formId={formId}
+      onSubmit={props.onClose}
+      fields={fields}
+      show={props.isOpen}
       onClose={props.onClose}
-      content={infoModalContent}
+      actions={infoModalActions}
     />
   );
 };

@@ -32,14 +32,14 @@ interface PropsToPKModal {
   metadata: Metadata;
   variant?: "default" | "small" | "medium" | "large";
   isTextareaDisabled?: boolean;
-  formId?: string;
-  onSubmit?: (event: React.FormEvent) => void;
+  formId: string;
+  onSubmit: (event: React.FormEvent) => void;
 }
 
 const ModalWithTextAreaLayout = (props: PropsToPKModal) => {
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    props.onSubmit?.(event);
+    props.onSubmit(event);
   };
 
   return (

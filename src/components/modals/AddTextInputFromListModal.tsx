@@ -19,7 +19,7 @@ interface PropsToAddModal {
   title: string;
   isOpen: boolean;
   onClose: () => void;
-  onSubmit?: () => void;
+  onSubmit: () => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   actions: any[];
   textInputTitle: string;
@@ -48,7 +48,7 @@ const AddTextInputFromListModal = (props: PropsToAddModal) => {
           id={props.id + "-form"}
           onSubmit={(e) => {
             e.preventDefault();
-            props.onSubmit?.();
+            props.onSubmit();
           }}
         >
           <FormGroup

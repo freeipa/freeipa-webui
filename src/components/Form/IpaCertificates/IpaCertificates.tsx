@@ -616,9 +616,13 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
         isOpen={isModalOpen}
         onClose={onClickCancel}
         formId={
-          textareaModalOption === "add" ? "add-certificate-form" : undefined
+          textareaModalOption === "add"
+            ? "add-certificate-form"
+            : "get-certificate-form"
         }
-        onSubmit={textareaModalOption === "add" ? onAddCertificate : undefined}
+        onSubmit={
+          textareaModalOption === "add" ? onAddCertificate : onClickCancel
+        }
         actions={
           textareaModalOption === "add"
             ? [
@@ -649,7 +653,8 @@ const IpaCertificates = (props: PropsToIpaCertificates) => {
                   data-cy="modal-button-close"
                   key="close"
                   variant="link"
-                  onClick={onClickCancel}
+                  type="submit"
+                  form="get-certificate-form"
                 >
                   Close
                 </Button>,

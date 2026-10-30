@@ -29,7 +29,7 @@ interface PropsToModal {
   // onClose method
   onClose: () => void;
   // onSubmit method
-  onSubmit?: (event: React.FormEvent) => void;
+  onSubmit: (event: React.FormEvent) => void;
   // Action buttons
   actions: JSX.Element[];
   // is horizontal
@@ -52,7 +52,7 @@ export interface Field {
 const ModalWithFormLayout = (props: PropsToModal) => {
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    props.onSubmit?.(event);
+    props.onSubmit(event);
   };
 
   return (

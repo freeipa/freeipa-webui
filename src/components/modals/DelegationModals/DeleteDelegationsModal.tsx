@@ -160,7 +160,7 @@ const DeleteDelegationsModal = (props: DeleteDelegationsModalProps) => {
     <Button
       key="delete-delegations"
       variant="danger"
-      onClick={onDelete}
+      type="submit"
       form="delete-delegations-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
@@ -203,6 +203,7 @@ const DeleteDelegationsModal = (props: DeleteDelegationsModalProps) => {
         fields={fields}
         show={props.isOpen}
         onClose={props.onClose}
+        onSubmit={onDelete}
         actions={modalActions}
       />
       {isModalErrorOpen && (

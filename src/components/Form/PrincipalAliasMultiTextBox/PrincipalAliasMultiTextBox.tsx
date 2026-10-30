@@ -250,7 +250,8 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
     <SecondaryButton
       dataCy="modal-button-add"
       key="add-principal-alias"
-      onClickHandler={onAddPrincipalAlias}
+      type="submit"
+      form="kerberos-principal-textinput-form"
       isDisabled={
         (newAliasValue !== "" && !newAliasValue.includes("@")) ||
         modalSpinning ||
@@ -296,6 +297,7 @@ const PrincipalAliasMultiTextBox = (props: PrincipalAliasMultiTextBoxProps) => {
         title={"Add kerberos principal alias"}
         isOpen={isTextInputModalOpen}
         onClose={onCloseTextInputModal}
+        onSubmit={onAddPrincipalAlias}
         actions={textInputModalActions}
         textInputTitle={"New kerberos principal alias"}
         textInputName="krbprincipalname"
