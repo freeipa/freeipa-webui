@@ -2,6 +2,8 @@ import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import globalReducer from "./Global/global-slice";
 import { api } from "../services/rpc";
+import { ahdapaApi } from "../services/rpcAhdapa";
+import ahdapaReducer from "./Ahdapa/ahdapa-slice";
 import routesReducer from "./Global/routes-slice";
 import alertsReducer from "./Global/alerts-slice";
 import contextualHelpReducer from "./Global/contextual-help-slice";
@@ -10,7 +12,9 @@ export const setupStore = () => {
   const store = configureStore({
     reducer: {
       api: api.reducer,
+      [ahdapaApi.reducerPath]: ahdapaApi.reducer,
       global: globalReducer,
+      ahdapa: ahdapaReducer,
       routes: routesReducer,
       alerts: alertsReducer,
       contextualHelp: contextualHelpReducer,
@@ -20,7 +24,9 @@ export const setupStore = () => {
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: false, // Removes the warning about non-serializable data
-      }).concat(api.middleware),
+      })
+        .concat(api.middleware)
+        .concat(ahdapaApi.middleware),
   });
 
   // optional, but required for refetchOnFocus/refetchOnReconnect behaviors

@@ -6,6 +6,11 @@ ENV container=podman
 
 RUN dnf update -y
 
+# Enable COPR repos for FreeIPA with ahdapa integration
+RUN dnf install -y 'dnf-command(copr)' \
+    && dnf copr enable -y abbra/rust-deps \
+    && dnf copr enable -y abbra/modrnizer-darc
+
 RUN dnf install -y \
     sudo \
     bash \
@@ -21,7 +26,7 @@ RUN dnf install -y \
     `# Packages required by dev-evn.sh script` \
     nc \
     nodejs \
-    `# FreeIPA packages` \
+    `# FreeIPA packages (from COPR abbra/modrnizer-darc)` \
     freeipa-server \
     python3-libselinux \
     freeipa-server-dns \

@@ -68,7 +68,7 @@ sudo tee -a /etc/hosts < developer/scenarios/single-server/hosts
 
 **Non-default scenario**
 
-If you want to use any non-default scenario, or you want to rebuild a modified version of the default scenario, you'll also need [`podman-compose`](https://github.com/containers/podman-compose) and [Ansible](https://ansible.com). You'll also need the ansible-freeipa and podman Ansible collections. Assuming the virtual environment is being used:
+If you want to use any non-default scenario, or you want to rebuild a modified version of the default scenario, you'll also need [`podman-compose`](https://github.com/containers/podman-compose) and [Ansible](https://ansible.com). You'll also need the podman Ansible collection. Assuming the virtual environment is being used:
 
 ```
 pip install ansible-core podman-compose
@@ -148,11 +148,35 @@ dnf install -y nss-tools
 The script will create a new profile (`webui-profile`), if needed, trust the IPA CA certificate, and open the webui in a new browser window.
 Both Mozilla's Firefox and Google's Chrome are supported.
 
+By default the browser opens without a Kerberos ticket, so you must log in with username and password. To enable SPNEGO auto-login (obtains a ticket for `devadmin` via `kinit`), pass the `-k` flag:
+
+```
+./developer/open-browser.sh -k https://webui.ipa.test/ipa/modern-ui
+```
+
 When using browsers deployed via Flatpak, some additional settings may be required. Currently, only Firefox is supported as Flatpak.
 
 It may happen the the keyboard does not work when running the browser with permission to access the container's network. This will mostly happen with browsers deployed with Flatpak. A workaround is provided for this issue by using the `open-browser.sh` option`-w`. The workaround requires `sudo`.
 
 The default credentials for the development environment are **admin** and **Secret123**.
+
+8. (Optional) Deploy ahdapa
+
+The development environment can optionally include [ahdapa](https://forge.fedoraproject.org/freeipa/ahdapa), a stateless OAuth 2.0 / OpenID Connect Identity Provider for FreeIPA. When deployed, the WebUI automatically detects ahdapa and displays the **OAuth2 / IdP** management section in the sidebar.
+
+To deploy ahdapa to an already running container:
+
+```
+./developer/dev-env.sh -sa
+```
+
+Or include it during a fresh build:
+
+```
+./developer/dev-env.sh -Ba
+```
+
+See the [developer/README.md](developer/README.md) file for more details on configuration.
 
 ## Development pre-checks
 

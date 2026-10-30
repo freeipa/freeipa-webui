@@ -42,6 +42,9 @@ import { logoutUser } from "./store/Global/global-slice";
 const AppLayout = () => {
   const dispatch = useAppDispatch();
   const loggedInUser = useAppSelector((state) => state.global.loggedInUser);
+  const ahdapaAvailable = useAppSelector(
+    (state) => state.ahdapa?.available ?? false
+  );
 
   // RPC
   const [logout] = useLogoutMutation();
@@ -66,8 +69,17 @@ const AppLayout = () => {
   const onLogout = () => {
     logout().then((response) => {
       if ("data" in response && !response.data?.error) {
-        sessionStorage.setItem("isKerberosDisabled", "true");
-        dispatch(logoutUser());
+        if (ahdapaAvailable) {
+          fetch("/idp/api/auth/logout", {
+            method: "POST",
+            credentials: "include",
+          }).finally(() => {
+            window.location.href = "/ipa/modern-ui/";
+          });
+        } else {
+          sessionStorage.setItem("isKerberosDisabled", "true");
+          dispatch(logoutUser());
+        }
       }
     });
   };
