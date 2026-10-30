@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
+import { useAppSelector } from "src/store/hooks";
 
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useGetConfigQuery } from "src/services/rpcConfig";
 // Data types
-import { Config, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Config } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type ConfigSettingsData = {
   isLoading: boolean;
@@ -22,9 +23,7 @@ type ConfigSettingsData = {
 
 const useConfigSettings = (): ConfigSettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] Config
   const configQuery = useGetConfigQuery();
@@ -40,7 +39,7 @@ const useConfigSettings = (): ConfigSettingsData => {
   }, [configData, configQuery.isFetching]);
 
   const settings = {
-    isLoading: metadataLoading || isFullDataLoading,
+    isLoading: isFullDataLoading,
     isFetching: configQuery.isFetching,
     modified,
     setModified,

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
+import { useAppSelector } from "src/store/hooks";
 
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import {
   useGetIdpServerQuery,
   useGetRadiusProxyQuery,
@@ -15,11 +15,11 @@ import {
 import {
   IDPServer,
   KrbPolicy,
-  Metadata,
   PwPolicy,
   RadiusServer,
   User,
 } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Utils
 import { getModifiedValues, isObjectModified } from "src/utils/ipaObjectUtils";
 
@@ -56,9 +56,7 @@ const useSettingsData = (
   userType: string
 ): UserSettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] User
   let userFullDataQuery = useGetUsersFullQuery(userId);
@@ -96,7 +94,6 @@ const useSettingsData = (
 
   const settings = {
     isLoading:
-      metadataLoading ||
       isFullDataLoading ||
       isRadiusProxyLoading ||
       isIdpLoading ||

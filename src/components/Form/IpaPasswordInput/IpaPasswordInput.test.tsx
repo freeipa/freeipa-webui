@@ -4,12 +4,15 @@ import { describe, expect, it, afterEach } from "vitest";
 // Component
 import IpaPasswordInput, { IpaPasswordInputProps } from "./IpaPasswordInput";
 import { HIDDEN_PASSWORD } from "src/utils/utils";
+import { createMetadata } from "src/services/types/metadata";
 
 describe("IpaPasswordInput Component", () => {
-  const mockMetadata = {
+  const mockMetadata = createMetadata({
     objects: {
       idp: {
-        name: "secret",
+        name: "idp",
+        methods: [],
+        primary_key: "cn",
         takes_params: [
           {
             alwaysask: false,
@@ -24,11 +27,10 @@ describe("IpaPasswordInput Component", () => {
             doc: "OAuth 2.0 client secret",
             flags: ["no_search"],
             label: "Secret",
-            maxlength: 255,
             multivalue: false,
             name: "ipaidpclientsecret",
             no_convert: false,
-            noextrawhitespace: false,
+            noextrawhitespace: true,
             primary_key: false,
             query: false,
             required: false,
@@ -38,7 +40,9 @@ describe("IpaPasswordInput Component", () => {
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   const defaultProps: IpaPasswordInputProps = {
     dataCy: "ipa-password-input",

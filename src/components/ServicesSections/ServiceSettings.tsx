@@ -8,7 +8,8 @@ import {
   TextInput,
 } from "@patternfly/react-core";
 // Data types
-import { Metadata, Service } from "src/utils/datatypes/globalDataTypes";
+import { Service } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Components
 import PopoverWithIconLayout from "../layouts/PopoverWithIconLayout";
 // Utils
