@@ -74,6 +74,36 @@ When rendering the delete modal from the main page, pass `columnNames` and `keyN
 />
 ```
 
+### Modal Action Buttons
+
+The primary button must use `type="submit"` and `form={formId}` (no `onClick`) so the modal is submittable by pressing Enter. The `ModalWithFormLayout` must receive `onSubmit`:
+
+```tsx
+const modalActions: JSX.Element[] = [
+  <Button
+    data-cy="modal-button-delete"
+    key="delete-entities"
+    variant="danger"
+    type="submit"
+    form="delete-entities-modal"
+    spinnerAriaValueText="Deleting"
+    spinnerAriaLabel="Deleting"
+    isLoading={spinning}
+    isDisabled={spinning}
+  >
+    {spinning ? "Deleting" : "Delete"}
+  </Button>,
+  <Button
+    data-cy="modal-button-cancel"
+    key="cancel-delete"
+    variant="link"
+    onClick={props.onClose}
+  >
+    Cancel
+  </Button>,
+];
+```
+
 ### Return Statement
 
 Always use a direct `return (...)` statement — do not assign JSX to an intermediate variable:
@@ -82,7 +112,19 @@ Always use a direct `return (...)` statement — do not assign JSX to an interme
 // Correct:
 return (
   <>
-    <ModalWithFormLayout ... />
+    <ModalWithFormLayout
+      dataCy="delete-entities-modal"
+      variantType="medium"
+      modalPosition="top"
+      offPosition="76px"
+      title="Remove entities"
+      formId="delete-entities-modal"
+      fields={fields}
+      show={props.isOpen}
+      onClose={props.onClose}
+      onSubmit={onDelete}
+      actions={modalActions}
+    />
     {isModalErrorOpen && <ErrorModal ... />}
   </>
 );

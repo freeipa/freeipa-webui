@@ -19,14 +19,14 @@ interface PropsToConfModal {
   actions: JSX.Element[];
   messageText: string;
   messageObj: string;
-  formId?: string;
-  onSubmit?: (event: React.FormEvent) => void;
+  formId: string;
+  onSubmit: (event: React.FormEvent) => void;
 }
 
 const ConfirmationModal = (props: PropsToConfModal) => {
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    props.onSubmit?.(event);
+    props.onSubmit(event);
   };
 
   return (

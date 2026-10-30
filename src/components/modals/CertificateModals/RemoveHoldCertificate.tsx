@@ -1,8 +1,8 @@
 import React from "react";
 // PatternFly
-import { Button, Content } from "@patternfly/react-core";
+import { Button, Content, ContentVariants } from "@patternfly/react-core";
 // Modals
-import InformationModalLayout from "src/components/layouts/InformationModalLayout";
+import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
@@ -73,12 +73,15 @@ const RemoveHoldCertificate = (props: PropsToRemoveHoldCertificate) => {
     });
   };
 
-  const infoModalActions = [
+  const formId = "remove-hold-certificate-modal";
+
+  const modalActions = [
     <Button
       data-cy="modal-button-remove-hold"
       key="remove-hold"
       variant="danger"
-      onClick={onRemoveHold}
+      type="submit"
+      form={formId}
     >
       Remove hold
     </Button>,
@@ -92,22 +95,30 @@ const RemoveHoldCertificate = (props: PropsToRemoveHoldCertificate) => {
     </Button>,
   ];
 
-  const contentMessage = (
-    <Content>Do you want to remove the certificate hold?</Content>
-  );
+  const fields = [
+    {
+      id: "question-text",
+      pfComponent: (
+        <Content component={ContentVariants.p}>
+          Do you want to remove the certificate hold?
+        </Content>
+      ),
+    },
+  ];
 
   return (
-    <>
-      <InformationModalLayout
-        dataCy="remove-hold-certificate-modal"
-        title={"Certificate for " + certName}
-        variant="medium"
-        actions={infoModalActions}
-        isOpen={props.isOpen}
-        onClose={props.onClose}
-        content={contentMessage}
-      />
-    </>
+    <ModalWithFormLayout
+      dataCy="remove-hold-certificate-modal"
+      title={"Certificate for " + certName}
+      variantType="medium"
+      modalPosition={undefined}
+      formId={formId}
+      onSubmit={onRemoveHold}
+      fields={fields}
+      show={props.isOpen}
+      onClose={props.onClose}
+      actions={modalActions}
+    />
   );
 };
 

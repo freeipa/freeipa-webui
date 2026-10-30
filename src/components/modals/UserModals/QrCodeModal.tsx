@@ -84,6 +84,8 @@ const QrCodeModal = (props: PropsToQrCodeModal) => {
     }
   };
 
+  const formId = "configure-your-token-form";
+
   // Actions
   const actions = [
     <Button
@@ -91,7 +93,8 @@ const QrCodeModal = (props: PropsToQrCodeModal) => {
       aria-label="OK button to close the modal"
       key="ok"
       variant="link"
-      onClick={onOkHandler}
+      type="submit"
+      form={formId}
     >
       Ok
     </Button>,
@@ -104,7 +107,8 @@ const QrCodeModal = (props: PropsToQrCodeModal) => {
       variantType="small"
       modalPosition="top"
       title="Configure your token"
-      formId="configure-your-token-form"
+      formId={formId}
+      onSubmit={onOkHandler}
       fields={fields}
       show={props.isOpen}
       onClose={onOkHandler}

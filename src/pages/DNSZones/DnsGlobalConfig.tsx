@@ -364,10 +364,12 @@ const DnsGlobalConfig = () => {
             ]}
             show={showUpdateSystemDnsRecordsModal}
             onClose={() => setShowUpdateSystemDnsRecordsModal(false)}
+            onSubmit={onUpdateSystemDnsRecords}
             actions={[
               <Button
                 variant="primary"
-                onClick={onUpdateSystemDnsRecords}
+                type="submit"
+                form="dns-global-config-modal-update-system-dns-records"
                 data-cy="dns-global-config-modal-update-system-dns-records-update"
                 key="update"
               >
