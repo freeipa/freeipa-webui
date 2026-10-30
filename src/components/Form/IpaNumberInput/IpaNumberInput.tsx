@@ -1,11 +1,10 @@
 import React from "react";
-// PatternFly
-import { NumberInput } from "@patternfly/react-core";
 // IPA Object
 import {
   getParamProperties,
   IPAParamDefinition,
 } from "src/utils/ipaObjectUtils";
+import NumberSelector from "../NumberSelector";
 
 /**
  * Interface for the IPA Number Input
@@ -35,74 +34,27 @@ export interface IPAParamDefinitionNumberInput extends IPAParamDefinition {
 const IpaNumberInput = (props: IPAParamDefinitionNumberInput) => {
   const { readOnly, value, onChange } = getParamProperties(props);
 
-  const fallbackValue = props.defaultValue ?? props.minValue;
+  const currentValue =
+    value === ""
+      ? ""
+      : +(value as string) || props.defaultValue || props.minValue || 0;
 
-  const clamp = (n: number) => {
-    if (props.minValue !== undefined && n < props.minValue)
-      return fallbackValue ?? props.minValue;
-    if (props.maxValue !== undefined && n > props.maxValue)
-      return props.maxValue;
-    return n;
-  };
-
-  const numberValue = (() => {
-    if (value === "" || value === null || value === undefined)
-      return fallbackValue ?? "";
-    const num = parseInt(value.toString(), 10);
-    return isNaN(num) ? "" : clamp(num);
-  })();
-
-  const isDisabled =
-    props.isDisabled !== undefined ? props.isDisabled : readOnly;
-
-  const onMinus = () => {
-    const num = value ? parseInt(value as string, 10) : (fallbackValue ?? 0);
-    onChange(clamp(num - 1));
-  };
-
-  const onChangeHandler = (event: React.FormEvent<HTMLInputElement>) => {
-    const val = (event.target as HTMLInputElement).value;
-    if (val === "") {
-      onChange(val);
-    } else {
-      onChange(clamp(+val));
-    }
-  };
-
-  const onBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-    const blurVal = event.target.value;
-    if (blurVal === "" && fallbackValue !== undefined) {
-      onChange(fallbackValue);
-    } else if (blurVal !== "") {
-      onChange(clamp(+blurVal));
-    }
-  };
-
-  const onPlus = () => {
-    const num = value ? parseInt(value as string, 10) : (fallbackValue ?? 0);
-    onChange(clamp(num + 1));
-  };
+  const isDisabled = props.isDisabled || readOnly;
 
   return (
-    <NumberInput
-      id={props.id + "-group"}
-      name={props.name}
-      value={numberValue}
-      onMinus={onMinus}
-      onChange={onChangeHandler}
-      min={props.minValue}
-      max={props.maxValue}
-      onBlur={onBlur}
-      onPlus={onPlus}
-      aria-label={props.name}
-      inputName="input"
-      inputAriaLabel="number input"
-      minusBtnAriaLabel="minus"
-      plusBtnAriaLabel="plus"
+    <NumberSelector
+      dataCy={props.dataCy}
+      id={props.id}
+      className={props.className}
+      numCharsShown={props.numCharsShown}
+      minValue={props.minValue}
+      maxValue={props.maxValue}
       isDisabled={isDisabled}
-      widthChars={props.numCharsShown || 1}
-      className={props.className || ""}
-      inputProps={{ id: props.id, "data-cy": props.dataCy }}
+      value={currentValue}
+      setValue={(value: number | "") => {
+        onChange(value);
+      }}
+      name={props.name}
     />
   );
 };
