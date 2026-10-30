@@ -14,7 +14,7 @@ import ModalWithFormLayout, {
 } from "src/components/layouts/ModalWithFormLayout";
 import CustomTooltip from "src/components/layouts/CustomTooltip";
 import InputRequiredText from "src/components/layouts/InputRequiredText";
-import NumberSelector from "src/components/Form/NumberInput";
+import NumberSelector from "src/components/Form/NumberSelector";
 import PasswordInput from "src/components/layouts/PasswordInput";
 // Redux
 import { useAppDispatch } from "src/store/hooks";

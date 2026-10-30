@@ -20,7 +20,7 @@ import { addAlert } from "src/store/Global/alerts-slice";
 import { SerializedError } from "@reduxjs/toolkit";
 // Icons
 import { InfoCircleIcon } from "@patternfly/react-icons";
-import NumberSelector from "src/components/Form/NumberInput";
+import NumberSelector from "src/components/Form/NumberSelector";
 import InputRequiredText from "src/components/layouts/InputRequiredText";
 
 interface PropsToAddRuleModal {

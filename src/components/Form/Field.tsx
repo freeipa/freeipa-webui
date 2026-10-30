@@ -17,7 +17,7 @@ import {
 import { InfoCircleIcon } from "@patternfly/react-icons";
 import React from "react";
 import CustomTooltip from "src/components/layouts/CustomTooltip";
-import NumberSelector from "src/components/Form/NumberInput";
+import NumberSelector from "src/components/Form/NumberSelector";
 
 // Generic field types
 interface BaseField {
