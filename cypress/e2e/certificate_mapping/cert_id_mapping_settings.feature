@@ -86,8 +86,8 @@ Feature: Certificate identity mapping rule settings
         Given I am logged in as admin
         And I am on "cert-id-mapping-rules/test_priority_rule" page
 
-        When I type in the "certificate-mapping-tab-settings-textbox-ipacertmappriority" textbox text "5"
-        Then I should see "5" in the "certificate-mapping-tab-settings-textbox-ipacertmappriority" textbox
+        When I type in the "certificate-mapping-tab-settings-textbox-ipacertmappriority-input" textbox text "5"
+        Then I should see "5" in the "certificate-mapping-tab-settings-textbox-ipacertmappriority-input" textbox
 
         When I click on the "certificate-mapping-tab-settings-button-save" button
         Then I should see "success" alert

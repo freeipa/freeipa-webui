@@ -31,21 +31,21 @@ Feature: DNS Zones Settings
         And I am on "dns-zones/my-dns-zone." page
 
         When I change SOA refresh field to "7200"
-        Then I should see "7200" in the "dns-zones-tab-settings-textbox-idnssoarefresh" textbox
+        Then I should see "7200" in the "dns-zones-tab-settings-textbox-idnssoarefresh-input" textbox
         When I change SOA retry field to "1800"
-        Then I should see "1800" in the "dns-zones-tab-settings-textbox-idnssoaretry" textbox
+        Then I should see "1800" in the "dns-zones-tab-settings-textbox-idnssoaretry-input" textbox
 
         When I change SOA expire field to "1209600"
-        Then I should see "1209600" in the "dns-zones-tab-settings-textbox-idnssoaexpire" textbox
+        Then I should see "1209600" in the "dns-zones-tab-settings-textbox-idnssoaexpire-input" textbox
 
         When I change SOA minimum field to "3600"
-        Then I should see "3600" in the "dns-zones-tab-settings-textbox-idnssoaminimum" textbox
+        Then I should see "3600" in the "dns-zones-tab-settings-textbox-idnssoaminimum-input" textbox
 
         When I click on the "dns-zones-tab-settings-button-save" button
-        Then I should see "7200" in the "dns-zones-tab-settings-textbox-idnssoarefresh" textbox
-        Then I should see "1800" in the "dns-zones-tab-settings-textbox-idnssoaretry" textbox
-        Then I should see "1209600" in the "dns-zones-tab-settings-textbox-idnssoaexpire" textbox
-        Then I should see "3600" in the "dns-zones-tab-settings-textbox-idnssoaminimum" textbox
+        Then I should see "7200" in the "dns-zones-tab-settings-textbox-idnssoarefresh-input" textbox
+        Then I should see "1800" in the "dns-zones-tab-settings-textbox-idnssoaretry-input" textbox
+        Then I should see "1209600" in the "dns-zones-tab-settings-textbox-idnssoaexpire-input" textbox
+        Then I should see "3600" in the "dns-zones-tab-settings-textbox-idnssoaminimum-input" textbox
         Then I should see "success" alert
 
     @cleanup
@@ -62,14 +62,14 @@ Feature: DNS Zones Settings
         And I am on "dns-zones/my-dns-zone." page
 
         When I change DNS zone default TTL field to "300"
-        Then I should see "300" in the "dns-zones-tab-settings-textbox-dnsdefaultttl" textbox
+        Then I should see "300" in the "dns-zones-tab-settings-textbox-dnsdefaultttl-input" textbox
 
         And I change TTL field to "1800"
-        Then I should see "1800" in the "dns-zones-tab-settings-textbox-dnsttl" textbox
+        Then I should see "1800" in the "dns-zones-tab-settings-textbox-dnsttl-input" textbox
 
         And I click on the "dns-zones-tab-settings-button-save" button
-        Then I should see "300" in the "dns-zones-tab-settings-textbox-dnsdefaultttl" textbox
-        Then I should see "1800" in the "dns-zones-tab-settings-textbox-dnsttl" textbox
+        Then I should see "300" in the "dns-zones-tab-settings-textbox-dnsdefaultttl-input" textbox
+        Then I should see "1800" in the "dns-zones-tab-settings-textbox-dnsttl-input" textbox
         Then I should see "success" alert
 
     @cleanup
