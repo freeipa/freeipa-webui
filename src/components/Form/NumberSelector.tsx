@@ -16,50 +16,23 @@ interface NumberSelectorProps {
 }
 
 const NumberSelector = (props: NumberSelectorProps) => {
-  const normalizeBetween = (value, min, max) => {
-    if (min !== undefined && max !== undefined) {
-      return Math.max(Math.min(value, max), min);
-    } else if (value <= min) {
-      return min;
-    } else if (value >= max) {
-      return max;
+  const clamp = (value: number, min?: number, max?: number) =>
+    Math.max(Math.min(value, max ?? Infinity), min ?? -Infinity);
+
+  const onChange = (value: string | number) => {
+    if (value === "") {
+      props.setValue(value);
+      return;
     }
-    return value;
+
+    const clampedValue = clamp(+value, props.minValue, props.maxValue);
+    props.setValue(clampedValue);
   };
 
-  const onMinus = () => {
-    const num = props.value ? parseInt(props.value.toString(), 10) : 0;
-    const newValue = normalizeBetween(num - 1, props.minValue, props.maxValue);
-    props.setValue(newValue);
-  };
-
-  const onChangeHandler = (event: React.FormEvent<HTMLInputElement>) => {
-    const value = (event.target as HTMLInputElement).value;
-    props.setValue(value === "" ? "" : +value);
-
-    // Return to max and min values if the input is beyond those values
-    if (props.minValue && +value < props.minValue) {
-      props.setValue(props.minValue);
-    } else if (props.maxValue && +value > props.maxValue) {
-      props.setValue(props.maxValue);
-    }
-  };
-
-  const onBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-    const blurVal = +event.target.value;
-
-    if (props.minValue && blurVal < props.minValue) {
-      props.setValue(props.minValue);
-    } else if (props.maxValue && blurVal > props.maxValue) {
-      props.setValue(props.maxValue);
-    }
-  };
-
-  const onPlus = () => {
-    const num = props.value ? parseInt(props.value.toString(), 10) : 0;
-    const newValue = normalizeBetween(num + 1, props.minValue, props.maxValue);
-    props.setValue(newValue);
-  };
+  const onMinus = () => onChange(+props.value - 1);
+  const onPlus = () => onChange(+props.value + 1);
+  const onChangeHandler = (event: React.FormEvent<HTMLInputElement>) =>
+    onChange(event.currentTarget.value);
 
   return (
     <NumberInput
@@ -70,7 +43,6 @@ const NumberSelector = (props: NumberSelectorProps) => {
       onChange={onChangeHandler}
       min={props.minValue}
       max={props.maxValue}
-      onBlur={onBlur}
       onPlus={onPlus}
       aria-label={props.name}
       inputName={props.name}
