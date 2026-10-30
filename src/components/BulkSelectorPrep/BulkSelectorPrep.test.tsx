@@ -45,7 +45,7 @@ const mockElementsData = {
   selected: [], // Initially no items selected
   updateSelected: vi.fn(),
   selectableTable: mockList,
-  nameAttr: "id",
+  nameAttr: "cn",
 };
 
 const mockButtonsData = {
@@ -53,13 +53,14 @@ const mockButtonsData = {
 };
 
 const mockSelectedPerPageData = {
-  selectedPerPage: 10, // Default value
+  selectedPerPage: 0,
   updateSelectedPerPage: vi.fn(),
 };
 
 describe("BulkSelectorPrep Component", () => {
   afterEach(() => {
     cleanup();
+    vi.clearAllMocks();
   });
 
   it("renders component with default props and interacts with the menu", async () => {
@@ -82,7 +83,7 @@ describe("BulkSelectorPrep Component", () => {
 
     // Wait for the menu to open
     const selectPageItem = await screen.findByText(
-      /^Select page \(0 items\)$/i
+      /^Select page \(1 items\)$/i
     );
     expect(selectPageItem).toBeInTheDocument();
 
@@ -100,5 +101,58 @@ describe("BulkSelectorPrep Component", () => {
     expect(mockSelectedPerPageData.updateSelectedPerPage).toHaveBeenCalledWith(
       mockShownElementsList.length
     );
+  });
+
+  it("advertises selectable page count excluding empty selection keys", async () => {
+    const shownWithExcluded: MockType[] = [
+      {
+        id: 1,
+        cn: "Selectable Group",
+        dn: "cn=Selectable Group,ou=Groups,dc=example,dc=com",
+        description: "Selectable",
+      },
+      {
+        id: 2,
+        cn: "",
+        dn: "cn=,ou=Groups,dc=example,dc=com",
+        description: "Not selectable",
+      },
+      {
+        id: 3,
+        cn: "Another Group",
+        dn: "cn=Another Group,ou=Groups,dc=example,dc=com",
+        description: "Also selectable",
+      },
+    ];
+    const selectableOnPage = shownWithExcluded.filter((el) => el.cn !== "");
+
+    render(
+      <BulkSelectorPrep
+        list={shownWithExcluded}
+        shownElementsList={shownWithExcluded}
+        elementData={{
+          selected: [],
+          updateSelected: vi.fn(),
+          selectableTable: selectableOnPage,
+          nameAttr: "cn",
+        }}
+        buttonsData={mockButtonsData}
+        selectedPerPageData={{
+          selectedPerPage: 1,
+          updateSelectedPerPage: vi.fn(),
+        }}
+      />
+    );
+
+    const toggleButton = screen.getByRole("button", {
+      name: /Menu toggle with checkbox split button and text/i,
+    });
+    fireEvent.click(toggleButton);
+
+    // 2 selectable rows on page, 1 already selected → "Select page (1 items)"
+    const selectPageItem = await screen.findByText(
+      /^Select page \(1 items\)$/i
+    );
+    expect(selectPageItem).toBeInTheDocument();
   });
 });
