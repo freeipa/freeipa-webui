@@ -146,7 +146,7 @@ const DeletePermissionsModal = (props: DeletePermissionsModalProps) => {
     <Button
       key="delete-permissions"
       variant="danger"
-      onClick={onDeletePermissions}
+      type="submit"
       form="delete-permissions-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
@@ -190,6 +190,7 @@ const DeletePermissionsModal = (props: DeletePermissionsModalProps) => {
         fields={fields}
         show={props.isOpen}
         onClose={props.onClose}
+        onSubmit={onDeletePermissions}
         actions={modalActions}
       />
       {isModalErrorOpen && (

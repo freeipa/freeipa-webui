@@ -150,3 +150,29 @@ const kebabItems = [
 | OTP Token | `ipatokendisabled` | Token is disabled |
 | User | `nsaccountlock` | User is disabled |
 | Host | `has_keytab` | Host has keytab |
+
+## ConfirmationModal Enter-Submit
+
+When using `ConfirmationModal` directly (e.g. for delete or convert actions), always wire it for Enter-submit:
+
+1. Pass `formId` and `onSubmit` to `ConfirmationModal`
+2. Use `type="submit"` and `form={formId}` on the primary button (no `onClick`)
+
+```tsx
+const modalActions = [
+  <Button variant="danger" type="submit" form="delete-entity-modal">
+    Delete
+  </Button>,
+  <Button variant="link" onClick={onCloseModal}>Cancel</Button>,
+];
+
+<ConfirmationModal
+  formId="delete-entity-modal"
+  onSubmit={doDelete}
+  isOpen={isDeleteModalOpen}
+  onClose={onCloseModal}
+  actions={modalActions}
+  messageText="Are you sure?"
+  messageObj={entityName}
+/>
+```
