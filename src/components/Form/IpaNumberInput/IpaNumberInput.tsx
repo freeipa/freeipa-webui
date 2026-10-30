@@ -23,7 +23,7 @@ import {
 
 export interface IPAParamDefinitionNumberInput extends IPAParamDefinition {
   dataCy: string;
-  id?: string;
+  id: string;
   className?: string;
   numCharsShown?: number;
   minValue?: number;

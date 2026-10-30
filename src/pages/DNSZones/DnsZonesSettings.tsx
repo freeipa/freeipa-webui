@@ -403,6 +403,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                   <FormGroup label="SOA serial" role="idnssoaserial">
                     <IpaNumberInput
                       dataCy="dns-zones-tab-settings-textbox-idnssoaserial"
+                      id={"idnssoaserial"}
                       name={"idnssoaserial"}
                       ariaLabel={"SOA serial number input"}
                       ipaObject={ipaObject}
@@ -421,6 +422,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                   >
                     <IpaNumberInput
                       dataCy="dns-zones-tab-settings-textbox-idnssoarefresh"
+                      id={"idnssoarefresh"}
                       name={"idnssoarefresh"}
                       ariaLabel={"SOA refresh in seconds number input"}
                       ipaObject={ipaObject}
@@ -438,6 +440,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                   >
                     <IpaNumberInput
                       dataCy="dns-zones-tab-settings-textbox-idnssoaretry"
+                      id={"idnssoaretry"}
                       name={"idnssoaretry"}
                       ariaLabel={"SOA retry  in seconds number input"}
                       ipaObject={ipaObject}
@@ -451,6 +454,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                   <FormGroup label="SOA expire (seconds)" role="idnssoaexpire">
                     <IpaNumberInput
                       dataCy="dns-zones-tab-settings-textbox-idnssoaexpire"
+                      id={"idnssoaexpire"}
                       name={"idnssoaexpire"}
                       ariaLabel={"SOA expire in seconds number input"}
                       ipaObject={ipaObject}
@@ -468,6 +472,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                   >
                     <IpaNumberInput
                       dataCy="dns-zones-tab-settings-textbox-idnssoaminimum"
+                      id={"idnssoaminimum"}
                       name={"idnssoaminimum"}
                       ariaLabel={"SOA minimum in seconds number input"}
                       ipaObject={ipaObject}
@@ -484,6 +489,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                   >
                     <IpaNumberInput
                       dataCy="dns-zones-tab-settings-textbox-dnsdefaultttl"
+                      id={"dnsdefaultttl"}
                       name={"dnsdefaultttl"}
                       ariaLabel={"Default time to live in seconds number input"}
                       ipaObject={ipaObject}
@@ -497,6 +503,7 @@ const DnsZonesSettings = (props: DnsZonesSettingsProps) => {
                   <FormGroup label="Time to live (seconds)" role="dnsttl">
                     <IpaNumberInput
                       dataCy="dns-zones-tab-settings-textbox-dnsttl"
+                      id={"dnsttl"}
                       name={"dnsttl"}
                       ariaLabel={"Time to live in seconds number input"}
                       ipaObject={ipaObject}

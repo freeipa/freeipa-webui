@@ -226,6 +226,7 @@ const DnsResourceRecordsSettings = (props: DnsResourceRecordsSettingsProps) => {
             <FormGroup label="Time to live (seconds)" role="dnsttl">
               <IpaNumberInput
                 dataCy="dns-zones-tab-settings-textbox-dnsttl"
+                id={"dnsttl"}
                 name={"dnsttl"}
                 aria-label={"Time to live in seconds text input"}
                 ipaObject={ipaObject}
