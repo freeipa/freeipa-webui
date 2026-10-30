@@ -26,6 +26,35 @@ Each file below covers a specific, self-contained topic (~100–200 lines). Load
 
 See **[Component Catalog](components/00-overview.md)** for reusable components (inputs, lists, layouts) shared with sub-pages.
 
+## Modal Submittability
+
+**Every action modal must be submittable by pressing Enter.** This requires three things:
+
+1. The modal layout component (`ModalWithFormLayout` or `ConfirmationModal`) must receive an `onSubmit` prop with the action handler
+2. The primary action button must have `type="submit"` and `form={formId}` (matching the layout's `formId` prop)
+3. The primary action button must **not** use `onClick` for the action — form submission handles it
+
+```tsx
+// ModalWithFormLayout — pass onSubmit
+<ModalWithFormLayout
+  formId="delete-entity-modal"
+  onSubmit={onDelete}
+  ...
+/>
+
+// ConfirmationModal — pass formId + onSubmit
+<ConfirmationModal
+  formId="confirm-action-modal"
+  onSubmit={onConfirm}
+  ...
+/>
+
+// Primary action button — type="submit" + form=, no onClick
+<Button variant="danger" type="submit" form="delete-entity-modal">
+  Delete
+</Button>
+```
+
 ## Quick Reference
 
 **To generate a new main page:** read [01-overview.md](main-pages/01-overview.md) for input requirements, then provide all required inputs alongside this index and the relevant sub-files as context.

@@ -252,7 +252,8 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
       data-cy="modal-button-delete"
       key="delete-host"
       variant="danger"
-      onClick={doDelete}
+      type="submit"
+      form="delete-user-group-modal"
       isDisabled={modalSpinning}
       isLoading={modalSpinning}
       spinnerAriaValueText="Deleting"
@@ -276,7 +277,8 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
       data-cy="modal-button-change"
       key="change-posix"
       variant="primary"
-      onClick={doChangeToPosix}
+      type="submit"
+      form="change-to-posix-modal"
       isDisabled={modalSpinning}
       isLoading={modalSpinning}
       spinnerAriaValueText="Changing"
@@ -300,7 +302,8 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
       data-cy="modal-button-change"
       key="change-external"
       variant="primary"
-      onClick={doChangeToExternal}
+      type="submit"
+      form="change-to-external-modal"
       isDisabled={modalSpinning}
       isLoading={modalSpinning}
       spinnerAriaValueText="Changing"
@@ -489,6 +492,8 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
       <ConfirmationModal
         dataCy="delete-user-group-modal"
         title={"Delete user group"}
+        formId="delete-user-group-modal"
+        onSubmit={doDelete}
         isOpen={isDeleteModalOpen}
         onClose={onCloseDeleteModal}
         actions={deleteModalActions}
@@ -498,6 +503,8 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
       <ConfirmationModal
         dataCy="change-group-type-posix-modal"
         title={"Change group type"}
+        formId="change-to-posix-modal"
+        onSubmit={doChangeToPosix}
         isOpen={isPOSIXModalOpen}
         onClose={onClosePOSIXModal}
         actions={posixModalActions}
@@ -509,6 +516,8 @@ const UserGroupsSettings = (props: PropsToGroupsSettings) => {
       <ConfirmationModal
         dataCy="change-group-type-external-modal"
         title={"Change group type"}
+        formId="change-to-external-modal"
+        onSubmit={doChangeToExternal}
         isOpen={isExternalModalOpen}
         onClose={onCloseExternalModal}
         actions={externalModalActions}

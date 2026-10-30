@@ -142,7 +142,7 @@ const DeleteSelfServicePermissionsModal = (
     <Button
       key="delete-self-service-permissions"
       variant="danger"
-      onClick={onDelete}
+      type="submit"
       form="delete-self-service-permissions-modal"
       spinnerAriaValueText="Deleting"
       spinnerAriaLabel="Deleting"
@@ -185,6 +185,7 @@ const DeleteSelfServicePermissionsModal = (
         fields={fields}
         show={props.isOpen}
         onClose={props.onClose}
+        onSubmit={onDelete}
         actions={modalActions}
       />
       {isModalErrorOpen && (

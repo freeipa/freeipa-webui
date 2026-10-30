@@ -46,6 +46,12 @@ See [00-best-practices.md](sub-pages/00-best-practices.md) for the complete guid
 
 See [03-tabs-component.md](sub-pages/03-tabs-component.md) for Tabs details.
 
+## Modal Submittability
+
+**Every action modal must be submittable by pressing Enter.** Pass `onSubmit` to the layout component and use `type="submit"` + `form={formId}` on the primary button (no `onClick`). See [Main Pages — Modal Submittability](main-pages.md#modal-submittability) for the full pattern.
+
+This applies to all modal types: delete modals, confirmation modals in kebab menus, and any custom action modals.
+
 ## Bulk Selection (BulkSelectorPrep)
 
 Any sub-page that is **not** Settings, "Is a member of", Members, or ManagedBy
