@@ -50,7 +50,7 @@ const IDViewSettings = (props: PropsToIDViewSettings) => {
   const [saveView] = useSaveIDViewMutation();
 
   // Update current route data to Redux and highlight the current page in the Nav bar
-  useUpdateRoute({ pathname: "id-view", noBreadcrumb: true });
+  useUpdateRoute({ pathname: "id-views", noBreadcrumb: true });
 
   const [isSaving, setSaving] = useState(false);
 

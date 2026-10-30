@@ -555,27 +555,22 @@ export const getGroupByPath = (
   path: string,
   configurationSettings: ConfigurationSettings
 ) => {
-  const fullPath: string[] = [];
-  getNavigationRoutes(configurationSettings).forEach((route) => {
-    route.items.forEach((subRoute) => {
+  for (const route of getNavigationRoutes(configurationSettings)) {
+    for (const subRoute of route.items) {
       if (path === subRoute.path) {
-        fullPath.push(route.group);
-        fullPath.push(subRoute.group);
-        return fullPath;
+        return [route.group, subRoute.group];
       }
       if (subRoute.items) {
-        subRoute.items.forEach((subSubRoute) => {
+        for (const subSubRoute of subRoute.items) {
           if (path === subSubRoute.path) {
-            fullPath.push(route.group);
-            fullPath.push(subRoute.group);
-            fullPath.push(subSubRoute.group);
-            return fullPath;
+            return [route.group, subRoute.group, subSubRoute.group];
           }
-        });
+        }
       }
-    });
-  });
-  return fullPath;
+    }
+  }
+
+  return [];
 };
 
 /**
@@ -587,38 +582,37 @@ export const getGroupByPath = (
 export const getBreadCrumbByPath = (
   path: string,
   configurationSettings: ConfigurationSettings
-) => {
-  const fullPath: BreadCrumbItem[] = [];
-  getNavigationRoutes(configurationSettings).forEach((route) => {
-    route.items.forEach((subRoute) => {
+): BreadCrumbItem[] => {
+  for (const route of getNavigationRoutes(configurationSettings)) {
+    for (const subRoute of route.items) {
       if (path === subRoute.path) {
-        const item: BreadCrumbItem = {
-          name: subRoute.label,
-          url: subRoute.path,
-        };
-        fullPath.push(item);
-        return fullPath;
+        return [
+          {
+            name: subRoute.label,
+            url: subRoute.path,
+          },
+        ];
       }
       if (subRoute.items) {
-        subRoute.items.forEach((subSubRoute) => {
+        for (const subSubRoute of subRoute.items) {
           if (path === subSubRoute.path) {
-            const itemSubRoute: BreadCrumbItem = {
-              name: subRoute.label,
-              url: subRoute.path,
-            };
-            const itemSubSubRoute: BreadCrumbItem = {
-              name: subSubRoute.label,
-              url: subSubRoute.path,
-            };
-            fullPath.push(itemSubRoute);
-            fullPath.push(itemSubSubRoute);
-            return fullPath;
+            return [
+              {
+                name: subRoute.label,
+                url: subRoute.path,
+              },
+              {
+                name: subSubRoute.label,
+                url: subSubRoute.path,
+              },
+            ];
           }
-        });
+        }
       }
-    });
-  });
-  return fullPath;
+    }
+  }
+
+  throw new Error(`Breadcrumb path not found for path: ${path}`);
 };
 
 /**
@@ -631,22 +625,20 @@ export const getTitleByPath = (
   path: string,
   configurationSettings: ConfigurationSettings
 ) => {
-  let title = "";
-  getNavigationRoutes(configurationSettings).forEach((route) => {
-    route.items.forEach((subRoute) => {
+  for (const route of getNavigationRoutes(configurationSettings)) {
+    for (const subRoute of route.items) {
       if (path === subRoute.path) {
-        title = subRoute.title;
-        return title;
+        return subRoute.title;
       }
       if (subRoute.items) {
-        subRoute.items.forEach((subSubRoute) => {
+        for (const subSubRoute of subRoute.items) {
           if (path === subSubRoute.path) {
-            title = subSubRoute.title;
-            return title;
+            return subSubRoute.title;
           }
-        });
+        }
       }
-    });
-  });
-  return title;
+    }
+  }
+
+  throw new Error(`Title not found for path: ${path}`);
 };
