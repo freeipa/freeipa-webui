@@ -19,6 +19,7 @@ import {
   useGetObjectMetadataQuery,
   Command,
   FindRPCResponse,
+  ErrorResult,
 } from "src/services/rpc";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -122,13 +123,19 @@ const AddUser = (props: PropsToAddUser) => {
     retrieveGIDs(groupFindPayload).then((response) => {
       if ("data" in response) {
         const data = response.data as FindRPCResponse;
-        const GIDsData = data.result.result;
-        const error = data.error as FetchBaseQueryError | SerializedError;
+        const error = data.error as ErrorResult;
 
-        if (error !== null) return error;
-
-        setGIDs(GIDsData as unknown as GroupId[]);
-        return GIDsData;
+        if (error) {
+          dispatch(
+            addAlert({
+              name: "add-user-error",
+              title: error.message,
+              variant: "danger",
+            })
+          );
+        } else if (data.result) {
+          setGIDs(data.result.result as unknown as GroupId[]);
+        }
       }
     });
   };
