@@ -32,50 +32,65 @@ const setDnsZoneAdminEmail = (email: string) => {
 
 const setDnsZoneSoaRefresh = (seconds: number) => {
   clearAndAddAdjustedNumberValue(
-    "dns-zones-tab-settings-textbox-idnssoarefresh",
+    "dns-zones-tab-settings-textbox-idnssoarefresh-input",
     seconds.toString()
   );
-  checkValueExists("dns-zones-tab-settings-textbox-idnssoarefresh", seconds);
+  checkValueExists(
+    "dns-zones-tab-settings-textbox-idnssoarefresh-input",
+    seconds
+  );
 };
 
 const setDnsZoneSoaRetry = (seconds: number) => {
   clearAndAddAdjustedNumberValue(
-    "dns-zones-tab-settings-textbox-idnssoaretry",
+    "dns-zones-tab-settings-textbox-idnssoaretry-input",
     seconds.toString()
   );
-  checkValueExists("dns-zones-tab-settings-textbox-idnssoaretry", seconds);
+  checkValueExists(
+    "dns-zones-tab-settings-textbox-idnssoaretry-input",
+    seconds
+  );
 };
 
 const setDnsZoneSoaExpire = (seconds: number) => {
   clearAndAddAdjustedNumberValue(
-    "dns-zones-tab-settings-textbox-idnssoaexpire",
+    "dns-zones-tab-settings-textbox-idnssoaexpire-input",
     seconds.toString()
   );
-  checkValueExists("dns-zones-tab-settings-textbox-idnssoaexpire", seconds);
+  checkValueExists(
+    "dns-zones-tab-settings-textbox-idnssoaexpire-input",
+    seconds
+  );
 };
 
 const setDnsZoneSoaMinimum = (seconds: number) => {
   clearAndAddAdjustedNumberValue(
-    "dns-zones-tab-settings-textbox-idnssoaminimum",
+    "dns-zones-tab-settings-textbox-idnssoaminimum-input",
     seconds.toString()
   );
-  checkValueExists("dns-zones-tab-settings-textbox-idnssoaminimum", seconds);
+  checkValueExists(
+    "dns-zones-tab-settings-textbox-idnssoaminimum-input",
+    seconds
+  );
 };
 
 const setDnsZoneDefaultTtl = (seconds: number) => {
   clearAndAddAdjustedNumberValue(
-    "dns-zones-tab-settings-textbox-dnsdefaultttl",
+    "dns-zones-tab-settings-textbox-dnsdefaultttl-input",
     seconds.toString()
   );
-  checkValueExists("dns-zones-tab-settings-textbox-dnsdefaultttl", seconds);
+  checkValueExists(
+    "dns-zones-tab-settings-textbox-dnsdefaultttl-input",
+    seconds
+  );
 };
 
 const setDnsZoneTtl = (seconds: number) => {
   clearAndAddAdjustedNumberValue(
-    "dns-zones-tab-settings-textbox-dnsttl",
+    "dns-zones-tab-settings-textbox-dnsttl-input",
     seconds.toString()
   );
-  checkValueExists("dns-zones-tab-settings-textbox-dnsttl", seconds);
+  checkValueExists("dns-zones-tab-settings-textbox-dnsttl-input", seconds);
 };
 
 const addDnsZoneAllowQuery = (elementToAdd: string) => {
