@@ -167,9 +167,21 @@ const MembersUsers = (props: PropsToMembersUsers) => {
     "First name",
     "Last name",
     "Status",
+    "UID",
     "Email address",
+    "Phone",
+    "Job title",
   ];
-  const userProperties = ["uid", "givenname", "sn", "nsaccountlock", "mail"];
+  const userProperties = [
+    "uid",
+    "givenname",
+    "sn",
+    "nsaccountlock",
+    "uidnumber",
+    "mail",
+    "telephonenumber",
+    "title",
+  ];
   const directionEnabled = props.from !== "netgroup" ? true : false;
 
   // Dialogs and actions
