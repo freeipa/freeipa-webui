@@ -341,18 +341,6 @@ const AutoMemUserRules = () => {
   const [showChangeConfirmationModal, setShowChangeConfirmationModal] =
     React.useState(false);
 
-  const onOpenAddModal = () => {
-    setShowAddModal(true);
-  };
-
-  const onCloseAddModal = () => {
-    setShowAddModal(false);
-  };
-
-  const onAddModalToggle = () => {
-    setShowAddModal(!showAddModal);
-  };
-
   const onOpenDeleteModal = () => {
     setShowDeleteModal(true);
   };
@@ -464,7 +452,7 @@ const AutoMemUserRules = () => {
         <SecondaryButton
           dataCy={"auto-member-user-rules-button-add"}
           isDisabled={userGroupRulesData.isFetching}
-          onClickHandler={onOpenAddModal}
+          onClickHandler={() => setShowAddModal(true)}
         >
           Add
         </SecondaryButton>
@@ -542,15 +530,14 @@ const AutoMemUserRules = () => {
           </FlexItem>
         </Flex>
       </PageSection>
-      <AddRule
-        show={showAddModal}
-        handleModalToggle={onAddModalToggle}
-        onOpenAddModal={onOpenAddModal}
-        onCloseAddModal={onCloseAddModal}
-        onRefresh={refreshData}
-        groupsAvailableToAdd={groupsAvailableToAdd}
-        ruleType="group"
-      />
+      {showAddModal && (
+        <AddRule
+          onClose={() => setShowAddModal(false)}
+          onRefresh={refreshData}
+          groupsAvailableToAdd={groupsAvailableToAdd}
+          ruleType="group"
+        />
+      )}
       <DeleteRule
         show={showDeleteModal}
         handleModalToggle={onToggleDeleteModal}

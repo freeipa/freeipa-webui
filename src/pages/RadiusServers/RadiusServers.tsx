@@ -357,12 +357,13 @@ const RadiusServers = () => {
           </FlexItem>
         </Flex>
       </PageSection>
-      <AddRadiusServerModal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        title="Add RADIUS server"
-        onRefresh={refreshData}
-      />
+      {showAddModal && (
+        <AddRadiusServerModal
+          onClose={() => setShowAddModal(false)}
+          title="Add RADIUS server"
+          onRefresh={refreshData}
+        />
+      )}
       <DeleteRadiusServersModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}

@@ -441,12 +441,13 @@ const CertificateMappingPage = () => {
           </FlexItem>
         </Flex>
       </PageSection>
-      <AddRuleModal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        title={"Add certificate identity mapping rule"}
-        onRefresh={refreshData}
-      />
+      {showAddModal && (
+        <AddRuleModal
+          onClose={() => setShowAddModal(false)}
+          title={"Add certificate identity mapping rule"}
+          onRefresh={refreshData}
+        />
+      )}
       <DeleteMultipleRulesModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}

@@ -24,7 +24,6 @@ import NumberSelector from "src/components/Form/NumberSelector";
 import InputRequiredText from "src/components/layouts/InputRequiredText";
 
 interface PropsToAddRuleModal {
-  isOpen: boolean;
   onClose: () => void;
   title: string;
   onRefresh: () => void;
@@ -57,15 +56,6 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
 
   const priorityMessage =
     "Priority of the rule (higher number means lower priority";
-
-  const clearFields = () => {
-    setRuleName("");
-    setMappingRule("");
-    setMatchingRule("");
-    setDomainName([]);
-    setPriority(0);
-    setDescription("");
-  };
 
   // 'Add' button handler
   const onAddRule = () => {
@@ -103,9 +93,6 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
               variant: "success",
             })
           );
-          // Reset selected item
-          clearFields();
-          // Update data
           props.onRefresh();
           props.onClose();
         }
@@ -115,10 +102,10 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
     });
   };
 
-  // Clean and close modal
-  const cleanAndCloseModal = () => {
-    clearFields();
-    props.onClose();
+  const onClose = () => {
+    if (!isAddButtonSpinning) {
+      props.onClose();
+    }
   };
 
   const fields: Field[] = [
@@ -247,7 +234,8 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
       data-cy="modal-button-cancel"
       key="cancel-new"
       variant="link"
-      onClick={cleanAndCloseModal}
+      onClick={onClose}
+      isDisabled={isAddButtonSpinning}
     >
       Cancel
     </Button>,
@@ -263,9 +251,9 @@ const AddRuleModal = (props: PropsToAddRuleModal) => {
         title={props.title}
         formId="add-modal-form"
         fields={fields}
-        show={props.isOpen}
+        show
         onSubmit={() => onAddRule()}
-        onClose={cleanAndCloseModal}
+        onClose={onClose}
         actions={modalActions}
       />
     </>

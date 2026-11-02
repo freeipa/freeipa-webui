@@ -366,12 +366,13 @@ const Permissions = () => {
           </FlexItem>
         </Flex>
       </PageSection>
-      <AddPermissionModal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        title="Add permission"
-        onRefresh={refreshData}
-      />
+      {showAddModal && (
+        <AddPermissionModal
+          onClose={() => setShowAddModal(false)}
+          title="Add permission"
+          onRefresh={refreshData}
+        />
+      )}
       <DeletePermissionsModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}

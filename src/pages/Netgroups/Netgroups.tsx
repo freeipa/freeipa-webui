@@ -215,16 +215,6 @@ const Netgroups = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const onAddClickHandler = () => {
-    setShowAddModal(true);
-  };
-  const onCloseAddModal = () => {
-    setShowAddModal(false);
-  };
-  const onAddModalToggle = () => {
-    setShowAddModal(!showAddModal);
-  };
-
   const onDeleteHandler = () => {
     setShowDeleteModal(true);
   };
@@ -340,7 +330,7 @@ const Netgroups = () => {
       key: 5,
       element: (
         <SecondaryButton
-          onClickHandler={onAddClickHandler}
+          onClickHandler={() => setShowAddModal(true)}
           isDisabled={isBatchFetching}
           dataCy="netgroups-button-add"
         >
@@ -427,13 +417,12 @@ const Netgroups = () => {
           errors={modalErrors.getAll()}
           dataCy="netgroups-modal-error"
         />
-        <AddNetgroup
-          show={showAddModal}
-          handleModalToggle={onAddModalToggle}
-          onOpenAddModal={onAddClickHandler}
-          onCloseAddModal={onCloseAddModal}
-          onRefresh={refreshGroupsData}
-        />
+        {showAddModal && (
+          <AddNetgroup
+            onClose={() => setShowAddModal(false)}
+            onRefresh={refreshGroupsData}
+          />
+        )}
         <DeleteNetgroups
           show={showDeleteModal}
           handleModalToggle={onDeleteModalToggle}

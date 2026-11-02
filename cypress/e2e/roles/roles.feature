@@ -68,6 +68,29 @@ Feature: Role manipulation
     When I search for "cancel_role" in the data table
     Then I should not see "cancel_role" entry in the data table
 
+  @test
+  Scenario: Fields are reset after canceling and reopening the add modal
+    Given I am logged in as admin
+    And I am on "roles" page
+
+    When I click on the "roles-button-add" button
+    Then I should see "add-role-modal" modal
+
+    When I type in the "modal-textbox-role-name" textbox text "should_be_cleared"
+    When I type in the "modal-textbox-description" textbox text "This should not persist"
+    Then I should see "should_be_cleared" in the "modal-textbox-role-name" textbox
+
+    When I click on the "modal-button-cancel" button
+    Then I should not see "add-role-modal" modal
+
+    When I click on the "roles-button-add" button
+    Then I should see "add-role-modal" modal
+    And I should see the "modal-textbox-role-name" textbox is empty
+    And I should see the "modal-textbox-description" textbox is empty
+
+    When I click on the "modal-button-cancel" button
+    Then I should not see "add-role-modal" modal
+
   @seed
   Scenario: Create role for deletion test
     Given role "delete_me_role" exists

@@ -29,7 +29,6 @@ const ATTR_OPTIONS = SELF_SERVICE_ATTRS.map((attr) => ({
 const PERMISSION_OPTIONS = ["read", "write"];
 
 interface PropsToAddModal {
-  isOpen: boolean;
   onClose: () => void;
   title: string;
   onRefresh: () => void;
@@ -38,7 +37,7 @@ interface PropsToAddModal {
 const AddDelegationModal = (props: PropsToAddModal) => {
   const dispatch = useAppDispatch();
   const [addDelegation] = useAddDelegationMutation();
-  const groupsQuery = useFindGroupsQuery(undefined, { skip: !props.isOpen });
+  const groupsQuery = useFindGroupsQuery();
 
   const [isAddButtonSpinning, setIsAddButtonSpinning] = React.useState(false);
   const [delegationName, setDelegationName] = React.useState("");
@@ -78,7 +77,7 @@ const AddDelegationModal = (props: PropsToAddModal) => {
   }, [groupsQuery.data]);
 
   React.useEffect(() => {
-    if (props.isOpen && groupsQuery.isError) {
+    if (groupsQuery.isError) {
       dispatch(
         addAlert({
           name: "add-delegation-groups-error",
@@ -87,7 +86,7 @@ const AddDelegationModal = (props: PropsToAddModal) => {
         })
       );
     }
-  }, [props.isOpen, groupsQuery.isError, dispatch]);
+  }, [groupsQuery.isError, dispatch]);
 
   const ACI_NAME_PATTERN = /^[-_ a-zA-Z0-9]+$/;
 
@@ -108,14 +107,6 @@ const AddDelegationModal = (props: PropsToAddModal) => {
   const isAciNameValid = (name: string): boolean => {
     if (name === "") return false;
     return aciNameRules.every((rule) => rule.validate(name));
-  };
-
-  const clearFields = () => {
-    setDelegationName("");
-    setSelectedPermissions([]);
-    setMemberof("");
-    setGroup("");
-    setSelectedAttrs([]);
   };
 
   const onAdd = () => {
@@ -172,7 +163,6 @@ const AddDelegationModal = (props: PropsToAddModal) => {
                 variant: "success",
               })
             );
-            clearFields();
             props.onRefresh();
             props.onClose();
           }
@@ -183,9 +173,10 @@ const AddDelegationModal = (props: PropsToAddModal) => {
       });
   };
 
-  const cleanAndCloseModal = () => {
-    clearFields();
-    props.onClose();
+  const onClose = () => {
+    if (!isAddButtonSpinning) {
+      props.onClose();
+    }
   };
 
   const fields: Field[] = [
@@ -286,7 +277,8 @@ const AddDelegationModal = (props: PropsToAddModal) => {
       data-cy="modal-button-cancel"
       key="cancel-new"
       variant="link"
-      onClick={cleanAndCloseModal}
+      onClick={onClose}
+      isDisabled={isAddButtonSpinning}
     >
       Cancel
     </Button>,
@@ -301,9 +293,9 @@ const AddDelegationModal = (props: PropsToAddModal) => {
       title={props.title}
       formId="add-modal-form"
       fields={fields}
-      show={props.isOpen}
+      show
       onSubmit={() => onAdd()}
-      onClose={cleanAndCloseModal}
+      onClose={onClose}
       actions={modalActions}
     />
   );

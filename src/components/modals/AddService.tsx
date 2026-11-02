@@ -14,10 +14,7 @@ import {
   ValidatedOptions,
 } from "@patternfly/react-core";
 // Layout
-import SecondaryButton from "../layouts/SecondaryButton";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
-// Modals
-import ErrorModal from "./ErrorModal";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -32,12 +29,9 @@ import {
 } from "../../services/rpcServices";
 
 interface PropsToAddService {
-  show: boolean;
   hostsList: string[];
-  handleModalToggle: () => void;
-  onOpenAddModal?: () => void;
-  onCloseAddModal?: () => void;
-  onRefresh?: () => void;
+  onClose: () => void;
+  onRefresh: () => void;
 }
 
 const AddService = (props: PropsToAddService) => {
@@ -340,24 +334,6 @@ const AddService = (props: PropsToAddService) => {
     },
   ];
 
-  // Helper method to clean the fields
-  const cleanAllFields = () => {
-    setServiceSelected("");
-    setHostNameSelected("");
-    setForceCheckbox(false);
-    setSkipHostCheckbox(false);
-    setIsHostNameOpen(false);
-    setIsServiceOpen(false);
-    setAddBtnSpinning(false);
-  };
-
-  // Clean fields and close modal (To prevent data persistence when reopen modal)
-  const cleanAndCloseModal = () => {
-    cleanAllFields();
-    resetValidations();
-    props.handleModalToggle();
-  };
-
   // List of field validations
   const validateFields = () => {
     resetValidations();
@@ -368,125 +344,53 @@ const AddService = (props: PropsToAddService) => {
     } else return true;
   };
 
-  // Define status flags to determine user added successfully or error
-  let isAdditionSuccess = true;
-
-  // Add host data
-  const addServiceData = async () => {
-    const newServicePayload = {
-      service: serviceSelected + "/" + hostNameSelected,
-      force: forceCheckbox,
-      skip_host_check: skipHostCheckbox,
-    } as ServiceAddPayload;
-
-    // Add host via API call
-    await executeServiceAddCommand(newServicePayload).then((service) => {
-      if ("data" in service) {
-        const data = service.data as FindRPCResponse;
-        const error = data.error as FetchBaseQueryError | SerializedError;
-
-        if (error) {
-          // Set status flag: error
-          isAdditionSuccess = false;
-          // Handle error
-          handleAPIError(error);
-        } else {
-          // Set alert: success
-          dispatch(
-            addAlert({
-              name: "add-service-success",
-              title: "New service added",
-              variant: "success",
-            })
-          );
-
-          // Set status flag: success
-          isAdditionSuccess = true;
-          // Refresh data
-          if (props.onRefresh !== undefined) {
-            props.onRefresh();
-          }
-        }
-      }
-    });
-  };
-
   const addServiceHandler = () => {
     const validation = validateFields();
     if (validation) {
       setAddBtnSpinning(true);
-      addServiceData().then(() => {
-        if (!isAdditionSuccess) {
-          // Close the modal without cleaning fields
-          if (props.onCloseAddModal !== undefined) {
-            props.onCloseAddModal();
+      const newServicePayload = {
+        service: serviceSelected + "/" + hostNameSelected,
+        force: forceCheckbox,
+        skip_host_check: skipHostCheckbox,
+      } as ServiceAddPayload;
+
+      executeServiceAddCommand(newServicePayload).then((service) => {
+        if ("data" in service) {
+          const data = service.data as FindRPCResponse;
+          const error = data.error as FetchBaseQueryError | SerializedError;
+
+          if (error) {
+            dispatch(
+              addAlert({
+                name: "add-service-error",
+                title:
+                  "code" in error
+                    ? "IPA error " + error.code + ": " + error.name
+                    : "An error occurred",
+                variant: "danger",
+              })
+            );
+          } else {
+            dispatch(
+              addAlert({
+                name: "add-service-success",
+                title: "New service added",
+                variant: "success",
+              })
+            );
+            props.onRefresh();
+            props.onClose();
           }
-          setAddBtnSpinning(false);
-        } else {
-          // Clean data and close modal
-          cleanAndCloseModal();
         }
+        setAddBtnSpinning(false);
       });
     }
   };
 
-  // Error handling
-  const [isModalErrorOpen, setIsModalErrorOpen] = useState(false);
-  const [errorTitle, setErrorTitle] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const closeAndCleanErrorParameters = () => {
-    setIsModalErrorOpen(false);
-    setErrorTitle("");
-    setErrorMessage("");
-  };
-
-  const onCloseErrorModal = () => {
-    closeAndCleanErrorParameters();
-    // Show Add modal
-    if (props.onOpenAddModal !== undefined) {
-      props.onOpenAddModal();
+  const onClose = () => {
+    if (!addSpinning) {
+      props.onClose();
     }
-  };
-
-  const onRetry = () => {
-    // Keep the add modal closed until the operation is done...
-    if (props.onCloseAddModal !== undefined) {
-      props.onCloseAddModal();
-    }
-
-    // Close the error modal
-    closeAndCleanErrorParameters();
-
-    addServiceHandler();
-  };
-
-  const errorModalActions = [
-    <SecondaryButton
-      dataCy="modal-button-retry"
-      key="retry"
-      onClickHandler={onRetry}
-    >
-      Retry
-    </SecondaryButton>,
-    <Button
-      data-cy="modal-button-cancel"
-      key="cancel"
-      variant="link"
-      onClick={onCloseErrorModal}
-    >
-      Cancel
-    </Button>,
-  ];
-
-  const handleAPIError = (error: FetchBaseQueryError | SerializedError) => {
-    if ("code" in error) {
-      setErrorTitle("IPA error " + error.code + ": " + error.name);
-      if (error.message !== undefined) {
-        setErrorMessage(error.message);
-      }
-    }
-    setIsModalErrorOpen(true);
   };
 
   // Buttons that will be shown at the end of the form
@@ -508,7 +412,8 @@ const AddService = (props: PropsToAddService) => {
       data-cy="modal-button-cancel"
       key="cancel-new-service"
       variant="link"
-      onClick={cleanAndCloseModal}
+      onClick={onClose}
+      isDisabled={addSpinning}
     >
       Cancel
     </Button>,
@@ -516,31 +421,19 @@ const AddService = (props: PropsToAddService) => {
 
   // Render component
   return (
-    <>
-      <ModalWithFormLayout
-        dataCy="add-service-modal"
-        variantType="small"
-        modalPosition="top"
-        offPosition="76px"
-        title="Add service"
-        formId="add-service-modal"
-        onSubmit={addServiceHandler}
-        fields={fields}
-        show={props.show}
-        onClose={cleanAndCloseModal}
-        actions={modalActions}
-      />
-      {isModalErrorOpen && (
-        <ErrorModal
-          dataCy="add-service-modal-error"
-          title={errorTitle}
-          isOpen={isModalErrorOpen}
-          onClose={onCloseErrorModal}
-          actions={errorModalActions}
-          errorMessage={errorMessage}
-        />
-      )}
-    </>
+    <ModalWithFormLayout
+      dataCy="add-service-modal"
+      variantType="small"
+      modalPosition="top"
+      offPosition="76px"
+      title="Add service"
+      formId="add-service-modal"
+      onSubmit={addServiceHandler}
+      fields={fields}
+      show
+      onClose={onClose}
+      actions={modalActions}
+    />
   );
 };
 

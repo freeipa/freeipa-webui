@@ -13,7 +13,6 @@ import { addAlert } from "src/store/Global/alerts-slice";
 import { SerializedError } from "@reduxjs/toolkit";
 
 interface PropsToAddModal {
-  isOpen: boolean;
   onClose: () => void;
   title: string;
   onRefresh: () => void;
@@ -46,11 +45,6 @@ const AddSelfServicePermissionModal = (props: PropsToAddModal) => {
   const isAciNameValid = (name: string): boolean => {
     if (name === "") return false;
     return aciNameRules.every((rule) => rule.validate(name));
-  };
-
-  const clearFields = () => {
-    setSelfServiceName("");
-    setSelectedAttrs([]);
   };
 
   const onAdd = () => {
@@ -99,7 +93,6 @@ const AddSelfServicePermissionModal = (props: PropsToAddModal) => {
                 variant: "success",
               })
             );
-            clearFields();
             props.onRefresh();
             props.onClose();
           }
@@ -110,9 +103,10 @@ const AddSelfServicePermissionModal = (props: PropsToAddModal) => {
       });
   };
 
-  const cleanAndCloseModal = () => {
-    clearFields();
-    props.onClose();
+  const onClose = () => {
+    if (!isAddButtonSpinning) {
+      props.onClose();
+    }
   };
 
   const fields: Field[] = [
@@ -166,7 +160,8 @@ const AddSelfServicePermissionModal = (props: PropsToAddModal) => {
       data-cy="modal-button-cancel"
       key="cancel-new"
       variant="link"
-      onClick={cleanAndCloseModal}
+      onClick={onClose}
+      isDisabled={isAddButtonSpinning}
     >
       Cancel
     </Button>,
@@ -181,9 +176,9 @@ const AddSelfServicePermissionModal = (props: PropsToAddModal) => {
       title={props.title}
       formId="add-modal-form"
       fields={fields}
-      show={props.isOpen}
+      show
       onSubmit={() => onAdd()}
-      onClose={cleanAndCloseModal}
+      onClose={onClose}
       actions={modalActions}
     />
   );

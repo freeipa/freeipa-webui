@@ -2,11 +2,8 @@ import React, { useEffect, useState } from "react";
 // PatternFly
 import { Button, TextArea } from "@patternfly/react-core";
 // Layouts
-import SecondaryButton from "../layouts/SecondaryButton";
 import ModalWithFormLayout from "../layouts/ModalWithFormLayout";
 import InputRequiredText from "../layouts/InputRequiredText";
-// Modals
-import ErrorModal from "./ErrorModal";
 // Errors
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
@@ -19,24 +16,20 @@ import {
   GroupAddPayload,
   useAddNetgroupMutation,
 } from "../../services/rpcNetgroups";
+
 interface PropsToAddGroup {
-  show: boolean;
-  handleModalToggle: () => void;
-  onOpenAddModal?: () => void;
-  onCloseAddModal?: () => void;
-  onRefresh?: () => void;
+  onClose: () => void;
+  onRefresh: () => void;
 }
 
 const AddNetgroup = (props: PropsToAddGroup) => {
   const dispatch = useAppDispatch();
   const [executeGroupAddCommand] = useAddNetgroupMutation();
 
-  // Set host names list
   const [addSpinning, setAddBtnSpinning] = React.useState<boolean>(false);
   const [groupName, setGroupName] = React.useState("");
   const [description, setDescription] = React.useState("");
 
-  // Add button is disabled until the user fills the required fields
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
   useEffect(() => {
@@ -47,7 +40,6 @@ const AddNetgroup = (props: PropsToAddGroup) => {
     }
   }, [groupName]);
 
-  // List of fields
   const fields = [
     {
       id: "modal-form-netgroup-name",
@@ -81,42 +73,31 @@ const AddNetgroup = (props: PropsToAddGroup) => {
     },
   ];
 
-  // Helper method to clean the fields
-  const cleanAllFields = () => {
-    setGroupName("");
-    setDescription("");
-    setAddBtnSpinning(false);
-  };
+  const addGroupHandler = () => {
+    setAddBtnSpinning(true);
 
-  // Clean fields and close modal (To prevent data persistence when reopen modal)
-  const cleanAndCloseModal = () => {
-    cleanAllFields();
-    props.handleModalToggle();
-  };
-
-  // Define status flags to determine user added successfully or error
-  let isAdditionSuccess = true;
-
-  // Add group data
-  const addGroupData = async () => {
     const newGroupPayload = {
       groupName: groupName,
       description: description,
     } as GroupAddPayload;
 
-    // Add host via API call
-    await executeGroupAddCommand(newGroupPayload).then((group) => {
+    executeGroupAddCommand(newGroupPayload).then((group) => {
       if ("data" in group) {
         const data = group.data as FindRPCResponse;
         const error = data.error as FetchBaseQueryError | SerializedError;
 
         if (error) {
-          // Set status flag: error
-          isAdditionSuccess = false;
-          // Handle error
-          handleAPIError(error);
+          dispatch(
+            addAlert({
+              name: "add-netgroup-error",
+              title:
+                "code" in error
+                  ? "IPA error " + error.code + ": " + error.name
+                  : "Error",
+              variant: "danger",
+            })
+          );
         } else {
-          // Set alert: success
           dispatch(
             addAlert({
               name: "add-netgroup-success",
@@ -124,95 +105,20 @@ const AddNetgroup = (props: PropsToAddGroup) => {
               variant: "success",
             })
           );
-
-          // Set status flag: success
-          isAdditionSuccess = true;
-          // Refresh data
-          if (props.onRefresh !== undefined) {
-            props.onRefresh();
-          }
+          props.onRefresh();
+          props.onClose();
         }
       }
+      setAddBtnSpinning(false);
     });
   };
 
-  const addGroupHandler = () => {
-    setAddBtnSpinning(true);
-    addGroupData().then(() => {
-      if (!isAdditionSuccess) {
-        // Close the modal without cleaning fields
-        if (props.onCloseAddModal !== undefined) {
-          props.onCloseAddModal();
-        }
-        setAddBtnSpinning(false);
-      } else {
-        // Clean data and close modal
-        cleanAndCloseModal();
-      }
-    });
-  };
-
-  // Error handling
-  const [isModalErrorOpen, setIsModalErrorOpen] = useState(false);
-  const [errorTitle, setErrorTitle] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const closeAndCleanErrorParameters = () => {
-    setIsModalErrorOpen(false);
-    setErrorTitle("");
-    setErrorMessage("");
-  };
-
-  const onCloseErrorModal = () => {
-    closeAndCleanErrorParameters();
-    // Show Add modal
-    if (props.onOpenAddModal !== undefined) {
-      props.onOpenAddModal();
+  const onClose = () => {
+    if (!addSpinning) {
+      props.onClose();
     }
   };
 
-  const onRetry = () => {
-    // Keep the add modal closed until the operation is done...
-    if (props.onCloseAddModal !== undefined) {
-      props.onCloseAddModal();
-    }
-
-    // Close the error modal
-    closeAndCleanErrorParameters();
-
-    // Repeats the same previous operation
-    addGroupHandler();
-  };
-
-  const errorModalActions = [
-    <SecondaryButton
-      dataCy="modal-button-retry"
-      key="retry"
-      onClickHandler={onRetry}
-    >
-      Retry
-    </SecondaryButton>,
-    <Button
-      data-cy="modal-button-cancel"
-      key="cancel"
-      variant="link"
-      onClick={onCloseErrorModal}
-    >
-      Cancel
-    </Button>,
-  ];
-
-  const handleAPIError = (error: FetchBaseQueryError | SerializedError) => {
-    if ("code" in error) {
-      setErrorTitle("IPA error " + error.code + ": " + error.name);
-      if (error.message !== undefined) {
-        setErrorMessage(error.message);
-      }
-    }
-    setIsModalErrorOpen(true);
-  };
-
-  // Buttons that will be shown at the end of the form
   const modalActions = [
     <Button
       data-cy="modal-button-add"
@@ -231,39 +137,27 @@ const AddNetgroup = (props: PropsToAddGroup) => {
       data-cy="modal-button-cancel"
       key="cancel-new-netgroup"
       variant="link"
-      onClick={cleanAndCloseModal}
+      onClick={onClose}
+      isDisabled={addSpinning}
     >
       Cancel
     </Button>,
   ];
 
-  // Render component
   return (
-    <>
-      <ModalWithFormLayout
-        dataCy="add-netgroup-modal"
-        variantType="small"
-        modalPosition="top"
-        offPosition="76px"
-        title="Add netgroup"
-        formId="add-netgroup-modal"
-        fields={fields}
-        show={props.show}
-        onSubmit={addGroupHandler}
-        onClose={cleanAndCloseModal}
-        actions={modalActions}
-      />
-      {isModalErrorOpen && (
-        <ErrorModal
-          dataCy="add-netgroup-modal-error"
-          title={errorTitle}
-          isOpen={isModalErrorOpen}
-          onClose={onCloseErrorModal}
-          actions={errorModalActions}
-          errorMessage={errorMessage}
-        />
-      )}
-    </>
+    <ModalWithFormLayout
+      dataCy="add-netgroup-modal"
+      variantType="small"
+      modalPosition="top"
+      offPosition="76px"
+      title="Add netgroup"
+      formId="add-netgroup-modal"
+      fields={fields}
+      show
+      onSubmit={addGroupHandler}
+      onClose={onClose}
+      actions={modalActions}
+    />
   );
 };
 

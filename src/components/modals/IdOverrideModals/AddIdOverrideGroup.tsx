@@ -8,15 +8,12 @@ import {
   TextInput,
 } from "@patternfly/react-core";
 // Layout
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import InputWithValidation from "src/components/layouts/InputWithValidation";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
-// Modals
-import ErrorModal from "src/components/modals/ErrorModal";
 // Forms
 import DropdownSearch from "src/components/layouts/DropdownSearch";
 // Hooks
@@ -35,23 +32,18 @@ import {
 import { EMPTY_OR_NUMBER_MESSAGE, isEmptyOrNumber } from "src/utils/utils";
 
 interface PropsToAddGroup {
-  show: boolean;
   idview: string;
   groups: IDViewOverrideGroup[];
-  handleModalToggle: () => void;
-  onOpenAddModal: () => void;
-  onCloseAddModal: () => void;
+  onClose: () => void;
   onRefresh: () => void;
 }
 
 const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
   const dispatch = useAppDispatch();
 
-  // Define 'executeCommand' to add group data to IPA server
   const [executeAddCommand] = useAddIDOverrideGroupMutation();
   const [retrieveGroups] = useGetIDListMutation({});
 
-  // States for TextInputs
   const [overrideGroup, setOverrideGroup] = useState("");
   const [groupName, setGroupName] = useState("");
   const [gidnumber, setGidNumber] = useState("");
@@ -61,11 +53,7 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [groupNames, setGroupNames] = useState<string[]>([]);
 
-  // Get our initial list of groups
   useEffect(() => {
-    if (!props.show) {
-      return;
-    }
     setLoading(true);
     retrieveGroups({
       searchValue: "",
@@ -75,7 +63,6 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
       entryType: "group",
     } as GenericPayload).then((result) => {
       if (result && "data" in result) {
-        // Filter out groups that are already listed
         const existing_groups = props.groups.map(
           (group) => group["ipaanchoruuid"][0]
         );
@@ -88,12 +75,10 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
       }
       setLoading(false);
     });
-  }, [props.show, props.groups]);
+  }, [props.groups]);
 
-  // Refs
   const loginRef = useRef() as MutableRefObject<HTMLInputElement>;
 
-  // List of fields
   const fields = [
     {
       id: "modal-form-override-group",
@@ -159,25 +144,8 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
     },
   ];
 
-  // Helper method to clean the fields
-  const cleanAllFields = () => {
-    setOverrideGroup("");
-    setGroupName("");
-    setGidNumber("");
-    setDescription("");
-  };
-
-  // Clean fields and close modal (To prevent data persistence when reopen modal)
-  const cleanAndCloseModal = () => {
-    cleanAllFields();
-    props.onCloseAddModal();
-  };
-
-  // Define status flags to determine group added successfully or error
-  let isAdditionSuccess = true;
-
-  // Add data
-  const addGroup = async () => {
+  const addHandler = () => {
+    setAddBtnSpinning(true);
     const newGroupPayload = {
       idview: props.idview,
       group: overrideGroup,
@@ -186,18 +154,23 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
       description,
     } as AddGroupPayload;
 
-    // Add via API call
-    await executeAddCommand(newGroupPayload).then((add) => {
+    executeAddCommand(newGroupPayload).then((add) => {
       if ("data" in add) {
         const data = add.data as FindRPCResponse;
         const error = data.error as FetchBaseQueryError | SerializedError;
         if (error) {
-          // Set status flag: error
-          isAdditionSuccess = false;
-          // Handle error
-          handleAPIError(error);
+          let title = "";
+          if ("code" in error) {
+            title = "IPA error " + error.code + ": " + error.name;
+          }
+          dispatch(
+            addAlert({
+              name: "add-override-group-error",
+              title,
+              variant: "danger",
+            })
+          );
         } else {
-          // Set alert: success
           dispatch(
             addAlert({
               name: "add-group-success",
@@ -205,89 +178,18 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
               variant: "success",
             })
           );
-
-          // Set status flag: success
-          isAdditionSuccess = true;
-          // Refresh data
           props.onRefresh();
+          props.onClose();
         }
-        setAddBtnSpinning(false);
       }
+      setAddBtnSpinning(false);
     });
   };
 
-  const addHandler = () => {
-    setAddBtnSpinning(true);
-    addGroup().then(() => {
-      if (!isAdditionSuccess) {
-        // Close the modal without cleaning fields
-        if (props.onCloseAddModal !== undefined) {
-          props.onCloseAddModal();
-        }
-      } else {
-        // Clean data and close modal
-        cleanAndCloseModal();
-      }
-    });
-  };
-
-  // Handle API error data
-  const [isModalErrorOpen, setIsModalErrorOpen] = useState(false);
-  const [errorTitle, setErrorTitle] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const closeAndCleanErrorParameters = () => {
-    setIsModalErrorOpen(false);
-    setErrorTitle("");
-    setErrorMessage("");
-  };
-
-  const onCloseErrorModal = () => {
-    closeAndCleanErrorParameters();
-    // Show Add modal
-    if (props.onOpenAddModal !== undefined) {
-      props.onOpenAddModal();
+  const onClose = () => {
+    if (!addSpinning) {
+      props.onClose();
     }
-  };
-
-  const onRetry = () => {
-    // Keep the add modal closed until the operation is done...
-    if (props.onCloseAddModal !== undefined) {
-      props.onCloseAddModal();
-    }
-
-    // Close the error modal
-    closeAndCleanErrorParameters();
-
-    addHandler();
-  };
-
-  const errorModalActions = [
-    <SecondaryButton
-      key="retry"
-      onClickHandler={onRetry}
-      dataCy="modal-button-retry"
-    >
-      Retry
-    </SecondaryButton>,
-    <Button
-      key="cancel"
-      variant="link"
-      onClick={onCloseErrorModal}
-      data-cy="modal-button-cancel"
-    >
-      Cancel
-    </Button>,
-  ];
-
-  const handleAPIError = (error: FetchBaseQueryError | SerializedError) => {
-    if ("code" in error) {
-      setErrorTitle("IPA error " + error.code + ": " + error.name);
-      if (error.message !== undefined) {
-        setErrorMessage(error.message);
-      }
-    }
-    setIsModalErrorOpen(true);
   };
 
   const [buttonDisabled, setButtonDisabled] = useState(true);
@@ -302,7 +204,6 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
     }
   }, [overrideGroup, gidnumber]);
 
-  // Buttons that will be shown at the end of the form
   const modalActions = [
     <Button
       data-cy="modal-button-add"
@@ -320,7 +221,8 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
       data-cy="modal-button-cancel"
       key="cancel-new-group"
       variant="link"
-      onClick={cleanAndCloseModal}
+      onClick={onClose}
+      isDisabled={addSpinning}
     >
       Cancel
     </Button>,
@@ -341,34 +243,21 @@ const AddIDOverrideGroupModal = (props: PropsToAddGroup) => {
     },
   ];
 
-  // Render
   return (
-    <>
-      <ModalWithFormLayout
-        dataCy="add-id-override-group-modal"
-        variantType="small"
-        modalPosition="top"
-        offPosition="76px"
-        title="Add new override group"
-        formId="override-group-add-modal"
-        fields={loading ? loadingGroups : fields}
-        show={props.show}
-        onSubmit={addHandler}
-        onClose={cleanAndCloseModal}
-        actions={modalActions}
-        isHorizontal
-      />
-      {isModalErrorOpen && (
-        <ErrorModal
-          dataCy="add-id-override-group-modal-error"
-          title={errorTitle}
-          isOpen={isModalErrorOpen}
-          onClose={onCloseErrorModal}
-          actions={errorModalActions}
-          errorMessage={errorMessage}
-        />
-      )}
-    </>
+    <ModalWithFormLayout
+      dataCy="add-id-override-group-modal"
+      variantType="small"
+      modalPosition="top"
+      offPosition="76px"
+      title="Add new override group"
+      formId="override-group-add-modal"
+      fields={loading ? loadingGroups : fields}
+      show
+      onSubmit={addHandler}
+      onClose={onClose}
+      actions={modalActions}
+      isHorizontal
+    />
   );
 };
 

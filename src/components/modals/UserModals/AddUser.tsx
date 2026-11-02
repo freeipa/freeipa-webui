@@ -10,7 +10,6 @@ import {
 } from "@patternfly/react-core";
 // Layout
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import PasswordInput from "src/components/layouts/PasswordInput";
 // Redux
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
@@ -23,8 +22,6 @@ import {
 } from "src/services/rpc";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
-// Modals
-import ErrorModal from "src/components/modals/ErrorModal";
 // Hooks
 import { addAlert } from "src/store/Global/alerts-slice";
 // Utils
@@ -44,12 +41,9 @@ interface GroupId {
 }
 
 interface PropsToAddUser {
-  show: boolean;
   from: "active-users" | "stage-users" | "preserved-users";
-  handleModalToggle: () => void;
-  onOpenAddModal?: () => void;
-  onCloseAddModal?: () => void;
-  onRefresh?: () => void;
+  onClose: () => void;
+  onRefresh: () => void;
 }
 
 const AddUser = (props: PropsToAddUser) => {
@@ -177,14 +171,11 @@ const AddUser = (props: PropsToAddUser) => {
     (isNoPrivateGroupChecked === true ? gidSelected !== "" : true)
   );
 
-  // If modal is shown, load GID data to show in the selector (only once)
   useEffect(() => {
-    if (props.show) {
-      if (GIDs.length === 0) {
-        getGIDs();
-      }
+    if (GIDs.length === 0) {
+      getGIDs();
     }
-  }, [props.show]);
+  }, []);
 
   const [passwordHidden, setPasswordHidden] = React.useState(true);
   const [verifyPasswordHidden, setVerifyPasswordHidden] = React.useState(true);
@@ -346,14 +337,7 @@ const AddUser = (props: PropsToAddUser) => {
     fields = new_fields;
   }
 
-  // Track which button has been clicked ('onAddUser')
-  //  to better handle the 'retry' function and its behavior
-  let onAddUserClicked = true;
-
   const onAddUser = () => {
-    onAddUserClicked = true;
-
-    // Prepare payload
     const newUserPayload: AddUserPayload = {
       type: props.from === "stage-users" ? "stageuser" : "user",
       givenname: firstName,
@@ -392,12 +376,6 @@ const AddUser = (props: PropsToAddUser) => {
             const error = data.error as FetchBaseQueryError | SerializedError;
 
             if (result) {
-              // Refresh data
-              if (props.onRefresh !== undefined) {
-                props.onRefresh();
-              }
-
-              // Set alert: success
               dispatch(
                 addAlert({
                   name: "add-user-success",
@@ -405,10 +383,20 @@ const AddUser = (props: PropsToAddUser) => {
                   variant: "success",
                 })
               );
-              cleanAndCloseModal();
+              props.onRefresh();
+              props.onClose();
             } else if (error) {
-              // Handle error
-              handleAPIError(error);
+              let title = "";
+              if ("code" in error) {
+                title = "IPA error " + error.code + ": " + error.name;
+              }
+              dispatch(
+                addAlert({
+                  name: "add-user-error",
+                  title: title,
+                  variant: "danger",
+                })
+              );
             }
           }
         })
@@ -418,86 +406,10 @@ const AddUser = (props: PropsToAddUser) => {
     }
   };
 
-  // Helper method to clean the fields
-  const cleanAllFields = () => {
-    setCustomLogin("");
-    setFirstName("");
-    setLastName("");
-    setUserClass("");
-    setIsNoPrivateGroupChecked(false);
-    setGidSelected("");
-    setNewPassword("");
-    setVerifyNewPassword("");
-  };
-
-  // Clean fields and close modal (To prevent data persistence when reopen modal)
-  const cleanAndCloseModal = () => {
-    cleanAllFields();
-    if (props.onCloseAddModal !== undefined) {
-      props.onCloseAddModal();
+  const onClose = () => {
+    if (!addSpinning) {
+      props.onClose();
     }
-  };
-
-  // Handle API error data
-  const [isModalErrorOpen, setIsModalErrorOpen] = useState(false);
-  const [errorTitle, setErrorTitle] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const closeAndCleanErrorParameters = () => {
-    setIsModalErrorOpen(false);
-    setErrorTitle("");
-    setErrorMessage("");
-  };
-
-  const onCloseErrorModal = () => {
-    closeAndCleanErrorParameters();
-    // Show Add modal
-    if (props.onOpenAddModal !== undefined) {
-      props.onOpenAddModal();
-    }
-  };
-
-  const onRetry = () => {
-    // Keep the add modal closed until the operation is done...
-    if (props.onCloseAddModal !== undefined) {
-      props.onCloseAddModal();
-    }
-
-    // Close the error modal
-    closeAndCleanErrorParameters();
-
-    // Repeats the same previous operation
-    if (onAddUserClicked) {
-      onAddUser();
-    }
-  };
-
-  const errorModalActions = [
-    <SecondaryButton
-      key="retry"
-      onClickHandler={onRetry}
-      dataCy="modal-button-retry"
-    >
-      Retry
-    </SecondaryButton>,
-    <Button
-      data-cy="modal-button-cancel"
-      key="cancel"
-      variant="link"
-      onClick={onCloseErrorModal}
-    >
-      Cancel
-    </Button>,
-  ];
-
-  const handleAPIError = (error: FetchBaseQueryError | SerializedError) => {
-    if ("code" in error) {
-      setErrorTitle("IPA error " + error.code + ": " + error.name);
-      if (error.message !== undefined) {
-        setErrorMessage(error.message);
-      }
-    }
-    setIsModalErrorOpen(true);
   };
 
   // Buttons that will be shown at the end of the form
@@ -518,39 +430,27 @@ const AddUser = (props: PropsToAddUser) => {
       data-cy="modal-button-cancel"
       key="cancel-new-user"
       variant="link"
-      onClick={cleanAndCloseModal}
+      onClick={onClose}
+      isDisabled={addSpinning}
     >
       Cancel
     </Button>,
   ];
 
-  // Render 'AddUser'
   return (
-    <>
-      <ModalWithFormLayout
-        dataCy="add-user-modal"
-        variantType="small"
-        modalPosition="top"
-        offPosition="76px"
-        title={props.from === "stage-users" ? "Add stage user" : "Add user"}
-        formId="users-add-user-modal"
-        fields={fields}
-        show={props.show}
-        onSubmit={onAddUser}
-        onClose={cleanAndCloseModal}
-        actions={modalActions}
-      />
-      {isModalErrorOpen && (
-        <ErrorModal
-          dataCy="add-user-modal-error"
-          title={errorTitle}
-          isOpen={isModalErrorOpen}
-          onClose={onCloseErrorModal}
-          actions={errorModalActions}
-          errorMessage={errorMessage}
-        />
-      )}
-    </>
+    <ModalWithFormLayout
+      dataCy="add-user-modal"
+      variantType="small"
+      modalPosition="top"
+      offPosition="76px"
+      title={props.from === "stage-users" ? "Add stage user" : "Add user"}
+      formId="users-add-user-modal"
+      fields={fields}
+      show
+      onSubmit={onAddUser}
+      onClose={onClose}
+      actions={modalActions}
+    />
   );
 };
 
