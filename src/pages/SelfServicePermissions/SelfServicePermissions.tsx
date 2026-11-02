@@ -371,12 +371,13 @@ const SelfServicePermissions = () => {
           </FlexItem>
         </Flex>
       </PageSection>
-      <AddSelfServicePermissionModal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        title="Add self-service permission"
-        onRefresh={refreshData}
-      />
+      {showAddModal && (
+        <AddSelfServicePermissionModal
+          onClose={() => setShowAddModal(false)}
+          title="Add self-service permission"
+          onRefresh={refreshData}
+        />
+      )}
       <DeleteSelfServicePermissionsModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}

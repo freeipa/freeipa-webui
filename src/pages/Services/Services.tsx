@@ -104,16 +104,6 @@ const Services = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const onAddClickHandler = () => {
-    setShowAddModal(true);
-  };
-  const onCloseAddModal = () => {
-    setShowAddModal(false);
-  };
-  const onAddModalToggle = () => {
-    setShowAddModal(!showAddModal);
-  };
-
   const onDeleteHandler = () => {
     setShowDeleteModal(true);
   };
@@ -377,7 +367,7 @@ const Services = () => {
       element: (
         <SecondaryButton
           isDisabled={isBatchFetching}
-          onClickHandler={onAddClickHandler}
+          onClickHandler={() => setShowAddModal(true)}
           dataCy="services-button-add"
         >
           Add
@@ -460,14 +450,13 @@ const Services = () => {
           errors={modalErrors.getAll()}
           dataCy="services-modal-error"
         />
-        <AddService
-          show={showAddModal}
-          handleModalToggle={onAddModalToggle}
-          onOpenAddModal={onAddClickHandler}
-          onCloseAddModal={onCloseAddModal}
-          onRefresh={refreshServicesData}
-          hostsList={hostsList}
-        />
+        {showAddModal && (
+          <AddService
+            onClose={() => setShowAddModal(false)}
+            onRefresh={refreshServicesData}
+            hostsList={hostsList}
+          />
+        )}
         <DeleteServices
           show={showDeleteModal}
           handleModalToggle={onDeleteModalToggle}

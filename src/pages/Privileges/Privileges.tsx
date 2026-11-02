@@ -356,12 +356,13 @@ const Privileges = () => {
           </FlexItem>
         </Flex>
       </PageSection>
-      <AddPrivilegeModal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        title="Add privilege"
-        onRefresh={refreshData}
-      />
+      {showAddModal && (
+        <AddPrivilegeModal
+          onClose={() => setShowAddModal(false)}
+          title="Add privilege"
+          onRefresh={refreshData}
+        />
+      )}
       <DeletePrivilegesModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}

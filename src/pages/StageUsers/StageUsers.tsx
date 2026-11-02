@@ -217,12 +217,6 @@ const StageUsers = () => {
   const onAddClickHandler = () => {
     setShowAddModal(true);
   };
-  const onCloseAddModal = () => {
-    setShowAddModal(false);
-  };
-  const onAddModalToggle = () => {
-    setShowAddModal(!showAddModal);
-  };
   const onDeleteHandler = () => {
     setShowDeleteModal(true);
   };
@@ -444,14 +438,13 @@ const StageUsers = () => {
           errors={modalErrors.getAll()}
           dataCy="stage-users-modal-error"
         />
-        <AddUser
-          show={showAddModal}
-          from="stage-users"
-          handleModalToggle={onAddModalToggle}
-          onOpenAddModal={onAddClickHandler}
-          onCloseAddModal={onCloseAddModal}
-          onRefresh={refreshUsersData}
-        />
+        {showAddModal && (
+          <AddUser
+            from="stage-users"
+            onClose={() => setShowAddModal(false)}
+            onRefresh={refreshUsersData}
+          />
+        )}
         <DeleteUsers
           show={showDeleteModal}
           from="stage-users"

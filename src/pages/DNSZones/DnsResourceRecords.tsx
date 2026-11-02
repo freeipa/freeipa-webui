@@ -387,12 +387,13 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
             </FlexItem>
           </Flex>
         </PageSection>
-        <AddDnsRecordsModal
-          isOpen={showAddModal}
-          onClose={() => setShowAddModal(false)}
-          onRefresh={refreshData}
-          dnsZoneId={props.dnsZoneId}
-        />
+        {showAddModal && (
+          <AddDnsRecordsModal
+            onClose={() => setShowAddModal(false)}
+            onRefresh={refreshData}
+            dnsZoneId={props.dnsZoneId}
+          />
+        )}
         <DeleteDnsRecordsModal
           isOpen={showDeleteModal}
           onClose={() => setShowDeleteModal(false)}

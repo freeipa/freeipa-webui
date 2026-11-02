@@ -365,12 +365,13 @@ const Delegations = () => {
           </FlexItem>
         </Flex>
       </PageSection>
-      <AddDelegationModal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        title="Add delegation"
-        onRefresh={refreshData}
-      />
+      {showAddModal && (
+        <AddDelegationModal
+          onClose={() => setShowAddModal(false)}
+          title="Add delegation"
+          onRefresh={refreshData}
+        />
+      )}
       <DeleteDelegationsModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}

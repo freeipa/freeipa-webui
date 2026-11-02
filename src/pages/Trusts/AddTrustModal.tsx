@@ -29,7 +29,6 @@ import { InfoCircleIcon } from "@patternfly/react-icons";
 import { RangeType } from "src/utils/datatypes/globalDataTypes";
 
 interface PropsToAddTrustModal {
-  isOpen: boolean;
   onClose: () => void;
   title: string;
   onRefresh: () => void;
@@ -87,20 +86,6 @@ const AddTrustModal = (props: PropsToAddTrustModal) => {
       if (adminAccount === "" || adminAccounPwd === "") return false;
     }
     return domainName !== "";
-  };
-
-  const clearFields = () => {
-    setDomainName("");
-    setIsTwoWayCheckboxChecked(false);
-    setIsExternalTrustCheckboxChecked(false);
-    setAuthMethod("admin");
-    setAdminAccount("");
-    setAdminAccounPwd("");
-    setPreSharedPwd("");
-    setPreSharedPwdVerify("");
-    setRangeType("detect");
-    setBaseId(0);
-    setRangeSize(0);
   };
 
   // 'Add' button handler
@@ -161,11 +146,7 @@ const AddTrustModal = (props: PropsToAddTrustModal) => {
                   variant: "success",
                 })
               );
-              // Reset selected item
-              clearFields();
-              // Update data
               props.onRefresh();
-              // Close modal
               props.onClose();
             }
           }
@@ -176,10 +157,10 @@ const AddTrustModal = (props: PropsToAddTrustModal) => {
     }
   };
 
-  // Clean and close modal
-  const cleanAndCloseModal = () => {
-    clearFields();
-    props.onClose();
+  const onClose = () => {
+    if (!isAddButtonSpinning) {
+      props.onClose();
+    }
   };
 
   const fields: Field[] = [
@@ -480,7 +461,8 @@ const AddTrustModal = (props: PropsToAddTrustModal) => {
       data-cy={"modal-button-cancel"}
       key="cancel-new"
       variant="link"
-      onClick={cleanAndCloseModal}
+      onClick={onClose}
+      isDisabled={isAddButtonSpinning}
     >
       Cancel
     </Button>,
@@ -496,9 +478,9 @@ const AddTrustModal = (props: PropsToAddTrustModal) => {
         title={props.title}
         formId="add-trust-modal"
         fields={fields}
-        show={props.isOpen}
+        show
         onSubmit={onAddTrust}
-        onClose={cleanAndCloseModal}
+        onClose={onClose}
         actions={modalActions}
       />
     </>

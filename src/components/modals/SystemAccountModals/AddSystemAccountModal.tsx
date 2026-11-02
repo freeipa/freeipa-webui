@@ -17,7 +17,6 @@ import { addAlert } from "src/store/Global/alerts-slice";
 import { SerializedError } from "@reduxjs/toolkit";
 
 interface PropsToAddModal {
-  isOpen: boolean;
   onClose: () => void;
   title: string;
   onRefresh: () => void;
@@ -38,17 +37,6 @@ const AddSystemAccountModal = (props: PropsToAddModal) => {
   const [verifyPassword, setVerifyPassword] = React.useState("");
   const [passwordHidden, setPasswordHidden] = React.useState(true);
   const [verifyPasswordHidden, setVerifyPasswordHidden] = React.useState(true);
-
-  // Clear fields
-  const clearFields = () => {
-    setAccountId("");
-    setDescription("");
-    setPrivileged(false);
-    setNewPassword("");
-    setVerifyPassword("");
-    setPasswordHidden(true);
-    setVerifyPasswordHidden(true);
-  };
 
   // Passwords must match when both are filled
   const verifiedPasswords =
@@ -104,7 +92,6 @@ const AddSystemAccountModal = (props: PropsToAddModal) => {
                 variant: "success",
               })
             );
-            clearFields();
             props.onRefresh();
             props.onClose();
           }
@@ -115,10 +102,10 @@ const AddSystemAccountModal = (props: PropsToAddModal) => {
       });
   };
 
-  // Clean and close modal
-  const cleanAndCloseModal = () => {
-    clearFields();
-    props.onClose();
+  const onClose = () => {
+    if (!isAddButtonSpinning) {
+      props.onClose();
+    }
   };
 
   const fields: Field[] = [
@@ -223,7 +210,8 @@ const AddSystemAccountModal = (props: PropsToAddModal) => {
       data-cy="modal-button-cancel"
       key="cancel-new"
       variant="link"
-      onClick={cleanAndCloseModal}
+      onClick={onClose}
+      isDisabled={isAddButtonSpinning}
     >
       Cancel
     </Button>,
@@ -238,9 +226,9 @@ const AddSystemAccountModal = (props: PropsToAddModal) => {
       title={props.title}
       formId="add-modal-form"
       fields={fields}
-      show={props.isOpen}
+      show
       onSubmit={() => onAddSysAccount()}
-      onClose={cleanAndCloseModal}
+      onClose={onClose}
       actions={modalActions}
     />
   );

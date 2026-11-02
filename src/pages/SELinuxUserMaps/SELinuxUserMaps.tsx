@@ -398,11 +398,12 @@ const SELinuxUserMaps = () => {
             </FlexItem>
           </Flex>
         </PageSection>
-        <AddSelinuxUserMapModal
-          isOpen={showAddModal}
-          onClose={() => setShowAddModal(false)}
-          onRefresh={refreshData}
-        />
+        {showAddModal && (
+          <AddSelinuxUserMapModal
+            onClose={() => setShowAddModal(false)}
+            onRefresh={refreshData}
+          />
+        )}
         <DeleteSelinuxUserMapsModal
           isOpen={showDeleteModal}
           onClose={() => setShowDeleteModal(false)}

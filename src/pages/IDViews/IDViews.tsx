@@ -229,17 +229,6 @@ const IDViews = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const onAddClickHandler = () => {
-    setIsKebabOpen(false);
-    setShowAddModal(true);
-  };
-  const onCloseAddModal = () => {
-    setShowAddModal(false);
-  };
-  const onAddModalToggle = () => {
-    setShowAddModal(!showAddModal);
-  };
-
   const onDeleteHandler = () => {
     setIsKebabOpen(false);
     setShowDeleteModal(true);
@@ -481,7 +470,10 @@ const IDViews = () => {
       element: (
         <SecondaryButton
           dataCy="id-views-button-add"
-          onClickHandler={onAddClickHandler}
+          onClickHandler={() => {
+            setIsKebabOpen(false);
+            setShowAddModal(true);
+          }}
           isDisabled={isBatchFetching}
         >
           Add
@@ -577,13 +569,12 @@ const IDViews = () => {
           errors={modalErrors.getAll()}
           dataCy="id-views-modal-error"
         />
-        <AddIDViewModal
-          show={showAddModal}
-          handleModalToggle={onAddModalToggle}
-          onOpenAddModal={onAddClickHandler}
-          onCloseAddModal={onCloseAddModal}
-          onRefresh={refreshViewsData}
-        />
+        {showAddModal && (
+          <AddIDViewModal
+            onClose={() => setShowAddModal(false)}
+            onRefresh={refreshViewsData}
+          />
+        )}
         <DeleteIDViewsModal
           show={showDeleteModal}
           handleModalToggle={onDeleteModalToggle}

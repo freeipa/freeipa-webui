@@ -100,7 +100,6 @@ Use `on{Action}` pattern:
 
 ```tsx
 const onAdd = () => { /* ... */ };
-const cleanAndCloseModal = () => { /* ... */ };
 ```
 
 ## Field Template

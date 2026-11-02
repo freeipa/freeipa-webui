@@ -174,18 +174,6 @@ const HBACServiceGroups = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const onAddClickHandler = () => {
-    setShowAddModal(true);
-  };
-
-  const onCloseAddModal = () => {
-    setShowAddModal(false);
-  };
-
-  const onAddModalToggle = () => {
-    setShowAddModal(!showAddModal);
-  };
-
   const onDeleteHandler = () => {
     setShowDeleteModal(true);
   };
@@ -353,7 +341,7 @@ const HBACServiceGroups = () => {
       key: 5,
       element: (
         <SecondaryButton
-          onClickHandler={onAddClickHandler}
+          onClickHandler={() => setShowAddModal(true)}
           isDisabled={isBatchFetching}
           dataCy="hbac-service-groups-button-add"
         >
@@ -435,13 +423,12 @@ const HBACServiceGroups = () => {
             </FlexItem>
           </Flex>
         </PageSection>
-        <AddHBACServiceGroup
-          show={showAddModal}
-          handleModalToggle={onAddModalToggle}
-          onOpenAddModal={onAddClickHandler}
-          onCloseAddModal={onCloseAddModal}
-          onRefresh={refreshServicesData}
-        />
+        {showAddModal && (
+          <AddHBACServiceGroup
+            onClose={() => setShowAddModal(false)}
+            onRefresh={refreshServicesData}
+          />
+        )}
         <DeleteHBACServiceGroup
           show={showDeleteModal}
           handleModalToggle={onDeleteModalToggle}

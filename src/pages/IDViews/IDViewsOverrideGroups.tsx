@@ -180,12 +180,6 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
   const onAddClickHandler = () => {
     setShowAddModal(true);
   };
-  const onCloseAddModal = () => {
-    setShowAddModal(false);
-  };
-  const onAddModalToggle = () => {
-    setShowAddModal(!showAddModal);
-  };
   const onDeleteHandler = () => {
     setShowDeleteModal(true);
   };
@@ -323,15 +317,14 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
         widgetId="pagination-options-menu-bottom"
         className="pf-v6-u-pb-0 pf-v6-u-pr-md"
       />
-      <AddIdOverrideGroupModal
-        show={showAddModal}
-        idview={props.idview}
-        groups={groupsList}
-        handleModalToggle={onAddModalToggle}
-        onOpenAddModal={onAddClickHandler}
-        onCloseAddModal={onCloseAddModal}
-        onRefresh={onRefresh}
-      />
+      {showAddModal && (
+        <AddIdOverrideGroupModal
+          idview={props.idview}
+          groups={groupsList}
+          onClose={() => setShowAddModal(false)}
+          onRefresh={onRefresh}
+        />
+      )}
       <DeleteIdOverrideGroupsModal
         show={showDeleteModal}
         idview={props.idview}

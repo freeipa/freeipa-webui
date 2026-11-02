@@ -413,12 +413,13 @@ const DnsZones = () => {
             </FlexItem>
           </Flex>
         </PageSection>
-        <AddDnsZoneModal
-          isOpen={showAddModal}
-          onClose={() => setShowAddModal(false)}
-          title="Add DNS zone"
-          onRefresh={refreshData}
-        />
+        {showAddModal && (
+          <AddDnsZoneModal
+            onClose={() => setShowAddModal(false)}
+            title="Add DNS zone"
+            onRefresh={refreshData}
+          />
+        )}
         <DeleteDnsZonesModal
           isOpen={showDeleteModal}
           onClose={() => setShowDeleteModal(false)}

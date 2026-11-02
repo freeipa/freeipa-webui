@@ -270,14 +270,15 @@ const OtherRecordTypes = (props: PropsToOtherRecordTypes) => {
           emptyStateMessage={`No ${type} records found`}
           tableVariant="compact"
           addModal={
-            <AddDnsRecordsModal
-              isOpen={state.isAddModalOpen}
-              onClose={() => handleCloseAdd(type)}
-              onRefresh={props.onRefresh}
-              dnsZoneId={props.idnsname}
-              defaultSelectedRecordType={type as DnsRecordType}
-              defaultRecordName={props.recordName}
-            />
+            state.isAddModalOpen ? (
+              <AddDnsRecordsModal
+                onClose={() => handleCloseAdd(type)}
+                onRefresh={props.onRefresh}
+                dnsZoneId={props.idnsname}
+                defaultSelectedRecordType={type as DnsRecordType}
+                defaultRecordName={props.recordName}
+              />
+            ) : undefined
           }
           editModal={
             <EditDnsRecordModal

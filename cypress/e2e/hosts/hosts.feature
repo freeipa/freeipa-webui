@@ -106,11 +106,7 @@ Feature: Host manipulation
     Then I should see "forcehost.ipa.test" in the "modal-textbox-host-name" textbox
 
     When I click on the "modal-button-add" button
-    Then I should see "add-host-modal-error" modal
-
-    When I click on the "modal-button-cancel" button
-    Then I should not see "add-host-modal-error" modal
-    And I should see "add-host-modal" modal
+    Then I should see "add-host-error" alert
 
     When I click on the "modal-button-cancel" button
     Then I should not see "add-host-modal" modal

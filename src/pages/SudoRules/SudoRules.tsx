@@ -193,18 +193,6 @@ const SudoRules = () => {
   const [showEnableDisableModal, setShowEnableDisableModal] = useState(false);
   const [enableDisableOptionSelected, setEnableDisableOptionSelected] =
     useState(false);
-  const onAddClickHandler = () => {
-    setShowAddModal(true);
-  };
-
-  const onCloseAddModal = () => {
-    setShowAddModal(false);
-  };
-
-  const onAddModalToggle = () => {
-    setShowAddModal(!showAddModal);
-  };
-
   const onDeleteHandler = () => {
     setShowDeleteModal(true);
   };
@@ -393,7 +381,7 @@ const SudoRules = () => {
       key: 5,
       element: (
         <SecondaryButton
-          onClickHandler={onAddClickHandler}
+          onClickHandler={() => setShowAddModal(true)}
           isDisabled={isBatchFetching}
           dataCy="sudo-rules-button-add"
         >
@@ -499,13 +487,12 @@ const SudoRules = () => {
             </FlexItem>
           </Flex>
         </PageSection>
-        <AddSudoRule
-          show={showAddModal}
-          handleModalToggle={onAddModalToggle}
-          onOpenAddModal={onAddClickHandler}
-          onCloseAddModal={onCloseAddModal}
-          onRefresh={refreshRulesData}
-        />
+        {showAddModal && (
+          <AddSudoRule
+            onClose={() => setShowAddModal(false)}
+            onRefresh={refreshRulesData}
+          />
+        )}
         <DeleteSudoRule
           show={showDeleteModal}
           handleModalToggle={onDeleteModalToggle}

@@ -371,12 +371,13 @@ const Trusts = () => {
             </FlexItem>
           </Flex>
         </PageSection>
-        <AddTrustModal
-          isOpen={showAddModal}
-          onClose={() => setShowAddModal(false)}
-          title="Add trust"
-          onRefresh={refreshData}
-        />
+        {showAddModal && (
+          <AddTrustModal
+            onClose={() => setShowAddModal(false)}
+            title="Add trust"
+            onRefresh={refreshData}
+          />
+        )}
         <DeleteTrustModal
           isOpen={showDeleteModal}
           onClose={() => setShowDeleteModal(false)}

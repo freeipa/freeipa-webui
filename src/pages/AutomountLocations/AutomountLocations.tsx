@@ -360,11 +360,12 @@ const AutomountLocations = () => {
           </FlexItem>
         </Flex>
       </PageSection>
-      <AddAutomountLocationModal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        onRefresh={refreshData}
-      />
+      {showAddModal && (
+        <AddAutomountLocationModal
+          onClose={() => setShowAddModal(false)}
+          onRefresh={refreshData}
+        />
+      )}
       <DeleteAutomountLocationsModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}

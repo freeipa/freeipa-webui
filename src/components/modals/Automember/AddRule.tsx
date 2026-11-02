@@ -27,11 +27,8 @@ import { useGetGenericListQuery } from "src/services/rpc";
 import { groupType } from "src/utils/datatypes/globalDataTypes";
 
 interface PropsToAddRule {
-  show: boolean;
-  handleModalToggle: () => void;
-  onOpenAddModal?: () => void;
-  onCloseAddModal?: () => void;
-  onRefresh?: () => void;
+  onClose: () => void;
+  onRefresh: () => void;
   groupsAvailableToAdd: string[];
   ruleType: string;
 }
@@ -136,18 +133,6 @@ const AddRule = (props: PropsToAddRule) => {
     },
   ];
 
-  const cleanFields = () => {
-    setGroupSelected("");
-    setIsSelectOpen(false);
-    setAddBtnSpinning(false);
-  };
-
-  // Clean fields and close modal (To prevent data persistence when reopen modal)
-  const cleanAndCloseModal = () => {
-    cleanFields();
-    props.handleModalToggle();
-  };
-
   // Add
   const onAdd = () => {
     const addPayload: AddPayload = {
@@ -165,12 +150,14 @@ const AddRule = (props: PropsToAddRule) => {
           dispatch(
             addAlert({
               name: "add-rule-error",
-              title: JSON.stringify(error, null, 2),
+              title:
+                "code" in error
+                  ? "IPA error " + error.code + ": " + error.name
+                  : "An error occurred",
               variant: "danger",
             })
           );
         } else {
-          // Set alert: success
           dispatch(
             addAlert({
               name: "add-rule-success",
@@ -178,15 +165,18 @@ const AddRule = (props: PropsToAddRule) => {
               variant: "success",
             })
           );
-          setAddBtnSpinning(true);
-
-          // Refresh table content
-          if (props.onRefresh !== undefined) props.onRefresh();
-          // Clean and close modal
-          cleanAndCloseModal();
+          props.onRefresh();
+          props.onClose();
         }
       }
+      setAddBtnSpinning(false);
     });
+  };
+
+  const onClose = () => {
+    if (!addSpinning) {
+      props.onClose();
+    }
   };
 
   const modalActions = [
@@ -206,7 +196,8 @@ const AddRule = (props: PropsToAddRule) => {
       data-cy={"modal-button-cancel"}
       key="cancel-new-rule"
       variant="link"
-      onClick={cleanAndCloseModal}
+      onClick={onClose}
+      isDisabled={addSpinning}
     >
       Cancel
     </Button>,
@@ -214,21 +205,19 @@ const AddRule = (props: PropsToAddRule) => {
 
   // Render component
   return (
-    <>
-      <ModalWithFormLayout
-        dataCy={"add-rule-modal"}
-        variantType="small"
-        modalPosition="top"
-        offPosition="76px"
-        title="Add rule"
-        formId="add-rule-modal"
-        onSubmit={() => onAdd()}
-        fields={fields}
-        show={props.show}
-        onClose={cleanAndCloseModal}
-        actions={modalActions}
-      />
-    </>
+    <ModalWithFormLayout
+      dataCy={"add-rule-modal"}
+      variantType="small"
+      modalPosition="top"
+      offPosition="76px"
+      title="Add rule"
+      formId="add-rule-modal"
+      onSubmit={() => onAdd()}
+      fields={fields}
+      show
+      onClose={onClose}
+      actions={modalActions}
+    />
   );
 };
 

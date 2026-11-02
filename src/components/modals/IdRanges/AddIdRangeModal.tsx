@@ -29,7 +29,6 @@ import NumberSelector from "src/components/Form/NumberSelector";
 import { NO_SELECTION_OPTION } from "src/utils/constUtils";
 
 interface PropsToAddModal {
-  isOpen: boolean;
   onClose: () => void;
   title: string;
   onRefresh: () => void;
@@ -85,17 +84,6 @@ const AddIdRangeModal = (props: PropsToAddModal) => {
       if (ipabaserid !== "") setIpabaserid("");
       if (ipasecondarybaserid !== "") setIpasecondarybaserid("");
     }
-  };
-
-  const clearFields = () => {
-    setCn("");
-    setRangeType("ipa-local");
-    setIpabaseid("");
-    setIpaidrangesize("");
-    setIpabaserid("");
-    setIpasecondarybaserid("");
-    setIpanttrusteddomainname("");
-    setIpaautoprivategroups("");
   };
 
   // Derived validation state
@@ -169,7 +157,6 @@ const AddIdRangeModal = (props: PropsToAddModal) => {
                 variant: "success",
               })
             );
-            clearFields();
             props.onRefresh();
             props.onClose();
           }
@@ -180,9 +167,10 @@ const AddIdRangeModal = (props: PropsToAddModal) => {
       });
   };
 
-  const cleanAndClose = () => {
-    clearFields();
-    props.onClose();
+  const onClose = () => {
+    if (!isAddButtonSpinning) {
+      props.onClose();
+    }
   };
 
   const fields: Field[] = [
@@ -377,7 +365,8 @@ const AddIdRangeModal = (props: PropsToAddModal) => {
       data-cy="modal-button-cancel"
       key="cancel-new"
       variant="link"
-      onClick={cleanAndClose}
+      onClick={onClose}
+      isDisabled={isAddButtonSpinning}
     >
       Cancel
     </Button>,
@@ -392,8 +381,8 @@ const AddIdRangeModal = (props: PropsToAddModal) => {
       title={props.title}
       formId="add-id-range-modal"
       fields={fields}
-      show={props.isOpen}
-      onClose={cleanAndClose}
+      show
+      onClose={onClose}
       onSubmit={() => onAdd()}
       actions={modalActions}
     />

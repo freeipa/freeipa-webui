@@ -16,7 +16,6 @@ import {
 import { SerializedError } from "@reduxjs/toolkit";
 
 interface PropsToAddAutomountLocationModal {
-  isOpen: boolean;
   onClose: () => void;
   onRefresh: () => void;
 }
@@ -33,13 +32,10 @@ const AddAutomountLocationModal = (props: PropsToAddAutomountLocationModal) => {
 
   const isButtonDisabled = isAddButtonSpinning || locationName.length === 0;
 
-  const clearFields = () => {
-    setLocationName("");
-  };
-
-  const cleanAndCloseModal = () => {
-    clearFields();
-    props.onClose();
+  const onClose = () => {
+    if (!isAddButtonSpinning) {
+      props.onClose();
+    }
   };
 
   const onAddLocation = () => {
@@ -84,7 +80,6 @@ const AddAutomountLocationModal = (props: PropsToAddAutomountLocationModal) => {
               variant: "success",
             })
           );
-          clearFields();
           props.onRefresh();
           props.onClose();
         }
@@ -127,7 +122,8 @@ const AddAutomountLocationModal = (props: PropsToAddAutomountLocationModal) => {
       data-cy="modal-button-cancel"
       key="cancel-new-automount-location"
       variant="link"
-      onClick={cleanAndCloseModal}
+      onClick={onClose}
+      isDisabled={isAddButtonSpinning}
     >
       Cancel
     </Button>,
@@ -142,9 +138,9 @@ const AddAutomountLocationModal = (props: PropsToAddAutomountLocationModal) => {
       title="Add automount location"
       formId="add-automount-location-modal"
       fields={fields}
-      show={props.isOpen}
+      show
       onSubmit={onAddLocation}
-      onClose={cleanAndCloseModal}
+      onClose={onClose}
       actions={modalActions}
     />
   );
