@@ -1,6 +1,5 @@
 import { When, Then, Given } from "@badeball/cypress-cucumber-preprocessor";
 import { entryExists, searchForEntry } from "./data_tables";
-import { IPA_PREFIX_INTERACTIVE } from "cypress/support/utils";
 
 const fillUser = (
   firstName: string,
@@ -63,9 +62,12 @@ export const createUserExec = (
   lastName: string,
   password: string
 ) => {
-  // Password can't be passed, therefore we have to pipe it and use different interface
-  const ipaCmd = `${IPA_PREFIX_INTERACTIVE} user-add "${login}" --first="${firstName}" --last="${lastName}" --password`;
-  cy.exec(`echo "${password}" | ${ipaCmd}`);
+  cy.ipa({
+    command: "user-add",
+    name: login,
+    specificOptions: `--first="${firstName}" --last="${lastName}" --password`,
+    stdin: password,
+  });
 };
 
 Given(
