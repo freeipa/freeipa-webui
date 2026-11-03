@@ -25,7 +25,7 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 //
 
-import { IPA_PREFIX } from "./utils";
+import { IPA_PREFIX, IPA_PREFIX_INTERACTIVE } from "./utils";
 
 Cypress.Commands.add("dataCy", (value: string) => {
   return cy.get(`[data-cy='${value}']`);
@@ -36,14 +36,15 @@ export type IpaCommandParams = {
   name: string;
   specificOptions?: string;
   options?: Partial<Cypress.ExecOptions>;
+  // Piped to the command's stdin (e.g. a password prompt).
+  stdin?: string;
 };
 
-// Register a helper to run IPA commands inside the webui container.
-// Automatically runs kinit before each IPA command.
+// Run an IPA command inside the webui container.
 // Usage:
-//   cy.ipa("hbacsvc-show", "my_service", { failOnNonZeroExit: false })
-//   cy.ipa("hbacsvc-add", "my_service")
-// Returns the result of cy.exec so you can inspect code/stdout/stderr.
+//   cy.ipa({ command: "hbacsvc-show", name: "my_service" })
+//   cy.ipa({ command: "user-add", name: login, specificOptions: "--password", stdin: password })
+// Resolves to the cy.exec result, so code/stdout/stderr can be inspected.
 Cypress.Commands.add(
   "ipa",
   ({
@@ -51,13 +52,15 @@ Cypress.Commands.add(
     name,
     specificOptions,
     options,
+    stdin,
   }: IpaCommandParams): Cypress.Chainable<Cypress.Exec> => {
-    const safeName = name.replace(/"/g, '\\"');
-    let ipaCmd = `${IPA_PREFIX} ${command} "${safeName}"`;
-    if (specificOptions) {
-      ipaCmd = `${IPA_PREFIX} ${command} "${safeName}" ${specificOptions}`;
-    }
+    // Single-quote so $, backticks and backslashes reach the shell literally.
+    const quote = (value: string) => `'${value.replace(/'/g, `'\\''`)}'`;
+    const prefix = stdin === undefined ? IPA_PREFIX : IPA_PREFIX_INTERACTIVE;
+    const ipaCmd = `${prefix} ${command} ${quote(name)}${specificOptions ? ` ${specificOptions}` : ""}`;
+    const input =
+      stdin === undefined ? "" : `printf '%s\\n' ${quote(stdin)} | `;
 
-    return cy.exec(ipaCmd, options);
+    return cy.exec(input + ipaCmd, options);
   }
 );
