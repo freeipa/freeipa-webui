@@ -155,7 +155,10 @@ const RadiusServers = () => {
     if (isSelected) {
       newSelected = JSON.parse(JSON.stringify(selectedRadiusServers));
       for (let i = 0; i < servers.length; i++) {
-        if (selectedRadiusServers.find((s) => s.cn[0] === servers[i].cn[0])) {
+        const alreadySelected = selectedRadiusServers.find(
+          (s) => ipaPrimaryKey(s.cn) === ipaPrimaryKey(servers[i].cn)
+        );
+        if (alreadySelected) {
           continue;
         }
         newSelected.push(servers[i]);
@@ -164,7 +167,10 @@ const RadiusServers = () => {
       for (let i = 0; i < selectedRadiusServers.length; i++) {
         let found = false;
         for (let ii = 0; ii < servers.length; ii++) {
-          if (selectedRadiusServers[i].cn[0] === servers[ii].cn[0]) {
+          if (
+            ipaPrimaryKey(selectedRadiusServers[i].cn) ===
+            ipaPrimaryKey(servers[ii].cn)
+          ) {
             found = true;
             break;
           }
