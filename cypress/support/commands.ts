@@ -25,7 +25,7 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 //
 
-import { IPA_PREFIX } from "./utils";
+import { IPA_PREFIX, IPA_PREFIX_INTERACTIVE } from "./utils";
 
 Cypress.Commands.add("dataCy", (value: string) => {
   return cy.get(`[data-cy='${value}']`);
@@ -36,6 +36,8 @@ export type IpaCommandParams = {
   name: string;
   specificOptions?: string;
   options?: Partial<Cypress.ExecOptions>;
+  // Piped to the command's stdin (e.g. a password prompt).
+  stdin?: string;
 };
 
 // Register a helper to run IPA commands inside the webui container.
@@ -51,13 +53,15 @@ Cypress.Commands.add(
     name,
     specificOptions,
     options,
+    stdin,
   }: IpaCommandParams): Cypress.Chainable<Cypress.Exec> => {
     const safeName = name.replace(/"/g, '\\"');
-    let ipaCmd = `${IPA_PREFIX} ${command} "${safeName}"`;
-    if (specificOptions) {
-      ipaCmd = `${IPA_PREFIX} ${command} "${safeName}" ${specificOptions}`;
-    }
+    const prefix = stdin === undefined ? IPA_PREFIX : IPA_PREFIX_INTERACTIVE;
+    const ipaCmd = `${prefix} ${command} "${safeName}"${specificOptions ? ` ${specificOptions}` : ""}`;
 
-    return cy.exec(ipaCmd, options);
+    return cy.exec(
+      stdin === undefined ? ipaCmd : `echo "${stdin}" | ${ipaCmd}`,
+      options
+    );
   }
 );
