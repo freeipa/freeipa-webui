@@ -160,26 +160,29 @@ const SudoCmdsTable = (props: PropsToTable) => {
     </Tr>
   );
 
-  const body = shownCmdsList.map((cmd, rowIndex) => (
-    <Tr key={cmd.sudocmd} id={cmd.sudocmd}>
-      <Td
-        dataLabel="checkbox"
-        select={{
-          rowIndex,
-          onSelect: (_event, isSelecting) =>
-            onSelectCmd(cmd, rowIndex, isSelecting),
-          isSelected: isSudoCmdSelected(cmd),
-          isDisabled: !props.cmdsData.isSudoCmdSelectable(cmd),
-        }}
-      />
-      <Td dataLabel={columnNames.sudocmd}>
-        <Link to={"/sudo-commands/" + cmd.sudocmd} state={cmd}>
-          {cmd.sudocmd}
-        </Link>
-      </Td>
-      <Td dataLabel={columnNames.description}>{cmd.description}</Td>
-    </Tr>
-  ));
+  const body = shownCmdsList.map((cmd, rowIndex) => {
+    const encodedSudoCmd = encodeURIComponent(encodeURIComponent(cmd.sudocmd));
+    return (
+      <Tr key={cmd.sudocmd} id={cmd.sudocmd}>
+        <Td
+          dataLabel="checkbox"
+          select={{
+            rowIndex,
+            onSelect: (_event, isSelecting) =>
+              onSelectCmd(cmd, rowIndex, isSelecting),
+            isSelected: isSudoCmdSelected(cmd),
+            isDisabled: !props.cmdsData.isSudoCmdSelectable(cmd),
+          }}
+        />
+        <Td dataLabel={columnNames.sudocmd}>
+          <Link to={"/sudo-commands/" + encodedSudoCmd} state={cmd}>
+            {cmd.sudocmd}
+          </Link>
+        </Td>
+        <Td dataLabel={columnNames.description}>{cmd.description}</Td>
+      </Tr>
+    );
+  });
 
   const skeleton = (
     <SkeletonOnTableLayout

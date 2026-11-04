@@ -26,9 +26,16 @@ type SudoCmdsParams = {
 const SudoCmdsTabs = ({ section }) => {
   // Get location (React Router DOM) and get state data
   const { sudocmd } = useSafeParams<SudoCmdsParams>(["sudocmd"]);
+
+  // As the id is sent by React Router DOM partially decoded, this should be fixed
+  const decodedSudoCmd = decodeURIComponent(sudocmd); // original ID
+  const doubleEncodedSudoCmd = encodeURIComponent(
+    encodeURIComponent(decodedSudoCmd)
+  ); // double encoded ID
+
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const settingsData = useSudoCmdsSettings(sudocmd);
+  const settingsData = useSudoCmdsSettings(decodedSudoCmd);
 
   // Tab
   const [activeTabKey, setActiveTabKey] = useState(section);
@@ -41,9 +48,11 @@ const SudoCmdsTabs = ({ section }) => {
     tabIndex: number | string
   ) => {
     if (tabIndex === "settings") {
-      navigate("/sudo-commands/" + sudocmd);
+      navigate("/sudo-commands/" + doubleEncodedSudoCmd);
     } else if (tabIndex === "memberof") {
-      navigate("/sudo-commands/" + sudocmd + "/memberof_sudocmdgroup");
+      navigate(
+        "/sudo-commands/" + doubleEncodedSudoCmd + "/memberof_sudocmdgroup"
+      );
     }
   };
 
@@ -55,20 +64,20 @@ const SudoCmdsTabs = ({ section }) => {
         url: "/sudo-commands",
       },
       {
-        name: sudocmd,
-        url: "/sudo-commands/" + sudocmd,
+        name: decodedSudoCmd,
+        url: "/sudo-commands/" + doubleEncodedSudoCmd,
         isActive: true,
       },
     ];
     setBreadcrumbItems(currentPath);
     setActiveTabKey("settings");
     dispatch(updateBreadCrumbPath(currentPath));
-  }, [sudocmd]);
+  }, [decodedSudoCmd]);
 
   // Redirect to the settings page if the section is not defined
   React.useEffect(() => {
     if (!section) {
-      navigate("/sudo-commands/" + sudocmd);
+      navigate("/sudo-commands/" + doubleEncodedSudoCmd);
     }
     setActiveTabKey(section);
     const section_string = section as string;
@@ -135,6 +144,7 @@ const SudoCmdsTabs = ({ section }) => {
             eventKey={"memberof"}
             name="memberof-details"
             title={<TabTitleText>Is member of</TabTitleText>}
+            data-cy="sudo-cmd-is-member-of-tab"
           >
             <SudoCmdsMemberOf sudoCmd={sudoCmd} tabSection={section} />
           </Tab>
