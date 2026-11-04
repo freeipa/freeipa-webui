@@ -29,7 +29,8 @@ import { useAppDispatch } from "src/store/hooks";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Data types
-import { SysAccount, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { SysAccount } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // RPC
 import { ErrorResult } from "src/services/rpc";
 import {

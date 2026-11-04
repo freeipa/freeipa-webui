@@ -12,7 +12,8 @@ import {
   SidebarPanel,
 } from "@patternfly/react-core";
 // Data types
-import { Host, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Host } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks

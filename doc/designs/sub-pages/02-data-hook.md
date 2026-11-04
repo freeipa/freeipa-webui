@@ -43,8 +43,7 @@ type <Entity>SettingsData = {
 ```tsx
 const use<Entity>Settings = (<entityId>: string): <Entity>SettingsData => {
   // 1. API Calls
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
+  const metadata = useAppSelector((state) => state.global.metadata);
   const <entity>Query = use<Entity>ShowQuery(<entityId>);
 
   // 2. Local State
@@ -95,7 +94,7 @@ const use<Entity>Settings = (<entityId>: string): <Entity>SettingsData => {
 
   // 7. Return
   return {
-    isLoading: metadataQuery.isLoading || <entity>Query.isLoading,
+    isLoading: <entity>Query.isLoading,
     isFetching: <entity>Query.isFetching,
     modified, setModified, metadata, resetValues: onResetValues,
     original<Entity>, set<Entity>, refetch: <entity>Query.refetch,
@@ -120,7 +119,7 @@ const userOptions = React.useMemo(() => {
 }, [usersQuery.data]);
 
 // Include in loading state and return
-isLoading: metadataQuery.isLoading || <entity>Query.isLoading || usersQuery.isLoading,
+isLoading: <entity>Query.isLoading || usersQuery.isLoading,
 return { ...otherProps, userOptions };
 ```
 
@@ -140,9 +139,10 @@ When unsupported option used, API returns: `{"error": {"code": 3005, "message": 
 
 ```tsx
 import React from "react";
-import { useGetObjectMetadataQuery } from "src/services/rpc";
+import { useAppSelector } from "src/store/hooks";
 import { use<Entity>ShowQuery } from "src/services/rpc<Entity>";
-import { <Entity>, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { <Entity> } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 ```
 
 ## Examples

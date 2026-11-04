@@ -7,6 +7,7 @@ import IpaSshPublicKeys, {
 } from "./IpaSshPublicKeys";
 // Redux
 import { renderWithAlerts } from "src/utils/testUtils";
+import { createMetadata } from "src/services/types/metadata";
 
 /**
  * Checks whether payload argument for updateSSHKey contains string *fail create*
@@ -69,10 +70,12 @@ describe("IpaSshPublicKeys Component", () => {
   });
   const mockOnRefresh = vi.fn();
 
-  const mockMetadata = {
+  const mockMetadata = createMetadata({
     objects: {
       user: {
         name: "user",
+        methods: [],
+        primary_key: "uid",
         takes_params: [
           {
             alwaysask: false,
@@ -103,7 +106,9 @@ describe("IpaSshPublicKeys Component", () => {
         ],
       },
     },
-  };
+    methods: {},
+    commands: {},
+  });
 
   const defaultProps: PropsToSshPublicKeysModal = {
     dataCy: "ipa-ssh-public-keys",

@@ -36,7 +36,8 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Data types
-import { HBACRule, Metadata } from "../../utils/datatypes/globalDataTypes";
+import { HBACRule } from "../../utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 import HBACRulesMemberTable from "./HBACRulesMemberTable";
 // Icons
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";

@@ -11,7 +11,7 @@ import {
   ModalHeader,
 } from "@patternfly/react-core";
 // Data types
-import { Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Utils
 import { getParamProperties } from "src/utils/ipaObjectUtils";
 // Components

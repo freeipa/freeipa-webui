@@ -1,12 +1,11 @@
 import React from "react";
+import { useAppSelector } from "src/store/hooks";
+
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useCertMapConfigFindQuery } from "src/services/rpcCertMapping";
 // Data types
-import {
-  CertificateMappingConfig,
-  Metadata,
-} from "src/utils/datatypes/globalDataTypes";
+import { CertificateMappingConfig } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type CertMapConfigSettingsData = {
   isLoading: boolean;
@@ -24,9 +23,7 @@ type CertMapConfigSettingsData = {
 
 const useCertMapConfigData = (): CertMapConfigSettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] Certificate Mapping Config
   const certMapConfigDetails = useCertMapConfigFindQuery();
@@ -47,7 +44,7 @@ const useCertMapConfigData = (): CertMapConfigSettingsData => {
   }, [certMapConfigData, certMapConfigDetails.isFetching]);
 
   const settings: CertMapConfigSettingsData = {
-    isLoading: metadataLoading || isCertMapConfigDataLoading,
+    isLoading: isCertMapConfigDataLoading,
     isFetching: certMapConfigDetails.isFetching,
     modified,
     setModified,

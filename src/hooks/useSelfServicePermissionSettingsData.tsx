@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
-import { useGetObjectMetadataQuery } from "src/services/rpc";
+import { useAppSelector } from "src/store/hooks";
 import { useGetSelfServicePermissionByIdQuery } from "src/services/rpcSelfServicePermissions";
-import {
-  SelfServicePermission,
-  Metadata,
-} from "src/utils/datatypes/globalDataTypes";
+import { SelfServicePermission } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type SelfServicePermissionSettingsData = {
   isLoading: boolean;
@@ -23,9 +21,7 @@ type SelfServicePermissionSettingsData = {
 const useSelfServicePermissionSettings = (
   aciname: string
 ): SelfServicePermissionSettingsData => {
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   const permissionQuery = useGetSelfServicePermissionByIdQuery(aciname, {
     skip: !aciname,
@@ -106,7 +102,7 @@ const useSelfServicePermissionSettings = (
   };
 
   return {
-    isLoading: metadataLoading || isPermissionLoading || !initialized,
+    isLoading: isPermissionLoading || !initialized,
     isFetching: permissionQuery.isFetching,
     modified,
     setModified,

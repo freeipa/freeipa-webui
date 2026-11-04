@@ -25,7 +25,8 @@ import { useAppDispatch } from "src/store/hooks";
 import { addAlert } from "src/store/Global/alerts-slice";
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Data types
-import { Netgroup, Metadata } from "../../utils/datatypes/globalDataTypes";
+import { Netgroup } from "../../utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 import NetgroupsMemberTable from "./NetgroupsMemberTable";
 // RPC
 import { ErrorResult } from "src/services/rpc";

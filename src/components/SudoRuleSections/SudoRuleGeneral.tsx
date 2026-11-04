@@ -6,7 +6,7 @@ import IpaTextInput from "../Form/IpaTextInput";
 import IpaTextArea from "../Form/IpaTextArea";
 import IpaNumberInput from "../Form/IpaNumberInput";
 // Data types
-import { Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 interface PropsToSudoRuleGeneral {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -13,7 +13,8 @@ import {
   SidebarPanel,
 } from "@patternfly/react-core";
 // Data types
-import { Trust, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { Trust } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Hooks
 import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";

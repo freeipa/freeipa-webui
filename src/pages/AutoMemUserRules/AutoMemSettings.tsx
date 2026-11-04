@@ -28,7 +28,8 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 import useContextualHelpTopic from "src/hooks/useContextualHelpTopic";
 import { toggleHelpPanel } from "src/store/Global/contextual-help-slice";
 // Data types
-import { Automember, Metadata } from "../../utils/datatypes/globalDataTypes";
+import { Automember } from "../../utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Icons
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 // RPC
