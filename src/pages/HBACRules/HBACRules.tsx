@@ -198,17 +198,6 @@ const HBACRules = () => {
   const [showEnableDisableModal, setShowEnableDisableModal] = useState(false);
   const [enableDisableOptionSelected, setEnableDisableOptionSelected] =
     useState(false);
-  const onAddClickHandler = () => {
-    setShowAddModal(true);
-  };
-
-  const onCloseAddModal = () => {
-    setShowAddModal(false);
-  };
-
-  const onAddModalToggle = () => {
-    setShowAddModal(!showAddModal);
-  };
 
   const onDeleteHandler = () => {
     setShowDeleteModal(true);
@@ -398,7 +387,7 @@ const HBACRules = () => {
       key: 5,
       element: (
         <SecondaryButton
-          onClickHandler={onAddClickHandler}
+          onClickHandler={() => setShowAddModal(true)}
           isDisabled={isBatchFetching}
           dataCy="hbac-rules-button-add"
         >
@@ -505,13 +494,12 @@ const HBACRules = () => {
             </FlexItem>
           </Flex>
         </PageSection>
-        <AddHBACRule
-          show={showAddModal}
-          handleModalToggle={onAddModalToggle}
-          onOpenAddModal={onAddClickHandler}
-          onCloseAddModal={onCloseAddModal}
-          onRefresh={refreshRulesData}
-        />
+        {showAddModal && (
+          <AddHBACRule
+            onClose={() => setShowAddModal(false)}
+            onRefresh={refreshRulesData}
+          />
+        )}
         <DeleteHBACRule
           show={showDeleteModal}
           handleModalToggle={onDeleteModalToggle}

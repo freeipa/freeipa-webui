@@ -168,18 +168,6 @@ const SudoCmds = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const onAddClickHandler = () => {
-    setShowAddModal(true);
-  };
-
-  const onCloseAddModal = () => {
-    setShowAddModal(false);
-  };
-
-  const onAddModalToggle = () => {
-    setShowAddModal(!showAddModal);
-  };
-
   const onDeleteHandler = () => {
     setShowDeleteModal(true);
   };
@@ -340,7 +328,7 @@ const SudoCmds = () => {
       key: 5,
       element: (
         <SecondaryButton
-          onClickHandler={onAddClickHandler}
+          onClickHandler={() => setShowAddModal(true)}
           isDisabled={isBatchFetching}
           dataCy="sudo-command-groups-button-add"
         >
@@ -422,13 +410,12 @@ const SudoCmds = () => {
             </FlexItem>
           </Flex>
         </PageSection>
-        <AddSudoCmdGroup
-          show={showAddModal}
-          handleModalToggle={onAddModalToggle}
-          onOpenAddModal={onAddClickHandler}
-          onCloseAddModal={onCloseAddModal}
-          onRefresh={refreshData}
-        />
+        {showAddModal && (
+          <AddSudoCmdGroup
+            onClose={() => setShowAddModal(false)}
+            onRefresh={refreshData}
+          />
+        )}
         <DeleteSudoCmdGroups
           show={showDeleteModal}
           handleModalToggle={onDeleteModalToggle}

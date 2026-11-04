@@ -344,12 +344,13 @@ const Roles = () => {
           </FlexItem>
         </Flex>
       </PageSection>
-      <AddRoleModal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        title="Add role"
-        onRefresh={refreshData}
-      />
+      {showAddModal && (
+        <AddRoleModal
+          onClose={() => setShowAddModal(false)}
+          title="Add role"
+          onRefresh={refreshData}
+        />
+      )}
       <DeleteRolesModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}

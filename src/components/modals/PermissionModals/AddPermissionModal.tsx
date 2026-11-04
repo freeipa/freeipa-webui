@@ -30,7 +30,6 @@ import InputWithValidation from "src/components/layouts/InputWithValidation";
 import { isValidDn } from "src/utils/utils";
 
 interface PropsToAddModal {
-  isOpen: boolean;
   onClose: () => void;
   title: string;
   onRefresh: () => void;
@@ -114,19 +113,6 @@ const AddPermissionModal = (props: PropsToAddModal) => {
     extraTargetFilter.length > 0 ||
     attrs.length > 0;
 
-  // Clear fields
-  const clearFields = () => {
-    setPermissionName("");
-    setSelectedRights([]);
-    setBindRuleType("permission");
-    setType("");
-    setSubtree("");
-    setExtraTargetFilter([]);
-    setMemberof([]);
-    setIpapermtarget("");
-    setAttrs([]);
-  };
-
   const toggleRight = (right: string, isChecked: boolean) => {
     if (isChecked) {
       setSelectedRights((prev) => [...prev, right]);
@@ -173,8 +159,8 @@ const AddPermissionModal = (props: PropsToAddModal) => {
               variant: "success",
             })
           );
-          cleanAndCloseModal();
           props.onRefresh();
+          props.onClose();
         }
       }
       // Reset button spinner
@@ -182,10 +168,10 @@ const AddPermissionModal = (props: PropsToAddModal) => {
     });
   };
 
-  // Clean and close modal
-  const cleanAndCloseModal = () => {
-    clearFields();
-    props.onClose();
+  const onClose = () => {
+    if (!isAddButtonSpinning) {
+      props.onClose();
+    }
   };
 
   const fields: Field[] = [
@@ -384,7 +370,8 @@ const AddPermissionModal = (props: PropsToAddModal) => {
       data-cy="modal-button-cancel"
       key="cancel-new"
       variant="link"
-      onClick={cleanAndCloseModal}
+      onClick={onClose}
+      isDisabled={isAddButtonSpinning}
     >
       Cancel
     </Button>,
@@ -399,9 +386,9 @@ const AddPermissionModal = (props: PropsToAddModal) => {
       title={props.title}
       formId="add-modal-form"
       fields={fields}
-      show={props.isOpen}
+      show
       onSubmit={() => onAddPermission()}
-      onClose={cleanAndCloseModal}
+      onClose={onClose}
       actions={modalActions}
     />
   );

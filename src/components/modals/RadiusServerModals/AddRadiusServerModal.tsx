@@ -18,7 +18,6 @@ import { addAlert } from "src/store/Global/alerts-slice";
 import { SerializedError } from "@reduxjs/toolkit";
 
 interface PropsToAddModal {
-  isOpen: boolean;
   onClose: () => void;
   title: string;
   onRefresh: () => void;
@@ -39,17 +38,6 @@ const AddRadiusServerModal = (props: PropsToAddModal) => {
   const [userAttribute, setUserAttribute] = React.useState("");
   const [secretHidden, setSecretHidden] = React.useState(true);
   const [secretVerifyHidden, setSecretVerifyHidden] = React.useState(true);
-
-  // Clear fields
-  const clearFields = () => {
-    setServerName("");
-    setServer("");
-    setSecret("");
-    setSecretVerify("");
-    setUserAttribute("");
-    setSecretHidden(true);
-    setSecretVerifyHidden(true);
-  };
 
   // Server must follow "<server>.<domain>.<tld>" pattern (at least 3 labels)
   const serverPattern =
@@ -109,7 +97,6 @@ const AddRadiusServerModal = (props: PropsToAddModal) => {
                 variant: "success",
               })
             );
-            clearFields();
             props.onRefresh();
             props.onClose();
           }
@@ -120,10 +107,10 @@ const AddRadiusServerModal = (props: PropsToAddModal) => {
       });
   };
 
-  // Clean and close modal
-  const cleanAndCloseModal = () => {
-    clearFields();
-    props.onClose();
+  const onClose = () => {
+    if (!isAddButtonSpinning) {
+      props.onClose();
+    }
   };
 
   const fields: Field[] = [
@@ -237,7 +224,8 @@ const AddRadiusServerModal = (props: PropsToAddModal) => {
       data-cy="modal-button-cancel"
       key="cancel-new"
       variant="link"
-      onClick={cleanAndCloseModal}
+      onClick={onClose}
+      isDisabled={isAddButtonSpinning}
     >
       Cancel
     </Button>,
@@ -252,9 +240,9 @@ const AddRadiusServerModal = (props: PropsToAddModal) => {
       title={props.title}
       formId="add-modal-form"
       fields={fields}
-      show={props.isOpen}
+      show
       onSubmit={() => onAddRadiusServer()}
-      onClose={cleanAndCloseModal}
+      onClose={onClose}
       actions={modalActions}
     />
   );

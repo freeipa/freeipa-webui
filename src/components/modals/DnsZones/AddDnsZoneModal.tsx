@@ -34,7 +34,6 @@ import InputWithValidation from "src/components/layouts/InputWithValidation";
 import InputRequiredText from "src/components/layouts/InputRequiredText";
 
 interface PropsToAddModal {
-  isOpen: boolean;
   onClose: () => void;
   title: string;
   onRefresh: () => void;
@@ -58,15 +57,6 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
     React.useState<boolean>(true);
   const [isReverseZoneIpRadioChecked, setIsReverseZoneIpRadioChecked] =
     React.useState<boolean>(false);
-
-  // Clear form fields
-  const clearFields = () => {
-    setDnsZoneName("");
-    setReverseZoneIp("");
-    setSkipOverlapCheck(false);
-    setIsZoneNameRadioChecked(true);
-    setIsReverseZoneIpRadioChecked(false);
-  };
 
   // Add DNS zone handler
   const onAddDnsZone = () => {
@@ -101,9 +91,6 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
               variant: "success",
             })
           );
-          // Reset selected item
-          clearFields();
-          // Update data
           props.onRefresh();
           props.onClose();
         }
@@ -113,10 +100,10 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
     });
   };
 
-  // Clean and close modal
-  const cleanAndCloseModal = () => {
-    clearFields();
-    props.onClose();
+  const onClose = () => {
+    if (!isAddButtonSpinning) {
+      props.onClose();
+    }
   };
 
   const zoneNameLabel = <b>Zone name</b>;
@@ -247,7 +234,8 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
       data-cy="modal-button-cancel"
       key="cancel-new"
       variant="link"
-      onClick={cleanAndCloseModal}
+      onClick={onClose}
+      isDisabled={isAddButtonSpinning}
     >
       Cancel
     </Button>,
@@ -260,8 +248,8 @@ const AddDnsZoneModal = (props: PropsToAddModal) => {
         variant="small"
         position="top"
         positionOffset="76px"
-        isOpen={props.isOpen}
-        onClose={props.onClose}
+        isOpen
+        onClose={onClose}
         data-cy="add-dns-zone-modal"
       >
         <ModalHeader title={props.title} labelId="add-dns-zone-modal-title" />

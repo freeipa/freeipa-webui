@@ -16,7 +16,6 @@ import { addAlert } from "src/store/Global/alerts-slice";
 import { SerializedError } from "@reduxjs/toolkit";
 
 interface PropsToAddModal {
-  isOpen: boolean;
   onClose: () => void;
   title: string;
   onRefresh: () => void;
@@ -32,12 +31,6 @@ const AddRoleModal = (props: PropsToAddModal) => {
   const [isAddButtonSpinning, setIsAddButtonSpinning] = React.useState(false);
   const [roleName, setRoleName] = React.useState("");
   const [description, setDescription] = React.useState("");
-
-  // Clear fields
-  const clearFields = () => {
-    setRoleName("");
-    setDescription("");
-  };
 
   // 'Add' button handler
   const onAddRole = () => {
@@ -69,9 +62,6 @@ const AddRoleModal = (props: PropsToAddModal) => {
               variant: "success",
             })
           );
-          // Reset fields
-          clearFields();
-          // Update data
           props.onRefresh();
           props.onClose();
         }
@@ -81,10 +71,10 @@ const AddRoleModal = (props: PropsToAddModal) => {
     });
   };
 
-  // Clean and close modal
-  const cleanAndCloseModal = () => {
-    clearFields();
-    props.onClose();
+  const onClose = () => {
+    if (!isAddButtonSpinning) {
+      props.onClose();
+    }
   };
 
   const fields: Field[] = [
@@ -135,7 +125,8 @@ const AddRoleModal = (props: PropsToAddModal) => {
       data-cy="modal-button-cancel"
       key="cancel-new"
       variant="link"
-      onClick={cleanAndCloseModal}
+      onClick={onClose}
+      isDisabled={isAddButtonSpinning}
     >
       Cancel
     </Button>,
@@ -151,9 +142,9 @@ const AddRoleModal = (props: PropsToAddModal) => {
         title={props.title}
         formId="add-modal-form"
         fields={fields}
-        show={props.isOpen}
+        show
         onSubmit={() => onAddRole()}
-        onClose={cleanAndCloseModal}
+        onClose={onClose}
         actions={modalActions}
       />
     </>

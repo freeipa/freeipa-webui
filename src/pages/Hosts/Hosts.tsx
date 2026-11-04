@@ -356,12 +356,6 @@ const Hosts = () => {
   const onAddClickHandler = () => {
     setShowAddModal(true);
   };
-  const onCloseAddModal = () => {
-    setShowAddModal(false);
-  };
-  const onAddModalToggle = () => {
-    setShowAddModal(!showAddModal);
-  };
 
   const onDeleteHandler = () => {
     setShowDeleteModal(true);
@@ -589,13 +583,12 @@ const Hosts = () => {
             dataCy="hosts-rebuild-auto-membership-modal"
           />
         )}
-        <AddHost
-          show={showAddModal}
-          handleModalToggle={onAddModalToggle}
-          onOpenAddModal={onAddClickHandler}
-          onCloseAddModal={onCloseAddModal}
-          onRefresh={refreshHostsData}
-        />
+        {showAddModal && (
+          <AddHost
+            onClose={() => setShowAddModal(false)}
+            onRefresh={refreshHostsData}
+          />
+        )}
         <DeleteHosts
           show={showDeleteModal}
           handleModalToggle={onDeleteModalToggle}

@@ -187,7 +187,7 @@ return (
     </PageSection>
     
     {/* Modals */}
-    <Add<ChildEntity>Modal isOpen={showAddModal} onClose={() => setShowAddModal(false)} onRefresh={refreshData} <parentId>={props.<parentId>} />
+    {showAddModal && <Add<ChildEntity>Modal onClose={() => setShowAddModal(false)} onRefresh={refreshData} <parentId>={props.<parentId>} />}
     <Delete<ChildEntity>Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} elementsToDelete={selectedElements} ... />
   </div>
 );

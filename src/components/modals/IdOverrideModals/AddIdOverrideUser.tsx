@@ -8,14 +8,11 @@ import {
   TextInput,
 } from "@patternfly/react-core";
 // Layout
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
-// Modals
-import ErrorModal from "src/components/modals/ErrorModal";
 // Forms
 import DropdownSearch from "src/components/layouts/DropdownSearch";
 // Hooks
@@ -35,23 +32,18 @@ import InputWithValidation from "src/components/layouts/InputWithValidation";
 import { EMPTY_OR_NUMBER_MESSAGE, isEmptyOrNumber } from "src/utils/utils";
 
 interface PropsToAddUser {
-  show: boolean;
   idview: string;
   users: IDViewOverrideUser[];
-  handleModalToggle: () => void;
-  onOpenAddModal: () => void;
-  onCloseAddModal: () => void;
+  onClose: () => void;
   onRefresh: () => void;
 }
 
 const AddIDOverrideUserModal = (props: PropsToAddUser) => {
   const dispatch = useAppDispatch();
 
-  // Define 'executeCommand' to add user data to IPA server
   const [executeAddCommand] = useAddIDOverrideUserMutation();
   const [retrieveUsers] = useGetIDListMutation({});
 
-  // States for TextInputs
   const [overrideUser, setOverrideUser] = useState("");
   const [login, setLogin] = useState("");
   const [gecos, setGecos] = useState("");
@@ -67,11 +59,7 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [userNames, setUserNames] = useState<string[]>([]);
 
-  // Get our initial list of users
   useEffect(() => {
-    if (!props.show) {
-      return;
-    }
     setLoading(true);
     retrieveUsers({
       searchValue: "",
@@ -81,7 +69,6 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       entryType: "user",
     } as GenericPayload).then((result) => {
       if (result && "data" in result) {
-        // Filter out users that are already listed
         const existing_users = props.users.map(
           (user) => user["ipaanchoruuid"][0]
         );
@@ -94,15 +81,13 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       }
       setLoading(false);
     });
-  }, [props.show, props.users]);
+  }, [props.users]);
 
-  // Refs
   const loginRef = useRef() as MutableRefObject<HTMLInputElement>;
   const gecosRef = useRef() as MutableRefObject<HTMLInputElement>;
   const shellRef = useRef() as MutableRefObject<HTMLInputElement>;
   const homedirRef = useRef() as MutableRefObject<HTMLInputElement>;
 
-  // List of fields
   const fields = [
     {
       id: "modal-form-override-user",
@@ -259,31 +244,8 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
     },
   ];
 
-  // Helper method to clean the fields
-  const cleanAllFields = () => {
-    setOverrideUser("");
-    setLogin("");
-    setGecos("");
-    setUidNumber("");
-    setGidNumber("");
-    setCertificate("");
-    setSSHKey("");
-    setShell("");
-    setHomeDirectory("");
-    setDescription("");
-  };
-
-  // Clean fields and close modal (To prevent data persistence when reopen modal)
-  const cleanAndCloseModal = () => {
-    cleanAllFields();
-    props.onCloseAddModal();
-  };
-
-  // Define status flags to determine user added successfully or error
-  let isAdditionSuccess = true;
-
-  // Add data
-  const addUser = async () => {
+  const addHandler = () => {
+    setAddBtnSpinning(true);
     const newUserPayload = {
       idview: props.idview,
       name: overrideUser,
@@ -298,18 +260,23 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       description,
     } as AddUserPayload;
 
-    // Add host via API call
-    await executeAddCommand(newUserPayload).then((add) => {
+    executeAddCommand(newUserPayload).then((add) => {
       if ("data" in add) {
         const data = add.data as FindRPCResponse;
         const error = data.error as FetchBaseQueryError | SerializedError;
         if (error) {
-          // Set status flag: error
-          isAdditionSuccess = false;
-          // Handle error
-          handleAPIError(error);
+          let title = "";
+          if ("code" in error) {
+            title = "IPA error " + error.code + ": " + error.name;
+          }
+          dispatch(
+            addAlert({
+              name: "add-override-user-error",
+              title,
+              variant: "danger",
+            })
+          );
         } else {
-          // Set alert: success
           dispatch(
             addAlert({
               name: "add-user-success",
@@ -317,89 +284,18 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
               variant: "success",
             })
           );
-
-          // Set status flag: success
-          isAdditionSuccess = true;
-          // Refresh data
           props.onRefresh();
+          props.onClose();
         }
-        setAddBtnSpinning(false);
       }
+      setAddBtnSpinning(false);
     });
   };
 
-  const addHandler = () => {
-    setAddBtnSpinning(true);
-    addUser().then(() => {
-      if (!isAdditionSuccess) {
-        // Close the modal without cleaning fields
-        if (props.onCloseAddModal !== undefined) {
-          props.onCloseAddModal();
-        }
-      } else {
-        // Clean data and close modal
-        cleanAndCloseModal();
-      }
-    });
-  };
-
-  // Handle API error data
-  const [isModalErrorOpen, setIsModalErrorOpen] = useState(false);
-  const [errorTitle, setErrorTitle] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const closeAndCleanErrorParameters = () => {
-    setIsModalErrorOpen(false);
-    setErrorTitle("");
-    setErrorMessage("");
-  };
-
-  const onCloseErrorModal = () => {
-    closeAndCleanErrorParameters();
-    // Show Add modal
-    if (props.onOpenAddModal !== undefined) {
-      props.onOpenAddModal();
+  const onClose = () => {
+    if (!addSpinning) {
+      props.onClose();
     }
-  };
-
-  const onRetry = () => {
-    // Keep the add modal closed until the operation is done...
-    if (props.onCloseAddModal !== undefined) {
-      props.onCloseAddModal();
-    }
-
-    // Close the error modal
-    closeAndCleanErrorParameters();
-
-    addHandler();
-  };
-
-  const errorModalActions = [
-    <SecondaryButton
-      key="retry"
-      onClickHandler={onRetry}
-      dataCy="modal-button-retry"
-    >
-      Retry
-    </SecondaryButton>,
-    <Button
-      key="cancel"
-      variant="link"
-      onClick={onCloseErrorModal}
-      data-cy="modal-button-cancel"
-    >
-      Cancel
-    </Button>,
-  ];
-
-  const handleAPIError = (error: FetchBaseQueryError | SerializedError) => {
-    if ("code" in error) {
-      setErrorTitle("IPA error " + error.code + ": " + error.name);
-      if (error.message !== undefined) {
-        setErrorMessage(error.message);
-      }
-    }
-    setIsModalErrorOpen(true);
   };
 
   const [buttonDisabled, setButtonDisabled] = useState(true);
@@ -415,7 +311,6 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
     }
   }, [overrideUser, gidnumber, uidnumber]);
 
-  // Buttons that will be shown at the end of the form
   const modalActions = [
     <Button
       data-cy="modal-button-add"
@@ -433,7 +328,8 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
       data-cy="modal-button-cancel"
       key="cancel-new-user"
       variant="link"
-      onClick={cleanAndCloseModal}
+      onClick={onClose}
+      isDisabled={addSpinning}
     >
       Cancel
     </Button>,
@@ -454,34 +350,21 @@ const AddIDOverrideUserModal = (props: PropsToAddUser) => {
     },
   ];
 
-  // Render
   return (
-    <>
-      <ModalWithFormLayout
-        dataCy="add-id-override-user-modal"
-        variantType="small"
-        modalPosition="top"
-        offPosition="76px"
-        title="Add new override user"
-        formId="override-user-add-modal"
-        fields={loading ? loadingUsers : fields}
-        show={props.show}
-        onSubmit={addHandler}
-        onClose={cleanAndCloseModal}
-        actions={modalActions}
-        isHorizontal
-      />
-      {isModalErrorOpen && (
-        <ErrorModal
-          dataCy="add-id-override-user-modal-error"
-          title={errorTitle}
-          isOpen={isModalErrorOpen}
-          onClose={onCloseErrorModal}
-          actions={errorModalActions}
-          errorMessage={errorMessage}
-        />
-      )}
-    </>
+    <ModalWithFormLayout
+      dataCy="add-id-override-user-modal"
+      variantType="small"
+      modalPosition="top"
+      offPosition="76px"
+      title="Add new override user"
+      formId="override-user-add-modal"
+      fields={loading ? loadingUsers : fields}
+      show
+      onSubmit={addHandler}
+      onClose={onClose}
+      actions={modalActions}
+      isHorizontal
+    />
   );
 };
 

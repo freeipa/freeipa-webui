@@ -354,12 +354,13 @@ const IdRanges = () => {
             </FlexItem>
           </Flex>
         </PageSection>
-        <AddIdRangeModal
-          isOpen={showAddModal}
-          onClose={() => setShowAddModal(false)}
-          title="Add ID range"
-          onRefresh={refreshData}
-        />
+        {showAddModal && (
+          <AddIdRangeModal
+            onClose={() => setShowAddModal(false)}
+            title="Add ID range"
+            onRefresh={refreshData}
+          />
+        )}
         <DeleteModal
           show={showDeleteModal}
           onClose={() => setShowDeleteModal(false)}

@@ -18,7 +18,6 @@ import { SerializedError } from "@reduxjs/toolkit";
 const invalidCharsRegex = /[$%&]/;
 
 interface PropsToAddSelinuxUserMapModal {
-  isOpen: boolean;
   onClose: () => void;
   onRefresh: () => void;
 }
@@ -46,11 +45,6 @@ const AddSelinuxUserMapModal = (props: PropsToAddSelinuxUserMapModal) => {
       setButtonDisabled(false);
     }
   }, [cn, ipaselinuxuser]);
-
-  const clearFields = () => {
-    setCn("");
-    setIpaselinuxuser("");
-  };
 
   const onAdd = () => {
     setIsAddButtonSpinning(true);
@@ -84,7 +78,6 @@ const AddSelinuxUserMapModal = (props: PropsToAddSelinuxUserMapModal) => {
                 variant: "success",
               })
             );
-            clearFields();
             props.onRefresh();
             props.onClose();
           }
@@ -95,9 +88,10 @@ const AddSelinuxUserMapModal = (props: PropsToAddSelinuxUserMapModal) => {
       });
   };
 
-  const cleanAndCloseModal = () => {
-    clearFields();
-    props.onClose();
+  const onClose = () => {
+    if (!isAddButtonSpinning) {
+      props.onClose();
+    }
   };
 
   const fields = [
@@ -156,7 +150,8 @@ const AddSelinuxUserMapModal = (props: PropsToAddSelinuxUserMapModal) => {
       data-cy="modal-button-cancel"
       key="cancel-new-selinux-user-map"
       variant="link"
-      onClick={cleanAndCloseModal}
+      onClick={onClose}
+      isDisabled={isAddButtonSpinning}
     >
       Cancel
     </Button>,
@@ -171,9 +166,9 @@ const AddSelinuxUserMapModal = (props: PropsToAddSelinuxUserMapModal) => {
       title="Add SELinux user map"
       formId="add-selinux-user-map-modal"
       fields={fields}
-      show={props.isOpen}
+      show
       onSubmit={onAdd}
-      onClose={cleanAndCloseModal}
+      onClose={onClose}
       actions={modalActions}
     />
   );

@@ -215,16 +215,6 @@ const UserGroups = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const onAddClickHandler = () => {
-    setShowAddModal(true);
-  };
-  const onCloseAddModal = () => {
-    setShowAddModal(false);
-  };
-  const onAddModalToggle = () => {
-    setShowAddModal(!showAddModal);
-  };
-
   const onDeleteHandler = () => {
     setShowDeleteModal(true);
   };
@@ -340,7 +330,7 @@ const UserGroups = () => {
       key: 5,
       element: (
         <SecondaryButton
-          onClickHandler={onAddClickHandler}
+          onClickHandler={() => setShowAddModal(true)}
           isDisabled={isBatchFetching}
           dataCy="user-groups-button-add"
         >
@@ -423,13 +413,12 @@ const UserGroups = () => {
           errors={modalErrors.getAll()}
           dataCy="user-groups-modal-error"
         />
-        <AddUserGroup
-          show={showAddModal}
-          handleModalToggle={onAddModalToggle}
-          onOpenAddModal={onAddClickHandler}
-          onCloseAddModal={onCloseAddModal}
-          onRefresh={refreshGroupsData}
-        />
+        {showAddModal && (
+          <AddUserGroup
+            onClose={() => setShowAddModal(false)}
+            onRefresh={refreshGroupsData}
+          />
+        )}
         <DeleteUserGroups
           show={showDeleteModal}
           handleModalToggle={onDeleteModalToggle}

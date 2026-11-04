@@ -46,7 +46,6 @@ import {
 } from "src/utils/utils";
 
 interface PropsToAddModal {
-  isOpen: boolean;
   onClose: () => void;
   onRefresh: () => void;
   dnsZoneId: string;
@@ -302,27 +301,6 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
     return payload;
   };
 
-  // Clear form fields
-  const clearFields = () => {
-    setBasicFormValues({
-      recordName: props.defaultRecordName || "",
-      recordType: props.defaultSelectedRecordType || "A",
-    });
-
-    // Initialize with default values for the default record type
-    const newFieldValues: Record<string, any> = {};
-    const defaultRecordType = props.defaultSelectedRecordType || "A";
-    const defaultConfig = dnsRecordConfigs[defaultRecordType];
-
-    defaultConfig.forEach((field) => {
-      const { newInitialValue } = setInitialValue(field);
-
-      newFieldValues[field.name] = newInitialValue;
-    });
-
-    setFieldValues(newFieldValues);
-  };
-
   // Clear non-basic fields when record type changes
   const clearNonBasicFields = () => {
     // Initialize with default values for the new record type
@@ -385,9 +363,6 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
               variant: "success",
             })
           );
-          // Reset selected item
-          clearFields();
-          // Update data
           props.onRefresh();
           props.onClose();
         }
@@ -481,10 +456,10 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
     </Form>
   );
 
-  // Clean and close modal
-  const cleanAndCloseModal = () => {
-    clearFields();
-    props.onClose();
+  const onClose = () => {
+    if (!isAddButtonSpinning) {
+      props.onClose();
+    }
   };
 
   // Modal actions
@@ -509,7 +484,8 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
     <Button
       key="cancel-new"
       variant="link"
-      onClick={cleanAndCloseModal}
+      onClick={onClose}
+      isDisabled={isAddButtonSpinning}
       data-cy={"add-dns-records-modal-cancel-button"}
     >
       Cancel
@@ -523,8 +499,8 @@ const AddDnsRecordsModal = (props: PropsToAddModal) => {
         variant="small"
         position="top"
         positionOffset="76px"
-        isOpen={props.isOpen}
-        onClose={props.onClose}
+        isOpen
+        onClose={onClose}
         data-cy={"add-dns-records-modal"}
       >
         <ModalHeader

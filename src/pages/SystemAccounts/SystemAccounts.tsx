@@ -406,12 +406,13 @@ const SystemAccounts = () => {
           </FlexItem>
         </Flex>
       </PageSection>
-      <AddSystemAccountModal
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        title="Add system account"
-        onRefresh={refreshData}
-      />
+      {showAddModal && (
+        <AddSystemAccountModal
+          onClose={() => setShowAddModal(false)}
+          title="Add system account"
+          onRefresh={refreshData}
+        />
+      )}
       <DeleteSystemAccountsModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}

@@ -8,14 +8,11 @@ import {
   TextInput,
 } from "@patternfly/react-core";
 // Layout
-import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ModalWithFormLayout from "src/components/layouts/ModalWithFormLayout";
 import InputWithValidation from "src/components/layouts/InputWithValidation";
 // Data types
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
-// Modals
-import ErrorModal from "src/components/modals/ErrorModal";
 // Redux
 import { useAppDispatch } from "src/store/hooks";
 // Hooks
@@ -25,11 +22,8 @@ import { useAddHostMutation, HostAddPayload } from "src/services/rpcHosts";
 import { isValidIpAddress } from "src/utils/utils";
 
 interface PropsToAddHost {
-  show: boolean;
-  handleModalToggle: () => void;
-  onOpenAddModal?: () => void;
-  onCloseAddModal?: () => void;
-  onRefresh?: () => void;
+  onClose: () => void;
+  onRefresh: () => void;
 }
 
 const AddHost = (props: PropsToAddHost) => {
@@ -222,41 +216,14 @@ const AddHost = (props: PropsToAddHost) => {
     },
   ];
 
-  // Helper method to clean the fields
-  const cleanAllFields = () => {
-    setHostName("");
-    setHostClass("");
-    setHostIpAddress("");
-    setForceCheckbox(false);
-    setGenerateOtpCheckbox(false);
-    setNoMembershipCheckbox(false);
-    setDescription("");
-  };
+  const addHostHandler = () => {
+    if (!isValidIpAddress(hostIpAddress)) return;
 
-  // Clean fields and close modal (To prevent data persistence when reopen modal)
-  const cleanAndCloseModal = () => {
-    cleanAllFields();
-    if (props.onCloseAddModal !== undefined) {
-      props.onCloseAddModal();
-    }
-  };
-
-  // List of field validations
-  const validateFields = () => {
-    const hostIpError = !isValidIpAddress(hostIpAddress);
-    return !hostIpError;
-  };
-
-  // Define status flags to determine user added successfully or error
-  let isAdditionSuccess = true;
-
-  // Add host data
-  const addHostData = async () => {
+    setAddBtnSpinning(true);
     const newHostPayload = {
       fqdn: hostName,
     } as HostAddPayload;
 
-    // Add the rest of parameters if they are not empty
     if (hostClass !== "") {
       newHostPayload.userclass = hostClass;
     }
@@ -273,19 +240,24 @@ const AddHost = (props: PropsToAddHost) => {
       newHostPayload.random = generateOtpCheckbox;
     }
 
-    // Add host via API call
-    await executeHostAddCommand(newHostPayload).then((host) => {
+    executeHostAddCommand(newHostPayload).then((host) => {
       if ("data" in host) {
         const data = host.data as FindRPCResponse;
         const error = data.error as FetchBaseQueryError | SerializedError;
 
         if (error) {
-          // Set status flag: error
-          isAdditionSuccess = false;
-          // Handle error
-          handleAPIError(error);
+          let title = "";
+          if ("code" in error) {
+            title = "IPA error " + error.code + ": " + error.name;
+          }
+          dispatch(
+            addAlert({
+              name: "add-host-error",
+              title: title,
+              variant: "danger",
+            })
+          );
         } else {
-          // Set alert: success
           dispatch(
             addAlert({
               name: "add-host-success",
@@ -293,94 +265,18 @@ const AddHost = (props: PropsToAddHost) => {
               variant: "success",
             })
           );
-
-          // Set status flag: success
-          isAdditionSuccess = true;
-          // Refresh data
-          if (props.onRefresh !== undefined) {
-            props.onRefresh();
-          }
+          props.onRefresh();
+          props.onClose();
         }
-        setAddBtnSpinning(false);
       }
+      setAddBtnSpinning(false);
     });
   };
 
-  const addHostHandler = () => {
-    const validation = validateFields();
-    if (validation) {
-      setAddBtnSpinning(true);
-      addHostData().then(() => {
-        if (!isAdditionSuccess) {
-          // Close the modal without cleaning fields
-          if (props.onCloseAddModal !== undefined) {
-            props.onCloseAddModal();
-          }
-        } else {
-          // Clean data and close modal
-          cleanAndCloseModal();
-        }
-      });
+  const onClose = () => {
+    if (!addSpinning) {
+      props.onClose();
     }
-  };
-
-  // Handle API error data
-  const [isModalErrorOpen, setIsModalErrorOpen] = useState(false);
-  const [errorTitle, setErrorTitle] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const closeAndCleanErrorParameters = () => {
-    setIsModalErrorOpen(false);
-    setErrorTitle("");
-    setErrorMessage("");
-  };
-
-  const onCloseErrorModal = () => {
-    closeAndCleanErrorParameters();
-    // Show Add modal
-    if (props.onOpenAddModal !== undefined) {
-      props.onOpenAddModal();
-    }
-  };
-
-  const onRetry = () => {
-    // Keep the add modal closed until the operation is done...
-    if (props.onCloseAddModal !== undefined) {
-      props.onCloseAddModal();
-    }
-
-    // Close the error modal
-    closeAndCleanErrorParameters();
-
-    addHostHandler();
-  };
-
-  const errorModalActions = [
-    <SecondaryButton
-      dataCy="modal-button-retry"
-      key="retry"
-      onClickHandler={onRetry}
-    >
-      Retry
-    </SecondaryButton>,
-    <Button
-      data-cy="modal-button-cancel"
-      key="cancel"
-      variant="link"
-      onClick={onCloseErrorModal}
-    >
-      Cancel
-    </Button>,
-  ];
-
-  const handleAPIError = (error: FetchBaseQueryError | SerializedError) => {
-    if ("code" in error) {
-      setErrorTitle("IPA error " + error.code + ": " + error.name);
-      if (error.message !== undefined) {
-        setErrorMessage(error.message);
-      }
-    }
-    setIsModalErrorOpen(true);
   };
 
   // Buttons that will be shown at the end of the form
@@ -401,39 +297,27 @@ const AddHost = (props: PropsToAddHost) => {
       data-cy="modal-button-cancel"
       key="cancel-new-host"
       variant="link"
-      onClick={cleanAndCloseModal}
+      onClick={onClose}
+      isDisabled={addSpinning}
     >
       Cancel
     </Button>,
   ];
 
-  // Render 'AddHost'
   return (
-    <>
-      <ModalWithFormLayout
-        dataCy="add-host-modal"
-        variantType="small"
-        modalPosition="top"
-        offPosition="76px"
-        title="Add host"
-        formId="hosts-add-host-modal"
-        fields={fields}
-        show={props.show}
-        onSubmit={addHostHandler}
-        onClose={cleanAndCloseModal}
-        actions={modalActions}
-      />
-      {isModalErrorOpen && (
-        <ErrorModal
-          dataCy="add-host-modal-error"
-          title={errorTitle}
-          isOpen={isModalErrorOpen}
-          onClose={onCloseErrorModal}
-          actions={errorModalActions}
-          errorMessage={errorMessage}
-        />
-      )}
-    </>
+    <ModalWithFormLayout
+      dataCy="add-host-modal"
+      variantType="small"
+      modalPosition="top"
+      offPosition="76px"
+      title="Add host"
+      formId="hosts-add-host-modal"
+      fields={fields}
+      show
+      onSubmit={addHostHandler}
+      onClose={onClose}
+      actions={modalActions}
+    />
   );
 };
 

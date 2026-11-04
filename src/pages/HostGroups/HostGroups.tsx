@@ -225,16 +225,6 @@ const HostGroups = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const onAddClickHandler = () => {
-    setShowAddModal(true);
-  };
-  const onCloseAddModal = () => {
-    setShowAddModal(false);
-  };
-  const onAddModalToggle = () => {
-    setShowAddModal(!showAddModal);
-  };
-
   const onDeleteHandler = () => {
     setShowDeleteModal(true);
   };
@@ -350,7 +340,7 @@ const HostGroups = () => {
       key: 5,
       element: (
         <SecondaryButton
-          onClickHandler={onAddClickHandler}
+          onClickHandler={() => setShowAddModal(true)}
           isDisabled={isBatchFetching || isDisabledDueError}
           dataCy="host-groups-button-add"
         >
@@ -433,13 +423,12 @@ const HostGroups = () => {
           errors={modalErrors.getAll()}
           dataCy="host-groups-modal-error"
         />
-        <AddHostGroup
-          show={showAddModal}
-          handleModalToggle={onAddModalToggle}
-          onOpenAddModal={onAddClickHandler}
-          onCloseAddModal={onCloseAddModal}
-          onRefresh={refreshGroupsData}
-        />
+        {showAddModal && (
+          <AddHostGroup
+            onClose={() => setShowAddModal(false)}
+            onRefresh={refreshGroupsData}
+          />
+        )}
         <DeleteHostGroups
           show={showDeleteModal}
           handleModalToggle={onDeleteModalToggle}

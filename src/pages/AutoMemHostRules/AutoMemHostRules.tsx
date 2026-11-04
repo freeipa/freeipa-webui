@@ -339,18 +339,6 @@ const AutoMemHostRules = () => {
   const [showChangeConfirmationModal, setShowChangeConfirmationModal] =
     React.useState(false);
 
-  const onOpenAddModal = () => {
-    setShowAddModal(true);
-  };
-
-  const onCloseAddModal = () => {
-    setShowAddModal(false);
-  };
-
-  const onAddModalToggle = () => {
-    setShowAddModal(!showAddModal);
-  };
-
   const onOpenDeleteModal = () => {
     setShowDeleteModal(true);
   };
@@ -462,7 +450,7 @@ const AutoMemHostRules = () => {
         <SecondaryButton
           dataCy="auto-member-host-rules-button-add"
           isDisabled={hostGroupRulesData.isFetching}
-          onClickHandler={onOpenAddModal}
+          onClickHandler={() => setShowAddModal(true)}
         >
           Add
         </SecondaryButton>
@@ -540,15 +528,14 @@ const AutoMemHostRules = () => {
           </FlexItem>
         </Flex>
       </PageSection>
-      <AddRule
-        show={showAddModal}
-        handleModalToggle={onAddModalToggle}
-        onOpenAddModal={onOpenAddModal}
-        onCloseAddModal={onCloseAddModal}
-        onRefresh={refreshData}
-        groupsAvailableToAdd={groupsAvailableToAdd}
-        ruleType="hostgroup"
-      />
+      {showAddModal && (
+        <AddRule
+          onClose={() => setShowAddModal(false)}
+          onRefresh={refreshData}
+          groupsAvailableToAdd={groupsAvailableToAdd}
+          ruleType="hostgroup"
+        />
+      )}
       <DeleteRule
         show={showDeleteModal}
         handleModalToggle={onToggleDeleteModal}

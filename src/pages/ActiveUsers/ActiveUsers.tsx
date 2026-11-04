@@ -333,14 +333,6 @@ const ActiveUsers = () => {
     setShowAddModal(true);
   };
 
-  const onCloseAddModal = () => {
-    setShowAddModal(false);
-  };
-
-  const onAddModalToggle = () => {
-    setShowAddModal(!showAddModal);
-  };
-
   const onDeleteHandler = () => {
     setShowDeleteModal(true);
   };
@@ -655,14 +647,13 @@ const ActiveUsers = () => {
           </FlexItem>
         </Flex>
       </PageSection>
-      <AddUser
-        show={showAddModal}
-        from="active-users"
-        handleModalToggle={onAddModalToggle}
-        onOpenAddModal={onAddClickHandler}
-        onCloseAddModal={onCloseAddModal}
-        onRefresh={refreshUsersData}
-      />
+      {showAddModal && (
+        <AddUser
+          from="active-users"
+          onClose={() => setShowAddModal(false)}
+          onRefresh={refreshUsersData}
+        />
+      )}
       <DeleteUsers
         show={showDeleteModal}
         from="active-users"

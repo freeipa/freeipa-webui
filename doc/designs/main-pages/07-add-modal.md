@@ -11,7 +11,6 @@ All Add modals use a consistent props interface with **all props required** (no 
 
 ```tsx
 interface PropsToAddModal {
-  isOpen: boolean;
   onClose: () => void;
   title: string;
   onRefresh: () => void;
@@ -20,20 +19,22 @@ interface PropsToAddModal {
 
 | Prop | Type | Description |
 |------|------|-------------|
-| `isOpen` | `boolean` | Controls modal visibility |
 | `onClose` | `() => void` | Callback to close the modal |
 | `title` | `string` | Modal title displayed in the header |
 | `onRefresh` | `() => void` | Callback to refresh the parent table after successful addition |
 
 **Usage in the parent page:**
 
+The modal must be conditionally rendered so that it unmounts when closed. This resets all internal state automatically — no manual field clearing needed.
+
 ```tsx
-<AddEntityModal
-  isOpen={showAddModal}
-  onClose={() => setShowAddModal(false)}
-  title="Add entity"
-  onRefresh={refreshData}
-/>
+{showAddModal && (
+  <AddEntityModal
+    onClose={() => setShowAddModal(false)}
+    title="Add entity"
+    onRefresh={refreshData}
+  />
+)}
 ```
 
 ## Code Organization
@@ -45,9 +46,8 @@ The Add modal follows this structure:
 3. **Component body:**
    - API mutation hook
    - State declarations (spinner, form fields)
-   - `clearFields()` — resets all form fields
+   - `onClose()` — guarded close handler (prevents closing while a request is in flight)
    - `onAdd()` — the add handler (API call, success/error alerts, refresh, close)
-   - `cleanAndCloseModal()` — clears fields and closes modal
    - `fields` array — form field definitions
    - `modalActions` array — Add and Cancel buttons
 4. **Return** — `ModalWithFormLayout` component
@@ -89,12 +89,15 @@ const modalActions: JSX.Element[] = [
     data-cy="modal-button-cancel"
     key="cancel-new"
     variant="link"
-    onClick={cleanAndCloseModal}
+    onClick={onClose}
+    isDisabled={isAddButtonSpinning}
   >
     Cancel
   </Button>,
 ];
 ```
+
+The Cancel button is disabled while a request is in flight, giving clear visual feedback. The `onClose` handler also guards against closing via the modal's X button or Escape key.
 
 ## Button Disabled Logic
 
@@ -122,7 +125,6 @@ import { addAlert } from "src/store/Global/alerts-slice";
 import { SerializedError } from "@reduxjs/toolkit";
 
 interface PropsToAddModal {
-  isOpen: boolean;
   onClose: () => void;
   title: string;
   onRefresh: () => void;
@@ -136,9 +138,10 @@ const AddEntityModal = (props: PropsToAddModal) => {
   const [entityName, setEntityName] = React.useState("");
   const [description, setDescription] = React.useState("");
 
-  const clearFields = () => {
-    setEntityName("");
-    setDescription("");
+  const onClose = () => {
+    if (!isAddButtonSpinning) {
+      props.onClose();
+    }
   };
 
   const onAdd = () => {
@@ -152,23 +155,14 @@ const AddEntityModal = (props: PropsToAddModal) => {
           }
           if (response.data?.result) {
             dispatch(addAlert({ name: "add-entity-success", title: "New entity added", variant: "success" }));
-            clearFields();
             props.onRefresh();
             props.onClose();
           }
         }
-        if (response.data?.result) {
-          dispatch(addAlert({ name: "add-entity-success", title: "New entity added", variant: "success" }));
-          cleanAndCloseModal();
-          props.onRefresh();
-        }
-      }
-    }).finally(() => {
-      setIsAddButtonSpinning(false);
-    });
+      }).finally(() => {
+        setIsAddButtonSpinning(false);
+      });
   };
-
-  const cleanAndCloseModal = () => { clearFields(); props.onClose(); };
 
   const fields: Field[] = [
     {
@@ -193,13 +187,14 @@ const AddEntityModal = (props: PropsToAddModal) => {
   const modalActions: JSX.Element[] = [
     <Button data-cy="modal-button-add" key="add-new" isDisabled={isAddButtonSpinning || entityName === ""}
       form="add-modal-form" type="submit">Add</Button>,
-    <Button data-cy="modal-button-cancel" key="cancel-new" variant="link" onClick={cleanAndCloseModal}>Cancel</Button>,
+    <Button data-cy="modal-button-cancel" key="cancel-new" variant="link" onClick={onClose}
+      isDisabled={isAddButtonSpinning}>Cancel</Button>,
   ];
 
   return (
     <ModalWithFormLayout dataCy="add-entity-modal" variantType="small" modalPosition="top" offPosition="76px"
-      title={props.title} formId="add-modal-form" fields={fields} show={props.isOpen}
-      onSubmit={() => onAdd()} onClose={cleanAndCloseModal} actions={modalActions} />
+      title={props.title} formId="add-modal-form" fields={fields} show
+      onSubmit={() => onAdd()} onClose={onClose} actions={modalActions} />
   );
 };
 
