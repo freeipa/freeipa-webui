@@ -158,6 +158,8 @@ const LoginMainPage = () => {
         </Modal>
       );
     }
+
+    return null;
   };
 
   // Action on login success

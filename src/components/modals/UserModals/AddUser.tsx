@@ -128,13 +128,13 @@ const AddUser = (props: PropsToAddUser) => {
     retrieveGIDs(groupFindPayload).then((response) => {
       if ("data" in response) {
         const data = response.data as FindRPCResponse;
-        const GIDsData = data.result.result;
         const error = data.error as FetchBaseQueryError | SerializedError;
 
-        if (error !== null) return error;
-
-        setGIDs(GIDsData as unknown as GroupId[]);
-        return GIDsData;
+        if (error) {
+          handleAPIError(error);
+        } else if (data.result) {
+          setGIDs(data.result.result as unknown as GroupId[]);
+        }
       }
     });
   };

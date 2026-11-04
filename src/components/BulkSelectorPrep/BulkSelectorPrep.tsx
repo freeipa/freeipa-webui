@@ -171,72 +171,12 @@ const BulkSelectorPrep = <Type,>(props: PropsToBulkSelectorPrep<Type>) => {
     />
   );
 
-  // Checks wether all the elements on the currect page have been selected or not
-  const [currentPageAlreadySelected, setCurrentPageAlreadySelected] =
-    useState(false);
-
-  // The 'currentPageAlreadySelected' should be set when elements are selected
-  const allSelected = () => {
-    const key = props.elementData.nameAttr;
-    props.shownElementsList.forEach(function (shown) {
-      let found = false;
-      props.elementData.selected.forEach(function (selected) {
-        if (shown[key] === selected[key]) {
-          found = true;
-        }
-      });
-      if (!found) {
-        return false;
-      }
-    });
-    return true;
-  };
-
-  // The 'currentPageAlreadySelected' should be set when elements are selected
-  const someSelected = () => {
-    const key = props.elementData.nameAttr;
-    props.shownElementsList.forEach(function (shown) {
-      props.elementData.selected.forEach(function (selected) {
-        if (shown[key] === selected[key]) {
-          return true;
-        }
-      });
-    });
-    return false;
-  };
-
-  useEffect(() => {
-    if (allSelected()) {
-      // All the elements on that page are been selected
-      setCurrentPageAlreadySelected(true);
-    } else {
-      // The elements on that page are not been selected (yet)
-      setCurrentPageAlreadySelected(false);
-      // If there are no elements selected on the page yet, reset 'selectedPerPage'
-      if (!someSelected()) {
-        props.selectedPerPageData.updateSelectedPerPage(0);
-      }
-    }
-  }, [props.elementData.selected.length, props.shownElementsList]);
-
   // Set the messages displayed in the 'Select page' option (bulk selector)
   const getSelectedElements = () => {
-    let msg = "Select page (" + props.elementData.selected.length + " items)";
-    const remainingElements = Math.min(
-      props.elementData.selected.length +
-        props.shownElementsList.length -
-        props.selectedPerPageData.selectedPerPage,
-      props.list.length
-    );
+    const elementsCount =
+      selectableElementsPage.length - props.selectedPerPageData.selectedPerPage;
 
-    if (
-      props.list.length > props.elementData.selected.length &&
-      !currentPageAlreadySelected
-    ) {
-      msg = "Select page (" + remainingElements + " items)";
-    }
-
-    return msg;
+    return `Select page (${elementsCount} items)`;
   };
 
   const group_id_list = props.elementData.selected.map((group) => {
