@@ -91,6 +91,26 @@ import SystemAccounts from "src/pages/SystemAccounts/SystemAccounts";
 import SystemAccountTabs from "src/pages/SystemAccounts/SystemAccountTabs";
 import RadiusServers from "src/pages/RadiusServers/RadiusServers";
 import RadiusServersTabs from "src/pages/RadiusServers/RadiusServersTabs";
+// Ahdapa (OAuth2/IdP) pages
+import AhdapaClients from "src/pages/AhdapaClients/AhdapaClients";
+import AhdapaClientsTabs from "src/pages/AhdapaClients/AhdapaClientsTabs";
+import AhdapaScopes from "src/pages/AhdapaScopes/AhdapaScopes";
+import AhdapaKeys from "src/pages/AhdapaKeys/AhdapaKeys";
+import AhdapaNodes from "src/pages/AhdapaNodes/AhdapaNodes";
+import AhdapaAudit from "src/pages/AhdapaAudit/AhdapaAudit";
+import AhdapaHbac from "src/pages/AhdapaHbac/AhdapaHbac";
+import AhdapaHbacTabs from "src/pages/AhdapaHbac/AhdapaHbacTabs";
+import AhdapaFederatedAccounts from "src/pages/AhdapaFederatedAccounts/AhdapaFederatedAccounts";
+import AhdapaFederationPolicies from "src/pages/AhdapaFederationPolicies/AhdapaFederationPolicies";
+import AhdapaFederationPoliciesTabs from "src/pages/AhdapaFederationPolicies/AhdapaFederationPoliciesTabs";
+import AhdapaIpaIdps from "src/pages/AhdapaIpaIdps/AhdapaIpaIdps";
+import AhdapaIpaIdpsTabs from "src/pages/AhdapaIpaIdps/AhdapaIpaIdpsTabs";
+import AhdapaSpiffe from "src/pages/AhdapaSpiffe/AhdapaSpiffe";
+import AhdapaSpiffeTabs from "src/pages/AhdapaSpiffe/AhdapaSpiffeTabs";
+import AhdapaSaml2Sps from "src/pages/AhdapaSaml2Sps/AhdapaSaml2Sps";
+import AhdapaSaml2SpsTabs from "src/pages/AhdapaSaml2Sps/AhdapaSaml2SpsTabs";
+import AhdapaSaml2Idps from "src/pages/AhdapaSaml2Idps/AhdapaSaml2Idps";
+import AhdapaSaml2IdpsTabs from "src/pages/AhdapaSaml2Idps/AhdapaSaml2IdpsTabs";
 
 // Renders routes (React)
 export const AppRoutes = (): React.ReactElement => {
@@ -99,6 +119,7 @@ export const AppRoutes = (): React.ReactElement => {
 
   const configurationSettings = useConfigurationSettings();
   const dnsIsEnabled = configurationSettings.dnsIsEnabled;
+  const ahdapaIsAvailable = configurationSettings.ahdapaIsAvailable;
 
   return (
     <Routes>
@@ -662,6 +683,91 @@ export const AppRoutes = (): React.ReactElement => {
               </Route>
             </Route>
             <Route path="configuration" element={<Configuration />} />
+            {/* Ahdapa (OAuth2 / IdP) routes */}
+            {ahdapaIsAvailable && (
+              <>
+                <Route path="ahdapa-clients">
+                  <Route path="" element={<AhdapaClients />} />
+                  <Route path=":client_id">
+                    <Route
+                      path=""
+                      element={<AhdapaClientsTabs section="settings" />}
+                    />
+                  </Route>
+                </Route>
+                <Route path="ahdapa-scopes">
+                  <Route path="" element={<AhdapaScopes />} />
+                </Route>
+                <Route path="ahdapa-hbac">
+                  <Route path="" element={<AhdapaHbac />} />
+                  <Route path=":id">
+                    <Route
+                      path=""
+                      element={<AhdapaHbacTabs section="settings" />}
+                    />
+                  </Route>
+                </Route>
+                <Route path="ahdapa-spiffe">
+                  <Route path="" element={<AhdapaSpiffe />} />
+                  <Route path=":id">
+                    <Route
+                      path=""
+                      element={<AhdapaSpiffeTabs section="settings" />}
+                    />
+                  </Route>
+                </Route>
+                <Route path="ahdapa-federated-accounts">
+                  <Route path="" element={<AhdapaFederatedAccounts />} />
+                </Route>
+                <Route path="ahdapa-federation-policies">
+                  <Route path="" element={<AhdapaFederationPolicies />} />
+                  <Route path=":key">
+                    <Route
+                      path=""
+                      element={
+                        <AhdapaFederationPoliciesTabs section="settings" />
+                      }
+                    />
+                  </Route>
+                </Route>
+                <Route path="ahdapa-ipa-idps">
+                  <Route path="" element={<AhdapaIpaIdps />} />
+                  <Route path=":id">
+                    <Route
+                      path=""
+                      element={<AhdapaIpaIdpsTabs section="settings" />}
+                    />
+                  </Route>
+                </Route>
+                <Route path="ahdapa-saml2-sps">
+                  <Route path="" element={<AhdapaSaml2Sps />} />
+                  <Route path=":entityId">
+                    <Route
+                      path=""
+                      element={<AhdapaSaml2SpsTabs section="settings" />}
+                    />
+                  </Route>
+                </Route>
+                <Route path="ahdapa-saml2-idps">
+                  <Route path="" element={<AhdapaSaml2Idps />} />
+                  <Route path=":localId">
+                    <Route
+                      path=""
+                      element={<AhdapaSaml2IdpsTabs section="settings" />}
+                    />
+                  </Route>
+                </Route>
+                <Route path="ahdapa-keys">
+                  <Route path="" element={<AhdapaKeys />} />
+                </Route>
+                <Route path="ahdapa-nodes">
+                  <Route path="" element={<AhdapaNodes />} />
+                </Route>
+                <Route path="ahdapa-audit">
+                  <Route path="" element={<AhdapaAudit />} />
+                </Route>
+              </>
+            )}
             {/* Redirect to Active users page if user is logged in and navigates to the root page */}
             <Route path="login" element={<Navigate to={"/"} replace />} />
             <Route path="" element={<Navigate to={"active-users"} replace />} />
