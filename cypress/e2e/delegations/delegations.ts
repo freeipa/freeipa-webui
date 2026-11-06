@@ -1,4 +1,4 @@
-import { Given } from "@badeball/cypress-cucumber-preprocessor";
+import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
 
 type DelegationSeedOptions = {
   permissions?: string;
@@ -37,4 +37,22 @@ Given("I delete delegation {string}", (delegationName: string) => {
     command: "delegation-del",
     name: delegationName,
   });
+});
+
+When(
+  "I click on {string} entry in the data table",
+  (name: string) => {
+    cy.get("tr[id='" + name + "']").find("a").click();
+  }
+);
+
+Then(
+  "I should see {string} text on the page",
+  (text: string) => {
+    cy.contains(text).should("be.visible");
+  }
+);
+
+When("I click on the {string} breadcrumb link", (linkText: string) => {
+  cy.get(".pf-v6-c-breadcrumb__link").contains(linkText).click();
 });
