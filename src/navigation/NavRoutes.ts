@@ -71,6 +71,7 @@ const TrustsGroupRef = "trusts";
 const TrustsGlobalConfigGroupRef = "trusts-config";
 // - Topology
 const TopologyGroupRef = "topology-graph";
+const TopologySuffixesGroupRef = "topology-suffixes";
 // - Role-based access control
 const RbacGroupRef = "rbac";
 const PrivilegesGroupRef = "privileges";
@@ -529,6 +530,13 @@ export const getNavigationRoutes = (
               group: TopologyGroupRef,
               title: `${BASE_TITLE} - Topology graph`,
               path: "topology-graph",
+              items: [],
+            },
+            {
+              label: "Topology suffixes",
+              group: TopologySuffixesGroupRef,
+              title: `${BASE_TITLE} - Topology suffixes`,
+              path: "topology-suffixes",
               items: [],
             },
           ],
