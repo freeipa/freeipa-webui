@@ -1,4 +1,11 @@
-import { api, FindRPCResponse, getCommand } from "./rpc";
+import {
+  api,
+  Command,
+  getBatchCommand,
+  BatchRPCResponse,
+  FindRPCResponse,
+  getCommand,
+} from "./rpc";
 // utils
 import { API_VERSION_BACKUP } from "../utils/utils";
 import {
@@ -9,10 +16,11 @@ import {
 import { apiToTopologySuffix } from "src/utils/topologyUtils";
 
 /**
- * Topology-related endpoints: findTopologyFullDataQuery
+ * Topology-related endpoints: findTopologyFullDataQuery, getTopologySuffixesFullData
  *
  * API commands:
  * - topologysuffix_find: https://freeipa.readthedocs.io/en/latest/api/topologysuffix_find.html
+ * - topologysuffix_show: https://freeipa.readthedocs.io/en/latest/api/topologysuffix_show.html
  * - topologysegment_find: https://freeipa.readthedocs.io/en/latest/api/topologysegment_find.html
  */
 
@@ -20,6 +28,14 @@ interface TopologyFullDataPayload {
   cn: string;
   sizelimit: number;
   version?: string;
+}
+
+interface TopologySuffixesFullDataPayload {
+  searchValue: string;
+  apiVersion?: string;
+  sizelimit: number;
+  startIdx: number;
+  stopIdx: number;
 }
 
 interface TopologyFullData {
@@ -118,8 +134,57 @@ const extendedApi = api.injectEndpoints({
         };
       },
     }),
+
+    getTopologySuffixesFullData: build.query<
+      BatchRPCResponse,
+      TopologySuffixesFullDataPayload
+    >({
+      async queryFn(payloadData, _queryApi, _extraOptions, fetchWithBQ) {
+        const { searchValue, apiVersion, sizelimit, startIdx, stopIdx } =
+          payloadData;
+        const apiVersionUsed = apiVersion || API_VERSION_BACKUP;
+
+        const findCommand: Command = {
+          method: "topologysuffix_find",
+          params: [
+            [searchValue],
+            { pkey_only: true, sizelimit, version: apiVersionUsed },
+          ],
+        };
+
+        const findResult = await fetchWithBQ(getCommand(findCommand));
+        if (findResult.error) return { error: findResult.error };
+
+        const findResponse = findResult.data as FindRPCResponse;
+        const totalCount = findResponse.result.result.length as number;
+        const ids: string[] = [];
+
+        for (let i = startIdx; i < totalCount && i < stopIdx; i++) {
+          const item = findResponse.result.result[i] as Record<string, unknown>;
+          ids.push((item.cn as string[])[0]);
+        }
+
+        const showCommands: Command[] = ids.map((id) => ({
+          method: "topologysuffix_show",
+          params: [[id], {}],
+        }));
+
+        const showResult = await fetchWithBQ(
+          getBatchCommand(showCommands, apiVersionUsed)
+        );
+        const response = showResult.data as BatchRPCResponse;
+        if (response) {
+          response.result.totalCount = totalCount;
+        }
+
+        return { data: response };
+      },
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useFindTopologyFullDataQuery } = extendedApi;
+export const {
+  useFindTopologyFullDataQuery,
+  useGetTopologySuffixesFullDataQuery,
+} = extendedApi;
