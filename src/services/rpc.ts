@@ -261,6 +261,7 @@ export const api = createApi({
     "FullOverrideUser",
     "FullOverrideGroup",
     "FullAutomember",
+    "FullSelinuxUserMap",
   ],
   endpoints: (build) => ({
     simpleMutCommand: build.mutation<

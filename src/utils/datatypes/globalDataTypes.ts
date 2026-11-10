@@ -1301,10 +1301,10 @@ export interface SELinuxUserMap {
   hostcategory: string;
   description: string;
   ipaenabledflag: boolean;
-  memberuser_user: string;
-  memberuser_group: string;
-  memberhost_host: string;
-  memberhost_hostgroup: string;
+  memberuser_user: string[];
+  memberuser_group: string[];
+  memberhost_host: string[];
+  memberhost_hostgroup: string[];
   memberuser: string[];
   memberhost: string[];
   dn: string;
