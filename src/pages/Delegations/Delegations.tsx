@@ -143,7 +143,7 @@ const Delegations = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const selectableTable = elementsList.filter(isDelegationSelectable);
+  const selectableOnPage = elementsList.filter(isDelegationSelectable);
 
   const updateSelectedDelegations = (
     delegations: Delegation[],
@@ -198,17 +198,6 @@ const Delegations = () => {
     (item) => ipaPrimaryKey(item.aciname)
   );
 
-  const bulkSelectorData = {
-    selected: selectedDelegations,
-    updateSelected: updateSelectedDelegations,
-    selectableTable: selectableTable,
-    nameAttr: "aciname",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-  };
-
   const columnNames = ["Delegation name"];
   const keyNames = ["aciname"];
 
@@ -217,11 +206,10 @@ const Delegations = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={elementsList}
-          shownElementsList={elementsList}
-          elementData={bulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedDelegations}
+          totalCount={totalCount}
+          selectableOnPage={selectableOnPage}
+          updateSelected={updateSelectedDelegations}
         />
       ),
     },
@@ -340,7 +328,7 @@ const Delegations = () => {
                     elementsData={{
                       isElementSelectable: isDelegationSelectable,
                       selectedElements: selectedDelegations,
-                      selectableElementsTable: selectableTable,
+                      selectableElementsTable: selectableOnPage,
                       setElementsSelected: setDelegationSelected,
                       clearSelectedElements: clearSelectedDelegations,
                     }}

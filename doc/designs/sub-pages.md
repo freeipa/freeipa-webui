@@ -56,7 +56,7 @@ This applies to all modal types: delete modals, confirmation modals in kebab men
 
 Any sub-page that is **not** Settings, "Is a member of", Members, or ManagedBy
 must include a `BulkSelectorPrep` component in its toolbar to allow bulk
-operations (select page / select all / unselect) on the table.
+operations (select none / select page) on the table.
 
 | Sub-Page Type | BulkSelectorPrep Required? |
 |---------------|---------------------------|
