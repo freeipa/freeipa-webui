@@ -13,7 +13,7 @@ import useShifting from "src/hooks/useShifting";
 interface IDViewsOverrideData {
   isSelectable: (view: IDViewOverrideGroup) => boolean;
   selected: string[];
-  selectableTable: IDViewOverrideGroup[];
+  selectableOnPage: IDViewOverrideGroup[];
   setSelectedGroups: (group: string[]) => void;
   clearSelected: () => void;
 }

@@ -88,12 +88,12 @@ const IDViewsOverrideUsers = (props: PropsToOverrides) => {
     (user) => ipaPrimaryKey(user.ipaanchoruuid)
   );
 
-  const selectableTable = usersList.filter(isUserOverrideSelectable);
+  const selectableOnPage = usersList.filter(isUserOverrideSelectable);
 
   const usersTableData = {
     isSelectable: isUserOverrideSelectable,
     selected: selectedUsers,
-    selectableTable,
+    selectableOnPage,
     setSelectedUsers: setSelectedUsersList,
     clearSelected: clearSelectedUsers,
   };

@@ -91,12 +91,12 @@ const IDViewsOverrideGroups = (props: PropsToOverrides) => {
     (group) => ipaPrimaryKey(group.ipaanchoruuid)
   );
 
-  const selectableTable = groupsList.filter(isGroupOverrideSelectable);
+  const selectableOnPage = groupsList.filter(isGroupOverrideSelectable);
 
   const groupsTableData = {
     isSelectable: isGroupOverrideSelectable,
     selected: selectedGroups,
-    selectableTable,
+    selectableOnPage,
     setSelectedGroups: setSelectedGroupsList,
     clearSelected: clearSelectedGroups,
   };

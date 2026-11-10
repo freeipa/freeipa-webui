@@ -102,7 +102,7 @@ addPrivilegeToRole: build.mutation({
 ## BulkSelectorPrep (Required)
 
 Independent sub-pages **must** include a `BulkSelectorPrep` component to allow
-bulk operations (select page / select all / unselect) on the table. Pass it to
+bulk operations (select none / select page) on the table. Pass it to
 `MemberOfToolbar` via the `bulkSelector` prop.
 
 This requires tracking selected items as entity objects (not plain strings) so
@@ -111,7 +111,6 @@ compatibility via `useMemo`.
 
 ```tsx
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
-import { getSelectedPerPageData } from "src/utils/selectedPerPage";
 
 // Entity-based selection state
 const [selectedItems, setSelectedItems] = React.useState<ItemType[]>([]);
@@ -119,7 +118,7 @@ const [selectedItems, setSelectedItems] = React.useState<ItemType[]>([]);
 // Derive string[] for MemberTable
 const selectedNames = useMemo(() => selectedItems.map((i) => i.cn), [selectedItems]);
 
-// Delete button disabled state (managed by BulkSelectorPrep and selection helpers)
+// Delete button disabled state (owned by parent via updateSelected / onCheckItemsChange)
 const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] = React.useState(true);
 
 // Update handler for BulkSelectorPrep
@@ -142,15 +141,6 @@ const onCheckItemsChange = (checkedNames: string[]) => {
   setSelectedItems(checkedNames.map((name) => ({ cn: name })));
   setIsDeleteButtonDisabled(checkedNames.length === 0);
 };
-
-// BulkSelectorPrep data
-const selectedPerPageData = getSelectedPerPageData(items, selectedNames, (i) => i.cn);
-const bulkSelectorData = {
-  selected: selectedItems,
-  updateSelected,
-  selectableTable: items,
-  nameAttr: "cn",
-};
 ```
 
 ## Component Structure
@@ -164,11 +154,10 @@ const <Entity><SubPage> = (props) => {
       <MemberOfToolbar
         bulkSelector={
           <BulkSelectorPrep
-            list={data}
-            shownElementsList={data}
-            elementData={bulkSelectorData}
-            buttonsData={{ updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled }}
-            selectedPerPageData={selectedPerPageData}
+            selected={selectedItems}
+            totalCount={data.length}
+            selectableOnPage={data}
+            updateSelected={updateSelected}
           />
         }
         deleteButtonEnabled={!isDeleteButtonDisabled && isRefreshButtonEnabled}
