@@ -30,7 +30,6 @@ import {
 import { useFindAvailablePrivilegesQuery } from "src/services/rpcPrivileges";
 // Utils
 import { paginate } from "src/utils/utils";
-import { getSelectedPerPageData } from "src/utils/selectedPerPage";
 
 interface PropsToPermissionsPrivileges {
   permission: Permission;
@@ -185,7 +184,7 @@ const PermissionsPrivileges = (props: PropsToPermissionsPrivileges) => {
     [selectedPrivileges]
   );
 
-  // Delete button disabled state (managed by BulkSelectorPrep and selection helpers)
+  // Delete button disabled state (owned by parent via updateSelected / onCheckItemsChange)
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
     React.useState(true);
 
@@ -221,22 +220,6 @@ const PermissionsPrivileges = (props: PropsToPermissionsPrivileges) => {
   // Buttons functionality
   const isRefreshButtonEnabled = !permissionQuery.isFetching;
   const isAddButtonEnabled = isRefreshButtonEnabled;
-
-  // BulkSelectorPrep data
-  const selectablePrivilegesTable = privileges;
-
-  const selectedPerPageData = getSelectedPerPageData(
-    privileges,
-    privilegesSelectedNames,
-    (priv) => priv.cn
-  );
-
-  const bulkSelectorData = {
-    selected: selectedPrivileges,
-    updateSelected: updateSelectedPrivileges,
-    selectableTable: selectablePrivilegesTable,
-    nameAttr: "cn",
-  };
 
   // API calls
   const [removePrivilegeFromPermission] =
@@ -308,13 +291,10 @@ const PermissionsPrivileges = (props: PropsToPermissionsPrivileges) => {
       <MemberOfToolbar
         bulkSelector={
           <BulkSelectorPrep
-            list={privileges}
-            shownElementsList={privileges}
-            elementData={bulkSelectorData}
-            buttonsData={{
-              updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-            }}
-            selectedPerPageData={selectedPerPageData}
+            selected={selectedPrivileges}
+            totalCount={privileges.length}
+            selectableTable={privileges}
+            updateSelected={updateSelectedPrivileges}
           />
         }
         searchPlaceholder="Search privileges"

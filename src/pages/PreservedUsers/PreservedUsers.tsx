@@ -236,20 +236,6 @@ const PreservedUsers = () => {
     setShowStageModal(!showStageModal);
   };
 
-  // Data wrappers
-  // - 'BulkSelectorPrep'
-  const usersBulkSelectorData = {
-    selected: selectedUsers,
-    updateSelected: updateSelectedUsers,
-    selectableTable: selectableUsersTable,
-    nameAttr: "uid",
-  };
-
-  const buttonsData = {
-    isDeleteButtonDisabled,
-    updateIsDeleteButtonDisabled,
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     preservedUsersList,
     selectedUsers.map((item) => ipaPrimaryKey(item.uid)),
@@ -288,11 +274,10 @@ const PreservedUsers = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={preservedUsersList}
-          shownElementsList={preservedUsersList}
-          elementData={usersBulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedUsers}
+          totalCount={totalCount}
+          selectableTable={selectableUsersTable}
+          updateSelected={updateSelectedUsers}
         />
       ),
     },

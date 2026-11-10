@@ -58,7 +58,7 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
   // Contextual help panel
 
   // Update current route data to Redux and highlight the current page in the Nav bar
-  useUpdateRoute({ pathname: "dns-records" });
+  useUpdateRoute({ pathname: "dns-zones" });
 
   // URL parameters: page number, page size, search value
   const { page, perPage, searchValue } = useListPageSearchParams();
@@ -193,15 +193,6 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
     (dnsRecord) => ipaPrimaryKey(dnsRecord.idnsname)
   );
 
-  // Data wrappers
-  // - 'BulkSelectorPrep'
-  const bulkSelectorData = {
-    selected: selectedElements,
-    updateSelected: updateSelectedDnsRecords,
-    selectableTable: selectableDnsRecordsTable,
-    nameAttr: "idnsname",
-  };
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
@@ -212,13 +203,10 @@ const DnsResourceRecords = (props: DnsResourceRecordsProps) => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={dnsRecords}
-          shownElementsList={dnsRecords}
-          elementData={bulkSelectorData}
-          buttonsData={{
-            updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-          }}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedElements}
+          totalCount={totalCount}
+          selectableTable={selectableDnsRecordsTable}
+          updateSelected={updateSelectedDnsRecords}
         />
       ),
     },

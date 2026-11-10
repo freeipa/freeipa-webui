@@ -226,19 +226,6 @@ const Netgroups = () => {
   // - Selectable checkboxes on table
   const selectableGroupsTable = groupsList.filter(isNetgroupSelectable); // elements per Table
 
-  // Data wrappers
-  // - 'BulkSelectorPrep'
-  const groupsBulkSelectorData = {
-    selected: selectedGroups,
-    updateSelected: updateSelectedGroups,
-    selectableTable: selectableGroupsTable,
-    nameAttr: "cn",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled,
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     groupsList,
     selectedGroups.map((item) => ipaPrimaryKey(item.cn)),
@@ -277,11 +264,10 @@ const Netgroups = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={groupsList}
-          shownElementsList={groupsList}
-          elementData={groupsBulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedGroups}
+          totalCount={totalCount}
+          selectableTable={selectableGroupsTable}
+          updateSelected={updateSelectedGroups}
         />
       ),
     },

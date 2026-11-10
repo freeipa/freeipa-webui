@@ -262,19 +262,6 @@ const Services = () => {
     servicesDataResponse.refetch();
   };
 
-  // Data wrappers
-  // - 'BulkSelectorPrep'
-  const servicesBulkSelectorData = {
-    selected: selectedServices,
-    updateSelected: updateSelectedServices,
-    selectableTable: selectableServicesTable,
-    nameAttr: "krbcanonicalname",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled,
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     servicesList,
     selectedServices.map((item) => ipaPrimaryKey(item.krbcanonicalname)),
@@ -313,11 +300,10 @@ const Services = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={servicesList}
-          shownElementsList={servicesList}
-          elementData={servicesBulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedServices}
+          totalCount={totalCount}
+          selectableTable={selectableServicesTable}
+          updateSelected={updateSelectedServices}
         />
       ),
     },

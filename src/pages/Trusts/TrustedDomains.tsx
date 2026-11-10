@@ -62,7 +62,7 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
   // Contextual help panel
 
   // Update current route data to Redux and highlight the current page in the Nav bar
-  useUpdateRoute({ pathname: "trusted-domains" });
+  useUpdateRoute({ pathname: "trusts" });
 
   // URL parameters: page number, page size, search value
   const { page, perPage } = useListPageSearchParams();
@@ -243,15 +243,6 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
     (trustDomain) => ipaPrimaryKey(trustDomain.cn)
   );
 
-  // Data wrappers
-  // - 'BulkSelectorprep'
-  const bulkSelectorData = {
-    selected: selectedElements,
-    updateSelected: updateSelectedTrustDomains,
-    selectableTable: selectableTrustDomainsTable,
-    nameAttr: "cn",
-  };
-
   // Modals functionality
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
   const [showEnableDisableModal, setShowEnableDisableModal] =
@@ -277,13 +268,10 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={trustDomains}
-          shownElementsList={trustDomains}
-          elementData={bulkSelectorData}
-          buttonsData={{
-            updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-          }}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedElements}
+          totalCount={totalCount}
+          selectableTable={selectableTrustDomainsTable}
+          updateSelected={updateSelectedTrustDomains}
         />
       ),
     },

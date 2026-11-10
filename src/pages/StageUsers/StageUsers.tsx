@@ -234,19 +234,6 @@ const StageUsers = () => {
   // - Selectable checkboxes on table
   const selectableUsersTable = stageUsersList.filter(isUserSelectable); // elements per Table
 
-  // Data wrappers
-  // - 'BulkSelectorPrep'
-  const usersBulkSelectorData = {
-    selected: selectedUsers,
-    updateSelected: updateSelectedUsers,
-    selectableTable: selectableUsersTable,
-    nameAttr: "uid",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled,
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     stageUsersList,
     selectedUsers.map((item) => ipaPrimaryKey(item.uid)),
@@ -285,11 +272,10 @@ const StageUsers = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={stageUsersList}
-          shownElementsList={stageUsersList}
-          elementData={usersBulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedUsers}
+          totalCount={totalCount}
+          selectableTable={selectableUsersTable}
+          updateSelected={updateSelectedUsers}
         />
       ),
     },

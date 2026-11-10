@@ -193,27 +193,15 @@ const RadiusServers = () => {
     (item) => ipaPrimaryKey(item.cn)
   );
 
-  const bulkSelectorData = {
-    selected: selectedRadiusServers,
-    updateSelected: updateSelectedRadiusServers,
-    selectableTable: selectableRadiusServersTable,
-    nameAttr: "cn",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-  };
-
   const toolbarItems: ToolbarItem[] = [
     {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={elementsList}
-          shownElementsList={elementsList}
-          elementData={bulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedRadiusServers}
+          totalCount={totalCount}
+          selectableTable={selectableRadiusServersTable}
+          updateSelected={updateSelectedRadiusServers}
         />
       ),
     },

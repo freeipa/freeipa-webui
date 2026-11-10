@@ -180,15 +180,6 @@ const DnsForwardZones = () => {
     (dnsZone) => ipaPrimaryKey(dnsZone.idnsname)
   );
 
-  // Data wrappers
-  // - 'BulkSelectorPrep'
-  const bulkSelectorData = {
-    selected: selectedElements,
-    updateSelected: updateSelectedDnsZones,
-    selectableTable: selectableDnsZonesTable,
-    nameAttr: "idnsname",
-  };
-
   const [showEnableDisableModal, setShowEnableDisableModal] =
     React.useState(false);
   const [operation, setOperation] = React.useState<"enable" | "disable">(
@@ -212,13 +203,10 @@ const DnsForwardZones = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={dnsForwardZones}
-          shownElementsList={dnsForwardZones}
-          elementData={bulkSelectorData}
-          buttonsData={{
-            updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-          }}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedElements}
+          totalCount={totalCount}
+          selectableTable={selectableDnsZonesTable}
+          updateSelected={updateSelectedDnsZones}
         />
       ),
     },

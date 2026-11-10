@@ -368,19 +368,6 @@ const Hosts = () => {
   // - Selectable checkboxes on table
   const selectableHostsTable = hostsList.filter(isHostSelectable); // elements per Table
 
-  // Data wrappers
-  // - 'BulkSelectorPrep'
-  const hostsBulkSelectorData = {
-    selected: selectedHosts,
-    updateSelected: updateSelectedHosts,
-    selectableTable: selectableHostsTable,
-    nameAttr: "fqdn",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled,
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     hostsList,
     selectedHosts.map((item) => ipaPrimaryKey(item.fqdn)),
@@ -421,11 +408,10 @@ const Hosts = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={hostsList}
-          shownElementsList={hostsList}
-          elementData={hostsBulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedHosts}
+          totalCount={totalCount}
+          selectableTable={selectableHostsTable}
+          updateSelected={updateSelectedHosts}
         />
       ),
     },

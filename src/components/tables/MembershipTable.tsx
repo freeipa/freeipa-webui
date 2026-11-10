@@ -173,6 +173,8 @@ const TableBody = (props: {
                     <Td key={index}>{parseEmptyString(item[propertyName])}</Td>
                   );
                 }
+
+                return null;
               })}
           </Tr>
         );

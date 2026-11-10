@@ -222,17 +222,6 @@ const CertificateMappingPage = () => {
     (item) => ipaPrimaryKey(item.cn)
   );
 
-  // Show table rows
-  // Data wrappers
-  // TODO: Better separation of concerts
-  // - 'BulkSelectorrep'
-  const bulkSelectorData = {
-    selected: selectedElements,
-    updateSelected: updateSelectedCertMapRules,
-    selectableTable: selectableCertMapRulesTable,
-    nameAttr: "cn",
-  };
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
@@ -259,13 +248,10 @@ const CertificateMappingPage = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={certMapRules}
-          shownElementsList={certMapRules}
-          elementData={bulkSelectorData}
-          buttonsData={{
-            updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-          }}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedElements}
+          totalCount={totalCount}
+          selectableTable={selectableCertMapRulesTable}
+          updateSelected={updateSelectedCertMapRules}
         />
       ),
     },

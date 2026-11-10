@@ -197,15 +197,6 @@ const DnsZones = () => {
     (dnsZone) => ipaPrimaryKey(dnsZone.idnsname)
   );
 
-  // Data wrappers
-  // - 'BulkSelectorrep'
-  const bulkSelectorData = {
-    selected: selectedElements,
-    updateSelected: updateSelectedDnsZones,
-    selectableTable: selectableDnsZonesTable,
-    nameAttr: "idnsname",
-  };
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
@@ -232,13 +223,10 @@ const DnsZones = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={dnsZones}
-          shownElementsList={dnsZones}
-          elementData={bulkSelectorData}
-          buttonsData={{
-            updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-          }}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedElements}
+          totalCount={totalCount}
+          selectableTable={selectableDnsZonesTable}
+          updateSelected={updateSelectedDnsZones}
         />
       ),
     },

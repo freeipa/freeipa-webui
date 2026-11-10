@@ -201,16 +201,6 @@ const IdpReferences = () => {
     (item) => ipaPrimaryKey(item.cn)
   );
 
-  // Show table rows
-  // Data wrappers
-  // - 'BulkSelectorrep'
-  const bulkSelectorData = {
-    selected: selectedElements,
-    updateSelected: updateSelectedIdpRefs,
-    selectableTable: selectableIdpRefsTable,
-    nameAttr: "cn",
-  };
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
@@ -237,13 +227,10 @@ const IdpReferences = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={idpReferences}
-          shownElementsList={idpReferences}
-          elementData={bulkSelectorData}
-          buttonsData={{
-            updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-          }}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedElements}
+          totalCount={totalCount}
+          selectableTable={selectableIdpRefsTable}
+          updateSelected={updateSelectedIdpRefs}
         />
       ),
     },

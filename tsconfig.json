@@ -9,7 +9,7 @@
     "sourceMap": true,
     "jsx": "react",
     "forceConsistentCasingInFileNames": true,
-    "noImplicitReturns": false,
+    "noImplicitReturns": true,
     "noImplicitThis": true,
     "noImplicitAny": false,
     "allowJs": false,

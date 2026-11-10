@@ -204,17 +204,6 @@ const SelfServicePermissions = () => {
     (item) => ipaPrimaryKey(item.aciname)
   );
 
-  const bulkSelectorData = {
-    selected: selectedPermissions,
-    updateSelected: updateSelectedPermissions,
-    selectableTable: selectableTable,
-    nameAttr: "aciname",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-  };
-
   const columnNames = ["Self-service name"];
   const keyNames = ["aciname"];
 
@@ -223,11 +212,10 @@ const SelfServicePermissions = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={elementsList}
-          shownElementsList={elementsList}
-          elementData={bulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedPermissions}
+          totalCount={totalCount}
+          selectableTable={selectableTable}
+          updateSelected={updateSelectedPermissions}
         />
       ),
     },
