@@ -268,23 +268,6 @@ const SudoRules = () => {
     (item) => ipaPrimaryKey(item.cn)
   );
 
-  // Data wrappers
-  // TODO: Better separation of concerts
-  // - 'BulkSelectorSudoRulesPrep'
-  const rulesBulkSelectorData = {
-    selected: selectedRules,
-    updateSelected: updateSelectedRules,
-    selectableTable: selectableRulesTable,
-    nameAttr: "cn",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled,
-    updateIsEnableButtonDisabled,
-    updateIsDisableButtonDisabled,
-    updateIsDisableEnableOp,
-  };
-
   // 'DeleteRules'
   const deleteRulesButtonsData = {
     updateIsDeleteButtonDisabled,
@@ -328,11 +311,10 @@ const SudoRules = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={rulesList}
-          shownElementsList={rulesList}
-          elementData={rulesBulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedRules}
+          totalCount={totalCount}
+          selectableTable={selectableRulesTable}
+          updateSelected={updateSelectedRules}
         />
       ),
     },

@@ -181,13 +181,6 @@ const SELinuxUserMaps = () => {
     (item) => ipaPrimaryKey(item.cn)
   );
 
-  const bulkSelectorData = {
-    selected: selectedElements,
-    updateSelected: updateSelectedMaps,
-    selectableTable: selectableMapsTable,
-    nameAttr: "cn",
-  };
-
   const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
   const [showEnableDisableModal, setShowEnableDisableModal] =
@@ -214,13 +207,10 @@ const SELinuxUserMaps = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={selinuxUserMaps}
-          shownElementsList={selinuxUserMaps}
-          elementData={bulkSelectorData}
-          buttonsData={{
-            updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-          }}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedElements}
+          totalCount={totalCount}
+          selectableTable={selectableMapsTable}
+          updateSelected={updateSelectedMaps}
         />
       ),
     },

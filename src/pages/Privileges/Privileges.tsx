@@ -189,17 +189,6 @@ const Privileges = () => {
     (item) => ipaPrimaryKey(item.cn)
   );
 
-  const bulkSelectorData = {
-    selected: selectedPrivileges,
-    updateSelected: updateSelectedPrivileges,
-    selectableTable: selectablePrivilegesTable,
-    nameAttr: "cn",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-  };
-
   const columnNames = ["Privilege name", "Description"];
   const keyNames = ["cn", "description"];
 
@@ -208,11 +197,10 @@ const Privileges = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={elementsList}
-          shownElementsList={elementsList}
-          elementData={bulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedPrivileges}
+          totalCount={totalCount}
+          selectableTable={selectablePrivilegesTable}
+          updateSelected={updateSelectedPrivileges}
         />
       ),
     },

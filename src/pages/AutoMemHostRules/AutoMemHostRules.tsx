@@ -295,21 +295,6 @@ const AutoMemHostRules = () => {
     }
   };
 
-  // Data wrappers
-  // TODO: Better separation of concerts
-  // - 'BulkSelectorPrep'
-  const automembersBulkSelectorData = {
-    selected: selectedAutomembers,
-    updateSelected: updateSelectedAutomembers,
-    selectableTable: selectableAutomembersTable,
-    nameAttr: "automemberRule",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled,
-    updateIsDisableEnableOp,
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     automemberRules,
     selectedAutomembers.map((rule) => rule.automemberRule),
@@ -382,11 +367,10 @@ const AutoMemHostRules = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={automemberRules}
-          shownElementsList={automemberRules}
-          elementData={automembersBulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedAutomembers}
+          totalCount={totalCount}
+          selectableTable={selectableAutomembersTable}
+          updateSelected={updateSelectedAutomembers}
         />
       ),
     },

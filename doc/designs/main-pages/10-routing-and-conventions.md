@@ -131,4 +131,4 @@ These are the same checks that run in CI, so catching them locally avoids failed
 2. **Missing `entryType`**: If using `useSearchEntriesMutation`, the `entryType` must exist in `GenericPayload`'s union type **and** be handled in the mutation's switch logic.
 3. **Wrong `pathname` in `useUpdateRoute`**: Must exactly match the route key in `NavRoutes.ts`.
 4. **Not calling `refetch()` on mount**: Include the `useEffect(() => { dataResponse.refetch(); }, [])` pattern to ensure fresh data.
-5. **Primary key mismatch**: The `pk` / `nameAttr` in `MainTable` and `BulkSelectorPrep` must match the actual field name in the data type (e.g. `"cn"`, `"uid"`, `"fqdn"`, `"idnsname"`).
+5. **Primary key mismatch**: The `pk` / `nameAttr` in `MainTable` must match the actual field name in the data type (e.g. `"cn"`, `"uid"`, `"fqdn"`, `"idnsname"`). Pass already-filtered selectable rows into `BulkSelectorPrep`'s `selectableTable` prop.

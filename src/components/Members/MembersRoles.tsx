@@ -23,7 +23,6 @@ import useUpdateRoute from "src/hooks/useUpdateRoute";
 // Utils
 import { API_VERSION_BACKUP, paginate } from "src/utils/utils";
 import { apiToRole } from "src/utils/rolesUtils";
-import { getSelectedPerPageData } from "src/utils/selectedPerPage";
 // RPC
 import { ErrorResult, FindRPCResponse } from "src/services/rpc";
 import {
@@ -106,19 +105,6 @@ const MembersRoles = (props: PropsToMembersRoles) => {
     () => rolesSelected.map((cn) => ({ cn })),
     [rolesSelected]
   );
-
-  const selectedPerPageData = getSelectedPerPageData(
-    roles,
-    rolesSelected,
-    (item) => item.cn
-  );
-
-  const bulkSelectorData = {
-    selected: selectedRoleItems,
-    updateSelected: updateSelectedRoles,
-    selectableTable: roles,
-    nameAttr: "cn",
-  };
 
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
@@ -303,13 +289,10 @@ const MembersRoles = (props: PropsToMembersRoles) => {
         totalItems={filteredRoles.length}
         bulkSelector={
           <BulkSelectorPrep
-            list={roles}
-            shownElementsList={roles}
-            elementData={bulkSelectorData}
-            buttonsData={{
-              updateIsDeleteButtonDisabled: () => {},
-            }}
-            selectedPerPageData={selectedPerPageData}
+            selected={selectedRoleItems}
+            totalCount={roles.length}
+            selectableTable={roles}
+            updateSelected={updateSelectedRoles}
           />
         }
       />

@@ -198,17 +198,6 @@ const Delegations = () => {
     (item) => ipaPrimaryKey(item.aciname)
   );
 
-  const bulkSelectorData = {
-    selected: selectedDelegations,
-    updateSelected: updateSelectedDelegations,
-    selectableTable: selectableTable,
-    nameAttr: "aciname",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-  };
-
   const columnNames = ["Delegation name"];
   const keyNames = ["aciname"];
 
@@ -217,11 +206,10 @@ const Delegations = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={elementsList}
-          shownElementsList={elementsList}
-          elementData={bulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedDelegations}
+          totalCount={totalCount}
+          selectableTable={selectableTable}
+          updateSelected={updateSelectedDelegations}
         />
       ),
     },

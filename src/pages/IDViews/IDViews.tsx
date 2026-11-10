@@ -335,19 +335,6 @@ const IDViews = () => {
   // - Selectable checkboxes on table
   const selectableViewsTable = viewsList.filter(isViewSelectable); // elements per Table
 
-  // Data wrappers
-  // - 'BulkSelectorIDViewPrep'
-  const viewsBulkSelectorData = {
-    selected: selectedViews,
-    updateSelected: updateSelectedViews,
-    selectableTable: selectableViewsTable,
-    nameAttr: "cn",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled,
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     viewsList,
     selectedViews.map((item) => ipaPrimaryKey(item.cn)),
@@ -416,11 +403,10 @@ const IDViews = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={viewsList}
-          shownElementsList={viewsList}
-          elementData={viewsBulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedViews}
+          totalCount={totalCount}
+          selectableTable={selectableViewsTable}
+          updateSelected={updateSelectedViews}
         />
       ),
     },

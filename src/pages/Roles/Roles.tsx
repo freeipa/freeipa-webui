@@ -181,17 +181,6 @@ const Roles = () => {
     (item) => ipaPrimaryKey(item.cn)
   );
 
-  const bulkSelectorData = {
-    selected: selectedRoles,
-    updateSelected: updateSelectedRoles,
-    selectableTable: selectableRolesTable,
-    nameAttr: "cn",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-  };
-
   const columnNames = ["Role name", "Description"];
   const keyNames = ["cn", "description"];
 
@@ -200,11 +189,10 @@ const Roles = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={elementsList}
-          shownElementsList={elementsList}
-          elementData={bulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedRoles}
+          totalCount={totalCount}
+          selectableTable={selectableRolesTable}
+          updateSelected={updateSelectedRoles}
         />
       ),
     },

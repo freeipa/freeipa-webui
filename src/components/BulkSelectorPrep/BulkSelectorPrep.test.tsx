@@ -41,22 +41,6 @@ const mockShownElementsList: MockType[] = [
   },
 ];
 
-const mockElementsData = {
-  selected: [], // Initially no items selected
-  updateSelected: vi.fn(),
-  selectableTable: mockList,
-  nameAttr: "cn",
-};
-
-const mockButtonsData = {
-  updateIsDeleteButtonDisabled: vi.fn(),
-};
-
-const mockSelectedPerPageData = {
-  selectedPerPage: 0,
-  updateSelectedPerPage: vi.fn(),
-};
-
 describe("BulkSelectorPrep Component", () => {
   afterEach(() => {
     cleanup();
@@ -64,43 +48,31 @@ describe("BulkSelectorPrep Component", () => {
   });
 
   it("renders component with default props and interacts with the menu", async () => {
+    const updateSelected = vi.fn();
+
     render(
       <BulkSelectorPrep
-        list={mockList}
-        shownElementsList={mockShownElementsList}
-        elementData={mockElementsData}
-        buttonsData={mockButtonsData}
-        selectedPerPageData={mockSelectedPerPageData}
+        selected={[]}
+        totalCount={mockList.length}
+        selectableTable={mockShownElementsList}
+        updateSelected={updateSelected}
       />
     );
 
-    // Find toggle button and click on it
     const toggleButton = screen.getByRole("button", {
       name: /Menu toggle with checkbox split button and text/i,
     });
     expect(toggleButton).toBeInTheDocument();
     fireEvent.click(toggleButton);
 
-    // Wait for the menu to open
     const selectPageItem = await screen.findByText(
       /^Select page \(1 items\)$/i
     );
     expect(selectPageItem).toBeInTheDocument();
 
-    // Click on "Select page" option
     fireEvent.click(selectPageItem);
 
-    // Verify mock  function calls
-    expect(mockElementsData.updateSelected).toHaveBeenCalledWith(
-      mockShownElementsList,
-      true
-    );
-    expect(mockButtonsData.updateIsDeleteButtonDisabled).toHaveBeenCalledWith(
-      false
-    );
-    expect(mockSelectedPerPageData.updateSelectedPerPage).toHaveBeenCalledWith(
-      mockShownElementsList.length
-    );
+    expect(updateSelected).toHaveBeenCalledWith(mockShownElementsList, true);
   });
 
   it("advertises selectable page count excluding empty selection keys", async () => {
@@ -128,19 +100,10 @@ describe("BulkSelectorPrep Component", () => {
 
     render(
       <BulkSelectorPrep
-        list={shownWithExcluded}
-        shownElementsList={shownWithExcluded}
-        elementData={{
-          selected: [],
-          updateSelected: vi.fn(),
-          selectableTable: selectableOnPage,
-          nameAttr: "cn",
-        }}
-        buttonsData={mockButtonsData}
-        selectedPerPageData={{
-          selectedPerPage: 1,
-          updateSelectedPerPage: vi.fn(),
-        }}
+        selected={[]}
+        totalCount={shownWithExcluded.length}
+        selectableTable={selectableOnPage}
+        updateSelected={vi.fn()}
       />
     );
 
@@ -149,10 +112,14 @@ describe("BulkSelectorPrep Component", () => {
     });
     fireEvent.click(toggleButton);
 
-    // 2 selectable rows on page, 1 already selected → "Select page (1 items)"
     const selectPageItem = await screen.findByText(
-      /^Select page \(1 items\)$/i
+      /^Select page \(2 items\)$/i
     );
     expect(selectPageItem).toBeInTheDocument();
+
+    const unselectAllItem = await screen.findByText(
+      /^Unselect all \(0 items\)$/i
+    );
+    expect(unselectAllItem).toBeInTheDocument();
   });
 });

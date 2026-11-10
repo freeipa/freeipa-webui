@@ -243,15 +243,6 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
     (trustDomain) => ipaPrimaryKey(trustDomain.cn)
   );
 
-  // Data wrappers
-  // - 'BulkSelectorprep'
-  const bulkSelectorData = {
-    selected: selectedElements,
-    updateSelected: updateSelectedTrustDomains,
-    selectableTable: selectableTrustDomainsTable,
-    nameAttr: "cn",
-  };
-
   // Modals functionality
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
   const [showEnableDisableModal, setShowEnableDisableModal] =
@@ -277,13 +268,10 @@ const TrustedDomains = (props: TrustedDomainsProps) => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={trustDomains}
-          shownElementsList={trustDomains}
-          elementData={bulkSelectorData}
-          buttonsData={{
-            updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-          }}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedElements}
+          totalCount={totalCount}
+          selectableTable={selectableTrustDomainsTable}
+          updateSelected={updateSelectedTrustDomains}
         />
       ),
     },

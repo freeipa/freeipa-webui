@@ -95,14 +95,9 @@ are URL-backed via `SearchInputLayout` / `PaginationLayout`, so you do **not** n
 ```tsx
   import { getSelectedPerPageData, ipaPrimaryKey } from "src/utils/selectedPerPage";
 
-  const bulkSelectorData = {
-    selected: selectedEntities,
-    updateSelected: updateSelectedEntities,
-    selectableTable: entitiesList.filter(isMyEntitySelectable),
-    nameAttr: "pk",  // The primary key field name (e.g. "uid", "cn", "fqdn")
-  };
+  const selectableTable = entitiesList.filter(isMyEntitySelectable);
 
-  // Derive how many of the current page rows are selected (do not keep a manual counter)
+  // Derive how many of the current page rows are selected (for table paginationData)
   const selectedPerPageData = getSelectedPerPageData(
     entitiesList,
     selectedEntities.map((e) => ipaPrimaryKey(e.pk)),
@@ -110,13 +105,17 @@ are URL-backed via `SearchInputLayout` / `PaginationLayout`, so you do **not** n
   );
 ```
 
+`BulkSelectorPrep` takes flat props (`selected`, `totalCount`, `selectableTable`,
+`updateSelected`). Delete-button enablement is owned by the parent via
+`updateSelected` (not by `BulkSelectorPrep`).
+
 ### 14. Toolbar Items
 
 The toolbar is built as an array of `ToolbarItem` objects. The standard order is:
 
 | Key | Component | Purpose |
 |-----|-----------|---------|
-| 0 | `BulkSelectorPrep` | Select all / none / page checkboxes |
+| 0 | `BulkSelectorPrep` | Select none / page / unselect all |
 | 1 | `SearchInputLayout` | Search input field |
 | 2 | Separator | Visual divider |
 | 3 | Refresh button | Refetch data |
@@ -134,11 +133,10 @@ The toolbar is built as an array of `ToolbarItem` objects. The standard order is
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={entitiesList}
-          shownElementsList={entitiesList}
-          elementData={bulkSelectorData}
-          buttonsData={{ updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled }}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedEntities}
+          totalCount={totalCount}
+          selectableTable={selectableTable}
+          updateSelected={updateSelectedEntities}
         />
       ),
     },

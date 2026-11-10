@@ -232,19 +232,6 @@ const SudoCmds = () => {
     (item) => ipaPrimaryKey(item.cn)
   );
 
-  // Data wrappers
-  // - 'BulkSelector'
-  const cmdsBulkSelectorData = {
-    selected: selectedCmdGroups,
-    updateSelected: updateSelectedCmdGroups,
-    selectableTable: selectableCmdGroupsTable,
-    nameAttr: "cn",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled,
-  };
-
   const deleteCmdsButtonsData = {
     updateIsDeleteButtonDisabled,
     updateIsDeletion,
@@ -275,11 +262,10 @@ const SudoCmds = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={cmdList}
-          shownElementsList={cmdList}
-          elementData={cmdsBulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedCmdGroups}
+          totalCount={totalCount}
+          selectableTable={selectableCmdGroupsTable}
+          updateSelected={updateSelectedCmdGroups}
         />
       ),
     },

@@ -209,30 +209,15 @@ const SystemAccounts = () => {
     (item) => ipaPrimaryKey(item.uid)
   );
 
-  const bulkSelectorData = {
-    selected: selectedSysAccounts,
-    updateSelected: updateSelectedSysAccounts,
-    selectableTable: selectableSysAccountsTable,
-    nameAttr: "uid",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-    updateIsEnableButtonDisabled: setIsEnableButtonDisabled,
-    updateIsDisableButtonDisabled: setIsDisableButtonDisabled,
-    isDisableEnableOp: true,
-  };
-
   const toolbarItems: ToolbarItem[] = [
     {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={elementsList}
-          shownElementsList={elementsList}
-          elementData={bulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedSysAccounts}
+          totalCount={totalCount}
+          selectableTable={selectableSysAccountsTable}
+          updateSelected={updateSelectedSysAccounts}
         />
       ),
     },

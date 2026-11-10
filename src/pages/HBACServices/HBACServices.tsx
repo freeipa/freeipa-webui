@@ -231,20 +231,6 @@ const HBACServices = () => {
     }
   };
 
-  // Data wrappers
-  // TODO: Better separation of concerts
-  // - 'BulkSelectorHBACServicesPrep'
-  const rulesBulkSelectorData = {
-    selected: selectedServices,
-    updateSelected: updateSelectedServices,
-    selectableTable: selectableServicesTable,
-    nameAttr: "cn",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled,
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     servicesList,
     selectedServices.map((item) => ipaPrimaryKey(item.cn)),
@@ -283,11 +269,10 @@ const HBACServices = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={servicesList}
-          shownElementsList={servicesList}
-          elementData={rulesBulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedServices}
+          totalCount={totalCount}
+          selectableTable={selectableServicesTable}
+          updateSelected={updateSelectedServices}
         />
       ),
     },

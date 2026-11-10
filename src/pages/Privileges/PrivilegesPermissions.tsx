@@ -30,7 +30,6 @@ import {
 } from "src/services/rpcPrivileges";
 // Utils
 import { paginate } from "src/utils/utils";
-import { getSelectedPerPageData } from "src/utils/selectedPerPage";
 
 interface PropsToPrivilegesPermissions {
   privilege: Privilege;
@@ -189,7 +188,7 @@ const PrivilegesPermissions = (props: PropsToPrivilegesPermissions) => {
     [selectedPermissions]
   );
 
-  // Delete button disabled state (managed by BulkSelectorPrep and selection helpers)
+  // Delete button disabled state (owned by parent via updateSelected / onCheckItemsChange)
   const [isDeleteButtonDisabled, setIsDeleteButtonDisabled] =
     React.useState(true);
 
@@ -228,22 +227,6 @@ const PrivilegesPermissions = (props: PropsToPrivilegesPermissions) => {
   // Buttons functionality
   const isRefreshButtonEnabled = !privilegeQuery.isFetching;
   const isAddButtonEnabled = isRefreshButtonEnabled;
-
-  // BulkSelectorPrep data
-  const selectablePermissionsTable = permissions;
-
-  const selectedPerPageData = getSelectedPerPageData(
-    permissions,
-    permissionsSelectedNames,
-    (perm) => perm.cn
-  );
-
-  const bulkSelectorData = {
-    selected: selectedPermissions,
-    updateSelected: updateSelectedPermissions,
-    selectableTable: selectablePermissionsTable,
-    nameAttr: "cn",
-  };
 
   // API calls
   const [removePermissionFromPrivilege] =
@@ -315,13 +298,10 @@ const PrivilegesPermissions = (props: PropsToPrivilegesPermissions) => {
       <MemberOfToolbar
         bulkSelector={
           <BulkSelectorPrep
-            list={permissions}
-            shownElementsList={permissions}
-            elementData={bulkSelectorData}
-            buttonsData={{
-              updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-            }}
-            selectedPerPageData={selectedPerPageData}
+            selected={selectedPermissions}
+            totalCount={permissions.length}
+            selectableTable={permissions}
+            updateSelected={updateSelectedPermissions}
           />
         }
         searchPlaceholder="Search permissions"

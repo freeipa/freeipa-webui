@@ -190,22 +190,6 @@ const Permissions = () => {
     }
   };
 
-  const bulkSelectorData = {
-    selected: selectedPermissions,
-    updateSelected: updateSelectedPermissions,
-    selectableTable: selectablePermissionsTable,
-    nameAttr: "cn",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-  };
-
-  const selectedPerPageData = {
-    selectedPerPage,
-    updateSelectedPerPage: setSelectedPerPage,
-  };
-
   const columnNames = ["Permission name", "Granted rights"];
   const keyNames = ["cn", "ipapermright"];
 
@@ -214,11 +198,10 @@ const Permissions = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={elementsList}
-          shownElementsList={elementsList}
-          elementData={bulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedPermissions}
+          totalCount={totalCount}
+          selectableTable={selectablePermissionsTable}
+          updateSelected={updateSelectedPermissions}
         />
       ),
     },

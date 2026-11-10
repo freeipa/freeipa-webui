@@ -200,15 +200,6 @@ const Trusts = () => {
     (trust) => ipaPrimaryKey(trust.cn)
   );
 
-  // Data wrappers
-  // - 'BulkSelectorprep'
-  const bulkSelectorData = {
-    selected: selectedElements,
-    updateSelected: updateSelectedTrusts,
-    selectableTable: selectableTrustsTable,
-    nameAttr: "cn",
-  };
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
@@ -219,13 +210,10 @@ const Trusts = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={trusts}
-          shownElementsList={trusts}
-          elementData={bulkSelectorData}
-          buttonsData={{
-            updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-          }}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedElements}
+          totalCount={totalCount}
+          selectableTable={selectableTrustsTable}
+          updateSelected={updateSelectedTrusts}
         />
       ),
     },

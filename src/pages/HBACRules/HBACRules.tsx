@@ -268,23 +268,6 @@ const HBACRules = () => {
     }
   };
 
-  // Data wrappers
-  // TODO: Better separation of concerts
-  // - 'BulkSelectorHBACRulesPrep'
-  const rulesBulkSelectorData = {
-    selected: selectedRules,
-    updateSelected: updateSelectedRules,
-    selectableTable: selectableRulesTable,
-    nameAttr: "cn",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled,
-    updateIsEnableButtonDisabled,
-    updateIsDisableButtonDisabled,
-    updateIsDisableEnableOp,
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     rulesList,
     selectedRules.map((item) => ipaPrimaryKey(item.cn)),
@@ -334,11 +317,10 @@ const HBACRules = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={rulesList}
-          shownElementsList={rulesList}
-          elementData={rulesBulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedRules}
+          totalCount={totalCount}
+          selectableTable={selectableRulesTable}
+          updateSelected={updateSelectedRules}
         />
       ),
     },

@@ -139,7 +139,14 @@ Build the toolbar with all the action buttons:
 
 ```tsx
 const toolbarItems: ToolbarItem[] = [
-  { key: 0, element: <BulkSelectorPrep bulkSelectorData={bulkSelectorData} /> },
+  { key: 0, element: (
+      <BulkSelectorPrep
+        selected={selectedElements}
+        totalCount={totalCount}
+        selectableTable={selectable}
+        updateSelected={updateSelected}
+      />
+    ) },
   { key: 1, element: <SearchInputLayout dataCy="search" name="search" ariaLabel="Search" placeholder="Search" />, toolbarItemVariant: ToolbarItemVariant.label },
   { key: 2, toolbarItemVariant: ToolbarItemVariant.separator },
   { key: 3, element: <SecondaryButton onClickHandler={refreshData}>Refresh</SecondaryButton> },

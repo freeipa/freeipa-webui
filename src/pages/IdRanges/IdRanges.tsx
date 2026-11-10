@@ -168,13 +168,6 @@ const IdRanges = () => {
     }
   };
 
-  const bulkSelectorData = {
-    selected: selectedElements,
-    updateSelected: updateSelectedIdRanges,
-    selectableTable: selectableIdRangesTable,
-    nameAttr: "cn",
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     shownElementsList,
     selectedElements.map((item) => ipaPrimaryKey(item.cn)),
@@ -187,15 +180,10 @@ const IdRanges = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={shownElementsList}
-          shownElementsList={shownElementsList}
-          elementData={bulkSelectorData}
-          buttonsData={{
-            updateIsDeleteButtonDisabled: (disabled: boolean) => {
-              void disabled;
-            },
-          }}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedElements}
+          totalCount={totalCount}
+          selectableTable={selectableIdRangesTable}
+          updateSelected={updateSelectedIdRanges}
         />
       ),
     },

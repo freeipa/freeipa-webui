@@ -230,19 +230,6 @@ const SudoCmds = () => {
     (item) => ipaPrimaryKey(item.sudocmd)
   );
 
-  // Data wrappers
-  // - 'BulkSelector'
-  const cmdsBulkSelectorData = {
-    selected: selectedCmds,
-    updateSelected: updateSelectedCmds,
-    selectableTable: selectableCmdsTable,
-    nameAttr: "sudocmd",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled,
-  };
-
   // 'DeleteSudoCmds'
   const deleteCmdsButtonsData = {
     updateIsDeleteButtonDisabled,
@@ -275,11 +262,10 @@ const SudoCmds = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={cmdList}
-          shownElementsList={cmdList}
-          elementData={cmdsBulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedCmds}
+          totalCount={totalCount}
+          selectableTable={selectableCmdsTable}
+          updateSelected={updateSelectedCmds}
         />
       ),
     },

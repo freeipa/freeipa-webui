@@ -215,15 +215,6 @@ const OtpTokens = () => {
     (otpToken) => ipaPrimaryKey(otpToken.ipatokenuniqueid)
   );
 
-  // Data wrappers
-  // - 'BulkSelectorrep'
-  const bulkSelectorData = {
-    selected: selectedElements,
-    updateSelected: updateSelectedOtpTokens,
-    selectableTable: selectableOtpTokensTable,
-    nameAttr: "ipatokenuniqueid",
-  };
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
@@ -249,13 +240,10 @@ const OtpTokens = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={otpTokens}
-          shownElementsList={otpTokens}
-          elementData={bulkSelectorData}
-          buttonsData={{
-            updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-          }}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedElements}
+          totalCount={totalCount}
+          selectableTable={selectableOtpTokensTable}
+          updateSelected={updateSelectedOtpTokens}
         />
       ),
     },

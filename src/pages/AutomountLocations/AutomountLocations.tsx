@@ -191,13 +191,6 @@ const AutomountLocations = () => {
     (item) => ipaPrimaryKey(item.cn)
   );
 
-  const bulkSelectorData = {
-    selected: selectedElements,
-    updateSelected: updateSelectedLocations,
-    selectableTable: selectableLocationsTable,
-    nameAttr: "cn",
-  };
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = React.useState<boolean>(false);
@@ -208,13 +201,10 @@ const AutomountLocations = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={locations}
-          shownElementsList={locations}
-          elementData={bulkSelectorData}
-          buttonsData={{
-            updateIsDeleteButtonDisabled: setIsDeleteButtonDisabled,
-          }}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedElements}
+          totalCount={totalCount}
+          selectableTable={selectableLocationsTable}
+          updateSelected={updateSelectedLocations}
         />
       ),
     },

@@ -214,17 +214,6 @@ const PasswordPolicies = () => {
   // Show table rows
   // Data wrappers
   // TODO: Better separation of concerts
-  const buttonsData = {
-    updateIsDeleteButtonDisabled,
-  };
-
-  // - 'BulkSelectorrep'
-  const bulkSelectorData = {
-    selected: selectedElements,
-    updateSelected: updateSelectedPwPolicies,
-    selectableTable: selectablePwPoliciesTable,
-    nameAttr: "cn",
-  };
 
   // Modals functionality
   const [showAddModal, setShowAddModal] = React.useState(false);
@@ -252,11 +241,10 @@ const PasswordPolicies = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={pwPolicies}
-          shownElementsList={pwPolicies}
-          elementData={bulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedElements}
+          totalCount={totalCount}
+          selectableTable={selectablePwPoliciesTable}
+          updateSelected={updateSelectedPwPolicies}
         />
       ),
     },

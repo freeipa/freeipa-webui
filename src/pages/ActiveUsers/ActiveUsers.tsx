@@ -410,23 +410,6 @@ const ActiveUsers = () => {
     }
   };
 
-  // Data wrappers
-  // TODO: Better separation of concerts
-  // - 'BulkSelectorUsersPrep'
-  const usersBulkSelectorData = {
-    selected: selectedUsers,
-    updateSelected: updateSelectedUsers,
-    selectableTable: selectableUsersTable,
-    nameAttr: "uid",
-  };
-
-  const buttonsData = {
-    updateIsDeleteButtonDisabled,
-    updateIsEnableButtonDisabled,
-    updateIsDisableButtonDisabled,
-    updateIsDisableEnableOp,
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     activeUsersList,
     selectedUsers.map((item) => ipaPrimaryKey(item.uid)),
@@ -476,11 +459,10 @@ const ActiveUsers = () => {
       key: 0,
       element: (
         <BulkSelectorPrep
-          list={activeUsersList}
-          shownElementsList={activeUsersList}
-          elementData={usersBulkSelectorData}
-          buttonsData={buttonsData}
-          selectedPerPageData={selectedPerPageData}
+          selected={selectedUsers}
+          totalCount={totalCount}
+          selectableTable={selectableUsersTable}
+          updateSelected={updateSelectedUsers}
         />
       ),
     },
