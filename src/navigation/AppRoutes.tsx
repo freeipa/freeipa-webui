@@ -34,6 +34,7 @@ import SudoCmdsTabs from "src/pages/SudoCmds/SudoCmdsTabs";
 import SudoCmdGroups from "src/pages/SudoCmdGroups/SudoCmdGroups";
 import SudoCmdGroupsTabs from "src/pages/SudoCmdGroups/SudoCmdGroupsTabs";
 import SELinuxUserMaps from "src/pages/SELinuxUserMaps/SELinuxUserMaps";
+import SELinuxUserMapsTabs from "src/pages/SELinuxUserMaps/SELinuxUserMapsTabs";
 import PasswordPolicies from "src/pages/PasswordPolicies/PasswordPolicies";
 import KrbTicketPolicy from "src/pages/KrbTicketPolicy/KrbTicketPolicy";
 import UserGroupsTabs from "src/pages/UserGroups/UserGroupsTabs";
@@ -437,6 +438,12 @@ export const AppRoutes = (): React.ReactElement => {
             </Route>
             <Route path="selinux-user-maps">
               <Route path="" element={<SELinuxUserMaps />} />
+              <Route path=":cn">
+                <Route
+                  path=""
+                  element={<SELinuxUserMapsTabs section="settings" />}
+                />
+              </Route>
             </Route>
             <Route path="password-policies">
               <Route path="" element={<PasswordPolicies />} />
