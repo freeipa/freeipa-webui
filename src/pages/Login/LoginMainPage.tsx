@@ -31,11 +31,15 @@ import {
   useX509LoginMutation,
 } from "src/services/rpcAuth";
 // Redux
-import { useAppDispatch } from "src/store/hooks";
+import { useAppDispatch, useAppSelector } from "src/store/hooks";
 // Navigation
 import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router";
 import { LoginPage } from "./LoginPage";
+// Layouts
+import DataSpinner from "src/components/layouts/DataSpinner";
+// OIDC
+import { initiateOidcLogin } from "src/utils/oidcUtils";
 
 interface StateFromSyncOtpPage {
   alertMessage: string;
@@ -44,6 +48,10 @@ interface StateFromSyncOtpPage {
 const LoginMainPage = () => {
   // Redux
   const dispatch = useAppDispatch();
+  const ahdapaAvailable = useAppSelector(
+    (state) => state.ahdapa?.available ?? false
+  );
+  const ahdapaProbed = useAppSelector((state) => state.ahdapa?.probed ?? false);
 
   // Navigate
   const navigate = useNavigate();
@@ -65,7 +73,17 @@ const LoginMainPage = () => {
     }
   }, [location.state]);
 
-  const [showHelperText, setShowHelperText] = React.useState(false);
+  // Show OIDC errors from the callback.
+  // useState (not useMemo): React StrictMode calls useMemo twice and keeps the
+  // second result, which would be null after the first call already removed the
+  // item from sessionStorage.
+  const [oidcError] = React.useState(() => {
+    const err = sessionStorage.getItem("oidc_login_error");
+    if (err) sessionStorage.removeItem("oidc_login_error");
+    return err;
+  });
+
+  const [showHelperText, setShowHelperText] = React.useState(!!oidcError);
   const [username, setUsername] = React.useState("");
   const [isValidUsername, setIsValidUsername] = React.useState(true);
   const [password, setPassword] = React.useState("");
@@ -99,9 +117,28 @@ const LoginMainPage = () => {
   const [onKrbLogin] = useKrbLoginMutation();
   const [onCertLogin] = useX509LoginMutation();
 
-  // Kerberos login when loading the component
+  const oidcRedirectFailed = React.useRef(false);
+
+  // OIDC PKCE login when ahdapa is available, or Kerberos auto-login as fallback.
+  // Wait for the ahdapa probe to complete before choosing the login method.
+  // After explicit logout (isKerberosDisabled), show the login page instead of
+  // auto-redirecting — SPNEGO or an existing ahdapa session would re-login
+  // immediately, defeating the logout.
   React.useEffect(() => {
-    if (!username && !isKerberosDisabled) {
+    if (!ahdapaProbed || isKerberosDisabled || oidcError) {
+      return;
+    }
+    if (ahdapaAvailable) {
+      initiateOidcLogin().then((ok) => {
+        if (!ok) {
+          oidcRedirectFailed.current = true;
+          setErrorMessage("OIDC login is not available");
+          setShowHelperText(true);
+        }
+      });
+      return;
+    }
+    if (!username) {
       onKrbLogin().then((response) => {
         if ("error" in response) {
           const receivedError = response.error as MetaResponse;
@@ -113,20 +150,20 @@ const LoginMainPage = () => {
             status === 200 &&
             wwwAuthenticateHeader?.startsWith("Negotiate")
           ) {
-            // Success on Kerberos login
             onSuccessLogin();
           } else {
-            // Set error without showing the modal
             setErrorMessage("Authentication with Kerberos failed");
           }
         }
       });
     }
-  }, []);
+  }, [ahdapaProbed, ahdapaAvailable, isKerberosDisabled]);
 
   // Handling API errors
   const [showErrorModal, setShowErrorModal] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState<string>("");
+  const [errorMessage, setErrorMessage] = React.useState<string>(
+    oidcError || ""
+  );
 
   // Modal to show any received error
   const errorModal = (errorMessage: string) => {
@@ -323,6 +360,20 @@ const LoginMainPage = () => {
 
   const socialMediaLoginContent = (
     <React.Fragment>
+      {ahdapaAvailable && (
+        <LoginMainFooterLinksItem>
+          <Button
+            variant="link"
+            data-cy="login-button-oidc"
+            aria-label="Login using Single Sign-On"
+            onClick={() => {
+              initiateOidcLogin();
+            }}
+          >
+            <Content component="p">Login using Single Sign-On</Content>
+          </Button>
+        </LoginMainFooterLinksItem>
+      )}
       <LoginMainFooterLinksItem>
         <Button
           variant="link"
@@ -406,6 +457,16 @@ const LoginMainPage = () => {
       </ListItem>
     </List>
   );
+
+  if (
+    ahdapaProbed &&
+    ahdapaAvailable &&
+    !isKerberosDisabled &&
+    !oidcRedirectFailed.current &&
+    !oidcError
+  ) {
+    return <DataSpinner />;
+  }
 
   return (
     <LoginPage

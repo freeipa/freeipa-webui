@@ -13,18 +13,23 @@ import { useAppSelector } from "src/store/hooks";
 
 export interface ConfigurationSettings {
   dnsIsEnabled: boolean;
+  ahdapaIsAvailable: boolean;
   // ... other configuration settings here
 }
 
 const useConfigurationSettings = () => {
   const dnsIsEnabled = useAppSelector((state) => state.global.dnsIsEnabled);
+  const ahdapaIsAvailable = useAppSelector(
+    (state) => state.ahdapa?.available ?? false
+  );
 
   const configurationSettings: ConfigurationSettings = React.useMemo(
     () => ({
       dnsIsEnabled: dnsIsEnabled,
+      ahdapaIsAvailable: ahdapaIsAvailable,
       // ... other configuration settings here
     }),
-    [dnsIsEnabled]
+    [dnsIsEnabled, ahdapaIsAvailable]
   );
 
   return configurationSettings;
