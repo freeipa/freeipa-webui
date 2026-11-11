@@ -223,7 +223,7 @@ Feature: Sudo command groups handling
     Then I should see "cmdgroup_dup" in the "modal-textbox-cmd-grp-name" textbox
 
     When I click on the "modal-button-add" button
-    Then I should see "add-sudo-cmd-group-modal-error" modal
+    Then I should see "add-sudo-cmd-grp-error" alert
 
   @cleanup
   Scenario: Cleanup
