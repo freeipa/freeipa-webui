@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
+import { useAppSelector } from "src/store/hooks";
 
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useSysAccountShowQuery } from "src/services/rpcSystemAccounts";
 // Data types
-import { SysAccount, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { SysAccount } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type SysAccountSettingsData = {
   isLoading: boolean;
@@ -25,9 +26,7 @@ const useSysAccountSettings = (
   sysAccountId: string
 ): SysAccountSettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] System account
   const sysAccountQuery = useSysAccountShowQuery(sysAccountId);
@@ -105,7 +104,7 @@ const useSysAccountSettings = (
   };
 
   return {
-    isLoading: metadataLoading || isSysAccountLoading,
+    isLoading: isSysAccountLoading,
     isFetching: sysAccountQuery.isFetching,
     notFound,
     modified,

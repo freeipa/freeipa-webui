@@ -1,5 +1,6 @@
 // Data types
-import { Metadata, Permission } from "src/utils/datatypes/globalDataTypes";
+import { Permission } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 import { SelectOptionProps } from "src/components/layouts/SimpleSelector";
 // Utils
 import { convertApiObj } from "./ipaObjectUtils";
@@ -14,12 +15,16 @@ export const BIND_RULE_OPTIONS: SelectOptionProps[] = [
 // Objects that share names with others but shouldn't be user-selectable
 export const FILTERED_OBJECTS: readonly string[] = ["automember_default_group"];
 
-export const generateRights = (metadata: Metadata | undefined): string[] => {
-  const rightParam = metadata?.objects?.permission?.takes_params?.find(
+export const generateRights = (metadata: Metadata): string[] => {
+  const rightParam = metadata.objects?.permission?.takes_params?.find(
     (param) => param.name === "ipapermright"
   );
 
-  return rightParam?.values || [];
+  if (!rightParam || rightParam.class !== "StrEnum") {
+    return [];
+  }
+
+  return rightParam.values;
 };
 
 export const asRecord = (

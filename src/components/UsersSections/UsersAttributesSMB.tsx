@@ -4,7 +4,8 @@ import { Flex, FlexItem, Form, FormGroup } from "@patternfly/react-core";
 // Layout
 import PopoverWithIconLayout from "../layouts/PopoverWithIconLayout";
 // Data types
-import { Metadata, User } from "src/utils/datatypes/globalDataTypes";
+import { User } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 // Form
 import IpaTextInput from "../Form/IpaTextInput";
 import IpaSelect from "../Form/IpaSelect";

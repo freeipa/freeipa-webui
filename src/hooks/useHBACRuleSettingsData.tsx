@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
+import { useAppSelector } from "src/store/hooks";
 
 // RPC
-import { useGetObjectMetadataQuery } from "src/services/rpc";
 import { useGetHbacRuleFullDataQuery } from "src/services/rpcHBACRules";
 // Data types
-import { HBACRule, Metadata } from "src/utils/datatypes/globalDataTypes";
+import { HBACRule } from "src/utils/datatypes/globalDataTypes";
+import { Metadata } from "src/services/types/metadata";
 
 type SettingsData = {
   isLoading: boolean;
@@ -22,9 +23,7 @@ type SettingsData = {
 
 const useHBACRuleSettings = (ruleId: string): SettingsData => {
   // [API call] Metadata
-  const metadataQuery = useGetObjectMetadataQuery();
-  const metadata = metadataQuery.data || {};
-  const metadataLoading = metadataQuery.isLoading;
+  const metadata = useAppSelector((state) => state.global.metadata);
 
   // [API call] Host Group
   const ruleFullDataQuery = useGetHbacRuleFullDataQuery(ruleId);
@@ -40,7 +39,7 @@ const useHBACRuleSettings = (ruleId: string): SettingsData => {
   }, [ruleFullData, ruleFullDataQuery.isFetching]);
 
   const settings = {
-    isLoading: metadataLoading || isFullDataLoading,
+    isLoading: isFullDataLoading,
     isFetching: ruleFullDataQuery.isFetching,
     modified,
     setModified,
