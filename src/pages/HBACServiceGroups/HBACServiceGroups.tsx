@@ -25,7 +25,7 @@ import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
-import HBACServiceGroupsTable from "./HBACServiceGroupsTable";
+import MainTable from "src/components/tables/MainTable";
 // Components
 import PaginationLayout from "../../components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
@@ -269,11 +269,11 @@ const HBACServiceGroups = () => {
 
   // 'ServicesTable'
   const servicesTableData = {
-    isHbacServiceSelectable: isHbacServiceGroupSelectable,
-    selectedServices,
-    selectableServicesTable,
-    setServicesSelected,
-    clearSelectedServices,
+    isElementSelectable: isHbacServiceGroupSelectable,
+    selectedElements: selectedServices,
+    selectableElementsTable: selectableServicesTable,
+    setElementsSelected: setServicesSelected,
+    clearSelectedElements: clearSelectedServices,
   };
 
   const servicesTableButtonsData = {
@@ -399,13 +399,19 @@ const HBACServiceGroups = () => {
                   {batchError !== undefined && batchError ? (
                     <GlobalErrors errors={globalErrors.getAll()} />
                   ) : (
-                    <HBACServiceGroupsTable
+                    <MainTable
+                      tableTitle="HBAC service groups table"
                       shownElementsList={servicesList}
+                      pk="cn"
+                      keyNames={["cn", "description"]}
+                      columnNames={["Service group name", "Description"]}
+                      hasCheckboxes={true}
+                      pathname="hbac-service-groups"
                       showTableRows={!isBatchFetching}
-                      servicesData={servicesTableData}
+                      showLink={true}
+                      elementsData={servicesTableData}
                       buttonsData={servicesTableButtonsData}
                       paginationData={selectedPerPageData}
-                      searchValue={searchValue}
                     />
                   )}
                 </InnerScrollContainer>

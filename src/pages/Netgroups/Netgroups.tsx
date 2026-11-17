@@ -24,7 +24,7 @@ import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayou
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 // Tables
-import NetgroupsTable from "src/pages/Netgroups/NetgroupsTable";
+import MainTable from "src/components/tables/MainTable";
 // Modal
 import AddNetgroup from "src/components/modals/AddNetgroup";
 import DeleteNetgroups from "src/components/modals/DeleteNetgroups";
@@ -258,11 +258,11 @@ const Netgroups = () => {
 
   // - 'NetroupsTable'
   const groupsTableData = {
-    isNetgroupSelectable,
-    selectedGroups,
-    selectableGroupsTable,
-    setGroupSelected,
-    clearSelectedGroups,
+    isElementSelectable: isNetgroupSelectable,
+    selectedElements: selectedGroups,
+    selectableElementsTable: selectableGroupsTable,
+    setElementsSelected: setGroupSelected,
+    clearSelectedElements: clearSelectedGroups,
   };
 
   const groupsTableButtonsData = {
@@ -388,14 +388,19 @@ const Netgroups = () => {
                   {batchError !== undefined && batchError ? (
                     <GlobalErrors errors={globalErrors.getAll()} />
                   ) : (
-                    <NetgroupsTable
-                      elementsList={groupsList}
+                    <MainTable
+                      tableTitle="Netgroups table"
                       shownElementsList={groupsList}
+                      pk="cn"
+                      keyNames={["cn", "description"]}
+                      columnNames={["Group Name", "Description"]}
+                      hasCheckboxes={true}
+                      pathname="netgroups"
                       showTableRows={!isBatchFetching}
-                      groupsData={groupsTableData}
+                      showLink={true}
+                      elementsData={groupsTableData}
                       buttonsData={groupsTableButtonsData}
                       paginationData={selectedPerPageData}
-                      searchValue={searchValue}
                     />
                   )}
                 </InnerScrollContainer>

@@ -24,7 +24,7 @@ import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
-import UsersTable from "../../components/tables/UsersTable";
+import MainTable from "../../components/tables/MainTable";
 // Components
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
@@ -267,13 +267,13 @@ const PreservedUsers = () => {
     clearSelectedUsers,
   };
 
-  // 'UsersTable'
+  // 'MainTable'
   const usersTableData = {
-    isUserSelectable,
-    selectedUsers,
-    selectableUsersTable,
-    setUserSelected,
-    clearSelectedUsers,
+    isElementSelectable: isUserSelectable,
+    selectedElements: selectedUsers,
+    selectableElementsTable: selectableUsersTable,
+    setElementsSelected: setUserSelected,
+    clearSelectedElements: clearSelectedUsers,
   };
 
   const usersTableButtonsData = {
@@ -412,14 +412,39 @@ const PreservedUsers = () => {
                   {batchError !== undefined && batchError ? (
                     <GlobalErrors errors={globalErrors.getAll()} />
                   ) : (
-                    <UsersTable
+                    <MainTable
+                      tableTitle="Preserved users table"
                       shownElementsList={preservedUsersList}
-                      from="preserved-users"
+                      pk="uid"
+                      keyNames={[
+                        "uid",
+                        "givenname",
+                        "sn",
+                        "nsaccountlock",
+                        "uidnumber",
+                        "mail",
+                        "telephonenumber",
+                        "title",
+                      ]}
+                      columnNames={[
+                        "User login",
+                        "First name",
+                        "Last name",
+                        "Status",
+                        "UID",
+                        "Email address",
+                        "Phone",
+                        "Job title",
+                      ]}
+                      hasCheckboxes={true}
+                      pathname="preserved-users"
                       showTableRows={!isBatchFetching}
-                      usersData={usersTableData}
+                      showLink={true}
+                      elementsData={usersTableData}
                       buttonsData={usersTableButtonsData}
                       paginationData={selectedPerPageData}
-                      searchValue={searchValue}
+                      statusElementName="nsaccountlock"
+                      invertStatusValue={true}
                     />
                   )}
                 </InnerScrollContainer>

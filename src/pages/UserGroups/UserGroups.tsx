@@ -24,7 +24,7 @@ import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayou
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 // Tables
-import UserGroupsTable from "./UserGroupsTable";
+import MainTable from "src/components/tables/MainTable";
 // Modal
 import AddUserGroup from "src/components/modals/AddUserGroup";
 import DeleteUserGroups from "src/components/modals/DeleteUserGroups";
@@ -258,11 +258,11 @@ const UserGroups = () => {
 
   // - 'UserGroupsTable'
   const groupsTableData = {
-    isUserGroupSelectable,
-    selectedGroups,
-    selectableGroupsTable,
-    setGroupSelected,
-    clearSelectedGroups,
+    isElementSelectable: isUserGroupSelectable,
+    selectedElements: selectedGroups,
+    selectableElementsTable: selectableGroupsTable,
+    setElementsSelected: setGroupSelected,
+    clearSelectedElements: clearSelectedGroups,
   };
 
   const groupsTableButtonsData = {
@@ -384,14 +384,19 @@ const UserGroups = () => {
                   {batchError !== undefined && batchError ? (
                     <GlobalErrors errors={globalErrors.getAll()} />
                   ) : (
-                    <UserGroupsTable
-                      elementsList={groupsList}
+                    <MainTable
+                      tableTitle="User groups table"
                       shownElementsList={groupsList}
+                      pk="cn"
+                      keyNames={["cn", "gidnumber", "description"]}
+                      columnNames={["Group Name", "GID", "Description"]}
+                      hasCheckboxes={true}
+                      pathname="user-groups"
                       showTableRows={!isBatchFetching}
-                      groupsData={groupsTableData}
+                      showLink={true}
+                      elementsData={groupsTableData}
                       buttonsData={groupsTableButtonsData}
                       paginationData={selectedPerPageData}
-                      searchValue={searchValue}
                     />
                   )}
                 </InnerScrollContainer>

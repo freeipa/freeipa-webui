@@ -28,7 +28,7 @@ import ToolbarLayout, {
 } from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
-import MainTable from "./AutomemRulesTable";
+import MainTable from "src/components/tables/MainTable";
 // Components
 import PaginationLayout from "../../components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
@@ -508,13 +508,18 @@ const AutoMemUserRules = () => {
                   <GlobalErrors errors={globalErrors.getAll()} />
                 ) : (
                   <MainTable
+                    tableTitle="Automember user groups table"
                     shownElementsList={automemberRules}
+                    pk="automemberRule"
+                    keyNames={["automemberRule", "description"]}
+                    columnNames={["Automember rule", "Description"]}
+                    hasCheckboxes={true}
+                    pathname="user-group-rules"
                     showTableRows={!userGroupRulesData.isFetching}
+                    showLink={true}
                     elementsData={automembersTableData}
                     buttonsData={automembersTableButtonsData}
                     paginationData={selectedPerPageData}
-                    searchValue={searchValue}
-                    automemberType="user-group"
                   />
                 )}
               </InnerScrollContainer>

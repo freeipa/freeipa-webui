@@ -27,7 +27,7 @@ import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayou
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 // Tables
-import IDViewsTable from "src/pages/IDViews/IDViewsTable";
+import MainTable from "src/components/tables/MainTable";
 // Modal
 import AddIDViewModal from "src/components/modals/AddIDView";
 import DeleteIDViewsModal from "src/components/modals/DeleteIDViews";
@@ -367,11 +367,11 @@ const IDViews = () => {
 
   // - 'Views Table'
   const viewsTableData = {
-    isViewSelectable,
-    selectedViews,
-    selectableViewsTable,
-    setViewSelected,
-    clearSelectedViews,
+    isElementSelectable: isViewSelectable,
+    selectedElements: selectedViews,
+    selectableElementsTable: selectableViewsTable,
+    setElementsSelected: setViewSelected,
+    clearSelectedElements: clearSelectedViews,
   };
 
   const viewsTableButtonsData = {
@@ -540,14 +540,19 @@ const IDViews = () => {
                   {batchError !== undefined && batchError ? (
                     <GlobalErrors errors={globalErrors.getAll()} />
                   ) : (
-                    <IDViewsTable
-                      elementsList={viewsList}
+                    <MainTable
+                      tableTitle="ID views table"
                       shownElementsList={viewsList}
+                      pk="cn"
+                      keyNames={["cn", "description"]}
+                      columnNames={["ID view name", "Description"]}
+                      hasCheckboxes={true}
+                      pathname="id-views"
                       showTableRows={!isBatchFetching}
-                      idViewsData={viewsTableData}
+                      showLink={true}
+                      elementsData={viewsTableData}
                       buttonsData={viewsTableButtonsData}
                       paginationData={selectedPerPageData}
-                      searchValue={searchValue}
                     />
                   )}
                 </InnerScrollContainer>

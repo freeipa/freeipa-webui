@@ -24,7 +24,7 @@ import BulkSelectorPrep from "../../components/BulkSelectorPrep";
 import PaginationLayout from "../../components/layouts/PaginationLayout";
 
 // Tables
-import ServicesTable from "./ServicesTable";
+import MainTable from "src/components/tables/MainTable";
 // Redux
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 // Data types
@@ -283,11 +283,11 @@ const Services = () => {
 
   // - 'ServicesTable'
   const servicesTableData = {
-    isServiceSelectable,
-    selectedServices,
-    selectableServicesTable,
-    setServiceSelected,
-    clearSelectedServices,
+    isElementSelectable: isServiceSelectable,
+    selectedElements: selectedServices,
+    selectableElementsTable: selectableServicesTable,
+    setElementsSelected: setServiceSelected,
+    clearSelectedElements: clearSelectedServices,
   };
 
   const servicesTableButtonsData = {
@@ -421,14 +421,27 @@ const Services = () => {
                   {batchError !== undefined && batchError ? (
                     <GlobalErrors errors={globalErrors.getAll()} />
                   ) : (
-                    <ServicesTable
-                      elementsList={servicesList}
+                    <MainTable
+                      tableTitle="Services table"
                       shownElementsList={servicesList}
+                      pk="krbcanonicalname"
+                      keyNames={["krbcanonicalname"]}
+                      columnNames={["Principal name"]}
+                      hasCheckboxes={true}
+                      pathname="services"
                       showTableRows={!isBatchFetching}
-                      servicesData={servicesTableData}
+                      showLink={true}
+                      linkPath={(service) =>
+                        "/services/" +
+                        encodeURIComponent(
+                          encodeURIComponent(
+                            ipaPrimaryKey(service.krbcanonicalname)
+                          )
+                        )
+                      }
+                      elementsData={servicesTableData}
                       buttonsData={servicesTableButtonsData}
                       paginationData={selectedPerPageData}
-                      searchValue={searchValue}
                     />
                   )}
                 </InnerScrollContainer>
