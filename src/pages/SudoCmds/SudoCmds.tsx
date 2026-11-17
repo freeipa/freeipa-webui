@@ -25,7 +25,7 @@ import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
-import SudoCmdsTable from "./SudoCmdsTable";
+import MainTable from "src/components/tables/MainTable";
 // Components
 import PaginationLayout from "../../components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
@@ -243,11 +243,11 @@ const SudoCmds = () => {
 
   // 'SudoCmdsTable'
   const cmdsTableData = {
-    isSudoCmdSelectable,
-    selectedCmds,
-    selectableCmdsTable,
-    setCmdsSelected,
-    clearSelectedCmds,
+    isElementSelectable: isSudoCmdSelectable,
+    selectedElements: selectedCmds,
+    selectableElementsTable: selectableCmdsTable,
+    setElementsSelected: setCmdsSelected,
+    clearSelectedElements: clearSelectedCmds,
   };
 
   const cmdsTableButtonsData = {
@@ -372,13 +372,25 @@ const SudoCmds = () => {
                   {batchError !== undefined && batchError ? (
                     <GlobalErrors errors={globalErrors.getAll()} />
                   ) : (
-                    <SudoCmdsTable
+                    <MainTable
+                      tableTitle="Sudo commands table"
                       shownElementsList={cmdList}
+                      pk="sudocmd"
+                      keyNames={["sudocmd", "description"]}
+                      columnNames={["Sudo command", "Description"]}
+                      hasCheckboxes={true}
+                      pathname="sudo-commands"
                       showTableRows={!isBatchFetching}
-                      cmdsData={cmdsTableData}
+                      showLink={true}
+                      linkPath={(cmd) =>
+                        "/sudo-commands/" +
+                        encodeURIComponent(
+                          encodeURIComponent(ipaPrimaryKey(cmd.sudocmd))
+                        )
+                      }
+                      elementsData={cmdsTableData}
                       buttonsData={cmdsTableButtonsData}
                       paginationData={selectedPerPageData}
-                      searchValue={searchValue}
                     />
                   )}
                 </InnerScrollContainer>

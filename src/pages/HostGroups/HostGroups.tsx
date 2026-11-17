@@ -24,7 +24,7 @@ import HelpTextWithIconLayout from "src/components/layouts/HelpTextWithIconLayou
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
 import PaginationLayout from "src/components/layouts/PaginationLayout";
 // Tables
-import HostGroupsTable from "src/pages/HostGroups/HostGroupsTable";
+import MainTable from "src/components/tables/MainTable";
 // Modal
 import AddHostGroup from "src/components/modals/AddHostGroup";
 import DeleteHostGroups from "src/components/modals/DeleteHostGroups";
@@ -255,11 +255,11 @@ const HostGroups = () => {
 
   // - 'HostGroupsTable'
   const groupsTableData = {
-    isHostGroupSelectable,
-    selectedGroups,
-    selectableGroupsTable,
-    setGroupSelected,
-    clearSelectedGroups,
+    isElementSelectable: isHostGroupSelectable,
+    selectedElements: selectedGroups,
+    selectableElementsTable: selectableGroupsTable,
+    setElementsSelected: setGroupSelected,
+    clearSelectedElements: clearSelectedGroups,
   };
 
   const groupsTableButtonsData = {
@@ -380,14 +380,19 @@ const HostGroups = () => {
                   {batchError !== undefined && batchError ? (
                     <GlobalErrors errors={globalErrors.getAll()} />
                   ) : (
-                    <HostGroupsTable
-                      elementsList={groupsList}
+                    <MainTable
+                      tableTitle="Host groups table"
                       shownElementsList={groupsList}
+                      pk="cn"
+                      keyNames={["cn", "description"]}
+                      columnNames={["Group Name", "Description"]}
+                      hasCheckboxes={true}
+                      pathname="host-groups"
                       showTableRows={!isBatchFetching}
-                      groupsData={groupsTableData}
+                      showLink={true}
+                      elementsData={groupsTableData}
                       buttonsData={groupsTableButtonsData}
                       paginationData={selectedPerPageData}
-                      searchValue={searchValue}
                     />
                   )}
                 </InnerScrollContainer>
