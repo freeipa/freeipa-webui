@@ -26,7 +26,7 @@ import ToolbarLayout, {
 } from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
-import MainTable from "../AutoMemUserRules/AutomemRulesTable";
+import MainTable from "src/components/tables/MainTable";
 // Components
 import PaginationLayout from "../../components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
@@ -490,13 +490,18 @@ const AutoMemHostRules = () => {
                   <GlobalErrors errors={globalErrors.getAll()} />
                 ) : (
                   <MainTable
+                    tableTitle="Automember host groups table"
                     shownElementsList={automemberRules}
+                    pk="automemberRule"
+                    keyNames={["automemberRule", "description"]}
+                    columnNames={["Automember rule", "Description"]}
+                    hasCheckboxes={true}
+                    pathname="host-group-rules"
                     showTableRows={!hostGroupRulesData.isFetching}
+                    showLink={true}
                     elementsData={automembersTableData}
                     buttonsData={automembersTableButtonsData}
                     paginationData={selectedPerPageData}
-                    searchValue={searchValue}
-                    automemberType="host-group"
                   />
                 )}
               </InnerScrollContainer>

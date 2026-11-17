@@ -3,7 +3,7 @@ import { loginAsAdmin, logout } from "../common/authentication";
 import { isElementDisabled, selectEntry } from "../common/data_tables";
 import { navigateTo } from "../common/navigation";
 
-const SUDO_RULE_STATUS_LABEL = "Status";
+const SUDO_RULE_STATUS_LABEL = "ipaenabledflag";
 
 const isDisabled = (name: string) => {
   isElementDisabled(name, SUDO_RULE_STATUS_LABEL);

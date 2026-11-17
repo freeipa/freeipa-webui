@@ -2,7 +2,7 @@ import { Given, Then } from "@badeball/cypress-cucumber-preprocessor";
 import { createUserExec } from "../common/user_management";
 import { isElementDisabled, isElementEnabled } from "../common/data_tables";
 
-const USER_STATUS_LABEL = "Status";
+const USER_STATUS_LABEL = "nsaccountlock";
 
 const isDisabled = (name: string) => {
   isElementDisabled(name, USER_STATUS_LABEL);

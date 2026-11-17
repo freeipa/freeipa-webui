@@ -62,19 +62,6 @@ import { Content } from "@patternfly/react-core";
 export const API_VERSION_BACKUP = "2.254";
 
 /**
- * Helper method: Given an users list and status, check if some entry has different status
- * @param {boolean} status - The status to check against
- * @param {User[]} usersList - Array of users to check
- * @returns {boolean} - True if all users have the same status, false otherwise
- */
-export const checkEqualStatus = (status: boolean, usersList: User[]) => {
-  const usersWithOtherStatus = usersList.filter(
-    (user) => user.nsaccountlock !== status
-  );
-  return usersWithOtherStatus.length === 0;
-};
-
-/**
  * Helper method: Given an general-type (T) list and status, check if some entry has different status
  * @param {boolean} status - The status to check against
  * @param {T[]} elementsList - Array of elements to check
@@ -88,41 +75,9 @@ export const checkEqualStatusGen = <T,>(
   statusElementName: string
 ) => {
   const elementsWithOtherStatus = elementsList.filter(
-    (element) => element[statusElementName] !== status
+    (element) => String(element[statusElementName]) !== String(status) // IPA attributes can be arrays
   );
   return elementsWithOtherStatus.length === 0;
-};
-
-/**
- * Helper method: Given a HBAC rule list and status, check if some entry has different status
- * @param {boolean} status - The status to check against
- * @param {HBACRule[]} rulesList - Array of HBAC rules to check
- * @returns {boolean} - True if all rules have the same status, false otherwise
- */
-export const checkEqualStatusHbacRule = (
-  status: boolean,
-  rulesList: HBACRule[]
-) => {
-  const rulesWithOtherStatus = rulesList.filter(
-    (rule) => rule.ipaenabledflag[0] !== status
-  );
-  return rulesWithOtherStatus.length === 0;
-};
-
-/**
- * Helper method: Given a Sudo rule list and status, check if some entry has different status
- * @param {string} status - The status to check against
- * @param {SudoRule[]} rulesList - Array of Sudo rules to check
- * @returns {boolean} - True if all rules have the same status, false otherwise
- */
-export const checkEqualStatusSudoRule = (
-  status: string,
-  rulesList: SudoRule[]
-) => {
-  const rulesWithOtherStatus = rulesList.filter(
-    (rule) => rule.ipaenabledflag[0] !== status
-  );
-  return rulesWithOtherStatus.length === 0;
 };
 
 /**

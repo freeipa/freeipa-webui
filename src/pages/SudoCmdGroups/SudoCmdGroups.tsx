@@ -25,7 +25,7 @@ import SecondaryButton from "src/components/layouts/SecondaryButton";
 import ToolbarLayout from "src/components/layouts/ToolbarLayout";
 import SearchInputLayout from "src/components/layouts/SearchInputLayout";
 // Tables
-import SudoCmdGroupsTable from "./SudoCmdGroupsTable";
+import MainTable from "src/components/tables/MainTable";
 // Components
 import PaginationLayout from "../../components/layouts/PaginationLayout";
 import BulkSelectorPrep from "src/components/BulkSelectorPrep";
@@ -243,11 +243,11 @@ const SudoCmds = () => {
   };
 
   const cmdGroupsTableData = {
-    isSudoCmdGroupSelectable,
-    selectedCmdGroups,
-    selectableCmdGroupsTable,
-    setCmdGroupsSelected,
-    clearSelectedCmdGroups,
+    isElementSelectable: isSudoCmdGroupSelectable,
+    selectedElements: selectedCmdGroups,
+    selectableElementsTable: selectableCmdGroupsTable,
+    setElementsSelected: setCmdGroupsSelected,
+    clearSelectedElements: clearSelectedCmdGroups,
   };
 
   const cmdsTableButtonsData = {
@@ -372,13 +372,19 @@ const SudoCmds = () => {
                   {batchError !== undefined && batchError ? (
                     <GlobalErrors errors={globalErrors.getAll()} />
                   ) : (
-                    <SudoCmdGroupsTable
+                    <MainTable
+                      tableTitle="Sudo command groups table"
                       shownElementsList={cmdList}
+                      pk="cn"
+                      keyNames={["cn", "description"]}
+                      columnNames={["Sudo command group", "Description"]}
+                      hasCheckboxes={true}
+                      pathname="sudo-command-groups"
                       showTableRows={!isBatchFetching}
-                      cmdGroupsData={cmdGroupsTableData}
+                      showLink={true}
+                      elementsData={cmdGroupsTableData}
                       buttonsData={cmdsTableButtonsData}
                       paginationData={selectedPerPageData}
-                      searchValue={searchValue}
                     />
                   )}
                 </InnerScrollContainer>
