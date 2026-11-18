@@ -76,6 +76,7 @@ import OtpTokens from "src/pages/OtpTokens/OtpTokens";
 import AutomountLocations from "src/pages/AutomountLocations/AutomountLocations";
 import TopologyGraph from "src/pages/Topology/TopologyGraph";
 import TopologySuffixes from "src/pages/Topology/TopologySuffixes";
+import TopologySuffixesTabs from "src/pages/Topology/TopologySuffixesTabs";
 import OtpTokensTabs from "src/pages/OtpTokens/OtpTokensTabs";
 import Roles from "src/pages/Roles/Roles";
 import RolesTabs from "src/pages/Roles/RolesTabs";
@@ -565,6 +566,12 @@ export const AppRoutes = (): React.ReactElement => {
             </Route>
             <Route path="topology-suffixes">
               <Route path="" element={<TopologySuffixes />} />
+              <Route path=":cn">
+                <Route
+                  path=""
+                  element={<TopologySuffixesTabs section="settings" />}
+                />
+              </Route>
             </Route>
             <Route path="roles">
               <Route path="" element={<Roles />} />

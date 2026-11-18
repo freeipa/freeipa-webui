@@ -200,7 +200,7 @@ const TopologySuffixes = () => {
                     hasCheckboxes={false}
                     pathname="topology-suffixes"
                     showTableRows={!isFetching}
-                    showLink={false}
+                    showLink={true}
                   />
                 )}
               </InnerScrollContainer>
