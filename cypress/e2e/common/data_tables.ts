@@ -45,18 +45,30 @@ export const validateEntry = (name: string) => {
   entryExists(name);
 };
 
-// 'MainTable' component uses 'data-label' attribute to set the status label
+// 'MainTable' adds a 'table-row-<entry>-<key>' data-cy to every cell
 // Also contains an icon followed by a space and the status text
 // So it must be handled differently than other attributes
 export const isElementDisabled = (elementName: string, label: string) => {
   cy.get(
-    "tr[id='" + elementName + "'] td[data-label='" + label + "']"
+    "tr[id='" +
+      elementName +
+      "'] td[data-cy='table-row-" +
+      elementName +
+      "-" +
+      label +
+      "']"
   ).contains("Disabled");
 };
 
 export const isElementEnabled = (elementName: string, label: string) => {
   cy.get(
-    "tr[id='" + elementName + "'] td[data-label='" + label + "']"
+    "tr[id='" +
+      elementName +
+      "'] td[data-cy='table-row-" +
+      elementName +
+      "-" +
+      label +
+      "']"
   ).contains("Enabled");
 };
 
@@ -97,8 +109,10 @@ Then(
   (name: string, attribute: string, value: string) => {
     entryExists(name);
     cy.get("tr[id='" + name + "'] td[data-label='" + attribute + "']").should(
-      "have.text",
-      value
+      ($cell) => {
+        // Status cells render an icon followed by a space and the value
+        expect($cell.text().trim()).to.equal(value);
+      }
     );
   }
 );

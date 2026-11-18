@@ -25,8 +25,8 @@ Feature: DNS Forward Zones
         And I should see "add-dnsforwardzones-success" alert
 
         When I search for "my-dnsforwardzone." in the data table
-        Then I should see "my-dnsforwardzone." entry in the data table with attribute "idnsforwarders" set to "8.8.8.8"
-        And I should see "my-dnsforwardzone." entry in the data table with attribute "idnsforwardpolicy" set to "first"
+        Then I should see "my-dnsforwardzone." entry in the data table with attribute "Zone Forwarders" set to "8.8.8.8"
+        And I should see "my-dnsforwardzone." entry in the data table with attribute "Forward policy" set to "first"
 
     @cleanup
     Scenario: Delete DNS forward zone
@@ -56,8 +56,8 @@ Feature: DNS Forward Zones
         And I should see "add-dnsforwardzones-success" alert
 
         When I search for "my-dnsforwardzone." in the data table
-        Then I should see "my-dnsforwardzone." entry in the data table with attribute "idnsforwarders" set to "192.168.23.24"
-        And I should see "my-dnsforwardzone." entry in the data table with attribute "idnsforwardpolicy" set to "first"
+        Then I should see "my-dnsforwardzone." entry in the data table with attribute "Zone Forwarders" set to "192.168.23.24"
+        And I should see "my-dnsforwardzone." entry in the data table with attribute "Forward policy" set to "first"
 
     @cleanup
     Scenario: Delete DNS forward zone
@@ -90,8 +90,8 @@ Feature: DNS Forward Zones
         And I should see "add-dnsforwardzones-success" alert
 
         When I search for "my-dnsforwardzone." in the data table
-        Then I should see "my-dnsforwardzone." entry in the data table with attribute "idnsforwarders" set to "8.8.8.8"
-        And I should see "my-dnsforwardzone." entry in the data table with attribute "idnsforwardpolicy" set to "only"
+        Then I should see "my-dnsforwardzone." entry in the data table with attribute "Zone Forwarders" set to "8.8.8.8"
+        And I should see "my-dnsforwardzone." entry in the data table with attribute "Forward policy" set to "only"
 
     @cleanup
     Scenario: Delete DNS forward zone
@@ -124,8 +124,8 @@ Feature: DNS Forward Zones
         And I should see "add-dnsforwardzones-success" alert
 
         When I search for "my-dnsforwardzone." in the data table
-        Then I should see "my-dnsforwardzone." entry in the data table with attribute "idnsforwarders" set to "8.8.8.8"
-        And I should see "my-dnsforwardzone." entry in the data table with attribute "idnsforwardpolicy" set to "none"
+        Then I should see "my-dnsforwardzone." entry in the data table with attribute "Zone Forwarders" set to "8.8.8.8"
+        And I should see "my-dnsforwardzone." entry in the data table with attribute "Forward policy" set to "none"
 
     @cleanup
     Scenario: Delete DNS forward zone
@@ -158,7 +158,7 @@ Feature: DNS Forward Zones
         And I should see "add-dnsforwardzones-success" alert
 
         When I search for "my-dnsforwardzone." in the data table
-        Then I should see "my-dnsforwardzone." entry in the data table with attribute "idnsforwarders" set to "8.8.8.8"
+        Then I should see "my-dnsforwardzone." entry in the data table with attribute "Zone Forwarders" set to "8.8.8.8"
 
     @cleanup
     Scenario: Delete DNS forward zone
@@ -191,7 +191,7 @@ Feature: DNS Forward Zones
         And I should see "add-dnsforwardzones-success" alert
 
         When I search for "168.192.in-addr.arpa." in the data table
-        Then I should see "168.192.in-addr.arpa." entry in the data table with attribute "idnsforwarders" set to "8.8.8.8"
+        Then I should see "168.192.in-addr.arpa." entry in the data table with attribute "Zone Forwarders" set to "8.8.8.8"
 
     @cleanup
     Scenario: Delete DNS forward zone
