@@ -377,12 +377,10 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
             const content = renderCellContent(cell);
             return (
               <Td
-                dataLabel={columnNames[keyName]}
+                dataLabel={columnNames[idx]}
                 key={keyName + "-" + idx + "-" + elementName}
                 id={idx.toString()}
                 style={setStyleOnStatus(cell)}
-                aria-label={keyName}
-                data-label={keyName}
                 data-cy={`table-row-${elementName}-${keyName}`}
               >
                 {idx === 0 && !!props.showLink ? (

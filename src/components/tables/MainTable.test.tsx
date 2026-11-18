@@ -83,6 +83,19 @@ describe("MainTable shift selection", () => {
     ).toBe(true);
   });
 
+  it("uses the column display name as the cell data label", () => {
+    render(makeTable(makeItems(1), { setElementsSelected: vi.fn() }));
+
+    const row = screen.getByText("item-0").closest("tr") as HTMLElement;
+    const nameCell = row.querySelector("td[data-label='Name']");
+    const descriptionCell = row.querySelector("td[data-label='Description']");
+
+    expect(nameCell).not.toBeNull();
+    expect(descriptionCell).not.toBeNull();
+    // Cell context comes from the headers, not a per-cell aria-label
+    expect(nameCell?.hasAttribute("aria-label")).toBe(false);
+  });
+
   it("applies a shift range in one update, skipping non-selectable rows", () => {
     const setElementsSelected = vi.fn();
     const setElementsRangeSelected = vi.fn();
