@@ -247,6 +247,7 @@ const SudoCmds = () => {
     selectedElements: selectedCmdGroups,
     selectableElementsTable: selectableCmdGroupsTable,
     setElementsSelected: setCmdGroupsSelected,
+    setElementsRangeSelected: updateSelectedCmdGroups,
     clearSelectedElements: clearSelectedCmdGroups,
   };
 

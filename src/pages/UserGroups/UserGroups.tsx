@@ -249,6 +249,7 @@ const UserGroups = () => {
     selectedElements: selectedGroups,
     selectableElementsTable: selectableGroupsTable,
     setElementsSelected: setGroupSelected,
+    setElementsRangeSelected: updateSelectedGroups,
     clearSelectedElements: clearSelectedGroups,
   };
 

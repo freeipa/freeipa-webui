@@ -259,6 +259,7 @@ const PreservedUsers = () => {
     selectedElements: selectedUsers,
     selectableElementsTable: selectableUsersTable,
     setElementsSelected: setUserSelected,
+    setElementsRangeSelected: updateSelectedUsers,
     clearSelectedElements: clearSelectedUsers,
   };
 
