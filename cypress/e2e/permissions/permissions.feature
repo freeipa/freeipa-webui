@@ -24,7 +24,7 @@ Feature: Permissions manipulation
 
     When I search for "a_permission1" in the data table
     Then I should see "a_permission1" entry in the data table
-    And I should see "a_permission1" entry in the data table with attribute "ipapermright" set to "read"
+    And I should see "a_permission1" entry in the data table with attribute "Granted rights" set to "read"
 
   @cleanup
   Scenario: Cleanup: Delete permission

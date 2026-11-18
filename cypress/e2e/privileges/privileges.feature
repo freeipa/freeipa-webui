@@ -21,7 +21,7 @@ Feature: Privileges manipulation
 
     When I search for "a_privilege1" in the data table
     Then I should see "a_privilege1" entry in the data table
-    And I should see "a_privilege1" entry in the data table with attribute "description" set to "my description"
+    And I should see "a_privilege1" entry in the data table with attribute "Description" set to "my description"
 
   @cleanup
   Scenario: Cleanup: Delete a privilege
