@@ -9,16 +9,19 @@ interface MockType {
   description: string;
 }
 
+interface SelectionCallbacks {
+  setElementsSelected: ReturnType<typeof vi.fn>;
+  setElementsRangeSelected?: ReturnType<typeof vi.fn>;
+  isElementSelectable?: (element: MockType) => boolean;
+}
+
 const makeItems = (count: number): MockType[] =>
   Array.from({ length: count }, (_, i) => ({
     cn: "item-" + i,
     description: "Item " + i,
   }));
 
-const makeTable = (
-  items: MockType[],
-  setElementsSelected: ReturnType<typeof vi.fn>
-) => (
+const makeTable = (items: MockType[], callbacks: SelectionCallbacks) => (
   <MainTable
     tableTitle="Test table"
     shownElementsList={items}
@@ -30,10 +33,11 @@ const makeTable = (
     showTableRows={true}
     showLink={false}
     elementsData={{
-      isElementSelectable: () => true,
+      isElementSelectable: callbacks.isElementSelectable ?? (() => true),
       selectedElements: [],
       selectableElementsTable: items,
-      setElementsSelected,
+      setElementsSelected: callbacks.setElementsSelected,
+      setElementsRangeSelected: callbacks.setElementsRangeSelected,
       clearSelectedElements: vi.fn(),
     }}
     buttonsData={{
@@ -56,14 +60,14 @@ describe("MainTable shift selection", () => {
   it("does not pass undefined rows after the shown list shrinks", () => {
     const setElementsSelected = vi.fn();
     const longList = makeItems(10);
-    const { rerender } = render(makeTable(longList, setElementsSelected));
+    const { rerender } = render(makeTable(longList, { setElementsSelected }));
 
     // Anchor the range on the last row of the long list
     fireEvent.click(screen.getAllByRole("checkbox")[9]);
 
     // Simulate a page/list change with fewer rows
     const shortList = makeItems(3);
-    rerender(makeTable(shortList, setElementsSelected));
+    rerender(makeTable(shortList, { setElementsSelected }));
     setElementsSelected.mockClear();
 
     // Shift-select the first row of the new list
@@ -77,5 +81,33 @@ describe("MainTable shift selection", () => {
     expect(
       setElementsSelected.mock.calls.every(([element]) => element !== undefined)
     ).toBe(true);
+  });
+
+  it("applies a shift range in one update, skipping non-selectable rows", () => {
+    const setElementsSelected = vi.fn();
+    const setElementsRangeSelected = vi.fn();
+    const items = makeItems(5);
+    render(
+      makeTable(items, {
+        setElementsSelected,
+        setElementsRangeSelected,
+        isElementSelectable: (item) => item.cn !== "item-2",
+      })
+    );
+
+    // Anchor on the first row, then shift-select the last one
+    fireEvent.click(screen.getAllByRole("checkbox")[0]);
+    setElementsSelected.mockClear();
+
+    fireEvent.keyDown(document, { key: "Shift" });
+    fireEvent.click(screen.getAllByRole("checkbox")[4]);
+    fireEvent.keyUp(document, { key: "Shift" });
+
+    expect(setElementsRangeSelected).toHaveBeenCalledTimes(1);
+    expect(setElementsRangeSelected).toHaveBeenCalledWith(
+      [items[0], items[1], items[3], items[4]],
+      true
+    );
+    expect(setElementsSelected).not.toHaveBeenCalled();
   });
 });

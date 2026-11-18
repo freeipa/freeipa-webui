@@ -260,6 +260,7 @@ const HBACServiceGroups = () => {
     selectedElements: selectedServices,
     selectableElementsTable: selectableServicesTable,
     setElementsSelected: setServicesSelected,
+    setElementsRangeSelected: updateSelectedServices,
     clearSelectedElements: clearSelectedServices,
   };
 

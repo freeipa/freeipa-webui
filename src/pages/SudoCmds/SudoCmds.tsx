@@ -247,6 +247,7 @@ const SudoCmds = () => {
     selectedElements: selectedCmds,
     selectableElementsTable: selectableCmdsTable,
     setElementsSelected: setCmdsSelected,
+    setElementsRangeSelected: updateSelectedCmds,
     clearSelectedElements: clearSelectedCmds,
   };
 

@@ -358,6 +358,7 @@ const IDViews = () => {
     selectedElements: selectedViews,
     selectableElementsTable: selectableViewsTable,
     setElementsSelected: setViewSelected,
+    setElementsRangeSelected: updateSelectedViews,
     clearSelectedElements: clearSelectedViews,
   };
 

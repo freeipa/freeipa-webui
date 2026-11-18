@@ -309,6 +309,7 @@ const AutoMemUserRules = () => {
     selectedElements: selectedAutomembers,
     selectableElementsTable: selectableAutomembersTable,
     setElementsSelected: setAutomembersSelected,
+    setElementsRangeSelected: updateSelectedAutomembers,
     clearSelectedElements: clearSelectedRules,
   };
 
