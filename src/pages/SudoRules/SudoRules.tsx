@@ -309,6 +309,7 @@ const SudoRules = () => {
     selectedElements: selectedRules,
     selectableElementsTable: selectableRulesTable,
     setElementsSelected: setRulesSelected,
+    setElementsRangeSelected: updateSelectedRules,
     clearSelectedElements: clearSelectedRules,
   };
 

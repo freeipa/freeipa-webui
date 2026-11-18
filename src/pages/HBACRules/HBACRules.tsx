@@ -315,6 +315,7 @@ const HBACRules = () => {
     selectedElements: selectedRules,
     selectableElementsTable: selectableRulesTable,
     setElementsSelected: setRulesSelected,
+    setElementsRangeSelected: updateSelectedRules,
     clearSelectedElements: clearSelectedRules,
   };
 

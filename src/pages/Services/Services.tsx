@@ -287,6 +287,7 @@ const Services = () => {
     selectedElements: selectedServices,
     selectableElementsTable: selectableServicesTable,
     setElementsSelected: setServiceSelected,
+    setElementsRangeSelected: updateSelectedServices,
     clearSelectedElements: clearSelectedServices,
   };
 

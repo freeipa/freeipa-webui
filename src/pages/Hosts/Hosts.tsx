@@ -404,6 +404,7 @@ const Hosts = () => {
     selectedElements: selectedHosts,
     selectableElementsTable: selectableHostsTable,
     setElementsSelected: setHostSelected,
+    setElementsRangeSelected: updateSelectedHosts,
     clearSelectedElements: clearSelectedHosts,
   };
 

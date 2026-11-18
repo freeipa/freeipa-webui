@@ -24,6 +24,7 @@ interface SelectedElementsData<T> {
   selectedElements: T[];
   selectableElementsTable: T[];
   setElementsSelected: (rule: T, isSelecting?: boolean) => void;
+  setElementsRangeSelected?: (elements: T[], isSelecting: boolean) => void;
   clearSelectedElements: () => void;
 }
 
@@ -120,12 +121,22 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
         new Array(Math.abs(numberSelected) + 1),
         (_, i) => i + Math.min(recentSelectedRowIndex, rowIndex)
       );
-      intermediateIndexes.forEach((index) => {
-        const element = shownElementsList[index];
-        if (element !== undefined) {
-          props.elementsData?.setElementsSelected(element, isSelecting);
+      const elements = intermediateIndexes
+        .map((index) => shownElementsList[index])
+        .filter(
+          (element) =>
+            element !== undefined &&
+            props.elementsData?.isElementSelectable(element)
+        );
+      if (elements.length > 0) {
+        if (props.elementsData?.setElementsRangeSelected) {
+          props.elementsData.setElementsRangeSelected(elements, isSelecting);
+        } else {
+          elements.forEach((element) =>
+            props.elementsData?.setElementsSelected(element, isSelecting)
+          );
         }
-      });
+      }
     } else {
       props.elementsData?.setElementsSelected(element, isSelecting);
     }
