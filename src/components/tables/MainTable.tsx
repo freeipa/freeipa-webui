@@ -102,6 +102,11 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
   >(null);
   const [shifting, setShifting] = React.useState(false);
 
+  // The range anchor is an index into the visible list, so drop it when that list changes
+  React.useEffect(() => {
+    setRecentSelectedRowIndex(null);
+  }, [props.shownElementsList]);
+
   // On selecting one single row
   const onSelectElement = (
     element: T,
@@ -115,12 +120,12 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
         new Array(Math.abs(numberSelected) + 1),
         (_, i) => i + Math.min(recentSelectedRowIndex, rowIndex)
       );
-      intermediateIndexes.forEach((index) =>
-        props.elementsData?.setElementsSelected(
-          shownElementsList[index],
-          isSelecting
-        )
-      );
+      intermediateIndexes.forEach((index) => {
+        const element = shownElementsList[index];
+        if (element !== undefined) {
+          props.elementsData?.setElementsSelected(element, isSelecting);
+        }
+      });
     } else {
       props.elementsData?.setElementsSelected(element, isSelecting);
     }
