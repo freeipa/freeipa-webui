@@ -338,6 +338,10 @@ const UsersAccountSettings = (props: PropsToUsersAccountSettings) => {
                     value: "idp",
                     text: "External Identity Provider",
                   },
+                  {
+                    value: "passkey",
+                    text: "Passkey",
+                  },
                 ]}
                 ipaObject={ipaObject}
                 onChange={recordOnChange}
