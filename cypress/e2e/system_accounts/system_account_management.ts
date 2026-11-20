@@ -1,6 +1,5 @@
 import { Given, Then } from "@badeball/cypress-cucumber-preprocessor";
 import { isElementDisabled, isElementEnabled } from "../common/data_tables";
-import { IPA_PREFIX_INTERACTIVE } from "cypress/support/utils";
 
 const SYSACCOUNT_STATUS_LABEL = "nsaccountlock";
 
@@ -31,8 +30,12 @@ const createSysAccountExec = (
   password: string,
   description?: string
 ) => {
-  const ipaCmd = `${IPA_PREFIX_INTERACTIVE} sysaccount-add "${accountId}" --password`;
-  cy.exec(`echo "${password}" | ${ipaCmd}`);
+  cy.ipa({
+    command: "sysaccount-add",
+    name: accountId,
+    specificOptions: "--password",
+    stdin: password,
+  });
 
   if (description) {
     cy.ipa({
