@@ -135,6 +135,23 @@ const extendedApi = api.injectEndpoints({
       },
     }),
 
+    /**
+     * Show a specific topology suffix.
+     * @param {string} cn - The CN of the topology suffix
+     * @returns {FindRPCResponse} - The topology suffix data
+     */
+    topologySuffixShow: build.query<FindRPCResponse, string>({
+      query: (cn) => {
+        return getCommand({
+          method: "topologysuffix_show",
+          params: [
+            [cn],
+            { all: true, rights: true, version: API_VERSION_BACKUP },
+          ],
+        });
+      },
+    }),
+
     getTopologySuffixesFullData: build.query<
       BatchRPCResponse,
       TopologySuffixesFullDataPayload
@@ -187,4 +204,5 @@ const extendedApi = api.injectEndpoints({
 export const {
   useFindTopologyFullDataQuery,
   useGetTopologySuffixesFullDataQuery,
+  useTopologySuffixShowQuery,
 } = extendedApi;
