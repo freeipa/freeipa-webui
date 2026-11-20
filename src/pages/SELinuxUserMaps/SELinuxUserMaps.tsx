@@ -169,12 +169,6 @@ const SELinuxUserMaps = () => {
     setIsDeleteButtonDisabled(newSelectedMaps.length === 0);
   };
 
-  const setMapSelected = (map: SELinuxUserMap, isSelecting = true) => {
-    if (isSelinuxUserMapSelectable(map)) {
-      updateSelectedMaps([map], isSelecting);
-    }
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     selinuxUserMaps,
     selectedElements.map((item) => ipaPrimaryKey(item.cn)),
@@ -365,7 +359,7 @@ const SELinuxUserMaps = () => {
                         isElementSelectable: isSelinuxUserMapSelectable,
                         selectedElements,
                         selectableElementsTable: selectableMapsTable,
-                        setElementsSelected: setMapSelected,
+                        setElementsSelected: updateSelectedMaps,
                         clearSelectedElements: () => setSelectedElements([]),
                       }}
                       buttonsData={{

@@ -176,15 +176,6 @@ const AutomountLocations = () => {
     setIsDeleteButtonDisabled(newSelectedLocations.length === 0);
   };
 
-  const setLocationSelected = (
-    location: AutomountLocation,
-    isSelecting = true
-  ) => {
-    if (isAutomountLocationSelectable(location)) {
-      updateSelectedLocations([location], isSelecting);
-    }
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     locations,
     selectedElements.map((item) => ipaPrimaryKey(item.cn)),
@@ -334,7 +325,7 @@ const AutomountLocations = () => {
                       isElementSelectable: isAutomountLocationSelectable,
                       selectedElements,
                       selectableElementsTable: selectableLocationsTable,
-                      setElementsSelected: setLocationSelected,
+                      setElementsSelected: updateSelectedLocations,
                       clearSelectedElements: () => setSelectedElements([]),
                     }}
                     buttonsData={{

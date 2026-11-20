@@ -287,16 +287,6 @@ const AutoMemUserRules = () => {
     setIsDeleteButtonDisabled(newSelectedAutomembers.length === 0);
   };
 
-  // - Helper method to set the selected entries from the table
-  const setAutomembersSelected = (
-    automember: AutomemberEntry,
-    isSelecting = true
-  ) => {
-    if (isAutomemberUserGroupSelectable(automember)) {
-      updateSelectedAutomembers([automember], isSelecting);
-    }
-  };
-
   // Data wrappers
   // TODO: Better separation of concerts
   // - 'BulkSelectorPrep'
@@ -323,8 +313,7 @@ const AutoMemUserRules = () => {
     isElementSelectable: isAutomemberUserGroupSelectable,
     selectedElements: selectedAutomembers,
     selectableElementsTable: selectableAutomembersTable,
-    setElementsSelected: setAutomembersSelected,
-    setElementsRangeSelected: updateSelectedAutomembers,
+    setElementsSelected: updateSelectedAutomembers,
     clearSelectedElements: clearSelectedRules,
   };
 

@@ -255,13 +255,6 @@ const SudoRules = () => {
     setIsDeleteButtonDisabled(newSelectedRules.length === 0);
   };
 
-  // - Helper method to set the selected entries from the table
-  const setRulesSelected = (rule: SudoRule, isSelecting = true) => {
-    if (isSudoRuleSelectable(rule)) {
-      updateSelectedRules([rule], isSelecting);
-    }
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     rulesList,
     selectedRules.map((item) => ipaPrimaryKey(item.cn)),
@@ -308,8 +301,7 @@ const SudoRules = () => {
     isElementSelectable: isSudoRuleSelectable,
     selectedElements: selectedRules,
     selectableElementsTable: selectableRulesTable,
-    setElementsSelected: setRulesSelected,
-    setElementsRangeSelected: updateSelectedRules,
+    setElementsSelected: updateSelectedRules,
     clearSelectedElements: clearSelectedRules,
   };
 

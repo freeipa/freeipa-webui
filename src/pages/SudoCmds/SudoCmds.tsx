@@ -217,13 +217,6 @@ const SudoCmds = () => {
     setIsDeleteButtonDisabled(newSelectedCmds.length === 0);
   };
 
-  // - Helper method to set the selected entries from the table
-  const setCmdsSelected = (cmd: SudoCmd, isSelecting = true) => {
-    if (isSudoCmdSelectable(cmd)) {
-      updateSelectedCmds([cmd], isSelecting);
-    }
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     cmdList,
     selectedCmds.map((item) => ipaPrimaryKey(item.sudocmd)),
@@ -259,8 +252,7 @@ const SudoCmds = () => {
     isElementSelectable: isSudoCmdSelectable,
     selectedElements: selectedCmds,
     selectableElementsTable: selectableCmdsTable,
-    setElementsSelected: setCmdsSelected,
-    setElementsRangeSelected: updateSelectedCmds,
+    setElementsSelected: updateSelectedCmds,
     clearSelectedElements: clearSelectedCmds,
   };
 

@@ -177,12 +177,6 @@ const Privileges = () => {
     setIsDeleteButtonDisabled(newSelectedPrivileges.length === 0);
   };
 
-  const setPrivilegeSelected = (privilege: Privilege, isSelecting = true) => {
-    if (isPrivilegeSelectable(privilege)) {
-      updateSelectedPrivileges([privilege], isSelecting);
-    }
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     elementsList,
     selectedPrivileges.map((item) => ipaPrimaryKey(item.cn)),
@@ -332,7 +326,7 @@ const Privileges = () => {
                       isElementSelectable: isPrivilegeSelectable,
                       selectedElements: selectedPrivileges,
                       selectableElementsTable: selectablePrivilegesTable,
-                      setElementsSelected: setPrivilegeSelected,
+                      setElementsSelected: updateSelectedPrivileges,
                       clearSelectedElements: clearSelectedPrivileges,
                     }}
                     buttonsData={{

@@ -183,15 +183,6 @@ const Delegations = () => {
     setIsDeleteButtonDisabled(newSelected.length === 0);
   };
 
-  const setDelegationSelected = (
-    delegation: Delegation,
-    isSelecting = true
-  ) => {
-    if (isDelegationSelectable(delegation)) {
-      updateSelectedDelegations([delegation], isSelecting);
-    }
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     elementsList,
     selectedDelegations.map((item) => ipaPrimaryKey(item.aciname)),
@@ -341,7 +332,7 @@ const Delegations = () => {
                       isElementSelectable: isDelegationSelectable,
                       selectedElements: selectedDelegations,
                       selectableElementsTable: selectableTable,
-                      setElementsSelected: setDelegationSelected,
+                      setElementsSelected: updateSelectedDelegations,
                       clearSelectedElements: clearSelectedDelegations,
                     }}
                     buttonsData={{

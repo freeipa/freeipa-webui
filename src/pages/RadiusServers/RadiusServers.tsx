@@ -178,15 +178,6 @@ const RadiusServers = () => {
     setIsDeleteButtonDisabled(newSelected.length === 0);
   };
 
-  const setRadiusServerSelected = (
-    server: RadiusServer,
-    isSelecting = true
-  ) => {
-    if (isRadiusServerSelectable(server)) {
-      updateSelectedRadiusServers([server], isSelecting);
-    }
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     elementsList,
     selectedRadiusServers.map((item) => ipaPrimaryKey(item.cn)),
@@ -333,7 +324,7 @@ const RadiusServers = () => {
                       isElementSelectable: isRadiusServerSelectable,
                       selectedElements: selectedRadiusServers,
                       selectableElementsTable: selectableRadiusServersTable,
-                      setElementsSelected: setRadiusServerSelected,
+                      setElementsSelected: updateSelectedRadiusServers,
                       clearSelectedElements: clearSelectedRadiusServers,
                     }}
                     buttonsData={{

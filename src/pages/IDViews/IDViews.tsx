@@ -218,13 +218,6 @@ const IDViews = () => {
     setIsDeleteButtonDisabled(newSelectedViews.length === 0);
   };
 
-  // - Helper method to set the selected views from the table
-  const setViewSelected = (view: IDView, isSelecting = true) => {
-    if (isViewSelectable(view)) {
-      updateSelectedViews([view], isSelecting);
-    }
-  };
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -370,8 +363,7 @@ const IDViews = () => {
     isElementSelectable: isViewSelectable,
     selectedElements: selectedViews,
     selectableElementsTable: selectableViewsTable,
-    setElementsSelected: setViewSelected,
-    setElementsRangeSelected: updateSelectedViews,
+    setElementsSelected: updateSelectedViews,
     clearSelectedElements: clearSelectedViews,
   };
 
