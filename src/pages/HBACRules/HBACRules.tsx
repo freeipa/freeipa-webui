@@ -261,13 +261,6 @@ const HBACRules = () => {
     setIsDeleteButtonDisabled(newSelectedRules.length === 0);
   };
 
-  // - Helper method to set the selected users from the table
-  const setRulesSelected = (rule: HBACRule, isSelecting = true) => {
-    if (isHbacRuleSelectable(rule)) {
-      updateSelectedRules([rule], isSelecting);
-    }
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     rulesList,
     selectedRules.map((item) => ipaPrimaryKey(item.cn)),
@@ -297,8 +290,7 @@ const HBACRules = () => {
     isElementSelectable: isHbacRuleSelectable,
     selectedElements: selectedRules,
     selectableElementsTable: selectableRulesTable,
-    setElementsSelected: setRulesSelected,
-    setElementsRangeSelected: updateSelectedRules,
+    setElementsSelected: updateSelectedRules,
     clearSelectedElements: clearSelectedRules,
   };
 

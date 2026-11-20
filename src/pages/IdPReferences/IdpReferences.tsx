@@ -188,13 +188,6 @@ const IdpReferences = () => {
     setIsDeleteButtonDisabled(newSelectedIdpRefs.length === 0);
   };
 
-  // - Helper method to set the selected entries from the table
-  const setIdpRefsSelected = (idpRef: IDPServer, isSelecting = true) => {
-    if (isIdpServerSelectable(idpRef)) {
-      updateSelectedIdpRefs([idpRef], isSelecting);
-    }
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     idpReferences,
     selectedElements.map((item) => ipaPrimaryKey(item.cn)),
@@ -356,7 +349,7 @@ const IdpReferences = () => {
                         isElementSelectable: isIdpServerSelectable,
                         selectedElements,
                         selectableElementsTable: selectableIdpRefsTable,
-                        setElementsSelected: setIdpRefsSelected,
+                        setElementsSelected: updateSelectedIdpRefs,
                         clearSelectedElements,
                       }}
                       buttonsData={{

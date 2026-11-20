@@ -169,12 +169,6 @@ const Roles = () => {
     setIsDeleteButtonDisabled(newSelectedRoles.length === 0);
   };
 
-  const setRoleSelected = (role: Role, isSelecting = true) => {
-    if (isRoleSelectable(role)) {
-      updateSelectedRoles([role], isSelecting);
-    }
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     elementsList,
     selectedRoles.map((item) => ipaPrimaryKey(item.cn)),
@@ -308,7 +302,7 @@ const Roles = () => {
                       isElementSelectable: isRoleSelectable,
                       selectedElements: selectedRoles,
                       selectableElementsTable: selectableRolesTable,
-                      setElementsSelected: setRoleSelected,
+                      setElementsSelected: updateSelectedRoles,
                       clearSelectedElements: clearSelectedRoles,
                     }}
                     buttonsData={{

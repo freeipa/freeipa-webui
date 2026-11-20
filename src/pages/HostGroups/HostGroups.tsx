@@ -214,13 +214,6 @@ const HostGroups = () => {
     setIsDeleteButtonDisabled(newSelectedGroups.length === 0);
   };
 
-  // - Helper method to set the selected groups from the table
-  const setGroupSelected = (group: HostGroup, isSelecting = true) => {
-    if (isHostGroupSelectable(group)) {
-      updateSelectedGroups([group], isSelecting);
-    }
-  };
-
   // Modals functionality
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -258,8 +251,7 @@ const HostGroups = () => {
     isElementSelectable: isHostGroupSelectable,
     selectedElements: selectedGroups,
     selectableElementsTable: selectableGroupsTable,
-    setElementsSelected: setGroupSelected,
-    setElementsRangeSelected: updateSelectedGroups,
+    setElementsSelected: updateSelectedGroups,
     clearSelectedElements: clearSelectedGroups,
   };
 

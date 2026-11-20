@@ -187,13 +187,6 @@ const Trusts = () => {
     setIsDeleteButtonDisabled(newSelectedTrusts.length === 0);
   };
 
-  // - Helper method to set the selected entries from the table
-  const setTrustsSelected = (trust: Trust, isSelecting = true) => {
-    if (isTrustSelectable(trust)) {
-      updateSelectedTrusts([trust], isSelecting);
-    }
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     trusts,
     selectedElements.map((trust) => ipaPrimaryKey(trust.cn)),
@@ -331,7 +324,7 @@ const Trusts = () => {
                         isElementSelectable: isTrustSelectable,
                         selectedElements,
                         selectableElementsTable: selectableTrustsTable,
-                        setElementsSelected: setTrustsSelected,
+                        setElementsSelected: updateSelectedTrusts,
                         clearSelectedElements: () => setSelectedElements([]),
                       }}
                       buttonsData={{

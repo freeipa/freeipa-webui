@@ -194,15 +194,6 @@ const SystemAccounts = () => {
     setIsDeleteButtonDisabled(newSelectedSysAccounts.length === 0);
   };
 
-  const setSysAccountSelected = (
-    sysAccount: SysAccount,
-    isSelecting = true
-  ) => {
-    if (isSysAccountSelectable(sysAccount)) {
-      updateSelectedSysAccounts([sysAccount], isSelecting);
-    }
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     elementsList,
     selectedSysAccounts.map((item) => ipaPrimaryKey(item.uid)),
@@ -361,7 +352,7 @@ const SystemAccounts = () => {
                       isElementSelectable: isSysAccountSelectable,
                       selectedElements: selectedSysAccounts,
                       selectableElementsTable: selectableSysAccountsTable,
-                      setElementsSelected: setSysAccountSelected,
+                      setElementsSelected: updateSelectedSysAccounts,
                       clearSelectedElements: clearSelectedSysAccounts,
                     }}
                     buttonsData={{

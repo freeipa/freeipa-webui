@@ -224,13 +224,6 @@ const HBACServices = () => {
     setIsDeleteButtonDisabled(newSelectedServices.length === 0);
   };
 
-  // - Helper method to set the selected entries from the table
-  const setServicesSelected = (service: HBACService, isSelecting = true) => {
-    if (isHbacServiceSelectable(service)) {
-      updateSelectedServices([service], isSelecting);
-    }
-  };
-
   const selectedPerPageData = getSelectedPerPageData(
     servicesList,
     selectedServices.map((item) => ipaPrimaryKey(item.cn)),
@@ -253,8 +246,7 @@ const HBACServices = () => {
     isElementSelectable: isHbacServiceSelectable,
     selectedElements: selectedServices,
     selectableElementsTable: selectableServicesTable,
-    setElementsSelected: setServicesSelected,
-    setElementsRangeSelected: updateSelectedServices,
+    setElementsSelected: updateSelectedServices,
     clearSelectedElements: clearSelectedServices,
   };
 
