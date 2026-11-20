@@ -389,12 +389,6 @@ const SudoCmds = () => {
                       pathname="sudo-commands"
                       showTableRows={!isBatchFetching}
                       showLink={true}
-                      linkPath={(cmd) =>
-                        "/sudo-commands/" +
-                        encodeURIComponent(
-                          encodeURIComponent(ipaPrimaryKey(cmd.sudocmd))
-                        )
-                      }
                       elementsData={cmdsTableData}
                       buttonsData={cmdsTableButtonsData}
                       paginationData={selectedPerPageData}

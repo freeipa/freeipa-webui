@@ -1,6 +1,7 @@
 import React from "react";
 import { render, screen, cleanup, fireEvent } from "@testing-library/react";
 import { describe, expect, it, afterEach, vi } from "vitest";
+import { MemoryRouter } from "react-router";
 // Component
 import MainTable from "./MainTable";
 
@@ -9,9 +10,10 @@ interface MockType {
   description: string;
 }
 
-interface SelectionCallbacks {
+interface TableOptions {
   setElementsSelected: ReturnType<typeof vi.fn>;
   isElementSelectable?: (element: MockType) => boolean;
+  showLink?: boolean;
 }
 
 const makeItems = (count: number): MockType[] =>
@@ -20,7 +22,7 @@ const makeItems = (count: number): MockType[] =>
     description: "Item " + i,
   }));
 
-const makeTable = (items: MockType[], callbacks: SelectionCallbacks) => (
+const makeTable = (items: MockType[], options: TableOptions) => (
   <MainTable
     tableTitle="Test table"
     shownElementsList={items}
@@ -30,12 +32,12 @@ const makeTable = (items: MockType[], callbacks: SelectionCallbacks) => (
     hasCheckboxes={true}
     pathname="test"
     showTableRows={true}
-    showLink={false}
+    showLink={options.showLink ?? false}
     elementsData={{
-      isElementSelectable: callbacks.isElementSelectable ?? (() => true),
+      isElementSelectable: options.isElementSelectable ?? (() => true),
       selectedElements: [],
       selectableElementsTable: items,
-      setElementsSelected: callbacks.setElementsSelected,
+      setElementsSelected: options.setElementsSelected,
       clearSelectedElements: vi.fn(),
     }}
     buttonsData={{
@@ -81,6 +83,23 @@ describe("MainTable shift selection", () => {
         elements.every((element: MockType) => element !== undefined)
       )
     ).toBe(true);
+  });
+
+  it("double-encodes slashes in the row link", () => {
+    const items = [{ cn: "/usr/bin/ls", description: "ls" }];
+    render(
+      <MemoryRouter>
+        {makeTable(items, {
+          setElementsSelected: vi.fn(),
+          showLink: true,
+        })}
+      </MemoryRouter>
+    );
+
+    expect(screen.getByRole("link")).toHaveAttribute(
+      "href",
+      "/test/%252Fusr%252Fbin%252Fls"
+    );
   });
 
   it("uses the column display name as the cell data label", () => {

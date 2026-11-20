@@ -12,6 +12,8 @@ import EmptyBodyTable from "./EmptyBodyTable";
 import { CheckIcon, MinusIcon } from "@patternfly/react-icons";
 // Utils
 import { checkEqualStatusGen } from "src/utils/utils";
+import { encodeRouteId } from "src/utils/routeUtils";
+import { ipaPrimaryKey } from "src/utils/selectedPerPage";
 
 /**
  * This component renders a table with the specified columns and rows.
@@ -52,7 +54,6 @@ interface PropsToTable<T> {
   pathname: string; // E.g. "active-users" (without the leading '/')
   showTableRows: boolean;
   showLink: boolean;
-  linkPath?: (element: T) => string; // Custom link target for the first column
   elementsData?: SelectedElementsData<T>;
   buttonsData?: ButtonsData;
   paginationData?: PaginationData;
@@ -377,9 +378,10 @@ const MainTable = <T,>(props: PropsToTable<T>) => {
                 {idx === 0 && !!props.showLink ? (
                   <Link
                     to={
-                      props.linkPath
-                        ? props.linkPath(element)
-                        : "/" + props.pathname + "/" + element[keyName]
+                      "/" +
+                      props.pathname +
+                      "/" +
+                      encodeRouteId(ipaPrimaryKey(element[keyName]))
                     }
                     state={element}
                   >
